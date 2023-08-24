@@ -1,6 +1,9 @@
 """Esup-Pod videos views."""
+from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Count, F, Q, Case, When, Value, BooleanField
+from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -15,8 +18,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.db.models import Count, F, Q, Case, When, Value, BooleanField
-from django.db.models.functions import Concat
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.shortcuts import redirect
@@ -28,6 +29,7 @@ from dateutil.parser import parse
 import concurrent.futures as futures
 from pod.main.utils import is_ajax
 
+from pod.main.models import AdditionalChannelTab
 from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
@@ -50,6 +52,8 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
+from pod.video.rest_views import ChannelSerializer
+
 from .utils import (
     pagination_data,
     get_headband,
@@ -164,6 +168,8 @@ if USE_TRANSCRIPTION:
     from ..video_encode_transcript import transcript
 
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
+
+CHANNELS_PER_BATCH = getattr(settings, "CHANNELS_PER_BATCH", 10)
 
 
 # ############################################################################
@@ -1003,7 +1009,29 @@ def video_edit(request, slug=None):
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
             )
-    return render(request, "videos/video_edit.html", {"form": form})
+
+    return render(request, "videos/video_edit.html", {
+        "form": form,
+        "listTheme": json.dumps(get_list_theme_in_form(form))
+    })
+
+
+def get_list_theme_in_form(form):
+    """
+    Get the themes for the form.
+
+    Args:
+        form: the form containing the channel available by the user.
+
+    Returns:
+        an array containing all the themes available.
+    """
+    listTheme = {}
+    if "channel" in form.fields:
+        for channel in form.fields["channel"].queryset:
+            if channel.themes.count() > 0:
+                listTheme["channel_%s" % channel.id] = channel.get_all_theme()
+    return listTheme
 
 
 def save_video_form(request, form):
@@ -2758,6 +2786,107 @@ def filter_videos(request, user_id):
 
     except Exception as err:
         return JsonResponse({"success": False, "detail": "Syntax error: {0}".format(err)})
+
+
+def get_serialized_channels(request: WSGIRequest, channels: QueryDict) -> dict:
+    """
+    Get serialized channels.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        channels (::class::`django.http.QueryDict`): The channel list.
+    Returns:
+        dict: The channel list in JSON format.
+    """
+    channels_json_format = {}
+    for channel in channels:
+        channels_json_format[channel.pk] = ChannelSerializer(channel, context={'request': request}).data
+        channels_json_format[channel.pk]["url"] = reverse('channel-video:channel', kwargs={"slug_c": channel.slug})
+        channels_json_format[channel.pk]["videoCount"] = channel.video_count
+        channels_json_format[channel.pk]["headbandImage"] = channel.headband.file.url if channel.headband else ""
+        channels_json_format[channel.pk]["themes"] = channel.themes.count()
+    return channels_json_format
+
+
+def get_channel_tabs_for_navbar(request: WSGIRequest) -> JsonResponse:
+    """
+    Get the channel tabs for the navbar.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
+    channel_tabs = AdditionalChannelTab.objects.all()
+    channel_tabs_json_format = {}
+    for channel_tab in channel_tabs:
+        channel_tabs_json_format[channel_tab.pk] = {
+            "id": channel_tab.pk,
+            "name": channel_tab.name,
+        }
+    return JsonResponse(channel_tabs_json_format, safe=False)
+
+
+def get_channels_for_specific_channel_tab(request: WSGIRequest) -> JsonResponse:
+    """
+    Get the channels for a specific channel tab.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
+    page_number = request.GET.get("page", 1)
+    channel_tab_id = request.GET.get("id")
+    if channel_tab_id:
+        channels = (
+            Channel.objects.filter(
+                visible=True,
+                video__is_draft=False,
+                add_channels_tab=channel_tab_id,
+                site=get_current_site(request),
+            )
+            .distinct()
+            .annotate(video_count=Count("video", distinct=True))
+            .order_by('title')
+        )
+    else:
+        channels = (
+            Channel.objects.filter(
+                visible=True,
+                video__is_draft=False,
+                add_channels_tab=None,
+                site=get_current_site(request),
+            )
+            .distinct()
+            .annotate(video_count=Count("video", distinct=True))
+            .order_by('title')
+        )
+    paginator = Paginator(channels, CHANNELS_PER_BATCH)
+    page_obj = paginator.get_page(page_number)
+    response = {}
+    response["channels"] = get_serialized_channels(request, page_obj.object_list)
+    response["currentPage"] = page_obj.number
+    response["totalPages"] = paginator.num_pages
+    response["count"] = len(channels)
+    return JsonResponse(response, safe=False)
+
+
+def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> JsonResponse:
+    """
+    Get the themes for a specific channel.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        request (`str`): The channel slug.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
+    channel = Channel.objects.get(slug=slug)
+    return JsonResponse(json.loads(channel.get_all_theme_json()), safe=False)
 
 
 """

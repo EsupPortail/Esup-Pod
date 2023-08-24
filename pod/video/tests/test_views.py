@@ -1,4 +1,5 @@
 """Tests for Video views."""
+from django.http import JsonResponse
 from django.test import Client
 from django.test import TestCase, override_settings, TransactionTestCase
 from django.urls import reverse
@@ -6,6 +7,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
 from pod.authentication.models import AccessGroup
 from django.contrib.sites.models import Site
+
+from pod.main.models import AdditionalChannelTab
 
 from ..models import Type
 from ..models import Theme
@@ -1456,3 +1459,107 @@ class VideoTestJSONView(TestCase):
         response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
         self.assertEqual(response.json()["status"], 403)
         self.assertEqual(response.json()["error"], "deny")
+
+
+class ChannelJsonResponseViews(TestCase):
+    """
+    Test for views to get channel informations in JSON format.
+
+    Args:
+        TestCase (::class::`django.test.TestCase`): The test case.
+    """
+    fixtures = ["initial_data.json", ]
+
+    def setUp(self):
+        """Set up the tests."""
+        self.site = Site.objects.get(id=1)
+        self.user = User.objects.create(
+            username="student",
+            password="1234student4321",
+        )
+        self.first_channel = Channel.objects.create(
+            title="First channel",
+            visible=True,
+        )
+        self.second_channel = Channel.objects.create(
+            title="Second channel",
+            visible=True,
+        )
+        self.channel_tab = AdditionalChannelTab.objects.create(
+            name="Simple addional channel tab",
+        )
+        self.first_channel.owners.add(self.user)
+        self.second_channel.owners.add(self.user)
+        self.second_channel.add_channels_tab.add(self.channel_tab)
+        self.video = Video.objects.create(
+            title="Simple video",
+            owner=self.user,
+            video="simple-video.mp4",
+            type=Type.objects.get(id=1),
+            is_draft=False,
+        )
+        self.video.channel.add(self.first_channel)
+        self.video.channel.add(self.second_channel)
+
+    @override_settings(HIDE_CHANNEL_TAB=False)
+    def test_get_channels_for_navbar(self):
+        """Test if the get channels request for the navbar works correctly."""
+        response = self.client.get(f"{reverse('video:get-channels-for-specific-channel-tab')}")
+        self.assertEqual(
+            response.status_code,
+            200,
+            "[test_get_channels_for_navbar] Test if the status code is 200.",
+        )
+        self.assertIsInstance(
+            response,
+            JsonResponse,
+            "[test_get_channels_for_navbar] Test if the response is instance of JsonResponse.",
+        )
+        self.assertEqual(
+            response.content,
+            b'{"channels": {"1": {"id": 1, "url": "/first-channel/", "title": "First channel", "description": "", "headband": null, "color": null, "style": null, "owners": ["http://testserver/rest/users/1/"], "users": [], "visible": true, "themes": 0, "site": "http://testserver/rest/sites/1/", "videoCount": 1, "headbandImage": ""}}, "currentPage": 1, "totalPages": 1, "count": 1}',
+            "[test_get_channels_for_navbar] Test if the response content is correct."
+        )
+        print(" ---> test_get_channels_for_navbar : OK!")
+
+    @override_settings(HIDE_CHANNEL_TAB=False)
+    def test_get_channel_tabs_for_navbar(self):
+        """Test if the get channel tabs request for the navbar works correctly."""
+        response = self.client.get(reverse("video:get-channel-tabs"))
+        self.assertEqual(
+            response.status_code,
+            200,
+            "[test_get_channel_tabs_for_navbar] Test if the status code is 200.",
+        )
+        self.assertIsInstance(
+            response,
+            JsonResponse,
+            "[test_get_channel_tabs_for_navbar] Test if the response is instance of JsonResponse.",
+        )
+        self.assertEqual(
+            response.content,
+            b'{"1": {"id": 1, "name": "Simple addional channel tab"}}',
+            "[test_get_channel_tabs_for_navbar] Test if the response content is correct."
+        )
+        print(" ---> test_get_channel_tabs_for_navbar : OK!")
+
+    @override_settings(HIDE_CHANNEL_TAB=False)
+    def test_get_channels_for_specific_channel_tab(self):
+        """Test if the get channels request for a specific channel tab works correctly."""
+        response = self.client.get(f"{reverse('video:get-channels-for-specific-channel-tab')}?page=1&id=1")
+        self.assertEqual(
+            response.status_code,
+            200,
+            "[test_get_channels_for_specific_channel_tab] Test if the status code is 200.",
+        )
+        self.assertIsInstance(
+            response,
+            JsonResponse,
+            "[test_get_channels_for_specific_channel_tab] Test if the response is instance of JsonResponse.",
+        )
+        self.assertEqual(
+            response.content,
+            b'{"channels": {"2": {"id": 2, "url": "/second-channel/", "title": "Second channel", "description": "", "headband": null, "color": null, "style": null, "owners": ["http://testserver/rest/users/1/"], "users": [], "visible": true, "themes": 0, "site": "http://testserver/rest/sites/1/", "videoCount": 1, "headbandImage": ""}}, "currentPage": 1, "totalPages": 1, "count": 1}',
+            "[test_get_channels_for_specific_channel_tab] Test if the response content is correct."
+        )
+        print(" ---> test_get_channels_for_specific_channel_tab : OK!")
