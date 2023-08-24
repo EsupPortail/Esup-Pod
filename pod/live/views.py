@@ -49,7 +49,7 @@ from .utils import (
 )
 from ..main.utils import is_ajax
 from ..main.views import in_maintenance
-from ..video.models import Video
+from ..video.models import Video, Type
 
 HEARTBEAT_DELAY = getattr(settings, "HEARTBEAT_DELAY", 45)
 
@@ -362,11 +362,25 @@ def render_event_template(request, evemnt, user_owns_event):
 
 def events(request):
     """Affichage des events."""
-    # Tous les events à venir (sauf les drafts sont affichés)
-    queryset = Event.objects.filter(end_date__gt=timezone.now(), is_draft=False)
+
+    # Tous les events en cours ou à venir sont affichés (sauf les drafts)
+    queryset = Event.objects.filter(
+        end_date__gt=timezone.now(),
+        broadcaster__building__sites__exact=get_current_site(request),
+        is_draft=False)
+
+    available_types = Type.objects.filter(event__in=queryset.all()).distinct()
+
+    # éventuellement filtrés par type
+    filter_type = request.GET.getlist("type")
+    if filter_type:
+        queryset = queryset.filter(type__slug__in=filter_type)
+
     events_list = queryset.all().order_by("start_date", "end_date")
 
+    # pagination
     page = request.GET.get("page", 1)
+
     full_path = ""
     if page:
         full_path = (
@@ -383,12 +397,21 @@ def events(request):
     except EmptyPage:
         events_found = paginator.page(paginator.num_pages)
 
+    if request.is_ajax():
+        return render(
+            request,
+            "live/events_list.html",
+            {"events": events_found, "full_path": full_path, "count_events": events_list.count()},
+        )
+
     return render(
         request,
         "live/events.html",
         {
+            "count_events": events_list.count(),
             "events": events_found,
             "full_path": full_path,
+            "types": available_types,
             "DEFAULT_EVENT_THUMBNAIL": DEFAULT_EVENT_THUMBNAIL,
             "display_broadcaster_name": False,
             "display_direct_button": request.user.is_superuser
@@ -414,7 +437,7 @@ def my_events(request):
     coming_events = [evt for evt in queryset if not evt.is_past()]
     coming_events = sorted(coming_events, key=lambda evt: (evt.start_date, evt.end_date))
 
-    events_number = len(past_events) + len(coming_events)
+    count_events = len(past_events) + len(coming_events)
 
     PREVIOUS_EVENT_URL_NAME = "ppage"
     NEXT_EVENT_URL_NAME = "npage"
@@ -449,7 +472,7 @@ def my_events(request):
         {
             "full_path": full_path,
             "types": request.GET.getlist("type"),
-            "events_number": events_number,
+            "count_events": count_events,
             "past_events": past_events,
             "past_events_url": PREVIOUS_EVENT_URL_NAME,
             "past_events_url_page": PREVIOUS_EVENT_URL_NAME + "=" + str(pageP),
