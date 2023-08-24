@@ -129,7 +129,7 @@
                 </div>
               </li>
             {% endif %}{% if DARKMODE_ENABLED == True %}
-              <li class="pod-navbar__theme-switch__item" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses darker colors' %}">
+              <li class="pod-navbar__theme-switch__item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses darker colors' %}">
                 <label for="checkbox-darkmode">
                   <span class="form-label">{% trans 'Dark mode' %}</span>
                   <span class="theme-switch">
@@ -142,7 +142,7 @@
                 </label>
               </li>
             {% endif %}{% if DYSLEXIAMODE_ENABLED == True %}
-              <li class="pod-navbar__theme-switch__item" id="dyslexia-switch-wrapper" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses a font more suitable for people with dyslexia.' %}">
+              <li class="pod-navbar__theme-switch__item" id="dyslexia-switch-wrapper" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses a font more suitable for people with dyslexia.' %}">
                 <label for="checkbox-dyslexia">
                   <span class="form-label">{% trans 'Dyslexia mode' %}</span>
                   <span class="dyslexia-switch">
