@@ -1027,9 +1027,10 @@ def get_list_theme_in_form(form):
         an array containing all the themes available.
     """
     listTheme = {}
-    for channel in form.fields["channel"].queryset:
-        if channel.themes.count() > 0:
-            listTheme["channel_%s" % channel.id] = channel.get_all_theme()
+    if "channel" in form.fields:
+        for channel in form.fields["channel"].queryset:
+            if channel.themes.count() > 0:
+                listTheme["channel_%s" % channel.id] = channel.get_all_theme()
     return listTheme
 
 

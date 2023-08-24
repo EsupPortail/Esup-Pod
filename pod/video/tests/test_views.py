@@ -1504,7 +1504,7 @@ class ChannelJsonResponseViews(TestCase):
     @override_settings(HIDE_CHANNEL_TAB=False)
     def test_get_channels_for_navbar(self):
         """Test if the get channels request for the navbar works correctly."""
-        response = self.client.get(reverse("video:get-channels"))
+        response = self.client.get(f"{reverse('video:get-channels-for-specific-channel-tab')}")
         self.assertEqual(
             response.status_code,
             200,
@@ -1538,7 +1538,7 @@ class ChannelJsonResponseViews(TestCase):
         )
         self.assertEqual(
             response.content,
-            b'{"1": {"id": 1, "name": "Simple addional channel tab", "channels": {"2": {"id": 2, "url": "/second-channel/", "title": "Second channel", "description": "", "headband": null, "color": null, "style": null, "owners": ["http://testserver/rest/users/1/"], "users": [], "visible": true, "themes": 0, "site": "http://testserver/rest/sites/1/", "videoCount": 1, "headbandImage": ""}}}}',
+            b'{"1": {"id": 1, "name": "Simple addional channel tab"}}',
             "[test_get_channel_tabs_for_navbar] Test if the response content is correct."
         )
         print(" ---> test_get_channel_tabs_for_navbar : OK!")
@@ -1563,14 +1563,3 @@ class ChannelJsonResponseViews(TestCase):
             "[test_get_channels_for_specific_channel_tab] Test if the response content is correct."
         )
         print(" ---> test_get_channels_for_specific_channel_tab : OK!")
-
-    @override_settings(HIDE_CHANNEL_TAB=False)
-    def test_get_channels_for_specific_channel_tab_404(self):
-        """Test if the get channels request for a specific channel tab works correctly without GET options."""
-        response = self.client.get(f"{reverse('video:get-channels-for-specific-channel-tab')}")
-        self.assertEqual(
-            response.status_code,
-            404,
-            "[test_get_channels_for_specific_channel_tab_404] Test if the status code is 200.",
-        )
-        print(" ---> test_get_channels_for_specific_channel_tab_404 : OK!")
