@@ -138,7 +138,7 @@ def direct(request, slug):  # affichage du flux d'un diffuseur
 
 
 def get_broadcaster_by_slug(slug, site):
-    if type(slug) == int:
+    if isinstance(slug, int):
         return get_object_or_404(Broadcaster, id=slug, building__sites=site)
     else:
         return get_object_or_404(Broadcaster, slug=slug, building__sites=site)
@@ -367,7 +367,8 @@ def events(request):
     queryset = Event.objects.filter(
         end_date__gt=timezone.now(),
         broadcaster__building__sites__exact=get_current_site(request),
-        is_draft=False)
+        is_draft=False,
+    )
 
     available_types = Type.objects.filter(event__in=queryset.all()).distinct()
 
@@ -401,7 +402,11 @@ def events(request):
         return render(
             request,
             "live/events_list.html",
-            {"events": events_found, "full_path": full_path, "count_events": events_list.count()},
+            {
+                "events": events_found,
+                "full_path": full_path,
+                "count_events": events_list.count(),
+            },
         )
 
     return render(
