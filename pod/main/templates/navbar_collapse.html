@@ -1,46 +1,25 @@
 {% load i18n %}
 {% load thumbnail %}
 {% load custom_tags %}
+{% load static %}
 {% spaceless %}
 
 <div class="modal fade chaines-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
       <div class="modal-header">
-        {# suppression temp du |get_type == 'int' dans le if #}
-        {% if CHANNELS.count %}
-          <h2 class="modal-title"><i class="bi bi-play-btn"></i>&nbsp;{% blocktrans count counter=CHANNELS.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
-        {% endif %}
+        <h2 class="modal-title">
+          <i class="bi bi-play-btn"></i>&nbsp;
+          <span class="spinner-border text-primary" role="status">
+          </span>
+        </h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
       </div>
       <div class="modal-body">
-        <ul class="clist-group list-group-flush p-0" id="list-channels">
-          {% for channel in CHANNELS %}
-            <li class="list-group-item list-group-item-action" data-id="{{channel.id}}">
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="d-flex align-items-center title-chaine">
-                  {% if channel.headband %}
-                    {% thumbnail channel.headband.file "x34" as im %}
-                    <img src="{{ im.url }}" height="34" class='rounded' alt="" loading="lazy">
-                    {% endthumbnail %}
-                  {% else %}<i class="bi bi-play-btn pod-channel__item"></i>{% endif %}
-                  <a href="{% url 'channel-video:channel' slug_c=channel.slug%}" id="channel-title_{{channel.id}}">
-                  {{channel.title}}</a></span>
-                <span class="text-nowrap">
-                  {% if channel.themes.all.count > 0 %}
-                    <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseThemes{{channel.id}}" aria-expanded="false" aria-controls="collapseThemes{{channel.id}}">
-                    {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i class="bi bi-chevron-down"></i>
-                    </button>
-                  {% endif %}
-                  <span class="badge text-bg-primary rounded-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
-                </span>
-              </div>
-              <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="channel-title_{{channel.id}}" data-bs-parent="#list-channels" data-id="{{channel.id}}"></div>
-            </li>
-          {% empty %}
-            <li class="list-group-item"> {% trans "No channels found" %} </li>
-          {%endfor%}
-        </ul>
+        <div class="text-center">
+          <span class="spinner-border text-primary" role="status">
+          </span>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close'%}</button>
@@ -48,50 +27,6 @@
     </div>
   </div>
 </div>
-{% for add_channel_tab in ADD_CHANNELS_TAB %}
-<div class="modal fade chaines-modal-{{add_channel_tab.id}}" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-pod-full">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title"><i class="bi bi-play-btn"></i>&nbsp;{% blocktrans count counter=add_channel_tab.channel_set.all.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
-      </div>
-      <div class="modal-body row">
-        <ul class="col-12 list-group list-group-flush" id="list-add-channels">
-          {% for channel in add_channel_tab.channel_set.all %}
-            <li class="list-group-item list-group-item-action" data-id="{{channel.id}}">
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="d-flex align-items-center title-chaine">
-                  {% if channel.headband %}
-                    {% thumbnail channel.headband.file "x34" as im %}
-                    <img src="{{ im.url }}" height="34" class='rounded' alt="" loading="lazy">
-                    {% endthumbnail %}
-                  {% else %}<i class="bi bi-play-btn" style="height:34px"></i>{% endif %}
-                  <a href="{% url 'channel-video:channel' slug_c=channel.slug%}" id="channel-title_{{channel.id}}">
-                  {{channel.title}}</a></span>
-                <span class="text-nowrap">
-                  {% if channel.themes.all.count > 0 %}
-                    <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseThemes{{channel.id}}" aria-expanded="false" aria-controls="collapseThemes{{channel.id}}">
-                    {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i class="bi bi-chevron-down" class="chevron-down m-0 p-0"></i>
-                    </button>
-                  {% endif %}
-                  <span class="badge text-bg-primary rounded-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
-                </span>
-              </div>
-              <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="channel-title_{{channel.id}}" data-bs-parent="#list-add-channels" data-id="{{channel.id}}"></div>
-            </li>
-          {% empty %}
-            <li class="list-group-item"> {% trans "No channels found" %} </li>
-          {%endfor%}
-        </ul>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close'%}</button>
-      </div>
-    </div>
-  </div>
-</div>
-{% endfor %}
 
 
 <div class="modal fade types-modal" tabindex="-1" role="dialog" aria-hidden="true">

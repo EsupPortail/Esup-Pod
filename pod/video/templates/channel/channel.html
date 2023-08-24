@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% load video_filters %}
+{% load video_filters custom_tags %}
 {% load filters %}
 {% block opengraph %}
     <meta name="description" content="{{channel.description|metaformat|safe|striptags|truncatechars:150}}">
@@ -252,7 +252,28 @@
         {% endif %}
     </script>
     <script>
-        var str = get_list(listTheme["channel_" + "{{channel.id}}"], 0, [], tag_type = "li", li_class = "list-group-item", attrs = '', add_link = true, current = "{{theme.slug}}", channel = "");
+        /** SHOW_ONLY_PARENT_THEMES **/
+        {% get_setting "SHOW_ONLY_PARENT_THEMES" True as only_parent_theme %}
+        var show_only_parent_themes = {% if only_parent_theme %} true {% else %} false {% endif %};
+        var all_theme_tab = {{ channel.get_all_theme_json | safe }};
+        {% if theme.slug %}
+        var all_theme_parents = [{% for parent in theme.get_all_parents %}"{{parent.slug}}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+        {% else %}
+        var all_theme_parents = [];
+        {% endif %}
+        var str = get_list(
+            all_theme_tab,
+            0,
+            [],
+            tag_type = "li",
+            li_class = "list-group-item",
+            attrs = '',
+            add_link = true,
+            current = "{{theme.slug}}",
+            channel = "",
+            show_only_parent_themes,
+            all_theme_parents
+        );
         document.getElementById("ultreeview").innerHTML = str;
         setTimeout(function() {
             const tree_item_info = document.querySelector("#ultreeview li.list-group-item-info");
@@ -263,6 +284,7 @@
                 document.getElementById("ultreeview").scrollTop = position;
             }
         }, 500);
+        
     </script>
     {% if organize_theme %}
         <script>
