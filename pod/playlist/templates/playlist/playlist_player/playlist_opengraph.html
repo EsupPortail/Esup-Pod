@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load video_filters %}
 
-<head>
+
   {% if OEMBED %}
     <link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&amp;format=json">
     <link rel="alternate" type="text/xml+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&amp;format=xml">
@@ -41,4 +41,4 @@
   {% if video.is_draft == True %}
     <meta name="robots" content="NONE,NOARCHIVE">
   {% endif %}
-</head>
+

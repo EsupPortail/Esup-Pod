@@ -13,7 +13,7 @@ function switchToNextVideo() {
     let nextElement = playerElements[currentIndex + 1];
     if (!(nextElement.classList.contains('disabled'))) {
         const videoSrc = playerElements[currentIndex + 1].getAttribute('href');
-        (currentIndex === -1) ? currentIndex = playerElements.length -1 : "";
+        (currentIndex === -1) ? currentIndex = playerElements.length - 1 : "";
         if (nextElement.getAttribute('data-chapter') || playerElements[currentIndex].getAttribute('data-chapter')) {
             window.location.href = videoSrc;
         }
@@ -21,9 +21,12 @@ function switchToNextVideo() {
             const videoSrc = nextElement.getAttribute('data-url-for-video');
             const xhr = new XMLHttpRequest();
             xhr.open('GET', videoSrc);
-            xhr.onreadystatechange = function() {
+            xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
+                        // var oldPlayer = document.getElementById ('podvideoplayer'); 
+                        // videojs(oldPlayer).dispose(); 
+                        // delete player;
                         const responseData = JSON.parse(xhr.responseText);
                         const parser = new DOMParser();
                         const opengraphHtml = parser.parseFromString(responseData.opengraph, 'text/html');
@@ -31,30 +34,24 @@ function switchToNextVideo() {
                         const pageAside = parser.parseFromString(responseData.page_aside, 'text/html');
                         const pageContent = parser.parseFromString(responseData.page_content, 'text/html');
                         const moreScript = parser.parseFromString(responseData.more_script, 'text/html');
-                        console.log(opengraphHtml);
-                        console.log(breadcrumbs);
-                        console.log(pageAside);
-                        refreshElementWithDocumentFragment('head', opengraphHtml);
-                        refreshElementWithDocumentFragment('#mainbreadcrumb', breadcrumbs);
-                        refreshElementWithDocumentFragment('#card-managevideo', pageAside);
-                        refreshElementWithDocumentFragment('#card-takenote', pageAside);
-                        refreshElementWithDocumentFragment('#card-share', pageAside);
-                        refreshElementWithDocumentFragment('#card-disciplines', pageAside);
-                        refreshElementWithDocumentFragment('#card-types', pageAside);
+                        document.getElementById("video-player").innerHTML = '';
+                        // refreshElementWithDocumentFragment('head', opengraphHtml);
+                        // refreshElementWithDocumentFragment('#mainbreadcrumb', breadcrumbs);
+                        // refreshElementWithDocumentFragment('#card-managevideo', pageAside);
+                        // refreshElementWithDocumentFragment('#card-takenote', pageAside);
+                        // refreshElementWithDocumentFragment('#card-share', pageAside);
+                        // refreshElementWithDocumentFragment('#card-disciplines', pageAside);
+                        // refreshElementWithDocumentFragment('#card-types', pageAside);
+                        console.log(pageContent);
                         refreshElementWithDocumentFragment('#video-player', pageContent);
-                        refreshElementWithDocumentFragment('#more-script', moreScript);
-                        document.querySelectorAll("script").forEach((item) => {
-                            if (item.src) {
-                                removeLoadedScript(item.getAttribute("src"));
-                                loadScript(item.src);
-                            } else {
-                                (0, eval)(item.innerHTML);
-                            }
-                        });
-                        player.load();
-                        player.ready(function () {
-                            this.play();
-                        });
+                        // refreshElementWithDocumentFragment('#more-script', moreScript);
+                        // document.querySelectorAll("script").forEach((item) => {
+                        //     if (item.id == "filewidget_script") (0, eval)(item.innerHTML);
+                        // });
+                        initialized_player();
+                        // player.ready(function () {
+                        //     player.play();
+                        // });
                     } else {
                         // TODO Make a real error
                         console.error('Request error: ' + xhr.statusText);
@@ -99,9 +96,9 @@ function switchToNextVideo() {
 // TODO Move into main JS
 function removeLoadedScript(lib) {
     document.querySelectorAll('[src="' + lib + '"]').forEach((item) => {
-      item.remove();
+        item.remove();
     });
-  }
+}
 
 // TODO Move into main JS
 function loadScript(lib) {
@@ -109,7 +106,7 @@ function loadScript(lib) {
     script.setAttribute("src", lib);
     document.getElementsByTagName("head")[0].appendChild(script);
     return script;
-  }
+}
 
 
 /**
@@ -187,7 +184,7 @@ function checkChapters(player, nextElement) {
 function checkVttThumbnails(player, nextElement) {
     const vttThumbnailsSrc = nextElement.getAttribute('data-vtt-thumbnails-src');
     if (vttThumbnailsSrc) {
-        player.vttThumbnails({src: vttThumbnailsSrc});
+        player.vttThumbnails({ src: vttThumbnailsSrc });
     }
 }
 
@@ -201,7 +198,7 @@ function checkVttThumbnails(player, nextElement) {
 function checkVr(player, nextElement) {
     if (nextElement.getAttribute('data-is-360') == 'True') {
         player.usingPlugin('vr');
-        player.vr({projection: '360'});
+        player.vr({ projection: '360' });
     } else {
         player.vr().dispose();
     }
@@ -248,9 +245,18 @@ function createCustomElement(content) {
 function refreshElementWithDocumentFragment(elementQuerySelector, newHTMLContent) {
     const newElement = newHTMLContent.querySelector(elementQuerySelector);
     const elementToRefresh = document.querySelector(elementQuerySelector);
+    console.log(newElement.innerHTML);
     if (newElement) {
+        console.log(elementToRefresh);
         elementToRefresh.innerHTML = newElement.innerHTML;
     }
+    // const fragment = document.createDocumentFragment();
+    // const newElement = newHTMLContent.querySelector(elementQuerySelector);
+    // fragment.appendChild(newElement.cloneNode(true));
+    // const elementToRefresh = document.querySelector(elementQuerySelector);
+    // elementToRefresh.innerHTML = '';
+    // console.log(fragment);
+    // elementToRefresh.innerHTML = fragment.querySelector(elementQuerySelector).innerHTML;
 }
 
 /**
