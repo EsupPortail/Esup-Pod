@@ -351,7 +351,7 @@ var get_list = function (
   current,
   channel,
   show_only_parent_themes = false,
-  theme_parents = []
+  theme_parents = [],
 ) {
   level = level || 0;
   tab_selected = tab_selected || [];
@@ -410,7 +410,11 @@ var get_list = function (
         channel,
       );
     }
-    if(count > 0 && show_only_parent_themes && theme_parents.includes(val.slug)) {
+    if (
+      count > 0 &&
+      show_only_parent_themes &&
+      theme_parents.includes(val.slug)
+    ) {
       list += get_list(
         child,
         level + 1,
@@ -426,7 +430,6 @@ var get_list = function (
   }
   return list;
 };
-
 
 /* USERS IN NAVBAR */
 let ownerBoxNavBar = document.getElementById("ownerboxnavbar");
@@ -1051,7 +1054,6 @@ function show_list_theme(data) {
 }
 
 /****** VIDEOS EDIT ******/
-
 
 /*** Copy to clipboard ***/
 let btnpartageprive = document.getElementById("btnpartageprive");
