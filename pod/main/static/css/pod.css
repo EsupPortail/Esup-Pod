@@ -1446,6 +1446,7 @@ body {
   transition: all 0.15s ease;
   z-index: 5;
   padding-top: 5rem;
+  box-shadow: .05rem .05rem .2rem .05rem rgba(0, 0, 0, .2);
 }
 
 .pod-aside.show {
@@ -1462,9 +1463,9 @@ body {
 
 @media(max-width:992px) {
   .pod-aside {
-    width: 100% !important;
-    position: fixed;
-    min-height: 100vh;
+    width: 101% !important;
+    min-height: 100%;
+    position: absolute;
   }
   .pod-aside-collapse{
     position: fixed;
@@ -1476,10 +1477,6 @@ body {
     padding-left: 5rem;
     padding-right: 5rem;
   }
-
-  /*.pod-aside {
-    padding-right: 5rem;
-  }*/
 
   .pod-grid-content {
     gap: 0;
@@ -1688,4 +1685,8 @@ table .alert.alert-danger.btn.pod-btn-social {
 .calendarbox {
   z-index: 3000;
   background-color: var(--pod-background) !important;
+}
+
+#mainbreadcrumb {
+  margin-right: 2.7rem;
 }
