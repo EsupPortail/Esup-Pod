@@ -2,7 +2,6 @@
  * Switch to the next video when this exists.
  */
 function switchToNextVideo() {
-    console.log('------------------------------ RUN switchToNextVideo() ------------------------------');
     const playerElements = Array.from(document.querySelectorAll('.player-element'));
     const selectedElement = document.querySelector('.selected');
     let currentIndex = playerElements.indexOf(selectedElement);
@@ -54,11 +53,16 @@ function switchToNextVideo() {
                             });
                         }
                         refreshElementWithDocumentFragment('#mainbreadcrumb', breadcrumbs);
-                        refreshElementWithDocumentFragment('#card-managevideo', pageAside);
-                        refreshElementWithDocumentFragment('#card-takenote', pageAside);
-                        refreshElementWithDocumentFragment('#card-share', pageAside);
-                        refreshElementWithDocumentFragment('#card-disciplines', pageAside);
-                        refreshElementWithDocumentFragment('#card-types', pageAside);
+                        const idElements = [
+                            'card-managevideo',
+                            'card-takenote',
+                            'card-share',
+                            'card-disciplines',
+                            'card-types',
+                        ]
+                        for (let id of idElements) {
+                            if (document.getElementById(id)) refreshElementWithDocumentFragment(`#${id}`, pageAside);
+                        }
                         refreshElementWithDocumentFragment('#video-player', pageContent);
                         refreshElementWithDocumentFragment('#more-script', moreScript);
                         refreshElementWithDocumentFragment('title', pageTitle);
@@ -78,7 +82,7 @@ function switchToNextVideo() {
     } else {
         switchToNextVideo();
     }
-    console.log('------------------------------ END switchToNextVideo() ------------------------------');
+    scrollToSelectedVideo();
 }
 
 
@@ -99,20 +103,11 @@ function updateUrl(newUrl) {
  * @param {*} html The html code.
  */
 function refreshElementWithDocumentFragment(elementQuerySelector, newHTMLContent) {
-    // const newElement = newHTMLContent.querySelector(elementQuerySelector);
-    // const elementToRefresh = document.querySelector(elementQuerySelector);
-    // if (newElement) {
-    //     if (elementToRefresh) {
-    //         // console.log(elementToRefresh);
-    //         elementToRefresh.innerHTML = newElement.innerHTML;
-    //     }
-    // }
     const fragment = document.createDocumentFragment();
     const newElement = newHTMLContent.querySelector(elementQuerySelector);
     fragment.appendChild(newElement.cloneNode(true));
     const elementToRefresh = document.querySelector(elementQuerySelector);
     elementToRefresh.innerHTML = '';
-    console.log(fragment);
     elementToRefresh.innerHTML = fragment.querySelector(elementQuerySelector).innerHTML;
 }
 

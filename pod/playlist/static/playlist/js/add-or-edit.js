@@ -47,7 +47,6 @@ if (visibilitySelectElement.value !== 'public') {
 updateVisibilityHelpText(visibilitySelectElement.value, visibilityHelpAdvancedElement)
 
 visibilitySelectElement.addEventListener('change', (event) => {
-    console.log(visibilityHelpAdvancedElement);
     updateVisibilityHelpText(event.target.value, visibilityHelpAdvancedElement);
     if (event.target.value == 'protected') {
         hidePasswordField(false);

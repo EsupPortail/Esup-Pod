@@ -46,7 +46,6 @@ function addEventForReorganizedButton() {
       if (this.id == 'reorganize-button') {
         event.preventDefault();
         activateDragAndDrop();
-        console.log(this.id)
         this.id = 'save-button';
         this.title = gettext('Save your reorganization');
         const iconElement = this.querySelector('i');

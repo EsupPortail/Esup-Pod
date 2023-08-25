@@ -8,7 +8,6 @@
   var options = {};
   var player;
   var initialized_player = function() {
-    console.log('------------------------------ RUN initialized_player() ------------------------------');
   window.onmessage = function(event) {
     var evt = event || window.event;
     {# maybe use request.get_host to protect it... #}
@@ -236,18 +235,15 @@
     player.on('ended', function (e) {
       {% if COUNTDOWN_PLAYLIST_PLAYER >= 3 %}
         const playButtonElement = document.querySelector('.vjs-big-play-button');
-        console.log(playButtonElement);
         if (playButtonElement) {
             playButtonElement.remove();
         }
         asyncStartCountDown().then(function () {
           player.dispose();
-          console.log('document after dispose()', document);
           switchToNextVideo();
         });
       {% else %}
         player.dispose();
-        console.log('document after dispose()', document);
         switchToNextVideo();
       {% endif %}
     });
@@ -262,7 +258,6 @@
       player.wavesurfer().surfer && player.wavesurfer().surfer._onResize();
     });
   {% endif %}
-  console.log('------------------------------ RUN initialized_player() ------------------------------');
 }
 initialized_player()
 </script>
