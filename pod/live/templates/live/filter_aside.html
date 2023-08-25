@@ -6,12 +6,12 @@
 {% spaceless %}
   <div class="card card-body">
     <h2 class="card-title pod-card__title h4">
-      <i class="bi bi-sliders2-vertical"></i>&nbsp;{% trans "Filters" %}
+      <i class="bi bi-sliders2-vertical" aria-hidden="true"></i>&nbsp;{% trans "Filters" %}
     </h2>
 
     <form action="{% url 'live:events' %}" method="get" id="filters">
       <fieldset class="border-right border-bottom mt-2">
-        <legend class="h5"><i class="bi bi-tv"></i> {% trans "Types" %} </legend>
+        <legend class="h5"><i class="bi bi-tv" aria-hidden="true"></i> {% trans "Types" %} </legend>
         <div id="filterType">
           <div class="form-group collapse" id="collapseFilterType">
             {% for type in types %}

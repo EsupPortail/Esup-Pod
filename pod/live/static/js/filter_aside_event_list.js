@@ -3,7 +3,11 @@
     let loader = document.querySelector(".lds-ring");
     let checkedInputs = [];
 
-    // Enable / Disable all checkboxes
+    /**
+     * Enable /disable all checkboxes.
+     *
+     * @param {boolean} value
+     */
     function disableCheckboxes(value) {
       document
         .querySelectorAll("input[type=checkbox]")
