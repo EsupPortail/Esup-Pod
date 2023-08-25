@@ -98,24 +98,21 @@ function updateUrl(newUrl) {
  * @param {*} html The html code.
  */
 function refreshElementWithDocumentFragment(elementQuerySelector, newHTMLContent) {
-    const newElement = newHTMLContent.querySelector(elementQuerySelector);
-    const elementToRefresh = document.querySelector(elementQuerySelector);
-    // console.log(newElement.innerHTML);
-    if (newElement) {
-        if (elementToRefresh) {
-            // console.log(elementToRefresh);
-            elementToRefresh.innerHTML = newElement.innerHTML;
-        } else {
-            document.querySelector(newElement.parentNode.tagName).appendChild(newElement);
-        }
-    }
-    // const fragment = document.createDocumentFragment();
     // const newElement = newHTMLContent.querySelector(elementQuerySelector);
-    // fragment.appendChild(newElement.cloneNode(true));
     // const elementToRefresh = document.querySelector(elementQuerySelector);
-    // elementToRefresh.innerHTML = '';
-    // console.log(fragment);
-    // elementToRefresh.innerHTML = fragment.querySelector(elementQuerySelector).innerHTML;
+    // if (newElement) {
+    //     if (elementToRefresh) {
+    //         // console.log(elementToRefresh);
+    //         elementToRefresh.innerHTML = newElement.innerHTML;
+    //     }
+    // }
+    const fragment = document.createDocumentFragment();
+    const newElement = newHTMLContent.querySelector(elementQuerySelector);
+    fragment.appendChild(newElement.cloneNode(true));
+    const elementToRefresh = document.querySelector(elementQuerySelector);
+    elementToRefresh.innerHTML = '';
+    console.log(fragment);
+    elementToRefresh.innerHTML = fragment.querySelector(elementQuerySelector).innerHTML;
 }
 
 /**

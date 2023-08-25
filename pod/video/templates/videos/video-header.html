@@ -10,7 +10,7 @@
 <link href="{% static 'videojs-seek-buttons/dist/videojs-seek-buttons.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'videojs-seek-buttons/dist/videojs-seek-buttons.min.js' %}?ver={{VERSION}}"></script>
 
-{% if not video.is_video and event is None %}
+{% if not video.is_video and event is None or playlist_in_get %}
   <!-- Audio wavesurfer -->
   <link href="{% static 'videojs-wavesurfer/dist/css/videojs.wavesurfer.min.css' %}?ver={{VERSION}}" rel="stylesheet">
   <script src="{% static 'wavesurfer.js/dist/wavesurfer.min.js'%}?ver={{VERSION}}"></script>
