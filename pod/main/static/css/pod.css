@@ -334,10 +334,11 @@ tr,
 .title-chaine {
   margin-right: .5rem;
   font-weight: 600;
-  flex-direction: row-reverse;
+  flex-direction: row;
 }
 
 .title-chaine>a {
+  margin-left: .5em;
   margin-right: .5em;
 }
 
@@ -1700,4 +1701,12 @@ div.disabled, a.player-element.disabled {
   background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.2) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2) 75%, transparent 75%, transparent);
   background-size: 4px 4px;
   background-repeat: repeat;
+}
+
+.progress {
+  height: .6em;
+}
+
+.progress .progress-bar {
+  width: 100%;
 }

@@ -4387,32 +4387,6 @@ msgid "Number of playlists"
 msgstr ""
 
 #: pod/main/templates/navbar_collapse.html
-#, python-format
-msgid "%(counter)s Channel"
-msgid_plural "%(counter)s Channels"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pod/main/templates/navbar_collapse.html
-#, python-format
-msgid "%(counter)s Theme"
-msgid_plural "%(counter)s Themes"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pod/main/templates/navbar_collapse.html
-#: pod/video/templates/channel/channel.html
-#, python-format
-msgid "%(counter)s video"
-msgid_plural "%(counter)s videos"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pod/main/templates/navbar_collapse.html
-msgid "No channels found"
-msgstr ""
-
-#: pod/main/templates/navbar_collapse.html
 msgid "Types of videos"
 msgstr ""
 

@@ -10,6 +10,8 @@ import webvtt
 
 logger = logging.getLogger(__name__)
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pod.settings")
+
 ENCODING_TRANSCODING_CELERY_BROKER_URL = getattr(
     settings_local, "ENCODING_TRANSCODING_CELERY_BROKER_URL", ""
 )

@@ -4630,32 +4630,6 @@ msgid "Number of playlists"
 msgstr "Nombre de listes de lecture"
 
 #: pod/main/templates/navbar_collapse.html
-#, python-format
-msgid "%(counter)s Channel"
-msgid_plural "%(counter)s Channels"
-msgstr[0] "%(counter)s Chaîne"
-msgstr[1] "%(counter)s Chaînes"
-
-#: pod/main/templates/navbar_collapse.html
-#, python-format
-msgid "%(counter)s Theme"
-msgid_plural "%(counter)s Themes"
-msgstr[0] "%(counter)s Thème"
-msgstr[1] "%(counter)s Thèmes"
-
-#: pod/main/templates/navbar_collapse.html
-#: pod/video/templates/channel/channel.html
-#, python-format
-msgid "%(counter)s video"
-msgid_plural "%(counter)s videos"
-msgstr[0] "%(counter)s vidéo"
-msgstr[1] "%(counter)s vidéos"
-
-#: pod/main/templates/navbar_collapse.html
-msgid "No channels found"
-msgstr "Aucune chaîne trouvée"
-
-#: pod/main/templates/navbar_collapse.html
 msgid "Types of videos"
 msgstr "Types de vidéos"
 
@@ -8331,106 +8305,18 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
-#~ msgid "Password-protected playlist"
-#~ msgstr "Liste de lecture protégée par un mot de passe"
+#~ msgid "%(counter)s Channel"
+#~ msgid_plural "%(counter)s Channels"
+#~ msgstr[0] "%(counter)s Chaîne"
+#~ msgstr[1] "%(counter)s Chaînes"
 
-#~ msgid "Sort by descending rank before you can rearrange"
-#~ msgstr "Trier par ordre décroissant avant de pouvoir réorganiser"
+#~ msgid "%(counter)s Theme"
+#~ msgid_plural "%(counter)s Themes"
+#~ msgstr[0] "%(counter)s Thème"
+#~ msgstr[1] "%(counter)s Thèmes"
 
-#~ msgid "Sort by descending rank"
-#~ msgstr "Trier par ordre décroissant"
-
-#~ msgid ""
-#~ "If checked, the playlist can be visible to users other than the owner."
-#~ msgstr ""
-#~ "Si coché, cette liste de lecture sera visible aux autres utilisateurs."
-
-#~ msgid "Position of the video in a playlist."
-#~ msgstr "Position de la vidéo dans la liste de lecture."
-
-#~ msgid "A video in draft mode cannot be added to a playlist."
-#~ msgstr ""
-#~ "Une vidéo en mode brouillon ne peut être ajoutée à une liste de lecture."
-
-#~ msgid "A video with a password cannot be added to a playlist."
-#~ msgstr ""
-#~ "Une vidéo avec mot de passe ne peut être ajoutée à une liste de lecture."
-
-#~ msgid ""
-#~ "This is the page of your playlists. Here you can create, edit or delete "
-#~ "them."
-#~ msgstr ""
-#~ "C’est la page de vos listes de lecture. Ici vous pouvez les créer, les "
-#~ "éditer ou les supprimer."
-
-#~ msgid ""
-#~ "A playlist with the eye symbol means that this playlist is visible to all "
-#~ "users when they view this page."
-#~ msgstr ""
-#~ "Une liste de lecture avec un symbole œil signifie que cette liste est "
-#~ "visible à tous les utilisateurs qui visiteront cette page."
-
-#~ msgid "This playlist has no videos yet."
-#~ msgstr "Cette liste de lecture ne dispose pas encore de vidéos."
-
-#~ msgid "Switch to next video automatically"
-#~ msgstr "Passer automatiquement à la prochaine vidéo"
-
-#~ msgid "List of videos"
-#~ msgstr "Liste des vidéos"
-
-#~ msgid "Thumbnail"
-#~ msgstr "Vignette"
-
-#~ msgid "Video thumbnail"
-#~ msgstr "Vignette de la vidéo"
-
-#~ msgid "Move up"
-#~ msgstr "Déplacer vers le haut"
-
-#~ msgid "Move down"
-#~ msgstr "Déplacer vers le bas"
-
-#~ msgid "Save position"
-#~ msgstr "Enregistrer les positions"
-
-#~ msgid "This playlist is visible to all users."
-#~ msgstr "Cette liste de lecture est visible à d’autres utilisateurs."
-
-#~ msgid "This playlist is only visible by you."
-#~ msgstr "Vous seul pouvez voir cette liste de lecture."
-
-#~ msgid "Launch"
-#~ msgstr "Lancer"
-
-#~ msgid "Sorry, no playlist found"
-#~ msgstr "Désolé, aucune liste de lecture trouvée"
-
-#~ msgid "You don't have access to this playlist."
-#~ msgstr "Vous n’avez pas les droits d’accès à cette liste de lecture."
-
-#~ msgid "%(title)s (%(count)d video)"
-#~ msgid_plural "%(title)s (%(count)d videos)"
-#~ msgstr[0] "%(title)s (%(count)d vidéo)"
-#~ msgstr[1] "%(title)s (%(count)d vidéos)"
-
-#~ msgid "The playlist has been saved!"
-#~ msgstr "La liste de lecture a été sauvegardée !"
-
-#~ msgid "The request is wrong. No video given."
-#~ msgstr "La requête est erronée. Aucune vidéo envoyée."
-
-#~ msgid "Only ajax request are accepted for this action."
-#~ msgstr "Uniquement les requêtes ajax sont autorisées pour cette action."
-
-#~ msgid "This video has been removed from your playlist."
-#~ msgstr "Cette vidéo a été retirée de votre liste de lecture."
-
-#~ msgid "The playlist have been saved."
-#~ msgstr "La liste de lecture a été sauvegardée."
-
-#~ msgid "The video has been added to your playlist."
-#~ msgstr "La vidéo a été ajoutée à votre liste de lecture."
+#~ msgid "No channels found"
+#~ msgstr "Aucune chaîne trouvée"
 
 #~ msgid "Error in %s: "
 #~ msgstr "Erreur sur %s : "
