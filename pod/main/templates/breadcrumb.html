@@ -1,0 +1,9 @@
+{% load static i18n custom_tags %}
+
+<nav aria-label="{% trans 'Breadcrumb' %}" class="breadcrumb d-flex justify-content-between pb-2" id="mainbreadcrumb">
+    <ol class="breadcrumb p-0 mb-0">
+        {% block breadcrumbs %}
+            <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+        {% endblock breadcrumbs %}
+    </ol>
+</nav>

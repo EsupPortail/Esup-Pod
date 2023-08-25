@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
@@ -40,6 +41,34 @@ from .utils import (
 
 import json
 import hashlib
+
+
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    settings,
+    "TEMPLATE_VISIBLE_SETTINGS",
+    {
+        "TITLE_SITE": "Pod",
+        "DESC_SITE": "The purpose of Esup-Pod is to facilitate the provision of video and\
+        thereby encourage its use in teaching and research.",
+        "TITLE_ETB": "University name",
+        "LOGO_SITE": "img/logoPod.svg",
+        "LOGO_ETB": "img/esup-pod.svg",
+        "LOGO_PLAYER": "img/pod_favicon.svg",
+        "LINK_PLAYER": "",
+        "FOOTER_TEXT": ("",),
+        "FAVICON": "img/pod_favicon.svg",
+        "CSS_OVERRIDE": "",
+        "PRE_HEADER_TEMPLATE": "",
+        "POST_FOOTER_TEMPLATE": "",
+        "TRACKING_TEMPLATE": "",
+    },
+)
+
+__TITLE_SITE__ = (
+    TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
+    if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
+    else "Pod"
+)
 
 
 @login_required(redirect_field_name="referrer")
@@ -475,12 +504,12 @@ def get_video(request: WSGIRequest, video_slug: str, playlist_slug: str) -> Json
             "playlist_in_get": playlist,
             "videos": videos,
         }
-        breadcrumbs = render_to_string("playlist/playlist_player/playlist_breadcrumbs.html", context, request)
-        opengraph = render_to_string("playlist/playlist_player/playlist_opengraph.html", context, request)
+        breadcrumbs = render_to_string("playlist/playlist_breadcrumbs.html", context, request)
+        opengraph = render_to_string("videos/video_opengraph.html", context, request)
         more_script = '<div id="more-script">%s</div>' % render_to_string("videos/video_more_script.html", context, request)
-        page_aside = render_to_string("playlist/playlist_player/playlist_page_aside.html", context, request)
+        page_aside = render_to_string("videos/video_page_aside.html", context, request)
         page_content = render_to_string("videos/video_page_content.html", context, request)
-        page_title = render_to_string("playlist/playlist_player/playlist_page_title.html", context, request)
+        page_title = '<title>%s - %s</title>' % (__TITLE_SITE__, render_to_string("videos/video_page_title.html", context, request))
         response_data = {
             "breadcrumbs": breadcrumbs,
             "opengraph": opengraph,
