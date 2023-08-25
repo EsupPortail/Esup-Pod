@@ -2,6 +2,7 @@
  * Switch to the next video when this exists.
  */
 function switchToNextVideo() {
+    console.log('------------------------------ RUN switchToNextVideo() ------------------------------');
     const playerElements = Array.from(document.querySelectorAll('.player-element'));
     const selectedElement = document.querySelector('.selected');
     let currentIndex = playerElements.indexOf(selectedElement);
@@ -24,9 +25,9 @@ function switchToNextVideo() {
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        // var oldPlayer = document.getElementById ('podvideoplayer'); 
-                        // videojs(oldPlayer).dispose(); 
-                        // delete player;
+                        delete player;
+                        delete seektime;
+                        delete options;
                         const responseData = JSON.parse(xhr.responseText);
                         const parser = new DOMParser();
                         const opengraphHtml = parser.parseFromString(responseData.opengraph, 'text/html');
@@ -34,24 +35,36 @@ function switchToNextVideo() {
                         const pageAside = parser.parseFromString(responseData.page_aside, 'text/html');
                         const pageContent = parser.parseFromString(responseData.page_content, 'text/html');
                         const moreScript = parser.parseFromString(responseData.more_script, 'text/html');
+                        const pageExtraHead = parser.parseFromString(responseData.page_extra_head, 'text/html');
                         document.getElementById("video-player").innerHTML = '';
-                        // refreshElementWithDocumentFragment('head', opengraphHtml);
-                        // refreshElementWithDocumentFragment('#mainbreadcrumb', breadcrumbs);
-                        // refreshElementWithDocumentFragment('#card-managevideo', pageAside);
-                        // refreshElementWithDocumentFragment('#card-takenote', pageAside);
-                        // refreshElementWithDocumentFragment('#card-share', pageAside);
-                        // refreshElementWithDocumentFragment('#card-disciplines', pageAside);
-                        // refreshElementWithDocumentFragment('#card-types', pageAside);
-                        console.log(pageContent);
+                        const tmp = document.querySelector('head');
+                        const coupleOfElements = [
+                            ['meta', 'property', 'head'],
+                            ['meta', 'name', 'head'],
+                        ]
+                        for (let coupleOfElement of coupleOfElements) {
+                            const metaTags = opengraphHtml.querySelectorAll(`${coupleOfElement[0]}[${coupleOfElement[1]}]`);
+                            metaTags.forEach(metaTag => {
+                                const elementToRefresh = document.querySelector(`${coupleOfElement[0]}[${coupleOfElement[1]}="${metaTag.getAttribute(coupleOfElement[1])}"]`);
+                                if (elementToRefresh) {
+                                    document.querySelector(`${coupleOfElement[0]}[${coupleOfElement[1]}="${metaTag.getAttribute(coupleOfElement[1])}"]`).setAttribute('content', metaTag.getAttribute('content'));
+                                } else {
+                                    document.querySelector(coupleOfElement[2]).appendChild(metaTag);
+                                }
+                            });
+                        }
+                        refreshElementWithDocumentFragment('#mainbreadcrumb', breadcrumbs);
+                        refreshElementWithDocumentFragment('#card-managevideo', pageAside);
+                        refreshElementWithDocumentFragment('#card-takenote', pageAside);
+                        refreshElementWithDocumentFragment('#card-share', pageAside);
+                        refreshElementWithDocumentFragment('#card-disciplines', pageAside);
+                        refreshElementWithDocumentFragment('#card-types', pageAside);
                         refreshElementWithDocumentFragment('#video-player', pageContent);
-                        // refreshElementWithDocumentFragment('#more-script', moreScript);
-                        // document.querySelectorAll("script").forEach((item) => {
-                        //     if (item.id == "filewidget_script") (0, eval)(item.innerHTML);
-                        // });
-                        initialized_player();
-                        // player.ready(function () {
-                        //     player.play();
-                        // });
+                        refreshElementWithDocumentFragment('#more-script', moreScript);
+                        document.querySelectorAll("script").forEach((item) => {
+                            if (item.id == "id_video_script") (0, eval)(item.innerHTML);
+                        });
+
                     } else {
                         // TODO Make a real error
                         console.error('Request error: ' + xhr.statusText);
@@ -59,65 +72,12 @@ function switchToNextVideo() {
                 }
             };
             xhr.send();
-            // refreshElementWithDocumentFragment('#collapseAside', videoSrc);
-            // refreshElementWithDocumentFragment('#info-video', videoSrc);
-            // refreshElementWithDocumentFragment('title', videoSrc);
-            // refreshElementWithDocumentFragment('#chapter-for-playlist', videoSrc);
-            // let srcOptions = {
-            //     src: nextElement.getAttribute('data-src'),
-            //     type: nextElement.getAttribute('data-encoding-format'),
-            // };
-            // let player = videojs.getPlayer('podvideoplayer');
-            // player = videojs('podvideoplayer', options, function(){});
-            // player.setAttribute('data-vr', true);
-            // player.src(srcOptions);
-            // TODO Replace the vtt thumbnails
-            // checkVttThumbnails(player, nextElement);
-            // checkVr(player, nextElement);
-            // checkChapters(player, nextElement);
-            // updateActiveBreadcrumb(nextElement);
             updateUrl(nextElement.getAttribute('href'));
-            // let player = videojs('podvideoplayer');
-            const videoCountForm = document.getElementById("video_count_form");
-            // const xhr = new XMLHttpRequest();
-            // xhr.open('POST', nextElement.getAttribute('data-view-count-link'), true);
-            // xhr.onreadystatechange = function () {
-            //     if (xhr.readyState === 4 & xhr.status === 200) {
-            //         // ---
-            //     }
-            // };
         }
     } else {
         switchToNextVideo();
     }
-}
-
-
-// TODO Move into main JS
-function removeLoadedScript(lib) {
-    document.querySelectorAll('[src="' + lib + '"]').forEach((item) => {
-        item.remove();
-    });
-}
-
-// TODO Move into main JS
-function loadScript(lib) {
-    var script = document.createElement("script");
-    script.setAttribute("src", lib);
-    document.getElementsByTagName("head")[0].appendChild(script);
-    return script;
-}
-
-
-/**
- * Update the active element in the breadcrumb by the next video title.
- *
- * @param {*} nextElement The next element.
- */
-function updateActiveBreadcrumb(nextElement) {
-    const breadcrumbElement = document.querySelector('.breadcrumb-item.active');
-    breadcrumbElement.textContent = nextElement.getElementsByClassName('title')[0].textContent;
-
+    console.log('------------------------------ END switchToNextVideo() ------------------------------');
 }
 
 
@@ -131,111 +91,6 @@ function updateUrl(newUrl) {
 }
 
 
-function checkChapters(player, nextElement) {
-    const chaptersExist = nextElement.getAttribute('data-chapter');
-    if (chaptersExist) {
-        const chaptersJSON = JSON.parse(chaptersExist).chapters;
-        const chapterUlElement = document.createElement('ul');
-        chapterUlElement.id = 'chapters';
-        let contentUl = '';
-        for (let chapterId = 0; chapterId < chaptersJSON.length; chapterId++) {
-            console.log(chapterId);
-            contentUl += `
-                <li data-start="${chapterId + 1}"
-                    data-id="${chapterId + 1}"
-                    data-title="${chaptersJSON[chapterId].title}">
-                    ${chaptersJSON[chapterId].title}
-                </li>
-            `;
-            chapterUlElement.textContent = contentUl;
-            console.log('chapterUlElement', chapterUlElement);
-        }
-        console.log('document.getElementById("podvideoplayer")', document.getElementById("podvideoplayer"));
-        document.getElementById("podvideoplayer").content += `
-            <div class="chapters-list inactive" role="menu">
-                <h6><span class="vjs-icon-chapters"></span>${gettext('Chapters')}</h6>
-                <ol id="chapters-list"></ol>
-            </div>
-        `;
-        document.getElementById("podvideoplayer").textContent += chapterUlElement.textContent;
-        console.log(JSON.parse(chaptersExist).chapters);
-
-        const chaptersData = [
-            { id: 1, title: "Chapter 1", start: 0 },
-            { id: 2, title: "Chapter 2", start: 5 },
-            // ... autres chapitres
-        ];
-        player.videoJsChapters({ ui: true });
-        player.createChapters(chapterUlElement.querySelectorAll("li"));
-        document.querySelector('.vjs-big-play-button').style.zIndex = '2';
-        document.querySelector('.vjs-control-bar').style.zIndex = '3';
-    } else {
-        alert('No chapter');
-    }
-}
-
-
-/**
- * Check if the VTT thumbnails exists for the next element. In this case, replace it.
- *
- * @param {*} player The video player.
- * @param {*} nextElement The next element.
- */
-function checkVttThumbnails(player, nextElement) {
-    const vttThumbnailsSrc = nextElement.getAttribute('data-vtt-thumbnails-src');
-    if (vttThumbnailsSrc) {
-        player.vttThumbnails({ src: vttThumbnailsSrc });
-    }
-}
-
-
-/**
- * Check if the VR must be activate for the next element. In this case, activate it.
- *
- * @param {*} player The video player.
- * @param {*} nextElement The next element.
- */
-function checkVr(player, nextElement) {
-    if (nextElement.getAttribute('data-is-360') == 'True') {
-        player.usingPlugin('vr');
-        player.vr({ projection: '360' });
-    } else {
-        player.vr().dispose();
-    }
-}
-
-
-// function loadNewPage(url) {
-//     // Fais une requête pour récupérer le contenu de la nouvelle page
-//     fetch(url)
-//       .then(response => response.text())
-//       .then(nouveauContenu => {
-//         const tempElement = document.createElement("div");
-//         tempElement.innerHTML = nouveauContenu;
-
-//         // Exécute les scripts chargés sur la nouvelle page
-//         const scripts = document.querySelectorAll("script");
-//         scripts.forEach(script => {
-//           const nouveauScript = document.createElement("script");
-//           nouveauScript.textContent = script.textContent;
-//           script.parentNode.replaceChild(nouveauScript, script);
-//         });
-
-//         // Remplace le contenu de la page actuelle par le nouveau contenu
-//         document.documentElement.innerHTML = tempElement.innerHTML;
-//       })
-//       .catch(error => {
-//         console.error("Erreur lors du chargement de la nouvelle page :", error);
-//       });
-//   }
-
-
-function createCustomElement(content) {
-    console.log(content);
-    return content;
-}
-
-
 /**
  * Refresh element with the DocuementFragment.
  *
@@ -245,10 +100,14 @@ function createCustomElement(content) {
 function refreshElementWithDocumentFragment(elementQuerySelector, newHTMLContent) {
     const newElement = newHTMLContent.querySelector(elementQuerySelector);
     const elementToRefresh = document.querySelector(elementQuerySelector);
-    console.log(newElement.innerHTML);
+    // console.log(newElement.innerHTML);
     if (newElement) {
-        console.log(elementToRefresh);
-        elementToRefresh.innerHTML = newElement.innerHTML;
+        if (elementToRefresh) {
+            // console.log(elementToRefresh);
+            elementToRefresh.innerHTML = newElement.innerHTML;
+        } else {
+            document.querySelector(newElement.parentNode.tagName).appendChild(newElement);
+        }
     }
     // const fragment = document.createDocumentFragment();
     // const newElement = newHTMLContent.querySelector(elementQuerySelector);

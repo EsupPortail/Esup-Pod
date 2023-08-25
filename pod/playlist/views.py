@@ -477,17 +477,17 @@ def get_video(request: WSGIRequest, video_slug: str, playlist_slug: str) -> Json
         }
         breadcrumbs = render_to_string("playlist/playlist_player/playlist_breadcrumbs.html", context, request)
         opengraph = render_to_string("playlist/playlist_player/playlist_opengraph.html", context, request)
-        more_script = render_to_string("playlist/playlist_player/playlist_more_script.html", context, request)
+        more_script = '<div id="more-script">%s</div>' % render_to_string("playlist/playlist_player/playlist_more_script.html", context, request)
         page_aside = render_to_string("playlist/playlist_player/playlist_page_aside.html", context, request)
         page_content = render_to_string("playlist/playlist_player/playlist_page_content.html", context, request)
-        page_extra_head = render_to_string("playlist/playlist_player/playlist_page_extra_head.html", context, request)
+        # page_extra_head = render_to_string("playlist/playlist_player/playlist_page_extra_head.html", context, request)
         response_data = {
             "breadcrumbs": breadcrumbs,
             "opengraph": opengraph,
             "more_script": more_script,
             "page_aside": page_aside,
             "page_content": page_content,
-            "page_extra_head": page_extra_head,
+            # "page_extra_head": page_extra_head,
         }
     else:
         response_data = {

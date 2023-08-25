@@ -4,9 +4,11 @@
 {% get_setting "VIDEO_PLAYBACKRATES" '[0.5, 1, 1.5, 2]' as video_playbackrates %}
 {% get_setting "USE_VIDEO_EVENT_TRACKING" False as video_event_tracking %}
 <script id="id_video_script">
+  var seektime = 10;
+  var options = {};
+  var player;
   var initialized_player = function() {
-
-    console.log("initialized_player")
+    console.log('------------------------------ RUN initialized_player() ------------------------------');
   window.onmessage = function(event) {
     var evt = event || window.event;
     {# maybe use request.get_host to protect it... #}
@@ -27,9 +29,9 @@
         evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
       }
   };
-  const seektime = 10;
 
-  const options = {
+
+  options = {
     notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
     //language: "fr", //en or nl
     {% if video.is_video and request.GET.is_iframe %}
@@ -97,7 +99,7 @@
     }
   }
 
-  let player = videojs('podvideoplayer', options, function(){});
+  player = videojs('podvideoplayer', options, function(){});
 
   player.on('firstplay', function(){
     var data_form = $( "#video_count_form" ).serializeArray();
@@ -112,10 +114,10 @@
     var mp4_sources = {{ video.get_video_mp4_json|safe }};
 
     {% if video.get_playlist_master %}
-      {% comment %} var srcOptions = {
+      var srcOptions = {
         src: '{{video.get_playlist_master.source_file.url}}',
         type: '{{video.get_playlist_master.encoding_format}}',
-      }; {% endcomment %}
+      };
       player.on('loadedmetadata', function() {
         //var qualityLevels = this.qualityLevels();
         {% if request.GET.start and request.GET.start != '0' %}
@@ -123,7 +125,7 @@
         {% endif %}
       });
       //Add source to player
-      {% comment %} player.src(srcOptions); {% endcomment %}
+      player.src(srcOptions);
       //add quality selector to player
       player.hlsQualitySelector({
           displayCurrentQuality: true,
@@ -260,6 +262,7 @@
       player.wavesurfer().surfer && player.wavesurfer().surfer._onResize();
     });
   {% endif %}
+  console.log('------------------------------ RUN initialized_player() ------------------------------');
 }
 initialized_player()
 </script>
