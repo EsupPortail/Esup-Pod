@@ -184,7 +184,11 @@
 {% if form %}
     {% include 'videos/video-form.html' %}
 {% else %}
-  {% include 'videos/video-element.html' %}
+  {% if video.get_encoding_step == "" or video.encoding_in_progress %}
+    {% comment %} Hide player {% endcomment %}
+  {% else %}
+    {% include 'videos/video-element.html' %}
+  {% endif %}
   <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' %}</div>
 {% endif %}
 {% endblock video-element %}
