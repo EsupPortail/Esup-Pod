@@ -35,7 +35,7 @@ function switchToNextVideo() {
                         const pageAside = parser.parseFromString(responseData.page_aside, 'text/html');
                         const pageContent = parser.parseFromString(responseData.page_content, 'text/html');
                         const moreScript = parser.parseFromString(responseData.more_script, 'text/html');
-                        const pageExtraHead = parser.parseFromString(responseData.page_extra_head, 'text/html');
+                        const pageTitle = parser.parseFromString(responseData.page_title, 'text/html');
                         document.getElementById("video-player").innerHTML = '';
                         const tmp = document.querySelector('head');
                         const coupleOfElements = [
@@ -61,6 +61,7 @@ function switchToNextVideo() {
                         refreshElementWithDocumentFragment('#card-types', pageAside);
                         refreshElementWithDocumentFragment('#video-player', pageContent);
                         refreshElementWithDocumentFragment('#more-script', moreScript);
+                        refreshElementWithDocumentFragment('title', pageTitle);
                         document.querySelectorAll("script").forEach((item) => {
                             if (item.id == "id_video_script") (0, eval)(item.innerHTML);
                         });
