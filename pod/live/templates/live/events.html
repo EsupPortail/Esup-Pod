@@ -40,5 +40,7 @@
 {% endblock page_content %}
 
 {% block page_aside %}
-  {% include 'live/filter_aside.html' %}
+  {% if HIDE_TYPES == False %}
+    {% include 'live/filter_aside.html' %}
+  {% endif %}
 {% endblock page_aside %}
