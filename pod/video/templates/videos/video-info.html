@@ -3,7 +3,9 @@
 {% load tagging_tags %}
 {% load thumbnail %}
 {% load video_tags %}
-{% load favorite_info %}
+{% load playlist_stats %}
+{% load favorites_playlist %}
+
 <div class="video-info_duration-view-share">
   <div class="video-info__duration">
     <i class="bi bi-clock"></i>
@@ -18,27 +20,46 @@
       {{ video.get_viewcount }}
     {% endif %}
   </div>
-  {% if USE_FAVORITES %}
+  {% if USE_PLAYLIST %}
+    <div class="pod-info-video__playlists">
+      <i class="bi bi-list-ul"></i> {% trans 'Addition in a playlist' %}
+      {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video">
+        <span id="addition_playlists_count">{% get_count_video_added_in_playlist video %}</span></a>
+      {% else %}
+        <span id="addition_playlists_count">{% get_count_video_added_in_playlist video %}</span>
+      {% endif %}
+    </div>
+  {% endif %}
+  {% if USE_PLAYLIST and USE_FAVORITES %}
     <div class="pod-info-video__favorites">
       <i class="bi bi-stars"></i> {% trans 'Number of favorites' %}
       {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video">
-        <span>{% number_favorites video %}</span></a>
+        <span id="favorites_count">{% get_total_favorites_video video %}</span></a>
       {% else %}
-        <span id="favorites_count">{% number_favorites video %}</span>
+        <span id="favorites_count">{% get_total_favorites_video video %}</span>
       {% endif %}
     </div>
   {% endif %}
   <div class="pod-info-video__buttons">
-    {% if user.is_authenticated and not video.is_draft %}
-      {% is_favorite video as is_fav %}
-      {% if USE_FAVORITES %}
-        <form method="post" action="{% url 'favorite:add-or-remove' %}" id="favorite-button-form" class="btn m-0 p-0" role="add-or-remove-favorite">
-          {% csrf_token %}
-          <input type="hidden" name="video" value="{{ video.id }}">
-          <button type="submit" id="star_btn" title="{% if is_fav %}{% trans 'Remove from favorite' %}{% else %}{% trans 'Add in favorite' %}{% endif %}" class="btn btn-link btn-lg pod-btn-share">
-            <i class="bi {% if is_fav %}bi-star-fill{% else %}bi-star{% endif %}" aria-hidden="true"></i>
-          </button>
-        </form>
+    {% if USE_PLAYLIST and user.is_authenticated and not video.is_draft %}
+      <button type="button" class="btn btn-link btn-lg pod-btn-share" title="{% trans 'Add the video to a playlist'%}" data-bs-toggle="modal" data-bs-target="#playlist-modal">
+        <i class="bi bi-list-ul" aria-hidden="true"></i>
+      </button>
+      {% include "playlist/playlist-list-modal.html" %}
+
+      {% is_favorite user video as is_favorite %}
+      {% get_favorite_playlist user as fav_playlist %}
+      {% if USE_PLAYLIST and USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
+        {% if is_favorite %}
+        <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" title="{% trans "Remove from favorite" %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="true">
+          <i class="bi-star-fill" aria-hidden="true"></i>
+        </a>
+        {% else %}
+        <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}" title="{% trans "Add in favorite" %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="false">
+          <i class="bi-star" aria-hidden="true"></i>
+        </a>
+        {% endif %}
+
       {% endif %}
     {% endif %}
     {% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all %}
@@ -268,7 +289,7 @@
     </div>
   </div>
 </div>
-{% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all%} <!-- Début modale-->
+{% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all%} <!-- Début modale PARTAGE-->
 <div class="modal fade" id="share" tabindex="-1" aria-labelledby="shareLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

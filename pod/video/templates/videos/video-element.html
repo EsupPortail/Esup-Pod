@@ -6,9 +6,11 @@ poster="{{video.get_thumbnail_url}}" {% spaceless %}
 {% else %}
   controls
   {% if request.GET.autoplay and request.GET.autoplay == 'true' %} autoplay muted {% endif %}
+  {% if playlist_in_get %} autoplay {% endif %}
 {% endif %}
 {% if request.GET.loop and request.GET.loop == 'true' %} loop {% endif %} {% endspaceless %}
 >
+  <!-- <source src="{{ video.get_playlist_master.source_file.url }}" type="{{ video.get_playlist_master.encoding_format }}"> -->
   <p class="vjs-no-js">
     {%blocktrans%}To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>{%endblocktrans%}
   </p>
@@ -18,7 +20,7 @@ poster="{{video.get_thumbnail_url}}" {% spaceless %}
   {%endfor%}
 </video>
 <form method="post" action="{% url 'video:video_count' id=video.id %}" id="video_count_form" aria-hidden="true">
-{% csrf_token %}
+  {% csrf_token %}
 </form>
 {% if video.overlay_set.all %}
   <ul id="overlays" style="display: none">
@@ -32,7 +34,8 @@ poster="{{video.get_thumbnail_url}}" {% spaceless %}
     {% endfor %}
   </ul>
 {% endif %}
-{% if video.chapter_set.all %}
+<div id="chapter-for-playlist">
+  {% if video.chapter_set.all %}
   <div class="chapters-list inactive" role="menu">
     <h6><span class="vjs-icon-chapters"></span>{% trans "Chapters" %}</h6>
     <ol id="chapters-list"></ol>
@@ -47,3 +50,4 @@ poster="{{video.get_thumbnail_url}}" {% spaceless %}
     {% endfor %}
   </ul>
 {% endif %}
+</div>

@@ -33,7 +33,13 @@ from pod.main.models import AdditionalChannelTab
 from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
-from pod.favorite.models import Favorite
+from pod.playlist.apps import FAVORITE_PLAYLIST_NAME
+from pod.playlist.models import Playlist, PlaylistContent
+from pod.playlist.utils import (
+    get_playlists_for_additional_owner,
+    get_video_list_for_playlist,
+    user_can_see_playlist_video,
+)
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
 from pod.video.models import Type
@@ -845,7 +851,67 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     if request.GET.get("is_iframe"):
         params = {"page_title": video.title}
         template_video = "videos/video-iframe.html"
+    elif request.GET.get("playlist"):
+        playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+        if playlist.visibility == "public" or playlist.visibility == "protected" or (
+            playlist.owner == request.user
+            or playlist in get_playlists_for_additional_owner(request.user)
+            or request.user.is_staff
+        ):
+            videos = sort_videos_list(
+                get_video_list_for_playlist(playlist), "rank"
+            )
+            params = {
+                "playlist_in_get": playlist,
+                "videos": videos,
+            }
+        else:
+            return HttpResponseNotFound()
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
+
+
+def toggle_render_video_user_can_see_video(show_page, is_password_protected, request, slug_private, video) -> bool:
+    """Toogle condition for `render_video()`."""
+    return (
+        (show_page and not is_password_protected)
+        or (
+            show_page
+            and is_password_protected
+            and request.POST.get("password")
+            and request.POST.get("password") == video.password
+        )
+        or (slug_private and slug_private == video.get_hashkey())
+        or request.user == video.owner
+        or request.user.is_superuser
+        or request.user.has_perm("video.change_video")
+        or (request.user in video.additional_owners.all())
+        or (request.GET.get("playlist"))
+    )
+
+
+def toggle_render_video_when_is_playlist_player(request):
+    """Toggle `render_video()` when the user want to play a playlist."""
+    playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+    print(playlist.visibility)
+    if request.user.is_authenticated:
+        video = (
+            Video.objects.filter(
+                playlistcontent__playlist_id=playlist.id,
+                is_draft=False,
+                is_restricted=False,
+            ) | Video.objects.filter(
+                playlistcontent__playlist_id=playlist.id,
+                owner=request.user,
+            )
+        ).first()
+    else:
+        video = Video.objects.filter(
+            playlistcontent__playlist_id=playlist.id,
+            is_draft=False,
+            is_restricted=False,
+        ).first()
+    if not video:
+        return Http404()
 
 
 def render_video(
@@ -857,6 +923,7 @@ def render_video(
     template_video="videos/video.html",
     more_data={},
 ):
+    """Render video."""
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
     """
     # Do it only for video --> move code in video definition
@@ -880,20 +947,12 @@ def render_video(
 
     show_page = get_video_access(request, video, slug_private)
 
-    if (
-        (show_page and not is_password_protected)
-        or (
-            show_page
-            and is_password_protected
-            and request.POST.get("password")
-            and request.POST.get("password") == video.password
-        )
-        or (slug_private and slug_private == video.get_hashkey())
-        or request.user == video.owner
-        or request.user.is_superuser
-        or request.user.has_perm("video.change_video")
-        or (request.user in video.additional_owners.all())
-    ):
+    if toggle_render_video_user_can_see_video(show_page, is_password_protected, request, slug_private, video):
+        if (
+            request.GET.get("playlist")
+            and not user_can_see_playlist_video(request, video)
+        ):
+            toggle_render_video_when_is_playlist_player(request)
         return render(
             request,
             template_video,
@@ -1971,12 +2030,43 @@ def get_all_views_count(v_id, date_filter=date.today()):
     count = ViewCount.objects.filter(video_id=v_id).aggregate(Sum("count"))["count__sum"]
     all_views["since_created"] = count if count else 0
 
+    # playlist addition in day
+    count = PlaylistContent.objects.filter(
+        video_id=v_id, date_added__date=date_filter).count()
+    all_views["playlist_day"] = count if count else 0
+
+    # playlist addition in month
+    count = PlaylistContent.objects.filter(
+        video_id=v_id,
+        date_added__year=date_filter.year,
+        date_added__month=date_filter.month,
+    ).count()
+    all_views["playlist_month"] = count if count else 0
+
+    # playlist addition in year
+    count = PlaylistContent.objects.filter(
+        video_id=v_id,
+        date_added__year=date_filter.year,
+    ).count()
+    all_views["playlist_year"] = count if count else 0
+
+    # playlist addition since video was created
+    count = PlaylistContent.objects.filter(video_id=v_id).count()
+    all_views["playlist_since_created"] = count if count else 0
+
+    favorites_playlists = Playlist.objects.filter(name=FAVORITE_PLAYLIST_NAME)
+
     # favorite addition in day
-    count = Favorite.objects.filter(video_id=v_id, date_added__date=date_filter).count()
+    count = PlaylistContent.objects.filter(
+        playlist__in=favorites_playlists,
+        video_id=v_id,
+        date_added__date=date_filter
+    ).count()
     all_views["fav_day"] = count if count else 0
 
     # favorite addition in month
-    count = Favorite.objects.filter(
+    count = PlaylistContent.objects.filter(
+        playlist__in=favorites_playlists,
         video_id=v_id,
         date_added__year=date_filter.year,
         date_added__month=date_filter.month,
@@ -1984,14 +2074,18 @@ def get_all_views_count(v_id, date_filter=date.today()):
     all_views["fav_month"] = count if count else 0
 
     # favorite addition in year
-    count = Favorite.objects.filter(
+    count = PlaylistContent.objects.filter(
+        playlist__in=favorites_playlists,
         video_id=v_id,
-        date_added__year=date_filter.year,
+        date_added__year=date_filter.year
     ).count()
     all_views["fav_year"] = count if count else 0
 
     # favorite addition since video was created
-    count = Favorite.objects.filter(video_id=v_id).count()
+    count = PlaylistContent.objects.filter(
+        playlist__in=favorites_playlists,
+        video_id=v_id,
+    ).count()
     all_views["fav_since_created"] = count if count else 0
 
     return all_views

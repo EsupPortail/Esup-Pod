@@ -1,76 +1,52 @@
+"""Esup-Pod playlist admin"""
 from django.contrib import admin
-from pod.playlist.models import Playlist
-from pod.playlist.models import PlaylistElement
-from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
-from pod.video.models import Video
+
+from .models import Playlist, PlaylistContent
 
 
+@admin.register(Playlist)
 class PlaylistAdmin(admin.ModelAdmin):
+    """Playlist admin page."""
+
+    date_hierarchy = "date_updated"
     list_display = (
-        "title",
-        "owner",
-        "visible",
-    )
-    list_display_links = ("title",)
-    list_editable = ("visible",)
-    ordering = (
-        "title",
         "id",
+        "name",
+        "owner",
+        "visibility",
+        "date_updated",
+        "date_created",
+        "autoplay",
     )
-    list_filter = ["visible"]
-    autocomplete_fields = ["owner"]
-    search_fields = ["name"]
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if (db_field.name) == "owner":
-            kwargs["queryset"] = User.objects.filter(
-                owner__sites=Site.objects.get_current()
-            )
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if not request.user.is_superuser:
-            qs = qs.filter(owner__owner__sites=get_current_site(request))
-        return qs
+    list_display_links = ("id", "name")
+    list_filter = (
+        "date_created",
+        "date_updated",
+        "visibility",
+        "autoplay",
+    )
+    search_fields = [
+        "name",
+        "owner__username",
+        "owner__first_name",
+        "owner__last_name",
+    ]
 
 
-admin.site.register(Playlist, PlaylistAdmin)
+@admin.register(PlaylistContent)
+class PlaylistContentAdmin(admin.ModelAdmin):
+    """PlaylistContent admin page."""
 
-
-class PlaylistElementAdmin(admin.ModelAdmin):
+    date_hierarchy = "date_added"
     list_display = (
+        "id",
         "playlist",
         "video",
-        "position",
+        "date_added",
+        "rank",
     )
-    list_display_links = ("playlist",)
-    list_editable = ("position",)
-    ordering = (
-        "playlist__title",
-        "id",
+    list_display_links = ("id", )
+    list_filter = (
+        "video",
+        "playlist",
     )
-    autocomplete_fields = ["playlist", "video"]
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if not request.user.is_superuser:
-            qs = qs.filter(playlist__owner__owner__sites=get_current_site(request))
-        return qs
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if (db_field.name) == "playlist":
-            kwargs["queryset"] = Playlist.objects.filter(
-                owner__owner__sites=Site.objects.get_current()
-            )
-        if (db_field.name) == "video":
-            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-    # class Media:
-    #     css = {"all": ("css/pod.css",)}
-
-
-admin.site.register(PlaylistElement, PlaylistElementAdmin)

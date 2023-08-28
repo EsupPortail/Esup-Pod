@@ -1,45 +1,122 @@
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.template.defaultfilters import slugify
+from django.db.models import Max
+from django.utils import timezone
 from django.utils.translation import ugettext as _
-from pod.video.models import Video
+from django.template.defaultfilters import slugify
+
 from pod.main.models import get_nextautoincrement
+from pod.video.models import Video
+from pod.video.utils import sort_videos_list
+
+
+SITE_ID = getattr(settings, "SITE_ID")
 
 
 class Playlist(models.Model):
-    title = models.CharField(_("Title"), max_length=100, unique=True)
+    """Playlist model."""
+    VISIBILITY_CHOICES = [
+        ("public", _("Public")),
+        ("protected", _("Password-protected")),
+        ("private", _("Private"))
+    ]
+    name = models.CharField(
+        verbose_name=_("Title"),
+        max_length=250,
+        default=_("Playlist"),
+        help_text=_("Please choose a title between 1 and 250 characters."),
+    )
+    description = models.TextField(
+        verbose_name=_("Description"),
+        blank=True,
+        default="",
+        help_text=_("Please choose a description. This description is empty by default."),
+    )
+    password = models.TextField(
+        verbose_name=_("Password"),
+        blank=True,
+        default="",
+        help_text=_("Please choose a password if this playlist is password-protected."),
+    )
+    visibility = models.CharField(
+        verbose_name=_("Right of access"),
+        max_length=9,
+        choices=VISIBILITY_CHOICES,
+        default="private",
+        help_text=_(
+            '''
+            Please chosse a right of access among 'public', 'password-protected', 'private'.
+            '''
+        ),
+    )
+    autoplay = models.BooleanField(
+        verbose_name=_("Autoplay"),
+        default=True,
+        help_text=_("Please choose if this playlist is an autoplay playlist or not."),
+    )
+    promoted = models.BooleanField(
+        verbose_name=_("Promoted"),
+        default=False,
+        help_text=_("Selecting this setting causes your playlist to be promoted on the page"
+                    + " listing promoted public playlists. However, if this setting is deactivated,"
+                    + " your playlist will still be accessible to everyone."
+                    + "<br>For general use, we recommend that you leave this setting disabled."),
+    )
+    editable = models.BooleanField(
+        verbose_name=_("Editable"),
+        default=True,
+        help_text=_("Please choose if this playlist is editable or not."),
+    )
     slug = models.SlugField(
-        _("Slug"),
+        _("slug"),
         unique=True,
-        max_length=100,
+        max_length=105,
         help_text=_(
             'Used to access this instance, the "slug" is a short'
-            + " label containing only letters, numbers, underscore or dash top."
+            + " label containing only letters, numbers, underscore"
+            + " or dash top."
         ),
+        editable=False,
     )
-    owner = models.ForeignKey(User, verbose_name=_("Owner"), on_delete=models.CASCADE)
-    description = models.TextField(
-        _("Description"),
-        max_length=255,
-        null=True,
+    owner = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
+    additional_owners = models.ManyToManyField(
+        User,
         blank=True,
-        help_text=_("Short description of the playlist."),
+        verbose_name=_("Additional owners"),
+        related_name="owners_playlists",
+        help_text=_("You can add additional owners to the playlist."),
     )
-    visible = models.BooleanField(
-        _("Visible"),
-        default=False,
-        help_text=_(
-            "If checked, the playlist can be visible to users other than the owner."
-        ),
+    date_created = models.DateTimeField(
+        verbose_name=_("Date created"),
+        default=timezone.now,
+        editable=False,
+        auto_created=True,
+    )
+    date_updated = models.DateTimeField(
+        verbose_name=_("Date updated"),
+        editable=False,
+        auto_now=True,
+    )
+    site = models.ForeignKey(
+        Site,
+        related_name="site_playlist",
+        verbose_name=_("Site"),
+        on_delete=models.CASCADE,
+        default=SITE_ID,
     )
 
     class Meta:
-        ordering = ["title", "id"]
+        """Metadata for Playlist model."""
+
+        ordering = ["name", "owner", "visibility", "date_updated"]
+        get_latest_by = "date_updated"
         verbose_name = _("Playlist")
         verbose_name_plural = _("Playlists")
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         newid = -1
         if not self.id:
             try:
@@ -52,70 +129,69 @@ class Playlist(models.Model):
                     newid = 1
         else:
             newid = self.id
-        newid = "{0}".format(newid)
-        self.slug = "{0}-{1}".format(newid, slugify(self.title))
-        super(Playlist, self).save(*args, **kwargs)
+        self.slug = f"{newid}-{slugify(self.name)}"
+        super().save(*args, **kwargs)
 
-    def __str__(self):
-        return "{0}".format(self.title)
+    def clean(self) -> None:
+        if self.visibility == "protected" and not self.password:
+            raise ValidationError("Password is required for a password-protected playlist.")
+        if self.visibility != "public":
+            self.promoted = False
 
-    def first(self):
-        return PlaylistElement.objects.get(playlist=self, position=1)
+    def __str__(self) -> str:
+        """Display a playlist as string."""
+        return self.slug
 
-    def last(self):
-        last = PlaylistElement.objects.filter(playlist=self).order_by("-position")
-        if last:
-            return last[0].position + 1
-        else:
-            return 1
+    def get_number_video(self) -> int:
+        """Get the video number."""
+        from .utils import get_number_video_in_playlist
+        return get_number_video_in_playlist(self)
 
-    def videos(self):
-        videos = list()
-        elements = PlaylistElement.objects.filter(playlist=self)
-        for element in elements:
-            videos.append(element.video)
-        return videos
+    def get_first_video(self, request=None) -> Video:
+        """Get the first video."""
+        from .utils import get_video_list_for_playlist, user_can_see_playlist_video
+        if request is not None:
+            for video in sort_videos_list(get_video_list_for_playlist(self), "rank"):
+                if user_can_see_playlist_video(request, video):
+                    return video
+        return sort_videos_list(get_video_list_for_playlist(self), "rank").first()
 
 
-class PlaylistElement(models.Model):
-    playlist = models.ForeignKey(
-        Playlist, verbose_name=_("Playlist"), on_delete=models.CASCADE
-    )
+class PlaylistContent(models.Model):
+    """PlaylistContent model."""
+
+    playlist = models.ForeignKey(Playlist, verbose_name=_(
+        "Playlist"), on_delete=models.CASCADE)
     video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
-    position = models.PositiveSmallIntegerField(
-        _("Position"),
-        default=1,
-        help_text=_("Position of the video in a playlist."),
+    date_added = models.DateTimeField(
+        verbose_name=_("Date added"), default=timezone.now, editable=False
     )
+    rank = models.IntegerField(verbose_name=_("Rank"), editable=False, default=1)
 
     class Meta:
-        unique_together = (
-            "playlist",
-            "video",
-        )
-        ordering = ["position", "id"]
-        verbose_name = _("Playlist element")
-        verbose_name_plural = _("Playlist elements")
+        """Metadata for PlaylistContent model."""
 
-    def clean(self):
-        if self.video.is_draft:
-            raise ValidationError(
-                _("A video in draft mode cannot be added to a playlist.")
-            )
-        if self.video.password:
-            raise ValidationError(
-                _("A video with a password cannot be added to a playlist.")
-            )
+        constraints = [
+            # A video cannot be twice in a playlist.
+            models.UniqueConstraint(
+                fields=["playlist", "video"], name="unique_playlist_video"
+            ),
+        ]
 
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        return super(PlaylistElement, self).save(*args, **kwargs)
+        ordering = ["playlist", "rank"]
+        get_latest_by = "rank"
+        verbose_name = _("Playlist content")
+        verbose_name_plural = _("Playlist contents")
 
-    def delete(self):
-        elements = PlaylistElement.objects.filter(
-            playlist=self.playlist, position__gt=self.position
-        )
-        for element in elements:
-            element.position = element.position - 1
-            element.save()
-        super(PlaylistElement, self).delete()
+    def save(self, *args, **kwargs) -> None:
+        try:
+            last_rank = PlaylistContent.objects.filter(
+                playlist=self.playlist).aggregate(Max("rank"))["rank__max"]
+            self.rank = last_rank + 1 if last_rank is not None else 1
+        except Exception:
+            ...
+        return super().save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        """Display a playlist content as string."""
+        return f"Playlist : {self.playlist} - Video : {self.video} - Rank : {self.rank}"

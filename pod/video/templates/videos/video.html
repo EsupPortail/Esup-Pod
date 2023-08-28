@@ -5,261 +5,43 @@
 {% load thumbnail %}
 {% load video_filters %}
 {% load video_tags %}
+{% load favorites_playlist %}
 
 {% block opengraph %}
-
-{% if OEMBED %}
-  <link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&amp;format=json">
-  <link rel="alternate" type="text/xml+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&amp;format=xml">
-{% endif %}
-
-<meta property="og:site_name" content="{{ TITLE_SITE }}">
-<meta property="og:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">
-<meta property="og:title" content="{{ video.title }}">
-<meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
-<meta property="og:image:secure_url" content="https:{{ video.get_thumbnail_url }}">
-<meta property="og:image:alt" content="{{ video.title }}">
-<meta property="og:image:width" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.width}}{% else %}640{% endif %}">
-<meta property="og:image:height" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.height}}{% else %}360{% endif %}">
-
-<meta property="og:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
-
-<meta property="og:type" content="video">
-<meta property="og:video" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
-<meta property="og:video:secure_url" content="https://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
-<meta property="og:video:type" content="video/mp4">
-<meta property="og:video:width" content="640">
-<meta property="og:video:height" content="{{video.get_player_height}}">
-
-<meta name="twitter:card" content="player">
-<meta name="twitter:site" content="{{ TITLE_SITE }}">
-<meta name="twitter:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">
-<meta name="twitter:title" content="{{ video.title }}">
-<meta name="twitter:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
-<meta name="twitter:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
-
-<meta name="twitter:player" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
-<meta name="twitter:player:width" content="640">
-<meta name="twitter:player:height" content="{{video.get_player_height}}">
-
-{% if video.is_draft == True %}
-  <meta name="robots" content="NONE,NOARCHIVE">
-{% endif %}
-
-{% endblock %}
+  {% include 'videos/video_opengraph.html' %}
+{% endblock opengraph %}
 
 {% block page_extra_head %}
-
-{% include 'videos/video-header.html' %}
-<link rel="stylesheet" href="{% static 'css/comment-style.css' %}?ver={{VERSION}}">
-<style>
-  {{channel.style}}
-  {% if channel.color %}
-    body {
-      background-color: {{channel.color}};
-    }
-  {% endif %}
-</style>
+  {% include 'videos/video-header.html' %}
+  <link rel="stylesheet" href="{% static 'css/comment-style.css' %}?ver={{VERSION}}">
+  <style>
+    {{channel.style}}
+    {% if channel.color %}
+      body {
+        background-color: {{channel.color}};
+      }
+    {% endif %}
+  </style>
 {% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }}
-  {% if channel %}
-    {% if theme %}
-      <li class="breadcrumb-item"><a href="{% url 'channel-video:channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
-      {% for t in theme.get_all_parents reversed %}
-        {% if t is not theme %}
-          <li class="breadcrumb-item"><a href="{% url 'channel-video:theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
-        {% endif %}
-      {% endfor %}
-      <li class="breadcrumb-item"><a href="{% url 'channel-video:theme' slug_c=channel.slug slug_t=theme.slug%}">{{theme.title}}</a></li>
-      <li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
-    {% else %}
-      <li class="breadcrumb-item"><a href="{% url 'channel-video:channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
-      <li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
-    {% endif %}
-  {% else %}
-    <li class="breadcrumb-item"><a href="{% url 'videos:videos' %}">{% trans 'Videos' %}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
-  {% endif %}
+{% block breadcrumbs %}
+  {{ block.super }}
+  {% include 'videos/video_breadcrumbs.html' %}
 {% endblock %}
 
-{% block page_title %}{% if channel %}{{channel.title}} - {% endif %}{% if theme %}{{theme.title}} - {% endif %}{{video.title|title|truncatechars:45}}{% endblock %}
+{% block page_title %}
+  {% include 'videos/video_page_title.html' %}
+{% endblock %}
 
 {% block page_content %}
-
-<div itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
-
-  <meta itemprop="duration" content="P{{ video.duration }}S">
-  {# uploadDate doit être au format 'c' - ISO 8601 (yyyy-mm-dd) #}
-  <meta itemprop="uploadDate" content="{{ video.date_added|date:'c' }}">
-  <meta itemprop="thumbnailUrl" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
-  <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">
-  <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
-  <meta itemprop="image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
-  <meta itemprop="name" content="{{ video.title }}">
-  <meta itemprop="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }} - {% trans 'Added by:' %} {{ video.owner.get_full_name }}">
-
-{% if channel %}
-  <h2 class="channel_title">
-    <a href="{% url 'channel-video:channel' slug_c=channel.slug%}">
-      {% if channel.headband %}
-        <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded" loading="lazy" height="34">
-      {% endif %}
-      {{channel.title}}
-    </a>
-    {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{% endif %}
-  </h2>
-  {% if channel.description %}
-    {% if channel.description|length > 140 %}
-      <div class="accordion accordion-flush mb-2" id="channel_block">
-        <div class="accordion-item">
-          <h3 class="accordion-header" id="channel_desc_title">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#channel_desc" aria-expanded="false" aria-controls="channel_desc">{% trans "Channel description" %}</button>
-          </h3>
-          <div id="channel_desc" class="accordion-collapse collapse" aria-labelledby="channel_desc_title" data-bs-parent="#channel_block">
-            <div class="accordion-body clearfix">
-                {{ channel.description|safe }}
-            </div>
-          </div>
-        </div>
-      </div>
-    {% else %}
-      <div id="channel_desc" class="m-2 clearfix">
-        {{ channel.description|safe }}
-      </div>
-    {% endif %}
-  {% endif %}
-  {% if theme %}
-    <div class="channel_theme ms-3">
-      <h3 class="theme_title">
-        <a href="{% url 'channel-video:theme' slug_c=channel.slug slug_t=theme.slug%}">
-          {% if theme.headband %}
-            <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="rounded" loading="lazy" height="34">
-          {% endif %}
-          {{theme.title}}
-        </a>
-      </h3>
-      {% if theme.description %}
-        {% if theme.description|length > 140 %}
-          <div class="accordion accordion-flush mb-2" id="theme_block">
-            <div class="accordion-item">
-              <h4 class="accordion-header theme_title" id="theme_desc_title">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#theme_desc" aria-expanded="false" aria-controls="theme_desc">{% trans "Theme description" %}</button>
-              </h4>
-              <div id="theme_desc" class="accordion-collapse collapse" aria-labelledby="theme_desc_title" data-bs-parent="#theme_block">
-                <div class="accordion-body clearfix">
-                  {{ theme.description|safe }}
-                </div>
-              </div>
-            </div>
-          </div>
-        {% else %}
-          <div id="theme_desc" class="m-2 clearfix">
-            {{ theme.description|safe }}
-          </div>
-        {% endif %}
-      {% endif %}
-    </div>
-  {% endif %}
-{% endif %}
-{% if video.get_encoding_step == "" %}
-  <div class="alert alert-warning" role="alert">
-    {% trans "The video is currently waiting for encoding." %}
-  </div>
-{% endif %}
-
-{% if video.encoding_in_progress %}
-  <div class="alert alert-warning" role="alert">
-    {% trans "The video is currently being encoded." %}
-  </div>
-{% endif %}
-
-{% if video.get_encoding_step == "5 : transcripting audio" %}
-  <p class="text-info-emphasis">
-    {% trans "The video is currently being transcripted." %}
-  </p>
-{% endif %}
-
-{% block video-element %}
-{% if form %}
-    {% include 'videos/video-form.html' %}
-{% else %}
-  {% include 'videos/video-element.html' %}
-  <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' %}</div>
-{% endif %}
-{% endblock video-element %}
-
-</div>
+  {% include 'videos/video_page_content.html' %}
 {% endblock page_content %}
 
 {% block page_aside %}
-  {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video or perms.enrichment.edit_enrichment or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay or perms.chapter.change_chapter or perms.video.delete_video %}
-    <div class="card" id="card-managevideo">
-      <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
-      <div class="card-body card-text text-center">
-        {% include "videos/link_video.html" %}
-      </div>
-    </div>
-  {% endif %}
-
-  {# Do not display notes if video is restricted. #}
-  {% if not form %}
-    <div class="card" id="card-takenote">
-      {% include 'videos/video_notes.html' %}
-    </div>
-  {% endif %}
-  {% include 'aside.html' %}
+  {% include 'videos/video_page_aside.html' %}
 {% endblock page_aside %}
 
 
 {% block more_script %}
-  {% if not form %}
-    <script>
-    // Allow anchor links to automatically load JS tabs
-    $(document).ready(() => {
-      var url = window.location.href;
-        if (url.indexOf("#") > 0){
-          var activeTab = url.substring(url.indexOf("#") + 1);
-          $('.nav[role="tablist"] a[href="#'+activeTab+'"]').tab('show');
-          var position = $("#pod-infos-tabs").offset().top -57;
-          $("html, body").animate({
-            scrollTop: position
-        }, 1000);
-      }
-    });
-    var maintenance_mode = {{MAINTENANCE_MODE|yesno:"true,false"}};
-    </script>
-    {% include 'videos/video-script.html' %}
-
-    {% if active_video_comment and not video.disable_comment %}
-      <script>
-        const comment_url = `{% url "video:get_comments" video_slug=video.slug %}`;
-        const base_url = window.location.origin + comment_url;
-        {% if request.user == video.owner %}
-          var is_video_owner = true;
-        {% else %}
-          var is_video_owner = false;
-        {% endif %}
-        var user_fullName = `{{request.user.first_name}} {{request.user.last_name}}`;
-        var user_id = `{{ request.user.id }}` === "None"? false: `{{ request.user.id }}`;
-        {% if MAINTENANCE_MODE %}
-          var is_authenticated = false;
-        {% else %}
-          var is_authenticated = {{request.user.is_authenticated|yesno:"true,false"}};
-        {% endif %}
-        var is_superuser = {{request.user.is_superuser|yesno:"true,false"}};
-      </script>
-      <script src="{% static 'dayjs/plugin/relativeTime.js' %}?ver={{VERSION}}"></script>
-      <script src="{% static 'dayjs/dayjs.min.js' %}?ver={{VERSION}}"></script>
-      <script src="{% static 'dayjs/locale/en.js' %}?ver={{VERSION}}"></script>
-      <script src="{% static 'dayjs/locale/fr.js' %}?ver={{VERSION}}"></script>
-      <script src="{% static 'dayjs/locale/nl.js' %}?ver={{VERSION}}"></script>
-      <script type="module" defer src="{% static 'js/comment-script.js' %}?ver={{VERSION}}"></script>
-    {% endif %}
-  {% endif %}
-
-  {% get_setting "USE_XAPI_VIDEO" False as USE_XAPI_VIDEO %}
-  {% if USE_XAPI and USE_XAPI_VIDEO %}
-    {% include 'xapi/xapi_video.html' %}
-  {% endif %}
+  {% include 'videos/video_more_script.html' %}
 {% endblock more_script %}

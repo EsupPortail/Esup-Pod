@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-20 13:09+0000\n"
+"POT-Creation-Date: 2023-08-18 09:32+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -32,7 +32,6 @@ msgstr "Le formulaire ne peut pas être récupéré."
 
 #: pod/chapter/static/js/chapters.js pod/completion/static/js/completion.js
 #: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
-#: pod/playlist/static/js/playlist.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "You are no longer authenticated. Please log in again."
 msgstr "Vous n’êtes plus authentifié. Veuillez vous reconnecter."
@@ -77,6 +76,7 @@ msgid "starts at the same time."
 msgstr "commencent au même moment."
 
 #: pod/chapter/static/js/videojs-chapters.js
+#: pod/playlist/static/playlist/js/playlist-player.js
 msgid "Chapters"
 msgstr "Chapitres"
 
@@ -375,34 +375,6 @@ msgstr "Ouvrir le gestionnaire de diapositives"
 msgid "Enrich mode"
 msgstr "Mode enrichi"
 
-#: pod/favorite/static/js/favorite-reorganize.js
-msgid "Save your reorganization"
-msgstr "Sauvegarder votre réorganisation"
-
-#: pod/favorite/static/js/favorite-reorganize.js
-msgid "Save"
-msgstr "Sauvegarder"
-
-#: pod/favorite/static/js/video-favorites-card-delete.js
-msgid "The video could not be removed from favorites..."
-msgstr "Le formulaire ne peut pas être récupéré."
-
-#: pod/favorite/static/js/video-favorites-card-list.js
-msgid "Remove from favorite"
-msgstr "Retirer des favoris"
-
-#: pod/favorite/static/js/video-favorites-card-list.js
-msgid "Add in favorite"
-msgstr "Ajouter aux favoris"
-
-#: pod/favorite/static/js/video-favorites-card-list.js
-msgid "The deletion couldn't be completed..."
-msgstr "La suppression n’a pas pu se faire..."
-
-#: pod/favorite/static/js/video-favorites.js
-msgid "The favorite couldn’t be completed…"
-msgstr "Le favori n’a pas pu être complété…"
-
 #: pod/live/static/js/admin_broadcaster.js
 msgid "An error occurred"
 msgstr "Une erreur est survenue."
@@ -430,6 +402,14 @@ msgstr "Pas de diffuseur pour ce bâtiment"
 #: pod/live/static/js/broadcaster_from_building.js
 msgid "An error occurred during broadcasters loading..."
 msgstr "Une erreur s’est produite lors du chargement des diffuseurs…"
+
+#: pod/main/static/js/filter-aside-element-list-refresh.js
+msgid "Descending sort"
+msgstr "Tri descendant"
+
+#: pod/main/static/js/filter-aside-element-list-refresh.js
+msgid "Ascending sort"
+msgstr "Tri ascendant"
 
 #: pod/main/static/js/main.js
 msgid "User not found"
@@ -489,21 +469,34 @@ msgstr ""
 "Cette extension de fichier n’est pas présente dans les extensions "
 "autorisées :"
 
-#: pod/playlist/static/js/playlist.js
-msgid "The video can not be added from this page."
-msgstr "La vidéo ne peut être ajoutée depuis cette page."
+#: pod/playlist/static/playlist/js/add-or-edit.js
+msgid "<b>Public:</b> the playlist can be accessed by anyone."
+msgstr "<b>Public :</b> la liste de lecture est accessible par tous."
 
-#: pod/playlist/static/js/playlist.js
-msgid "The video slug not found."
-msgstr "La trace (slug) de la vidéo est introuvable."
-
-#: pod/playlist/static/js/playlist.js
+#: pod/playlist/static/playlist/js/add-or-edit.js
 msgid ""
-"Error getting video information. The video information could not be "
-"retrieved."
+"<b>Password-protected:</b> the playlist can be accessed by anyone with the "
+"appropriate link and password."
 msgstr ""
-"Erreur lors de l’obtention des informations sur la vidéo. Les informations "
-"vidéo n’ont pas pu être récupérées."
+"<b>Protégé par un mot de passe :</b> la liste de lecture est accessible à "
+"toute personne disposant du lien et du mot de passe appropriés."
+
+#: pod/playlist/static/playlist/js/add-or-edit.js
+msgid "<b>Private:</b> only you have access to this playlist."
+msgstr "<b>Privé :</b> vous seul avez accès à cette liste de lecture."
+
+#: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
+#: pod/video/static/js/filter_aside_video_list_refresh.js
+msgid "An Error occurred while processing."
+msgstr "Une erreur est survenue durant l’exécution du processus."
+
+#: pod/playlist/static/playlist/js/playlist-reorganize.js
+msgid "Save your reorganization"
+msgstr "Sauvegarder votre réorganisation"
+
+#: pod/playlist/static/playlist/js/playlist-reorganize.js
+msgid "Save"
+msgstr "Sauvegarder"
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
@@ -643,18 +636,6 @@ msgid_plural "%s comments"
 msgstr[0] "%s commentaire"
 msgstr[1] "%s commentaires"
 
-#: pod/video/static/js/filter_aside_video_list_refresh.js
-msgid "Descending sort"
-msgstr "Tri descendant"
-
-#: pod/video/static/js/filter_aside_video_list_refresh.js
-msgid "Ascending sort"
-msgstr "Tri ascendant"
-
-#: pod/video/static/js/filter_aside_video_list_refresh.js
-msgid "An Error occurred while processing."
-msgstr "Une erreur est survenue durant l’exécution du processus."
-
 #: pod/video/static/js/regroup_videos_by_theme.js
 msgid "This content is password protected."
 msgstr "Ce contenu est protégé par mot de passe."
@@ -785,6 +766,22 @@ msgid "Total view from creation"
 msgstr "Vue totale depuis création"
 
 #: pod/video/static/js/video_stats_view.js
+msgid "Playlist additions during the day"
+msgstr "Ajouts dans une liste de lecture durant la journée"
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Playlist additions during the month"
+msgstr "Ajouts dans une liste de lecture durant le mois"
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Playlist additions during the year"
+msgstr "Ajouts dans une liste de lecture durant l’année"
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Total Playlist additions from creation"
+msgstr "Ajouts en liste de lecture total depuis la création"
+
+#: pod/video/static/js/video_stats_view.js
 msgid "Favorite additions during the day"
 msgstr "Ajouts en favoris de la journée"
 
@@ -803,22 +800,6 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
-
-#~ msgid "Position saved"
-#~ msgstr "Position enregistrée"
-
-#~ msgid "Error deleting video from playlist. The video could not be deleted."
-#~ msgstr ""
-#~ "Erreur lors de la suppression de la vidéo de la liste de lecture. La "
-#~ "vidéo n’a pas pu être retirée."
-
-#~ msgid "Error deleting playlist. The playlist could not be deleted."
-#~ msgstr ""
-#~ "Erreur lors de la suppression. La liste de lecture n’a pas pu être "
-#~ "supprimée."
-
-#~ msgid "Reply to comment"
-#~ msgstr "Répondre au commentaire"
 
 #~ msgid "Reply"
 #~ msgstr "Répondre"

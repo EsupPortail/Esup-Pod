@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load playlist_buttons %}
+{% load favorites_playlist %}
+
+{% block opengraph %}{% load video_filters %}
+  <meta name="description" content="{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}">
+  <!-- Open Graph data -->
+  <meta property="og:title" content="{% trans 'Playlist videos' %}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}">
+  <meta property="og:description" content="{{ DESC_SITE }} - {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}">
+  <meta property="og:site_name" content="{{ TITLE_SITE }}">
+{% endblock %}
+
+{% block page_extra_head %}
+  <link rel="stylesheet" href="{% static 'playlist/css/playlist.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item active" aria-current="page">
+    <a href="{% url 'playlist:list'%}" title="{% trans "Access the list of playlists" %}" aria-label="{% trans "Playlists" %}">
+      {% trans "Playlists" %}
+    </a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">
+    {% get_playlist_name playlist %}
+  </li>
+{% endblock %}
+
+
+{% block page_content %}
+    <div class="row videos-list-header">
+      <h2 id="video_count" class="page_title col-xxl-4 mb-2">
+        {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+      </h2>
+        <div class="col-xxl-4 col-md-6 mb-2" id="reorganize-buttons">
+          {% user_can_edit_or_remove playlist as can_edit_or_remove %}
+          {% if can_edit_or_remove or in_favorites_playlist %}
+            <form action="{% url 'playlist:save-reorganisation' slug=playlist.slug %}" method="post" class="{% if count_videos < 2 %}d-none{% endif %}">
+              {% csrf_token %}
+              <input id="json-data" type="hidden" name="json-data">
+              <button id="reorganize-button" title="{% trans 'Reorganize your playlist videos'%}" class="btn btn-outline-primary btn-sm {% if sort_field != 'rank' or sort_direction == 'on' %}d-none{% endif %}">
+                <i class="bi bi-arrows-move" aria-hidden="true"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
+              </button>
+              <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm d-none" title="{% trans 'Cancel the reorganization'%}" aria-label="{% trans "Cancel" %}">
+              <i class="bi bi-x-circle" aria-hidden="true"></i>&nbsp;{% trans "Cancel" %}</a>
+            </form>
+          {% endif %}
+        </div>
+        <form id="sortForm" action="{% url 'playlist:content' slug=playlist.slug %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2 d-none">
+          {% include "videos/video_sort_select.html" with video_rank=True %}
+        </form>
+    </div>
+    {% include 'loader.html' %}
+    {% include "playlist/playlist-videos-list.html" %}
+{% endblock page_content %}
+
+{% block page_aside %}
+  <div class="d-none">
+    {% include 'videos/filter_aside.html' %}
+  </div>
+  <div class="card card-hidden" id="card-sharedraftversion">
+    <h2 class="card-header card-title pod-card__title h4">{% trans "Help - Drag & Drop" %}</h2>
+    <div class="card-body card-text">
+      <ol>
+        <li>{% trans "Select the video to move by clicking and holding." %}</li>
+        <li> {% trans "While holding down the video, drag it to the desired location." %}</li>
+        <li> {% trans "Drop the video on another to swap their position." %}</li>
+      </ol>
+    </div>
+  </div>
+    {% include "playlist/playlist-management-card.html" %}
+    <div class="card" id="card-start-button">
+      <div class="card-body">
+        {% include "playlist/button_start_playlist.html" %}
+      </div>
+    </div>
+  {% include "playlist/playlist-informations-card.html" %}
+{% endblock page_aside %}
+
+{% block more_script %}
+    <script>
+      const urlVideos = "{% url 'playlist:content' slug=playlist.slug %}";
+      var page = 1;
+      nextPage = false;
+
+      {% if videos.has_next %}
+        page = parseInt("{{videos.next_page_number}}");
+        nextPage = true;
+      {% endif %}
+    </script>
+    <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>    <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'playlist/js/playlist-reorganize.js' %}?ver={{VERSION}}"></script>
+{% endblock more_script %}
