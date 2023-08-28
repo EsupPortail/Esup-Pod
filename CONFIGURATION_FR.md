@@ -1759,6 +1759,34 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
   >> Activer l’application meeting <br>
 
 ### Configuration application playlist
+Application Playlist pour la gestion des playlists.<br>
+Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
+
+ - `DEFAULT_PLAYLIST_THUMBNAIL`
+
+  > valeur par défaut : `/static/playlist/img/default-playlist.svg`
+
+  >> Image par défaut affichée comme poster ou vignette, utilisée pour présenter la playlist. <br>
+  >> Cette image doit se situer dans le répertoire `static`. <br>
+
+ - `COUNTDOWN_PLAYLIST_PLAYER`
+
+  > valeur par défaut : `0`
+
+  >> Compte à rebours utilisé entre chaque vidéo lors de la lecture d'une playlist en lecture automatique. <br>
+  >> Le compte à rebours n'est pas présent s'il est à 0. <br>
+
+ - `USE_FAVORITES`
+
+  > valeur par défaut : `True`
+
+  >> Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris. <br>
+
+ - `USE_PLAYLIST`
+
+  > valeur par défaut : `True`
+
+  >> Activation des playlist. Permet aux utilisateurs d'ajouter des vidéos dans une playlist. <br>
 
 ### Configuration application podfile
 
@@ -2122,12 +2150,6 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
   >> Permet d’activer le fonctionnement de categorie au niveau de ses vidéos. <br>
   >> Vous pouvez créer des catégories pour pouvoir ranger vos propres vidéos. <br>
   >> Les catégories sont liées à l’utilisateur. <br>
-
- - `USE_FAVORITES`
-
-  > valeur par défaut : `True`
-
-  >> Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris. <br>
 
  - `USE_OBSOLESCENCE`
 

@@ -26,5 +26,8 @@
 {% endspaceless %}
 
 {% block more_script %}
-<script src="{% static 'js/video-favorites-card-list.js' %}?ver={{VERSION}}"></script>
+{% if USE_PLAYLIST and USE_FAVORITES %}
+  <script src="{% static 'playlist/js/utils-playlist.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'playlist/js/video-list-favorites-card.js' %}?ver={{VERSION}}"></script>
+{% endif %}
 {% endblock %}

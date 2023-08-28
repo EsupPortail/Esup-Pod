@@ -32,7 +32,6 @@ msgstr ""
 
 #: pod/chapter/static/js/chapters.js pod/completion/static/js/completion.js
 #: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
-#: pod/playlist/static/js/playlist.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "You are no longer authenticated. Please log in again."
 msgstr ""
@@ -73,6 +72,7 @@ msgid "starts at the same time."
 msgstr ""
 
 #: pod/chapter/static/js/videojs-chapters.js
+#: pod/playlist/static/playlist/js/playlist-player.js
 msgid "Chapters"
 msgstr ""
 
@@ -356,34 +356,6 @@ msgstr ""
 msgid "Enrich mode"
 msgstr ""
 
-#: pod/favorite/static/js/favorite-reorganize.js
-msgid "Save your reorganization"
-msgstr ""
-
-#: pod/favorite/static/js/favorite-reorganize.js
-msgid "Save"
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites-card-delete.js
-msgid "The video could not be removed from favorites..."
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites-card-list.js
-msgid "Remove from favorite"
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites-card-list.js
-msgid "Add in favorite"
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites-card-list.js
-msgid "The deletion couldn't be completed..."
-msgstr ""
-
-#: pod/favorite/static/js/video-favorites.js
-msgid "The favorite couldn’t be completed…"
-msgstr ""
-
 #: pod/live/static/js/admin_broadcaster.js
 msgid "An error occurred"
 msgstr ""
@@ -408,6 +380,14 @@ msgstr ""
 
 #: pod/live/static/js/broadcaster_from_building.js
 msgid "An error occurred during broadcasters loading..."
+msgstr ""
+
+#: pod/main/static/js/filter-aside-element-list-refresh.js
+msgid "Descending sort"
+msgstr ""
+
+#: pod/main/static/js/filter-aside-element-list-refresh.js
+msgid "Ascending sort"
 msgstr ""
 
 #: pod/main/static/js/main.js
@@ -466,18 +446,31 @@ msgstr ""
 msgid "The file extension not in the allowed extension:"
 msgstr ""
 
-#: pod/playlist/static/js/playlist.js
-msgid "The video can not be added from this page."
+#: pod/playlist/static/playlist/js/add-or-edit.js
+msgid "<b>Public:</b> the playlist can be accessed by anyone."
 msgstr ""
 
-#: pod/playlist/static/js/playlist.js
-msgid "The video slug not found."
-msgstr ""
-
-#: pod/playlist/static/js/playlist.js
+#: pod/playlist/static/playlist/js/add-or-edit.js
 msgid ""
-"Error getting video information. The video information could not be "
-"retrieved."
+"<b>Password-protected:</b> the playlist can be accessed by anyone with the "
+"appropriate link and password."
+msgstr ""
+
+#: pod/playlist/static/playlist/js/add-or-edit.js
+msgid "<b>Private:</b> only you have access to this playlist."
+msgstr ""
+
+#: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
+#: pod/video/static/js/filter_aside_video_list_refresh.js
+msgid "An Error occurred while processing."
+msgstr ""
+
+#: pod/playlist/static/playlist/js/playlist-reorganize.js
+msgid "Save your reorganization"
+msgstr ""
+
+#: pod/playlist/static/playlist/js/playlist-reorganize.js
+msgid "Save"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
@@ -614,18 +607,6 @@ msgid_plural "%s comments"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pod/video/static/js/filter_aside_video_list_refresh.js
-msgid "Descending sort"
-msgstr ""
-
-#: pod/video/static/js/filter_aside_video_list_refresh.js
-msgid "Ascending sort"
-msgstr ""
-
-#: pod/video/static/js/filter_aside_video_list_refresh.js
-msgid "An Error occurred while processing."
-msgstr ""
-
 #: pod/video/static/js/regroup_videos_by_theme.js
 msgid "This content is password protected."
 msgstr ""
@@ -752,6 +733,22 @@ msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Total view from creation"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Playlist additions during the day"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Playlist additions during the month"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Playlist additions during the year"
+msgstr ""
+
+#: pod/video/static/js/video_stats_view.js
+msgid "Total Playlist additions from creation"
 msgstr ""
 
 #: pod/video/static/js/video_stats_view.js

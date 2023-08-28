@@ -40,8 +40,7 @@
   <!-- more styles for each App -->
   {% block more_style %}
   {% endblock more_style %}
-  <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|striptags|capfirst}}{% endblock %}</title>
-  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+  <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|striptags|capfirst}}{% endblock %}</title>  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
   {% block page_extra_head %}
   {% endblock %}
   {% if request.GET.is_iframe %}
@@ -187,8 +186,10 @@
     <script src="{% static 'js/ajax-display-channels.js' %}?ver={{VERSION}}"></script>
   {% endif %}
 
-  {% block more_script %}
-  {% endblock more_script %}
+  <div id="more-script">
+    {% block more_script %}
+    {% endblock more_script %}
+  </div>
 
   {% if DARKMODE_ENABLED == True %}
     <script>

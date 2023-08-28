@@ -1,11 +1,6 @@
 var infinite;
 var checkedInputs = [];
 var listUser;
-var sortDirectionChars = ["8600", "8599"];
-var sortDirectionTitle = [
-  gettext("Descending sort"),
-  gettext("Ascending sort"),
-];
 
 let loader = document.querySelector(".lds-ring");
 let infinite_loading = document.querySelector(".infinite-loading");
@@ -107,6 +102,15 @@ function refreshVideosSearch() {
     });
 }
 
+// Add trigger event to manage sort direction.
+document
+  .getElementById("sort_direction_label")
+  .addEventListener("click", function (e) {
+    e.preventDefault();
+    toggleSortDirection();
+    refreshVideosSearch();
+  });
+
 // Return url with filter and sort parameters
 function getUrlForRefresh() {
   let newUrl = window.location.pathname;
@@ -207,38 +211,6 @@ document.getElementById("resetFilters").addEventListener("click", function () {
   window.history.pushState("", "", window.location.pathname);
   refreshVideosSearch();
 });
-
-// Add trigger event to manage sort direction
-document
-  .getElementById("sort_direction_label")
-  .addEventListener("click", function (e) {
-    e.preventDefault();
-    toggleSortDirection();
-    refreshVideosSearch();
-  });
-
-// Update arrow char of ascending or descending sort order
-function updateSortDirectionChar(sortDirectionAsc) {
-  document.getElementById("sort_direction_label").innerHTML =
-    "&#" + sortDirectionChars[+sortDirectionAsc].toString();
-}
-
-// Update title for input sort direction
-function updateSortDirectionTitle(sortDirectionAsc) {
-  let newTitle = sortDirectionTitle[+sortDirectionAsc];
-  document
-    .getElementById("sort_direction_label")
-    .setAttribute("title", newTitle);
-}
-
-// Toggle direction of sort
-function toggleSortDirection() {
-  document.getElementById("sort_direction").checked =
-    !document.getElementById("sort_direction").checked;
-  const direction = document.getElementById("sort_direction").checked;
-  updateSortDirectionChar(direction);
-  updateSortDirectionTitle(direction);
-}
 
 // Enable / Disable toggle inputs to prevent user actions during loading
 function disabledInputs(value) {

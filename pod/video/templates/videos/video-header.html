@@ -10,7 +10,7 @@
 <link href="{% static 'videojs-seek-buttons/dist/videojs-seek-buttons.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'videojs-seek-buttons/dist/videojs-seek-buttons.min.js' %}?ver={{VERSION}}"></script>
 
-{% if not video.is_video and event is None %}
+{% if not video.is_video and event is None or playlist_in_get %}
   <!-- Audio wavesurfer -->
   <link href="{% static 'videojs-wavesurfer/dist/css/videojs.wavesurfer.min.css' %}?ver={{VERSION}}" rel="stylesheet">
   <script src="{% static 'wavesurfer.js/dist/wavesurfer.min.js'%}?ver={{VERSION}}"></script>
@@ -62,31 +62,33 @@
 <!-- notes -->
 <link href="{% static 'css/video_notes.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/video_notes.js' %}?ver={{VERSION}}"></script>
-<!-- favorites -->
-<script src="{% static 'js/video-favorites.js' %}?ver={{VERSION}}"></script>
+<!-- Playlist / favorites -->
+{% if USE_PLAYLIST and USE_FAVORITES %}
+  <script src="{% static 'playlist/js/utils-playlist.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'playlist/js/video-header-favorites.js' %}?ver={{VERSION}}"></script>
+{% endif %}
 <!-- logo -->
 <link href="{% static 'css/videojs-controlbar.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/videojs-logo-controlbar.js' %}?ver={{VERSION}}"></script>
 <!-- chapitre : depuis videojs7, plus besoin de plugin js https://docs.videojs.com/tutorial-text-tracks.html -->
 <link href="{% static 'css/videojs-chapters.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/videojs-chapters.js' %}?ver={{VERSION}}"></script>
-{% if video.overview %}
+{% if video.overview or playlist_in_get %}
 
   <link id="overview_style_id" href="{% static 'videojs-vtt-thumbnails/dist/videojs-vtt-thumbnails.css' %}?ver={{VERSION}}" rel="stylesheet">
   <script id="overview_script_id" src="{% static 'videojs-vtt-thumbnails/dist/videojs-vtt-thumbnails.min.js' %}?ver={{VERSION}}"></script>
 {% endif %}
 
-{% if video.overlay_set.all and not enrichment %}
+{% if video.overlay_set.all and not enrichment or playlist_in_get %}
   <link id="overlay_style_id" href="{% static 'videojs-overlay/dist/videojs-overlay.css' %}?ver={{VERSION}}" rel="stylesheet">
   <script id="overlay_script_id" src="{% static 'videojs-overlay/dist/videojs-overlay.min.js' %}?ver={{VERSION}}"></script>
 {% endif %}
 
 {% if request.user.playlist_set.all %}
-  <link href="{% static 'css/playlist.css' %}?ver={{VERSION}}" rel="stylesheet">
-  <script src="{% static 'js/playlist.js' %}?ver={{VERSION}}"></script>
+  <link href="{% static 'playlist/css/playlist.css' %}?ver={{VERSION}}" rel="stylesheet">
 {% endif %}
 
-{% if video.is_360 %}
+{% if video.is_360 or playlist_in_get %}
   <link id="vr360_style_id" href="{% static 'videojs-vr/dist/videojs-vr.css' %}?ver={{VERSION}}" rel="stylesheet">
   <script id="vr360_script_id" src="{% static 'videojs-vr/dist/videojs-vr.min.js' %}?ver={{VERSION}}"></script>
 {% endif %}

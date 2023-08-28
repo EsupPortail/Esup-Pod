@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item">
+        <a
+            href="{% url 'playlist:list' %}"
+            title="{% trans "Access the list of playlists" %}"
+            aria-label="{% trans "Playlists" %}"
+        >
+            {% trans "Playlists" %}
+        </a>
+    </li>
+    <li class="breadcrumb-item">
+        <a
+            href="{% url 'playlist:content' playlist.slug %}"
+            title="{% trans "Access the video list of this playlist" %}"
+            aria-label="Playlist content"
+        >
+            {{ playlist.name }}
+        </a>
+    </li>
+    <li class="breadcrumb-item active">
+        {% trans "Delete" %}
+    </li>
+{% endblock breadcrumbs %}
+
+{% block page_content %}
+    <style>
+        .page_title {
+            display: none;
+        }
+    </style>
+    <h3>{% blocktrans with name=playlist.name %}Delete the playlist <b>{{name}}</b>{% endblocktrans %}
+        <span class="float-end">
+            <a href="{% url 'playlist:list' %}" title="{% trans 'Back to my playlists' %}" class="btn btn-secondary btn-sm" aria-label="{% trans "Back to my playlists" %}">
+                <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Back to my playlists" %}
+            </a>
+        </span>
+    </h3>
+    <p>{% trans 'To delete the playlist, please check the box in and click delete.' %}</p>
+    <form method="POST" action="{{ request.get_full_path }}" class='needs-validation' novalidate>
+        {% csrf_token %}
+        <div class="list-group">
+        <fieldset>
+            <legend>{% trans 'Agree required' %}</legend>
+            {% if form.errors %}
+                <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+            {% endif %}
+            {% for field_hidden in form.hidden_fields %}
+                {{field_hidden}}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+                {% spaceless %}
+                    <div class="list-group-item">
+                        <div class="form-group {% if field.field.required %}form-group-required {% endif %}" >
+                            {{ field.errors }}
+                            {% if "form-check-input" in field.field.widget.attrs.class %}
+                                <div class="form-check">
+                                    {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
+                                </div>
+                            {% else %}
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                            {% endif %}
+                            {% if field.help_text %}
+                                <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+                            {% endif %}
+                            {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+                        </div>
+                    </div>
+                {% endspaceless %}
+            {% endfor %}
+            <div class="text-center mt-1">
+                <button type="submit" class="btn btn-secondary btn-sm btn-danger">{% trans "Delete" %}</button>
+                <a href="{% url 'meeting:my_meetings' %}" title="{% trans 'Back to my playlists' %}" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Back to my playlists" %}
+                </a>
+            </div>
+        </fieldset>
+        </div>
+    </form>
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+{% endblock more_script %}

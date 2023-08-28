@@ -432,7 +432,11 @@ var get_list = function (
 };
 
 /* USERS IN NAVBAR */
-let ownerBoxNavBar = document.getElementById("ownerboxnavbar");
+if (typeof ownerBoxNavBar === undefined) {
+  let ownerBoxNavBar = document.getElementById("ownerboxnavbar");
+} else {
+  ownerBoxNavBar = document.getElementById("ownerboxnavbar");
+}
 if (ownerBoxNavBar) {
   let pod_users_list = document.getElementById("pod_users_list");
   ownerBoxNavBar.addEventListener("input", (e) => {
@@ -1056,7 +1060,11 @@ function show_list_theme(data) {
 /****** VIDEOS EDIT ******/
 
 /*** Copy to clipboard ***/
-let btnpartageprive = document.getElementById("btnpartageprive");
+if (typeof btnpartageprive === undefined) {
+  let btnpartageprive = document.getElementById("btnpartageprive");
+} else {
+  btnpartageprive = document.getElementById("btnpartageprive");
+}
 if (btnpartageprive) {
   btnpartageprive.addEventListener("click", function () {
     var copyText = document.getElementById("txtpartageprive");
@@ -1068,7 +1076,11 @@ if (btnpartageprive) {
 
 /** Restrict access **/
 /** restrict access to group */
-let id_is_restricted = document.getElementById("id_is_restricted");
+if (typeof id_is_restricted === undefined) {
+  let id_is_restricted = document.getElementById("id_is_restricted");
+} else {
+  id_is_restricted = document.getElementById("id_is_restricted");
+}
 if (id_is_restricted) {
   id_is_restricted.addEventListener("click", function () {
     restrict_access_to_groups();
@@ -1108,7 +1120,11 @@ var restrict_access_to_groups = function () {
   }
 };
 
-let id_is_draft = document.getElementById("id_is_draft");
+if (typeof id_is_draft === undefined) {
+  let id_is_draft = document.getElementById("id_is_draft");
+} else {
+  id_is_draft = document.getElementById("id_is_draft");
+}
 if (id_is_draft) {
   id_is_draft.addEventListener("click", function () {
     restricted_access();

@@ -1563,10 +1563,76 @@
                     }
                 },
                 "playlist": {
-                    "description": {},
-                    "settings": {},
+                    "description": {
+                        "en": [
+                            "Playlist app for the playlist management.",
+                            "Set `USE_PLAYLIST` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Playlist pour la gestion des playlists.",
+                            "Mettre `USE_PLAYLIST` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "DEFAULT_PLAYLIST_THUMBNAIL": {
+                            "default_value": "/static/playlist/img/default-playlist.svg",
+                            "description": {
+                                "en": [
+                                    "Default image displayed as a poster or thumbnail, used to present the playlist.",
+                                    "This image must be located in the `static` directory."
+                                ],
+                                "fr": [
+                                    "Image par défaut affichée comme poster ou vignette, utilisée pour présenter la playlist.",
+                                    "Cette image doit se situer dans le répertoire `static`."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4"
+                        },
+                        "COUNTDOWN_PLAYLIST_PLAYER": {
+                            "default_value": 0,
+                            "description": {
+                                "en": [
+                                    "Countdown used between each video when playing an autoplay playlist.",
+                                    "The coutdown is not present if it at 0."
+                                ],
+                                "fr": [
+                                    "Compte à rebours utilisé entre chaque vidéo lors de la lecture d'une playlist en lecture automatique.",
+                                    "Le compte à rebours n'est pas présent s'il est à 0."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4"
+                        },
+                        "USE_FAVORITES": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of favorite videos. Allows users to add videos to their favorites."
+                                ],
+                                "fr": [
+                                    "Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4"
+                        },
+                        "USE_PLAYLIST": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of playlist. Allows users to add videos in a playlist."
+                                ],
+                                "fr": [
+                                    "Activation des playlist. Permet aux utilisateurs d'ajouter des vidéos dans une playlist."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4"
+                        }
+                    },
                     "title": {
-                        "en": "",
+                        "en": "Playlist application configuration",
                         "fr": "Configuration application playlist"
                     }
                 },
@@ -2236,17 +2302,6 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
-                        },
-                        "USE_FAVORITES": {
-                            "default_value": true,
-                            "description": {
-                                "en": [
-                                    "Activation of favorite videos. Allows users to add videos to their favorites."
-                                ],
-                                "fr": [
-                                    "Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris."
-                                ]
-                            }
                         },
                         "USE_OBSOLESCENCE": {
                             "default_value": false,
