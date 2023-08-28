@@ -1,4 +1,9 @@
 {% load i18n %}
+{% load static %}
+
+{% block more_style %}
+  <link href="{% static 'css/event_list.css' %}?ver={{ VERSION }}" rel="stylesheet">
+{% endblock more_style %}
 
 {% spaceless %}
     <div id="events_content">
@@ -11,8 +16,8 @@
 
       <div class="pod-infinite-container infinite-container" id="events_list">
           {% for event in events %}
-              <div class="infinite-item card-group"
-                   style="min-width: 12rem; min-height: 11rem;" {% if categories %}data-slug={{ event.slug }}{% endif %}>
+              <div class="infinite-item card-group event-card-container"
+                   {% if categories %}data-slug={{ event.slug }}{% endif %}>
                   {% include "live/event_card.html" %}
               </div>
           {% empty %}

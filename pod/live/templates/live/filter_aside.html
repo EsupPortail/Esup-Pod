@@ -21,7 +21,7 @@
                        {% if type.slug in types %}checked{% endif %}>
                 <label class="form-check-label" for="id{{ type.slug.split|join:'-' }}_type">
                   {% if type.icon %}
-                    <img src="{{ type.icon.file.url }}" alt="{{ type.title }}" style="max-height:32px; max-width:32px;"
+                    <img class="filter-event-img" src="{{ type.icon.file.url }}" alt="{{ type.title }}"
                          loading="lazy">
                   {% else %}
                     <i class="bi bi-fonts" aria-hidden="true"></i>
