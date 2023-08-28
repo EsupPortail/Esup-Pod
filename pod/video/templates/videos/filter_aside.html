@@ -9,7 +9,7 @@
     <button type="button" id="resetFilters" class="btn btn-outline-primary">{% trans 'Reset' %}</button>
   </h2>
   <p class="filter-info">
-    <i>{% trans "The videos on the left are automatically sorted according to the filters selected. Check options to adjust results." %}</i>
+    {% trans "The videos on the left are automatically sorted according to the filters selected. Check options to adjust results." %}
   </p>
   <hr>
 <form action="{% url 'videos:videos' %}" method="get" id="filters">

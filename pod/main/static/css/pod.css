@@ -1005,6 +1005,7 @@ body {
 
 .timecode, .filter-info {
   font-size: 12px;
+  font-style: italic;
 }
 
 /*.btn{
@@ -1463,7 +1464,7 @@ body {
 
 @media(max-width:992px) {
   .pod-aside {
-    width: 101% !important;
+    width: 101% !important; /* THIS IS NORMAL, it's to fit with pod-aside-collapse */
     min-height: 100%;
     position: absolute;
   }

@@ -71,8 +71,6 @@ class ConfirmModal extends HTMLElement {
     cancel_text = null,
   ) {
     super();
-    const bodyElement = document.querySelector('body');
-    bodyElement.setAttribute('aria-hidden', 'true');
 
     title = title ? title : this.getAttribute("confirm_title");
     message = message ? message : this.getAttribute("message");
@@ -465,6 +463,9 @@ function hide_or_add_show_children_btn(parent_comment, parent_id, nb_child) {
     }
   });
 
+  /**
+   * Toggles the visibility of a comment and fetches its children if needed.
+   */
   function toggleComment() {
     parent_comment.classList.toggle("show");
     fetch_comment_children(parent_comment, parent_id);
