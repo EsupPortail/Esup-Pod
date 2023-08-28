@@ -50,9 +50,24 @@ $(() => {
         sortable: true,
         sorttype: "int",
       },
-      { name: "playlist_day", align: "center", sortable: true, sorttype: "int" },
-      { name: "playlist_month", align: "center", sortable: true, sorttype: "int" },
-      { name: "playlist_year", align: "center", sortable: true, sorttype: "int" },
+      {
+        name: "playlist_day",
+        align: "center",
+        sortable: true,
+        sorttype: "int",
+      },
+      {
+        name: "playlist_month",
+        align: "center",
+        sortable: true,
+        sorttype: "int",
+      },
+      {
+        name: "playlist_year",
+        align: "center",
+        sortable: true,
+        sorttype: "int",
+      },
       {
         name: "playlist_since_created",
         align: "center",

@@ -104,12 +104,12 @@ function refreshVideosSearch() {
 
 // Add trigger event to manage sort direction.
 document
-    .getElementById("sort_direction_label")
-    .addEventListener("click", function (e) {
-        e.preventDefault();
-        toggleSortDirection();
-        refreshVideosSearch();
-});
+  .getElementById("sort_direction_label")
+  .addEventListener("click", function (e) {
+    e.preventDefault();
+    toggleSortDirection();
+    refreshVideosSearch();
+  });
 
 // Return url with filter and sort parameters
 function getUrlForRefresh() {
@@ -232,7 +232,7 @@ document
   .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
   .forEach((e) => {
     checkedInputs.push(e);
-});
+  });
 
 // First launch of the infinite scroll
 infinite = new InfiniteLoader(

@@ -101,7 +101,8 @@ class InfiniteLoader {
 
         element.innerHTML += html.getElementById("videos_list").innerHTML;
         this.next_page_number += 1;
-        const favoritesButtons = document.getElementsByClassName("favorite-btn-link");
+        const favoritesButtons =
+          document.getElementsByClassName("favorite-btn-link");
         for (let btn of favoritesButtons) {
           preventRefreshButton(btn, true);
         }
