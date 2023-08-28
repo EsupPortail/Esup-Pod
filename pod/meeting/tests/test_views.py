@@ -422,7 +422,7 @@ class MeetingJoinTestView(TestCase):
             fetch_redirect_response=True,
         )
 
-        # Auth user can have acces and ask password
+        # Auth user can have access and ask password
         self.user2 = User.objects.get(username="pod2")
         self.client.force_login(self.user2)
         url = reverse("meeting:join", kwargs={"meeting_id": newmeeting.meeting_id})

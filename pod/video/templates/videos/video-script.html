@@ -4,233 +4,260 @@
 {% get_setting "VIDEO_PLAYBACKRATES" '[0.5, 1, 1.5, 2]' as video_playbackrates %}
 {% get_setting "USE_VIDEO_EVENT_TRACKING" False as video_event_tracking %}
 <script id="id_video_script">
-window.onmessage = function(event) {
-   var evt = event || window.event;
-   {# maybe use request.get_host to protect it... #}
-    if(evt.data.type == 'player:play') {
-      player.play();
-      evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
-    }
-    if(evt.data.type == 'player:pause') {
-      player.pause();
-      evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
-    }
-    if(evt.data.type == 'player:mute') {
-      player.muted(true);
-      evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
-    }
-    if(evt.data.type == 'player:unmute') {
-      player.muted(false);
-      evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
-    }
-};
-const seektime = 10;
+  var seektime = 10;
+  var options = {};
+  var player;
+  var initialized_player = function() {
+  window.onmessage = function(event) {
+    var evt = event || window.event;
+    {# maybe use request.get_host to protect it... #}
+      if(evt.data.type == 'player:play') {
+        player.play();
+        evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
+      }
+      if(evt.data.type == 'player:pause') {
+        player.pause();
+        evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
+      }
+      if(evt.data.type == 'player:mute') {
+        player.muted(true);
+        evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
+      }
+      if(evt.data.type == 'player:unmute') {
+        player.muted(false);
+        evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
+      }
+  };
 
-const options = {
-  notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
-  //language: "fr", //en or nl
-  {% if video.is_video and request.GET.is_iframe %}
-    fluid: false,
-  {% else %}
-    fluid: true,
-  {% endif %}
-  responsive: true,
-  playbackRates: {{video_playbackrates}},
-  userActions: {
-    hotkeys: function(event) {
-      // `this` is the player in this context
-      if (event.code === 'Space') {
-        event.preventDefault();
-        if(!this.paused()) this.pause();
-        else this.play();
-      }
-      if (event.key === 'm') {
-        event.preventDefault();
-        this.muted(!this.muted());
-      }
-      if (event.key === 'f') {
-        event.preventDefault();
-        this.requestFullscreen();
-      }
-      // `arrow left`
-      if (event.code === 'ArrowLeft') {
-        event.preventDefault();
-        this.currentTime(Math.floor(this.currentTime())-seektime);
-      }
-      // `arrow right`
-      if (event.code === 'ArrowRight') {
-        event.preventDefault();
-        this.currentTime(Math.floor(this.currentTime())+seektime);
-      }
-      if( event.code === "ArrowUp" ) {
-        event.preventDefault();
-        this.volume(this.volume()+0.1);
-      }
-      if( event.code === "ArrowDown" ) {
-        event.preventDefault();
-        this.volume(this.volume()-0.1);
-      }
-    }
-  },
-  plugins: {
-    {% if event is None %}
-    seekButtons: {
-      forward: seektime,
-      back: seektime
-    }
+
+  options = {
+    notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
+    //language: "fr", //en or nl
+    {% if video.is_video and request.GET.is_iframe %}
+      fluid: false,
+    {% else %}
+      fluid: true,
     {% endif %}
-{% if not video.is_video and event is None %}
-    // enable videojs-wavesurfer plugin
-    ,wavesurfer: {
-      backend: 'MediaElement',
-      displayMilliseconds: true,
-      debug: false,
-      waveColor: 'grey',
-      progressColor: 'black',
-      cursorColor: 'var(--pod-primary)',
-      hideScrollbar: false
-    }
-{% endif %}
-  }
-}
-
-var player = videojs('podvideoplayer', options, function(){});
-
-player.on('firstplay', function(){
-  var data_form = $( "#video_count_form" ).serializeArray();
-  jqxhr = $.post(
-    $( "#video_count_form" ).attr("action"),
-    data_form
-  );
-});
-
-{% if video.is_video %}
-  /** get all mp4 format **/
-  var mp4_sources = {{video.get_video_mp4_json|safe}};
-
-  {% if video.get_playlist_master %}
-    var srcOptions = {
-      src: '{{video.get_playlist_master.source_file.url}}',
-      type: '{{video.get_playlist_master.encoding_format}}',
-    };
-    player.on('loadedmetadata', function() {
-      //var qualityLevels = this.qualityLevels();
-      {% if request.GET.start and request.GET.start != '0' %}
-      player.currentTime({{request.GET.start}});
-      {% endif %}
-    });
-    //Add source to player
-    player.src(srcOptions);
-    //add quality selector to player
-    player.hlsQualitySelector({
-        displayCurrentQuality: true,
-    });
-    player.on("error", function(e){
-      e.stopImmediatePropagation();
-      var error = player.error();
-      //alert(error.code+" "+error.type+" "+error.message);
-      if(error.code == 3 || error.code == 4) {
-        //console.log('error!', error.code, error.type , error.message);
-        if(player.src()=="" || player.src().indexOf("m3u8")!=-1){
-          player.src(mp4_sources);
-          player.controlBar.addChild('QualitySelector');
-          player.play();
+    responsive: true,
+    playbackRates: {{video_playbackrates}},
+    userActions: {
+      hotkeys: function(event) {
+        // `this` is the player in this context
+        if (event.code === 'Space') {
+          event.preventDefault();
+          if(!this.paused()) this.pause();
+          else this.play();
+        }
+        if (event.key === 'm') {
+          event.preventDefault();
+          this.muted(!this.muted());
+        }
+        if (event.key === 'f') {
+          event.preventDefault();
+          this.requestFullscreen();
+        }
+        // `arrow left`
+        if (event.code === 'ArrowLeft') {
+          event.preventDefault();
+          this.currentTime(Math.floor(this.currentTime())-seektime);
+        }
+        // `arrow right`
+        if (event.code === 'ArrowRight') {
+          event.preventDefault();
+          this.currentTime(Math.floor(this.currentTime())+seektime);
+        }
+        if( event.code === "ArrowUp" ) {
+          event.preventDefault();
+          this.volume(this.volume()+0.1);
+        }
+        if( event.code === "ArrowDown" ) {
+          event.preventDefault();
+          this.volume(this.volume()-0.1);
         }
       }
-    });
-  {% else %}
-    player.src(mp4_sources);
-    player.controlBar.addChild('QualitySelector');
+    },
+    plugins: {
+      {% if event is None %}
+      seekButtons: {
+        forward: seektime,
+        back: seektime
+      }
+      {% endif %}
+  {% if not video.is_video and event is None %}
+      // enable videojs-wavesurfer plugin
+      ,wavesurfer: {
+        backend: 'MediaElement',
+        displayMilliseconds: true,
+        debug: false,
+        waveColor: 'grey',
+        progressColor: 'black',
+        cursorColor: 'var(--pod-primary)',
+        hideScrollbar: false
+      }
   {% endif %}
-  {% if video.overview %}
-    //add overview
-    player.vttThumbnails({
-      src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
-    });
-  {% endif %}
-
-  {% if video.overlay_set.all %}
-    var list_overlays = [];
-    $('ul#overlays li').each(function() {
-      list_overlays.push({
-        content: $(this).attr('data-content'),
-        align: $(this).attr('data-position'),
-        showBackground: ($(this).attr('data-background') === 'true'),
-        start: parseInt($(this).attr('data-timestart')),
-        end: parseInt($(this).attr('data-timeend'))
-      });
-    });
-    if (typeof player.overlay === "function") {
-      player.overlay({
-        overlays: list_overlays
-      });
     }
-  {% endif %}
+  }
 
-  {% if video.is_360 %}
-    player.vr({projection: '360'});
-  {% endif %}
-  //add logo to the player
-  player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
-{% else %}
-  {% if video.get_video_m4a %}
-    var srcOptions = {
-      src: '{{video.get_video_m4a.source_file.url}}',
-      type: '{{video.get_video_m4a.encoding_format}}',
-    };
-    //Add source to player
-    player.src(srcOptions);
+  player = videojs('podvideoplayer', options, function(){});
+
+  player.on('firstplay', function(){
+    var data_form = $( "#video_count_form" ).serializeArray();
+    jqxhr = $.post(
+      $( "#video_count_form" ).attr("action"),
+      data_form
+    );
+  });
+
+  {% if video.is_video %}
+    /** get all mp4 format **/
+    var mp4_sources = {{ video.get_video_mp4_json|safe }};
+
+    {% if video.get_playlist_master %}
+      var srcOptions = {
+        src: '{{video.get_playlist_master.source_file.url}}',
+        type: '{{video.get_playlist_master.encoding_format}}',
+      };
+      player.on('loadedmetadata', function() {
+        //var qualityLevels = this.qualityLevels();
+        {% if request.GET.start and request.GET.start != '0' %}
+        player.currentTime({{request.GET.start}});
+        {% endif %}
+      });
+      //Add source to player
+      player.src(srcOptions);
+      //add quality selector to player
+      player.hlsQualitySelector({
+          displayCurrentQuality: true,
+      });
+      player.on("error", function(e) {
+        e.stopImmediatePropagation();
+        var error = player.error();
+        //alert(error.code+" "+error.type+" "+error.message);
+        if(error.code == 3 || error.code == 4) {
+          //console.log('error!', error.code, error.type , error.message);
+          if(player.src()=="" || player.src().indexOf("m3u8")!=-1){
+            player.controlBar.addChild('QualitySelector');
+            player.play();
+          }
+        }
+      });
+    {% else %}
+      player.src(mp4_sources);
+      player.controlBar.addChild('QualitySelector');
+    {% endif %}
+    {% if video.overview %}
+      //add overview
+      player.vttThumbnails({
+        src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
+      });
+      player.vttThumbnails({
+        src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
+      });
+    {% endif %}
+
+    {% if video.overlay_set.all %}
+      var list_overlays = [];
+      $('ul#overlays li').each(function() {
+        list_overlays.push({
+          content: $(this).attr('data-content'),
+          align: $(this).attr('data-position'),
+          showBackground: ($(this).attr('data-background') === 'true'),
+          start: parseInt($(this).attr('data-timestart')),
+          end: parseInt($(this).attr('data-timeend'))
+        });
+      });
+      if (typeof player.overlay === "function") {
+        player.overlay({
+          overlays: list_overlays
+        });
+      }
+    {% endif %}
+
+    {% if video.is_360 %}
+      player.vr({projection: '360'});
+    {% endif %}
     //add logo to the player
     player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
-    player.on('loadedmetadata', function() {
-      {% if request.GET.start and request.GET.start != '0' %}
-      player.currentTime({{request.GET.start}});
+  {% else %}
+    {% if video.get_video_m4a %}
+      var srcOptions = {
+        src: '{{video.get_video_m4a.source_file.url}}',
+        type: '{{video.get_video_m4a.encoding_format}}',
+      };
+      //Add source to player
+      player.src(srcOptions);
+      //add logo to the player
+      player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
+      player.on('loadedmetadata', function() {
+        {% if request.GET.start and request.GET.start != '0' %}
+        player.currentTime({{request.GET.start}});
+        {% endif %}
+      });
+    {% endif %}
+  {% endif %}
+
+  {% if video.chapter_set.all %}
+    player.videoJsChapters();
+    document.querySelector('.vjs-big-play-button').style.zIndex = '2';
+    document.querySelector('.vjs-control-bar').style.zIndex = '3';
+  {% endif %}
+
+  {% if video_event_tracking %}
+    {# Be sure to define _paq in a tracking script in TEMPLATE_VISIBLE_SETTINGS:TRACKING_TEMPLATE pref. #}
+    player.on('play', function() {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'play', player.currentTime()]);
+    });
+    player.on('pause', function() {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'pause', player.currentTime()]);
+    });
+    player.on("seeked", function (e) {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'seeked', player.currentTime()]);
+    });
+    player.on("ended", function (e) {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ended', player.currentTime()]);
+    });
+    player.on("ratechange", function (e) {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ratechange', player.playbackRate()]);
+    });
+    player.on("fullscreenchange", function (e) {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'fullscreen :'+ player.isFullscreen(), player.currentTime()]);
+    });
+    player.on("error", function (e) {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'error', player.error()]);
+    });
+    player.on("loadedmetadata", function (e) {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'loadedmetadata']);
+    });
+  {% endif %}
+
+  /* --- PLAYLIST --- */
+  {% if playlist_in_get.autoplay %}
+    player.on('ended', function (e) {
+      {% if COUNTDOWN_PLAYLIST_PLAYER >= 3 %}
+        const playButtonElement = document.querySelector('.vjs-big-play-button');
+        if (playButtonElement) {
+            playButtonElement.remove();
+        }
+        asyncStartCountDown().then(function () {
+          player.dispose();
+          switchToNextVideo();
+        });
+      {% else %}
+        player.dispose();
+        switchToNextVideo();
       {% endif %}
     });
   {% endif %}
-{% endif %}
 
 
-{% if video.chapter_set.all %}
-  player.videoJsChapters();
-  $('.vjs-big-play-button').css('z-index', 2)
-  $('.vjs-control-bar').css('z-index', 3);
-{% endif %}
-
-{% if video_event_tracking %}
-  {# Be sure to define _paq in a tracking script in TEMPLATE_VISIBLE_SETTINGS:TRACKING_TEMPLATE pref. #}
-  player.on('play', function() {
-    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'play', player.currentTime()]);
-  });
-  player.on('pause', function() {
-    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'pause', player.currentTime()]);
-  });
-  player.on("seeked", function (e) {
-    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'seeked', player.currentTime()]);
-  });
-  player.on("ended", function (e) {
-    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ended', player.currentTime()]);
-  });
-  player.on("ratechange", function (e) {
-    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ratechange', player.playbackRate()]);
-  });
-  player.on("fullscreenchange", function (e) {
-    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'fullscreen :'+ player.isFullscreen(), player.currentTime()]);
-  });
-  player.on("error", function (e) {
-    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'error', player.error()]);
-  });
-  player.on("loadedmetadata", function (e) {
-    _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'loadedmetadata']);
-  });
-{% endif %}
 
 
-{% if not video.is_video and event is None %}
-  window.addEventListener('resize', function(){
-    // Auto resize Waves on window resize.
-    player.wavesurfer().surfer && player.wavesurfer().surfer._onResize();
-  });
-{% endif %}
-
+  {% if not video.is_video and event is None %}
+    window.addEventListener('resize', function(){
+      // Auto resize Waves on window resize.
+      player.wavesurfer().surfer && player.wavesurfer().surfer._onResize();
+    });
+  {% endif %}
+}
+initialized_player()
 </script>
