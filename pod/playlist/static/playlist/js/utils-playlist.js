@@ -8,11 +8,14 @@ function preventRefreshButton(button, jsonFormat) {
   if (button) {
     button.addEventListener('click', function (e) {
       e.preventDefault();
+      console.log("oui")
       let url = this.getAttribute('href');
       if (button.classList.contains('action-btn')) {
         button.classList.add('disabled');
         button.style.backgroundColor = 'gray';
         this.removeAttribute('href');
+      } else if (button.classList.contains('favorite-btn-link')) {
+        button.classList.add('disabled');
       }
       if (jsonFormat) {
         url += '?json=true'
