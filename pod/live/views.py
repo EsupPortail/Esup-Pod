@@ -72,7 +72,8 @@ EMAIL_ON_EVENT_SCHEDULING = getattr(settings, "EMAIL_ON_EVENT_SCHEDULING", False
 
 
 @login_required(redirect_field_name="referrer")
-def directs_all(request):  # affichage des directs
+def directs_all(request):
+    """Show all live."""
     check_permission(request)
 
     site = get_current_site(request)
@@ -96,7 +97,8 @@ def directs_all(request):  # affichage des directs
 
 
 @login_required(redirect_field_name="referrer")
-def directs(request, building_id):  # affichage des directs d'un batiment
+def directs(request, building_id):
+    """Show all directs of a given building."""
     check_permission(request)
     building = get_object_or_404(Building, id=building_id)
     return render(
@@ -107,7 +109,8 @@ def directs(request, building_id):  # affichage des directs d'un batiment
 
 
 @login_required(redirect_field_name="referrer")
-def direct(request, slug):  # affichage du flux d'un diffuseur
+def direct(request, slug):
+    """Show the stream of a given broadcaster."""
     check_permission(request)
 
     site = get_current_site(request)
@@ -278,9 +281,10 @@ def get_event_access(request, evt, slug_private, is_owner):
     return True
 
 
-def event(request, slug, slug_private=None):  # affichage d'un event
-    # modif de l'url d'appel pour compatibilité
-    # avec le template link_video.html (variable: urleditapp)
+def event(request, slug, slug_private=None):
+    """Show an event."""
+
+    # change request url for compatibility purpose with template link_video.html (var: urleditapp)
     request.resolver_match.namespace = ""
 
     try:
@@ -361,9 +365,9 @@ def render_event_template(request, evemnt, user_owns_event):
 
 
 def events(request):
-    """Affichage des events."""
+    """Show all events."""
 
-    # Tous les events en cours ou à venir sont affichés (sauf les drafts)
+    # All events not ended are shown (except drafts)
     queryset = Event.objects.filter(
         end_date__gt=timezone.now(),
         broadcaster__building__sites__exact=get_current_site(request),
@@ -372,7 +376,7 @@ def events(request):
 
     available_types = Type.objects.filter(event__in=queryset.all()).distinct()
 
-    # éventuellement filtrés par type
+    # can be filtered by Type
     filter_type = request.GET.getlist("type")
     if filter_type:
         queryset = queryset.filter(type__slug__in=filter_type)
@@ -431,6 +435,7 @@ def events(request):
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def my_events(request):
+    """Show all owner events."""
     queryset = (
         request.user.event_set.all().distinct()
         | request.user.owners_events.all().distinct()
@@ -493,6 +498,7 @@ def my_events(request):
 
 
 def get_event_edition_access(request, evt):
+    """Check if user can edit the event."""
     # creation
     if evt is None:
         return can_manage_event(request.user)
@@ -621,6 +627,7 @@ def event_delete(request, slug=None):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def event_immediate_edit(request, broadcaster_id=None):
+    """Edition of an immediate event (created with QrCode)"""
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
@@ -673,6 +680,10 @@ def event_immediate_edit(request, broadcaster_id=None):
 
 
 def broadcasters_from_building(request):
+    """Retrieve broadcasters of a given building.
+
+    Returns: an HttpResponse.
+    """
     building_name = request.GET.get("building")
     if not building_name:
         return HttpResponseBadRequest()
@@ -692,6 +703,10 @@ def broadcasters_from_building(request):
 
 
 def broadcaster_restriction(request):
+    """Check if broadcaster's access is restricted.
+
+    Returns: a JsonResponse.
+    """
     if request.method == "GET":
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         if not broadcaster_id:
@@ -734,6 +749,7 @@ def ajax_is_stream_available_to_record(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_startrecord(request):
+    """Starts the record."""
     if request.method == "POST" and is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_startrecord(event_id, broadcaster_id)
@@ -767,6 +783,7 @@ def event_startrecord(event_id, broadcaster_id):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_splitrecord(request):
+    """Split the record."""
     if request.method == "POST" and is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
 
@@ -803,6 +820,7 @@ def event_splitrecord(event_id, broadcaster_id):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_stoprecord(request):
+    """Stops the record."""
     if request.method == "POST" and is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_stoprecord(event_id, broadcaster_id)
@@ -840,6 +858,7 @@ def event_stoprecord(event_id, broadcaster_id):
 
 @login_required(redirect_field_name="referrer")
 def ajax_event_info_record(request):
+    """Get the infos of the record."""
     if request.method == "POST" and is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_info_record(event_id, broadcaster_id)
