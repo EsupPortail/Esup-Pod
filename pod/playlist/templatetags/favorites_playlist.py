@@ -51,12 +51,29 @@ def get_playlist_name(playlist: Playlist) -> str:
     Get the playlist name.
 
     Args:
-        playlist (:class:`pod.playlist.models.Playlist`): The specific playlist
+        playlist (:class:`pod.playlist.models.Playlist`): The specific playlist.
 
     Returns:
-        str: The favorites playlist name
+        str: The playlist name.
     """
     if playlist.name == FAVORITE_PLAYLIST_NAME:
         return _("Favorites")
     else:
         return playlist.name
+
+
+@register.simple_tag(name="get_playlist_description")
+def get_playlist_description(playlist: Playlist) -> str:
+    """
+    Get the playlist description.
+
+    Args:
+        playlist (:class:`pod.playlist.models.Playlist`): The specific playlist.
+
+    Returns:
+        str: The playlist name.
+    """
+    if playlist.name == FAVORITE_PLAYLIST_NAME:
+        return _("Your favorites videos.")
+    else:
+        return playlist.description

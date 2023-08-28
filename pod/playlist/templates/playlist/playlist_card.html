@@ -9,7 +9,7 @@
                 <a
                     class="link"
                     href="{% url 'playlist:content' playlist.slug %}"
-                    title="{% if playlist.description %}{{ playlist.description }}{% else %}{{ playlist.name }}{% endif %}"
+                    title="{% if playlist.description %}{% get_playlist_description playlist %}{% else %}{% get_playlist_name playlist %}{% endif %}"
                     aria-label="{{ playlist.name }}"
                 >
                     <small class="text-muted time">
