@@ -73,7 +73,7 @@ EMAIL_ON_EVENT_SCHEDULING = getattr(settings, "EMAIL_ON_EVENT_SCHEDULING", False
 
 @login_required(redirect_field_name="referrer")
 def directs_all(request):
-    """Show all live."""
+    """Show all lives."""
     check_permission(request)
 
     site = get_current_site(request)
@@ -283,7 +283,6 @@ def get_event_access(request, evt, slug_private, is_owner):
 
 def event(request, slug, slug_private=None):
     """Show an event."""
-
     # change request url for compatibility purpose with template link_video.html (var: urleditapp)
     request.resolver_match.namespace = ""
 
@@ -366,7 +365,6 @@ def render_event_template(request, evemnt, user_owns_event):
 
 def events(request):
     """Show all events."""
-
     # All events not ended are shown (except drafts)
     queryset = Event.objects.filter(
         end_date__gt=timezone.now(),
@@ -435,7 +433,7 @@ def events(request):
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def my_events(request):
-    """Show all owner events."""
+    """Show owner's events."""
     queryset = (
         request.user.event_set.all().distinct()
         | request.user.owners_events.all().distinct()
