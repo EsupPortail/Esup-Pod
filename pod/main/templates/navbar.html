@@ -35,23 +35,23 @@
         {% endif %}
         {% if HIDE_TYPES_TAB == False %}
           <li class="nav-item" id="nav-types">
-            <button class="nav-link" data-bs-toggle="modal" data-bs-target=".types-modal"> <i class="bi bi-tv pod-nav-link-icon"></i> {% trans "Types"%}</button>
+            <button class="nav-link" data-bs-toggle="modal" data-bs-target=".types-modal"> <i class="bi bi-tv pod-nav-link-icon" aria-hidden="true"></i> {% trans "Types"%}</button>
           </li>
         {% endif %}
         {% if USE_PLAYLIST %}
           <li class="nav-item" id="nav-promoted-playlists">
-            <a class="nav-link" href="{% url 'playlist:list' %}?visibility=promoted"><i class="bi bi-list-stars pod-nav-link-icon"></i> {% trans "Promoted playlists"%}</a>
+            <a class="nav-link" href="{% url 'playlist:list' %}?visibility=promoted"><i class="bi bi-list-stars pod-nav-link-icon" aria-hidden="true"></i> {% trans "Promoted playlists"%}</a>
           </li>
         {% endif %}
         {% if "live" in THIRD_PARTY_APPS %}
           <li class="nav-item" id="nav-live">
-            <a class="nav-link" href="{% url 'live:events'%}"><i class="bi bi-broadcast pod-nav-link-icon"></i> {% trans "Lives"%}</a>
+            <a class="nav-link" href="{% url 'live:events'%}"><i class="bi bi-broadcast pod-nav-link-icon" aria-hidden="true"></i> {% trans "Lives"%}</a>
           </li>
         {% endif %}
         {% if HIDE_CHANNEL_TAB == False %}
           <li class="nav-item" id="nav-channels">
             <button class="nav-link" data-bs-toggle="modal" data-bs-target=".chaines-modal">
-              <i class="bi bi-play-btn pod-nav-link-icon"></i> {% trans "Channels" %}</button>
+              <i class="bi bi-play-btn pod-nav-link-icon" aria-hidden="true"></i> {% trans "Channels" %}</button>
           </li>
           <li>
             <span class="progress">
@@ -65,12 +65,12 @@
 
   <form class="pod-navbar__form my-2 my-lg-0" action='{% url "video_search:search_videos" %}' id="nav-search">
     <label for="s" class="d-lg-none">
-      <i class="bi bi-search"></i> <span class="visually-hidden">{% trans "Search" %}</span>
+      <i class="bi bi-search" aria-hidden="true"></i> <span class="visually-hidden">{% trans "Search" %}</span>
     </label>
     <div class="input-group me-sm-2 pod-navbar-search">
       <input class="form-control form-control-sm" id="s" placeholder="{% trans 'Search' %}" type="search" name="q">
       <button type="submit" class="btn btn-primary" title="{% trans 'Search' %}">
-        <i class="bi bi-search"></i>
+        <i class="bi bi-search" aria-hidden="true"></i>
       </button>
     </div>
   </form>
@@ -79,22 +79,22 @@
     {% if user.is_authenticated %}
         {% if MAINTENANCE_MODE %}
           <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
-            <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br><i class="bi bi-exclamation-triangle"></i> {% trans "Some features are unavailable" %}</span>
+            <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {% trans "Some features are unavailable" %}</span>
           </li>
         {% else %}
           {% show_video_buttons as video_buttons %}
           {% if video_buttons %}
             <li class="nav-item pod-navbar__nav-item mx-1" id="nav-addvideo">
-              <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "Add a video" %}</span></a>
+              <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add" aria-hidden="true"></i><span class="ms-1 d-none d-md-inline">{% trans "Add a video" %}</span></a>
             </li>
             <li class="nav-item pod-navbar__nav-item mx-1" id="nav-myvideos">
-              <a class="btn btn-primary btn-sm" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1"></i><span class="ms-1 d-none d-md-inline">{% trans "My videos" %}</span></a>
+              <a class="btn btn-primary btn-sm" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i><span class="ms-1 d-none d-md-inline">{% trans "My videos" %}</span></a>
             </li>
           {% endif %}
           {% show_meeting_button as meeting_button %}
           {% if meeting_button %}
             <li class="nav-item pod-navbar__nav-item mx-1" id="nav-mymeetings">
-              <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add"></i><span class="ms-1 d-none d-md-inline">{% trans "My meetings" %}</span></a>
+              <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-add" aria-hidden="true"></i><span class="ms-1 d-none d-md-inline">{% trans "My meetings" %}</span></a>
             </li>
           {% endif %}
         {% endif %}
@@ -141,8 +141,8 @@
                   <span class="theme-switch">
                     <input type="checkbox" id="checkbox-darkmode">
                     <span class="slider">
-                      <i class="bi bi-sun"></i>
-                      <i class="bi bi-moon"></i>
+                      <i class="bi bi-sun" aria-hidden="true"></i>
+                      <i class="bi bi-moon" aria-hidden="true"></i>
                     </span>
                   </span>
                 </label>
@@ -154,8 +154,8 @@
                   <span class="dyslexia-switch">
                     <input type="checkbox" id="checkbox-dyslexia">
                     <span class="slider">
-                      <i class="bi bi-eye-slash"></i>
-                      <i class="bi bi-eye"></i>
+                      <i class="bi bi-eye-slash" aria-hidden="true"></i>
+                      <i class="bi bi-eye" aria-hidden="true"></i>
                     </span>
                   </span>
                 </label>
@@ -187,25 +187,25 @@
           <div class="offcanvas-body d-flex flex-column justify-content-between">
             <nav class="nav flex-column">
               {% if MAINTENANCE_MODE %}
-                <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br><i class="bi bi-exclamation-triangle "></i> {% trans "Some features are unavailable" %}</span>
+                <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br><i class="bi bi-exclamation-triangle " aria-hidden="true"></i> {% trans "Some features are unavailable" %}</span>
               {% else %}
                 {% if video_buttons %}
-                  <a class="mx-3 mb-2 btn btn-primary" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add"></i><span>{% trans "Add a video" %}</span></a>
+                  <a class="mx-3 mb-2 btn btn-primary" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add" aria-hidden="true"></i><span>{% trans "Add a video" %}</span></a>
                 {% endif %}
               {% endif %}
               {% if request.user.is_superuser or user.owner.is_manager %}
-                <a class="nav-item nav-link" href="{% url 'admin:index' %}"><i class="bi bi-cpu pod-nav-link-icon mx-1"></i>Administration</a>
+                <a class="nav-item nav-link" href="{% url 'admin:index' %}"><i class="bi bi-cpu pod-nav-link-icon mx-1" aria-hidden="true"></i>Administration</a>
               {% endif %}
               {% if request.user.is_staff or request.user.is_superuser %}
                 <div class="nav-item"><button class="nav-link get_form_userpicture" data-url='{% url "userpicture" %}'>
-                  <i class="bi bi-card-image pod-nav-link-icon mx-1"></i>{% if request.user.owner.userpicture %}{% trans 'Change your picture' %}{% else %}{% trans 'Add your picture' %}{% endif %}
+                  <i class="bi bi-card-image pod-nav-link-icon mx-1" aria-hidden="true"></i>{% if request.user.owner.userpicture %}{% trans 'Change your picture' %}{% else %}{% trans 'Add your picture' %}{% endif %}
                 </button></div>
               {% endif %}
               {% if video_buttons %}
-                <a class="nav-item nav-link" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
+                <a class="nav-item nav-link" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true" aria-hidden="true"></i>{% trans 'My videos' %}</a>
               {% endif %}
               {% if USE_PLAYLIST %}
-                <a class="nav-item nav-link" href="{% url 'playlist:list' %}"><i class="bi bi-list-ul pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
+                <a class="nav-item nav-link" href="{% url 'playlist:list' %}"><i class="bi bi-list-ul pod-nav-link-icon mx-1" aria-hidden="true" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
               {% endif %}
               {% if USE_PLAYLIST and USE_FAVORITES %}
                 {% get_favorite_playlist user as playlist %}
@@ -269,7 +269,7 @@
         <li class="nav-item dropdown login me-2" id="nav-authentication">
           {% get_url_referrer request as url_referrer %}
           <a class="btn btn-primary btn-sm ps-2 pe-2 d-flex" href="{% url 'authentication:authentication_login' %}{{ url_referrer }}" aria-label="{% trans 'Log in' %}">
-            <i class="bi bi-person-circle"></i> <span class="ms-1 d-none d-lg-block">{% trans 'Log in' %}</span>
+            <i class="bi bi-person-circle" aria-hidden="true"></i> <span class="ms-1 d-none d-lg-block">{% trans 'Log in' %}</span>
           </a>
         </li>
       {% endif %}
