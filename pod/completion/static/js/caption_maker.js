@@ -33,19 +33,19 @@ document.addEventListener("DOMContentLoaded", function () {
     send_form_data(url, data, "ProcessProxyVttResponse");
   } else {
     document.getElementById(
-      "captionFilename"
+      "captionFilename",
     ).value = `${file_prefix}_captions_${Date.now()}`;
   }
 
   let placeholder = gettext(
-    "WEBVTT\n\nstart time(00:00.000) --> end time(00:00.000)\ncaption text"
+    "WEBVTT\n\nstart time(00:00.000) --> end time(00:00.000)\ncaption text",
   );
   let captionContent = document.getElementById("captionContent");
   captionContent.setAttribute("placeholder", placeholder);
   captionContent.addEventListener("mouseup", function (e) {
     let selectedText = this.value.substring(
       this.selectionStart,
-      this.selectionEnd
+      this.selectionEnd,
     );
 
     playSelectedCaption(selectedText.trim());
@@ -163,7 +163,7 @@ const send_form_save_captions = function () {
           error +
           ")<br>" +
           gettext("no data could be stored."),
-        "alert-danger"
+        "alert-danger",
       );
     });
 };
@@ -182,17 +182,17 @@ document
         break;
       case event.originalEvent.target.error.MEDIA_ERR_NETWORK:
         video_error.textContent = gettext(
-          "A network error caused the video download to fail part-way."
+          "A network error caused the video download to fail part-way.",
         );
         break;
       case event.originalEvent.target.error.MEDIA_ERR_DECODE:
         video_error.textContent = gettext(
-          "The video playback was aborted due to a corruption problem or because the video used features your browser did not support."
+          "The video playback was aborted due to a corruption problem or because the video used features your browser did not support.",
         );
         break;
       case event.originalEvent.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
         video_error.textContent = gettext(
-          "The video could not be loaded, either because the server or network failed or because the format is not supported."
+          "The video could not be loaded, either because the server or network failed or because the format is not supported.",
         );
 
         break;
@@ -226,7 +226,7 @@ document.getElementById("addSubtitle").addEventListener("click", function (e) {
   AddCaption(
     captionsEndTime,
     playTime > captionsEndTime ? playTime : parseInt(captionsEndTime) + 2,
-    ""
+    "",
   );
 });
 
@@ -358,14 +358,14 @@ function videoPauseEventHandler() {
       message = gettext("Edit caption for segment from %s to %s:");
       document.getElementById("captionTitle").textContent = interpolate(
         message,
-        [FormatTime(theCaption.start), FormatTime(theCaption.end)]
+        [FormatTime(theCaption.start), FormatTime(theCaption.end)],
       );
 
       textCaption.value = theCaption.caption;
       captionBeingDisplayed = ci;
     } else {
       document.getElementById("captionTitle").textContent = gettext(
-        "No caption at this time code."
+        "No caption at this time code.",
       );
       textCaption.value = "";
       captionBeingDisplayed = -1;
@@ -423,7 +423,7 @@ function EnableDemoAfterLoadVideo() {
     });
   document
     .querySelectorAll(
-      ".grayNoVideo a, .grayNoVideo button, .grayNoVideo input, .grayNoVideo textarea"
+      ".grayNoVideo a, .grayNoVideo button, .grayNoVideo input, .grayNoVideo textarea",
     )
     .forEach(function (e) {
       e.disabled = false;
@@ -547,77 +547,77 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
     // parent
     div: new DOMParser().parseFromString(
       `<div class='newEditorBlock row'></div>`,
-      "text/html"
+      "text/html",
     ).body.firstChild,
 
     // circle buttons
     buttonsDiv: new DOMParser().parseFromString(
       "<div class='captionButtons col-1 d-flex flex-wrap align-items-center'></div>",
-      "text/html"
+      "text/html",
     ).body.firstChild,
 
     insertBtn: new DOMParser().parseFromString(
       `<button class="btn btn-light" title="${gettext(
-        "Add"
+        "Add",
       )}"><i class="bi bi-plus-circle"></i></button>`,
-      "text/html"
+      "text/html",
     ).body.firstChild,
     deleteBtn: new DOMParser().parseFromString(
       `<button class="btn btn-light" title="${gettext(
-        "Delete"
+        "Delete",
       )}"><i class="bi bi-x-circle"></i></button>`,
-      "text/html"
+      "text/html",
     ).body.firstChild,
     // textarea
     captionDiv: new DOMParser().parseFromString(
       "<div class='captionText col'></div>",
-      "text/html"
+      "text/html",
     ).body.firstChild,
     //captionTextInput: $(`<label>${gettext('Caption')}<textarea class='captionTextInput'></textarea></label>`),
     captionTextLabel: new DOMParser().parseFromString(
       `<label>${gettext("Caption")}</label>`,
-      "text/html"
+      "text/html",
     ).body.firstChild,
     captionTextInput: new DOMParser().parseFromString(
       `<textarea class='captionTextInput form-control'></textarea>`,
-      "text/html"
+      "text/html",
     ).body.firstChild,
     // time editable
     timeBlockEditable: new DOMParser().parseFromString(
       `<div class='captionTimestamps col-3' style='display:none'></div>"`,
-      "text/html"
+      "text/html",
     ).body.firstChild,
     startTimeLabel: new DOMParser().parseFromString(
       `<label class="p-2">${gettext("Start")}</label>`,
-      "text/html"
+      "text/html",
     ).body.firstChild,
     startTimeInput: new DOMParser().parseFromString(
       `<input class="form-control" type='text'>`,
-      "text/html"
+      "text/html",
     ).body.firstChild,
     endTimeLabel: new DOMParser().parseFromString(
       `<label class="p-2">${gettext("End")}</label>`,
-      "text/html"
+      "text/html",
     ).body.firstChild,
     endTimeInput: new DOMParser().parseFromString(
       `<input class="form-control" type='text'>`,
-      "text/html"
+      "text/html",
     ).body.firstChild,
 
     // time links
     timeBlock: new DOMParser().parseFromString(
       `<div class='captionTimestamps col-sm-3 col-md-2'><span>${gettext(
-        "Time stamps"
+        "Time stamps",
       )}</span></div>`,
-      "text/html"
+      "text/html",
     ).body.firstChild,
     startTimeBtn: new DOMParser().parseFromString(
       `<a class='startTimeBtn btn-link' href='#podvideoplayer'>${start}</a>`,
-      "text/html"
+      "text/html",
     ).body.firstChild,
     endTimeBtn: new DOMParser().parseFromString(
       `<a class='endTimeBtn btn-link' href='#podvideoplayer'>${end}</a>`,
-      "text/html"
+      "text/html",
     ).body.firstChild,
     // flags
     isEditEnabled: false,
@@ -669,7 +669,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
         if (cap.start > newCaption.start) {
           // move caption object in captionsArray
           let index = Array.from(this.div.parentNode.children).indexOf(
-            this.div
+            this.div,
           );
           let fromI = index;
           let toI = fromI < i ? i - 1 : i;
@@ -680,7 +680,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
           this.div.remove();
           cap.blockObject.div.parentNode.insertBefore(
             this.div,
-            cap.blockObject.div
+            cap.blockObject.div,
           );
           return;
         }
@@ -710,7 +710,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
 
       captionsArray.splice(index + 1, 0, captionObj);
       CreateCaptionBlock(captionObj, (newDiv) =>
-        this.div.parentNode.insertBefore(newDiv, this.div.nextSibling)
+        this.div.parentNode.insertBefore(newDiv, this.div.nextSibling),
       );
     },
 
@@ -733,10 +733,10 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
       this.insertBtn.addEventListener("click", () => this.spawnNew());
       this.deleteBtn.addEventListener("click", () => this.delete());
       this.startTimeBtn.addEventListener("click", () =>
-        seekVideoTo(newCaption.start)
+        seekVideoTo(newCaption.start),
       );
       this.endTimeBtn.addEventListener("click", () =>
-        seekVideoTo(newCaption.end)
+        seekVideoTo(newCaption.end),
       );
       this.captionTextInput.addEventListener("focus", () => this.enableEdit());
 
@@ -750,7 +750,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
         this.startTimeLabel,
         this.startTimeInput,
         this.endTimeLabel,
-        this.endTimeInput
+        this.endTimeInput,
       );
       this.buttonsDiv.append(this.insertBtn, this.deleteBtn);
 
@@ -760,7 +760,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
         this.buttonsDiv,
         this.captionDiv,
         this.timeBlock,
-        this.timeBlockEditable
+        this.timeBlockEditable,
       );
 
       this.startTimeInput.addEventListener("keydown", (e) => {
@@ -805,7 +805,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
     },
     function () {
       clearVideoRegion();
-    }
+    },
   );
   document.getElementById("noCaptionsText")?.remove();
 
@@ -1072,7 +1072,7 @@ function LoadCaptionFile(fileObject) {
       reader.readAsText(fileObject);
     } catch (exc) {
       alert(
-        gettext("Exception thrown reading caption file. Code = ") + exc.code
+        gettext("Exception thrown reading caption file. Code = ") + exc.code,
       );
     }
   } else {
@@ -1098,7 +1098,7 @@ function ProcessProxyVttResponse(obj) {
     // strip file extension and set as title
     document.getElementById("captionFilename").value = obj.file_name.replace(
       /\.[^/.]+$/,
-      ""
+      "",
     );
 
     if (obj.response.match(/^WEBVTT/)) {

@@ -41,7 +41,7 @@ window.onload = function () {
       } else if (given < today) {
         add_error_message(
           gettext("The deletion date can’t be earlier than today."),
-          "date_before_today"
+          "date_before_today",
         );
       } else {
         input.parentNode.classList.remove("errors");
@@ -53,7 +53,7 @@ window.onload = function () {
         if (!list_errors.includes(error_types[i])) {
           if (errorlist.querySelector("." + error_types[i])) {
             errorlist.removeChild(
-              errorlist.querySelector("." + error_types[i])
+              errorlist.querySelector("." + error_types[i]),
             );
           }
         }

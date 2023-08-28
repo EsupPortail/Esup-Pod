@@ -1,0 +1,17 @@
+{% load i18n %}
+<div class="input-group">
+  <label for="sort" class="input-group-text" aria-label="{% trans 'Sort' %}">{% trans 'Sort' %}</label>
+  {% if sort_direction == 'on' %}
+    <button id="sort_direction_label" class="btn btn-primary" title="{% trans 'Ascending sort' %}">&#8599;</button>
+  {% else %}
+    <button id="sort_direction_label" class="btn btn-primary" title="{% trans 'Descending sort' %}">&#8600;</button>
+  {% endif %}
+  <input id="sort_direction" type="checkbox" name="sort_direction" class="visually-hidden" {% if sort_direction == 'on' %}checked{% endif %}>
+  <label for="sort_direction" class="visually-hidden">{% trans 'Sort Direction' %}</label>
+
+  <select id="sort" name="sort" class="form-select sort-select">
+    <option value="name" {% if sort_field == 'name' %} selected {% endif %}>{% trans 'Name' %}</option>
+    <option value="date_updated" {% if sort_field == 'date_updated' %} selected {% endif %}>{% trans 'Modification date' %}</option>
+    <option value="date_created" {% if sort_field == 'date_created' %} selected {% endif %}>{% trans 'Creation date' %}</option>
+  </select>
+</div>

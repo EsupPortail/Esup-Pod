@@ -89,7 +89,7 @@
               function () {
                 player.currentTime(this.attributes.start.value);
               },
-              false
+              false,
             );
           }
           /* What is the purpose of this code ??
@@ -132,7 +132,7 @@
           for (let i = 0; i <= keys.length - 1; i++) {
             var next = chapters.start[i + 1] || player.duration();
             currentChapter = document.getElementById(
-              "chapter" + chapters.id[i]
+              "chapter" + chapters.id[i],
             );
             if (currentTime >= chapters.start[i] && currentTime < next) {
               currentChapter.classList.add("current");
@@ -152,7 +152,7 @@
             var menuButton = new ChapterMenuButton(player, settings);
             player.controlBar.chapters = player.controlBar.el_.insertBefore(
               menuButton.el_,
-              player.controlBar.getChild("fullscreenToggle").el_
+              player.controlBar.getChild("fullscreenToggle").el_,
             );
             player.controlBar.chapters.dispose = function () {
               this.parentNode.removeChild(this);
@@ -177,7 +177,7 @@
         this.on(player, "timeupdate", function () {
           player.getCurrentChapter(
             player.currentTime(),
-            player.getGroupedChapters()
+            player.getGroupedChapters(),
           );
         });
       },

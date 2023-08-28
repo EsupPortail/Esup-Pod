@@ -1,0 +1,26 @@
+{% load i18n %}
+{% load favorites_playlist %}
+
+
+{% if channel %}
+    {% if theme %}
+    <li class="breadcrumb-item"><a href="{% url 'channel-video:channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+    {% for t in theme.get_all_parents reversed %}
+        {% if t is not theme %}
+        <li class="breadcrumb-item"><a href="{% url 'channel-video:theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
+        {% endif %}
+    {% endfor %}
+        <li class="breadcrumb-item"><a href="{% url 'channel-video:theme' slug_c=channel.slug slug_t=theme.slug%}">{{theme.title}}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
+    {% else %}
+        <li class="breadcrumb-item"><a href="{% url 'channel-video:channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
+    {% endif %}
+{% elif playlist_in_get %}
+    <li class="breadcrumb-item"><a href="{% url 'playlist:list' %}">{% trans 'Playlist' %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'playlist:content' playlist_in_get.slug %}">{% get_playlist_name playlist_in_get %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
+{% else %}
+    <li class="breadcrumb-item"><a href="{% url 'videos:videos' %}">{% trans 'Video' %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
+{% endif %}

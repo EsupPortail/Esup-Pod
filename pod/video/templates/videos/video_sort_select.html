@@ -10,7 +10,7 @@
   <label for="sort_direction" class="visually-hidden">{% trans 'Sort Direction' %}</label>
 
   <select id="sort" name="sort" class="form-select sort-select">
-    {% if favorite %}
+    {% if video_rank %}
       <option id="rank-option" value="rank" {% if sort_field == 'rank' %} selected {% endif %}>{% trans 'Rank' %}</option>
     {% endif %}
     <option value="title" {% if sort_field == 'title' %} selected {% endif %}>{% trans 'Title' %}</option>

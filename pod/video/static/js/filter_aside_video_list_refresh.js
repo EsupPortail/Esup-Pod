@@ -1,11 +1,6 @@
 var infinite;
 var checkedInputs = [];
 var listUser;
-var sortDirectionChars = ["8600", "8599"];
-var sortDirectionTitle = [
-  gettext("Descending sort"),
-  gettext("Ascending sort"),
-];
 
 let loader = document.querySelector(".lds-ring");
 let infinite_loading = document.querySelector(".infinite-loading");
@@ -27,7 +22,7 @@ onAfterPageLoad = function () {
     document.body.offsetHeight,
     document.clientHeight,
     document.scrollHeight,
-    document.offsetHeight
+    document.offsetHeight,
   );
   document.querySelector("footer.static-pod .hidden-pod").style.display =
     "none";
@@ -50,7 +45,7 @@ function refreshInfiniteLoader(url, nextPage) {
     url,
     onBeforePageLoad,
     onAfterPageLoad,
-    (page = nextPage)
+    (page = nextPage),
   );
 }
 
@@ -84,7 +79,7 @@ function refreshVideosSearch() {
       let html = parser.parseFromString(data, "text/html").body;
       document.getElementById("videos_list").outerHTML = html.innerHTML;
       replaceCountVideos(
-        document.getElementById("videos_list").dataset.countvideos
+        document.getElementById("videos_list").dataset.countvideos,
       );
       nextPage =
         document.getElementById("videos_list").dataset.nextpage === "true";
@@ -97,7 +92,7 @@ function refreshVideosSearch() {
     })
     .catch((error) => {
       document.getElementById("videos_list").innerHTML = gettext(
-        "An Error occurred while processing."
+        "An Error occurred while processing.",
       );
     })
     .finally(() => {
@@ -106,6 +101,15 @@ function refreshVideosSearch() {
       loader.classList.remove("show");
     });
 }
+
+// Add trigger event to manage sort direction.
+document
+  .getElementById("sort_direction_label")
+  .addEventListener("click", function (e) {
+    e.preventDefault();
+    toggleSortDirection();
+    refreshVideosSearch();
+  });
 
 // Return url with filter and sort parameters
 function getUrlForRefresh() {
@@ -157,7 +161,7 @@ if (ownerBox) {
         users.forEach((user) => {
           filterOwnerContainer.appendChild(createUserCheckBox(user));
           setListenerChangeInputs(
-            document.getElementById("id" + user.username)
+            document.getElementById("id" + user.username),
           );
         });
       });
@@ -208,38 +212,6 @@ document.getElementById("resetFilters").addEventListener("click", function () {
   refreshVideosSearch();
 });
 
-// Add trigger event to manage sort direction
-document
-  .getElementById("sort_direction_label")
-  .addEventListener("click", function (e) {
-    e.preventDefault();
-    toggleSortDirection();
-    refreshVideosSearch();
-  });
-
-// Update arrow char of ascending or descending sort order
-function updateSortDirectionChar(sortDirectionAsc) {
-  document.getElementById("sort_direction_label").innerHTML =
-    "&#" + sortDirectionChars[+sortDirectionAsc].toString();
-}
-
-// Update title for input sort direction
-function updateSortDirectionTitle(sortDirectionAsc) {
-  let newTitle = sortDirectionTitle[+sortDirectionAsc];
-  document
-    .getElementById("sort_direction_label")
-    .setAttribute("title", newTitle);
-}
-
-// Toggle direction of sort
-function toggleSortDirection() {
-  document.getElementById("sort_direction").checked =
-    !document.getElementById("sort_direction").checked;
-  const direction = document.getElementById("sort_direction").checked;
-  updateSortDirectionChar(direction);
-  updateSortDirectionTitle(direction);
-}
-
 // Enable / Disable toggle inputs to prevent user actions during loading
 function disabledInputs(value) {
   document
@@ -268,5 +240,5 @@ infinite = new InfiniteLoader(
   onBeforePageLoad,
   onAfterPageLoad,
   nextPage,
-  (page = 2)
+  (page = 2),
 );

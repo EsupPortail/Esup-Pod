@@ -223,7 +223,10 @@ class VideoAdmin(admin.ModelAdmin):
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form
 
-    actions = ["encode_video", "transcript_video", "draft_video"]
+    if USE_TRANSCRIPTION:
+        actions = ["encode_video", "transcript_video", "draft_video"]
+    else:
+        actions = ["encode_video", "draft_video"]
 
     def draft_video(self, request, queryset):
         for item in queryset:

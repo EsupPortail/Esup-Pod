@@ -57,20 +57,21 @@
 
 
 {% block more_script %}
-<script>
-  const urlVideos = "{% url 'videos:videos' %}";
-</script>
+  <script>
+    const urlVideos = "{% url 'videos:videos' %}";
+  </script>
 
-<script>
-  var page = 1;
-  var nextPage = false;
+  <script>
+    var page = 1;
+    var nextPage = false;
 
-  {% if videos.has_next %}
-    page = parseInt("{{videos.next_page_number}}");
-    nextPage = true;
-  {% endif %}
+    {% if videos.has_next %}
+      page = parseInt("{{videos.next_page_number}}");
+      nextPage = true;
+    {% endif %}
 
-</script>
-<script src="{% static 'js/infinite.js' %}"></script>
-<script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
+  </script>
+  <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}
