@@ -7,106 +7,191 @@
   var seektime = 10;
   var options = {};
   var player;
+  var engineHlsJs;
   var initialized_player = function() {
-  window.onmessage = function(event) {
-    var evt = event || window.event;
-    {# maybe use request.get_host to protect it... #}
-      if(evt.data.type == 'player:play') {
-        player.play();
-        evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
-      }
-      if(evt.data.type == 'player:pause') {
-        player.pause();
-        evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
-      }
-      if(evt.data.type == 'player:mute') {
-        player.muted(true);
-        evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
-      }
-      if(evt.data.type == 'player:unmute') {
-        player.muted(false);
-        evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
-      }
-  };
 
-
-  options = {
-    notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
-    //language: "fr", //en or nl
-    {% if video.is_video and request.GET.is_iframe %}
-      fluid: false,
-    {% else %}
-      fluid: true,
-    {% endif %}
-    responsive: true,
-    playbackRates: {{video_playbackrates}},
-    userActions: {
-      hotkeys: function(event) {
-        // `this` is the player in this context
-        if (event.code === 'Space') {
-          event.preventDefault();
-          if(!this.paused()) this.pause();
-          else this.play();
+    window.onmessage = function(event) {
+      var evt = event || window.event;
+      {# maybe use request.get_host to protect it... #}
+        if(evt.data.type == 'player:play') {
+          player.play();
+          evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
         }
-        if (event.key === 'm') {
-          event.preventDefault();
-          this.muted(!this.muted());
+        if(evt.data.type == 'player:pause') {
+          player.pause();
+          evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
         }
-        if (event.key === 'f') {
-          event.preventDefault();
-          this.requestFullscreen();
+        if(evt.data.type == 'player:mute') {
+          player.muted(true);
+          evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
         }
-        // `arrow left`
-        if (event.code === 'ArrowLeft') {
-          event.preventDefault();
-          this.currentTime(Math.floor(this.currentTime())-seektime);
+        if(evt.data.type == 'player:unmute') {
+          player.muted(false);
+          evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
         }
-        // `arrow right`
-        if (event.code === 'ArrowRight') {
-          event.preventDefault();
-          this.currentTime(Math.floor(this.currentTime())+seektime);
-        }
-        if( event.code === "ArrowUp" ) {
-          event.preventDefault();
-          this.volume(this.volume()+0.1);
-        }
-        if( event.code === "ArrowDown" ) {
-          event.preventDefault();
-          this.volume(this.volume()-0.1);
-        }
-      }
-    },
-    plugins: {
-      {% if event is None %}
-      seekButtons: {
-        forward: seektime,
-        back: seektime
-      }
-      {% endif %}
-  {% if not video.is_video and event is None %}
-      // enable videojs-wavesurfer plugin
-      ,wavesurfer: {
-        backend: 'MediaElement',
-        displayMilliseconds: true,
-        debug: false,
-        waveColor: 'grey',
-        progressColor: 'black',
-        cursorColor: 'var(--pod-primary)',
-        hideScrollbar: false
-      }
-  {% endif %}
+    };
+    var VideoHlsjsConfig = {
+        maxBufferSize: 0,
+        maxBufferLength: 10,
+        liveSyncDurationCount: 10,
     }
-  }
+    const p2p_config = {
+      segments:{
+        // number of segments to pass for processing to P2P algorithm
+        forwardSegmentCount:50, // usually should be equal or greater than p2pDownloadMaxPriority and httpDownloadMaxPriority
+        swarmId: 'https://pod.univ-lille.fr/media/videos/7f08fab4c221715162d57ff0189ace167c63f9ccfc00c7dbee27ea01065d456f/17137/playlist.m3u8', // any unique string
+      },
+      loader:{
+        /** configure personal tracker and STUN servers
+         * trackerAnnounce: [
+         *   "wss://personal.tracker1.com",
+         *   "wss://personal.tracker2.com"
+         * ],
+         * rtcConfig: {
+         *   iceServers: [
+         *     { urls: "stun:stun.l.google.com:19302" },
+         *     { urls: "stun:global.stun.twilio.com:3478?transport=udp" }
+         *   ]
+         * }
+        */
+        // how long to store the downloaded segments for P2P sharing
+        cachedSegmentExpiration:86400000,
+        // count of the downloaded segments to store for P2P sharing
+        cachedSegmentsCount:1000,
 
-  player = videojs('podvideoplayer', options, function(){});
+        // first 4 segments (priorities 0, 1, 2 and 3) are required buffer for stable playback
+        requiredSegmentsPriority:3,
 
-  player.on('firstplay', function(){
-    var data_form = $( "#video_count_form" ).serializeArray();
-    jqxhr = $.post(
-      $( "#video_count_form" ).attr("action"),
-      data_form
-    );
-  });
+        // each 1 second each of 10 segments ahead of playhead position gets 6% probability for random HTTP download
+        httpDownloadMaxPriority:9,
+        httpDownloadProbability:0.06,
+        httpDownloadProbabilityInterval: 1000,
+
+        // disallow randomly download segments over HTTP if there are no connected peers
+        httpDownloadProbabilitySkipIfNoPeers: true,
+
+        // P2P will try to download only first 51 segment ahead of playhead position
+        p2pDownloadMaxPriority: 50,
+
+        // 1 second timeout before retrying HTTP download of a segment in case of an error
+        httpFailedSegmentTimeout:1000,
+
+        // number of simultaneous downloads for P2P and HTTP methods
+        simultaneousP2PDownloads:20,
+        simultaneousHttpDownloads:3,
+
+        // enable mode, that try to prevent HTTP downloads on stream start-up
+        httpDownloadInitialTimeout: 120000, // try to prevent HTTP downloads during first 2 minutes
+        httpDownloadInitialTimeoutPerSegment: 17000, // try to prevent HTTP download per segment during first 17 seconds
+
+        // allow to continue aborted P2P downloads via HTTP
+        httpUseRanges: true,
+      }
+    };
+    if (p2pml.hlsjs.Engine.isSupported()) {
+        console.log("p2pml");
+        engineHlsJs = new p2pml.hlsjs.Engine(p2p_config);
+        console.log("Engine ! " + engineHlsJs);
+        VideoHlsjsConfig["loader"] = engineHlsJs.createLoaderClass();
+        engineHlsJs.on(p2pml.core.Events.PeerConnect, onPeerConnect.bind(this));
+        engineHlsJs.on(p2pml.core.Events.PeerClose, onPeerClose.bind(this));
+        engineHlsJs.on("segment_loaded", (segment, peerId) => console.log("segment_loaded from", peerId ? `peer ${peerId}` : "HTTP", segment.url));
+    }
+
+    function onPeerConnect(peer) {
+      console.log("peer_connect", peer.id, peer.remoteAddress)
+    }
+
+    function onPeerClose(id) {
+      console.log("peer_close", peerId)
+    }
+
+    options = {
+      notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
+      //language: "fr", //en or nl
+      {% if video.is_video and request.GET.is_iframe %}
+        fluid: false,
+      {% else %}
+        fluid: true,
+      {% endif %}
+      responsive: true,
+      playbackRates: {{video_playbackrates}},
+      html5: {
+          hlsjsConfig: VideoHlsjsConfig,
+      },
+      userActions: {
+        hotkeys: function(event) {
+          // `this` is the player in this context
+          if (event.code === 'Space') {
+            event.preventDefault();
+            if(!this.paused()) this.pause();
+            else this.play();
+          }
+          if (event.key === 'm') {
+            event.preventDefault();
+            this.muted(!this.muted());
+          }
+          if (event.key === 'f') {
+            event.preventDefault();
+            this.requestFullscreen();
+          }
+          // `arrow left`
+          if (event.code === 'ArrowLeft') {
+            event.preventDefault();
+            this.currentTime(Math.floor(this.currentTime())-seektime);
+          }
+          // `arrow right`
+          if (event.code === 'ArrowRight') {
+            event.preventDefault();
+            this.currentTime(Math.floor(this.currentTime())+seektime);
+          }
+          if( event.code === "ArrowUp" ) {
+            event.preventDefault();
+            this.volume(this.volume()+0.1);
+          }
+          if( event.code === "ArrowDown" ) {
+            event.preventDefault();
+            this.volume(this.volume()-0.1);
+          }
+        }
+      },
+      plugins: {
+        {% if event is None %}
+        seekButtons: {
+          forward: seektime,
+          back: seektime
+        }
+        {% endif %}
+        {% if not video.is_video and event is None %}
+        // enable videojs-wavesurfer plugin
+        ,wavesurfer: {
+          backend: 'MediaElement',
+          displayMilliseconds: true,
+          debug: false,
+          waveColor: 'grey',
+          progressColor: 'black',
+          cursorColor: 'var(--pod-primary)',
+          hideScrollbar: false
+        }
+        {% endif %}
+      }
+    }
+
+    player = videojs('podvideoplayer', options, function(){});
+
+    if (p2pml.hlsjs.Engine.isSupported()) {
+      console.log("init player");
+      p2pml.hlsjs.initVideoJsContribHlsJsPlayer(player);
+      console.log("init ok !");
+    }
+
+    player.on('firstplay', function(){
+      var data_form = $( "#video_count_form" ).serializeArray();
+      jqxhr = $.post(
+        $( "#video_count_form" ).attr("action"),
+        data_form
+      );
+    });
 
   {% if video.is_video %}
     /** get all mp4 format **/
@@ -114,7 +199,8 @@
 
     {% if video.get_playlist_master %}
       var srcOptions = {
-        src: '{{video.get_playlist_master.source_file.url}}',
+        //src: '{{video.get_playlist_master.source_file.url}}',
+        src: 'https://pod.univ-lille.fr/media/videos/7f08fab4c221715162d57ff0189ace167c63f9ccfc00c7dbee27ea01065d456f/17137/playlist.m3u8',
         type: '{{video.get_playlist_master.encoding_format}}',
       };
       player.on('loadedmetadata', function() {
