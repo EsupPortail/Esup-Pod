@@ -880,7 +880,7 @@ class Video(models.Model):
                 affiliation_years = [
                     ACCOMMODATION_YEARS.get(key) for key in self.owner.owner.affiliation if key in ACCOMMODATION_YEARS
                 ]
-                new_year = max(affiliation_years)
+                new_year = max(affiliation_years) if len(affiliation_years) else DEFAULT_YEAR_DATE_DELETE
                 self.date_delete = date(
                     date.today().year + new_year,
                     date.today().month,
