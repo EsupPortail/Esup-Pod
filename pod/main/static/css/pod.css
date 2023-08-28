@@ -334,10 +334,11 @@ tr,
 .title-chaine {
   margin-right: .5rem;
   font-weight: 600;
-  flex-direction: row-reverse;
+  flex-direction: row;
 }
 
 .title-chaine>a {
+  margin-left: .5em;
   margin-right: .5em;
 }
 
@@ -1695,4 +1696,12 @@ table .alert.alert-danger.btn.pod-btn-social {
 .calendarbox {
   z-index: 3000;
   background-color: var(--pod-background) !important;
+}
+
+.progress {
+  height: .6em;
+}
+
+.progress .progress-bar {
+  width: 100%;
 }

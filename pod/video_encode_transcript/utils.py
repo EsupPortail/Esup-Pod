@@ -200,7 +200,7 @@ def send_notification_email(video_to_encode, subject_prefix):
         manager = dict(MANAGERS)[video_estab]
         if type(manager) in (list, tuple):
             bcc_email = manager
-        elif type(manager) == str:
+        elif isinstance(manager, str):
             bcc_email.append(manager)
         msg = EmailMultiAlternatives(
             subject, message, from_email, to_email, bcc=bcc_email
