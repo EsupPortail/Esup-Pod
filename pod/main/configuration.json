@@ -873,7 +873,7 @@
                             "pod_version_init": "3.3.0"
                         },
                         "MAX_UPLOAD_SIZE_ON_IMPORT": {
-                            "default_value": 0,
+                            "default_value": 4,
                             "description": {
                                 "en": [
                                     "Maximum size in Gb of video files that can be imported into the platform ",
