@@ -1,0 +1,52 @@
+{% load i18n %}
+{% load static %}
+{% load playlist_list_modal %}
+{% load favorites_playlist %}
+
+{% block page_extra_head %}
+<link rel="stylesheet" href="{% static 'playlist/css/playlist.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
+<!-- DEBUT modal PLAYLIST -->
+<div class="modal fade" id="playlist-modal" tabindex="-1" aria-labelledby="playlist-list-label" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h3" id="shareLabel">
+            <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Your playlists" %}
+          </h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+        </div>
+        <div class="modal-body" id="playlist-list">
+            {% get_user_playlists request.user as playlists %}
+            {% for playlist in playlists %}
+                <div class="d-flex flex-row justify-content-start align-items-center mb-3 gap-4">
+                    {% video_in_playlist playlist video as video_in_playlist %}
+                    {% if video_in_playlist %}
+                    <a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" class="action-btn remove-video-from-playlist" id="{{ playlist.slug }}-btn" title="{% trans "Remove video from this playlist" %}" aria-label="{% trans "Remove video from this playlist" %}">
+                        <i class="bi bi-dash" aria-hidden="true"></i>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'playlist:add-video' playlist.slug video.slug %}" class="action-btn add-video-from-playlist" id="{{ playlist.slug }}-btn" title="{% trans "Add video in this playlist" %}" aria-label="{% trans "Add video in this playlist" %}">
+                        <i class="bi bi-plus" aria-hidden="true"></i>
+                    </a>
+                    {% endif %}
+
+                    {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
+
+                    {% get_playlist_name playlist as playlist_name %}
+                    <a class="playlist-title" href="{% url 'playlist:content' playlist.slug %}" target="_blank" title="{% if playlist.description %}{{ playlist.description }}{% else %}{{ playlist.name }}{% endif %}" aria-label="{{ playlist_name }}">{{ playlist_name }}</a>
+                </div>
+            {% endfor %}
+            <a class="btn btn-primary mt-4 w-100" href="{% url 'playlist:add' %}?next={% url 'video:video' video.slug %}" title="{% trans "Add the video in a new playlist" %}" aria-label="{% trans "Add the video in a new playlist" %}">
+              <i class="bi bi-plus pod-add" aria-hidden="true"></i>
+              <span>{% trans "Add the video in a new playlist" %}</span>
+            </a>
+        </div>
+      </div>
+    </div>
+  </div> <!-- modal end PLAYLIST -->
+  {% block more_script %}
+  <script src="{% static 'playlist/js/utils-playlist.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'playlist/js/playlist-modal.js' %}?ver={{VERSION}}"></script>
+  {% endblock %}

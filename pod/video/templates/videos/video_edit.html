@@ -243,6 +243,9 @@
 {% block more_script %}
   <script src="/admin/jsi18n/"></script>
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+  <script>
+    var listTheme = {{listTheme | safe}};
+  </script>
   <script defer src="{% static 'js/video_edit.js' %}?ver={{VERSION}}"></script>
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
   {{form.media}}

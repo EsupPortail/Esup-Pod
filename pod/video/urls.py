@@ -2,26 +2,39 @@ from django.conf import settings
 from django.conf.urls import url
 from django.urls import include, path
 
-from .views import video
-from .views import video_edit
-from .views import video_add
-from .views import video_delete
-from .views import video_transcript
+from .views import (
+    video,
+    video_edit,
+    video_add,
+    video_delete,
+    video_transcript,
+    my_videos,
+    video_notes,
+    video_xhr,
+    video_count,
+    video_version,
+    get_categories,
+    add_category,
+    edit_category,
+    delete_category,
+    update_video_owner,
+    filter_owners,
+    filter_videos,
+    PodChunkedUploadView,
+    PodChunkedUploadCompleteView,
+    stats_view,
+    video_oembed,
+    get_channels_for_specific_channel_tab,
+    get_channel_tabs_for_navbar,
+    get_comments,
+    get_children_comment,
+    get_theme_list_for_specific_channel,
+    add_comment,
+    delete_comment,
+    vote_get,
+    vote_post,
+)
 
-from .views import my_videos
-from .views import video_notes
-from .views import video_xhr
-from .views import video_count, video_version
-from .views import get_categories, add_category
-from .views import edit_category, delete_category
-from .views import update_video_owner, filter_owners, filter_videos
-from .views import PodChunkedUploadView, PodChunkedUploadCompleteView
-from .views import stats_view
-from .views import video_oembed
-
-from .views import get_comments, get_children_comment
-from .views import add_comment, delete_comment
-from .views import vote_get, vote_post
 
 app_name = "video"
 
@@ -170,6 +183,21 @@ if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
             name="add_vote",
         ),
     ]
+
+# NAVBAR
+urlpatterns += [
+    path("get-channel-tabs/", get_channel_tabs_for_navbar, name="get-channel-tabs"),
+    path(
+        "get-channels-for-specific-channel-tab/",
+        get_channels_for_specific_channel_tab,
+        name="get-channels-for-specific-channel-tab",
+    ),
+    path(
+        "get-themes-for-specific-channel/<slug:slug>/",
+        get_theme_list_for_specific_channel,
+        name="get-themes-for-specific-channel",
+    ),
+]
 
 # DIRECT ACCESS TO A VIDEO
 urlpatterns += [

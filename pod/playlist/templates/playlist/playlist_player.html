@@ -1,0 +1,92 @@
+{% load i18n l10n static %}
+{% load static custom_tags video_tags %}
+{% load playlist_buttons %}
+{% load favorites_playlist %}
+
+
+{% block page_extra_head %}
+    <link rel="stylesheet" href="{% static 'playlist/css/playlist.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
+<script src="{% static 'playlist/js/playlist-player.js' %}?ver={{VERSION}}" ></script>
+
+<div class="card" id="card-playlistplayer">
+    {% get_playlist_name playlist_in_get as playlist_name %}
+    <h2 class="card-header card-title pod-card__title h4">
+        <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Playlist:" %} <a class="btn-link" href="{% url 'playlist:content' playlist_in_get.slug %}" title="{% trans "View the playlist" %}" aria-label="{{ playlist_name }}">{{ playlist_name|capfirst|truncatechars:20 }}</a>
+    </h2>
+    <div {% if videos|length > 5 %}class="scroll-container"{% endif %}>
+        {% for video_in_playlist in videos %}
+            {% can_see_playlist_video video_in_playlist as can_see_video %}
+                <a
+                    {% if can_see_video %}
+                        href="{% url 'video:video' video_in_playlist.slug %}?playlist={{ playlist_in_get.slug }}"
+                        title="{% trans "Watch the video" %}"
+                        aria-label="{{ video_in_playlist.title }}"
+                    {% endif %}
+                    id="{{ forloop.counter }}"
+                    class="player-element card-body card-text border mb-1 mt-4 d-flex flex-row
+                    {% if video_in_playlist == video %}selected{% endif %}
+                    {% if can_see_video == False %}disabled{% endif %}"
+                    data-url-for-video="{% url 'playlist:get-video' video_in_playlist.slug playlist_in_get.slug %}"
+                >
+                    <span class="rank d-flex align-self-center">
+                        {% if video_in_playlist == video %}
+                            <i class="bi bi-caret-right-fill" aria-hidden="true"></i>
+                        {% else %}
+                            {{ forloop.counter }}
+                        {% endif %}
+                    </span>
+                    <span class="card-img d-flex">
+                        <img class="card-img {% if can_see_video == False %}grayscale-image{% endif %}" src="{{ video_in_playlist.get_thumbnail_url }}" alt="{% trans "Playlist image" %}" loading="lazy">
+                        {% if can_see_video == False %}
+                            <span class="lock-icon-container">
+                                <i class="bi bi-lock-fill" aria-hidden="true"></i>
+                            </span>
+                        {% endif %}
+                    </span>
+                    <div class="card-content d-flex flex-column align-self-center">
+                        <div>
+                            <h5 class="title">{{ video_in_playlist.title|truncatechars:27 }}</h5>
+                        </div>
+                        <div class="d-flex flex-row justify-content-between">
+                            <div>
+                                {{ video_in_playlist.owner }}
+                            </div>
+                            <div>
+                                {{ video_in_playlist.date_added|date }}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    span.rank {
+        margin-right: 1rem;
+    }
+
+    span.card-img {
+        width: 20%;
+        margin-right: 2rem;
+    }
+
+    .card-content {
+        width: 100%;
+    }
+
+    img.card-img {
+        object-fit: cover;
+    }
+
+    .card-img {
+        position: relative;
+        display: inline-block;
+    }
+</style>
+
+<script>
+    var count = {{ COUNTDOWN_PLAYLIST_PLAYER }};
+</script>
