@@ -127,9 +127,15 @@ class ObsolescenceTestCase(TestCase):
         self.assertEqual(video.date_delete, date1)
 
         video2 = Video.objects.get(id=2)
+        affiliation_years = [
+            settings.ACCOMMODATION_YEARS.get(key)
+            for key in video2.owner.owner.affiliation
+            if key in settings.ACCOMMODATION_YEARS
+        ]
+        new_year = max(affiliation_years) if len(affiliation_years) else DEFAULT_YEAR_DATE_DELETE
         date2 = date(
             date.today().year
-            + settings.ACCOMMODATION_YEARS[video2.owner.owner.affiliation],
+            + new_year,
             date.today().month,
             date.today().day,
         )
