@@ -670,7 +670,7 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
                 # Source video file
                 source_video_url = pt_video_json["files"][0]["fileDownloadUrl"]
 
-        # Verify that video exists and not oversised
+        # Verify that video exists and not oversized
         verify_video_exists_and_size(source_video_url)
 
         # Step 2 : Define destination source file
