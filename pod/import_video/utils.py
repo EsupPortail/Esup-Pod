@@ -10,7 +10,7 @@ from pod.video.models import Video
 from pod.video.models import Type
 from urllib.parse import parse_qs, urlparse
 
-MAX_UPLOAD_SIZE_ON_IMPORT = getattr(settings, "MAX_UPLOAD_SIZE_ON_IMPORT", 0)
+MAX_UPLOAD_SIZE_ON_IMPORT = getattr(settings, "MAX_UPLOAD_SIZE_ON_IMPORT", 4)
 
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
 
