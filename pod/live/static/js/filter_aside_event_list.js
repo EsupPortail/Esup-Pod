@@ -16,7 +16,11 @@
         });
     }
 
-    // Return url with filters param
+    /**
+     * Return url with filters params.
+     *
+     * @returns {string}
+     */
     function getUrlForRefresh() {
       let newUrl = window.location.pathname + "?";
 
@@ -29,6 +33,12 @@
       return newUrl;
     }
 
+    /**
+     * Remove loader height.
+     *
+     * @param height
+     * @returns {number}
+     */
     function getHeightMinusLoader(height) {
       let loader_style = getComputedStyle(loader);
       let loader_height = loader_style.height;
@@ -36,7 +46,9 @@
       return height - loader_height;
     }
 
-    // Async request to refresh view with filtered events list
+    /**
+     * Async request to refresh view with filtered events list.
+     */
     function refreshEvents() {
 
       // Erase list and enable loader
@@ -47,7 +59,7 @@
       events_content.innerHTML = "<div style='height: "+height+"px; width:"+width+"px'></div>";
       loader.classList.add("show");
 
-      url = getUrlForRefresh();
+      let url = getUrlForRefresh();
 
       // Async GET request wth parameters by fetch method
       fetch(url, {
@@ -68,7 +80,7 @@
           // change url with params sent
           window.history.pushState({}, "", url);
         })
-        .catch((error) => {
+        .catch(() => {
           events_content.innerHTML = gettext("An Error occurred while processing.");
         })
         .finally(() => {
@@ -78,14 +90,23 @@
         });
     }
 
-    // Coche ou non la checkbox si dans les param de la request
+    /**
+     * Check or uncheck checkbox regarding url params.
+     *
+     * @param el
+     */
     function setCheckboxStatus(el) {
       let currentUrl = window.location.href;
       el.checked = currentUrl.includes("type="+ el.value + "&");
     }
 
+    /**
+     * Add listener to refresh events list on checkbox status change.
+     *
+     * @param el
+     */
     function addCheckboxListener(el) {
-      el.addEventListener("change", (e) => {
+      el.addEventListener("change", () => {
         checkedInputs = [];
         disableCheckboxes(true);
         document
@@ -97,7 +118,7 @@
       });
     }
 
-    // Au chargement
+    // On page load
     document
       .querySelectorAll("#collapseFilterType input[type=checkbox]")
       .forEach((el) => {
