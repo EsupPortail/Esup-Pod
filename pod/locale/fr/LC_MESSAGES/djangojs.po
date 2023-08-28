@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-18 09:32+0000\n"
+"POT-Creation-Date: 2023-08-28 14:31+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -76,7 +76,6 @@ msgid "starts at the same time."
 msgstr "commencent au même moment."
 
 #: pod/chapter/static/js/videojs-chapters.js
-#: pod/playlist/static/playlist/js/playlist-player.js
 msgid "Chapters"
 msgstr "Chapitres"
 
@@ -498,6 +497,10 @@ msgstr "Sauvegarder votre réorganisation"
 msgid "Save"
 msgstr "Sauvegarder"
 
+#: pod/playlist/static/playlist/js/video-favorites-remove-card.js
+msgid "Network response was not ok."
+msgstr ""
+
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
 msgstr "Changer d’image"
@@ -545,10 +548,6 @@ msgstr "Ce dossier est vide"
 #: pod/video/static/js/ajax-display-channels.js
 msgid "Channel"
 msgstr "Chaîne"
-
-#: pod/video/static/js/ajax-display-channels.js
-msgid "Channels"
-msgstr "Chaînes"
 
 #: pod/video/static/js/ajax-display-channels.js
 msgid "No channels found"
@@ -800,6 +799,9 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "Channels"
+#~ msgstr "Chaînes"
 
 #~ msgid "Reply"
 #~ msgstr "Répondre"

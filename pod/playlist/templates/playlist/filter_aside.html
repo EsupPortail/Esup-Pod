@@ -42,7 +42,7 @@
         </div>
         <div class="form-check">
           <input onChange="window.location = `{% url 'playlist:list' %}?visibility=additional`;" class="form-check-input" type="radio" name="type" value="additional" id="idadditional_type" {% if request.GET.visibility == "additional" %}checked="true"{% endif %}>
-          <label class="form-check-label" for="idadditional_type">&nbsp;{% trans "See playlists I can contribute"%}</label>
+          <label class="form-check-label" for="idadditional_type">&nbsp;{% trans "See the additional playlists"%}</label>
         </div>
         <div class="form-check">
             <input onChange="window.location = `{% url 'playlist:list' %}?visibility=allpublic`;" class="form-check-input" type="radio" name="type" value="allpublic" id="idallpublic_type" {% if request.GET.visibility == "allpublic" %}checked="true"{% endif %}>
