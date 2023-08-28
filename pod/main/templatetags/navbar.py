@@ -32,16 +32,43 @@ def show_meeting_button(context):
 
 @register.simple_tag(name="show_stats")
 def show_stats(user):
+    """
+    This template tag allows to know whether or not to display the statistics.
+
+    Args:
+        user (::class::`django.contrib.auth.models.User`): The specific user.
+
+    Returns:
+        `boolean`: `True` if we can show it, `False` otherwise.
+    """
     return (get_number_video_for_user(user) > 0) or (get_number_playlist_for_user(user) > 0 and USE_PLAYLIST)
 
 
 @register.simple_tag(name="get_number_video_user")
 def get_number_video_user(user):
+    """
+    This template tag allows to get the number of videos a user has.
+
+    Args:
+        user (::class::`django.contrib.auth.models.User`): The specific user.
+
+    Returns:
+        `int`: The number of videos a user has.
+    """
     return get_number_video_for_user(user)
 
 
 @register.simple_tag(name="get_number_playlist_user")
 def get_number_playlist_user(user):
+    """
+    This template tag allows to get the number of playlists a user has.
+
+    Args:
+        user (::class::`django.contrib.auth.models.User`): The specific user.
+
+    Returns:
+        `int`: The number of playlists a user has.
+    """
     return get_number_playlist_for_user(user)
 
 

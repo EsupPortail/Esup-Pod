@@ -6,17 +6,21 @@ from .models import Playlist, PlaylistContent
 
 
 class PlaylistContentSerializer(serializers.ModelSerializer):
+    """Serializer for the `PlaylistContent` model."""
     video = VideoSerializer()
 
     class Meta:
+        """Meta class for the PlaylistContent model serializer."""
         model = PlaylistContent
         fields = ("video",)
 
 
 class PlaylistSerializer(serializers.HyperlinkedModelSerializer):
+    """Serializer for the `Playlist` model."""
     videos = PlaylistContentSerializer(many=True, source="playlistcontent_set", read_only=True)
 
     class Meta:
+        """Meta class for the Playlist model serializer."""
         model = Playlist
         fields = (
             "id",
@@ -39,6 +43,7 @@ class PlaylistSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PlaylistViewSet(viewsets.ModelViewSet):
+    """ViewSet for the `Playlist` model."""
     queryset = Playlist.objects.all()
     serializer_class = PlaylistSerializer
     filter_fields = (

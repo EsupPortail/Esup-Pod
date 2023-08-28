@@ -90,13 +90,13 @@ class Playlist(models.Model):
         help_text=_("You can add additional owners to the playlist."),
     )
     date_created = models.DateTimeField(
-        verbose_name=_("Date created"),
+        verbose_name=_("Creation date"),
         default=timezone.now,
         editable=False,
         auto_created=True,
     )
     date_updated = models.DateTimeField(
-        verbose_name=_("Date updated"),
+        verbose_name=_("Update date"),
         editable=False,
         auto_now=True,
     )
@@ -164,7 +164,7 @@ class PlaylistContent(models.Model):
         "Playlist"), on_delete=models.CASCADE)
     video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     date_added = models.DateTimeField(
-        verbose_name=_("Date added"), default=timezone.now, editable=False
+        verbose_name=_("Addition date"), default=timezone.now, editable=False
     )
     rank = models.IntegerField(verbose_name=_("Rank"), editable=False, default=1)
 
@@ -194,4 +194,4 @@ class PlaylistContent(models.Model):
 
     def __str__(self) -> str:
         """Display a playlist content as string."""
-        return f"Playlist : {self.playlist} - Video : {self.video} - Rank : {self.rank}"
+        return f"Playlist: {self.playlist} - Video: {self.video} - Rank: {self.rank}"

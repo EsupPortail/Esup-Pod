@@ -4379,11 +4379,11 @@ msgid "Your statistics"
 msgstr ""
 
 #: pod/main/templates/navbar.html
-msgid "Number of videos"
+msgid "Number of videos:"
 msgstr ""
 
 #: pod/main/templates/navbar.html
-msgid "Number of playlists"
+msgid "Number of playlists:"
 msgstr ""
 
 #: pod/main/templates/navbar_collapse.html
@@ -5131,7 +5131,7 @@ msgstr ""
 #: pod/playlist/forms.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/filter_aside.html
 #: pod/playlist/templates/playlist/playlist-informations-card.html
-msgid "Right of access"
+msgid "Right of access:"
 msgstr ""
 
 #: pod/playlist/forms.py pod/playlist/models.py
@@ -5302,7 +5302,7 @@ msgid "See my playlists"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
-msgid "See playlists I can contribute"
+msgid "See additional playlists"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html

@@ -4622,12 +4622,12 @@ msgid "Your statistics"
 msgstr "Vos statistiques"
 
 #: pod/main/templates/navbar.html
-msgid "Number of videos"
-msgstr "Nombre de vidéos"
+msgid "Number of videos:"
+msgstr "Nombre de vidéos :"
 
 #: pod/main/templates/navbar.html
-msgid "Number of playlists"
-msgstr "Nombre de listes de lecture"
+msgid "Number of playlists:"
+msgstr "Nombre de listes de lecture :"
 
 #: pod/main/templates/navbar_collapse.html
 msgid "Types of videos"
@@ -5429,7 +5429,7 @@ msgstr "Informations de sécurité"
 
 #: pod/playlist/forms.py pod/playlist/models.py
 msgid "Please choose a title between 1 and 250 characters."
-msgstr "Veuillez entrer un titre contenant entre 2 et 100 caractères."
+msgstr "Veuillez entrer un titre contenant entre 2 et 250 caractères."
 
 #: pod/playlist/forms.py pod/playlist/models.py
 msgid "Please choose a description. This description is empty by default."
@@ -5438,8 +5438,8 @@ msgstr "Veuillez choisir une description. Celle-ci est vide par défaut."
 #: pod/playlist/forms.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/filter_aside.html
 #: pod/playlist/templates/playlist/playlist-informations-card.html
-msgid "Right of access"
-msgstr "Droit d'accès"
+msgid "Right of access:"
+msgstr "Droit d'accès :"
 
 #: pod/playlist/forms.py pod/playlist/models.py
 msgid ""
@@ -5486,10 +5486,8 @@ msgid "Please choose if this playlist is an autoplay playlist or not."
 msgstr "Veuillez choisir si cette playlist est en lecture automatique ou non."
 
 #: pod/playlist/forms.py
-#, fuzzy, python-brace-format
-#| msgid "You cannot create a playlist named \"{FAVORITE_PLAYLIST_NAME}\""
 msgid "You cannot create a playlist named \"{FAVORITE_PLAYLIST_NAME}\""
-msgstr "Vous ne pouvez créer une liste de lecture nommée \"Favoris\""
+msgstr "Vous ne pouvez créer une liste de lecture nommée \"{FAVORITE_PLAYLIST_NAME}\""
 
 #: pod/playlist/forms.py
 msgid "Remove playlist cannot be undone"
@@ -5538,16 +5536,16 @@ msgid "You can add additional owners to the playlist."
 msgstr "Vous pouvez ajouter des propriétaires additionnels à la playlist."
 
 #: pod/playlist/models.py
-msgid "Date created"
+msgid "Creation date"
 msgstr "Date de création"
 
 #: pod/playlist/models.py
-msgid "Date updated"
+msgid "Update date"
 msgstr "Date de mise à jour"
 
 #: pod/playlist/models.py pod/recorder/models.py pod/video/models.py
 #: pod/video/templates/videos/video_sort_select.html
-msgid "Date added"
+msgid "Addition date"
 msgstr "Date d’ajout"
 
 #: pod/playlist/models.py pod/video/templates/videos/video_sort_select.html
@@ -5591,8 +5589,8 @@ msgstr "Accéder à la liste de lecture"
 
 #: pod/playlist/templates/playlist/delete.html
 #, python-format
-msgid "Delete the playlist <b>%(name)s</b>"
-msgstr "Supprimer la liste de lecture <b>%(name)s</b>"
+msgid "Delete the playlist <strong>%(name)s</strong>"
+msgstr "Supprimer la liste de lecture <strong>%(name)s</strong>"
 
 #: pod/playlist/templates/playlist/delete.html
 msgid "Back to my playlists"
@@ -5625,7 +5623,7 @@ msgid "See my playlists"
 msgstr "Voir mes listes de lecture"
 
 #: pod/playlist/templates/playlist/filter_aside.html
-msgid "See playlists I can contribute"
+msgid "See additional playlists"
 msgstr "Voir les listes de lecture additionnelles"
 
 #: pod/playlist/templates/playlist/filter_aside.html
@@ -5658,7 +5656,7 @@ msgstr "Propriétaire de la liste de lecture"
 
 #: pod/playlist/templates/playlist/playlist-informations-card.html
 msgid "Access to playlist owner profile"
-msgstr "Accéder au profile du propriétaire de la liste de lecture"
+msgstr "Accéder au profil du propriétaire de la liste de lecture"
 
 #: pod/playlist/templates/playlist/playlist-informations-card.html
 msgid "Access to playlist additional owner profile"
@@ -5848,7 +5846,7 @@ msgstr "Vous ne pouvez créer une liste de lecture nommé \"Favoris\""
 
 #: pod/playlist/views.py
 msgid "The playlist has been deleted."
-msgstr "Cette liste de lecture a été supprimée."
+msgstr "La liste de lecture a été supprimée."
 
 #: pod/playlist/views.py
 msgid "The playlist has been created and the video has been added in it."
@@ -8275,7 +8273,7 @@ msgstr "Vous la/le retrouverez ici :"
 
 #: pod/video_encode_transcript/utils.py
 msgid "the:"
-msgstr "le:"
+msgstr "le: "
 
 #: pod/video_search/apps.py
 msgid "Video search"

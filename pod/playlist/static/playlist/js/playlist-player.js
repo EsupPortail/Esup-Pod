@@ -97,7 +97,7 @@ function updateUrl(newUrl) {
 
 
 /**
- * Refresh element with the DocuementFragment.
+ * Refresh element with the `DocumentFragment`.
  *
  * @param {*} elementQuerySelector The query selector for the element.
  * @param {*} html The html code.
