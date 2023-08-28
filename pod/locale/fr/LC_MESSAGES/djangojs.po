@@ -278,6 +278,7 @@ msgid "Iframe and Script tags are not allowed."
 msgstr "Les balises Iframe et Script ne sont pas autorisées."
 
 #: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
+#: pod/video/static/js/ajax-display-channels.js
 #: pod/video/static/js/comment-script.js
 msgid "Close"
 msgstr "Fermer"
@@ -547,6 +548,22 @@ msgstr "Voir plus"
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "This folder is empty"
 msgstr "Ce dossier est vide"
+
+#: pod/video/static/js/ajax-display-channels.js
+msgid "Channel"
+msgstr "Chaîne"
+
+#: pod/video/static/js/ajax-display-channels.js
+msgid "Channels"
+msgstr "Chaînes"
+
+#: pod/video/static/js/ajax-display-channels.js
+msgid "No channels found"
+msgstr "Aucun chaîne trouvée"
+
+#: pod/video/static/js/ajax-display-channels.js
+msgid "videos"
+msgstr "vidéos"
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"

@@ -39,7 +39,7 @@
     </div>
   </fieldset>
 {% endif %}
-
+{% if HIDE_TYPES == False %}
 <fieldset class="border-right border-bottom mt-2">
   <legend class="h5"><i class="bi bi-tv"></i> {% trans "Types"%} </legend>
   <div id="filterType">
@@ -59,7 +59,8 @@
     {% endif %}
   </div><!-- type -->
 </fieldset>
-
+{% endif %}
+{% if HIDE_DISCIPLINES == False %}
 <fieldset class="border-right border-bottom mt-2">
   <legend class="h5"><i class="bi bi-book"></i> {% trans "Disciplines"%} </legend>
   <div id="filterDiscipline">
@@ -79,7 +80,8 @@
     {% endif %}
   </div><!-- filterdiscipline -->
 </fieldset>
-
+{% endif %}
+{% if HIDE_TAGS == False %}
 <fieldset class="border-right border-bottom mt-2">
   <legend class="h5"><i class="bi bi-tag"></i> {% trans "Tags"%}</legend>
   <div id="filterTag">
@@ -102,7 +104,7 @@
     {% endwith %}
   </div>
 </fieldset>
-
+{% endif %}
 
 <fieldset class="border-right border-bottom mt-2">
   <legend class="h5"><i class="bi bi-archive"></i> {% trans "University course"%}</legend>

@@ -334,10 +334,11 @@ tr,
 .title-chaine {
   margin-right: .5rem;
   font-weight: 600;
-  flex-direction: row-reverse;
+  flex-direction: row;
 }
 
 .title-chaine>a {
+  margin-left: .5em;
   margin-right: .5em;
 }
 
@@ -1689,4 +1690,12 @@ table .alert.alert-danger.btn.pod-btn-social {
 
 #mainbreadcrumb {
   margin-right: 2.7rem;
+}
+
+.progress {
+  height: .6em;
+}
+
+.progress .progress-bar {
+  width: 100%;
 }

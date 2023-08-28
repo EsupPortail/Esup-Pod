@@ -26,18 +26,7 @@
       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="{% trans 'Close' %}"></button>
     </div>
     <div class="offcanvas-body">
-      <ul class="nav flex-column">
-        {% if HIDE_CHANNEL_TAB == False %}
-          <li class="nav-item" id="nav-channels">
-            <button class="nav-link" data-bs-toggle="modal" data-bs-target=".chaines-modal">
-              <i class="bi bi-play-btn pod-nav-link-icon"></i> {% trans "Channels" %}</button>
-          </li>
-          {% for add_channel_tab in ADD_CHANNELS_TAB %}
-            <li class="nav-item">
-              <button class="nav-link" data-bs-toggle="modal" data-bs-target=".chaines-modal-{{add_channel_tab.id}}"><i class="bi bi-play-btn pod-nav-link-icon"></i> {{ add_channel_tab.name }}</button>
-            </li>
-          {% endfor %}
-        {% endif %}
+      <ul class="nav flex-column" id="tab-list">
         {% if HIDE_USER_TAB == False and user.is_authenticated %}
           <li class="nav-item" id="nav-users">
             <button class="nav-link" data-bs-toggle="modal" data-bs-target=".users-modal"><i class="bi bi-people pod-nav-link-icon" aria-hidden="true"></i> {% trans "Users"%}</button>
@@ -51,6 +40,17 @@
         {% if "live" in THIRD_PARTY_APPS %}
           <li class="nav-item" id="nav-live">
             <a class="nav-link" href="{% url 'live:events'%}"><i class="bi bi-broadcast pod-nav-link-icon"></i> {% trans "Lives"%}</a>
+          </li>
+        {% endif %}
+        {% if HIDE_CHANNEL_TAB == False %}
+          <li class="nav-item" id="nav-channels">
+            <button class="nav-link" data-bs-toggle="modal" data-bs-target=".chaines-modal">
+              <i class="bi bi-play-btn pod-nav-link-icon"></i> {% trans "Channels" %}</button>
+          </li>
+          <li>
+            <span class="progress">
+              <span class="text-bg-primary progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></span>
+            </span>
           </li>
         {% endif %}
       </ul>
