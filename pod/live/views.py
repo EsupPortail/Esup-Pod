@@ -400,7 +400,7 @@ def events(request):
     except EmptyPage:
         events_found = paginator.page(paginator.num_pages)
 
-    if request.is_ajax():
+    if is_ajax(request):
         return render(
             request,
             "live/events_list.html",
