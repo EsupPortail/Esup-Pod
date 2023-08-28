@@ -393,6 +393,7 @@ class TestShowMeetingButton(TestCase):
 
 class TestNavbar(TestCase):
     """Navbar tests case."""
+
     fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:
@@ -408,7 +409,7 @@ class TestNavbar(TestCase):
 
         self.assertFalse(
             'id="stats-usermenu"' in response.content.decode(),
-            "test if statistics section is correctly hidden"
+            "test if statistics section is correctly hidden",
         )
         print(" --->  test_statistics_category_hidden ok")
 
@@ -423,13 +424,13 @@ class TestNavbar(TestCase):
             description="Ma description",
             visibility="public",
             autoplay=True,
-            owner=self.user
+            owner=self.user,
         )
 
         response = self.client.get("/")
         self.assertFalse(
             'id="stats-usermenu-video-count"' in response.content.decode(),
-            "test if video count paragraph is correctly hidden"
+            "test if video count paragraph is correctly hidden",
         )
 
         Video.objects.create(
@@ -449,7 +450,7 @@ class TestNavbar(TestCase):
         response = self.client.get("/")
         self.assertTrue(
             '<span id="stats-usermenu-video-count">2' in response.content.decode(),
-            "test if number of videos is correct"
+            "test if number of videos is correct",
         )
         print(" --->  test_statistics_videos ok")
 
@@ -471,7 +472,7 @@ class TestNavbar(TestCase):
         response = self.client.get("/")
         self.assertFalse(
             'id="stats-usermenu-playlist-count"' in response.content.decode(),
-            "test if video count paragraph is correctly hidden"
+            "test if video count paragraph is correctly hidden",
         )
 
         Playlist.objects.create(
@@ -479,19 +480,19 @@ class TestNavbar(TestCase):
             description="Ma description",
             visibility="public",
             autoplay=True,
-            owner=self.user
+            owner=self.user,
         )
         Playlist.objects.create(
             name="playlist_2",
             description="Ma description",
             visibility="public",
             autoplay=True,
-            owner=self.user
+            owner=self.user,
         )
         response = self.client.get("/")
         self.assertTrue(
             '<span id="stats-usermenu-playlist-count">2' in response.content.decode(),
-            "test if number of playlists is correct."
+            "test if number of playlists is correct.",
         )
 
         print(" --->  test_statistics_playlists ok")

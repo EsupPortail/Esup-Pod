@@ -109,8 +109,8 @@ class PlaylistContentModelTests(TestCase):
         """
         Set up the tests.
         """
-        self.user = User.objects.create_user(username='testuser', password='testpassword')
-        self.playlist = Playlist.objects.create(name='Test Playlist', owner=self.user)
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
+        self.playlist = Playlist.objects.create(name="Test Playlist", owner=self.user)
         self.video = Video.objects.create(
             title="Video",
             owner=self.user,
@@ -131,8 +131,7 @@ class PlaylistContentModelTests(TestCase):
         Test the model creation.
         """
         playlist_content = PlaylistContent.objects.create(
-            playlist=self.playlist,
-            video=self.video
+            playlist=self.playlist, video=self.video
         )
         self.assertEqual(playlist_content.playlist, self.playlist)
         self.assertEqual(playlist_content.video, self.video)
@@ -143,15 +142,9 @@ class PlaylistContentModelTests(TestCase):
         """
         Test creating two playlist contents with the same playlist and video.
         """
-        PlaylistContent.objects.create(
-            playlist=self.playlist,
-            video=self.video
-        )
+        PlaylistContent.objects.create(playlist=self.playlist, video=self.video)
         with self.assertRaises(Exception):
-            PlaylistContent.objects.create(
-                playlist=self.playlist,
-                video=self.video
-            )
+            PlaylistContent.objects.create(playlist=self.playlist, video=self.video)
         print(" --->  test_unique_constraint ok")
 
     def test_rank_generation(self):
@@ -159,12 +152,10 @@ class PlaylistContentModelTests(TestCase):
         Test the rank generation playlist content.
         """
         playlist_content1 = PlaylistContent.objects.create(
-            playlist=self.playlist,
-            video=self.video
+            playlist=self.playlist, video=self.video
         )
         playlist_content2 = PlaylistContent.objects.create(
-            playlist=self.playlist,
-            video=self.video2
+            playlist=self.playlist, video=self.video2
         )
         self.assertEqual(playlist_content1.rank, 1)
         self.assertEqual(playlist_content2.rank, 2)
@@ -175,10 +166,11 @@ class PlaylistContentModelTests(TestCase):
         Test the string representation models.
         """
         playlist_content = PlaylistContent.objects.create(
-            playlist=self.playlist,
-            video=self.video
+            playlist=self.playlist, video=self.video
         )
         expected_string = f"Playlist : {self.playlist} - Video : {self.video} - Rank : {playlist_content.rank}"
         self.assertEqual(str(playlist_content), expected_string)
         print(" --->  test_string_representation ok")
+
+
 # ggignore-end

@@ -17,6 +17,7 @@ class PlaylistConfig(AppConfig):
 
     def ready(self) -> None:
         from . import signals  # noqa: F401
+
         pre_migrate.connect(self.save_previous_data, sender=self)
         post_migrate.connect(self.send_previous_data, sender=self)
         post_migrate.connect(self.remove_previous_favorites_table, sender=self)
@@ -29,8 +30,9 @@ class PlaylistConfig(AppConfig):
 
         self.save_playlist_content()
         if len(PLAYLIST_CONTENTS) > 0:
-            print("PLAYLIST_CONTENTS saved %s videos in playlists" %
-                  len(PLAYLIST_CONTENTS))
+            print(
+                "PLAYLIST_CONTENTS saved %s videos in playlists" % len(PLAYLIST_CONTENTS)
+            )
 
         self.save_favorites()
         if len(FAVORITES_DATA) > 0:
@@ -81,7 +83,8 @@ class PlaylistConfig(AppConfig):
             SELECT id, title, description, visible, owner_id
             FROM playlist_playlist
             ORDER BY id
-            """, PLAYLIST_INFORMATIONS
+            """,
+            PLAYLIST_INFORMATIONS,
         )
 
     def save_playlist_content(self):
@@ -91,7 +94,8 @@ class PlaylistConfig(AppConfig):
             SELECT id, position, playlist_id, video_id
             FROM playlist_playlistelement
             ORDER BY id
-            """, PLAYLIST_CONTENTS
+            """,
+            PLAYLIST_CONTENTS,
         )
 
     def send_previous_data(self, sender, **kwargs):
@@ -122,7 +126,7 @@ class PlaylistConfig(AppConfig):
                 visibility="private",
                 autoplay=True,
                 owner=user,
-                editable=False
+                editable=False,
             )
 
         # Converting previous favorites to new system
@@ -133,7 +137,7 @@ class PlaylistConfig(AppConfig):
                 visibility="private",
                 autoplay=True,
                 owner_id=owner_id,
-                editable=False
+                editable=False,
             )
 
             for favorites_datas in data_lists:
@@ -142,7 +146,7 @@ class PlaylistConfig(AppConfig):
                     date_added=date_added,
                     rank=rank,
                     playlist=new_favorites_playlist,
-                    video_id=video_id
+                    video_id=video_id,
                 )
 
         print("create_new_favorites --> OK")
@@ -171,29 +175,29 @@ class PlaylistConfig(AppConfig):
 
             playlists_to_update.append(playlist)
 
-        Playlist.objects.bulk_update(playlists_to_update, fields=[
-            "name",
-            "description",
-            "visibility",
-            "owner_id",
-            "autoplay",
-            "editable"
-        ])
+        Playlist.objects.bulk_update(
+            playlists_to_update,
+            fields=[
+                "name",
+                "description",
+                "visibility",
+                "owner_id",
+                "autoplay",
+                "editable",
+            ],
+        )
         print("update_playlists --> OK")
 
     def add_playlists_contents(self):
         """Add playlist content record from existing datas"""
         from pod.playlist.models import PlaylistContent
+
         content_list_to_bulk = []
         for content_datas in PLAYLIST_CONTENTS.values():
             position, playlist_id, video_id = content_datas
 
             content_list_to_bulk.append(
-                PlaylistContent(
-                    rank=position,
-                    playlist_id=playlist_id,
-                    video_id=video_id
-                )
+                PlaylistContent(rank=position, playlist_id=playlist_id, video_id=video_id)
             )
         PlaylistContent.objects.bulk_create(content_list_to_bulk, batch_size=1000)
         print("add_playlists_contents --> OK")
@@ -202,9 +206,7 @@ class PlaylistConfig(AppConfig):
         """Remove the previous favorites table."""
         try:
             with connection.cursor() as c:
-                c.execute(
-                    "DROP TABLE favorite_favorite"
-                )
+                c.execute("DROP TABLE favorite_favorite")
         except Exception as e:
             print(e)
             pass

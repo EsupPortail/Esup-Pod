@@ -5,7 +5,7 @@ USE_FAVORITES = getattr(django_settings, "USE_FAVORITES", True)
 DEFAULT_PLAYLIST_THUMBNAIL = getattr(
     django_settings,
     "DEFAULT_PLAYLIST_THUMBNAIL",
-    "/static/playlist/img/default-playlist.svg"
+    "/static/playlist/img/default-playlist.svg",
 )
 COUNTDOWN_PLAYLIST_PLAYER = getattr(django_settings, "COUNTDOWN_PLAYLIST_PLAYER", 0)
 

@@ -10,8 +10,8 @@ from pod.meeting.forms import AddOwnerWidget
 from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist
 
-general_informations = _('General informations')
-security_informations = _('Security informations')
+general_informations = _("General informations")
+security_informations = _("Security informations")
 
 
 class PlaylistForm(forms.ModelForm):
@@ -19,6 +19,7 @@ class PlaylistForm(forms.ModelForm):
 
     class Meta:
         """Meta class."""
+
         model = Playlist
         exclude = [
             "editable",
@@ -69,9 +70,9 @@ class PlaylistForm(forms.ModelForm):
         ),
         choices=Playlist.VISIBILITY_CHOICES,
         help_text=_(
-            '''
+            """
             Please chosse a right of access among 'public', 'password-protected', 'private'.
-            '''
+            """
         ),
     )
     password = forms.CharField(
@@ -93,10 +94,12 @@ class PlaylistForm(forms.ModelForm):
             },
         ),
         required=False,
-        help_text=_("Selecting this setting causes your playlist to be promoted on the page"
-                    + " listing promoted public playlists. However, if this setting is deactivated,"
-                    + " your playlist will still be accessible to everyone."
-                    + "<br>For general use, we recommend that you leave this setting disabled."),
+        help_text=_(
+            "Selecting this setting causes your playlist to be promoted on the page"
+            + " listing promoted public playlists. However, if this setting is deactivated,"
+            + " your playlist will still be accessible to everyone."
+            + "<br>For general use, we recommend that you leave this setting disabled."
+        ),
     )
     autoplay = forms.BooleanField(
         label=_("Autoplay"),
@@ -164,6 +167,7 @@ class PlaylistForm(forms.ModelForm):
 
 class PlaylistRemoveForm(forms.Form):
     """Form to remove a playlist."""
+
     agree = forms.BooleanField(
         label=_("I agree"),
         help_text=_("Remove playlist cannot be undone"),
@@ -182,6 +186,7 @@ class PlaylistRemoveForm(forms.Form):
 
 class PlaylistPasswordForm(forms.Form):
     """Form to access to a password-protected playlist."""
+
     password = forms.CharField(
         label=_("Password"),
         widget=forms.PasswordInput(
@@ -189,7 +194,9 @@ class PlaylistPasswordForm(forms.Form):
                 "aria-describedby": "id_passwordHelp",
             },
         ),
-        help_text=_("This playlist is protected by password, please fill in and click send."),
+        help_text=_(
+            "This playlist is protected by password, please fill in and click send."
+        ),
     )
 
     def __init__(self, *args, **kwargs):

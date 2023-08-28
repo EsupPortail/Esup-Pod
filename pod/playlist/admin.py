@@ -45,7 +45,7 @@ class PlaylistContentAdmin(admin.ModelAdmin):
         "date_added",
         "rank",
     )
-    list_display_links = ("id", )
+    list_display_links = ("id",)
     list_filter = (
         "video",
         "playlist",

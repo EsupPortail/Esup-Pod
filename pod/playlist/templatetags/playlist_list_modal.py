@@ -6,7 +6,7 @@ from ..models import Playlist
 from ..utils import (
     check_video_in_playlist,
     get_playlist_list_for_user,
-    get_playlists_for_additional_owner
+    get_playlists_for_additional_owner,
 )
 
 register = Library()

@@ -22,24 +22,24 @@ urlpatterns = [
     path(
         "remove/<slug:slug>/<slug:video_slug>/",
         remove_video_in_playlist,
-        name="remove-video"
+        name="remove-video",
     ),
     path(
         "add/<slug:slug>/<slug:video_slug>/",
         add_video_in_playlist,
         name="add-video",
     ),
-    path("get-video/<slug:video_slug>/<slug:playlist_slug>/", get_video, name="get-video"),
+    path(
+        "get-video/<slug:video_slug>/<slug:playlist_slug>/", get_video, name="get-video"
+    ),
     path("<slug:slug>/", playlist_content, name="content"),
     path(
         "<slug:slug>/save-reorganisation/",
         favorites_save_reorganisation,
-        name="save-reorganisation"
+        name="save-reorganisation",
     ),
     path("start-playlist/<slug:slug>", start_playlist, name="start-playlist"),
     path(
-        "start-playlist/<slug:slug>/<slug:video>",
-        start_playlist,
-        name="start-playlist"
+        "start-playlist/<slug:slug>/<slug:video>", start_playlist, name="start-playlist"
     ),
 ]

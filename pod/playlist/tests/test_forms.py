@@ -27,14 +27,16 @@ class PlaylistFormTest(TestCase):
         """
         Test the form with valid data for a public playlist.
         """
-        form = PlaylistForm(data={
-            "name": "Test Playlist",
-            "description": "Test description",
-            "visibility": "public",
-            "password": "",
-            "autoplay": True,
-            "additional_owners": [],
-        })
+        form = PlaylistForm(
+            data={
+                "name": "Test Playlist",
+                "description": "Test description",
+                "visibility": "public",
+                "password": "",
+                "autoplay": True,
+                "additional_owners": [],
+            }
+        )
         self.assertTrue(form.is_valid())
         print(" --->  test_valid_data_for_public_playlist ok")
 
@@ -43,14 +45,16 @@ class PlaylistFormTest(TestCase):
         """
         Test the form with valid data for a private playlist.
         """
-        form = PlaylistForm(data={
-            "name": "Test Playlist",
-            "description": "Test description",
-            "visibility": "private",
-            "password": "",
-            "autoplay": True,
-            "additional_owners": [],
-        })
+        form = PlaylistForm(
+            data={
+                "name": "Test Playlist",
+                "description": "Test description",
+                "visibility": "private",
+                "password": "",
+                "autoplay": True,
+                "additional_owners": [],
+            }
+        )
         self.assertTrue(form.is_valid())
         print(" --->  test_valid_data_for_private_playlist ok")
 
@@ -59,14 +63,16 @@ class PlaylistFormTest(TestCase):
         """
         Test the form with valid data for a protected playlist.
         """
-        form = PlaylistForm(data={
-            "name": "Test Playlist",
-            "description": "Test description",
-            "visibility": "protected",
-            "password": PWD,
-            "autoplay": True,
-            "additional_owners": [],
-        })
+        form = PlaylistForm(
+            data={
+                "name": "Test Playlist",
+                "description": "Test description",
+                "visibility": "protected",
+                "password": PWD,
+                "autoplay": True,
+                "additional_owners": [],
+            }
+        )
         self.assertTrue(form.is_valid())
         print(" --->  test_valid_data_for_protected_playlist ok")
 
@@ -75,14 +81,16 @@ class PlaylistFormTest(TestCase):
         """
         Test the form with invalid data for a protected playlist.
         """
-        form = PlaylistForm(data={
-            "name": "Test Playlist",
-            "description": "Test description",
-            "visibility": "protected",
-            "password": "",
-            "autoplay": True,
-            "additional_owners": [],
-        })
+        form = PlaylistForm(
+            data={
+                "name": "Test Playlist",
+                "description": "Test description",
+                "visibility": "protected",
+                "password": "",
+                "autoplay": True,
+                "additional_owners": [],
+            }
+        )
         self.assertFalse(form.is_valid())
         print(" --->  test_invalid_data_for_protected_playlist ok")
 
@@ -91,17 +99,24 @@ class PlaylistFormTest(TestCase):
         """
         Test if the name validation works correctly for a public playlist.
         """
-        valid_form = PlaylistForm(data={
-            "name": "Valid Name",
-            "visibility": "public",
-        })
-        invalid_form = PlaylistForm(data={
-            "name": FAVORITE_PLAYLIST_NAME,
-            "visibility": "public",
-        })
+        valid_form = PlaylistForm(
+            data={
+                "name": "Valid Name",
+                "visibility": "public",
+            }
+        )
+        invalid_form = PlaylistForm(
+            data={
+                "name": FAVORITE_PLAYLIST_NAME,
+                "visibility": "public",
+            }
+        )
         self.assertTrue(valid_form.is_valid())
         self.assertFalse(invalid_form.is_valid())
-        self.assertEqual(invalid_form.errors["name"][0], _("You cannot create a playlist named \"Favorites\""))
+        self.assertEqual(
+            invalid_form.errors["name"][0],
+            _('You cannot create a playlist named "Favorites"'),
+        )
         print(" --->  test_name_validation_for_public_playlist ok")
 
     @override_settings(USE_PLAYLIST=True)
@@ -109,17 +124,24 @@ class PlaylistFormTest(TestCase):
         """
         Test if the name validation works correctly for a private playlist.
         """
-        valid_form = PlaylistForm(data={
-            "name": "Valid Name",
-            "visibility": "private",
-        })
-        invalid_form = PlaylistForm(data={
-            "name": FAVORITE_PLAYLIST_NAME,
-            "visibility": "private",
-        })
+        valid_form = PlaylistForm(
+            data={
+                "name": "Valid Name",
+                "visibility": "private",
+            }
+        )
+        invalid_form = PlaylistForm(
+            data={
+                "name": FAVORITE_PLAYLIST_NAME,
+                "visibility": "private",
+            }
+        )
         self.assertTrue(valid_form.is_valid())
         self.assertFalse(invalid_form.is_valid())
-        self.assertEqual(invalid_form.errors["name"][0], _("You cannot create a playlist named \"Favorites\""))
+        self.assertEqual(
+            invalid_form.errors["name"][0],
+            _('You cannot create a playlist named "Favorites"'),
+        )
         print(" --->  test_name_validation_for_private_playlist ok")
 
     @override_settings(USE_PLAYLIST=True)
@@ -127,19 +149,26 @@ class PlaylistFormTest(TestCase):
         """
         Test if the name validation works correctly for a protected playlist.
         """
-        valid_form = PlaylistForm(data={
-            "name": "Valid Name",
-            "visibility": "protected",
-            "password": PWD,
-        })
-        invalid_form = PlaylistForm(data={
-            "name": FAVORITE_PLAYLIST_NAME,
-            "visibility": "protected",
-            "password": PWD,
-        })
+        valid_form = PlaylistForm(
+            data={
+                "name": "Valid Name",
+                "visibility": "protected",
+                "password": PWD,
+            }
+        )
+        invalid_form = PlaylistForm(
+            data={
+                "name": FAVORITE_PLAYLIST_NAME,
+                "visibility": "protected",
+                "password": PWD,
+            }
+        )
         self.assertTrue(valid_form.is_valid())
         self.assertFalse(invalid_form.is_valid())
-        self.assertEqual(invalid_form.errors["name"][0], _("You cannot create a playlist named \"Favorites\""))
+        self.assertEqual(
+            invalid_form.errors["name"][0],
+            _('You cannot create a playlist named "Favorites"'),
+        )
         print(" --->  test_name_validation_for_protected_playlist ok")
 
     @override_settings(USE_PLAYLIST=True)
@@ -179,10 +208,14 @@ class PlaylistRemoveFormTest(TestCase):
         agree_not_provided_form = PlaylistRemoveForm(data={})
         self.assertFalse(agree_not_selected_form.is_valid())
         self.assertEqual(len(agree_not_selected_form.errors), 1)
-        self.assertEqual(agree_not_selected_form.errors["agree"][0], FIELD_REQUIRED_ERROR_MESSAGE)
+        self.assertEqual(
+            agree_not_selected_form.errors["agree"][0], FIELD_REQUIRED_ERROR_MESSAGE
+        )
         self.assertFalse(agree_not_provided_form.is_valid())
         self.assertEqual(len(agree_not_provided_form.errors), 1)
-        self.assertEqual(agree_not_provided_form.errors["agree"][0], FIELD_REQUIRED_ERROR_MESSAGE)
+        self.assertEqual(
+            agree_not_provided_form.errors["agree"][0], FIELD_REQUIRED_ERROR_MESSAGE
+        )
         print(" --->  test_agree_required ok")
 
     @override_settings(USE_PLAYLIST=True)
@@ -223,10 +256,14 @@ class PlaylistPasswordFormTests(TestCase):
         empty_password_form = PlaylistPasswordForm(data={"password": ""})
         self.assertFalse(password_not_provided_form.is_valid())
         self.assertEqual(len(password_not_provided_form.errors), 1)
-        self.assertEqual(password_not_provided_form.errors["password"][0], FIELD_REQUIRED_ERROR_MESSAGE)
+        self.assertEqual(
+            password_not_provided_form.errors["password"][0], FIELD_REQUIRED_ERROR_MESSAGE
+        )
         self.assertFalse(empty_password_form.is_valid())
         self.assertEqual(len(empty_password_form.errors), 1)
-        self.assertEqual(empty_password_form.errors["password"][0], FIELD_REQUIRED_ERROR_MESSAGE)
+        self.assertEqual(
+            empty_password_form.errors["password"][0], FIELD_REQUIRED_ERROR_MESSAGE
+        )
         print(" --->  test_password_required ok")
 
     @override_settings(USE_PLAYLIST=True)

@@ -18,10 +18,11 @@ SITE_ID = getattr(settings, "SITE_ID")
 
 class Playlist(models.Model):
     """Playlist model."""
+
     VISIBILITY_CHOICES = [
         ("public", _("Public")),
         ("protected", _("Password-protected")),
-        ("private", _("Private"))
+        ("private", _("Private")),
     ]
     name = models.CharField(
         verbose_name=_("Title"),
@@ -47,9 +48,9 @@ class Playlist(models.Model):
         choices=VISIBILITY_CHOICES,
         default="private",
         help_text=_(
-            '''
+            """
             Please chosse a right of access among 'public', 'password-protected', 'private'.
-            '''
+            """
         ),
     )
     autoplay = models.BooleanField(
@@ -60,10 +61,12 @@ class Playlist(models.Model):
     promoted = models.BooleanField(
         verbose_name=_("Promoted"),
         default=False,
-        help_text=_("Selecting this setting causes your playlist to be promoted on the page"
-                    + " listing promoted public playlists. However, if this setting is deactivated,"
-                    + " your playlist will still be accessible to everyone."
-                    + "<br>For general use, we recommend that you leave this setting disabled."),
+        help_text=_(
+            "Selecting this setting causes your playlist to be promoted on the page"
+            + " listing promoted public playlists. However, if this setting is deactivated,"
+            + " your playlist will still be accessible to everyone."
+            + "<br>For general use, we recommend that you leave this setting disabled."
+        ),
     )
     editable = models.BooleanField(
         verbose_name=_("Editable"),
@@ -134,7 +137,9 @@ class Playlist(models.Model):
 
     def clean(self) -> None:
         if self.visibility == "protected" and not self.password:
-            raise ValidationError("Password is required for a password-protected playlist.")
+            raise ValidationError(
+                "Password is required for a password-protected playlist."
+            )
         if self.visibility != "public":
             self.promoted = False
 
@@ -145,11 +150,13 @@ class Playlist(models.Model):
     def get_number_video(self) -> int:
         """Get the video number."""
         from .utils import get_number_video_in_playlist
+
         return get_number_video_in_playlist(self)
 
     def get_first_video(self, request=None) -> Video:
         """Get the first video."""
         from .utils import get_video_list_for_playlist, user_can_see_playlist_video
+
         if request is not None:
             for video in sort_videos_list(get_video_list_for_playlist(self), "rank"):
                 if user_can_see_playlist_video(request, video):
@@ -160,8 +167,9 @@ class Playlist(models.Model):
 class PlaylistContent(models.Model):
     """PlaylistContent model."""
 
-    playlist = models.ForeignKey(Playlist, verbose_name=_(
-        "Playlist"), on_delete=models.CASCADE)
+    playlist = models.ForeignKey(
+        Playlist, verbose_name=_("Playlist"), on_delete=models.CASCADE
+    )
     video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     date_added = models.DateTimeField(
         verbose_name=_("Date added"), default=timezone.now, editable=False
@@ -185,8 +193,9 @@ class PlaylistContent(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         try:
-            last_rank = PlaylistContent.objects.filter(
-                playlist=self.playlist).aggregate(Max("rank"))["rank__max"]
+            last_rank = PlaylistContent.objects.filter(playlist=self.playlist).aggregate(
+                Max("rank")
+            )["rank__max"]
             self.rank = last_rank + 1 if last_rank is not None else 1
         except Exception:
             ...

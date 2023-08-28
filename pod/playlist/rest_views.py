@@ -14,7 +14,9 @@ class PlaylistContentSerializer(serializers.ModelSerializer):
 
 
 class PlaylistSerializer(serializers.HyperlinkedModelSerializer):
-    videos = PlaylistContentSerializer(many=True, source="playlistcontent_set", read_only=True)
+    videos = PlaylistContentSerializer(
+        many=True, source="playlistcontent_set", read_only=True
+    )
 
     class Meta:
         model = Playlist
@@ -33,9 +35,7 @@ class PlaylistSerializer(serializers.HyperlinkedModelSerializer):
             "additional_owners",
             "videos",
         )
-        read_only_fields = (
-            "editable",
-        )
+        read_only_fields = ("editable",)
 
 
 class PlaylistViewSet(viewsets.ModelViewSet):

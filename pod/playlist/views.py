@@ -84,12 +84,15 @@ def playlist_list(request):
     elif visibility == "allmy":
         playlists = get_playlist_list_for_user(request.user)
     elif visibility == "all":
-        playlists = (get_playlist_list_for_user(request.user) | get_public_playlist(
-        ) | get_playlists_for_additional_owner(request.user))
+        playlists = (
+            get_playlist_list_for_user(request.user)
+            | get_public_playlist()
+            | get_playlists_for_additional_owner(request.user)
+        )
     elif visibility == "promoted":
         playlists = get_promoted_playlist()
     else:
-        return redirect(reverse('playlist:list'))
+        return redirect(reverse("playlist:list"))
 
     sort_field = request.GET.get("sort")
     sort_direction = request.GET.get("sort_direction")
@@ -104,7 +107,7 @@ def playlist_list(request):
             "playlists": playlists,
             "sort_field": sort_field,
             "sort_direction": sort_direction,
-        }
+        },
     )
 
 
@@ -116,7 +119,8 @@ def playlist_content(request, slug):
     playlist = get_playlist(slug)
     if (
         playlist.visibility == "public"
-        or playlist.visibility == "protected" or (
+        or playlist.visibility == "protected"
+        or (
             playlist.owner == request.user
             or playlist in get_playlists_for_additional_owner(request.user)
             or request.user.is_staff
@@ -124,10 +128,19 @@ def playlist_content(request, slug):
     ):
         return render_playlist(request, playlist, sort_field, sort_direction)
     else:
-        return HttpResponseRedirect(reverse('playlist:list'))
+        return HttpResponseRedirect(reverse("playlist:list"))
 
 
-def render_playlist_page(request, playlist, videos, in_favorites_playlist, count_videos, sort_field, sort_direction, form=None):
+def render_playlist_page(
+    request,
+    playlist,
+    videos,
+    in_favorites_playlist,
+    count_videos,
+    sort_field,
+    sort_direction,
+    form=None,
+):
     """Render playlist page with the videos list of this."""
     page_title = _("Playlist") + " : " + get_playlist_name(playlist)
     types = request.GET.getlist("type")
@@ -137,8 +150,9 @@ def render_playlist_page(request, playlist, videos, in_favorites_playlist, count
     cursus_selected = request.GET.getlist("cursus")
     additional_owners = get_additional_owners(playlist)
     full_path = (
-        request.get_full_path().replace("?page=%s" % request.GET.get("page", 1), "").replace(
-            "&page=%s" % request.GET.get("page", 1), "")
+        request.get_full_path()
+        .replace("?page=%s" % request.GET.get("page", 1), "")
+        .replace("&page=%s" % request.GET.get("page", 1), "")
     )
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     cursus_list = CURSUS_CODES
@@ -162,7 +176,7 @@ def render_playlist_page(request, playlist, videos, in_favorites_playlist, count
         "cursus_list": cursus_list,
         "sort_field": sort_field,
         "sort_direction": sort_direction,
-        "form": form
+        "form": form,
     }
 
     return render(request, "playlist/playlist.html", context)
@@ -190,7 +204,7 @@ def toggle_render_playlist_user_has_right(
                 count_videos,
                 sort_field,
                 sort_direction,
-                form
+                form,
             )
         else:
             messages.add_message(
@@ -207,16 +221,13 @@ def toggle_render_playlist_user_has_right(
             {
                 "form": form,
                 "playlist": playlist,
-            }
+            },
         )
 
 
 @login_required(redirect_field_name="referrer")
 def render_playlist(
-    request: dict,
-    playlist: Playlist,
-    sort_field: str,
-    sort_direction: str
+    request: dict, playlist: Playlist, sort_field: str, sort_direction: str
 ):
     """Render playlist page with the videos list of this."""
     videos_list = sort_videos_list(
@@ -243,9 +254,9 @@ def render_playlist(
         "playlist:content",
         kwargs={
             "slug": get_favorite_playlist_for_user(request.user).slug,
-        }
+        },
     )
-    in_favorites_playlist = (playlist_url == request.path)
+    in_favorites_playlist = playlist_url == request.path
     if playlist.visibility == "protected" and playlist.owner != request.user:
         return toggle_render_playlist_user_has_right(
             request,
@@ -266,7 +277,7 @@ def render_playlist(
                 "playlist": playlist,
                 "in_favorites_playlist": in_favorites_playlist,
                 "full_path": full_path,
-                "count_videos": count_videos
+                "count_videos": count_videos,
             },
         )
     return render_playlist_page(
@@ -276,7 +287,7 @@ def render_playlist(
         in_favorites_playlist,
         count_videos,
         sort_field,
-        sort_direction
+        sort_direction,
     )
 
 
@@ -286,10 +297,12 @@ def remove_video_in_playlist(request, slug, video_slug):
     playlist = get_object_or_404(Playlist, slug=slug)
     video = Video.objects.get(slug=video_slug)
     user_remove_video_from_playlist(playlist, video)
-    if request.GET.get('json'):
-        return JsonResponse({
-            'state': 'out-playlist',
-        })
+    if request.GET.get("json"):
+        return JsonResponse(
+            {
+                "state": "out-playlist",
+            }
+        )
     return redirect(request.META["HTTP_REFERER"])
 
 
@@ -299,10 +312,12 @@ def add_video_in_playlist(request, slug, video_slug):
     playlist = get_playlist(slug)
     video = Video.objects.get(slug=video_slug)
     user_add_video_in_playlist(playlist, video)
-    if request.GET.get('json'):
-        return JsonResponse({
-            'state': 'in-playlist',
-        })
+    if request.GET.get("json"):
+        return JsonResponse(
+            {
+                "state": "in-playlist",
+            }
+        )
     return redirect(request.META["HTTP_REFERER"])
 
 
@@ -333,8 +348,11 @@ def remove_playlist_view(request, slug: str):
     return render(
         request,
         "playlist/delete.html",
-        {"playlist": playlist, "form": form,
-            "page_title": f"{_('Delete the playlist')} \"{playlist.name}\""}
+        {
+            "playlist": playlist,
+            "form": form,
+            "page_title": f"{_('Delete the playlist')} \"{playlist.name}\"",
+        },
     )
 
 
@@ -342,8 +360,11 @@ def remove_playlist_view(request, slug: str):
 def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) -> None:
     """Handle post request for add_or_edit function."""
     page_title = ""
-    form = PlaylistForm(
-        request.POST, instance=playlist) if playlist else PlaylistForm(request.POST)
+    form = (
+        PlaylistForm(request.POST, instance=playlist)
+        if playlist
+        else PlaylistForm(request.POST)
+    )
     if form.is_valid():
         new_playlist = form.save(commit=False) if playlist is None else playlist
         new_playlist.site = get_current_site(request)
@@ -356,14 +377,13 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
         new_playlist.save()
         new_playlist.additional_owners.clear()
         new_playlist.save()
-        if (request.POST.get("additional_owners")):
+        if request.POST.get("additional_owners"):
             for o in request.POST.get("additional_owners"):
                 new_playlist.additional_owners.add(o)
             new_playlist.save()
         if request.GET.get("next"):
             video_slug = request.GET.get("next").split("/")[2]
-            user_add_video_in_playlist(
-                new_playlist, Video.objects.get(slug=video_slug))
+            user_add_video_in_playlist(new_playlist, Video.objects.get(slug=video_slug))
             messages.add_message(
                 request,
                 messages.INFO,
@@ -373,11 +393,15 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
         return HttpResponseRedirect(
             reverse("playlist:content", kwargs={"slug": new_playlist.slug})
         )
-    return render(request, "playlist/add_or_edit.html", {
-        "form": form,
-        "page_title": page_title,
-        "options": "",
-    })
+    return render(
+        request,
+        "playlist/add_or_edit.html",
+        {
+            "form": form,
+            "page_title": page_title,
+            "options": "",
+        },
+    )
 
 
 @login_required(redirect_field_name="referrer")
@@ -390,21 +414,24 @@ def handle_get_request_for_add_or_edit_function(request, slug: str) -> None:
     playlist = get_object_or_404(Playlist, slug=slug) if slug else None
     if playlist:
         if (
-            (request.user == playlist.owner or request.user.is_staff)
-            and playlist.editable
-        ):
+            request.user == playlist.owner or request.user.is_staff
+        ) and playlist.editable:
             form = PlaylistForm(instance=playlist)
-            page_title = _("Edit the playlist") + f" \"{playlist.name}\""
+            page_title = _("Edit the playlist") + f' "{playlist.name}"'
         else:
             return redirect(reverse("playlist:list"))
     else:
         form = PlaylistForm()
         page_title = _("Add a playlist")
-    return render(request, "playlist/add_or_edit.html", {
-        "form": form,
-        "page_title": page_title,
-        "options": options,
-    })
+    return render(
+        request,
+        "playlist/add_or_edit.html",
+        {
+            "form": form,
+            "page_title": page_title,
+            "options": options,
+        },
+    )
 
 
 @csrf_protect
@@ -465,8 +492,9 @@ def start_playlist(request, slug, video=None):
             if form_password and check_password(form_password, playlist):
                 return redirect(get_link_to_start_playlist(request, playlist, video))
             else:
-                messages.add_message(request, messages.ERROR,
-                                     _("The password is incorrect."))
+                messages.add_message(
+                    request, messages.ERROR, _("The password is incorrect.")
+                )
                 return redirect(request.META["HTTP_REFERER"])
         else:
             form = PlaylistPasswordForm()
@@ -476,7 +504,7 @@ def start_playlist(request, slug, video=None):
                 {
                     "form": form,
                     "playlist": playlist,
-                }
+                },
             )
     else:
         return redirect(reverse("playlist:list"))
@@ -498,18 +526,27 @@ def get_video(request: WSGIRequest, video_slug: str, playlist_slug: str) -> Json
     video = get_object_or_404(Video, slug=video_slug)
     playlist = get_object_or_404(Playlist, slug=playlist_slug)
     videos = get_video_list_for_playlist(playlist)
-    if (video in get_video_list_for_playlist(playlist)):
+    if video in get_video_list_for_playlist(playlist):
         context = {
             "video": video,
             "playlist_in_get": playlist,
             "videos": videos,
         }
-        breadcrumbs = render_to_string("playlist/playlist_breadcrumbs.html", context, request)
+        breadcrumbs = render_to_string(
+            "playlist/playlist_breadcrumbs.html", context, request
+        )
         opengraph = render_to_string("videos/video_opengraph.html", context, request)
-        more_script = '<div id="more-script">%s</div>' % render_to_string("videos/video_more_script.html", context, request)
+        more_script = '<div id="more-script">%s</div>' % render_to_string(
+            "videos/video_more_script.html", context, request
+        )
         page_aside = render_to_string("videos/video_page_aside.html", context, request)
-        page_content = render_to_string("videos/video_page_content.html", context, request)
-        page_title = '<title>%s - %s</title>' % (__TITLE_SITE__, render_to_string("videos/video_page_title.html", context, request))
+        page_content = render_to_string(
+            "videos/video_page_content.html", context, request
+        )
+        page_title = "<title>%s - %s</title>" % (
+            __TITLE_SITE__,
+            render_to_string("videos/video_page_title.html", context, request),
+        )
         response_data = {
             "breadcrumbs": breadcrumbs,
             "opengraph": opengraph,

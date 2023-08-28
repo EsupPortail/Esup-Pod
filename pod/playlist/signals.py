@@ -11,10 +11,12 @@ from .models import Playlist
 
 @receiver(m2m_changed, sender=Owner.sites.through)
 def update_favorite_playlist(sender, instance, action, reverse, model, pk_set, **kwargs):
-    if action == 'post_add':
+    if action == "post_add":
         for site_id in pk_set:
             site = Site.objects.get(id=site_id)
-            if not Playlist.objects.filter(name=FAVORITE_PLAYLIST_NAME, owner=instance.user, site=site).exists():
+            if not Playlist.objects.filter(
+                name=FAVORITE_PLAYLIST_NAME, owner=instance.user, site=site
+            ).exists():
                 Playlist.objects.create(
                     name=FAVORITE_PLAYLIST_NAME,
                     description=_("Your favorites videos."),

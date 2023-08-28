@@ -41,9 +41,7 @@ def user_add_video_in_playlist(playlist: Playlist, video: Video) -> str:
     """
     if not check_video_in_playlist(playlist, video):
         PlaylistContent.objects.create(
-            playlist=playlist,
-            video=video,
-            rank=get_next_rank(playlist)
+            playlist=playlist, video=video, rank=get_next_rank(playlist)
         )
 
 
@@ -72,8 +70,9 @@ def get_next_rank(playlist: Playlist) -> int:
     Returns:
         int: The next rank.
     """
-    last_rank = PlaylistContent.objects.filter(
-        playlist=playlist).aggregate(Max("rank"))["rank__max"]
+    last_rank = PlaylistContent.objects.filter(playlist=playlist).aggregate(Max("rank"))[
+        "rank__max"
+    ]
     return last_rank + 1 if last_rank is not None else 1
 
 
@@ -162,7 +161,9 @@ def get_playlist_list_for_user(user: User) -> list:
     if getattr(settings, "USE_FAVORITES", True):
         return Playlist.objects.filter(owner=user, site=Site.objects.get_current())
     else:
-        return Playlist.objects.filter(owner=user, site=Site.objects.get_current()).exclude(name="Favorites")
+        return Playlist.objects.filter(
+            owner=user, site=Site.objects.get_current()
+        ).exclude(name="Favorites")
 
 
 def get_video_list_for_playlist(playlist: Playlist) -> list:
@@ -182,9 +183,9 @@ def get_video_list_for_playlist(playlist: Playlist) -> list:
         tables=["playlist_playlistcontent"],
         where=[
             "playlist_playlistcontent.video_id=video_video.id",
-            "playlist_playlistcontent.playlist_id=%s"
+            "playlist_playlistcontent.playlist_id=%s",
         ],
-        params=[playlist.id]
+        params=[playlist.id],
     )
     return video_list
 
@@ -212,7 +213,9 @@ def get_favorite_playlist_for_user(user: User) -> Playlist:
     Returns:
         Playlist: The favorite playlist
     """
-    return Playlist.objects.get(name=FAVORITE_PLAYLIST_NAME, owner=user, site=Site.objects.get_current())
+    return Playlist.objects.get(
+        name=FAVORITE_PLAYLIST_NAME, owner=user, site=Site.objects.get_current()
+    )
 
 
 def remove_playlist(user: User, playlist: Playlist) -> None:
@@ -237,7 +240,9 @@ def get_playlists_for_additional_owner(user: User) -> list:
     Returns:
         list (:class:`list(pod.playlist.models.Playlist)`): The list of playlist
     """
-    return Playlist.objects.filter(additional_owners=user, site=Site.objects.get_current())
+    return Playlist.objects.filter(
+        additional_owners=user, site=Site.objects.get_current()
+    )
 
 
 def get_additional_owners(playlist: Playlist) -> list:
@@ -253,7 +258,9 @@ def get_additional_owners(playlist: Playlist) -> list:
     return playlist.additional_owners.all()
 
 
-def get_link_to_start_playlist(request: WSGIRequest, playlist: Playlist, video=None) -> str:
+def get_link_to_start_playlist(
+    request: WSGIRequest, playlist: Playlist, video=None
+) -> str:
     """
     Get the link to start a specific playlist.
 
@@ -267,7 +274,9 @@ def get_link_to_start_playlist(request: WSGIRequest, playlist: Playlist, video=N
     """
     first_video = playlist.get_first_video(request)
     if video:
-        return f"{reverse('video:video', kwargs={'slug': video})}?playlist={playlist.slug}"
+        return (
+            f"{reverse('video:video', kwargs={'slug': video})}?playlist={playlist.slug}"
+        )
     elif first_video:
         return f"{reverse('video:video', kwargs={'slug': first_video.slug})}?playlist={playlist.slug}"
     else:
@@ -286,7 +295,8 @@ def get_total_favorites_video(video: Video) -> int:
     """
     favorites_playlists = Playlist.objects.filter(name=FAVORITE_PLAYLIST_NAME)
     favorite_contents = PlaylistContent.objects.filter(
-        playlist__in=favorites_playlists, video=video)
+        playlist__in=favorites_playlists, video=video
+    )
     count = favorite_contents.count()
     return count
 

@@ -853,14 +853,16 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         template_video = "videos/video-iframe.html"
     elif request.GET.get("playlist"):
         playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-        if playlist.visibility == "public" or playlist.visibility == "protected" or (
-            playlist.owner == request.user
-            or playlist in get_playlists_for_additional_owner(request.user)
-            or request.user.is_staff
-        ):
-            videos = sort_videos_list(
-                get_video_list_for_playlist(playlist), "rank"
+        if (
+            playlist.visibility == "public"
+            or playlist.visibility == "protected"
+            or (
+                playlist.owner == request.user
+                or playlist in get_playlists_for_additional_owner(request.user)
+                or request.user.is_staff
             )
+        ):
+            videos = sort_videos_list(get_video_list_for_playlist(playlist), "rank")
             params = {
                 "playlist_in_get": playlist,
                 "videos": videos,
@@ -870,7 +872,9 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
 
-def toggle_render_video_user_can_see_video(show_page, is_password_protected, request, slug_private, video) -> bool:
+def toggle_render_video_user_can_see_video(
+    show_page, is_password_protected, request, slug_private, video
+) -> bool:
     """Toogle condition for `render_video()`."""
     return (
         (show_page and not is_password_protected)
@@ -899,7 +903,8 @@ def toggle_render_video_when_is_playlist_player(request):
                 playlistcontent__playlist_id=playlist.id,
                 is_draft=False,
                 is_restricted=False,
-            ) | Video.objects.filter(
+            )
+            | Video.objects.filter(
                 playlistcontent__playlist_id=playlist.id,
                 owner=request.user,
             )
@@ -947,10 +952,11 @@ def render_video(
 
     show_page = get_video_access(request, video, slug_private)
 
-    if toggle_render_video_user_can_see_video(show_page, is_password_protected, request, slug_private, video):
-        if (
-            request.GET.get("playlist")
-            and not user_can_see_playlist_video(request, video)
+    if toggle_render_video_user_can_see_video(
+        show_page, is_password_protected, request, slug_private, video
+    ):
+        if request.GET.get("playlist") and not user_can_see_playlist_video(
+            request, video
         ):
             toggle_render_video_when_is_playlist_player(request)
         return render(
@@ -2032,7 +2038,8 @@ def get_all_views_count(v_id, date_filter=date.today()):
 
     # playlist addition in day
     count = PlaylistContent.objects.filter(
-        video_id=v_id, date_added__date=date_filter).count()
+        video_id=v_id, date_added__date=date_filter
+    ).count()
     all_views["playlist_day"] = count if count else 0
 
     # playlist addition in month
@@ -2058,9 +2065,7 @@ def get_all_views_count(v_id, date_filter=date.today()):
 
     # favorite addition in day
     count = PlaylistContent.objects.filter(
-        playlist__in=favorites_playlists,
-        video_id=v_id,
-        date_added__date=date_filter
+        playlist__in=favorites_playlists, video_id=v_id, date_added__date=date_filter
     ).count()
     all_views["fav_day"] = count if count else 0
 
@@ -2075,9 +2080,7 @@ def get_all_views_count(v_id, date_filter=date.today()):
 
     # favorite addition in year
     count = PlaylistContent.objects.filter(
-        playlist__in=favorites_playlists,
-        video_id=v_id,
-        date_added__year=date_filter.year
+        playlist__in=favorites_playlists, video_id=v_id, date_added__year=date_filter.year
     ).count()
     all_views["fav_year"] = count if count else 0
 

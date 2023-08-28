@@ -32,7 +32,9 @@ def show_meeting_button(context):
 
 @register.simple_tag(name="show_stats")
 def show_stats(user):
-    return (get_number_video_for_user(user) > 0) or (get_number_playlist_for_user(user) > 0 and USE_PLAYLIST)
+    return (get_number_video_for_user(user) > 0) or (
+        get_number_playlist_for_user(user) > 0 and USE_PLAYLIST
+    )
 
 
 @register.simple_tag(name="get_number_video_user")

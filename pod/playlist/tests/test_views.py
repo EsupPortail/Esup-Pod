@@ -14,7 +14,11 @@ from pod.video.models import Type, Video
 from ..apps import FAVORITE_PLAYLIST_NAME
 from ...playlist import context_processors
 from ..models import Playlist, PlaylistContent
-from ..utils import get_favorite_playlist_for_user, get_link_to_start_playlist, user_add_video_in_playlist
+from ..utils import (
+    get_favorite_playlist_for_user,
+    get_link_to_start_playlist,
+    user_add_video_in_playlist,
+)
 
 import importlib
 
@@ -116,10 +120,7 @@ class TestPlaylistsPageTestCase(TestCase):
             200,
             "Test if status code equal 200.",
         )
-        self.assertTrue(
-            "4" in response.content.decode(),
-            "Test if '4' is visible."
-        )
+        self.assertTrue("4" in response.content.decode(), "Test if '4' is visible.")
         self.client.logout()
         print(" --->  test_video_counter ok")
 
@@ -134,10 +135,7 @@ class TestPlaylistsPageTestCase(TestCase):
             200,
             "Test if status code equal 200.",
         )
-        self.assertTrue(
-            "4" in response.content.decode(),
-            "Test if '4' is visible."
-        )
+        self.assertTrue("4" in response.content.decode(), "Test if '4' is visible.")
         self.client.logout()
         print(" --->  test_playlist_counter ok")
 
@@ -154,7 +152,7 @@ class TestPlaylistsPageTestCase(TestCase):
         )
         self.assertTrue(
             "Protected playlist" in response.content.decode(),
-            "Test if playlist title is visible."
+            "Test if playlist title is visible.",
         )
         self.client.logout()
         print(" --->  test_card_titles ok")
@@ -174,11 +172,11 @@ class TestPlaylistsPageTestCase(TestCase):
         )
         self.assertFalse(
             "bi-lock" in response.content.decode(),
-            "Test if protected icon isn't visible."
+            "Test if protected icon isn't visible.",
         )
         self.assertFalse(
             "bi-globe-americas" in response.content.decode(),
-            "Test if public icon isn't visible."
+            "Test if public icon isn't visible.",
         )
         self.client.logout()
         print(" --->  test_private_filter ok")
@@ -198,11 +196,11 @@ class TestPlaylistsPageTestCase(TestCase):
         )
         self.assertFalse(
             "bi-incognito" in response.content.decode(),
-            "Test if private icon isn't visible."
+            "Test if private icon isn't visible.",
         )
         self.assertFalse(
             "bi-globe-americas" in response.content.decode(),
-            "Test if public icon isn't visible."
+            "Test if public icon isn't visible.",
         )
         self.client.logout()
         print(" --->  test_protected_filter ok")
@@ -222,11 +220,10 @@ class TestPlaylistsPageTestCase(TestCase):
         )
         self.assertFalse(
             "bi-incognito" in response.content.decode(),
-            "Test if private icon isn't visible."
+            "Test if private icon isn't visible.",
         )
         self.assertFalse(
-            "bi-lock" in response.content.decode(),
-            "Test if protected icon isn't visible"
+            "bi-lock" in response.content.decode(), "Test if protected icon isn't visible"
         )
         self.client.logout()
         print(" --->  test_public_filter ok")
@@ -256,8 +253,7 @@ class TestPlaylistsPageLinkTestCase(TestCase):
             "Test if status code equal 200.",
         )
         self.assertTrue(
-            "bi-list-ul" in response.content.decode(),
-            "Test if playlist icon is visible."
+            "bi-list-ul" in response.content.decode(), "Test if playlist icon is visible."
         )
         self.client.logout()
         print(" --->  test_icon_visible ok")
@@ -265,6 +261,7 @@ class TestPlaylistsPageLinkTestCase(TestCase):
 
 class TestModalVideoPlaylist(TestCase):
     """Playlist list modal test case."""
+
     fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:
@@ -283,21 +280,21 @@ class TestModalVideoPlaylist(TestCase):
             description="Ma description",
             visibility="public",
             autoplay=True,
-            owner=self.user
+            owner=self.user,
         )
         self.private_playlist_user = Playlist.objects.create(
             name="private_playlist_user",
             description="Ma description",
             visibility="private_playlist",
             autoplay=True,
-            owner=self.user
+            owner=self.user,
         )
         self.public_playlist_user2 = Playlist.objects.create(
             name="public_playlist_user2",
             description="Ma description",
             visibility="protected_playlist",
             autoplay=True,
-            owner=self.user2
+            owner=self.user2,
         )
         user_add_video_in_playlist(self.public_playlist_user, self.video)
         self.url = reverse("video:video", kwargs={"slug": self.video.slug})
@@ -310,15 +307,15 @@ class TestModalVideoPlaylist(TestCase):
         response = self.client.get(self.url)
         self.assertTrue(
             f'id="{self.public_playlist_user.slug}-btn"' in response.content.decode(),
-            "Test if the first playlist is present."
+            "Test if the first playlist is present.",
         )
         self.assertTrue(
             f'id="{self.private_playlist_user.slug}-btn"' in response.content.decode(),
-            "Test if the second playlist is present."
+            "Test if the second playlist is present.",
         )
         self.assertFalse(
             f'id="{self.public_playlist_user2.slug}-btn"' in response.content.decode(),
-            "Test if the user2 playlist is not present."
+            "Test if the user2 playlist is not present.",
         )
         self.client.logout()
         print(" --->  test_list_playlist_in_modal ok")
@@ -333,20 +330,25 @@ class TestModalVideoPlaylist(TestCase):
         # self.video is on the public playlist of user1
         url_remove_button = reverse(
             "playlist:remove-video",
-            kwargs={"slug": self.public_playlist_user.slug, "video_slug": self.video.slug}
+            kwargs={
+                "slug": self.public_playlist_user.slug,
+                "video_slug": self.video.slug,
+            },
         )
         url_add_button = reverse(
             "playlist:add-video",
-            kwargs={"slug": self.private_playlist_user.slug,
-                    "video_slug": self.video.slug}
+            kwargs={
+                "slug": self.private_playlist_user.slug,
+                "video_slug": self.video.slug,
+            },
         )
         self.assertTrue(
             f'<a href="{url_remove_button}"' in response.content.decode(),
-            "Test if public playlist show a delete button."
+            "Test if public playlist show a delete button.",
         )
         self.assertTrue(
             f'<a href="{url_add_button}"' in response.content.decode(),
-            "Test if private playlist show an add button."
+            "Test if private playlist show an add button.",
         )
 
         self.client.logout()
@@ -362,20 +364,25 @@ class TestModalVideoPlaylist(TestCase):
         # self.video is on the public playlist of user1
         url_remove_button = reverse(
             "playlist:remove-video",
-            kwargs={"slug": self.public_playlist_user.slug, "video_slug": self.video.slug}
+            kwargs={
+                "slug": self.public_playlist_user.slug,
+                "video_slug": self.video.slug,
+            },
         )
         url_add_button = reverse(
             "playlist:add-video",
-            kwargs={"slug": self.private_playlist_user.slug,
-                    "video_slug": self.video.slug}
+            kwargs={
+                "slug": self.private_playlist_user.slug,
+                "video_slug": self.video.slug,
+            },
         )
         self.assertTrue(
             f'<a href="{url_remove_button}"' in response.content.decode(),
-            "Test if public playlist show a delete button"
+            "Test if public playlist show a delete button",
         )
         self.assertTrue(
             f'<a href="{url_add_button}"' in response.content.decode(),
-            "Test if private playlist show an add button"
+            "Test if private playlist show an add button",
         )
 
         self.client.logout()
@@ -399,8 +406,9 @@ class TestAddOrRemoveFormTestCase(TestCase):
             owner=self.user,
         )
         self.addUrl = reverse("playlist:add")
-        self.editUrl = reverse("playlist:edit", kwargs={
-                               "slug": self.simple_playlist.slug})
+        self.editUrl = reverse(
+            "playlist:edit", kwargs={"slug": self.simple_playlist.slug}
+        )
 
     @override_settings(USE_PLAYLIST=True)
     def test_add_form_page(self) -> None:
@@ -483,7 +491,8 @@ class TestStartupPlaylistParamTestCase(TestCase):
         )
         print(response.content.decode())
         self.assertTrue(
-            f"/playlist/start-playlist/{self.simple_playlist.slug}" in response.content.decode(),
+            f"/playlist/start-playlist/{self.simple_playlist.slug}"
+            in response.content.decode(),
             "Test if the link is present into the playlists page.",
         )
         self.client.logout()
@@ -510,6 +519,7 @@ class TestStartupPlaylistParamTestCase(TestCase):
 
 class TestPlaylistPage(TestCase):
     """Playlist page test case."""
+
     fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:
@@ -541,20 +551,24 @@ class TestPlaylistPage(TestCase):
             description="Ma description",
             visibility="public",
             autoplay=True,
-            owner=self.user
+            owner=self.user,
         )
         self.playlist_user2 = Playlist.objects.create(
             name="Playlist2",
             description="Ma description",
             visibility="public",
             autoplay=True,
-            owner=self.user2
+            owner=self.user2,
         )
 
-        self.url_fav_user1 = reverse("playlist:content", kwargs={
-                                     'slug': get_favorite_playlist_for_user(self.user).slug})
-        self.url_fav_user2 = reverse("playlist:content", kwargs={
-                                     'slug': get_favorite_playlist_for_user(self.user2).slug})
+        self.url_fav_user1 = reverse(
+            "playlist:content",
+            kwargs={"slug": get_favorite_playlist_for_user(self.user).slug},
+        )
+        self.url_fav_user2 = reverse(
+            "playlist:content",
+            kwargs={"slug": get_favorite_playlist_for_user(self.user2).slug},
+        )
 
     @override_settings(USE_FAVORITES=True)
     def test_playlist_video_list(self):
@@ -577,8 +591,9 @@ class TestPlaylistPage(TestCase):
 
         self.client.force_login(self.user2)
         user_add_video_in_playlist(self.playlist_user2, self.video3)
-        response = self.client.get(reverse("playlist:content", kwargs={
-                                   'slug': self.playlist_user2.slug}))
+        response = self.client.get(
+            reverse("playlist:content", kwargs={"slug": self.playlist_user2.slug})
+        )
         self.assertTrue(
             'data-countvideos="1"' in response.content.decode(),
             "Test if the playlist video list isn't empty",
@@ -612,15 +627,12 @@ class TestPlaylistPage(TestCase):
         self.client.force_login(self.user)
         user_add_video_in_playlist(self.playlist_user1, self.video)
         user_add_video_in_playlist(get_favorite_playlist_for_user(self.user), self.video)
-        response = self.client.get(reverse("playlist:content", kwargs={
-                                   'slug': self.playlist_user1.slug}))
-        self.assertTrue(
-            'class="bi bi-folder-minus"' in response.content.decode()
+        response = self.client.get(
+            reverse("playlist:content", kwargs={"slug": self.playlist_user1.slug})
         )
+        self.assertTrue('class="bi bi-folder-minus"' in response.content.decode())
         response = self.client.get(self.url_fav_user1)
-        self.assertFalse(
-            'class="bi bi-folder-minus"' in response.content.decode()
-        )
+        self.assertFalse('class="bi bi-folder-minus"' in response.content.decode())
         self.client.logout()
         print(" --->  test_folder_icon_in_video_links ok")
 
@@ -639,15 +651,12 @@ class TestPlaylistPage(TestCase):
         """Test if the manage section appears correctly for an editable playlist."""
         importlib.reload(context_processors)
         self.client.force_login(self.user)
-        response = self.client.get(reverse("playlist:content", kwargs={
-                                   'slug': self.playlist_user1.slug}))
-        self.assertTrue(
-            'id="card-manage-playlist"' in response.content.decode()
+        response = self.client.get(
+            reverse("playlist:content", kwargs={"slug": self.playlist_user1.slug})
         )
+        self.assertTrue('id="card-manage-playlist"' in response.content.decode())
         response = self.client.get(self.url_fav_user1)
-        self.assertFalse(
-            'id="card-manage-playlist"' in response.content.decode()
-        )
+        self.assertFalse('id="card-manage-playlist"' in response.content.decode())
         self.client.logout()
         print(" --->  test_manage_section_for_editable_playlists ok")
 
@@ -686,14 +695,14 @@ class TestStatsInfoTestCase(TestCase):
             description="Ma description",
             visibility="public",
             autoplay=True,
-            owner=self.user
+            owner=self.user,
         )
         self.playlist_user2 = Playlist.objects.create(
             name="Playlist2",
             description="Ma description",
             visibility="public",
             autoplay=True,
-            owner=self.user2
+            owner=self.user2,
         )
         user_add_video_in_playlist(get_favorite_playlist_for_user(self.user), self.video)
         user_add_video_in_playlist(get_favorite_playlist_for_user(self.user2), self.video)
@@ -756,7 +765,8 @@ class TestStatsInfoTestCase(TestCase):
             '<span id="stats-usermenu-video-count">2</span>' in response.content.decode()
         )
         self.assertTrue(
-            '<span id="stats-usermenu-playlist-count">2</span>' in response.content.decode()
+            '<span id="stats-usermenu-playlist-count">2</span>'
+            in response.content.decode()
         )
         self.client.logout()
 
@@ -767,7 +777,8 @@ class TestStatsInfoTestCase(TestCase):
             '<span id="stats-usermenu-video-count">1</span>' in response.content.decode()
         )
         self.assertTrue(
-            '<span id="stats-usermenu-playlist-count">2</span>' in response.content.decode()
+            '<span id="stats-usermenu-playlist-count">2</span>'
+            in response.content.decode()
         )
         self.client.logout()
 
@@ -783,14 +794,14 @@ class TestPrivatePlaylistTestCase(TestCase):
     def setUp(self) -> None:
         """Set up tests."""
         self.first_student = User.objects.create(
-            username="student", password="student1234student")
+            username="student", password="student1234student"
+        )
         self.second_student = User.objects.create(
-            username="student2", password="student1234student")
+            username="student2", password="student1234student"
+        )
         self.url_private_playlist = reverse(
             "playlist:content",
-            kwargs={
-                'slug': get_favorite_playlist_for_user(self.second_student).slug
-            },
+            kwargs={"slug": get_favorite_playlist_for_user(self.second_student).slug},
         )
 
     @override_settings(USE_PLAYLIST=True, USE_FAVORITES=True)
@@ -812,9 +823,11 @@ class TestPlaylistPlayerTestCase(TestCase):
     def setUp(self) -> None:
         """Set up tests."""
         self.first_student = User.objects.create(
-            username="student", password="student1234student")
+            username="student", password="student1234student"
+        )
         self.second_student = User.objects.create(
-            username="student2", password="student1234student")
+            username="student2", password="student1234student"
+        )
         self.super_user = User.objects.create(username="admin", password="admin1234admin")
         self.video_first_student = Video.objects.create(
             title="Video First Student",
@@ -877,7 +890,7 @@ class TestPlaylistPlayerTestCase(TestCase):
             description="This playlist is simple.",
             visibility="public",
             autoplay=True,
-            owner=self.first_student
+            owner=self.first_student,
         )
         self.big_playlist = Playlist.objects.create(
             name="Big Playlist",
@@ -908,13 +921,16 @@ class TestPlaylistPlayerTestCase(TestCase):
         importlib.reload(context_processors)
         self.client.force_login(self.first_student)
         response = self.client.get(
-            f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}')
+            f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}'
+        )
         next_video_url = f'{reverse("video:video", kwargs={"slug": self.video_first_student_draft.slug})}?playlist={self.simple_playlist.slug}'
         self.assertEqual(response.status_code, 200)
-        soup = BeautifulSoup(response.content, 'html.parser')
-        next_video_html_element = soup.find_all(attrs={
-            "href": next_video_url,
-        })
+        soup = BeautifulSoup(response.content, "html.parser")
+        next_video_html_element = soup.find_all(
+            attrs={
+                "href": next_video_url,
+            }
+        )
         self.assertIsNotNone(next_video_html_element)
         self.client.logout()
         print(" --->  test_switch_video_in_playlist_player ok")
@@ -926,12 +942,15 @@ class TestPlaylistPlayerTestCase(TestCase):
         self.client.force_login(self.second_student)
         next_video_url = f'{reverse("video:video", kwargs={"slug": self.video_first_student_draft.slug})}?playlist={self.simple_playlist.slug}'
         response = self.client.get(
-            f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}')
+            f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}'
+        )
         self.assertEqual(response.status_code, 200)
-        soup = BeautifulSoup(response.content, 'html.parser')
-        next_video_html_elements = soup.find_all(attrs={
-            "href": next_video_url,
-        })
+        soup = BeautifulSoup(response.content, "html.parser")
+        next_video_html_elements = soup.find_all(
+            attrs={
+                "href": next_video_url,
+            }
+        )
         self.assertEqual(next_video_html_elements, [])
         self.client.logout()
         print(" --->  test_draft_videos_in_playlist_player ok")
@@ -942,7 +961,8 @@ class TestPlaylistPlayerTestCase(TestCase):
         importlib.reload(context_processors)
         self.client.force_login(self.first_student)
         response = self.client.get(
-            f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.big_playlist.slug}')
+            f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.big_playlist.slug}'
+        )
         self.assertEqual(response.status_code, 200)
         self.assertTrue("scroll-container" in response.content.decode())
         self.client.logout()
@@ -954,7 +974,8 @@ class TestPlaylistPlayerTestCase(TestCase):
         importlib.reload(context_processors)
         self.client.force_login(self.first_student)
         response = self.client.get(
-            f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}')
+            f'{reverse("video:video", kwargs={"slug": self.video_first_student.slug})}?playlist={self.simple_playlist.slug}'
+        )
         self.assertEqual(response.status_code, 200)
         self.assertFalse("scroll-container" in response.content.decode())
         self.client.logout()
@@ -995,7 +1016,7 @@ class StartPlaylistViewTest(TestCase):
             description="Ma description",
             visibility="public",
             autoplay=True,
-            owner=self.user
+            owner=self.user,
         )
         self.protected_playlist_user1 = Playlist.objects.create(
             name="Playlist2",
@@ -1003,14 +1024,14 @@ class StartPlaylistViewTest(TestCase):
             visibility="protected",
             password="password",
             autoplay=True,
-            owner=self.user
+            owner=self.user,
         )
         self.private_playlist_user1 = Playlist.objects.create(
             name="Playlist2",
             description="Ma description",
             visibility="private",
             autoplay=True,
-            owner=self.user
+            owner=self.user,
         )
         user_add_video_in_playlist(self.public_playlist_user1, self.video)
         user_add_video_in_playlist(self.public_playlist_user1, self.video2)
@@ -1029,9 +1050,14 @@ class StartPlaylistViewTest(TestCase):
         importlib.reload(context_processors)
         self.client.force_login(self.user)
         response = self.client.get(
-            reverse("playlist:start-playlist", kwargs={"slug": self.public_playlist_user1.slug}))
+            reverse(
+                "playlist:start-playlist",
+                kwargs={"slug": self.public_playlist_user1.slug},
+            )
+        )
         expected_url = get_link_to_start_playlist(
-            self.client.request, self.public_playlist_user1)
+            self.client.request, self.public_playlist_user1
+        )
         self.assertRedirects(response, expected_url)
         self.client.logout()
         print(" --->  test_start_playlist_public ok")
@@ -1041,9 +1067,14 @@ class StartPlaylistViewTest(TestCase):
         importlib.reload(context_processors)
         self.client.force_login(self.user)
         response = self.client.get(
-            reverse("playlist:start-playlist", kwargs={"slug": self.private_playlist_user1.slug}))
+            reverse(
+                "playlist:start-playlist",
+                kwargs={"slug": self.private_playlist_user1.slug},
+            )
+        )
         expected_url = get_link_to_start_playlist(
-            self.client.request, self.private_playlist_user1)
+            self.client.request, self.private_playlist_user1
+        )
         self.assertRedirects(response, expected_url)
         self.client.logout()
         print(" --->  test_start_playlist_private_owner ok")
@@ -1053,7 +1084,11 @@ class StartPlaylistViewTest(TestCase):
         importlib.reload(context_processors)
         self.client.force_login(self.user2)
         response = self.client.get(
-            reverse("playlist:start-playlist", kwargs={"slug": self.private_playlist_user1.slug}))
+            reverse(
+                "playlist:start-playlist",
+                kwargs={"slug": self.private_playlist_user1.slug},
+            )
+        )
         expected_url = reverse("playlist:list")
         self.assertRedirects(response, expected_url)
         self.client.logout()
@@ -1064,7 +1099,11 @@ class StartPlaylistViewTest(TestCase):
         importlib.reload(context_processors)
         self.client.force_login(self.user2)
         response = self.client.get(
-            reverse("playlist:start-playlist", kwargs={"slug": self.protected_playlist_user1.slug}))
+            reverse(
+                "playlist:start-playlist",
+                kwargs={"slug": self.protected_playlist_user1.slug},
+            )
+        )
         self.assertTemplateUsed(response, "playlist/protected-playlist-form.html")
         print(" --->  test_start_playlist_protected_get_request_not_owner ok")
 
@@ -1073,9 +1112,14 @@ class StartPlaylistViewTest(TestCase):
         importlib.reload(context_processors)
         self.client.force_login(self.user)
         response = self.client.get(
-            reverse("playlist:start-playlist", kwargs={"slug": self.protected_playlist_user1.slug}))
+            reverse(
+                "playlist:start-playlist",
+                kwargs={"slug": self.protected_playlist_user1.slug},
+            )
+        )
         expected_url = get_link_to_start_playlist(
-            self.client.request, self.protected_playlist_user1)
+            self.client.request, self.protected_playlist_user1
+        )
         self.assertRedirects(response, expected_url)
         self.assertTemplateNotUsed(response, "playlist/protected-playlist-form.html")
         print(" --->  test_start_playlist_protected_get_request_owner ok")
