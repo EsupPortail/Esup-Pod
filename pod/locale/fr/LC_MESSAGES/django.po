@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-28 14:31+0000\n"
+"POT-Creation-Date: 2023-08-29 14:17+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -753,8 +753,7 @@ msgid "More"
 msgstr "Plus"
 
 #: pod/bbb/templates/bbb/live_record_list.html
-#: pod/bbb/templates/bbb/record_list.html
-#: pod/live/templates/live/events_list.html pod/main/templates/loader.html
+#: pod/bbb/templates/bbb/record_list.html pod/main/templates/loader.html
 #: pod/playlist/templates/playlist/playlist-videos-list.html
 #: pod/podfile/templates/podfile/home_content.html
 #: pod/podfile/templates/podfile/list_folder_files.html
@@ -3183,8 +3182,7 @@ msgstr "Mot de passe requis"
 #: pod/live/templates/live/event-form.html
 #: pod/live/templates/live/event_edit.html
 #: pod/live/templates/live/event_immediate_edit.html
-#: pod/live/templates/live/filter_aside.html pod/main/templates/contact_us.html
-#: pod/meeting/templates/meeting/invite.html
+#: pod/main/templates/contact_us.html pod/meeting/templates/meeting/invite.html
 #: pod/meeting/templates/meeting/join.html
 #: pod/playlist/templates/playlist/protected-playlist-form.html
 #: pod/video/templates/videos/video-form.html
@@ -3268,6 +3266,25 @@ msgstr "Réseaux sociaux"
 #: pod/video/templates/videos/video-info.html
 msgid "Share on"
 msgstr "Partager sur"
+
+#: pod/live/templates/live/event-info.html pod/main/templates/aside.html
+#: pod/video/templates/videos/video-info.html
+#, fuzzy
+#| msgid "Share on"
+msgid "Share on Facebook"
+msgstr "Partager sur"
+
+#: pod/live/templates/live/event-info.html pod/main/templates/aside.html
+#: pod/video/templates/videos/video-info.html
+msgid "Share on X (Twitter)"
+msgstr ""
+
+#: pod/live/templates/live/event-info.html pod/main/templates/aside.html
+#: pod/video/templates/videos/video-info.html
+#, fuzzy
+#| msgid "Share the link"
+msgid "Share on LinkedIn"
+msgstr "Partager le lien"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
@@ -3504,13 +3521,6 @@ msgstr "Vous pouvez créer un évènement immédiatement."
 msgid "You will just need to specify a title and an end time."
 msgstr "Vous devez simplement préciser un titre et une heure de fin."
 
-#: pod/live/templates/live/events.html pod/live/templates/live/my_events.html
-#, python-format
-msgid "%(counter)s event found"
-msgid_plural "%(counter)s events found"
-msgstr[0] "%(counter)s évènement trouvé"
-msgstr[1] "%(counter)s évènements trouvés"
-
 #: pod/live/templates/live/events.html
 msgid "Supervise broadcasters"
 msgstr "Superviser les diffuseurs"
@@ -3522,6 +3532,14 @@ msgid ""
 msgstr ""
 "Veuillez utiliser la barre d’outils située en dessous de la vignette de "
 "l’évènement sur lequel vous voulez travailler."
+
+#: pod/live/templates/live/events_list.html
+#: pod/live/templates/live/my_events.html
+#, python-format
+msgid "%(counter)s event found"
+msgid_plural "%(counter)s events found"
+msgstr[0] "%(counter)s évènement trouvé"
+msgstr[1] "%(counter)s évènements trouvés"
 
 #: pod/live/templates/live/events_list.html
 msgid "Sorry, no event found."
@@ -3548,6 +3566,13 @@ msgstr "Afficher tous les évènements"
 #: pod/video/templates/videos/filter_aside.html
 msgid "Types"
 msgstr "Types"
+
+#: pod/live/templates/live/filter_aside.html
+#: pod/video/templates/videos/change_video_owner.html
+#: pod/video/templates/videos/filter_aside.html
+#: pod/video_search/templates/search/search.html
+msgid "Filter"
+msgstr "Filtre"
 
 #: pod/live/templates/live/my_events.html
 msgid "No event found"
@@ -4727,7 +4752,6 @@ msgstr "Enregistrement"
 msgid "Recurring options"
 msgstr "Options de récurrence"
 
-#: pod/meeting/forms.py pod/video/forms.py
 #: pod/meeting/forms.py pod/playlist/forms.py pod/video/forms.py
 msgid "Owner of the video cannot be an additional owner too"
 msgstr ""
@@ -5454,10 +5478,6 @@ msgstr "Veuillez choisir une description. Celle-ci est vide par défaut."
 msgid "Right of access"
 msgstr "Droit d'accès"
 
-#: pod/playlist/templates/playlist/filter_aside.html
-msgid "When you click on a choice in the form, you will be automatically redirected to the page dedicated to this filter."
-msgstr "Lorsque vous cliquez sur un choix du formulaire, vous serez redirigé automatiquement vers la page dédiée à ce filtre."
-
 #: pod/playlist/forms.py pod/playlist/models.py
 msgid ""
 "\n"
@@ -5507,7 +5527,7 @@ msgstr "Veuillez choisir si cette playlist est en lecture automatique ou non."
 #| msgid "You cannot create a playlist named \"{FAVORITE_PLAYLIST_NAME}\""
 msgid "You cannot create a playlist named \"{FAVORITE_PLAYLIST_NAME}\""
 msgstr ""
-"Vous ne pouvez créer une liste de lecture nommée \"{FAVORITE_PLAYLIST_NAME}\""
+"Vous ne pouvez pas créer une liste de lecture nommée \"{FAVORITE_PLAYLIST_NAME}\""
 
 #: pod/playlist/forms.py
 msgid "Remove playlist cannot be undone"
@@ -5627,6 +5647,14 @@ msgstr ""
 #: pod/playlist/templates/playlist/filter_aside.html
 msgid "Reset the filter"
 msgstr "Retirer ce filtre"
+
+#: pod/playlist/templates/playlist/filter_aside.html
+msgid ""
+"When you click on a choice in the form, you will be automatically redirected "
+"to the page dedicated to this filter."
+msgstr ""
+"Lorsque vous cliquez sur un choix du formulaire, vous serez redirigé "
+"automatiquement vers la page dédiée à ce filtre."
 
 #: pod/playlist/templates/playlist/filter_aside.html
 msgid "See my private playlists"
@@ -5768,11 +5796,6 @@ msgstr "Déposez la vidéo sur une autre pour échanger leur position."
 msgid "videos"
 msgstr "vidéos"
 
-#: pod/playlist/templates/playlist/playlist_card.html
-#: pod/playlist/templates/playlist/playlist_player.html
-msgid "Playlist image"
-msgstr "Image de la playlist"
-
 #: pod/playlist/templates/playlist/playlist_link.html
 msgid "Remove the playlist"
 msgstr "Supprimer la liste de lecture"
@@ -5788,6 +5811,10 @@ msgstr "Consulter la liste de lecture"
 #: pod/playlist/templates/playlist/playlist_player.html
 msgid "Watch the video"
 msgstr "Regarder la vidéo"
+
+#: pod/playlist/templates/playlist/playlist_player.html
+msgid "Playlist image"
+msgstr "Image de la playlist"
 
 #: pod/playlist/templates/playlist/playlist_sort_select.html
 #: pod/video/templates/videos/video_sort_select.html
@@ -5877,8 +5904,12 @@ msgid "The playlist has been created and the video has been added in it."
 msgstr "La liste de lecture a été créée et la vidéo a été ajoutée dedans."
 
 #: pod/playlist/views.py
+msgid "JSON in wrong format"
+msgstr "JSON au mauvais format"
+
+#: pod/playlist/views.py
 msgid "This video isn't present in this playlist."
-msgstr "Ajouter la vidéo à cette liste de lecture"
+msgstr "Cette vidéo n'est pas présente dans cette playlist."
 
 #: pod/podfile/apps.py
 msgid "Pod files"
@@ -6294,7 +6325,7 @@ msgstr "Taille du fichier"
 #: pod/recorder/models.py pod/video/models.py
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Date added"
-msgstr "Date de modification"
+msgstr "Date d'ajout"
 
 #: pod/recorder/models.py
 msgid "Require manual claim?"
@@ -7405,12 +7436,6 @@ msgid "New owner"
 msgstr "Nouveau propriétaire"
 
 #: pod/video/templates/videos/change_video_owner.html
-#: pod/video/templates/videos/filter_aside.html
-#: pod/video_search/templates/search/search.html
-msgid "Filter"
-msgstr "Filtre"
-
-#: pod/video/templates/videos/change_video_owner.html
 msgid "Filter by title"
 msgstr "Filtrer par titre"
 
@@ -7430,7 +7455,9 @@ msgstr "Soumettre les changements"
 msgid ""
 "The videos on the left are automatically sorted according to the filters "
 "selected. Check options to adjust results."
-msgstr "Les vidéos à gauche sont automatiquement triées en fonction des filtres sélectionnés. Vérifiez les options pour ajuster les résultats."
+msgstr ""
+"Les vidéos à gauche sont automatiquement triées en fonction des filtres "
+"sélectionnés. Vérifiez les options pour ajuster les résultats."
 
 #: pod/video/templates/videos/filter_aside.html
 msgid "Filter by user"
@@ -8353,6 +8380,7 @@ msgstr "xAPI Esup-Pod"
 
 #~ msgid "End:"
 #~ msgstr "Fin :"
+
 #~ msgid "%(counter)s Channel"
 #~ msgid_plural "%(counter)s Channels"
 #~ msgstr[0] "%(counter)s Chaîne"

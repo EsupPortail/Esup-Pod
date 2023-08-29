@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-28 14:31+0000\n"
+"POT-Creation-Date: 2023-08-29 14:17+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -707,8 +707,7 @@ msgid "More"
 msgstr ""
 
 #: pod/bbb/templates/bbb/live_record_list.html
-#: pod/bbb/templates/bbb/record_list.html
-#: pod/live/templates/live/events_list.html pod/main/templates/loader.html
+#: pod/bbb/templates/bbb/record_list.html pod/main/templates/loader.html
 #: pod/playlist/templates/playlist/playlist-videos-list.html
 #: pod/podfile/templates/podfile/home_content.html
 #: pod/podfile/templates/podfile/list_folder_files.html
@@ -2968,8 +2967,7 @@ msgstr ""
 #: pod/live/templates/live/event-form.html
 #: pod/live/templates/live/event_edit.html
 #: pod/live/templates/live/event_immediate_edit.html
-#: pod/live/templates/live/filter_aside.html pod/main/templates/contact_us.html
-#: pod/meeting/templates/meeting/invite.html
+#: pod/main/templates/contact_us.html pod/meeting/templates/meeting/invite.html
 #: pod/meeting/templates/meeting/join.html
 #: pod/playlist/templates/playlist/protected-playlist-form.html
 #: pod/video/templates/videos/video-form.html
@@ -3048,6 +3046,21 @@ msgstr ""
 #: pod/live/templates/live/event-info.html pod/main/templates/aside.html
 #: pod/video/templates/videos/video-info.html
 msgid "Share on"
+msgstr ""
+
+#: pod/live/templates/live/event-info.html pod/main/templates/aside.html
+#: pod/video/templates/videos/video-info.html
+msgid "Share on Facebook"
+msgstr ""
+
+#: pod/live/templates/live/event-info.html pod/main/templates/aside.html
+#: pod/video/templates/videos/video-info.html
+msgid "Share on X (Twitter)"
+msgstr ""
+
+#: pod/live/templates/live/event-info.html pod/main/templates/aside.html
+#: pod/video/templates/videos/video-info.html
+msgid "Share on LinkedIn"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
@@ -3276,13 +3289,6 @@ msgstr ""
 msgid "You will just need to specify a title and an end time."
 msgstr ""
 
-#: pod/live/templates/live/events.html pod/live/templates/live/my_events.html
-#, python-format
-msgid "%(counter)s event found"
-msgid_plural "%(counter)s events found"
-msgstr[0] ""
-msgstr[1] ""
-
 #: pod/live/templates/live/events.html
 msgid "Supervise broadcasters"
 msgstr ""
@@ -3292,6 +3298,14 @@ msgid ""
 "Please use the thumbnails toolbar which is located under the event on which "
 "you want to work with."
 msgstr ""
+
+#: pod/live/templates/live/events_list.html
+#: pod/live/templates/live/my_events.html
+#, python-format
+msgid "%(counter)s event found"
+msgid_plural "%(counter)s events found"
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/live/templates/live/events_list.html
 msgid "Sorry, no event found."
@@ -3317,6 +3331,13 @@ msgstr ""
 #: pod/main/templates/navbar.html pod/video/models.py
 #: pod/video/templates/videos/filter_aside.html
 msgid "Types"
+msgstr ""
+
+#: pod/live/templates/live/filter_aside.html
+#: pod/video/templates/videos/change_video_owner.html
+#: pod/video/templates/videos/filter_aside.html
+#: pod/video_search/templates/search/search.html
+msgid "Filter"
 msgstr ""
 
 #: pod/live/templates/live/my_events.html
@@ -5300,6 +5321,12 @@ msgid "Reset the filter"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
+msgid ""
+"When you click on a choice in the form, you will be automatically redirected "
+"to the page dedicated to this filter."
+msgstr ""
+
+#: pod/playlist/templates/playlist/filter_aside.html
 msgid "See my private playlists"
 msgstr ""
 
@@ -5434,11 +5461,6 @@ msgstr "Déposez la vidéo sur une autre pour échanger leur position."
 msgid "videos"
 msgstr ""
 
-#: pod/playlist/templates/playlist/playlist_card.html
-#: pod/playlist/templates/playlist/playlist_player.html
-msgid "Playlist image"
-msgstr ""
-
 #: pod/playlist/templates/playlist/playlist_link.html
 msgid "Remove the playlist"
 msgstr ""
@@ -5453,6 +5475,10 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_player.html
 msgid "Watch the video"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_player.html
+msgid "Playlist image"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_sort_select.html
@@ -5534,6 +5560,10 @@ msgstr ""
 
 #: pod/playlist/views.py
 msgid "The playlist has been created and the video has been added in it."
+msgstr ""
+
+#: pod/playlist/views.py
+msgid "JSON in wrong format"
 msgstr ""
 
 #: pod/playlist/views.py
@@ -6925,12 +6955,6 @@ msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
 msgid "New owner"
-msgstr ""
-
-#: pod/video/templates/videos/change_video_owner.html
-#: pod/video/templates/videos/filter_aside.html
-#: pod/video_search/templates/search/search.html
-msgid "Filter"
 msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
