@@ -7,7 +7,7 @@
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
                 <a
-                    class="link"
+                    class="link-for-playlist"
                     href="{% url 'playlist:content' playlist.slug %}"
                     title="{% if playlist.description %}{% get_playlist_description playlist %}{% else %}{% get_playlist_name playlist %}{% endif %}"
                     aria-label="{{ playlist.name }}"
@@ -36,10 +36,10 @@
             >
                 {% if playlist.get_number_video > 0 %}
                     <span class="card-img-top">
-                        <img class="card-img-top" src="{{ playlist.get_first_video.get_thumbnail_url }}" alt="{% trans "Playlist image" %}" loading="lazy">
+                        <img class="card-img-top" src="{{ playlist.get_first_video.get_thumbnail_url }}" alt="" loading="lazy">
                     </span>
                 {% else %}
-                    <img class="card-img-top" src="{{ DEFAULT_PLAYLIST_THUMBNAIL }}" alt="{% trans "Playlist image" %}" loading="lazy">
+                    <img class="card-img-top" src="{{ DEFAULT_PLAYLIST_THUMBNAIL }}" alt="" loading="lazy">
                 {% endif %}
             </a>
         </div>

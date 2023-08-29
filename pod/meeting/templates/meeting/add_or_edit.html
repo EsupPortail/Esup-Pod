@@ -41,7 +41,7 @@
       {% if "collapse" in options.classes %}
         <div class="mb-3">
           <div class="list-group-item">
-            <a class="btn btn-primary" data-bs-toggle="collapse" href="#meeting_form_{{fieldset|first}}_{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
+            <a class="btn btn-primary" id="advanced_options_btn" data-bs-toggle="collapse" href="#meeting_form_{{fieldset|first}}_{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
               {{ options.legend|safe }}
             </a>
           </div>
@@ -187,6 +187,14 @@ window.addEventListener('load', function(event) {
     restrict_access_to_groups();
   });
   restrict_access_to_groups();
+});
+
+/* Add event listener to use advanced options button with keyboard */
+var advanced_options_btn = document.getElementById('advanced_options_btn');
+advanced_options_btn.addEventListener("keydown", function(event) {
+  if (event.key === "Enter" || event.key === " ") {
+    advanced_options_btn.click();
+  }
 });
 </script>
 {% endblock more_script %}
