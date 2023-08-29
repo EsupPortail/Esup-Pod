@@ -1,8 +1,8 @@
-a.link {
+a.link-for-playlist {
     text-decoration: none;
 }
 
-a.link:hover {
+a.link-for-playlist:hover {
     text-decoration: underline;
 }
 
