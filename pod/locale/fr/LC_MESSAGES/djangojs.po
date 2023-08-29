@@ -499,7 +499,7 @@ msgstr "Sauvegarder"
 
 #: pod/playlist/static/playlist/js/video-favorites-remove-card.js
 msgid "Network response was not ok."
-msgstr ""
+msgstr "La réponse du réseau n'était pas correcte."
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"

@@ -5865,8 +5865,6 @@ msgid "The playlist has been created and the video has been added in it."
 msgstr "La liste de lecture a été créée et la vidéo a été ajoutée dedans."
 
 #: pod/playlist/views.py
-#, fuzzy
-#| msgid "Add video in this playlist"
 msgid "This video isn't present in this playlist."
 msgstr "Ajouter la vidéo à cette liste de lecture"
 
@@ -6283,8 +6281,6 @@ msgstr "Taille du fichier"
 
 #: pod/recorder/models.py pod/video/models.py
 #: pod/video/templates/videos/video_sort_select.html
-#, fuzzy
-#| msgid "Date modified"
 msgid "Date added"
 msgstr "Date de modification"
 
