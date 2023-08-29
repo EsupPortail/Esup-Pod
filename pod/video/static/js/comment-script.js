@@ -71,6 +71,7 @@ class ConfirmModal extends HTMLElement {
     cancel_text = null,
   ) {
     super();
+
     title = title ? title : this.getAttribute("confirm_title");
     message = message ? message : this.getAttribute("message");
     delete_text = delete_text ? delete_text : this.getAttribute("delete_text");
@@ -111,14 +112,26 @@ class ConfirmModal extends HTMLElement {
     cancel_btn.innerHTML = cancel_text ? cancel_text : gettext("Cancel");
     cancel_btn.addEventListener("click", (e) => {
       e.preventDefault();
+      closeModal();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key == "Escape") {
+        closeModal();
+      }
+    })
+    this.innerHTML = modal;
+    this.querySelector(".actions").appendChild(delete_btn);
+    this.querySelector(".actions").appendChild(cancel_btn);
+
+    /**
+     * Closes the custom confirmation modal.
+     */
+    function closeModal() {
       document
         .querySelector("#custom_element_confirm_modal .confirm_delete")
         .classList.remove("show");
       ACTION_COMMENT.comment_to_delete = null;
-    });
-    this.innerHTML = modal;
-    this.querySelector(".actions").appendChild(delete_btn);
-    this.querySelector(".actions").appendChild(cancel_btn);
+    }
   }
 }
 customElements.define("confirm-modal", ConfirmModal);
@@ -203,13 +216,24 @@ class Comment extends HTMLElement {
       "comment_vote_btn",
       vote_text,
       id,
+      0,
     );
     if (is_authenticated) {
-      vote_action.addEventListener("click", () => {
+      vote_action.addEventListener("click", toggleVote);
+      vote_action.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          toggleVote();
+        }
+      })
+
+      /**
+       * Toggles the voting action for a comment.
+       */
+      function toggleVote() {
         vote_action.classList.add("voting");
         let comment_id = get_comment_attribute(document.getElementById(id));
         vote(vote_action, comment_id);
-      });
+      }
     }
     comment_container
       .querySelector(".comment_content_footer .actions")
@@ -224,14 +248,33 @@ class Comment extends HTMLElement {
         svg_icon,
         "comment_response_btn",
         gettext("Reply"),
+        null,
+        0,
       );
       response_action.addEventListener("click", function () {
-        let target_node = get_node(this, "form");
-        target_node.classList.toggle("show");
-        this.parentElement.nextElementSibling
-          .querySelector(".new_comment")
-          .focus();
+        toggleReply(this)
       });
+      response_action.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          toggleReply(this);
+        }
+      });
+
+      /**
+       * Toggles the reply form for a comment.
+       *
+       * @param {HTMLElement} element - The element that triggered the action.
+       */
+      function toggleReply(element) {
+        let target_node = get_node(element, "form");
+        if (target_node) {
+          target_node.classList.toggle("show");
+          element.parentElement.nextElementSibling
+            .querySelector(".new_comment")
+            .focus();
+        }
+      }
+
       comment_container
         .querySelector(".comment_content_footer .actions")
         .appendChild(response_action);
@@ -246,15 +289,26 @@ class Comment extends HTMLElement {
           "comment_delete_btn",
           gettext("Delete"),
           id,
+          0,
         );
-        delete_action.addEventListener("click", () => {
-          // display confirm modal
+        delete_action.addEventListener("click", toggleDelete);
+        delete_action.addEventListener("keydown", function (event) {
+          if (event.key === "Enter" || event.key === " ") {
+            toggleDelete();
+          }
+        });
+
+        /**
+         * Toggles the delete confirmation modal for a comment.
+         */
+        function toggleDelete() {
           document
             .querySelector("#custom_element_confirm_modal .confirm_delete")
             .classList.add("show");
           let el = document.getElementById(id);
           ACTION_COMMENT.comment_to_delete = el;
-        });
+        }
+
         comment_container
           .querySelector(".comment_content_footer .actions")
           .appendChild(delete_action);
@@ -266,8 +320,8 @@ class Comment extends HTMLElement {
           name="new_comment" id="comment" rows="1"
           placeholder="${gettext("Add a public comment")}"></textarea>
         <button class="btn btn-link btn-lg send_reply disabled" role="button" title="${gettext(
-          "Send",
-        )}">
+        "Send",
+      )}">
           <i aria-hidden="true" class="bi bi-send-fill"></i>
         </button>
       `;
@@ -366,8 +420,12 @@ function createFooterBtnAction(
   span_classes,
   span_text,
   comment_id = null,
+  tabIndex = null,
 ) {
   let el = document.createElement("DIV");
+  if (tabIndex !== "null" && typeof tabIndex === "number" && Number.isInteger(tabIndex)) {
+    el.setAttribute("tabindex", tabIndex.toString())
+  }
   el.setAttribute("class", classes + " btn btn-link btn-sm");
   el.setAttribute("role", "button");
   if (comment_id) el.setAttribute("data-comment", comment_id);
@@ -395,11 +453,23 @@ function hide_or_add_show_children_btn(parent_comment, parent_id, nb_child) {
     [svg_icon_show, svg_icon_hide],
     "comment_show_children_btn",
     txt,
+    null,
+    0
   );
-  children_action.addEventListener("click", function () {
+  children_action.addEventListener("click", toggleComment);
+  children_action.addEventListener("keydown", function (event) {
+    if (event.key === "Enter" || event.key === " ") {
+      toggleComment();
+    }
+  });
+
+  /**
+   * Toggles the visibility of a comment and fetches its children if needed.
+   */
+  function toggleComment() {
     parent_comment.classList.toggle("show");
     fetch_comment_children(parent_comment, parent_id);
-  });
+  }
 
   let children_container = parent_comment.querySelector(
     ".comments_children_container",
@@ -759,7 +829,7 @@ function isInViewport(el) {
     rect.top >= 0 &&
     rect.left >= 0 &&
     rect.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
+    (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
@@ -833,12 +903,10 @@ function setBorderLeftColor(comment, parent_element) {
     let index = Number.parseInt(parent_element.dataset.level) + 1;
     if (index >= COLORS.length) {
       comment.dataset.level = COLORS.length - 1;
-      comment.querySelector(".comment_content").style.borderLeft = `4px solid ${
-        COLORS[COLORS.length - 1]
-      }`;
-      comment.querySelector(".comments_icon").style.color = `${
-        COLORS[COLORS.length - 1]
-      }`;
+      comment.querySelector(".comment_content").style.borderLeft = `4px solid ${COLORS[COLORS.length - 1]
+        }`;
+      comment.querySelector(".comments_icon").style.color = `${COLORS[COLORS.length - 1]
+        }`;
     } else {
       comment.dataset.level = index;
       comment.querySelector(
@@ -848,12 +916,10 @@ function setBorderLeftColor(comment, parent_element) {
     }
   } catch (e) {
     comment.dataset.level = COLORS.length - 1;
-    comment.querySelector(".comment_content").style.borderLeft = `4px solid ${
-      COLORS[COLORS.length - 1]
-    }`;
-    comment.querySelector(".comments_icon").style.color = `${
-      COLORS[COLORS.length - 1]
-    }`;
+    comment.querySelector(".comment_content").style.borderLeft = `4px solid ${COLORS[COLORS.length - 1]
+      }`;
+    comment.querySelector(".comments_icon").style.color = `${COLORS[COLORS.length - 1]
+      }`;
   }
 }
 

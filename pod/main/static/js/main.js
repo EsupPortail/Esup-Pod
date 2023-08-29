@@ -1354,3 +1354,31 @@ function flashing(elem, duration) {
     elem.classList.remove("flashing_field");
   }, duration);
 }
+
+// SEARCH INPUT //
+
+document.addEventListener("DOMContentLoaded", function () {
+  var searchInput = document.getElementById("s");
+  var searchButton = document.getElementById("search-button");
+
+  /**
+   * Handles adding CSS classes to highlight the search element when it gains focus.
+   */
+  function handleFocus() {
+    searchInput.classList.add("focus-search-input");
+    searchInput.classList.remove("hide-search-input");
+  }
+
+  /**
+   * Handles removing CSS classes to hide the search element when it loses focus.
+   */
+  function handleBlur() {
+    searchInput.classList.remove("focus-search-input");
+    searchInput.classList.add("hide-search-input");
+  }
+
+  searchButton.addEventListener("focus", handleFocus);
+  searchButton.addEventListener("blur", handleBlur);
+  searchInput.addEventListener("focus", handleFocus);
+  searchInput.addEventListener("blur", handleBlur);
+});

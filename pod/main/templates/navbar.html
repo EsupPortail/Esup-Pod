@@ -68,8 +68,8 @@
       <i class="bi bi-search"></i> <span class="visually-hidden">{% trans "Search" %}</span>
     </label>
     <div class="input-group me-sm-2 pod-navbar-search">
-      <input class="form-control form-control-sm" id="s" placeholder="{% trans 'Search' %}" type="search" name="q">
-      <button type="submit" class="btn btn-primary" title="{% trans 'Search' %}">
+      <input class="form-control form-control-sm hide-search-input" id="s" placeholder="{% trans 'Search' %}" type="search" name="q">
+      <button id="search-button" type="submit" class="btn btn-primary" title="{% trans 'Search' %}">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -135,7 +135,7 @@
                 </div>
               </li>
             {% endif %}{% if DARKMODE_ENABLED == True %}
-              <li class="pod-navbar__theme-switch__item" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses darker colors' %}">
+              <li class="pod-navbar__theme-switch__item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses darker colors' %}">
                 <label for="checkbox-darkmode">
                   <span class="form-label">{% trans 'Dark mode' %}</span>
                   <span class="theme-switch">
@@ -148,7 +148,7 @@
                 </label>
               </li>
             {% endif %}{% if DYSLEXIAMODE_ENABLED == True %}
-              <li class="pod-navbar__theme-switch__item" id="dyslexia-switch-wrapper" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses a font more suitable for people with dyslexia.' %}">
+              <li class="pod-navbar__theme-switch__item" id="dyslexia-switch-wrapper" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses a font more suitable for people with dyslexia.' %}">
                 <label for="checkbox-dyslexia">
                   <span class="form-label">{% trans 'Dyslexia mode' %}</span>
                   <span class="dyslexia-switch">
