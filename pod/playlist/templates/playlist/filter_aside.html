@@ -1,0 +1,73 @@
+{% load i18n %}
+{% load custom_tags %}
+
+{% spaceless %}
+<div class="card card-body" id="my_meetings_filter">
+  <h2 class="h3 card-title pod-card__title">
+    <i class="bi bi-sliders2-vertical" aria-hidden="true"></i>&nbsp;{% trans "Filters"%}
+    <a
+      id="resetFilters"
+      href="{% url 'playlist:list' %}"
+      class="btn btn-outline-primary"
+      title="{% trans "Reset the filter" %}"
+      aria-label="{% trans "Reset" %}"
+    >
+      {% trans 'Reset' %}
+    </a>
+  </h2>
+
+  <div class="filters" id="filters">
+    <fieldset class="border-right border-bottom mt-2">
+      <legend class="h5">
+        <i class="bi bi-eye" aria-hidden="true"></i>&nbsp;{% trans "Right of access"%}
+      </legend>
+    </fieldset>
+    <div id="filterType">
+      <div id="collapseFilterType">
+        <div class="form-check">
+          <input onChange="window.location = `{% url 'playlist:list' %}?visibility=private`;" class="form-check-input" type="radio" name="type" value="private" id="idprivate_type" {% if request.GET.visibility == "private" %}checked="true"{% endif %}>
+          <label class="form-check-label" for="idprivate_type">&nbsp;{% trans "See my private playlists"%}</label>
+        </div>
+        <div class="form-check">
+            <input onChange="window.location = `{% url 'playlist:list' %}?visibility=protected`;" class="form-check-input" type="radio" name="type" value="protected" id="idprotected_type" {% if request.GET.visibility == "protected" %}checked="true"{% endif %}>
+            <label class="form-check-label" for="idprotected_type">&nbsp;{% trans "See my password-protected playlists"%}</label>
+        </div>
+        <div class="form-check">
+            <input onChange="window.location = `{% url 'playlist:list' %}?visibility=public`;" class="form-check-input" type="radio" name="type" value="public" id="idpublic_type" {% if request.GET.visibility == "public" %}checked="true"{% endif %}>
+            <label class="form-check-label" for="idpublic_type">&nbsp;{% trans "See my public playlists"%}</label>
+        </div>
+        <div class="form-check">
+          <input onChange="window.location = `{% url 'playlist:list' %}?visibility=allmy`;" class="form-check-input" type="radio" name="type" value="allmy" id="idallmy_type" {% if request.GET.visibility == "allmy" %}checked="true"{% endif %}>
+          <label class="form-check-label" for="idallmy_type">&nbsp;{% trans "See my playlists"%}</label>
+        </div>
+        <div class="form-check">
+          <input onChange="window.location = `{% url 'playlist:list' %}?visibility=additional`;" class="form-check-input" type="radio" name="type" value="additional" id="idadditional_type" {% if request.GET.visibility == "additional" %}checked="true"{% endif %}>
+          <label class="form-check-label" for="idadditional_type">&nbsp;{% trans "See playlists I can contribute"%}</label>
+        </div>
+        <div class="form-check">
+            <input onChange="window.location = `{% url 'playlist:list' %}?visibility=allpublic`;" class="form-check-input" type="radio" name="type" value="allpublic" id="idallpublic_type" {% if request.GET.visibility == "allpublic" %}checked="true"{% endif %}>
+            <label class="form-check-label" for="idallpublic_type">&nbsp;{% trans "See all public playlists"%}</label>
+        </div>
+        <div class="form-check">
+          <input onChange="window.location = `{% url 'playlist:list' %}?visibility=promoted`;" class="form-check-input" type="radio" name="type" value="promoted" id="idpromoted_type" {% if request.GET.visibility == "promoted" %}checked="true"{% endif %}>
+          <label class="form-check-label" for="idpromoted_type">&nbsp;{% trans "See all promoted playlists"%}</label>
+        </div>
+        <div class="form-check">
+          <input onChange="window.location = `{% url 'playlist:list' %}?visibility=all`;" class="form-check-input" type="radio" name="type" value="all" id="idall_type" {% if request.GET.visibility == "all" %}checked="true"{% endif %}>
+          <label class="form-check-label" for="idall_type">&nbsp;{% trans "See all playlists"%}</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function redirectToAllPlaylists() {
+    const urlWithoutGetOptions = window.location.origin + window.location.pathname
+    document.location.href = urlWithoutGetOptions + "?visibility=allmy";
+  }
+  const visibilityValue = new URL(window.location).searchParams.get("visibility");
+  if (!visibilityValue || !["private", "password-protected", "additional", "public", "promoted", "allmy", "allpublic", "all"].includes(visibilityValue)) {
+    redirectToAllPlaylists();
+  }
+</script>
+{% endspaceless %}

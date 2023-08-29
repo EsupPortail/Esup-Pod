@@ -1,0 +1,53 @@
+{% load i18n %}
+{% load static custom_tags %}
+
+{% if not form %}
+    <script>
+        // Allow anchor links to automatically load JS tabs
+        $(document).ready(() => {
+        var url = window.location.href;
+            if (url.indexOf("#") > 0){
+            var activeTab = url.substring(url.indexOf("#") + 1);
+            $('.nav[role="tablist"] a[href="#'+activeTab+'"]').tab('show');
+            var position = $("#pod-infos-tabs").offset().top -57;
+            $("html, body").animate({
+                scrollTop: position
+            }, 1000);
+        }
+        });
+        var maintenance_mode = {{MAINTENANCE_MODE|yesno:"true,false"}};
+    </script>
+    <div>
+        {% include 'videos/video-script.html' %}
+    </div>
+    {% if active_video_comment and not video.disable_comment %}
+        <script>
+            const comment_url = `{% url "video:get_comments" video_slug=video.slug %}`;
+            const base_url = window.location.origin + comment_url;
+            {% if request.user == video.owner %}
+            var is_video_owner = true;
+            {% else %}
+            var is_video_owner = false;
+            {% endif %}
+            var user_fullName = `{{request.user.first_name}} {{request.user.last_name}}`;
+            var user_id = `{{ request.user.id }}` === "None"? false: `{{ request.user.id }}`;
+            {% if MAINTENANCE_MODE %}
+            var is_authenticated = false;
+            {% else %}
+            var is_authenticated = {{request.user.is_authenticated|yesno:"true,false"}};
+            {% endif %}
+            var is_superuser = {{request.user.is_superuser|yesno:"true,false"}};
+        </script>
+        <script src="{% static 'dayjs/plugin/relativeTime.js' %}?ver={{VERSION}}"></script>
+        <script src="{% static 'dayjs/dayjs.min.js' %}?ver={{VERSION}}"></script>
+        <script src="{% static 'dayjs/locale/en.js' %}?ver={{VERSION}}"></script>
+        <script src="{% static 'dayjs/locale/fr.js' %}?ver={{VERSION}}"></script>
+        <script src="{% static 'dayjs/locale/nl.js' %}?ver={{VERSION}}"></script>
+        <script type="module" defer src="{% static 'js/comment-script.js' %}?ver={{VERSION}}"></script>
+    {% endif %}
+{% endif %}
+
+{% get_setting "USE_XAPI_VIDEO" False as USE_XAPI_VIDEO %}
+{% if USE_XAPI and USE_XAPI_VIDEO %}
+    {% include 'xapi/xapi_video.html' %}
+{% endif %}

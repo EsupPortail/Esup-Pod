@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item">
+        <a
+            href="{% url 'playlist:list' %}"
+            title="{% trans "Access the list of playlists" %}"
+            aria-label="{% trans "Playlists" %}"
+        >
+            {% trans "Playlists" %}
+        </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        {% if form.instance.slug %}
+            {% trans "Edit the playlist" %} "{{ form.instance.name }}"
+        {% else %}
+            {% trans "Add a playlist" %}
+        {% endif %}
+    </li>
+{% endblock breadcrumbs %}
+
+{% block page_content %}
+    <form method="POST" action="{% if form.instance.slug %}{% url 'playlist:edit' form.instance.slug %}{% else %}{% url 'playlist:add' %}{{ options }}{% endif %}" accept-charset="utf-8" enctype="multipart/form" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="list-group">
+            {% if form.errors %}
+                <p class="text-danger">
+                    {% trans "One or more errors have been found in the form." %}
+                    {% for error in form.errors %}
+                        <span> - {{ error }}</span><br>
+                    {% endfor %}
+                </p>
+            {% endif %}
+            {% for field_hidden in form.hidden_fields %}
+                {{ field_hidden }}
+            {% endfor %}
+            {% for fieldset in form.fieldsets %}
+                {% with options=fieldset|last name=fieldset|first %}
+                    <div class="mb-3">
+                        <fieldset class="{{ options.classes }}" id="playlist-form-{{fieldset|first}}-{{forloop.counter}}" >
+                            {% if options.legend %}
+                                <legend>{{ options.legend|safe }}</legend>
+                            {% endif %}
+                            {% for field in form.visible_fields %}
+                                {% if field.name in options.fields %}
+                                    {% spaceless %}
+                                        <div class="mb-3 {% if "restrict_access_to_groups" in field.name %}collapse restricted_access{% endif %}">
+                                            <div class="list-group-item">
+                                                <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
+                                                    {{ field.errors }}
+                                                    {% if "form-check-input" in field.field.widget.attrs.class %}
+                                                        <div class="form-check">
+                                                            {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                                                        </div>
+                                                    {% else %}
+                                                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                                        {{ field }}
+                                                    {% endif %}
+                                                    {% if field.help_text %}
+                                                        <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+                                                    {% endif %}
+                                                    {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endspaceless %}
+                                {% endif %}
+                            {% endfor %}
+                            <div class="d-flex align-items-center">
+                            {{ options.additional_data|safe }}
+                            </div>
+                        </fieldset>
+                    </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+        <div class="text-center mb-3">
+            <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+        </div>
+    </form>
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+    <script src="/admin/jsi18n/"></script>
+    <script src="{% static 'admin/js/core.js' %}?ver={{ VERSION }}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{ VERSION }}">
+    <script src="{% static 'playlist/js/add-or-edit.js' %}?ver={{ VERSION }}"></script>
+    {{ form.media }}
+{% endblock more_script %}

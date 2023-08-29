@@ -538,8 +538,7 @@ tr,
   margin: .1rem;
 }
 
-#videos_list .card-header,
-.playlist-videos .card-header {
+#videos_list .card-header {
   /*position: absolute;
   width: 100%;
   background: var(--color-black-alpha);
@@ -1696,6 +1695,12 @@ table .alert.alert-danger.btn.pod-btn-social {
 .calendarbox {
   z-index: 3000;
   background-color: var(--pod-background) !important;
+}
+
+div.disabled, a.player-element.disabled {
+  background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.2) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2) 75%, transparent 75%, transparent);
+  background-size: 4px 4px;
+  background-repeat: repeat;
 }
 
 .progress {

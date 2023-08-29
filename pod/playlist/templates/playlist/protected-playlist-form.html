@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load favorites_playlist %}
+
+{% block page_title %}{% trans 'Protected playlist form' %}{% endblock %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item active" aria-current="page">
+    <a href="{% url 'playlist:list'%}" title="{% trans "Access the list of playlists" %}" aria-label="{% trans "Playlists" %}">
+      {% trans "Playlists" %}
+    </a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">
+    {% get_playlist_name playlist %}
+  </li>
+{% endblock %}
+
+{% block page_content %}
+  <form method="post" action="{{ request.get_full_path }}" id="playlist_password_form" class='needs-validation' novalidate>
+    {% csrf_token %}
+    <div class="list-group">
+      <fieldset>
+        <legend>{% trans 'Password required' %}</legend>
+        <p>{% trans 'This playlist is protected by password, please fill in and click send.' %}</p>
+
+        {% if form.errors %}
+          <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+        {% endif %}
+        {% for field_hidden in form.hidden_fields %}
+          {{field_hidden}}
+        {% endfor %}
+        {% for field in form.visible_fields %}
+          {% spaceless %}
+            <div class="form-group {% if field.field.required %}form-group-required {% endif %}{% if field.field.errors %}errors{% endif %}" >
+              {{ field.errors }}
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.help_text %}
+                <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+              {% endif %}
+              {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+            </div>
+          {% endspaceless %}
+        {% endfor %}
+        <div class="text-center mt-2">
+          <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
+        </div>
+      </fieldset>
+    </div>
+  </form>
+  <p class="mt-3">
+    {% trans 'If you do not have the password for this content, please' %} <a href="{% url 'contact_us' %}?owner={{playlist.owner.id}}&amp;playlist={{playlist.id}}&amp;subject=request_password" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{% trans 'contact its owner' %}</a>.
+  </p>
+{% endblock %}
