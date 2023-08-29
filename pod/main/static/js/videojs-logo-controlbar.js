@@ -14,32 +14,27 @@
       };
 
     /*
-     * Logo menu button
+     * Logo menu link
      */
-    var MenuButton = videojs.getComponent("Button");
+    var MenuLink = videojs.getComponent("ClickableComponent");
 
-    var LogoMenuButton = videojs.extend(MenuButton, {
+    var LogoMenuLink = videojs.extend(MenuLink, {
       constructor: function (player, options) {
-        options.label = "Logo";
-        MenuButton.call(this, player, options);
-        this.el().setAttribute("aria-label", options.linktitle);
-        this.controlText(options.linktitle);
-        videojs.dom.addClass(this.el(), "vjs-logo-button");
-        this.el().setAttribute(
+        var aElement = document.createElement("a");
+        aElement.href = options.link;
+        aElement.target = "_blank";
+        aElement.setAttribute("aria-label", options.linktitle);
+        aElement.setAttribute("title", options.linktitle);
+        aElement.classList.add("vjs-logo-button", "vjs-control")
+        aElement.setAttribute(
           "style",
           "background-image: url(" +
             options.imgsrc +
-            "); background-repeat: no-repeat;  background-position: center; ",
+            "); background-repeat: no-repeat; background-position: center; cursor: pointer;",
         );
-        this.link = options.link;
+        MenuLink.call(this, player, { el: aElement });
       },
     });
-    LogoMenuButton.prototype.handleClick = function (event) {
-      MenuButton.prototype.handleClick.call(this, event);
-      if (this.link == "") window.open("/", "_blank");
-      else window.open(this.link, "_blank");
-    };
-    MenuButton.registerComponent("LogoMenuButton", LogoMenuButton);
 
     /**
      * Initialize the plugin.
@@ -49,10 +44,8 @@
         player = this;
       player.ready(function () {
         if (settings.ui) {
-          var menuButton = new LogoMenuButton(player, settings);
-          player.controlBar.logo = player.controlBar.el_.appendChild(
-            menuButton.el_,
-          );
+          var menuLink = new LogoMenuLink(player, settings);
+          player.controlBar.logo = player.controlBar.el_.appendChild(menuLink.el());
           player.controlBar.logo.dispose = function () {
             this.parentNode.removeChild(this);
           };

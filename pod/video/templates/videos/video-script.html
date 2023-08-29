@@ -177,7 +177,7 @@
       player.vr({projection: '360'});
     {% endif %}
     //add logo to the player
-    player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
+    player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{ TITLE_SITE }} - {% trans "Home" %} - {% trans "New window" %}', link:'{{ LINK_PLAYER }}'});
   {% else %}
     {% if video.get_video_m4a %}
       var srcOptions = {
@@ -187,7 +187,7 @@
       //Add source to player
       player.src(srcOptions);
       //add logo to the player
-      player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
+      player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{ TITLE_SITE }} - {% trans "Home" %} - {% trans "New window" %}', link:'{{ LINK_PLAYER }}'});
       player.on('loadedmetadata', function() {
         {% if request.GET.start and request.GET.start != '0' %}
         player.currentTime({{request.GET.start}});

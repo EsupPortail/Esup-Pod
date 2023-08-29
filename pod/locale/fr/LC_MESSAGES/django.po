@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-29 08:05+0000\n"
+"POT-Creation-Date: 2023-08-29 11:51+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -4413,6 +4413,7 @@ msgid "Breadcrumb"
 msgstr "Fil d’Ariane"
 
 #: pod/main/templates/base.html pod/main/templates/navbar.html
+#: pod/video/templates/videos/video-script.html
 msgid "Home"
 msgstr "Accueil"
 
@@ -7704,6 +7705,10 @@ msgid ""
 msgstr ""
 "Utilisez ces liens dans une conférence BigBlueButton ou une activité vidéo "
 "interactive H5P :"
+
+#: pod/video/templates/videos/video-script.html
+msgid "New window"
+msgstr "Nouvelle fenêtre"
 
 #: pod/video/templates/videos/video_collaborate.html
 msgid "Collaborate"
