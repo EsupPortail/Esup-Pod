@@ -73,7 +73,7 @@ EMAIL_ON_EVENT_SCHEDULING = getattr(settings, "EMAIL_ON_EVENT_SCHEDULING", False
 
 @login_required(redirect_field_name="referrer")
 def directs_all(request):
-    """Show all lives."""
+    """Show all directs."""
     check_permission(request)
 
     site = get_current_site(request)
@@ -254,7 +254,6 @@ def is_in_event_groups(user, evt):
 
 def get_event_access(request, evt, slug_private, is_owner):
     """Return True if access is granted to current user."""
-
     if is_owner:
         return True
 
@@ -625,7 +624,7 @@ def event_delete(request, slug=None):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def event_immediate_edit(request, broadcaster_id=None):
-    """Edition of an immediate event (created with QrCode)"""
+    """Edition of an immediate event (created with QrCode)."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
@@ -747,7 +746,7 @@ def ajax_is_stream_available_to_record(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_startrecord(request):
-    """Starts the record."""
+    """Start the record."""
     if request.method == "POST" and is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_startrecord(event_id, broadcaster_id)
@@ -756,7 +755,7 @@ def ajax_event_startrecord(request):
 
 
 def event_startrecord(event_id, broadcaster_id):
-    """Calls the start method of the broadcaster's implementation.
+    """Call the start method of the broadcaster's implementation.
 
     Returns: a JsonResponse with success state and the error (in case of failure).
     """
@@ -791,7 +790,7 @@ def ajax_event_splitrecord(request):
 
 
 def event_splitrecord(event_id, broadcaster_id):
-    """Calls the split method of the broadcaster's implementation
+    """Call the split method of the broadcaster's implementation
     and converts the file to a Pod video (linked to the event).
 
      Returns: a JsonResponse with success state and the error (in case of failure).
@@ -818,7 +817,7 @@ def event_splitrecord(event_id, broadcaster_id):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_stoprecord(request):
-    """Stops the record."""
+    """Stop the record."""
     if request.method == "POST" and is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_stoprecord(event_id, broadcaster_id)
@@ -827,7 +826,7 @@ def ajax_event_stoprecord(request):
 
 
 def event_stoprecord(event_id, broadcaster_id):
-    """Calls the stop method of the broadcaster's implementation
+    """Call the stop method of the broadcaster's implementation
     and converts the file to a Pod video (linked to the event).
 
      Returns: a JsonResponse with success state and the error (in case of failure).
@@ -865,7 +864,7 @@ def ajax_event_info_record(request):
 
 
 def event_info_record(event_id, broadcaster_id):
-    """Returns a JsonResponse with success state and :
+    """Return a JsonResponse with success state and :
 
     * the duration of the recording in seconds
     * or the error (in case of failure).
@@ -888,7 +887,7 @@ def event_info_record(event_id, broadcaster_id):
 
 
 def check_event_record(broadcaster, with_file_check=False):
-    """Checks whether the given broadcaster is recording an event."""
+    """Check whether the given broadcaster is recording an event."""
     if not check_piloting_conf(broadcaster):
         return False, JsonResponse({"success": False, "error": "implementation error"})
 
@@ -903,19 +902,19 @@ def check_event_record(broadcaster, with_file_check=False):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_start_streaming(request):
-    """Starts the stream."""
+    """Start the stream."""
     return ajax_event_change_streaming(request, "start")
 
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_stop_streaming(request):
-    """Stops the stream."""
+    """Stop the stream."""
     return ajax_event_change_streaming(request, "stop")
 
 
 def ajax_event_change_streaming(request, action):
-    """Starts or stops the stream."""
+    """Start or stops the stream."""
     if request.method != "POST" or not is_ajax(request):
         return HttpResponseNotAllowed(["POST"])
 
@@ -942,7 +941,7 @@ def ajax_event_change_streaming(request, action):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_get_rtmp_config(request):
-    """Checks if the broadcaster is configured for rtmp stream and return his config."""
+    """Check if the broadcaster is configured for rtmp stream and return his config."""
     if request.method != "GET" or not is_ajax(request):
         return HttpResponseNotAllowed(["GET"])
 
@@ -963,7 +962,7 @@ def ajax_event_get_rtmp_config(request):
 
 @csrf_protect
 def event_get_video_cards(request):
-    """Returns the template with the videos link to the event."""
+    """Return the template with the videos link to the event."""
     if is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         evt = Event.objects.get(pk=event_id)
@@ -980,7 +979,7 @@ def event_get_video_cards(request):
 
 
 def create_video(event_id, current_file, segment_number):
-    """Creates a video from the file_path given in the parameters."""
+    """Create a video from the file_path given in the parameters."""
     live_event = Event.objects.get(pk=event_id)
     filename = os.path.basename(current_file)
 
@@ -1072,23 +1071,23 @@ def create_video(event_id, current_file, segment_number):
 
 
 def check_dir_exists(dest_dir_name, max_attempt=6):
-    """Checks a directory exists."""
+    """Check a directory exists."""
     return check_exists(dest_dir_name, True, max_attempt)
 
 
 def check_file_exists(full_file_name, max_attempt=6):
-    """Checks a file exists."""
+    """Check a file exists."""
     return check_exists(full_file_name, False, max_attempt)
 
 
 def check_piloting_conf(broadcaster: Broadcaster) -> bool:
-    """Returns if the piloting configuration of the broadcaster is correct."""
+    """Returs if the piloting configuration of the broadcaster is correct."""
     impl_class = get_piloting_implementation(broadcaster)
     return impl_class.check_piloting_conf() if impl_class else False
 
 
 def start_record(broadcaster: Broadcaster, event_id) -> bool:
-    """Starts the recording and return if successfully done."""
+    """Stars the recording and return if successfully done."""
     impl_class = get_piloting_implementation(broadcaster)
     return impl_class.start_recording(event_id) if impl_class else False
 
@@ -1100,19 +1099,19 @@ def split_record(broadcaster: Broadcaster) -> bool:
 
 
 def stop_record(broadcaster: Broadcaster) -> bool:
-    """Stops the recording and return if successfully done."""
+    """Stop the recording and return if successfully done."""
     impl_class = get_piloting_implementation(broadcaster)
     return impl_class.stop_recording() if impl_class else False
 
 
 def use_split(broadcaster: Broadcaster) -> bool:
-    """Returns if the implementation allows to split the current recording."""
+    """Return if the implementation allows to split the current recording."""
     impl_class = get_piloting_implementation(broadcaster)
     return impl_class is not None and impl_class.can_split()
 
 
 def get_info_current_record(broadcaster: Broadcaster) -> dict:
-    """Returns the infos of the current recording."""
+    """Return the infos of the current recording."""
     impl_class = get_piloting_implementation(broadcaster)
     if not impl_class:
         return {
@@ -1125,13 +1124,13 @@ def get_info_current_record(broadcaster: Broadcaster) -> dict:
 
 
 def is_available_to_record(broadcaster: Broadcaster) -> bool:
-    """Returns the broadcaster is ready to record."""
+    """Return the broadcaster is ready to record."""
     impl_class = get_piloting_implementation(broadcaster)
     return impl_class.is_available_to_record() if impl_class else False
 
 
 def is_recording(broadcaster: Broadcaster, with_file_check=False) -> bool:
-    """Returns the broadcaster is actually recording."""
+    """Return the broadcaster is actually recording."""
     impl_class = get_piloting_implementation(broadcaster)
     return impl_class.is_recording(with_file_check) if impl_class else False
 
@@ -1170,7 +1169,7 @@ def transform_to_video(broadcaster, event_id, current_record_info):
 
 def copy_and_transform(impl_class, event_id, current_record_info):
     """
-    Copies the file from remote to Pod and creates the video
+    Copy the file from remote to Pod and creates the video
     Args:
         impl_class (PilotingInterface): the piloting interface of the broadcaster
         event_id (int): event's id
@@ -1192,13 +1191,13 @@ def copy_and_transform(impl_class, event_id, current_record_info):
 
 
 def can_manage_stream(broadcaster: Broadcaster) -> bool:
-    """Returns if the implementation allows to manage the stream."""
+    """Return if the implementation allows to manage the stream."""
     impl_class = get_piloting_implementation(broadcaster)
     return impl_class is not None and impl_class.can_manage_stream()
 
 
 def start_stream(broadcaster: Broadcaster) -> bool:
-    """Starts the streaming and return if successfully done."""
+    """Start the streaming and return if successfully done."""
     impl_class = get_piloting_implementation(broadcaster)
     if impl_class is None or not impl_class.can_manage_stream():
         return False
@@ -1214,7 +1213,7 @@ def start_stream(broadcaster: Broadcaster) -> bool:
 
 
 def stop_stream(broadcaster: Broadcaster) -> bool:
-    """Stops the streaming and return if successfully done."""
+    """Stop the streaming and return if successfully done."""
     impl_class = get_piloting_implementation(broadcaster)
     if impl_class is None or not impl_class.can_manage_stream():
         return False
