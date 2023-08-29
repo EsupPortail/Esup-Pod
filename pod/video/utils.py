@@ -9,6 +9,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.db.models import Q
 from django.template.defaultfilters import slugify
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Video
 
@@ -24,7 +25,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "LOGO_SITE": "img/logoPod.svg",
         "LOGO_ETB": "img/esup-pod.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
-        "LINK_PLAYER": "",
+        "LINK_PLAYER": ("", _("Home")),
         "FOOTER_TEXT": ("",),
         "FAVICON": "img/pod_favicon.svg",
         "CSS_OVERRIDE": "",

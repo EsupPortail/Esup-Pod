@@ -21,7 +21,12 @@
     var LogoMenuLink = videojs.extend(MenuLink, {
       constructor: function (player, options) {
         var aElement = document.createElement("a");
-        aElement.href = options.link;
+        console.log(options.link);
+        if (options.link && options.link !== "") {
+          aElement.href = options.link;
+        } else {
+          aElement.href = "/"
+        }
         aElement.target = "_blank";
         aElement.setAttribute("aria-label", options.linktitle);
         aElement.setAttribute("title", options.linktitle);

@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from pod.main.models import Configuration
 from django.contrib.sites.shortcuts import get_current_site
+from django.utils.translation import ugettext_lazy as _
 
 MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
     django_settings, "MENUBAR_HIDE_INACTIVE_OWNERS", False
@@ -32,7 +33,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "LOGO_SITE": "img/logoPod.svg",
         "LOGO_ETB": "img/esup-pod.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
-        "LINK_PLAYER": "",
+        "LINK_PLAYER": ("", _("Home")),
         "FOOTER_TEXT": ("",),
         "FAVICON": "img/pod_favicon.svg",
         "CSS_OVERRIDE": "",
