@@ -256,7 +256,7 @@ def verify_video_exists_and_size(video_url):
     response = requests.head(video_url, timeout=2)
     if response.status_code < 400:
         # Video file size
-        size = int(response.headers.get('Content-Length', '0'))
+        size = int(response.headers.get("Content-Length", "0"))
         check_video_size(size)
     else:
         msg = {}
@@ -278,10 +278,10 @@ def check_video_size(video_size):
     if MAX_UPLOAD_SIZE_ON_IMPORT != 0 and video_size > size_max:
         msg = {}
         msg["error"] = _("File too large.")
-        msg["message"] = _(
-            "The size of the video file exceeds "
-            "the maximum allowed value, %s Gb."
-        ) % MAX_UPLOAD_SIZE_ON_IMPORT
+        msg["message"] = (
+            _("The size of the video file exceeds " "the maximum allowed value, %s Gb.")
+            % MAX_UPLOAD_SIZE_ON_IMPORT
+        )
         raise ValueError(msg)
 
 
