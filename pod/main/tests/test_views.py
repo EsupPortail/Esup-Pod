@@ -113,11 +113,13 @@ class MainViewsTestCase(TestCase):
 
 
 class MaintenanceViewsTestCase(TestCase):
+    """`TestCase for the maintenance view.`"""
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
+        """Set up function for the tests."""
         User.objects.create(username="pod", password="podv3")
 
     def test_maintenance(self):
@@ -194,9 +196,11 @@ class XSSTests(TestCase):
 
 
 class TestShowVideoButtons(TestCase):
+    """`TestCase` for the video buttons."""
     fixtures = ["initial_data.json"]
 
     def setUp(self):
+        """Set up function for the tests."""
         self.factory = RequestFactory()
         User.objects.create(
             username="admin", password="admin", is_staff=True, is_superuser=True
@@ -207,8 +211,9 @@ class TestShowVideoButtons(TestCase):
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_show_video_buttons_admin_restrict(self):
         """
-        Test if video buttons present in header for admin
-        if restrict access to staff only.
+        Test if video buttons present in header for admins.
+
+        If restrict access to staff only.
         """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="admin")
@@ -222,8 +227,9 @@ class TestShowVideoButtons(TestCase):
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_show_video_buttons_staff_restrict(self):
         """
-        Test if video buttons present in header for staff
-        if restrict access to staff only.
+        Test if video buttons present in header for staff.
+
+        If restrict access to staff only.
         """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="staff")
@@ -237,8 +243,9 @@ class TestShowVideoButtons(TestCase):
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_show_video_buttons_student_restrict(self):
         """
-        Test if video buttons not present in header for student
-        if restrict access to staff only.
+        Test if video buttons not present in header for student.
+
+        If restrict access to staff only.
         """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="student")
@@ -252,8 +259,9 @@ class TestShowVideoButtons(TestCase):
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False)
     def test_show_video_buttons_admin_not_restrict(self):
         """
-        Test if video buttons present in header for admin
-        if not restrict access to staff only.
+        Test if video buttons present in header for admin.
+
+        If not restrict access to staff only.
         """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="admin")
@@ -267,8 +275,9 @@ class TestShowVideoButtons(TestCase):
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False)
     def test_show_video_buttons_staff_not_restrict(self):
         """
-        Test if video buttons present in header for staff
-        if not restrict access to staff only.
+        Test if video buttons present in header for staff.
+
+        If not restrict access to staff only.
         """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="staff")
@@ -282,8 +291,9 @@ class TestShowVideoButtons(TestCase):
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False)
     def test_show_video_buttons_student_not_restrict(self):
         """
-        Test if video buttons present in header for student
-        if not restrict access to staff only.
+        Test if video buttons present in header for student.
+
+        If not restrict access to staff only.
         """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="student")
@@ -296,9 +306,11 @@ class TestShowVideoButtons(TestCase):
 
 
 class TestShowMeetingButton(TestCase):
+    """`TestCase` for the meeting button."""
     fixtures = ["initial_data.json"]
 
     def setUp(self):
+        """Set up function for the tests."""
         self.factory = RequestFactory()
         User.objects.create(
             username="admin", password="admin", is_staff=True, is_superuser=True
@@ -309,8 +321,9 @@ class TestShowMeetingButton(TestCase):
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True, USE_MEETING=True)
     def test_show_meeting_button_admin_restrict(self):
         """
-        Test if meeting button present in header for admin
-        if restrict access to staff only.
+        Test if meeting button present in header for admin.
+
+        If restrict access to staff only.
         """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="admin")
@@ -323,8 +336,9 @@ class TestShowMeetingButton(TestCase):
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True, USE_MEETING=True)
     def test_show_meeting_button_staff_restrict(self):
         """
-        Test if meeting button present in header for staff
-        if restrict access to staff only.
+        Test if meeting button present in header for staff.
+
+        If restrict access to staff only.
         """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="staff")
@@ -337,8 +351,9 @@ class TestShowMeetingButton(TestCase):
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True, USE_MEETING=True)
     def test_show_meeting_button_student_restrict(self):
         """
-        Test if meeting button not present in header for student
-        if restrict access to staff only.
+        Test if meeting button not present in header for student.
+
+        If restrict access to staff only.
         """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="student")
@@ -351,8 +366,9 @@ class TestShowMeetingButton(TestCase):
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False, USE_MEETING=True)
     def test_show_meeting_button_admin_not_restrict(self):
         """
-        Test if meeting button present in header for admin
-        if not restrict access to staff only.
+        Test if meeting button present in header for admin.
+
+        If not restrict access to staff only.
         """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="admin")
@@ -365,8 +381,9 @@ class TestShowMeetingButton(TestCase):
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False, USE_MEETING=True)
     def test_show_meeting_button_staff_not_restrict(self):
         """
-        Test if meeting button present in header for staff
-        if not restrict access to staff only.
+        Test if meeting button present in header for staff.
+
+        If not restrict access to staff only.
         """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="staff")
@@ -379,8 +396,9 @@ class TestShowMeetingButton(TestCase):
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False, USE_MEETING=True)
     def test_show_meeting_button_student_not_restrict(self):
         """
-        Test if meeting button not present in header for student
-        if not restrict access to staff only.
+        Test if meeting button not present in header for student.
+
+        If not restrict access to staff only.
         """
         importlib.reload(context_processors)
         self.user = User.objects.get(username="student")
