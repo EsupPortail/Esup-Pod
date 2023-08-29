@@ -3,11 +3,18 @@
 {% load i18n %}
 {% get_setting "VIDEO_PLAYBACKRATES" '[0.5, 1, 1.5, 2]' as video_playbackrates %}
 {% get_setting "USE_VIDEO_EVENT_TRACKING" False as video_event_tracking %}
+{% get_setting "USE_VIDEO_P2P" False as use_video_p2p %}
+
 <script id="id_video_script">
   var seektime = 10;
   var options = {};
   var player;
   var engineHlsJs;
+  {% if use_video_p2p %}
+  var downloadTotals = { http: 0, p2p: 0 };
+  var uploadTotal = 0;
+  var nb_peers = 0;
+  {% endif %}
   var initialized_player = function() {
 
     window.onmessage = function(event) {
@@ -30,30 +37,31 @@
           evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
         }
     };
+    
     var VideoHlsjsConfig = {
         maxBufferSize: 0,
         maxBufferLength: 10,
         liveSyncDurationCount: 10,
     }
+    {% if use_video_p2p %}
     const p2p_config = {
       segments:{
         // number of segments to pass for processing to P2P algorithm
         forwardSegmentCount:50, // usually should be equal or greater than p2pDownloadMaxPriority and httpDownloadMaxPriority
-        swarmId: 'https://pod.univ-lille.fr/media/videos/7f08fab4c221715162d57ff0189ace167c63f9ccfc00c7dbee27ea01065d456f/17137/playlist.m3u8', // any unique string
+        swarmId: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.get_playlist_master.source_file.url}}',
       },
       loader:{
-        /** configure personal tracker and STUN servers
-         * trackerAnnounce: [
-         *   "wss://personal.tracker1.com",
-         *   "wss://personal.tracker2.com"
-         * ],
-         * rtcConfig: {
-         *   iceServers: [
-         *     { urls: "stun:stun.l.google.com:19302" },
-         *     { urls: "stun:global.stun.twilio.com:3478?transport=udp" }
-         *   ]
-         * }
-        */
+        /** configure personal tracker and STUN servers */
+        // trackerAnnounce: [
+        //   "wss://personal.tracker1.com",
+        //   "wss://personal.tracker2.com"
+        // ],
+        // rtcConfig: {
+        //   iceServers: [
+        //     { urls: "stun:stun.l.google.com:19302" },
+        //     { urls: "stun:global.stun.twilio.com:3478?transport=udp" }
+        //   ]
+        // },
         // how long to store the downloaded segments for P2P sharing
         cachedSegmentExpiration:86400000,
         // count of the downloaded segments to store for P2P sharing
@@ -88,24 +96,20 @@
         httpUseRanges: true,
       }
     };
+
     if (p2pml.hlsjs.Engine.isSupported()) {
-        console.log("p2pml");
-        engineHlsJs = new p2pml.hlsjs.Engine(p2p_config);
-        console.log("Engine ! " + engineHlsJs);
-        VideoHlsjsConfig["loader"] = engineHlsJs.createLoaderClass();
-        engineHlsJs.on(p2pml.core.Events.PeerConnect, onPeerConnect.bind(this));
-        engineHlsJs.on(p2pml.core.Events.PeerClose, onPeerClose.bind(this));
-        engineHlsJs.on("segment_loaded", (segment, peerId) => console.log("segment_loaded from", peerId ? `peer ${peerId}` : "HTTP", segment.url));
+      downloadTotals = { http: 0, p2p: 0 };
+      uploadTotal = 0;
+      nb_peers = 0;
+      engineHlsJs = new p2pml.hlsjs.Engine(p2p_config);
+      VideoHlsjsConfig["loader"] = engineHlsJs.createLoaderClass();
+      engineHlsJs.on(p2pml.core.Events.PeerConnect, onPeerConnect.bind(this));
+      engineHlsJs.on(p2pml.core.Events.PeerClose, onPeerClose.bind(this));
+      engineHlsJs.on(p2pml.core.Events.PieceBytesDownloaded, onBytesDownloaded.bind(this));
+      engineHlsJs.on(p2pml.core.Events.PieceBytesUploaded, onBytesUploaded.bind(this));
+      //engineHlsJs.on("segment_loaded", (segment, peerId) => console.log("segment_loaded from", peerId ? `peer ${peerId}` : "HTTP", segment.url));
     }
-
-    function onPeerConnect(peer) {
-      console.log("peer_connect", peer.id, peer.remoteAddress)
-    }
-
-    function onPeerClose(id) {
-      console.log("peer_close", peerId)
-    }
-
+    {% endif %}
     options = {
       notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
       //language: "fr", //en or nl
@@ -178,13 +182,11 @@
     }
 
     player = videojs('podvideoplayer', options, function(){});
-
+    {% if use_video_p2p %}
     if (p2pml.hlsjs.Engine.isSupported()) {
-      console.log("init player");
       p2pml.hlsjs.initVideoJsContribHlsJsPlayer(player);
-      console.log("init ok !");
     }
-
+    {% endif %}
     player.on('firstplay', function(){
       var data_form = $( "#video_count_form" ).serializeArray();
       jqxhr = $.post(
@@ -199,8 +201,7 @@
 
     {% if video.get_playlist_master %}
       var srcOptions = {
-        //src: '{{video.get_playlist_master.source_file.url}}',
-        src: 'https://pod.univ-lille.fr/media/videos/7f08fab4c221715162d57ff0189ace167c63f9ccfc00c7dbee27ea01065d456f/17137/playlist.m3u8',
+        src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.get_playlist_master.source_file.url}}',
         type: '{{video.get_playlist_master.encoding_format}}',
       };
       player.on('loadedmetadata', function() {
@@ -335,9 +336,6 @@
     });
   {% endif %}
 
-
-
-
   {% if not video.is_video and event is None %}
     window.addEventListener('resize', function(){
       // Auto resize Waves on window resize.
@@ -345,5 +343,57 @@
     });
   {% endif %}
 }
+
 initialized_player()
+
+function updateStats() {
+  let httpMb = downloadTotals.http / 1048576;
+  let p2pMb = downloadTotals.p2p / 1048576;
+  let totalMb = httpMb + p2pMb;
+  let uploadMb = uploadTotal / 1048576;
+  let statInfo = "";
+  if (totalMb != 0) {
+      statInfo += '<i class="bi bi-person-fill-down"></i> '
+          + Number(totalMb).toFixed(1) + " MiB ";
+      statInfo += '[ <i class="bi bi-server"></i> : '
+          + Number(httpMb).toFixed(1) + " MiB / "
+          + Number((httpMb * 100) / totalMb).toFixed(0) + "%";
+      statInfo +=  ' - <i class="bi bi-people"></i> : '
+          + Number(p2pMb).toFixed(1) + " MiB / "
+          + Number((p2pMb * 100) / totalMb).toFixed(0) + "% ]";
+      statInfo +=  ' - <i class="bi bi-person-fill-up"></i> '
+          + Number(uploadMb).toFixed(1) + " MiB";
+  }
+  document.querySelector("#stat-info").innerHTML = statInfo;
+}
+
+function updatePeers() {
+  let statPeer = '<i class="bi bi-people-fill"></i> ' + nb_peers;
+  document.querySelector("#stat-peers").innerHTML = statPeer;
+}
+
+function onBytesDownloaded(method, size) {
+  // console.log("onBytesDownloaded", method, size)
+  downloadTotals[method] += size;
+  updateStats();
+}
+
+function onBytesUploaded(method, size) {
+  // console.log("onBytesUploaded", method, size)
+  uploadTotal += size;
+  updateStats();
+}
+
+function onPeerConnect(peer) {
+  nb_peers += 1;
+  // console.log("peer_connect", peer.id, peer.remoteAddress);
+  updatePeers()
+}
+
+function onPeerClose(peerId) {
+  nb_peers -= 1;
+  // console.log("peer_close", peerId);
+  updatePeers();
+}
+
 </script>

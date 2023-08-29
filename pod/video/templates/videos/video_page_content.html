@@ -116,11 +116,10 @@
         <div id="countdown"></div>
         {% include 'videos/video-element.html' %}
       </div>
-      <div id="p2p-stat-video" class="pod-info-video">
-        <i class="bi bi-arrow-up"></i>
-        <i class="bi bi-arrow-down"></i>
+      <div id="info-video" class="pod-info-video">
+        <span id="stat-peers"><i class="bi bi-people-fill"></i> 0</span> | <span id="stat-info"></span>
+        {% include 'videos/video-all-info.html' %}
       </div>
-      <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' %}</div>
     {% endif %}
     {% endblock video-element %}
 
