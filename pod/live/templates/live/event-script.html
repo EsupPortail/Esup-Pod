@@ -103,11 +103,7 @@
       let player = videojs("podvideoplayer", options, function() {
       });
 
-      player.videoJsLogo({
-        imgsrc: '{% static LOGO_PLAYER %}',
-        linktitle: '{{TITLE_ETB}}"-"{{TITLE_SITE}}',
-        link: '{{LINK_PLAYER}}'
-      });
+      player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{ TITLE_SITE }} - {% trans "Home" %} - {% trans "New window" %}', link:'/'});
 
       player.on("error", function() {
         // Handle successives errors to avoid multiple reload

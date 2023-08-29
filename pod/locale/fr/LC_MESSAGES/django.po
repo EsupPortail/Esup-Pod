@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-29 11:51+0000\n"
+"POT-Creation-Date: 2023-08-29 13:11+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -1415,8 +1415,8 @@ msgid "Role"
 msgstr "Rôle"
 
 #: pod/completion/templates/contributor/list_contributor.html
-msgid "Edit the contributor"
-msgstr "Éditer le contributeur"
+msgid "Modify the contributor"
+msgstr "Modifier le contributeur"
 
 #: pod/completion/templates/contributor/list_contributor.html
 msgid "Delete the contributor"
@@ -1645,10 +1645,8 @@ msgid "Subtitle(s) and Caption(s)"
 msgstr "Sous-titres et légendes"
 
 #: pod/completion/templates/video_completion.html
-#, fuzzy
-#| msgid "to create your subtitles and/or caption(s) files"
 msgid "To create your subtitles and/or caption(s) files"
-msgstr "pour créer les fichiers de sous-titres ou de légendes"
+msgstr "Pour créer les fichiers de sous-titres ou de légendes"
 
 #: pod/completion/templates/video_completion.html
 msgid "Add a new subtitle or caption file"
@@ -3121,6 +3119,18 @@ msgstr ""
 "d’attente."
 
 #: pod/live/templates/live/direct.html
+#: pod/live/templates/live/event-script.html pod/main/templates/base.html
+#: pod/main/templates/navbar.html pod/video/templates/videos/video-script.html
+msgid "Home"
+msgstr "Accueil"
+
+#: pod/live/templates/live/direct.html
+#: pod/live/templates/live/event-script.html
+#: pod/video/templates/videos/video-script.html
+msgid "New window"
+msgstr "Nouvelle fenêtre"
+
+#: pod/live/templates/live/direct.html
 #: pod/live/templates/live/event-script.html
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
@@ -4411,11 +4421,6 @@ msgstr "Afficher/masquer le menu latéral"
 #: pod/main/templates/base.html
 msgid "Breadcrumb"
 msgstr "Fil d’Ariane"
-
-#: pod/main/templates/base.html pod/main/templates/navbar.html
-#: pod/video/templates/videos/video-script.html
-msgid "Home"
-msgstr "Accueil"
 
 #: pod/main/templates/base.html
 msgid ""
@@ -7705,10 +7710,6 @@ msgid ""
 msgstr ""
 "Utilisez ces liens dans une conférence BigBlueButton ou une activité vidéo "
 "interactive H5P :"
-
-#: pod/video/templates/videos/video-script.html
-msgid "New window"
-msgstr "Nouvelle fenêtre"
 
 #: pod/video/templates/videos/video_collaborate.html
 msgid "Collaborate"

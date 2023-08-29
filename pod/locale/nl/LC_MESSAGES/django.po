@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-29 11:51+0000\n"
+"POT-Creation-Date: 2023-08-29 13:11+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1346,7 +1346,7 @@ msgid "Role"
 msgstr ""
 
 #: pod/completion/templates/contributor/list_contributor.html
-msgid "Edit the contributor"
+msgid "Modify the contributor"
 msgstr ""
 
 #: pod/completion/templates/contributor/list_contributor.html
@@ -2910,6 +2910,18 @@ msgid ""
 msgstr ""
 
 #: pod/live/templates/live/direct.html
+#: pod/live/templates/live/event-script.html pod/main/templates/base.html
+#: pod/main/templates/navbar.html pod/video/templates/videos/video-script.html
+msgid "Home"
+msgstr ""
+
+#: pod/live/templates/live/direct.html
+#: pod/live/templates/live/event-script.html
+#: pod/video/templates/videos/video-script.html
+msgid "New window"
+msgstr ""
+
+#: pod/live/templates/live/direct.html
 #: pod/live/templates/live/event-script.html
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
@@ -4174,11 +4186,6 @@ msgstr ""
 
 #: pod/main/templates/base.html
 msgid "Breadcrumb"
-msgstr ""
-
-#: pod/main/templates/base.html pod/main/templates/navbar.html
-#: pod/video/templates/videos/video-script.html
-msgid "Home"
 msgstr ""
 
 #: pod/main/templates/base.html
@@ -7220,10 +7227,6 @@ msgstr ""
 msgid ""
 "Use these links in a BigBlueButton meeting or an interactive H5P video "
 "activity:"
-msgstr ""
-
-#: pod/video/templates/videos/video-script.html
-msgid "New window"
 msgstr ""
 
 #: pod/video/templates/videos/video_collaborate.html
