@@ -63,7 +63,10 @@ SITE_ID = getattr(settings, "SITE_ID", 1)
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
-    ((_("-- Frequently used languages --"), __PREF_LANG_CHOICES__), (_("-- All languages --"), __ALL_LANG_CHOICES__)),
+    (
+        (_("-- Frequently used languages --"), __PREF_LANG_CHOICES__),
+        (_("-- All languages --"), __ALL_LANG_CHOICES__),
+    ),
 )
 
 CURSUS_CODES = getattr(

@@ -51,7 +51,10 @@ SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
-    ((_("-- Frequently used languages --"), __PREF_LANG_CHOICES__), (_("-- All languages --"), __ALL_LANG_CHOICES__)),
+    (
+        (_("-- Frequently used languages --"), __PREF_LANG_CHOICES__),
+        (_("-- All languages --"), __ALL_LANG_CHOICES__),
+    ),
 )
 MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
 LIVE_TRANSCRIPTIONS_FOLDER = getattr(

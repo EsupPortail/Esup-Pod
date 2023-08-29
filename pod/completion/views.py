@@ -36,7 +36,10 @@ __CAPTION_MAKER_ACTION__ = ["save"]
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
-    ((_("-- Frequently used languages --"), PREF_LANG_CHOICES), (_("-- All languages --"), ALL_LANG_CHOICES)),
+    (
+        (_("-- Frequently used languages --"), PREF_LANG_CHOICES),
+        (_("-- All languages --"), ALL_LANG_CHOICES),
+    ),
 )
 __LANG_CHOICES_DICT__ = {
     key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]

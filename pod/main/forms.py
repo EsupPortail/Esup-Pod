@@ -27,13 +27,13 @@ class ContactUsForm(forms.Form):
         label=_("Name"),
         required=True,
         max_length=512,
-        widget=forms.TextInput(attrs={"autocomplete": "name"})
+        widget=forms.TextInput(attrs={"autocomplete": "name"}),
     )
 
     email = forms.EmailField(
         label=_("Email"),
         required=True,
-        widget=forms.EmailInput(attrs={"autocomplete": "email"})
+        widget=forms.EmailInput(attrs={"autocomplete": "email"}),
     )
 
     subject = forms.ChoiceField(
