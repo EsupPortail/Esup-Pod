@@ -20,15 +20,11 @@ class PlaylistModelTests(TestCase):
     """
 
     def setUp(self):
-        """
-        Set up the tests.
-        """
+        """Set up the tests."""
         self.user = User.objects.create_user(username="testuser", password="testpassword")
 
     def test_create_playlist(self):
-        """
-        Test the model creation.
-        """
+        """Test the model creation."""
         playlist = Playlist.objects.create(
             name="Test Playlist",
             description="Test description",
@@ -44,9 +40,7 @@ class PlaylistModelTests(TestCase):
         print(" --->  test_create_playlist ok")
 
     def test_default_values(self):
-        """
-        Test the model default values.
-        """
+        """Test the model default values."""
         playlist = Playlist.objects.create(owner=self.user)
         self.assertEqual(playlist.name, _("Playlist"))
         self.assertEqual(playlist.description, "")
@@ -57,17 +51,13 @@ class PlaylistModelTests(TestCase):
         print(" --->  test_default_values ok")
 
     def test_slug_generation(self):
-        """
-        Test the model slug generation.
-        """
+        """Test the model slug generation."""
         playlist = Playlist.objects.create(name="Test Playlist", owner=self.user)
         self.assertEqual(playlist.slug, f"{playlist.id}-test-playlist")
         print(" --->  test_slug_generation ok")
 
     def test_additional_owners(self):
-        """
-        Test the model additional owners.
-        """
+        """Test the model additional owners."""
         owner1 = User.objects.create_user(username="owner1", password="testpassword")
         owner2 = User.objects.create_user(username="owner2", password="testpassword")
         playlist = Playlist.objects.create(name="Test Playlist", owner=owner1)
@@ -77,9 +67,7 @@ class PlaylistModelTests(TestCase):
         print(" --->  test_additional_owners ok")
 
     def test_date_created_and_updated(self):
-        """
-        Test the model creation date and update date.
-        """
+        """Test the model creation date and update date."""
         playlist = Playlist.objects.create(name="Test Playlist", owner=self.user)
         self.assertIsNotNone(playlist.date_created)
         self.assertIsNotNone(playlist.date_updated)
@@ -87,9 +75,7 @@ class PlaylistModelTests(TestCase):
         print(" --->  test_date_created_and_updated ok")
 
     def test_string_representation(self):
-        """
-        Test the model string representation.
-        """
+        """Test the model string representation."""
         playlist = Playlist.objects.create(name="Test Playlist", owner=self.user)
         self.assertEqual(str(playlist), playlist.slug)
         print(" --->  test_string_representation ok")
@@ -106,9 +92,7 @@ class PlaylistContentModelTests(TestCase):
     fixtures = ["initial_data.json"]
 
     def setUp(self):
-        """
-        Set up the tests.
-        """
+        """Set up the tests."""
         self.user = User.objects.create_user(username="testuser", password="testpassword")
         self.playlist = Playlist.objects.create(name="Test Playlist", owner=self.user)
         self.video = Video.objects.create(
@@ -127,9 +111,7 @@ class PlaylistContentModelTests(TestCase):
         )
 
     def test_create_playlist_content(self):
-        """
-        Test the model creation.
-        """
+        """Test the model creation."""
         playlist_content = PlaylistContent.objects.create(
             playlist=self.playlist, video=self.video
         )
@@ -139,18 +121,14 @@ class PlaylistContentModelTests(TestCase):
         print(" --->  test_create_playlist_content ok")
 
     def test_unique_constraint(self):
-        """
-        Test creating two playlist contents with the same playlist and video.
-        """
+        """Test creating two playlist contents with the same playlist and video."""
         PlaylistContent.objects.create(playlist=self.playlist, video=self.video)
         with self.assertRaises(Exception):
             PlaylistContent.objects.create(playlist=self.playlist, video=self.video)
         print(" --->  test_unique_constraint ok")
 
     def test_rank_generation(self):
-        """
-        Test the rank generation playlist content.
-        """
+        """Test the rank generation playlist content."""
         playlist_content1 = PlaylistContent.objects.create(
             playlist=self.playlist, video=self.video
         )
@@ -162,13 +140,11 @@ class PlaylistContentModelTests(TestCase):
         print(" --->  test_rank_generation ok")
 
     def test_string_representation(self):
-        """
-        Test the string representation models.
-        """
+        """Test the string representation models."""
         playlist_content = PlaylistContent.objects.create(
             playlist=self.playlist, video=self.video
         )
-        expected_string = f"Playlist : {self.playlist} - Video : {self.video} - Rank : {playlist_content.rank}"
+        expected_string = f"Playlist: {self.playlist} - Video: {self.video} - Rank: {playlist_content.rank}"
         self.assertEqual(str(playlist_content), expected_string)
         print(" --->  test_string_representation ok")
 

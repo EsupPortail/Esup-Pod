@@ -15,7 +15,7 @@
 {% block page_title %}{{building.name}}{% endblock %}
 
 {% block page_content %}
-<h3><i class="bi bi-broadcast"></i>&nbsp;{{building.name}}</h3>
+<h3><i class="bi bi-broadcast" aria-hidden="true"></i>&nbsp;{{building.name}}</h3>
 {% if building.headband %}
 <img class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" src="{{building.get_headband_url}}" alt="{{building.name}}" loading="lazy">
 {% endif %}

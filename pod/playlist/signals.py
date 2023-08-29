@@ -11,6 +11,11 @@ from .models import Playlist
 
 @receiver(m2m_changed, sender=Owner.sites.through)
 def update_favorite_playlist(sender, instance, action, reverse, model, pk_set, **kwargs):
+    """
+    This signal update favorite playlist.
+
+    When an owner has been created.
+    """
     if action == "post_add":
         for site_id in pk_set:
             site = Site.objects.get(id=site_id)

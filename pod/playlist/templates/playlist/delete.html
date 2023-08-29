@@ -33,7 +33,7 @@
             display: none;
         }
     </style>
-    <h3>{% blocktrans with name=playlist.name %}Delete the playlist <b>{{name}}</b>{% endblocktrans %}
+    <h3>{% blocktrans with name=playlist.name %}Delete the playlist <strong>{{name}}</strong>{% endblocktrans %}
         <span class="float-end">
             <a href="{% url 'playlist:list' %}" title="{% trans 'Back to my playlists' %}" class="btn btn-secondary btn-sm" aria-label="{% trans "Back to my playlists" %}">
                 <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Back to my playlists" %}

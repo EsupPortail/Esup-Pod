@@ -97,9 +97,9 @@ function updateUrl(newUrl) {
 
 
 /**
- * Refresh element with the DocuementFragment.
+ * Refresh element with the DocumentFragment.
  *
- * @param {*} elementQuerySelector The query selector for the element.
+ * @param {string} elementQuerySelector The query selector for the element.
  * @param {*} html The html code.
  */
 function refreshElementWithDocumentFragment(elementQuerySelector, newHTMLContent) {
@@ -110,6 +110,7 @@ function refreshElementWithDocumentFragment(elementQuerySelector, newHTMLContent
     elementToRefresh.innerHTML = '';
     elementToRefresh.innerHTML = fragment.querySelector(elementQuerySelector).innerHTML;
 }
+
 
 /**
  * Scroll to the selected video.
@@ -128,6 +129,7 @@ function scrollToSelectedVideo() {
     }
 }
 
+
 /**
  * Get startCountDown() promise.
  *
@@ -138,6 +140,7 @@ function asyncStartCountDown() {
         startCountdown(resolve);
     });
 }
+
 
 /**
  * Start the count down.
@@ -155,6 +158,7 @@ function startCountdown(callback) {
         callback();
     }
 }
+
 
 if (typeof videos === undefined) {
     let videos = document.querySelectorAll('.player-element');
