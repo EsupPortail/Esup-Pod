@@ -3,8 +3,10 @@ var translationDone = false;
 document.getElementById('podvideoplayer_html5_api').addEventListener('play', function () {
     if (!translationDone) {
         const elementToTranslateList = [
-            ['.skip-back', 'Revenir de 10 secondes en arrière'],
-            ['.skip-forward', 'Aller de 10 seconds en avant'],
+            ['.skip-back', gettext('Seek back 10 seconds')],
+            ['.skip-forward', gettext('Seek forward 10 seconds')],
+            ['.vjs-quality-selector', gettext('Quality')],
+            ['.vjs-mute-control', ''],
         ]
         for (let elementToTranslate of elementToTranslateList) {
             translateTitleOfVideoPlayerButton(elementToTranslate[0], elementToTranslate[1]);
@@ -20,13 +22,13 @@ document.getElementById('podvideoplayer_html5_api').addEventListener('play', fun
  * @param {string} title The title.
  */
 function translateTitleOfVideoPlayerButton(querySelectorButton, title) {
-    const translatedTitle = gettext(title);
+    let translatedTitle = title;
     const videoPlayerButton = document.querySelector(querySelectorButton);
     if (videoPlayerButton) {
         const videoPlayerSpan = videoPlayerButton.querySelector('.vjs-control-text');
         videoPlayerButton.title = translatedTitle;
-        videoPlayerSpan.textContent = translatedTitle;
+        if (videoPlayerSpan) {
+            videoPlayerSpan.textContent = translatedTitle;
+        }
     }
 }
-
-// 'Seek back 10 seconds'
