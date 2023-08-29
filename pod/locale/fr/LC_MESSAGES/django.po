@@ -1655,10 +1655,8 @@ msgid "Subtitle(s) and Caption(s)"
 msgstr "Sous-titres et légendes"
 
 #: pod/completion/templates/video_completion.html
-#, fuzzy
-#| msgid "to create your subtitles and/or caption(s) files"
 msgid "To create your subtitles and/or caption(s) files"
-msgstr "pour créer les fichiers de sous-titres ou de légendes"
+msgstr "Pour créer les fichiers de sous-titres ou de légendes"
 
 #: pod/completion/templates/video_completion.html
 msgid "Add a new subtitle or caption file"
@@ -2516,8 +2514,8 @@ msgid "The found file is not a valid video."
 msgstr "Le fichier trouvé n’est pas une vidéo valide."
 
 #: pod/import_video/utils.py
-msgid "No video file found"
-msgstr "Aucun fichier vidéo trouvé"
+msgid "No video file found."
+msgstr "Aucun fichier vidéo trouvé."
 
 #: pod/import_video/utils.py
 msgid "The video file for this recording was not found on the BBB server."
@@ -2532,6 +2530,20 @@ msgstr "Impossible de télécharger le fichier vidéo depuis le serveur."
 #: pod/import_video/utils.py
 msgid "Impossible to create the Pod video"
 msgstr "Impossible de créer la vidéo Pod"
+
+#: pod/import_video/utils.py
+msgid "No video file found for this address."
+msgstr "Aucun fichier vidéo trouvé pour cette adresse."
+
+#: pod/import_video/utils.py
+msgid "File too large."
+msgstr "Fichier trop volumineux."
+
+#: pod/import_video/utils.py
+#, python-format
+msgid "The size of the video file exceeds the maximum allowed value, %s Gb."
+msgstr ""
+"La taille du fichier vidéo dépasse la valeur maximale autorisée, %s Go."
 
 #: pod/import_video/views.py
 msgid "You cannot view this recording."
@@ -2564,7 +2576,7 @@ msgid ""
 "This video was uploaded to Pod; its origin is %(type)s : <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
-"Cette vidéo a été téléversée sur Pod; son origine est %(type)s : <a href="
+"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a href="
 "\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
 #: pod/import_video/views.py pod/meeting/views.py
@@ -2579,7 +2591,7 @@ msgid ""
 "This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a href="
 "\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
-"Cette vidéo « %(name)s » a été téléversée sur Pod; son origine est Youtube : "
+"Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est Youtube : "
 "<a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
 #: pod/import_video/views.py

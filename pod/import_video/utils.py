@@ -10,6 +10,8 @@ from pod.video.models import Video
 from pod.video.models import Type
 from urllib.parse import parse_qs, urlparse
 
+MAX_UPLOAD_SIZE_ON_IMPORT = getattr(settings, "MAX_UPLOAD_SIZE_ON_IMPORT", 4)
+
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
 
 VIDEO_ALLOWED_EXTENSIONS = getattr(
@@ -140,7 +142,7 @@ def parse_remote_file(source_html_url):
             msg["error"] = _(
                 "The video file for this recording was not found in the HTML file."
             )
-            msg["message"] = _("No video file found")
+            msg["message"] = _("No video file found.")
             raise ValueError(msg)
     except Exception as exc:
         msg = {}
@@ -240,6 +242,47 @@ def check_file_exists(source_url):
         return True
     else:
         return False
+
+
+def verify_video_exists_and_size(video_url):
+    """Check that the video file exists and its size does not exceed the limit.
+
+    Args:
+        video_url (String): Video source URL
+
+    Raises:
+        ValueError: exception raised if no video found in this URL or video oversized
+    """
+    response = requests.head(video_url, timeout=2)
+    if response.status_code < 400:
+        # Video file size
+        size = int(response.headers.get('Content-Length', '0'))
+        check_video_size(size)
+    else:
+        msg = {}
+        msg["error"] = _("No video file found.")
+        msg["message"] = _("No video file found for this address.")
+        raise ValueError(msg)
+
+
+def check_video_size(video_size):
+    """Check that the video file size does not exceed the limit.
+
+    Args:
+        video_size (Integer): Video file size
+
+    Raises:
+        ValueError: exception raised if video oversized
+    """
+    size_max = int(MAX_UPLOAD_SIZE_ON_IMPORT) * 1024 * 1024 * 1024
+    if MAX_UPLOAD_SIZE_ON_IMPORT != 0 and video_size > size_max:
+        msg = {}
+        msg["error"] = _("File too large.")
+        msg["message"] = _(
+            "The size of the video file exceeds "
+            "the maximum allowed value, %s Gb."
+        ) % MAX_UPLOAD_SIZE_ON_IMPORT
+        raise ValueError(msg)
 
 
 class video_parser(HTMLParser):

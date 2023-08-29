@@ -2360,7 +2360,7 @@ msgid "The found file is not a valid video."
 msgstr ""
 
 #: pod/import_video/utils.py
-msgid "No video file found"
+msgid "No video file found."
 msgstr ""
 
 #: pod/import_video/utils.py
@@ -2373,6 +2373,19 @@ msgstr ""
 
 #: pod/import_video/utils.py
 msgid "Impossible to create the Pod video"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "No video file found for this address."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "File too large."
+msgstr ""
+
+#: pod/import_video/utils.py
+#, python-format
+msgid "The size of the video file exceeds the maximum allowed value (%s Gb)."
 msgstr ""
 
 #: pod/import_video/views.py
