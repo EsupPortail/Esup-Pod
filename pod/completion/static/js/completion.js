@@ -101,7 +101,7 @@ document.addEventListener("submit", (e) => {
     e.target.id != "form_new_overlay" &&
     !e.target.matches(".form_change") &&
     !e.target.matches(".form_delete")
-    )
+  )
     return;
 
   e.preventDefault();
@@ -379,7 +379,6 @@ function refresh_list(data, form, list) {
     document.getElementById("enrich_player").innerHTML = data.player;
   }
   document.getElementById(list).innerHTML = data.list_data;
-
 }
 
 // Check fields

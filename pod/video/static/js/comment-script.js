@@ -118,7 +118,7 @@ class ConfirmModal extends HTMLElement {
       if (event.key == "Escape") {
         closeModal();
       }
-    })
+    });
     this.innerHTML = modal;
     this.querySelector(".actions").appendChild(delete_btn);
     this.querySelector(".actions").appendChild(cancel_btn);
@@ -224,7 +224,7 @@ class Comment extends HTMLElement {
         if (event.key === "Enter" || event.key === " ") {
           toggleVote();
         }
-      })
+      });
 
       /**
        * Toggles the voting action for a comment.
@@ -252,7 +252,7 @@ class Comment extends HTMLElement {
         0,
       );
       response_action.addEventListener("click", function () {
-        toggleReply(this)
+        toggleReply(this);
       });
       response_action.addEventListener("keydown", function (event) {
         if (event.key === "Enter" || event.key === " ") {
@@ -320,8 +320,8 @@ class Comment extends HTMLElement {
           name="new_comment" id="comment" rows="1"
           placeholder="${gettext("Add a public comment")}"></textarea>
         <button class="btn btn-link btn-lg send_reply disabled" role="button" title="${gettext(
-        "Send",
-      )}">
+          "Send",
+        )}">
           <i aria-hidden="true" class="bi bi-send-fill"></i>
         </button>
       `;
@@ -423,8 +423,12 @@ function createFooterBtnAction(
   tabIndex = null,
 ) {
   let el = document.createElement("DIV");
-  if (tabIndex !== "null" && typeof tabIndex === "number" && Number.isInteger(tabIndex)) {
-    el.setAttribute("tabindex", tabIndex.toString())
+  if (
+    tabIndex !== "null" &&
+    typeof tabIndex === "number" &&
+    Number.isInteger(tabIndex)
+  ) {
+    el.setAttribute("tabindex", tabIndex.toString());
   }
   el.setAttribute("class", classes + " btn btn-link btn-sm");
   el.setAttribute("role", "button");
@@ -454,7 +458,7 @@ function hide_or_add_show_children_btn(parent_comment, parent_id, nb_child) {
     "comment_show_children_btn",
     txt,
     null,
-    0
+    0,
   );
   children_action.addEventListener("click", toggleComment);
   children_action.addEventListener("keydown", function (event) {
@@ -829,7 +833,7 @@ function isInViewport(el) {
     rect.top >= 0 &&
     rect.left >= 0 &&
     rect.bottom <=
-    (window.innerHeight || document.documentElement.clientHeight) &&
+      (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
@@ -903,10 +907,12 @@ function setBorderLeftColor(comment, parent_element) {
     let index = Number.parseInt(parent_element.dataset.level) + 1;
     if (index >= COLORS.length) {
       comment.dataset.level = COLORS.length - 1;
-      comment.querySelector(".comment_content").style.borderLeft = `4px solid ${COLORS[COLORS.length - 1]
-        }`;
-      comment.querySelector(".comments_icon").style.color = `${COLORS[COLORS.length - 1]
-        }`;
+      comment.querySelector(".comment_content").style.borderLeft = `4px solid ${
+        COLORS[COLORS.length - 1]
+      }`;
+      comment.querySelector(".comments_icon").style.color = `${
+        COLORS[COLORS.length - 1]
+      }`;
     } else {
       comment.dataset.level = index;
       comment.querySelector(
@@ -916,10 +922,12 @@ function setBorderLeftColor(comment, parent_element) {
     }
   } catch (e) {
     comment.dataset.level = COLORS.length - 1;
-    comment.querySelector(".comment_content").style.borderLeft = `4px solid ${COLORS[COLORS.length - 1]
-      }`;
-    comment.querySelector(".comments_icon").style.color = `${COLORS[COLORS.length - 1]
-      }`;
+    comment.querySelector(".comment_content").style.borderLeft = `4px solid ${
+      COLORS[COLORS.length - 1]
+    }`;
+    comment.querySelector(".comments_icon").style.color = `${
+      COLORS[COLORS.length - 1]
+    }`;
   }
 }
 
