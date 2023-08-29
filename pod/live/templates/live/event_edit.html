@@ -31,7 +31,7 @@
 
   {% if access_not_allowed == True %}
     <p class="text-info-emphasis">
-      <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding event has been restricted. If you want to add events on the platform, please" %}
+      <i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% trans "Access to adding event has been restricted. If you want to add events on the platform, please" %}
       <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
     </p>
   {% else %}
@@ -69,7 +69,7 @@
           {% if "collapse" in last.classes %}
             <div class="mb-3">
                 <a class="btn btn-link" data-bs-toggle="collapse" href="#event_form_{{fieldset|first}}{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
-                    {% trans "Display advanced options" %} &nbsp;<i class="bi bi-chevron-down"></i>
+                    {% trans "Display advanced options" %} &nbsp;<i class="bi bi-chevron-down" aria-hidden="true"></i>
                 </a>
             </div>
           {% endif %}
@@ -124,7 +124,7 @@
   {% if access_not_allowed != True %}
     {% if form.instance.title  and form.instance.slug != '' %}
       <div class="card mt-1" id="card-managevideo">
-        <h2 class="h4 card-header card-title pl-2"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage event" %}
+        <h2 class="h4 card-header card-title pl-2"><i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage event" %}
         </h2>
         <div class="card-body card-text text-center">
           {% if event.owner == request.user or request.user.is_superuser %}

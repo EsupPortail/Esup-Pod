@@ -1,16 +1,20 @@
 {% load i18n %}
-<div class="mb-3" id="repeat_recurring">
-  <div class="list-group-item">
-    <div class="row g-3 align-items-center m-1">
-      <div class="col-auto">
-        <label class="form-label" for="id_frequency">{% trans 'Repeat every' %}</label>
+
+<fieldset>
+  <legend><i class="bi bi-calendar2-range" aria-hidden="true"></i>&nbsp;{% trans "Frequency" %}</legend>
+  <div class="mb-3" id="repeat_recurring">
+    <div class="list-group-item">
+      <div class="row g-3 align-items-center m-1">
+        <div class="col-auto">
+          <label class="form-label" for="id_frequency">{% trans 'Repeat every' %}</label>
+        </div>
+        <div class="col-auto">{{ form.frequency }}</div>
+        <label for="id_recurrence" class="visually-hidden">{% trans 'Recurrence unit' %}</label>
+        <div class="col-auto">{{ form.recurrence }}</div>
       </div>
-      <div class="col-auto">{{ form.frequency }}</div>
-      <label for="id_recurrence" class="visually-hidden">{% trans 'Recurrence unit' %}</label>
-      <div class="col-auto">{{ form.recurrence }}</div>
     </div>
   </div>
-</div>
+</fieldset>
 <div class="mb-3" id="weekdays_recurring">
   <div class="list-group-item">
     <div class="row g-3 align-items-center m-1">
@@ -35,22 +39,24 @@
     </div>
   </div>
 </div>
-<div class="mb-3">
-  <div class="list-group-item">
-    <div class="h3">{% trans 'End:' %}</div>
-    <div class="row g-3 align-items-center m-1">
-      <div class="col-auto align-items-center">
-        <div class="input-group input-group-sm">
-          <label class="input-group-text me-1 p-1" for="id_recurring_until">{% trans 'The:' %}</label>
-          <span class="align-items-center">{{ form.recurring_until }}</span>
-          <span class="input-group-text ms-1 p-1">{% trans 'Or after' %}</span>
-          {{ form.nb_occurrences }}
-          <label class="input-group-text p-1" for="id_nb_occurrences">{% trans 'occurrences' %}</label>
+<fieldset>
+  <legend><i class="bi bi-calendar-check" aria-hidden="true"></i>&nbsp;{% trans 'End' %}</legend>
+  <div class="mb-3">
+    <div class="list-group-item">
+      <div class="row g-3 align-items-center m-1">
+        <div class="col-auto align-items-center">
+          <div class="input-group input-group-sm">
+            <label class="input-group-text me-1 p-1" for="id_recurring_until">{% trans 'The:' %}</label>
+            <span class="align-items-center">{{ form.recurring_until }}</span>
+            <span class="input-group-text ms-1 p-1">{% trans 'Or after' %}</span>
+            {{ form.nb_occurrences }}
+            <label class="input-group-text p-1" for="id_nb_occurrences">{% trans 'occurrences' %}</label>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</fieldset>
 <script>
   let recurrence = document.getElementById("id_recurrence");
   // recurrence.onchange = function() { console.log("Changed!" + recurrence.value);

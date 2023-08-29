@@ -1134,6 +1134,16 @@ msgstr "sous-titres"
 msgid "captions"
 msgstr "légendes"
 
+#: pod/completion/models.py pod/completion/views.py pod/live/models.py
+#: pod/recorder/models.py pod/video/models.py
+msgid "-- Frequently used languages --"
+msgstr "-- Langues fréquemment utilisées --"
+
+#: pod/completion/models.py pod/completion/views.py pod/live/models.py
+#: pod/recorder/models.py pod/video/models.py
+msgid "-- All languages --"
+msgstr "-- Toutes les langues --"
+
 #: pod/completion/models.py
 msgid "lastname / firstname"
 msgstr "nom / prénom"
@@ -1447,6 +1457,7 @@ msgstr "Début"
 #: pod/completion/templates/overlay/list_overlay.html
 #: pod/cut/templates/video_cut.html pod/enrichment/models.py
 #: pod/enrichment/templates/enrichment/list_enrichment.html
+#: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "End"
 msgstr "Fin"
 
@@ -4658,7 +4669,7 @@ msgstr "votre message intitulé"
 msgid "join"
 msgstr "rejoindre"
 
-#: pod/meeting/admin.py
+#: pod/meeting/admin.py pod/meeting/forms.py
 msgid "Recurring"
 msgstr "Récurrence"
 
@@ -4709,13 +4720,14 @@ msgid "Date and time options"
 msgstr "Date et heure"
 
 #: pod/meeting/forms.py
-msgid "Recurring options"
-msgstr "Récurrence"
-
-#: pod/meeting/forms.py
 msgid "Record session"
 msgstr "Enregistrement"
 
+#: pod/meeting/forms.py
+msgid "Recurring options"
+msgstr "Options de récurrence"
+
+#: pod/meeting/forms.py pod/video/forms.py
 #: pod/meeting/forms.py pod/playlist/forms.py pod/video/forms.py
 msgid "Owner of the video cannot be an additional owner too"
 msgstr ""
@@ -5239,6 +5251,10 @@ msgid "End the meeting"
 msgstr "Terminer la réunion"
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
+msgid "Frequency"
+msgstr "Fréquence"
+
+#: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "Repeat every"
 msgstr "Répéter tou(te)s les"
 
@@ -5253,10 +5269,6 @@ msgstr "Répéter le :"
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "Type of monthly recurrence"
 msgstr "Type de récurrence mensuelle"
-
-#: pod/meeting/templates/meeting/recurring_options_modal_form.html
-msgid "End:"
-msgstr "Fin :"
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "The:"
@@ -7415,6 +7427,12 @@ msgid "Submit changes"
 msgstr "Soumettre les changements"
 
 #: pod/video/templates/videos/filter_aside.html
+msgid ""
+"The videos on the left are automatically sorted according to the filters "
+"selected. Check options to adjust results."
+msgstr "Les vidéos à gauche sont automatiquement triées en fonction des filtres sélectionnés. Vérifiez les options pour ajuster les résultats."
+
+#: pod/video/templates/videos/filter_aside.html
 msgid "Filter by user"
 msgstr "Filtrer par utilisateur"
 
@@ -8333,6 +8351,8 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
+#~ msgid "End:"
+#~ msgstr "Fin :"
 #~ msgid "%(counter)s Channel"
 #~ msgid_plural "%(counter)s Channels"
 #~ msgstr[0] "%(counter)s Chaîne"

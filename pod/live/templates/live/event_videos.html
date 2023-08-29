@@ -1,9 +1,9 @@
-<div class="row infinite-container" id="videos_list">
+<div class="pod-infinite-container infinite-container" id="videos_list">
     {% for video in event.videos.all %}
 
         {# on n'affiche pas la video en brouillon sauf si l'evenement est brouillon aussi (ou pour les ayants droit) #}
         {% if not video.is_draft or event.is_draft or video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all %}
-            <div class="infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group"
+            <div class="infinite-item card-group"
                  style="min-width: 12rem; min-height: 11rem;">
                 {% with fromEvent=True %}
                     {% include "videos/card.html" %}
