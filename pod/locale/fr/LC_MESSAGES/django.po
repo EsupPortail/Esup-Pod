@@ -5439,10 +5439,12 @@ msgstr "Veuillez choisir une description. Celle-ci est vide par défaut."
 
 #: pod/playlist/forms.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/filter_aside.html
-#, fuzzy
-#| msgid "Right of access:"
 msgid "Right of access"
-msgstr "Droit d'accès :"
+msgstr "Droit d'accès"
+
+#: pod/playlist/templates/playlist/filter_aside.html
+msgid "When you click on a choice in the form, you will be automatically redirected to the page dedicated to this filter."
+msgstr "Lorsque vous cliquez sur un choix du formulaire, vous serez redirigé automatiquement vers la page dédiée à ce filtre."
 
 #: pod/playlist/forms.py pod/playlist/models.py
 msgid ""
