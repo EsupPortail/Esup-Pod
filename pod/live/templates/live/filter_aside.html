@@ -1,52 +1,52 @@
 {% load i18n %}
+{% load static %}
 {% load tagging_tags %}
 {% load thumbnail %}
 
 {% spaceless %}
   <div class="card card-body">
     <h2 class="card-title pod-card__title h4">
-      <i class="bi bi-sliders2-vertical"></i>&nbsp;{% trans "Filters" %}
+      <i class="bi bi-sliders2-vertical" aria-hidden="true"></i>&nbsp;{% trans "Filters" %}
     </h2>
 
     <form action="{% url 'live:events' %}" method="get" id="filters">
       <fieldset class="border-right border-bottom mt-2">
-        <legend class="h5"><i class="bi bi-tv"></i> {% trans "Types" %}
-          <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans 'Send' %}">
-            <i class="bi bi-send"></i>
-          </button>
-        </legend>
+        <legend class="h5"><i class="bi bi-tv" aria-hidden="true"></i> {% trans "Types" %} </legend>
         <div id="filterType">
           <div class="form-group collapse" id="collapseFilterType">
-            {% for type in TYPES %}
+            {% for type in types %}
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="type"
-                     value="{{ type.slug }}" id="id{{ type.slug.split|join:'-' }}_type"
-                     {% if type.slug in types %}checked{% endif %}>
+                       value="{{ type.slug }}" id="id{{ type.slug.split|join:'-' }}_type"
+                       {% if type.slug in types %}checked{% endif %}>
                 <label class="form-check-label" for="id{{ type.slug.split|join:'-' }}_type">
                   {% if type.icon %}
-                    <img src="{{ type.icon.file.url }}" alt="{{ type.title }}"
-                       style="max-height:32px; max-width:32px;"
-                       loading="lazy">
+                    <img class="filter-event-img" src="{{ type.icon.file.url }}" alt="{{ type.title }}"
+                         loading="lazy">
                   {% else %}
-                  <i class="bi bi-fonts" aria-hidden="true"></i>
+                    <i class="bi bi-fonts" aria-hidden="true"></i>
                   {% endif %}
                   &nbsp;{{ type }}
                 </label>
               </div>
             {% endfor %}
           </div>
-          {% if TYPES.count > 5 %}
-            <span class="badge badge-light float-right">
-              <a class="collapsed" data-toggle="collapse" href="#collapseFilterType"
-                 aria-expanded="false" aria-controls="collapseFilterType">
-              </a></span>
+          {% if types.count > 5 %}
+            <span class="badge badge-light float-end">
+            <a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterType"
+               aria-expanded="false" aria-controls="collapseFilterType">
+            </a></span>
           {% endif %}
-        </div><!-- type -->
+        </div>
       </fieldset>
+      <input class="d-none" type="submit" disabled value="{% trans 'Filter' %}">
     </form>
 
   </div>
-  <script>
-    var listUserChecked = {{owners|escapejs}};
-  </script>
+
 {% endspaceless %}
+
+{% block more_script %}
+  <script src="{% static 'js/filter_aside_event_list.js' %}?ver={{ VERSION }}"></script>
+{% endblock %}
+

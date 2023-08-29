@@ -6,7 +6,7 @@
 <div class="tab-content w-100" id="video-meta">
   {% if event.description %}
     <div class="tab-pane fade active show" id="summary" role="tabpanel" aria-labelledby="summary-tab">
-      <h2 class="tab-title"><i class="bi bi-justify"></i>&nbsp;{% trans 'Summary' %}</h2>
+      <h2 class="tab-title"><i class="bi bi-justify" aria-hidden="true"></i>&nbsp;{% trans 'Summary' %}</h2>
       <hr>
       <p>{{ event.description|safe }}</p>
     </div>
@@ -62,7 +62,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h2 class="modal-title h5" id="shareLabel">
-              <i class="bi bi-share"></i>&nbsp;{% if event.is_draft %}{% trans 'Embed/Share (Draft Mode)' %}{% else %}{% trans 'Embed/Share' %}{% endif %}
+              <i class="bi bi-share" aria-hidden="true"></i>&nbsp;{% if event.is_draft %}{% trans 'Embed/Share (Draft Mode)' %}{% else %}{% trans 'Embed/Share' %}{% endif %}
             </h2>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
           </div>
@@ -77,7 +77,7 @@
                {% endif %}
 
               <fieldset class="pod-share-fieldset">
-                <legend><i class="bi bi-code"></i>&nbsp;{% trans 'Embed in a web page' %}</legend>
+                <legend><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Embed in a web page' %}</legend>
                 <div class="form-group ">
                   <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:'%}</label>
                   <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'live:event' slug=event.slug %}{% if event.is_draft == True %}{{ event.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
@@ -89,9 +89,9 @@
                   <dt class="col-sm-3 text-right visually-hidden">{% trans 'Social Networks' %}</dt>
                   <dd class="col-sm-9 mb-0">
                     <ul class="list-inline mb-0 social_links">
-                      <li class="list-inline-item"><a target="_blank" href="https://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} Facebook"><i class="bi bi-facebook"></i></a></li>
-                      <li class="list-inline-item"><a target="_blank" href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} Twitter"><i class="bi bi-twitter"></i></a></li>
-                      <li class="list-inline-item"><a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&amp;url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} LinkedIn"><i class="bi bi-linkedin"></i></a></li>
+                      <li class="list-inline-item"><a target="_blank" href="https://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} Facebook"><i class="bi bi-facebook" aria-hidden="true"></i></a></li>
+                      <li class="list-inline-item"><a target="_blank" href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} Twitter"><i class="bi bi-twitter" aria-hidden="true"></i></a></li>
+                      <li class="list-inline-item"><a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&amp;url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} LinkedIn"><i class="bi bi-linkedin" aria-hidden="true"></i></a></li>
                     </ul>
                   </dd>
                 </dl>
@@ -99,7 +99,7 @@
               {% endif %}
 
               <fieldset class="pod-share-fieldset">
-                <legend><i class="bi bi-link-45deg"></i>&nbsp;{% trans 'Share the link' %}</legend>
+                <legend><i class="bi bi-link-45deg" aria-hidden="true"></i>&nbsp;{% trans 'Share the link' %}</legend>
                   <div class="form-group">
                     <label for="txtpartage">{% trans 'Use this link to share the video:' %}</label>
                     <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'live:event' slug=event.slug %}{% if event.is_draft == True %}{{ event.get_hashkey }}/{% endif %}">
@@ -107,7 +107,7 @@
                 <div class="form-group">
                   <label>{% trans 'QR code for this link:' %}&nbsp;
                     <a href="#" class="btn pod-btn pod-btn-social m-1" title="{% trans 'Warning, it use google API' %}" role="button" data-bs-toggle="collapse" data-bs-target="#qrcode" aria-expanded="false" aria-controls="qrcode">
-                      <i class="bi bi-eye"></i>
+                      <i class="bi bi-eye" aria-hidden="true"></i>
                     </a>
                   </label>
                   <img src="//chart.apis.google.com/chart?cht=qr&amp;chs=200x200&amp;chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'live:event' slug=event.slug %}{% if event.is_draft == True %}{{ event.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode" loading="lazy">
