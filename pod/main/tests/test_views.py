@@ -114,6 +114,7 @@ class MainViewsTestCase(TestCase):
 
 class MaintenanceViewsTestCase(TestCase):
     """`TestCase for the maintenance view.`"""
+
     fixtures = [
         "initial_data.json",
     ]
@@ -197,6 +198,7 @@ class XSSTests(TestCase):
 
 class TestShowVideoButtons(TestCase):
     """`TestCase` for the video buttons."""
+
     fixtures = ["initial_data.json"]
 
     def setUp(self):
@@ -307,6 +309,7 @@ class TestShowVideoButtons(TestCase):
 
 class TestShowMeetingButton(TestCase):
     """`TestCase` for the meeting button."""
+
     fixtures = ["initial_data.json"]
 
     def setUp(self):
