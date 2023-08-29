@@ -38,7 +38,7 @@
 
 {% block page_content %}
     {% csrf_token %}
-    <h3 id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast pe-2"></i>{{ event.title|title }}</h3>
+    <h3 id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast pe-2" aria-hidden="true"></i>{{ event.title|title }}</h3>
 
     {% if form %}
       {% include 'live/event-form.html' %}
@@ -159,7 +159,7 @@
             <a id="report" class="col-auto pod-info-video__signal pt-3"
                href="{% url 'contact_us' %}?video={{ video.id }}&subject=inappropriate_content"
                title="{% trans 'Report the event' %}">
-              <i class="bi bi-exclamation-octagon"></i>
+              <i class="bi bi-exclamation-octagon" aria-hidden="true"></i>
             </a>
 
             {% if event.is_current and can_record %}
@@ -168,17 +168,17 @@
                   <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
                           id="startstream" title="{% trans 'Start stream' %}" aria-label="{% trans 'Start stream' %}"
                           data-url="{% url 'live:ajax_event_start_streaming'%}">
-                    <i class="bi bi-person-video" style="font-size: 2em"></i>
+                    <i class="bi bi-person-video" aria-hidden="true" style="font-size: 2em"></i>
                   </button>
                   <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
                           id="stopstream" title="{% trans 'Stop stream' %}" aria-label="{% trans 'Stop stream' %}"
                           data-url="{% url 'live:ajax_event_stop_streaming'%}">
-                    <i class="bi bi-stop-btn" style="font-size: 2em"></i>
+                    <i class="bi bi-stop-btn" aria-hidden="true" style="font-size: 2em"></i>
                   </button>
                   </button>
                   <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
                           id="startandrecord" title="{% trans 'Start stream and record' %}" aria-label="{% trans 'Start stream and record' %}">
-                    <i class="bi bi-person-video2" style="font-size: 2em"></i>
+                    <i class="bi bi-person-video2" aria-hidden="true" style="font-size: 2em"></i>
                   </button>
                 </div>
               {% endif %}
@@ -187,17 +187,17 @@
                 <button type="button" class="btn btn-outline-danger btn-sm border-0 m-1" disabled
                         id="startrecord" title="{% trans 'Start record' %}" aria-label="{% trans 'Start record' %}"
                         data-url="{% url 'live:ajax_event_startrecord'%}">
-                  <i class="bi bi-circle-fill" style="font-size: 2em"></i>
+                  <i class="bi bi-circle-fill" aria-hidden="true" style="font-size: 2em"></i>
                 </button>
                 <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
                         id="stoprecord" title="{% trans 'Stop record' %}" aria-label="{% trans 'Stop record' %}"
                           data-url="{% url 'live:ajax_event_stoprecord'%}">
-                  <i class="bi bi-square-fill" style="font-size: 2em"></i>
+                  <i class="bi bi-square-fill" aria-hidden="true" style="font-size: 2em"></i>
                 </button>
                 <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
                         id="splitrecord" title="{% trans 'Split record' %}" aria-label="{% trans 'Split record' %}"
                           data-url="{% url 'live:ajax_event_splitrecord'%}">
-                  <i class="bi bi-slash-circle-fill" style="font-size: 2em"></i>
+                  <i class="bi bi-slash-circle-fill" aria-hidden="true" style="font-size: 2em"></i>
                 </button>
               </div>
 
@@ -233,7 +233,7 @@
 
     {% if event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser or perms.live.delete_event or perms.live.change_event %}
         <div class="card mt-1" id="card-managevideo">
-            <h2 class="h4 card-header card-title pl-2"><i class="bi bi-gear"></i>&nbsp;{% trans 'Manage event' %}
+            <h2 class="h4 card-header card-title pl-2"><i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans 'Manage event' %}
             </h2>
             <div class="card-body card-text text-center">
                 <a href="{% url 'live:event_edit' slug=event.slug %}" title="{% trans 'Edit the event' %}"

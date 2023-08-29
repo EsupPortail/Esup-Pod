@@ -15,16 +15,15 @@
 {% block page_content %}
 
   <div class="d-flex infinite-container mb-2" id="event_add">
-    <div class="pod-callout pod-callout-info">{% blocktrans count counter=events.paginator.count %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}</div>
     {% if display_direct_button %}
       <a class="btn btn-primary" href="{% url 'live:directs_all' %}" title="{% trans 'Supervise broadcasters' %}">
-        <i class="bi bi-activity"></i>
+        <i class="bi bi-activity" aria-hidden="true"></i>
         {% trans "Supervise broadcasters" %}
       </a>
     {% endif %}
     {% if display_creation_button %}
       <a class="btn btn-primary" href="{% url 'live:event_edit' %}" title="{% trans 'Plan an event' %}">
-        <i class="bi bi-plus pod-add"></i>
+        <i class="bi bi-plus pod-add" aria-hidden="true"></i>
         {% trans "Plan an event" %}
       </a>
     {% endif %}
@@ -34,10 +33,14 @@
     <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the event on which you want to work with." %}</p>
   {% endif %}
 
+  {% include 'loader.html' %}
+
   {% include "live/events_list.html" %}
 
 {% endblock page_content %}
 
 {% block page_aside %}
-  {% include 'live/filter_aside.html' %}
+  {% if HIDE_TYPES == False %}
+    {% include 'live/filter_aside.html' %}
+  {% endif %}
 {% endblock page_aside %}

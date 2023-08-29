@@ -16,7 +16,7 @@
 {% block page_content %}
     <a href="{% url 'live:event' slug=event.slug %}"
        class="btn btn btn-secondary btn-sm float-end">
-        <i class="bi bi-broadcast"></i>&nbsp;{% trans "Back to the event" %}
+        <i class="bi bi-broadcast" aria-hidden="true"></i>&nbsp;{% trans "Back to the event" %}
     </a>
     </span>
     <h1>{% blocktrans with vtitle=event.title %}Deleting the event "{{ vtitle }}"{% endblocktrans %}
