@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-18 09:32+0000\n"
+"POT-Creation-Date: 2023-08-29 08:05+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -1024,8 +1024,8 @@ msgstr "Ajouter un nouveau chapitre"
 #: pod/completion/templates/video_completion.html
 #: pod/cut/templates/video_cut.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
-#: pod/video/templates/videos/video.html
 #: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_aside.html
 msgid "Manage video"
 msgstr "Gérer la vidéo"
 
@@ -1184,7 +1184,8 @@ msgstr ""
 
 #: pod/completion/models.py pod/enrichment/models.py pod/playlist/models.py
 #: pod/recorder/models.py pod/video/models.py
-#: pod/video/templates/videos/video.html pod/video_encode_transcript/models.py
+#: pod/video/templates/videos/video_breadcrumbs.html
+#: pod/video_encode_transcript/models.py
 msgid "Video"
 msgstr "Vidéo"
 
@@ -1805,8 +1806,8 @@ msgstr "Découper la vidéo"
 
 #: pod/cut/templates/video_cut.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
-#: pod/video/templates/videos/video.html
 #: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
 msgid "The video is currently being encoded."
 msgstr "La vidéo est en cours d’encodage."
 
@@ -2108,7 +2109,7 @@ msgid "Enriched"
 msgstr "Enrichi"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html
-#: pod/video/templates/videos/video.html
+#: pod/video/templates/videos/video_opengraph.html
 msgid "Added by"
 msgstr "Ajouté par"
 
@@ -2763,7 +2764,7 @@ msgstr "nom"
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/channel/list_theme.html
-#: pod/video/templates/videos/video.html
+#: pod/video/templates/videos/video_page_content.html
 msgid "Headband"
 msgstr "Bannière"
 
@@ -3212,7 +3213,7 @@ msgstr "Lieu :"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video.html
+#: pod/video/templates/videos/video_page_content.html
 msgid "Added by:"
 msgstr "Ajouté par :"
 
@@ -4411,7 +4412,7 @@ msgstr "Afficher/masquer le menu latéral"
 msgid "Breadcrumb"
 msgstr "Fil d’Ariane"
 
-#: pod/main/templates/base.html
+#: pod/main/templates/base.html pod/main/templates/navbar.html
 msgid "Home"
 msgstr "Accueil"
 
@@ -4463,6 +4464,14 @@ msgstr "Projet Pod"
 #: pod/main/templates/footer.html pod/video/feeds.py
 msgid "video platform of"
 msgstr "plateforme vidéos de"
+
+#: pod/main/templates/footer.html
+msgid "View changes to version"
+msgstr "Voir les changements de la version"
+
+#: pod/main/templates/footer.html
+msgid "on"
+msgstr "sur"
 
 #: pod/main/templates/footer.html
 msgid "Release"
@@ -4521,14 +4530,14 @@ msgstr "Contactez nous"
 msgid "Toggle navigation"
 msgstr "Basculer le menu"
 
+#: pod/main/templates/navbar.html
+msgid "Promoted playlists"
+msgstr "Listes de lecture promues"
+
 #: pod/main/templates/navbar.html pod/recorder/models.py pod/video/forms.py
 #: pod/video/models.py
 msgid "Channels"
 msgstr "Chaînes"
-
-#: pod/main/templates/navbar.html
-msgid "Promoted playlists"
-msgstr "Listes de lecture promues"
 
 #: pod/main/templates/navbar.html
 msgid "Some features are unavailable"
@@ -5416,6 +5425,7 @@ msgid "Playlists"
 msgstr "Listes de lecture"
 
 #: pod/playlist/apps.py pod/playlist/signals.py
+#: pod/playlist/templatetags/favorites_playlist.py
 msgid "Your favorites videos."
 msgstr "Vos vidéos favorites."
 
@@ -5520,8 +5530,10 @@ msgstr "Protégé par un mot de passe"
 msgid "Private"
 msgstr "Privé"
 
-#: pod/playlist/models.py pod/playlist/tests/test_models.py
-#: pod/playlist/views.py pod/video/templates/videos/video.html
+#: pod/playlist/models.py
+#: pod/playlist/templates/playlist/playlist_breadcrumbs.html
+#: pod/playlist/tests/test_models.py pod/playlist/views.py
+#: pod/video/templates/videos/video_breadcrumbs.html
 msgid "Playlist"
 msgstr "Liste de lecture"
 
@@ -5707,7 +5719,7 @@ msgid "Playlist videos"
 msgstr "Vidéos de la playlist"
 
 #: pod/playlist/templates/playlist/playlist.html
-msgid "Reorganize your favorite videos"
+msgid "Reorganize your playlist videos"
 msgstr "Réorganiser vos vidéos favorites"
 
 #: pod/playlist/templates/playlist/playlist.html
@@ -5853,6 +5865,10 @@ msgstr "Cette liste de lecture a été supprimée."
 #: pod/playlist/views.py
 msgid "The playlist has been created and the video has been added in it."
 msgstr "La liste de lecture a été créée et la vidéo a été ajoutée dedans."
+
+#: pod/playlist/views.py
+msgid "This video isn't present in this playlist."
+msgstr "Ajouter la vidéo à cette liste de lecture"
 
 #: pod/podfile/apps.py
 msgid "Pod files"
@@ -7131,7 +7147,7 @@ msgstr "souscrire au flux audio"
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/channel/my_channels.html
 #: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video.html
+#: pod/video/templates/videos/video_page_content.html
 msgid "Edit the channel"
 msgstr "Éditer la chaîne"
 
@@ -7141,6 +7157,13 @@ msgid "%(counter)s theme found for this channel"
 msgid_plural "%(counter)s themes found for this channel"
 msgstr[0] "%(counter)s thème trouvé dans cette chaine"
 msgstr[1] "%(counter)s thèmes trouvés dans cette chaine"
+
+#: pod/video/templates/channel/channel.html
+#, python-format
+msgid "%(counter)s video"
+msgid_plural "%(counter)s videos"
+msgstr[0] "%(counter)s vidéo trouvée"
+msgstr[1] "%(counter)s vidéos trouvées"
 
 #  python-format
 #: pod/video/templates/channel/channel.html
@@ -7682,24 +7705,6 @@ msgstr ""
 "Utilisez ces liens dans une conférence BigBlueButton ou une activité vidéo "
 "interactive H5P :"
 
-#: pod/video/templates/videos/video.html
-msgid "Channel description"
-msgstr "Description de la chaîne"
-
-#: pod/video/templates/videos/video.html
-msgid "Theme description"
-msgstr "Description du thème"
-
-#: pod/video/templates/videos/video.html
-#: pod/video/templates/videos/video_edit.html
-msgid "The video is currently waiting for encoding."
-msgstr "La vidéo est actuellement en attente d’encodage."
-
-#: pod/video/templates/videos/video.html
-#: pod/video/templates/videos/video_edit.html
-msgid "The video is currently being transcripted."
-msgstr "La vidéo est en cours de transcription."
-
 #: pod/video/templates/videos/video_collaborate.html
 msgid "Collaborate"
 msgstr "Collaborer"
@@ -7740,6 +7745,16 @@ msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
 #: pod/video/templates/videos/video_edit.html
 msgid "Add a new video"
 msgstr "Ajouter une nouvelle vidéo"
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
+msgid "The video is currently waiting for encoding."
+msgstr "La vidéo est actuellement en attente d’encodage."
+
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_page_content.html
+msgid "The video is currently being transcripted."
+msgstr "La vidéo est en cours de transcription."
 
 #: pod/video/templates/videos/video_edit.html
 msgid "Restart transcription"
@@ -7861,6 +7876,14 @@ msgstr "Télécharger les notes"
 #: pod/video/templates/videos/video_notes.html
 msgid "New note"
 msgstr "Nouvelle note"
+
+#: pod/video/templates/videos/video_page_content.html
+msgid "Channel description"
+msgstr "Description de la chaîne"
+
+#: pod/video/templates/videos/video_page_content.html
+msgid "Theme description"
+msgstr "Description du thème"
 
 #: pod/video/templates/videos/video_stats_view.html
 msgid "Change the date"
