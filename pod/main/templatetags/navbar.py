@@ -32,6 +32,7 @@ def show_meeting_button(context):
 
 @register.simple_tag(name="show_stats")
 def show_stats(user):
+    """Show stats in the right menu."""
     return (get_number_video_for_user(user) > 0) or (
         get_number_playlist_for_user(user) > 0 and USE_PLAYLIST
     )
@@ -39,11 +40,13 @@ def show_stats(user):
 
 @register.simple_tag(name="get_number_video_user")
 def get_number_video_user(user):
+    """Get the number of videos a user has."""
     return get_number_video_for_user(user)
 
 
 @register.simple_tag(name="get_number_playlist_user")
 def get_number_playlist_user(user):
+    """Get the number playlist a user has."""
     return get_number_playlist_for_user(user)
 
 

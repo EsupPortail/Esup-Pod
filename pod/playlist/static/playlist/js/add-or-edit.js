@@ -13,6 +13,13 @@ function hidePasswordField(toHide) {
     }
 }
 
+
+/**
+ * Update the visibility for the help text.
+ *
+ * @param {string} visibility The new visibility.
+ * @param {HTMLElement} helpText The help text element.
+ */
 function updateVisibilityHelpText(visibility, helpText) {
     if (visibility == 'public') {
         helpText.innerHTML = gettext('<b>Public:</b> the playlist can be accessed by anyone.');
