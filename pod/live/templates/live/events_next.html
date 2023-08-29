@@ -5,11 +5,11 @@
 {% if NEXT_EVENTS %}
   <div  id="last_videos">
     <h3>{% trans "Next events" %}</h3>
-    {% include "live/events_list.html" with events=NEXT_EVENTS %}
+    {% include "live/events_list.html" with events=NEXT_EVENTS hide_counter=True %}
 
     <div class="highlight">
       <div class="d-flex justify-content-end">
-        <p><a class="btn btn-lg btn-primary btn-sm" href="{% url 'live:events' %}"
+        <p><a class="btn btn-primary btn-sm" href="{% url 'live:events' %}"
               role="button">{% trans "Show all events" %} &raquo;</a></p>
       </div>
     </div>

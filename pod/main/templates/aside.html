@@ -8,9 +8,18 @@
       <i class="bi bi-share" aria-hidden="true"></i>&nbsp;{% trans 'Share' %}
     </h2>
     <p class="card-text text-center social_links">
-      <a target="_blank" href="https://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary m-1" title="{% trans 'Share on' %} Facebook"><i class="bi bi-facebook" aria-hidden="true"></i></a>
-      <a target="_blank" href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary m-1" title="{% trans 'Share on' %} Twitter"><i class="bi bi-twitter" aria-hidden="true"></i></a>
-      <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&amp;url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary m-1" title="{% trans 'Share on' %} LinkedIn"><i class="bi bi-linkedin" aria-hidden="true"></i></a>
+      <a target="_blank" href="https://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary m-1" title="{% trans 'Share on' %} Facebook">
+        <i class="bi bi-facebook" aria-hidden="true"></i>
+        <span class="visually-hidden">{% trans 'Share on Facebook' %}</span>
+      </a>
+      <a target="_blank" href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary m-1" title="{% trans 'Share on' %} X (Twitter)">
+        <i class="bi bi-twitter" aria-hidden="true"></i>
+        <span class="visually-hidden">{% trans 'Share on X (Twitter)' %}</span>
+      </a>
+      <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&amp;url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary m-1" title="{% trans 'Share on' %} LinkedIn">
+        <i class="bi bi-linkedin" aria-hidden="true"></i>
+        <span class="visually-hidden">{% trans 'Share on LinkedIn' %}</span>
+      </a>
     </p>
   </div>
 {% endif %}

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-18 09:32+0000\n"
+"POT-Creation-Date: 2023-08-23 12:22+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1071,6 +1071,16 @@ msgstr ""
 msgid "captions"
 msgstr ""
 
+#: pod/completion/models.py pod/completion/views.py pod/live/models.py
+#: pod/recorder/models.py pod/video/models.py
+msgid "-- Frequently used languages --"
+msgstr ""
+
+#: pod/completion/models.py pod/completion/views.py pod/live/models.py
+#: pod/recorder/models.py pod/video/models.py
+msgid "-- All languages --"
+msgstr ""
+
 #: pod/completion/models.py
 msgid "lastname / firstname"
 msgstr ""
@@ -1377,6 +1387,7 @@ msgstr ""
 #: pod/completion/templates/overlay/list_overlay.html
 #: pod/cut/templates/video_cut.html pod/enrichment/models.py
 #: pod/enrichment/templates/enrichment/list_enrichment.html
+#: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "End"
 msgstr ""
 
@@ -4414,7 +4425,7 @@ msgstr ""
 msgid "join"
 msgstr ""
 
-#: pod/meeting/admin.py
+#: pod/meeting/admin.py pod/meeting/forms.py
 msgid "Recurring"
 msgstr ""
 
@@ -4465,11 +4476,11 @@ msgid "Date and time options"
 msgstr ""
 
 #: pod/meeting/forms.py
-msgid "Recurring options"
+msgid "Record session"
 msgstr ""
 
 #: pod/meeting/forms.py
-msgid "Record session"
+msgid "Recurring options"
 msgstr ""
 
 #: pod/meeting/forms.py pod/playlist/forms.py pod/video/forms.py
@@ -4960,6 +4971,10 @@ msgid "End the meeting"
 msgstr ""
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
+msgid "Frequency"
+msgstr ""
+
+#: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "Repeat every"
 msgstr ""
 
@@ -4973,10 +4988,6 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "Type of monthly recurrence"
-msgstr ""
-
-#: pod/meeting/templates/meeting/recurring_options_modal_form.html
-msgid "End:"
 msgstr ""
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
@@ -6917,6 +6928,12 @@ msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
 msgid "Submit changes"
+msgstr ""
+
+#: pod/video/templates/videos/filter_aside.html
+msgid ""
+"The videos on the left are automatically sorted according to the filters "
+"selected. Check options to adjust results."
 msgstr ""
 
 #: pod/video/templates/videos/filter_aside.html

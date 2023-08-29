@@ -10,7 +10,7 @@
   <li class="breadcrumb-item active" aria-current="page">{% trans "My events" %}</li>{% endblock %}
 
 {% block page_title %}
-    {% blocktrans count counter=events_number %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}
+  {% trans "My events" %}
 {% endblock %}
 
 {% block page_content %}
@@ -18,13 +18,13 @@
     {% if events.count == 0 %}
       {% trans "No event found" %}
     {% else %}
-      {% blocktrans count counter=events_number %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}
+      {% blocktrans count counter=count_events %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}
     {% endif %}
   </div>
   {% if display_creation_button %}
     <div class="d-flex infinite-container mb-2" id="event_add">
       <a class="btn btn-primary" href="{% url 'live:event_edit' %}" title="{% trans 'Plan an event' %}">
-        <i class="bi bi-plus pod-add"></i>
+        <i class="bi bi-plus pod-add" aria-hidden="true"></i>
         <span>{% trans "Plan an event" %}</span>
       </a>
     </div>
@@ -36,10 +36,10 @@
     <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the event on which you want to work with." %}</p>
 
     <h2 class="mt-4">{% trans "Coming events" %}</h2>
-    {% include "live/events_list.html" with events=coming_events urlpage=coming_events_url urland=past_events_url_page %}
+    {% include "live/events_list.html" with hide_counter=True events=coming_events urlpage=coming_events_url urland=past_events_url_page %}
 
     <h2 class="mt-4">{% trans "Past events" %}</h2>
-    {% include "live/events_list.html" with events=past_events urlpage=past_events_url urland=coming_events_url_page %}
+    {% include "live/events_list.html" with hide_counter=True events=past_events urlpage=past_events_url urland=coming_events_url_page %}
 
   {% endif %}
 
