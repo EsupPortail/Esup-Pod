@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 14:00+0000\n"
+"POT-Creation-Date: 2023-08-30 14:09+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -4542,7 +4542,7 @@ msgid "video platform of"
 msgstr "plateforme vidéos de"
 
 #: pod/main/templates/footer.html
-msgid "View changes to version"
+msgid "View changes of version"
 msgstr "Voir les changements de la version"
 
 #: pod/main/templates/footer.html
@@ -6089,8 +6089,8 @@ msgstr "Supprimer le dossier « %(folder_name)s »"
 
 #: pod/podfile/templates/podfile/list_folder_files.html
 #, python-format
-msgid "Share folder “%(folder_name)s” with somebody"
-msgstr "Partager le dossier « %(folder_name)s » avec quelqu’un"
+msgid "Share folder “%(folder_name)s” with another user"
+msgstr "Partager le dossier « %(folder_name)s » avec un autre utilisateur"
 
 #: pod/podfile/templates/podfile/list_folder_files.html
 msgid "Upload Files"
