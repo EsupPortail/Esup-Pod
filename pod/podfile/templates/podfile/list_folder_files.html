@@ -35,7 +35,7 @@
                 data-bs-target="#folderModalCenter"
                 data-oldname="{{folder.name}}"
                 data-folderid="{{folder.id}}"
-                title="{% trans 'Rename folder' %}"
+                title="{% blocktrans with folder_name=folder.name %}Rename folder “{{ folder_name }}”{% endblocktrans %}"
               >
                 <i class="bi bi-pencil-square" aria-hidden="true"></i>
               </button>
@@ -47,7 +47,7 @@
                   type="button"
                   class="nav-link"
                   data-folderid="{{folder.id}}"
-                  title="{% trans 'Delete folder' %}"
+                  title="{% blocktrans with folder_name=folder.name %}Delete folder “{{ folder_name }}”{% endblocktrans %}"
                 >
                   {% csrf_token %}
                   <i class="bi bi-trash3-fill" aria-hidden="true"></i>
@@ -66,7 +66,7 @@
                 data-name="{{folder.name}}"
                 data-bs-target="#shareModalCenter"
                 data-folderid="{{folder.id}}"
-                title="{% trans 'Share this folder' %}"
+                title="{% blocktrans with folder_name=folder.name %}Share folder “{{ folder_name }}” with another user{% endblocktrans %}"
               >
                 <i class="bi bi-share" aria-hidden="true"></i>
               </button>

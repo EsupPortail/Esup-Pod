@@ -17,7 +17,7 @@
     aria-controls="pod-navbar__menu" title="{% trans 'Toggle navigation' %}">
     <i class="bi bi-list" aria-hidden="true"></i>
   </button>
-  <a class="navbar-brand pod-navbar__brand me-0 me-sm-1" href="/">
+  <a class="navbar-brand pod-navbar__brand me-0 me-sm-1" href="/" title="{{ TITLE_SITE }} - {% trans 'Home' %}" {% if request.path == '/' %}aria-current="page"{% endif %}>
     <img src="{% static LOGO_SITE %}" height="25" alt="" loading="lazy"><strong>{{ TITLE_SITE }}</strong>
   </a>
   <!-- off canvas -->

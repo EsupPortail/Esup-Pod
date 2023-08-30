@@ -32,7 +32,7 @@ RUN mkdir /tmp/node_modules/
 COPY --from=source-build-js /tmp/pod/node_modules/ /tmp/node_modules/
 # TODO remove ES version - move it into env var
 RUN pip3 install --no-cache-dir -r requirements-conteneur.txt \
-    && pip3 install elasticsearch==7.17.7
+    && pip3 install elasticsearch==8.9.0
 
 # ENTRYPOINT :
 COPY ./dockerfile-dev-with-volumes/pod-back/my-entrypoint-back.sh /tmp/my-entrypoint-back.sh
