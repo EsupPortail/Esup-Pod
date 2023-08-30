@@ -177,7 +177,11 @@
       player.vr({projection: '360'});
     {% endif %}
     //add logo to the player
-    player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{ TITLE_SITE }} - {% if LINK_PLAYER.1 %}{{ LINK_PLAYER.1 }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}', link:'{{ LINK_PLAYER.0 }}'});
+    player.videoJsLogo({
+      imgsrc: '{% static LOGO_PLAYER %}',
+      linktitle:'{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
+      link:'{{ LINK_PLAYER }}'
+    });
     {% else %}
     {% if video.get_video_m4a %}
       var srcOptions = {
@@ -187,7 +191,11 @@
       //Add source to player
       player.src(srcOptions);
       //add logo to the player
-      player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{ TITLE_SITE }} - {% if LINK_PLAYER.1 %}{{ LINK_PLAYER.1 }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}', link:'{{ LINK_PLAYER.0 }}'});
+      player.videoJsLogo({
+        imgsrc: '{% static LOGO_PLAYER %}',
+        linktitle:'{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
+        link:'{{ LINK_PLAYER }}'
+      });
       player.on('loadedmetadata', function() {
         {% if request.GET.start and request.GET.start != '0' %}
         player.currentTime({{request.GET.start}});
