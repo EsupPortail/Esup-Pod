@@ -381,6 +381,12 @@ msgstr ""
 msgid "An error occurred during broadcasters loading..."
 msgstr ""
 
+#: pod/live/static/js/filter_aside_event_list.js
+#: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
+#: pod/video/static/js/filter_aside_video_list_refresh.js
+msgid "An Error occurred while processing."
+msgstr ""
+
 #: pod/main/static/js/filter-aside-element-list-refresh.js
 msgid "Descending sort"
 msgstr ""
@@ -459,17 +465,16 @@ msgstr ""
 msgid "<b>Private:</b> only you have access to this playlist."
 msgstr ""
 
-#: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
-#: pod/video/static/js/filter_aside_video_list_refresh.js
-msgid "An Error occurred while processing."
-msgstr ""
-
 #: pod/playlist/static/playlist/js/playlist-reorganize.js
 msgid "Save your reorganization"
 msgstr ""
 
 #: pod/playlist/static/playlist/js/playlist-reorganize.js
 msgid "Save"
+msgstr ""
+
+#: pod/playlist/static/playlist/js/video-favorites-remove-card.js
+msgid "Network response was not ok."
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
@@ -652,6 +657,18 @@ msgstr ""
 
 #: pod/video/static/js/validate-date_delete-field.js
 msgid "The deletion date can’t be earlier than today."
+msgstr ""
+
+#: pod/video/static/js/video-show.js
+msgid "Seek back 10 seconds"
+msgstr ""
+
+#: pod/video/static/js/video-show.js
+msgid "Seek forward 10 seconds"
+msgstr ""
+
+#: pod/video/static/js/video-show.js
+msgid "Quality"
 msgstr ""
 
 #: pod/video/static/js/video_category.js

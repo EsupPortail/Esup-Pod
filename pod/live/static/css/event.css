@@ -7,3 +7,7 @@
 .video-js .vjs-remaining-time {
   display: none;
 }
+ .filter-event-img {
+  max-height:32px;
+  max-width:32px;
+}

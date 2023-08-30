@@ -33,7 +33,7 @@
               <a class="btn btn-primary"
                  href="{% url 'live:event_edit' %}?broadcaster_id={{ broadcaster.id }}&building_id={{ broadcaster.building.id }}"
                  title="{% trans 'Plan an event' %}">
-                  <i class="bi bi-plus pod-add"></i>
+                  <i class="bi bi-plus pod-add" aria-hidden="true"></i>
                   <span>{% trans "Plan an event" %}</span>
               </a>
           </div>
@@ -65,7 +65,7 @@
       {% if broadcaster.is_recording %}
           <div class="card text-white bg-danger mb-3">
               <div class="card-body">
-                  <i class="bi bi-exclamation-octagon"></i>{% blocktrans %}Recording in progress{% endblocktrans %}
+                  <i class="bi bi-exclamation-octagon" aria-hidden="true"></i>{% blocktrans %}Recording in progress{% endblocktrans %}
               </div>
           </div>
       {% else %}
@@ -93,12 +93,12 @@
     {% if request.user.is_superuser %}
         <div class="card" id="card-managevideo">
             <h2 class="card-header card-title pod-card__title h4">
-                <i class="bi bi-gear"></i>{% trans "Manage broadcaster" %}
+                <i class="bi bi-gear" aria-hidden="true"></i>{% trans "Manage broadcaster" %}
             </h2>
             <div class="card-body card-text text-center">
                 <a href="{% url 'admin:live_broadcaster_change' broadcaster.id %}" title="{% trans 'Edit' %}"
                    class="btn pod-btn-social p1 m-0 ms-1">
-                    <i class="bi bi-pencil-square"></i>
+                    <i class="bi bi-pencil-square" aria-hidden="true"></i>
                 </a>
             </div>
         </div>
@@ -106,7 +106,7 @@
 
     <div class="card card-body p-2 mt-1" id="card-livebuilding">
         <h2 class="card-title pod-card__title h4">
-            <i class="bi bi-broadcast"></i>
+            <i class="bi bi-broadcast" aria-hidden="true"></i>
             <span class="ms-1 broadcaster-name">
                 {{ broadcaster.building.name }}
             </span>
@@ -127,12 +127,12 @@
                 <p class="card-text broadcaster-status">
                     {% if otherbroadcaster.status %}
                         <a href="{% url 'live:direct' slug=otherbroadcaster.slug %}" class="live_on">
-                            <i class="bi bi-cast pe-2"></i>
+                            <i class="bi bi-cast pe-2" aria-hidden="true"></i>
                             {{ otherbroadcaster.name }}
                         </a>
                     {% else %}
                         <span class="live_off">
-                          <i class="bi bi-cast pe-2"></i>
+                          <i class="bi bi-cast pe-2" aria-hidden="true"></i>
                           {{ otherbroadcaster.name }} ({% trans "no broadcast in progress" %})
                         </span>
                     {% endif %}
@@ -146,7 +146,7 @@
             <p class="card-text">
                 <small class="text-muted">
                     <a href='{{ broadcaster.building.gmapurl }}' title="{% trans 'access map' %}" target="_blank">
-                        <i class="bi bi-gear pe-2"></i>
+                        <i class="bi bi-gear pe-2" aria-hidden="true"></i>
                         <span class="access-map">{% trans "access map" %}</span>
                     </a>
                 </small>

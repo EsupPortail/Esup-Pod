@@ -40,7 +40,7 @@
       document.getElementById("user_message").innerHTML =
         `<div id="user-msg" class="alert alert-${type} alert-dismissible fade show" role="alert">
             <button id="user-msg-btn" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              <i class="bi bi-${icon}" style="font-size: 1.5em"></i> ${msg}
+              <i class="bi bi-${icon}" aria-hidden="true" style="font-size: 1.5em"></i> ${msg}
             </div>`;
 
       const user_msg = document.getElementById("user-msg");

@@ -1,44 +1,62 @@
 {% load i18n %}
+{% load static %}
+
+{% block more_style %}
+  <link href="{% static 'css/event_list.css' %}?ver={{ VERSION }}" rel="stylesheet">
+{% endblock more_style %}
 
 {% spaceless %}
-    <div class="row infinite-container" id="videos_list">
-        {% for event in events %}
-            <div class="infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group"
-                 style="min-width: 12rem; min-height: 11rem;" {% if categories %}data-slug={{ event.slug }}{% endif %}>
-                <!-- min-width: 15rem; -->
-                {% include "live/event_card.html" %}
-            </div>
-        {% empty %}
-            <div class="col-12 mb-2">
-                <p>{% trans "Sorry, no event found." %}</p>
-            </div>
-        {% endfor %}
+    <div id="events_content">
+
+      {% if not hide_counter %}
+        <div id="event_count" class="pod-callout pod-callout-info">
+          {% blocktrans count counter=count_events %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}
+        </div>
+      {% endif %}
+
+      <div class="pod-infinite-container infinite-container" id="events_list">
+          {% for event in events %}
+              <div class="infinite-item card-group event-card-container"
+                   {% if categories %}data-slug={{ event.slug }}{% endif %}>
+                  {% include "live/event_card.html" %}
+              </div>
+          {% empty %}
+              <div class="col-12 mb-2">
+                  <p>{% trans "Sorry, no event found." %}</p>
+              </div>
+          {% endfor %}
+      </div>
+
+      <div class="d-flex">
+        <div style="flex: 0 0 auto;">
+          {% if events.has_previous %}
+            <a class="btn btn-primary btn-sm"
+              {% if not urlpage %}
+                href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ events.previous_page_number }}"
+              {% else %}
+                href="?{{ urlpage }}={{ events.previous_page_number }}&{{ urland }}"
+              {% endif %}>
+              {% trans "Previous page" %}
+            </a>
+          {% endif %}
+        </div>
+        <div class="flex-grow-1">
+        </div>
+        <div style="flex: 0 0 auto;">
+          {% if events.has_next %}
+            <a class="btn btn-primary btn-sm"
+              {% if not urlpage %}
+                href="
+                  {{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ events.next_page_number }}"
+              {% else %}
+                href="?{{ urlpage }}={{ events.next_page_number }}&{{ urland }}"
+              {% endif %}>
+              {% trans "Next page" %}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
     </div>
 
-    <div class="d-flex">
-        {% if events.has_previous %}
-            <a class="infinite-more-link"
-                {% if not urlpage %}
-                    href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ events.previous_page_number }}"
-                {% else %}
-                    href="?{{ urlpage }}={{ events.previous_page_number }}&{{ urland }}"
-                {% endif %}>
-            {% trans "Previous page" %}
-            </a>
-        {% endif %}
-        {% if events.has_next %}
-            <a class="infinite-more-link ml-auto"
-                {% if not urlpage %}
-                    href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ events.next_page_number }}"
-                {% else %}
-                    href="?{{ urlpage }}={{ events.next_page_number }}&{{ urland }}"
-                {% endif %}>
-                {% trans "Next page" %}
-            </a>
-        {% endif %}
-    </div>
-
-    <div class="infinite-loading" style="display: none;">
-        {% trans "Loading…" %}
-    </div>
 {% endspaceless %}

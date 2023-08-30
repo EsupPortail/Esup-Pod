@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (response.ok) {
             return response.text();
           } else {
-            throw new Error("Network response was not ok.");
+            throw new Error(gettext("Network response was not ok."));
           }
         })
         .then((data) => {

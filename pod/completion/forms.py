@@ -27,6 +27,8 @@ class ContributorForm(forms.ModelForm):
         """Initialize fields."""
         super(ContributorForm, self).__init__(*args, **kwargs)
         self.fields["video"].widget = HiddenInput()
+        self.fields["name"].widget.attrs["autocomplete"] = "name"
+        self.fields["email_address"].widget.attrs["autocomplete"] = "email"
         self.fields = add_placeholder_and_asterisk(self.fields)
 
     class Meta(object):

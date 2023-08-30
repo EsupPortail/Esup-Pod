@@ -402,6 +402,12 @@ msgstr "Pas de diffuseur pour ce bâtiment"
 msgid "An error occurred during broadcasters loading..."
 msgstr "Une erreur s’est produite lors du chargement des diffuseurs…"
 
+#: pod/live/static/js/filter_aside_event_list.js
+#: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
+#: pod/video/static/js/filter_aside_video_list_refresh.js
+msgid "An Error occurred while processing."
+msgstr "Une erreur est survenue durant l’exécution du processus."
+
 #: pod/main/static/js/filter-aside-element-list-refresh.js
 msgid "Descending sort"
 msgstr "Tri descendant"
@@ -484,11 +490,6 @@ msgstr ""
 msgid "<b>Private:</b> only you have access to this playlist."
 msgstr "<b>Privé :</b> vous seul avez accès à cette liste de lecture."
 
-#: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
-#: pod/video/static/js/filter_aside_video_list_refresh.js
-msgid "An Error occurred while processing."
-msgstr "Une erreur est survenue durant l’exécution du processus."
-
 #: pod/playlist/static/playlist/js/playlist-reorganize.js
 msgid "Save your reorganization"
 msgstr "Sauvegarder votre réorganisation"
@@ -496,6 +497,10 @@ msgstr "Sauvegarder votre réorganisation"
 #: pod/playlist/static/playlist/js/playlist-reorganize.js
 msgid "Save"
 msgstr "Sauvegarder"
+
+#: pod/playlist/static/playlist/js/video-favorites-remove-card.js
+msgid "Network response was not ok."
+msgstr "La réponse du réseau n'était pas correcte."
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
@@ -678,6 +683,18 @@ msgstr "La date doit être anterieure ou égale à"
 #: pod/video/static/js/validate-date_delete-field.js
 msgid "The deletion date can’t be earlier than today."
 msgstr "La date de suppression ne peut pas être antérieure à aujourd’hui."
+
+#: pod/video/static/js/video-show.js
+msgid "Seek back 10 seconds in the video"
+msgstr "Reculer de 10 secondes dans la vidéo"
+
+#: pod/video/static/js/video-show.js
+msgid "Seek forward 10 seconds in the video"
+msgstr "Avancer de 10 secondes dans la video"
+
+#: pod/video/static/js/video-show.js
+msgid "Quality"
+msgstr "Qualité"
 
 #: pod/video/static/js/video_category.js
 msgid "Category changes saved successfully"

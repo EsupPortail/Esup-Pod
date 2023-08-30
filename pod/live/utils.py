@@ -94,7 +94,7 @@ def get_event_url(event):
 
 
 def get_bcc(manager):
-    if type(manager) in (list, tuple):
+    if isinstance(manager, (list, tuple)):
         return manager
     elif isinstance(manager, str):
         return [manager]

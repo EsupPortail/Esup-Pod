@@ -6,8 +6,8 @@
     <a class="pod-gotoup" href="#" title="{% trans 'Go to top'%}">
       <i class="bi bi-arrow-up-circle pod-gotoup"></i></a>
   </p>
-  <div class="pod-footer-content">
-    <div>
+  <div class="pod-footer-content row">
+    <div class="col-auto">
       <div class="pod-footer-logo" style="background-image: url('{% static LOGO_ETB %}')">&nbsp;</div>
       <address>
         <p class="footer-contact mt-3 hidden-pod pod-hidden">
@@ -18,7 +18,7 @@
         </p>
       </address>
     </div>
-    <div>
+    <div class="col">
       <ul class="footer_links pod-footer__links list-unstyled">
         {% if LINK_FOOTER %}
           {% for link in LINK_FOOTER %}

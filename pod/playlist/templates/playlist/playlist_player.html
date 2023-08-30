@@ -13,7 +13,7 @@
 <div class="card" id="card-playlistplayer">
     {% get_playlist_name playlist_in_get as playlist_name %}
     <h2 class="card-header card-title pod-card__title h4">
-        <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Playlist:" %} <a class="btn-link" href="{% url 'playlist:content' playlist_in_get.slug %}" title="{% trans "View the playlist" %}" aria-label="{{ playlist_name }}">{{ playlist_name|capfirst|truncatechars:20 }}</a>
+        <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Playlist:" %} <a class="btn-link" href="{% url 'playlist:content' playlist_in_get.slug %}" title="{% trans "View the playlist" %}">{{ playlist_name|capfirst|truncatechars:20 }}</a>
     </h2>
     <div {% if videos|length > 5 %}class="scroll-container"{% endif %}>
         {% for video_in_playlist in videos %}

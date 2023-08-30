@@ -10,6 +10,7 @@ from .forms import ExternalRecordingForm
 from .utils import StatelessRecording, check_file_exists, download_video_file
 from .utils import manage_recording_url, parse_remote_file
 from .utils import save_video, secure_request_for_upload
+from .utils import check_video_size, verify_video_exists_and_size
 from datetime import datetime
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -436,6 +437,9 @@ def upload_bbb_recording_to_pod(request, record_id):
             video_file = parse_remote_file(source_url)
             source_video_url = source_url + video_file
 
+        # Verify that video exists and not oversised
+        verify_video_exists_and_size(source_video_url)
+
         # Step 2 : Define destination source file
         extension = source_video_url.split(".")[-1].lower()
         discrim = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -469,7 +473,7 @@ def upload_bbb_recording_to_pod(request, record_id):
         msg["error"] = _("Impossible to upload to Pod the video")
         try:
             # Management of error messages from sub-functions
-            message = "%s (%s)" % (exc.args[0]["error"], exc.args[0]["message"])
+            message = "%s %s" % (exc.args[0]["error"], exc.args[0]["message"])
         except Exception:
             # Management of error messages in all cases
             message = str(exc)
@@ -513,6 +517,9 @@ def upload_youtube_recording_to_pod(request, record_id):
 
         # Setting video resolution
         yt_stream = yt_video.streams.get_highest_resolution()
+
+        # Verify that video not oversized
+        check_video_size(yt_stream.filesize)
 
         # User directory
         dest_dir = os.path.join(
@@ -570,7 +577,7 @@ def upload_youtube_recording_to_pod(request, record_id):
         msg["error"] = _("Impossible to upload to Pod the video")
         try:
             # Management of error messages from sub-functions
-            message = "%s (%s)" % (exc.args[0]["error"], exc.args[0]["message"])
+            message = "%s %s" % (exc.args[0]["error"], exc.args[0]["message"])
         except Exception:
             # Management of error messages in all cases
             message = str(exc)
@@ -663,6 +670,9 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
                 # Source video file
                 source_video_url = pt_video_json["files"][0]["fileDownloadUrl"]
 
+        # Verify that video exists and not oversized
+        verify_video_exists_and_size(source_video_url)
+
         # Step 2 : Define destination source file
         discrim = datetime.now().strftime("%Y%m%d%H%M%S")
         extension = source_video_url.split(".")[-1].lower()
@@ -695,7 +705,7 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
         msg["error"] = _("Impossible to upload to Pod the PeerTube video")
         try:
             # Management of error messages from sub-functions
-            message = "%s (%s)" % (exc.args[0]["error"], exc.args[0]["message"])
+            message = "%s %s" % (exc.args[0]["error"], exc.args[0]["message"])
         except Exception:
             # Management of error messages in all cases
             message = str(exc)
@@ -755,7 +765,7 @@ def get_stateless_recording(request, data):
         # For old BBB or BBB 2.6+ without video playback
         if check_file_exists(recording.videoUrl) is False:
             recording.state = _(
-                "No video file found. " "Upload to Pod as a video is not possible."
+                "No video file found. Upload to Pod as a video is not possible."
             )
             recording.canUpload = False
             recording.videoUrl = ""
