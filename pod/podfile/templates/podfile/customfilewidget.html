@@ -45,7 +45,11 @@
     >
         {% trans 'Select an image' %}
       {% else %}
-        aria-label="{% trans "Select a file" %}"
+        {% if id == "id_slides" %}
+          aria-label="{% trans "Slides - Select a file" %}"
+        {% else %}
+          aria-label="{% trans "File to import - Select a file" %}"
+        {% endif %}
     >
         {% trans 'Select a file' %}
       {% endif %}
