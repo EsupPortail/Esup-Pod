@@ -35,10 +35,10 @@
                     {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
 
                     {% get_playlist_name playlist as playlist_name %}
-                    <a class="playlist-title" href="{% url 'playlist:content' playlist.slug %}" target="_blank" title="{% if playlist.description %}{{ playlist.description }}{% else %}{{ playlist.name }}{% endif %}" aria-label="{{ playlist_name }}">{{ playlist_name }}</a>
+                    <a class="playlist-title" href="{% url 'playlist:content' playlist.slug %}" target="_blank" title="{% if playlist.description %}{{ playlist.description }}{% else %}{{ playlist.name }}{% endif %}">{{ playlist_name }}</a>
                 </div>
             {% endfor %}
-            <a class="btn btn-primary mt-4 w-100" href="{% url 'playlist:add' %}?next={% url 'video:video' video.slug %}" title="{% trans "Add the video in a new playlist" %}" aria-label="{% trans "Add the video in a new playlist" %}">
+            <a class="btn btn-primary mt-4 w-100" href="{% url 'playlist:add' %}?next={% url 'video:video' video.slug %}" title="{% trans "Add the video in a new playlist" %}">
               <i class="bi bi-plus pod-add" aria-hidden="true"></i>
               <span>{% trans "Add the video in a new playlist" %}</span>
             </a>

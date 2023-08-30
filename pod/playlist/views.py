@@ -457,7 +457,7 @@ def favorites_save_reorganisation(request, slug: str):
         try:
             dict_data = json.loads(json_data)
         except json.JSONDecodeError:
-            return HttpResponseBadRequest("JSON au mauvais format")
+            return HttpResponseBadRequest(_("JSON in wrong format"))
         with transaction.atomic():
             for videos_tuple in dict_data.values():
                 playlist_video_1 = PlaylistContent.objects.filter(
