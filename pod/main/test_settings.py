@@ -38,6 +38,7 @@ DATABASES = {
         },
     }
 }
+CACHE_MIDDLEWARE_ALIAS = ''
 
 LANGUAGES = (("fr", "Français"), ("en", "English"))
 LANGUAGE_CODE = "en"
