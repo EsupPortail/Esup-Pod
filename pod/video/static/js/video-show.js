@@ -3,8 +3,8 @@ var translationDone = false;
 document.getElementById('podvideoplayer_html5_api').addEventListener('play', function () {
     if (!translationDone) {
         const elementToTranslateList = [
-            ['.skip-back', gettext('Seek back 10 seconds')],
-            ['.skip-forward', gettext('Seek forward 10 seconds')],
+            ['.skip-back', gettext('Seek back 10 seconds in the video')],
+            ['.skip-forward', gettext('Seek forward 10 seconds in the video')],
             ['.vjs-quality-selector', gettext('Quality')],
         ]
         for (let elementToTranslate of elementToTranslateList) {

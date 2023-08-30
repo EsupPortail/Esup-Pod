@@ -685,12 +685,12 @@ msgid "The deletion date can’t be earlier than today."
 msgstr "La date de suppression ne peut pas être antérieure à aujourd’hui."
 
 #: pod/video/static/js/video-show.js
-msgid "Seek back 10 seconds"
-msgstr "Passer de 10 secondes en arrière"
+msgid "Seek back 10 seconds in the video"
+msgstr "Reculer de 10 secondes dans la vidéo"
 
 #: pod/video/static/js/video-show.js
-msgid "Seek forward 10 seconds"
-msgstr "Passer de 10 secondes en avant"
+msgid "Seek forward 10 seconds in the video"
+msgstr "Avancer de 10 secondes dans le video"
 
 #: pod/video/static/js/video-show.js
 msgid "Quality"
