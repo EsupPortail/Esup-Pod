@@ -2120,7 +2120,7 @@ msgstr "Liste des enrichissements"
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #, python-format
 msgid "Modify the enrichment “%(enrich_title)s”"
-msgstr "Modifier l'enrichissement « %(enrich_title)s »"
+msgstr "Modifier l’enrichissement « %(enrich_title)s »"
 
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #, python-format

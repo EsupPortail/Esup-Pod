@@ -228,8 +228,8 @@
   {% endif %}
   player.videoJsLogo({
     imgsrc: '{% static LOGO_PLAYER %}',
-    linktitle:'{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
-    link:'{{ LINK_PLAYER }}'
+    linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
+    link: '{{ LINK_PLAYER }}'
   });
   player.on('error', function() {
     // Handle successives errors to avoid multiple reload
