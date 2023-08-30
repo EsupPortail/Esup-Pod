@@ -3051,10 +3051,11 @@
                                 ],
                                 "fr": [
                                     "Version d’ElasticSearch.",
-                                    "valeurs possibles 6 ou 7 (pour indiquer utiliser ElasticSearch 6 ou 7)",
-                                    "pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py ",
-                                    "`pip3 install elasticsearch==7.10.1`",
-                                    "[https://elasticsearch-py.readthedocs.io/en/v7.10.1/]()"
+                                    "valeurs possibles 6, 7 ou 8 correspondant à la version du Elasticsearch utilisé.",
+                                    "Pour utiliser la version 7 ou 8, faire une mise à jour du paquet elasticsearch-py ",
+                                    "Pour la 7, `pip3 install elasticsearch==7.17.7`,",
+                                    "et pour la 8, `pip3 install elasticsearch==8.8.1`.",
+                                    "Voir [https://elasticsearch-py.readthedocs.io/]() pour plus d'information."
                                 ]
                             },
                             "pod_version_end": "",

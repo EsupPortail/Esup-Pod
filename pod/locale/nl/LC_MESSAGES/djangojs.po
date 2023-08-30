@@ -659,6 +659,18 @@ msgstr ""
 msgid "The deletion date can’t be earlier than today."
 msgstr ""
 
+#: pod/video/static/js/video-show.js
+msgid "Seek back 10 seconds"
+msgstr ""
+
+#: pod/video/static/js/video-show.js
+msgid "Seek forward 10 seconds"
+msgstr ""
+
+#: pod/video/static/js/video-show.js
+msgid "Quality"
+msgstr ""
+
 #: pod/video/static/js/video_category.js
 msgid "Category changes saved successfully"
 msgstr ""

@@ -36,7 +36,7 @@ poster="{{video.get_thumbnail_url}}" {% spaceless %}
 {% endif %}
 <div id="chapter-for-playlist">
   {% if video.chapter_set.all %}
-  <div class="chapters-list inactive" role="menu">
+  <div class="chapters-list inactive">
     <h6><span class="vjs-icon-chapters"></span>{% trans "Chapters" %}</h6>
     <ol id="chapters-list"></ol>
   </div>
