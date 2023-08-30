@@ -6,10 +6,13 @@ document.getElementById('podvideoplayer_html5_api').addEventListener('play', fun
             ['.skip-back', gettext('Seek back 10 seconds')],
             ['.skip-forward', gettext('Seek forward 10 seconds')],
             ['.vjs-quality-selector', gettext('Quality')],
-            ['.vjs-mute-control', ''],
         ]
         for (let elementToTranslate of elementToTranslateList) {
             translateTitleOfVideoPlayerButton(elementToTranslate[0], elementToTranslate[1]);
+        }
+        const resetTrackSettingsButton = document.querySelector('.vjs-track-settings-controls>.vjs-default-button');
+        if (resetTrackSettingsButton) {
+            resetTrackSettingsButton.setAttribute('aria-label', resetTrackSettingsButton.getAttribute('title'));
         }
     }
 });
