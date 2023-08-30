@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-29 14:17+0000\n"
+"POT-Creation-Date: 2023-08-30 09:20+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2385,7 +2385,7 @@ msgstr ""
 
 #: pod/import_video/utils.py
 #, python-format
-msgid "The size of the video file exceeds the maximum allowed value (%s Gb)."
+msgid "The size of the video file exceeds the maximum allowed value, %s Gb."
 msgstr ""
 
 #: pod/import_video/views.py
@@ -5652,6 +5652,10 @@ msgstr ""
 
 #: pod/podfile/templates/podfile/customfilewidget.html
 msgid "Select a file"
+msgstr ""
+
+#: pod/podfile/templates/podfile/customfilewidget.html
+msgid "Thumbnail - Select an image"
 msgstr ""
 
 #: pod/podfile/templates/podfile/home_content.html
