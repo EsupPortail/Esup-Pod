@@ -25,12 +25,12 @@
         if (options.link && options.link !== "") {
           aElement.href = options.link;
         } else {
-          aElement.href = "/"
+          aElement.href = "/";
         }
         aElement.target = "_blank";
         aElement.setAttribute("aria-label", options.linktitle);
         aElement.setAttribute("title", options.linktitle);
-        aElement.classList.add("vjs-logo-button", "vjs-control")
+        aElement.classList.add("vjs-logo-button", "vjs-control");
         aElement.setAttribute(
           "style",
           "background-image: url(" +
@@ -50,7 +50,9 @@
       player.ready(function () {
         if (settings.ui) {
           var menuLink = new LogoMenuLink(player, settings);
-          player.controlBar.logo = player.controlBar.el_.appendChild(menuLink.el());
+          player.controlBar.logo = player.controlBar.el_.appendChild(
+            menuLink.el(),
+          );
           player.controlBar.logo.dispose = function () {
             this.parentNode.removeChild(this);
           };
