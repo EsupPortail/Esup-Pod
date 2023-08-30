@@ -690,7 +690,7 @@ msgstr "Reculer de 10 secondes dans la vidéo"
 
 #: pod/video/static/js/video-show.js
 msgid "Seek forward 10 seconds in the video"
-msgstr "Avancer de 10 secondes dans le video"
+msgstr "Avancer de 10 secondes dans la video"
 
 #: pod/video/static/js/video-show.js
 msgid "Quality"
