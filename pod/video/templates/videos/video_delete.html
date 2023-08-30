@@ -12,11 +12,6 @@
 
 
 {% block page_content %}
-  <span class="float-end">
-      <a href="{% url 'video:video' slug=video.slug %}" title="{% trans 'View the video'%}" class="btn btn btn-secondary btn-sm">
-        <i class="bi bi-film"></i>&nbsp;{% trans "Back to the video"%}
-      </a>
-  </span>
   <p>{% trans 'To delete the video, please checked in and click send.' %}</p>
   <form method="post" action="{{ request.get_full_path }}" id="video_delete_form" class='needs-validation' novalidate>
     {% csrf_token %}
@@ -53,7 +48,9 @@
         {% endfor %}
         <div class="text-center mt-1">
           <button type="submit" class="btn btn-danger">{% trans "Delete" %}</button>
-          <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}" class="btn btn-secondary">{% trans "Back to the video"%}</a>
+          <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn btn-secondary">
+            <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans "Back to the video"%}
+          </a>
         </div>
       </fieldset>
     </div>

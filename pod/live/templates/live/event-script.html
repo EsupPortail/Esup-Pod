@@ -105,8 +105,8 @@
 
       player.videoJsLogo({
         imgsrc: '{% static LOGO_PLAYER %}',
-        linktitle: '{{TITLE_ETB}}"-"{{TITLE_SITE}}',
-        link: '{{LINK_PLAYER}}'
+        linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
+        link: '{{ LINK_PLAYER }}'
       });
 
       player.on("error", function() {
@@ -647,9 +647,9 @@
             playerOnHold.createModal('{% trans "Live not found, retry in 10 seconds" %}');
 
         playerOnHold.videoJsLogo({
-            imgsrc: '{% static LOGO_PLAYER %}',
-            linktitle: '{{TITLE_ETB}} - {{TITLE_SITE}}',
-            link: '{{LINK_PLAYER}}'
+          imgsrc: '{% static LOGO_PLAYER %}',
+          linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
+          link: '{{ LINK_PLAYER }}'
         });
 
         let mp4_sources = {{event.video_on_hold.get_video_mp4_json|safe|default:'null'}};

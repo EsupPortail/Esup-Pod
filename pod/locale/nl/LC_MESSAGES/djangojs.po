@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 12:18+0000\n"
+"POT-Creation-Date: 2023-08-30 14:09+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -660,11 +660,11 @@ msgid "The deletion date can’t be earlier than today."
 msgstr ""
 
 #: pod/video/static/js/video-show.js
-msgid "Seek back 10 seconds"
+msgid "Seek back 10 seconds in the video"
 msgstr ""
 
 #: pod/video/static/js/video-show.js
-msgid "Seek forward 10 seconds"
+msgid "Seek forward 10 seconds in the video"
 msgstr ""
 
 #: pod/video/static/js/video-show.js

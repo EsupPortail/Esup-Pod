@@ -26,13 +26,13 @@
 							{% csrf_token %}
 							<input type="hidden" name="action" value="modify">
 							<input type="hidden" name="id" value="{{contributor.id}}">
-							<input type="submit" title="{% trans 'Edit the contributor' %}" value="{% trans 'Modify' %}" class="edt_contributor btn btn-secondary btn-sm">
+							<input type="submit" title="{% blocktrans with contributor_name=contributor.name %}Modify the contributor “{{ contributor_name }}”{% endblocktrans %}" value="{% trans 'Modify' %}" class="edt_contributor btn btn-secondary btn-sm">
 						</form>
 						<form class="form_delete completion d-inline-block" action="{% url 'video:completion:video_completion_contributor' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="delete">
 							<input type="hidden" name="id" value="{{contributor.id}}">
-							<input type="submit" title="{% trans 'Delete the contributor' %}" value="{% trans 'Delete' %}" class="edt_contributor btn btn-danger btn-sm">
+							<input type="submit" title="{% blocktrans with contributor_name=contributor.name %}Delete the contributor “{{ contributor_name }}”{% endblocktrans %}" value="{% trans 'Delete' %}" class="edt_contributor btn btn-danger btn-sm">
 						</form>
 					</td>
 				</tr>
