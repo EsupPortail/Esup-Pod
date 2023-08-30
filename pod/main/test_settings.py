@@ -38,12 +38,8 @@ DATABASES = {
         },
     }
 }
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        'LOCATION': 'cache_host',
-    }
-}
+MIDDLEWARE.remove("django.middleware.cache.UpdateCacheMiddleware")
+MIDDLEWARE.remove("django.middleware.cache.FetchFromCacheMiddleware")
 
 LANGUAGES = (("fr", "Français"), ("en", "English"))
 LANGUAGE_CODE = "en"
