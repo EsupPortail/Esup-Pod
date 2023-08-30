@@ -8,7 +8,10 @@
     <i class="bi bi-sliders2-vertical"></i>&nbsp;{% trans "Filters"%}
     <button type="button" id="resetFilters" class="btn btn-outline-primary">{% trans 'Reset' %}</button>
   </h2>
-
+  <p class="filter-info">
+    {% trans "The videos on the left are automatically sorted according to the filters selected. Check options to adjust results." %}
+  </p>
+  <hr>
 <form action="{% url 'videos:videos' %}" method="get" id="filters">
   {% if use_category %}
     {% include "videos/filter_aside_category.html" %}

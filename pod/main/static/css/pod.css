@@ -401,7 +401,7 @@ tr,
 
 #s:focus+button,
 #s+button:focus,
-#s+button:hover  {
+#s+button:hover {
   opacity: 1;
 }
 
@@ -452,12 +452,10 @@ tr,
 
   #s {
     border-radius: 0;
-    padding: 0;
-    margin: 0;
     transition: height .5s;
   }
 
-  #s:not(:focus) {
+  .hide-search-input {
     margin-top: -3rem;
     width: 1px;
     height: 1px;
@@ -466,11 +464,11 @@ tr,
     border: 0;
     opacity: 0;
   }
-  #s:not(:focus)+button{
+  #s.hide-search-input+button{
     height: 1px;
   }
 
-  #s:focus {
+  #s:focus, .focus-search-input {
     width: calc(100% - 4em);
     opacity: 1;
     display: inline-block;
@@ -572,11 +570,6 @@ tr,
   /*position:relative;*/
   top: 0;
   gap: 0.5rem;
-}
-
-.pod-footer-content {
-  display: grid;
-  grid-template-columns: 200px 1fr;
 }
 
 a:not(.btn):hover,
@@ -1010,8 +1003,9 @@ body {
   --bs-accordion-btn-focus-border-color: var(--pod-primary);
 }
 
-.timecode{
+.timecode, .filter-info {
   font-size: 12px;
+  font-style: italic;
 }
 
 /*.btn{
@@ -1453,6 +1447,7 @@ body {
   transition: all 0.15s ease;
   z-index: 5;
   padding-top: 5rem;
+  box-shadow: .05rem .05rem .2rem .05rem rgba(0, 0, 0, .2);
 }
 
 .pod-aside.show {
@@ -1469,9 +1464,9 @@ body {
 
 @media(max-width:992px) {
   .pod-aside {
-    width: 100% !important;
-    position: fixed;
-    min-height: 100vh;
+    width: 101% !important; /* THIS IS NORMAL, it's to fit with pod-aside-collapse */
+    min-height: 100%;
+    position: absolute;
   }
   .pod-aside-collapse{
     position: fixed;
@@ -1483,10 +1478,6 @@ body {
     padding-left: 5rem;
     padding-right: 5rem;
   }
-
-  /*.pod-aside {
-    padding-right: 5rem;
-  }*/
 
   .pod-grid-content {
     gap: 0;
@@ -1695,6 +1686,10 @@ table .alert.alert-danger.btn.pod-btn-social {
 .calendarbox {
   z-index: 3000;
   background-color: var(--pod-background) !important;
+}
+
+#mainbreadcrumb {
+  margin-right: 2.7rem;
 }
 
 div.disabled, a.player-element.disabled {

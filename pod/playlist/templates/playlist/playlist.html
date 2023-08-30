@@ -22,7 +22,7 @@
 {% block breadcrumbs %}
   {{ block.super }}
   <li class="breadcrumb-item active" aria-current="page">
-    <a href="{% url 'playlist:list'%}" title="{% trans "Access the list of playlists" %}" aria-label="{% trans "Playlists" %}">
+    <a href="{% url 'playlist:list'%}" title="{% trans "Access the list of playlists" %}">
       {% trans "Playlists" %}
     </a>
   </li>
@@ -46,7 +46,7 @@
               <button id="reorganize-button" title="{% trans 'Reorganize your playlist videos'%}" class="btn btn-outline-primary btn-sm {% if sort_field != 'rank' or sort_direction == 'on' %}d-none{% endif %}">
                 <i class="bi bi-arrows-move" aria-hidden="true"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
               </button>
-              <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm d-none" title="{% trans 'Cancel the reorganization'%}" aria-label="{% trans "Cancel" %}">
+              <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm d-none" title="{% trans 'Cancel the reorganization'%}">
               <i class="bi bi-x-circle" aria-hidden="true"></i>&nbsp;{% trans "Cancel" %}</a>
             </form>
           {% endif %}

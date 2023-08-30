@@ -1,6 +1,6 @@
 = Docker
-Nom de l’auteur <farid.aitkarra@univ-lille.fr>
-v1.1, 2023-02-28
+Nom de l’auteur <farid.aitkarra@univ-lille.fr> <nicolas.can@univ-lille.fr>
+v1.2, 2023-08-30
 :toc:
 :toc-title: Liste des rubriques
 :imagesdir: ./images
@@ -10,14 +10,7 @@ v1.1, 2023-02-28
 === Conteneur ElasticSearch
 http://localhost:9200
 
-==== elasticsearch:6.8.23
-===== OS/ARCH
-----
-OS/ARCH
-linux/amd64
-----
-
-==== elasticsearch:7.17.7
+==== elasticsearch:8.8.1
 ===== OS/ARCH
 ----
 OS/ARCH
@@ -48,33 +41,33 @@ linux/arm64/v8
 -----
 
 ===== Configuration
-. Renommer le fichier .env.dev-exemple en .env.dev
-. Renseigner le fichier .env.dev comme ceci (attention, changer les valeurs de username, password et email):
+. Renommer le fichier .env.dev-exemple en .env.dev et le renseigner.
+. Vous devez changer les valeurs d'identifiant, mot de passe et courriel.
+. Pour la variable DOCKER_ENV, vous pouvez choisir entre *light* (1 docker pour Pod avec que l'encodage d'activé) ou *full* (4 docker pour Pod : pod-back, encodage, transcription et xAPI)
 +
 [source,shell]
 ----
 DJANGO_SUPERUSER_USERNAME=
 DJANGO_SUPERUSER_PASSWORD=
 DJANGO_SUPERUSER_EMAIL=
-ELASTICSEARCH_TAG=elasticsearch:7.17.7
+ELASTICSEARCH_TAG=elasticsearch:8.8.1
 NODE_TAG=node:19
 PYTHON_TAG=python:3.9-buster
 REDIS_TAG=redis:alpine3.16
-DOCKER_ENV=full
+DOCKER_ENV=light
 ----
 . Créer un fichier pod/custom/settings_local.py
 
 Renseignez le fichier pod/custom/settings_local.py comme ceci :
 [source,python]
 ----
-# Si ElasticSearch 7
+
 USE_PODFILE = True
 EMAIL_ON_ENCODING_COMPLETION = False
 SECRET_KEY = "A_CHANGER"
 DEBUG = True
-
-ES_VERSION = 7
-
+# on précise ici qu'on utilise ES version 8
+ES_VERSION = 8
 ES_URL = ['http://elasticsearch:9200/']
 
 
@@ -108,9 +101,9 @@ SESSION_REDIS = {
 # Uniquement lors d’environnement conteneurisé
 MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
 
-# Pour utiliser les docker afin d'encoder et de transcrire
-USE_DISTANT_ENCODING_TRANSCODING = True
-ENCODING_TRANSCODING_CELERY_BROKER_URL = "redis://redis:6379/7"
+# Si DOCKER_ENV = full il faut activer l'encodage et la transcription distante
+# USE_DISTANT_ENCODING_TRANSCODING = True
+# ENCODING_TRANSCODING_CELERY_BROKER_URL = "redis://redis:6379/7"
 
 # pour avoir le maximum de log sur la console
 LOGGING = {}

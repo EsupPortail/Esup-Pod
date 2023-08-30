@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-18 09:32+0000\n"
+"POT-Creation-Date: 2023-08-30 12:18+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -76,7 +76,6 @@ msgid "starts at the same time."
 msgstr "commencent au même moment."
 
 #: pod/chapter/static/js/videojs-chapters.js
-#: pod/playlist/static/playlist/js/playlist-player.js
 msgid "Chapters"
 msgstr "Chapitres"
 
@@ -403,6 +402,12 @@ msgstr "Pas de diffuseur pour ce bâtiment"
 msgid "An error occurred during broadcasters loading..."
 msgstr "Une erreur s’est produite lors du chargement des diffuseurs…"
 
+#: pod/live/static/js/filter_aside_event_list.js
+#: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
+#: pod/video/static/js/filter_aside_video_list_refresh.js
+msgid "An Error occurred while processing."
+msgstr "Une erreur est survenue durant l’exécution du processus."
+
 #: pod/main/static/js/filter-aside-element-list-refresh.js
 msgid "Descending sort"
 msgstr "Tri descendant"
@@ -485,11 +490,6 @@ msgstr ""
 msgid "<b>Private:</b> only you have access to this playlist."
 msgstr "<b>Privé :</b> vous seul avez accès à cette liste de lecture."
 
-#: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
-#: pod/video/static/js/filter_aside_video_list_refresh.js
-msgid "An Error occurred while processing."
-msgstr "Une erreur est survenue durant l’exécution du processus."
-
 #: pod/playlist/static/playlist/js/playlist-reorganize.js
 msgid "Save your reorganization"
 msgstr "Sauvegarder votre réorganisation"
@@ -497,6 +497,10 @@ msgstr "Sauvegarder votre réorganisation"
 #: pod/playlist/static/playlist/js/playlist-reorganize.js
 msgid "Save"
 msgstr "Sauvegarder"
+
+#: pod/playlist/static/playlist/js/video-favorites-remove-card.js
+msgid "Network response was not ok."
+msgstr "La réponse du réseau n'était pas correcte."
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
@@ -545,10 +549,6 @@ msgstr "Ce dossier est vide"
 #: pod/video/static/js/ajax-display-channels.js
 msgid "Channel"
 msgstr "Chaîne"
-
-#: pod/video/static/js/ajax-display-channels.js
-msgid "Channels"
-msgstr "Chaînes"
 
 #: pod/video/static/js/ajax-display-channels.js
 msgid "No channels found"
@@ -684,6 +684,18 @@ msgstr "La date doit être anterieure ou égale à"
 msgid "The deletion date can’t be earlier than today."
 msgstr "La date de suppression ne peut pas être antérieure à aujourd’hui."
 
+#: pod/video/static/js/video-show.js
+msgid "Seek back 10 seconds in the video"
+msgstr "Reculer de 10 secondes dans la vidéo"
+
+#: pod/video/static/js/video-show.js
+msgid "Seek forward 10 seconds in the video"
+msgstr "Avancer de 10 secondes dans la video"
+
+#: pod/video/static/js/video-show.js
+msgid "Quality"
+msgstr "Qualité"
+
 #: pod/video/static/js/video_category.js
 msgid "Category changes saved successfully"
 msgstr "Les changements sur la catégorie ont été sauvegardés avec succès"
@@ -800,6 +812,9 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "Channels"
+#~ msgstr "Chaînes"
 
 #~ msgid "Reply"
 #~ msgstr "Répondre"
