@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 07:35+0000\n"
+"POT-Creation-Date: 2023-08-30 12:18+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -5647,7 +5647,23 @@ msgid "Remove file"
 msgstr ""
 
 #: pod/podfile/templates/podfile/customfilewidget.html
+msgid "Headband - Select an image"
+msgstr ""
+
+#: pod/podfile/templates/podfile/customfilewidget.html
+msgid "Thumbnail - Select an image"
+msgstr ""
+
+#: pod/podfile/templates/podfile/customfilewidget.html
 msgid "Select an image"
+msgstr ""
+
+#: pod/podfile/templates/podfile/customfilewidget.html
+msgid "Slides - Select a file"
+msgstr ""
+
+#: pod/podfile/templates/podfile/customfilewidget.html
+msgid "File to import - Select a file"
 msgstr ""
 
 #: pod/podfile/templates/podfile/customfilewidget.html
