@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 12:13+0000\n"
+"POT-Creation-Date: 2023-08-30 12:18+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -5934,8 +5934,6 @@ msgid "Favorites"
 msgstr "Favoris"
 
 #: pod/playlist/tests/test_forms.py
-#, fuzzy
-#| msgid "Title field is required"
 msgid "This field is required."
 msgstr "Champ de titre est requis"
 
@@ -6025,8 +6023,24 @@ msgid "Remove file"
 msgstr "Retirer le fichier"
 
 #: pod/podfile/templates/podfile/customfilewidget.html
+msgid "Headband - Select an image"
+msgstr "Bannière - Sélectionner une image"
+
+#: pod/podfile/templates/podfile/customfilewidget.html
+msgid "Thumbnail - Select an image"
+msgstr "Vignette - Sélectionner une image"
+
+#: pod/podfile/templates/podfile/customfilewidget.html
 msgid "Select an image"
 msgstr "Sélectionner une image"
+
+#: pod/podfile/templates/podfile/customfilewidget.html
+msgid "Slides - Select a file"
+msgstr "Diapositives - Sélectionner un fichier"
+
+#: pod/podfile/templates/podfile/customfilewidget.html
+msgid "File to import - Select a file"
+msgstr "Fichier à importer - Sélectionner un fichier"
 
 #: pod/podfile/templates/podfile/customfilewidget.html
 msgid "Select a file"
