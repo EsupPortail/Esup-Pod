@@ -16,7 +16,7 @@
       <b>{% trans "Right of access:" %}</b> {% include "playlist/playlist_visibility_icon.html" with playlist=playlist %}
     </p>
     <p class="playlist-owner">
-      <b>{% trans "Playlist owner:" %}</b> <a class="btn btn-link" href="{% url 'videos:videos' %}?owner={{ playlist.owner.username }}" title="{% trans "Access to playlist owner profile" %}" aria-label="{{ playlist.owner }}">{{ playlist.owner }}</a>
+      <b>{% trans "Playlist owner:" %}</b> <a class="btn btn-link" href="{% url 'videos:videos' %}?owner={{ playlist.owner.get_username }}" title="{% trans "Access to playlist owner profile" %}" aria-label="{{ playlist.owner }}">{{ playlist.owner }}</a>
     </p>
 
     {% if additional_owners|length > 0 %}
@@ -27,7 +27,7 @@
           <li>
             <a
               class="btn btn-link"
-              href="{% url 'videos:videos' %}?owner={{ additional_owner.username }}"
+              href="{% url 'videos:videos' %}?owner={{ additional_owner.get_username }}"
               title="{% trans "Access to playlist additional owner profile" %}"
               aria-label="{{ additional_owner }}"
             >

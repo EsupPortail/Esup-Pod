@@ -12,7 +12,7 @@
       <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
       <meta itemprop="image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
       <meta itemprop="name" content="{{ video.title }}">
-      <meta itemprop="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }} - {% trans 'Added by:' %} {{ video.owner.get_full_name }}">
+      <meta itemprop="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }} - {% trans 'Added by:' %} {{ video.owner }}">
 
     {% if channel %}
       <h2 class="channel_title">

@@ -23,7 +23,7 @@
         {% else %}
           <i class="bi bi-chevron-down"></i>
         {% endif %}
-        <span class="user">{{ note.user.username }},</span>
+        <span class="user">{{ note.user.get_username }},</span>
         <span class="pod-note-date">
           {% blocktrans with date=note.modified_on %}the {{date}}:{% endblocktrans %}
         </span>
@@ -73,7 +73,7 @@
         {% else %}
           <i class="bi bi-chevron-right"></i>
         {% endif %}
-        <span class="user">{{ note.user.username }} :</span>
+        <span class="user">{{ note.user.get_username }} :</span>
         <span class="pod-note-content pod-note-truncated">{{ note.note}}</span>
       </div>
     </form>
