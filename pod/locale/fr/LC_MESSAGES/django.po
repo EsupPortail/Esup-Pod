@@ -4687,7 +4687,7 @@ msgstr "Utilise une police plus adaptée aux personnes atteintes de dyslexie."
 
 #: pod/main/templates/navbar.html
 msgid "Dyslexia mode"
-msgstr "Police ‘Open Dyslexic’"
+msgstr "Mode dyslexie"
 
 #: pod/main/templates/navbar.html
 msgid "Toggle user menu"
