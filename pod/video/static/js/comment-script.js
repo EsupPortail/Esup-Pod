@@ -316,9 +316,9 @@ class Comment extends HTMLElement {
       let add_comment = document.createElement("DIV");
       add_comment.setAttribute("class", "add_comment");
       add_comment.innerHTML = `
-        <label for=${id} class="comment_label">${gettext("Your public comment")}</label>
         <textarea class="new_comment form-control form-control-sm"
           name="new_comment" id="${id}" rows="1"
+          title="${gettext("Add a public comment")}"
           placeholder="${gettext("Add a public comment")}"></textarea>
         <button class="btn btn-link btn-lg send_reply disabled" role="button" title="${gettext(
           "Send",
