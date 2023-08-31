@@ -48,9 +48,9 @@
           <div class="input-group input-group-sm">
             <label class="input-group-text me-1 p-1" for="id_recurring_until">{% trans 'The:' %}</label>
             <span class="align-items-center">{{ form.recurring_until }}</span>
-            <span class="input-group-text ms-1 p-1">{% trans 'Or after' %}</span>
+            <label class="input-group-text ms-1 p-1" for="id_nb_occurrences">{% trans 'Or after' %}</label>
             {{ form.nb_occurrences }}
-            <label class="input-group-text p-1" for="id_nb_occurrences">{% trans 'occurrences' %}</label>
+            <label id="nb-occurrences-help" class="input-group-text p-1" for="id_nb_occurrences">{% trans 'occurrences' %}</label>
           </div>
         </div>
       </div>
@@ -58,6 +58,8 @@
   </div>
 </fieldset>
 <script>
+  document.getElementById('id_nb_occurrences').setAttribute('aria-descrbedby', 'nb-occurrences-help');
+
   let recurrence = document.getElementById("id_recurrence");
   // recurrence.onchange = function() { console.log("Changed!" + recurrence.value);
   recurrence.addEventListener('change', function(ev) {
