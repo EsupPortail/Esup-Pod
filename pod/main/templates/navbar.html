@@ -60,8 +60,8 @@
   </div>
 
   <form class="pod-navbar__form my-2 my-lg-0" action='{% url "video_search:search_videos" %}' id="nav-search">
-    <label for="s" class="d-lg-none" title="{% trans "Search for a video on" %} {{ TITLE_SITE }}">
-      <i class="bi bi-search" aria-hidden="true"></i>
+    <label for="s" class="d-lg-none">
+      <i class="bi bi-search" aria-hidden="true"></i> <span class="visually-hidden">{% trans "Search for a video on" %} {{ TITLE_SITE }}</span>
     </label>
     <div class="input-group me-sm-2 pod-navbar-search">
       <input class="form-control form-control-sm hide-search-input" id="s" placeholder="{% trans 'Search a video' %}" type="search" name="q">
@@ -81,13 +81,13 @@
           {% show_video_buttons as video_buttons %}
           {% if video_buttons %}
             <li class="nav-item pod-navbar__nav-item mx-1" id="nav-addvideo">
-              <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}" title="{% trans "Add a new video on" %} {{ TITLE_SITE }}">
+              <a class="btn btn-primary btn-sm" href="{% url 'video:video_add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Add a new video on" %} {{ TITLE_SITE }}">
                 <i class="bi bi-plus pod-add" aria-hidden="true"></i>
                 <span class="ms-1 d-none d-md-inline">{% trans "Add a video" %}</span>
               </a>
             </li>
             <li class="nav-item pod-navbar__nav-item mx-1" id="nav-myvideos">
-              <a class="btn btn-primary btn-sm" href="{% url 'video:my_videos' %}" title="{% trans "Show all my videos on" %} {{ TITLE_SITE }}">
+              <a class="btn btn-primary btn-sm" href="{% url 'video:my_videos' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Show all my videos on" %} {{ TITLE_SITE }}">
                 <i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>
                 <span class="ms-1 d-none d-md-inline">{% trans "My videos" %}</span>
               </a>
@@ -96,7 +96,7 @@
           {% show_meeting_button as meeting_button %}
           {% if meeting_button %}
             <li class="nav-item pod-navbar__nav-item mx-1" id="nav-mymeetings">
-              <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}" title="{% trans "Show all my meetings on" %} {{ TITLE_SITE }}">
+              <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Show all my meetings on" %} {{ TITLE_SITE }}">
                 <i class="bi bi-person-video pod-add" aria-hidden="true"></i>
                 <span class="ms-1 d-none d-md-inline">{% trans "My meetings" %}</span>
               </a>
