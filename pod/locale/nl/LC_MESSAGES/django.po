@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 14:09+0000\n"
+"POT-Creation-Date: 2023-08-31 10:30+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -4374,7 +4374,19 @@ msgid "Some features are unavailable"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+msgid "Add a new video on"
+msgstr ""
+
+#: pod/main/templates/navbar.html
 msgid "Add a video"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Show all my videos on"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Show all my meetings on"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -4413,6 +4425,10 @@ msgstr ""
 
 #: pod/main/templates/navbar.html
 msgid "Dyslexia mode"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Toggle your action menu"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -4466,6 +4482,10 @@ msgstr ""
 
 #: pod/main/templates/navbar.html
 msgid "Number of playlists:"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Open login page"
 msgstr ""
 
 #: pod/main/templates/navbar_collapse.html
