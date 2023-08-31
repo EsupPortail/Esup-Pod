@@ -38,15 +38,12 @@ button.close {
 }
 
 .modal.fade .modal-dialog {
-  transition: -webkit-transform 0.3s ease-out;
-  -webkit-transition: -webkit-transform 0.3s ease-out;ation-triangle-fill warning-icon" 
-    transform: translate(0, -25%);
+  transition: transform 0.3s ease-out;
+  transform: translate(0, -25%);
 }
 
 .modal.show .modal-dialog {
-  -webkit-transform: translate(0, 0);
-  -ms-transform: translate(0, 0);
-    transform: translate(0, 0);
+  transform: translate(0, 0);
 }
 
 .modal-dialog-centered {
