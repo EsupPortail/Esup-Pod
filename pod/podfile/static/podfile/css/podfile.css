@@ -270,12 +270,12 @@ button.close {
   margin-right: 3px;
 }
 #podfile #dirs .dirs-nav + *{
-  display: -ms-grid;
+  /* display: -ms-grid;
   display: grid;
   -ms-grid-columns: 1fr;
   grid-template-columns: 1fr;
   -ms-grid-rows: (minmax(auto, 1fr))[2];
-  grid-template-rows: repeat(2, minmax(auto, 1fr) );
+  grid-template-rows: repeat(2, minmax(auto, 1fr) ); */
   overflow: auto;
 }
 #podfile #dirs .dirs-nav + * > *:nth-child(1){
