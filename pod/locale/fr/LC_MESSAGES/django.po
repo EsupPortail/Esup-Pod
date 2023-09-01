@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-01 13:56+0000\n"
+"POT-Creation-Date: 2023-09-01 14:17+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -223,7 +223,7 @@ msgstr "Fermer"
 #: pod/video/templates/videos/video_note_comments_display.html
 #: pod/video/templates/videos/video_note_display.html
 #: pod/video/templates/videos/video_notes.html pod/video/views.py
-#: pod/video_search/templates/search/search.html test000.py
+#: pod/video_search/templates/search/search.html
 msgid "One or more errors have been found in the form."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 
@@ -4751,7 +4751,7 @@ msgstr "Types de vidéos"
 msgid "Use the input to filter user by last name."
 msgstr "Utiliser le champ pour filtrer les utilisateurs par nom de famille."
 
-#: pod/main/tests/test_views.py pod/main/views.py test000.py
+#: pod/main/tests/test_views.py pod/main/views.py
 msgid "Your message has been sent."
 msgstr "Votre message a été envoyé."
 

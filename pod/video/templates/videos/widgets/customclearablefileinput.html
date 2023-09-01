@@ -1,0 +1,20 @@
+{% load i18n %}
+{% comment %}
+ Adapted from Django 3.2.20 clearable_file_input.html
+ Please check for updates of this file when updating Django.
+ Changes made:
+  * translate the ":" (can add nbsp on some langs)
+  * add a <label> around widget.input_text for a11y
+{% endcomment %}
+
+{% if widget.is_initial %}
+  {{ widget.initial_text }}{% trans ": " %}
+  <a href="{{ widget.value.url }}">{{ widget.value }}</a>
+  {% if not widget.required %}
+    <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}"{% if widget.attrs.disabled %} disabled{% endif %}>
+    <label for="{{ widget.checkbox_id }}">{{ widget.clear_checkbox_label }}</label>
+  {% endif %}
+  <br>
+  <label for="{{ widget.attrs.id }}">{{ widget.input_text }}{% trans ": " %}</label>
+{% endif %}
+<input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
