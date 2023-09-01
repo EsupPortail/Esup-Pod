@@ -71,7 +71,7 @@ def get_name(self) -> str:
     Returns:
         str: The user's full name and username if not hidden.
     """
-    if HIDE_USERNAME:
+    if HIDE_USERNAME or not self.is_authenticated:
         return self.get_full_name().strip()
     return f"{self.get_full_name()} ({self.get_username()})".strip()
 

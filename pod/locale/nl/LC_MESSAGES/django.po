@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-31 12:54+0000\n"
+"POT-Creation-Date: 2023-09-01 07:47+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2026,8 +2026,11 @@ msgid "Enriched"
 msgstr ""
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html
+#: pod/live/templates/live/event-info.html
+#: pod/video/templates/videos/video-info.html
 #: pod/video/templates/videos/video_opengraph.html
-msgid "Added by"
+#: pod/video/templates/videos/video_page_content.html
+msgid "Added by:"
 msgstr ""
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html
@@ -3048,12 +3051,6 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 msgid "Location:"
-msgstr ""
-
-#: pod/live/templates/live/event-info.html
-#: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_page_content.html
-msgid "Added by:"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
@@ -4290,11 +4287,11 @@ msgid "Esup Portal"
 msgstr ""
 
 #: pod/main/templates/footer.html
-msgid "Show Esup-Pod project on GitHub"
+msgid "Show Esup-Pod project"
 msgstr ""
 
 #: pod/main/templates/footer.html
-msgid "Pod Project"
+msgid "Esup-Pod Project"
 msgstr ""
 
 #: pod/main/templates/footer.html pod/video/feeds.py
@@ -4374,15 +4371,15 @@ msgid "Channels"
 msgstr ""
 
 #: pod/main/templates/navbar.html
-msgid "Search for a video on"
+msgid "Search for a media on"
 msgstr ""
 
 #: pod/main/templates/navbar.html
-msgid "Search a video"
+msgid "Search a media"
 msgstr ""
 
 #: pod/main/templates/navbar.html
-msgid "Start video search on"
+msgid "Start media search on"
 msgstr ""
 
 #: pod/main/templates/navbar.html

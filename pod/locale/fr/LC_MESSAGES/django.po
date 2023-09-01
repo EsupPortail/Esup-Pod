@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-31 12:54+0000\n"
+"POT-Creation-Date: 2023-09-01 07:47+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -2133,9 +2133,12 @@ msgid "Enriched"
 msgstr "Enrichi"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html
+#: pod/live/templates/live/event-info.html
+#: pod/video/templates/videos/video-info.html
 #: pod/video/templates/videos/video_opengraph.html
-msgid "Added by"
-msgstr "Ajouté par"
+#: pod/video/templates/videos/video_page_content.html
+msgid "Added by:"
+msgstr "Ajouté par :"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html
 msgid "Informations"
@@ -3263,12 +3266,6 @@ msgstr "%(start_date)s au %(end_date)s"
 #: pod/live/templates/live/event-info.html
 msgid "Location:"
 msgstr "Lieu :"
-
-#: pod/live/templates/live/event-info.html
-#: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_page_content.html
-msgid "Added by:"
-msgstr "Ajouté par :"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
@@ -4534,12 +4531,12 @@ msgid "Esup Portal"
 msgstr "ESUP-Portail"
 
 #: pod/main/templates/footer.html
-msgid "Show Esup-Pod project on GitHub"
-msgstr "Afficher le projet Esup-Pod sur GitHub"
+msgid "Show Esup-Pod project"
+msgstr "Afficher le projet Esup-Pod"
 
 #: pod/main/templates/footer.html
-msgid "Pod Project"
-msgstr "Projet Pod"
+msgid "Esup-Pod Project"
+msgstr "Projet Esup-Pod"
 
 #: pod/main/templates/footer.html pod/video/feeds.py
 msgid "video platform of"
@@ -4620,16 +4617,16 @@ msgid "Channels"
 msgstr "Chaînes"
 
 #: pod/main/templates/navbar.html
-msgid "Search for a video on"
-msgstr "Rechercher une vidéo sur"
+msgid "Search for a media on"
+msgstr "Rechercher un média sur"
 
 #: pod/main/templates/navbar.html
-msgid "Search a video"
-msgstr "Rechercher une vidéo"
+msgid "Search a media"
+msgstr "Rechercher un média"
 
 #: pod/main/templates/navbar.html
-msgid "Start video search on"
-msgstr "Lancer la recherche de vidéo sur"
+msgid "Start media search on"
+msgstr "Lancer la recherche d'un média sur"
 
 #: pod/main/templates/navbar.html
 msgid "Some features are unavailable"
@@ -8479,6 +8476,9 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Added by"
+#~ msgstr "Ajouté par"
 
 #~ msgid "Toggle your action menu"
 #~ msgstr "Basculer votre menu d'actions"

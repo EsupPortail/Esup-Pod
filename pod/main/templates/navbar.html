@@ -61,11 +61,11 @@
 
   <form class="pod-navbar__form my-2 my-lg-0" action='{% url "video_search:search_videos" %}' id="nav-search">
     <label for="s" class="d-lg-none">
-      <i class="bi bi-search" aria-hidden="true"></i> <span class="visually-hidden">{% trans "Search for a video on" %} {{ TITLE_SITE }}</span>
+      <i class="bi bi-search" aria-hidden="true"></i> <span class="visually-hidden">{% trans "Search for a media on" %} {{ TITLE_SITE }}</span>
     </label>
     <div class="input-group me-sm-2 pod-navbar-search">
-      <input class="form-control form-control-sm hide-search-input" id="s" placeholder="{% trans 'Search a video' %}" type="search" name="q">
-      <button id="search-button" type="submit" class="btn btn-primary" title="{% trans "Start video search on" %} {{ TITLE_SITE }}">
+      <input class="form-control form-control-sm hide-search-input" id="s" placeholder="{% trans 'Search a media' %}" type="search" name="q">
+      <button id="search-button" type="submit" class="btn btn-primary" title="{% trans "Start media search on" %} {{ TITLE_SITE }}">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -273,7 +273,7 @@
       {% if request.path != LOGIN_URL %}
         <li class="nav-item dropdown login me-2" id="nav-authentication">
           {% get_url_referrer request as url_referrer %}
-          <a class="btn btn-primary btn-sm ps-2 pe-2 d-flex" href="{% url 'authentication:authentication_login' %}{{ url_referrer }}" aria-label="{% trans 'Log in' %}" title="{% trans "Open login page" %}">
+          <a class="btn btn-primary btn-sm ps-2 pe-2 d-flex" href="{% url 'authentication:authentication_login' %}{{ url_referrer }}" title="{% trans "Open login page" %}">
             <i class="bi bi-person-circle" aria-hidden="true"></i> <span class="ms-1 d-none d-lg-block">{% trans 'Log in' %}</span>
           </a>
         </li>
