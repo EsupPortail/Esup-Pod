@@ -5,7 +5,7 @@
 {% spaceless %}
 <div class="card card-body">
   <h2 class="card-title pod-card__title h4">
-    <i class="bi bi-sliders2-vertical"></i>&nbsp;{% trans 'Filters' %}
+    <i class="bi bi-sliders2-vertical" aria-hidden="true"></i>&nbsp;{% trans 'Filters' %}
     <button type="button" id="resetFilters" class="btn btn-outline-primary">{% trans 'Reset' %}</button>
   </h2>
   <p class="filter-info">
@@ -19,7 +19,7 @@
 
   {% if not HIDE_USER_FILTER and user.is_authenticated %}
   <fieldset>
-    <legend  class="h5"><i class="bi bi-people"></i> {% trans 'Users' %}</legend>
+    <legend  class="h5"><i class="bi bi-people" aria-hidden="true"></i> {% trans 'Users' %}</legend>
     <div class="form-group">
       <label for="ownerbox">{% trans 'Filter by user' %}</label>
       <input placeholder="{% trans 'Search' %}" id="ownerbox" type="text" class="form-control">
@@ -83,7 +83,7 @@
 {% endif %}
 {% if HIDE_TAGS == False %}
 <fieldset class="border-right border-bottom mt-2">
-  <legend class="h5"><i class="bi bi-tag"></i> {% trans 'Tags' %}</legend>
+  <legend class="h5"><i class="bi bi-tag" aria-hidden="true"></i> {% trans 'Tags' %}</legend>
   <div id="filterTag">
     {% tags_for_model video.Video as tagscloud with counts %}
     {% with tagslist=tagscloud|dictsortreversed:"count"|slice:":20" %}
@@ -107,7 +107,7 @@
 {% endif %}
 
 <fieldset class="border-right border-bottom mt-2">
-  <legend class="h5"><i class="bi bi-archive"></i> {% trans 'University course' %}</legend>
+  <legend class="h5"><i class="bi bi-archive" aria-hidden="true"></i> {% trans 'University course' %}</legend>
   <div id="filterCursus">
     <div class="form-group collapse" id="collapseFilterCursus">
       {% for keyCursus , transCursus in cursus_list %}
