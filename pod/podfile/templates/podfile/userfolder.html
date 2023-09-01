@@ -24,26 +24,21 @@
         </button>
     </div>
     <button id="close-folder-icon" type="button" class="btn-close" aria-label="{% trans 'Close' %}"></button>
-</div>
-  <label class="visually-hidden" for="folder-search">{% trans 'Search folder' %}</label>
-  <input
-    class="folder-search form-control"
-    placeholder="{% trans 'Search folder' %}"
-    type="search"
-    id="folder-search"
-    name="q"
-  >
-
-{% if request.user.is_superuser %}
-  <div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <p>
-      <i class="bi bi-exclamation-triangle-fill warning-icon" aria-hidden="true"></i>
-      {% trans "SuperUser mode: the folders of all users are listed (the owner is noted in brackets)" %}
-    </p>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button>
   </div>
-{% endif %}
+  <div class="form-floating form-search-floating">
+    <input type="search" class="form-control" id="folder-search" placeholder="{% trans 'Search folder' %}" name="q">
+    <label for="folder-search">{% trans 'Search folder' %}</label>
+  </div>
 
+  {% if request.user.is_superuser %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <p>
+        <i class="bi bi-exclamation-triangle-fill warning-icon" aria-hidden="true"></i>
+        {% trans "SuperUser mode: the folders of all users are listed (the owner is noted in brackets)" %}
+      </p>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button>
+    </div>
+  {% endif %}
 <div class="flex display-vertical">
     <div class="list_folders" id="list_folders_sub" data-type="{{type}}">&nbsp;</div>
 </div>

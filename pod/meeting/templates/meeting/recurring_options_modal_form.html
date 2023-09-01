@@ -48,9 +48,9 @@
           <div class="input-group input-group-sm">
             <label class="input-group-text me-1 p-1" for="id_recurring_until">{% trans 'The:' %}</label>
             <span class="align-items-center">{{ form.recurring_until }}</span>
-            <span class="input-group-text ms-1 p-1">{% trans 'Or after' %}</span>
+            <label class="input-group-text ms-1 p-1" for="id_nb_occurrences">{% trans 'Or after' %}</label>
             {{ form.nb_occurrences }}
-            <label class="input-group-text p-1" for="id_nb_occurrences">{% trans 'occurrences' %}</label>
+            <small id="id_nb_occurrencesHelp" class="input-group-text p-1">{% trans 'occurrences' %}</small>
           </div>
         </div>
       </div>
