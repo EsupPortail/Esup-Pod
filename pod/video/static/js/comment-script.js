@@ -317,7 +317,8 @@ class Comment extends HTMLElement {
       add_comment.setAttribute("class", "add_comment");
       add_comment.innerHTML = `
         <textarea class="new_comment form-control form-control-sm"
-          name="new_comment" id="comment" rows="1"
+          name="new_comment" id="${id}" rows="1"
+          title="${gettext("Add a public comment")}"
           placeholder="${gettext("Add a public comment")}"></textarea>
         <button class="btn btn-link btn-lg send_reply disabled" role="button" title="${gettext(
           "Send",
