@@ -813,14 +813,14 @@ msgstr "Ajouts en favoris total depuis la création"
 msgid "Slug"
 msgstr "Titre court"
 
+msgid "Add a public comment"
+msgstr "Ajouter un commentaire public"
+
+msgid "Reply"
+msgstr "Répondre"
+
 #~ msgid "Channels"
 #~ msgstr "Chaînes"
-
-#~ msgid "Reply"
-#~ msgstr "Répondre"
-
-#~ msgid "Add a public comment"
-#~ msgstr "Ajouter un commentaire public"
 
 #~ msgid "Send"
 #~ msgstr "Envoyer"
