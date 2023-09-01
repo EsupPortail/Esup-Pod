@@ -53,6 +53,15 @@ class MyAdminSplitDateTime(forms.MultiWidget):
         return [None, None]
 
 
+def add_describedby_attr(fields):
+    """Add aria-describedby attribute to specified fields."""
+    for fieldName in fields:
+        myField = fields[fieldName]
+        if myField.help_text:
+            myField.widget.attrs["aria-describedby"] = "id_%sHelp" % fieldName
+    return fields
+
+
 def add_placeholder_and_asterisk(fields):
     """Add placeholder and asterisk to specified fields."""
     for fieldName in fields:

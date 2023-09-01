@@ -175,6 +175,7 @@ CKEDITOR_CONFIGS = {
             {"name": "links", "items": ["Link", "Unlink", "Anchor"]},
             {"name": "tools", "items": ["Maximize"]},
         ],
+        "removePlugins": "exportpdf",
     },
 }
 
