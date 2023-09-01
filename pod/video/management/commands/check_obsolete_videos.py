@@ -340,7 +340,7 @@ class Command(BaseCommand):
                 msg_html += "\n</p>"
                 msg_html += "\n<p>" + _("Regards") + "</p>\n"
 
-                subject = (_("The deleted videos on Pod"),)
+                subject = _("The deleted videos on Pod")
 
                 if estab == "other":
                     mail_managers(

@@ -555,6 +555,7 @@ class VideoForm(forms.ModelForm):
             form.remove_field("sites")
 
     def move_video_source_file(self, new_path, new_dir, old_dir):
+        """Move video source file in a new dir."""
         # create user repository
         dest_file = os.path.join(settings.MEDIA_ROOT, new_path)
         os.makedirs(os.path.dirname(dest_file), exist_ok=True)
@@ -768,6 +769,7 @@ class VideoForm(forms.ModelForm):
             self.remove_field("transcript")
 
     def manage_more_required_fields(self):
+        """Set the required attribute to True for all VIDEO_REQUIRED_FIELDS."""
         for field in VIDEO_REQUIRED_FIELDS:
             # field exists, not hide
             if self.fields.get(field, None):
