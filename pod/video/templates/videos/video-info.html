@@ -51,11 +51,11 @@
       {% get_favorite_playlist user as fav_playlist %}
       {% if USE_PLAYLIST and USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
         {% if is_favorite %}
-        <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" title="{% trans "Remove from favorite" %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="true">
+        <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" title="{% trans 'Remove from favorite' %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="true">
           <i class="bi-star-fill" aria-hidden="true"></i>
         </a>
         {% else %}
-        <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}" title="{% trans "Add in favorite" %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="false">
+        <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}" title="{% trans 'Add in favorite' %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="false">
           <i class="bi-star" aria-hidden="true"></i>
         </a>
         {% endif %}
@@ -78,7 +78,7 @@
 {% if video.description or tag_list or video.is_360 %}
 <div class="pod-info-video__summary my-3" id="summary">
   {% if video.is_360 %}
-    <p class="alert">{% trans "This is a 360 degree video. To look around click and drag your mouse on the video." %}</p>
+    <p class="alert">{% trans 'This is a 360 degree video. To look around click and drag your mouse on the video.' %}</p>
   {% endif %}
   {% tags_for_object video as tag_list %}
   {% if video.description or tag_list %}
@@ -95,7 +95,7 @@
       </p>
     {% endif %}
   {% elif not video.is_360 %}
-    <p>[... {% trans "No information available" %} ...]</p>
+    <p>[... {% trans 'No information available' %} ...]</p>
   {% endif %}
 </div>
 {% endif %}
@@ -108,13 +108,14 @@
       <li class="col-6 col-md-4">
         <span class="pod-meta-title">{% trans 'Added by:' %}</span>
 
-        <a class="btn btn-link" href="{% url 'videos:videos' %}?owner={{ video.owner.username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
+        <a class="btn btn-link" href="{% url 'videos:videos' %}?owner={{ video.owner.get_username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
           {% if video.owner.owner.userpicture.file %}
             {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
               <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class="userpicture rounded" alt="" loading="lazy">
             {% endthumbnail %}
           {% endif %}
-          {{ video.owner.get_full_name }}</a>
+          {{ video.owner }}
+        </a>
       </li>
       {% if video.additional_owners.all %}
       <li class="col-6 col-md-4">
@@ -122,13 +123,13 @@
 
         <ul class="list-unstyled">
           {% for additionalOwner in video.additional_owners.all %}
-            <li><a href="{% url 'videos:videos' %}?owner={{ additionalOwner.username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
+            <li><a href="{% url 'videos:videos' %}?owner={{ additionalOwner.get_username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
                 {% if additionalOwner.owner.userpicture.file %}
                   {% thumbnail additionalOwner.owner.userpicture.file "x50" as im %}
                     <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}" loading="lazy">
                   {% endthumbnail %}
                 {% endif %}
-                {{ additionalOwner.get_full_name }}
+                {{ additionalOwner }}
               </a></li>
           {% endfor %}
         </ul>
@@ -194,7 +195,7 @@
       </li>
 
       <li class="col-6 col-md-4">
-        <span class="pod-meta-title">{% trans "Main language:" %}</span>
+        <span class="pod-meta-title">{% trans 'Main language:' %}</span>
         {{video.get_main_lang}}
       </li>
 

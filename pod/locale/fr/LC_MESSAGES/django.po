@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-31 12:25+0000\n"
+"POT-Creation-Date: 2023-09-01 09:54+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -2133,9 +2133,12 @@ msgid "Enriched"
 msgstr "Enrichi"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html
+#: pod/live/templates/live/event-info.html
+#: pod/video/templates/videos/video-info.html
 #: pod/video/templates/videos/video_opengraph.html
-msgid "Added by"
-msgstr "Ajouté par"
+#: pod/video/templates/videos/video_page_content.html
+msgid "Added by:"
+msgstr "Ajouté par :"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html
 msgid "Informations"
@@ -2400,7 +2403,7 @@ msgid "Tags"
 msgstr "Mots clés"
 
 #: pod/import_video/templates/import_video/filter_aside.html
-#: pod/main/templates/navbar.html pod/main/templates/navbar_collapse.html
+#: pod/main/templates/navbar_collapse.html
 #: pod/meeting/templates/meeting/filter_aside_recording.html
 #: pod/video/templates/videos/filter_aside.html
 #: pod/video/templates/videos/filter_aside_category.html
@@ -3169,7 +3172,7 @@ msgid "Home"
 msgstr "Accueil"
 
 #: pod/live/templates/live/direct.html
-#: pod/live/templates/live/event-script.html
+#: pod/live/templates/live/event-script.html pod/main/templates/footer.html
 #: pod/video/templates/videos/video-script.html
 msgid "New window"
 msgstr "Nouvelle fenêtre"
@@ -3263,12 +3266,6 @@ msgstr "%(start_date)s au %(end_date)s"
 #: pod/live/templates/live/event-info.html
 msgid "Location:"
 msgstr "Lieu :"
-
-#: pod/live/templates/live/event-info.html
-#: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_page_content.html
-msgid "Added by:"
-msgstr "Ajouté par :"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
@@ -4518,8 +4515,8 @@ msgid "Back to the previous page"
 msgstr "Retour à la page précédente"
 
 #: pod/main/templates/footer.html
-msgid "Go to top"
-msgstr "Haut de page"
+msgid "Return to top of page"
+msgstr "Retourner en haut de la page"
 
 #: pod/main/templates/footer.html
 msgid ""
@@ -4534,8 +4531,12 @@ msgid "Esup Portal"
 msgstr "ESUP-Portail"
 
 #: pod/main/templates/footer.html
-msgid "Pod Project"
-msgstr "Projet Pod"
+msgid "Show Esup-Pod project"
+msgstr "Afficher le projet Esup-Pod"
+
+#: pod/main/templates/footer.html
+msgid "Esup-Pod Project"
+msgstr "Projet Esup-Pod"
 
 #: pod/main/templates/footer.html pod/video/feeds.py
 msgid "video platform of"
@@ -4616,12 +4617,36 @@ msgid "Channels"
 msgstr "Chaînes"
 
 #: pod/main/templates/navbar.html
+msgid "Search for a media on"
+msgstr "Rechercher un média sur"
+
+#: pod/main/templates/navbar.html
+msgid "Search a media"
+msgstr "Rechercher un média"
+
+#: pod/main/templates/navbar.html
+msgid "Start media search on"
+msgstr "Lancer la recherche d'un média sur"
+
+#: pod/main/templates/navbar.html
 msgid "Some features are unavailable"
 msgstr "Certaines fonctionnalités sont indisponibles"
 
 #: pod/main/templates/navbar.html
+msgid "Add a new video on"
+msgstr "Ajouter une nouvelle vidéo sur"
+
+#: pod/main/templates/navbar.html
 msgid "Add a video"
 msgstr "Ajouter une vidéo"
+
+#: pod/main/templates/navbar.html
+msgid "Show all my videos on"
+msgstr "Afficher toutes mes vidéos sur"
+
+#: pod/main/templates/navbar.html
+msgid "Show all my meetings on"
+msgstr "Afficher toutes mes réunions sur"
 
 #: pod/main/templates/navbar.html
 #: pod/meeting/templates/meeting/add_or_edit.html
@@ -4659,7 +4684,11 @@ msgstr "Utilise une police plus adaptée aux personnes atteintes de dyslexie."
 
 #: pod/main/templates/navbar.html
 msgid "Dyslexia mode"
-msgstr "Police ‘Open Dyslexic’"
+msgstr "Mode dyslexie"
+
+#: pod/main/templates/navbar.html
+msgid "Toggle user menu"
+msgstr "Basculer le menu utilisateur"
 
 #: pod/main/templates/navbar.html
 msgid "Add your picture"
@@ -4713,6 +4742,10 @@ msgstr "Nombre de vidéos :"
 #: pod/main/templates/navbar.html
 msgid "Number of playlists:"
 msgstr "Nombre de listes de lecture :"
+
+#: pod/main/templates/navbar.html
+msgid "Open login page"
+msgstr "Ouvrir la page de connexion"
 
 #: pod/main/templates/navbar_collapse.html
 msgid "Types of videos"
@@ -8443,6 +8476,15 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Added by"
+#~ msgstr "Ajouté par"
+
+#~ msgid "Toggle your action menu"
+#~ msgstr "Basculer votre menu d'actions"
+
+#~ msgid "Go to top"
+#~ msgstr "Haut de page"
 
 #~ msgid "Edit the overlay"
 #~ msgstr "Éditer la superposition"

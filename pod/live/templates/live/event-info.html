@@ -40,13 +40,14 @@
       <li class="col-6 col-md-4">
         <h3 class="meta-title">{% trans 'Added by:' %}</h3>
         <div>
-          <a class="btn btn-link btn-sm" href="{% url 'videos:videos' %}?owner={{ event.owner.username }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+          <a class="btn btn-link btn-sm" href="{% url 'videos:videos' %}?owner={{ event.owner.get_username }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
           {% if event.owner.owner.userpicture.file %}
             {% thumbnail event.owner.owner.userpicture.file "x34" as im %}
               <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='userpicture rounded' alt="" loading="lazy">
             {% endthumbnail %}
           {% endif %}
-          {{ event.owner.get_full_name }}</a>
+          {{ event.owner }}
+          </a>
         </div>
       </li>
       <li class="col-6 col-md-4">
