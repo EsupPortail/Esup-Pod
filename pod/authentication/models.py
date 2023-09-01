@@ -64,10 +64,16 @@ SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 
-def get_name(self):
-    if HIDE_USERNAME:
-        return "%s %s" % (self.first_name, self.last_name)
-    return "%s %s (%s)" % (self.first_name, self.last_name, self.username)
+def get_name(self) -> str:
+    """
+    Returns the user's full name, including the username if not hidden.
+
+    Returns:
+        str: The user's full name and username if not hidden.
+    """
+    if HIDE_USERNAME or not self.is_authenticated:
+        return self.get_full_name().strip()
+    return f"{self.get_full_name()} ({self.get_username()})".strip()
 
 
 User.add_to_class("__str__", get_name)

@@ -7,23 +7,23 @@
     <li class="breadcrumb-item">
         <a
             href="{% url 'playlist:list' %}"
-            title="{% trans "Access the list of playlists" %}"
-            aria-label="{% trans "Playlists" %}"
+            title="{% trans 'Access the list of playlists' %}"
+            aria-label="{% trans 'Playlists' %}"
         >
-            {% trans "Playlists" %}
+            {% trans 'Playlists' %}
         </a>
     </li>
     <li class="breadcrumb-item">
         <a
             href="{% url 'playlist:content' playlist.slug %}"
-            title="{% trans "Access the video list of this playlist" %}"
+            title="{% trans 'Access the video list of this playlist' %}"
             aria-label="Playlist content"
         >
             {{ playlist.name }}
         </a>
     </li>
-    <li class="breadcrumb-item active">
-        {% trans "Delete" %}
+    <li class="breadcrumb-item active" aria-current="page">
+        {% trans 'Delete' %}
     </li>
 {% endblock breadcrumbs %}
 
@@ -35,8 +35,8 @@
     </style>
     <h3>{% blocktrans with name=playlist.name %}Delete the playlist <strong>{{name}}</strong>{% endblocktrans %}
         <span class="float-end">
-            <a href="{% url 'playlist:list' %}" title="{% trans 'Back to my playlists' %}" class="btn btn-secondary btn-sm" aria-label="{% trans "Back to my playlists" %}">
-                <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Back to my playlists" %}
+            <a href="{% url 'playlist:list' %}" title="{% trans 'Back to my playlists' %}" class="btn btn-secondary btn-sm" aria-label="{% trans 'Back to my playlists' %}">
+                <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans 'Back to my playlists' %}
             </a>
         </span>
     </h3>
@@ -47,7 +47,7 @@
         <fieldset>
             <legend>{% trans 'Agree required' %}</legend>
             {% if form.errors %}
-                <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+                <p class="text-danger">{% trans 'One or more errors have been found in the form.' %}</p>
             {% endif %}
             {% for field_hidden in form.hidden_fields %}
                 {{field_hidden}}
@@ -68,15 +68,15 @@
                             {% if field.help_text %}
                                 <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
                             {% endif %}
-                            {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+                            {% if field.field.required %}<div class="invalid-feedback">{% trans 'Please provide a valid value for this field.' %}</div>{% endif %}
                         </div>
                     </div>
                 {% endspaceless %}
             {% endfor %}
             <div class="text-center mt-1">
-                <button type="submit" class="btn btn-secondary btn-sm btn-danger">{% trans "Delete" %}</button>
+                <button type="submit" class="btn btn-secondary btn-sm btn-danger">{% trans 'Delete' %}</button>
                 <a href="{% url 'meeting:my_meetings' %}" title="{% trans 'Back to my playlists' %}" class="btn btn-secondary btn-sm">
-                    <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Back to my playlists" %}
+                    <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans 'Back to my playlists' %}
                 </a>
             </div>
         </fieldset>

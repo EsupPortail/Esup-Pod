@@ -3,17 +3,17 @@
 {% spaceless %}
 <div>
   <p class="float-end">
-    <a class="pod-gotoup" href="#" title="{% trans 'Go to top'%}">
-      <i class="bi bi-arrow-up-circle pod-gotoup"></i></a>
+    <a class="pod-gotoup" href="#" data-bs-toggle="tooltip" data-bs-placement="left" title="{% trans 'Return to top of page'%}">
+      <i class="bi bi-arrow-up-circle pod-gotoup" aria-hidden="true"></i></a>
   </p>
   <div class="pod-footer-content row">
     <div class="col-auto">
       <div class="pod-footer-logo" style="background-image: url('{% static LOGO_ETB %}')">&nbsp;</div>
       <address>
         <p class="footer-contact mt-3 hidden-pod pod-hidden">
-          <span class="footer-contact-title">{{TITLE_ETB}}</span><br>
+          <span class="footer-contact-title">{{ TITLE_ETB }}</span><br>
           {% for text in FOOTER_TEXT %}
-            {{text|safe}}<br>
+            {{ text|safe }}<br>
           {% endfor %}
         </p>
       </address>
@@ -22,17 +22,21 @@
       <ul class="footer_links pod-footer__links list-unstyled">
         {% if LINK_FOOTER %}
           {% for link in LINK_FOOTER %}
-            <li><a href="{{link.get_url}}">{{link.title}}</a></li>
+            <li><a href="{{ link.get_url }}">{{ link.title }}</a></li>
           {% endfor %}
         {% endif %}
 
-        <li><a href="https://www.esup-portail.org/" title="{% trans 'Esup Portal: Community of French higher education establishments for digital innovation' %}" target="_blank">{% trans "Esup Portal" %}</a></li>
-        <li><a href="https://github.com/EsupPortail/Esup-Pod" target="_blank">{% trans "Pod Project" %}</a></li>
+        <li>
+          <a href="https://www.esup-portail.org/" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Esup Portal: Community of French higher education establishments for digital innovation' %} - {% trans 'New window' %}">{% trans 'Esup Portal' %}</a>
+        </li>
+        <li>
+          <a href="https://pod.esup-portail.org" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Show Esup-Pod project' %} - {% trans 'New window' %}">{% trans 'Esup-Pod Project' %}</a>
+        </li>
       </ul>
     </div>
   </div>
   <p class="hidden-pod pod-footer__credits text-center">
-    {{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/Esup-Pod/releases/tag/{{VERSION}}" target="_blank" title="{% trans "View changes of version" %} {{ VERSION }} {% trans "on" %} GitHub">{% trans "Release" %} {{VERSION}}</a>  - {{VIDEOS_COUNT}} {% trans "videos availables" %} [ {{VIDEOS_DURATION}} ]
+    {{ TITLE_SITE }} {% trans 'video platform of' %} {{ TITLE_ETB }} - <a href="https://github.com/EsupPortail/Esup-Pod/releases/tag/{{VERSION}}" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'View changes of version' %} {{ VERSION }} {% trans 'on' %} GitHub">{% trans 'Release' %} {{ VERSION }}</a>  - {{ VIDEOS_COUNT }} {% trans 'videos availables' %} [ {{ VIDEOS_DURATION }} ]
   </p>
 </div>
 {% endspaceless %}
