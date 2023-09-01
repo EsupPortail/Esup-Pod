@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-01 07:47+0000\n"
+"POT-Creation-Date: 2023-09-01 09:54+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -4745,7 +4745,7 @@ msgstr "Nombre de listes de lecture :"
 
 #: pod/main/templates/navbar.html
 msgid "Open login page"
-msgstr "Ouvir la page de connexion"
+msgstr "Ouvrir la page de connexion"
 
 #: pod/main/templates/navbar_collapse.html
 msgid "Types of videos"
