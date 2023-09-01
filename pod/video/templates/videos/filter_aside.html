@@ -41,7 +41,7 @@
 {% endif %}
 {% if HIDE_TYPES == False %}
 <fieldset class="border-right border-bottom mt-2">
-  <legend class="h5"><i class="bi bi-tv"></i> {% trans 'Types' %} </legend>
+  <legend class="h5"><i class="bi bi-tv" aria-hidden="true"></i> {% trans 'Types' %} </legend>
   <div id="filterType">
     <div class="form-group collapse" id="collapseFilterType">
       {% for type in TYPES %}
@@ -62,7 +62,7 @@
 {% endif %}
 {% if HIDE_DISCIPLINES == False %}
 <fieldset class="border-right border-bottom mt-2">
-  <legend class="h5"><i class="bi bi-book"></i> {% trans 'Disciplines' %} </legend>
+  <legend class="h5"><i class="bi bi-book" aria-hidden="true"></i> {% trans 'Disciplines' %} </legend>
   <div id="filterDiscipline">
     <div class="form-group collapse" id="collapseFilterDiscipline">
       {% for discipline in DISCIPLINES %}
