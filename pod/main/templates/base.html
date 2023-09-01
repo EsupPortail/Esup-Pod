@@ -82,15 +82,9 @@
             <nav aria-label="{% trans 'Breadcrumb' %}" class="breadcrumb d-flex justify-content-between pb-2" id="mainbreadcrumb">
               <ol class="breadcrumb p-0 mb-0">
                 {% block breadcrumbs %}
-                  {% if request.path == '/' %}
-                    <li class="breadcrumb-item active" aria-current="page">
-                      {% trans 'Home' %}
-                    </li>
-                  {% else %}
-                    <li class="breadcrumb-item">
-                      <a href="/">{% trans 'Home' %}</a>
-                    </li>
-                  {% endif %}
+                  <li class="breadcrumb-item {% if request.path == '/' %}active" aria-current="page{% endif %}">
+                    {% trans 'Home' %}
+                  </li>
                 {% endblock breadcrumbs %}
               </ol>
             </nav>
