@@ -38,20 +38,12 @@ button.close {
 }
 
 .modal.fade .modal-dialog {
-  transition: -webkit-transform 0.3s ease-out;
-  -webkit-transition: -webkit-transform 0.3s ease-out;
-  -o-transition: transform 0.3s ease-out;
   transition: transform 0.3s ease-out;
-  transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
-  -webkit-transform: translate(0, -25%);
-  -ms-transform: translate(0, -25%);
-    transform: translate(0, -25%);
+  transform: translate(0, -25%);
 }
 
 .modal.show .modal-dialog {
-  -webkit-transform: translate(0, 0);
-  -ms-transform: translate(0, 0);
-    transform: translate(0, 0);
+  transform: translate(0, 0);
 }
 
 .modal-dialog-centered {
@@ -275,12 +267,12 @@ button.close {
   margin-right: 3px;
 }
 #podfile #dirs .dirs-nav + *{
-  display: -ms-grid;
+  /* display: -ms-grid;
   display: grid;
   -ms-grid-columns: 1fr;
   grid-template-columns: 1fr;
   -ms-grid-rows: (minmax(auto, 1fr))[2];
-  grid-template-rows: repeat(2, minmax(auto, 1fr) );
+  grid-template-rows: repeat(2, minmax(auto, 1fr) ); */
   overflow: auto;
 }
 #podfile #dirs .dirs-nav + * > *:nth-child(1){

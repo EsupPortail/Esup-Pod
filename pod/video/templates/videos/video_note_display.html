@@ -2,11 +2,11 @@
 <div class="pod-note-item p-1">
   <span class="pod-note-status">
     {% if note.status == '0' %}
-      <i class="bi bi-file-earmark-lock" title="{% trans "Private (me only)" %}"></i>
+      <i class="bi bi-file-earmark-lock" title="{% trans 'Private (me only)' %}"></i>
     {% elif note.status == '1' %}
-      <i class="bi bi-person-video" title="{% trans "Shared with video owner" %}"></i>
+      <i class="bi bi-person-video" title="{% trans 'Shared with video owner' %}"></i>
     {% elif note.status == '2' %}
-      <i class="bi bi-globe2" title="{% trans "Public" %}"></i>
+      <i class="bi bi-globe2" title="{% trans 'Public' %}"></i>
     {% endif %}
   </span>
 
@@ -23,7 +23,7 @@
         {% else %}
           <i class="bi bi-chevron-down"></i>
         {% endif %}
-        <span class="user">{{ note.user.username }},</span>
+        <span class="user">{{ note.user.get_username }},</span>
         <span class="pod-note-date">
           {% blocktrans with date=note.modified_on %}the {{date}}:{% endblocktrans %}
         </span>
@@ -39,7 +39,7 @@
     </form>
     <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" id="video_notes_form">
     {% csrf_token %}
-      {% if note_form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
+      {% if note_form.errors %} <p class="text-danger">{% trans 'One or more errors have been found in the form.' %}</p> {% endif %}
       {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}
       {% for field in note_form.visible_fields %}
         {% spaceless %}
@@ -48,7 +48,7 @@
           {{ field.errors }}
           {{ field }}
           {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small> {% endif %}
-          {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div> {% endif %}
+          {% if field.field.required %} <div class="invalid-feedback">{% trans 'Please provide a valid value for this field.' %}</div> {% endif %}
         </div>
         {% endspaceless %}
       {% endfor %}
@@ -73,7 +73,7 @@
         {% else %}
           <i class="bi bi-chevron-right"></i>
         {% endif %}
-        <span class="user">{{ note.user.username }} :</span>
+        <span class="user">{{ note.user.get_username }} :</span>
         <span class="pod-note-content pod-note-truncated">{{ note.note}}</span>
       </div>
     </form>

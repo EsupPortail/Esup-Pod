@@ -29,7 +29,7 @@
             {% else %}
             var is_video_owner = false;
             {% endif %}
-            var user_fullName = `{{request.user.first_name}} {{request.user.last_name}}`;
+            var user_fullName = `{{request.user.get_full_name}}`;
             var user_id = `{{ request.user.id }}` === "None"? false: `{{ request.user.id }}`;
             {% if MAINTENANCE_MODE %}
             var is_authenticated = false;

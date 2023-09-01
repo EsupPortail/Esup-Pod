@@ -29,10 +29,11 @@ __AVAILABLE_VIDEO_FILTER__ = {
 CHANNELS_PER_BATCH = getattr(django_settings, "CHANNELS_PER_BATCH", 10)
 
 
-def get_available_videos(request=None):
-    """Get all videos available."""
+def get_available_videos_filter(request=None):
+    """Return the base filter to get the available videos of the site."""
     __AVAILABLE_VIDEO_FILTER__["sites"] = get_current_site(request)
-    vids = (
+
+    return (
         Video.objects.filter(**__AVAILABLE_VIDEO_FILTER__)
         .defer("video", "slug", "owner", "additional_owners", "description")
         .filter(
@@ -60,9 +61,12 @@ def get_available_videos(request=None):
                 )
             )
         )
-        .distinct()
     )
-    return vids
+
+
+def get_available_videos(request=None):
+    """Get all videos available."""
+    return get_available_videos_filter(request).distinct()
 
 
 def context_video_settings(request):
@@ -95,11 +99,14 @@ def context_navbar(request):
         .annotate(video_count=Count("video", distinct=True))
     )
 
-    list_videos = get_available_videos(request)
-    VIDEOS_COUNT = list_videos.count()
+    v_filter = get_available_videos_filter(request)
+
+    aggregate_videos = v_filter.aggregate(duration=Sum("duration"), number=Count("id"))
+
+    VIDEOS_COUNT = aggregate_videos["number"]
     VIDEOS_DURATION = (
-        str(timedelta(seconds=list_videos.aggregate(Sum("duration"))["duration__sum"]))
-        if list_videos.aggregate(Sum("duration"))["duration__sum"]
+        str(timedelta(seconds=aggregate_videos["duration"]))
+        if aggregate_videos["duration"]
         else 0
     )
 

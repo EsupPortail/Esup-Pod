@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 14:09+0000\n"
+"POT-Creation-Date: 2023-09-01 09:54+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2026,8 +2026,11 @@ msgid "Enriched"
 msgstr ""
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html
+#: pod/live/templates/live/event-info.html
+#: pod/video/templates/videos/video-info.html
 #: pod/video/templates/videos/video_opengraph.html
-msgid "Added by"
+#: pod/video/templates/videos/video_page_content.html
+msgid "Added by:"
 msgstr ""
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html
@@ -2259,7 +2262,7 @@ msgid "Tags"
 msgstr ""
 
 #: pod/import_video/templates/import_video/filter_aside.html
-#: pod/main/templates/navbar.html pod/main/templates/navbar_collapse.html
+#: pod/main/templates/navbar_collapse.html
 #: pod/meeting/templates/meeting/filter_aside_recording.html
 #: pod/video/templates/videos/filter_aside.html
 #: pod/video/templates/videos/filter_aside_category.html
@@ -2959,7 +2962,7 @@ msgid "Home"
 msgstr ""
 
 #: pod/live/templates/live/direct.html
-#: pod/live/templates/live/event-script.html
+#: pod/live/templates/live/event-script.html pod/main/templates/footer.html
 #: pod/video/templates/videos/video-script.html
 msgid "New window"
 msgstr ""
@@ -3048,12 +3051,6 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 msgid "Location:"
-msgstr ""
-
-#: pod/live/templates/live/event-info.html
-#: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_page_content.html
-msgid "Added by:"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
@@ -4276,7 +4273,7 @@ msgid "Back to the previous page"
 msgstr ""
 
 #: pod/main/templates/footer.html
-msgid "Go to top"
+msgid "Return to top of page"
 msgstr ""
 
 #: pod/main/templates/footer.html
@@ -4290,7 +4287,11 @@ msgid "Esup Portal"
 msgstr ""
 
 #: pod/main/templates/footer.html
-msgid "Pod Project"
+msgid "Show Esup-Pod project"
+msgstr ""
+
+#: pod/main/templates/footer.html
+msgid "Esup-Pod Project"
 msgstr ""
 
 #: pod/main/templates/footer.html pod/video/feeds.py
@@ -4370,11 +4371,35 @@ msgid "Channels"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+msgid "Search for a media on"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Search a media"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Start media search on"
+msgstr ""
+
+#: pod/main/templates/navbar.html
 msgid "Some features are unavailable"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+msgid "Add a new video on"
+msgstr ""
+
+#: pod/main/templates/navbar.html
 msgid "Add a video"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Show all my videos on"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Show all my meetings on"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -4413,6 +4438,10 @@ msgstr ""
 
 #: pod/main/templates/navbar.html
 msgid "Dyslexia mode"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Toggle user menu"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -4466,6 +4495,10 @@ msgstr ""
 
 #: pod/main/templates/navbar.html
 msgid "Number of playlists:"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Open login page"
 msgstr ""
 
 #: pod/main/templates/navbar_collapse.html
