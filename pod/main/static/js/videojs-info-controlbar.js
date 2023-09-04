@@ -18,15 +18,15 @@
      */
     var MenuButton = videojs.getComponent("Button");
 
-    var InfoMenuButton = videojs.extend(MenuButton, {
+    class InfoMenuButton extends MenuButton {
       constructor: function (player, options) {
         options.label = "Info";
         MenuButton.call(this, player, options);
         this.el().setAttribute("aria-label", "Info");
         videojs.dom.addClass(this.el(), "vjs-info-button");
         this.controlText("Information");
-      },
-    });
+      }
+    };
     InfoMenuButton.prototype.handleClick = function (event) {
       MenuButton.prototype.handleClick.call(this, event);
       show_info_video();

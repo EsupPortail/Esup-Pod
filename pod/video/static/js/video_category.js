@@ -516,7 +516,7 @@
       let title = gettext("Video content.");
       if (video.is_video) {
         span = `<span title="${title}">
-        <i class="bi bi-film"></i></span>`;
+        <i class="bi bi-film" aria-hidden="true"></i></span>`;
       } else {
         title = gettext("Audio content.");
         span = `<span title="${title}"><i class="bi bi-soundwave" aria-hidden="true"></i></span>`;

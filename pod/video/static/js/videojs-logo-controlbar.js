@@ -18,8 +18,8 @@
      */
     var MenuLink = videojs.getComponent("ClickableComponent");
 
-    var LogoMenuLink = videojs.extend(MenuLink, {
-      constructor: function (player, options) {
+    class LogoMenuLink extends MenuLink {
+      constructor(player, options) {
         var aElement = document.createElement("a");
         console.log(options.link);
         if (options.link && options.link !== "") {
@@ -37,9 +37,9 @@
             options.imgsrc +
             "); background-repeat: no-repeat; background-position: center; cursor: pointer;",
         );
-        MenuLink.call(this, player, { el: aElement });
-      },
-    });
+        super(player, { el: aElement });
+      }
+    };
 
     /**
      * Initialize the plugin.

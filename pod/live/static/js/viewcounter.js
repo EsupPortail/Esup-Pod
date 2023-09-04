@@ -89,10 +89,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const MenuButton = videojs.getComponent("Button");
 
-    const ViewerCountMenuButton = videojs.extend(MenuButton, {
-      constructor: function (player, options) {
+    class ViewerCountMenuButton extends MenuButton {
+      constructor(player, options) {
         options.label = "Viewers";
-        MenuButton.call(this, player, options);
+        super(player, options);
         this.el().setAttribute("aria-label", "Viewers");
         // videojs.dom.addClass(this.el(), "vjs-info-button");
         this.controlText("Viewers");
@@ -102,8 +102,8 @@ document.addEventListener("DOMContentLoaded", function () {
           '<span style="line-height:1.7">' +
           eyeSVG +
           '<span style="padding-left:4px" id="viewcount">?</div></span></span>';
-      },
-    });
+      }
+    };
 
     ViewerCountMenuButton.prototype.handleClick = function (event) {
       MenuButton.prototype.handleClick.call(this, event);
