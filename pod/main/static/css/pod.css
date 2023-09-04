@@ -168,6 +168,10 @@
   display: inline-block;
 }
 
+.pod-meta-title-additional-owners {
+  vertical-align: top;
+}
+
 .btn-link {
   /*font-weight: 400;*/
   /*color: var(--pod-link-color);*/

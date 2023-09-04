@@ -130,6 +130,7 @@
 
 </div>
 <script>
-  var listUserChecked = {{owners|escapejs}};
+  var hideUserFilter = {{HIDE_USER_FILTER|yesno:'true,false'}};
+  var userIsAuthenticated = {{user.is_authenticated|yesno:'true,false'}};
 </script>
 {% endspaceless %}

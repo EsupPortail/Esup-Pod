@@ -596,7 +596,7 @@ def get_filtered_videos_list(request, videos_list):
         videos_list = videos_list.filter(
             discipline__slug__in=request.GET.getlist("discipline")
         )
-    if request.GET.getlist("owner"):
+    if request.user and request.user.is_authenticated and request.GET.getlist("owner"):
         # Add filter on additional owners
         videos_list = videos_list.filter(
             Q(owner__username__in=request.GET.getlist("owner"))
