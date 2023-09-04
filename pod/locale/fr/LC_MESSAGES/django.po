@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-01 14:17+0000\n"
+"POT-Creation-Date: 2023-09-04 09:43+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.3\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -1288,8 +1288,8 @@ msgid "Please specify a track file."
 msgstr "Veuillez joindre un fichier de sous-titres."
 
 #: pod/completion/models.py pod/enrichment/models.py
-msgid "Only \".vtt\" format is allowed."
-msgstr "Seulement le format \".vtt\" est autorisé."
+msgid "Only “.vtt” format is allowed."
+msgstr "Seul le format « .vtt » est autorisé."
 
 #: pod/completion/models.py
 msgid ""
@@ -1727,22 +1727,23 @@ msgid ""
 "You can add several subtitle or caption files to a single video (for "
 "example, in order to subtitle or caption this video in several languages"
 msgstr ""
-"Vous pouvez ajouter plusieurs sous-titres ou légendes pour une même vidéo "
-"(par exemple, dans le but de traduire une vidéo en plusieurs langues)"
+"Vous pouvez ajouter plusieurs fichiers de sous-titres ou de légendes pour "
+"une même vidéo (par exemple, dans le but de traduire une vidéo en plusieurs "
+"langues)"
 
 #: pod/completion/templates/video_completion.html
-msgid "Subtitles and/or caption(s) files must be in \".vtt\" format."
+msgid "Subtitle and/or caption file(s) must be in “.vtt” format."
 msgstr ""
-"Les fichiers de sous-titres et/ou de légendes doivent être au format \"."
-"vtt\"."
+"Les fichiers de sous-titres et/ou de légendes doivent être au format « ."
+"vtt »."
 
 #: pod/completion/templates/video_completion.html
 msgid "You can use"
 msgstr "Vous pouvez utiliser"
 
 #: pod/completion/templates/video_completion.html
-msgid "to create your subtitles and/or caption(s) files."
-msgstr "pour créer les fichiers de sous-titres ou de légendes."
+msgid "to create your subtitle(s) and/or caption(s) file(s)."
+msgstr "pour créer vos fichier(s) de sous-titre(s) ou de légende(s)."
 
 #: pod/completion/templates/video_completion.html
 msgid ""
@@ -2771,8 +2772,9 @@ msgstr "Un évenement est déjà planifié à cette date"
 msgid "Password"
 msgstr "Mot de passe"
 
-#: pod/live/forms.py pod/live/templates/live/event_edit.html pod/video/forms.py
-msgid "Display advanced options"
+#: pod/live/forms.py pod/live/templates/live/event_edit.html pod/main/admin.py
+#: pod/meeting/forms.py pod/video/forms.py
+msgid "Advanced options"
 msgstr "Options avancées"
 
 #: pod/live/forms.py pod/live/models.py
@@ -3713,10 +3715,6 @@ msgstr "Activité non trouvée"
 #: pod/lti/views.py
 msgid "The video id is not valid."
 msgstr "L’identifiant de la vidéo n’est pas valide."
-
-#: pod/main/admin.py pod/meeting/forms.py
-msgid "Advanced options"
-msgstr "Options avancées"
 
 #: pod/main/apps.py
 msgid "Main configurations"

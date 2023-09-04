@@ -618,7 +618,7 @@ class VideoForm(forms.ModelForm):
         (
             "advanced_options",
             {
-                "legend": _("Display advanced options"),
+                "legend": _("Advanced options"),
                 "classes": "",
                 "fields": [
                     "allow_downloading",

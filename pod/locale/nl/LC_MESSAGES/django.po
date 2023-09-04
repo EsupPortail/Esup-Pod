@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-01 14:17+0000\n"
+"POT-Creation-Date: 2023-09-04 09:43+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1223,7 +1223,7 @@ msgid "Please specify a track file."
 msgstr ""
 
 #: pod/completion/models.py pod/enrichment/models.py
-msgid "Only \".vtt\" format is allowed."
+msgid "Only “.vtt” format is allowed."
 msgstr ""
 
 #: pod/completion/models.py
@@ -1656,7 +1656,7 @@ msgid ""
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "Subtitles and/or caption(s) files must be in \".vtt\" format."
+msgid "Subtitle and/or caption file(s) must be in “.vtt” format."
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -1664,7 +1664,7 @@ msgid "You can use"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "to create your subtitles and/or caption(s) files."
+msgid "to create your subtitle(s) and/or caption(s) file(s)."
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -2592,8 +2592,9 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: pod/live/forms.py pod/live/templates/live/event_edit.html pod/video/forms.py
-msgid "Display advanced options"
+#: pod/live/forms.py pod/live/templates/live/event_edit.html pod/main/admin.py
+#: pod/meeting/forms.py pod/video/forms.py
+msgid "Advanced options"
 msgstr ""
 
 #: pod/live/forms.py pod/live/models.py
