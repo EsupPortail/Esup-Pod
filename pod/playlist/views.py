@@ -55,6 +55,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "LOGO_ETB": "img/esup-pod.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
+        "LINK_PLAYER_NAME": _("Home"),
         "FOOTER_TEXT": ("",),
         "FAVICON": "img/pod_favicon.svg",
         "CSS_OVERRIDE": "",
@@ -457,7 +458,7 @@ def favorites_save_reorganisation(request, slug: str):
         try:
             dict_data = json.loads(json_data)
         except json.JSONDecodeError:
-            return HttpResponseBadRequest("JSON au mauvais format")
+            return HttpResponseBadRequest(_("JSON in wrong format"))
         with transaction.atomic():
             for videos_tuple in dict_data.values():
                 playlist_video_1 = PlaylistContent.objects.filter(

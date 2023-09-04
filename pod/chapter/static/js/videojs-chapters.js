@@ -78,6 +78,8 @@
             var newA = document.createElement("a");
             newA.setAttribute("id", "chapter" + chapId);
             newA.setAttribute("start", chapTime);
+            newA.setAttribute("role", "button");
+            newA.setAttribute("tabindex", "0");
 
             var newTitle = document.createTextNode(chapTitle);
             newA.appendChild(newTitle);

@@ -63,7 +63,10 @@ SITE_ID = getattr(settings, "SITE_ID", 1)
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
-    ((" ", __PREF_LANG_CHOICES__), ("----------", __ALL_LANG_CHOICES__)),
+    (
+        (_("-- Frequently used languages --"), __PREF_LANG_CHOICES__),
+        (_("-- All languages --"), __ALL_LANG_CHOICES__),
+    ),
 )
 
 CURSUS_CODES = getattr(
@@ -180,6 +183,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "LOGO_ETB": "img/esup-pod.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
+        "LINK_PLAYER_NAME": _("Home"),
         "FOOTER_TEXT": ("",),
         "FAVICON": "img/pod_favicon.svg",
         "CSS_OVERRIDE": "",

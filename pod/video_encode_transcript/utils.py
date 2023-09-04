@@ -24,6 +24,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "LOGO_ETB": "img/esup-pod.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
+        "LINK_PLAYER_NAME": _("Home"),
         "FOOTER_TEXT": ("",),
         "FAVICON": "img/pod_favicon.svg",
         "CSS_OVERRIDE": "",
@@ -198,7 +199,7 @@ def send_notification_email(video_to_encode, subject_prefix):
         bcc_email = []
         video_estab = video_to_encode.owner.owner.establishment.lower()
         manager = dict(MANAGERS)[video_estab]
-        if type(manager) in (list, tuple):
+        if isinstance(manager, (list, tuple)):
             bcc_email = manager
         elif isinstance(manager, str):
             bcc_email.append(manager)

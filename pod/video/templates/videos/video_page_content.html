@@ -12,7 +12,7 @@
       <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
       <meta itemprop="image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
       <meta itemprop="name" content="{{ video.title }}">
-      <meta itemprop="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }} - {% trans 'Added by:' %} {{ video.owner.get_full_name }}">
+      <meta itemprop="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }} - {% trans 'Added by:' %} {{ video.owner }}">
 
     {% if channel %}
       <h2 class="channel_title">
@@ -22,14 +22,14 @@
           {% endif %}
           {{channel.title}}
         </a>
-        {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{% endif %}
+        {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans 'Edit the channel' %}</a></span>{% endif %}
       </h2>
       {% if channel.description %}
         {% if channel.description|length > 140 %}
           <div class="accordion accordion-flush mb-2" id="channel_block">
             <div class="accordion-item">
               <h3 class="accordion-header" id="channel_desc_title">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#channel_desc" aria-expanded="true" aria-controls="channel_desc">{% trans "Channel description" %}</button>
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#channel_desc" aria-expanded="true" aria-controls="channel_desc">{% trans 'Channel description' %}</button>
               </h3>
               <div id="channel_desc" class="accordion-collapse collapse" aria-labelledby="channel_desc_title" data-bs-parent="#channel_block">
                 <div class="accordion-body clearfix">
@@ -59,7 +59,7 @@
               <div class="accordion accordion-flush mb-2" id="theme_block">
                 <div class="accordion-item">
                   <h4 class="accordion-header theme_title" id="theme_desc_title">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#theme_desc" aria-expanded="true" aria-controls="theme_desc">{% trans "Theme description" %}</button>
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#theme_desc" aria-expanded="true" aria-controls="theme_desc">{% trans 'Theme description' %}</button>
                   </h4>
                   <div id="theme_desc" class="accordion-collapse collapse" aria-labelledby="theme_desc_title" data-bs-parent="#theme_block">
                     <div class="accordion-body clearfix">
@@ -79,19 +79,19 @@
     {% endif %}
     {% if video.get_encoding_step == "" %}
       <div class="alert alert-warning" role="alert">
-        {% trans "The video is currently waiting for encoding." %}
+        {% trans 'The video is currently waiting for encoding.' %}
       </div>
     {% endif %}
 
     {% if video.encoding_in_progress %}
       <div class="alert alert-warning" role="alert">
-        {% trans "The video is currently being encoded." %}
+        {% trans 'The video is currently being encoded.' %}
       </div>
     {% endif %}
 
     {% if video.get_encoding_step == "5 : transcripting audio" %}
       <p class="text-info-emphasis">
-        {% trans "The video is currently being transcripted." %}
+        {% trans 'The video is currently being transcripted.' %}
       </p>
     {% endif %}
     <style>

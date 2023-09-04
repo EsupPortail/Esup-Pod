@@ -39,7 +39,7 @@
       {% endif %}
     </div>
     <span class="float-end">
-      <a href="{% url 'video:video' slug=video.slug %}" title="{% trans 'View the video'%}" class="btn btn btn-secondary btn-sm">
+      <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn btn-secondary btn-sm">
         <i class="bi bi-film"></i>&nbsp;{% trans "Back to the video"%}
       </a>
     </span>

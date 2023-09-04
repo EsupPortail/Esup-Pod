@@ -1,4 +1,5 @@
 {% load i18n static %}
+
 {% block more_style %}
 <link rel="stylesheet" type="text/css" href="{% static 'podfile/css/podfile.css' %}?ver={{VERSION}}">
 {% endblock more_style %}
@@ -34,10 +35,22 @@
     </button>
   {% else %}
     <span id="fileinput_{{id}}"></span>
-    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" id="btn-fileinput_{{id}}">
+    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" id="btn-fileinput_{{id}}"
       {% if type == "image" %}
+          {% if id == "id_headband" %}
+            aria-label="{% trans "Headband - Select an image" %}"
+          {% else %}
+            aria-label="{% trans "Thumbnail - Select an image" %}"
+          {% endif %}
+    >
         {% trans 'Select an image' %}
       {% else %}
+        {% if id == "id_slides" %}
+          aria-label="{% trans "Slides - Select a file" %}"
+        {% else %}
+          aria-label="{% trans "File to import - Select a file" %}"
+        {% endif %}
+    >
         {% trans 'Select a file' %}
       {% endif %}
     </button>
@@ -101,21 +114,40 @@ document.addEventListener('show.bs.modal',  (event) => {
 document.addEventListener("click", (event) => {
   if (!event.target.matches('#remove_file_{{id}}')) return;
 
-  var html_div = '<span id="fileinput_{{id}}"></span>\
-    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput mx-1" data-bs-toggle="modal" data-bs-target="#fileModal_{{id}}">\
-    {% if type == "image" %}\
-      {% trans 'Select an image' %}\
-    {% else %}\
-      {% trans 'Select a file' %}\
-    {% endif %}\
-    </button>\
-    <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}" style="display:none">\
-      {% if type == "image" %}\
-        {% trans 'Remove image' %}\
-      {% else %}\
-        {% trans 'Remove file' %}\
-      {% endif %}\
-    </button>';
+  var html_div = `<span id="fileinput_{{id}}"></span>
+    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" id="btn-fileinput_{{id}}"
+      {% if type == "image" %}
+          {% if id == "id_headband" %}
+            aria-label="{% trans "Headband - Select an image" %}"
+          {% else %}
+            aria-label="{% trans "Thumbnail - Select an image" %}"
+          {% endif %}
+    >
+        {% trans 'Select an image' %}
+      {% else %}
+        {% if id == "id_slides" %}
+          aria-label="{% trans "Slides - Select a file" %}"
+        {% else %}
+          aria-label="{% trans "File to import - Select a file" %}"
+        {% endif %}
+    >
+        {% trans 'Select a file' %}
+      {% endif %}
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}" style="display:none">
+      {% if type == "image" %}
+        {% trans 'Remove image' %}
+      {% else %}
+        {% trans 'Remove file' %}
+      {% endif %}
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}" style="display:none">
+      {% if type == "image" %}
+        {% trans 'Remove image' %}
+      {% else %}
+        {% trans 'Remove file' %}
+      {% endif %}
+    </button>`;
   event.target.parentNode.parentNode.querySelector('span').innerHTML = html_div;
   document.getElementById("{{id}}").value = "";
 });

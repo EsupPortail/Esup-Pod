@@ -3,10 +3,10 @@
 {% load static %}
 {% load thumbnail %}
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My channels" %}</li>{% endblock %}
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans 'My channels' %}</li>{% endblock %}
 
 {% block page_title %}
-{% trans "My channels" %}
+{% trans 'My channels' %}
 {% endblock %}
 
 
@@ -17,13 +17,13 @@
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <span>
           <a href="{% url 'channels:channel_edit' slug=channel.slug %}" title="{% trans 'Edit the channel'%}" class="btn pod-btn-social"><i class="bi bi-pencil-square" aria-hidden="true"></i></a>
-          <a href="{% url 'channel-video:channel' slug_c=channel.slug %}" title="{{channel.title}}" class="btn-link">
+          <a href="{% url 'channel-video:channel' slug_c=channel.slug %}" title="{{ channel.title }}" class="btn-link">
             {% if channel.headband %}<!-- <img src="{{channel.headband.file.url}}" class="rounded img-thumbnail" alt="{{channel.title}}" loading="lazy"> -->
               {% thumbnail channel.headband.file "x34" as im %}
                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="" loading="lazy">
               {% endthumbnail %}
             {% endif %}
-            {{channel.title}}
+            {{ channel.title }}
           </a>
         </span>
         <span class="badge text-bg-primary rounded-pill" title="{% trans 'Number of video inside the channel' %}">{{channel.video_count}}</span>

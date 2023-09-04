@@ -872,6 +872,21 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.3.0"
                         },
+                        "MAX_UPLOAD_SIZE_ON_IMPORT": {
+                            "default_value": 4,
+                            "description": {
+                                "en": [
+                                    "Maximum size in Gb of video files that can be imported into the platform ",
+                                    "via the import_video application (0 = no maximum size)."
+                                ],
+                                "fr": [
+                                    "Taille maximum en Go des fichiers vidéos qui peuvent être importés sur la plateforme ",
+                                    "via l'application import_video (0 = pas de taille maximum)."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4.0"
+                        },
                         "USE_IMPORT_VIDEO": {
                             "default_value": true,
                             "description": {
@@ -3036,10 +3051,11 @@
                                 ],
                                 "fr": [
                                     "Version d’ElasticSearch.",
-                                    "valeurs possibles 6 ou 7 (pour indiquer utiliser ElasticSearch 6 ou 7)",
-                                    "pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py ",
-                                    "`pip3 install elasticsearch==7.10.1`",
-                                    "[https://elasticsearch-py.readthedocs.io/en/v7.10.1/]()"
+                                    "valeurs possibles 6, 7 ou 8 correspondant à la version du Elasticsearch utilisé.",
+                                    "Pour utiliser la version 7 ou 8, faire une mise à jour du paquet elasticsearch-py ",
+                                    "Pour la 7, `pip3 install elasticsearch==7.17.7`,",
+                                    "et pour la 8, `pip3 install elasticsearch==8.8.1`.",
+                                    "Voir [https://elasticsearch-py.readthedocs.io/]() pour plus d'information."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4571,8 +4587,11 @@
                                     "# Doit se situer dans le répertoire static",
                                     "'LOGO_PLAYER': 'img/pod_favicon.svg',",
                                     " ",
-                                    "# Lien de destination du logo affiché sur le player",
+                                    "# Lien de destination du logo affiché sur le player.",
                                     "'LINK_PLAYER': '',",
+                                    " ",
+                                    "# Intitulé de la page de redirection du logo affiché sur le player.",
+                                    "'LINK_PLAYER_NAME': _('Home'),",
                                     " ",
                                     "# Texte affiché dans le footer. Une ligne par entrée, accepte du code html.",
                                     "# Par exemple :",

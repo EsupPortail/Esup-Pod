@@ -26,13 +26,13 @@
 							{% csrf_token %}
 							<input type="hidden" name="action" value="modify">
 							<input type="hidden" name="id" value="{{overlay.id}}">
-							<input type="submit" title="{% trans 'Edit the overlay' %}" value="{% trans 'Modify' %}" class="edt_overlay btn btn-primary btn-sm">
+							<input type="submit" title="{% blocktrans with overlay_title=overlay.title %}Modify the overlay “{{ overlay_title }}”{% endblocktrans %}" value="{% trans 'Modify' %}" class="edt_overlay btn btn-primary btn-sm">
 						</form>
 						<form class="form_delete completion d-inline-block" action="{% url 'video:completion:video_completion_overlay' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="delete">
 							<input type="hidden" name="id" value="{{overlay.id}}">
-							<input type="submit" title="{% trans 'Delete the overlay' %}" value="{% trans 'Delete' %}" class="edt_overlay btn btn-danger btn-sm">
+							<input type="submit" title="{% blocktrans with overlay_title=overlay.title %}Delete the overlay “{{ overlay_title }}”{% endblocktrans %}" value="{% trans 'Delete' %}" class="edt_overlay btn btn-danger btn-sm">
 						</form>
 					</td>
 				</tr>

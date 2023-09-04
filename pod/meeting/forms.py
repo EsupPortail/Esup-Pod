@@ -188,7 +188,7 @@ class MeetingForm(forms.ModelForm):
                     "btn btn-primary btn-sm",
                     "modal",
                     "#recurring_fields",
-                    _("Recurring options"),
+                    _("Recurring"),
                 ),
             },
         ),
