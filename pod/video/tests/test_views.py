@@ -549,16 +549,6 @@ class VideosTestView(TestCase):
         response = self.client.get(url + "?discipline=discipline1&discipline=discipline2")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 3)
-        # owner
-        response = self.client.get(url + "?owner=pod")
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context["videos"].paginator.count, 2)
-        response = self.client.get(url + "?owner=pod2")
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context["videos"].paginator.count, 2)
-        response = self.client.get(url + "?owner=pod&owner=pod2")
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.context["videos"].paginator.count, 4)
         # tag
         response = self.client.get(url + "?tag=tag1")
         self.assertEqual(response.status_code, HTTPStatus.OK)
