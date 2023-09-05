@@ -43,4 +43,3 @@ if /i "%1"=="docker-build" (
 ) else (
   echo "Mauvaise syntaxe"
 )
-

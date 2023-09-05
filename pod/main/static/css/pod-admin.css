@@ -57,3 +57,8 @@
 .deletelink, .cancel-link {
   box-sizing: revert;
 }
+
+/* prevent bootstrap 5 from collapsing Django admin fieldset */
+fieldset.collapsed:not(.show) {
+  display: block;
+}

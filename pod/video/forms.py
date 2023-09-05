@@ -1,12 +1,13 @@
 from django import forms
 from django.contrib.admin import widgets
+from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.validators import FileExtensionValidator
+from django.core.exceptions import ValidationError
+from django.forms.widgets import ClearableFileInput
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
-from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
 from .models import Video, VideoVersion
 from .models import Channel
 from .models import Theme
@@ -23,7 +24,7 @@ from django.db.models.query import QuerySet
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.sites.shortcuts import get_current_site
-from pod.main.forms_utils import add_placeholder_and_asterisk
+from pod.main.forms_utils import add_placeholder_and_asterisk, add_describedby_attr
 
 from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
@@ -416,6 +417,12 @@ THEME_FORM_FIELDS_HELP_TEXT = getattr(
 )
 
 
+class CustomClearableFileInput(ClearableFileInput):
+    """A custom ClearableFileInput Widget a little more accessible."""
+
+    template_name = 'videos/widgets/customclearablefileinput.html'
+
+
 class OwnerWidget(s2forms.ModelSelect2Widget):
     search_fields = [
         "username__icontains",
@@ -545,6 +552,83 @@ class VideoForm(forms.ModelForm):
     is_admin = False
     user = User.objects.all()
 
+    fieldsets = (
+        (
+            "file",
+            {
+                "legend": _("Source file"),
+                "classes": "show",
+                "fields": [
+                    "video",
+                ],
+            },
+        ),
+        (
+            "general",
+            {
+                "legend": _("General settings"),
+                "classes": "show",
+                "fields": [
+                    "title",
+                    "title_en",
+                    "sites",
+                    "type",
+                    "owner",
+                    "additional_owners",
+                    "description",
+                    "description_en",
+                    "date_added",
+                    "date_evt",
+                    "cursus",
+                    "main_lang",
+                    "transcript",
+                    "tags",
+                    "discipline",
+                    "licence",
+                    "thumbnail",
+                    "date_delete",
+                ]
+            },
+        ),
+        (
+            "channel_option",
+            {
+                "legend": _("Channel options"),
+                "classes": "show",
+                "fields": [
+                    "channel",
+                    "theme",
+
+                ],
+            },
+        ),
+        (
+            "access_restrictions",
+            {
+                "legend": _("Restrictions"),
+                "classes": "show",
+                "fields": [
+                    "is_draft",
+                    "is_restricted",
+                    "restrict_access_to_groups",
+                    "password",
+                ],
+            },
+        ),
+        (
+            "advanced_options",
+            {
+                "legend": _("Advanced options"),
+                "classes": "",
+                "fields": [
+                    "allow_downloading",
+                    "is_360",
+                    "disable_comment"
+                ],
+            },
+        ),
+    )
+
     def filter_fields_admin(form):
         """Hide fields reserved for admins."""
         if form.is_superuser is False and form.is_admin is False:
@@ -555,6 +639,7 @@ class VideoForm(forms.ModelForm):
             form.remove_field("sites")
 
     def move_video_source_file(self, new_path, new_dir, old_dir):
+        """Move video source file in a new dir."""
         # create user repository
         dest_file = os.path.join(settings.MEDIA_ROOT, new_path)
         os.makedirs(os.path.dirname(dest_file), exist_ok=True)
@@ -707,6 +792,7 @@ class VideoForm(forms.ModelForm):
             return self.cleaned_data["channel"]
 
     def __init__(self, *args, **kwargs):
+        """Initialize a new VideoForm instance."""
         self.is_staff = (
             kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
         )
@@ -726,7 +812,7 @@ class VideoForm(forms.ModelForm):
         super(VideoForm, self).__init__(*args, **kwargs)
 
         self.custom_video_form()
-        # change ckeditor, thumbnail and date delete config for no staff user
+        # change ckeditor, thumbnail and date delete config for non staff user
         self.set_nostaff_config()
         # hide default language
         self.hide_default_language()
@@ -737,8 +823,10 @@ class VideoForm(forms.ModelForm):
         self.manage_more_required_fields()
         # Manage required fields html
         self.fields = add_placeholder_and_asterisk(self.fields)
+        self.fields = add_describedby_attr(self.fields)
         if self.fields.get("video"):
-            self.fields["video"].label = _("File")
+            # Remove label, as it will be included in customclearablefileinput
+            self.fields["video"].label = ""
             valid_ext = FileExtensionValidator(VIDEO_ALLOWED_EXTENSIONS)
             self.fields["video"].validators = [valid_ext, FileSizeValidator]
             self.fields["video"].widget.attrs["class"] = self.videoattrs["class"]
@@ -768,6 +856,7 @@ class VideoForm(forms.ModelForm):
             self.remove_field("transcript")
 
     def manage_more_required_fields(self):
+        """Set the required attribute to True for all VIDEO_REQUIRED_FIELDS."""
         for field in VIDEO_REQUIRED_FIELDS:
             # field exists, not hide
             if self.fields.get(field, None):
@@ -849,6 +938,8 @@ class VideoForm(forms.ModelForm):
             )
 
     class Meta(object):
+        """Define the VideoForm metadata."""
+
         model = Video
         fields = VIDEO_FORM_FIELDS
         field_classes = {"type": DescribedChoiceField}
@@ -858,6 +949,7 @@ class VideoForm(forms.ModelForm):
             "channel": ChannelWidget,
             "discipline": DisciplineWidget,
             "date_evt": widgets.AdminDateWidget,
+            "video": CustomClearableFileInput
             # "restrict_access_to_groups": AddAccessGroupWidget
         }
         initial = {

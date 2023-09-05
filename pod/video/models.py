@@ -820,7 +820,6 @@ class Video(models.Model):
         blank=True,
         null=True,
     )
-
     thumbnail = models.ForeignKey(
         CustomImageModel,
         on_delete=models.SET_NULL,
@@ -838,7 +837,6 @@ class Video(models.Model):
         max_length=255,
         editable=False,
     )
-
     encoding_in_progress = models.BooleanField(
         _("Encoding in progress"), default=False, editable=False
     )

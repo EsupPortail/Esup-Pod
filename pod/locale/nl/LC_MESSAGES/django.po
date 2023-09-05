@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-01 09:54+0000\n"
+"POT-Creation-Date: 2023-09-04 09:43+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1223,7 +1223,7 @@ msgid "Please specify a track file."
 msgstr ""
 
 #: pod/completion/models.py pod/enrichment/models.py
-msgid "Only \".vtt\" format is allowed."
+msgid "Only “.vtt” format is allowed."
 msgstr ""
 
 #: pod/completion/models.py
@@ -1447,7 +1447,7 @@ msgstr ""
 msgid "Video Caption Maker"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html pod/video/forms.py
+#: pod/completion/templates/video_caption_maker.html
 #: pod/video/templates/videos/add_video.html
 msgid "File"
 msgstr ""
@@ -1651,12 +1651,12 @@ msgstr ""
 
 #: pod/completion/templates/video_completion.html
 msgid ""
-"You can add several subtitle or caption files to a signle video (for "
+"You can add several subtitle or caption files to a single video (for "
 "example, in order to subtitle or caption this video in several languages"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "Subtitles and/or caption(s) files must be in \".vtt\" format."
+msgid "Subtitle and/or caption file(s) must be in “.vtt” format."
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -1664,7 +1664,7 @@ msgid "You can use"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "to create your subtitles and/or caption(s) files."
+msgid "to create your subtitle(s) and/or caption(s) file(s)."
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -2444,8 +2444,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2592,8 +2592,9 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: pod/live/forms.py pod/live/templates/live/event_edit.html
-msgid "Display advanced options"
+#: pod/live/forms.py pod/live/templates/live/event_edit.html pod/main/admin.py
+#: pod/meeting/forms.py pod/video/forms.py
+msgid "Advanced options"
 msgstr ""
 
 #: pod/live/forms.py pod/live/models.py
@@ -6119,8 +6120,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -6397,6 +6398,22 @@ msgstr ""
 
 #: pod/video/forms.py
 msgid "Users can only add videos to this channel"
+msgstr ""
+
+#: pod/video/forms.py
+msgid "Source file"
+msgstr ""
+
+#: pod/video/forms.py
+msgid "General settings"
+msgstr ""
+
+#: pod/video/forms.py
+msgid "Channel options"
+msgstr ""
+
+#: pod/video/forms.py
+msgid "Restrictions"
 msgstr ""
 
 #: pod/video/forms.py
@@ -7359,6 +7376,10 @@ msgid ""
 "activity:"
 msgstr ""
 
+#: pod/video/templates/videos/video-info.html
+msgid "QR code"
+msgstr ""
+
 #: pod/video/templates/videos/video_collaborate.html
 msgid "Collaborate"
 msgstr ""
@@ -7543,6 +7564,10 @@ msgstr ""
 
 #: pod/video/templates/videos/videos.html
 msgid "Show view statistics for all videos"
+msgstr ""
+
+#: pod/video/templates/videos/widgets/customclearablefileinput.html
+msgid ": "
 msgstr ""
 
 #: pod/video/templatetags/video_tags.py

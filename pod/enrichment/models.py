@@ -348,7 +348,7 @@ class EnrichmentVtt(models.Model):
     def verify_attributs(self):
         msg = list()
         if "vtt" not in self.src.file_type:
-            msg.append(_('Only ".vtt" format is allowed.'))
+            msg.append(_('Only “.vtt” format is allowed.'))
         return msg
 
     class Meta:
