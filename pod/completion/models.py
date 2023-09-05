@@ -249,7 +249,7 @@ class Track(models.Model):
         if not self.src:
             msg.append(_("Please specify a track file."))
         elif "vtt" not in self.src.file_type:
-            msg.append(_('Only “.vtt” format is allowed.'))
+            msg.append(_("Only “.vtt” format is allowed."))
         if len(msg) > 0:
             return msg
         else:

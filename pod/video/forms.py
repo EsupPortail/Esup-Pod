@@ -420,7 +420,7 @@ THEME_FORM_FIELDS_HELP_TEXT = getattr(
 class CustomClearableFileInput(ClearableFileInput):
     """A custom ClearableFileInput Widget a little more accessible."""
 
-    template_name = 'videos/widgets/customclearablefileinput.html'
+    template_name = "videos/widgets/customclearablefileinput.html"
 
 
 class OwnerWidget(s2forms.ModelSelect2Widget):
@@ -587,7 +587,7 @@ class VideoForm(forms.ModelForm):
                     "licence",
                     "thumbnail",
                     "date_delete",
-                ]
+                ],
             },
         ),
         (
@@ -598,7 +598,6 @@ class VideoForm(forms.ModelForm):
                 "fields": [
                     "channel",
                     "theme",
-
                 ],
             },
         ),
@@ -620,11 +619,7 @@ class VideoForm(forms.ModelForm):
             {
                 "legend": _("Advanced options"),
                 "classes": "",
-                "fields": [
-                    "allow_downloading",
-                    "is_360",
-                    "disable_comment"
-                ],
+                "fields": ["allow_downloading", "is_360", "disable_comment"],
             },
         ),
     )
