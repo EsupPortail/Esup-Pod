@@ -35,7 +35,7 @@
       {% trans "Editing the video" %} "{{form.instance.title}}"
       <span>
         <a href="{% url 'video:video' slug=form.instance.slug %}" class="btn btn-primary btn-sm m-2">
-          <i class="bi bi-film"></i>&nbsp;{% trans "View the video" %}
+          <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans "View the video" %}
         </a>
         {% if video.encoded and video.encoding_in_progress is False %}
         <a href="{% url 'video:video_delete' slug=form.instance.slug %}" class="btn btn btn-danger btn-sm m-2">
