@@ -474,7 +474,7 @@ class PopulatedShibTestCase(TestCase):
 
     @override_settings(DEBUG=False)
     def test_make_profile(self):
-        """Test if user attributes are retreived"""
+        """Test if user attributes are retrieved."""
         user, shib_meta = self._authenticate_shib_user(
             {
                 "username": "jdo@univ.fr",

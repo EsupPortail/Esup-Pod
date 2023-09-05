@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 
 from pod.chapter.models import Chapter
 from pod.chapter.utils import vtt_to_chapter
-from pod.main.forms_utils import add_placeholder_and_asterisk
+from pod.main.forms_utils import add_placeholder_and_asterisk, add_describedby_attr
 
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
@@ -28,6 +28,7 @@ class ChapterForm(forms.ModelForm):
         except Exception:
             self.fields["time_start"].widget.attrs["max"] = 36000
         self.fields = add_placeholder_and_asterisk(self.fields)
+        self.fields = add_describedby_attr(self.fields)
 
     class Meta:
         model = Chapter
@@ -48,7 +49,10 @@ class ChapterImportForm(forms.Form):
             )
         else:
             self.fields["file"].queryset = CustomFileModel.objects.all()
+        # self.fields = add_placeholder_and_asterisk(self.fields)
+        self.fields = add_describedby_attr(self.fields)
         self.fields["file"].label = _("File to import")
+        self.fields["file"].help_text = _("The file must be in VTT format.")
 
     def clean_file(self):
         msg = vtt_to_chapter(self.cleaned_data["file"], self.video)
