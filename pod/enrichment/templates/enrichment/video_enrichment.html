@@ -56,21 +56,21 @@
 
 {% block page_title %}{% if channel %}{{channel.title}} - {% endif %}{% if theme %}{{theme.title}} - {% endif %}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
 
-{% block video-element %}
-
-{% if form %}
-  {% include 'videos/video-form.html' %}
-{% else %}
-  {% include 'enrichment/video-element-enrichment.html' %}
-  <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' with third_app=True %}</div>
-{% endif %}
-
-{% endblock video-element %}
+{% block page_content %}
+  {% block video-element %}
+    {% if form %}
+      {% include 'videos/video-form.html' %}
+    {% else %}
+      {% include 'enrichment/video-element-enrichment.html' %}
+    {% endif %}
+    <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' with third_app=True %}</div>
+  {% endblock video-element %}
+{% endblock page_content %}
 
 {% block page_aside %}
   <div class="card" id="card-enrichmentinformations">
     <h2 class="card-header card-title pod-card__title h4">
-      <i class="bi bi-info-circle"></i>&nbsp;{% trans 'Informations' %}
+      <i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% trans 'Informations' %}
     </h2>
     <div class="card-body card-text">
       <p>{% trans 'To help you, the different types of enrichments have specific colors:' %}</p>
