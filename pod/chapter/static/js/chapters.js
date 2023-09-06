@@ -355,7 +355,7 @@ var manageSave = function () {
   if (player.usingPlugin("videoJsChapters")) {
     player.main();
   } else {
-    player.videoJsChapters();
+    player.podVideoJsChapters();
   }
 };
 
@@ -366,7 +366,7 @@ var manageDelete = function () {
     player.main();
   } else {
     player.controlBar.chapters.dispose();
-    player.videoJsChapters().dispose();
+    player.podVideoJsChapters().dispose();
   }
 };
 
@@ -377,14 +377,14 @@ var manageImport = function () {
     if (player.usingPlugin("videoJsChapters")) {
       player.main();
     } else {
-      player.videoJsChapters();
+      player.podVideoJsChapters();
     }
   } else {
     if (typeof player.controlBar.chapters != "undefined") {
       player.controlBar.chapters.dispose();
     }
     if (player.usingPlugin("videoJsChapters")) {
-      player.videoJsChapters().dispose();
+      player.podVideoJsChapters().dispose();
     }
   }
 };

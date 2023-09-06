@@ -118,9 +118,8 @@
         type: '{{video.get_playlist_master.encoding_format}}',
       };
       player.on('loadedmetadata', function() {
-        //var qualityLevels = this.qualityLevels();
         {% if request.GET.start and request.GET.start != '0' %}
-        player.currentTime({{request.GET.start}});
+          player.currentTime({{request.GET.start}});
         {% endif %}
       });
       //Add source to player
@@ -205,7 +204,7 @@
   {% endif %}
 
   {% if video.chapter_set.all %}
-    player.videoJsChapters();
+    player.podVideoJsChapters();
     document.querySelector('.vjs-big-play-button').style.zIndex = '2';
     document.querySelector('.vjs-control-bar').style.zIndex = '3';
   {% endif %}
