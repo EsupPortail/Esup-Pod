@@ -21,7 +21,6 @@
     class LogoMenuLink extends MenuLink {
       constructor(player, options) {
         var aElement = document.createElement("a");
-        console.log(options.link);
         if (options.link && options.link !== "") {
           aElement.href = options.link;
         } else {

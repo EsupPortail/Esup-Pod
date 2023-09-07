@@ -123,6 +123,14 @@
       html5: {
           hlsjsConfig: VideoHlsjsConfig
       },
+      controlBar: {
+        {% if event is None %}
+        skipButtons: {
+          forward: seektime,
+          backward: seektime
+        }
+        {% endif %}
+      },
       userActions: {
         hotkeys: function(event) {
           // `this` is the player in this context
@@ -159,16 +167,10 @@
           }
         }
       },
-      plugins: {/*
-        {% if event is None %}
-        seekButtons: {
-          forward: seektime,
-          back: seektime
-        }
-        {% endif %}
+      plugins: {
         {% if not video.is_video and event is None %}
         // enable videojs-wavesurfer plugin
-        ,wavesurfer: {
+        wavesurfer: {
           backend: 'MediaElement',
           displayMilliseconds: true,
           debug: false,
@@ -177,7 +179,7 @@
           cursorColor: 'var(--pod-primary)',
           hideScrollbar: false
         }
-        {% endif %}*/
+        {% endif %}
       }
     }
 
@@ -213,11 +215,9 @@
       //Add source to player
       player.src(srcOptions);
       //add quality selector to player
-      /*
-      player.hlsQualitySelector({
+      player.qualitySelectorHls({
           displayCurrentQuality: true,
       });
-      */
       player.on("error", function(e) {
         e.stopImmediatePropagation();
         var error = player.error();
@@ -225,23 +225,25 @@
         if(error.code == 3 || error.code == 4) {
           //console.log('error!', error.code, error.type , error.message);
           if(player.src()=="" || player.src().indexOf("m3u8")!=-1){
-            player.controlBar.addChild('QualitySelector');
+            //player.controlBar.addChild('QualitySelector');
             player.play();
           }
         }
       });
     {% else %}
       player.src(mp4_sources);
-      player.controlBar.addChild('QualitySelector');
+      //player.controlBar.addChild('QualitySelector');
     {% endif %}
     {% if video.overview %}
       //add overview
+      /*
       player.vttThumbnails({
         src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
       });
       player.vttThumbnails({
         src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
       });
+      */
     {% endif %}
 
     {% if video.overlay_set.all %}
@@ -292,12 +294,13 @@
       });
     {% endif %}
   {% endif %}
-
+      /*
   {% if video.chapter_set.all %}
     player.videoJsChapters();
     document.querySelector('.vjs-big-play-button').style.zIndex = '2';
     document.querySelector('.vjs-control-bar').style.zIndex = '3';
   {% endif %}
+      */
 
   {% if video_event_tracking %}
     {# Be sure to define _paq in a tracking script in TEMPLATE_VISIBLE_SETTINGS:TRACKING_TEMPLATE pref. #}

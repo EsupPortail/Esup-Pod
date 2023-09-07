@@ -12,21 +12,15 @@
 
 <script src="{% static 'js/videojs-hlsjs-plugin.js' %}?ver={{VERSION}}"></script>
 
-{% comment %}
-<!-- quality selector -->
-<link href="{% static 'videojs-hls-quality-selector/dist/videojs-hls-quality-selector.css' %}?ver={{VERSION}}" rel="stylesheet">
-<script src="{% static 'videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'videojs-hls-quality-selector/dist/videojs-hls-quality-selector.min.js' %}?ver={{VERSION}}"></script>
-<!-- mp4 quality selector -->
+<script src="{% static 'videojs-quality-selector-hls/dist/videojs-quality-selector-hls.min.js' %}"></script>
+<link href="{% static 'videojs-quality-selector-hls/dist/videojs-quality-selector-hls.css' %}?ver={{VERSION}}" rel="stylesheet">
+
+<!-- mp4 quality selector 
+  // remove it from videojs 8 due to extend error
+  // resolve in https://github.com/silvermine/videojs-quality-selector/commit/d16842b1acb16cb25f12404ce56d8577b1c61a8d
+  // wait for new version
 <script src="{% static '@silvermine/videojs-quality-selector/dist/js/silvermine-videojs-quality-selector.min.js' %}?ver={{VERSION}}"></script>
-<!--
-<link href="{% static 'css/quality-selector.css' %}?ver={{VERSION}}" rel="stylesheet">
 -->
-
-
-<!-- seek button -->
-<link href="{% static 'videojs-seek-buttons/dist/videojs-seek-buttons.css' %}?ver={{VERSION}}" rel="stylesheet">
-<script src="{% static 'videojs-seek-buttons/dist/videojs-seek-buttons.min.js' %}?ver={{VERSION}}"></script>
 
 {% if not video.is_video and event is None or playlist_in_get %}
   <!-- Audio wavesurfer -->
@@ -78,6 +72,8 @@
 <!-- logo -->
 <link href="{% static 'css/videojs-controlbar.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/videojs-logo-controlbar.js' %}?ver={{VERSION}}"></script>
+
+{% comment %}
 <!-- chapitre : depuis videojs7, plus besoin de plugin js https://docs.videojs.com/tutorial-text-tracks.html -->
 <link href="{% static 'css/videojs-chapters.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/videojs-chapters.js' %}?ver={{VERSION}}"></script>
