@@ -37,12 +37,12 @@
   </span>
 </h1>
 {% if form.instance.headband %}
-<img src="{{ form.instance.headband.file.url }}" alt="{% trans 'Headband' %} {{ form.instance.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy">
+  <img src="{{ form.instance.headband.file.url }}" alt="{% trans 'Headband' %} {{ form.instance.title }}" class="rounded mx-auto mb-3 d-block img-fluid img-responsive img-thumbnail" loading="lazy">
 {% endif %}
 
 <form id="channel_form" method="post" action="{% url 'channels:channel_edit' slug=form.instance.slug %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
   {% csrf_token %}
-  <div class="list-group">
+  <div>
     {% if form.errors %}
       <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
     {% endif %}
@@ -52,7 +52,7 @@
     {% for field in form.visible_fields %}
     {% spaceless %}
     <div class="{% if " description_" in field.name or "title_" in field.name %}collapse{% else %}{% endif %}{% if "description_" in field.name %} description{% endif %}{% if "title_" in field.name %} title{% endif %}">
-      <div class="list-group-item">
+      <div class="mb-3">
         <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
           {{ field.errors }}
           {% if "form-check-input" in field.field.widget.attrs.class %}
@@ -60,7 +60,7 @@
               {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
             </div>
           {% else %}
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
             {{ field }}
           {% endif %}
           {% if field.help_text %}
@@ -120,8 +120,8 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script src="/admin/jsi18n/"></script>
-<script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
-{{form.media}}
+  <script src="/admin/jsi18n/"></script>
+  <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
+  {{form.media}}
 {% endblock more_script %}

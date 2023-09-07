@@ -16,14 +16,23 @@ function show_form(data) {
   });
   fadeIn(form_chapter);
 
+  var describedby_list = [];
   let inputStart = document.getElementById("id_time_start");
   if (inputStart) {
     inputStart.insertAdjacentHTML(
       "beforebegin",
       "&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-primary btn-sm'>" +
         gettext("Get time from the player") +
-        "</a><span class='timecode'>&nbsp;</span></span>",
+        "</a><span class='timecode' id='timecode_start'>&nbsp;</span></span>",
     );
+
+    if(inputStart.getAttribute("aria-describedby")) {
+      describedby_list = inputStart.getAttribute("aria-describedby").split(" ");
+    }
+    if (describedby_list.indexOf("timecode_start") === -1){
+        describedby_list.push("timecode_start");
+    }
+    inputStart.setAttribute("aria-describedby", describedby_list.join(" "));
   }
   let inputEnd = document.getElementById("id_time_end");
   if (inputEnd) {
@@ -31,8 +40,15 @@ function show_form(data) {
       "beforebegin",
       "&nbsp;<span class='getfromvideo'><a id='getfromvideo_end' class='btn btn-primary btn-sm'>" +
         gettext("Get time from the player") +
-        "</a><span class='timecode'>&nbsp;</span></span>",
+        "</a><span class='timecode' id='timecode_end'>&nbsp;</span></span>",
     );
+    if(inputEnd.getAttribute("aria-describedby")) {
+      describedby_list = inputEnd.getAttribute("aria-describedby").split(" ");
+    }
+    if (describedby_list.indexOf("timecode_end") === -1){
+        describedby_list.push("timecode_end");
+    }
+    inputEnd.setAttribute("aria-describedby", describedby_list.join(" "));
   }
 }
 
