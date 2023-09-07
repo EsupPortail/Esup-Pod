@@ -1,7 +1,8 @@
 {% load static %}
 
-<script src="https://cdn.jsdelivr.net/npm/p2p-media-loader-core@latest/build/p2p-media-loader-core.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/p2p-media-loader-hlsjs@latest/build/p2p-media-loader-hlsjs.min.js"></script>
+<script src="{% static '@peertube/p2p-media-loader-core/build/p2p-media-loader-core.js' %}?ver={{VERSION}}" ></script>
+<script src="{% static '@peertube/p2p-media-loader-hlsjs/build/p2p-media-loader-hlsjs.js' %}?ver={{VERSION}}" ></script>
+
 
 <link href="{% static 'video.js/dist/video-js.min.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script id="videojs_script_id" src="{% static 'video.js/dist/video.min.js' %}?ver={{VERSION}}"></script>
@@ -9,8 +10,9 @@
   <script src="{% static videojs_lang %}?ver={{VERSION}}"></script>
 {% endwith %}
 
-<script src="https://cdn.jsdelivr.net/npm/videojs-contrib-hls.js@latest"></script>
+<script src="{% static 'js/videojs-hlsjs-plugin.js' %}?ver={{VERSION}}"></script>
 
+{% comment %}
 <!-- quality selector -->
 <link href="{% static 'videojs-hls-quality-selector/dist/videojs-hls-quality-selector.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js' %}?ver={{VERSION}}"></script>
@@ -20,6 +22,7 @@
 <!--
 <link href="{% static 'css/quality-selector.css' %}?ver={{VERSION}}" rel="stylesheet">
 -->
+
 
 <!-- seek button -->
 <link href="{% static 'videojs-seek-buttons/dist/videojs-seek-buttons.css' %}?ver={{VERSION}}" rel="stylesheet">
@@ -96,3 +99,4 @@
   <link id="vr360_style_id" href="{% static 'videojs-vr/dist/videojs-vr.css' %}?ver={{VERSION}}" rel="stylesheet">
   <script id="vr360_script_id" src="{% static 'videojs-vr/dist/videojs-vr.min.js' %}?ver={{VERSION}}"></script>
 {% endif %}
+{% endcomment %}

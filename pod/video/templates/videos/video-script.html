@@ -121,7 +121,7 @@
       responsive: true,
       playbackRates: {{video_playbackrates}},
       html5: {
-          hlsjsConfig: VideoHlsjsConfig,
+          hlsjsConfig: VideoHlsjsConfig
       },
       userActions: {
         hotkeys: function(event) {
@@ -159,7 +159,7 @@
           }
         }
       },
-      plugins: {
+      plugins: {/*
         {% if event is None %}
         seekButtons: {
           forward: seektime,
@@ -177,7 +177,7 @@
           cursorColor: 'var(--pod-primary)',
           hideScrollbar: false
         }
-        {% endif %}
+        {% endif %}*/
       }
     }
 
@@ -213,9 +213,11 @@
       //Add source to player
       player.src(srcOptions);
       //add quality selector to player
+      /*
       player.hlsQualitySelector({
           displayCurrentQuality: true,
       });
+      */
       player.on("error", function(e) {
         e.stopImmediatePropagation();
         var error = player.error();

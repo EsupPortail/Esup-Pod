@@ -1,7 +1,6 @@
 {
   "license": "LGPL-3.0",
   "dependencies": {
-    "@silvermine/videojs-quality-selector": "^1.2.5",
     "blueimp-file-upload": "^10.32.0",
     "bootstrap": "^5.3.0",
     "bootstrap-icons": "^1.10.5",
@@ -11,16 +10,20 @@
     "jquery-ui-dist": "^1.13.2",
     "js-cookie": "^3.0.5",
     "spark-md5": "^3.0.2",
-    "video.js": "^7.18.1",
-    "videojs-contrib-quality-levels": "^2.1.0",
+    "video.js": "^8.5.2",
+    "videojs-contrib-quality-levels": "^4.0.0",
     "videojs-hls-quality-selector": "^1.1.4",
+    "videojs-quality-selector-hls": "^1.1.1",
     "videojs-overlay": "^2.1.5",
     "videojs-seek-buttons": "^2.2.1",
     "videojs-vr": "^1.8.0",
     "videojs-vtt-thumbnails": "^0.0.13",
     "videojs-wavesurfer": "^3.8.0",
     "wavesurfer.js": "^6.1.0",
-    "waypoints": "^4.0.1"
+    "waypoints": "^4.0.1",
+    "@silvermine/videojs-quality-selector": "^1.2.5",
+    "@peertube/p2p-media-loader-core": "^1.0.14",
+    "@peertube/p2p-media-loader-hlsjs": "^1.0.14"
   },
   "engines": {
     "yarn": ">= 1.0.0"
