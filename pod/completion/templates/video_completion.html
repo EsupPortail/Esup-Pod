@@ -151,9 +151,9 @@
   <div id="collapse-2" class="card-body collapse card-text small">
     <p>{% trans 'Subtitle(s) and/or captions(s) related to this video.' %}</p>
     <!-- <p>{% trans 'Several web sites allows you to subtitle or caption videos (for example: Amara)' %}</p> -->
-    <p>{% trans 'You can add several subtitle or caption files to a signle video (for example, in order to subtitle or caption this video in several languages' %}</p>
-    <p>{% trans 'Subtitles and/or caption(s) files must be in ".vtt" format.' %}</p>
-    <p>{% trans 'You can use' %} <a href="{% url 'video:completion:video_caption_maker' slug=video.slug %}">{% trans 'Video Caption Maker' %}</a> {% trans 'to create your subtitles and/or caption(s) files.' %}</p>
+    <p>{% trans 'You can add several subtitle or caption files to a single video (for example, in order to subtitle or caption this video in several languages' %}</p>
+    <p>{% trans 'Subtitle and/or caption file(s) must be in “.vtt” format.' %}</p>
+    <p>{% trans 'You can use' %} <a href="{% url 'video:completion:video_caption_maker' slug=video.slug %}">{% trans 'Video Caption Maker' %}</a> {% trans 'to create your subtitle(s) and/or caption(s) file(s).' %}</p>
     <p>{% trans 'You will need the URL of this video to make subtitles and/or captions. This URL is a direct access to this video. Please do not communicate it outside of this site to avoid any misuse.' %}</p>
     <ul class="list-group">
       {% for vid in video.get_video_mp4 %}

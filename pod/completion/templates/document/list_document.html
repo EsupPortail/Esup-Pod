@@ -20,13 +20,13 @@
 							{% csrf_token %}
 							<input type="hidden" name="action" value="modify">
 							<input type="hidden" name="id" value="{{doc.id}}">
-							<input type="submit" title="{% trans 'Edit the additional resource' %}" value="{% trans 'Modify' %}" class="edt_document btn btn-primary btn-sm">
+							<input type="submit" title="{% blocktrans with document_name=doc.document.name %}Modify the additional resource “{{ document_name }}”{% endblocktrans %}" value="{% trans 'Modify' %}" class="edt_document btn btn-primary btn-sm">
 						</form>
 						<form class="form_delete completion d-inline-block" action="{% url 'video:completion:video_completion_document' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="delete">
 							<input type="hidden" name="id" value="{{doc.id}}">
-							<input type="submit" title="{% trans 'Delete the additional resource' %}" value="{% trans 'Delete' %}" class="edt_document btn btn-danger btn-sm">
+							<input type="submit" title="{% blocktrans with document_name=doc.document.name %}Delete the additional resource “{{ document_name }}”{% endblocktrans %}" value="{% trans 'Delete' %}" class="edt_document btn btn-danger btn-sm">
 						</form>
 					</td>
 				</tr>

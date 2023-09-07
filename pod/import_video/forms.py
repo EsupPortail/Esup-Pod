@@ -42,7 +42,7 @@ class ExternalRecordingForm(forms.ModelForm):
 
     def filter_fields_admin(form):
         """List fields, depends on user right."""
-        if form.is_superuser is False and form.is_admin is False:
+        if not form.is_superuser and not form.is_admin:
             form.remove_field("owner")
             form.remove_field("site")
 

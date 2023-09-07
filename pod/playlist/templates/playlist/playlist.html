@@ -21,9 +21,9 @@
 
 {% block breadcrumbs %}
   {{ block.super }}
-  <li class="breadcrumb-item active" aria-current="page">
-    <a href="{% url 'playlist:list'%}" title="{% trans "Access the list of playlists" %}">
-      {% trans "Playlists" %}
+  <li class="breadcrumb-item active">
+    <a href="{% url 'playlist:list'%}" title="{% trans 'Access the list of playlists' %}">
+      {% trans 'Playlists' %}
     </a>
   </li>
   <li class="breadcrumb-item active" aria-current="page">
@@ -44,10 +44,10 @@
               {% csrf_token %}
               <input id="json-data" type="hidden" name="json-data">
               <button id="reorganize-button" title="{% trans 'Reorganize your playlist videos'%}" class="btn btn-outline-primary btn-sm {% if sort_field != 'rank' or sort_direction == 'on' %}d-none{% endif %}">
-                <i class="bi bi-arrows-move" aria-hidden="true"></i>&nbsp;<span>{% trans "Reorganize" %}</span>
+                <i class="bi bi-arrows-move" aria-hidden="true"></i>&nbsp;<span>{% trans 'Reorganize' %}</span>
               </button>
               <a href="{{ request.path }}" id="cancel_btn_favorites_list" class="btn btn-outline-secondary btn-sm d-none" title="{% trans 'Cancel the reorganization'%}">
-              <i class="bi bi-x-circle" aria-hidden="true"></i>&nbsp;{% trans "Cancel" %}</a>
+              <i class="bi bi-x-circle" aria-hidden="true"></i>&nbsp;{% trans 'Cancel' %}</a>
             </form>
           {% endif %}
         </div>
@@ -64,12 +64,12 @@
     {% include 'videos/filter_aside.html' %}
   </div>
   <div class="card card-hidden" id="card-sharedraftversion">
-    <h2 class="card-header card-title pod-card__title h4">{% trans "Help - Drag & Drop" %}</h2>
+    <h2 class="card-header card-title pod-card__title h4">{% trans 'Help - Drag & Drop' %}</h2>
     <div class="card-body card-text">
       <ol>
-        <li>{% trans "Select the video to move by clicking and holding." %}</li>
-        <li> {% trans "While holding down the video, drag it to the desired location." %}</li>
-        <li> {% trans "Drop the video on another to swap their position." %}</li>
+        <li>{% trans 'Select the video to move by clicking and holding.' %}</li>
+        <li> {% trans 'While holding down the video, drag it to the desired location.' %}</li>
+        <li> {% trans 'Drop the video on another to swap their position.' %}</li>
       </ol>
     </div>
   </div>

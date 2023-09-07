@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 12:18+0000\n"
+"POT-Creation-Date: 2023-09-04 09:43+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -895,7 +895,8 @@ msgid "Actions"
 msgstr ""
 
 #: pod/chapter/templates/chapter/list_chapter.html
-msgid "Edit the chapter"
+#, python-format
+msgid "Modify the chapter “%(chapter_title)s”"
 msgstr ""
 
 #: pod/chapter/templates/chapter/list_chapter.html
@@ -910,7 +911,8 @@ msgid "Modify"
 msgstr ""
 
 #: pod/chapter/templates/chapter/list_chapter.html
-msgid "Delete the chapter"
+#, python-format
+msgid "Delete the chapter “%(chapter_title)s”"
 msgstr ""
 
 #: pod/chapter/templates/chapter/list_chapter.html
@@ -948,8 +950,8 @@ msgstr ""
 #: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
-#: pod/video/templates/videos/video_edit.html
-msgid "View the video"
+#, python-format
+msgid "Back to the video “%(video_title)s”"
 msgstr ""
 
 #: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
@@ -1221,7 +1223,7 @@ msgid "Please specify a track file."
 msgstr ""
 
 #: pod/completion/models.py pod/enrichment/models.py
-msgid "Only \".vtt\" format is allowed."
+msgid "Only “.vtt” format is allowed."
 msgstr ""
 
 #: pod/completion/models.py
@@ -1355,11 +1357,13 @@ msgid "Role"
 msgstr ""
 
 #: pod/completion/templates/contributor/list_contributor.html
-msgid "Edit the contributor"
+#, python-format
+msgid "Modify the contributor “%(contributor_name)s”"
 msgstr ""
 
 #: pod/completion/templates/contributor/list_contributor.html
-msgid "Delete the contributor"
+#, python-format
+msgid "Delete the contributor “%(contributor_name)s”"
 msgstr ""
 
 #: pod/completion/templates/document/list_document.html
@@ -1367,11 +1371,13 @@ msgid "List of additional resources"
 msgstr ""
 
 #: pod/completion/templates/document/list_document.html
-msgid "Edit the additional resource"
+#, python-format
+msgid "Modify the additional resource “%(document_name)s”"
 msgstr ""
 
 #: pod/completion/templates/document/list_document.html
-msgid "Delete the additional resource"
+#, python-format
+msgid "Delete the additional resource “%(document_name)s”"
 msgstr ""
 
 #: pod/completion/templates/overlay/list_overlay.html
@@ -1392,11 +1398,13 @@ msgid "End"
 msgstr ""
 
 #: pod/completion/templates/overlay/list_overlay.html
-msgid "Edit the overlay"
+#, python-format
+msgid "Modify the overlay “%(overlay_title)s”"
 msgstr ""
 
 #: pod/completion/templates/overlay/list_overlay.html
-msgid "Delete the overlay"
+#, python-format
+msgid "Delete the overlay “%(overlay_title)s”"
 msgstr ""
 
 #: pod/completion/templates/track/list_track.html
@@ -1408,7 +1416,8 @@ msgid "Video track file"
 msgstr ""
 
 #: pod/completion/templates/track/list_track.html
-msgid "Replace the subtitle or caption files"
+#, python-format
+msgid "Replace the subtitle or caption file “%(track_name)s”"
 msgstr ""
 
 #: pod/completion/templates/track/list_track.html
@@ -1416,11 +1425,13 @@ msgid "Replace"
 msgstr ""
 
 #: pod/completion/templates/track/list_track.html
-msgid "Edit the subtitle or caption files"
+#, python-format
+msgid "Modify the subtitle or caption file “%(track_name)s”"
 msgstr ""
 
 #: pod/completion/templates/track/list_track.html
-msgid "Remove the subtitle or caption files"
+#, python-format
+msgid "Remove the subtitle or caption file “%(track_name)s”"
 msgstr ""
 
 #: pod/completion/templates/track/list_track.html
@@ -1436,7 +1447,7 @@ msgstr ""
 msgid "Video Caption Maker"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html pod/video/forms.py
+#: pod/completion/templates/video_caption_maker.html
 #: pod/video/templates/videos/add_video.html
 msgid "File"
 msgstr ""
@@ -1640,12 +1651,12 @@ msgstr ""
 
 #: pod/completion/templates/video_completion.html
 msgid ""
-"You can add several subtitle or caption files to a signle video (for "
+"You can add several subtitle or caption files to a single video (for "
 "example, in order to subtitle or caption this video in several languages"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "Subtitles and/or caption(s) files must be in \".vtt\" format."
+msgid "Subtitle and/or caption file(s) must be in “.vtt” format."
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -1653,7 +1664,7 @@ msgid "You can use"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "to create your subtitles and/or caption(s) files."
+msgid "to create your subtitle(s) and/or caption(s) file(s)."
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -1804,7 +1815,6 @@ msgid "enrichment"
 msgstr ""
 
 #: pod/enrichment/apps.py
-#: pod/enrichment/templates/enrichment/list_enrichment.html
 msgid "Edit the enrichment"
 msgstr ""
 
@@ -2001,7 +2011,13 @@ msgid "List of the enrichments"
 msgstr ""
 
 #: pod/enrichment/templates/enrichment/list_enrichment.html
-msgid "Delete the enrichment"
+#, python-format
+msgid "Modify the enrichment “%(enrich_title)s”"
+msgstr ""
+
+#: pod/enrichment/templates/enrichment/list_enrichment.html
+#, python-format
+msgid "Delete the enrichment “%(enrich_title)s”"
 msgstr ""
 
 #: pod/enrichment/templates/enrichment/video_enrichment-iframe.html
@@ -2010,8 +2026,11 @@ msgid "Enriched"
 msgstr ""
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html
+#: pod/live/templates/live/event-info.html
+#: pod/video/templates/videos/video-info.html
 #: pod/video/templates/videos/video_opengraph.html
-msgid "Added by"
+#: pod/video/templates/videos/video_page_content.html
+msgid "Added by:"
 msgstr ""
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html
@@ -2243,7 +2262,7 @@ msgid "Tags"
 msgstr ""
 
 #: pod/import_video/templates/import_video/filter_aside.html
-#: pod/main/templates/navbar.html pod/main/templates/navbar_collapse.html
+#: pod/main/templates/navbar_collapse.html
 #: pod/meeting/templates/meeting/filter_aside_recording.html
 #: pod/video/templates/videos/filter_aside.html
 #: pod/video/templates/videos/filter_aside_category.html
@@ -2425,8 +2444,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2573,8 +2592,9 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: pod/live/forms.py pod/live/templates/live/event_edit.html
-msgid "Display advanced options"
+#: pod/live/forms.py pod/live/templates/live/event_edit.html pod/main/admin.py
+#: pod/meeting/forms.py pod/video/forms.py
+msgid "Advanced options"
 msgstr ""
 
 #: pod/live/forms.py pod/live/models.py
@@ -2933,6 +2953,22 @@ msgid ""
 msgstr ""
 
 #: pod/live/templates/live/direct.html
+#: pod/live/templates/live/event-script.html pod/main/context_processors.py
+#: pod/main/templates/base.html pod/main/templates/navbar.html
+#: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
+#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
+#: pod/video/templates/videos/video-script.html pod/video/utils.py
+#: pod/video/views.py pod/video_encode_transcript/utils.py
+msgid "Home"
+msgstr ""
+
+#: pod/live/templates/live/direct.html
+#: pod/live/templates/live/event-script.html pod/main/templates/footer.html
+#: pod/video/templates/videos/video-script.html
+msgid "New window"
+msgstr ""
+
+#: pod/live/templates/live/direct.html
 #: pod/live/templates/live/event-script.html
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
@@ -3016,12 +3052,6 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 msgid "Location:"
-msgstr ""
-
-#: pod/live/templates/live/event-info.html
-#: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_page_content.html
-msgid "Added by:"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
@@ -4222,10 +4252,6 @@ msgid "Breadcrumb"
 msgstr ""
 
 #: pod/main/templates/base.html
-msgid "Home"
-msgstr ""
-
-#: pod/main/templates/base.html
 msgid ""
 "We use third party cookies to personalize content, manage session and "
 "analyze site traffic."
@@ -4248,7 +4274,7 @@ msgid "Back to the previous page"
 msgstr ""
 
 #: pod/main/templates/footer.html
-msgid "Go to top"
+msgid "Return to top of page"
 msgstr ""
 
 #: pod/main/templates/footer.html
@@ -4262,11 +4288,23 @@ msgid "Esup Portal"
 msgstr ""
 
 #: pod/main/templates/footer.html
-msgid "Pod Project"
+msgid "Show Esup-Pod project"
+msgstr ""
+
+#: pod/main/templates/footer.html
+msgid "Esup-Pod Project"
 msgstr ""
 
 #: pod/main/templates/footer.html pod/video/feeds.py
 msgid "video platform of"
+msgstr ""
+
+#: pod/main/templates/footer.html
+msgid "View changes of version"
+msgstr ""
+
+#: pod/main/templates/footer.html
+msgid "on"
 msgstr ""
 
 #: pod/main/templates/footer.html
@@ -4334,11 +4372,35 @@ msgid "Channels"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+msgid "Search for a media on"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Search a media"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Start media search on"
+msgstr ""
+
+#: pod/main/templates/navbar.html
 msgid "Some features are unavailable"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+msgid "Add a new video on"
+msgstr ""
+
+#: pod/main/templates/navbar.html
 msgid "Add a video"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Show all my videos on"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Show all my meetings on"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -4377,6 +4439,10 @@ msgstr ""
 
 #: pod/main/templates/navbar.html
 msgid "Dyslexia mode"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Toggle user menu"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -4430,6 +4496,10 @@ msgstr ""
 
 #: pod/main/templates/navbar.html
 msgid "Number of playlists:"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Open login page"
 msgstr ""
 
 #: pod/main/templates/navbar_collapse.html
@@ -5703,15 +5773,18 @@ msgid "Toggle file actions menu"
 msgstr ""
 
 #: pod/podfile/templates/podfile/list_folder_files.html
-msgid "Rename folder"
+#, python-format
+msgid "Rename folder “%(folder_name)s”"
 msgstr ""
 
 #: pod/podfile/templates/podfile/list_folder_files.html
-msgid "Delete folder"
+#, python-format
+msgid "Delete folder “%(folder_name)s”"
 msgstr ""
 
 #: pod/podfile/templates/podfile/list_folder_files.html
-msgid "Share this folder"
+#, python-format
+msgid "Share folder “%(folder_name)s” with another user"
 msgstr ""
 
 #: pod/podfile/templates/podfile/list_folder_files.html
@@ -6047,8 +6120,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -6325,6 +6398,22 @@ msgstr ""
 
 #: pod/video/forms.py
 msgid "Users can only add videos to this channel"
+msgstr ""
+
+#: pod/video/forms.py
+msgid "Source file"
+msgstr ""
+
+#: pod/video/forms.py
+msgid "General settings"
+msgstr ""
+
+#: pod/video/forms.py
+msgid "Channel options"
+msgstr ""
+
+#: pod/video/forms.py
+msgid "Restrictions"
 msgstr ""
 
 #: pod/video/forms.py
@@ -7287,6 +7376,10 @@ msgid ""
 "activity:"
 msgstr ""
 
+#: pod/video/templates/videos/video-info.html
+msgid "QR code"
+msgstr ""
+
 #: pod/video/templates/videos/video_collaborate.html
 msgid "Collaborate"
 msgstr ""
@@ -7321,6 +7414,10 @@ msgstr ""
 
 #: pod/video/templates/videos/video_edit.html
 msgid "Add a new video"
+msgstr ""
+
+#: pod/video/templates/videos/video_edit.html
+msgid "View the video"
 msgstr ""
 
 #: pod/video/templates/videos/video_edit.html
@@ -7467,6 +7564,10 @@ msgstr ""
 
 #: pod/video/templates/videos/videos.html
 msgid "Show view statistics for all videos"
+msgstr ""
+
+#: pod/video/templates/videos/widgets/customclearablefileinput.html
+msgid ": "
 msgstr ""
 
 #: pod/video/templatetags/video_tags.py
