@@ -1,3 +1,4 @@
+"""Forms to create/edit and import Esup-Pod video chapter."""
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -17,7 +18,10 @@ else:
 
 
 class ChapterForm(forms.ModelForm):
+    """A form to create/edit a video chapter."""
+
     def __init__(self, *args, **kwargs):
+        """Initialize fields."""
         super(ChapterForm, self).__init__(*args, **kwargs)
         self.fields["video"].widget = forms.HiddenInput()
         self.fields["time_start"].widget.attrs["min"] = 0
@@ -31,14 +35,19 @@ class ChapterForm(forms.ModelForm):
         self.fields = add_describedby_attr(self.fields)
 
     class Meta:
+        """Form Metadata."""
+
         model = Chapter
         fields = "__all__"
 
 
 class ChapterImportForm(forms.Form):
+    """A form to import chapters from VTT file."""
+
     file = forms.ModelChoiceField(queryset=CustomFileModel.objects.all())
 
     def __init__(self, *args, **kwargs):
+        """Initialize fields."""
         self.user = kwargs.pop("user")
         self.video = kwargs.pop("video")
         super(ChapterImportForm, self).__init__(*args, **kwargs)
@@ -55,7 +64,8 @@ class ChapterImportForm(forms.Form):
         self.fields["file"].help_text = _("The file must be in VTT format.")
 
     def clean_file(self):
+        """Convert VTT to chapters and return cleaned Data."""
         msg = vtt_to_chapter(self.cleaned_data["file"], self.video)
         if msg:
-            raise ValidationError("Error ! {0}".format(msg))
+            raise ValidationError("Error! {0}".format(msg))
         return self.cleaned_data["file"]

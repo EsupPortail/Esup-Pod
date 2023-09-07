@@ -208,53 +208,92 @@ var sendform = async function (elt, action) {
 
 /*** Verify if value of field respect form field ***/
 function verify_start_title_items() {
+  var ret = true;
+
+  // First, check Title field.
+
   let inputTitle = document.getElementById("id_title");
+  inputTitle.classList.remove("is-invalid");
+  inputTitle.classList.remove("is-valid");
+  var describedby_list = [];
+  if(inputTitle.getAttribute("aria-describedby")) {
+    describedby_list = inputTitle.getAttribute("aria-describedby").split(" ");
+  }
+
+  var errormsg_id = "lengthErrorMsg";
   if (
     inputTitle.value === "" ||
     inputTitle.value.length < 2 ||
     inputTitle.value.length > 100
   ) {
-    if (typeof lengthErrorSpan === "undefined") {
-      lengthErrorSpan = document.createElement("span");
-      lengthErrorSpan.className = "form-help-inline";
-      lengthErrorSpan.innerHTML =
+    if (typeof lengthErrorMsg === "undefined") {
+      lengthErrorMsg = document.createElement("div");
+      lengthErrorMsg.id = errormsg_id;
+      lengthErrorMsg.className = "invalid-feedback";
+      lengthErrorMsg.innerHTML =
         "&nbsp;&nbsp;" +
         gettext("Please enter a title from 2 to 100 characters.");
-      inputTitle.insertAdjacentHTML("beforebegin", lengthErrorSpan.outerHTML);
+      inputTitle.insertAdjacentHTML("afterend", lengthErrorMsg.outerHTML);
       inputTitle.parentNode.parentNode
         .querySelectorAll("div.form-group")
         .forEach(function (elt) {
           elt.classList.add("has-error");
         });
     }
-    return false;
+    if (describedby_list.indexOf(errormsg_id) === -1){
+      describedby_list.push(errormsg_id);
+    }
+    inputTitle.classList.add("is-invalid");
+    ret = false;
+  } else {
+    describedby_list.pop(errormsg_id);
+    inputTitle.classList.add("is-valid");
   }
+  inputTitle.setAttribute("aria-describedby", describedby_list.join(" "));
+
+  // Then check inputStart field.
   let inputStart = document.getElementById("id_time_start");
+  inputStart.classList.remove("is-invalid");
+  inputStart.classList.remove("is-valid");
+
+  errormsg_id = "timeErrorMsg";
+  if(inputStart.getAttribute("aria-describedby")) {
+    describedby_list = inputStart.getAttribute("aria-describedby").split(" ");
+  } else {
+    describedby_list = [];
+  }
   if (
     inputStart.value === "" ||
     inputStart.value < 0 ||
     inputStart.value >= video_duration
   ) {
-    if (typeof timeErrorSpan === "undefined") {
-      timeErrorSpan = document.createElement("span");
-      timeErrorSpan.className = "form-help-inline";
-      timeErrorSpan.innerHTML =
-        "&nbsp;&nbsp;" +
+    if (typeof timeErrorMsg === "undefined") {
+      timeErrorMsg = document.createElement("div");
+      timeErrorMsg.id = errormsg_id;
+      timeErrorMsg.className = "invalid-feedback";
+      timeErrorMsg.innerHTML =
         gettext("Please enter a correct start field between 0 and") +
-        " " +
-        (video_duration - 1);
-      inputStart.insertAdjacentHTML("beforebegin", timeErrorSpan.outerHTML);
+        " " + (video_duration - 1);
+      inputStart.insertAdjacentHTML("afterend", timeErrorMsg.outerHTML);
+      inputStart.setAttribute("aria-describedby", errormsg_id);
       inputStart.parentNode.parentNode
         .querySelectorAll("div.form-group")
         .forEach(function (elt) {
           elt.classList.add("has-error");
         });
     }
-    return false;
+    inputStart.classList.add("is-invalid");
+    if (describedby_list.indexOf(errormsg_id) === -1){
+      describedby_list.push(errormsg_id);
+    }
+    ret = false;
+  } else {
+    inputStart.classList.add("is-valid");
+    describedby_list.pop(errormsg_id);
   }
-  timeErrorSpan = undefined;
-  lengthErrorSpan = undefined;
-  return true;
+  inputStart.setAttribute("aria-describedby", describedby_list.join(" "));
+
+  return ret;
 }
 
 function overlaptest() {
