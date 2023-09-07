@@ -246,9 +246,7 @@ function verify_start_title_items() {
       lengthErrorMsg = document.createElement("div");
       lengthErrorMsg.id = errormsg_id;
       lengthErrorMsg.className = "invalid-feedback";
-      lengthErrorMsg.innerHTML =
-        "&nbsp;&nbsp;" +
-        gettext("Please enter a title from 2 to 100 characters.");
+      lengthErrorMsg.innerHTML = gettext("Please enter a title from 2 to 100 characters.");
       inputTitle.insertAdjacentHTML("afterend", lengthErrorMsg.outerHTML);
       inputTitle.parentNode.parentNode
         .querySelectorAll("div.form-group")
@@ -407,7 +405,7 @@ var updateDom = function (data) {
 
 var manageSave = function () {
   let player = window.videojs.players.podvideoplayer;
-  if (player.usingPlugin("videoJsChapters")) {
+  if (player.usingPlugin("podVideoJsChapters")) {
     player.main();
   } else {
     player.podVideoJsChapters();
@@ -429,7 +427,7 @@ var manageImport = function () {
   let player = window.videojs.players.podvideoplayer;
   let n = document.querySelector("div.chapters-list");
   if (n != null) {
-    if (player.usingPlugin("videoJsChapters")) {
+    if (player.usingPlugin("podVideoJsChapters")) {
       player.main();
     } else {
       player.podVideoJsChapters();
@@ -438,7 +436,7 @@ var manageImport = function () {
     if (typeof player.controlBar.chapters != "undefined") {
       player.controlBar.chapters.dispose();
     }
-    if (player.usingPlugin("videoJsChapters")) {
+    if (player.usingPlugin("podVideoJsChapters")) {
       player.podVideoJsChapters().dispose();
     }
   }
