@@ -877,10 +877,17 @@ class Video(models.Model):
             # fix date_delete depends of owner affiliation
             ACCOMMODATION_YEARS = getattr(settings, "ACCOMMODATION_YEARS", {})
             if len(ACCOMMODATION_YEARS) and len(self.owner.owner.affiliation):
-                affiliation_years = [
-                    ACCOMMODATION_YEARS.get(key) for key in self.owner.owner.affiliation if key in ACCOMMODATION_YEARS
-                ]
-                new_year = max(affiliation_years) if len(affiliation_years) else DEFAULT_YEAR_DATE_DELETE
+                if self.owner.owner.affiliation.find('[') != -1:
+                    accommodation_years = (
+                        ACCOMMODATION_YEARS.get(key)
+                        for key in self.owner.owner.affiliation
+                        if key in ACCOMMODATION_YEARS
+                    )
+                    new_year = max(accommodation_years)
+                else:
+                    new_year = ACCOMMODATION_YEARS.get(self.owner.owner.affiliation)
+                if new_year is None:
+                    new_year = DEFAULT_YEAR_DATE_DELETE
                 self.date_delete = date(
                     date.today().year + new_year,
                     date.today().month,
