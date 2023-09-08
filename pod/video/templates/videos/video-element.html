@@ -18,6 +18,13 @@ poster="{{video.get_thumbnail_url}}" {% spaceless %}
   {% for track in video.track_set.all%}
     <track id="track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.file.url }}?{% now 'U' %}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}" {% if forloop.first %}default{% endif %}>
   {%endfor%}
+  {% if video.chapter_set.all %}
+  {% if video.get_hashkey in request.url %}
+  <track id="track_chapters" kind="chapters" src="{% url 'video:get_video_chapters' video.slug video.get_hashkey %}" label="{% trans 'Chapters' %}" >
+  {% else %}
+  <track id="track_chapters" kind="chapters" src="{% url 'video:get_video_chapters' video.slug %}" label="{% trans 'Chapters' %}" >
+  {% endif %}
+  {% endif %}
 </video>
 <form method="post" action="{% url 'video:video_count' id=video.id %}" id="video_count_form" aria-hidden="true">
   {% csrf_token %}

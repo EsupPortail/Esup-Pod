@@ -74,9 +74,7 @@
 <script src="{% static 'js/videojs-logo-controlbar.js' %}?ver={{VERSION}}"></script>
 
 {% comment %}
-<!-- chapitre : depuis videojs7, plus besoin de plugin js https://docs.videojs.com/tutorial-text-tracks.html -->
-<link href="{% static 'css/videojs-chapters.css' %}?ver={{VERSION}}" rel="stylesheet">
-<script src="{% static 'js/videojs-chapters.js' %}?ver={{VERSION}}"></script>
+
 {% if video.overview or playlist_in_get %}
   <link id="overview_style_id" href="{% static 'videojs-vtt-thumbnails/dist/videojs-vtt-thumbnails.css' %}?ver={{VERSION}}" rel="stylesheet">
   <script id="overview_script_id" src="{% static 'videojs-vtt-thumbnails/dist/videojs-vtt-thumbnails.min.js' %}?ver={{VERSION}}"></script>

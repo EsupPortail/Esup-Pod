@@ -13,6 +13,7 @@ from .views import (
     video_xhr,
     video_count,
     video_version,
+    get_video_chapters,
     get_categories,
     add_category,
     edit_category,
@@ -91,6 +92,16 @@ urlpatterns += [
 ]
 # CHAPTER
 urlpatterns += [
+    url(
+        r"^get_video_chapters/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
+        get_video_chapters,
+        name="get_video_chapters",
+    ),
+    url(
+        r"^get_video_chapters/(?P<slug>[\-\d\w]+)/$",
+        get_video_chapters,
+        name="get_video_chapters",
+    ),
     path("chapter/", include("pod.chapter.urls", namespace="chapter")),
 ]
 
