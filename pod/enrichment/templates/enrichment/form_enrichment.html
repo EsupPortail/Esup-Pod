@@ -7,7 +7,7 @@
 </div>
 <form id="form_enrich" class="form_save" action="{% url 'enrichment:edit_enrichment' slug=video.slug %}" method="POST">
     {% csrf_token %}
-    <div id="formcontent" class="form-container">
+    <div class="form-container">
         {% if form_enrichment.errors or form_enrichment.non_field_errors %}
             <div class="alert alert-danger">
                 {% trans 'One or more errors have been found in the form:' %}
