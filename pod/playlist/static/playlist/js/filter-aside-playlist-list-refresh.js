@@ -48,13 +48,17 @@ function refreshPlaylistsSearch() {
 
 
 // Add trigger event to manage sort direction.
-document
-    .getElementById('sort_direction_label')
-    .addEventListener('click', function (e) {
+let sort_direction_label = document.getElementById('sort_direction_label');
+if(sort_direction_label) {
+    sort_direction_label.addEventListener('click', function (e) {
         e.preventDefault();
         toggleSortDirection();
         refreshPlaylistsSearch();
     });
-document.getElementById('sort').addEventListener('change', function (e) {
-    refreshPlaylistsSearch();
-});
+}
+let document_sort = document.getElementById('sort');
+if (document_sort) {
+    document_sort.addEventListener('change', function (e) {
+        refreshPlaylistsSearch();
+    });
+}
