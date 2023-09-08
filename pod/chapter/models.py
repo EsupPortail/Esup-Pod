@@ -60,6 +60,7 @@ class Chapter(models.Model):
         return list()
 
     def verify_time(self):
+        """Check that start time is included inside video duration."""
         msg = list()
         if (
             self.time_start == ""

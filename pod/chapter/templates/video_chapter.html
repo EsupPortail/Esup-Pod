@@ -4,77 +4,85 @@
 {% load static %}
 {% block page_title %}{% trans 'Chapter video' %} "{{video.title}}" {% endblock page_title %}
 {% block page_extra_head %}
-
-{% include 'videos/video-header.html' %}
-<script src="{% static 'js/chapters.js' %}?ver={{VERSION}}"></script>
-<script>
-  const video_duration = {{ video.duration }};
-</script>
+  {% include 'videos/video-header.html' %}
+  <script src="{% static 'js/chapters.js' %}?ver={{VERSION}}"></script>
+  <script>
+    const video_duration = {{ video.duration }};
+  </script>
 {% endblock page_extra_head %}
 {% block breadcrumbs %}
-{{block.super}}
-<li class="breadcrumb-item"><a href="{% url 'video:my_videos'%}">{% trans 'My videos' %}</a></li>
-<li class="breadcrumb-item">
-  <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}">
-    {{video.title|title|truncatechars:45}}
-  </a>
-</li>
-<li class="breadcrumb-item active" aria-current="page">
-  {% trans 'Chapter video' %}
-</li>
-{% endblock %}
+  {{block.super}}
+  <li class="breadcrumb-item"><a href="{% url 'video:my_videos'%}">{% trans 'My videos' %}</a></li>
+  <li class="breadcrumb-item">
+    <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}">
+      {{video.title|title|truncatechars:45}}
+    </a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">
+    {% trans 'Chapter video' %}
+  </li>
+{% endblock breadcrumbs %}
 {% block page_content %}
-<span id="chapter_player">
-  {% include 'videos/video-element.html' %}
-</span>
-<hr>
-<div id="info_video">
-  <div>
-    <div id="list_chapter">
-      {% include 'chapter/list_chapter.html' %}
-    </div>
-    <div id="form_chapter">
-      {% if form_chapter %}
-      {% include 'chapter/form_chapter.html' with form_chapter=form_chapter %}
+  <span id="chapter_player">
+    {% include 'videos/video-element.html' %}
+  </span>
+  <hr>
+  <div id="info_video">
+    <div>
+      <div id="list_chapter">
+        {% include 'chapter/list_chapter.html' %}
+      </div>
+      <div id="form_chapter">
+        {% if form_chapter %}
+          {% include 'chapter/form_chapter.html' with form_chapter=form_chapter %}
+        {% endif %}
+      </div>
+      <span class="float-end">
+        <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn btn-secondary btn-sm">
+          <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans "Back to the video"%}
+        </a>
+      </span>
+      {% if not form_chapter %}
+        <form id="form_new" class="get_form" action="{% url 'video:chapter:video_chapter' slug=video.slug %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="new">
+          <input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-primary btn-sm">
+        </form>
       {% endif %}
     </div>
-    <span class="float-end">
-      <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn btn-secondary btn-sm">
-        <i class="bi bi-film"></i>&nbsp;{% trans "Back to the video"%}
-      </a>
-    </span>
-    {% if not form_chapter %}
-    <form id="form_new" class="get_form" action="{% url 'video:chapter:video_chapter' slug=video.slug %}" method="POST">
-      {% csrf_token %}
-      <input type="hidden" name="action" value="new">
-      <input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-primary btn-sm">
-    </form>
-    {% endif %}
   </div>
-</div>
 {% endblock page_content %}
 {% block page_aside %}
-{% if video.owner == request.user or request.user.is_superuser or perms.chapter.add_chapter or request.user in video.additional_owners.all %}
-<div class="card" id="card-managevideo">
-  <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
-  <div class="card-body card-text text-center">
-    {% include "videos/link_video.html" with hide_favorite_link=True %}
+  {% if video.owner == request.user or request.user.is_superuser or perms.chapter.add_chapter or request.user in video.additional_owners.all %}
+    <div class="card" id="card-managevideo">
+      <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
+      <div class="card-body card-text text-center">
+        {% include "videos/link_video.html" with hide_favorite_link=True %}
+      </div>
+    </div>
+  {% endif %}
+  <div id="chapter-info" class="card">
+    <h2 class="card-header card-title pod-card__title h4">{% trans "Help"%}</h2>
+    <button class="btn rounded-0 pod-btn" id="heading-0" data-bs-toggle="collapse" data-bs-target="#collapse-0" aria-expanded="false" aria-controls="collapse-0">
+      {% trans 'Chapters' %}
+    </button>
+    <div id="collapse-0" class="card-body collapse card-text small">
+      <p>{% trans '"Add a new chapter" allows you to add a new chapter, "modify" allows you to modify it and "delete" allows you to remove the chapter.' %}</p>
+      <p>{% trans 'Start playback of the video, pause the video and click on "Get time from the player" to fill in the field untitled "Start time".' %}</p>
+      <p>{% trans 'The chapters cannot start at the same time.' %}</p>
+      <p>{% trans 'You must save your chapters to view the result.' %}</p>
+    </div>
   </div>
-</div>
-{% endif %}
-<div id="chapter-info" class="card">
-  <h2 class="card-header card-title pod-card__title h4">{% trans "Help"%}</h2>
-  <button class="btn rounded-0 pod-btn" id="heading-0" data-bs-toggle="collapse" data-bs-target="#collapse-0" aria-expanded="false" aria-controls="collapse-0">
-    {% trans 'Chapters' %}
-  </button>
-  <div id="collapse-0" class="card-body collapse card-text small">
-    <p>{% trans '"Add a new chapter" allows you to add a new chapter, "modify" allows you to modify it and "delete" allows you to remove the chapter.' %}</p>
-    <p>{% trans 'Start playback of the video, pause the video and click on "Get time from the player" to fill in the field untitled "Start time".' %}</p>
-    <p>{% trans 'The chapters cannot start at the same time.' %}</p>
-    <p>{% trans 'You must save your chapters to view the result.' %}</p>
+  <div class="card mt-1" id="card-mandatoryfields">
+    <h2 class="h4 card-header card-title pl-2">{% trans "Mandatory fields" %}</h2>
+    <div class="card-body card-text">
+      <p>
+        <span class="required_star">*</span>
+        {% trans "Fields marked with an asterisk are mandatory." %}
+      </p>
+    </div>
   </div>
-</div>
 {% endblock page_aside %}
 {% block more_script %}
-{% include 'videos/video-script.html'%}
+  {% include 'videos/video-script.html'%}
 {% endblock more_script %}

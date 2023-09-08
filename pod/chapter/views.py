@@ -54,6 +54,7 @@ def video_chapter(request, slug):
 
 
 def video_chapter_new(request, video):
+    """Display a new video chapter form."""
     list_chapter = video.chapter_set.all()
     form_chapter = ChapterForm(initial={"video": video})
     form_import = ChapterImportForm(user=request.user, video=video)
@@ -81,6 +82,7 @@ def video_chapter_new(request, video):
 
 
 def video_chapter_save(request, video):
+    """Save a video chapter form request."""
     list_chapter = video.chapter_set.all()
     form_chapter = None
 
@@ -149,6 +151,7 @@ def video_chapter_save(request, video):
 
 
 def video_chapter_modify(request, video):
+    """Display a video chapter modification form."""
     list_chapter = video.chapter_set.all()
     if request.POST.get("action", "").lower() == "modify":
         chapter = get_object_or_404(Chapter, id=request.POST.get("id"))

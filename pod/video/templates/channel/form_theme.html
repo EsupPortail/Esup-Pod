@@ -4,7 +4,7 @@
 
 <form id="form_theme" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="post">
   {% csrf_token %}
-  <div id="formcontent" class="form-container">
+  <div class="form-container">
     <fieldset class="row">
       <legend class="form-title">
         {% if form_theme.instance.title %}{% trans "Editing the theme" %} {{form_theme.instance.title}}{% else %}{% trans "Add a new theme" %}{% endif %}

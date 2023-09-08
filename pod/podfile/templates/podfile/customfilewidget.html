@@ -36,6 +36,11 @@
   {% else %}
     <span id="fileinput_{{id}}"></span>
     <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" id="btn-fileinput_{{id}}"
+      {% for name, value in btn_attrs.items %}
+        {% if value is not False %}
+         {{ name }}{% if value is not True %}="{{ value|stringformat:'s' }}"{% endif %}
+        {% endif %}
+      {% endfor %}
       {% if type == "image" %}
           {% if id == "id_headband" %}
             aria-label="{% trans "Headband - Select an image" %}"
@@ -71,7 +76,7 @@
       <div class="modal-header">
         <h2 class="modal-title" id="fileModalLabel_{{id}}">
             {% if type == "image" %}{% trans 'Select an image' %}{% else %}{% trans 'Select a file' %}{% endif %}</h2>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
       </div>
       <div class="modal-body row" id="modal-folder_{{id}}"></div>
       <div class="modal-footer">
@@ -153,12 +158,7 @@ document.addEventListener("click", (event) => {
 });
 
 
-
-
-
 //let open_folder = document.querySelector(".open-folder").querySelector("button").style ="pointer-events : none" ;
-
-
 
 </script>
 {% endblock more_script %}

@@ -8,8 +8,7 @@
   }
 
   (function (window, videojs) {
-    var videoJsChapters,
-      defaults = {
+    var defaults = {
         ui: true,
       };
 
@@ -29,24 +28,24 @@
         videojs.dom.addClass(span, "vjs-chapters-icon");
         this.el().appendChild(span);
       }
-    };
-    ChapterMenuButton.prototype.handleClick = function (event) {
-      MenuButton.prototype.handleClick.call(this, event);
-      if (document.querySelectorAll(".chapters-list.inactive li").length > 0) {
-        document
-          .querySelector(".chapters-list.inactive")
-          .setAttribute("class", "chapters-list active");
-        document.querySelector(".vjs-chapters-button button").style =
-          "text-shadow: 0 0 1em #fff";
-      } else {
-        document
-          .querySelector(".chapters-list.active")
-          .setAttribute("class", "chapters-list inactive");
+      handleClick(event) {
+        MenuButton.prototype.handleClick.call(this, event);
+        if (document.querySelectorAll(".chapters-list.inactive li").length > 0) {
+          document
+            .querySelector(".chapters-list.inactive")
+            .setAttribute("class", "chapters-list active");
+          document.querySelector(".vjs-chapters-button button").style =
+            "text-shadow: 0 0 1em #fff";
+        } else {
+          document
+            .querySelector(".chapters-list.active")
+            .setAttribute("class", "chapters-list inactive");
 
-        document.querySelector(".vjs-chapters-button button").style =
-          "text-shadow: '' ";
+          document.querySelector(".vjs-chapters-button button").style =
+            "text-shadow: '' ";
+        }
       }
-    };
+    }
     MenuButton.registerComponent("ChapterMenuButton", ChapterMenuButton);
 
     /**

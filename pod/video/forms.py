@@ -1010,6 +1010,7 @@ class ChannelForm(forms.ModelForm):
         self.fields["title_%s" % settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
         self.fields = add_placeholder_and_asterisk(self.fields)
+        self.fields = add_describedby_attr(self.fields)
 
     class Meta(object):
         model = Channel
