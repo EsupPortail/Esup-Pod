@@ -4,6 +4,8 @@
 {% get_setting "VIDEO_PLAYBACKRATES" '[0.5, 1, 1.5, 2]' as video_playbackrates %}
 {% get_setting "USE_VIDEO_EVENT_TRACKING" False as video_event_tracking %}
 {% get_setting "USE_VIDEO_P2P" False as use_video_p2p %}
+{% get_setting "P2P_TRACKERS" "" as p2p_trackers %}
+{% get_setting "P2P_STUNS" "" as p2p_stuns %}
 
 <script id="id_video_script">
   var seektime = 10;
@@ -52,16 +54,18 @@
       },
       loader:{
         /** configure personal tracker and STUN servers */
-        // trackerAnnounce: [
-        //   "wss://personal.tracker1.com",
-        //   "wss://personal.tracker2.com"
-        // ],
-        // rtcConfig: {
-        //   iceServers: [
-        //     { urls: "stun:stun.l.google.com:19302" },
-        //     { urls: "stun:global.stun.twilio.com:3478?transport=udp" }
-        //   ]
-        // },
+        trackerAnnounce: [
+          {% for tracker in p2p_trackers %}
+          "{{tracker}}"{% if not forloop.last %},{%endif%}
+          {% endfor %}
+        ],
+        rtcConfig: {
+          iceServers: [
+          {% for stun in p2p_stuns %}
+          { urls: "{{stun}}" }{% if not forloop.last %},{%endif%}
+          {% endfor %}
+          ]
+        },
         // how long to store the downloaded segments for P2P sharing
         cachedSegmentExpiration:86400000,
         // count of the downloaded segments to store for P2P sharing
@@ -397,15 +401,15 @@ function updatePeers() {
   document.querySelector("#stat-peers").innerHTML = statPeer;
 }
 
-function onBytesDownloaded(method, size) {
+function onBytesDownloaded(method, segment, bytes) {
   // console.log("onBytesDownloaded", method, size)
-  downloadTotals[method] += size;
+  downloadTotals[method] += bytes;
   updateStats();
 }
 
-function onBytesUploaded(method, size) {
+function onBytesUploaded(method, segment, bytes) {
   // console.log("onBytesUploaded", method, size)
-  uploadTotal += size;
+  uploadTotal += bytes;
   updateStats();
 }
 

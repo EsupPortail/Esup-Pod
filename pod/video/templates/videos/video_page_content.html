@@ -1,5 +1,6 @@
 {% load i18n %}
-{% load video_filters %}
+{% load custom_tags video_filters %}
+{% get_setting "USE_VIDEO_P2P" False as use_video_p2p %}
 
 <div id="video-player">
     <div itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
@@ -116,8 +117,10 @@
         <div id="countdown"></div>
         {% include 'videos/video-element.html' %}
       </div>
+      {% if use_video_p2p %}
+      <div class="d-flex justify-content-end"><span id="stat-peers"><i class="bi bi-people-fill"></i> 0</span> | <span id="stat-info"> - </span></div>
+      {% endif %}
       <div id="info-video" class="pod-info-video">
-        <span id="stat-peers"><i class="bi bi-people-fill"></i> 0</span> | <span id="stat-info"> - </span>
         {% include 'videos/video-all-info.html' %}
       </div>
     {% endif %}
