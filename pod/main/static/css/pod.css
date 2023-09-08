@@ -223,6 +223,10 @@ tr,
   --bs-btn-active-color: var(--pod-font-color);
 }
 
+.btn.pod-btn-social:focus-visible {
+  outline: 2px var(--color-black) solid;
+}
+
 .pod-btn-social i {
   transition: all 0.2s ease;
 }
