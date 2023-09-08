@@ -36,7 +36,11 @@
   {% else %}
     <span id="fileinput_{{id}}"></span>
     <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" id="btn-fileinput_{{id}}"
-      {% for name, value in btn_attrs.items %}{% if value is not False %} {{ name }}{% if value is not True %}="{{ value|stringformat:'s' }}"{% endif %}{% endif %}{% endfor %}
+      {% for name, value in btn_attrs.items %}
+        {% if value is not False %}
+         {{ name }}{% if value is not True %}="{{ value|stringformat:'s' }}"{% endif %}
+        {% endif %}
+      {% endfor %}
       {% if type == "image" %}
           {% if id == "id_headband" %}
             aria-label="{% trans "Headband - Select an image" %}"
