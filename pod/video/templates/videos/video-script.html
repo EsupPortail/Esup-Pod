@@ -342,6 +342,28 @@
       player.wavesurfer().surfer && player.wavesurfer().surfer.drawer.fireEvent('redraw');
     });
   {% endif %}
+  {% if request.GET.is_iframe %}
+  var ModalDialog = videojs.getComponent('ModalDialog');
+  var modal = new ModalDialog(player, {
+    // We don't want this modal to go away when it closes.
+    temporary: false,
+    fillAlways: true,
+    content: document.querySelector('#info-video') //.cloneNode(true)
+  });
+  modal.on('modalclose', function() {
+    player.play();
+  });
+  player.addChild(modal);
+  //modal.setAttribute('style', 'background-color:#fff');
+  var button = player.getChild('ControlBar').addChild('button', {
+    clickHandler: function(event) {
+      modal.open();
+    },
+    controlText: 'Information',
+    className: 'vjs-info-button'
+  });
+  button.setAttribute("aria-label", "Information");
+  {% endif %}
 }
 
 initialized_player()
@@ -364,7 +386,10 @@ function updateStats() {
       statInfo +=  ' - <i class="bi bi-person-fill-up"></i> '
           + Number(uploadMb).toFixed(1) + " MiB";
   }
-  document.querySelector("#stat-info").innerHTML = statInfo;
+  var stat_info = document.querySelector("#stat-info");
+  if(stat_info) {
+    stat_info.innerHTML = statInfo;
+  }
 }
 
 function updatePeers() {
