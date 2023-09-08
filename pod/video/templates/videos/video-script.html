@@ -235,14 +235,9 @@
     {% endif %}
     {% if video.overview %}
       //add overview
-      /*
       player.vttThumbnails({
         src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
       });
-      player.vttThumbnails({
-        src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
-      });
-      */
     {% endif %}
 
     {% if video.overlay_set.all %}
@@ -293,13 +288,6 @@
       });
     {% endif %}
   {% endif %}
-      /*
-  {% if video.chapter_set.all %}
-    player.podVideoJsChapters();
-    document.querySelector('.vjs-big-play-button').style.zIndex = '2';
-    document.querySelector('.vjs-control-bar').style.zIndex = '3';
-  {% endif %}
-      */
 
   {% if video_event_tracking %}
     {# Be sure to define _paq in a tracking script in TEMPLATE_VISIBLE_SETTINGS:TRACKING_TEMPLATE pref. #}
