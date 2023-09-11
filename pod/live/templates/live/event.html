@@ -83,7 +83,7 @@
                         <video id="podvideoplayer"
                                class="video-js vjs-default-skin vjs-big-play-centered"
                                controls height="360" muted autoplay>
-                            <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
+                          <!-- <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL"> -->
                         </video>
                     </div>
                     {% if event.aside_iframe_url %}
@@ -152,6 +152,10 @@
       {% if not request.GET.is_iframe %}
         <div class="container-fluid">
           <div class="row">
+            {% get_setting "USE_VIDEO_P2P" False as use_video_p2p %}
+            {% if use_video_p2p %}
+            <div class="d-flex justify-content-end"><span id="p2p-stat-peers"><i class="bi bi-people-fill" aria-hidden="true"></i> 0</span> | <span id="p2p-stat-info"> - </span></div>
+            {% endif %}
             <h1 class="col-auto page_title pt-3 h2">
               {{ event.title|capfirst }}
             </h1>
@@ -161,7 +165,6 @@
                title="{% trans 'Report the event' %}">
               <i class="bi bi-exclamation-octagon" aria-hidden="true"></i>
             </a>
-
             {% if event.is_current and can_record %}
               {% if can_manage_stream %}
                 <div id="stream_btns" class="col-auto border border-secondary rounded d-none" style="margin: 10px 10px 10px 0">
@@ -218,7 +221,6 @@
             <div id="event_videos_list"></div>
           </div>
         </div>
-
         <div id="info-video-all">{% include 'live/event-all-info.html' %}</div>
 
       {% endif %}

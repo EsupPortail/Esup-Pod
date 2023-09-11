@@ -1,6 +1,12 @@
 {% load custom_tags %}
 {% load i18n %}
 {% load static %}
+{% get_setting "USE_VIDEO_P2P" False as use_video_p2p %}
+{% get_setting "P2P_TRACKERS" "" as p2p_trackers %}
+{% get_setting "P2P_STUNS" "" as p2p_stuns %}
+{% if use_video_p2p %}
+<script src="{% static 'js/video-p2p-stats.js' %}?ver={{VERSION}}"></script>
+{% endif %}
 <script>
     // Debug if necessary, depends on the settings_local
     const debug = "{% get_setting "DEBUG" False %}" === "True";
@@ -14,13 +20,99 @@
     let stopped = false;
     let video_on_hold_is_displayed = false;
     let recordingDuration = 0;
+
+    {% if use_video_p2p %}
+    var downloadTotals = { http: 0, p2p: 0 };
+    var uploadTotal = 0;
+    var nb_peers = 0;
+    {% endif %}
+
+    var VideoHlsjsConfig = {
+        maxBufferSize: 0,
+        maxBufferLength: 10,
+        liveSyncDurationCount: 10,
+    }
+    {% if use_video_p2p %}
+    const p2p_config = {
+      segments:{
+        // number of segments to pass for processing to P2P algorithm
+        forwardSegmentCount:50, // usually should be equal or greater than p2pDownloadMaxPriority and httpDownloadMaxPriority
+        swarmId: '{{ event.broadcaster.url }}',
+      },
+      loader:{
+        /** configure personal tracker and STUN servers */
+        trackerAnnounce: [
+          {% for tracker in p2p_trackers %}
+          "{{tracker}}"{% if not forloop.last %},{%endif%}
+          {% endfor %}
+        ],
+        rtcConfig: {
+          iceServers: [
+          {% for stun in p2p_stuns %}
+          { urls: "{{stun}}" }{% if not forloop.last %},{%endif%}
+          {% endfor %}
+          ]
+        },
+        // how long to store the downloaded segments for P2P sharing
+        cachedSegmentExpiration:86400000,
+        // count of the downloaded segments to store for P2P sharing
+        cachedSegmentsCount:1000,
+
+        // first 4 segments (priorities 0, 1, 2 and 3) are required buffer for stable playback
+        requiredSegmentsPriority:3,
+
+        // each 1 second each of 10 segments ahead of playhead position gets 6% probability for random HTTP download
+        httpDownloadMaxPriority:9,
+        httpDownloadProbability:0.06,
+        httpDownloadProbabilityInterval: 1000,
+
+        // disallow randomly download segments over HTTP if there are no connected peers
+        httpDownloadProbabilitySkipIfNoPeers: true,
+
+        // P2P will try to download only first 51 segment ahead of playhead position
+        p2pDownloadMaxPriority: 50,
+
+        // 1 second timeout before retrying HTTP download of a segment in case of an error
+        httpFailedSegmentTimeout:1000,
+
+        // number of simultaneous downloads for P2P and HTTP methods
+        simultaneousP2PDownloads:20,
+        simultaneousHttpDownloads:3,
+
+        // enable mode, that try to prevent HTTP downloads on stream start-up
+        httpDownloadInitialTimeout: 120000, // try to prevent HTTP downloads during first 2 minutes
+        httpDownloadInitialTimeoutPerSegment: 17000, // try to prevent HTTP download per segment during first 17 seconds
+
+        // allow to continue aborted P2P downloads via HTTP
+        httpUseRanges: true,
+      }
+    };
+
+    if (p2pml.hlsjs.Engine.isSupported()) {
+      downloadTotals = { http: 0, p2p: 0 };
+      uploadTotal = 0;
+      nb_peers = 0;
+      engineHlsJs = new p2pml.hlsjs.Engine(p2p_config);
+      VideoHlsjsConfig["loader"] = engineHlsJs.createLoaderClass();
+      engineHlsJs.on(p2pml.core.Events.PeerConnect, onPeerConnect.bind(this));
+      engineHlsJs.on(p2pml.core.Events.PeerClose, onPeerClose.bind(this));
+      engineHlsJs.on(p2pml.core.Events.PieceBytesDownloaded, onBytesDownloaded.bind(this));
+      engineHlsJs.on(p2pml.core.Events.PieceBytesUploaded, onBytesUploaded.bind(this));
+      //engineHlsJs.on("segment_loaded", (segment, peerId) => console.log("segment_loaded from", peerId ? `peer ${peerId}` : "HTTP", segment.url));
+    }
+    {% endif %}
+
+
     let options = {
-        notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
-        language: "fr", //en or nl
-        fluid: !{{ request.GET.is_iframe|yesno:"true,false" }},
-        playbackRates: [0.5, 1, 1.5, 2],
-        errorDisplay: false,
-        loop: false
+      notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
+      language: "fr", //en or nl
+      fluid: !{{ request.GET.is_iframe|yesno:"true,false" }},
+      //playbackRates: [0.5, 1, 1.5, 2],
+      errorDisplay: false,
+      loop: false,
+      html5: {
+        hlsjsConfig: VideoHlsjsConfig
+      },
     }
 
     /**
@@ -56,8 +148,8 @@
     }
 
     // Management of the end of the stream (for Firefox, Chrome... not working for Edge, Safari)
-    videojs.Hls.xhr.beforeRequest = function (options) {
-
+    /*videojs.Hls.xhr.beforeRequest = function (options) { */
+    videojs.Vhs.xhr.beforeRequest = (options) => {
         if ('{{event.is_past }}' === 'False') {
 
             // Reset counter if video state is ok
@@ -102,13 +194,26 @@
       // Management of the streaming live
       let player = videojs("podvideoplayer", options, function() {
       });
-
+      {% if use_video_p2p %}
+      if (p2pml.hlsjs.Engine.isSupported()) {
+        p2pml.hlsjs.initVideoJsContribHlsJsPlayer(player);
+      }
+      {% endif %}
+      var srcOptions = {
+        src: '{{ event.broadcaster.url }}',
+        type: 'application/x-mpegURL',
+      };
+      //Add source to player
+      player.src(srcOptions);
       player.videoJsLogo({
         imgsrc: '{% static LOGO_PLAYER %}',
         linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
         link: '{{ LINK_PLAYER }}'
       });
-
+      //add quality selector to player
+      player.qualitySelectorHls({
+          displayCurrentQuality: true,
+      });
       player.on("error", function() {
         // Handle successives errors to avoid multiple reload
         if (typeof (errored) == "undefined" || !errored) {
@@ -141,8 +246,10 @@
 
         // dispose onHold resources
         video_on_hold_is_displayed = false;
-        videojs(document.getElementById("divvideoonhold")).dispose();
-
+        let divvideoonhold = document.getElementById("divvideoonhold");
+        if (divvideoonhold) {
+          videojs(document.getElementById("divvideoonhold")).dispose();
+        }
         // Affichage du flux direct
         started = true;
         document.getElementById("divvideoplayer").style.display = "block";
@@ -653,7 +760,9 @@
         });
 
         let mp4_sources = {{event.video_on_hold.get_video_mp4_json|safe|default:'null'}};
-        playerOnHold.src(mp4_sources);
+        if(mp4_sources) {
+          playerOnHold.src(mp4_sources);
+        }
 
         document.getElementById("divvideoonhold").style.display = "block";
         if (document.getElementById("divvideoplayer"))
