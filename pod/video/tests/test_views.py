@@ -523,6 +523,7 @@ class VideosTestView(TestCase):
             )
         print(" --->  SetUp of VideosTestView: OK!")
 
+    @override_settings(HIDE_USER_FILTER=False)
     def test_get_videos_view(self):
         self.client = Client()
         url = reverse("videos:videos")
@@ -550,6 +551,10 @@ class VideosTestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 3)
         # owner
+        response = self.client.get(url + "?owner=pod")
+        self.assertEqual(response.context["videos"].paginator.count, 4)
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
         response = self.client.get(url + "?owner=pod")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 2)
