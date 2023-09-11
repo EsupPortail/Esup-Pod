@@ -630,6 +630,7 @@ def get_owners_has_instances(owners):
 
 
 def owner_is_searchable(user):
+    """Return if user is searchable according to HIDE_USER_FILTER setting and authenticated user"""
     return not HIDE_USER_FILTER and user.is_authenticated
 
 
