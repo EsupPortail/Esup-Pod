@@ -596,7 +596,7 @@ def get_filtered_videos_list(request, videos_list):
         videos_list = videos_list.filter(
             discipline__slug__in=request.GET.getlist("discipline")
         )
-    if request.user and request.user.is_authenticated and request.GET.getlist("owner"):
+    if request.user and owner_is_searchable(request.user) and request.GET.getlist("owner"):
         # Add filter on additional owners
         videos_list = videos_list.filter(
             Q(owner__username__in=request.GET.getlist("owner"))
@@ -620,6 +620,10 @@ def get_owners_has_instances(owners):
         except ObjectDoesNotExist:
             pass
     return ownersInstances
+
+
+def owner_is_searchable(user):
+    return not HIDE_USER_FILTER and user.is_authenticated
 
 
 def videos(request):
@@ -649,7 +653,7 @@ def videos(request):
     paginator = Paginator(videos_list, 12)
     videos = get_paginated_videos(paginator, page)
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
-    owner_filter = not HIDE_USER_FILTER and request.user.is_authenticated
+    owner_filter = owner_is_searchable(request.user)
 
     if request.is_ajax():
         return render(
@@ -960,7 +964,7 @@ def render_video(
 
     show_page = get_video_access(request, video, slug_private)
 
-    owner_filter = not HIDE_USER_FILTER and request.user.is_authenticated
+    owner_filter = owner_is_searchable(request.user)
 
     if toggle_render_video_user_can_see_video(
         show_page, is_password_protected, request, slug_private, video
