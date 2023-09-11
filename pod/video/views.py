@@ -545,6 +545,7 @@ def my_videos(request):
     sort_field = request.GET.get("sort")
     sort_direction = request.GET.get("sort_direction")
     videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+    owner_filter = owner_is_searchable(request.user)
 
     if not sort_field:
         # Get the default Video ordering
@@ -558,7 +559,12 @@ def my_videos(request):
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
+            {
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos,
+                "owner_filter": owner_filter
+            },
         )
 
     data_context["videos"] = videos
@@ -574,6 +580,7 @@ def my_videos(request):
     data_context["page_title"] = _("My videos")
     data_context["sort_field"] = sort_field
     data_context["sort_direction"] = sort_direction
+    data_context["owner_filter"] = owner_filter
 
     return render(request, "videos/my_videos.html", data_context)
 
