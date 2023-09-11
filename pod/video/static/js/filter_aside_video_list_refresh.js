@@ -246,7 +246,7 @@ infinite = new InfiniteLoader(
 
 // Check and clean url to avoid owner parameter if not authorized
 var urlParams = new URLSearchParams(window.location.search);
-if(urlParams.has("owner") && (hideUserFilter || !userIsAuthenticated)){
+if(urlParams.has("owner") && !ownerFilter){
   urlParams.delete("owner");
   window.history.pushState(null, "",
       location.protocol +
