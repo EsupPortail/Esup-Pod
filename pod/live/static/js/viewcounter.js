@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
           eyeSVG +
           '<span style="padding-left:4px" id="viewcount">?</div></span></span>';
       }
-    };
+    }
 
     ViewerCountMenuButton.prototype.handleClick = function (event) {
       MenuButton.prototype.handleClick.call(this, event);

@@ -26,11 +26,11 @@ function show_form(data) {
         "</a><span class='timecode' id='chapter_time_start'>&nbsp;</span></span>",
     );
 
-    if(inputStart.getAttribute("aria-describedby")) {
+    if (inputStart.getAttribute("aria-describedby")) {
       describedby_list = inputStart.getAttribute("aria-describedby").split(" ");
     }
-    if (describedby_list.indexOf("chapter_time_start") === -1){
-        describedby_list.push("chapter_time_start");
+    if (describedby_list.indexOf("chapter_time_start") === -1) {
+      describedby_list.push("chapter_time_start");
     }
     inputStart.setAttribute("aria-describedby", describedby_list.join(" "));
   }
@@ -42,11 +42,11 @@ function show_form(data) {
         gettext("Get time from the player") +
         "</a><span class='timecode' id='chapter_time_end'>&nbsp;</span></span>",
     );
-    if(inputEnd.getAttribute("aria-describedby")) {
+    if (inputEnd.getAttribute("aria-describedby")) {
       describedby_list = inputEnd.getAttribute("aria-describedby").split(" ");
     }
-    if (describedby_list.indexOf("chapter_time_end") === -1){
-        describedby_list.push("chapter_time_end");
+    if (describedby_list.indexOf("chapter_time_end") === -1) {
+      describedby_list.push("chapter_time_end");
     }
     inputEnd.setAttribute("aria-describedby", describedby_list.join(" "));
   }
@@ -232,7 +232,7 @@ function verify_start_title_items() {
   inputTitle.classList.remove("is-invalid");
   inputTitle.classList.remove("is-valid");
   var describedby_list = [];
-  if(inputTitle.getAttribute("aria-describedby")) {
+  if (inputTitle.getAttribute("aria-describedby")) {
     describedby_list = inputTitle.getAttribute("aria-describedby").split(" ");
   }
 
@@ -246,7 +246,9 @@ function verify_start_title_items() {
       lengthErrorMsg = document.createElement("div");
       lengthErrorMsg.id = errormsg_id;
       lengthErrorMsg.className = "invalid-feedback";
-      lengthErrorMsg.innerHTML = gettext("Please enter a title from 2 to 100 characters.");
+      lengthErrorMsg.innerHTML = gettext(
+        "Please enter a title from 2 to 100 characters.",
+      );
       inputTitle.insertAdjacentHTML("afterend", lengthErrorMsg.outerHTML);
       inputTitle.parentNode.parentNode
         .querySelectorAll("div.form-group")
@@ -254,7 +256,7 @@ function verify_start_title_items() {
           elt.classList.add("has-error");
         });
     }
-    if (describedby_list.indexOf(errormsg_id) === -1){
+    if (describedby_list.indexOf(errormsg_id) === -1) {
       describedby_list.push(errormsg_id);
     }
     inputTitle.classList.add("is-invalid");
@@ -271,7 +273,7 @@ function verify_start_title_items() {
   inputStart.classList.remove("is-valid");
 
   errormsg_id = "timeErrorMsg";
-  if(inputStart.getAttribute("aria-describedby")) {
+  if (inputStart.getAttribute("aria-describedby")) {
     describedby_list = inputStart.getAttribute("aria-describedby").split(" ");
   } else {
     describedby_list = [];
@@ -287,7 +289,8 @@ function verify_start_title_items() {
       timeErrorMsg.className = "invalid-feedback";
       timeErrorMsg.innerHTML =
         gettext("Please enter a correct start field between 0 and") +
-        " " + (video_duration - 1);
+        " " +
+        (video_duration - 1);
       inputStart.insertAdjacentHTML("afterend", timeErrorMsg.outerHTML);
       inputStart.setAttribute("aria-describedby", errormsg_id);
       inputStart.parentNode.parentNode
@@ -297,7 +300,7 @@ function verify_start_title_items() {
         });
     }
     inputStart.classList.add("is-invalid");
-    if (describedby_list.indexOf(errormsg_id) === -1){
+    if (describedby_list.indexOf(errormsg_id) === -1) {
       describedby_list.push(errormsg_id);
     }
     ret = false;
