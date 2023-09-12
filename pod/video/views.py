@@ -563,7 +563,7 @@ def my_videos(request):
                 "videos": videos,
                 "full_path": full_path,
                 "count_videos": count_videos,
-                "owner_filter": owner_filter
+                "owner_filter": owner_filter,
             },
         )
 
@@ -603,7 +603,11 @@ def get_filtered_videos_list(request, videos_list):
         videos_list = videos_list.filter(
             discipline__slug__in=request.GET.getlist("discipline")
         )
-    if request.user and owner_is_searchable(request.user) and request.GET.getlist("owner"):
+    if (
+        request.user
+        and owner_is_searchable(request.user)
+        and request.GET.getlist("owner")
+    ):
         # Add filter on additional owners
         videos_list = videos_list.filter(
             Q(owner__username__in=request.GET.getlist("owner"))
@@ -671,7 +675,7 @@ def videos(request):
                 "videos": videos,
                 "full_path": full_path,
                 "count_videos": count_videos,
-                "owner_filter": owner_filter
+                "owner_filter": owner_filter,
             },
         )
     return render(
@@ -690,7 +694,7 @@ def videos(request):
             "cursus_list": CURSUS_CODES,
             "sort_field": sort_field,
             "sort_direction": request.GET.get("sort_direction"),
-            "owner_filter": owner_filter
+            "owner_filter": owner_filter,
         },
     )
 

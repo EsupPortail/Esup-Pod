@@ -381,7 +381,7 @@ var VideoSlides = function (items) {
           }
         }
       }
-    };
+    }
 
     // Create the slide manager menu title
     class SlideTitle extends vjs_menu_item {
@@ -390,11 +390,11 @@ var VideoSlides = function (items) {
         super(player, options);
         this.off("click");
       }
-    };
+    }
 
     // Create the slide menu manager
     var vjs_menu_button = videojs.getComponent("MenuButton");
-    class SlideButton  extends vjs_menu_button {
+    class SlideButton extends vjs_menu_button {
       constructor(player, options) {
         options = options || {};
         super(player, options);
@@ -426,7 +426,7 @@ var VideoSlides = function (items) {
 
         return items;
       }
-    };
+    }
     var newbutton = new SlideButton(player);
     if (document.getElementsByClassName("vjs-slide-manager").length > 0) {
       document
