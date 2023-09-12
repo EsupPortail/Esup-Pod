@@ -198,12 +198,15 @@
       p2pml.hlsjs.initVideoJsContribHlsJsPlayer(player);
     }
     {% endif %}
-    player.on('firstplay', function(){
-      var data_form = $( "#video_count_form" ).serializeArray();
-      jqxhr = $.post(
-        $( "#video_count_form" ).attr("action"),
-        data_form
-      );
+    player.ready(() => {
+      player.one('play', function(){
+        let form = document.querySelector('#video_count_form');
+        let data = new FormData(form);
+        fetch(form.getAttribute("action"), {
+          method: 'POST',
+          body:data
+        });
+      });
     });
 
   {% if video.is_video %}

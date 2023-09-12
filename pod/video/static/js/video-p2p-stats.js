@@ -28,6 +28,7 @@ function updateStats() {
         }
     }
 }
+
 /**
  * Show the number of peers sharing file with the user.
  */
@@ -35,6 +36,7 @@ function updatePeers() {
     let statPeer = '<i class="bi bi-people-fill" aria-hidden="true"></i> ' + nb_peers;
     document.querySelector("#p2p-stat-peers").innerHTML = statPeer;
 }
+
 /**
  * Saves the bytes just download by the player by the download method.
  * This method is called by the bytes download event.
@@ -48,6 +50,7 @@ function onBytesDownloaded(method, segment, bytes) {
     downloadTotals[method] += bytes;
     updateStats();
 }
+
 /**
  * Saves the bytes just upload by the player.
  * This method is called by the bytes upload event.
@@ -61,6 +64,7 @@ function onBytesUploaded(method, segment, bytes) {
     uploadTotal += bytes;
     updateStats();
 }
+
 /**
  * Increments the number of peer connected.
  * This method is called by the peer connect event.
@@ -72,6 +76,7 @@ function onPeerConnect(peer) {
     // console.log("peer_connect", peer.id, peer.remoteAddress);
     updatePeers()
 }
+
 /**
  * Decrements the number of connected peers.
  * This method is called by the peer close event.
