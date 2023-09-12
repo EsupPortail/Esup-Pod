@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-04 09:43+0000\n"
+"POT-Creation-Date: 2023-09-12 15:15+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -814,9 +814,12 @@ msgstr "Chapitres"
 msgid "File to import"
 msgstr "Fichier à importer"
 
+#: pod/chapter/forms.py pod/completion/templates/video_completion.html
+msgid "The file must be in VTT format."
+msgstr "Le fichier doit être au format VTT."
+
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
-#: pod/video_encode_transcript/utils.py
 msgid "video"
 msgstr "vidéo"
 
@@ -921,11 +924,6 @@ msgstr "Annuler"
 #: pod/chapter/templates/chapter/form_chapter.html
 msgid "Import chapters"
 msgstr "Importer les chapitres"
-
-#: pod/chapter/templates/chapter/form_chapter.html
-#: pod/completion/templates/video_completion.html
-msgid "The file must be in VTT format."
-msgstr "Le fichier doit être au format VTT."
 
 #: pod/chapter/templates/chapter/list_chapter.html
 msgid "List of chapters"
@@ -1061,6 +1059,26 @@ msgstr "Les chapitres ne peuvent commencer au même moment."
 #: pod/chapter/templates/video_chapter.html
 msgid "You must save your chapters to view the result."
 msgstr "Vous devez sauvegarder vos chapitres pour voir le résultat."
+
+#: pod/chapter/templates/video_chapter.html
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/main/templates/contact_us.html
+#: pod/video/templates/channel/channel_edit.html
+#: pod/video/templates/channel/theme_edit.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Mandatory fields"
+msgstr "Champs obligatoires"
+
+#: pod/chapter/templates/video_chapter.html
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/main/templates/contact_us.html
+#: pod/video/templates/channel/channel_edit.html
+#: pod/video/templates/channel/theme_edit.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Fields marked with an asterisk are mandatory."
+msgstr "Les champs marqués avec un astérisque sont obligatoires."
 
 #: pod/chapter/views.py
 msgid "You cannot chapter this video."
@@ -1832,12 +1850,20 @@ msgid "The video is currently being encoded."
 msgstr "La vidéo est en cours d’encodage."
 
 #: pod/cut/templates/video_cut.html
-msgid "Get the video player time"
-msgstr "Obtenir le temps du lecteur"
+msgid "Get the start time from the video player"
+msgstr "Définir le temps de début à partir du lecteur vidéo"
 
 #: pod/cut/templates/video_cut.html
 msgid "Total video duration"
 msgstr "Durée totale de la vidéo"
+
+#: pod/cut/templates/video_cut.html
+msgid "Get the end time from the video player"
+msgstr "Définir le temps de fin à partir du lecteur vidéo"
+
+#: pod/cut/templates/video_cut.html
+msgid "Reset to previous start and end times"
+msgstr "Réinitialiser les temps de début et de fin à leurs valeurs précédentes"
 
 #: pod/cut/templates/video_cut.html
 #: pod/playlist/templates/playlist/filter_aside.html
@@ -3533,24 +3559,6 @@ msgstr ""
 #: pod/live/templates/live/event_edit.html
 msgid "Finally, remember to provide as precise a description as possible."
 msgstr "Enfin, pensez à renseigner une description la plus précise possible."
-
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Mandatory fields"
-msgstr "Champs obligatoires"
-
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Fields marked with an asterisk are mandatory."
-msgstr "Les champs marqués avec un astérisque sont obligatoires."
 
 #: pod/live/templates/live/event_immediate_edit.html
 msgid "You can create a live event starting now."
@@ -8440,15 +8448,19 @@ msgid ""
 "%(content_type)s “%(content_title)s” has been %(action)s, and is now "
 "available on %(site_title)s."
 msgstr ""
-"%(content_type)s \"%(content_title)s\" a été %(action)s, "
-"et est maintenant disponible sur %(site_title)s."
+"%(content_type)s \"%(content_title)s\" a été %(action)s, et est maintenant "
+"disponible sur %(site_title)s."
 
 #: pod/video_encode_transcript/utils.py
-msgid "content"
-msgstr "contenu"
+msgid "The content"
+msgstr "Le contenu"
 
 #: pod/video_encode_transcript/utils.py
-msgid "automatically transcript"
+msgid "The video"
+msgstr "La vidéo"
+
+#: pod/video_encode_transcript/utils.py
+msgid "automatically transcripted"
 msgstr "automatiquement transcrit"
 
 #: pod/video_encode_transcript/utils.py
@@ -8490,6 +8502,12 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Get the video player time"
+#~ msgstr "Obtenir le temps du lecteur"
+
+#~ msgid "content"
+#~ msgstr "contenu"
 
 #, fuzzy
 #~ msgid "Media file"
