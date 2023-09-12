@@ -168,7 +168,7 @@ ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 USER_VIDEO_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
 ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
-
+HIDE_USER_FILTER = getattr(settings, "HIDE_USER_FILTER", False)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
 if USE_TRANSCRIPTION:
@@ -545,6 +545,7 @@ def my_videos(request):
     sort_field = request.GET.get("sort")
     sort_direction = request.GET.get("sort_direction")
     videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+    owner_filter = owner_is_searchable(request.user)
 
     if not sort_field:
         # Get the default Video ordering
@@ -558,7 +559,12 @@ def my_videos(request):
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
+            {
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos,
+                "owner_filter": owner_filter
+            },
         )
 
     data_context["videos"] = videos
@@ -574,6 +580,7 @@ def my_videos(request):
     data_context["page_title"] = _("My videos")
     data_context["sort_field"] = sort_field
     data_context["sort_direction"] = sort_direction
+    data_context["owner_filter"] = owner_filter
 
     return render(request, "videos/my_videos.html", data_context)
 
@@ -596,7 +603,7 @@ def get_filtered_videos_list(request, videos_list):
         videos_list = videos_list.filter(
             discipline__slug__in=request.GET.getlist("discipline")
         )
-    if request.GET.getlist("owner"):
+    if request.user and owner_is_searchable(request.user) and request.GET.getlist("owner"):
         # Add filter on additional owners
         videos_list = videos_list.filter(
             Q(owner__username__in=request.GET.getlist("owner"))
@@ -620,6 +627,11 @@ def get_owners_has_instances(owners):
         except ObjectDoesNotExist:
             pass
     return ownersInstances
+
+
+def owner_is_searchable(user):
+    """Return if user is searchable according to HIDE_USER_FILTER setting and authenticated user"""
+    return not HIDE_USER_FILTER and user.is_authenticated
 
 
 def videos(request):
@@ -649,12 +661,18 @@ def videos(request):
     paginator = Paginator(videos_list, 12)
     videos = get_paginated_videos(paginator, page)
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
+    owner_filter = owner_is_searchable(request.user)
 
     if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
+            {
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos,
+                "owner_filter": owner_filter
+            },
         )
     return render(
         request,
@@ -672,6 +690,7 @@ def videos(request):
             "cursus_list": CURSUS_CODES,
             "sort_field": sort_field,
             "sort_direction": request.GET.get("sort_direction"),
+            "owner_filter": owner_filter
         },
     )
 
@@ -953,6 +972,8 @@ def render_video(
 
     show_page = get_video_access(request, video, slug_private)
 
+    owner_filter = owner_is_searchable(request.user)
+
     if toggle_render_video_user_can_see_video(
         show_page, is_password_protected, request, slug_private, video
     ):
@@ -968,6 +989,7 @@ def render_video(
                 "video": video,
                 "theme": theme,
                 "listNotes": listNotes,
+                "owner_filter": owner_filter,
                 **more_data,
             },
         )
@@ -998,6 +1020,7 @@ def render_video(
                     "theme": theme,
                     "form": form,
                     "listNotes": listNotes,
+                    "owner_filter": owner_filter,
                     **more_data,
                 },
             )

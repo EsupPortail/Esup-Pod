@@ -107,30 +107,39 @@
     <ul class="list-inline d-flex flex-wrap">
       <li class="col-6 col-md-4">
         <span class="pod-meta-title">{% trans 'Added by:' %}</span>
-
-        <a class="btn btn-link" href="{% url 'videos:videos' %}?owner={{ video.owner.get_username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
+        {% if owner_filter %}
+            <a class="btn btn-link" href="{% url 'videos:videos' %}?owner={{ video.owner.get_username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
+        {% endif %}
           {% if video.owner.owner.userpicture.file %}
             {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
               <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class="userpicture rounded" alt="" loading="lazy">
             {% endthumbnail %}
           {% endif %}
           {{ video.owner }}
-        </a>
+        {% if owner_filter %}
+          </a>
+        {% endif %}
       </li>
       {% if video.additional_owners.all %}
       <li class="col-6 col-md-4">
-        <span class="pod-meta-title">{% trans 'Additional owner(s):' %}</span>
+        <span class="pod-meta-title pod-meta-title-additional-owners">{% trans 'Additional owner(s):' %}</span>
 
         <ul class="list-unstyled">
           {% for additionalOwner in video.additional_owners.all %}
-            <li><a href="{% url 'videos:videos' %}?owner={{ additionalOwner.get_username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
-                {% if additionalOwner.owner.userpicture.file %}
-                  {% thumbnail additionalOwner.owner.userpicture.file "x50" as im %}
-                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}" loading="lazy">
-                  {% endthumbnail %}
-                {% endif %}
-                {{ additionalOwner }}
-              </a></li>
+            <li>
+            {% if owner_filter %}
+                <a href="{% url 'videos:videos' %}?owner={{ additionalOwner.get_username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %}>
+            {% endif %}
+            {% if additionalOwner.owner.userpicture.file %}
+              {% thumbnail additionalOwner.owner.userpicture.file "x50" as im %}
+                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}" loading="lazy">
+              {% endthumbnail %}
+            {% endif %}
+            {{ additionalOwner }}
+            {% if owner_filter %}
+                </a>
+            {% endif %}
+            </li>
           {% endfor %}
         </ul>
 

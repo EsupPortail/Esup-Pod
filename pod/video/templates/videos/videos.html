@@ -59,11 +59,9 @@
 {% block more_script %}
   <script>
     const urlVideos = "{% url 'videos:videos' %}";
-  </script>
-
-  <script>
     var page = 1;
     var nextPage = false;
+    var ownerFilter = {{ owner_filter|yesno:'true,false'}};
 
     {% if videos.has_next %}
       page = parseInt("{{videos.next_page_number}}");

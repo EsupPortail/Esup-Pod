@@ -227,6 +227,7 @@ document
   .forEach((el) => {
     setListenerChangeInputs(el);
   });
+
 //initiate checkedInputs
 document
   .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
@@ -242,3 +243,17 @@ infinite = new InfiniteLoader(
   nextPage,
   (page = 2),
 );
+
+// Check and clean url to avoid owner parameter if not authorized
+var urlParams = new URLSearchParams(window.location.search);
+if(urlParams.has("owner") && !ownerFilter){
+  urlParams.delete("owner");
+  window.history.pushState(null, "",
+      location.protocol +
+      '//'
+      + location.host
+      + location.pathname
+      + urlParams.toString()
+  );
+}
+
