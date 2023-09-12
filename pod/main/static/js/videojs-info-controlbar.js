@@ -19,7 +19,7 @@
     var MenuButton = videojs.getComponent("Button");
 
     class InfoMenuButton extends MenuButton {
-      constructor: function (player, options) {
+      constructor(player, options) {
         options.label = "Info";
         MenuButton.call(this, player, options);
         this.el().setAttribute("aria-label", "Info");
