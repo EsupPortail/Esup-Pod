@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-04 09:43+0000\n"
+"POT-Creation-Date: 2023-09-12 07:43+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -764,6 +764,10 @@ msgstr ""
 msgid "File to import"
 msgstr ""
 
+#: pod/chapter/forms.py pod/completion/templates/video_completion.html
+msgid "The file must be in VTT format."
+msgstr ""
+
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
 #: pod/video_encode_transcript/utils.py
@@ -863,11 +867,6 @@ msgstr ""
 
 #: pod/chapter/templates/chapter/form_chapter.html
 msgid "Import chapters"
-msgstr ""
-
-#: pod/chapter/templates/chapter/form_chapter.html
-#: pod/completion/templates/video_completion.html
-msgid "The file must be in VTT format."
 msgstr ""
 
 #: pod/chapter/templates/chapter/list_chapter.html
@@ -997,6 +996,26 @@ msgstr ""
 
 #: pod/chapter/templates/video_chapter.html
 msgid "You must save your chapters to view the result."
+msgstr ""
+
+#: pod/chapter/templates/video_chapter.html
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/main/templates/contact_us.html
+#: pod/video/templates/channel/channel_edit.html
+#: pod/video/templates/channel/theme_edit.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Mandatory fields"
+msgstr ""
+
+#: pod/chapter/templates/video_chapter.html
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/main/templates/contact_us.html
+#: pod/video/templates/channel/channel_edit.html
+#: pod/video/templates/channel/theme_edit.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Fields marked with an asterisk are mandatory."
 msgstr ""
 
 #: pod/chapter/views.py
@@ -2034,6 +2053,7 @@ msgid "Added by:"
 msgstr ""
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html
+#: pod/video/templates/videos/video-script.html
 msgid "Informations"
 msgstr ""
 
@@ -2444,8 +2464,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -3306,24 +3326,6 @@ msgstr ""
 msgid "Finally, remember to provide as precise a description as possible."
 msgstr ""
 
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Mandatory fields"
-msgstr ""
-
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Fields marked with an asterisk are mandatory."
-msgstr ""
-
 #: pod/live/templates/live/event_immediate_edit.html
 msgid "You can create a live event starting now."
 msgstr ""
@@ -3478,10 +3480,6 @@ msgstr ""
 
 #: pod/lti/views.py
 msgid "The video id is not valid."
-msgstr ""
-
-#: pod/main/admin.py pod/meeting/forms.py
-msgid "Advanced options"
 msgstr ""
 
 #: pod/main/apps.py
@@ -6120,8 +6118,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -7550,6 +7548,18 @@ msgstr ""
 msgid "New note"
 msgstr ""
 
+#: pod/video/templates/videos/video_p2p_stats.html
+msgid "Number of people sharing this resource."
+msgstr ""
+
+#: pod/video/templates/videos/video_p2p_stats.html
+msgid "Video data downloaded from the server or another peer."
+msgstr ""
+
+#: pod/video/templates/videos/video_p2p_stats.html
+msgid "Video data shared with other peer."
+msgstr ""
+
 #: pod/video/templates/videos/video_page_content.html
 msgid "Channel description"
 msgstr ""
@@ -7626,6 +7636,10 @@ msgstr ""
 
 #: pod/video/views.py
 msgid "You cannot edit this channel."
+msgstr ""
+
+#: pod/video/views.py
+msgid "Sorry, you can't access to the video chapter."
 msgstr ""
 
 #: pod/video/views.py

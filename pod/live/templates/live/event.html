@@ -83,7 +83,6 @@
                         <video id="podvideoplayer"
                                class="video-js vjs-default-skin vjs-big-play-centered"
                                controls height="360" muted autoplay>
-                          <!-- <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL"> -->
                         </video>
                     </div>
                     {% if event.aside_iframe_url %}
@@ -154,7 +153,7 @@
           <div class="row">
             {% get_setting "USE_VIDEO_P2P" False as use_video_p2p %}
             {% if use_video_p2p %}
-            <div class="d-flex justify-content-end"><span id="p2p-stat-peers"><i class="bi bi-people-fill" aria-hidden="true"></i> 0</span> | <span id="p2p-stat-info"> - </span></div>
+            {% include 'videos/video_p2p_stats.html' %}
             {% endif %}
             <h1 class="col-auto page_title pt-3 h2">
               {{ event.title|capfirst }}
@@ -170,7 +169,7 @@
                 <div id="stream_btns" class="col-auto border border-secondary rounded d-none" style="margin: 10px 10px 10px 0">
                   <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
                           id="startstream" title="{% trans 'Start stream' %}" aria-label="{% trans 'Start stream' %}"
-                          data-url="{% url 'live:ajax_event_start_streaming'%}">
+                          data-url="{% url 'live:ajax_event_start_streaming' %}">
                     <i class="bi bi-person-video" aria-hidden="true" style="font-size: 2em"></i>
                   </button>
                   <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled

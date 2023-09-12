@@ -6,22 +6,26 @@ function updateStats() {
     let p2pMb = downloadTotals.p2p / 1048576;
     let totalMb = httpMb + p2pMb;
     let uploadMb = uploadTotal / 1048576;
-    let statInfo = "";
-    if (totalMb != 0) {
-        statInfo += '<i class="bi bi-person-fill-down" aria-hidden="true"></i> '
+    if (totalMb != 0 || uploadMb != 0) {
+        let statInfoDownload = '<i class="bi bi-person-fill-down" aria-hidden="true"></i> '
             + Number(totalMb).toFixed(1) + " MiB ";
-        statInfo += '[ <i class="bi bi-server" aria-hidden="true"></i> : '
+        statInfoDownload += '[ <i class="bi bi-server" aria-hidden="true"></i> : '
             + Number(httpMb).toFixed(1) + " MiB / "
             + Number((httpMb * 100) / totalMb).toFixed(0) + "%";
-        statInfo +=  ' - <i class="bi bi-people" aria-hidden="true"></i> : '
+        statInfoDownload +=  ' - <i class="bi bi-people" aria-hidden="true"></i> : '
             + Number(p2pMb).toFixed(1) + " MiB / "
-            + Number((p2pMb * 100) / totalMb).toFixed(0) + "% ]";
-        statInfo +=  ' - <i class="bi bi-person-fill-up" aria-hidden="true"></i> '
-            + Number(uploadMb).toFixed(1) + " MiB";
-    }
-    var stat_info = document.querySelector("#p2p-stat-info");
-    if(stat_info) {
-        stat_info.innerHTML = statInfo;
+            + Number((p2pMb * 100) / totalMb).toFixed(0) + "% ] </span>";
+        var stat_info_download = document.querySelector("#p2p-stat-info-download");
+        if(stat_info_download) {
+            stat_info_download.innerHTML = statInfoDownload;
+        }
+    
+        let statInfoUpload =  '<i class="bi bi-person-fill-up" aria-hidden="true"></i> '
+        + Number(uploadMb).toFixed(1) + " MiB</span>";
+        var stat_info_upload = document.querySelector("#p2p-stat-info-upload");
+        if(stat_info_upload) {
+            stat_info_upload.innerHTML = statInfoUpload;
+        }
     }
 }
 /**
