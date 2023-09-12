@@ -8426,8 +8426,8 @@ msgid "Encoding"
 msgstr "Encodage"
 
 #: pod/video_encode_transcript/utils.py
-msgid "Transcripting"
-msgstr "Transcrire"
+msgid "The transcripting"
+msgstr "La transcription"
 
 #: pod/video_encode_transcript/utils.py
 #, python-format
@@ -8437,10 +8437,10 @@ msgstr "%(subject)s du #%(content_id)s est terminée"
 #: pod/video_encode_transcript/utils.py
 #, python-format
 msgid ""
-"The %(content_type)s “%(content_title)s” has been %(action)s, and is now "
+"%(content_type)s “%(content_title)s” has been %(action)s, and is now "
 "available on %(site_title)s."
 msgstr ""
-"Le %(content_type)s \"%(content_title)s\" a été automatiquement %(action)s, "
+"%(content_type)s \"%(content_title)s\" a été %(action)s, "
 "et est maintenant disponible sur %(site_title)s."
 
 #: pod/video_encode_transcript/utils.py

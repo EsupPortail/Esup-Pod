@@ -32,14 +32,14 @@
         <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="add_video_notes_form mt-1" role="menuitem">
           {% csrf_token %}
           <input type="hidden" name="action" value="form_note">
-          <button class="btn pod-btn-social p-0 m-0" type="submit" action="create" title="{% trans 'Create a note' %}"> <i class="bi bi-journal-plus"></i> </button>
+          <button class="btn btn-link pod-btn-social p-0 m-0" type="submit" action="create" title="{% trans 'Create a note' %}"> <i class="bi bi-journal-plus" aria-hidden="true"></i> </button>
         </form>
       {% endif %}
       {% if listNotes %}
         <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="download_video_notes_form  mt-1" role="menuitem">
           {% csrf_token %}
           <input type="hidden" name="action" value="download">
-          <button class="btn pod-btn-social p-0 m-0" type="submit" action="download" title="{% trans 'Download the notes' %}"> <i class="bi bi-download"></i></button>
+          <button class="btn btn-link pod-btn-social p-0 m-0" type="submit" action="download" title="{% trans 'Download the notes' %}"> <i class="bi bi-download" aria-hidden="true"></i></button>
         </form>
       {% endif %}
     </div>

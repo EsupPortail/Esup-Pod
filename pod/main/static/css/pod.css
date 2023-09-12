@@ -223,15 +223,12 @@ tr,
   --bs-btn-active-color: var(--pod-font-color);
 }
 
-.btn.pod-btn-social:focus-visible {
-  outline: 2px var(--color-black) solid;
-}
-
 .pod-btn-social i {
   transition: all 0.2s ease;
 }
 
-.pod-btn-social:hover i {
+.pod-btn-social:hover i,
+.btn.pod-btn-social:focus-visible i {
   transform: rotate(15deg);
   display: inline-block;
 }
@@ -981,6 +978,15 @@ body[data-admin-utc-offset] .select2-selection--multiple .select2-results__optio
   color: #333;
 }
 
+
+.select2-container--focus,
+.cke_focus {
+  box-shadow: 0 0 0 .25rem rgba(var(--pod-primary-rgb),.25);
+  border-radius: 5px;
+}
+.select2-container--default.select2-container--focus .select2-selection--multiple.select2-selection {
+  border: solid 1px var(--pod-primary);
+}
 /* end select2 multiple corrections */
 
 /* System/browser dark mode */

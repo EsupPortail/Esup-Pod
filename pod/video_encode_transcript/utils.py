@@ -1,3 +1,4 @@
+"""Esup-Pod video encoding and transcripting utilities."""
 import os
 import bleach
 import time
@@ -133,7 +134,7 @@ def send_email(msg, video_id):
 
 def send_email_transcript(video_to_encode):
     """Send email on transcripting completion."""
-    subject_prefix = _("Transcripting")
+    subject_prefix = _("The transcripting")
     send_notification_email(video_to_encode, subject_prefix)
 
 
@@ -155,17 +156,17 @@ def send_notification_email(video_to_encode, subject_prefix):
         % (
             _("Hello,"),
             _(
-                "The %(content_type)s “%(content_title)s” has been %(action)s"
+                "%(content_type)s “%(content_title)s” has been %(action)s"
                 + ", and is now available on %(site_title)s."
             )
             % {
                 "content_type": (
-                    _("content") if subject_prefix == _("Transcripting") else _("video")
+                    _("The content") if subject_prefix == _("The transcripting") else _("The video")
                 ),
                 "content_title": "<b>%s</b>" % video_to_encode.title,
                 "action": (
-                    _("automatically transcript")
-                    if (subject_prefix == _("Transcripting"))
+                    _("automatically transcripted")
+                    if (subject_prefix == _("The transcripting"))
                     else _("encoded to Web formats")
                 ),
                 "site_title": __TITLE_SITE__,
