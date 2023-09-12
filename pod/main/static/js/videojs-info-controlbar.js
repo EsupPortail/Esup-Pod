@@ -26,7 +26,7 @@
         videojs.dom.addClass(this.el(), "vjs-info-button");
         this.controlText("Information");
       }
-    };
+    }
     InfoMenuButton.prototype.handleClick = function (event) {
       MenuButton.prototype.handleClick.call(this, event);
       show_info_video();

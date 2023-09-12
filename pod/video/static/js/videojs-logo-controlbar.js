@@ -39,7 +39,7 @@
         );
         super(player, { el: aElement });
       }
-    };
+    }
 
     /**
      * Initialize the plugin.

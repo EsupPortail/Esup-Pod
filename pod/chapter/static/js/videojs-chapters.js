@@ -9,8 +9,8 @@
 
   (function (window, videojs) {
     var defaults = {
-        ui: true,
-      };
+      ui: true,
+    };
 
     /*
      * Chapter menu button
@@ -30,7 +30,9 @@
       }
       handleClick(event) {
         MenuButton.prototype.handleClick.call(this, event);
-        if (document.querySelectorAll(".chapters-list.inactive li").length > 0) {
+        if (
+          document.querySelectorAll(".chapters-list.inactive li").length > 0
+        ) {
           document
             .querySelector(".chapters-list.inactive")
             .setAttribute("class", "chapters-list active");
@@ -182,7 +184,7 @@
           );
         });
       }
-    };
+    }
 
     podVideoJsChapters.prototype.dispose = function () {
       Plugin.prototype.dispose.call(this);
