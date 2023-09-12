@@ -8,7 +8,6 @@ from .models import CustomFileModel, CustomImageModel
 
 
 class CustomFileWidget(widgets.TextInput):
-
     class Media:
         js = ("podfile/js/filewidget.js",)
 
