@@ -145,21 +145,22 @@ let button_end = document.getElementById("button_end");
 button_start.addEventListener("click", get_video_player_start);
 button_start.addEventListener("keydown", function (event) {
   if (event.key === " ") {
-    get_video_player_start();
+    get_video_player_start(event);
   }
 });
 
 button_end.addEventListener("click", get_video_player_end);
 button_end.addEventListener("keydown", function (event) {
   if (event.key === " ") {
-    get_video_player_end();
+    get_video_player_end(event);
   }
 });
 
 /**
  * Retrieves the start time of the video player and updates UI elements accordingly.
  */
-function get_video_player_start() {
+function get_video_player_start(event) {
+  event.preventDefault();
   time = Math.trunc(player.currentTime()) + start_time;
   displayValOne.value = intToTime(time);
   sliderOne.value = time;
@@ -169,7 +170,8 @@ function get_video_player_start() {
 /**
  * Retrieves the end time of the video player and updates UI elements accordingly.
  */
-function get_video_player_end() {
+function get_video_player_end(event) {
+  event.preventDefault();
   time = Math.trunc(player.currentTime()) + start_time;
   displayValTwo.value = intToTime(time);
   sliderTwo.value = Math.trunc(time);
@@ -180,14 +182,15 @@ function get_video_player_end() {
 button_reset.addEventListener("click", resetVideoCut);
 button_reset.addEventListener("keydown", function (event) {
   if (event.key === " ") {
-    resetVideoCut();
+    resetVideoCut(event);
   }
 });
 
 /**
  * Resets the video cut to its initial state, updating UI elements and video player.
  */
-function resetVideoCut() {
+function resetVideoCut(event) {
+  event.preventDefault();
   displayValOne.value = intToTime(initialStart);
   sliderOne.value = initialStart;
   displayValTwo.value = intToTime(initialEnd);
