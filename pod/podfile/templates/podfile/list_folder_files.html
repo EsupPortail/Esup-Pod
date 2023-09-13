@@ -87,20 +87,16 @@
             <input type="hidden" name="type" value="{{type}}">
             {% endif %}
             <div class="custom-file">
-              <input
-                type="file"
-                class="d-none"
-                id="ufile"
-                name="ufile"
-                multiple
-              >
               <button id='podfile_submit_button' type="submit" class="d-none"></button>
-              <label for="ufile" class="btn nav-link" title="{% trans 'Upload Files' %}">
-                <span class="upload-file" id="upload-file-icon">
-                  <i class="bi bi-file-earmark-arrow-up-fill" aria-hidden="true"></i>
-                </span>
-                <span class="visually-hidden">{% trans "Upload Files" %}</span>
-              </label>
+              <label for="ufile" class="visually-hidden">{% trans "Upload Files" %}</label>
+              <input
+                  type="file"
+                  class="btn nav-link bi bi-file-earmark-arrow-up-fill podfile-icon-selector"
+                  id="ufile"
+                  name="ufile"
+                  title="{% trans "Upload Files" %}"
+                  multiple
+                >
             </div>
           </form>
         </li>

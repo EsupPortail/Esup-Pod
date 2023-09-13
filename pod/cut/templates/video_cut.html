@@ -40,11 +40,13 @@
 </span>
 
 <div id="wrapper_cut">
-  <div id="values_cut">
+  <div id="values_cut" class="bg-primary text-white">
     <form action="{% url 'video:cut:video_cut' slug=video.slug %}" method="POST" id="time_for_cut" accept-charset="utf-8" enctype="multipart/form-data">
       {% csrf_token %}
 
-      <i id="button_start" class="bi bi-align-start" aria-hidden="true" title="{% trans 'Get the video player time' %}"></i>
+      <button id="button_start" class="btn btn-link" title="{% trans 'Get the start time from the video player' %}">
+        <i class="bi bi-align-start" aria-hidden="true"></i>
+      </button>
       {{ form_cut.video }}
       <div class="time_input">
         <label for="range1">{% trans "Start" %}</label>
@@ -57,14 +59,19 @@
         <label for="range2">{% trans "End" %}</label>
         {{ form_cut.end }}
       </div>
-      <i id="button_end" class="bi bi-align-end" aria-hidden="true" title="{% trans 'Get the video player time' %}"></i>
+      <button id="button_end" class="btn btn-link" title="{% trans 'Get the end time from the video player' %}">
+        <i class="bi bi-align-end" aria-hidden="true"></i>
+      </button>
   </div>
   <div id="container_cut">
       <div class="slider-track"></div>
       <input type="range" class="pod-multi-range" name="start_slider" id="slider-1" min="0" max="{% firstof cutting.duration_in_int video.duration %}" value="{% firstof cutting.start_in_int '0' %}" oninput="slideOne()" title="{% trans 'Start' %}">
       <input type="range" class="pod-multi-range" name="end_slider" id="slider-2" min="0" max="{% firstof cutting.duration_in_int video.duration %}" value="{% firstof cutting.end_in_int video.duration %}" oninput="slideTwo()" title="{% trans 'End' %}">
   </div>
-  <a id="reset" class="btn btn btn-secondary btn-sm"><i class="bi bi-arrow-clockwise"></i>&nbsp;{% trans 'Reset' %}</a>
+  <a id="reset" href="#container_cut" class="btn btn-secondary btn-sm"
+     role="button" title="{% trans 'Reset to previous start and end times' %}">
+    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>&nbsp;{% trans 'Reset' %}
+  </a>
 </div>
 
 <hr>
@@ -72,7 +79,7 @@
   <div>
     <span class="float-end">
       <button type="button" class="btn btn-primary btn-sm m-2" data-bs-toggle="modal" data-bs-target="#ConfirmationModal"><i class="bi bi-scissors"></i>&nbsp;{% trans 'Cut' %}</button>
-      <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn btn-secondary btn-sm">
+      <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn-secondary btn-sm">
         <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans 'Back to the video' %}
       </a>
     </span>
