@@ -36,7 +36,7 @@
     const p2p_config = {
       segments:{
         // number of segments to pass for processing to P2P algorithm
-        forwardSegmentCount:50, // usually should be equal or greater than p2pDownloadMaxPriority and httpDownloadMaxPriority
+        // forwardSegmentCount:50, // usually should be equal or greater than p2pDownloadMaxPriority and httpDownloadMaxPriority
         swarmId: '{{ event.broadcaster.url }}',
       },
       loader:{
@@ -53,6 +53,7 @@
           {% endfor %}
           ]
         },
+        /*
         // how long to store the downloaded segments for P2P sharing
         cachedSegmentExpiration:86400000,
         // count of the downloaded segments to store for P2P sharing
@@ -85,6 +86,7 @@
 
         // allow to continue aborted P2P downloads via HTTP
         httpUseRanges: true,
+        */
       }
     };
 
