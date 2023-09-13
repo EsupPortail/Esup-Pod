@@ -78,4 +78,13 @@
     }
   }
   change_weekdays_display()
+
+  get_start_date = function() {
+    var start_date = document.querySelector('#id_start');
+    //start_date.value
+    var current_lang = document.querySelector("#pod-lang-select").textContent;
+    var options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    var formatter = new Intl.DateTimeFormat(current_lang, options).formatToParts();
+    return formatter
+  }
 </script>

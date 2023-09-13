@@ -196,11 +196,13 @@ advanced_options_btn.addEventListener("keydown", function(event) {
     advanced_options_btn.click();
   }
 });
-
+/**
+ * fixed calendar display in a modal
+ * change position from absolute to fixed
+*/
 const myModals = document.getElementsByClassName('modal');
 for (let i = 0; i < myModals.length; i++) {
   myModals[i].addEventListener('shown.bs.modal', () => {
-    // console.log("OPEN");
     // looking for calendarlink
     var calendarLinks = myModals[i].querySelectorAll('[id^="calendarlink"]');
     for(let i = 0; i < calendarLinks.length; i++) {
