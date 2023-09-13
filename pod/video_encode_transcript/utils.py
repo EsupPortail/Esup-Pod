@@ -161,7 +161,9 @@ def send_notification_email(video_to_encode, subject_prefix):
             )
             % {
                 "content_type": (
-                    _("The content") if subject_prefix == _("The transcripting") else _("The video")
+                    _("The content")
+                    if subject_prefix == _("The transcripting")
+                    else _("The video")
                 ),
                 "content_title": "<b>%s</b>" % video_to_encode.title,
                 "action": (
