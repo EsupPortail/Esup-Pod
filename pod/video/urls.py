@@ -9,7 +9,6 @@ from .views import (
     video_delete,
     video_transcript,
     dashboard,
-    bulk_update,
     my_videos,
     video_notes,
     video_xhr,
@@ -57,7 +56,6 @@ urlpatterns = [
     url(r"^add/$", video_add, name="video_add"),
     url(r"^edit/$", video_edit, name="video_edit"),
     url(r"^edit/(?P<slug>[\-\d\w]+)/$", video_edit, name="video_edit"),
-    url(r"^bulk_update/$", bulk_update, name="bulk_update"),
     url(
         r"^delete/(?P<slug>[\-\d\w]+)/$",
         video_delete,
