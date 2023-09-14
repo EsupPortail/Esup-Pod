@@ -260,7 +260,7 @@ class MeetingForm(forms.ModelForm):
                 not in self.cleaned_data.get("weekdays")
         )):
             raise ValidationError(
-                _("In case of weekly recurring, the day of the start date has to be selected")
+                _("In case of weekly recurring, the day of the start date must be selected.")
             )
 
     def clean_add_owner(self):

@@ -267,7 +267,7 @@ if(modal_recurring_fields) {
       select_days_values.push(select_days[i].value);
     }
     if(recurrence.value == "weekly" && !select_days_values.includes(""+day_of_start_date)) {
-      alert("{% trans "In case of weekly recurring, the day of the start date have to be checked" %}");
+      alert("{% trans "In case of weekly recurring, the day of the start date must be selected." %}");
       let see_recurring_fields_btn = document.getElementById('see_recurring_fields');
       if (see_recurring_fields_btn) see_recurring_fields_btn.click();
     }
