@@ -10,7 +10,7 @@ from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseNotAllowed, HttpResponseNotFound
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.http import QueryDict, Http404
-from django.core.exceptions import SuspiciousOperation
+from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
@@ -491,101 +491,8 @@ def theme_edit_save(request, channel):
 @login_required(redirect_field_name="referrer")
 def dashboard(request):
     """Render the logged user's dashboard (videos list/bulk update)"""
-    data_context = {}
-    site = get_current_site(request)
-    # Videos list which user is the owner + which user is an additional owner
-    videos_list = request.user.video_set.all().filter(
-        sites=site
-    ) | request.user.owners_videos.all().filter(sites=site)
-    videos_list = videos_list.distinct()
-
-    if USER_VIDEO_CATEGORY:
-        cats = Category.objects.prefetch_related("video").filter(owner=request.user)
-        """
-        " user's videos categories format =>
-        " [{
-        " 'title': cat_title,
-        " 'slug': cat_slug,
-        " 'videos': [v_slug, v_slug...] },]
-        """
-        if request.GET.get("category") is not None:
-            category_checked = request.GET.get("category")
-            videos_list = get_object_or_404(Category, title=category_checked).video.all()
-
-        videos_without_cat = videos_list.exclude(category__in=cats)
-        cats = list(
-            map(
-                lambda c: {
-                    "id": c.id,
-                    "title": c.title,
-                    "slug": c.slug,
-                    "videos": list(c.video.values_list("slug", flat=True)),
-                },
-                cats,
-            )
-        )
-        cats.insert(0, len(videos_list))
-        cats = json.dumps(cats, ensure_ascii=False)
-        data_context["categories"] = cats
-        data_context["videos_without_cat"] = videos_without_cat
-
-    videos_list = get_filtered_videos_list(request, videos_list)
-    sort_field = request.GET.get("sort")
-    sort_direction = request.GET.get("sort_direction")
-    videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
-
-    count_videos = len(videos_list)
-
-    page = request.GET.get("page", 1)
-    full_path = ""
-    if page:
-        full_path = (
-            request.get_full_path()
-                .replace("?page=%s" % page, "")
-                .replace("&page=%s" % page, "")
-        )
-
-    paginator = Paginator(videos_list, 12)
-    videos = get_paginated_videos(paginator, page)
-
-    if request.is_ajax():
-        return render(
-            request,
-            "videos/video_list_selectable.html",
-            {
-                "videos": videos,
-                "full_path": full_path,
-                "count_videos": count_videos,
-                "cursus_codes": CURSUS_CODES,
-            },
-        )
-
-    default_owner = request.user.pk
-    form = VideoForm(
-        is_staff=request.user.is_staff,
-        is_superuser=request.user.is_superuser,
-        current_user=request.user,
-        initial={"owner": default_owner},
-    )
-
-    data_context["form"] = form
-    data_context["use_category"] = USER_VIDEO_CATEGORY
-    data_context["videos"] = videos
-    data_context["count_videos"] = count_videos
-    data_context["cursus_codes"] = CURSUS_CODES
-    data_context["full_path"] = full_path
-    data_context["owners"] = request.GET.getlist("owner")
-    data_context["page_title"] = "Dashboard"
-
-    return render(request, "videos/dashboard.html", data_context)
-
-
-@ajax_required
-@csrf_protect
-@login_required(redirect_field_name="referrer")
-def bulk_update(request):
-    """Bulk update of a video list"""
     if request.method == "POST":
+
         data = json.loads(request.body.decode("utf-8"))
 
         selected_videos = data["selectedVideos"]
@@ -593,10 +500,13 @@ def bulk_update(request):
         value = data["value"]
 
         videos = Video.objects.filter(slug__in=selected_videos)
+
         if videos.exists():
+            updated_videos = []
 
             if action == "delete":
                 for video in videos:
+                    video_delete()
                     video.delete()
             else:
                 field = Video._meta.get_field(action)
@@ -617,10 +527,112 @@ def bulk_update(request):
 
                     for video in videos:
                         setattr(video, action, value)
-                        video.full_clean(exclude=['transcript'])
-                        video.save(force_update=True)
+                        try:
+                            video.full_clean(exclude=['transcript'])
+                            video.save(force_update=True)
+                            updated_videos.append(Video.objects.get(pk=video.id).slug)
+                        except ValidationError as e:
+                            error = '; '.join(e.messages)
+                            return JsonResponse({"error": error}, status=404)
 
-        return HttpResponse(json.dumps("OK"), content_type="application/json")
+            return JsonResponse({
+                'selected_videos': selected_videos,
+                'updated_videos': updated_videos
+            })
+
+    data_context = {}
+    site = get_current_site(request)
+    # Videos list which user is the owner + which user is an additional owner
+    videos_list = request.user.video_set.all().filter(
+        sites=site
+    ) | request.user.owners_videos.all().filter(sites=site)
+    videos_list = videos_list.distinct()
+
+    if USER_VIDEO_CATEGORY:
+
+        cats = Category.objects.prefetch_related("video").filter(owner=request.user)
+        """
+        " user's videos categories format =>
+        " [{
+        " 'title': cat_title,
+        " 'slug': cat_slug,
+        " 'videos': [v_slug, v_slug...] },]
+        """
+        if request.GET.get("category") is not None:
+            category_checked = request.GET.get("category")
+            videos_list = get_object_or_404(Category, slug=category_checked, owner=request.user).video.all()
+
+        videos_without_cat = videos_list.exclude(category__in=cats)
+        cats = list(
+            map(
+                lambda c: {
+                    "id": c.id,
+                    "title": c.title,
+                    "slug": c.slug,
+                    "videos": list(c.video.values_list("slug", flat=True)),
+                },
+                cats,
+            )
+        )
+        cats.insert(0, len(videos_list))
+        cats = json.dumps(cats, ensure_ascii=False)
+        data_context["categories"] = cats
+        data_context["videos_without_cat"] = videos_without_cat
+
+    page = request.GET.get("page", 1)
+    full_path = ""
+    if page:
+        full_path = (
+            request.get_full_path()
+            .replace("?page=%s" % page, "")
+            .replace("&page=%s" % page, "")
+        )
+
+    videos_list = get_filtered_videos_list(request, videos_list)
+    sort_field = request.GET.get("sort")
+    sort_direction = request.GET.get("sort_direction")
+    videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+    owner_filter = owner_is_searchable(request.user)
+
+    count_videos = len(videos_list)
+
+    paginator = Paginator(videos_list, 12)
+    videos = get_paginated_videos(paginator, page)
+
+    if request.is_ajax():
+        return render(
+            request,
+            "videos/video_list_selectable.html",
+            {
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos,
+                "cursus_codes": CURSUS_CODES,
+                "owner_filter": owner_filter,
+            },
+        )
+
+    default_owner = request.user.pk
+    form = VideoForm(
+        is_staff=request.user.is_staff,
+        is_superuser=request.user.is_superuser,
+        current_user=request.user,
+        initial={"owner": default_owner},
+    )
+
+    data_context["form"] = form
+    data_context["use_category"] = USER_VIDEO_CATEGORY
+    data_context["videos"] = videos
+    data_context["count_videos"] = count_videos
+    data_context["cursus_codes"] = CURSUS_CODES
+    data_context["full_path"] = full_path
+    data_context["owners"] = request.GET.getlist("owner")
+    data_context["sort_field"] = sort_field
+    data_context["sort_direction"] = request.GET.get("sort_direction")
+    data_context["owner_filter"] = owner_filter
+    data_context["page_title"] = "Dashboard"
+
+    return render(request, "videos/dashboard.html", data_context)
 
 
 @login_required(redirect_field_name="referrer")
@@ -1056,7 +1068,6 @@ def toggle_render_video_user_can_see_video(
 def toggle_render_video_when_is_playlist_player(request):
     """Toggle `render_video()` when the user want to play a playlist."""
     playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-    print(playlist.visibility)
     if request.user.is_authenticated:
         video = (
             Video.objects.filter(

@@ -1,6 +1,5 @@
 var infinite;
 var checkedInputs = [];
-var listUser;
 
 let loader = document.querySelector(".lds-ring");
 let infinite_loading = document.querySelector(".infinite-loading");
@@ -12,6 +11,13 @@ onBeforePageLoad = function () {
 };
 onAfterPageLoad = function () {
   infinite_loading.style.display = "none";
+  if (
+      urlVideos === "/video/dashboard/"
+      && selectedVideosCards
+      && selectedVideosCards.length !== 0
+  ){
+    setSelectedVideos();
+  }
   let footer = document.querySelector("footer.static-pod");
   if (!footer) return;
   footer.classList.add("small");
@@ -88,6 +94,13 @@ function refreshVideosSearch() {
         pageNext = document.querySelector("a.infinite-more-link").dataset
           .nextpagenumber;
         refreshInfiniteLoader(url, pageNext);
+      }
+      if (
+          urlVideos === "/video/dashboard/"
+          && selectedVideosCards
+          && selectedVideosCards.length !== 0
+      ){
+        setSelectedVideos();
       }
     })
     .catch((error) => {

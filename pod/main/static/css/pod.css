@@ -659,6 +659,16 @@ div.card a img {
 }
 
 /* Dashboard */
+#bulk_update_container{
+    background-color: var(--pod-background-neutre2-bloc);
+    padding: 1em;
+    border-radius: var(--bs-border-radius);
+}
+
+#bulk_update_instructions{
+    color: var(--pod-primary);
+}
+
 #mutliple_actions{
     position: absolute;
     top: 27px;

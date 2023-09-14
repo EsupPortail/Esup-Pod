@@ -1,5 +1,3 @@
-var dashboardFormContainer = document.getElementById("dashboardFormContainer");
-var dashboardForm = document.getElementById("dashboardForm");
 var bulkUpdateActionSelect = document.getElementById("bulkUpdateActionSelect");
 var confirmBulkUpdateBtn = document.getElementById("confirmBulkUpdateBtn");
 var action;
@@ -8,12 +6,10 @@ var value;
 bulkUpdateActionSelect.addEventListener("change", function() {
     // Add event listener on change Action Select
     action = bulkUpdateActionSelect.value;
-    if(action !== "delete" && action != ""){
-        appendDynamicForm(action);
-    }
+    appendDynamicForm(action);
 });
 
-function bulk_update() {
+async function bulk_update() {
   // Async POST request to bulk update videos
   let element = document.getElementById("id_"+action);
   if(element.hasAttribute("multiple")){
@@ -21,8 +17,9 @@ function bulk_update() {
   }else{
     value = document.getElementById("id_"+action).value;
   }
+  selectedVideosCards = getListSelectedVideos();
 
-  fetch(urlVideosUpdate, {
+  let response = await fetch(urlVideos, {
     method: "POST",
     headers: {
       "X-Requested-With": "XMLHttpRequest",
@@ -31,19 +28,23 @@ function bulk_update() {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-        "selectedVideos" : getListSelectedVideos(),
+        "selectedVideos" : selectedVideosCards,
         "action" : action,
         "value" : value
     })
-  })
-    .then((response) => response.json())
-    .then((data) => {
-    })
-    .catch((error) => {
-      document.getElementById("videos_list").innerHTML = gettext(
-            "An Error occurred while processing."
-      );
-    });
+  });
+    let result = await response.text();
+    if(response.ok){
+        data = JSON.parse(result);
+        Array.from(data["updated_videos"]).forEach((v_slug) => {
+            selectedVideosCards.push(v_slug);
+        });
+        showalert(gettext("The changes have been saved."), "alert-success");
+        refreshVideosSearch();
+    }else{
+        showalert(JSON.parse(result)["error"],"alert-danger");
+    }
+    bootstrap.Modal.getInstance(document.getElementById('modalConfirmBulkUpdate')).toggle();
 }
 
 function appendDynamicForm(action){
@@ -53,7 +54,12 @@ function appendDynamicForm(action){
         form_group.classList.add("d-none");
     });
     let input = document.getElementById('id_'+action);
-    input.closest(".form-group").classList.remove("d-none");
+    if(input){
+        if(action == "restricted_access_to_groups"){
+
+        }
+            input.closest(".form-group").classList.remove("d-none");
+    }
 }
 
 confirmBulkUpdateBtn.addEventListener("click", (e) => {

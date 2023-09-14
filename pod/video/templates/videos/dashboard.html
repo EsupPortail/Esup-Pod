@@ -2,6 +2,12 @@
 {% load i18n %}
 {% load static %}
 
+{% block more_style %}
+  {% if use_category %}
+    <link rel="stylesheet" href="{% static 'css/video_category.css' %}?ver={{VERSION}}">
+  {% endif %}
+{% endblock more_style %}
+
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">Dashboard</li>{% endblock %}
 
   <div class="row">
@@ -11,10 +17,10 @@
   </div>
 
 {% block page_content %}
-  <!-- End Loader -->
-  {% if use_category %}
-    {% include "videos/category_modal.html" %}
-  {% endif %}
+
+{% if use_category %}
+  {% include "videos/category_modal.html" %}
+{% endif %}
 
 <div class="modal fade" id="modalConfirmBulkUpdate" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -34,57 +40,61 @@
   </div>
 </div>
 
-<p id="bulkUpdateInstructions">Select below an action, check the videos you want to modify and press Apply.</p>
+  <div id="bulk_update_container">
 
-  <div id="bulk_update_container" class="row">
-    <div id="bulk_update_form">
+    <h2>Multiple actions</h2>
+    <p id="bulk_update_instructions">Select below an action, check the videos you want to modify and press Apply. You can also refine the videos displayed using the filters on the right.</p>
 
-        <select id="bulkUpdateActionSelect" name="action" class="form-select mb-2" aria-label="Default select example">
-          <option value="" selected>Choose an action</option>
-          <optgroup label="Edit a field">
-            <option value="title">Title</option>
-            <option value="date_added">Date added</option>
-            <option value="date_delete">Date to delete</option>
-            <option value="date_evt">Date of the event field</option>
-            <option value="type">Type</option>
-            <option value="cursus">Cursus</option>
-            <option value="main_lang">Main lang</option>
-            <option value="discipline">Discipline</option>
-          </optgroup>
-          <option value="is_draft">Draft mode</option>
-          <option value="is_restricted">Restrict access</option>
-          <option value="password">Add a password</option>
-          <option value="additionalOwner">Add an additional owner</option>
-          <option value="thumbnail">Edit the thumbnail</option>
-          <option value="delete">Delete</option>
-        </select>
+    <select id="bulkUpdateActionSelect" name="action" class="form-select mb-2" aria-label="Choose an action">
+      <option value="" selected>Choose an action</option>
+      <optgroup label="Edit a field">
+        <option value="title">Title</option>
+        <option value="date_added">Date added</option>
+        <option value="date_delete">Date to delete</option>
+        <option value="date_evt">Date of the event field</option>
+        <option value="type">Type</option>
+        <option value="cursus">Cursus</option>
+        <option value="main_lang">Main lang</option>
+        <option value="discipline">Discipline</option>
+      </optgroup>
+      <option value="is_draft">Draft mode</option>
+      <option value="is_restricted">Restrict access</option>
+      <option value="password">Add a password</option>
+      <option value="additional_owners">Add an additional owner</option>
+      <option value="thumbnail">Edit the thumbnail</option>
+      <option value="delete">Delete</option>
+    </select>
 
-      <div id="dashboardFormContainer">
-        <form id="dashboardForm" method="get" action="#" accept-charset="utf-8">
-          {% csrf_token %}
-          {% if form.errors %}
-            <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
-              {{form.errors}}
-          {% endif %}
-          {% for field in form %}
-          <div class="form-group d-none">
-            {{field}}
-          </div>
-          {% endfor %}
-        </form>
-      </div>
-
-      <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalConfirmBulkUpdate" disabled>
-        Appliquer <span id="countSelectedVideosBadge" class="badge bg-secondary">0 vidéos</span></button>
+    <div id="dashboardFormContainer">
+      <form id="dashboardForm" method="post" action="{% url 'video:dashboard' %}" accept-charset="utf-8">
+        {% csrf_token %}
+        {% if form.errors %}
+          <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+            {{form.errors}}
+        {% endif %}
+        {% for field in form %}
+        <div class="form-group d-none">
+          {{field}}
+        {% if field.help_text %}
+              <small id="{{field.id_for_label}}Help" class="form-text"> {{ field.help_text|safe }}</small>
+        {% endif %}
+        </div>
+        {% endfor %}
+      </form>
     </div>
+
+    <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalConfirmBulkUpdate" disabled>
+      Apply <span id="countSelectedVideosBadge" class="badge bg-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="">0 videos</span></button>
+    <button id="resetSelectedVideosBtn" type="button" class="btn btn-secondary mt-2" onclick="clearSelectedVideo()" disabled>
+      Clear selection</button>
+  </div>
   <div>
   {% if videos.paginator.count == 0 %}
     <h2 class="h4">{% trans "No video found"%}</h2>
     <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the "Add a new video" button to add one'%}</p>
   {% else %}
-    <div class="row">
-    <h2 id="video_count" class="col-12">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
-    <div class="col-12"></div>
+    <div class="row mt-3">
+      <h2 id="video_count" class="col-8">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
       <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms col-4 mb-2">
         {% include "videos/video_sort_select.html" %}
       </form>
@@ -96,7 +106,6 @@
     </div>
   {% endif %}
   </div>
-  </div>
 
 {% endblock page_content %}
 
@@ -106,21 +115,36 @@
 
 {% block more_script %}
 <script>
-  var urlVideos = "{% url 'video:dashboard' %}";
-  var urlVideosUpdate = "{% url 'video:bulk_update' %}";
+  const urlVideos = "{% url 'video:dashboard' %}";
   var csrftoken = "{{ csrf_token }}";
   var page = 1;
   var nextPage = false;
-  var update_fields = true;
+
+  {% if videos.has_next %}
+      page = parseInt("{{videos.next_page_number}}");
+      nextPage = true;
+  {% endif %}
 </script>
 <script src="{% static 'js/infinite.js' %}"></script>
-<script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
-<script src="{% static 'js/dashboard.js' %}"></script>
+<script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/dashboard.js' %}?ver={{VERSION}}"></script>
 {{form.media}}
 <script>
 {% if use_category %}
   const USE_CATEGORY = true;
   const CATEGORIES_DATA = {{ categories | safe }};
+  const BASE_URL = `${window.location.origin}${window.location.pathname}categories/`;
+  {# create base url link for video management #}
+  {% url 'video:video_edit' slug="abcd" as video_edit %}
+  const EDIT_URL = `{{ video_edit|slice:"-5" }}`;
+  {% url 'video:completion:video_completion' slug="abcd" as video_completion %}
+  const COMPLETION_URL = `{{ video_completion|slice:"-5" }}`;
+  {% url 'video:chapter:video_chapter' slug="abcd" as video_chapter %}
+  const CHAPTER_URL = `{{ video_chapter|slice:"-5" }}`;
+  {% url 'video:video_delete' slug="abcd" as video_delete %}
+  const DELETE_URL = `{{ video_delete|slice:"-5" }}`;
+  const VIDEO_URL = `${window.location.origin}/video/`;
   </script>
   <script defer src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
 {% else %}
