@@ -68,23 +68,24 @@
   change_weekdays_display = function() {
     if (recurrence.value == "weekly") {
       document.getElementById("weekdays_recurring").style.display = 'block';
+      if(day_of_start_date != -1) {
+        let day = document.getElementById("id_days_of_week_" + day_of_start_date);
+        if(day) day.checked = true;
+      }
     } else {
       document.getElementById("weekdays_recurring").style.display = 'none';
     }
     if (recurrence.value == "monthly") {
       document.getElementById("monthly_recurring").style.display = 'block';
+      /* In case of monthly recurring, we unchecked all days */
+      for(let i = 0; i < 7; i++) {
+        let day = document.getElementById("id_days_of_week_" + i);
+        if(day) day.checked = false;
+      }
     } else {
       document.getElementById("monthly_recurring").style.display = 'none';
     }
   }
-  change_weekdays_display()
+document.addEventListener("load", change_weekdays_display);
 
-  get_start_date = function() {
-    var start_date = document.querySelector('#id_start');
-    //start_date.value
-    var current_lang = document.querySelector("#pod-lang-select").textContent;
-    var options = { year: "numeric", month: "2-digit", day: "2-digit" };
-    var formatter = new Intl.DateTimeFormat(current_lang, options).formatToParts();
-    return formatter
-  }
 </script>

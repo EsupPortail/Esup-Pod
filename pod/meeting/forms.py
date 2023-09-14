@@ -179,12 +179,13 @@ class MeetingForm(forms.ModelForm):
                 "fields": ["start", "start_time", "expected_duration"],
                 "additional_data": """
                 <div class="m-1">
-                <button type="button" class="%s" data-bs-toggle="%s" data-bs-target="%s">
+                <button type="button" id="%s" class="%s" data-bs-toggle="%s" data-bs-target="%s">
                     <i class="bi bi-calendar3-range"></i> %s
                 </button>
                 </div>
             """
                 % (
+                    "see_recurring_fields",
                     "btn btn-primary btn-sm",
                     "modal",
                     "#recurring_fields",
@@ -242,6 +243,26 @@ class MeetingForm(forms.ModelForm):
         else:
             form.remove_field("days_of_week")
 
+    def clean_start_date(self, cleaned_data):
+        if ("start" in cleaned_data.keys()
+            and "recurring_until" in cleaned_data.keys()
+            and cleaned_data["recurring_until"] is not None
+            and (
+                cleaned_data["start"] > cleaned_data["recurring_until"]
+        )):
+            raise ValidationError(_("Start date must be less than recurring until date"))
+
+        if (self.cleaned_data.get("weekdays")
+            and cleaned_data.get("start")
+            and self.cleaned_data.get("recurrence") == "weekly"
+            and (
+                str(cleaned_data.get("start").weekday())
+                not in self.cleaned_data.get("weekdays")
+        )):
+            raise ValidationError(
+                _("In case of weekly recurring, the day of the start date has to be selected")
+            )
+
     def clean_add_owner(self, cleaned_data):
         if "additional_owners" in cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
@@ -272,13 +293,8 @@ class MeetingForm(forms.ModelForm):
             tab = self.cleaned_data["days_of_week"]
             self.cleaned_data["weekdays"] = "".join(tab)
 
-        if (
-            "start" in cleaned_data.keys()
-            and "recurring_until" in cleaned_data.keys()
-            and cleaned_data["recurring_until"] is not None
-            and cleaned_data["start"] > cleaned_data["recurring_until"]
-        ):
-            raise ValidationError(_("Start date must be less than recurring until date"))
+        self.clean_start_date(cleaned_data)
+
         self.clean_add_owner(cleaned_data)
         if (
             "restrict_access_to_groups" in cleaned_data.keys()
