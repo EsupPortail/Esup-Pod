@@ -507,15 +507,13 @@ class Meeting(models.Model):
                 + timedelta(days=increment)
                 + timedelta(weeks=self.frequency - 1)
             )
-
             # Look in this week and be sure to find
             weekday = 0
-            increment = 1
+            increment = 0
             while weekday + increment <= 6:
                 if str(weekday + increment) in self.weekdays:
                     return next_date + timedelta(days=increment)
                 increment += 1
-
             raise RuntimeError("You should have found the next weekly occurrence by now.")
 
         if self.recurrence == Meeting.MONTHLY:

@@ -243,35 +243,35 @@ class MeetingForm(forms.ModelForm):
         else:
             form.remove_field("days_of_week")
 
-    def clean_start_date(self, cleaned_data):
-        if ("start" in cleaned_data.keys()
-            and "recurring_until" in cleaned_data.keys()
-            and cleaned_data["recurring_until"] is not None
+    def clean_start_date(self):
+        if ("start" in self.cleaned_data.keys()
+            and "recurring_until" in self.cleaned_data.keys()
+            and self.cleaned_data["recurring_until"] is not None
             and (
-                cleaned_data["start"] > cleaned_data["recurring_until"]
+                self.cleaned_data["start"] > self.cleaned_data["recurring_until"]
         )):
             raise ValidationError(_("Start date must be less than recurring until date"))
 
         if (self.cleaned_data.get("weekdays")
-            and cleaned_data.get("start")
+            and self.cleaned_data.get("start")
             and self.cleaned_data.get("recurrence") == "weekly"
             and (
-                str(cleaned_data.get("start").weekday())
+                str(self.cleaned_data.get("start").weekday())
                 not in self.cleaned_data.get("weekdays")
         )):
             raise ValidationError(
                 _("In case of weekly recurring, the day of the start date has to be selected")
             )
 
-    def clean_add_owner(self, cleaned_data):
-        if "additional_owners" in cleaned_data.keys() and isinstance(
+    def clean_add_owner(self):
+        if "additional_owners" in self.cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
         ):
             meetingowner = (
                 self.instance.owner
                 if hasattr(self.instance, "owner")
-                else cleaned_data["owner"]
-                if "owner" in cleaned_data.keys()
+                else self.cleaned_data["owner"]
+                if "owner" in self.cleaned_data.keys()
                 else self.current_user
             )
             if (
@@ -283,26 +283,26 @@ class MeetingForm(forms.ModelForm):
                 )
 
     def clean(self):
-        cleaned_data = super(MeetingForm, self).clean()
-        if "expected_duration" in cleaned_data.keys():
+        self.cleaned_data = super(MeetingForm, self).clean()
+        if "expected_duration" in self.cleaned_data.keys():
             self.cleaned_data["expected_duration"] = timezone.timedelta(
                 hours=self.cleaned_data["expected_duration"]
             )
 
-        if "days_of_week" in cleaned_data.keys():
+        if "days_of_week" in self.cleaned_data.keys():
             tab = self.cleaned_data["days_of_week"]
             self.cleaned_data["weekdays"] = "".join(tab)
 
-        self.clean_start_date(cleaned_data)
+        self.clean_start_date()
 
-        self.clean_add_owner(cleaned_data)
+        self.clean_add_owner()
         if (
-            "restrict_access_to_groups" in cleaned_data.keys()
-            and len(cleaned_data["restrict_access_to_groups"]) > 0
+            "restrict_access_to_groups" in self.cleaned_data.keys()
+            and len(self.cleaned_data["restrict_access_to_groups"]) > 0
         ):
-            cleaned_data["is_restricted"] = True
+            self.cleaned_data["is_restricted"] = True
 
-        if "start_time" in cleaned_data.keys() and "start" in cleaned_data.keys():
+        if "start_time" in self.cleaned_data.keys() and "start" in self.cleaned_data.keys():
             start_time = datetime.datetime.strptime(
                 self.cleaned_data["start_time"], "%H:%M:%S"
             ).time()
@@ -312,7 +312,7 @@ class MeetingForm(forms.ModelForm):
             start_datetime = timezone.make_aware(start_datetime)
             self.instance.start_at = start_datetime
 
-        if "voice_bridge" in cleaned_data.keys() and cleaned_data[
+        if "voice_bridge" in self.cleaned_data.keys() and self.cleaned_data[
             "voice_bridge"
         ] not in range(10000, 99999):
             raise ValidationError(
