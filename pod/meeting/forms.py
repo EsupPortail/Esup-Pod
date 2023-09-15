@@ -244,6 +244,10 @@ class MeetingForm(forms.ModelForm):
             form.remove_field("days_of_week")
 
     def clean_start_date(self):
+        """Check two things:
+        - the start date is before the recurrence deadline.
+        - in the case of weekly recurrence, the start day must be selected from the list of weekdays.
+        The function raise a validation error if a condition is not met."""
         if ("start" in self.cleaned_data.keys()
             and "recurring_until" in self.cleaned_data.keys()
             and self.cleaned_data["recurring_until"] is not None
@@ -264,6 +268,7 @@ class MeetingForm(forms.ModelForm):
             )
 
     def clean_add_owner(self):
+        """Check if meeting owner not in additional owners."""
         if "additional_owners" in self.cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
         ):
