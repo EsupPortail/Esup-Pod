@@ -195,7 +195,7 @@
     player = videojs('podvideoplayer', options, function(){});
     {% if use_video_p2p %}
     if (p2pml.hlsjs.Engine.isSupported()) {
-      p2pml.hlsjs.initVideoJsContribHlsJsPlayer(player);
+      p2pml.hlsjs.initVideoJsHlsJsPlugin(player);
     }
     {% endif %}
     player.ready(() => {
