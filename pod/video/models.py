@@ -963,8 +963,8 @@ class Video(models.Model):
         return new_year
 
     def affiliation_is_array(self, affiliation):
-        """ Check if the user affiliation is an array of strings or a simple string """
-        return True if affiliation.find('[') != -1 else False
+        """Check if the user affiliation is an array of strings or a simple string"""
+        return True if affiliation.find("[") != -1 else False
 
     def get_player_height(self):
         """
