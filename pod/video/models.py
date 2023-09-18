@@ -874,8 +874,8 @@ class Video(models.Model):
                     newid = 1
             # fix date_delete depends of owner affiliation
             ACCOMMODATION_YEARS = getattr(settings, "ACCOMMODATION_YEARS", {})
-            if ACCOMMODATION_YEARS.get(self.owner.owner.affiliation):
-                new_year = ACCOMMODATION_YEARS[self.owner.owner.affiliation]
+            if len(ACCOMMODATION_YEARS) and len(self.owner.owner.affiliation):
+                new_year = self.get_date_delete_for_affiliation(ACCOMMODATION_YEARS)
                 self.date_delete = date(
                     date.today().year + new_year,
                     date.today().month,
@@ -940,6 +940,31 @@ class Video(models.Model):
             return ""
 
     get_encoding_step.fget.short_description = _("Encoding step")
+
+    def get_date_delete_for_affiliation(self, accommodation_years):
+        """
+        Get the calculated date of deletion according to multi-values field affiliation.
+
+        If the affiliation field is an array (the user have several affiliations)
+        and their deletion deadlines exist, then the largest value (the longest date)
+        will be applied to the video.
+        """
+        if self.affiliation_is_array(self.owner.owner.affiliation):
+            years = (
+                accommodation_years.get(key)
+                for key in self.owner.owner.affiliation
+                if key in accommodation_years
+            )
+            new_year = max(years)
+        else:
+            new_year = accommodation_years.get(self.owner.owner.affiliation)
+        if new_year is None:
+            new_year = DEFAULT_YEAR_DATE_DELETE
+        return new_year
+
+    def affiliation_is_array(self, affiliation):
+        """ Check if the user affiliation is an array of strings or a simple string """
+        return True if affiliation.find('[') != -1 else False
 
     def get_player_height(self):
         """
