@@ -26,6 +26,8 @@ from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.core.validators import MinLengthValidator
+from django.core.validators import MaxValueValidator
+from django.core.validators import MinValueValidator
 from django.db.models import F, Q
 
 
@@ -208,6 +210,7 @@ class Meeting(models.Model):
     frequency = models.PositiveIntegerField(
         verbose_name=_("Repeat each time"),
         default=1,
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
         help_text=_(
             "The meeting will be repeat each time of value specify."
             " i.e: each 3 days if recurring daily"
@@ -438,7 +441,9 @@ class Meeting(models.Model):
                         self.reset_recurrence()
                     next_occurrence = self.start
                     for _i in range(self.nb_occurrences - 1):
-                        next_occurrence = self.next_occurrence(next_occurrence)
+                        next_occurrence = self.next_occurrence(
+                            next_occurrence + timedelta(days=1)
+                        )
                     self.recurring_until = next_occurrence
                 # Infinite recurrence... do nothing
             else:
@@ -472,15 +477,15 @@ class Meeting(models.Model):
 
     # ##############################    Meeting occurences
     def next_occurrence_from_today(self):
-        if self.start == timezone.now().date():
-            # start_datetime = dt.combine(self.start, self.start_time)
-            # start_datetime = timezone.make_aware(start_datetime)
+        next_one = self.next_occurrence(timezone.now().date())
+        if next_one == timezone.now().date():
             start_datetime = self.start_at + self.expected_duration
             if start_datetime > timezone.now():
-                return self.start
-        next_one = self.next_occurrence(self.start)
-        while next_one < timezone.now().date():
-            next_one = self.next_occurrence(next_one)
+                return next_one
+            else:
+                return self.next_occurrence(
+                    timezone.now().date() + timedelta(days=1)
+                )
         return next_one
 
     def next_occurrence(self, current_date):  # noqa: C901
@@ -494,7 +499,7 @@ class Meeting(models.Model):
             return current_date + timedelta(days=self.frequency)
 
         if self.recurrence == Meeting.WEEKLY:
-            increment = 1
+            increment = 0
             # Look in the current week
             weekday = current_date.weekday()
             while weekday + increment <= 6:
@@ -553,7 +558,7 @@ class Meeting(models.Model):
             while new_start <= real_end:
                 if new_start >= start:
                     occurrences.append(new_start)
-                new_start = self.next_occurrence(new_start)
+                new_start = self.next_occurrence(new_start + timedelta(days=1))
             return occurrences
 
         # check if event is in the period

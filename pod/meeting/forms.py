@@ -267,6 +267,9 @@ class MeetingForm(forms.ModelForm):
                 _("In case of weekly recurring, the day of the start date must be selected.")
             )
 
+        if not self.cleaned_data.get('recurring_until'):
+            self.instance.recurring_until = None
+
     def clean_add_owner(self):
         """Check if meeting owner not in additional owners."""
         if "additional_owners" in self.cleaned_data.keys() and isinstance(
@@ -365,6 +368,8 @@ class MeetingForm(forms.ModelForm):
                 self.remove_field(field)
         # remove start_at
         self.remove_field("start_at")
+        # set min frequency to 1
+        self.fields["frequency"].widget.attrs["min"] = 1
 
     def remove_field(self, field):
         if self.fields.get(field):
