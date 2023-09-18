@@ -944,6 +944,13 @@ class Video(models.Model):
     get_encoding_step.fget.short_description = _("Encoding step")
 
     def get_date_delete_for_affiliation(self, accommodation_years):
+        """
+        Get the calculated date of deletion according to multi-values field affiliation.
+
+        If the affiliation field is an array (the user have several affiliations)
+        and their deletion deadlines exist, then the largest value (the longest date)
+        will be applied to the video.
+        """
         if self.owner.owner.affiliation.find('[') != -1:
             years = (
                 accommodation_years.get(key)
