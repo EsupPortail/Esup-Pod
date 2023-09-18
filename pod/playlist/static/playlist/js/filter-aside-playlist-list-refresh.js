@@ -46,15 +46,17 @@ function refreshPlaylistsSearch() {
         });
 }
 
-
-// Add trigger event to manage sort direction.
-document
-    .getElementById('sort_direction_label')
-    .addEventListener('click', function (e) {
-        e.preventDefault();
-        toggleSortDirection();
+let playlist_list = document.getElementById("playlists_list");
+if (playlist_list.dataset.numberVideos >= 2) {
+    // Add trigger event to manage sort direction.
+    document
+        .getElementById('sort_direction_label')
+        .addEventListener('click', function (e) {
+            e.preventDefault();
+            toggleSortDirection();
+            refreshPlaylistsSearch();
+        });
+    document.getElementById('sort').addEventListener('change', function (e) {
         refreshPlaylistsSearch();
     });
-document.getElementById('sort').addEventListener('change', function (e) {
-    refreshPlaylistsSearch();
-});
+}
