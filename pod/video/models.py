@@ -951,7 +951,7 @@ class Video(models.Model):
         and their deletion deadlines exist, then the largest value (the longest date)
         will be applied to the video.
         """
-        if self.owner.owner.affiliation.find('[') != -1:
+        if self.affiliation_is_array(self.owner.owner.affiliation):
             years = (
                 accommodation_years.get(key)
                 for key in self.owner.owner.affiliation
@@ -963,6 +963,10 @@ class Video(models.Model):
         if new_year is None:
             new_year = DEFAULT_YEAR_DATE_DELETE
         return new_year
+
+    def affiliation_is_array(self, affiliation):
+        """ Check if the user affiliation is an array of strings or a simple string """
+        return True if affiliation.find('[') != -1 else False
 
     def get_player_height(self):
         """
