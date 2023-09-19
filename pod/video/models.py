@@ -859,6 +859,11 @@ class Video(models.Model):
         verbose_name = _("video")
         verbose_name_plural = _("videos")
 
+    def set_password(self):
+        """Encrypt the password if video is protected. An encrypted password cannot be re-encrypted."""
+        if self.password and not self.password.startswith(('pbkdf2', 'sha256$')):
+            self.password = make_password(self.password, hasher="pbkdf2_sha256")
+
     def save(self, *args, **kwargs):
         """Store a video object in db."""
         newid = -1
@@ -888,8 +893,7 @@ class Video(models.Model):
         newid = "%04d" % newid
         self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
-        if self.password and not self.password.startswith(('pbkdf2', 'sha256$')):
-            self.password = make_password(self.password, hasher="pbkdf2_sha256")
+        self.set_password()
         super(Video, self).save(*args, **kwargs)
 
     def __str__(self):

@@ -57,14 +57,16 @@ def fix_transcript(sender, **kwargs):
     Video.objects.filter(transcript="1").update(transcript=F("main_lang"))
     Video.objects.filter(transcript="0").update(transcript="")
 
+
 def update_video_passwords(sender, **kwargs):
-        """Encrypt all video passwords."""
-        from pod.video.models import Video
-        from django.contrib.auth.hashers import make_password
-        for video in Video.objects.all():
-            if video.password and not video.password.startswith(('pbkdf2', 'sha256$')):
-                video.password = make_password(video.password, hasher="pbkdf2_sha256")
-                video.save()
+    """Encrypt all video passwords."""
+    from pod.video.models import Video
+    from django.contrib.auth.hashers import make_password
+    for video in Video.objects.all():
+        if video.password and not video.password.startswith(('pbkdf2', 'sha256$')):
+            video.password = make_password(video.password, hasher="pbkdf2_sha256")
+            video.save()
+
 
 class VideoConfig(AppConfig):
     name = "pod.video"
