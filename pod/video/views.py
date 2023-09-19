@@ -2222,7 +2222,7 @@ def stats_view(request, slug=None, slug_t=None):
         and target == "video"
         and (
             request.POST.get("password")
-            and check_password(request.POST.get("password"), video[0].password)
+            and check_password(request.POST.get("password"), videos[0].password)
         )
     ) or (
         request.method == "GET" and videos and target in ("videos", "channel", "theme")
