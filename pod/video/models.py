@@ -34,6 +34,7 @@ from django.db.models.signals import post_save
 from django.db.models.signals import pre_save
 from pod.main.models import AdditionalChannelTab
 import importlib
+from django.contrib.auth.hashers import make_password
 
 from sorl.thumbnail import get_thumbnail
 from pod.authentication.models import AccessGroup
@@ -887,6 +888,8 @@ class Video(models.Model):
         newid = "%04d" % newid
         self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
+        if self.password and not self.password.startswith(('pbkdf2', 'sha256$')):
+            self.password = make_password(self.password, hasher="pbkdf2_sha256")
         super(Video, self).save(*args, **kwargs)
 
     def __str__(self):
