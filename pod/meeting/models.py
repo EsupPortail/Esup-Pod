@@ -142,11 +142,16 @@ class Meeting(models.Model):
 
     DAILY, WEEKLY, MONTHLY, YEARLY = "daily", "weekly", "monthly", "yearly"
 
-    INTERVAL_CHOICES = (
+    INTERVAL_FREQUENCIES = (
         (DAILY, _("Daily")),
         (WEEKLY, _("Weekly")),
         (MONTHLY, _("Monthly")),
         (YEARLY, _("Yearly")),
+    )
+
+    INTERVAL_CHOICES = (
+        ('', '%s' % _("Choose repeat frequency")),
+        ('%s :' % _("Frequency"), INTERVAL_FREQUENCIES),
     )
 
     DATE_DAY, NTH_DAY = "date_day", "nth_day"

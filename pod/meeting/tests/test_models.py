@@ -384,7 +384,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Weekly occurences with number of occurrences filled in but not date \
         of end of reccurrence."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = datetime(2022, 7, 6, 14, 0, 0)
+        meeting.start_at = timezone.make_aware(datetime(2022, 7, 6, 14, 0, 0))
         meeting.recurrence = "weekly"
         meeting.frequency = 1
         meeting.recurring_until = None
@@ -432,7 +432,7 @@ class OccurencesMeetingTestCase(TestCase):
     def test_models_meetings_get_occurrences_weekly_reset_weekdays(self):
         """reset weekdays if recurrence not equal to weekly"""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = datetime(2022, 7, 6, 14, 0, 0)
+        meeting.start_at = timezone.make_aware(datetime(2022, 7, 6, 14, 0, 0))
         meeting.recurrence = "weekly"
         meeting.frequency = 1
         meeting.recurring_until = None
@@ -452,6 +452,23 @@ class OccurencesMeetingTestCase(TestCase):
         meeting.save()
         meeting.refresh_from_db()
         self.assertEqual(meeting.weekdays, "126")
+
+    def test_models_meetings_get_occurrences_weekly_on_monday(self):
+        """check a recurring meeting each monday"""
+        meeting = Meeting.objects.get(id=1)
+        meeting.start_at = timezone.make_aware(datetime(2023, 9, 18, 10, 0, 0))
+        meeting.recurrence = "weekly"
+        meeting.frequency = 1
+        meeting.recurring_until = None
+        meeting.nb_occurrences = 12
+        meeting.weekdays = "0"  # on monday
+        meeting.save()
+        meeting.refresh_from_db()
+        occurrences = meeting.get_occurrences(meeting.start, meeting.recurring_until)
+        self.assertEqual(len(occurrences), 12)
+        next_occurrence = meeting.next_occurrence(meeting.start)
+        self.assertEqual(next_occurrence, date(2023, 9, 25))
+        self.assertEqual(next_occurrence.weekday(), 0)
 
     # Monthly
 

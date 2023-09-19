@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-14 14:46+0000\n"
+"POT-Creation-Date: 2023-09-19 12:22+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ptitloup <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -4843,7 +4843,8 @@ msgstr "La date de début doit être antérieure à la date de fin récurrente"
 msgid ""
 "In case of weekly recurring, the day of the start date must be selected."
 msgstr ""
-"En cas de récurrence hebdomadaire, le jour de la date de début doit être sélectionné."
+"En cas de récurrence hebdomadaire, le jour de la date de début doit être "
+"sélectionné."
 
 #: pod/meeting/forms.py pod/playlist/forms.py pod/video/forms.py
 msgid "Owner of the video cannot be an additional owner too"
@@ -4892,6 +4893,15 @@ msgstr "Mois"
 #: pod/meeting/models.py
 msgid "Yearly"
 msgstr "Année"
+
+#: pod/meeting/models.py
+msgid "Choose repeat frequency"
+msgstr "choisissez la fréquence de répétition"
+
+#: pod/meeting/models.py
+#: pod/meeting/templates/meeting/recurring_options_modal_form.html
+msgid "Frequency"
+msgstr "Fréquence"
 
 #: pod/meeting/models.py
 msgid "Every month on this date"
@@ -5362,10 +5372,6 @@ msgstr "Impossible de trouver des informations sur la réunion"
 #: pod/meeting/templates/meeting/my_meetings.html
 msgid "End the meeting"
 msgstr "Terminer la réunion"
-
-#: pod/meeting/templates/meeting/recurring_options_modal_form.html
-msgid "Frequency"
-msgstr "Fréquence"
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "Repeat every"
