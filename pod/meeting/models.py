@@ -477,6 +477,7 @@ class Meeting(models.Model):
 
     # ##############################    Meeting occurences
     def next_occurrence_from_today(self):
+        """Returns the date of the next occurrence for the meeting from today."""
         next_one = self.next_occurrence(timezone.now().date())
         if next_one == timezone.now().date():
             start_datetime = self.start_at + self.expected_duration
@@ -585,6 +586,7 @@ class Meeting(models.Model):
 
     # ##############################    BBB API
     def create(self, request=None):
+        """Make the url with goods parameters to create the meeting on the BBB instance and call it."""
         action = "create"
         parameters = {}
         for param in meeting_to_bbb:
