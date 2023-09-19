@@ -165,7 +165,7 @@ class MeetingForm(forms.ModelForm):
         (
             "main_fields",
             {
-                "legend": ('<i class="bi bi-gear"></i> %s' % _("Main fields")),
+                "legend": ('<i class="bi bi-gear" aria-hidden="true"></i> %s' % _("Main fields")),
                 "fields": MEETING_MAIN_FIELDS,
             },
         ),
@@ -173,14 +173,14 @@ class MeetingForm(forms.ModelForm):
             "input-group",
             {
                 "legend": (
-                    '<i class="bi bi-clock-history"></i>'
+                    '<i class="bi bi-clock-history" aria-hidden="true"></i>'
                     + " %s" % _("Date and time options")
                 ),
                 "fields": ["start", "start_time", "expected_duration"],
                 "additional_data": """
                 <div class="m-1">
                 <button type="button" id="%s" class="%s" data-bs-toggle="%s" data-bs-target="%s">
-                    <i class="bi bi-calendar3-range"></i> %s
+                    <i class="bi bi-calendar3-range" aria-hidden="true"></i> %s
                 </button>
                 </div>
             """
@@ -200,7 +200,7 @@ class MeetingForm(forms.ModelForm):
                 "input-group",
                 {
                     "legend": (
-                        '<i class="bi bi-record-circle"></i>'
+                        '<i class="bi bi-record-circle" aria-hidden="true"></i>'
                         + " %s" % _("Record session")
                     ),
                     "fields": MEETING_RECORD_FIELDS,
@@ -213,7 +213,7 @@ class MeetingForm(forms.ModelForm):
             "modal",
             {
                 "legend": (
-                    '<i class="bi bi-calendar3-range"></i>&nbsp;'
+                    '<i class="bi bi-calendar3-range" aria-hidden="true"></i>&nbsp;'
                     + "  %s" % _("Recurring options")
                 ),
                 "id": "recurring_fields",
@@ -225,7 +225,7 @@ class MeetingForm(forms.ModelForm):
             "advanced_options",
             {
                 "legend": (
-                    '<i class="bi bi-file-earmark-plus-fill"></i>'
+                    '<i class="bi bi-file-earmark-plus-fill" aria-hidden="true"></i>'
                     + " %s" % _("Advanced options")
                 ),
                 "classes": "collapse border border-primary p-1 m-1",
