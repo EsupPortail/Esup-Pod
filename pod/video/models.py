@@ -816,7 +816,7 @@ class Video(models.Model):
     )
     password = models.CharField(
         _("password"),
-        help_text=_("Viewing this video will not be possible without this password."),
+        help_text=_("Viewing this video will not be possible without this password.") + " " + _("The password is / will be encrypted.") ,
         max_length=50,
         blank=True,
         null=True,
