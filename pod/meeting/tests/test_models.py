@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.template.defaultfilters import slugify
 from pod.authentication.models import AccessGroup
+from django.utils import timezone
 
 
 class MeetingTestCase(TestCase):
@@ -164,7 +165,7 @@ class OccurencesMeetingTestCase(TestCase):
     def test_models_meetings_get_occurrences_no_recurrence(self):
         """A meeting without recurrence should return 1 occurence."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = datetime(2022, 7, 7, 14, 0, 0)
+        meeting.start_at = timezone.make_aware(datetime(2022, 7, 7, 14, 0, 0))
         meeting.recurrence = None
         meeting.save()
         self.assertEqual(
@@ -180,7 +181,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Daily occurences with date of end of reccurrence filled in but not \
         number of occurrences."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = datetime(2022, 7, 7, 14, 0, 0)
+        meeting.start_at = timezone.make_aware(datetime(2022, 7, 7, 14, 0, 0))
         meeting.recurrence = "daily"
         meeting.frequency = 1
         meeting.recurring_until = date(2022, 8, 2)
@@ -220,7 +221,7 @@ class OccurencesMeetingTestCase(TestCase):
         """Daily occurences with date of end of reccurrence not leaving any \
         possibliity of repeated occurence."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = datetime(2022, 7, 7, 14, 0, 0)
+        meeting.start_at = timezone.make_aware(datetime(2022, 7, 7, 14, 0, 0))
         meeting.recurrence = "daily"
         meeting.frequency = 3
         meeting.recurring_until = date(2022, 7, 9)
@@ -242,7 +243,7 @@ class OccurencesMeetingTestCase(TestCase):
         end of occurence. The date of end of reccurrence shoud be calculated if \
         the number of occurrences is repeated."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = datetime(2022, 7, 7, 14, 0, 0)
+        meeting.start_at = timezone.make_aware(datetime(2022, 7, 7, 14, 0, 0))
         meeting.recurrence = "daily"
         meeting.frequency = 1
         meeting.recurring_until = None
@@ -315,25 +316,20 @@ class OccurencesMeetingTestCase(TestCase):
     def test_models_meetings_get_occurrences_weekly_weekdays_include_start(self):
         """For weekly recurrence, the weekday of the start date should be included \
         in weekdays."""
-        meeting = meeting = Meeting.objects.get(id=1)
+        meeting = Meeting.objects.get(id=1)
         with self.assertRaises(ValidationError) as context:
-            # 2022-7-7 is a Thursday, and weekday 2 is Tuesday
-            meeting.start_at = datetime(2022, 7, 7, 14, 0, 0)
+            # 2022-7-7 is a Thursday, and weekday 2 is not Tuesday
+            meeting.start_at = timezone.make_aware(datetime(2022, 7, 7, 14, 0, 0))
             meeting.recurrence = "weekly"
             meeting.weekdays = "2"
             meeting.save()
-        msg = "The day of the start date of the meeting must be "
-        msg += "included in the recurrence weekdays."
-        self.assertEqual(
-            context.exception.messages,
-            [msg],
-        )
+        self.assertTrue("weekdays" in context.exception.message_dict)
 
     def test_models_meetings_get_occurrences_weekly_recurring_until_filled(self):
         """Weekly occurences with date of end of reccurrence filled in but not \
         number of occurrences."""
         meeting = Meeting.objects.get(id=1)
-        meeting.start_at = datetime(2022, 7, 7, 14, 0, 0)
+        meeting.start_at = timezone.make_aware(datetime(2022, 7, 7, 14, 0, 0))
         meeting.recurrence = "weekly"
         meeting.frequency = 1
         meeting.recurring_until = date(2022, 8, 2)

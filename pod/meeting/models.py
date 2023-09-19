@@ -441,9 +441,7 @@ class Meeting(models.Model):
                         self.reset_recurrence()
                     next_occurrence = self.start
                     for _i in range(self.nb_occurrences - 1):
-                        next_occurrence = self.next_occurrence(
-                            next_occurrence + timedelta(days=1)
-                        )
+                        next_occurrence = self.next_occurrence(next_occurrence)
                     self.recurring_until = next_occurrence
                 # Infinite recurrence... do nothing
             else:
@@ -478,16 +476,11 @@ class Meeting(models.Model):
     # ##############################    Meeting occurences
     def next_occurrence_from_today(self):
         """Returns the date of the next occurrence for the meeting from today."""
-        next_one = self.next_occurrence(timezone.now().date())
-        if next_one == timezone.now().date():
+        if self.start_at == timezone.now().date():
             start_datetime = self.start_at + self.expected_duration
             if start_datetime > timezone.now():
-                return next_one
-            else:
-                return self.next_occurrence(
-                    timezone.now().date() + timedelta(days=1)
-                )
-        return next_one
+                return self.start_at
+        return self.next_occurrence(timezone.now().date())
 
     def next_occurrence(self, current_date):  # noqa: C901
         """
@@ -500,7 +493,7 @@ class Meeting(models.Model):
             return current_date + timedelta(days=self.frequency)
 
         if self.recurrence == Meeting.WEEKLY:
-            increment = 0
+            increment = 1
             # Look in the current week
             weekday = current_date.weekday()
             while weekday + increment <= 6:
@@ -559,7 +552,7 @@ class Meeting(models.Model):
             while new_start <= real_end:
                 if new_start >= start:
                     occurrences.append(new_start)
-                new_start = self.next_occurrence(new_start + timedelta(days=1))
+                new_start = self.next_occurrence(new_start)
             return occurrences
 
         # check if event is in the period
