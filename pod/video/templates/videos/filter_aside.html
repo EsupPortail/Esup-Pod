@@ -17,7 +17,7 @@
     {% include "videos/filter_aside_category.html" %}
   {% endif %}
 
-  {% if not HIDE_USER_FILTER and user.is_authenticated %}
+  {% if owner_filter %}
   <fieldset>
     <legend  class="h5"><i class="bi bi-people" aria-hidden="true"></i> {% trans 'Users' %}</legend>
     <div class="form-group">

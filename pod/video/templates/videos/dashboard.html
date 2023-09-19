@@ -50,7 +50,9 @@
       <optgroup label="Edit a field">
         <option value="title">Title</option>
         <option value="date_added">Date added</option>
-        <option value="date_delete">Date to delete</option>
+          {% if request.user.is_staff and use_obsolescence %}
+            <option value="date_delete">Date to delete</option>
+          {% endif %}
         <option value="date_evt">Date of the event field</option>
         <option value="type">Type</option>
         <option value="cursus">Cursus</option>
@@ -66,21 +68,24 @@
     </select>
 
     <div id="dashboardFormContainer">
-      <form id="dashboardForm" method="post" action="{% url 'video:dashboard' %}" accept-charset="utf-8">
+        <form id="dashboardForm" method="post" action="{% url 'video:dashboard' %}" accept-charset="utf-8">
         {% csrf_token %}
-        {% if form.errors %}
+        {% if form_dashboard.errors %}
           <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
-            {{form.errors}}
+            {{form_dashboard.errors}}
         {% endif %}
-        {% for field in form %}
-        <div class="form-group d-none">
+        {% for field_hidden in form_dashboard.hidden_fields %}
+            {{field_hidden}}
+        {% endfor %}
+        {% for field in form_dashboard %}
+        <div class="form-group d-none form-group-dashboard">
           {{field}}
         {% if field.help_text %}
               <small id="{{field.id_for_label}}Help" class="form-text"> {{ field.help_text|safe }}</small>
         {% endif %}
         </div>
         {% endfor %}
-      </form>
+        </form>
     </div>
 
     <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalConfirmBulkUpdate" disabled>
@@ -119,6 +124,7 @@
   var csrftoken = "{{ csrf_token }}";
   var page = 1;
   var nextPage = false;
+  var ownerFilter = {{ owner_filter|yesno:'true,false'}};
 
   {% if videos.has_next %}
       page = parseInt("{{videos.next_page_number}}");
@@ -129,7 +135,7 @@
 <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/dashboard.js' %}?ver={{VERSION}}"></script>
-{{form.media}}
+{{form_dashboard.media}}
 <script>
 {% if use_category %}
   const USE_CATEGORY = true;

@@ -633,6 +633,11 @@ class VideoForm(forms.ModelForm):
         if not hasattr(form, "admin_form"):
             form.remove_field("sites")
 
+    def create_with_fields(self, fields):
+        for field in list(self.fields):
+            if field not in fields:
+                del self.fields[field]
+
     def move_video_source_file(self, new_path, new_dir, old_dir):
         """Move video source file in a new dir."""
         # create user repository
@@ -870,7 +875,6 @@ class VideoForm(forms.ModelForm):
         if self.fields.get("date_delete"):
             if (
                 self.is_staff is False
-                or self.instance.id is None
                 or USE_OBSOLESCENCE is False
             ):
                 del self.fields["date_delete"]
@@ -932,11 +936,6 @@ class VideoForm(forms.ModelForm):
             self.fields["theme"].queryset = self.fields["theme"].queryset.filter(
                 channel__site=Site.objects.get_current()
             )
-
-    def create_with_fields(self, fields):
-        for field in list(self.fields):
-            if field not in fields:
-                del self.fields[field]
 
     class Meta(object):
         """Define the VideoForm metadata."""

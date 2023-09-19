@@ -172,6 +172,7 @@ DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
 ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
 HIDE_USER_FILTER = getattr(settings, "HIDE_USER_FILTER", False)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
+USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
 
 if USE_TRANSCRIPTION:
     from ..video_encode_transcript import transcript
@@ -592,6 +593,7 @@ def dashboard(request):
     sort_field = request.GET.get("sort")
     sort_direction = request.GET.get("sort_direction")
     videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+    ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     owner_filter = owner_is_searchable(request.user)
 
     count_videos = len(videos_list)
@@ -613,6 +615,14 @@ def dashboard(request):
         )
 
     default_owner = request.user.pk
+    """
+    form = VideoForm(
+        is_staff=request.user.is_staff,
+        is_superuser=request.user.is_superuser,
+        current_user=request.user,
+        initial={"owner": default_owner},
+    )
+    """
     form = VideoForm(
         is_staff=request.user.is_staff,
         is_superuser=request.user.is_superuser,
@@ -620,13 +630,15 @@ def dashboard(request):
         initial={"owner": default_owner},
     )
 
-    data_context["form"] = form
+    data_context["form_dashboard"] = form
     data_context["use_category"] = USER_VIDEO_CATEGORY
+    data_context["use_obsolescence"] = USE_OBSOLESCENCE
     data_context["videos"] = videos
     data_context["count_videos"] = count_videos
     data_context["cursus_codes"] = CURSUS_CODES
     data_context["full_path"] = full_path
     data_context["owners"] = request.GET.getlist("owner")
+    data_context["ownersInstances"] = ownersInstances
     data_context["sort_field"] = sort_field
     data_context["sort_direction"] = request.GET.get("sort_direction")
     data_context["owner_filter"] = owner_filter

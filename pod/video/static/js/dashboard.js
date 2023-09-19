@@ -15,7 +15,7 @@ async function bulk_update() {
   if(element.hasAttribute("multiple")){
     value = Array.from(element.querySelectorAll("option:checked"),e => e.value);
   }else{
-    value = document.getElementById("id_"+action).value;
+    value = element.type === "checkbox" ? element.checked : document.getElementById("id_"+action).value;
   }
   selectedVideosCards = getListSelectedVideos();
 
@@ -49,16 +49,16 @@ async function bulk_update() {
 
 function appendDynamicForm(action){
     // Append form group selected action
-    let form_groups = document.querySelectorAll('.form-group');
+    let form_groups = document.querySelectorAll('.form-group-dashboard');
     Array.from(form_groups).forEach((form_group) => {
         form_group.classList.add("d-none");
     });
     let input = document.getElementById('id_'+action);
     if(input){
-        if(action == "restricted_access_to_groups"){
-
+        if(action === "restricted_access_to_groups"){
+            console.log("restricted");
         }
-            input.closest(".form-group").classList.remove("d-none");
+            input.closest(".form-group-dashboard").classList.remove("d-none");
     }
 }
 
