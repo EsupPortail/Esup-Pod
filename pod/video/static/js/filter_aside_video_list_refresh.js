@@ -210,7 +210,7 @@ function createUserCheckBox(user) {
 document.getElementById("resetFilters").addEventListener("click", function () {
   checkedInputs = [];
   document
-    .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
+    .querySelectorAll("#filters input[type=checkbox]:checked[class=form-check-input]")
     .forEach((checkBox) => {
       checkBox.checked = false;
     });
@@ -236,7 +236,7 @@ function disabledInputs(value) {
 
 // Add event listener on inputs on launch
 document
-  .querySelectorAll(".form-check-input,#sort,#sort_direction")
+  .querySelectorAll("#filters .form-check-input,#sort,#sort_direction")
   .forEach((el) => {
     setListenerChangeInputs(el);
   });
