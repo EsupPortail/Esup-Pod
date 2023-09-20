@@ -165,7 +165,7 @@ class MeetingForm(forms.ModelForm):
         (
             "main_fields",
             {
-                "legend": ('<i class="bi bi-gear"></i> %s' % _("Main fields")),
+                "legend": ('<i class="bi bi-gear" aria-hidden="true"></i> %s' % _("Main fields")),
                 "fields": MEETING_MAIN_FIELDS,
             },
         ),
@@ -173,18 +173,19 @@ class MeetingForm(forms.ModelForm):
             "input-group",
             {
                 "legend": (
-                    '<i class="bi bi-clock-history"></i>'
+                    '<i class="bi bi-clock-history" aria-hidden="true"></i>'
                     + " %s" % _("Date and time options")
                 ),
                 "fields": ["start", "start_time", "expected_duration"],
                 "additional_data": """
                 <div class="m-1">
-                <button type="button" class="%s" data-bs-toggle="%s" data-bs-target="%s">
-                    <i class="bi bi-calendar3-range"></i> %s
+                <button type="button" id="%s" class="%s" data-bs-toggle="%s" data-bs-target="%s">
+                    <i class="bi bi-calendar3-range" aria-hidden="true"></i> %s
                 </button>
                 </div>
             """
                 % (
+                    "see_recurring_fields",
                     "btn btn-primary btn-sm",
                     "modal",
                     "#recurring_fields",
@@ -199,7 +200,7 @@ class MeetingForm(forms.ModelForm):
                 "input-group",
                 {
                     "legend": (
-                        '<i class="bi bi-record-circle"></i>'
+                        '<i class="bi bi-record-circle" aria-hidden="true"></i>'
                         + " %s" % _("Record session")
                     ),
                     "fields": MEETING_RECORD_FIELDS,
@@ -212,7 +213,7 @@ class MeetingForm(forms.ModelForm):
             "modal",
             {
                 "legend": (
-                    '<i class="bi bi-calendar3-range"></i>&nbsp;'
+                    '<i class="bi bi-calendar3-range" aria-hidden="true"></i>&nbsp;'
                     + "  %s" % _("Recurring options")
                 ),
                 "id": "recurring_fields",
@@ -224,7 +225,7 @@ class MeetingForm(forms.ModelForm):
             "advanced_options",
             {
                 "legend": (
-                    '<i class="bi bi-file-earmark-plus-fill"></i>'
+                    '<i class="bi bi-file-earmark-plus-fill" aria-hidden="true"></i>'
                     + " %s" % _("Advanced options")
                 ),
                 "classes": "collapse border border-primary p-1 m-1",
@@ -242,15 +243,43 @@ class MeetingForm(forms.ModelForm):
         else:
             form.remove_field("days_of_week")
 
-    def clean_add_owner(self, cleaned_data):
-        if "additional_owners" in cleaned_data.keys() and isinstance(
+    def clean_start_date(self):
+        """Check two things:
+        - the start date is before the recurrence deadline.
+        - in the case of weekly recurrence, the start day must be selected from the list of weekdays.
+        The function raise a validation error if a condition is not met."""
+        if ("start" in self.cleaned_data.keys()
+            and "recurring_until" in self.cleaned_data.keys()
+            and self.cleaned_data["recurring_until"] is not None
+            and (
+                self.cleaned_data["start"] > self.cleaned_data["recurring_until"]
+        )):
+            raise ValidationError(_("Start date must be less than recurring until date"))
+
+        if (self.cleaned_data.get("weekdays")
+            and self.cleaned_data.get("start")
+            and self.cleaned_data.get("recurrence") == "weekly"
+            and (
+                str(self.cleaned_data.get("start").weekday())
+                not in self.cleaned_data.get("weekdays")
+        )):
+            raise ValidationError(
+                _("In case of weekly recurring, the day of the start date must be selected.")
+            )
+
+        if not self.cleaned_data.get('recurring_until'):
+            self.instance.recurring_until = None
+
+    def clean_add_owner(self):
+        """Check if meeting owner not in additional owners."""
+        if "additional_owners" in self.cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
         ):
             meetingowner = (
                 self.instance.owner
                 if hasattr(self.instance, "owner")
-                else cleaned_data["owner"]
-                if "owner" in cleaned_data.keys()
+                else self.cleaned_data["owner"]
+                if "owner" in self.cleaned_data.keys()
                 else self.current_user
             )
             if (
@@ -262,31 +291,26 @@ class MeetingForm(forms.ModelForm):
                 )
 
     def clean(self):
-        cleaned_data = super(MeetingForm, self).clean()
-        if "expected_duration" in cleaned_data.keys():
+        self.cleaned_data = super(MeetingForm, self).clean()
+        if "expected_duration" in self.cleaned_data.keys():
             self.cleaned_data["expected_duration"] = timezone.timedelta(
                 hours=self.cleaned_data["expected_duration"]
             )
 
-        if "days_of_week" in cleaned_data.keys():
+        if "days_of_week" in self.cleaned_data.keys():
             tab = self.cleaned_data["days_of_week"]
             self.cleaned_data["weekdays"] = "".join(tab)
 
-        if (
-            "start" in cleaned_data.keys()
-            and "recurring_until" in cleaned_data.keys()
-            and cleaned_data["recurring_until"] is not None
-            and cleaned_data["start"] > cleaned_data["recurring_until"]
-        ):
-            raise ValidationError(_("Start date must be less than recurring until date"))
-        self.clean_add_owner(cleaned_data)
-        if (
-            "restrict_access_to_groups" in cleaned_data.keys()
-            and len(cleaned_data["restrict_access_to_groups"]) > 0
-        ):
-            cleaned_data["is_restricted"] = True
+        self.clean_start_date()
 
-        if "start_time" in cleaned_data.keys() and "start" in cleaned_data.keys():
+        self.clean_add_owner()
+        if (
+            "restrict_access_to_groups" in self.cleaned_data.keys()
+            and len(self.cleaned_data["restrict_access_to_groups"]) > 0
+        ):
+            self.cleaned_data["is_restricted"] = True
+
+        if "start_time" in self.cleaned_data.keys() and "start" in self.cleaned_data.keys():
             start_time = datetime.datetime.strptime(
                 self.cleaned_data["start_time"], "%H:%M:%S"
             ).time()
@@ -296,7 +320,7 @@ class MeetingForm(forms.ModelForm):
             start_datetime = timezone.make_aware(start_datetime)
             self.instance.start_at = start_datetime
 
-        if "voice_bridge" in cleaned_data.keys() and cleaned_data[
+        if "voice_bridge" in self.cleaned_data.keys() and self.cleaned_data[
             "voice_bridge"
         ] not in range(10000, 99999):
             raise ValidationError(
@@ -344,6 +368,8 @@ class MeetingForm(forms.ModelForm):
                 self.remove_field(field)
         # remove start_at
         self.remove_field("start_at")
+        # set min frequency to 1
+        self.fields["frequency"].widget.attrs["min"] = 1
 
     def remove_field(self, field):
         if self.fields.get(field):
