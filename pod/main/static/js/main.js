@@ -1376,9 +1376,10 @@ document.addEventListener("DOMContentLoaded", function () {
     searchInput.classList.remove("focus-search-input");
     searchInput.classList.add("hide-search-input");
   }
-
-  searchButton.addEventListener("focus", handleFocus);
-  searchButton.addEventListener("blur", handleBlur);
-  searchInput.addEventListener("focus", handleFocus);
-  searchInput.addEventListener("blur", handleBlur);
+  if (searchButton) {
+    searchButton.addEventListener("focus", handleFocus);
+    searchButton.addEventListener("blur", handleBlur);
+    searchInput.addEventListener("focus", handleFocus);
+    searchInput.addEventListener("blur", handleBlur);
+  }
 });

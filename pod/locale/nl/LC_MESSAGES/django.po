@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-12 15:15+0000\n"
+"POT-Creation-Date: 2023-09-20 10:24+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -979,14 +979,14 @@ msgstr ""
 
 #: pod/chapter/templates/video_chapter.html
 msgid ""
-"\"Add a new chapter\" allows you to add a new chapter, \"modify\" allows you "
-"to modify it and \"delete\" allows you to remove the chapter."
+"“Add a new chapter” allows you to add a chapter to the video, “modify” "
+"allows you to edit it and “delete” allows you to remove the chapter."
 msgstr ""
 
 #: pod/chapter/templates/video_chapter.html
 msgid ""
-"Start playback of the video, pause the video and click on \"Get time from "
-"the player\" to fill in the field untitled \"Start time\"."
+"Start playback of the video, pause the video and click on “Get time from the "
+"player” to fill in the field untitled “Start time”."
 msgstr ""
 
 #: pod/chapter/templates/video_chapter.html
@@ -2459,7 +2459,7 @@ msgstr ""
 #: pod/import_video/views.py pod/meeting/views.py
 #, python-format
 msgid ""
-"This video was uploaded to Pod; its origin is %(type)s : <a href=\"%(url)s\" "
+"This video was uploaded to Pod; its origin is %(type)s: <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
 
@@ -2470,7 +2470,7 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a "
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
 "href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
@@ -2528,7 +2528,7 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is PeerTube : <a "
+"This video '%(name)s' was uploaded to Pod; its origin is PeerTube: <a "
 "href='%(url)s' target='blank'>%(url)s</a>."
 msgstr ""
 
@@ -4504,6 +4504,10 @@ msgstr ""
 
 #: pod/main/templates/navbar.html
 msgid "Open login page"
+msgstr ""
+
+#: pod/main/templates/navbar_collapse.html
+msgid "Channel list"
 msgstr ""
 
 #: pod/main/templates/navbar_collapse.html

@@ -31,14 +31,14 @@
       </label>
     </h2>
     <div class="card-text">
-      <form class="form" method="get">
+      <form class="form input-group" method="get">
         <select class="form-select" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="discipline" id="discipline">
           <option value="#">{% trans 'Disciplines' %}...</option>
           {% for disc in DISCIPLINES %}
             <option value="{{disc.slug}}" data-value="{% url 'videos:videos' %}?discipline={{disc.slug}}">{{disc.title}}  ({{disc.video_count}})</option>
           {% endfor %}
         </select>
-        <input value="{% trans 'Submit' %}" class="visually-hidden" type="submit">
+        <input value="{% trans 'Submit' %}" class="visually-hidden-focusable btn btn-primary" type="submit">
       </form>
     </div>
   </div>
@@ -52,14 +52,14 @@
       </label>
     </h2>
     <div class="card-text">
-      <form class="form" method="get">
+      <form class="form input-group" method="get">
         <select class="form-select" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="type" id="type">
           <option value="#">{% trans 'Types' %}...</option>
           {% for type in TYPES %}
             <option value="{{type.slug}}" data-value="{% url 'videos:videos' %}?type={{type.slug}}">{{type.title}}  ({{type.video_count}})</option>
           {% endfor %}
         </select>
-        <input value="{% trans 'Submit' %}" class="visually-hidden" type="submit">
+        <input value="{% trans 'Submit' %}" class="visually-hidden-focusable btn btn-primary" type="submit">
       </form>
     </div>
   </div>

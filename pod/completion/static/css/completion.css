@@ -120,13 +120,6 @@ table#table_list_contributors thead th.contributor_name {
 .grid-list-track .track_kind.options > form,
 .grid-list-track .track_kind.options > #modifCapSubFile{ display: none;}
 }
-/** Forms **/
-
-
-/** Aside **/
-.info-card {
-	display: none;
-}
 
 /** Filepicker override **/
 div.file-picker-overlay,
@@ -142,4 +135,3 @@ textarea#id_description {
 .card-title {
 	margin: .45rem;
 }
-
