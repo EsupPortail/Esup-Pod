@@ -48,7 +48,7 @@
         {% endfor %}
         <div class="text-center mt-1">
           <button type="submit" class="btn btn-danger">{% trans "Delete" %}</button>
-          <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn btn-secondary">
+          <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="bottom">
             <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans "Back to the video"%}
           </a>
         </div>

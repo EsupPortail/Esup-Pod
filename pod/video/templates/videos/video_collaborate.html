@@ -61,7 +61,7 @@
 					{% trans "Black notes are public. The clearest are private. The intermediary is visible to the owner of the video." %}
 				</p>
             <span class="float-end">
-                <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn btn-secondary btn-sm">
+                <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn btn-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
                     <i class="bi bi-arrow-left"></i>&nbsp;{% trans "Back to the video"%}
                 </a>
             </span>
