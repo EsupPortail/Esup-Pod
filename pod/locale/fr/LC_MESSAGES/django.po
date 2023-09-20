@@ -4896,7 +4896,7 @@ msgstr "Année"
 
 #: pod/meeting/models.py
 msgid "Choose repeat frequency"
-msgstr "choisissez la fréquence de répétition"
+msgstr "Choisissez la fréquence de répétition"
 
 #: pod/meeting/models.py
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
