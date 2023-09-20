@@ -69,4 +69,4 @@ jobs:
             export DISPLAY=:99
             geckodriver &
             Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
-            python manage.py test -v 3 --settings=pod.main.test_settings pod.main.integration_tests.test_selenium
+            python manage.py test -v 3 --settings=pod.main.test_settings pod.main.integration_tests.selenium_pod_integration_tests

@@ -1,7 +1,8 @@
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.firefox.webdriver import WebDriver
 
-# python manage.py test -v 3 --settings=pod.main.test_settings pod.main.tests.test_selenium
+# python manage.py test -v 3 --settings=pod.main.test_settings \
+# pod.main.integration_tests.selenium_pod_integration_tests
 
 
 class PodSeleniumTests(StaticLiveServerTestCase):
