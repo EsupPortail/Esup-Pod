@@ -25,5 +25,6 @@ fi
 # Le serveur de développement permet de tester vos futures modifications facilement.
 # N'hésitez pas à lancer le serveur de développement pour vérifier vos modifications au fur et à mesure.
 # À ce niveau, vous devriez avoir le site en français et en anglais et voir l'ensemble de la page d'accueil.
+Xvfb -ac :99 -screen 0 1280x1024x24 -nolisten tcp &
 python3 manage.py runserver 0.0.0.0:8080 --insecure
 sleep infinity
