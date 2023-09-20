@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-19 12:42+0000\n"
+"POT-Creation-Date: 2023-09-19 13:07+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: \n"
@@ -453,8 +453,8 @@ msgid "Add your picture"
 msgstr "Ajouter votre image"
 
 #: pod/main/static/js/main.js
-msgid "text copied"
-msgstr "texte copié"
+msgid "Text copied"
+msgstr "Texte copié"
 
 #: pod/main/static/js/main.js
 msgid "Errors appear in the form, please correct them"

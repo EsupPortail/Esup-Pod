@@ -1009,9 +1009,8 @@ def render_video(
             form = (
                 VideoPasswordForm(request.POST) if request.POST else VideoPasswordForm()
             )
-            if (
-                request.POST.get("password")
-                and check_password(request.POST.get("password"), video.password)
+            if request.POST.get("password") and check_password(
+                request.POST.get("password"), video.password
             ):
                 messages.add_message(
                     request, messages.ERROR, _("The password is incorrect.")
@@ -1568,6 +1567,11 @@ def video_note_save(request, slug):
 
     idCom = get_id_from_request(request, "idCom")
     idNote = get_id_from_request(request, "idNote")
+
+    if idCom:
+        com = NoteComments.objects.get(id=idCom)
+    if idNote:
+        note = AdvancedNotes.objects.get(id=idNote)
 
     if request.method == "POST" and request.POST.get("action") == "save_note":
         q = QueryDict(mutable=True)
