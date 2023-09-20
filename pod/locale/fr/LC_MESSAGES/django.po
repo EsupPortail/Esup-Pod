@@ -5,11 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
 "POT-Creation-Date: 2023-09-20 10:24+0000\n"
-=======
-"POT-Creation-Date: 2023-09-19 12:22+0000\n"
->>>>>>> develop
 "PO-Revision-Date: \n"
 "Last-Translator: ptitloup <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -2626,13 +2622,8 @@ msgid ""
 "This video was uploaded to Pod; its origin is %(type)s: <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
-<<<<<<< HEAD
 "Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a "
 "href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
-=======
-"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
->>>>>>> develop
 
 #: pod/import_video/views.py pod/meeting/views.py
 msgid "Try changing the record type or address for this recording."
@@ -2643,13 +2634,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-<<<<<<< HEAD
 "This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
 "href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
-=======
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
->>>>>>> develop
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "Youtube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
