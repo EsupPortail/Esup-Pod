@@ -74,22 +74,31 @@ class ObsolescenceTestCase(TestCase):
             owner=user1,
             video="test.mp4",
             type=Type.objects.get(id=1),
-            date_delete=date.today() + timedelta(days=60),
         )
         Video.objects.create(
             title="Video2_30",
             owner=user2,
             video="test.mp4",
             type=Type.objects.get(id=1),
-            date_delete=date.today() + timedelta(days=30),
         )
         Video.objects.create(
             title="Video3_7",
             owner=user3,
             video="test.mp4",
             type=Type.objects.get(id=1),
-            date_delete=date.today() + timedelta(days=7),
         )
+
+        video60 = Video.objects.get(pk=3)
+        video60.date_delete = date.today() + timedelta(days=60)
+        video60.save()
+
+        video30 = Video.objects.get(pk=4)
+        video30.date_delete = date.today() + timedelta(days=30)
+        video30.save()
+
+        video7 = Video.objects.get(pk=5)
+        video7.date_delete = date.today() + timedelta(days=7)
+        video7.save()
 
         # On modifie la date après la création pour etre sur qu'elle soit bonne
         vid1 = Video.objects.create(

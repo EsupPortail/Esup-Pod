@@ -4835,15 +4835,22 @@ msgstr "Enregistrement"
 msgid "Recurring options"
 msgstr "Options de récurrence"
 
+#: pod/meeting/forms.py pod/meeting/models.py
+msgid "Start date must be less than recurring until date"
+msgstr "La date de début doit être antérieure à la date de fin récurrente"
+
+#: pod/meeting/forms.py pod/meeting/templates/meeting/add_or_edit.html
+msgid ""
+"In case of weekly recurring, the day of the start date must be selected."
+msgstr ""
+"En cas de récurrence hebdomadaire, le jour de la date de début doit être "
+"sélectionné."
+
 #: pod/meeting/forms.py pod/playlist/forms.py pod/video/forms.py
 msgid "Owner of the video cannot be an additional owner too"
 msgstr ""
 "Le propriétaire de la video ne peut pas être propriétaire additionnel en "
 "même temps"
-
-#: pod/meeting/forms.py pod/meeting/models.py
-msgid "Start date must be less than recurring until date"
-msgstr "La date de début doit être antérieure à la date de fin récurrente"
 
 #: pod/meeting/forms.py
 msgid "Voice bridge must be a 5-digit number in the range 10000 to 99999"
@@ -4886,6 +4893,15 @@ msgstr "Mois"
 #: pod/meeting/models.py
 msgid "Yearly"
 msgstr "Année"
+
+#: pod/meeting/models.py
+msgid "Choose repeat frequency"
+msgstr "Choisissez la fréquence de répétition"
+
+#: pod/meeting/models.py
+#: pod/meeting/templates/meeting/recurring_options_modal_form.html
+msgid "Frequency"
+msgstr "Fréquence"
 
 #: pod/meeting/models.py
 msgid "Every month on this date"
@@ -5356,10 +5372,6 @@ msgstr "Impossible de trouver des informations sur la réunion"
 #: pod/meeting/templates/meeting/my_meetings.html
 msgid "End the meeting"
 msgstr "Terminer la réunion"
-
-#: pod/meeting/templates/meeting/recurring_options_modal_form.html
-msgid "Frequency"
-msgstr "Fréquence"
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "Repeat every"

@@ -4592,12 +4592,17 @@ msgstr ""
 msgid "Recurring options"
 msgstr ""
 
-#: pod/meeting/forms.py pod/playlist/forms.py pod/video/forms.py
-msgid "Owner of the video cannot be an additional owner too"
-msgstr ""
-
 #: pod/meeting/forms.py pod/meeting/models.py
 msgid "Start date must be less than recurring until date"
+msgstr ""
+
+#: pod/meeting/forms.py pod/meeting/templates/meeting/add_or_edit.html
+msgid ""
+"In case of weekly recurring, the day of the start date must be selected."
+msgstr ""
+
+#: pod/meeting/forms.py pod/playlist/forms.py pod/video/forms.py
+msgid "Owner of the video cannot be an additional owner too"
 msgstr ""
 
 #: pod/meeting/forms.py
@@ -4638,6 +4643,15 @@ msgstr ""
 
 #: pod/meeting/models.py
 msgid "Yearly"
+msgstr ""
+
+#: pod/meeting/models.py
+msgid "Choose repeat frequency"
+msgstr ""
+
+#: pod/meeting/models.py
+#: pod/meeting/templates/meeting/recurring_options_modal_form.html
+msgid "Frequency"
 msgstr ""
 
 #: pod/meeting/models.py
@@ -5077,10 +5091,6 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/my_meetings.html
 msgid "End the meeting"
-msgstr ""
-
-#: pod/meeting/templates/meeting/recurring_options_modal_form.html
-msgid "Frequency"
 msgstr ""
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
