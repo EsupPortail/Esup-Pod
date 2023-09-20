@@ -188,7 +188,11 @@ def add_or_edit(request, meeting_id=None):
     return render(
         request,
         "meeting/add_or_edit.html",
-        {"form": form, "start_date_formats": start_date_formats, "page_title": mark_safe(page_title)},
+        {
+            "form": form,
+            "start_date_formats": start_date_formats,
+            "page_title": mark_safe(page_title),
+        },
     )
 
 

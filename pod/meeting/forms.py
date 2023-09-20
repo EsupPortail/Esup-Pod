@@ -165,7 +165,9 @@ class MeetingForm(forms.ModelForm):
         (
             "main_fields",
             {
-                "legend": ('<i class="bi bi-gear" aria-hidden="true"></i> %s' % _("Main fields")),
+                "legend": (
+                    '<i class="bi bi-gear" aria-hidden="true"></i> %s' % _("Main fields")
+                ),
                 "fields": MEETING_MAIN_FIELDS,
             },
         ),
@@ -248,26 +250,30 @@ class MeetingForm(forms.ModelForm):
         - the start date is before the recurrence deadline.
         - in the case of weekly recurrence, the start day must be selected from the list of weekdays.
         The function raise a validation error if a condition is not met."""
-        if ("start" in self.cleaned_data.keys()
+        if (
+            "start" in self.cleaned_data.keys()
             and "recurring_until" in self.cleaned_data.keys()
             and self.cleaned_data["recurring_until"] is not None
-            and (
-                self.cleaned_data["start"] > self.cleaned_data["recurring_until"]
-        )):
+            and (self.cleaned_data["start"] > self.cleaned_data["recurring_until"])
+        ):
             raise ValidationError(_("Start date must be less than recurring until date"))
 
-        if (self.cleaned_data.get("weekdays")
+        if (
+            self.cleaned_data.get("weekdays")
             and self.cleaned_data.get("start")
             and self.cleaned_data.get("recurrence") == "weekly"
             and (
                 str(self.cleaned_data.get("start").weekday())
                 not in self.cleaned_data.get("weekdays")
-        )):
+            )
+        ):
             raise ValidationError(
-                _("In case of weekly recurring, the day of the start date must be selected.")
+                _(
+                    "In case of weekly recurring, the day of the start date must be selected."
+                )
             )
 
-        if not self.cleaned_data.get('recurring_until'):
+        if not self.cleaned_data.get("recurring_until"):
             self.instance.recurring_until = None
 
     def clean_add_owner(self):
@@ -310,7 +316,10 @@ class MeetingForm(forms.ModelForm):
         ):
             self.cleaned_data["is_restricted"] = True
 
-        if "start_time" in self.cleaned_data.keys() and "start" in self.cleaned_data.keys():
+        if (
+            "start_time" in self.cleaned_data.keys()
+            and "start" in self.cleaned_data.keys()
+        ):
             start_time = datetime.datetime.strptime(
                 self.cleaned_data["start_time"], "%H:%M:%S"
             ).time()

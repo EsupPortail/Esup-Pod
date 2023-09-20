@@ -150,8 +150,8 @@ class Meeting(models.Model):
     )
 
     INTERVAL_CHOICES = (
-        ('', '%s' % _("Choose repeat frequency")),
-        ('-- %s --' % _("Frequency"), INTERVAL_FREQUENCIES),
+        ("", "%s" % _("Choose repeat frequency")),
+        ("-- %s --" % _("Frequency"), INTERVAL_FREQUENCIES),
     )
 
     DATE_DAY, NTH_DAY = "date_day", "nth_day"
