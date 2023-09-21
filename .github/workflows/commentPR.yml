@@ -1,8 +1,27 @@
 name: Make sure new PRs are sent to development
 
 on:
+  push:
+    branches: [master, develop]
   pull_request_target: # Please read https://securitylab.github.com/research/github-actions-preventing-pwn-requests/ before using
-    types: [opened, edited]
+    types: 
+        - assigned
+        - unassigned
+        - labeled
+        - unlabeled
+        - opened
+        - edited
+        - closed
+        - reopened
+        - synchronize
+        - converted_to_draft
+        - ready_for_review
+        - locked
+        - unlocked
+        - review_requested
+        - review_request_removed
+        - auto_merge_enabled
+        - auto_merge_disabled
 
 jobs:
   check-branch:
