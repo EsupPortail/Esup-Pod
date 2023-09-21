@@ -121,16 +121,18 @@ class PlaylistConfig(AppConfig):
         existing_users = User.objects.all()
         users_without_favorites = existing_users.exclude(id__in=FAVORITES_DATA.keys())
         for user in users_without_favorites:
-            if not get_favorite_playlist_for_user(user):
+            try:
+                if not get_favorite_playlist_for_user(user):
+                    pass
+            except:
                 Playlist.objects.create(
-                    name=FAVORITE_PLAYLIST_NAME,
-                    description=_("Your favorites videos."),
-                    visibility="private",
-                    autoplay=True,
-                    owner=user,
-                    editable=False,
-                )
-
+                        name=FAVORITE_PLAYLIST_NAME,
+                        description=_("Your favorites videos."),
+                        visibility="private",
+                        autoplay=True,
+                        owner=user,
+                        editable=False,
+                    )
         # Converting previous favorites to new system
         for owner_id, data_lists in FAVORITES_DATA.items():
             new_favorites_playlist = Playlist.objects.create(
