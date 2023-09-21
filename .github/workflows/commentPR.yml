@@ -4,7 +4,7 @@ on: pull_request
 
 jobs:
   example_comment_pr:
-    permissions: read-all
+    permissions: write-all
     runs-on: ubuntu-latest
     # permissions:
     #   contents: write
@@ -19,13 +19,12 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            github.rest.pull_request.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: '👋 Thanks for reporting!'
             })
-
       - name: Add comment to PR
         env:
           URL: ${{ github.event.pull_request.comments_url }}
