@@ -9,6 +9,7 @@ from pod.video.models import Channel, Theme, Video, Type
 from pod.video.views import get_all_views_count, stats_view
 from django.contrib.sites.models import Site
 from pod.authentication.models import AccessGroup
+from django.contrib.auth.hashers import make_password
 
 from pod.video_encode_transcript.models import EncodingVideo
 from pod.video_encode_transcript.models import VideoRendition
@@ -314,7 +315,7 @@ class TestStatsView(TestCase):
         """Test video restrictions (by password, by group, or private video)."""
         # *********** Test restricted by password ************ #
         password = "ThisVideoRequireAPassword"
-        self.video3.password = password
+        self.video3.password = make_password(password, hasher="pbkdf2_sha256")
         self.video3.save()
         url = reverse("video:video_stats_view", kwargs={"slug": self.video3.slug})
         response = self.client.get(url, {"from": "video"})

@@ -1070,7 +1070,7 @@ if (btnpartageprive) {
     var copyText = document.getElementById("txtpartageprive");
     copyText.select();
     document.execCommand("copy");
-    showalert(gettext("text copied"), "alert-info");
+    showalert(gettext("Text copied"), "alert-info");
   });
 }
 

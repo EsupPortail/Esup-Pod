@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-19 12:22+0000\n"
+"POT-Creation-Date: 2023-09-21 12:16+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: ptitloup <nicolas.can@univ-lille.fr>\n"
+"Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -1213,8 +1213,9 @@ msgstr ""
 
 #: pod/completion/models.py pod/enrichment/models.py pod/playlist/models.py
 #: pod/recorder/models.py pod/video/models.py
+#: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/video_breadcrumbs.html
-#: pod/video_encode_transcript/models.py
+#: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
 msgid "Video"
 msgstr "Vidéo"
 
@@ -7148,6 +7149,10 @@ msgid "Date of event"
 msgstr "Date de l’évènement"
 
 #: pod/video/models.py
+msgid "The password is / will be encrypted."
+msgstr "Le mot de passe est / sera encrypté."
+
+#: pod/video/models.py
 msgid "Overview"
 msgstr "Vue d’ensemble"
 
@@ -7304,13 +7309,18 @@ msgstr "Statistiques de vues"
 
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/videos.html
-msgid "subscribe to the video feed"
-msgstr "souscrire au flux vidéo"
+msgid "Subscribe to the video feed"
+msgstr "Souscrire au flux vidéo"
 
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/videos.html
-msgid "subscribe to the audio feed"
-msgstr "souscrire au flux audio"
+msgid "Subscribe to the audio feed"
+msgstr "Souscrire au flux audio"
+
+#: pod/video/templates/channel/channel.html
+#: pod/video/templates/videos/videos.html
+msgid "Audio"
+msgstr "Audio"
 
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/channel/my_channels.html

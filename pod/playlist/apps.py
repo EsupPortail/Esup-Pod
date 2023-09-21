@@ -115,20 +115,23 @@ class PlaylistConfig(AppConfig):
         from pod.playlist.models import Playlist, PlaylistContent
         from django.utils.translation import gettext_lazy as _
         from django.contrib.auth.models import User
+        from django.contrib.sites.models import Site
 
         # Add Favorites playlist for users without favorites
         existing_users = User.objects.all()
         users_without_favorites = existing_users.exclude(id__in=FAVORITES_DATA.keys())
         for user in users_without_favorites:
-            Playlist.objects.create(
+            Playlist.objects.get_or_create(
                 name=FAVORITE_PLAYLIST_NAME,
-                description=_("Your favorites videos."),
-                visibility="private",
-                autoplay=True,
                 owner=user,
-                editable=False,
+                site=Site.objects.get_current(),
+                defaults={
+                    "description": _("Your favorites videos."),
+                    "visibility": "private",
+                    "autoplay": True,
+                    "editable": False,
+                }
             )
-
         # Converting previous favorites to new system
         for owner_id, data_lists in FAVORITES_DATA.items():
             new_favorites_playlist = Playlist.objects.create(

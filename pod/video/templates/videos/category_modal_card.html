@@ -6,12 +6,12 @@
       <small class="text-muted time">{{video.duration_in_time}}</small>
       <span class="text-muted small">
         {% if video.is_video %}
-        <span title="{% trans 'Video content.' %}" >
+        <span title="{% trans 'Video content.' %}" data-bs-toggle="tooltip" data-bs-placement="left">
           <i class="bi bi-film" aria-hidden="true"></i>
         </span>
         {% else %}
-        <span title="{% trans 'Audio content.' %}" >
-          <i class="bi bi-soundwave"></i>
+        <span title="{% trans 'Audio content.' %}" data-bs-toggle="tooltip" data-bs-placement="left">
+          <i class="bi bi-soundwave" aria-hidden="true"></i>
         </span>
         {% endif %}
       </span>
