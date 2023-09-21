@@ -16,18 +16,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '👋 Thanks for reporting!'
-            })
+    #   - uses: actions/github-script@v6
+    #     with:
+    #       script: |
+    #         github.rest.issues.createComment({
+    #           issue_number: context.issue.number,
+    #           owner: context.repo.owner,
+    #           repo: context.repo.repo,
+    #           body: '👋 Thanks for reporting!'
+    #         })
       - name: Add comment to PR
         env:
-          URL: ${{ github.event.pull_request.comments_url }}
+          URL: ${{ github.event.issues.comments_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
             curl \
