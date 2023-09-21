@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-21 12:05+0000\n"
+"POT-Creation-Date: 2023-09-21 12:16+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -7318,6 +7318,11 @@ msgid "Subscribe to the audio feed"
 msgstr "Souscrire au flux audio"
 
 #: pod/video/templates/channel/channel.html
+#: pod/video/templates/videos/videos.html
+msgid "Audio"
+msgstr "Audio"
+
+#: pod/video/templates/channel/channel.html
 #: pod/video/templates/channel/my_channels.html
 #: pod/video/templates/channel/theme_edit.html
 #: pod/video/templates/videos/video_page_content.html
@@ -7356,11 +7361,6 @@ msgstr[1] "%(counter)s vidéos trouvées sans thème"
 #: pod/video/templates/channel/channel.html
 msgid "Load more videos"
 msgstr "Charger plus de vidéos"
-
-#: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/videos.html
-msgid "Audio"
-msgstr "Audio"
 
 #: pod/video/templates/channel/channel.html
 msgid "Show view statistics for all videos in this channel"

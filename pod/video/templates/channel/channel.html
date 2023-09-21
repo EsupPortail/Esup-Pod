@@ -70,17 +70,17 @@
                 {% endif %}
                 {% if theme %}
                     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'Subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
-                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;Video
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Video" %}
                     </a>
                     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'Subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
-                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;Audio
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Audio" %}
                     </a>
                 {% else %}
                     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug %}" title="{% trans 'Subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
-                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;Video
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Video" %}
                     </a>
                     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug %}" title="{% trans 'Subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
-                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;Audio
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Audio" %}
                     </a>
                 {% endif %}
                 {% if request.user in channel.owners.all %}

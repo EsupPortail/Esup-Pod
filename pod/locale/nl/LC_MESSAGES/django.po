@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-21 12:05+0000\n"
+"POT-Creation-Date: 2023-09-21 12:16+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -6866,6 +6866,11 @@ msgid "Subscribe to the audio feed"
 msgstr ""
 
 #: pod/video/templates/channel/channel.html
+#: pod/video/templates/videos/videos.html
+msgid "Audio"
+msgstr ""
+
+#: pod/video/templates/channel/channel.html
 #: pod/video/templates/channel/my_channels.html
 #: pod/video/templates/channel/theme_edit.html
 #: pod/video/templates/videos/video_page_content.html
@@ -6902,11 +6907,6 @@ msgstr[1] ""
 
 #: pod/video/templates/channel/channel.html
 msgid "Load more videos"
-msgstr ""
-
-#: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/videos.html
-msgid "Audio"
 msgstr ""
 
 #: pod/video/templates/channel/channel.html
