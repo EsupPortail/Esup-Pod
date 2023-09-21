@@ -2,7 +2,8 @@
 name: Test Comment PR
 on:
     pull_request_target:
-      branches: [master, develop]
+      branches:
+        - '*'
 
 jobs:
   example_comment_pr:
