@@ -62,7 +62,7 @@ def update_video_passwords(sender, **kwargs):
     """Encrypt all video passwords."""
     from pod.video.models import Video
     from django.contrib.auth.hashers import make_password
-    from django.db.models import Q, F
+    from django.db.models import Q
     # Filter insecure protected videos
     videos_to_update = Video.objects.filter(
         Q(password__isnull=False) & ~Q(password__startswith=('pbkdf2', 'sha256$')))
