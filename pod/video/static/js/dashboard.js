@@ -11,6 +11,11 @@ bulkUpdateActionSelect.addEventListener("change", function() {
 
 async function bulk_update() {
   // Async POST request to bulk update videos
+  let restrict_access_to_groups = document.getElementById("id_restrict_access_to_groups");
+  if(restrict_access_to_groups != null &&
+      Array.from(restrict_access_to_groups.querySelectorAll("option:checked")).length > 0){
+      action = "restrict_access_to_groups";
+  }
   let element = document.getElementById("id_"+action);
   if(element.hasAttribute("multiple")){
     value = Array.from(element.querySelectorAll("option:checked"),e => e.value);
@@ -49,16 +54,23 @@ async function bulk_update() {
 
 function appendDynamicForm(action){
     // Append form group selected action
+    let fieldsets = document.querySelectorAll('.fieldset-dashboard');
     let form_groups = document.querySelectorAll('.form-group-dashboard');
     Array.from(form_groups).forEach((form_group) => {
         form_group.classList.add("d-none");
     });
-    let input = document.getElementById('id_'+action);
-    if(input){
-        if(action === "restricted_access_to_groups"){
-            console.log("restricted");
-        }
+    fieldsets.forEach((fieldset) => fieldset.classList.add("d-none"));
+    if(action === "channel_option" || action === "access_restrictions"){
+        let fieldset = document.getElementById(action);
+        fieldset.classList.remove("d-none");
+        Array.from(fieldset.querySelectorAll(".form-group-dashboard")).forEach((form_group) => {
+            form_group.classList.remove("d-none");
+        });
+    }else{
+        let input = document.getElementById('id_'+action);
+        if(input){
             input.closest(".form-group-dashboard").classList.remove("d-none");
+        }
     }
 }
 

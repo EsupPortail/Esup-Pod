@@ -64,10 +64,10 @@ function replaceCountVideos(newCount) {
 
 // Async request to refresh view with filtered and sorted video list
 function refreshVideosSearch() {
-  // Erase list and enable loader
+  // Erase videos list and show loader
   document.getElementById("videos_list").innerHTML = "";
   loader.classList.add("show");
-  url = getUrlForRefresh();
+  let url = getUrlForRefresh();
   // Async GET request wth parameters by fetch method
   fetch(url, {
     method: "GET",

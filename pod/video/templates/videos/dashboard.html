@@ -46,25 +46,28 @@
     <p id="bulk_update_instructions">Select below an action, check the videos you want to modify and press Apply. You can also refine the videos displayed using the filters on the right.</p>
 
     <select id="bulkUpdateActionSelect" name="action" class="form-select mb-2" aria-label="Choose an action">
-      <option value="" selected>Choose an action</option>
-      <optgroup label="Edit a field">
-        <option value="title">Title</option>
-        <option value="date_added">Date added</option>
-          {% if request.user.is_staff and use_obsolescence %}
-            <option value="date_delete">Date to delete</option>
-          {% endif %}
-        <option value="date_evt">Date of the event field</option>
-        <option value="type">Type</option>
-        <option value="cursus">Cursus</option>
-        <option value="main_lang">Main lang</option>
-        <option value="discipline">Discipline</option>
-      </optgroup>
-      <option value="is_draft">Draft mode</option>
-      <option value="is_restricted">Restrict access</option>
-      <option value="password">Add a password</option>
-      <option value="additional_owners">Add an additional owner</option>
-      <option value="thumbnail">Edit the thumbnail</option>
-      <option value="delete">Delete</option>
+        <option value="" selected>Choose an action</option>
+        <optgroup label="Edit field">
+            <option value="title">Title</option>
+            <option value="type">Type</option>
+            <option value="owner">Owner</option>
+            <option value="additional_owners">Additional owners</option>
+            <option value="description">Description</option>
+            <option value="date_added">Date added</option>
+            <option value="date_evt">Date of the event field</option>
+            <option value="cursus">Cursus</option>
+            <option value="main_lang">Main language</option>
+            <option value="tags">Tags</option>
+            <option value="discipline">Discipline</option>
+            <option value="licence">Licence</option>
+            <option value="thumbnail">Edit the thumbnail</option>
+            {% if request.user.is_staff and use_obsolescence %}
+                <option value="date_delete">Date to delete</option>
+            {% endif %}
+        </optgroup>
+        <option value="access_restrictions">Manage restrictions</option>
+        <option value="channel_option">Channel options</option>
+        <option value="delete">Delete</option>
     </select>
 
     <div id="dashboardFormContainer">
@@ -77,14 +80,31 @@
         {% for field_hidden in form_dashboard.hidden_fields %}
             {{field_hidden}}
         {% endfor %}
-        {% for field in form_dashboard %}
-        <div class="form-group d-none form-group-dashboard">
-          {{field}}
-        {% if field.help_text %}
-              <small id="{{field.id_for_label}}Help" class="form-text"> {{ field.help_text|safe }}</small>
-        {% endif %}
-        </div>
+
+        {% for fieldset in form_dashboard.fieldsets %}
+            {% with options=fieldset|last name=fieldset|first%}
+            {% if name in fieldsets_dashboard %}
+                <fieldset id="{{ name }}" class="fieldset-dashboard d-none">
+            {% endif %}
+            {% for field in form_dashboard %}
+                {% if field.name in options.fields %}
+                    <div class="form-group form-group-dashboard {% if name not in fieldsets_dashboard %}d-none{% endif %}">
+                    {% if field.label and name in fieldsets_dashboard %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% endif %}
+                      {{field}}
+                    {% if field.help_text %}
+                          <small id="{{field.id_for_label}}Help" class="form-text"> {{ field.help_text|safe }}</small>
+                    {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% if name in fieldsets_dashboard %}
+                </fieldset>
+            {% endif %}
+            {% endwith %}
         {% endfor %}
+
         </form>
     </div>
 
