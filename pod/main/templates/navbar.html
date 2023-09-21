@@ -254,7 +254,7 @@
               <div id="stats-usermenu" class="nav flex-column">
                 {% get_number_video_user user as number_videos %}
                 {% get_number_playlist_user user as number_playlists %}
-                <h5 class="offcanvas-title text-center" id="pod-navbar__menuLabel">{% trans 'Your statistics' %}</h5>
+                <h5 class="offcanvas-title text-center">{% trans 'Your statistics' %}</h5>
                 <hr>
                 {% if number_videos > 0 %}
                   <p class="stats-usermenu">{% trans 'Number of videos:' %} <span id="stats-usermenu-video-count">{{ number_videos }}</span></p>

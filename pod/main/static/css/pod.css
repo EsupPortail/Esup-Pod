@@ -1463,6 +1463,20 @@ body {
   text-decoration: underline;
 }*/
 
+#pod-video-countdown {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 72px;
+  color: white;
+  z-index: 99;
+}
+
+#pod-video-container {
+  position: relative;
+}
+
 .pod-card--video {
   border: none;
   box-shadow: 0 3px 6px rgba(0, 0, 0, .16), 0 3px 6px rgba(0, 0, 0, .23);

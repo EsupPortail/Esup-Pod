@@ -177,4 +177,4 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 500);
 });
 
-var countdownElement = document.getElementById('countdown');
+var countdownElement = document.getElementById('pod-video-countdown');
