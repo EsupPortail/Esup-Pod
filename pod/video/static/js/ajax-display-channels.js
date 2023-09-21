@@ -101,12 +101,13 @@ function getThemesForSpecificChannel(channelSlug) {
  */
 function setModalTitle(modalContentElement, channelsCount) {
   const modalTitleElement = modalContentElement.querySelector(".modal-title");
-  const channelIcon = "<i class=\"bi bi-play-btn\" aria-hidden=\"true\"></i>";
+  const channelIcon = '<i class="bi bi-play-btn" aria-hidden="true"></i>';
   var channelString = ngettext(
     `%(count)s channel`,
     `%(count)s channels`,
-    channelsCount);
-  channelString = interpolate(channelString, {count: channelsCount}, true);
+    channelsCount,
+  );
+  channelString = interpolate(channelString, { count: channelsCount }, true);
   modalTitleElement.innerHTML = `${channelIcon}&nbsp;${channelString}`;
 }
 
@@ -180,8 +181,9 @@ function convertToModalListElement(channel) {
   var videoString = ngettext(
     `%(count)s video`,
     `%(count)s videos`,
-    channel.videoCount);
-  videoString = interpolate(videoString, {count: channel.videoCount}, true);
+    channel.videoCount,
+  );
+  videoString = interpolate(videoString, { count: channel.videoCount }, true);
   noWrapSpanElement.innerHTML += `<span class="badge text-bg-primary rounded-pill">${videoString}</span>`;
 
   const childAndParentCouples = [
