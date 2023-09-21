@@ -184,7 +184,7 @@ a.player-element:not(.disabled):hover {
 }
 
 a.player-element:not(.disabled).selected:hover {
-    background-color: #bebebe;
+    background-color: #BEBEBE;
 }
 
 a.player-element.selected {

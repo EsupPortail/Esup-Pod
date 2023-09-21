@@ -175,7 +175,7 @@
   color: #A8AFB5;
 }
 
-[data-theme="dark"] .btn-outline-primary{
+[data-theme="dark"] .btn-outline-primary {
   --bs-btn-hover-bg: var(--pod-primary-darken-dark);
   color: var(--pod-font-color);
 }
