@@ -1,45 +1,26 @@
 ---
 name: Test Comment PR
-on: pull_request
+on:
+    push:
+      branches: [master, develop]
+    pull_request_target:
+      branches: [master, develop]
 
 jobs:
   example_comment_pr:
-    permissions: read-all
     runs-on: ubuntu-latest
-    # permissions:
-    #   contents: write
-    #   pull-requests: write
-    #   repository-projects: write
-    #   issues: write
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
+      issues: write
     name: An example job to comment a PR
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-    #   - uses: actions/github-script@v6
-    #     with:
-    #       script: |
-    #         github.rest.issues.createComment({
-    #           issue_number: context.issue.number,
-    #           owner: context.repo.owner,
-    #           repo: context.repo.repo,
-    #           body: '👋 Thanks for reporting!'
-    #         })
-      - name: Add comment to PR
-        env:
-          URL: ${{ github.event.issue.comments_url }}
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: 'Hello world ! :wave:'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-            echo '${{ github.event.issue.comments_url }}'
-            curl \
-            -X POST \
-            $URL \
-            -H "Content-Type: application/json" \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            --data '{ "body": "blah blah" }'
-
-    #   - name: Comment PR
-    #     uses: thollander/actions-comment-pull-request@v2
-    #     with:
-    #       message: 'Hello world ! :wave:'
-    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
