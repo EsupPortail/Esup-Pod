@@ -1303,7 +1303,7 @@ body {
   margin-left: auto;
 }
 
-.pod-btn {
+/*.pod-btn {
   color: var(--pod-font-color);
   text-decoration: none;
 }
@@ -1312,7 +1312,7 @@ body {
 .pod-btn:focus {
   color: var(--pod-primary);
   text-decoration: underline;
-}
+}*/
 
 /*.pod-btn-share {
   border: 1px solid silver;

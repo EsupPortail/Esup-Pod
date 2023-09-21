@@ -78,11 +78,11 @@
 {% if video.description or tag_list or video.is_360 %}
 <div class="pod-info-video__summary my-3" id="summary">
   {% if video.is_360 %}
-    <p class="alert">{% trans 'This is a 360 degree video. To look around click and drag your mouse on the video.' %}</p>
+    <p class="alert alert-info" role="alert">{% trans 'This is a 360 degree video. To look around click and drag your mouse on the video.' %}</p>
   {% endif %}
   {% tags_for_object video as tag_list %}
   {% if video.description or tag_list %}
-    <p>{{ video.description|safe }}</p>
+    <div class="pod-video-description">{{ video.description|safe }}</div>
     {% if tag_list %}
       <p>{% trans 'Tags:' %}
         {% for tag in tag_list %}

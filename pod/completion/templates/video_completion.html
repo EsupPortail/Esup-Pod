@@ -134,53 +134,57 @@
   </div>
 </div>
 {% endif %}
-<div id="contributor-info" class="card">
+<div class="card mb-2" id="card-completion-tips">
   <h2 class="card-header card-title pod-card__title h4">{% trans "Help"%}</h2>
-  <button class="btn rounded-0 pod-btn" id="heading-1" data-bs-toggle="collapse" data-bs-target="#collapse-1" aria-expanded="false" aria-controls="collapse-1">
-    {% trans 'Contributor(s)' %}
-  </button>
-  <div id="collapse-1" class="card-body collapse card-text small">
-    <p>{% trans 'List of people related to this video.' %}</p>
-    <p>{% trans 'A contributor must at least have a name and a role. You can also join the email of this contributor as well as a link (professional website for example).' %}</p>
-  </div>
-</div>
-<div id="track-info" class="card">
-  <button class="btn rounded-0 pod-btn" id="heading-2" data-bs-toggle="collapse" data-bs-target="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
-    {% trans 'Subtitle(s) and Caption(s)' %}
-  </button>
-  <div id="collapse-2" class="card-body collapse card-text small">
-    <p>{% trans 'Subtitle(s) and/or captions(s) related to this video.' %}</p>
-    <!-- <p>{% trans 'Several web sites allows you to subtitle or caption videos (for example: Amara)' %}</p> -->
-    <p>{% trans 'You can add several subtitle or caption files to a single video (for example, in order to subtitle or caption this video in several languages' %}</p>
-    <p>{% trans 'Subtitle and/or caption file(s) must be in “.vtt” format.' %}</p>
-    <p>{% trans 'You can use' %} <a href="{% url 'video:completion:video_caption_maker' slug=video.slug %}">{% trans 'Video Caption Maker' %}</a> {% trans 'to create your subtitle(s) and/or caption(s) file(s).' %}</p>
-    <p>{% trans 'You will need the URL of this video to make subtitles and/or captions. This URL is a direct access to this video. Please do not communicate it outside of this site to avoid any misuse.' %}</p>
-    <ul class="list-group">
-      {% for vid in video.get_video_mp4 %}
-      <li class="list-group-item">{{vid.name}}: <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly></li>
-      {% endfor %}
-      {% if video.is_video == False and video.get_video_mp3 %}
-      <li class="list-group-item">{{video.get_video_mp3.name}}: <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly></li>
-      {% endif %}
-    </ul>
-  </div>
-</div>
-<div id="document-info" class="card">
-  <button class="btn rounded-0 pod-btn" id="heading-3" data-bs-toggle="collapse" data-bs-target="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
-    {% trans 'Additional resource(s)' %}
-  </button>
-  <div id="collapse-3" class="card-body collapse card-text small">
-    <p>{% trans 'Document(s) related to this video. These documents will be downloadable by users.' %}</p>
-    <p>{% trans 'Be careful, not to be confused with enrichment. These documents are attached to the video, not integrated.' %}</p>
-  </div>
-</div>
-<div id="overlay-info" class="card">
-  <button class="btn rounded-0 pod-btn" id="heading-4" data-bs-toggle="collapse" data-bs-target="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
-    {% trans 'Overlay(s)' %}
-  </button>
-  <div id="collapse-4" class="card-body collapse card-text small">
-    <p>{% trans 'Overlay allows you to display text (with ou without html tag) over the video at specific times and positions.' %}</p>
-    <p>{% trans 'You can add a solid background or a transparent background to the text you want to display with the option "Show background"' %}</p>
+  <div class="card-body">
+    <div id="contributor-info">
+      <button class="btn btn-link rounded-0 pod-btn" id="heading-1" data-bs-toggle="collapse" data-bs-target="#collapse-1" aria-expanded="false" aria-controls="collapse-1">
+        {% trans 'Contributor(s)' %}
+      </button>
+      <div id="collapse-1" class="collapse card-text small">
+        <p>{% trans 'List of people related to this video.' %}</p>
+        <p>{% trans 'A contributor must at least have a name and a role. You can also join the email of this contributor as well as a link (professional website for example).' %}</p>
+      </div>
+    </div>
+    <div id="track-info">
+      <button class="btn btn-link rounded-0 pod-btn" id="heading-2" data-bs-toggle="collapse" data-bs-target="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
+        {% trans 'Subtitle(s) and Caption(s)' %}
+      </button>
+      <div id="collapse-2" class="collapse card-text small">
+        <p>{% trans 'Subtitle(s) and/or captions(s) related to this video.' %}</p>
+        <!-- <p>{% trans 'Several web sites allows you to subtitle or caption videos (for example: Amara)' %}</p> -->
+        <p>{% trans 'You can add several subtitle or caption files to a single video (for example, in order to subtitle or caption this video in several languages' %}</p>
+        <p>{% trans 'Subtitle and/or caption file(s) must be in “.vtt” format.' %}</p>
+        <p>{% trans 'You can use' %} <a href="{% url 'video:completion:video_caption_maker' slug=video.slug %}">{% trans 'Video Caption Maker' %}</a> {% trans 'to create your subtitle(s) and/or caption(s) file(s).' %}</p>
+        <p>{% trans 'You will need the URL of this video to make subtitles and/or captions. This URL is a direct access to this video. Please do not communicate it outside of this site to avoid any misuse.' %}</p>
+        <ul class="list-group">
+          {% for vid in video.get_video_mp4 %}
+          <li class="list-group-item">{{vid.name}}: <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly></li>
+          {% endfor %}
+          {% if video.is_video == False and video.get_video_mp3 %}
+          <li class="list-group-item">{{video.get_video_mp3.name}}: <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+    <div id="document-info">
+      <button class="btn btn-link rounded-0 pod-btn" id="heading-3" data-bs-toggle="collapse" data-bs-target="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
+        {% trans 'Additional resource(s)' %}
+      </button>
+      <div id="collapse-3" class="collapse card-text small">
+        <p>{% trans 'Document(s) related to this video. These documents will be downloadable by users.' %}</p>
+        <p>{% trans 'Be careful, not to be confused with enrichment. These documents are attached to the video, not integrated.' %}</p>
+      </div>
+    </div>
+    <div id="overlay-info">
+      <button class="btn btn-link rounded-0 pod-btn" id="heading-4" data-bs-toggle="collapse" data-bs-target="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
+        {% trans 'Overlay(s)' %}
+      </button>
+      <div id="collapse-4" class="collapse card-text small">
+        <p>{% trans 'Overlay allows you to display text (with ou without html tag) over the video at specific times and positions.' %}</p>
+        <p>{% trans 'You can add a solid background or a transparent background to the text you want to display with the option "Show background"' %}</p>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock page_aside %}

@@ -1112,7 +1112,7 @@ def upload_bbb_recording_to_pod(request, record_id, meeting_id):
         recording = InternalRecording.objects.get(id=record_id)
         source_url = request.POST.get("source_url")
 
-        # Step 1 : Download and parse the remote HTML file if necessary
+        # Step 1: Download and parse the remote HTML file if necessary
         # Check if extension is a video extension
         extension = source_url.split(".")[-1].lower()
         if extension in VIDEO_ALLOWED_EXTENSIONS:
@@ -1123,7 +1123,7 @@ def upload_bbb_recording_to_pod(request, record_id, meeting_id):
             video_file = parse_remote_file(source_url)
             source_video_url = source_url + video_file
 
-        # Step 2 : Define destination source file
+        # Step 2: Define destination source file
         extension = source_video_url.split(".")[-1].lower()
         discrim = datetime.now().strftime("%Y%m%d%H%M%S")
         dest_file = os.path.join(
@@ -1135,10 +1135,10 @@ def upload_bbb_recording_to_pod(request, record_id, meeting_id):
 
         os.makedirs(os.path.dirname(dest_file), exist_ok=True)
 
-        # Step 3 : Download the video file
+        # Step 3: Download the video file
         download_video_file(source_video_url, dest_file)
 
-        # Step 4 : Save informations about the recording
+        # Step 4: Save informations about the recording
         recording_title = request.POST.get("recording_name")
         save_internal_recording(
             request,
@@ -1148,9 +1148,9 @@ def upload_bbb_recording_to_pod(request, record_id, meeting_id):
             source_video_url,
         )
 
-        # Step 5 : Save and encode Pod video
+        # Step 5: Save and encode Pod video
         description = _(
-            "This video was uploaded to Pod; its origin is %(type)s : "
+            "This video was uploaded to Pod; its origin is %(type)s: "
             '<a href="%(url)s" target="_blank">%(url)s</a>'
         ) % {"type": "Big Blue Button", "url": source_video_url}
 

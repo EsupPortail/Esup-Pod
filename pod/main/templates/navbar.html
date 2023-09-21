@@ -207,10 +207,10 @@
                 </button></div>
               {% endif %}
               {% if video_buttons %}
-                <a class="nav-item nav-link" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true" aria-hidden="true"></i>{% trans 'My videos' %}</a>
+                <a class="nav-item nav-link" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
               {% endif %}
               {% if USE_PLAYLIST %}
-                <a class="nav-item nav-link" href="{% url 'playlist:list' %}"><i class="bi bi-list-ul pod-nav-link-icon mx-1" aria-hidden="true" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
+                <a class="nav-item nav-link" href="{% url 'playlist:list' %}"><i class="bi bi-list-ul pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
               {% endif %}
               {% if USE_PLAYLIST and USE_FAVORITES %}
                 {% get_favorite_playlist user as playlist %}

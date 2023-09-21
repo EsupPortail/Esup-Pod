@@ -131,10 +131,13 @@ var sendandgetform = async function (elt, action, name, form, list) {
   if (action == "new" || action == "form_save_new") {
     document.getElementById(form).innerHTML =
       '<div style="width:100%; margin: 2rem;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
-    document.querySelectorAll(".info-card").forEach(function (element) {
-      element.style.display = "none";
+
+    document.querySelectorAll(`#card-completion-tips div:not(#${name}-info) .collapse`).forEach((collapsable) => {
+      bootstrap.Collapse.getOrCreateInstance(collapsable, { toggle: false }).hide();
     });
-    document.getElementById(name + "-info").style.display = "block";
+    /* Display associated help in side menu */
+    var compInfo = document.querySelector(`#${name}-info>.collapse`);
+    bootstrap.Collapse.getOrCreateInstance(compInfo).show();
 
     let url = window.location.origin + href;
     let token = elt.csrfmiddlewaretoken.value;
