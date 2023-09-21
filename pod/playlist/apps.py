@@ -130,7 +130,7 @@ class PlaylistConfig(AppConfig):
                     "visibility": "private",
                     "autoplay": True,
                     "editable": False,
-                }
+                },
             )
         # Converting previous favorites to new system
         for owner_id, data_lists in FAVORITES_DATA.items():
