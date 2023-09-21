@@ -1,18 +1,13 @@
 ---
 name: Test Comment PR
 on:
-    pull_request_target:
-      branches:
-        - '*'
+    pull_request_target: # Please read https://securitylab.github.com/research/github-actions-preventing-pwn-requests/ before using
+      types: [opened, edited]
 
 jobs:
   example_comment_pr:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      repository-projects: write
-      issues: write
+    permissions: write-all
     name: An example job to comment a PR
     steps:
       - name: Checkout
