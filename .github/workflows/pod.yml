@@ -72,6 +72,20 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           coverage run --append --source='.' manage.py test -v 3 --settings=pod.main.test_settings
+      
+      - name: Add Gecko driver
+        if: matrix.python-version == '3.9'
+        uses: browser-actions/setup-geckodriver@latest
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Run Integration Tests
+        if: matrix.python-version == '3.9'
+        run: |
+          export DISPLAY=:99
+          geckodriver &
+          Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
+          python manage.py test -v 3 --settings=pod.main.test_settings pod.main.integration_tests.selenium_pod_integration_tests
 
       ## Start Accessibility tests with pa11y ##
 
@@ -110,15 +124,8 @@ jobs:
         uses: thollander/actions-comment-pull-request@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          message: '<details><summary>Pa11y testing results</summary>
+          message: '<details><summary>Pa11y testing results</summary>```${{ steps.pa11y_output.outputs.content }}```</details>'
 
-
-```
-
-${{ steps.pa11y_output.outputs.content }}```
-
-
-</details>'
       - name: Check for pa11y failures.
         if: contains(steps.pa11y_output.outputs.content, 'Errors in http://')
         run: |
