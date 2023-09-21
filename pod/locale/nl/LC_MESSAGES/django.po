@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-20 10:24+0000\n"
+"POT-Creation-Date: 2023-09-21 14:05+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1148,8 +1148,9 @@ msgstr ""
 
 #: pod/completion/models.py pod/enrichment/models.py pod/playlist/models.py
 #: pod/recorder/models.py pod/video/models.py
+#: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/video_breadcrumbs.html
-#: pod/video_encode_transcript/models.py
+#: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
 msgid "Video"
 msgstr ""
 
@@ -4596,12 +4597,17 @@ msgstr ""
 msgid "Recurring options"
 msgstr ""
 
-#: pod/meeting/forms.py pod/playlist/forms.py pod/video/forms.py
-msgid "Owner of the video cannot be an additional owner too"
-msgstr ""
-
 #: pod/meeting/forms.py pod/meeting/models.py
 msgid "Start date must be less than recurring until date"
+msgstr ""
+
+#: pod/meeting/forms.py pod/meeting/templates/meeting/add_or_edit.html
+msgid ""
+"In case of weekly recurring, the day of the start date must be selected."
+msgstr ""
+
+#: pod/meeting/forms.py pod/playlist/forms.py pod/video/forms.py
+msgid "Owner of the video cannot be an additional owner too"
 msgstr ""
 
 #: pod/meeting/forms.py
@@ -4642,6 +4648,15 @@ msgstr ""
 
 #: pod/meeting/models.py
 msgid "Yearly"
+msgstr ""
+
+#: pod/meeting/models.py
+msgid "Choose repeat frequency"
+msgstr ""
+
+#: pod/meeting/models.py
+#: pod/meeting/templates/meeting/recurring_options_modal_form.html
+msgid "Frequency"
 msgstr ""
 
 #: pod/meeting/models.py
@@ -5081,10 +5096,6 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/my_meetings.html
 msgid "End the meeting"
-msgstr ""
-
-#: pod/meeting/templates/meeting/recurring_options_modal_form.html
-msgid "Frequency"
 msgstr ""
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
@@ -6693,6 +6704,10 @@ msgid "Date of event"
 msgstr ""
 
 #: pod/video/models.py
+msgid "The password is / will be encrypted."
+msgstr ""
+
+#: pod/video/models.py
 msgid "Overview"
 msgstr ""
 
@@ -6846,12 +6861,17 @@ msgstr ""
 
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/videos.html
-msgid "subscribe to the video feed"
+msgid "Subscribe to the video feed"
 msgstr ""
 
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/videos.html
-msgid "subscribe to the audio feed"
+msgid "Subscribe to the audio feed"
+msgstr ""
+
+#: pod/video/templates/channel/channel.html
+#: pod/video/templates/videos/videos.html
+msgid "Audio"
 msgstr ""
 
 #: pod/video/templates/channel/channel.html
