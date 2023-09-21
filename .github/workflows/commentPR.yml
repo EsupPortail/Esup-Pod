@@ -4,7 +4,8 @@ on:
     push:
       branches: [master, develop]
     pull_request_target:
-      branches: ["*"]
+      types: [assigned, opened, synchronize, reopened]
+      branches: [master, develop]
 
 jobs:
   example_comment_pr:
