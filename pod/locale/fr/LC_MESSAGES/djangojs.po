@@ -568,10 +568,10 @@ msgid "No channels found"
 msgstr "Aucun chaîne trouvée"
 
 #: pod/video/static/js/ajax-display-channels.js
-msgid "video"
-msgid_plural "videos"
-msgstr[0] "vidéo"
-msgstr[1] "vidéos"
+msgid "%(count)s video"
+msgid_plural "%(count)s videos"
+msgstr[0] "%(count)s vidéo"
+msgstr[1] "%(count)s vidéos"
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
@@ -856,6 +856,11 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "video"
+#~ msgid_plural "videos"
+#~ msgstr[0] "vidéo"
+#~ msgstr[1] "vidéos"
 
 #~ msgid "Channels"
 #~ msgstr "Chaînes"

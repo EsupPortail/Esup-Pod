@@ -543,8 +543,8 @@ msgid "No channels found"
 msgstr ""
 
 #: pod/video/static/js/ajax-display-channels.js
-msgid "video"
-msgid_plural "videos"
+msgid "%(count)s video"
+msgid_plural "%(count)s videos"
 msgstr[0] ""
 msgstr[1] ""
 
