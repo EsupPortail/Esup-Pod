@@ -106,7 +106,7 @@ function setModalTitle(modalContentElement, channelsCount) {
     `%(count)s channel`,
     `%(count)s channels`,
     channelsCount);
-  channelString = interpolate(formats, {count: channelsCount}, true);
+  channelString = interpolate(channelString, {count: channelsCount}, true);
   modalTitleElement.innerHTML = `${channelIcon}&nbsp;${channelString}`;
 }
 
@@ -177,9 +177,12 @@ function convertToModalListElement(channel) {
     spanElement = setChannelThemeButtonForModal(noWrapSpanElement, channel);
   }
 
-  noWrapSpanElement.innerHTML += `<span class="badge text-bg-primary rounded-pill">${
-    channel.videoCount
-  } ${ngettext("video", "videos", channel.videoCount)}</span>`;
+  var videoString = ngettext(
+    `%(count)s video`,
+    `%(count)s videos`,
+    channel.videoCount);
+  videoString = interpolate(videoString, {count: channel.videoCount}, true);
+  noWrapSpanElement.innerHTML += `<span class="badge text-bg-primary rounded-pill">${videoString}</span>`;
 
   const childAndParentCouples = [
     [dFlexSpanElement, linkElement],
