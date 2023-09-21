@@ -16,12 +16,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: 'Hello world ! :wave:'
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Create issue using REST API
         run: |
             curl --request POST \
@@ -33,3 +27,9 @@ jobs:
               "body": "This issue was automatically created by the GitHub Action workflow **${{ github.workflow }}**. \n\n The commit hash was: _${{ github.sha }}_."
               }' \
             --fail
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: 'Hello world ! :wave:'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
