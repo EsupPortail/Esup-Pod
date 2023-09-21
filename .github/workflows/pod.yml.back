@@ -13,6 +13,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: write-all
     strategy:
       max-parallel: 4
       matrix:
@@ -122,12 +123,12 @@ jobs:
         with:
           path: ./pa11y_output.txt
 
-      - name: Comment on pull request.
-        if: contains(steps.pa11y_output.outputs.content, 'Errors in http://')
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          message: '<details><summary>Pa11y testing results</summary>```${{ steps.pa11y_output.outputs.content }}```</details>'
+      # - name: Comment on pull request.
+      #   if: contains(steps.pa11y_output.outputs.content, 'Errors in http://')
+      #   uses: thollander/actions-comment-pull-request@v2
+      #   with:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     message: '<details><summary>Pa11y testing results</summary>```${{ steps.pa11y_output.outputs.content }}```</details>'
 
       - name: Comment on pull request.
         run: echo '${{ steps.pa11y_output.outputs.content }}'
@@ -135,6 +136,7 @@ jobs:
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v2
         with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: |
             Hello world ! :wave:
       
