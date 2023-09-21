@@ -23,10 +23,10 @@
   <h1 id="video_count" class="page_title col-xxl-4 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h1>
   <span class="col-xxl-4 col-md-6 mb-2">
     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'Subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
-      <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;Audio
+      <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Audio" %}
     </a>
     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'Subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
-      <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;Video
+      <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Video" %}
     </a>
     {% if USE_STATS_VIEW %}
       <a href="{% url 'video:video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
