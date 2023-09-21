@@ -7,7 +7,8 @@ on:
   pull_request:
     branches: ["*"]
 
-permissions: write-all
+permissions: 
+  pull-requests: write 
 
 jobs:
   build:
@@ -130,6 +131,12 @@ jobs:
 
       - name: Comment on pull request.
         run: echo '${{ steps.pa11y_output.outputs.content }}'
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            Hello world ! :wave:
       
       - name: Comment Pa11y Ok
         if: ${{ !contains(steps.pa11y_output.outputs.content, 'Errors in http://') }}
