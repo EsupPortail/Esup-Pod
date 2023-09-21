@@ -2,9 +2,9 @@
 <div class="input-group">
   <label for="sort" class="input-group-text" aria-label="{% trans 'Sort' %}">{% trans 'Sort' %}</label>
   {% if sort_direction == 'on' %}
-    <button id="sort_direction_label" class="btn btn-primary" title="{% trans 'Ascending sort' %}">&#8599;</button>
+    <button id="sort_direction_label" class="btn btn-primary" title="{% trans 'Ascending sort' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">&#8599;</button>
   {% else %}
-    <button id="sort_direction_label" class="btn btn-primary" title="{% trans 'Descending sort' %}">&#8600;</button>
+    <button id="sort_direction_label" class="btn btn-primary" title="{% trans 'Descending sort' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">&#8600;</button>
   {% endif %}
   <input id="sort_direction" type="checkbox" name="sort_direction" class="visually-hidden" {% if sort_direction == 'on' %}checked{% endif %}>
   <label for="sort_direction" class="visually-hidden">{% trans 'Sort Direction' %}</label>

@@ -78,8 +78,10 @@
 <div id="info_video">
   <div>
     <span class="float-end">
-      <button type="button" class="btn btn-primary btn-sm m-2" data-bs-toggle="modal" data-bs-target="#ConfirmationModal"><i class="bi bi-scissors"></i>&nbsp;{% trans 'Cut' %}</button>
-      <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn-secondary btn-sm">
+      <button type="button" class="btn btn-primary btn-sm m-2" data-bs-toggle="modal" data-bs-target="#ConfirmationModal">
+        <i class="bi bi-scissors" aria-hidden="true"></i>&nbsp;{% trans 'Cut' %}
+      </button>
+      <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
         <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans 'Back to the video' %}
       </a>
     </span>

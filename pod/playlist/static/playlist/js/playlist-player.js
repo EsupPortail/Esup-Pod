@@ -10,6 +10,8 @@ function switchToNextVideo() {
     }
     playerElements[currentIndex + 1].classList.add('selected');
     selectedElement.classList.remove('selected');
+    selectedElement.querySelector("span.rank").innerHTML = selectedElement.id;
+    playerElements[currentIndex + 1].querySelector("span.rank").innerHTML = '<i class="bi bi-caret-right-fill" aria-hidden="true"></i>';
     let nextElement = playerElements[currentIndex + 1];
     if (!(nextElement.classList.contains('disabled'))) {
         const videoSrc = playerElements[currentIndex + 1].getAttribute('href');

@@ -38,7 +38,7 @@
         {% endif %}
       </div>
       <span class="float-end">
-        <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn btn-secondary btn-sm">
+        <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn btn-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
           <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans "Back to the video"%}
         </a>
       </span>

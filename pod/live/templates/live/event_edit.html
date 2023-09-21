@@ -130,7 +130,7 @@
           {% if event.owner == request.user or request.user.is_superuser %}
             <a href="{% url 'live:event_edit' slug=form.instance.slug %}" title="{% trans 'Edit the event' %}"
                class="btn pod-btn-social p-1 m-0 ms-1">
-                <i class="bi bi-pencil" aria-hidden="true"></i>
+                <i class="bi bi-pencil-square" aria-hidden="true"></i>
             </a>
           {% endif %}
           <a href="{% url 'live:event_delete' slug=form.instance.slug %}"

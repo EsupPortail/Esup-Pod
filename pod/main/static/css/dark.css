@@ -71,8 +71,12 @@
 }*/
 
 /* switch logoPod color on dark theme */
-[data-theme="dark"] .pod-navbar__brand img{
+[data-theme="dark"] .pod-navbar__brand img {
   filter: invert(100%) saturate(2908%) hue-rotate(27deg) brightness(121%) contrast(99%);
+}
+
+[data-theme="dark"] .vjs-logo-button {
+  filter: brightness(0) invert(1);
 }
 
 [data-theme="dark"] :not(.alert)>.btn-close {
@@ -171,10 +175,9 @@
   color: #A8AFB5;
 }
 
-[data-theme="dark"] .btn-outline-primary{
-  background-color: #000;
+[data-theme="dark"] .btn-outline-primary {
   --bs-btn-hover-bg: var(--pod-primary-darken-dark);
-  color: var(--pod-primary-lighten-dark);
+  color: var(--pod-font-color);
 }
 
 [data-theme="dark"] .btn-outline-primary>svg {
