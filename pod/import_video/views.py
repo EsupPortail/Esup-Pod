@@ -25,6 +25,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.text import get_valid_filename
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import ensure_csrf_cookie
+from pod.import_video.utils import manage_download
 from pod.main.views import in_maintenance
 from pod.main.utils import secure_post_request, display_message_with_icon
 
@@ -64,6 +65,8 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
         "ts",
     ),
 )
+
+VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
 
 
 def secure_external_recording(request, recording):
@@ -423,21 +426,37 @@ def upload_bbb_recording_to_pod(request, record_id):
         Boolean: True if upload achieved
     """
     try:
+        # Session useful to achieve requests (and keep cookies between)
+        session = requests.Session()
+
         recording = ExternalRecording.objects.get(id=record_id)
         source_url = request.POST.get("source_url")
 
         # Step 1: Download and parse the remote HTML file if necessary
         # Check if extension is a video extension
+        """
         extension = source_url.split(".")[-1].lower()
         if extension in VIDEO_ALLOWED_EXTENSIONS:
             # URL corresponds to a video file
             source_video_url = source_url
         else:
             # Download and parse the remote HTML file
-            video_file = parse_remote_file(source_url)
+            video_file = parse_remote_file(session, source_url)
             source_video_url = source_url + video_file
+        """
+
+        # Check if extension is a video extension
+        extension = source_url.split(".")[-1].lower()
+        # Name of the video file to add to the URL (if necessary)
+        video_file_add = ""
+        if extension not in VIDEO_ALLOWED_EXTENSIONS:
+            # Download and parse the remote HTML file
+            video_file_add = parse_remote_file(session, source_url)
+            # Extension overload
+            extension = video_file_add.split(".")[-1].lower()
 
         # Verify that video exists and not oversised
+        source_video_url = manage_recording_url(source_url, video_file_add)
         verify_video_exists_and_size(source_video_url)
 
         # Step 2: Define destination source file
@@ -445,15 +464,25 @@ def upload_bbb_recording_to_pod(request, record_id):
         discrim = datetime.now().strftime("%Y%m%d%H%M%S")
         dest_file = os.path.join(
             settings.MEDIA_ROOT,
-            "videos",
+            VIDEOS_DIR,
+            request.user.owner.hashkey,
+            os.path.basename("%s-%s.%s" % (discrim, recording.id, extension)),
+        )
+        os.makedirs(os.path.dirname(dest_file), exist_ok=True)
+
+        dest_path = os.path.join(
+            VIDEOS_DIR,
             request.user.owner.hashkey,
             os.path.basename("%s-%s.%s" % (discrim, recording.id, extension)),
         )
 
-        os.makedirs(os.path.dirname(dest_file), exist_ok=True)
-
         # Step 3: Download the video file
-        download_video_file(source_video_url, dest_file)
+        source_video_url = manage_download(
+            session,
+            source_url,
+            video_file_add,
+            dest_file
+        )
 
         # Step 4: Save informations about the recording
         recording_title = request.POST.get("recording_name")
@@ -465,7 +494,7 @@ def upload_bbb_recording_to_pod(request, record_id):
             '<a href="%(url)s" target="_blank">%(url)s</a>'
         ) % {"type": recording.get_type_display(), "url": source_video_url}
 
-        save_video(request, dest_file, recording_title, description)
+        save_video(request, dest_path, recording_title, description)
 
         return True
     except Exception as exc:
@@ -524,7 +553,7 @@ def upload_youtube_recording_to_pod(request, record_id):
         # User directory
         dest_dir = os.path.join(
             settings.MEDIA_ROOT,
-            "videos",
+            VIDEOS_DIR,
             request.user.owner.hashkey,
         )
         os.makedirs(os.path.dirname(dest_dir), exist_ok=True)
@@ -532,8 +561,9 @@ def upload_youtube_recording_to_pod(request, record_id):
         discrim = datetime.now().strftime("%Y%m%d%H%M%S")
         filename = "%s-%s" % (discrim, get_valid_filename(yt_stream.default_filename))
         # Video file path
-        dest_file = os.path.join(
-            dest_dir,
+        dest_path = os.path.join(
+            VIDEOS_DIR,
+            request.user.owner.hashkey,
             filename,
         )
 
@@ -549,7 +579,7 @@ def upload_youtube_recording_to_pod(request, record_id):
             'its origin is Youtube: <a href="%(url)s" target="_blank">%(url)s</a>'
         ) % {"name": yt_video.title, "url": source_url}
         recording_title = request.POST.get("recording_name")
-        save_video(request, dest_file, recording_title, description, date_evt)
+        save_video(request, dest_path, recording_title, description, date_evt)
         return True
 
     except VideoUnavailable:
@@ -604,6 +634,9 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
         Boolean: True if upload achieved
     """
     try:
+        # Session useful to achieve requests (and keep cookies between)
+        session = requests.Session()
+
         # Manage source URL from video playback
         source_url = request.POST.get("source_url")
 
@@ -678,14 +711,20 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
         extension = source_video_url.split(".")[-1].lower()
         dest_file = os.path.join(
             settings.MEDIA_ROOT,
-            "videos",
+            VIDEOS_DIR,
             request.user.owner.hashkey,
             os.path.basename("%s-%s.%s" % (discrim, pt_video_uuid, extension)),
         )
         os.makedirs(os.path.dirname(dest_file), exist_ok=True)
 
+        dest_path = os.path.join(
+            VIDEOS_DIR,
+            request.user.owner.hashkey,
+            os.path.basename("%s-%s.%s" % (discrim, pt_video_uuid, extension)),
+        )
+
         # Step 3: Download the video file
-        download_video_file(source_video_url, dest_file)
+        download_video_file(session, source_video_url, dest_file)
 
         # Step 4: Save informations about the recording
         recording_title = request.POST.get("recording_name")
@@ -697,7 +736,7 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
             "<a href='%(url)s' target='blank'>%(url)s</a>."
         ) % {"name": pt_video_name, "url": pt_video_url}
         description = ("%s<br>%s") % (description, pt_video_description)
-        save_video(request, dest_file, recording_title, description, date_evt)
+        save_video(request, dest_path, recording_title, description, date_evt)
 
         return True
     except Exception as exc:
@@ -745,8 +784,8 @@ def get_stateless_recording(request, data):
 
     # Management of the external recording type
     if data.type == "bigbluebutton":
-        # Manage BBB recording URL, if necessary
-        video_url = manage_recording_url(data.source_url)
+        # Manage BBB recording URL
+        video_url = data.source_url
         # For BBB, external URL can be the video or presentation playback
         if video_url.find("playback/video") != -1:
             # Management for standards video URLs with BBB or Scalelite server
