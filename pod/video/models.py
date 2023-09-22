@@ -819,7 +819,7 @@ class Video(models.Model):
         help_text=_("Viewing this video will not be possible without this password.")
         + " "
         + _("The password is / will be encrypted."),
-        max_length=50,
+        max_length=250,
         blank=True,
         null=True,
     )

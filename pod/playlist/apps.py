@@ -116,10 +116,10 @@ class PlaylistConfig(AppConfig):
         from django.utils.translation import gettext_lazy as _
         from django.contrib.auth.models import User
         from django.contrib.sites.models import Site
+        from django.utils import timezone
 
         # Add Favorites playlist for users without favorites
-        existing_users = User.objects.all()
-        users_without_favorites = existing_users.exclude(id__in=FAVORITES_DATA.keys())
+        users_without_favorites = User.objects.exclude(id__in=FAVORITES_DATA.keys())
         for user in users_without_favorites:
             Playlist.objects.get_or_create(
                 name=FAVORITE_PLAYLIST_NAME,
@@ -146,7 +146,7 @@ class PlaylistConfig(AppConfig):
             for favorites_datas in data_lists:
                 date_added, rank, video_id = favorites_datas
                 PlaylistContent.objects.create(
-                    date_added=date_added,
+                    date_added=timezone.make_aware(date_added),
                     rank=rank,
                     playlist=new_favorites_playlist,
                     video_id=video_id,
