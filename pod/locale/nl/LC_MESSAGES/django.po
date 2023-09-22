@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-22 14:47+0200\n"
+"POT-Creation-Date: 2023-09-22 16:41+0200\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2461,7 +2461,7 @@ msgstr ""
 #: pod/import_video/views.py pod/meeting/views.py
 #, python-format
 msgid ""
-"This video was uploaded to Pod; its origin is %(type)s : <a href=\"%(url)s\" "
+"This video was uploaded to Pod; its origin is %(type)s: <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
 
