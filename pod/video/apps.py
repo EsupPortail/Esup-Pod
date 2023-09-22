@@ -33,6 +33,7 @@ def set_default_site(sender, **kwargs):
     from pod.video.models import Type
     from django.contrib.sites.models import Site
 
+    print("Start set_default_site")
     site = Site.objects.get_current()
     for vid in Video.objects.filter(sites__isnull=True):
         apply_default_site(vid, site)
@@ -44,6 +45,7 @@ def set_default_site(sender, **kwargs):
         apply_default_site(typ, site)
     for vr in VideoRendition.objects.filter(sites__isnull=True):
         apply_default_site(vr, site)
+    print("set_default_site --> OK")
 
 
 def fix_transcript(sender, **kwargs):
@@ -54,8 +56,10 @@ def fix_transcript(sender, **kwargs):
     from pod.video.models import Video
     from django.db.models import F
 
+    print("Start fix_transcript")
     Video.objects.filter(transcript="1").update(transcript=F("main_lang"))
     Video.objects.filter(transcript="0").update(transcript="")
+    print("fix_transcript --> OK")
 
 
 def update_video_passwords(sender, **kwargs):
@@ -64,13 +68,15 @@ def update_video_passwords(sender, **kwargs):
     from django.contrib.auth.hashers import make_password
     from django.db.models import Q
 
+    print("Start update_video_passwords")
     # Filter insecure protected videos
-    videos_to_update = Video.objects.filter(
-        Q(password__isnull=False) & ~Q(password__startswith=("pbkdf2", "sha256$"))
+    videos_to_update = Video.objects.exclude(
+        Q(password__isnull=True) | Q(password__startswith=("pbkdf2_sha256$"))
     )
     for video in videos_to_update:
         video.password = make_password(video.password, hasher="pbkdf2_sha256")
         video.save()
+    print("update_video_passwords --> OK")
 
 
 class VideoConfig(AppConfig):
@@ -105,6 +111,7 @@ class VideoConfig(AppConfig):
 
     def save_previous_data(self, sender, **kwargs):
         """Save previous data from various database tables."""
+        print("pre_migrate - Start save_previous_data")
         self.execute_query(
             """
             SELECT id,
@@ -190,9 +197,11 @@ class VideoConfig(AppConfig):
         )
         if len(PLAYLIST_VIDEO) > 0:
             print("%s PLAYLIST_VIDEO saved" % len(PLAYLIST_VIDEO))
+        print("pre_migrate - save_previous_data --> OK")
 
     def send_previous_data(self, sender, **kwargs):
         """Send previous data from various database tables."""
+        print("post_migrate - Start send_previous_data")
         nb_batch = 1000
         if (
             len(VIDEO_RENDITION) > 0
