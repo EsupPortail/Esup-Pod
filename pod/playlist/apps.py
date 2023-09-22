@@ -24,6 +24,7 @@ class PlaylistConfig(AppConfig):
 
     def save_previous_data(self, sender, **kwargs):
         """Save previous data from various database tables."""
+        print("Start save_previous_data | playlists")
         self.save_playlists()
         if len(PLAYLIST_INFORMATIONS) > 0:
             print("PLAYLIST_INFORMATIONS saved %s playlists" % len(PLAYLIST_INFORMATIONS))
@@ -37,6 +38,7 @@ class PlaylistConfig(AppConfig):
         self.save_favorites()
         if len(FAVORITES_DATA) > 0:
             print("FAVORITES_DATA saved for %s persons" % len(FAVORITES_DATA))
+        print("save_previous_data --> OK | playlists")
 
     def save_favorites(self):
         """Save previous data from favorites table."""
@@ -100,7 +102,7 @@ class PlaylistConfig(AppConfig):
 
     def send_previous_data(self, sender, **kwargs):
         """Send previous data from various database tables."""
-        print("Sending datas")
+        print("Start send_previous_data | playlists")
 
         if len(PLAYLIST_INFORMATIONS) > 0:
             self.update_playlists()
@@ -109,6 +111,7 @@ class PlaylistConfig(AppConfig):
             self.add_playlists_contents()
 
         self.create_new_favorites()
+        print("send_previous_data --> OK | playlists")
 
     def create_new_favorites(self):
         """Create favorites records from existing datas or create favorites playlist."""
@@ -118,20 +121,30 @@ class PlaylistConfig(AppConfig):
         from django.contrib.sites.models import Site
         from django.utils import timezone
 
+        print("Start create_new_favorites")
         # Add Favorites playlist for users without favorites
         users_without_favorites = User.objects.exclude(id__in=FAVORITES_DATA.keys())
+        users_with_favorite_playlist = set(
+            Playlist.objects.filter(name=FAVORITE_PLAYLIST_NAME).values_list(
+                'owner_id', flat=True)
+        )
+        favorites_playlists_to_create = []
         for user in users_without_favorites:
-            Playlist.objects.get_or_create(
-                name=FAVORITE_PLAYLIST_NAME,
-                owner=user,
-                site=Site.objects.get_current(),
-                defaults={
-                    "description": _("Your favorites videos."),
-                    "visibility": "private",
-                    "autoplay": True,
-                    "editable": False,
-                },
-            )
+            if user.id not in users_with_favorite_playlist:
+                playlist = Playlist(
+                    name=FAVORITE_PLAYLIST_NAME,
+                    owner=user,
+                    site=Site.objects.get_current(),
+                    defaults={
+                        "description": _("Your favorites videos."),
+                        "visibility": "private",
+                        "autoplay": True,
+                        "editable": False,
+                    },
+                )
+                favorites_playlists_to_create.append(playlist)
+        Playlist.objects.bulk_create(favorites_playlists_to_create)
+
         # Converting previous favorites to new system
         for owner_id, data_lists in FAVORITES_DATA.items():
             new_favorites_playlist = Playlist.objects.create(
@@ -158,6 +171,7 @@ class PlaylistConfig(AppConfig):
         """Update previous playlist table."""
         from pod.playlist.models import Playlist
 
+        print("Start update_playlists")
         playlists_to_update = []
 
         for playlist_id, playlist_datas in PLAYLIST_INFORMATIONS.items():
@@ -195,6 +209,7 @@ class PlaylistConfig(AppConfig):
         """Add playlist content record from existing datas"""
         from pod.playlist.models import PlaylistContent
 
+        print("Start add_playlists_contents")
         content_list_to_bulk = []
         for content_datas in PLAYLIST_CONTENTS.values():
             position, playlist_id, video_id = content_datas
