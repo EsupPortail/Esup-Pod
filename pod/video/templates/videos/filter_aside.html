@@ -6,7 +6,7 @@
 <div class="card card-body">
   <h2 class="card-title pod-card__title h4">
     <i class="bi bi-sliders2-vertical" aria-hidden="true"></i>&nbsp;{% trans 'Filters' %}
-    <button type="button" id="resetFilters" class="btn btn-outline-primary">{% trans 'Reset' %}</button>
+    <button type="button" id="resetFilters" class="btn btn-outline-primary" title="Reset the filters" data-bs-toggle="tooltip">{% trans 'Reset' %}</button>
   </h2>
   <p class="filter-info">
     {% trans 'The videos on the left are automatically sorted according to the filters selected. Check options to adjust results.' %}
@@ -52,7 +52,7 @@
             {% if type.icon %}<img src="{{type.icon.file.url}}" alt="{{type.title}}" style="max-height:32px; max-width:32px;" loading="lazy">{% else %}<i class="bi bi-fonts" aria-hidden="true"></i>{% endif %}&nbsp;{{type}}
           </label>
         </div>
-      {%endfor%}
+      {% endfor %}
     </div>
     {% if TYPES.count > 5 %}
       <span class="badge badge-light float-end"><a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType"></a></span>
@@ -73,7 +73,7 @@
             {% if discipline.icon %}<img src="{{discipline.icon.file.url}}" alt="{{discipline.title}}" style="max-height:32px; max-width:32px;" loading="lazy">{% endif %}&nbsp;{{discipline}}
           </label>
         </div>
-      {%endfor%}
+      {% endfor %}
     </div>
     {% if DISCIPLINES.count > 5 %}
       <span class="badge badge-light float-end"><a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterDiscipline" aria-expanded="false" aria-controls="collapseFilterDiscipline"></a></span>

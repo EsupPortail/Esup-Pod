@@ -1115,13 +1115,13 @@ body {
   text-decoration: none;
 }
 
-.pod-params-button:focus::before,
-.pod-params-button:hover::before {
+.pod-params-button:focus>i::before,
+.pod-params-button:hover>i::before {
   transform: rotate(20deg);
 }
 
 /* Make icon rotate and button remain still */
-.pod-params-button::before {
+.pod-params-button>i::before {
   transition: transform ease-in-out .3s;
 }
 
@@ -1462,20 +1462,6 @@ body {
 .pod-dropdown-item:focus {
   text-decoration: underline;
 }*/
-
-#pod-video-countdown {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 72px;
-  color: white;
-  z-index: 99;
-}
-
-#pod-video-container {
-  position: relative;
-}
 
 .pod-card--video {
   border: none;

@@ -258,7 +258,7 @@
         <div id="collapse-{{forloop.counter}}" class="card-body collapse card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
           {% for value in values %}
           <p>{{value|safe}}</p>
-          {%endfor%}
+          {% endfor %}
         </div>
       </div>
       {% endfor %}
@@ -289,7 +289,7 @@
     }
     var VIDEO_MAX_UPLOAD_SIZE = {{ form.VIDEO_MAX_UPLOAD_SIZE }};
     var video_max_upload_size = VIDEO_MAX_UPLOAD_SIZE * 1024 * 1024 * 1024;
-    var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";
+    var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{% endfor %}";
     const max_duration_date_delete = {{ form.max_duration_date_delete }};
   </script>
   <script defer src="{% static 'js/validate-date_delete-field.js' %}?ver={{VERSION}}"></script>
