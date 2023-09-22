@@ -147,7 +147,7 @@ class PlaylistConfig(AppConfig):
                 )
                 favorites_playlists_to_create.append(playlist)
                 playlist_id += 1
-        Playlist.objects.bulk_create(favorites_playlists_to_create)
+        Playlist.objects.bulk_create(favorites_playlists_to_create, batch_size=1000)
 
         # Converting previous favorites to new system
         for owner_id, data_lists in FAVORITES_DATA.items():
