@@ -144,10 +144,8 @@ def manage_recording_url(source_url, video_file_add):
         if url.query:
             query = parse_qs(url.query, keep_blank_values=True)
             if query["token"][0]:
-                # 1st case (ex: ESR URL), URL likes
+                # 1st case (ex: ESR URL), URL likes (ex for ESR URL:)
                 # https://_site_/recording/_recording_id/video?token=_token_
-                # Ex for ESR URL:
-                # https://_site_/recording/_recording_id_/video?token=_token_
                 # Get recording unique identifier
                 recording_id = url.path.split("/")[2]
                 # Define 2nd video URL
