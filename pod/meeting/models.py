@@ -614,7 +614,7 @@ class Meeting(models.Model):
             [
                 "https://",
                 get_current_site(None).domain,
-                reverse("meeting:recording_ready_url", kwargs={}),
+                reverse("meeting:recording_ready", kwargs={}),
             ]
         )
         parameters["meta_bbb-recording-ready-url"] = recordingReadyUrl
