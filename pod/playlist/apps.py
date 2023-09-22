@@ -128,9 +128,10 @@ class PlaylistConfig(AppConfig):
         users_without_favorites = User.objects.exclude(id__in=FAVORITES_DATA.keys())
         users_with_favorite_playlist = set(
             Playlist.objects.filter(name=FAVORITE_PLAYLIST_NAME).values_list(
-                'owner_id', flat=True)
+                "owner_id", flat=True
+            )
         )
-        playlist_id = Playlist.objects.aggregate(Max('id'))['id__max']
+        playlist_id = Playlist.objects.aggregate(Max("id"))["id__max"]
         playlist_id = playlist_id + 1 if playlist_id is not None else 1
         favorites_playlists_to_create = []
         for user in users_without_favorites:
