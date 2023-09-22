@@ -2554,7 +2554,7 @@ msgstr ""
 #: pod/import_video/utils.py
 #, python-format
 msgid "Error number: %s"
-msgstr ""
+msgstr "Numéro d'erreur : %s"
 
 #: pod/import_video/utils.py
 msgid "The video file for this recording was not found in the HTML file."
