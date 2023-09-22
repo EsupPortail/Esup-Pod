@@ -35,3 +35,4 @@ bleach==6.0.0
 pytube==15.0.0
 django-redis-sessions
 paramiko~=3.1.0
+djangorestframework-simplejwt==5.3.0
