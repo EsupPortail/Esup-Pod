@@ -38,6 +38,16 @@ if not views.MEETING_DISABLE_RECORD:
             views.delete_internal_recording,
             name="delete_internal_recording",
         ),
+        path(
+            "internal_recording/<slug:meeting_id>/<slug:recording_id>/",
+            views.internal_recording,
+            name="internal_recording",
+        ),
+        path(
+            "recording_ready_url/",
+            views.recording_ready_url,
+            name="recording_ready_url"
+        ),
     ]
 
 urlpatterns += [
