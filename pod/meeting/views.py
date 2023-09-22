@@ -1272,7 +1272,7 @@ def upload_bbb_recording_to_pod(request, record_id, meeting_id):
 
 
 @csrf_exempt
-def recording_ready_url(request):
+def recording_ready(request):
     """Make a callback when a recording is ready for viewing.
 
     Useful to send an email to prevent the user.
