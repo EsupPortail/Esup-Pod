@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-21 14:05+0000\n"
+"POT-Creation-Date: 2023-09-22 14:47+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -2118,8 +2118,8 @@ msgid ""
 msgstr ""
 "Les champs \"Début\" et \"Fin\" doivent contenir des valeurs en secondes. "
 "Lancez la lecture de la vidéo, mettez sur pause et cliquez sur \"Récupérer "
-"le temps depuis le lecteur\" pour renseigner automatiquement le champ "
-"\"Début\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
+"le temps depuis le lecteur\" pour renseigner automatiquement le champ \"Début"
+"\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html
 msgid "You cannot overlap enrichments."
@@ -2552,6 +2552,11 @@ msgstr ""
 "Le fichier HTML de cet enregistrement est introuvable sur le serveur BBB."
 
 #: pod/import_video/utils.py
+#, python-format
+msgid "Error number: %s"
+msgstr ""
+
+#: pod/import_video/utils.py
 msgid "The video file for this recording was not found in the HTML file."
 msgstr ""
 "Le fichier vidéo de cet enregistrement est introuvable dans le fichier HTML."
@@ -2569,10 +2574,6 @@ msgid "The video file for this recording was not found on the BBB server."
 msgstr ""
 "Le fichier vidéo pour cet enregistrement n’a pas été trouvé sur le serveur "
 "BBB."
-
-#: pod/import_video/utils.py
-msgid "Impossible to download the video file from the server."
-msgstr "Impossible de télécharger le fichier vidéo depuis le serveur."
 
 #: pod/import_video/utils.py
 msgid "Impossible to create the Pod video"
@@ -2618,13 +2619,12 @@ msgid "Impossible to create the external recording"
 msgstr "Impossible de créer l’enregistrement externe"
 
 #: pod/import_video/views.py pod/meeting/views.py
-#, python-format
 msgid ""
 "This video was uploaded to Pod; its origin is %(type)s: <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
-"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
 #: pod/import_video/views.py pod/meeting/views.py
 msgid "Try changing the record type or address for this recording."
@@ -2635,8 +2635,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "Youtube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
@@ -3647,7 +3647,7 @@ msgstr "Évènements passés"
 msgid "Registration of event #%(content_id)s"
 msgstr "Programmation de l’évènement #%(content_id)s"
 
-#: pod/live/utils.py pod/video_encode_transcript/utils.py
+#: pod/live/utils.py pod/meeting/utils.py pod/video_encode_transcript/utils.py
 msgid "Hello,"
 msgstr "Bonjour,"
 
@@ -3663,7 +3663,7 @@ msgstr ""
 "%(url_event)s). Vous pouvez retrouver les autres options de partage dans "
 "l’onglet dédié."
 
-#: pod/live/utils.py pod/main/templates/mail/mail.html
+#: pod/live/utils.py pod/main/templates/mail/mail.html pod/meeting/utils.py
 #: pod/video_encode_transcript/utils.py
 msgid "Regards."
 msgstr "Cordialement."
@@ -5170,6 +5170,10 @@ msgid "Unable to get meeting recordings!"
 msgstr "Impossible d’obtenir les enregistrements de la réunion !"
 
 #: pod/meeting/models.py
+msgid "Unable to get recording!"
+msgstr "Impossible d'obtenir l'enregistrement !"
+
+#: pod/meeting/models.py
 msgid "Unable to delete recording!"
 msgstr "Impossible de supprimer l’enregistrement !"
 
@@ -5228,6 +5232,22 @@ msgstr "Voir toutes mes réunions"
 #: pod/meeting/templates/meeting/internal_recordings.html pod/meeting/views.py
 msgid "Meeting recordings"
 msgstr "Enregistrements de réunion"
+
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid ""
+"After recording a Big Blue Button meeting, recordings of that meeting will "
+"be available at that level after a while."
+msgstr ""
+"Après avoir enregistré une réunion Big Blue Button, les enregistrements de cette "
+"réunion seront disponibles à ce niveau après un certain temps."
+
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid ""
+"When a new recording is available at this level, you will receive an email "
+"to inform you."
+msgstr ""
+"Lorsqu'un nouvel enregistrement est disponible à ce niveau, vous recevrez un courriel "
+"pour vous en informer."
 
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid "Toolbar"
@@ -5406,6 +5426,23 @@ msgstr "Ou après"
 msgid "occurrences"
 msgstr "occurrences"
 
+#: pod/meeting/utils.py
+#, python-format
+msgid "A new Big Blue Button recording for '%(name)s' meeting is available"
+msgstr "Un nouvel enregistrement de la réunion Big Blue Button '%(name)s' est disponible"
+
+#: pod/meeting/utils.py
+msgid ""
+"A new Big Blue Button recording for “%(content_title)s” meeting is now "
+"available on %(site_title)s."
+msgstr ""
+"Un nouvel enregistrement Big Blue Button pour la réunion “%(content_title)s” "
+"est maintenant disponible sur %(site_title)s."
+
+#: pod/meeting/utils.py pod/video_encode_transcript/utils.py
+msgid "You will find it here:"
+msgstr "Vous la/le retrouverez ici :"
+
 #: pod/meeting/views.py
 msgid "Has user joined?"
 msgstr "Utilisateurs connectés ?"
@@ -5485,16 +5522,16 @@ msgid ""
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à une réunion récurrente "
-"<b>%(meeting_title)s</b>.</p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente <b>"
+"%(meeting_title)s</b>.</p>\n"
 "        <p>Date de début : %(start_date_time)s </p>\n"
 "        <p>Récurrent jusqu’à la date : %(end_date)s </p>\n"
 "        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
 "p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<b>%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
+"%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -5520,8 +5557,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<b>%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
+"%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -6497,8 +6534,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -6577,10 +6614,9 @@ msgid ""
 msgstr ""
 "Bonjour, <p>un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur \"%(recorder)s\".<br>Pour "
-"l’ajouter, cliquez sur le lien ci dessous.</p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br><i>Si le lien n’est pas actif, il "
-"faut le copier-coller dans la barre d’adresse de votre navigateur.</"
-"i><p><p>Cordialement</p>"
+"l’ajouter, cliquez sur le lien ci dessous.</p><a href=\"%(link_url)s\">"
+"%(link_url)s</a><br><i>Si le lien n’est pas actif, il faut le copier-coller "
+"dans la barre d’adresse de votre navigateur.</i><p><p>Cordialement</p>"
 
 #: pod/recorder/views.py
 msgid "New recording added."
@@ -6928,8 +6964,8 @@ msgid ""
 "%(url)s</a></p>\n"
 msgstr ""
 "vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
-"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
-"target=\"_blank\">%(scheme)s:%(url)s</a></p>\n"
+"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" target=\"_blank\">"
+"%(scheme)s:%(url)s</a></p>\n"
 "\n"
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -7691,8 +7727,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
-"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
+"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html
 msgid "Other versions"
@@ -8492,10 +8528,6 @@ msgstr "automatiquement transcrit"
 #: pod/video_encode_transcript/utils.py
 msgid "encoded to Web formats"
 msgstr "encodé aux formats Web"
-
-#: pod/video_encode_transcript/utils.py
-msgid "You will find it here:"
-msgstr "Vous la/le retrouverez ici :"
 
 #: pod/video_encode_transcript/utils.py
 msgid "the:"
