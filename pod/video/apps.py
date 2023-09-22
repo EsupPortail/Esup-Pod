@@ -73,9 +73,13 @@ def update_video_passwords(sender, **kwargs):
     videos_to_update = Video.objects.exclude(
         Q(password__isnull=True) | Q(password__startswith=("pbkdf2_sha256$"))
     )
+    print("%s videos password to update" % videos_to_update.count())
+    print("Please note that updating passwords can take a long time (10 minutes for 5000 passwords).")
+    videos = []
     for video in videos_to_update:
         video.password = make_password(video.password, hasher="pbkdf2_sha256")
-        video.save()
+        videos.append(video)
+    Video.objects.bulk_update(videos, ['password'], batch_size=1000)
     print("update_video_passwords --> OK")
 
 
