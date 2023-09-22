@@ -120,6 +120,8 @@ class PlaylistConfig(AppConfig):
         from django.contrib.auth.models import User
         from django.contrib.sites.models import Site
         from django.utils import timezone
+        from django.db.models import Max
+        from django.template.defaultfilters import slugify
 
         print("Start create_new_favorites")
         # Add Favorites playlist for users without favorites
@@ -128,21 +130,23 @@ class PlaylistConfig(AppConfig):
             Playlist.objects.filter(name=FAVORITE_PLAYLIST_NAME).values_list(
                 'owner_id', flat=True)
         )
+        playlist_id = Playlist.objects.aggregate(Max('id'))['id__max']
+        playlist_id = playlist_id + 1 if playlist_id is not None else 1
         favorites_playlists_to_create = []
         for user in users_without_favorites:
             if user.id not in users_with_favorite_playlist:
                 playlist = Playlist(
+                    slug=f"{playlist_id}-{slugify(FAVORITE_PLAYLIST_NAME)}",
                     name=FAVORITE_PLAYLIST_NAME,
                     owner=user,
                     site=Site.objects.get_current(),
-                    defaults={
-                        "description": _("Your favorites videos."),
-                        "visibility": "private",
-                        "autoplay": True,
-                        "editable": False,
-                    },
+                    description=_("Your favorites videos."),
+                    visibility="private",
+                    autoplay=True,
+                    editable=False,
                 )
                 favorites_playlists_to_create.append(playlist)
+                playlist_id += 1
         Playlist.objects.bulk_create(favorites_playlists_to_create)
 
         # Converting previous favorites to new system
