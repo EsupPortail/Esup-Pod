@@ -183,6 +183,10 @@ a.player-element:not(.disabled):hover {
     border: var(--bs-border-width) solid var(--pod-primary) !important;
 }
 
+a.player-element:not(.disabled).selected:hover {
+    background-color: #BEBEBE;
+}
+
 a.player-element.selected {
     background-color: #D1D1D1;
 }

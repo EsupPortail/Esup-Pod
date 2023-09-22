@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-04 09:43+0000\n"
+"POT-Creation-Date: 2023-09-21 14:05+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -764,9 +764,12 @@ msgstr ""
 msgid "File to import"
 msgstr ""
 
+#: pod/chapter/forms.py pod/completion/templates/video_completion.html
+msgid "The file must be in VTT format."
+msgstr ""
+
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
-#: pod/video_encode_transcript/utils.py
 msgid "video"
 msgstr ""
 
@@ -863,11 +866,6 @@ msgstr ""
 
 #: pod/chapter/templates/chapter/form_chapter.html
 msgid "Import chapters"
-msgstr ""
-
-#: pod/chapter/templates/chapter/form_chapter.html
-#: pod/completion/templates/video_completion.html
-msgid "The file must be in VTT format."
 msgstr ""
 
 #: pod/chapter/templates/chapter/list_chapter.html
@@ -981,14 +979,14 @@ msgstr ""
 
 #: pod/chapter/templates/video_chapter.html
 msgid ""
-"\"Add a new chapter\" allows you to add a new chapter, \"modify\" allows you "
-"to modify it and \"delete\" allows you to remove the chapter."
+"“Add a new chapter” allows you to add a chapter to the video, “modify” "
+"allows you to edit it and “delete” allows you to remove the chapter."
 msgstr ""
 
 #: pod/chapter/templates/video_chapter.html
 msgid ""
-"Start playback of the video, pause the video and click on \"Get time from "
-"the player\" to fill in the field untitled \"Start time\"."
+"Start playback of the video, pause the video and click on “Get time from the "
+"player” to fill in the field untitled “Start time”."
 msgstr ""
 
 #: pod/chapter/templates/video_chapter.html
@@ -997,6 +995,26 @@ msgstr ""
 
 #: pod/chapter/templates/video_chapter.html
 msgid "You must save your chapters to view the result."
+msgstr ""
+
+#: pod/chapter/templates/video_chapter.html
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/main/templates/contact_us.html
+#: pod/video/templates/channel/channel_edit.html
+#: pod/video/templates/channel/theme_edit.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Mandatory fields"
+msgstr ""
+
+#: pod/chapter/templates/video_chapter.html
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/main/templates/contact_us.html
+#: pod/video/templates/channel/channel_edit.html
+#: pod/video/templates/channel/theme_edit.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Fields marked with an asterisk are mandatory."
 msgstr ""
 
 #: pod/chapter/views.py
@@ -1130,8 +1148,9 @@ msgstr ""
 
 #: pod/completion/models.py pod/enrichment/models.py pod/playlist/models.py
 #: pod/recorder/models.py pod/video/models.py
+#: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/video_breadcrumbs.html
-#: pod/video_encode_transcript/models.py
+#: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
 msgid "Video"
 msgstr ""
 
@@ -1742,11 +1761,19 @@ msgid "The video is currently being encoded."
 msgstr ""
 
 #: pod/cut/templates/video_cut.html
-msgid "Get the video player time"
+msgid "Get the start time from the video player"
 msgstr ""
 
 #: pod/cut/templates/video_cut.html
 msgid "Total video duration"
+msgstr ""
+
+#: pod/cut/templates/video_cut.html
+msgid "Get the end time from the video player"
+msgstr ""
+
+#: pod/cut/templates/video_cut.html
+msgid "Reset to previous start and end times"
 msgstr ""
 
 #: pod/cut/templates/video_cut.html
@@ -2433,7 +2460,7 @@ msgstr ""
 #: pod/import_video/views.py pod/meeting/views.py
 #, python-format
 msgid ""
-"This video was uploaded to Pod; its origin is %(type)s : <a href=\"%(url)s\" "
+"This video was uploaded to Pod; its origin is %(type)s: <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
 
@@ -2444,7 +2471,7 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a "
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
 "href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
@@ -2502,7 +2529,7 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is PeerTube : <a "
+"This video '%(name)s' was uploaded to Pod; its origin is PeerTube: <a "
 "href='%(url)s' target='blank'>%(url)s</a>."
 msgstr ""
 
@@ -3306,24 +3333,6 @@ msgstr ""
 msgid "Finally, remember to provide as precise a description as possible."
 msgstr ""
 
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Mandatory fields"
-msgstr ""
-
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Fields marked with an asterisk are mandatory."
-msgstr ""
-
 #: pod/live/templates/live/event_immediate_edit.html
 msgid "You can create a live event starting now."
 msgstr ""
@@ -3478,10 +3487,6 @@ msgstr ""
 
 #: pod/lti/views.py
 msgid "The video id is not valid."
-msgstr ""
-
-#: pod/main/admin.py pod/meeting/forms.py
-msgid "Advanced options"
 msgstr ""
 
 #: pod/main/apps.py
@@ -4503,6 +4508,10 @@ msgid "Open login page"
 msgstr ""
 
 #: pod/main/templates/navbar_collapse.html
+msgid "Channel list"
+msgstr ""
+
+#: pod/main/templates/navbar_collapse.html
 msgid "Types of videos"
 msgstr ""
 
@@ -4588,12 +4597,17 @@ msgstr ""
 msgid "Recurring options"
 msgstr ""
 
-#: pod/meeting/forms.py pod/playlist/forms.py pod/video/forms.py
-msgid "Owner of the video cannot be an additional owner too"
-msgstr ""
-
 #: pod/meeting/forms.py pod/meeting/models.py
 msgid "Start date must be less than recurring until date"
+msgstr ""
+
+#: pod/meeting/forms.py pod/meeting/templates/meeting/add_or_edit.html
+msgid ""
+"In case of weekly recurring, the day of the start date must be selected."
+msgstr ""
+
+#: pod/meeting/forms.py pod/playlist/forms.py pod/video/forms.py
+msgid "Owner of the video cannot be an additional owner too"
 msgstr ""
 
 #: pod/meeting/forms.py
@@ -4634,6 +4648,15 @@ msgstr ""
 
 #: pod/meeting/models.py
 msgid "Yearly"
+msgstr ""
+
+#: pod/meeting/models.py
+msgid "Choose repeat frequency"
+msgstr ""
+
+#: pod/meeting/models.py
+#: pod/meeting/templates/meeting/recurring_options_modal_form.html
+msgid "Frequency"
 msgstr ""
 
 #: pod/meeting/models.py
@@ -5073,10 +5096,6 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/my_meetings.html
 msgid "End the meeting"
-msgstr ""
-
-#: pod/meeting/templates/meeting/recurring_options_modal_form.html
-msgid "Frequency"
 msgstr ""
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
@@ -6685,6 +6704,10 @@ msgid "Date of event"
 msgstr ""
 
 #: pod/video/models.py
+msgid "The password is / will be encrypted."
+msgstr ""
+
+#: pod/video/models.py
 msgid "Overview"
 msgstr ""
 
@@ -6838,12 +6861,17 @@ msgstr ""
 
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/videos.html
-msgid "subscribe to the video feed"
+msgid "Subscribe to the video feed"
 msgstr ""
 
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/videos.html
-msgid "subscribe to the audio feed"
+msgid "Subscribe to the audio feed"
+msgstr ""
+
+#: pod/video/templates/channel/channel.html
+#: pod/video/templates/videos/videos.html
+msgid "Audio"
 msgstr ""
 
 #: pod/video/templates/channel/channel.html
@@ -7926,7 +7954,7 @@ msgid "Encoding"
 msgstr "Videocodering"
 
 #: pod/video_encode_transcript/utils.py
-msgid "Transcripting"
+msgid "The transcripting"
 msgstr ""
 
 #: pod/video_encode_transcript/utils.py
@@ -7937,16 +7965,20 @@ msgstr ""
 #: pod/video_encode_transcript/utils.py
 #, python-format
 msgid ""
-"The %(content_type)s “%(content_title)s” has been %(action)s, and is now "
+"%(content_type)s “%(content_title)s” has been %(action)s, and is now "
 "available on %(site_title)s."
 msgstr ""
 
 #: pod/video_encode_transcript/utils.py
-msgid "content"
+msgid "The content"
 msgstr ""
 
 #: pod/video_encode_transcript/utils.py
-msgid "automatically transcript"
+msgid "The video"
+msgstr ""
+
+#: pod/video_encode_transcript/utils.py
+msgid "automatically transcripted"
 msgstr ""
 
 #: pod/video_encode_transcript/utils.py

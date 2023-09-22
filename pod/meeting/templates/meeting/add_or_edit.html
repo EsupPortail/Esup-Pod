@@ -191,10 +191,88 @@ window.addEventListener('load', function(event) {
 
 /* Add event listener to use advanced options button with keyboard */
 var advanced_options_btn = document.getElementById('advanced_options_btn');
-advanced_options_btn.addEventListener("keydown", function(event) {
-  if (event.key === "Enter" || event.key === " ") {
-    advanced_options_btn.click();
+if (advanced_options_btn) {
+  advanced_options_btn.addEventListener("keydown", function(event) {
+    if (event.key === "Enter" || event.key === " ") {
+      advanced_options_btn.click();
+    }
+  });
+}
+
+/**
+ * fixed calendar display in a modal
+ * change position from absolute to fixed
+*/
+const myModals = document.getElementsByClassName('modal');
+for (let i = 0; i < myModals.length; i++) {
+  myModals[i].addEventListener('shown.bs.modal', () => {
+    // looking for calendarlink
+    var calendarLinks = myModals[i].querySelectorAll('[id^="calendarlink"]');
+    for(let i = 0; i < calendarLinks.length; i++) {
+      // console.log(calendarLinks[i].getAttribute("id"));
+      var calendarlinkid = calendarLinks[i].getAttribute("id");
+      var targetNode = document.getElementById(calendarlinkid.replace('calendarlink','calendarbox'));
+      var observer = new MutationObserver(function(){
+          if(targetNode.style.display != 'none'){
+              targetNode.style.position = "fixed";
+          }
+      });
+      observer.observe(targetNode, { attributes: true, childList: true });
+    }
+  })
+}
+var day_of_start_date = -1;
+let id_start = document.querySelector("#id_start");
+let start_date_formats = {{start_date_formats|safe}};
+if(id_start) {
+  function setDayOfWeekForStartDate() {
+    let id_start_value = id_start.value;
+    for(let i = 0; i < start_date_formats.length; i++) {
+      let index_day = start_date_formats[i].indexOf('%d');
+      let index_month = start_date_formats[i].indexOf('%m');
+      let index_little_year = start_date_formats[i].indexOf('%y');
+      let index_year = start_date_formats[i].indexOf('%Y');
+      let regex_date_format = "^" + start_date_formats[i].replace('%d', '\\d{2}').replace('%m', '\\d{2}').replace('%y', '\\d{2}').replace('%Y', '\\d{4}') + "$";
+      regex_date_format = regex_date_format.replace("-", "[-]").replace(".", "[.]").replace("/", "[/]");
+      let match = id_start_value.match(new RegExp(regex_date_format, "g"));
+      if(match) {
+        let day = id_start_value.substring(index_day, index_day+2);
+        let monthIndex = parseInt(id_start_value.substring(index_month, index_month+2))-1;
+        let year = 0;
+        if(index_year == -1) {
+          year = id_start_value.substring(index_little_year, index_little_year+2);
+        } else {
+          year = id_start_value.substring(index_year, index_year+4); 
+        }
+        let corresponding_day = [6,0,1,2,3,4,5];
+        day_of_start_date = corresponding_day[new Date(year, monthIndex, day).getDay()];
+        return
+      }
+    }
   }
-});
+  setDayOfWeekForStartDate();
+}
+
+var modal_recurring_fields = document.getElementById('recurring_fields');
+if(modal_recurring_fields) {
+  modal_recurring_fields.addEventListener('shown.bs.modal', () => {
+    setDayOfWeekForStartDate();
+    change_weekdays_display();
+  });
+  modal_recurring_fields.addEventListener('hidden.bs.modal', function (e) {
+    setDayOfWeekForStartDate();
+    var select_days = document.querySelectorAll('input[name="days_of_week"]:checked');
+    let select_days_values = [];
+    for(let i = 0; i < select_days.length; i++) {
+      select_days_values.push(select_days[i].value);
+    }
+    if(recurrence.value == "weekly" && !select_days_values.includes(""+day_of_start_date)) {
+      alert("{% trans "In case of weekly recurring, the day of the start date must be selected." %}");
+      let see_recurring_fields_btn = document.getElementById('see_recurring_fields');
+      if (see_recurring_fields_btn) see_recurring_fields_btn.click();
+    }
+  })
+}
+
 </script>
 {% endblock more_script %}

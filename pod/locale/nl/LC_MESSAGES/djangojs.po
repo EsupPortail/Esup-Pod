@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-01 13:56+0000\n"
+"POT-Creation-Date: 2023-09-21 14:05+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -442,7 +442,7 @@ msgid "Add your picture"
 msgstr ""
 
 #: pod/main/static/js/main.js
-msgid "text copied"
+msgid "Text copied"
 msgstr ""
 
 #: pod/main/static/js/main.js
@@ -533,24 +533,20 @@ msgid "This folder is empty"
 msgstr ""
 
 #: pod/video/static/js/ajax-display-channels.js
-msgid "Channels"
-msgstr ""
-
-#: pod/video/static/js/ajax-display-channels.js
-msgid "Channel"
-msgstr ""
+msgid "%(count)s channel"
+msgid_plural "%(count)s channels"
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/video/static/js/ajax-display-channels.js
 msgid "No channels found"
 msgstr ""
 
 #: pod/video/static/js/ajax-display-channels.js
-msgid "videos"
-msgstr ""
-
-#: pod/video/static/js/ajax-display-channels.js
-msgid "video"
-msgstr ""
+msgid "%(count)s video"
+msgid_plural "%(count)s videos"
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"

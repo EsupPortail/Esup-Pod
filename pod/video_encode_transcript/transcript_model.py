@@ -18,7 +18,10 @@ except ImportError:
 
 import logging
 
-from ..custom import settings_local
+try:
+    from ..custom import settings_local
+except ImportError:
+    from .. import settings as settings_local
 
 DEBUG = getattr(settings_local, "DEBUG", False)
 

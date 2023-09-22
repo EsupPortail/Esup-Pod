@@ -1070,7 +1070,7 @@ if (btnpartageprive) {
     var copyText = document.getElementById("txtpartageprive");
     copyText.select();
     document.execCommand("copy");
-    showalert(gettext("text copied"), "alert-info");
+    showalert(gettext("Text copied"), "alert-info");
   });
 }
 
@@ -1376,9 +1376,10 @@ document.addEventListener("DOMContentLoaded", function () {
     searchInput.classList.remove("focus-search-input");
     searchInput.classList.add("hide-search-input");
   }
-
-  searchButton.addEventListener("focus", handleFocus);
-  searchButton.addEventListener("blur", handleBlur);
-  searchInput.addEventListener("focus", handleFocus);
-  searchInput.addEventListener("blur", handleBlur);
+  if (searchButton) {
+    searchButton.addEventListener("focus", handleFocus);
+    searchButton.addEventListener("blur", handleBlur);
+    searchInput.addEventListener("focus", handleFocus);
+    searchInput.addEventListener("blur", handleBlur);
+  }
 });

@@ -294,4 +294,11 @@
   </script>
   <script defer src="{% static 'js/validate-date_delete-field.js' %}?ver={{VERSION}}"></script>
 
+  <script>
+    let passwordInput = document.getElementById("id_password");
+    passwordInput.addEventListener("click", function() {
+      passwordInput.select();
+    });
+  </script>
+
 {% endblock more_script %}

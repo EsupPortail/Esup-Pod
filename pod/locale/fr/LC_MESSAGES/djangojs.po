@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-01 13:56+0000\n"
+"POT-Creation-Date: 2023-09-21 14:05+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.3\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 msgid "Get time from the player"
@@ -463,8 +463,8 @@ msgid "Add your picture"
 msgstr "Ajouter votre image"
 
 #: pod/main/static/js/main.js
-msgid "text copied"
-msgstr "texte copié"
+msgid "Text copied"
+msgstr "Texte copié"
 
 #: pod/main/static/js/main.js
 msgid "Errors appear in the form, please correct them"
@@ -486,19 +486,19 @@ msgstr ""
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
 msgid "<b>Public:</b> the playlist can be accessed by anyone."
-msgstr "<b>Public :</b> la liste de lecture est accessible par tous."
+msgstr "<b>Public :</b> la liste de lecture est accessible par tous."
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
 msgid ""
 "<b>Password-protected:</b> the playlist can be accessed by anyone with the "
 "appropriate link and password."
 msgstr ""
-"<b>Protégé par un mot de passe :</b> la liste de lecture est accessible à "
+"<b>Protégé par un mot de passe :</b> la liste de lecture est accessible à "
 "toute personne disposant du lien et du mot de passe appropriés."
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
 msgid "<b>Private:</b> only you have access to this playlist."
-msgstr "<b>Privé :</b> vous seul avez accès à cette liste de lecture."
+msgstr "<b>Privé :</b> vous seul avez accès à cette liste de lecture."
 
 #: pod/playlist/static/playlist/js/playlist-reorganize.js
 msgid "Save your reorganization"
@@ -510,7 +510,7 @@ msgstr "Sauvegarder"
 
 #: pod/playlist/static/playlist/js/video-favorites-remove-card.js
 msgid "Network response was not ok."
-msgstr "La réponse du réseau n'était pas correcte."
+msgstr "La réponse du réseau n’était pas correcte."
 
 #: pod/podfile/static/podfile/js/filewidget.js
 #: pod/video/static/js/change_video_owner.js
@@ -558,24 +558,20 @@ msgid "This folder is empty"
 msgstr "Ce dossier est vide"
 
 #: pod/video/static/js/ajax-display-channels.js
-msgid "Channels"
-msgstr "Chaînes"
-
-#: pod/video/static/js/ajax-display-channels.js
-msgid "Channel"
-msgstr "Chaîne"
+msgid "%(count)s channel"
+msgid_plural "%(count)s channels"
+msgstr[0] "%(count)s chaîne"
+msgstr[1] "%(count)s chaînes"
 
 #: pod/video/static/js/ajax-display-channels.js
 msgid "No channels found"
 msgstr "Aucun chaîne trouvée"
 
 #: pod/video/static/js/ajax-display-channels.js
-msgid "videos"
-msgstr "vidéos"
-
-#: pod/video/static/js/ajax-display-channels.js
-msgid "video"
-msgstr "vidéo"
+msgid "%(count)s video"
+msgid_plural "%(count)s videos"
+msgstr[0] "%(count)s vidéo"
+msgstr[1] "%(count)s vidéos"
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
@@ -860,6 +856,20 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "video"
+#~ msgid_plural "videos"
+#~ msgstr[0] "vidéo"
+#~ msgstr[1] "vidéos"
+
+#~ msgid "Channels"
+#~ msgstr "Chaînes"
+
+#~ msgid "Channel"
+#~ msgstr "Chaîne"
+
+#~ msgid "videos"
+#~ msgstr "vidéos"
 
 #~ msgid "Are you sure you want to delete this element?"
 #~ msgstr "Êtes-vous sûr(e) de vouloir supprimer cet élément ?"

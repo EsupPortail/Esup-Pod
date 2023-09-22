@@ -13,7 +13,7 @@
     aria-controls="pod-navbar__menu" title="{% trans 'Toggle navigation' %}">
     <i class="bi bi-list" aria-hidden="true"></i>
   </button>
-  <a class="navbar-brand pod-navbar__brand me-0 me-sm-1" href="/" title="{{ TITLE_SITE }} - {% trans 'Home' %}" {% if request.path == '/' %}aria-current="page"{% endif %}>
+  <a class="navbar-brand pod-navbar__brand me-0 me-sm-1" href="/" title="{{ TITLE_SITE }} - {% trans 'Home' %}" {% if request.path == '/' %}aria-current="page"{% endif %} data-bs-toggle="tooltip" data-bs-placement="bottom">
     <img src="{% static LOGO_SITE %}" height="25" alt="" loading="lazy"><strong>{{ TITLE_SITE }}</strong>
   </a>
   <!-- off canvas -->
@@ -106,7 +106,7 @@
     {% endif %}
     <!--  Add configuration panel buttons -->
     <li class="nav-item pod-params pod-navbar__nav-item" id="pod-param-buttons">
-      <button class="btn bi bi-gear pod-params-button px-1" type="button"
+      <button class="btn btn-link bi bi-gear pod-params-button px-1" type="button"
         id="pod-param-buttons__button" title="{% trans 'Toggle configuration panel'%}"
         data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menusettings">
       </button>
@@ -207,10 +207,10 @@
                 </button></div>
               {% endif %}
               {% if video_buttons %}
-                <a class="nav-item nav-link" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true" aria-hidden="true"></i>{% trans 'My videos' %}</a>
+                <a class="nav-item nav-link" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
               {% endif %}
               {% if USE_PLAYLIST %}
-                <a class="nav-item nav-link" href="{% url 'playlist:list' %}"><i class="bi bi-list-ul pod-nav-link-icon mx-1" aria-hidden="true" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
+                <a class="nav-item nav-link" href="{% url 'playlist:list' %}"><i class="bi bi-list-ul pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
               {% endif %}
               {% if USE_PLAYLIST and USE_FAVORITES %}
                 {% get_favorite_playlist user as playlist %}

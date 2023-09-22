@@ -426,7 +426,7 @@ def upload_bbb_recording_to_pod(request, record_id):
         recording = ExternalRecording.objects.get(id=record_id)
         source_url = request.POST.get("source_url")
 
-        # Step 1 : Download and parse the remote HTML file if necessary
+        # Step 1: Download and parse the remote HTML file if necessary
         # Check if extension is a video extension
         extension = source_url.split(".")[-1].lower()
         if extension in VIDEO_ALLOWED_EXTENSIONS:
@@ -440,7 +440,7 @@ def upload_bbb_recording_to_pod(request, record_id):
         # Verify that video exists and not oversised
         verify_video_exists_and_size(source_video_url)
 
-        # Step 2 : Define destination source file
+        # Step 2: Define destination source file
         extension = source_video_url.split(".")[-1].lower()
         discrim = datetime.now().strftime("%Y%m%d%H%M%S")
         dest_file = os.path.join(
@@ -452,16 +452,16 @@ def upload_bbb_recording_to_pod(request, record_id):
 
         os.makedirs(os.path.dirname(dest_file), exist_ok=True)
 
-        # Step 3 : Download the video file
+        # Step 3: Download the video file
         download_video_file(source_video_url, dest_file)
 
-        # Step 4 : Save informations about the recording
+        # Step 4: Save informations about the recording
         recording_title = request.POST.get("recording_name")
         save_external_recording(request, record_id)
 
-        # Step 5 : Save and encode Pod video
+        # Step 5: Save and encode Pod video
         description = _(
-            "This video was uploaded to Pod; its origin is %(type)s : "
+            "This video was uploaded to Pod; its origin is %(type)s: "
             '<a href="%(url)s" target="_blank">%(url)s</a>'
         ) % {"type": recording.get_type_display(), "url": source_video_url}
 
@@ -489,7 +489,7 @@ def upload_youtube_recording_to_pod(request, record_id):
     """Upload Youtube recording to Pod.
 
     Use PyTube with its API
-    More information : https://pytube.io/en/latest/api.html
+    More information: https://pytube.io/en/latest/api.html
     Args:
         request (Request): HTTP request
         record_id (Integer): id record in the database
@@ -511,8 +511,8 @@ def upload_youtube_recording_to_pod(request, record_id):
             # use_oauth=True,
             # allow_oauth_cache=True
         )
-        # Publish date (format : 2023-05-13 00:00:00)
-        # Event date (format : 2023-05-13)
+        # Publish date (format: 2023-05-13 00:00:00)
+        # Event date (format: 2023-05-13)
         date_evt = str(yt_video.publish_date)[0:10]
 
         # Setting video resolution
@@ -540,13 +540,13 @@ def upload_youtube_recording_to_pod(request, record_id):
         # Download video
         yt_stream.download(dest_dir, filename=filename)
 
-        # Step 4 : Save informations about the recording
+        # Step 4: Save informations about the recording
         save_external_recording(request, record_id)
 
-        # Step 5 : Save and encode Pod video
+        # Step 5: Save and encode Pod video
         description = _(
             "This video '%(name)s' was uploaded to Pod; "
-            'its origin is Youtube : <a href="%(url)s" target="_blank">%(url)s</a>'
+            'its origin is Youtube: <a href="%(url)s" target="_blank">%(url)s</a>'
         ) % {"name": yt_video.title, "url": source_url}
         recording_title = request.POST.get("recording_name")
         save_video(request, dest_file, recording_title, description, date_evt)
@@ -592,7 +592,7 @@ def upload_youtube_recording_to_pod(request, record_id):
 def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
     """Upload Peertube recording to Pod.
 
-    More information : https://docs.joinpeertube.org/api/rest-getting-started
+    More information: https://docs.joinpeertube.org/api/rest-getting-started
     Args:
         request (Request): HTTP request
         record_id (Integer): id record in the database
@@ -610,11 +610,11 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
         # Check if extension is a video extension
         extension = source_url.split(".")[-1].lower()
         if extension in VIDEO_ALLOWED_EXTENSIONS:
-            # URL corresponds to a video file. Format example :
+            # URL corresponds to a video file. Format example:
             #  - https://xxxx.fr/download/videos/id-quality.mp4
-            # with : id = id/uuid/shortUUID, quality=480/720/1080
+            # with: id = id/uuid/shortUUID, quality=480/720/1080
             source_video_url = source_url
-            # PeerTube API for this video :
+            # PeerTube API for this video:
             # https://xxxx.fr/api/v1/videos/id
             pos_pt = source_url.rfind("-")
             if pos_pt != -1:
@@ -630,11 +630,11 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
                 msg["proposition"] = _("Try changing the address of the recording.")
                 raise ValueError(msg)
         else:
-            # URL corresponds to a PeerTube URL. Format example :
+            # URL corresponds to a PeerTube URL. Format example:
             #  - https://xxx.fr/w/id
             #  - https://xxx.fr/videos/watch/id
-            # with : id = id/uuid/shortUUID
-            # PeerTube API for this video :
+            # with: id = id/uuid/shortUUID
+            # PeerTube API for this video:
             # https://xxxx.fr/api/v1/videos/id
             url_api_video = source_url.replace("/w/", "/api/v1/videos/")
             url_api_video = url_api_video.replace("/videos/watch/", "/api/v1/videos/")
@@ -663,9 +663,9 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
                     pt_video_description = ""
                 else:
                     pt_video_description = pt_video_description.replace("\r\n", "<br>")
-                # Creation date (format : 2023-05-23T08:16:34.690Z)
+                # Creation date (format: 2023-05-23T08:16:34.690Z)
                 pt_video_created_at = pt_video_json["createdAt"]
-                # Evant date (format : 2023-05-23)
+                # Evant date (format: 2023-05-23)
                 date_evt = pt_video_created_at[0:10]
                 # Source video file
                 source_video_url = pt_video_json["files"][0]["fileDownloadUrl"]
@@ -673,7 +673,7 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
         # Verify that video exists and not oversized
         verify_video_exists_and_size(source_video_url)
 
-        # Step 2 : Define destination source file
+        # Step 2: Define destination source file
         discrim = datetime.now().strftime("%Y%m%d%H%M%S")
         extension = source_video_url.split(".")[-1].lower()
         dest_file = os.path.join(
@@ -684,16 +684,16 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
         )
         os.makedirs(os.path.dirname(dest_file), exist_ok=True)
 
-        # Step 3 : Download the video file
+        # Step 3: Download the video file
         download_video_file(source_video_url, dest_file)
 
-        # Step 4 : Save informations about the recording
+        # Step 4: Save informations about the recording
         recording_title = request.POST.get("recording_name")
         save_external_recording(request, record_id)
 
-        # Step 5 : Save and encode Pod video
+        # Step 5: Save and encode Pod video
         description = _(
-            "This video '%(name)s' was uploaded to Pod; its origin is PeerTube : "
+            "This video '%(name)s' was uploaded to Pod; its origin is PeerTube: "
             "<a href='%(url)s' target='blank'>%(url)s</a>."
         ) % {"name": pt_video_name, "url": pt_video_url}
         description = ("%s<br>%s") % (description, pt_video_description)
