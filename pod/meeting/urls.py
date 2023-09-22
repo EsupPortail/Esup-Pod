@@ -44,9 +44,9 @@ if not views.MEETING_DISABLE_RECORD:
             name="internal_recording",
         ),
         path(
-            "recording_ready_url/",
-            views.recording_ready_url,
-            name="recording_ready_url"
+            "recording_ready/",
+            views.recording_ready,
+            name="recording_ready"
         ),
     ]
 
