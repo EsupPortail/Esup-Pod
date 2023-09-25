@@ -57,13 +57,13 @@
             <td>
                 {% if record.presentationUrl != "" %}
                   <a id="{{ record.id }}-presentation" class="btn btn-primary pod-btn-primary btn-sm" href="javascript:void(0);" onclick="manageLink('presentation', this);" title="{% trans 'Display the recording in presentation format'%}" data-bs-toggle="tooltip" data-bs-placement="top"
-                    pod-meeting-id="{{ meeting.meeting_id }}" pod-recording-id="{{ record.id }}" pod-recording-presentation-url="{{ record.presentationUrl }}">
+                    data-pod-meeting-id="{{ meeting.meeting_id }}" data-pod-recording-id="{{ record.id }}" data-pod-recording-presentation-url="{{ record.presentationUrl }}">
                     <i class="bi bi-file-earmark-play" aria-hidden="true"></i>
                   </a>
                 {% endif %}
                 {% if record.videoUrl != "" %}
                   <a id="{{ record.id }}-video" class="btn btn-primary pod-btn-primary btn-sm" href="javascript:void(0);" onclick="manageLink('video', this);" title="{% trans 'Display the recording in video format'%}" data-bs-toggle="tooltip" data-bs-placement="top"
-                    pod-meeting-id="{{ meeting.meeting_id }}" pod-recording-id="{{ record.id }}" pod-recording-video-url="{{ record.videoUrl }}">
+                    data-pod-meeting-id="{{ meeting.meeting_id }}" data-pod-recording-id="{{ record.id }}" data-pod-recording-video-url="{{ record.videoUrl }}">
                     <i class="bi bi-camera-video" aria-hidden="true"></i>
                   </a>
                 {% endif %}
@@ -145,9 +145,9 @@
    **/
   function manageLink(type, element) {
     // Get important information from element
-    let meetingId = element.getAttribute("pod-meeting-id");
-    let recordingId = element.getAttribute("pod-recording-id");
-    let url = element.getAttribute("pod-recording-" + type + "-url");
+    let meetingId = element.dataset.podMeetingId;
+    let recordingId = element.dataset.podRecordingId;
+    let url = element.getAttribute("data-pod-recording-" + type + "-url");
     // Open presentation/video recording on other window
     window.open(url, '_blank');
     // AJAX Pod server to re-request the BBB server 
@@ -174,7 +174,7 @@
           urlNew = jsonData.videoUrl;
         }
         // Modify element
-        element.setAttribute("pod-recording-" + type + "-url", urlNew);
+        element.setAttribute("data-pod-recording-" + type + "-url", urlNew);
       })
       .catch((error) => {
         console.debug(error);
