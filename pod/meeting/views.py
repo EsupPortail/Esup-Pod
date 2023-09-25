@@ -1,11 +1,15 @@
 """Views of the Meeting module."""
-import os
 import bleach
+import jwt
+import logging
+import os
+import requests
+import traceback
 
 from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm
 from .forms import MeetingInviteForm
 from .models import Meeting, InternalRecording
-from .utils import get_nth_week_number
+from .utils import get_nth_week_number, send_email_recording_ready
 from datetime import datetime
 from django.conf import settings
 from django.contrib import messages
@@ -14,7 +18,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import SuspiciousOperation
 from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMultiAlternatives
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.templatetags.static import static
@@ -23,10 +27,10 @@ from django.utils import timezone
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from pod.import_video.utils import StatelessRecording
-from pod.import_video.utils import secure_request_for_upload, parse_remote_file
-from pod.import_video.utils import download_video_file, manage_recording_url, save_video
+from pod.import_video.utils import manage_download, parse_remote_file
+from pod.import_video.utils import save_video, secure_request_for_upload
 from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
 from pod.main.utils import secure_post_request, display_message_with_icon
 
@@ -53,6 +57,7 @@ BBB_MEETING_INFO = getattr(
         "role": _("Role"),
     },
 )
+BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
 MEETING_DISABLE_RECORD = getattr(settings, "MEETING_DISABLE_RECORD", True)
 
 VIDEO_ALLOWED_EXTENSIONS = getattr(
@@ -81,11 +86,15 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
     ),
 )
 
+VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
+
 __TITLE_SITE__ = (
     TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
     if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
     else "Pod"
 )
+
+log = logging.getLogger(__name__)
 
 
 @login_required(redirect_field_name="referrer")
@@ -525,18 +534,19 @@ def get_meeting_info(request, meeting_id):
 
 
 @login_required(redirect_field_name="referrer")
-def internal_recordings(request, meeting_id):
-    """List the internal recordings.
+def get_internal_recordings(request, meeting_id, recording_id=None):
+    """List the internal recordings, depends on parameters (core function).
 
     Args:
         request (Request): HTTP request
         meeting_id (String): meeting id (BBB format)
+        recording_id (String, optional): recording id (BBB format)
 
     Raises:
         PermissionDenied: if user not allowed
 
     Returns:
-        HTTPResponse: internal recordings list
+        recordings[]: Array of recordings corresponding to parameters
     """
     meeting = get_object_or_404(
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
@@ -548,7 +558,9 @@ def internal_recordings(request, meeting_id):
     # The user can delete this recording ?
     can_delete = get_can_delete_recordings(request, meeting)
 
-    meeting_recordings = meeting.get_recordings()
+    # Get one or more recordings
+    meeting_recordings = get_one_or_more_recordings(request, meeting, recording_id)
+
     recordings = []
     if type(meeting_recordings.get("recordings")) is dict:
         for data in meeting_recordings["recordings"].values():
@@ -568,10 +580,7 @@ def internal_recordings(request, meeting_id):
                 # Uploading to Pod is possible only for video playback
                 if data["playback"][playback]["type"] == "video":
                     bbb_recording.canUpload = True
-                    # Manage BBB recording URL, if necessary
-                    bbb_recording.videoUrl = manage_recording_url(
-                        data["playback"][playback]["url"]
-                    )
+                    bbb_recording.videoUrl = data["playback"][playback]["url"]
 
             # Only the owner can delete their recordings
             bbb_recording.canDelete = can_delete
@@ -583,6 +592,39 @@ def internal_recordings(request, meeting_id):
                 bbb_recording.uploadedToPodBy = recording.uploaded_to_pod_by
             recordings.append(bbb_recording)
 
+    return recordings
+
+
+@login_required(redirect_field_name="referrer")
+def get_one_or_more_recordings(request, meeting, recording_id=None):
+    """Define recordings useful for get_internal_recordings function."""
+    if recording_id is None:
+        meeting_recordings = meeting.get_recordings()
+    else:
+        meeting_recordings = meeting.get_recording(recording_id)
+    return meeting_recordings
+
+
+@login_required(redirect_field_name="referrer")
+def internal_recordings(request, meeting_id):
+    """List the internal recordings (main function).
+
+    Args:
+        request (Request): HTTP request
+        meeting_id (String): meeting id (BBB format)
+
+    Raises:
+        PermissionDenied: if user not allowed
+
+    Returns:
+        HTTPResponse: internal recordings list
+    """
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+    # Call the core function
+    recordings = get_internal_recordings(request, meeting_id)
+
     return render(
         request,
         "meeting/internal_recordings.html",
@@ -592,6 +634,33 @@ def internal_recordings(request, meeting_id):
             "page_title": _("Meeting recordings"),
         },
     )
+
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def internal_recording(request, meeting_id, recording_id):
+    """Get an internal recording, in JSON format (main function).
+
+    Args:
+        request (Request): HTTP request
+        meeting_id (String): meeting id (BBB format)
+        recording_id (String): recording id (BBB format)
+
+    Raises:
+        PermissionDenied: if user not allowed
+
+    Returns:
+        HTTPResponse: internal recording (JSON format)
+    """
+    # Call the core function
+    recordings = get_internal_recordings(request, meeting_id, recording_id)
+    # JSON format
+    data = recordings[0].to_json()
+    if request.is_ajax():
+        return HttpResponse(data, content_type="application/json")
+    else:
+        return HttpResponseBadRequest()
 
 
 def secure_internal_recordings(request, meeting):
@@ -944,6 +1013,21 @@ def get_rrule(meeting):
     return rrule
 
 
+def get_video_url(request, meeting_id, recording_id):
+    """Get recording video URL."""
+    meeting = get_object_or_404(
+        Meeting, meeting_id=meeting_id, site=get_current_site(request)
+    )
+    meeting_recordings = meeting.get_recording(recording_id)
+    if type(meeting_recordings.get("recordings")) is dict:
+        for data in meeting_recordings["recordings"].values():
+            for playback in data["playback"]:
+                # Uploading to Pod is possible only for video playback
+                if data["playback"][playback]["type"] == "video":
+                    source_url = data["playback"][playback]["url"]
+    return source_url
+
+
 @csrf_protect
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
@@ -1109,34 +1193,47 @@ def upload_bbb_recording_to_pod(request, record_id, meeting_id):
         Boolean: True if upload achieved
     """
     try:
+        # Session useful to achieve requests (and keep cookies between)
+        session = requests.Session()
+
         recording = InternalRecording.objects.get(id=record_id)
-        source_url = request.POST.get("source_url")
+
+        source_url = get_video_url(request, meeting_id, recording.recording_id)
 
         # Step 1: Download and parse the remote HTML file if necessary
         # Check if extension is a video extension
         extension = source_url.split(".")[-1].lower()
-        if extension in VIDEO_ALLOWED_EXTENSIONS:
-            # URL corresponds to a video file
-            source_video_url = source_url
-        else:
+        # Name of the video file to add to the URL (if necessary)
+        video_file_add = ""
+        if extension not in VIDEO_ALLOWED_EXTENSIONS:
             # Download and parse the remote HTML file
-            video_file = parse_remote_file(source_url)
-            source_video_url = source_url + video_file
+            video_file_add = parse_remote_file(session, source_url)
+            # Extension overload
+            extension = video_file_add.split(".")[-1].lower()
 
         # Step 2: Define destination source file
-        extension = source_video_url.split(".")[-1].lower()
         discrim = datetime.now().strftime("%Y%m%d%H%M%S")
         dest_file = os.path.join(
             settings.MEDIA_ROOT,
-            "videos",
+            VIDEOS_DIR,
+            request.user.owner.hashkey,
+            os.path.basename("%s-%s.%s" % (discrim, recording.id, extension)),
+        )
+        os.makedirs(os.path.dirname(dest_file), exist_ok=True)
+
+        dest_path = os.path.join(
+            VIDEOS_DIR,
             request.user.owner.hashkey,
             os.path.basename("%s-%s.%s" % (discrim, recording.id, extension)),
         )
 
-        os.makedirs(os.path.dirname(dest_file), exist_ok=True)
-
         # Step 3: Download the video file
-        download_video_file(source_video_url, dest_file)
+        source_video_url = manage_download(
+            session,
+            source_url,
+            video_file_add,
+            dest_file
+        )
 
         # Step 4: Save informations about the recording
         recording_title = request.POST.get("recording_name")
@@ -1154,7 +1251,7 @@ def upload_bbb_recording_to_pod(request, record_id, meeting_id):
             '<a href="%(url)s" target="_blank">%(url)s</a>'
         ) % {"type": "Big Blue Button", "url": source_video_url}
 
-        save_video(request, dest_file, recording_title, description)
+        save_video(request, dest_path, recording_title, description)
 
         return True
     except Exception as exc:
@@ -1172,3 +1269,52 @@ def upload_bbb_recording_to_pod(request, record_id, meeting_id):
             "Try changing the record type or address for this recording."
         )
         raise ValueError(msg)
+
+
+@csrf_exempt
+def recording_ready(request):
+    """Make a callback when a recording is ready for viewing.
+
+    Useful to send an email to prevent the user.
+    See https://docs.bigbluebutton.org/development/api/#recording-ready-callback-url
+    Args:
+        request (Request): HTTP request
+
+    Returns:
+        HttpResponse: empty response
+    """
+    meeting_id = ""
+    recording_id = ""
+    try:
+        if request.method == "POST":
+            # Get parameters, encoded in HS256
+            signed_parameters = request.POST.get("signed_parameters")
+            # Decoded parameters with BBB secret key
+            # Returns JSON format like : {'meeting_id': 'xxx', 'record_id': 'xxx'}
+            decoded_parameters = jwt.decode(
+                signed_parameters,
+                BBB_SECRET_KEY,
+                algorithms=['HS256']
+            )
+            # Get data
+            meeting_id = decoded_parameters["meeting_id"]
+            recording_id = decoded_parameters["record_id"]
+            meeting = get_object_or_404(
+                Meeting, meeting_id=meeting_id, site=get_current_site(request)
+            )
+            # Send email to the owner
+            send_email_recording_ready(meeting)
+        else:
+            raise ValueError("No POST method")
+
+        return HttpResponse()
+    except Exception as exc:
+        log.error(
+            "Error when check for recording (%s %s) ready URL: %s. %s" % (
+                meeting_id,
+                recording_id,
+                mark_safe(str(exc)),
+                traceback.format_exc()
+            )
+        )
+        return HttpResponse()

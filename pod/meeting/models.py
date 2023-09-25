@@ -480,7 +480,7 @@ class Meeting(models.Model):
 
     # ##############################    Meeting occurences
     def next_occurrence_from_today(self):
-        """Returns the date of the next occurrence for the meeting from today."""
+        """Return the date of the next occurrence for the meeting from today."""
         if self.start_at == timezone.now().date():
             start_datetime = self.start_at + self.expected_duration
             if start_datetime > timezone.now():
@@ -584,7 +584,10 @@ class Meeting(models.Model):
 
     # ##############################    BBB API
     def create(self, request=None):
-        """Make the url with goods parameters to create the meeting on the BBB instance and call it."""
+        """Make the url with goods parameters to create the meeting.
+
+        After create the meeting on the BBB instance, call it.
+        """
         action = "create"
         parameters = {}
         for param in meeting_to_bbb:
@@ -607,6 +610,14 @@ class Meeting(models.Model):
             ]
         )
         parameters["meta_endCallbackUrl"] = endCallbackUrl
+        recordingReadyUrl = "".join(
+            [
+                "https://",
+                get_current_site(None).domain,
+                reverse("meeting:recording_ready", kwargs={}),
+            ]
+        )
+        parameters["meta_bbb-recording-ready-url"] = recordingReadyUrl
         query = urlencode(parameters)
         hashed = api_call(query, action)
         url = slash_join(BBB_API_URL, action, "?%s" % hashed)
@@ -828,6 +839,7 @@ class Meeting(models.Model):
             return True
 
     def get_recordings(self):
+        """Get recordings for a meeting."""
         action = "getRecordings"
         parameters = {}
         parameters["meetingID"] = self.meeting_id
@@ -853,6 +865,35 @@ class Meeting(models.Model):
             raise ValueError(msg)
         else:
             return meeting_json
+
+    def get_recording(self, record_id):
+        """Get a specific recording."""
+        action = "getRecordings"
+        parameters = {}
+        parameters["meetingID"] = self.meeting_id
+        parameters["recordID"] = record_id
+        query = urlencode(parameters)
+        hashed = api_call(query, action)
+        url = slash_join(BBB_API_URL, action, "?%s" % hashed)
+        response = requests.get(url)
+        if response.status_code != 200:
+            msg = {}
+            msg["error"] = "Unable to call BBB server."
+            msg["returncode"] = response.status_code
+            msg["message"] = response.content.decode("utf-8")
+            raise ValueError(msg)
+        result = response.content.decode("utf-8")
+        xmldoc = et.fromstring(result)
+        recording_json = parseXmlToJson(xmldoc)
+        if recording_json.get("returncode", "") != "SUCCESS":
+            msg = {}
+            msg["error"] = _("Unable to get recording!")
+            msg["returncode"] = recording_json.get("returncode", "")
+            msg["messageKey"] = recording_json.get("messageKey", "")
+            msg["message"] = recording_json.get("message", "")
+            raise ValueError(msg)
+        else:
+            return recording_json
 
     def delete_recording(self, record_id):
         """Delete a BBB recording."""
@@ -911,6 +952,19 @@ class Meeting(models.Model):
             raise ValueError(msg)
         else:
             return meeting_json
+
+    def get_recordings_absolute_url(self):
+        """Get recordings list absolute URL."""
+        return reverse("meeting:internal_recordings", args=[
+            str(self.meeting_id),
+        ])
+
+    def get_recordings_full_url(self, request=None):
+        """Get recordings list full URL."""
+        full_url = "".join(
+            ["//", get_current_site(request).domain, self.get_recordings_absolute_url()]
+        )
+        return full_url
 
     class Meta:
         db_table = "meeting"

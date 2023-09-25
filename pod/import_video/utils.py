@@ -1,9 +1,11 @@
 """Utils for Meeting and Import_video module."""
+import json
 import requests
 import shutil
 
 from datetime import datetime as dt
 from django.conf import settings
+from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 from html.parser import HTMLParser
 from pod.video.models import Video
@@ -61,40 +63,11 @@ def secure_request_for_upload(request):
         raise ValueError(msg)
 
 
-def manage_recording_url(video_url):
-    """Verify the video URL and change it, if necessary (for ESR URL).
-
-    Args:
-        video_url (String): URL to verify
-
-    Returns:
-        String: good URL of a BBB recording video
-    """
-    try:
-        bbb_playback_video = "/playback/video/"
-        url = urlparse(video_url)
-        if url.query:
-            query = parse_qs(url.query, keep_blank_values=True)
-            if query["token"][0]:
-                # For ESR URL
-                # Ex: https://_site_/recording/_uid_/video?token=_token_
-                # Get recording unique identifier
-                uid = url.path.split("/")[2]
-                # New video URL
-                # Ex: https://_site_/playback/video/_uid_/
-                return url.scheme + "://" + url.netloc + bbb_playback_video + uid + "/"
-            else:
-                return video_url
-        else:
-            return video_url
-    except Exception:
-        return video_url
-
-
-def parse_remote_file(source_html_url):
+def parse_remote_file(session, source_html_url):
     """Parse the remote HTML file on the BBB server.
 
     Args:
+        session (Session) : session useful to achieve requests (and keep cookies between)
         source_html_url (String): URL to parse
 
     Raises:
@@ -104,7 +77,7 @@ def parse_remote_file(source_html_url):
         String: name of the video found in the page
     """
     try:
-        response = requests.get(source_html_url)
+        response = session.get(source_html_url)
         if response.status_code != 200:
             msg = {}
             msg["error"] = _(
@@ -112,7 +85,7 @@ def parse_remote_file(source_html_url):
             )
             # If we want to display the 404/500... page to the user
             # msg["message"] = response.content.decode("utf-8")
-            msg["message"] = "Error number : %s" % response.status_code
+            msg["message"] = _("Error number: %s") % response.status_code
             raise ValueError(msg)
 
         # Parse the BBB video HTML file
@@ -130,7 +103,7 @@ def parse_remote_file(source_html_url):
             if extension not in VIDEO_ALLOWED_EXTENSIONS:
                 msg = {}
                 msg["error"] = _(
-                    "The video file for this recording was not " "found in the HTML file."
+                    "The video file for this recording was not found in the HTML file."
                 )
                 msg["message"] = _("The found file is not a valid video.")
                 raise ValueError(msg)
@@ -149,14 +122,89 @@ def parse_remote_file(source_html_url):
         msg["error"] = _(
             "The video file for this recording was not found in the HTML file."
         )
-        msg["message"] = str(exc)
+        msg["message"] = mark_safe(str(exc))
         raise ValueError(msg)
 
 
-def download_video_file(source_video_url, dest_file):
+def manage_recording_url(source_url, video_file_add):
+    """Generate the BBB video URL.
+
+    See more explanations in manage_download() function.
+
+    Args:
+        source_url (String): Source file URL
+        video_file_add (String): Name of the video file to add to the URL
+
+    Returns:
+        String: good URL of a BBB recording video
+    """
+    try:
+        bbb_playback_video = "/video/"
+        url = urlparse(source_url)
+        if url.query:
+            query = parse_qs(url.query, keep_blank_values=True)
+            if query["token"][0]:
+                # 1st case (ex: ESR URL), URL likes (ex for ESR URL:)
+                # https://_site_/recording/_recording_id/video?token=_token_
+                # Get recording unique identifier
+                recording_id = url.path.split("/")[2]
+                # Define 2nd video URL
+                # Ex: https://_site_/video/_recording_id/video-0.m4v
+                source_video_url = "%s://%s%s%s/%s" % (
+                    url.scheme,
+                    url.netloc,
+                    bbb_playback_video,
+                    recording_id,
+                    video_file_add
+                )
+            else:
+                # 2nd case (BBB URL standard without token)
+                source_video_url = source_url + video_file_add
+            return source_video_url
+        else:
+            return source_url + video_file_add
+    except Exception:
+        return source_url + video_file_add
+
+
+def manage_download(session, source_url, video_file_add, dest_file):
+    """Manage the download of a BBB video file.
+
+    2 possibilities :
+     - Download BBB video file directly.
+     - Download BBB video file where source URL is protected by a single-use token.
+    In such a case, 2 requests are made, using the same session.
+    A cookie is set at the first request (the parsing one, called before)
+    and used for the second one.
+
+    This function is a simple shortcut to the calls of manage_recording_url
+    and download_video_file.
+
+    Args:
+        session (Session) : session useful to achieve requests (and keep cookies between)
+        source_url (String): Source file URL
+        video_file_add (String): Name of the video file to add to the URL
+        dest_file (String): Destination file of the Pod video
+
+    Returns:
+        source_video_url (String) : video source file URL
+
+    Raises:
+        ValueError: if impossible download
+    """
+    try:
+        source_video_url = manage_recording_url(source_url, video_file_add)
+        download_video_file(session, source_video_url, dest_file)
+        return source_video_url
+    except Exception as exc:
+        raise ValueError(mark_safe(str(exc)))
+
+
+def download_video_file(session, source_video_url, dest_file):
     """Download BBB video file.
 
     Args:
+        session (Session) : session useful to achieve requests (and keep cookies between)
         source_video_url (String): Video file URL
         dest_file (String): Destination file of the Pod video
 
@@ -165,17 +213,14 @@ def download_video_file(source_video_url, dest_file):
     """
     # Check if video file exists
     try:
-        with requests.get(source_video_url, timeout=(10, 180), stream=True) as response:
+        with session.get(source_video_url, timeout=(10, 180), stream=True) as response:
+            # Can be useful to debug
+            # print(session.cookies.get_dict())
             if response.status_code != 200:
-                msg = {}
-                msg["error"] = _(
+                raise ValueError(_(
                     "The video file for this recording "
                     "was not found on the BBB server."
-                )
-                # If we want to display the 404/500... page to the user
-                # msg["message"] = response.content.decode("utf-8")
-                msg["message"] = "Error number : %s" % response.status_code
-                raise ValueError(msg)
+                ))
 
             with open(dest_file, "wb+") as file:
                 # Total size, in bytes, from response header
@@ -189,18 +234,15 @@ def download_video_file(source_video_url, dest_file):
                 # Method 3 : The fastest
                 shutil.copyfileobj(response.raw, file)
     except Exception as exc:
-        msg = {}
-        msg["error"] = _("Impossible to download the video file from the server.")
-        msg["message"] = str(exc)
-        raise ValueError(msg)
+        raise ValueError(mark_safe(str(exc)))
 
 
-def save_video(request, dest_file, recording_name, description, date_evt=None):
+def save_video(request, dest_path, recording_name, description, date_evt=None):
     """Save and encode the Pod video file.
 
     Args:
         request (Request): HTTP request
-        dest_file (String): Destination file of the Pod video
+        dest_path (String): Destination path of the Pod video
         recording_name (String): recording name
         description (String): description added to the Pod video
         date_evt (Datetime, optional): Event date. Defaults to None.
@@ -210,7 +252,7 @@ def save_video(request, dest_file, recording_name, description, date_evt=None):
     """
     try:
         video = Video.objects.create(
-            video=dest_file,
+            video=dest_path,
             title=recording_name,
             owner=request.user,
             description=description,
@@ -224,7 +266,7 @@ def save_video(request, dest_file, recording_name, description, date_evt=None):
     except Exception as exc:
         msg = {}
         msg["error"] = _("Impossible to create the Pod video")
-        msg["message"] = str(exc)
+        msg["message"] = mark_safe(str(exc))
         raise ValueError(msg)
 
 
@@ -279,7 +321,7 @@ def check_video_size(video_size):
         msg = {}
         msg["error"] = _("File too large.")
         msg["message"] = (
-            _("The size of the video file exceeds " "the maximum allowed value, %s Gb.")
+            _("The size of the video file exceeds the maximum allowed value, %s Gb.")
             % MAX_UPLOAD_SIZE_ON_IMPORT
         )
         raise ValueError(msg)
@@ -372,3 +414,11 @@ class StatelessRecording:
     def get_duration(self):
         """Return duration."""
         return str(self.get_end_time() - self.get_start_time()).split(".")[0]
+
+    def to_json(self):
+        """Return recording data (without uploadedToPodBy) in JSON format."""
+        exclusion_list = ['uploadedToPodBy']
+        return json.dumps(
+            {key: value for key, value in self.__dict__.items()
+             if key not in exclusion_list}
+        )

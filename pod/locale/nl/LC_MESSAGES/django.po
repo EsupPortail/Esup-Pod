@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-21 14:05+0000\n"
+"POT-Creation-Date: 2023-09-22 16:41+0200\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2398,6 +2398,11 @@ msgid "The HTML file for this recording was not found on the BBB server."
 msgstr ""
 
 #: pod/import_video/utils.py
+#, python-format
+msgid "Error number: %s"
+msgstr ""
+
+#: pod/import_video/utils.py
 msgid "The video file for this recording was not found in the HTML file."
 msgstr ""
 
@@ -2411,10 +2416,6 @@ msgstr ""
 
 #: pod/import_video/utils.py
 msgid "The video file for this recording was not found on the BBB server."
-msgstr ""
-
-#: pod/import_video/utils.py
-msgid "Impossible to download the video file from the server."
 msgstr ""
 
 #: pod/import_video/utils.py
@@ -2471,8 +2472,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -3415,7 +3416,7 @@ msgstr ""
 msgid "Registration of event #%(content_id)s"
 msgstr ""
 
-#: pod/live/utils.py pod/video_encode_transcript/utils.py
+#: pod/live/utils.py pod/meeting/utils.py pod/video_encode_transcript/utils.py
 msgid "Hello,"
 msgstr ""
 
@@ -3427,7 +3428,7 @@ msgid ""
 "the other sharing options in the dedicated tab."
 msgstr ""
 
-#: pod/live/utils.py pod/main/templates/mail/mail.html
+#: pod/live/utils.py pod/main/templates/mail/mail.html pod/meeting/utils.py
 #: pod/video_encode_transcript/utils.py
 msgid "Regards."
 msgstr ""
@@ -4900,6 +4901,10 @@ msgid "Unable to get meeting recordings!"
 msgstr ""
 
 #: pod/meeting/models.py
+msgid "Unable to get recording!"
+msgstr ""
+
+#: pod/meeting/models.py
 msgid "Unable to delete recording!"
 msgstr ""
 
@@ -4954,6 +4959,18 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/internal_recordings.html pod/meeting/views.py
 msgid "Meeting recordings"
+msgstr ""
+
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid ""
+"After recording a Big Blue Button meeting, recordings of that meeting will "
+"be available at that level after a while."
+msgstr ""
+
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid ""
+"When a new recording is available at this level, you will receive an email "
+"to inform you."
 msgstr ""
 
 #: pod/meeting/templates/meeting/internal_recordings.html
@@ -5124,6 +5141,22 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "occurrences"
+msgstr ""
+
+#: pod/meeting/utils.py
+#, python-format
+msgid "A new Big Blue Button recording for '%(name)s' meeting is available"
+msgstr ""
+
+#: pod/meeting/utils.py
+#, python-format
+msgid ""
+"A new Big Blue Button recording for “%(content_title)s” meeting is now "
+"available on %(site_title)s."
+msgstr ""
+
+#: pod/meeting/utils.py pod/video_encode_transcript/utils.py
+msgid "You will find it here:"
 msgstr ""
 
 #: pod/meeting/views.py
@@ -6139,8 +6172,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -7983,10 +8016,6 @@ msgstr ""
 
 #: pod/video_encode_transcript/utils.py
 msgid "encoded to Web formats"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "You will find it here:"
 msgstr ""
 
 #: pod/video_encode_transcript/utils.py

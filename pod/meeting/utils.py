@@ -1,10 +1,23 @@
 """Utils for Meeting module."""
 from datetime import date, timedelta
 from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.utils.translation import ugettext_lazy as _
+from pod.main.views import TEMPLATE_VISIBLE_SETTINGS
 from hashlib import sha1
+
+import bleach
 
 BBB_API_URL = getattr(settings, "BBB_API_URL", "")
 BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
+
+DEBUG = getattr(settings, "DEBUG", True)
+
+DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
+
+MANAGERS = getattr(settings, "MANAGERS", {})
+
+SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
 
 def api_call(query, call):
@@ -70,3 +83,60 @@ def get_nth_week_number(original_date):
     if first_day.weekday() <= original_date.weekday():
         nb_weeks += 1
     return nb_weeks
+
+
+def send_email_recording_ready(meeting):
+    """Send an email when a recording was saved and available on Pod."""
+    if DEBUG:
+        print("SEND EMAIL WHEN RECORDING READY")
+
+    url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
+    content_url = "%s:%s" % (url_scheme, meeting.get_recordings_full_url())
+
+    subject = "[%s] %s" % (
+        TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"),
+        _(
+            "A new Big Blue Button recording for '%(name)s' meeting is available"
+        )
+        % {
+            "name": meeting.name
+        },
+    )
+
+    from_email = DEFAULT_FROM_EMAIL
+
+    to_email = [meeting.owner.email]
+
+    html_message = (
+        '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a></p><p>%s</p>'
+        % (
+            _("Hello,"),
+            _(
+                "A new Big Blue Button recording for “%(content_title)s” meeting"
+                + " is now available on %(site_title)s."
+            )
+            % {
+                "content_title": "<b>%s</b>" % meeting.name,
+                "site_title": TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"),
+            },
+            _("You will find it here:"),
+            content_url,
+            content_url,
+            _("Regards."),
+        )
+    )
+
+    text_message = bleach.clean(html_message, tags=[], strip=True)
+
+    msg = EmailMultiAlternatives(
+        subject,
+        text_message,
+        from_email,
+        to_email
+    )
+    msg.attach_alternative(html_message, "text/html")
+
+    if DEBUG:
+        print(text_message)
+
+    msg.send()
