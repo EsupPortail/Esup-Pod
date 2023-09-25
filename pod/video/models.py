@@ -34,7 +34,7 @@ from django.db.models.signals import post_save
 from django.db.models.signals import pre_save
 from pod.main.models import AdditionalChannelTab
 import importlib
-# from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password
 
 from sorl.thumbnail import get_thumbnail
 from pod.authentication.models import AccessGroup
@@ -859,10 +859,10 @@ class Video(models.Model):
         verbose_name = _("video")
         verbose_name_plural = _("videos")
 
-    # def set_password(self):
-    #     """Encrypt the password if video is protected. An encrypted password cannot be re-encrypted."""
-    #     if self.password and not self.password.startswith(("pbkdf2_sha256$")):
-    #         self.password = make_password(self.password, hasher="pbkdf2_sha256")
+    def set_password(self):
+        """Encrypt the password if video is protected. An encrypted password cannot be re-encrypted."""
+        if self.password and not self.password.startswith(("pbkdf2_sha256$")):
+            self.password = make_password(self.password, hasher="pbkdf2_sha256")
 
     def save(self, *args, **kwargs):
         """Store a video object in db."""
