@@ -477,12 +477,7 @@ def upload_bbb_recording_to_pod(request, record_id):
         )
 
         # Step 3: Download the video file
-        source_video_url = manage_download(
-            session,
-            source_url,
-            video_file_add,
-            dest_file
-        )
+        source_video_url = manage_download(session, source_url, video_file_add, dest_file)
 
         # Step 4: Save informations about the recording
         recording_title = request.POST.get("recording_name")

@@ -155,7 +155,7 @@ def manage_recording_url(source_url, video_file_add):
                     url.netloc,
                     bbb_playback_video,
                     recording_id,
-                    video_file_add
+                    video_file_add,
                 )
             else:
                 # 2nd case (BBB URL standard without token)
@@ -217,10 +217,12 @@ def download_video_file(session, source_video_url, dest_file):
             # Can be useful to debug
             # print(session.cookies.get_dict())
             if response.status_code != 200:
-                raise ValueError(_(
-                    "The video file for this recording "
-                    "was not found on the BBB server."
-                ))
+                raise ValueError(
+                    _(
+                        "The video file for this recording "
+                        "was not found on the BBB server."
+                    )
+                )
 
             with open(dest_file, "wb+") as file:
                 # Total size, in bytes, from response header
@@ -417,8 +419,11 @@ class StatelessRecording:
 
     def to_json(self):
         """Return recording data (without uploadedToPodBy) in JSON format."""
-        exclusion_list = ['uploadedToPodBy']
+        exclusion_list = ["uploadedToPodBy"]
         return json.dumps(
-            {key: value for key, value in self.__dict__.items()
-             if key not in exclusion_list}
+            {
+                key: value
+                for key, value in self.__dict__.items()
+                if key not in exclusion_list
+            }
         )

@@ -95,12 +95,8 @@ def send_email_recording_ready(meeting):
 
     subject = "[%s] %s" % (
         TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"),
-        _(
-            "A new Big Blue Button recording for '%(name)s' meeting is available"
-        )
-        % {
-            "name": meeting.name
-        },
+        _("A new Big Blue Button recording for '%(name)s' meeting is available")
+        % {"name": meeting.name},
     )
 
     from_email = DEFAULT_FROM_EMAIL
@@ -128,12 +124,7 @@ def send_email_recording_ready(meeting):
 
     text_message = bleach.clean(html_message, tags=[], strip=True)
 
-    msg = EmailMultiAlternatives(
-        subject,
-        text_message,
-        from_email,
-        to_email
-    )
+    msg = EmailMultiAlternatives(subject, text_message, from_email, to_email)
     msg.attach_alternative(html_message, "text/html")
 
     if DEBUG:

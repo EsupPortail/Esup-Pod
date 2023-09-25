@@ -955,9 +955,12 @@ class Meeting(models.Model):
 
     def get_recordings_absolute_url(self):
         """Get recordings list absolute URL."""
-        return reverse("meeting:internal_recordings", args=[
-            str(self.meeting_id),
-        ])
+        return reverse(
+            "meeting:internal_recordings",
+            args=[
+                str(self.meeting_id),
+            ],
+        )
 
     def get_recordings_full_url(self, request=None):
         """Get recordings list full URL."""

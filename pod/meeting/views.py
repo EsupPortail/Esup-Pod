@@ -1228,12 +1228,7 @@ def upload_bbb_recording_to_pod(request, record_id, meeting_id):
         )
 
         # Step 3: Download the video file
-        source_video_url = manage_download(
-            session,
-            source_url,
-            video_file_add,
-            dest_file
-        )
+        source_video_url = manage_download(session, source_url, video_file_add, dest_file)
 
         # Step 4: Save informations about the recording
         recording_title = request.POST.get("recording_name")
@@ -1292,9 +1287,7 @@ def recording_ready(request):
             # Decoded parameters with BBB secret key
             # Returns JSON format like : {'meeting_id': 'xxx', 'record_id': 'xxx'}
             decoded_parameters = jwt.decode(
-                signed_parameters,
-                BBB_SECRET_KEY,
-                algorithms=['HS256']
+                signed_parameters, BBB_SECRET_KEY, algorithms=["HS256"]
             )
             # Get data
             meeting_id = decoded_parameters["meeting_id"]
@@ -1310,11 +1303,7 @@ def recording_ready(request):
         return HttpResponse()
     except Exception as exc:
         log.error(
-            "Error when check for recording (%s %s) ready URL: %s. %s" % (
-                meeting_id,
-                recording_id,
-                mark_safe(str(exc)),
-                traceback.format_exc()
-            )
+            "Error when check for recording (%s %s) ready URL: %s. %s"
+            % (meeting_id, recording_id, mark_safe(str(exc)), traceback.format_exc())
         )
         return HttpResponse()

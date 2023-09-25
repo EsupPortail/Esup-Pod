@@ -43,11 +43,7 @@ if not views.MEETING_DISABLE_RECORD:
             views.internal_recording,
             name="internal_recording",
         ),
-        path(
-            "recording_ready/",
-            views.recording_ready,
-            name="recording_ready"
-        ),
+        path("recording_ready/", views.recording_ready, name="recording_ready"),
     ]
 
 urlpatterns += [
