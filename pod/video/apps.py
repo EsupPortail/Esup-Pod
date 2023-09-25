@@ -62,8 +62,9 @@ def fix_transcript(sender, **kwargs):
     print("fix_transcript --> OK")
 
 
+"""
 def update_video_passwords(sender, **kwargs):
-    """Encrypt all video passwords."""
+    # Encrypt all video passwords.
     from pod.video.models import Video
     from django.contrib.auth.hashers import make_password
     from django.db.models import Q
@@ -83,6 +84,7 @@ def update_video_passwords(sender, **kwargs):
         videos.append(video)
     Video.objects.bulk_update(videos, ["password"], batch_size=1000)
     print("update_video_passwords --> OK")
+"""
 
 
 class VideoConfig(AppConfig):
@@ -95,7 +97,7 @@ class VideoConfig(AppConfig):
         post_migrate.connect(set_default_site, sender=self)
         post_migrate.connect(self.send_previous_data, sender=self)
         post_migrate.connect(fix_transcript, sender=self)
-        post_migrate.connect(update_video_passwords, sender=self)
+        # post_migrate.connect(update_video_passwords, sender=self)
 
     def execute_query(self, query, mapping_dict):
         """
