@@ -2227,7 +2227,8 @@ def stats_view(request, slug=None, slug_t=None):
         request.method == "POST"
         and target == "video"
         and (
-            request.POST.get("password") == videos[0].password
+            request.POST.get("password")
+            and request.POST.get("password") == videos[0].password
             # and check_password(request.POST.get("password"), videos[0].password)
         )
     ) or (
