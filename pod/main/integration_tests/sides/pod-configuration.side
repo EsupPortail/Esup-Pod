@@ -1,0 +1,131 @@
+{
+  "id": "96bdfd57-c9ad-4b38-b5f6-c32a68957e33",
+  "version": "2.0",
+  "name": "pod3.4.0",
+  "url": "http://localhost:9090",
+  "tests": [{
+    "id": "f27edc9b-9e82-4944-a554-acdf4008d084",
+    "name": "switch_to_dark_mode",
+    "commands": [{
+      "id": "75113f62-909d-4cfb-bd66-654892f501b2",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "395352bc-9f40-4ce8-9706-6e1160a73340",
+      "comment": "",
+      "command": "click",
+      "target": "id=okcookie",
+      "targets": [
+        ["id=okcookie", "id"],
+        ["css=#okcookie", "css:finder"],
+        ["xpath=//button[@id='okcookie']", "xpath:attributes"],
+        ["xpath=//div[@id='cookieModal']/div/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'J’ai compris')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5824164e-d42a-46c5-9608-850b3a2804e1",
+      "comment": "",
+      "command": "click",
+      "target": "id=pod-param-buttons__button",
+      "targets": [
+        ["id=pod-param-buttons__button", "id"],
+        ["css=#pod-param-buttons__button", "css:finder"],
+        ["xpath=//button[@id='pod-param-buttons__button']", "xpath:attributes"],
+        ["xpath=//li[@id='pod-param-buttons']/button", "xpath:idRelative"],
+        ["xpath=//nav/div/ul/li/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9f3a14ec-b937-4bd5-98d1-9d650dfc1b77",
+      "comment": "",
+      "command": "click",
+      "target": "css=.theme-switch > .slider",
+      "targets": [
+        ["css=.theme-switch > .slider", "css:finder"],
+        ["xpath=//div[@id='pod-navbar__menusettings']/div[2]/ul/li[2]/label/span[2]/span", "xpath:idRelative"],
+        ["xpath=//span[2]/span", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "eaa1d134-f372-4a8b-84d0-c3bb0689c03f",
+      "comment": "",
+      "command": "click",
+      "target": "css=#pod-navbar__menusettings > .offcanvas-body",
+      "targets": [
+        ["css=#pod-navbar__menusettings > .offcanvas-body", "css:finder"],
+        ["xpath=//div[@id='pod-navbar__menusettings']/div[2]", "xpath:idRelative"],
+        ["xpath=//li/div/div[2]", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "70df9a16-53b3-4a29-845f-f8264ec89cb3",
+    "name": "switch_to_dyslexia_mode",
+    "commands": [{
+      "id": "a5d16f0f-5b79-4e39-baa2-9d5d26935229",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a3b14c5e-9c01-4c6b-aa1f-fb56669b83cd",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1303x889",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "a472f852-2116-4c9b-b1f0-13417fd0ceb3",
+      "comment": "",
+      "command": "click",
+      "target": "id=pod-param-buttons__button",
+      "targets": [
+        ["id=pod-param-buttons__button", "id"],
+        ["css=#pod-param-buttons__button", "css:finder"],
+        ["xpath=//button[@id='pod-param-buttons__button']", "xpath:attributes"],
+        ["xpath=//li[@id='pod-param-buttons']/button", "xpath:idRelative"],
+        ["xpath=//nav/div/ul/li/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "9be70e4b-70c6-4ae2-b9b2-0fd4b8d3e664",
+      "comment": "",
+      "command": "click",
+      "target": "css=.dyslexia-switch > .slider",
+      "targets": [
+        ["css=.dyslexia-switch > .slider", "css:finder"],
+        ["xpath=//li[@id='dyslexia-switch-wrapper']/label/span[2]/span", "xpath:idRelative"],
+        ["xpath=//li[3]/label/span[2]/span", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "63742661-2b25-4525-9f40-55b5e2343160",
+      "comment": "",
+      "command": "click",
+      "target": "css=#pod-navbar__menusettings .btn-close",
+      "targets": [
+        ["css=#pod-navbar__menusettings .btn-close", "css:finder"],
+        ["xpath=(//button[@type='button'])[4]", "xpath:attributes"],
+        ["xpath=//div[@id='pod-navbar__menusettings']/div/button", "xpath:idRelative"],
+        ["xpath=//li/div/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "b6a92037-b365-4211-adea-2b6725c3ed63",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["f27edc9b-9e82-4944-a554-acdf4008d084"]
+  }],
+  "urls": ["http://localhost:9090/"],
+  "plugins": []
+}
