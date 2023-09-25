@@ -24,7 +24,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Sum, Min
-from django.contrib.auth.hashers import check_password
+# from django.contrib.auth.hashers import check_password
 
 from dateutil.parser import parse
 import concurrent.futures as futures
@@ -906,8 +906,8 @@ def toggle_render_video_user_can_see_video(
         or (
             show_page
             and is_password_protected
-            and request.POST.get("password")
-            and check_password(request.POST.get("password"), video.password)
+            and request.POST.get("password") == video.password
+            # and check_password(request.POST.get("password"), video.password)
         )
         or (slug_private and slug_private == video.get_hashkey())
         or request.user == video.owner
@@ -1009,8 +1009,10 @@ def render_video(
             form = (
                 VideoPasswordForm(request.POST) if request.POST else VideoPasswordForm()
             )
-            if request.POST.get("password") and check_password(
-                request.POST.get("password"), video.password
+            if (
+                request.POST.get("password")
+                and request.POST.get("password") != video.password
+                # and check_password(request.POST.get("password"), video.password )
             ):
                 messages.add_message(
                     request, messages.ERROR, _("The password is incorrect.")
@@ -2226,7 +2228,8 @@ def stats_view(request, slug=None, slug_t=None):
         and target == "video"
         and (
             request.POST.get("password")
-            and check_password(request.POST.get("password"), videos[0].password)
+            and request.POST.get("password") == videos[0].password
+            # and check_password(request.POST.get("password"), videos[0].password)
         )
     ) or (
         request.method == "GET" and videos and target in ("videos", "channel", "theme")

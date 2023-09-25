@@ -816,10 +816,8 @@ class Video(models.Model):
     )
     password = models.CharField(
         _("password"),
-        help_text=_("Viewing this video will not be possible without this password.")
-        + " "
-        + _("The password is / will be encrypted."),
-        max_length=250,
+        help_text=_("Viewing this video will not be possible without this password."),
+        max_length=50,
         blank=True,
         null=True,
     )
@@ -895,7 +893,7 @@ class Video(models.Model):
         newid = "%04d" % newid
         self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
-        self.set_password()
+        # self.set_password()
         super(Video, self).save(*args, **kwargs)
 
     def __str__(self):

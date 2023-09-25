@@ -95,7 +95,7 @@ class VideoConfig(AppConfig):
         post_migrate.connect(set_default_site, sender=self)
         post_migrate.connect(self.send_previous_data, sender=self)
         post_migrate.connect(fix_transcript, sender=self)
-        post_migrate.connect(update_video_passwords, sender=self)
+        # post_migrate.connect(update_video_passwords, sender=self)
 
     def execute_query(self, query, mapping_dict):
         """
