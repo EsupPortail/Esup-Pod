@@ -14,13 +14,10 @@
         {% trans "Get notified for specific events (when one of your video encoding is completed)." %}
       </p>
       {% webpush_button with_class="d-none" %}
-      <div id="notifications-preference-tips" class="alert alert-warning d-none" role="alert"></div>
-      <div class="mt-2 pt-2 border-top">
-        <button class="btn btn-primary btn-sm" type="button" onclick="setPushPreference(subscribe, '{% url "set_notifications" %}')">
+      <div id="notifications-preference-tips" class="alert d-none" role="alert"></div>
+      <div class="mt-2 pt-2 border-top notification-buttonbar">
+        <button class="btn btn-primary btn-sm" id="notification-action-button" type="button" onclick="setPushPreference('{% url "set_notifications" %}')">
           {% trans "Allow" %}
-        </button>
-        <button class="btn btn-secondary btn-sm" type="button" onclick="setPushPreference(unsubscribe, '{% url "set_notifications" %}')">
-          {% trans "Deny on all devices" %}
         </button>
         <div id="notifications-spinner" class="spinner-border spinner-border-sm d-none" role="status"></div>
       </div>

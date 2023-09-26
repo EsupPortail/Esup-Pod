@@ -279,6 +279,7 @@
   {% endif %}
   {% if POST_FOOTER_TEMPLATE %}{% include POST_FOOTER_TEMPLATE %}{% endif %}
   {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
+  <script src="{% static 'js/pwa-installation.js' %}?ver={{VERSION}}"></script>
 </body>
 
 </html>

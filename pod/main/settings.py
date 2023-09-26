@@ -4,6 +4,7 @@ Django local settings for pod_project.
 Django version: 3.2.
 """
 import os
+from django.utils.translation import gettext_lazy as _
 
 ##
 # flatpages
@@ -306,3 +307,58 @@ HIDE_TYPES = False
 VIDEO_RECENT_VIEWCOUNT = 180
 
 HONEYPOT_FIELD_NAME = "firstname"
+
+# PWA
+
+PWA_APP_NAME = 'Pod'
+PWA_APP_DESCRIPTION = _(
+    "Pod is aimed at users of our institutions, by allowing the publication of "
+    "videos in the fields of research (promotion of platforms, etc.), training "
+    "(tutorials, distance training, student reports, etc.), institutional life (video "
+    "of events), offering several days of content."
+)
+PWA_APP_THEME_COLOR = '#0A0302'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': f'/static/img/icon_x{size}.png',
+        'sizes': f"{size}x{size}",
+        'purpose': "any maskable",
+    }
+    for size in (1024, 512, 384, 192, 128, 96, 72, 48)
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': f'/static/img/icon_x{size}.png',
+        'sizes': f"{size}x{size}",
+    }
+    for size in (1024, 512, 384, 192, 128, 96, 72, 48)
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': '/static/img/splash-512.png',
+        'media': (
+            '(device-width: 320px) '
+            'and (device-height: 568px) '
+            'and (-webkit-device-pixel-ratio: 2)'
+        )
+    }
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'fr-FR'
+PWA_APP_SCREENSHOTS = [
+    {
+        'src': '/static/img/esup-pod.svg',
+        'sizes': '750x1334',
+        "type": "image/png"
+    }
+]
+PWA_SERVICE_WORKER_PATH = os.path.join(
+    BASE_DIR, "progressive_web_app", "static", "js", "serviceworker.js",
+)
+PWA_APP_DEBUG_MODE = locals().get("DEBUG", False)

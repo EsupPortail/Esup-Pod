@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-22 16:41+0200\n"
+"POT-Creation-Date: 2023-09-27 12:16+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -558,8 +558,8 @@ msgid "This folder is empty"
 msgstr "Ce dossier est vide"
 
 #: pod/progressive_web_app/static/js/notification-toast.js
-msgid "Error"
-msgstr "Erreur"
+msgid "An error happened during notification subscription"
+msgstr "Erreur durant la désinscription..."
 
 #: pod/progressive_web_app/static/js/notification-toast.js
 msgid ""
@@ -570,8 +570,41 @@ msgstr ""
 "votre navigateur !"
 
 #: pod/progressive_web_app/static/js/notification-toast.js
-msgid "Error during unsubscription..."
-msgstr "Erreur durant la désinscription..."
+msgid ""
+"You have denied notifications in your browser, to enable them back you must "
+"do it in your browser configuration menu."
+msgstr ""
+"Vous avez décliné les notifications via votre navigateur, pour les activer à "
+"nouveau vous devez autoriser les notifications depuis les menus de "
+"configuration de votre navigateur."
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Enable notifications"
+msgstr "Activer les notifications"
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Notifications are currently disabled."
+msgstr "Les notifications sont actuellement désactivées."
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Notifications are currently enabled."
+msgstr "Les notifications sont actuellement activées"
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Disable notifications"
+msgstr "Désactiver les notifications"
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Unsubscribe from Push Messaging"
+msgstr "Se désinscrire des notifications push"
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Successfully subscribed to push notifications."
+msgstr "Souscription aux notifications réussie."
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Error while subscribing to push notifications."
+msgstr "Une erreur est survenue lors de la souscription aux notifications."
 
 #: pod/video/static/js/ajax-display-channels.js
 msgid "%(count)s channel"
@@ -876,6 +909,9 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "Error"
+#~ msgstr "Erreur"
 
 #~ msgid "video"
 #~ msgid_plural "videos"
