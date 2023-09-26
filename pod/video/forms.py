@@ -954,7 +954,40 @@ class VideoForm(forms.ModelForm):
 
 
 class ChannelForm(forms.ModelForm):
+    """Form class for Channel editing."""
+
     site = forms.ModelChoiceField(Site.objects.all(), required=False)
+
+    fieldsets = (
+        (
+            "general",
+            {
+                "legend": _("General settings"),
+                "classes": "show",
+                "fields": [
+                    "title",
+                    "description",
+                    "color",
+                    "style",
+                    "owners",
+                    "users",
+                    "visible",
+                    "allow_to_groups",
+                    "add_channels_tab",
+                ],
+            },
+        ), (
+            "headband",
+            {
+                "legend": _("Headband"),
+                "classes": "show",
+                "fields": [
+                    "headband",
+                ],
+            },
+        ),
+
+    )
 
     def clean(self):
         cleaned_data = super(ChannelForm, self).clean()
