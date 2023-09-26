@@ -19,6 +19,15 @@
     {% trans "Do not leave the page until the video upload to Pod is complete." %}
   </div>
 
+  <div>
+    <p>
+      {% trans "After recording a Big Blue Button meeting, recordings of that meeting will be available at that level after a while." %}<br>
+      <p class="text-info-emphasis">
+        <i class="bi bi-info-circle" aria-hidden="true"></i> {% trans "When a new recording is available at this level, you will receive an email to inform you." %}
+      </p>
+    </p>
+  </div>
+
   <table class="table align-middle table-sm table-bordered table-striped caption-top" id="recordings">
     <thead>
       <tr>
@@ -47,13 +56,15 @@
             <td> {{ record.get_start_time }} </td>
             <td>
                 {% if record.presentationUrl != "" %}
-                  <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.presentationUrl }}" target="_blank" title="{% trans 'Display the recording in presentation format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
-                    <i class="bi bi-file-earmark-play"></i>
+                  <a id="{{ record.id }}-presentation" class="btn btn-primary pod-btn-primary btn-sm" href="javascript:void(0);" onclick="manageLink('presentation', this);" title="{% trans 'Display the recording in presentation format'%}" data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-pod-meeting-id="{{ meeting.meeting_id }}" data-pod-recording-id="{{ record.id }}" data-pod-recording-presentation-url="{{ record.presentationUrl }}">
+                    <i class="bi bi-file-earmark-play" aria-hidden="true"></i>
                   </a>
                 {% endif %}
                 {% if record.videoUrl != "" %}
-                  <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.videoUrl }}" target="_blank" title="{% trans 'Display the recording in video format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
-                    <i class="bi bi-camera-video"></i>
+                  <a id="{{ record.id }}-video" class="btn btn-primary pod-btn-primary btn-sm" href="javascript:void(0);" onclick="manageLink('video', this);" title="{% trans 'Display the recording in video format'%}" data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-pod-meeting-id="{{ meeting.meeting_id }}" data-pod-recording-id="{{ record.id }}" data-pod-recording-video-url="{{ record.videoUrl }}">
+                    <i class="bi bi-camera-video" aria-hidden="true"></i>
                   </a>
                 {% endif %}
             </td>
@@ -64,16 +75,15 @@
                     <input type="hidden" name="recording_name" value="{{ record.name }}" >
                     <input type="hidden" name="start_timestamp" value="{{ record.startTime }}" >
                     <input type="hidden" name="end_timestamp" value="{{ record.endTime }}" >
-                    <input type="hidden" name="source_url" value="{{ record.videoUrl }}" >
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-secondary pod-btn-secondary btn-sm" title="{% trans 'Upload to Pod as a video'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-upload pod-add"></i></button>
+                    <button type="submit" class="btn btn-secondary pod-btn-secondary btn-sm" title="{% trans 'Upload to Pod as a video'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-upload pod-add" aria-hidden="true"></i></button>
                   </form>
                 {% endif %}
                 {% if record.canDelete %}
                   {% trans "Please confirm you want to delete the recording" as confirmDelete %}
                   <form method="post" action="{% url "meeting:delete_internal_recording" meeting_id=meeting.meeting_id recording_id=record.id %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the recording'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-trash3 pod-add"></i></button>
+                    <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the recording'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-trash3 pod-add" aria-hidden="true"></i></button>
                   </form>
                 {% endif %}
             </td>
@@ -128,6 +138,49 @@
      document.getElementById("recording-loader").style.display = "block";
     }
     return answer;
+  }
+
+  /**
+   * Function that allow to manage the link of recordings (video and presentation playback) to take into account the single-use token.
+   **/
+  function manageLink(type, element) {
+    // Get important information from element
+    let meetingId = element.dataset.podMeetingId;
+    let recordingId = element.dataset.podRecordingId;
+    let url = element.getAttribute("data-pod-recording-" + type + "-url");
+    // Open presentation/video recording on other window
+    window.open(url, '_blank');
+    // AJAX Pod server to re-request the BBB server 
+    urlGetRecording = "/meeting/internal_recording/" + meetingId + "/" + recordingId + "/";
+
+    // Get infos from the recording (new token appears here)
+    fetch(urlGetRecording, {
+      method: "GET",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+      dataType: "html",
+      cache: "no-store",
+    })
+      .then((response) => response.text())
+      .then((data) => {
+        // Get new playback URL
+        let jsonData = JSON.parse(data);
+        var urlNew;
+        if (type == "presentation") {
+          urlNew = jsonData.presentationUrl;
+        } else {
+          urlNew = jsonData.videoUrl;
+        }
+        // Modify element
+        element.setAttribute("data-pod-recording-" + type + "-url", urlNew);
+      })
+      .catch((error) => {
+        console.debug(error);
+        // Reload the whole page
+        location.reload();
+      });
   }
 </script>
 {% endblock more_script %}

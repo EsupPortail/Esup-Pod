@@ -235,6 +235,10 @@
               {% if USE_OPENCAST_STUDIO %}
                 <a class="nav-item nav-link" href="{% url 'recorder:studio_pod'%}"><i class="bi bi-camera-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Video Record' %}</a>
               {% endif %}
+              {% show_meeting_button as meeting_button %}
+              {% if meeting_button %}
+                <a class="nav-item nav-link" href="{% url 'meeting:my_meetings'%}"><i class="bi bi-person-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My meetings' %}</a>
+              {% endif %}
               {% show_import_video_button as import_video_button %}
               {% if import_video_button %}
                 <a class="nav-item nav-link" href="{% url 'import_video:external_recordings'%}"><i class="bi bi-collection-play-fill pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Import an external video' %}</a>

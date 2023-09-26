@@ -816,9 +816,7 @@ class Video(models.Model):
     )
     password = models.CharField(
         _("password"),
-        help_text=_("Viewing this video will not be possible without this password.")
-        + " "
-        + _("The password is / will be encrypted."),
+        help_text=_("Viewing this video will not be possible without this password."),
         max_length=50,
         blank=True,
         null=True,
@@ -863,7 +861,7 @@ class Video(models.Model):
 
     def set_password(self):
         """Encrypt the password if video is protected. An encrypted password cannot be re-encrypted."""
-        if self.password and not self.password.startswith(("pbkdf2", "sha256$")):
+        if self.password and not self.password.startswith(("pbkdf2_sha256$")):
             self.password = make_password(self.password, hasher="pbkdf2_sha256")
 
     def save(self, *args, **kwargs):
@@ -895,7 +893,7 @@ class Video(models.Model):
         newid = "%04d" % newid
         self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
-        self.set_password()
+        # self.set_password()
         super(Video, self).save(*args, **kwargs)
 
     def __str__(self):
