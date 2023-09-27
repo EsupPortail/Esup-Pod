@@ -82,9 +82,9 @@ urlpatterns = [
     # cut
     url(r"^cut/", include("pod.cut.urls")),
     # pwa
-    url('', include('pwa.urls')),
+    url("", include("pwa.urls")),
     # webpush
-    url(r'^webpush/', include('webpush.urls'))
+    url(r"^webpush/", include("webpush.urls")),
 ]
 
 # CAS
@@ -103,7 +103,9 @@ if USE_OIDC:
 
 # PWA
 urlpatterns += [
-    path("pwa/", include("pod.progressive_web_app.urls", namespace="progressive_web_app")),
+    path(
+        "pwa/", include("pod.progressive_web_app.urls", namespace="progressive_web_app")
+    ),
 ]
 
 # BBB: TODO REPLACE BBB BY MEETING

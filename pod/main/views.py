@@ -404,10 +404,17 @@ def set_notifications(request):
     setNotificationForm = SetNotificationForm(instance=request.user.owner)
 
     if request.method == "POST":
-        setNotificationForm = SetNotificationForm(request.POST, instance=request.user.owner)
+        setNotificationForm = SetNotificationForm(
+            request.POST, instance=request.user.owner
+        )
         if setNotificationForm.is_valid():
             setNotificationForm.save()
-            return JsonResponse({"success": True, "user_accepts_notifications": request.user.owner.accepts_notifications})
+            return JsonResponse(
+                {
+                    "success": True,
+                    "user_accepts_notifications": request.user.owner.accepts_notifications,
+                }
+            )
         else:
             messages.add_message(
                 request,

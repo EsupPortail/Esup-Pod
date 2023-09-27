@@ -164,7 +164,10 @@ def get_encoding_video(video_to_encode):
 
 def end_of_encoding(video):
     """Send mail at the end of encoding, call transcription."""
-    if video.owner.owner.accepts_notifications and PushInformation.objects.filter(user=video.owner).exists():
+    if (
+        video.owner.owner.accepts_notifications
+        and PushInformation.objects.filter(user=video.owner).exists()
+    ):
         send_notification_encoding(video)
     elif EMAIL_ON_ENCODING_COMPLETION:
         send_email_encoding(video)

@@ -260,7 +260,12 @@ def send_notification(video_to_encode, subject_prefix):
         "site_title": __TITLE_SITE__,
     }
 
-    notify_user(video_to_encode.owner, subject, message, url=reverse("video:video", args=(video_to_encode.slug,)))
+    notify_user(
+        video_to_encode.owner,
+        subject,
+        message,
+        url=reverse("video:video", args=(video_to_encode.slug,)),
+    )
 
 
 def time_to_seconds(a_time):
