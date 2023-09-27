@@ -9,47 +9,48 @@ import json
 
 def create_missing_pages(sender, **kwargs):
     """Create missing flat pages from several fixtures."""
-    print("---> Creating missing flat pages...")
+    print("---> Creating missing flat pages and links...")
+
+    count = 0
 
     with open("./pod/main/fixtures/initial_data.json", encoding="utf-8") as data_file:
         json_data = json.loads(data_file.read())
         print("--> Search missing initial pages...")
-        create_pages_and_links(json_data)
+        for fixture in json_data:
+            count += create_pages_and_links(fixture)
 
     with open("./pod/main/fixtures/accessibility.json", encoding="utf-8") as data_file:
         json_data = json.loads(data_file.read())
         print("--> Search missing accessibility pages...")
-        create_pages_and_links(json_data)
+        for fixture in json_data:
+            count += create_pages_and_links(fixture)
+
+    if count == 0:
+        print("--> No missing page nor missing link found, all is up to date!")
 
 
-def create_pages_and_links(json_data):
+def create_pages_and_links(fixture):
     """Create missing flat pages and associated footer links from one fixture."""
     from pod.main.models import LinkFooter
     from django.contrib.flatpages.models import FlatPage
 
-    created_pages = []
-    created_link = 0
-    for fixture in json_data:
-        if fixture["model"] == "flatpages.flatpage":
-            url = fixture["fields"]["url"]
-            page, page_created = FlatPage.objects.get_or_create(url=url)
-            if page_created:
-                print("-> New page created at “%s”." % url)
-                created_pages.append(fixture["fields"]["title_en"])
-                update_object_fields(page, fixture["fields"])
+    count = 0
+    if fixture["model"] == "flatpages.flatpage":
+        url = fixture["fields"]["url"]
+        page, page_created = FlatPage.objects.get_or_create(url=url)
+        if page_created:
+            print("-> New page created at “%s”." % url)
+            count += 1
+            update_object_fields(page, fixture["fields"])
 
-        elif fixture["model"] == "main.linkfooter":
-            title = fixture["fields"]["title_en"]
-            link, link_created = LinkFooter.objects.get_or_create(title_en=title)
-            if link_created:
-                print("-> New Footer link created for “%s”." % title)
-                created_link = created_link + 1
-                update_object_fields(link, fixture["fields"], title)
-
-    if created_link == 0:
-        print("--> No missing link found.")
-    if len(created_pages) == 0:
-        print("--> No missing page found.")
+    elif fixture["model"] == "main.linkfooter":
+        title = fixture["fields"]["title_en"]
+        link, link_created = LinkFooter.objects.get_or_create(title_en=title)
+        if link_created:
+            print("-> New Footer link created for “%s”." % title)
+            count += 1
+            update_object_fields(link, fixture["fields"], title)
+    return count
 
 
 def update_object_fields(obj, fields, title=None):
