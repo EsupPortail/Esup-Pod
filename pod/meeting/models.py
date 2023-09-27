@@ -53,6 +53,7 @@ BBB_API_URL = getattr(settings, "BBB_API_URL", "")
 BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
 BBB_LOGOUT_URL = getattr(settings, "BBB_LOGOUT_URL", "")
 MEETING_PRE_UPLOAD_SLIDES = getattr(settings, "MEETING_PRE_UPLOAD_SLIDES", "")
+MEETING_DISABLE_RECORD = getattr(settings, "MEETING_DISABLE_RECORD", True)
 STATIC_ROOT = getattr(settings, "STATIC_ROOT", "")
 TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
 
@@ -471,6 +472,8 @@ class Meeting(models.Model):
             newid = self.id
         newid = "%04d" % newid
         self.meeting_id = "%s-%s" % (newid, slugify(self.name))
+        if MEETING_DISABLE_RECORD:
+            self.record = False
         super(Meeting, self).save(*args, **kwargs)
 
     def get_hashkey(self):
@@ -598,10 +601,9 @@ class Meeting(models.Model):
                     }
                 )
         # let duration and voiceBridge to default value
-        if BBB_LOGOUT_URL == "":
-            parameters["logoutURL"] = "".join(["https://", get_current_site(None).domain])
-        else:
-            parameters["logoutURL"] = BBB_LOGOUT_URL
+        parameters["logoutURL"] = BBB_LOGOUT_URL if (
+            BBB_LOGOUT_URL != ""
+        ) else "".join(["https://", get_current_site(None).domain])
         endCallbackUrl = "".join(
             [
                 "https://",
@@ -610,14 +612,15 @@ class Meeting(models.Model):
             ]
         )
         parameters["meta_endCallbackUrl"] = endCallbackUrl
-        recordingReadyUrl = "".join(
-            [
-                "https://",
-                get_current_site(None).domain,
-                reverse("meeting:recording_ready", kwargs={}),
-            ]
-        )
-        parameters["meta_bbb-recording-ready-url"] = recordingReadyUrl
+        if not MEETING_DISABLE_RECORD:
+            recordingReadyUrl = "".join(
+                [
+                    "https://",
+                    get_current_site(None).domain,
+                    reverse("meeting:recording_ready", kwargs={}),
+                ]
+            )
+            parameters["meta_bbb-recording-ready-url"] = recordingReadyUrl
         query = urlencode(parameters)
         hashed = api_call(query, action)
         url = slash_join(BBB_API_URL, action, "?%s" % hashed)
