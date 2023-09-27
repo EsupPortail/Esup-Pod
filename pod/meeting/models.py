@@ -601,9 +601,11 @@ class Meeting(models.Model):
                     }
                 )
         # let duration and voiceBridge to default value
-        parameters["logoutURL"] = BBB_LOGOUT_URL if (
-            BBB_LOGOUT_URL != ""
-        ) else "".join(["https://", get_current_site(None).domain])
+        parameters["logoutURL"] = (
+            BBB_LOGOUT_URL
+            if (BBB_LOGOUT_URL != "")
+            else "".join(["https://", get_current_site(None).domain])
+        )
         endCallbackUrl = "".join(
             [
                 "https://",
