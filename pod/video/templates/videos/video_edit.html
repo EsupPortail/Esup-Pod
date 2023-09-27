@@ -301,4 +301,12 @@
     });
   </script>
 
+  {% if form.instance.encoding_in_progress and request.user.owner.accepts_notifications is not False %}
+    <script>
+      if (Notification.permission !== "granted") {
+        const notificationToast = new bootstrap.Toast(document.querySelector('#notification-toast'))
+        notificationToast.show()
+      }
+    </script>
+  {% endif %}
 {% endblock more_script %}

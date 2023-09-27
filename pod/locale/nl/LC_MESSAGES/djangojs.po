@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-22 16:41+0200\n"
+"POT-Creation-Date: 2023-09-27 12:16+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -532,6 +532,50 @@ msgstr ""
 msgid "This folder is empty"
 msgstr ""
 
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "An error happened during notification subscription"
+msgstr ""
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid ""
+"Don't forget to allow notifications from this website in your browser's "
+"settings!"
+msgstr ""
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid ""
+"You have denied notifications in your browser, to enable them back you must "
+"do it in your browser configuration menu."
+msgstr ""
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Enable notifications"
+msgstr ""
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Notifications are currently disabled."
+msgstr ""
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Notifications are currently enabled."
+msgstr ""
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Disable notifications"
+msgstr ""
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Unsubscribe from Push Messaging"
+msgstr ""
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Successfully subscribed to push notifications."
+msgstr ""
+
+#: pod/progressive_web_app/static/js/notification-toast.js
+msgid "Error while subscribing to push notifications."
+msgstr ""
+
 #: pod/video/static/js/ajax-display-channels.js
 msgid "%(count)s channel"
 msgid_plural "%(count)s channels"
@@ -773,6 +817,10 @@ msgstr ""
 
 #: pod/video/static/js/video_edit.js
 msgid "Select the general type of the video."
+msgstr ""
+
+#: pod/video/static/js/video_edit.js
+msgid "Get notified when the video encoding is finished."
 msgstr ""
 
 #: pod/video/static/js/video_stats_view.js

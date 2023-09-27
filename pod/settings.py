@@ -65,6 +65,9 @@ INSTALLED_APPS = [
     "pod.video_encode_transcript",
     "pod.import_video",
     "pod.custom",
+    "pwa",
+    "pod.progressive_web_app",
+    "webpush",
 ]
 
 ##
@@ -380,6 +383,7 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr", "en")
 # MIGRATION_MODULES = {
 #     'flatpages': 'pod.db_migrations'
 # }
+
 
 ##
 # Applications settings (and settings locale if any)

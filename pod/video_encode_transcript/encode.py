@@ -1,6 +1,8 @@
 """This module handles video encoding with CPU."""
 
 from django.conf import settings
+from webpush.models import PushInformation
+
 from pod.video.models import Video
 from .Encoding_video_model import Encoding_video_model
 from .encoding_studio import encode_video_studio
@@ -13,6 +15,7 @@ from .utils import (
     add_encoding_log,
     send_email,
     send_email_encoding,
+    send_notification_encoding,
     time_to_seconds,
 )
 import logging
@@ -161,7 +164,9 @@ def get_encoding_video(video_to_encode):
 
 def end_of_encoding(video):
     """Send mail at the end of encoding, call transcription."""
-    if EMAIL_ON_ENCODING_COMPLETION:
+    if video.owner.owner.accepts_notifications and PushInformation.objects.filter(user=video.owner).exists():
+        send_notification_encoding(video)
+    elif EMAIL_ON_ENCODING_COMPLETION:
         send_email_encoding(video)
 
     transcript_video(video.id)

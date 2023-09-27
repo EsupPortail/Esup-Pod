@@ -108,6 +108,13 @@ MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
 # pour avoir le maximum de log sur la console
 LOGGING = {}
 
+# PUSH NOTIFICATIONS
+# Les clés VAPID peuvent être générées avec https://web-push-codelab.glitch.me/
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": "",
+    "VAPID_PRIVATE_KEY": "",
+    "VAPID_ADMIN_EMAIL": "contact@example.org"
+}
 ----
 
 == Commandes

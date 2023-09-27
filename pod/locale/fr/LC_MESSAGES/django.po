@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-22 16:41+0200\n"
+"POT-Creation-Date: 2023-09-27 12:16+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -99,6 +99,14 @@ msgstr "Commentaire"
 #: pod/authentication/models.py
 msgid "Picture"
 msgstr "Image"
+
+#: pod/authentication/models.py
+msgid "Accept notifications"
+msgstr "Accepter les notifications"
+
+#: pod/authentication/models.py
+msgid "Receive push notifications on your devices."
+msgstr "Recevez des notifications push sur vos appareils"
 
 #: pod/authentication/models.py pod/live/models.py pod/meeting/models.py
 #: pod/podfile/models.py pod/video/admin.py pod/video/models.py
@@ -820,6 +828,7 @@ msgstr "Le fichier doit être au format VTT."
 
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
+#: pod/video_encode_transcript/utils.py
 msgid "video"
 msgstr "vidéo"
 
@@ -2118,8 +2127,8 @@ msgid ""
 msgstr ""
 "Les champs \"Début\" et \"Fin\" doivent contenir des valeurs en secondes. "
 "Lancez la lecture de la vidéo, mettez sur pause et cliquez sur \"Récupérer "
-"le temps depuis le lecteur\" pour renseigner automatiquement le champ \"Début"
-"\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
+"le temps depuis le lecteur\" pour renseigner automatiquement le champ "
+"\"Début\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html
 msgid "You cannot overlap enrichments."
@@ -2624,8 +2633,8 @@ msgid ""
 "This video was uploaded to Pod; its origin is %(type)s: <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
-"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
 #: pod/import_video/views.py pod/meeting/views.py
 msgid "Try changing the record type or address for this recording."
@@ -2636,8 +2645,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "Youtube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
@@ -4731,6 +4740,14 @@ msgstr "Mes fichiers"
 msgid "Claim a record"
 msgstr "Revendiquer un enregistrement"
 
+#: pod/main/templates/navbar.html pod/progressive_web_app/templates/debug.html
+msgid "Notifications settings"
+msgstr "Paramètres de notifications"
+
+#: pod/main/templates/navbar.html
+msgid "Install"
+msgstr "Installer"
+
 #: pod/main/templates/navbar.html
 msgid "Log out"
 msgstr "Déconnexion"
@@ -5526,16 +5543,16 @@ msgid ""
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à une réunion récurrente <b>"
-"%(meeting_title)s</b>.</p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente "
+"<b>%(meeting_title)s</b>.</p>\n"
 "        <p>Date de début : %(start_date_time)s </p>\n"
 "        <p>Récurrent jusqu’à la date : %(end_date)s </p>\n"
 "        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
 "p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
-"%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<b>%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -5561,8 +5578,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
-"%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<b>%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -6254,6 +6271,22 @@ msgstr "Vous ne pouvez pas voir ce dossier."
 msgid "You cannot edit this file."
 msgstr "Vous ne pouvez pas éditer ce fichier."
 
+#: pod/progressive_web_app/templates/notification_toast.html
+msgid "Get application notifications"
+msgstr "Recevez les notifications de l'application"
+
+#: pod/progressive_web_app/templates/notification_toast.html
+msgid ""
+"Get notified for specific events (when one of your video encoding is "
+"completed)."
+msgstr ""
+"Recevez des notifications pour des événements spécifiques (lorsque "
+"l'encodage d'une de vos vidéos est terminé)"
+
+#: pod/progressive_web_app/templates/notification_toast.html
+msgid "Allow"
+msgstr "Autoriser"
+
 #: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
 msgstr ""
@@ -6538,8 +6571,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -6618,9 +6651,10 @@ msgid ""
 msgstr ""
 "Bonjour, <p>un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur \"%(recorder)s\".<br>Pour "
-"l’ajouter, cliquez sur le lien ci dessous.</p><a href=\"%(link_url)s\">"
-"%(link_url)s</a><br><i>Si le lien n’est pas actif, il faut le copier-coller "
-"dans la barre d’adresse de votre navigateur.</i><p><p>Cordialement</p>"
+"l’ajouter, cliquez sur le lien ci dessous.</p><a "
+"href=\"%(link_url)s\">%(link_url)s</a><br><i>Si le lien n’est pas actif, il "
+"faut le copier-coller dans la barre d’adresse de votre navigateur.</"
+"i><p><p>Cordialement</p>"
 
 #: pod/recorder/views.py
 msgid "New recording added."
@@ -6633,6 +6667,17 @@ msgstr "L’enregistrement a été supprimé."
 #: pod/recorder/views.py
 msgid "Recorder for Studio not found."
 msgstr "Enregistreur studio non trouvé."
+
+#: pod/settings.py
+msgid ""
+"Pod is aimed at users of our institutions, by allowing the publication of "
+"videos in the fields of research (promotion of platforms, etc.), training "
+"(tutorials, distance training, student reports, etc.), institutional life "
+"(video of events), offering several days of content."
+msgstr ""
+"Pod a pour but de faciliter la mise à disposition de vidéo et de ce "
+"fait, d’encourager l’utilisation de celles-ci dans le cadre de "
+"l’enseignement et la recherche."
 
 #: pod/urls.py
 msgid "Pod Administration"
@@ -6968,8 +7013,8 @@ msgid ""
 "%(url)s</a></p>\n"
 msgstr ""
 "vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
-"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" target=\"_blank\">"
-"%(scheme)s:%(url)s</a></p>\n"
+"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
+"target=\"_blank\">%(scheme)s:%(url)s</a></p>\n"
 "\n"
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -7192,10 +7237,6 @@ msgstr ""
 #: pod/video/models.py pod/video/templates/videos/video_sort_select.html
 msgid "Date of event"
 msgstr "Date de l’évènement"
-
-#: pod/video/models.py
-msgid "The password is / will be encrypted."
-msgstr "Le mot de passe est / sera encrypté."
 
 #: pod/video/models.py
 msgid "Overview"
@@ -7731,8 +7772,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
-"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
+"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html
 msgid "Other versions"
@@ -8537,6 +8578,24 @@ msgstr "encodé aux formats Web"
 msgid "the:"
 msgstr "le :"
 
+#: pod/video_encode_transcript/utils.py
+#, fuzzy
+#| msgid "Content"
+msgid "content"
+msgstr "Contenu"
+
+#: pod/video_encode_transcript/utils.py
+#, fuzzy
+#| msgid "Transcript"
+msgid "Transcripting"
+msgstr "Transcrire"
+
+#: pod/video_encode_transcript/utils.py
+#, fuzzy
+#| msgid "automatically transcripted"
+msgid "automatically transcript"
+msgstr "automatiquement transcrit"
+
 #: pod/video_search/apps.py
 msgid "Video search"
 msgstr "Recherche de vidéo"
@@ -8564,3 +8623,9 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Deny on all devices"
+#~ msgstr "Refuser sur tous les appareils"
+
+#~ msgid "The password is / will be encrypted."
+#~ msgstr "Le mot de passe est / sera encrypté."

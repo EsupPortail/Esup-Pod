@@ -1,4 +1,6 @@
 {% load static i18n custom_tags %}
+{% load pwa %}
+{% load webpush_notifications %}
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
@@ -46,8 +48,9 @@
   {% if request.GET.is_iframe %}
     <link rel="stylesheet" href="{% static 'css/iframe.css' %}?ver={{VERSION}}" media="screen">
   {% endif %}
+  {% progressive_web_app_meta %}
   {% endspaceless %}
-
+  {% webpush_header %}
 </head>
 
 <body>
@@ -124,6 +127,7 @@
         {% endif %}
       </div> <!-- fin div pod-grid-content -->
     </main>
+    {% include "notification_toast.html" %}
   </div> <!-- fin container -->
   {% endblock content %}
   {% if not request.GET.is_iframe %}
@@ -275,6 +279,7 @@
   {% endif %}
   {% if POST_FOOTER_TEMPLATE %}{% include POST_FOOTER_TEMPLATE %}{% endif %}
   {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
+  <script src="{% static 'js/pwa-installation.js' %}?ver={{VERSION}}"></script>
 </body>
 
 </html>
