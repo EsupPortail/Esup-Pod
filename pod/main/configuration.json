@@ -1727,6 +1727,28 @@
                         "fr": "Configuration application podfile"
                     }
                 },
+                "progressive_web_app": {
+                    "description": {},
+                    "settings": {
+                        "WEBPUSH_SETTINGS": {
+                            "default_value": "```python\n{\n    'VAPID_PUBLIC_KEY': '',\n    'VAPID_PRIVATE_KEY': '',\n    'VAPID_ADMIN_EMAIL': 'contact@esup-portail.org'\n}\n```",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush). Elles peuvent être générées avec [https://web-push-codelab.glitch.me/]()"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": ""
+                        }
+                    },
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application progressive_web_app"
+                    }
+                },
                 "recorder": {
                     "description": {},
                     "settings": {
