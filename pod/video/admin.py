@@ -131,7 +131,7 @@ class VideoAdmin(admin.ModelAdmin):
         "is_draft",
         "encoding_in_progress",
         EncodedFilter,
-        "owner",
+        # "owner",
     )
     autocomplete_fields = [
         "owner",
