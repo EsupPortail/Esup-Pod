@@ -69,11 +69,13 @@ class FlatepageTestCase(TestCase):
 
     def test_delete_object(self):
         """Test delete object."""
+        count = FlatPage.objects.all().count()
         FlatPage.objects.get(id=1).delete()
         FlatPage.objects.get(id=2).delete()
-        self.assertEqual(FlatPage.objects.all().count(), 0)
+        count = count - 2
+        self.assertEqual(FlatPage.objects.all().count(), count)
 
-        print("   --->  test_delete_object of ChannelTestCase: OK!")
+        print("   --->  test_delete_object of FlatepageTestCase: OK!")
 
 
 class ConfigurationTestCase(TestCase):

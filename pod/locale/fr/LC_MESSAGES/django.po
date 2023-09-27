@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 14:59+0000\n"
+"POT-Creation-Date: 2023-09-27 15:47+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -7150,10 +7150,6 @@ msgstr ""
 msgid "In %(deadline)s days:"
 msgstr "Dans %(deadline)s jours :"
 
-#: pod/video/models.py
-msgid "Unknown"
-msgstr "Inconnu"
-
 #: pod/video/models.py pod/video/views.py
 msgid "None / All"
 msgstr "Aucun / Tous"
@@ -8633,10 +8629,6 @@ msgstr "contenu"
 #: pod/video_encode_transcript/utils.py
 msgid "Transcripting"
 msgstr "Transcrire"
-
-#: pod/video_encode_transcript/utils.py
-msgid "automatically transcript"
-msgstr "automatiquement transcrit"
 
 #: pod/video_search/apps.py
 msgid "Video search"

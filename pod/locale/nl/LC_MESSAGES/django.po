@@ -6700,10 +6700,6 @@ msgstr ""
 msgid "In %(deadline)s days:"
 msgstr ""
 
-#: pod/video/models.py
-msgid "Unknown"
-msgstr ""
-
 #: pod/video/models.py pod/video/views.py
 msgid "None / All"
 msgstr ""
@@ -8113,10 +8109,6 @@ msgstr ""
 
 #: pod/video_encode_transcript/utils.py
 msgid "Transcripting"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "automatically transcript"
 msgstr ""
 
 #: pod/video_search/apps.py
