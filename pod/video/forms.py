@@ -633,9 +633,9 @@ class VideoForm(forms.ModelForm):
         if not hasattr(form, "admin_form"):
             form.remove_field("sites")
 
-    def create_with_fields(self, fields):
+    def create_with_fields(self, field_key):
         for field in list(self.fields):
-            if field not in fields:
+            if field not in field_key:
                 del self.fields[field]
 
     def move_video_source_file(self, new_path, new_dir, old_dir):

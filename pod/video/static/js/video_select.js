@@ -1,7 +1,7 @@
 var selectedVideosCards;
 var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
 var resetSelectedVideosBtn = document.getElementById("resetSelectedVideosBtn");
-var countVideosSelectedBadge = document.getElementById("countSelectedVideosBadge");
+var countSelectedVideosBadge = document.getElementById("countSelectedVideosBadge");
 var countVideosModal = document.getElementById("countSelectedVideosModal");
 var badgeToolTip = new bootstrap.Tooltip(applyMultipleActionsBtn, {
         title: "",
@@ -41,7 +41,7 @@ function replaceSelectedCountVideos() {
   videos_selected = document.querySelectorAll(".infinite-item.selected");
   let newCount = videos_selected.length;
   countVideosModal.innerHTML = newCount;
-  countVideosSelectedBadge.innerHTML = newCount+" vidéos";
+  countSelectedVideosBadge.innerHTML = newCount+" vidéos";
   if(newCount > 0){
     let selected_slugs = []
     applyMultipleActionsBtn.removeAttribute('disabled');

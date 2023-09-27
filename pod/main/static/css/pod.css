@@ -747,11 +747,6 @@ div.card a img {
     width: calc(100% - var(--bs-gutter-x))
 }
 
-#countVideosSelectedBadge{
-    background-color: var(--pod-link-color);
-    margin-left: 5px;
-}
-
 .infinite-item .checked_overlay {
     display: -webkit-box;
     display: -ms-flexbox;
