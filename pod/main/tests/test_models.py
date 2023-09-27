@@ -14,9 +14,11 @@ class FlatepageTestCase(TestCase):
     """Test the flatepages creation for welcome page."""
 
     def setUp(self):
-        fp1 = FlatPage.objects.create(title="Home", url="/")
-        fp1.sites.add(Site.objects.get(id=SITE_ID))
-        fp1.save()
+        """Set up initial of FlatepageTestCase."""
+        fp1, created = FlatPage.objects.get_or_create(title="Home", url="/")
+        if created:
+            fp1.sites.add(Site.objects.get(id=SITE_ID))
+            fp1.save()
         fp2 = FlatPage.objects.create(
             title="Home",
             url="/home/",
@@ -29,12 +31,12 @@ class FlatepageTestCase(TestCase):
         fp2.save()
         print(" --->  SetUp of FlatepageTestCase: OK!")
 
-    """
-        test all attributs when a channel have been save with the minimum of
-        attributs
-    """
-
     def test_Flatepage_null_attribut(self):
+        """
+        Test all attributes.
+
+        when a channel have been save with the minimum of attributes.
+        """
         flatPage = FlatPage.objects.get(url="/")
         self.assertQuerysetEqual(
             flatPage.sites.all(),
@@ -47,11 +49,8 @@ class FlatepageTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         print("   --->  test_Flatepage_null_attribut of FlatepageTestCase: OK!")
 
-    """
-        test attributs when a channel have many attributs
-    """
-
     def test_Flatepage_with_attributs(self):
+        """Test attributs when a channel have many attributs."""
         flatPage = FlatPage.objects.get(url="/home/")
         self.assertQuerysetEqual(
             flatPage.sites.all(),
@@ -68,11 +67,8 @@ class FlatepageTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         print("   --->  test_Flatepage_with_attributs of FlatepageTestCase: OK!")
 
-    """
-        test delete object
-    """
-
     def test_delete_object(self):
+        """Test delete object."""
         FlatPage.objects.get(id=1).delete()
         FlatPage.objects.get(id=2).delete()
         self.assertEqual(FlatPage.objects.all().count(), 0)

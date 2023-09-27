@@ -8,17 +8,10 @@ import json
 
 
 def create_missing_pages(sender, **kwargs):
-    """Create missing flat pages from several fixtures."""
+    """Create missing flat pages from json fixtures."""
     print("---> Creating missing flat pages and links...")
 
     count = 0
-
-    with open("./pod/main/fixtures/initial_data.json", encoding="utf-8") as data_file:
-        json_data = json.loads(data_file.read())
-        print("--> Search missing initial pages...")
-        for fixture in json_data:
-            count += create_pages_and_links(fixture)
-
     with open("./pod/main/fixtures/flat_pages.json", encoding="utf-8") as data_file:
         json_data = json.loads(data_file.read())
         print("--> Search missing accessibility pages...")
