@@ -35,7 +35,8 @@ async function setPushPreference(notificationSettingUrl) {
   notificationButton.disabled = true;
 
   let afterBrowserNotificationPermissionChanged = async function (
-    subscription, acceptsNotifications=true,
+    subscription,
+    acceptsNotifications = true,
   ) {
     let response = await postNotificationPreference(
       acceptsNotifications,
