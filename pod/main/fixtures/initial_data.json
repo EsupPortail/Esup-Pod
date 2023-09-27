@@ -11,18 +11,18 @@
     "pk": 1,
     "model": "flatpages.flatpage",
     "fields": {
+        "content": "<p>Welcome</p>\r\n",
+        "content_en": "<p>Welcome</p>\r\n",
         "content_fr": "<p>Bienvenue</p>\r\n",
         "registration_required": false,
-        "content_en": "<p>Welcome</p>\r\n",
         "title": "Home",
-        "url": "/",
         "title_en": "Home",
+        "title_fr": "Accueil",
+        "url": "/",
         "sites": [
             1
         ],
-        "content": "<p>Welcome</p>\r\n",
-        "enable_comments": false,
-        "title_fr": "Accueil"
+        "enable_comments": false
     }
   },
   {
