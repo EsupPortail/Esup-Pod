@@ -493,48 +493,39 @@ def theme_edit_save(request, channel):
 def dashboard(request):
     """Render the logged user's dashboard (videos list/bulk update)"""
     if request.method == "POST":
-
-        data = json.loads(request.body.decode("utf-8"))
-
-        selected_videos = data["selectedVideos"]
-        action = data["action"]
-        value = data["value"]
-
+        selected_videos = json.loads(request.POST.get("selected_videos"))
+        update_fields = json.loads(request.POST.get("update_fields"))
         videos = Video.objects.filter(slug__in=selected_videos)
 
         if videos.exists():
             updated_videos = []
 
-            if action == "delete":
-                for video in videos:
-                    video_delete()
-                    video.delete()
-            else:
-                field = Video._meta.get_field(action)
+            for video in videos:
 
-                if field.__class__ is models.ManyToManyField:
-                    # Gestion des collections d'objets
-                    field_model = field.remote_field.model
-                    objects = field_model.objects.filter(pk__in=value)
-                    for video in videos:
-                        video.__getattribute__(action).set(objects)
+                formm = (VideoForm(
+                    request.POST,
+                    request.FILES,
+                    instance=video,
+                    is_staff=request.user.is_staff,
+                    is_superuser=request.user.is_superuser,
+                    current_user=request.user,
+                    current_lang=request.LANGUAGE_CODE,
+                ))
+                formm.create_with_fields(update_fields)
 
+                if formm.is_valid():
+                    video = save_video_form(request, formm)
+                    updated_videos.append(Video.objects.get(pk=video.id).slug)
+                    messages.add_message(
+                        request, messages.INFO, _("The changes have been saved.")
+                    )
                 else:
-                    if field.__class__ is models.ForeignKey:
-                        # Gestion des objets simples liés
-                        pk = value
-                        field_model = field.remote_field.model
-                        value = field_model.objects.get(pk=pk)
-
-                    for video in videos:
-                        setattr(video, action, value)
-                        try:
-                            video.full_clean(exclude=['transcript'])
-                            video.save(force_update=True)
-                            updated_videos.append(Video.objects.get(pk=video.id).slug)
-                        except ValidationError as e:
-                            error = '; '.join(e.messages)
-                            return JsonResponse({"error": error}, status=404)
+                    messages.add_message(
+                        request,
+                        messages.ERROR,
+                        _("One or more errors have been found in the form."),
+                    )
+                    return JsonResponse({"error": messages.ERROR}, status=404)
 
             return JsonResponse({
                 'selected_videos': selected_videos,
@@ -615,14 +606,6 @@ def dashboard(request):
         )
 
     default_owner = request.user.pk
-    """
-    form = VideoForm(
-        is_staff=request.user.is_staff,
-        is_superuser=request.user.is_superuser,
-        current_user=request.user,
-        initial={"owner": default_owner},
-    )
-    """
     form = VideoForm(
         is_staff=request.user.is_staff,
         is_superuser=request.user.is_superuser,

@@ -70,43 +70,40 @@
         <option value="delete">Delete</option>
     </select>
 
-    <div id="dashboardFormContainer">
-        <form id="dashboardForm" method="post" action="{% url 'video:dashboard' %}" accept-charset="utf-8">
-        {% csrf_token %}
-        {% if form_dashboard.errors %}
-          <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
-            {{form_dashboard.errors}}
+    <form id="dashboardForm" enctype="multipart/form-data" name="dashboard_form" method="post" class="needs-validation" novalidate action="{% url 'video:dashboard' %}" accept-charset="utf-8">
+    {% csrf_token %}
+    {% if form_dashboard.errors %}
+      <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+        {{form_dashboard.errors}}
+    {% endif %}
+    {% for field_hidden in form_dashboard.hidden_fields %}
+        {{field_hidden}}
+    {% endfor %}
+
+    {% for fieldset in form_dashboard.fieldsets %}
+        {% with options=fieldset|last name=fieldset|first%}
+        {% if name in fieldsets_dashboard %}
+            <fieldset id="{{ name }}" class="fieldset-dashboard d-none">
         {% endif %}
-        {% for field_hidden in form_dashboard.hidden_fields %}
-            {{field_hidden}}
-        {% endfor %}
-
-        {% for fieldset in form_dashboard.fieldsets %}
-            {% with options=fieldset|last name=fieldset|first%}
-            {% if name in fieldsets_dashboard %}
-                <fieldset id="{{ name }}" class="fieldset-dashboard d-none">
-            {% endif %}
-            {% for field in form_dashboard %}
-                {% if field.name in options.fields %}
-                    <div class="form-group form-group-dashboard {% if name not in fieldsets_dashboard %}d-none{% endif %}">
-                    {% if field.label and name in fieldsets_dashboard %}
-                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {% endif %}
-                      {{field}}
-                    {% if field.help_text %}
-                          <small id="{{field.id_for_label}}Help" class="form-text"> {{ field.help_text|safe }}</small>
-                    {% endif %}
-                    </div>
+        {% for field in form_dashboard %}
+            {% if field.name in options.fields %}
+                <div class="form-group form-group-dashboard {% if name not in fieldsets_dashboard %}d-none{% endif %}">
+                {% if field.label and name in fieldsets_dashboard %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {% endif %}
-            {% endfor %}
-            {% if name in fieldsets_dashboard %}
-                </fieldset>
+                  {{field}}
+                {% if field.help_text %}
+                      <small id="{{field.id_for_label}}Help" class="form-text"> {{ field.help_text|safe }}</small>
+                {% endif %}
+                </div>
             {% endif %}
-            {% endwith %}
         {% endfor %}
-
-        </form>
-    </div>
+        {% if name in fieldsets_dashboard %}
+            </fieldset>
+        {% endif %}
+        {% endwith %}
+    {% endfor %}
+    </form>
 
     <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalConfirmBulkUpdate" disabled>
       Apply <span id="countSelectedVideosBadge" class="badge bg-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="">0 videos</span></button>
@@ -145,6 +142,7 @@
   var page = 1;
   var nextPage = false;
   var ownerFilter = {{ owner_filter|yesno:'true,false'}};
+  var formFieldsets = {{ fieldsets_dashboard|safe }};
 
   {% if videos.has_next %}
       page = parseInt("{{videos.next_page_number}}");

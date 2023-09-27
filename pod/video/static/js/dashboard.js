@@ -11,32 +11,30 @@ bulkUpdateActionSelect.addEventListener("change", function() {
 
 async function bulk_update() {
   // Async POST request to bulk update videos
-  let restrict_access_to_groups = document.getElementById("id_restrict_access_to_groups");
-  if(restrict_access_to_groups != null &&
-      Array.from(restrict_access_to_groups.querySelectorAll("option:checked")).length > 0){
-      action = "restrict_access_to_groups";
-  }
-  let element = document.getElementById("id_"+action);
-  if(element.hasAttribute("multiple")){
-    value = Array.from(element.querySelectorAll("option:checked"),e => e.value);
-  }else{
-    value = element.type === "checkbox" ? element.checked : document.getElementById("id_"+action).value;
-  }
-  selectedVideosCards = getListSelectedVideos();
+  let formData = new FormData();
+  let update_fields = []
+  let form_groups = document.getElementById("dashboardForm").querySelectorAll(".form-group:not(.d-none)")
+  Array.from(form_groups).forEach(form_group => {
+      let element = form_group.querySelector(".form-control, .form-check-input, input[name='thumbnail']");
+      if(element.hasAttribute("multiple")){
+        formData.append(element.getAttribute("name"), element.value);
+      }else{
+        value = element.type === "checkbox" ? element.checked : document.getElementById("id_"+element.getAttribute("name")).value;
+        formData.append(element.getAttribute("name"), value);
+      }
+      update_fields.push(element.name);
+  });
+
+  formData.append("selected_videos",JSON.stringify(getListSelectedVideos()));
+  formData.append("update_fields",JSON.stringify(update_fields));
 
   let response = await fetch(urlVideos, {
     method: "POST",
     headers: {
       "X-Requested-With": "XMLHttpRequest",
       "X-CSRFToken": csrftoken,
-      "Accept": "application/json",
-      "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-        "selectedVideos" : selectedVideosCards,
-        "action" : action,
-        "value" : value
-    })
+    body:formData,
   });
     let result = await response.text();
     if(response.ok){
@@ -54,13 +52,11 @@ async function bulk_update() {
 
 function appendDynamicForm(action){
     // Append form group selected action
-    let fieldsets = document.querySelectorAll('.fieldset-dashboard');
-    let form_groups = document.querySelectorAll('.form-group-dashboard');
-    Array.from(form_groups).forEach((form_group) => {
+    let elements = document.querySelectorAll('.fieldset-dashboard, .form-group-dashboard');
+    Array.from(elements).forEach((form_group) => {
         form_group.classList.add("d-none");
     });
-    fieldsets.forEach((fieldset) => fieldset.classList.add("d-none"));
-    if(action === "channel_option" || action === "access_restrictions"){
+    if(formFieldsets.includes(action)){
         let fieldset = document.getElementById(action);
         fieldset.classList.remove("d-none");
         Array.from(fieldset.querySelectorAll(".form-group-dashboard")).forEach((form_group) => {
