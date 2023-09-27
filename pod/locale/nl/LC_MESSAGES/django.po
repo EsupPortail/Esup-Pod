@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 14:01+0000\n"
+"POT-Creation-Date: 2023-09-27 14:59+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -98,6 +98,14 @@ msgstr ""
 
 #: pod/authentication/models.py
 msgid "Picture"
+msgstr ""
+
+#: pod/authentication/models.py
+msgid "Accept notifications"
+msgstr ""
+
+#: pod/authentication/models.py
+msgid "Receive push notifications on your devices."
 msgstr ""
 
 #: pod/authentication/models.py pod/live/models.py pod/meeting/models.py
@@ -770,6 +778,7 @@ msgstr ""
 
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
+#: pod/video_encode_transcript/utils.py
 msgid "video"
 msgstr ""
 
@@ -4203,6 +4212,14 @@ msgstr ""
 msgid "Additional channel Tabs"
 msgstr ""
 
+#: pod/main/settings.py
+msgid ""
+"Pod is aimed at users of our institutions, by allowing the publication of "
+"videos in the fields of research (promotion of platforms, etc.), training "
+"(tutorials, distance training, student reports, etc.), institutional life "
+"(video of events), offering several days of content."
+msgstr ""
+
 #: pod/main/templates/403.html
 msgid "Permission denied"
 msgstr ""
@@ -4517,6 +4534,14 @@ msgstr ""
 #: pod/recorder/templates/recorder/claim_record.html
 #: pod/recorder/templates/recorder/record_delete.html
 msgid "Claim a record"
+msgstr ""
+
+#: pod/main/templates/navbar.html pod/progressive_web_app/templates/debug.html
+msgid "Notifications settings"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Install"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -5953,6 +5978,20 @@ msgstr ""
 msgid "You cannot edit this file."
 msgstr ""
 
+#: pod/progressive_web_app/templates/notification_toast.html
+msgid "Get application notifications"
+msgstr ""
+
+#: pod/progressive_web_app/templates/notification_toast.html
+msgid ""
+"Get notified for specific events (when one of your video encoding is "
+"completed)."
+msgstr ""
+
+#: pod/progressive_web_app/templates/notification_toast.html
+msgid "Allow"
+msgstr ""
+
 #: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
 msgstr ""
@@ -6282,10 +6321,10 @@ msgstr ""
 #: pod/recorder/views.py
 #, python-format
 msgid ""
-"Hello, <p>a new recording has just be added on %(title_site)s from the "
-"recorder \"%(recorder)s\". <br>To add it, just click on link below.</p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br><i>if you cannot click on link, "
-"just copy-paste it in your browser.</i> <p><p>Regards</p>"
+"<p>Hello,<br>a new recording has just be added on %(title_site)s from the "
+"recorder “%(recorder)s”.<br>To add it, just click on link below.</p><p><a "
+"href=\"%(link_url)s\">%(link_url)s</a><br><em>If you cannot click on link, "
+"just copy-paste it in your browser.</em></p><p>Regards.</p>"
 msgstr ""
 
 #: pod/recorder/views.py
@@ -8066,6 +8105,18 @@ msgstr ""
 
 #: pod/video_encode_transcript/utils.py
 msgid "the:"
+msgstr ""
+
+#: pod/video_encode_transcript/utils.py
+msgid "content"
+msgstr ""
+
+#: pod/video_encode_transcript/utils.py
+msgid "Transcripting"
+msgstr ""
+
+#: pod/video_encode_transcript/utils.py
+msgid "automatically transcript"
 msgstr ""
 
 #: pod/video_search/apps.py

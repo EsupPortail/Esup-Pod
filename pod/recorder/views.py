@@ -237,12 +237,12 @@ def recorder_notify(request):
             # link_url = reformat_url_if_use_cas_or_shib(request, link_url)
 
             html_msg = _(
-                "Hello, <p>a new recording has just be added on %("
-                'title_site)s from the recorder "%(recorder)s". '
-                '<br>To add it, just click on link below.</p><a href="%('
-                'link_url)s">%(link_url)s</a><br><i>if you cannot click on '
-                "link, just copy-paste it in your browser.</i> "
-                "<p><p>Regards</p>"
+                "<p>Hello,<br>a new recording has just be added on %("
+                'title_site)s from the recorder “%(recorder)s”.<br>'
+                'To add it, just click on link below.</p><p><a href="%('
+                'link_url)s">%(link_url)s</a><br><em>If you cannot click on '
+                "link, just copy-paste it in your browser.</em>"
+                "</p><p>Regards.</p>"
             ) % {
                 "title_site": __TITLE_SITE__,
                 "recorder": recorder.name,
