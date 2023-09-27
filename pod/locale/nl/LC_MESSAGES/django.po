@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-22 16:41+0200\n"
+"POT-Creation-Date: 2023-09-27 14:01+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2472,8 +2472,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2651,8 +2651,8 @@ msgstr ""
 msgid "name"
 msgstr ""
 
-#: pod/live/models.py pod/live/templates/live/direct.html pod/video/models.py
-#: pod/video/templates/channel/channel.html
+#: pod/live/models.py pod/live/templates/live/direct.html pod/video/forms.py
+#: pod/video/models.py pod/video/templates/channel/channel.html
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_page_content.html
@@ -3384,6 +3384,11 @@ msgstr ""
 #: pod/main/templates/navbar.html pod/video/models.py
 #: pod/video/templates/videos/filter_aside.html
 msgid "Types"
+msgstr ""
+
+#: pod/live/templates/live/filter_aside.html
+#: pod/video/templates/videos/filter_aside.html
+msgid "Fold/Unfold “Types” filters"
 msgstr ""
 
 #: pod/live/templates/live/filter_aside.html
@@ -4250,7 +4255,11 @@ msgid "Disciplines"
 msgstr ""
 
 #: pod/main/templates/base.html
-msgid "Toggle side Menu"
+msgid "Side menu"
+msgstr ""
+
+#: pod/main/templates/base.html
+msgid "Toggle side menu"
 msgstr ""
 
 #: pod/main/templates/base.html
@@ -4365,7 +4374,17 @@ msgid "Contact us"
 msgstr ""
 
 #: pod/main/templates/navbar.html
-msgid "Toggle navigation"
+msgid "Toggle main menu"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+#, fuzzy
+#| msgid "Main fields"
+msgid "Main menu"
+msgstr "Belangrijkste velden"
+
+#: pod/main/templates/navbar.html
+msgid "Close main menu"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -4420,11 +4439,19 @@ msgid "My meetings"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+msgid "Configuration panel"
+msgstr ""
+
+#: pod/main/templates/navbar.html
 msgid "Toggle configuration panel"
 msgstr ""
 
 #: pod/main/templates/navbar.html
 msgid "Configuration"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Close configuration panel"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -4449,6 +4476,10 @@ msgstr ""
 
 #: pod/main/templates/navbar.html
 msgid "Toggle user menu"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Close user menu"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -5452,7 +5483,8 @@ msgid "To delete the playlist, please check the box in and click delete."
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
-msgid "Reset the filter"
+#: pod/video/templates/videos/filter_aside.html
+msgid "Reset the filters"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
@@ -5594,6 +5626,16 @@ msgstr "Déposez la vidéo sur une autre pour échanger leur position."
 
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
 msgid "videos"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_link.html
+#, python-format
+msgid "Edit the playlist “%(playlist.name)s”"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_link.html
+#, python-format
+msgid "Remove the playlist “%(playlist.name)s”"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_link.html
@@ -6172,8 +6214,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -6619,6 +6661,10 @@ msgstr ""
 msgid "In %(deadline)s days:"
 msgstr ""
 
+#: pod/video/models.py
+msgid "Unknown"
+msgstr ""
+
 #: pod/video/models.py pod/video/views.py
 msgid "None / All"
 msgstr ""
@@ -6734,10 +6780,6 @@ msgstr ""
 
 #: pod/video/models.py pod/video/templates/videos/video_sort_select.html
 msgid "Date of event"
-msgstr ""
-
-#: pod/video/models.py
-msgid "The password is / will be encrypted."
 msgstr ""
 
 #: pod/video/models.py
@@ -7163,7 +7205,11 @@ msgid "Filter by user"
 msgstr ""
 
 #: pod/video/templates/videos/filter_aside.html
-msgid "Fold/Unfold filter tags"
+msgid "Fold/Unfold “Disciplines” filters"
+msgstr ""
+
+#: pod/video/templates/videos/filter_aside.html
+msgid "Fold/Unfold “Tags” filters"
 msgstr ""
 
 #: pod/video/templates/videos/filter_aside_category.html

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-22 16:41+0200\n"
+"POT-Creation-Date: 2023-09-27 14:01+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -2118,8 +2118,8 @@ msgid ""
 msgstr ""
 "Les champs \"Début\" et \"Fin\" doivent contenir des valeurs en secondes. "
 "Lancez la lecture de la vidéo, mettez sur pause et cliquez sur \"Récupérer "
-"le temps depuis le lecteur\" pour renseigner automatiquement le champ \"Début"
-"\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
+"le temps depuis le lecteur\" pour renseigner automatiquement le champ "
+"\"Début\". Vous pouvez le faire également pour remplir le champ \"Fin\"."
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html
 msgid "You cannot overlap enrichments."
@@ -2624,8 +2624,8 @@ msgid ""
 "This video was uploaded to Pod; its origin is %(type)s: <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
-"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
 #: pod/import_video/views.py pod/meeting/views.py
 msgid "Try changing the record type or address for this recording."
@@ -2636,8 +2636,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "Youtube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
@@ -2831,8 +2831,8 @@ msgstr "Enregistrement de %(user)s le %(date)s"
 msgid "name"
 msgstr "nom"
 
-#: pod/live/models.py pod/live/templates/live/direct.html pod/video/models.py
-#: pod/video/templates/channel/channel.html
+#: pod/live/models.py pod/live/templates/live/direct.html pod/video/forms.py
+#: pod/video/models.py pod/video/templates/channel/channel.html
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_page_content.html
@@ -3615,6 +3615,11 @@ msgstr "Afficher tous les évènements"
 #: pod/video/templates/videos/filter_aside.html
 msgid "Types"
 msgstr "Types"
+
+#: pod/live/templates/live/filter_aside.html
+#: pod/video/templates/videos/filter_aside.html
+msgid "Fold/Unfold “Types” filters"
+msgstr "Plier/déplier les filtres par « Types »"
 
 #: pod/live/templates/live/filter_aside.html
 #: pod/video/templates/videos/change_video_owner.html
@@ -4486,7 +4491,11 @@ msgid "Disciplines"
 msgstr "Disciplines"
 
 #: pod/main/templates/base.html
-msgid "Toggle side Menu"
+msgid "Side menu"
+msgstr "Menu latéral"
+
+#: pod/main/templates/base.html
+msgid "Toggle side menu"
 msgstr "Afficher/masquer le menu latéral"
 
 #: pod/main/templates/base.html
@@ -4608,8 +4617,16 @@ msgid "Contact us"
 msgstr "Contactez nous"
 
 #: pod/main/templates/navbar.html
-msgid "Toggle navigation"
-msgstr "Basculer le menu"
+msgid "Toggle main menu"
+msgstr "Basculer le menu principal"
+
+#: pod/main/templates/navbar.html
+msgid "Main menu"
+msgstr "Menu principal"
+
+#: pod/main/templates/navbar.html
+msgid "Close main menu"
+msgstr "Ferme le menu principal"
 
 #: pod/main/templates/navbar.html
 msgid "Promoted playlists"
@@ -4663,12 +4680,20 @@ msgid "My meetings"
 msgstr "Mes réunions"
 
 #: pod/main/templates/navbar.html
+msgid "Configuration panel"
+msgstr "Panneau de configuration"
+
+#: pod/main/templates/navbar.html
 msgid "Toggle configuration panel"
 msgstr "Basculer le panneau de configuration"
 
 #: pod/main/templates/navbar.html
 msgid "Configuration"
 msgstr "Configuration"
+
+#: pod/main/templates/navbar.html
+msgid "Close configuration panel"
+msgstr "Fermer le panneau de configuration"
 
 #: pod/main/templates/navbar.html
 msgid "Change display language"
@@ -4693,6 +4718,10 @@ msgstr "Mode dyslexie"
 #: pod/main/templates/navbar.html
 msgid "Toggle user menu"
 msgstr "Basculer le menu utilisateur"
+
+#: pod/main/templates/navbar.html
+msgid "Close user menu"
+msgstr "Fermer le menu utilisateur"
 
 #: pod/main/templates/navbar.html
 msgid "Add your picture"
@@ -5526,16 +5555,16 @@ msgid ""
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à une réunion récurrente <b>"
-"%(meeting_title)s</b>.</p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente "
+"<b>%(meeting_title)s</b>.</p>\n"
 "        <p>Date de début : %(start_date_time)s </p>\n"
 "        <p>Récurrent jusqu’à la date : %(end_date)s </p>\n"
 "        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
 "p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
-"%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<b>%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -5561,8 +5590,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
-"%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<b>%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -5786,8 +5815,9 @@ msgstr ""
 "supprimer."
 
 #: pod/playlist/templates/playlist/filter_aside.html
-msgid "Reset the filter"
-msgstr "Retirer ce filtre"
+#: pod/video/templates/videos/filter_aside.html
+msgid "Reset the filters"
+msgstr "Retirer les filtres"
 
 #: pod/playlist/templates/playlist/filter_aside.html
 msgid ""
@@ -5934,6 +5964,16 @@ msgstr "Déposez la vidéo sur une autre pour échanger leur position."
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
 msgid "videos"
 msgstr "vidéos"
+
+#: pod/playlist/templates/playlist/playlist_link.html
+#, python-format
+msgid "Edit the playlist “%(playlist.name)s”"
+msgstr "Modifier la liste de lecture « %(playlist.name)s »"
+
+#: pod/playlist/templates/playlist/playlist_link.html
+#, python-format
+msgid "Remove the playlist “%(playlist.name)s”"
+msgstr "Supprimer la liste de lecture « %(playlist.name)s »"
 
 #: pod/playlist/templates/playlist/playlist_link.html
 msgid "Remove the playlist"
@@ -6538,8 +6578,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -6618,9 +6658,10 @@ msgid ""
 msgstr ""
 "Bonjour, <p>un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur \"%(recorder)s\".<br>Pour "
-"l’ajouter, cliquez sur le lien ci dessous.</p><a href=\"%(link_url)s\">"
-"%(link_url)s</a><br><i>Si le lien n’est pas actif, il faut le copier-coller "
-"dans la barre d’adresse de votre navigateur.</i><p><p>Cordialement</p>"
+"l’ajouter, cliquez sur le lien ci dessous.</p><a "
+"href=\"%(link_url)s\">%(link_url)s</a><br><i>Si le lien n’est pas actif, il "
+"faut le copier-coller dans la barre d’adresse de votre navigateur.</"
+"i><p><p>Cordialement</p>"
 
 #: pod/recorder/views.py
 msgid "New recording added."
@@ -6968,8 +7009,8 @@ msgid ""
 "%(url)s</a></p>\n"
 msgstr ""
 "vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
-"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" target=\"_blank\">"
-"%(scheme)s:%(url)s</a></p>\n"
+"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
+"target=\"_blank\">%(scheme)s:%(url)s</a></p>\n"
 "\n"
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -7064,6 +7105,10 @@ msgstr ""
 #, python-format
 msgid "In %(deadline)s days:"
 msgstr "Dans %(deadline)s jours :"
+
+#: pod/video/models.py
+msgid "Unknown"
+msgstr "Inconnu"
 
 #: pod/video/models.py pod/video/views.py
 msgid "None / All"
@@ -7192,10 +7237,6 @@ msgstr ""
 #: pod/video/models.py pod/video/templates/videos/video_sort_select.html
 msgid "Date of event"
 msgstr "Date de l’évènement"
-
-#: pod/video/models.py
-msgid "The password is / will be encrypted."
-msgstr "Le mot de passe est / sera encrypté."
 
 #: pod/video/models.py
 msgid "Overview"
@@ -7639,8 +7680,12 @@ msgid "Filter by user"
 msgstr "Filtrer par utilisateur"
 
 #: pod/video/templates/videos/filter_aside.html
-msgid "Fold/Unfold filter tags"
-msgstr "Plier/déplier les filtres par mots-clés"
+msgid "Fold/Unfold “Disciplines” filters"
+msgstr "Plier/déplier les filtres par « Disciplines »"
+
+#: pod/video/templates/videos/filter_aside.html
+msgid "Fold/Unfold “Tags” filters"
+msgstr "Plier/déplier les filtres par « Mots-clés »"
 
 #: pod/video/templates/videos/filter_aside_category.html
 msgid "Add new category"
@@ -7731,8 +7776,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
-"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
+"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html
 msgid "Other versions"
@@ -8564,3 +8609,9 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Toggle navigation"
+#~ msgstr "Basculer le menu"
+
+#~ msgid "The password is / will be encrypted."
+#~ msgstr "Le mot de passe est / sera encrypté."
