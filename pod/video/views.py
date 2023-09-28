@@ -2934,18 +2934,18 @@ def get_serialized_channels(request: WSGIRequest, channels: QueryDict) -> dict:
         dict: The channel list in JSON format.
     """
     channels_json_format = {}
-    for channel in channels:
-        channels_json_format[channel.pk] = ChannelSerializer(
+    for num, channel in enumerate(channels):
+        channels_json_format[num] = ChannelSerializer(
             channel, context={"request": request}
         ).data
-        channels_json_format[channel.pk]["url"] = reverse(
+        channels_json_format[num]["url"] = reverse(
             "channel-video:channel", kwargs={"slug_c": channel.slug}
         )
-        channels_json_format[channel.pk]["videoCount"] = channel.video_count
-        channels_json_format[channel.pk]["headbandImage"] = (
+        channels_json_format[num]["videoCount"] = channel.video_count
+        channels_json_format[num]["headbandImage"] = (
             channel.headband.file.url if channel.headband else ""
         )
-        channels_json_format[channel.pk]["themes"] = channel.themes.count()
+        channels_json_format[num]["themes"] = channel.themes.count()
     return channels_json_format
 
 
@@ -2961,8 +2961,8 @@ def get_channel_tabs_for_navbar(request: WSGIRequest) -> JsonResponse:
     """
     channel_tabs = AdditionalChannelTab.objects.all()
     channel_tabs_json_format = {}
-    for channel_tab in channel_tabs:
-        channel_tabs_json_format[channel_tab.pk] = {
+    for num, channel_tab in enumerate(channel_tabs):
+        channel_tabs_json_format[num] = {
             "id": channel_tab.pk,
             "name": channel_tab.name,
         }
