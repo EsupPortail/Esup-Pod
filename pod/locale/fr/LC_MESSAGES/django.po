@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 15:47+0000\n"
+"POT-Creation-Date: 2023-09-28 09:06+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -6069,6 +6069,10 @@ msgid ""
 msgstr ""
 "Vous n’avez pas encore créé de liste de lecture, veuillez cliquer sur le "
 "bouton « Ajouter une nouvelle liste de lecture » pour en ajouter une."
+
+#: pod/playlist/templates/playlist/playlists.html
+msgid "Add a new playlist"
+msgstr "Ajouter une nouvelle liste de lecture"
 
 #: pod/playlist/templates/playlist/protected-playlist-form.html
 msgid "Protected playlist form"

@@ -110,7 +110,7 @@ async function updateToast() {
     (permissionState == "granted" && !subscription)
   ) {
     notificationsPreferenceTips.classList.remove("d-none");
-    notificationsPreferenceTips.classList.remove("alert-primary");
+    notificationsPreferenceTips.classList.remove("alert-success");
     notificationsPreferenceTips.classList.remove("alert-warning");
     notificationsPreferenceTips.classList.add("alert-warning");
     notificationsPreferenceTips.textContent = gettext(
@@ -122,7 +122,7 @@ async function updateToast() {
     notificationsPreferenceTips.classList.remove("d-none");
     notificationsPreferenceTips.classList.remove("alert-error");
     notificationsPreferenceTips.classList.remove("alert-warning");
-    notificationsPreferenceTips.classList.add("alert-primary");
+    notificationsPreferenceTips.classList.add("alert-success");
     notificationsPreferenceTips.textContent = gettext(
       "Notifications are currently enabled.",
     );
