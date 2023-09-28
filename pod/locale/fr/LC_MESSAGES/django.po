@@ -4455,7 +4455,7 @@ msgid ""
 "(tutorials, distance training, student reports, etc.), institutional life "
 "(video of events), offering several days of content."
 msgstr ""
-"Pod a pour but de faciliter la mise à disposition de vidéo et de ce fait, "
+"Pod a pour but de faciliter la mise à disposition de vidéos et de ce fait, "
 "d’encourager l’utilisation de celles-ci dans le cadre de l’enseignement et "
 "la recherche."
 
