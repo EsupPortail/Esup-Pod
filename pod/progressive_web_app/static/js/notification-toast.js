@@ -23,12 +23,12 @@ async function postNotificationPreference(
 }
 
 async function setPushPreference(notificationSettingUrl) {
-  const notificationsSpinner = document.querySelector("#notifications-spinner");
-  const notificationButton = document.querySelector(
-    "#notification-action-button",
+  const notificationsSpinner = document.getElementById("notifications-spinner");
+  const notificationButton = document.getElementById(
+    "notification-action-button"
   );
-  const notificationsPreferenceTips = document.querySelector(
-    "#notifications-preference-tips",
+  const notificationsPreferenceTips = document.getElementById(
+   "notifications-preference-tips"
   );
 
   notificationsSpinner.classList.remove("d-none");
@@ -49,7 +49,7 @@ async function setPushPreference(notificationSettingUrl) {
       notificationsPreferenceTips.textContent = gettext(
         "An error happened during notification subscription",
       );
-      notificationsPreferenceTips.classList.remove("alert-primary");
+      notificationsPreferenceTips.classList.remove("alert-success");
       notificationsPreferenceTips.classList.remove("alert-warning");
       notificationsPreferenceTips.classList.add("alert-error");
     }
@@ -62,7 +62,7 @@ async function setPushPreference(notificationSettingUrl) {
 
   if (permissionState == "prompt") {
     notificationsPreferenceTips.classList.remove("d-none");
-    notificationsPreferenceTips.classList.remove("alert-primary");
+    notificationsPreferenceTips.classList.remove("alert-success");
     notificationsPreferenceTips.classList.remove("alert-error");
     notificationsPreferenceTips.classList.add("alert-warning");
     notificationsPreferenceTips.textContent = gettext(
@@ -97,7 +97,7 @@ async function updateToast() {
 
   if (permissionState == "denied") {
     notificationsPreferenceTips.classList.remove("d-none");
-    notificationsPreferenceTips.classList.remove("alert-primary");
+    notificationsPreferenceTips.classList.remove("alert-success");
     notificationsPreferenceTips.classList.remove("alert-warning");
     notificationsPreferenceTips.classList.add("alert-error");
     notificationsPreferenceTips.textContent = gettext(

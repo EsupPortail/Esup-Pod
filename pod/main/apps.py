@@ -14,7 +14,7 @@ def create_missing_pages(sender, **kwargs):
     count = 0
     with open("./pod/main/fixtures/flat_pages.json", encoding="utf-8") as data_file:
         json_data = json.loads(data_file.read())
-        print("--> Search missing accessibility pages...")
+        print("--> Search missing flat pages and footer links...")
         for fixture in json_data:
             count += create_pages_and_links(fixture)
 
