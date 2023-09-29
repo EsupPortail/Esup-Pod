@@ -69,8 +69,8 @@
     "pk": 2,
     "model": "main.linkfooter",
     "fields": {
-        "title_en": "Accessibility statement",
-        "title_fr": "Déclaration d’accessibilité",
+        "title_en": "Accessibility: Partially compliant",
+        "title_fr": "Accessibilité : Partiellement conforme",
         "order": 1,
         "page": 3,
         "sites": [
