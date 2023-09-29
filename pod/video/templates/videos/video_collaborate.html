@@ -55,19 +55,18 @@
         </div>
     <div style="clear: both; padding-top: 24px; padding-bottom: 24px; display: block;">
         <div style="padding-top: 6px;">
-					<h5>{% trans "Tricks" %} :</h5>
-					<p>{% trans "Start the video than click the + icon to write a comment at the choosen time. Video will be paused." %}<br>
-					{% trans "Click on comment's timecode to go at this time in the video." %}<br>
-					{% trans "Black notes are public. The clearest are private. The intermediary is visible to the owner of the video." %}
-				</p>
+          <h5>{% trans "Tricks" %} :</h5>
+          <p>{% trans "Start the video than click the + icon to write a comment at the choosen time. Video will be paused." %}<br>
+          {% trans "Click on comment's timecode to go at this time in the video." %}<br>
+          {% trans "Black notes are public. The clearest are private. The intermediary is visible to the owner of the video." %}
+        </p>
             <span class="float-end">
                 <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn btn-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
-                    <i class="bi bi-arrow-left"></i>&nbsp;{% trans "Back to the video"%}
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i>&nbsp;{% trans "Back to the video"%}
                 </a>
             </span>
         </div>
     </div>
-
 
 {% endblock page_content %}
 {% block collapse_page_aside %}
