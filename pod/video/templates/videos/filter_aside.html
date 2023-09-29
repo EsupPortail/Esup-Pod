@@ -120,7 +120,7 @@
     </div>
   </fieldset>
   {% endif %}
-
+  {% if HIDE_CURSUS == False %}
   <fieldset class="border-right border-bottom mt-2">
     <legend class="h5"><i class="bi bi-archive" aria-hidden="true"></i> {% trans 'University course' %}</legend>
     <div id="filterCursus">
@@ -140,6 +140,7 @@
       {% endif %}
     </div>
   </fieldset>
+  {% endif %}
   <input class="d-none" type="submit" value="{% trans 'Filter' %}">
 </form>
 </div>

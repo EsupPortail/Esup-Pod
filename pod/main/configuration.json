@@ -4376,6 +4376,19 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "HIDE_CURSUS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Si True, permet de ne pas afficher les cursus dans la colonne de droite"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4.0"
+                        },
                         "HIDE_LANGUAGE_SELECTOR": {
                             "default_value": false,
                             "description": {
