@@ -60,6 +60,8 @@ HIDE_SHARE = getattr(django_settings, "HIDE_SHARE", False)
 
 HIDE_DISCIPLINES = getattr(django_settings, "HIDE_DISCIPLINES", False)
 
+HIDE_CURSUS = getattr(django_settings, "HIDE_CURSUS", False)
+
 HIDE_TYPES = getattr(django_settings, "HIDE_TYPES", False)
 
 USE_BBB = getattr(django_settings, "USE_BBB", False)
