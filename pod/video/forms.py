@@ -976,7 +976,8 @@ class ChannelForm(forms.ModelForm):
                     "add_channels_tab",
                 ],
             },
-        ), (
+        ),
+        (
             "headband",
             {
                 "legend": _("Headband"),
@@ -986,7 +987,6 @@ class ChannelForm(forms.ModelForm):
                 ],
             },
         ),
-
     )
 
     def clean(self):

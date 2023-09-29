@@ -238,7 +238,7 @@ def recorder_notify(request):
 
             html_msg = _(
                 "<p>Hello,<br>a new recording has just be added on %("
-                'title_site)s from the recorder “%(recorder)s”.<br>'
+                "title_site)s from the recorder “%(recorder)s”.<br>"
                 'To add it, just click on link below.</p><p><a href="%('
                 'link_url)s">%(link_url)s</a><br><em>If you cannot click on '
                 "link, just copy-paste it in your browser.</em>"
