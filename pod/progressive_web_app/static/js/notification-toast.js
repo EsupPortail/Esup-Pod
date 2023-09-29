@@ -25,10 +25,10 @@ async function postNotificationPreference(
 async function setPushPreference(notificationSettingUrl) {
   const notificationsSpinner = document.getElementById("notifications-spinner");
   const notificationButton = document.getElementById(
-    "notification-action-button"
+    "notification-action-button",
   );
   const notificationsPreferenceTips = document.getElementById(
-   "notifications-preference-tips"
+    "notifications-preference-tips",
   );
 
   notificationsSpinner.classList.remove("d-none");

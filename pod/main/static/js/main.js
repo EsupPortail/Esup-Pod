@@ -43,10 +43,7 @@ function getParents(el, parentSelector) {
  * @param  {[type]}   target   [description]
  */
 function slideUpAndRemove(target) {
-  target.animate(
-    {opacity: 0,},
-    {duration: 1000,},
-  );
+  target.animate({ opacity: 0 }, { duration: 1000 });
   slideUp(target, 1000, function () {
     target.remove();
   });
@@ -586,7 +583,9 @@ document.addEventListener("DOMContentLoaded", function () {
 function TriggerAlertClose() {
   window.setTimeout(function () {
     document
-      .querySelectorAll("#base-message-alert>.alert-success, #base-message-alert>.alert-info")
+      .querySelectorAll(
+        "#base-message-alert>.alert-success, #base-message-alert>.alert-info",
+      )
       .forEach((el) => {
         slideUpAndRemove(el);
       });
