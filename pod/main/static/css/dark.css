@@ -91,7 +91,8 @@
   color: #ccc !important;
 }
 
-[data-theme="dark"] .form-control:focus {
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-check-input:focus {
   background-color: var(--background-color);
   color: var(--pod-font-color);
   border-color: var(--pod-primary);
@@ -279,7 +280,7 @@ body.dark {
   background-color: var(--pod-background-neutre1-bloc);
   border-color: var(--pod-font-color);
   color: var(--pod-font-color);
-  box-shadow: none;
+  /*box-shadow: none;*/
 }
 [data-theme="dark"] .select2-selection--multiple .select2-selection__choice{
   color: #000;

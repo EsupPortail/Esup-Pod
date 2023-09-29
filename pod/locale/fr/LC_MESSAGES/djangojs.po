@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 12:16+0000\n"
+"POT-Creation-Date: 2023-09-27 14:42+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -559,14 +559,14 @@ msgstr "Ce dossier est vide"
 
 #: pod/progressive_web_app/static/js/notification-toast.js
 msgid "An error happened during notification subscription"
-msgstr "Erreur durant la désinscription..."
+msgstr "Une erreur s’est produite lors de l’abonnement aux notifications"
 
 #: pod/progressive_web_app/static/js/notification-toast.js
 msgid ""
 "Don't forget to allow notifications from this website in your browser's "
 "settings!"
 msgstr ""
-"N'oubliez pas d'autoriser les notifications provenant de ce site web dans "
+"N’oubliez pas d’autoriser les notifications provenant de ce site web dans "
 "votre navigateur !"
 
 #: pod/progressive_web_app/static/js/notification-toast.js
@@ -588,7 +588,7 @@ msgstr "Les notifications sont actuellement désactivées."
 
 #: pod/progressive_web_app/static/js/notification-toast.js
 msgid "Notifications are currently enabled."
-msgstr "Les notifications sont actuellement activées"
+msgstr "Les notifications sont actuellement activées."
 
 #: pod/progressive_web_app/static/js/notification-toast.js
 msgid "Disable notifications"
@@ -852,7 +852,7 @@ msgstr "Sélectionnez le type général de vidéo."
 
 #: pod/video/static/js/video_edit.js
 msgid "Get notified when the video encoding is finished."
-msgstr "Recevez une notification lorsque l'encodage de la vidéo est terminé."
+msgstr "Recevez une notification lorsque l’encodage de la vidéo est terminé."
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Title"

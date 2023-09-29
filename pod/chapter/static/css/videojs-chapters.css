@@ -1,63 +1,72 @@
 .chapters-list.inactive,
 .chapters-list.active {
-	position: absolute;
-	right: 0;
-	top: 0;
-	height: 100%;
-	width: 20%;
-	background-color: rgba(43,51,63,.7);
-	overflow-y: auto;
-	/*border: 2px solid black;*/
-	cursor: default;
-	z-index: 2;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 20%;
+  background-color: rgba(43, 51, 63, .7);
+  overflow-y: auto;
+  /*border: 2px solid black;*/
+  cursor: default;
+  z-index: 2;
 
 }
+
 .chapters-list.inactive {
-	display: none;
+  display: none;
 }
+
 .chapters-list.active {
-	display: block;
+  display: block;
 }
+
 .chapters-list h6 {
-	text-align: center;
+  text-align: center;
 }
+
 .chapters-list.active p,
 .chapters-list.inactive p {
-	text-align: center;
-	background-color: #000;
-	color: #fff;
-	padding-bottom: 5px;
-	padding-top: 5px;
+  text-align: center;
+  background-color: #000;
+  color: #fff;
+  padding-bottom: 5px;
+  padding-top: 5px;
 }
+
 .chapters-list ol {
-	position: relative;
-	margin: 0;
-	padding: 0;
-	padding-bottom: 30px;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 30px;
 }
+
 .chapters-list ol li {
-	display: list-item;
-	list-style-type: none;
-	text-align: -webkit-match-parent;
-	/*background-color: rgba(0, 0, 0, 0.8);*/
-	margin: 0 3px;
-	border-top:1px solid rgba(0, 0, 0, 0.8);
+  display: list-item;
+  list-style-type: none;
+  text-align: -webkit-match-parent;
+  /*background-color: rgba(0, 0, 0, 0.8);*/
+  margin: 0 3px;
+  border-top: 1px solid rgba(0, 0, 0, .8);
 }
+
 .chapters-list ol li a:hover,
+.chapters-list ol li a:focus,
 .chapters-list ol li a.current {
-	background-color: #555;
-	color: white;
-	cursor: pointer;
+  background-color: #555;
+  color: white;
+  cursor: pointer;
 }
+
 .chapters-list ol li a {
-	display: block;
-	padding: .7rem 1rem;
-	transition: .3s;
-	color: #fff;
-	text-align: left;
-	font-size:1.3em;
+  display: block;
+  padding: .7rem 1rem;
+  transition: .3s;
+  color: #fff;
+  text-align: left;
+  font-size: 1.3em;
 }
 
 #chapters {
-	display: none;
+  display: none;
 }

@@ -6,7 +6,7 @@
   {% else %}
     <button id="sort_direction_label" class="btn btn-primary" title="{% trans 'Descending sort' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">&#8600;</button>
   {% endif %}
-  <input id="sort_direction" type="checkbox" name="sort_direction" class="visually-hidden" {% if sort_direction == 'on' %}checked{% endif %}>
+  <input id="sort_direction" type="checkbox" name="sort_direction" class="d-none" {% if sort_direction == 'on' %}checked{% endif %}>
   <label for="sort_direction" class="visually-hidden">{% trans 'Sort Direction' %}</label>
 
   <select id="sort" name="sort" class="form-select sort-select">

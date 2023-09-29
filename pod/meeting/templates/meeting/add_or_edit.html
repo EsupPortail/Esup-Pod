@@ -242,7 +242,7 @@ if(id_start) {
         if(index_year == -1) {
           year = id_start_value.substring(index_little_year, index_little_year+2);
         } else {
-          year = id_start_value.substring(index_year, index_year+4); 
+          year = id_start_value.substring(index_year, index_year+4);
         }
         let corresponding_day = [6,0,1,2,3,4,5];
         day_of_start_date = corresponding_day[new Date(year, monthIndex, day).getDay()];

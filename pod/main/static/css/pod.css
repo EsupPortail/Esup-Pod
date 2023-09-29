@@ -125,14 +125,14 @@
 
 .navbar-toggler:focus,
 .navbar-toggler:hover {
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  transition: background-color .3s ease-in-out, color .3s ease-in-out;
   color: var(--bs-link-color);
   border-color: var(--bs-link-color);
 }
 
 .navbar-light .navbar-brand:focus,
 .navbar-light .navbar-brand:hover {
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  transition: background-color .3s ease-in-out, color .3s ease-in-out;
   color: var(--color-black)
 }
 
@@ -193,7 +193,7 @@ a.btn-outline-primary:not(:hover) svg {
   white-space: normal !important;
   word-wrap: break-word;
   word-break: normal;
-  padding: 0.5rem;
+  padding: .5rem;
 }
 
 .submit-row a.deletelink {
@@ -230,7 +230,7 @@ tr,
 }
 
 .pod-btn-social i {
-  transition: all 0.2s ease;
+  transition: all .2s ease;
 }
 
 .pod-btn-social:hover i,
@@ -378,7 +378,7 @@ tr,
   border-top: 1px solid var(--color-alto) !important;
   padding: 1.5rem;
   background: var(--pod-background);
-  margin-top: 0.75rem;
+  margin-top: .75rem;
 }
 
 .nav-tabs {
@@ -583,7 +583,7 @@ tr,
 .video-card .d-flex {
   /*position:relative;*/
   top: 0;
-  gap: 0.5rem;
+  gap: .5rem;
 }
 
 a:not(.btn):hover,
@@ -631,7 +631,7 @@ div.card a img {
 }
 
 .card-footer-pod a.btn i {
-  transition: 0.2s all ease;
+  transition: .2s all ease;
   display: inline-block;
 }
 
@@ -679,7 +679,7 @@ div.card a img {
 /** aside list video **/
 #collapseAside .card-body .card-title {
   position: relative;
-  padding-bottom: 0.8em;
+  padding-bottom: .8em;
 }
 
 #collapseAside .card-body .card-title::after {
@@ -1115,13 +1115,13 @@ body {
   text-decoration: none;
 }
 
-.pod-params-button:focus::before,
-.pod-params-button:hover::before {
+.pod-params-button:focus>i::before,
+.pod-params-button:hover>i::before {
   transform: rotate(20deg);
 }
 
 /* Make icon rotate and button remain still */
-.pod-params-button::before {
+.pod-params-button>i::before {
   transition: transform ease-in-out .3s;
 }
 
@@ -1135,7 +1135,7 @@ body {
 
 .pod-aside-collapse {
   position: absolute;
-  right: 0.5rem;
+  right: .5rem;
   z-index: 6;
 }
 
@@ -1147,7 +1147,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1.4rem;
-  transition: all 0.5s ease-in;
+  transition: all .5s ease-in;
   background: none;
   border: 1px solid silver;
   color: var(--pod-font-color);
@@ -1253,11 +1253,11 @@ body {
 .video-info_duration-view-share {
   display: flex;
   font-size: 90%;
-  gap: 0.75rem;
+  gap: .75rem;
   align-items: center;
   justify-content: flex-start;
   border-bottom: 1px solid var(--pod-background-neutre1-bloc);
-  padding-bottom: 0.75rem;
+  padding-bottom: .75rem;
 }
 
 .pod-info-video__info {
@@ -1290,7 +1290,7 @@ body {
 
 
 .pod-download-title>.bi {
-  padding-right: 0.5rem;
+  padding-right: .5rem;
 }
 
 /* ------ */
@@ -1322,7 +1322,7 @@ body {
 
 .pod-btn-share i,
 .pod-info-video__signal i {
-  transition: all 0.2s ease-in;
+  transition: all .2s ease-in;
   display: inline-block;
 }
 
@@ -1418,8 +1418,8 @@ body {
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  font-size: 0.8rem;
+  gap: .25rem;
+  font-size: .8rem;
 }*/
 
 /* small screens */
@@ -1455,7 +1455,7 @@ body {
 .pod-dropdown-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: .5rem;
 }
 
 .pod-dropdown-item:hover,
@@ -1485,7 +1485,7 @@ body {
   width: 0;
   overflow: hidden;
   margin-left: 100%;
-  transition: all 0.15s ease;
+  transition: all .15s ease;
   z-index: 5;
   padding-top: 5rem;
   box-shadow: .05rem .05rem .2rem .05rem rgba(0, 0, 0, .2);
@@ -1579,7 +1579,7 @@ body {
 /* Buttons side by side under the title */
 #event_add {
   display: inline-block !important;
-  padding-right: 0.5rem;
+  padding-right: .5rem;
 }
 
 /*Fix table on "My meetings" */
@@ -1601,7 +1601,7 @@ table :not(footer)>.pod-btn-social {
 }*/
 
 th+td+td+td+td {
-  /* border-right: 0.15rem solid var(--pod-link-color);  */
+  /* border-right: .15rem solid var(--pod-link-color);  */
   text-align: center;
 }
 
@@ -1648,12 +1648,12 @@ table .alert.alert-danger.btn.pod-btn-social {
 
 .form-group.hide-on-processing {
   border: dotted var(--pod-link-color);
-  padding: 2rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: .5rem;
   border-radius: 1rem;
   width: fit-content;
 }
 
+/** Esup-Pod callout messages **/
 .pod-callout {
   padding: .7rem 1rem;
   margin-top: 1.25rem;
@@ -1711,7 +1711,7 @@ table .alert.alert-danger.btn.pod-btn-social {
   margin: 6px;
   border: 6px solid var(--pod-font-color);
   border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  animation: lds-ring 1.2s cubic-bezier(.5, 0, .5, 1) infinite;
   border-color: var(--pod-font-color) transparent transparent transparent;
 }
 
@@ -1749,7 +1749,7 @@ table .alert.alert-danger.btn.pod-btn-social {
 
 div.disabled,
 a.player-element.disabled {
-  background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.2) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2) 75%, transparent 75%, transparent);
+  background-image: linear-gradient(45deg, rgba(0, 0, 0, .2) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, .2) 50%, rgba(0, 0, 0, .2) 75%, transparent 75%, transparent);
   background-size: 4px 4px;
   background-repeat: repeat;
 }

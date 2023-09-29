@@ -1,9 +1,17 @@
 {% load i18n %}
 {% spaceless %}
-    <a href="{% url 'playlist:edit' playlist.slug %}" title="{% trans 'Edit the playlist'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
-        <i class="bi bi-pencil-square" aria-hidden="true"></i>
-    </a>
-    <a href="{% url 'playlist:remove' playlist.slug %}" title="{% trans 'Remove the playlist'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
-        <i class="bi bi-trash" aria-hidden="true"></i>
-    </a>
+  <a href="{% url 'playlist:edit' playlist.slug %}"
+     title="{% blocktrans %}Edit the playlist “{{ playlist.name }}”{% endblocktrans %}"
+     aria-label="{% trans 'Edit the playlist'%}"
+     class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1"
+     data-bs-toggle="tooltip" data-bs-placement="top">
+    <i class="bi bi-pencil-square" aria-hidden="true"></i>
+  </a>
+  <a href="{% url 'playlist:remove' playlist.slug %}"
+     title="{% blocktrans %}Remove the playlist “{{ playlist.name }}”{% endblocktrans %}"
+     aria-label="{% trans 'Remove the playlist'%}"
+     class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1"
+     data-bs-toggle="tooltip" data-bs-placement="top">
+    <i class="bi bi-trash" aria-hidden="true"></i>
+  </a>
 {% endspaceless %}

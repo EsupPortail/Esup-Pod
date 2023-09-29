@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 12:16+0000\n"
+"POT-Creation-Date: 2023-09-28 09:06+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2660,8 +2660,8 @@ msgstr ""
 msgid "name"
 msgstr ""
 
-#: pod/live/models.py pod/live/templates/live/direct.html pod/video/models.py
-#: pod/video/templates/channel/channel.html
+#: pod/live/models.py pod/live/templates/live/direct.html pod/video/forms.py
+#: pod/video/models.py pod/video/templates/channel/channel.html
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_page_content.html
@@ -3393,6 +3393,11 @@ msgstr ""
 #: pod/main/templates/navbar.html pod/video/models.py
 #: pod/video/templates/videos/filter_aside.html
 msgid "Types"
+msgstr ""
+
+#: pod/live/templates/live/filter_aside.html
+#: pod/video/templates/videos/filter_aside.html
+msgid "Fold/Unfold “Types” filters"
 msgstr ""
 
 #: pod/live/templates/live/filter_aside.html
@@ -4207,6 +4212,14 @@ msgstr ""
 msgid "Additional channel Tabs"
 msgstr ""
 
+#: pod/main/settings.py
+msgid ""
+"Pod is aimed at users of our institutions, by allowing the publication of "
+"videos in the fields of research (promotion of platforms, etc.), training "
+"(tutorials, distance training, student reports, etc.), institutional life "
+"(video of events), offering several days of content."
+msgstr ""
+
 #: pod/main/templates/403.html
 msgid "Permission denied"
 msgstr ""
@@ -4259,7 +4272,11 @@ msgid "Disciplines"
 msgstr ""
 
 #: pod/main/templates/base.html
-msgid "Toggle side Menu"
+msgid "Side menu"
+msgstr ""
+
+#: pod/main/templates/base.html
+msgid "Toggle side menu"
 msgstr ""
 
 #: pod/main/templates/base.html
@@ -4374,7 +4391,17 @@ msgid "Contact us"
 msgstr ""
 
 #: pod/main/templates/navbar.html
-msgid "Toggle navigation"
+msgid "Toggle main menu"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+#, fuzzy
+#| msgid "Main fields"
+msgid "Main menu"
+msgstr "Belangrijkste velden"
+
+#: pod/main/templates/navbar.html
+msgid "Close main menu"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -4429,11 +4456,19 @@ msgid "My meetings"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+msgid "Configuration panel"
+msgstr ""
+
+#: pod/main/templates/navbar.html
 msgid "Toggle configuration panel"
 msgstr ""
 
 #: pod/main/templates/navbar.html
 msgid "Configuration"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Close configuration panel"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -4458,6 +4493,10 @@ msgstr ""
 
 #: pod/main/templates/navbar.html
 msgid "Toggle user menu"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Close user menu"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -5469,7 +5508,8 @@ msgid "To delete the playlist, please check the box in and click delete."
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
-msgid "Reset the filter"
+#: pod/video/templates/videos/filter_aside.html
+msgid "Reset the filters"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
@@ -5614,6 +5654,16 @@ msgid "videos"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_link.html
+#, python-format
+msgid "Edit the playlist “%(playlist.name)s”"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_link.html
+#, python-format
+msgid "Remove the playlist “%(playlist.name)s”"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist_link.html
 msgid "Remove the playlist"
 msgstr ""
 
@@ -5676,6 +5726,10 @@ msgstr ""
 msgid ""
 "You haven't got any playlist yet, please use the \"Add a playlist\" button "
 "to add one."
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlists.html
+msgid "Add a new playlist"
 msgstr ""
 
 #: pod/playlist/templates/playlist/protected-playlist-form.html
@@ -6271,10 +6325,10 @@ msgstr ""
 #: pod/recorder/views.py
 #, python-format
 msgid ""
-"Hello, <p>a new recording has just be added on %(title_site)s from the "
-"recorder \"%(recorder)s\". <br>To add it, just click on link below.</p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br><i>if you cannot click on link, "
-"just copy-paste it in your browser.</i> <p><p>Regards</p>"
+"<p>Hello,<br>a new recording has just be added on %(title_site)s from the "
+"recorder “%(recorder)s”.<br>To add it, just click on link below.</p><p><a "
+"href=\"%(link_url)s\">%(link_url)s</a><br><em>If you cannot click on link, "
+"just copy-paste it in your browser.</em></p><p>Regards.</p>"
 msgstr ""
 
 #: pod/recorder/views.py
@@ -6287,14 +6341,6 @@ msgstr ""
 
 #: pod/recorder/views.py
 msgid "Recorder for Studio not found."
-msgstr ""
-
-#: pod/settings.py
-msgid ""
-"Pod is aimed at users of our institutions, by allowing the publication of "
-"videos in the fields of research (promotion of platforms, etc.), training "
-"(tutorials, distance training, student reports, etc.), institutional life "
-"(video of events), offering several days of content."
 msgstr ""
 
 #: pod/urls.py
@@ -7198,7 +7244,11 @@ msgid "Filter by user"
 msgstr ""
 
 #: pod/video/templates/videos/filter_aside.html
-msgid "Fold/Unfold filter tags"
+msgid "Fold/Unfold “Disciplines” filters"
+msgstr ""
+
+#: pod/video/templates/videos/filter_aside.html
+msgid "Fold/Unfold “Tags” filters"
 msgstr ""
 
 #: pod/video/templates/videos/filter_aside_category.html
@@ -8063,10 +8113,6 @@ msgstr ""
 
 #: pod/video_encode_transcript/utils.py
 msgid "Transcripting"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "automatically transcript"
 msgstr ""
 
 #: pod/video_search/apps.py

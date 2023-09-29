@@ -51,13 +51,13 @@
       {% get_favorite_playlist user as fav_playlist %}
       {% if USE_PLAYLIST and USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
         {% if is_favorite %}
-        <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" title="{% trans 'Remove from favorite' %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="true">
-          <i class="bi-star-fill" aria-hidden="true"></i>
-        </a>
+          <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" title="{% trans 'Remove from favorite' %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="true" role="button">
+            <i class="bi-star-fill" aria-hidden="true"></i>
+          </a>
         {% else %}
-        <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}" title="{% trans 'Add in favorite' %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="false">
-          <i class="bi-star" aria-hidden="true"></i>
-        </a>
+          <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}" title="{% trans 'Add in favorite' %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="false" role="button">
+            <i class="bi-star" aria-hidden="true"></i>
+          </a>
         {% endif %}
 
       {% endif %}

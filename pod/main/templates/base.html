@@ -74,8 +74,13 @@
           {% if not request.GET.is_iframe %}
             <div class="pod-aside-collapse" id="collapse-button">
               {% block collapse_page_aside %}
-                <a class="btn btn-outline-primary collapseAside pod-aside-collapse__button" data-bs-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" aria-label="{% trans 'Toggle side Menu' %}">
-                  <i class="bi bi-three-dots-vertical"></i>
+                <a role="button" href="#collapseAside"
+                class="btn btn-outline-primary collapseAside pod-aside-collapse__button"
+                data-bs-toggle="collapse"
+                aria-expanded="false" aria-controls="collapseAside"
+                aria-label="{% trans 'Side menu' %}" data-pod-tooltip="true"
+                title="{% trans 'Toggle side menu' %}">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
                 </a>
               {% endblock collapse_page_aside %}
             </div>
@@ -100,23 +105,22 @@
               </ol>
             </nav>
           {% endif %}
-          <!-- contenu page statique -->
-          <div class="pod-first-content">
-            {% block main_page_title %}
-              {% if page_title %}
-                <h1 class="page_title">{{page_title|capfirst}}</h1>
+          <div class="container">
+            <div class="pod-first-content">
+              {% block main_page_title %}
+                {% if page_title %}
+                  <h1 class="page_title">{{page_title|capfirst}}</h1>
+                {% endif %}
+              {% endblock main_page_title %}
+              {% block page_content %}{% endblock page_content %}
+            </div>
+            {% if request.path == "/" %}
+              {% if SHOW_EVENTS_ON_HOMEPAGE and "live" in THIRD_PARTY_APPS %}
+                {% include "live/events_next.html" %}
               {% endif %}
-            {% endblock main_page_title %}
-            {% block page_content %}
-            {% endblock page_content %}
-          </div>
-          <!-- fin contenu page statique -->
-          {% if request.path == "/" %}
-            {% if SHOW_EVENTS_ON_HOMEPAGE and "live" in THIRD_PARTY_APPS %}
-              {% include "live/events_next.html" %}
+              {% include "videos/last_videos.html" %}
             {% endif %}
-            {% include "videos/last_videos.html" %}
-          {% endif %}
+          </div>
         </div>
         {% if not request.GET.is_iframe %}
           <aside class="pod-aside collapse" id="collapseAside">
@@ -270,13 +274,14 @@
       dyslexiaToggle.addEventListener("change", switchDyslexia, false);
     </script>
   {% endif %}
-  {% if DARKMODE_ENABLED == True or DYSLEXIAMODE_ENABLED == True %}
-    <script>
-      $(function () {
-        $('[data-bs-toggle="tooltip"]').tooltip()
-      })
-    </script>
-  {% endif %}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      /* Enable Bootstrap tooltips */
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"], [data-pod-tooltip="true"]');
+      [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    }, false);
+  </script>
   {% if POST_FOOTER_TEMPLATE %}{% include POST_FOOTER_TEMPLATE %}{% endif %}
   {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
   <script src="{% static 'js/pwa-installation.js' %}?ver={{VERSION}}"></script>

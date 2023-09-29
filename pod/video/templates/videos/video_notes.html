@@ -12,7 +12,7 @@
 {% endif %}
 
 <h2 class="card-header card-title pod-card__title h4">
-  <i class="bi bi-journals"></i>&nbsp;{% trans "Take Note"%}
+  <i class="bi bi-journals" aria-hidden="true"></i>&nbsp;{% trans "Take Note"%}
 </h2>
 <div class="card-body">
   {% if not listNotes %}
@@ -27,21 +27,21 @@
     <div class="mgtNotes mb-2 text-center">
       {% if request.user.is_authenticated %}
         {% comment %}
-        <a class="p-0 m-0 btn btn-outline-primary btn-sm open" href="{% url 'video_collaborate' slug=video.slug %}" title="{% trans 'Large columns interface' %}"><i class="bi bi-arrows-angle-expand"></i></a>
+        <a class="p-0 m-0 btn btn-outline-primary btn-sm open" href="{% url 'video_collaborate' slug=video.slug %}" title="{% trans 'Large columns interface' %}"><i class="bi bi-arrows-angle-expand" aria-hidden="true"></i></a>
         {% endcomment %}
-        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="add_video_notes_form mt-1" role="menuitem">
+        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="add_video_notes_form mt-1">
           {% csrf_token %}
           <input type="hidden" name="action" value="form_note">
-          <button class="btn btn-link pod-btn-social p-0 m-0" type="submit" action="create" title="{% trans 'Create a note' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+          <button class="btn btn-link pod-btn-social p-0 m-0" type="submit" title="{% trans 'Create a note' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
             <i class="bi bi-journal-plus" aria-hidden="true"></i>
           </button>
         </form>
       {% endif %}
       {% if listNotes %}
-        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="download_video_notes_form  mt-1" role="menuitem">
+        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="download_video_notes_form mt-1">
           {% csrf_token %}
           <input type="hidden" name="action" value="download">
-          <button class="btn btn-link pod-btn-social p-0 m-0" type="submit" action="download" title="{% trans 'Download the notes' %}">
+          <button class="btn btn-link pod-btn-social p-0 m-0" type="submit" title="{% trans 'Download the notes' %}">
             <i class="bi bi-download" aria-hidden="true"></i>
           </button>
         </form>

@@ -81,33 +81,32 @@
 
   {% if request.user.is_authenticated and not note_form %}
     <div class="mgtNote dropleft">
-      <button class="btn btn-link btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage note' %}"> <i class="bi bi-three-dots"></i> </button>
+      <button class="btn btn-link btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage note' %}"><i class="bi bi-three-dots" aria-hidden="true"></i></button>
       <div class="dropdown-menu">
 
         {% if request.user == note.user %}
           {# Button to edit the note in three dots menu #}
-          <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="edit_video_notes_form" role="menuitem">
+          <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="edit_video_notes_form">
             {% csrf_token %}
             <input type="hidden" name="action" value="form_note">
             <input type="hidden" name="idNote" value="{{ note.id }}">
-            <button class="btn btn-outline-primary dropdown-item" type="submit" action="edit" title="{% trans 'Edit the note' %}"> <i class="bi bi-pencil"></i> </button>
+            <button class="btn btn-outline-primary dropdown-item" type="submit" title="{% trans 'Edit the note' %}"><i class="bi bi-pencil" aria-hidden="true"></i></button>
           </form>
           {# Button to remove the note in three dots menu #}
-          <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="remove_video_notes_form" role="menuitem">
+          <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="remove_video_notes_form">
             {% csrf_token %}
             <input type="hidden" name="action" value="remove_note">
             <input type="hidden" name="idNote" value="{{ note.id }}">
-            <button class="btn btn-outline-danger dropdown-item" type="submit" action="remove" title="{% trans 'Remove the note' %}"> <i class="bi bi-trash"></i></button>
+            <button class="btn btn-outline-danger dropdown-item" type="submit" title="{% trans 'Remove the note' %}"><i class="bi bi-trash" aria-hidden="true"></i></button>
           </form>
         {% endif %}
         {# Button to comment the note in three dots menu #}
-        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="comment_video_notes_form" role="menuitem">
+        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="comment_video_notes_form">
           {% csrf_token %}
           <input type="hidden" name="action" value="form_com">
           <input type="hidden" name="idNote" value="{{ note.id }}">
-          <button class="btn btn-outline-primary dropdown-item" type="submit" title="{% trans 'Comment the note' %}"> <i class="bi bi-chat"></i></button>
+          <button class="btn btn-outline-primary dropdown-item" type="submit" title="{% trans 'Comment the note' %}"><i class="bi bi-chat" aria-hidden="true"></i></button>
         </form>
-
       </div>
     </div>
   {% endif %}

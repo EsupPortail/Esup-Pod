@@ -253,7 +253,7 @@ def send_notification(video_to_encode, subject_prefix):
         ),
         "content_title": video_to_encode.title,
         "action": (
-            _("automatically transcript")
+            _("automatically transcripted")
             if (subject_prefix == _("Transcripting"))
             else _("encoded to Web formats")
         ),

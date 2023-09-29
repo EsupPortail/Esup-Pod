@@ -49,7 +49,28 @@
     {% for field_hidden in form.hidden_fields %}
       {{field_hidden}}
     {% endfor %}
-    {% for field in form.visible_fields %}
+
+
+    <div class="accordion">
+      {% for fieldset in form.fieldsets %}
+        {% with options=fieldset|last name=fieldset|first%}
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button{% if "show" in options.classes %}" aria-expanded="true{% else %} collapsed{% endif %}"
+                    data-bs-toggle="collapse" data-bs-target="#videoEditCollapse{{forloop.counter}}"
+                    type="button" aria-controls="videoEditCollapse{{forloop.counter}}">
+              {{ options.legend|safe }}
+            </button>
+          </h2>
+          <div id="videoEditCollapse{{forloop.counter}}" class="accordion-collapse collapse {{ options.classes }}">
+        <div class="accordion-body">
+        <fieldset id="video_edit_{{fieldset|first}}_{{forloop.counter}}">
+          {% if options.legend %}
+            <legend>{{ options.legend|safe }}</legend>
+          {% endif %}
+
+
+    {% for field in form.visible_fields %}{% if field.name in options.fields %}
     {% spaceless %}
     <div class="{% if " description_" in field.name or "title_" in field.name %}collapse{% else %}{% endif %}{% if "description_" in field.name %} description{% endif %}{% if "title_" in field.name %} title{% endif %}">
       <div class="mb-3">
@@ -60,7 +81,9 @@
               {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
             </div>
           {% else %}
-            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {% if field.name not in "headband" %}
+              <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {% endif %}
             {{ field }}
           {% endif %}
           {% if field.help_text %}
@@ -78,9 +101,18 @@
       </div>
     </div>
     {% endspaceless %}
+    {% endif %}{% endfor %}
+
+    </fieldset>
+    </div>
+    </div>
+    </div>
+    {% endwith %}
     {% endfor %}
+    </div>
+
   </div>
-  <div class="text-center">
+  <div class="text-center m-2">
     <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
   </div>
 </form>
@@ -111,7 +143,7 @@
       <div id="collapse-{{forloop.counter}}" class="card-body collapse card-text small" aria-labelledby="heading-{{forloop.counter}}" data-bs-parent="#formfields">
         {% for value in values %}
         <p>{{value|safe}}</p>
-        {%endfor%}
+        {% endfor %}
       </div>
     </div>
     {% endfor %}

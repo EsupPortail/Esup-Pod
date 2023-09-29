@@ -6,7 +6,7 @@
 <div class="card card-body">
   <h2 class="card-title pod-card__title h4">
     <i class="bi bi-sliders2-vertical" aria-hidden="true"></i>&nbsp;{% trans 'Filters' %}
-    <button type="button" id="resetFilters" class="btn btn-outline-primary">{% trans 'Reset' %}</button>
+    <button type="button" id="resetFilters" class="btn btn-outline-primary" title="{% trans 'Reset the filters' %}" data-bs-toggle="tooltip">{% trans 'Reset' %}</button>
   </h2>
   <p class="filter-info">
     {% trans 'The videos on the left are automatically sorted according to the filters selected. Check options to adjust results.' %}
@@ -38,95 +38,109 @@
       {% endfor %}
     </div>
   </fieldset>
-{% endif %}
-{% if HIDE_TYPES == False %}
-<fieldset class="border-right border-bottom mt-2">
-  <legend class="h5"><i class="bi bi-tv" aria-hidden="true"></i> {% trans 'Types' %} </legend>
-  <div id="filterType">
-    <div class="form-group collapse" id="collapseFilterType">
-      {% for type in TYPES %}
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="type"
-            value="{{type.slug}}" id="id{{type.slug.split|join:'-'}}_type" {% if type.slug in types %}checked{% endif %}>
-          <label class="form-check-label" for="id{{type.slug.split|join:'-'}}_type">
-            {% if type.icon %}<img src="{{type.icon.file.url}}" alt="{{type.title}}" style="max-height:32px; max-width:32px;" loading="lazy">{% else %}<i class="bi bi-fonts" aria-hidden="true"></i>{% endif %}&nbsp;{{type}}
-          </label>
-        </div>
-      {%endfor%}
+  {% endif %}
+  {% if HIDE_TYPES == False %}
+  <fieldset class="border-right border-bottom mt-2">
+    <legend class="h5"><i class="bi bi-tv" aria-hidden="true"></i> {% trans 'Types' %} </legend>
+    <div id="filterType">
+      <div class="form-group collapse" id="collapseFilterType">
+        {% for type in TYPES %}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="type"
+              value="{{type.slug}}" id="id{{type.slug.split|join:'-'}}_type" {% if type.slug in types %}checked{% endif %}>
+            <label class="form-check-label" for="id{{type.slug.split|join:'-'}}_type">
+              {% if type.icon %}<img src="{{type.icon.file.url}}" alt="{{type.title}}" style="max-height:32px; max-width:32px;" loading="lazy">{% else %}<i class="bi bi-fonts" aria-hidden="true"></i>{% endif %}&nbsp;{{type}}
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+      {% if TYPES.count > 5 %}
+        <span class="badge badge-light float-end">
+          <a class="collapsed" data-bs-toggle="collapse"
+             href="#collapseFilterType" role="button"
+             aria-expanded="false" aria-controls="collapseFilterType"
+             title="{% trans 'Fold/Unfold “Types” filters' %}"></a>
+        </span>
+      {% endif %}
+    </div><!-- type -->
+  </fieldset>
+  {% endif %}
+  {% if HIDE_DISCIPLINES == False %}
+  <fieldset class="border-right border-bottom mt-2">
+    <legend class="h5"><i class="bi bi-book" aria-hidden="true"></i> {% trans 'Disciplines' %} </legend>
+    <div id="filterDiscipline">
+      <div class="form-group collapse" id="collapseFilterDiscipline">
+        {% for discipline in DISCIPLINES %}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="discipline"
+              value="{{discipline.slug}}" id="id{{discipline.slug.split|join:'-'}}_disc" {% if discipline.slug in disciplines %}checked{% endif %}>
+            <label class="form-check-label" for="id{{discipline.slug.split|join:'-'}}_disc">
+              {% if discipline.icon %}<img src="{{discipline.icon.file.url}}" alt="{{discipline.title}}" style="max-height:32px; max-width:32px;" loading="lazy">{% endif %}&nbsp;{{discipline}}
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+      {% if DISCIPLINES.count > 5 %}
+        <span class="badge badge-light float-end">
+          <a class="collapsed" data-bs-toggle="collapse"
+             href="#collapseFilterDiscipline" role="button"
+             aria-expanded="false" aria-controls="collapseFilterDiscipline"
+             title="{% trans 'Fold/Unfold “Disciplines” filters' %}"></a>
+        </span>
+      {% endif %}
+    </div><!-- filterdiscipline -->
+  </fieldset>
+  {% endif %}
+  {% if HIDE_TAGS == False %}
+  <fieldset class="border-right border-bottom mt-2">
+    <legend class="h5"><i class="bi bi-tag" aria-hidden="true"></i> {% trans 'Tags' %}</legend>
+    <div id="filterTag">
+      {% tags_for_model video.Video as tagscloud with counts %}
+      {% with tagslist=tagscloud|dictsortreversed:"count"|slice:":20" %}
+      <div class="form-group collapse" id="collapseFilterTag">
+        {% for tag in tagslist %}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="tag"
+              value="{{tag.name}}" id="id{{tag.name.split|join:'-'}}_tag" {% if tag.name in tags_slug %}checked{% endif %}>
+            <label class="form-check-label" for="id{{tag.name.split|join:'-'}}_tag">
+              {{tag.name}}
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+      {% if tagslist|length > 5 %}
+        <span class="badge badge-light float-end">
+          <a class="collapsed" data-bs-toggle="collapse"
+             href="#collapseFilterTag" role="button"
+             aria-expanded="false" aria-controls="collapseFilterTag"
+             title="{% trans 'Fold/Unfold “Tags” filters' %}"></a>
+        </span>
+      {% endif %}
+      {% endwith %}
     </div>
-    {% if TYPES.count > 5 %}
-      <span class="badge badge-light float-end"><a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType"></a></span>
-    {% endif %}
-  </div><!-- type -->
-</fieldset>
-{% endif %}
-{% if HIDE_DISCIPLINES == False %}
-<fieldset class="border-right border-bottom mt-2">
-  <legend class="h5"><i class="bi bi-book" aria-hidden="true"></i> {% trans 'Disciplines' %} </legend>
-  <div id="filterDiscipline">
-    <div class="form-group collapse" id="collapseFilterDiscipline">
-      {% for discipline in DISCIPLINES %}
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="discipline"
-            value="{{discipline.slug}}" id="id{{discipline.slug.split|join:'-'}}_disc" {% if discipline.slug in disciplines %}checked{% endif %}>
-          <label class="form-check-label" for="id{{discipline.slug.split|join:'-'}}_disc">
-            {% if discipline.icon %}<img src="{{discipline.icon.file.url}}" alt="{{discipline.title}}" style="max-height:32px; max-width:32px;" loading="lazy">{% endif %}&nbsp;{{discipline}}
-          </label>
-        </div>
-      {%endfor%}
-    </div>
-    {% if DISCIPLINES.count > 5 %}
-      <span class="badge badge-light float-end"><a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterDiscipline" aria-expanded="false" aria-controls="collapseFilterDiscipline"></a></span>
-    {% endif %}
-  </div><!-- filterdiscipline -->
-</fieldset>
-{% endif %}
-{% if HIDE_TAGS == False %}
-<fieldset class="border-right border-bottom mt-2">
-  <legend class="h5"><i class="bi bi-tag" aria-hidden="true"></i> {% trans 'Tags' %}</legend>
-  <div id="filterTag">
-    {% tags_for_model video.Video as tagscloud with counts %}
-    {% with tagslist=tagscloud|dictsortreversed:"count"|slice:":20" %}
-    <div class="form-group collapse" id="collapseFilterTag">
-      {% for tag in tagslist %}
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="tag"
-            value="{{tag.name}}" id="id{{tag.name.split|join:'-'}}_tag" {% if tag.name in tags_slug %}checked{% endif %}>
-          <label class="form-check-label" for="id{{tag.name.split|join:'-'}}_tag">
-            {{tag.name}}
-          </label>
-        </div>
-      {% endfor %}
-    </div>
-    {% if tagslist|length > 5 %}
-      <span class="badge badge-light float-end"><a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterTag" aria-expanded="false" aria-controls="collapseFilterTag" title="{% trans 'Fold/Unfold filter tags' %}"></a></span>
-    {% endif %}
-    {% endwith %}
-  </div>
-</fieldset>
-{% endif %}
+  </fieldset>
+  {% endif %}
 
-<fieldset class="border-right border-bottom mt-2">
-  <legend class="h5"><i class="bi bi-archive" aria-hidden="true"></i> {% trans 'University course' %}</legend>
-  <div id="filterCursus">
-    <div class="form-group collapse" id="collapseFilterCursus">
-      {% for keyCursus , transCursus in cursus_list %}
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="cursus"
-            value="{{keyCursus}}" id="cursus-{{keyCursus}}" {% if keyCursus in cursus_selected %}checked{% endif %}>
-          <label class="form-check-label" for="cursus-{{keyCursus}}">
-            {{transCursus}}
-          </label>
-        </div>
-      {% endfor %}
+  <fieldset class="border-right border-bottom mt-2">
+    <legend class="h5"><i class="bi bi-archive" aria-hidden="true"></i> {% trans 'University course' %}</legend>
+    <div id="filterCursus">
+      <div class="form-group collapse" id="collapseFilterCursus">
+        {% for keyCursus , transCursus in cursus_list %}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="cursus"
+              value="{{keyCursus}}" id="cursus-{{keyCursus}}" {% if keyCursus in cursus_selected %}checked{% endif %}>
+            <label class="form-check-label" for="cursus-{{keyCursus}}">
+              {{transCursus}}
+            </label>
+          </div>
+        {% endfor %}
+      </div>
+      {% if cursus_list|length > 5 %}
+        <span class="badge badge-light float-end"><a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterCursus" aria-expanded="false" aria-controls="collapseFilterCursus"></a></span>
+      {% endif %}
     </div>
-    {% if cursus_list|length > 5 %}
-      <span class="badge badge-light float-end"><a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterCursus" aria-expanded="false" aria-controls="collapseFilterCursus"></a></span>
-    {% endif %}
-  </div>
-</fieldset>
-<input class="d-none" type="submit" value="{% trans 'Filter' %}">
+  </fieldset>
+  <input class="d-none" type="submit" value="{% trans 'Filter' %}">
 </form>
-
 </div>
 {% endspaceless %}
