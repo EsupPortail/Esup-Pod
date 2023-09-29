@@ -124,6 +124,7 @@ def context_settings(request):
     new_settings["HIDE_TAGS"] = HIDE_TAGS
     new_settings["HIDE_SHARE"] = HIDE_SHARE
     new_settings["HIDE_DISCIPLINES"] = HIDE_DISCIPLINES
+    new_settings["HIDE_CURSUS"] = HIDE_CURSUS
     new_settings["HIDE_TYPES"] = HIDE_TYPES
     new_settings["MAINTENANCE_REASON"] = maintenance_text_short
     new_settings["MAINTENANCE_MODE"] = maintenance_mode
