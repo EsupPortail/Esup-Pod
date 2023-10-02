@@ -13,10 +13,12 @@ CACHE_VIDEO_DEFAULT_TIMEOUT = getattr(django_settings, "CACHE_VIDEO_DEFAULT_TIME
 
 
 class Command(BaseCommand):
+    """Command to store video data in cache."""
     help = "Store video data in django cache : " \
         + "types, discipline, video count and videos duration"
 
     def handle(self, *args, **options):
+        """Function called to store video data in cache."""
         request = None
         types = (
             Type.objects.filter(
