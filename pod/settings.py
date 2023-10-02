@@ -5,7 +5,6 @@ Django version: 3.2.
 """
 import os
 import importlib.util
-import django.conf.global_settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # will be update in pod/main/settings.py
@@ -13,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "3.3.1"
+VERSION = "3.4.0"
 
 ##
 # Installed applications list
@@ -45,6 +44,8 @@ INSTALLED_APPS = [
     "mozilla_django_oidc",
     "honeypot",
     "lti_provider",
+    "pwa",
+    "webpush",
     # Pod Applications
     "pod.main",
     "django.contrib.admin",  # put it here for template override
@@ -63,9 +64,9 @@ INSTALLED_APPS = [
     "pod.meeting",
     "pod.cut",
     "pod.xapi",
-    "pod.favorite",
     "pod.video_encode_transcript",
     "pod.import_video",
+    "pod.progressive_web_app",
     "pod.custom",
 ]
 
@@ -120,7 +121,7 @@ TEMPLATES = [
                 "pod.video.context_processors.context_video_settings",
                 "pod.authentication.context_processors.context_authentication_settings",
                 "pod.recorder.context_processors.context_recorder_settings",
-                "pod.favorite.context_processors.context_settings",
+                "pod.playlist.context_processors.context_settings",
                 "pod.import_video.context_processors.context_settings",
             ],
         },
@@ -383,6 +384,7 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr", "en")
 #     'flatpages': 'pod.db_migrations'
 # }
 
+
 ##
 # Applications settings (and settings locale if any)
 #
@@ -456,8 +458,6 @@ def update_settings(local_settings):
 the_update_settings = update_settings(locals())
 for variable in the_update_settings:
     locals()[variable] = the_update_settings[variable]
-
-TIME_INPUT_FORMATS = ["%H:%M", *django.conf.global_settings.TIME_INPUT_FORMATS]
 
 if locals()["DEBUG"] is True and importlib.util.find_spec("debug_toolbar") is not None:
     INSTALLED_APPS.append("debug_toolbar")

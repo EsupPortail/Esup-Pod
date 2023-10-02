@@ -4,13 +4,13 @@ from django.conf.urls import url
 from django.conf.urls import include
 from pod.authentication import rest_views as authentication_views
 from pod.video import rest_views as video_views
-from pod.playlist import rest_views as playlist_views
 from pod.main import rest_views as main_views
 from pod.authentication import rest_views as auth_views
 from pod.video_encode_transcript import rest_views as encode_views
 
 from pod.chapter import rest_views as chapter_views
 from pod.completion import rest_views as completion_views
+from pod.playlist import rest_views as playlist_views
 from pod.recorder import rest_views as recorder_views
 
 from django.conf import settings
@@ -45,8 +45,7 @@ router.register(r"encodings_audio", encode_views.EncodingAudioViewSet)
 router.register(r"playlist_videos", encode_views.PlaylistVideoViewSet)
 router.register(r"view_count", video_views.ViewCountViewSet)
 
-router.register(r"playlist", playlist_views.PlaylistViewSet)
-router.register(r"playlist_element", playlist_views.PlaylistElementViewSet)
+router.register(r"playlists", playlist_views.PlaylistViewSet)
 
 router.register(r"contributors", completion_views.ContributorViewSet)
 router.register(r"documents", completion_views.DocumentViewSet)
@@ -80,11 +79,6 @@ urlpatterns = [
         name="launch_encode_view",
     ),
     url(
-        r"launch_transcript_view/$",
-        encode_views.launch_transcript_view,
-        name="launch_transcript_view",
-    ),
-    url(
         r"store_remote_encoded_video/$",
         encode_views.store_remote_encoded_video,
         name="store_remote_encoded_video",
@@ -110,6 +104,15 @@ urlpatterns = [
         name="accessgroups_remove_user_accessgroup ",
     ),
 ]
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
+if USE_TRANSCRIPTION:
+    urlpatterns += [
+        url(
+            r"launch_transcript_view/$",
+            encode_views.launch_transcript_view,
+            name="launch_transcript_view",
+        ),
+    ]
 
 for apps in settings.THIRD_PARTY_APPS:
     mod = importlib.import_module("pod.%s.rest_urls" % apps)

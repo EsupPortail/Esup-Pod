@@ -672,7 +672,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print(args.start)
     filename = fix_input(args.input)
-    encoding_video = Encoding_video(args.id, filename)
+    encoding_video = Encoding_video(args.id, filename, args.start, args.stop)
     # error if uncommented
     # encoding_video.encoding_log += start
     # AttributeError: 'NoneType' object has no attribute 'get'

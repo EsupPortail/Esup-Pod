@@ -1,75 +1,80 @@
 {# HTML for chapter form. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
 {% load static %}
-<div class="card m-2">
-	<div class="card-body">
-		<div class="panel-heading mb-3 p-1">
-			<h4 class="card-title pod-card__title">{% trans 'Create / Edit chapters' %}</h4>
-		</div>
-		<form id="form_chapter" class="form_save" action="{% url 'video:chapter:video_chapter' slug=video.slug %}" method="POST">
-			{% csrf_token %}
-			<div id="formcontent" class="form-container">
-				{% if form_chapter.errors or form_chapter.non_field_errors %}
-					{% trans 'One or more errors have been found in the form:' %}<br>
-					{% for error in form_chapter.non_field_errors %}
-						- {{error}}<br>
-					{% endfor %}
-				{% endif %}
-				{% for field_hidden in form_chapter.hidden_fields %}
-					{{field_hidden}}
-				{% endfor %}
-				{% for field in form_chapter.visible_fields %}
-					<div class="row mb-3">
-						<label for="{{field.auto_id}}" class="col-sm-2 col-form-label">{{field.label}}</label>
-						<div class="col-sm-10">{{field}}</div>
-					</div>
-				{% endfor %}
-				{% if form_chapter.instance %}
-					<input type="hidden" id="id_chapter" name="chapter_id" value="{{form_chapter.instance.id}}">
-				{% endif %}
-				<input type="hidden" name="action" value="save">
-				<div class="mb-3">
-					<input type="submit" id="save_chapter" value="{% trans 'Save' %}" class="btn btn-primary">
-					<input type="reset" action="cancel" id="cancel_chapter" value="{% trans 'Cancel' %}" class="btn btn-secondary">
-				</div>
-			</div>
-		</form>
-		&nbsp;
-		{% if request.user.is_staff %}
-		  <div class="panel-heading mt-3 mb-3 p-1">
-			<h4 class="card-title pod-card__title">{% trans 'Import chapters' %}</h4>
-		  </div>
-		  <form id="form_chapter_import" class="form_save" action="{% url 'video:chapter:video_chapter' slug=video.slug %}" method="POST">
-			{% csrf_token %}
-			<div id="formcontent" class="form-container">
-				{% if form_import.errors or form_import.non_field_errors %}
-					{% trans 'One or more errors have been found in the form:' %}<br>
-					{% for error in form_import.non_field_errors %}
-						- {{error}}<br>
-					{% endfor %}
-				{% endif %}
-				{% for field_hidden in form_import.hidden_fields %}
-					{{field_hidden}}
-				{% endfor %}
-				{% for field in form_import.visible_fields %}
-					<div class="row mb-3">
-						<label for="{{field.auto_id}}" class="col-sm-2 col-form-label">{{field.label}}</label>
-						<div class="col-sm-10">{{field}}</div>
-					</div>
-					{% for error in field.errors %}
-						<div class="alert alert-danger">
-							<strong>{{error|escape}}</strong>
-						</div>
-					{% endfor %}
-				{% endfor %}
-				<input type="hidden" name="action" value="import">
-				<span>{% trans 'The file must be in VTT format.' %}</span>
-				<div class="mt-3">
-					<input type="submit" id="save_chapter_import" value="{% trans 'Import chapters' %}" class="btn btn-primary">
-				</div>
-			</div>
-		  </form>
-		  {{form_import.media}}
-		{% endif %}
-	</div>
-</div>
+<fieldset class="border rounded p-3 m-2">
+  <legend class="float-none w-auto">{% trans 'Create / Edit chapters' %}</legend>
+  <form id="form_chapter" class="form_save" action="{% url 'video:chapter:video_chapter' slug=video.slug %}" method="POST">
+    {% csrf_token %}
+    <div class="form-container">
+      {% if form_chapter.errors or form_chapter.non_field_errors %}
+        {% trans 'One or more errors have been found in the form:' %}<br>
+        {% for error in form_chapter.non_field_errors %}
+          - {{error}}<br>
+        {% endfor %}
+      {% endif %}
+      {% for field_hidden in form_chapter.hidden_fields %}
+        {{field_hidden}}
+      {% endfor %}
+      {% for field in form_chapter.visible_fields %}
+        <div class="row mb-3">
+          <label for="{{field.auto_id}}" class="col-sm-2 col-form-label">{{field.label}}</label>
+          <div class="col-sm-10">
+            {{field}}
+            {% if field.help_text %}
+              <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+      {% if form_chapter.instance %}
+        <input type="hidden" id="id_chapter" name="chapter_id" value="{{form_chapter.instance.id}}">
+      {% endif %}
+      <input type="hidden" name="action" value="save">
+      <div class="mb-3">
+        <input type="submit" id="save_chapter" value="{% trans 'Save' %}" class="btn btn-primary">
+        <input type="reset" action="cancel" id="cancel_chapter" value="{% trans 'Cancel' %}" class="btn btn-secondary">
+      </div>
+    </div>
+  </form>
+</fieldset>
+
+{% if request.user.is_staff and form_import.visible_fields %}
+  <fieldset class="border rounded p-3 m-2">
+    <legend class="float-none w-auto">{% trans 'Import chapters' %}</legend>
+    <form id="form_chapter_import" class="form_save" action="{% url 'video:chapter:video_chapter' slug=video.slug %}" method="POST">
+    {% csrf_token %}
+      <div class="form-container">
+        {% if form_import.errors or form_import.non_field_errors %}
+          {% trans 'One or more errors have been found in the form:' %}<br>
+          {% for error in form_import.non_field_errors %}
+            - {{error}}<br>
+          {% endfor %}
+        {% endif %}
+        {% for field_hidden in form_import.hidden_fields %}
+          {{field_hidden}}
+        {% endfor %}
+        {% for field in form_import.visible_fields %}
+          <div class="row mb-3">
+            <label for="{{field.auto_id}}" class="col-sm-2 col-form-label">{{field.label}}</label>
+            <div class="col-sm-10">
+              {{field}}
+              {% if field.help_text %}
+                <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+              {% endif %}
+            </div>
+          </div>
+          {% for error in field.errors %}
+            <div class="alert alert-danger">
+              <strong>{{error|escape}}</strong>
+            </div>
+          {% endfor %}
+        {% endfor %}
+        <input type="hidden" name="action" value="import">
+        <div class="mt-3">
+          <input type="submit" id="save_chapter_import" value="{% trans 'Import chapters' %}" class="btn btn-primary">
+        </div>
+      </div>
+    </form>
+    {{form_import.media}}
+  </fieldset>
+{% endif %}

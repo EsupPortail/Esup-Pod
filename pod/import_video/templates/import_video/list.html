@@ -8,7 +8,7 @@
 {% endblock more_style %}
 
 
-{% block breadcrumbs %}{{ block.super }} 
+{% block breadcrumbs %}{{ block.super }}
   <li class="breadcrumb-item active" aria-current="page">{% trans "My external videos" %}</li>
 {% endblock %}
 
@@ -86,7 +86,7 @@
               {% endif %}
             </td>
         </tr>
-        {%endfor%}
+        {% endfor %}
     </tbody>
 </table>
 {% endblock page_content %}

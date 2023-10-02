@@ -90,6 +90,7 @@ createconfigs:
 -include .env.dev
 export
 COMPOSE = docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
+COMPOSE_FULL = docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod
 DOCKER_LOGS = docker logs -f
 
 #docker-start-build:
@@ -107,6 +108,7 @@ docker-logs:
 echo-env:
 	@echo ELASTICSEARCH_TAG=$(ELASTICSEARCH_TAG)
 	@echo PYTHON_TAG=$(PYTHON_TAG)
+	@echo DOCKER_ENV=$(DOCKER_ENV)
 
 # Démarre le serveur de test en recompilant les conteneurs de la stack
 docker-build:
@@ -118,25 +120,41 @@ docker-build:
 	sudo rm -rf ./pod/static
 	# sudo rm -rf ./pod/node_modules
 	sudo rm -rf ./pod/node_modules
+ifeq ($(DOCKER_ENV), full)
+	@$(COMPOSE_FULL) build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG) --no-cache
+	@$(COMPOSE_FULL) up
+else
 	@$(COMPOSE) build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG) --no-cache
 	@$(COMPOSE) up
+endif
 	# Vous devriez obtenir ce message une fois esup-pod lancé
 	# $ pod-dev-with-volumes        | Superuser created successfully.
 
 # Démarre le serveur de test
 docker-start:
 	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
+ifeq ($(DOCKER_ENV), full)
+	@$(COMPOSE_FULL) up
+else
 	@$(COMPOSE) up
+endif
 	# Vous devriez obtenir ce message une fois esup-pod lancé
 	# $ pod-dev-with-volumes        | Superuser created successfully.
 
 # Arrête le serveur de test
 docker-stop:
+ifeq ($(DOCKER_ENV), full)
+	@$(COMPOSE_FULL) down -v
+else
 	@$(COMPOSE) down -v
-
+endif
 # Arrête le serveur de test et supprime les fichiers générés
 docker-reset:
+ifeq ($(DOCKER_ENV), full)
+	@$(COMPOSE_FULL) down -v
+else
 	@$(COMPOSE) down -v
+endif
 	# sudo rm -rf ./pod/log
 	sudo rm -rf ./pod/log
 	# sudo rm -rf ./pod/static

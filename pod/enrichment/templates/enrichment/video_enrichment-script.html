@@ -6,8 +6,10 @@ player.ready(function() {
   const tracks = player.textTracks();
   const trackElts = player.remoteTextTrackEls();
   let metadataTrack, i, track;
+
   for (i = 0; i < tracks.length; i++) {
       track = tracks[i];
+      // console.log("track: ["+track.kind + "] " + track.label);
       if (track.kind === 'metadata' && track.label === 'enrichment') {
           metadataTrack = track;
           metadataTrack.index = i;
@@ -17,6 +19,10 @@ player.ready(function() {
   }
 
   player.on('loadedmetadata', function() {
+      if(!metadataTrack){
+        console.log("No enrichment track found.")
+        return
+      }
       let slide = [];
       if(!metadataTrack.cues) { //Safari do not get cues
           //let tracksrc = player.el().getElementsByTagName('TRACK')[metadataTrack.index].src;

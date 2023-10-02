@@ -2,11 +2,11 @@
 <div class="pod-note-item p-1">
   <span class="pod-note-status">
     {% if note.status == '0' %}
-      <i class="bi bi-file-earmark-lock" title="{% trans "Private (me only)" %}"></i>
+      <i class="bi bi-file-earmark-lock" title="{% trans 'Private (me only)' %}"></i>
     {% elif note.status == '1' %}
-      <i class="bi bi-person-video" title="{% trans "Shared with video owner" %}"></i>
+      <i class="bi bi-person-video" title="{% trans 'Shared with video owner' %}"></i>
     {% elif note.status == '2' %}
-      <i class="bi bi-globe2" title="{% trans "Public" %}"></i>
+      <i class="bi bi-globe2" title="{% trans 'Public' %}"></i>
     {% endif %}
   </span>
 
@@ -23,7 +23,7 @@
         {% else %}
           <i class="bi bi-chevron-down"></i>
         {% endif %}
-        <span class="user">{{ note.user.username }},</span>
+        <span class="user">{{ note.user.get_username }},</span>
         <span class="pod-note-date">
           {% blocktrans with date=note.modified_on %}the {{date}}:{% endblocktrans %}
         </span>
@@ -39,7 +39,7 @@
     </form>
     <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" id="video_notes_form">
     {% csrf_token %}
-      {% if note_form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
+      {% if note_form.errors %} <p class="text-danger">{% trans 'One or more errors have been found in the form.' %}</p> {% endif %}
       {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}
       {% for field in note_form.visible_fields %}
         {% spaceless %}
@@ -48,7 +48,7 @@
           {{ field.errors }}
           {{ field }}
           {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small> {% endif %}
-          {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div> {% endif %}
+          {% if field.field.required %} <div class="invalid-feedback">{% trans 'Please provide a valid value for this field.' %}</div> {% endif %}
         </div>
         {% endspaceless %}
       {% endfor %}
@@ -73,7 +73,7 @@
         {% else %}
           <i class="bi bi-chevron-right"></i>
         {% endif %}
-        <span class="user">{{ note.user.username }} :</span>
+        <span class="user">{{ note.user.get_username }} :</span>
         <span class="pod-note-content pod-note-truncated">{{ note.note}}</span>
       </div>
     </form>
@@ -81,33 +81,32 @@
 
   {% if request.user.is_authenticated and not note_form %}
     <div class="mgtNote dropleft">
-      <button class="btn btn-link btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage note' %}"> <i class="bi bi-three-dots"></i> </button>
+      <button class="btn btn-link btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage note' %}"><i class="bi bi-three-dots" aria-hidden="true"></i></button>
       <div class="dropdown-menu">
 
         {% if request.user == note.user %}
           {# Button to edit the note in three dots menu #}
-          <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="edit_video_notes_form" role="menuitem">
+          <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="edit_video_notes_form">
             {% csrf_token %}
             <input type="hidden" name="action" value="form_note">
             <input type="hidden" name="idNote" value="{{ note.id }}">
-            <button class="btn btn-outline-primary dropdown-item" type="submit" action="edit" title="{% trans 'Edit the note' %}"> <i class="bi bi-pencil"></i> </button>
+            <button class="btn btn-outline-primary dropdown-item" type="submit" title="{% trans 'Edit the note' %}"><i class="bi bi-pencil" aria-hidden="true"></i></button>
           </form>
           {# Button to remove the note in three dots menu #}
-          <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="remove_video_notes_form" role="menuitem">
+          <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="remove_video_notes_form">
             {% csrf_token %}
             <input type="hidden" name="action" value="remove_note">
             <input type="hidden" name="idNote" value="{{ note.id }}">
-            <button class="btn btn-outline-danger dropdown-item" type="submit" action="remove" title="{% trans 'Remove the note' %}"> <i class="bi bi-trash"></i></button>
+            <button class="btn btn-outline-danger dropdown-item" type="submit" title="{% trans 'Remove the note' %}"><i class="bi bi-trash" aria-hidden="true"></i></button>
           </form>
         {% endif %}
         {# Button to comment the note in three dots menu #}
-        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="comment_video_notes_form" role="menuitem">
+        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="comment_video_notes_form">
           {% csrf_token %}
           <input type="hidden" name="action" value="form_com">
           <input type="hidden" name="idNote" value="{{ note.id }}">
-          <button class="btn btn-outline-primary dropdown-item" type="submit" title="{% trans 'Comment the note' %}"> <i class="bi bi-chat"></i></button>
+          <button class="btn btn-outline-primary dropdown-item" type="submit" title="{% trans 'Comment the note' %}"><i class="bi bi-chat" aria-hidden="true"></i></button>
         </form>
-
       </div>
     </div>
   {% endif %}

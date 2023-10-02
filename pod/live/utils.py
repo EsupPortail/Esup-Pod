@@ -13,32 +13,9 @@ from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMultiAlternatives, mail_managers
 from django.utils.translation import ugettext_lazy as _
 
+from pod.main.views import TEMPLATE_VISIBLE_SETTINGS
+
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
-
-TEMPLATE_VISIBLE_SETTINGS = getattr(
-    settings,
-    "TEMPLATE_VISIBLE_SETTINGS",
-    {
-        "TITLE_SITE": "Pod",
-        "TITLE_ETB": "University name",
-        "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/esup-pod.svg",
-        "LOGO_PLAYER": "img/pod_favicon.svg",
-        "LINK_PLAYER": "",
-        "FOOTER_TEXT": ("",),
-        "FAVICON": "img/pod_favicon.svg",
-        "CSS_OVERRIDE": "",
-        "PRE_HEADER_TEMPLATE": "",
-        "POST_FOOTER_TEMPLATE": "",
-        "TRACKING_TEMPLATE": "",
-    },
-)
-
-__TITLE_SITE__ = (
-    TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
-    if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
-    else "Pod"
-)
 
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
 
@@ -47,6 +24,8 @@ USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 MANAGERS = getattr(settings, "MANAGERS", {})
 
 DEBUG = getattr(settings, "DEBUG", True)
+
+EVENT_CHECK_MAX_ATTEMPT = getattr(settings, "EVENT_CHECK_MAX_ATTEMPT", 10)
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +38,7 @@ def send_email_confirmation(event):
     url_event = get_event_url(event)
 
     subject = "[%s] %s" % (
-        __TITLE_SITE__,
+        TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"),
         _("Registration of event #%(content_id)s") % {"content_id": event.id},
     )
 
@@ -117,9 +96,9 @@ def get_event_url(event):
 
 
 def get_bcc(manager):
-    if type(manager) in (list, tuple):
+    if isinstance(manager, (list, tuple)):
         return manager
-    elif type(manager) == str:
+    elif isinstance(manager, str):
         return [manager]
     return []
 
@@ -197,14 +176,21 @@ def get_event_id_and_broadcaster_id(request):
         A tuple containing the event ID
         and broadcaster ID extracted from the request body.
     """
+    event_id = broadcaster_id = None
     body_unicode = request.body.decode("utf-8")
-    body_data = json.loads(body_unicode)
-    event_id = body_data.get("idevent", None)
-    broadcaster_id = body_data.get("idbroadcaster", None)
+    if request.method == "GET":
+        event_id = request.GET.get("idevent", None)
+        broadcaster_id = request.GET.get("idbroadcaster", None)
+
+    if request.method == "POST":
+        body_data = json.loads(body_unicode)
+        event_id = body_data.get("idevent", None)
+        broadcaster_id = body_data.get("idbroadcaster", None)
+
     return event_id, broadcaster_id
 
 
-def check_size_not_changing(resource_path, max_attempt=6):
+def check_size_not_changing(resource_path, max_attempt=EVENT_CHECK_MAX_ATTEMPT):
     """
     Checks  if the size of a resource remains unchanged over a specified number of attempts.
     Args:
@@ -236,7 +222,7 @@ def check_size_not_changing(resource_path, max_attempt=6):
             size_match = True
 
 
-def check_exists(resource_path, is_dir, max_attempt=6):
+def check_exists(resource_path, is_dir, max_attempt=EVENT_CHECK_MAX_ATTEMPT):
     """
     Checks whether a file or directory exists.
     Args:

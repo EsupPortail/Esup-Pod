@@ -422,7 +422,7 @@ class MeetingJoinTestView(TestCase):
             fetch_redirect_response=True,
         )
 
-        # Auth user can have acces and ask password
+        # Auth user can have access and ask password
         self.user2 = User.objects.get(username="pod2")
         self.client.force_login(self.user2)
         url = reverse("meeting:join", kwargs={"meeting_id": newmeeting.meeting_id})
@@ -551,7 +551,7 @@ class MeetingRecordingTestView(TestCase):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        meeting = Meeting.objects.create(id=1, name="test", owner=user, site=site)
+        meeting = Meeting.objects.create(id=1, name="test_pod1", owner=user, site=site)
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
@@ -567,6 +567,7 @@ class MeetingRecordingTestView(TestCase):
         print(" --->  SetUp of MeetingEndTestView: OK!")
 
     def test_meeting_recordings_get_request(self):
+        """Check recordings list of a meeting."""
         self.client = Client()
         # check auth
         url = reverse(
@@ -584,7 +585,7 @@ class MeetingRecordingTestView(TestCase):
         self.assertEqual(response.status_code, 404)
 
         # check access right with user2
-        meeting = Meeting.objects.get(name="test")
+        meeting = Meeting.objects.get(name="test_pod1")
         url = reverse(
             "meeting:internal_recordings", kwargs={"meeting_id": meeting.meeting_id}
         )
@@ -620,7 +621,7 @@ class MeetingRecordingTestView(TestCase):
         self.assertEqual(response.status_code, 404)  # not found
 
         # check access right with user2
-        meeting = Meeting.objects.get(name="test")
+        meeting = Meeting.objects.get(name="test_pod1")
         url = reverse(
             "meeting:delete_internal_recording",
             kwargs={

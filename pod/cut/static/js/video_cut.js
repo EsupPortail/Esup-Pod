@@ -142,30 +142,68 @@ noPressEnter(sliderTwo);
 let button_start = document.getElementById("button_start");
 let button_end = document.getElementById("button_end");
 
-button_start.addEventListener("click", (event) => {
+button_start.addEventListener("click", get_video_player_start);
+button_start.addEventListener("keydown", function (event) {
+  if (event.key === " ") {
+    get_video_player_start(event);
+  }
+});
+
+button_end.addEventListener("click", get_video_player_end);
+button_end.addEventListener("keydown", function (event) {
+  if (event.key === " ") {
+    get_video_player_end(event);
+  }
+});
+
+/**
+ * Retrieves the start time of the video player and updates UI elements accordingly.
+ */
+function get_video_player_start(event) {
+  event.preventDefault();
   time = Math.trunc(player.currentTime()) + start_time;
   displayValOne.value = intToTime(time);
   sliderOne.value = time;
   fillColor();
-});
+}
 
-button_end.addEventListener("click", (event) => {
+/**
+ * Retrieves the end time of the video player and updates UI elements accordingly.
+ */
+function get_video_player_end(event) {
+  event.preventDefault();
   time = Math.trunc(player.currentTime()) + start_time;
   displayValTwo.value = intToTime(time);
   sliderTwo.value = Math.trunc(time);
   fillColor();
-});
+}
 
 // Button reset
-button_reset.addEventListener("click", (event) => {
+button_reset.addEventListener("click", resetVideoCut);
+button_reset.addEventListener("keydown", function (event) {
+  if (event.key === " ") {
+    resetVideoCut(event);
+  }
+});
+
+/**
+ * Resets the video cut to its initial state, updating UI elements and video player.
+ */
+function resetVideoCut(event) {
+  event.preventDefault();
   displayValOne.value = intToTime(initialStart);
   sliderOne.value = initialStart;
   displayValTwo.value = intToTime(initialEnd);
   sliderTwo.value = initialEnd;
   fillColor();
   player.currentTime(0);
-});
+}
 
+/**
+ * Changes the current time of the video player based on the provided value.
+ *
+ * @param {number} value - The new time value to set for the video player.
+ */
 function changeCurrentTimePlayer(value) {
   // Move the player along with the cursor
   if (value - initialStart >= 0) {

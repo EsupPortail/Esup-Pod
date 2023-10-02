@@ -26,12 +26,7 @@
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  animation: recording-spin 3s linear infinite;      
-}
-
-@-webkit-keyframes recording-spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
+  animation: recording-spin 3s linear infinite;
 }
 
 @keyframes recording-spin {
@@ -40,7 +35,7 @@
 }
 /* */
 /* Message error */
-div.alert {
+div.alert.alert-dismissible {
   border-radius: 6px;
   display: table;
   width: 100%;

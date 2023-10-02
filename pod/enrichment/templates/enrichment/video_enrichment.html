@@ -19,7 +19,7 @@
 <meta property="og:image:width" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.width}}{% else %}640{% endif %}">
 <meta property="og:image:height" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.height}}{% else %}360{% endif %}">
 
-<meta property="og:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
+<meta property="og:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {% endfor %}%{% endif %}{% endif %} {% trans 'Added by:' %} {{ video.owner.get_full_name }}">
 
 <meta property="og:type" content="video">
 <meta property="og:video" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'enrichment:video_enrichment' slug=video.slug %}?is_iframe=true">
@@ -32,7 +32,7 @@
 <meta name="twitter:site" content="{{ TITLE_SITE }}">
 <meta name="twitter:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'enrichment:video_enrichment' slug=video.slug %}">
 <meta name="twitter:title" content="{{ video.title }}">
-<meta name="twitter:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
+<meta name="twitter:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {% endfor %}%{% endif %}{% endif %} {% trans 'Added by:' %} {{ video.owner.get_full_name }}">
 <meta name="twitter:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
 
 <meta name="twitter:player" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
@@ -56,21 +56,21 @@
 
 {% block page_title %}{% if channel %}{{channel.title}} - {% endif %}{% if theme %}{{theme.title}} - {% endif %}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
 
-{% block video-element %}
-
-{% if form %}
-  {% include 'videos/video-form.html' %}
-{% else %}
-  {% include 'enrichment/video-element-enrichment.html' %}
-  <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' with third_app=True %}</div>
-{% endif %}
-
-{% endblock video-element %}
+{% block page_content %}
+  {% block video-element %}
+    {% if form %}
+      {% include 'videos/video-form.html' %}
+    {% else %}
+      {% include 'enrichment/video-element-enrichment.html' %}
+    {% endif %}
+    <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' with third_app=True %}</div>
+  {% endblock video-element %}
+{% endblock page_content %}
 
 {% block page_aside %}
   <div class="card" id="card-enrichmentinformations">
     <h2 class="card-header card-title pod-card__title h4">
-      <i class="bi bi-info-circle"></i>&nbsp;{% trans 'Informations' %}
+      <i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% trans 'Informations' %}
     </h2>
     <div class="card-body card-text">
       <p>{% trans 'To help you, the different types of enrichments have specific colors:' %}</p>

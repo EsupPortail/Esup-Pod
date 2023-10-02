@@ -87,7 +87,7 @@ var ajaxfail = function (data, form) {
       data +
       ") " +
       gettext("The form could not be recovered."),
-    "alert-danger"
+    "alert-danger",
   );
 };
 
@@ -99,7 +99,8 @@ document.addEventListener("submit", (e) => {
     e.target.id != "form_new_document" &&
     e.target.id != "form_new_track" &&
     e.target.id != "form_new_overlay" &&
-    !e.target.matches(".form_change")
+    !e.target.matches(".form_change") &&
+    !e.target.matches(".form_delete")
   )
     return;
 
@@ -130,10 +131,19 @@ var sendandgetform = async function (elt, action, name, form, list) {
   if (action == "new" || action == "form_save_new") {
     document.getElementById(form).innerHTML =
       '<div style="width:100%; margin: 2rem;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
-    document.querySelectorAll(".info-card").forEach(function (element) {
-      element.style.display = "none";
-    });
-    document.getElementById(name + "-info").style.display = "block";
+
+    document
+      .querySelectorAll(
+        `#card-completion-tips div:not(#${name}-info) .collapse`,
+      )
+      .forEach((collapsable) => {
+        bootstrap.Collapse.getOrCreateInstance(collapsable, {
+          toggle: false,
+        }).hide();
+      });
+    /* Display associated help in side menu */
+    var compInfo = document.querySelector(`#${name}-info>.collapse`);
+    bootstrap.Collapse.getOrCreateInstance(compInfo).show();
 
     let url = window.location.origin + href;
     let token = elt.csrfmiddlewaretoken.value;
@@ -156,8 +166,8 @@ var sendandgetform = async function (elt, action, name, form, list) {
           showalert(
             gettext(
               "You are no longer authenticated. Please log in again.",
-              "alert-danger"
-            )
+              "alert-danger",
+            ),
           );
         } else {
           show_form(data, form);
@@ -211,8 +221,8 @@ var sendandgetform = async function (elt, action, name, form, list) {
           showalert(
             gettext(
               "You are no longer authenticated. Please log in again.",
-              "alert-danger"
-            )
+              "alert-danger",
+            ),
           );
         } else {
           show_form(data, form);
@@ -233,26 +243,26 @@ var sendandgetform = async function (elt, action, name, form, list) {
     var deleteConfirm = "";
     if (name == "track") {
       deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this file?")
+        gettext("Are you sure you want to delete this file?"),
       );
     } else if (name == "contributor") {
       deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this contributor?")
+        gettext("Are you sure you want to delete this contributor?"),
       );
     } else if (name == "document") {
       deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this document?")
+        gettext("Are you sure you want to delete this document?"),
       );
     } else if (name == "overlay") {
       deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this overlay?")
+        gettext("Are you sure you want to delete this overlay?"),
       );
     }
     if (deleteConfirm) {
       var id = elt.querySelector("input[name=id]").value;
       var url = window.location.origin + href;
       var token = document.querySelector(
-        "input[name=csrfmiddlewaretoken]"
+        "input[name=csrfmiddlewaretoken]",
       ).value;
       let form_data = new FormData();
       form_data.append("action", action);
@@ -275,8 +285,8 @@ var sendandgetform = async function (elt, action, name, form, list) {
             showalert(
               gettext(
                 "You are no longer authenticated. Please log in again.",
-                "alert-danger"
-              )
+                "alert-danger",
+              ),
             );
           }
         })
@@ -295,7 +305,7 @@ var sendandgetform = async function (elt, action, name, form, list) {
       let data_form = new FormData(form_el);
       let url = window.location.origin + href;
       let token = document.querySelector(
-        "input[name=csrfmiddlewaretoken]"
+        "input[name=csrfmiddlewaretoken]",
       ).value;
 
       await fetch(url, {
@@ -320,8 +330,8 @@ var sendandgetform = async function (elt, action, name, form, list) {
             showalert(
               gettext(
                 "You are no longer authenticated. Please log in again.",
-                "alert-danger"
-              )
+                "alert-danger",
+              ),
             );
           }
         })
@@ -374,8 +384,10 @@ function refresh_list(data, form, list) {
   document.querySelectorAll("a.title").forEach(function (element) {
     element.style.display = "initial";
   });
-  document.getElementById("enrich_player").innerHTML = data.player;
-  documentL.getElementById(list).innerHTML = data.list_data;
+  if (data.player) {
+    document.getElementById("enrich_player").innerHTML = data.player;
+  }
+  document.getElementById(list).innerHTML = data.list_data;
 }
 
 // Check fields
@@ -391,7 +403,7 @@ function verify_fields(form) {
       input.parentNode.append(
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
           gettext("Please enter a name from 2 to 100 caracteres.") +
-          "</span>"
+          "</span>",
       );
       let form_group = input.closest("div.form-group");
 
@@ -405,7 +417,7 @@ function verify_fields(form) {
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
           gettext("You cannot enter a weblink with more than 200 caracteres.") +
-          "</span>"
+          "</span>",
       );
       let form_group = id_weblink.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -418,7 +430,7 @@ function verify_fields(form) {
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
           gettext("Please enter a role.") +
-          "</span>"
+          "</span>",
       );
       let form_group = id_role.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -437,7 +449,7 @@ function verify_fields(form) {
           tr.querySelector("td[class=contributor_role]").innerHTML == new_role
         ) {
           var text = gettext(
-            "There is already a contributor with this same name and role in the list."
+            "There is already a contributor with this same name and role in the list.",
           );
           showalert(text, "alert-danger");
           error = true;
@@ -455,7 +467,7 @@ function verify_fields(form) {
         "afterend",
         "<span class='form-help-inline'>" +
           gettext("Please enter a correct kind.") +
-          "</span>"
+          "</span>",
       );
       let form_group = id_kind.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -472,7 +484,7 @@ function verify_fields(form) {
         "afterend",
         "<span class='form-help-inline'>" +
           gettext("Please select a language.") +
-          "</span>"
+          "</span>",
       );
       let form_group = id_lang.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -489,7 +501,7 @@ function verify_fields(form) {
         "afterend",
         "<span class='form-help-inline'>" +
           gettext("Please specify a track file.") +
-          "</span>"
+          "</span>",
       );
       let form_group = id_src.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -499,7 +511,7 @@ function verify_fields(form) {
         "afterend",
         "<span class='form-help-inline'>" +
           gettext("Only .vtt format is allowed.") +
-          "</span>"
+          "</span>",
       );
       let form_group = id_src.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -533,9 +545,9 @@ function verify_fields(form) {
         "afterend",
         "<span class='form-help-inline'>" +
           gettext(
-            "There is already a track with the same kind and language in the list."
+            "There is already a track with the same kind and language in the list.",
           ) +
-          "</span>"
+          "</span>",
       );
       let form_group = id_src.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -548,13 +560,13 @@ function verify_fields(form) {
         .getAttribute("src") == "/static/icons/nofile_48x48.png"
     ) {
       let id_document_thumbnail = document.getElementById(
-        "id_document_thubmanil_img"
+        "id_document_thubmanil_img",
       );
       id_document_thumbnail.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
           gettext("Please select a document") +
-          "</span>"
+          "</span>",
       );
       let form_group = id_document_thumbnail.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -569,7 +581,7 @@ function verify_fields(form) {
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
           gettext("Iframe and Script tags are not allowed.") +
-          "</span>"
+          "</span>",
       );
       let form_group = id_content.closest("div.form-group");
       form_group.forEach(function (element) {

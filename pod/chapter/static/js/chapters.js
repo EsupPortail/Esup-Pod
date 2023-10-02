@@ -16,14 +16,23 @@ function show_form(data) {
   });
   fadeIn(form_chapter);
 
+  var describedby_list = [];
   let inputStart = document.getElementById("id_time_start");
   if (inputStart) {
     inputStart.insertAdjacentHTML(
       "beforebegin",
-      "&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-primary btn-sm'>" +
+      "&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-primary btn-sm' href='#form_chapter'>" +
         gettext("Get time from the player") +
-        "</a><span class='timecode'>&nbsp;</span></span>"
+        "</a><span class='timecode' id='chapter_time_start'>&nbsp;</span></span>",
     );
+
+    if (inputStart.getAttribute("aria-describedby")) {
+      describedby_list = inputStart.getAttribute("aria-describedby").split(" ");
+    }
+    if (describedby_list.indexOf("chapter_time_start") === -1) {
+      describedby_list.push("chapter_time_start");
+    }
+    inputStart.setAttribute("aria-describedby", describedby_list.join(" "));
   }
   let inputEnd = document.getElementById("id_time_end");
   if (inputEnd) {
@@ -31,8 +40,15 @@ function show_form(data) {
       "beforebegin",
       "&nbsp;<span class='getfromvideo'><a id='getfromvideo_end' class='btn btn-primary btn-sm'>" +
         gettext("Get time from the player") +
-        "</a><span class='timecode'>&nbsp;</span></span>"
+        "</a><span class='timecode' id='chapter_time_end'>&nbsp;</span></span>",
     );
+    if (inputEnd.getAttribute("aria-describedby")) {
+      describedby_list = inputEnd.getAttribute("aria-describedby").split(" ");
+    }
+    if (describedby_list.indexOf("chapter_time_end") === -1) {
+      describedby_list.push("chapter_time_end");
+    }
+    inputEnd.setAttribute("aria-describedby", describedby_list.join(" "));
   }
 }
 
@@ -42,9 +58,7 @@ var showalert = function (message, alerttype) {
       alerttype +
       ' alert-dismissible fade show" role="alert">' +
       message +
-      '<button type="button" class="close" data-dismiss="alert" aria-label="' +
-      gettext("Close") +
-      '"><span aria-hidden="true">&times;</span></button></div>'
+      '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>',
   );
   setTimeout(function () {
     document.getElementById("formalertdiv").remove();
@@ -58,7 +72,7 @@ var ajaxfail = function (data) {
       data +
       ") " +
       gettext("The form could not be recovered."),
-    "alert-danger"
+    "alert-danger",
   );
   show_form("");
 };
@@ -111,7 +125,7 @@ var sendandgetform = async function (elt) {
     ) {
       showalert(
         gettext("You are no longer authenticated. Please log in again."),
-        "alert-danger"
+        "alert-danger",
       );
       return;
     }
@@ -125,7 +139,7 @@ var sendandgetform = async function (elt) {
       if (data.indexOf("list_chapter") == -1) {
         showalert(
           gettext("You are no longer authenticated. Please log in again."),
-          "alert-danger"
+          "alert-danger",
         );
         return;
       }
@@ -157,19 +171,19 @@ var sendform = async function (elt, action) {
       form_save.style.display = "none";
       data_form = new FormData(form_save);
       validationMessage = gettext(
-        "Make sure your chapter start time is not 0 or equal to another chapter start time."
+        "Make sure your chapter start time is not 0 or equal to another chapter start time.",
       );
     } else {
       showalert(
         gettext("One or more errors have been found in the form."),
-        "alert-danger"
+        "alert-danger",
       );
       return;
     }
   } else if (action === "import") {
     data_form = new FormData(elt);
     validationMessage = gettext(
-      "Make sure you added a file and that it is a valid file."
+      "Make sure you added a file and that it is a valid file.",
     );
   } else {
     // if action is neither "save" nor "import", show an error and return
@@ -187,7 +201,7 @@ var sendform = async function (elt, action) {
     if (data.indexOf("list_chapter") == -1 && data.indexOf("form") == -1) {
       showalert(
         gettext("You are no longer authenticated. Please log in again."),
-        "alert-danger"
+        "alert-danger",
       );
     } else {
       const jsonData = JSON.parse(data);
@@ -210,53 +224,93 @@ var sendform = async function (elt, action) {
 
 /*** Verify if value of field respect form field ***/
 function verify_start_title_items() {
+  var ret = true;
+
+  // First, check Title field.
+
   let inputTitle = document.getElementById("id_title");
+  inputTitle.classList.remove("is-invalid");
+  inputTitle.classList.remove("is-valid");
+  var describedby_list = [];
+  if (inputTitle.getAttribute("aria-describedby")) {
+    describedby_list = inputTitle.getAttribute("aria-describedby").split(" ");
+  }
+
+  var errormsg_id = "lengthErrorMsg";
   if (
     inputTitle.value === "" ||
     inputTitle.value.length < 2 ||
     inputTitle.value.length > 100
   ) {
-    if (typeof lengthErrorSpan === "undefined") {
-      lengthErrorSpan = document.createElement("span");
-      lengthErrorSpan.className = "form-help-inline";
-      lengthErrorSpan.innerHTML =
-        "&nbsp;&nbsp;" +
-        gettext("Please enter a title from 2 to 100 characters.");
-      inputTitle.insertAdjacentHTML("beforebegin", lengthErrorSpan.outerHTML);
+    if (typeof lengthErrorMsg === "undefined") {
+      lengthErrorMsg = document.createElement("div");
+      lengthErrorMsg.id = errormsg_id;
+      lengthErrorMsg.className = "invalid-feedback";
+      lengthErrorMsg.innerHTML = gettext(
+        "Please enter a title from 2 to 100 characters.",
+      );
+      inputTitle.insertAdjacentHTML("afterend", lengthErrorMsg.outerHTML);
       inputTitle.parentNode.parentNode
         .querySelectorAll("div.form-group")
         .forEach(function (elt) {
           elt.classList.add("has-error");
         });
     }
-    return false;
+    if (describedby_list.indexOf(errormsg_id) === -1) {
+      describedby_list.push(errormsg_id);
+    }
+    inputTitle.classList.add("is-invalid");
+    ret = false;
+  } else {
+    describedby_list.pop(errormsg_id);
+    inputTitle.classList.add("is-valid");
   }
+  inputTitle.setAttribute("aria-describedby", describedby_list.join(" "));
+
+  // Then check inputStart field.
   let inputStart = document.getElementById("id_time_start");
+  inputStart.classList.remove("is-invalid");
+  inputStart.classList.remove("is-valid");
+
+  errormsg_id = "timeErrorMsg";
+  if (inputStart.getAttribute("aria-describedby")) {
+    describedby_list = inputStart.getAttribute("aria-describedby").split(" ");
+  } else {
+    describedby_list = [];
+  }
   if (
     inputStart.value === "" ||
     inputStart.value < 0 ||
     inputStart.value >= video_duration
   ) {
-    if (typeof timeErrorSpan === "undefined") {
-      timeErrorSpan = document.createElement("span");
-      timeErrorSpan.className = "form-help-inline";
-      timeErrorSpan.innerHTML =
-        "&nbsp;&nbsp;" +
+    if (typeof timeErrorMsg === "undefined") {
+      timeErrorMsg = document.createElement("div");
+      timeErrorMsg.id = errormsg_id;
+      timeErrorMsg.className = "invalid-feedback";
+      timeErrorMsg.innerHTML =
         gettext("Please enter a correct start field between 0 and") +
         " " +
         (video_duration - 1);
-      inputStart.insertAdjacentHTML("beforebegin", timeErrorSpan.outerHTML);
+      inputStart.insertAdjacentHTML("afterend", timeErrorMsg.outerHTML);
+      inputStart.setAttribute("aria-describedby", errormsg_id);
       inputStart.parentNode.parentNode
         .querySelectorAll("div.form-group")
         .forEach(function (elt) {
           elt.classList.add("has-error");
         });
     }
-    return false;
+    inputStart.classList.add("is-invalid");
+    if (describedby_list.indexOf(errormsg_id) === -1) {
+      describedby_list.push(errormsg_id);
+    }
+    ret = false;
+  } else {
+    inputStart.classList.add("is-valid");
+    describedby_list.pop(errormsg_id);
   }
-  timeErrorSpan = undefined;
-  lengthErrorSpan = undefined;
-  return true;
+  inputStart.setAttribute("aria-describedby", describedby_list.join(" "));
+
+  return ret;
 }
 
 function overlaptest() {
@@ -318,7 +372,7 @@ document.addEventListener("click", (event) => {
   if (!(typeof player === "undefined")) {
     if (event.target.matches("#getfromvideo_start")) {
       document.getElementById("id_time_start").value = Math.floor(
-        player.currentTime()
+        player.currentTime(),
       );
       const event = new Event("change");
       const time_start = document.getElementById("id_time_start");
@@ -354,10 +408,10 @@ var updateDom = function (data) {
 
 var manageSave = function () {
   let player = window.videojs.players.podvideoplayer;
-  if (player.usingPlugin("videoJsChapters")) {
+  if (player.usingPlugin("podVideoJsChapters")) {
     player.main();
   } else {
-    player.videoJsChapters();
+    player.podVideoJsChapters();
   }
 };
 
@@ -368,7 +422,7 @@ var manageDelete = function () {
     player.main();
   } else {
     player.controlBar.chapters.dispose();
-    player.videoJsChapters().dispose();
+    player.podVideoJsChapters().dispose();
   }
 };
 
@@ -376,17 +430,17 @@ var manageImport = function () {
   let player = window.videojs.players.podvideoplayer;
   let n = document.querySelector("div.chapters-list");
   if (n != null) {
-    if (player.usingPlugin("videoJsChapters")) {
+    if (player.usingPlugin("podVideoJsChapters")) {
       player.main();
     } else {
-      player.videoJsChapters();
+      player.podVideoJsChapters();
     }
   } else {
     if (typeof player.controlBar.chapters != "undefined") {
       player.controlBar.chapters.dispose();
     }
-    if (player.usingPlugin("videoJsChapters")) {
-      player.videoJsChapters().dispose();
+    if (player.usingPlugin("podVideoJsChapters")) {
+      player.podVideoJsChapters().dispose();
     }
   }
 };

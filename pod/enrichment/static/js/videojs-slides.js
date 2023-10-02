@@ -288,7 +288,7 @@ var VideoSlides = function (items) {
    */
   this.slideBar = function () {
     const progressbar = document.getElementsByClassName(
-      "vjs-progress-holder"
+      "vjs-progress-holder",
     )[0];
     // Create the slidebar
     var slidebar = document.createElement("div");
@@ -316,7 +316,7 @@ var VideoSlides = function (items) {
           "%; width: " +
           slidebar_width +
           "%; background-color: " +
-          slide_color[type]
+          slide_color[type],
       );
       newslide.id = "slidebar_" + i;
       slidebar_holder.appendChild(newslide);
@@ -339,7 +339,7 @@ var VideoSlides = function (items) {
       }
       videoplayer.className = vclass;
       document.getElementsByClassName(
-        "vjs-slide-manager"
+        "vjs-slide-manager",
       )[0].firstChild.firstChild.innerHTML = slide_mode_list[mode];
     });
   };
@@ -354,17 +354,17 @@ var VideoSlides = function (items) {
     if (document.getElementsByClassName("vjs-fullscreen-control"))
       // Create the slide view mode
       var vjs_menu_item = videojs.getComponent("MenuItem");
-    var SlideMode = videojs.extend(vjs_menu_item, {
-      constructor: function (player, options) {
+    class SlideMode extends vjs_menu_item {
+      constructor(player, options) {
         options = options || {};
         options.label = options.label;
-        vjs_menu_item.call(this, player, options);
+        super(player, options);
         this.on("click", this.onClick);
         this.addClass("vjs-slide-mode");
         this.controlText(gettext("Turn to ") + options.mode);
         this.setAttribute("data-mode", options.mode);
-      },
-      onClick: function () {
+      }
+      onClick() {
         this.setAttribute("aria-checked", true);
         this.addClass("vjs-selected");
         current_slide_mode = this.el().getAttribute("data-mode");
@@ -380,30 +380,30 @@ var VideoSlides = function (items) {
             e.classList.remove("vjs-selected");
           }
         }
-      },
-    });
+      }
+    }
 
     // Create the slide manager menu title
-    var SlideTitle = videojs.extend(vjs_menu_item, {
-      constructor: function (player, options) {
+    class SlideTitle extends vjs_menu_item {
+      constructor(player, options) {
         options = options || {};
-        vjs_menu_item.call(this, player, options);
+        super(player, options);
         this.off("click");
-      },
-    });
+      }
+    }
 
     // Create the slide menu manager
     var vjs_menu_button = videojs.getComponent("MenuButton");
-    var SlideButton = videojs.extend(vjs_menu_button, {
-      constructor: function (player, options) {
+    class SlideButton extends vjs_menu_button {
+      constructor(player, options) {
         options = options || {};
-        vjs_menu_button.call(this, player, options);
+        super(player, options);
         this.addClass("vjs-slide-manager");
         this.controlText(gettext("Open slide manager"));
         this.el().firstChild.firstChild.innerHTML =
           slide_mode_list[current_slide_mode];
-      },
-      createItems: function () {
+      }
+      createItems() {
         var items = [];
 
         items.push(
@@ -412,7 +412,7 @@ var VideoSlides = function (items) {
               className: "vjs-menu-title vjs-slide-manager-title",
               innerHTML: gettext("Enrich mode"),
             }),
-          })
+          }),
         );
 
         for (let e in slide_mode_list) {
@@ -420,26 +420,26 @@ var VideoSlides = function (items) {
             new SlideMode(player, {
               label: slide_mode_list[e],
               mode: e,
-            })
+            }),
           );
         }
 
         return items;
-      },
-    });
+      }
+    }
     var newbutton = new SlideButton(player);
     if (document.getElementsByClassName("vjs-slide-manager").length > 0) {
       document
         .getElementsByClassName("vjs-slide-manager")[0]
         .parentNode.removeChild(
-          document.getElementsByClassName("vjs-slide-manager")[0]
+          document.getElementsByClassName("vjs-slide-manager")[0],
         );
     }
     player.controlBar
       .el()
       .insertBefore(
         newbutton.el(),
-        document.getElementsByClassName("vjs-fullscreen-control")[0]
+        document.getElementsByClassName("vjs-fullscreen-control")[0],
       );
   };
   ////VideoSLide construction (need to be and the end in order to register called methods)

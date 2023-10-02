@@ -235,7 +235,7 @@ def search_videos(request):
     list_videos_id = [hit["_id"] for hit in result["hits"]["hits"]]
     videos = Video.objects.filter(id__in=list_videos_id)
     num_result = 0
-    if ES_VERSION == 7:
+    if ES_VERSION in [7, 8]:
         num_result = result["hits"]["total"]["value"]
     else:
         num_result = result["hits"]["total"]

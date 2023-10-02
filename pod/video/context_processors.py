@@ -1,20 +1,16 @@
 from django.conf import settings as django_settings
 
-from pod.video.models import Channel
-from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.models import Video
 
 from django.db.models import Count, Sum
-from django.db.models import Prefetch
 from django.db.models import Q
 from django.db.models import Exists
 from django.db.models import OuterRef
 
 from datetime import timedelta
 from django.contrib.sites.shortcuts import get_current_site
-from pod.main.models import AdditionalChannelTab
 from pod.video_encode_transcript.models import EncodingVideo
 from pod.video_encode_transcript.models import PlaylistVideo
 from pod.video_encode_transcript.models import EncodingAudio
@@ -30,11 +26,14 @@ __AVAILABLE_VIDEO_FILTER__ = {
     "sites": 1,
 }
 
+CHANNELS_PER_BATCH = getattr(django_settings, "CHANNELS_PER_BATCH", 10)
 
-def get_available_videos(request=None):
-    """Get all videos available."""
+
+def get_available_videos_filter(request=None):
+    """Return the base filter to get the available videos of the site."""
     __AVAILABLE_VIDEO_FILTER__["sites"] = get_current_site(request)
-    vids = (
+
+    return (
         Video.objects.filter(**__AVAILABLE_VIDEO_FILTER__)
         .defer("video", "slug", "owner", "additional_owners", "description")
         .filter(
@@ -62,9 +61,12 @@ def get_available_videos(request=None):
                 )
             )
         )
-        .distinct()
     )
-    return vids
+
+
+def get_available_videos(request=None):
+    """Get all videos available."""
+    return get_available_videos_filter(request).distinct()
 
 
 def context_video_settings(request):
@@ -77,51 +79,6 @@ def context_video_settings(request):
 
 
 def context_navbar(request):
-    channels = (
-        Channel.objects.filter(
-            visible=True,
-            video__is_draft=False,
-            add_channels_tab=None,
-            site=get_current_site(request),
-        )
-        .distinct()
-        .annotate(video_count=Count("video", distinct=True))
-        .prefetch_related(
-            Prefetch(
-                "themes",
-                queryset=Theme.objects.filter(
-                    parentId=None, channel__site=get_current_site(request)
-                )
-                .distinct()
-                .annotate(video_count=Count("video", distinct=True)),
-            )
-        )
-    )
-
-    add_channels_tab = AdditionalChannelTab.objects.all().prefetch_related(
-        Prefetch(
-            "channel_set",
-            queryset=Channel.objects.filter(site=get_current_site(request))
-            .distinct()
-            .annotate(video_count=Count("video", distinct=True)),
-        )
-    )
-
-    all_channels = (
-        Channel.objects.all()
-        .filter(site=get_current_site(request))
-        .distinct()
-        .annotate(video_count=Count("video", distinct=True))
-        .prefetch_related(
-            Prefetch(
-                "themes",
-                queryset=Theme.objects.filter(channel__site=get_current_site(request))
-                .distinct()
-                .annotate(video_count=Count("video", distinct=True)),
-            )
-        )
-    )
-
     types = (
         Type.objects.filter(
             sites=get_current_site(request),
@@ -142,20 +99,21 @@ def context_navbar(request):
         .annotate(video_count=Count("video", distinct=True))
     )
 
-    list_videos = get_available_videos(request)
-    VIDEOS_COUNT = list_videos.count()
+    v_filter = get_available_videos_filter(request)
+
+    aggregate_videos = v_filter.aggregate(duration=Sum("duration"), number=Count("id"))
+
+    VIDEOS_COUNT = aggregate_videos["number"]
     VIDEOS_DURATION = (
-        str(timedelta(seconds=list_videos.aggregate(Sum("duration"))["duration__sum"]))
-        if list_videos.aggregate(Sum("duration"))["duration__sum"]
+        str(timedelta(seconds=aggregate_videos["duration"]))
+        if aggregate_videos["duration"]
         else 0
     )
 
     return {
-        "ALL_CHANNELS": all_channels,
-        "ADD_CHANNELS_TAB": add_channels_tab,
-        "CHANNELS": channels,
         "TYPES": types,
         "DISCIPLINES": disciplines,
         "VIDEOS_COUNT": VIDEOS_COUNT,
         "VIDEOS_DURATION": VIDEOS_DURATION,
+        "CHANNELS_PER_BATCH": CHANNELS_PER_BATCH,
     }

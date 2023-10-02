@@ -1,6 +1,9 @@
 """Esup-Pod videos views."""
+from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Count, F, Q, Case, When, Value, BooleanField
+from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -15,8 +18,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.db.models import Count, F, Q, Case, When, Value, BooleanField
-from django.db.models.functions import Concat
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.shortcuts import redirect
@@ -24,14 +25,23 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Sum, Min
 
+# from django.contrib.auth.hashers import check_password
+
 from dateutil.parser import parse
 import concurrent.futures as futures
 from pod.main.utils import is_ajax
 
+from pod.main.models import AdditionalChannelTab
 from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
-from pod.favorite.models import Favorite
+from pod.playlist.apps import FAVORITE_PLAYLIST_NAME
+from pod.playlist.models import Playlist, PlaylistContent
+from pod.playlist.utils import (
+    get_playlists_for_additional_owner,
+    get_video_list_for_playlist,
+    user_can_see_playlist_video,
+)
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
 from pod.video.models import Type
@@ -50,6 +60,8 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
+from pod.video.rest_views import ChannelSerializer
+
 from .utils import (
     pagination_data,
     get_headband,
@@ -91,6 +103,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         "LOGO_ETB": "img/esup-pod.svg",
         "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
+        "LINK_PLAYER_NAME": _("Home"),
         "FOOTER_TEXT": ("",),
         "FAVICON": "img/pod_favicon.svg",
         "CSS_OVERRIDE": "",
@@ -157,13 +170,15 @@ ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 USER_VIDEO_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
 ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
-
+HIDE_USER_FILTER = getattr(settings, "HIDE_USER_FILTER", False)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
 if USE_TRANSCRIPTION:
     from ..video_encode_transcript import transcript
 
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
+
+CHANNELS_PER_BATCH = getattr(settings, "CHANNELS_PER_BATCH", 10)
 
 
 # ############################################################################
@@ -532,6 +547,7 @@ def my_videos(request):
     sort_field = request.GET.get("sort")
     sort_direction = request.GET.get("sort_direction")
     videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+    owner_filter = owner_is_searchable(request.user)
 
     if not sort_field:
         # Get the default Video ordering
@@ -545,7 +561,12 @@ def my_videos(request):
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
+            {
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos,
+                "owner_filter": owner_filter,
+            },
         )
 
     data_context["videos"] = videos
@@ -561,6 +582,7 @@ def my_videos(request):
     data_context["page_title"] = _("My videos")
     data_context["sort_field"] = sort_field
     data_context["sort_direction"] = sort_direction
+    data_context["owner_filter"] = owner_filter
 
     return render(request, "videos/my_videos.html", data_context)
 
@@ -583,7 +605,11 @@ def get_filtered_videos_list(request, videos_list):
         videos_list = videos_list.filter(
             discipline__slug__in=request.GET.getlist("discipline")
         )
-    if request.GET.getlist("owner"):
+    if (
+        request.user
+        and owner_is_searchable(request.user)
+        and request.GET.getlist("owner")
+    ):
         # Add filter on additional owners
         videos_list = videos_list.filter(
             Q(owner__username__in=request.GET.getlist("owner"))
@@ -607,6 +633,11 @@ def get_owners_has_instances(owners):
         except ObjectDoesNotExist:
             pass
     return ownersInstances
+
+
+def owner_is_searchable(user):
+    """Return if user is searchable according to HIDE_USER_FILTER setting and authenticated user"""
+    return not HIDE_USER_FILTER and user.is_authenticated
 
 
 def videos(request):
@@ -636,12 +667,18 @@ def videos(request):
     paginator = Paginator(videos_list, 12)
     videos = get_paginated_videos(paginator, page)
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
+    owner_filter = owner_is_searchable(request.user)
 
     if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
+            {
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos,
+                "owner_filter": owner_filter,
+            },
         )
     return render(
         request,
@@ -659,6 +696,7 @@ def videos(request):
             "cursus_list": CURSUS_CODES,
             "sort_field": sort_field,
             "sort_direction": request.GET.get("sort_direction"),
+            "owner_filter": owner_filter,
         },
     )
 
@@ -839,7 +877,72 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     if request.GET.get("is_iframe"):
         params = {"page_title": video.title}
         template_video = "videos/video-iframe.html"
+    elif request.GET.get("playlist"):
+        playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+        if (
+            playlist.visibility == "public"
+            or playlist.visibility == "protected"
+            or (
+                playlist.owner == request.user
+                or playlist in get_playlists_for_additional_owner(request.user)
+                or request.user.is_staff
+            )
+        ):
+            videos = sort_videos_list(get_video_list_for_playlist(playlist), "rank")
+            params = {
+                "playlist_in_get": playlist,
+                "videos": videos,
+            }
+        else:
+            return HttpResponseNotFound()
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
+
+
+def toggle_render_video_user_can_see_video(
+    show_page, is_password_protected, request, slug_private, video
+) -> bool:
+    """Toogle condition for `render_video()`."""
+    return (
+        (show_page and not is_password_protected)
+        or (
+            show_page
+            and is_password_protected
+            and request.POST.get("password") == video.password
+            # and check_password(request.POST.get("password"), video.password)
+        )
+        or (slug_private and slug_private == video.get_hashkey())
+        or request.user == video.owner
+        or request.user.is_superuser
+        or request.user.has_perm("video.change_video")
+        or (request.user in video.additional_owners.all())
+        or (request.GET.get("playlist"))
+    )
+
+
+def toggle_render_video_when_is_playlist_player(request):
+    """Toggle `render_video()` when the user want to play a playlist."""
+    playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+    print(playlist.visibility)
+    if request.user.is_authenticated:
+        video = (
+            Video.objects.filter(
+                playlistcontent__playlist_id=playlist.id,
+                is_draft=False,
+                is_restricted=False,
+            )
+            | Video.objects.filter(
+                playlistcontent__playlist_id=playlist.id,
+                owner=request.user,
+            )
+        ).first()
+    else:
+        video = Video.objects.filter(
+            playlistcontent__playlist_id=playlist.id,
+            is_draft=False,
+            is_restricted=False,
+        ).first()
+    if not video:
+        return Http404()
 
 
 def render_video(
@@ -851,6 +954,7 @@ def render_video(
     template_video="videos/video.html",
     more_data={},
 ):
+    """Render video."""
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
     """
     # Do it only for video --> move code in video definition
@@ -874,20 +978,15 @@ def render_video(
 
     show_page = get_video_access(request, video, slug_private)
 
-    if (
-        (show_page and not is_password_protected)
-        or (
-            show_page
-            and is_password_protected
-            and request.POST.get("password")
-            and request.POST.get("password") == video.password
-        )
-        or (slug_private and slug_private == video.get_hashkey())
-        or request.user == video.owner
-        or request.user.is_superuser
-        or request.user.has_perm("video.change_video")
-        or (request.user in video.additional_owners.all())
+    owner_filter = owner_is_searchable(request.user)
+
+    if toggle_render_video_user_can_see_video(
+        show_page, is_password_protected, request, slug_private, video
     ):
+        if request.GET.get("playlist") and not user_can_see_playlist_video(
+            request, video
+        ):
+            toggle_render_video_when_is_playlist_player(request)
         return render(
             request,
             template_video,
@@ -896,6 +995,7 @@ def render_video(
                 "video": video,
                 "theme": theme,
                 "listNotes": listNotes,
+                "owner_filter": owner_filter,
                 **more_data,
             },
         )
@@ -913,6 +1013,7 @@ def render_video(
             if (
                 request.POST.get("password")
                 and request.POST.get("password") != video.password
+                # and check_password(request.POST.get("password"), video.password )
             ):
                 messages.add_message(
                     request, messages.ERROR, _("The password is incorrect.")
@@ -926,6 +1027,7 @@ def render_video(
                     "theme": theme,
                     "form": form,
                     "listNotes": listNotes,
+                    "owner_filter": owner_filter,
                     **more_data,
                 },
             )
@@ -1003,7 +1105,30 @@ def video_edit(request, slug=None):
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
             )
-    return render(request, "videos/video_edit.html", {"form": form})
+
+    return render(
+        request,
+        "videos/video_edit.html",
+        {"form": form, "listTheme": json.dumps(get_list_theme_in_form(form))},
+    )
+
+
+def get_list_theme_in_form(form):
+    """
+    Get the themes for the form.
+
+    Args:
+        form: the form containing the channel available by the user.
+
+    Returns:
+        an array containing all the themes available.
+    """
+    listTheme = {}
+    if "channel" in form.fields:
+        for channel in form.fields["channel"].queryset:
+            if channel.themes.count() > 0:
+                listTheme["channel_%s" % channel.id] = channel.get_all_theme()
+    return listTheme
 
 
 def save_video_form(request, form):
@@ -1445,6 +1570,11 @@ def video_note_save(request, slug):
 
     idCom = get_id_from_request(request, "idCom")
     idNote = get_id_from_request(request, "idNote")
+
+    if idCom:
+        com = NoteComments.objects.get(id=idCom)
+    if idNote:
+        note = AdvancedNotes.objects.get(id=idNote)
 
     if request.method == "POST" and request.POST.get("action") == "save_note":
         q = QueryDict(mutable=True)
@@ -1942,12 +2072,42 @@ def get_all_views_count(v_id, date_filter=date.today()):
     count = ViewCount.objects.filter(video_id=v_id).aggregate(Sum("count"))["count__sum"]
     all_views["since_created"] = count if count else 0
 
+    # playlist addition in day
+    count = PlaylistContent.objects.filter(
+        video_id=v_id, date_added__date=date_filter
+    ).count()
+    all_views["playlist_day"] = count if count else 0
+
+    # playlist addition in month
+    count = PlaylistContent.objects.filter(
+        video_id=v_id,
+        date_added__year=date_filter.year,
+        date_added__month=date_filter.month,
+    ).count()
+    all_views["playlist_month"] = count if count else 0
+
+    # playlist addition in year
+    count = PlaylistContent.objects.filter(
+        video_id=v_id,
+        date_added__year=date_filter.year,
+    ).count()
+    all_views["playlist_year"] = count if count else 0
+
+    # playlist addition since video was created
+    count = PlaylistContent.objects.filter(video_id=v_id).count()
+    all_views["playlist_since_created"] = count if count else 0
+
+    favorites_playlists = Playlist.objects.filter(name=FAVORITE_PLAYLIST_NAME)
+
     # favorite addition in day
-    count = Favorite.objects.filter(video_id=v_id, date_added__date=date_filter).count()
+    count = PlaylistContent.objects.filter(
+        playlist__in=favorites_playlists, video_id=v_id, date_added__date=date_filter
+    ).count()
     all_views["fav_day"] = count if count else 0
 
     # favorite addition in month
-    count = Favorite.objects.filter(
+    count = PlaylistContent.objects.filter(
+        playlist__in=favorites_playlists,
         video_id=v_id,
         date_added__year=date_filter.year,
         date_added__month=date_filter.month,
@@ -1955,14 +2115,16 @@ def get_all_views_count(v_id, date_filter=date.today()):
     all_views["fav_month"] = count if count else 0
 
     # favorite addition in year
-    count = Favorite.objects.filter(
-        video_id=v_id,
-        date_added__year=date_filter.year,
+    count = PlaylistContent.objects.filter(
+        playlist__in=favorites_playlists, video_id=v_id, date_added__year=date_filter.year
     ).count()
     all_views["fav_year"] = count if count else 0
 
     # favorite addition since video was created
-    count = Favorite.objects.filter(video_id=v_id).count()
+    count = PlaylistContent.objects.filter(
+        playlist__in=favorites_playlists,
+        video_id=v_id,
+    ).count()
     all_views["fav_since_created"] = count if count else 0
 
     return all_views
@@ -2068,6 +2230,7 @@ def stats_view(request, slug=None, slug_t=None):
         and (
             request.POST.get("password")
             and request.POST.get("password") == videos[0].password
+            # and check_password(request.POST.get("password"), videos[0].password)
         )
     ) or (
         request.method == "GET" and videos and target in ("videos", "channel", "theme")
@@ -2758,6 +2921,113 @@ def filter_videos(request, user_id):
 
     except Exception as err:
         return JsonResponse({"success": False, "detail": "Syntax error: {0}".format(err)})
+
+
+def get_serialized_channels(request: WSGIRequest, channels: QueryDict) -> dict:
+    """
+    Get serialized channels.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        channels (::class::`django.http.QueryDict`): The channel list.
+    Returns:
+        dict: The channel list in JSON format.
+    """
+    channels_json_format = {}
+    for num, channel in enumerate(channels):
+        channels_json_format[num] = ChannelSerializer(
+            channel, context={"request": request}
+        ).data
+        channels_json_format[num]["url"] = reverse(
+            "channel-video:channel", kwargs={"slug_c": channel.slug}
+        )
+        channels_json_format[num]["videoCount"] = channel.video_count
+        channels_json_format[num]["headbandImage"] = (
+            channel.headband.file.url if channel.headband else ""
+        )
+        channels_json_format[num]["themes"] = channel.themes.count()
+    return channels_json_format
+
+
+def get_channel_tabs_for_navbar(request: WSGIRequest) -> JsonResponse:
+    """
+    Get the channel tabs for the navbar.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
+    channel_tabs = AdditionalChannelTab.objects.all()
+    channel_tabs_json_format = {}
+    for num, channel_tab in enumerate(channel_tabs):
+        channel_tabs_json_format[num] = {
+            "id": channel_tab.pk,
+            "name": channel_tab.name,
+        }
+    return JsonResponse(channel_tabs_json_format, safe=False)
+
+
+def get_channels_for_specific_channel_tab(request: WSGIRequest) -> JsonResponse:
+    """
+    Get the channels for a specific channel tab.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
+    page_number = request.GET.get("page", 1)
+    channel_tab_id = request.GET.get("id")
+    if channel_tab_id:
+        channels = (
+            Channel.objects.filter(
+                visible=True,
+                video__is_draft=False,
+                add_channels_tab=channel_tab_id,
+                site=get_current_site(request),
+            )
+            .distinct()
+            .annotate(video_count=Count("video", distinct=True))
+            .order_by("title")
+        )
+    else:
+        channels = (
+            Channel.objects.filter(
+                visible=True,
+                video__is_draft=False,
+                add_channels_tab=None,
+                site=get_current_site(request),
+            )
+            .distinct()
+            .annotate(video_count=Count("video", distinct=True))
+            .order_by("title")
+        )
+    paginator = Paginator(channels, CHANNELS_PER_BATCH)
+    page_obj = paginator.get_page(page_number)
+    response = {}
+    response["channels"] = get_serialized_channels(request, page_obj.object_list)
+    response["currentPage"] = page_obj.number
+    response["totalPages"] = paginator.num_pages
+    response["count"] = len(channels)
+    return JsonResponse(response, safe=False)
+
+
+def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> JsonResponse:
+    """
+    Get the themes for a specific channel.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        request (`str`): The channel slug.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
+    channel = Channel.objects.get(slug=slug)
+    return JsonResponse(json.loads(channel.get_all_theme_json()), safe=False)
 
 
 """

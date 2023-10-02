@@ -36,7 +36,10 @@ __CAPTION_MAKER_ACTION__ = ["save"]
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
-    ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
+    (
+        (_("-- Frequently used languages --"), PREF_LANG_CHOICES),
+        (_("-- All languages --"), ALL_LANG_CHOICES),
+    ),
 )
 __LANG_CHOICES_DICT__ = {
     key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
@@ -585,12 +588,12 @@ def video_completion_get_form_track(request):
 
 def video_completion_track_save(request, video):
     """View to save a track associated to a video."""
-
     form_track = video_completion_get_form_track(request)
+    list_track = video.track_set.all()
 
     if form_track.is_valid():
         form_track.save()
-        list_track = video.track_set.all()
+
         if request.is_ajax():
             some_data_to_dump = {
                 "list_data": render_to_string(
@@ -633,7 +636,6 @@ def video_completion_track_save(request, video):
 
 def video_completion_track_modify(request, video):
     """View to modify a track associated to a video."""
-
     track = get_object_or_404(Track, id=request.POST["id"])
     form_track = TrackForm(instance=track)
     if request.is_ajax():
@@ -653,7 +655,6 @@ def video_completion_track_modify(request, video):
 
 def video_completion_track_delete(request, video):
     """View to delete a track associated to a video."""
-
     track = get_object_or_404(Track, id=request.POST["id"])
     track.delete()
     list_track = video.track_set.all()
@@ -769,6 +770,7 @@ def video_completion_overlay_new(request, video):
 
 
 def video_completion_overlay_save(request, video):
+    """Save a completion overlay."""
     if LINK_SUPERPOSITION:
         request.POST._mutable = True
         request.POST["content"] = transform_url_to_link(request.POST["content"])
@@ -823,6 +825,7 @@ def video_completion_overlay_save(request, video):
 
 
 def video_completion_overlay_modify(request, video):
+    """Modify a completion overlay."""
     overlay = get_object_or_404(Overlay, id=request.POST["id"])
 
     if LINK_SUPERPOSITION:
@@ -844,6 +847,7 @@ def video_completion_overlay_modify(request, video):
 
 
 def video_completion_overlay_delete(request, video):
+    """Delete a completion overlay."""
     overlay = get_object_or_404(Overlay, id=request.POST["id"])
     overlay.delete()
     list_overlay = video.overlay_set.all()

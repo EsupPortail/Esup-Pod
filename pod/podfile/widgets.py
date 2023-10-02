@@ -1,3 +1,4 @@
+"""Esup-Pod podfile widgets."""
 from django.forms import widgets
 from django.utils.safestring import mark_safe
 from django.template.loader import render_to_string
@@ -15,6 +16,8 @@ class CustomFileWidget(widgets.TextInput):
         super(CustomFileWidget, self).__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None, renderer=None):
+        """Render the CustomFileWidget as HTML."""
+
         document = None
 
         if value:
@@ -36,6 +39,15 @@ class CustomFileWidget(widgets.TextInput):
         }
         template_name = "podfile/customfilewidget.html"
         output = super(CustomFileWidget, self).render(name, value, attrs)
+        context = self.get_context(name, value, attrs)
+        attrs = context["widget"]["attrs"]
+
+        # Copy all the aria-xxx attributes on button
+        btn_attrs = {}
+        for att_name, att_value in attrs.items():
+            if "aria" in att_name:
+                btn_attrs[att_name] = att_value
+
         return mark_safe(
             render_to_string(
                 template_name,
@@ -47,6 +59,8 @@ class CustomFileWidget(widgets.TextInput):
                     "widget": output,
                     "input": input,
                     "type": self.type,
+                    "attrs": attrs,
+                    "btn_attrs": btn_attrs,
                 },
             )
         )

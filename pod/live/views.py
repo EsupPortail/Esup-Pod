@@ -2,6 +2,7 @@ import json
 import logging
 import os.path
 import re
+import threading
 from datetime import datetime
 
 from django.conf import settings
@@ -30,7 +31,6 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from rest_framework import status
 
 from pod.bbb.models import Livestream
-from . import pilotingInterface
 from .forms import EventPasswordForm, EventForm, EventDeleteForm, EventImmediateForm
 from .models import (
     Building,
@@ -39,6 +39,7 @@ from .models import (
     Event,
     get_available_broadcasters_of_building,
 )
+from .pilotingInterface import get_piloting_implementation
 from .utils import (
     send_email_confirmation,
     get_event_id_and_broadcaster_id,
@@ -46,8 +47,9 @@ from .utils import (
     check_size_not_changing,
     check_permission,
 )
+from ..main.utils import is_ajax
 from ..main.views import in_maintenance
-from ..video.models import Video
+from ..video.models import Video, Type
 
 HEARTBEAT_DELAY = getattr(settings, "HEARTBEAT_DELAY", 45)
 
@@ -70,7 +72,8 @@ EMAIL_ON_EVENT_SCHEDULING = getattr(settings, "EMAIL_ON_EVENT_SCHEDULING", False
 
 
 @login_required(redirect_field_name="referrer")
-def directs_all(request):  # affichage des directs
+def directs_all(request):
+    """Show all directs."""
     check_permission(request)
 
     site = get_current_site(request)
@@ -94,7 +97,8 @@ def directs_all(request):  # affichage des directs
 
 
 @login_required(redirect_field_name="referrer")
-def directs(request, building_id):  # affichage des directs d'un batiment
+def directs(request, building_id):
+    """Show all directs of a given building."""
     check_permission(request)
     building = get_object_or_404(Building, id=building_id)
     return render(
@@ -105,7 +109,8 @@ def directs(request, building_id):  # affichage des directs d'un batiment
 
 
 @login_required(redirect_field_name="referrer")
-def direct(request, slug):  # affichage du flux d'un diffuseur
+def direct(request, slug):
+    """Show the stream of a given broadcaster."""
     check_permission(request)
 
     site = get_current_site(request)
@@ -136,7 +141,7 @@ def direct(request, slug):  # affichage du flux d'un diffuseur
 
 
 def get_broadcaster_by_slug(slug, site):
-    if type(slug) == int:
+    if isinstance(slug, int):
         return get_object_or_404(Broadcaster, id=slug, building__sites=site)
     else:
         return get_object_or_404(Broadcaster, slug=slug, building__sites=site)
@@ -155,7 +160,7 @@ def change_status(request, slug):
 
 
 def heartbeat(request):
-    if request.is_ajax() and request.method == "GET":
+    if is_ajax(request) and request.method == "GET":
         broadcasterid = request.GET.get("broadcasterid")
         eventid = request.GET.get("eventid")
         if broadcasterid is None and eventid is None:
@@ -239,54 +244,53 @@ def can_manage_event(user):
     )
 
 
-def is_in_event_groups(user, event):
+def is_in_event_groups(user, evt):
     return user.owner.accessgroup_set.filter(
         code_name__in=[
-            name[0] for name in event.restrict_access_to_groups.values_list("code_name")
+            name[0] for name in evt.restrict_access_to_groups.values_list("code_name")
         ]
     ).exists()
 
 
-def get_event_access(request, event, slug_private, is_owner):
+def get_event_access(request, evt, slug_private, is_owner):
     """Return True if access is granted to current user."""
-
     if is_owner:
         return True
 
-    if event.is_draft:
-        if slug_private or slug_private == event.get_hashkey():
+    if evt.is_draft:
+        if slug_private or slug_private == evt.get_hashkey():
             can_access_draft = True
         else:
             can_access_draft = (
-                request.user == event.owner
-                or request.user in event.additional_owners.all()
+                request.user == evt.owner
+                or request.user in evt.additional_owners.all()
                 or request.user.is_superuser
             )
         if not can_access_draft:
             return False
 
-    if event.is_restricted and not request.user.is_authenticated:
+    if evt.is_restricted and not request.user.is_authenticated:
         return False
 
-    if event.restrict_access_to_groups.all().exists() and (
-        not request.user.is_authenticated or not is_in_event_groups(request.user, event)
+    if evt.restrict_access_to_groups.all().exists() and (
+        not request.user.is_authenticated or not is_in_event_groups(request.user, evt)
     ):
         return False
 
     return True
 
 
-def event(request, slug, slug_private=None):  # affichage d'un event
-    # modif de l'url d'appel pour compatibilité
-    # avec le template link_video.html (variable: urleditapp)
+def event(request, slug, slug_private=None):
+    """Show an event."""
+    # change request url for compatibility purpose with template link_video.html (var: urleditapp)
     request.resolver_match.namespace = ""
 
     try:
-        id = int(slug[: slug.find("-")])
+        event_id = int(slug[: slug.find("-")])
     except ValueError:
         raise SuspiciousOperation("Invalid event id")
 
-    evemnt = get_object_or_404(Event, id=id)
+    evemnt = get_object_or_404(Event, id=event_id)
 
     if (
         evemnt.is_restricted or evemnt.restrict_access_to_groups.all().exists()
@@ -346,19 +350,39 @@ def render_event_template(request, evemnt, user_owns_event):
         {
             "event": evemnt,
             "display_chat": display_chat,
-            "need_piloting_buttons": user_owns_event and not request.GET.get("is_iframe"),
+            "can_record": (
+                user_owns_event
+                and evemnt.broadcaster.piloting_implementation
+                and not request.GET.get("is_iframe")
+            ),
+            "use_split": use_split(evemnt.broadcaster),
+            "can_manage_stream": can_manage_stream(evemnt.broadcaster),
             "heartbeat_delay": HEARTBEAT_DELAY,
         },
     )
 
 
 def events(request):
-    """Affichage des events."""
-    # Tous les events à venir (sauf les drafts sont affichés)
-    queryset = Event.objects.filter(end_date__gt=timezone.now(), is_draft=False)
+    """Show all events."""
+    # All events not ended are shown (except drafts)
+    queryset = Event.objects.filter(
+        end_date__gt=timezone.now(),
+        broadcaster__building__sites__exact=get_current_site(request),
+        is_draft=False,
+    )
+
+    available_types = Type.objects.filter(event__in=queryset.all()).distinct()
+
+    # can be filtered by Type
+    filter_type = request.GET.getlist("type")
+    if filter_type:
+        queryset = queryset.filter(type__slug__in=filter_type)
+
     events_list = queryset.all().order_by("start_date", "end_date")
 
+    # pagination
     page = request.GET.get("page", 1)
+
     full_path = ""
     if page:
         full_path = (
@@ -375,12 +399,25 @@ def events(request):
     except EmptyPage:
         events_found = paginator.page(paginator.num_pages)
 
+    if is_ajax(request):
+        return render(
+            request,
+            "live/events_list.html",
+            {
+                "events": events_found,
+                "full_path": full_path,
+                "count_events": events_list.count(),
+            },
+        )
+
     return render(
         request,
         "live/events.html",
         {
+            "count_events": events_list.count(),
             "events": events_found,
             "full_path": full_path,
+            "types": available_types,
             "DEFAULT_EVENT_THUMBNAIL": DEFAULT_EVENT_THUMBNAIL,
             "display_broadcaster_name": False,
             "display_direct_button": request.user.is_superuser
@@ -395,6 +432,7 @@ def events(request):
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def my_events(request):
+    """Show owner's events."""
     queryset = (
         request.user.event_set.all().distinct()
         | request.user.owners_events.all().distinct()
@@ -406,7 +444,7 @@ def my_events(request):
     coming_events = [evt for evt in queryset if not evt.is_past()]
     coming_events = sorted(coming_events, key=lambda evt: (evt.start_date, evt.end_date))
 
-    events_number = len(past_events) + len(coming_events)
+    count_events = len(past_events) + len(coming_events)
 
     PREVIOUS_EVENT_URL_NAME = "ppage"
     NEXT_EVENT_URL_NAME = "npage"
@@ -441,7 +479,7 @@ def my_events(request):
         {
             "full_path": full_path,
             "types": request.GET.getlist("type"),
-            "events_number": events_number,
+            "count_events": count_events,
             "past_events": past_events,
             "past_events_url": PREVIOUS_EVENT_URL_NAME,
             "past_events_url_page": PREVIOUS_EVENT_URL_NAME + "=" + str(pageP),
@@ -456,14 +494,15 @@ def my_events(request):
     )
 
 
-def get_event_edition_access(request, event):
+def get_event_edition_access(request, evt):
+    """Check if user can edit the event."""
     # creation
-    if event is None:
+    if evt is None:
         return can_manage_event(request.user)
     # edition
     return (
-        request.user == event.owner
-        or request.user in event.additional_owners.all()
+        request.user == evt.owner
+        or request.user in evt.additional_owners.all()
         or request.user.is_superuser
     )
 
@@ -476,14 +515,14 @@ def event_edit(request, slug=None):
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
-    event = get_object_or_404(Event, slug=slug) if slug else None
+    evt = get_object_or_404(Event, slug=slug) if slug else None
 
-    if event:
+    if evt:
         page_title = _("Editing the event")
     else:
         page_title = _("Plan an event")
 
-    if not get_event_edition_access(request, event):
+    if not get_event_edition_access(request, evt):
         return render(
             request,
             "live/event_edit.html",
@@ -495,9 +534,9 @@ def event_edit(request, slug=None):
 
     form = EventForm(
         request.POST or None,
-        instance=event,
+        instance=evt,
         user=request.user,
-        is_current_event=event.is_current() if slug else None,
+        is_current_event=evt.is_current() if slug else None,
         broadcaster_id=request.GET.get("broadcaster_id"),
         building_id=request.GET.get("building_id"),
     )
@@ -505,14 +544,14 @@ def event_edit(request, slug=None):
     if request.POST:
         form = EventForm(
             request.POST,
-            instance=event,
+            instance=evt,
             user=request.user,
-            is_current_event=event.is_current() if slug else None,
+            is_current_event=evt.is_current() if slug else None,
         )
         if form.is_valid():
-            event = update_event(form)
+            evt = update_event(form)
             if EMAIL_ON_EVENT_SCHEDULING:
-                send_email_confirmation(event)
+                send_email_confirmation(evt)
             messages.add_message(
                 request, messages.INFO, _("The changes have been saved.")
             )
@@ -532,29 +571,29 @@ def event_edit(request, slug=None):
 def update_event(form):
     """Update an event with received form fields."""
     if form.cleaned_data.get("end_date"):
-        event = form.save()
-        return event
+        evt = form.save()
+        return evt
     else:
         if form.cleaned_data.get("start_date"):
             d_debut = form.cleaned_data["start_date"].date()
         else:
             d_debut = datetime.now()
 
-        event = form.save(commit=False)
+        evt = form.save(commit=False)
         d_fin = datetime.combine(d_debut, form.cleaned_data["end_time"])
         d_fin = timezone.make_aware(d_fin)
-        event.end_date = d_fin
-        event.save()
-        return event
+        evt.end_date = d_fin
+        evt.save()
+        return evt
 
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def event_delete(request, slug=None):
     """Delete the event identified by 'slug'."""
-    event = get_object_or_404(Event, slug=slug)
+    evt = get_object_or_404(Event, slug=slug)
 
-    if request.user != event.owner and not (
+    if request.user != evt.owner and not (
         request.user.is_superuser or request.user.has_perm("live.delete_event")
     ):
         messages.add_message(request, messages.ERROR, _("You cannot delete this event."))
@@ -565,7 +604,7 @@ def event_delete(request, slug=None):
     if request.method == "POST":
         form = EventDeleteForm(request.POST)
         if form.is_valid():
-            event.delete()
+            evt.delete()
             messages.add_message(request, messages.INFO, _("The event has been deleted."))
             return redirect(reverse("live:my_events"))
         else:
@@ -578,13 +617,14 @@ def event_delete(request, slug=None):
     return render(
         request,
         "live/event_delete.html",
-        {"event": event, "form": form},
+        {"event": evt, "form": form},
     )
 
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def event_immediate_edit(request, broadcaster_id=None):
+    """Edition of an immediate event (created with QrCode)."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
@@ -637,6 +677,10 @@ def event_immediate_edit(request, broadcaster_id=None):
 
 
 def broadcasters_from_building(request):
+    """Retrieve broadcasters of a given building.
+
+    Returns: an HttpResponse.
+    """
     building_name = request.GET.get("building")
     if not building_name:
         return HttpResponseBadRequest()
@@ -656,8 +700,12 @@ def broadcasters_from_building(request):
 
 
 def broadcaster_restriction(request):
+    """Check if broadcaster's access is restricted.
+
+    Returns: a JsonResponse.
+    """
     if request.method == "GET":
-        broadcaster_id = request.GET.get("idbroadcaster")
+        event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         if not broadcaster_id:
             return HttpResponseBadRequest()
         broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
@@ -668,9 +716,13 @@ def broadcaster_restriction(request):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def event_isstreamavailabletorecord(request):
-    if request.method == "GET" and request.is_ajax():
-        broadcaster_id = request.GET.get("idbroadcaster", None)
+def ajax_is_stream_available_to_record(request):
+    """Check if the broadcaster is available to record and if is recording.
+
+    Returns: a JsonResponse with available state and recording state of the broadcaster.
+    """
+    if request.method == "GET" and is_ajax(request):
+        event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
 
         if not check_piloting_conf(broadcaster):
@@ -694,7 +746,8 @@ def event_isstreamavailabletorecord(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_startrecord(request):
-    if request.method == "POST" and request.is_ajax():
+    """Start the record."""
+    if request.method == "POST" and is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_startrecord(event_id, broadcaster_id)
 
@@ -702,6 +755,10 @@ def ajax_event_startrecord(request):
 
 
 def event_startrecord(event_id, broadcaster_id):
+    """Call the start method of the broadcaster's implementation.
+
+    Returns: a JsonResponse with success state and the error (in case of failure).
+    """
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
     if not check_piloting_conf(broadcaster):
         return JsonResponse({"success": False, "error": "implementation error"})
@@ -714,13 +771,17 @@ def event_startrecord(event_id, broadcaster_id):
     if not start_record(broadcaster, event_id):
         return JsonResponse({"success": False, "error": ""})
 
+    curr_event = Event.objects.get(pk=event_id)
+    curr_event.is_recording_stopped = False
+
     return JsonResponse({"success": True})
 
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_splitrecord(request):
-    if request.method == "POST" and request.is_ajax():
+    """Split the record."""
+    if request.method == "POST" and is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
 
         return event_splitrecord(event_id, broadcaster_id)
@@ -729,6 +790,11 @@ def ajax_event_splitrecord(request):
 
 
 def event_splitrecord(event_id, broadcaster_id):
+    """Call the split method of the broadcaster's implementation
+    and converts the file to a Pod video (linked to the event).
+
+     Returns: a JsonResponse with success state and the error (in case of failure).
+    """
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
 
     valid, res = check_event_record(broadcaster, with_file_check=True)
@@ -741,17 +807,18 @@ def event_splitrecord(event_id, broadcaster_id):
     if not split_record(broadcaster):
         return JsonResponse({"success": False, "error": ""})
 
-    return event_video_transform(
+    return transform_to_video(
+        broadcaster,
         event_id,
-        current_record_info.get("currentFile", None),
-        current_record_info.get("segmentNumber", None),
+        current_record_info,
     )
 
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def ajax_event_stoprecord(request):
-    if request.method == "POST" and request.is_ajax():
+    """Stop the record."""
+    if request.method == "POST" and is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_stoprecord(event_id, broadcaster_id)
 
@@ -759,6 +826,11 @@ def ajax_event_stoprecord(request):
 
 
 def event_stoprecord(event_id, broadcaster_id):
+    """Call the stop method of the broadcaster's implementation
+    and converts the file to a Pod video (linked to the event).
+
+     Returns: a JsonResponse with success state and the error (in case of failure).
+    """
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
 
     valid, res = check_event_record(broadcaster, with_file_check=True)
@@ -769,21 +841,22 @@ def event_stoprecord(event_id, broadcaster_id):
     if not stop_record(broadcaster):
         return JsonResponse({"success": False, "error": ""})
 
-    # change auto_start property so the recording does not start again
+    # change is_recording_stopped property so the recording does not start again
     curr_event = Event.objects.get(pk=event_id)
-    curr_event.is_auto_start = False
+    curr_event.is_recording_stopped = True
     curr_event.save()
 
-    return event_video_transform(
+    return transform_to_video(
+        broadcaster,
         event_id,
-        current_record_info.get("currentFile", None),
-        current_record_info.get("segmentNumber", None),
+        current_record_info,
     )
 
 
 @login_required(redirect_field_name="referrer")
 def ajax_event_info_record(request):
-    if request.method == "POST" and request.is_ajax():
+    """Get the infos of the record."""
+    if request.method == "POST" and is_ajax(request):
         event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
         return event_info_record(event_id, broadcaster_id)
 
@@ -791,6 +864,11 @@ def ajax_event_info_record(request):
 
 
 def event_info_record(event_id, broadcaster_id):
+    """Return a JsonResponse with success state and :
+
+    * the duration of the recording in seconds
+    * or the error (in case of failure).
+    """
     broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
     valid, res = check_event_record(broadcaster)
     if not valid:
@@ -809,7 +887,7 @@ def event_info_record(event_id, broadcaster_id):
 
 
 def check_event_record(broadcaster, with_file_check=False):
-    """Checks whether the given broadcaster is recording an event."""
+    """Check whether the given broadcaster is recording an event."""
     if not check_piloting_conf(broadcaster):
         return False, JsonResponse({"success": False, "error": "implementation error"})
 
@@ -822,23 +900,86 @@ def check_event_record(broadcaster, with_file_check=False):
 
 
 @csrf_protect
+@login_required(redirect_field_name="referrer")
+def ajax_event_start_streaming(request):
+    """Start the stream."""
+    return ajax_event_change_streaming(request, "start")
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def ajax_event_stop_streaming(request):
+    """Stop the stream."""
+    return ajax_event_change_streaming(request, "stop")
+
+
+def ajax_event_change_streaming(request, action):
+    """Start or stops the stream."""
+    if request.method != "POST" or not is_ajax(request):
+        return HttpResponseNotAllowed(["POST"])
+
+    if action not in ["start", "stop"]:
+        return JsonResponse(
+            {"success": False, "error": "can only start or stop"}, status=500
+        )
+
+    event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
+    broadcaster = Broadcaster.objects.filter(pk=broadcaster_id).first()
+    impl_class = get_piloting_implementation(broadcaster)
+
+    if impl_class is None:
+        return JsonResponse({"success": False, "error": "implementation error"})
+
+    to_exe = impl_class.start_stream() if action == "start" else impl_class.stop_stream()
+
+    if to_exe:
+        return JsonResponse({"success": True})
+
+    return JsonResponse({"success": False, "error": f"{action} not done"})
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def ajax_event_get_rtmp_config(request):
+    """Check if the broadcaster is configured for rtmp stream and return his config."""
+    if request.method != "GET" or not is_ajax(request):
+        return HttpResponseNotAllowed(["GET"])
+
+    event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
+
+    broadcaster = Broadcaster.objects.get(pk=broadcaster_id)
+    impl_class = get_piloting_implementation(broadcaster)
+
+    if impl_class is None:
+        return JsonResponse({"success": False, "error": "implementation error"})
+
+    infos = impl_class.get_stream_rtmp_infos()
+    if infos.get("error", ""):
+        return JsonResponse({"success": False, "error": infos["error"]})
+
+    return JsonResponse({"success": True, "data": infos})
+
+
+@csrf_protect
 def event_get_video_cards(request):
-    if request.is_ajax():
-        event_id = request.GET.get("idevent", None)
-        event = Event.objects.get(pk=event_id)
+    """Return the template with the videos link to the event."""
+    if is_ajax(request):
+        event_id, broadcaster_id = get_event_id_and_broadcaster_id(request)
+        evt = Event.objects.get(pk=event_id)
 
         html = ""
-        if event.videos.count() > 0:
+        if evt.videos.count() > 0:
             request.resolver_match.namespace = ""
             html = render_to_string(
-                "live/event_videos.html", {"event": event}, request=request
+                "live/event_videos.html", {"event": evt}, request=request
             )
         return JsonResponse({"content": html})
 
     return HttpResponseBadRequest()
 
 
-def event_video_transform(event_id, current_file, segment_number):
+def create_video(event_id, current_file, segment_number):
+    """Create a video from the file_path given in the parameters."""
     live_event = Event.objects.get(pk=event_id)
     filename = os.path.basename(current_file)
 
@@ -881,7 +1022,7 @@ def event_video_transform(event_id, current_file, segment_number):
     except Exception as exc:
         return JsonResponse(
             status=500,
-            data={"success": False, "error": exc},
+            data={"success": False, "error": str(exc)},
         )
 
     segment = "(" + segment_number + ")" if segment_number else ""
@@ -926,49 +1067,52 @@ def event_video_transform(event_id, current_file, segment_number):
     live_event.videos.add(video)
     live_event.save()
 
-    return JsonResponse({"success": True})
+    return JsonResponse({"success": True, "error": ""})
 
 
 def check_dir_exists(dest_dir_name, max_attempt=6):
-    """Checks a directory exists."""
+    """Check a directory exists."""
     return check_exists(dest_dir_name, True, max_attempt)
 
 
 def check_file_exists(full_file_name, max_attempt=6):
-    """Checks a file exists."""
+    """Check a file exists."""
     return check_exists(full_file_name, False, max_attempt)
 
 
 def check_piloting_conf(broadcaster: Broadcaster) -> bool:
-    impl_class = pilotingInterface.get_piloting_implementation(broadcaster)
-    if not impl_class:
-        return False
-    return impl_class.check_piloting_conf()
+    """Returs if the piloting configuration of the broadcaster is correct."""
+    impl_class = get_piloting_implementation(broadcaster)
+    return impl_class.check_piloting_conf() if impl_class else False
 
 
 def start_record(broadcaster: Broadcaster, event_id) -> bool:
-    impl_class = pilotingInterface.get_piloting_implementation(broadcaster)
-    if not impl_class:
-        return False
-    return impl_class.start(event_id)
+    """Stars the recording and return if successfully done."""
+    impl_class = get_piloting_implementation(broadcaster)
+    return impl_class.start_recording(event_id) if impl_class else False
 
 
 def split_record(broadcaster: Broadcaster) -> bool:
-    impl_class = pilotingInterface.get_piloting_implementation(broadcaster)
-    if not impl_class:
-        return False
-    return impl_class.split()
+    """Split the recording and return if successfully done."""
+    impl_class = get_piloting_implementation(broadcaster)
+    return impl_class.split_recording() if impl_class else False
 
 
 def stop_record(broadcaster: Broadcaster) -> bool:
-    impl_class = pilotingInterface.get_piloting_implementation(broadcaster)
-    if not impl_class:
-        return False
-    return impl_class.stop()
+    """Stop the recording and return if successfully done."""
+    impl_class = get_piloting_implementation(broadcaster)
+    return impl_class.stop_recording() if impl_class else False
+
+
+def use_split(broadcaster: Broadcaster) -> bool:
+    """Return if the implementation allows to split the current recording."""
+    impl_class = get_piloting_implementation(broadcaster)
+    return impl_class is not None and impl_class.can_split()
 
 
 def get_info_current_record(broadcaster: Broadcaster) -> dict:
-    impl_class = pilotingInterface.get_piloting_implementation(broadcaster)
+    """Return the infos of the current recording."""
+    impl_class = get_piloting_implementation(broadcaster)
     if not impl_class:
         return {
             "currentFile": "",
@@ -980,14 +1124,105 @@ def get_info_current_record(broadcaster: Broadcaster) -> dict:
 
 
 def is_available_to_record(broadcaster: Broadcaster) -> bool:
-    impl_class = pilotingInterface.get_piloting_implementation(broadcaster)
-    if not impl_class:
-        return False
-    return impl_class.is_available_to_record()
+    """Return the broadcaster is ready to record."""
+    impl_class = get_piloting_implementation(broadcaster)
+    return impl_class.is_available_to_record() if impl_class else False
 
 
 def is_recording(broadcaster: Broadcaster, with_file_check=False) -> bool:
-    impl_class = pilotingInterface.get_piloting_implementation(broadcaster)
+    """Return the broadcaster is actually recording."""
+    impl_class = get_piloting_implementation(broadcaster)
+    return impl_class.is_recording(with_file_check) if impl_class else False
+
+
+def transform_to_video(broadcaster, event_id, current_record_info):
+    """
+    Args:
+        broadcaster (Broadcaster): the broadcaster
+        event_id (int): event's id
+        current_record_info(dict): infos
+
+    Returns:
+        JsonResponse: with success and error keys
+
+    """
+    impl_class = get_piloting_implementation(broadcaster)
     if not impl_class:
+        return JsonResponse({"success": False, "error": "implementation error"})
+
+    if impl_class.copy_file_needed():
+        # Copie + transform faite dans un thread
+        t = threading.Thread(
+            target=copy_and_transform,
+            args=[impl_class, event_id, current_record_info],
+            daemon=True,
+        )
+        t.start()
+        return JsonResponse({"success": True, "error": ""})
+
+    return create_video(
+        event_id,
+        current_record_info.get("currentFile", None),
+        current_record_info.get("segmentNumber", None),
+    )
+
+
+def copy_and_transform(impl_class, event_id, current_record_info):
+    """
+    Copy the file from remote to Pod and creates the video
+    Args:
+        impl_class (PilotingInterface): the piloting interface of the broadcaster
+        event_id (int): event's id
+        current_record_info(dict): infos
+
+    Returns:
+        bool: if successfully done
+
+    """
+    filename = current_record_info.get("currentFile", None)
+    if impl_class.copy_file_to_pod_dir(filename):
+        json_response = create_video(
+            event_id,
+            filename,
+            current_record_info.get("segmentNumber", None),
+        )
+        return json_response.status_code == 200
+    return False
+
+
+def can_manage_stream(broadcaster: Broadcaster) -> bool:
+    """Return if the implementation allows to manage the stream."""
+    impl_class = get_piloting_implementation(broadcaster)
+    return impl_class is not None and impl_class.can_manage_stream()
+
+
+def start_stream(broadcaster: Broadcaster) -> bool:
+    """Start the streaming and return if successfully done."""
+    impl_class = get_piloting_implementation(broadcaster)
+    if impl_class is None or not impl_class.can_manage_stream():
         return False
-    return impl_class.is_recording(with_file_check)
+
+    rtmp_infos = impl_class.get_stream_rtmp_infos()
+    if not rtmp_infos:
+        return False
+
+    if rtmp_infos["is_streaming"]:
+        return True
+
+    return impl_class.start_stream()
+
+
+def stop_stream(broadcaster: Broadcaster) -> bool:
+    """Stop the streaming and return if successfully done."""
+    impl_class = get_piloting_implementation(broadcaster)
+    if impl_class is None or not impl_class.can_manage_stream():
+        return False
+
+    rtmp_infos = impl_class.get_stream_rtmp_infos()
+    if not rtmp_infos:
+        return False
+
+    if not rtmp_infos["is_streaming"]:
+        return True
+
+    return impl_class.stop_stream()

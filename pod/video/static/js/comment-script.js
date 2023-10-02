@@ -68,9 +68,10 @@ class ConfirmModal extends HTMLElement {
     title = null,
     message = null,
     delete_text = null,
-    cancel_text = null
+    cancel_text = null,
   ) {
     super();
+
     title = title ? title : this.getAttribute("confirm_title");
     message = message ? message : this.getAttribute("message");
     delete_text = delete_text ? delete_text : this.getAttribute("delete_text");
@@ -111,14 +112,26 @@ class ConfirmModal extends HTMLElement {
     cancel_btn.innerHTML = cancel_text ? cancel_text : gettext("Cancel");
     cancel_btn.addEventListener("click", (e) => {
       e.preventDefault();
-      document
-        .querySelector("#custom_element_confirm_modal .confirm_delete")
-        .classList.remove("show");
-      ACTION_COMMENT.comment_to_delete = null;
+      closeModal();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key == "Escape") {
+        closeModal();
+      }
     });
     this.innerHTML = modal;
     this.querySelector(".actions").appendChild(delete_btn);
     this.querySelector(".actions").appendChild(cancel_btn);
+
+    /**
+     * Closes the custom confirmation modal.
+     */
+    function closeModal() {
+      document
+        .querySelector("#custom_element_confirm_modal .confirm_delete")
+        .classList.remove("show");
+      ACTION_COMMENT.comment_to_delete = null;
+    }
   }
 }
 customElements.define("confirm-modal", ConfirmModal);
@@ -149,7 +162,7 @@ class Comment extends HTMLElement {
     added_since,
     id,
     is_parent = null,
-    is_comment_owner = false
+    is_comment_owner = false,
   ) {
     super();
     this.setAttribute("class", "comment_element");
@@ -189,9 +202,9 @@ class Comment extends HTMLElement {
       ngettext(
         '%s <span class="d-none d-md-inline">vote</span>',
         '%s <span class="d-none d-md-inline">votes</span>',
-        likes
+        likes,
       ),
-      [likes]
+      [likes],
     );
 
     let btn_classes = "comment_actions comment_vote_action";
@@ -202,14 +215,25 @@ class Comment extends HTMLElement {
       svg_icon,
       "comment_vote_btn",
       vote_text,
-      id
+      id,
+      0,
     );
     if (is_authenticated) {
-      vote_action.addEventListener("click", () => {
+      vote_action.addEventListener("click", toggleVote);
+      vote_action.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          toggleVote();
+        }
+      });
+
+      /**
+       * Toggles the voting action for a comment.
+       */
+      function toggleVote() {
         vote_action.classList.add("voting");
         let comment_id = get_comment_attribute(document.getElementById(id));
         vote(vote_action, comment_id);
-      });
+      }
     }
     comment_container
       .querySelector(".comment_content_footer .actions")
@@ -223,15 +247,34 @@ class Comment extends HTMLElement {
         gettext("Reply to comment"),
         svg_icon,
         "comment_response_btn",
-        gettext("Reply")
+        gettext("Reply"),
+        null,
+        0,
       );
       response_action.addEventListener("click", function () {
-        let target_node = get_node(this, "form");
-        target_node.classList.toggle("show");
-        this.parentElement.nextElementSibling
-          .querySelector(".new_comment")
-          .focus();
+        toggleReply(this);
       });
+      response_action.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          toggleReply(this);
+        }
+      });
+
+      /**
+       * Toggles the reply form for a comment.
+       *
+       * @param {HTMLElement} element - The element that triggered the action.
+       */
+      function toggleReply(element) {
+        let target_node = get_node(element, "form");
+        if (target_node) {
+          target_node.classList.toggle("show");
+          element.parentElement.nextElementSibling
+            .querySelector(".new_comment")
+            .focus();
+        }
+      }
+
       comment_container
         .querySelector(".comment_content_footer .actions")
         .appendChild(response_action);
@@ -245,16 +288,27 @@ class Comment extends HTMLElement {
           svg_icon,
           "comment_delete_btn",
           gettext("Delete"),
-          id
+          id,
+          0,
         );
-        delete_action.addEventListener("click", () => {
-          // display confirm modal
+        delete_action.addEventListener("click", toggleDelete);
+        delete_action.addEventListener("keydown", function (event) {
+          if (event.key === "Enter" || event.key === " ") {
+            toggleDelete();
+          }
+        });
+
+        /**
+         * Toggles the delete confirmation modal for a comment.
+         */
+        function toggleDelete() {
           document
             .querySelector("#custom_element_confirm_modal .confirm_delete")
             .classList.add("show");
           let el = document.getElementById(id);
           ACTION_COMMENT.comment_to_delete = el;
-        });
+        }
+
         comment_container
           .querySelector(".comment_content_footer .actions")
           .appendChild(delete_action);
@@ -263,10 +317,11 @@ class Comment extends HTMLElement {
       add_comment.setAttribute("class", "add_comment");
       add_comment.innerHTML = `
         <textarea class="new_comment form-control form-control-sm"
-          name="new_comment" id="comment" rows="1"
+          name="new_comment" id="${id}" rows="1"
+          title="${gettext("Add a public comment")}"
           placeholder="${gettext("Add a public comment")}"></textarea>
         <button class="btn btn-link btn-lg send_reply disabled" role="button" title="${gettext(
-          "Send"
+          "Send",
         )}">
           <i aria-hidden="true" class="bi bi-send-fill"></i>
         </button>
@@ -299,7 +354,7 @@ class Comment extends HTMLElement {
           this.submit_comment_reply(
             new_comment,
             add_comment,
-            comment_reply_btn
+            comment_reply_btn,
           );
         }
       });
@@ -347,13 +402,13 @@ class Comment extends HTMLElement {
       let comment_parent = get_node(
         html_field,
         "comment_element",
-        "comment_child"
+        "comment_child",
       );
       add_child_comment(
         html_field,
         html_container,
         child_container,
-        comment_parent
+        comment_parent,
       );
     }
   }
@@ -365,9 +420,17 @@ function createFooterBtnAction(
   svg,
   span_classes,
   span_text,
-  comment_id = null
+  comment_id = null,
+  tabIndex = null,
 ) {
   let el = document.createElement("DIV");
+  if (
+    tabIndex !== "null" &&
+    typeof tabIndex === "number" &&
+    Number.isInteger(tabIndex)
+  ) {
+    el.setAttribute("tabindex", tabIndex.toString());
+  }
   el.setAttribute("class", classes + " btn btn-link btn-sm");
   el.setAttribute("role", "button");
   if (comment_id) el.setAttribute("data-comment", comment_id);
@@ -394,15 +457,27 @@ function hide_or_add_show_children_btn(parent_comment, parent_id, nb_child) {
     gettext("Show answers"),
     [svg_icon_show, svg_icon_hide],
     "comment_show_children_btn",
-    txt
+    txt,
+    null,
+    0,
   );
-  children_action.addEventListener("click", function () {
-    parent_comment.classList.toggle("show");
-    fetch_comment_children(parent_comment, parent_id);
+  children_action.addEventListener("click", toggleComment);
+  children_action.addEventListener("keydown", function (event) {
+    if (event.key === "Enter" || event.key === " ") {
+      toggleComment();
+    }
   });
 
+  /**
+   * Toggles the visibility of a comment and fetches its children if needed.
+   */
+  function toggleComment() {
+    parent_comment.classList.toggle("show");
+    fetch_comment_children(parent_comment, parent_id);
+  }
+
   let children_container = parent_comment.querySelector(
-    ".comments_children_container"
+    ".comments_children_container",
   );
   if (
     !parent_comment.querySelector(".actions .comment_show_children_action") &&
@@ -420,8 +495,8 @@ function hide_or_add_show_children_btn(parent_comment, parent_id, nb_child) {
       .querySelector(".comment_content_footer .actions")
       .removeChild(
         parent_comment.querySelector(
-          ".comment_content_footer .actions .comment_show_children_action"
-        )
+          ".comment_content_footer .actions .comment_show_children_action",
+        ),
       );
   }
 }
@@ -458,7 +533,7 @@ function vote(comment_action_html, comment_id) {
     })
     .then((data) => {
       const target_comment = document.getElementById(
-        comment_action_html.dataset.comment
+        comment_action_html.dataset.comment,
       );
 
       let action = "";
@@ -473,15 +548,15 @@ function vote(comment_action_html, comment_id) {
         target_comment,
         null,
         "nbr_vote",
-        action
+        action,
       );
       btn.innerHTML = interpolate(
         ngettext(
           '%s <span class="d-none d-md-inline">vote</span>',
           '%s <span class="d-none d-md-inline">votes</span>',
-          nb_vote
+          nb_vote,
         ),
-        [nb_vote]
+        [nb_vote],
       );
     })
     .catch((error) => {
@@ -507,7 +582,7 @@ function save_comment(
   comment_html,
   comment_container_html,
   direct_parent_id = null,
-  top_parent_comment_html = null
+  top_parent_comment_html = null,
 ) {
   // Prevent input to be modified until comment is really added.
   textarea.setAttribute("readonly", true);
@@ -591,12 +666,12 @@ function save_comment(
         });
         let nbr_child = get_comment_attribute(
           top_parent_comment_html,
-          "nbr_child"
+          "nbr_child",
         );
         hide_or_add_show_children_btn(
           top_parent_comment_html,
           top_parent_id,
-          nbr_child
+          nbr_child,
         );
         update_answer_text(top_parent_comment_html, nbr_child);
       }
@@ -648,7 +723,7 @@ function delete_comment(comment) {
           if (data.deleted) {
             showalert(
               gettext("The comment has been deleted successfully."),
-              "alert-success"
+              "alert-success",
             );
             let parent_el = null;
             if (is_child) {
@@ -657,20 +732,20 @@ function delete_comment(comment) {
               delete_comment_child_DOM(comment, parent_id, is_child); // delete all children from the DOM
               let remaining_children = get_comment_attribute(
                 parent_el,
-                "nbr_child"
+                "nbr_child",
               );
               deleteWithAnimation(comment, true); // delete comment from the DOM
               hide_or_add_show_children_btn(
                 parent_el,
                 parent_id,
-                remaining_children
+                remaining_children,
               ); // Manage show answers button
               update_answer_text(parent_el, remaining_children); // Update number of child text displayed
               set_comments_number();
               return;
             }
             all_comment = all_comment.filter(
-              (c) => c.id != data.comment_deleted
+              (c) => c.id != data.comment_deleted,
             );
             deleteWithAnimation(comment, false);
             set_comments_number();
@@ -712,7 +787,7 @@ function delete_comment_child_DOM(comment, comment_top_parent_id, is_child) {
               list_parent_id = [...list_parent_id, child_comment.id];
               // Remove comment html element from DOM
               let html_id = `#comment_${new Date(
-                child_comment.added
+                child_comment.added,
               ).getTime()}`;
               let child_comment_html = document.querySelector(html_id);
               deleteWithAnimation(child_comment_html, true);
@@ -736,7 +811,7 @@ function getElementPosition(element) {
   let yPosition = 0;
   // get body padding top if exists that will be
   let bodyPaddingTop = Number.parseInt(
-    getComputedStyle(document.body)["padding-top"] ?? 0
+    getComputedStyle(document.body)["padding-top"] ?? 0,
   );
 
   while (element) {
@@ -842,7 +917,7 @@ function setBorderLeftColor(comment, parent_element) {
     } else {
       comment.dataset.level = index;
       comment.querySelector(
-        ".comment_content"
+        ".comment_content",
       ).style.borderLeft = `4px solid ${COLORS[index]}`;
       comment.querySelector(".comments_icon").style.color = `${COLORS[index]}`;
     }
@@ -874,7 +949,7 @@ if (is_authenticated) {
         date_added,
         `comment_${date_added.getTime()}`,
         true,
-        true
+        true,
       );
       c.dataset.level = "-1";
       // INSERT INTO DATABASE THE CURRENT COMMENT CHILD
@@ -884,8 +959,8 @@ if (is_authenticated) {
         date_added,
         c,
         document.querySelector(
-          ".comment_container .comment_content form.add_parent_comment"
-        )
+          ".comment_container .comment_content form.add_parent_comment",
+        ),
       );
     }
   });
@@ -901,7 +976,7 @@ if (is_authenticated) {
 function fetch_comment_children(
   parent_comment_html,
   parent_comment_id,
-  scroll_to_last = false
+  scroll_to_last = false,
 ) {
   // fetch children only once
   if (
@@ -924,15 +999,15 @@ function fetch_comment_children(
                 comment_child.direct_parent__id !== comment_child.parent__id
               ) {
                 let direct_parent_comment = parent_comment.children.find(
-                  (c_obj) => c_obj.id === comment_child.direct_parent__id
+                  (c_obj) => c_obj.id === comment_child.direct_parent__id,
                 );
                 let direct_parent_html_id = `comment_${new Date(
-                  direct_parent_comment.added
+                  direct_parent_comment.added,
                 )
                   .getTime()
                   .toString()}`;
                 parent_to_scroll = parent_comment_html.querySelector(
-                  `#${direct_parent_html_id}`
+                  `#${direct_parent_html_id}`,
                 );
               }
 
@@ -941,7 +1016,7 @@ function fetch_comment_children(
               let comment_child_content = add_user_tag(
                 comment_child.content,
                 parent_to_scroll,
-                parent_comment.author_name
+                parent_comment.author_name,
               );
 
               let comment_child_html = new Comment(
@@ -951,7 +1026,7 @@ function fetch_comment_children(
                 date_added,
                 `comment_${date_added.getTime()}`,
                 false,
-                comment_child.is_owner
+                comment_child.is_owner,
               );
 
               parent_comment_html
@@ -988,12 +1063,12 @@ function add_child_comment(
   el,
   el_container,
   child_container,
-  top_parent_comment_html
+  top_parent_comment_html,
 ) {
   let date_added = new Date();
   if (el.value.trim() !== "") {
     let child_direct_parent = document.querySelector(
-      `#${el.parentElement.parentElement.dataset.comment}`
+      `#${el.parentElement.parentElement.dataset.comment}`,
     );
 
     let comment_child_content = add_user_tag(el.value, child_direct_parent);
@@ -1004,7 +1079,7 @@ function add_child_comment(
       date_added,
       `comment_${date_added.getTime()}`,
       false,
-      true
+      true,
     );
     setBorderLeftColor(c, child_direct_parent);
     // INSERT INTO DATABASE THE CURRENT COMMENT CHILD
@@ -1017,7 +1092,7 @@ function add_child_comment(
       c,
       child_container,
       direct_parent_id,
-      top_parent_comment_html
+      top_parent_comment_html,
     );
 
     el_container.parentElement.classList.remove("show");
@@ -1049,7 +1124,7 @@ function update_comment_attribute(comment_html, value, attr, action = null) {
     }
     comment_data.children = comment_data.children.map((child_comment_data) => {
       comment_htmlID = `comment_${new Date(
-        child_comment_data.added
+        child_comment_data.added,
       ).getTime()}`;
       if (comment_htmlID == curr_html_id) {
         if (action !== null && action === "increment") {
@@ -1084,7 +1159,7 @@ function get_comment_attribute(comment_html, attr = "id") {
     }
     for (const child_comment_data of comment_data.children) {
       comment_htmlID = `comment_${new Date(
-        child_comment_data.added
+        child_comment_data.added,
       ).getTime()}`;
       if (comment_htmlID == curr_html_id) {
         comment_attr = child_comment_data[attr];
@@ -1174,7 +1249,7 @@ function set_comments_number() {
     all_comment.length;
   comment_title.innerText = interpolate(
     ngettext("%s comment", "%s comments", nb_comments),
-    [nb_comments]
+    [nb_comments],
   );
 }
 
@@ -1198,7 +1273,7 @@ fetch(base_vote_url)
           comment_data.children = []; // init children to empty array
           all_comment = [...all_comment, comment_data]; // updating all_comment
           let parent_container = document.querySelector(
-            ".comment_container .comment_content"
+            ".comment_container .comment_content",
           );
           let date_added = new Date(comment_data.added);
           let html_id = `comment_${date_added.getTime().toString()}`;
@@ -1209,7 +1284,7 @@ fetch(base_vote_url)
             date_added,
             html_id,
             true,
-            comment_data.is_owner
+            comment_data.is_owner,
           );
           parent_c.dataset.level = "-1";
           manage_vote_frontend(comment_data.id, parent_c);
@@ -1224,7 +1299,7 @@ fetch(base_vote_url)
           hide_or_add_show_children_btn(
             parent_c,
             comment_data.id,
-            comment_data.nbr_child
+            comment_data.nbr_child,
           );
         });
         set_comments_number(); // update number of comments from comment label

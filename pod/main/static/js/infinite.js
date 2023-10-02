@@ -40,7 +40,7 @@ function detect_visibility() {
 const isElementXPercentInViewport = function () {
   percentVisible = 95;
   var footer = document.querySelector(
-    "footer.container-fluid.pod-footer-container"
+    "footer.container-fluid.pod-footer-container",
   );
   let rect = footer.getBoundingClientRect(),
     windowHeight = window.innerHeight || document.documentElement.clientHeight;
@@ -59,7 +59,7 @@ class InfiniteLoader {
     callBackBeforeLoad,
     callBackAfterLoad,
     nextPage = true,
-    page = 2
+    page = 2,
   ) {
     this.infinite_loading = document.querySelector(".infinite-loading");
     this.videos_list = document.getElementById("videos_list");
@@ -101,6 +101,11 @@ class InfiniteLoader {
 
         element.innerHTML += html.getElementById("videos_list").innerHTML;
         this.next_page_number += 1;
+        const favoritesButtons =
+          document.getElementsByClassName("favorite-btn-link");
+        for (let btn of favoritesButtons) {
+          preventRefreshButton(btn, true);
+        }
       }
       this.callBackAfterLoad();
     });

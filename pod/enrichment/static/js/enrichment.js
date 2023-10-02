@@ -36,7 +36,7 @@ function show_form(data) {
     "beforebegin",
     "&nbsp;<div class='getfromvideo pull-right mb-1'><a href='' id='getfromvideo_start' class='btn btn-primary btn-sm'>" +
       gettext("Get time from the player") +
-      "</a><span class='timecode'></span></div>"
+      "</a><span class='timecode'></span></div>",
   );
   var inputEnd = document.getElementById("id_end");
   if (!inputEnd) return;
@@ -44,7 +44,7 @@ function show_form(data) {
     "beforebegin",
     "&nbsp;<div class='getfromvideo pull-right mb-1'><a href='' id='getfromvideo_end' class='btn btn-primary btn-sm'>" +
       gettext("Get time from the player") +
-      "</a><span class='timecode'></span></div>"
+      "</a><span class='timecode'></span></div>",
   );
   enrich_type();
 }
@@ -57,7 +57,7 @@ var showalert = function (message, alerttype) {
       message +
       '<button type="button" class="close" data-dismiss="alert" aria-label="' +
       gettext("Close") +
-      '"><span aria-hidden="true">&times;</span></button></div>'
+      '"><span aria-hidden="true">&times;</span></button></div>',
   );
   setTimeout(function () {
     document.getElementById("formalertdiv").remove();
@@ -71,7 +71,7 @@ var ajaxfail = function (data) {
       data +
       ") " +
       gettext("The form could not be recovered."),
-    "alert-danger"
+    "alert-danger",
   );
   document.querySelectorAll("form.get_form").forEach((form) => {
     form.style.display = "block";
@@ -125,7 +125,7 @@ var sendandgetform = async function (elt, action) {
     ) {
       showalert(
         gettext("You are no longer authenticated. Please log in again."),
-        "alert-danger"
+        "alert-danger",
       );
       return;
     }
@@ -139,7 +139,7 @@ var sendandgetform = async function (elt, action) {
       if (data.indexOf("list_enrichment") == -1) {
         showalert(
           gettext("You are no longer authenticated. Please log in again."),
-          "alert-danger"
+          "alert-danger",
         );
         return;
       }
@@ -187,7 +187,7 @@ var sendform = async function (elt, action) {
           ) {
             showalert(
               gettext("You are no longer authenticated. Please log in again."),
-              "alert-danger"
+              "alert-danger",
             );
           } else {
             data = JSON.parse(data);
@@ -202,7 +202,7 @@ var sendform = async function (elt, action) {
     } else {
       showalert(
         gettext("One or more errors have been found in the form."),
-        "alert-danger"
+        "alert-danger",
       );
     }
   }
@@ -228,7 +228,7 @@ var sendform = async function (elt, action) {
         if (data.indexOf("list_enrichment") == -1) {
           showalert(
             gettext("You are no longer authenticated. Please log in again."),
-            "alert-danger"
+            "alert-danger",
           );
         } else {
           location.reload();
@@ -293,14 +293,14 @@ function get_form(data) {
     "beforebegin",
     "&nbsp;<div class='getfromvideo pull-right mb-1'><a href='' id='getfromvideo_start' class='btn btn-primary btn-sm'>" +
       gettext("Get time from the player") +
-      "</a><span class='timecode'></span></div>"
+      "</a><span class='timecode'></span></div>",
   );
   var inputEnd = document.getElementById("id_end");
   inputEnd.insertAdjacentHTML(
     "beforebegin",
     "&nbsp;<div class='getfromvideo pull-right mb-1'><a href='' id='getfromvideo_end' class='btn btn-primary btn-sm'>" +
       gettext("Get time from the player") +
-      "</a><span class='timecode'></span></div>"
+      "</a><span class='timecode'></span></div>",
   );
   enrich_type();
   manageResize();
@@ -334,7 +334,7 @@ const setTimecode = (e) => {
   if (e.target.id !== "id_start" && e.target.id !== "id_end") return;
   const parentNode = e.target.parentNode;
   const timecodeSpan = parentNode.querySelector(
-    "div.getfromvideo span.timecode"
+    "div.getfromvideo span.timecode",
   );
   timecodeSpan.innerHTML = " " + parseInt(e.target.value).toHHMMSS();
 };
@@ -370,7 +370,7 @@ function verify_fields() {
       "beforebegin",
       "<span class='form-help-inline'>&nbsp;&nbsp;" +
         gettext("Please enter a title from 2 to 100 characters.") +
-        "</span>"
+        "</span>",
     );
     inputTitle.closest("div.form-group").classList.add("has-error");
 
@@ -387,7 +387,7 @@ function verify_fields() {
       "<span class='form-help-inline'>&nbsp; &nbsp;" +
         gettext("Please enter a correct start from 0 to ") +
         (video_duration - 1) +
-        "</span>"
+        "</span>",
     );
     inputStart.closest("div.form-group").classList.add("has-error");
 
@@ -405,7 +405,7 @@ function verify_fields() {
       "<span class='form-help-inline'>&nbsp; &nbsp;" +
         gettext("Please enter a correct end from 1 to ") +
         video_duration +
-        "</span>"
+        "</span>",
     );
     inputEnd.closest("div.form-group").classList.add("has-error");
 
@@ -421,7 +421,7 @@ function verify_fields() {
             "beforebegin",
             "<span class='form-help-inline'>&nbsp; &nbsp;" +
               gettext("Please enter a correct image.") +
-              "</span>"
+              "</span>",
           );
           img.closest("div.form-group").classList.add("has-error");
           error = true;
@@ -436,7 +436,7 @@ function verify_fields() {
           "beforebegin",
           "<span class='form-help-inline'>&nbsp; &nbsp;" +
             gettext("Please enter a correct richtext.") +
-            "</span>"
+            "</span>",
         );
         richtext.closest("div.form-group").classList.add("has-error");
 
@@ -450,7 +450,7 @@ function verify_fields() {
           "beforebegin",
           "<span class='form-help-inline'>&nbsp; &nbsp;" +
             gettext("Please enter a correct weblink.") +
-            "</span>"
+            "</span>",
         );
         weblink.closest("div.form-group").classList.add("has-error");
 
@@ -461,7 +461,7 @@ function verify_fields() {
             "beforebegin",
             "<span class='form-help-inline'>&nbsp; &nbsp;" +
               gettext("Weblink must be less than 200 characters.") +
-              "</span>"
+              "</span>",
           );
           weblink.closest("div.form-group").classList.add("has-error");
 
@@ -477,7 +477,7 @@ function verify_fields() {
           "beforebegin",
           "<span class='form-help-inline'>&nbsp; &nbsp;" +
             gettext("Please select a document.") +
-            "</span>"
+            "</span>",
         );
         documentD.closest("div.form-group").classList.add("has-error");
 
@@ -491,7 +491,7 @@ function verify_fields() {
           "beforebegin",
           "<span class='form-help-inline'>&nbsp; &nbsp;" +
             gettext("Please enter a correct embed.") +
-            "</span>"
+            "</span>",
         );
         embed.closest("div.form-group").classList.add("has-error");
 
@@ -502,7 +502,7 @@ function verify_fields() {
             "beforebegin",
             "<span class='form-help-inline'>&nbsp; &nbsp;" +
               gettext("Embed field must be less than 200 characters.") +
-              "</span>"
+              "</span>",
           );
 
           embed.closes("div.form-group").classList.add("has-error");
@@ -517,7 +517,7 @@ function verify_fields() {
         "beforebegin",
         "<span class='form-help-inline'>&nbsp; &nbsp;" +
           gettext("Please enter a type in index field.") +
-          "</span>"
+          "</span>",
       );
       inputType.closest("div.form-group").classList.add("has-error");
 

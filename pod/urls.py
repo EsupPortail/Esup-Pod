@@ -20,6 +20,7 @@ from pod.main.views import (
     robots_txt,
     info_pod,
     userpicture,
+    set_notifications,
 )
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 
@@ -68,6 +69,7 @@ urlpatterns = [
     url(r"^accounts/change-password/$", auth_views.PasswordChangeView.as_view()),
     url(r"^accounts/reset-password/$", auth_views.PasswordResetView.as_view()),
     url(r"^accounts/userpicture/$", userpicture, name="userpicture"),
+    url(r"^accounts/set-notifications/$", set_notifications, name="set_notifications"),
     # rest framework
     url(r"^api-auth/", include("rest_framework.urls")),
     url(r"^rest/", include(rest_urlpatterns)),
@@ -79,10 +81,10 @@ urlpatterns = [
     url(r"^custom/", include("pod.custom.urls")),
     # cut
     url(r"^cut/", include("pod.cut.urls")),
-]
-# PLAYLIST
-urlpatterns += [
-    path("playlist/", include("pod.playlist.urls", namespace="playlist")),
+    # pwa
+    url("", include("pwa.urls")),
+    # webpush
+    url(r"^webpush/", include("webpush.urls")),
 ]
 
 # CAS
@@ -98,6 +100,13 @@ if USE_OIDC:
     urlpatterns += [
         url(r"^oidc/", include("mozilla_django_oidc.urls")),
     ]
+
+# PWA
+urlpatterns += [
+    path(
+        "pwa/", include("pod.progressive_web_app.urls", namespace="progressive_web_app")
+    ),
+]
 
 # BBB: TODO REPLACE BBB BY MEETING
 if getattr(settings, "USE_MEETING", False):
@@ -128,10 +137,10 @@ for apps in settings.THIRD_PARTY_APPS:
         url(r"^" + apps + "/", include("pod.%s.urls" % apps, namespace=apps)),
     ]
 
-# FAVORITE
-if getattr(settings, "USE_FAVORITES", True):
+# PLAYLIST
+if getattr(settings, "USE_PLAYLIST", True):
     urlpatterns += [
-        path("favorite/", include("pod.favorite.urls", namespace="favorite")),
+        path("playlist/", include("pod.playlist.urls", namespace="playlist")),
     ]
 
 # IMPORT_VIDEO

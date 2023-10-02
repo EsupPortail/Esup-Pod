@@ -18,15 +18,15 @@
      */
     var MenuButton = videojs.getComponent("Button");
 
-    var InfoMenuButton = videojs.extend(MenuButton, {
-      constructor: function (player, options) {
+    class InfoMenuButton extends MenuButton {
+      constructor(player, options) {
         options.label = "Info";
         MenuButton.call(this, player, options);
         this.el().setAttribute("aria-label", "Info");
         videojs.dom.addClass(this.el(), "vjs-info-button");
         this.controlText("Information");
-      },
-    });
+      }
+    }
     InfoMenuButton.prototype.handleClick = function (event) {
       MenuButton.prototype.handleClick.call(this, event);
       show_info_video();
@@ -43,7 +43,7 @@
         if (settings.ui) {
           var menuButton = new InfoMenuButton(player, settings);
           player.controlBar.info = player.controlBar.el_.appendChild(
-            menuButton.el_
+            menuButton.el_,
           );
           player.controlBar.info.dispose = function () {
             this.parentNode.removeChild(this);

@@ -51,7 +51,10 @@ SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
-    ((" ", __PREF_LANG_CHOICES__), ("----------", __ALL_LANG_CHOICES__)),
+    (
+        (_("-- Frequently used languages --"), __PREF_LANG_CHOICES__),
+        (_("-- All languages --"), __ALL_LANG_CHOICES__),
+    ),
 )
 MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
 LIVE_TRANSCRIPTIONS_FOLDER = getattr(
@@ -430,6 +433,9 @@ class Event(models.Model):
     is_auto_start = models.BooleanField(
         verbose_name=_("Auto start"),
         help_text=_("If this box is checked, the record will start automatically."),
+        default=False,
+    )
+    is_recording_stopped = models.BooleanField(
         default=False,
     )
     video_on_hold = models.ForeignKey(
