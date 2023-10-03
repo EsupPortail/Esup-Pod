@@ -33,18 +33,17 @@ class Command(BaseCommand):
         with open(os.path.join("pod", "main", "configuration.json"), "r") as json_file:
             configuration_local_data = json.load(json_file)
             local_configuration = self.get_all_settings(configuration_local_data)
-        local_missing = []
-        url_missing = []
-        for key in url_configuration:
-            print(key)
-            if key not in local_configuration:
-                local_missing.append(key)
-        for key in local_configuration:
-            if key not in url_configuration:
-                url_missing.append(key)
+        local_missing = self.get_local_missing(url_configuration, local_configuration)
+        url_missing = self.get_url_missing(url_configuration, local_configuration)
 
-        self.print_log("New configuration", local_missing)
-        self.print_log("Configuration missing", url_missing)
+        self.print_log(
+            "New configuration from %s not in local" % options['pod_version'],
+            local_missing
+        )
+        self.print_log(
+            "Configuration found in local file but missing in %s version of pod" % options['pod_version'],
+            url_missing
+        )
 
         self.stdout.write(self.style.SUCCESS('End compare configuration'))
 
@@ -52,6 +51,20 @@ class Command(BaseCommand):
         print(20 * "-")
         print(f"{title} :")
         print("\n    - " + "\n    - ".join(data))
+
+    def get_local_missing(self, url_configuration, local_configuration):
+        local_missing = []
+        for key in url_configuration:
+            if key not in local_configuration:
+                local_missing.append(key)
+        return local_missing
+
+    def get_url_missing(self, url_configuration, local_configuration):
+        url_missing = []
+        for key in local_configuration:
+            if key not in url_configuration:
+                url_missing.append(key)
+        return url_missing
 
     def get_all_settings(self, data):
         json_settings = []
