@@ -7,22 +7,23 @@ import json
 
 class Command(BaseCommand):
     """Command to store video data in cache."""
-    help = "Store video data in django cache : " \
+
+    help = (
+        "Store video data in django cache : "
         + "types, discipline, video count and videos duration"
+    )
 
     def handle(self, *args, **options):
         """Function called to store video data in cache."""
-        cache.delete_many(['DISCIPLINES', 'VIDEOS_COUNT', 'VIDEOS_DURATION', 'TYPES'])
+        cache.delete_many(["DISCIPLINES", "VIDEOS_COUNT", "VIDEOS_DURATION", "TYPES"])
         video_data = context_video_data(request=None)
-        msg = 'Successfully store video data in cache'
+        msg = "Successfully store video data in cache"
         for data in video_data:
             try:
                 msg += "\n %s : %s" % (
                     data,
-                    json.dumps(serializers.serialize("json", video_data[data]))
+                    json.dumps(serializers.serialize("json", video_data[data])),
                 )
             except (TypeError, AttributeError):
                 msg += "\n %s : %s" % (data, video_data[data])
-        self.stdout.write(
-            self.style.SUCCESS(msg)
-        )
+        self.stdout.write(self.style.SUCCESS(msg))

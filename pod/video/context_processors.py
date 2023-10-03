@@ -81,7 +81,7 @@ def context_video_settings(request):
 
 def context_video_data(request):
     """Get video data in cache, if not, create and add it in cache."""
-    types = cache.get('TYPES')
+    types = cache.get("TYPES")
     if types is None:
         types = (
             Type.objects.filter(
@@ -94,7 +94,7 @@ def context_video_data(request):
         )
         cache.set("TYPES", types, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
 
-    disciplines = cache.get('DISCIPLINES')
+    disciplines = cache.get("DISCIPLINES")
     if disciplines is None:
         disciplines = (
             Discipline.objects.filter(
@@ -107,13 +107,12 @@ def context_video_data(request):
         )
         cache.set("DISCIPLINES", disciplines, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
 
-    VIDEOS_COUNT = cache.get('VIDEOS_COUNT')
-    VIDEOS_DURATION = cache.get('VIDEOS_DURATION')
+    VIDEOS_COUNT = cache.get("VIDEOS_COUNT")
+    VIDEOS_DURATION = cache.get("VIDEOS_DURATION")
     if VIDEOS_COUNT is None:
         v_filter = get_available_videos_filter(request)
         aggregate_videos = v_filter.aggregate(
-            duration=Sum("duration"),
-            number=Count("id")
+            duration=Sum("duration"), number=Count("id")
         )
         VIDEOS_COUNT = aggregate_videos["number"]
         cache.set("VIDEOS_COUNT", VIDEOS_COUNT, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
