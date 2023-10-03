@@ -12,9 +12,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Function called to store video data in cache."""
-        cache.delete(['DISCIPLINES', 'VIDEOS_COUNT', 'VIDEOS_DURATION', 'TYPES'])
-        request = None
-        video_data = context_video_data(request)
+        cache.delete_many(['DISCIPLINES', 'VIDEOS_COUNT', 'VIDEOS_DURATION', 'TYPES'])
+        video_data = context_video_data(request=None)
         msg = 'Successfully store video data in cache'
         for data in video_data:
             try:
