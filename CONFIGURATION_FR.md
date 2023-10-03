@@ -711,17 +711,17 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   >> Si True, permet de cacher l’onglet chaine dans la barre de menu du haut. <br>
 
- - `HIDE_DISCIPLINES`
-
-  > valeur par défaut : `False`
-
-  >> Si True, permet de ne pas afficher les disciplines dans la colonne de droite <br>
-
  - `HIDE_CURSUS`
 
   > valeur par défaut : `False`
 
   >> Si True, permet de ne pas afficher les cursus dans la colonne de droite <br>
+
+ - `HIDE_DISCIPLINES`
+
+  > valeur par défaut : `False`
+
+  >> Si True, permet de ne pas afficher les disciplines dans la colonne de droite <br>
 
  - `HIDE_LANGUAGE_SELECTOR`
 
@@ -1401,18 +1401,18 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 Application Import_video permettant d'importer des vidéos externes dans Pod.<br>
 Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
- - `RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY`
-
-  > valeur par défaut : `True`
-
-  >> Seuls les utilisateurs "staff" pourront importer des vidéos <br>
-
  - `MAX_UPLOAD_SIZE_ON_IMPORT`
 
   > valeur par défaut : `4`
 
   >> Taille maximum en Go des fichiers vidéos qui peuvent être importés sur la plateforme  <br>
   >> via l'application import_video (0 = pas de taille maximum). <br>
+
+ - `RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY`
+
+  > valeur par défaut : `True`
+
+  >> Seuls les utilisateurs "staff" pourront importer des vidéos <br>
 
  - `USE_IMPORT_VIDEO`
 
@@ -1475,17 +1475,17 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
   >> Permet de lancer automatiquement l’enregistrement sur l’interface utilisée (wowza, ) sur le broadcaster et spécifié par `BROADCASTER_PILOTING_SOFTWARE` <br>
 
- - `EVENT_GROUP_ADMIN`
-
-  > valeur par défaut : `event admin`
-
-  >> Permet de préciser le nom du groupe dans lequel les utilisateurs peuvent planifier un évènement sur plusieurs jours. <br>
-
  - `EVENT_CHECK_MAX_ATTEMPT`
 
   > valeur par défaut : `10`
 
   >> Nombre de tentatives maximum pour vérifier la présence / taille d'un fichier sur le filesystem <br>
+
+ - `EVENT_GROUP_ADMIN`
+
+  > valeur par défaut : `event admin`
+
+  >> Permet de préciser le nom du groupe dans lequel les utilisateurs peuvent planifier un évènement sur plusieurs jours. <br>
 
  - `HEARTBEAT_DELAY`
 
@@ -1784,19 +1784,19 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
 Application Playlist pour la gestion des playlists.<br>
 Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
 
- - `DEFAULT_PLAYLIST_THUMBNAIL`
-
-  > valeur par défaut : `/static/playlist/img/default-playlist.svg`
-
-  >> Image par défaut affichée comme poster ou vignette, utilisée pour présenter la playlist. <br>
-  >> Cette image doit se situer dans le répertoire `static`. <br>
-
  - `COUNTDOWN_PLAYLIST_PLAYER`
 
   > valeur par défaut : `0`
 
   >> Compte à rebours utilisé entre chaque vidéo lors de la lecture d'une playlist en lecture automatique. <br>
   >> Le compte à rebours n'est pas présent s'il est à 0. <br>
+
+ - `DEFAULT_PLAYLIST_THUMBNAIL`
+
+  > valeur par défaut : `/static/playlist/img/default-playlist.svg`
+
+  >> Image par défaut affichée comme poster ou vignette, utilisée pour présenter la playlist. <br>
+  >> Cette image doit se situer dans le répertoire `static`. <br>
 
  - `USE_FAVORITES`
 
@@ -1997,6 +1997,13 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   > valeur par défaut : `False`
 
   >> Activer les commentaires au niveau de la plateforme <br>
+
+ - `CACHE_VIDEO_DEFAULT_TIMEOUT`
+
+  > valeur par défaut : `600`
+
+
+  >> Temps en seconde de conservation des données de l'application video <br>
 
  - `CHANNEL_FORM_FIELDS_HELP_TEXT`
 
@@ -2569,6 +2576,18 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l'enco
 
   >> Si True, un courriel est envoyé aux managers et à l’auteur (si DEBUG est à False) à la fin de la transcription <br>
 
+ - `ENCODE_STUDIO`
+
+  > valeur par défaut : `start_encode_studio`
+
+  >> Fonction appelée pour lancer l’encodage du studio (merge and cut). <br>
+
+ - `ENCODE_VIDEO`
+
+  > valeur par défaut : `start_encode`
+
+  >> Fonction appelée pour lancer l’encodage des vidéos direct par thread ou distant par celery <br>
+
  - `ENCODING_CHOICES`
 
   > valeur par défaut : `()`
@@ -2586,6 +2605,14 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l'enco
   >> ) 
   >>
   >> ```
+
+ - `ENCODING_TRANSCODING_CELERY_BROKER_URL`
+
+  > valeur par défaut : `False`
+
+
+  >> Il faut renseigner l'url du redis sur lequel Celery va chercher les ordres d'encodage et de transcription <br>
+  >> par exemple : "redis://redis:6379/7" <br>
 
  - `FORMAT_CHOICES`
 
@@ -2605,17 +2632,12 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l'enco
   >>
   >> ```
 
- - `ENCODE_STUDIO`
+ - `USE_DISTANT_ENCODING_TRANSCODING`
 
-  > valeur par défaut : `start_encode_studio`
+  > valeur par défaut : `False`
 
-  >> Fonction appelée pour lancer l’encodage du studio (merge and cut). <br>
 
- - `ENCODE_VIDEO`
-
-  > valeur par défaut : `start_encode`
-
-  >> Fonction appelée pour lancer l’encodage des vidéos direct par thread ou distant par celery <br>
+  >> Si True, active l'encodage et la transcription sur un environnement distant via redis+celery <br>
 
  - `VIDEO_RENDITIONS`
 
@@ -2657,21 +2679,6 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l'enco
   >> ] 
   >>
   >> ```
-
- - `ENCODING_TRANSCODING_CELERY_BROKER_URL`
-
-  > valeur par défaut : `False`
-
-
-  >> Il faut renseigner l'url du redis sur lequel Celery va chercher les ordres d'encodage et de transcription <br>
-  >> par exemple : "redis://redis:6379/7" <br>
-
- - `USE_DISTANT_ENCODING_TRANSCODING`
-
-  > valeur par défaut : `False`
-
-
-  >> Si True, active l'encodage et la transcription sur un environnement distant via redis+celery <br>
 
 ### Configuration application search
 
