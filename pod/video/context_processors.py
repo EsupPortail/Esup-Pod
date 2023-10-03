@@ -10,6 +10,7 @@ from django.db.models import Exists
 from django.db.models import OuterRef
 
 from datetime import timedelta
+from django.core.cache import cache
 from django.contrib.sites.shortcuts import get_current_site
 from pod.video_encode_transcript.models import EncodingVideo
 from pod.video_encode_transcript.models import PlaylistVideo
@@ -19,7 +20,7 @@ CHUNK_SIZE = getattr(django_settings, "CHUNK_SIZE", 100000)
 HIDE_USER_FILTER = getattr(django_settings, "HIDE_USER_FILTER", False)
 OEMBED = getattr(django_settings, "OEMBED", False)
 USE_STATS_VIEW = getattr(django_settings, "USE_STATS_VIEW", False)
-
+CACHE_VIDEO_DEFAULT_TIMEOUT = getattr(django_settings, "CACHE_VIDEO_DEFAULT_TIMEOUT", 600)
 __AVAILABLE_VIDEO_FILTER__ = {
     "encoding_in_progress": False,
     "is_draft": False,
@@ -78,37 +79,50 @@ def context_video_settings(request):
     return new_settings
 
 
-def context_navbar(request):
-    types = (
-        Type.objects.filter(
-            sites=get_current_site(request),
-            video__is_draft=False,
-            video__sites=get_current_site(request),
+def context_video_data(request):
+    """Get video data in cache, if not, create and add it in cache."""
+    types = cache.get('TYPES')
+    if types is None:
+        types = (
+            Type.objects.filter(
+                sites=get_current_site(request),
+                video__is_draft=False,
+                video__sites=get_current_site(request),
+            )
+            .distinct()
+            .annotate(video_count=Count("video", distinct=True))
         )
-        .distinct()
-        .annotate(video_count=Count("video", distinct=True))
-    )
+        cache.set("TYPES", types, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
 
-    disciplines = (
-        Discipline.objects.filter(
-            site=get_current_site(request),
-            video__is_draft=False,
-            video__sites=get_current_site(request),
+    disciplines = cache.get('DISCIPLINES')
+    if disciplines is None:
+        disciplines = (
+            Discipline.objects.filter(
+                site=get_current_site(request),
+                video__is_draft=False,
+                video__sites=get_current_site(request),
+            )
+            .distinct()
+            .annotate(video_count=Count("video", distinct=True))
         )
-        .distinct()
-        .annotate(video_count=Count("video", distinct=True))
-    )
+        cache.set("DISCIPLINES", disciplines, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
 
-    v_filter = get_available_videos_filter(request)
-
-    aggregate_videos = v_filter.aggregate(duration=Sum("duration"), number=Count("id"))
-
-    VIDEOS_COUNT = aggregate_videos["number"]
-    VIDEOS_DURATION = (
-        str(timedelta(seconds=aggregate_videos["duration"]))
-        if aggregate_videos["duration"]
-        else 0
-    )
+    VIDEOS_COUNT = cache.get('VIDEOS_COUNT')
+    VIDEOS_DURATION = cache.get('VIDEOS_DURATION')
+    if VIDEOS_COUNT is None:
+        v_filter = get_available_videos_filter(request)
+        aggregate_videos = v_filter.aggregate(
+            duration=Sum("duration"),
+            number=Count("id")
+        )
+        VIDEOS_COUNT = aggregate_videos["number"]
+        cache.set("VIDEOS_COUNT", VIDEOS_COUNT, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
+        VIDEOS_DURATION = (
+            str(timedelta(seconds=aggregate_videos["duration"]))
+            if aggregate_videos["duration"]
+            else 0
+        )
+        cache.set("VIDEOS_DURATION", VIDEOS_DURATION, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
 
     return {
         "TYPES": types,
