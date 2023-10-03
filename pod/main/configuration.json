@@ -859,19 +859,6 @@
                         ]
                     },
                     "settings": {
-                        "RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY": {
-                            "default_value": true,
-                            "description": {
-                                "en": [
-                                    "Only \"staff\" users will be able to import videos"
-                                ],
-                                "fr": [
-                                    "Seuls les utilisateurs \"staff\" pourront importer des vidéos"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.3.0"
-                        },
                         "MAX_UPLOAD_SIZE_ON_IMPORT": {
                             "default_value": 4,
                             "description": {
@@ -886,6 +873,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.4.0"
+                        },
+                        "RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Only \"staff\" users will be able to import videos"
+                                ],
+                                "fr": [
+                                    "Seuls les utilisateurs \"staff\" pourront importer des vidéos"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.3.0"
                         },
                         "USE_IMPORT_VIDEO": {
                             "default_value": true,
@@ -1018,19 +1018,6 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
-                        "EVENT_GROUP_ADMIN": {
-                            "default_value": "event admin",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Permet de préciser le nom du groupe dans lequel les utilisateurs peuvent planifier un évènement sur plusieurs jours."
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1"
-                        },
                         "EVENT_CHECK_MAX_ATTEMPT": {
                             "default_value": 10,
                             "description": {
@@ -1043,6 +1030,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.4"
+                        },
+                        "EVENT_GROUP_ADMIN": {
+                            "default_value": "event admin",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Permet de préciser le nom du groupe dans lequel les utilisateurs peuvent planifier un évènement sur plusieurs jours."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
                         },
                         "HEARTBEAT_DELAY": {
                             "default_value": 45,
@@ -1602,21 +1602,6 @@
                         ]
                     },
                     "settings": {
-                        "DEFAULT_PLAYLIST_THUMBNAIL": {
-                            "default_value": "/static/playlist/img/default-playlist.svg",
-                            "description": {
-                                "en": [
-                                    "Default image displayed as a poster or thumbnail, used to present the playlist.",
-                                    "This image must be located in the `static` directory."
-                                ],
-                                "fr": [
-                                    "Image par défaut affichée comme poster ou vignette, utilisée pour présenter la playlist.",
-                                    "Cette image doit se situer dans le répertoire `static`."
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.4"
-                        },
                         "COUNTDOWN_PLAYLIST_PLAYER": {
                             "default_value": 0,
                             "description": {
@@ -1627,6 +1612,21 @@
                                 "fr": [
                                     "Compte à rebours utilisé entre chaque vidéo lors de la lecture d'une playlist en lecture automatique.",
                                     "Le compte à rebours n'est pas présent s'il est à 0."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4"
+                        },
+                        "DEFAULT_PLAYLIST_THUMBNAIL": {
+                            "default_value": "/static/playlist/img/default-playlist.svg",
+                            "description": {
+                                "en": [
+                                    "Default image displayed as a poster or thumbnail, used to present the playlist.",
+                                    "This image must be located in the `static` directory."
+                                ],
+                                "fr": [
+                                    "Image par défaut affichée comme poster ou vignette, utilisée pour présenter la playlist.",
+                                    "Cette image doit se situer dans le répertoire `static`."
                                 ]
                             },
                             "pod_version_end": "",
@@ -2036,6 +2036,21 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "CACHE_VIDEO_DEFAULT_TIMEOUT": {
+                            "default_value": 600,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Time in second to cache video data"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Temps en seconde de conservation des données de l'application video"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.0"
                         },
                         "CHANNEL_FORM_FIELDS_HELP_TEXT": {
                             "default_value": "",
@@ -2756,7 +2771,6 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
-
                         "VIDEO_REQUIRED_FIELDS": {
                             "default_value": "[]",
                             "description": {
@@ -2870,52 +2884,6 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
-                        "ENCODING_CHOICES": {
-                            "default_value": "()",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Encodage possible sur la plateforme. Associé à un rendu dans le cas d’une vidéo.",
-                                    "```",
-                                    "ENCODING_CHOICES = (",
-                                    "    (\"audio\", \"audio\"),",
-                                    "    (\"360p\", \"360p\"),",
-                                    "    (\"480p\", \"480p\"),",
-                                    "    (\"720p\", \"720p\"),",
-                                    "    (\"1080p\", \"1080p\"),",
-                                    "    (\"playlist\", \"playlist\")",
-                                    ")",
-                                    "```"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
-                        "FORMAT_CHOICES": {
-                            "default_value": "()",
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Format d’encodage réalisé sur la plateforme.",
-                                    "```",
-                                    "FORMAT_CHOICES = (",
-                                    "    (\"video/mp4\", \"video/mp4\"),",
-                                    "    (\"video/mp2t\", \"video/mp2t\"),",
-                                    "    (\"video/webm\", \"video/webm\"),",
-                                    "    (\"audio/mp3\", \"audio/mp3\"),",
-                                    "    (\"audio/wav\", \"audio/wav\"),",
-                                    "    (\"application/x-mpegURL\", \"application/x-mpegURL\"),",
-                                    ")",
-                                    "```"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
                         "ENCODE_STUDIO": {
                             "default_value": "start_encode_studio",
                             "description": {
@@ -2941,6 +2909,81 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "ENCODING_CHOICES": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Encodage possible sur la plateforme. Associé à un rendu dans le cas d’une vidéo.",
+                                    "```",
+                                    "ENCODING_CHOICES = (",
+                                    "    (\"audio\", \"audio\"),",
+                                    "    (\"360p\", \"360p\"),",
+                                    "    (\"480p\", \"480p\"),",
+                                    "    (\"720p\", \"720p\"),",
+                                    "    (\"1080p\", \"1080p\"),",
+                                    "    (\"playlist\", \"playlist\")",
+                                    ")",
+                                    "```"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "ENCODING_TRANSCODING_CELERY_BROKER_URL": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Il faut renseigner l'url du redis sur lequel Celery va chercher les ordres d'encodage et de transcription",
+                                    "par exemple : \"redis://redis:6379/7\""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.3.1"
+                        },
+                        "FORMAT_CHOICES": {
+                            "default_value": "()",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Format d’encodage réalisé sur la plateforme.",
+                                    "```",
+                                    "FORMAT_CHOICES = (",
+                                    "    (\"video/mp4\", \"video/mp4\"),",
+                                    "    (\"video/mp2t\", \"video/mp2t\"),",
+                                    "    (\"video/webm\", \"video/webm\"),",
+                                    "    (\"audio/mp3\", \"audio/mp3\"),",
+                                    "    (\"audio/wav\", \"audio/wav\"),",
+                                    "    (\"application/x-mpegURL\", \"application/x-mpegURL\"),",
+                                    ")",
+                                    "```"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "USE_DISTANT_ENCODING_TRANSCODING": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Si True, active l'encodage et la transcription sur un environnement distant via redis+celery"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4.0"
                         },
                         "VIDEO_RENDITIONS": {
                             "default_value": "[]",
@@ -2987,35 +3030,6 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
-                        },
-                        "ENCODING_TRANSCODING_CELERY_BROKER_URL": {
-                            "default_value": false,
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "",
-                                    "Il faut renseigner l'url du redis sur lequel Celery va chercher les ordres d'encodage et de transcription",
-                                    "par exemple : \"redis://redis:6379/7\""
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.3.1"
-                        },
-                        "USE_DISTANT_ENCODING_TRANSCODING": {
-                            "default_value": false,
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "",
-                                    "Si True, active l'encodage et la transcription sur un environnement distant via redis+celery"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.4.0"
                         }
                     },
                     "title": {
@@ -4363,19 +4377,6 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
-                        "HIDE_DISCIPLINES": {
-                            "default_value": false,
-                            "description": {
-                                "en": [
-                                    ""
-                                ],
-                                "fr": [
-                                    "Si True, permet de ne pas afficher les disciplines dans la colonne de droite"
-                                ]
-                            },
-                            "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
-                        },
                         "HIDE_CURSUS": {
                             "default_value": false,
                             "description": {
@@ -4388,6 +4389,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.4.0"
+                        },
+                        "HIDE_DISCIPLINES": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Si True, permet de ne pas afficher les disciplines dans la colonne de droite"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
                         },
                         "HIDE_LANGUAGE_SELECTOR": {
                             "default_value": false,
