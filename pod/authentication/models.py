@@ -130,6 +130,9 @@ class Owner(models.Model):
         self.hashkey = hashlib.sha256(
             (SECRET_KEY + self.user.username).encode("utf-8")
         ).hexdigest()
+        if self.affiliation in AFFILIATION_STAFF :
+            self.user.is_staff = True
+        else self.user.is_staff = False
         super(Owner, self).save(*args, **kwargs)
 
     def is_manager(self):
