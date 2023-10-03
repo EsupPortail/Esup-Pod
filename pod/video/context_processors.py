@@ -20,7 +20,7 @@ CHUNK_SIZE = getattr(django_settings, "CHUNK_SIZE", 100000)
 HIDE_USER_FILTER = getattr(django_settings, "HIDE_USER_FILTER", False)
 OEMBED = getattr(django_settings, "OEMBED", False)
 USE_STATS_VIEW = getattr(django_settings, "USE_STATS_VIEW", False)
-CACHE_VIDEO_DEFAULT_TIMEOUT = getattr(django_settings, "CACHE_VIDEO_DEFAULT_TIMEOUT", 60)
+CACHE_VIDEO_DEFAULT_TIMEOUT = getattr(django_settings, "CACHE_VIDEO_DEFAULT_TIMEOUT", 600)
 __AVAILABLE_VIDEO_FILTER__ = {
     "encoding_in_progress": False,
     "is_draft": False,
