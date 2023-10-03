@@ -132,7 +132,8 @@ class Owner(models.Model):
         ).hexdigest()
         if self.affiliation in AFFILIATION_STAFF :
             self.user.is_staff = True
-        else self.user.is_staff = False
+        else : 
+            self.user.is_staff = False
         super(Owner, self).save(*args, **kwargs)
 
     def is_manager(self):
