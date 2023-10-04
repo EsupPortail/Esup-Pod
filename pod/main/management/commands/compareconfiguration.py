@@ -8,16 +8,15 @@ __CONFIGURATION_POD_URL__ = "https://raw.githubusercontent.com/EsupPortail/Esup-
 
 
 class Command(BaseCommand):
-    help = 'Compare configuration from specified version'
+    help = "Compare configuration from specified version"
 
     def add_arguments(self, parser):
-        parser.add_argument('pod_version', type=str)
+        parser.add_argument("pod_version", type=str)
 
     def handle(self, *args, **options):
         """Get confiuration from specific version passed in args and compare it to the local configuration."""
         configuration_url = __CONFIGURATION_POD_URL__.replace(
-            '__pod_version__',
-            options['pod_version']
+            "__pod_version__", options["pod_version"]
         )
         distant_configuration = []
         try:
@@ -27,9 +26,9 @@ class Command(BaseCommand):
         except urllib.error.HTTPError as err:
             if err.code == 404:
                 raise CommandError(
-                    'The configuration file for %s was not found' % options['pod_version']
+                    "The configuration file for %s was not found" % options["pod_version"]
                 )
-            raise CommandError(f'A HTTPError was thrown: {err.code} {err.reason}')
+            raise CommandError(f"A HTTPError was thrown: {err.code} {err.reason}")
         local_configuration = []
         with open(os.path.join("pod", "main", "configuration.json"), "r") as json_file:
             configuration_local_data = json.load(json_file)
@@ -38,15 +37,16 @@ class Command(BaseCommand):
         distant_missing = self.get_url_missing(distant_configuration, local_configuration)
 
         self.print_log(
-            "New configuration from %s not in local" % options['pod_version'],
-            local_missing
+            "New configuration from %s not in local" % options["pod_version"],
+            local_missing,
         )
         self.print_log(
-            "Configuration found in local file but missing in %s version of pod" % options['pod_version'],
-            distant_missing
+            "Configuration found in local file but missing in %s version of pod"
+            % options["pod_version"],
+            distant_missing,
         )
 
-        self.stdout.write(self.style.SUCCESS('End compare configuration'))
+        self.stdout.write(self.style.SUCCESS("End compare configuration"))
 
     def print_log(self, title: str, data: List[str]) -> None:
         """Pretty print of array with title."""
