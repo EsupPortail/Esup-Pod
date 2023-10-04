@@ -4864,7 +4864,7 @@
                 "fr": [
                     "",
                     "La plateforme Esup-Pod se base sur le framework Django écrit en Python.",
-                    "Elle supporte les versions 3.7, 3.8 et 3.9 de Python.",
+                    "Elle est compatible avec les versions 3.8, 3.9 et 3.10 de Python.",
                     "",
                     "**Django Version : 3.2 LTS**",
                     "",
@@ -4971,6 +4971,35 @@
                     },
                     "pod_version_end": "",
                     "pod_version_init": "3.1"
+                },
+                "pwa": {
+                    "default_value": "1.1.0",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "Mise en place du mode PWA grâce à l'application Django-pwa",
+                            "Voici la configuration par défaut pour Pod, vous pouvez surcharger chaque variable dans votre fichier de configuration.",
+                            "PWA_APP_NAME = \"Pod\"",
+                            "PWA_APP_DESCRIPTION = _(",
+                            "    \"Pod is aimed at users of our institutions, by allowing the publication of \"",
+                            "    \"videos in the fields of research (promotion of platforms, etc.), training \"",
+                            "    \"(tutorials, distance training, student reports, etc.), institutional life (video \"",
+                            "    \"of events), offering several days of content.\"",
+                            ")",
+                            "PWA_APP_THEME_COLOR = \"#0A0302\"",
+                            "PWA_APP_BACKGROUND_COLOR = \"#ffffff\"",
+                            "PWA_APP_DISPLAY = \"standalone\"",
+                            "PWA_APP_SCOPE = \"/\"",
+                            "PWA_APP_ORIENTATION = \"any\"",
+                            "PWA_APP_START_URL = \"/\"",
+                            "PWA_APP_STATUS_BAR_COLOR = \"default\"",
+                            "PWA_APP_DIR = \"ltr\"",
+                            "PWA_APP_LANG = \"fr-FR\"",
+                            "Pour en savoir plus : [https://github.com/silviolleite/django-pwa]()"
+                        ]
+                    },
+                    "pod_version_end": "",
+                    "pod_version_init": "3.4"
                 },
                 "rest_framework": {
                     "default_value": "3.14.0",
