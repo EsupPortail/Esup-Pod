@@ -6,7 +6,7 @@
 
 
 La plateforme Esup-Pod se base sur le framework Django écrit en Python.<br>
-Elle supporte les versions 3.7, 3.8 et 3.9 de Python.<br>
+Elle est compatible avec les versions 3.8, 3.9 et 3.10 de Python.<br>
 
 **Django Version : 3.2 LTS**<br>
 
@@ -71,6 +71,30 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
 
   >> Système d’authentification OpenID Connect <br>
   >> [https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html]() <br>
+
+ - `pwa`
+
+  > valeur par défaut : `1.1.0`
+
+  >> Mise en place du mode PWA grâce à l'application Django-pwa <br>
+  >> Voici la configuration par défaut pour Pod, vous pouvez surcharger chaque variable dans votre fichier de configuration. <br>
+  >> PWA_APP_NAME = "Pod" <br>
+  >> PWA_APP_DESCRIPTION = _( <br>
+  >>     "Pod is aimed at users of our institutions, by allowing the publication of " <br>
+  >>     "videos in the fields of research (promotion of platforms, etc.), training " <br>
+  >>     "(tutorials, distance training, student reports, etc.), institutional life (video " <br>
+  >>     "of events), offering several days of content." <br>
+  >> ) <br>
+  >> PWA_APP_THEME_COLOR = "#0A0302" <br>
+  >> PWA_APP_BACKGROUND_COLOR = "#ffffff" <br>
+  >> PWA_APP_DISPLAY = "standalone" <br>
+  >> PWA_APP_SCOPE = "/" <br>
+  >> PWA_APP_ORIENTATION = "any" <br>
+  >> PWA_APP_START_URL = "/" <br>
+  >> PWA_APP_STATUS_BAR_COLOR = "default" <br>
+  >> PWA_APP_DIR = "ltr" <br>
+  >> PWA_APP_LANG = "fr-FR" <br>
+  >> Pour en savoir plus : [https://github.com/silviolleite/django-pwa]() <br>
 
  - `rest_framework`
 
