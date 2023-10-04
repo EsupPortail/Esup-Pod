@@ -71,8 +71,12 @@
 }*/
 
 /* switch logoPod color on dark theme */
-[data-theme="dark"] .pod-navbar__brand img{
+[data-theme="dark"] .pod-navbar__brand img {
   filter: invert(100%) saturate(2908%) hue-rotate(27deg) brightness(121%) contrast(99%);
+}
+
+[data-theme="dark"] .vjs-logo-button {
+  filter: brightness(0) invert(1);
 }
 
 [data-theme="dark"] :not(.alert)>.btn-close {
@@ -87,7 +91,8 @@
   color: #ccc !important;
 }
 
-[data-theme="dark"] .form-control:focus {
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-check-input:focus {
   background-color: var(--background-color);
   color: var(--pod-font-color);
   border-color: var(--pod-primary);
@@ -171,10 +176,9 @@
   color: #A8AFB5;
 }
 
-[data-theme="dark"] .btn-outline-primary{
-  background-color: #000;
+[data-theme="dark"] .btn-outline-primary {
   --bs-btn-hover-bg: var(--pod-primary-darken-dark);
-  color: var(--pod-primary-lighten-dark);
+  color: var(--pod-font-color);
 }
 
 [data-theme="dark"] .btn-outline-primary>svg {
@@ -276,7 +280,7 @@ body.dark {
   background-color: var(--pod-background-neutre1-bloc);
   border-color: var(--pod-font-color);
   color: var(--pod-font-color);
-  box-shadow: none;
+  /*box-shadow: none;*/
 }
 [data-theme="dark"] .select2-selection--multiple .select2-selection__choice{
   color: #000;

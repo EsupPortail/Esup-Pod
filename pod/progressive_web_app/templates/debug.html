@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load webpush_notifications %}
+
+{% block page_title %}
+    Notifications debug
+{% endblock %}
+
+{% block page_content %}
+    <button onclick="new bootstrap.Toast(document.querySelector('#notification-toast')).show()">{% trans 'Notifications settings' %}</button>
+    <button onclick="sendNotification()" {% if request.user.is_anonymous %}disabled{% endif %}>Send notification</button>
+{% endblock page_content %}
+
+{% block more_script %}
+    <script>
+        async function sendNotification() {
+            const response = await fetch("/pwa/send").catch((error) => {
+                console.log(error)
+            })
+            console.log(await response.json());
+        }
+    </script>
+{% endblock more_script %}

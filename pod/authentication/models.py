@@ -105,6 +105,12 @@ class Owner(models.Model):
     )
     accessgroups = models.ManyToManyField("authentication.AccessGroup", blank=True)
     sites = models.ManyToManyField(Site)
+    accepts_notifications = models.BooleanField(
+        verbose_name=_("Accept notifications"),
+        default=None,
+        null=True,
+        help_text=_("Receive push notifications on your devices."),
+    )
 
     class Meta:
         verbose_name = _("Owner")

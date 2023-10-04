@@ -26,19 +26,19 @@
 
 {% if restricted_to_staff and not user.is_staff %}
 <p class="text-info-emphasis">
-  <i class="bi bi-broadcast"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
+  <i class="bi bi-broadcast" aria-hidden="true"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
 </p>
 {% else %}
 
 <div id="uploadblock">
   {% csrf_token %}
   <div class="mb-5">
-    <h2><i class="bi bi-pin-angle"></i>&nbsp;{% trans "Legal notice" %}</h2>
+    <h2><i class="bi bi-pin-angle" aria-hidden="true"></i>&nbsp;{% trans "Legal notice" %}</h2>
     <p>{% trans "Please note: make sure that you have the necessary authorizations signed by the speakers and that you respect the Intellectual Property Code before publishing a video." %}</p>
   </div>
 
-  <h2><i class="bi bi-upload"></i>&nbsp;{% trans "Uploading" %}</h2>
-  <div class="form-group hide-on-processing">
+  <h2><i class="bi bi-upload" aria-hidden="true"></i>&nbsp;{% trans "Uploading" %}</h2>
+  <div class="form-group hide-on-processing py-3 px-2 px-md-5 mx-auto">
     <label for="chunked_upload">{% trans "Choose an audio or video file to upload" %}</label><br>
     <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file" class="form-control-file">
   </div>
@@ -64,7 +64,7 @@
 </div>
 {% if slug %}
 <a href="{% url 'video:video_edit' slug=slug %}" class="btn btn-primary btn-sm m-2">
-  <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Back to video edit"%}
+  <i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Back to video edit"%}
 </a>
 {% endif %}
 

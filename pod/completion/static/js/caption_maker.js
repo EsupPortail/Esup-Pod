@@ -281,11 +281,11 @@ function DisplayExistingCaption(seconds) {
     ]);
 
     document.getElementById("textCaptionEntry").value = theCaption.caption;
-    document.getElementById("previewTrack").value = theCaption.caption;
+    //document.getElementById("previewTrack").value = theCaption.caption;
   } else {
     document.getElementById("captionTitle").innerHTML = "&nbsp;";
     document.getElementById("textCaptionEntry").value = "";
-    document.getElementById("previewTrack").value = "";
+    //document.getElementById("previewTrack").value = "";
   }
 }
 

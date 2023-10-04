@@ -25,6 +25,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Sum, Min
 
+# from django.contrib.auth.hashers import check_password
+
 from dateutil.parser import parse
 import concurrent.futures as futures
 from pod.main.utils import is_ajax
@@ -905,8 +907,8 @@ def toggle_render_video_user_can_see_video(
         or (
             show_page
             and is_password_protected
-            and request.POST.get("password")
             and request.POST.get("password") == video.password
+            # and check_password(request.POST.get("password"), video.password)
         )
         or (slug_private and slug_private == video.get_hashkey())
         or request.user == video.owner
@@ -1011,6 +1013,7 @@ def render_video(
             if (
                 request.POST.get("password")
                 and request.POST.get("password") != video.password
+                # and check_password(request.POST.get("password"), video.password )
             ):
                 messages.add_message(
                     request, messages.ERROR, _("The password is incorrect.")
@@ -1567,6 +1570,11 @@ def video_note_save(request, slug):
 
     idCom = get_id_from_request(request, "idCom")
     idNote = get_id_from_request(request, "idNote")
+
+    if idCom:
+        com = NoteComments.objects.get(id=idCom)
+    if idNote:
+        note = AdvancedNotes.objects.get(id=idNote)
 
     if request.method == "POST" and request.POST.get("action") == "save_note":
         q = QueryDict(mutable=True)
@@ -2222,6 +2230,7 @@ def stats_view(request, slug=None, slug_t=None):
         and (
             request.POST.get("password")
             and request.POST.get("password") == videos[0].password
+            # and check_password(request.POST.get("password"), videos[0].password)
         )
     ) or (
         request.method == "GET" and videos and target in ("videos", "channel", "theme")
@@ -2925,18 +2934,18 @@ def get_serialized_channels(request: WSGIRequest, channels: QueryDict) -> dict:
         dict: The channel list in JSON format.
     """
     channels_json_format = {}
-    for channel in channels:
-        channels_json_format[channel.pk] = ChannelSerializer(
+    for num, channel in enumerate(channels):
+        channels_json_format[num] = ChannelSerializer(
             channel, context={"request": request}
         ).data
-        channels_json_format[channel.pk]["url"] = reverse(
+        channels_json_format[num]["url"] = reverse(
             "channel-video:channel", kwargs={"slug_c": channel.slug}
         )
-        channels_json_format[channel.pk]["videoCount"] = channel.video_count
-        channels_json_format[channel.pk]["headbandImage"] = (
+        channels_json_format[num]["videoCount"] = channel.video_count
+        channels_json_format[num]["headbandImage"] = (
             channel.headband.file.url if channel.headband else ""
         )
-        channels_json_format[channel.pk]["themes"] = channel.themes.count()
+        channels_json_format[num]["themes"] = channel.themes.count()
     return channels_json_format
 
 
@@ -2952,8 +2961,8 @@ def get_channel_tabs_for_navbar(request: WSGIRequest) -> JsonResponse:
     """
     channel_tabs = AdditionalChannelTab.objects.all()
     channel_tabs_json_format = {}
-    for channel_tab in channel_tabs:
-        channel_tabs_json_format[channel_tab.pk] = {
+    for num, channel_tab in enumerate(channel_tabs):
+        channel_tabs_json_format[num] = {
             "id": channel_tab.pk,
             "name": channel_tab.name,
         }

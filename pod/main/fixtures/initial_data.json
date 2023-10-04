@@ -9,56 +9,6 @@
   },
   {
     "pk": 1,
-    "model": "flatpages.flatpage",
-    "fields": {
-        "content_fr": "<p>Bienvenue</p>\r\n",
-        "registration_required": false,
-        "content_en": "<p>Welcome</p>\r\n",
-        "title": "Home",
-        "url": "/",
-        "title_en": "Home",
-        "sites": [
-            1
-        ],
-        "content": "<p>Welcome</p>\r\n",
-        "enable_comments": false,
-        "title_fr": "Accueil"
-    }
-  },
-  {
-    "pk": 2,
-    "model": "flatpages.flatpage",
-    "fields": {
-        "content_fr": "<h1>Mentions légales</h1><div class=\"alert alert-warning\">Le texte ci-dessous sert de modèle de base et est à modifier par l’établissement hébergeur.</div><h2>Description du site</h2>\r\n<p>Esup-Pod est une plateforme de gestion de documents audio et vidéo à vocation culturelle, scientifique et pédagogique.</p><h2>Hébergement</h2><p>La plateforme «&nbsp;Pod&nbsp;» ainsi que les sauvegardes sont hébergées par ## À COMPLÉTER##.</p><h2>Droit d’auteur et respect de la propri&eacute;t&eacute; intellectuelle</h2>\r\n<p>L’ensemble de ce site rel&egrave;ve de la l&eacute;gislation fran&ccedil;aise et internationale sur le droit d’auteur et la propri&eacute;t&eacute; intellectuelle. Tous les droits de reproduction sont réservés.</p>\r\n<p>La reproduction de tout ou partie d’un document de cette plateforme sur un support électronique quel qu'il soit est formellement interdite sauf autorisation expresse de l’auteur de ce document.</p>\r\n<h2>Avertissement concernant les documents publiés</h2>\r\n<p>Préalablement à toute mise en ligne d’un document sur le service «&nbsp;Pod&nbsp;» l’usager est tenu de vérifier qu’il respecte bien la législation en vigueur.</p>\r\n<p>Chaque usager est responsable du contenu qu’il publie sur le service «&nbsp;Pod&nbsp;».</p>\r\n<ul><li>Droit d’exploitation&nbsp;: L’usager doit vérifier qu’il dispose des droits de diffusion du document ou qu’il utilise le document dans le cadre de «&nbsp;l’exception pédagogique&nbsp;» telle qu’elle est légalement définie.<br>→ «&nbsp;<a href=\"http://www.sup-numerique.gouv.fr/cid94535/guide-du-droit-d-auteur.html\" target=\"_blank\">Guide du droit d’auteur&nbsp;élaboré par le Ministère de l’Enseignement Supérieur, de la Recherche et de l’Innovation</a> »</li><li>Droit à l’image &nbsp;: L’usager s’engage à obtenir les autorisations des personnes identifiables sur le document audio ou vidéo. Si la personne identifiable est mineure, le consentement des représentants légaux est nécessaire avant toute diffusion.</li></ul>\r\n<h2>Protection de la vie priv&eacute;e et des donn&eacute;es &agrave; caract&egrave;re personnel</h2>\r\n<p >Dans le cadre de la diffusion des podcasts, certaines donn&eacute;es personnelles peuvent &ecirc;tre communiqu&eacute;es aux utilisateurs de la plateforme.</p>\r\n",
-        "registration_required": false,
-        "content_en": "<h1>Legal Notice</h1><div class=\"alert alert-warning\">This page serves as a basic template and is to be modified.</div>",
-        "title": "Legal Notice",
-        "url": "/legal_notice/",
-        "title_en": "Legal Notice",
-        "sites": [
-            1
-        ],
-        "content": "<p>Legal Notice</p>\r\n",
-        "enable_comments": false,
-        "title_fr": "Mentions légales"
-    }
-  },
-  {
-    "pk": 1,
-    "model": "main.linkfooter",
-    "fields": {
-        "title": "Legal Notice",
-        "title_en": "Legal Notice",
-        "title_fr": "Mentions légales",
-        "order": 1,
-        "page": 2,
-        "sites": [
-            1
-        ]
-    }
-  },
-  {
-    "pk": 1,
     "model": "main.configuration",
     "fields": {
         "key": "maintenance_mode",

@@ -25,6 +25,8 @@ MANAGERS = getattr(settings, "MANAGERS", {})
 
 DEBUG = getattr(settings, "DEBUG", True)
 
+EVENT_CHECK_MAX_ATTEMPT = getattr(settings, "EVENT_CHECK_MAX_ATTEMPT", 10)
+
 logger = logging.getLogger(__name__)
 
 
@@ -188,7 +190,7 @@ def get_event_id_and_broadcaster_id(request):
     return event_id, broadcaster_id
 
 
-def check_size_not_changing(resource_path, max_attempt=6):
+def check_size_not_changing(resource_path, max_attempt=EVENT_CHECK_MAX_ATTEMPT):
     """
     Checks  if the size of a resource remains unchanged over a specified number of attempts.
     Args:
@@ -220,7 +222,7 @@ def check_size_not_changing(resource_path, max_attempt=6):
             size_match = True
 
 
-def check_exists(resource_path, is_dir, max_attempt=6):
+def check_exists(resource_path, is_dir, max_attempt=EVENT_CHECK_MAX_ATTEMPT):
     """
     Checks whether a file or directory exists.
     Args:

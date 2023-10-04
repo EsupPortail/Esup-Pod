@@ -239,12 +239,14 @@ var restrict_access_to_groups = function () {
     parents[parents.length-1].style.display = 'none';
   }
 };
-window.addEventListener('load', function(event) {
-  is_restricted_elt = document.getElementById("id_is_restricted");
-  is_restricted_elt.addEventListener('clicked',function (event) {
+is_restricted_elt = document.getElementById("id_is_restricted");
+if (is_restricted_elt !== null) {
+  window.addEventListener('load', function(event) {
+    is_restricted_elt.addEventListener('clicked',function (event) {
+      restrict_access_to_groups();
+    });
     restrict_access_to_groups();
   });
-  restrict_access_to_groups();
-});
+}
 </script>
 {% endblock more_script %}

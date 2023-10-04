@@ -17,7 +17,7 @@ poster="{{video.get_thumbnail_url}}" {% spaceless %}
   {% block extratrack %} {% endblock extratrack %}
   {% for track in video.track_set.all%}
     <track id="track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.file.url }}?{% now 'U' %}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}" {% if forloop.first %}default{% endif %}>
-  {%endfor%}
+  {% endfor %}
 </video>
 <form method="post" action="{% url 'video:video_count' id=video.id %}" id="video_count_form" aria-hidden="true">
   {% csrf_token %}
@@ -36,18 +36,18 @@ poster="{{video.get_thumbnail_url}}" {% spaceless %}
 {% endif %}
 <div id="chapter-for-playlist">
   {% if video.chapter_set.all %}
-  <div class="chapters-list inactive">
-    <h6><span class="vjs-icon-chapters"></span>{% trans "Chapters" %}</h6>
-    <ol id="chapters-list"></ol>
-  </div>
-  <ul id="chapters">
-    {% for chapter in video.chapter_set.all %}
-      <li data-start="{{chapter.time_start}}"
-        data-id="{{chapter.id}}"
-        data-title="{{chapter.title}}">
-        {{chapter.title}}
-      </li>
-    {% endfor %}
-  </ul>
-{% endif %}
+    <div class="chapters-list inactive">
+      <h6><span class="vjs-icon-chapters" aria-hidden="true"></span>{% trans "Chapters" %}</h6>
+      <ol id="chapters-list"></ol>
+    </div>
+    <ul id="chapters">
+      {% for chapter in video.chapter_set.all %}
+        <li data-start="{{chapter.time_start}}"
+          data-id="{{chapter.id}}"
+          data-title="{{chapter.title}}">
+          {{chapter.title}}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 </div>

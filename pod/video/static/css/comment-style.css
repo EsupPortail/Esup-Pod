@@ -98,10 +98,6 @@
 	width: 100%;
 }
 
-.comment_main .comment_container .add_comment_footer {
-	margin-top: .5rem;
-	padding-bottom: 1em;
-}
 
 /* Confirm Modal */
 .comment_main .confirm_delete {
