@@ -1,0 +1,82 @@
+{
+  "id": "f060a750-1757-4b5d-8ed0-ce6b1c49b62b",
+  "version": "2.0",
+  "name": "pod-front",
+  "url": "http://localhost:9090/",
+  "tests": [{
+    "id": "pod-searchbar",
+    "name": "search",
+    "commands": [{
+      "id": "pod-open-home",
+      "comment": "Ouvre la page d'accueil",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+    "id": "pod-search",
+    "comment": "Sélectionne barre recherche",
+    "command": "click",
+    "target": "id=s",
+    "targets": [
+      ["id=s", "id"],
+      ["name=q", "name"],
+      ["css=#s", "css:finder"],
+      ["xpath=//input[@id='s']", "xpath:attributes"],
+      ["xpath=//form[@id='nav-search']/input", "xpath:idRelative"],
+      ["xpath=//input", "xpath:position"]
+    ],
+    "value": ""
+    }, {
+    "id": "pod-search-type",
+    "comment": "Tape mot clé",
+    "command": "type",
+    "target": "id=s",
+    "targets": [
+      ["id=s", "id"],
+      ["name=q", "name"],
+      ["css=#s", "css:finder"],
+      ["xpath=//input[@id='s']", "xpath:attributes"],
+      ["xpath=//form[@id='nav-search']/input", "xpath:idRelative"],
+      ["xpath=//input", "xpath:position"]
+    ],
+    "value": "pas de résultat attendu"
+    }, {
+    "id": "pod-search-enter",
+    "comment": "Appuie touche entrée",
+    "command": "sendKeys",
+    "target": "id=s",
+    "targets": [
+      ["id=s", "id"],
+      ["name=q", "name"],
+      ["css=#s", "css:finder"],
+      ["xpath=//input[@id='s']", "xpath:attributes"],
+      ["xpath=//form[@id='nav-search']/input", "xpath:idRelative"],
+      ["xpath=//input", "xpath:position"]
+    ],
+    "value": "${KEY_ENTER}"
+    }, {
+    "id": "pod-accueil-ariane",
+    "comment": "Retour à la page d'accueil via logo pod",
+    "command": "click",
+    "target": "xpath=//div[@id='nav-mainbar']/a/strong",
+    "targets": [
+      ["css=strong", "css:finder"],
+      ["xpath=//div[@id='nav-mainbar']/a/strong", "xpath:idRelative"],
+      ["xpath=//strong", "xpath:position"],
+      ["xpath=//strong[contains(.,'Lille.Pod')]", "xpath:innerText"]
+    ],
+    "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "pod-front",
+    "name": "Esup Pod test selenium",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["pod-searchbar"]
+  }],
+  "urls": ["http://localhost:9090/"],
+  "plugins": []
+}

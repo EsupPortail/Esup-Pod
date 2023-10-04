@@ -7,8 +7,8 @@ on:
   pull_request:
     branches: ["*"]
 
-permissions: 
-  pull-requests: write 
+permissions:
+  pull-requests: write
 
 jobs:
   build:
@@ -76,13 +76,13 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           coverage run --append --source='.' manage.py test -v 3 --settings=pod.main.test_settings
-      
+
       - name: Add Gecko driver
         if: matrix.python-version == '3.9'
         uses: browser-actions/setup-geckodriver@latest
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Run Integration Tests
         if: matrix.python-version == '3.9'
         run: |
