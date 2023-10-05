@@ -65,3 +65,17 @@ jobs:
         run: |
           git commit -am "Auto-update configuration files"
           git push
+
+      # Compile lang files
+      - name: Compile lang files in fr and nl
+        run: python manage.py compilemessages -l fr -l nl
+
+      - name: Check for modified files
+        id: compilation-git-check
+        run: echo modified=$(if git diff --quiet; then echo "false"; else echo "true"; fi) >> $GITHUB_OUTPUT
+
+      - name: Push lang compilation changes
+        if: steps.compilation-git-check.outputs.modified == 'true'
+        run: |
+          git commit -am "Compile lang files"
+          git push
