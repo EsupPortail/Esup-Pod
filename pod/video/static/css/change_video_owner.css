@@ -61,7 +61,7 @@ main {
   padding: .4em;
 }
 
-[data-theme="dark"][data-theme-mode="dark"] .form .form-wrapper input {
+[data-theme="dark"] .form .form-wrapper input {
   background: var(--bs-dark) !important;
   border-color: var(--bs-dark) !important;
 }
