@@ -123,8 +123,8 @@
   border-bottom: none;
 }
 
-[data-theme="dark"] .nav-tabs .nav-link::focus,
-[data-theme="dark"] .nav-tabs .nav-link::hover {
+[data-theme="dark"] .nav-tabs .nav-link:focus,
+[data-theme="dark"] .nav-tabs .nav-link:hover {
   background-color: var(--pod-background);
   border-color: var(--pod-background);
 }
