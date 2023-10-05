@@ -89,7 +89,8 @@ def start_transcript(video_id, threaded=True):
 
 def main_threaded_transcript(video_to_encode_id):
     """
-    Main function to transcript.
+    Transcript main function.
+
     Will check all configuration and file and launch transcript.
     """
     change_encoding_step(video_to_encode_id, 5, "transcripting audio")
@@ -100,7 +101,7 @@ def main_threaded_transcript(video_to_encode_id):
     lang = video_to_encode.transcript
     # check if TRANSCRIPTION_MODEL_PARAM [lang] exist
     if not TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE].get(lang):
-        msg += "\n no stt model found for lang:%s." % lang
+        msg += "\n no stt model found for lang: %s." % lang
         msg += "Please add it in TRANSCRIPTION_MODEL_PARAM."
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
@@ -111,7 +112,7 @@ def main_threaded_transcript(video_to_encode_id):
             else None
         )
         if mp3file is None:
-            msg += "\n no mp3 file found for video :%s." % video_to_encode.id
+            msg += "\n no mp3 file found for video: %s." % video_to_encode.id
             change_encoding_step(video_to_encode.id, -1, msg)
             send_email(msg, video_to_encode.id)
         else:
