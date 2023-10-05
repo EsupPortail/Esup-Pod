@@ -4,7 +4,7 @@
 
 /* Main */
 .vjs-poster {
-  z-index: 2
+  z-index: 2;
 }
 
 .vjs-slides {
@@ -20,7 +20,7 @@
   padding: 0;
 }
 
-.video-slides>li {
+.video-slides > li {
   background-size: contain;
   background-position: center center;
   background-repeat: no-repeat;
@@ -42,14 +42,14 @@
   /* Works but maybe not usable because plyer menu is hidden duriong playing */
 }
 
-.video-slides>li>div {
+.video-slides > li > div {
   height: 100%;
   background-color: var(--bs-light);
   color: var(--pod-font-color);
   padding: 1em;
 }
 
-.video-slides>li>.slide_embed {
+.video-slides > li > .slide_embed {
   overflow: auto;
   background-color: #000;
   text-align: center;
@@ -58,7 +58,7 @@
   justify-content: center;
 }
 
-.video-slides>li>img {
+.video-slides > li > img {
   max-width: 100%;
   -webkit-user-select: none;
 }
@@ -72,7 +72,7 @@
 }
 
 .video-js .vjs-tech {
-  padding: 0 10px
+  padding: 0 10px;
 }
 
 /********* Pip slide -> pip-slide *********/
@@ -213,7 +213,7 @@
   top: -0.5rem;
   height: 100%;
   position: relative;
-  background: rgba(100 100 100 .5);
+  background: rgba(100 100 100 0.5);
 }
 
 .vjs-chapbar-holder {
@@ -231,32 +231,32 @@
 }
 
 .vjs-big-play-button {
-  z-index: 2
+  z-index: 2;
 }
 
 .vjs-control-bar {
-  z-index: 3
+  z-index: 3;
 }
 
 /* Enrich types colors */
 .enrich_image {
-  color: var(--bs-purple)
+  color: var(--bs-purple);
 }
 
 .enrich_document {
-  color: var(--bs-orange)
+  color: var(--bs-orange);
 }
 
 .enrich_richtext {
-  color: var(--bs-blue)
+  color: var(--bs-blue);
 }
 
 .enrich_weblink {
-  color: var(--bs-red)
+  color: var(--bs-red);
 }
 
 .enrich_embed {
-  color: var(--bs-green)
+  color: var(--bs-green);
 }
 
 li[class^="enrich_"] {

@@ -19,7 +19,7 @@
 }
 
 .meeting-infos {
-  background-color: #CFE2FF;
+  background-color: #cfe2ff;
   border: 1px solid #000;
 }
 
@@ -27,7 +27,6 @@
   --bs-table-color: var(--pod-font-color);
   --bs-table-striped-color: var(--pod-font-color);
 }
-
 
 /* Loading while uploading */
 .recording-loader {
@@ -74,7 +73,7 @@ div.alert.alert-dismissible {
   position: relative;
   padding-right: 60px;
   border: 1px solid #e6e6e6;
-  background: #FFF;
+  background: #fff;
 }
 
 div.alert .icon {
@@ -131,5 +130,5 @@ div.alert .proposition::before {
   content: "\F137";
   margin-right: 15px;
   font-family: bootstrap-icons;
-  vertical-align: -.125em;
+  vertical-align: -0.125em;
 }

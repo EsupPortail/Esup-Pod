@@ -9,13 +9,12 @@
   top: 0;
   height: 100%;
   width: 20%;
-  background-color: rgba(43 51 63 .7);
+  background-color: rgba(43 51 63 0.7);
   overflow-y: auto;
 
   /* border: 2px solid black; */
   cursor: default;
   z-index: 2;
-
 }
 
 .chapters-list.inactive {
@@ -53,13 +52,13 @@
 
   /* background-color: rgba(0 0 0 .8); */
   margin: 0 3px;
-  border-top: 1px solid rgba(0 0 0 .8);
+  border-top: 1px solid rgba(0 0 0 0.8);
 }
 
 .chapters-list ol li a {
   display: block;
-  padding: .7rem 1rem;
-  transition: .3s;
+  padding: 0.7rem 1rem;
+  transition: 0.3s;
   color: #fff;
   text-align: left;
   font-size: 1.3em;

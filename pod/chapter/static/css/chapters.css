@@ -10,7 +10,7 @@ table.scroll {
 }
 
 table.scroll .btn-sm,
-table.scroll .btn-group-sm>.btn {
+table.scroll .btn-group-sm > .btn {
   border-radius: 3px;
   font-size: 12px;
   line-height: 0.5;
@@ -69,7 +69,7 @@ table.scroll thead th.chapter_time_end {
 
 form#form_chapter,
 form#form_chapter_import {
-  background-color: rgba(0 0 0 .05);
+  background-color: rgba(0 0 0 0.05);
 }
 
 .form-group.row p {
@@ -103,5 +103,5 @@ div.file-picker-overlay select {
 
 /** Bootstrap override **/
 .card-title {
-  margin: .45rem;
+  margin: 0.45rem;
 }

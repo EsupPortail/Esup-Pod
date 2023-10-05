@@ -19,7 +19,9 @@ jobs:
 
       # Prettify js code with prettier
       - name: Running prettier
-        run: npx prettier --write pod/*/static/**/*.js
+        run: |
+          npx prettier --write pod/*/static/**/*.js
+          npx prettier --write pod/*/static/**/*.css
 
       - name: Check for modified files
         id: prettier-git-check

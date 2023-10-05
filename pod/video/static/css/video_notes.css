@@ -100,7 +100,7 @@ div.comment {
 .pod-note-item,
 .pod-note-comment {
   display: flex;
-  gap: .3rem;
+  gap: 0.3rem;
   align-items: baseline;
 }
 
@@ -152,11 +152,10 @@ span.user {
 
 .pod-note-header:hover,
 .pod-note-header:focus,
-.pod-note-header:hover>.pod-note-truncated,
-.pod-note-header:focus>.pod-note-truncated {
+.pod-note-header:hover > .pod-note-truncated,
+.pod-note-header:focus > .pod-note-truncated {
   text-decoration: underline;
 }
-
 
 textarea#id_note,
 textarea#id_comment,
@@ -172,11 +171,11 @@ select#id_status {
 }
 */
 
-#card-takenote>div.card-text {
+#card-takenote > div.card-text {
   width: 100%;
 }
 
-#card-takenote>div.mgtNotes>div.dropdown-menu {
+#card-takenote > div.mgtNotes > div.dropdown-menu {
   background-color: #fff5f5;
 }
 
@@ -199,7 +198,7 @@ div.mgtComment.dropleft > button {
 */
 
 .noNotes {
-  font-size: .8rem;
+  font-size: 0.8rem;
   font-style: italic;
   margin: 5px;
 }

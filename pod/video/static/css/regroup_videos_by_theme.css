@@ -18,7 +18,7 @@
   flex-grow: 1;
   width: 100%;
   min-width: 100%;
-  transition: transform .5s ease-in-out;
+  transition: transform 0.5s ease-in-out;
 }
 
 .list-children-theme.scroll-left {
@@ -49,14 +49,14 @@
 
 li.child-theme {
   padding: 0;
-  margin: .4em 0;
-  margin-right: .8em;
+  margin: 0.4em 0;
+  margin-right: 0.8em;
   max-width: 200px;
-  min-width: 200px
+  min-width: 200px;
 }
 
 .child-theme a {
-  padding: .4em;
+  padding: 0.4em;
   max-width: 100%;
   width: 100%;
   display: block;

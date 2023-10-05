@@ -42,11 +42,11 @@ a.link-for-playlist:hover {
 }
 
 .remove-video-from-playlist {
-  background-color: #CC3434;
+  background-color: #cc3434;
 }
 
 .remove-video-from-playlist:hover {
-  background-color: #AA3434;
+  background-color: #aa3434;
   color: var(--pod-background);
 }
 
@@ -69,7 +69,6 @@ a.link-for-playlist:hover {
   opacity: 1;
   display: block;
 }
-
 
 .shake-effect-active {
   cursor: grabbing;
@@ -128,7 +127,7 @@ a.link-for-playlist:hover {
 #sortForm.no-click,
 #collapse-button.no-click {
   opacity: 0;
-  transition: opacity .9s ease;
+  transition: opacity 0.9s ease;
 }
 
 .card-hidden {
@@ -146,7 +145,7 @@ a.link-for-playlist:hover {
 }
 
 .dropzone-hover {
-  border: .2rem solid #1F7C85;
+  border: 0.2rem solid #1f7c85;
 }
 
 p.playlist-last-updated {
@@ -179,16 +178,16 @@ a.player-element:hover {
 }
 
 a.player-element.selected {
-  background-color: #D1D1D1;
+  background-color: #d1d1d1;
 }
 
 a.player-element:not(.disabled):hover {
-  background-color: #F1F1F1;
+  background-color: #f1f1f1;
   border: var(--bs-border-width) solid var(--pod-primary) !important;
 }
 
 a.player-element:not(.disabled).selected:hover {
-  background-color: #BEBEBE;
+  background-color: #bebebe;
 }
 
 .promoted-icon {

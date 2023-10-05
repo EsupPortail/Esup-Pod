@@ -1,10 +1,14 @@
 @media (prefers-color-scheme: dark) {
-  .select2-container--default .select2-selection--multiple, .select2-dropdown,
-  .select2-container--default .select2-selection--multiple .select2-selection__choice {
+  .select2-container--default .select2-selection--multiple,
+  .select2-dropdown,
+  .select2-container--default
+    .select2-selection--multiple
+    .select2-selection__choice {
     background-color: #121212 !important;
   }
 
-  .select2-container--default.select2-container--focus .select2-selection--multiple {
+  .select2-container--default.select2-container--focus
+    .select2-selection--multiple {
     border: solid white 1px !important;
   }
 
@@ -13,7 +17,7 @@
   }
 
   :root {
-    --pod-font-color : white;
+    --pod-font-color: white;
   }
 }
 
@@ -50,7 +54,8 @@
   color: #000;
 }
 
-.deletelink, .cancel-link {
+.deletelink,
+.cancel-link {
   box-sizing: revert;
 }
 

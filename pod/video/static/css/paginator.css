@@ -3,9 +3,9 @@
  */
 
 .paginator {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    grid-column: 1 / -1;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  grid-column: 1 / -1;
 }

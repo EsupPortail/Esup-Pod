@@ -4,7 +4,7 @@
 
 #bbb_meetings_list .card-header {
   background: var(--color-black-alpha);
-  padding: 0 .25rem;
+  padding: 0 0.25rem;
   z-index: 9;
 }
 

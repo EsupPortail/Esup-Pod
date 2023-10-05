@@ -10,11 +10,11 @@ table.scroll {
 }
 
 table.scroll .btn-sm,
-table.scroll .btn-group-sm>.btn {
+table.scroll .btn-group-sm > .btn {
   border-radius: 4px;
   font-size: 14px;
   line-height: 1.4;
-  padding: .2em .4em;
+  padding: 0.2em 0.4em;
 }
 
 table.scroll tbody {
@@ -151,7 +151,7 @@ table#table_list_contributors thead th.contributor_name {
 
 .track_kind.options .btn {
   margin: 0;
-  padding: .2em .4em;
+  padding: 0.2em 0.4em;
   font-size: 1rem;
   box-sizing: border-box;
 }
@@ -161,8 +161,8 @@ table#table_list_contributors thead th.contributor_name {
     display: inline-block;
   }
 
-  .grid-list-track .track_kind.options>form,
-  .grid-list-track .track_kind.options>#modifCapSubFile {
+  .grid-list-track .track_kind.options > form,
+  .grid-list-track .track_kind.options > #modifCapSubFile {
     display: none;
   }
 }
@@ -180,5 +180,5 @@ textarea#id_description {
 
 /** Bootstrap override **/
 .card-title {
-  margin: .45rem;
+  margin: 0.45rem;
 }

@@ -6,7 +6,7 @@
   /* --content-primary-color: rgba(6, 14, 29, .75); */
   --primary-background-color: #f8f9fa;
   --third-background-color: rgb(255 255 255);
-  --content-secondary-color: rgba(54 56 58 .65);
+  --content-secondary-color: rgba(54 56 58 0.65);
   --content-third-color: #696969;
   --padding-comment-content: 25px;
   --margin-between-comment: 1em;
@@ -14,15 +14,15 @@
 }
 
 [data-theme="dark"] {
-  --content-third-color: #B6B4B4;
+  --content-third-color: #b6b4b4;
 }
 
 .comment_disable {
   text-align: center;
-  padding: .4em .8em;
+  padding: 0.4em 0.8em;
   color: #386066;
   background: #afe0e8;
-  margin-top: .8em;
+  margin-top: 0.8em;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -41,8 +41,8 @@
 .reply_to {
   letter-spacing: 1.1px;
   color: var(--content-third-color);
-  margin-bottom: .8em;
-  margin-left: .8em;
+  margin-bottom: 0.8em;
+  margin-left: 0.8em;
 }
 
 .reply_to svg {
@@ -105,7 +105,6 @@
   width: 100%;
 }
 
-
 /* Confirm Modal */
 .comment_main .confirm_delete {
   display: none;
@@ -116,7 +115,7 @@
   position: fixed;
   inset: 0;
   min-height: 100vh;
-  background-color: rgba(54 56 58 .5);
+  background-color: rgba(54 56 58 0.5);
 }
 
 .comment_main .confirm_delete.show {
@@ -193,37 +192,56 @@
   flex-direction: column;
   justify-content: space-between;
   border-left: 4px solid var(--pod-primary);
-  padding: .4em;
+  padding: 0.4em;
   box-shadow: 2px 2px 12px #e6e2e2;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
   background-color: var(--pod-background-neutre2-bloc);
 }
 
-.comment_main .comment_element .comment_container>.comments_children_container {
+.comment_main
+  .comment_element
+  .comment_container
+  > .comments_children_container {
   height: 0;
   overflow: hidden;
-  transition: .5s height;
+  transition: 0.5s height;
 }
 
-.comment_main .comment_element.show .comment_container>.comments_children_container {
+.comment_main
+  .comment_element.show
+  .comment_container
+  > .comments_children_container {
   height: auto;
 }
 
-.comment_main .comment_element .comment_container .comment_element>.comment_child_container {
+.comment_main
+  .comment_element
+  .comment_container
+  .comment_element
+  > .comment_child_container {
   display: flex;
-  margin-top: calc(var(--margin-between-comment) - .2em);
+  margin-top: calc(var(--margin-between-comment) - 0.2em);
   padding-right: 0.8em;
 }
 
-.comment_main .comment_element>.comment.onDelete,
-.comment_main .comment_element .comment_container .comment_element>.comment_child_container.onDelete {
+.comment_main .comment_element > .comment.onDelete,
+.comment_main
+  .comment_element
+  .comment_container
+  .comment_element
+  > .comment_child_container.onDelete {
   animation-name: deletecomment;
   animation-duration: 1s;
   animation-fill-mode: forwards;
 }
 
-.comment_main .comment_element .comment_container .comment_element>.comment_child_container .comments_icon {
+.comment_main
+  .comment_element
+  .comment_container
+  .comment_element
+  > .comment_child_container
+  .comments_icon {
   margin-left: 0;
   flex: none;
   align-self: center;
@@ -238,7 +256,7 @@
   flex-grow: 1;
 
   /* width reduced by "re" svg width */
-  max-width: calc(100% - 21px)
+  max-width: calc(100% - 21px);
 }
 
 .comment_main .comment .comment_content_header .comment_since {
@@ -265,7 +283,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: .8em;
+  margin-bottom: 0.8em;
 }
 
 .comment_main .comment .comment_content_body .comment_text {
@@ -278,13 +296,13 @@
   color: var(--content-secondary-color);
 }
 
-.comment_main .comment .comment_content_footer>* {
+.comment_main .comment .comment_content_footer > * {
   display: flex;
   align-items: center;
   font-size: 13px;
 }
 
-.comment_main .comment .comment_content_footer>* .icon {
+.comment_main .comment .comment_content_footer > * .icon {
   margin-right: 4px;
 }
 
@@ -307,7 +325,11 @@
   color: var(--pod-primary);
 }
 
-.comment_main .comment .comment_content_footer .comment_actions.voting .comment_vote_icon {
+.comment_main
+  .comment
+  .comment_content_footer
+  .comment_actions.voting
+  .comment_vote_icon {
   display: none;
 }
 
@@ -333,7 +355,7 @@
 .comment_main .comment_element .comment_content_footer .form {
   height: 0;
   overflow: hidden;
-  transition: .5s height;
+  transition: 0.5s height;
 }
 
 .comment_main .comment_element .comment_content_footer .form.show {
@@ -341,7 +363,7 @@
 }
 
 .comment_main .comment .comment_content_footer .add_comment {
-  margin: .8em .2em 0;
+  margin: 0.8em 0.2em 0;
 }
 
 .comment_main .add_comment .new_comment {
@@ -375,7 +397,6 @@
   height: 100%;
 }
 
-
 @media only screen and (max-width: 650px) {
   .comment_main .comment_actions:not(.comment_vote_action) span {
     display: none;
@@ -405,7 +426,7 @@
 @keyframes deletecomment {
   0% {
     position: relative;
-    box-shadow: 0 0 8px 8px rgba(255 0 0 .3) !important;
+    box-shadow: 0 0 8px 8px rgba(255 0 0 0.3) !important;
     z-index: 9999;
     transform: translateX(0);
   }

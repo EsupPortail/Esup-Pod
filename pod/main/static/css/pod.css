@@ -3,7 +3,7 @@
 :root {
   /* COMMON COLORS */
   --color-black: #000;
-  --color-black-alpha: rgba(0 0 0 .6);
+  --color-black-alpha: rgba(0 0 0 0.6);
   --color-alto: #ddd;
   --color-silver: #ccc;
   --color-silver-chalice: #aaa;
@@ -13,20 +13,20 @@
    ***/
 
   /*** Theme primary color ***/
-  --pod-primary: #1F7C85;
+  --pod-primary: #1f7c85;
   --pod-primary-rgb: 31, 124, 133;
 
   /* a light variant of primary color, used for button hover */
   --pod-primary-lighten: #08b0a0;
 
   /* a dark variant of primary color, used for active links and disabled buttons */
-  --pod-primary-darken: #18575D;
+  --pod-primary-darken: #18575d;
 
   /* les valeurs '...-dark' ci-dessous sont pour le mode sombre. */
-  --pod-primary-dark: #1F7C85;
+  --pod-primary-dark: #1f7c85;
   --pod-primary-lighten-dark: #08b0a0;
   --pod-primary-lighten-dark-rgb: 8, 176, 160;
-  --pod-primary-darken-dark: #18575D;
+  --pod-primary-darken-dark: #18575d;
 
   /***
    * Esup-Pod default colors
@@ -61,8 +61,8 @@
   --pod-primary-focus: var(--pod-primary-darken);
 
   /* Couleur d'alerte */
-  --pod-alert: #FC8670;
-  --pod-alert-dark: #B11030;
+  --pod-alert: #fc8670;
+  --pod-alert-dark: #b11030;
 
   /**** font family ****/
 
@@ -83,13 +83,14 @@
   --bs-card-color: var(--pod-font-color);
 
   /* better contrast on sidebar background */
-  --bs-danger: #DC2028;
+  --bs-danger: #dc2028;
 
   /* better contrasts */
-  --bs-border-color: #8E969D;
+  --bs-border-color: #8e969d;
 
   /* Use system font (faster load) */
-  --font-family-sans-serif: -apple-system, system-ui, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Verdana", sans-serif;
+  --font-family-sans-serif: -apple-system, system-ui, "BlinkMacSystemFont",
+    "Segoe UI", "Roboto", "Verdana", sans-serif;
 
   /** reinit before cleaning all old css vars ***/
   --primary-background-color: var(--pod-background-neutre1-bloc) !important;
@@ -99,7 +100,6 @@
 :root[data-dyslexia="on"] {
   --bs-body-font-family: var(--pod-font-family-dyslexie);
 }
-
 
 /* copy "alert-danger" style from Bootstrap 4 */
 .alert-error {
@@ -114,7 +114,7 @@ tr,
 }
 
 .table-hover tbody tr {
-  transition: background-color .5s;
+  transition: background-color 0.5s;
 }
 
 /*
@@ -126,8 +126,10 @@ tr,
 
 .navbar-light .navbar-brand:focus,
 .navbar-light .navbar-brand:hover {
-  transition: background-color .3s ease-in-out, color .3s ease-in-out;
-  color: var(--color-black)
+  transition:
+    background-color 0.3s ease-in-out,
+    color 0.3s ease-in-out;
+  color: var(--color-black);
 }
 
 .pod-nav-link-icon,
@@ -147,7 +149,7 @@ tr,
   font-size: 85%;
 }
 
-.pod-meta-title+ul {
+.pod-meta-title + ul {
   display: inline-block;
 }
 
@@ -155,9 +157,9 @@ tr,
   vertical-align: top;
 }
 
-.title-chaine>a {
-  margin-left: .5em;
-  margin-right: .5em;
+.title-chaine > a {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
 }
 
 .pod-card--video a:not(.btn) {
@@ -190,11 +192,11 @@ a:not(.btn):focus {
   border-color: var(--pod-primary);
 }
 
-#collapseAside .card>.btn {
+#collapseAside .card > .btn {
   white-space: normal !important;
   word-wrap: break-word;
   word-break: normal;
-  padding: .5rem;
+  padding: 0.5rem;
 }
 
 .submit-row a.deletelink {
@@ -214,7 +216,7 @@ a:not(.btn):focus {
   margin-bottom: 1.5rem;
 }
 
-:not(footer)>.pod-btn-social {
+:not(footer) > .pod-btn-social {
   font-size: 2rem;
 }
 
@@ -226,7 +228,7 @@ a:not(.btn):focus {
 }
 
 .pod-btn-social i {
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .pod-btn-social:hover i,
@@ -237,15 +239,15 @@ a:not(.btn):focus {
 
 .list-group-item {
   background: var(--pod-background);
-  padding: .25rem 1.25rem;
+  padding: 0.25rem 1.25rem;
 }
 
 /***
  *  video *
  ***/
 #myTabContent #info p {
-  margin-top: .5rem;
-  margin-bottom: .5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 #share legend {
@@ -279,7 +281,7 @@ a:not(.btn):focus {
   }
 }
 
-.link-center-pod>img {
+.link-center-pod > img {
   min-width: 100%;
   height: 100%;
 }
@@ -289,7 +291,7 @@ a:not(.btn):focus {
  ***/
 
 .btn-lang {
-  padding: .2rem .25rem;
+  padding: 0.2rem 0.25rem;
   width: 100%;
   text-align: left;
 }
@@ -313,27 +315,30 @@ a:not(.btn):focus {
 }
 
 .navbar-toggler {
-  padding: .5rem;
+  padding: 0.5rem;
   line-height: inherit;
   font-size: 1rem;
 }
 
 .navbar-light .navbar-nav .nav-link,
 .navbar-light .navbar-toggler {
-  transition: background-color .3s ease-in-out, color .3s ease-in-out;
+  transition:
+    background-color 0.3s ease-in-out,
+    color 0.3s ease-in-out;
   color: var(--pod-font-color);
-  box-shadow: .05rem .05rem .2rem .05rem rgba(0 0 0 .2);
-  border-radius: .15rem;
+  box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgba(0 0 0 0.2);
+  border-radius: 0.15rem;
   margin-top: 1rem;
 }
 
 .navbar-toggler:focus,
 .navbar-toggler:hover {
-  transition: background-color .3s ease-in-out, color .3s ease-in-out;
+  transition:
+    background-color 0.3s ease-in-out,
+    color 0.3s ease-in-out;
   color: var(--bs-link-color);
   border-color: var(--bs-link-color);
 }
-
 
 .userpicture {
   height: 34px;
@@ -364,15 +369,14 @@ a:not(.btn):focus {
 /** end modal **/
 
 a.btn-outline-primary:not(:hover) svg {
-  fill: var(--pod-primary)
+  fill: var(--pod-primary);
 }
 
 .title-chaine {
-  margin-right: .5rem;
+  margin-right: 0.5rem;
   font-weight: 600;
   flex-direction: row;
 }
-
 
 #listeChaines {
   max-height: 30rem;
@@ -387,7 +391,7 @@ a.btn-outline-primary:not(:hover) svg {
 /***
  * tab
  ***/
-.tab-content>.active {
+.tab-content > .active {
   border: 1px solid var(--color-alto);
   padding: 1.5rem;
   background: var(--pod-background);
@@ -399,7 +403,7 @@ a.btn-outline-primary:not(:hover) svg {
   border-top: 1px solid var(--color-alto) !important;
   padding: 1.5rem;
   background: var(--pod-background);
-  margin-top: .75rem;
+  margin-top: 0.75rem;
 }
 
 .nav-tabs {
@@ -429,14 +433,14 @@ a.btn-outline-primary:not(:hover) svg {
 }
 
 /* general search */
-#s+button {
+#s + button {
   opacity: 0;
-  transition: opacity .8s ease-in;
+  transition: opacity 0.8s ease-in;
 }
 
-#s:focus+button,
-#s+button:focus,
-#s+button:hover {
+#s:focus + button,
+#s + button:focus,
+#s + button:hover {
   opacity: 1;
 }
 
@@ -489,7 +493,7 @@ a.btn-outline-primary:not(:hover) svg {
 
   #s {
     border-radius: 0;
-    transition: height .5s;
+    transition: height 0.5s;
   }
 
   .hide-search-input {
@@ -502,7 +506,7 @@ a.btn-outline-primary:not(:hover) svg {
     opacity: 0;
   }
 
-  #s.hide-search-input+button {
+  #s.hide-search-input + button {
     height: 1px;
   }
 
@@ -511,7 +515,7 @@ a.btn-outline-primary:not(:hover) svg {
     width: calc(100% - 4em);
     opacity: 1;
     display: inline-block;
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
     z-index: 99;
     height: 3rem;
     margin-top: 0;
@@ -531,15 +535,14 @@ a.btn-outline-primary:not(:hover) svg {
     margin-top: .3em;
     */
     position: relative;
-    left: .1em;
+    left: 0.1em;
     cursor: pointer;
   }
-
 }
 
 /*** end MQueries **/
 
-.login>.initials {
+.login > .initials {
   font-weight: 600;
 }
 
@@ -559,8 +562,8 @@ button.nav-link {
 
 .btn:hover .userpicture,
 .btn:focus .userpicture {
-  opacity: .8;
-  border-color: #CCC;
+  opacity: 0.8;
+  border-color: #ccc;
 }
 
 /*** Videos list header ***/
@@ -570,14 +573,14 @@ button.nav-link {
 
 /*** CARD ***/
 .infinite-item .card-body {
-  padding: .9rem;
+  padding: 0.9rem;
   height: 3.5rem;
   overflow: hidden;
 }
 
 .infinite-item .card-header .octicon {
-  height: .9rem;
-  margin: .1rem;
+  height: 0.9rem;
+  margin: 0.1rem;
 }
 
 #videos_list .card-header {
@@ -588,7 +591,7 @@ button.nav-link {
   padding: 0 .25rem;
   z-index: 9;
   */
-  padding: .4rem !important;
+  padding: 0.4rem !important;
 }
 
 .pod-card--video .video-title {
@@ -607,7 +610,7 @@ button.nav-link {
 }
 
 /* prevent default thumbnail to be too small on some screens */
-.video-card>.card-thumbnail {
+.video-card > .card-thumbnail {
   min-height: 146px;
   background-color: #000;
 }
@@ -617,17 +620,19 @@ button.nav-link {
   position:relative;
   */
   top: 0;
-  gap: .5rem;
+  gap: 0.5rem;
 }
 
 div.card a img {
-  transition: -webkit-transform .5s ease;
-  transition: transform .5s ease;
-  transition: transform .5s ease, -webkit-transform .5s ease;
+  transition: -webkit-transform 0.5s ease;
+  transition: transform 0.5s ease;
+  transition:
+    transform 0.5s ease,
+    -webkit-transform 0.5s ease;
   background: #000;
 }
 
-.card .link-center-pod:hover>img {
+.card .link-center-pod:hover > img {
   transform: scale(1.1);
   z-index: 0;
 }
@@ -647,12 +652,12 @@ div.card a img {
   color: white;
   background: none;
 
-  --bs-btn-hover-color: #FFF;
-  --bs-btn-active-color: #FFF;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-color: #fff;
 }
 
 .card-footer-pod a.btn i {
-  transition: .2s all ease;
+  transition: 0.2s all ease;
   display: inline-block;
 }
 
@@ -705,7 +710,7 @@ div.card a img {
 /** aside list video **/
 #collapseAside .card-body .card-title {
   position: relative;
-  padding-bottom: .8em;
+  padding-bottom: 0.8em;
 }
 
 #collapseAside .card-body .card-title::after {
@@ -745,14 +750,14 @@ div.card a img {
 #filterDiscipline a.collapsed::after,
 #filterCursus a.collapsed::after,
 #filterTag a.collapsed::after {
-  content: '+';
+  content: "+";
 }
 
 #filterType a:not(.collapsed)::after,
 #filterDiscipline a:not(.collapsed)::after,
 #filterCursus a:not(.collapsed)::after,
 #filterTag a:not(.collapsed)::after {
-  content: '-';
+  content: "-";
 }
 
 /** ckeditor **/
@@ -782,8 +787,8 @@ div.card a img {
   overflow-x: hidden;
 }
 
-.errors>.form-control:focus {
-  box-shadow: 0 0 0 .25rem rgba(var(--bs-danger-rgb) .25);
+.errors > .form-control:focus {
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-danger-rgb) 0.25);
   border-color: var(--bs-danger);
 }
 
@@ -819,7 +824,9 @@ div.card a img {
 .flashing_field {
   border-color: var(--pod-primary);
   box-shadow: 0 0 4px var(--pod-primary);
-  transition: box-shadow .5s, border-color .5s;
+  transition:
+    box-shadow 0.5s,
+    border-color 0.5s;
 }
 
 /** channel form **/
@@ -841,7 +848,7 @@ div.card a img {
   width: 88%;
 }
 
-@media screen and (min-width:992px) {
+@media screen and (min-width: 992px) {
   #channel_form .selector-available,
   #channel_form .selector-chosen,
   #enrichment_group_form .selector-available,
@@ -855,7 +862,14 @@ div.card a img {
   width: 90%;
 }
 
-#channel_form .selector .selector-filter label #enrichment_group_form .selector .selector-filter label {
+#channel_form
+  .selector
+  .selector-filter
+  label
+  #enrichment_group_form
+  .selector
+  .selector-filter
+  label {
   margin-top: 0;
 }
 
@@ -884,7 +898,7 @@ div.card a img {
   }
 }
 */
-@media screen and (min-width:992px) {
+@media screen and (min-width: 992px) {
   .card-img-top {
     max-height: 195.36px;
   }
@@ -894,11 +908,11 @@ div.card a img {
   }
 }
 
-.footer_links>li::before {
+.footer_links > li::before {
   margin-right: 2px;
   content: "\F234";
   font-family: bootstrap-icons;
-  vertical-align: -.125em;
+  vertical-align: -0.125em;
 }
 
 #view-counter-icon {
@@ -1009,7 +1023,9 @@ body[data-admin-utc-offset] .select2-dropdown {
   background-color: var(--pod-background);
 }
 
-body[data-admin-utc-offset] .select2-container--open .select2-selection--multiple {
+body[data-admin-utc-offset]
+  .select2-container--open
+  .select2-selection--multiple {
   border-color: var(--body-quiet-color);
 }
 
@@ -1017,26 +1033,29 @@ body[data-admin-utc-offset] .select2-search--inline .select2-search__field {
   color: var(--pod-font-color);
 }
 
-body[data-admin-utc-offset] .select2-selection--multiple .select2-selection__choice,
-body[data-admin-utc-offset] .select2-selection--multiple .select2-results__option[aria-selected="true"] {
+body[data-admin-utc-offset]
+  .select2-selection--multiple
+  .select2-selection__choice,
+body[data-admin-utc-offset]
+  .select2-selection--multiple
+  .select2-results__option[aria-selected="true"] {
   color: #333;
 }
 
-
 .select2-container--focus,
 .cke_focus {
-  box-shadow: 0 0 0 .25rem rgba(var(--pod-primary-rgb) .25);
+  box-shadow: 0 0 0 0.25rem rgba(var(--pod-primary-rgb) 0.25);
   border-radius: 5px;
 }
 
-.select2-container--default.select2-container--focus .select2-selection--multiple.select2-selection {
+.select2-container--default.select2-container--focus
+  .select2-selection--multiple.select2-selection {
   border: solid 1px var(--pod-primary);
 }
 
 /* end select2 multiple corrections */
 
 /* System/browser dark mode */
-
 
 /*** CUSTOM CLASSES POD - bootstrap5 - 2022/04 ****/
 
@@ -1065,7 +1084,7 @@ body {
 
 .accordion {
   --bs-accordion-active-color: var(--pod-link-color);
-  --bs-accordion-active-bg: rgba(var(--bs-primary-rgb) .1);
+  --bs-accordion-active-bg: rgba(var(--bs-primary-rgb) 0.1);
   --bs-accordion-btn-focus-border-color: var(--pod-primary);
 }
 
@@ -1104,7 +1123,7 @@ body {
 
 /* dark navbars (see in "my files") */
 .bg-primary {
-  --bs-link-color: #F5F5F5;
+  --bs-link-color: #f5f5f5;
 }
 
 .bg-primary .nav-link {
@@ -1147,14 +1166,14 @@ body {
   text-decoration: none;
 }
 
-.pod-params-button:focus>i::before,
-.pod-params-button:hover>i::before {
+.pod-params-button:focus > i::before,
+.pod-params-button:hover > i::before {
   transform: rotate(20deg);
 }
 
 /* Make icon rotate and button remain still */
-.pod-params-button>i::before {
-  transition: transform ease-in-out .3s;
+.pod-params-button > i::before {
+  transition: transform ease-in-out 0.3s;
 }
 
 .pod-gotoup {
@@ -1167,7 +1186,7 @@ body {
 
 .pod-aside-collapse {
   position: absolute;
-  right: .5rem;
+  right: 0.5rem;
   z-index: 6;
 }
 
@@ -1179,7 +1198,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1.4rem;
-  transition: all .5s ease-in;
+  transition: all 0.5s ease-in;
   background: none;
   border: 1px solid silver;
   color: var(--pod-font-color);
@@ -1226,7 +1245,7 @@ body {
 .pod-footer__links {
   display: flex;
   justify-content: space-around;
-  gap: .5rem;
+  gap: 0.5rem;
   font-weight: 600;
   flex-wrap: wrap;
 }
@@ -1249,20 +1268,22 @@ body {
 .pod-card__title,
 .pod-card__title label {
   display: flex;
-  gap: .5rem;
+  gap: 0.5rem;
   align-items: center;
 }
 
 @media (min-width: 992px) {
   .pod-card__title,
   .pod-card__title label {
-    flex-flow: wrap
+    flex-flow: wrap;
   }
 }
 
 .pod-navbar {
   background: var(--pod-background);
-  box-shadow: 0 1px 3px rgba(0 0 0 .12), 0 1px 2px rgba(0 0 0 .24);
+  box-shadow:
+    0 1px 3px rgba(0 0 0 0.12),
+    0 1px 2px rgba(0 0 0 0.24);
 }
 
 .pod-info-video {
@@ -1287,11 +1308,11 @@ body {
 .video-info_duration-view-share {
   display: flex;
   font-size: 90%;
-  gap: .75rem;
+  gap: 0.75rem;
   align-items: center;
   justify-content: flex-start;
   border-bottom: 1px solid var(--pod-background-neutre1-bloc);
-  padding-bottom: .75rem;
+  padding-bottom: 0.75rem;
 }
 
 .pod-info-video__info {
@@ -1324,9 +1345,8 @@ body {
   padding: 1rem 0 0 1rem;
 }
 
-
-.pod-download-title>.bi {
-  padding-right: .5rem;
+.pod-download-title > .bi {
+  padding-right: 0.5rem;
 }
 
 /* ------ */
@@ -1360,7 +1380,7 @@ body {
 
 .pod-btn-share i,
 .pod-info-video__signal i {
-  transition: all .2s ease-in;
+  transition: all 0.2s ease-in;
   display: inline-block;
 }
 
@@ -1388,9 +1408,9 @@ body {
 .pod-navbar__brand {
   display: flex;
   align-items: center;
-  gap: .5rem;
+  gap: 0.5rem;
   color: var(--pod-font-color) !important;
-  transition: transform .4s ease;
+  transition: transform 0.4s ease;
 }
 
 .pod-navbar__brand:hover,
@@ -1414,7 +1434,7 @@ body {
   margin-bottom: 1.5rem;
 }
 
-.pod-navbar__theme-switch__item>* {
+.pod-navbar__theme-switch__item > * {
   display: flex;
   align-items: center;
   margin: 1rem 2rem;
@@ -1443,7 +1463,7 @@ body {
   margin-left: auto;
 }
 
-@media(min-width:992px) {
+@media (min-width: 992px) {
   .pod-navbar__form {
     flex-basis: 350px;
   }
@@ -1472,7 +1492,7 @@ body {
 }
 
 /* medium screens */
-@media(min-width:992px) {
+@media (min-width: 992px) {
   .pod-grid-content {
     gap: 2rem;
     grid-template-columns: minmax(0%, 100%) repeat(auto-fit, 33%);
@@ -1480,7 +1500,7 @@ body {
 }
 
 /* large screens */
-@media(min-width:1200px) {
+@media (min-width: 1200px) {
   .pod-grid-content {
     grid-template-columns: minmax(0%, 100%) repeat(auto-fit, 25%);
   }
@@ -1512,7 +1532,9 @@ body {
 
 .pod-card--video {
   border: none;
-  box-shadow: 0 3px 6px rgba(0 0 0 .16), 0 3px 6px rgba(0 0 0 .23);
+  box-shadow:
+    0 3px 6px rgba(0 0 0 0.16),
+    0 3px 6px rgba(0 0 0 0.23);
   background: var(--pod-background);
 }
 
@@ -1532,10 +1554,10 @@ body {
   width: 0;
   overflow: hidden;
   margin-left: 100%;
-  transition: all .15s ease;
+  transition: all 0.15s ease;
   z-index: 5;
   padding-top: 5rem;
-  box-shadow: .05rem .05rem .2rem .05rem rgba(0 0 0 .2);
+  box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgba(0 0 0 0.2);
 }
 
 .pod-aside.show {
@@ -1543,14 +1565,14 @@ body {
   width: auto;
 }
 
-@media(min-width:992px) {
+@media (min-width: 992px) {
   .pod-show-lg {
     margin-left: 0;
     width: auto;
   }
 }
 
-@media(max-width:992px) {
+@media (max-width: 992px) {
   .pod-aside {
     /* THIS IS NORMAL, it's to fit with pod-aside-collapse */
     width: 101% !important;
@@ -1563,7 +1585,7 @@ body {
   }
 }
 
-@media(min-width:1450px) {
+@media (min-width: 1450px) {
   .pod-mainContent {
     padding-left: 5rem;
     padding-right: 5rem;
@@ -1572,19 +1594,16 @@ body {
   .pod-grid-content {
     gap: 0;
   }
-
 }
 
 .pod-aside.collapsing {
   height: auto;
 }
 
-
 .pod-aside .card {
   background: none;
   border-radius: 0;
   border: none;
-  ;
 }
 
 .pod-navbar__button-toggler {
@@ -1593,7 +1612,7 @@ body {
   font-size: 1.8rem;
   margin: 0;
   border: 0;
-  margin-right: .3rem;
+  margin-right: 0.3rem;
   background: none;
   width: 2.5rem;
   height: 2.5rem;
@@ -1627,17 +1646,17 @@ body {
 /* Buttons side by side under the title */
 #event_add {
   display: inline-block !important;
-  padding-right: .5rem;
+  padding-right: 0.5rem;
 }
 
 /* Fix table on "My meetings" */
 
-.table> :not(caption)>*>* {
-  padding: .5rem .25rem;
+.table > :not(caption) > * > * {
+  padding: 0.5rem 0.25rem;
   border-bottom-width: 0 !important;
 }
 
-table :not(footer)>.pod-btn-social {
+table :not(footer) > .pod-btn-social {
   font-size: 1.5rem;
   width: 3rem !important;
   height: 3rem !important;
@@ -1650,7 +1669,7 @@ table .btn:hover {
 }
 */
 
-th+td+td+td+td {
+th + td + td + td + td {
   /* border-right: .15rem solid var(--pod-link-color);  */
   text-align: center;
 }
@@ -1682,7 +1701,7 @@ table .alert.alert-danger.btn.pod-btn-social {
 /* Custom subtitles block on Firefox & Chrome (Safari use it's own subtitle style) */
 .vjs-text-track-cue > div {
   display: block;
-  padding: .3rem .5rem;
+  padding: 0.3rem 0.5rem;
   border-radius: 8px;
 }
 
@@ -1701,24 +1720,23 @@ table .alert.alert-danger.btn.pod-btn-social {
   font-size: 11px;
 }
 
-
 /* Upload page */
 
 .form-group.hide-on-processing {
   border: dotted var(--pod-link-color);
-  margin-bottom: .5rem;
+  margin-bottom: 0.5rem;
   border-radius: 1rem;
   width: fit-content;
 }
 
 /** Esup-Pod callout messages **/
 .pod-callout {
-  padding: .7rem 1rem;
+  padding: 0.7rem 1rem;
   margin-top: 1.25rem;
   margin-bottom: 1.25rem;
   border: 1px solid #eee;
-  border-left-width: .33rem;
-  border-radius: .25rem;
+  border-left-width: 0.33rem;
+  border-radius: 0.25rem;
 }
 
 .pod-callout-primary {
@@ -1769,7 +1787,7 @@ table .alert.alert-danger.btn.pod-btn-social {
   margin: 6px;
   border: 6px solid var(--pod-font-color);
   border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(.5, 0, .5, 1) infinite;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border-color: var(--pod-font-color) transparent transparent transparent;
 }
 
@@ -1807,13 +1825,22 @@ table .alert.alert-danger.btn.pod-btn-social {
 
 div.disabled,
 a.player-element.disabled {
-  background-image: linear-gradient(45deg, rgba(0 0 0 .2) 25%, transparent 25%, transparent 50%, rgba(0 0 0 .2) 50%, rgba(0 0 0 .2) 75%, transparent 75%, transparent);
+  background-image: linear-gradient(
+    45deg,
+    rgba(0 0 0 0.2) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(0 0 0 0.2) 50%,
+    rgba(0 0 0 0.2) 75%,
+    transparent 75%,
+    transparent
+  );
   background-size: 4px 4px;
   background-repeat: repeat;
 }
 
 .progress {
-  height: .6em;
+  height: 0.6em;
 }
 
 .progress .progress-bar {
@@ -1837,11 +1864,12 @@ a.player-element.disabled {
   /* display: inline-block; */
   width: 1.6em;
   padding: 1.7em 1em 0;
-  margin-top: .1em;
+  margin-top: 0.1em;
   height: 1.6em;
   overflow: hidden;
   box-sizing: border-box;
-  background: url('/static/bootstrap-icons/icons/cloud-arrow-up.svg') center center no-repeat transparent;
+  background: url("/static/bootstrap-icons/icons/cloud-arrow-up.svg") center
+    center no-repeat transparent;
   border-radius: 5px;
   background-size: 1.6em 1.6em;
 }
@@ -1855,9 +1883,9 @@ a.player-element.disabled {
 }
 
 .bg-primary .podfile-icon-selector:focus-visible {
-  box-shadow: 0 0 0 .25rem rgba(0 0 0 .5);
+  box-shadow: 0 0 0 0.25rem rgba(0 0 0 0.5);
 }
 
 .podfile-icon-selector:hover {
-  opacity: .66;
+  opacity: 0.66;
 }

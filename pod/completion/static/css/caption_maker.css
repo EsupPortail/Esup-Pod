@@ -77,7 +77,7 @@ textarea {
 .gray_no_video {
   display: flex;
   flex-wrap: wrap;
-  border-top: 1px solid #E1E1E1;
+  border-top: 1px solid #e1e1e1;
 }
 
 .videoSection {
@@ -89,7 +89,7 @@ textarea {
 }
 
 .caption_content {
-  border-left: 1px solid #E1E1E1;
+  border-left: 1px solid #e1e1e1;
   display: inline-block;
   width: 49%;
 
@@ -107,7 +107,7 @@ textarea {
   margin-left: 4px;
 }
 
-.caption_content .caption_title svg:hover+.help_text {
+.caption_content .caption_title svg:hover + .help_text {
   display: block;
 }
 
@@ -118,7 +118,7 @@ textarea {
   color: #fff;
   width: calc(100% - 110px);
   right: 0;
-  padding: .4em .8em;
+  padding: 0.4em 0.8em;
   border-radius: 4px;
   box-shadow: 4px 4px 10px #ccc;
   font-size: 15px;
@@ -134,7 +134,6 @@ textarea {
   width: 100%;
   padding: 0;
   */
-
 }
 
 #newCaptionsEditor {
@@ -142,16 +141,16 @@ textarea {
 }
 
 .newEditorBlock {
-  border-bottom: 1px solid #E1E1E1;
+  border-bottom: 1px solid #e1e1e1;
   padding: 8px;
   transition: 0.2s;
 }
 
 .newEditorBlock:hover {
-  background-color: rgba(223 230 246 .4);
+  background-color: rgba(223 230 246 0.4);
 }
 
-.newEditorBlock>textarea {
+.newEditorBlock > textarea {
   width: 77%;
 
   /*
@@ -165,7 +164,7 @@ textarea {
 
 .captionBeingEdited {
   border-left: 3px solid var(--pod-primary);
-  background-color: rgba(223 230 246 .4);
+  background-color: rgba(223 230 246 0.4);
 }
 
 /*
@@ -312,7 +311,7 @@ textarea {
 }
 */
 
-#captionmakerModal.save>.modal-dialog {
+#captionmakerModal.save > .modal-dialog {
   max-width: 1000px;
 }
 
@@ -322,7 +321,7 @@ textarea {
   padding-top: 24px;
   padding-bottom: 24px;
   display: block;
-  border-top: 1px solid #E1E1E1;
+  border-top: 1px solid #e1e1e1;
 }
 
 @media only screen and (max-width: 800px) {
@@ -331,7 +330,7 @@ textarea {
     flex-direction: column;
   }
 
-  .gray_no_video>div {
+  .gray_no_video > div {
     width: 100% !important;
   }
 
@@ -342,7 +341,7 @@ textarea {
     min-height: unset !important;
   }
 
-  .newEditorBlock>textarea {
+  .newEditorBlock > textarea {
     width: 60%;
   }
 }
@@ -364,7 +363,7 @@ textarea {
 .regionHighligh {
   position: absolute;
   z-index: 1;
-  background-color: rgba(173 50 122 .5);
+  background-color: rgba(173 50 122 0.5);
   height: 3px;
 }
 
