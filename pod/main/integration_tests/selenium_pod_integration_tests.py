@@ -61,32 +61,30 @@ class SeleniumTestCase(object):
     def __init__(self, test_data, callback=None):
         self.test_data = test_data
         self.callback = callback
+        self.base_url = None
+        self.commands = []
 
     def run(self, driver, url):
+        self.base_url = url
         print(f'Running test: {self.test_data["name"]}')
-        self.run_commands(driver, url)
+        for command in self.commands:
+            method_name, target, value = command
+            method = getattr(self, method_name)
+            args = [driver]
+            if target is not None:
+                args.append(target)
+            if value is not None:
+                args.append(value)
+            print(f'   {method_name} {args}')
+            method(*args)
         if self.callback:
             self.callback(driver.page_source)
-
-    def run_commands(self, driver, url):
-        base_url = self.test_data.get('url', url)
-        for command in self.test_data.get('commands', []):
-            command_name = command.get('command', '')
-            target = command.get('target', '')
-            value = command.get('value', '')
-
-            if command_name == 'open':
-                driver.get(base_url + target)
-            elif command_name == 'click':
-                self.click(driver, target)
-            elif command_name == "cookies_commands":
-                self.cookies_commands(driver, url)
 
     def cookies_commands(self, driver, url):
         with open('pod/main/integration_tests/commands/cookies_commands.side', 'r') as side_file:
             side_data = json.load(side_file)
             self.test_data['commands'] = side_data.get('commands', [])
-            self.run_commands(driver, url)
+            self.run(driver, url)
 
     def open(self, driver, target):
         driver.get(self.base_url + target)
