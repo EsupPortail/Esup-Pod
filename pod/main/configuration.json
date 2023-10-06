@@ -4035,7 +4035,7 @@
                             "pod_version_init": "3.1"
                         },
                         "USE_DEBUG_TOOLBAR": {
-                            "default_value": true,
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     "A boolean value that enables or disables the debugging tool.<br>",
