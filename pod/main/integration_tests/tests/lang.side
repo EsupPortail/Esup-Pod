@@ -13,7 +13,11 @@
       "target": "/",
       "targets": [],
       "value": ""
-    },{
+    }, {
+      "id": "pod-accept-cookies",
+      "comment": "Valide les cookies du navigateur",
+      "command": "cookies_commands"
+    }, {
       "id": "pod-open-configuration",
       "comment": "Ouvre la page de configuration",
       "command": "click",

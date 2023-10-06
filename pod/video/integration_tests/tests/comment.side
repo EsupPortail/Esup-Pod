@@ -7,6 +7,10 @@
     "id": "pod-add-delete-comment",
     "name": "comment",
     "commands": [{
+      "id": "pod-accept-cookies",
+      "comment": "Valide les cookies du navigateur",
+      "command": "cookies_commands"
+    }, {
       "id": "pod-open-video-page",
       "comment": "Ouvre la page de la vidéo",
       "command": "open",

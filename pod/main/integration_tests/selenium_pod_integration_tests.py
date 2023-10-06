@@ -79,6 +79,14 @@ class SeleniumTestCase(object):
                 driver.get(base_url + target)
             elif command_name == 'click':
                 self.click(driver, target)
+            elif command_name == "cookies_commands":
+                self.cookies_commands(driver, url)
+
+    def cookies_commands(self, driver, url):
+        with open('pod/main/integration_tests/commands/cookies_commands.side', 'r') as side_file:
+            side_data = json.load(side_file)
+            self.test_data['commands'] = side_data.get('commands', [])
+            self.run_commands(driver, url)
 
     def open(self, driver, target):
         driver.get(self.base_url + target)
@@ -327,8 +335,10 @@ def run_all_tests():
             os.path.dirname(app_module.__file__), "integration_tests"
         )
         if os.path.exists(integration_tests_dir):
-            print(f"Running Selenium tests in {app}...")
-            run_tests_in_directory(integration_tests_dir)
+            tests_dir = os.path.join(integration_tests_dir, "tests")
+            if os.path.exists(tests_dir):
+                print(f"Running Selenium tests in {app}...")
+                run_tests_in_directory(tests_dir)
 
 
 def run_tests_in_directory(directory):
@@ -340,7 +350,7 @@ def run_tests_in_directory(directory):
 
 
 def run_single_suite(suite_name):
-    with Display(visible=0, size=(1024, 768)):
+    with Display(visible=0, size=(1920, 1080)):
         with WebDriver() as driver:
             PodSeleniumTests.selenium = driver
             PodSeleniumTests.setUpClass()
