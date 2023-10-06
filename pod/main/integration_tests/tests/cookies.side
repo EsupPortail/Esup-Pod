@@ -3,30 +3,37 @@
   "version": "2.0",
   "name": "pod-front",
   "url": "http://localhost:9090/",
-  "tests": [{
-    "id": "pod-accept-cookies",
-    "name": "cookies",
-    "commands": [{
-      "id": "pod-open-home",
-      "comment": "Ouvre la page d'accueil",
-      "command": "open",
-      "target": "/",
-      "targets": [],
-      "value": ""
-    }, {
+  "tests": [
+    {
       "id": "pod-accept-cookies",
-      "comment": "Valide les cookies du navigateur",
-      "command": "cookies_commands"
-    }]
-  }],
-  "suites": [{
-    "id": "pod-front",
-    "name": "Esup Pod test selenium",
-    "persistSession": false,
-    "parallel": false,
-    "timeout": 300,
-    "tests": ["pod-accept-cookies"]
-  }],
+      "name": "cookies",
+      "commands": [
+        {
+          "id": "pod-open-home",
+          "comment": "Ouvre la page d'accueil",
+          "command": "open",
+          "target": "/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "pod-accept-cookies",
+          "comment": "Valide les cookies du navigateur",
+          "command": "cookies_commands"
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "pod-front",
+      "name": "Esup Pod test selenium",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": ["pod-accept-cookies"]
+    }
+  ],
   "urls": ["http://localhost:9090/"],
   "plugins": []
 }

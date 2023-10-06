@@ -3,148 +3,198 @@
   "version": "2.0",
   "name": "pod-front",
   "url": "http://localhost:9090/",
-  "tests": [{
-    "id": "pod-add-delete-comment",
-    "name": "comment",
-    "commands": [{
-      "id": "pod-accept-cookies",
-      "comment": "Valide les cookies du navigateur",
-      "command": "cookies_commands"
-    }, {
-      "id": "pod-open-video-page",
-      "comment": "Ouvre la page de la vidéo",
-      "command": "open",
-      "target": "video/1-first-video/",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "pod-target-comment",
-      "comment": "Cible la zone de commentaire",
-      "command": "click",
-      "target": "id=comment",
-      "targets": [
-        ["id=comment", "id"],
-        ["name=new_parent_comment", "name"],
-        ["css=#comment", "css:finder"],
-        ["xpath=//textarea[@id='comment']", "xpath:attributes"],
-        ["xpath=//div[@id='pod_comment_wrapper']/div/div/form/div/textarea", "xpath:idRelative"],
-        ["xpath=//form/div/textarea", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "pod-write-comment",
-      "comment": "écrit dans la zone de commentaire",
-      "command": "type",
-      "target": "id=comment",
-      "targets": [
-        ["id=comment", "id"],
-        ["name=new_parent_comment", "name"],
-        ["css=#comment", "css:finder"],
-        ["xpath=//textarea[@id='comment']", "xpath:attributes"],
-        ["xpath=//div[@id='pod_comment_wrapper']/div/div/form/div/textarea", "xpath:idRelative"],
-        ["xpath=//form/div/textarea", "xpath:position"]
-      ],
-      "value": "Bonjour !"
-    }, {
-      "id": "pod-send-comment",
-      "comment": "clique sur le bouton \"commenter !\"",
-      "command": "click",
-      "target": "css=.add_comment_btn",
-      "targets": [
-        ["css=.add_comment_btn", "css:finder"],
-        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
-        ["xpath=//div[@id='pod_comment_wrapper']/div/div/form/div[2]/button", "xpath:idRelative"],
-        ["xpath=//form/div[2]/button", "xpath:position"],
-        ["xpath=//button[contains(.,'Commenter !')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "pod-favorite-comment",
-      "comment": "Met en favori le commentaire",
-      "command": "click",
-      "target": "css=.unvoted > .bi",
-      "targets": [
-        ["css=.unvoted > .bi", "css:finder"],
-        ["xpath=//comment-element[@id='comment_1695815656609']/div/div[2]/div/div[3]/div/div/div/span/i", "xpath:idRelative"],
-        ["xpath=//div/span/i", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "pod-select-answer-zone",
-      "comment": "Sélectionne la zone de réponse",
-      "command": "click",
-      "target": "css=.comment_response_btn",
-      "targets": [
-        ["css=.comment_response_btn", "css:finder"],
-        ["xpath=//comment-element[@id='comment_1695815656609']/div/div[2]/div/div[3]/div/div[2]/span", "xpath:idRelative"],
-        ["xpath=//div[3]/div/div[2]/span", "xpath:position"],
-        ["xpath=//span[contains(.,'Répondre')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }, {
-      "id": "pod-write-answer",
-      "comment": "écrit une réponse",
-      "command": "type",
-      "target": "name=new_comment",
-      "targets": [
-        ["name=new_comment", "name"],
-        ["css=.add_comment > #comment_1695815656609", "css:finder"],
-        ["xpath=//textarea[@id='comment_1695815656609']", "xpath:attributes"],
-        ["xpath=//comment-element[@id='comment_1695815656609']/div/div[2]/div/div[3]/div[2]/div/textarea", "xpath:idRelative"],
-        ["xpath=//div[2]/div/textarea", "xpath:position"]
-      ],
-      "value": "réponse"
-    }, {
-      "id": "pod-send-answer",
-      "comment": "envoi la réponse",
-      "command": "click",
-      "target": "css=.bi-send-fill",
-      "targets": [
-        ["css=.bi-send-fill", "css:finder"],
-        ["xpath=//comment-element[@id='comment_1695815656609']/div/div[2]/div/div[3]/div[2]/div/button/i", "xpath:idRelative"],
-        ["xpath=//div[3]/div[2]/div/button/i", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "pod-scroll-up",
-      "comment": "remonte la page (à garder ?)",
-      "command": "runScript",
-      "target": "window.scrollTo(0,720)",
-      "targets": [],
-      "value": ""
-    }, {
-      "id": "pod-select-delete-comment",
-      "comment": "Clique sur supprimer",
-      "command": "click",
-      "target": "css=.comment_actions:nth-child(4) .bi",
-      "targets": [
-        ["css=.comment_actions:nth-child(4) .bi", "css:finder"],
-        ["xpath=//comment-element[@id='comment_1695815656609']/div/div[2]/div/div[3]/div/div[4]/div/i", "xpath:idRelative"],
-        ["xpath=//div[4]/div/i", "xpath:position"]
-      ],
-      "value": ""
-    }, {
-      "id": "pod-delete-comment",
-      "comment": "Valide la suppression",
-      "command": "click",
-      "target": "css=.delete",
-      "targets": [
-        ["css=.delete", "css:finder"],
-        ["xpath=//confirm-modal[@id='custom_element_confirm_modal']/div/div/div/div[3]/button", "xpath:idRelative"],
-        ["xpath=//confirm-modal/div/div/div/div[3]/button", "xpath:position"],
-        ["xpath=//button[contains(.,'Supprimer')]", "xpath:innerText"]
-      ],
-      "value": ""
-    }]
-  }],
-  "suites": [{
-    "id": "pod-front",
-    "name": "Esup Pod test selenium",
-    "persistSession": false,
-    "parallel": false,
-    "timeout": 300,
-    "tests": ["pod-add-delete-comment"]
-  }],
+  "tests": [
+    {
+      "id": "pod-add-delete-comment",
+      "name": "comment",
+      "commands": [
+        {
+          "id": "pod-accept-cookies",
+          "comment": "Valide les cookies du navigateur",
+          "command": "cookies_commands"
+        },
+        {
+          "id": "pod-open-video-page",
+          "comment": "Ouvre la page de la vidéo",
+          "command": "open",
+          "target": "video/1-first-video/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "pod-target-comment",
+          "comment": "Cible la zone de commentaire",
+          "command": "click",
+          "target": "id=comment",
+          "targets": [
+            ["id=comment", "id"],
+            ["name=new_parent_comment", "name"],
+            ["css=#comment", "css:finder"],
+            ["xpath=//textarea[@id='comment']", "xpath:attributes"],
+            [
+              "xpath=//div[@id='pod_comment_wrapper']/div/div/form/div/textarea",
+              "xpath:idRelative"
+            ],
+            ["xpath=//form/div/textarea", "xpath:position"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "pod-write-comment",
+          "comment": "écrit dans la zone de commentaire",
+          "command": "type",
+          "target": "id=comment",
+          "targets": [
+            ["id=comment", "id"],
+            ["name=new_parent_comment", "name"],
+            ["css=#comment", "css:finder"],
+            ["xpath=//textarea[@id='comment']", "xpath:attributes"],
+            [
+              "xpath=//div[@id='pod_comment_wrapper']/div/div/form/div/textarea",
+              "xpath:idRelative"
+            ],
+            ["xpath=//form/div/textarea", "xpath:position"]
+          ],
+          "value": "Bonjour !"
+        },
+        {
+          "id": "pod-send-comment",
+          "comment": "clique sur le bouton \"commenter !\"",
+          "command": "click",
+          "target": "css=.add_comment_btn",
+          "targets": [
+            ["css=.add_comment_btn", "css:finder"],
+            ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+            [
+              "xpath=//div[@id='pod_comment_wrapper']/div/div/form/div[2]/button",
+              "xpath:idRelative"
+            ],
+            ["xpath=//form/div[2]/button", "xpath:position"],
+            ["xpath=//button[contains(.,'Commenter !')]", "xpath:innerText"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "pod-favorite-comment",
+          "comment": "Met en favori le commentaire",
+          "command": "click",
+          "target": "css=.unvoted > .bi",
+          "targets": [
+            ["css=.unvoted > .bi", "css:finder"],
+            [
+              "xpath=//comment-element[@id='comment_1695815656609']/div/div[2]/div/div[3]/div/div/div/span/i",
+              "xpath:idRelative"
+            ],
+            ["xpath=//div/span/i", "xpath:position"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "pod-select-answer-zone",
+          "comment": "Sélectionne la zone de réponse",
+          "command": "click",
+          "target": "css=.comment_response_btn",
+          "targets": [
+            ["css=.comment_response_btn", "css:finder"],
+            [
+              "xpath=//comment-element[@id='comment_1695815656609']/div/div[2]/div/div[3]/div/div[2]/span",
+              "xpath:idRelative"
+            ],
+            ["xpath=//div[3]/div/div[2]/span", "xpath:position"],
+            ["xpath=//span[contains(.,'Répondre')]", "xpath:innerText"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "pod-write-answer",
+          "comment": "écrit une réponse",
+          "command": "type",
+          "target": "name=new_comment",
+          "targets": [
+            ["name=new_comment", "name"],
+            ["css=.add_comment > #comment_1695815656609", "css:finder"],
+            [
+              "xpath=//textarea[@id='comment_1695815656609']",
+              "xpath:attributes"
+            ],
+            [
+              "xpath=//comment-element[@id='comment_1695815656609']/div/div[2]/div/div[3]/div[2]/div/textarea",
+              "xpath:idRelative"
+            ],
+            ["xpath=//div[2]/div/textarea", "xpath:position"]
+          ],
+          "value": "réponse"
+        },
+        {
+          "id": "pod-send-answer",
+          "comment": "envoi la réponse",
+          "command": "click",
+          "target": "css=.bi-send-fill",
+          "targets": [
+            ["css=.bi-send-fill", "css:finder"],
+            [
+              "xpath=//comment-element[@id='comment_1695815656609']/div/div[2]/div/div[3]/div[2]/div/button/i",
+              "xpath:idRelative"
+            ],
+            ["xpath=//div[3]/div[2]/div/button/i", "xpath:position"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "pod-scroll-up",
+          "comment": "remonte la page (à garder ?)",
+          "command": "runScript",
+          "target": "window.scrollTo(0,720)",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "pod-select-delete-comment",
+          "comment": "Clique sur supprimer",
+          "command": "click",
+          "target": "css=.comment_actions:nth-child(4) .bi",
+          "targets": [
+            ["css=.comment_actions:nth-child(4) .bi", "css:finder"],
+            [
+              "xpath=//comment-element[@id='comment_1695815656609']/div/div[2]/div/div[3]/div/div[4]/div/i",
+              "xpath:idRelative"
+            ],
+            ["xpath=//div[4]/div/i", "xpath:position"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "pod-delete-comment",
+          "comment": "Valide la suppression",
+          "command": "click",
+          "target": "css=.delete",
+          "targets": [
+            ["css=.delete", "css:finder"],
+            [
+              "xpath=//confirm-modal[@id='custom_element_confirm_modal']/div/div/div/div[3]/button",
+              "xpath:idRelative"
+            ],
+            [
+              "xpath=//confirm-modal/div/div/div/div[3]/button",
+              "xpath:position"
+            ],
+            ["xpath=//button[contains(.,'Supprimer')]", "xpath:innerText"]
+          ],
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "pod-front",
+      "name": "Esup Pod test selenium",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": ["pod-add-delete-comment"]
+    }
+  ],
   "urls": ["http://localhost:9090/", "https://pod-test.univ-lille.fr/"],
   "plugins": []
 }
