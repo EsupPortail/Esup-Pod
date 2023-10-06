@@ -30,15 +30,6 @@
 }
 
 #textCaptionEntry {
-  /*
-    width: 100%;
-    height: auto;
-    line-height: 19px;
-    border: 1px solid #999;
-    padding: 3px 8px 5px;
-    min-height: 50px;
-    overflow: hidden;
-    */
   text-align: center;
 }
 
@@ -46,16 +37,6 @@
   background-color: var(--pod-background-dark);
   color: white;
 }
-
-/*
-textarea {
-    line-height: 16px;
-    font-size: 14px;
-    resize: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-*/
 
 .shortcutKey {
   display: inline-block;
@@ -92,8 +73,6 @@ textarea {
   border-left: 1px solid #e1e1e1;
   display: inline-block;
   width: 49%;
-
-  /* overflow-y: auto; */
 }
 
 .caption_content .caption_title {
@@ -128,12 +107,6 @@ textarea {
 .captions_editor {
   height: 470px;
   overflow-y: auto;
-
-  /*
-  resize: none;
-  width: 100%;
-  padding: 0;
-  */
 }
 
 #newCaptionsEditor {
@@ -152,14 +125,6 @@ textarea {
 
 .newEditorBlock > textarea {
   width: 77%;
-
-  /*
-  height: 80px;
-  border-style: hidden;
-  background-color: transparent;
-  padding: 8px;
-  transition: .4s;
-  */
 }
 
 .captionBeingEdited {
@@ -167,28 +132,12 @@ textarea {
   background-color: rgba(223 230 246 0.4);
 }
 
-/*
-.captionBeingEdited > textarea {
-  border: 1px solid var(--pod-primary);
-  border-radius: 4px;
-  background-color: #FFF5FB;
-}
-*/
-
 .captionTimestamps {
-  /* float: right; */
   line-height: 32px;
 }
 
 .newEditorBlock a {
   display: block;
-
-  /*
-  margin: 6px 0;
-  max-width: 78px;
-  color: #3EA6FF;
-  font-weight: 400;
-  */
 }
 
 .newEditorBlock input {
@@ -198,45 +147,18 @@ textarea {
   padding: 4px;
 }
 
-/*
-.captionButtons {
-  float: left;
-}
-*/
-
 .captionButtons button {
-  /*
-  margin: 9px 2px 2px 2px;
-  left: 16px;
-  */
   display: block;
   width: 28px;
   height: 28px;
   padding: 0;
   border: 0;
   border-radius: 50%;
-
-  /*
-  background: #fff;
-  box-shadow: 0 0 4px rgba(0 0 0 .15);
-  transition: 0.2s;
-  */
 }
 
 .captionButtons button:hover {
   background: var(--pod-primary-lighten);
 }
-
-/*
-.captionButtons button:hover svg {
-    color: #fff;
-}
-
-.captionButtons svg{
-    color: #707070;
-    margin: 0;
-}
-*/
 
 #addSubtitle svg {
   color: var(--pod-link-color);
@@ -251,65 +173,6 @@ textarea {
     float: none;
   }
 }
-
-/*
-#captionFilename {
-    width: 280px;
-    margin-left: 32px;
-    transform: translateY(-4px);
-    border-top-style: hidden;
-    border-right-style: hidden;
-    border-left-style: hidden;
-    border-bottom-style: groove;
-    background-color: transparent;
-}
-
-#switchOldEditMode {
-    margin-bottom: 8px;
-}
-
-#captionLanguageSelect {
-    margin-right: 10px;
-    height: 31px;
-    width: 120px;
-    background: none;
-    border: none;
-    color: var(--pod-primary);
-    font-weight: 600;
-    font-size: 20px;
-}
-
-#captionLanguageSelect:hover {
-    cursor: pointer;
-}
-
-#captionLanguageSelect option {
-    color: black;
-    text-align: left;
-    font-size: 16px;
-}
-
-#captionKindSelect {
-    margin-right: 10px;
-    height: 31px;
-    width: 120px;
-    background: none;
-    border: none;
-    color: var(--pod-primary);
-    font-weight: 600;
-    font-size: 20px;
-}
-
-#captionKindSelect:hover {
-    cursor: pointer;
-}
-
-#captionKindSelect option {
-    color: black;
-    text-align: left;
-    font-size: 16px;
-}
-*/
 
 #captionmakerModal.save > .modal-dialog {
   max-width: 1000px;

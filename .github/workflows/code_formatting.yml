@@ -17,7 +17,7 @@ jobs:
           git config user.email github-actions@github.com
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
-      # Prettify js code with prettier
+      # Prettify js+css code with prettier
       - name: Running prettier
         run: |
           npx prettier --write pod/*/static/**/*.js

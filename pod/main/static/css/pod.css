@@ -1635,10 +1635,10 @@ a.player-element.disabled {
   filter: invert(1);
 }
 
-.bg-primary .podfile-icon-selector:focus-visible {
-  box-shadow: 0 0 0 0.25rem rgba(0 0 0 0.5);
-}
-
 .podfile-icon-selector:hover {
   opacity: 0.66;
+}
+
+.bg-primary .podfile-icon-selector:focus-visible {
+  box-shadow: 0 0 0 0.25rem rgba(0 0 0 0.5);
 }

@@ -1,3 +1,4 @@
+"""Esup-Pod transcript video functions."""
 from django.conf import settings
 from django.core.files import File
 from pod.completion.models import Track
@@ -42,7 +43,7 @@ EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
 TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", False)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
-    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "VOSK")
+    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
 TRANSCRIPTION_NORMALIZE = getattr(settings, "TRANSCRIPTION_NORMALIZE", False)
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 
@@ -72,7 +73,8 @@ print(webvtt)
 # ##########################################################################
 def start_transcript(video_id, threaded=True):
     """
-    Main function call to start transcript.
+    Call to start transcript main function.
+
     Will launch transcript mode depending on configuration.
     """
     if threaded:

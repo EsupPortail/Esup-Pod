@@ -53,21 +53,9 @@
   font-weight: 600;
 }
 
-/*
-.reply_content {
-	font-weight: 500;
-}
-
-.comment_main .icon.comment_vote_icon svg {
-	transform: translateY(-1px);
-}
-*/
-
 .comment_main .icon.comments_icon {
   width: var(--padding-comment-content);
   margin-right: 3px;
-
-  /* flex: none; */
 }
 
 .comment_main .inline_flex_space {
@@ -122,39 +110,6 @@
   display: flex;
 }
 
-/*
-.comment_main .confirm_delete_container {
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-	width: 500px;
-	border-radius: 4px;
-	padding: .8em;
-	box-shadow: 2px 2px 4px rgba(54, 56, 58, .6);
-}
-
-.comment_main .confirm_delete_container .confirm_title {
-	text-align: center;
-	text-transform: uppercase;
-}
-
-.comment_main .confirm_delete_container .content {
-	border: none;
-	text-align: center;
-	font-size: 16px;
-	padding-top: .8em;
-	padding-bottom: .4em;
-	font-weight: 400;
-}
-
-.comment_main .confirm_delete_container .actions {
-	display: flex;
-	justify-content: space-around;
-	align-items: center;
-	padding: .8em 0;
-}
-*/
-
 /* End Confirm Modal */
 
 .comment_content {
@@ -162,7 +117,6 @@
 }
 
 .comment_main .add_comment {
-  /* padding: 1em 0; */
   width: 100%;
   position: relative;
 }
@@ -264,13 +218,7 @@
   font-size: 14px;
 }
 
-/*
 .comment_main .comment .comment_content_body {
-	color: var(--content-primary-color);
-} */
-
-.comment_main .comment .comment_content_body {
-  /* font-weight: 400; */
   margin: 0 0 2em;
   word-break: break-all;
   font-size: 14px;
@@ -313,12 +261,6 @@
 .comment_main .comment .comment_content_footer .comment_actions {
   display: flex;
   color: var(--pod-font-color);
-
-  /*
-  align-items: center;
-  transition: .3s color;
-	font-weight: 400;
-	*/
 }
 
 .comment_main .comment .comment_content_footer .comment_actions:hover {
@@ -379,18 +321,6 @@
   height: 100%;
   padding: 0;
 }
-
-/*
-.comment_main .send_reply.active {
-	cursor: pointer;
-	color: var(--pod-link-color);
-}
-
-.comment_main .send_reply.active:hover,
-.comment_main .send_reply.active:focus {
-	color: var(--pod-activelink-color);
-}
-*/
 
 .comment_main .send_reply i {
   width: 100%;
