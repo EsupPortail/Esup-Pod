@@ -14,7 +14,7 @@
       "id": "pod-open-video-page",
       "comment": "Ouvre la page de la vidéo",
       "command": "open",
-      "target": "video/5811-les-oiseaux-video-exemple/",
+      "target": "video/1-first-video/",
       "targets": [],
       "value": ""
     }, {

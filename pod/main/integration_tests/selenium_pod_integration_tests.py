@@ -8,6 +8,8 @@ from pyvirtualdisplay import Display
 from django.conf import settings
 from selenium.webdriver.support.ui import Select
 from django.test import override_settings
+from django.contrib.auth.models import User
+from pod.video.models import Video, Type
 
 # python manage.py test -v 3 --settings=pod.main.test_settings \
 # pod.main.integration_tests.selenium_pod_integration_tests
@@ -291,6 +293,10 @@ class PodSeleniumTests(StaticLiveServerTestCase):
 
     fixtures = ["initial_data.json"]
 
+    def setUp(self):
+        """Set up the tests."""
+        self.initialize_data()
+
     @classmethod
     def setUpClass(cls):
         """Create the driver for all selenium tests."""
@@ -308,6 +314,17 @@ class PodSeleniumTests(StaticLiveServerTestCase):
     def test_selenium_suites(self):
         """Run Selenium Test Suites from Side files in all installed apps"""
         run_all_tests()
+
+    def initialize_data(self):
+        """Initialize custom test data."""
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
+        self.video = Video.objects.create(
+            title="first-video",
+            owner=self.user,
+            video="video.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
 
 
 def run_suite(suite_name, suite_url):
@@ -337,6 +354,7 @@ def run_all_tests():
             if os.path.exists(tests_dir):
                 print(f"Running Selenium tests in {app}...")
                 run_tests_in_directory(tests_dir)
+    print("FIN de TOUS les TESTS")
 
 
 def run_tests_in_directory(directory):
