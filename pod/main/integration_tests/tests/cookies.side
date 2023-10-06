@@ -16,10 +16,7 @@
     }, {
       "id": "pod-accept-cookies",
       "comment": "Valide les cookies du navigateur",
-      "command": "click",
-      "target": "id=okcookie",
-      "targets": [],
-      "value": ""
+      "command": "cookies_commands"
     }]
   }],
   "suites": [{
