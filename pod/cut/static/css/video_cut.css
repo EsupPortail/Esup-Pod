@@ -1,7 +1,11 @@
+/**
+ * Esup-Pod video-cutter styles
+ */
+
 #wrapper_cut {
   position: relative;
   width: 100%;
-  padding: 50px 10px 20px 10px;
+  padding: 50px 10px 20px;
   border-radius: 10px;
 }
 
@@ -12,8 +16,6 @@
 }
 
 input[type="range"] {
-  -webkit-appearance: none;
-  -moz-appearance: none;
   appearance: none;
   width: 100%;
   outline: none;
@@ -63,13 +65,12 @@ input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   margin-top: -9px;
   border: 1px solid gray;
-
   height: 1.7em;
   width: 1.7em;
   cursor: pointer;
   pointer-events: auto;
   border-radius: 50%;
-  background-color: #FFF;
+  background-color: #fff;
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -79,7 +80,7 @@ input[type="range"]::-moz-range-thumb {
   cursor: pointer;
   pointer-events: auto;
   border-radius: 50%;
-  background-color: #FFF;
+  background-color: #fff;
 }
 
 input[type="range"]::-ms-thumb {
@@ -89,13 +90,14 @@ input[type="range"]::-ms-thumb {
   cursor: pointer;
   pointer-events: auto;
   border-radius: 50%;
-  background-color: #FFF;
+  background-color: #fff;
 }
 
-#container_cut{
-  /*--bs-btn-focus-shadow-rgb: var(--pod-primary-rgb);*/
+#container_cut {
+  /* --bs-btn-focus-shadow-rgb: var(--pod-primary-rgb); */
   --bs-btn-focus-shadow-rgb: 200, 200, 253;
-  --bs-btn-focus-box-shadow:0 0 0 0.25rem rgba(var(--bs-btn-focus-shadow-rgb), .5);;
+  --bs-btn-focus-box-shadow: 0 0 0 0.25rem
+    rgba(var(--bs-btn-focus-shadow-rgb) 0.5);
 }
 
 input[type="range"]:active::-webkit-slider-thumb,
@@ -124,7 +126,7 @@ input[type="range"]:focus-visible::-moz-range-thumb {
   font-size: 25px;
 }
 
-#values_cut:before {
+#values_cut::before {
   content: "";
   position: absolute;
   height: 0;

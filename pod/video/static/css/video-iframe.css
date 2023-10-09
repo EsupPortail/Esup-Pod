@@ -1,10 +1,15 @@
-body{
+/**
+ * Esup-Pod video-iframe styles
+ */
+
+body {
   margin: 0;
   padding: 0;
   background: #000;
   height: 100%;
 }
-/* Add extra classes for a variable width / height*/
+
+/* Add extra classes for a variable width / height */
 #div-video-wrapper {
   position: absolute;
   display: block;
@@ -13,10 +18,12 @@ body{
   overflow: hidden;
   z-index: 0;
 }
+
 #podvideoplayer {
   margin-left: auto;
   margin-right: auto;
 }
+
 #info-video-wrapper {
   overflow: hidden;
   position: absolute;
@@ -27,14 +34,16 @@ body{
   border-radius: 0;
   padding: 0;
   margin: 0;
-  background-color: rgba(250, 250, 250, .9);
+  background-color: rgba(250 250 250 0.9);
   z-index: 10;
 }
+
 #info-video {
   padding: 1em;
   box-sizing: border-box;
   overflow: auto;
   position: absolute;
+
   /* top: 3em; */
   width: 100%;
   bottom: 0;
@@ -46,71 +55,81 @@ body{
 .tab-title {
   font-size: 1.5em;
 }
-/*.meta-title {
+
+/*
+.meta-title {
   font-size: 1.2rem;
-}*/
+}
+*/
+
 .list-group-item {
-  background-color: rgba(250, 250, 250, .9) !important;
+  background-color: rgba(250 250 250 0.9) !important;
 }
 
 .iframe-header {
-  padding: 0 .5rem 0 1.25rem;
+  padding: 0 0.5rem 0 1.25rem;
   margin: 0;
   border-radius: 0;
   overflow: hidden;
 }
+
 .iframe-header > h1 {
   display: inline-block;
   font-size: 1.25em;
-  padding: .25em 5em 0 0;
+  padding: 0.25em 5em 0 0;
 }
 
 .iframe-header .close {
-  /* position: absolute;
+  /*
+  position: absolute;
   top: .5em;
-  right: .5em; */
+  right: .5em;
+  margin: .395em 0 0 .75em;
+  padding: 0 .25em .15em;
+  overflow: hidden;
+  opacity: 1;
+  font-size: 1.1em;
+  */
   float: right;
-  /*margin: .395em 0 0 .75em;*/
   border: 1px solid var(--bs-light);
   color: var(--bs-light);
-  /*padding: 0 .25em .15em;*/
   background-color: var(--bs-dark);
   border-radius: 2px;
-  /*overflow: hidden;
-  opacity: 1;
-  font-size: 1.1em;*/
 }
+
 .iframe-header .close:hover {
   background-color: var(--bs-light);
   color: var(--bs-dark);
-  /*opacity: 1;*/
+
+  /* opacity: 1; */
 }
 
-
 #div-video-wrapper #overlay-footer {
-  position: absolute;
   /* bottom: 0; */
+  position: absolute;
   background-color: #2b333f;
-  background-color: rgba(43,51,63,.7);
+  background-color: rgba(43 51 63 0.7);
   z-index: 10;
   height: 30px;
-  padding: 0 .5em;
+  padding: 0 0.5em;
   width: 100%;
   color: #fff;
   display: none;
   text-align: right;
 }
+
 #div-video-wrapper #overlay-footer > p {
+  /* margin-right: 70px; */
   float: left;
   text-align: left;
   line-height: 30px;
   max-width: calc(100% - 75px);
-  /* margin-right: 70px; */
   overflow: auto;
-  margin-left:-.5em;
-  padding: 0 .5em;
+  margin-left: -0.5em;
+  padding: 0 0.5em;
   background-color: #343a40;
 }
+
 /* Info button with current color */
 #overlay-footer .vjs-button {
   display: inline-block;
@@ -120,21 +139,25 @@ body{
   box-shadow: none;
   background: transparent;
   box-sizing: border-box;
-  margin: 0 -.1em 0 .5em;
+  margin: 0 -0.1em 0 0.5em;
   padding: 0;
 }
+
 #overlay-footer .vjs-button:focus,
-#overlay-footer .vjs-button:active {outline: none}
+#overlay-footer .vjs-button:active {
+  outline: none;
+}
 
 #overlay-footer .vjs-control-text {
-    border: 0;
-    clip: rect(0 0 0 0);
-    height: 1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
 }
+
 /*
 #overlay-footer .vjs-info-button::before,
 .video-js .vjs-info-button::before {
@@ -143,31 +166,40 @@ body{
   background-color: #FFF;
   mask-size: 20px;
   -webkit-mask-size: 20px;
-}*/
-
-#overlay-footer .vjs-info-button,
-.video-js .vjs-info-button {
-  background-position: center;
-  background-image: url( 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"%3E%3Cpath d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/%3E  %3Cpath d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/%3E%3C/svg%3E' );
-  background-repeat: no-repeat;
-  background-size: contain;
 }
+*/
+
 /*
 %3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"%3E%3Cpath d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/%3E  %3Cpath d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/%3E%3C/svg%3E
 */
-#div-video-wrapper #info-video-wrapper {display: none}
+#div-video-wrapper #info-video-wrapper {
+  display: none;
+}
+
 #div-video-wrapper.overlay.info #info-video-wrapper,
 #div-video-wrapper.overlay #overlay-footer,
-#div-video-wrapper.vjs-not-started #overlay-footer {display: block}
+#div-video-wrapper.vjs-not-started #overlay-footer {
+  display: block;
+}
 
-.vjs-logo-button, .vjs-info-button {
+.vjs-logo-button,
+.vjs-info-button {
   filter: invert(100%);
   background-size: 1.2rem !important;
 }
+
 .vjs-logo-button:hover,
 .vjs-logo-button:focus,
 .vjs-info-button:hover,
 .vjs-info-button:focus {
   transform: rotate(30deg);
   background-color: transparent !important;
+}
+
+.video-js .vjs-info-button,
+#overlay-footer .vjs-info-button {
+  background-position: center;
+  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16"%3E%3Cpath d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/%3E  %3Cpath d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/%3E%3C/svg%3E');
+  background-repeat: no-repeat;
+  background-size: contain;
 }

@@ -4,9 +4,8 @@
 {% get_current_language as LANGUAGE_CODE %}
 
 {% block page_extra_head %}
-<style>
-
-:root{
+  <style>
+  :root {
     --theme-ui-colors-background: var(--pod-background);
     --theme-ui-colors-text: var(--pod-font-color);
     --theme-ui-colors-gray-0: var(--pod-font-color);
@@ -16,31 +15,38 @@
     --theme-ui-colors-element_bg: var(--pod-background);
   }
 
-  .pod-opencast-studio .loading-indicator > svg > circle {
+  .pod-opencast-studio .loading-indicator>svg>circle {
     stroke: var(--pod-font-color);
   }
+
   .pod-opencast-studio {
     --theme-ui-colors-primary: var(--pod-primary);
     --theme-ui-colors-btn-hover: var(--pod-primary-focus);
     --theme-ui-colors-error: var(--bs-danger);
   }
-  .pod-opencast-studio a[role="button"]:hover{
+
+  .pod-opencast-studio a[role="button"]:hover {
     color: var(--pod-btn-text);
   }
-  .pod-opencast-studio .buttons button{
+
+  .pod-opencast-studio .buttons button {
     transition: filter 1s;
   }
-  .pod-opencast-studio .buttons button:hover{
+
+  .pod-opencast-studio .buttons button:hover {
     filter: drop-shadow(0 0 2px var(--pod-btn-text))
   }
 
   [data-theme="dark"] {
-    /*--theme-ui-colors-gray-0: var(--pod-font-color);*/
-    /* secondary-button::hover */
+    /*
+    --theme-ui-colors-gray-0: var(--pod-font-color);
+    --theme-ui-colors-gray-4: #737373;
+    */
+
+    /* secondary-button:hover */
     --theme-ui-colors-gray-3: #797676;
-    --theme-ui-colors-error: rgb(241, 70, 104);
+    --theme-ui-colors-error: rgb(241 70 104);
     --theme-ui-colors-element_bg: var(--pod-neutre1-bloc);
-    /*--theme-ui-colors-gray-4: #737373;*/
   }
 
   #root header {
@@ -59,19 +65,21 @@
   button>.fa-layers {
     color: var(--pod-font-color);
   }
-</style>
-<script>
-  // put local storage default value for default presenter
-  {% if default_presenter %}
-  localStorage.setItem('ocStudioLastPresenter', "{{default_presenter}}");
-  {% endif %}
-  // put local storage default value for language
-  localStorage.setItem('i18nextLng', "{{LANGUAGE_CODE|lower}}");
-</script>
+  </style>
+
+  <script>
+    // put local storage default value for default presenter
+    {% if default_presenter %}
+      localStorage.setItem('ocStudioLastPresenter', "{{default_presenter}}");
+    {% endif %}
+    // put local storage default value for language
+    localStorage.setItem('i18nextLng', "{{LANGUAGE_CODE|lower}}");
+  </script>
 {% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }}
-<li class="breadcrumb-item active" aria-current="page">{% trans "Studio" %}</li>
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item active" aria-current="page">{% trans "Studio" %}</li>
 {% endblock %}
 
 {% block page_title %}{% trans "Studio" %}{% endblock %}

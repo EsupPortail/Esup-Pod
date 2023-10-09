@@ -1,356 +1,245 @@
+/**
+ * Esup-Pod caption_maker styles
+ */
+
 #videoElm {
-    display: block;
-    border: solid 1px #999;
-    width: 100%;
-    min-height: 297px;
+  display: block;
+  border: solid 1px #999;
+  width: 100%;
+  min-height: 297px;
 }
+
 .videoError {
-    display: block;
-    background-color: #999;
-    width: 100%;
-    min-height: 297px;
-    color: white;
-    text-align: center;
-    padding: 12px;
+  display: block;
+  background-color: #999;
+  width: 100%;
+  min-height: 297px;
+  color: white;
+  text-align: center;
+  padding: 12px;
 }
 
 #videoError {
-    display: none;
+  display: none;
 }
+
 #captionTitle {
-    padding-top: 4px;
-    padding-bottom: 4px;
-    min-height: 32px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  min-height: 32px;
 }
 
 #textCaptionEntry {
-    /*
-    width: 100%;
-    height: auto;
-    line-height: 19px;
-    border: 1px solid #999;
-    padding: 3px 8px 5px;
-    min-height: 50px;
-    overflow: hidden;
-    */
-    text-align: center;
+  text-align: center;
 }
 
 #textCaptionEntry.playing {
-    background-color: var(--pod-background-dark);
-    color: white;
+  background-color: var(--pod-background-dark);
+  color: white;
 }
 
-/*textarea {
-    line-height: 16px;
-    font-size: 14px;
-    resize: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}*/
-
 .shortcutKey {
-    display: inline-block;
-    border: 2px solid #222;
-    border-radius: 6px;
-    padding: 3px 8px;
-    font-weight: 600;
-    margin-right: 8px;
-    margin-left: 8px;
-    min-width: 35px;
-    text-align: center;
+  display: inline-block;
+  border: 2px solid #222;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-weight: 600;
+  margin-right: 8px;
+  margin-left: 8px;
+  min-width: 35px;
+  text-align: center;
 }
 
 .shortcutKey svg {
-    transform: translateY(-2px);
+  transform: translateY(-2px);
 }
 
 /* the list of captions */
-.gray_no_video{
-    display: flex;
-    flex-wrap: wrap;
-    border-top: 1px solid #E1E1E1;
+.gray_no_video {
+  display: flex;
+  flex-wrap: wrap;
+  border-top: 1px solid #e1e1e1;
 }
 
 .videoSection {
-    float: left;
-    min-height: 425px;
-    width: 49%;
-    padding: 24px 0px;
-    padding-right: 24px;
+  float: left;
+  min-height: 425px;
+  width: 49%;
+  padding: 24px 0;
+  padding-right: 24px;
 }
 
 .caption_content {
-    border-left: 1px solid #E1E1E1;
-    display: inline-block;
-    width: 49%;
-    /* overflow-y: auto; */
+  border-left: 1px solid #e1e1e1;
+  display: inline-block;
+  width: 49%;
 }
 
-.caption_content .caption_title{
-   display: flex;
-   position: relative;
+.caption_content .caption_title {
+  display: flex;
+  position: relative;
 }
-.caption_content svg{
-    width: 20px;
-    color: var(--secondary);
-    margin-left: 4px;
+
+.caption_content svg {
+  width: 20px;
+  color: var(--secondary);
+  margin-left: 4px;
 }
-.caption_content .caption_title svg:hover + .help_text{
-    display: block;
+
+.caption_content .caption_title svg:hover + .help_text {
+  display: block;
 }
-.caption_content .help_text{
-    display: none;
-    position: absolute;
-    background: var(--pod-primary);
-    color: #fff;
-    width: calc(100% - 110px);
-    right: 0;
-    padding: .4em .8em;
-    border-radius: 4px;
-    box-shadow: 4px 4px 10px #ccc;
-    font-size: 15px;
-    line-height: 1.4;
+
+.caption_content .help_text {
+  display: none;
+  position: absolute;
+  background: var(--pod-primary);
+  color: #fff;
+  width: calc(100% - 110px);
+  right: 0;
+  padding: 0.4em 0.8em;
+  border-radius: 4px;
+  box-shadow: 4px 4px 10px #ccc;
+  font-size: 15px;
+  line-height: 1.4;
 }
 
 .captions_editor {
-    height: 470px;
-
-    overflow-y: auto;
-    /*resize: none;
-    width: 100%;
-    padding: 0;*/
-
+  height: 470px;
+  overflow-y: auto;
 }
 
 #newCaptionsEditor {
-    margin-bottom: 6px;
-
+  margin-bottom: 6px;
 }
 
 .newEditorBlock {
-    border-bottom: 1px solid #E1E1E1;
-    padding: 8px;
-    transition: 0.2s;
+  border-bottom: 1px solid #e1e1e1;
+  padding: 8px;
+  transition: 0.2s;
 }
 
 .newEditorBlock:hover {
-    background-color: rgba(223, 230, 246, 0.4);
+  background-color: rgba(223 230 246 0.4);
 }
 
 .newEditorBlock > textarea {
-    width: 77%;
-    /*
-    height: 80px;
-    border-style: hidden;
-    background-color: transparent;
-    padding: 8px;
-    transition: .4s;
-    */
+  width: 77%;
 }
 
 .captionBeingEdited {
-    border-left: 3px solid var(--pod-primary);
-    background-color: rgba(223, 230, 246, 0.4);
+  border-left: 3px solid var(--pod-primary);
+  background-color: rgba(223 230 246 0.4);
 }
 
-/*.captionBeingEdited > textarea {
-    border: 1px solid var(--pod-primary);
-    border-radius: 4px;
-    background-color: #FFF5FB;
-}*/
-
 .captionTimestamps {
-    /*float: right;*/
-    line-height: 32px;
+  line-height: 32px;
 }
 
 .newEditorBlock a {
-    display: block;
-    /*
-    margin: 6px 0;
-    max-width: 78px;
-    color: #3EA6FF;
-    font-weight: 400;
-    */
+  display: block;
 }
 
 .newEditorBlock input {
-    margin: 6px 0;
-    max-width: 78px;
-    display: inline-block;
-    padding: 4px;
+  margin: 6px 0;
+  max-width: 78px;
+  display: inline-block;
+  padding: 4px;
 }
 
-/*.captionButtons {
-    float: left;
-}*/
-
 .captionButtons button {
-    /*margin: 9px 2px 2px 2px;
-    left: 16px;*/
-    display: block;
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    border: 0;
-    border-radius: 50%;
-    /*background: #fff;
-    box-shadow: 0 0 4px rgba(0,0,0,.15);
-    transition: 0.2s;*/
+  display: block;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
 }
 
 .captionButtons button:hover {
-    background: var(--pod-primary-lighten);
+  background: var(--pod-primary-lighten);
 }
-
-/*
-.captionButtons button:hover svg {
-    color: #fff;
-}
-
-.captionButtons svg{
-    color: #707070;
-    margin: 0;
-}*/
 
 #addSubtitle svg {
-    color: var(--pod-link-color);
+  color: var(--pod-link-color);
 }
 
 .makerNavbarRight {
-    float: right;
+  float: right;
 }
 
 @media only screen and (max-width: 1000px) {
-    .makerNavbarRight {
-        float: none;
-    }
+  .makerNavbarRight {
+    float: none;
+  }
 }
-
-/*
-#captionFilename {
-    width: 280px;
-    margin-left: 32px;
-    transform: translateY(-4px);
-    border-top-style: hidden;
-    border-right-style: hidden;
-    border-left-style: hidden;
-    border-bottom-style: groove;
-    background-color: transparent;
-}
-
-#switchOldEditMode {
-    margin-bottom: 8px;
-}
-
-#captionLanguageSelect {
-    margin-right: 10px;
-    height: 31px;
-    width: 120px;
-    background: none;
-    border: none;
-    color: var(--pod-primary);
-    font-weight: 600;
-    font-size: 20px;
-}
-
-#captionLanguageSelect:hover {
-    cursor: pointer;
-}
-
-#captionLanguageSelect option {
-    color: black;
-    text-align: left;
-    font-size: 16px;
-}
-
-
-#captionKindSelect {
-    margin-right: 10px;
-    height: 31px;
-    width: 120px;
-    background: none;
-    border: none;
-    color: var(--pod-primary);
-    font-weight: 600;
-    font-size: 20px;
-}
-
-#captionKindSelect:hover {
-    cursor: pointer;
-}
-
-#captionKindSelect option {
-    color: black;
-    text-align: left;
-    font-size: 16px;
-}*/
 
 #captionmakerModal.save > .modal-dialog {
-    max-width: 1000px;
+  max-width: 1000px;
 }
 
 #editorTipsAndGoBack {
-    width: 100%;
-    clear: both;
-    padding-top: 24px;
-    padding-bottom: 24px;
-    display: block;
-    border-top: 1px solid #E1E1E1;
+  width: 100%;
+  clear: both;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  display: block;
+  border-top: 1px solid #e1e1e1;
 }
 
-@media only screen and (max-width: 800px){
-    .gray_no_video{
-        display: flex;
-	flex-direction: column;
-    }
-    .gray_no_video > div{
-	width: 100% !important;
-    }
-    .gray_no_video div:first-child{
-	overflow: hidden;
-	margin: 0;
-	margin-bottom: 1em;
-	min-height: unset !important;
-    }
+@media only screen and (max-width: 800px) {
+  .gray_no_video {
+    display: flex;
+    flex-direction: column;
+  }
 
-    .newEditorBlock > textarea {
-        width: 60%;
-    }
+  .gray_no_video > div {
+    width: 100% !important;
+  }
+
+  .gray_no_video div:first-child {
+    overflow: hidden;
+    margin: 0;
+    margin-bottom: 1em;
+    min-height: unset !important;
+  }
+
+  .newEditorBlock > textarea {
+    width: 60%;
+  }
 }
 
 .keyframe {
-    position: absolute;
-    z-index: 2;
-    height: 11px;
+  position: absolute;
+  z-index: 2;
+  height: 11px;
 }
 
 .keyframe-left {
-    transform: translate(-6px, -11px);
+  transform: translate(-6px, -11px);
 }
 
 .keyframe-right {
-    transform: translate(0, -11px);
+  transform: translate(0, -11px);
 }
 
 .regionHighligh {
-    position: absolute;
-    z-index: 1;
-    background-color: rgba(173, 50, 122, .5);
-    height: 3px;
+  position: absolute;
+  z-index: 1;
+  background-color: rgba(173 50 122 0.5);
+  height: 3px;
 }
 
 ::-webkit-scrollbar {
-    padding: 2px;
-    width: 4px;
+  padding: 2px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-    background: none;
+  background: none;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--pod-primary);
-    border-radius: 2px;
+  background: var(--pod-primary);
+  border-radius: 2px;
 }

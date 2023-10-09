@@ -1,45 +1,52 @@
+/**
+ * Esup-Pod completion styles
+ */
 
 /** Table scroll **/
 table.scroll {
-	width: 100%;
-	border-collapse: collapse;
-	border-spacing: 0;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
+
 table.scroll .btn-sm,
 table.scroll .btn-group-sm > .btn {
-	border-radius: 4px;
-	font-size: 14px;
-	line-height: 1.4;
-	padding: .2em .4em;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.4;
+  padding: 0.2em 0.4em;
 }
+
 table.scroll tbody {
-	max-height: 100px;
-	overflow-y: auto;
-	overflow-x: hidden;
+  max-height: 100px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
+
 table.scroll tbody td,
 table.scroll thead th {
-	width: 10%;
-	height: 20px;
-	line-height: 20px;
-	border-bottom: 0;
+  width: 10%;
+  height: 20px;
+  line-height: 20px;
+  border-bottom: 0;
 }
+
 table.scroll thead tr th {
-	height: 27px;
-	line-height: 27px;
-	text-align: left;
+  height: 27px;
+  line-height: 27px;
+  text-align: left;
 }
 
 /** Table contributor **/
 table#table_list_contributors tbody td.contributor_name,
 table#table_list_contributors thead th.contributor_name {
-	width: 20%;
+  width: 20%;
 }
 
 /** Accordeon for lists **/
 #accordeon li,
 #accordeon div {
-	list-style: none;
+  list-style: none;
 }
 
 /** Lists style **/
@@ -47,91 +54,131 @@ table#table_list_contributors thead th.contributor_name {
 #list_track .panel-heading,
 #list_document .panel-heading,
 #list_overlay .panel-heading {
-	border-bottom: 1px solid transparent;
-	border-top-left-radius: 3px;
-	border-top-right-radius: 3px;
-	padding: 4px 15px;
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  padding: 4px 15px;
 }
 
 #id_background {
-	margin-left: 0.25rem;
-	position: inherit;
+  margin-left: 0.25rem;
+  position: inherit;
 }
 
-.contenuTitre{
-	display: flex;
-	flex-direction: column;
+.contenuTitre {
+  display: flex;
+  flex-direction: column;
 }
-.contenuTitre #list_track{
-	order: 1;
+
+.contenuTitre #list_track {
+  order: 1;
 }
-.contenuTitre .breadcrumb{
-	padding: 0;
+
+.contenuTitre .breadcrumb {
+  padding: 0;
 }
-.contenuTitre .btn{
-	margin-bottom: 1rem;
-	margin-right: 1rem;
+
+.contenuTitre .btn {
+  margin-bottom: 1rem;
+  margin-right: 1rem;
 }
 
 /***** Override track list *****/
 
-.grid-list-track .division{ grid-column: 1 / span 4; border-bottom: 1px solid #ccc;}
-.grid-list-track .track_kind.options .btn{ font-size: 14px;}
-.grid-list-track .track_kind.options a.btn{ overflow: unset; align-self: self-start;}
-.grid-list-track .track_kind.options .dropdown #dropdownMenuButton{
-    background-color: var(--pod-primary);
-    color: #fff;
-    border-color: var(--pod-primary);
-    border-radius: 4px;
+.grid-list-track .division {
+  grid-column: 1 / span 4;
+  border-bottom: 1px solid #ccc;
 }
-.grid-list-track .track_kind.options .dropdown .dropdown-item{ background-color: #fff; }
-.grid-list-track .track_kind.options .dropdown .btn{ width: 100%; }
-.grid-list-track .track_kind.options .dropdown{ display: none; background-color: #fff;}
-.grid-list-track .thead_title{
-    margin: 0;
-    padding-right: 20px;
-    color: var(--pod-primary);
-    word-wrap: break-word;
-    font-weight: 600;
+
+.grid-list-track .track_kind.options .btn {
+  font-size: 14px;
 }
-.grid-list-track p{margin: 0;}
-.grid-list-track{
-    display: grid;
-    grid-template-columns: max-content min-content 1fr min-content;
-    grid-gap: 20px;
-    margin-bottom: 1em;
-    margin-top: 1em;
+
+.grid-list-track .track_kind.options a.btn {
+  overflow: unset;
+  align-self: self-start;
 }
-.grid-list-track .track_kind.file{word-break: break-word;}
-.track_kind.options{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-column-gap: 10px;
+
+.grid-list-track .track_kind.options .dropdown #dropdownMenuButton {
+  background-color: var(--pod-primary);
+  color: #fff;
+  border-color: var(--pod-primary);
+  border-radius: 4px;
 }
+
+.grid-list-track .track_kind.options .dropdown .dropdown-item {
+  background-color: #fff;
+}
+
+.grid-list-track .track_kind.options .dropdown .btn {
+  width: 100%;
+}
+
+.grid-list-track .track_kind.options .dropdown {
+  display: none;
+  background-color: #fff;
+}
+
+.grid-list-track .thead_title {
+  margin: 0;
+  padding-right: 20px;
+  color: var(--pod-primary);
+  word-wrap: break-word;
+  font-weight: 600;
+}
+
+.grid-list-track p {
+  margin: 0;
+}
+
+.grid-list-track {
+  display: grid;
+  grid-template-columns: max-content min-content 1fr min-content;
+  grid-gap: 20px;
+  margin-bottom: 1em;
+  margin-top: 1em;
+}
+
+.grid-list-track .track_kind.file {
+  word-break: break-word;
+}
+
+.track_kind.options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 10px;
+}
+
 .track_kind.options .btn {
-    margin: 0;
-    padding: .2em .4em;
-    font-size: 1rem;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0.2em 0.4em;
+  font-size: 1rem;
+  box-sizing: border-box;
 }
-@media only screen and (max-width: 840px)
-{
-.grid-list-track .track_kind.options .dropdown{ display: inline-block;}
-.grid-list-track .track_kind.options > form,
-.grid-list-track .track_kind.options > #modifCapSubFile{ display: none;}
+
+@media only screen and (max-width: 840px) {
+  .grid-list-track .track_kind.options .dropdown {
+    display: inline-block;
+  }
+
+  .grid-list-track .track_kind.options > form,
+  .grid-list-track .track_kind.options > #modifCapSubFile {
+    display: none;
+  }
 }
 
 /** Filepicker override **/
 div.file-picker-overlay,
 div.file-picker,
 ul.css-tabs a {
-	box-sizing: content-box;
+  box-sizing: content-box;
 }
+
 textarea#id_description {
-	line-height: normal;
+  line-height: normal;
 }
 
 /** Bootstrap override **/
 .card-title {
-	margin: .45rem;
+  margin: 0.45rem;
 }
