@@ -7,7 +7,7 @@ import os
 from pyvirtualdisplay import Display
 from django.conf import settings
 from selenium.webdriver.support.ui import Select
-from django.test import override_settings
+from django.test.utils import override_settings
 from django.contrib.auth.models import User
 from pod.video.models import Video, Type
 

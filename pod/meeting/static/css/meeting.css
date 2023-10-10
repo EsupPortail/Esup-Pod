@@ -1,4 +1,8 @@
-.meeting-card-inactive{
+/**
+ * Esup-Pod Meeting styles
+ */
+
+.meeting-card-inactive {
   border: 1px solid #f5a391;
 }
 
@@ -15,15 +19,14 @@
 }
 
 .meeting-infos {
-  background-color: #CFE2FF ;
-  border: 1px solid #000000;
+  background-color: #cfe2ff;
+  border: 1px solid #000;
 }
 
 #recordings.table {
   --bs-table-color: var(--pod-font-color);
   --bs-table-striped-color: var(--pod-font-color);
 }
-
 
 /* Loading while uploading */
 .recording-loader {
@@ -40,6 +43,7 @@
   padding: 10px;
   display: none;
 }
+
 .recording-loading {
   margin: auto;
   border: 6px solid #f3f3f3;
@@ -50,16 +54,16 @@
   animation: recording-spin 3s linear infinite;
 }
 
-@-webkit-keyframes recording-spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
+@keyframes recording-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-@keyframes recording-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-/* */
 /* Message error */
 div.alert.alert-dismissible {
   border-radius: 6px;
@@ -69,7 +73,7 @@ div.alert.alert-dismissible {
   position: relative;
   padding-right: 60px;
   border: 1px solid #e6e6e6;
-  background: #FFF;
+  background: #fff;
 }
 
 div.alert .icon {
@@ -94,37 +98,37 @@ div.alert .icon i {
 }
 
 div.alert.alert-success .icon,
-div.alert.alert-success .icon:after {
+div.alert.alert-success .icon::after {
   border-color: none;
   background: #00986a;
 }
 
 div.alert.alert-info .icon,
-div.alert.alert-info .icon:after {
+div.alert.alert-info .icon::after {
   border-color: none;
   background: #00b3c8;
 }
 
 div.alert.alert-warning .icon,
-div.alert.alert-warning .icon:after {
+div.alert.alert-warning .icon::after {
   border: none;
   background: #f9af2c;
 }
 
 div.alert.alert-error .icon,
-div.alert.alert-error .icon:after {
+div.alert.alert-error .icon::after {
   border-color: none;
   background: #c82630;
 }
 
 div.alert .proposition {
   color: #000;
-  font-weight: Bold;
+  font-weight: bold;
 }
+
 div.alert .proposition::before {
   content: "\F137";
   margin-right: 15px;
   font-family: bootstrap-icons;
-  vertical-align: -.125em;
+  vertical-align: -0.125em;
 }
-/* */
