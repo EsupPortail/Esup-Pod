@@ -554,7 +554,7 @@ class SeleniumTestSuite(object):
 class PodSeleniumTests(StaticLiveServerTestCase):
     """Tests the integration of Pod application with Selenium from side files"""
 
-    fixtures = ["initial_data.json", "sample_videos.json"]
+    fixtures = ["initial_data.json"]
 
     def setUp(self):
         """Set up the tests and initialize custom test data."""
@@ -576,7 +576,9 @@ class PodSeleniumTests(StaticLiveServerTestCase):
     @override_settings(DEBUG=False)
     def test_selenium_suites(self):
         """Run Selenium Test Suites from Side files in all installed apps."""
+        self.setUpClass()
         self.run_all_tests()
+        self.tearDownClass()
 
     def initialize_data(self):
         """Initialize custom test data."""
