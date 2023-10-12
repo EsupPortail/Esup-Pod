@@ -1474,6 +1474,27 @@ class ViewCount(models.Model):
         verbose_name_plural = _("View counts")
 
 
+class UserTime(models.Model):
+    """Record the time of vidéo played by a user."""
+    video = models.ForeignKey(
+        Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        User, verbose_name=_("User"), editable=False, on_delete=models.CASCADE
+    )
+    time = models.IntegerField(_("Current time"), default=0, editable=False)
+
+    @property
+    def sites(self):
+        """Return the sites of the video."""
+        return self.video.sites
+
+    class Meta:
+        unique_together = ("video", "user")
+        verbose_name = _("Video user time")
+        verbose_name_plural = _("Video users time")
+
+
 class VideoVersion(models.Model):
     video = models.OneToOneField(
         Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
