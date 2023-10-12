@@ -78,8 +78,7 @@ def find_element(driver, target):
         except NoSuchElementException:
             result = driver.find_element(locator, value.lower())
             target_cache[target] = f"{locator}={value.lower()}"
-            msg = f"label {value} is being cached as {target_cache[target]}"
-            print(msg)
+            print(f"label {value} is being cached as {target_cache[target]}")
             return result
     else:
         direct = (
@@ -145,22 +144,22 @@ class SeleniumTestCase(object):
             "mouseOver": self.mouseOver,
             "mouseOut": self.mouseOut,
             "sendKeys": self.sendKeys,
+            "executeScript": self.executeScript,
         }
 
         for command in self.test_data.get("commands", []):
             command_name = command.get("command", "")
             target = command.get("target", "")
             value = command.get("value", "")
-            text = command.get("text", "")
 
             if command_name in COMMAND_MAPPING:
                 COMMAND_MAPPING[command_name](
-                    driver=driver, target=target, text=text, value=value, url=url
+                    driver=driver, target=target, value=value, url=url
                 )
             else:
                 print(f"Command {command_name} not supported")
 
-    def cookies_commands(self, driver, url, text="", value="", target=""):
+    def cookies_commands(self, driver, url, value="", target=""):
         """
         Execute custom commands to handle cookies acceptance on website.
 
@@ -175,7 +174,7 @@ class SeleniumTestCase(object):
             self.test_data["commands"] = side_data.get("commands", [])
             self.run_commands(driver, url)
 
-    def open(self, driver, target, text="", value="", url=""):
+    def open(self, driver, target, value="", url=""):
         """
         Open a URL in the WebDriver.
 
@@ -185,7 +184,7 @@ class SeleniumTestCase(object):
         """
         driver.get(self.base_url + "/" + target)
 
-    def click(self, driver, target, text="", value="", url=""):
+    def click(self, driver, target, value="", url=""):
         """
         Click on a web element identified by a target.
 
@@ -194,13 +193,13 @@ class SeleniumTestCase(object):
             target (str): The identifier for the web element to be clicked.
         """
         element = find_element(driver, target)
-        element_type = element.get_attribute("type")
-        without_scroll_elements = {"button", "submit", "reset", "radio", "checkbox"}
-        if element_type and element_type.lower() not in without_scroll_elements:
+        element_tag = element.tag_name
+        without_scroll_elements = {"button", "submit", "textarea", "input"}
+        if element_tag not in without_scroll_elements:
             driver.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
+        driver.execute_script("arguments[0].click();", element)
 
-    def clickAndWait(self, driver, target, text="", value="", url=""):
+    def clickAndWait(self, driver, target, value="", url=""):
         """
         Click on a web element identified by a target and wait for a response.
 
@@ -210,21 +209,21 @@ class SeleniumTestCase(object):
         """
         self.click(driver, target)
 
-    def type(self, driver, target, text="", value="", url=""):
+    def type(self, driver, target, value="", url=""):
         """
         Simulate typing text into an input field on a web page.
 
         Args:
             driver (WebDriver): The WebDriver instance for interacting with the web page.
             target (str): The identifier for the input field.
-            text (str, optional): The text to be typed into the input field.
+            value (str, optional): The value to be typed into the input field.
         """
         element = find_element(driver, target)
         element.click()
         element.clear()
-        element.send_keys(text)
+        element.send_keys(value)
 
-    def select(self, driver, target, value, text="", url=""):
+    def select(self, driver, target, value, url=""):
         """
         Select an option from a dropdown list on a web page.
 
@@ -269,7 +268,7 @@ class SeleniumTestCase(object):
             print("verifyNotTextPresent: ", repr(text), "present")
             raise
 
-    def assertElementPresent(self, driver, target, text="", value="", url=""):
+    def assertElementPresent(self, driver, target, value="", url=""):
         """
         Assert the presence of a specified web element.
 
@@ -283,7 +282,7 @@ class SeleniumTestCase(object):
             print("assertElementPresent: ", repr(target), "not present")
             raise
 
-    def verifyElementPresent(self, driver, target, text="", value="", url=""):
+    def verifyElementPresent(self, driver, target, value="", url=""):
         """
         Verify the presence of a specified web element on a web page.
 
@@ -297,7 +296,7 @@ class SeleniumTestCase(object):
             print("verifyElementPresent: ", repr(target), "not present")
             raise
 
-    def verifyElementNotPresent(self, driver, target, text="", value="", url=""):
+    def verifyElementNotPresent(self, driver, target, value="", url=""):
         """
         Verify the absence of a specified web element on a web page.
 
@@ -345,7 +344,7 @@ class SeleniumTestCase(object):
             print("waitForTextNotPresent: ", repr(text), "present")
             raise
 
-    def assertText(self, driver, target, value="", text="", url=""):
+    def assertText(self, driver, target, value="", url=""):
         """
         Assert that the text of a specified web element matches the expected value.
 
@@ -370,7 +369,7 @@ class SeleniumTestCase(object):
             )
             raise
 
-    def assertNotText(self, driver, target, value="", text="", url=""):
+    def assertNotText(self, driver, target, value="", url=""):
         """
         Assert that the text of a specified web element does not match the expected value.
 
@@ -395,7 +394,7 @@ class SeleniumTestCase(object):
             )
             raise
 
-    def assertValue(self, driver, target, value="", text="", url=""):
+    def assertValue(self, driver, target, value="", url=""):
         """
         Assert that the value attribute of a specified web element matches the expected value.
 
@@ -417,7 +416,7 @@ class SeleniumTestCase(object):
             )
             raise
 
-    def assertNotValue(self, driver, target, value="", text="", url=""):
+    def assertNotValue(self, driver, target, value="", url=""):
         """
         Assert that the value attribute of a specified web element does not match the expected value.
 
@@ -439,7 +438,7 @@ class SeleniumTestCase(object):
             )
             raise
 
-    def verifyValue(self, driver, target, value="", text="", url=""):
+    def verifyValue(self, driver, target, value="", url=""):
         """
         Verify that the value attribute of a specified web element matches the expected value.
 
@@ -461,7 +460,7 @@ class SeleniumTestCase(object):
             )
             raise
 
-    def mouseOver(self, driver, target, text="", value="", url=""):
+    def mouseOver(self, driver, target, value="", url=""):
         """
         Simulate a mouse over event on the specified target element.
 
@@ -474,7 +473,7 @@ class SeleniumTestCase(object):
             "arguments[0].dispatchEvent(new Event('mouseover'))", element
         )
 
-    def mouseOut(self, driver, target, text="", value="", url=""):
+    def mouseOut(self, driver, target, value="", url=""):
         """
         Simulate a mouse out event on the specified target element.
 
@@ -487,17 +486,27 @@ class SeleniumTestCase(object):
             "arguments[0].dispatchEvent(new Event('mouseout'))", element
         )
 
-    def sendKeys(self, driver, target, text="", value="", url=""):
+    def sendKeys(self, driver, target, value="", url=""):
         """
         Send the specified text to the target element.
 
         Args:
             driver (WebDriver): The WebDriver instance for interacting with the web page.
             target (str): The identifier for the web element whose value attribute needs to be verified.
-            text (str, optional): The text to send to the target element.
+            value (str, optional): The text to send to the target element.
         """
         element = find_element(driver, target)
-        element.send_keys(text)
+        element.send_keys(value)
+
+    def executeScript(self, driver, target, value="", url=""):
+        """
+        Execute a script script in the browser.
+
+        Args:
+            driver (WebDriver): The WebDriver instance for interacting with the web page.
+            script (str): The script code to execute.
+        """
+        driver.execute_script(target)
 
 
 class SeleniumTestSuite(object):
@@ -581,7 +590,7 @@ class PodSeleniumTests(StaticLiveServerTestCase):
 
     def initialize_data(self):
         """Initialize custom test data."""
-        self.user = User.objects.create_user(username="testuser", password="testpassword")
+        self.user = User.objects.create_user(username="user", password="user")
         self.video = Video.objects.create(
             title="first-video",
             owner=self.user,
