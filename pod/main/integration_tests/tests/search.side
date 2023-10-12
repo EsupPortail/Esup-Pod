@@ -17,11 +17,6 @@
           "value": ""
         },
         {
-          "id": "pod-accept-cookies",
-          "comment": "Valide les cookies du navigateur",
-          "command": "cookies_commands"
-        },
-        {
           "id": "pod-search",
           "comment": "Sélectionne barre recherche",
           "command": "click",

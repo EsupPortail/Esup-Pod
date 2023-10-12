@@ -6,4 +6,3 @@ httmock
 beautifulsoup4
 django-debug-toolbar
 selenium
-pyvirtualdisplay

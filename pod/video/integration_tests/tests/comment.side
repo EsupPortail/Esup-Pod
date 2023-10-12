@@ -9,15 +9,10 @@
       "name": "comment",
       "commands": [
         {
-          "id": "pod-accept-cookies",
-          "comment": "Valide les cookies du navigateur",
-          "command": "cookies_commands"
-        },
-        {
           "id": "pod-open-video-page",
           "comment": "Ouvre la page de la vidéo",
           "command": "open",
-          "target": "video/1-first-video/",
+          "target": "video/0001-first-video/",
           "targets": [],
           "value": ""
         },
