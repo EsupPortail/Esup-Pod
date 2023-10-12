@@ -4,10 +4,21 @@
 {% get_setting "USE_VIDEO_P2P" False as use_video_p2p %}
 {% get_setting "P2P_TRACKERS" "" as p2p_trackers %}
 {% get_setting "P2P_STUNS" "" as p2p_stuns %}
-{% if use_video_p2p %}
-<script src="{% static 'js/video-p2p-stats.js' %}?ver={{VERSION}}"></script>
+{% if use_video_p2p and event.is_current %}
+  <script src="{% static 'js/video-p2p-stats.js' %}?ver={{VERSION}}"></script>
 {% endif %}
-<script>
+<script type="module">
+  import '{% static 'video.js/dist/video.min.js' %}';
+  {% if use_video_p2p and event.is_current %}
+    import '{% static 'js/hls-plugin.js' %}';
+  {% endif %}
+  import '{% static 'videojs-quality-selector-hls/dist/videojs-quality-selector-hls.min.js' %}';
+  {% if video.overview or playlist_in_get %}
+    import '{% static 'js/videojs-vtt-thumbnails.js' %}';
+  {% endif %}
+  import '{% static 'js/videojs-logo-controlbar.js' %}';
+
+
     // Debug if necessary, depends on the settings_local
     const debug = "{% get_setting "DEBUG" False %}" === "True";
 
@@ -21,10 +32,10 @@
     let video_on_hold_is_displayed = false;
     let recordingDuration = 0;
 
-    {% if use_video_p2p %}
-    var downloadTotals = { http: 0, p2p: 0 };
-    var uploadTotal = 0;
-    var nb_peers = 0;
+    {% if use_video_p2p and event.is_current %}
+      window.downloadTotals = { http: 0, p2p: 0 };
+      window.uploadTotal = 0;
+      window.nb_peers = 0;
     {% endif %}
 
     var VideoHlsjsConfig = {
@@ -32,76 +43,76 @@
         maxBufferLength: 10,
         liveSyncDurationCount: 10,
     }
-    {% if use_video_p2p %}
-    const p2p_config = {
-      segments:{
-        // number of segments to pass for processing to P2P algorithm
-        // forwardSegmentCount:50, // usually should be equal or greater than p2pDownloadMaxPriority and httpDownloadMaxPriority
-        swarmId: '{{ event.broadcaster.url }}',
-      },
-      loader:{
-        /** configure personal tracker and STUN servers */
-        trackerAnnounce: [
-          {% for tracker in p2p_trackers %}
-          "{{tracker}}"{% if not forloop.last %},{%endif%}
-          {% endfor %}
-        ],
-        rtcConfig: {
-          iceServers: [
-          {% for stun in p2p_stuns %}
-          { urls: "{{stun}}" }{% if not forloop.last %},{%endif%}
-          {% endfor %}
-          ]
+    {% if use_video_p2p and event.is_current %}
+      const p2p_config = {
+        segments:{
+          // number of segments to pass for processing to P2P algorithm
+          // forwardSegmentCount:50, // usually should be equal or greater than p2pDownloadMaxPriority and httpDownloadMaxPriority
+          swarmId: '{{ event.broadcaster.url }}',
         },
-        /*
-        // how long to store the downloaded segments for P2P sharing
-        cachedSegmentExpiration:86400000,
-        // count of the downloaded segments to store for P2P sharing
-        cachedSegmentsCount:1000,
+        loader:{
+          /** configure personal tracker and STUN servers */
+          trackerAnnounce: [
+            {% for tracker in p2p_trackers %}
+              "{{tracker}}"{% if not forloop.last %},{%endif%}
+            {% endfor %}
+          ],
+          rtcConfig: {
+            iceServers: [
+            {% for stun in p2p_stuns %}
+              { urls: "{{stun}}" }{% if not forloop.last %},{%endif%}
+            {% endfor %}
+            ]
+          },
+          /*
+          // how long to store the downloaded segments for P2P sharing
+          cachedSegmentExpiration:86400000,
+          // count of the downloaded segments to store for P2P sharing
+          cachedSegmentsCount:1000,
 
-        // first 4 segments (priorities 0, 1, 2 and 3) are required buffer for stable playback
-        requiredSegmentsPriority:3,
+          // first 4 segments (priorities 0, 1, 2 and 3) are required buffer for stable playback
+          requiredSegmentsPriority:3,
 
-        // each 1 second each of 10 segments ahead of playhead position gets 6% probability for random HTTP download
-        httpDownloadMaxPriority:9,
-        httpDownloadProbability:0.06,
-        httpDownloadProbabilityInterval: 1000,
+          // each 1 second each of 10 segments ahead of playhead position gets 6% probability for random HTTP download
+          httpDownloadMaxPriority:9,
+          httpDownloadProbability:0.06,
+          httpDownloadProbabilityInterval: 1000,
 
-        // disallow randomly download segments over HTTP if there are no connected peers
-        httpDownloadProbabilitySkipIfNoPeers: true,
+          // disallow randomly download segments over HTTP if there are no connected peers
+          httpDownloadProbabilitySkipIfNoPeers: true,
 
-        // P2P will try to download only first 51 segment ahead of playhead position
-        p2pDownloadMaxPriority: 50,
+          // P2P will try to download only first 51 segment ahead of playhead position
+          p2pDownloadMaxPriority: 50,
 
-        // 1 second timeout before retrying HTTP download of a segment in case of an error
-        httpFailedSegmentTimeout:1000,
+          // 1 second timeout before retrying HTTP download of a segment in case of an error
+          httpFailedSegmentTimeout:1000,
 
-        // number of simultaneous downloads for P2P and HTTP methods
-        simultaneousP2PDownloads:20,
-        simultaneousHttpDownloads:3,
+          // number of simultaneous downloads for P2P and HTTP methods
+          simultaneousP2PDownloads:20,
+          simultaneousHttpDownloads:3,
 
-        // enable mode, that try to prevent HTTP downloads on stream start-up
-        httpDownloadInitialTimeout: 120000, // try to prevent HTTP downloads during first 2 minutes
-        httpDownloadInitialTimeoutPerSegment: 17000, // try to prevent HTTP download per segment during first 17 seconds
+          // enable mode, that try to prevent HTTP downloads on stream start-up
+          httpDownloadInitialTimeout: 120000, // try to prevent HTTP downloads during first 2 minutes
+          httpDownloadInitialTimeoutPerSegment: 17000, // try to prevent HTTP download per segment during first 17 seconds
 
-        // allow to continue aborted P2P downloads via HTTP
-        httpUseRanges: true,
-        */
+          // allow to continue aborted P2P downloads via HTTP
+          httpUseRanges: true,
+          */
+        }
+      };
+
+      if (p2pml.hlsjs.Engine.isSupported()) {
+        window.downloadTotals = { http: 0, p2p: 0 };
+        window.uploadTotal = 0;
+        window.nb_peers = 0;
+        window.engineHlsJs = new p2pml.hlsjs.Engine(p2p_config);
+        VideoHlsjsConfig["loader"] = window.engineHlsJs.createLoaderClass();
+        window.engineHlsJs.on(p2pml.core.Events.PeerConnect, onPeerConnect.bind(this));
+        window.engineHlsJs.on(p2pml.core.Events.PeerClose, onPeerClose.bind(this));
+        window.engineHlsJs.on(p2pml.core.Events.PieceBytesDownloaded, onBytesDownloaded.bind(this));
+        window.engineHlsJs.on(p2pml.core.Events.PieceBytesUploaded, onBytesUploaded.bind(this));
+        //window.engineHlsJs.on("segment_loaded", (segment, peerId) => console.log("segment_loaded from", peerId ? `peer ${peerId}` : "HTTP", segment.url));
       }
-    };
-
-    if (p2pml.hlsjs.Engine.isSupported()) {
-      downloadTotals = { http: 0, p2p: 0 };
-      uploadTotal = 0;
-      nb_peers = 0;
-      engineHlsJs = new p2pml.hlsjs.Engine(p2p_config);
-      VideoHlsjsConfig["loader"] = engineHlsJs.createLoaderClass();
-      engineHlsJs.on(p2pml.core.Events.PeerConnect, onPeerConnect.bind(this));
-      engineHlsJs.on(p2pml.core.Events.PeerClose, onPeerClose.bind(this));
-      engineHlsJs.on(p2pml.core.Events.PieceBytesDownloaded, onBytesDownloaded.bind(this));
-      engineHlsJs.on(p2pml.core.Events.PieceBytesUploaded, onBytesUploaded.bind(this));
-      //engineHlsJs.on("segment_loaded", (segment, peerId) => console.log("segment_loaded from", peerId ? `peer ${peerId}` : "HTTP", segment.url));
-    }
     {% endif %}
 
 
@@ -196,10 +207,11 @@
       // Management of the streaming live
       let player = videojs("podvideoplayer", options, function() {
       });
-      {% if use_video_p2p %}
-      if (p2pml.hlsjs.Engine.isSupported()) {
-        p2pml.hlsjs.initVideoJsContribHlsJsPlayer(player);
-      }
+      {% if use_video_p2p and event.is_current %}
+        if (p2pml.hlsjs.Engine.isSupported()) {
+          p2pml.hlsjs.initVideoJsContribHlsJsPlayer(player);
+          player.hlsjs({});
+        }
       {% endif %}
       var srcOptions = {
         src: '{{ event.broadcaster.url }}',
@@ -256,9 +268,12 @@
         started = true;
         document.getElementById("divvideoplayer").style.display = "block";
 
-        // Affichage du nombre de spectateurs
         {% if event.broadcaster.enable_viewer_count %}
-          player.videoJsViewerCount();
+          try {
+            player.videoJsViewerCount();
+          } catch {
+            console.log(gettext('A problem occurred displaying the number of viewers'));
+          }
         {% endif %}
 
         // Affichage des boutons de contrôle de l'enregistrement
@@ -749,8 +764,9 @@
         }
 
         options["loop"] = true;
-        let playerOnHold = videojs('podvideoonholdplayer', options, function () {
-         });
+        options["html5"] = {};
+        // options["plugins"] = {"core": {"p2p": false}}
+        let playerOnHold = videojs('podvideoonholdplayer', options, function () { });
 
         if (withModal)
             playerOnHold.createModal('{% trans "Live not found, retry in 10 seconds" %}');
@@ -865,19 +881,19 @@
     document.addEventListener("DOMContentLoaded", () => {
 
         {% if event.is_past or event.is_current %}
-            {% if not request.GET.is_iframe %}
-                getEventVideos()
-            {% endif %}
+          {% if not request.GET.is_iframe %}
+            getEventVideos();
+          {% endif %}
         {% endif %}
 
         {% if event.is_coming %}
-            {% if event.video_on_hold.is_video %}
-                showWaitingVideo(false);
-            {% endif %}
+          {% if event.video_on_hold.is_video %}
+            showWaitingVideo(false);
+          {% endif %}
         {% endif %}
 
         {% if event.is_current %}
-            showWaitingVideo(true);
+          showWaitingVideo(true);
         {% endif %}
 
         reloadIfNeeded();

@@ -558,6 +558,7 @@ class Event(models.Model):
 
     def is_coming(self):
         """Test if event will happen in future."""
+        print('localdate', timezone.localtime(timezone.now())) # TODO Withdraw this print
         if self.start_date:
             return timezone.localtime(timezone.now()) < self.start_date
         else:

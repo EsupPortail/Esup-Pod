@@ -6,45 +6,54 @@
 {% get_setting "USE_VIDEO_P2P" False as use_video_p2p %}
 {% get_setting "P2P_TRACKERS" "" as p2p_trackers %}
 {% get_setting "P2P_STUNS" "" as p2p_stuns %}
-{% if use_video_p2p %}
-<script src="{% static 'js/video-p2p-stats.js' %}?ver={{VERSION}}"></script>
-{% endif %}
-<script id="id_video_script">
-  var seektime = 10;
-  var options = {};
-  var player;
-  var engineHlsJs;
+
+<script id="id_video_script" type="module">
+  import '{% static 'video.js/dist/video.min.js' %}';
   {% if use_video_p2p %}
-  var downloadTotals = { http: 0, p2p: 0 };
-  var uploadTotal = 0;
-  var nb_peers = 0;
+    import '{% static 'js/hls-plugin.js' %}';
+  {% endif %}
+  import '{% static 'videojs-quality-selector-hls/dist/videojs-quality-selector-hls.min.js' %}';
+  {% if video.overview or playlist_in_get %}
+    import '{% static 'js/videojs-vtt-thumbnails.js' %}';
+  {% endif %}
+  import '{% static 'js/videojs-logo-controlbar.js' %}';
+
+
+  window.seektime = 10;
+  window.options = {};
+  window.player;
+  window.engineHlsJs;
+  {% if use_video_p2p %}
+    window.downloadTotals = { http: 0, p2p: 0 };
+    window.uploadTotal = 0;
+    window.nb_peers = 0;
   {% endif %}
   /**
    * Initialize the videojs player
    */
-  var initialize_player = function() {
+  window.initialize_player = function() {
 
     window.onmessage = function(event) {
       var evt = event || window.event;
       {# maybe use request.get_host to protect it... #}
         if(evt.data.type == 'player:play') {
-          player.play();
-          evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
+          window.player.play();
+          evt.source.postMessage({paused: window.player.paused(), data: {}}, evt.origin);
         }
         if(evt.data.type == 'player:pause') {
-          player.pause();
-          evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
+          window.player.pause();
+          evt.source.postMessage({paused: window.player.paused(), data: {}}, evt.origin);
         }
         if(evt.data.type == 'player:mute') {
-          player.muted(true);
-          evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
+          window.player.muted(true);
+          evt.source.postMessage({muted: window.player.muted(), data: {}}, evt.origin);
         }
         if(evt.data.type == 'player:unmute') {
-          player.muted(false);
-          evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
+          window.player.muted(false);
+          evt.source.postMessage({muted: window.player.muted(), data: {}}, evt.origin);
         }
     };
-    
+
     var VideoHlsjsConfig = {
         maxBufferSize: 0,
         maxBufferLength: 10,
@@ -110,16 +119,16 @@
       downloadTotals = { http: 0, p2p: 0 };
       uploadTotal = 0;
       nb_peers = 0;
-      engineHlsJs = new p2pml.hlsjs.Engine(p2p_config);
-      VideoHlsjsConfig["loader"] = engineHlsJs.createLoaderClass();
-      engineHlsJs.on(p2pml.core.Events.PeerConnect, onPeerConnect.bind(this));
-      engineHlsJs.on(p2pml.core.Events.PeerClose, onPeerClose.bind(this));
-      engineHlsJs.on(p2pml.core.Events.PieceBytesDownloaded, onBytesDownloaded.bind(this));
-      engineHlsJs.on(p2pml.core.Events.PieceBytesUploaded, onBytesUploaded.bind(this));
-      //engineHlsJs.on("segment_loaded", (segment, peerId) => console.log("segment_loaded from", peerId ? `peer ${peerId}` : "HTTP", segment.url));
+      window.engineHlsJs = new p2pml.hlsjs.Engine(p2p_config);
+      VideoHlsjsConfig["loader"] = window.engineHlsJs.createLoaderClass();
+      window.engineHlsJs.on(p2pml.core.Events.PeerConnect, onPeerConnect.bind(this));
+      window.engineHlsJs.on(p2pml.core.Events.PeerClose, onPeerClose.bind(this));
+      window.engineHlsJs.on(p2pml.core.Events.PieceBytesDownloaded, onBytesDownloaded.bind(this));
+      window.engineHlsJs.on(p2pml.core.Events.PieceBytesUploaded, onBytesUploaded.bind(this));
+      //window.engineHlsJs.on("segment_loaded", (segment, peerId) => console.log("segment_loaded from", peerId ? `peer ${peerId}` : "HTTP", segment.url));
     }
     {% endif %}
-    options = {
+    window.options = {
       notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
       //language: "fr", //en or nl
       {% if video.is_video and request.GET.is_iframe %}
@@ -135,8 +144,8 @@
       controlBar: {
         {% if event is None %}
         skipButtons: {
-          forward: seektime,
-          backward: seektime
+          forward: window.seektime,
+          backward: window.seektime
         }
         {% endif %}
       },
@@ -159,12 +168,12 @@
           // `arrow left`
           if (event.code === 'ArrowLeft') {
             event.preventDefault();
-            this.currentTime(Math.floor(this.currentTime())-seektime);
+            this.currentTime(Math.floor(this.currentTime()) - window.seektime);
           }
           // `arrow right`
           if (event.code === 'ArrowRight') {
             event.preventDefault();
-            this.currentTime(Math.floor(this.currentTime())+seektime);
+            this.currentTime(Math.floor(this.currentTime()) + window.seektime);
           }
           if( event.code === "ArrowUp" ) {
             event.preventDefault();
@@ -192,14 +201,15 @@
       }
     }
 
-    player = videojs('podvideoplayer', options, function(){});
+    window.player = videojs('podvideoplayer', window.options, function(){});
     {% if use_video_p2p %}
     if (p2pml.hlsjs.Engine.isSupported()) {
+      window.player.hlsjs({});
       p2pml.hlsjs.initVideoJsHlsJsPlugin(player);
     }
     {% endif %}
-    player.ready(() => {
-      player.one('play', function(){
+    window.player.ready(() => {
+      window.player.one('play', function(){
         let form = document.querySelector('#video_count_form');
         let data = new FormData(form);
         fetch(form.getAttribute("action"), {
@@ -214,40 +224,40 @@
     var mp4_sources = {{ video.get_video_mp4_json|safe }};
 
     {% if video.get_playlist_master %}
-      var srcOptions = {
+      window.options = {
         src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.get_playlist_master.source_file.url}}',
         type: '{{video.get_playlist_master.encoding_format}}',
       };
-      player.on('loadedmetadata', function() {
+      window.player.on('loadedmetadata', function() {
         {% if request.GET.start and request.GET.start != '0' %}
-          player.currentTime({{request.GET.start}});
+          window.player.currentTime({{request.GET.start}});
         {% endif %}
       });
       //Add source to player
-      player.src(srcOptions);
+      window.player.src(window.options);
       //add quality selector to player
-      player.qualitySelectorHls({
+      window.player.qualitySelectorHls({
           displayCurrentQuality: true,
       });
-      player.on("error", function(e) {
+      window.player.on("error", function(e) {
         e.stopImmediatePropagation();
-        var error = player.error();
+        var error = window.player.error();
         //alert(error.code+" "+error.type+" "+error.message);
         if(error.code == 3 || error.code == 4) {
           //console.log('error!', error.code, error.type , error.message);
-          if(player.src()=="" || player.src().indexOf("m3u8")!=-1){
+          if(pwindow.layer.src()=="" || window.player.src().indexOf("m3u8")!=-1){
             //player.controlBar.addChild('QualitySelector');
-            player.play();
+            window.player.play();
           }
         }
       });
     {% else %}
-      player.src(mp4_sources);
+    window.player.src(mp4_sources);
       //player.controlBar.addChild('QualitySelector');
     {% endif %}
     {% if video.overview %}
       //add overview
-      player.vttThumbnails({
+      window.player.vttThumbnails({
         src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
       });
     {% endif %}
@@ -263,39 +273,39 @@
           end: parseInt($(this).attr('data-timeend'))
         });
       });
-      if (typeof player.overlay === "function") {
-        player.overlay({
+      if (typeof window.player.overlay === "function") {
+        window.player.overlay({
           overlays: list_overlays
         });
       }
     {% endif %}
 
     {% if video.is_360 %}
-      player.vr({projection: '360'});
+    window.player.vr({projection: '360'});
     {% endif %}
     //add logo to the player
-    player.videoJsLogo({
+    window.player.videoJsLogo({
       imgsrc: '{% static LOGO_PLAYER %}',
       linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
       link: '{{ LINK_PLAYER }}'
     });
     {% else %}
     {% if video.get_video_m4a %}
-      var srcOptions = {
+      window.options = {
         src: '{{video.get_video_m4a.source_file.url}}',
         type: '{{video.get_video_m4a.encoding_format}}',
       };
       //Add source to player
-      player.src(srcOptions);
+      window.player.src(window.options);
       //add logo to the player
-      player.videoJsLogo({
+      window.player.videoJsLogo({
         imgsrc: '{% static LOGO_PLAYER %}',
         linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
         link: '{{ LINK_PLAYER }}'
       });
-      player.on('loadedmetadata', function() {
+      window.player.on('loadedmetadata', function() {
         {% if request.GET.start and request.GET.start != '0' %}
-        player.currentTime({{request.GET.start}});
+        window.player.currentTime({{request.GET.start}});
         {% endif %}
       });
     {% endif %}
@@ -303,46 +313,46 @@
 
   {% if video_event_tracking %}
     {# Be sure to define _paq in a tracking script in TEMPLATE_VISIBLE_SETTINGS:TRACKING_TEMPLATE pref. #}
-    player.on('play', function() {
-      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'play', player.currentTime()]);
+    window.player.on('play', function() {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'play', window.player.currentTime()]);
     });
-    player.on('pause', function() {
-      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'pause', player.currentTime()]);
+    window.player.on('pause', function() {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'pause', window.player.currentTime()]);
     });
-    player.on("seeked", function (e) {
-      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'seeked', player.currentTime()]);
+    window.player.on("seeked", function (e) {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'seeked', window.player.currentTime()]);
     });
-    player.on("ended", function (e) {
-      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ended', player.currentTime()]);
+    window.player.on("ended", function (e) {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ended', window.player.currentTime()]);
     });
-    player.on("ratechange", function (e) {
-      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ratechange', player.playbackRate()]);
+    window.player.on("ratechange", function (e) {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'ratechange', window.player.playbackRate()]);
     });
-    player.on("fullscreenchange", function (e) {
-      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'fullscreen :'+ player.isFullscreen(), player.currentTime()]);
+    window.player.on("fullscreenchange", function (e) {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'fullscreen :'+ window.player.isFullscreen(), player.currentTime()]);
     });
-    player.on("error", function (e) {
-      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'error', player.error()]);
+    window.player.on("error", function (e) {
+      _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'error', window.player.error()]);
     });
-    player.on("loadedmetadata", function (e) {
+    window.player.on("loadedmetadata", function (e) {
       _paq.push(['trackEvent', 'Videos', '{{video.slug}}', 'loadedmetadata']);
     });
   {% endif %}
 
   /* --- PLAYLIST --- */
   {% if playlist_in_get.autoplay %}
-    player.on('ended', function (e) {
+    window.player.on('ended', function (e) {
       {% if COUNTDOWN_PLAYLIST_PLAYER >= 3 %}
         const playButtonElement = document.querySelector('.vjs-big-play-button');
         if (playButtonElement) {
             playButtonElement.remove();
         }
         asyncStartCountDown().then(function () {
-          player.dispose();
+          window.player.dispose();
           switchToNextVideo();
         });
       {% else %}
-        player.dispose();
+        window.player.dispose();
         switchToNextVideo();
       {% endif %}
     });
@@ -351,23 +361,23 @@
   {% if not video.is_video and event is None %}
     window.addEventListener('resize', function(){
       // Auto resize Waves on window resize.
-      player.wavesurfer().surfer && player.wavesurfer().surfer.drawer.fireEvent('redraw');
+      window.player.wavesurfer().surfer && window.player.wavesurfer().surfer.drawer.fireEvent('redraw');
     });
   {% endif %}
   {% if request.GET.is_iframe %}
   var ModalDialog = videojs.getComponent('ModalDialog');
-  var modal = new ModalDialog(player, {
+  var modal = new ModalDialog(window.player, {
     // We don't want this modal to go away when it closes.
     temporary: false,
     fillAlways: true,
     content: document.querySelector('#info-video') //.cloneNode(true)
   });
   modal.on('modalclose', function() {
-    player.play();
+    window.player.play();
   });
-  player.addChild(modal);
+  window.player.addChild(modal);
   //modal.setAttribute('style', 'background-color:#fff');
-  var button = player.getChild('ControlBar').addChild('button', {
+  var button = window.player.getChild('ControlBar').addChild('button', {
     clickHandler: function(event) {
       modal.open();
     },
@@ -377,6 +387,10 @@
   button.setAttribute("aria-label", "{% trans "Informations" %}");
   {% endif %}
 }
-initialize_player()
+window.initialize_player()
+console.log("downloadTotals:", window.downloadTotals);
 </script>
+{% if use_video_p2p %}
+  <script src="{% static 'js/video-p2p-stats.js' %}?ver={{VERSION}}"></script>
+{% endif %}
 <script src="{% static 'js/video-show.js' %}?ver={{VERSION}}"></script>

@@ -152,8 +152,8 @@
         <div class="container-fluid">
           <div class="row">
             {% get_setting "USE_VIDEO_P2P" False as use_video_p2p %}
-            {% if use_video_p2p %}
-            {% include 'videos/video_p2p_stats.html' %}
+            {% if use_video_p2p and event.is_current %}
+              {% include 'videos/video_p2p_stats.html' %}
             {% endif %}
             <h1 class="col-auto page_title pt-3 h2">
               {{ event.title|capfirst }}

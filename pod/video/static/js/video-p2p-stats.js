@@ -2,8 +2,8 @@
  * Show the p2p stats.
  */
 function updateStats() {
-    let httpMb = downloadTotals.http / 1048576;
-    let p2pMb = downloadTotals.p2p / 1048576;
+    let httpMb = window.downloadTotals.http / 1048576;
+    let p2pMb = window.downloadTotals.p2p / 1048576;
     let totalMb = httpMb + p2pMb;
     let uploadMb = uploadTotal / 1048576;
     if (totalMb != 0 || uploadMb != 0) {
@@ -19,7 +19,7 @@ function updateStats() {
         if(stat_info_download) {
             stat_info_download.innerHTML = statInfoDownload;
         }
-    
+
         let statInfoUpload =  '<i class="bi bi-person-fill-up" aria-hidden="true"></i> '
         + Number(uploadMb).toFixed(1) + " MiB</span>";
         var stat_info_upload = document.querySelector("#p2p-stat-info-upload");
@@ -47,7 +47,7 @@ function updatePeers() {
  */
 function onBytesDownloaded(method, segment, bytes) {
     // console.log("onBytesDownloaded", method, size)
-    downloadTotals[method] += bytes;
+    window.downloadTotals[method] += bytes;
     updateStats();
 }
 
