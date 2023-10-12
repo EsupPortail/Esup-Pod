@@ -576,9 +576,8 @@ class PodSeleniumTests(StaticLiveServerTestCase):
     @override_settings(DEBUG=False)
     def test_selenium_suites(self):
         """Run Selenium Test Suites from Side files in all installed apps."""
-        self.setUpClass()
+        self.selenium.get(f"{self.live_server_url}/")
         self.run_all_tests()
-        self.tearDownClass()
 
     def initialize_data(self):
         """Initialize custom test data."""
@@ -655,7 +654,7 @@ class PodSeleniumTests(StaticLiveServerTestCase):
             suite_name (str): The name of the test suite JSON file to run.
         """
         try:
-            suite_url = "http://localhost:8080"
+            suite_url = self.live_server_url
             self.run_suite(suite_name, suite_url)
         except Exception:
             PodSeleniumTests.selenium.save_screenshot(f"{suite_name}-error_screen.png")
