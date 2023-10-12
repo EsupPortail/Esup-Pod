@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 14:42+0000\n"
+"POT-Creation-Date: 2023-10-12 13:35+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -171,9 +171,17 @@ msgid "Pause to enter caption for segment from %s to %s."
 msgstr "Mettez en pause pour entrer le texte du segment entre %s et %s."
 
 #: pod/completion/static/js/caption_maker.js
+msgid "Add a caption/subtitle after this one"
+msgstr "Ajouter un(e) légende/sous-titre ci-dessous"
+
+#: pod/completion/static/js/caption_maker.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Add"
 msgstr "Ajouter"
+
+#: pod/completion/static/js/caption_maker.js
+msgid "Delete this caption/subtitle"
+msgstr "Supprimer ce(tte) légende/sous-titre"
 
 #: pod/completion/static/js/caption_maker.js
 #: pod/video/static/js/comment-script.js
@@ -181,7 +189,7 @@ msgid "Delete"
 msgstr "Supprimer"
 
 #: pod/completion/static/js/caption_maker.js
-msgid "Caption"
+msgid "Caption / Subtitle"
 msgstr "Légende / Sous-titre"
 
 #: pod/completion/static/js/caption_maker.js
@@ -909,6 +917,9 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "Caption"
+#~ msgstr "Légende / Sous-titre"
 
 #~ msgid "Error"
 #~ msgstr "Erreur"

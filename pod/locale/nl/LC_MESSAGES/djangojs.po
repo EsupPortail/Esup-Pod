@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 12:16+0000\n"
+"POT-Creation-Date: 2023-10-12 13:35+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -156,8 +156,16 @@ msgid "Pause to enter caption for segment from %s to %s."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
+msgid "Add a caption/subtitle after this one"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Add"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
+msgid "Delete this caption/subtitle"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
@@ -166,7 +174,7 @@ msgid "Delete"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
-msgid "Caption"
+msgid "Caption / Subtitle"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
