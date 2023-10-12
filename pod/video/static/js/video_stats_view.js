@@ -99,13 +99,16 @@ $(() => {
     pager: "#pager",
     sortorder: "asc",
     beforeProcessing: function (data) {
-      // Set min date
-      let min_date = data.filter((obj) => {
-        return obj.min_date != undefined;
-      });
-      // remove date_min in data
-      data.pop();
-      document.querySelector("#jsperiode").min = min_date[0].min_date;
+      try {
+        // Set min date
+        let min_date = data.filter((obj) => {
+          return obj.min_date != undefined;
+        });
+        // remove date_min in data
+        data.pop();
+        document.querySelector("#jsperiode").min = min_date[0].min_date;
+      }
+      catch(uselesserr) { }
     },
     postData: {
       csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
