@@ -258,7 +258,7 @@ def render_playlist(
         },
     )
     in_favorites_playlist = playlist_url == request.path
-    if playlist.visibility == "protected" and playlist.owner != request.user:
+    if playlist.visibility == "protected" and playlist.owner != request.user and request.user not in playlist.additional_owners.all():
         return toggle_render_playlist_user_has_right(
             request,
             playlist,
