@@ -379,8 +379,7 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
         new_playlist.additional_owners.clear()
         new_playlist.save()
         if request.POST.get("additional_owners"):
-            for o in request.POST.get("additional_owners"):
-                new_playlist.additional_owners.add(o)
+            new_playlist.additional_owners.set(request.POST.getlist("additional_owners"))
             new_playlist.save()
         if request.GET.get("next"):
             video_slug = request.GET.get("next").split("/")[2]
