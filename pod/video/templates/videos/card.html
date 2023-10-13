@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load playlist_buttons %}
+{% load playlist_buttons video_tags %}
 
 {% spaceless %}
 {% if playlist %}
@@ -61,6 +61,14 @@
     >
       {{video.get_thumbnail_card|safe}}
     </a>
+    {% if request.user.is_authenticated %}
+    {% get_PercentMarkerForUser video request.user as percentView %}
+    {% if percentView != 0 %}
+    <div class="progress">
+      <div class="progress-bar" role="progressbar" style="width: {{percentView}}%" aria-valuenow="{{percentView}}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    {% endif %}
+    {% endif %}
   </div>
   <div class="card-body px-3 py-2">
     {# TODO: replace test below by "if video.is_editable" ? #}
