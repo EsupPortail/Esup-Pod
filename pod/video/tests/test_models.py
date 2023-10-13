@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
+from django.db import transaction
 
 from ..models import Channel
 from ..models import Theme
@@ -17,6 +19,7 @@ from ..models import ViewCount
 from ..models import get_storage_path_video
 from ..models import VIDEOS_DIR
 from ..models import Notes, AdvancedNotes
+from ..models import VideoUserViewingMarkerTime
 
 from pod.video_encode_transcript.models import VideoRendition
 from pod.video_encode_transcript.models import EncodingVideo
@@ -861,3 +864,76 @@ class NotesTestCase(TestCase):
         self.assertEqual(AdvancedNotes.objects.all().count(), 0)
 
         print("   --->  test_delete_object of NotesTestCase: OK!")
+
+
+class VideoUserViewingMarkerTimeTestCase(TestCase):
+    fixtures = [
+        "initial_data.json",
+    ]
+
+    def setUp(self):
+        user = User.objects.create(username="pod", password="pod1234pod")
+        Video.objects.create(
+            title="Video1",
+            owner=user,
+            video="test.mp4",
+            type=Type.objects.get(id=1),
+        )
+        print(" --->  SetUp of VideoUserViewingMarkerTimeTestCase: OK!")
+
+    def test_create_VideoUserViewingMarkerTime_default(self):
+        user = User.objects.get(username="pod")
+        video = Video.objects.get(id=1)
+        markerTime = VideoUserViewingMarkerTime.objects.create(video=video, user=user)
+        self.assertTrue(isinstance(markerTime, VideoUserViewingMarkerTime))
+        self.assertEqual(VideoUserViewingMarkerTime.objects.all().count(), 1)
+        self.assertEqual(markerTime.markerTime, 0)
+        print("ok")
+
+    def test_create_VideoUserViewingMarkerTime_with_attribut(self):
+        user = User.objects.get(username="pod")
+        video = Video.objects.get(id=1)
+        markerTime = VideoUserViewingMarkerTime(video=video, user=user, markerTime=60)
+        markerTime.save()
+        self.assertTrue(isinstance(markerTime, VideoUserViewingMarkerTime))
+        self.assertEqual(VideoUserViewingMarkerTime.objects.all().count(), 1)
+        self.assertEqual(markerTime.user, user)
+        self.assertEqual(markerTime.video, video)
+        self.assertEqual(markerTime.markerTime, 60)
+        print("ok")
+
+    def test_create_VideoUserViewingMarkerTime_already_exist(self):
+        user = User.objects.get(username="pod")
+        video = Video.objects.get(id=1)
+        VideoUserViewingMarkerTime.objects.create(video=video, user=user)
+        newMarkerTime = VideoUserViewingMarkerTime(video=video, user=user)
+        try:
+            with transaction.atomic():
+                newMarkerTime.save()
+            self.fail('Duplicate marker allowed.')
+        except IntegrityError:
+            pass
+        self.assertEqual(VideoUserViewingMarkerTime.objects.all().count(), 1)
+        print("ok")
+
+    def test_modify_VideoUserViewingMarkerTime(self):
+        user = User.objects.get(username="pod")
+        video = Video.objects.get(id=1)
+        markerTime = VideoUserViewingMarkerTime(video=video, user=user, markerTime=60)
+        markerTime.save()
+        self.assertEqual(markerTime.markerTime, 60)
+        markerTime.markerTime = 120
+        markerTime.save()
+        markerTime.refresh_from_db()
+        self.assertEqual(markerTime.markerTime, 120)
+        print('ok')
+
+    def test_delete_VideoUserViewingMarkerTime(self):
+        user = User.objects.get(username="pod")
+        video = Video.objects.get(id=1)
+        markerTime = VideoUserViewingMarkerTime(video=video, user=user, markerTime=60)
+        markerTime.save()
+        self.assertEqual(VideoUserViewingMarkerTime.objects.all().count(), 1)
+        markerTime.delete()
+        self.assertEqual(VideoUserViewingMarkerTime.objects.all().count(), 0)
+        print('ok')

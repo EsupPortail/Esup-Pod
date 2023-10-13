@@ -1474,7 +1474,7 @@ class ViewCount(models.Model):
         verbose_name_plural = _("View counts")
 
 
-class UserTime(models.Model):
+class VideoUserViewingMarkerTime(models.Model):
     """Record the time of vidéo played by a user."""
     video = models.ForeignKey(
         Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
@@ -1482,7 +1482,7 @@ class UserTime(models.Model):
     user = models.ForeignKey(
         User, verbose_name=_("User"), editable=False, on_delete=models.CASCADE
     )
-    time = models.IntegerField(_("Current time"), default=0, editable=False)
+    markerTime = models.IntegerField(_("Marker time"), default=0, editable=False)
 
     @property
     def sites(self):
@@ -1491,8 +1491,8 @@ class UserTime(models.Model):
 
     class Meta:
         unique_together = ("video", "user")
-        verbose_name = _("Video user time")
-        verbose_name_plural = _("Video users time")
+        verbose_name = _("User viewing time marker of video")
+        verbose_name_plural = _("Users viewing time marker of video")
 
 
 class VideoVersion(models.Model):
