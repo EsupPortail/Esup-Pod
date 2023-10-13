@@ -139,7 +139,11 @@
       responsive: true,
       playbackRates: {{video_playbackrates}},
       html5: {
-          hlsjsConfig: VideoHlsjsConfig
+        hls: {
+          debug: true,
+          bufferLength: 500000,
+        }
+        hlsjsConfig: VideoHlsjsConfig
       },
       controlBar: {
         {% if event is None %}
