@@ -84,12 +84,12 @@ document.addEventListener("submit", (e) => {
   if (!oldModeSelected) caption_content.value = generateWEBVTT();
 
   if(caption_content.value === "false") {
-    showalert(gettext("There are errors in your captions. Please review."), "alert-warning");
+    showalert(gettext("There are errors in your captions/subtitles. Please review."), "alert-warning");
     return;
   }
 
   if (caption_content.value.trim() === "") {
-    showalert(gettext("There is no captions to save."), "alert-danger");
+    showalert(gettext("There is no caption/subtitle to save."), "alert-danger");
     return;
   }
   if (typeof file_loaded != "undefined" && file_loaded) {
@@ -130,7 +130,6 @@ document.addEventListener("click", (evt) => {
 
 /**
  * Send the captions form to be saved
- * @return void
  */
 const send_form_save_captions = function () {
   let fileName = document.getElementById("captionFilename").value;
@@ -538,7 +537,7 @@ function generateWEBVTT() {
 
 /**
  * Check validity of every form and fires an invalid event on invalid elements
- * @return {bool} True if everything's fine
+ * @return {bool} true if everything's fine
  */
 function validateForms(forms) {
   let validity = true;
@@ -1057,7 +1056,7 @@ let editorShortcuts = {
 editorShortcuts.init();
 
 /**
- * [addCaptionListRow description]
+ * Add caption list row
  * @param {[type]} ci         [description]
  * @param {[type]} newCaption [description]
  */
@@ -1084,7 +1083,7 @@ function addCaptionListRow(ci, newCaption) {
 }
 
 /**
- * [addCaption description]
+ * Add caption
  * @param {[type]} captionStart [description]
  * @param {[type]} captionEnd   [description]
  * @param {[type]} captionText  [description]
@@ -1163,7 +1162,7 @@ function formatTime(seconds) {
 }
 
 /**
- * [findCaptionIndex description]
+ * Find caption index
  * @param {[type]} seconds [description]
  */
 function findCaptionIndex(seconds) {

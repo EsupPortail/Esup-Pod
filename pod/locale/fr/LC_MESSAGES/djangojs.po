@@ -96,13 +96,13 @@ msgid "Unrecognized caption file format."
 msgstr "Format de fichier de traduction non reconnu."
 
 #: pod/completion/static/js/caption_maker.js
-msgid "There are errors in your captions. Please review."
+msgid "There are errors in your captions/subtitles. Please review."
 msgstr ""
 "Il y a des erreurs dans vos légendes/sous-titres. Veuillez corriger svp."
 
 #: pod/completion/static/js/caption_maker.js
-msgid "There is no captions to save."
-msgstr "Il n’y a aucun sous-titre à sauvegarder."
+msgid "There is no caption/subtitle to save."
+msgstr "Il n’y a aucun sous-titre/légende à sauvegarder."
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Not a valid time track file."

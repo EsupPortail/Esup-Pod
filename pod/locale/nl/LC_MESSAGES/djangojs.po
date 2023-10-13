@@ -88,11 +88,11 @@ msgid "Unrecognized caption file format."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
-msgid "There are errors in your captions. Please review."
+msgid "There are errors in your captions/subtitles. Please review."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
-msgid "There is no captions to save."
+msgid "There is no caption/subtitle to save."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
