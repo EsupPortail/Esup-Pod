@@ -1122,32 +1122,32 @@ class video_markerTestView(TestCase):
         )
         print(" --->  SetUp of video_markerTestView: OK!")
 
-    def test_video_countTestView_get_request(self):
+    def test_video_markerTestView_get_request(self):
         # anonyme
         self.client = Client()
         video = Video.objects.get(title="Video1")
-        url = reverse("video:video_marker", kwargs={"id": video.id, "time":1})
+        url = reverse("video:video_marker", kwargs={"id": video.id, "time": 1})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         # login and video does not exist
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        url = reverse("video:video_marker", kwargs={"id": 2, "time":2})
+        url = reverse("video:video_marker", kwargs={"id": 2, "time": 2})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
         # login and video exist
-        url = reverse("video:video_marker", kwargs={"id": video.id, "time":3})
+        url = reverse("video:video_marker", kwargs={"id": video.id, "time": 3})
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"ok" in response.content)
         self.assertEqual(video.get_MarkerForUser(self.user), 3)
         # update time
-        url = reverse("video:video_marker", kwargs={"id": video.id, "time":4})
+        url = reverse("video:video_marker", kwargs={"id": video.id, "time": 4})
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"ok" in response.content)
         self.assertEqual(video.get_MarkerForUser(self.user), 4)
-        print("ok")
+        print(" --->  test video markerTestView get request: OK!")
 
 
 class VideoTestUpdateOwner(TransactionTestCase):
