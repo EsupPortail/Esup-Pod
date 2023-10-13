@@ -1018,6 +1018,19 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "EVENT_CHECK_MAX_ATTEMPT": {
+                            "default_value": 10,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Nombre de tentatives maximum pour vérifier la présence / taille d'un fichier sur le filesystem"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4"
+                        },
                         "EVENT_GROUP_ADMIN": {
                             "default_value": "event admin",
                             "description": {
@@ -1714,6 +1727,28 @@
                         "fr": "Configuration application podfile"
                     }
                 },
+                "progressive_web_app": {
+                    "description": {},
+                    "settings": {
+                        "WEBPUSH_SETTINGS": {
+                            "default_value": "```python\n{\n    'VAPID_PUBLIC_KEY': '',\n    'VAPID_PRIVATE_KEY': '',\n    'VAPID_ADMIN_EMAIL': 'contact@esup-portail.org'\n}\n```",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush). Elles peuvent être générées avec [https://web-push-codelab.glitch.me/]()"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": ""
+                        }
+                    },
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application progressive_web_app"
+                    }
+                },
                 "recorder": {
                     "description": {},
                     "settings": {
@@ -2001,6 +2036,21 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "CACHE_VIDEO_DEFAULT_TIMEOUT": {
+                            "default_value": 600,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Time in second to cache video data"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Temps en seconde de conservation des données de l'application video"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.0"
                         },
                         "CHANNEL_FORM_FIELDS_HELP_TEXT": {
                             "default_value": "",
@@ -4372,6 +4422,19 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "HIDE_CURSUS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Si True, permet de ne pas afficher les cursus dans la colonne de droite"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4.0"
+                        },
                         "HIDE_DISCIPLINES": {
                             "default_value": false,
                             "description": {
@@ -4846,7 +4909,7 @@
                 "fr": [
                     "",
                     "La plateforme Esup-Pod se base sur le framework Django écrit en Python.",
-                    "Elle supporte les versions 3.7, 3.8 et 3.9 de Python.",
+                    "Elle est compatible avec les versions 3.8, 3.9 et 3.10 de Python.",
                     "",
                     "**Django Version : 3.2 LTS**",
                     "",
@@ -4953,6 +5016,35 @@
                     },
                     "pod_version_end": "",
                     "pod_version_init": "3.1"
+                },
+                "pwa": {
+                    "default_value": "1.1.0",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "Mise en place du mode PWA grâce à l'application Django-pwa",
+                            "Voici la configuration par défaut pour Pod, vous pouvez surcharger chaque variable dans votre fichier de configuration.",
+                            "PWA_APP_NAME = \"Pod\"",
+                            "PWA_APP_DESCRIPTION = _(",
+                            "    \"Pod is aimed at users of our institutions, by allowing the publication of \"",
+                            "    \"videos in the fields of research (promotion of platforms, etc.), training \"",
+                            "    \"(tutorials, distance training, student reports, etc.), institutional life (video \"",
+                            "    \"of events), offering several days of content.\"",
+                            ")",
+                            "PWA_APP_THEME_COLOR = \"#0A0302\"",
+                            "PWA_APP_BACKGROUND_COLOR = \"#ffffff\"",
+                            "PWA_APP_DISPLAY = \"standalone\"",
+                            "PWA_APP_SCOPE = \"/\"",
+                            "PWA_APP_ORIENTATION = \"any\"",
+                            "PWA_APP_START_URL = \"/\"",
+                            "PWA_APP_STATUS_BAR_COLOR = \"default\"",
+                            "PWA_APP_DIR = \"ltr\"",
+                            "PWA_APP_LANG = \"fr-FR\"",
+                            "Pour en savoir plus : [https://github.com/silviolleite/django-pwa]()"
+                        ]
+                    },
+                    "pod_version_end": "",
+                    "pod_version_init": "3.4"
                 },
                 "rest_framework": {
                     "default_value": "3.14.0",

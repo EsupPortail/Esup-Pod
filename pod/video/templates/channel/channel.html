@@ -58,21 +58,34 @@
             <span class="pod-float-end">
                 {% if USE_STATS_VIEW %}
                     {% if theme %}
-                        <a href="{% url 'video:video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+                        <a href="{% url 'video:video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                            {% trans 'Statistics views' %}
+                        </a>
                     {% else %}
-                        <a href="{% url 'video:video_stats_view' slug=channel.slug %}" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-graph-up">&nbsp;</i>{% trans 'Statistics views' %}</a>
+                        <a href="{% url 'video:video_stats_view' slug=channel.slug %}" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                            <i class="bi bi-graph-up" aria-hidden="true">&nbsp;</i>
+                            {% trans 'Statistics views' %}
+                        </a>
                     {% endif %}
                 {% endif %}
                 {% if theme %}
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-rss"></i>&nbsp;Video</a>
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-rss"></i>&nbsp;Audio</a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'Subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Video" %}
+                    </a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'Subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Audio" %}
+                    </a>
                 {% else %}
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-rss"></i>&nbsp;Video</a>
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug %}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm"><i class="bi bi-rss"></i>&nbsp;Audio</a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug %}" title="{% trans 'Subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Video" %}
+                    </a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug %}" title="{% trans 'Subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Audio" %}
+                    </a>
                 {% endif %}
                 {% if request.user in channel.owners.all %}
                     <a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn-link">
-                        <i class="bi bi-pencil-square me-1"></i>&nbsp;{% trans "Edit the channel"%}</a>
+                        <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a>
                 {% endif %}
             </span>
         </h1>
@@ -147,21 +160,29 @@
             <span class="pod-float-end">
                 {% if theme %}
                     {% if USE_STATS_VIEW %}
-                        <a href="{% url 'video:video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+                        <a href="{% url 'video:video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">{% trans 'Statistics views' %}</a>
                     {% endif %}
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss"></i>&nbsp;Video</a>
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss"></i>&nbsp;Audio</a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'Subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Video" %}
+                    </a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'Subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Audio" %}
+                    </a>
                 {% else %}
                     {% if USE_STATS_VIEW %}
-                        <a href="{% url 'video:video_stats_view' slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+                        <a href="{% url 'video:video_stats_view' slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">{% trans 'Statistics views' %}</a>
                     {% endif %}
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss"></i>&nbsp;Video</a>
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-rss"></i>&nbsp;Audio</a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug %}" title="{% trans 'Subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Video" %}
+                    </a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug%}" title="{% trans 'Subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Audio" %}
+                    </a>
                 {% endif %}
             </span>
             {% if request.user in channel.owners.all %}
                 <span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm me-1">
-                    <i class="bi bi-pencil-square"></i>&nbsp;{% trans "Edit the channel"%}</a>
+                    <i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a>
                 </span>
             {% endif %}
         {% if theme %}

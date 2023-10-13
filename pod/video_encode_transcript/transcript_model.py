@@ -85,6 +85,8 @@ def get_model(lang):
 
 def start_transcripting(mp3filepath, duration, lang):
     """
+    Start direct transcription.
+
     Normalize the audio if set, get the model according to the lang and start transcript.
     """
     if TRANSCRIPTION_NORMALIZE:
@@ -161,7 +163,7 @@ def normalize_mp3(mp3filepath):
 
 
 # #################################
-# TRANSCRIPT VIDEO : MAIN FUNCTION
+# TRANSCRIPT VIDEO: MAIN FUNCTION
 # #################################
 
 
@@ -228,7 +230,7 @@ def words_to_vtt(
                 ((word[start_key]) - start_caption) + word_duration
             )
         all_text += word["word"] + " "
-        # word : <class 'dict'> {'word': 'bonjour', 'start ':
+        # word: <class 'dict'> {'word': 'bonjour', 'start ':
         # 0.58, 'duration': 7.34}
         text_caption.append(word["word"])
         if not (
@@ -371,7 +373,7 @@ def main_stt_transcript(norm_mp3_file, duration, transript_model):
         metadata = transript_model.sttWithMetadata(audio)
 
         for transcript in metadata.transcripts:
-            msg += "\nConfidence : %s" % transcript.confidence
+            msg += "\nConfidence: %s" % transcript.confidence
             words = words_from_candidate_transcript(transcript)
             start_caption = start_trim + words[0]["start_time"]
             text_caption = []
@@ -415,7 +417,7 @@ def format_time_caption(time_caption):
 
 
 def get_text_caption(text_caption, last_word_added):
-    """get the text for a caption."""
+    """Get the text for a caption."""
     try:
         first_index = text_caption.index(last_word_added)
         return text_caption[first_index + 1 :]

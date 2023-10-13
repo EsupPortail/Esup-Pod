@@ -1,7 +1,9 @@
+"""Esup-Pod video encoding and transcripting utilities."""
 import os
 import bleach
 import time
 
+from django.urls import reverse
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import mail_admins
@@ -9,6 +11,7 @@ from django.core.mail import send_mail
 from django.core.mail import mail_managers
 from django.core.mail import EmailMultiAlternatives
 from pod.video.models import Video
+from pod.progressive_web_app.utils import notify_user
 from .models import EncodingStep
 from .models import EncodingLog
 
@@ -126,6 +129,12 @@ def send_email_encoding(video_to_encode):
     send_notification_email(video_to_encode, subject_prefix)
 
 
+def send_notification_encoding(video_to_encode):
+    """Send push notification on encoding completion."""
+    subject_prefix = _("Encoding")
+    send_notification(video_to_encode, subject_prefix)
+
+
 def send_email(msg, video_id):
     """Send email notification when video encoding failed."""
     send_email_item(msg, "Video", video_id)
@@ -133,7 +142,7 @@ def send_email(msg, video_id):
 
 def send_email_transcript(video_to_encode):
     """Send email on transcripting completion."""
-    subject_prefix = _("Transcripting")
+    subject_prefix = _("The transcripting")
     send_notification_email(video_to_encode, subject_prefix)
 
 
@@ -155,17 +164,19 @@ def send_notification_email(video_to_encode, subject_prefix):
         % (
             _("Hello,"),
             _(
-                "The %(content_type)s “%(content_title)s” has been %(action)s"
+                "%(content_type)s “%(content_title)s” has been %(action)s"
                 + ", and is now available on %(site_title)s."
             )
             % {
                 "content_type": (
-                    _("content") if subject_prefix == _("Transcripting") else _("video")
+                    _("The content")
+                    if subject_prefix == _("The transcripting")
+                    else _("The video")
                 ),
                 "content_title": "<b>%s</b>" % video_to_encode.title,
                 "action": (
-                    _("automatically transcript")
-                    if (subject_prefix == _("Transcripting"))
+                    _("automatically transcripted")
+                    if (subject_prefix == _("The transcripting"))
                     else _("encoded to Web formats")
                 ),
                 "site_title": __TITLE_SITE__,
@@ -224,6 +235,37 @@ def send_notification_email(video_to_encode, subject_prefix):
                 fail_silently=False,
                 html_message=html_message,
             )
+
+
+def send_notification(video_to_encode, subject_prefix):
+    """Send push notification on video encoding or transcripting completion."""
+    subject = "[%s] %s" % (
+        __TITLE_SITE__,
+        _("%(subject)s #%(content_id)s completed")
+        % {"subject": subject_prefix, "content_id": video_to_encode.id},
+    )
+    message = _(
+        "%(content_type)s “%(content_title)s” has been %(action)s"
+        + ", and is now available on %(site_title)s."
+    ) % {
+        "content_type": (
+            _("content") if subject_prefix == _("Transcripting") else _("video")
+        ),
+        "content_title": video_to_encode.title,
+        "action": (
+            _("automatically transcripted")
+            if (subject_prefix == _("Transcripting"))
+            else _("encoded to Web formats")
+        ),
+        "site_title": __TITLE_SITE__,
+    }
+
+    notify_user(
+        video_to_encode.owner,
+        subject,
+        message,
+        url=reverse("video:video", args=(video_to_encode.slug,)),
+    )
 
 
 def time_to_seconds(a_time):

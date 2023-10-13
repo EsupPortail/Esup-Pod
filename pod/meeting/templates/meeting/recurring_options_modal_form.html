@@ -61,21 +61,31 @@
   let recurrence = document.getElementById("id_recurrence");
   // recurrence.onchange = function() { console.log("Changed!" + recurrence.value);
   recurrence.addEventListener('change', function(ev) {
-    console.log("Changed!" + recurrence.value);
+    // console.log("Changed!" + recurrence.value);
     change_weekdays_display()
   })
 
   change_weekdays_display = function() {
     if (recurrence.value == "weekly") {
       document.getElementById("weekdays_recurring").style.display = 'block';
+      if(day_of_start_date != -1) {
+        let day = document.getElementById("id_days_of_week_" + day_of_start_date);
+        if(day) day.checked = true;
+      }
     } else {
       document.getElementById("weekdays_recurring").style.display = 'none';
     }
     if (recurrence.value == "monthly") {
       document.getElementById("monthly_recurring").style.display = 'block';
+      /* In case of monthly recurring, we unchecked all days */
+      for(let i = 0; i < 7; i++) {
+        let day = document.getElementById("id_days_of_week_" + i);
+        if(day) day.checked = false;
+      }
     } else {
       document.getElementById("monthly_recurring").style.display = 'none';
     }
   }
-  change_weekdays_display()
+document.addEventListener("load", change_weekdays_display);
+
 </script>

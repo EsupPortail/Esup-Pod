@@ -34,6 +34,7 @@ from django.db.models.signals import post_save
 from django.db.models.signals import pre_save
 from pod.main.models import AdditionalChannelTab
 import importlib
+from django.contrib.auth.hashers import make_password
 
 from sorl.thumbnail import get_thumbnail
 from pod.authentication.models import AccessGroup
@@ -858,6 +859,11 @@ class Video(models.Model):
         verbose_name = _("video")
         verbose_name_plural = _("videos")
 
+    def set_password(self):
+        """Encrypt the password if video is protected. An encrypted password cannot be re-encrypted."""
+        if self.password and not self.password.startswith(("pbkdf2_sha256$")):
+            self.password = make_password(self.password, hasher="pbkdf2_sha256")
+
     def save(self, *args, **kwargs):
         """Store a video object in db."""
         newid = -1
@@ -874,8 +880,8 @@ class Video(models.Model):
                     newid = 1
             # fix date_delete depends of owner affiliation
             ACCOMMODATION_YEARS = getattr(settings, "ACCOMMODATION_YEARS", {})
-            if ACCOMMODATION_YEARS.get(self.owner.owner.affiliation):
-                new_year = ACCOMMODATION_YEARS[self.owner.owner.affiliation]
+            if len(ACCOMMODATION_YEARS) and len(self.owner.owner.affiliation):
+                new_year = self.get_date_delete_for_affiliation(ACCOMMODATION_YEARS)
                 self.date_delete = date(
                     date.today().year + new_year,
                     date.today().month,
@@ -887,6 +893,7 @@ class Video(models.Model):
         newid = "%04d" % newid
         self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
+        # self.set_password()
         super(Video, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -940,6 +947,31 @@ class Video(models.Model):
             return ""
 
     get_encoding_step.fget.short_description = _("Encoding step")
+
+    def get_date_delete_for_affiliation(self, accommodation_years):
+        """
+        Get the calculated date of deletion according to multi-values field affiliation.
+
+        If the affiliation field is an array (the user have several affiliations)
+        and their deletion deadlines exist, then the largest value (the longest date)
+        will be applied to the video.
+        """
+        if self.affiliation_is_array(self.owner.owner.affiliation):
+            years = (
+                accommodation_years.get(key)
+                for key in self.owner.owner.affiliation
+                if key in accommodation_years
+            )
+            new_year = max(years)
+        else:
+            new_year = accommodation_years.get(self.owner.owner.affiliation)
+        if new_year is None:
+            new_year = DEFAULT_YEAR_DATE_DELETE
+        return new_year
+
+    def affiliation_is_array(self, affiliation):
+        """Check if the user affiliation is an array of strings or a simple string"""
+        return True if affiliation.find("[") != -1 else False
 
     def get_player_height(self):
         """

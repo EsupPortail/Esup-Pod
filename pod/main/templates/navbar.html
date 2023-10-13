@@ -9,18 +9,23 @@
 
 <div class="container-fluid pod-container pod-navbar__container" id="nav-mainbar">
   <button class="pod-navbar__button-toggler navbar-toggler" type="button"
+    data-pod-tooltip="true" title="{% trans 'Toggle main menu' %}"
+    aria-label="Main menu"
     data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menu"
-    aria-controls="pod-navbar__menu" title="{% trans 'Toggle navigation' %}">
+    aria-controls="pod-navbar__menu">
     <i class="bi bi-list" aria-hidden="true"></i>
   </button>
-  <a class="navbar-brand pod-navbar__brand me-0 me-sm-1" href="/" title="{{ TITLE_SITE }} - {% trans 'Home' %}" {% if request.path == '/' %}aria-current="page"{% endif %}>
+  <a class="navbar-brand pod-navbar__brand me-0 me-sm-1" href="/" title="{{ TITLE_SITE }} - {% trans 'Home' %}" {% if request.path == '/' %}aria-current="page"{% endif %} data-bs-toggle="tooltip" data-bs-placement="bottom">
     <img src="{% static LOGO_SITE %}" height="25" alt="" loading="lazy"><strong>{{ TITLE_SITE }}</strong>
   </a>
   <!-- off canvas -->
   <div class="offcanvas offcanvas-start pod-offcanvas" tabindex="-1" id="pod-navbar__menu" aria-labelledby="pod-navbar__menuLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="pod-navbar__menuLabel">Menu</h5>
-      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="{% trans 'Close' %}"></button>
+      <h5 class="offcanvas-title" id="pod-navbar__menuLabel">{% trans "Main menu" %}</h5>
+      <button type="button" class="btn-close text-reset"
+        data-bs-dismiss="offcanvas" data-pod-tooltip="true"
+        aria-label="{% trans 'Close' %}"
+        title="{% trans 'Close main menu' %}"></button>
     </div>
     <div class="offcanvas-body">
       <ul class="nav flex-column" id="tab-list">
@@ -65,7 +70,7 @@
     </label>
     <div class="input-group me-sm-2 pod-navbar-search">
       <input class="form-control form-control-sm hide-search-input" id="s" placeholder="{% trans 'Search a media' %}" type="search" name="q">
-      <button id="search-button" type="submit" class="btn btn-primary" title="{% trans 'Start media search on' %} {{ TITLE_SITE }}">
+      <button id="search-button" type="submit" class="btn btn-primary" title="{% trans 'Start media search on' %} {{ TITLE_SITE }}" data-bs-toggle="tooltip">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -106,14 +111,21 @@
     {% endif %}
     <!--  Add configuration panel buttons -->
     <li class="nav-item pod-params pod-navbar__nav-item" id="pod-param-buttons">
-      <button class="btn bi bi-gear pod-params-button px-1" type="button"
-        id="pod-param-buttons__button" title="{% trans 'Toggle configuration panel'%}"
-        data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menusettings">
+      <button class="btn btn-link pod-params-button px-1"
+        type="button" id="pod-param-buttons__button"
+        data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menusettings"
+        data-pod-tooltip="true" aria-label="{% trans 'Configuration panel'%}"
+        title="{% trans 'Toggle configuration panel'%}"
+        >
+        <i class="bi bi-gear" aria-hidden="true"></i>
       </button>
       <div class="offcanvas offcanvas-end pod-offcanvas" tabindex="-1" id="pod-navbar__menusettings" aria-labelledby="pod-navbar__menusettingsLabel">
         <div class="offcanvas-header">
           <h5 id="pod-navbar__menusettingsLabel">{% trans 'Configuration'%}</h5>
-          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="{% trans 'Close' %}"></button>
+          <button type="button" class="btn-close text-reset"
+            data-bs-dismiss="offcanvas" data-pod-tooltip="true"
+            aria-label="{% trans 'Close' %}"
+            title="{% trans 'Close configuration panel' %}"></button>
         </div>
         <div class="offcanvas-body">
           <ul class="list-unstyled" aria-labelledby="pod-param-buttons__button">
@@ -173,7 +185,8 @@
 
     {% if user.is_authenticated %}
       <li class="nav-item" id="nav-usermenu">
-        <button class="btn btn-sm nav-item {% if not request.user.owner.userpicture  %}initials btn btn-primary {% else %} nav-link{% endif %} ps-2 pe-2 d-flex justify-content-center align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menuuser" aria-controls="pod-navbar__menuuser" title="{% trans 'Toggle user menu' %}">
+        <button class="btn btn-sm nav-item {% if not request.user.owner.userpicture  %}initials btn btn-primary {% else %} nav-link{% endif %} ps-2 pe-2 d-flex justify-content-center align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menuuser" aria-controls="pod-navbar__menuuser" title="{% trans 'Toggle user menu' %}"
+         data-pod-tooltip="true">
           {% if request.user.owner.userpicture %}
             <img src="{{ user.owner.userpicture.file.url }}" class="userpicture rounded" alt="{{ user }}" loading="lazy">
           {% endif %}
@@ -187,7 +200,10 @@
         <div class="offcanvas offcanvas-end pod-offcanvas" tabindex="-1" id="pod-navbar__menuuser" aria-labelledby="pod-navbar__menuuserLabel">
           <div class="offcanvas-header">
             <h5 id="pod-navbar__menuuserLabel">{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.get_username }}{% endif %}</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="{% trans 'Close' %}"></button>
+            <button type="button" class="btn-close text-reset"
+              data-bs-dismiss="offcanvas" data-pod-tooltip="true"
+              aria-label="{% trans 'Close' %}"
+              title="{% trans 'Close user menu' %}"></button>
           </div>
           <div class="offcanvas-body d-flex flex-column justify-content-between">
             <nav class="nav flex-column">
@@ -207,10 +223,10 @@
                 </button></div>
               {% endif %}
               {% if video_buttons %}
-                <a class="nav-item nav-link" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true" aria-hidden="true"></i>{% trans 'My videos' %}</a>
+                <a class="nav-item nav-link" href="{% url 'video:my_videos' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My videos' %}</a>
               {% endif %}
               {% if USE_PLAYLIST %}
-                <a class="nav-item nav-link" href="{% url 'playlist:list' %}"><i class="bi bi-list-ul pod-nav-link-icon mx-1" aria-hidden="true" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
+                <a class="nav-item nav-link" href="{% url 'playlist:list' %}"><i class="bi bi-list-ul pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
               {% endif %}
               {% if USE_PLAYLIST and USE_FAVORITES %}
                 {% get_favorite_playlist user as playlist %}
@@ -218,6 +234,10 @@
               {% endif %}
               {% if USE_OPENCAST_STUDIO %}
                 <a class="nav-item nav-link" href="{% url 'recorder:studio_pod'%}"><i class="bi bi-camera-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Video Record' %}</a>
+              {% endif %}
+              {% show_meeting_button as meeting_button %}
+              {% if meeting_button %}
+                <a class="nav-item nav-link" href="{% url 'meeting:my_meetings'%}"><i class="bi bi-person-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My meetings' %}</a>
               {% endif %}
               {% show_import_video_button as import_video_button %}
               {% if import_video_button %}
@@ -243,6 +263,16 @@
                   <a class="nav-item nav-link" href="{% url 'bbb:live_list_meeting' %}"><i class="bi bi-lightning-charge pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Perform a BigBlueButton live' %}</a>
                 {% endif %}
               {% endif %}
+              <div class="nav-item">
+                <button class="nav-link" onclick="new bootstrap.Toast(document.querySelector('#notification-toast')).show()">
+                  <i class="bi bi-bell pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Notifications settings' %}
+                </button>
+              </div>
+              <div class="nav-item d-none" id="pwa-install-container">
+                <button class="nav-link" onclick="">
+                  <i class="bi bi-save pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Install' %}
+                </button>
+              </div>
               {% comment %}
                 <a class="nav-item nav-link" href="#">Gestion de mon compte</a> {% endcomment %}
               <hr class="dropdown-divider">
@@ -254,7 +284,7 @@
               <div id="stats-usermenu" class="nav flex-column">
                 {% get_number_video_user user as number_videos %}
                 {% get_number_playlist_user user as number_playlists %}
-                <h5 class="offcanvas-title text-center" id="pod-navbar__menuLabel">{% trans 'Your statistics' %}</h5>
+                <h5 class="offcanvas-title text-center">{% trans 'Your statistics' %}</h5>
                 <hr>
                 {% if number_videos > 0 %}
                   <p class="stats-usermenu">{% trans 'Number of videos:' %} <span id="stats-usermenu-video-count">{{ number_videos }}</span></p>
@@ -273,7 +303,7 @@
       {% if request.path != LOGIN_URL %}
         <li class="nav-item dropdown login me-2" id="nav-authentication">
           {% get_url_referrer request as url_referrer %}
-          <a class="btn btn-primary btn-sm ps-2 pe-2 d-flex" href="{% url 'authentication:authentication_login' %}{{ url_referrer }}" title="{% trans 'Open login page' %}">
+          <a class="btn btn-primary btn-sm ps-2 pe-2 d-flex" href="{% url 'authentication:authentication_login' %}{{ url_referrer }}" title="{% trans 'Open login page' %}" data-bs-toggle="tooltip">
             <i class="bi bi-person-circle" aria-hidden="true"></i> <span class="ms-1 d-none d-lg-block">{% trans 'Log in' %}</span>
           </a>
         </li>

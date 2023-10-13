@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "mozilla_django_oidc",
     "honeypot",
     "lti_provider",
+    "pwa",
+    "webpush",
     # Pod Applications
     "pod.main",
     "django.contrib.admin",  # put it here for template override
@@ -64,6 +66,7 @@ INSTALLED_APPS = [
     "pod.xapi",
     "pod.video_encode_transcript",
     "pod.import_video",
+    "pod.progressive_web_app",
     "pod.custom",
 ]
 
@@ -114,7 +117,7 @@ TEMPLATES = [
                 # Local contexts
                 "pod.main.context_processors.context_settings",
                 "pod.main.context_processors.context_footer",
-                "pod.video.context_processors.context_navbar",
+                "pod.video.context_processors.context_video_data",
                 "pod.video.context_processors.context_video_settings",
                 "pod.authentication.context_processors.context_authentication_settings",
                 "pod.recorder.context_processors.context_recorder_settings",
@@ -380,6 +383,7 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr", "en")
 # MIGRATION_MODULES = {
 #     'flatpages': 'pod.db_migrations'
 # }
+
 
 ##
 # Applications settings (and settings locale if any)

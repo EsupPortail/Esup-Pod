@@ -1,35 +1,40 @@
+/**
+ * Esup-Pod regroup_video_by_theme styles
+ */
+
 .scroll_wrapper {
-    width: 100%;
-    overflow: hidden;
-    display: flex;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
 }
 
 .list-children-theme {
-    margin-bottom: 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    padding: 0;
-    flex-grow: 1;
-    width: 100%;
-    min-width: 100%;
-    transition: transform .5s ease-in-out;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  padding: 0;
+  flex-grow: 1;
+  width: 100%;
+  min-width: 100%;
+  transition: transform 0.5s ease-in-out;
 }
 
 .list-children-theme.scroll-left {
-    transform: translateX(-100%);
+  transform: translateX(-100%);
 }
 
 .list-children-theme.scroll-right {
-    transform: translateX(100%);
+  transform: translateX(100%);
 }
 
+/*
 .paginator,
 .headband-description {
-    /*margin-bottom: 1em;*/
+  margin-bottom: 1em;
 }
-/*
+
 .channelheader {
     float: left;
     margin-right: 1em;
@@ -41,18 +46,19 @@
     max-width: 100%;
 }
 */
+
 li.child-theme {
-    padding: 0;
-    margin: .4em 0;
-    margin-right: .8em;
-    max-width: 200px;
-    min-width: 200px
+  padding: 0;
+  margin: 0.4em 0;
+  margin-right: 0.8em;
+  max-width: 200px;
+  min-width: 200px;
 }
 
 .child-theme a {
-    padding: .4em;
-    max-width: 100%;
-    width: 100%;
-    display: block;
-    color: inherit !important;
+  padding: 0.4em;
+  max-width: 100%;
+  width: 100%;
+  display: block;
+  color: inherit !important;
 }

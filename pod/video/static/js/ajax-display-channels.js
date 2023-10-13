@@ -101,15 +101,14 @@ function getThemesForSpecificChannel(channelSlug) {
  */
 function setModalTitle(modalContentElement, channelsCount) {
   const modalTitleElement = modalContentElement.querySelector(".modal-title");
-  if (channelsCount > 1) {
-    modalTitleElement.innerHTML = `<i class="bi bi-play-btn"></i>&nbsp; ${channelsCount} ${gettext(
-      "Channels",
-    )}`;
-  } else {
-    modalTitleElement.innerHTML = `<i class="bi bi-play-btn"></i>&nbsp; ${channelsCount} ${gettext(
-      "Channel",
-    )}`;
-  }
+  const channelIcon = '<i class="bi bi-play-btn" aria-hidden="true"></i>';
+  var channelString = ngettext(
+    `%(count)s channel`,
+    `%(count)s channels`,
+    channelsCount,
+  );
+  channelString = interpolate(channelString, { count: channelsCount }, true);
+  modalTitleElement.innerHTML = `${channelIcon}&nbsp;${channelString}`;
 }
 
 /**
@@ -178,15 +177,15 @@ function convertToModalListElement(channel) {
   if (haveThemes) {
     spanElement = setChannelThemeButtonForModal(noWrapSpanElement, channel);
   }
-  if (channel.videoCount > 1) {
-    noWrapSpanElement.innerHTML += `<span class="badge text-bg-primary rounded-pill">${
-      channel.videoCount
-    } ${gettext("videos")}</span>`;
-  } else {
-    noWrapSpanElement.innerHTML += `<span class="badge text-bg-primary rounded-pill">${
-      channel.videoCount
-    } ${gettext("video")}</span>`;
-  }
+
+  var videoString = ngettext(
+    `%(count)s video`,
+    `%(count)s videos`,
+    channel.videoCount,
+  );
+  videoString = interpolate(videoString, { count: channel.videoCount }, true);
+  noWrapSpanElement.innerHTML += `<span class="badge text-bg-primary rounded-pill">${videoString}</span>`;
+
   const childAndParentCouples = [
     [dFlexSpanElement, linkElement],
     [dFlexDivElement, dFlexSpanElement],

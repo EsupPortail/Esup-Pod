@@ -49,6 +49,17 @@ class AdminOwnerForm(forms.ModelForm):
         fields = []
 
 
+class SetNotificationForm(forms.ModelForm):
+    """Push notification preferences form."""
+
+    def __init__(self, *args, **kwargs):
+        super(SetNotificationForm, self).__init__(*args, **kwargs)
+
+    class Meta(object):
+        model = Owner
+        fields = ["accepts_notifications"]
+
+
 User = get_user_model()
 
 
