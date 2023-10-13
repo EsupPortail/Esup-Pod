@@ -95,6 +95,6 @@ XAPI_LRS_PWD = ""
 
 # Uniquement lors d'environnement conteneurisé
 MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
-MIGRATION_DIRECTORY = os.path.join(settings_base_dir, "pod", "db_migrations")
+MIGRATION_DIRECTORY = os.path.join(settings_base_dir, "db_migrations")
 if not os.path.exists(MIGRATION_DIRECTORY):
     os.mkdir(MIGRATION_DIRECTORY)
