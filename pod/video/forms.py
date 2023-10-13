@@ -829,7 +829,8 @@ class VideoForm(forms.ModelForm):
 
         if self.instance and self.instance.video:
             if self.instance.encoding_in_progress or not self.instance.encoded:
-                self.remove_field("owner")
+                if not self.is_superuser:
+                    self.remove_field("owner")
                 self.remove_field("video")  # .widget = forms.HiddenInput()
 
         # remove required=True for videofield if instance
