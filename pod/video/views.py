@@ -1929,14 +1929,18 @@ def video_count(request, id):
 
 
 @login_required(redirect_field_name="referrer")
-def video_marker(request, id, time=0):
+def video_marker(request, id, time):
     video = get_object_or_404(Video, id=id)
     try:
         markerTime = VideoUserViewingMarkerTime.objects.get(video=video, user=request.user)
     except VideoUserViewingMarkerTime.DoesNotExist:
         try:
             with transaction.atomic():
-                markerTime = VideoUserViewingMarkerTime.objects.create(video=video, user=request.user)
+                markerTime = VideoUserViewingMarkerTime.objects.create(
+                    video=video,
+                    user=request.user,
+                    markerTime=time
+                )
                 return HttpResponse("ok")
         except IntegrityError:
             markerTime = VideoUserViewingMarkerTime.objects.get(video=video, user=request.user)

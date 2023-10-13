@@ -1120,6 +1120,11 @@ class Video(models.Model):
             return 0
         return count_sum["count__sum"]
 
+    def get_MarkerForUser(self, user):
+        if self.videouserviewingmarkertime_set.filter(user=user).exists():
+            return self.videouserviewingmarkertime_set.get(user=user).markerTime
+        return 0
+
     def get_absolute_url(self):
         """Get the video absolute URL."""
         return reverse("video:video", args=[str(self.slug)])
@@ -1488,6 +1493,13 @@ class VideoUserViewingMarkerTime(models.Model):
     def sites(self):
         """Return the sites of the video."""
         return self.video.sites
+
+    def __str__(self):
+        return "Marker time for user %s and video %s: %s" % (
+            self.user,
+            self.video,
+            self.markerTime
+        )
 
     class Meta:
         unique_together = ("video", "user")
