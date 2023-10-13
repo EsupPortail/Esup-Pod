@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-12 13:35+0000\n"
+"POT-Creation-Date: 2023-10-13 13:36+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -88,6 +88,10 @@ msgid "Unrecognized caption file format."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
+msgid "There are errors in your captions. Please review."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
 msgid "There is no captions to save."
 msgstr ""
 
@@ -156,6 +160,10 @@ msgid "Pause to enter caption for segment from %s to %s."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
+msgid "A caption cannot has more than 80 characters."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
 msgid "Add a caption/subtitle after this one"
 msgstr ""
 
@@ -187,18 +195,6 @@ msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Time stamps"
-msgstr ""
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Error reading caption file. Code = "
-msgstr ""
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Exception thrown reading caption file. Code = "
-msgstr ""
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Your browser does not support FileReader."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
