@@ -51,6 +51,7 @@ from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
 from pod.video.models import get_transcription_choices
+from pod.video.models import VideoUserViewingMarkerTime
 
 from tagging.models import TaggedItem
 
@@ -1925,6 +1926,23 @@ def video_count(request, id):
         return HttpResponse("ok")
     messages.add_message(request, messages.ERROR, _("You cannot access to this view."))
     raise PermissionDenied
+
+
+@login_required(redirect_field_name="referrer")
+def video_marker(request, id, time=0):
+    video = get_object_or_404(Video, id=id)
+    try:
+        markerTime = VideoUserViewingMarkerTime.objects.get(video=video, user=request.user)
+    except VideoUserViewingMarkerTime.DoesNotExist:
+        try:
+            with transaction.atomic():
+                markerTime = VideoUserViewingMarkerTime.objects.create(video=video, user=request.user)
+                return HttpResponse("ok")
+        except IntegrityError:
+            markerTime = VideoUserViewingMarkerTime.objects.get(video=video, user=request.user)
+    markerTime.markerTime = time
+    markerTime.save(update_fields=["markerTime"])
+    return HttpResponse("ok")
 
 
 @csrf_protect
