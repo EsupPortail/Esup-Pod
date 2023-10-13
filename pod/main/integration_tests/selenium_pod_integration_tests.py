@@ -197,7 +197,7 @@ class SeleniumTestCase(object):
         without_scroll_elements = {"button", "submit", "textarea", "input"}
         if element_tag not in without_scroll_elements:
             driver.execute_script("arguments[0].scrollIntoView();", element)
-        driver.execute_script("arguments[0].click();", element)
+        element.click()
 
     def clickAndWait(self, driver, target, value="", url=""):
         """
@@ -586,6 +586,7 @@ class PodSeleniumTests(StaticLiveServerTestCase):
     def test_selenium_suites(self):
         """Run Selenium Test Suites from Side files in all installed apps."""
         self.selenium.get(f"{self.live_server_url}/")
+        self.run_initial_tests()
         self.run_all_tests()
 
     def initialize_data(self):
@@ -594,7 +595,7 @@ class PodSeleniumTests(StaticLiveServerTestCase):
         self.video = Video.objects.create(
             title="first-video",
             owner=self.user,
-            video="video.mp4",
+            video="pod/main/static/video_test/pod.mp4",
             is_draft=False,
             type=Type.objects.get(id=1),
         )
@@ -623,6 +624,15 @@ class PodSeleniumTests(StaticLiveServerTestCase):
                     f"{suite_name}-error_screen.png"
                 )
                 self.fail(f"Error in suite {suite_name}")
+
+    def run_initial_tests(self):
+        """Run initial Selenium test suites for cookies and login."""
+        initial_tests_dir = os.path.join(
+            os.path.dirname(__file__), "init_integration_tests")
+        cookies_test_path = os.path.join(initial_tests_dir, "cookies.side")
+        login_test_path = os.path.join(initial_tests_dir, "connexion.side")
+        self.run_single_suite(cookies_test_path)
+        self.run_single_suite(login_test_path)
 
     def run_all_tests(self):
         """
