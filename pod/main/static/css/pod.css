@@ -719,7 +719,7 @@ div.card a img {
     border-color 0.5s;
 }
 
-/** vignettes video **/
+/** video thumbnails **/
 @media (max-width: 575.98px) {
   .pod-flex-direction {
     flex-direction: column;
