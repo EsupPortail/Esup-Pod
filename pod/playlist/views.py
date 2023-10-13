@@ -415,7 +415,7 @@ def handle_get_request_for_add_or_edit_function(request, slug: str) -> None:
     playlist = get_object_or_404(Playlist, slug=slug) if slug else None
     if playlist:
         if (
-            request.user == playlist.owner or request.user.is_staff
+            request.user == playlist.owner or request.user.is_staff or request.user in playlist.additional_owners.all()
         ) and playlist.editable:
             form = PlaylistForm(instance=playlist)
             page_title = _("Edit the playlist") + f' "{playlist.name}"'
@@ -484,7 +484,7 @@ def favorites_save_reorganisation(request, slug: str):
 def start_playlist(request, slug, video=None):
     playlist = get_object_or_404(Playlist, slug=slug)
 
-    if playlist.visibility == "public" or playlist.owner == request.user:
+    if playlist.visibility == "public" or playlist.owner == request.user or request.user in playlist.additional_owners.all():
         return redirect(get_link_to_start_playlist(request, playlist, video))
     elif playlist.visibility == "protected":
         if request.method == "POST":
