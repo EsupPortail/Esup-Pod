@@ -108,8 +108,7 @@ $(() => {
         // remove date_min in data
         data.pop();
         document.getElementById("jsperiode").min = min_date[0].min_date;
-      }
-      catch(uselesserr) { }
+      } catch (uselesserr) {}
     },
     postData: {
       csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),

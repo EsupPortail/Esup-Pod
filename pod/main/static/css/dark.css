@@ -305,7 +305,10 @@ body.dark {
   color: #000;
 }
 
-[data-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__rendered{
+[data-theme="dark"]
+  .select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered {
   color: var(--pod-font-color);
 }
 
