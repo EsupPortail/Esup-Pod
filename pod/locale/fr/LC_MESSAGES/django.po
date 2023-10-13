@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-28 09:06+0000\n"
+"POT-Creation-Date: 2023-10-13 11:27+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ptitloup <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -194,6 +194,7 @@ msgstr "Changer votre image de profil"
 #: pod/podfile/templates/podfile/customfilewidget.html
 #: pod/podfile/templates/podfile/home_content.html
 #: pod/podfile/templates/podfile/userfolder.html
+#: pod/progressive_web_app/templates/notification_toast.html
 #: pod/recorder/templates/recorder/claim_record.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/video-iframe.html
@@ -814,7 +815,6 @@ msgstr "Le direct BigBlueButton a été publié et va bientôt démarrer."
 
 #: pod/chapter/apps.py pod/chapter/models.py
 #: pod/chapter/templates/video_chapter.html
-#: pod/video/templates/videos/video-element.html
 msgid "Chapters"
 msgstr "Chapitres"
 
@@ -2634,8 +2634,8 @@ msgid ""
 "This video was uploaded to Pod; its origin is %(type)s: <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
-"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
 #: pod/import_video/views.py pod/meeting/views.py
 msgid "Try changing the record type or address for this recording."
@@ -2646,8 +2646,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "Youtube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
@@ -6332,6 +6332,12 @@ msgid "Get application notifications"
 msgstr "Recevez les notifications de l’application"
 
 #: pod/progressive_web_app/templates/notification_toast.html
+#, fuzzy
+#| msgid "Close configuration panel"
+msgid "Close notification panel"
+msgstr "Fermer le panneau de configuration"
+
+#: pod/progressive_web_app/templates/notification_toast.html
 msgid ""
 "Get notified for specific events (when one of your video encoding is "
 "completed)."
@@ -6707,10 +6713,9 @@ msgid ""
 msgstr ""
 "<p>Bonjour,<br> un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur « %(recorder)s ».<br>Pour "
-"l’ajouter, cliquez sur le lien ci-dessous.</p><p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br><em>Si le lien n’est pas actif, il "
-"faut le copier-coller dans la barre d’adresse de votre navigateur.</em></"
-"p><p>Cordialement.</p>"
+"l’ajouter, cliquez sur le lien ci-dessous.</p><p><a href=\"%(link_url)s\">"
+"%(link_url)s</a><br><em>Si le lien n’est pas actif, il faut le copier-coller "
+"dans la barre d’adresse de votre navigateur.</em></p><p>Cordialement.</p>"
 
 #: pod/recorder/views.py
 msgid "New recording added."

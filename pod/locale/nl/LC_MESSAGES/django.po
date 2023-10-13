@@ -5,11 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2023-09-12 07:43+0000\n"
-=======
-"POT-Creation-Date: 2023-09-28 09:06+0000\n"
->>>>>>> develop
+"POT-Creation-Date: 2023-10-13 11:27+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -194,6 +190,7 @@ msgstr ""
 #: pod/podfile/templates/podfile/customfilewidget.html
 #: pod/podfile/templates/podfile/home_content.html
 #: pod/podfile/templates/podfile/userfolder.html
+#: pod/progressive_web_app/templates/notification_toast.html
 #: pod/recorder/templates/recorder/claim_record.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/video-iframe.html
@@ -768,7 +765,6 @@ msgstr ""
 
 #: pod/chapter/apps.py pod/chapter/models.py
 #: pod/chapter/templates/video_chapter.html
-#: pod/video/templates/videos/video-element.html
 msgid "Chapters"
 msgstr ""
 
@@ -2486,13 +2482,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-<<<<<<< HEAD
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube : <a href="
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a href="
 "\"%(url)s\" target=\"_blank\">%(url)s</a>"
-=======
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
->>>>>>> develop
 msgstr ""
 
 #: pod/import_video/views.py
@@ -5994,6 +5985,10 @@ msgstr ""
 
 #: pod/progressive_web_app/templates/notification_toast.html
 msgid "Get application notifications"
+msgstr ""
+
+#: pod/progressive_web_app/templates/notification_toast.html
+msgid "Close notification panel"
 msgstr ""
 
 #: pod/progressive_web_app/templates/notification_toast.html
