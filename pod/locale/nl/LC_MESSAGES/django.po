@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-28 09:06+0000\n"
+"POT-Creation-Date: 2023-10-13 13:44+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -190,6 +190,7 @@ msgstr ""
 #: pod/podfile/templates/podfile/customfilewidget.html
 #: pod/podfile/templates/podfile/home_content.html
 #: pod/podfile/templates/podfile/userfolder.html
+#: pod/progressive_web_app/templates/notification_toast.html
 #: pod/recorder/templates/recorder/claim_record.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/video-iframe.html
@@ -2481,8 +2482,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -5987,6 +5988,10 @@ msgid "Get application notifications"
 msgstr ""
 
 #: pod/progressive_web_app/templates/notification_toast.html
+msgid "Close notification panel"
+msgstr ""
+
+#: pod/progressive_web_app/templates/notification_toast.html
 msgid ""
 "Get notified for specific events (when one of your video encoding is "
 "completed)."
@@ -6257,8 +6262,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
