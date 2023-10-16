@@ -366,6 +366,11 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
         if playlist
         else PlaylistForm(request.POST)
     )
+    if playlist:
+        page_title = _("Edit the playlist") + f' "{playlist.name}"'
+    else:
+        page_title = _("Add a playlist")
+
     if form.is_valid():
         new_playlist = form.save(commit=False) if playlist is None else playlist
         new_playlist.site = get_current_site(request)
@@ -393,6 +398,13 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
         return HttpResponseRedirect(
             reverse("playlist:content", kwargs={"slug": new_playlist.slug})
         )
+    else:
+        print(form.errors)
+        messages.add_message(
+                request,
+                messages.ERROR,
+                _("The data sent to create the playlist are invalid."),
+            )
     return render(
         request,
         "playlist/add_or_edit.html",

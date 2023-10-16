@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-13 13:44+0000\n"
+"POT-Creation-Date: 2023-10-16 12:41+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -5453,6 +5453,10 @@ msgid "Update date"
 msgstr ""
 
 #: pod/playlist/models.py
+msgid "Password is required for a password-protected playlist."
+msgstr ""
+
+#: pod/playlist/models.py
 msgid "Addition date"
 msgstr ""
 
@@ -5767,6 +5771,10 @@ msgstr ""
 
 #: pod/playlist/views.py
 msgid "The playlist has been created and the video has been added in it."
+msgstr ""
+
+#: pod/playlist/views.py
+msgid "The data sent to create the playlist are invalid."
 msgstr ""
 
 #: pod/playlist/views.py
