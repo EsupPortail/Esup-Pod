@@ -83,8 +83,11 @@ document.addEventListener("submit", (e) => {
   let caption_content = document.getElementById("captionContent");
   if (!oldModeSelected) caption_content.value = generateWEBVTT();
 
-  if(caption_content.value === "false") {
-    showalert(gettext("There are errors in your captions/subtitles. Please review."), "alert-warning");
+  if (caption_content.value === "false") {
+    showalert(
+      gettext("There are errors in your captions/subtitles. Please review."),
+      "alert-warning",
+    );
     return;
   }
 
@@ -275,7 +278,7 @@ document
   .addEventListener("click", function () {
     if (!oldModeSelected) {
       let vtt = generateWEBVTT();
-      if(vtt) {
+      if (vtt) {
         document.getElementById("captionContent").value = vtt;
         document.getElementById("rawCaptionsEditor").style.display = "block";
         document.getElementById("newCaptionsEditor").style.display = "none";
@@ -512,8 +515,9 @@ document.getElementById("pauseButton").addEventListener("click", function () {
 function generateWEBVTT() {
   let vtt = "";
 
-  let captionBlocks = document
-    .querySelectorAll("#newCaptionsEditor > .newEditorBlock");
+  let captionBlocks = document.querySelectorAll(
+    "#newCaptionsEditor > .newEditorBlock",
+  );
 
   // If form has invalid fields, do not continue.
   if (!validateForms(captionBlocks)) {
@@ -547,7 +551,12 @@ function validateForms(forms) {
     // After Browser checks, we add some custom ones
     let captionInput = e.querySelector(".captionTextInput");
     if (captionInput.value.length > 80) {
-      captionInput.setCustomValidity(gettext("A caption cannot has more than 80 characters.") + "[" + captionInput.value.length + "]");
+      captionInput.setCustomValidity(
+        gettext("A caption cannot has more than 80 characters.") +
+          "[" +
+          captionInput.value.length +
+          "]",
+      );
     } else {
       captionInput.setCustomValidity("");
     }
@@ -1446,7 +1455,7 @@ const onPlayerReady = function (player, options) {
    * Seek video player to relative `time`.
    * @param  {[type]} time [description]
    */
-  seekVideo =  function (time) {
+  seekVideo = function (time) {
     player.userActive(true);
     player.currentTime(player.currentTime() + time);
   };

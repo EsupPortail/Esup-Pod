@@ -1495,7 +1495,6 @@ a.player-element.disabled {
   box-shadow: 0 0 0 0.25rem rgba(0 0 0 0.5);
 }
 
-
 /** Django 3 Admin pages
  *  (must be set after Bootsrap to reset Django defaults)
  **/
