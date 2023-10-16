@@ -44,10 +44,15 @@
   </div>
   <div class="card-body px-3 py-2">
 
-    <span class="small video-title">
-      <p>
-        {{video.title|capfirst|truncatechars:43}}
-      </p>
+    {% if request.user.is_authenticated %}
+      <footer class="card-footer card-footer-pod p-0 m-0">
+        {% include "videos/link_video.html" %}
+      </footer>
+    {% endif %}
+
+    <span title="{{video.title|capfirst}}" class="small video-title">
+        {{video.title|capfirst|truncatechars:25}}
+         {{ video.id }}
     </span>
   </div>
 </div>

@@ -664,15 +664,11 @@ div.card a img {
     padding: 1em;
     border-radius: var(--bs-border-radius);
 }
-
 #bulk_update_instructions{
     color: var(--pod-primary);
 }
-
-#mutliple_actions{
-    position: absolute;
-    top: 27px;
-    right:4em;
+.btn-dashboard-header{
+    height: fit-content;
 }
 .infinite-container-selectable .infinite-item{
     position: relative;
@@ -695,10 +691,10 @@ div.card a img {
     color: var(--primary);
     transition: all .3s;
 }
-.infinite-item:not(.selected):hover,
-.infinite-item .checked_overlay:hover .card_selected,
-.infinite-item:not(.selected):hover,
-.infinite-item .checked_overlay:hover .card_selected{
+.pod-infinite-container .infinite-item:not(.selected):hover,
+.pod-infinite-container .infinite-item .checked_overlay:hover .card_selected,
+.pod-infinite-container .infinite-item:not(.selected):hover,
+.pod-infinite-container .infinite-item .checked_overlay:hover .card_selected{
     -webkit-transform: scale(1.04);
         -ms-transform: scale(1.04);
             transform: scale(1.04);
@@ -712,35 +708,13 @@ div.card a img {
 .infinite-item.selected .checked_overlay{
     background-color: var(--dark-select-category-video-color) !important;
 }
-
 .infinite-item.selected .checked_overlay .card-selected i{
     font-size:3rem;
     color: var(--pod-link-color);
 }
-.infinite-container.infinite-container-selectable{
-    grid-template-columns: repeat(auto-fill,minmax(10rem,1fr));
-}
-
 .infinite-container.infinite-container-selectable .infinite-item{
     cursor: pointer;
 }
-
-.infinite-container.infinite-container-selectable .infinite-item .video-card .card-header{
-    background-color: var(--pod-link-color);
-}
-
-.infinite-container.infinite-container-selectable .infinite-item .video-card .card-header .text-muted{
-    color: var(--light) !important;
-}
-
-#collapseActionsMultiples{
-    padding: 20px;
-    margin-left: calc(var(--bs-gutter-x) * .5);
-    margin-right: calc(var(--bs-gutter-x) * .5);
-    background: var(--pod-background-neutre2-bloc);
-    width: calc(100% - var(--bs-gutter-x))
-}
-
 .infinite-item .checked_overlay {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -767,33 +741,36 @@ div.card a img {
     -o-transition: opacity .3s;
     transition: opacity .3s;
 }
-/*
-.infinite-item .card_selected{
-    display: block;
-    width: 25%;
-    font-size: 2em;
-    color: var(--pod-primary);
-    transition: all .3s;
-}*/
-#multiple_actions_container{
-    position: relative;
-    margin: 0 auto;
-    padding: 20px;
-    border-radius: 5px;
-    background: rgba(150,150,150,0.2);
+ul.infinite-container{
+  margin: 1rem 0;
 }
-
-#multiple_actions_instructions{
-    position: relative;
-    padding: 20px;
-    border-radius: 5px;
-    color: #055160;
-    background: #cff4fc;
-    border-color: #b6effb;
+.infinite-container>.list-group-item,
+.infinite-container>.list-group-item .row{
+  padding: 0;
 }
-
-#applyMultipleActionsBtn{
-    width: auto;
+.infinite-container>.list-group-item>.col{
+  padding: 0!important;
+}
+.btn-more-actions-video-row{
+  border: none;
+  background-color: inherit;
+}
+.infinite-container>.list-group-item .bi{
+  font-size: 1.2rem;
+  padding: 0.2rem;
+  opacity:0.2;
+}
+.video_as_row_thumbnail{
+  padding: 0;
+}
+.infinite-container>.list-group-item .bi.active,
+.infinite-container>.list-group-item .bi_content_type,
+.infinite-container>.list-group-item .bi_more{
+  color: var(--pod-link-color);
+  opacity:1;
+}
+.infinite-container>.list-group-item.selected{
+  border: 2px solid var(--pod-link-color);
 }
 
 /** video form **/
