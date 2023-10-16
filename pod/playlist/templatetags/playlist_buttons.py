@@ -28,7 +28,11 @@ def user_can_edit_or_remove(context: dict, playlist: Playlist) -> bool:
     request = context["request"]
     if not request.user.is_authenticated:
         return False
-    return playlist.editable and (request.user == playlist.owner or request.user.is_staff or request.user in get_additional_owners(playlist))
+    return playlist.editable and (
+        request.user == playlist.owner
+        or request.user.is_staff
+        or request.user in get_additional_owners(playlist)
+    )
 
 
 @register.simple_tag(takes_context=True, name="get_link_to_start_playlist")
