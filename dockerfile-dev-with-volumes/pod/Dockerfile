@@ -23,7 +23,8 @@ RUN apt-get clean && apt-get update \
     && apt-get install -y netcat \
                           ffmpeg \
                           ffmpegthumbnailer \
-                          imagemagick
+                          imagemagick \
+                          gettext
 
 WORKDIR /usr/src/app
 

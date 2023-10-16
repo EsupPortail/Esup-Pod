@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-12 13:34+0000\n"
+"POT-Creation-Date: 2023-10-16 13:36+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2482,8 +2482,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -5453,6 +5453,10 @@ msgid "Update date"
 msgstr ""
 
 #: pod/playlist/models.py
+msgid "Password is required for a password-protected playlist."
+msgstr ""
+
+#: pod/playlist/models.py
 msgid "Addition date"
 msgstr ""
 
@@ -5766,7 +5770,16 @@ msgid "The playlist has been deleted."
 msgstr ""
 
 #: pod/playlist/views.py
+#, python-format
+msgid "Edit the playlist “%(pname)s”"
+msgstr ""
+
+#: pod/playlist/views.py
 msgid "The playlist has been created and the video has been added in it."
+msgstr ""
+
+#: pod/playlist/views.py
+msgid "The data sent to create the playlist are invalid."
 msgstr ""
 
 #: pod/playlist/views.py
@@ -6262,8 +6275,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html

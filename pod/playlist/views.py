@@ -258,7 +258,7 @@ def render_playlist(
         },
     )
     in_favorites_playlist = playlist_url == request.path
-    if playlist.visibility == "protected" and playlist.owner != request.user:
+    if playlist.visibility == "protected" and playlist.owner != request.user and request.user not in get_additional_owners(playlist):
         return toggle_render_playlist_user_has_right(
             request,
             playlist,
@@ -366,6 +366,11 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
         if playlist
         else PlaylistForm(request.POST)
     )
+    if playlist:
+        page_title = _("Edit the playlist “%(pname)s”") % {"pname": playlist.name}
+    else:
+        page_title = _("Add a playlist")
+
     if form.is_valid():
         new_playlist = form.save(commit=False) if playlist is None else playlist
         new_playlist.site = get_current_site(request)
@@ -379,8 +384,7 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
         new_playlist.additional_owners.clear()
         new_playlist.save()
         if request.POST.get("additional_owners"):
-            for o in request.POST.get("additional_owners"):
-                new_playlist.additional_owners.add(o)
+            new_playlist.additional_owners.set(request.POST.getlist("additional_owners"))
             new_playlist.save()
         if request.GET.get("next"):
             video_slug = request.GET.get("next").split("/")[2]
@@ -393,6 +397,12 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
             return redirect(request.GET.get("next"))
         return HttpResponseRedirect(
             reverse("playlist:content", kwargs={"slug": new_playlist.slug})
+        )
+    else:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("The data sent to create the playlist are invalid."),
         )
     return render(
         request,
@@ -415,7 +425,7 @@ def handle_get_request_for_add_or_edit_function(request, slug: str) -> None:
     playlist = get_object_or_404(Playlist, slug=slug) if slug else None
     if playlist:
         if (
-            request.user == playlist.owner or request.user.is_staff
+            request.user == playlist.owner or request.user.is_staff or request.user in get_additional_owners(playlist)
         ) and playlist.editable:
             form = PlaylistForm(instance=playlist)
             page_title = _("Edit the playlist") + f' "{playlist.name}"'
@@ -484,7 +494,7 @@ def favorites_save_reorganisation(request, slug: str):
 def start_playlist(request, slug, video=None):
     playlist = get_object_or_404(Playlist, slug=slug)
 
-    if playlist.visibility == "public" or playlist.owner == request.user:
+    if playlist.visibility == "public" or playlist.owner == request.user or request.user in get_additional_owners(playlist):
         return redirect(get_link_to_start_playlist(request, playlist, video))
     elif playlist.visibility == "protected":
         if request.method == "POST":
