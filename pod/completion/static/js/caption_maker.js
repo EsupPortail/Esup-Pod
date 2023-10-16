@@ -6,12 +6,12 @@
 */
 
 // Global vars
-var file_loaded = false;
-var file_loaded_id = undefined;
+var fileLoaded = false;
+var fileLoadedId = undefined;
 var captionsArray = [];
 var autoPauseAtTime = -1;
 
-const caption_memories = {
+const captionMemories = {
   start_time: "00:00.000",
 };
 const file_prefix = window.location.pathname
@@ -92,7 +92,7 @@ document.addEventListener("submit", (e) => {
     showalert(gettext("There is no caption/subtitle to save."), "alert-danger");
     return;
   }
-  if (typeof file_loaded != "undefined" && file_loaded) {
+  if (typeof fileLoaded != "undefined" && fileLoaded) {
     let saveModalId = document.getElementById("saveCaptionsModal");
     let saveModal = bootstrap.Modal.getOrCreateInstance(saveModalId);
     saveModal.show();
@@ -116,7 +116,7 @@ document.addEventListener("click", (evt) => {
   if (evt.target.id == "modal-btn-override") {
     document
       .getElementById("form_save_captions")
-      .querySelector('input[name="file_id"]').value = file_loaded_id;
+      .querySelector('input[name="file_id"]').value = fileLoadedId;
     //form_save_captions.querySelector('input[name="enrich_ready"]').value = "";
     updateCaptionsArray(caption_content.value);
     send_form_save_captions();
@@ -515,8 +515,8 @@ function generateWEBVTT() {
   let captionBlocks = document
     .querySelectorAll("#newCaptionsEditor > .newEditorBlock");
 
-
-  if (!validateForms(captionBlocks)){
+  // If form has invalid fields, do not continue.
+  if (!validateForms(captionBlocks)) {
     return false;
   }
   captionBlocks.forEach((e) => {
@@ -1063,7 +1063,7 @@ editorShortcuts.init();
 function addCaptionListRow(ci, newCaption) {
   let vtt = document.getElementById("captionContent");
   let vtt_entry = document.getElementById("textCaptionEntry").value.trim();
-  let start = caption_memories.start_time;
+  let start = captionMemories.start_time;
 
   const pod = document.getElementById("podvideoplayer");
   const podPlayer = pod.player;
@@ -1079,7 +1079,7 @@ function addCaptionListRow(ci, newCaption) {
   }
 
   createCaptionBlock(newCaption);
-  caption_memories.start_time = end;
+  captionMemories.start_time = end;
 }
 
 /**
@@ -1270,8 +1270,8 @@ function processProxyVttResponse(obj) {
   else if (obj.status == "success") {
     //  delete any captions we've got
     captionsArray.length = 0;
-    file_loaded = true;
-    file_loaded_id = obj.id_file;
+    fileLoaded = true;
+    fileLoadedId = obj.id_file;
     current_folder = obj.id_folder;
     document.querySelectorAll(".newEditorBlock").forEach((elt) => {
       elt.remove();
