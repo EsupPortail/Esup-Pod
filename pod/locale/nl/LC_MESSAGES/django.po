@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-16 12:41+0000\n"
+"POT-Creation-Date: 2023-10-16 13:36+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -5767,6 +5767,11 @@ msgstr ""
 
 #: pod/playlist/views.py
 msgid "The playlist has been deleted."
+msgstr ""
+
+#: pod/playlist/views.py
+#, python-format
+msgid "Edit the playlist “%(pname)s”"
 msgstr ""
 
 #: pod/playlist/views.py

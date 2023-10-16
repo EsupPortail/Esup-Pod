@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-16 12:41+0000\n"
+"POT-Creation-Date: 2023-10-16 13:36+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: \n"
@@ -180,17 +180,9 @@ msgid "A caption cannot has more than 80 characters."
 msgstr "Une légende / sous-titre ne peut comporter plus de 80 caractères."
 
 #: pod/completion/static/js/caption_maker.js
-msgid "Add a caption/subtitle after this one"
-msgstr "Ajouter un(e) légende/sous-titre ci-dessous"
-
-#: pod/completion/static/js/caption_maker.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Add"
 msgstr "Ajouter"
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Delete this caption/subtitle"
-msgstr "Supprimer ce(tte) légende/sous-titre"
 
 #: pod/completion/static/js/caption_maker.js
 #: pod/video/static/js/comment-script.js
@@ -864,3 +856,9 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "Add a caption/subtitle after this one"
+#~ msgstr "Ajouter un(e) légende/sous-titre ci-dessous"
+
+#~ msgid "Delete this caption/subtitle"
+#~ msgstr "Supprimer ce(tte) légende/sous-titre"

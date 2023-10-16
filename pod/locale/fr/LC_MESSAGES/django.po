@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-16 12:41+0000\n"
+"POT-Creation-Date: 2023-10-16 13:36+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Ptitloup <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -5787,7 +5787,9 @@ msgstr "Date de mise à jour"
 
 #: pod/playlist/models.py
 msgid "Password is required for a password-protected playlist."
-msgstr "Un mot de passe est nécessaire pour une liste de lecture protégée par un mot de passe."
+msgstr ""
+"Un mot de passe est nécessaire pour une liste de lecture protégée par un mot "
+"de passe."
 
 #: pod/playlist/models.py
 msgid "Addition date"
@@ -6110,12 +6112,17 @@ msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
 
 #: pod/playlist/views.py
+msgid "Edit the playlist “%(pname)s”"
+msgstr "Modifier la liste de lecture « %(pname)s »"
+
+#: pod/playlist/views.py
 msgid "The playlist has been created and the video has been added in it."
 msgstr "La liste de lecture a été créée et la vidéo a été ajoutée dedans."
 
 #: pod/playlist/views.py
 msgid "The data sent to create the playlist are invalid."
-msgstr "Les données envoyées pour créer la liste de lecture ne sont pas valides."
+msgstr ""
+"Les données envoyées pour créer la liste de lecture ne sont pas valides."
 
 #: pod/playlist/views.py
 msgid "JSON in wrong format"

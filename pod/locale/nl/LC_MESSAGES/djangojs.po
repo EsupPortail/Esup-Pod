@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-16 12:41+0000\n"
+"POT-Creation-Date: 2023-10-16 13:36+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -164,16 +164,8 @@ msgid "A caption cannot has more than 80 characters."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
-msgid "Add a caption/subtitle after this one"
-msgstr ""
-
-#: pod/completion/static/js/caption_maker.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Add"
-msgstr ""
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Delete this caption/subtitle"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js

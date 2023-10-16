@@ -367,7 +367,7 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
         else PlaylistForm(request.POST)
     )
     if playlist:
-        page_title = _("Edit the playlist") + f' "{playlist.name}"'
+        page_title = _("Edit the playlist “%(pname)s”") % {"pname": playlist.name}
     else:
         page_title = _("Add a playlist")
 
