@@ -978,7 +978,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
  - `TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH`
 
-  > valeur par défaut : `3`
+  > valeur par défaut : `2`
 
   >> Temps en secondes maximum pour une phrase lors de la transcription avec l’outil STT. <br>
 

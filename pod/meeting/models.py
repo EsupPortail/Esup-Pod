@@ -471,7 +471,7 @@ class Meeting(models.Model):
         else:
             newid = self.id
         newid = "%04d" % newid
-        self.meeting_id = "%s-%s" % (newid, slugify(self.name))
+        self.meeting_id = "%s-%s" % (newid, slugify(self.name).replace("-", "_"))
         if MEETING_DISABLE_RECORD:
             self.record = False
         super(Meeting, self).save(*args, **kwargs)

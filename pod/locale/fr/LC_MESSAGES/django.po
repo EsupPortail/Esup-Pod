@@ -1579,8 +1579,8 @@ msgid "No captions"
 msgstr "Pas de sous-titres"
 
 #: pod/completion/templates/video_caption_maker.html
-msgid "Add subtitle"
-msgstr "Ajouter un sous titre"
+msgid "Add a caption/subtitle"
+msgstr "Ajouter un(e) légende / sous-titre"
 
 #: pod/completion/templates/video_caption_maker.html
 msgid "Save Captions"
@@ -6341,7 +6341,7 @@ msgstr "Recevez les notifications de l’application"
 
 #: pod/progressive_web_app/templates/notification_toast.html
 msgid "Close notification panel"
-msgstr "Fermer le panneau de notifications"
+msgstr "Fermer le panneau de notification"
 
 #: pod/progressive_web_app/templates/notification_toast.html
 msgid ""

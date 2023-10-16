@@ -1510,7 +1510,7 @@ msgid "No captions"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
-msgid "Add subtitle"
+msgid "Add a caption/subtitle"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
