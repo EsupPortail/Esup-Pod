@@ -580,22 +580,36 @@ def dashboard(request):
             .replace("&page=%s" % page, "")
         )
 
-    videos_list = get_filtered_videos_list(request, videos_list)
-    sort_field = request.GET.get("sort")
+    filtered_videos_list = get_filtered_videos_list(request, videos_list)
+    sort_field = request.GET.get("sort") if request.GET.get("sort") else "title"
     sort_direction = request.GET.get("sort_direction")
-    videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+    sorted_videos_list = sort_videos_list(filtered_videos_list, sort_field, sort_direction)
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     owner_filter = owner_is_searchable(request.user)
 
-    count_videos = len(videos_list)
+    count_videos = len(sorted_videos_list)
 
-    paginator = Paginator(videos_list, 12)
+    paginator = Paginator(sorted_videos_list, 12)
     videos = get_paginated_videos(paginator, page)
+
+    videos_list_templates = {
+        "grid": {
+            "template_name": "videos/video_list_grid_selectable.html"
+        },
+        "list": {
+            "template_name": "videos/video_list_table_selectable.html"
+        },
+    }
+
+    display_mode = "grid"
+    if request.GET.get("display_mode") and request.GET.get("display_mode") in videos_list_templates.keys():
+        display_mode = request.GET.get("display_mode")
+    template = videos_list_templates.get(display_mode)["template_name"]
 
     if request.is_ajax():
         return render(
             request,
-            "videos/video_list_selectable.html",
+            template,
             {
                 "videos": videos,
                 "full_path": full_path,
@@ -626,6 +640,8 @@ def dashboard(request):
     data_context["sort_field"] = sort_field
     data_context["sort_direction"] = request.GET.get("sort_direction")
     data_context["owner_filter"] = owner_filter
+    data_context["display_mode"] = display_mode
+    data_context["video_list_template"] = template
     data_context["page_title"] = "Dashboard"
 
     return render(request, "videos/dashboard.html", data_context)

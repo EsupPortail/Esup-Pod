@@ -135,6 +135,10 @@ function getUrlForRefresh() {
     newUrl +=
       "sort_direction=" + document.getElementById("sort_direction").value + "&";
   }
+  // Add dashboard display mode param
+  if (urlVideos === "/video/dashboard/" && displayMode != undefined){
+    newUrl += "display_mode="+displayMode + "&";
+  }
   // Add category checked if exists
   if (document.querySelectorAll(".categories_list_item.active").length !== 0) {
     checkedCategory = document.querySelector(".categories_list_item.active")
