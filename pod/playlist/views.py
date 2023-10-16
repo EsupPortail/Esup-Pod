@@ -399,12 +399,11 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
             reverse("playlist:content", kwargs={"slug": new_playlist.slug})
         )
     else:
-        print(form.errors)
         messages.add_message(
-                request,
-                messages.ERROR,
-                _("The data sent to create the playlist are invalid."),
-            )
+            request,
+            messages.ERROR,
+            _("The data sent to create the playlist are invalid."),
+        )
     return render(
         request,
         "playlist/add_or_edit.html",
