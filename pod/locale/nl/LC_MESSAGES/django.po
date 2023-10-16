@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-28 09:06+0000\n"
+"POT-Creation-Date: 2023-10-12 13:34+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -190,6 +190,7 @@ msgstr ""
 #: pod/podfile/templates/podfile/customfilewidget.html
 #: pod/podfile/templates/podfile/home_content.html
 #: pod/podfile/templates/podfile/userfolder.html
+#: pod/progressive_web_app/templates/notification_toast.html
 #: pod/recorder/templates/recorder/claim_record.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/video-iframe.html
@@ -1509,7 +1510,7 @@ msgid "No captions"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
-msgid "Add subtitle"
+msgid "Add a caption/subtitle"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
@@ -5984,6 +5985,10 @@ msgstr ""
 
 #: pod/progressive_web_app/templates/notification_toast.html
 msgid "Get application notifications"
+msgstr ""
+
+#: pod/progressive_web_app/templates/notification_toast.html
+msgid "Close notification panel"
 msgstr ""
 
 #: pod/progressive_web_app/templates/notification_toast.html

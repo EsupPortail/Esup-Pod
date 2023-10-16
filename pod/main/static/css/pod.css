@@ -252,20 +252,16 @@ a:not(.btn):focus {
   margin-right: auto;
 }
 
-@media (max-width: 576px) {
-  .link-center-pod,
-  .file-image {
-    display: block;
-    overflow: hidden;
-    max-height: auto;
-  }
+.link-center-pod,
+.file-image {
+  display: block;
+  overflow: hidden;
+  max-height: auto;
 }
 
 @media (min-width: 576px) {
   .link-center-pod,
   .file-image {
-    display: block;
-    overflow: hidden;
     max-height: 10rem;
   }
 }
@@ -723,56 +719,7 @@ div.card a img {
     border-color 0.5s;
 }
 
-/** channel form **/
-
-#channel_form .selector,
-#enrichment_group_form .selector {
-  width: 100%;
-}
-
-#channel_form .selector select,
-#enrichment_group_form .selector select {
-  width: 100%;
-}
-
-#channel_form .selector-available,
-#channel_form .selector-chosen,
-#enrichment_group_form .selector-available,
-#enrichment_group_form .selector-chosen {
-  width: 88%;
-}
-
-@media screen and (min-width: 992px) {
-  #channel_form .selector-available,
-  #channel_form .selector-chosen,
-  #enrichment_group_form .selector-available,
-  #enrichment_group_form .selector-chosen {
-    width: 47%;
-  }
-}
-
-#channel_form .selector .selector-available input,
-#enrichment_group_form .selector .selector-available input {
-  width: 90%;
-}
-
-#channel_form .selector .selector-filter label,
-#enrichment_group_form .selector .selector-filter label {
-  margin-top: 0;
-}
-
-#channel_form .selector-available h2,
-#channel_form .selector-chosen h2,
-#enrichment_group_form .selector-available h2,
-#enrichment_group_form .selector-chosen h2 {
-  margin: 0;
-  padding: 8px;
-  font-weight: 400;
-  font-size: 13px;
-  text-align: left;
-}
-
-/** vignettes video **/
+/** video thumbnails **/
 @media (max-width: 575.98px) {
   .pod-flex-direction {
     flex-direction: column;
@@ -841,100 +788,6 @@ div.card a img {
   padding: 0 !important;
   margin: 0 !important;
 }
-
-/** Django 3 Admin pages
- *  (must be set after Bootsrap to reset Django defaults)
- **/
-body[data-admin-utc-offset] {
-  background-color: var(--body-bg);
-  padding-top: 0;
-
-  --primary: var(--pod-primary);
-  --breadcrumbs-bg: var(--pod-primary);
-  --button-bg: var(--pod-primary);
-}
-
-body[data-admin-utc-offset] textarea.cke_source {
-  background-color: var(--pod-background);
-}
-
-body[data-admin-utc-offset] caption {
-  caption-side: top;
-}
-
-body[data-admin-utc-offset] h1 {
-  font-size: 20px;
-}
-
-body[data-admin-utc-offset] h2 {
-  font-size: 18px;
-}
-
-body[data-admin-utc-offset] h3 {
-  font-size: 16px;
-}
-
-body[data-admin-utc-offset] .hidden {
-  display: none;
-}
-
-body[data-admin-utc-offset] .btn-outline-primary {
-  color: var(--link-fg);
-}
-
-body[data-admin-utc-offset] .btn-outline-primary:hover,
-body[data-admin-utc-offset] .btn-outline-primary:focus {
-  background-color: var(--pod-primary);
-  color: var(--bs-light);
-}
-
-body[data-admin-utc-offset] .form-row.errors {
-  display: block;
-}
-
-/* css corrections for select2 autocompletion Multiple in dark theme.
- * (see "additional owners", or "disciplines" for sample.)
- */
-body[data-admin-utc-offset] .select2-selection--multiple {
-  background-color: var(--pod-background);
-  border-color: var(--border-color);
-}
-
-body[data-admin-utc-offset] .select2-dropdown {
-  background-color: var(--pod-background);
-}
-
-body[data-admin-utc-offset]
-  .select2-container--open
-  .select2-selection--multiple {
-  border-color: var(--body-quiet-color);
-}
-
-body[data-admin-utc-offset] .select2-search--inline .select2-search__field {
-  color: var(--pod-font-color);
-}
-
-body[data-admin-utc-offset]
-  .select2-selection--multiple
-  .select2-selection__choice,
-body[data-admin-utc-offset]
-  .select2-selection--multiple
-  .select2-results__option[aria-selected="true"] {
-  color: #333;
-}
-
-.select2-container--focus,
-.cke_focus {
-  box-shadow: 0 0 0 0.25rem rgba(var(--pod-primary-rgb) 0.25);
-  border-radius: 5px;
-}
-
-.select2-container--default.select2-container--focus
-  .select2-selection--multiple.select2-selection {
-  border: solid 1px var(--pod-primary);
-}
-
-/* end select2 multiple corrections */
 
 /*** CUSTOM CLASSES POD - bootstrap5 - 2022/04 ****/
 
@@ -1640,4 +1493,148 @@ a.player-element.disabled {
 
 .bg-primary .podfile-icon-selector:focus-visible {
   box-shadow: 0 0 0 0.25rem rgba(0 0 0 0.5);
+}
+
+
+/** Django 3 Admin pages
+ *  (must be set after Bootsrap to reset Django defaults)
+ **/
+body[data-admin-utc-offset] {
+  background-color: var(--body-bg);
+  padding-top: 0;
+
+  --primary: var(--pod-primary);
+  --breadcrumbs-bg: var(--pod-primary);
+  --button-bg: var(--pod-primary);
+}
+
+body[data-admin-utc-offset] textarea.cke_source {
+  background-color: var(--pod-background);
+}
+
+body[data-admin-utc-offset] caption {
+  caption-side: top;
+}
+
+body[data-admin-utc-offset] h1 {
+  font-size: 20px;
+}
+
+body[data-admin-utc-offset] h2 {
+  font-size: 18px;
+}
+
+body[data-admin-utc-offset] h3 {
+  font-size: 16px;
+}
+
+body[data-admin-utc-offset] .hidden {
+  display: none;
+}
+
+body[data-admin-utc-offset] .btn-outline-primary {
+  color: var(--link-fg);
+}
+
+body[data-admin-utc-offset] .btn-outline-primary:hover,
+body[data-admin-utc-offset] .btn-outline-primary:focus {
+  background-color: var(--pod-primary);
+  color: var(--bs-light);
+}
+
+body[data-admin-utc-offset] .form-row.errors {
+  display: block;
+}
+
+/* css corrections for select2 autocompletion Multiple in dark theme.
+ * (see "additional owners", or "disciplines" for sample.)
+ */
+body[data-admin-utc-offset] .select2-selection--multiple {
+  background-color: var(--pod-background);
+  border-color: var(--border-color);
+}
+
+body[data-admin-utc-offset] .select2-dropdown {
+  background-color: var(--pod-background);
+}
+
+body[data-admin-utc-offset]
+  .select2-container--open
+  .select2-selection--multiple {
+  border-color: var(--body-quiet-color);
+}
+
+body[data-admin-utc-offset] .select2-search--inline .select2-search__field {
+  color: var(--pod-font-color);
+}
+
+body[data-admin-utc-offset]
+  .select2-selection--multiple
+  .select2-selection__choice,
+body[data-admin-utc-offset]
+  .select2-selection--multiple
+  .select2-results__option[aria-selected="true"] {
+  color: #333;
+}
+
+.select2-container--focus,
+.cke_focus {
+  box-shadow: 0 0 0 0.25rem rgba(var(--pod-primary-rgb) 0.25);
+  border-radius: 5px;
+}
+
+.select2-container--default.select2-container--focus
+  .select2-selection--multiple.select2-selection {
+  border: solid 1px var(--pod-primary);
+}
+
+/* end select2 multiple corrections */
+
+/** channel form **/
+
+#channel_form .selector,
+#enrichment_group_form .selector {
+  width: 100%;
+}
+
+#channel_form .selector select,
+#enrichment_group_form .selector select {
+  width: 100%;
+}
+
+#channel_form .selector-available,
+#channel_form .selector-chosen,
+#enrichment_group_form .selector-available,
+#enrichment_group_form .selector-chosen {
+  width: 88%;
+}
+
+@media screen and (min-width: 992px) {
+  #channel_form .selector-available,
+  #channel_form .selector-chosen,
+  #enrichment_group_form .selector-available,
+  #enrichment_group_form .selector-chosen {
+    width: 47%;
+  }
+}
+
+#channel_form .selector .selector-available input,
+#enrichment_group_form .selector .selector-available input {
+  width: 90%;
+}
+
+#channel_form .selector .selector-filter label,
+#enrichment_group_form .selector .selector-filter label {
+  margin-top: 0;
+}
+
+#channel_form .selector-available h2,
+#channel_form .selector-chosen h2,
+#enrichment_group_form .selector-available h2,
+#enrichment_group_form .selector-chosen h2 {
+  margin: 0;
+  padding: 8px;
+  font-weight: 400;
+  font-size: 13px;
+  text-align: left;
 }

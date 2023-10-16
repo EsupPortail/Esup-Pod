@@ -4780,7 +4780,7 @@
                             "default_value": 0.5,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Maximum time in seconds of gaps between each word for cutting subtitles with the STT tool."
                                 ],
                                 "fr": [
                                     "Temps maximum en secondes des blancs entre chaque mot pour le decoupage des sous-titres avec l’outil STT."
@@ -4790,10 +4790,10 @@
                             "pod_version_init": "3.1.0"
                         },
                         "TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH": {
-                            "default_value": 3,
+                            "default_value": 2,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Maximum time in seconds for a sentence when transcribing with the STT tool."
                                 ],
                                 "fr": [
                                     "Temps en secondes maximum pour une phrase lors de la transcription avec l’outil STT."

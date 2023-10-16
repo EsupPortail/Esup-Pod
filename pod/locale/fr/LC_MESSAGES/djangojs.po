@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 14:42+0000\n"
+"POT-Creation-Date: 2023-10-13 13:36+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -96,8 +96,13 @@ msgid "Unrecognized caption file format."
 msgstr "Format de fichier de traduction non reconnu."
 
 #: pod/completion/static/js/caption_maker.js
-msgid "There is no captions to save."
-msgstr "Il n’y a aucun sous-titre à sauvegarder."
+msgid "There are errors in your captions/subtitles. Please review."
+msgstr ""
+"Il y a des erreurs dans vos légendes/sous-titres. Veuillez corriger svp."
+
+#: pod/completion/static/js/caption_maker.js
+msgid "There is no caption/subtitle to save."
+msgstr "Il n’y a aucun sous-titre/légende à sauvegarder."
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Not a valid time track file."
@@ -171,9 +176,21 @@ msgid "Pause to enter caption for segment from %s to %s."
 msgstr "Mettez en pause pour entrer le texte du segment entre %s et %s."
 
 #: pod/completion/static/js/caption_maker.js
+msgid "A caption cannot has more than 80 characters."
+msgstr "Une légende / sous-titre ne peut comporter plus de 80 caractères."
+
+#: pod/completion/static/js/caption_maker.js
+msgid "Add a caption/subtitle after this one"
+msgstr "Ajouter un(e) légende/sous-titre ci-dessous"
+
+#: pod/completion/static/js/caption_maker.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Add"
 msgstr "Ajouter"
+
+#: pod/completion/static/js/caption_maker.js
+msgid "Delete this caption/subtitle"
+msgstr "Supprimer ce(tte) légende/sous-titre"
 
 #: pod/completion/static/js/caption_maker.js
 #: pod/video/static/js/comment-script.js
@@ -181,7 +198,7 @@ msgid "Delete"
 msgstr "Supprimer"
 
 #: pod/completion/static/js/caption_maker.js
-msgid "Caption"
+msgid "Caption / Subtitle"
 msgstr "Légende / Sous-titre"
 
 #: pod/completion/static/js/caption_maker.js
@@ -195,18 +212,6 @@ msgstr "Fin"
 #: pod/completion/static/js/caption_maker.js
 msgid "Time stamps"
 msgstr "Horodatages"
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Error reading caption file. Code = "
-msgstr "Erreur durant la lecture du fichier de traduction, Code = "
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Exception thrown reading caption file. Code = "
-msgstr "Une exception a été levée durant la lecture du fichier. Code = "
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Your browser does not support FileReader."
-msgstr "Votre navigateur ne supporte pas FileReader."
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Error loading caption file: "
@@ -909,6 +914,18 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "Error reading caption file. Code = "
+#~ msgstr "Erreur durant la lecture du fichier de traduction, Code = "
+
+#~ msgid "Exception thrown reading caption file. Code = "
+#~ msgstr "Une exception a été levée durant la lecture du fichier. Code = "
+
+#~ msgid "Your browser does not support FileReader."
+#~ msgstr "Votre navigateur ne supporte pas FileReader."
+
+#~ msgid "Caption"
+#~ msgstr "Légende / Sous-titre"
 
 #~ msgid "Error"
 #~ msgstr "Erreur"
