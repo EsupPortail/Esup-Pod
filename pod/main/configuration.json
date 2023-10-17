@@ -1730,6 +1730,19 @@
                 "progressive_web_app": {
                     "description": {},
                     "settings": {
+                        "USE_NOTIFICATIONS": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Activation des notifications, attention, elles sont actives par défaut."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.0"
+                        },
                         "WEBPUSH_SETTINGS": {
                             "default_value": "```python\n{\n    'VAPID_PUBLIC_KEY': '',\n    'VAPID_PRIVATE_KEY': '',\n    'VAPID_ADMIN_EMAIL': 'contact@esup-portail.org'\n}\n```",
                             "description": {
@@ -1741,7 +1754,7 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": ""
+                            "pod_version_init": "3.4.0"
                         }
                     },
                     "title": {
