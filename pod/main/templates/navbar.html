@@ -264,11 +264,11 @@
                 {% endif %}
               {% endif %}
               {% if USE_NOTIFICATIONS %}
-              <div class="nav-item">
-                <button class="nav-link" onclick="new bootstrap.Toast(document.querySelector('#notification-toast')).show()">
-                  <i class="bi bi-bell pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Notifications settings' %}
-                </button>
-              </div>
+                <div class="nav-item">
+                  <button class="nav-link" onclick="new bootstrap.Toast(document.querySelector('#notification-toast')).show()">
+                    <i class="bi bi-bell pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Notifications settings' %}
+                  </button>
+                </div>
               {% endif %}
               <div class="nav-item d-none" id="pwa-install-container">
                 <button class="nav-link" onclick="">
