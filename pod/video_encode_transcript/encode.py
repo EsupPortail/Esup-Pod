@@ -169,7 +169,7 @@ def end_of_encoding(video):
         and PushInformation.objects.filter(user=video.owner).exists()
     ):
         send_notification_encoding(video)
-    elif EMAIL_ON_ENCODING_COMPLETION:
+    if EMAIL_ON_ENCODING_COMPLETION:
         send_email_encoding(video)
 
     transcript_video(video.id)
