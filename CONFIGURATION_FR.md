@@ -1864,6 +1864,12 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
 
 ### Configuration application progressive_web_app
 
+ - `USE_NOTIFICATIONS`
+
+  > valeur par défaut : `True`
+
+  >> Activation des notifications, attention, elles sont actives par défaut. <br>
+
  - `WEBPUSH_SETTINGS`
 
   > valeur par défaut :
