@@ -29,6 +29,7 @@ USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", True)
 if USE_TRANSCRIPTION:
     from . import transcript
+
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
