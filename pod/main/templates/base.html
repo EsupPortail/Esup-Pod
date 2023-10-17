@@ -50,7 +50,9 @@
   {% endif %}
   {% progressive_web_app_meta %}
   {% endspaceless %}
-  {% webpush_header %}
+  {% if USE_NOTIFICATIONS %}
+    {% webpush_header %}
+  {% endif %}
 </head>
 
 <body>
@@ -131,7 +133,9 @@
         {% endif %}
       </div>
     </main>
-    {% include "notification_toast.html" %}
+    {% if USE_NOTIFICATIONS %}
+      {% include "notification_toast.html" %}
+    {% endif %}
   </div>
   {% endblock content %}
   {% if not request.GET.is_iframe %}

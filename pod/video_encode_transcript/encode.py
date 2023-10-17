@@ -26,10 +26,9 @@ __license__ = "LGPL v3"
 log = logging.getLogger(__name__)
 
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
-
+USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", True)
 if USE_TRANSCRIPTION:
     from . import transcript
-
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
@@ -165,11 +164,12 @@ def get_encoding_video(video_to_encode):
 def end_of_encoding(video):
     """Send mail at the end of encoding, call transcription."""
     if (
-        video.owner.owner.accepts_notifications
+        USE_NOTIFICATIONS
+        and video.owner.owner.accepts_notifications
         and PushInformation.objects.filter(user=video.owner).exists()
     ):
         send_notification_encoding(video)
-    elif EMAIL_ON_ENCODING_COMPLETION:
+    if EMAIL_ON_ENCODING_COMPLETION:
         send_email_encoding(video)
 
     transcript_video(video.id)

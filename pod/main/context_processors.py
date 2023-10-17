@@ -83,6 +83,7 @@ RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     django_settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
 )
+USE_NOTIFICATIONS = getattr(django_settings, "USE_NOTIFICATIONS", True)
 
 
 def context_settings(request):
@@ -144,6 +145,7 @@ def context_settings(request):
     new_settings[
         "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY"
     ] = RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY
+    new_settings["USE_NOTIFICATIONS"] = USE_NOTIFICATIONS
     return new_settings
 
 
