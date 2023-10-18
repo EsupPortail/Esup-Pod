@@ -639,6 +639,8 @@ class Meeting(models.Model):
         for elt in xmldoc:
             meeting_json[elt.tag] = elt.text
         if meeting_json.get("returncode", "") != "SUCCESS":
+            if self.end():
+                return self.create()
             msg = {}
             msg["error"] = "Unable to create meeting ! "
             msg["returncode"] = meeting_json.get("returncode", "")
@@ -774,6 +776,8 @@ class Meeting(models.Model):
         for elt in xmldoc:
             meeting_json[elt.tag] = elt.text
         if meeting_json.get("returncode", "") != "SUCCESS":
+            if self.end():
+                return False
             msg = {}
             msg["error"] = "Unable to get meeting status ! "
             msg["returncode"] = meeting_json.get("returncode", "")
