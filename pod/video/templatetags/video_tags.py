@@ -32,15 +32,17 @@ HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS = getattr(
 )
 
 
-@register.simple_tag(name="get_MarkerForUser")
-def get_MarkerForUser(video: Video, user: User):
-    return video.get_MarkerForUser(user)
+@register.simple_tag(name="get_marker_time_for_user")
+def get_marker_time_for_user(video: Video, user: User):
+    """Tag to get the marker time of the video for the authenticated user."""
+    return video.get_marker_time_for_user(user)
 
 
-@register.simple_tag(name="get_PercentMarkerForUser")
-def get_PercentMarkerForUser(video: Video, user: User):
+@register.simple_tag(name="get_percent_marker_for_user")
+def get_percent_marker_for_user(video: Video, user: User):
+    """Tag to get the percent time of the video viewed by the authenticated user."""
     if video.duration and video.duration != 0:
-        return int((video.get_MarkerForUser(user) / video.duration) * 100)
+        return int((video.get_marker_time_for_user(user) / video.duration) * 100)
     else:
         return 0
 

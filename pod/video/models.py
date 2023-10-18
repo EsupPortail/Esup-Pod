@@ -1120,9 +1120,10 @@ class Video(models.Model):
             return 0
         return count_sum["count__sum"]
 
-    def get_MarkerForUser(self, user):
-        if self.videouserviewingmarkertime_set.filter(user=user).exists():
-            return self.videouserviewingmarkertime_set.get(user=user).markerTime
+    def get_marker_time_for_user(self, user):
+        """Get the marker time of a video for the user in parameter."""
+        if self.usermarkertime_set.filter(user=user).exists():
+            return self.usermarkertime_set.get(user=user).markerTime
         return 0
 
     def get_absolute_url(self):
@@ -1479,8 +1480,8 @@ class ViewCount(models.Model):
         verbose_name_plural = _("View counts")
 
 
-class VideoUserViewingMarkerTime(models.Model):
-    """Record the time of vidéo played by a user."""
+class UserMarkerTime(models.Model):
+    """Record the time of video played by a user."""
     video = models.ForeignKey(
         Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
     )

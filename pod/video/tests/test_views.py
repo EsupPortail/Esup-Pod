@@ -1108,6 +1108,7 @@ class video_countTestView(TestCase):
 
 
 class video_markerTestView(TestCase):
+    """Test the video marker view."""
     fixtures = [
         "initial_data.json",
     ]
@@ -1140,13 +1141,13 @@ class video_markerTestView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"ok" in response.content)
-        self.assertEqual(video.get_MarkerForUser(self.user), 3)
+        self.assertEqual(video.get_marker_time_for_user(self.user), 3)
         # update time
         url = reverse("video:video_marker", kwargs={"id": video.id, "time": 4})
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"ok" in response.content)
-        self.assertEqual(video.get_MarkerForUser(self.user), 4)
+        self.assertEqual(video.get_marker_time_for_user(self.user), 4)
         print(" --->  test video markerTestView get request: OK!")
 
 

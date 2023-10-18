@@ -19,7 +19,7 @@ from ..models import ViewCount
 from ..models import get_storage_path_video
 from ..models import VIDEOS_DIR
 from ..models import Notes, AdvancedNotes
-from ..models import VideoUserViewingMarkerTime
+from ..models import UserMarkerTime
 
 from pod.video_encode_transcript.models import VideoRendition
 from pod.video_encode_transcript.models import EncodingVideo
@@ -791,6 +791,8 @@ class EncodingStepTestCase(TestCase):
 
 
 class NotesTestCase(TestCase):
+    """Test the Note model."""
+
     fixtures = [
         "initial_data.json",
     ]
@@ -866,7 +868,8 @@ class NotesTestCase(TestCase):
         print("   --->  test_delete_object of NotesTestCase: OK!")
 
 
-class VideoUserViewingMarkerTimeTestCase(TestCase):
+class UserMarkerTimeTestCase(TestCase):
+    """Test the UserMarkerTime model."""
     fixtures = [
         "initial_data.json",
     ]
@@ -879,61 +882,61 @@ class VideoUserViewingMarkerTimeTestCase(TestCase):
             video="test.mp4",
             type=Type.objects.get(id=1),
         )
-        print(" --->  SetUp of VideoUserViewingMarkerTimeTestCase: OK!")
+        print(" --->  SetUp of UserMarkerTimeTestCase: OK!")
 
-    def test_create_VideoUserViewingMarkerTime_default(self):
+    def test_create_UserMarkerTime_default(self):
         user = User.objects.get(username="pod")
         video = Video.objects.get(id=1)
-        markerTime = VideoUserViewingMarkerTime.objects.create(video=video, user=user)
-        self.assertTrue(isinstance(markerTime, VideoUserViewingMarkerTime))
-        self.assertEqual(VideoUserViewingMarkerTime.objects.all().count(), 1)
+        markerTime = UserMarkerTime.objects.create(video=video, user=user)
+        self.assertTrue(isinstance(markerTime, UserMarkerTime))
+        self.assertEqual(UserMarkerTime.objects.all().count(), 1)
         self.assertEqual(markerTime.markerTime, 0)
-        print("ok")
+        print(" ---> test_create_UserMarkerTime_default: OK!")
 
-    def test_create_VideoUserViewingMarkerTime_with_attribut(self):
+    def test_create_UserMarkerTime_with_attribut(self):
         user = User.objects.get(username="pod")
         video = Video.objects.get(id=1)
-        markerTime = VideoUserViewingMarkerTime(video=video, user=user, markerTime=60)
+        markerTime = UserMarkerTime(video=video, user=user, markerTime=60)
         markerTime.save()
-        self.assertTrue(isinstance(markerTime, VideoUserViewingMarkerTime))
-        self.assertEqual(VideoUserViewingMarkerTime.objects.all().count(), 1)
+        self.assertTrue(isinstance(markerTime, UserMarkerTime))
+        self.assertEqual(UserMarkerTime.objects.all().count(), 1)
         self.assertEqual(markerTime.user, user)
         self.assertEqual(markerTime.video, video)
         self.assertEqual(markerTime.markerTime, 60)
-        print("ok")
+        print(" ---> test_create_UserMarkerTime_with_attribut: OK!")
 
-    def test_create_VideoUserViewingMarkerTime_already_exist(self):
+    def test_create_UserMarkerTime_already_exist(self):
         user = User.objects.get(username="pod")
         video = Video.objects.get(id=1)
-        VideoUserViewingMarkerTime.objects.create(video=video, user=user)
-        newMarkerTime = VideoUserViewingMarkerTime(video=video, user=user)
+        UserMarkerTime.objects.create(video=video, user=user)
+        newMarkerTime = UserMarkerTime(video=video, user=user)
         try:
             with transaction.atomic():
                 newMarkerTime.save()
             self.fail('Duplicate marker allowed.')
         except IntegrityError:
             pass
-        self.assertEqual(VideoUserViewingMarkerTime.objects.all().count(), 1)
-        print("ok")
+        self.assertEqual(UserMarkerTime.objects.all().count(), 1)
+        print(" ---> test_create_UserMarkerTime_already_exist: OK!")
 
-    def test_modify_VideoUserViewingMarkerTime(self):
+    def test_modify_UserMarkerTime(self):
         user = User.objects.get(username="pod")
         video = Video.objects.get(id=1)
-        markerTime = VideoUserViewingMarkerTime(video=video, user=user, markerTime=60)
+        markerTime = UserMarkerTime(video=video, user=user, markerTime=60)
         markerTime.save()
         self.assertEqual(markerTime.markerTime, 60)
         markerTime.markerTime = 120
         markerTime.save()
         markerTime.refresh_from_db()
         self.assertEqual(markerTime.markerTime, 120)
-        print('ok')
+        print(" ---> test_modify_UserMarkerTime: OK!")
 
-    def test_delete_VideoUserViewingMarkerTime(self):
+    def test_delete_UserMarkerTime(self):
         user = User.objects.get(username="pod")
         video = Video.objects.get(id=1)
-        markerTime = VideoUserViewingMarkerTime(video=video, user=user, markerTime=60)
+        markerTime = UserMarkerTime(video=video, user=user, markerTime=60)
         markerTime.save()
-        self.assertEqual(VideoUserViewingMarkerTime.objects.all().count(), 1)
+        self.assertEqual(UserMarkerTime.objects.all().count(), 1)
         markerTime.delete()
-        self.assertEqual(VideoUserViewingMarkerTime.objects.all().count(), 0)
-        print('ok')
+        self.assertEqual(UserMarkerTime.objects.all().count(), 0)
+        print(" ---> test_delete_UserMarkerTime: OK!")
