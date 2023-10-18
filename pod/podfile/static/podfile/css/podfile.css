@@ -1,3 +1,6 @@
+/**
+ * Esup-Pod Podfile styles
+ */
 
 button.close {
   padding: 0;
@@ -12,10 +15,7 @@ button.close {
 
 .modal {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   z-index: 1050;
   display: none;
   overflow: hidden;
@@ -29,7 +29,6 @@ button.close {
 
 .modal-dialog {
   position: relative;
-  width: auto;
   margin: 0 auto;
   pointer-events: none;
   width: calc(100% - 2em);
@@ -47,11 +46,7 @@ button.close {
 }
 
 .modal-dialog-centered {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
   min-height: calc(100% - (0.5rem * 2));
 }
@@ -63,7 +58,7 @@ button.close {
   pointer-events: auto;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0 0 0 0.2);
   outline: 0;
   max-width: 100% !important;
   width: calc(100% - 2em);
@@ -72,10 +67,7 @@ button.close {
 
 .modal-backdrop {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   z-index: 1040;
   background-color: #000;
 }
@@ -99,103 +91,119 @@ button.close {
 /**********************************
  ********** Improve css ***********
  **********************************/
-@media only screen and (min-width: 950px)
-{
-  /*.modal-dialog{ width: 850px; }*/
+@media only screen and (min-width: 950px) {
+  /* .modal-dialog{ width: 850px; } */
 }
-#podfile .row{
-  margin: 10px 10px 5px 10px;
+
+#podfile .row {
+  margin: 10px 10px 5px;
 }
-#podfile .col{
+
+#podfile .col {
   padding: 5px;
   background: white;
-  border: 1px solid rgba(0,0,0,.125);
+  border: 1px solid rgba(0 0 0 0.125);
 }
-#podifle .card-body{
+
+#podifle .card-body {
   padding: 0;
-  font-size: .8rem;
+  font-size: 0.8rem;
 }
+
 #podfile .card-img-top {
   width: 100%;
   height: 26vh;
   object-fit: scale-down;
 }
+
 #podifle img.directory-image {
   height: 26px;
   vertical-align: middle;
 }
 
-#podfile .list_folders{
+#podfile .list_folders {
   padding-left: 15px;
   height: auto;
   overflow: hidden;
 }
 
-#podfile #listfiles{
-  max-height:600px;
+#podfile #listfiles {
+  max-height: 600px;
   overflow: auto;
 }
 
 /**********************************
  ********** Overrid css ***********
  **********************************/
-#modal-folder_id_src .modal-body{
+#modal-folder_id_src .modal-body {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
-#shareModalCenter #shared-people.list-group .list-group-item{
-  display: -webkit-box;
-  display: -ms-flexbox;
+
+#shareModalCenter #shared-people.list-group .list-group-item {
   display: flex;
-  -webkit-box-pack: justify;
-     -ms-flex-pack: justify;
   justify-content: space-between;
-  -webkit-box-align: center;
-     -ms-flex-align: center;
-        align-items: center;
-  border: 1px solid rgba(0,0,0,.08);
-  padding: .8em;
+  align-items: center;
+  border: 1px solid rgba(0 0 0 0.08);
+  padding: 0.8em;
 }
-#shareModalCenter #shared-people.list-group .list-group-item:not(:last-child){
+
+#shareModalCenter #shared-people.list-group .list-group-item:not(:last-child) {
   border-bottom: none;
 }
-#shareModalCenter #shared-people.list-group .list-group-item .username{
+
+#shareModalCenter #shared-people.list-group .list-group-item .username {
   color: var(--bs-gray-dark);
   font-weight: 700;
 }
-#shareModalCenter #shared-people.list-group .list-group-item .btn-share.btn-remove{
+
+#shareModalCenter
+  #shared-people.list-group
+  .list-group-item
+  .btn-share.btn-remove {
   order: 1;
-  padding: .4em .8em;
+  padding: 0.4em 0.8em;
   color: #fff !important;
   background-color: var(--bs-danger);
   line-height: 1;
   flex: none;
 }
-#shareModalCenter #shareFormName .form-group{position: relative;}
-#shareModalCenter #shareFormName .form-group .form-control{ outline: none !important; -webkit-box-shadow: none !important; box-shadow: none !important;}
-#shareModalCenter #user-search.list-group{
-  padding: .8em 0;
+
+#shareModalCenter #shareFormName .form-group {
+  position: relative;
+}
+
+#shareModalCenter #shareFormName .form-group .form-control {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#shareModalCenter #user-search.list-group {
+  padding: 0.8em 0;
   width: 400px;
   max-width: 100%;
-  border: 1px solid rgba(0,0,0,.1);
-  box-shadow: 0 8px 10px 4px rgba(0,0,0,.08);
+  border: 1px solid rgba(0 0 0 0.1);
+  box-shadow: 0 8px 10px 4px rgba(0 0 0 0.08);
   position: absolute;
   top: 100%;
 }
-#shareModalCenter #user-search.list-group .list-group-item{
+
+#shareModalCenter #user-search.list-group .list-group-item {
   border: none !important;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: .8em;
+  padding: 0.8em;
   line-height: 1;
 }
-#shareModalCenter #user-search.list-group .list-group-item .btn-share.btn-add{
-  padding: .4em .8em;
+
+#shareModalCenter #user-search.list-group .list-group-item .btn-share.btn-add {
+  padding: 0.4em 0.8em;
   line-height: 1;
   flex: none;
 }
-#shareModalCenter #user-search.list-group .list-group-item .username{
+
+#shareModalCenter #user-search.list-group .list-group-item .username {
   font-weight: 700;
   color: var(--bs-gray);
 }
@@ -205,9 +213,11 @@ button.close {
   align-items: flex-start;
   justify-content: space-between;
 }
-.modal-header .modal-title{
+
+.modal-header .modal-title {
   color: var(--pod-primary);
 }
+
 .modal-header .close {
   margin: 0;
   color: var(--pod-font-color);
@@ -215,58 +225,88 @@ button.close {
   padding: 0;
   transform: translate(10px, -15px);
 }
-.podfilemodal{
+
+.podfilemodal {
   padding: 0 !important;
 }
-#podfile{
+
+#podfile {
   position: relative;
   padding-bottom: 4em;
   overflow: hidden;
 }
-#podfile > .row{
-  justify-content: space-between;
 
+#podfile > .row {
+  justify-content: space-between;
 }
 
-#podfile #dirs .dirs-nav{
+#podfile #dirs .dirs-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-left: 0;
 }
-#podfile #dirs .dirs-nav .dirs-nav-container{
+
+#podfile #dirs .dirs-nav .dirs-nav-container {
   display: flex;
 }
+
 #podfile .list_folders .folder_container:nth-child(2n),
 #podfile .list_folders_sub .folder_container:nth-child(2n) {
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
 }
+
 #podfile .list_folders .folder_container,
-#podfile .list_folders_sub .folder_container{padding: .4em;}
+#podfile .list_folders_sub .folder_container {
+  padding: 0.4em;
+}
+
 #podfile .list_folders .folder,
 #podfile .list_folders_sub .folder,
-/*#podfile #dirs .dirs-nav a.folder*/{
+/*#podfile #dirs .dirs-nav a.folder*/ {
   display: flex;
   align-items: flex-end;
   margin-right: 1em;
 }
-#podfile .list_folders .folder,
-#podfile .list_folders_sub .folder{ -webkit-box-align: center; -ms-flex-align: center; align-items: center;}
 
-#podfile .share-folders{ padding-top: .4em; border-top: 2px dotted var(--pod-primary); }
+#podfile .list_folders .folder,
+#podfile .list_folders_sub .folder {
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+#podfile .share-folders {
+  padding-top: 0.4em;
+  border-top: 2px dotted var(--pod-primary);
+}
+
 #podfile .share-folders,
-#podfile #list_folders_sub{ overflow-y: auto;}
-#podfile .share-folders .folder_title{ display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; margin-bottom: .4em; color: var(--pod-primary);}
-#podfile .share-folders .home-directory{-webkit-transform: translateY(-8px);-ms-transform: translateY(-8px);transform: translateY(-8px) }
+#podfile #list_folders_sub {
+  overflow-y: auto;
+}
+
+#podfile .share-folders .folder_title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.4em;
+  color: var(--pod-primary);
+}
+
+#podfile .share-folders .home-directory {
+  transform: translateY(-8px);
+}
 
 #podfile a.folder:not(.folder-opened) .folder-open,
-#podfile a.folder-opened .folder-close
-{ display: none;}
+#podfile a.folder-opened .folder-close {
+  display: none;
+}
 
 #podfile .bi {
   margin-right: 3px;
 }
-#podfile #dirs .dirs-nav + *{
+
+#podfile #dirs .dirs-nav + * {
   /* display: -ms-grid;
   display: grid;
   -ms-grid-columns: 1fr;
@@ -275,23 +315,26 @@ button.close {
   grid-template-rows: repeat(2, minmax(auto, 1fr) ); */
   overflow: auto;
 }
-#podfile #dirs .dirs-nav + * > *:nth-child(1){
+
+#podfile #dirs .dirs-nav + * > *:nth-child(1) {
   -ms-grid-row: 1;
   -ms-grid-column: 1;
 }
-#podfile #dirs .dirs-nav + * > *:nth-child(2){
+
+#podfile #dirs .dirs-nav + * > *:nth-child(2) {
   -ms-grid-row: 2;
   -ms-grid-column: 1;
 }
-/*#podfile #dirs .share-folder span.home-directory{ color: var(--pod-primary); }*/
-#podfile #dirs .folder-search{
+
+/*
+#podfile #dirs .share-folder span.home-directory{ color: var(--pod-primary); }
+*/
+#podfile #dirs .folder-search {
   border: 1px solid #ccc;
   font-size: 14px;
-  padding: .4em;
-  color: rgba(0,0,0,.75);
-  -webkit-box-flex: 0;
-      -ms-flex: none;
-          flex: none;
+  padding: 0.4em;
+  color: rgba(0 0 0 0.75);
+  flex: none;
   height: 35px;
 }
 
@@ -299,43 +342,47 @@ button.close {
   text-align: center;
 }
 
-#podfile #files #currentfolder{
+#podfile #files #currentfolder {
   flex-grow: unset;
   flex-basis: auto;
 }
 
-#podfile #currentfolder .nav-item:not(:last-child){margin-right: .8em}
+#podfile #currentfolder .nav-item:not(:last-child) {
+  margin-right: 0.8em;
+}
 
-#podfile #currentfolder .nav-item{
+#podfile #currentfolder .nav-item {
   display: flex;
   align-items: center;
 }
 
-#podfile .flex{
+#podfile .flex {
   display: grid;
-  grid-template-rows: minmax(.5fr, 1fr);
-  grid-auto-rows: minmax(.5fr, 1fr);
+  grid-template-rows: minmax(0.5fr, 1fr);
+  grid-auto-rows: minmax(0.5fr, 1fr);
   min-height: 100%;
 }
 
-#podfile #listfiles{
+#podfile #listfiles {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   grid-gap: 5px;
 }
-#podfile #files.loading .container-loader{
+
+#podfile #files.loading .container-loader {
   position: relative;
   margin: 0 auto;
   margin-top: 4em;
   width: 75px;
-
 }
-#podfile #files.loading .lds-ellipsis{
+
+#podfile #files.loading .lds-ellipsis {
   display: block;
   transform: translateX(-50%);
   width: 75px;
 }
-#podfile #listfiles .empty-folder-warning{
+
+#podfile #listfiles .empty-folder-warning {
   grid-column: 1/-1;
   grid-row: 10;
   text-align: center;
@@ -343,93 +390,82 @@ button.close {
   color: #856404;
   font-weight: 600;
 }
-#podfile #listfiles .navbar-toggler-icon{
+
+#podfile #listfiles .navbar-toggler-icon {
   background: none;
 }
-#podfile #listfiles .col-sm-2{
+
+#podfile #listfiles .col-sm-2 {
   max-width: unset;
 }
-#podfile #listfiles .navbar{
+
+#podfile #listfiles .navbar {
   justify-content: flex-end;
 }
 
-
-#podfile #listfiles .card{
+#podfile #listfiles .card {
   overflow: unset;
 }
-#podfile #listfiles .file{
+
+#podfile #listfiles .file {
   position: absolute;
   bottom: 4px;
   left: 0;
   right: 0;
   transform: translateY(100%);
-  padding: .4em;
-  transition: .1s all;
+  padding: 0.4em;
+  transition: 0.1s all;
 }
-#podfile #listfiles .file-navbar{
+
+#podfile #listfiles .file-navbar {
   justify-content: space-around;
-  flex-direction: row;
   align-items: flex-end;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
   overflow-y: auto;
 }
-#podfile #listfiles .file-navbar .nav-item{
+
+#podfile #listfiles .file-navbar .nav-item {
   width: 25px;
   display: inline-block;
   height: 25px;
-  margin: 0 .4em .4em .4em !important;
+  margin: 0 0.4em 0.4em !important;
 }
 
-#podfile #listfiles .card-body{
+#podfile #listfiles .card-body {
   overflow: hidden;
 }
-@media only screen and (max-width: 992px){
-  #podfile #currentfolder{
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  -webkit-transform: translateY(100%);
-    -ms-transform: translateY(100%);
-      transform: translateY(100%);
-  max-width: 180px;
-  z-index: 9;
-  -webkit-transition: all .1s linear 0s;
-  -o-transition: all .1s linear 0s;
-  transition: all .1s linear 0s;
-  }
-  #podfile #currentfolder .navbar-nav{
-  margin: O !important;
-  width: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-    -ms-flex-direction: row;
-      flex-direction: row;
-  }
-  #podfile #currentfolder .custom-file label{
-  margin: 0;
 
+@media only screen and (max-width: 992px) {
+  #podfile #currentfolder {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    transform: translateY(100%);
+    max-width: 180px;
+    z-index: 9;
+    transition: all 0.1s linear 0s;
+  }
+
+  #podfile #currentfolder .navbar-nav {
+    margin: 0 !important;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+  }
+
+  #podfile #currentfolder .custom-file label {
+    margin: 0;
   }
 }
 
-@media only screen and (max-width: 550px)
-{
-  #podfile .alert-warning{
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-        flex-direction: column;
-  line-height: 1.2;
+@media only screen and (max-width: 550px) {
+  #podfile .alert-warning {
+    flex-direction: column;
+    line-height: 1.2;
   }
-  #podfile #dirs .dirs-nav .dirs-nav-container{
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-        flex-direction: column;
-  -webkit-box-align: start;
-    -ms-flex-align: start;
-      align-items: flex-start;
+
+  #podfile #dirs .dirs-nav .dirs-nav-container {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

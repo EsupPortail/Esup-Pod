@@ -4,59 +4,56 @@
 
 /*** Table scroll ***/
 table.scroll {
-	width: 100%;
-	border-collapse: collapse;
-	border-spacing: 0;
-}
-table.scroll .btn-sm,
-table.scroll .btn-group-sm > .btn {
-	border-radius: 3px;
-	font-size: 12px;
-	line-height: 0.5;
-	padding: 5px 10px;
-}
-table.scroll thead tr th {
-	height: 27px;
-	line-height: 27px;
-	text-align: left;
-	border: none;
-}
-table.scroll tbody {
-	max-height: 200px;
-	overflow-y: auto;
-	overflow-x: hidden;
-}
-table.scroll tbody td,
-table.scroll thead th {
-	width: 10%;
-	height: 20px;
-	white-space: nowrap;
-	line-height: 20px;
-}
-.enrich_type{
-	text-transform: capitalize;
-}
-#list_enrich .panel-heading,
-#form_enrich .panel-heading {
-	border-bottom: 1px solid transparent;
-	border-top-left-radius: 3px;
-	border-top-right-radius: 3px;
-	padding: 4px 15px;
-}
-#form_enrich {
-	padding: 10px;
-}
-form#form_enrich {
-	background-color: rgba(0, 0, 0, .05);
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
-/*
-#form_new,
-.video_back {
-	padding-left: 12px;
-	margin-bottom: 10px;
+table.scroll .btn-sm,
+table.scroll .btn-group-sm > .btn {
+  border-radius: 3px;
+  font-size: 12px;
+  line-height: 0.5;
+  padding: 5px 10px;
 }
-.video_back button {
-	margin-bottom: 10px;
+
+table.scroll thead tr th {
+  height: 27px;
+  line-height: 27px;
+  text-align: left;
+  border: none;
 }
-*/
+
+table.scroll tbody {
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+table.scroll tbody td,
+table.scroll thead th {
+  width: 10%;
+  height: 20px;
+  white-space: nowrap;
+  line-height: 20px;
+}
+
+.enrich_type {
+  text-transform: capitalize;
+}
+
+#list_enrich .panel-heading,
+#form_enrich .panel-heading {
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  padding: 4px 15px;
+}
+
+#form_enrich {
+  padding: 10px;
+}
+
+form#form_enrich {
+  background-color: rgba(0 0 0 0.05);
+}

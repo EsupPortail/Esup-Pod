@@ -1,71 +1,11 @@
-.grid-container{
-    padding-top: 4em;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    min-height: calc(100vh - 255px);
-}
-/*.grid-container h1.title{
-    margin-bottom: 1em;
-    font-size: 24px;
-    padding: 0 .8em;
-    color: var(--pod-primary) !important;
-}
-.ui-jqgrid tr.jqgrow td{
-    height: 30px;
-    white-space: normal;
-    padding: .5em;
-}
-.ui-state-default .ui-icon{
-    background-image: url("/static/img/ui-icons_6da8d5_256x240.png");
-}
-.ui-icon .ui-widget-content .ui-icon{
-    background-image: url("/static/img/ui-icons_469bdd_256x240.png");
-}
-.ui-state-default .ui-icon {
-    background-image: url("/static/img/ui-icons_6da8d5_256x240.png");
-}
-ui-icon, .ui-widget-content .ui-icon {
-    background-image: url("/static/img/ui-icons_469bdd_256x240.png");
-}*/
+/**
+ * Esup-Pod video stats styles
+ */
 
-/* Override jqgrid default css background-image */
-/*.ui-widget-content,
-.ui-state-default,
-.ui-widget-content .ui-state-default,
-.ui-widget-header .ui-state-default,
-.ui-state-hover,
-.ui-widget-content .ui-state-hover,
-.ui-widget-header .ui-state-hover,
-.ui-state-focus,
-.ui-widget-content .ui-state-focus,
-.ui-widget-header .ui-state-focus{
-    background-image:none;
-}*/
-
-
-/*.stat-form-group{
-    display: flex;
-    justify-content: flex-start;
-    max-width: 755px;
-    align-items: center;
+.grid-container {
+  padding-top: 4em;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  min-height: calc(100vh - 255px);
 }
-.stat-form-group .col-form-label{
-    font-weight: 700;
-    color: var(--secondary);
-}
-.stat-form-group .col-form-label,
-.stat-form-group .col-date{
-    width: auto;
-    flex: none;
-    max-width: unset;
-}
-@media only screen and (max-width: 512px){
-    .stat-form-group{
-	flex-direction: column;
-	width: 100%;
-    }
-    .stat-form-group .col-date{
-	width: calc(100% - 2em);
-    }
-}*/

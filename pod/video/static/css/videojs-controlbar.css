@@ -6,17 +6,27 @@
 .vjs-control-bar button:hover,
 .vjs-control-bar button:active,
 .vjs-control-bar button:focus,
-.vjs-volume-control:hover,.vjs-volume-control:active,.vjs-volume-control:focus{
-    background-color: #0006;
+.vjs-volume-control:hover,
+.vjs-volume-control:active,
+.vjs-volume-control:focus {
+  background-color: #0006;
 }
-.vjs-button{cursor:pointer;}
-.video-js .vjs-volume-horizontal{margin-right:0}
-.video-js .vjs-volume-bar{margin-right:1em;}
 
+.vjs-button {
+  cursor: pointer;
+}
+
+.video-js .vjs-volume-horizontal {
+  margin-right: 0;
+}
+
+.video-js .vjs-volume-bar {
+  margin-right: 1em;
+}
 
 /* Hide seek buttons & volume pannel on x-small screens */
 .video-js.vjs-layout-small .vjs-seek-button,
 .video-js.vjs-layout-x-small .vjs-seek-button,
-.video-js.vjs-layout-x-small .vjs-volume-panel{
-    display: none;
+.video-js.vjs-layout-x-small .vjs-volume-panel {
+  display: none;
 }
