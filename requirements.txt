@@ -7,7 +7,7 @@ django-modeltranslation==0.18.7
 django-cas-client==1.5.3
 ldap3==2.9
 django-simple-captcha==0.5.17
-urllib3==1.26.17
+urllib3==1.26.18
 elasticsearch==6.3.1
 djangorestframework==3.14.0
 django-filter==22.1
