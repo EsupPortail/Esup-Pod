@@ -639,6 +639,8 @@ class Meeting(models.Model):
         for elt in xmldoc:
             meeting_json[elt.tag] = elt.text
         if meeting_json.get("returncode", "") != "SUCCESS":
+            # force end of meeting if create failed
+            # due to issue bigbluebutton/bigbluebutton#18913
             if self.end():
                 return self.create()
             msg = {}
@@ -776,6 +778,8 @@ class Meeting(models.Model):
         for elt in xmldoc:
             meeting_json[elt.tag] = elt.text
         if meeting_json.get("returncode", "") != "SUCCESS":
+            # force end of meeting if create failed
+            # due to issue bigbluebutton/bigbluebutton#18913
             if self.end():
                 return False
             msg = {}
