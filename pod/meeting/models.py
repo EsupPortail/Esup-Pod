@@ -587,6 +587,7 @@ class Meeting(models.Model):
 
     # ##############################    BBB API
     def get_meeting_parameters(self):
+        """Return the meeting's parameters in dict obejct to create the meeting."""
         parameters = {}
         for param in meeting_to_bbb:
             if getattr(self, meeting_to_bbb[param], "") not in ["", None]:
