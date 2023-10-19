@@ -586,12 +586,7 @@ class Meeting(models.Model):
         return False
 
     # ##############################    BBB API
-    def create(self, request=None):
-        """Make the url with goods parameters to create the meeting.
-
-        After create the meeting on the BBB instance, call it.
-        """
-        action = "create"
+    def get_meeting_parameters(self):
         parameters = {}
         for param in meeting_to_bbb:
             if getattr(self, meeting_to_bbb[param], "") not in ["", None]:
@@ -600,6 +595,15 @@ class Meeting(models.Model):
                         param: getattr(self, meeting_to_bbb[param], ""),
                     }
                 )
+        return parameters
+
+    def create(self, request=None):
+        """Make the url with goods parameters to create the meeting.
+
+        After create the meeting on the BBB instance, call it.
+        """
+        action = "create"
+        parameters = self.get_meeting_parameters()
         # let duration and voiceBridge to default value
         parameters["logoutURL"] = (
             BBB_LOGOUT_URL
