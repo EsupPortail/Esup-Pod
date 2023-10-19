@@ -27,7 +27,7 @@ function setListSelectedVideos(){
 
 function setSelectedVideos(){
     Array.from(selectedVideosCards).forEach((elt) => {
-        let domElt = document.querySelector('#videos_list>.infinite-item[data-slug="'+elt+'"]');
+        let domElt = document.querySelector('#videos_list .infinite-item[data-slug="'+elt+'"]');
         if(domElt && !domElt.classList.contains("selected")){
             if(!domElt.classList.contains("selected")){
                 domElt.classList.add("selected");
@@ -57,6 +57,10 @@ function replaceSelectedCountVideos() {
 }
 
 function toggleSelectedVideo(item){
+    // Prevent item to select if link is clicked
+    if(event.target.tagName === "A" || event.target.tagName === "I"){
+        return;
+    }
     item.classList.toggle("selected");
     setListSelectedVideos();
     replaceSelectedCountVideos();

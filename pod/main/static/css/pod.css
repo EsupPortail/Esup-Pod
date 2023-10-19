@@ -667,7 +667,7 @@ div.card a img {
 #bulk_update_instructions{
     color: var(--pod-primary);
 }
-.btn-dashboard-header{
+.btn-dashboard-display-mode{
     height: fit-content;
 }
 .infinite-container-selectable .infinite-item{
@@ -743,6 +743,31 @@ div.card a img {
 }
 ul.infinite-container{
   margin: 1rem 0;
+}
+#list-group-item-row{
+    padding: 0;
+    border: none;
+    background-color: var(--pod-background-neutre2-bloc);
+    border-radius: 4px;
+    width: 92%;
+}
+#more-btn-group{
+  width: 6%;
+  padding: 4px;
+  margin: 0;
+  background-color: var(--pod-link-color);
+  border-radius: 4px;
+}
+.btn-more-actions-video-row{
+  width: 100%;
+}
+.infinite-container>.list-group-item:hover{
+    background-color: var(--pod-background-neutre1-bloc);
+}
+.infinite-container>.list-group-item.selected{
+    border: none;
+    background-color: var(--pod-link-color);
+    color: var(--pod-background);
 }
 .infinite-container>.list-group-item,
 .infinite-container>.list-group-item .row{

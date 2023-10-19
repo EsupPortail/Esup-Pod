@@ -10,7 +10,6 @@ onBeforePageLoad = function () {
   infinite_loading.style.display = "block";
 };
 onAfterPageLoad = function () {
-  infinite_loading.style.display = "none";
   if (
       urlVideos === "/video/dashboard/"
       && selectedVideosCards
@@ -18,6 +17,7 @@ onAfterPageLoad = function () {
   ){
     setSelectedVideos();
   }
+  infinite_loading.style.display = "none";
   let footer = document.querySelector("footer.static-pod");
   if (!footer) return;
   footer.classList.add("small");

@@ -119,8 +119,8 @@
     <div class="row mt-3">
       <h2 id="video_count" class="col-5">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
       <div class="btn-group col-3" role="group">
-          <a title="Grid display mode" href="{% url 'video:dashboard' %}?display_mode=grid" class="btn btn-outline-primary bi bi-ui-checks-grid btn-dashboard-header {% if display_mode == "grid" %}active{% endif %}" aria-current="page"></a>
-          <a title="List display mode" href="{% url 'video:dashboard' %}?display_mode=list" class="btn btn-outline-primary bi bi-list-check btn-dashboard-header {% if display_mode == "list" %}active{% endif %}"></a>
+          <button title="Grid display mode" class="btn btn-outline-primary bi bi-ui-checks-grid btn-dashboard-display-mode {% if display_mode == "grid" %}active{% endif %}" aria-current="page" onclick="changeDisplayMode('grid')"></button>
+          <button title="List display mode" class="btn btn-outline-primary bi bi-list-check btn-dashboard-display-mode {% if display_mode == "list" %}active{% endif %}" onclick="changeDisplayMode('list')"></button>
       </div>
       <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms col-4 mb-2">
         {% include "videos/video_sort_select.html" %}
@@ -143,7 +143,7 @@
 {% block more_script %}
 <script>
   const urlVideos = "{% url 'video:dashboard' %}";
-  const displayMode = "{{ display_mode }}";
+  var displayMode = "{{ display_mode }}";
   var csrftoken = "{{ csrf_token }}";
   var page = 1;
   var nextPage = false;
