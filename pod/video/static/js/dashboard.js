@@ -1,5 +1,6 @@
 var bulkUpdateActionSelect = document.getElementById("bulkUpdateActionSelect");
 var confirmBulkUpdateBtn = document.getElementById("confirmBulkUpdateBtn");
+var btnDisplayMode = document.querySelectorAll(".btn-dashboard-display-mode");
 var action;
 var value;
 
@@ -15,7 +16,7 @@ async function bulk_update() {
   let update_fields = []
   let form_groups = document.getElementById("dashboardForm").querySelectorAll(".form-group:not(.d-none)")
   Array.from(form_groups).forEach(form_group => {
-      let element = form_group.querySelector(".form-control, .form-check-input, input[name='thumbnail']");
+      let element = form_group.querySelector(".form-control, .form-check-input, .form-select, input[name='thumbnail']");
       if(element.hasAttribute("multiple")){
         formData.append(element.getAttribute("name"), element.value);
       }else{
@@ -68,6 +69,13 @@ function appendDynamicForm(action){
             input.closest(".form-group-dashboard").classList.remove("d-none");
         }
     }
+}
+
+function changeDisplayMode(display_mode){
+    // Change display mode between grid and list
+    displayMode = display_mode;
+    btnDisplayMode.forEach(e => e.classList.toggle("active"));
+    refreshVideosSearch();
 }
 
 confirmBulkUpdateBtn.addEventListener("click", (e) => {
