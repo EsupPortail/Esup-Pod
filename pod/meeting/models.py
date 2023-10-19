@@ -586,12 +586,8 @@ class Meeting(models.Model):
         return False
 
     # ##############################    BBB API
-    def create(self, request=None):
-        """Make the url with goods parameters to create the meeting.
-
-        After create the meeting on the BBB instance, call it.
-        """
-        action = "create"
+    def get_meeting_parameters(self):
+        """Return the meeting's parameters in dict obejct to create the meeting."""
         parameters = {}
         for param in meeting_to_bbb:
             if getattr(self, meeting_to_bbb[param], "") not in ["", None]:
@@ -600,6 +596,15 @@ class Meeting(models.Model):
                         param: getattr(self, meeting_to_bbb[param], ""),
                     }
                 )
+        return parameters
+
+    def create(self, request=None):
+        """Make the url with goods parameters to create the meeting.
+
+        After create the meeting on the BBB instance, call it.
+        """
+        action = "create"
+        parameters = self.get_meeting_parameters()
         # let duration and voiceBridge to default value
         parameters["logoutURL"] = (
             BBB_LOGOUT_URL
@@ -639,6 +644,10 @@ class Meeting(models.Model):
         for elt in xmldoc:
             meeting_json[elt.tag] = elt.text
         if meeting_json.get("returncode", "") != "SUCCESS":
+            # force end of meeting if create failed
+            # due to issue bigbluebutton/bigbluebutton#18913
+            if self.end():
+                return self.create()
             msg = {}
             msg["error"] = "Unable to create meeting ! "
             msg["returncode"] = meeting_json.get("returncode", "")
@@ -774,6 +783,10 @@ class Meeting(models.Model):
         for elt in xmldoc:
             meeting_json[elt.tag] = elt.text
         if meeting_json.get("returncode", "") != "SUCCESS":
+            # force end of meeting if create failed
+            # due to issue bigbluebutton/bigbluebutton#18913
+            if self.end():
+                return False
             msg = {}
             msg["error"] = "Unable to get meeting status ! "
             msg["returncode"] = meeting_json.get("returncode", "")
