@@ -164,7 +164,7 @@
 {% if use_category %}
   const USE_CATEGORY = true;
   const CATEGORIES_DATA = {{ categories | safe }};
-  const BASE_URL = `${window.location.origin}${window.location.pathname}categories/`;
+  const BASE_URL = `${window.location.origin}/video/my/categories/`;
   {# create base url link for video management #}
   {% url 'video:video_edit' slug="abcd" as video_edit %}
   const EDIT_URL = `{{ video_edit|slice:"-5" }}`;
