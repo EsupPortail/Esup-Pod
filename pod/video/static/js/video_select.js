@@ -58,7 +58,11 @@ function replaceSelectedCountVideos() {
 
 function toggleSelectedVideo(item){
     // Prevent item to select if link is clicked
-    if(event.target.tagName === "A" || event.target.tagName === "I"){
+    if(
+        event.target.tagName === "A" ||
+        event.target.tagName === "BUTTON" ||
+        event.target.classList.contains("card-footer-link-i") ||
+        event.target.classList.contains("more-actions-row-i")) {
         return;
     }
     item.classList.toggle("selected");
