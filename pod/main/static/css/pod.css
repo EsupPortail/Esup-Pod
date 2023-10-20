@@ -764,6 +764,9 @@ div.card a img {
 .thumbnail-item-video-row img{
   width: 100%;
 }
+.title-item-video-row{
+  padding-left: 1rem;
+}
 .more-actions-row-btn{
   border: none;
   background-color: inherit;
