@@ -633,6 +633,11 @@ def dashboard(request):
     data_context["use_obsolescence"] = USE_OBSOLESCENCE
     data_context["videos"] = videos
     data_context["count_videos"] = count_videos
+    data_context["types"] = request.GET.getlist("type")
+    data_context["owners"] = request.GET.getlist("owner")
+    data_context["disciplines"] = request.GET.getlist("discipline")
+    data_context["tags_slug"] = request.GET.getlist("tag")
+    data_context["cursus_selected"] = request.GET.getlist("cursus")
     data_context["cursus_codes"] = CURSUS_CODES
     data_context["full_path"] = full_path
     data_context["owners"] = request.GET.getlist("owner")
