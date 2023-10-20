@@ -635,11 +635,8 @@ class VideoForm(forms.ModelForm):
 
     def create_with_fields(self, field_key):
         fields = list(self.fields)
-        # if owner we have to keep video field
-        if 'owner' in field_key and 'video' in fields:
-            fields.remove("video")
         for field in fields:
-            if field not in field_key:
+            if field not in field_key and field != "video":
                 del self.fields[field]
 
     def move_video_source_file(self, new_path, new_dir, old_dir):
