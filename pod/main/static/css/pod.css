@@ -728,6 +728,13 @@ div.card a img {
     font-size: 3rem;
     color: var(--pod-link-color);
 }
+.pod-infinite-container .infinite-item .video-card .card-thumbnail {
+    height: 146px;
+    overflow: hidden;
+}
+.pod-infinite-container .infinite-item .video-card .card-thumbnail .pod-thumbnail{
+    width: 100%;
+}
 /* Specific list display mode */
 .pod-infinite-list-container .list-item-video-row {
     padding: 0;
@@ -763,6 +770,7 @@ div.card a img {
 }
 .thumbnail-item-video-row img{
   width: 100%;
+  min-height: 100%;
 }
 .title-item-video-row{
   padding-left: 1rem;
