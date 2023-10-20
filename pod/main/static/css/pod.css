@@ -722,11 +722,11 @@ div.card a img {
     font-size: 3rem;
     color: var(--pod-link-color);
 }
-.pod-infinite-container .infinite-item .video-card .card-thumbnail {
+.pod-infinite-grid-container .infinite-item .video-card .card-thumbnail {
     height: 146px;
     overflow: hidden;
 }
-.pod-infinite-container .infinite-item .video-card .card-thumbnail .pod-thumbnail{
+.pod-infinite-grid-container .infinite-item .video-card .card-thumbnail .pod-thumbnail{
     width: 100%;
 }
 /* Specific list display mode */
