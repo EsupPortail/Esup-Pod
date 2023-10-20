@@ -636,7 +636,7 @@ class VideoForm(forms.ModelForm):
     def create_with_fields(self, field_key):
         fields = list(self.fields)
         # if owner we have to keep video field
-        if "owner" in field_key:
+        if 'owner' in field_key and 'video' in fields:
             fields.remove("video")
         for field in fields:
             if field not in field_key:
