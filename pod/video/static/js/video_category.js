@@ -480,7 +480,7 @@
     </div>`;
   };
 
-  // Create video video html element for my_videos (on filtering with category)
+  // Create video video html element for dashboard (on filtering with category)
   // video = object
   let getVideoElement = (video) => {
     let span_info = `

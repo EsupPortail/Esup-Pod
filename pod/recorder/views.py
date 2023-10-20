@@ -157,7 +157,7 @@ def add_recording(request):
             )
 
             messages.add_message(request, messages.INFO, message)
-            return redirect(reverse("video:my_videos"))
+            return redirect(reverse("video:dashboard"))
         else:
             message = _("One or more errors have been found in the form.")
             messages.add_message(request, messages.ERROR, message)

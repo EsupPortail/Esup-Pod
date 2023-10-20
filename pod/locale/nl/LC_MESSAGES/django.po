@@ -496,13 +496,13 @@ msgid "Do you want to show the public chat in the live?"
 msgstr ""
 
 #: pod/bbb/models.py
-msgid "Save meeting in My videos"
+msgid "Save meeting in Dashboard"
 msgstr ""
 
 #: pod/bbb/models.py
 msgid ""
 "Do you want to save the video of this meeting, at the end of the live, "
-"directly in \"My videos\"?"
+"directly in \"Dashboard\"?"
 msgstr ""
 
 #: pod/bbb/models.py
@@ -2237,7 +2237,7 @@ msgstr ""
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
-"You will then be able to find the encoded video directly in the My videos "
+"You will then be able to find the encoded video directly in the Dashboard "
 "tab after a while."
 msgstr ""
 
@@ -2452,7 +2452,7 @@ msgstr ""
 #: pod/import_video/views.py pod/meeting/views.py
 msgid ""
 "The recording has been uploaded to Pod. You can see the generated video in "
-"My videos."
+"Dashboard."
 msgstr ""
 
 #: pod/import_video/views.py pod/live/views.py pod/meeting/views.py

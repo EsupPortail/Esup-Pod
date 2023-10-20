@@ -499,37 +499,47 @@ def dashboard(request):
 
         if videos.exists():
             updated_videos = []
+            deleted_videos = 0
 
             for video in videos:
 
-                form = (VideoForm(
-                    request.POST,
-                    request.FILES,
-                    instance=video,
-                    is_staff=request.user.is_staff,
-                    is_superuser=request.user.is_superuser,
-                    current_user=request.user,
-                    current_lang=request.LANGUAGE_CODE,
-                ))
-                form.create_with_fields(update_fields)
+                if "transcript" in update_fields:
+                    video_transcript(request, video.slug)
 
-                if form.is_valid():
-                    video = save_video_form(request, form)
-                    updated_videos.append(Video.objects.get(pk=video.id).slug)
-                    messages.add_message(
-                        request, messages.INFO, _("The changes have been saved.")
-                    )
+                elif "delete" in update_fields and video_is_deletable(request, video):
+                    video.delete()
+                    deleted_videos += 1
+
                 else:
-                    messages.add_message(
-                        request,
-                        messages.ERROR,
-                        _("One or more errors have been found in the form."),
-                    )
-                    return JsonResponse({"error": messages.ERROR}, status=404)
+                    form = (VideoForm(
+                        request.POST,
+                        request.FILES,
+                        instance=video,
+                        is_staff=request.user.is_staff,
+                        is_superuser=request.user.is_superuser,
+                        current_user=request.user,
+                        current_lang=request.LANGUAGE_CODE,
+                    ))
+                    form.create_with_fields(update_fields)
+
+                    if form.is_valid():
+                        video = save_video_form(request, form)
+                        updated_videos.append(Video.objects.get(pk=video.id).slug)
+                        messages.add_message(
+                            request, messages.INFO, _("The changes have been saved.")
+                        )
+                    else:
+                        messages.add_message(
+                            request,
+                            messages.ERROR,
+                            _("One or more errors have been found in the form."),
+                        )
+                        return JsonResponse({"error": messages.ERROR}, status=404)
 
             return JsonResponse({
                 'selected_videos': selected_videos,
-                'updated_videos': updated_videos
+                'updated_videos': updated_videos,
+                'deleted_videos': deleted_videos,
             })
 
     data_context = {}
@@ -631,6 +641,7 @@ def dashboard(request):
     data_context["fieldsets_dashboard"] = ["channel_option", "access_restrictions"]
     data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["use_obsolescence"] = USE_OBSOLESCENCE
+    data_context["use_transcription"] = USE_TRANSCRIPTION
     data_context["videos"] = videos
     data_context["count_videos"] = count_videos
     data_context["types"] = request.GET.getlist("type")
@@ -650,104 +661,6 @@ def dashboard(request):
     data_context["page_title"] = "Dashboard"
 
     return render(request, "videos/dashboard.html", data_context)
-
-
-@login_required(redirect_field_name="referrer")
-def my_videos(request):
-    """Render the logged user's videos list."""
-    data_context = {}
-    site = get_current_site(request)
-    # Videos list which user is the owner + which user is an additional owner
-    videos_list = request.user.video_set.all().filter(
-        sites=site
-    ) | request.user.owners_videos.all().filter(sites=site)
-    videos_list = videos_list.distinct()
-    page = request.GET.get("page", 1)
-
-    full_path = ""
-    if page:
-        full_path = (
-            request.get_full_path()
-            .replace("?page=%s" % page, "")
-            .replace("&page=%s" % page, "")
-        )
-
-    cats = []
-    videos_without_cat = []
-    if USER_VIDEO_CATEGORY:
-        """
-        " user's videos categories format =>
-        " [{
-        " 'title': cat_title,
-        " 'slug': cat_slug,
-        " 'videos': [v_slug, v_slug...] },]
-        """
-        if request.GET.get("category") is not None:
-            category_checked = request.GET.get("category")
-            videos_list = get_object_or_404(
-                Category, slug=category_checked, owner=request.user
-            ).video.all()
-
-        cats = Category.objects.prefetch_related("video").filter(owner=request.user)
-        videos_without_cat = videos_list.exclude(category__in=cats)
-        cats = list(
-            map(
-                lambda c: {
-                    "id": c.id,
-                    "title": c.title,
-                    "slug": c.slug,
-                    "videos": list(c.video.values_list("slug", flat=True)),
-                },
-                cats,
-            )
-        )
-        cats.insert(0, len(videos_list))
-        cats = json.dumps(cats, ensure_ascii=False)
-        data_context["categories"] = cats
-        data_context["videos_without_cat"] = videos_without_cat
-
-    videos_list = get_filtered_videos_list(request, videos_list)
-    sort_field = request.GET.get("sort")
-    sort_direction = request.GET.get("sort_direction")
-    videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
-    owner_filter = owner_is_searchable(request.user)
-
-    if not sort_field:
-        # Get the default Video ordering
-        sort_field = Video._meta.ordering[0].lstrip("-")
-    count_videos = len(videos_list)
-
-    paginator = Paginator(videos_list, 12)
-    videos = get_paginated_videos(paginator, page)
-
-    if request.is_ajax():
-        return render(
-            request,
-            "videos/video_list.html",
-            {
-                "videos": videos,
-                "full_path": full_path,
-                "count_videos": count_videos,
-                "owner_filter": owner_filter,
-            },
-        )
-
-    data_context["videos"] = videos
-    data_context["count_videos"] = count_videos
-    data_context["types"] = request.GET.getlist("type")
-    data_context["owners"] = request.GET.getlist("owner")
-    data_context["disciplines"] = request.GET.getlist("discipline")
-    data_context["tags_slug"] = request.GET.getlist("tag")
-    data_context["cursus_selected"] = request.GET.getlist("cursus")
-    data_context["full_path"] = full_path
-    data_context["cursus_list"] = CURSUS_CODES
-    data_context["use_category"] = USER_VIDEO_CATEGORY
-    data_context["page_title"] = _("My videos")
-    data_context["sort_field"] = sort_field
-    data_context["sort_direction"] = sort_direction
-    data_context["owner_filter"] = owner_filter
-
-    return render(request, "videos/my_videos.html", data_context)
 
 
 def get_paginated_videos(paginator, page):
@@ -1317,7 +1230,32 @@ def save_video_form(request, form):
 def video_delete(request, slug=None):
     """View to delete video. Show form to approve deletion and do it if sent."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
+    if video_is_deletable(request, video):
 
+        form = VideoDeleteForm()
+
+        if request.method == "POST":
+            form = VideoDeleteForm(request.POST)
+            if form.is_valid():
+                video.delete()
+                messages.add_message(request, messages.INFO, _("The video has been deleted."))
+                return redirect(reverse("video:dashboard"))
+            else:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    _("One or more errors have been found in the form."),
+                )
+        page_title = _('Deleting the video "%(vtitle)s"') % {"vtitle": video.title}
+        return render(
+            request,
+            "videos/video_delete.html",
+            {"video": video, "form": form, "page_title": page_title},
+        )
+
+
+def video_is_deletable(request, video):
+    """Check if video is deletable, usage for delete form and multiple deletion"""
     if request.user != video.owner and not (
         request.user.is_superuser or request.user.has_perm("video.delete_video")
     ):
@@ -1328,28 +1266,8 @@ def video_delete(request, slug=None):
         messages.add_message(
             request, messages.ERROR, _("You cannot delete a video that is being encoded.")
         )
-        return redirect(reverse("video:my_videos"))
-
-    form = VideoDeleteForm()
-
-    if request.method == "POST":
-        form = VideoDeleteForm(request.POST)
-        if form.is_valid():
-            video.delete()
-            messages.add_message(request, messages.INFO, _("The video has been deleted."))
-            return redirect(reverse("video:my_videos"))
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                _("One or more errors have been found in the form."),
-            )
-    page_title = _('Deleting the video "%(vtitle)s"') % {"vtitle": video.title}
-    return render(
-        request,
-        "videos/video_delete.html",
-        {"video": video, "form": form, "page_title": page_title},
-    )
+        return False
+    return True
 
 
 @csrf_protect

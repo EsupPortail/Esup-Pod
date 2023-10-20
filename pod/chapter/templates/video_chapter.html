@@ -12,7 +12,7 @@
 {% endblock page_extra_head %}
 {% block breadcrumbs %}
   {{block.super}}
-  <li class="breadcrumb-item"><a href="{% url 'video:my_videos'%}">{% trans 'My videos' %}</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'video:dashboard'%}">{% trans 'Dashboard' %}</a></li>
   <li class="breadcrumb-item">
     <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}">
       {{video.title|title|truncatechars:45}}

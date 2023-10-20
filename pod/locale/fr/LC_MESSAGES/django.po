@@ -508,16 +508,16 @@ msgid "Do you want to show the public chat in the live?"
 msgstr "Souhaitez-vous montrer le tchat public en direct ?"
 
 #: pod/bbb/models.py
-msgid "Save meeting in My videos"
-msgstr "Enregistrer la session dans Mes vidéos"
+msgid "Save meeting in Dashboard"
+msgstr "Enregistrer la session dans Tableau de bord"
 
 #: pod/bbb/models.py
 msgid ""
 "Do you want to save the video of this meeting, at the end of the live, "
-"directly in \"My videos\"?"
+"directly in \"Dashboard\"?"
 msgstr ""
 "Souhaitez-vous enregistrer la vidéo de cette session, à la fin du direct, "
-"directement dans « Mes vidéos » ?"
+"directement dans « Tableau de bord » ?"
 
 #: pod/bbb/models.py
 msgid "Enable chat"
@@ -2369,11 +2369,11 @@ msgstr ""
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
-"You will then be able to find the encoded video directly in the My videos "
+"You will then be able to find the encoded video directly in the Dashboard "
 "tab after a while."
 msgstr ""
-"Vous pourrez alors retrouver la vidéo encodée directement dans l’onglet Mes "
-"vidéos après un certain temps."
+"Vous pourrez alors retrouver la vidéo encodée directement dans l’onglet Tableau "
+"de bord après un certain temps."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/video/templates/videos/add_video.html
@@ -2610,10 +2610,10 @@ msgstr "Vous ne pouvez pas consulter cet enregistrement."
 #: pod/import_video/views.py pod/meeting/views.py
 msgid ""
 "The recording has been uploaded to Pod. You can see the generated video in "
-"My videos."
+"Dashboard."
 msgstr ""
 "L’enregistrement a été téléversé sur Pod. Vous pouvez voir la vidéo générée "
-"dans Mes vidéos."
+"dans Tableau de bord."
 
 #: pod/import_video/views.py pod/live/views.py pod/meeting/views.py
 #: pod/video/views.py
