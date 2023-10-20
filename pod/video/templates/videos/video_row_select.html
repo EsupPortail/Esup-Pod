@@ -13,7 +13,7 @@
       </span>
     </div>
     <!-- video as row -->
-    <div class="col-1" style="width:100px;">{{ video.get_thumbnail_card|safe }}</div>
+    <div class="col-1 thumbnail-item-video-row">{{ video.get_thumbnail_card|safe }}</div>
     <span class="col-3"
           {% if video.title|length > 20 %}title="{{ video.title|capfirst }}"{% endif %}>{{ video.title|capfirst|truncatechars:20 }}</span>
     <span class="col-2" title="{% trans 'Duration' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">

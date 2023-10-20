@@ -731,6 +731,7 @@ div.card a img {
 /* Specific list display mode */
 .pod-infinite-list-container .list-item-video-row {
     padding: 0;
+    max-height: 50px;
     border: none;
     background-color: var(--pod-background-neutre2-bloc);
     border-radius: 4px;
@@ -754,6 +755,14 @@ div.card a img {
   font-size: 1.2rem;
   padding: 0.2rem;
   opacity: 0.3;
+}
+.thumbnail-item-video-row{
+  height: 50px;
+  overflow: hidden;
+  border-radius: 4px 0 0 4px;
+}
+.thumbnail-item-video-row img{
+  width: 100%;
 }
 .more-actions-row-btn{
   border: none;
