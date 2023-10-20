@@ -54,6 +54,9 @@
                 <option value="date_delete">{% trans "Date to delete" %}</option>
             {% endif %}
         </optgroup>
+        {% if use_transcription %}
+            <option value="transcript">{% trans "Transcript" %}</option>
+        {% endif %}
         {% if request.user.is_staff  %}
             <option value="access_restrictions">{% trans "Restrictions" %}</option>
         {% endif %}

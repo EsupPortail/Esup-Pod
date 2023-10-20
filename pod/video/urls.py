@@ -9,7 +9,6 @@ from .views import (
     video_delete,
     video_transcript,
     dashboard,
-    my_videos,
     video_notes,
     video_xhr,
     video_count,
@@ -86,7 +85,6 @@ urlpatterns = [
         PodChunkedUploadView.as_view(),
         name="api_chunked_upload",
     ),
-    url(r"^my/$", my_videos, name="my_videos"),
     url(r"^dashboard/$", dashboard, name="dashboard"),
 ]
 # COMPLETION

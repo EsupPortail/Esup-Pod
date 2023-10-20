@@ -14,17 +14,21 @@ async function bulk_update() {
   // Async POST request to bulk update videos
   let formData = new FormData();
   let update_fields = []
-  let form_groups = document.getElementById("dashboardForm").querySelectorAll(".form-group:not(.d-none)")
-  Array.from(form_groups).forEach(form_group => {
-      let element = form_group.querySelector(".form-control, .form-check-input, .form-select, input[name='thumbnail']");
-      if(element.hasAttribute("multiple")){
-        formData.append(element.getAttribute("name"), element.value);
-      }else{
-        value = element.type === "checkbox" ? element.checked : document.getElementById("id_"+element.getAttribute("name")).value;
-        formData.append(element.getAttribute("name"), value);
-      }
-      update_fields.push(element.name);
-  });
+  if(action === "delete" || action === "transcript"){
+      update_fields = [action];
+  }else{
+      let form_groups = document.getElementById("dashboardForm").querySelectorAll(".form-group:not(.d-none)")
+      Array.from(form_groups).forEach(form_group => {
+          let element = form_group.querySelector(".form-control, .form-check-input, .form-select, input[name='thumbnail']");
+          if(element.hasAttribute("multiple")){
+            formData.append(element.getAttribute("name"), element.value);
+          }else{
+            value = element.type === "checkbox" ? element.checked : document.getElementById("id_"+element.getAttribute("name")).value;
+            formData.append(element.getAttribute("name"), value);
+          }
+          update_fields.push(element.name);
+      });
+  }
 
   formData.append("selected_videos",JSON.stringify(getListSelectedVideos()));
   formData.append("update_fields",JSON.stringify(update_fields));

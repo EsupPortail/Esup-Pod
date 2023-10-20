@@ -440,11 +440,11 @@ class MyVideosTestView(TestCase):
 
         print(" --->  SetUp of MyChannelsTestView: OK!")
 
-    def test_get_myvideos_view(self):
+    def test_get_dashboard_view(self):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        url = reverse("video:my_videos")
+        url = reverse("video:dashboard")
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 3)
@@ -453,7 +453,7 @@ class MyVideosTestView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 1)
-        print(" --->  test_get_myvideos_view of MyVideosTestView: OK!")
+        print(" --->  test_get_dashboard_view of MyVideosTestView: OK!")
 
 
 class VideosTestView(TestCase):
@@ -974,7 +974,7 @@ class video_deleteTestView(TestCase):
                 "agree": True,
             },
         )
-        url = reverse("video:my_videos", kwargs={})
+        url = reverse("video:dashboard", kwargs={})
         self.assertRedirects(response, url)
         self.assertEqual(Video.objects.all().count(), 1)
         video = Video.objects.get(title="VideoWithAdditionalOwners")
@@ -985,7 +985,7 @@ class video_deleteTestView(TestCase):
                 "agree": True,
             },
         )
-        url = reverse("video:my_videos", kwargs={})
+        url = reverse("video:dashboard", kwargs={})
         self.assertRedirects(response, url)
         self.assertEqual(Video.objects.all().count(), 0)
         print(" --->  test_video_edit_post_request of video_deleteTestView: OK!")
