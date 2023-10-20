@@ -2,7 +2,6 @@ var selectedVideosCards;
 var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
 var resetSelectedVideosBtn = document.getElementById("resetSelectedVideosBtn");
 var countSelectedVideosBadge = document.getElementById("countSelectedVideosBadge");
-var countVideosModal = document.getElementById("countSelectedVideosModal");
 var badgeToolTip = new bootstrap.Tooltip(applyMultipleActionsBtn, {
         title: "",
         html: true,
@@ -40,7 +39,6 @@ function setSelectedVideos(){
 function replaceSelectedCountVideos() {
   videos_selected = document.querySelectorAll(".infinite-item.selected");
   let newCount = videos_selected.length;
-  countVideosModal.innerHTML = newCount;
   let transVideoCount = newCount > 1 ? "videos" : "video";
   countSelectedVideosBadge.innerHTML = newCount + " " + gettext(transVideoCount);
   if(newCount > 0){
