@@ -25,32 +25,34 @@
 
   <div id="bulk_update_container">
 
-    <h2>Multiple actions</h2>
-    <p id="bulk_update_instructions">Select below an action, check the videos you want to modify and press Apply. You can also refine the videos displayed using the filters on the right.</p>
+    <h2>{% trans "Multiple actions" %}</h2>
+    <p id="bulk_update_instructions">
+        {% trans "To edit several videos at the same time, you can select the ones you want by clicking on them then select an action to perform using the drop-down menu below, finally apply the modification. You can also refine your video search using the filters in the right menu." %}
+    </p>
 
     <select id="bulkUpdateActionSelect" name="action" class="form-select mb-2" aria-label="Choose an action">
-        <option value="" selected>Choose an action</option>
-        <optgroup label="Edit field">
-            <option value="title">Title</option>
-            <option value="type">Type</option>
-            <option value="owner">Owner</option>
-            <option value="additional_owners">Additional owners</option>
-            <option value="description">Description</option>
-            <option value="date_added">Date added</option>
-            <option value="date_evt">Date of the event field</option>
-            <option value="cursus">Cursus</option>
-            <option value="main_lang">Main language</option>
-            <option value="tags">Tags</option>
-            <option value="discipline">Discipline</option>
-            <option value="licence">Licence</option>
-            <option value="thumbnail">Edit the thumbnail</option>
+        <option value="" selected>{% trans "Choose an action" %}</option>
+        <optgroup label="{% trans "Edit a field" %}">
+            <option value="title">{% trans "Title" %}</option>
+            <option value="type">{% trans "Type" %}</option>
+            <option value="owner">{% trans "Owner" %}</option>
+            <option value="additional_owners">{% trans "Additional owners" %}</option>
+            <option value="description">{% trans "Description" %}</option>
+            <option value="date_added">{% trans "Date added" %}</option>
+            <option value="date_evt">{% trans "Date of the event field" %}</option>
+            <option value="cursus">{% trans "Cursus" %}</option>
+            <option value="main_lang">{% trans "Main language" %}</option>
+            <option value="tags">{% trans "Tags" %}</option>
+            <option value="discipline">{% trans "Disciplines" %}</option>
+            <option value="licence">{% trans "Licence" %}</option>
+            <option value="thumbnail">{% trans "Thumbnails" %}</option>
             {% if request.user.is_staff and use_obsolescence %}
-                <option value="date_delete">Date to delete</option>
+                <option value="date_delete">{% trans "Date to delete" %}</option>
             {% endif %}
         </optgroup>
-        <option value="access_restrictions">Manage restrictions</option>
-        <option value="channel_option">Channel options</option>
-        <option value="delete">Delete</option>
+        <option value="access_restrictions">{% trans "Restrictions" %}</option>
+        <option value="channel_option">{% trans "Channel options" %}</option>
+        <option value="delete">{% trans "Delete" %}</option>
     </select>
 
     <form id="dashboardForm" enctype="multipart/form-data" name="dashboard_form" method="post" class="needs-validation" novalidate action="{% url 'video:dashboard' %}" accept-charset="utf-8">
