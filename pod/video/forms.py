@@ -634,7 +634,11 @@ class VideoForm(forms.ModelForm):
             form.remove_field("sites")
 
     def create_with_fields(self, field_key):
-        for field in list(self.fields):
+        fields = list(self.fields)
+        # if owner we have to keep video field
+        if "owner" in field_key:
+            fields.remove("video")
+        for field in fields:
             if field not in field_key:
                 del self.fields[field]
 
