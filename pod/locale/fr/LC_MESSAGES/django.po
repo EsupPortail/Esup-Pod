@@ -7565,8 +7565,8 @@ msgstr[1] "%(counter)s thèmes trouvés dans cette chaine"
 #, python-format
 msgid "%(counter)s video"
 msgid_plural "%(counter)s videos"
-msgstr[0] "%(counter)s vidéo trouvée"
-msgstr[1] "%(counter)s vidéos trouvées"
+msgstr[0] "%(counter)s vidéo"
+msgstr[1] "%(counter)s vidéos"
 
 #  python-format
 #: pod/video/templates/channel/channel.html

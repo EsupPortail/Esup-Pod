@@ -41,7 +41,8 @@ function replaceSelectedCountVideos() {
   videos_selected = document.querySelectorAll(".infinite-item.selected");
   let newCount = videos_selected.length;
   countVideosModal.innerHTML = newCount;
-  countSelectedVideosBadge.innerHTML = newCount+" vidéos";
+  let transVideoCount = newCount > 1 ? "videos" : "video";
+  countSelectedVideosBadge.innerHTML = newCount + " " + gettext(transVideoCount);
   if(newCount > 0){
     let selected_slugs = []
     applyMultipleActionsBtn.removeAttribute('disabled');

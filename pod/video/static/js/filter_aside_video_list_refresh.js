@@ -57,7 +57,7 @@ function refreshInfiniteLoader(url, nextPage) {
 
 // Replace count videos label (h1) with translation and plural
 function replaceCountVideos(newCount) {
-  var transVideoCount = newCount > 1 ? "videos found" : "video found";
+  let transVideoCount = newCount > 1 ? "videos found" : "video found";
   document.getElementById("video_count").innerHTML =
     newCount + " " + gettext(transVideoCount);
 }
