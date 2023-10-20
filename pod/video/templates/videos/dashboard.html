@@ -63,20 +63,20 @@
 
     <form id="dashboardForm" enctype="multipart/form-data" name="dashboard_form" method="post" class="needs-validation" novalidate action="{% url 'video:dashboard' %}" accept-charset="utf-8">
     {% csrf_token %}
-    {% if form_dashboard.errors %}
+    {% if form.errors %}
       <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
-        {{form_dashboard.errors}}
+        {{form.errors}}
     {% endif %}
-    {% for field_hidden in form_dashboard.hidden_fields %}
+    {% for field_hidden in form.hidden_fields %}
         {{field_hidden}}
     {% endfor %}
 
-    {% for fieldset in form_dashboard.fieldsets %}
+    {% for fieldset in form.fieldsets %}
         {% with options=fieldset|last name=fieldset|first%}
         {% if name in fieldsets_dashboard %}
             <fieldset id="{{ name }}" class="fieldset-dashboard d-none">
         {% endif %}
-        {% for field in form_dashboard %}
+        {% for field in form %}
             {% if field.name in options.fields %}
                 <div class="form-group form-group-dashboard {% if name not in fieldsets_dashboard %}d-none{% endif %}">
                 {% if field.label and name in fieldsets_dashboard %}
@@ -148,6 +148,10 @@
 {% endblock page_aside %}
 
 {% block more_script %}
+<script src="/admin/jsi18n/"></script>
+<script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
+{{form.media}}
 <script>
   const urlVideos = "{% url 'video:dashboard' %}";
   var displayMode = "{{ display_mode }}";
@@ -166,7 +170,6 @@
 <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/dashboard.js' %}?ver={{VERSION}}"></script>
-{{form_dashboard.media}}
 <script>
 {% if use_category %}
   const USE_CATEGORY = true;

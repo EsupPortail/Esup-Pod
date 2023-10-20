@@ -502,7 +502,7 @@ def dashboard(request):
 
             for video in videos:
 
-                formm = (VideoForm(
+                form = (VideoForm(
                     request.POST,
                     request.FILES,
                     instance=video,
@@ -511,10 +511,10 @@ def dashboard(request):
                     current_user=request.user,
                     current_lang=request.LANGUAGE_CODE,
                 ))
-                formm.create_with_fields(update_fields)
+                form.create_with_fields(update_fields)
 
-                if formm.is_valid():
-                    video = save_video_form(request, formm)
+                if form.is_valid():
+                    video = save_video_form(request, form)
                     updated_videos.append(Video.objects.get(pk=video.id).slug)
                     messages.add_message(
                         request, messages.INFO, _("The changes have been saved.")
@@ -627,7 +627,7 @@ def dashboard(request):
         initial={"owner": default_owner},
     )
 
-    data_context["form_dashboard"] = form
+    data_context["form"] = form
     data_context["fieldsets_dashboard"] = ["channel_option", "access_restrictions"]
     data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["use_obsolescence"] = USE_OBSOLESCENCE
