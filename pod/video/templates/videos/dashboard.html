@@ -30,15 +30,19 @@
         {% trans "To edit several videos at the same time, you can select the ones you want by clicking on them then select an action to perform using the drop-down menu below, finally apply the modification. You can also refine your video search using the filters in the right menu." %}
     </p>
 
-    <select id="bulkUpdateActionSelect" name="action" class="form-select mb-2" aria-label="Choose an action">
+    <select id="bulkUpdateActionSelect" name="action" class="form-select mb-2" aria-label="{% trans "Choose an action" %}">
         <option value="" selected>{% trans "Choose an action" %}</option>
         <optgroup label="{% trans "Edit a field" %}">
             <option value="title">{% trans "Title" %}</option>
             <option value="type">{% trans "Type" %}</option>
-            <option value="owner">{% trans "Owner" %}</option>
-            <option value="additional_owners">{% trans "Additional owners" %}</option>
+            {% if request.user.is_superuser %}
+                <option value="owner">{% trans "Owner" %}</option>
+                <option value="additional_owners">{% trans "Additional owners" %}</option>
+            {% endif %}
             <option value="description">{% trans "Description" %}</option>
-            <option value="date_added">{% trans "Date added" %}</option>
+            {% if request.user.is_superuser %}
+                <option value="date_added">{% trans "Date added" %}</option>
+            {% endif %}
             <option value="date_evt">{% trans "Date of the event field" %}</option>
             <option value="cursus">{% trans "Cursus" %}</option>
             <option value="main_lang">{% trans "Main language" %}</option>
@@ -50,7 +54,9 @@
                 <option value="date_delete">{% trans "Date to delete" %}</option>
             {% endif %}
         </optgroup>
-        <option value="access_restrictions">{% trans "Restrictions" %}</option>
+        {% if request.user.is_staff  %}
+            <option value="access_restrictions">{% trans "Restrictions" %}</option>
+        {% endif %}
         <option value="channel_option">{% trans "Channel options" %}</option>
         <option value="delete">{% trans "Delete" %}</option>
     </select>
