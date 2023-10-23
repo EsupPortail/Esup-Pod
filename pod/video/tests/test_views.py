@@ -1109,6 +1109,7 @@ class video_countTestView(TestCase):
 
 class video_markerTestView(TestCase):
     """Test the video marker view."""
+
     fixtures = [
         "initial_data.json",
     ]

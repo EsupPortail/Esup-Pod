@@ -1482,6 +1482,7 @@ class ViewCount(models.Model):
 
 class UserMarkerTime(models.Model):
     """Record the time of video played by a user."""
+
     video = models.ForeignKey(
         Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
     )
@@ -1499,7 +1500,7 @@ class UserMarkerTime(models.Model):
         return "Marker time for user %s and video %s: %s" % (
             self.user,
             self.video,
-            self.markerTime
+            self.markerTime,
         )
 
     class Meta:

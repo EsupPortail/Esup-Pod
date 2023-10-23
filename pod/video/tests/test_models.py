@@ -870,6 +870,7 @@ class NotesTestCase(TestCase):
 
 class UserMarkerTimeTestCase(TestCase):
     """Test the UserMarkerTime model."""
+
     fixtures = [
         "initial_data.json",
     ]
@@ -913,7 +914,7 @@ class UserMarkerTimeTestCase(TestCase):
         try:
             with transaction.atomic():
                 newMarkerTime.save()
-            self.fail('Duplicate marker allowed.')
+            self.fail("Duplicate marker allowed.")
         except IntegrityError:
             pass
         self.assertEqual(UserMarkerTime.objects.all().count(), 1)

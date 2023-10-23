@@ -1939,9 +1939,7 @@ def video_marker(request, id, time):
         try:
             with transaction.atomic():
                 marker_time = UserMarkerTime.objects.create(
-                    video=video,
-                    user=request.user,
-                    markerTime=time
+                    video=video, user=request.user, markerTime=time
                 )
                 return HttpResponse("ok")
         except IntegrityError:
