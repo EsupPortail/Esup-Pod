@@ -553,9 +553,9 @@ def dashboard(request):
     videos = get_paginated_videos(paginator, page)
 
     videos_list_templates = {
-            "grid": "videos/video_list_grid_selectable.html",
-            "list": "videos/video_list_table_selectable.html"
-            }
+        "grid": "videos/video_list_grid_selectable.html",
+        "list": "videos/video_list_table_selectable.html"
+    }
 
     display_mode = request.GET.get("display_mode") if request.GET.get("display_mode") and request.GET.get("display_mode") in videos_list_templates.keys() else "grid"
     template = videos_list_templates[display_mode]
