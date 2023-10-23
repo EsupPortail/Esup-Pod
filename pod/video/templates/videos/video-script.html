@@ -108,6 +108,19 @@
     );
   });
 
+  {% if request.user %}
+    var marker_url = "{% url "video:video_marker" video.id 0 %}";
+    var last_timeupdate = 0;
+    player.on('timeupdate', function(){
+      // Get the current time (in seconds)
+      let currentTime = parseInt(player.currentTime());
+      if(currentTime % 5 == 0 && currentTime != last_timeupdate ) {
+        last_timeupdate = currentTime;
+        fetch(marker_url.replace("/0/", "/"+currentTime+"/"), {}); //.then(response => console.log(response)); 
+      }
+    });
+  {% endif %}
+
   {% if video.is_video %}
     /** get all mp4 format **/
     var mp4_sources = {{ video.get_video_mp4_json|safe }};
@@ -120,6 +133,11 @@
       player.on('loadedmetadata', function() {
         {% if request.GET.start and request.GET.start != '0' %}
           player.currentTime({{request.GET.start}});
+        {% else %}
+          {% if request.user.is_authenticated %}
+            const markerTime = {% get_marker_time_for_user video request.user %};
+            if(markerTime !=0) player.currentTime(markerTime);
+          {% endif %}
         {% endif %}
       });
       //Add source to player
@@ -198,6 +216,11 @@
       player.on('loadedmetadata', function() {
         {% if request.GET.start and request.GET.start != '0' %}
         player.currentTime({{request.GET.start}});
+        {% else %}
+          {% if request.user %}
+          const markerTime = {% get_marker_time_for_user video request.user %};
+          if(markerTime !=0) player.currentTime(markerTime);
+          {% endif %}
         {% endif %}
       });
     {% endif %}
