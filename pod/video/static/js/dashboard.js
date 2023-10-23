@@ -4,16 +4,33 @@ var btnDisplayMode = document.querySelectorAll(".btn-dashboard-display-mode");
 var action;
 var value;
 
+/**
+ * Add change event listener on select action to get related inputs
+ */
 bulkUpdateActionSelect.addEventListener("change", function() {
-    // Add event listener on change Action Select
     action = bulkUpdateActionSelect.value;
     appendDynamicForm(action);
 });
 
+/**
+ * Add click event listener on confirmation modal button to perform bulk update
+ */
+confirmBulkUpdateBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    bulk_update();
+});
+
+/**
+ * Perform asynchronously bulk update on selected videos
+ * @returns {Promise<void>}
+ */
 async function bulk_update() {
-  // Async POST request to bulk update videos
+
+  // Init vars
   let formData = new FormData();
   let update_fields = []
+
+  // Set updated field(s)
   if(action === "delete" || action === "transcript"){
       update_fields = [action];
   }else{
@@ -30,9 +47,11 @@ async function bulk_update() {
       });
   }
 
+  // Construct formData to send
   formData.append("selected_videos",JSON.stringify(getListSelectedVideos()));
   formData.append("update_fields",JSON.stringify(update_fields));
 
+  // Post asynchronous request
   let response = await fetch(urlUpdateVideos, {
     method: "POST",
     headers: {
@@ -45,7 +64,7 @@ async function bulk_update() {
     if(response.ok){
         data = JSON.parse(result);
         Array.from(data["updated_videos"]).forEach((v_slug) => {
-            selectedVideosCards.push(v_slug);
+            selectedVideos.push(v_slug);
         });
         showalert(gettext("The changes have been saved."), "alert-success");
         refreshVideosSearch();
@@ -55,6 +74,10 @@ async function bulk_update() {
     bootstrap.Modal.getInstance(document.getElementById('modalConfirmBulkUpdate')).toggle();
 }
 
+/**
+ * Dynamically display input(s) for selected action
+ * @param action
+ */
 function appendDynamicForm(action){
     // Append form group selected action
     let elements = document.querySelectorAll('.fieldset-dashboard, .form-group-dashboard');
@@ -75,15 +98,13 @@ function appendDynamicForm(action){
     }
 }
 
+/**
+ * Change videos list display mode between "Grid" and "List"
+ * @param display_mode
+ */
 function changeDisplayMode(display_mode){
     // Change display mode between grid and list
     displayMode = display_mode;
     btnDisplayMode.forEach(e => e.classList.toggle("active"));
     refreshVideosSearch();
 }
-
-confirmBulkUpdateBtn.addEventListener("click", (e) => {
-    // Add event listener to perform bulk update after confirmation modal
-    e.preventDefault();
-    bulk_update();
-});

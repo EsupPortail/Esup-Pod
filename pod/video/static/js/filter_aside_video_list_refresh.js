@@ -12,8 +12,8 @@ onBeforePageLoad = function () {
 onAfterPageLoad = function () {
   if (
       urlVideos === "/video/dashboard/"
-      && selectedVideosCards
-      && selectedVideosCards.length !== 0
+      && selectedVideos
+      && selectedVideos.length !== 0
   ){
     setSelectedVideos();
   }
@@ -42,6 +42,11 @@ onAfterPageLoad = function () {
   });
 };
 
+/**
+ * Refresh Infinite Loader (Waypoint Infinite's)
+ * @param url
+ * @param nextPage
+ */
 function refreshInfiniteLoader(url, nextPage) {
   if (infinite !== undefined) {
     infinite.removeLoader();
@@ -55,14 +60,19 @@ function refreshInfiniteLoader(url, nextPage) {
   );
 }
 
-// Replace count videos label (h1) with translation and plural
+/**
+ * Replace count videos label (h1) with translation and plural
+ * @param newCount
+ */
 function replaceCountVideos(newCount) {
   let transVideoCount = newCount > 1 ? "videos found" : "video found";
   document.getElementById("video_count").innerHTML =
     newCount + " " + gettext(transVideoCount);
 }
 
-// Async request to refresh view with filtered and sorted video list
+/**
+ * Async request to refresh view with filtered and sorted video list
+ */
 function refreshVideosSearch() {
   // Erase videos list and show loader
   document.getElementById("videos_list").innerHTML = "";
@@ -97,8 +107,8 @@ function refreshVideosSearch() {
       }
       if (
           urlVideos === "/video/dashboard/"
-          && selectedVideosCards
-          && selectedVideosCards.length !== 0
+          && selectedVideos
+          && selectedVideos.length !== 0
       ){
         setSelectedVideos();
       }
@@ -115,7 +125,9 @@ function refreshVideosSearch() {
     });
 }
 
-// Add trigger event to manage sort direction.
+/**
+ * Add click event listener to manage sort direction
+ */
 document
   .getElementById("sort_direction_label")
   .addEventListener("click", function (e) {
@@ -124,7 +136,10 @@ document
     refreshVideosSearch();
   });
 
-// Return url with filter and sort parameters
+/**
+ * Get built url with filter and sort and page parameters
+ * @returns {string}
+ */
 function getUrlForRefresh() {
   let newUrl = window.location.pathname;
   // Add sort-related parameters
@@ -136,7 +151,7 @@ function getUrlForRefresh() {
       "sort_direction=" + document.getElementById("sort_direction").value + "&";
   }
   // Add dashboard display mode param
-  if (urlVideos === "/video/dashboard/" && displayMode != undefined){
+  if (urlVideos === "/video/dashboard/" && displayMode !== undefined){
     newUrl += "display_mode="+displayMode + "&";
   }
   // Add category checked if exists
@@ -154,7 +169,10 @@ function getUrlForRefresh() {
   return newUrl;
 }
 
-// Add trigger event on change on inputs (filters, sort column and sort direction)
+/**
+ * Add change event listener on inputs (filters, sort column and sort direction) to refresh video list
+ * @param el
+ */
 function setListenerChangeInputs(el) {
   el.addEventListener("change", (e) => {
     checkedInputs = [];
@@ -168,7 +186,9 @@ function setListenerChangeInputs(el) {
   });
 }
 
-// Add event listener to search user input to create checkboxes
+/**
+ * Add event listener to search user input to create checkboxes
+ */
 if (ownerBox) {
   ownerBox.addEventListener("input", (e) => {
     if (ownerBox.value && ownerBox.value.length > 2) {
@@ -188,7 +208,11 @@ if (ownerBox) {
   });
 }
 
-// Create checkbox for user search
+/**
+ * Create checkbox for user search
+ * @param user
+ * @returns {HTMLDivElement}
+ */
 function createUserCheckBox(user) {
   let div = document.createElement("div");
   div.classList.add("form-check");
@@ -210,7 +234,9 @@ function createUserCheckBox(user) {
   return div;
 }
 
-// Add trigger event to manage reset of filters
+/**
+ * Add click event listener to manage reset of filters
+ */
 document.getElementById("resetFilters").addEventListener("click", function () {
   checkedInputs = [];
   document
@@ -229,7 +255,10 @@ document.getElementById("resetFilters").addEventListener("click", function () {
   refreshVideosSearch();
 });
 
-// Enable / Disable toggle inputs to prevent user actions during loading
+/**
+ * Toggle (enable/disable) inputs to prevent user actions during loading
+ * @param value
+ */
 function disabledInputs(value) {
   document
     .querySelectorAll("input[type=checkbox][class=form-check-input]")
@@ -238,14 +267,12 @@ function disabledInputs(value) {
     });
 }
 
-// Add event listener on inputs on launch
 document
   .querySelectorAll("#filters .form-check-input,#sort,#sort_direction")
   .forEach((el) => {
     setListenerChangeInputs(el);
   });
 
-//initiate checkedInputs
 document
   .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
   .forEach((e) => {

@@ -491,7 +491,7 @@ def theme_edit_save(request, channel):
 
 @login_required(redirect_field_name="referrer")
 def dashboard(request):
-    """Render the logged user's dashboard (videos list/bulk update's interface)"""
+    """Render the logged user's dashboard (videos list/bulk update's interface)."""
     data_context = {}
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
@@ -609,7 +609,7 @@ def dashboard(request):
 
 @login_required(redirect_field_name="referrer")
 def bulk_update(request):
-    """Perform bulk update for selected videos"""
+    """Perform bulk update for selected videos."""
     if request.method == "POST":
         selected_videos = json.loads(request.POST.get("selected_videos"))
         update_fields = json.loads(request.POST.get("update_fields"))

@@ -1,4 +1,4 @@
-var selectedVideosCards;
+var selectedVideos;
 var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
 var resetSelectedVideosBtn = document.getElementById("resetSelectedVideosBtn");
 var countSelectedVideosBadge = document.getElementById("countSelectedVideosBadge");
@@ -9,23 +9,33 @@ var badgeToolTip = new bootstrap.Tooltip(applyMultipleActionsBtn, {
         delay: { "show": 0, "hide": 50 }
     });
 
+/**
+ * Get list of selected videos (cards or list-items selected by user) based on class selected
+ * @returns {*[videos]}
+ */
 function getListSelectedVideos(){
-    selectedVideosCards = [];
+    selectedVideos = [];
     document.querySelectorAll(".infinite-item.selected").forEach((elt) => {
-        selectedVideosCards.push(elt.dataset.slug);
+        selectedVideos.push(elt.dataset.slug);
     });
-    return selectedVideosCards;
+    return selectedVideos;
 }
 
+/**
+ * Set shared/global variable selectedVideos with selected videos based on class selected
+ */
 function setListSelectedVideos(){
-    selectedVideosCards = [];
+    selectedVideos = [];
     document.querySelectorAll(".infinite-item.selected").forEach((elt) => {
-        selectedVideosCards.push(elt.dataset.slug);
+        selectedVideos.push(elt.dataset.slug);
     });
 }
 
+/**
+ * Set directly selected videos on interface to improve user experience
+ */
 function setSelectedVideos(){
-    Array.from(selectedVideosCards).forEach((elt) => {
+    Array.from(selectedVideos).forEach((elt) => {
         let domElt = document.querySelector('#videos_list .infinite-item[data-slug="'+elt+'"]');
         if(domElt && !domElt.classList.contains("selected")){
             if(!domElt.classList.contains("selected")){
@@ -35,7 +45,9 @@ function setSelectedVideos(){
     });
 }
 
-// Replace selected count videos label
+/**
+ * Replace count of selected videos (count label in "Apply" bulk update's badge)
+ */
 function replaceSelectedCountVideos() {
   videos_selected = document.querySelectorAll(".infinite-item.selected");
   let newCount = videos_selected.length;
@@ -55,6 +67,10 @@ function replaceSelectedCountVideos() {
   }
 }
 
+/**
+ * Toggle class selected for video cards or list-item, avoid select a video when click on links
+ * @param item
+ */
 function toggleSelectedVideo(item){
     // Prevent item to select if link is clicked
     if(
@@ -69,11 +85,13 @@ function toggleSelectedVideo(item){
     replaceSelectedCountVideos();
 }
 
+/**
+ * Clear videos selection : deselect all videos, reset badge count
+ */
 function clearSelectedVideo() {
-    selectedVideosCards = []
+    selectedVideos = []
     document.querySelectorAll(".infinite-item.selected").forEach((elt) => {
         elt.classList.remove("selected");
     });
     replaceSelectedCountVideos();
 }
-
