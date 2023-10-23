@@ -20,8 +20,9 @@ def is_staff_affiliation(affiliation):
 class ShibbBackend(ShibbolethRemoteUserBackend):
     def authenticate(self, request, remote_user, shib_meta):
         """
-        The username passed as ``remote_user`` is considered trusted.  Use the
-        username to get or create the user.
+        Username passed as `remote_user` is considered trusted.
+
+        Use the username to get or create the user.
         """
         if not remote_user:
             return

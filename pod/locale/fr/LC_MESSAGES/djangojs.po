@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 14:42+0000\n"
+"POT-Creation-Date: 2023-10-16 13:36+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: obado <bado@unice.fr>\n"
+"Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -96,8 +96,13 @@ msgid "Unrecognized caption file format."
 msgstr "Format de fichier de traduction non reconnu."
 
 #: pod/completion/static/js/caption_maker.js
-msgid "There is no captions to save."
-msgstr "Il n’y a aucun sous-titre à sauvegarder."
+msgid "There are errors in your captions/subtitles. Please review."
+msgstr ""
+"Il y a des erreurs dans vos légendes/sous-titres. Veuillez corriger svp."
+
+#: pod/completion/static/js/caption_maker.js
+msgid "There is no caption/subtitle to save."
+msgstr "Il n’y a aucun sous-titre/légende à sauvegarder."
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Not a valid time track file."
@@ -171,6 +176,10 @@ msgid "Pause to enter caption for segment from %s to %s."
 msgstr "Mettez en pause pour entrer le texte du segment entre %s et %s."
 
 #: pod/completion/static/js/caption_maker.js
+msgid "A caption cannot has more than 80 characters."
+msgstr "Une légende / sous-titre ne peut comporter plus de 80 caractères."
+
+#: pod/completion/static/js/caption_maker.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Add"
 msgstr "Ajouter"
@@ -181,7 +190,7 @@ msgid "Delete"
 msgstr "Supprimer"
 
 #: pod/completion/static/js/caption_maker.js
-msgid "Caption"
+msgid "Caption / Subtitle"
 msgstr "Légende / Sous-titre"
 
 #: pod/completion/static/js/caption_maker.js
@@ -195,18 +204,6 @@ msgstr "Fin"
 #: pod/completion/static/js/caption_maker.js
 msgid "Time stamps"
 msgstr "Horodatages"
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Error reading caption file. Code = "
-msgstr "Erreur durant la lecture du fichier de traduction, Code = "
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Exception thrown reading caption file. Code = "
-msgstr "Une exception a été levée durant la lecture du fichier. Code = "
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Your browser does not support FileReader."
-msgstr "Votre navigateur ne supporte pas FileReader."
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Error loading caption file: "
@@ -513,11 +510,6 @@ msgid "Network response was not ok."
 msgstr "La réponse du réseau n’était pas correcte."
 
 #: pod/podfile/static/podfile/js/filewidget.js
-#: pod/video/static/js/change_video_owner.js
-msgid "Loading…"
-msgstr "Chargement en cours…"
-
-#: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
 msgstr "Changer d’image"
 
@@ -607,24 +599,16 @@ msgid "Error while subscribing to push notifications."
 msgstr "Une erreur est survenue lors de la souscription aux notifications."
 
 #: pod/video/static/js/ajax-display-channels.js
-msgid "%(count)s channel"
-msgid_plural "%(count)s channels"
-msgstr[0] "%(count)s chaîne"
-msgstr[1] "%(count)s chaînes"
-
-#: pod/video/static/js/ajax-display-channels.js
 msgid "No channels found"
 msgstr "Aucun chaîne trouvée"
-
-#: pod/video/static/js/ajax-display-channels.js
-msgid "%(count)s video"
-msgid_plural "%(count)s videos"
-msgstr[0] "%(count)s vidéo"
-msgstr[1] "%(count)s vidéos"
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
 msgstr "Aucun élément trouvé"
+
+#: pod/video/static/js/change_video_owner.js
+msgid "Loading…"
+msgstr "Chargement en cours…"
 
 #: pod/video/static/js/change_video_owner.js
 msgid "An error occurred during the change of owner"
@@ -647,35 +631,12 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: pod/video/static/js/comment-script.js
-#, javascript-format
-msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
-msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
-msgstr[0] "%s <span class=\"d-none d-md-inline\">vote</span>"
-msgstr[1] "%s <span class=\"d-none d-md-inline\">votes</span>"
-
-#: pod/video/static/js/comment-script.js
 msgid "Agree with the comment"
 msgstr "D’accord avec ce commentaire"
 
 #: pod/video/static/js/comment-script.js
-msgid "Reply to comment"
-msgstr "Répondre au commentaire"
-
-#: pod/video/static/js/comment-script.js
-msgid "Reply"
-msgstr "Répondre"
-
-#: pod/video/static/js/comment-script.js
 msgid "Remove this comment"
 msgstr "Supprimer ce commentaire"
-
-#: pod/video/static/js/comment-script.js
-msgid "Add a public comment"
-msgstr "Ajouter un commentaire public"
-
-#: pod/video/static/js/comment-script.js
-msgid "Send"
-msgstr "Envoyer"
 
 #: pod/video/static/js/comment-script.js
 msgid "Show answers"
@@ -688,6 +649,13 @@ msgstr "Mauvaise réponse du serveur."
 #: pod/video/static/js/comment-script.js
 msgid "Sorry, you're not allowed to vote by now."
 msgstr "Désolé, vous n’êtes pas autorisé à voter maintenant."
+
+#: pod/video/static/js/comment-script.js
+#, javascript-format
+msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
+msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
+msgstr[0] "%s <span class=\"d-none d-md-inline\">vote</span>"
+msgstr[1] "%s <span class=\"d-none d-md-inline\">votes</span>"
 
 #: pod/video/static/js/comment-script.js
 msgid "Sorry, you can't comment this video by now."
@@ -709,47 +677,38 @@ msgstr[0] "%s commentaire"
 msgstr[1] "%s commentaires"
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is password protected."
 msgstr "Ce contenu est protégé par mot de passe."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is chaptered."
 msgstr "Ce contenu est chapitré."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is in draft."
 msgstr "Ce contenu est en brouillon."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Video content."
 msgstr "Contenu vidéo."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Audio content."
 msgstr "Contenu audio."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Edit the video"
 msgstr "Éditer la vidéo"
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Complete the video"
 msgstr "Compléter la vidéo"
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Chapter the video"
 msgstr "Chapitrer la vidéo"
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Delete the video"
 msgstr "Supprimer la vidéo"
 
@@ -821,18 +780,6 @@ msgstr "Désolé, aucune vidéo trouvée"
 #: pod/video/static/js/video_category.js
 msgid "Edit the category"
 msgstr "Éditer la catégorie"
-
-#: pod/video/static/js/video_category.js
-msgid "Delete the category"
-msgstr "Supprimer la catégorie"
-
-#: pod/video/static/js/video_category.js
-msgid "Success!"
-msgstr "Succès !"
-
-#: pod/video/static/js/video_category.js
-msgid "Error…"
-msgstr "Erreur…"
 
 #: pod/video/static/js/video_category.js
 msgid "Category created successfully"
@@ -910,37 +857,8 @@ msgstr "Ajouts en favoris total depuis la création"
 msgid "Slug"
 msgstr "Titre court"
 
-#~ msgid "Error"
-#~ msgstr "Erreur"
+#~ msgid "Add a caption/subtitle after this one"
+#~ msgstr "Ajouter un(e) légende/sous-titre ci-dessous"
 
-#~ msgid "video"
-#~ msgid_plural "videos"
-#~ msgstr[0] "vidéo"
-#~ msgstr[1] "vidéos"
-
-#~ msgid "Channels"
-#~ msgstr "Chaînes"
-
-#~ msgid "Channel"
-#~ msgstr "Chaîne"
-
-#~ msgid "videos"
-#~ msgstr "vidéos"
-
-#~ msgid "Are you sure you want to delete this element?"
-#~ msgstr "Êtes-vous sûr(e) de vouloir supprimer cet élément ?"
-
-#~ msgid "Refresh"
-#~ msgstr "Actualiser"
-
-#~ msgid "Video add to playlist"
-#~ msgstr "Ajouter une vidéo à une playlist"
-
-#~ msgid "Do you want to delete this playlist?"
-#~ msgstr "Êtes-vous sûr(e) de vouloir supprimer cette liste de lecture ?"
-
-#~ msgid "default"
-#~ msgstr "par défaut"
-
-#~ msgid "Slide"
-#~ msgstr "Diapositive"
+#~ msgid "Delete this caption/subtitle"
+#~ msgstr "Supprimer ce(tte) légende/sous-titre"
