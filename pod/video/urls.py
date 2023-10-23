@@ -9,6 +9,7 @@ from .views import (
     video_delete,
     video_transcript,
     dashboard,
+    bulk_update,
     video_notes,
     video_xhr,
     video_count,
@@ -86,6 +87,7 @@ urlpatterns = [
         name="api_chunked_upload",
     ),
     url(r"^dashboard/$", dashboard, name="dashboard"),
+    url(r"^bulk_update/$", bulk_update, name="bulk_update"),
 ]
 # COMPLETION
 urlpatterns += [

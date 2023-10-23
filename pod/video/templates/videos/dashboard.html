@@ -157,6 +157,7 @@
 {{form.media}}
 <script>
   const urlVideos = "{% url 'video:dashboard' %}";
+  const urlUpdateVideos = "{% url 'video:bulk_update' %}";
   var displayMode = "{{ display_mode }}";
   var csrftoken = "{{ csrf_token }}";
   var page = 1;

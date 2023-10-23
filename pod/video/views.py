@@ -491,57 +491,7 @@ def theme_edit_save(request, channel):
 
 @login_required(redirect_field_name="referrer")
 def dashboard(request):
-    """Render the logged user's dashboard (videos list/bulk update)"""
-    if request.method == "POST":
-        selected_videos = json.loads(request.POST.get("selected_videos"))
-        update_fields = json.loads(request.POST.get("update_fields"))
-        videos = Video.objects.filter(slug__in=selected_videos)
-
-        if videos.exists():
-            updated_videos = []
-            deleted_videos = 0
-
-            for video in videos:
-
-                if "transcript" in update_fields:
-                    video_transcript(request, video.slug)
-
-                elif "delete" in update_fields and video_is_deletable(request, video):
-                    video.delete()
-                    deleted_videos += 1
-
-                else:
-                    form = (VideoForm(
-                        request.POST,
-                        request.FILES,
-                        instance=video,
-                        is_staff=request.user.is_staff,
-                        is_superuser=request.user.is_superuser,
-                        current_user=request.user,
-                        current_lang=request.LANGUAGE_CODE,
-                    ))
-                    form.create_with_fields(update_fields)
-
-                    if form.is_valid():
-                        video = save_video_form(request, form)
-                        updated_videos.append(Video.objects.get(pk=video.id).slug)
-                        messages.add_message(
-                            request, messages.INFO, _("The changes have been saved.")
-                        )
-                    else:
-                        messages.add_message(
-                            request,
-                            messages.ERROR,
-                            _("One or more errors have been found in the form."),
-                        )
-                        return JsonResponse({"error": messages.ERROR}, status=404)
-
-            return JsonResponse({
-                'selected_videos': selected_videos,
-                'updated_videos': updated_videos,
-                'deleted_videos': deleted_videos,
-            })
-
+    """Render the logged user's dashboard (videos list/bulk update's interface)"""
     data_context = {}
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
@@ -603,18 +553,12 @@ def dashboard(request):
     videos = get_paginated_videos(paginator, page)
 
     videos_list_templates = {
-        "grid": {
-            "template_name": "videos/video_list_grid_selectable.html"
-        },
-        "list": {
-            "template_name": "videos/video_list_table_selectable.html"
-        },
-    }
+            "grid": "videos/video_list_grid_selectable.html",
+            "list": "videos/video_list_table_selectable.html"
+        }
 
-    display_mode = "grid"
-    if request.GET.get("display_mode") and request.GET.get("display_mode") in videos_list_templates.keys():
-        display_mode = request.GET.get("display_mode")
-    template = videos_list_templates.get(display_mode)["template_name"]
+    display_mode = request.GET.get("display_mode") if request.GET.get("display_mode") and request.GET.get("display_mode") in videos_list_templates.keys() else "grid"
+    template = videos_list_templates[display_mode]
 
     if request.is_ajax():
         return render(
@@ -661,6 +605,60 @@ def dashboard(request):
     data_context["page_title"] = "Dashboard"
 
     return render(request, "videos/dashboard.html", data_context)
+
+
+@login_required(redirect_field_name="referrer")
+def bulk_update(request):
+    """Perform bulk update for selected videos"""
+    if request.method == "POST":
+        selected_videos = json.loads(request.POST.get("selected_videos"))
+        update_fields = json.loads(request.POST.get("update_fields"))
+        videos_list = Video.objects.filter(slug__in=selected_videos)
+
+        if videos_list.exists():
+            updated_videos = []
+            deleted_videos = 0
+
+            for video in videos_list:
+
+                if "transcript" in update_fields:
+                    video_transcript(request, video.slug)
+
+                elif "delete" in update_fields and video_is_deletable(request, video):
+                    video.delete()
+                    deleted_videos += 1
+
+                else:
+                    form = (VideoForm(
+                        request.POST,
+                        request.FILES,
+                        instance=video,
+                        is_staff=request.user.is_staff,
+                        is_superuser=request.user.is_superuser,
+                        current_user=request.user,
+                        current_lang=request.LANGUAGE_CODE,
+                    ))
+                    form.create_with_fields(update_fields)
+
+                    if form.is_valid():
+                        video = save_video_form(request, form)
+                        updated_videos.append(Video.objects.get(pk=video.id).slug)
+                        messages.add_message(
+                            request, messages.INFO, _("The changes have been saved.")
+                        )
+                    else:
+                        messages.add_message(
+                            request,
+                            messages.ERROR,
+                            _("One or more errors have been found in the form."),
+                        )
+                        return JsonResponse({"error": messages.ERROR}, status=404)
+
+            return JsonResponse({
+                'selected_videos': selected_videos,
+                'updated_videos': updated_videos,
+                'deleted_videos': deleted_videos,
+            })
 
 
 def get_paginated_videos(paginator, page):
@@ -728,7 +726,7 @@ def owner_is_searchable(user):
 def videos(request):
     """Render the main list of videos."""
     videos_list = get_filtered_videos_list(request, get_available_videos())
-    sort_field = request.GET.get("sort")
+    sort_field = request.GET.get("sort") if request.GET.get("sort") else "title"
     sort_direction = request.GET.get("sort_direction")
 
     videos_list = sort_videos_list(videos_list, sort_field, sort_direction)

@@ -33,7 +33,7 @@ async function bulk_update() {
   formData.append("selected_videos",JSON.stringify(getListSelectedVideos()));
   formData.append("update_fields",JSON.stringify(update_fields));
 
-  let response = await fetch(urlVideos, {
+  let response = await fetch(urlUpdateVideos, {
     method: "POST",
     headers: {
       "X-Requested-With": "XMLHttpRequest",
