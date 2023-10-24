@@ -403,7 +403,9 @@ def main_stt_transcript(norm_mp3_file, duration, transript_model):
     msg += "\nInference took %0.3fs." % inference_end
     return msg, webvtt, all_text
 
+
 def main_whisper_transcript(norm_mp3_file, lang):
+    """Whisper transcription."""
     msg = ""
     all_text = ""
     webvtt = WebVTT()
@@ -413,8 +415,8 @@ def main_whisper_transcript(norm_mp3_file, lang):
     model = whisper.load_model(
             TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"],
             download_root=TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["download_root"]
-        )
- 
+    )
+
     transcription = model.transcribe(norm_mp3_file, language=lang)
     msg += "\nRunning inference."
 
@@ -429,6 +431,7 @@ def main_whisper_transcript(norm_mp3_file, lang):
     inference_end = timer() - inference_start
     msg += "\nInference took %0.3fs." % inference_end
     return msg, webvtt, all_text
+
 
 def change_previous_end_caption(webvtt, start_caption):
     """Change the end time for caption."""
