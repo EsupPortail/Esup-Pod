@@ -707,7 +707,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
       "text/html",
     ).body.firstChild,
     startTimeInput: new DOMParser().parseFromString(
-      `<input class="form-control" type="text" pattern="([0-9][0-9]:){0,1}([0-5][0-9]:){0,1}[0-5][0-9].([0-9]){3}" required>`,
+      `<input class="form-control" type="text" pattern="([0-9][0-9]:){0,1}([0-5][0-9]:){0,1}[0-5][0-9].([0-9]){3}" value="${start}" required>`,
       "text/html",
     ).body.firstChild,
     endTimeLabel: new DOMParser().parseFromString(
@@ -715,7 +715,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
       "text/html",
     ).body.firstChild,
     endTimeInput: new DOMParser().parseFromString(
-      `<input class="form-control" type="text" pattern="([0-9][0-9]:){0,1}([0-5][0-9]:){0,1}[0-5][0-9].([0-9]){3}" required>`,
+      `<input class="form-control" type="text" pattern="([0-9][0-9]:){0,1}([0-5][0-9]:){0,1}[0-5][0-9].([0-9]){3}" value="${end}" required>`,
       "text/html",
     ).body.firstChild,
 
