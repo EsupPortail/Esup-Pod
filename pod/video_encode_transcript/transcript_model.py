@@ -412,7 +412,9 @@ def main_whisper_transcript(norm_mp3_file, lang):
 
     model = whisper.load_model(
         TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"],
-        download_root=TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["download_root"]
+        download_root=TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang][
+            "download_root"
+        ],
     )
 
     transcription = model.transcribe(norm_mp3_file, language=lang)
@@ -420,9 +422,9 @@ def main_whisper_transcript(norm_mp3_file, lang):
 
     for segment in transcription["segments"]:
         caption = Caption(
-            format_time_caption(segment['start']),
-            format_time_caption(segment['end']),
-            segment['text'],
+            format_time_caption(segment["start"]),
+            format_time_caption(segment["end"]),
+            segment["text"],
         )
         webvtt.captions.append(caption)
 
