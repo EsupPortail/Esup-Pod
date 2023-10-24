@@ -94,10 +94,12 @@ def start_transcripting(mp3filepath, duration, lang):
     if TRANSCRIPTION_NORMALIZE:
         mp3filepath = normalize_mp3(mp3filepath)
     if TRANSCRIPTION_TYPE == "WHISPER":
-        transript_model = lang
+        msg, webvtt, all_text = main_whisper_transcript(mp3filepath, lang)
     else:
         transript_model = get_model(lang)
-    msg, webvtt, all_text = start_main_transcript(mp3filepath, duration, transript_model)
+        msg, webvtt, all_text = start_main_transcript(
+            mp3filepath, duration, transript_model
+        )
     if DEBUG:
         print(msg)
         print(webvtt)
@@ -115,10 +117,6 @@ def start_main_transcript(mp3filepath, duration, transript_model):
     elif TRANSCRIPTION_TYPE == "VOSK":
         msg, webvtt, all_text = main_vosk_transcript(
             mp3filepath, duration, transript_model
-        )
-    elif TRANSCRIPTION_TYPE == "WHISPER":
-        msg, webvtt, all_text = main_whisper_transcript(
-            mp3filepath, transript_model
         )
     return msg, webvtt, all_text
 
@@ -413,8 +411,8 @@ def main_whisper_transcript(norm_mp3_file, lang):
     msg += "\nInference start %0.3fs." % inference_start
 
     model = whisper.load_model(
-            TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"],
-            download_root=TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["download_root"]
+        TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"],
+        download_root=TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["download_root"]
     )
 
     transcription = model.transcribe(norm_mp3_file, language=lang)
