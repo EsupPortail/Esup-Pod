@@ -16,7 +16,7 @@
         "http://localhost:9090/video/0001-video-test/",
         "http://localhost:9090/live/events/"
     ],
-    "todo":[
+    "todo": [
         "These urls are not A11y compliant yet, and need more work from 3rd party",
         "http://localhost:9090/video/stats_view/videos/"
     ]

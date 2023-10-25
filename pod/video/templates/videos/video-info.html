@@ -51,13 +51,13 @@
       {% get_favorite_playlist user as fav_playlist %}
       {% if USE_PLAYLIST and USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
         {% if is_favorite %}
-        <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" title="{% trans 'Remove from favorite' %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="true">
-          <i class="bi-star-fill" aria-hidden="true"></i>
-        </a>
+          <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" title="{% trans 'Remove from favorite' %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="true" role="button">
+            <i class="bi-star-fill" aria-hidden="true"></i>
+          </a>
         {% else %}
-        <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}" title="{% trans 'Add in favorite' %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="false">
-          <i class="bi-star" aria-hidden="true"></i>
-        </a>
+          <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}" title="{% trans 'Add in favorite' %}" class="btn btn-link btn-lg pod-btn-share favorite-btn-link" id="favorite-button" aria-pressed="false" role="button">
+            <i class="bi-star" aria-hidden="true"></i>
+          </a>
         {% endif %}
 
       {% endif %}
@@ -78,11 +78,11 @@
 {% if video.description or tag_list or video.is_360 %}
 <div class="pod-info-video__summary my-3" id="summary">
   {% if video.is_360 %}
-    <p class="alert">{% trans 'This is a 360 degree video. To look around click and drag your mouse on the video.' %}</p>
+    <p class="alert alert-info" role="alert">{% trans 'This is a 360 degree video. To look around click and drag your mouse on the video.' %}</p>
   {% endif %}
   {% tags_for_object video as tag_list %}
   {% if video.description or tag_list %}
-    <p>{{ video.description|safe }}</p>
+    <div class="pod-video-description">{{ video.description|safe }}</div>
     {% if tag_list %}
       <p>{% trans 'Tags:' %}
         {% for tag in tag_list %}
@@ -319,19 +319,19 @@
               <dd class="col-sm-9 mb-0">
                 <ul class="list-inline mb-0 social_links">
                   <li class="list-inline-item">
-                    <a target="_blank" href="https://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} Facebook">
+                    <a target="_blank" href="https://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} Facebook" data-bs-toggle="tooltip" data-bs-placement="bottom">
                       <i class="bi bi-facebook" aria-hidden="true"></i>
                       <span class="visually-hidden">{% trans 'Share on Facebook' %}</span>
                     </a>
                   </li>
                   <li class="list-inline-item">
-                    <a target="_blank" href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} X (Twitter)">
+                    <a target="_blank" href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} X (Twitter)" data-bs-toggle="tooltip" data-bs-placement="bottom">
                       <i class="bi bi-twitter" aria-hidden="true"></i>
                       <span class="visually-hidden">{% trans 'Share on X (Twitter)' %}</span>
                     </a>
                   </li>
                   <li class="list-inline-item">
-                    <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} LinkedIn">
+                    <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} LinkedIn" data-bs-toggle="tooltip" data-bs-placement="bottom">
                       <i class="bi bi-linkedin" aria-hidden="true"></i>
                       <span class="visually-hidden">{% trans 'Share on LinkedIn' %}</span>
                     </a>

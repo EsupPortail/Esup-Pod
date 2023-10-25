@@ -1,16 +1,11 @@
-.paginator {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-}
+/**
+ * Esup-Pod Paginator styles
+ */
 
 .paginator {
-    width: 100%;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    grid-column: 1 / -1;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  grid-column: 1 / -1;
 }

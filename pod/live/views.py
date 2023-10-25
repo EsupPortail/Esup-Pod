@@ -1022,7 +1022,7 @@ def create_video(event_id, current_file, segment_number):
     except Exception as exc:
         return JsonResponse(
             status=500,
-            data={"success": False, "error": exc},
+            data={"success": False, "error": str(exc)},
         )
 
     segment = "(" + segment_number + ")" if segment_number else ""

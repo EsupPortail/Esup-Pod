@@ -1,3 +1,4 @@
+"""Esup-Pod transcript video functions."""
 from django.conf import settings
 from django.core.files import File
 from pod.completion.models import Track
@@ -42,7 +43,7 @@ EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
 TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", False)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
-    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "VOSK")
+    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
 TRANSCRIPTION_NORMALIZE = getattr(settings, "TRANSCRIPTION_NORMALIZE", False)
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 
@@ -72,7 +73,8 @@ print(webvtt)
 # ##########################################################################
 def start_transcript(video_id, threaded=True):
     """
-    Main function call to start transcript.
+    Call to start transcript main function.
+
     Will launch transcript mode depending on configuration.
     """
     if threaded:
@@ -89,7 +91,8 @@ def start_transcript(video_id, threaded=True):
 
 def main_threaded_transcript(video_to_encode_id):
     """
-    Main function to transcript.
+    Transcript main function.
+
     Will check all configuration and file and launch transcript.
     """
     change_encoding_step(video_to_encode_id, 5, "transcripting audio")
@@ -100,7 +103,7 @@ def main_threaded_transcript(video_to_encode_id):
     lang = video_to_encode.transcript
     # check if TRANSCRIPTION_MODEL_PARAM [lang] exist
     if not TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE].get(lang):
-        msg += "\n no stt model found for lang:%s." % lang
+        msg += "\n no stt model found for lang: %s." % lang
         msg += "Please add it in TRANSCRIPTION_MODEL_PARAM."
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
@@ -111,7 +114,7 @@ def main_threaded_transcript(video_to_encode_id):
             else None
         )
         if mp3file is None:
-            msg += "\n no mp3 file found for video :%s." % video_to_encode.id
+            msg += "\n no mp3 file found for video: %s." % video_to_encode.id
             change_encoding_step(video_to_encode.id, -1, msg)
             send_email(msg, video_to_encode.id)
         else:

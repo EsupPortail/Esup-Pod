@@ -1,13 +1,13 @@
 -r requirements-encode.txt
 Django==3.2.20
 django-ckeditor==6.3.0
-Pillow==9.3.0
+Pillow==10.0.1
 django-tagging==0.5.0
 django-modeltranslation==0.18.7
 django-cas-client==1.5.3
 ldap3==2.9
 django-simple-captcha==0.5.17
-urllib3==1.26.5
+urllib3==1.26.17
 elasticsearch==6.3.1
 djangorestframework==3.14.0
 django-filter==22.1
@@ -35,3 +35,6 @@ bleach==6.0.0
 pytube==15.0.0
 django-redis-sessions
 paramiko~=3.1.0
+djangorestframework-simplejwt==5.3.0
+django-pwa==1.1.0
+django-webpush==0.3.5

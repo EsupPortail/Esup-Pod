@@ -21,7 +21,7 @@ function show_form(data) {
   if (inputStart) {
     inputStart.insertAdjacentHTML(
       "beforebegin",
-      "&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-primary btn-sm'>" +
+      "&nbsp;<span class='getfromvideo'><a id='getfromvideo_start' class='btn btn-primary btn-sm' href='#form_chapter'>" +
         gettext("Get time from the player") +
         "</a><span class='timecode' id='chapter_time_start'>&nbsp;</span></span>",
     );

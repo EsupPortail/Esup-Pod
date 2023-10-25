@@ -1,15 +1,22 @@
+/**
+ * Esup-Pod BBB styles
+ */
+
 #bbb_meetings_list .card-header {
   background: var(--color-black-alpha);
-  padding: 0 .25rem;
+  padding: 0 0.25rem;
   z-index: 9;
 }
-#bbb_meetings_list .card-header .text-muted{
-	color: var(--color-white) !important;
+
+#bbb_meetings_list .card-header .text-muted {
+  color: var(--color-white) !important;
 }
+
 /* To always see publish button */
-#bbb_meetings_list .infinite-item .card-body{
-height: auto !important;
+#bbb_meetings_list .infinite-item .card-body {
+  height: auto !important;
 }
-#bbb_meetings_list .infinite-item .card-body footer a{
-width: 100% !important;
+
+#bbb_meetings_list .infinite-item .card-body footer a {
+  width: 100% !important;
 }

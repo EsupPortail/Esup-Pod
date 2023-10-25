@@ -28,9 +28,9 @@
     {% else %}
       <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the video on which you want to work with." %}</p>
     {% endif %}
-    <h2 id="video_count" class="page_title col-8">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
+    <h2 id="video_count" class="page_title col-md-8">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
     {% if count_videos > 1 %}
-      <form id="sortForm" action="{% url 'video:my_videos' %}" method="get" class="filterSortForms col-4 mb-2">
+      <form id="sortForm" action="{% url 'video:my_videos' %}" method="get" class="filterSortForms col-md-4 mb-2">
         {% include "videos/video_sort_select.html" %}
       </form>
     {% endif %}

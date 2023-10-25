@@ -150,7 +150,7 @@ class LiveTestUtils(TestCase):
         def modify_file():
             modifications = 0
 
-            while modifications < 10:
+            while modifications < 14:
                 with open(resource_path, "a+") as f:
                     f.write(" some more content " + str(modifications))
                     modifications += 1
@@ -159,7 +159,7 @@ class LiveTestUtils(TestCase):
             # remove the temporary file
             os.unlink(resource_path)
 
-        # Modify the file in a thread during 8 seconds
+        # Modify the file in a thread during +- 11 seconds (14 * 0.8)
         thread = threading.Thread(target=modify_file)
         thread.start()
 
