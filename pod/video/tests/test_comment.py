@@ -1,3 +1,4 @@
+"""Tests for video comments and votes."""
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse, HttpResponse
 from django.test import TestCase, Client
@@ -13,11 +14,14 @@ import logging
 
 
 class TestComment(TestCase):
+    """Class containing Tests for video comments and votes."""
+
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
+        """Set up TestComment class."""
         self.logger = logging.getLogger("django.request")
         # self.previous_level = self.logger.getEffectiveLevel()
         # Remove warning log
@@ -86,8 +90,11 @@ class TestComment(TestCase):
         self.admin_user.owner.sites.add(Site.objects.get_current())
         self.admin_user.owner.save()
 
+        self.ajax_header = {"HTTP_x-requested-with": "XMLHttpRequest"}
+
     def test_get_all_comment(self):
-        url = reverse("get_comments", kwargs={"video_slug": self.video.slug})
+        """Try to get all comments."""
+        url = reverse("video:get_comments", kwargs={"video_slug": self.video.slug})
         response = self.client.get(url)
         # Check that the view function is get_comments
         self.assertEqual(response.resolver_match.func, get_comments)
@@ -100,7 +107,7 @@ class TestComment(TestCase):
         self.assertContains(response, self.simple_user_comment.content.encode("utf-8"))
 
     def test_get_only_parent_comment(self):
-        url = reverse("get_comments", kwargs={"video_slug": self.video.slug})
+        url = reverse("video:get_comments", kwargs={"video_slug": self.video.slug})
         response = self.client.get(
             url, {"only": "parents"}, HTTP_ACCEPT="application/json"
         )
@@ -140,7 +147,7 @@ class TestComment(TestCase):
 
     def test_get_comment_with_children(self):
         url = reverse(
-            "get_comment",
+            "video:get_comment",
             kwargs={
                 "comment_id": self.admin_comment.id,
                 "video_slug": self.video.slug,
@@ -188,12 +195,14 @@ class TestComment(TestCase):
         )
 
     def test_add_comment(self):
-        # test add parent comment
+        """Test add parent comment."""
         pk = Comment.objects.all().count() + 1
-        url = reverse("add_comment", kwargs={"video_slug": self.video.slug})
+        url = reverse("video:add_comment", kwargs={"video_slug": self.video.slug})
         self.client.logout()
         self.client.force_login(self.simple_user)
-        response = self.client.post(url, {"content": "Third parent comment"})
+        response = self.client.post(
+            url, {"content": "Third parent comment"}, **self.ajax_header
+        )
         data = {
             "author_name": "{0} {1}".format(
                 self.simple_user.first_name, self.simple_user.last_name
@@ -217,12 +226,14 @@ class TestComment(TestCase):
         # test add child comment
         pk = Comment.objects.all().count() + 1
         url = reverse(
-            "add_child_comment",
+            "video:add_child_comment",
             kwargs={"video_slug": self.video.slug, "comment_id": p_comment.id},
         )
         self.client.logout()
         self.client.force_login(self.owner_user)
-        response = self.client.post(url, {"content": "Response to third comment"})
+        response = self.client.post(
+            url, {"content": "Response to third comment"}, **self.ajax_header
+        )
         data["author_name"] = "{0} {1}".format(
             self.owner_user.first_name, self.owner_user.last_name
         )
@@ -244,17 +255,17 @@ class TestComment(TestCase):
         # test bad request
         self.client.logout()
         self.client.force_login(self.owner_user)
-        response = self.client.post(url, HTTP_ACCEPT_LANGUAGE="en")
+        response = self.client.post(url, HTTP_ACCEPT_LANGUAGE="en", **self.ajax_header)
         self.assertContains(response, b"<h1>Bad Request</h1>", status_code=400)
 
         # test method not allowed
-        response = self.client.get(url, HTTP_ACCEPT_LANGUAGE="en")
+        response = self.client.get(url, HTTP_ACCEPT_LANGUAGE="en", **self.ajax_header)
         self.assertContains(response, b"<h1>Method Not Allowed</h1>", status_code=405)
 
     def test_delete_comment(self):
-        # simple_user cannot delete a comment that does not belongs to him
+        """simple_user cannot delete a comment that does not belongs to him."""
         url = reverse(
-            "delete_comment",
+            "video:delete_comment",
             kwargs={
                 "video_slug": self.video.slug,
                 "comment_id": self.owner_to_admin_comment.id,
@@ -262,7 +273,7 @@ class TestComment(TestCase):
         )
         self.client.logout()
         self.client.force_login(self.simple_user)
-        response = self.client.post(url, HTTP_ACCEPT_LANGUAGE="en")
+        response = self.client.post(url, HTTP_ACCEPT_LANGUAGE="en", **self.ajax_header)
         data = {
             "deleted": False,
             "message": "You do not have rights to delete this comment",
@@ -272,7 +283,7 @@ class TestComment(TestCase):
         self.assertEqual(response.content, expected_content)
         # video owner can delete any comment
         url = reverse(
-            "delete_comment",
+            "video:delete_comment",
             kwargs={
                 "video_slug": self.video.slug,
                 "comment_id": self.admin_comment.id,
@@ -282,14 +293,14 @@ class TestComment(TestCase):
         expected_content = JsonResponse(data, safe=False).content
         self.client.logout()
         self.client.force_login(self.owner_user)
-        response = self.client.post(url)
+        response = self.client.post(url, **self.ajax_header)
         self.assertEqual(response.content, expected_content)
         # should also remove child comment
         comment = Comment.objects.filter(id=self.owner_to_admin_comment.id).first()
         self.assertIsNone(comment)
         # Admin user can delete any comment
         url = reverse(
-            "delete_comment",
+            "video:delete_comment",
             kwargs={
                 "video_slug": self.video.slug,
                 "comment_id": self.simple_user_comment.id,
@@ -302,17 +313,14 @@ class TestComment(TestCase):
         expected_content = JsonResponse(data, safe=False).content
         self.client.logout()
         self.client.force_login(self.admin_user)
-        response = self.client.post(url)
+        response = self.client.post(url, **self.ajax_header)
         self.assertEqual(response.content, expected_content)
         comment = Comment.objects.filter(id=self.owner_to_simple_user_comment.id).first()
         self.assertIsNone(comment)
 
-    """
-    " VOTE TEST
-    """
-
     def test_get_votes(self):
-        url = reverse("get_votes", kwargs={"video_slug": self.video.slug})
+        """VOTE TEST."""
+        url = reverse("video:get_votes", kwargs={"video_slug": self.video.slug})
         self.client.logout()
         self.client.force_login(self.owner_user)
         response = self.client.get(url)
@@ -322,28 +330,65 @@ class TestComment(TestCase):
 
         # test vote +1
         url = reverse(
-            "add_vote",
+            "video:add_vote",
+            kwargs={
+                "video_slug": self.video.slug,
+                "comment_id": self.admin_comment.id,
+            },
+        )
+        response = self.client.post(url, **self.ajax_header)
+        data = {"voted": True}
+        expected_response = JsonResponse(data, safe=False).content
+        self.assertEqual(response.content, expected_response)
+
+        # test vote -1
+        response = self.client.post(url, **self.ajax_header)
+        data["voted"] = False
+        expected_response = JsonResponse(data, safe=False).content
+        self.assertEqual(response.content, expected_response)
+
+        # test method not allowed
+        response = self.client.get(url, HTTP_ACCEPT_LANGUAGE="en", **self.ajax_header)
+        self.assertContains(response, b"<h1>Method Not Allowed</h1>", status_code=405)
+
+    def test_comment_without_ajax(self):
+        """Verify that Pod will refuse a comment request done without AJAX http header."""
+        # Ensure that comment owner is logged
+        self.client.logout()
+        self.client.force_login(self.owner_user)
+
+        # Vote +1
+        url = reverse(
+            "video:add_vote",
             kwargs={
                 "video_slug": self.video.slug,
                 "comment_id": self.admin_comment.id,
             },
         )
         response = self.client.post(url)
-        data = {"voted": True}
-        expected_response = JsonResponse(data, safe=False).content
-        self.assertEqual(response.content, expected_response)
+        # Check that the response is 403 Forbidden.
+        self.assertEqual(response.status_code, 403)
 
-        # test vote -1
+        # Delete comment
+        url = reverse(
+            "video:delete_comment",
+            kwargs={
+                "video_slug": self.video.slug,
+                "comment_id": self.owner_to_admin_comment.id,
+            },
+        )
         response = self.client.post(url)
-        data["voted"] = False
-        expected_response = JsonResponse(data, safe=False).content
-        self.assertEqual(response.content, expected_response)
+        # Check that the response is 403 Forbidden.
+        self.assertEqual(response.status_code, 403)
 
-        # test method not allowed
-        response = self.client.get(url, HTTP_ACCEPT_LANGUAGE="en")
-        self.assertContains(response, b"<h1>Method Not Allowed</h1>", status_code=405)
+        # Add a comment
+        url = reverse("video:add_comment", kwargs={"video_slug": self.video.slug})
+        response = self.client.post(url, {"content": "New parent comment"})
+        # Check that the response is 403 Forbidden.
+        self.assertEqual(response.status_code, 403)
 
     def tearDown(self):
+        """Cleanup all created stuffs."""
         del self.video
         del self.owner_user
         del self.admin_user

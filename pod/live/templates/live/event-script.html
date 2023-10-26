@@ -1,0 +1,842 @@
+{% load custom_tags %}
+{% load i18n %}
+{% load static %}
+<script>
+    // Debug if necessary, depends on the settings_local
+    const debug = "{% get_setting "DEBUG" False %}" === "True";
+
+    // Live started
+    let started = false;
+    // Number of loop until we are sure the live is stopped
+    // See video state (cf. https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/readyState)
+    let nbLoop = 0;
+    // Live seems stopped
+    let stopped = false;
+    let video_on_hold_is_displayed = false;
+    let recordingDuration = 0;
+    let options = {
+        notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
+        language: "fr", //en or nl
+        fluid: !{{ request.GET.is_iframe|yesno:"true,false" }},
+        playbackRates: [0.5, 1, 1.5, 2],
+        errorDisplay: false,
+        loop: false
+    }
+
+    /**
+     * Add a BS5 alert message in current view.
+     * @param msg
+     * @param type
+     */
+    function show_alert(msg, type) {
+      let icon = "info-circle-fill";
+      if (type === "success")
+        icon = "check-circle-fill";
+      else if (type === "warning")
+        icon = "exclamation-circle-fill";
+      else
+        type = "info";
+
+      document.getElementById("user_message").innerHTML =
+        `<div id="user-msg" class="alert alert-${type} alert-dismissible fade show" role="alert">
+            <button id="user-msg-btn" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              <i class="bi bi-${icon}" aria-hidden="true" style="font-size: 1.5em"></i> ${msg}
+            </div>`;
+
+      const user_msg = document.getElementById("user-msg");
+      setTimeout(() => {
+        user_msg.animate(
+          { opacity: 0 },
+          { duration: 1000 }
+        );
+        slideUp(user_msg, 1000, function() {
+          user_msg.remove();
+        });
+      }, 4000);
+    }
+
+    // Management of the end of the stream (for Firefox, Chrome... not working for Edge, Safari)
+    videojs.Hls.xhr.beforeRequest = function (options) {
+
+        if ('{{event.is_past }}' === 'False') {
+
+            // Reset counter if video state is ok
+            if (started && player.readyState() > 2) {
+                nbLoop = 0;
+            }
+            if (started && player.readyState() <= 2) {
+                // Check if .m3u8 exists, to be sure that live is stopped
+                fetch("{{event.broadcaster.url}}", {
+                    method: 'GET',
+                    {#crossDomain: true,#}
+                    headers: {
+                        'Accept': 'text/html',
+                        'Content-Type': 'text/html; charset=utf-8',
+                    }
+                }).then((response) => {
+                  stopped = !response.ok;
+                }).catch(() => {
+                    stopped = true;
+                });
+                if (stopped) {
+                    nbLoop = nbLoop + 1;
+                    // We're waiting a bit to make sure it's not a network / data flow issue...
+                    if (debug) {
+                        console.info("The streaming live stopped? Video state: " + player.readyState() + ". It's been " + nbLoop + " times that there is no more video stream. After 4 times, we stop.");
+                    }
+                    if (nbLoop > 3) {
+                        // Display of a message of end of live and reload of the page in 9 seconds
+                        let modal = player.createModal('{% trans "Thank you for watching this streaming live with us. The page will reload automatically within a few seconds to display the video on hold." %}');
+                        setTimeout(function () {
+                            location.reload();
+                        }, 9000);
+                    }
+                }
+            }
+        }
+        return options;
+    }
+
+    {% if event.is_current %}
+
+      // Management of the streaming live
+      let player = videojs("podvideoplayer", options, function() {
+      });
+
+      player.videoJsLogo({
+        imgsrc: '{% static LOGO_PLAYER %}',
+        linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
+        link: '{{ LINK_PLAYER }}'
+      });
+
+      player.on("error", function() {
+        // Handle successives errors to avoid multiple reload
+        if (typeof (errored) == "undefined" || !errored) {
+          let errored = true;
+          let modal = player.createModal('{% trans "Live not found, retry in 10 seconds" %}');
+          setTimeout(function() {
+            errored = false;
+            modal.close();
+            player.src({
+              src: player.currentSrc(),
+              type: player.currentType(),
+              overrideNative: true
+            });
+          }, 10000);
+
+
+          // Chargement de la vidéo d'attente si le stream n'a pas commencé
+          {% if event.video_on_hold.is_video %}
+            modal.close();
+            showWaitingVideo(true);
+          {% endif %}
+        }
+      });
+
+      // Fire this event when live started
+      player.on("loadedmetadata", function() {
+        if (debug) {
+          console.info("Streaming live starts.");
+        }
+
+        // dispose onHold resources
+        video_on_hold_is_displayed = false;
+        videojs(document.getElementById("divvideoonhold")).dispose();
+
+        // Affichage du flux direct
+        started = true;
+        document.getElementById("divvideoplayer").style.display = "block";
+
+        // Affichage du nombre de spectateurs
+        {% if event.broadcaster.enable_viewer_count %}
+          player.videoJsViewerCount();
+        {% endif %}
+
+        // Affichage des boutons de contrôle de l'enregistrement
+        {% if can_record %}
+          document.getElementById("recording_btns").classList.remove("d-none");
+          updateStreamStatus();
+          setInterval(updateStreamStatus, 60000); // every 60 sec
+          setInterval(displayRecordingDuration, 1000); // every sec
+        {% endif %}
+
+      // Transcription du live
+        {% if event.enable_transcription %}
+          show_transcription();
+        {% endif %}
+      });
+
+      {% if can_record %}
+        const startRecordBtn = document.getElementById("startrecord");
+        const stopRecordBtn = document.getElementById("stoprecord");
+        const splitRecordBtn = document.getElementById("splitrecord");
+        const durationClock = document.getElementById("recordingduration");
+        const streamControl = document.getElementById("stream_btns");
+        const startStreamBtn = document.getElementById("startstream");
+        const stopStreamBtn = document.getElementById("stopstream");
+        const startAndRecordBtn = document.getElementById("startandrecord");
+
+        // variables set in getRtmpInfos()
+        let rtmp_streamer_id;
+        let is_streaming;
+        let is_auto_start_on_record;
+
+        /**
+         * Starts the recording.
+         */
+        startRecordAction = function() {
+          changeRecordControlButtons();
+          fetch(startRecordBtn.dataset.url, {
+            method: "POST",
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+              "Accept": "application/json",
+              "Content-Type": "application/json",
+              "X-CSRFToken": '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+              "idevent": "{{ event.id }}",
+              "idbroadcaster": "{{ event.broadcaster.id }}"
+            })
+          }).then((response) => {
+            if (response.ok)
+              return response.json();
+            else
+              return Promise.reject(response);
+          }).then((data) => {
+            if (data.success) {
+              recordingDuration = 0;
+              durationClock.innerHTML = "";
+              durationClock.classList.remove("d-none");
+              changeRecordControlButtons("on");
+              show_alert("{% trans 'Recording in progress' %}", "success");
+              if (is_auto_start_on_record)
+                changeStreamControlButtons("opened");
+            } else {
+              show_alert("{% trans 'Recording not done: ' %}" + data.error, "warning");
+            }
+          }).catch((error) => {
+            durationClock.classList.add("d-none");
+            console.error("{% trans 'Error calling' %}" + " 'startrecord' " + error.statusText);
+            show_alert("{% trans 'Error calling' %}" + " 'startrecord'", "warning");
+          });
+        };
+
+        /**
+         * Stops the recording.
+         */
+        stopRecordAction = function() {
+          changeRecordControlButtons();
+          durationClock.classList.add("d-none");
+          fetch(stopRecordBtn.dataset.url, {
+            method: "POST",
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+              "Accept": "application/json",
+              "Content-Type": "application/json",
+              "X-CSRFToken": '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+              "idevent": "{{ event.id }}",
+              "idbroadcaster": "{{ event.broadcaster.id }}"
+            })
+          }).then((response) => {
+            if (response.ok)
+              return response.json();
+            else
+              return Promise.reject(response);
+          }).then((data) => {
+            if (data.success) {
+              changeRecordControlButtons("off");
+              getEventVideos();
+              show_alert("{% trans 'Recording stopped' %}", "success");
+
+              if (is_auto_start_on_record)
+                changeStreamControlButtons("closed");
+            } else {
+              show_alert("{% trans 'Recording not stopped: ' %}" + data.error, "warning");
+            }
+          }).catch((error) => {
+            console.error("{% trans 'Error calling' %}" + " 'stop record' " + error.statusText);
+            show_alert("{% trans 'Error calling' %}" + " 'stop record'", "warning");
+          });
+        };
+
+        /**
+         * Splits the recording.
+         */
+        splitRecordAction = function() {
+          changeRecordControlButtons();
+          fetch(splitRecordBtn.dataset.url, {
+            method: "POST",
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+              "Accept": "application/json",
+              "Content-Type": "application/json",
+              "X-CSRFToken": '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+              "idevent": "{{ event.id }}",
+              "idbroadcaster": "{{ event.broadcaster.id }}"
+            })
+          }).then((response) => {
+            if (response.ok)
+              return response.json();
+            else
+              return Promise.reject(response);
+          }).then((data) => {
+            if (data.success) {
+              recordingDuration = 0;
+              changeRecordControlButtons("on");
+              getEventVideos();
+              show_alert("{% trans 'Recording split done' %}", "success");
+            } else {
+              durationClock.classList.add("d-none");
+              show_alert("{% trans 'Recording not split: ' %}" + data.error, "warning");
+            }
+          }).catch((error) => {
+            durationClock.classList.add("d-none");
+            console.error("{% trans 'Error calling' %}" + " 'splitrecord' " + error.statusText);
+            show_alert("{% trans 'Error calling' %}" + " 'splitrecord'", "warning");
+          });
+        };
+
+        setOnclickActionToButton(startRecordBtn, startRecordAction);
+        setOnclickActionToButton(stopRecordBtn, stopRecordAction);
+        {% if use_split %}
+          setOnclickActionToButton(splitRecordBtn, splitRecordAction);
+        {% else %}
+          splitRecordBtn.classList.add("d-none");
+        {% endif %}
+
+        {% if can_manage_stream %}
+
+          /**
+           * Starts the stream
+           * @returns {Promise<boolean>}
+           */
+          startStreamAction = function() {
+            return new Promise((resolve, reject) => {
+              if (!rtmp_streamer_id)
+                return resolve = false;
+
+              changeStreamControlButtons();
+              fetch(startStreamBtn.dataset.url, {
+                method: "POST",
+                headers: {
+                  "X-Requested-With": "XMLHttpRequest",
+                  "Accept": "application/json",
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                  "idbroadcaster": "{{ event.broadcaster.id }}"
+                })
+               }).then((response) => {
+                if (response.ok)
+                  return response.json();
+                else
+                  return Promise.reject(response);
+               }).then((data) => {
+                if (data.success) {
+                  changeStreamControlButtons("opened");
+                  show_alert("{% trans 'Video stream started (please wait a moment)' %}", "success");
+                  resolve(true);
+                } else {
+                  show_alert("{% trans 'Video stream can not be started' %}", "warning");
+                  resolve(false);
+                }
+               }).catch((error) => {
+                changeStreamControlButtons();
+                console.error("{% trans 'Error calling' %}" + " 'startstream' " + error.statusText);
+                show_alert("{% trans 'Error calling' %}" + " 'startstream'", "warning");
+                resolve(false);
+               });
+            });
+          };
+
+          /**
+           * Stops the stream
+           */
+          stopStreamAction = function() {
+            if (!rtmp_streamer_id)
+              return;
+
+            changeStreamControlButtons();
+            fetch(stopStreamBtn.dataset.url, {
+              method: "POST",
+              headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "X-CSRFToken": '{{ csrf_token }}'
+              },
+              body: JSON.stringify({
+                "idbroadcaster": "{{ event.broadcaster.id }}",
+              })
+            }).then((response) => {
+              if (response.ok)
+                return response.json();
+              else
+                return Promise.reject(response);
+            }).then((data) => {
+              if (data.success) {
+                // stops the recording (if currently recording)
+                stopRecordBtn.click();
+                changeStreamControlButtons("closed");
+                changeRecordControlButtons();
+                show_alert("{% trans 'Video stream stopped (please wait a moment)' %}", "success");
+              } else {
+                console.error("{% trans 'Video stream can not be stopped' %}");
+                show_alert("{% trans 'Video stream can not be stopped' %}", "warning");
+              }
+            }).catch((error) => {
+              console.error("{% trans 'Error calling' %}"  + " 'stopstream' " + error.statusText);
+              show_alert("{% trans 'Error calling' %}" + " 'stopstream'", "warning");
+            });
+          };
+
+          /**
+           * Starts the stream and starts the recording.
+           */
+          startAndRecordStreamAction = async function() {
+
+            if (is_auto_start_on_record)
+              return startRecordAction();
+
+            if (await startStreamAction()) {
+              startRecordAction();
+            }
+          };
+
+          /**
+           * Checks if the broadcaster is configured for rtmp and gets infos.
+           */
+          function getRtmpInfos() {
+            const url = "{% url 'live:ajax_event_get_rtmp_config' %}" + '?idbroadcaster={{ event.broadcaster.id }}';
+            fetch(url, {
+              method: "GET",
+              headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "X-CSRFToken": '{{ csrf_token }}'
+              }
+            }).then((response) => {
+              if (response.ok)
+                return response.json();
+              else
+                return Promise.reject(response);
+            }).then((body) => {
+              if (body.success && Object.keys(body.data).length > 0) {
+
+                streamControl.classList.remove("d-none");
+
+                is_streaming = body.data["is_streaming"];
+                is_auto_start_on_record = body.data["auto_start_on_record"];
+                rtmp_streamer_id = body.data["streamer_id"];
+
+                changeStreamControlButtons(is_streaming ? "opened" : "closed");
+              } else {
+                changeStreamControlButtons();
+              }
+            }).catch((error) => {
+              changeStreamControlButtons();
+              console.error("{% trans 'Error calling' %}" + " 'get_stream_rtmp_infos' " + error);
+            });
+          }
+
+          // Check rtmp stream state every 60 sec
+          getRtmpInfos();
+          setInterval(getRtmpInfos, 60000);
+
+        {% endif %}
+
+        /**
+         * Change the stream control buttons status.
+         */
+        function changeStreamControlButtons(status = "") {
+          {% if can_manage_stream %}
+            if (status === "opened") {
+              startStreamBtn.setAttribute("disabled", "");
+              startAndRecordBtn.setAttribute("disabled", "");
+              stopStreamBtn.removeAttribute("disabled");
+              setOnclickActionToButton(startStreamBtn, null);
+              setOnclickActionToButton(startAndRecordBtn, null);
+              setOnclickActionToButton(stopStreamBtn, stopStreamAction);
+            } else if (status === "closed") {
+              startStreamBtn.removeAttribute("disabled");
+              startAndRecordBtn.removeAttribute("disabled");
+              stopStreamBtn.setAttribute("disabled", "");
+              setOnclickActionToButton(startStreamBtn, startStreamAction);
+              setOnclickActionToButton(startAndRecordBtn, startAndRecordStreamAction);
+              setOnclickActionToButton(stopStreamBtn, null);
+            } else {
+              startStreamBtn.setAttribute("disabled", "");
+              startAndRecordBtn.setAttribute("disabled", "");
+              stopStreamBtn.setAttribute("disabled", "");
+              setOnclickActionToButton(startStreamBtn, null);
+              setOnclickActionToButton(startAndRecordBtn, null);
+              setOnclickActionToButton(stopStreamBtn, null);
+            }
+          {% endif %}
+        }
+
+        /**
+         * Change the stream control buttons status.
+         */
+        function changeRecordControlButtons(status = "") {
+
+          if (status === "on") {
+            startRecordBtn.setAttribute("disabled", "");
+            stopRecordBtn.removeAttribute("disabled");
+            splitRecordBtn.removeAttribute("disabled");
+            splitRecordBtn.removeAttribute("disabled");
+          } else if (status === "off") {
+            startRecordBtn.removeAttribute("disabled");
+            stopRecordBtn.setAttribute("disabled", "");
+            splitRecordBtn.setAttribute("disabled", "");
+          } else {
+            startRecordBtn.setAttribute("disabled", "");
+            stopRecordBtn.setAttribute("disabled", "");
+            splitRecordBtn.setAttribute("disabled", "");
+          }
+        }
+
+        /**
+         * Set onclick action to the given button if not already set.
+         */
+        function setOnclickActionToButton(btn, action = null) {
+          if (btn.onclick !== action) {
+            btn.onclick = action;
+          }
+        }
+
+        /**
+         * Updates the status of the stream and display the action buttons.
+         */
+        function updateStreamStatus() {
+          const url = "{% url 'live:ajax_is_stream_available_to_record' %}" + '?idbroadcaster={{ event.broadcaster.id }}';
+          fetch(url, {
+            method: "GET",
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+              "Accept": "application/json",
+              "Content-Type": "application/json",
+              "X-CSRFToken": '{{ csrf_token }}'
+            }
+          }).then((response) => {
+            if (response.ok)
+              return response.json();
+            else
+              return Promise.reject(response);
+          }).then((data) => {
+            if (data.recording) {
+              changeRecordControlButtons("on");
+              getCurrentRecordInfos();
+            } else {
+              durationClock.classList.add("d-none");
+              if (data.available)
+                changeRecordControlButtons("off");
+              else
+                changeRecordControlButtons();
+            }
+          }).catch((error) => {
+            console.error("{% trans 'Error calling' %}" + " 'isstreamavailabletorecord'" + error.statusText);
+            changeRecordControlButtons();
+            durationClock.classList.add("d-none");
+          });
+        }
+
+        /**
+         * Displays elapsed record time.
+         */
+        function displayRecordingDuration() {
+          let hours = Math.floor(recordingDuration / 3600)
+          let minutes = Math.floor(recordingDuration / 60 - (hours * 60))
+          let seconds = recordingDuration - minutes * 60 - hours * 3600
+          hours = hours === 0 ? "" : hours + ":"
+          minutes = minutes < 10 ? "0" + minutes : minutes
+          seconds = seconds < 10 ? "0" + seconds : seconds
+          durationClock.innerHTML = '{% trans "Recording duration" %}: ' + hours + minutes + ':' + seconds;
+          recordingDuration++
+        }
+
+        /**
+         * Gets the current recording infos.
+         */
+        function getCurrentRecordInfos() {
+          fetch("{% url 'live:ajax_event_info_record' %}", {
+            method: "POST",
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+              "Accept": "application/json",
+              "Content-Type": "application/json",
+              "X-CSRFToken": '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+              "idevent": "{{ event.id }}",
+              "idbroadcaster": "{{ event.broadcaster.id }}"
+            })
+          }).then((response) => {
+            if (response.ok)
+              return response.json();
+            else
+              return Promise.reject(response);
+          }).then((data) => {
+            if (data.success && data.duration) {
+              recordingDuration = data.duration;
+              durationClock.classList.remove("d-none");
+            } else {
+              durationClock.classList.add("d-none");
+              console.error("Recording Info not done: " + data.error);
+            }
+          }).catch((error) => {
+            durationClock.classList.add("d-none");
+            console.error("{% trans 'Error calling' %}" + " 'info record' "+ error.statusText);
+          });
+        }
+
+      {% endif %}
+
+    {% endif %}
+
+    /**
+     * Displays the event's videos.
+     */
+    function getEventVideos() {
+        const url = "{% url 'live:event_get_video_cards' %}" + '?idevent={{ event.id }}';
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                "X-CSRFToken": '{{ csrf_token }}'
+            },
+        }).then((response) => {
+            if (response.ok)
+                return response.json();
+            else
+                return Promise.reject(response);
+        }).then((data) => {
+            if (data.content !== "") {
+                document.getElementById("list_videos_of_event").classList.remove("d-none");
+                document.getElementById("event_videos_list").innerHTML = data.content;
+            }
+        }).catch((error) => {
+            document.getElementById("list_videos_of_event").classList.add("d-none");
+            console.error("{% trans 'Error calling' %}" + " 'event_get_video_cards' " + error.statusText);
+        })
+    }
+
+    /**
+     * Displays the waiting video (if any).
+     * @param withModal: if modal should be added on top.
+     */
+    function showWaitingVideo(withModal){
+        if (video_on_hold_is_displayed) {
+            return;
+        }
+
+        options["loop"] = true;
+        let playerOnHold = videojs('podvideoonholdplayer', options, function () {
+         });
+
+        if (withModal)
+            playerOnHold.createModal('{% trans "Live not found, retry in 10 seconds" %}');
+
+        playerOnHold.videoJsLogo({
+          imgsrc: '{% static LOGO_PLAYER %}',
+          linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
+          link: '{{ LINK_PLAYER }}'
+        });
+
+        let mp4_sources = {{event.video_on_hold.get_video_mp4_json|safe|default:'null'}};
+        playerOnHold.src(mp4_sources);
+
+        document.getElementById("divvideoonhold").style.display = "block";
+        if (document.getElementById("divvideoplayer"))
+          document.getElementById("divvideoplayer").style.display = "none";
+
+        video_on_hold_is_displayed = true;
+    }
+
+    /**
+     * Reloads the page if the event has started or ended while viewing.
+     */
+    function reloadIfNeeded() {
+        const start = new Date("{{ event.start_date }}")
+        const end = new Date("{{ event.end_date }}")
+        {% if event.is_coming %}
+            setInterval(() => {
+                if (new Date() >= start) {
+                    location.reload()
+                }
+            }, 1000);
+
+        {% elif event.is_current %}
+            setInterval(() => {
+                if (new Date() >= end) {
+                    location.reload()
+                }
+            }, 1000);
+        {% endif %}
+    }
+
+    // BBB message sending
+    {% if display_chat %}
+        function displayReturnMessage(level, returnCode) {
+            let toReturn = "";
+            let returnElement = document.getElementById("message_return");
+            if (level === "info") {
+                returnElement.classList.add('alert');
+                returnElement.classList.add('alert-info');
+            } else {
+                returnElement.classList.add('alert');
+                returnElement.classList.add('alert-warning');
+            }
+            if (returnCode === "message_sent") {
+                toReturn = "{% trans 'Message sent' %}";
+            }
+            if (returnCode === "error_no_broadcaster_found") {
+                toReturn = "{% trans 'Message not sent: no broadcaster found' %}";
+            }
+            if (returnCode === "error_no_connection") {
+                toReturn = "{% trans 'Message not sent: connection problem (REDIS)' %}";
+            }
+
+            returnElement.innerHTML = toReturn;
+            returnElement.style.display = "block";
+            setTimeout(function() {
+                returnElement.style.display = "none";
+            }, 3000)
+        }
+
+        function sendBBBMessage(e) {
+            e.preventDefault();
+            let message = document.getElementById("message").value;
+            fetch("{% url 'bbb:live_publish_chat' id=event.broadcaster.id %}", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    "X-CSRFToken": '{{ csrf_token }}'
+                },
+                body: JSON.stringify({"message": message}),
+            }).then((response) => {
+                if (response.ok)
+                    return response.json();
+                else
+                    return Promise.reject(response);
+            }).then((data) => {
+                document.getElementById('live_bbb_chat_form').reset();
+                if (data.is_sent) {
+                    // message_sent
+                    displayReturnMessage("info", data.message_return);
+                } else {
+                    // error_no_broadcaster_found: Message not sent: no broadcaster found
+                    // error_no_connection: Message not sent: no connection to REDIS
+                    displayReturnMessage("error", data.message_return);
+                }
+            }).catch((error) => {
+                console.log("{% trans 'Error calling' %}" + " 'sendBBBMessage' " + error);
+            });
+        }
+
+        document.getElementById('bbb-send-message').onclick = function ($this) {
+            sendBBBMessage($this);
+        };
+
+    {% endif %}
+
+    // On page load
+    document.addEventListener("DOMContentLoaded", () => {
+
+        {% if event.is_past or event.is_current %}
+            {% if not request.GET.is_iframe %}
+                getEventVideos()
+            {% endif %}
+        {% endif %}
+
+        {% if event.is_coming %}
+            {% if event.video_on_hold.is_video %}
+                showWaitingVideo(false);
+            {% endif %}
+        {% endif %}
+
+        {% if event.is_current %}
+            showWaitingVideo(true);
+        {% endif %}
+
+        reloadIfNeeded();
+
+    })
+
+    /**
+     * Displays the event's transcription.
+     */
+    function show_transcription() {
+        let lastMod = null;
+        let lastModTime = 0;
+        setInterval(function () {
+            let tracks = player.textTracks();
+            let track_live;
+            for (let i = 0; i < tracks.length; i++) {
+                let track = tracks[i];
+                if (track.kind === "subtitles" && track.language === "{{ event.broadcaster.main_lang }}") {
+                    track_live = tracks[i];
+                }
+            }
+            let current_mod = null;
+            const currentDate = new Date();
+            const timestamp = currentDate. getTime();
+            let vtt_url ="{{ event.broadcaster.transcription_file.url }}?d="; // + timestamp;
+            fetch(vtt_url).then(r => {
+                current_mod = r.headers.get('Last-Modified');
+                if (lastMod && current_mod && lastMod === current_mod){
+                    lastModTime += 1;
+                    if(lastModTime == 10) {
+                        if(track_live) player.removeRemoteTextTrack(track_live);
+                        let newTrack = player.addRemoteTextTrack(
+                            {
+                            kind: "subtitles",
+                            language: "{{ event.broadcaster.main_lang }}",
+                            src: "{{ event.broadcaster.transcription_file.url }}_empty.vtt",
+                            default: true,
+                            },
+                            false
+                        );
+                        lastModTime = 0;
+                    }
+                    return
+                }
+                lastModTime = 0;
+                lastMod = current_mod;
+                if(track_live) player.removeRemoteTextTrack(track_live);
+                let newTrack = player.addRemoteTextTrack(
+                    {
+                        kind: "subtitles",
+                        language: "{{ event.broadcaster.main_lang }}",
+                        src: vtt_url,
+                        default: true,
+                    },
+                    false
+                );
+                newTrack.addEventListener('load', (e)=>{
+                    newTrack.mode = 'showing';
+                });
+                // show all tracks
+                for (let i = 0; i < tracks.length; i++) {
+                    if (tracks[i].kind === "subtitles" && tracks[i].language === "{{ event.broadcaster.main_lang }}") {
+                        tracks[i].mode = "showing";
+                    }
+                }
+
+            }).catch(e => {
+                  // console.log(e)
+            })
+        }, 1000);
+    }
+
+</script>

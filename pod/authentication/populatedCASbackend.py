@@ -2,9 +2,9 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from pod.authentication.models import Owner
-from pod.authentication.models import AFFILIATION
+from pod.authentication.models import DEFAULT_AFFILIATION, AFFILIATION_STAFF
 from ldap3 import Server
-from ldap3 import ALL
+from ldap3 import ALL as __ALL__
 from ldap3 import Connection
 from ldap3.core.exceptions import LDAPSocketOpenError
 from ldap3.core.exceptions import LDAPBindError
@@ -39,11 +39,7 @@ CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION
 
 CREATE_GROUP_FROM_GROUPS = getattr(settings, "CREATE_GROUP_FROM_GROUPS", False)
 
-AFFILIATION_STAFF = getattr(
-    settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff")
-)
-
-GROUP_STAFF = getattr(settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff"))
+GROUP_STAFF = AFFILIATION_STAFF
 
 LDAP_SERVER = getattr(settings, "LDAP_SERVER", {"url": "", "port": 389, "use_ssl": False})
 AUTH_LDAP_BIND_DN = getattr(settings, "AUTH_LDAP_BIND_DN", "")
@@ -70,9 +66,9 @@ USER_LDAP_MAPPING_ATTRIBUTES = getattr(
 CAS_FORCE_LOWERCASE_USERNAME = getattr(settings, "CAS_FORCE_LOWERCASE_USERNAME", False)
 
 # search scope
-BASE = "BASE"
-LEVEL = "LEVEL"
-SUBTREE = "SUBTREE"
+__BASE__ = "BASE"
+__LEVEL__ = "LEVEL"
+__SUBTREE__ = "SUBTREE"
 
 
 def populateUser(tree):
@@ -86,6 +82,9 @@ def populateUser(tree):
     user, user_created = User.objects.get_or_create(username=username)
     owner, owner_created = Owner.objects.get_or_create(user=user)
     owner.auth_type = "CAS"
+
+    delete_synchronized_access_group(owner)
+
     owner.save()
 
     if POPULATE_USER == "CAS":
@@ -101,13 +100,19 @@ def populateUser(tree):
                 populate_user_from_entry(user, owner, entry)
 
 
+def delete_synchronized_access_group(owner):
+    groups_to_sync = AccessGroup.objects.filter(auto_sync=True)
+    for group_to_sync in groups_to_sync:
+        owner.accessgroup_set.remove(group_to_sync)
+
+
 def get_server():
     if isinstance(LDAP_SERVER["url"], str):
         server = Server(
             LDAP_SERVER["url"],
             port=LDAP_SERVER["port"],
             use_ssl=LDAP_SERVER["use_ssl"],
-            get_info=ALL,
+            get_info=__ALL__,
         )
     elif isinstance(LDAP_SERVER["url"], tuple):
         hosts = []
@@ -118,7 +123,7 @@ def get_server():
             LDAP_SERVER["url"][0],
             port=LDAP_SERVER["port"],
             use_ssl=LDAP_SERVER["use_ssl"],
-            get_info=ALL,
+            get_info=__ALL__,
             allowed_referral_hosts=hosts,
         )
     return server
@@ -135,7 +140,7 @@ def get_ldap_conn():
         logger.error("LDAPBindError, credentials incorrect: {0}".format(err))
         return None
     except LDAPSocketOpenError as err:
-        logger.error("LDAPSocketOpenError : %s" % err)
+        logger.error("LDAPSocketOpenError: %s" % err)
         return None
 
 
@@ -144,7 +149,7 @@ def get_entry(conn, username, list_value):
         conn.search(
             AUTH_LDAP_USER_SEARCH[0],
             AUTH_LDAP_USER_SEARCH[1] % {"uid": username},
-            search_scope=SUBTREE,  # BASE, LEVEL and SUBTREE
+            search_scope=__SUBTREE__,  # BASE, LEVEL and SUBTREE
             attributes=list_value,
             size_limit=1,
         )
@@ -167,6 +172,7 @@ def assign_accessgroups(groups_element, user):
             )
             if group_created:
                 accessgroup.display_name = group
+                accessgroup.auto_sync = True
             accessgroup.sites.add(Site.objects.get_current())
             accessgroup.save()
             user.owner.accessgroup_set.add(accessgroup)
@@ -200,59 +206,36 @@ def create_accessgroups(user, tree_or_entry, auth_type):
     assign_accessgroups(groups_element, user)
 
 
+def get_entry_value(entry, attribute, default):
+    """Retrieve the value of the given attribute from the LDAP entry."""
+    if (
+        USER_LDAP_MAPPING_ATTRIBUTES.get(attribute)
+        and entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]]
+    ):
+        if attribute == "last_name" and isinstance(
+            entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]].value, list
+        ):
+            return entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]].value[0]
+        elif attribute == "affiliations":
+            return entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]].values
+        else:
+            return entry[USER_LDAP_MAPPING_ATTRIBUTES[attribute]].value
+    else:
+        return default
+
+
 def populate_user_from_entry(user, owner, entry):
+    """Populate user and owner objects from the LDAP entry."""
     if DEBUG:
         print(entry)
-    user.email = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES["mail"]].value
-        if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get("mail")
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES["mail"]]
-        )
-        else ""
-    )
-    user.first_name = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES["first_name"]].value
-        if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get("first_name")
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES["first_name"]]
-        )
-        else ""
-    )
-    user.last_name = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES["last_name"]].value
-        if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get("last_name")
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES["last_name"]]
-        )
-        else ""
-    )
+    user.email = get_entry_value(entry, "mail", "")
+    user.first_name = get_entry_value(entry, "first_name", "")
+    user.last_name = get_entry_value(entry, "last_name", "")
     user.save()
-    owner.affiliation = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES["primaryAffiliation"]].value
-        if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get("primaryAffiliation")
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES["primaryAffiliation"]]
-        )
-        else AFFILIATION[0][0]
-    )
-    owner.establishment = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES["establishment"]].value
-        if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get("establishment")
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES["establishment"]]
-        )
-        else ""
-    )
+    owner.affiliation = get_entry_value(entry, "primaryAffiliation", DEFAULT_AFFILIATION)
+    owner.establishment = get_entry_value(entry, "establishment", "")
     owner.save()
-    affiliations = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES["affiliations"]].values
-        if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get("affiliations")
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES["affiliations"]]
-        )
-        else []
-    )
+    affiliations = get_entry_value(entry, attribute="affiliations", default=[])
     for affiliation in affiliations:
         if affiliation in AFFILIATION_STAFF:
             user.is_staff = True
@@ -262,6 +245,7 @@ def populate_user_from_entry(user, owner, entry):
             )
             if group_created:
                 accessgroup.display_name = affiliation
+                accessgroup.auto_sync = True
             accessgroup.sites.add(Site.objects.get_current())
             accessgroup.save()
             # group.groupsite.sites.add(Site.objects.get_current())
@@ -298,7 +282,7 @@ def populate_user_from_tree(user, owner, tree):
     owner.affiliation = (
         primary_affiliation_element.text
         if (primary_affiliation_element is not None)
-        else AFFILIATION[0][0]
+        else DEFAULT_AFFILIATION
     )
     # affiliation
     affiliation_element = tree.findall(
@@ -313,6 +297,7 @@ def populate_user_from_tree(user, owner, tree):
             )
             if group_created:
                 accessgroup.display_name = affiliation.text
+                accessgroup.auto_sync = True
             accessgroup.sites.add(Site.objects.get_current())
             accessgroup.save()
             user.owner.accessgroup_set.add(accessgroup)

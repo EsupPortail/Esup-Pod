@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 
 {% block opengraph %}
   <meta name="description" content="{{ query }}">
   <!-- Open Graph data -->
-  <meta property="og:title" content="{% trans 'Search' %}" />
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-  <meta property="og:description" content="{{ query }}" />
-  <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+  <meta property="og:title" content="{% trans 'Search' %}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}">
+  <meta property="og:description" content="{{ query }}">
+  <meta property="og:site_name" content="{{ TITLE_SITE }}">
 {% endblock opengraph %}
 
 
@@ -39,7 +39,7 @@
 {% block page_aside %}
 
 <div class="card card-body">
-  <h2 class="card-title h4">{% trans "Advanced search" %}</h2>
+  <h2 class="card-title pod-card__title h4">{% trans "Advanced search" %}</h2>
   <div class="card-text" >
     <form method="get" action="{{ request.get_full_path }}" id="video_search_form">
     {% if form.errors %}
@@ -51,11 +51,12 @@
     {% for field in form.visible_fields %}
       {% spaceless %}
         {{ field.errors }}
-        <div class="form-group">
-        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {{field}}</div>
+        <div class="mb-3">
+          <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{field}}
+        </div>
       {% endspaceless %}
-    {%endfor%}
+    {% endfor %}
     <div class="text-center">
       <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
     </div>
@@ -64,7 +65,7 @@
 </div>
 
 <div class="card card-body">
-  <h2 class="card-title h4">{% trans 'Filter' %}</h2>
+  <h2 class="card-title pod-card__title h4">{% trans 'Filter' %}</h2>
   <div class="card-text" >
     <dl>
     {% if aggregations.owner_full_name and aggregations.owner_full_name.buckets %}
@@ -72,19 +73,19 @@
       {# Provide only the top 5 owner #}
       {% for owner in aggregations.owner_full_name.buckets %}
         <dd>
-          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=owner_full_name.raw:{{ owner.key|urlencode }}">
+          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif %}selected_facets=owner_full_name.raw:{{ owner.key|urlencode }}">
             {{ owner.key }}
           </a>
           ({{ owner.doc_count }})
         </dd>
       {% endfor %}
-    {%endif%}
+    {% endif %}
     {% if aggregations.type_title and aggregations.type_title.buckets %}
       <dt>{% trans 'Type' %}</dt>
       {# Provide only the top 5 type #}
       {% for type in aggregations.type_title.buckets %}
         <dd>
-          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=type.slug:{{ type.key|slugify }}">
+          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif %}selected_facets=type.slug:{{ type.key|slugify }}">
             {{ type.key }}
           </a>
           ({{ type.doc_count }})
@@ -96,7 +97,7 @@
       {# Provide only the top 5 type #}
       {% for tag in aggregations.tags_name.buckets %}
         <dd>
-          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=tags.slug:{{ tag.key|slugify }}">
+          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif %}selected_facets=tags.slug:{{ tag.key|slugify }}">
             {{ tag.key }}
           </a>
           ({{ tag.doc_count }})
@@ -108,7 +109,7 @@
       {# Provide only the top 5 type #}
       {% for discipline in aggregations.disciplines_title.buckets %}
         <dd>
-          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=disciplines.slug:{{ discipline.key|slugify }}">
+          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif %}selected_facets=disciplines.slug:{{ discipline.key|slugify }}">
             {{ discipline.key }}
           </a>
           ({{ discipline.doc_count }})
@@ -121,7 +122,7 @@
       {# Provide only the top 5 type #}
       {% for channel in aggregations.channels_title.buckets %}
         <dd>
-          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=channels.slug:{{ channel.key|slugify }}">
+          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif %}selected_facets=channels.slug:{{ channel.key|slugify }}">
             {{ channel.key }}
           </a>
           ({{ channel.doc_count }})
@@ -134,7 +135,7 @@
       {# Provide only the top 5 type #}
       {% for main_lang in aggregations.main_lang.buckets %}
         <dd>
-          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=main_lang:{{ main_lang.key }}">
+          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif %}selected_facets=main_lang:{{ main_lang.key }}">
              {{main_lang.key}}
           </a>
           ({{ main_lang.doc_count }})
@@ -147,7 +148,7 @@
       {# Provide only the top 5 cursus #}
       {% for cursus in aggregations.cursus.buckets %}
         <dd>
-          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=cursus:{{ cursus.key }}">
+          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif %}selected_facets=cursus:{{ cursus.key }}">
              {{cursus.key }}
           </a>
           ({{ cursus.doc_count }})
@@ -162,8 +163,8 @@
 
 {% block more_script %}
 
-<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
   var infinite = new Waypoint.Infinite({
   element: $('.infinite-container')[0],
@@ -172,7 +173,6 @@
   },
   onAfterPageLoad: function ($items) {
     $('.infinite-loading').hide();
-    feather.replace({ class: 'align-bottom'});
     $('footer.static-pod').addClass('small');
     $('footer.static-pod').addClass('fixed-bottom');
     $('footer.static-pod').attr('style','height:80px; overflow-y:auto');
@@ -192,7 +192,7 @@
 <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
 
 {{ form.media }}
 

@@ -12,9 +12,10 @@ class ChapterAdmin(admin.ModelAdmin):
     )
     list_display_links = ("title",)
     search_fields = ["id", "title", "video__title"]
+    autocomplete_fields = ["video"]
 
-    class Media:
-        css = {"all": ("css/pod.css",)}
+    # class Media:
+    #     css = {"all": ("css/pod.css",)}
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -32,6 +33,5 @@ admin.site.register(Chapter, ChapterAdmin)
 
 
 class ChapterInline(admin.TabularInline):
-
     model = Chapter
     extra = 0

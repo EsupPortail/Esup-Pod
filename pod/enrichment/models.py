@@ -13,7 +13,6 @@ from django.contrib.auth.models import Group
 
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
-from select2 import fields as select2_fields
 
 import os
 import datetime
@@ -23,9 +22,9 @@ if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomFileModel
     from pod.podfile.models import UserFolder
 
-    FILEPICKER = True
+    __FILEPICKER__ = True
 else:
-    FILEPICKER = False
+    __FILEPICKER__ = False
     from pod.main.models import CustomImageModel
     from pod.main.models import CustomFileModel
 
@@ -59,7 +58,7 @@ def enrichment_to_vtt(list_enrichment, video):
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     with open(temp_vtt_file.name, "w") as f:
         webvtt.write(f)
-    if FILEPICKER:
+    if __FILEPICKER__:
         videodir, created = UserFolder.objects.get_or_create(
             name="%s" % video.slug, owner=video.owner
         )
@@ -100,7 +99,6 @@ def enrichment_to_vtt_type(enrich):
 
 
 class Enrichment(models.Model):
-
     ENRICH_CHOICES = (
         ("image", _("image")),
         ("richtext", _("richtext")),
@@ -109,7 +107,7 @@ class Enrichment(models.Model):
         ("embed", _("embed")),
     )
 
-    video = select2_fields.ForeignKey(Video, verbose_name=_("video"))
+    video = models.ForeignKey(Video, verbose_name=_("video"), on_delete=models.CASCADE)
     title = models.CharField(_("title"), max_length=100)
     slug = models.SlugField(
         _("slug"),
@@ -142,13 +140,18 @@ class Enrichment(models.Model):
     )
 
     image = models.ForeignKey(
-        CustomImageModel, verbose_name=_("Image"), null=True, blank=True
+        CustomImageModel,
+        verbose_name=_("Image"),
+        null=True,
+        on_delete=models.CASCADE,
+        blank=True,
     )
     document = models.ForeignKey(
         CustomFileModel,
         verbose_name=_("Document"),
         null=True,
         blank=True,
+        on_delete=models.CASCADE,
         help_text=_("Integrate a document (PDF, text, html)"),
     )
     richtext = RichTextField(_("Richtext"), config_name="complete", blank=True)
@@ -298,7 +301,7 @@ class Enrichment(models.Model):
         super(Enrichment, self).save(*args, **kwargs)
 
     def __str__(self):
-        return "Media : {0} - Video: {1}".format(self.title, self.video)
+        return "Media: {0} - Video: {1}".format(self.title, self.video)
 
 
 @receiver(post_save, sender=Enrichment)
@@ -325,7 +328,11 @@ class EnrichmentVtt(models.Model):
         on_delete=models.CASCADE,
     )
     src = models.ForeignKey(
-        CustomFileModel, blank=True, null=True, verbose_name=_("Subtitle file")
+        CustomFileModel,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        verbose_name=_("Subtitle file"),
     )
 
     @property
@@ -341,7 +348,7 @@ class EnrichmentVtt(models.Model):
     def verify_attributs(self):
         msg = list()
         if "vtt" not in self.src.file_type:
-            msg.append(_('Only ".vtt" format is allowed.'))
+            msg.append(_("Only “.vtt” format is allowed."))
         return msg
 
     class Meta:
@@ -351,13 +358,8 @@ class EnrichmentVtt(models.Model):
 
 
 class EnrichmentGroup(models.Model):
-    video = select2_fields.OneToOneField(
-        Video,
-        verbose_name=_("Video"),
-        # editable=False, null=True,
-        on_delete=models.CASCADE,
-    )
-    groups = select2_fields.ManyToManyField(
+    video = models.OneToOneField(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
+    groups = models.ManyToManyField(
         Group,
         blank=True,
         verbose_name=_("Groups"),

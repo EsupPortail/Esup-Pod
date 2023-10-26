@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
-{% load video_filters %}
+{% load static %}
+{% load video_filters custom_tags %}
 {% load filters %}
 {% block opengraph %}
-    <meta name="description" content="{{channel.description|metaformat|safe|striptags|truncatechars:150}}" />
+    <meta name="description" content="{{channel.description|metaformat|safe|striptags|truncatechars:150}}">
     <!-- Open Graph data -->
-    <meta property="og:title" content="{{ channel.title }}" />
-    <meta property="og:type" content="article" />
-    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-    <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-    <meta property="og:description" content="{{channel.description|metaformat|safe|striptags|truncatechars:250}}" />
-    <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+    <meta property="og:title" content="{{ channel.title }}">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}">
+    <meta property="og:description" content="{{channel.description|metaformat|safe|striptags|truncatechars:250}}">
+    <meta property="og:site_name" content="{{ TITLE_SITE }}">
 {% endblock %}
 {% block page_extra_head %}
     <style>
@@ -26,17 +26,17 @@
         {% endif %}
     </style>
     {% if organize_theme %}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/regroup_videos_by_theme.css' %}?ver={{VERSION}}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'css/paginator.css' %}?ver={{VERSION}}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/regroup_videos_by_theme.css' %}?ver={{VERSION}}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/paginator.css' %}?ver={{VERSION}}">
     {% endif %}
 {% endblock %}
 {% block breadcrumbs %}
     {{ block.super }}
     {% if theme %}
-        <li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'channel-video:channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
         {% for t in theme.get_all_parents reversed %}
             {% if t is not theme %}
-                <li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'channel-video:theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
             {% endif %}
         {% endfor %}
         <li class="breadcrumb-item active" aria-current="page">{{theme.title}}</li>
@@ -55,24 +55,37 @@
     {% if organize_theme %}
         <h1 class="page_title">
             {% if parent_title %} {{parent_title}} {% else %} {{title}} {% endif %}
-            <span class="float-right">
+            <span class="pod-float-end">
                 {% if USE_STATS_VIEW %}
                     {% if theme %}
-                        <a href="{% url 'video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+                        <a href="{% url 'video:video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                            {% trans 'Statistics views' %}
+                        </a>
                     {% else %}
-                        <a href="{% url 'video_stats_view' slug=channel.slug %}" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+                        <a href="{% url 'video:video_stats_view' slug=channel.slug %}" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                            <i class="bi bi-graph-up" aria-hidden="true">&nbsp;</i>
+                            {% trans 'Statistics views' %}
+                        </a>
                     {% endif %}
                 {% endif %}
                 {% if theme %}
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Video</a>
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Audio</a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'Subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Video" %}
+                    </a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'Subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Audio" %}
+                    </a>
                 {% else %}
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video' slug_c=channel.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Video</a>
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug %}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Audio</a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug %}" title="{% trans 'Subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Video" %}
+                    </a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug %}" title="{% trans 'Subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Audio" %}
+                    </a>
                 {% endif %}
                 {% if request.user in channel.owners.all %}
-                    <a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the themes'%}" class="btn btn btn-outline-primary btn-sm">
-                        <i data-feather="edit" class="mr-1"></i>{% trans "Edit the channel"%}</a>
+                    <a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn-link">
+                        <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a>
                 {% endif %}
             </span>
         </h1>
@@ -81,24 +94,35 @@
                 <h2 class="parent_title">{{title}}</h2>
             {% endif %}
             {% if headband %}
-                <div align="center" class="channelheader">
-                    <img src="{{ headband }}" alt="{% trans 'Headband' %} {{ title }}" class="img-responsive" loading="lazy" />
+                <div class="channelheader">
+                    <img src="{{ headband }}" alt="{% trans 'Headband' %} {{ title }}" class="img-fluid rounded mx-auto d-block" loading="lazy">
                 </div>
             {% endif %}
             {% if description %}
-                {{ description|safe }}
+                <div class="lead pod-lead">
+                    {{ description|safe }}
+                </div>
             {% endif %}
+
         </div>
-        <div class="themes-videos">
+        <div class="themes-videos" data-channelurl="{% url 'channel-video:channel' slug_c=channel.slug %}">
             <!-- THEME SECTION -->
             <section class="theme-section">
-                <p class="theme-count">{% blocktrans count counter=count_themes %}{{ counter }} theme found{% plural %}{{ counter }} themes found{% endblocktrans %}</p>
+                <p class="theme-count">
+                    {% if count_themes > 0 %}
+                    {% blocktrans count counter=count_themes %}{{ counter }} theme found for this channel{% plural %}{{ counter }} themes found for this channel{% endblocktrans %}
+                    -
+                    {% endif %}
+                    {% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}
+                </p>
                 {% if theme_children|length %}
                     <div class="scroll_wrapper">
                         <ul class="list-children-theme">
                             {% for th in theme_children %}
                             <li class="btn btn-sm btn-outline-secondary text-truncate child-theme">
-                                <a href="{% url 'theme' slug_c=channel.slug slug_t=th.slug%}" class="text-truncate">{{th.title}}</a>
+                                <a href="{% url 'channel-video:theme' slug_c=channel.slug slug_t=th.slug%}" class="text-truncate" title="{{th.title}} ({{th.video_count}})">
+                                    {{th.title}} ({{th.video_count}})
+                                </a>
                             </li>
                             {% endfor %}
                         </ul>
@@ -111,11 +135,15 @@
             <section class="video-section">
                 {% if videos %}
                     <p class="video-count">
-                        {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+                        {% if theme %}
+                        {% blocktrans count counter=count_videos %}{{ counter }} video found for this theme{% plural %}{{ counter }} videos found for this theme{% endblocktrans %}
+                        {% else %}
+                        {% blocktrans count counter=count_videos %}{{ counter }} video found without theme{% plural %}{{ counter }} videos found without theme{% endblocktrans %}
+                        {% endif %}
                     </p>
                     {% include "videos/video_list.html" %}
                     {% if has_more_videos %}
-                        <div class="float-right">
+                        <div class="float-end">
                             <button class="btn btn-primary" id="load-more-videos" type="button">{% trans "Load more videos" %}</button>
                         </div>
                     {% endif %}
@@ -128,44 +156,52 @@
         {% else %}
             <h1 class="page_title channel_title">
         {% endif %}
-        <i data-feather="youtube" aria-hidden="true"></i>&nbsp;{{channel.title}}
-            <span class="float-right">
+        <i class="bi bi-play-btn" aria-hidden="true"></i>&nbsp;{{channel.title}}
+            <span class="pod-float-end">
                 {% if theme %}
                     {% if USE_STATS_VIEW %}
-                        <a href="{% url 'video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+                        <a href="{% url 'video:video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">{% trans 'Statistics views' %}</a>
                     {% endif %}
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Video</a>
-                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Audio</a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'Subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Video" %}
+                    </a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'Subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Audio" %}
+                    </a>
                 {% else %}
                     {% if USE_STATS_VIEW %}
-                        <a href="{% url 'video_stats_view' slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+                        <a href="{% url 'video:video_stats_view' slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">{% trans 'Statistics views' %}</a>
                     {% endif %}
-                    <a href="{% url 'rss-video' slug_c=channel.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Video</a>
-                    <a href="{% url 'rss-audio' slug_c=channel.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Audio</a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug %}" title="{% trans 'Subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Video" %}
+                    </a>
+                    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio' slug_c=channel.slug%}" title="{% trans 'Subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                        <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Audio" %}
+                    </a>
                 {% endif %}
             </span>
             {% if request.user in channel.owners.all %}
-                <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the themes'%}" class="btn btn btn-outline-primary btn-sm mr-1">
-                    <i data-feather="edit" class="mr-1"></i>{% trans "Edit the channel"%}</a>
+                <span class="float-end"><a href="{% url 'channels:channel_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm me-1">
+                    <i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the channel"%}</a>
                 </span>
-            {%endif%}
+            {% endif %}
         {% if theme %}
             </div>
         {% else %}
             </h1>
         {% endif %}
         {% if channel.headband %}
-            <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy" />
+            <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy">
         {% endif %}
         {% if channel.description %}
             {{ channel.description|safe }}
         {% endif %}
         {% if theme %}
-            {% if request.user in channel.owners.all %}<span class="float-right"><a href="{% url 'theme_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i data-feather="edit" aria-hidden="true"></i>&nbsp;{% trans "Edit the themes"%}</a></span>{%endif%}
+            {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:theme_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the themes"%}</a></span>{% endif %}
             <h1 class="theme_title h2">{{theme.title}}</h1>
             {% if theme.headband %}
-                <div align="center" class="channelheader">
-                    <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" loading="lazy" />
+                <div class="channelheader">
+                    <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" loading="lazy">
                 </div>
             {% endif %}
             {% if theme.description %}
@@ -179,58 +215,97 @@
 {% endblock page_content %}
 
 {% block page_aside %}
-    <div class="card card-body p-2 mt-1" id="card-channelthemes">
-        <h2 class="card-title pl-2 h4">
-            <i data-feather="list" class="mr-1" aria-hidden="true"></i> {% trans 'Themes of ' %}&nbsp;{{ channel.title }}
-        </h2>
-        <div class="card-text" id="treeview">
-            <ul class="list-group list-group-flush {% if channel.themes.count > 5 %}small{%endif%}" id="ultreeview" style="max-height:300px; overflow:auto;">
-            </ul>
-        </div>
+  {% if channel.themes.count > 0 %}
+    <div class="card card-body p-2 p-md-3" id="card-channelthemes">
+      <h2 class="card-title h4">
+        <i class="bi bi-card-list" aria-hidden="true" ></i>
+        {% trans 'Themes of' %} "{{ channel.title }}"
+      </h2>
+      <div class="card-text" id="treeview">
+        <ul class="list-group list-group-flush {% if channel.themes.count > 5 %}small{% endif %}" id="ultreeview" style="max-height:300px; overflow:auto;">
+        </ul>
+      </div>
     </div>
-    {% include 'aside.html'%}
+  {% endif %}
+  {% include 'aside.html'%}
 {% endblock page_aside %}
 
 {% block more_script %}
-    <script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
-    <script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
+
+    <script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}" ></script>
     <script>
-        var infinite = new Waypoint.Infinite({
-            element: $('.infinite-container')[0],
-            onBeforePageLoad: function() {
-                $('.infinite-loading').show();
+        {% if theme %}
+        url = "{% url 'channel-video:theme' slug_c=channel.slug slug_t=theme.slug %}?page="
+        {% else %}
+        url = "{% url 'channel-video:channel' slug_c=channel.slug %}?page="
+        {% endif %}
+            onBeforePageLoad =  function() {
+                document.querySelector('.infinite-loading').style.display = 'block';
             },
-            onAfterPageLoad: function($items) {
-                $('.infinite-loading').hide();
-                feather.replace({
-                    class: 'align-bottom'
-                });
-                $('footer.static-pod').addClass('small');
-                $('footer.static-pod').addClass('fixed-bottom');
-                $('footer.static-pod').attr('style', 'height:80px; overflow-y:auto');
-                $('footer.static-pod .hidden-pod').css('display', 'none');
-                $(window).scroll(function() {
-                    if ($(window).height() + $(window).scrollTop() == $(document).height()) {
-                        $('footer.static-pod .hidden-pod').css('display', 'block');
-                        $('footer.static-pod').attr('style', 'height:auto;');
-                        $('footer.static-pod').removeClass('fixed-bottom');
+            onAfterPageLoad = function($items) {
+                document.querySelector('.infinite-loading').style.display = 'none';
+                let footer = document.querySelector('footer.static-pod');
+                if (!footer) return
+                footer.classList.add('small');
+                footer.classList.add('fixed-bottom');
+                footer.setAttribute('style', 'height:80px; overflow-y:auto');
+                document.querySelector('footer.static-pod .hidden-pod').style.display = 'none'
+                var docHeight = Math.max(
+                    document.body.scrollHeight,
+                    document.body.offsetHeight,
+                    document.clientHeight,
+                    document.scrollHeight,
+                    document.offsetHeight
+                  );
+                window.addEventListener("scroll", function () {
+                    if (window.innerHeight + window.scrollY === docHeight) {
+                      document.querySelector("footer.static-pod .hidden-pod").style.display =
+                        "block";
+                      footer.setAttribute("style", "height:auto;");
+                      footer.classList.remove("fixed-bottom");
                     }
-                });
+             });
             }
-        });
+        {% if videos.has_next %}
+            page = parseInt("{{videos.next_page_number}}")
+            next_page = true
+            var infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, page = page);
+        {% endif %}
     </script>
     <script>
-        var str = get_list(listTheme["channel_" + "{{channel.id}}"], 0, [], tag_type = "li", li_class = "list-group-item", attrs = '', add_link = true, current = "{{theme.slug}}", channel = "");
-        $("#ultreeview").html(str);
+        /** SHOW_ONLY_PARENT_THEMES **/
+        {% get_setting "SHOW_ONLY_PARENT_THEMES" True as only_parent_theme %}
+        var show_only_parent_themes = {% if only_parent_theme %} true {% else %} false {% endif %};
+        var all_theme_tab = {{ channel.get_all_theme_json | safe }};
+        {% if theme.slug %}
+        var all_theme_parents = [{% for parent in theme.get_all_parents %}"{{parent.slug}}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+        {% else %}
+        var all_theme_parents = [];
+        {% endif %}
+        var str = get_list(
+            all_theme_tab,
+            0,
+            [],
+            tag_type = "li",
+            li_class = "list-group-item",
+            attrs = '',
+            add_link = true,
+            current = "{{theme.slug}}",
+            channel = "",
+            show_only_parent_themes,
+            all_theme_parents
+        );
+        document.getElementById("ultreeview").innerHTML = str;
         setTimeout(function() {
-            const tree_item_info = $("#ultreeview li.list-group-item-info");
-            const tree_item = $("#ultreeview li")
-            if(!!tree_item_info.length && !!tree_item.length)
+            const tree_item_info = document.querySelector("#ultreeview li.list-group-item-info");
+            const tree_item = document.querySelectorAll("#ultreeview li")
+            if(tree_item_info && tree_item)
             {
-                const position = parseInt(tree_item_info.position().top) - parseInt(tree_item.first().position().top);
-                $("#ultreeview").scrollTop(position);
+                const position = parseInt(tree_item_info.offsetTop) - parseInt(tree_item[0].offsetTop);
+                document.getElementById("ultreeview").scrollTop = position;
             }
         }, 500);
+        
     </script>
     {% if organize_theme %}
         <script>

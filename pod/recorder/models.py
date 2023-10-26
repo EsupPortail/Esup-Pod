@@ -13,63 +13,52 @@ from django.db.models import Q
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.contrib.sites.models import Site
-from select2 import fields as select2_fields
+from pod.main.lang_settings import ALL_LANG_CHOICES as __ALL_LANG_CHOICES__
+from pod.main.lang_settings import PREF_LANG_CHOICES as __PREF_LANG_CHOICES__
 from pod.video.models import Type
 from pod.video.models import Discipline, Channel, Theme
+from pod.video.models import LANG_CHOICES as __LANG_CHOICES__
+from pod.video.models import CURSUS_CODES as __CURSUS_CODES__
+from pod.video.models import LICENCE_CHOICES as __LICENCE_CHOICES__
+from pod.video.models import RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY as __REVATSO__
 from tagging.fields import TagField
-from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from django.utils.translation import get_language
 
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
-    ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
-)
-CURSUS_CODES = getattr(
-    settings,
-    "CURSUS_CODES",
     (
-        ("0", _("None / All")),
-        ("L", _("Bachelor’s Degree")),
-        ("M", _("Master’s Degree")),
-        ("D", _("Doctorate")),
-        ("1", _("Other")),
+        (_("-- Frequently used languages --"), __PREF_LANG_CHOICES__),
+        (_("-- All languages --"), __ALL_LANG_CHOICES__),
     ),
 )
-LICENCE_CHOICES = getattr(
-    settings,
-    "LICENCE_CHOICES",
-    (
-        ("by", _("Attribution 4.0 International (CC BY 4.0)")),
-        (
-            "by-nd",
-            _("Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)"),
-        ),
-        (
-            "by-nc-nd",
-            _(
-                "Attribution-NonCommercial-NoDerivatives 4.0 "
-                "International (CC BY-NC-ND 4.0)"
-            ),
-        ),
-        (
-            "by-nc",
-            _("Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"),
-        ),
-        (
-            "by-nc-sa",
-            _(
-                "Attribution-NonCommercial-ShareAlike 4.0 "
-                "International (CC BY-NC-SA 4.0)"
-            ),
-        ),
-        ("by-sa", _("Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)")),
-    ),
-)
+
+__LANG_CHOICES_DICT__ = {
+    key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
+}
+
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
+if USE_TRANSCRIPTION:
+    TRANSCRIPTION_MODEL_PARAM = getattr(settings, "TRANSCRIPTION_MODEL_PARAM", {})
+    TRANSCRIPTION_TYPE = getattr(settings, "TRANSCRIPTION_TYPE", "STT")
+
+# FUNCTIONS
+
+
+def get_transcription_choices():
+    """Manage the transcription language choice table."""
+    if USE_TRANSCRIPTION:
+        transcript_lang = TRANSCRIPTION_MODEL_PARAM.get(TRANSCRIPTION_TYPE, {}).keys()
+        transcript_choices_lang = []
+        for lang in transcript_lang:
+            transcript_choices_lang.append((lang, __LANG_CHOICES_DICT__[lang]))
+        return transcript_choices_lang
+    else:
+        return []
 
 
 def select_recorder_user():
-    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
+    if __REVATSO__:
         return lambda q: (
             Q(is_staff=True) & (Q(first_name__icontains=q) | Q(last_name__icontains=q))
         ) & Q(owner__sites=Site.objects.get_current())
@@ -78,10 +67,6 @@ def select_recorder_user():
             owner__sites=Site.objects.get_current()
         )
 
-
-RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
-    settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
-)
 
 RECORDER_TYPE = getattr(
     settings,
@@ -120,7 +105,7 @@ class Recorder(models.Model):
         default=RECORDER_TYPE[0][0],
     )
     # Manager of the recorder who received mails
-    user = select2_fields.ForeignKey(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         limit_choices_to={"is_staff": True},
@@ -134,13 +119,10 @@ class Recorder(models.Model):
         blank=True,
     )
     # Additionnal additional_users
-    additional_users = select2_fields.ManyToManyField(
+    additional_users = models.ManyToManyField(
         User,
         blank=True,
-        ajax=True,
-        js_options={"width": "off"},
         verbose_name=_("Additional users"),
-        search_field=select_recorder_user(),
         related_name="users_recorders",
         help_text=_(
             "You can add additionals users to the recorder. They "
@@ -170,7 +152,7 @@ class Recorder(models.Model):
         ),
         default=False,
     )
-    restrict_access_to_groups = select2_fields.ManyToManyField(
+    restrict_access_to_groups = models.ManyToManyField(
         Group,
         blank=True,
         verbose_name=_("Groups"),
@@ -186,21 +168,23 @@ class Recorder(models.Model):
     cursus = models.CharField(
         _("University course"),
         max_length=1,
-        choices=CURSUS_CODES,
+        choices=__CURSUS_CODES__,
         default="0",
         help_text=_("Select an university course as audience target of the content."),
     )
     main_lang = models.CharField(
         _("Main language"),
         max_length=2,
-        choices=LANG_CHOICES,
+        choices=__LANG_CHOICES__,
         default=get_language(),
         help_text=_("Select the main language used in the content."),
     )
-    transcript = models.BooleanField(
+    transcript = models.CharField(
         _("Transcript"),
-        default=False,
-        help_text=_("Check this box if you want to transcript the audio. (beta version)"),
+        max_length=2,
+        choices=get_transcription_choices(),
+        blank=True,
+        help_text=_("Select an available language to transcribe the audio."),
     )
     tags = TagField(
         help_text=_(
@@ -209,19 +193,13 @@ class Recorder(models.Model):
         ),
         verbose_name=_("Tags"),
     )
-    discipline = select2_fields.ManyToManyField(
+    discipline = models.ManyToManyField(
         Discipline, blank=True, verbose_name=_("Disciplines")
     )
     licence = models.CharField(
-        _("Licence"),
-        max_length=8,
-        choices=LICENCE_CHOICES,
-        blank=True,
-        null=True,
+        _("Licence"), max_length=8, choices=__LICENCE_CHOICES__, blank=True, null=True
     )
-    channel = select2_fields.ManyToManyField(
-        Channel, verbose_name=_("Channels"), blank=True
-    )
+    channel = models.ManyToManyField(Channel, verbose_name=_("Channels"), blank=True)
     theme = models.ManyToManyField(
         Theme,
         verbose_name=_("Themes"),
@@ -287,7 +265,7 @@ class Recording(models.Model):
         default=DEFAULT_RECORDER_ID,
         help_text=_("Recorder that made this recording."),
     )
-    user = select2_fields.ForeignKey(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         limit_choices_to={"is_staff": True},

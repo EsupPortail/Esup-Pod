@@ -1,3 +1,4 @@
+"""Podfile forms definitions."""
 from django import forms
 from django.conf import settings
 from django.core.validators import FileExtensionValidator
@@ -34,14 +35,7 @@ FILE_ALLOWED_EXTENSIONS = getattr(
 IMAGE_ALLOWED_EXTENSIONS = getattr(
     settings,
     "IMAGE_ALLOWED_EXTENSIONS",
-    (
-        "jpg",
-        "jpeg",
-        "bmp",
-        "png",
-        "gif",
-        "tiff",
-    ),
+    ("jpg", "jpeg", "bmp", "png", "gif", "tiff", "webp"),
 )
 FILE_MAX_UPLOAD_SIZE = getattr(settings, "FILE_MAX_UPLOAD_SIZE", 10)
 
@@ -79,7 +73,7 @@ class UserFolderForm(forms.ModelForm):
 
 class CustomFileModelForm(forms.ModelForm):
     fileattrs = {
-        "class": "form-control-file",
+        "class": "form-control-file ms-2",
         "accept": ".%s" % ", .".join(map(str, FILE_ALLOWED_EXTENSIONS)),
         "data-maxsize": FILE_MAX_UPLOAD_SIZE * 1024 * 1024,
     }
@@ -96,11 +90,14 @@ class CustomFileModelForm(forms.ModelForm):
     class Meta:
         model = CustomFileModel
         fields = ("file", "folder")
+        labels = {
+            "file": _("Choose File"),
+        }
 
 
 class CustomImageModelForm(forms.ModelForm):
     fileattrs = {
-        "class": "form-control-file",
+        "class": "form-control-file ms-2",
         "accept": ".%s" % ", .".join(map(str, IMAGE_ALLOWED_EXTENSIONS)),
         "data-maxsize": FILE_MAX_UPLOAD_SIZE * 1024 * 1024,
     }
@@ -117,3 +114,6 @@ class CustomImageModelForm(forms.ModelForm):
     class Meta:
         model = CustomImageModel
         fields = ("file", "folder")
+        labels = {
+            "file": _("Choose image file"),
+        }

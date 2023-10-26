@@ -5,8 +5,6 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.sites.models import Site
-from select2 import fields as select2_fields
-from django.db.models import Q
 
 import hashlib
 import logging
@@ -50,6 +48,10 @@ AFFILIATION = getattr(
         ("registered-reader", _("registered-reader")),
     ),
 )
+DEFAULT_AFFILIATION = AFFILIATION[0][0]
+AFFILIATION_STAFF = getattr(
+    settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff")
+)
 ESTABLISHMENTS = getattr(
     settings,
     "ESTABLISHMENTS",
@@ -62,10 +64,16 @@ SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 
-def get_name(self):
-    if HIDE_USERNAME:
-        return "%s %s" % (self.first_name, self.last_name)
-    return "%s %s (%s)" % (self.first_name, self.last_name, self.username)
+def get_name(self) -> str:
+    """
+    Returns the user's full name, including the username if not hidden.
+
+    Returns:
+        str: The user's full name and username if not hidden.
+    """
+    if HIDE_USERNAME or not self.is_authenticated:
+        return self.get_full_name().strip()
+    return f"{self.get_full_name()} ({self.get_username()})".strip()
 
 
 User.add_to_class("__str__", get_name)
@@ -77,12 +85,16 @@ class Owner(models.Model):
         max_length=20, choices=AUTH_TYPE, default=AUTH_TYPE[0][0]
     )
     affiliation = models.CharField(
-        max_length=50, choices=AFFILIATION, default=AFFILIATION[0][0]
+        max_length=50, choices=AFFILIATION, default=DEFAULT_AFFILIATION
     )
     commentaire = models.TextField(_("Comment"), blank=True, default="")
     hashkey = models.CharField(max_length=64, unique=True, blank=True, default="")
     userpicture = models.ForeignKey(
-        CustomImageModel, blank=True, null=True, verbose_name=_("Picture")
+        CustomImageModel,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        verbose_name=_("Picture"),
     )
     establishment = models.CharField(
         _("Establishment"),
@@ -91,10 +103,19 @@ class Owner(models.Model):
         choices=ESTABLISHMENTS,
         default=ESTABLISHMENTS[0][0],
     )
-    accessgroups = select2_fields.ManyToManyField(
-        "authentication.AccessGroup", blank=True
-    )
+    accessgroups = models.ManyToManyField("authentication.AccessGroup", blank=True)
     sites = models.ManyToManyField(Site)
+    accepts_notifications = models.BooleanField(
+        verbose_name=_("Accept notifications"),
+        default=None,
+        null=True,
+        help_text=_("Receive push notifications on your devices."),
+    )
+
+    class Meta:
+        verbose_name = _("Owner")
+        verbose_name_plural = _("Owners")
+        ordering = ["user"]
 
     def __str__(self):
         if HIDE_USERNAME:
@@ -149,6 +170,11 @@ class GroupSite(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
     sites = models.ManyToManyField(Site)
 
+    class Meta:
+        verbose_name = _("Group site")
+        verbose_name_plural = _("Groups site")
+        ordering = ["group"]
+
 
 @receiver(post_save, sender=GroupSite)
 def default_site_groupsite(sender, instance, created, **kwargs):
@@ -172,13 +198,14 @@ class AccessGroup(models.Model):
     display_name = models.CharField(max_length=128, blank=True, default="")
     code_name = models.CharField(max_length=250, unique=True)
     sites = models.ManyToManyField(Site)
-    users = select2_fields.ManyToManyField(
+    auto_sync = models.BooleanField(
+        _("Auto synchronize"),
+        default=False,
+        help_text=_("Check if the access group must be synchronized on user connexion."),
+    )
+    users = models.ManyToManyField(
         Owner,
         blank=True,
-        ajax=True,
-        search_field=lambda q: Q(user__username__icontains=q)
-        | Q(user__first_name__icontains=q)
-        | Q(user__last_name__icontains=q),
         through="Owner_accessgroups",
     )
 
@@ -188,3 +215,4 @@ class AccessGroup(models.Model):
     class Meta:
         verbose_name = _("Access Groups")
         verbose_name_plural = _("Access Groups")
+        ordering = ["display_name"]

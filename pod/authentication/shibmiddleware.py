@@ -1,5 +1,6 @@
 from shibboleth.middleware import ShibbolethRemoteUserMiddleware
 from django.conf import settings
+from pod.authentication.models import AFFILIATION_STAFF
 
 REMOTE_USER_HEADER = getattr(settings, "REMOTE_USER_HEADER", "REMOTE_USER")
 
@@ -38,10 +39,6 @@ AFFILIATION = getattr(
         ("teacher", ""),
         ("registered-reader", ""),
     ),
-)
-
-AFFILIATION_STAFF = getattr(
-    settings, "AFFILIATION_STAFF", ("employee", "faculty", "staff")
 )
 
 

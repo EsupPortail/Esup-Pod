@@ -1,0 +1,224 @@
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html itemscope itemtype="https://schema.org/MediaObject" lang="eng">
+    <head>
+        <meta charset="utf-8">
+
+        <title>{{ TITLE_SITE }} - {% block page_title %}{{ event.title }}{% endblock page_title %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+
+        {% block page_extra_head %}
+            {% include 'videos/video-header.html' %}
+        {% endblock page_extra_head %}
+
+        {% if event.broadcaster.enable_viewer_count %}
+            <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
+
+            {% if event.is_current %}
+                <script src="{% static 'js/viewcounter.js' %}?ver={{VERSION}}"></script>
+            {% endif %}
+        {% endif %}
+
+        <script src="{% static 'js/videojs-info-controlbar.js' %}?ver={{VERSION}}"></script>
+
+        <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+        <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
+        <script src="{% url 'javascript-catalog' %}"></script>
+
+        <link rel="stylesheet" href="{% static 'css/video-iframe.css' %}?ver={{VERSION}}">
+    </head>
+
+{% block page_content %}
+    {% csrf_token %}
+    <h3 id="livename" data-eventid="{{ event.id }}" class="d-none"><i class="bi bi-cast" aria-hidden="true"></i>&nbsp;{{ event.title|title }}</h3>
+    {% if form %}
+      {% include 'live/event-form.html' %}
+    {% else %}
+        <div class="overlay" id="div-video-wrapper">
+            {% if event.is_past %}
+                <div class="p-3 mb-2 bg-warning text-dark">
+                    {% trans "Event is finished at:" %} {{ event.end_date }}
+                    <br>
+                </div>
+            {% elif event.is_coming %}
+                <div class="p-3 mb-2 bg-warning text-dark position-absolute" style="z-index: 1; left:0; right: 0">
+                    {% trans "The event is scheduled from:" %} {{ event.start_date }} {% trans 'to' %} {{ event.end_date }}
+                </div>
+                {% if event.video_on_hold.is_video %}
+                    <div id="divvideoonhold" style="display:block">
+                        <video id="podvideoonholdplayer"
+                           class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                               controls height="360" muted autoplay>
+                        </video>
+                        <div id="info-video-wrapper">
+                            <div class="iframe-header bg-dark text-white">
+                                <h2 class="video-title">{{ event.title }}</h2>
+                                <button type="button" class="close" aria-label="{% trans 'Close' %}">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div id="info-video">
+                                {% include 'live/event-info.html' %}
+                            </div>
+                        </div>
+                    </div>
+                {# event thumbnail  #}
+                {% elif event.thumbnail  %}
+                    <img src="{{ event.get_thumbnail_card }}" height="360" alt="{{ event.title }}">
+                {# broadcaster thumbnail  #}
+                {% elif event.broadcaster.poster %}
+                    <img src="{{ event.broadcaster.get_poster_url }}" height="360" alt="{{ event.title }}">
+                {% endif %}
+
+            {% elif event.is_current %}
+                <div id="divvideoplayer" style="display:block">
+                    <div class="row">
+                        <div class="col">
+                            <video id="podvideoplayer"
+                                   class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                                   preload="none" controls height="360" muted autoplay>
+                                <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
+                            </video>
+                        </div>
+                        {# ajouter ici l' event.aside_iframe_url si nécessaire #}
+                        {# ajouter ici le chatBBB si nécessaire #}
+                    </div>
+                </div>
+                {# ajouter ici l' event.iframe_url si nécessaire #}
+
+                <div id="divvideoonhold" style="display:none">
+                    {# waiting video #}
+                    {% if event.video_on_hold.is_video %}
+                        <video id="podvideoonholdplayer"
+                               class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                               controls height="360" muted autoplay>
+                        </video>
+
+                        {# event thumbnail  #}
+                    {% elif event.thumbnail %}
+                        <video id="podvideoonholdplayer"
+                               class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                               poster="{{ event.get_thumbnail_card }}"
+                               controls height="360" muted autoplay>
+                        </video>
+                        {# broadcaster thumbnail  #}
+                    {% elif event.broadcaster.poster %}
+                        <video id="podvideoonholdplayer"
+                               class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                               poster="{{ event.broadcaster.get_poster_url }}"
+                               controls height="360" muted autoplay>
+                        </video>
+                    {% else %}
+                        <video id="podvideoonholdplayer"
+                               class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+                               controls height="360" muted autoplay>
+                        </video>
+                    {% endif %}
+                </div>
+
+                <div id="info-video-wrapper">
+                    <div class="iframe-header bg-dark text-white">
+                        <h2 class="video-title">{{ event.title }}</h2>
+                        <button type="button" class="close" aria-label="{% trans 'Close' %}">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="info-video">
+                        {% include 'live/event-info.html' %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% block more_script %}
+        {% include 'live/event-script.html' %}
+
+        {# affichage du bouton d'info sur le player #}
+        {% if event.is_coming and event.video_on_hold.is_video or event.is_current  %}
+
+            <script>
+                {% if event.is_coming and event.video_on_hold.is_video %}
+                    iframeplayer = videojs("podvideoonholdplayer");
+                {% else %}
+                    iframeplayer = videojs("podvideoplayer");
+                {% endif %}
+
+                iframeplayer.videoJsInfo();
+
+                function setOnPlayerPlayPause() {
+                    iframeplayer.on('play', function () {
+                        isPlaying = true;
+                        $('#div-video-wrapper').attr('class', '')
+                    })
+                    iframeplayer.on('pause', function () {
+                        isPlaying = false;
+                    })
+                }
+
+                $('#div-video-wrapper').append('<div id="overlay-footer"></div>')
+                iframeplayer.ready(function () {
+                    const btinfo = $('.vjs-info-button:eq(0)')[0]
+                    $(btinfo).clone().appendTo('#overlay-footer')
+                    $('#overlay-footer .vjs-info-button').click(function () {
+                        $(btinfo).click()
+                    })
+                })
+                $(document).on('click', '.close', function () {
+                    show_info_video()
+                });
+
+                // Responsive
+                const hdres = 1920 / 1080;
+                let isPlaying = false, wasPlaying = false
+                setOnPlayerPlayPause()
+
+                function resizeInfo() {
+                    const ihead = document.querySelector('#info-video-wrapper > .iframe-header')
+                        , ph = iframeplayer.el().offsetHeight
+                        , pb = parseInt(iframeplayer.el().style.top) + ph - 30
+                        , pw = ph * hdres//$('#podvideoplayer .vjs-poster').width()
+                    $('#info-video').css('top', ihead.offsetHeight + 'px')
+                    $('#info-video-wrapper').css({
+                        top: iframeplayer.el().style.top,
+                        height: (ph - 30) + 'px',
+                        left: '50%',
+                        'margin-left': -(pw / 2) + 'px',
+                        width: pw + 'px'
+                    })
+                    $('#overlay-footer').css({'top': pb + 'px'})
+                }
+
+                let show_info_video = function () { // Call by videojs-controllbar
+                    const hasStarted = $(iframeplayer.el()).hasClass('vjs-has-started')
+                        , isOverlayed = $('#div-video-wrapper').hasClass('overlay')
+                        , isInfoOverlayed = isOverlayed && $('#div-video-wrapper').hasClass('info')
+                        , cls = 'overlay info'
+                    if (!isOverlayed) { // No overlay is displayed
+                        wasPlaying = isPlaying;
+                        iframeplayer.pause();
+                        $('#div-video-wrapper').attr('class', cls)
+                        resizeInfo()
+                    } else if (!isInfoOverlayed) { // One overlay is displayed but not Info
+                        $('#div-video-wrapper').attr('class', cls)
+                        resizeInfo()
+                    } else { // Info overlay is displayed => close
+                        $('#div-video-wrapper').attr('class', (hasStarted ? '' : 'vjs-not-started'))
+                        if (wasPlaying) iframeplayer.play();
+                    }
+                }
+
+                $('#video-meta .tab-pane').addClass('show').show();
+
+            </script>
+        {% endif %}
+
+    {% endblock more_script %}
+    {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
+{% endblock page_content %}
+</body>
+</html>

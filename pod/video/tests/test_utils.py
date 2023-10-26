@@ -1,3 +1,5 @@
+"""Unit tests for Esup-Pod video utilities."""
+
 import json
 
 from django.test import TestCase
@@ -10,11 +12,14 @@ from pod.video.utils import change_owner, get_videos
 
 
 class VideoTestUtils(TestCase):
+    """TestCase for Esup-Pod video utilities."""
+
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
+        """Set up required objects for next tests."""
         self.user = User.objects.create(username="pod", password="pod1234pod")
         self.user2 = User.objects.create(username="pod2", password="pod1234pod2")
         self.c = Channel.objects.create(title="ChannelTest1")
@@ -56,9 +61,10 @@ class VideoTestUtils(TestCase):
         self.assertEqual(get_headband(self.c, self.theme).get("type", None), "theme")
 
     def test_change_owner(self):
+        """Change video owner."""
         actual = change_owner(str(self.v.id), self.user2)
         self.assertEqual(actual, True)
-        # test video doesn't exist
+        # Must return false with non-existent video id
         self.assertEqual(change_owner(100, self.user2), False)
 
     def test_get_videos(self):

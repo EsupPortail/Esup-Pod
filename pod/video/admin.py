@@ -1,8 +1,11 @@
+"""Admin pages for Esup-Pod Video items."""
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.admin import widgets
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 
@@ -12,17 +15,12 @@ from .models import Channel
 from .models import Theme
 from .models import Type
 from .models import Discipline
-from .models import VideoRendition
-from .models import EncodingVideo
-from .models import EncodingAudio
-from .models import EncodingLog
-from .models import EncodingStep
-from .models import PlaylistVideo
 from .models import Notes, AdvancedNotes, NoteComments
 from .models import ViewCount
 from .models import VideoToDelete
 from .models import VideoVersion
 from .models import Category
+
 
 from .forms import VideoForm, VideoVersionForm
 from .forms import ChannelForm
@@ -43,10 +41,10 @@ User._meta.ordering = ["username"]
 # SET USE_ESTABLISHMENT_FIELD
 USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
 
-TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
-if TRANSCRIPT:
-    from . import transcript
+if USE_TRANSCRIPTION:
+    from ..video_encode_transcript import transcript
 
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
@@ -54,16 +52,16 @@ USE_OBSOLESCENCE = getattr(settings, "USE_OBSOLESCENCE", False)
 
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 
+ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
+
 
 def url_to_edit_object(obj):
     url = reverse(
         "admin:%s_%s_change" % (obj._meta.app_label, obj._meta.model_name),
         args=[obj.id],
     )
-    return format_html('<a href="{}">{}</a>', url, obj.username)
-
-
-# Register your models here.
+    title = format_html('<a href="{}">{}</a>', url, obj.username)
+    return mark_safe(title)
 
 
 class EncodedFilter(admin.SimpleListFilter):
@@ -110,9 +108,6 @@ class VideoVersionInline(admin.StackedInline):
 
 
 class VideoAdmin(admin.ModelAdmin):
-    change_form_template = "progressbarupload/change_form.html"
-    add_form_template = "progressbarupload/change_form.html"
-
     list_display = (
         "id",
         "title",
@@ -136,7 +131,16 @@ class VideoAdmin(admin.ModelAdmin):
         "is_draft",
         "encoding_in_progress",
         EncodedFilter,
+        # "owner",
     )
+    autocomplete_fields = [
+        "owner",
+        "additional_owners",
+        "discipline",
+        "channel",
+        "theme",
+        "restrict_access_to_groups",
+    ]
     # Ajout de l'attribut 'date_delete'
     if USE_OBSOLESCENCE:
         list_filter = list_filter + ("date_delete",)
@@ -188,7 +192,8 @@ class VideoAdmin(admin.ModelAdmin):
     def get_owner_by_name(self, obj):
         owner = obj.owner
         url = url_to_edit_object(owner)
-        return "%s %s (%s)" % (owner.first_name, owner.last_name, url)
+        title = "%s %s (%s)" % (owner.first_name, owner.last_name, url)
+        return mark_safe(title)
 
     get_owner_by_name.allow_tags = True
     get_owner_by_name.short_description = _("Owner")
@@ -203,12 +208,12 @@ class VideoAdmin(admin.ModelAdmin):
         if not getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
             exclude += ("disable_comment",)
 
-        if obj and obj.encoding_in_progress:
+        if obj and (obj.encoding_in_progress or not obj.encoded):
             exclude += (
                 "video",
                 "owner",
             )
-        if not TRANSCRIPT:
+        if not USE_TRANSCRIPTION:
             exclude += ("transcript",)
         if request.user.is_staff is False or obj is None or USE_OBSOLESCENCE is False:
             exclude += ("date_delete",)
@@ -218,7 +223,17 @@ class VideoAdmin(admin.ModelAdmin):
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form
 
-    actions = ["encode_video", "transcript_video"]
+    if USE_TRANSCRIPTION:
+        actions = ["encode_video", "transcript_video", "draft_video"]
+    else:
+        actions = ["encode_video", "draft_video"]
+
+    def draft_video(self, request, queryset):
+        for item in queryset:
+            item.is_draft = True
+            item.save()
+
+    draft_video.short_description = _("Set as draft")
 
     def encode_video(self, request, queryset):
         for item in queryset:
@@ -259,17 +274,16 @@ class VideoAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "css/pod.css",
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
             "podfile/js/filewidget.js",
             "js/main.js",
             "js/validate-date_delete-field.js",
-            "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
 
@@ -288,7 +302,7 @@ class updateOwnerAdmin(admin.ModelAdmin):
     def has_add_permission(self, request, obj=None):
         """Manage create new instance link from admin interface.
 
-        if return False no add link
+        if return False, no add link
 
         Args:
             request (Request): Http request
@@ -305,20 +319,66 @@ class ChannelSuperAdminForm(ChannelForm):
     is_superuser = True
     admin_form = True
 
+    class Meta(object):
+        model = Channel
+        fields = "__all__"
+        widgets = {
+            "owners": widgets.AutocompleteSelectMultiple(
+                Channel._meta.get_field("owners"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "users": widgets.AutocompleteSelectMultiple(
+                Channel._meta.get_field("users"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "allow_to_groups": widgets.AutocompleteSelectMultiple(
+                Channel._meta.get_field("allow_to_groups"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+        }
+
 
 class ChannelAdminForm(ChannelForm):
     is_staff = True
     is_superuser = False
     admin_form = True
 
+    class Meta(object):
+        model = Channel
+        fields = "__all__"
+        widgets = {
+            "owners": widgets.AutocompleteSelectMultiple(
+                Channel._meta.get_field("owners"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "users": widgets.AutocompleteSelectMultiple(
+                Channel._meta.get_field("users"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "allow_to_groups": widgets.AutocompleteSelectMultiple(
+                Channel._meta.get_field("allow_to_groups"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+        }
+
 
 class ChannelAdmin(admin.ModelAdmin):
+    search_fields = ["title"]
+
     def get_owners(self, obj):
         owners = []
         for owner in obj.owners.all():
             url = url_to_edit_object(owner)
-            owners.append("%s %s (%s)" % (owner.first_name, owner.last_name, url))
-        return ", ".join(owners)
+            title = "%s %s (%s)" % (owner.first_name, owner.last_name, url)
+            owners.append(mark_safe(title))
+        titles = ", ".join(owners)
+        return mark_safe(titles)
 
     get_owners.allow_tags = True
     get_owners.short_description = _("Owners")
@@ -338,14 +398,14 @@ class ChannelAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if not request.user.is_superuser:
-            return ("sites",)
+            return ("site",)
         else:
             return ()
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         if not change:
-            obj.sites.add(get_current_site(request))
+            obj.site = get_current_site(request)
             obj.save()
 
     def get_form(self, request, obj=None, **kwargs):
@@ -360,22 +420,21 @@ class ChannelAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
-            "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(sites=get_current_site(request))
+            qs = qs.filter(site=get_current_site(request))
         return qs
 
 
@@ -384,35 +443,36 @@ class ThemeAdmin(admin.ModelAdmin):
     list_display = ("title", "channel")
     list_filter = (("channel", admin.RelatedOnlyFieldListFilter),)
     ordering = ("channel", "title")
+    search_fields = ["title"]
+    autocomplete_fields = ["parentId", "channel"]
 
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
-            "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(channel__sites=get_current_site(request))
+            qs = qs.filter(channel__site=get_current_site(request))
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "parentId":
             kwargs["queryset"] = Theme.objects.filter(
-                channel__sites=Site.objects.get_current()
+                channel__site=Site.objects.get_current()
             )
         if (db_field.name) == "channel":
-            kwargs["queryset"] = Channel.objects.filter(sites=Site.objects.get_current())
+            kwargs["queryset"] = Channel.objects.filter(site=Site.objects.get_current())
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -420,20 +480,20 @@ class ThemeAdmin(admin.ModelAdmin):
 class TypeAdmin(TranslationAdmin):
     form = TypeForm
     prepopulated_fields = {"slug": ("title",)}
+    search_fields = ["title"]
 
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap.min.css",
-                "bootstrap-4/css/bootstrap-grid.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "css/pod.css",
             )
         }
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
-            "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
     def get_form(self, request, obj=None, **kwargs):
@@ -460,26 +520,26 @@ class TypeAdmin(TranslationAdmin):
 class DisciplineAdmin(TranslationAdmin):
     form = DisciplineForm
     prepopulated_fields = {"slug": ("title",)}
+    search_fields = ["title"]
 
     class Media:
         css = {
             "all": (
-                "bootstrap-4/css/bootstrap-grid.css",
-                "bootstrap-4/css/bootstrap.min.css",
-                "css/pod.css",
+                # "bootstrap/dist/css/bootstrap-grid.min.css",
+                # "bootstrap/dist/css/bootstrap.min.css",
+                # "css/pod.css",
             )
         }
         js = (
             "js/main.js",
             "podfile/js/filewidget.js",
-            "feather-icons/feather.min.js",
-            "bootstrap-4/js/bootstrap.min.js",
+            "bootstrap/dist/js/bootstrap.min.js",
         )
 
     def get_form(self, request, obj=None, **kwargs):
         if not request.user.is_superuser:
             exclude = ()
-            exclude += ("sites",)
+            exclude += ("site",)
             self.exclude = exclude
         form = super(DisciplineAdmin, self).get_form(request, obj, **kwargs)
         return form
@@ -487,142 +547,22 @@ class DisciplineAdmin(TranslationAdmin):
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         if not change:
-            obj.sites.add(get_current_site(request))
+            obj.site = get_current_site(request)
             obj.save()
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(sites=get_current_site(request))
-        return qs
-
-
-class EncodingVideoAdmin(admin.ModelAdmin):
-    list_display = ("video", "get_resolution", "encoding_format")
-    list_filter = ["encoding_format", "rendition"]
-    search_fields = ["id", "video__id", "video__title"]
-
-    def get_resolution(self, obj):
-        return obj.rendition.resolution
-
-    get_resolution.short_description = "resolution"
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if not request.user.is_superuser:
-            qs = qs.filter(video__sites=get_current_site(request))
-        return qs
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if (db_field.name) == "video":
-            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
-        if (db_field.name) == "rendition":
-            kwargs["queryset"] = VideoRendition.objects.filter(
-                sites=Site.objects.get_current()
-            )
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-
-class EncodingAudioAdmin(admin.ModelAdmin):
-    list_display = ("video", "encoding_format")
-    list_filter = ["encoding_format"]
-    search_fields = ["id", "video__id", "video__title"]
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if not request.user.is_superuser:
-            qs = qs.filter(video__sites=get_current_site(request))
-        return qs
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if (db_field.name) == "video":
-            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-
-class PlaylistVideoAdmin(admin.ModelAdmin):
-    list_display = ("name", "video", "encoding_format")
-    search_fields = ["id", "video__id", "video__title"]
-    list_filter = ["encoding_format"]
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if not request.user.is_superuser:
-            qs = qs.filter(video__sites=get_current_site(request))
-        return qs
-
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if (db_field.name) == "video":
-            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
-
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-
-class VideoRenditionAdmin(admin.ModelAdmin):
-    list_display = (
-        "resolution",
-        "video_bitrate",
-        "audio_bitrate",
-        "encode_mp4",
-    )
-
-    def get_form(self, request, obj=None, **kwargs):
-        if not request.user.is_superuser:
-            exclude = ()
-            exclude += ("sites",)
-            self.exclude = exclude
-        form = super(VideoRenditionAdmin, self).get_form(request, obj, **kwargs)
-        return form
-
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
-        if not change:
-            obj.sites.add(get_current_site(request))
-            obj.save()
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if not request.user.is_superuser:
-            qs = qs.filter(sites=get_current_site(request))
-        return qs
-
-
-class EncodingLogAdmin(admin.ModelAdmin):
-    def video_id(self, obj):
-        return obj.video.id
-
-    list_display = (
-        "id",
-        "video_id",
-        "video",
-    )
-    readonly_fields = ("video", "log")
-    search_fields = ["id", "video__id", "video__title"]
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if not request.user.is_superuser:
-            qs = qs.filter(video__sites=get_current_site(request))
-        return qs
-
-
-class EncodingStepAdmin(admin.ModelAdmin):
-    list_display = ("video", "num_step", "desc_step")
-    readonly_fields = ("video", "num_step", "desc_step")
-    search_fields = ["id", "video__id", "video__title"]
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        if not request.user.is_superuser:
-            qs = qs.filter(video__sites=get_current_site(request))
+            qs = qs.filter(site=get_current_site(request))
         return qs
 
 
 class NotesAdmin(admin.ModelAdmin):
     list_display = ("video", "user")
+    autocomplete_fields = ["video", "user"]
 
-    class Media:
-        css = {"all": ("css/pod.css",)}
+    # class Media:
+    #     css = {"all": ("css/pod.css",)}
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -642,17 +582,12 @@ class NotesAdmin(admin.ModelAdmin):
 
 
 class AdvancedNotesAdmin(admin.ModelAdmin):
-    list_display = (
-        "video",
-        "user",
-        "timestamp",
-        "status",
-        "added_on",
-        "modified_on",
-    )
+    list_display = ("video", "user", "timestamp", "status", "added_on", "modified_on")
+    search_fields = ["note"]
+    autocomplete_fields = ["user", "video"]
 
-    class Media:
-        css = {"all": ("css/pod.css",)}
+    # class Media:
+    #     css = {"all": ("css/pod.css",)}
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -672,10 +607,12 @@ class AdvancedNotesAdmin(admin.ModelAdmin):
 
 
 class NoteCommentsAdmin(admin.ModelAdmin):
+    autocomplete_fields = ["user", "parentNote", "parentCom"]
+    search_fields = ["comment"]
     list_display = ("parentNote", "user", "added_on", "modified_on")
 
-    class Media:
-        css = {"all": ("css/pod.css",)}
+    # class Media:
+    #     css = {"all": ("css/pod.css",)}
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -702,6 +639,7 @@ class NoteCommentsAdmin(admin.ModelAdmin):
 class VideoToDeleteAdmin(admin.ModelAdmin):
     list_display = ("date_deletion", "get_videos")
     list_filter = ["date_deletion"]
+    autocomplete_fields = ["video"]
 
     def get_videos(self, obj):
         return obj.video.count()
@@ -737,12 +675,6 @@ admin.site.register(Discipline, DisciplineAdmin)
 admin.site.register(Theme, ThemeAdmin)
 admin.site.register(Video, VideoAdmin)
 admin.site.register(UpdateOwner, updateOwnerAdmin)
-admin.site.register(EncodingVideo, EncodingVideoAdmin)
-admin.site.register(EncodingAudio, EncodingAudioAdmin)
-admin.site.register(VideoRendition, VideoRenditionAdmin)
-admin.site.register(EncodingLog, EncodingLogAdmin)
-admin.site.register(EncodingStep, EncodingStepAdmin)
-admin.site.register(PlaylistVideo, PlaylistVideoAdmin)
 admin.site.register(Notes, NotesAdmin)
 admin.site.register(AdvancedNotes, AdvancedNotesAdmin)
 admin.site.register(NoteComments, NoteCommentsAdmin)

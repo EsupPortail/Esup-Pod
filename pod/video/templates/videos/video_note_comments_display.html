@@ -1,143 +1,172 @@
-{% load staticfiles i18n video_note_filter %}
+{% load static i18n video_note_filter %}
 
-<div id="comment-{{ com.id }}" class="comment status-{{ com.status }} border-left pl-2">
+<div id="comment-{{ com.id }}" class="pod-note-comment status-{{ com.status }} border-start ps-2 p-1">
 
-    <div class="header">
-        {% comment %} {% if com.user.userpicture %} <span class="user">{{ com.user.userpicture }}</span> {% else %} <span class="user">{{ com.user.username }}</span> {% endif %} {% endcomment %}
-        <span><span class="user"> {{ com.user.username }}</span>,
-          {% trans 'the' %} {{com.modified_on}}
-          {% if com.notecomments_set.all.count > 0 %}<span><i data-feather="chevron-down" width="16" height="16" ></i></span>{% endif %}
-        </span>
-        {% if request.user.is_authenticated and request.user == com.user %}
-            <div class="mgtComment dropleft">
-                <button class="p-0 m-0 btn btn-outline-primary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage comment' %}"> <i data-feather="more-horizontal"></i> </button>
-                <div class="dropdown-menu">
-
-                    {% comment %} Button to edit the comment in three dots menu {% endcomment %}
-                    <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="edit_video_notes_com_form" role="menuitem">
-                        {% csrf_token %}
-                        <input type="hidden" name="idNote" value="{{ note.id }}"/>
-                        <input type="hidden" name="idCom" value="{{ com.id }}"/>
-                        <input type="hidden" name="action" value="form_com_edit"/>
-                        <button class="p-0 m-0 btn btn-outline-primary btn-sm edit" type="submit" action="edit" title="{% trans 'Edit the comment' %}"> <i data-feather="edit-2"></i></button>
-                    </form>
-
-                    {% comment %} Button to comment the comment in three dots menu {% endcomment %}
-                    <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="comment_video_notes_form" role="menuitem">
-                        {% csrf_token %}
-                        <input type="hidden" name="idNote" value="{{ note.id }}"/>
-                        <input type="hidden" name="idCom" value="{{ com.id }}"/>
-                        <input type="hidden" name="action" value="form_com_new"/>
-                        <button class="p-0 m-0 btn btn-outline-primary btn-sm comment" type="submit" title="{% trans 'Comment the note' %}"> <i data-feather="message-circle"></i></button>
-                    </form>
-
-                    {% comment %} Button to remove the comment in three dots menu {% endcomment %}
-                    <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="remove_video_notes_com_form" role="menuitem">
-                        {% csrf_token %}
-                        <input type="hidden" name="idNote" value="{{ note.id }}"/>
-                        <input type="hidden" name="idCom" value="{{ com.id }}"/>
-                        <input type="hidden" name="action" value="remove_com"/>
-                        <button class="p-0 m-0 btn btn-outline-danger btn-sm remove" type="submit" action="remove" title="{% trans 'Remove the comment' %}"> <i data-feather="trash-2"></i></button>
-                    </form>
-                </div>
-            </div>
-        {% endif %}
-    </div>
-
-    {% comment %} Display the full comment {% endcomment %}
-    {% if comToDisplay and com in comToDisplay and com != comToEdit %}
-        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_note_coms_form displayed">
-            {% csrf_token %}
-            <input type="hidden" name="idNote" value="{{ note.id }}"/>
-            <input type="hidden" name="idCom" value="{{ com.parentCom.id }}"/>
-            <input type="hidden" name="action" value="get"/>
-            <span class="comment form">{{ com.comment }}</span>
-        </form>
-
-    {% comment %} Display a form to edit the comment {% endcomment %}
-    {% elif note_form and comToEdit and com == comToEdit %}
-        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_note_coms_form hidden">
-            {% csrf_token %}
-            <input type="hidden" name="idNote" value="{{ note.id }}"/>
-            <input type="hidden" name="idCom" value="{{ com.id }}"/>
-            <input type="hidden" name="action" value="get"/>
-        </form>
-        <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
-            {% csrf_token %}
-            {% if note_form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
-            {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}
-            {% for field in note_form.visible_fields %}
-                {% spaceless %}
-                <div class="form-group" >
-                    <label for="{{field.id_for_label}}">{{ field.label }}</label>
-                    {{ field.errors }}
-                    {{ field }}
-                    {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small> {% endif %}
-                    {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div> {% endif %}
-                </div>
-                {% endspaceless %}
-            {% endfor %}
-            <input type="hidden" name="idNote" value="{{ note.id }}"/>
-            <input type="hidden" name="idCom" value="{{ com.id }}"/>
-            <input type="hidden" name="action" value="save_com_edit"/>
-
-            <input type="submit" name="submit" value="{% trans "save" %}" class="btn btn-sm btn-outline-primary">
-            <input type="button" name="cancel" id="cancel_save_com" value="{% trans "cancel" %}" class="btn btn-sm btn-outline-primary">
-        </form>
-
-    {% comment %} Display the comment reduced {% endcomment %}
-    {% else %}
-        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_note_coms_form notdisplayed">
-            {% csrf_token %}
-            <input type="hidden" name="idCom" value="{{ com.id }}"/>
-            <input type="hidden" name="idNote" value="{{ note.id }}"/>
-            <input type="hidden" name="action" value="get"/>
-
-            <span class="comment form"> {{ com.comment }} </span>
-        </form>
+  <span class="pod-note-status">
+    {% if com.status == '0' %}
+      <i class="bi bi-file-earmark-lock" title="{% trans 'Private (me only)' %}"></i>
+    {% elif com.status == '1' %}
+      <i class="bi bi-person-video" title="{% trans 'Shared with video owner' %}"></i>
+    {% elif com.status == '2' %}
+      <i class="bi bi-globe2" title="{% trans 'Public' %}"></i>
     {% endif %}
+  </span>
+
+  <div class="pod-note-header js-comment-toggle">
+    {# {% if com.user.userpicture %} <span class="user">{{ com.user.userpicture }}</span> {% else %} <span class="user">{{ com.user.username }}</span> {% endif %} #}
+      {% if comToDisplay and com in comToDisplay and com != comToEdit %}
+        {% if com.notecomments_set.all.count > 0 %}
+          <i class="bi bi-chevron-double-down"></i>
+        {% else %}
+          <i class="bi bi-chevron-down"></i>
+        {% endif %}
+      {% else %}
+        {% if com.notecomments_set.all.count > 0 %}
+          <i class="bi bi-chevron-double-right"></i>
+        {% else %}
+          <i class="bi bi-chevron-right"></i>
+        {% endif %}
+      {% endif %}
+      <span class="user"> {{ com.user.get_username }}</span>,
+      <span class="pod-note-date">
+        {% blocktrans with date=com.modified_on %}the {{date}}:{% endblocktrans %}
+      </span>
+  </div>
+  {% if request.user.is_authenticated and request.user == com.user %}
+    <div class="mgtComment dropleft">
+      <button class="btn btn-link btn-sm" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage comment' %}"><i class="bi bi-three-dots" aria-hidden="true"></i></button>
+      <div class="dropdown-menu">
+
+        {# Button to edit the comment in three dots menu #}
+        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="edit_video_notes_com_form">
+          {% csrf_token %}
+          <input type="hidden" name="idNote" value="{{ note.id }}">
+          <input type="hidden" name="idCom" value="{{ com.id }}">
+          <input type="hidden" name="action" value="form_com_edit">
+          <button class="btn btn-outline-primary dropdown-item" type="submit" title="{% trans 'Edit the comment' %}"><i class="bi bi-pencil" aria-hidden="true"></i></button>
+        </form>
+
+        {# Button to comment the comment in three dots menu #}
+        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="comment_video_notes_form">
+          {% csrf_token %}
+          <input type="hidden" name="idNote" value="{{ note.id }}">
+          <input type="hidden" name="idCom" value="{{ com.id }}">
+          <input type="hidden" name="action" value="form_com_new">
+          <button class="btn btn-outline-primary dropdown-item" type="submit" title="{% trans 'Comment the note' %}"><i class="bi bi-chat" aria-hidden="true"></i></button>
+        </form>
+
+        {# Button to remove the comment in three dots menu #}
+        <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="remove_video_notes_com_form">
+          {% csrf_token %}
+          <input type="hidden" name="idNote" value="{{ note.id }}">
+          <input type="hidden" name="idCom" value="{{ com.id }}">
+          <input type="hidden" name="action" value="remove_com">
+          <button class="btn btn-outline-danger dropdown-item" type="submit" title="{% trans 'Remove the comment' %}"><i class="bi bi-trash" aria-hidden="true"></i></button>
+        </form>
+      </div>
+    </div>
+  {% endif %}
+
+  {# Display the full comment #}
+  {% if comToDisplay and com in comToDisplay and com != comToEdit %}
+    <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_note_coms_form">
+      {% csrf_token %}
+      <input type="hidden" name="idNote" value="{{ note.id }}">
+      <input type="hidden" name="idCom" value="{{ com.parentCom.id }}">
+      <input type="hidden" name="action" value="get">
+      <div class="pod-comment-content pod-callout pod-callout-info m-0 py-1">{{ com.comment }}</div>
+    </form>
+
+  {# Display a form to edit the comment #}
+  {% elif note_form and comToEdit and com == comToEdit %}
+    <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_note_coms_form d-none">
+      {% csrf_token %}
+      <input type="hidden" name="idNote" value="{{ note.id }}">
+      <input type="hidden" name="idCom" value="{{ com.id }}">
+      <input type="hidden" name="action" value="get">
+    </form>
+    <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" id="video_notes_form">
+      {% csrf_token %}
+      {% if note_form.errors %} <p class="text-danger">{% trans 'One or more errors have been found in the form.' %}</p> {% endif %}
+      {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}
+      {% for field in note_form.visible_fields %}
+        {% spaceless %}
+        <div class="form-group mb-2">
+          <label for="{{field.id_for_label}}" class="form-label">{{ field.label }}</label>
+          {{ field.errors }}
+          {{ field }}
+          {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small> {% endif %}
+          {% if field.field.required %} <div class="invalid-feedback">{% trans 'Please provide a valid value for this field.' %}</div> {% endif %}
+        </div>
+        {% endspaceless %}
+      {% endfor %}
+      <input type="hidden" name="idNote" value="{{ note.id }}">
+      <input type="hidden" name="idCom" value="{{ com.id }}">
+      <input type="hidden" name="action" value="save_com_edit">
+
+      <div class="mt-3">
+        <input type="submit" name="submit" value="{% trans 'Save' %}" class="btn btn-sm btn-primary">
+        <input type="button" name="cancel" id="cancel_save_com" value="{% trans 'Cancel' %}" class="btn btn-sm btn-secondary">
+      </div>
+    </form>
+
+  {# Display the comment reduced #}
+  {% else %}
+    <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_note_coms_form">
+      {% csrf_token %}
+      <input type="hidden" name="idCom" value="{{ com.id }}">
+      <input type="hidden" name="idNote" value="{{ note.id }}">
+      <input type="hidden" name="action" value="get">
+
+      <div class="pod-comment-content pod-note-truncated m-0 py-1">{{ com.comment }}</div>
+    </form>
+  {% endif %}
 
 </div>
 
 {% if com and com in comToDisplay and com != comToEdit %}
-    {% with comid=com.id|slugify %}
-    {% with dCom=dictComments|lookup:comid %}
-    {% if dCom %}
-        <div class="comments">
-            {% for com in dCom %}
-                {% include "videos/video_note_comments_display.html" %}
-            {% endfor %}
-        </div>
-    {% endif %}
-    {% endwith %}
-    {% endwith %}
+  {% with comid=com.id|slugify %}
+  {% with dCom=dictComments|lookup:comid %}
+  {% if dCom %}
+    <div class="comments">
+      {% for com in dCom %}
+        {% include "videos/video_note_comments_display.html" %}
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% endwith %}
+  {% endwith %}
 {% endif %}
 
-{% comment %} Form used to comment a comment {% endcomment %}
+{# Form used to comment a comment #}
 {% if note_form and noteToDisplay and com == comToDisplay.0 and not noteToEdit and not comToEdit %}
-    <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_note_coms_form hidden">
-        {% csrf_token %}
-        <input type="hidden" name="action" value="get"/>
-        <input type="hidden" name="idNote" value="{{ note.id }}"/>
-        <input type="hidden" name="idCom" value="{{ com.id }}"/>
-    </form>
-    <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
+  <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" class="view_video_note_coms_form d-none">
     {% csrf_token %}
-        {% if note_form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
-        {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}
-        {% for field in note_form.visible_fields %}
-            {% spaceless %}
-            <div class="form-group" >
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field.errors }}
-                {{ field }}
-                {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small> {% endif %}
-                {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div> {% endif %}
-            </div>
-            {% endspaceless %}
-        {% endfor %}
-        <input type="hidden" name="idCom" value="{{ com.id }}"/>
-        <input type="hidden" name="idNote" value="{{ note.id }}"/>
-        <input type="hidden" name="action" value="save_com_new"/>
-    </form>
+    <input type="hidden" name="action" value="get">
+    <input type="hidden" name="idNote" value="{{ note.id }}">
+    <input type="hidden" name="idCom" value="{{ com.id }}">
+  </form>
+  <form method="post" action="{% url 'video:video_notes' slug=video.slug %}" id="video_notes_form" class="m-2">
+  {% csrf_token %}
+    {% if note_form.errors %} <p class="text-danger">{% trans 'One or more errors have been found in the form.' %}</p> {% endif %}
+    {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}
+    {% for field in note_form.visible_fields %}
+      {% spaceless %}
+      <div class="form-group mb-2">
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        {{ field.errors }}
+        {{ field }}
+        {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small> {% endif %}
+        {% if field.field.required %} <div class="invalid-feedback">{% trans 'Please provide a valid value for this field.' %}</div> {% endif %}
+      </div>
+      {% endspaceless %}
+    {% endfor %}
+    <input type="hidden" name="idCom" value="{{ com.id }}">
+    <input type="hidden" name="idNote" value="{{ note.id }}">
+    <input type="hidden" name="action" value="save_com_new">
+    <div class="mt-3">
+      <input type="submit" name="submit" value="{% trans 'Save' %}" class="btn btn-sm btn-primary">
+      <input type="button" name="cancel" id="cancel_save_com" value="{% trans 'Cancel' %}" class="btn btn-sm btn-secondary">
+    </div>
+  </form>
 {% endif %}

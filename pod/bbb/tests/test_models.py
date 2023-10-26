@@ -1,7 +1,8 @@
+"""Test BBB models."""
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.utils import timezone
-from ..models import Meeting, Attendee, Livestream
+from ..models import BBB_Meeting as Meeting, Attendee, Livestream
 
 
 class MeetingTestCase(TestCase):
@@ -28,7 +29,7 @@ class MeetingTestCase(TestCase):
             encoded_by=user,
         )
 
-        print(" --->  SetUp of MeetingTestCase : OK !")
+        print(" --->  SetUp of MeetingTestCase: OK!")
 
     # Test attributes
     def test_attributes(self):
@@ -49,7 +50,7 @@ class MeetingTestCase(TestCase):
         self.assertEqual(meeting2.meeting_name, "Session BBB2")
         self.assertEqual(meeting2.encoding_step, 1)
         self.assertEqual(meeting2.encoded_by, user)
-        print("   --->  test_attributs of MeetingTestCase : OK !")
+        print("   --->  test_attributs of MeetingTestCase: OK!")
 
     # Test update attributes
     def test_update_attributes(self):
@@ -60,7 +61,7 @@ class MeetingTestCase(TestCase):
         meeting.save()
         self.assertEqual(meeting.encoding_step, 1)
         self.assertEqual(meeting.encoded_by, user)
-        print("   --->  test_update_attributes of MeetingTestCase : OK !")
+        print("   --->  test_update_attributes of MeetingTestCase: OK!")
 
     # Test delete object
     def test_delete_object(self):
@@ -69,7 +70,7 @@ class MeetingTestCase(TestCase):
         Meeting.objects.filter(meeting_id="id2").delete()
         self.assertEquals(Meeting.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of MeetingTestCase : OK !")
+        print("   --->  test_delete_object of MeetingTestCase: OK!")
 
 
 class AttendeeTestCase(TestCase):
@@ -101,7 +102,7 @@ class AttendeeTestCase(TestCase):
             user=userJaneDoe,
         )
 
-        print(" --->  SetUp of AttendeeTestCase : OK !")
+        print(" --->  SetUp of AttendeeTestCase: OK!")
 
     # Test attributes
     def test_attributes(self):
@@ -118,7 +119,7 @@ class AttendeeTestCase(TestCase):
         self.assertEqual(attendee2.meeting, meeting)
         self.assertEqual(attendee2.username, "pod2")
         self.assertEqual(attendee2.user, userJaneDoe)
-        print("   --->  test_attributs of AttendeeTestCase : OK !")
+        print("   --->  test_attributs of AttendeeTestCase: OK!")
 
     # Test update attributes
     def test_update_attributes(self):
@@ -129,7 +130,7 @@ class AttendeeTestCase(TestCase):
         attendee.save()
         self.assertEqual(attendee.username, "pod")
         self.assertEqual(attendee.user, userJohnDoe)
-        print("   --->  test_update_attributes of AttendeeTestCase : OK !")
+        print("   --->  test_update_attributes of AttendeeTestCase: OK!")
 
     # Test delete object
     def test_delete_object(self):
@@ -138,7 +139,7 @@ class AttendeeTestCase(TestCase):
         Attendee.objects.filter(id=2).delete()
         self.assertEquals(Attendee.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of AttendeeTestCase : OK !")
+        print("   --->  test_delete_object of AttendeeTestCase: OK!")
 
 
 class LivestreamTestCase(TestCase):
@@ -161,7 +162,7 @@ class LivestreamTestCase(TestCase):
             id=1, start_date=timezone.now(), meeting=meeting1, user=user1
         )
 
-        print(" --->  SetUp of LivestreamTestCase : OK !")
+        print(" --->  SetUp of LivestreamTestCase: OK!")
 
     # Test attributes
     def test_attributes(self):
@@ -176,7 +177,7 @@ class LivestreamTestCase(TestCase):
         self.assertEqual(livestream.start_date.month, date.month)
         self.assertEqual(livestream.start_date.day, date.day)
 
-        print("   --->  test_attributs of LivestreamTestCase : OK !")
+        print("   --->  test_attributs of LivestreamTestCase: OK!")
 
     # Test update attributes
     def test_update_attributes(self):
@@ -194,11 +195,11 @@ class LivestreamTestCase(TestCase):
         self.assertEqual(livestream.redis_hostname, "localhost")
         self.assertEqual(livestream.redis_port, 6379)
         self.assertEqual(livestream.broadcaster_id, 1)
-        print("   --->  test_update_attributes of LivestreamTestCase : OK !")
+        print("   --->  test_update_attributes of LivestreamTestCase: OK!")
 
     # Test delete object
     def test_delete_object(self):
         Livestream.objects.filter(id=1).delete()
         self.assertEquals(Livestream.objects.all().count(), 0)
 
-        print("   --->  test_delete_object of LivestreamTestCase : OK !")
+        print("   --->  test_delete_object of LivestreamTestCase: OK!")

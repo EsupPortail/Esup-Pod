@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 
 {% block opengraph %}{% load video_filters %}
-  <meta name="description" content="{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
+  <meta name="description" content="{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}">
   <!-- Open Graph data -->
-  <meta property="og:title" content="{% trans 'Videos' %}" />
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-  <meta property="og:description" content="{{ DESC_SITE }} - {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
-  <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+  <meta property="og:title" content="{% trans 'Videos' %}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}">
+  <meta property="og:description" content="{{ DESC_SITE }} - {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}">
+  <meta property="og:site_name" content="{{ TITLE_SITE }}">
 {% endblock %}
 
 
@@ -18,26 +18,32 @@
 
 {% block page_title %}{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}{% endblock %}
 
+{% block main_page_title %}
+<div class="row videos-list-header">
+  <h1 id="video_count" class="page_title col-xxl-4 mb-2">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h1>
+  <span class="col-xxl-4 col-md-6 mb-2">
+    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'Subscribe to the audio feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+      <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Audio" %}
+    </a>
+    <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'Subscribe to the video feed'%}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+      <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Video" %}
+    </a>
+    {% if USE_STATS_VIEW %}
+      <a href="{% url 'video:video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+        <i class="bi bi-graph-up" aria-hidden="true"></i>&nbsp;{% trans "Statistics views" %}
+      </a>
+    {% endif %}
+  </span>
+  <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms col-xxl-4 col-md-4 mb-2">
+    {% include "videos/video_sort_select.html" %}
+  </form>
+</div>
+{% endblock main_page_title %}
 
 {% block page_content %}
-
-  <div class="row">
-    <div class="col">
-      <h1 id="video_count">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h1>
-    </div>
-      <span class="float-left col">
-        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm float-right">
-          <i data-feather="rss"></i>&nbsp;Audio</a>
-        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video'%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm float-right">
-          <i data-feather="rss"></i>&nbsp;Video</a>
-        {% if USE_STATS_VIEW %}
-          <a href="{% url 'video_stats_view' 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm float-right" style="height:35.8px"> {% trans "Statistics views" %}</a>
-        {% endif %}
-      </span>
-  </div>
-
+  {% include 'loader.html' %}
   {% comment %}
-  <p>
+  <p class="debug">
     "types": request.GET.getlist('type'),
     "owners": request.GET.getlist('owner'),
     "disciplines": request.GET.getlist('discipline'),
@@ -55,10 +61,19 @@
 
 
 {% block more_script %}
-<script type="text/javascript">
-const urlVideos = "{% url 'videos' %}";
-</script>
-<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'js/filter_aside_video_list_refresh.js' %}"></script>
+  <script>
+    const urlVideos = "{% url 'videos:videos' %}";
+    var page = 1;
+    var nextPage = false;
+    var ownerFilter = {{ owner_filter|yesno:'true,false'}};
+
+    {% if videos.has_next %}
+      page = parseInt("{{videos.next_page_number}}");
+      nextPage = true;
+    {% endif %}
+
+  </script>
+  <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}

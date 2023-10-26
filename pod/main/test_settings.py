@@ -1,15 +1,18 @@
+"""Esup-Pod "test mode" settings."""
 # test_settings.py
 # from ..settings import *
+from ..settings import BASE_DIR as settings_base_dir
+from ..settings import USE_TZ, REST_FRAMEWORK, LOG_DIRECTORY, LOGGING
+from ..settings import LOCALE_PATHS, STATICFILES_DIRS, DEFAULT_AUTO_FIELD
+from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N, USE_L10N
+from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
+from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
 import os
+from bs4 import BeautifulSoup
+import requests
 
 USE_OPENCAST_STUDIO = True
 
-from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
-from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
-from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N, USE_L10N
-from ..settings import LOCALE_PATHS
-from ..settings import USE_TZ, REST_FRAMEWORK, LOG_DIRECTORY, LOGGING
-from ..settings import BASE_DIR as settings_base_dir
 
 TEST_SETTINGS = True
 TEMPLATES[0]["DIRS"].append(
@@ -29,16 +32,23 @@ for application in INSTALLED_APPS:
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "db.sqlite",
+        "NAME": "db-test.sqlite",
+        "OPTIONS": {
+            "timeout": 20,
+        },
     }
 }
-LANGUAGES = (("fr", "Français"), ("en", "English"), ("nl", "Netherlands"))
+
+LANGUAGES = (("fr", "Français"), ("en", "English"))
 LANGUAGE_CODE = "en"
 THIRD_PARTY_APPS = ["enrichment", "live"]
 USE_PODFILE = True
+USE_FAVORITES = True
+USE_PLAYLIST = True
 USE_STATS_VIEW = True
 ACCOMMODATION_YEARS = {"faculty": 1}
 USE_OBSOLESCENCE = True
+SHOW_EVENTS_ON_HOMEPAGE = True
 ACTIVE_VIDEO_COMMENT = True
 USER_VIDEO_CATEGORY = True
 POD_ARCHIVE_AFFILIATION = ["faculty"]
@@ -55,3 +65,30 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
     "Shibboleth-unscoped-affiliation": (False, "affiliations"),
 }
 REMOTE_USER_HEADER = "REMOTE_USER"
+EXISTING_BROADCASTER_IMPLEMENTATIONS = ["Wowza", "Test"]
+AFFILIATION_EVENT = ["employee"]
+
+USE_MEETING = True
+
+
+def get_shared_secret():
+    api_mate_url = "https://bigbluebutton.org/api-mate/"
+    response = requests.get(api_mate_url)
+    soup = BeautifulSoup(response.text, features="html.parser")
+    input_val = soup.body.find("input", attrs={"id": "input-custom-server-salt"})
+    return input_val.get("value")
+
+
+BBB_API_URL = "http://test-install.blindsidenetworks.com/bigbluebutton/api/"
+BBB_SECRET_KEY = get_shared_secret()
+MEETING_DISABLE_RECORD = False
+
+USE_IMPORT_VIDEO = True
+
+# xAPI settings
+USE_XAPI = True
+USE_XAPI_VIDEO = True
+XAPI_ANONYMIZE_ACTOR = False
+XAPI_LRS_URL = ""
+XAPI_LRS_LOGIN = ""
+XAPI_LRS_PWD = ""

@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib import messages
 from pod.video.models import Video
 from django.utils.translation import ugettext_lazy as _
+from django.utils.html import strip_tags
 
 # import json
 
@@ -52,7 +53,7 @@ def get_remove_selected_facet_link(request, selected_facets):
     for facet in selected_facets:
         if ":" in facet:
             term = facet.split(":")[0]
-            value = facet.split(":")[1]
+            value = strip_tags(facet.split(":")[1])
             link = request.get_full_path().replace(
                 "&selected_facets=%s:%s" % (term, value), ""
             )
@@ -234,11 +235,11 @@ def search_videos(request):
     list_videos_id = [hit["_id"] for hit in result["hits"]["hits"]]
     videos = Video.objects.filter(id__in=list_videos_id)
     num_result = 0
-    if ES_VERSION == 7:
+    if ES_VERSION in [7, 8]:
         num_result = result["hits"]["total"]["value"]
     else:
         num_result = result["hits"]["total"]
-    videos.has_next = ((page + 1) * 12) < num_result
+    videos.has_next = ((page + 1) * size) < num_result
     videos.next_page_number = page + 1
 
     if request.is_ajax():

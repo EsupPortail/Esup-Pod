@@ -1,6 +1,9 @@
 """Esup-Pod videos views."""
+from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Count, F, Q, Case, When, Value, BooleanField
+from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -15,8 +18,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.db.models import Count, F, Q, Case, When, Value, BooleanField
-from django.db.models.functions import Concat
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.shortcuts import redirect
@@ -24,12 +25,23 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Sum, Min
 
+# from django.contrib.auth.hashers import check_password
+
 from dateutil.parser import parse
 import concurrent.futures as futures
+from pod.main.utils import is_ajax
 
+from pod.main.models import AdditionalChannelTab
 from pod.main.views import in_maintenance
-from pod.main.decorators import ajax_required, admin_required
+from pod.main.decorators import ajax_required, ajax_login_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
+from pod.playlist.apps import FAVORITE_PLAYLIST_NAME
+from pod.playlist.models import Playlist, PlaylistContent
+from pod.playlist.utils import (
+    get_playlists_for_additional_owner,
+    get_video_list_for_playlist,
+    user_can_see_playlist_video,
+)
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
 from pod.video.models import Type
@@ -38,6 +50,8 @@ from pod.video.models import Theme
 from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
+from pod.video.models import get_transcription_choices
+
 from tagging.models import TaggedItem
 
 from pod.video.forms import VideoForm, VideoVersionForm
@@ -46,7 +60,17 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
-from pod.video.utils import pagination_data, get_headband, change_owner
+from pod.video.rest_views import ChannelSerializer
+
+from .utils import (
+    pagination_data,
+    get_headband,
+    change_owner,
+    get_video_data,
+    get_id_from_request,
+)
+from .context_processors import get_available_videos
+from .utils import sort_videos_list
 
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import ObjectDoesNotExist
@@ -61,23 +85,11 @@ from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 from django.db import transaction
 from django.db import IntegrityError
 
-VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False).defer(
-    "video", "slug", "owner", "additional_owners", "description"
-)
-
-# for clean install, produces errors
-try:
-    VIDEOS = VIDEOS.exclude(pk__in=[vid.id for vid in VIDEOS if not vid.encoded]).filter(
-        sites=get_current_site(None)
-    )
-except Exception:
-    pass
-
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
 )
-THEME_ACTION = ["new", "modify", "delete", "save"]
-NOTE_ACTION = ["get", "save", "remove", "form", "download"]
+__THEME_ACTION__ = ["new", "modify", "delete", "save"]
+__NOTE_ACTION__ = ["get", "save", "remove", "form", "download"]
 
 TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings,
@@ -88,11 +100,12 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         thereby encourage its use in teaching and research.",
         "TITLE_ETB": "University name",
         "LOGO_SITE": "img/logoPod.svg",
-        "LOGO_ETB": "img/logo_etb.svg",
-        "LOGO_PLAYER": "img/logoPod.svg",
+        "LOGO_ETB": "img/esup-pod.svg",
+        "LOGO_PLAYER": "img/pod_favicon.svg",
         "LINK_PLAYER": "",
+        "LINK_PLAYER_NAME": _("Home"),
         "FOOTER_TEXT": ("",),
-        "FAVICON": "img/logoPod.svg",
+        "FAVICON": "img/pod_favicon.svg",
         "CSS_OVERRIDE": "",
         "PRE_HEADER_TEMPLATE": "",
         "POST_FOOTER_TEMPLATE": "",
@@ -100,7 +113,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     },
 )
 
-TITLE_SITE = (
+__TITLE_SITE__ = (
     TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
     if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
     else "Pod"
@@ -152,12 +165,21 @@ CURSUS_CODES = getattr(
     ),
 )
 
-TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
 VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
-USE_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
+USER_VIDEO_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
-DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
+ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
+HIDE_USER_FILTER = getattr(settings, "HIDE_USER_FILTER", False)
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
+
+if USE_TRANSCRIPTION:
+    from ..video_encode_transcript import transcript
+
+    TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
+
+CHANNELS_PER_BATCH = getattr(settings, "CHANNELS_PER_BATCH", 10)
+
 
 # ############################################################################
 # CHANNEL
@@ -169,15 +191,14 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
 
     Args:
         request (Request): current HTTP Request
-        videos (List[Video]): list of vidéo filter by channel
+        videos (List[Video]): list of video filter by channel
         channel (Channel): current channel
         theme (Theme, optional): current theme. Defaults to None.
-
     Returns:
         Dict[str, Any]: json data
     """
     target = request.GET.get("target", "").lower()
-    limit = int(request.GET.get("limit", 8))
+    limit = int(request.GET.get("limit", 12))
     offset = int(request.GET.get("offset", 0))
     theme_children = None
     parent_title = ""
@@ -185,7 +206,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
 
     if target in ("", "themes"):
         theme_children = Theme.objects.filter(parentId=theme, channel=channel)
-        videos = videos.filter(theme=theme, channel=channel)
+        videos = videos.filter(theme=theme, channel=channel).distinct()
 
         if theme is not None and theme.parentId is not None:
             parent_title = theme.parentId.title
@@ -193,7 +214,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
             parent_title = channel.title
 
     if target in ("", "videos"):
-        videos = videos.filter(theme=theme, channel=channel)
+        videos = videos.filter(theme=theme, channel=channel).distinct()
         response["next_videos"], *_ = pagination_data(
             request.path, offset, limit, videos.count()
         )
@@ -209,7 +230,12 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
     if theme_children is not None:
         count_themes = theme_children.count()
         has_more_themes = (offset + limit) < count_themes
-        theme_children = theme_children.values("slug", "title")[offset : limit + offset]
+        theme_children = theme_children.annotate(
+            video_count=Count("video", filter=Q(video__is_draft=False), distinct=True)
+        )
+        theme_children = theme_children.values("slug", "title", "video_count")[
+            offset : limit + offset
+        ]
         next_url, previous_url, theme_pages_info = pagination_data(
             request.path, offset, limit, count_themes
         )
@@ -236,21 +262,16 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         videos = list(
             map(
                 lambda v: {
-                    "slug": v.slug,
-                    "title": v.title,
-                    "duration": v.duration_in_time,
-                    "thumbnail": v.get_thumbnail_card(),
-                    "is_video": v.is_video,
-                    "has_password": bool(v.password),
-                    "is_restricted": v.is_restricted,
-                    "has_chapter": v.chapter_set.all().count() > 0,
-                    "is_draft": v.is_draft,
+                    **get_video_data(v),
+                    "is_editable": v.is_editable(request.user),
                 },
                 videos,
             )
         )
         response["videos"] = videos
         return JsonResponse(response, safe=False)
+        # TODO : replace this return by a
+        #  render(request,"videos/video_list.html") like in channel
 
     return render(
         request,
@@ -276,9 +297,10 @@ def paginator(videos_list, page):
 
 
 def channel(request, slug_c, slug_t=None):
-    channel = get_object_or_404(Channel, slug=slug_c, sites=get_current_site(request))
+    channel = get_object_or_404(Channel, slug=slug_c, site=get_current_site(request))
 
-    videos_list = VIDEOS.filter(channel=channel)
+    videos_list = get_available_videos().filter(channel=channel)
+    channel.video_count = videos_list.count()
 
     theme = None
     if slug_t:
@@ -286,7 +308,7 @@ def channel(request, slug_c, slug_t=None):
         list_theme = theme.get_all_children_flat()
         videos_list = videos_list.filter(theme__in=list_theme)
 
-    if getattr(settings, "ORGANIZE_BY_THEME", False):
+    if ORGANIZE_BY_THEME:
         return _regroup_videos_by_theme(request, videos_list, channel, theme)
 
     page = request.GET.get("page", 1)
@@ -324,7 +346,7 @@ def my_channels(request):
     site = get_current_site(request)
     channels = (
         request.user.owners_channels.all()
-        .filter(sites=site)
+        .filter(site=site)
         .annotate(video_count=Count("video", distinct=True))
     )
     return render(
@@ -337,7 +359,7 @@ def my_channels(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def channel_edit(request, slug):
-    channel = get_object_or_404(Channel, slug=slug, sites=get_current_site(request))
+    channel = get_object_or_404(Channel, slug=slug, site=get_current_site(request))
     if request.user not in channel.owners.all() and not (
         request.user.is_superuser or request.user.has_perm("video.change_channel")
     ):
@@ -377,15 +399,15 @@ def channel_edit(request, slug):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def theme_edit(request, slug):
-    channel = get_object_or_404(Channel, slug=slug, sites=get_current_site(request))
+    channel = get_object_or_404(Channel, slug=slug, site=get_current_site(request))
     if request.user not in channel.owners.all() and not (
         request.user.is_superuser or request.user.has_perm("video.change_theme")
     ):
         messages.add_message(request, messages.ERROR, _("You cannot edit this channel."))
         raise PermissionDenied
 
-    if request.POST and request.is_ajax():
-        if request.POST["action"] in THEME_ACTION:
+    if is_ajax(request):
+        if request.POST["action"] in __THEME_ACTION__:
             return eval("theme_edit_{0}(request, channel)".format(request.POST["action"]))
 
     form_theme = FrontThemeForm(initial={"channel": channel})
@@ -429,6 +451,7 @@ def theme_edit_delete(request, channel):
 
 
 def theme_edit_save(request, channel):
+    """Save theme edition."""
     form_theme = None
 
     if request.POST.get("theme_id") and request.POST.get("theme_id") != "None":
@@ -468,7 +491,7 @@ def theme_edit_save(request, channel):
 
 @login_required(redirect_field_name="referrer")
 def my_videos(request):
-
+    """Render the logged user's videos list."""
     data_context = {}
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
@@ -488,7 +511,7 @@ def my_videos(request):
 
     cats = []
     videos_without_cat = []
-    if USE_CATEGORY:
+    if USER_VIDEO_CATEGORY:
         """
         " user's videos categories format =>
         " [{
@@ -496,6 +519,12 @@ def my_videos(request):
         " 'slug': cat_slug,
         " 'videos': [v_slug, v_slug...] },]
         """
+        if request.GET.get("category") is not None:
+            category_checked = request.GET.get("category")
+            videos_list = get_object_or_404(
+                Category, slug=category_checked, owner=request.user
+            ).video.all()
+
         cats = Category.objects.prefetch_related("video").filter(owner=request.user)
         videos_without_cat = videos_list.exclude(category__in=cats)
         cats = list(
@@ -514,38 +543,73 @@ def my_videos(request):
         data_context["categories"] = cats
         data_context["videos_without_cat"] = videos_without_cat
 
+    videos_list = get_filtered_videos_list(request, videos_list)
+    sort_field = request.GET.get("sort")
+    sort_direction = request.GET.get("sort_direction")
+    videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+    owner_filter = owner_is_searchable(request.user)
+
+    if not sort_field:
+        # Get the default Video ordering
+        sort_field = Video._meta.ordering[0].lstrip("-")
+    count_videos = len(videos_list)
+
     paginator = Paginator(videos_list, 12)
-    try:
-        videos = paginator.page(page)
-    except PageNotAnInteger:
-        videos = paginator.page(1)
-    except EmptyPage:
-        videos = paginator.page(paginator.num_pages)
+    videos = get_paginated_videos(paginator, page)
 
     if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path},
+            {
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos,
+                "owner_filter": owner_filter,
+            },
         )
-    data_context["use_category"] = USE_CATEGORY
+
     data_context["videos"] = videos
+    data_context["count_videos"] = count_videos
+    data_context["types"] = request.GET.getlist("type")
+    data_context["owners"] = request.GET.getlist("owner")
+    data_context["disciplines"] = request.GET.getlist("discipline")
+    data_context["tags_slug"] = request.GET.getlist("tag")
+    data_context["cursus_selected"] = request.GET.getlist("cursus")
     data_context["full_path"] = full_path
+    data_context["cursus_list"] = CURSUS_CODES
+    data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["page_title"] = _("My videos")
+    data_context["sort_field"] = sort_field
+    data_context["sort_direction"] = sort_direction
+    data_context["owner_filter"] = owner_filter
 
     return render(request, "videos/my_videos.html", data_context)
 
 
-def get_videos_list(request):
-    videos_list = VIDEOS
+def get_paginated_videos(paginator, page):
+    """Return paginated videos in paginator object."""
+    try:
+        return paginator.page(page)
+    except PageNotAnInteger:
+        return paginator.page(1)
+    except EmptyPage:
+        return paginator.page(paginator.num_pages)
 
+
+def get_filtered_videos_list(request, videos_list):
+    """Return filtered videos list by get parameters."""
     if request.GET.getlist("type"):
         videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
     if request.GET.getlist("discipline"):
         videos_list = videos_list.filter(
             discipline__slug__in=request.GET.getlist("discipline")
         )
-    if request.GET.getlist("owner"):
+    if (
+        request.user
+        and owner_is_searchable(request.user)
+        and request.GET.getlist("owner")
+    ):
         # Add filter on additional owners
         videos_list = videos_list.filter(
             Q(owner__username__in=request.GET.getlist("owner"))
@@ -571,12 +635,27 @@ def get_owners_has_instances(owners):
     return ownersInstances
 
 
+def owner_is_searchable(user):
+    """Return if user is searchable according to HIDE_USER_FILTER setting and authenticated user"""
+    return not HIDE_USER_FILTER and user.is_authenticated
+
+
 def videos(request):
     """Render the main list of videos."""
-    videos_list = get_videos_list(request)
+    videos_list = get_filtered_videos_list(request, get_available_videos())
+    sort_field = request.GET.get("sort")
+    sort_direction = request.GET.get("sort_direction")
+
+    videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+
+    if not sort_field:
+        # Get the default Video ordering
+        sort_field = Video._meta.ordering[0].lstrip("-")
     count_videos = len(videos_list)
 
     page = request.GET.get("page", 1)
+    if page == "" or page is None:
+        page = 1
     full_path = ""
     if page:
         full_path = (
@@ -586,22 +665,21 @@ def videos(request):
         )
 
     paginator = Paginator(videos_list, 12)
-    try:
-        videos = paginator.page(page)
-    except PageNotAnInteger:
-        videos = paginator.page(1)
-    except EmptyPage:
-        videos = paginator.page(paginator.num_pages)
-
+    videos = get_paginated_videos(paginator, page)
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
+    owner_filter = owner_is_searchable(request.user)
 
     if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path, "count_videos": count_videos},
+            {
+                "videos": videos,
+                "full_path": full_path,
+                "count_videos": count_videos,
+                "owner_filter": owner_filter,
+            },
         )
-
     return render(
         request,
         "videos/videos.html",
@@ -616,6 +694,9 @@ def videos(request):
             "full_path": full_path,
             "ownersInstances": ownersInstances,
             "cursus_list": CURSUS_CODES,
+            "sort_field": sort_field,
+            "sort_direction": request.GET.get("sort_direction"),
+            "owner_filter": owner_filter,
         },
     )
 
@@ -645,17 +726,17 @@ def get_video_access(request, video, slug_private):
     )
     if is_access_protected:
         access_granted_for_private = slug_private and slug_private == video.get_hashkey()
-        access_granted_for_draft = request.user.is_authenticated() and (
+        access_granted_for_draft = request.user.is_authenticated and (
             request.user == video.owner
             or request.user.is_superuser
             or request.user.has_perm("video.change_video")
             or (request.user in video.additional_owners.all())
         )
         access_granted_for_restricted = (
-            request.user.is_authenticated() and not is_restricted_to_group
+            request.user.is_authenticated and not is_restricted_to_group
         )
         access_granted_for_group = (
-            (request.user.is_authenticated() and is_in_video_groups(request.user, video))
+            (request.user.is_authenticated and is_in_video_groups(request.user, video))
             or request.user == video.owner
             or request.user.is_superuser
             or request.user.has_perm("recorder.add_recording")
@@ -752,7 +833,7 @@ def video_xhr(request, slug, slug_private=None):
             }
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
-        elif request.user.is_authenticated():
+        elif request.user.is_authenticated:
             response = {
                 "status": HTTPStatus.FORBIDDEN,
                 "error": "deny",
@@ -779,19 +860,89 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
 
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
 
-    if video.get_version != "O" and request.GET.get("redirect") != "false":
-        return redirect(
-            video.get_default_version_link(slug_private)
-            + "?"
-            + request.META["QUERY_STRING"]
+    if (
+        video.get_version != "O"
+        and request.GET.get("redirect") != "false"
+        and video.get_default_version_link(slug_private)
+    ):
+        query_string = (
+            "?%s" % request.META["QUERY_STRING"]
+            if (request.META.get("QUERY_STRING"))
+            else ""
         )
+        return redirect(video.get_default_version_link(slug_private) + query_string)
 
     template_video = "videos/video.html"
     params = {"active_video_comment": ACTIVE_VIDEO_COMMENT}
     if request.GET.get("is_iframe"):
-        params = {}
+        params = {"page_title": video.title}
         template_video = "videos/video-iframe.html"
+    elif request.GET.get("playlist"):
+        playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+        if (
+            playlist.visibility == "public"
+            or playlist.visibility == "protected"
+            or (
+                playlist.owner == request.user
+                or playlist in get_playlists_for_additional_owner(request.user)
+                or request.user.is_staff
+            )
+        ):
+            videos = sort_videos_list(get_video_list_for_playlist(playlist), "rank")
+            params = {
+                "playlist_in_get": playlist,
+                "videos": videos,
+            }
+        else:
+            return HttpResponseNotFound()
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
+
+
+def toggle_render_video_user_can_see_video(
+    show_page, is_password_protected, request, slug_private, video
+) -> bool:
+    """Toogle condition for `render_video()`."""
+    return (
+        (show_page and not is_password_protected)
+        or (
+            show_page
+            and is_password_protected
+            and request.POST.get("password") == video.password
+            # and check_password(request.POST.get("password"), video.password)
+        )
+        or (slug_private and slug_private == video.get_hashkey())
+        or request.user == video.owner
+        or request.user.is_superuser
+        or request.user.has_perm("video.change_video")
+        or (request.user in video.additional_owners.all())
+        or (request.GET.get("playlist"))
+    )
+
+
+def toggle_render_video_when_is_playlist_player(request):
+    """Toggle `render_video()` when the user want to play a playlist."""
+    playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+    print(playlist.visibility)
+    if request.user.is_authenticated:
+        video = (
+            Video.objects.filter(
+                playlistcontent__playlist_id=playlist.id,
+                is_draft=False,
+                is_restricted=False,
+            )
+            | Video.objects.filter(
+                playlistcontent__playlist_id=playlist.id,
+                owner=request.user,
+            )
+        ).first()
+    else:
+        video = Video.objects.filter(
+            playlistcontent__playlist_id=playlist.id,
+            is_draft=False,
+            is_restricted=False,
+        ).first()
+    if not video:
+        return Http404()
 
 
 def render_video(
@@ -803,12 +954,12 @@ def render_video(
     template_video="videos/video.html",
     more_data={},
 ):
+    """Render video."""
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
     """
     # Do it only for video --> move code in video definition
     app_name = request.resolver_match.namespace.capitalize()[0] \
         if request.resolver_match.namespace else 'O'
-
     if (
         video.get_version != app_name and
         request.GET.get('redirect') != "false"
@@ -817,7 +968,7 @@ def render_video(
     """
     listNotes = get_adv_note_list(request, video)
     channel = (
-        get_object_or_404(Channel, slug=slug_c, sites=get_current_site(request))
+        get_object_or_404(Channel, slug=slug_c, site=get_current_site(request))
         if slug_c
         else None
     )
@@ -827,20 +978,15 @@ def render_video(
 
     show_page = get_video_access(request, video, slug_private)
 
-    if (
-        (show_page and not is_password_protected)
-        or (
-            show_page
-            and is_password_protected
-            and request.POST.get("password")
-            and request.POST.get("password") == video.password
-        )
-        or (slug_private and slug_private == video.get_hashkey())
-        or request.user == video.owner
-        or request.user.is_superuser
-        or request.user.has_perm("video.change_video")
-        or (request.user in video.additional_owners.all())
+    owner_filter = owner_is_searchable(request.user)
+
+    if toggle_render_video_user_can_see_video(
+        show_page, is_password_protected, request, slug_private, video
     ):
+        if request.GET.get("playlist") and not user_can_see_playlist_video(
+            request, video
+        ):
+            toggle_render_video_when_is_playlist_player(request)
         return render(
             request,
             template_video,
@@ -849,6 +995,7 @@ def render_video(
                 "video": video,
                 "theme": theme,
                 "listNotes": listNotes,
+                "owner_filter": owner_filter,
                 **more_data,
             },
         )
@@ -866,6 +1013,7 @@ def render_video(
             if (
                 request.POST.get("password")
                 and request.POST.get("password") != video.password
+                # and check_password(request.POST.get("password"), video.password )
             ):
                 messages.add_message(
                     request, messages.ERROR, _("The password is incorrect.")
@@ -879,10 +1027,11 @@ def render_video(
                     "theme": theme,
                     "form": form,
                     "listNotes": listNotes,
+                    "owner_filter": owner_filter,
                     **more_data,
                 },
             )
-        elif request.user.is_authenticated():
+        elif request.user.is_authenticated:
             messages.add_message(
                 request, messages.ERROR, _("You cannot watch this video.")
             )
@@ -947,16 +1096,39 @@ def video_edit(request, slug=None):
                 request, messages.INFO, _("The changes have been saved.")
             )
             if request.POST.get("_saveandsee"):
-                return redirect(reverse("video", args=(video.slug,)))
+                return redirect(reverse("video:video", args=(video.slug,)))
             else:
-                return redirect(reverse("video_edit", args=(video.slug,)))
+                return redirect(reverse("video:video_edit", args=(video.slug,)))
         else:
             messages.add_message(
                 request,
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
             )
-    return render(request, "videos/video_edit.html", {"form": form})
+
+    return render(
+        request,
+        "videos/video_edit.html",
+        {"form": form, "listTheme": json.dumps(get_list_theme_in_form(form))},
+    )
+
+
+def get_list_theme_in_form(form):
+    """
+    Get the themes for the form.
+
+    Args:
+        form: the form containing the channel available by the user.
+
+    Returns:
+        an array containing all the themes available.
+    """
+    listTheme = {}
+    if "channel" in form.fields:
+        for channel in form.fields["channel"].queryset:
+            if channel.themes.count() > 0:
+                listTheme["channel_%s" % channel.id] = channel.get_all_theme()
+    return listTheme
 
 
 def save_video_form(request, form):
@@ -981,7 +1153,7 @@ def save_video_form(request, form):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_delete(request, slug=None):
-
+    """View to delete video. Show form to approve deletion and do it if sent."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
 
     if request.user != video.owner and not (
@@ -990,6 +1162,12 @@ def video_delete(request, slug=None):
         messages.add_message(request, messages.ERROR, _("You cannot delete this video."))
         raise PermissionDenied
 
+    if not video.encoded or video.encoding_in_progress is True:
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete a video that is being encoded.")
+        )
+        return redirect(reverse("video:my_videos"))
+
     form = VideoDeleteForm()
 
     if request.method == "POST":
@@ -997,22 +1175,59 @@ def video_delete(request, slug=None):
         if form.is_valid():
             video.delete()
             messages.add_message(request, messages.INFO, _("The video has been deleted."))
-            return redirect(reverse("my_videos"))
+            return redirect(reverse("video:my_videos"))
         else:
             messages.add_message(
                 request,
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
             )
+    page_title = _('Deleting the video "%(vtitle)s"') % {"vtitle": video.title}
+    return render(
+        request,
+        "videos/video_delete.html",
+        {"video": video, "form": form, "page_title": page_title},
+    )
 
-    return render(request, "videos/video_delete.html", {"video": video, "form": form})
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def video_transcript(request, slug=None):
+    """View to restart transcription of a video."""
+    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
+
+    if not USE_TRANSCRIPTION:
+        messages.add_message(
+            request, messages.ERROR, _("Transcription not enabled on this platform.")
+        )
+        raise PermissionDenied
+
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm("video.change_video")
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot manage this video."))
+        raise PermissionDenied
+
+    if not video.encoded or video.encoding_in_progress is True:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("You cannot launch transcript for a video that is being encoded."),
+        )
+        return redirect(reverse("video:video_edit", args=(video.slug,)))
+
+    if video.get_video_mp3():
+        transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
+        transcript_video(video.id)
+        messages.add_message(
+            request, messages.INFO, _("The video transcript has been restarted.")
+        )
+
+    return redirect(reverse("video:video_edit", args=(video.slug,)))
 
 
 def get_adv_note_list(request, video):
-    """
-    Return the list of AdvancedNotes of video
-      that can be seen by the current user
-    """
+    """Return the list of AdvancedNotes of video that can be seen by the current user."""
     if request.user.is_authenticated:
         filter = (
             Q(user=request.user)
@@ -1031,8 +1246,8 @@ def get_adv_note_list(request, video):
 
 def get_adv_note_com_list(request, id):
     """
-    Return the list of coms wich are the direct sons of the
-      AdvancedNote of id id , that can be seen by the current user
+    Return the list of coms which are direct sons of the AdvancedNote id.
+        ...that can be seen by the current user
     """
     if id:
         note = get_object_or_404(AdvancedNotes, id=id)
@@ -1056,8 +1271,7 @@ def get_adv_note_com_list(request, id):
 
 def get_com_coms_dict(request, listComs):
     """
-    Return a dictionnary build recursively containing
-      the list of the direct sons of a com
+    Return the list of the direct sons of a com.
       for each encountered com
     Starting from the coms present in listComs
     Example, having the next tree of coms :
@@ -1092,7 +1306,7 @@ def get_com_coms_dict(request, listComs):
 
 def get_com_tree(com):
     """
-    Return the list of the successive parents of com
+    Return the list of the successive parents of com.
       including com from bottom to top
     """
     tree, c = [], com
@@ -1105,8 +1319,7 @@ def get_com_tree(com):
 
 def can_edit_or_remove_note_or_com(request, nc, action):
     """
-    Check if the current user can apply action to
-      the note or comment nc
+    Check if the current user can apply action to the note or comment nc.
     Typically action is in ['edit', 'delete']
     If not raise PermissionDenied
     """
@@ -1129,7 +1342,7 @@ def can_edit_or_remove_note_or_com(request, nc, action):
 
 def can_see_note_or_com(request, nc):
     """
-    Check if the current user can view the note or comment nc
+    Check if the current user can view the note or comment nc.
     If not raise PermissionDenied
     """
     if isinstance(nc, AdvancedNotes):
@@ -1158,12 +1371,13 @@ def can_see_note_or_com(request, nc):
 
 @csrf_protect
 def video_notes(request, slug):
+    """Render video notes."""
     action = None
     if request.method == "POST" and request.POST.get("action"):
         action = request.POST.get("action").split("_")[0]
     elif request.method == "GET" and request.GET.get("action"):
         action = request.GET.get("action").split("_")[0]
-    if action in NOTE_ACTION:
+    if action in __NOTE_ACTION__:
         return eval("video_note_{0}(request, slug)".format(action))
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     listNotes = get_adv_note_list(request, video)
@@ -1176,16 +1390,10 @@ def video_notes(request, slug):
 
 @csrf_protect
 def video_note_get(request, slug):
+    """Get video notes."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-    idCom = idNote = None
-    if request.method == "POST" and request.POST.get("idCom"):
-        idCom = request.POST.get("idCom")
-    elif request.method == "GET" and request.GET.get("idCom"):
-        idCom = request.GET.get("idCom")
-    if request.method == "POST" and request.POST.get("idNote"):
-        idNote = request.POST.get("idNote")
-    elif request.method == "GET" and request.GET.get("idNote"):
-        idCom = request.GET.get("idNote")
+    idCom = get_id_from_request(request, "idCom")
+    idNote = get_id_from_request(request, "idNote")
 
     if idNote is None:
         listNotes = get_adv_note_list(request, video)
@@ -1224,17 +1432,12 @@ def video_note_get(request, slug):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_note_form(request, slug):
+    """Render video note form."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     idNote, idCom = None, None
     note, com = None, None
-    if request.method == "POST" and request.POST.get("idCom"):
-        idCom = request.POST.get("idCom")
-    elif request.method == "GET" and request.GET.get("idCom"):
-        idCom = request.GET.get("idCom")
-    if request.method == "POST" and request.POST.get("idNote"):
-        idNote = request.POST.get("idNote")
-    elif request.method == "GET" and request.GET.get("idNote"):
-        idCom = request.GET.get("idNote")
+    idCom = get_id_from_request(request, "idCom")
+    idNote = get_id_from_request(request, "idNote")
 
     if idCom is not None:
         com = get_object_or_404(NoteComments, id=idCom)
@@ -1274,7 +1477,11 @@ def video_note_form(request, slug):
 
 
 def video_note_form_case(request, params):
+    """Editing/creating a note."""
     (idNote, idCom, note, com) = params
+    noteToDisplay, comToDisplay = None, None
+    listNotesCom, dictComments = None, None
+    comToEdit, noteToEdit = None, None
     # Editing a note comment
     if (
         idCom is not None
@@ -1289,8 +1496,8 @@ def video_note_form_case(request, params):
         noteToDisplay, comToDisplay = note, get_com_tree(com)
         listNotesCom = get_adv_note_com_list(request, idNote)
         dictComments = get_com_coms_dict(request, listNotesCom)
-        comToEdit, noteToEdit = com, None
-        # Creting a comment answer
+        comToEdit = com
+        # Creating a comment answer
     elif (
         idCom is not None
         and idNote is not None
@@ -1303,7 +1510,6 @@ def video_note_form_case(request, params):
         noteToDisplay, comToDisplay = note, get_com_tree(com)
         listNotesCom = get_adv_note_com_list(request, idNote)
         dictComments = get_com_coms_dict(request, listNotesCom)
-        comToEdit, noteToEdit = None, None
     # Editing a note
     elif (
         idCom is None
@@ -1321,9 +1527,7 @@ def video_note_form_case(request, params):
                 "status": note.status,
             }
         )
-        noteToDisplay, comToDisplay = None, None
-        listNotesCom, dictComments = None, None
-        comToEdit, noteToEdit = None, note
+        noteToEdit = note
     # Creating a note comment
     elif (
         idCom is None
@@ -1336,15 +1540,9 @@ def video_note_form_case(request, params):
         form = NoteCommentsForm()
         noteToDisplay, comToDisplay = note, None
         listNotesCom = get_adv_note_com_list(request, idNote)
-        dictComments = None
-        comToEdit, noteToEdit = None, None
     # Creating a note
     elif idCom is None and idNote is None:
         form = AdvancedNotesForm()
-        noteToDisplay, comToDisplay = None, None
-        listNotesCom, dictComments = None, None
-        comToEdit, noteToEdit = None, None
-
     return (
         note,
         com,
@@ -1361,6 +1559,7 @@ def video_note_form_case(request, params):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_note_save(request, slug):
+    """Save a Video note or comment."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     idNote, idCom = None, None
     note, com = None, None
@@ -1369,12 +1568,13 @@ def video_note_save(request, slug):
     listNotesCom, dictComments = None, None
     form = None
 
-    if request.method == "POST" and request.POST.get("idCom"):
-        idCom = request.POST.get("idCom")
-        com = get_object_or_404(NoteComments, id=idCom)
-    if request.method == "POST" and request.POST.get("idNote"):
-        idNote = request.POST.get("idNote")
-        note = get_object_or_404(AdvancedNotes, id=idNote)
+    idCom = get_id_from_request(request, "idCom")
+    idNote = get_id_from_request(request, "idNote")
+
+    if idCom:
+        com = NoteComments.objects.get(id=idCom)
+    if idNote:
+        note = AdvancedNotes.objects.get(id=idNote)
 
     if request.method == "POST" and request.POST.get("action") == "save_note":
         q = QueryDict(mutable=True)
@@ -1441,6 +1641,7 @@ def video_note_save(request, slug):
 
 
 def video_note_save_form_valid(request, video, params):
+    """Save a note or a note comment."""
     (
         idNote,
         idCom,
@@ -1461,11 +1662,11 @@ def video_note_save_form_valid(request, video, params):
         com.status = request.POST.get("status")
         com.modified_on = timezone.now()
         com.save()
-        messages.add_message(request, messages.INFO, _("The comment has been saved."))
+        messages.add_message(request, messages.INFO, _("The comment has been modified."))
         noteToDisplay, comToDisplay = note, get_com_tree(com)
         listNotesCom = get_adv_note_com_list(request, idNote)
         dictComments = get_com_coms_dict(request, listNotesCom)
-    # Saving a new answer (com) to a com
+    # Saving a new answer (com) to a note
     elif (
         idCom is not None
         and idNote is not None
@@ -1491,7 +1692,7 @@ def video_note_save_form_valid(request, video, params):
         note.status = request.POST.get("status")
         note.modified_on = timezone.now()
         note.save()
-        messages.add_message(request, messages.INFO, _("The note has been saved."))
+        messages.add_message(request, messages.INFO, _("Your note has been modified."))
     # Saving a new com for a note
     elif (
         idCom is None and idNote is not None and request.POST.get("action") == "save_com"
@@ -1502,28 +1703,36 @@ def video_note_save_form_valid(request, video, params):
             status=request.POST.get("status"),
             comment=request.POST.get("comment"),
         )
-        messages.add_message(request, messages.INFO, _("The comment has been saved."))
+        messages.add_message(request, messages.INFO, _("Your comment has been saved."))
         noteToDisplay = note
         listNotesCom = get_adv_note_com_list(request, idNote)
     # Saving a new note
     elif idCom is None and idNote is None:
+        timestamp = request.POST.get("timestamp")
         note, created = AdvancedNotes.objects.get_or_create(
             user=request.user,
             video=video,
             status=request.POST.get("status"),
-            timestamp=request.POST.get("timestamp"),
+            timestamp=timestamp,
         )
         if created or not note.note:
             note.note = request.POST.get("note")
+            message = _("The note has been saved.")
         else:
+            # If there is already a note at this timestamp & status, update it.
             note.note = note.note + "\n" + request.POST.get("note")
+            message = _(
+                "Your note at %(timestamp)s has been modified."
+                % {"timestamp": note.timestampstr()}
+            )
         note.save()
-        messages.add_message(request, messages.INFO, _("The note has been saved."))
+        messages.add_message(request, messages.INFO, message)
 
     return (note, com, noteToDisplay, comToDisplay, listNotesCom, dictComments)
 
 
 def video_note_form_not_valid(request, params):
+    """Display a warning when a note or a note comment is not valid."""
     (
         idNote,
         idCom,
@@ -1747,11 +1956,11 @@ def video_oembed(request):
     if not request.GET.get("url"):
         raise SuspiciousOperation("URL must be specified")
     format = "xml" if request.GET.get("format") == "xml" else "json"
-
+    version = request.GET.get("version") if request.GET.get("version") else "video"
     data = {}
     data["type"] = "video"
     data["version"] = "1.0"
-    data["provider_name"] = TITLE_SITE
+    data["provider_name"] = __TITLE_SITE__
     protocole = "https" if request.is_secure() else "http"
     data["provider_url"] = "%s://%s" % (
         protocole,
@@ -1768,7 +1977,7 @@ def video_oembed(request):
     p = re.compile(reg)
     m = p.match(url)
 
-    if m:
+    if m and m.group("slug") not in ["add", "edit"]:
         video_slug = m.group("slug")
         slug_private = m.group("slug_private")
         try:
@@ -1781,8 +1990,16 @@ def video_oembed(request):
         data["author_name"] = video.owner.get_full_name()
         data["author_url"] = "%s%s?owner=%s" % (
             data["provider_url"],
-            reverse("videos"),
+            reverse("videos:videos"),
             video.owner.username,
+        )
+        video_url = (
+            reverse("video:video", kwargs={"slug": video.slug})
+            if version == "video"
+            else reverse(
+                "%(version)s:video_%(version)s" % {"version": version},
+                kwargs={"slug": video.slug},
+            )
         )
         data["html"] = (
             '<iframe src="%(provider)s%(video_url)s%(slug_private)s'
@@ -1791,7 +2008,7 @@ def video_oembed(request):
             + "allowfullscreen loading='lazy'></iframe>"
         ) % {
             "provider": data["provider_url"],
-            "video_url": reverse("video", kwargs={"slug": video.slug}),
+            "video_url": video_url,
             "slug_private": "%s/" % slug_private if slug_private else "",
         }
     else:
@@ -1855,12 +2072,66 @@ def get_all_views_count(v_id, date_filter=date.today()):
     count = ViewCount.objects.filter(video_id=v_id).aggregate(Sum("count"))["count__sum"]
     all_views["since_created"] = count if count else 0
 
+    # playlist addition in day
+    count = PlaylistContent.objects.filter(
+        video_id=v_id, date_added__date=date_filter
+    ).count()
+    all_views["playlist_day"] = count if count else 0
+
+    # playlist addition in month
+    count = PlaylistContent.objects.filter(
+        video_id=v_id,
+        date_added__year=date_filter.year,
+        date_added__month=date_filter.month,
+    ).count()
+    all_views["playlist_month"] = count if count else 0
+
+    # playlist addition in year
+    count = PlaylistContent.objects.filter(
+        video_id=v_id,
+        date_added__year=date_filter.year,
+    ).count()
+    all_views["playlist_year"] = count if count else 0
+
+    # playlist addition since video was created
+    count = PlaylistContent.objects.filter(video_id=v_id).count()
+    all_views["playlist_since_created"] = count if count else 0
+
+    favorites_playlists = Playlist.objects.filter(name=FAVORITE_PLAYLIST_NAME)
+
+    # favorite addition in day
+    count = PlaylistContent.objects.filter(
+        playlist__in=favorites_playlists, video_id=v_id, date_added__date=date_filter
+    ).count()
+    all_views["fav_day"] = count if count else 0
+
+    # favorite addition in month
+    count = PlaylistContent.objects.filter(
+        playlist__in=favorites_playlists,
+        video_id=v_id,
+        date_added__year=date_filter.year,
+        date_added__month=date_filter.month,
+    ).count()
+    all_views["fav_month"] = count if count else 0
+
+    # favorite addition in year
+    count = PlaylistContent.objects.filter(
+        playlist__in=favorites_playlists, video_id=v_id, date_added__year=date_filter.year
+    ).count()
+    all_views["fav_year"] = count if count else 0
+
+    # favorite addition since video was created
+    count = PlaylistContent.objects.filter(
+        playlist__in=favorites_playlists,
+        video_id=v_id,
+    ).count()
+    all_views["fav_since_created"] = count if count else 0
+
     return all_views
 
 
 def get_videos(p_slug, target, p_slug_t=None):
     """Retourne une ou plusieurs videos selon le slug donné.
-
     Renvoi vidéo/s et titre de
     (theme, ou video ou channel ou videos pour toutes)
     selon la réference du slug donnée
@@ -1868,7 +2139,7 @@ def get_videos(p_slug, target, p_slug_t=None):
     """
     videos = []
     title = _("Pod video viewing statistics")
-
+    available_videos = get_available_videos()
     if target.lower() == "video":
         video_founded = Video.objects.filter(slug=p_slug).first()
         # In case that the slug is a bad one
@@ -1880,14 +2151,14 @@ def get_videos(p_slug, target, p_slug_t=None):
 
     elif target.lower() == "channel":
         title = _("Video viewing statistics for the channel %s") % p_slug
-        videos = VIDEOS.filter(channel__slug__istartswith=p_slug)
+        videos = available_videos.filter(channel__slug__istartswith=p_slug)
 
     elif target.lower() == "theme" and p_slug_t:
         title = _("Video viewing statistics for the theme %s") % p_slug_t
-        videos = VIDEOS.filter(theme__slug__istartswith=p_slug_t)
+        videos = available_videos.filter(theme__slug__istartswith=p_slug_t)
 
     elif target == "videos":
-        return (VIDEOS, title)
+        return (available_videos, title)
 
     return (videos, title)
 
@@ -1938,7 +2209,7 @@ def stats_view(request, slug=None, slug_t=None):
     target = request.GET.get("from", "videos")
     videos, title = get_videos(slug, target, slug_t)
     error_message = (
-        "The following %(target)s does not " "exist or contain any videos: %(slug)s"
+        "The following %(target)s does not exist or contain any videos: %(slug)s"
     )
     if request.method == "GET" and target == "video" and videos:
         return manage_access_rights_stats_video(request, videos[0], title)
@@ -1959,6 +2230,7 @@ def stats_view(request, slug=None, slug_t=None):
         and (
             request.POST.get("password")
             and request.POST.get("password") == videos[0].password
+            # and check_password(request.POST.get("password"), videos[0].password)
         )
     ) or (
         request.method == "GET" and videos and target in ("videos", "channel", "theme")
@@ -1966,7 +2238,7 @@ def stats_view(request, slug=None, slug_t=None):
         return render(request, "videos/video_stats_view.html", {"title": title})
     else:
         date_filter = request.POST.get("periode", date.today())
-        if type(date_filter) == str:
+        if isinstance(date_filter, str):
             date_filter = parse(date_filter).date()
 
         data = list(
@@ -1980,7 +2252,9 @@ def stats_view(request, slug=None, slug_t=None):
             )
         )
 
-        min_date = VIDEOS.aggregate(Min("date_added"))["date_added__min"].date()
+        min_date = (
+            get_available_videos().aggregate(Min("date_added"))["date_added__min"].date()
+        )
         data.append({"min_date": min_date})
 
         return JsonResponse(data, safe=False)
@@ -2027,7 +2301,8 @@ def video_add(request):
             "allow_extension": allow_extension,
             "allowed_text": allowed_text,
             "restricted_to_staff": RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY,
-            "TRANSCRIPT": TRANSCRIPT,
+            "TRANSCRIPT": get_transcription_choices(),
+            "page_title": _("Media upload"),
         },
     )
 
@@ -2051,10 +2326,15 @@ def vote_get(request, video_slug):
         )
 
 
-@login_required(redirect_field_name="referrer")
+@ajax_login_required
+@csrf_protect
 def vote_post(request, video_slug, comment_id):
     if request.method == "GET":
         return HttpResponseNotFound("<h1>Method Not Allowed</h1>", status=405)
+    if in_maintenance():
+        return HttpResponseForbidden(
+            _("Sorry, you can't vote a comment while the server is under maintenance.")
+        )
     # current video
     c_video = get_object_or_404(Video, slug=video_slug)
     # current comment
@@ -2079,9 +2359,13 @@ def vote_post(request, video_slug, comment_id):
     return HttpResponse(json.dumps(response), content_type="application/json")
 
 
-@login_required(redirect_field_name="referrer")
+@ajax_login_required
 @csrf_protect
 def add_comment(request, video_slug, comment_id=None):
+    if in_maintenance():
+        return HttpResponseForbidden(
+            _("Sorry, you can't comment while the server is under maintenance.")
+        )
     if request.method == "POST":
         # current video
         c_video = get_object_or_404(Video, slug=video_slug)
@@ -2123,7 +2407,6 @@ def add_comment(request, video_slug, comment_id=None):
 def get_parent_comments(request, video):
     """
     Return only comments without parent.
-
     (direct comments to video) which contains
     number of votes and children
     """
@@ -2160,9 +2443,7 @@ def get_parent_comments(request, video):
 
 
 def get_children_comment(request, comment_id, video_slug):
-    """
-    return one comment with all children
-    """
+    """Return one comment with all children."""
     try:
         v = get_object_or_404(Video, slug=video_slug)
         parent_comment = (
@@ -2255,9 +2536,16 @@ def get_comments(request, video_slug):
         )
 
 
-@login_required(redirect_field_name="referrer")
+@ajax_login_required
+@csrf_protect
 def delete_comment(request, video_slug, comment_id):
-
+    """Delete the comment `comment_id` associated to `video_slug`.
+    Args:
+        video_slug (string): the video associated to this comment
+        comment_id (): id of the comment to be deleted
+    Returns:
+        HttpResponse
+    """
     v = get_object_or_404(Video, slug=video_slug)
     c_user = request.user
     c = get_object_or_404(Comment, video=v, id=comment_id)
@@ -2265,13 +2553,16 @@ def delete_comment(request, video_slug, comment_id):
         "deleted": True,
     }
 
-    if c.author == c_user or v.owner == c_user or c_user.is_superuser:
+    if in_maintenance():
+        return HttpResponseForbidden(
+            _("Sorry, you can't delete a comment while the server is under maintenance.")
+        )
 
+    if c.author == c_user or v.owner == c_user or c_user.is_superuser:
         c.delete()
         response["comment_deleted"] = comment_id
         return HttpResponse(json.dumps(response), content_type="application/json")
     else:
-
         response["deleted"] = False
         response["message"] = _("You do not have rights to delete this comment")
         return HttpResponse(
@@ -2283,13 +2574,12 @@ def delete_comment(request, video_slug, comment_id):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def get_categories(request, c_slug=None):
-
+    """Get categories."""
     response = {"success": False}
     c_user = request.user  # connected user
 
     # GET method
     if c_slug:  # get category with slug
-
         cat = get_object_or_404(Category, slug=c_slug)
         response["success"] = True
         response["id"] = cat.id
@@ -2299,19 +2589,7 @@ def get_categories(request, c_slug=None):
         response["videos"] = []
         for v in cat.video.all():
             if v.owner == cat.owner or cat.owner in v.additional_owners.all():
-                response["videos"].append(
-                    {
-                        "slug": v.slug,
-                        "title": v.title,
-                        "duration": v.duration_in_time,
-                        "thumbnail": v.get_thumbnail_card(),
-                        "is_video": v.is_video,
-                        "has_password": bool(v.password),
-                        "is_restricted": v.is_restricted,
-                        "has_chapter": v.chapter_set.all().count() > 0,
-                        "is_draft": v.is_draft,
-                    }
-                )
+                response["videos"].append(get_video_data(v))
             else:
                 # delete if user is no longer owner
                 # or additional owner of the video
@@ -2323,7 +2601,6 @@ def get_categories(request, c_slug=None):
         )
 
     else:  # get all categories of connected user
-
         cats = Category.objects.prefetch_related("video").filter(owner=c_user)
         cats = list(
             map(
@@ -2332,17 +2609,7 @@ def get_categories(request, c_slug=None):
                     "slug": c.slug,
                     "videos": list(
                         map(
-                            lambda v: {
-                                "slug": v.slug,
-                                "title": v.title,
-                                "duration": v.duration_in_time,
-                                "thumbnail": v.get_thumbnail_card(),
-                                "is_video": v.is_video,
-                                "has_password": bool(v.password),
-                                "is_restricted": v.is_restricted,
-                                "has_chapter": v.chapter_set.all().count() > 0,
-                                "is_draft": v.is_draft,
-                            },
+                            lambda v: get_video_data(v),
                             c.video.all(),
                         )
                     ),
@@ -2363,12 +2630,11 @@ def get_categories(request, c_slug=None):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def add_category(request):
-
+    """Add category."""
     response = {"success": False}
     c_user = request.user  # connected user
 
     if request.method == "POST":  # create new category
-
         data = json.loads(request.body.decode("utf-8"))
 
         videos = Video.objects.filter(slug__in=data.get("videos", []))
@@ -2400,17 +2666,7 @@ def add_category(request):
             response["success"] = True
             response["category"]["videos"] = list(
                 map(
-                    lambda v: {
-                        "slug": v.slug,
-                        "title": v.title,
-                        "duration": v.duration_in_time,
-                        "thumbnail": v.get_thumbnail_card(),
-                        "is_video": v.is_video,
-                        "has_password": bool(v.password),
-                        "is_restricted": v.is_restricted,
-                        "has_chapter": v.chapter_set.all().count() > 0,
-                        "is_draft": v.is_draft,
-                    },
+                    lambda v: get_video_data(v),
                     cat.video.all(),
                 )
             )
@@ -2432,12 +2688,11 @@ def add_category(request):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def edit_category(request, c_slug):
-
+    """Edit category."""
     response = {"success": False}
     c_user = request.user  # connected user
 
     if request.method == "POST":  # edit current category
-
         cat = get_object_or_404(Category, slug=c_slug)
         data = json.loads(request.body.decode("utf-8"))
 
@@ -2457,9 +2712,7 @@ def edit_category(request, c_slug):
             )
 
         if "title" in data and data["title"].strip() != "":
-
             if c_user == cat.owner or c_user.is_superuser:
-
                 cat.title = data["title"]
                 cat.video.set(list(new_videos))
                 cat.save()
@@ -2470,17 +2723,7 @@ def edit_category(request, c_slug):
                 response["message"] = _("Category updated successfully.")
                 response["videos"] = list(
                     map(
-                        lambda v: {
-                            "slug": v.slug,
-                            "title": v.title,
-                            "duration": v.duration_in_time,
-                            "thumbnail": v.get_thumbnail_card(),
-                            "is_video": v.is_video,
-                            "has_password": bool(v.password),
-                            "is_restricted": v.is_restricted,
-                            "has_chapter": v.chapter_set.all().count() > 0,
-                            "is_draft": v.is_draft,
-                        },
+                        lambda v: get_video_data(v),
                         cat.video.all(),
                     )
                 )
@@ -2512,16 +2755,13 @@ def edit_category(request, c_slug):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def delete_category(request, c_id):
-
     response = {"success": False}
     c_user = request.user  # connected user
 
     if request.method == "POST":  # create new category
-
         cat = get_object_or_404(Category, id=c_id)
 
         if cat.owner == c_user:
-
             response["id"] = cat.id
             response["videos"] = list(
                 map(
@@ -2555,12 +2795,11 @@ def delete_category(request, c_id):
 
 
 class PodChunkedUploadView(ChunkedUploadView):
-
     model = ChunkedUpload
     field_name = "the_file"
 
     def check_permissions(self, request):
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             return False
         elif RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
             return False
@@ -2568,12 +2807,11 @@ class PodChunkedUploadView(ChunkedUploadView):
 
 
 class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
-
     model = ChunkedUpload
     slug = ""
 
     def check_permissions(self, request):
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             return False
         elif RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
             return False
@@ -2582,18 +2820,19 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
     def on_completion(self, uploaded_file, request):
         """Triggered when a chunked upload is complete."""
         edit_slug = request.POST.get("slug")
-        transcript = request.POST.get("transcript")
+        transcript = request.POST.get("transcript", "")
         if edit_slug == "":
             video = Video.objects.create(
                 video=uploaded_file,
                 owner=request.user,
                 type=Type.objects.get(id=DEFAULT_TYPE_ID),
                 title=uploaded_file.name,
-                transcript=(True if (transcript == "true") else False),
+                transcript=transcript,
             )
         else:
             video = Video.objects.get(slug=edit_slug)
             video.video = uploaded_file
+            video.transcript = transcript
         video.launch_encode = True
         video.save()
         self.slug = video.slug
@@ -2601,46 +2840,12 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 
     def get_response_data(self, chunked_upload, request):
         return {
-            "redirlink": reverse("video_edit", args=(self.slug,)),
+            "redirlink": reverse("video:video_edit", args=(self.slug,)),
             "message": (
                 "You successfully uploaded '%s' (%s bytes)!"
                 % (chunked_upload.filename, chunked_upload.offset)
             ),
         }
-
-
-@csrf_protect
-@ensure_csrf_cookie
-@login_required(redirect_field_name="referrer")
-def video_record(request):
-    if in_maintenance():
-        return redirect(reverse("maintenance"))
-    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
-        return render(request, "videos/video_edit.html", {"access_not_allowed": True})
-    if request.method == "POST" and request.is_ajax():
-        try:
-            vid = Video()
-            vid.video = request.FILES["video"]
-            vid.title = request.POST["title"]
-            vid.owner = request.user
-            vid.type = Type.objects.get(id=DEFAULT_RECORDER_TYPE_ID)
-            vid.save()
-            vid.sites.add(get_current_site(request))
-            vid.launch_encode = True
-            vid.save()
-            return JsonResponse(
-                {
-                    "id": vid.id,
-                    "url_edit": reverse("video_edit", args=(vid.slug,)),
-                }
-            )
-        except (RuntimeError, TypeError, NameError, AttributeError) as err:
-            return JsonResponse(
-                {
-                    "error": "Unexpected error: {0}".format(err),
-                }
-            )
-    return render(request, "videos/video_record.html", {"page_title": _("Video record")})
 
 
 @csrf_protect
@@ -2718,6 +2923,113 @@ def filter_videos(request, user_id):
         return JsonResponse({"success": False, "detail": "Syntax error: {0}".format(err)})
 
 
+def get_serialized_channels(request: WSGIRequest, channels: QueryDict) -> dict:
+    """
+    Get serialized channels.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        channels (::class::`django.http.QueryDict`): The channel list.
+    Returns:
+        dict: The channel list in JSON format.
+    """
+    channels_json_format = {}
+    for num, channel in enumerate(channels):
+        channels_json_format[num] = ChannelSerializer(
+            channel, context={"request": request}
+        ).data
+        channels_json_format[num]["url"] = reverse(
+            "channel-video:channel", kwargs={"slug_c": channel.slug}
+        )
+        channels_json_format[num]["videoCount"] = channel.video_count
+        channels_json_format[num]["headbandImage"] = (
+            channel.headband.file.url if channel.headband else ""
+        )
+        channels_json_format[num]["themes"] = channel.themes.count()
+    return channels_json_format
+
+
+def get_channel_tabs_for_navbar(request: WSGIRequest) -> JsonResponse:
+    """
+    Get the channel tabs for the navbar.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
+    channel_tabs = AdditionalChannelTab.objects.all()
+    channel_tabs_json_format = {}
+    for num, channel_tab in enumerate(channel_tabs):
+        channel_tabs_json_format[num] = {
+            "id": channel_tab.pk,
+            "name": channel_tab.name,
+        }
+    return JsonResponse(channel_tabs_json_format, safe=False)
+
+
+def get_channels_for_specific_channel_tab(request: WSGIRequest) -> JsonResponse:
+    """
+    Get the channels for a specific channel tab.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
+    page_number = request.GET.get("page", 1)
+    channel_tab_id = request.GET.get("id")
+    if channel_tab_id:
+        channels = (
+            Channel.objects.filter(
+                visible=True,
+                video__is_draft=False,
+                add_channels_tab=channel_tab_id,
+                site=get_current_site(request),
+            )
+            .distinct()
+            .annotate(video_count=Count("video", distinct=True))
+            .order_by("title")
+        )
+    else:
+        channels = (
+            Channel.objects.filter(
+                visible=True,
+                video__is_draft=False,
+                add_channels_tab=None,
+                site=get_current_site(request),
+            )
+            .distinct()
+            .annotate(video_count=Count("video", distinct=True))
+            .order_by("title")
+        )
+    paginator = Paginator(channels, CHANNELS_PER_BATCH)
+    page_obj = paginator.get_page(page_number)
+    response = {}
+    response["channels"] = get_serialized_channels(request, page_obj.object_list)
+    response["currentPage"] = page_obj.number
+    response["totalPages"] = paginator.num_pages
+    response["count"] = len(channels)
+    return JsonResponse(response, safe=False)
+
+
+def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> JsonResponse:
+    """
+    Get the themes for a specific channel.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        request (`str`): The channel slug.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
+    channel = Channel.objects.get(slug=slug)
+    return JsonResponse(json.loads(channel.get_all_theme_json()), safe=False)
+
+
 """
 # check access to video
 # change template to fix height and breadcrumbs
@@ -2729,7 +3041,7 @@ def video_collaborate(request, slug):
         action = request.POST.get('action').split('_')[0]
     elif (request.method == 'GET' and request.GET.get('action')):
         action = request.GET.get('action').split('_')[0]
-    if action in NOTE_ACTION:
+    if action in __NOTE_ACTION__:
         return eval('video_note_{0}(request, slug)'.format(action))
     video = get_object_or_404(
         Video, slug=slug, sites=get_current_site(request))

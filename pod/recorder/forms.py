@@ -4,7 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.models import Site
 from .models import Recording, Recorder
-from pod.main.forms import add_placeholder_and_asterisk
+from pod.main.forms_utils import add_placeholder_and_asterisk
+from django_select2 import forms as s2forms
 
 
 DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
@@ -13,11 +14,27 @@ ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = getattr(
 )
 
 
+class RecorderWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "name__icontains",
+    ]
+
+
+class UserWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+        "first_name___icontains",
+        "last_name__icontains",
+    ]
+
+
 def check_show_user(request):
     show_user = False
     if request.GET.get("recorder") and ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER:
         try:
             recorder = Recorder.objects.get(id=request.GET.get("recorder"))
+            # little doubt about this condition
             if recorder and (request.user == recorder.user):
                 show_user = True
         except ObjectDoesNotExist:
@@ -61,6 +78,7 @@ class RecordingForm(forms.ModelForm):
     class Meta:
         model = Recording
         exclude = ("comment", "date_added")
+        widgets = {"recorder": RecorderWidget, "user": UserWidget}
 
     delete = forms.BooleanField(
         required=False,

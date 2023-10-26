@@ -15,56 +15,73 @@ window.onload = function () {
     year: "numeric",
   });
   let input =
-    document.querySelector("input#id_date_delete") ||
+    document.getElementById("id_date_delete") ||
     document.querySelector('input[name="date_delete"]');
+
   if (input != null) {
-    input.style.boxShadow = "none";
     let given = new Date(input.value);
-  }
-
-  let limite = new Date();
-  limite.setYear(new Date().getFullYear() + max_duration_date_delete);
-  let listener_inputchange = function () {
-    given = new Date(input.value);
-    let error_message = document.createElement("span");
-    if (given > limite) {
-      //let msg = localStorage.getItem('lang') == 'en' ? 'The date must be before or equal to' : 'La date doit être antérieur au'
-      let msg = gettext("The date must be before or equal to");
-      // Create message span element with error_message class
-      // Add error_value class to the input field
-      input.classList.add("error_value");
-      input.style.borderColor = "red";
-      //<span class="error_message">The date must be before or equal to</span>
-      error_message.classList.add("error_message");
-      error_message.style.color = "red";
-      error_message.style.display = "inline-block";
-      error_message.style.marginLeft = "5px";
-      error_message.textContent = `${msg} ${dtf.format(limite)}`;
-
-      // Insert the message span at the last position in parentElement
-      if (!input.parentElement.querySelector("span.error_message"))
-        input.parentNode.appendChild(error_message);
-    } else if (input.parentElement.querySelector("span.error_message")) {
-      // if no error is detected then reset the DOM modifications
-      input.parentElement.removeChild(
-        input.parentElement.querySelector("span.error_message")
-      );
-      input.classList.remove("error_value");
-      input.style.borderColor = "#ccc";
+    const today = new Date();
+    let limite = new Date();
+    limite.setYear(new Date().getFullYear() + max_duration_date_delete);
+    var errorlist = input.parentElement.querySelector(".errorlist");
+    const error_types = ["date_too_far", "date_before_today"];
+    var list_errors = [];
+    if (!errorlist) {
+      errorlist = document.createElement("ul");
+      errorlist.classList.add("errorlist");
+      input.parentNode.appendChild(errorlist);
     }
-  };
 
-  if (input != null) {
+    let listener_inputchange = function () {
+      given = new Date(input.value);
+      list_errors = [];
+      if (given > limite) {
+        msg = gettext("The date must be before or equal to");
+        add_error_message(`${msg} ${dtf.format(limite)}`, "date_too_far");
+      } else if (given < today) {
+        add_error_message(
+          gettext("The deletion date can’t be earlier than today."),
+          "date_before_today",
+        );
+      } else {
+        input.parentNode.classList.remove("errors");
+      }
+
+      // Remove every obsolete message
+
+      for (let i in error_types) {
+        if (!list_errors.includes(error_types[i])) {
+          if (errorlist.querySelector("." + error_types[i])) {
+            errorlist.removeChild(
+              errorlist.querySelector("." + error_types[i]),
+            );
+          }
+        }
+      }
+    };
+
     // Set listener on the field and check even after reloading the page
     input.onchange = function () {
       listener_inputchange();
     };
     listener_inputchange();
+  }
 
-    // Hide backend validate
-    let back_errors_msg =
-      input.parentNode.parentNode.querySelector("ul.errorlist");
-    if (back_errors_msg)
-      back_errors_msg.parentNode.removeChild(back_errors_msg);
+  /**
+   * Display a validation error message on current input
+   * @param {String} msg  message to be displayed
+   * @param {String} type error code (added as css class)
+   */
+  function add_error_message(msg, type) {
+    let error_message = document.createElement("li");
+    // Add errors class to the input container
+    input.parentNode.classList.add("errors");
+    error_message.classList.add(type);
+    error_message.textContent = msg;
+
+    list_errors.push(type);
+    // Insert the message at the last position in parentElement
+    if (!input.parentElement.querySelector("." + type))
+      errorlist.appendChild(error_message);
   }
 };

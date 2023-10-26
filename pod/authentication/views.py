@@ -4,13 +4,9 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.conf import settings
-from django.views.decorators.csrf import csrf_protect
 from django.core.exceptions import SuspiciousOperation
-from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.decorators import login_required
 from cas.decorators import gateway
-from pod.authentication.forms import FrontOwnerForm
 from django.contrib import auth
 
 USE_CAS = getattr(settings, "USE_CAS", False)
@@ -24,7 +20,8 @@ OIDC_NAME = getattr(settings, "OIDC_NAME", "OpenID Connect")
 if CAS_GATEWAY:
 
     @gateway()
-    def authentication_login_gateway(request):
+    def authentication_login_gateway(request):  # pragma: no cover
+        """Login gateway when CAS_GATEWAY is defined."""
         next = request.GET["next"] if request.GET.get("next") else "/"
         host = (
             "https://%s" % request.get_host()
@@ -33,7 +30,7 @@ if CAS_GATEWAY:
         )
         if not next.startswith(("/", host)):
             raise SuspiciousOperation("next is not internal")
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return redirect(next)
         return render(
             request,
@@ -65,10 +62,10 @@ def authentication_login(request):
     if not referrer.startswith(("/", host)):
         raise SuspiciousOperation("referrer is not internal")
     iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return redirect(referrer)
     if USE_CAS and CAS_GATEWAY:
-        url = reverse("authentication_login_gateway")
+        url = reverse("authentication:authentication_login_gateway")
         url += "?%snext=%s" % (iframe_param, referrer.replace("&", "%26"))
         return redirect(url)
     elif USE_CAS or USE_SHIB or USE_OIDC:
@@ -100,7 +97,7 @@ def local_logout(request):
 
 def authentication_logout(request):
     """Logout a user."""
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return local_logout(request)
     if request.user.owner.auth_type == "CAS":
         return redirect(reverse("cas-logout"))
@@ -110,29 +107,3 @@ def authentication_logout(request):
         return redirect(logout)
     else:
         return local_logout(request)
-
-
-@csrf_protect
-@login_required(redirect_field_name="referrer")
-def userpicture(request):
-
-    frontOwnerForm = FrontOwnerForm(instance=request.user.owner)
-
-    if request.method == "POST":
-        frontOwnerForm = FrontOwnerForm(request.POST, instance=request.user.owner)
-        if frontOwnerForm.is_valid():
-            frontOwnerForm.save()
-            # messages.add_message(
-            #    request, messages.INFO, _('Your picture has been saved.'))
-        else:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                _("One or more errors have been found in the form."),
-            )
-
-    return render(
-        request,
-        "userpicture/userpicture.html",
-        {"frontOwnerForm": frontOwnerForm},
-    )

@@ -12,7 +12,6 @@ import logging
 
 
 class TestCategory(TestCase):
-
     fixtures = [
         "initial_data.json",
     ]
@@ -74,19 +73,19 @@ class TestCategory(TestCase):
 
     def test_getCategories(self):
         # not Authenticated, should return HttpResponseRedirect:302
-        response = self.client.get(reverse("get_categories"))
+        response = self.client.get(reverse("video:get_categories"))
         self.assertIsInstance(response, HttpResponseRedirect)
         self.assertEqual(response.status_code, 302)
 
         # not Ajax request, should return HttpResponseForbidden:403
         self.client.force_login(self.owner_user)
-        response = self.client.get(reverse("get_categories"))
+        response = self.client.get(reverse("video:get_categories"))
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
 
         # Ajax request, should return HttpResponse:200 with all categories
         response = self.client.get(
-            reverse("get_categories"), HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            reverse("video:get_categories"), HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )
 
         actual_data = json.loads(response.content.decode("utf-8"))
@@ -136,7 +135,7 @@ class TestCategory(TestCase):
 
         # Ajax request, should return HttpResponse:200 with one category
         response = self.client.get(
-            reverse("get_category", kwargs={"c_slug": self.cat_1.slug}),
+            reverse("video:get_category", kwargs={"c_slug": self.cat_1.slug}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
 
@@ -174,7 +173,7 @@ class TestCategory(TestCase):
         # Ajax request, should return HttpResponse:200 with one category
         self.client.force_login(self.simple_user)
         response = self.client.get(
-            reverse("get_category", kwargs={"c_slug": self.cat_3.slug}),
+            reverse("video:get_category", kwargs={"c_slug": self.cat_3.slug}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
 
@@ -208,7 +207,7 @@ class TestCategory(TestCase):
         # Ajax request, should return HttpResponse:200 with one category
         self.video.additional_owners.remove(self.simple_user)
         response = self.client.get(
-            reverse("get_category", kwargs={"c_slug": self.cat_3.slug}),
+            reverse("video:get_category", kwargs={"c_slug": self.cat_3.slug}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
 
@@ -230,7 +229,7 @@ class TestCategory(TestCase):
 
         # not Authenticated, should return HttpResponseRedirect:302
         response = self.client.post(
-            reverse("add_category"),
+            reverse("video:add_category"),
             json.dumps(data),
             content_type="application/json",
         )
@@ -241,7 +240,7 @@ class TestCategory(TestCase):
         # not Ajax request, should return HttpResponseForbidden:403
         self.client.force_login(self.owner_user)
         response = self.client.post(
-            reverse("add_category"),
+            reverse("video:add_category"),
             json.dumps(data),
             content_type="application/json",
         )
@@ -251,7 +250,7 @@ class TestCategory(TestCase):
 
         # Ajax GET request, should return HttpResponseNotAllowed:405
         response = self.client.get(
-            reverse("add_category"), HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            reverse("video:add_category"), HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )
 
         self.assertIsInstance(response, HttpResponseNotAllowed)
@@ -259,7 +258,7 @@ class TestCategory(TestCase):
 
         # Ajax POST request, should return HttpResponse:200 with category data
         response = self.client.post(
-            reverse("add_category"),
+            reverse("video:add_category"),
             json.dumps(data),
             content_type="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
@@ -294,7 +293,7 @@ class TestCategory(TestCase):
         # Add video in another category
         # should return HttpResponseBadRequest:400
         response = self.client.post(
-            reverse("add_category"),
+            reverse("video:add_category"),
             json.dumps(data),
             content_type="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
@@ -313,7 +312,7 @@ class TestCategory(TestCase):
         # should return HttpResponseBadRequest:400
         del data["title"]
         response = self.client.post(
-            reverse("add_category"),
+            reverse("video:add_category"),
             json.dumps(data),
             content_type="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
@@ -326,7 +325,7 @@ class TestCategory(TestCase):
         # category already exists
         data = {"title": "Test new category", "videos": []}
         response = self.client.post(
-            reverse("add_category"),
+            reverse("video:add_category"),
             json.dumps(data),
             content_type="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
@@ -339,7 +338,7 @@ class TestCategory(TestCase):
         data = {"title": "New Category title", "videos": [self.video_2.slug]}
         # not Authenticated, should return HttpResponseRedirect:302
         response = self.client.post(
-            reverse("edit_category", kwargs={"c_slug": self.cat_1.slug}),
+            reverse("video:edit_category", kwargs={"c_slug": self.cat_1.slug}),
             json.dumps(data),
             content_type="application/json",
         )
@@ -350,7 +349,7 @@ class TestCategory(TestCase):
         # not Ajax request, should return HttpResponseForbidden:403
         self.client.force_login(self.owner_user)
         response = self.client.post(
-            reverse("edit_category", kwargs={"c_slug": self.cat_1.slug}),
+            reverse("video:edit_category", kwargs={"c_slug": self.cat_1.slug}),
             json.dumps(data),
             content_type="application/json",
         )
@@ -360,7 +359,7 @@ class TestCategory(TestCase):
 
         # Ajax GET request, should return HttpResponseNotAllowed:405
         response = self.client.get(
-            reverse("edit_category", kwargs={"c_slug": self.cat_1.slug}),
+            reverse("video:edit_category", kwargs={"c_slug": self.cat_1.slug}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
 
@@ -369,7 +368,7 @@ class TestCategory(TestCase):
 
         # Ajax POST request, should return HttpResponse:200 with category data
         response = self.client.post(
-            reverse("edit_category", kwargs={"c_slug": self.cat_1.slug}),
+            reverse("video:edit_category", kwargs={"c_slug": self.cat_1.slug}),
             json.dumps(data),
             content_type="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
@@ -405,7 +404,7 @@ class TestCategory(TestCase):
         # Add video in anthoer category
         # should return HttpResponseBadRequest:400
         response = self.client.post(
-            reverse("edit_category", kwargs={"c_slug": self.cat_2.slug}),
+            reverse("video:edit_category", kwargs={"c_slug": self.cat_2.slug}),
             json.dumps(data),
             content_type="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
@@ -424,7 +423,7 @@ class TestCategory(TestCase):
         # should return HttpResponseBadRequest:400
         del data["title"]
         response = self.client.post(
-            reverse("edit_category", kwargs={"c_slug": expected_data["slug"]}),
+            reverse("video:edit_category", kwargs={"c_slug": expected_data["slug"]}),
             json.dumps(data),
             content_type="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
@@ -435,7 +434,7 @@ class TestCategory(TestCase):
     def test_deleteCategory(self):
         # not Authenticated, should return HttpResponseRedirect:302
         response = self.client.post(
-            reverse("delete_category", kwargs={"c_id": self.cat_1.id}),
+            reverse("video:delete_category", kwargs={"c_id": self.cat_1.id}),
             content_type="application/json",
         )
 
@@ -445,7 +444,7 @@ class TestCategory(TestCase):
         # not Ajax request, should return HttpResponseForbidden:403
         self.client.force_login(self.owner_user)
         response = self.client.post(
-            reverse("delete_category", kwargs={"c_id": self.cat_1.id}),
+            reverse("video:delete_category", kwargs={"c_id": self.cat_1.id}),
             content_type="application/json",
         )
 
@@ -454,7 +453,7 @@ class TestCategory(TestCase):
 
         # Ajax GET request, should return HttpResponseNotAllowed:405
         response = self.client.get(
-            reverse("delete_category", kwargs={"c_id": self.cat_1.id}),
+            reverse("video:delete_category", kwargs={"c_id": self.cat_1.id}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
 
@@ -465,17 +464,17 @@ class TestCategory(TestCase):
         # should return HttpResponseForbidden:403
         self.client.force_login(self.simple_user)
         response = self.client.post(
-            reverse("delete_category", kwargs={"c_id": self.cat_1.id}),
+            reverse("video:delete_category", kwargs={"c_id": self.cat_1.id}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
-        response = self.client.get(reverse("get_categories"))
+        response = self.client.get(reverse("video:get_categories"))
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
 
         self.client.force_login(self.owner_user)
         # Ajax POST request, should return HttpResponse:200 with category data
         response = self.client.post(
-            reverse("delete_category", kwargs={"c_id": self.cat_1.id}),
+            reverse("video:delete_category", kwargs={"c_id": self.cat_1.id}),
             content_type="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )

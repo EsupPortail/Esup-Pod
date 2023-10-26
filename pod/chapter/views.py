@@ -13,10 +13,10 @@ from pod.chapter.forms import ChapterForm
 from pod.chapter.forms import ChapterImportForm
 from django.middleware.csrf import get_token
 from django.contrib.sites.shortcuts import get_current_site
-
+from pod.main.utils import is_ajax
 import json
 
-ACTION = ["new", "save", "modify", "delete", "cancel", "import", "export"]
+__AVAILABLE_ACTIONS__ = ["new", "save", "modify", "delete", "cancel", "import", "export"]
 
 
 @csrf_protect
@@ -32,15 +32,18 @@ def video_chapter(request, slug):
     ):
         messages.add_message(request, messages.ERROR, _("You cannot chapter this video."))
         return HttpResponseForbidden(
-            "Only the owner and additional owners " "can add chapter."
+            "Only the owner and additional owners can add chapter."
         )
 
     list_chapter = video.chapter_set.all()
 
-    if request.POST and request.POST.get("action"):
-        if request.POST["action"] in ACTION:
+    if request.method == "POST":
+        if (
+            request.POST.get("action")
+            and request.POST.get("action") in __AVAILABLE_ACTIONS__
+        ):
             return eval(
-                "video_chapter_{0}(request, video)".format(request.POST["action"])
+                "video_chapter_{0}(request, video)".format(request.POST.get("action"))
             )
     else:
         return render(
@@ -51,11 +54,11 @@ def video_chapter(request, slug):
 
 
 def video_chapter_new(request, video):
+    """Display a new video chapter form."""
     list_chapter = video.chapter_set.all()
-
     form_chapter = ChapterForm(initial={"video": video})
     form_import = ChapterImportForm(user=request.user, video=video)
-    if request.is_ajax():
+    if is_ajax(request):
         return render(
             request,
             "chapter/form_chapter.html",
@@ -79,18 +82,20 @@ def video_chapter_new(request, video):
 
 
 def video_chapter_save(request, video):
+    """Save a video chapter form request."""
     list_chapter = video.chapter_set.all()
-
     form_chapter = None
-    if request.POST.get("chapter_id") != "None":
-        chapter = get_object_or_404(Chapter, id=request.POST["chapter_id"])
+
+    chapter_id = request.POST.get("chapter_id")
+    if chapter_id != "None" and chapter_id is not None:
+        chapter = get_object_or_404(Chapter, id=chapter_id)
         form_chapter = ChapterForm(request.POST, instance=chapter)
     else:
         form_chapter = ChapterForm(request.POST)
     if form_chapter.is_valid():
         form_chapter.save()
         list_chapter = video.chapter_set.all()
-        if request.is_ajax():
+        if is_ajax(request):
             csrf_token_value = get_token(request)
             some_data_to_dump = {
                 "list_chapter": render_to_string(
@@ -117,7 +122,7 @@ def video_chapter_save(request, video):
                 {"video": video, "list_chapter": list_chapter},
             )
     else:
-        if request.is_ajax():
+        if is_ajax(request):
             csrf_token_value = get_token(request)
             some_data_to_dump = {
                 "errors": "{0}".format(_("Please correct errors.")),
@@ -146,12 +151,12 @@ def video_chapter_save(request, video):
 
 
 def video_chapter_modify(request, video):
+    """Display a video chapter modification form."""
     list_chapter = video.chapter_set.all()
-
-    if request.POST.get("action") and request.POST["action"] == "modify":
-        chapter = get_object_or_404(Chapter, id=request.POST["id"])
+    if request.POST.get("action", "").lower() == "modify":
+        chapter = get_object_or_404(Chapter, id=request.POST.get("id"))
         form_chapter = ChapterForm(instance=chapter)
-        if request.is_ajax():
+        if is_ajax(request):
             return render(
                 request,
                 "chapter/form_chapter.html",
@@ -171,11 +176,10 @@ def video_chapter_modify(request, video):
 
 def video_chapter_delete(request, video):
     list_chapter = video.chapter_set.all()
-
-    chapter = get_object_or_404(Chapter, id=request.POST["id"])
+    chapter = get_object_or_404(Chapter, id=request.POST.get("id"))
     chapter.delete()
     list_chapter = video.chapter_set.all()
-    if request.is_ajax():
+    if is_ajax(request):
         csrf_token_value = get_token(request)
         some_data_to_dump = {
             "list_chapter": render_to_string(
@@ -213,12 +217,11 @@ def video_chapter_cancel(request, video):
 
 def video_chapter_import(request, video):
     list_chapter = video.chapter_set.all()
-
     form_chapter = ChapterForm(initial={"video": video})
     form_import = ChapterImportForm(request.POST, user=request.user, video=video)
     if form_import.is_valid():
         list_chapter = video.chapter_set.all()
-        if request.is_ajax():
+        if is_ajax(request):
             csrf_token_value = get_token(request)
             some_data_to_dump = {
                 "list_chapter": render_to_string(
@@ -245,7 +248,7 @@ def video_chapter_import(request, video):
                 {"video": video, "list_chapter": list_chapter},
             )
     else:
-        if request.is_ajax():
+        if is_ajax(request):
             some_data_to_dump = {
                 "errors": "{0}".format(_("Please correct errors.")),
                 "form": render_to_string(

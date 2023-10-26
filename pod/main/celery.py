@@ -1,4 +1,4 @@
-from __future__ import absolute_import, unicode_literals
+"""Esup-Pod Celery app."""
 import os
 from celery import Celery
 
@@ -14,7 +14,11 @@ app = Celery("pod_project")
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
 # Load task modules from all registered Django app configs.
-app.autodiscover_tasks()
+app.autodiscover_tasks(packages=["pod.main"], related_name="tasks", force=False)
+app.conf.task_routes = {
+    "pod.main.tasks.*": {"queue": "celery"},
+    "pod.main.celery.*": {"queue": "celery"},
+}
 
 
 @app.task(bind=True)

@@ -1,0 +1,91 @@
+{% load i18n %}
+
+<fieldset>
+  <legend><i class="bi bi-calendar2-range" aria-hidden="true"></i>&nbsp;{% trans "Frequency" %}</legend>
+  <div class="mb-3" id="repeat_recurring">
+    <div class="list-group-item">
+      <div class="row g-3 align-items-center m-1">
+        <div class="col-auto">
+          <label class="form-label" for="id_frequency">{% trans 'Repeat every' %}</label>
+        </div>
+        <div class="col-auto">{{ form.frequency }}</div>
+        <label for="id_recurrence" class="visually-hidden">{% trans 'Recurrence unit' %}</label>
+        <div class="col-auto">{{ form.recurrence }}</div>
+      </div>
+    </div>
+  </div>
+</fieldset>
+<div class="mb-3" id="weekdays_recurring">
+  <div class="list-group-item">
+    <div class="row g-3 align-items-center m-1">
+      <fieldset>
+        <legend>{% trans 'Repeat the:' %}</legend>
+        {% for day in form.days_of_week %}
+          <div class="form-check form-check-inline">
+            {{day}}
+          </div>
+        {% endfor %}
+      </fieldset>
+    </div>
+  </div>
+</div>
+<div class="mb-3" id="monthly_recurring">
+  <div class="list-group-item">
+    <div class="row g-3 align-items-center m-1">
+      <div class="col-auto">
+        <label class="form-label" for="id_monthly_type">{% trans 'Type of monthly recurrence' %}</label>
+        {{ form.monthly_type }}
+      </div>
+    </div>
+  </div>
+</div>
+<fieldset>
+  <legend><i class="bi bi-calendar-check" aria-hidden="true"></i>&nbsp;{% trans 'End' %}</legend>
+  <div class="mb-3">
+    <div class="list-group-item">
+      <div class="row g-3 align-items-center m-1">
+        <div class="col-auto align-items-center">
+          <div class="input-group input-group-sm">
+            <label class="input-group-text me-1 p-1" for="id_recurring_until">{% trans 'The:' %}</label>
+            <span class="align-items-center">{{ form.recurring_until }}</span>
+            <label class="input-group-text ms-1 p-1" for="id_nb_occurrences">{% trans 'Or after' %}</label>
+            {{ form.nb_occurrences }}
+            <small id="id_nb_occurrencesHelp" class="input-group-text p-1">{% trans 'occurrences' %}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</fieldset>
+<script>
+  let recurrence = document.getElementById("id_recurrence");
+  // recurrence.onchange = function() { console.log("Changed!" + recurrence.value);
+  recurrence.addEventListener('change', function(ev) {
+    // console.log("Changed!" + recurrence.value);
+    change_weekdays_display()
+  })
+
+  change_weekdays_display = function() {
+    if (recurrence.value == "weekly") {
+      document.getElementById("weekdays_recurring").style.display = 'block';
+      if(day_of_start_date != -1) {
+        let day = document.getElementById("id_days_of_week_" + day_of_start_date);
+        if(day) day.checked = true;
+      }
+    } else {
+      document.getElementById("weekdays_recurring").style.display = 'none';
+    }
+    if (recurrence.value == "monthly") {
+      document.getElementById("monthly_recurring").style.display = 'block';
+      /* In case of monthly recurring, we unchecked all days */
+      for(let i = 0; i < 7; i++) {
+        let day = document.getElementById("id_days_of_week_" + i);
+        if(day) day.checked = false;
+      }
+    } else {
+      document.getElementById("monthly_recurring").style.display = 'none';
+    }
+  }
+document.addEventListener("load", change_weekdays_display);
+
+</script>

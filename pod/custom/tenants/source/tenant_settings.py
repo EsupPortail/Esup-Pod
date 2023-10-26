@@ -1,3 +1,4 @@
+"""Settings for an Esup-Pod tenant."""
 # Cette ligne va importer les settings déjà présents dans votre application,
 # vous pourrez les surchager par site
 from pod.settings import *
@@ -29,7 +30,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
     'LOGO_SITE': 'img/logoPod.svg',
     'LOGO_COMPACT_SITE': 'img/logoPod.svg',
     'LOGO_ETB': '__NAME__/custom/images/__NAME__.png',
-    'LOGO_PLAYER': 'img/logoPod.svg',
+    'LOGO_PLAYER': 'img/pod_favicon.svg',
     'FOOTER_TEXT': (
         '__NAME__ ',
         ' '
@@ -44,3 +45,9 @@ DEFAULT_DC_COVERAGE = TEMPLATE_VISIBLE_SETTINGS["TITLE_ETB"] + " - Paris - Franc
 DEFAULT_DC_RIGHTS = "BY-NC-SA"
 
 CELERY_BROKER_URL = CELERY_BROKER_URL + "-__NAME__"  # Define a broker
+
+
+# !!!!!!!! A LAISSER EN DERNIER !!!!!!!!!!!!!
+the_update_settings = update_settings(locals())
+for variable in the_update_settings:
+    locals()[variable] = the_update_settings[variable]

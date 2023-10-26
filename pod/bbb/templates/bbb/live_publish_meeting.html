@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 {% load thumbnail %}
 {% block page_extra_head %}
 <style>
@@ -9,13 +9,13 @@
 body {
   background-color: {{form.instance.color}};
 }
-{%endif%}
+{% endif %}
 </style>
 {% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }} 
+{% block breadcrumbs %}{{ block.super }}
   <li class="breadcrumb-item" aria-current="page">
-    <a  href="{% url 'bbb:live_list_meeting' %}" title="{% trans 'Perform a BigBlueButton live' %}">{% trans 'Perform a BigBlueButton live' %}</a>
+    <a href="{% url 'bbb:live_list_meeting' %}">{% trans 'Perform a BigBlueButton live' %}</a>
   </li>
   <li class="breadcrumb-item active" aria-current="page">
     {% trans 'Confirmation of performing a BigBlueButton live' %}
@@ -36,9 +36,9 @@ body {
     {% csrf_token %}
 
     <div class="list-group">
-      {% trans 'Select the desired options than validate this form by clicking "Perform a BigBlueButton live".' %}<br/>
-      <p class="text-info">
-        <i data-feather="info"></i> {% trans "This live will be stopped automatically when BigBlueButton session ends." %}
+      {% trans 'Select the desired options than validate this form by clicking "Perform a BigBlueButton live".' %}<br>
+      <p class="text-info-emphasis">
+        <i class="bi bi-info-circle"></i> {% trans "This live will be stopped automatically when BigBlueButton session ends." %}
       </p>
       <fieldset>
         {% if form.errors %}
@@ -55,9 +55,9 @@ body {
         {% endif %}
         {% for field in form.visible_fields %}
           {% spaceless %}
-          <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}">
+          <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse{% else %}{% endif %}{% if "description_" in field.name %} description{% endif %}{% if "title_" in field.name %} title{% endif %}">
             <div class="list-group-item">
-              <div class="{% if field.name == "owners" or field.name == "users" %}form-row {%endif%}form-group {% if field.field.required %}form-group-required {%endif%}" >
+              <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}" >
                 {{ field.errors }}
                 {% if "form-check-input" in field.field.widget.attrs.class %}
                   <div class="form-check">
@@ -68,16 +68,16 @@ body {
                     {{ field }}
                 {% endif %}
                 {% if field.help_text %}
-                  <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                  <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
                 {% endif %}
-                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
                 </div>
               </div>
             </div>
             {% endspaceless %}
         {% endfor %}
       </fieldset>
-	  <small class="form-text text-muted">{% trans 'Please note: shortly after clicking the "Perform a BigBlueButton live" button, the live stream will be available to users on the <i data-feather=\"radio\"></i> <b>Lives</b> page.' %}</small><br/>
+	  <small class="form-text">{% trans 'Please note: shortly after clicking the "Perform a BigBlueButton live" button, the live stream will be available to users on the <i class=\"bi bi-broadcast\"></i> <b>Lives</b> page.' %}</small><br>
     </div>
     <div class="text-center">
       <button type="submit" class="btn btn-primary">{% trans "Perform a BigBlueButton live" %}</button>
@@ -86,11 +86,9 @@ body {
 {% endblock page_content %}
 
 {% block collapse_page_aside %}
-
 {% endblock collapse_page_aside %}
 
 {% block page_aside %}
-
 {% endblock page_aside %}
 
 {% block more_script %}

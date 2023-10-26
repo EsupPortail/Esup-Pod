@@ -1,23 +1,33 @@
 {% load i18n %}
+{% load static %}
 {% spaceless %}
-<div class="row infinite-container" id="videos_list">
+<div class="pod-infinite-container infinite-container" id="videos_list" data-nextpage="{{ videos.has_next|yesno:'true,false' }}" data-countvideos="{{ count_videos }}">
   {% for video in videos %}
-    <div class="infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group" style="min-width: 12rem; min-height: 11rem;" {% if categories %}data-slug={{video.slug}}{% endif %} > <!-- min-width: 15rem; -->
-      {% include "videos/card.html" %}
-    </div>
+  <div class="infinite-item card-group" {% if categories %}data-slug={{video.slug}}{% endif %} >
+    {% include "videos/card.html" %}
+  </div>
   {% empty %}
-    <div class="col-12 mb-2">
-      <p>{% trans "Sorry, no video found." %}</p>
-    </div>
+  <div>
+    <p>{% trans "Sorry, no video found." %}</p>
+  </div>
   {% endfor %}
 </div>
 {% if videos.has_next %}
-  <a class="infinite-more-link" href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{%endif%}page={{ videos.next_page_number }}">{% trans "More" %}</a>
+  <a
+    style = "display:none"
+    class="infinite-more-link"
+    href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ videos.next_page_number }}"
+    data-nextpagenumber = "{% if videos.has_next %}{{ videos.next_page_number }}{% else %}null{% endif %}" >{% trans "More" %}
+  </a>
 {% endif %}
 <div class="infinite-loading" style="display: none;">
-  {% trans "Loading..." %}
+  {% trans "Loading…" %}
 </div>
 {% endspaceless %}
-<script type="text/javascript">
-var countVideos = "{{ count_videos }}";
-</script>
+
+{% block more_script %}
+{% if USE_PLAYLIST and USE_FAVORITES %}
+  <script src="{% static 'playlist/js/utils-playlist.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'playlist/js/video-list-favorites-card.js' %}?ver={{VERSION}}"></script>
+{% endif %}
+{% endblock %}

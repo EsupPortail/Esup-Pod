@@ -1,90 +1,107 @@
+/**
+ * Esup-Pod Chapter styles
+ */
 
 /*** Table scroll ***/
 table.scroll {
-	width: 100%;
-	border-collapse: collapse;
-	border-spacing: 0;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
+
 table.scroll .btn-sm,
 table.scroll .btn-group-sm > .btn {
-	border-radius: 3px;
-	font-size: 12px;
-	line-height: 0.5;
-	padding: 5px 10px;
+  border-radius: 3px;
+  font-size: 12px;
+  line-height: 0.5;
+  padding: 5px 10px;
 }
+
 table.scroll tbody,
 table.scroll thead {
-	display: block;
+  display: block;
 }
+
 table.scroll thead tr th {
-	height: 27px;
-	line-height: 27px;
-	text-align: left;
+  height: 27px;
+  line-height: 27px;
+  text-align: left;
 }
+
 table.scroll tbody {
-	max-height: 200px;
-	overflow-y: auto;
-	overflow-x: hidden;
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
+
 table.scroll tbody td,
 table.scroll thead th {
-	width: 10%;
-	height: 20px;
-	white-space: nowrap;
-	line-height: 20px;
+  width: 10%;
+  height: 20px;
+  white-space: nowrap;
+  line-height: 20px;
 }
+
 table.scroll thead th.chapter_title,
 table.scroll thead th.chapter_time_start,
 table.scroll thead th.chapter_time_end {
-	white-space: nowrap;
+  white-space: nowrap;
 }
+
 #list_chapter .panel-heading,
 #form_chapter .panel-heading {
-	border-bottom: 1px solid transparent;
-	border-top-left-radius: 3px;
-	border-top-right-radius: 3px;
-	padding: 4px 15px;
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  padding: 4px 15px;
 }
+
 #form_new {
-	padding-left: 12px;
-	padding-bottom: 10px;
+  padding-left: 12px;
+  padding-bottom: 10px;
 }
+
 #form_chapter,
 #form_chapter_import,
 #form_vtt {
-	padding: 10px;
+  padding: 10px;
 }
+
 form#form_chapter,
 form#form_chapter_import {
-	background-color: rgba(0, 0, 0, .05);
+  background-color: rgba(0 0 0 0.05);
 }
+
 .form-group.row p {
-	padding: 2px;
+  padding: 2px;
 }
 
 /** Filepicker override **/
 div.file-picker-overlay,
 div.file-picker,
 ul.css-tabs a {
-	box-sizing: content-box;
+  box-sizing: content-box;
 }
+
 textarea#id_description {
-	line-height: normal;
+  line-height: normal;
 }
+
 div.file-picker-overlay input[type="text"],
-div.file-picker-overlay textarea, 
+div.file-picker-overlay textarea,
 div.file-picker-overlay select {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 5px 6px;
-    margin-top: 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px 6px;
+  margin-top: 0;
 }
+
 .file-list a:hover {
-	cursor: pointer;
-	color: #007bff !important;
+  cursor: pointer;
+  color: #007bff !important;
 }
 
 /** Bootstrap override **/
 .card-title {
-	margin: .45rem;
+  margin: 0.45rem;
 }

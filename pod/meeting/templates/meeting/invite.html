@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load thumbnail %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+<li class="breadcrumb-item"><a href="{% url 'meeting:my_meetings' %}">{% trans 'My meetings' %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{meeting.name}}</li>
+{% endblock %}
+
+{% block page_title %}
+{% trans 'Send invitations to the meeting' %} <b>{{meeting.name}}</b>
+{% endblock %}
+
+{% block page_content %}
+<h1 class="page_title">{% trans 'Send invitations to the meeting' %} <b>{{meeting.name}}</b></h1>
+
+
+<form method="post" action="{{ request.get_full_path }}" id="meeting_invite_form" class='needs-validation' novalidate>
+  {% csrf_token %}
+  <div class="list-group">
+    <fieldset>
+      <legend>{% trans 'Add emails addresses in the form below and click send to invite to your meeting' %}</legend>
+      {% if form.errors %}
+        <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+      {% endif %}
+      {% for field_hidden in form.hidden_fields %}
+        {{field_hidden}}
+      {% endfor %}
+      {% for field in form.visible_fields %}
+        {% spaceless %}
+        <div class="list-group-item">
+          <div class="form-group {% if field.field.required %}form-group-required {% endif %}" >
+            {{ field.errors }}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+              <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+            {% endif %}
+            {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+          </div>
+        </div>
+        {% endspaceless %}
+      {% endfor %}
+      <div class="text-center mt-1">
+        <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
+      </div>
+    </fieldset>
+  </div>
+</form>
+
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+{% endblock more_script %}

@@ -1,6 +1,4 @@
-"""
-Unit tests for podfile views
-"""
+"""Unit tests for podfile views."""
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -12,22 +10,37 @@ from ..models import CustomFileModel
 from ..models import CustomImageModel
 from ..models import UserFolder
 from django.contrib.sites.models import Site
+from datetime import datetime
 
 import json
 import os
 import ast
 
-##
-# FOLDER VIEWS
-#
-
 
 class FolderViewTestCase(TestCase):
+    """FOLDER VIEWS test case."""
+
     def setUp(self):
         user = User.objects.create(username="pod", password="azerty")
         UserFolder.objects.get(owner=user, name="home")
-        UserFolder.objects.create(owner=user, name="Child")
+        child = UserFolder.objects.create(owner=user, name="Child")
         user2 = User.objects.create(username="pod2", password="azerty")
+
+        # We add a simplefile in child folder so it is not empty
+        currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        simplefile = SimpleUploadedFile(
+            name="testfile.txt",
+            content=open(os.path.join(currentdir, "tests", "testfile.txt"), "rb").read(),
+            content_type="text/plain",
+        )
+        CustomFileModel.objects.create(
+            name="testfile",
+            description="testfile",
+            uploaded_at=datetime.now(),
+            created_by=user,
+            folder=child,
+            file=simplefile,
+        )
 
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
@@ -36,7 +49,6 @@ class FolderViewTestCase(TestCase):
         user2.owner.save()
 
     def test_list_folders(self):
-
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
@@ -56,6 +68,7 @@ class FolderViewTestCase(TestCase):
                 "next_page": -1,
                 "total_pages": 1,
                 "folders": [{"name": "Child", "id": 2}],
+                "search": "",
             },
         )
 
@@ -148,6 +161,8 @@ class FolderViewTestCase(TestCase):
 
 
 class FileViewTestCase(TestCase):
+    """File view test case."""
+
     def setUp(self):
         pod = User.objects.create(username="pod", password="azerty")
         home = UserFolder.objects.get(owner=pod, name="home")

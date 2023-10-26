@@ -10,6 +10,11 @@ from pod.video.views import get_all_views_count, stats_view
 from django.contrib.sites.models import Site
 from pod.authentication.models import AccessGroup
 
+# from django.contrib.auth.hashers import make_password
+
+from pod.video_encode_transcript.models import EncodingVideo
+from pod.video_encode_transcript.models import VideoRendition
+
 import json
 import logging
 
@@ -75,10 +80,26 @@ class TestStatsView(TestCase):
             video="teststatsviewthird.mp4",
             type=self.t1,
         )
-        self.video.channel = [self.channel]
-        self.video.theme = [self.theme]
-        self.video2.channel = [self.channel]
-        self.video2.theme = [self.theme]
+        # add encoding to video
+        EncodingVideo.objects.create(
+            video=self.video,
+            encoding_format="video/mp4",
+            rendition=VideoRendition.objects.get(id=1),
+        )
+        EncodingVideo.objects.create(
+            video=self.video2,
+            encoding_format="video/mp4",
+            rendition=VideoRendition.objects.get(id=1),
+        )
+        EncodingVideo.objects.create(
+            video=self.video3,
+            encoding_format="video/mp4",
+            rendition=VideoRendition.objects.get(id=1),
+        )
+        self.video.channel.set([self.channel])
+        self.video.theme.set([self.theme])
+        self.video2.channel.set([self.channel])
+        self.video2.theme.set([self.theme])
         self.url_stats_exists = True
 
         self.user.owner.sites.add(Site.objects.get_current())
@@ -90,18 +111,17 @@ class TestStatsView(TestCase):
         self.superuser.owner.sites.add(Site.objects.get_current())
         self.superuser.owner.save()
         try:
-
             self.stat_video_url = (
-                reverse("video_stats_view", kwargs={"slug": self.video.slug})
+                reverse("video:video_stats_view", kwargs={"slug": self.video.slug})
                 + "?from=video"
             )
             self.stat_channel_url = (
-                reverse("video_stats_view", kwargs={"slug": self.channel.slug})
+                reverse("video:video_stats_view", kwargs={"slug": self.channel.slug})
                 + "?from=channel"
             )
             self.stat_theme_url = (
                 reverse(
-                    "video_stats_view",
+                    "video:video_stats_view",
                     kwargs={
                         "slug": self.channel.slug,
                         "slug_t": self.theme.slug,
@@ -132,7 +152,7 @@ class TestStatsView(TestCase):
         # Check that the response is 404 Not Found.
         # Check the response contains the error message
         stat_video_url = (
-            reverse("video_stats_view", kwargs={"slug": "0001_videodoesnotexist"})
+            reverse("video:video_stats_view", kwargs={"slug": "0001_videodoesnotexist"})
             + "?from=video"
         )
         response = self.client.get(stat_video_url)
@@ -147,12 +167,13 @@ class TestStatsView(TestCase):
 
     @skipUnless(USE_STATS_VIEW, "Require activate URL video_stats_view")
     def test_stats_view_GET_request_videos(self):
-        stat_url_videos = reverse("video_stats_view")
+        stat_url_videos = reverse("video:video_stats_view")
         response = self.client.get(stat_url_videos, {"from": "videos"})
         self.assertContains(response, b"Pod video viewing statistics", status_code=200)
 
     @skipUnless(USE_STATS_VIEW, "Require acitvate URL video_stats_view")
     def test_stats_view_GET_request_channel(self):
+        # print("ABCDE " + self.stat_channel_url)
         response = self.client.get(self.stat_channel_url)
         # Check that the view function is stats_view
         self.assertEqual(response.resolver_match.func, stats_view)
@@ -169,7 +190,7 @@ class TestStatsView(TestCase):
         # Check that the response is 404 Not Found.
         # Check that the response contains the error message
         stat_channel_url = (
-            reverse("video_stats_view", kwargs={"slug": "0001_channeldoesnotexist"})
+            reverse("video:video_stats_view", kwargs={"slug": "0001_channeldoesnotexist"})
             + "?from=channel"
         )
         response = self.client.get(stat_channel_url)
@@ -195,7 +216,7 @@ class TestStatsView(TestCase):
         # Check that the response contains the error message
         stat_theme_url = (
             reverse(
-                "video_stats_view",
+                "video:video_stats_view",
                 kwargs={
                     "slug": "0001_channeldoesnotexist",
                     "slug_t": "0001_themedoesnotexist",
@@ -228,7 +249,7 @@ class TestStatsView(TestCase):
 
     @skipUnless(USE_STATS_VIEW, "Require activate URL video_stats_view")
     def test_stats_view_POST_request_videos(self):
-        stat_url_videos = reverse("video_stats_view")
+        stat_url_videos = reverse("video:video_stats_view")
         response = self.client.post(stat_url_videos)
         # Check that the view function is stats_view
         self.assertEqual(response.resolver_match.func, stats_view)
@@ -292,17 +313,16 @@ class TestStatsView(TestCase):
 
     @skipUnless(USE_STATS_VIEW, "Require URL video_stats_view")
     def test_stats_view_GET_request_video_access_rights(self):
-        # **************************************************** #
+        """Test video restrictions (by password, by group, or private video)."""
         # *********** Test restricted by password ************ #
-        # **************************************************** #
-        password = "ThisVideoRequiredAPassword"
-        self.video3.password = password
+        password = "ThisVideoRequireAPassword"
+        self.video3.password = password  # make_password(password, hasher="pbkdf2_sha256")
         self.video3.save()
-        url = reverse("video_stats_view", kwargs={"slug": self.video3.slug})
+        url = reverse("video:video_stats_view", kwargs={"slug": self.video3.slug})
         response = self.client.get(url, {"from": "video"})
         input_expected = '<input type="password" name="password" \
-                placeholder="Password" id="id_password" class="form-control " \
-                required />'
+                placeholder="Password" id="id_password" class="required form-control" \
+                required>'
         # Test that the response is 200 Ok
         self.assertEqual(response.status_code, 200)
         # Test thant the response content contains "password input"
@@ -330,9 +350,7 @@ class TestStatsView(TestCase):
         response = self.client.get(url, {"from": "video"})
         self.assertContains(response, title_expected.encode(), status_code=200)
 
-        # **************************************************** #
         # ************ Test restricted by group ************** #
-        # **************************************************** #
         group1 = AccessGroup.objects.create(code_name="group1")
         self.video3.password = None
         self.video3.is_restricted = True
@@ -367,9 +385,8 @@ class TestStatsView(TestCase):
         self.client.force_login(self.superuser)
         response = self.client.get(url, {"from": "video"})
         self.assertContains(response, title_expected.encode(), status_code=200)
-        # ***************************************************** #
+
         # *************** Test private video ****************** #
-        # ***************************************************** #
         self.video3.is_draft = True
         self.video3.is_restricted = False
         self.video3.restrict_access_to_groups.remove(group1)

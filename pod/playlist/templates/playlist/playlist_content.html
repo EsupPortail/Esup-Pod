@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block opengraph %}{% load video_filters %}
+  <meta name="description" content="{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}">
+  <!-- Open Graph data -->
+  <meta property="og:title" content="{% trans 'Playlist videos' %}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}">
+  <meta property="og:description" content="{{ DESC_SITE }} - {% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}">
+  <meta property="og:site_name" content="{{ TITLE_SITE }}">
+{% endblock %}
+
+{% block page_extra_head %}
+  <link rel="stylesheet" href="{% static 'playlist/css/playlist.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
+
+{% endspaceless %}

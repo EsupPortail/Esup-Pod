@@ -1,3 +1,4 @@
+"""Unit test for Pod recorder plugins."""
 import os
 import shutil
 import importlib
@@ -15,6 +16,8 @@ AUDIOVIDEOCAST_TEST = getattr(
 
 
 class PluginVideoTestCase(TestCase):
+    """Test case for video plugin."""
+
     fixtures = [
         "initial_data.json",
     ]
@@ -61,7 +64,7 @@ class PluginVideoTestCase(TestCase):
             recorder=recorder2,
         )
 
-        print(" --->  SetUp of PluginVideoTestCase : OK !")
+        print(" --->  SetUp of PluginVideoTestCase: OK!")
 
     def test_type_video_published_attributs(self):
         recording = Recording.objects.get(id=1)
@@ -72,17 +75,17 @@ class PluginVideoTestCase(TestCase):
         nbtest = nbnow + 1
         mod.encode_recording(recording)
         # print("Number of video after encode : ", Video.objects.all().count())
-        self.assertEquals(Video.objects.all().count(), nbtest)
+        self.assertEqual(Video.objects.all().count(), nbtest)
         video = Video.objects.last()
-        self.assertEquals(video.is_draft, recorder.is_draft)
-        self.assertEquals(video.channel.all().count(), recorder.channel.all().count())
-        self.assertEquals(video.theme.all().count(), recorder.theme.all().count())
-        self.assertEquals(
+        self.assertEqual(video.is_draft, recorder.is_draft)
+        self.assertEqual(video.channel.all().count(), recorder.channel.all().count())
+        self.assertEqual(video.theme.all().count(), recorder.theme.all().count())
+        self.assertEqual(
             video.discipline.all().count(), recorder.discipline.all().count()
         )
-        self.assertEquals(video.main_lang, recorder.main_lang)
-        self.assertEquals(video.cursus, recorder.cursus)
-        self.assertEquals(video.tags, recorder.tags)
+        self.assertEqual(video.main_lang, recorder.main_lang)
+        self.assertEqual(video.cursus, recorder.cursus)
+        self.assertEqual(video.tags, recorder.tags)
 
         print("   --->  test_type_video_published_attributs of PluginVideoTestCase: OK!")
 
@@ -95,21 +98,21 @@ class PluginVideoTestCase(TestCase):
         nbtest = nbnow + 1
         mod.encode_recording(recording)
         # print("Number of video after encode : ", Video.objects.all().count())
-        self.assertEquals(Video.objects.all().count(), nbtest)
+        self.assertEqual(Video.objects.all().count(), nbtest)
         video = Video.objects.last()
         # print("Number of slide after encode : ",
         #       video.enrichment_set.all().count())
-        self.assertEquals((video.enrichment_set.all().count() > 0), True)
-        self.assertEquals(video.is_draft, recorder.is_draft)
-        self.assertEquals(video.channel.all().count(), recorder.channel.all().count())
-        self.assertEquals(video.theme.all().count(), recorder.theme.all().count())
-        self.assertEquals(
+        self.assertEqual((video.enrichment_set.all().count() > 0), True)
+        self.assertEqual(video.is_draft, recorder.is_draft)
+        self.assertEqual(video.channel.all().count(), recorder.channel.all().count())
+        self.assertEqual(video.theme.all().count(), recorder.theme.all().count())
+        self.assertEqual(
             video.discipline.all().count(), recorder.discipline.all().count()
         )
-        self.assertEquals(video.main_lang, recorder.main_lang)
-        self.assertEquals(video.cursus, recorder.cursus)
-        self.assertEquals(video.tags, recorder.tags)
+        self.assertEqual(video.main_lang, recorder.main_lang)
+        self.assertEqual(video.cursus, recorder.cursus)
+        self.assertEqual(video.tags, recorder.tags)
         print(
             "   --->  test_type_video_published_attributs "
-            "of PluginAudioVideoCastTestCase: OK!"
+            "of PluginAudioVideoCastTestCase: OK !"
         )

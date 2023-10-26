@@ -19,7 +19,7 @@ from .forms import EnrichmentForm, EnrichmentGroupForm
 
 import json
 
-ACTION = ["new", "save", "modify", "delete", "cancel"]
+__AVAILABLE_ACTIONS__ = ["new", "save", "modify", "delete", "cancel"]
 
 
 @csrf_protect
@@ -83,7 +83,7 @@ def edit_enrichment(request, slug):
 
     list_enrichment = video.enrichment_set.all()
     if request.POST and request.POST.get("action"):
-        if request.POST["action"] in ACTION:
+        if request.POST["action"] in __AVAILABLE_ACTIONS__:
             return eval(
                 "edit_enrichment_{0}(request, video)".format(request.POST["action"])
             )
@@ -121,7 +121,10 @@ def edit_enrichment_save(request, video):
     list_enrichment = video.enrichment_set.all()
 
     form_enrichment = None
-    if request.POST.get("enrich_id") != "None":
+    if (
+        request.POST.get("enrich_id") != "None"
+        and request.POST.get("enrich_id") is not None
+    ):
         enrich = get_object_or_404(Enrichment, id=request.POST["enrich_id"])
         form_enrichment = EnrichmentForm(request.POST, instance=enrich)
     else:
@@ -230,7 +233,6 @@ def edit_enrichment_cancel(request, video):
 @csrf_protect
 @ensure_csrf_cookie
 def video_enrichment(request, slug, slug_c=None, slug_t=None, slug_private=None):
-
     template_video = (
         "enrichment/video_enrichment-iframe.html"
         if (request.GET.get("is_iframe"))

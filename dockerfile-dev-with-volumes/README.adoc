@@ -1,0 +1,186 @@
+= Docker
+Nom de l’auteur <farid.aitkarra@univ-lille.fr> <nicolas.can@univ-lille.fr>
+v1.2, 2023-08-30
+:toc:
+:toc-title: Liste des rubriques
+:imagesdir: ./images
+
+== Docker / docker-compose avec volumes sur la machine hôte
+
+=== Conteneur ElasticSearch
+http://localhost:9200
+
+==== elasticsearch:8.8.1
+===== OS/ARCH
+----
+OS/ARCH
+linux/amd64
+linux/arm64/v8
+----
+
+=== Conteneur Redis
+==== OS/ARCH
+----
+linux/386
+linux/amd64
+linux/arm/v6
+linux/arm/v7
+linux/arm64/v8
+linux/ppc64le
+linux/s390x
+----
+
+=== Conteneur Python /  FFMPEG  (esup-pod)
+
+==== OS/ARCH
+-----
+linux/386
+linux/amd64
+linux/arm/v7
+linux/arm64/v8
+-----
+
+===== Configuration
+. Renommer le fichier .env.dev-exemple en .env.dev et le renseigner.
+. Vous devez changer les valeurs d'identifiant, mot de passe et courriel.
+. Pour la variable DOCKER_ENV, vous pouvez choisir entre *light* (1 docker pour Pod avec que l'encodage d'activé) ou *full* (4 docker pour Pod : pod-back, encodage, transcription et xAPI)
++
+[source,shell]
+----
+DJANGO_SUPERUSER_USERNAME=
+DJANGO_SUPERUSER_PASSWORD=
+DJANGO_SUPERUSER_EMAIL=
+ELASTICSEARCH_TAG=elasticsearch:8.8.1
+NODE_TAG=node:19
+PYTHON_TAG=python:3.9-buster
+REDIS_TAG=redis:alpine3.16
+DOCKER_ENV=light
+----
+. Créer un fichier pod/custom/settings_local.py
+
+Renseignez le fichier pod/custom/settings_local.py comme ceci :
+[source,python]
+----
+
+USE_PODFILE = True
+EMAIL_ON_ENCODING_COMPLETION = False
+SECRET_KEY = "A_CHANGER"
+DEBUG = True
+# on précise ici qu'on utilise ES version 8
+ES_VERSION = 8
+ES_URL = ['http://elasticsearch:9200/']
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/3",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": "pod"
+    },
+    "select2": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://redis:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    },
+}
+SESSION_ENGINE = "redis_sessions.session"
+SESSION_REDIS = {
+    "host": "redis",
+    "port": 6379,
+    "db": 4,
+    "prefix": "session",
+    "socket_timeout": 1,
+    "retry_on_timeout": False,
+}
+
+# Uniquement lors d’environnement conteneurisé
+MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
+
+# Si DOCKER_ENV = full il faut activer l'encodage et la transcription distante
+# USE_DISTANT_ENCODING_TRANSCODING = True
+# ENCODING_TRANSCODING_CELERY_BROKER_URL = "redis://redis:6379/7"
+
+# pour avoir le maximum de log sur la console
+LOGGING = {}
+
+# PUSH NOTIFICATIONS
+# Les clés VAPID peuvent être générées avec https://web-push-codelab.glitch.me/
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": "",
+    "VAPID_PRIVATE_KEY": "",
+    "VAPID_ADMIN_EMAIL": "contact@example.org"
+}
+----
+
+== Commandes
+
+=== Lancement de la stack Esup-Pod
+- Se positionner à la racine du projet
+- Sous windows, devez remplacer `make` par `make.bat`.
+
+[source,console]
+----
+# Force la recompilation des conteneurs (obligatoire au premier lancement ou après un docker-reset)
+$ make docker-build
+----
+Suppression des répertoires suivants :
+
+- ./pod/log
+- ./pod/static
+- ./pod/node_modules
+
+
+[source,console]
+----
+# Lancement sans recompilation des conteneurs, ni suppressions répertoires ./pod/log, ./pod/static, ./pod/node_modules
+$ make docker-start
+----
+
+Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes. ;)
+
+Vous devriez obtenir ce message une fois esup-pod lancé
+[source,console]
+----
+$ pod-dev-with-volumes        | Superuser created successfully.
+----
+L'application esup-pod est dès lors disponible via cette URL : localhost:9090
+
+=== Arrêt de la stack
+$ CTRL+C dans la fenetre depuis laquelle l'application esup-pod a été lancée
+
+OU depuis une autre fenêtre via
+
+[source,console]
+----
+$ make docker-stop
+----
+
+=== Reset de la stack
+Cette commande supprime l'ensemble des données crées depuis le/les conteneur(s) via les volumes montés
+[source,console]
+----
+$ make docker-reset
+----
+Suppression des répertoires suivants :
+
+- ./pod/log
+- ./pod/media
+- ./pod/static
+- ./pod/node_modules
+- ./pod/db_migrations
+- ./pod/db.sqlite3
+- ./pod/yarn.lock
+
+
+== HELM / Kubernetes
+TODO...
+
+== (C) Copyright
+- https://www.esup-portail.org/wiki/display/ES/Installation+de+la+plateforme+Pod+V3
+- https://github.com/EsupPortail/Esup-Pod
+- https://hub.docker.com/_/debian/tags?page=2

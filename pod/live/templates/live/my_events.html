@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block more_style %}
+  <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet">
+{% endblock more_style %}
+
+{% block breadcrumbs %}{{ block.super }}
+  <li class="breadcrumb-item active" aria-current="page">{% trans "My events" %}</li>{% endblock %}
+
+{% block page_title %}
+  {% trans "My events" %}
+{% endblock %}
+
+{% block page_content %}
+  <div class="pod-callout pod-callout-info">
+    {% if events.count == 0 %}
+      {% trans "No event found" %}
+    {% else %}
+      {% blocktrans count counter=count_events %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}
+    {% endif %}
+  </div>
+  {% if display_creation_button %}
+    <div class="d-flex infinite-container mb-2" id="event_add">
+      <a class="btn btn-primary" href="{% url 'live:event_edit' %}" title="{% trans 'Plan an event' %}">
+        <i class="bi bi-plus pod-add" aria-hidden="true"></i>
+        <span>{% trans "Plan an event" %}</span>
+      </a>
+    </div>
+  {% endif %}
+
+  {% if events.count == 0 %}
+    <p class="alert alert-info">{% trans 'You have not planned any event yet, please use the "Plan an event" button to add one' %}</p>
+  {% else %}
+    <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the event on which you want to work with." %}</p>
+
+    <h2 class="mt-4">{% trans "Coming events" %}</h2>
+    {% include "live/events_list.html" with hide_counter=True events=coming_events urlpage=coming_events_url urland=past_events_url_page %}
+
+    <h2 class="mt-4">{% trans "Past events" %}</h2>
+    {% include "live/events_list.html" with hide_counter=True events=past_events urlpage=past_events_url urland=coming_events_url_page %}
+
+  {% endif %}
+
+{% endblock page_content %}
+
+{% block page_aside %}
+  {# hide the side bar aside.html #}
+{% endblock page_aside %}

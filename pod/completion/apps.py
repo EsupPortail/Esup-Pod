@@ -1,5 +1,8 @@
 from django.apps import AppConfig
+from django.utils.translation import gettext_lazy as _
 
 
 class CompletionConfig(AppConfig):
-    name = "completion"
+    name = "pod.completion"
+    default_auto_field = "django.db.models.BigAutoField"
+    verbose_name = _("Video additions")

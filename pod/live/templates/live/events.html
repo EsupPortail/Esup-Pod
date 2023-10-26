@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block more_style %}
+  <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet">
+{% endblock more_style %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Events" %}</li>{% endblock %}
+
+{% block page_title %}
+  {% trans "Events" %}
+{% endblock %}
+
+{% block page_content %}
+
+  <div class="d-flex infinite-container mb-2" id="event_add">
+    {% if display_direct_button %}
+      <a class="btn btn-primary" href="{% url 'live:directs_all' %}" title="{% trans 'Supervise broadcasters' %}">
+        <i class="bi bi-activity" aria-hidden="true"></i>
+        {% trans "Supervise broadcasters" %}
+      </a>
+    {% endif %}
+    {% if display_creation_button %}
+      <a class="btn btn-primary" href="{% url 'live:event_edit' %}" title="{% trans 'Plan an event' %}">
+        <i class="bi bi-plus pod-add" aria-hidden="true"></i>
+        {% trans "Plan an event" %}
+      </a>
+    {% endif %}
+  </div>
+
+  {% if events.paginator.count > 0 %}
+    <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the event on which you want to work with." %}</p>
+  {% endif %}
+
+  {% include 'loader.html' %}
+
+  {% include "live/events_list.html" %}
+
+{% endblock page_content %}
+
+{% block page_aside %}
+  {% if HIDE_TYPES == False %}
+    {% include 'live/filter_aside.html' %}
+  {% endif %}
+{% endblock page_aside %}

@@ -9,13 +9,10 @@ from ckeditor.fields import RichTextField
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
-from select2 import fields as select2_fields
 
 if getattr(settings, "USE_PODFILE", False):
-    FILEPICKER = True
     from pod.podfile.models import CustomFileModel
 else:
-    FILEPICKER = False
     from pod.main.models import CustomFileModel
 
 ROLE_CHOICES = getattr(
@@ -48,14 +45,19 @@ KIND_CHOICES = getattr(
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
-    ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
+    (
+        (_("-- Frequently used languages --"), PREF_LANG_CHOICES),
+        (_("-- All languages --"), ALL_LANG_CHOICES),
+    ),
 )
-LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
+__LANG_CHOICES_DICT__ = {
+    key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
+}
+DEFAULT_LANG_TRACK = getattr(settings, "DEFAULT_LANG_TRACK", "fr")
 
 
 class Contributor(models.Model):
-
-    video = select2_fields.ForeignKey(Video, verbose_name=_("video"))
+    video = models.ForeignKey(Video, verbose_name=_("video"), on_delete=models.CASCADE)
     name = models.CharField(_("lastname / firstname"), max_length=200)
     email_address = models.EmailField(_("mail"), null=True, blank=True, default="")
     role = models.CharField(
@@ -121,9 +123,13 @@ class Contributor(models.Model):
 
 
 class Document(models.Model):
-    video = select2_fields.ForeignKey(Video, verbose_name=_("Video"))
+    video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     document = models.ForeignKey(
-        CustomFileModel, null=True, blank=True, verbose_name=_("Document")
+        CustomFileModel,
+        null=True,
+        blank=True,
+        verbose_name=_("Document"),
+        on_delete=models.CASCADE,
     )
 
     class Meta:
@@ -166,23 +172,61 @@ class Document(models.Model):
         return "Document: {0} - Video: {1}".format(self.document.name, self.video)
 
 
-class Track(models.Model):
+class EnrichModelQueue(models.Model):
+    title = models.TextField(_("Title"), null=True, blank=True)
+    text = models.TextField(_("Text"), null=False, blank=False)
+    model_type = models.CharField(
+        _("Model Type"), null=False, blank=False, max_length=100, default="STT"
+    )
+    lang = models.CharField(
+        _("Language"), max_length=2, choices=LANG_CHOICES, default="fr"
+    )
+    in_treatment = models.BooleanField(_("In Treatment"), default=False)
 
-    video = select2_fields.ForeignKey(Video, verbose_name=_("Video"))
+    def get_label_lang(self):
+        return "%s" % __LANG_CHOICES_DICT__[self.lang]
+
+    class Meta:
+        verbose_name = _("EnrichModelQueue")
+        verbose_name_plural = _("EnrichModelQueue")
+
+    def verify_attributs(self):
+        msg = list()
+        if not self.text:
+            msg.append(_("Please enter a text."))
+        if not self.model_type:
+            msg.append(_("Please enter a model type."))
+        if not self.lang:
+            msg.append(_("Please enter a language."))
+        if len(msg) > 0:
+            return msg
+        else:
+            return list()
+
+
+class Track(models.Model):
+    video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     kind = models.CharField(
         _("Kind"), max_length=10, choices=KIND_CHOICES, default="subtitles"
     )
-    lang = models.CharField(_("Language"), max_length=2, choices=LANG_CHOICES)
-    src = models.ForeignKey(
-        CustomFileModel, blank=True, null=True, verbose_name=_("Subtitle file")
+    lang = models.CharField(
+        _("Language"), max_length=2, choices=LANG_CHOICES, default=DEFAULT_LANG_TRACK
     )
+    src = models.ForeignKey(
+        CustomFileModel,
+        blank=True,
+        null=True,
+        verbose_name=_("Subtitle file"),
+        on_delete=models.CASCADE,
+    )
+    enrich_ready = models.BooleanField(_("Enrich Ready"), default=False)
 
     @property
     def sites(self):
         return self.video.sites
 
     def get_label_lang(self):
-        return "%s" % LANG_CHOICES_DICT[self.lang]
+        return "%s" % __LANG_CHOICES_DICT__[self.lang]
 
     class Meta:
         verbose_name = _("Track")
@@ -205,7 +249,7 @@ class Track(models.Model):
         if not self.src:
             msg.append(_("Please specify a track file."))
         elif "vtt" not in self.src.file_type:
-            msg.append(_('Only ".vtt" format is allowed.'))
+            msg.append(_("Only “.vtt” format is allowed."))
         if len(msg) > 0:
             return msg
         else:
@@ -233,7 +277,6 @@ class Track(models.Model):
 
 
 class Overlay(models.Model):
-
     POSITION_CHOICES = (
         ("top-left", _("top-left")),
         ("top", _("top")),
@@ -245,7 +288,7 @@ class Overlay(models.Model):
         ("left", _("left")),
     )
 
-    video = select2_fields.ForeignKey(Video, verbose_name=_("Video"))
+    video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     title = models.CharField(_("Title"), max_length=100)
     slug = models.SlugField(
         _("Slug"),

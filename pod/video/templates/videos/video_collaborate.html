@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 
 {% block page_extra_head %}
 {% include 'videos/video-header.html' %}
@@ -9,10 +9,10 @@
 
 {% block breadcrumbs %}
     {{block.super}}
-    <li class="breadcrumb-item"><a href="{% url 'my_videos' %}">{% trans 'My videos' %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'video:my_videos' %}">{% trans 'My videos' %}</a></li>
 
     <li class="breadcrumb-item">
-        <a href="{% url 'video' slug=video.slug %}">
+        <a href="{% url 'video:video' slug=video.slug %}">
             {{video.title|title|truncatechars:45}}
         </a>
     </li>
@@ -34,13 +34,11 @@
     {% for message in messages %}
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
             {{ message }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
         </div>
     {% endfor %}
     <script>
-        $(document).ready(function () {
+        document.addEventListener('DOMContentLoaded',function () {
             TriggerAlertClose();
         });
     </script>
@@ -57,19 +55,18 @@
         </div>
     <div style="clear: both; padding-top: 24px; padding-bottom: 24px; display: block;">
         <div style="padding-top: 6px;">
-					<h5>{% trans "Tricks" %} :</h5>
-					<p>{% trans "Start the video than click the + icon to write a comment at the choosen time. Video will be paused." %}<br />
-					{% trans "Click on comment's timecode to go at this time in the video." %}<br />
-					{% trans "Black notes are public. The clearest are private. The intermediary is visible to the owner of the video." %}
-				</p>
-            <span class="float-right">
-                <a href="{% url 'video' slug=video.slug %}" title="{% trans 'View the video' %}" class="btn btn btn-secondary btn-sm">
-                    <i data-feather="arrow-left"></i>&nbsp;{% trans "Back to the video"%}
+          <h5>{% trans "Tricks" %} :</h5>
+          <p>{% trans "Start the video than click the + icon to write a comment at the choosen time. Video will be paused." %}<br>
+          {% trans "Click on comment's timecode to go at this time in the video." %}<br>
+          {% trans "Black notes are public. The clearest are private. The intermediary is visible to the owner of the video." %}
+        </p>
+            <span class="float-end">
+                <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn btn-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i>&nbsp;{% trans "Back to the video"%}
                 </a>
             </span>
         </div>
     </div>
-
 
 {% endblock page_content %}
 {% block collapse_page_aside %}

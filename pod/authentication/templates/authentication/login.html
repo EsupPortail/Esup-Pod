@@ -15,10 +15,10 @@
     <p><a class="btn btn-primary" role="button" href="{{SHIB_URL }}?target={{ referrer|urlencode }}">{{SHIB_NAME}}</a></p>
   {% endif %}
   {% if USE_OIDC %}
-    <p><a class="btn btn-primary" href="{%url 'oidc_authentication_init' %}"  title="{{ OIDC_NAME }}">{{OIDC_NAME}}</a></p>
+    <p><a class="btn btn-primary" href="{%url 'oidc_authentication_init' %}?next={{ referrer|urlencode }}"  title="{{ OIDC_NAME }}">{{OIDC_NAME}}</a></p>
   {% endif %}
   {% if not local_login %}
-    <p><a class="btn btn-secondary" role="button" href="{% url 'local-login'%}?{% if request.GET.is_iframe %}is_iframe=true&amp;{%endif%}next={{ referrer|urlencode }}">{% trans "Local sign on" %}</a></p>
+    <p><a class="btn btn-secondary" role="button" href="{% url 'local-login' %}?{% if request.GET.is_iframe %}is_iframe=true&amp;{% endif %}next={{ referrer|urlencode }}">{% trans "Local sign on" %}</a></p>
   {% endif %}
 </div>
 

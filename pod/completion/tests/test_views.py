@@ -14,6 +14,7 @@ from ..models import Overlay
 from ..models import Track
 from datetime import datetime
 from django.contrib.sites.models import Site
+from django.urls import reverse
 
 if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
@@ -59,27 +60,29 @@ class CompletionViewsTestCase(TestCase):
 
     def test_video_completion_user(self):
         video = Video.objects.get(id=1)
-        response = self.client.get("/video_completion/{0}/".format(video.slug))
+        url = reverse("video:completion:video_completion", kwargs={"slug": video.slug})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/video_completion/{0}/".format(video.slug))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest")
         self.assertContains(response, "list_contributor")
 
-        print(" ---> test_video_completion_user : OK!")
+        print(" ---> test_video_completion_user: OK!")
 
     def test_video_completion_staff(self):
         video = Video.objects.get(id=2)
-        response = self.client.get("/video_completion/{0}/".format(video.slug))
+        url = reverse("video:completion:video_completion", kwargs={"slug": video.slug})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/video_completion/{0}/".format(video.slug))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
@@ -88,7 +91,7 @@ class CompletionViewsTestCase(TestCase):
         self.assertContains(response, "list_document")
         self.assertContains(response, "list_overlay")
 
-        print(" ---> test_video_completion_staff : OK!")
+        print(" ---> test_video_completion_staff: OK!")
 
 
 class CompletionContributorViewsTestCase(TestCase):
@@ -113,16 +116,15 @@ class CompletionContributorViewsTestCase(TestCase):
 
     def test_video_completion_contributor(self):
         video = Video.objects.get(id=1)
-        response = self.client.get(
-            "/video_completion_contributor/{0}/".format(video.slug)
+        url = reverse(
+            "video:completion:video_completion_contributor", kwargs={"slug": video.slug}
         )
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
-        response = self.client.get(
-            "/video_completion_contributor/{0}/".format(video.slug)
-        )
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
@@ -132,21 +134,24 @@ class CompletionContributorViewsTestCase(TestCase):
         self.assertContains(response, "list_overlay")
 
         print(" [ BEGIN COMPLETION_CONTRIBUTOR VIEWS ] ")
-        print(" ---> test_video_completion_contributor : OK!")
+        print(" ---> test_video_completion_contributor: OK!")
 
     def test_video_completion_contributor_new(self):
         video = Video.objects.get(id=1)
         authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
+        url = reverse(
+            "video:completion:video_completion_contributor", kwargs={"slug": video.slug}
+        )
         response = self.client.post(
-            "/video_completion_contributor/{0}/".format(video.slug),
+            url,
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form_contributor")
         response = self.client.post(
-            "/video_completion_contributor/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "name": "testcontributor",
@@ -154,7 +159,6 @@ class CompletionContributorViewsTestCase(TestCase):
                 "video": 1,
                 "email_address": "test@test.com",
                 "weblink": "",
-                "contributor_id": None,
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -162,10 +166,11 @@ class CompletionContributorViewsTestCase(TestCase):
         self.assertContains(response, "list_contributor")
         self.assertContains(response, "testcontributor")
         self.assertContains(response, "test@test.com")
+
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, "testcontributor")
 
-        print(" ---> test_video_completion_contributor_new : OK!")
+        print(" ---> test_video_completion_contributor_new: OK!")
         print(" [ END COMPLETION_CONTRIBUTOR VIEWS ] ")
 
     def test_video_completion_contributor_edit(self):
@@ -173,14 +178,17 @@ class CompletionContributorViewsTestCase(TestCase):
         authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
+        url = reverse(
+            "video:completion:video_completion_contributor", kwargs={"slug": video.slug}
+        )
         response = self.client.post(
-            "/video_completion_contributor/{0}/".format(video.slug),
+            url,
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form_contributor")
         response = self.client.post(
-            "/video_completion_contributor/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "name": "testcontributor",
@@ -188,7 +196,6 @@ class CompletionContributorViewsTestCase(TestCase):
                 "video": 1,
                 "email_address": "test@test.com",
                 "weblink": "",
-                "contributor_id": None,
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -196,13 +203,13 @@ class CompletionContributorViewsTestCase(TestCase):
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, "testcontributor")
         response = self.client.post(
-            "/video_completion_contributor/{0}/".format(video.slug),
+            url,
             data={"action": "modify", "id": result.id},
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form_contributor")
         response = self.client.post(
-            "/video_completion_contributor/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "name": "testcontributor2",
@@ -220,21 +227,24 @@ class CompletionContributorViewsTestCase(TestCase):
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, "testcontributor2")
 
-        print(" ---> test_video_completion_contributor_edit : OK!")
+        print(" ---> test_video_completion_contributor_edit: OK!")
 
     def test_video_completion_contributor_delete(self):
         video = Video.objects.get(id=1)
         authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
+        url = reverse(
+            "video:completion:video_completion_contributor", kwargs={"slug": video.slug}
+        )
         response = self.client.post(
-            "/video_completion_contributor/{0}/".format(video.slug),
+            url,
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form_contributor")
         response = self.client.post(
-            "/video_completion_contributor/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "name": "testcontributor",
@@ -242,22 +252,22 @@ class CompletionContributorViewsTestCase(TestCase):
                 "video": 1,
                 "email_address": "test@test.com",
                 "weblink": "",
-                "contributor_id": None,
             },
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "list_contributor")
+
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, "testcontributor")
         response = self.client.post(
-            "/video_completion_contributor/{0}/".format(video.slug),
+            url,
             data={"action": "delete", "id": result.id},
         )
         self.assertEqual(response.status_code, 200)
         result = Contributor.objects.all()
         self.assertFalse(result)
 
-        print(" ---> test_video_completion_contributor_delete : OK!")
+        print(" ---> test_video_completion_contributor_delete: OK!")
 
 
 class CompletionTrackViewsTestCase(TestCase):
@@ -284,12 +294,15 @@ class CompletionTrackViewsTestCase(TestCase):
 
     def test_video_completion_track(self):
         video = Video.objects.get(id=1)
-        response = self.client.get("/video_completion_track/{0}/".format(video.slug))
+        url = reverse(
+            "video:completion:video_completion_track", kwargs={"slug": video.slug}
+        )
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/video_completion_track/{0}/".format(video.slug))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
@@ -299,15 +312,18 @@ class CompletionTrackViewsTestCase(TestCase):
         self.assertContains(response, "list_overlay")
 
         print(" [ BEGIN COMPLETION_TRACK VIEWS ] ")
-        print(" ---> test_video_completion_track : OK!")
+        print(" ---> test_video_completion_track: OK!")
 
     def test_video_completion_track_new(self):
         video = Video.objects.get(id=1)
         user = authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
+        url = reverse(
+            "video:completion:video_completion_track", kwargs={"slug": video.slug}
+        )
         response = self.client.post(
-            "/video_completion_track/{0}/".format(video.slug),
+            url,
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
@@ -329,14 +345,13 @@ class CompletionTrackViewsTestCase(TestCase):
         else:
             document = CustomFileModel.objects.create(file=testfile)
         response = self.client.post(
-            "/video_completion_track/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "kind": "subtitles",
                 "lang": "fr",
                 "src": document.id,
                 "video": 1,
-                "track_id": None,
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -347,7 +362,7 @@ class CompletionTrackViewsTestCase(TestCase):
         self.assertTrue("testfile" in result.src.name)
         # self.assertEqual(result.src.name, 'testfile')
 
-        print(" ---> test_video_completion_track_new : OK!")
+        print(" ---> test_video_completion_track_new: OK!")
         print(" [ END COMPLETION_TRACK VIEWS ] ")
 
     def test_video_completion_track_edit(self):
@@ -355,8 +370,11 @@ class CompletionTrackViewsTestCase(TestCase):
         user = authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
+        url = reverse(
+            "video:completion:video_completion_track", kwargs={"slug": video.slug}
+        )
         response = self.client.post(
-            "/video_completion_track/{0}/".format(video.slug),
+            url,
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
@@ -378,14 +396,13 @@ class CompletionTrackViewsTestCase(TestCase):
         else:
             document = CustomFileModel.objects.create(file=testfile)
         response = self.client.post(
-            "/video_completion_track/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "kind": "subtitles",
                 "lang": "fr",
                 "src": document.id,
                 "video": 1,
-                "track_id": None,
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -394,13 +411,13 @@ class CompletionTrackViewsTestCase(TestCase):
         self.assertTrue("testfile" in result.src.name)
         # self.assertEqual(result.src.name, 'testfile')
         response = self.client.post(
-            "/video_completion_track/{0}/".format(video.slug),
+            url,
             data={"action": "modify", "id": result.id},
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form_track")
         response = self.client.post(
-            "/video_completion_track/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "kind": "captions",
@@ -416,15 +433,18 @@ class CompletionTrackViewsTestCase(TestCase):
         self.assertEqual(result.kind, "captions")
         self.assertEqual(result.lang, "de")
 
-        print(" ---> test_video_completion_track_edit : OK!")
+        print(" ---> test_video_completion_track_edit: OK!")
 
     def test_video_completion_track_delete(self):
         video = Video.objects.get(id=1)
         user = authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
+        url = reverse(
+            "video:completion:video_completion_track", kwargs={"slug": video.slug}
+        )
         response = self.client.post(
-            "/video_completion_track/{0}/".format(video.slug),
+            url,
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
@@ -446,14 +466,13 @@ class CompletionTrackViewsTestCase(TestCase):
         else:
             document = CustomFileModel.objects.create(file=testfile)
         response = self.client.post(
-            "/video_completion_track/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "kind": "subtitles",
                 "lang": "fr",
                 "src": document.id,
                 "video": 1,
-                "track_id": None,
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -462,14 +481,14 @@ class CompletionTrackViewsTestCase(TestCase):
         self.assertTrue("testfile" in result.src.name)
         # self.assertEqual(result.src.name, 'testfile')
         response = self.client.post(
-            "/video_completion_track/{0}/".format(video.slug),
+            url,
             data={"action": "delete", "id": result.id},
         )
         self.assertEqual(response.status_code, 200)
         result = Track.objects.all()
         self.assertFalse(result)
 
-        print(" ---> test_video_completion_track_delete : OK!")
+        print(" ---> test_video_completion_track_delete: OK!")
 
 
 class CompletionDocumentViewsTestCase(TestCase):
@@ -496,12 +515,15 @@ class CompletionDocumentViewsTestCase(TestCase):
 
     def test_video_completion_document(self):
         video = Video.objects.get(id=1)
-        response = self.client.get("/video_completion_document/{0}/".format(video.slug))
+        url = reverse(
+            "video:completion:video_completion_document", kwargs={"slug": video.slug}
+        )
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/video_completion_document/{0}/".format(video.slug))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
@@ -511,15 +533,18 @@ class CompletionDocumentViewsTestCase(TestCase):
         self.assertContains(response, "list_overlay")
 
         print(" [ BEGIN COMPLETION_DOCUMENT VIEWS ] ")
-        print(" ---> test_video_completion_document : OK!")
+        print(" ---> test_video_completion_document: OK!")
 
     def test_video_completion_document_new(self):
         video = Video.objects.get(id=1)
         user = authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
+        url = reverse(
+            "video:completion:video_completion_document", kwargs={"slug": video.slug}
+        )
         response = self.client.post(
-            "/video_completion_document/{0}/".format(video.slug),
+            url,
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
@@ -541,14 +566,14 @@ class CompletionDocumentViewsTestCase(TestCase):
         else:
             document = CustomFileModel.objects.create(file=testfile)
         response = self.client.post(
-            "/video_completion_document/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "document": document.id,
                 "video": 1,
-                "track_id": None,
             },
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "list_document")
@@ -556,7 +581,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         # self.assertEqual(result.document.name, 'testfile')
         self.assertTrue("testfile" in result.document.name)
 
-        print(" ---> test_video_completion_document_new : OK!")
+        print(" ---> test_video_completion_document_new: OK!")
         print(" [ END COMPLETION_DOCUMENT VIEWS ] ")
 
     def test_video_completion_document_edit(self):
@@ -564,8 +589,11 @@ class CompletionDocumentViewsTestCase(TestCase):
         user = authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
+        url = reverse(
+            "video:completion:video_completion_document", kwargs={"slug": video.slug}
+        )
         response = self.client.post(
-            "/video_completion_document/{0}/".format(video.slug),
+            url,
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
@@ -587,14 +615,14 @@ class CompletionDocumentViewsTestCase(TestCase):
         else:
             document = CustomFileModel.objects.create(file=testfile)
         response = self.client.post(
-            "/video_completion_document/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "document": document.id,
                 "video": 1,
-                "track_id": None,
             },
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "list_document")
@@ -602,7 +630,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         # self.assertEqual(result.document.name, 'testfile')
         self.assertTrue("testfile" in result.document.name)
         response = self.client.post(
-            "/video_completion_document/{0}/".format(video.slug),
+            url,
             data={"action": "modify", "id": result.id},
         )
         self.assertEqual(response.status_code, 200)
@@ -624,7 +652,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         else:
             document = CustomFileModel.objects.create(file=testfile)
         response = self.client.post(
-            "/video_completion_document/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "document": document.id,
@@ -637,15 +665,18 @@ class CompletionDocumentViewsTestCase(TestCase):
         result = Document.objects.get(id=1)
         # self.assertEqual(result.document.name, 'testfile2')
         self.assertTrue("testfile2" in result.document.name)
-        print(" ---> test_video_completion_document_edit : OK!")
+        print(" ---> test_video_completion_document_edit: OK!")
 
     def test_video_completion_document_delete(self):
         video = Video.objects.get(id=1)
         user = authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
+        url = reverse(
+            "video:completion:video_completion_document", kwargs={"slug": video.slug}
+        )
         response = self.client.post(
-            "/video_completion_document/{0}/".format(video.slug),
+            url,
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
@@ -667,12 +698,11 @@ class CompletionDocumentViewsTestCase(TestCase):
         else:
             document = CustomFileModel.objects.create(file=testfile)
         response = self.client.post(
-            "/video_completion_document/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "document": document.id,
                 "video": 1,
-                "track_id": None,
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -681,14 +711,14 @@ class CompletionDocumentViewsTestCase(TestCase):
         # self.assertEqual(result.document.name, 'testfile')
         self.assertTrue("testfile" in result.document.name)
         response = self.client.post(
-            "/video_completion_document/{0}/".format(video.slug),
+            url,
             data={"action": "delete", "id": result.id},
         )
         self.assertEqual(response.status_code, 200)
         result = Document.objects.all()
         self.assertFalse(result)
 
-        print(" ---> test_video_completion_document_delete : OK!")
+        print(" ---> test_video_completion_document_delete: OK!")
 
 
 class CompletionOverlayViewsTestCase(TestCase):
@@ -712,12 +742,15 @@ class CompletionOverlayViewsTestCase(TestCase):
 
     def test_video_completion_overlay(self):
         video = Video.objects.get(id=1)
-        response = self.client.get("/video_completion_overlay/{0}/".format(video.slug))
+        url = reverse(
+            "video:completion:video_completion_overlay", kwargs={"slug": video.slug}
+        )
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/video_completion_overlay/{0}/".format(video.slug))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
@@ -727,21 +760,21 @@ class CompletionOverlayViewsTestCase(TestCase):
         self.assertContains(response, "list_overlay")
 
         print(" [ BEGIN COMPLETION_OVERLAY VIEWS ] ")
-        print(" ---> test_video_completion_overlay : OK!")
+        print(" ---> test_video_completion_overlay: OK!")
 
     def test_video_completion_overlay_new(self):
         video = Video.objects.get(id=1)
         authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
-        response = self.client.post(
-            "/video_completion_overlay/{0}/".format(video.slug),
-            data={"action": "new"},
+        url = reverse(
+            "video:completion:video_completion_overlay", kwargs={"slug": video.slug}
         )
+        response = self.client.post(url, data={"action": "new"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form_overlay")
         response = self.client.post(
-            "/video_completion_overlay/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "title": "testoverlay",
@@ -751,17 +784,17 @@ class CompletionOverlayViewsTestCase(TestCase):
                 "position": "bottom-right",
                 "background": "on",
                 "video": 1,
-                "overlay_id": None,
             },
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "list_overlay")
+
         result = Overlay.objects.get(id=1)
         self.assertEqual(result.title, "testoverlay")
         self.assertEqual(result.content, "testoverlay")
 
-        print(" ---> test_video_completion_overlay_new : OK!")
+        print(" ---> test_video_completion_overlay_new: OK!")
         print(" [ END COMPLETION_OVERLAY VIEWS ] ")
 
     def test_video_completion_overlay_edit(self):
@@ -769,14 +802,14 @@ class CompletionOverlayViewsTestCase(TestCase):
         authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
-        response = self.client.post(
-            "/video_completion_overlay/{0}/".format(video.slug),
-            data={"action": "new"},
+        url = reverse(
+            "video:completion:video_completion_overlay", kwargs={"slug": video.slug}
         )
+        response = self.client.post(url, data={"action": "new"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form_overlay")
         response = self.client.post(
-            "/video_completion_overlay/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "title": "testoverlay",
@@ -786,7 +819,6 @@ class CompletionOverlayViewsTestCase(TestCase):
                 "position": "bottom-right",
                 "background": "on",
                 "video": 1,
-                "overlay_id": None,
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -795,13 +827,13 @@ class CompletionOverlayViewsTestCase(TestCase):
         result = Overlay.objects.get(id=1)
         self.assertEqual(result.title, "testoverlay")
         response = self.client.post(
-            "/video_completion_overlay/{0}/".format(video.slug),
+            url,
             data={"action": "modify", "id": result.id},
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form_overlay")
         response = self.client.post(
-            "/video_completion_overlay/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "title": "testoverlay2",
@@ -821,21 +853,24 @@ class CompletionOverlayViewsTestCase(TestCase):
         self.assertEqual(result.time_end, 3)
         self.assertEqual(result.position, "bottom-left")
 
-        print(" ---> test_video_completion_overlay_edit : OK!")
+        print(" ---> test_video_completion_overlay_edit: OK!")
 
     def test_video_completion_overlay_delete(self):
         video = Video.objects.get(id=1)
         authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
+        url = reverse(
+            "video:completion:video_completion_overlay", kwargs={"slug": video.slug}
+        )
         response = self.client.post(
-            "/video_completion_overlay/{0}/".format(video.slug),
+            url,
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "form_overlay")
         response = self.client.post(
-            "/video_completion_overlay/{0}/".format(video.slug),
+            url,
             data={
                 "action": "save",
                 "title": "testoverlay",
@@ -845,7 +880,6 @@ class CompletionOverlayViewsTestCase(TestCase):
                 "position": "bottom-right",
                 "background": "on",
                 "video": 1,
-                "overlay_id": None,
             },
         )
         self.assertEqual(response.status_code, 200)
@@ -853,11 +887,11 @@ class CompletionOverlayViewsTestCase(TestCase):
         result = Overlay.objects.get(id=1)
         self.assertEqual(result.title, "testoverlay")
         response = self.client.post(
-            "/video_completion_overlay/{0}/".format(video.slug),
+            url,
             data={"action": "delete", "id": result.id},
         )
         self.assertEqual(response.status_code, 200)
         result = Overlay.objects.all()
         self.assertFalse(result)
 
-        print(" ---> test_video_completion_overlay_delete : OK!")
+        print(" ---> test_video_completion_overlay_delete: OK!")

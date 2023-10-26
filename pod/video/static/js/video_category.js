@@ -6,12 +6,6 @@
     id: undefined,
     slug: undefined,
   };
-  const BASE_URL = `${window.location.origin}${window.location.pathname}categories/`;
-  const EDIT_URL = `${window.location.origin}/video_edit/`;
-  const COMPLETION_URL = `${window.location.origin}/video_completion/`;
-  const CHAPTER_URL = `${window.location.origin}/video_chapter/`;
-  const DELETE_URL = `${window.location.origin}/video_delete/`;
-  const VIDEO_URL = `${window.location.origin}/video/`;
   const VIDEOS_LIST_CHUNK = {
     videos: {
       chunk: [], // all videos chunked
@@ -19,23 +13,23 @@
       unselected: [], // current unselected videos
     }, // all videos
     page_index: 0, // current index
-    size: 12, // number videos per view
+    size: 12, // videos per page
   };
   const modal_video_list = document.querySelector(
-    ".category_modal_videos_list"
+    ".category_modal_videos_list",
   );
   const msg_saved = gettext("Category changes saved successfully");
   const msg_error_duplicate = gettext(
-    "You cannot add two categories with the same title."
+    "You cannot add two categories with the same title.",
   );
   const msg_deleted = gettext("Category deleted successfully");
   const msg_error = gettext(
-    "An error occured, please refresh the page and try again."
+    "An error occured, please refresh the page and try again.",
   );
   const msg_title_empty = gettext("Category title field is required.");
   const msg_save_cat = gettext("Save category");
   let videos_list = document.querySelector(
-    "#videos_list.infinite-container:not(.filtered)"
+    "#videos_list.infinite-container:not(.filtered)",
   );
   let saveCatBtn = document.querySelector("#manageCategoryModal #saveCategory"); // btn in dialog
   let modal_title = document.querySelector("#manageCategoryModal #modal_title");
@@ -43,7 +37,7 @@
   let CURR_CATEGORY = {}; // current editing category (js object)
   let DOMCurrentEditCat = null; // current editing category (html DOM)
   // show loader
-  let loader = document.querySelector(".loader_wrapper");
+  let loader = document.querySelector(".lds-ring");
 
   const SAVED_DATA = {}; // To prevent too many requests to the server
   const CURR_FILTER = { slug: null, id: null }; // the category currently filtering
@@ -60,32 +54,43 @@
     const html_paginator = modal_video_list.querySelector(".paginator");
     modal_video_list.innerHTML = "";
     modal_video_list.appendChild(html_paginator);
-    let videos_to_display = VIDEOS_LIST_CHUNK.videos.chunk.length
-      ? VIDEOS_LIST_CHUNK.videos.chunk[VIDEOS_LIST_CHUNK.page_index]
-      : [];
-    videos_to_display.forEach((v) => appendVideoCard(toggleSelectedClass(v)));
+    if (VIDEOS_LIST_CHUNK.videos.chunk.length > 0) {
+      let videos_to_display =
+        VIDEOS_LIST_CHUNK.videos.chunk[VIDEOS_LIST_CHUNK.page_index];
+      videos_to_display.forEach((v) => appendVideoCard(toggleSelectedClass(v)));
+    } else {
+      const cat_modal_alert = document.createElement("div");
+      cat_modal_alert.setAttribute("class", "alert alert-warning");
+      cat_modal_alert.innerHTML = gettext(
+        "You have no content without a category.",
+      );
+      const cat_modal_body = document.querySelector(
+        "#manageCategoryModal .modal-body",
+      );
+      cat_modal_body.appendChild(cat_modal_alert);
+    }
   };
   // Chunk array
   const chunk = (arr, size) =>
     Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
-      arr.slice(i * size, i * size + size)
+      arr.slice(i * size, i * size + size),
     );
   const paginate = (cat_videos) => {
     VIDEOS_LIST_CHUNK.page_index = 0;
-    prev.classList.add("disable");
+    prev.classList.add("disabled");
     const video_elements = Array.from(
       modal_video_list.querySelectorAll(
-        ".category_modal_videos_list .infinite-item"
-      )
+        ".category_modal_videos_list .infinite-item",
+      ),
     );
     VIDEOS_LIST_CHUNK.videos.selected = cat_videos.map((v) =>
-      getModalVideoCard(v)
+      getModalVideoCard(v),
     );
 
     // Saving unselected videos
     if (video_elements.length && !VIDEOS_LIST_CHUNK.videos.unselected.length) {
       VIDEOS_LIST_CHUNK.videos.unselected = video_elements.filter(
-        (html_v) => !html_v.classList.contains("selected")
+        (html_v) => !html_v.classList.contains("selected"),
       );
     }
     VIDEOS_LIST_CHUNK.videos.chunk = chunk(
@@ -93,7 +98,7 @@
         ...VIDEOS_LIST_CHUNK.videos.unselected,
         ...VIDEOS_LIST_CHUNK.videos.selected,
       ],
-      VIDEOS_LIST_CHUNK.size
+      VIDEOS_LIST_CHUNK.size,
     );
     pages_info.innerText = `${VIDEOS_LIST_CHUNK.page_index + 1}/${
       VIDEOS_LIST_CHUNK.videos.chunk.length
@@ -102,13 +107,13 @@
       "title",
       `${VIDEOS_LIST_CHUNK.page_index + 1}/${
         VIDEOS_LIST_CHUNK.videos.chunk.length
-      }`
+      }`,
     );
     if (VIDEOS_LIST_CHUNK.videos.chunk.length > 1) {
       modal_video_list.classList.add("show");
       modal_video_list
         .querySelector(".next_content")
-        .classList.remove("disable");
+        .classList.remove("disabled");
       show_paginate_videos();
     } else {
       show_paginate_videos(false);
@@ -125,15 +130,14 @@
     e.stopPropagation();
     VIDEOS_LIST_CHUNK.page_index -= VIDEOS_LIST_CHUNK.page_index > 0 ? 1 : 0;
     let nbr_pages = VIDEOS_LIST_CHUNK.videos.chunk.length - 1;
-    if (VIDEOS_LIST_CHUNK.page_index === 0)
-      prev.setAttribute("class", "previous_content disable");
-    next.classList.remove("disable");
+    if (VIDEOS_LIST_CHUNK.page_index === 0) prev.classList.add("disabled");
+    next.classList.remove("disabled");
     pages_info.innerText = `${VIDEOS_LIST_CHUNK.page_index + 1}/${
       nbr_pages + 1
     }`;
     pages_info.setAttribute(
       "title",
-      `${VIDEOS_LIST_CHUNK.page_index + 1}/${nbr_pages + 1}`
+      `${VIDEOS_LIST_CHUNK.page_index + 1}/${nbr_pages + 1}`,
     );
     show_paginate_videos();
   });
@@ -144,30 +148,28 @@
     VIDEOS_LIST_CHUNK.page_index +=
       VIDEOS_LIST_CHUNK.page_index < nbr_pages ? 1 : 0;
     if (VIDEOS_LIST_CHUNK.page_index === nbr_pages)
-      next.setAttribute("class", "next_content disable");
+      next.classList.add("disabled");
 
-    prev.classList.remove("disable");
+    prev.classList.remove("disabled");
     pages_info.innerText = `${VIDEOS_LIST_CHUNK.page_index + 1}/${
       nbr_pages + 1
     }`;
     pages_info.setAttribute(
       "title",
-      `${VIDEOS_LIST_CHUNK.page_index + 1}/${nbr_pages + 1}`
+      `${VIDEOS_LIST_CHUNK.page_index + 1}/${nbr_pages + 1}`,
     );
     show_paginate_videos();
   });
 
   // Search categery
-  let searchCatInput = document.querySelector(
-    "#my_videos_filter #searchcategories"
-  );
+  let searchCatInput = document.getElementById("searchcategories");
   let searchCatHandler = (s) => {
     let cats = document.querySelectorAll(
-      ".categories_list .cat_title:not(.hidden)"
+      ".categories_list .cat_title:not(.hidden)",
     );
     if (s.length >= 3) {
       cats.forEach((cat) => {
-        if (!cat.getAttribute("title").trim().toLowerCase().includes(s))
+        if (!cat.innerHTML.trim().toLowerCase().includes(s))
           cat.parentNode.classList.add("hidden");
         else cat.parentNode.classList.remove("hidden");
       });
@@ -185,15 +187,15 @@
   // Update text 'Number video found' on filtering
   let manageNumberVideoFoundText = (v_len) => {
     let text = v_len > 1 ? gettext("videos found") : gettext("video found");
-    let h2 = document.querySelector(".jumbotron h2");
+    let h2 = document.querySelector(".pod-mainContent h2");
     h2.textContent = `${v_len} ${text}`;
     if (!v_len) {
       text = gettext("Sorry, no video found");
-      getVideosFilteredContainer().innerHTML = `<p class="alert-warning">${text}</p>`;
+      getVideosFilteredContainer().innerHTML = `<p class="alert alert-warning" role="alert">${text}</p>`;
     } else {
       // delete warning text videos found
       let warning = document.querySelector(
-        "#videos_list.filtered .alert-warning"
+        "#videos_list.filtered .alert-warning",
       );
       if (warning) warning.parentNode.removeChild(warning);
     }
@@ -207,7 +209,7 @@
         c_p.classList.remove("active");
       });
     let curr_slug = html_el.querySelector(".cat_title").dataset.slug;
-    let curr_id = html_el.querySelector("#remove_category_icon").dataset.del;
+    let curr_id = html_el.querySelector(".remove_category").dataset.del;
     html_el.classList.toggle("active");
     getVideosFilteredContainer().innerHTML = "";
     if (CURR_FILTER.slug === curr_slug && CURR_FILTER.id == curr_id) {
@@ -216,14 +218,13 @@
       CURR_FILTER.id = null;
       getVideosFilteredContainer().classList.add("hidden");
       if (videos_list) {
-        videos_list.setAttribute("class", "row infinite-container");
-        let more_btn = videos_list.parentNode.querySelector(
-          ".infinite-more-link"
+        videos_list.setAttribute(
+          "class",
+          "pod-infinite-container infinite-container",
         );
-        if (more_btn) more_btn.setAttribute("class", "infinite-more-link");
       }
-    } // filter
-    else {
+    } else {
+      // filter
       html_el.classList.add("active");
       let { id, slug } = findCategory(curr_slug, curr_id);
       CURR_FILTER.id = id;
@@ -232,12 +233,10 @@
       getVideosFilteredContainer().classList.remove("hidden");
 
       if (videos_list) {
-        videos_list.setAttribute("class", "row infinite-container hidden");
-        let more_btn = videos_list.parentNode.querySelector(
-          ".infinite-more-link"
+        videos_list.setAttribute(
+          "class",
+          "pod-infinite-container infinite-container hidden",
         );
-        if (more_btn)
-          more_btn.setAttribute("class", "infinite-more-link hidden");
       }
     }
   };
@@ -245,7 +244,7 @@
   // Create filtered videos container (HtmlELement)
   let getVideosFilteredContainer = () => {
     let videos_list_filtered = document.querySelector(
-      ".jumbotron .filtered.infinite-container"
+      ".pod-mainContent .filtered.infinite-container",
     );
     if (videos_list_filtered) {
       return videos_list_filtered;
@@ -253,10 +252,12 @@
     videos_list_filtered = document.createElement("div");
     videos_list_filtered.setAttribute(
       "class",
-      "filtered infinite-container row"
+      "filtered infinite-container pod-infinite-container",
     );
     videos_list_filtered.setAttribute("id", "videos_list");
-    document.querySelector(".jumbotron").appendChild(videos_list_filtered);
+    document
+      .querySelector(".pod-mainContent .pod-first-content")
+      .appendChild(videos_list_filtered);
     return videos_list_filtered;
   };
   // Update videos Filtered in filtered container after editing category
@@ -268,7 +269,7 @@
       CURR_CATEGORY.id === CURR_FILTER.id
     ) {
       let actual_videos = VIDEOS_LIST_CHUNK.videos.selected.map(
-        (v_html) => v_html.dataset.slug
+        (v_html) => v_html.dataset.slug,
       );
       let old_videos = getSavedData(CURR_FILTER.id).videos.map((v) => v.slug);
       let rm = old_videos.filter((v) => !actual_videos.includes(v));
@@ -281,8 +282,8 @@
         if (rm[i]) {
           container_filtered.removeChild(
             container_filtered.querySelector(
-              `.infinite-item[data-slug="${rm[i]}"`
-            )
+              `.infinite-item[data-slug="${rm[i]}"`,
+            ),
           );
         }
 
@@ -290,8 +291,8 @@
         if (added[i]) {
           container_filtered.appendChild(
             getVideoElement(
-              category_data.videos.find((v) => v.slug === added[i])
-            )
+              category_data.videos.find((v) => v.slug === added[i]),
+            ),
           );
         }
       }
@@ -302,46 +303,21 @@
   // Add click event to manage filter video on click category
   let manageFilterVideos = (c) => {
     c.addEventListener("click", (e) => {
+      e.preventDefault();
       e.stopPropagation();
-      loader.classList.add("show");
       let cat_filter_slug = c.dataset.slug.trim();
       let cat_filter_id = c.parentNode
-        .querySelector(".category_actions #remove_category_icon")
+        .querySelector(".category_actions .remove_category")
         .dataset.del.trim();
-      videos_list_filtered = getVideosFilteredContainer();
       manageCssActiveClass(c.parentNode); // manage active css class
-      let jsonData = getSavedData(cat_filter_id);
-      if (Object.keys(jsonData).length) {
-        let videos_nb =
-          !CURR_FILTER.slug && !CURR_FILTER.id
-            ? CATEGORIES_DATA[0]
-            : jsonData.videos.length;
-        manageNumberVideoFoundText(videos_nb); // update text 'video found'
-        loader.classList.remove("show");
-        if (CURR_FILTER.slug && CURR_FILTER.id)
-          jsonData.videos.forEach((v) => {
-            videos_list_filtered.appendChild(getVideoElement(v));
-          });
-      } else {
-        jsonData = fetchCategoryData(cat_filter_slug);
-        jsonData.then((data) => {
-          manageNumberVideoFoundText(data.videos.length); // update text 'video found'
-          if (CURR_FILTER.slug && CURR_FILTER.id)
-            data.videos.forEach((v) => {
-              videos_list_filtered.appendChild(getVideoElement(v));
-            });
-          // save data
-          saveCategoryData(data);
-          loader.classList.remove("show");
-        });
-      }
+      refreshVideosSearch();
     });
   };
 
   // remove all current selected videos in dialog
   let refreshDialog = () => {
     let videos = document.querySelectorAll(
-      ".category_modal_videos_list .selected"
+      ".category_modal_videos_list .selected",
     );
     videos.forEach((v) => {
       v.parentNode.removeChild(v);
@@ -384,7 +360,7 @@
         if (selected) {
           VIDEOS_LIST_CHUNK.videos.unselected =
             VIDEOS_LIST_CHUNK.videos.unselected.filter(
-              (v) => !v.classList.contains("selected")
+              (v) => !v.classList.contains("selected"),
             );
           VIDEOS_LIST_CHUNK.videos.selected = [
             ...VIDEOS_LIST_CHUNK.videos.selected,
@@ -393,7 +369,7 @@
         } else {
           VIDEOS_LIST_CHUNK.videos.selected =
             VIDEOS_LIST_CHUNK.videos.selected.filter((v) =>
-              v.classList.contains("selected")
+              v.classList.contains("selected"),
             );
           VIDEOS_LIST_CHUNK.videos.unselected = [
             ...VIDEOS_LIST_CHUNK.videos.unselected,
@@ -436,62 +412,47 @@
     let videoContent_Text = gettext("Video content.");
     let audioContent_Text = gettext("Audio content.");
     if (is_video) {
-      return (
-        '<span title="' +
-        videoContent_Text +
-        '"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-film align-bottom"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg></span>'
-      );
+      return '<span title="' + videoContent_Text + '">';
     }
-    return (
-      '<span title="' +
-      audioContent_Text +
-      '"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-radio"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg></span>'
-    );
+    return '<span title="' + audioContent_Text + '">';
   };
 
   // Create category html element <li></li>
   let getCategoryLi = (title, slug, id) => {
-    let spanEdit = document.createElement("span");
-    spanEdit.setAttribute("title", gettext("Edit the category"));
-    spanEdit.setAttribute("data-toggle", "modal");
-    spanEdit.setAttribute("data-target", "#manageCategoryModal");
-    spanEdit.setAttribute("data-slug", slug);
-    spanEdit.setAttribute("data-title", title);
-    spanEdit.setAttribute("class", "edit_category");
-    spanEdit.setAttribute("id", "edit_category");
-    spanEdit.innerHTML = `
-      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="edit" class="svg-inline--fa fa-edit fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"></path></svg>
-    `;
-    editHandler(spanEdit); // append edit click event
+    let btnEdit = document.createElement("button");
+    btnEdit.setAttribute("title", gettext("Edit the category"));
+    btnEdit.setAttribute("data-bs-toggle", "modal");
+    btnEdit.setAttribute("data-bs-target", "#manageCategoryModal");
+    btnEdit.setAttribute("data-slug", slug);
+    btnEdit.setAttribute("data-title", title);
+    btnEdit.setAttribute("class", "btn btn-link edit_category");
+    btnEdit.innerHTML = `<i class="bi bi-pencil-square"></i>`;
+    editHandler(btnEdit); // append edit click event
 
-    let spanDelete = document.createElement("span");
-    spanDelete.setAttribute("title", gettext("Delete the category"));
-    spanDelete.setAttribute("data-toggle", "modal");
-    spanDelete.setAttribute("data-target", "#deleteCategoryModal");
-    spanDelete.setAttribute("data-del", id);
-    spanDelete.setAttribute("data-slug", slug);
-    spanDelete.setAttribute("data-title", title);
-    spanDelete.setAttribute("class", "remove_category");
-    spanDelete.setAttribute("id", "remove_category_icon");
-    spanDelete.innerHTML = `
-      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash-alt" class="svg-inline--fa fa-trash-alt fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path></svg>
-    `;
-    deleteHandler(spanDelete); // append detele click event
+    let btnDelete = document.createElement("button");
+    btnDelete.setAttribute("title", gettext("Delete the category"));
+    btnDelete.setAttribute("data-bs-toggle", "modal");
+    btnDelete.setAttribute("data-bs-target", "#deleteCategoryModal");
+    btnDelete.setAttribute("data-del", id);
+    btnDelete.setAttribute("data-slug", slug);
+    btnDelete.setAttribute("data-title", title);
+    btnDelete.setAttribute("class", "btn btn-link remove_category");
+    btnDelete.innerHTML = `<i class="bi bi-trash"></i>`;
+    deleteHandler(btnDelete); // append delete click event
 
     let li = document.createElement("li");
     li.setAttribute("class", "categories_list_item");
     li.innerHTML = `
       <div class="category_actions"></div>`;
 
-    let catTitleHtml = document.createElement("span");
-    catTitleHtml.setAttribute("class", "cat_title");
-    catTitleHtml.setAttribute("title", title);
+    let catTitleHtml = document.createElement("button");
+    catTitleHtml.setAttribute("class", "btn btn-link cat_title");
     catTitleHtml.setAttribute("data-slug", slug);
     catTitleHtml.innerText = title;
     manageFilterVideos(catTitleHtml); // append filter click event
     li.prepend(catTitleHtml);
-    li.querySelector(".category_actions").appendChild(spanEdit);
-    li.querySelector(".category_actions").appendChild(spanDelete);
+    li.querySelector(".category_actions").appendChild(btnEdit);
+    li.querySelector(".category_actions").appendChild(btnDelete);
     return li;
   };
 
@@ -529,7 +490,7 @@
       let span = ``;
       let title = gettext("This content is password protected.");
       if (video.has_password) {
-        span = `<span title="${title}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock align-bottom"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>`;
+        span = `<span title="${title}"><i class="bi bi-lock" aria-hidden="true"></i></span>`;
       }
       return span;
     };
@@ -537,7 +498,7 @@
       let span = ``;
       let title = gettext("This content is chaptered.");
       if (video.has_chapter) {
-        span = `<span title="${title}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list align-bottom"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></span>`;
+        span = `<span title="${title}"><i class="bi bi-card-list" aria-hidden="true"></i></span>`;
       }
       return span;
     };
@@ -546,7 +507,7 @@
       let title = gettext("This content is in draft.");
       if (video.is_draft) {
         span = `<span title="${title}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle align-bottom"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></span>`;
+        <i class="bi bi-incognito"></i></span>`;
       }
       return span;
     };
@@ -555,10 +516,10 @@
       let title = gettext("Video content.");
       if (video.is_video) {
         span = `<span title="${title}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-film align-bottom"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg></span>`;
+        <i class="bi bi-film" aria-hidden="true"></i></span>`;
       } else {
         title = gettext("Audio content.");
-        span = `<span title="${title}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-radio"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg></i></span>`;
+        span = `<span title="${title}"><i class="bi bi-soundwave" aria-hidden="true"></i></span>`;
       }
       return span;
     };
@@ -567,16 +528,13 @@
     let chapter_text = gettext("Chapter the video");
     let delete_text = gettext("Delete the video");
     let infinite_item = document.createElement("div");
-    infinite_item.setAttribute(
-      "class",
-      "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group"
-    );
-    infinite_item.setAttribute("style", "min-width: 12rem; min-height: 11rem;");
+    infinite_item.setAttribute("class", "infinite-item card-group");
+    // infinite_item.setAttribute("style", "min-width: 12rem; min-height: 11rem;");
     infinite_item.setAttribute("data-slug", video.slug);
     let card = document.createElement("div");
     card.setAttribute(
       "class",
-      "card mb-4 box-shadow border-secondary video-card"
+      "card box-shadow pod-card--video video-card", // "card mb-4 box-shadow border-secondary video-card"
     );
     card.innerHTML = `
       <div class="card-header">
@@ -592,38 +550,36 @@
       </div>
       <div class="card-thumbnail">
         <a class="link-center-pod" href="${VIDEO_URL}${
-      video.slug
-    }" title="${video.title.charAt(0).toUpperCase()}${video.title.slice(1)}">
+          video.slug
+        }" title="${video.title.charAt(0).toUpperCase()}${video.title.slice(
+          1,
+        )}">
           ${video.thumbnail}
         </a>
       </div>
       <div class="card-body px-3 py-2">
         <footer class="card-footer card-footer-pod p-0 m-0">
           <a href="${EDIT_URL}${
-      video.slug
-    }" title="${edit_text}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit align-bottom"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
-          </a>
+            video.slug
+          }" title="${edit_text}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1">
+    <i class="bi bi-pencil-square" aria-hidden="true"></i></a>
           <a href="${COMPLETION_URL}${
-      video.slug
-    }" title="${completion_text}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text align-bottom"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          </a>
+            video.slug
+          }" title="${completion_text}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1">
+    <i class="bi bi-file-text" aria-hidden="true"></i></a>
           <a href="${CHAPTER_URL}${
-      video.slug
-    }" title="${chapter_text}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list align-bottom"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg>
-          </a>
+            video.slug
+          }" title="${chapter_text}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1">
+    <i class="bi bi-card-list" aria-hidden="true"></i></a>
           <a href="${DELETE_URL}${
-      video.slug
-    }" title="${delete_text}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 align-bottom"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-          </a>
+            video.slug
+          }" title="${delete_text}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1">
+    <i class="bi bi-trash" aria-hidden="true"></i></a>
         </footer>
         <span class="small video-title">
           <a href="${VIDEO_URL}${video.slug}">${video.title
-      .charAt(0)
-      .toUpperCase()}${video.title.slice(1)}</a>
+            .charAt(0)
+            .toUpperCase()}${video.title.slice(1)}</a>
         </span>
       </div>
     `;
@@ -633,18 +589,22 @@
 
   // Create alert message
   let showAlertMessage = (message, type = true, delay = 4000) => {
-    let success = gettext("Success..");
-    let error = gettext("Error..");
+    let success = gettext("Success!");
+    let error = gettext("Error…");
     let title = type ? success : error;
-    let class_suffix = type ? "success" : "error";
+    let class_suffix = type ? "success" : "danger";
     let icon =
       type === "success"
-        ? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
+        ? `<i class="bi bi-check2-circle"></i>`
         : type === "error"
-        ? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`
-        : `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+        ? `<i class="bi bi-exclamation-triangle"></i>`
+        : `<i class="bi bi-info-circle"></i>`;
     let alert_message = document.createElement("div");
-    alert_message.setAttribute("class", `category_alert alert_${class_suffix}`);
+    alert_message.setAttribute(
+      "class",
+      `category_alert alert alert-${class_suffix}`,
+    );
+    alert_message.setAttribute("role", `alert`);
     alert_message.innerHTML = `<div class="alert_content"><span class="alert_icon">${icon}</span><span class="alert_title">${title}</span><span class="alert_text">${message}</span>`;
     document.body.appendChild(alert_message);
     window.setTimeout(() => alert_message.classList.add("show"), 1000);
@@ -657,11 +617,12 @@
   // Handler to edit category, c_e=current category to edit
   let editHandler = (c_e) => {
     c_e.addEventListener("click", (e) => {
+      e.preventDefault();
       loader.classList.add("show");
       cat_edit_title = c_e.dataset.title.trim();
       cat_edit_slug = c_e.dataset.slug.trim();
       cat_edit_id = c_e.parentNode
-        .querySelector("#remove_category_icon")
+        .querySelector(".remove_category")
         .dataset.del.trim();
       cat_input.value = cat_edit_title;
       modal_title.innerText = c_e.getAttribute("title").trim();
@@ -704,7 +665,7 @@
     let selectClass = selected ? "selected" : "";
     v_wrapper.setAttribute(
       "class",
-      "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group " + selectClass
+      "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group " + selectClass,
     );
     v_wrapper.innerHTML = videoCard;
     return v_wrapper;
@@ -712,63 +673,37 @@
   // Append video card in category modal
   let appendVideoCard = (v) => {
     let modalListVideo = document.querySelector(
-      "#manageCategoryModal .category_modal_videos_list"
+      "#manageCategoryModal .category_modal_videos_list",
     );
     modalListVideo.insertBefore(v, modalListVideo.querySelector(".paginator"));
   };
 
   // Add onclick event to edit a category
   let cats_edit = document.querySelectorAll(
-    "#my_videos_filter .categories_list_item #edit_category"
+    ".categories_list_item .edit_category",
   );
   cats_edit.forEach((c_e) => {
     editHandler(c_e);
-  });
-
-  // listener on close modal btn
-  let closeBtn = document.querySelector(".modal-footer #cancelDialog");
-  closeBtn.addEventListener("click", (e) => {
-    window.setTimeout(function () {
-      refreshDialog();
-    }, 50);
-  });
-  let closeCrossBtn =
-    document.querySelector("#manageCategoryModal .modal-header .close") ||
-    document.querySelector("#manageCategoryModal .modal-header button");
-  closeCrossBtn.addEventListener("click", (e) => {
-    if (
-      e.target.getAttribute("class") === "close" ||
-      e.target.parentNode.classList.contains("close")
-    )
-      window.setTimeout(function () {
-        refreshDialog();
-      }, 50);
-  });
-  let modalContainer = document.querySelector("#manageCategoryModal");
-  modalContainer.addEventListener("mousedown", (e) => {
-    if (e.target.getAttribute("id") === "manageCategoryModal")
-      window.setTimeout(function () {
-        refreshDialog();
-      }, 50);
   });
 
   // Handler to delete category, c_d=current category to delete
   // Temporarily save the category to delete
   let deleteHandler = (c_d) => {
     c_d.addEventListener("click", (e) => {
+      e.preventDefault();
       // Show confirm modal => manage by boostrap
       CAT_TO_DELETE.html = c_d.parentNode.parentNode;
       CAT_TO_DELETE.id = c_d.dataset.del;
       CAT_TO_DELETE.slug = c_d.dataset.slug;
       document.querySelector(
-        "#deleteCategoryModal .modal-body .category_title"
+        "#deleteCategoryModal .modal-body .category_title",
       ).textContent = c_d.dataset.title;
     });
   };
 
   // Add onclick event to delete a category
   let cats_del = document.querySelectorAll(
-    "#my_videos_filter .categories_list_item #remove_category_icon"
+    ".categories_list_item .remove_category",
   );
   cats_del.forEach((c_d) => {
     deleteHandler(c_d);
@@ -782,7 +717,7 @@
       // Delete category
       let cat = findCategory(
         (slug = CAT_TO_DELETE.slug),
-        (id = CAT_TO_DELETE.id)
+        (id = CAT_TO_DELETE.id),
       );
       if (Object.keys(cat).length) {
         fetch(`${BASE_URL}delete/${cat.id}/`, {
@@ -792,6 +727,19 @@
           response.json().then((data) => {
             showAlertMessage(msg_deleted);
             deleteFromSavedData(cat.slug); // delete from local save
+
+            // TODO : Ici il faudrait masquer la recherche si c'est la dernière cat supprimée, et l'afficher sinon.
+
+            // Remove eventual alert message
+            const cat_modal_alert = document.querySelector(
+              "#manageCategoryModal .modal-body .alert-warning",
+            );
+            if (
+              typeof cat_modal_alert != "undefined" &&
+              cat_modal_alert != null
+            ) {
+              cat_modal_alert.remove();
+            }
             data.videos.forEach((v) => {
               // append all the videos into chunk videos unselected
               VIDEOS_LIST_CHUNK.videos.unselected = [
@@ -800,7 +748,7 @@
               ];
             });
             document
-              .querySelector("#my_videos_filter .categories_list")
+              .querySelector(".categories_list")
               .removeChild(CAT_TO_DELETE.html);
             let filtered_container = getVideosFilteredContainer();
             if (
@@ -810,7 +758,7 @@
             ) {
               filtered_container.parentNode.removeChild(filtered_container);
               let my_videos_container = document.querySelector(
-                ".infinite-container.hidden"
+                ".infinite-container.hidden",
               );
               if (my_videos_container)
                 my_videos_container.classList.remove("hidden");
@@ -850,7 +798,7 @@
 
     //let videos = Array.from(document.querySelectorAll(".category_modal_videos_list .selected")).map(v_el => v_el.dataset.slug.trim());
     const videos = VIDEOS_LIST_CHUNK.videos.selected.map(
-      (html_v) => html_v.dataset.slug
+      (html_v) => html_v.dataset.slug,
     );
     let postData = {
       title: cat_input.value.trim(),
@@ -861,6 +809,7 @@
       loader.classList.remove("show");
       return;
     }
+
     if (Object.keys(CURR_CATEGORY).length > 0 && DOMCurrentEditCat) {
       // Editing mode
       // Update new data, server side
@@ -874,7 +823,7 @@
             data.title;
           DOMCurrentEditCat.querySelector(".cat_title").setAttribute(
             "title",
-            data.title
+            data.title,
           );
           DOMCurrentEditCat.querySelectorAll("span").forEach((sp) => {
             sp.setAttribute("data-slug", data.slug);
@@ -892,24 +841,23 @@
           loader.classList.remove("show");
           showAlertMessage(msg_error, false, (delay = 30000));
         });
-    } // Adding mode
-    else {
+    } else {
+      // Adding mode
       postCategoryData(`${BASE_URL}add/`, postData)
         .then((data) => {
           let li = getCategoryLi(
             data.category.title,
             data.category.slug,
-            data.category.id
+            data.category.id,
           );
-          document
-            .querySelector("#my_videos_filter .categories_list")
-            .appendChild(li);
+          document.querySelector(".categories_list").appendChild(li);
           let msg_create = gettext("Category created successfully");
           showAlertMessage(msg_create);
           saveCategoryData(data.category); // saving cat localy to prevent more request to the server
           loader.classList.remove("show"); // hide loader
         })
         .catch((err) => {
+          //alert(err);
           showAlertMessage(msg_error_duplicate, false, (delay = 30000));
         });
       document.querySelector("#manageCategoryModal #cancelDialog").click();
@@ -918,10 +866,10 @@
   });
 
   // Add onclick event to add a new category
-  let add_cat = document.querySelector("#my_videos_filter #add_category_btn");
+  let add_cat = document.querySelector("#add_category_btn");
   add_cat.addEventListener("click", (e) => {
     paginate([]);
-    modal_title.innerText = add_cat.getAttribute("title").trim();
+    modal_title.innerText = gettext("Add new category");
     cat_input.value = "";
     // Change the Save button text to 'create category'
     saveCatBtn.textContent = gettext("Create category");
@@ -933,9 +881,7 @@
   });
 
   // Add click event on category in filter bar to filter videos in my_videos vue
-  let cats = document.querySelectorAll(
-    "#my_videos_filter .categories_list_item .cat_title"
-  );
+  let cats = document.querySelectorAll(".categories_list_item .cat_title");
   cats.forEach((c) => {
     manageFilterVideos(c);
   });

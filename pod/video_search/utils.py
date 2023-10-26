@@ -29,7 +29,7 @@ def index_es(video):
         try:
             data = video.get_json_to_index()
             if data != "{}":
-                if ES_VERSION == 7:
+                if ES_VERSION in [7, 8]:
                     res = es.index(index=ES_INDEX, id=video.id, body=data, refresh=True)
                 else:
                     res = es.index(
@@ -51,6 +51,7 @@ def index_es(video):
 
 
 def delete_es(video):
+    """Delete an Elasticsearch entry."""
     es = Elasticsearch(
         ES_URL,
         timeout=ES_TIMEOUT,
@@ -59,7 +60,7 @@ def delete_es(video):
     )
     if es.ping():
         try:
-            if ES_VERSION == 7:
+            if ES_VERSION in [7, 8]:
                 delete = es.delete(
                     index=ES_INDEX, id=video.id, refresh=True, ignore=[400, 404]
                 )
@@ -88,7 +89,7 @@ def create_index_es():
         max_retries=ES_MAX_RETRIES,
         retry_on_timeout=True,
     )
-    if ES_VERSION == 7:
+    if ES_VERSION in [7, 8]:
         template_file = "pod/video_search/search_template7.json"
     else:
         template_file = "pod/video_search/search_template.json"
@@ -101,13 +102,13 @@ def create_index_es():
     except TransportError as e:
         # (400, u'IndexAlreadyExistsException[[pod] already exists]')
         if e.status_code == 400:
-            logger.error("Pod index already exists: %s" % e.error)
-        else:
-            logger.error(
-                "An error occured during"
-                " index creation: %s-%s : %s"
-                % (e.status_code, e.error, e.info["error"]["reason"])
-            )
+            logger.error("ES responded with ERROR 400. Does pod index already exists?")
+
+        logger.error(
+            "An error occured during"
+            " index creation: %s-%s : %s"
+            % (e.status_code, e.error, e.info["error"]["reason"])
+        )
 
 
 def delete_index_es():

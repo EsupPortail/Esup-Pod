@@ -1,40 +1,30 @@
 [
   {
+    "model": "sites.site",
     "pk": 1,
-    "model": "flatpages.flatpage",
     "fields": {
-        "content_fr": "<p>Bienvenue</p>\r\n",
-        "registration_required": false,
-        "content_en": "<p>Welcome</p>\r\n",
-        "title": "Home",
-        "url": "/",
-        "title_en": "Home",
-        "sites": [
-            1
-        ],
-        "content": "<p>Welcome</p>\r\n",
-        "enable_comments": false,
-        "title_fr": "Accueil"
+      "domain": "localhost:9090",
+      "name": "localhost:9090"
     }
   },
   {
     "pk": 1,
     "model": "main.configuration",
     "fields": {
-        "key" : "maintenance_mode",
+        "key": "maintenance_mode",
         "value": "0",
-        "description_fr" : "Activation du mode maintenance ou non",
-        "description_en" : "Activation of maintenance mode or not"
+        "description_fr": "Activation du mode maintenance ou non",
+        "description_en": "Activation of maintenance mode or not"
     }
   },
   {
     "pk": 2,
     "model": "main.configuration",
     "fields": {
-        "key" : "maintenance_text_short",
+        "key": "maintenance_text_short",
         "value": "Maintenance en cours",
-        "description_fr" : "Texte qui sera affiché sur la barre de navigation pendant la maintenance",
-        "description_en" : "Text that will be displayed on the navigation bar during maintenance"
+        "description_fr": "Texte qui sera affiché sur la barre de navigation pendant la maintenance",
+        "description_en": "Text that will be displayed on the navigation bar during maintenance"
     }
   },
   {
@@ -43,8 +33,8 @@
     "fields": {
         "key" : "maintenance_text_welcome",
         "value": "La plateforme Pod est actuellement en maintenance",
-        "description_fr" : "Texte qui sera affiché sur la page d'accueil pendant une maintenance",
-        "description_en" : "Text that will be displayed on the home page during maintenance"
+        "description_fr": "Texte qui sera affiché sur la page d’accueil pendant une maintenance",
+        "description_en": "Text that will be displayed on the home page during maintenance"
     }
   },
   {
@@ -53,28 +43,28 @@
     "fields": {
         "key" : "maintenance_text_disabled",
         "value": "Pod est en maintenance, cette fonctionnalité est donc désactivée pour le moment",
-        "description_fr" : "Texte qui sera affiché sur les pages qui sont désactivées pendant la maintenance",
-        "description_en" : "Text that will be displayed on pages that are disabled during maintenance"
+        "description_fr": "Texte qui sera affiché sur les pages qui sont désactivées pendant la maintenance",
+        "description_en": "Text that will be displayed on pages that are disabled during maintenance"
     }
   },
   {
     "pk": 5,
     "model": "main.configuration",
     "fields": {
-        "key" : "maintenance_sheduled",
+        "key": "maintenance_sheduled",
         "value": "0",
-        "description_fr" : "Affichage d'une maintenance programmée (1) ou non (0).",
-        "description_en" : "Display a sheduled maintenance message (1) or not (0)."
+        "description_fr": "Affichage d'une maintenance programmée (1) ou non (0).",
+        "description_en": "Display a sheduled maintenance message (1) or not (0)."
     }
   },
   {
     "pk": 6,
     "model": "main.configuration",
     "fields": {
-        "key" : "maintenance_text_sheduled",
+        "key": "maintenance_text_sheduled",
         "value": "Pod sera en maintenance <strong>le _/_/_</strong>. Évitez tout transfert de contenu à cette date.",
-        "description_fr" : "Texte annoncant une maintenance.",
-        "description_en" : "Text announcing a sheduled maintenance."
+        "description_fr": "Texte annoncant une maintenance.",
+        "description_en": "Text announcing a sheduled maintenance."
     }
   }
 ]

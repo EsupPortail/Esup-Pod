@@ -1,3 +1,7 @@
+/**
+ * Esup-Pod video notes styles
+ */
+
 #video_notes_form {
   padding: 0 2px;
 }
@@ -13,35 +17,42 @@
 
 #id_notes small {
   font-size: 9px;
+  display: inline-block;
+  margin-top: 0;
   font-weight: bold;
 }
 
-.bigtakenote #id_notes small {
-  font-size: 11px;
-}
-
-#id_notes .form-group {
-  margin: 0;
-}
-
-#id_notes p.note.form, #id_notes div.comment.form {
-  margin: auto;
-}
-
+/*
 .bigtakenote #id_notes {
   overflow: scroll;
   height: 600px;
 }
 
-.mgtNote div.dropdown-menu, .mgtComment div.dropdown-menu {
+.bigtakenote #id_notes small {
+  font-size: 11px;
+}
+*/
+
+#id_notes .form-group {
+  margin: 0;
+}
+
+#id_notes p.note.form,
+#id_notes div.comment.form {
+  margin: auto;
+}
+
+.mgtNote div.dropdown-menu,
+.mgtComment div.dropdown-menu {
   min-width: auto;
   padding: 5px;
 }
 
 span.timestamp {
   font-size: 11px;
-  align-self: center;
 }
+
+/*
 .bigtakenote span.timestamp {
   font-size: 14px;
 }
@@ -50,16 +61,15 @@ span.timestamp {
   display: none;
 }
 
-span.timestamp, .view_video_notes_form, .view_video_note_coms_form {
-  cursor: pointer;
-  padding: 3px 0 3px 0;
+.view_video_notes_form,
+.view_video_note_coms_form {
+  cursor: ns-resize;
+  /padding: 3px 0 3px 0;*
 }
+*/
 
-p.note, .note .comment {
-  font-size: 12px;
-}
-
-.bigtakenote p.note, .bigtakenote div.comment {
+.bigtakenote .note,
+.bigtakenote .comment {
   font-size: 14px;
 }
 
@@ -67,47 +77,99 @@ div.comment {
   flex: auto;
 }
 
-div.header {
+.pod-note-header {
+  cursor: pointer;
+  font-size: 12px;
+  flex-grow: 2;
+}
+
+.pod-note-date {
+  display: inline-block;
+  font-size: 10px;
+  max-width: 8rem;
+}
+
+.view_video_notes_form {
+  flex-grow: 2;
+}
+
+.view_video_note_coms_form {
+  width: 100%;
+}
+
+.pod-note-item,
+.pod-note-comment {
   display: flex;
+  gap: 0.3rem;
+  align-items: baseline;
 }
 
-div.header:hover{
-  background-color: #f2f2f266;
+.pod-note-comment {
+  flex-wrap: wrap;
 }
 
-div.header > form {
-  align-self: center;
-  width: 56%;
+.pod-note-item:hover,
+.pod-note-comment:hover {
+  background-color: var(--pod-background-neutre1-bloc);
 }
 
-div.header > span, div.header > form {
+/*
+.pod-note-item > span,
+.pod-note-item > form {
   flex: auto;
+  align-self: center;
 }
+*/
 
 span.user {
   font-size: 11px;
   font-weight: bold;
 }
 
+/*
 .bigtakenote span.user {
   font-size: 14px;
 }
+*/
 
-.notdisplayed p.note, .notdisplayed p.comment {
+.pod-note-truncated {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  font-size: 12px;
 }
 
-textarea#id_note, textarea#id_comment, select#id_status {
+.pod-note-truncated.pod-note-content {
+  display: inline-block;
+  vertical-align: bottom;
+  max-width: 8em;
+}
+
+.pod-note-content.pod-callout,
+.pod-comment-content.pod-callout {
+  white-space: pre-wrap;
+}
+
+.pod-note-header:hover,
+.pod-note-header:focus,
+.pod-note-header:hover > .pod-note-truncated,
+.pod-note-header:focus > .pod-note-truncated {
+  text-decoration: underline;
+}
+
+textarea#id_note,
+textarea#id_comment,
+select#id_status {
   font-size: 11px;
   height: auto;
   padding: 5px;
 }
 
+/*
 .bigtakenote textarea#id_note, .bigtakenote textarea#id_comment, .bigtakenote select#id_status {
   font-size: 14px;
-  }
+}
+*/
 
 #card-takenote > div.card-text {
   width: 100%;
@@ -117,58 +179,33 @@ textarea#id_note, textarea#id_comment, select#id_status {
   background-color: #fff5f5;
 }
 
+/*
 div.mgtNotes, div.mgtNote, div.mgtComment {
   align-self: center;
 }
-div.mgtNotes {
-  display:block;
-}
-div.mgtNotes form{
+*/
+
+div.mgtNotes form {
   display: inline-block;
-  text-align: center;
 }
 
+/*
 div.mgtNotes.dropleft > button,
 div.mgtNote.dropleft > button,
 div.mgtComment.dropleft > button {
   border: none;
 }
-
-#id_notes > div[class*="status-"] .header:before,
-.comments > div[class*="status-"] .header:before
-{
-  margin-right: 2px;
-  display: inline-block;
-}
-/* private */
-#id_notes > .status-0>.header:before,
-.comments > div.status-0>.header:before{
-  content:"\1F512";
-}
-/* shared with owner */
-#id_notes > .status-1>.header:before,
-.comments > div.status-1>.header:before {
-  content:"\1F91D";
-}
-/* public */
-#id_notes > .status-2>.header:before,
-.comments > div.status-2>.header:before {
-  content:"\1F30D";
-}
-
-form.view_video_notes_form.hidden, form.view_video_note_coms_form.hidden {
-  display: none;
-}
+*/
 
 .noNotes {
-  font-size: 13px;
+  font-size: 0.8rem;
   font-style: italic;
-  font-weight: bold;
   margin: 5px;
 }
 
-div.note, div.comment {
-  margin: 3px 0 3px 0;
+div.note,
+div.comment {
+  margin: 3px 0;
 }
 
 .user-comment {

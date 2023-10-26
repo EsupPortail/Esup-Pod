@@ -1,0 +1,21 @@
+{% load i18n %}
+<div class="input-group">
+  <label for="sort" class="input-group-text" aria-label="{% trans 'Sort' %}">{% trans 'Sort' %}</label>
+  {% if sort_direction == 'on' %}
+    <button id="sort_direction_label" class="btn btn-primary" title="{% trans 'Ascending sort' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">&#8599;</button>
+  {% else %}
+    <button id="sort_direction_label" class="btn btn-primary" title="{% trans 'Descending sort' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">&#8600;</button>
+  {% endif %}
+  <input id="sort_direction" type="checkbox" name="sort_direction" class="d-none" {% if sort_direction == 'on' %}checked{% endif %}>
+  <label for="sort_direction" class="visually-hidden">{% trans 'Sort Direction' %}</label>
+
+  <select id="sort" name="sort" class="form-select sort-select">
+    {% if video_rank %}
+      <option id="rank-option" value="rank" {% if sort_field == 'rank' %} selected {% endif %}>{% trans 'Rank' %}</option>
+    {% endif %}
+    <option value="title" {% if sort_field == 'title' %} selected {% endif %}>{% trans 'Title' %}</option>
+    <option value="date_added" {% if sort_field == 'date_added' %} selected {% endif %}>{% trans 'Date added' %}</option>
+    <option value="date_evt" {% if sort_field == 'date_evt' %} selected {% endif %}>{% trans 'Date of event' %}</option>
+    <option value="duration" {% if sort_field == 'duration' %} selected {% endif %}>{% trans 'Duration' %}</option>
+  </select>
+</div>

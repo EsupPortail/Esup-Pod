@@ -1,8 +1,10 @@
 """
 Django local settings for pod_project.
-Django version : 1.11.10.
+
+Django version: 3.2.
 """
 import os
+from django.utils.translation import gettext_lazy as _
 
 ##
 # flatpages
@@ -16,7 +18,7 @@ SITE_ID = 1
 # and should be set to a unique, unpredictable value.
 #
 # Django will not start if this is not set.
-# https://docs.djangoproject.com/en/1.11/ref/settings/#secret-key
+# https://docs.djangoproject.com/en/3.2/ref/settings/#secret-key
 #
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "A_CHANGER"
@@ -29,7 +31,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ##
 # DEBUG mode activation
 #
-# https://docs.djangoproject.com/en/1.11/ref/settings/#debug
+# https://docs.djangoproject.com/en/3.2/ref/settings/#debug
 #
 # SECURITY WARNING: MUST be set to False when deploying into production.
 DEBUG = True
@@ -38,14 +40,14 @@ DEBUG = True
 # A list of strings representing the host/domain names
 # that this Django site is allowed to serve.
 #
-# https://docs.djangoproject.com/en/1.11/ref/settings/#allowed-hosts
+# https://docs.djangoproject.com/en/3.2/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ["localhost"]
 
 ##
 # Session settings
 #
-# https://docs.djangoproject.com/en/1.11/ref/settings/#session-cookie-age
-# https://docs.djangoproject.com/en/1.11/ref/settings/#session-expire-at-browser-close
+# https://docs.djangoproject.com/en/3.2/ref/settings/#session-cookie-age
+# https://docs.djangoproject.com/en/3.2/ref/settings/#session-expire-at-browser-close
 #
 SESSION_COOKIE_AGE = 14400
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -57,20 +59,20 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # A tuple that lists people who get code error notifications
 #   when DEBUG=False and a view raises an exception.
 #
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-ADMINS
+# https://docs.djangoproject.com/en/3.2/ref/settings/#std:setting-ADMINS
 #
-ADMINS = (("Name", "adminmail@univ.fr"),)
+ADMINS = [("Name", "adminmail@univ.fr")]
 ##
 # A tuple that lists people who get other notifications
 #   email from contact_us / end of encoding / report video
 #
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-MANAGERS
-MANAGERS = ADMINS
+# https://docs.djangoproject.com/en/3.2/ref/settings/#std:setting-MANAGERS
+MANAGERS = []
 ##
 # A dictionary containing the settings for all databases
 # to be used with Django.
 #
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -81,14 +83,10 @@ DATABASES = {
 ##
 # Internationalization and localization.
 #
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
+# https://docs.djangoproject.com/en/3.2/topics/i18n/
 # https://github.com/django/django/blob/master/django/conf/global_settings.py
 LANGUAGE_CODE = "fr"
-LANGUAGES = (
-    ("fr", "Français"),
-    ("en", "English"),
-    ("nl", "Dutch (Netherlands)"),
-)
+LANGUAGES = (("fr", "Français"), ("en", "English"))
 
 ##
 # A string representing the time zone for this installation.
@@ -102,12 +100,11 @@ TIME_ZONE = "UTC"
 #   If None, the standard temporary directory for the operating system
 #   will be used.
 #
-# https://docs.djangoproject.com/en/1.11/ref/settings/#file-upload-temp-dir
+# https://docs.djangoproject.com/en/3.2/ref/settings/#file-upload-temp-dir
 #
 FILE_UPLOAD_TEMP_DIR = os.path.join(os.path.sep, "var", "tmp")
 # https://github.com/ouhouhsami/django-progressbarupload
 FILE_UPLOAD_HANDLERS = (
-    "progressbarupload.uploadhandler.ProgressBarUploadHandler",
     "django.core.files.uploadhandler.MemoryFileUploadHandler",
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 )
@@ -116,20 +113,19 @@ PROGRESSBARUPLOAD_INCLUDE_JQUERY = False
 ##
 # Static files (assets, CSS, JavaScript, fonts...)
 #
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
+# https://docs.djangoproject.com/en/3.2/howto/static-files/
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 ##
 # Dynamic files (user managed content: videos, subtitles, documents, etc...)
 #
-# https://docs.djangoproject.com/en/1.11/ref/settings/#media-url
-# https://docs.djangoproject.com/en/1.11/ref/settings/#media-root
+# https://docs.djangoproject.com/en/3.2/ref/settings/#media-url
+# https://docs.djangoproject.com/en/3.2/ref/settings/#media-root
 #
 # WARNING: this folder must have previously been created.
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
 ##
 # CKeditor settings
 #
@@ -180,6 +176,7 @@ CKEDITOR_CONFIGS = {
             {"name": "links", "items": ["Link", "Unlink", "Anchor"]},
             {"name": "tools", "items": ["Maximize"]},
         ],
+        "removePlugins": "exportpdf",
     },
 }
 
@@ -199,9 +196,9 @@ LOGIN_URL = "/authentication_login/"
 ##
 # eMail settings
 #
-# https://docs.djangoproject.com/en/1.11/ref/settings/#email-host
-# https://docs.djangoproject.com/en/1.11/ref/settings/#email-port
-# https://docs.djangoproject.com/en/1.11/ref/settings/#default-from-email
+# https://docs.djangoproject.com/en/3.2/ref/settings/#email-host
+# https://docs.djangoproject.com/en/3.2/ref/settings/#email-port
+# https://docs.djangoproject.com/en/3.2/ref/settings/#default-from-email
 #
 #   username: EMAIL_HOST_USER
 #   password: EMAIL_HOST_PASSWORD
@@ -210,7 +207,7 @@ EMAIL_HOST = "smtp.univ.fr"
 EMAIL_PORT = 25
 DEFAULT_FROM_EMAIL = "noreply@univ.fr"
 
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-SERVER_EMAIL
+# https://docs.djangoproject.com/en/3.2/ref/settings/#std:setting-SERVER_EMAIL
 SERVER_EMAIL = "noreply@univ.fr"
 
 ##
@@ -232,9 +229,10 @@ USE_PODFILE = False
 THIRD_PARTY_APPS = []
 
 ##
-# https://docs.djangoproject.com/fr/1.11/ref/clickjacking/
+# https://docs.djangoproject.com/en/3.2/ref/clickjacking/
+# Add @xframe_options_exempt on a view you want to authorize in frame
 #
-X_FRAME_OPTIONS = "EXEMPT"  # SAMEORIGIN, DENY OR EXEMPT
+X_FRAME_OPTIONS = "EXEMPT"  # SAMEORIGIN OR DENY
 
 ###
 # Enable LTI Provider
@@ -276,14 +274,10 @@ LTI_PROPERTY_USER_USERNAME = "ext_user_username"
 # https://sorl-thumbnail.readthedocs.io/en/latest/reference/settings.html
 THUMBNAIL_PRESERVE_FORMAT = True
 
-###
-# Choose a theme for your pod website
-# 'default' is the simpliest, bootstrap $enable_rounded is true
-# 'green' is with a dark green for primary color, $enable_rounded is false
-# 'dark' is black and red, without grey background, $enable_rounded is false
-
-# ie : USE_THEME = 'green'
-
+SHOW_EVENTS_ON_HOMEPAGE = False
+DEFAULT_EVENT_PATH = ""
+DEFAULT_EVENT_THUMBNAIL = "/img/default-event.svg"
+DEFAULT_EVENT_TYPE_ID = 1
 """
 ##
 # Main menu settings:
@@ -292,7 +286,7 @@ THUMBNAIL_PRESERVE_FORMAT = True
 MENUBAR_HIDE_INACTIVE_OWNERS = True
 # Show only staff users in “Owners” main menu list.
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
-# Hide de language selector
+# Hide the language selector
 HIDE_LANGUAGE_SELECTOR = False
 # Hide Users tab in navbar
 HIDE_USER_TAB = False
@@ -309,3 +303,62 @@ HIDE_DISCIPLINES = False
 # Hide types filter on sidebar
 HIDE_TYPES = False
 """
+
+VIDEO_RECENT_VIEWCOUNT = 180
+
+HONEYPOT_FIELD_NAME = "firstname"
+
+# PWA
+
+PWA_APP_NAME = "Pod"
+PWA_APP_DESCRIPTION = _(
+    "Pod is aimed at users of our institutions, by allowing the publication of "
+    "videos in the fields of research (promotion of platforms, etc.), training "
+    "(tutorials, distance training, student reports, etc.), institutional life (video "
+    "of events), offering several days of content."
+)
+PWA_APP_THEME_COLOR = "#0A0302"
+PWA_APP_BACKGROUND_COLOR = "#ffffff"
+PWA_APP_DISPLAY = "standalone"
+PWA_APP_SCOPE = "/"
+PWA_APP_ORIENTATION = "any"
+PWA_APP_START_URL = "/"
+PWA_APP_STATUS_BAR_COLOR = "default"
+PWA_APP_ICONS = [
+    {
+        "src": f"/static/img/icon_x{size}.png",
+        "sizes": f"{size}x{size}",
+        "purpose": "any maskable",
+    }
+    for size in (1024, 512, 384, 192, 128, 96, 72, 48)
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        "src": f"/static/img/icon_x{size}.png",
+        "sizes": f"{size}x{size}",
+    }
+    for size in (1024, 512, 384, 192, 128, 96, 72, 48)
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        "src": "/static/img/splash-512.png",
+        "media": (
+            "(device-width: 320px) "
+            "and (device-height: 568px) "
+            "and (-webkit-device-pixel-ratio: 2)"
+        ),
+    }
+]
+PWA_APP_DIR = "ltr"
+PWA_APP_LANG = "fr-FR"
+PWA_APP_SCREENSHOTS = [
+    {"src": "/static/img/esup-pod.svg", "sizes": "750x1334", "type": "image/png"}
+]
+PWA_SERVICE_WORKER_PATH = os.path.join(
+    BASE_DIR,
+    "progressive_web_app",
+    "static",
+    "js",
+    "serviceworker.js",
+)
+PWA_APP_DEBUG_MODE = locals().get("DEBUG", False)

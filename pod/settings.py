@@ -1,10 +1,10 @@
 """
 Django global settings for pod_project.
 
-Django version : 1.11.16.
+Django version: 3.2.
 """
 import os
-import sys
+import importlib.util
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # will be update in pod/main/settings.py
@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "2.9.2"
+VERSION = "3.4.1"
 
 ##
 # Installed applications list
@@ -35,12 +35,17 @@ INSTALLED_APPS = [
     "tagging",
     "cas",
     "captcha",
-    "progressbarupload",
     "rest_framework",
     "rest_framework.authtoken",
     "django_filters",
+    "django_select2",
+    "shibboleth",
+    "chunked_upload",
+    "mozilla_django_oidc",
+    "honeypot",
     "lti_provider",
-    "select2",
+    "pwa",
+    "webpush",
     # Pod Applications
     "pod.main",
     "django.contrib.admin",  # put it here for template override
@@ -55,11 +60,14 @@ INSTALLED_APPS = [
     "pod.live",
     "pod.recorder",
     "pod.lti",
-    "pod.custom",
-    "shibboleth",
-    "chunked_upload",
     "pod.bbb",
-    "mozilla_django_oidc",
+    "pod.meeting",
+    "pod.cut",
+    "pod.xapi",
+    "pod.video_encode_transcript",
+    "pod.import_video",
+    "pod.progressive_web_app",
+    "pod.custom",
 ]
 
 ##
@@ -71,8 +79,6 @@ MIDDLEWARE = [
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    # Django 3.1 starts to support SameSite middleware
-    "django_cookies_samesite.middleware.CookiesSameSite",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -110,7 +116,13 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 # Local contexts
                 "pod.main.context_processors.context_settings",
-                "pod.main.context_processors.context_navbar",
+                "pod.main.context_processors.context_footer",
+                "pod.video.context_processors.context_video_data",
+                "pod.video.context_processors.context_video_settings",
+                "pod.authentication.context_processors.context_authentication_settings",
+                "pod.recorder.context_processors.context_recorder_settings",
+                "pod.playlist.context_processors.context_settings",
+                "pod.import_video.context_processors.context_settings",
             ],
         },
     },
@@ -118,7 +130,7 @@ TEMPLATES = [
 
 ##
 # Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.{0}".format(validator)}
     for validator in [
@@ -131,10 +143,12 @@ AUTH_PASSWORD_VALIDATORS = [
 
 ##
 # Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
+# https://docs.djangoproject.com/en/3.2/topics/i18n/
 USE_I18N = True
 USE_L10N = True
 LOCALE_PATHS = (os.path.join(BASE_DIR, "pod", "locale"),)
+
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 ##
 # Time zone support is enabled (True) or not (False)
@@ -159,7 +173,7 @@ REST_FRAMEWORK = {
 
 
 ##
-# Logging configuration https://docs.djangoproject.com/fr/1.11/topics/logging/
+# Logging configuration https://docs.djangoproject.com/en/3.2/topics/logging/
 #
 LOG_DIRECTORY = os.path.join(BASE_DIR, "pod", "log")
 if not os.path.exists(LOG_DIRECTORY):
@@ -168,46 +182,207 @@ if not os.path.exists(LOG_DIRECTORY):
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "{asctime} {levelname} [{module}] {message}",
-            "style": "{",
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
         },
-        "simple": {
-            "format": "{asctime} {levelname} - {message}",
-            "style": "{",
+        "require_debug_true": {
+            "()": "django.utils.log.RequireDebugTrue",
+        },
+    },
+    "formatters": {
+        "general": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s - %(filename)s:%(lineno)s] %(message)s "
+            "(EXCEPTION: %(exc_info)s)",
+            "datefmt": "%d/%b/%Y %H:%M:%S",
+        },
+        "request": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s - %(filename)s:%(lineno)s] %(message)s "
+            "(STATUS: %(status_code)s; REQUEST: %(request)s; EXCEPTION: %(exc_info)s)",
+            "datefmt": "%d/%b/%Y %H:%M:%S",
+        },
+        "db": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s - %(filename)s:%(lineno)s] %(message)s "
+            "(DURATION: %(duration)s; SQL: %(sql)s; PARAMS: %(params)s; EXCEPTION: %(exc_info)s)",
+            "datefmt": "%d/%b/%Y %H:%M:%S",
         },
     },
     "handlers": {
-        "file": {
-            # 'level': 'DEBUG',
-            "class": "logging.FileHandler",
-            "filename": "pod/log/django.log",
+        "null": {
+            "class": "logging.NullHandler",
         },
         "console": {
+            "level": "DEBUG",
+            "filters": ["require_debug_true"],
             "class": "logging.StreamHandler",
-            "formatter": "verbose",
+            "formatter": "general",
         },
         "mail_admins": {
             "level": "ERROR",
+            "filters": ["require_debug_false"],
             "class": "django.utils.log.AdminEmailHandler",
+            "include_html": True,
+        },
+        "django": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "django.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
+        },
+        "security": {
+            "level": "WARNING",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "security.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
+        },
+        "db": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "db.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "db",
+        },
+        "request": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "request.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "request",
+        },
+        "celery": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "celery.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
+        },
+        "delayed_tasks": {
+            "level": "INFO",
+            # 'filters': ['require_debug_false'],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "delayed_tasks.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
+        },
+        "apps": {
+            "level": "WARNING",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "apps.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
+        },
+        "api": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(LOG_DIRECTORY, "api.log"),
+            "maxBytes": 16 * 1024 * 1024,  # 16 MB
+            "backupCount": 5,
+            "formatter": "general",
         },
     },
     "loggers": {
         "django": {
-            "handlers": ["file", "console", "mail_admins"],
-            "level": "WARNING",
-            "propagate": True,
+            "handlers": ["django"],
+            "level": "ERROR",
+            "propagate": False,
         },
-        "pod.*": {
-            "handlers": ["file", "console", "mail_admins"],
+        "django.request": {
+            "handlers": ["request", "mail_admins"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "django.security": {
+            "handlers": ["security", "mail_admins"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "django.db.backends": {
+            "handlers": ["db", "mail_admins"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "celery": {
+            "handlers": ["celery"],
+            "level": "ERROR",
+        },
+        "celery.task": {
+            "handlers": ["delayed_tasks"],
             "level": "INFO",
-            "propagate": True,
+        },
+        "apps": {
+            "handlers": ["apps"],
+            "level": "WARNING",
+        },
+        "common": {
+            "handlers": ["apps"],
+            "level": "WARNING",
+        },
+        "api": {
+            "handlers": ["api"],
+            "level": "ERROR",
+        },
+        "py.warnings": {
+            "handlers": ["console"],
+            "propagate": False,
+        },
+        "": {
+            "handlers": ["console"],
+            "level": "DEBUG",
         },
     },
 }
 
-MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr", "en", "nl")
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/3",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": "pod",
+    },
+    "select2": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    },
+}
+SESSION_ENGINE = "redis_sessions.session"
+SESSION_REDIS = {
+    "host": "127.0.0.1",
+    "port": 6379,
+    "db": 4,
+    "prefix": "session",
+    "socket_timeout": 1,
+    "retry_on_timeout": False,
+}
+
+# Tell select2 which cache configuration to use:
+SELECT2_CACHE_BACKEND = "select2"
+
+MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr", "en")
+
+# MIGRATION_MODULES = {
+#     'flatpages': 'pod.db_migrations'
+# }
 
 
 ##
@@ -231,43 +406,65 @@ for application in INSTALLED_APPS:
             for variable in dir(_temp.settings_local):
                 if variable == variable.upper():
                     locals()[variable] = getattr(_temp.settings_local, variable)
-##
-# AUTH CAS
-#
-if "USE_CAS" in globals() and eval("USE_CAS") is True:
-    AUTHENTICATION_BACKENDS = (
-        "pod.main.auth_backend.SiteBackend",
-        "cas.backends.CASBackend",
+
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "node_modules")]
+
+
+def update_settings(local_settings):
+    ##
+    # AUTH
+    #
+    if local_settings.get("USE_CAS", False):
+        local_settings["AUTHENTICATION_BACKENDS"] += ("cas.backends.CASBackend",)
+        local_settings["CAS_RESPONSE_CALLBACKS"] = (
+            "pod.authentication.populatedCASbackend.populateUser",
+            # function call to add some information to user login by CAS
+        )
+        local_settings["MIDDLEWARE"].append("cas.middleware.CASMiddleware")
+
+    if local_settings.get("USE_SHIB", False):
+        local_settings["AUTHENTICATION_BACKENDS"] += (
+            "pod.authentication.backends.ShibbBackend",
+        )
+        local_settings["MIDDLEWARE"].append(
+            "pod.authentication.shibmiddleware.ShibbMiddleware"
+        )
+    if local_settings.get("USE_OIDC", False):
+        local_settings["AUTHENTICATION_BACKENDS"] += (
+            "pod.authentication.backends.OIDCBackend",
+        )
+        local_settings["LOGIN_REDIRECT_URL"] = "/"
+    ##
+    # Authentication backend: add lti backend if use
+    #
+    if local_settings.get("LTI_ENABLED", False):
+        local_settings["AUTHENTICATION_BACKENDS"] += ("lti_provider.auth.LTIBackend",)
+
+    ##
+    # Opencast studio
+    if local_settings.get("USE_OPENCAST_STUDIO", False):
+        # add dir to opencast studio static files i.e: pod/custom/static/opencast/
+        local_settings["TEMPLATES"][0]["DIRS"].append(
+            os.path.join(BASE_DIR, "custom", "static", "opencast")
+        )
+
+    local_settings["AUTHENTICATION_BACKENDS"] = list(
+        dict.fromkeys(local_settings["AUTHENTICATION_BACKENDS"])
     )
-    CAS_RESPONSE_CALLBACKS = (
-        "pod.authentication.populatedCASbackend.populateUser",
-        # function call to add some information to user login by CAS
-    )
-    MIDDLEWARE.append("cas.middleware.CASMiddleware")
 
-if "USE_SHIB" in globals() and eval("USE_SHIB") is True:
-    AUTHENTICATION_BACKENDS += ("pod.authentication.backends.ShibbBackend",)
-    MIDDLEWARE.append("pod.authentication.shibmiddleware.ShibbMiddleware")
+    return local_settings
 
-if "USE_OIDC" in globals() and eval("USE_OIDC") is True:
-    AUTHENTICATION_BACKENDS += ("pod.authentication.backends.OIDCBackend",)
-    LOGIN_REDIRECT_URL = "/"
 
-##
-# Authentication backend : add lti backend if use
-#
-if "LTI_ENABLED" in globals() and eval("LTI_ENABLED") is True:
-    AUTHENTICATION_BACKENDS = list(AUTHENTICATION_BACKENDS)
-    AUTHENTICATION_BACKENDS.append("lti_provider.auth.LTIBackend")
-    AUTHENTICATION_BACKENDS = tuple(AUTHENTICATION_BACKENDS)
+the_update_settings = update_settings(locals())
+for variable in the_update_settings:
+    locals()[variable] = the_update_settings[variable]
 
-if "H5P_ENABLED" in globals() and eval("H5P_ENABLED") is True:
-    sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
-    INSTALLED_APPS.append("h5pp")
-    INSTALLED_APPS.append("pod.interactive")
+if locals()["DEBUG"] is True and importlib.util.find_spec("debug_toolbar") is not None:
+    INSTALLED_APPS.append("debug_toolbar")
+    MIDDLEWARE = [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    ] + MIDDLEWARE
+    DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": "pod.settings.show_toolbar"}
 
-##
-# Opencast studio
-if "USE_OPENCAST_STUDIO" in globals() and eval("USE_OPENCAST_STUDIO") is True:
-    # add dir to opencast studio static files i.e : pod/custom/static/opencast/
-    TEMPLATES[0]["DIRS"].append(os.path.join(BASE_DIR, "custom", "static", "opencast"))
+    def show_toolbar(request):
+        return True

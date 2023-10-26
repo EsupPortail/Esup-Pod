@@ -13,13 +13,13 @@ from pod.video.models import Type
 # Register your models here.
 
 RECORDER_ADDITIONAL_FIELDS = getattr(settings, "RECORDER_ADDITIONAL_FIELDS", ())
-TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
 
 
 class RecordingAdmin(admin.ModelAdmin):
     list_display = ("title", "user", "source_file", "date_added")
     list_display_links = ("title",)
     list_filter = ("type",)
+    autocomplete_fields = ["recorder", "user"]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "recorder":
@@ -40,6 +40,7 @@ class RecordingAdmin(admin.ModelAdmin):
 class RecordingFileTreatmentAdmin(admin.ModelAdmin):
     list_display = ("id", "file")
     actions = ["delete_source"]
+    autocomplete_fields = ["recorder"]
 
     def delete_source(self, request, queryset):
         for item in queryset:
@@ -48,7 +49,7 @@ class RecordingFileTreatmentAdmin(admin.ModelAdmin):
             item.delete()
 
     delete_source.short_description = _(
-        "Delete selected Recording file " "treatments + source files"
+        "Delete selected Recording file treatments + source files"
     )
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -64,6 +65,16 @@ class RecordingFileTreatmentAdmin(admin.ModelAdmin):
 
 
 class RecorderAdmin(admin.ModelAdmin):
+    search_fields = ["name"]
+    autocomplete_fields = [
+        "user",
+        "additional_users",
+        "type",
+        "discipline",
+        "channel",
+        "theme",
+    ]
+
     def Description(self, obj):
         return mark_safe("%s" % obj.description)
 
@@ -105,7 +116,10 @@ class RecorderAdmin(admin.ModelAdmin):
         for f in available_fields:
             if f not in RECORDER_ADDITIONAL_FIELDS:
                 exclude += (f,)
-        if not TRANSCRIPT and "transcript" not in exclude:
+        if (
+            not getattr(settings, "USE_TRANSCRIPTION", False)
+            and "transcript" not in exclude
+        ):
             exclude += ("transcript",)
         if not request.user.is_superuser:
             exclude += ("sites",)
@@ -135,6 +149,7 @@ class RecorderAdmin(admin.ModelAdmin):
 
 class RecordingFileAdmin(admin.ModelAdmin):
     list_display = ("id", "file", "recorder")
+    autocomplete_fields = ["recorder"]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

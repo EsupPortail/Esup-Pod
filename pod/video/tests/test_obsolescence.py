@@ -1,3 +1,4 @@
+"""Test the Obsolete videos."""
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -14,19 +15,15 @@ DEFAULT_YEAR_DATE_DELETE = getattr(settings, "DEFAULT_YEAR_DATE_DELETE", 2)
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 
 
-"""
-    test the Obsolete video
-"""
-
-
 class ObsolescenceTestCase(TestCase):
+    """Test the Obsolete videos."""
 
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
-
+        """Set up."""
         site = Site.objects.get(id=1)
         user = User.objects.create(
             username="pod", password="pod1234pod", email="pod@univ.fr"
@@ -70,31 +67,40 @@ class ObsolescenceTestCase(TestCase):
             type=Type.objects.get(id=1),
         )
 
-        # pour les 3 vidéos suivante, la date n'est pas changée à la création
+        # pour les 3 vidéos suivantes, la date n'est pas changée à la création
         # car l'affiliation du prop n'est pas dans ACCOMMODATION_YEARS
         Video.objects.create(
             title="Video1_60",
             owner=user1,
             video="test.mp4",
             type=Type.objects.get(id=1),
-            date_delete=date.today() + timedelta(days=60),
         )
         Video.objects.create(
             title="Video2_30",
             owner=user2,
             video="test.mp4",
             type=Type.objects.get(id=1),
-            date_delete=date.today() + timedelta(days=30),
         )
         Video.objects.create(
             title="Video3_7",
             owner=user3,
             video="test.mp4",
             type=Type.objects.get(id=1),
-            date_delete=date.today() + timedelta(days=7),
         )
 
-        # on modifie la date après la création pour etre sur qu'elle soit bonne
+        video60 = Video.objects.get(pk=3)
+        video60.date_delete = date.today() + timedelta(days=60)
+        video60.save()
+
+        video30 = Video.objects.get(pk=4)
+        video30.date_delete = date.today() + timedelta(days=30)
+        video30.save()
+
+        video7 = Video.objects.get(pk=5)
+        video7.date_delete = date.today() + timedelta(days=7)
+        video7.save()
+
+        # On modifie la date après la création pour etre sur qu'elle soit bonne
         vid1 = Video.objects.create(
             title="Video_to_archive",
             owner=user_faculty,
@@ -117,9 +123,10 @@ class ObsolescenceTestCase(TestCase):
         for vid in Video.objects.all():
             vid.sites.add(site)
 
-        print(" --->  SetUp of ObsolescenceTestCase : OK !")
+        print(" --->  SetUp of ObsolescenceTestCase: OK!")
 
     def test_check_video_date_delete(self):
+        """Check that the videos deletion date complies with the settings."""
         video = Video.objects.get(id=1)
         date1 = date(
             date.today().year + DEFAULT_YEAR_DATE_DELETE,
@@ -140,6 +147,7 @@ class ObsolescenceTestCase(TestCase):
         print("--->  check_video_date_delete of ObsolescenceTestCase: OK")
 
     def test_notify_user_obsolete_video(self):
+        """Check user notification of obsolete video."""
         from pod.video.management.commands import check_obsolete_videos
 
         cmd = check_obsolete_videos.Command()
@@ -154,6 +162,7 @@ class ObsolescenceTestCase(TestCase):
         )
 
     def test_obsolete_video(self):
+        """Check that videos with deletion date in 7,30 and 60 days will be notified."""
         from pod.video.management.commands import check_obsolete_videos
 
         cmd = check_obsolete_videos.Command()
@@ -173,6 +182,7 @@ class ObsolescenceTestCase(TestCase):
         print("--->  test_obsolete_video of ObsolescenceTestCase: OK")
 
     def test_delete_video(self):
+        """Check that obsolete videos are deleted."""
         from pod.video.management.commands import check_obsolete_videos
 
         cmd = check_obsolete_videos.Command()
@@ -205,10 +215,10 @@ class ObsolescenceTestCase(TestCase):
         vid_delete = VideoToDelete.objects.get(date_deletion=video_to_archive.date_delete)
         self.assertTrue(video_to_archive in vid_delete.video.all())
 
-        # on vérifie que la video supprimée est bien supprimée
+        # On vérifie que la video supprimée est bien supprimée
         self.assertEqual(Video.objects.filter(id=7).count(), 0)
 
-        # on verifie que les fichiers csvsont bien créés
+        # On verifie que les fichiers csv sont bien créés
         file1 = "%s/%s.csv" % (settings.LOG_DIRECTORY, "deleted")
         self.assertTrue(os.path.isfile(file1))
         file2 = "%s/%s.csv" % (settings.LOG_DIRECTORY, "archived")
@@ -231,6 +241,7 @@ class ObsolescenceTestCase(TestCase):
         print("--->  test_obsolete_video of ObsolescenceTestCase: OK")
 
     def tearDown(self):
+        """Cleanup all created stuffs."""
         try:
             os.remove("%s/%s.csv" % (settings.LOG_DIRECTORY, "deleted"))
             os.remove("%s/%s.csv" % (settings.LOG_DIRECTORY, "archived"))

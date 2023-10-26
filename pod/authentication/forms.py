@@ -7,17 +7,17 @@ from django.contrib.auth.models import Group
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.models import Site
 
-FILEPICKER = False
+__FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.widgets import CustomFileWidget
 
-    FILEPICKER = True
+    __FILEPICKER__ = True
 
 
 class OwnerAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(OwnerAdminForm, self).__init__(*args, **kwargs)
-        if FILEPICKER:
+        if __FILEPICKER__:
             self.fields["userpicture"].widget = CustomFileWidget(type="image")
 
     class Meta(object):
@@ -40,15 +40,31 @@ class FrontOwnerForm(OwnerAdminForm):
         fields = ("userpicture",)
 
 
+class AdminOwnerForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(AdminOwnerForm, self).__init__(*args, **kwargs)
+
+    class Meta(object):
+        model = Owner
+        fields = []
+
+
+class SetNotificationForm(forms.ModelForm):
+    """Push notification preferences form."""
+
+    def __init__(self, *args, **kwargs):
+        super(SetNotificationForm, self).__init__(*args, **kwargs)
+
+    class Meta(object):
+        model = Owner
+        fields = ["accepts_notifications"]
+
+
 User = get_user_model()
 
 
 # Create ModelForm based on the Group model.
 class GroupAdminForm(forms.ModelForm):
-    class Meta:
-        model = Group
-        exclude = []
-
     # Add the users field.
     users = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(),
@@ -57,6 +73,11 @@ class GroupAdminForm(forms.ModelForm):
         widget=FilteredSelectMultiple(_("Users"), False),
         label=_("Users"),
     )
+
+    class Meta:
+        model = Group
+        fields = "__all__"
+        exclude = []
 
     def __init__(self, *args, **kwargs):
         # Do the normal form initialisation.
