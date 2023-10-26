@@ -582,7 +582,7 @@ def dashboard(request):
     )
 
     data_context["form"] = form
-    data_context["fieldsets_dashboard"] = ["channel_option", "access_restrictions"]
+    data_context["fieldsets_dashboard"] = ["channel_option", "access_restrictions", "advanced_options"]
     data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["use_obsolescence"] = USE_OBSOLESCENCE
     data_context["use_transcription"] = USE_TRANSCRIPTION

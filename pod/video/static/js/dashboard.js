@@ -61,6 +61,7 @@ async function bulk_update() {
     body:formData,
   });
     let result = await response.text();
+    bootstrap.Modal.getInstance(document.getElementById('modalConfirmBulkUpdate')).toggle();
     if(response.ok){
         data = JSON.parse(result);
         Array.from(data["updated_videos"]).forEach((v_slug) => {
@@ -71,7 +72,6 @@ async function bulk_update() {
     }else{
         showalert(JSON.parse(result)["error"],"alert-danger");
     }
-    bootstrap.Modal.getInstance(document.getElementById('modalConfirmBulkUpdate')).toggle();
 }
 
 /**
