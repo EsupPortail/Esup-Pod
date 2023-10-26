@@ -9,7 +9,7 @@
     {% endif %}
     <div class="checked_overlay">
       <span class="card-selected">
-        <i class="bi bi-check-circle-fill"></i>
+        <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
       </span>
     </div>
     <!-- video as row -->
@@ -51,13 +51,13 @@
             <i class="bi bi-three-dots more-actions-row-i" aria-hidden="true"></i>
         </button>
         <ul class="dropdown-menu" aria-labelledby="more-actions-row-btn-{{ video.id }}">
-            <li><a href="{% url 'video:video' video.slug %}" title="{% trans "Play" %}" aria-hidden="true"
+            <li><a href="{% url 'video:video' video.slug %}" title="{% trans 'Play' %}" aria-hidden="true"
                    class="dropdown-item">{% trans "Play" %}</a></li>
             {% if playlist %}
                 {% user_can_edit_or_remove playlist as can_edit_or_remove %}
                 {% if not in_favorites_playlist and can_edit_or_remove %}
                     <li><a href="{% url 'playlist:remove-video' playlist.slug video.slug %}"
-                           title="{% trans "Remove from playlist" %}" class="dropdown-item"
+                           title="{% trans 'Remove from playlist' %}" class="dropdown-item"
                            id="remove-from-playlist-btn-{{ video.id }}">{% trans "Remove from playlist" %}</a></li>
                 {% endif %}
             {% endif %}
@@ -68,12 +68,12 @@
                 <li>
                     {% if is_favorite %}
                         <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}"
-                           title="{% trans "Remove from favorite" %}" class="dropdown-item"
+                           title="{% trans 'Remove from favorite' %}" class="dropdown-item"
                            id="favorite-btn-{{ video.id }}" aria-pressed="true"
                            role="button">{% trans "Remove from favorite" %}</a>
                     {% else %}
                         <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}"
-                           title="{% trans "Add in favorite" %}" class="dropdown-item" id="favorite-btn-{{ video.id }}"
+                           title="{% trans 'Add in favorite' %}" class="dropdown-item" id="favorite-btn-{{ video.id }}"
                            aria-pressed="false" role="button">{% trans "Add in favorite" %}</a>
                     {% endif %}
                 </li>

@@ -14,7 +14,7 @@
 </div>
 {% if videos.has_next %}
   <a
-    style = "display:none"
+    style="display:none"
     class="infinite-more-link"
     href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ videos.next_page_number }}"
     data-nextpagenumber = "{% if videos.has_next %}{{ videos.next_page_number }}{% else %}null{% endif %}" >{% trans "More" %}

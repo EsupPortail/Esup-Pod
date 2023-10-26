@@ -392,7 +392,7 @@ class ThemeEditTestView(TestCase):
         print(" --->  test_theme_edit_post_request of ThemeEditTestView: OK!")
 
 
-class MyVideosTestView(TestCase):
+class DashboardTestView(TestCase):
     fixtures = [
         "initial_data.json",
     ]

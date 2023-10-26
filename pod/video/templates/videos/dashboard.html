@@ -8,11 +8,11 @@
   {% endif %}
 {% endblock more_style %}
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">Dashboard</li>{% endblock %}
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans 'Dashboard' %}</li>{% endblock %}
 
   <div class="row">
     {% block page_title %}
-      Dashboard
+      {% trans 'Dashboard' %}
     {% endblock %}
   </div>
 
@@ -30,9 +30,9 @@
         {% trans "To edit several videos at the same time, you can select the ones you want by clicking on them then select an action to perform using the drop-down menu below, finally apply the modification. You can also refine your video search using the filters in the right menu." %}
     </p>
 
-    <select id="bulkUpdateActionSelect" name="action" class="form-select mb-2" aria-label="{% trans "Choose an action" %}">
+    <select id="bulkUpdateActionSelect" name="action" class="form-select mb-2" aria-label="{% trans 'Choose an action' %}">
         <option value="" selected>{% trans "Choose an action" %}</option>
-        <optgroup label="{% trans "Edit a field" %}">
+        <optgroup label="{% trans 'Edit a field' %}">
             <option value="title">{% trans "Title" %}</option>
             <option value="type">{% trans "Type" %}</option>
             {% if request.user.is_superuser %}
@@ -119,7 +119,8 @@
 </div>
 
     <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalConfirmBulkUpdate" disabled>
-      Apply <span id="countSelectedVideosBadge" class="badge bg-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="">0 videos</span></button>
+        {% trans 'Apply' %} <span id="countSelectedVideosBadge" class="badge bg-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="">
+    {% blocktrans count counter=0 %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}</span></button>
     <button id="resetSelectedVideosBtn" type="button" class="btn btn-secondary mt-2" onclick="clearSelectedVideo()" disabled>{% trans "Clear selection" %}</button>
   </div>
   <div>
@@ -130,8 +131,8 @@
     <div class="row mt-3">
       <h2 id="video_count" class="col-5">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
       <div class="btn-group col-3" role="group">
-          <button title="Grid display mode" class="btn btn-outline-primary bi bi-ui-checks-grid btn-dashboard-display-mode {% if display_mode == "grid" %}active{% endif %}" aria-current="page" onclick="changeDisplayMode('grid')"></button>
-          <button title="List display mode" class="btn btn-outline-primary bi bi-list-check btn-dashboard-display-mode {% if display_mode == "list" %}active{% endif %}" onclick="changeDisplayMode('list')"></button>
+          <button title="{% trans 'Grid display mode' %}" class="btn btn-outline-primary bi bi-ui-checks-grid btn-dashboard-display-mode {% if display_mode == "grid" %}active{% endif %}" aria-current="page" onclick="changeDisplayMode('grid')"></button>
+          <button title="{% trans 'List display mode' %}" class="btn btn-outline-primary bi bi-list-check btn-dashboard-display-mode {% if display_mode == "list" %}active{% endif %}" onclick="changeDisplayMode('list')"></button>
       </div>
       <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms col-4 mb-2">
         {% include "videos/video_sort_select.html" %}

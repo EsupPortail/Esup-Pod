@@ -2,7 +2,7 @@
 {% spaceless %}
 <div class="checked_overlay">
   <span class="card-selected">
-    <i class="bi bi-check-circle-fill"></i>
+    <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
   </span>
 </div>
 <div class="card box-shadow pod-card--video video-card">
@@ -19,7 +19,7 @@
 
         {% if video.is_draft %}
           <span title="{% trans 'This content is in draft.' %}">
-            <i class="bi bi-incognito"></i>
+            <i class="bi bi-incognito" aria-hidden="true"></i>
           </span>
         {% endif %}
         {% if video.chapter_set.all %}
@@ -29,7 +29,7 @@
         {% endif %}
         {% if video.is_video %}
           <span title="{% trans 'Video content.' %}">
-            <i class="bi bi-film"></i>
+            <i class="bi bi-film" aria-hidden="true"></i>
           </span>
         {% else %}
           <span title="{% trans 'Audio content.' %}">

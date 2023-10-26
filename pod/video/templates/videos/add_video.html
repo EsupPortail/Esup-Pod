@@ -44,7 +44,7 @@
 
   {% if TRANSCRIPT|length > 0 %}
   <div class="hide-on-processing">
-    <select class="form-select" aria-label="{% trans "Transcript" %}" id="select-transcript-lang">
+    <select class="form-select" aria-label="{% trans 'Transcript' %}" id="select-transcript-lang">
       <option selected value="">{% trans "Transcript" %}</option>
       {% for lang in TRANSCRIPT %}
       <option value="{{lang|first}}">{{lang|last}}</option>

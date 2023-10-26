@@ -602,7 +602,7 @@ def dashboard(request):
     data_context["owner_filter"] = owner_filter
     data_context["display_mode"] = display_mode
     data_context["video_list_template"] = template
-    data_context["page_title"] = "Dashboard"
+    data_context["page_title"] = _("Dashboard")
 
     return render(request, "videos/dashboard.html", data_context)
 
