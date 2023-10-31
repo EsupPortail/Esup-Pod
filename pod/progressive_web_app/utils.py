@@ -1,3 +1,4 @@
+"""Esup-Pod PWA utilities."""
 from webpush import send_user_notification
 from django.templatetags.static import static
 
@@ -6,7 +7,7 @@ DEFAULT_ICON = static("img/icon_x1024.png")
 
 
 def notify_user(user, title, message, url=None, icon=None):
-    """Fills the payload to send a webpush notification to users devices."""
+    """Fill the payload to send a webpush notification to users devices."""
     payload = {
         "head": title,
         "body": message,
