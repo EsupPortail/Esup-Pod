@@ -21,6 +21,7 @@ from pod.video.models import Video, Type
 
 
 target_cache = {}
+current_side_file = None
 
 
 def parse_target(target):
@@ -125,6 +126,7 @@ class SeleniumTestCase(object):
         COMMAND_MAPPING = {
             "open": self.open,
             "click": self.click,
+            "pause": self.pause,
             "cookies_commands": self.cookies_commands,
             "clickAndWait": self.clickAndWait,
             "type": self.type,
@@ -194,10 +196,30 @@ class SeleniumTestCase(object):
         """
         element = find_element(driver, target)
         element_tag = element.tag_name
-        without_scroll_elements = {"button", "submit", "textarea", "input"}
+        without_scroll_elements = {
+            "button",
+            "submit",
+            "textarea",
+            "input",
+            "div",
+            "span",
+            "i",
+        }
         if element_tag not in without_scroll_elements:
             driver.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
+            element.click()
+        else:
+            driver.execute_script("arguments[0].click();", element)
+
+    def pause(self, driver, target, value="", url=""):
+        """
+        Make a pause during target value.
+
+        Args:
+            driver (WebDriver): The WebDriver instance for interacting with the web page.
+            target (str): The during value to wait.
+        """
+        driver.implicitly_wait(target)
 
     def clickAndWait(self, driver, target, value="", url=""):
         """
@@ -609,6 +631,7 @@ class PodSeleniumTests(StaticLiveServerTestCase):
             suite_name (str): The name of the test suite JSON file.
             suite_url (str): The base URL for the test suite.
         """
+        global current_side_file
         print(f"Running test suite: {suite_name}")
 
         with open(suite_name, "r") as json_file:
@@ -623,6 +646,7 @@ class PodSeleniumTests(StaticLiveServerTestCase):
                 PodSeleniumTests.selenium.save_screenshot(
                     f"{suite_name}-error_screen.png"
                 )
+                current_side_file = suite_name
                 self.fail(f"Error in suite {suite_name}")
 
     def run_initial_tests(self):
@@ -677,4 +701,6 @@ class PodSeleniumTests(StaticLiveServerTestCase):
             self.run_suite(suite_name, suite_url)
         except Exception:
             PodSeleniumTests.selenium.save_screenshot(f"{suite_name}-error_screen.png")
+            print("ERROR !")
+            print(f"Side path : {current_side_file}")
             self.fail(f"Error in suite {suite_name}")
