@@ -18,6 +18,7 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.ui import Select
 
 from pod.video.models import Video, Type
+import time
 
 
 target_cache = {}
@@ -205,6 +206,7 @@ class SeleniumTestCase(object):
             "span",
             "i",
         }
+        time.sleep(1)
         if element_tag not in without_scroll_elements:
             driver.execute_script("arguments[0].scrollIntoView();", element)
             element.click()
