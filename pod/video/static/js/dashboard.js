@@ -108,3 +108,14 @@ function changeDisplayMode(display_mode){
     btnDisplayMode.forEach(e => e.classList.toggle("active"));
     refreshVideosSearch();
 }
+
+/**
+ * Update list of selected videos for modal confirm display
+ */
+function updateModalConfirmSelectedVideos(){
+    let str = "";
+    Array.from(selectedVideos).forEach((video) => {
+        str += "<li>"+video.split('-')[1]+"</li>";
+    });
+    bulkUpdateConfirmSelectedVideos.innerHTML = str;
+}

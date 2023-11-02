@@ -108,7 +108,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <p>{% trans "Please confirm you want edit these videos" %}</p>
+        <p>{% trans "Please confirm you want edit these videos :" %}</p>
+        <ul id="bulkUpdateConfirmSelectedVideos"></ul>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
@@ -118,7 +119,7 @@
   </div>
 </div>
 
-    <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalConfirmBulkUpdate" disabled>
+    <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalConfirmBulkUpdate" onclick="updateModalConfirmSelectedVideos()" disabled>
         {% trans 'Apply' %} <span id="countSelectedVideosBadge" class="badge bg-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="">
     {% blocktrans count counter=0 %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}</span></button>
     <button id="resetSelectedVideosBtn" type="button" class="btn btn-secondary mt-2" onclick="clearSelectedVideo()" disabled>{% trans "Clear selection" %}</button>
