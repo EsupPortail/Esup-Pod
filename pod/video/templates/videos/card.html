@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load playlist_buttons %}
+{% load playlist_buttons video_tags %}
 
 {% spaceless %}
 {% if playlist %}
@@ -38,6 +38,7 @@
         {% endif %}
       </span>
     </div>
+
   </div>
   <div class="card-thumbnail">
     <a class="link-center-pod"
@@ -61,6 +62,14 @@
     >
       {{video.get_thumbnail_card|safe}}
     </a>
+    {% if request.user.is_authenticated %}
+      {% get_percent_marker_for_user video request.user as percent_view %}
+      {% if percent_view != 0 %}
+      <div class="progress">
+        <div class="progress-bar" role="progressbar" style="width:{{percent_view}}%" aria-valuenow="{{percent_view}}" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      {% endif %}
+    {% endif %}
   </div>
   <div class="card-body px-3 py-2">
     {# TODO: replace test below by "if video.is_editable" ? #}
@@ -69,7 +78,6 @@
         {% include "videos/link_video.html" %}
       </footer>
     {% endif %}
-
     <span class="small video-title">
       {% if playlist %}
          {% if can_see_video %}

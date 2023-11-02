@@ -978,7 +978,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
  - `TRANSCRIPTION_STT_SENTENCE_MAX_LENGTH`
 
-  > valeur par défaut : `3`
+  > valeur par défaut : `2`
 
   >> Temps en secondes maximum pour une phrase lors de la transcription avec l’outil STT. <br>
 
@@ -1863,6 +1863,12 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   >> Extensions autorisées pour les images téléversées dans le gestionnaire de fichier. (en minuscules) <br>
 
 ### Configuration application progressive_web_app
+
+ - `USE_NOTIFICATIONS`
+
+  > valeur par défaut : `True`
+
+  >> Activation des notifications, attention, elles sont actives par défaut. <br>
 
  - `WEBPUSH_SETTINGS`
 

@@ -16,6 +16,7 @@ import importlib.util
 if (
     importlib.util.find_spec("vosk") is not None
     or importlib.util.find_spec("stt") is not None
+    or importlib.util.find_spec("whisper") is not None
 ):
     from .transcript_model import start_transcripting
 

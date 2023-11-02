@@ -138,7 +138,7 @@ class Playlist(models.Model):
     def clean(self) -> None:
         if self.visibility == "protected" and not self.password:
             raise ValidationError(
-                "Password is required for a password-protected playlist."
+                _("Password is required for a password-protected playlist.")
             )
         if self.visibility != "public":
             self.promoted = False

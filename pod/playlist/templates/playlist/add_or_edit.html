@@ -28,12 +28,18 @@
         <div class="list-group">
             {% if form.errors %}
                 <p class="text-danger">
-                    {% trans "One or more errors have been found in the form." %}
+                    {% trans "One or more errors have been found in the form." %}<br>
                     {% for error in form.errors %}
+                        {% if error != "__all__" %}
+                            <span> - {{ error }}</span><br>
+                        {% endif %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
                         <span> - {{ error }}</span><br>
                     {% endfor %}
                 </p>
             {% endif %}
+            
             {% for field_hidden in form.hidden_fields %}
                 {{ field_hidden }}
             {% endfor %}
