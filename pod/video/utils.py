@@ -1,5 +1,4 @@
 """Esup-Pod video utilities."""
-from django.db.models import F
 from django.db.models.functions import Lower
 import os
 import re
