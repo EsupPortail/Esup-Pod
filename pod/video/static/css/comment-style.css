@@ -3,10 +3,10 @@
  */
 
 :root {
-  /* --content-primary-color: rgba(6, 14, 29, .75); */
+  /* --content-primary-color: rgb(6 14 29 / 75%); */
   --primary-background-color: #f8f9fa;
   --third-background-color: rgb(255 255 255);
-  --content-secondary-color: rgba(54 56 58 0.65);
+  --content-secondary-color: rgb(54 56 58 / 65%);
   --content-third-color: #696969;
   --padding-comment-content: 25px;
   --margin-between-comment: 1em;
@@ -103,7 +103,7 @@
   position: fixed;
   inset: 0;
   min-height: 100vh;
-  background-color: rgba(54 56 58 0.5);
+  background-color: rgb(54 56 58 / 50%);
 }
 
 .comment_main .confirm_delete.show {
@@ -344,7 +344,7 @@
   0% {
     background-color: #f9f99b;
 
-    /* rgba(255 234 59) */
+    /* rgb(255 234 59) */
   }
 
   100% {
@@ -356,7 +356,7 @@
 @keyframes deletecomment {
   0% {
     position: relative;
-    box-shadow: 0 0 8px 8px rgba(255 0 0 0.3) !important;
+    box-shadow: 0 0 8px 8px rgb(255 0 0 / 30%) !important;
     z-index: 9999;
     transform: translateX(0);
   }
