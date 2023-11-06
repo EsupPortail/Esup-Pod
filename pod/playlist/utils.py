@@ -360,7 +360,7 @@ def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") 
         "date_created",
         "date_updated",
     }:
-        if sort_field in {'name'}:
+        if sort_field in {"name"}:
             sort_field = Lower(sort_field)
             if not sort_direction:
                 sort_field = sort_field.desc()
