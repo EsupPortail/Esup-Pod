@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from pod.video.models import Video
-from pod.video.Encoding_video_model import Encoding_video_model
-from pod.video.models import EncodingLog
+from pod.video_encode_transcript.Encoding_video_model import Encoding_video_model
+from pod.video_encode_transcript.models import EncodingLog
 
 
 class Command(BaseCommand):

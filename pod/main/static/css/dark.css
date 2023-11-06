@@ -98,14 +98,14 @@
   background-color: var(--background-color);
   color: var(--pod-font-color);
   border-color: var(--pod-primary);
-  box-shadow: 0 0 0 0.2rem rgba(126 126 126 0.25);
+  box-shadow: 0 0 0 0.2rem rgb(126 126 126 / 25%);
 }
 
 [data-theme="dark"]
   .category_modal_videos_list
   .infinite-item
   .checked_overlay {
-  background-color: rgba(0 0 0 0.8);
+  background-color: rgb(0 0 0 / 80%);
 }
 
 [data-theme="dark"] #card-takenote .header:hover {
@@ -292,7 +292,8 @@ body.dark {
 [data-theme="dark"] .select2-dropdown-open .select2-choice,
 [data-theme="dark"] .select2-results .select2-no-results,
 [data-theme="dark"] .select2-results .select2-searching,
-[data-theme="dark"] .select2-container--default .select2-selection--multiple {
+[data-theme="dark"] .select2-container--default .select2-selection--multiple,
+[data-theme="dark"] .select2-container--default .select2-selection--single {
   background-color: var(--pod-background-neutre1-bloc);
   border-color: var(--pod-font-color);
   color: var(--pod-font-color);
@@ -302,6 +303,18 @@ body.dark {
 
 [data-theme="dark"] .select2-selection--multiple .select2-selection__choice {
   color: #000;
+}
+
+[data-theme="dark"]
+  .select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered {
+  color: var(--pod-font-color);
+}
+
+[data-theme="dark"] .select2-results__option {
+  background-color: var(--pod-background-neutre1-bloc);
+  color: var(--pod-font-color);
 }
 
 [data-theme="dark"] .form-select {

@@ -1,12 +1,11 @@
 const exchangedValues = [];
 var infinite;
 
-addEventForReorganizedButton();
-
 const reorganizeButtonsSpanElement = document.getElementById('reorganize-buttons');
 const collapseAsideElement = document.getElementById('collapseAside');
 const reorganizeButton = document.getElementById('reorganize-button');
 
+addEventForReorganizedButton();
 
 /**
  * Add or remove the CSS class to make drop zone hover.
@@ -28,35 +27,36 @@ function addOrRemoveDropZoneHoverStyleClass(state, element) {
  * Add an event listener to the 'reorganize-button' element.
  */
 function addEventForReorganizedButton() {
-  document
-    .getElementById('reorganize-button')
-    .addEventListener('click', function (event) {
-      const draggableElements = document.querySelectorAll('.draggable-container',);
-      draggableElements.forEach((draggableElement) => {
-        draggableElement.addEventListener('dragenter', (event) => {
-          addOrRemoveDropZoneHoverStyleClass('add', event.target);
+  if (reorganizeButton) {
+    reorganizeButton
+      .addEventListener('click', function (event) {
+        const draggableElements = document.querySelectorAll('.draggable-container',);
+        draggableElements.forEach((draggableElement) => {
+          draggableElement.addEventListener('dragenter', (event) => {
+            addOrRemoveDropZoneHoverStyleClass('add', event.target);
+          });
+          draggableElement.addEventListener('dragleave', (event) => {
+            addOrRemoveDropZoneHoverStyleClass('remove', event.target);
+          });
+          draggableElement.addEventListener('drop', (event) => {
+            addOrRemoveDropZoneHoverStyleClass('remove', event.target);
+          });
         });
-        draggableElement.addEventListener('dragleave', (event) => {
-          addOrRemoveDropZoneHoverStyleClass('remove', event.target);
-        });
-        draggableElement.addEventListener('drop', (event) => {
-          addOrRemoveDropZoneHoverStyleClass('remove', event.target);
-        });
+        if (this.id == 'reorganize-button') {
+          event.preventDefault();
+          activateDragAndDrop();
+          this.id = 'save-button';
+          this.title = gettext('Save your reorganization');
+          const iconElement = this.querySelector('i');
+          const spanElement = this.querySelector('span');
+          iconElement.classList.replace('bi-arrows-move', 'bi-save');
+          spanElement.textContent = gettext('Save');
+        } else if (this.id == 'save-button') {
+          document.getElementById('json-data').value =
+            convert2DTableToJson(exchangedValues);
+        }
       });
-      if (this.id == 'reorganize-button') {
-        event.preventDefault();
-        activateDragAndDrop();
-        this.id = 'save-button';
-        this.title = gettext('Save your reorganization');
-        const iconElement = this.querySelector('i');
-        const spanElement = this.querySelector('span');
-        iconElement.classList.replace('bi-arrows-move', 'bi-save');
-        spanElement.textContent = gettext('Save');
-      } else if (this.id == 'save-button') {
-        document.getElementById('json-data').value =
-          convert2DTableToJson(exchangedValues);
-      }
-    });
+  }
 }
 
 

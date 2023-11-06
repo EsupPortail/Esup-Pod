@@ -5,11 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2023-09-12 07:43+0000\n"
-=======
-"POT-Creation-Date: 2023-09-27 12:16+0000\n"
->>>>>>> develop
+"POT-Creation-Date: 2023-11-06 15:50+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -92,7 +88,11 @@ msgid "Unrecognized caption file format."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
-msgid "There is no captions to save."
+msgid "There are errors in your captions/subtitles. Please review."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
+msgid "There is no caption/subtitle to save."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
@@ -160,7 +160,21 @@ msgid "Pause to enter caption for segment from %s to %s."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
-msgid "Caption"
+msgid "A caption cannot has more than 80 characters."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
+#: pod/podfile/static/podfile/js/filewidget.js
+msgid "Add"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
+#: pod/video/static/js/comment-script.js
+msgid "Delete"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
+msgid "Caption / Subtitle"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
@@ -173,18 +187,6 @@ msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Time stamps"
-msgstr ""
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Error reading caption file. Code = "
-msgstr ""
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Exception thrown reading caption file. Code = "
-msgstr ""
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Your browser does not support FileReader."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
@@ -510,10 +512,6 @@ msgid "Server error"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
-msgid "Add"
-msgstr ""
-
-#: pod/podfile/static/podfile/js/filewidget.js
 msgid "Are you sure you want to delete this folder?"
 msgstr ""
 
@@ -525,11 +523,6 @@ msgstr ""
 msgid "This folder is empty"
 msgstr ""
 
-<<<<<<< HEAD
-#: pod/video/static/js/ajax-display-channels.js
-msgid "Channel"
-msgstr ""
-=======
 #: pod/progressive_web_app/static/js/notification-toast.js
 msgid "An error happened during notification subscription"
 msgstr ""
@@ -575,30 +568,12 @@ msgid "Error while subscribing to push notifications."
 msgstr ""
 
 #: pod/video/static/js/ajax-display-channels.js
-msgid "%(count)s channel"
-msgid_plural "%(count)s channels"
-msgstr[0] ""
-msgstr[1] ""
->>>>>>> develop
-
-#: pod/video/static/js/ajax-display-channels.js
 msgid "No channels found"
-msgstr ""
-
-#: pod/video/static/js/ajax-display-channels.js
-<<<<<<< HEAD
-msgid "videos"
 msgstr ""
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
 msgstr ""
-=======
-msgid "%(count)s video"
-msgid_plural "%(count)s videos"
-msgstr[0] ""
-msgstr[1] ""
->>>>>>> develop
 
 #: pod/video/static/js/change_video_owner.js
 msgid "Loading…"
@@ -618,10 +593,6 @@ msgstr ""
 
 #: pod/video/static/js/comment-script.js
 msgid "Answers"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js
-msgid "Delete"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js

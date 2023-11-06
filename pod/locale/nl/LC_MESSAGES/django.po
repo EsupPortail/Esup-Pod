@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-13 11:28+0000\n"
+"POT-Creation-Date: 2023-11-06 15:50+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -362,7 +362,7 @@ msgid "URL of the recording thumbnail of the BBB presentation."
 msgstr ""
 
 #: pod/bbb/models.py pod/import_video/models.py pod/meeting/models.py
-#: pod/playlist/models.py pod/recorder/models.py
+#: pod/playlist/models.py pod/recorder/models.py pod/video/models.py
 msgid "User"
 msgstr ""
 
@@ -1509,7 +1509,7 @@ msgid "No captions"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
-msgid "Add subtitle"
+msgid "Add a caption/subtitle"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
@@ -5453,6 +5453,10 @@ msgid "Update date"
 msgstr ""
 
 #: pod/playlist/models.py
+msgid "Password is required for a password-protected playlist."
+msgstr ""
+
+#: pod/playlist/models.py
 msgid "Addition date"
 msgstr ""
 
@@ -5766,7 +5770,16 @@ msgid "The playlist has been deleted."
 msgstr ""
 
 #: pod/playlist/views.py
+#, python-format
+msgid "Edit the playlist “%(pname)s”"
+msgstr ""
+
+#: pod/playlist/views.py
 msgid "The playlist has been created and the video has been added in it."
+msgstr ""
+
+#: pod/playlist/views.py
+msgid "The data sent to create the playlist are invalid."
 msgstr ""
 
 #: pod/playlist/views.py
@@ -6872,6 +6885,18 @@ msgid "View counts"
 msgstr ""
 
 #: pod/video/models.py
+msgid "Marker time"
+msgstr ""
+
+#: pod/video/models.py
+msgid "User viewing time marker of video"
+msgstr ""
+
+#: pod/video/models.py
+msgid "Users viewing time marker of video"
+msgstr ""
+
+#: pod/video/models.py
 msgid "Video version"
 msgstr ""
 
@@ -7169,6 +7194,10 @@ msgstr ""
 
 #: pod/video/templates/videos/card.html
 msgid "This content is password protected."
+msgstr ""
+
+#: pod/video/templates/videos/card.html
+msgid "This content has restricted access."
 msgstr ""
 
 #: pod/video/templates/videos/card.html
