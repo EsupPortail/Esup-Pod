@@ -110,8 +110,8 @@ class TestPlaylistsPageTestCase(TestCase):
         self.url = reverse("playlist:list")
 
     @override_settings(USE_PLAYLIST=True)
-    def test_video_counter(self) -> None:
-        """Test if the video counter works correctly."""
+    def test_playlist_card_counter(self) -> None:
+        """Test if the number of cards in playlist list page is correct."""
         importlib.reload(context_processors)
         self.client.force_login(self.first_user)
         response = self.client.get(self.url)
@@ -120,24 +120,9 @@ class TestPlaylistsPageTestCase(TestCase):
             200,
             "Test if status code equal 200.",
         )
-        self.assertTrue("4" in response.content.decode(), "Test if '4' is visible.")
+        self.assertTrue("data-number-playlists=5" in response.content.decode(), "Test if there's 5 playlists visible in the playlist page.")
         self.client.logout()
-        print(" --->  test_video_counter ok")
-
-    @override_settings(USE_PLAYLIST=True)
-    def test_playlist_counter(self) -> None:
-        """Test if the playlist counter works correctly."""
-        importlib.reload(context_processors)
-        self.client.force_login(self.first_user)
-        response = self.client.get(self.url)
-        self.assertEqual(
-            response.status_code,
-            200,
-            "Test if status code equal 200.",
-        )
-        self.assertTrue("4" in response.content.decode(), "Test if '4' is visible.")
-        self.client.logout()
-        print(" --->  test_playlist_counter ok")
+        print(" --->  test_playlist_card_counter ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_card_titles(self) -> None:
@@ -489,7 +474,6 @@ class TestStartupPlaylistParamTestCase(TestCase):
             200,
             "Test if status code equal 200.",
         )
-        print(response.content.decode())
         self.assertTrue(
             f"/playlist/start-playlist/{self.simple_playlist.slug}"
             in response.content.decode(),
