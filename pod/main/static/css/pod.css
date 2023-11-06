@@ -312,8 +312,8 @@ a:not(.btn):focus {
     background-color 0.3s ease-in-out,
     color 0.3s ease-in-out;
   color: var(--pod-font-color);
-  box-shadow: .05rem .05rem .2rem .05rem rgb(0 0 0 / 20%);
-  border-radius: .15rem;
+  box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgb(0 0 0 / 20%);
+  border-radius: 0.15rem;
   margin-top: 1rem;
 }
 

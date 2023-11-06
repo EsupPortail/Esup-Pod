@@ -98,7 +98,7 @@
   background-color: var(--background-color);
   color: var(--pod-font-color);
   border-color: var(--pod-primary);
-  box-shadow: 0 0 0 .2rem rgb(126 126 126 / 25%);
+  box-shadow: 0 0 0 0.2rem rgb(126 126 126 / 25%);
 }
 
 [data-theme="dark"]
