@@ -58,7 +58,7 @@ button.close {
   pointer-events: auto;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid rgba(0 0 0 0.2);
+  border: 1px solid rgb(0 0 0 / 20%);
   outline: 0;
   max-width: 100% !important;
   width: calc(100% - 2em);
@@ -102,7 +102,7 @@ button.close {
 #podfile .col {
   padding: 5px;
   background: white;
-  border: 1px solid rgba(0 0 0 0.125);
+  border: 1px solid rgb(0 0 0 / 12.5%);
 }
 
 #podifle .card-body {
@@ -144,7 +144,7 @@ button.close {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid rgba(0 0 0 0.08);
+  border: 1px solid rgb(0 0 0 / 8%);
   padding: 0.8em;
 }
 
@@ -182,8 +182,8 @@ button.close {
   padding: 0.8em 0;
   width: 400px;
   max-width: 100%;
-  border: 1px solid rgba(0 0 0 0.1);
-  box-shadow: 0 8px 10px 4px rgba(0 0 0 0.08);
+  border: 1px solid rgb(0 0 0 / 10%);
+  box-shadow: 0 8px 10px 4px rgb(0 0 0 / 8%);
   position: absolute;
   top: 100%;
 }
@@ -333,7 +333,7 @@ button.close {
   border: 1px solid #ccc;
   font-size: 14px;
   padding: 0.4em;
-  color: rgba(0 0 0 0.75);
+  color: rgb(0 0 0 / 75%);
   flex: none;
   height: 35px;
 }

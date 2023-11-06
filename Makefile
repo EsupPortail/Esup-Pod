@@ -51,7 +51,7 @@ lang:
 	echo "Processing python files..."
 	python3 manage.py makemessages --all -i "opencast-studio/*" -i "pod/custom/settings_local.py" --add-location=file
 	echo "Processing javascript files..."
-	python3 manage.py makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*" --add-location=file
+	python3 manage.py makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*"  -i "node_modules/*" --add-location=file
 
 #compilation des fichiers de langue
 compilelang:
@@ -76,7 +76,7 @@ pystyle:
 
 # Collects all static files inside all apps and put a copy inside the static directory declared in settings.py
 statics:
-	cd pod; yarn upgrade
+	cd pod; yarn install; yarn upgrade
 	# --clear Clear the existing files before trying to copy or link the original file.
 	python3 manage.py collectstatic --clear
 

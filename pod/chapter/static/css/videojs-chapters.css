@@ -9,7 +9,7 @@
   top: 0;
   height: 100%;
   width: 20%;
-  background-color: rgba(43 51 63 0.7);
+  background-color: rgb(43 51 63 / 70%);
   overflow-y: auto;
   cursor: default;
   z-index: 2;
@@ -48,7 +48,7 @@
   list-style-type: none;
   text-align: -webkit-match-parent;
   margin: 0 3px;
-  border-top: 1px solid rgba(0 0 0 0.8);
+  border-top: 1px solid rgb(0 0 0 / 80%);
 }
 
 .chapters-list ol li a {

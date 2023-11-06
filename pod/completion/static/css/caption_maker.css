@@ -120,7 +120,7 @@
 }
 
 .newEditorBlock:hover {
-  background-color: rgba(223 230 246 0.4);
+  background-color: rgb(223 230 246 / 40%);
 }
 
 .newEditorBlock > textarea {
@@ -129,7 +129,7 @@
 
 .captionBeingEdited {
   border-left: 3px solid var(--pod-primary);
-  background-color: rgba(223 230 246 0.4);
+  background-color: rgb(223 230 246 / 40%);
 }
 
 .captionTimestamps {
@@ -226,7 +226,7 @@
 .regionHighligh {
   position: absolute;
   z-index: 1;
-  background-color: rgba(173 50 122 0.5);
+  background-color: rgb(173 50 122 / 50%);
   height: 3px;
 }
 
