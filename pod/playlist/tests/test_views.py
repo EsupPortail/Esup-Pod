@@ -86,6 +86,7 @@ class TestPlaylistsPageTestCase(TestCase):
             name="Second public playlist",
             visibility="public",
             owner=self.second_user,
+            promoted=True,
         )
         self.playlist_content_1 = PlaylistContent.objects.create(
             playlist=self.public_playlist,
@@ -163,6 +164,8 @@ class TestPlaylistsPageTestCase(TestCase):
             "bi-globe-americas" in response.content.decode(),
             "Test if public icon isn't visible.",
         )
+        print(response.content.decode())
+        self.assertTrue("data-number-playlists=2" in response.content.decode(), "Test if there's 2 private playlists in the playlist page.")
         self.client.logout()
         print(" --->  test_private_filter ok")
 
@@ -187,6 +190,7 @@ class TestPlaylistsPageTestCase(TestCase):
             "bi-globe-americas" in response.content.decode(),
             "Test if public icon isn't visible.",
         )
+        self.assertTrue("data-number-playlists=1" in response.content.decode(), "Test if there's 1 protected playlist in the playlist page.")
         self.client.logout()
         print(" --->  test_protected_filter ok")
 
@@ -210,8 +214,60 @@ class TestPlaylistsPageTestCase(TestCase):
         self.assertFalse(
             "bi-lock" in response.content.decode(), "Test if protected icon isn't visible"
         )
+        self.assertTrue("data-number-playlists=1" in response.content.decode(), "Test if there's 1 playlist visible in the playlist page.")
         self.client.logout()
         print(" --->  test_public_filter ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_allpublic_filter(self) -> None:
+        """
+        Test if all public playlists are visible when the allpublic filter is active.
+        """
+        importlib.reload(context_processors)
+        self.client.force_login(self.first_user)
+        response = self.client.get(f"{self.url}?visibility=allpublic")
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200.",
+        )
+        self.assertFalse(
+            "bi-incognito" in response.content.decode(),
+            "Test if private icon isn't visible.",
+        )
+        self.assertFalse(
+            "bi-lock" in response.content.decode(), "Test if protected icon isn't visible"
+        )
+        self.assertTrue("data-number-playlists=2" in response.content.decode(), "Test if there's 2 playlists visible in the playlist page.")
+        self.client.logout()
+        print(" --->  test_allpublic_filter ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_promoted_filter(self) -> None:
+        """
+        Test if all promoted playlist are visible when the promoted filter is active.
+        """
+        importlib.reload(context_processors)
+        self.client.force_login(self.first_user)
+        response = self.client.get(f"{self.url}?visibility=promoted")
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200.",
+        )
+        self.assertFalse(
+            "bi-incognito" in response.content.decode(),
+            "Test if private icon isn't visible.",
+        )
+        self.assertFalse(
+            "bi-lock" in response.content.decode(), "Test if protected icon isn't visible"
+        )
+        self.assertTrue(
+            "promoted-icon" in response.content.decode(), "Test if promoted icon is visible."
+        )
+        self.assertTrue("data-number-playlists=1" in response.content.decode(), "Test if there's 1 promoted playlist in the playlist page.")
+        self.client.logout()
+        print(" --->  test_promoted_filter ok")
 
 
 class TestPlaylistsPageLinkTestCase(TestCase):
