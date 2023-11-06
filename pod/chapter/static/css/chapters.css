@@ -69,7 +69,7 @@ table.scroll thead th.chapter_time_end {
 
 form#form_chapter,
 form#form_chapter_import {
-  background-color: rgba(0 0 0 0.05);
+  background-color: rgb(0 0 0 / 5%);
 }
 
 .form-group.row p {
