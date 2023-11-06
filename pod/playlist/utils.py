@@ -380,6 +380,7 @@ def check_password(form_password: str, playlist: Playlist) -> bool:
     hashed_password = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
     return hashed_password == playlist.password
 
+
 def playlist_can_be_displayed(request: WSGIRequest, playlist: Playlist) -> bool:
     """
     Check if the playlist can be displayed by the current user.

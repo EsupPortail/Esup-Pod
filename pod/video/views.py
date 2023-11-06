@@ -38,7 +38,6 @@ from pod.authentication.utils import get_owners as auth_get_owners
 from pod.playlist.apps import FAVORITE_PLAYLIST_NAME
 from pod.playlist.models import Playlist, PlaylistContent
 from pod.playlist.utils import (
-    get_playlists_for_additional_owner,
     get_video_list_for_playlist,
     playlist_can_be_displayed,
     user_can_see_playlist_video,
