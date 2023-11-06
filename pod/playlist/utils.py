@@ -375,7 +375,27 @@ def check_password(form_password: str, playlist: Playlist) -> bool:
 
 
     Returns:
-        bool: True if the password provided matches the playlist password, False otherwise.
+        bool: `True` if the password provided matches the playlist password, `False` otherwise.
     """
     hashed_password = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
     return hashed_password == playlist.password
+
+def playlist_can_be_displayed(request: WSGIRequest, playlist: Playlist) -> bool:
+    """
+    Check if the playlist can be displayed by the current user.
+
+    Args:
+        playlist (Playlist): The playlist.
+
+    Returns:
+        bool: `True` if the current user can be see the playlist, `False` otherwise.
+    """
+    return (
+        playlist.visibility == "public"
+        or playlist.visibility == "protected"
+        or (
+            playlist.owner == request.user
+            or playlist in get_playlists_for_additional_owner(request.user)
+            or request.user.is_staff
+        )
+    )

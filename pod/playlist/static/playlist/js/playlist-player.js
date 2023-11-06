@@ -1,7 +1,7 @@
 /**
  * Switch to the next video when this exists.
  */
-function switchToNextVideo() {
+function switchToNextVideo(withRefresh = false) {
     const playerElements = Array.from(document.querySelectorAll('.player-element'));
     const selectedElement = document.querySelector('.selected');
     let currentIndex = playerElements.indexOf(selectedElement);
@@ -15,6 +15,9 @@ function switchToNextVideo() {
     let nextElement = playerElements[currentIndex + 1];
     if (!(nextElement.classList.contains('disabled'))) {
         const videoSrc = playerElements[currentIndex + 1].getAttribute('href');
+        if (withRefresh) {
+            window.location.href =  videoSrc;
+        }
         (currentIndex === -1) ? currentIndex = playerElements.length - 1 : "";
         if (nextElement.getAttribute('data-chapter') || playerElements[currentIndex].getAttribute('data-chapter')) {
             window.location.href = videoSrc;

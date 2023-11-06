@@ -40,6 +40,7 @@ from pod.playlist.models import Playlist, PlaylistContent
 from pod.playlist.utils import (
     get_playlists_for_additional_owner,
     get_video_list_for_playlist,
+    playlist_can_be_displayed,
     user_can_see_playlist_video,
 )
 from pod.video.utils import get_videos as video_get_videos
@@ -880,15 +881,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         template_video = "videos/video-iframe.html"
     elif request.GET.get("playlist"):
         playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-        if (
-            playlist.visibility == "public"
-            or playlist.visibility == "protected"
-            or (
-                playlist.owner == request.user
-                or playlist in get_playlists_for_additional_owner(request.user)
-                or request.user.is_staff
-            )
-        ):
+        if playlist_can_be_displayed(request, playlist):
             videos = sort_videos_list(get_video_list_for_playlist(playlist), "rank")
             params = {
                 "playlist_in_get": playlist,
