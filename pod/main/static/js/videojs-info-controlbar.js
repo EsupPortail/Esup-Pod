@@ -38,7 +38,7 @@ function resizeInfo() {
   const ihead = document.querySelector('#info-video-wrapper > .iframe-header')
     , ph = player.el().offsetHeight
     , pb = parseInt(player.el().style.top) + ph - 30
-    , pw = ph*hdres;  //$('#podvideoplayer .vjs-poster').width()
+    , pw = ph*hdres;  // ('#podvideoplayer .vjs-poster').width()
   document.getElementById("info-video").style.top = ihead.offsetHeight+'px';
   // console.log('MTop: '+player.el().style.top+'\nleft: '+player.el().offsetLeft+'\nwidth: '+player.el().offsetWidth+'\nheight: '+player.el().offsetHeight+' /// '+pb)
   document.getElementById("info-video-wrapper").cssText = "top:"+player.el().style.top+", height:"+(ph - 30)+"px, left: '50%', 'margin-left':"+ -(pw/2)+"px, width:"+ pw+"px";

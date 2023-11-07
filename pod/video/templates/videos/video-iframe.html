@@ -12,8 +12,6 @@
   <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|capfirst}}{% endblock page_title %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
-
   {% block page_extra_head %}
     {% include 'videos/video-header.html' %}
   {% endblock page_extra_head %}
