@@ -286,6 +286,7 @@ document
       }
     } else {
       oldModeSelected = !oldModeSelected;
+      parseAndLoadWebVTT(document.getElementById("captionContent").value);
       document.getElementById("rawCaptionsEditor").style.display = "none";
       document.getElementById("newCaptionsEditor").style.display = "block";
     }

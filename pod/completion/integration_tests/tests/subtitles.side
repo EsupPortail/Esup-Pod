@@ -1,0 +1,170 @@
+{
+  "id": "9ea49e3a-2f6e-49aa-b1c7-975e8c0f70d3",
+  "version": "2.0",
+  "name": "pod-front",
+  "url": "http://localhost:9090/",
+  "tests": [{
+    "id": "pod-sous-titres-mode-edition",
+    "name": "Untitled",
+    "commands": [{
+      "id": "bb668b94-3724-482f-b0e9-ba055f0e3000",
+      "comment": "Ouvre la page de complétion",
+      "command": "open",
+      "target": "/video/completion/0001-first-video/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "833e6f0f-cfb0-494d-b62f-4dd944b3df42",
+      "comment": "Ouvre l'accordéon des sous-titres",
+      "command": "click",
+      "target": "id=section_track",
+      "targets": [
+        ["id=section_track", "id"],
+        ["linkText=Sous-titres et légendes", "linkText"],
+        ["css=#section_track", "css:finder"],
+        ["xpath=//a[contains(text(),'Sous-titres et légendes')]", "xpath:link"],
+        ["xpath=//a[@id='section_track']", "xpath:attributes"],
+        ["xpath=//div[@id='accordeon']/li[3]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[3]", "xpath:href"],
+        ["xpath=//div/li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Sous-titres et légendes ')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "18f5e568-9ae1-4e43-920d-8e7aca81aa83",
+      "comment": "Clique sur le bouton pour ouvrir l'outil de création de sous-titres",
+      "command": "click",
+      "target": "linkText=Outil de création de fichier de sous-titres/légende",
+      "targets": [
+        ["linkText=Outil de création de fichier de sous-titres/légende", "linkText"],
+        ["css=p > .btn", "css:finder"],
+        ["xpath=//a[contains(text(),'Outil de création de fichier de sous-titres/légende')]", "xpath:link"],
+        ["xpath=//div[@id='accordeon']/li[4]/div/p/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/video/completion/caption_maker/33955-bbb/')]", "xpath:href"],
+        ["xpath=//p/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Outil de création de fichier de sous-titres/légende')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "80aceab9-1cac-42ce-ba1e-e4e0ffb5fa27",
+      "comment": "Clique sur le bouton pour ajouter un sous-titre",
+      "command": "click",
+      "target": "id=addSubtitle",
+      "targets": [
+        ["id=addSubtitle", "id"],
+        ["css=#addSubtitle", "css:finder"],
+        ["xpath=//button[@id='addSubtitle']", "xpath:attributes"],
+        ["xpath=//div[@id='newCaptionsEditor']/button", "xpath:idRelative"],
+        ["xpath=//div[2]/div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,' Ajouter un(e) légende / sous-titre')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "042569e8-f390-40c1-a04f-413c88519950",
+      "comment": "Sélectionne le champ des sous-titres",
+      "command": "click",
+      "target": "name=captionTextInput",
+      "targets": [
+        ["id=c40389510", "id"],
+        ["name=captionTextInput", "name"],
+        ["css=#c40389510", "css:finder"],
+        ["xpath=//textarea[@id='c40389510']", "xpath:attributes"],
+        ["xpath=//div[@id='newCaptionsEditor']/form/div[2]/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "3f6c5cb2-d467-4e35-9d55-3b69bba7dd13",
+      "comment": "Écrit le contenu du sous-titre",
+      "command": "type",
+      "target": "name=captionTextInput",
+      "targets": [
+        ["id=c40389510", "id"],
+        ["name=captionTextInput", "name"],
+        ["css=#c40389510", "css:finder"],
+        ["xpath=//textarea[@id='c40389510']", "xpath:attributes"],
+        ["xpath=//div[@id='newCaptionsEditor']/form/div[2]/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/textarea", "xpath:position"]
+      ],
+      "value": "Texte initial"
+    }, {
+      "id": "ffed3160-9509-4730-8478-c0c6543419a2",
+      "comment": "Change le mode d'édition",
+      "command": "click",
+      "target": "id=switchOldEditMode",
+      "targets": [
+        ["id=switchOldEditMode", "id"],
+        ["css=#switchOldEditMode", "css:finder"],
+        ["xpath=//button[@id='switchOldEditMode']", "xpath:attributes"],
+        ["xpath=//div[@id='pod-mainContent']/div[2]/div/div/div/div[7]/button", "xpath:idRelative"],
+        ["xpath=//div[7]/button", "xpath:position"],
+        ["xpath=//button[contains(.,' Changer le mode d’édition')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "50f96a38-c5bd-49bb-babe-47227a1a022e",
+      "comment": "Sélectionne le champ des sous-titres",
+      "command": "click",
+      "target": "id=captionContent",
+      "targets": [
+        ["id=captionContent", "id"],
+        ["css=#captionContent", "css:finder"],
+        ["xpath=//textarea[@id='captionContent']", "xpath:attributes"],
+        ["xpath=//div[@id='rawCaptionsEditor']/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div/textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "0ee2ab41-f02e-4a7f-a865-4caf1500d8ed",
+      "comment": "Modifie le contenu du sous-titre",
+      "command": "type",
+      "target": "id=captionContent",
+      "targets": [
+        ["id=captionContent", "id"],
+        ["css=#captionContent", "css:finder"],
+        ["xpath=//textarea[@id='captionContent']", "xpath:attributes"],
+        ["xpath=//div[@id='rawCaptionsEditor']/textarea", "xpath:idRelative"],
+        ["xpath=//div[2]/div/textarea", "xpath:position"]
+      ],
+      "value": "WEBVTT\\n\\n00:00.000 --> 00:02.000\\nTexte corrigé"
+    }, {
+      "id": "0bd7bfef-23b1-4eee-82aa-e8e10daf2541",
+      "comment": "Reviens au mode d'édition par défaut",
+      "command": "click",
+      "target": "id=switchOldEditMode",
+      "targets": [
+        ["id=switchOldEditMode", "id"],
+        ["css=#switchOldEditMode", "css:finder"],
+        ["xpath=//button[@id='switchOldEditMode']", "xpath:attributes"],
+        ["xpath=//div[@id='pod-mainContent']/div[2]/div/div/div/div[7]/button", "xpath:idRelative"],
+        ["xpath=//div[7]/button", "xpath:position"],
+        ["xpath=//button[contains(.,' Changer le mode d’édition')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "bf33e57c-b117-4d43-ba0f-ce246565ed15",
+      "comment": "Récupère la valeur du champ du sous-titre",
+      "command": "storeValue",
+      "target": "name=captionTextInput",
+      "targets": [],
+      "value": "sousTitre"
+    }, {
+      "id": "ee3f5108-139c-4e56-8ecd-5f4fe90208ad",
+      "comment": "Vérifie si la valeur modifiée est bien prise en compte d'un mode d'édition à l'autre",
+      "command": "assert",
+      "target": "sousTitre",
+      "targets": [],
+      "value": "Texte corrigé"
+    }]
+  }],
+  "suites": [{
+    "id": "pod-front",
+    "name": "Esup Pod test selenium",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["pod-sous-titres-mode-edition"]
+  }],
+  "urls": ["http://localhost:9090/"],
+  "plugins": []
+}
