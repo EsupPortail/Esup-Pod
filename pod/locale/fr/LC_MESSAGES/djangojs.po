@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-31 11:26+0000\n"
+"POT-Creation-Date: 2023-11-07 10:52+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -488,6 +488,14 @@ msgid "The file extension not in the allowed extension:"
 msgstr ""
 "Cette extension de fichier n’est pas présente dans les extensions "
 "autorisées :"
+
+#: pod/main/static/js/videojs-info-controlbar.js
+msgid "Info"
+msgstr "Info"
+
+#: pod/main/static/js/videojs-info-controlbar.js
+msgid "Information"
+msgstr "Information"
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
 msgid "<b>Public:</b> the playlist can be accessed by anyone."
