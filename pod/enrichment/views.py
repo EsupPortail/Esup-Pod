@@ -248,7 +248,7 @@ def video_enrichment(request, slug, slug_c=None, slug_t=None, slug_private=None)
                 "videos": videos,
             }
         else:
-            return HttpResponseNotFound()
+            raise PermissionDenied(_("You cannot access this playlist because it is private."))
     template_video = (
         "enrichment/video_enrichment-iframe.html"
         if (request.GET.get("is_iframe"))

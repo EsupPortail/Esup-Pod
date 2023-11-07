@@ -395,8 +395,11 @@ def playlist_can_be_displayed(request: WSGIRequest, playlist: Playlist) -> bool:
         playlist.visibility == "public"
         or playlist.visibility == "protected"
         or (
-            playlist.owner == request.user
-            or playlist in get_playlists_for_additional_owner(request.user)
-            or request.user.is_staff
+            request.user.is_authenticated
+            and (
+                playlist.owner == request.user
+                or playlist in get_playlists_for_additional_owner(request.user)
+                or request.user.is_staff
+            )
         )
     )
