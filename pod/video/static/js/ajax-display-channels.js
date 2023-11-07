@@ -1,3 +1,10 @@
+// Read-only globals defined in base.html
+/*
+  global GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL, GET_CHANNEL_TAGS_REQUEST_URL,
+  GET_THEMES_FOR_SPECIFIC_CHANNEL_REQUEST_URL
+*/
+
+
 /**
  * Set attributes of an HTML element with a two-dimensional array.
  *
