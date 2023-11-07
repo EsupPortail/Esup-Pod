@@ -16,6 +16,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.keys import Keys
 
 from pod.video.models import Video, Type
 import time
@@ -243,8 +244,25 @@ class SeleniumTestCase(object):
             value (str, optional): The value to be typed into the input field.
         """
         element = find_element(driver, target)
-        element.click()
-        element.clear()
+        element_tag = element.tag_name
+        without_scroll_elements = {
+            "button",
+            "submit",
+            "textarea",
+            "input",
+            "div",
+            "span",
+            "i",
+        }
+        time.sleep(1)
+        if element_tag not in without_scroll_elements:
+            driver.execute_script("arguments[0].scrollIntoView();", element)
+            element.click()
+            element.clear()
+        else:
+            driver.execute_script("arguments[0].click();", element)
+            element.send_keys(Keys.CONTROL, 'a')
+            element.send_keys(Keys.DELETE)
         element.send_keys(value)
 
     def select(self, driver, target, value, url=""):
