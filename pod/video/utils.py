@@ -1,4 +1,5 @@
 """Esup-Pod video utilities."""
+from django.db.models.functions import Lower
 import os
 import re
 import shutil
@@ -201,7 +202,7 @@ def sort_videos_list(videos_list, sort_field, sort_direction=""):
 
     Sorted by specific column name and ascending or descending direction
     """
-    if sort_field and sort_field in [
+    if sort_field and sort_field in {
         "category",
         "channel",
         "cursus",
@@ -224,10 +225,16 @@ def sort_videos_list(videos_list, sort_field, sort_direction=""):
         "type",
         "viewcount",
         "rank",
-    ]:
-        if not sort_direction:
+    }:
+        if sort_field in {"title", "title_fr", "title_en"}:
+            sort_field = Lower(sort_field)
+            if not sort_direction:
+                sort_field = sort_field.desc()
+
+        elif not sort_direction:
             sort_field = "-" + sort_field
         videos_list = videos_list.order_by(sort_field)
+
     return videos_list.distinct()
 
 

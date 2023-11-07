@@ -1,6 +1,7 @@
 """Esup-Pod playlist utilities."""
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.db.models.functions import Lower
 from django.db.models import Max
 from django.urls import reverse
 from django.core.handlers.wsgi import WSGIRequest
@@ -350,7 +351,7 @@ def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") 
     Returns:
         list (:class:`list(pod.playlist.models.Playlist)`): The list of playlist
     """
-    if sort_field and sort_field in [
+    if sort_field and sort_field in {
         "id",
         "name",
         "visibility",
@@ -358,10 +359,16 @@ def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") 
         "owner",
         "date_created",
         "date_updated",
-    ]:
-        if not sort_direction:
+    }:
+        if sort_field in {"name"}:
+            sort_field = Lower(sort_field)
+            if not sort_direction:
+                sort_field = sort_field.desc()
+
+        elif not sort_direction:
             sort_field = "-" + sort_field
         playlist_list = playlist_list.order_by(sort_field)
+
     return playlist_list.distinct()
 
 
