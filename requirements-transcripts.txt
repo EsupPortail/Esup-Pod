@@ -5,3 +5,6 @@ stt==1.4.0 # linux only
 
 # Offline open source speech recognition API based on Kaldi and Vosk
 vosk==0.3.45
+
+# Whisper
+openai-whisper

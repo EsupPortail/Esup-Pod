@@ -383,7 +383,7 @@ class Encoding_video_model(Encoding_video):
         encoding_log.save()
         if len(self.list_thumbnail_files) > 0:
             info_video["list_thumbnail_files"] = self.list_thumbnail_files
-            self.store_json_list_thumbnail_files(info_video, video_to_encode)
+            self.store_json_list_thumbnail_files(info_video)
 
     def encode_video(self):
         """Start video encoding."""

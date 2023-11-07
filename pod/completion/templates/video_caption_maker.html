@@ -84,7 +84,7 @@
     <div id="captionTitle"></div>
     <div>
       <label class="col-form-label" for="textCaptionEntry">{% trans "Caption" %}</label>
-      <textarea class="form-control" id="textCaptionEntry" autocomplete="off"></textarea>
+      <textarea class="form-control" id="textCaptionEntry" autocomplete="off" cols="40" rows="2" wrap="hard" maxlength="80"></textarea>
     </div>
     <div >
       <button id="playButton" class="btn btn-primary btn-sm mt-1">
@@ -111,10 +111,10 @@
       <textarea class="form-control captions_editor" id="captionContent"></textarea>
     </div>
     <div class="captions_editor text-center container" id="newCaptionsEditor">
-      <h2 class="h3" id="noCaptionsText">{% trans "No captions" %} </h5>
-      <button id="addSubtitle" type="button" class="btn btn-outline-primary btn-lg">
-        <i class="bi bi-plus" width='28px' height='28px'></i>
-        {% trans "Add subtitle" %}
+      <h2 class="h3" id="noCaptionsText">{% trans "No captions" %}</h5>
+      <button id="addSubtitle" type="button" class="btn btn-outline-primary btn-lg mt-2">
+        <i class="bi bi-plus" aria-hidden="true"></i>
+        {% trans "Add a caption/subtitle" %}
       </button>
     </div>
     <div>
@@ -218,11 +218,6 @@
 {% block more_script %}
   <script>
     var current_folder = {{ current_folder.id }};
-    var captionFileSourceUpdateTimer = null;
-    var file_loaded = false;
-    var file_loaded_id = undefined;
-    var captionsArray = [];
-    var autoPauseAtTime = -1;
   </script>
   <script src="{% static 'js/caption_maker.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/completion.js' %}?ver={{VERSION}}"></script>

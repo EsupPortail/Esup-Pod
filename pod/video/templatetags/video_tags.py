@@ -16,6 +16,8 @@ from tagging.utils import LOGARITHMIC
 from ..forms import VideoVersionForm
 from ..context_processors import get_available_videos
 from pod.video_encode_transcript.utils import check_file
+from django.contrib.auth.models import User
+from pod.video.models import Video
 
 import importlib
 import os
@@ -28,6 +30,21 @@ HOMEPAGE_NB_VIDEOS = getattr(django_settings, "HOMEPAGE_NB_VIDEOS", 12)
 HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS = getattr(
     django_settings, "HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS", False
 )
+
+
+@register.simple_tag(name="get_marker_time_for_user")
+def get_marker_time_for_user(video: Video, user: User):
+    """Tag to get the marker time of the video for the authenticated user."""
+    return video.get_marker_time_for_user(user)
+
+
+@register.simple_tag(name="get_percent_marker_for_user")
+def get_percent_marker_for_user(video: Video, user: User):
+    """Tag to get the percent time of the video viewed by the authenticated user."""
+    if video.duration and video.duration != 0:
+        return int((video.get_marker_time_for_user(user) / video.duration) * 100)
+    else:
+        return 0
 
 
 @register.filter(name="file_exists")
