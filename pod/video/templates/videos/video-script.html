@@ -9,9 +9,6 @@
 
 <script id="id_video_script" type="module">
   import '{% static 'video.js/dist/video.min.js' %}';
-  {% if use_video_p2p %}
-    import '{% static 'js/hls-plugin.js' %}';
-  {% endif %}
   import '{% static 'videojs-quality-selector-hls/dist/videojs-quality-selector-hls.min.js' %}';
   {% if video.overview or playlist_in_get %}
     import '{% static 'js/videojs-vtt-thumbnails.js' %}';
