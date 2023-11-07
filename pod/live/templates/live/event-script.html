@@ -17,7 +17,7 @@
     import '{% static 'js/videojs-vtt-thumbnails.js' %}';
   {% endif %}
   import '{% static 'js/videojs-logo-controlbar.js' %}';
-
+  import '{% static 'js/viewcounter.js' %}';
 
     // Debug if necessary, depends on the settings_local
     const debug = "{% get_setting "DEBUG" False %}" === "True";
@@ -270,7 +270,9 @@
 
         {% if event.broadcaster.enable_viewer_count %}
           try {
-            player.videoJsViewerCount();
+            player.ready(function () {
+              player.videoJsViewerCount();
+            });
           } catch {
             console.log(gettext('A problem occurred displaying the number of viewers'));
           }

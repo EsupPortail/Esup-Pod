@@ -57,7 +57,7 @@
     class podVideoJsChapters extends Plugin {
       constructor(player, options) {
         super(player, options);
-        var settings = videojs.mergeOptions(defaults, options),
+        var settings = videojs.obj.merge(defaults, options),
           chapters = {},
           currentChapter = document.createElement("li");
 

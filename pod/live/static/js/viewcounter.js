@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Initialize the plugin
     videoJsViewerCount = function (options) {
-      const settings = videojs.mergeOptions(defaults, options),
+      const settings = videojs.obj.merge(defaults, options),
         player = this;
       player.ready(function () {
         if (settings.ui) {

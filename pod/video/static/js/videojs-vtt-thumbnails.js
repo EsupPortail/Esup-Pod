@@ -181,7 +181,7 @@ var vttThumbnails = function vttThumbnails(options) {
   var _this = this;
 
   this.ready(function () {
-    onPlayerReady(_this, videojs.mergeOptions(defaults, options));
+    onPlayerReady(_this, videojs.obj.merge(defaults, options));
   });
 };
 

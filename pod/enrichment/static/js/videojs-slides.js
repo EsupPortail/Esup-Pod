@@ -476,7 +476,7 @@ const onPlayerReady = function (player, options) {
  */
 const slides = function (options) {
   this.ready(function () {
-    onPlayerReady(this, videojs.mergeOptions(slides_defaults, options));
+    onPlayerReady(this, videojs.obj.merge(slides_defaults, options));
   });
 };
 
