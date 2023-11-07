@@ -213,7 +213,7 @@
   top: -0.5rem;
   height: 100%;
   position: relative;
-  background: rgba(100 100 100 0.5);
+  background: rgb(100 100 100 / 50%);
 }
 
 .vjs-chapbar-holder {
