@@ -1,13 +1,17 @@
-// Esup-Pod videojs-info-controlbar
+/**
+ * @file Esup-Pod functions for managing video.js information panel.
+ * @since 2.0.0
+ */
 
 // Read-only globals defined in video-script.html
 /*
-  global player
+global player
 */
 
 // Global vars
 const hdres = 1920/1080;
-let isPlaying = false, wasPlaying = false;
+let isPlaying = false;
+let wasPlaying = false;
 
 /**
  * Show or Hide the Pod video information panel (Called by video-iframe)
@@ -35,10 +39,10 @@ function show_info_video() {
  * Resize responsively the Pod video Information panel
  */
 function resizeInfo() {
-  const ihead = document.querySelector('#info-video-wrapper > .iframe-header')
-    , ph = player.el().offsetHeight
-    , pb = parseInt(player.el().style.top) + ph - 30
-    , pw = ph*hdres;  // ('#podvideoplayer .vjs-poster').width()
+  const ihead = document.querySelector('#info-video-wrapper > .iframe-header');
+  const ph = player.el().offsetHeight;
+  const pb = parseInt(player.el().style.top) + ph - 30;
+  const pw = ph*hdres;  // ('#podvideoplayer .vjs-poster').width()
   document.getElementById("info-video").style.top = ihead.offsetHeight+'px';
   // console.log('MTop: '+player.el().style.top+'\nleft: '+player.el().offsetLeft+'\nwidth: '+player.el().offsetWidth+'\nheight: '+player.el().offsetHeight+' /// '+pb)
   document.getElementById("info-video-wrapper").cssText = "top:"+player.el().style.top+", height:"+(ph - 30)+"px, left: '50%', 'margin-left':"+ -(pw/2)+"px, width:"+ pw+"px";
@@ -49,9 +53,9 @@ function resizeInfo() {
  * Resize responsively the video.js player (Called by video-iframe.html)
  */
 function resizeVideoJs(){
-  const width = document.getElementById(player.id()).parentElement.offsetWidth
-    , height = document.getElementById(player.id()).parentElement.offsetHeight
-    , ratio = width/height;
+  const width = document.getElementById(player.id()).parentElement.offsetWidth;
+  const height = document.getElementById(player.id()).parentElement.offsetHeight;
+  const ratio = width/height;
   let margintop = 0;
   if(ratio<hdres) {
     player.width(width);

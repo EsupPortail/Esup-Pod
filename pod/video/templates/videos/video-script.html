@@ -101,7 +101,7 @@
   player = videojs('podvideoplayer', options, function(){});
 
   player.on('firstplay', function(){
-    var data_form = $( "#video_count_form" ).serializeArray();
+    var data_form = $("#video_count_form").serializeArray();
     jqxhr = $.post(
       $( "#video_count_form" ).attr("action"),
       data_form
@@ -116,7 +116,7 @@
       let currentTime = parseInt(player.currentTime());
       if(currentTime % 5 == 0 && currentTime != last_timeupdate ) {
         last_timeupdate = currentTime;
-        fetch(marker_url.replace("/0/", "/"+currentTime+"/"), {}); //.then(response => console.log(response)); 
+        fetch(marker_url.replace("/0/", "/"+currentTime+"/"), {}); //.then(response => console.log(response));
       }
     });
   {% endif %}
