@@ -84,11 +84,11 @@
                                 <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
                             </video>
                         </div>
-                        {# ajouter ici l' event.aside_iframe_url si nécessaire #}
-                        {# ajouter ici le chatBBB si nécessaire #}
+                        {# ajouter ici l'event.aside_iframe_url au besoin #}
+                        {# ajouter ici le chatBBB au besoin #}
                     </div>
                 </div>
-                {# ajouter ici l' event.iframe_url si nécessaire #}
+                {# ajouter ici l'event.iframe_url au besoin #}
 
                 <div id="divvideoonhold" style="display:none">
                     {# waiting video #}
@@ -160,17 +160,17 @@
                     })
                 }
 
-                $('#div-video-wrapper').append('<div id="overlay-footer"></div>')
+                let overlay = document.createElement("div");
+                overlay.id="overlay-footer";
+                document.getElementById("div-video-wrapper").appendChild(overlay);
                 iframeplayer.ready(function () {
-                    const btinfo = $('.vjs-info-button:eq(0)')[0]
-                    $(btinfo).clone().appendTo('#overlay-footer')
-                    $('#overlay-footer .vjs-info-button').click(function () {
-                        $(btinfo).click()
-                    })
+                    const btinfo = document.querySelector(".vjs-info-button");
+                    const clonedInfo = btinfo.cloneNode(true);
+                    overlay.appendChild(clonedInfo);
+                    clonedInfo.addEventListener("click", showInfoVideo);
+                  })
                 })
-                $(document).on('click', '.close', function () {
-                    show_info_video()
-                });
+                document.querySelector("#info-video-wrapper .close").addEventListener("click", showInfoVideo);
 
                 // Responsive
                 const hdres = 1920 / 1080;
@@ -193,7 +193,7 @@
                     $('#overlay-footer').css({'top': pb + 'px'})
                 }
 
-                let show_info_video = function () { // Call by videojs-controllbar
+                let showInfoVideo = function () { // Call by videojs-controllbar
                     const hasStarted = $(iframeplayer.el()).hasClass('vjs-has-started')
                         , isOverlayed = $('#div-video-wrapper').hasClass('overlay')
                         , isInfoOverlayed = isOverlayed && $('#div-video-wrapper').hasClass('info')

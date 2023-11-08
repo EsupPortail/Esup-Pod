@@ -16,7 +16,7 @@ let wasPlaying = false;
 /**
  * Show or Hide the Pod video information panel (Called by video-iframe)
  */
-function show_info_video() {
+function showInfoVideo() {
   const hasStarted = player.el().classList.contains('vjs-has-started');
   const isOverlayed = document.getElementById("div-video-wrapper").classList.contains('overlay');
   const isInfoOverlayed = isOverlayed && document.getElementById("div-video-wrapper").classList.contains('info');
@@ -86,11 +86,11 @@ function resizeVideoJs(){
         ui: true,
       };
 
-    /*
-     * Info menu button
-     */
     var MenuButton = videojs.getComponent("Button");
 
+    /**
+     * Info menu button for video.js
+     */
     class InfoMenuButton extends MenuButton {
       constructor(player, options) {
         options.label = gettext("Info");
@@ -102,7 +102,7 @@ function resizeVideoJs(){
     }
     InfoMenuButton.prototype.handleClick = function (event) {
       MenuButton.prototype.handleClick.call(this, event);
-      show_info_video();
+      showInfoVideo();
     };
     MenuButton.registerComponent("InfoMenuButton", InfoMenuButton);
 

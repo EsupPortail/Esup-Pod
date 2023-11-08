@@ -65,19 +65,19 @@
 
         {% if video.is_video %}
           // Append overlay-footer to video-wrapper
-          var overlay = document.createElement("div");
+          let overlay = document.createElement("div");
           overlay.id="overlay-footer";
           document.getElementById("div-video-wrapper").appendChild(overlay);
 
           player.ready(function() {
             const btinfo = document.querySelector(".vjs-info-button");
-            const cloned_info = btinfo.cloneNode(true);
-            overlay.appendChild(cloned_info);
-            cloned_info.addEventListener("click", show_info_video);
+            const clonedInfo = btinfo.cloneNode(true);
+            overlay.appendChild(clonedInfo);
+            clonedInfo.addEventListener("click", showInfoVideo);
           })
         {% endif %}
 
-        document.querySelector("#info-video-wrapper .close").addEventListener("click", show_info_video);
+        document.querySelector("#info-video-wrapper .close").addEventListener("click", showInfoVideo);
 
         player.on('play',function() {
           isPlaying = true;
