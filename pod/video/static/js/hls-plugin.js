@@ -6,7 +6,7 @@ import "/static/video.js/dist/video.min.js";
 
 let alreadyRegistered = false;
 
-const registerSourceHandler = function(vjs) {
+const registerSourceHandler = function (vjs) {
   console.log(Hls.isSupported());
   if (!Hls.isSupported()) {
     console.log("Hls.js is not supported in this browser.");
@@ -27,7 +27,7 @@ const registerSourceHandler = function(vjs) {
   // FIXME: typings
   html5.registerSourceHandler(
     {
-      canHandleSource: function(source) {
+      canHandleSource: function (source) {
         const hlsTypeRE = /^application\/x-mpegURL|application\/vnd\.apple\.mpegurl$/i;
         const hlsExtRE = /\.m3u8/i;
 
@@ -37,7 +37,7 @@ const registerSourceHandler = function(vjs) {
         return "";
       },
 
-      handleSource: function(source, tech) {
+      handleSource: function (source, tech) {
         if (tech.hlsProvider) {
           tech.hlsProvider.dispose();
         }
@@ -95,6 +95,82 @@ class HLSJSConfigHandler extends Plugin {
 }
 
 videojs.registerPlugin("hlsjs", HLSJSConfigHandler);
+
+// ---------------------------------------------------------------------------
+// Pod resolutions plugin
+// ---------------------------------------------------------------------------
+
+class PodResolutionsPlugin extends Plugin {
+  currentSelection = null;
+  resolutions = [];
+  autoResolutionChosenId = null;
+
+  constructor(player) {
+    super(player);
+
+    player.on("video-change", function () {
+      this.resolutions = [];
+      this.trigger('resolutions-removed');
+    });
+  }
+
+  add(resolutions) {
+    for (let r of resolutions) {
+      this.resolutions.push(r);
+    }
+    this.currentSelection = this.getSelected();
+
+    this._sort();
+    this.trigger("resolutions-added");
+  }
+
+  remove(resolutionIndex) {
+    this.resolutions = this.resolutions.filter(r => r.id !== resolutionIndex);
+    this.trigger('resolutions-removed');
+  }
+
+  getResolutions() {
+    return this.resolutions;
+  }
+
+  getSelected() {
+    return this.resolutions.find(r => r.id === this.autoResolutionChosenId);
+  }
+
+  select(options) {
+    const { id, autoResolutionChosenId, fireCallback } = options;
+
+    if (this.currentSelection?.id === id && this.autoResolutionChosenId === autoResolutionChosenId) return;
+
+    this.autoResolutionChosenId = autoResolutionChosenId;
+
+    for (const r of this.resolutions) {
+      r.selected = r.id === id
+
+      if (r.selected) {
+        this.currentSelection = r
+
+        if (fireCallback) r.selectCallback()
+      }
+    }
+
+    this.trigger("resolutions-changed");
+  }
+
+  _sort() {
+    this.resolutions.sort((a, b) => {
+      if (a.id === -1) return 1
+      if (b.id === -1) return -1
+
+      if (a.height > b.height) return -1
+      if (a.height === b.height) return 0
+      return 1
+    })
+  }
+}
+
+videojs.registerPlugin("podResolutions", PodResolutionsPlugin);
+
 
 // ---------------------------------------------------------------------------
 // HLS JS source handler
@@ -307,7 +383,7 @@ export class Html5Hlsjs {
     // increment/set error count
     if (this.errorCounts[data.type]) this.errorCounts[data.type] += 1;
     else this.errorCounts[data.type] = 1;
-
+    console.log(data)
     if (data.fatal)
       console.error(error.message, {
         currentTime: this.player.currentTime(),
@@ -344,7 +420,7 @@ export class Html5Hlsjs {
 
   _removeQuality(index) {
     this.hls.removeLevel(index);
-    this.player.peertubeResolutions().remove(index);
+    this.player.podResolutions().remove(index);
     this.hls.currentLevel = -1;
   }
 
@@ -375,7 +451,7 @@ export class Html5Hlsjs {
       selectCallback: () => (this.hls.currentLevel = -1)
     });
 
-    this.player.peertubeResolutions().add(resolutions);
+    this.player.podResolutions().add(resolutions);
   }
 
   _startLoad() {
@@ -461,7 +537,7 @@ export class Html5Hlsjs {
       const autoResolutionChosenId = this.hls.autoLevelEnabled ? data.level : -1;
 
       this.player
-        .peertubeResolutions()
+        .podResolutions()
         .select({
           id: resolutionId,
           autoResolutionChosenId,
