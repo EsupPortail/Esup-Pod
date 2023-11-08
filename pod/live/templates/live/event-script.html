@@ -259,11 +259,18 @@
         video_on_hold_is_displayed = false;
         let div_video_on_hold = document.getElementById("divvideoonhold");
         if (div_video_on_hold) {
-          videojs(document.getElementById("divvideoonhold")).dispose();
+          let videoPlayer = videojs(div_video_on_hold);
+          if (videoPlayer) {
+            videoPlayer.dispose();
+          }
         }
+
         // Affichage du flux direct
         started = true;
-        document.getElementById("divvideoplayer").style.display = "block";
+        let divvideoplayer = document.getElementById("divvideoplayer");
+        if (divvideoplayer) {
+          divvideoplayer.style.display = "block";
+        }
 
         {% if event.broadcaster.enable_viewer_count %}
           try {
@@ -277,7 +284,10 @@
 
         // Affichage des boutons de contrôle de l'enregistrement
         {% if can_record %}
-          document.getElementById("recording_btns").classList.remove("d-none");
+          let recordingBtns = document.getElementById("recording_btns");
+          if (recordingBtns) {
+            recordingBtns.classList.remove("d-none");
+          }
           updateStreamStatus();
           setInterval(updateStreamStatus, 60000); // every 60 sec
           setInterval(displayRecordingDuration, 1000); // every sec
