@@ -6,8 +6,8 @@
 {% block page_extra_head %}
 {% include 'videos/video-header.html' %}
 {% if event.is_current and event.broadcaster.enable_viewer_count %}
-    <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
-    <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}">
+    <script>
+      let heartbeat_delay = {{ heartbeat_delay }}</script>
     </script>
 {% endif %}
 {% if event.is_current and event.enable_transcription and event.broadcaster.status and event.broadcaster.transcription_file %}

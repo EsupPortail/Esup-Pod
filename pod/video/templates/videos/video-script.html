@@ -67,13 +67,13 @@
         /** configure personal tracker and STUN servers */
         trackerAnnounce: [
           {% for tracker in p2p_trackers %}
-          "{{tracker}}"{% if not forloop.last %},{%endif%}
+            "{{tracker}}"{% if not forloop.last %},{%endif%}
           {% endfor %}
         ],
         rtcConfig: {
           iceServers: [
           {% for stun in p2p_stuns %}
-          { urls: "{{stun}}" }{% if not forloop.last %},{%endif%}
+            { urls: "{{stun}}" }{% if not forloop.last %},{%endif%}
           {% endfor %}
           ]
         },
@@ -411,7 +411,7 @@
   {% endif %}
 }
 window.initialize_player()
-console.log("downloadTotals:", window.downloadTotals);
+
 </script>
 {% if use_video_p2p %}
   <script src="{% static 'js/video-p2p-stats.js' %}?ver={{VERSION}}"></script>

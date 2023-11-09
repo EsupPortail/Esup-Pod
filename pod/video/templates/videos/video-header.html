@@ -16,10 +16,9 @@
 <script src="{% static 'js/videojs-hlsjs-plugin.min.js' %}?ver={{VERSION}}"></script>
 -->
 
-<script src="{% static 'videojs-quality-selector-hls/dist/videojs-quality-selector-hls.min.js' %}"></script>
 <link href="{% static 'videojs-quality-selector-hls/dist/videojs-quality-selector-hls.css' %}?ver={{VERSION}}" rel="stylesheet">
 
-<!-- mp4 quality selector 
+<!-- mp4 quality selector
   // remove it from videojs 8 due to extend error
   // resolve in https://github.com/silvermine/videojs-quality-selector/commit/d16842b1acb16cb25f12404ce56d8577b1c61a8d
   // wait for new version
@@ -75,7 +74,6 @@
 {% endif %}
 <!-- logo -->
 <link href="{% static 'css/videojs-controlbar.css' %}?ver={{VERSION}}" rel="stylesheet">
-<script src="{% static 'js/videojs-logo-controlbar.js' %}?ver={{VERSION}}"></script>
 
 {% if video.overview or playlist_in_get %}
   <link id="overview_style_id" href="{% static 'videojs-vtt-thumbnails/dist/videojs-vtt-thumbnails.css' %}?ver={{VERSION}}" rel="stylesheet">

@@ -7,7 +7,6 @@ import "/static/video.js/dist/video.min.js";
 let alreadyRegistered = false;
 
 const registerSourceHandler = function (vjs) {
-  console.log(Hls.isSupported());
   if (!Hls.isSupported()) {
     console.log("Hls.js is not supported in this browser.");
     return;
@@ -253,17 +252,17 @@ export class Html5Hlsjs {
   seekable() {
     if (this.hls.media) {
       if (!this.isLive) {
-        return this.vjs.createTimeRanges(0, this.hls.media.duration);
+        return this.vjs.time.createTimeRanges(0, this.hls.media.duration);
       }
 
       // Video.js doesn't seem to like floating point timeranges
       const startTime = Math.round(this.hls.media.duration - this.dvrDuration);
       const endTime = Math.round(this.hls.media.duration - this.edgeMargin);
 
-      return this.vjs.createTimeRanges(startTime, endTime);
+      return this.vjs.time.createTimeRanges(startTime, endTime);
     }
 
-    return this.vjs.createTimeRanges();
+    return this.vjs.time.createTimeRanges();
   }
 
   // See comment for `initialize` method.
@@ -383,7 +382,7 @@ export class Html5Hlsjs {
     // increment/set error count
     if (this.errorCounts[data.type]) this.errorCounts[data.type] += 1;
     else this.errorCounts[data.type] = 1;
-    console.log(data)
+
     if (data.fatal)
       console.error(error.message, {
         currentTime: this.player.currentTime(),
