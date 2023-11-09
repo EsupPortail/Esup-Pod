@@ -8,7 +8,6 @@
   GET_THEMES_FOR_SPECIFIC_CHANNEL_REQUEST_URL
 */
 
-
 /**
  * Set attributes of an HTML element with a two-dimensional array.
  *
