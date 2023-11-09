@@ -1,5 +1,5 @@
 """Esup-Pod videos views."""
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers.json import DjangoJSONEncoder
@@ -11,8 +11,6 @@ from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseNotAllowed, HttpResponseNotFound
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.http import QueryDict, Http404
-from django.core.exceptions import SuspiciousOperation
-from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _

@@ -262,7 +262,6 @@
 
   /* --- PLAYLIST --- */
   {% if playlist_in_get.autoplay %}
-    console.log({% if "enrichment" in request.path %}true{% endif %});
     player.on('ended', function (e) {
       {% if COUNTDOWN_PLAYLIST_PLAYER >= 3 %}
         const playButtonElement = document.querySelector('.vjs-big-play-button');
@@ -271,11 +270,11 @@
         }
         asyncStartCountDown().then(function () {
           player.dispose();
-          switchToNextVideo({% if "enrichment" in request.path %}true{% endif %});
+          switchToNextVideo();
         });
       {% else %}
         player.dispose();
-        switchToNextVideo({% if "enrichment" in request.path %}true{% endif %});
+        switchToNextVideo();
       {% endif %}
     });
   {% endif %}

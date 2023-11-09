@@ -1,0 +1,18 @@
+{% load i18n %}
+
+<h2 class="card-header card-title pod-card__title h4">
+    <i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% trans 'Informations' %}
+</h2>
+<div class="card-body card-text">
+    <p>{% trans 'To help you, the different types of enrichments have specific colors:' %}</p>
+    <p>
+        <ul>
+            <li class="enrich_image">{% trans 'Image' %}</li>
+            <li class="enrich_document">{% trans 'Document' %}</li>
+            <li class="enrich_richtext">{% trans 'Richtext' %}</li>
+            <li class="enrich_weblink">{% trans 'Weblink' %}</li>
+            <li class="enrich_embed">{% trans 'Embed' %}</li>
+        </ul>
+    </p>
+    <p>{% trans 'They are visible on the video playback bar.' %}</p>
+</div>

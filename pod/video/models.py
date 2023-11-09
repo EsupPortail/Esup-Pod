@@ -1097,7 +1097,7 @@ class Video(models.Model):
                     )
         return version
 
-    def get_default_version_link(self, slug_private):
+    def get_default_version_link(self, slug_private=None):
         """Get link of the version of a video."""
         for version in self.get_other_version():
             if version["link"] == __VERSION_CHOICES_DICT__[self.get_version]:

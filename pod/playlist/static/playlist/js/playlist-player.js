@@ -1,7 +1,10 @@
+var enrichmentIsOn = false;
+var linkForStyleSheetForEnrichment;
+
 /**
  * Switch to the next video when this exists.
  */
-function switchToNextVideo(withRefresh = false) {
+function switchToNextVideo() {
     const playerElements = Array.from(document.querySelectorAll('.player-element'));
     const selectedElement = document.querySelector('.selected');
     let currentIndex = playerElements.indexOf(selectedElement);
@@ -15,9 +18,6 @@ function switchToNextVideo(withRefresh = false) {
     let nextElement = playerElements[currentIndex + 1];
     if (!(nextElement.classList.contains('disabled'))) {
         const videoSrc = playerElements[currentIndex + 1].getAttribute('href');
-        if (withRefresh) {
-            window.location.href =  videoSrc;
-        }
         (currentIndex === -1) ? currentIndex = playerElements.length - 1 : "";
         if (nextElement.getAttribute('data-chapter') || playerElements[currentIndex].getAttribute('data-chapter')) {
             window.location.href = videoSrc;
@@ -40,6 +40,7 @@ function switchToNextVideo(withRefresh = false) {
                         const pageContent = parser.parseFromString(responseData.page_content, 'text/html');
                         const moreScript = parser.parseFromString(responseData.more_script, 'text/html');
                         const pageTitle = parser.parseFromString(responseData.page_title, 'text/html');
+                        enrichmentIsOn = responseData.enrichment_is_on;
                         document.getElementById("video-player").innerHTML = '';
                         const tmp = document.querySelector('head');
                         const coupleOfElements = [
@@ -68,13 +69,29 @@ function switchToNextVideo(withRefresh = false) {
                         for (let id of idElements) {
                             if (document.getElementById(id)) refreshElementWithDocumentFragment(`#${id}`, pageAside);
                         }
+                        document.getElementById('card-enrichmentinformations').style.display = enrichmentIsOn ? 'flex' : 'none';
                         refreshElementWithDocumentFragment('#video-player', pageContent);
                         refreshElementWithDocumentFragment('#more-script', moreScript);
                         refreshElementWithDocumentFragment('title', pageTitle);
-                        document.querySelectorAll("script").forEach((item) => {
-                            if (item.id == "id_video_script") (0, eval)(item.innerHTML);
+                        document.querySelectorAll('script').forEach((item) => {
+                            if (item.id == 'id_video_script') (0, eval)(item.innerHTML);
+                            if (item.id == 'id_video_enrichment_script') (0, eval)(item.innerHTML);
                         });
-
+                        let styleElementForEnrichment = document.getElementById('enrichment_style_id');
+                        if (enrichmentIsOn) {
+                            if (!styleElementForEnrichment) {
+                                let styleElementForEnrichment = document.createElement('link');
+                                styleElementForEnrichment.rel = 'stylesheet';
+                                styleElementForEnrichment.type = 'text/css';
+                                styleElementForEnrichment.href = linkForStyleSheetForEnrichment;
+                                styleElementForEnrichment.id = 'enrichment_style_id';
+                                document.head.appendChild(styleElementForEnrichment);
+                            }
+                        } else {
+                            if (styleElementForEnrichment) {
+                                styleElementForEnrichment.remove();
+                            }
+                        }
                     } else {
                         // TODO Make a real error
                         console.error('Request error: ' + xhr.statusText);

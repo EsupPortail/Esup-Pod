@@ -1,9 +1,8 @@
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.exceptions import PermissionDenied
-from django.core.exceptions import SuspiciousOperation
-from django.http import HttpResponse, HttpResponseNotFound
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
+from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
