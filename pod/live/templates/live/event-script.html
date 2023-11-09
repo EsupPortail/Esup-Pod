@@ -4,9 +4,11 @@
 {% get_setting "USE_VIDEO_P2P" False as use_video_p2p %}
 {% get_setting "P2P_TRACKERS" "" as p2p_trackers %}
 {% get_setting "P2P_STUNS" "" as p2p_stuns %}
+
 {% if use_video_p2p and event.is_current %}
   <script src="{% static 'js/video-p2p-stats.js' %}?ver={{VERSION}}"></script>
 {% endif %}
+
 <script type="module">
   import '{% static 'video.js/dist/video.min.js' %}';
   import '{% static 'videojs-quality-selector-hls/dist/videojs-quality-selector-hls.min.js' %}';
@@ -41,6 +43,10 @@
         maxBufferSize: 0,
         maxBufferLength: 10,
         liveSyncDurationCount: 10,
+        backBufferLength: 90,
+        enableWorker: true,
+        lowLatencyMode: true,
+        debug: true, // TODO - REMOVE
     }
     {% if use_video_p2p and event.is_current %}
       const p2p_config = {
@@ -110,7 +116,10 @@
         window.engineHlsJs.on(p2pml.core.Events.PeerClose, onPeerClose.bind(this));
         window.engineHlsJs.on(p2pml.core.Events.PieceBytesDownloaded, onBytesDownloaded.bind(this));
         window.engineHlsJs.on(p2pml.core.Events.PieceBytesUploaded, onBytesUploaded.bind(this));
-        //window.engineHlsJs.on("segment_loaded", (segment, peerId) => console.log("segment_loaded from", peerId ? `peer ${peerId}` : "HTTP", segment.url));
+        window.engineHlsJs.on("segment_loaded", (segment, peerId) => {
+          // console.log("-> segment_loaded from", peerId ? `peer ${peerId}` : "HTTP", segment.url); // TODO REMOVE
+          // console.log("Segment loaded:", segment);
+        })
       }
     {% endif %}
 
@@ -123,6 +132,9 @@
       errorDisplay: false,
       loop: false,
       html5: {
+        hls: {
+          debug: true,
+        },
         hlsjsConfig: VideoHlsjsConfig
       },
     }
