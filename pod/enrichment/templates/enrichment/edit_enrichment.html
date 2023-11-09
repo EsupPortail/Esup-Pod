@@ -20,10 +20,10 @@
   <script src="{% static 'js/enrichment.js' %}?ver={{VERSION}}"></script>
 
   <script>
-    var num = 0,
-    name = '';
+    let num = 0;
+    let name = '';
     /*** For the form ***/;
-    var video_duration = {{video.duration}};
+    let video_duration = {{video.duration}};
     /*** For the Cancel button ***/
 
     document.addEventListener("reset",   (e) => {
