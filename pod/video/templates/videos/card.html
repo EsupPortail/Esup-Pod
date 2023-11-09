@@ -12,8 +12,15 @@
     <div class="d-flex justify-content-between align-items-center">
       <small class="text-muted time">{{video.duration_in_time}}</small>
       <span class="text-muted small d-flex">
-        {% if video.password or video.is_restricted %}
-          <span title="{% trans 'This content is password protected.' %}" data-bs-toggle="tooltip" data-bs-placement="left">
+        {% if video.password %}
+          <span title="{% trans 'This content is password protected.' %}"
+            data-bs-toggle="tooltip" data-bs-placement="left">
+            <i class="bi bi-key" aria-hidden="true"></i>
+          </span>
+        {% endif %}
+        {% if video.is_restricted %}
+          <span title="{% trans 'This content has restricted access.' %}"
+            data-bs-toggle="tooltip" data-bs-placement="left">
             <i class="bi bi-lock" aria-hidden="true"></i>
           </span>
         {% endif %}

@@ -5,16 +5,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-16 13:36+0000\n"
+"POT-Creation-Date: 2023-10-31 11:26+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Ptitloup <nicolas.can@univ-lille.fr>\n"
+"Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.4\n"
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -370,7 +370,7 @@ msgstr ""
 "URL de la vignette correspondant à l’enregistrement de la présentation BBB."
 
 #: pod/bbb/models.py pod/import_video/models.py pod/meeting/models.py
-#: pod/playlist/models.py pod/recorder/models.py
+#: pod/playlist/models.py pod/recorder/models.py pod/video/models.py
 msgid "User"
 msgstr "Utilisateur"
 
@@ -6112,6 +6112,7 @@ msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
 
 #: pod/playlist/views.py
+#, python-format
 msgid "Edit the playlist “%(pname)s”"
 msgstr "Modifier la liste de lecture « %(pname)s »"
 
@@ -7347,6 +7348,18 @@ msgid "View counts"
 msgstr "Statistiques"
 
 #: pod/video/models.py
+msgid "Marker time"
+msgstr "Marqueur de temps"
+
+#: pod/video/models.py
+msgid "User viewing time marker of video"
+msgstr "Marqueur de lecture de vidéo de l’utilisateur"
+
+#: pod/video/models.py
+msgid "Users viewing time marker of video"
+msgstr "Marqueur de lecture de vidéo des utilisateurs"
+
+#: pod/video/models.py
 msgid "Video version"
 msgstr "Version de la video"
 
@@ -7662,6 +7675,10 @@ msgstr "Aide pour les champs de formulaire"
 #: pod/video/templates/videos/card.html
 msgid "This content is password protected."
 msgstr "Ce contenu est protégé par un mot de passe."
+
+#: pod/video/templates/videos/card.html
+msgid "This content has restricted access."
+msgstr "Ce contenu est en accès restreint."
 
 #: pod/video/templates/videos/card.html
 msgid "This content is chaptered."
