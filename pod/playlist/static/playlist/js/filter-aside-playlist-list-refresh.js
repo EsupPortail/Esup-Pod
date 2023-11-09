@@ -47,7 +47,7 @@ function refreshPlaylistsSearch() {
 }
 
 let playlist_list = document.getElementById("playlists_list");
-if (playlist_list.dataset.numberPlaylists >= 2) {
+if (parseInt(playlist_list.dataset.numberPlaylists) >= 2) {
     // Add trigger event to manage sort direction.
     document
         .getElementById('sort_direction_label')
