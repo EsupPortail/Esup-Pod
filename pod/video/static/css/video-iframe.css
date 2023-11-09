@@ -109,7 +109,7 @@ body {
   position: absolute;
   background-color: #2b333f;
   background-color: rgb(43 51 63 / 70%);
-  z-index: 10;
+  z-index: 9;
   height: 30px;
   padding: 0 0.5em;
   width: 100%;

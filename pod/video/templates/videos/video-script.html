@@ -100,10 +100,21 @@
 
   player = videojs('podvideoplayer', options, function(){});
 
+  /**
+   * Increase the video counter on first play
+   */
   player.on('firstplay', function(){
-    var data_form = $( "#video_count_form" ).serializeArray();
+
+    let formElement = document.getElementById("video_count_form");
+    let formData = new FormData(formElement);
+    let data_form = [];
+
+    formData.forEach(function(value, key) {
+      data_form.push({ name: key, value: value });
+    });
+
     jqxhr = $.post(
-      $( "#video_count_form" ).attr("action"),
+      formElement.getAttribute("action"),
       data_form
     );
   });
@@ -116,7 +127,7 @@
       let currentTime = parseInt(player.currentTime());
       if(currentTime % 5 == 0 && currentTime != last_timeupdate ) {
         last_timeupdate = currentTime;
-        fetch(marker_url.replace("/0/", "/"+currentTime+"/"), {}); //.then(response => console.log(response)); 
+        fetch(marker_url.replace("/0/", "/"+currentTime+"/"), {}); //.then(response => console.log(response));
       }
     });
   {% endif %}
