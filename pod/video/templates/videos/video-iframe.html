@@ -12,6 +12,7 @@
   <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|capfirst}}{% endblock page_title %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  {# jquery is still used by video-script.html #}
   <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
 
   {% block page_extra_head %}
@@ -54,84 +55,41 @@
 
 </div>
 {% block more_script %}
-{% if not form %}
-{% include 'videos/video-script.html'%}
-<script>
-  player.videoJsInfo();
+  {% if not form %}
+    {% include 'videos/video-script.html'%}
+    <script>
 
-  function setOnPlayerPlayPause() {
-    player.on('play',function() {
-      isPlaying = true;
-      $('#div-video-wrapper').attr('class','')
-    })
-    player.on('pause',function() { isPlaying = false; })
-  }
-  {% if video.is_video %}
-    $('#div-video-wrapper').append('<div id="overlay-footer"></div>');
-    player.ready(function() {
-      const btinfo = $('.vjs-info-button:eq(0)')[0]
-      $(btinfo).clone().appendTo('#overlay-footer')
-      $('#overlay-footer .vjs-info-button').click(function(){$(btinfo).click()})
-    })
+      (function () {
+
+        player.videoJsInfo();
+
+        {% if video.is_video %}
+          // Append overlay-footer to video-wrapper
+          let overlay = document.createElement("div");
+          overlay.id="overlay-footer";
+          document.getElementById("div-video-wrapper").appendChild(overlay);
+
+          player.ready(function() {
+            const btinfo = document.querySelector(".vjs-info-button");
+            const clonedInfo = btinfo.cloneNode(true);
+            overlay.appendChild(clonedInfo);
+            clonedInfo.addEventListener("click", showInfoVideo);
+          })
+        {% endif %}
+
+        document.querySelector("#info-video-wrapper .close").addEventListener("click", showInfoVideo);
+
+        player.on('play',function() {
+          isPlaying = true;
+          document.getElementById("div-video-wrapper").className = '';
+        });
+        player.on('pause',function() { isPlaying = false; });
+        resizeVideoJs(); // Initialize the function right now
+        window.onresize = resizeVideoJs; // Call the function on resize
+
+      })();
+      </script>
   {% endif %}
-  $(document).on('click', '.close', function() { show_info_video() });
-
-  // Responsive
-  const hdres = 1920/1080;
-  let isPlaying = false, wasPlaying = false
-  setOnPlayerPlayPause()
-  function resizeInfo() {
-    const ihead = document.querySelector('#info-video-wrapper > .iframe-header')
-        , ph = player.el().offsetHeight
-        , pb = parseInt(player.el().style.top) + ph - 30
-        , pw = ph*hdres//$('#podvideoplayer .vjs-poster').width()
-    $('#info-video').css('top',ihead.offsetHeight+'px')
-    // console.log('MTop: '+player.el().style.top+'\nleft: '+player.el().offsetLeft+'\nwidth: '+player.el().offsetWidth+'\nheight: '+player.el().offsetHeight+' /// '+pb)
-    $('#info-video-wrapper').css({top:player.el().style.top, height:(ph - 30)+'px', left: '50%', 'margin-left': -(pw/2)+'px', width: pw+'px'})
-    $('#overlay-footer').css({'top':pb+'px'})
-  }
-  function resizeVideoJs(){
-    const width = document.getElementById(player.id()).parentElement.offsetWidth
-        , height = document.getElementById(player.id()).parentElement.offsetHeight
-        , ratio = width/height;
-    let margintop = 0
-    if(ratio<hdres) {
-      player.width(width);
-      player.height(width / hdres);
-      margintop = parseInt((height - player.height())/2);
-      document.getElementById("podvideoplayer").style.top = margintop+"px";
-    } else {
-      player.height(height);
-      player.width(height*hdres);
-      document.getElementById("podvideoplayer").style.top = "0";
-    }
-    resizeInfo()
-  }
-  resizeVideoJs(); // Initialize the function right now
-  window.onresize = resizeVideoJs; // Call the function on resize
-
-  var show_info_video = function() { // Call by videojs-controllbar
-    const hasStarted = $(player.el()).hasClass('vjs-has-started')
-        , isOverlayed = $('#div-video-wrapper').hasClass('overlay')
-        , isInfoOverlayed = isOverlayed && $('#div-video-wrapper').hasClass('info')
-        , cls = 'overlay info'
-    if(!isOverlayed) { // No overlay is displayed
-      wasPlaying = isPlaying;
-      player.pause();
-      $('#div-video-wrapper').attr('class', cls)
-      resizeInfo()
-    } else if(!isInfoOverlayed) { // One overlay is displayed but not Info
-      $('#div-video-wrapper').attr('class', cls)
-      resizeInfo()
-    } else { // Info overlay is displayed => close
-      $('#div-video-wrapper').attr('class', (hasStarted ? '' : 'vjs-not-started'))
-      if(wasPlaying) player.play();
-    }
-  }
-
-  $('#video-meta .tab-pane').addClass('show').show();
-  </script>
-{% endif %}
 {% endblock more_script %}
 {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
 {% endblock page_content %}

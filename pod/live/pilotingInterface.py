@@ -1,3 +1,4 @@
+"""Esup-Pod Piloting Interface."""
 import http
 import json
 import logging
@@ -39,8 +40,12 @@ class PilotingInterface(__ABC__):
 
     @abstractmethod
     def __init__(self, broadcaster: Broadcaster):
-        """Initialize the PilotingInterface
-        :param broadcaster: the broadcaster to pilot"""
+        """
+        Initialize the PilotingInterface.
+
+        Args:
+            broadcaster(:class:`pod.live.models.Broadcaster`): the broadcaster to pilot
+        """
         self.broadcaster = broadcaster
         raise NotImplementedError
 
@@ -56,21 +61,24 @@ class PilotingInterface(__ABC__):
 
     @abstractmethod
     def check_piloting_conf(self) -> bool:
-        """Checks the piloting conf value."""
+        """Check the piloting conf value."""
         raise NotImplementedError
 
     @abstractmethod
     def is_available_to_record(self) -> bool:
-        """Checks if the broadcaster is available."""
+        """Check if the broadcaster is available."""
         raise NotImplementedError
 
     @abstractmethod
     def is_recording(self, with_file_check=False) -> bool:
         """
-        Returns if the broadcaster is recording state.
+        Check if the broadcaster is recording state.
+
         Args:
-            with_file_check(bool): checks if tmp recording file is present on the filesystem,
-                as recording could have been launch from somewhere else.
+            with_file_check(bool): checks if tmp recording file is present on the
+                filesystem, as recording could have been launch from somewhere else.
+        Returns:
+            bool: True if the broadcaster is recording state
         """
         raise NotImplementedError
 
@@ -106,22 +114,22 @@ class PilotingInterface(__ABC__):
 
     @abstractmethod
     def start_stream(self) -> bool:
-        """Starts the stream."""
+        """Start the stream."""
         raise NotImplementedError
 
     @abstractmethod
     def stop_stream(self) -> bool:
-        """Stops the streams."""
+        """Stop the streams."""
         raise NotImplementedError
 
     @abstractmethod
     def get_stream_rtmp_infos(self) -> dict:
-        """Checks if SMP is configured for Rtmp and gets infos."""
+        """Check if SMP is configured for Rtmp and gets infos."""
         raise NotImplementedError
 
 
 def ajax_get_mandatory_parameters(request):
-    """Returns the mandatory parameters as a json response."""
+    """Return the mandatory parameters as a json response."""
     if request.method == "GET" and request.is_ajax():
         impl_name = request.GET.get("impl_name", None)
         params = get_mandatory_parameters(impl_name)
@@ -135,7 +143,7 @@ def ajax_get_mandatory_parameters(request):
 
 
 def get_mandatory_parameters(impl_name="") -> List[str]:
-    """Returns the mandatory parameters of the implementation."""
+    """Return the mandatory parameters of the implementation."""
     if impl_name in __MANDATORY_PARAMETERS__:
         return __MANDATORY_PARAMETERS__[impl_name]
     if impl_name.lower() in __MANDATORY_PARAMETERS__:
@@ -148,7 +156,7 @@ def get_mandatory_parameters(impl_name="") -> List[str]:
 
 
 def validate_json_implementation(broadcaster: Broadcaster) -> bool:
-    """Returns if the config value is json formatted and has all the mandatory parameters."""
+    """Return if the config value is json formatted and has all mandatory params."""
     conf = broadcaster.piloting_conf
     if not conf:
         logger.error(
@@ -186,7 +194,7 @@ def validate_json_implementation(broadcaster: Broadcaster) -> bool:
 
 
 def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
-    """Returns the class inheriting from PilotingInterface according to the broadcaster configuration (or None)."""
+    """Return the class inheriting from PilotingInterface according to the broadcaster configuration (or None)."""
     if broadcaster is None:
         return None
 
@@ -237,7 +245,7 @@ def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
 
 
 def is_recording_launched_by_pod(self) -> bool:
-    """Returns if the current recording has been launched by Pod."""
+    """Return if the current recording has been launched by Pod."""
     # Fetch file name of current recording
     current_record_info = self.get_info_current_record()
     filename = current_record_info.get("currentFile", None)

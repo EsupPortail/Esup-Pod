@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-31 11:26+0000\n"
+"POT-Creation-Date: 2023-11-09 10:23+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -3258,6 +3258,10 @@ msgstr ""
 
 #: pod/live/templates/live/event.html pod/live/templates/live/event_edit.html
 msgid "Delete the event"
+msgstr ""
+
+#: pod/live/templates/live/event_card.html
+msgid "Current event"
 msgstr ""
 
 #: pod/live/templates/live/event_card.html pod/video/templates/videos/card.html

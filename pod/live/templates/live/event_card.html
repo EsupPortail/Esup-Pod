@@ -6,13 +6,11 @@
     <div class="card-header">
       <div class="d-flex justify-content-end align-items-center">
         <span class="text-muted small d-flex">
-          <span>
-            {% if event.is_current %}
+          {% if event.is_current %}
+            <span data-toggle="tooltip" title="{% trans 'Current event' %}">
               <i class="bi bi-soundwave current_event" aria-hidden="true"></i>
-            {% else %}
-              <i class="bi bi-soundwave" aria-hidden="true"></i>
-            {%  endif %}
-          </span>
+            </span>
+          {%  endif %}
           <span data-toggle="tooltip" title="{{event.broadcaster.name}}">
             <i class="bi bi-info-circle" aria-hidden="true"></i>
           </span>
