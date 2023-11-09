@@ -10,7 +10,7 @@
       "id": "bb668b94-3724-482f-b0e9-ba055f0e3000",
       "comment": "Ouvre la page de complétion",
       "command": "open",
-      "target": "/video/completion/0001-first-video/",
+      "target": "/video/completion/0002-video-staff/",
       "targets": [],
       "value": ""
     }, {
@@ -30,6 +30,21 @@
         ["xpath=//a[contains(.,'Sous-titres et légendes ')]", "xpath:innerText"]
       ],
       "value": ""
+    }, {
+      "id": "9292c6ab-76d7-43d6-9102-cf80e772acac",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "linkText=Outil de création de fichier de sous-titres/légende",
+      "targets": [
+        ["linkText=Outil de création de fichier de sous-titres/légende", "linkText"],
+        ["css=p > .btn", "css:finder"],
+        ["xpath=//a[contains(text(),'Outil de création de fichier de sous-titres/légende')]", "xpath:link"],
+        ["xpath=//div[@id='accordeon']/li[4]/div/p/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/video/completion/caption_maker/0002-video-staff/')]", "xpath:href"],
+        ["xpath=//p/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Outil de création de fichier de sous-titres/légende')]", "xpath:innerText"]
+      ],
+      "value": "30000"
     }, {
       "id": "18f5e568-9ae1-4e43-920d-8e7aca81aa83",
       "comment": "Clique sur le bouton pour ouvrir l'outil de création de sous-titres",

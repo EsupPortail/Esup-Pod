@@ -5,17 +5,22 @@
 
 import json
 import os
+import shutil
+from urllib.parse import urljoin
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test.utils import override_settings
+from django.core.files.temp import NamedTemporaryFile
 from pod.video_encode_transcript.encode import encode_video
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 
 from pod.video.models import Video, Type
@@ -140,6 +145,7 @@ class SeleniumTestCase(object):
             "verifyElementNotPresent": self.verifyElementNotPresent,
             "waitForTextPresent": self.waitForTextPresent,
             "waitForTextNotPresent": self.waitForTextNotPresent,
+            "assert": self.assertSimple,
             "assertText": self.assertText,
             "assertNotText": self.assertNotText,
             "assertValue": self.assertValue,
@@ -149,6 +155,7 @@ class SeleniumTestCase(object):
             "mouseOut": self.mouseOut,
             "sendKeys": self.sendKeys,
             "executeScript": self.executeScript,
+            "waitForElementVisible": self.waitForElementVisible,
         }
 
         for command in self.test_data.get("commands", []):
@@ -186,7 +193,8 @@ class SeleniumTestCase(object):
             driver (WebDriver): The WebDriver instance for interacting with the web page.
             target (str): The URL to open.
         """
-        driver.get(self.base_url + "/" + target)
+        url = urljoin(self.base_url, target)
+        driver.get(url)
 
     def click(self, driver, target, value="", url=""):
         """
@@ -386,6 +394,10 @@ class SeleniumTestCase(object):
             print("waitForTextNotPresent: ", repr(text), "present")
             raise
 
+    def assertSimple(self, driver, target, value="", url=""):
+        target_value = find_element(driver, target).get_attribute("value")
+        assert(target_value == value)
+
     def assertText(self, driver, target, value="", url=""):
         """
         Assert that the text of a specified web element matches the expected value.
@@ -550,6 +562,10 @@ class SeleniumTestCase(object):
         """
         driver.execute_script(target)
 
+    def waitForElementVisible(self, driver, target, value="", url=""):
+        element = find_element(driver, target)
+        WebDriverWait(driver, 30).until(EC.visibility_of_element_located(element))
+
 
 class SeleniumTestSuite(object):
     """A Selenium Test Suite"""
@@ -629,19 +645,44 @@ class PodSeleniumTests(StaticLiveServerTestCase):
         """Run Selenium Test Suites from Side files in all installed apps."""
         self.selenium.get(f"{self.live_server_url}/")
         self.run_initial_tests()
-        self.run_all_tests()
+        time.sleep(1)
+        self.run_all_simple_tests()
+        time.sleep(1)
+        self.run_initial_staff_tests()
+        time.sleep(1)
+        self.run_all_staff_tests()
 
     def initialize_data(self):
         """Initialize custom test data."""
-        self.user = User.objects.create_user(username="user", password="user")
+        self.user_simple = User.objects.create_user(username="user", password="user")
+        self.user_staff = User.objects.create_user(username="staff_user", password="user")
+        self.user_staff.is_staff = True
+        self.user_staff.save()
+        # copy video file
+
         self.video = Video.objects.create(
             title="first-video",
-            owner=self.user,
-            video="pod/main/static/video_test/pod.mp4",
+            owner=self.user_simple,
             is_draft=False,
             type=Type.objects.get(id=1),
         )
+        tempfile = NamedTemporaryFile(delete=True)
+        self.video.video.save("test.mp4", tempfile)
+        dest = os.path.join(settings.MEDIA_ROOT, self.video.video.name)
+        shutil.copyfile("pod/main/static/video_test/pod.mp4", dest)
+        self.video_staff = Video.objects.create(
+            title="video-staff",
+            owner=self.user_staff,
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        tempfile = NamedTemporaryFile(delete=True)
+        self.video_staff.video.save("test.mp4", tempfile)
+        dest = os.path.join(settings.MEDIA_ROOT, self.video_staff.video.name)
+        shutil.copyfile("pod/main/static/video_test/pod.mp4", dest)
+
         encode_video(self.video.id)
+        encode_video(self.video_staff.id)
 
     def run_suite(self, suite_name, suite_url):
         """
@@ -678,7 +719,16 @@ class PodSeleniumTests(StaticLiveServerTestCase):
         self.run_single_suite(cookies_test_path)
         self.run_single_suite(login_test_path)
 
-    def run_all_tests(self):
+    def run_initial_staff_tests(self):
+        """Run initial Selenium test suites for cookies and login."""
+        initial_tests_dir = os.path.join(
+            os.path.dirname(__file__), "init_integration_tests")
+        deconnexion_path = os.path.join(initial_tests_dir, "deconnexion.side")
+        login_test_path = os.path.join(initial_tests_dir, "connexion_staff.side")
+        self.run_single_suite(deconnexion_path)
+        self.run_single_suite(login_test_path)
+
+    def run_all_simple_tests(self):
         """
         Run Selenium test suites in all installed apps.
 
@@ -693,10 +743,28 @@ class PodSeleniumTests(StaticLiveServerTestCase):
                 tests_dir = os.path.join(integration_tests_dir, "tests")
                 if os.path.exists(tests_dir):
                     print(f"Running Selenium tests in {app}...")
-                    self.run_tests_in_directory(tests_dir)
-        print("All tests are DONE")
+                    self.run_tests_in_directory(tests_dir, suffixe = "_simple")
+        print("All simple tests are DONE")
 
-    def run_tests_in_directory(self, directory):
+    def run_all_staff_tests(self):
+        """
+        Run Selenium test suites in all installed apps.
+
+        This method searches for test suites in integration_tests/tests directories of all installed apps and runs them.
+        """
+        for app in settings.INSTALLED_APPS:
+            app_module = __import__(app, fromlist=["integration_tests"])
+            integration_tests_dir = os.path.join(
+                os.path.dirname(app_module.__file__), "integration_tests"
+            )
+            if os.path.exists(integration_tests_dir):
+                tests_dir = os.path.join(integration_tests_dir, "tests")
+                if os.path.exists(tests_dir):
+                    print(f"Running Selenium tests in {app}...")
+                    self.run_tests_in_directory(tests_dir, suffixe = "_staff")
+        print("All simple tests are DONE")
+
+    def run_tests_in_directory(self, directory, suffixe = ""):
         """
         Run Selenium test suites in the specified directory.
 
@@ -705,7 +773,7 @@ class PodSeleniumTests(StaticLiveServerTestCase):
         """
         for root, dirs, files in os.walk(directory):
             for filename in files:
-                if filename.endswith(".side"):
+                if filename.endswith("%s.side" % suffixe):
                     suite_name = os.path.join(root, filename)
                     self.run_single_suite(suite_name)
 
@@ -719,6 +787,7 @@ class PodSeleniumTests(StaticLiveServerTestCase):
         try:
             suite_url = self.live_server_url
             self.run_suite(suite_name, suite_url)
+            PodSeleniumTests.selenium.save_screenshot(f"{suite_name}-info_screen.png")
         except Exception:
             PodSeleniumTests.selenium.save_screenshot(f"{suite_name}-error_screen.png")
             print("ERROR !")

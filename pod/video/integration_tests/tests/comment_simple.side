@@ -190,6 +190,6 @@
       "tests": ["pod-add-delete-comment"]
     }
   ],
-  "urls": ["http://localhost:9090/", "https://pod-test.univ-lille.fr/"],
+  "urls": ["http://localhost:9090/"],
   "plugins": []
 }

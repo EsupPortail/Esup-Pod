@@ -1,0 +1,42 @@
+{
+  "id": "5ce4dc16-363c-4d63-8b80-7eb881c4720c",
+  "version": "2.0",
+  "name": "pod-front",
+  "url": "http://localhost:9090/",
+  "tests": [{
+    "id": "pod-deconnexion",
+    "name": "deconnexion",
+    "commands": [{
+      "id": "pod-open-deconnexion",
+      "comment": "accueil",
+      "command": "open",
+      "target": "/authentication_logout/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "pod-get-url",
+      "comment": "Récupère et stocke dans la variable podURL la valeur de l'url",
+      "command": "executeScript",
+      "target": "return document.URL;",
+      "targets": [],
+      "value": "podURL"
+    }, {
+      "id": "pod-check-url",
+      "comment": "Vérifie qu'il y a bien redirection vers page d'accueil et donc connexion",
+      "command": "assert",
+      "target": "podURL",
+      "targets": [],
+      "value": "http://localhost:9090/"
+    }]
+  }],
+  "suites": [{
+  "id": "pod-front",
+  "name": "Esup Pod test selenium",
+  "persistSession": false,
+  "parallel": false,
+  "timeout": 300,
+  "tests": ["pod-deconnexion"]
+  }],
+  "urls": ["http://localhost:9090/"],
+  "plugins": []
+}

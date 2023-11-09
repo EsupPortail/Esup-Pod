@@ -4,11 +4,11 @@
   "name": "pod-front",
   "url": "http://localhost:9090/",
   "tests": [{
-    "id": "pod-connexion",
-    "name": "connexion",
+    "id": "pod-connexion-staff",
+    "name": "connexion staff",
     "commands": [{
       "id": "pod-open-home",
-      "comment": "Ouvre la page d'accueil",
+      "comment": "accueil",
       "command": "open",
       "target": "/",
       "targets": [],
@@ -51,7 +51,7 @@
         ["xpath=//form[@id='login-form']/div/input", "xpath:idRelative"],
         ["xpath=//div/div/form/div/input", "xpath:position"]
       ],
-      "value": "user"
+      "value": "staff_user"
     }, {
       "id": "pod-select-password",
       "comment": "Sélectionne le formulaire de mot de passe",
@@ -115,7 +115,7 @@
   "persistSession": false,
   "parallel": false,
   "timeout": 300,
-  "tests": ["pod-connexion"]
+  "tests": ["pod-connexion-staff"]
   }],
   "urls": ["http://localhost:9090/"],
   "plugins": []
