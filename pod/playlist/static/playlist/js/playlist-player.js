@@ -1,4 +1,16 @@
+/**
+ * @file Esup-Pod functions for the playlist player.
+ * @since 3.5.0
+ */
+
+/**
+ * This variable is `true` if the enrichment is active for the current page.
+ */
 var enrichmentIsOn = false;
+
+/**
+ * Link for the stylesheet for the enrichment application.
+ */
 var linkForStyleSheetForEnrichment;
 
 /**
