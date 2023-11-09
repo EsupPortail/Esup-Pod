@@ -60,7 +60,7 @@ function switchToNextVideo() {
                         }
                         refreshElementWithDocumentFragment('#mainbreadcrumb', breadcrumbs);
                         const idElements = [
-                            'card-managevideo',
+                            'card-manage-video',
                             'card-takenote',
                             'card-share',
                             'card-disciplines',
@@ -69,7 +69,7 @@ function switchToNextVideo() {
                         for (let id of idElements) {
                             if (document.getElementById(id)) refreshElementWithDocumentFragment(`#${id}`, pageAside);
                         }
-                        document.getElementById('card-enrichmentinformations').style.display = enrichmentIsOn ? 'flex' : 'none';
+                        document.getElementById('card-enrichment-informations').style.display = enrichmentIsOn ? 'flex' : 'none';
                         refreshElementWithDocumentFragment('#video-player', pageContent);
                         refreshElementWithDocumentFragment('#more-script', moreScript);
                         refreshElementWithDocumentFragment('title', pageTitle);
