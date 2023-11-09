@@ -72,13 +72,13 @@ class PilotingInterface(__ABC__):
     @abstractmethod
     def is_recording(self, with_file_check=False) -> bool:
         """
-        Return if the broadcaster is recording state.
+        Check if the broadcaster is recording state.
 
         Args:
             with_file_check(bool): checks if tmp recording file is present on the
                 filesystem, as recording could have been launch from somewhere else.
         Returns:
-            bool: [TODO]
+            bool: True if the broadcaster is recording state
         """
         raise NotImplementedError
 
