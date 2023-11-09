@@ -3479,6 +3479,10 @@ msgstr "Éditer l’évènement"
 msgid "Delete the event"
 msgstr "Supprimer l’évènement"
 
+#: pod/live/templates/live/event_card.html
+msgid "Current event"
+msgstr "Évènement en cours"
+
 #: pod/live/templates/live/event_card.html pod/video/templates/videos/card.html
 msgid "This content is in draft."
 msgstr "Ce contenu est en mode brouillon."

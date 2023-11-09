@@ -43,7 +43,8 @@ class PilotingInterface(__ABC__):
         """
         Initialize the PilotingInterface.
 
-        :param broadcaster: the broadcaster to pilot
+        Args:
+            broadcaster(:class:`pod.live.models.Broadcaster`): the broadcaster to pilot
         """
         self.broadcaster = broadcaster
         raise NotImplementedError
@@ -74,8 +75,10 @@ class PilotingInterface(__ABC__):
         Return if the broadcaster is recording state.
 
         Args:
-            with_file_check(bool): checks if tmp recording file is present on the filesystem,
-                as recording could have been launch from somewhere else.
+            with_file_check(bool): checks if tmp recording file is present on the
+                filesystem, as recording could have been launch from somewhere else.
+        Returns:
+            bool: [TODO]
         """
         raise NotImplementedError
 
