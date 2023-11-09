@@ -12,6 +12,7 @@
   <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|capfirst}}{% endblock page_title %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  {# jquery is still used by video-script.html #}
   <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
 
   {% block page_extra_head %}
@@ -55,30 +56,41 @@
 
 </div>
 {% block more_script %}
-{% if not form %}
-{% include 'videos/video-script.html'%}
-<script>
-  const hdres = 1920/1080;
-  function resizeVideoJs(){
-    const width = document.getElementById(player.id()).parentElement.offsetWidth
-        , height = document.getElementById(player.id()).parentElement.offsetHeight
-        , ratio = width/height;
-    let margintop = 0
-    if(ratio<hdres) {
-      player.width(width);
-      player.height(width / hdres);
-      margintop = parseInt((height - player.height())/2);
-      document.getElementById("podvideoplayer").style.top = margintop+"px";
-    } else {
-      player.height(height);
-      player.width(height*hdres);
-      document.getElementById("podvideoplayer").style.top = "0";
-    }
-  }
-  resizeVideoJs(); // Initialize the function right now
-  window.onresize = resizeVideoJs; // Call the function on resize
-  </script>
-{% endif %}
+  {% if not form %}
+    {% include 'videos/video-script.html'%}
+    <script>
+
+      (function () {
+
+        player.videoJsInfo();
+
+        {% if video.is_video %}
+          // Append overlay-footer to video-wrapper
+          let overlay = document.createElement("div");
+          overlay.id="overlay-footer";
+          document.getElementById("div-video-wrapper").appendChild(overlay);
+
+          player.ready(function() {
+            const btinfo = document.querySelector(".vjs-info-button");
+            const clonedInfo = btinfo.cloneNode(true);
+            overlay.appendChild(clonedInfo);
+            clonedInfo.addEventListener("click", showInfoVideo);
+          })
+        {% endif %}
+
+        document.querySelector("#info-video-wrapper .close").addEventListener("click", showInfoVideo);
+
+        player.on('play',function() {
+          isPlaying = true;
+          document.getElementById("div-video-wrapper").className = '';
+        });
+        player.on('pause',function() { isPlaying = false; });
+        resizeVideoJs(); // Initialize the function right now
+        window.onresize = resizeVideoJs; // Call the function on resize
+
+      })();
+      </script>
+  {% endif %}
 {% endblock more_script %}
 {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
 {% endblock page_content %}

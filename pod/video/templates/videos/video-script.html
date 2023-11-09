@@ -209,12 +209,21 @@
     }
     {% endif %}
     window.player.ready(() => {
-      window.player.one('play', function(){
-        let form = document.querySelector('#video_count_form');
-        let data = new FormData(form);
-        fetch(form.getAttribute("action"), {
+      /**
+       * Increase the video counter on first play
+       */
+      window.player.on('firstplay', function() {
+        let formElement = document.getElementById("video_count_form");
+        let formData = new FormData(formElement);
+        let data_form = [];
+
+        formData.forEach(function(value, key) {
+          data_form.push({ name: key, value: value });
+        });
+
+        fetch(formElement.getAttribute("action"), {
           method: 'POST',
-          body:data
+          body: data_form
         });
       });
     });
@@ -227,7 +236,7 @@
       let currentTime = parseInt(player.currentTime());
       if(currentTime % 5 == 0 && currentTime != last_timeupdate ) {
         last_timeupdate = currentTime;
-        fetch(marker_url.replace("/0/", "/"+currentTime+"/"), {}); //.then(response => console.log(response)); 
+        fetch(marker_url.replace("/0/", "/"+currentTime+"/"), {}); //.then(response => console.log(response));
       }
     });
   {% endif %}

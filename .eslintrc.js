@@ -32,6 +32,7 @@ module.exports = {
   "globals": {
     "Cookies": "readonly",
     "gettext": "readonly",
+    "ngettext": "readonly",
     "interpolate": "readonly",
     "bootstrap": "readonly",
     "videojs": "readonly",
