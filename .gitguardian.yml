@@ -1,0 +1,2 @@
+exclude_paths:
+  - pod/enrichment/tests/test_views.py
