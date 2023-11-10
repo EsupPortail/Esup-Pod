@@ -1,7 +1,7 @@
 # gitguardian:ignore
 
 """
-Unit tests for enrichment views
+Unit tests for enrichment views.
 """
 from django.test import TestCase
 from django.contrib.auth import authenticate
@@ -16,11 +16,14 @@ __PWD__ = "thisisnotpassword"
 
 
 class EnrichmentViewsTestCase(TestCase):
+    """TestCase for enrichment application views."""
+
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
+        """Set up the tests."""
         site = Site.objects.get(id=1)
         owner = User.objects.create(username="test", password=__PWD__, is_staff=True)
         owner.set_password(__PWD__)
@@ -37,6 +40,7 @@ class EnrichmentViewsTestCase(TestCase):
         vid.sites.add(site)
 
     def test_video_enrichment(self):
+        """Test the video edit enrichment page."""
         video = Video.objects.get(id=1)
         url = reverse("enrichment:edit_enrichment", kwargs={"slug": video.slug})
         response = self.client.get(url)
@@ -53,6 +57,7 @@ class EnrichmentViewsTestCase(TestCase):
         print(" ---> test_video_enrichment: OK!")
 
     def test_video_enrichment_new(self):
+        """Test the video create enrichment page."""
         video = Video.objects.get(id=1)
         authenticate(username="test", password=__PWD__)
         login = self.client.login(username="test", password=__PWD__)
@@ -88,6 +93,7 @@ class EnrichmentViewsTestCase(TestCase):
         print(" [ END ENRICHMENT VIEWS ] ")
 
     def test_video_enrichment_edit(self):
+        """Test the video edit enrichment page."""
         video = Video.objects.get(id=1)
         authenticate(username="test", password=__PWD__)
         login = self.client.login(username="test", password=__PWD__)
@@ -131,6 +137,7 @@ class EnrichmentViewsTestCase(TestCase):
         print(" ---> test_video_enrichment_edit: OK!")
 
     def test_video_enrichment_delete(self):
+        """Test the video delete enrichment."""
         video = Video.objects.get(id=1)
         authenticate(username="test", password=__PWD__)
         login = self.client.login(username="test", password=__PWD__)

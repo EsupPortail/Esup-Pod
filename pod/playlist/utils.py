@@ -393,6 +393,7 @@ def playlist_can_be_displayed(request: WSGIRequest, playlist: Playlist) -> bool:
     Check if the playlist can be displayed by the current user.
 
     Args:
+        request (:class:`django.core.handlers.wsgi.WSGIRequest`): The current request.
         playlist (:class:`pod.playlist.models.Playlist`): The playlist object.
 
     Returns:

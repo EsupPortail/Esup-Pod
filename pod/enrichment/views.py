@@ -248,7 +248,11 @@ def video_enrichment(request: WSGIRequest, slug: str, slug_c: str = None, slug_t
         slug_t (`str`): The theme slug.
 
     Returns:
-        `django.http.HttpResponse`: The HTTP response.
+        :class:`django.http.HttpResponse`: The HTTP response.
+
+    Raises:
+        :class:`django.core.exceptions.PermissionDenied`: If the user can't display the requested playlist.
+        :class:`django.core.exceptions.SuspiciousOperation`: If the video identifier cannot be converted to an integer.
     """
     params = {}
     if request.GET.get("playlist"):
