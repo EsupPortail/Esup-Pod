@@ -24,9 +24,7 @@ class PlaylistFormTest(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_valid_data_for_public_playlist(self):
-        """
-        Test the form with valid data for a public playlist.
-        """
+        """Test the form with valid data for a public playlist."""
         form = PlaylistForm(
             data={
                 "name": "Test Playlist",
@@ -42,9 +40,7 @@ class PlaylistFormTest(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_valid_data_for_private_playlist(self):
-        """
-        Test the form with valid data for a private playlist.
-        """
+        """Test the form with valid data for a private playlist."""
         form = PlaylistForm(
             data={
                 "name": "Test Playlist",
@@ -60,9 +56,7 @@ class PlaylistFormTest(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_valid_data_for_protected_playlist(self):
-        """
-        Test the form with valid data for a protected playlist.
-        """
+        """Test the form with valid data for a protected playlist."""
         form = PlaylistForm(
             data={
                 "name": "Test Playlist",
@@ -78,9 +72,7 @@ class PlaylistFormTest(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_invalid_data_for_protected_playlist(self):
-        """
-        Test the form with invalid data for a protected playlist.
-        """
+        """Test the form with invalid data for a protected playlist."""
         form = PlaylistForm(
             data={
                 "name": "Test Playlist",
@@ -96,9 +88,7 @@ class PlaylistFormTest(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_name_validation_for_public_playlist(self):
-        """
-        Test if the name validation works correctly for a public playlist.
-        """
+        """Test if the name validation works correctly for a public playlist."""
         valid_form = PlaylistForm(
             data={
                 "name": "Valid Name",
@@ -121,9 +111,7 @@ class PlaylistFormTest(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_name_validation_for_private_playlist(self):
-        """
-        Test if the name validation works correctly for a private playlist.
-        """
+        """Test if the name validation works correctly for a private playlist."""
         valid_form = PlaylistForm(
             data={
                 "name": "Valid Name",
@@ -146,9 +134,7 @@ class PlaylistFormTest(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_name_validation_for_protected_playlist(self):
-        """
-        Test if the name validation works correctly for a protected playlist.
-        """
+        """Test if the name validation works correctly for a protected playlist."""
         valid_form = PlaylistForm(
             data={
                 "name": "Valid Name",
@@ -173,9 +159,7 @@ class PlaylistFormTest(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_blank_data_for_public_playlist(self):
-        """
-        Test the form with blank data for a public playlist.
-        """
+        """Test the form with blank data for a public playlist."""
         form = PlaylistForm(data={})
         self.assertFalse(form.is_valid())
         self.assertLessEqual(1, len(form.errors))
@@ -192,18 +176,14 @@ class PlaylistRemoveFormTest(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_valid_data(self):
-        """
-        Test the form with valid data.
-        """
+        """Test the form with valid data."""
         form = PlaylistRemoveForm(data={"agree": True})
         self.assertTrue(form.is_valid())
         print(" --->  test_valid_data ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_agree_required(self):
-        """
-        Test the form with agree field not selected and not provided.
-        """
+        """Test the form with agree field not selected and not provided."""
         agree_not_selected_form = PlaylistRemoveForm(data={"agree": False})
         agree_not_provided_form = PlaylistRemoveForm(data={})
         self.assertFalse(agree_not_selected_form.is_valid())
@@ -220,9 +200,7 @@ class PlaylistRemoveFormTest(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_blank_data(self):
-        """
-        Test the form with empty data.
-        """
+        """Test the form with empty data."""
         form = PlaylistRemoveForm(data={})
         self.assertFalse(form.is_valid())
         self.assertEqual(len(form.errors), 1)
@@ -240,18 +218,14 @@ class PlaylistPasswordFormTests(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_valid_data(self):
-        """
-        Test the form with valid data.
-        """
+        """Test the form with valid data."""
         form = PlaylistPasswordForm(data={"password": PWD})
         self.assertTrue(form.is_valid())
         print(" --->  test_valid_data ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_password_required(self):
-        """
-        Test the form with password field empty and not provided.
-        """
+        """Test the form with password field empty and not provided."""
         password_not_provided_form = PlaylistPasswordForm(data={})
         empty_password_form = PlaylistPasswordForm(data={"password": ""})
         self.assertFalse(password_not_provided_form.is_valid())
@@ -268,9 +242,7 @@ class PlaylistPasswordFormTests(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_blank_data(self):
-        """
-        Test the form with empty data.
-        """
+        """Test the form with empty data."""
         form = PlaylistPasswordForm(data={})
         self.assertFalse(form.is_valid())
         self.assertEqual(len(form.errors), 1)

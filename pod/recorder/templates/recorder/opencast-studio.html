@@ -94,67 +94,91 @@
 
 {% block more_script %}
 <script>
-  //Create array of options to be added
+  // Create array of options to be added
   {% if default_presenter and default_presenter == "pipb" %}
-    const list_value = [["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"], ["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"], ["mid", "50/50 - {% trans 'Same size for screen and camera' %}"]];
-  {% elif  default_presenter and default_presenter == "piph" %}
-    const list_value = [["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"], ["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"], ["mid", "50/50 - {% trans 'Same size for screen and camera' %}"]];
+    const list_value = [
+      ["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"],
+      ["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"],
+      ["mid", "50/50 - {% trans 'Same size for screen and camera' %}"]
+    ];
+  {% elif default_presenter and default_presenter == "piph" %}
+    const list_value = [
+      ["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"],
+      ["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"],
+      ["mid", "50/50 - {% trans 'Same size for screen and camera' %}"]
+    ];
   {% else %}
-    const list_value = [["mid", "50/50 - {% trans 'Same size for screen and camera' %}"], ["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"], ["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"]];
+    const list_value = [
+      ["mid", "50/50 - {% trans 'Same size for screen and camera' %}"],
+      ["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"],
+      ["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"]
+    ];
   {% endif %}
 
-  //Create and append select list
+  // Create and append select list
   let selectList = document.createElement("select");
   selectList.id = "input_presenter";
   selectList.name = "presenter_list";
-  //myParent.appendChild(selectList);
 
-  //Create and append the options
+  // Create and append the options
   for (var i = 0; i < list_value.length; i++) {
     var option = document.createElement("option");
     option.value = list_value[i][0];
     option.text = list_value[i][1];
     selectList.appendChild(option);
   }
-  let label = document.createElement("label");
-  label.innerHTML = "{% trans 'Please select the render you want' %}";
-  label.setAttribute("for", "input_presenter");
+  let new_label = document.createElement("label");
+  new_label.innerHTML = "{% trans 'Please select the render you want' %}";
+  new_label.setAttribute("for", "input_presenter");
 
   let divselect = document.createElement("div");
   divselect.appendChild(selectList)
-  label.appendChild(divselect)
+  new_label.appendChild(divselect)
 
   const input_title = "input[name='title'][type='text']";
   let data_send = false;
-  $(document).on('DOMSubtreeModified', '#root>div>main', function () {
-    if ($(input_title).html() === "" && $(input_title).length && $("#root video").length == 2 && $("#input_presenter").length == 0 && data_send == false) {
-      let div = $(input_title).first().parent("div").parent("label").parent("div");
-      label.setAttribute("class", $(input_title).first().parent("div").parent("label").attr("class"));
-      div.append(label);
-      send_presenter_value($('#input_presenter').val());
-      data_send = true;
-    }
-  });
-  $(document).on('change', '#input_presenter', function () {
-    // call ajax to send value
-    send_presenter_value($('#input_presenter').val());
-  });
 
+  (function() {
+    body_element = document.querySelector("body");
+    body_element.addEventListener('DOMSubtreeModified', function () {
+      let input_title_el = document.querySelector(input_title);
+      let input_presenter = document.getElementById("input_presenter");
+      if (input_title_el && !input_presenter) {
+        if (document.querySelectorAll("#root video").length == 2 &&
+            data_send == false) {
+          let parent_div = input_title_el.closest("div").closest("div");
+          new_label.setAttribute("class", parent_div.getAttribute("class"));
+          parent_div.parentNode.insertBefore(new_label, parent_div.nextSibling);
+          input_presenter = document.getElementById("input_presenter");
+          input_presenter.addEventListener("change", (event) => {
+            // call ajax to send value
+            send_presenter_value(event.target.value);
+          });
+          send_presenter_value(input_presenter.value);
+          console.log("data_send="+data_send);
+        }
+      }
+    }, false);
+  })();
+
+  /**
+   * [send_presenter_value description]
+   * @param  {[type]} val [description]
+   */
   function send_presenter_value(val) {
-    console.log("VAL : " + val);
+    // console.log("[send_presenter_value] VAL: " + val);
     $.ajax({
       type: 'POST',
       url: "{% url 'recorder:presenter_post' %}",
       data: { "presenter": val },
-      success: function (response) {
+      success: function(response) {
         data_send = false;
       },
-      error: function (response) {
+      error: function(response) {
         // alert the error if any error occured
-        console.log(response)
+        console.log("[send_presenter_value] response: " +response)
       }
     });
   }
-
 </script>
 {% endblock more_script %}
