@@ -2,6 +2,7 @@
 import os
 import re
 import time
+from typing import Optional
 import unicodedata
 import json
 import logging
@@ -1097,7 +1098,7 @@ class Video(models.Model):
                     )
         return version
 
-    def get_default_version_link(self, slug_private: str = None) -> str | None:
+    def get_default_version_link(self, slug_private: str = None) -> Optional[str]:
         """
         Get link of the version of a video.
 
