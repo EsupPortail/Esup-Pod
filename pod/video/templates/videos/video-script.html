@@ -119,7 +119,7 @@
     );
   });
 
-  {% if request.user %}
+  {% if request.user and not playlist_in_get.autoplay %}
     var marker_url = "{% url "video:video_marker" video.id 0 %}";
     var last_timeupdate = 0;
     player.on('timeupdate', function(){
@@ -145,7 +145,7 @@
         {% if request.GET.start and request.GET.start != '0' %}
           player.currentTime({{request.GET.start}});
         {% else %}
-          {% if request.user.is_authenticated %}
+          {% if request.user.is_authenticated and not playlist_in_get.autoplay %}
             const markerTime = {% get_marker_time_for_user video request.user %};
             if(markerTime !=0) player.currentTime(markerTime);
           {% endif %}
@@ -228,7 +228,7 @@
         {% if request.GET.start and request.GET.start != '0' %}
         player.currentTime({{request.GET.start}});
         {% else %}
-          {% if request.user %}
+          {% if request.user and not playlist_in_get.autoplay %}
           const markerTime = {% get_marker_time_for_user video request.user %};
           if(markerTime !=0) player.currentTime(markerTime);
           {% endif %}

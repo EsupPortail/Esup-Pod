@@ -1,0 +1,10 @@
+<div id="video-player">
+  {% block video-element %}
+    {% if form %}
+      {% include 'videos/video-form.html' %}
+    {% else %}
+      {% include 'enrichment/video-element-enrichment.html' %}
+    {% endif %}
+    <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' with third_app=True %}</div>
+  {% endblock video-element %}
+</div>
