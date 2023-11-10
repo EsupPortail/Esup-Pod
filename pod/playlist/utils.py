@@ -399,8 +399,7 @@ def playlist_can_be_displayed(request: WSGIRequest, playlist: Playlist) -> bool:
         bool: `True` if the current user can be see the playlist, `False` otherwise.
     """
     return (
-        playlist.visibility == "public"
-        or playlist.visibility == "protected"
+        playlist.visibility in {"public", "protected"}
         or (
             request.user.is_authenticated
             and (
