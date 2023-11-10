@@ -97,14 +97,14 @@
   {% endif %}
   {% block video-element %}
     {% if form %}
-        {% include 'videos/video-form.html' %}
+      {% include 'videos/video-form.html' %}
     {% else %}
       <div id="pod-video-container">
         <div id="pod-video-countdown"></div>
         {% include 'videos/video-element.html' %}
       </div>
       {% if use_video_p2p %}
-      {% include 'videos/video_p2p_stats.html' %}
+        {% include 'videos/video_p2p_stats.html' %}
       {% endif %}
       <div id="info-video" class="pod-info-video">
         {% include 'videos/video-all-info.html' %}

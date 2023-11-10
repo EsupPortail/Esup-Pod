@@ -88,21 +88,21 @@ urlpatterns = [
     ),
     url(r"^my/$", my_videos, name="my_videos"),
 ]
+
 # COMPLETION
 urlpatterns += [
     path("completion/", include("pod.completion.urls", namespace="completion")),
 ]
+
 # CHAPTER
 urlpatterns += [
-    url(
-        r"^get_video_chapters/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
+    path(
+        "get_video_chapters/<slug:slug>/<slug:slug_private>/",
         get_video_chapters,
         name="get_video_chapters",
     ),
-    url(
-        r"^get_video_chapters/(?P<slug>[\-\d\w]+)/$",
-        get_video_chapters,
-        name="get_video_chapters",
+    path(
+        "get_video_chapters/<slug:slug>/", get_video_chapters, name="get_video_chapters"
     ),
     path("chapter/", include("pod.chapter.urls", namespace="chapter")),
 ]

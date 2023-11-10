@@ -1,6 +1,6 @@
-var translationDone = false;
-var video_player = document.getElementById("podvideoplayer_html5_api")
-if(video_player) {
+let translationDone = false;
+let video_player = document.getElementById("podvideoplayer_html5_api");
+if (video_player) {
   video_player.addEventListener("play", function () {
     if (!translationDone) {
       const elementToTranslateList = [

@@ -54,6 +54,15 @@
      * Initialize the plugin.
      */
     var Plugin = videojs.getPlugin("plugin");
+
+    /**
+     * Custom Video.js plugin for handling chapters in a video player.
+     *
+     * @class podVideoJsChapters
+     * @extends {Plugin}
+     * @param {Object} player - The Video.js player instance.
+     * @param {Object} options - Configuration options for the plugin.
+     */
     class podVideoJsChapters extends Plugin {
       constructor(player, options) {
         super(player, options);
@@ -62,7 +71,11 @@
           currentChapter = document.createElement("li");
 
         /**
-         * Create the list of chapters
+         * Create the list of chapters.
+         *
+         * @memberof podVideoJsChapters
+         * @param {Array} data - Chapter data to be displayed.
+         * @returns {boolean} - Returns false if no chapter data is provided.
          */
         player.createChapters = function (data) {
           if (!data) {
@@ -95,20 +108,14 @@
               false,
             );
           }
-          /* What is the purpose of this code ??
-          var oldList = document.getElementById("chapters");
-          var newList = document.getElementsByClassName(
-            "chapters-list inactive"
-          );
-          oldList.parentNode.removeChild(oldList);
-
-          let podPlayer = document.getElementById(player.id());
-          podPlayer.append(newList);
-          **/
         };
 
         /**
-         * Return a list of chapters useable by other functions
+         * Return a list of chapters usable by other functions.
+         *
+         * @memberof podVideoJsChapters
+         * @param {Array} data - Chapter data to be grouped.
+         * @returns {Object} - Object containing arrays of chapter information.
          */
         function groupedChapters(data) {
           var chapters = {
@@ -124,10 +131,23 @@
           return chapters;
         }
 
+        /**
+         * Get the grouped chapters.
+         *
+         * @memberof podVideoJsChapters
+         * @returns {Object} - Object containing arrays of chapter information.
+         */
         player.getGroupedChapters = function () {
           return this.chapters;
         };
 
+        /**
+         * Update the current chapter based on the current time.
+         *
+         * @memberof podVideoJsChapters
+         * @param {number} time - Current time in seconds.
+         * @param {Object} chapters - Object containing arrays of chapter information.
+         */
         player.getCurrentChapter = function (time, chapters) {
           const currentTime = Math.floor(time);
 
@@ -145,6 +165,11 @@
           }
         };
 
+        /**
+         * Main function for initializing the plugin.
+         *
+         * @memberof podVideoJsChapters
+         */
         player.main = function () {
           var data = document.querySelectorAll("#chapters li");
           if (

@@ -1,4 +1,5 @@
 """Esup-Pod videos views."""
+from typing import Optional
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers.json import DjangoJSONEncoder
@@ -854,12 +855,25 @@ def video_xhr(request, slug, slug_private=None):
             return HttpResponse(data, content_type="application/json")
 
 
-# get video chapter for video player
-# return all chapters for the video specifid in webvtt format
-def get_video_chapters(request, slug, slug_private=None):
-    """Return all video's chapters in webVTT format for video player."""
+def get_video_chapters(
+    request: WSGIRequest, slug: str, slug_private: Optional[str] = None
+) -> HttpResponse:
+    """
+    Return all video's chapters in webVTT format for video player.
+
+    Args:
+        request (:class:`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        slug (str): The chapter slug.
+        slug_private (str, optional): The chapter private slug. Defaults to None.
+
+    Raises:
+        SuspiciousOperation: Raised when an invalid video id is encountered.
+
+    Returns:
+        HttpResponse: WebVTT formatted response containing video chapters.
+    """
     try:
-        id = int(slug[: slug.find("-")])
+        id = int(slug.split("-")[0])
     except ValueError:
         raise SuspiciousOperation("Invalid video id")
 
@@ -885,9 +899,7 @@ def get_video_chapters(request, slug, slug_private=None):
         webvtt.captions.append(caption)
         return HttpResponse(webvtt.content, content_type="text/plain")
     else:
-        return HttpResponseForbidden(
-            _("Sorry, you can't access to the video chapter.")
-        )
+        return HttpResponseForbidden(_("Sorry, you can't access to the video chapter."))
 
 
 @csrf_protect
@@ -961,7 +973,6 @@ def toggle_render_video_user_can_see_video(
 def toggle_render_video_when_is_playlist_player(request):
     """Toggle `render_video()` when the user want to play a playlist."""
     playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-    # print(playlist.visibility)
     if request.user.is_authenticated:
         video = (
             Video.objects.filter(
