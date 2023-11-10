@@ -393,7 +393,7 @@ def playlist_can_be_displayed(request: WSGIRequest, playlist: Playlist) -> bool:
     Check if the playlist can be displayed by the current user.
 
     Args:
-        playlist (Playlist): The playlist.
+        playlist (:class:`pod.playlist.models.Playlist`): The playlist object.
 
     Returns:
         bool: `True` if the current user can be see the playlist, `False` otherwise.

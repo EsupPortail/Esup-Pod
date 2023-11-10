@@ -12,7 +12,7 @@ from pod.video.models import Video, Type
 from ..models import Enrichment
 from django.contrib.sites.models import Site
 
-PWD = "thisisnotpassword"
+__PWD__ = "thisisnotpassword"
 
 
 class EnrichmentViewsTestCase(TestCase):
@@ -22,8 +22,8 @@ class EnrichmentViewsTestCase(TestCase):
 
     def setUp(self):
         site = Site.objects.get(id=1)
-        owner = User.objects.create(username="test", password=PWD, is_staff=True)
-        owner.set_password(PWD)
+        owner = User.objects.create(username="test", password=__PWD__, is_staff=True)
+        owner.set_password(__PWD__)
         owner.save()
         vid = Video.objects.create(
             title="videotest",
@@ -41,8 +41,8 @@ class EnrichmentViewsTestCase(TestCase):
         url = reverse("enrichment:edit_enrichment", kwargs={"slug": video.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        authenticate(username="test", password=PWD)
-        login = self.client.login(username="test", password=PWD)
+        authenticate(username="test", password=__PWD__)
+        login = self.client.login(username="test", password=__PWD__)
         self.assertTrue(login)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -54,8 +54,8 @@ class EnrichmentViewsTestCase(TestCase):
 
     def test_video_enrichment_new(self):
         video = Video.objects.get(id=1)
-        authenticate(username="test", password=PWD)
-        login = self.client.login(username="test", password=PWD)
+        authenticate(username="test", password=__PWD__)
+        login = self.client.login(username="test", password=__PWD__)
         self.assertTrue(login)
         url = reverse("enrichment:edit_enrichment", kwargs={"slug": video.slug})
         response = self.client.post(url, data={"action": "new"})
@@ -89,8 +89,8 @@ class EnrichmentViewsTestCase(TestCase):
 
     def test_video_enrichment_edit(self):
         video = Video.objects.get(id=1)
-        authenticate(username="test", password=PWD)
-        login = self.client.login(username="test", password=PWD)
+        authenticate(username="test", password=__PWD__)
+        login = self.client.login(username="test", password=__PWD__)
         self.assertTrue(login)
         url = reverse("enrichment:edit_enrichment", kwargs={"slug": video.slug})
         response = self.client.post(
@@ -132,8 +132,8 @@ class EnrichmentViewsTestCase(TestCase):
 
     def test_video_enrichment_delete(self):
         video = Video.objects.get(id=1)
-        authenticate(username="test", password=PWD)
-        login = self.client.login(username="test", password=PWD)
+        authenticate(username="test", password=__PWD__)
+        login = self.client.login(username="test", password=__PWD__)
         self.assertTrue(login)
         url = reverse("enrichment:edit_enrichment", kwargs={"slug": video.slug})
         response = self.client.post(
@@ -162,14 +162,17 @@ class EnrichmentViewsTestCase(TestCase):
 
 
 class VideoEnrichmentViewTestCase(TestCase):
+    """This TestCase test the video_enrichment view."""
+
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
+        """Set up the tests."""
         site = Site.objects.get(id=1)
-        self.user = User.objects.create(username="test", password=PWD, is_staff=True)
-        self.student = User.objects.create(username="test_student", password=PWD)
+        self.user = User.objects.create(username="test", password=__PWD__, is_staff=True)
+        self.student = User.objects.create(username="test_student", password=__PWD__)
         self.video = Video.objects.create(
             title="videotest",
             owner=self.user,

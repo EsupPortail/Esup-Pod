@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
+from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.shortcuts import render
@@ -236,7 +237,19 @@ def edit_enrichment_cancel(request, video):
 
 @csrf_protect
 @ensure_csrf_cookie
-def video_enrichment(request, slug, slug_c=None, slug_t=None, slug_private=None):
+def video_enrichment(request: WSGIRequest, slug: str, slug_c: str=None, slug_t: str=None, slug_private: str=None) -> HttpResponse:
+    """
+    View to display a video in enrichment mode.
+
+    Args:
+        request (:class:`django.core.handlers.wsgi.WSGIRequest`): The current request.
+        slug (`str`): The video slug.
+        slug_c (`str`): The channel slug.
+        slug_t (`str`): The theme slug.
+
+    Returns:
+        `django.http.HttpResponse`: The HTTP response.
+    """
     params = {}
     if request.GET.get("playlist"):
         playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
