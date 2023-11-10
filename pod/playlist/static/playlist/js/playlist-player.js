@@ -1,4 +1,19 @@
 /**
+ * @file Esup-Pod functions for the playlist player.
+ * @since 3.5.0
+ */
+
+/**
+ * This variable is `true` if the enrichment is active for the current page.
+ */
+var enrichmentIsOn = false;
+
+/**
+ * Link for the stylesheet for the enrichment application.
+ */
+var linkForStyleSheetForEnrichment;
+
+/**
  * Switch to the next video when this exists.
  */
 function switchToNextVideo() {
@@ -37,6 +52,7 @@ function switchToNextVideo() {
                         const pageContent = parser.parseFromString(responseData.page_content, 'text/html');
                         const moreScript = parser.parseFromString(responseData.more_script, 'text/html');
                         const pageTitle = parser.parseFromString(responseData.page_title, 'text/html');
+                        enrichmentIsOn = responseData.enrichment_is_on;
                         document.getElementById("video-player").innerHTML = '';
                         const tmp = document.querySelector('head');
                         const coupleOfElements = [
@@ -56,7 +72,7 @@ function switchToNextVideo() {
                         }
                         refreshElementWithDocumentFragment('#mainbreadcrumb', breadcrumbs);
                         const idElements = [
-                            'card-managevideo',
+                            'card-manage-video',
                             'card-takenote',
                             'card-share',
                             'card-disciplines',
@@ -65,16 +81,31 @@ function switchToNextVideo() {
                         for (let id of idElements) {
                             if (document.getElementById(id)) refreshElementWithDocumentFragment(`#${id}`, pageAside);
                         }
+                        document.getElementById('card-enrichment-informations').style.display = enrichmentIsOn ? 'flex' : 'none';
                         refreshElementWithDocumentFragment('#video-player', pageContent);
                         refreshElementWithDocumentFragment('#more-script', moreScript);
                         refreshElementWithDocumentFragment('title', pageTitle);
-                        document.querySelectorAll("script").forEach((item) => {
-                            if (item.id == "id_video_script") (0, eval)(item.innerHTML);
+                        document.querySelectorAll('script').forEach((item) => {
+                            if (item.id == 'id_video_script') (0, eval)(item.innerHTML);
+                            if (item.id == 'id_video_enrichment_script') (0, eval)(item.innerHTML);
                         });
-
+                        let styleElementForEnrichment = document.getElementById('enrichment_style_id');
+                        if (enrichmentIsOn) {
+                            if (!styleElementForEnrichment) {
+                                let styleElementForEnrichment = document.createElement('link');
+                                styleElementForEnrichment.rel = 'stylesheet';
+                                styleElementForEnrichment.type = 'text/css';
+                                styleElementForEnrichment.href = linkForStyleSheetForEnrichment;
+                                styleElementForEnrichment.id = 'enrichment_style_id';
+                                document.head.appendChild(styleElementForEnrichment);
+                            }
+                        } else {
+                            if (styleElementForEnrichment) {
+                                styleElementForEnrichment.remove();
+                            }
+                        }
                     } else {
-                        // TODO Make a real error
-                        console.error('Request error: ' + xhr.statusText);
+                        showalert(`Request error: ${xhr.statusText}`, 'alert-danger');
                     }
                 }
             };

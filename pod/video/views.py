@@ -1,4 +1,5 @@
 """Esup-Pod videos views."""
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers.json import DjangoJSONEncoder
@@ -10,8 +11,6 @@ from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseNotAllowed, HttpResponseNotFound
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.http import QueryDict, Http404
-from django.core.exceptions import SuspiciousOperation
-from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
@@ -38,8 +37,8 @@ from pod.authentication.utils import get_owners as auth_get_owners
 from pod.playlist.apps import FAVORITE_PLAYLIST_NAME
 from pod.playlist.models import Playlist, PlaylistContent
 from pod.playlist.utils import (
-    get_playlists_for_additional_owner,
     get_video_list_for_playlist,
+    playlist_can_be_displayed,
     user_can_see_playlist_video,
 )
 from pod.video.utils import get_videos as video_get_videos
@@ -880,22 +879,14 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         template_video = "videos/video-iframe.html"
     elif request.GET.get("playlist"):
         playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-        if (
-            playlist.visibility == "public"
-            or playlist.visibility == "protected"
-            or (
-                playlist.owner == request.user
-                or playlist in get_playlists_for_additional_owner(request.user)
-                or request.user.is_staff
-            )
-        ):
+        if playlist_can_be_displayed(request, playlist):
             videos = sort_videos_list(get_video_list_for_playlist(playlist), "rank")
             params = {
                 "playlist_in_get": playlist,
                 "videos": videos,
             }
         else:
-            return HttpResponseNotFound()
+            raise PermissionDenied(_("You cannot access this playlist because it is private."))
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
 

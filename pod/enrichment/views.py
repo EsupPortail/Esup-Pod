@@ -1,7 +1,8 @@
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.exceptions import PermissionDenied
-from django.core.exceptions import SuspiciousOperation
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
+from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.shortcuts import render
@@ -9,9 +10,13 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import ensure_csrf_cookie
+
+from pod.playlist.models import Playlist
+from pod.playlist.utils import get_video_list_for_playlist, playlist_can_be_displayed
 from pod.video.models import Video
+from pod.video.utils import sort_videos_list
 from pod.video.views import render_video
-from django.contrib.sites.shortcuts import get_current_site
+
 from .models import Enrichment, EnrichmentGroup
 from .forms import EnrichmentForm, EnrichmentGroupForm
 
@@ -232,7 +237,34 @@ def edit_enrichment_cancel(request, video):
 
 @csrf_protect
 @ensure_csrf_cookie
-def video_enrichment(request, slug, slug_c=None, slug_t=None, slug_private=None):
+def video_enrichment(request: WSGIRequest, slug: str, slug_c: str = None, slug_t: str = None, slug_private: str = None) -> HttpResponse:
+    """
+    View to display a video in enrichment mode.
+
+    Args:
+        request (:class:`django.core.handlers.wsgi.WSGIRequest`): The current request.
+        slug (`str`): The video slug.
+        slug_c (`str`): The channel slug.
+        slug_t (`str`): The theme slug.
+
+    Returns:
+        :class:`django.http.HttpResponse`: The HTTP response.
+
+    Raises:
+        :class:`django.core.exceptions.PermissionDenied`: If the user can't display the requested playlist.
+        :class:`django.core.exceptions.SuspiciousOperation`: If the video identifier cannot be converted to an integer.
+    """
+    params = {}
+    if request.GET.get("playlist"):
+        playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+        if playlist_can_be_displayed(request, playlist):
+            videos = sort_videos_list(get_video_list_for_playlist(playlist), "rank")
+            params = {
+                "playlist_in_get": playlist,
+                "videos": videos,
+            }
+        else:
+            raise PermissionDenied(_("You cannot access this playlist because it is private."))
     template_video = (
         "enrichment/video_enrichment-iframe.html"
         if (request.GET.get("is_iframe"))
@@ -244,7 +276,7 @@ def video_enrichment(request, slug, slug_c=None, slug_t=None, slug_private=None)
     except ValueError:
         raise SuspiciousOperation("Invalid video id")
 
-    return render_video(request, id, slug_c, slug_t, slug_private, template_video)
+    return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
 
 """

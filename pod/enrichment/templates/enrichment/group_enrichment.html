@@ -67,8 +67,10 @@
 
 {% block page_aside %}
 {% if video.owner == request.user or request.user.is_superuser or perms.video.change_video or request.user in video.additional_owners.all %}
-  <div class="card" id="card-managevideo">
-    <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
+  <div class="card" id="card-manage-video">
+    <h2 class="card-header card-title pod-card__title h4">
+      <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage video"%}
+    </h2>
     <div class="card-body card-text text-center">
       {% include "videos/link_video.html" %}
     </div>

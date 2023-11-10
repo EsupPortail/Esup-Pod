@@ -42,5 +42,9 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-  {% include 'videos/video_more_script.html' %}
+  {% if playlist_in_get %}
+    {% include 'enrichment/video_enrichment_more_script.html' %}
+  {% else %}
+    {% include 'videos/video_more_script.html' %}
+  {% endif %}
 {% endblock more_script %}

@@ -382,7 +382,31 @@ def check_password(form_password: str, playlist: Playlist) -> bool:
 
 
     Returns:
-        bool: True if the password provided matches the playlist password, False otherwise.
+        bool: `True` if the password provided matches the playlist password, `False` otherwise.
     """
     hashed_password = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
     return hashed_password == playlist.password
+
+
+def playlist_can_be_displayed(request: WSGIRequest, playlist: Playlist) -> bool:
+    """
+    Check if the playlist can be displayed by the current user.
+
+    Args:
+        request (:class:`django.core.handlers.wsgi.WSGIRequest`): The current request.
+        playlist (:class:`pod.playlist.models.Playlist`): The playlist object.
+
+    Returns:
+        bool: `True` if the current user can be see the playlist, `False` otherwise.
+    """
+    return (
+        playlist.visibility in {"public", "protected"}
+        or (
+            request.user.is_authenticated
+            and (
+                playlist.owner == request.user
+                or playlist in get_playlists_for_additional_owner(request.user)
+                or request.user.is_staff
+            )
+        )
+    )

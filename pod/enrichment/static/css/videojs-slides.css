@@ -75,6 +75,11 @@
   padding: 0 10px;
 }
 
+/********* To edit *********/
+.vjs-tech.to-edit {
+  width: 100% !important;
+}
+
 /********* Pip slide -> pip-slide *********/
 .vjs-tech.pip-slide {
   width: 80% !important;

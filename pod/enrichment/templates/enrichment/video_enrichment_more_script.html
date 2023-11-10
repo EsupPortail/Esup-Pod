@@ -1,0 +1,6 @@
+{% load i18n %}
+{% load static %}
+
+{% include 'videos/video_more_script.html' %}
+<script id="enrichment_script_id" src="{% static 'js/videojs-slides.js' %}?ver={{VERSION}}"></script>
+{% include 'enrichment/video_enrichment-script.html' %}
