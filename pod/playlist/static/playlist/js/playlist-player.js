@@ -105,8 +105,7 @@ function switchToNextVideo() {
                             }
                         }
                     } else {
-                        // TODO Make a real error
-                        console.error('Request error: ' + xhr.statusText);
+                        showalert(`Request error: ${xhr.statusText}`, 'alert-danger');
                     }
                 }
             };
