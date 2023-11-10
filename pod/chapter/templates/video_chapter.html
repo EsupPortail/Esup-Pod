@@ -5,7 +5,6 @@
 {% block page_title %}{% trans 'Chapter video' %} "{{video.title}}" {% endblock page_title %}
 {% block page_extra_head %}
   {% include 'videos/video-header.html' %}
-  <script src="{% static 'js/chapters.js' %}?ver={{VERSION}}"></script>
   <script>
     const video_duration = {{ video.duration }};
   </script>
