@@ -30,7 +30,7 @@
     let nbLoop = 0;
     // Live seems stopped
     let stopped = false;
-    let video_on_hold_is_displayed = false;
+    let videoOnHoldIsDisplayed = false;
     let recordingDuration = 0;
 
     {% if use_video_p2p and event.is_current %}
@@ -46,7 +46,7 @@
         backBufferLength: 90,
         enableWorker: true,
         lowLatencyMode: true,
-        debug: true, // TODO - REMOVE
+        // debug: true, // TODO - REMOVE
     }
     {% if use_video_p2p and event.is_current %}
       const p2p_config = {
@@ -270,7 +270,7 @@
         }
 
         // dispose onHold resources
-        video_on_hold_is_displayed = false;
+        videoOnHoldIsDisplayed = false;
         let div_video_on_hold = document.getElementById("divvideoonhold");
         if (div_video_on_hold) {
           let videoPlayer = videojs(div_video_on_hold);
@@ -782,7 +782,7 @@
      * @param withModal: if modal should be added on top.
      */
     function showWaitingVideo(withModal){
-        if (video_on_hold_is_displayed) {
+        if (videoOnHoldIsDisplayed) {
             return;
         }
 
@@ -809,7 +809,7 @@
         if (document.getElementById("divvideoplayer"))
           document.getElementById("divvideoplayer").style.display = "none";
 
-        video_on_hold_is_displayed = true;
+        videoOnHoldIsDisplayed = true;
     }
 
     /**

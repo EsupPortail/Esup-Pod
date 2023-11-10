@@ -1,3 +1,8 @@
+/**
+ * @file Esup-Pod functions for hls plugin,
+ * @since 3.5.0
+ */
+
 // Thanks https://github.com/streamroot/videojs-hlsjs-plugin
 // We duplicated this plugin to choose the hls.js version we want, because streamroot only provide a bundled file
 
