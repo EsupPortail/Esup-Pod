@@ -62,6 +62,17 @@ def display_message_with_icon(request, type, message):
     messages.add_message(request, type, mark_safe(msg))
 
 
+def dismiss_stored_messages(request):
+    """Tweak that dismiss messages stored to prevent them to pop on reload (asynchronous views)
+
+    Args:
+        request (Request): HTTP request
+    """
+    system_messages = messages.get_messages(request)
+    for msg in system_messages:
+        pass
+
+
 def secure_post_request(request):
     """Secure that this request is POST type.
 

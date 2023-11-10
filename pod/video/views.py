@@ -13,6 +13,7 @@ from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.http import QueryDict, Http404
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
+from django.utils.translation import ngettext
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
@@ -28,7 +29,7 @@ from django.db.models import Sum, Min
 
 from dateutil.parser import parse
 import concurrent.futures as futures
-from pod.main.utils import is_ajax
+from pod.main.utils import is_ajax, dismiss_stored_messages
 
 from pod.main.models import AdditionalChannelTab
 from pod.main.views import in_maintenance
@@ -616,18 +617,24 @@ def bulk_update(request):
         videos_list = Video.objects.filter(slug__in=selected_videos)
 
         if videos_list.exists():
-            updated_videos = []
-            deleted_videos = 0
-
+            status = 200
+            result = {
+                "message": "",
+                "fields_errors": [],
+                "updated_videos": [],
+                "deleted_videos": []
+            }
             for video in videos_list:
-
                 if "transcript" in update_fields:
                     video_transcript(request, video.slug)
-
-                elif "delete" in update_fields and video_is_deletable(request, video):
-                    video.delete()
-                    deleted_videos += 1
-
+                elif "delete" in update_fields:
+                    if video_is_deletable(request, video):
+                        slug = video.slug
+                        video.delete()
+                        result["deleted_videos"].append(slug)
+                    else:
+                        status = 404
+                        break
                 else:
                     form = (VideoForm(
                         request.POST,
@@ -642,23 +649,46 @@ def bulk_update(request):
 
                     if form.is_valid():
                         video = save_video_form(request, form)
-                        updated_videos.append(Video.objects.get(pk=video.id).slug)
-                        messages.add_message(
-                            request, messages.INFO, _("The changes have been saved.")
-                        )
+                        result["updated_videos"].append(Video.objects.get(pk=video.id).slug)
                     else:
-                        messages.add_message(
-                            request,
-                            messages.ERROR,
-                            _("One or more errors have been found in the form."),
-                        )
-                        return JsonResponse({"error": messages.ERROR}, status=404)
+                        # Prevent from duplicate error items
+                        if dict(form.errors.items()) not in result["fields_errors"]:
+                            result["fields_errors"].append(dict(form.errors.items()))
+                        status = 400
+                        break
 
-            return JsonResponse({
-                'selected_videos': selected_videos,
-                'updated_videos': updated_videos,
-                'deleted_videos': deleted_videos,
-            })
+            # Get global error messages (transcript or delete) and prevent alert messages to popup on reload
+            result["message"] = ' '.join(map(str, messages.get_messages(request)))
+            dismiss_stored_messages(request)
+
+            if len(result["fields_errors"]) == 0:
+                if "delete" in update_fields:
+                    counter = len(result["deleted_videos"])
+                    singular = "%(counter)s video removed"
+                    plural = "%(counter)s videos removed"
+                else:
+                    counter = len(result["updated_videos"])
+                    singular = "%(counter)s video modified"
+                    plural = "%(counter)s videos modified"
+
+                message = ngettext(
+                    singular,
+                    plural,
+                    counter
+                ) % {
+                    "counter": counter
+                }
+
+                counter = len(selected_videos) - counter
+                delta = ngettext(
+                    "%(counter)s video in error",
+                    "%(counter)s videos in error",
+                    counter
+                ) % {
+                    "counter": counter
+                }
+                result["message"] += message + ", " + delta
+            return JsonResponse(result, status=status)
 
 
 def get_paginated_videos(paginator, page):

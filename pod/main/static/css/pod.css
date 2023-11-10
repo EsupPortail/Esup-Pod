@@ -836,7 +836,20 @@ div.card a img {
   margin: 0 auto;
   left: 50%;
   transform: translate(-50%, 0);
-  z-index: 1000;
+  z-index: 1031;
+}
+
+#formalertdivbottomright {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  margin: 0 auto;
+  z-index: 1031;
+}
+
+#formalertdivbottomright > i {
+  margin-right: 0.8rem;
+  font-size: 1rem;
 }
 
 .flashing_field {

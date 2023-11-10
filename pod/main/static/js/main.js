@@ -509,6 +509,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+
+/**
+ * Enable / Disable buttons with specific condition parameter
+ * @param element
+ * @param condition
+ */
+function manageDisableBtns(element, condition) {
+    condition ? element.removeAttribute('disabled') : element.setAttribute('disabled','');
+}
 /** MENU ASIDE **/
 document.addEventListener("DOMContentLoaded", function () {
   //.collapseAside is on the toggle button
@@ -1273,16 +1282,16 @@ var videocheck = function (form, event) {
  * @param  {[type]} alerttype Type of alert (info, success, danger, warning...)
  * @return {void}
  */
-var showalert = function (message, alerttype) {
+var showalert = function (message, alerttype, idalerttype="formalertdiv") {
   const icon_types = {
-    "alert-success": "check2-circle",
-    "alert-info": "info-circle",
-    "alert-warning": "exclamation-triangle",
-    "alert-danger": "bug",
+    "alert-success": "check-circle-fill",
+    "alert-info": "info-fill",
+    "alert-warning": "exclamation-triangle-fill",
+    "alert-danger": "exclamation-triangle-fill",
   };
 
   let textHtml =
-    '<div id="formalertdiv" class="alert ' +
+    '<div id='+idalerttype+' class="alert ' +
     alerttype +
     ' alert-dismissible fade show" role="alert">' +
     '<i class="bi bi-' +
@@ -1302,7 +1311,7 @@ var showalert = function (message, alerttype) {
   // Auto dismiss success and info types
   if (["alert-success", "alert-info"].includes(alerttype)) {
     setTimeout(function () {
-      let formalertdiv = document.getElementById("formalertdiv");
+      let formalertdiv = document.getElementById(idalerttype);
       window.setTimeout(function () {
         slideUpAndRemove(formalertdiv);
       });

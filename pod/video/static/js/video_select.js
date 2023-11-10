@@ -49,22 +49,18 @@ function setSelectedVideos(){
  * Replace count of selected videos (count label in "Apply" bulk update's badge)
  */
 function replaceSelectedCountVideos() {
-  videos_selected = document.querySelectorAll(".infinite-item.selected");
+  videos_selected = getListSelectedVideos();
+  let selected_slugs = []
   let newCount = videos_selected.length;
   let transVideoCount = newCount > 1 ? "videos" : "video";
   countSelectedVideosBadge.innerHTML = newCount + " " + gettext(transVideoCount);
-  if(newCount > 0){
-    let selected_slugs = []
-    applyMultipleActionsBtn.removeAttribute('disabled');
-    resetSelectedVideosBtn.removeAttribute('disabled');
-    videos_selected.forEach((e) => {
-        selected_slugs.push(e.dataset.slug.split('-')[1])
-    });
-    badgeToolTip._config.title = selected_slugs.join("<br>");
-  }else{
-    applyMultipleActionsBtn.setAttribute('disabled','');
-    resetSelectedVideosBtn.setAttribute('disabled','');
-  }
+
+  manageDisableBtns(applyMultipleActionsBtn, newCount > 0 && action.length !== 0);
+  manageDisableBtns(resetSelectedVideosBtn, newCount > 0);
+  videos_selected.forEach((v) => {
+      selected_slugs.push(v.split('-')[1])
+  });
+  badgeToolTip._config.title = selected_slugs.join("<br>");
 }
 
 /**

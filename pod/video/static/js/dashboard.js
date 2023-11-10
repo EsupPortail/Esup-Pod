@@ -1,7 +1,7 @@
 var bulkUpdateActionSelect = document.getElementById("bulkUpdateActionSelect");
 var confirmBulkUpdateBtn = document.getElementById("confirmBulkUpdateBtn");
 var btnDisplayMode = document.querySelectorAll(".btn-dashboard-display-mode");
-var action;
+var action = "";
 var value;
 
 /**
@@ -10,6 +10,7 @@ var value;
 bulkUpdateActionSelect.addEventListener("change", function() {
     action = bulkUpdateActionSelect.value;
     appendDynamicForm(action);
+    replaceSelectedCountVideos();
 });
 
 /**
@@ -61,16 +62,35 @@ async function bulk_update() {
     body:formData,
   });
     let result = await response.text();
+    // Close modal and scroll to top
     bootstrap.Modal.getInstance(document.getElementById('modalConfirmBulkUpdate')).toggle();
+    window.scroll({top: 0, left: 0, behavior: 'smooth'});
+    // Parse result
+    data = JSON.parse(result);
+    let message = data["message"];
+    let updated_videos = data["updated_videos"];
+    let deleted_videos = data["deleted_videos"];
+
     if(response.ok){
-        data = JSON.parse(result);
-        Array.from(data["updated_videos"]).forEach((v_slug) => {
-            selectedVideos.push(v_slug);
-        });
-        showalert(gettext("The changes have been saved."), "alert-success");
+        // Set selected videos with new slugs if changed during update
+        selectedVideos = updated_videos;
+        showalert(message, "alert-success", "formalertdivbottomright");
         refreshVideosSearch();
     }else{
-        showalert(JSON.parse(result)["error"],"alert-danger");
+        // Manage field errors and global errors
+        let errors = Array.from(data["fields_errors"]);
+        if(errors.length > 0){
+            errors.forEach((error) => {
+                let key = Object.keys(error)[0];
+                let element = document.getElementById("id_"+key);
+                if(element != null){
+                    let message = error[key];
+                    showDashboardFormError(element, message, "alert-danger");
+                }
+            });
+        }else{
+            showalert(message, "alert-danger", "formalertdivbottomright");
+        }
     }
 }
 
@@ -118,4 +138,15 @@ function updateModalConfirmSelectedVideos(){
         str += "<li>"+video.split('-')[1]+"</li>";
     });
     bulkUpdateConfirmSelectedVideos.innerHTML = str;
+}
+
+/**
+ * Show feedback message after bulk update
+ * @param message
+ * @param alert_class
+ */
+function showDashboardFormError(element, message, alert_class){
+    let html = "<div class=\"alert "+alert_class+" alert-dismissible fade show my-2\" role=\"alert\">"+message+
+        "<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button></div>"
+    element.insertAdjacentHTML("beforebegin", html);
 }
