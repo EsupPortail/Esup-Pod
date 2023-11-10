@@ -237,7 +237,13 @@ def edit_enrichment_cancel(request, video):
 
 @csrf_protect
 @ensure_csrf_cookie
-def video_enrichment(request: WSGIRequest, slug: str, slug_c: str = None, slug_t: str = None, slug_private: str = None) -> HttpResponse:
+def video_enrichment(
+    request: WSGIRequest,
+    slug: str,
+    slug_c: str = None,
+    slug_t: str = None,
+    slug_private: str = None,
+) -> HttpResponse:
     """
     View to display a video in enrichment mode.
 
@@ -264,7 +270,9 @@ def video_enrichment(request: WSGIRequest, slug: str, slug_c: str = None, slug_t
                 "videos": videos,
             }
         else:
-            raise PermissionDenied(_("You cannot access this playlist because it is private."))
+            raise PermissionDenied(
+                _("You cannot access this playlist because it is private.")
+            )
     template_video = (
         "enrichment/video_enrichment-iframe.html"
         if (request.GET.get("is_iframe"))

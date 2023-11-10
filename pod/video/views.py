@@ -886,7 +886,9 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                 "videos": videos,
             }
         else:
-            raise PermissionDenied(_("You cannot access this playlist because it is private."))
+            raise PermissionDenied(
+                _("You cannot access this playlist because it is private.")
+            )
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
 

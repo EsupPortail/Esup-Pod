@@ -192,14 +192,14 @@ class VideoEnrichmentViewTestCase(TestCase):
     def test_access_video_enrichment(self):
         """Test the video enrichment access."""
         self.client.force_login(self.user)
-        url = reverse('enrichment:video_enrichment', kwargs={'slug': self.video.slug})
+        url = reverse("enrichment:video_enrichment", kwargs={"slug": self.video.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'enrichment/video_enrichment.html')
+        self.assertTemplateUsed(response, "enrichment/video_enrichment.html")
 
     def test_invalid_video_slug(self):
         """Test the view with invalid slug."""
-        url = reverse('enrichment:video_enrichment', kwargs={'slug': 'invalid-slug'})
+        url = reverse("enrichment:video_enrichment", kwargs={"slug": "invalid-slug"})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 400)
 
@@ -211,6 +211,9 @@ class VideoEnrichmentViewTestCase(TestCase):
             visibility="private",
             owner=self.user,
         )
-        url = reverse('enrichment:video_enrichment', kwargs={'slug': self.video.slug}) + f'?playlist={playlist.slug}'
+        url = (
+            reverse("enrichment:video_enrichment", kwargs={"slug": self.video.slug})
+            + f"?playlist={playlist.slug}"
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
