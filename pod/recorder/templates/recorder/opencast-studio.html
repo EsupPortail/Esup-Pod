@@ -115,47 +115,49 @@
     ];
   {% endif %}
 
-  // Create and append select list
-  let selectList = document.createElement("select");
-  selectList.id = "input_presenter";
-  selectList.name = "presenter_list";
+  // Create a render type select box
+  let renderTypeSelector = document.createElement("select");
+  renderTypeSelector.id = "render_type";
+  renderTypeSelector.name = "presenter_list";
+  renderTypeSelector.classList.add("form-select");
 
-  // Create and append the options
-  for (var i = 0; i < list_value.length; i++) {
-    var option = document.createElement("option");
+  // Create and append the render type options
+  for (let i = 0; i < list_value.length; i++) {
+    let option = document.createElement("option");
     option.value = list_value[i][0];
     option.text = list_value[i][1];
-    selectList.appendChild(option);
+    renderTypeSelector.appendChild(option);
   }
-  let new_label = document.createElement("label");
-  new_label.innerHTML = "{% trans 'Please select the render you want' %}";
-  new_label.setAttribute("for", "input_presenter");
+  let renderTypeLabel = document.createElement("label");
+  renderTypeLabel.innerHTML = "{% trans 'Please select the render you want' %}";
+  renderTypeLabel.setAttribute("for", "render_type");
+  renderTypeLabel.classList.add("form-label");
 
-  let divselect = document.createElement("div");
-  divselect.appendChild(selectList)
-  new_label.appendChild(divselect)
+  let renderTypeDiv = document.createElement("div");
+  renderTypeDiv.appendChild(renderTypeLabel)
+  renderTypeDiv.appendChild(renderTypeSelector)
 
-  const input_title = "input[name='title'][type='text']";
   let data_send = false;
 
   (function() {
     body_element = document.querySelector("body");
     body_element.addEventListener('DOMSubtreeModified', function () {
-      let input_title_el = document.querySelector(input_title);
-      let input_presenter = document.getElementById("input_presenter");
-      if (input_title_el && !input_presenter) {
-        if (document.querySelectorAll("#root video").length == 2 &&
-            data_send == false) {
-          let parent_div = input_title_el.closest("div").closest("div");
-          new_label.setAttribute("class", parent_div.getAttribute("class"));
-          parent_div.parentNode.insertBefore(new_label, parent_div.nextSibling);
-          input_presenter = document.getElementById("input_presenter");
-          input_presenter.addEventListener("change", (event) => {
+      let inputTitle = document.querySelector("input[name='title'][type='text']");
+      let renderTypeInput = document.getElementById("render_type");
+      // If we are at last step and renderTypeInput has not been injected yet.
+      if (inputTitle && !renderTypeInput) {
+        // If we have 2 video sources
+        if (document.querySelectorAll("#root video").length == 2) {
+          let parent_div = inputTitle.parentNode.parentNode;
+          renderTypeDiv.classList.add(parent_div.className);
+          renderTypeLabel.classList.add(parent_div.firstChild.className);
+          parent_div.parentNode.insertBefore(renderTypeDiv, parent_div.nextSibling);
+          renderTypeInput = document.getElementById("render_type");
+          renderTypeInput.addEventListener("change", (event) => {
             // call ajax to send value
             send_presenter_value(event.target.value);
           });
-          send_presenter_value(input_presenter.value);
-          console.log("data_send="+data_send);
+          send_presenter_value(renderTypeInput.value);
         }
       }
     }, false);
