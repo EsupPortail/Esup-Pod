@@ -237,7 +237,7 @@ def edit_enrichment_cancel(request, video):
 
 @csrf_protect
 @ensure_csrf_cookie
-def video_enrichment(request: WSGIRequest, slug: str, slug_c: str=None, slug_t: str=None, slug_private: str=None) -> HttpResponse:
+def video_enrichment(request: WSGIRequest, slug: str, slug_c: str = None, slug_t: str = None, slug_private: str = None) -> HttpResponse:
     """
     View to display a video in enrichment mode.
 
