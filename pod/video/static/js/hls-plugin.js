@@ -6,6 +6,14 @@ import "/static/video.js/dist/video.min.js";
 
 let alreadyRegistered = false;
 
+/**
+ * Registers an Hls.js source handler for HTML5 video playback in Video.js.
+ *
+ * @function registerSourceHandler
+ * @param {Object} vjs - The Video.js library object.
+ * @throws {Error} Throws an error if Hls.js is not supported in the browser or if the "Html5" tech is not found in Video.js.
+ * @returns {void}
+ */
 const registerSourceHandler = function (vjs) {
   if (!Hls.isSupported()) {
     console.log("Hls.js is not supported in this browser.");
@@ -16,7 +24,7 @@ const registerSourceHandler = function (vjs) {
 
   if (!html5) {
     console.error('No "Html5" tech found in videojs');
-    return
+    return;
   }
 
   if (alreadyRegistered) return;
@@ -26,8 +34,15 @@ const registerSourceHandler = function (vjs) {
   // FIXME: typings
   html5.registerSourceHandler(
     {
+      /**
+       * Determines if the source can be handled by Hls.js.
+       *
+       * @param {Object} source - The video source object.
+       * @returns {string} - Returns "probably" if the source type or extension indicates Hls.js support, otherwise returns an empty string.
+       */
       canHandleSource: function (source) {
-        const hlsTypeRE = /^application\/x-mpegURL|application\/vnd\.apple\.mpegurl$/i;
+        const hlsTypeRE =
+          /^application\/x-mpegURL|application\/vnd\.apple\.mpegurl$/i;
         const hlsExtRE = /\.m3u8/i;
 
         if (hlsTypeRE.test(source.type)) return "probably";
@@ -36,6 +51,13 @@ const registerSourceHandler = function (vjs) {
         return "";
       },
 
+      /**
+       * Handles the given video source by disposing of any existing Hls.js provider and creating a new one.
+       *
+       * @param {Object} source - The video source object.
+       * @param {Object} tech - The Video.js tech object.
+       * @returns {Object} - Returns the new Hls.js provider.
+       */
       handleSource: function (source, tech) {
         if (tech.hlsProvider) {
           tech.hlsProvider.dispose();
@@ -44,24 +66,36 @@ const registerSourceHandler = function (vjs) {
         tech.hlsProvider = new Html5Hlsjs(vjs, source, tech);
 
         return tech.hlsProvider;
-      }
+      },
     },
-    0
-  )
+    0,
+  );
 
   // FIXME: typings
   vjs.Html5Hlsjs = Html5Hlsjs;
-}
+};
 
 // ---------------------------------------------------------------------------
 // HLS options plugin
 // ---------------------------------------------------------------------------
 
-const Plugin = videojs.getPlugin("plugin")
+const Plugin = videojs.getPlugin("plugin");
 
+/**
+ * HLSJSConfigHandler plugin for Video.js.
+ *
+ * @class HLSJSConfigHandler
+ * @extends {Plugin}
+ */
 class HLSJSConfigHandler extends Plugin {
+  /**
+   * Constructor for HLSJSConfigHandler plugin.
+   *
+   * @param {Player} player - The Video.js player instance.
+   * @param {Object} options - Configuration options for the HLSJSConfigHandler plugin.
+   */
   constructor(player, options) {
-    super(player, options)
+    super(player, options);
 
     if (!options) return;
 
@@ -80,6 +114,13 @@ class HLSJSConfigHandler extends Plugin {
     registerSourceHandler(videojs);
   }
 
+  /**
+   * Dispose method for cleaning up the HLSJSConfigHandler plugin.
+   *
+   * @memberof HLSJSConfigHandler
+   * @method dispose
+   * @returns {void}
+   */
   dispose() {
     this.player.srOptions_ = undefined;
 
@@ -99,20 +140,37 @@ videojs.registerPlugin("hlsjs", HLSJSConfigHandler);
 // Pod resolutions plugin
 // ---------------------------------------------------------------------------
 
+/**
+ * PodResolutionsPlugin class for managing video resolutions in a Video.js player.
+ *
+ * @class PodResolutionsPlugin
+ * @extends {Plugin}
+ */
 class PodResolutionsPlugin extends Plugin {
   currentSelection = null;
   resolutions = [];
   autoResolutionChosenId = null;
 
+  /**
+   * Creates an instance of PodResolutionsPlugin.
+   *
+   * @param {Player} player - The Video.js player instance.
+   */
   constructor(player) {
     super(player);
 
     player.on("video-change", function () {
       this.resolutions = [];
-      this.trigger('resolutions-removed');
+      this.trigger("resolutions-removed");
     });
   }
 
+  /**
+   * Adds resolutions to the list of available resolutions.
+   *
+   * @param {Array} resolutions - An array of resolution objects to be added.
+   * @returns {void}
+   */
   add(resolutions) {
     for (let r of resolutions) {
       this.resolutions.push(r);
@@ -123,53 +181,87 @@ class PodResolutionsPlugin extends Plugin {
     this.trigger("resolutions-added");
   }
 
+  /**
+   * Removes a resolution from the list of available resolutions.
+   *
+   * @param {number} resolutionIndex - The index of the resolution to be removed.
+   * @returns {void}
+   */
   remove(resolutionIndex) {
-    this.resolutions = this.resolutions.filter(r => r.id !== resolutionIndex);
-    this.trigger('resolutions-removed');
+    this.resolutions = this.resolutions.filter((r) => r.id !== resolutionIndex);
+    this.trigger("resolutions-removed");
   }
 
+  /**
+   * Gets the list of available resolutions.
+   *
+   * @returns {Array} - An array of resolution objects.
+   */
   getResolutions() {
     return this.resolutions;
   }
 
+  /**
+   * Gets the currently selected resolution.
+   *
+   * @returns {Object|null} - The currently selected resolution object or null if none selected.
+   */
   getSelected() {
-    return this.resolutions.find(r => r.id === this.autoResolutionChosenId);
+    return this.resolutions.find((r) => r.id === this.autoResolutionChosenId);
   }
 
+  /**
+   * Selects a resolution based on the provided options.
+   *
+   * @param {Object} options - Options for selecting a resolution.
+   * @param {number} options.id - The ID of the resolution to be selected.
+   * @param {number} options.autoResolutionChosenId - The ID indicating auto-selected resolution.
+   * @param {boolean} options.fireCallback - Whether to fire the selectCallback of the selected resolution.
+   * @returns {void}
+   */
   select(options) {
     const { id, autoResolutionChosenId, fireCallback } = options;
 
-    if (this.currentSelection?.id === id && this.autoResolutionChosenId === autoResolutionChosenId) return;
+    if (
+      this.currentSelection?.id === id &&
+      this.autoResolutionChosenId === autoResolutionChosenId
+    )
+      return;
 
     this.autoResolutionChosenId = autoResolutionChosenId;
 
     for (const r of this.resolutions) {
-      r.selected = r.id === id
+      r.selected = r.id === id;
 
       if (r.selected) {
-        this.currentSelection = r
+        this.currentSelection = r;
 
-        if (fireCallback) r.selectCallback()
+        if (fireCallback) r.selectCallback();
       }
     }
 
     this.trigger("resolutions-changed");
   }
 
+  /**
+   * Sorts the resolutions array based on resolution height.
+   *
+   * @private
+   * @returns {void}
+   */
   _sort() {
     this.resolutions.sort((a, b) => {
-      if (a.id === -1) return 1
-      if (b.id === -1) return -1
+      if (a.id === -1) return 1;
+      if (b.id === -1) return -1;
 
-      if (a.height > b.height) return -1
-      if (a.height === b.height) return 0
-      return 1
-    })
+      if (a.height > b.height) return -1;
+      if (a.height === b.height) return 0;
+      return 1;
+    });
   }
 }
 
 videojs.registerPlugin("podResolutions", PodResolutionsPlugin);
-
 
 // ---------------------------------------------------------------------------
 // HLS JS source handler
@@ -192,7 +284,7 @@ export class Html5Hlsjs {
 
   handlers = {
     play: null,
-    error: null
+    error: null,
   };
 
   constructor(vjs, source, tech) {
@@ -205,7 +297,7 @@ export class Html5Hlsjs {
     this.videoElement = tech.el();
     this.player = vjs(tech.options_.playerId);
 
-    this.handlers.error = event => {
+    this.handlers.error = (event) => {
       let errorTxt;
       const mediaError = (event.currentTarget || event.target).error;
 
@@ -236,7 +328,7 @@ export class Html5Hlsjs {
       }
 
       console.error(`MEDIA_ERROR: ${errorTxt}`);
-    }
+    };
     this.videoElement.addEventListener("error", this.handlers.error);
 
     this.initialize();
@@ -274,7 +366,7 @@ export class Html5Hlsjs {
     const untypedHLS = this.hls;
     untypedHLS.log = untypedHLS.warn = () => {
       // empty
-    }
+    };
 
     this.hls.destroy();
   }
@@ -318,7 +410,7 @@ export class Html5Hlsjs {
   }
 
   _handleUnrecovarableError(error) {
-    if (this.hls.levels.filter(l => l.id > -1).length > 1) {
+    if (this.hls.levels.filter((l) => l.id > -1).length > 1) {
       this._removeQuality(this.hls.loadLevel);
       return;
     }
@@ -327,7 +419,7 @@ export class Html5Hlsjs {
     console.log("bubbling error up to VIDEOJS");
     this.tech.error = () => ({
       ...error,
-      message: this._getHumanErrorMsg(error)
+      message: this._getHumanErrorMsg(error),
     });
     this.tech.trigger("error");
   }
@@ -366,7 +458,7 @@ export class Html5Hlsjs {
       // Reset error count on success
       this.hls.once(Hls.Events.FRAG_LOADED, () => {
         this.errorCounts[Hls.ErrorTypes.NETWORK_ERROR] = 0;
-      })
+      });
 
       return;
     }
@@ -376,7 +468,7 @@ export class Html5Hlsjs {
 
   _onError(_event, data) {
     const error = {
-      message: `HLS.js error: ${data.type} - fatal: ${data.fatal} - ${data.details}`
+      message: `HLS.js error: ${data.type} - fatal: ${data.fatal} - ${data.details}`,
     };
 
     // increment/set error count
@@ -386,7 +478,7 @@ export class Html5Hlsjs {
     if (data.fatal)
       console.error(error.message, {
         currentTime: this.player.currentTime(),
-        data
+        data,
       });
     else console.log(error.message);
 
@@ -438,16 +530,16 @@ export class Html5Hlsjs {
         selected: level.id === this.hls.manualLevel,
 
         selectCallback: () => {
-          this.hls.currentLevel = index
-        }
+          this.hls.currentLevel = index;
+        },
       });
-    })
+    });
 
     resolutions.push({
       id: -1,
       label: this.player.localize("Auto"),
       selected: true,
-      selectCallback: () => (this.hls.currentLevel = -1)
+      selectCallback: () => (this.hls.currentLevel = -1),
     });
 
     this.player.podResolutions().add(resolutions);
@@ -505,14 +597,15 @@ export class Html5Hlsjs {
 
     this.hls.on(Hls.Events.ERROR, (event, data) => this._onError(event, data));
     this.hls.on(Hls.Events.MANIFEST_PARSED, (event, data) =>
-      this._onMetaData(event, data)
+      this._onMetaData(event, data),
     );
     this.hls.on(Hls.Events.LEVEL_LOADED, (event, data) => {
       // The DVR plugin will auto seek to "live edge" on start up
       if (this.hlsjsConfig.liveSyncDuration) {
         this.edgeMargin = this.hlsjsConfig.liveSyncDuration;
       } else if (this.hlsjsConfig.liveSyncDurationCount) {
-        this.edgeMargin = this.hlsjsConfig.liveSyncDurationCount * data.details.targetduration;
+        this.edgeMargin =
+          this.hlsjsConfig.liveSyncDurationCount * data.details.targetduration;
       }
 
       this.isLive = data.details.live;
@@ -527,21 +620,21 @@ export class Html5Hlsjs {
     this.hls.once(Hls.Events.FRAG_LOADED, () => {
       // Emit custom 'loadedmetadata' event for parity with `videojs-contrib-hls`
       // Ref: https://github.com/videojs/videojs-contrib-hls#loadedmetadata
-      this.tech.trigger("loadedmetadata");
+      // this.tech.trigger("loadedmetadata"); // TODO Faut il retirer ça ??? Cela cause l'execution de `player.on("loadedmetadata", function()` et fait en double plein de chose...
     });
 
     this.hls.on(Hls.Events.LEVEL_SWITCHING, (_e, data) => {
       const resolutionId = this.hls.autoLevelEnabled ? -1 : data.level;
 
-      const autoResolutionChosenId = this.hls.autoLevelEnabled ? data.level : -1;
+      const autoResolutionChosenId = this.hls.autoLevelEnabled
+        ? data.level
+        : -1;
 
-      this.player
-        .podResolutions()
-        .select({
-          id: resolutionId,
-          autoResolutionChosenId,
-          fireCallback: false
-        });
+      this.player.podResolutions().select({
+        id: resolutionId,
+        autoResolutionChosenId,
+        fireCallback: false,
+      });
     });
 
     this.hls.attachMedia(this.videoElement);
