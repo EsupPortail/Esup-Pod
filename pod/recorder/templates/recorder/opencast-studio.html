@@ -5,6 +5,7 @@
 
 {% block page_extra_head %}
   <style>
+  /* OpenCast v1.x */
   :root {
     --theme-ui-colors-background: var(--pod-background);
     --theme-ui-colors-text: var(--pod-font-color);
@@ -14,6 +15,18 @@
     --theme-ui-colors-btn-hover: var(--bs-btn-hover-bg);
     --theme-ui-colors-element_bg: var(--pod-background);
   }
+
+  /* OpenCast v2.x */
+  .pod-opencast-studio{
+    --color-accent6: var(--pod-primary);
+    --color-accent7: var(--pod-link-color);
+    --color-accent8: var(--pod-activelink-color);
+  }
+  html[data-color-scheme="dark"] .pod-opencast-studio{
+    --color-accent6: var(--pod-primary-lighten);
+    --color-accent8: var(--pod-primary-lighten);
+  }
+
 
   .pod-opencast-studio .loading-indicator>svg>circle {
     stroke: var(--pod-font-color);
