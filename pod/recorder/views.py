@@ -417,7 +417,7 @@ def studio_static(request, file):
 
 
 @login_required(redirect_field_name="referrer")
-def studio_root(request, file):
+def studio_root_file(request, file):
     """Redirect to root static files of Opencast studio folder."""
     extension = file.split(".")[-1]
     if extension == "js":

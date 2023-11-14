@@ -1,9 +1,10 @@
+"""Opencast Studio urls for Esup-Pod Integration."""
 from django.conf.urls import url
-from .views import studio_pod, studio_static, studio_root, settings_toml, info_me_json
+from .views import studio_pod, studio_static, studio_root_file
 from .views import ingest_createMediaPackage, ingest_addDCCatalog
 from .views import ingest_addAttachment, ingest_addTrack
 from .views import ingest_addCatalog, ingest_ingest
-from .views import presenter_post
+from .views import presenter_post, settings_toml, info_me_json
 
 app_name = "recorder"
 urlpatterns = [
@@ -34,8 +35,8 @@ urlpatterns = [
     ),
     url(
         r"^(?P<file>[a-zA-Z0-9\.]*)$",
-        studio_root,
-        name="studio_root",
+        studio_root_file,
+        name="studio_root_file",
     ),
     url(
         r"^ingest/createMediaPackage$",
