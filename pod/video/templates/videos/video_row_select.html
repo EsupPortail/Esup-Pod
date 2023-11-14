@@ -17,38 +17,48 @@
     <span class="col-3 title-item-video-row"
           {% if video.title|length > 20 %}title="{{ video.title|capfirst }}"{% endif %}>{{ video.title|capfirst|truncatechars:20 }}</span>
     <span class="col-2" title="{% trans 'Duration' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
-        <i class="bi bi-clock" aria-hidden="true"></i> {{ video.duration_in_time }}
+        <i class="bi bi-clock" aria-hidden="true"><span class="visually-hidden">{% trans 'Duration' %}</span></i> {{ video.duration_in_time }}
     </span>
     <span class="col-3" title="{% trans 'Date added' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
-        <i class="bi bi-calendar-check" aria-hidden="true"></i> {{ video.date_added }}</span>
+        <i class="bi bi-calendar-check" aria-hidden="true"><span class="visually-hidden">{% trans 'Date added' %}</span></i> {{ video.date_added }}</span>
     <div class="col-2 me-auto">
         <span title="{% trans 'This content is password protected.' %}" data-bs-toggle="tooltip"
               data-bs-placement="bottom">
             <i class="bi bi-lock {% if video.password or video.is_restricted %}active{% endif %}"
-               aria-hidden="true"></i>
+               aria-hidden="true"><span class="visually-hidden">{% trans 'This content is password protected.' %}</span></i>
         </span>
 
         <span title="{% trans 'This content is in draft.' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
-            <i class="bi bi-incognito {% if video.is_draft %}active{% endif %}" aria-hidden="true"></i>
+            <i class="bi bi-incognito {% if video.is_draft %}active{% endif %}" aria-hidden="true">
+                <span class="visually-hidden">{% trans 'This content is in draft.' %}</span>
+            </i>
         </span>
         <span title="{% trans 'This content is chaptered.' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
-            <i class="bi bi-card-list {% if video.chapter_set.all %}active{% endif %}" aria-hidden="true"></i>
+            <i class="bi bi-card-list {% if video.chapter_set.all %}active{% endif %}" aria-hidden="true">
+                <span class="visually-hidden">{% trans 'This content is chaptered.' %}</span>
+            </i>
         </span>
 
         {% if video.is_video %}
             <span title="{% trans 'Video content.' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
-                <i class="bi bi-film bi_content_type" aria-hidden="true"></i>
+                <i class="bi bi-film bi_content_type" aria-hidden="true">
+                    <span class="visually-hidden">{% trans 'Video content.' %}</span>
+                </i>
           </span>
         {% else %}
             <span title="{% trans 'Audio content.' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
-            <i class="bi bi-soundwave bi_content_type" aria-hidden="true"></i>
+            <i class="bi bi-soundwave bi_content_type" aria-hidden="true">
+                <span class="visually-hidden">{% trans 'Audio content.' %}</span>
+            </i>
           </span>
         {% endif %}
     </div>
     <div id="more-btn-group" class="btn-group ms-auto" role="group">
         <button id="more-actions-row-btn-{{ video.id }}" type="button" class="more-actions-row-btn"
                 data-bs-toggle="dropdown" aria-expanded="false" title="{% trans 'More' %}">
-            <i class="bi bi-three-dots more-actions-row-i" aria-hidden="true"></i>
+            <i class="bi bi-three-dots more-actions-row-i" aria-hidden="true">
+                <span class="visually-hidden">{% trans 'More' %}</span>
+            </i>
         </button>
         <ul class="dropdown-menu" aria-labelledby="more-actions-row-btn-{{ video.id }}">
             <li><a href="{% url 'video:video' video.slug %}" title="{% trans 'Play' %}" aria-hidden="true"
