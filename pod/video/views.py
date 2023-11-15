@@ -1,5 +1,5 @@
 """Esup-Pod videos views."""
-from django.core.exceptions import PermissionDenied, SuspiciousOperation, ValidationError
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers.json import DjangoJSONEncoder
@@ -83,7 +83,7 @@ from datetime import date
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 
-from django.db import transaction, models
+from django.db import transaction
 from django.db import IntegrityError
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
