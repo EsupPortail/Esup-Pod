@@ -709,7 +709,7 @@ def bulk_update_transcript(request, videos_list):
         for video in videos_list:
             video_transcript(request, video.slug)
             updated_videos.append(video.slug)
-    except:
+    except Exception:
         status = 400
     return updated_videos, status
 
