@@ -29,12 +29,11 @@ async function bulk_update() {
 
   // Init vars
   let formData = new FormData();
-  let update_fields = []
+  let update_action = action === "delete" || action === "transcript" ? action : "fields" ;
+  let update_fields = [];
 
   // Set updated field(s)
-  if(action === "delete" || action === "transcript"){
-      update_fields = [action];
-  }else{
+  if(update_action === "fields"){
       let form_groups = document.getElementById("dashboardForm").querySelectorAll(".form-group:not(.d-none)")
       Array.from(form_groups).forEach(form_group => {
           let element = form_group.querySelector(".form-control, .form-check-input, .form-select, input[name='thumbnail']");
@@ -51,6 +50,7 @@ async function bulk_update() {
   // Construct formData to send
   formData.append("selected_videos",JSON.stringify(getListSelectedVideos()));
   formData.append("update_fields",JSON.stringify(update_fields));
+  formData.append("update_action",JSON.stringify(update_action));
 
   // Post asynchronous request
   let response = await fetch(urlUpdateVideos, {

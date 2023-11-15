@@ -612,83 +612,110 @@ def dashboard(request):
 def bulk_update(request):
     """Perform bulk update for selected videos."""
     if request.method == "POST":
+        # Get post parameters
         selected_videos = json.loads(request.POST.get("selected_videos"))
-        update_fields = json.loads(request.POST.get("update_fields"))
         videos_list = Video.objects.filter(slug__in=selected_videos)
+        update_action = json.loads(request.POST.get("update_action"))
+        update_fields = json.loads(request.POST.get("update_fields"))
+        # Init return json object
+        status = 200 if videos_list.exists() else 400
+        message = "" if videos_list.exists() else _("Sorry, no video found.")
+        result = {
+            "message": message,
+            "fields_errors": [],
+            "updated_videos": [],
+            "deleted_videos": []
+        }
 
-        if videos_list.exists():
-            status = 200
-            result = {
-                "message": "",
-                "fields_errors": [],
-                "updated_videos": [],
-                "deleted_videos": []
-            }
+        if update_action == "fields":
             for video in videos_list:
-                if "transcript" in update_fields:
-                    video_transcript(request, video.slug)
-                elif "delete" in update_fields:
-                    if video_is_deletable(request, video):
-                        slug = video.slug
-                        video.delete()
-                        result["deleted_videos"].append(slug)
-                    else:
-                        status = 404
-                        break
+                form = (VideoForm(
+                    request.POST,
+                    request.FILES,
+                    instance=video,
+                    is_staff=request.user.is_staff,
+                    is_superuser=request.user.is_superuser,
+                    current_user=request.user,
+                    current_lang=request.LANGUAGE_CODE,
+                ))
+                form.create_with_fields(update_fields)
+
+                if form.is_valid():
+                    video = save_video_form(request, form)
+                    result["updated_videos"].append(Video.objects.get(pk=video.id).slug)
                 else:
-                    form = (VideoForm(
-                        request.POST,
-                        request.FILES,
-                        instance=video,
-                        is_staff=request.user.is_staff,
-                        is_superuser=request.user.is_superuser,
-                        current_user=request.user,
-                        current_lang=request.LANGUAGE_CODE,
-                    ))
-                    form.create_with_fields(update_fields)
+                    # Prevent from duplicate error items
+                    if dict(form.errors.items()) not in result["fields_errors"]:
+                        result["fields_errors"].append(dict(form.errors.items()))
+                    status = 400
+                    break
 
-                    if form.is_valid():
-                        video = save_video_form(request, form)
-                        result["updated_videos"].append(Video.objects.get(pk=video.id).slug)
-                    else:
-                        # Prevent from duplicate error items
-                        if dict(form.errors.items()) not in result["fields_errors"]:
-                            result["fields_errors"].append(dict(form.errors.items()))
-                        status = 400
-                        break
-
-            # Get global error messages (transcript or delete) and prevent alert messages to popup on reload
-            result["message"] = ' '.join(map(str, messages.get_messages(request)))
-            dismiss_stored_messages(request)
-
-            if len(result["fields_errors"]) == 0:
-                if "delete" in update_fields:
-                    counter = len(result["deleted_videos"])
-                    singular = "%(counter)s video removed"
-                    plural = "%(counter)s videos removed"
+        elif update_action == "delete":
+            for video in videos_list:
+                if video_is_deletable(request, video):
+                    slug = video.slug
+                    video.delete()
+                    result["deleted_videos"].append(slug)
                 else:
-                    counter = len(result["updated_videos"])
-                    singular = "%(counter)s video modified"
-                    plural = "%(counter)s videos modified"
+                    status = 404
+                    break
 
-                message = ngettext(
-                    singular,
-                    plural,
-                    counter
-                ) % {
-                    "counter": counter
-                }
+        elif update_action == "transcript":
+            for video in videos_list:
+                video_transcript(request, video.slug)
+        else:
+            pass
 
-                counter = len(selected_videos) - counter
-                delta = ngettext(
-                    "%(counter)s video in error",
-                    "%(counter)s videos in error",
-                    counter
-                ) % {
-                    "counter": counter
-                }
-                result["message"] += message + ", " + delta
-            return JsonResponse(result, status=status)
+        # Get global error messages (transcript or delete) and prevent alert messages to popup on reload
+        result["message"] = ' '.join(map(str, messages.get_messages(request)))
+        dismiss_stored_messages(request)
+
+        if len(result["fields_errors"]) == 0:
+            counter = len(result["deleted_videos"]) if update_action == "delete" else len(result["updated_videos"])
+            delta = len(selected_videos) - counter
+            result["message"] += get_result_message_bulk_update(request, update_action, counter, delta)
+
+        return JsonResponse(result, status=status)
+
+
+def get_result_message_bulk_update(request, update_action, counter, delta):
+    """Return result message for bulk update action"""
+    messages_translations = {
+        "delete": {
+            "singular": "%(counter)s video removed",
+            "plural": "%(counter)s videos removed",
+        },
+        "transcript": {
+            "singular": "%(counter)s video transcripted",
+            "plural": "%(counter)s videos transcripted",
+        },
+        "fields": {
+            "singular": "%(counter)s video modified",
+            "plural": "%(counter)s videos modified",
+        },
+        "delta": {
+            "singular": "%(counter)s video in error",
+            "plural": "%(counter)s videos in error",
+        }
+    }
+    # Get plural translation for deleted, transcripted or updated videos
+    message = ngettext(
+        messages_translations[update_action]["singular"],
+        messages_translations[update_action]["plural"],
+        counter
+    ) % {
+        "counter": counter
+    }
+    # Get plural translation for videos in error
+    counter = delta
+    message += ", " + ngettext(
+        messages_translations["delta"]["singular"],
+        messages_translations["delta"]["plural"],
+        counter
+    ) % {
+        "counter": counter
+    }
+    return message
 
 
 def get_paginated_videos(paginator, page):
