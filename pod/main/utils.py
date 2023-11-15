@@ -73,6 +73,19 @@ def dismiss_stored_messages(request):
         pass
 
 
+def get_max_code_lvl_messages(request):
+    """Get max level of request's stored messages
+
+    Args:
+        request (Request): HTTP request
+    """
+    max_code_lvl = 0
+    system_messages = messages.get_messages(request)
+    if len(system_messages) > 0:
+        max_code_lvl = max(list(map(lambda x: x.level, system_messages)))
+    return max_code_lvl
+
+
 def secure_post_request(request):
     """Secure that this request is POST type.
 

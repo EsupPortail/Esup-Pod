@@ -840,6 +840,7 @@ div.card a img {
 }
 
 #formalertdivbottomright {
+  max-width: 95%;
   position: fixed;
   bottom: 20px;
   right: 20px;

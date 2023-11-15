@@ -69,7 +69,6 @@ async function bulk_update() {
     data = JSON.parse(result);
     let message = data["message"];
     let updated_videos = data["updated_videos"];
-    let deleted_videos = data["deleted_videos"];
 
     if(response.ok){
         // Set selected videos with new slugs if changed during update
