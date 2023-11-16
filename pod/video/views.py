@@ -613,7 +613,6 @@ def bulk_update(request):
     """Perform bulk update for selected videos."""
     if request.method == "POST":
         status = 200
-
         # Get post parameters
         update_action = json.loads(request.POST.get("update_action"))
         selected_videos = json.loads(request.POST.get("selected_videos"))
@@ -721,7 +720,7 @@ def get_bulk_update_result(request, status, update_action, counter, delta, resul
         if get_max_code_lvl_messages(request) >= 40:
             status = 400
         result["message"] = ' '.join(map(str, messages.get_messages(request)))
-        result["message"] += ' ' + get_recap_message_bulk_update(request, update_action, counter, delta)
+       result["message"] += ' ' + get_recap_message_bulk_update(request, update_action, counter, delta)
 
     # Prevent alert messages to popup on reload (asynchronous view)
     dismiss_stored_messages(request)
@@ -731,37 +730,41 @@ def get_bulk_update_result(request, status, update_action, counter, delta, resul
 
 def get_recap_message_bulk_update(request, update_action, counter, delta):
     """Return overview message (videos updated, deleted, transcripted, in error) for bulk update"""
-    messages_translations = {
-        "delete": {
-            "singular": "%(counter)s video removed",
-            "plural": "%(counter)s videos removed",
-        },
-        "transcript": {
-            "singular": "%(counter)s video transcripted",
-            "plural": "%(counter)s videos transcripted",
-        },
-        "fields": {
-            "singular": "%(counter)s video modified",
-            "plural": "%(counter)s videos modified",
-        },
-        "error": {
-            "singular": "%(counter)s video in error",
-            "plural": "%(counter)s videos in error",
-        }
+    # Define translations keys and message with plural management
+    message_translations = {
+        "delete":
+            ngettext(
+                "%(counter)s video removed",
+                "%(counter)s videos removed",
+                counter
+            ) % {
+                "counter": counter
+            },
+        "transcript":
+            ngettext(
+                "%(counter)s video transcripted",
+                "%(counter)s videos transcripted",
+                counter
+            ) % {
+                "counter": counter
+            },
+        "fields":
+            ngettext(
+                "%(counter)s video modified",
+                "%(counter)s videos modified",
+                counter
+            ) % {
+                "counter": counter
+            },
     }
+    
     # Get plural translation for deleted, transcripted or updated videos
-    msg = ngettext(
-        messages_translations[update_action]["singular"],
-        messages_translations[update_action]["plural"],
-        counter
-    ) % {
-        "counter": counter
-    }
-    # Get plural translation for videos in error
+    msg = message_translations[update_action]
     counter = delta
-    msg += ", " + ngettext(
-        messages_translations["error"]["singular"],
-        messages_translations["error"]["plural"],
+    # Get plural translation for videos in error
+    msg += " " + ngettext(
+        "%(counter)s video in error",
+        "%(counter)s videos in error",
         counter
     ) % {
         "counter": counter
