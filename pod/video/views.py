@@ -757,7 +757,6 @@ def get_recap_message_bulk_update(request, update_action, counter, delta):
                 "counter": counter
             },
     }
-    
     # Get plural translation for deleted, transcripted or updated videos
     msg = message_translations[update_action]
     counter = delta
