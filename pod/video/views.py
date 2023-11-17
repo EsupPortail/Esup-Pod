@@ -720,7 +720,7 @@ def get_bulk_update_result(request, status, update_action, counter, delta, resul
         if get_max_code_lvl_messages(request) >= 40:
             status = 400
         result["message"] = ' '.join(map(str, messages.get_messages(request)))
-       result["message"] += ' ' + get_recap_message_bulk_update(request, update_action, counter, delta)
+        result["message"] += ' ' + get_recap_message_bulk_update(request, update_action, counter, delta)
 
     # Prevent alert messages to popup on reload (asynchronous view)
     dismiss_stored_messages(request)
