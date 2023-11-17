@@ -762,7 +762,7 @@ def get_recap_message_bulk_update(request, update_action, counter, delta):
     msg = message_translations[update_action]
     counter = delta
     # Get plural translation for videos in error
-    msg += " " + ngettext(
+    msg += ", " + ngettext(
         "%(counter)s video in error",
         "%(counter)s videos in error",
         counter
