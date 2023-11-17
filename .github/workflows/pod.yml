@@ -54,7 +54,7 @@ jobs:
 
       - name: Flake8 compliance
         run: |
-          flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py
+          flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py,side_*.py
 
       - name: Runs Elasticsearch
         uses: elastic/elastic-github-actions/elasticsearch@refactor_with_plugins

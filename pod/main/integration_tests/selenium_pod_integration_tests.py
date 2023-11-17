@@ -3,10 +3,9 @@
 *  run with 'python manage.py test -v 3 --settings=pod.main.test_settings pod.main.integration_tests.selenium_pod_integration_tests'
 """
 
-import json
+import importlib
 import os
 import shutil
-from urllib.parse import urljoin
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -15,607 +14,13 @@ from django.test.utils import override_settings
 from django.core.files.temp import NamedTemporaryFile
 from pod.video_encode_transcript.encode import encode_video
 
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.webdriver import WebDriver
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
 
 from pod.video.models import Video, Type
-import time
 
 
 target_cache = {}
 current_side_file = None
-
-
-def parse_target(target):
-    """
-    Parse the target string to determine the Selenium locator type and value.
-
-    Args:
-        target (str): The target element identifier, which can start with 'link=', '//', 'xpath=', 'css=', 'id=', or 'name='.
-
-    Returns:
-        tuple: A tuple containing the Selenium locator type (e.g., By.LINK_TEXT, By.XPATH, By.CSS_SELECTOR, By.ID, By.NAME) and the corresponding value.
-
-    Returns:
-        tuple: A tuple containing the Selenium locator type and the corresponding value, or (None, None) if the target identifier format is not recognized.
-    """
-    if target.startswith("link="):
-        return By.LINK_TEXT, target[5:]
-    elif target.startswith("//"):
-        return By.XPATH, target
-    elif target.startswith("xpath="):
-        return By.XPATH, target[6:]
-    elif target.startswith("css="):
-        return By.CSS_SELECTOR, target[4:]
-    elif target.startswith("id="):
-        return By.ID, target[3:]
-    elif target.startswith("name="):
-        return By.NAME, target[5:]
-    else:
-        return None, None
-
-
-def find_element(driver, target):
-    """
-    Find and return a web element using various locator strategies (e.g., By.ID, By.XPATH, By.CSS_SELECTOR).
-
-    Args:
-        driver (WebDriver): The WebDriver instance for interacting with the web page.
-        target (str): The target element identifier, which can start with 'link=', '//', 'xpath=', 'css=', 'id=', or 'name='.
-
-    Returns:
-        WebElement: The located web element.
-
-    Raises:
-        NoSuchElementException: If the specified element is not found on the web page.
-        Exception: If the target identifier format is not recognized.
-    """
-    if target in target_cache:
-        target = target_cache[target]
-
-    locator, value = parse_target(target)
-
-    if locator is not None:
-        try:
-            return driver.find_element(locator, value)
-        except NoSuchElementException:
-            result = driver.find_element(locator, value.lower())
-            target_cache[target] = f"{locator}={value.lower()}"
-            print(f"label {value} is being cached as {target_cache[target]}")
-            return result
-    else:
-        direct = (
-            driver.find_element(By.NAME, target)
-            or driver.find_element(By.ID, target)
-            or driver.find_element(By.LINK_TEXT, target)
-        )
-        if direct:
-            return direct
-        raise Exception("Don't know how to find %s" % target)
-
-
-class SeleniumTestCase(object):
-    """A Single Selenium Test Case"""
-
-    def __init__(self, test_data, callback=None):
-        """
-        Initialize a SeleniumTestCase instance.
-
-        Args:
-            test_data (dict): Test case data, including name, URL, and commands.
-            callback (callable, optional): Callback function to be executed after the test.
-        """
-        self.test_data = test_data
-        self.callback = callback
-        self.base_url = None
-        self.commands = []
-
-    def run(self, driver, url):
-        """
-        Run the Selenium test case.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            url (str): The base URL for the test case.
-        """
-        self.base_url = url
-        print(f'Running test: {self.test_data["name"]}')
-        self.run_commands(driver, url)
-        if self.callback:
-            self.callback(driver.page_source)
-
-    def run_commands(self, driver, url):
-        COMMAND_MAPPING = {
-            "open": self.open,
-            "click": self.click,
-            "pause": self.pause,
-            "cookies_commands": self.cookies_commands,
-            "clickAndWait": self.clickAndWait,
-            "type": self.type,
-            "select": self.select,
-            "verifyTextPresent": self.verifyTextPresent,
-            "verifyTextNotPresent": self.verifyTextNotPresent,
-            "assertElementPresent": self.assertElementPresent,
-            "verifyElementPresent": self.verifyElementPresent,
-            "verifyElementNotPresent": self.verifyElementNotPresent,
-            "waitForTextPresent": self.waitForTextPresent,
-            "waitForTextNotPresent": self.waitForTextNotPresent,
-            "assert": self.assertSimple,
-            "assertText": self.assertText,
-            "assertNotText": self.assertNotText,
-            "assertValue": self.assertValue,
-            "assertNotValue": self.assertNotValue,
-            "verifyValue": self.verifyValue,
-            "mouseOver": self.mouseOver,
-            "mouseOut": self.mouseOut,
-            "sendKeys": self.sendKeys,
-            "executeScript": self.executeScript,
-            "waitForElementVisible": self.waitForElementVisible,
-        }
-
-        for command in self.test_data.get("commands", []):
-            command_name = command.get("command", "")
-            target = command.get("target", "")
-            value = command.get("value", "")
-
-            if command_name in COMMAND_MAPPING:
-                COMMAND_MAPPING[command_name](
-                    driver=driver, target=target, value=value, url=url
-                )
-            else:
-                print(f"Command {command_name} not supported")
-
-    def cookies_commands(self, driver, url, value="", target=""):
-        """
-        Execute custom commands to handle cookies acceptance on website.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            url (str): The base URL for the test case.
-        """
-        with open(
-            "pod/main/integration_tests/commands/cookies_commands.side", "r"
-        ) as side_file:
-            side_data = json.load(side_file)
-            self.test_data["commands"] = side_data.get("commands", [])
-            self.run_commands(driver, url)
-
-    def open(self, driver, target, value="", url=""):
-        """
-        Open a URL in the WebDriver.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The URL to open.
-        """
-        url = urljoin(self.base_url, target)
-        driver.get(url)
-
-    def click(self, driver, target, value="", url=""):
-        """
-        Click on a web element identified by a target.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the web element to be clicked.
-        """
-        element = find_element(driver, target)
-        element_tag = element.tag_name
-        without_scroll_elements = {
-            "button",
-            "submit",
-            "textarea",
-            "input",
-            "div",
-            "span",
-            "i",
-        }
-        time.sleep(1)
-        if element_tag not in without_scroll_elements:
-            driver.execute_script("arguments[0].scrollIntoView();", element)
-            element.click()
-        else:
-            driver.execute_script("arguments[0].click();", element)
-
-    def pause(self, driver, target, value="", url=""):
-        """
-        Make a pause during target value.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The during value to wait.
-        """
-        driver.implicitly_wait(target)
-
-    def clickAndWait(self, driver, target, value="", url=""):
-        """
-        Click on a web element identified by a target and wait for a response.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the web element to be clicked.
-        """
-        self.click(driver, target)
-
-    def type(self, driver, target, value="", url=""):
-        """
-        Simulate typing text into an input field on a web page.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the input field.
-            value (str, optional): The value to be typed into the input field.
-        """
-        element = find_element(driver, target)
-        element_tag = element.tag_name
-        without_scroll_elements = {
-            "button",
-            "submit",
-            "textarea",
-            "input",
-            "div",
-            "span",
-            "i",
-        }
-        time.sleep(1)
-        if element_tag not in without_scroll_elements:
-            driver.execute_script("arguments[0].scrollIntoView();", element)
-            element.click()
-            element.clear()
-        else:
-            driver.execute_script("arguments[0].click();", element)
-            element.send_keys(Keys.CONTROL, 'a')
-            element.send_keys(Keys.DELETE)
-        element.send_keys(value)
-
-    def select(self, driver, target, value, url=""):
-        """
-        Select an option from a dropdown list on a web page.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the dropdown element.
-            value (str): The option value to be selected.
-        """
-        element = find_element(driver, target)
-        if value.startswith("label="):
-            Select(element).select_by_visible_text(value[6:])
-        else:
-            msg = "Don't know how to select %s on %s"
-            raise Exception(msg % (value, target))
-
-    def verifyTextPresent(self, driver, text, target="", value="", url=""):
-        """
-        Verify if the specified text is present in the page source.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            text (str): The text to be verified for presence.
-        """
-        try:
-            source = driver.page_source
-            assert bool(text in source)
-        except Exception:
-            print("verifyTextPresent: ", repr(text), "not present in", repr(source))
-            raise
-
-    def verifyTextNotPresent(self, driver, text, target="", value="", url=""):
-        """
-        Verify if the specified text is not present in the page source.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            text (str): The text to be verified for absence.
-        """
-        try:
-            assert not bool(text in driver.page_source)
-        except Exception:
-            print("verifyNotTextPresent: ", repr(text), "present")
-            raise
-
-    def assertElementPresent(self, driver, target, value="", url=""):
-        """
-        Assert the presence of a specified web element.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the web element to be verified for presence.
-        """
-        try:
-            assert bool(find_element(driver, target))
-        except Exception:
-            print("assertElementPresent: ", repr(target), "not present")
-            raise
-
-    def verifyElementPresent(self, driver, target, value="", url=""):
-        """
-        Verify the presence of a specified web element on a web page.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the web element to be verified for presence.
-        """
-        try:
-            assert bool(find_element(driver, target))
-        except Exception:
-            print("verifyElementPresent: ", repr(target), "not present")
-            raise
-
-    def verifyElementNotPresent(self, driver, target, value="", url=""):
-        """
-        Verify the absence of a specified web element on a web page.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the web element to be verified for absence.
-        """
-        present = True
-        try:
-            find_element(driver, target)
-        except NoSuchElementException:
-            present = False
-
-        try:
-            assert not present
-        except Exception:
-            print("verifyElementNotPresent: ", repr(target), "present")
-            raise
-
-    def waitForTextPresent(self, driver, text, target="", value="", url=""):
-        """
-        Wait for the specified text to be present in the page source.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            text (str): The text to wait for in the page source.
-        """
-        try:
-            assert bool(text in driver.page_source)
-        except Exception:
-            print("waitForTextPresent: ", repr(text), "not present")
-            raise
-
-    def waitForTextNotPresent(self, driver, text, target="", value="", url=""):
-        """
-        Wait for the specified text to be absent in the page source.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            text (str): The text to wait for to be absent in the page source.
-        """
-        try:
-            assert not bool(text in driver.page_source)
-        except Exception:
-            print("waitForTextNotPresent: ", repr(text), "present")
-            raise
-
-    def assertSimple(self, driver, target, value="", url=""):
-        target_value = find_element(driver, target).get_attribute("value")
-        assert(target_value == value)
-
-    def assertText(self, driver, target, value="", url=""):
-        """
-        Assert that the text of a specified web element matches the expected value.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the web element whose text needs to be asserted.
-            value (str, optional): The expected text value to compare against (default is an empty string).
-        """
-        try:
-            target_value = find_element(driver, target).text
-            print("   assertText target value =" + repr(target_value))
-            if value.startswith("exact:"):
-                assert target_value == value[len("exact:") :]
-            else:
-                assert target_value == value
-        except Exception:
-            print(
-                "assertText: ",
-                repr(target),
-                repr(find_element(driver, target).get_attribute("value")),
-                repr(value),
-            )
-            raise
-
-    def assertNotText(self, driver, target, value="", url=""):
-        """
-        Assert that the text of a specified web element does not match the expected value.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the web element whose text needs to be asserted.
-            value (str, optional): The expected text value to compare against (default is an empty string).
-        """
-        try:
-            target_value = find_element(driver, target).text
-            print("  assertNotText target value =" + repr(target_value))
-            if value.startswith("exact:"):
-                assert target_value != value[len("exact:") :]
-            else:
-                assert target_value != value
-        except Exception:
-            print(
-                "assertNotText: ",
-                repr(target),
-                repr(find_element(driver, target).get_attribute("value")),
-                repr(value),
-            )
-            raise
-
-    def assertValue(self, driver, target, value="", url=""):
-        """
-        Assert that the value attribute of a specified web element matches the expected value.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the web element whose value attribute needs to be asserted.
-            value (str, optional): The expected value to compare against (default is an empty string).
-        """
-        try:
-            target_value = find_element(driver, target).get_attribute("value")
-            print("  assertValue target value =" + repr(target_value))
-            assert target_value == value
-        except Exception:
-            print(
-                "assertValue: ",
-                repr(target),
-                repr(find_element(driver, target).get_attribute("value")),
-                repr(value),
-            )
-            raise
-
-    def assertNotValue(self, driver, target, value="", url=""):
-        """
-        Assert that the value attribute of a specified web element does not match the expected value.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the web element whose value attribute needs to be asserted.
-            value (str, optional): The expected value to compare against (default is an empty string).
-        """
-        try:
-            target_value = find_element(driver, target).get_attribute("value")
-            print("  assertNotValue target value =" + repr(target_value))
-            assert target_value != value
-        except Exception:
-            print(
-                "assertNotValue: ",
-                repr(target),
-                repr(target_value),
-                repr(value),
-            )
-            raise
-
-    def verifyValue(self, driver, target, value="", url=""):
-        """
-        Verify that the value attribute of a specified web element matches the expected value.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the web element whose value attribute needs to be verified.
-            value (str, optional): The expected value to compare against (default is an empty string).
-        """
-        try:
-            target_value = find_element(driver, target).get_attribute("value")
-            print("  verifyValue target value =" + repr(target_value))
-            assert target_value == value
-        except Exception:
-            print(
-                "verifyValue: ",
-                repr(target),
-                repr(find_element(driver, target).get_attribute("value")),
-                repr(value),
-            )
-            raise
-
-    def mouseOver(self, driver, target, value="", url=""):
-        """
-        Simulate a mouse over event on the specified target element.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the web element whose value attribute needs to be verified.
-        """
-        element = find_element(driver, target)
-        driver.execute_script(
-            "arguments[0].dispatchEvent(new Event('mouseover'))", element
-        )
-
-    def mouseOut(self, driver, target, value="", url=""):
-        """
-        Simulate a mouse out event on the specified target element.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the web element whose value attribute needs to be verified.
-        """
-        element = find_element(driver, target)
-        driver.execute_script(
-            "arguments[0].dispatchEvent(new Event('mouseout'))", element
-        )
-
-    def sendKeys(self, driver, target, value="", url=""):
-        """
-        Send the specified text to the target element.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            target (str): The identifier for the web element whose value attribute needs to be verified.
-            value (str, optional): The text to send to the target element.
-        """
-        element = find_element(driver, target)
-        element.send_keys(value)
-
-    def executeScript(self, driver, target, value="", url=""):
-        """
-        Execute a script script in the browser.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            script (str): The script code to execute.
-        """
-        driver.execute_script(target)
-
-    def waitForElementVisible(self, driver, target, value="", url=""):
-        element = find_element(driver, target)
-        WebDriverWait(driver, 30).until(EC.visibility_of_element_located(element))
-
-
-class SeleniumTestSuite(object):
-    """A Selenium Test Suite"""
-
-    def __init__(self, filename, callback=None):
-        """
-        Initialize a SeleniumTestSuite instance.
-
-        Args:
-            filename (str): The name of the test suite JSON file.
-            callback (callable, optional): A callback function to be executed after each test (default is None).
-        """
-        self.filename = filename
-        self.callback = callback
-
-        self.tests = []
-
-        with open(filename, "r") as json_file:
-            json_data = json.load(json_file)
-            self.title = json_data.get("name", "Untitled Suite")
-            self.tests = [
-                (test_data.get("name", "Untitled Test"), test_data)
-                for test_data in json_data.get("tests", [])
-            ]
-
-    def run(self, driver, url):
-        """
-        Run the Selenium test suite with the specified WebDriver instance and URL.
-
-        Args:
-            driver (WebDriver): The WebDriver instance for interacting with the web page.
-            url (str): The base URL to be used for the tests.
-        """
-        for test_title, test_data in self.tests:
-            try:
-                test = SeleniumTestCase(test_data, self.callback)
-                test.run(driver, url)
-            except Exception as e:
-                print(f"Error in {test_title} ({test.filename}): {e}")
-                raise
-
-    def __repr__(self):
-        """
-        Return a string representation of the SeleniumTestSuite.
-
-        Returns:
-            str: A string representation of the test suite, including its title and test titles.
-        """
-        test_titles = "\n".join([title for title, _ in self.tests])
-        return f"{self.title}\n{test_titles}"
 
 
 class PodSeleniumTests(StaticLiveServerTestCase):
@@ -631,35 +36,36 @@ class PodSeleniumTests(StaticLiveServerTestCase):
     def setUpClass(cls):
         """Create the WebDriver for all Selenium tests."""
         super().setUpClass()
-        cls.selenium = WebDriver()
-        cls.selenium.implicitly_wait(10)
+        cls.driver = WebDriver()
+        cls.vars = {}
+        cls.driver.implicitly_wait(10)
 
     @classmethod
     def tearDownClass(cls):
         """Close the WebDriver used."""
-        cls.selenium.quit()
+        cls.driver.quit()
         super().tearDownClass()
 
     @override_settings(DEBUG=False)
     def test_selenium_suites(self):
         """Run Selenium Test Suites from Side files in all installed apps."""
-        self.selenium.get(f"{self.live_server_url}/")
+        self.driver.get(f"{self.live_server_url}/")
+        # run initial test
         self.run_initial_tests()
-        time.sleep(1)
-        self.run_all_simple_tests()
-        time.sleep(1)
-        self.run_initial_staff_tests()
-        time.sleep(1)
-        self.run_all_staff_tests()
+        # run anonyme test
+        self.run_tests("anonyme")
+        # run simple user test
+        # run staff uesr test
 
     def initialize_data(self):
         """Initialize custom test data."""
         self.user_simple = User.objects.create_user(username="user", password="user")
-        self.user_staff = User.objects.create_user(username="staff_user", password="user")
-        self.user_staff.is_staff = True
-        self.user_staff.save()
+        self.user_staff = User.objects.create_user(
+            username="staff_user",
+            password="user",
+            is_staff=True
+        )
         # copy video file
-
         self.video = Video.objects.create(
             title="first-video",
             owner=self.user_simple,
@@ -684,51 +90,76 @@ class PodSeleniumTests(StaticLiveServerTestCase):
         encode_video(self.video.id)
         encode_video(self.video_staff.id)
 
-    def run_suite(self, suite_name, suite_url):
+    def run_suite(self, suite_name, prefixe=""):
         """
         Run a Selenium test suite with the specified name and URL.
 
         Args:
-            suite_name (str): The name of the test suite JSON file.
+            suite_name (str): The name of the test suite python file.
             suite_url (str): The base URL for the test suite.
         """
         global current_side_file
         print(f"Running test suite: {suite_name}")
 
-        with open(suite_name, "r") as json_file:
-            suite_data = json.load(json_file)
-            suite_tests = suite_data.get("tests", [])
+        fname, ext = os.path.splitext(os.path.basename(suite_name))
+        def_name = fname.replace(prefixe, "")
+        command_lines = []
+        import_lines = []
+        find_def_name = False
 
-        for test_data in suite_tests:
-            test_case = SeleniumTestCase(test_data)
-            try:
-                test_case.run(PodSeleniumTests.selenium, suite_url)
-            except Exception:
-                PodSeleniumTests.selenium.save_screenshot(
-                    f"{suite_name}-error_screen.png"
-                )
-                current_side_file = suite_name
-                self.fail(f"Error in suite {suite_name}")
+        with open(suite_name, 'r', encoding="utf8", errors='ignore') as fp:
+            # read all lines in a list
+            for l_no, line in enumerate(fp):
+                # check if string present on a current line
+                if line.startswith("from selenium"):
+                    import_lines.append(line)
+                if line.find(def_name) != -1:
+                    find_def_name = True
+                    continue
+                if find_def_name:
+                    if len(line.strip()) == 0 :
+                        break
+                    command_lines.append(self.format_line(line))
+
+        tempfile = suite_name.replace(fname, def_name)
+        print(tempfile)
+        with open(tempfile, "w") as f:
+            f.writelines(import_lines)
+            f.write("\n")
+            f.write("def %s(cls):\n" % def_name)
+            for command in command_lines:
+                f.write("    %s\n" % command)
+            f.write("\n")
+
+        import_module = tempfile[tempfile.index('/pod/') + 1:]
+        import_module = import_module.replace("/", ".").replace(".py", "")
+        module = importlib.import_module(import_module)
+        module_fct = getattr(module, def_name)
+        module_fct(self)
+        os.remove(tempfile)
+
+    def format_line(self, line):
+        formatted_line = line
+        formatted_line = formatted_line.strip().replace("undefined", "")
+        formatted_line = formatted_line.replace("self", "cls")
+        formatted_line = formatted_line.replace(
+            "http://localhost:9090", self.live_server_url
+        )
+        return formatted_line
 
     def run_initial_tests(self):
         """Run initial Selenium test suites for cookies and login."""
         initial_tests_dir = os.path.join(
             os.path.dirname(__file__), "init_integration_tests")
-        cookies_test_path = os.path.join(initial_tests_dir, "cookies.side")
-        login_test_path = os.path.join(initial_tests_dir, "connexion.side")
-        self.run_single_suite(cookies_test_path)
-        self.run_single_suite(login_test_path)
+        cookies_test_path = os.path.join(initial_tests_dir, "side_init_test_cookies.py")
+        self.run_single_suite(cookies_test_path, "side_init_")
+        deconnexion_test_path = os.path.join(
+            initial_tests_dir,
+            "side_init_test_deconnexion.py"
+        )
+        self.run_single_suite(deconnexion_test_path, "side_init_")
 
-    def run_initial_staff_tests(self):
-        """Run initial Selenium test suites for cookies and login."""
-        initial_tests_dir = os.path.join(
-            os.path.dirname(__file__), "init_integration_tests")
-        deconnexion_path = os.path.join(initial_tests_dir, "deconnexion.side")
-        login_test_path = os.path.join(initial_tests_dir, "connexion_staff.side")
-        self.run_single_suite(deconnexion_path)
-        self.run_single_suite(login_test_path)
-
-    def run_all_simple_tests(self):
+    def run_tests(self, type):
         """
         Run Selenium test suites in all installed apps.
 
@@ -742,54 +173,37 @@ class PodSeleniumTests(StaticLiveServerTestCase):
             if os.path.exists(integration_tests_dir):
                 tests_dir = os.path.join(integration_tests_dir, "tests")
                 if os.path.exists(tests_dir):
-                    print(f"Running Selenium tests in {app}...")
-                    self.run_tests_in_directory(tests_dir, suffixe = "_simple")
-        print("All simple tests are DONE")
+                    print(f"Running Selenium {type} tests in {app}...")
+                    self.run_tests_in_directory(tests_dir, type)
+        print("All %s tests are DONE" % type)
 
-    def run_all_staff_tests(self):
-        """
-        Run Selenium test suites in all installed apps.
-
-        This method searches for test suites in integration_tests/tests directories of all installed apps and runs them.
-        """
-        for app in settings.INSTALLED_APPS:
-            app_module = __import__(app, fromlist=["integration_tests"])
-            integration_tests_dir = os.path.join(
-                os.path.dirname(app_module.__file__), "integration_tests"
-            )
-            if os.path.exists(integration_tests_dir):
-                tests_dir = os.path.join(integration_tests_dir, "tests")
-                if os.path.exists(tests_dir):
-                    print(f"Running Selenium tests in {app}...")
-                    self.run_tests_in_directory(tests_dir, suffixe = "_staff")
-        print("All simple tests are DONE")
-
-    def run_tests_in_directory(self, directory, suffixe = ""):
+    def run_tests_in_directory(self, directory, type):
         """
         Run Selenium test suites in the specified directory.
 
         Args:
             directory (str): The directory containing test suites.
+            type (str): The type of test to run.
         """
         for root, dirs, files in os.walk(directory):
             for filename in files:
-                if filename.endswith("%s.side" % suffixe):
+                prefixe = "side_%s_" % type
+                if filename.startswith(prefixe):
                     suite_name = os.path.join(root, filename)
-                    self.run_single_suite(suite_name)
+                    self.run_single_suite(suite_name, prefixe)
 
-    def run_single_suite(self, suite_name):
+    def run_single_suite(self, suite_name, suffixe):
         """
         Run a single Selenium test suite.
 
         Args:
-            suite_name (str): The name of the test suite JSON file to run.
+            suite_name (str): The name of the test suite python file to run.
         """
         try:
-            suite_url = self.live_server_url
-            self.run_suite(suite_name, suite_url)
-            PodSeleniumTests.selenium.save_screenshot(f"{suite_name}-info_screen.png")
+            self.run_suite(suite_name, suffixe)
+            PodSeleniumTests.driver.save_screenshot(f"{suite_name}-info_screen.png")
         except Exception:
-            PodSeleniumTests.selenium.save_screenshot(f"{suite_name}-error_screen.png")
+            PodSeleniumTests.driver.save_screenshot(f"{suite_name}-error_screen.png")
             print("ERROR !")
             print(f"Side path : {current_side_file}")
             self.fail(f"Error in suite {suite_name}")
