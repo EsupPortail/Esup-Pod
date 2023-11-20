@@ -97,7 +97,8 @@
   --third-background-color: var(--pod-background-neutre1-bloc) !important;
 }
 
-.progress, .progress-stacked{
+.progress,
+.progress-stacked {
   --bs-progress-bar-bg: var(--pod-primary);
 }
 
