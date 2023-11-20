@@ -366,7 +366,9 @@ def studio_pod(request):
             request, "recorder/opencast-studio.html", {"access_not_allowed": True}
         )
     # Render the Opencast studio index file
-    opencast_studio_rendered = render_to_string("studio/index.html").replace('\r', '').replace('\n', '')
+    opencast_studio_rendered = (
+        render_to_string("studio/index.html").replace("\r", "").replace("\n", "")
+    )
     head = opencast_studio_rendered[
         opencast_studio_rendered.index("<head>")
         + len("<head>") : opencast_studio_rendered.index("</head>")
