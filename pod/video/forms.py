@@ -636,6 +636,10 @@ class VideoForm(forms.ModelForm):
     def create_with_fields(self, field_key):
         """Create VideoForm with specific fields. Keep video field to prevent error on save."""
         fields = list(self.fields)
+        if "description" in field_key:
+            field_key.append("description_%s" % self.current_lang)
+        if "title" in field_key:
+            field_key.append("title_%s" % self.current_lang)
         for field in fields:
             if field not in field_key and field != "video":
                 del self.fields[field]

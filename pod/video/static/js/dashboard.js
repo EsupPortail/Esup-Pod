@@ -40,7 +40,16 @@ async function bulk_update() {
           if(element.hasAttribute("multiple")){
             formData.append(element.getAttribute("name"), element.value);
           }else{
-            value = element.type === "checkbox" ? element.checked : document.getElementById("id_"+element.getAttribute("name")).value;
+            switch(element.type){
+                case "checkbox":
+                    value = element.checked
+                    break;
+                case "textarea":
+                    value = CKEDITOR.instances[element.id].getData();
+                    break;
+                default:
+                    document.getElementById("id_"+element.getAttribute("name")).value;
+            }
             formData.append(element.getAttribute("name"), value);
           }
           update_fields.push(element.name);
