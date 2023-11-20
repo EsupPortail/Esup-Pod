@@ -97,6 +97,10 @@
   --third-background-color: var(--pod-background-neutre1-bloc) !important;
 }
 
+.progress, .progress-stacked{
+  --bs-progress-bar-bg: var(--pod-primary);
+}
+
 :root[data-dyslexia="on"] {
   --bs-body-font-family: var(--pod-font-family-dyslexie);
 }

@@ -111,7 +111,7 @@ def fetch_user(request, form):
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def add_recording(request):
-    """Adds a recording to the system."""
+    """Add a recording to the system."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
     mediapath = request.GET.get("mediapath", "")
@@ -358,6 +358,7 @@ def delete_record(request, id=None):
 # OPENCAST VIEWS
 @login_required(redirect_field_name="referrer")
 def studio_pod(request):
+    """Render the Opencast studio view in Esup-Pod."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
     if __REVATSO__ and request.user.is_staff is False:
@@ -365,7 +366,7 @@ def studio_pod(request):
             request, "recorder/opencast-studio.html", {"access_not_allowed": True}
         )
     # Render the Opencast studio index file
-    opencast_studio_rendered = render_to_string("studio/index.html")
+    opencast_studio_rendered = render_to_string("studio/index.html").replace('\r', '').replace('\n', '')
     head = opencast_studio_rendered[
         opencast_studio_rendered.index("<head>")
         + len("<head>") : opencast_studio_rendered.index("</head>")
@@ -388,6 +389,7 @@ def studio_pod(request):
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def presenter_post(request):
+    """Check if the value for `presenter` is valid."""
     if (
         request.POST
         and request.POST.get("presenter")
@@ -401,6 +403,7 @@ def presenter_post(request):
 
 @login_required(redirect_field_name="referrer")
 def studio_static(request, file):
+    """Redirect to all static files inside Opencast studio static subfolder."""
     extension = file.split(".")[-1]
     if extension == "js":
         path_file = os.path.join(
@@ -414,7 +417,23 @@ def studio_static(request, file):
 
 
 @login_required(redirect_field_name="referrer")
+def studio_root_file(request, file):
+    """Redirect to root static files of Opencast studio folder."""
+    extension = file.split(".")[-1]
+    if extension == "js":
+        path_file = os.path.join(
+            settings.BASE_DIR, "custom", "static", "opencast", "studio/%s" % file
+        )
+        f = open(path_file, "r")
+        content_file = f.read()
+        content_file = content_file.replace("Opencast", "Pod")
+        return HttpResponse(content_file, content_type="application/javascript")
+    return HttpResponseRedirect("/static/opencast/studio/%s" % file)
+
+
+@login_required(redirect_field_name="referrer")
 def settings_toml(request):
+    """Render a settings.toml configuration file for Opencast Studio."""
     # OpenCast Studio configuration
     # See https://github.com/elan-ev/opencast-studio/blob/master/CONFIGURATION.md
     # Add parameter : the pod studio URL
@@ -434,8 +453,10 @@ def settings_toml(request):
     content_text = """
     [opencast]
     serverUrl = "%(serverUrl)s"
+    loginProvided = true
     [upload]
     presenterField = 'hidden'
+    seriesField = 'hidden'
     [return]
     target = "%(target)s"
     label = "%(label)s"
@@ -451,7 +472,9 @@ def settings_toml(request):
 
 @login_required(redirect_field_name="referrer")
 def info_me_json(request):
-    # Authentication for OpenCast Studio
+    """Render a info/me.json file for current user roles in Opencast Studio."""
+    # Providing a user with ROLE_STUDIO should grant all necessary rights.
+    # See https://github.com/elan-ev/opencast-studio/blob/master/README.md
     return render(request, "studio/me.json", {}, content_type="application/json")
 
 

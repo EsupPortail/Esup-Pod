@@ -5,6 +5,7 @@
 
 {% block page_extra_head %}
   <style>
+  /* OpenCast v1.x colors */
   :root {
     --theme-ui-colors-background: var(--pod-background);
     --theme-ui-colors-text: var(--pod-font-color);
@@ -14,6 +15,19 @@
     --theme-ui-colors-btn-hover: var(--bs-btn-hover-bg);
     --theme-ui-colors-element_bg: var(--pod-background);
   }
+
+  /* OpenCast v2.x colors */
+  .pod-opencast-studio{
+    /*--color-accent5: var(--pod-btn-text);*/
+    --color-accent6: var(--pod-primary);
+    --color-accent7: var(--pod-link-color);
+    --color-accent8: var(--pod-activelink-color);
+  }
+  html[data-color-scheme="dark"] .pod-opencast-studio{
+    --color-accent6: var(--pod-primary-lighten);
+    --color-accent8: var(--pod-primary-lighten);
+  }
+
 
   .pod-opencast-studio .loading-indicator>svg>circle {
     stroke: var(--pod-font-color);
@@ -25,7 +39,7 @@
     --theme-ui-colors-error: var(--bs-danger);
   }
 
-  .pod-opencast-studio a[role="button"]:hover {
+  .pod-opencast-studio div>a[role="button"]:hover {
     color: var(--pod-btn-text);
   }
 
@@ -94,67 +108,93 @@
 
 {% block more_script %}
 <script>
-  //Create array of options to be added
+  // Create array of options to be added
   {% if default_presenter and default_presenter == "pipb" %}
-    const list_value = [["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"], ["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"], ["mid", "50/50 - {% trans 'Same size for screen and camera' %}"]];
-  {% elif  default_presenter and default_presenter == "piph" %}
-    const list_value = [["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"], ["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"], ["mid", "50/50 - {% trans 'Same size for screen and camera' %}"]];
+    const list_value = [
+      ["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"],
+      ["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"],
+      ["mid", "50/50 - {% trans 'Same size for screen and camera' %}"]
+    ];
+  {% elif default_presenter and default_presenter == "piph" %}
+    const list_value = [
+      ["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"],
+      ["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"],
+      ["mid", "50/50 - {% trans 'Same size for screen and camera' %}"]
+    ];
   {% else %}
-    const list_value = [["mid", "50/50 - {% trans 'Same size for screen and camera' %}"], ["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"], ["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"]];
+    const list_value = [
+      ["mid", "50/50 - {% trans 'Same size for screen and camera' %}"],
+      ["piph", "Pip - {% trans 'Camera inside the screen video to top right' %}"],
+      ["pipb", "Pip - {% trans 'Camera inside the screen video to bottom right' %}"]
+    ];
   {% endif %}
 
-  //Create and append select list
-  let selectList = document.createElement("select");
-  selectList.id = "input_presenter";
-  selectList.name = "presenter_list";
-  //myParent.appendChild(selectList);
+  // Create a render type select box
+  let renderTypeSelector = document.createElement("select");
+  renderTypeSelector.id = "render_type";
+  renderTypeSelector.name = "presenter_list";
+  renderTypeSelector.classList.add("form-select");
 
-  //Create and append the options
-  for (var i = 0; i < list_value.length; i++) {
-    var option = document.createElement("option");
+  // Create and append the render type options
+  for (let i = 0; i < list_value.length; i++) {
+    let option = document.createElement("option");
     option.value = list_value[i][0];
     option.text = list_value[i][1];
-    selectList.appendChild(option);
+    renderTypeSelector.appendChild(option);
   }
-  let label = document.createElement("label");
-  label.innerHTML = "{% trans 'Please select the render you want' %}";
-  label.setAttribute("for", "input_presenter");
+  let renderTypeLabel = document.createElement("label");
+  renderTypeLabel.innerHTML = "{% trans 'Please select the render you want' %}";
+  renderTypeLabel.setAttribute("for", "render_type");
+  renderTypeLabel.classList.add("form-label");
 
-  let divselect = document.createElement("div");
-  divselect.appendChild(selectList)
-  label.appendChild(divselect)
+  let renderTypeDiv = document.createElement("div");
+  renderTypeDiv.appendChild(renderTypeLabel)
+  renderTypeDiv.appendChild(renderTypeSelector)
 
-  const input_title = "input[name='title'][type='text']";
   let data_send = false;
-  $(document).on('DOMSubtreeModified', '#root>div>main', function () {
-    if ($(input_title).html() === "" && $(input_title).length && $("#root video").length == 2 && $("#input_presenter").length == 0 && data_send == false) {
-      let div = $(input_title).first().parent("div").parent("label").parent("div");
-      label.setAttribute("class", $(input_title).first().parent("div").parent("label").attr("class"));
-      div.append(label);
-      send_presenter_value($('#input_presenter').val());
-      data_send = true;
-    }
-  });
-  $(document).on('change', '#input_presenter', function () {
-    // call ajax to send value
-    send_presenter_value($('#input_presenter').val());
-  });
 
+  (function() {
+    body_element = document.querySelector("body");
+    body_element.addEventListener('DOMSubtreeModified', function () {
+      let inputTitle = document.querySelector("input[name='title'][type='text']");
+      let renderTypeInput = document.getElementById("render_type");
+      // If we are at last step and renderTypeInput has not been injected yet.
+      if (inputTitle && !renderTypeInput) {
+        // If we have 2 video sources
+        if (document.querySelectorAll("#root video").length == 2) {
+          let parent_div = inputTitle.parentNode.parentNode;
+          renderTypeDiv.classList.add(parent_div.className);
+          renderTypeLabel.classList.add(parent_div.firstChild.className);
+          parent_div.parentNode.insertBefore(renderTypeDiv, parent_div.nextSibling);
+          renderTypeInput = document.getElementById("render_type");
+          renderTypeInput.addEventListener("change", (event) => {
+            // call ajax to send value
+            send_presenter_value(event.target.value);
+          });
+          send_presenter_value(renderTypeInput.value);
+        }
+      }
+    }, false);
+  })();
+
+  /**
+   * [send_presenter_value description]
+   * @param  {[type]} val [description]
+   */
   function send_presenter_value(val) {
-    console.log("VAL : " + val);
+    // console.log("[send_presenter_value] VAL: " + val);
     $.ajax({
       type: 'POST',
       url: "{% url 'recorder:presenter_post' %}",
       data: { "presenter": val },
-      success: function (response) {
+      success: function(response) {
         data_send = false;
       },
-      error: function (response) {
+      error: function(response) {
         // alert the error if any error occured
-        console.log(response)
+        console.log("[send_presenter_value] response: " +response)
       }
     });
   }
-
 </script>
 {% endblock more_script %}
