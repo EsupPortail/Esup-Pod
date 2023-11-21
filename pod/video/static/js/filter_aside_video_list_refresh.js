@@ -7,7 +7,7 @@ let ownerBox = document.getElementById("ownerbox");
 let filterOwnerContainer = document.getElementById("collapseFilterOwner");
 
 onBeforePageLoad = function () {
-  infiniteLoading.style.display = "block";
+  infiniteLoading.classList.remove = "d-none";
 };
 onAfterPageLoad = function () {
   if (
@@ -17,7 +17,7 @@ onAfterPageLoad = function () {
   ){
     setSelectedVideos();
   }
-  infiniteLoading.style.display = "none";
+  infiniteLoading.classList.add = "d-none";
   let footer = document.querySelector("footer.static-pod");
   if (!footer) return;
   footer.classList.add("small");
