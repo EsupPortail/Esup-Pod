@@ -63,7 +63,8 @@ def display_message_with_icon(request, type, message):
 
 
 def dismiss_stored_messages(request):
-    """Tweak that dismiss messages stored to prevent them to pop on reload (asynchronous views)
+    """
+    Tweak that dismiss messages (django.contrib.messages) stored to prevent them to pop on reload (asynchronous views)
 
     Args:
         request (Request): HTTP request
@@ -74,7 +75,7 @@ def dismiss_stored_messages(request):
 
 
 def get_max_code_lvl_messages(request):
-    """Get max level of request's stored messages
+    """Get max level of request's stored messages.
 
     Args:
         request (Request): HTTP request

@@ -694,18 +694,12 @@ div.card a img {
     top: 0;
     z-index: 9;
     opacity: 0;
-    -webkit-box-pack: center;
-        -ms-flex-pack: center;
-            justify-content: center;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
+    justify-content: center;
+    align-items: center;
     outline: 2px solid var(--pod-link-color);
     border-radius: var(--bs-border-radius-sm);
     background-color: rgba(255, 255, 255, .8);
     cursor: pointer;
-    -webkit-transition: all .3s;
-    -o-transition: all .3s;
     transition: all .3s;
 }
 .infinite-item.selected .checked_overlay{

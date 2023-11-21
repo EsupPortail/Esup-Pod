@@ -492,7 +492,15 @@ def theme_edit_save(request, channel):
 
 @login_required(redirect_field_name="referrer")
 def dashboard(request):
-    """Render the logged user's dashboard (videos list/bulk update's interface)."""
+    """
+    Render the logged user's dashboard (videos list/bulk update's interface).
+
+    Args:
+        request (Request): current HTTP Request.
+
+    Returns:
+        Render of global views with updated filtered and sorted videos, categories, display_mode, etc...
+    """
     data_context = {}
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
@@ -610,7 +618,15 @@ def dashboard(request):
 
 @login_required(redirect_field_name="referrer")
 def bulk_update(request):
-    """Perform bulk update for selected videos."""
+    """
+    Perform bulk update for selected videos.
+
+    Args:
+        request (Request): current HTTP Request.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response of bulk update.
+    """
     if request.method == "POST":
         status = 200
         # Get post parameters
@@ -653,7 +669,19 @@ def bulk_update(request):
 
 
 def bulk_update_fields(request, videos_list, update_fields):
-    """Perform field(s) bulk update for selected videos."""
+    """
+    Perform field(s) bulk update for selected videos.
+
+    Args:
+        request (Request): current HTTP Request.
+        videos_list (List[Video]): list of videos to be edited.
+        update_fields (List[string]): list of field(s) to update.
+
+    Returns:
+        updated_videos (List[string]): list of modified videos slugs.
+        fields_errors (List[Obj{"field_name":error}]): list of potential fields errors.
+        status (number): HTTP status.
+    """
     status = 200
     updated_videos = []
     fields_errors = []
@@ -684,7 +712,17 @@ def bulk_update_fields(request, videos_list, update_fields):
 
 
 def bulk_update_delete(request, videos_list):
-    """Perform bulk delete for selected videos."""
+    """
+    Perform bulk delete for selected videos.
+
+    Args:
+        request (Request): current HTTP Request.
+        videos_list (List[Video]): list of videos to be deleted.
+
+    Returns:
+        deleted_videos (List[string]): list of deleted videos slugs.
+        status (number): HTTP status.
+    """
     status = 200
     deleted_videos = []
 
@@ -700,7 +738,17 @@ def bulk_update_delete(request, videos_list):
 
 
 def bulk_update_transcript(request, videos_list):
-    """Perform bulk transcript for selected videos."""
+    """
+    Perform bulk transcript for selected videos.
+
+    Args:
+        request (Request): current HTTP Request.
+        videos_list (List[Video]): list of videos to be transcript.
+
+    Returns:
+        updated_videos (List[string]): list of modified videos slugs.
+        status (number): HTTP status.
+    """
     status = 200
     updated_videos = []
 
@@ -714,7 +762,21 @@ def bulk_update_transcript(request, videos_list):
 
 
 def get_bulk_update_result(request, status, update_action, counter, delta, result):
-    """Return result object with status and message updated for bulk update action"""
+    """
+    Build and return result object with updated status and message for bulk update action.
+
+    Args:
+        request (Request): current HTTP Request.
+        status (number): HTTP status.
+        update_action (string): Action case ("fields", "delete" or "transcript").
+        counter (number): Count of altered videos.
+        delta (number): Count of selected videos to be edited.
+        result (Obj{message(string), fields_errors(List[Obj]), updated_videos(List[string])}): Current result object.
+
+    Returns:
+        result (Obj{message(string), fields_errors(List[Obj]), updated_videos(List[string])}): Updated result object.
+        status (number): HTTP status.
+    """
     if len(result["fields_errors"]) == 0:
         # Get global error messages (transcript or delete) and set status 400 if error message exists
         if get_max_code_lvl_messages(request) >= 40:
@@ -729,7 +791,18 @@ def get_bulk_update_result(request, status, update_action, counter, delta, resul
 
 
 def get_recap_message_bulk_update(request, update_action, counter, delta):
-    """Return overview message (videos updated, deleted, transcripted, in error) for bulk update"""
+    """
+    Build and return overview message for bulk update.
+
+    Args:
+        request (Request): current HTTP Request.
+        update_action (string): Action case ("fields", "delete" or "transcript").
+        counter (number): Count of altered videos.
+        delta (number): Count of selected videos to be edited.
+
+    Returns:
+        msg (string): Return pluralized and translated message.
+    """
     # Define translations keys and message with plural management
     message_translations = {
         "delete":

@@ -511,11 +511,13 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /**
- * Enable / Disable buttons with specific condition parameter
- * @param element
- * @param condition
+ * Enable / Disable buttons with specific condition parameter.
+ *
+ * @param  {HTMLElement}    element               HTML element to enable / disable
+ * @param  {condition}      condition             Condition to evaluate for enabled disabled status
  */
 function manageDisableBtns(element, condition) {
+
     condition ? element.removeAttribute('disabled') : element.setAttribute('disabled','');
 }
 /** MENU ASIDE **/
@@ -1279,10 +1281,10 @@ var videocheck = function (form, event) {
 /**
  * Display an alert message
  * @param  {[type]} message   [The message to be displayed]
- * @param  {[type]} alerttype Type of alert (info, success, danger, warning...)
+ * @param  {[type]} alertType Type of alert (info, success, danger, warning...)
  * @return {void}
  */
-var showalert = function (message, alerttype, idalerttype="formalertdiv") {
+var showalert = function (message, alertType, idAlertType="formalertdiv") {
   const icon_types = {
     "alert-success": "check-circle-fill",
     "alert-info": "info-fill",
@@ -1291,11 +1293,11 @@ var showalert = function (message, alerttype, idalerttype="formalertdiv") {
   };
 
   let textHtml =
-    '<div id='+idalerttype+' class="alert ' +
-    alerttype +
+    '<div id='+idAlertType+' class="alert ' +
+    alertType +
     ' alert-dismissible fade show" role="alert">' +
-    '<i class="bi bi-' +
-    icon_types[alerttype] +
+    '<i aria-hidden="true" class="bi bi-' +
+    icon_types[alertType] +
     ' me-2"></i>' +
     '<span class="alert-message">' +
     message +
@@ -1309,9 +1311,9 @@ var showalert = function (message, alerttype, idalerttype="formalertdiv") {
 
   document.body.appendChild(parsedHTML);
   // Auto dismiss success and info types
-  if (["alert-success", "alert-info"].includes(alerttype)) {
+  if (["alert-success", "alert-info"].includes(alertType)) {
     setTimeout(function () {
-      let formalertdiv = document.getElementById(idalerttype);
+      let formalertdiv = document.getElementById(idAlertType);
       window.setTimeout(function () {
         slideUpAndRemove(formalertdiv);
       });

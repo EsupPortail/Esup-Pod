@@ -86,8 +86,8 @@ urlpatterns = [
         PodChunkedUploadView.as_view(),
         name="api_chunked_upload",
     ),
-    url(r"^dashboard/$", dashboard, name="dashboard"),
-    url(r"^bulk_update/$", bulk_update, name="bulk_update"),
+    path("dashboard/", dashboard, name="dashboard"),
+    path("bulk_update/", bulk_update, name="bulk_update"),
 ]
 # COMPLETION
 urlpatterns += [

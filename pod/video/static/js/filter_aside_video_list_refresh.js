@@ -2,12 +2,12 @@ var infinite;
 var checkedInputs = [];
 
 let loader = document.querySelector(".lds-ring");
-let infinite_loading = document.querySelector(".infinite-loading");
+let infiniteLoading = document.querySelector(".infinite-loading");
 let ownerBox = document.getElementById("ownerbox");
 let filterOwnerContainer = document.getElementById("collapseFilterOwner");
 
 onBeforePageLoad = function () {
-  infinite_loading.style.display = "block";
+  infiniteLoading.style.display = "block";
 };
 onAfterPageLoad = function () {
   if (
@@ -17,7 +17,7 @@ onAfterPageLoad = function () {
   ){
     setSelectedVideos();
   }
-  infinite_loading.style.display = "none";
+  infiniteLoading.style.display = "none";
   let footer = document.querySelector("footer.static-pod");
   if (!footer) return;
   footer.classList.add("small");

@@ -18,28 +18,28 @@ bulkUpdateActionSelect.addEventListener("change", function() {
  */
 confirmBulkUpdateBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    bulk_update();
+    bulkUpdate();
 });
 
 /**
  * Perform asynchronously bulk update on selected videos
  * @returns {Promise<void>}
  */
-async function bulk_update() {
+async function bulkUpdate() {
 
   // Init vars
   let formData = new FormData();
-  let update_action = action === "delete" || action === "transcript" ? action : "fields" ;
-  let update_fields = [];
+  let updateAction = action === "delete" || action === "transcript" ? action : "fields" ;
+  let updateFields = [];
 
   // Set updated field(s)
-  if(update_action === "fields"){
-      let form_groups = document.getElementById("dashboardForm").querySelectorAll(".form-group:not(.d-none)")
-      Array.from(form_groups).forEach(form_group => {
-          let element = form_group.querySelector(".form-control, .form-check-input, .form-select, input[name='thumbnail']");
-          if(element.hasAttribute("multiple")){
+  if (updateAction === "fields") {
+      let formGroups = document.getElementById("dashboardForm").querySelectorAll(".form-group:not(.d-none)")
+      Array.from(formGroups).forEach(formGroup => {
+          let element = formGroup.querySelector(".form-control, .form-check-input, .form-select, input[name='thumbnail']");
+          if (element.hasAttribute("multiple")) {
             formData.append(element.getAttribute("name"), element.value);
-          }else{
+          } else {
             switch(element.type){
                 case "checkbox":
                     value = element.checked
@@ -52,14 +52,14 @@ async function bulk_update() {
             }
             formData.append(element.getAttribute("name"), value);
           }
-          update_fields.push(element.name);
+          updateFields.push(element.name);
       });
   }
 
   // Construct formData to send
   formData.append("selected_videos",JSON.stringify(getListSelectedVideos()));
-  formData.append("update_fields",JSON.stringify(update_fields));
-  formData.append("update_action",JSON.stringify(update_action));
+  formData.append("update_fields",JSON.stringify(updateFields));
+  formData.append("update_action",JSON.stringify(updateAction));
 
   // Post asynchronous request
   let response = await fetch(urlUpdateVideos, {
@@ -77,17 +77,17 @@ async function bulk_update() {
     // Parse result
     data = JSON.parse(result);
     let message = data["message"];
-    let updated_videos = data["updated_videos"];
+    let updatedVideos = data["updated_videos"];
 
-    if(response.ok){
+    if (response.ok) {
         // Set selected videos with new slugs if changed during update
-        selectedVideos = updated_videos;
+        selectedVideos = updatedVideos;
         showalert(message, "alert-success", "formalertdivbottomright");
         refreshVideosSearch();
-    }else{
+    } else {
         // Manage field errors and global errors
         let errors = Array.from(data["fields_errors"]);
-        if(errors.length > 0){
+        if (errors.length > 0) {
             errors.forEach((error) => {
                 let key = Object.keys(error)[0];
                 let element = document.getElementById("id_"+key);
@@ -96,7 +96,7 @@ async function bulk_update() {
                     showDashboardFormError(element, message, "alert-danger");
                 }
             });
-        }else{
+        } else {
             showalert(message, "alert-danger", "formalertdivbottomright");
         }
     }
@@ -109,16 +109,16 @@ async function bulk_update() {
 function appendDynamicForm(action){
     // Append form group selected action
     let elements = document.querySelectorAll('.fieldset-dashboard, .form-group-dashboard');
-    Array.from(elements).forEach((form_group) => {
-        form_group.classList.add("d-none");
+    Array.from(elements).forEach((formGroup) => {
+        formGroup.classList.add("d-none");
     });
-    if(formFieldsets.includes(action)){
+    if (formFieldsets.includes(action)) {
         let fieldset = document.getElementById(action);
         fieldset.classList.remove("d-none");
-        Array.from(fieldset.querySelectorAll(".form-group-dashboard")).forEach((form_group) => {
-            form_group.classList.remove("d-none");
+        Array.from(fieldset.querySelectorAll(".form-group-dashboard")).forEach((formGroup) => {
+            formGroup.classList.remove("d-none");
         });
-    }else{
+    } else {
         let input = document.getElementById('id_'+action);
         if(input){
             input.closest(".form-group-dashboard").classList.remove("d-none");
@@ -131,7 +131,6 @@ function appendDynamicForm(action){
  * @param display_mode
  */
 function changeDisplayMode(display_mode){
-    // Change display mode between grid and list
     displayMode = display_mode;
     btnDisplayMode.forEach(e => e.classList.toggle("active"));
     refreshVideosSearch();
@@ -151,10 +150,10 @@ function updateModalConfirmSelectedVideos(){
 /**
  * Show feedback message after bulk update
  * @param message
- * @param alert_class
+ * @param alertClass
  */
-function showDashboardFormError(element, message, alert_class){
-    let html = "<div class=\"alert "+alert_class+" alert-dismissible fade show my-2\" role=\"alert\">"+message+
+function showDashboardFormError(element, message, alertClass){
+    let html = "<div class=\"alert "+alertClass+" alert-dismissible fade show my-2\" role=\"alert\">"+message+
         "<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button></div>"
     element.insertAdjacentHTML("beforebegin", html);
 }
