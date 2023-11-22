@@ -48,7 +48,7 @@ async function bulkUpdate() {
                     value = CKEDITOR.instances[element.id].getData();
                     break;
                 default:
-                    document.getElementById("id_"+element.getAttribute("name")).value;
+                    value = document.getElementById("id_"+element.getAttribute("name")).value;
             }
             formData.append(element.getAttribute("name"), value);
           }
