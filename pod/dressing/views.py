@@ -31,15 +31,15 @@ def video_dressing(request, slug):
         selected_dressing_value = request.POST.get("selected_dressing_value")
         if selected_dressing_value is not None:
             selected_dressing = get_object_or_404(Dressing, pk=selected_dressing_value)
-        existing = Dressing.objects.filter(videos=video)
-        for dressing in existing:
-            dressing.videos.remove(video)
-            dressing.save()
-        if selected_dressing_value is not None:
+            existing = Dressing.objects.filter(videos=video)
+            for dressing in existing:
+                dressing.videos.remove(video)
+                dressing.save()
+
             selected_dressing.videos.add(video)
             selected_dressing.save()
             start_encode(video.id)
-        elif selected_dressing_value is None:
+        else:
             start_encode(video.id)
 
     try:
