@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    <li class="breadcrumb-item"><a href="{% url 'dressing:my_dressings' %}">{% trans 'My dressings' %}</a></li>
+    <li class="breadcrumb-item"><a href="#" title="{{ dressing.title }}">{{ dressing.title }}</a></li> <!-- Mettre un lien -->
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Delete" %}</li>
+{% endblock %}
+
+{% block page_title %}
+    {% blocktrans with vtitle=dressing.title %}Deleting the dressing "{{ vtitle }}"{% endblocktrans %}
+{% endblock %}
+
+{% block page_content %}
+    <h1>{% blocktrans with vtitle=dressing.title %}Deleting the dressing "{{ vtitle }}"{% endblocktrans %}</h1>
+
+    <p>{% trans 'To delete the dressing, please checked in and click send.' %}</p>
+    <form method="post" action="{{ request.get_full_path }}" id="dressing_delete_form" class='needs-validation' novalidate>
+        {% csrf_token %}
+        <div class="list-group">
+            <fieldset>
+                <legend>{% trans 'Agree required' %}</legend>
+                {% if form.errors %}
+                    <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+                {% endif %}
+                {% for field_hidden in form.hidden_fields %}
+                    {{ field_hidden }}
+                {% endfor %}
+                {% for field in form.visible_fields %}
+                    {% spaceless %}
+                        <div class="list-group-item">
+                            <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
+                                {{ field.errors }}
+                                {% if "form-check-input" in field.field.widget.attrs.class %}
+                                    <div class="form-check">
+                                        {{ field }} <label for="{{ field.id_for_label }}"
+                                                           class="form-check-label">{{ field.label }}</label>
+                                    </div>
+                                {% else %}
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {% if "form-control-file" in field.field.widget.attrs.class and form.instance.dressing %}
+                                        <br>{% endif %}
+                                    {{ field }}
+                                {% endif %}
+                                {% if field.help_text %}
+                                    <small id="{{ field.id_for_label }}Help"
+                                           class="form-text">{{ field.help_text|safe }}</small>
+                                {% endif %}
+                                {% if field.field.required %}
+                                    <div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+                            </div>
+                        </div>
+                    {% endspaceless %}
+                {% endfor %}
+                <div class="text-center mt-1">
+                    <button type="submit" class="btn btn-danger">{% trans "Delete" %}</button>
+                    <a href="#" class="btn btn-secondary">{% trans "Back to the dressing" %}</a>
+                </div>
+            </fieldset>
+        </div>
+    </form>
+{% endblock page_content %}

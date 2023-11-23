@@ -5,6 +5,7 @@ import time
 from webvtt import WebVTT, Caption
 import argparse
 import unicodedata
+from pod.dressing.utils import get_position_value, get_dressing_input
 
 if __name__ == "__main__":
     from encoding_utils import (
@@ -35,6 +36,12 @@ if __name__ == "__main__":
         FFMPEG_NB_THUMBNAIL,
         FFMPEG_CREATE_THUMBNAIL,
         FFMPEG_EXTRACT_SUBTITLE,
+        FFMPEG_DRESSING_INPUT,
+        FFMPEG_DRESSING_OUTPUT,
+        FFMPEG_DRESSING_WATERMARK,
+        FFMPEG_DRESSING_FILTER_COMPLEX,
+        FFMPEG_DRESSING_SCALE,
+        FFMPEG_DRESSING_CONCAT,
     )
 else:
     from .encoding_utils import (
@@ -65,6 +72,12 @@ else:
         FFMPEG_NB_THUMBNAIL,
         FFMPEG_CREATE_THUMBNAIL,
         FFMPEG_EXTRACT_SUBTITLE,
+        FFMPEG_DRESSING_INPUT,
+        FFMPEG_DRESSING_OUTPUT,
+        FFMPEG_DRESSING_WATERMARK,
+        FFMPEG_DRESSING_FILTER_COMPLEX,
+        FFMPEG_DRESSING_SCALE,
+        FFMPEG_DRESSING_CONCAT,
     )
 
 
@@ -114,6 +127,24 @@ try:
     FFMPEG_EXTRACT_SUBTITLE = getattr(
         settings, "FFMPEG_EXTRACT_SUBTITLE", FFMPEG_EXTRACT_SUBTITLE
     )
+    FFMPEG_DRESSING_INPUT = getattr(
+        settings, "FFMPEG_DRESSING_INPUT", FFMPEG_DRESSING_INPUT
+    )
+    FFMPEG_DRESSING_OUTPUT = getattr(
+        settings, "FFMPEG_DRESSING_OUTPUT", FFMPEG_DRESSING_OUTPUT
+    )
+    FFMPEG_DRESSING_WATERMARK = getattr(
+        settings, "FFMPEG_DRESSING_WATERMARK", FFMPEG_DRESSING_WATERMARK
+    )
+    FFMPEG_DRESSING_FILTER_COMPLEX = getattr(
+        settings, "FFMPEG_DRESSING_FILTER_COMPLEX", FFMPEG_DRESSING_FILTER_COMPLEX
+    )
+    FFMPEG_DRESSING_SCALE = getattr(
+        settings, "FFMPEG_DRESSING_SCALE", FFMPEG_DRESSING_SCALE
+    )
+    FFMPEG_DRESSING_CONCAT = getattr(
+        settings, "FFMPEG_DRESSING_CONCAT", FFMPEG_DRESSING_CONCAT
+    )
 except ImportError:  # pragma: no cover
     pass
 
@@ -142,8 +173,9 @@ class Encoding_video:
     error_encoding = False
     cutting_start = 0
     cutting_stop = 0
+    dressing = None
 
-    def __init__(self, id=0, video_file="", start=0, stop=0):
+    def __init__(self, id=0, video_file="", start=0, stop=0, dressing=None):
         """Initialize a new Encoding_video object."""
         self.id = id
         self.video_file = video_file
@@ -166,6 +198,7 @@ class Encoding_video:
         self.error_encoding = False
         self.cutting_start = start or 0
         self.cutting_stop = stop or 0
+        self.dressing = dressing or None
 
     def is_video(self):
         """Check if current encoding correspond to a video."""
@@ -358,6 +391,82 @@ class Encoding_video:
                 }
                 self.list_hls_files[rend] = output_file
         return hls_command
+
+    def get_dressing_file(self):
+        dirname = os.path.dirname(self.video_file)
+        filename, ext = os.path.splitext(os.path.basename(self.video_file))
+        output_file = os.path.join(dirname, filename + "_dressing" + ext)
+        return output_file
+
+    def get_dressing_command(self):
+        height = str(list(self.list_video_track.items())[0][1]["height"])
+        order_opening_credits = 0
+        dressing_command_params = '[vid][0:a]'
+        number_concat = 1
+        dressing_command = "%s " % FFMPEG_CMD
+        dressing_command += FFMPEG_INPUT % {
+            "input": self.video_file,
+            "nb_threads": FFMPEG_NB_THREADS,
+        }
+
+        dressing_command += get_dressing_input(self.dressing, FFMPEG_DRESSING_INPUT)
+        dressing_command_filter = []
+        dressing_command_filter.append(FFMPEG_DRESSING_SCALE % {
+            "number": "0",
+            "height": height,
+            "name": "vid",
+        })
+        if self.dressing.watermark:
+            dressing_command_params = '[video][0:a]'
+            order_opening_credits = order_opening_credits + 1
+            dressing_command_filter.append(FFMPEG_DRESSING_WATERMARK % {
+                "opacity": self.dressing.opacity / 100.0,
+                "position": get_position_value(self.dressing.position, height)
+            })
+        if self.dressing.opening_credits:
+            order_opening_credits = order_opening_credits + 1
+            number_concat = number_concat + 1
+            dressing_command_params = ('[debut][' + str(order_opening_credits)
+                                       + ':a]' + dressing_command_params)
+            dressing_command_filter.append(FFMPEG_DRESSING_SCALE % {
+                "number": str(order_opening_credits),
+                "height": height,
+                "name": "debut",
+            })
+        if self.dressing.ending_credits:
+            number_concat = number_concat + 1
+            dressing_command_params = (dressing_command_params + '[fin]['
+                                       + str(order_opening_credits + 1) + ':a]')
+            dressing_command_filter.append(FFMPEG_DRESSING_SCALE % {
+                "number": str(order_opening_credits + 1),
+                "height": str(list(self.list_video_track.items())[0][1]["height"]),
+                "name": "fin",
+            })
+        if self.dressing.opening_credits or self.dressing.ending_credits:
+            dressing_command_filter.append(FFMPEG_DRESSING_CONCAT % {
+                "params": dressing_command_params,
+                "number": number_concat,
+            })
+
+        dressing_command += FFMPEG_DRESSING_FILTER_COMPLEX % {
+            "filter": ';'.join(dressing_command_filter),
+        }
+
+        if self.dressing.opening_credits or self.dressing.ending_credits:
+            dressing_command += " -map '[v]' -map '[a]' "
+
+        output_file = self.get_dressing_file()
+        dressing_command += FFMPEG_DRESSING_OUTPUT % {
+            "output": output_file,
+        }
+        return dressing_command
+
+    def encode_video_dressing(self):
+        dressing_command = self.get_dressing_command()
+        return_value, return_msg = launch_cmd(dressing_command)
+        self.add_encoding_log("dressing_command", dressing_command, return_value,
+                              return_msg)
+        self.video_file = self.get_dressing_file()
 
     def encode_video_part(self):
         mp4_command = self.get_mp4_command()
@@ -609,7 +718,10 @@ class Encoding_video:
     def export_to_json(self):
         data_to_dump = {}
         for attribute, value in self.__dict__.items():
-            data_to_dump[attribute] = value
+            if attribute == 'dressing' and value is not None:
+                data_to_dump[attribute] = value.to_json()
+            else:
+                data_to_dump[attribute] = value
         with open(self.output_dir + "/info_video.json", "w") as outfile:
             json.dump(data_to_dump, outfile, indent=2)
 
@@ -622,6 +734,8 @@ class Encoding_video:
         self.start = time.ctime()
         self.create_output_dir()
         self.get_video_data()
+        if self.dressing is not None:
+            self.encode_video_dressing()
         print(self.id, self.video_file, self.duration)
         if self.is_video():
             self.encode_video_part()
@@ -668,11 +782,13 @@ if __name__ == "__main__":
     parser.add_argument("--start", required=False, help="Start cut")
     parser.add_argument("--stop", required=False, help="Stop cut")
     parser.add_argument("--input", required=True, help="name of input file to encode")
+    parser.add_argument("--dressing", required=False, help="Dressing for the video")
 
     args = parser.parse_args()
     print(args.start)
     filename = fix_input(args.input)
-    encoding_video = Encoding_video(args.id, filename, args.start, args.stop)
+    encoding_video = Encoding_video(args.id, filename, args.start, args.stop,
+                                    args.dressing)
     # error if uncommented
     # encoding_video.encoding_log += start
     # AttributeError: 'NoneType' object has no attribute 'get'

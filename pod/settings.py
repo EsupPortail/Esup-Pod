@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "pod.video_encode_transcript",
     "pod.import_video",
     "pod.progressive_web_app",
+    "pod.dressing",
     "pod.custom",
 ]
 
