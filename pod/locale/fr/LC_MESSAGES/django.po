@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-13 11:52+0100\n"
+"POT-Creation-Date: 2023-11-23 15:42+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1394,6 +1394,7 @@ msgstr "Contenu"
 
 #: pod/completion/models.py pod/completion/templates/overlay/list_overlay.html
 #: pod/dressing/models.py pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/my_dressings.html
 #: pod/dressing/templates/video_dressing.html
 msgid "Position"
 msgstr "Position"
@@ -3754,14 +3755,6 @@ msgstr "L’évènement est actuellement en cours. La supression est impossible.
 #: pod/live/templates/live/event_delete.html
 msgid "To delete the event, please checked in and click send."
 msgstr "Pour supprimer l’évènement, veuillez cocher et cliquer sur envoyer."
-
-#: pod/live/templates/live/event_delete.html
-#: pod/meeting/templates/meeting/delete.html
-#: pod/playlist/templates/playlist/delete.html
-#: pod/recorder/templates/recorder/record_delete.html
-#: pod/video/templates/videos/video_delete.html
-msgid "Agree required"
-msgstr "Accord requis"
 
 #: pod/live/templates/live/event_edit.html
 #: pod/live/templates/live/event_immediate_edit.html
@@ -7467,12 +7460,6 @@ msgid ""
 "platform."
 msgstr ""
 "Si coché, la chaîne apparaîtra dans la liste des chaînes de la plateforme."
-
-#: pod/video/models.py
-msgid "Select one or more groups who can upload video to this channel."
-msgstr ""
-"Sélectionnez un ou plusieurs groupes qui peuvent ajouter des vidéos à cette "
-"chaîne."
 
 #: pod/video/models.py
 msgid "Additionals channels tab"
