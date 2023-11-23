@@ -1402,6 +1402,7 @@ msgstr "Contenu"
 
 #: pod/completion/models.py pod/completion/templates/overlay/list_overlay.html
 #: pod/dressing/models.py pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/my_dressings.html
 #: pod/dressing/templates/video_dressing.html
 msgid "Position"
 msgstr "Position"

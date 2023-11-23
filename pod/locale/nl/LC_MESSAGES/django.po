@@ -3539,14 +3539,6 @@ msgstr ""
 msgid "To delete the event, please checked in and click send."
 msgstr ""
 
-#: pod/live/templates/live/event_delete.html
-#: pod/meeting/templates/meeting/delete.html
-#: pod/playlist/templates/playlist/delete.html
-#: pod/recorder/templates/recorder/record_delete.html
-#: pod/video/templates/videos/video_delete.html
-msgid "Agree required"
-msgstr ""
-
 #: pod/live/templates/live/event_edit.html
 #: pod/live/templates/live/event_immediate_edit.html
 msgid ""
@@ -7027,10 +7019,6 @@ msgstr ""
 msgid ""
 "If checked, the channel appear in a list of available channels on the "
 "platform."
-msgstr ""
-
-#: pod/video/models.py
-msgid "Select one or more groups who can upload video to this channel."
 msgstr ""
 
 #: pod/video/models.py
