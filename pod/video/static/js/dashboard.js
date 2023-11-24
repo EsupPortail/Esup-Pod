@@ -29,7 +29,7 @@ async function bulkUpdate() {
 
   // Init vars
   let formData = new FormData();
-  let updateAction = action === "delete" || action === "transcript" ? action : "fields" ;
+  let updateAction = action === "delete" ? action : "fields" ;
   let updateFields = [];
 
   // Set updated field(s)

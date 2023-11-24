@@ -309,6 +309,10 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
 )
 
 if USE_TRANSCRIPTION:
+    from ..video_encode_transcript import transcript
+
+    TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
+
     transcript_help_text = OrderedDict(
         [
             (
@@ -540,6 +544,14 @@ def launch_encode(sender, instance, created, **kwargs):
         encode_video(instance.id)
 
 
+@receiver(post_save, sender=Video)
+def launch_transcript(sender, instance, created, **kwargs):
+    if hasattr(instance, "launch_transcript") and instance.launch_transcript is True:
+        instance.launch_transcript = False
+        transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
+        transcript_video(instance.id)
+
+
 class VideoForm(forms.ModelForm):
     """Form class for Video editing."""
 
@@ -705,6 +717,9 @@ class VideoForm(forms.ModelForm):
 
         if hasattr(self, "launch_encode"):
             video.launch_encode = self.launch_encode
+
+        if hasattr(self, "launch_transcript"):
+            video.launch_transcript = self.launch_transcript
         return video
 
     def clean_date_delete(self):
@@ -755,7 +770,10 @@ class VideoForm(forms.ModelForm):
             and hasattr(self.instance, "video")
             and cleaned_data["video"] != self.instance.video
         )
-
+        self.launch_transcript = (
+            "transcript" in cleaned_data.keys()
+            and hasattr(self.instance, "transcript")
+        )
         self.change_user = (
             self.launch_encode is False
             and hasattr(self.instance, "encoding_in_progress")

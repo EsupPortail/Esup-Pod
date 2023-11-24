@@ -653,10 +653,6 @@ def bulk_update(request):
                 # Bulk delete
                 deleted_videos, status = bulk_update_delete(request, videos_list)
                 counter = len(deleted_videos)
-            elif update_action == "transcript":
-                # Bulk transcript
-                updated_videos, status = bulk_update_transcript(request, videos_list)
-                counter = len(updated_videos)
             else:
                 pass
 
@@ -735,30 +731,6 @@ def bulk_update_delete(request, videos_list):
             status = 400
             break
     return deleted_videos, status
-
-
-def bulk_update_transcript(request, videos_list):
-    """
-    Perform bulk transcript for selected videos.
-
-    Args:
-        request (Request): current HTTP Request.
-        videos_list (List[Video]): list of videos to be transcript.
-
-    Returns:
-        updated_videos (List[string]): list of modified videos slugs.
-        status (number): HTTP status.
-    """
-    status = 200
-    updated_videos = []
-
-    try:
-        for video in videos_list:
-            video_transcript(request, video.slug)
-            updated_videos.append(video.slug)
-    except Exception:
-        status = 400
-    return updated_videos, status
 
 
 def get_bulk_update_result(request, status, update_action, counter, delta, result):
