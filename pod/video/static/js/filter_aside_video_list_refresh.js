@@ -111,7 +111,6 @@ function refreshVideosSearch() {
           && selectedVideos.length !== 0
       ){
         setSelectedVideos();
-        replaceSelectedCountVideos();
       }
     })
     .catch((error) => {
