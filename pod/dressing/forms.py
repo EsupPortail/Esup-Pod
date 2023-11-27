@@ -44,12 +44,14 @@ class AddVideoHoldWidget(s2forms.ModelSelect2Widget):
 
 
 class DressingForm(forms.ModelForm):
+    """Form to add or edit a dressing."""
     is_staff = True
     is_superuser = False
     admin_form = True
     site = forms.ModelChoiceField(Site.objects.all(), required=False)
 
     def __init__(self, *args, **kwargs):
+        """Init method."""
         self.is_staff = (
             kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
         )
@@ -91,6 +93,7 @@ class DressingForm(forms.ModelForm):
         self.fields["ending_credits"].queryset = query_videos.all()
 
     class Meta(object):
+        """Meta class."""
         model = Dressing
         fields = "__all__"
         exclude = ['videos']
@@ -104,6 +107,7 @@ class DressingForm(forms.ModelForm):
 
 
 class DressingDeleteForm(forms.Form):
+    """Form to delete a dressing."""
     agree = forms.BooleanField(
         label=_("I agree"),
         help_text=_("Delete dressing cannot be undo"),

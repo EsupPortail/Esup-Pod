@@ -57,6 +57,7 @@ def video_dressing(request, slug):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def dressing_edit(request, dressing_id):
+    """Edit a dressing object."""
     dressing_edit = get_object_or_404(Dressing, id=dressing_id)
     form_dressing = DressingForm(
         instance=dressing_edit,
@@ -86,6 +87,7 @@ def dressing_edit(request, dressing_id):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def dressing_create(request):
+    """Create a dressing object."""
     if request.method == 'POST':
         form_dressing = DressingForm(request.POST, user=request.user)
         if form_dressing.is_valid():
@@ -129,7 +131,7 @@ def dressing_delete(request, dressing_id):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def my_dressings(request):
-    """Render the logged user's dressing"""
+    """Render the logged user's dressings."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
     user = request.user

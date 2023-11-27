@@ -104,10 +104,12 @@ class Dressing(models.Model):
     )
 
     class Meta:
+        """Metadata for Dressing model."""
         verbose_name = _("Video dressing")
         verbose_name_plural = _("Video dressings")
 
     def to_json(self):
+        """Convert to json format for encoding logs"""
         return {
             "id": self.id,
             "title": self.title,

@@ -4,6 +4,7 @@ from django.conf import settings
 
 
 def get_position_value(position, height):
+    """Obtain dimensions proportional to the video format."""
     height = str(float(height) * 0.05)
     if position == 'top_right':
         return 'overlay=main_w-overlay_w-' + height + ':' + height
@@ -16,6 +17,7 @@ def get_position_value(position, height):
 
 
 def get_dressing_input(dressing, FFMPEG_DRESSING_INPUT):
+    """Function to obtain the files necessary for encoding a dressed video"""
     command = ''
     if dressing.watermark:
         command += FFMPEG_DRESSING_INPUT % {

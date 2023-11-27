@@ -393,12 +393,14 @@ class Encoding_video:
         return hls_command
 
     def get_dressing_file(self):
+        """Create or replace the dressed video file."""
         dirname = os.path.dirname(self.video_file)
         filename, ext = os.path.splitext(os.path.basename(self.video_file))
         output_file = os.path.join(dirname, filename + "_dressing" + ext)
         return output_file
 
     def get_dressing_command(self):
+        """Get the command based on the dressing object parameters"""
         height = str(list(self.list_video_track.items())[0][1]["height"])
         order_opening_credits = 0
         dressing_command_params = '[vid][0:a]'
@@ -462,6 +464,7 @@ class Encoding_video:
         return dressing_command
 
     def encode_video_dressing(self):
+        """Encode the dressed video."""
         dressing_command = self.get_dressing_command()
         return_value, return_msg = launch_cmd(dressing_command)
         self.add_encoding_log("dressing_command", dressing_command, return_value,
