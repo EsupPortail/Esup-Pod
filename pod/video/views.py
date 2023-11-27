@@ -646,9 +646,18 @@ def bulk_update(request):
             if update_action == "fields":
                 # Bulk update fields
                 update_fields = json.loads(request.POST.get("update_fields"))
-                updated_videos, fields_errors, status = bulk_update_fields(request, videos_list, update_fields)
+                (
+                    result["updated_videos"],
+                    fields_errors,
+                    status
+                ) = (
+                    bulk_update_fields(
+                        request,
+                        videos_list,
+                        update_fields)
+                )
                 result["fields_errors"] = fields_errors
-                counter = len(updated_videos)
+                counter = len(result["updated_videos"])
             elif update_action == "delete":
                 # Bulk delete
                 deleted_videos, status = bulk_update_delete(request, videos_list)
