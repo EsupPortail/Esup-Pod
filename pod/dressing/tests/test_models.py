@@ -81,6 +81,7 @@ class DressingModelTest(TestCase):
         self.assertEqual(dressing.opacity, 50)
         self.assertEqual(dressing.opening_credits, video)
         self.assertEqual(dressing.ending_credits, video2)
+        print(" ---> test_attributs_full: OK! --- DressingModelTest")
 
     def test_dressing_to_json(self):
         dressing = Dressing.objects.get(id=1)
@@ -96,9 +97,10 @@ class DressingModelTest(TestCase):
             "owners": [owner.id],
             "users": [owner.id],
             "watermark": dressing.watermark.file.url,
-            "position": "En haut à droite",
+            "position": dressing.get_position_display(),
             "opacity": 50,
             "opening_credits": video.slug,
             "ending_credits": video2.slug,
         }
         self.assertEqual(dressing_json, expected_json)
+        print(" ---> test_dressing_to_json: OK! --- DressingModelTest")
