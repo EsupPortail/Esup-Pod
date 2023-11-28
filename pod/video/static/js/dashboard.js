@@ -1,5 +1,9 @@
 var bulkUpdateActionSelect = document.getElementById("bulkUpdateActionSelect");
-var confirmBulkUpdateBtn = document.getElementById("confirmBulkUpdateBtn");
+var applyBulkUpdateBtn = document.getElementById("applyBulkUpdateBtn");
+var modalLoader = document.getElementById("bulkUpdateLoader");
+var modal = document.getElementById("modalBulkUpdate");
+var confirmModalBtn = document.getElementById("confirmModalBtn");
+var cancelModalBtn = document.getElementById("cancelModalBtn");
 var btnDisplayMode = document.querySelectorAll(".btn-dashboard-display-mode");
 var action = "";
 var value;
@@ -13,12 +17,28 @@ bulkUpdateActionSelect.addEventListener("change", function() {
     replaceSelectedCountVideos();
 });
 
+
 /**
  * Add click event listener on confirmation modal button to perform bulk update
  */
-confirmBulkUpdateBtn.addEventListener("click", (e) => {
+applyBulkUpdateBtn.addEventListener("click", (e) => {
+    modal.querySelector(".modal-body").innerHTML = getHtmlListSelectedVideosSlugs();
+});
+
+/**
+ * Add click event listener on confirmation modal button to perform bulk update
+ */
+confirmModalBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    bulkUpdate();
+    showLoader(modalLoader, true);
+    manageDisableBtn(cancelModalBtn, false);
+    manageDisableBtn(confirmModalBtn, false);
+    bulkUpdate().then(() =>{
+        showLoader(modalLoader, false);
+        bootstrap.Modal.getInstance(modal).toggle();
+        manageDisableBtn(cancelModalBtn, true);
+        manageDisableBtn(confirmModalBtn, true);
+    });
 });
 
 /**
@@ -31,6 +51,7 @@ async function bulkUpdate() {
   let formData = new FormData();
   let updateAction = action === "delete" ? action : "fields" ;
   let updateFields = [];
+  let message = "";
 
   // Set updated field(s)
   if (updateAction === "fields") {
@@ -71,17 +92,14 @@ async function bulkUpdate() {
     body:formData,
   });
     let result = await response.text();
-    // Close modal and scroll to top
-    bootstrap.Modal.getInstance(document.getElementById('modalConfirmBulkUpdate')).toggle();
-    window.scroll({top: 0, left: 0, behavior: 'smooth'});
+
     // Parse result
     data = JSON.parse(result);
-    let message = data["message"];
-    let updatedVideos = data["updated_videos"];
+    message = data["message"];
 
     if (response.ok) {
         // Set selected videos with new slugs if changed during update
-        selectedVideos = updatedVideos;
+        selectedVideos = data["updated_videos"];
         showalert(message, "alert-success", "formalertdivbottomright");
         refreshVideosSearch();
     } else {
@@ -96,6 +114,7 @@ async function bulkUpdate() {
                     showDashboardFormError(element, message, "alert-danger");
                 }
             });
+            window.scroll({top: 0, left: 0, behavior: 'smooth'});
         } else {
             showalert(message, "alert-danger", "formalertdivbottomright");
         }
@@ -149,6 +168,7 @@ function updateModalConfirmSelectedVideos(){
 
 /**
  * Show feedback message after bulk update
+ * @param element
  * @param message
  * @param alertClass
  */

@@ -1517,6 +1517,20 @@ table .alert.alert-danger.btn.pod-btn-social {
   border-left-color: var(--bs-info);
 }
 
+.loaderSpinner{
+  transition: opacity 150ms ease-in-out;
+  z-index: 1100;
+}
+.loaderSpinner.hide{
+  opacity: 0;
+}
+.loaderSpinner>.spinner-border{
+  color: var(--pod-primary);
+  width: 4rem;
+  height: 4rem;
+  margin: 2rem;
+  border-width: 0.5rem;
+}
 /* Pure css loader */
 .lds-ring {
   display: none;

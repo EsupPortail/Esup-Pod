@@ -1,7 +1,6 @@
 var infinite;
 var checkedInputs = [];
 
-let loader = document.querySelector(".lds-ring");
 let infiniteLoading = document.querySelector(".infinite-loading");
 let ownerBox = document.getElementById("ownerbox");
 let filterOwnerContainer = document.getElementById("collapseFilterOwner");
@@ -76,7 +75,7 @@ function replaceCountVideos(newCount) {
 function refreshVideosSearch() {
   // Erase videos list and show loader
   document.getElementById("videos_list").innerHTML = "";
-  loader.classList.add("show");
+  showLoader(videosListLoader, true);
   let url = getUrlForRefresh();
   // Async GET request wth parameters by fetch method
   fetch(url, {
@@ -121,7 +120,7 @@ function refreshVideosSearch() {
     .finally(() => {
       // Finally re-enable inputs and dismiss loader
       disabledInputs(false);
-      loader.classList.remove("show");
+      showLoader(videosListLoader, false);
     });
 }
 

@@ -55,8 +55,8 @@ function replaceSelectedCountVideos() {
   let transVideoCount = newCount > 1 ? "videos" : "video";
   countSelectedVideosBadge.innerHTML = newCount + " " + gettext(transVideoCount);
 
-  manageDisableBtns(applyMultipleActionsBtn, newCount > 0 && action.length !== 0);
-  manageDisableBtns(resetSelectedVideosBtn, newCount > 0);
+  manageDisableBtn(applyMultipleActionsBtn, newCount > 0 && action.length !== 0);
+  manageDisableBtn(resetSelectedVideosBtn, newCount > 0);
   videos_selected.forEach((v) => {
       selected_slugs.push(v.split('-')[1])
   });
@@ -90,4 +90,15 @@ function clearSelectedVideo() {
         elt.classList.remove("selected");
     });
     replaceSelectedCountVideos();
+}
+
+/**
+ * Get list of selected videos slugs (HTML li formated) for modal confirm display
+ */
+function getHtmlListSelectedVideosSlugs(){
+    let str = "";
+    Array.from(selectedVideos).forEach((video) => {
+        str += "<li>"+video.split('-')[1]+"</li>";
+    });
+    return str;
 }

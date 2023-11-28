@@ -108,30 +108,14 @@
     {% endfor %}
     </form>
 
-    <div class="modal fade" id="modalConfirmBulkUpdate" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">{% trans "Confirm multiple editing" %}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>{% trans "Please confirm you want edit these videos :" %}</p>
-        <ul id="bulkUpdateConfirmSelectedVideos"></ul>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
-        <button id="confirmBulkUpdateBtn" type="button" class="btn btn-primary">{% trans 'Apply' %}</button>
-      </div>
-    </div>
-  </div>
-</div>
+    {% include "videos/dashboard_modal.html" %}
 
-    <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalConfirmBulkUpdate" onclick="updateModalConfirmSelectedVideos()" disabled>
+    <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalBulkUpdate" disabled>
         {% trans 'Apply' %} <span id="countSelectedVideosBadge" class="badge bg-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'No video found' %}">
     {% blocktrans count counter=0 %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}</span></button>
     <button id="resetSelectedVideosBtn" type="button" class="btn btn-secondary mt-2" onclick="clearSelectedVideo()" disabled>{% trans "Clear selection" %}</button>
   </div>
+
   <div>
   {% if videos.paginator.count == 0 %}
     <h2 class="h4">{% trans "No video found"%}</h2>
@@ -149,7 +133,7 @@
     </div>
 
     <div id="video_list_content">
-    {% include 'loader.html' %}
+    {% include 'loader.html' with loaderid="videosListLoader" %}
     {% include video_list_template %}
     </div>
   {% endif %}
@@ -169,6 +153,7 @@
 <script>
   const urlVideos = "{% url 'video:dashboard' %}";
   const urlUpdateVideos = "{% url 'video:bulk_update' %}";
+  const videosListLoader = document.getElementById("videosListLoader");
   var displayMode = "{{ display_mode }}";
   var csrftoken = "{{ csrf_token }}";
   var page = 1;

@@ -516,7 +516,7 @@ document.addEventListener("DOMContentLoaded", function () {
  * @param  {HTMLElement}    element               HTML element to enable / disable
  * @param  {condition}      condition             Condition to evaluate for enabled disabled status
  */
-function manageDisableBtns(element, condition) {
+function manageDisableBtn(element, condition) {
 
     condition ? element.removeAttribute('disabled') : element.setAttribute('disabled','');
 }
@@ -1363,6 +1363,26 @@ function show_messages(msgText, msgClass, loadUrl) {
   }
 }
 */
+
+/***** MANAGE BOOTSTRAP LOADERS *****/
+/**
+ * Show or hide given loader
+ * @param  {HTMLElement}  loaderElement     [Loader element to show]
+ * @param  {boolean}      show              [True: enable full page loader / False: dismiss it]
+ * @return {void}
+ */
+function showLoader(loaderElement, show) {
+  if(show){
+    loaderElement.classList.remove("d-none");
+    loaderElement.classList.remove("hide");
+  }else{
+    loaderElement.classList.add("hide");
+    setTimeout(() => {
+      loaderElement.classList.add("d-none");
+    },150);
+  }
+}
+
 /**
  * [flashing description]
  * @param  {[type]} elem     [description]
