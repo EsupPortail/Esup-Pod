@@ -18,6 +18,9 @@ th {
 tr:nth-child(even) {
     background-color: #f9f9f9;
 }
+[data-theme="dark"] tr:nth-child(even), [data-theme="dark"] th {
+    background-color: #393e46;
+}
 
 #watermark {
     max-width: 50px;
