@@ -658,6 +658,8 @@ def bulk_update(request):
                 )
                 result["fields_errors"] = fields_errors
                 counter = len(result["updated_videos"])
+                if "transcript" in update_fields:
+                    update_action = "transcript"
             elif update_action == "delete":
                 # Bulk delete
                 deleted_videos, status = bulk_update_delete(request, videos_list)
