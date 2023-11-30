@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-23 15:42+0100\n"
+"POT-Creation-Date: 2023-11-30 16:26+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1948,6 +1948,10 @@ msgstr "Vous ne pouvez pas découper cette vidéo."
 msgid "The cut was made."
 msgstr "Découpe effectuée."
 
+#: pod/dressing/apps.py pod/dressing/models.py
+msgid "Video dressings"
+msgstr "Habillages de vidéos"
+
 #: pod/dressing/forms.py pod/live/forms.py pod/meeting/forms.py
 #: pod/playlist/forms.py pod/recorder/forms.py pod/video/forms.py
 msgid "I agree"
@@ -1996,15 +2000,15 @@ msgstr ""
 
 #: pod/dressing/models.py
 msgid "watermark"
-msgstr "Filigrane"
+msgstr "filigrane"
 
 #: pod/dressing/models.py
 msgid "position"
-msgstr "Position"
+msgstr "position"
 
 #: pod/dressing/models.py
 msgid "opacity"
-msgstr "Opacité"
+msgstr "opacité"
 
 #: pod/dressing/models.py pod/dressing/templates/my_dressings.html
 #: pod/dressing/templates/video_dressing.html
@@ -2025,10 +2029,6 @@ msgstr "Vidéos"
 msgid "Video dressing"
 msgstr "Habillage de vidéos"
 
-#: pod/dressing/models.py
-msgid "Video dressings"
-msgstr "Habillages de vidéos"
-
 #: pod/dressing/templates/dressing_delete.html
 #: pod/dressing/templates/dressing_edit.html
 #: pod/dressing/templates/my_dressings.html pod/main/templates/navbar.html
@@ -2036,6 +2036,11 @@ msgid "My dressings"
 msgstr "Mes habillages"
 
 #: pod/dressing/templates/dressing_delete.html
+msgid "Deleting the dressing"
+msgstr "Supprimer l'habillage"
+
+#: pod/dressing/templates/dressing_delete.html
+#, python-format
 msgid "Deleting the dressing \"%(vtitle)s\""
 msgstr "Supprimer l'habillage « %(vtitle)s »"
 
@@ -2054,7 +2059,7 @@ msgstr "Accord requis"
 
 #: pod/dressing/templates/dressing_delete.html
 msgid "Back to the dressing"
-msgstr "Retour à l'habillage'"
+msgstr "Retour à l'habillage"
 
 #: pod/dressing/templates/dressing_edit.html
 msgid "Editing the dressing"
@@ -2132,6 +2137,10 @@ msgstr "Appliquer"
 #: pod/meeting/views.py pod/video/views.py
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
+
+#: pod/dressing/views.py
+msgid "Edit the dressing"
+msgstr "Éditer l'habillage"
 
 #: pod/dressing/views.py
 msgid "The dressing has been deleted."
@@ -2396,7 +2405,8 @@ msgstr "Vous ne pouvez pas enrichir cette vidéo."
 
 #: pod/enrichment/views.py pod/video/views.py
 msgid "You cannot access this playlist because it is private."
-msgstr "Vous ne pouvez pas voir ce dossier."
+msgstr ""
+"Vous ne pouvez pas accéder à cette liste de lecture car elle est privée."
 
 #: pod/import_video/apps.py
 msgid "Import External Video"
@@ -8853,6 +8863,9 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Dressing"
+#~ msgstr "Habillage"
 
 #~ msgid "Toggle navigation"
 #~ msgstr "Basculer le menu"

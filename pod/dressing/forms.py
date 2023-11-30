@@ -15,14 +15,8 @@ if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.widgets import CustomFileWidget
 
 
-class OwnerWidget(s2forms.ModelSelect2Widget):
-    search_fields = [
-        "username__icontains",
-        "email__icontains",
-    ]
-
-
 class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
+    """Class AddOwnerWidget."""
     search_fields = [
         "username__icontains",
         "email__icontains",
@@ -30,6 +24,7 @@ class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
 
 
 class AddAccessGroupWidget(s2forms.ModelSelect2MultipleWidget):
+    """Class AddAccessGroupWidget."""
     search_fields = [
         "display_name__icontains",
         "code_name__icontains",
@@ -37,6 +32,7 @@ class AddAccessGroupWidget(s2forms.ModelSelect2MultipleWidget):
 
 
 class AddVideoHoldWidget(s2forms.ModelSelect2Widget):
+    """Class AddVideoHoldWidget."""
     search_fields = [
         "slug__icontains",
         "title__icontains"

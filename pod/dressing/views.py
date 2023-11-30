@@ -1,3 +1,4 @@
+"""Esup-Pod dressing views."""
 from django.shortcuts import render, redirect, get_object_or_404
 from pod.main.views import in_maintenance
 from django.urls import reverse
@@ -77,11 +78,16 @@ def dressing_edit(request, dressing_id):
                                  _("The changes have been saved."))
             form_dressing.save()
             return redirect(reverse("dressing:my_dressings"))
-
+    page_title = _("Edit the dressing") + f' "{dressing_edit.title}"'
     return render(
         request,
         'dressing_edit.html',
-        {'dressing_edit': dressing_edit, "form": form_dressing})
+        {
+            'dressing_edit': dressing_edit,
+            'form': form_dressing,
+            'page_title': page_title,
+        }
+    )
 
 
 @csrf_protect
@@ -99,7 +105,7 @@ def dressing_create(request):
     return render(
         request,
         'dressing_edit.html',
-        {'dressing_create': dressing_create, "form": form_dressing})
+        {'dressing_create': dressing_create, 'form': form_dressing})
 
 
 @csrf_protect

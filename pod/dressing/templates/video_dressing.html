@@ -117,7 +117,7 @@
 <span class="float-end">
   <button type="submit" form="apply_dressing" class="btn btn-primary btn-sm m-2" title="{% trans 'Apply' %}">{% trans "Apply" %}</button>
   <a href="{% url 'video:video' slug=video.slug %}" title="{% trans 'View the video'%}" class="btn btn btn-secondary btn-sm">
-    <i class="bi bi-film"></i>&nbsp;{% trans 'Back to the video' %}
+    <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans 'Back to the video' %}
   </a>
 </span>
 

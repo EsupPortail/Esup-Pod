@@ -73,7 +73,7 @@
                 </td>
                 <td>
                     {% if dressing.watermark %}
-                        <img id="watermark" src="{{ dressing.watermark.file.url }}" alt="Watermark">
+                        <img id="watermark" src="{{ dressing.watermark.file.url }}" alt="{% trans 'Watermark'%}">
                     {% else %}
                         {% trans 'None' %}
                     {% endif %}
@@ -83,7 +83,7 @@
                         {{ dressing.get_position_display }}
                     {% else %}
                     <div class="text-center">
-                        <i class="bi bi-x-lg"></i>
+                        <i class="bi bi-x-lg" aria-hidden="true"></i>
                     </div>
                     {% endif %}
                 </td>
@@ -92,7 +92,7 @@
                         {{ dressing.opacity }}
                     {% else %}
                     <div class="text-center">
-                        <i class="bi bi-x-lg"></i>
+                        <i class="bi bi-x-lg" aria-hidden="true"></i>
                     </div>
                     {% endif %}
                 </td>

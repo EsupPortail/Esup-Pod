@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-23 15:42+0100\n"
+"POT-Creation-Date: 2023-11-30 16:26+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1850,6 +1850,10 @@ msgstr ""
 msgid "The cut was made."
 msgstr ""
 
+#: pod/dressing/apps.py pod/dressing/models.py
+msgid "Video dressings"
+msgstr ""
+
 #: pod/dressing/forms.py pod/live/forms.py pod/meeting/forms.py
 #: pod/playlist/forms.py pod/recorder/forms.py pod/video/forms.py
 msgid "I agree"
@@ -1922,14 +1926,14 @@ msgstr ""
 msgid "Video dressing"
 msgstr ""
 
-#: pod/dressing/models.py
-msgid "Video dressings"
-msgstr ""
-
 #: pod/dressing/templates/dressing_delete.html
 #: pod/dressing/templates/dressing_edit.html
 #: pod/dressing/templates/my_dressings.html pod/main/templates/navbar.html
 msgid "My dressings"
+msgstr ""
+
+#: pod/dressing/templates/dressing_delete.html
+msgid "Deleting the dressing"
 msgstr ""
 
 #: pod/dressing/templates/dressing_delete.html
@@ -2029,6 +2033,10 @@ msgstr ""
 #: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
 #: pod/meeting/views.py pod/video/views.py
 msgid "The changes have been saved."
+msgstr ""
+
+#: pod/dressing/views.py
+msgid "Edit the dressing"
 msgstr ""
 
 #: pod/dressing/views.py

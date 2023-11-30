@@ -1,3 +1,4 @@
+"""Esup-Pod dressing utilities."""
 import os
 
 from django.conf import settings
