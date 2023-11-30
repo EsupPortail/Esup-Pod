@@ -1944,6 +1944,10 @@ msgid "Deleting the dressing"
 msgstr ""
 
 #: pod/dressing/templates/dressing_delete.html
+msgid "Deleting the dressing"
+msgstr ""
+
+#: pod/dressing/templates/dressing_delete.html
 #, python-format
 msgid "Deleting the dressing \"%(vtitle)s\""
 msgstr ""
@@ -2038,6 +2042,10 @@ msgstr ""
 #: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
 #: pod/meeting/views.py pod/video/views.py
 msgid "The changes have been saved."
+msgstr ""
+
+#: pod/dressing/views.py
+msgid "Edit the dressing"
 msgstr ""
 
 #: pod/dressing/views.py
