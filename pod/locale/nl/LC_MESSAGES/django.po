@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-23 15:42+0100\n"
+"POT-Creation-Date: 2023-11-30 16:26+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1936,6 +1936,10 @@ msgid "Deleting the dressing"
 msgstr ""
 
 #: pod/dressing/templates/dressing_delete.html
+msgid "Deleting the dressing"
+msgstr ""
+
+#: pod/dressing/templates/dressing_delete.html
 #, python-format
 msgid "Deleting the dressing \"%(vtitle)s\""
 msgstr ""
@@ -2030,6 +2034,10 @@ msgstr ""
 #: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
 #: pod/meeting/views.py pod/video/views.py
 msgid "The changes have been saved."
+msgstr ""
+
+#: pod/dressing/views.py
+msgid "Edit the dressing"
 msgstr ""
 
 #: pod/dressing/views.py

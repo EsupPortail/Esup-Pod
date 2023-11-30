@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-23 15:42+0100\n"
+"POT-Creation-Date: 2023-11-30 16:26+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2135,6 +2135,10 @@ msgstr "Appliquer"
 #: pod/meeting/views.py pod/video/views.py
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
+
+#: pod/dressing/views.py
+msgid "Edit the dressing"
+msgstr "Éditer l'habillage"
 
 #: pod/dressing/views.py
 msgid "The dressing has been deleted."
