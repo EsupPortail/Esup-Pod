@@ -19,8 +19,10 @@ class LinkFooterTranslationOptions(TranslationOptions):
 class ConfigurationTranslationOptions(TranslationOptions):
     fields = ("description",)
 
+
 class AdditionalChannelTabTranslationOptions(TranslationOptions):
     fields = ("name",)
+
 
 translator.register(FlatPage, FlatPageTranslationOptions)
 translator.register(LinkFooter, LinkFooterTranslationOptions)
