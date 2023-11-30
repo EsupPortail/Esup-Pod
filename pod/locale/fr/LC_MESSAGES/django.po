@@ -2145,6 +2145,10 @@ msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
 
 #: pod/dressing/views.py
+msgid "Edit the dressing"
+msgstr "Éditer l'habillage"
+
+#: pod/dressing/views.py
 msgid "The dressing has been deleted."
 msgstr "L’habillage a été supprimé."
 
