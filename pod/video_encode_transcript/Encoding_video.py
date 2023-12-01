@@ -421,9 +421,13 @@ class Encoding_video:
         if self.dressing.watermark:
             dressing_command_params = '[video][0:a]'
             order_opening_credits = order_opening_credits + 1
+            name_out = ""
+            if self.dressing.opening_credits or self.dressing.ending_credits:
+                name_out = "[video]"
             dressing_command_filter.append(FFMPEG_DRESSING_WATERMARK % {
                 "opacity": self.dressing.opacity / 100.0,
-                "position": get_position_value(self.dressing.position, height)
+                "position": get_position_value(self.dressing.position, height),
+                "name_out": name_out,
             })
         if self.dressing.opening_credits:
             order_opening_credits = order_opening_credits + 1

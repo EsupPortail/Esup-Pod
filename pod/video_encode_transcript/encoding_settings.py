@@ -70,7 +70,7 @@ FFMPEG_DRESSING_FILTER_COMPLEX = ' -filter_complex "%(filter)s" '
 FFMPEG_DRESSING_WATERMARK = (
     ' [1]format=rgba,colorchannelmixer=aa=%(opacity)s[logo]; '
     + ' [logo][vid]scale2ref=oh*mdar:ih*0.1[logo][video2]; '
-    + ' [video2][logo]%(position)s[video] '
+    + ' [video2][logo]%(position)s%(name_out)s '
 )
 FFMPEG_DRESSING_SCALE = (
     '[%(number)s]scale=-1:%(height)s:force_original_aspect_ratio= '
