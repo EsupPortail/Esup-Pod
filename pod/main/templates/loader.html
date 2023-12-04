@@ -1,5 +1,5 @@
 {% load i18n %}
-<div id="{{ loaderid|default:"loader" }}" class="d-flex justify-content-center align-items-center d-none loaderSpinner">
+<div id="{{ loaderid|default:'loader' }}" class="d-flex justify-content-center align-items-center d-none loaderSpinner">
     <div class="spinner-border" role="status">
         <span class="visually-hidden">{% trans 'Loading…' %}</span>
     </div>

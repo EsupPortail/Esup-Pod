@@ -538,6 +538,13 @@ class FileSizeValidator(object):
 
 @receiver(post_save, sender=Video)
 def launch_encode(sender, instance, created, **kwargs):
+    """
+        Launch encoding after save Video if requested.
+
+        Args:
+            sender (::class::`pod.video.models.Video`): Video model class.
+            instance (Video): video object instance.
+    """
     if hasattr(instance, "launch_encode") and instance.launch_encode is True:
         instance.launch_encode = False
         encode_video = getattr(encode, ENCODE_VIDEO)
@@ -546,6 +553,13 @@ def launch_encode(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Video)
 def launch_transcript(sender, instance, created, **kwargs):
+    """
+        Launch transcription after save Video if requested.
+
+        Args:
+            sender (::class::`pod.video.models.Video`): Video model class.
+            instance (Video): video object instance.
+    """
     if hasattr(instance, "launch_transcript") and instance.launch_transcript is True:
         instance.launch_transcript = False
         transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
