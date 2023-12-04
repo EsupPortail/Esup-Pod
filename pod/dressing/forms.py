@@ -44,7 +44,6 @@ class DressingForm(forms.ModelForm):
     is_staff = True
     is_superuser = False
     admin_form = True
-    site = forms.ModelChoiceField(Site.objects.all(), required=False)
 
     def __init__(self, *args, **kwargs):
         """Init method."""
