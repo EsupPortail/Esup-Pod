@@ -8935,6 +8935,15 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
+#~ msgid "watermark"
+#~ msgstr "filigrane"
+
+#~ msgid "position"
+#~ msgstr "position"
+
+#~ msgid "opacity"
+#~ msgstr "opacité"
+
 #~ msgid "Edit the dressing"
 #~ msgstr "Éditer l'habillage"
 
