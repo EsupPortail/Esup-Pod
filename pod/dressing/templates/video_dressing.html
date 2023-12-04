@@ -17,9 +17,9 @@
 
 {% block breadcrumbs %}
 {{block.super}}
-<li class="breadcrumb-item"><a href="{% url 'video:my_videos'%}" title="{% trans 'My videos' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">{% trans 'My videos' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'video:my_videos'%}">{% trans 'My videos' %}</a></li>
 <li class="breadcrumb-item">
-  <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+  <a href="{% url 'video:video' slug=video.slug %}">
     {{video.title|title|truncatechars:45}}
   </a>
 </li>
@@ -43,16 +43,17 @@
 
 <form action="{% url 'video:dressing:video_dressing' slug=video.slug %}" method="POST" id="apply_dressing" accept-charset="utf-8" enctype="multipart/form-data">
   {% csrf_token %}
-  <table>
+  <table summary="{% trans 'List of dressings that I can apply to the video.' %}">
+    <caption>{% trans 'Available video dressings' %}</caption>
     <thead>
       <tr>
-        <th>{% trans 'Select' %}</th>
-        <th>{% trans 'Title' %}</th>
-        <th>{% trans 'Watermark' %}</th>
-        <th>{% trans 'Position' %}</th>
-        <th>{% trans 'Opacity' %}</th>
-        <th>{% trans 'Opening credits' %}</th>
-        <th>{% trans 'Ending credits' %}</th>
+        <th scope="col">{% trans 'Select' %}</th>
+        <th scope="col">{% trans 'Title' %}</th>
+        <th scope="col">{% trans 'Watermark' %}</th>
+        <th scope="col">{% trans 'Position' %}</th>
+        <th scope="col">{% trans 'Opacity' %}</th>
+        <th scope="col">{% trans 'Opening credits' %}</th>
+        <th scope="col">{% trans 'Ending credits' %}</th>
       </tr>
     </thead>
     <tbody>

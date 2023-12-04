@@ -19,19 +19,20 @@
 {% endblock %}
 
 {% block page_content %}
-<table>
+<table summary="{% trans 'List of dressings I can use or manage.' %}">
+    <caption>{% trans 'Available video dressings' %}</caption>
     <thead>
         <tr>
-            <th>{% trans 'Title' %}</th>
-            <th>{% trans 'Owners' %}</th>
-            <th>{% trans 'Users' %}</th>
-            <th>{% trans 'Allow to Groups' %}</th>
-            <th>{% trans 'Watermark' %}</th>
-            <th>{% trans 'Position' %}</th>
-            <th>{% trans 'Opacity' %}</th>
-            <th>{% trans 'Opening credits' %}</th>
-            <th>{% trans 'Ending credits' %}</th>
-            <th>{% trans 'Actions' %}</th>
+            <th scope="col">{% trans 'Title' %}</th>
+            <th scope="col">{% trans 'Owners' %}</th>
+            <th scope="col">{% trans 'Users' %}</th>
+            <th scope="col">{% trans 'Allow to Groups' %}</th>
+            <th scope="col">{% trans 'Watermark' %}</th>
+            <th scope="col">{% trans 'Position' %}</th>
+            <th scope="col">{% trans 'Opacity' %}</th>
+            <th scope="col">{% trans 'Opening credits' %}</th>
+            <th scope="col">{% trans 'Ending credits' %}</th>
+            <th scope="col">{% trans 'Actions' %}</th>
         </tr>
     </thead>
     <tbody>

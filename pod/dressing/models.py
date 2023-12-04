@@ -51,7 +51,7 @@ class Dressing(models.Model):
         AccessGroup,
         blank=True,
         verbose_name=_("Groups"),
-        help_text=_("Select one or more groups who can upload video to this channel."),
+        help_text=_("Select one or more groups who can manage and use this video dressing."),
     )
 
     watermark = models.ForeignKey(
@@ -59,11 +59,11 @@ class Dressing(models.Model):
         models.SET_NULL,
         blank=True,
         null=True,
-        verbose_name=_("watermark"),
+        verbose_name=_("Watermark"),
     )
 
     position = models.CharField(
-        verbose_name=_("position"),
+        verbose_name=_("Position"),
         max_length=200,
         choices=POSITIONS,
         default=TOP_RIGHT,
@@ -76,7 +76,7 @@ class Dressing(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(100)],
         blank=True,
         null=True,
-        verbose_name=_("opacity"),
+        verbose_name=_("Opacity"),
     )
 
     opening_credits = models.ForeignKey(

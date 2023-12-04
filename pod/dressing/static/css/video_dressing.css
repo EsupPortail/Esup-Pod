@@ -6,6 +6,10 @@ table {
     text-align: center;
 }
 
+caption {
+    caption-side: top;
+}
+
 th, td {
     padding: 10px;
     border: 1px solid #ccc;

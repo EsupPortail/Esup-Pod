@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-04 11:53+0100\n"
+"POT-Creation-Date: 2023-12-04 16:46+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1326,7 +1326,7 @@ msgid "Content"
 msgstr ""
 
 #: pod/completion/models.py pod/completion/templates/overlay/list_overlay.html
-#: pod/dressing/templates/my_dressings.html
+#: pod/dressing/models.py pod/dressing/templates/my_dressings.html
 #: pod/dressing/templates/video_dressing.html
 msgid "Position"
 msgstr ""
@@ -1891,20 +1891,18 @@ msgstr ""
 msgid "Groups"
 msgstr ""
 
-#: pod/dressing/models.py pod/video/models.py
-msgid "Select one or more groups who can upload video to this channel."
+#: pod/dressing/models.py
+msgid "Select one or more groups who can manage and use this video dressing."
 msgstr ""
 
-#: pod/dressing/models.py
-msgid "watermark"
+#: pod/dressing/models.py pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+msgid "Watermark"
 msgstr ""
 
-#: pod/dressing/models.py
-msgid "position"
-msgstr ""
-
-#: pod/dressing/models.py
-msgid "opacity"
+#: pod/dressing/models.py pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+msgid "Opacity"
 msgstr ""
 
 #: pod/dressing/models.py pod/dressing/templates/my_dressings.html
@@ -1943,16 +1941,11 @@ msgid "Deleting the dressing \"%(vtitle)s\""
 msgstr ""
 
 #: pod/dressing/templates/dressing_delete.html
-msgid "To delete the dressing, please checked in and click send."
+msgid "To delete the dressing, please check in and click send."
 msgstr ""
 
 #: pod/dressing/templates/dressing_delete.html
-#: pod/live/templates/live/event_delete.html
-#: pod/meeting/templates/meeting/delete.html
-#: pod/playlist/templates/playlist/delete.html
-#: pod/recorder/templates/recorder/record_delete.html
-#: pod/video/templates/videos/video_delete.html
-msgid "Agree required"
+msgid "Agreement required"
 msgstr ""
 
 #: pod/dressing/templates/dressing_delete.html
@@ -1968,17 +1961,16 @@ msgid "Create a new dressing"
 msgstr ""
 
 #: pod/dressing/templates/my_dressings.html
+msgid "List of dressings I can use or manage."
+msgstr ""
+
+#: pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+msgid "Available video dressings"
+msgstr ""
+
+#: pod/dressing/templates/my_dressings.html
 msgid "Allow to Groups"
-msgstr ""
-
-#: pod/dressing/templates/my_dressings.html
-#: pod/dressing/templates/video_dressing.html
-msgid "Watermark"
-msgstr ""
-
-#: pod/dressing/templates/my_dressings.html
-#: pod/dressing/templates/video_dressing.html
-msgid "Opacity"
 msgstr ""
 
 #: pod/dressing/templates/my_dressings.html
@@ -2021,6 +2013,10 @@ msgstr ""
 #: pod/dressing/templates/video_dressing.html
 #: pod/video/templates/videos/link_video.html
 msgid "Dress the video"
+msgstr ""
+
+#: pod/dressing/templates/video_dressing.html
+msgid "List of dressings that I can apply to the video."
 msgstr ""
 
 #: pod/dressing/templates/video_dressing.html
@@ -3488,6 +3484,14 @@ msgstr ""
 
 #: pod/live/templates/live/event_delete.html
 msgid "To delete the event, please checked in and click send."
+msgstr ""
+
+#: pod/live/templates/live/event_delete.html
+#: pod/meeting/templates/meeting/delete.html
+#: pod/playlist/templates/playlist/delete.html
+#: pod/recorder/templates/recorder/record_delete.html
+#: pod/video/templates/videos/video_delete.html
+msgid "Agree required"
 msgstr ""
 
 #: pod/live/templates/live/event_edit.html
@@ -6956,6 +6960,10 @@ msgstr ""
 msgid ""
 "If checked, the channel appear in a list of available channels on the "
 "platform."
+msgstr ""
+
+#: pod/video/models.py
+msgid "Select one or more groups who can upload video to this channel."
 msgstr ""
 
 #: pod/video/models.py

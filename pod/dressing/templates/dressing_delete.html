@@ -15,12 +15,12 @@
 {% block page_content %}
     <h1>{% blocktrans with vtitle=dressing.title %}Deleting the dressing "{{ vtitle }}"{% endblocktrans %}</h1>
 
-    <p>{% trans 'To delete the dressing, please checked in and click send.' %}</p>
+    <p>{% trans 'To delete the dressing, please check in and click send.' %}</p>
     <form method="post" action="{{ request.get_full_path }}" id="dressing_delete_form" class='needs-validation' novalidate>
         {% csrf_token %}
         <div class="list-group">
             <fieldset>
-                <legend>{% trans 'Agree required' %}</legend>
+                <legend>{% trans 'Agreement required' %}</legend>
                 {% if form.errors %}
                     <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
                 {% endif %}
