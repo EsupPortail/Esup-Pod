@@ -43,6 +43,8 @@ def video_dressing(request, slug):
         else:
             start_encode(video.id)
 
+        return redirect(reverse("video:video", args=(video.slug,)))
+
     try:
         current = Dressing.objects.get(videos=video)
     except Dressing.DoesNotExist:
@@ -78,7 +80,7 @@ def dressing_edit(request, dressing_id):
                                  _("The changes have been saved."))
             form_dressing.save()
             return redirect(reverse("dressing:my_dressings"))
-    page_title = _("Edit the dressing") + f' "{dressing_edit.title}"'
+    page_title = f'{_("Edit the dressing")} {dressing_edit.title}'
     return render(
         request,
         'dressing_edit.html',

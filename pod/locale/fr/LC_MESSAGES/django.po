@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-30 16:26+0100\n"
+"POT-Creation-Date: 2023-12-04 11:53+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1958,7 +1958,7 @@ msgid "I agree"
 msgstr "J’accepte"
 
 #: pod/dressing/forms.py
-msgid "Delete dressing cannot be undo"
+msgid "Delete video dressing cannot be undone"
 msgstr "La suppression de l'habillage est définitive"
 
 #: pod/dressing/models.py
@@ -2031,7 +2031,8 @@ msgstr "Habillage de vidéos"
 
 #: pod/dressing/templates/dressing_delete.html
 #: pod/dressing/templates/dressing_edit.html
-#: pod/dressing/templates/my_dressings.html pod/main/templates/navbar.html
+#: pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html pod/main/templates/navbar.html
 msgid "My dressings"
 msgstr "Mes habillages"
 
@@ -2137,10 +2138,6 @@ msgstr "Appliquer"
 #: pod/meeting/views.py pod/video/views.py
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
-
-#: pod/dressing/views.py
-msgid "Edit the dressing"
-msgstr "Éditer l'habillage"
 
 #: pod/dressing/views.py
 msgid "The dressing has been deleted."
@@ -8863,6 +8860,9 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Edit the dressing"
+#~ msgstr "Éditer l'habillage"
 
 #~ msgid "Dressing"
 #~ msgstr "Habillage"

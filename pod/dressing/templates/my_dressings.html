@@ -112,8 +112,8 @@
                   </td>
                 <td>
                     <div class="d-flex justify-content-between">
-                        <a href="{% url 'dressing:dressing_edit' dressing_id=dressing.pk %}" class="btn btn-primary" title="{% trans 'Edit'%}"><i class="bi bi-pencil-square" aria-hidden="true"></i></a>
-                        <a href="{% url 'dressing:dressing_delete' dressing_id=dressing.pk %}" class="btn btn-danger" title="{% trans 'Delete'%}"><i class="bi bi-trash" aria-hidden="true"></i></a>
+                        <a href="{% url 'dressing:dressing_edit' dressing_id=dressing.pk %}" class="btn btn-primary" title="{% trans 'Edit'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-pencil-square" aria-hidden="true"></i></a>
+                        <a href="{% url 'dressing:dressing_delete' dressing_id=dressing.pk %}" class="btn btn-danger" title="{% trans 'Delete'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-trash" aria-hidden="true"></i></a>
                     </div>
                 </td>
             </tr>
@@ -124,7 +124,7 @@
         {% endfor %}
     </tbody>
 </table>
-<a href="{% url 'dressing:dressing_create' %}" class="btn btn-primary">{% trans 'Add new object' %}</a>
+<a href="{% url 'dressing:dressing_create' %}" class="btn btn-primary" title="{% trans 'Add new object' %}" data-bs-toggle="tooltip" data-bs-placement="top">{% trans 'Add new object' %}</a>
 {% endblock page_content %}
 
 {% block collapse_page_aside %}

@@ -9,7 +9,7 @@
 
 {% block breadcrumbs %}{{ block.super }}
 <li class="breadcrumb-item">
-  <a href="{% url 'dressing:my_dressings' %}" title="{% trans 'My dressings' %}">
+  <a href="{% url 'dressing:my_dressings' %}" title="{% trans 'My dressings' %}" data-bs-toggle="tooltip" data-bs-placement="top">
     {% trans 'My dressings' %}
   </a>
 </li>
@@ -64,7 +64,7 @@
         {% endfor %}
       </div>
       <div class="text-center">
-        <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+        <button type="submit" class="btn btn-primary" title="{% trans 'Save' %}" data-bs-toggle="tooltip" data-bs-placement="top">{% trans "Save" %}</button>
       </div>
   </form>
 {% endblock page_content %}

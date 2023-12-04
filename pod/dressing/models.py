@@ -73,7 +73,7 @@ class Dressing(models.Model):
 
     opacity = models.PositiveIntegerField(
         default=100,
-        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
         blank=True,
         null=True,
         verbose_name=_("opacity"),

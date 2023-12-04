@@ -17,9 +17,9 @@
 
 {% block breadcrumbs %}
 {{block.super}}
-<li class="breadcrumb-item"><a href="{% url 'video:my_videos'%}">{% trans 'My videos' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'video:my_videos'%}" title="{% trans 'My videos' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">{% trans 'My videos' %}</a></li>
 <li class="breadcrumb-item">
-  <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}">
+  <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}" data-bs-toggle="tooltip" data-bs-placement="bottom">
     {{video.title|title|truncatechars:45}}
   </a>
 </li>
@@ -66,7 +66,7 @@
           <td>{{ dressing.title }}</td>
           <td>
             {% if dressing.watermark %}
-            <img id="watermark" src="{{ dressing.watermark.file.url }}" alt="Watermark">
+            <img id="watermark" src="{{ dressing.watermark.file.url }}" alt="{% trans 'Watermark' %}">
             {% else %}
               {% trans 'None' %}
             {% endif %}
@@ -76,7 +76,7 @@
             {{ dressing.get_position_display }}
             {% else %}
             <div class="text-center">
-              <i class="bi bi-x-lg"></i>
+              <i class="bi bi-x-lg" aria-hidden="true"></i>
             </div>
             {% endif %}
           </td>
@@ -85,7 +85,7 @@
             {{ dressing.opacity }}
             {% else %}
             <div class="text-center">
-              <i class="bi bi-x-lg"></i>
+              <i class="bi bi-x-lg" aria-hidden="true"></i>
             </div>
             {% endif %}
           </td>
@@ -111,12 +111,13 @@
         {% endfor %}
     </tbody>
   </table>
-  <button type="button" onclick="resetRadioButtons()" class="btn btn btn-secondary btn-sm" title="{% trans 'Reset' %}">{% trans "Reset" %}</button>
+  <button type="button" onclick="resetRadioButtons()" class="btn btn btn-secondary btn-sm" title="{% trans 'Reset' %}" data-bs-toggle="tooltip" data-bs-placement="top">{% trans "Reset" %}</button>
 </form>
 
 <span class="float-end">
-  <button type="submit" form="apply_dressing" class="btn btn-primary btn-sm m-2" title="{% trans 'Apply' %}">{% trans "Apply" %}</button>
-  <a href="{% url 'video:video' slug=video.slug %}" title="{% trans 'View the video'%}" class="btn btn btn-secondary btn-sm">
+  <button type="submit" form="apply_dressing" class="btn btn-primary btn-sm m-2" title="{% trans 'Apply' %}" data-bs-toggle="tooltip" data-bs-placement="top">{% trans "Apply" %}</button>
+  <a class="btn btn btn-secondary btn-sm" href="{% url 'dressing:my_dressings' %}" title="{% trans 'My dressings'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-palette" aria-hidden="true"></i>&nbsp;{% trans 'My dressings' %}</a>
+  <a href="{% url 'video:video' slug=video.slug %}" title="{% trans 'View the video'%}" class="btn btn btn-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="top">
     <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans 'Back to the video' %}
   </a>
 </span>
@@ -127,7 +128,7 @@
   {% if access_not_allowed == True %}
   {% else %}
     <div class="card" id="card-managevideo">
-      <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video" %}</h2>
+      <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage video" %}</h2>
       <div class="card-body card-text text-center">
         {% include "videos/link_video.html" %}
       </div>

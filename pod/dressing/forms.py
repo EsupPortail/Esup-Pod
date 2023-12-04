@@ -106,7 +106,7 @@ class DressingDeleteForm(forms.Form):
     """Form to delete a dressing."""
     agree = forms.BooleanField(
         label=_("I agree"),
-        help_text=_("Delete dressing cannot be undo"),
+        help_text=_("Delete video dressing cannot be undone"),
         widget=forms.CheckboxInput(),
     )
 

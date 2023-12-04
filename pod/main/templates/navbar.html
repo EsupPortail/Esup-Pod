@@ -269,7 +269,7 @@
                 <a class="nav-item nav-link" href="{% url 'channels:my_channels' %}"><i class="bi bi-play-btn pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My channels' %}</a>
               {% endif %}
               {% if request.user.is_staff or request.user.is_superuser %}
-              <a class="nav-item nav-link" href="{% url 'dressing:my_dressings' %}"><i class="bi bi-palette-fill pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My dressings' %}</a>
+              <a class="nav-item nav-link" href="{% url 'dressing:my_dressings' %}"><i class="bi bi-palette pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My dressings' %}</a>
               {% endif %}
               {% if request.user.is_staff and USE_PODFILE %}
                 <a class="nav-item nav-link" href="{% url 'podfile:home' %}"><i class="bi bi-folder pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My files' %}</a>
