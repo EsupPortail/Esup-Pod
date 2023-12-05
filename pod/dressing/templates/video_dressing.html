@@ -65,7 +65,7 @@
           <td>{{ dressing.title }}</td>
           <td>
             {% if dressing.watermark %}
-            <img id="watermark" src="{{ dressing.watermark.file.url }}" alt="{% trans 'Watermark' %}" width="50px">
+            <img src="{{ dressing.watermark.file.url }}" alt="{% trans 'Watermark' %}" width="50px">
             {% else %}
               {% trans 'None' %}
             {% endif %}
