@@ -154,6 +154,8 @@
   const urlVideos = "{% url 'video:dashboard' %}";
   const urlUpdateVideos = "{% url 'video:bulk_update' %}";
   const videosListLoader = document.getElementById("videosListLoader");
+  const singularConfirmBulkUpdate = gettext("Please confirm the editing of the following video:");
+  const pluralConfirmBulkUpdate = gettext("Please confirm the editing of the following videos:")
   var displayMode = "{{ display_mode }}";
   var csrftoken = "{{ csrf_token }}";
   var page = 1;

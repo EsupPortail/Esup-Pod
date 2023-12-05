@@ -1,4 +1,4 @@
-var selectedVideos;
+var selectedVideos = [];
 var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
 var resetSelectedVideosBtn = document.getElementById("resetSelectedVideosBtn");
 var countSelectedVideosBadge = document.getElementById("countSelectedVideosBadge");
@@ -10,15 +10,18 @@ var badgeToolTip = new bootstrap.Tooltip(applyMultipleActionsBtn, {
     });
 
 /**
- * Get list of selected videos (cards or list-items selected by user) based on class selected
- * @returns {*[videos]}
+ * Get list of selected videos's titles based on class selected
+ * @returns {*[video_title]}
  */
-function getListSelectedVideos(){
-    selectedVideos = [];
-    document.querySelectorAll(".infinite-item.selected").forEach((elt) => {
-        selectedVideos.push(elt.dataset.slug);
-    });
-    return selectedVideos;
+function getListSelectedVideosTitles(){
+    let selectedTitles = [];
+    if (selectedVideos.length > 0) {
+        Array.from(selectedVideos).forEach((v) => {
+            let item = document.querySelector(".infinite-item.selected[data-slug='"+v+"']");
+            selectedTitles.push(item.querySelector(".dashboard-video-title").getAttribute('title'));
+        });
+    }
+    return selectedTitles;
 }
 
 /**
@@ -49,18 +52,14 @@ function setSelectedVideos(){
  * Replace count of selected videos (count label in "Apply" bulk update's badge)
  */
 function replaceSelectedCountVideos() {
-  videos_selected = getListSelectedVideos();
-  let selected_slugs = []
-  let newCount = videos_selected.length;
+  let selected_titles = [];
+  selected_titles = getListSelectedVideosTitles();
+  let newCount = selected_titles.length;
   let transVideoCount = newCount > 1 ? "videos" : "video";
   countSelectedVideosBadge.innerHTML = newCount + " " + gettext(transVideoCount);
-
   manageDisableBtn(applyMultipleActionsBtn, newCount > 0 && action.length !== 0);
   manageDisableBtn(resetSelectedVideosBtn, newCount > 0);
-  videos_selected.forEach((v) => {
-      selected_slugs.push(v.split('-')[1])
-  });
-  badgeToolTip._config.title = selected_slugs.join("<br>");
+  badgeToolTip._config.title = selected_titles.join("<br>");
 }
 
 /**
@@ -95,10 +94,10 @@ function clearSelectedVideo() {
 /**
  * Get list of selected videos slugs (HTML li formated) for modal confirm display
  */
-function getHtmlListSelectedVideosSlugs(){
+function getHTMLBadgesSelectedTitles(){
     let str = "";
-    Array.from(selectedVideos).forEach((video) => {
-        str += "<li>"+video.split('-')[1]+"</li>";
+    Array.from(getListSelectedVideosTitles()).forEach((title) => {
+        str += "<span class='badge rounded-pill bulk-update-confirm-badges'>"+title+"</span>";
     });
     return str;
 }

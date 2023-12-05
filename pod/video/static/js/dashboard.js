@@ -19,10 +19,11 @@ bulkUpdateActionSelect.addEventListener("change", function() {
 
 
 /**
- * Add click event listener on confirmation modal button to perform bulk update
+ * Add click event listener on apply button to build and open confirm modal
  */
 applyBulkUpdateBtn.addEventListener("click", (e) => {
-    modal.querySelector(".modal-body").innerHTML = getHtmlListSelectedVideosSlugs();
+    let confirmLabel = selectedVideos.length > 1 ? pluralConfirmBulkUpdate : singularConfirmBulkUpdate;
+    modal.querySelector(".modal-body").innerHTML = "<p>" + confirmLabel + "</p>" + getHTMLBadgesSelectedTitles();
 });
 
 /**
@@ -78,7 +79,7 @@ async function bulkUpdate() {
   }
 
   // Construct formData to send
-  formData.append("selected_videos",JSON.stringify(getListSelectedVideos()));
+  formData.append("selected_videos",JSON.stringify(selectedVideos));
   formData.append("update_fields",JSON.stringify(updateFields));
   formData.append("update_action",JSON.stringify(updateAction));
 
@@ -160,8 +161,8 @@ function changeDisplayMode(display_mode){
  */
 function updateModalConfirmSelectedVideos(){
     let str = "";
-    Array.from(selectedVideos).forEach((video) => {
-        str += "<li>"+video.split('-')[1]+"</li>";
+    Array.from(getListSelectedVideosTitles()).forEach((title) => {
+        str += "<li>"+title+"</li>";
     });
     bulkUpdateConfirmSelectedVideos.innerHTML = str;
 }

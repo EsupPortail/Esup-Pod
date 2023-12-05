@@ -779,6 +779,13 @@ div.card a img {
   color: var(--pod-link-color);
   opacity: 1!important;
 }
+/* custom badges for confirm modal bulk update */
+.bulk-update-confirm-badges{
+  background-color: var(--pod-link-color);
+  color: var(--pod-background);
+  padding: 10px;
+  margin: 5px;
+}
 
 /** video form **/
 
