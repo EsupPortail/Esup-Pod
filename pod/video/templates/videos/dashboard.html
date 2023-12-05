@@ -111,7 +111,7 @@
     {% include "videos/dashboard_modal.html" %}
 
     <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalBulkUpdate" disabled>
-        {% trans 'Apply' %} <span id="countSelectedVideosBadge" class="badge bg-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'No video found' %}">
+        {% trans 'Apply' %} <span id="countSelectedVideosBadge" class="badge" title="{% trans 'No video found' %}">
     {% blocktrans count counter=0 %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}</span></button>
     <button id="resetSelectedVideosBtn" type="button" class="btn btn-secondary mt-2" onclick="clearSelectedVideo()" disabled>{% trans "Clear selection" %}</button>
   </div>

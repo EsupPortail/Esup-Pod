@@ -2,12 +2,6 @@ var selectedVideos = [];
 var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
 var resetSelectedVideosBtn = document.getElementById("resetSelectedVideosBtn");
 var countSelectedVideosBadge = document.getElementById("countSelectedVideosBadge");
-var badgeToolTip = new bootstrap.Tooltip(applyMultipleActionsBtn, {
-        title: "",
-        html: true,
-        placement: "bottom",
-        delay: { "show": 0, "hide": 50 }
-    });
 
 /**
  * Get list of selected videos's titles based on class selected
@@ -52,14 +46,12 @@ function setSelectedVideos(){
  * Replace count of selected videos (count label in "Apply" bulk update's badge)
  */
 function replaceSelectedCountVideos() {
-  let selected_titles = [];
-  selected_titles = getListSelectedVideosTitles();
-  let newCount = selected_titles.length;
+  let newCount = selectedVideos.length;
   let transVideoCount = newCount > 1 ? "videos" : "video";
   countSelectedVideosBadge.innerHTML = newCount + " " + gettext(transVideoCount);
+  countSelectedVideosBadge.setAttribute("title", newCount + " " + gettext(transVideoCount));
   manageDisableBtn(applyMultipleActionsBtn, newCount > 0 && action.length !== 0);
   manageDisableBtn(resetSelectedVideosBtn, newCount > 0);
-  badgeToolTip._config.title = selected_titles.join("<br>");
 }
 
 /**

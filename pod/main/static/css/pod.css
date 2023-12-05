@@ -673,6 +673,10 @@ div.card a img {
 .btn-dashboard-display-mode{
     height: fit-content;
 }
+#countSelectedVideosBadge{
+  background-color: var(--pod-background-neutre1-bloc);
+  color: var(--pod-font-color);
+}
 /* Dashboard infinite container */
 .infinite-container{
   margin: 1rem 0;
