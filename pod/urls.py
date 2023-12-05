@@ -85,7 +85,7 @@ urlpatterns = [
     # pwa
     url("", include("pwa.urls")),
     # dressing
-    url(r"^dressing/", include("pod.dressing.urls")),
+    path("dressing/", include("pod.dressing.urls", namespace="dressing")),
 ]
 
 # WEBPUSH

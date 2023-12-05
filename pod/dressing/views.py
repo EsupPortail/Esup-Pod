@@ -80,7 +80,7 @@ def dressing_edit(request, dressing_id):
                                  _("The changes have been saved."))
             form_dressing.save()
             return redirect(reverse("dressing:my_dressings"))
-    page_title = f'{_("Edit the dressing")} {dressing_edit.title}'
+    page_title = f'{_("Editing the dressing")} {dressing_edit.title}'
     return render(
         request,
         'dressing_edit.html',
