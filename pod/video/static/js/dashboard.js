@@ -22,8 +22,14 @@ bulkUpdateActionSelect.addEventListener("change", function() {
  * Add click event listener on apply button to build and open confirm modal
  */
 applyBulkUpdateBtn.addEventListener("click", (e) => {
-    let confirmLabel = selectedVideos.length > 1 ? pluralConfirmBulkUpdate : singularConfirmBulkUpdate;
-    modal.querySelector(".modal-body").innerHTML = "<p>" + confirmLabel + "</p>" + getHTMLBadgesSelectedTitles();
+    let selectedCount = selectedVideos.length;
+    let modalConfirmStr = ngettext(
+        `Please confirm the editing of the following video:`,
+        `Please confirm the editing of the following videos:`,
+        selectedCount,
+    );
+    modalConfirmStr = interpolate(modalConfirmStr, { count: selectedCount }, true);
+    modal.querySelector(".modal-body").innerHTML = "<p>" + modalConfirmStr + "</p>" + getHTMLBadgesSelectedTitles();
 });
 
 /**

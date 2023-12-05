@@ -64,9 +64,13 @@ function refreshInfiniteLoader(url, nextPage) {
  * @param newCount
  */
 function replaceCountVideos(newCount) {
-  let transVideoCount = newCount > 1 ? "videos found" : "video found";
-  document.getElementById("video_count").innerHTML =
-    newCount + " " + gettext(transVideoCount);
+  let videoFoundStr = ngettext(
+      `%(count)s video found`,
+      `%(count)s videos found`,
+      newCount,
+  );
+  videoFoundStr = interpolate(videoFoundStr, { count: newCount }, true);
+  document.getElementById("video_count").innerHTML = videoFoundStr;
 }
 
 /**

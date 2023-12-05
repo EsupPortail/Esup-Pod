@@ -47,9 +47,14 @@ function setSelectedVideos(){
  */
 function replaceSelectedCountVideos() {
   let newCount = selectedVideos.length;
-  let transVideoCount = newCount > 1 ? "videos" : "video";
-  countSelectedVideosBadge.innerHTML = newCount + " " + gettext(transVideoCount);
-  countSelectedVideosBadge.setAttribute("title", newCount + " " + gettext(transVideoCount));
+  let videoCountStr = ngettext(
+    `%(count)s video`,
+    `%(count)s videos`,
+    newCount,
+  );
+  videoCountStr = interpolate(videoCountStr, { count: newCount }, true);
+  countSelectedVideosBadge.innerHTML = videoCountStr;
+  countSelectedVideosBadge.setAttribute("title", videoCountStr);
   manageDisableBtn(applyMultipleActionsBtn, newCount > 0 && action.length !== 0);
   manageDisableBtn(resetSelectedVideosBtn, newCount > 0);
 }
