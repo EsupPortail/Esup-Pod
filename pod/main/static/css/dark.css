@@ -109,7 +109,7 @@
 }*/
 [data-theme="dark"]
 .infinite-item.selected .checked_overlay{
-    background-color: var(--dark-select-category-video-color) !important;
+    background-color: var(--dark-select-category-video-color);
 }
 
 [data-theme="dark"] #card-takenote .header:hover {
