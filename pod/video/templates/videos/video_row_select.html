@@ -61,13 +61,13 @@
             </i>
         </button>
         <ul class="dropdown-menu" aria-labelledby="more-actions-row-btn-{{ video.id }}">
-            <li><a href="{% url 'video:video' video.slug %}" title="{% trans 'Play' %}" aria-hidden="true"
+            <li><a href="{% url 'video:video' video.slug %}"
+                   title="{% trans 'Play' %} {{ video.title }}"
                    class="dropdown-item">{% trans "Play" %}</a></li>
             {% if playlist %}
                 {% user_can_edit_or_remove playlist as can_edit_or_remove %}
                 {% if not in_favorites_playlist and can_edit_or_remove %}
-                    <li><a href="{% url 'playlist:remove-video' playlist.slug video.slug %}"
-                           title="{% trans 'Remove from playlist' %}" class="dropdown-item"
+                    <li><a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" class="dropdown-item"
                            id="remove-from-playlist-btn-{{ video.id }}">{% trans "Remove from playlist" %}</a></li>
                 {% endif %}
             {% endif %}
@@ -78,48 +78,51 @@
                 <li>
                     {% if is_favorite %}
                         <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}"
-                           title="{% trans 'Remove from favorite' %}" class="dropdown-item"
-                           id="favorite-btn-{{ video.id }}" aria-pressed="true"
+                           class="dropdown-item" id="favorite-btn-{{ video.id }}" aria-pressed="true"
                            role="button">{% trans "Remove from favorite" %}</a>
                     {% else %}
                         <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}"
-                           title="{% trans 'Add in favorite' %}" class="dropdown-item" id="favorite-btn-{{ video.id }}"
-                           aria-pressed="false" role="button">{% trans "Add in favorite" %}</a>
+                           class="dropdown-item" id="favorite-btn-{{ video.id }}" aria-pressed="false"
+                           role="button">{% trans "Add in favorite" %}</a>
                     {% endif %}
                 </li>
             {% endif %}
             {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video %}
                 <li>
-                    <a href="{% url 'video:video_edit' slug=video.slug %}" title="{% trans 'Edit the video' %}"
+                    <a href="{% url 'video:video_edit' slug=video.slug %}"
+                       title="{% trans 'Edit the video' %} {{ video.title }}"
                        class="dropdown-item">{% trans 'Edit the video' %}</a>
                 </li>
             {% endif %}
             {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay %}
                 <li>
                     <a href="{% url 'video:completion:video_completion' slug=video.slug %}"
-                       title="{% trans 'Complete the video' %}"
+                       title="{% trans 'Complete the video' %} {{ video.title }}"
                        class="dropdown-item">{% trans 'Complete the video' %}</a>
                 </li>
             {% endif %}
             {% if video.encoded and video.encoding_in_progress is False %}
                 {% if video.owner == request.user or request.user.is_superuser or perms.cut.cut_video %}
                     <li>
-                        <a href="{% url 'video:cut:video_cut' slug=video.slug %}" title="{% trans 'Cut the video' %}"
-                           aria-hidden="true" class="dropdown-item">{% trans 'Cut the video' %}</a>
+                        <a href="{% url 'video:cut:video_cut' slug=video.slug %}"
+                           title="{% trans 'Cut the video' %} {{ video.title }}"
+                           class="dropdown-item">{% trans 'Cut the video' %}</a>
                     </li>
                 {% endif %}
             {% endif %}
             {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.chapter.change_chapter %}
                 <li>
                     <a href="{% url 'video:chapter:video_chapter' slug=video.slug %}"
-                       title="{% trans 'Chapter the video' %}" class="dropdown-item">{% trans 'Chapter the video' %}</a>
+                       title="{% trans 'Chapter the video' %} {{ video.title }}"
+                       class="dropdown-item">{% trans 'Chapter the video' %}</a>
                 </li>
             {% endif %}
             {% if video.encoded and video.encoding_in_progress is False %}
                 {% if video.owner == request.user or request.user.is_superuser or perms.video.delete_video %}
                     <li>
-                        <a href="{% url 'video:video_delete' slug=video.slug %}" class="dropdown-item"
-                           title="{% trans 'Delete the video' %}">{% trans 'Delete the video' %}</a>
+                        <a href="{% url 'video:video_delete' slug=video.slug %}"
+                           title="{% trans 'Delete the video' %} {{ video.title }}"
+                           class="dropdown-item">{% trans 'Delete the video' %}</a>
                     </li>
                 {% endif %}
             {% endif %}
