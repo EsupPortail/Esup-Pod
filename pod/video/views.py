@@ -1,4 +1,5 @@
 """Esup-Pod videos views."""
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers.json import DjangoJSONEncoder
@@ -10,8 +11,6 @@ from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseNotAllowed, HttpResponseNotFound
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.http import QueryDict, Http404
-from django.core.exceptions import SuspiciousOperation
-from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
@@ -38,8 +37,8 @@ from pod.authentication.utils import get_owners as auth_get_owners
 from pod.playlist.apps import FAVORITE_PLAYLIST_NAME
 from pod.playlist.models import Playlist, PlaylistContent
 from pod.playlist.utils import (
-    get_playlists_for_additional_owner,
     get_video_list_for_playlist,
+    playlist_can_be_displayed,
     user_can_see_playlist_video,
 )
 from pod.video.utils import get_videos as video_get_videos
@@ -51,6 +50,7 @@ from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
 from pod.video.models import get_transcription_choices
+from pod.video.models import UserMarkerTime
 
 from tagging.models import TaggedItem
 
@@ -879,22 +879,16 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         template_video = "videos/video-iframe.html"
     elif request.GET.get("playlist"):
         playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-        if (
-            playlist.visibility == "public"
-            or playlist.visibility == "protected"
-            or (
-                playlist.owner == request.user
-                or playlist in get_playlists_for_additional_owner(request.user)
-                or request.user.is_staff
-            )
-        ):
+        if playlist_can_be_displayed(request, playlist):
             videos = sort_videos_list(get_video_list_for_playlist(playlist), "rank")
             params = {
                 "playlist_in_get": playlist,
                 "videos": videos,
             }
         else:
-            return HttpResponseNotFound()
+            raise PermissionDenied(
+                _("You cannot access this playlist because it is private.")
+            )
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
 
@@ -1909,22 +1903,43 @@ def video_note_download(request, slug):
 
 @csrf_protect
 def video_count(request, id):
+    """View to store the video count."""
     video = get_object_or_404(Video, id=id)
     if request.method == "POST":
         try:
-            viewCount = ViewCount.objects.get(video=video, date=date.today())
+            view_count = ViewCount.objects.get(video=video, date=date.today())
         except ViewCount.DoesNotExist:
             try:
                 with transaction.atomic():
                     ViewCount.objects.create(video=video, count=1)
                     return HttpResponse("ok")
             except IntegrityError:
-                viewCount = ViewCount.objects.get(video=video, date=date.today())
-        viewCount.count = F("count") + 1
-        viewCount.save(update_fields=["count"])
+                view_count = ViewCount.objects.get(video=video, date=date.today())
+        view_count.count = F("count") + 1
+        view_count.save(update_fields=["count"])
         return HttpResponse("ok")
     messages.add_message(request, messages.ERROR, _("You cannot access to this view."))
     raise PermissionDenied
+
+
+@login_required(redirect_field_name="referrer")
+def video_marker(request, id, time):
+    """View to store the video marker time for the authenticated user."""
+    video = get_object_or_404(Video, id=id)
+    try:
+        marker_time = UserMarkerTime.objects.get(video=video, user=request.user)
+    except UserMarkerTime.DoesNotExist:
+        try:
+            with transaction.atomic():
+                marker_time = UserMarkerTime.objects.create(
+                    video=video, user=request.user, markerTime=time
+                )
+                return HttpResponse("ok")
+        except IntegrityError:
+            marker_time = UserMarkerTime.objects.get(video=video, user=request.user)
+    marker_time.markerTime = time
+    marker_time.save(update_fields=["markerTime"])
+    return HttpResponse("ok")
 
 
 @csrf_protect

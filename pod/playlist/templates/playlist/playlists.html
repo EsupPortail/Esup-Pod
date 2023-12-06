@@ -35,7 +35,7 @@
     </a>
   </div>
 
-  <div class="infinite-container pod-infinite-container" id="playlists_list" data-number-video={{ playlists|length }}>
+  <div class="infinite-container pod-infinite-container" id="playlists_list" data-number-playlists={{ playlists|length }}>
     {% for playlist in playlists %}
       <div class="infinite-item card-group">
         {% include "playlist/playlist_card.html" %}

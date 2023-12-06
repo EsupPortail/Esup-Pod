@@ -97,7 +97,7 @@ input[type="range"]::-ms-thumb {
   /* --bs-btn-focus-shadow-rgb: var(--pod-primary-rgb); */
   --bs-btn-focus-shadow-rgb: 200, 200, 253;
   --bs-btn-focus-box-shadow: 0 0 0 0.25rem
-    rgba(var(--bs-btn-focus-shadow-rgb) 0.5);
+    rgb(var(--bs-btn-focus-shadow-rgb) / 50%);
 }
 
 input[type="range"]:active::-webkit-slider-thumb,

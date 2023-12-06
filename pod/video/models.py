@@ -2,6 +2,7 @@
 import os
 import re
 import time
+from typing import Optional
 import unicodedata
 import json
 import logging
@@ -1097,8 +1098,16 @@ class Video(models.Model):
                     )
         return version
 
-    def get_default_version_link(self, slug_private):
-        """Get link of the version of a video."""
+    def get_default_version_link(self, slug_private: str = None) -> Optional[str]:
+        """
+        Get link of the version of a video.
+
+        Args:
+            slug_private (str, optional): The private slug. Defaults to None.
+
+        Returns:
+            str | None: The default version link.
+        """
         for version in self.get_other_version():
             if version["link"] == __VERSION_CHOICES_DICT__[self.get_version]:
                 if slug_private:
@@ -1119,6 +1128,12 @@ class Video(models.Model):
         if count_sum["count__sum"] is None:
             return 0
         return count_sum["count__sum"]
+
+    def get_marker_time_for_user(self, user):
+        """Get the marker time of a video for the user in parameter."""
+        if self.usermarkertime_set.filter(user=user).exists():
+            return self.usermarkertime_set.get(user=user).markerTime
+        return 0
 
     def get_absolute_url(self):
         """Get the video absolute URL."""
@@ -1472,6 +1487,35 @@ class ViewCount(models.Model):
         unique_together = ("video", "date")
         verbose_name = _("View count")
         verbose_name_plural = _("View counts")
+
+
+class UserMarkerTime(models.Model):
+    """Record the time of video played by a user."""
+
+    video = models.ForeignKey(
+        Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        User, verbose_name=_("User"), editable=False, on_delete=models.CASCADE
+    )
+    markerTime = models.IntegerField(_("Marker time"), default=0, editable=False)
+
+    @property
+    def sites(self):
+        """Return the sites of the video."""
+        return self.video.sites
+
+    def __str__(self):
+        return "Marker time for user %s and video %s: %s" % (
+            self.user,
+            self.video,
+            self.markerTime,
+        )
+
+    class Meta:
+        unique_together = ("video", "user")
+        verbose_name = _("User viewing time marker of video")
+        verbose_name_plural = _("Users viewing time marker of video")
 
 
 class VideoVersion(models.Model):

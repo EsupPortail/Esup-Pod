@@ -1,59 +1,63 @@
-<script>
-{% if not video.is_video %}
-  slide_mode = 'video off';
-{% endif %}
-player.ready(function() {
-  const tracks = player.textTracks();
-  const trackElts = player.remoteTextTrackEls();
-  let metadataTrack, i, track;
+{% load static %}
 
-  for (i = 0; i < tracks.length; i++) {
-      track = tracks[i];
-      // console.log("track: ["+track.kind + "] " + track.label);
-      if (track.kind === 'metadata' && track.label === 'enrichment') {
-          metadataTrack = track;
-          metadataTrack.index = i;
-          metadataTrack.src = trackElts[i].src;
-          break;
+<script id="id_video_enrichment_script">
+  var linkForStyleSheetForEnrichment = "{% static 'css/videojs-slides.css' %}?ver={{VERSION}}";
+  {% if not video.is_video %}
+    slide_mode = 'video off';
+  {% endif %}
+
+  if (typeof enrichmentIsOn !== 'undefined' && enrichmentIsOn) {
+    player.ready(function() {
+      const tracks = player.textTracks();
+      const trackElts = player.remoteTextTrackEls();
+      let metadataTrack, i, track;
+
+      for (i = 0; i < tracks.length; i++) {
+          track = tracks[i];
+          // console.log("track: ["+track.kind + "] " + track.label);
+          if (track.kind === 'metadata' && track.label === 'enrichment') {
+              metadataTrack = track;
+              metadataTrack.index = i;
+              metadataTrack.src = trackElts[i].src;
+              break;
+          }
       }
+
+      player.on('loadedmetadata', function() {
+          if(!metadataTrack){
+            console.log("No enrichment track found.")
+            return
+          }
+          let slide = [];
+          if(!metadataTrack.cues) { //Safari do not get cues
+              //let tracksrc = player.el().getElementsByTagName('TRACK')[metadataTrack.index].src;
+              //let tracksrc = player.el().querySelector("TRACK[kind='metadata'][label='enrichment']").src
+              loadEnrichmentVTTfile(metadataTrack.src, function(cues) {
+                  if (typeof player.slides === "function") {
+                      player.slides(cues);
+                  }
+              });
+          } else {
+            //console.log(metadataTrack.cues.length);
+            for (i = 0; i < metadataTrack.cues.length; i++) {
+              // Replace tabs by spaces to prevent a "JSON.parse: bad control character in string literal" error.
+              data = JSON.parse(metadataTrack.cues[i].text.replace(/\t/g, ' '));
+              //console.log('Parsed '+data.title)
+              slide.push({
+                title: data.title,
+                url: data.url,
+                type: data.type,
+                stop_video: data.stop_video,
+                start: metadataTrack.cues[i].startTime,
+                end: metadataTrack.cues[i].endTime
+              });
+            }
+          }
+          if (typeof player.slides === "function") {
+            //console.log('Call player.slides from video-script');
+            player.slides(slide);
+          }
+      });
+    });
   }
-
-  player.on('loadedmetadata', function() {
-      if(!metadataTrack){
-        console.log("No enrichment track found.")
-        return
-      }
-      let slide = [];
-      if(!metadataTrack.cues) { //Safari do not get cues
-          //let tracksrc = player.el().getElementsByTagName('TRACK')[metadataTrack.index].src;
-          //let tracksrc = player.el().querySelector("TRACK[kind='metadata'][label='enrichment']").src
-          loadEnrichmentVTTfile(metadataTrack.src, function(cues) {
-              if (typeof player.slides === "function") {
-                  player.slides(cues);
-              }
-          });
-      } else {
-        //console.log(metadataTrack.cues.length);
-        for (i = 0; i < metadataTrack.cues.length; i++) {
-          // Replace tabs by spaces to prevent a "JSON.parse: bad control character in string literal" error.
-          data = JSON.parse(metadataTrack.cues[i].text.replace(/\t/g, ' '));
-          //console.log('Parsed '+data.title)
-          slide.push({
-            title: data.title,
-            url: data.url,
-            type: data.type,
-            stop_video: data.stop_video,
-            start: metadataTrack.cues[i].startTime,
-            end: metadataTrack.cues[i].endTime
-          });
-        }
-      }
-      if (typeof player.slides === "function") {
-        //console.log('Call player.slides from video-script');
-        player.slides(slide);
-      }
-  });
-
-
-});
 </script>

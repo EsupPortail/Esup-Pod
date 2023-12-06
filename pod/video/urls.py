@@ -12,6 +12,7 @@ from .views import (
     video_notes,
     video_xhr,
     video_count,
+    video_marker,
     video_version,
     get_categories,
     add_category,
@@ -66,6 +67,7 @@ urlpatterns = [
     ),
     url(r"^notes/(?P<slug>[\-\d\w]+)/$", video_notes, name="video_notes"),
     url(r"^count/(?P<id>[\d]+)/$", video_count, name="video_count"),
+    url(r"^marker/(?P<id>[\d]+)/(?P<time>[\d]+)/$", video_marker, name="video_marker"),
     url(r"^version/(?P<id>[\d]+)/$", video_version, name="video_version"),
     url(r"^xhr/(?P<slug>[\-\d\w]+)/$", video_xhr, name="video_xhr"),
     url(

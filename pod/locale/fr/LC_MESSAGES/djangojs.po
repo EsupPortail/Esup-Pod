@@ -5,16 +5,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-16 13:36+0000\n"
+"POT-Creation-Date: 2023-11-07 10:52+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
+"Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.4\n"
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 msgid "Get time from the player"
@@ -180,9 +180,17 @@ msgid "A caption cannot has more than 80 characters."
 msgstr "Une légende / sous-titre ne peut comporter plus de 80 caractères."
 
 #: pod/completion/static/js/caption_maker.js
+msgid "Add a caption/subtitle after this one"
+msgstr "Ajouter un(e) légende/sous-titre ci-dessous"
+
+#: pod/completion/static/js/caption_maker.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Add"
 msgstr "Ajouter"
+
+#: pod/completion/static/js/caption_maker.js
+msgid "Delete this caption/subtitle"
+msgstr "Supprimer ce(tte) légende/sous-titre"
 
 #: pod/completion/static/js/caption_maker.js
 #: pod/video/static/js/comment-script.js
@@ -481,6 +489,14 @@ msgstr ""
 "Cette extension de fichier n’est pas présente dans les extensions "
 "autorisées :"
 
+#: pod/main/static/js/videojs-info-controlbar.js
+msgid "Info"
+msgstr "Info"
+
+#: pod/main/static/js/videojs-info-controlbar.js
+msgid "Information"
+msgstr "Information"
+
 #: pod/playlist/static/playlist/js/add-or-edit.js
 msgid "<b>Public:</b> the playlist can be accessed by anyone."
 msgstr "<b>Public :</b> la liste de lecture est accessible par tous."
@@ -508,6 +524,11 @@ msgstr "Sauvegarder"
 #: pod/playlist/static/playlist/js/video-favorites-remove-card.js
 msgid "Network response was not ok."
 msgstr "La réponse du réseau n’était pas correcte."
+
+#: pod/podfile/static/podfile/js/filewidget.js
+#: pod/video/static/js/change_video_owner.js
+msgid "Loading…"
+msgstr "Chargement en cours…"
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
@@ -599,16 +620,24 @@ msgid "Error while subscribing to push notifications."
 msgstr "Une erreur est survenue lors de la souscription aux notifications."
 
 #: pod/video/static/js/ajax-display-channels.js
+msgid "%(count)s channel"
+msgid_plural "%(count)s channels"
+msgstr[0] "%(count)s chaîne"
+msgstr[1] "%(count)s chaînes"
+
+#: pod/video/static/js/ajax-display-channels.js
 msgid "No channels found"
 msgstr "Aucun chaîne trouvée"
+
+#: pod/video/static/js/ajax-display-channels.js
+msgid "%(count)s video"
+msgid_plural "%(count)s videos"
+msgstr[0] "%(count)s vidéo"
+msgstr[1] "%(count)s vidéos"
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
 msgstr "Aucun élément trouvé"
-
-#: pod/video/static/js/change_video_owner.js
-msgid "Loading…"
-msgstr "Chargement en cours…"
 
 #: pod/video/static/js/change_video_owner.js
 msgid "An error occurred during the change of owner"
@@ -631,12 +660,35 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: pod/video/static/js/comment-script.js
+#, javascript-format
+msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
+msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
+msgstr[0] "%s <span class=\"d-none d-md-inline\">vote</span>"
+msgstr[1] "%s <span class=\"d-none d-md-inline\">votes</span>"
+
+#: pod/video/static/js/comment-script.js
 msgid "Agree with the comment"
 msgstr "D’accord avec ce commentaire"
 
 #: pod/video/static/js/comment-script.js
+msgid "Reply to comment"
+msgstr "Répondre au commentaire"
+
+#: pod/video/static/js/comment-script.js
+msgid "Reply"
+msgstr "Répondre"
+
+#: pod/video/static/js/comment-script.js
 msgid "Remove this comment"
 msgstr "Supprimer ce commentaire"
+
+#: pod/video/static/js/comment-script.js
+msgid "Add a public comment"
+msgstr "Ajouter un commentaire public"
+
+#: pod/video/static/js/comment-script.js
+msgid "Send"
+msgstr "Envoyer"
 
 #: pod/video/static/js/comment-script.js
 msgid "Show answers"
@@ -649,13 +701,6 @@ msgstr "Mauvaise réponse du serveur."
 #: pod/video/static/js/comment-script.js
 msgid "Sorry, you're not allowed to vote by now."
 msgstr "Désolé, vous n’êtes pas autorisé à voter maintenant."
-
-#: pod/video/static/js/comment-script.js
-#, javascript-format
-msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
-msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
-msgstr[0] "%s <span class=\"d-none d-md-inline\">vote</span>"
-msgstr[1] "%s <span class=\"d-none d-md-inline\">votes</span>"
 
 #: pod/video/static/js/comment-script.js
 msgid "Sorry, you can't comment this video by now."
@@ -677,38 +722,47 @@ msgstr[0] "%s commentaire"
 msgstr[1] "%s commentaires"
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "This content is password protected."
 msgstr "Ce contenu est protégé par mot de passe."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "This content is chaptered."
 msgstr "Ce contenu est chapitré."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "This content is in draft."
 msgstr "Ce contenu est en brouillon."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "Video content."
 msgstr "Contenu vidéo."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "Audio content."
 msgstr "Contenu audio."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "Edit the video"
 msgstr "Éditer la vidéo"
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "Complete the video"
 msgstr "Compléter la vidéo"
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "Chapter the video"
 msgstr "Chapitrer la vidéo"
 
 #: pod/video/static/js/regroup_videos_by_theme.js
+#: pod/video/static/js/video_category.js
 msgid "Delete the video"
 msgstr "Supprimer la vidéo"
 
@@ -780,6 +834,18 @@ msgstr "Désolé, aucune vidéo trouvée"
 #: pod/video/static/js/video_category.js
 msgid "Edit the category"
 msgstr "Éditer la catégorie"
+
+#: pod/video/static/js/video_category.js
+msgid "Delete the category"
+msgstr "Supprimer la catégorie"
+
+#: pod/video/static/js/video_category.js
+msgid "Success!"
+msgstr "Succès !"
+
+#: pod/video/static/js/video_category.js
+msgid "Error…"
+msgstr "Erreur…"
 
 #: pod/video/static/js/video_category.js
 msgid "Category created successfully"
@@ -856,9 +922,3 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
-
-#~ msgid "Add a caption/subtitle after this one"
-#~ msgstr "Ajouter un(e) légende/sous-titre ci-dessous"
-
-#~ msgid "Delete this caption/subtitle"
-#~ msgstr "Supprimer ce(tte) légende/sous-titre"

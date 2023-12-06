@@ -3,6 +3,7 @@
 *  run with 'python manage.py test pod.playlist.tests.test_views'
 """
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.test import override_settings, TestCase
@@ -86,6 +87,7 @@ class TestPlaylistsPageTestCase(TestCase):
             name="Second public playlist",
             visibility="public",
             owner=self.second_user,
+            promoted=True,
         )
         self.playlist_content_1 = PlaylistContent.objects.create(
             playlist=self.public_playlist,
@@ -110,8 +112,8 @@ class TestPlaylistsPageTestCase(TestCase):
         self.url = reverse("playlist:list")
 
     @override_settings(USE_PLAYLIST=True)
-    def test_video_counter(self) -> None:
-        """Test if the video counter works correctly."""
+    def test_playlist_card_counter(self) -> None:
+        """Test if the number of cards in playlist list page is correct."""
         importlib.reload(context_processors)
         self.client.force_login(self.first_user)
         response = self.client.get(self.url)
@@ -120,24 +122,12 @@ class TestPlaylistsPageTestCase(TestCase):
             200,
             "Test if status code equal 200.",
         )
-        self.assertTrue("4" in response.content.decode(), "Test if '4' is visible.")
-        self.client.logout()
-        print(" --->  test_video_counter ok")
-
-    @override_settings(USE_PLAYLIST=True)
-    def test_playlist_counter(self) -> None:
-        """Test if the playlist counter works correctly."""
-        importlib.reload(context_processors)
-        self.client.force_login(self.first_user)
-        response = self.client.get(self.url)
-        self.assertEqual(
-            response.status_code,
-            200,
-            "Test if status code equal 200.",
+        self.assertTrue(
+            "data-number-playlists=5" in response.content.decode(),
+            "Test if there's 5 playlists visible in the playlist page.",
         )
-        self.assertTrue("4" in response.content.decode(), "Test if '4' is visible.")
         self.client.logout()
-        print(" --->  test_playlist_counter ok")
+        print(" --->  test_playlist_card_counter ok")
 
     @override_settings(USE_PLAYLIST=True)
     def test_card_titles(self) -> None:
@@ -178,6 +168,10 @@ class TestPlaylistsPageTestCase(TestCase):
             "bi-globe-americas" in response.content.decode(),
             "Test if public icon isn't visible.",
         )
+        self.assertTrue(
+            "data-number-playlists=2" in response.content.decode(),
+            "Test if there's 2 private playlists in the playlist page.",
+        )
         self.client.logout()
         print(" --->  test_private_filter ok")
 
@@ -202,6 +196,10 @@ class TestPlaylistsPageTestCase(TestCase):
             "bi-globe-americas" in response.content.decode(),
             "Test if public icon isn't visible.",
         )
+        self.assertTrue(
+            "data-number-playlists=1" in response.content.decode(),
+            "Test if there's 1 protected playlist in the playlist page.",
+        )
         self.client.logout()
         print(" --->  test_protected_filter ok")
 
@@ -225,8 +223,70 @@ class TestPlaylistsPageTestCase(TestCase):
         self.assertFalse(
             "bi-lock" in response.content.decode(), "Test if protected icon isn't visible"
         )
+        self.assertTrue(
+            "data-number-playlists=1" in response.content.decode(),
+            "Test if there's 1 playlist visible in the playlist page.",
+        )
         self.client.logout()
         print(" --->  test_public_filter ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_allpublic_filter(self) -> None:
+        """
+        Test if all public playlists are visible when the allpublic filter is active.
+        """
+        importlib.reload(context_processors)
+        self.client.force_login(self.first_user)
+        response = self.client.get(f"{self.url}?visibility=allpublic")
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200.",
+        )
+        self.assertFalse(
+            "bi-incognito" in response.content.decode(),
+            "Test if private icon isn't visible.",
+        )
+        self.assertFalse(
+            "bi-lock" in response.content.decode(), "Test if protected icon isn't visible"
+        )
+        self.assertTrue(
+            "data-number-playlists=2" in response.content.decode(),
+            "Test if there's 2 playlists visible in the playlist page.",
+        )
+        self.client.logout()
+        print(" --->  test_allpublic_filter ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_promoted_filter(self) -> None:
+        """
+        Test if all promoted playlist are visible when the promoted filter is active.
+        """
+        importlib.reload(context_processors)
+        self.client.force_login(self.first_user)
+        response = self.client.get(f"{self.url}?visibility=promoted")
+        self.assertEqual(
+            response.status_code,
+            200,
+            "Test if status code equal 200.",
+        )
+        self.assertFalse(
+            "bi-incognito" in response.content.decode(),
+            "Test if private icon isn't visible.",
+        )
+        self.assertFalse(
+            "bi-lock" in response.content.decode(), "Test if protected icon isn't visible"
+        )
+        self.assertTrue(
+            "promoted-icon" in response.content.decode(),
+            "Test if promoted icon is visible.",
+        )
+        self.assertTrue(
+            "data-number-playlists=1" in response.content.decode(),
+            "Test if there's 1 promoted playlist in the playlist page.",
+        )
+        self.client.logout()
+        print(" --->  test_promoted_filter ok")
 
 
 class TestPlaylistsPageLinkTestCase(TestCase):
@@ -489,7 +549,6 @@ class TestStartupPlaylistParamTestCase(TestCase):
             200,
             "Test if status code equal 200.",
         )
-        print(response.content.decode())
         self.assertTrue(
             f"/playlist/start-playlist/{self.simple_playlist.slug}"
             in response.content.decode(),
@@ -568,6 +627,12 @@ class TestPlaylistPage(TestCase):
         self.url_fav_user2 = reverse(
             "playlist:content",
             kwargs={"slug": get_favorite_playlist_for_user(self.user2).slug},
+        )
+
+        self.playlist_content_1 = PlaylistContent.objects.create(
+            playlist=self.playlist_user1,
+            video=self.video,
+            rank=1,
         )
 
     @override_settings(USE_FAVORITES=True)
@@ -659,6 +724,74 @@ class TestPlaylistPage(TestCase):
         self.assertFalse('id="card-manage-playlist"' in response.content.decode())
         self.client.logout()
         print(" --->  test_manage_section_for_editable_playlists ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_remove_video_in_playlist(self):
+        """Test if remove a video from a playlist works."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        url_content = reverse(
+            "playlist:content", kwargs={"slug": self.playlist_user1.slug}
+        )
+        response = self.client.get(url_content)
+        self.assertTrue(
+            'data-countvideos="1"' in response.content.decode(),
+            "Test if there's 1 video in the playlist.",
+        )
+        url = reverse(
+            "playlist:remove-video",
+            kwargs={
+                "slug": self.playlist_user1.slug,
+                "video_slug": self.video.slug,
+            },
+        )
+        response = self.client.get(url, HTTP_REFERER=url_content)
+        self.assertEqual(response.status_code, 302)
+
+        redirected_url = response.url
+        response = self.client.get(redirected_url)
+        self.assertTrue(
+            'data-countvideos="0"' in response.content.decode(),
+            "Test if there's 0 video in the playlist.",
+        )
+        print(" --->  test_remove_video_in_playlist ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_remove_video_in_playlist_json(self):
+        """Test if remove a video from a playlist works with JSON."""
+        importlib.reload(context_processors)
+        self.client.force_login(self.user)
+        url_content = reverse(
+            "playlist:content", kwargs={"slug": self.playlist_user1.slug}
+        )
+        response = self.client.get(url_content)
+        self.assertTrue(
+            'data-countvideos="1"' in response.content.decode(),
+            "Test if there's 1 video in the playlist.",
+        )
+
+        url = (
+            reverse(
+                "playlist:remove-video",
+                kwargs={
+                    "slug": self.playlist_user1.slug,
+                    "video_slug": self.video.slug,
+                },
+            )
+            + "?json=1"
+        )
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        data = JsonResponse({"state": "out-playlist"}).content.decode("utf-8")
+        self.assertEqual(response.content.decode("utf-8"), data)
+
+        response = self.client.get(url_content)
+        self.assertTrue(
+            'data-countvideos="0"' in response.content.decode(),
+            "Test if there's 0 video in the playlist.",
+        )
+        print(" --->  test_remove_video_in_playlist_json ok")
 
 
 class TestStatsInfoTestCase(TestCase):

@@ -112,7 +112,7 @@
 {% block page_aside %}
   {% if access_not_allowed == True %}
   {% else %}
-    <div class="card" id="card-managevideo">
+    <div class="card" id="card-manage-video">
       <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video" %}</h2>
       <div class="card-body card-text text-center">
         {% include "videos/link_video.html" with hide_favorite_link=True %}
