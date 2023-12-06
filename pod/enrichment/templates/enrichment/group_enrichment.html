@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block page_extra_head %}
-
+  <script id="jsi18n" src="{% url 'javascript-catalog' %}"></script>
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
@@ -79,7 +79,6 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-  <script src="/admin/jsi18n/"></script>
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>

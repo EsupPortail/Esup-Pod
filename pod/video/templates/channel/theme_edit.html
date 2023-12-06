@@ -4,6 +4,7 @@
 {% load thumbnail %}
 
 {% block page_extra_head %}
+  <script id="jsi18n" src="{% url 'javascript-catalog' %}"></script>
 <style>
   {{channel.style}}
   {% if channel.color %}
