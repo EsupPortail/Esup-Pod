@@ -1,4 +1,4 @@
-let loader = document.querySelector(".lds-ring");
+let loader = document.querySelector(".loaderSpinner");
 let checkedInputs = [];
 
 /**

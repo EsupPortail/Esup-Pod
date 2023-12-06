@@ -1530,7 +1530,7 @@ table .alert.alert-danger.btn.pod-btn-social {
 .pod-callout-info {
   border-left-color: var(--bs-info);
 }
-
+/* Bootstrap loader-spinner */
 .loaderSpinner{
   transition: opacity 150ms ease-in-out;
   z-index: 1100;
@@ -1544,55 +1544,6 @@ table .alert.alert-danger.btn.pod-btn-social {
   height: 4rem;
   margin: 2rem;
   border-width: 0.5rem;
-}
-/* Pure css loader */
-.lds-ring {
-  display: none;
-  position: relative;
-  width: 80px;
-  height: 80px;
-  margin: 0 auto;
-  z-index: 9999;
-}
-
-.lds-ring.show {
-  display: flex;
-  align-items: center;
-}
-
-.lds-ring div {
-  box-sizing: border-box;
-  display: block;
-  position: absolute;
-  width: 51px;
-  height: 51px;
-  margin: 6px;
-  border: 6px solid var(--pod-font-color);
-  border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: var(--pod-font-color) transparent transparent transparent;
-}
-
-.lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
-}
-
-.lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
-}
-
-.lds-ring div:nth-child(3) {
-  animation-delay: -0.15s;
-}
-
-@keyframes lds-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 /* *** fix for calendar choice widget in modal dialog *** */
