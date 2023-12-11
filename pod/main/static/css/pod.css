@@ -691,14 +691,9 @@ div.card a img {
     position: relative;
 }
 .infinite-item .checked_overlay{
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: none;
     position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
+    inset: 0;
     z-index: 9;
     opacity: 0;
     justify-content: center;

@@ -122,6 +122,35 @@ def get_last_videos(context):
     return recent_vids
 
 
+@register.simple_tag(name="get_video_infos")
+def get_video_infos(video):
+    is_password_protected = video.password or video.is_restricted
+    is_chaptered = video.chapter_set.all().count() > 0
+    return {
+        "password": {
+            "status": is_password_protected,
+            "translation":
+                _("This content is password protected.")
+                if is_password_protected
+                else _("This content is not password protected."),
+        },
+        "draft": {
+            "status": video.is_draft,
+            "translation":
+                _("This content is in draft.")
+                if video.is_draft
+                else _("This content is public.")
+        },
+        "chaptered": {
+            "status": is_chaptered,
+            "translation":
+                _("This content is chaptered.")
+                if is_chaptered
+                else _("This content is not chaptered."),
+        },
+    }
+
+
 class getTagsForModelNode(TagsForModelNode):
     def __init__(self, model, context_var, counts):
         super(getTagsForModelNode, self).__init__(model, context_var, counts)
