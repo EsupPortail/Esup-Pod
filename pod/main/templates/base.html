@@ -45,7 +45,7 @@
   <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|striptags|capfirst}}{% endblock %}</title>
 
   <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
-  <script id="jsi18n" src="{% url 'javascript-catalog' %}?ver={{VERSION}}"></script>
+  <script id="jsi18n" src="{% url 'javascript-catalog' %}"></script>
 
   {% block page_extra_head %}{% endblock %}
 
