@@ -3,10 +3,6 @@
 {% load static %}
 {% load tagging_tags %}
 
-{% block page_extra_head %}
-  <script id="jsi18n" src="{% url 'javascript-catalog' %}"></script>
-{% endblock page_extra_head %}
-
 {% block breadcrumbs %}{{ block.super }}
   <li class="breadcrumb-item"><a href="{% url 'video:my_videos' %}">{% trans 'My videos' %}</a></li>
   {% if form.instance.title and form.instance.slug != '' %}

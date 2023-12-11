@@ -2,10 +2,6 @@
 {% load i18n %}
 {% load static %}
 
-{% block page_extra_head %}
-  <script id="jsi18n" src="{% url 'javascript-catalog' %}"></script>
-{% endblock page_extra_head %}
-
 {% block breadcrumbs %}
 {{ block.super }}
 <li class="breadcrumb-item"><a href="{% url 'import_video:external_recordings' %}">{% trans "My external videos" %}</a></li>

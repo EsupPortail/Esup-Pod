@@ -3,13 +3,9 @@
 {% load static %}
 {% load tagging_tags %}
 
-{% block page_extra_head %}
-  <script id="jsi18n" src="{% url 'javascript-catalog' %}"></script>
-{% endblock page_extra_head %}
-
 {% block breadcrumbs %}{{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'video:my_videos' %}">{% trans 'My videos' %}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
+  <li class="breadcrumb-item"><a href="{% url 'video:my_videos' %}">{% trans 'My videos' %}</a></li>
+  <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
 {% endblock %}
 
 {% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Choose an audio or video file to upload" %}{% endif %}{% endblock %}

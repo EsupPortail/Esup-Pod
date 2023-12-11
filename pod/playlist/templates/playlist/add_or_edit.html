@@ -2,10 +2,6 @@
 {% load i18n %}
 {% load static %}
 
-{% block page_extra_head %}
-  <script id="jsi18n" src="{% url 'javascript-catalog' %}"></script>
-{% endblock %}
-
 {% block breadcrumbs %}
     {{ block.super }}
     <li class="breadcrumb-item">
