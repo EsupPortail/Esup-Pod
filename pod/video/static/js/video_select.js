@@ -1,3 +1,7 @@
+/**
+ * @file Esup-Pod functions for video selection manage.
+ * @since 3.5.0
+ */
 var selectedVideos = [];
 var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
 var resetSelectedVideosBtn = document.getElementById("resetSelectedVideosBtn");

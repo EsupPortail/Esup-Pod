@@ -542,7 +542,7 @@ def launch_encode(sender, instance, created, **kwargs):
         Launch encoding after save Video if requested.
 
         Args:
-            sender (::class::`pod.video.models.Video`): Video model class.
+            sender ::class::`pod.video.models.Video`: Video model class.
             instance (Video): video object instance.
     """
     if hasattr(instance, "launch_encode") and instance.launch_encode is True:
@@ -557,7 +557,7 @@ def launch_transcript(sender, instance, created, **kwargs):
         Launch transcription after save Video if requested.
 
         Args:
-            sender (::class::`pod.video.models.Video`): Video model class.
+            sender ::class::`pod.video.models.Video`: Video model class.
             instance (Video): video object instance.
     """
     if hasattr(instance, "launch_transcript") and instance.launch_transcript is True:
@@ -661,7 +661,7 @@ class VideoForm(forms.ModelForm):
 
     def create_with_fields(self, field_key):
         """Create VideoForm with specific fields. Keep video field to prevent error on save."""
-        fields = list(self.fields)
+        fields = set(self.fields)
         if "description" in field_key:
             field_key.append("description_%s" % self.current_lang)
         if "title" in field_key:

@@ -1,3 +1,7 @@
+/**
+ * @file Esup-Pod functions for videos list refresh and aside manage.
+ * @since 3.4.1
+ */
 var infinite;
 var checkedInputs = [];
 

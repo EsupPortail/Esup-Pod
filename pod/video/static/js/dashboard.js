@@ -1,3 +1,7 @@
+/**
+ * @file Esup-Pod functions for dashboard view.
+ * @since 3.5.0
+ */
 var bulkUpdateActionSelect = document.getElementById("bulkUpdateActionSelect");
 var applyBulkUpdateBtn = document.getElementById("applyBulkUpdateBtn");
 var modalLoader = document.getElementById("bulkUpdateLoader");
