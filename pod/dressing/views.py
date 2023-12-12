@@ -13,6 +13,7 @@ from pod.video.models import Video
 from pod.video_encode_transcript.encode import start_encode
 from .forms import DressingForm, DressingDeleteForm
 from .models import Dressing
+from .utils import get_dressings
 
 
 @csrf_protect
@@ -22,11 +23,7 @@ def video_dressing(request, slug):
     if in_maintenance():
         return redirect(reverse("maintenance"))
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-
-    user = request.user
-    users_groups = user.owner.accessgroup_set.all()
-    dressings = Dressing.objects.filter(
-        Q(owners=user) | Q(users=user) | Q(allow_to_groups__in=users_groups)).distinct()
+    dressings = get_dressings(request.user, request.user.owner.accessgroup_set.all())
 
     if request.method == 'POST':
         selected_dressing_value = request.POST.get("selected_dressing_value")
@@ -142,10 +139,7 @@ def my_dressings(request):
     """Render the logged user's dressings."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
-    user = request.user
-    users_groups = user.owner.accessgroup_set.all()
-    dressings = Dressing.objects.filter(
-        Q(owners=user) | Q(users=user) | Q(allow_to_groups__in=users_groups)).distinct()
+    dressings = get_dressings(request.user, request.user.owner.accessgroup_set.all())
 
     return render(request, "my_dressings.html",
                   {'dressings': dressings})

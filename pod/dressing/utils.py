@@ -1,7 +1,8 @@
 """Esup-Pod dressing utilities."""
 import os
-
+from .models import Dressing
 from django.conf import settings
+from django.db.models import Q
 
 
 def get_position_value(position, height):
@@ -52,3 +53,8 @@ def get_dressing_input(dressing, FFMPEG_DRESSING_INPUT):
             "input": os.path.join(settings.MEDIA_ROOT, str(dressing.ending_credits.video))
         }
     return command
+
+def get_dressings(user, accessgroup_set):
+    dressings = Dressing.objects.filter(
+        Q(owners=user) | Q(users=user) | Q(allow_to_groups__in=accessgroup_set)).distinct()
+    return dressings
