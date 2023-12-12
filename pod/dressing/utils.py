@@ -54,6 +54,7 @@ def get_dressing_input(dressing, FFMPEG_DRESSING_INPUT):
         }
     return command
 
+
 def get_dressings(user, accessgroup_set):
     dressings = Dressing.objects.filter(
         Q(owners=user) | Q(users=user) | Q(allow_to_groups__in=accessgroup_set)).distinct()

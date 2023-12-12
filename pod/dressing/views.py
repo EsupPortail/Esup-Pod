@@ -7,7 +7,6 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
-from django.db.models import Q
 
 from pod.video.models import Video
 from pod.video_encode_transcript.encode import start_encode
