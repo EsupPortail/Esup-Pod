@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.http import HttpResponseForbidden
 from django.core.cache import cache
 from django.middleware.csrf import get_token
+from django.shortcuts import render
 from django.views.decorators.csrf import (
     csrf_exempt,
     csrf_protect,
@@ -53,3 +54,7 @@ def get_ids_by_urls(request): # TODO Add documentation
 def get_csrf_token(request):
     print(get_token(request))
     return JsonResponse({"csrf_token": get_token(request)})
+
+
+def test(request):
+    return render(request, "peer_to_peer/test.html")
