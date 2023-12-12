@@ -1590,6 +1590,18 @@
                         "fr": "Configuration application meeting"
                     }
                 },
+                "peer_to_peer": {
+                    "description" : {
+                        "en": [
+                            "Peer to peer app for the peer to peer management.",
+                            "Set `USE_PEER_TO_PEER` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Peer to peer pour la gestion du pair à pair.",
+                            "Mettre `USE_PEER_TO_PEER` à True pour activer cette application."
+                        ]
+                    }
+                },
                 "playlist": {
                     "description": {
                         "en": [

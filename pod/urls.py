@@ -149,6 +149,12 @@ if getattr(settings, "USE_PLAYLIST", True):
         path("playlist/", include("pod.playlist.urls", namespace="playlist")),
     ]
 
+# PEER_TO_PEER
+if getattr(settings, "USE_PEER_TO_PEER", True):
+    urlpatterns += [
+        path("peer-to-peer/", include("pod.peer_to_peer.urls", namespace="peer_to_peer")),
+    ]
+
 # IMPORT_VIDEO
 if getattr(settings, "USE_IMPORT_VIDEO", True):
     urlpatterns += [

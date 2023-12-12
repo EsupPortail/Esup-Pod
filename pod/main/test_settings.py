@@ -70,6 +70,7 @@ AFFILIATION_EVENT = ["employee"]
 
 USE_MEETING = True
 
+USE_PEER_TO_PEER = True
 
 def get_shared_secret():
     api_mate_url = "https://bigbluebutton.org/api-mate/"
