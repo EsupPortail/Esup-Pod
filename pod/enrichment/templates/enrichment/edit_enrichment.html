@@ -1,99 +1,134 @@
-{% extends 'enrichment/video_enrichment.html' %} {% load i18n %} {% load static %} {% block page_title %}{% trans 'Enrichment of the video' %} "{{video.title}}"
-{% endblock page_title %} {% block page_extra_head %} {{ block.super }}
+{% extends 'enrichment/video_enrichment.html' %}
+{% load i18n %}
+{% load static %}
 
-<link
-  rel="stylesheet"
-  href="{% static 'css/enrichment.css' %}?ver={{VERSION}}"
->
-<script src="{% static 'js/enrichment.js' %}?ver={{VERSION}}"></script>
 
-<script>
-  var num = 0,
-  name = '';
-  /*** For the form ***/;
-  var video_duration = {{video.duration}};
-  /*** For the Cancel button ***/
 
-  document.addEventListener("reset",   (e) => {
-    if (e.target !== document.querySelector("#page-video form"))  return
-    document.getElementById("form_enrich").innerHTML = "";
-   document.querySelectorAll("form").forEach((form)=>{
-    form.style.display = "block";
-   })
-    document.querySelectorAll("table tr").forEach((tr) => {
-      tr.classList.remove("info");
+{% block page_title %}
+  {% trans 'Enrichment of the video' %} "{{video.title}}"
+{% endblock page_title %}
+
+
+
+{% block page_extra_head %}
+  {{ block.super }}
+
+  <link
+    rel="stylesheet"
+    href="{% static 'css/enrichment.css' %}?ver={{VERSION}}"
+  >
+  <script src="{% static 'js/enrichment.js' %}?ver={{VERSION}}"></script>
+
+  <script>
+    let num = 0;
+    let name = '';
+    /*** For the form ***/;
+    let video_duration = {{video.duration}};
+    /*** For the Cancel button ***/
+
+    document.addEventListener("reset",   (e) => {
+      if (e.target !== document.querySelector("#page-video form"))  return
+      document.getElementById("form_enrich").innerHTML = "";
+    document.querySelectorAll("form").forEach((form)=>{
+      form.style.display = "block";
+    })
+      document.querySelectorAll("table tr").forEach((tr) => {
+        tr.classList.remove("info");
+      });
+
+      manageResize();
     });
+  </script>
+{% endblock page_extra_head %}
 
-    manageResize();
-  });
-</script>
-{% endblock page_extra_head %} {% block video-element %}
-<div id="page-video">
-  {% include 'enrichment/video-element-enrichment.html' %}
-  <hr>
 
-  <div id="info_video">
-    <div id="list_enrich">{% include 'enrichment/list_enrichment.html' %}</div>
-    <div id="form_enrich">
-      {% if form_enrichment %} {% include 'enrichment/form_enrichment.html' with form_enrichment=form_enrichment %}
+
+{% block page_content %}
+  <div id="video-player">
+    {% block video-element %}
+      <div id="page-video">
+        {% include 'enrichment/video-element-enrichment.html' %}
+        <hr>
+        <div id="info_video">
+          <div id="list_enrich">{% include 'enrichment/list_enrichment.html' %}</div>
+          <div id="form_enrich">
+            {% if form_enrichment %} {% include 'enrichment/form_enrichment.html' with form_enrichment=form_enrichment %}
+            {% endif %}
+          </div>
+          {% if not form_enrichment %}
+          <form
+            id="form_new"
+            class="get_form"
+            action="{% url 'enrichment:edit_enrichment' slug=video.slug %}"
+            method="POST"
+          >
+            {% csrf_token %}
+            <input type="hidden" name="action" value="new">
+            <input
+              type="submit"
+              id="add_new_enrichment"
+              value="{% trans 'Add a new enrichment' %}"
+              class="btn btn-primary btn-sm"
+            >
+          </form>
+          {% endif %}
+          <hr>
+          <div class="d-flex justify-content-between">
+            <a
+              href="{% url 'video:video_edit' slug=video.slug %}"
+              class="btn btn-secondary btn-sm"
+            >
+              {% trans 'Back to video edit' %}
+            </a>
+            <a
+              href="{% url 'enrichment:video_enrichment' slug=video.slug %}"
+              class="btn btn-primary btn-sm"
+            >
+              {% trans 'See the enrich video' %}
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endblock video-element %}
+  </div>
+{% endblock page_content %}
+
+
+
+
+{% block page_aside %}
+  <div class="card" id="card-enrichment-edit-informations">
+    <h2 class="card-header card-title pod-card__title h4">
+      <i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% trans 'Editing enrichments' %}
+    </h2>
+    <div class="card-body card-text small">
+      {% if video.owner == request.user or request.user.is_superuser or perms.enrichment.change_enrichment or request.user in video.additional_owners.all %}
+      <p>
+        <a href="{% url 'enrichment:group_enrichment' slug=video.slug %}">
+          <i class="bi bi-people" aria-hidden="true"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}
+        </a>
+      </p>
       {% endif %}
-    </div>
-    {% if not form_enrichment %}
-    <form
-      id="form_new"
-      class="get_form"
-      action="{% url 'enrichment:edit_enrichment' slug=video.slug %}"
-      method="POST"
-    >
-      {% csrf_token %}
-      <input type="hidden" name="action" value="new">
-      <input
-        type="submit"
-        id="add_new_enrichment"
-        value="{% trans 'Add a new enrichment' %}"
-        class="btn btn-primary btn-sm"
-      >
-    </form>
-    {% endif %}
-    <hr>
-    <div class="d-flex justify-content-between">
-      <a
-        href="{% url 'video:video_edit' slug=video.slug %}"
-        class="btn btn-secondary btn-sm"
-      >
-        {% trans 'Back to video edit' %}
-      </a>
-      <a
-        href="{% url 'enrichment:video_enrichment' slug=video.slug %}"
-        class="btn btn-primary btn-sm"
-      >
-        {% trans 'See the enrich video' %}
-      </a>
+      <p>
+        {% trans 'The title field is required and must contains from 2 to 100 characters.' %}
+      </p>
+      <p>
+        {% trans 'The fields “Start“ and “End“ must contain an indication value in seconds. Start playback of the video, pause the video and click on “Get time from the player“ to fill in the field untitled “Start“. Then do the same to fill in the field untitled “End“.' %}
+      </p>
+      <p>{% trans 'You cannot overlap enrichments.' %}</p>
+      <p>{% trans 'You must save your enrichments to view the result.' %}</p>
     </div>
   </div>
-</div>
-{% endblock video-element %} {% block page_aside %}
-<div class="card" id="card-enrichmenteditinformations">
-  <h2 class="card-header card-title pod-card__title h4">
-    <i class="bi bi-info-circle"></i>&nbsp;{% trans 'Editing enrichments' %}
-  </h2>
-  <div class="card-body card-text small">
-    {% if video.owner == request.user or request.user.is_superuser or perms.enrichment.change_enrichment or request.user in video.additional_owners.all %}
-    <p>
-      <a href="{% url 'enrichment:group_enrichment' slug=video.slug %}"
-        ><i class="bi bi-people"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}</a
-      >
-    </p>
-    {% endif %}
-    <p>
-      {% trans 'The title field is required and must contains from 2 to 100 characters.' %}
-    </p>
-    <p>
-      {% trans 'The fields "Start" and "End" must contain an indication value in seconds. Start playback of the video, pause the video and click on "Get time from the player" to fill in the field untitled "Start". Then do the same to fill in the field untitled "End".' %}
-    </p>
-    <p>{% trans 'You cannot overlap enrichments.' %}</p>
-    <p>{% trans 'You must save your enrichments to view the result.' %}</p>
-  </div>
-</div>
-{{ block.super }} {% endblock page_aside %} {% block more_script %}
-{{block.super}} {% endblock more_script %}
+  {{ block.super }}
+{% endblock page_aside %}
+
+
+
+{% block more_script %}
+  {{block.super}}
+  <script>
+    player.on('play', function() {
+      document.getElementById('podvideoplayer_html5_api').classList.add('to-edit');
+    });
+  </script>
+{% endblock more_script %}

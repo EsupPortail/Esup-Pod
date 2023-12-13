@@ -7,14 +7,14 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-12-12 10:50+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
+"Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.3.2\n"
+"X-Generator: Poedit 3.4\n"
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 msgid "Get time from the player"
@@ -185,7 +185,6 @@ msgid "Add a caption/subtitle after this one"
 msgstr "Ajouter un(e) légende/sous-titre ci-dessous"
 
 #: pod/completion/static/js/caption_maker.js
-#: pod/podfile/static/podfile/js/filewidget issue 949.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Add"
 msgstr "Ajouter"
@@ -496,6 +495,14 @@ msgstr ""
 "Cette extension de fichier n’est pas présente dans les extensions "
 "autorisées :"
 
+#: pod/main/static/js/videojs-info-controlbar.js
+msgid "Info"
+msgstr "Info"
+
+#: pod/main/static/js/videojs-info-controlbar.js
+msgid "Information"
+msgstr "Information"
+
 #: pod/playlist/static/playlist/js/add-or-edit.js
 msgid "<b>Public:</b> the playlist can be accessed by anyone."
 msgstr "<b>Public :</b> la liste de lecture est accessible par tous."
@@ -531,6 +538,11 @@ msgid "Loading…"
 msgstr "Chargement en cours…"
 
 #: pod/podfile/static/podfile/js/filewidget issue 949.js
+#: pod/podfile/static/podfile/js/filewidget.js
+#: pod/video/static/js/change_video_owner.js
+msgid "Loading…"
+msgstr "Chargement en cours…"
+
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
 msgstr "Changer d’image"
@@ -632,8 +644,8 @@ msgstr "Une erreur est survenue lors de la souscription aux notifications."
 #: pod/video/static/js/ajax-display-channels.js
 msgid "%(count)s channel"
 msgid_plural "%(count)s channels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(count)s chaîne"
+msgstr[1] "%(count)s chaînes"
 
 #: pod/video/static/js/ajax-display-channels.js
 msgid "No channels found"
@@ -642,8 +654,8 @@ msgstr "Aucun chaîne trouvée"
 #: pod/video/static/js/ajax-display-channels.js
 msgid "%(count)s video"
 msgid_plural "%(count)s videos"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(count)s vidéo"
+msgstr[1] "%(count)s vidéos"
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
@@ -681,14 +693,12 @@ msgid "Agree with the comment"
 msgstr "D’accord avec ce commentaire"
 
 #: pod/video/static/js/comment-script.js
-#, fuzzy
-#| msgid "Remove this comment"
 msgid "Reply to comment"
-msgstr "Supprimer ce commentaire"
+msgstr "Répondre au commentaire"
 
 #: pod/video/static/js/comment-script.js
 msgid "Reply"
-msgstr ""
+msgstr "Répondre"
 
 #: pod/video/static/js/comment-script.js
 msgid "Remove this comment"
@@ -696,11 +706,11 @@ msgstr "Supprimer ce commentaire"
 
 #: pod/video/static/js/comment-script.js
 msgid "Add a public comment"
-msgstr ""
+msgstr "Ajouter un commentaire public"
 
 #: pod/video/static/js/comment-script.js
 msgid "Send"
-msgstr ""
+msgstr "Envoyer"
 
 #: pod/video/static/js/comment-script.js
 msgid "Show answers"
@@ -848,18 +858,16 @@ msgid "Edit the category"
 msgstr "Éditer la catégorie"
 
 #: pod/video/static/js/video_category.js
-#, fuzzy
-#| msgid "Edit the category"
 msgid "Delete the category"
-msgstr "Éditer la catégorie"
+msgstr "Supprimer la catégorie"
 
 #: pod/video/static/js/video_category.js
 msgid "Success!"
-msgstr ""
+msgstr "Succès !"
 
 #: pod/video/static/js/video_category.js
 msgid "Error…"
-msgstr ""
+msgstr "Erreur…"
 
 #: pod/video/static/js/video_category.js
 msgid "Category created successfully"

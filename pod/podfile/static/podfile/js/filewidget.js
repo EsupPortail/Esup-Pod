@@ -123,7 +123,6 @@ if (typeof loaded == "undefined") {
     )
       return;
     e.preventDefault();
-    //alert('FORM');
     e.target.style.display = "none";
     document.querySelectorAll(".loadingformfiles").forEach((el) => {
       el.style.display = "block";

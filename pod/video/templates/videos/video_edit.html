@@ -194,8 +194,10 @@
   {% if access_not_allowed == True %}
   {% else %}
   {% if form.instance.title and form.instance.slug != '' %}
-    <div class="card" id="card-managevideo">
-      <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video" %}</h2>
+    <div class="card" id="card-manage-video">
+      <h2 class="card-header card-title pod-card__title h4">
+        <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage video" %}
+    </h2>
       <div class="card-body card-text text-center">
         {% include "videos/link_video.html" with video=form.instance hide_favorite_link=True %}
       </div>
@@ -238,7 +240,7 @@
       <p>
     </div>
   </div>
-  <div class="card" id="card-mandatoryfields">
+  <div class="card" id="card-mandatory-fields">
     <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Mandatory fields" %}</h2>
     <div class="card-body card-text">
       <p>

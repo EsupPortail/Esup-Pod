@@ -21,7 +21,7 @@ function updateSortDirectionTitle(sortDirectionAsc) {
   let newTitle = sortDirectionTitle[+sortDirectionAsc];
   document
     .getElementById("sort_direction_label")
-    .setAttribute("title", newTitle);
+    .setAttribute("data-bs-original-title", newTitle);
 }
 
 /**

@@ -232,7 +232,7 @@
     {% include 'aside.html' with HIDE_DISCIPLINES=True HIDE_TAGS=True %}
 
     {% if event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser or perms.live.delete_event or perms.live.change_event %}
-        <div class="card mt-1" id="card-managevideo">
+        <div class="card mt-1" id="card-manage-video">
             <h2 class="h4 card-header card-title pl-2"><i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans 'Manage event' %}
             </h2>
             <div class="card-body card-text text-center">

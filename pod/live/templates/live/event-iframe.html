@@ -84,11 +84,11 @@
                                 <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
                             </video>
                         </div>
-                        {# ajouter ici l' event.aside_iframe_url si nécessaire #}
-                        {# ajouter ici le chatBBB si nécessaire #}
+                        {# ajouter ici l'event.aside_iframe_url au besoin #}
+                        {# ajouter ici le chatBBB au besoin #}
                     </div>
                 </div>
-                {# ajouter ici l' event.iframe_url si nécessaire #}
+                {# ajouter ici l'event.iframe_url au besoin #}
 
                 <div id="divvideoonhold" style="display:none">
                     {# waiting video #}
@@ -150,69 +150,22 @@
 
                 iframeplayer.videoJsInfo();
 
-                function setOnPlayerPlayPause() {
-                    iframeplayer.on('play', function () {
-                        isPlaying = true;
-                        $('#div-video-wrapper').attr('class', '')
-                    })
-                    iframeplayer.on('pause', function () {
-                        isPlaying = false;
-                    })
-                }
-
-                $('#div-video-wrapper').append('<div id="overlay-footer"></div>')
+                let overlay = document.createElement("div");
+                overlay.id="overlay-footer";
+                document.getElementById("div-video-wrapper").appendChild(overlay);
                 iframeplayer.ready(function () {
-                    const btinfo = $('.vjs-info-button:eq(0)')[0]
-                    $(btinfo).clone().appendTo('#overlay-footer')
-                    $('#overlay-footer .vjs-info-button').click(function () {
-                        $(btinfo).click()
-                    })
-                })
-                $(document).on('click', '.close', function () {
-                    show_info_video()
+                    const btinfo = document.querySelector(".vjs-info-button");
+                    const clonedInfo = btinfo.cloneNode(true);
+                    overlay.appendChild(clonedInfo);
+                    clonedInfo.addEventListener("click", showInfoVideo);
                 });
+                document.querySelector("#info-video-wrapper .close").addEventListener("click", showInfoVideo);
 
-                // Responsive
-                const hdres = 1920 / 1080;
-                let isPlaying = false, wasPlaying = false
-                setOnPlayerPlayPause()
-
-                function resizeInfo() {
-                    const ihead = document.querySelector('#info-video-wrapper > .iframe-header')
-                        , ph = iframeplayer.el().offsetHeight
-                        , pb = parseInt(iframeplayer.el().style.top) + ph - 30
-                        , pw = ph * hdres//$('#podvideoplayer .vjs-poster').width()
-                    $('#info-video').css('top', ihead.offsetHeight + 'px')
-                    $('#info-video-wrapper').css({
-                        top: iframeplayer.el().style.top,
-                        height: (ph - 30) + 'px',
-                        left: '50%',
-                        'margin-left': -(pw / 2) + 'px',
-                        width: pw + 'px'
-                    })
-                    $('#overlay-footer').css({'top': pb + 'px'})
-                }
-
-                let show_info_video = function () { // Call by videojs-controllbar
-                    const hasStarted = $(iframeplayer.el()).hasClass('vjs-has-started')
-                        , isOverlayed = $('#div-video-wrapper').hasClass('overlay')
-                        , isInfoOverlayed = isOverlayed && $('#div-video-wrapper').hasClass('info')
-                        , cls = 'overlay info'
-                    if (!isOverlayed) { // No overlay is displayed
-                        wasPlaying = isPlaying;
-                        iframeplayer.pause();
-                        $('#div-video-wrapper').attr('class', cls)
-                        resizeInfo()
-                    } else if (!isInfoOverlayed) { // One overlay is displayed but not Info
-                        $('#div-video-wrapper').attr('class', cls)
-                        resizeInfo()
-                    } else { // Info overlay is displayed => close
-                        $('#div-video-wrapper').attr('class', (hasStarted ? '' : 'vjs-not-started'))
-                        if (wasPlaying) iframeplayer.play();
-                    }
-                }
-
-                $('#video-meta .tab-pane').addClass('show').show();
+                iframeplayer.on('play',function() {
+                  isPlaying = true;
+                  document.getElementById("div-video-wrapper").className = '';
+                });
+                iframeplayer.on('pause',function() { isPlaying = false; });
 
             </script>
         {% endif %}

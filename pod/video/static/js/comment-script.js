@@ -916,9 +916,8 @@ function setBorderLeftColor(comment, parent_element) {
       }`;
     } else {
       comment.dataset.level = index;
-      comment.querySelector(
-        ".comment_content",
-      ).style.borderLeft = `4px solid ${COLORS[index]}`;
+      comment.querySelector(".comment_content").style.borderLeft =
+        `4px solid ${COLORS[index]}`;
       comment.querySelector(".comments_icon").style.color = `${COLORS[index]}`;
     }
   } catch (e) {

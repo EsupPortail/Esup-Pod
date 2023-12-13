@@ -169,7 +169,6 @@ msgid "Add a caption/subtitle after this one"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
-#: pod/podfile/static/podfile/js/filewidget issue 949.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Add"
 msgstr ""
@@ -472,6 +471,14 @@ msgstr ""
 msgid "The file extension not in the allowed extension:"
 msgstr ""
 
+#: pod/main/static/js/videojs-info-controlbar.js
+msgid "Info"
+msgstr ""
+
+#: pod/main/static/js/videojs-info-controlbar.js
+msgid "Information"
+msgstr ""
+
 #: pod/playlist/static/playlist/js/add-or-edit.js
 msgid "<b>Public:</b> the playlist can be accessed by anyone."
 msgstr ""
@@ -505,6 +512,11 @@ msgid "Loading…"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget issue 949.js
+#: pod/podfile/static/podfile/js/filewidget.js
+#: pod/video/static/js/change_video_owner.js
+msgid "Loading…"
+msgstr ""
+
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change image"
 msgstr ""

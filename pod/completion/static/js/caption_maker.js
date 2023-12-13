@@ -45,9 +45,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     send_form_data(url, data, "processProxyVttResponse");
   } else {
-    document.getElementById(
-      "captionFilename",
-    ).value = `${file_prefix}_captions_${Date.now()}`;
+    document.getElementById("captionFilename").value =
+      `${file_prefix}_captions_${Date.now()}`;
   }
 
   let placeholder = gettext(

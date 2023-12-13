@@ -27,9 +27,9 @@
           </a>
           <div class="dropdown-menu">
             {% if video.get_hashkey in request.get_full_path %}
-              <a href="{% url 'video:video_private' slug=video.slug slug_private=video.get_hashkey %}?redirect=false" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
+              <a href="{% url 'video:video_private' slug=video.slug slug_private=video.get_hashkey %}?redirect=false&playlist={{ playlist_in_get.slug }}" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
             {% else %}
-              <a href="{% url 'video:video' slug=video.slug %}?redirect=false" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
+              <a href="{% url 'video:video' slug=video.slug %}?redirect=false&playlist={{ playlist_in_get.slug }}" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
             {% endif %}
           </div>
         </li>
@@ -43,9 +43,9 @@
             <div class="dropdown-menu">
               {% for version in versions %}
                 {% if video.get_hashkey in request.get_full_path %}
-                  <a href="{{version.url}}{{ video.get_hashkey }}/?redirect=false" title="{{version.app}}" class="dropdown-item">{{version.link}}</a>
+                  <a href="{{version.url}}{{ video.get_hashkey }}/?redirect=false&playlist={{ playlist_in_get.slug }}" title="{{version.app}}" class="dropdown-item">{{version.link}}</a>
                 {% else %}
-                  <a href="{{version.url}}?redirect=false" title="{{version.app}}" class="dropdown-item">{{version.link}}</a>
+                  <a href="{{version.url}}?redirect=false&playlist={{ playlist_in_get.slug }}" title="{{version.app}}" class="dropdown-item">{{version.link}}</a>
                 {% endif %}
               {% endfor %}
             </div>
