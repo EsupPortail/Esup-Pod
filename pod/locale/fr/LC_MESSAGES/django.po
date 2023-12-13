@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-16 13:36+0000\n"
+"POT-Creation-Date: 2023-12-12 10:50+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Ptitloup <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -191,7 +191,9 @@ msgstr "Changer votre image de profil"
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/meeting/templates/meeting/my_meetings.html
 #: pod/playlist/templates/playlist/playlist-list-modal.html
+#: pod/podfile/templates/podfile/customfilewidget issue 949.html
 #: pod/podfile/templates/podfile/customfilewidget.html
+#: pod/podfile/templates/podfile/home_content
 #: pod/podfile/templates/podfile/home_content.html
 #: pod/podfile/templates/podfile/userfolder.html
 #: pod/progressive_web_app/templates/notification_toast.html
@@ -267,6 +269,7 @@ msgid "Please provide a valid value for this field."
 msgstr "Veuillez renseigner une valeur valide pour ce champ."
 
 #: pod/authentication/templates/userpicture/userpicture.html
+#: pod/podfile/templates/podfile/home_content issue 949.html
 #: pod/podfile/templates/podfile/home_content.html
 msgid "Save changes"
 msgstr "Sauvegarder"
@@ -370,7 +373,7 @@ msgstr ""
 "URL de la vignette correspondant à l’enregistrement de la présentation BBB."
 
 #: pod/bbb/models.py pod/import_video/models.py pod/meeting/models.py
-#: pod/playlist/models.py pod/recorder/models.py
+#: pod/playlist/models.py pod/recorder/models.py pod/video/models.py
 msgid "User"
 msgstr "Utilisateur"
 
@@ -452,19 +455,19 @@ msgstr "Date de fin"
 msgid "End date of the live."
 msgstr "Date de fin du direct."
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Live not started"
 msgstr "Le direct n’a pas encore démarré"
 
-#: pod/bbb/models.py pod/bbb/templates/bbb/live_card.html
+#: pod/bbb/models.py pod/bbb/templates/bbb/live_card.html pod/meeting/models.py
 msgid "Live in progress"
 msgstr "Le direct est en cours"
 
-#: pod/bbb/models.py pod/bbb/templates/bbb/live_card.html
+#: pod/bbb/models.py pod/bbb/templates/bbb/live_card.html pod/meeting/models.py
 msgid "Live stopped"
 msgstr "Le direct a été arrêté"
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Live status"
 msgstr "Statut du direct"
 
@@ -491,7 +494,7 @@ msgstr "Accès restreint"
 msgid "Is live only accessible to authenticated users?"
 msgstr "Le direct est-il uniquement accessible aux utilisateurs authentifiés ?"
 
-#: pod/bbb/models.py pod/live/admin.py pod/live/models.py
+#: pod/bbb/models.py pod/live/admin.py pod/live/models.py pod/meeting/models.py
 msgid "Broadcaster"
 msgstr "Diffuseur"
 
@@ -499,7 +502,7 @@ msgstr "Diffuseur"
 msgid "Broadcaster in charge to perform live."
 msgstr "Diffuseur en charge de réaliser le direct."
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Show public chat"
 msgstr "Affichage du tchat public"
 
@@ -519,11 +522,11 @@ msgstr ""
 "Souhaitez-vous enregistrer la vidéo de cette session, à la fin du direct, "
 "directement dans « Mes vidéos » ?"
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Enable chat"
 msgstr "Activer le tchat"
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid ""
 "Do you want a chat on the live page for students? Messages sent in this live "
 "page's chat will end up in BigBlueButton's public chat."
@@ -532,35 +535,35 @@ msgstr ""
 "envoyés dans le tchat de cette page de direct se retrouveront dans le tchat "
 "public de BigBlueButton."
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Redis hostname"
 msgstr "Nom d’hôte REDIS"
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Redis hostname, useful for chat"
 msgstr "Nom d’hôte REDIS, utile pour le tchat"
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Redis port"
 msgstr "Port REDIS"
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Redis port, useful for chat"
 msgstr "Port REDIS, utile pour le tchat"
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Redis channel"
 msgstr "Channel REDIS"
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Redis channel, useful for chat"
 msgstr "Channel REDIS, utile pour le tchat"
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Livestream"
 msgstr "Direct"
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Livestreams"
 msgstr "Directs"
 
@@ -764,6 +767,7 @@ msgstr "Plus"
 #: pod/bbb/templates/bbb/live_record_list.html
 #: pod/bbb/templates/bbb/record_list.html pod/main/templates/loader.html
 #: pod/playlist/templates/playlist/playlist-videos-list.html
+#: pod/podfile/templates/podfile/home_content issue 949.html
 #: pod/podfile/templates/podfile/home_content.html
 #: pod/podfile/templates/podfile/list_folder_files.html
 #: pod/recorder/templates/recorder/record_list.html
@@ -2364,7 +2368,7 @@ msgstr ""
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid "To do this, please use the 'Upload to Pod as video' button in the list."
 msgstr ""
-"Pour ce faire, veuillez utiliser le bouton « Télécharger sur le pod en tant "
+"Pour ce faire, veuillez utiliser le bouton « Télécharger sur Pod en tant "
 "que vidéo » dans la liste."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
@@ -2382,6 +2386,29 @@ msgid "An email will be sent to you when all encoding tasks are completed."
 msgstr ""
 "Un courriel vous sera envoyé quand toutes les tâches d’encodage seront "
 "complétées."
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/meeting/templates/meeting/add_or_edit.html
+msgid "Useful tips"
+msgstr "Conseils pratiques"
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"The address entered must correspond to a video file. The platform to which you "
+"copy the link may offer several possibilities; feel free to test the "
+"different links provided."
+msgstr ""
+"L'adresse saisie doit correspondre à un fichier vidéo. La plateforme vers laquelle vous "
+"copiez le lien peut offrir plusieurs possibilités ; n'hésitez pas à tester les "
+"différents liens proposés."
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"For example, in the case of a video from a Pod platform, please enter the "
+"source file address, available in the video edition."
+msgstr ""
+"Par exemple, dans le cas d'une vidéo provenant d'une plateforme Pod, veuillez entrer "
+"l'adresse du fichier source, disponible dans l'édition de la vidéo."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid "Terms of Service"
@@ -2481,7 +2508,8 @@ msgstr ""
 #: pod/import_video/templates/import_video/list.html pod/main/forms.py
 #: pod/meeting/forms.py pod/meeting/templates/meeting/internal_recordings.html
 #: pod/playlist/templates/playlist/playlist_sort_select.html
-#: pod/podfile/models.py pod/podfile/templates/podfile/home_content.html
+#: pod/podfile/models.py pod/podfile/templates/podfile/home_content issue
+#: 949.html pod/podfile/templates/podfile/home_content.html
 #: pod/video_encode_transcript/models.py
 msgid "Name"
 msgstr "Nom"
@@ -2557,9 +2585,9 @@ msgstr ""
 "enregistrement"
 
 #: pod/import_video/utils.py
-msgid "The HTML file for this recording was not found on the BBB server."
+msgid "The HTML file for this recording was not found on the server."
 msgstr ""
-"Le fichier HTML de cet enregistrement est introuvable sur le serveur BBB."
+"Le fichier HTML de cet enregistrement est introuvable sur le serveur."
 
 #: pod/import_video/utils.py
 #, python-format
@@ -2576,18 +2604,25 @@ msgid "The found file is not a valid video."
 msgstr "Le fichier trouvé n’est pas une vidéo valide."
 
 #: pod/import_video/utils.py
-msgid "No video file found."
-msgstr "Aucun fichier vidéo trouvé."
+msgid ""
+"In the case of a video from a Pod platform, please enter the source file "
+"address, available in the video edition."
+msgstr ""
+"Dans le cas d'une vidéo provenant d'une plateforme Pod, veuillez indiquer l'adresse "
+"du fichier source, disponible dans l'édition de la vidéo."
 
 #: pod/import_video/utils.py
-msgid "The video file for this recording was not found on the BBB server."
+msgid "The video file for this recording was not found on the server."
 msgstr ""
-"Le fichier vidéo pour cet enregistrement n’a pas été trouvé sur le serveur "
-"BBB."
+"Le fichier vidéo pour cet enregistrement n’a pas été trouvé sur le serveur."
 
 #: pod/import_video/utils.py
 msgid "Impossible to create the Pod video"
 msgstr "Impossible de créer la vidéo Pod"
+
+#: pod/import_video/utils.py
+msgid "No video file found."
+msgstr "Aucun fichier vidéo trouvé."
 
 #: pod/import_video/utils.py
 msgid "No video file found for this address."
@@ -2602,6 +2637,11 @@ msgstr "Fichier trop volumineux."
 msgid "The size of the video file exceeds the maximum allowed value, %s Gb."
 msgstr ""
 "La taille du fichier vidéo dépasse la valeur maximale autorisée, %s Go."
+
+#: pod/import_video/utils.py
+msgid "The video file for this recording was not found."
+msgstr ""
+"Le fichier vidéo de cet enregistrement est introuvable."
 
 #: pod/import_video/views.py
 msgid "You cannot view this recording."
@@ -2642,6 +2682,14 @@ msgid "Try changing the record type or address for this recording."
 msgstr ""
 "Essayez de modifier le type d’enregistrement ou l’adresse de cet "
 "enregistrement."
+
+#: pod/import_video/views.py
+msgid ""
+"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+msgstr ""
+"Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
+"%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
 #: pod/import_video/views.py
 #, python-format
@@ -3115,31 +3163,6 @@ msgstr "Signal"
 #: pod/live/models.py
 msgid "Heartbeats"
 msgstr "Signaux"
-
-#: pod/live/templates/bbb/bbb_form.html
-msgid "Send message"
-msgstr "Envoyer un message"
-
-#: pod/live/templates/bbb/bbb_form.html
-msgid ""
-"You can send a message (100 characters maximum) to the BigBlueButton "
-"session. It will be displayed within 15 to 30 seconds on the live video."
-msgstr ""
-"Vous pouvez envoyer un message (100 caractères maximum) à la session "
-"BigBlueButton. Il sera affiché dans les 15 à 30 secondes sur la vidéo en "
-"direct."
-
-#: pod/live/templates/bbb/bbb_form.html
-msgid "Message"
-msgstr "Message"
-
-#: pod/live/templates/bbb/bbb_form.html
-msgid "You must be authenticated to send a message."
-msgstr "Vous devez être authentifié pour envoyer un message."
-
-#: pod/live/templates/bbb/bbb_form.html pod/main/templates/aside.html
-msgid "Submit"
-msgstr "Envoyer"
 
 #: pod/live/templates/live/direct.html
 msgid "Live"
@@ -3657,6 +3680,27 @@ msgstr "Évènements à venir"
 #: pod/live/templates/live/my_events.html
 msgid "Past events"
 msgstr "Évènements passés"
+
+#: pod/live/templates/meeting/bbb_form.html
+msgid "Send message"
+msgstr "Envoyer un message"
+
+#: pod/live/templates/meeting/bbb_form.html
+msgid ""
+"You can send a message (100 characters maximum) to the BigBlueButton "
+"session. It will be displayed within 15 to 30 seconds on the live video."
+msgstr ""
+"Vous pouvez envoyer un message (100 caractères maximum) à la session "
+"BigBlueButton. Il sera affiché dans les 15 à 30 secondes sur la vidéo en "
+"direct."
+
+#: pod/live/templates/meeting/bbb_form.html
+msgid "You must be authenticated to send a message."
+msgstr "Vous devez être authentifié pour envoyer un message."
+
+#: pod/live/templates/meeting/bbb_form.html pod/main/templates/aside.html
+msgid "Submit"
+msgstr "Envoyer"
 
 #: pod/live/utils.py
 #, python-format
@@ -6112,6 +6156,7 @@ msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
 
 #: pod/playlist/views.py
+#, python-format
 msgid "Edit the playlist “%(pname)s”"
 msgstr "Modifier la liste de lecture « %(pname)s »"
 
@@ -6177,70 +6222,87 @@ msgstr "La création du répertoire racine a échoué."
 msgid "Images"
 msgstr "Images"
 
+#: pod/podfile/templates/podfile/customfilewidget issue 949.html
 #: pod/podfile/templates/podfile/customfilewidget.html
 msgid "Open file in a new tab"
 msgstr "Ouvrir le fichier dans un nouvel onglet"
 
+#: pod/podfile/templates/podfile/customfilewidget issue 949.html
 #: pod/podfile/templates/podfile/customfilewidget.html
 msgid "Change image"
 msgstr "Changer d’image"
 
+#: pod/podfile/templates/podfile/customfilewidget issue 949.html
 #: pod/podfile/templates/podfile/customfilewidget.html
 msgid "Change file"
 msgstr "Changer de fichier"
 
+#: pod/podfile/templates/podfile/customfilewidget issue 949.html
 #: pod/podfile/templates/podfile/customfilewidget.html
 msgid "Remove image"
 msgstr "Retirer l’image"
 
+#: pod/podfile/templates/podfile/customfilewidget issue 949.html
 #: pod/podfile/templates/podfile/customfilewidget.html
 msgid "Remove file"
 msgstr "Retirer le fichier"
 
+#: pod/podfile/templates/podfile/customfilewidget issue 949.html
 #: pod/podfile/templates/podfile/customfilewidget.html
 msgid "Headband - Select an image"
 msgstr "Bannière - Sélectionner une image"
 
+#: pod/podfile/templates/podfile/customfilewidget issue 949.html
 #: pod/podfile/templates/podfile/customfilewidget.html
 msgid "Thumbnail - Select an image"
 msgstr "Vignette - Sélectionner une image"
 
+#: pod/podfile/templates/podfile/customfilewidget issue 949.html
 #: pod/podfile/templates/podfile/customfilewidget.html
 msgid "Select an image"
 msgstr "Sélectionner une image"
 
+#: pod/podfile/templates/podfile/customfilewidget issue 949.html
 #: pod/podfile/templates/podfile/customfilewidget.html
 msgid "Slides - Select a file"
 msgstr "Diapositives - Sélectionner un fichier"
 
+#: pod/podfile/templates/podfile/customfilewidget issue 949.html
 #: pod/podfile/templates/podfile/customfilewidget.html
 msgid "File to import - Select a file"
 msgstr "Fichier à importer - Sélectionner un fichier"
 
+#: pod/podfile/templates/podfile/customfilewidget issue 949.html
 #: pod/podfile/templates/podfile/customfilewidget.html
 msgid "Select a file"
 msgstr "Sélectionner un fichier"
 
+#: pod/podfile/templates/podfile/home_content issue 949.html
 #: pod/podfile/templates/podfile/home_content.html
 msgid "Toggle folders menu"
 msgstr "Afficher/masquer le menu des dossiers"
 
+#: pod/podfile/templates/podfile/home_content issue 949.html
 #: pod/podfile/templates/podfile/home_content.html
 msgid "Enter new name of folder"
 msgstr "Indiquer un nouveau nom à ce dossier"
 
+#: pod/podfile/templates/podfile/home_content issue 949.html
 #: pod/podfile/templates/podfile/home_content.html
 msgid "Share with someone"
 msgstr "Partager avec quelqu’un"
 
+#: pod/podfile/templates/podfile/home_content issue 949.html
 #: pod/podfile/templates/podfile/home_content.html
 msgid "Already shared with:"
 msgstr "Déjà partagé avec :"
 
+#: pod/podfile/templates/podfile/home_content issue 949.html
 #: pod/podfile/templates/podfile/home_content.html
 msgid "Username"
 msgstr "Nom d’utilisateur"
 
+#: pod/podfile/templates/podfile/home_content issue 949.html
 #: pod/podfile/templates/podfile/home_content.html
 msgid "Enter new username"
 msgstr "Entrer un nom d’utilisateur"
@@ -7345,6 +7407,18 @@ msgstr "Nombre de vues"
 #: pod/video/models.py
 msgid "View counts"
 msgstr "Statistiques"
+
+#: pod/video/models.py
+msgid "Marker time"
+msgstr "Temps de visionnage"
+
+#: pod/video/models.py
+msgid "User viewing time marker of video"
+msgstr "Marqueur temporel de visionnage de la vidéo par l'utilisateur"
+
+#: pod/video/models.py
+msgid "Users viewing time marker of video"
+msgstr "Marqueur temporel de visionnage de la vidéo par les utilisateurs"
 
 #: pod/video/models.py
 msgid "Video version"
@@ -8680,6 +8754,9 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Message"
+#~ msgstr "Message"
 
 #~ msgid "Toggle navigation"
 #~ msgstr "Basculer le menu"
