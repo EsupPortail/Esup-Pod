@@ -231,7 +231,7 @@ class ExternalRecordingUploadTestView(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         # Message for a bad URL
-        self.assertTrue(b"Impossible to upload to Pod the PeerTube" in response.content)
+        self.assertTrue(b"Impossible to upload to Pod the video" in response.content)
 
         # External BBB type
         recordingBBB = ExternalRecording.objects.get(name="test external bbb recording1")
