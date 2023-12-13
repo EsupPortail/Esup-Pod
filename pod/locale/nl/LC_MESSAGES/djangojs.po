@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-12 10:50+0100\n"
+"POT-Creation-Date: 2023-12-13 11:52+0100\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -31,8 +31,7 @@ msgid "The form could not be recovered."
 msgstr ""
 
 #: pod/chapter/static/js/chapters.js pod/completion/static/js/completion.js
-#: pod/enrichment/static/js/enrichment.js pod/main/static/js/main issue 949.js
-#: pod/main/static/js/main.js pod/podfile/static/podfile/js/filewidget
+#: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "You are no longer authenticated. Please log in again."
 msgstr ""
@@ -44,7 +43,7 @@ msgid ""
 msgstr ""
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
+#: pod/main/static/js/main.js
 msgid "One or more errors have been found in the form."
 msgstr ""
 
@@ -203,7 +202,6 @@ msgid "Error loading caption file: "
 msgstr ""
 
 #: pod/completion/static/js/completion.js
-#: pod/podfile/static/podfile/js/filewidget issue 949.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Are you sure you want to delete this file?"
 msgstr ""
@@ -273,8 +271,8 @@ msgstr ""
 msgid "Iframe and Script tags are not allowed."
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js pod/main/static/js/main issue 949.js
-#: pod/main/static/js/main.js pod/video/static/js/ajax-display-channels.js
+#: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
+#: pod/video/static/js/ajax-display-channels.js
 #: pod/video/static/js/comment-script.js
 msgid "Close"
 msgstr ""
@@ -411,63 +409,59 @@ msgstr ""
 msgid "Ascending sort"
 msgstr ""
 
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
+#: pod/main/static/js/main.js
 msgid "User not found"
 msgstr ""
 
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
+#: pod/main/static/js/main.js
 msgid "Are you sure you want to delete theme '%(title)s'?"
 msgstr ""
 
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
+#: pod/main/static/js/main.js
 msgid "Changes have been saved."
 msgstr ""
 
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
-#: pod/podfile/static/podfile/js/filewidget
-#: pod/podfile/static/podfile/js/filewidget.js
+#: pod/main/static/js/main.js pod/podfile/static/podfile/js/filewidget.js
 msgid "Error during exchange"
 msgstr ""
 
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
-#: pod/podfile/static/podfile/js/filewidget
-#: pod/podfile/static/podfile/js/filewidget.js
+#: pod/main/static/js/main.js pod/podfile/static/podfile/js/filewidget.js
 msgid "No data could be stored."
 msgstr ""
 
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
+#: pod/main/static/js/main.js
 msgid "Theme sucessfully deleted."
 msgstr ""
 
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
+#: pod/main/static/js/main.js
 msgid "Action performed successfully."
 msgstr ""
 
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
+#: pod/main/static/js/main.js
 msgid "Change your picture"
 msgstr ""
 
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
+#: pod/main/static/js/main.js
 msgid "Add your picture"
 msgstr ""
 
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
+#: pod/main/static/js/main.js
 msgid "Text copied"
 msgstr ""
 
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
+#: pod/main/static/js/main.js
 msgid "Errors appear in the form, please correct them"
 msgstr ""
 
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
+#: pod/main/static/js/main.js
 msgid "The file size exceeds the maximum allowed value:"
 msgstr ""
 
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
+#: pod/main/static/js/main.js
 msgid " GB."
 msgstr ""
 
-#: pod/main/static/js/main issue 949.js pod/main/static/js/main.js
+#: pod/main/static/js/main.js
 msgid "The file extension not in the allowed extension:"
 msgstr ""
 
@@ -505,13 +499,6 @@ msgstr ""
 msgid "Network response was not ok."
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget issue 949.js
-#: pod/podfile/static/podfile/js/filewidget.js
-#: pod/video/static/js/change_video_owner.js
-msgid "Loading…"
-msgstr ""
-
-#: pod/podfile/static/podfile/js/filewidget issue 949.js
 #: pod/podfile/static/podfile/js/filewidget.js
 #: pod/video/static/js/change_video_owner.js
 msgid "Loading…"
@@ -521,47 +508,38 @@ msgstr ""
 msgid "Change image"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget issue 949.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change file"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget issue 949.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Open file in a new tab"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget issue 949.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Change"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget issue 949.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Enter new name of folder"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget issue 949.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Remove"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget issue 949.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Server error"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget issue 949.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Are you sure you want to delete this folder?"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget issue 949.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "See more"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget issue 949.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "This folder is empty"
 msgstr ""
