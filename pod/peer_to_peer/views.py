@@ -37,7 +37,6 @@ def get_ids_by_urls(request): # TODO Add documentation
         all_keys = cache.keys("*")
 
 
-
         # Afficher le contenu associé à chaque clé
         for key in all_keys:
             value = cache.get(key)
