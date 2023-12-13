@@ -124,6 +124,15 @@ def get_last_videos(context):
 
 @register.simple_tag(name="get_video_infos")
 def get_video_infos(video):
+    """
+    Get videos infos (password, draft and chaptered) to display in list mode.
+
+    Args:
+        video ::class::`pod.video.models.Video`: Video model class.
+
+    Returns:
+        Return composite object of video's infos to be accessible in template
+    """
     is_password_protected = video.password or video.is_restricted
     is_chaptered = video.chapter_set.all().count() > 0
     return {
