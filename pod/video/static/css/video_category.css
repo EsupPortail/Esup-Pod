@@ -79,7 +79,7 @@
   display: flex;
   position: absolute;
   margin: 0.2em 0.4em;
-  background-color: rgba(255 255 255 0.8);
+  background-color: rgb(255 255 255 / 80%);
   border: 2px solid var(--pod-link-color);
   border-radius: var(--bs-border-radius-sm);
   inset: 0;
@@ -192,8 +192,8 @@
 }
 
 .categories_list_item:not(.active):hover {
-  background-color: rgba(149 149 149 0.09);
-  border-color: rgba(149 149 149 0.09);
+  background-color: rgb(149 149 149 / 9%);
+  border-color: rgb(149 149 149 / 9%);
 }
 
 .categories_list_item.active .cat_title {

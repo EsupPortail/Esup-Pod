@@ -597,8 +597,8 @@
       type === "success"
         ? `<i class="bi bi-check2-circle"></i>`
         : type === "error"
-        ? `<i class="bi bi-exclamation-triangle"></i>`
-        : `<i class="bi bi-info-circle"></i>`;
+          ? `<i class="bi bi-exclamation-triangle"></i>`
+          : `<i class="bi bi-info-circle"></i>`;
     let alert_message = document.createElement("div");
     alert_message.setAttribute(
       "class",
