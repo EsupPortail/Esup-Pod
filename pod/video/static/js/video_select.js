@@ -73,7 +73,8 @@ function toggleSelectedVideo(item){
         event.target.tagName === "A" ||
         event.target.tagName === "BUTTON" ||
         event.target.classList.contains("card-footer-link-i") ||
-        event.target.classList.contains("more-actions-row-i")) {
+        event.target.classList.contains("more-actions-row-i") ||
+        (event.keyCode && event.keyCode !== 13) ){
         return;
     }
     item.classList.toggle("selected");

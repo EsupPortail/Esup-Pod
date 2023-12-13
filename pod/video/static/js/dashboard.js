@@ -44,6 +44,7 @@ confirmModalBtn.addEventListener("click", (e) => {
     showLoader(modalLoader, true);
     manageDisableBtn(cancelModalBtn, false);
     manageDisableBtn(confirmModalBtn, false);
+    modalLoader.focus();
     bulkUpdate().then(() =>{
         showLoader(modalLoader, false);
         bootstrap.Modal.getInstance(modal).toggle();
