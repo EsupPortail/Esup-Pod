@@ -10,6 +10,8 @@ let coreCache = [];
 
 let peer; // TODO Update this ?
 
+let firstTime = false;
+
 
 function startConnect(options) {
     let uuid = crypto.randomUUID();
@@ -39,8 +41,10 @@ async function store_urls_id() {
     for (let i = 0; i < urlList.length; i++) {
         postData[urlList[i]] = 1;
     }
+    console.log('[p2p-script.js] postData:', postData);
+    console.log('[p2p-script.js] JSON.stringify(postData):', JSON.stringify(postData));
     // TODO Change the URL.
-    fetch(`http://localhost:9090/peer-to-peer/store/${peer.id}`, {
+    fetch(`http://localhost:9090/peer-to-peer/store/${peer.id}/`, {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
@@ -50,8 +54,14 @@ async function store_urls_id() {
         body: JSON.stringify(postData),
     }).then(function (response) {
         fetch_status = response.status;
-        return response.json();
+        console.log("JSON", response);
+        console.log("RESPONSE JSON:", response.json());
+        return response.json().then((data) => {
+            alert(data);
+            return data;
+        });
     }).then(function (json) {
+        console.log("FETCH-STATUS:", fetch_status);
         if (fetch_status == 200) {
             console.log(json);
         }
@@ -66,17 +76,19 @@ player.on('xhr-hooks-ready', () => {
     console.log('[p2p-script.js] xhr-hooks-ready event');
     const playerOnResponseHook = (request, error, response) => {
         console.log('[p2p-script.js] Inside playerOnResponseHook');
-        console.log('[p2p-script.js] content_type:', content_type);
-        if (content_type.includes(response.headers['content-type'])) {
-            console.log('[p2p-script.js] Condition met');
-            urlList.push(`${response.url}__ID__${peer.id}`);
-            coreCache[`${response.url}__ID__${peer.id}`] = response;
-            if (urlList.length > 10) {
-                delete coreCache[urlList[0]];
-                urlList.splice(0, 1);
-            }
-            store_urls_id();
+        // console.log('[p2p-script.js] content_type:', content_type);
+        console.log('[p2p-script.js] request: ', request);
+        console.log('[p2p-script.js] response: ', response);
+        // if (content_type.includes(response.headers['content-type'])) {
+        console.log('[p2p-script.js] Condition met');
+        urlList.push(`${response.url}__ID__${peer.id}`);
+        coreCache[`${response.url}__ID__${peer.id}`] = response;
+        if (urlList.length > 10) {
+            delete coreCache[urlList[0]];
+            urlList.splice(0, 1);
         }
+        store_urls_id();
+        // }
     }
 
     const playerOnRequestHook = (options) => {
@@ -89,7 +101,7 @@ player.on('xhr-hooks-ready', () => {
         return options;
     }
 
-    console.log('[p2p-script.js] player.tech().vhs.xhr:', player.tech().vhs.xhr());
+    console.log('[p2p-script.js] player.tech().vhs.xhr:', player.tech().vhs.xhr);
     player.tech().vhs.xhr = function(urlC, callback) {
         console.log("URLC CALLLLLLLL", urlC, callback);
         let url = '';
@@ -100,6 +112,7 @@ player.on('xhr-hooks-ready', () => {
             console.log('[p2p-script.js] urlC:', urlC);
             console.log('[p2p-script.js] urlC.responseType:', urlC.responseType);
             if (urlC.responseType === 'arraybuffer') {
+                firstTime = true;
                 if (nbLog < 10) {
                     console.log('urlC', urlC);
                     nbLog++;
@@ -110,7 +123,17 @@ player.on('xhr-hooks-ready', () => {
                 }
                 videojs.Vhs.xhr.onResponse(playerOnResponseHook);
                 return videojs.Vhs.xhr(urlC, callback);
+            } else if (!firstTime) {
+                firstTime = true;
+                url = urlC.url;
+                videojs.Vhs.xhr.onResponse(playerOnResponseHook);
+                return videojs.Vhs.xhr(urlC, callback);
             }
+             // } else {
+            //     url = urlC.url;
+            //     videojs.Vhs.xhr.onResponse(playerOnResponseHook);
+            //     return videojs.Vhs.xhr(urlC, callback);
+            // }
         } else {
             url = urlC;
             videojs.Vhs.xhr.onResponse(playerOnResponseHook);
