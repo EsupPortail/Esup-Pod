@@ -2249,7 +2249,7 @@ msgstr ""
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
-"The address entered must correspond to a video file. The platform to which "
+"The entered address must correspond to a video file. The platform to which "
 "you copy the link may offer several possibilities; feel free to test the "
 "different links provided."
 msgstr ""
@@ -2405,7 +2405,7 @@ msgid "Delete the external recording"
 msgstr ""
 
 #: pod/import_video/utils.py pod/import_video/views.py pod/meeting/views.py
-msgid "Impossible to upload to Pod the video"
+msgid "Unable to upload the video to Pod"
 msgstr ""
 
 #: pod/import_video/utils.py
@@ -4446,10 +4446,8 @@ msgid "Toggle main menu"
 msgstr ""
 
 #: pod/main/templates/navbar.html
-#, fuzzy
-#| msgid "Main fields"
 msgid "Main menu"
-msgstr "Belangrijkste velden"
+msgstr ""
 
 #: pod/main/templates/navbar.html
 msgid "Close main menu"
@@ -5818,10 +5816,8 @@ msgid "Favorites"
 msgstr ""
 
 #: pod/playlist/tests/test_forms.py
-#, fuzzy
-#| msgid "Title field is required"
 msgid "This field is required."
-msgstr "Titelveld is verplicht"
+msgstr ""
 
 #: pod/playlist/tests/test_forms.py
 msgid "You cannot create a playlist named \"Favorites\""

@@ -2197,10 +2197,8 @@ msgid "You cannot enrich this video."
 msgstr "Vous ne pouvez pas enrichir cette vidéo."
 
 #: pod/enrichment/views.py pod/video/views.py
-#, fuzzy
-#| msgid "You cannot access this folder."
 msgid "You cannot access this playlist because it is private."
-msgstr "Vous ne pouvez pas voir ce dossier."
+msgstr "Vous ne pouvez pas accéder à cette liste de lecture car elle est privée."
 
 #: pod/import_video/apps.py
 msgid "Import External Video"
@@ -2387,7 +2385,7 @@ msgstr "Conseils pratiques"
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
-"The address entered must correspond to a video file. The platform to which "
+"The entered address must correspond to a video file. The platform to which "
 "you copy the link may offer several possibilities; feel free to test the "
 "different links provided."
 msgstr ""
@@ -2564,7 +2562,7 @@ msgid "Delete the external recording"
 msgstr "Supprimer l’enregistrement externe"
 
 #: pod/import_video/utils.py pod/import_video/views.py pod/meeting/views.py
-msgid "Impossible to upload to Pod the video"
+msgid "Unable to upload the video to Pod"
 msgstr "Impossible de téléverser la vidéo sur Pod"
 
 #: pod/import_video/utils.py
@@ -2675,16 +2673,12 @@ msgstr ""
 "enregistrement."
 
 #: pod/import_video/views.py
-#, fuzzy, python-format
-#| msgid ""
-#| "This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a "
-#| "href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgid ""
 "This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a href="
 "\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
-"%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 
 #: pod/import_video/views.py
 #, python-format
@@ -3714,19 +3708,6 @@ msgstr "Évènements à venir"
 #: pod/live/templates/live/my_events.html
 msgid "Past events"
 msgstr "Évènements passés"
-
-#: pod/live/templates/meeting/bbb_form.html
-#, fuzzy
-#| msgid ""
-#| "You can send a message (100 characters maximum) to the BigBlueButton "
-#| "session. It will be displayed within 15 to 30 seconds on the live video."
-msgid ""
-"You can send a message (100 characters maximum) to the speakers/trainers. "
-"They will receive it in few seconds."
-msgstr ""
-"Vous pouvez envoyer un message (100 caractères maximum) à la session "
-"BigBlueButton. Il sera affiché dans les 15 à 30 secondes sur la vidéo en "
-"direct."
 
 #: pod/live/utils.py
 #, python-format
@@ -5554,24 +5535,6 @@ msgstr "Ou après"
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "occurrences"
 msgstr "occurrences"
-
-#: pod/meeting/templates/meeting/webinary_options_modal_form.html
-#, fuzzy
-#| msgid "Enable chat"
-msgid "Enable the chat"
-msgstr "Activer le tchat"
-
-#: pod/meeting/templates/meeting/webinary_options_modal_form.html
-#, fuzzy
-#| msgid "Enable chat"
-msgid "enable_chat"
-msgstr "Activer le tchat"
-
-#: pod/meeting/templates/meeting/webinary_options_modal_form.html
-#, fuzzy
-#| msgid "Show public chat"
-msgid "Show chat"
-msgstr "Affichage du tchat public"
 
 #: pod/meeting/utils.py
 #, python-format

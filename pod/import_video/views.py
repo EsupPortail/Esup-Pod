@@ -400,7 +400,7 @@ def upload_recording_to_pod(request, record_id):
     except Exception as exc:
         msg = {}
         proposition = ""
-        msg["error"] = _("Impossible to upload to Pod the video")
+        msg["error"] = _("Unable to upload the video to Pod")
         try:
             # Management of error messages from sub-functions
             message = exc.args[0]["message"]

@@ -231,7 +231,7 @@ class ExternalRecordingUploadTestView(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         # Message for a bad URL
-        self.assertTrue(b"Impossible to upload to Pod the video" in response.content)
+        self.assertTrue(b"Unable to upload the video to Pod" in response.content)
 
         # External BBB type
         recordingBBB = ExternalRecording.objects.get(name="test external bbb recording1")
@@ -251,7 +251,7 @@ class ExternalRecordingUploadTestView(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         # Message for a bad URL
-        self.assertTrue(b"Impossible to upload to Pod the video" in response.content)
+        self.assertTrue(b"Unable to upload the video to Pod" in response.content)
 
         # Video type
         recordingVideo = ExternalRecording.objects.get(
@@ -273,7 +273,7 @@ class ExternalRecordingUploadTestView(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         # Message for a bad URL
-        self.assertTrue(b"Impossible to upload to Pod the video" in response.content)
+        self.assertTrue(b"Unable to upload the video to Pod" in response.content)
 
         # Video type - Mediacad video
         recordingMediacad = ExternalRecording.objects.get(
@@ -295,6 +295,6 @@ class ExternalRecordingUploadTestView(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         # Message for a bad URL
-        self.assertTrue(b"Impossible to upload to Pod the video" in response.content)
+        self.assertTrue(b"Unable to upload the video to Pod" in response.content)
 
         print(" --->  test_recording_upload_get_request of RecordingUploadTestView: OK!")
