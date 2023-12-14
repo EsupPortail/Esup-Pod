@@ -58,7 +58,7 @@ def secure_request_for_upload(request):
     # Source_url and recording_name are necessary
     if request.POST.get("source_url") == "" or request.POST.get("recording_name") == "":
         msg = {}
-        msg["error"] = _("Impossible to upload to Pod the video")
+        msg["error"] = _("Unable to upload the video to Pod")
         msg["message"] = _("No URL found / No recording name")
         msg["proposition"] = _(
             "Try changing the record type or address for this recording"
@@ -119,7 +119,7 @@ def parse_remote_file(session, source_html_url):
                     "In the case of a video from a Pod platform, please enter "
                     "the source file address, available in the video edition."
                 )
-            raise ValueError("<div class='alert alert-info'>%s</div>" % msg)
+            raise ValueError("<div role='alert' class='alert alert-info'>%s</div>" % msg)
     except Exception as exc:
         msg = {}
         msg["error"] = _(
