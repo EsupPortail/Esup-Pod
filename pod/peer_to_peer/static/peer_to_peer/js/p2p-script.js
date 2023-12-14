@@ -2,7 +2,7 @@ console.log('P2P SCRIPT LOADED');
 
 console.log('player', player);
 
-let videoId = '47858-rabbit-and-others' // TODO Set the true identifier
+let videoSlug = '47858-rabbit-and-others' // TODO Set the true identifier
 
 let urlList = [];
 
@@ -16,7 +16,7 @@ let firstTime = false;
 function startConnect(options) {
     console.log('[p2p-script.js] startConnect()');
     let uuid = crypto.randomUUID();
-    let peerId = `${videoId}_ID_${uuid}`;
+    let peerId = `${videoSlug}_ID_${uuid}`;
     peer = new Peer(peerId, options);
     console.log("Peer:", peer);
 
@@ -43,7 +43,7 @@ async function getIds() {
     console.log('[p2p-script.js] getIds()');
     let idList = [];
     let postData = {
-        'url': videoId,
+        'url': videoSlug,
     };
     console.log('[p2p-script.js] postData:', postData);
     // TODO Update the URL
