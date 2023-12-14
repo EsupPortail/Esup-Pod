@@ -14,8 +14,10 @@ let firstTime = false;
 
 
 function startConnect(options) {
+    console.log('[p2p-script.js] startConnect()');
     let uuid = crypto.randomUUID();
-    peer = new Peer(`${videoId}__ID__${uuid}`, options);
+    let peerId = `${videoId}_ID_${uuid}`;
+    peer = new Peer(peerId, options);
     console.log("Peer:", peer);
 
     if (false) { // TODO Delete this test | Set true for sender
@@ -102,8 +104,8 @@ player.on('xhr-hooks-ready', () => {
         console.log('[p2p-script.js] response: ', response);
         // if (content_type.includes(response.headers['content-type'])) {
         console.log('[p2p-script.js] Condition met');
-        urlList.push(`${response.url}__ID__${peer.id}`);
-        coreCache[`${response.url}__ID__${peer.id}`] = response;
+        urlList.push(`${response.url}_ID_${peer.id}`);
+        coreCache[`${response.url}_ID_${peer.id}`] = response;
         if (urlList.length > 10) {
             delete coreCache[urlList[0]];
             urlList.splice(0, 1);

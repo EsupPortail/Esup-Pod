@@ -14,11 +14,11 @@ import json
 # ou cache dedié ?
 # from django.core.cache import caches
 # cache  = caches['video_p2p']
-# keys format : <url>__ID__<id>
+# keys format : <url>_ID_<id>
 
 @csrf_exempt   # TODO Add csrf cookie
 def store_urls_id(request, id): # TODO Add documentation
-    cache.delete_pattern("*__ID__%s" % id)
+    cache.delete_pattern("*_ID_%s" % id)
     if request.body:
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
