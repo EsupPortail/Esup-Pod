@@ -2,7 +2,7 @@ console.log('P2P SCRIPT LOADED');
 
 console.log('player', player);
 
-let videoId = '47858-rabbit-and-others' // TODO Set the true identifier
+let videoSlug = '47858-rabbit-and-others' // TODO Set the true identifier
 
 let urlList = [];
 
@@ -16,7 +16,7 @@ let firstTime = false;
 function startConnect(options) {
     console.log('[p2p-script.js] startConnect()');
     let uuid = crypto.randomUUID();
-    let peerId = `${videoId}_ID_${uuid}`;
+    let peerId = `${videoSlug}_ID_${uuid}`;
     peer = new Peer(peerId, options);
     console.log("Peer:", peer);
 
@@ -43,7 +43,7 @@ async function getIds() {
     console.log('[p2p-script.js] getIds()');
     let idList = [];
     let postData = {
-        'url': videoId,
+        'url': videoSlug,
     };
     console.log('[p2p-script.js] postData:', postData);
     // TODO Update the URL
@@ -83,11 +83,7 @@ async function storeUrlsId() {
     }).then(function (response) {
         fetch_status = response.status;
         console.log("JSON", response);
-        console.log("RESPONSE JSON:", response.json());
-        return response.json().then((data) => {
-            alert(data);
-            return data;
-        });
+        return response.json();
     }).then(function (json) {
         console.log("FETCH-STATUS:", fetch_status);
         if (fetch_status == 200) {
@@ -109,7 +105,7 @@ player.on('xhr-hooks-ready', () => {
         console.log('[p2p-script.js] response: ', response);
         // if (content_type.includes(response.headers['content-type'])) {
         console.log('[p2p-script.js] Condition met');
-        urlList.push(`${response.url}_ID_${peer.id}`);
+        urlList.push(peer.id);
         coreCache[`${response.url}_ID_${peer.id}`] = response;
         if (urlList.length > 10) {
             delete coreCache[urlList[0]];
