@@ -83,11 +83,7 @@ async function storeUrlsId() {
     }).then(function (response) {
         fetch_status = response.status;
         console.log("JSON", response);
-        console.log("RESPONSE JSON:", response.json());
-        return response.json().then((data) => {
-            alert(data);
-            return data;
-        });
+        return response.json();
     }).then(function (json) {
         console.log("FETCH-STATUS:", fetch_status);
         if (fetch_status == 200) {
@@ -109,7 +105,7 @@ player.on('xhr-hooks-ready', () => {
         console.log('[p2p-script.js] response: ', response);
         // if (content_type.includes(response.headers['content-type'])) {
         console.log('[p2p-script.js] Condition met');
-        urlList.push(`${response.url}_ID_${peer.id}`);
+        urlList.push(peer.id);
         coreCache[`${response.url}_ID_${peer.id}`] = response;
         if (urlList.length > 10) {
             delete coreCache[urlList[0]];
