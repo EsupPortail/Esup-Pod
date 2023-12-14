@@ -34,8 +34,8 @@ function startConnect(options) {
     });
 }
 
-async function store_urls_id() {
-    console.log('[p2p-script.js] store_urls_id()');
+async function storeUrlsId() {
+    console.log('[p2p-script.js] storeUrlsId()');
     let fetch_status;
     let postData = {};
     for (let i = 0; i < urlList.length; i++) {
@@ -87,7 +87,7 @@ player.on('xhr-hooks-ready', () => {
             delete coreCache[urlList[0]];
             urlList.splice(0, 1);
         }
-        store_urls_id();
+        storeUrlsId();
         // }
     }
 
