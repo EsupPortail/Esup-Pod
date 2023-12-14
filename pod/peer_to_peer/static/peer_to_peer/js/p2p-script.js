@@ -15,7 +15,7 @@ let firstTime = false;
 
 function startConnect(options) {
     let uuid = crypto.randomUUID();
-    peer = new Peer(`${videoId}-${uuid}`, options);
+    peer = new Peer(`${videoId}__ID__${uuid}`, options);
     console.log("Peer:", peer);
 
     if (false) { // TODO Delete this test | Set true for sender
@@ -32,6 +32,27 @@ function startConnect(options) {
             console.log(data);
         });
     });
+}
+
+/**
+ * Get the peer identifiers.
+ */
+async function getIds() {
+    console.log('[p2p-script.js] getIds()');
+    let idList = [];
+    let postData = {
+        'url': videoId,
+    };
+    // TODO Update the URL
+    fetch('http://localhost:9090/peer-to-peer/get-ids/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+    }).then(response => response.json())
+        .then(response => console.log(response))
+        .catch(err => console.error(err));
 }
 
 async function storeUrlsId() {
