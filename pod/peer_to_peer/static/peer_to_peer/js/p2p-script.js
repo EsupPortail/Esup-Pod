@@ -45,16 +45,21 @@ async function getIds() {
     let postData = {
         'url': videoId,
     };
+    console.log('[p2p-script.js] postData:', postData);
     // TODO Update the URL
-    fetch('http://localhost:9090/peer-to-peer/get-ids/', {
+    await fetch('http://localhost:9090/peer-to-peer/get-ids/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(postData),
     }).then(response => response.json())
-        .then(response => console.log(response))
+        .then(response => {
+            idList = [].concat(response);
+            console.log(idList);
+        })
         .catch(err => console.error(err));
+    return idList;
 }
 
 async function storeUrlsId() {
