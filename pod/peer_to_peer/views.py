@@ -22,7 +22,8 @@ def store_urls_id(request, id):  # TODO Add documentation
     if request.body:
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        cache.set_many(body)
+        expiration_time = 12 * 60 * 60 # 12 hours
+        cache.set_many(body, timeout=expiration_time)
         return JsonResponse(body)
     return HttpResponseForbidden(_("You must provide data to store"))
 
