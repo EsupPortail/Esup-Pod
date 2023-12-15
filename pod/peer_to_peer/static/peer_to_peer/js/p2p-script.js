@@ -347,6 +347,11 @@ player.on('xhr-hooks-ready', () => {
         }
     };
 
+    player.tech().vhs.xhr.beforeRequest = function (options) {
+        console.log('HLS Request:', options);
+        return options;
+    }
+
     // FIN player.on('xhr-hooks-ready', () => {
 });
 
