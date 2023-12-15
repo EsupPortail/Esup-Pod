@@ -59,9 +59,6 @@ def test(request):
 
 @csrf_exempt
 def clear_invalid_peer_in_caches(request):
-    """
-    Json received in request : {"peer_id": "peer_id"}
-    """
     if request.method == "POST":
         try:
             data = json.loads(request.body)
@@ -69,7 +66,7 @@ def clear_invalid_peer_in_caches(request):
 
             if peer_id:
                 cache.delete(peer_id)
-                return JsonResponse({"message": "Peer deleted from cache"}, status=200)
+                return JsonResponse({"message": "Peer deleted from cache", "deleted_peer": peer_id}, status=200)
             else:
                 return JsonResponse({"message": "No peer_id provided"}, status=400)
         except Exception as e:

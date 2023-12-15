@@ -65,9 +65,32 @@ async function connectToAnyPeers() {
             return;
         } catch (err) {
             console.error(`[p2p-script.js] [${functionName}] Connection Error to ${idPeer} | Cause: Catch Block`);
+            removePeerFromCache(idPeer);
         }
     }
     console.log(`[p2p-script.js] [${functionName}] No successful connection with available pairs`);
+}
+
+/**
+ * Removes a peer from the cache.
+ * @param {string} idPeer - The peer identifier with format: {videoSlug}_ID_{peerUuid}.
+ * @returns {void}
+ */
+function removePeerFromCache(idPeer) {
+    console.log('[p2p-script.js] [removePeerFromCache] idPeer:', idPeer);
+    fetch(`http://localhost:9090/peer-to-peer/clear-invalid-peer/`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ "peer_id": idPeer }),
+    })
+        .then(response => response.json())
+        .then(response => {
+            console.log('[p2p-script.js] [removePeerFromCache] response:', response);
+        })
+        .catch(err => console.error(err));
 }
 
 /**
@@ -297,4 +320,4 @@ player.on('xhr-hooks-ready', () => {
 });
 
 
-startConnect({ host: "127.0.0.1", port: "9000", path: '/', key: 'peerjs', debug: 3 });
+startConnect({ host: "134.206.5.156", port: "9000", path: '/', key: 'peerjs', debug: 3 });
