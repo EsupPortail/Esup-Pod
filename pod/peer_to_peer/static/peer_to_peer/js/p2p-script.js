@@ -44,32 +44,55 @@ let firstTime = false;
  */
 let connectedId = "";
 
-async function connectToAnyPeers() {
-    const functionName = 'connectToAnyPeers';
-    for (const idPeer of await getIds()) {
-        try {
-            const conn = peer.connect(idPeer);
 
-            await new Promise((resolve, reject => {
+
+async function connectToAnyPeers() {
+    const functionName = 'connectToAnyPeers()';
+    try {
+        const idList = await getIds();
+        console.log(`[p2p-script.js] [${functionName}] idList:`, idList);
+        await connectToNextPeer(idList);
+        console.log(`[p2p-script.js] [${functionName}] No successful connection`);
+    } catch (err) {
+        console.error(`[p2p-script.js] [${functionName}] An error occurred: ${err}`);
+    }
+}
+
+
+
+async function connectToNextPeer(idList, index = 0) {
+    const functionName = 'connectToNextPeer()';
+    if (index >= idList.length) {
+        return;
+    }
+    const peerId = idList[index];
+
+    if (peerId !== peer.id) {
+        console.log(`[p2p-script.js] [${functionName}] Attempting to connect to peer: ${peerId}`);
+        try {
+            const conn = peer.connect(peerId);
+            await new Promise((resolve, reject) => {
                 conn.on('open', () => {
-                    console.log(`[p2p-script.js] [${functionName}] Connected to ${idPeer}`);
+                    console.log(`[p2p-script.js] [${functionName}] Connection to peer successful: ${peerId}`);
                     resolve();
                 });
 
-                conn.on('error', (error) => {
-                    console.error(`[p2p-script.js] [${functionName}] Connection Error to ${idPeer} | Cause: PeerJS`);
-                    reject(err);
+                conn.on('error', (err) => {
+                    console.error(`[p2p-script.js] [${functionName}] Connection error: ${err}`);
+                    reject();
                 });
-            }));
+            });
 
             return;
         } catch (err) {
-            console.error(`[p2p-script.js] [${functionName}] Connection Error to ${idPeer} | Cause: Catch Block`);
-            removePeerFromCache(idPeer);
+            console.error(`[p2p-script.js] [${functionName}] Error connecting to peer: ${peerId}`);
         }
     }
-    console.log(`[p2p-script.js] [${functionName}] No successful connection with available pairs`);
+
+    await connectToNextPeer(idList, index + 1);
 }
+
+
 
 /**
  * Removes a peer from the cache.
@@ -93,6 +116,8 @@ function removePeerFromCache(idPeer) {
         .catch(err => console.error(err));
 }
 
+
+
 /**
  * Establishes a peer-to-peer connection using the provided options.
  * @param {Object} options - Configuration options for the Peer object.
@@ -108,7 +133,7 @@ async function startConnect(options) {
     const idList = await getIds();
     console.log('idList', idList);
     console.log('[p2p-script.js] [startConnect()] idList.length:', idList.length);
-    if (idList.length <= 1) {
+    if (idList.length <= 0) {
         console.log('[p2p-script.js] [startConnect()] CDN connection | Cause: idList.length <= 1');
         // TODO Make CDN live function and call this here
     } else {
@@ -158,6 +183,8 @@ async function startConnect(options) {
     });
 }
 
+
+
 /**
  * Retrieves peer identifiers associated with the current video.
  * @async
@@ -184,6 +211,8 @@ async function getIds() {
         .catch(err => console.error(err));
     return idList;
 }
+
+
 
 /**
  * Stores URLs associated with the current peer's ID on the server.
@@ -221,6 +250,8 @@ async function storeUrlsId() {
         console.log(error);
     });
 }
+
+
 
 // TODO Call the function
 
