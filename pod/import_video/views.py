@@ -421,9 +421,7 @@ def upload_video_recording_to_pod(request, record_id):
         type_source_url = check_source_url(request.POST.get("source_url"))
         # Mediacad platform
         if type_source_url is not None and type_source_url.type == "Mediacad":
-            return upload_mediacad_recording_to_pod(
-                request, record_id, type_source_url
-            )
+            return upload_mediacad_recording_to_pod(request, record_id, type_source_url)
         else:
             # Video file (or BBB video file, same process) source URL
             return upload_bbb_recording_to_pod(request, record_id)
@@ -485,12 +483,7 @@ def upload_bbb_recording_to_pod(request, record_id):
         dest_path = define_dest_path(request, recording.id, extension)
 
         # Step 3: Download the video file
-        source_video_url = manage_download(
-            session,
-            source_url,
-            video_file_add,
-            dest_file
-        )
+        source_video_url = manage_download(session, source_url, video_file_add, dest_file)
 
         # Step 4: Save informations about the recording
         recording_title = request.POST.get("recording_name")
@@ -613,7 +606,7 @@ def get_mediacad_api_description(type_source_url):
         "name": mc_video_title,
         "type": "Mediacad",
         "url": type_source_url.url,
-        "desc": mc_video_desc
+        "desc": mc_video_desc,
     }
     return description
 
