@@ -231,10 +231,7 @@ def download_video_file(session, source_video_url, dest_file):
             # print(session.cookies.get_dict())
             if response.status_code != 200:
                 raise ValueError(
-                    _(
-                        "The video file for this recording "
-                        "was not found on the server."
-                    )
+                    _("The video file for this recording " "was not found on the server.")
                 )
 
             with open(dest_file, "wb+") as file:
@@ -366,7 +363,7 @@ def check_source_url(source_url):  # noqa: C901
     platform = ""
     platform_type = None
     # Source URL array
-    array_url = source_url.split('/')
+    array_url = source_url.split("/")
     # Parse for parameters
     url = urlparse(source_url)
     if url.query:
@@ -376,7 +373,7 @@ def check_source_url(source_url):  # noqa: C901
         if source_url.find("/download.php?t=") != -1 and url.query:
             # Mediacad direct video link (with ##format## in: mp4, source, webm)
             # ##mediacadBaseUrl##/download.php?t=##token##&e=##format##&m=##mediaId##
-            base_url = source_url[:source_url.find("/download.php?t=")]
+            base_url = source_url[: source_url.find("/download.php?t=")]
             media_id = query["m"][0]
             format = query["e"][0].replace("source", "mp4")
             # Force to download mp4 file if source
@@ -388,7 +385,7 @@ def check_source_url(source_url):  # noqa: C901
         ):
             # Mediacad direct video link (with ##format## in: mp4, source, webm)
             # ##mediacadBaseUrl##/default/media/display/m/##mediaId##/e/##format##/d/d
-            base_url = source_url[:source_url.find("/default/media/display/m/")]
+            base_url = source_url[: source_url.find("/default/media/display/m/")]
             media_id = array_url[-5]
             format = array_url[-3].replace("source", "mp4")
             # Force to download mp4 file if source
@@ -397,7 +394,7 @@ def check_source_url(source_url):  # noqa: C901
         elif source_url.find("/d/m/e") != -1:
             # Mediacad direct video link (with ##format## in: mp4, source, webm)
             # ##mediacadBaseUrl##/m/##mediaId##/d/m/e/##format##
-            base_url = source_url[:source_url.find("/m/")]
+            base_url = source_url[: source_url.find("/m/")]
             media_id = array_url[-5]
             format = array_url[-1].replace("source", "mp4")
             source_video_url = source_url.replace("/e/source", "/e/mp4")
@@ -406,7 +403,7 @@ def check_source_url(source_url):  # noqa: C901
             # Mediacad page link
             # ##mediacadBaseUrl##/default/media/display/m/##mediaId##
             # ##mediacadBaseUrl##/default/media/display/page/1/sort/date/m/##mediaId##
-            base_url = source_url[:source_url.find("/default/media/display/")]
+            base_url = source_url[: source_url.find("/default/media/display/")]
             media_id = array_url[-1]
             format = "mp4"
             source_video_url = source_url + "/e/mp4/d/d"
@@ -414,12 +411,13 @@ def check_source_url(source_url):  # noqa: C901
         elif source_url.find("/m/") != -1:
             # Mediacad page link
             # ##mediacadBaseUrl##/m/##mediaId##
-            base_url = source_url[:source_url.find("/m/")]
+            base_url = source_url[: source_url.find("/m/")]
             media_id = array_url[-1]
             format = "mp4"
             # Download possible on all Mediacad platform with such an URL
             source_video_url = "%s/default/media/display/m/%s/e/mp4/d/d" % (
-                base_url, media_id
+                base_url,
+                media_id,
             )
             platform = "Mediacad"
 
@@ -430,24 +428,19 @@ def check_source_url(source_url):  # noqa: C901
             url_api_video = "%s/default/media/display/m/%s/d/j" % (base_url, media_id)
             # Platform type
             platform_type = TypeSourceURL(
-                platform,
-                source_video_url,
-                format,
-                url_api_video
+                platform, source_video_url, format, url_api_video
             )
 
         return platform_type
     except Exception as exc:
         msg = {}
-        msg["error"] = _(
-            "The video file for this recording was not found."
-        )
+        msg["error"] = _("The video file for this recording was not found.")
         msg["message"] = mark_safe(str(exc))
         raise ValueError(msg)
 
 
 def define_dest_file(request, id, extension):
-    """ Define standard destination filename for an external recording."""
+    """Define standard destination filename for an external recording."""
     # Set a discriminant
     discrim = dt.now().strftime("%Y%m%d%H%M%S")
     dest_file = os.path.join(
@@ -461,7 +454,7 @@ def define_dest_file(request, id, extension):
 
 
 def define_dest_path(request, id, extension):
-    """ Define standard destination path for an external recording."""
+    """Define standard destination path for an external recording."""
     # Set a discriminant
     discrim = dt.now().strftime("%Y%m%d%H%M%S")
     dest_path = os.path.join(
@@ -477,6 +470,7 @@ class TypeSourceURL:
 
     Define context, and platform used, about a source URL.
     """
+
     # Source URL type, like Mediacad, Pod...
     type = ""
     # Source video file URL
