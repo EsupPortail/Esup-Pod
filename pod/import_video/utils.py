@@ -470,6 +470,7 @@ class TypeSourceURL:
 
     Define context, and platform used, about a source URL.
     """
+
     # Source URL type, like Mediacad, Pod...
     type = ""
     # Source video file URL
