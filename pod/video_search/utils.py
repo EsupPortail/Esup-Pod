@@ -15,6 +15,7 @@ ES_INDEX = getattr(settings, "ES_INDEX", "pod")
 ES_TIMEOUT = getattr(settings, "ES_TIMEOUT", 30)
 ES_MAX_RETRIES = getattr(settings, "ES_MAX_RETRIES", 10)
 ES_VERSION = getattr(settings, "ES_VERSION", 6)
+ES_OPTIONS = getattr(settings, "ES_OPTIONS", {})
 
 
 def index_es(video):
@@ -24,6 +25,7 @@ def index_es(video):
         timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
         retry_on_timeout=True,
+        **ES_OPTIONS,
     )
     if es.ping():
         try:
@@ -57,6 +59,7 @@ def delete_es(video):
         timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
         retry_on_timeout=True,
+        **ES_OPTIONS,
     )
     if es.ping():
         try:
@@ -88,6 +91,7 @@ def create_index_es():
         timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
         retry_on_timeout=True,
+        **ES_OPTIONS,
     )
     if ES_VERSION in [7, 8]:
         template_file = "pod/video_search/search_template7.json"
@@ -117,6 +121,7 @@ def delete_index_es():
         timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
         retry_on_timeout=True,
+        **ES_OPTIONS,
     )
     try:
         delete = es.indices.delete(index=ES_INDEX)
