@@ -16,6 +16,7 @@ ES_INDEX = getattr(settings, "ES_INDEX", "pod")
 ES_TIMEOUT = getattr(settings, "ES_TIMEOUT", 30)
 ES_MAX_RETRIES = getattr(settings, "ES_MAX_RETRIES", 10)
 ES_VERSION = getattr(settings, "ES_VERSION", 6)
+ES_OPTIONS = getattr(settings, "ES_OPTIONS", {})
 
 
 def get_filter_search(selected_facets, start_date, end_date):
@@ -103,6 +104,7 @@ def search_videos(request):
         timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
         retry_on_timeout=True,
+        **ES_OPTIONS,
     )
     aggsAttrs = [
         "owner_full_name",
