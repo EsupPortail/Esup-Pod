@@ -514,7 +514,7 @@ msgstr "Enregistrer la session dans le tableau de bord"
 #: pod/bbb/models.py
 msgid ""
 "Do you want to save the video of this meeting, at the end of the live, "
-"directly in \"Dashboard\"?"
+"directly in “Dashboard“?"
 msgstr ""
 "Souhaitez-vous enregistrer la vidéo de cette session, à la fin du direct, "
 "directement dans « Tableau de bord » ?"
