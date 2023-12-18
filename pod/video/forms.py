@@ -542,8 +542,8 @@ def launch_encode(sender, instance, created, **kwargs):
         Launch encoding after save Video if requested.
 
         Args:
-            sender ::class::`pod.video.models.Video`: Video model class.
-            instance (Video): video object instance.
+            sender (:class:`pod.video.models.Video`): Video model class.
+            instance (:class:`pod.video.models.Video`): Video object instance.
     """
     if hasattr(instance, "launch_encode") and instance.launch_encode is True:
         instance.launch_encode = False
@@ -557,8 +557,8 @@ def launch_transcript(sender, instance, created, **kwargs):
         Launch transcription after save Video if requested.
 
         Args:
-            sender ::class::`pod.video.models.Video`: Video model class.
-            instance (Video): video object instance.
+            sender (:class:`pod.video.models.Video`): Video model class.
+            instance (:class:`pod.video.models.Video`): Video object instance.
     """
     if hasattr(instance, "launch_transcript") and instance.launch_transcript is True:
         instance.launch_transcript = False

@@ -128,7 +128,7 @@ def get_video_infos(video):
     Get videos infos (password, draft and chaptered) to display in list mode.
 
     Args:
-        video ::class::`pod.video.models.Video`: Video model class.
+        video (:class:`pod.video.models.Video`): Video object instance.
 
     Returns:
         Return composite object of video's infos to be accessible in template
