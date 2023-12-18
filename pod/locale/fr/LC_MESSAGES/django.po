@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-04 16:46+0100\n"
+"POT-Creation-Date: 2023-12-13 11:52+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2561,8 +2561,8 @@ msgstr ""
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid "To do this, please use the 'Upload to Pod as video' button in the list."
 msgstr ""
-"Pour ce faire, veuillez utiliser le bouton « Télécharger sur le pod en tant "
-"que vidéo » dans la liste."
+"Pour ce faire, veuillez utiliser le bouton « Télécharger sur Pod en tant que "
+"vidéo » dans la liste."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
@@ -2579,6 +2579,29 @@ msgid "An email will be sent to you when all encoding tasks are completed."
 msgstr ""
 "Un courriel vous sera envoyé quand toutes les tâches d’encodage seront "
 "complétées."
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "Useful tips"
+msgstr "Conseils pratiques"
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"The entered address must correspond to a video file. The platform to which "
+"you copy the link may offer several possibilities; feel free to test the "
+"different links provided."
+msgstr ""
+"L'adresse saisie doit correspondre à un fichier vidéo. La plateforme vers "
+"laquelle vous copiez le lien peut offrir plusieurs possibilités ; n'hésitez "
+"pas à tester les différents liens proposés."
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"For example, in the case of a video from a Pod platform, please enter the "
+"source file address, available in the video edition."
+msgstr ""
+"Par exemple, dans le cas d'une vidéo provenant d'une plateforme Pod, "
+"veuillez entrer l'adresse du fichier source, disponible dans l'édition de la "
+"vidéo."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid "Terms of Service"
@@ -2740,7 +2763,7 @@ msgid "Delete the external recording"
 msgstr "Supprimer l’enregistrement externe"
 
 #: pod/import_video/utils.py pod/import_video/views.py pod/meeting/views.py
-msgid "Impossible to upload to Pod the video"
+msgid "Unable to upload the video to Pod"
 msgstr "Impossible de téléverser la vidéo sur Pod"
 
 #: pod/import_video/utils.py
@@ -2754,9 +2777,8 @@ msgstr ""
 "enregistrement"
 
 #: pod/import_video/utils.py
-msgid "The HTML file for this recording was not found on the BBB server."
-msgstr ""
-"Le fichier HTML de cet enregistrement est introuvable sur le serveur BBB."
+msgid "The HTML file for this recording was not found on the server."
+msgstr "Le fichier HTML de cet enregistrement est introuvable sur le serveur."
 
 #: pod/import_video/utils.py
 #, python-format
@@ -2773,18 +2795,25 @@ msgid "The found file is not a valid video."
 msgstr "Le fichier trouvé n’est pas une vidéo valide."
 
 #: pod/import_video/utils.py
-msgid "No video file found."
-msgstr "Aucun fichier vidéo trouvé."
+msgid ""
+"In the case of a video from a Pod platform, please enter the source file "
+"address, available in the video edition."
+msgstr ""
+"Dans le cas d'une vidéo provenant d'une plateforme Pod, veuillez indiquer "
+"l'adresse du fichier source, disponible dans l'édition de la vidéo."
 
 #: pod/import_video/utils.py
-msgid "The video file for this recording was not found on the BBB server."
+msgid "The video file for this recording was not found on the server."
 msgstr ""
-"Le fichier vidéo pour cet enregistrement n’a pas été trouvé sur le serveur "
-"BBB."
+"Le fichier vidéo pour cet enregistrement n’a pas été trouvé sur le serveur."
 
 #: pod/import_video/utils.py
 msgid "Impossible to create the Pod video"
 msgstr "Impossible de créer la vidéo Pod"
+
+#: pod/import_video/utils.py
+msgid "No video file found."
+msgstr "Aucun fichier vidéo trouvé."
 
 #: pod/import_video/utils.py
 msgid "No video file found for this address."
@@ -2799,6 +2828,10 @@ msgstr "Fichier trop volumineux."
 msgid "The size of the video file exceeds the maximum allowed value, %s Gb."
 msgstr ""
 "La taille du fichier vidéo dépasse la valeur maximale autorisée, %s Go."
+
+#: pod/import_video/utils.py
+msgid "The video file for this recording was not found."
+msgstr "Le fichier vidéo de cet enregistrement est introuvable."
 
 #: pod/import_video/views.py
 msgid "You cannot view this recording."
@@ -2834,6 +2867,14 @@ msgid "Try changing the record type or address for this recording."
 msgstr ""
 "Essayez de modifier le type d’enregistrement ou l’adresse de cet "
 "enregistrement."
+
+#: pod/import_video/views.py
+msgid ""
+"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+msgstr ""
+"Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
+"%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 
 #: pod/import_video/views.py
 #, python-format
@@ -3304,6 +3345,7 @@ msgid "Heartbeats"
 msgstr "Signaux"
 
 #: pod/live/templates/bbb/bbb_form.html
+#: pod/live/templates/meeting/bbb_form.html
 msgid "Send message"
 msgstr "Envoyer un message"
 
@@ -3321,10 +3363,12 @@ msgid "Message"
 msgstr "Message"
 
 #: pod/live/templates/bbb/bbb_form.html
+#: pod/live/templates/meeting/bbb_form.html
 msgid "You must be authenticated to send a message."
 msgstr "Vous devez être authentifié pour envoyer un message."
 
-#: pod/live/templates/bbb/bbb_form.html pod/main/templates/aside.html
+#: pod/live/templates/bbb/bbb_form.html
+#: pod/live/templates/meeting/bbb_form.html pod/main/templates/aside.html
 msgid "Submit"
 msgstr "Envoyer"
 

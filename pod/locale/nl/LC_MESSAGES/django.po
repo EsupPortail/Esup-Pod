@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-04 16:46+0100\n"
+"POT-Creation-Date: 2023-12-13 11:52+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2439,6 +2439,23 @@ msgid "An email will be sent to you when all encoding tasks are completed."
 msgstr ""
 
 #: pod/import_video/templates/import_video/add_or_edit.html
+msgid "Useful tips"
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"The entered address must correspond to a video file. The platform to which "
+"you copy the link may offer several possibilities; feel free to test the "
+"different links provided."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"For example, in the case of a video from a Pod platform, please enter the "
+"source file address, available in the video edition."
+msgstr ""
+
+#: pod/import_video/templates/import_video/add_or_edit.html
 msgid "Terms of Service"
 msgstr ""
 
@@ -2583,7 +2600,7 @@ msgid "Delete the external recording"
 msgstr ""
 
 #: pod/import_video/utils.py pod/import_video/views.py pod/meeting/views.py
-msgid "Impossible to upload to Pod the video"
+msgid "Unable to upload the video to Pod"
 msgstr ""
 
 #: pod/import_video/utils.py
@@ -2595,7 +2612,7 @@ msgid "Try changing the record type or address for this recording"
 msgstr ""
 
 #: pod/import_video/utils.py
-msgid "The HTML file for this recording was not found on the BBB server."
+msgid "The HTML file for this recording was not found on the server."
 msgstr ""
 
 #: pod/import_video/utils.py
@@ -2612,15 +2629,21 @@ msgid "The found file is not a valid video."
 msgstr ""
 
 #: pod/import_video/utils.py
-msgid "No video file found."
+msgid ""
+"In the case of a video from a Pod platform, please enter the source file "
+"address, available in the video edition."
 msgstr ""
 
 #: pod/import_video/utils.py
-msgid "The video file for this recording was not found on the BBB server."
+msgid "The video file for this recording was not found on the server."
 msgstr ""
 
 #: pod/import_video/utils.py
 msgid "Impossible to create the Pod video"
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "No video file found."
 msgstr ""
 
 #: pod/import_video/utils.py
@@ -2634,6 +2657,10 @@ msgstr ""
 #: pod/import_video/utils.py
 #, python-format
 msgid "The size of the video file exceeds the maximum allowed value, %s Gb."
+msgstr ""
+
+#: pod/import_video/utils.py
+msgid "The video file for this recording was not found."
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2668,8 +2695,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+msgstr ""
+
+#: pod/import_video/views.py
+#, python-format
+msgid ""
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -3093,6 +3127,7 @@ msgid "Heartbeats"
 msgstr ""
 
 #: pod/live/templates/bbb/bbb_form.html
+#: pod/live/templates/meeting/bbb_form.html
 msgid "Send message"
 msgstr ""
 
@@ -3107,10 +3142,12 @@ msgid "Message"
 msgstr ""
 
 #: pod/live/templates/bbb/bbb_form.html
+#: pod/live/templates/meeting/bbb_form.html
 msgid "You must be authenticated to send a message."
 msgstr ""
 
-#: pod/live/templates/bbb/bbb_form.html pod/main/templates/aside.html
+#: pod/live/templates/bbb/bbb_form.html
+#: pod/live/templates/meeting/bbb_form.html pod/main/templates/aside.html
 msgid "Submit"
 msgstr ""
 
@@ -3611,6 +3648,12 @@ msgstr ""
 
 #: pod/live/templates/live/my_events.html
 msgid "Past events"
+msgstr ""
+
+#: pod/live/templates/meeting/bbb_form.html
+msgid ""
+"You can send a message (100 characters maximum) to the speakers/trainers. "
+"They will receive it in few seconds."
 msgstr ""
 
 #: pod/live/utils.py
@@ -4583,10 +4626,8 @@ msgid "Toggle main menu"
 msgstr ""
 
 #: pod/main/templates/navbar.html
-#, fuzzy
-#| msgid "Main fields"
 msgid "Main menu"
-msgstr "Belangrijkste velden"
+msgstr ""
 
 #: pod/main/templates/navbar.html
 msgid "Close main menu"
@@ -5387,6 +5428,18 @@ msgstr ""
 msgid "occurrences"
 msgstr ""
 
+#: pod/meeting/templates/meeting/webinary_options_modal_form.html
+msgid "Enable the chat"
+msgstr ""
+
+#: pod/meeting/templates/meeting/webinary_options_modal_form.html
+msgid "enable_chat"
+msgstr ""
+
+#: pod/meeting/templates/meeting/webinary_options_modal_form.html
+msgid "Show chat"
+msgstr ""
+
 #: pod/meeting/utils.py
 #, python-format
 msgid "A new Big Blue Button recording for '%(name)s' meeting is available"
@@ -5943,10 +5996,8 @@ msgid "Favorites"
 msgstr ""
 
 #: pod/playlist/tests/test_forms.py
-#, fuzzy
-#| msgid "Title field is required"
 msgid "This field is required."
-msgstr "Titelveld is verplicht"
+msgstr ""
 
 #: pod/playlist/tests/test_forms.py
 msgid "You cannot create a playlist named \"Favorites\""
@@ -6462,8 +6513,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
