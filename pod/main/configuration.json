@@ -3122,6 +3122,20 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "ES_OPTIONS": {
+                            "default_value": {},
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Options d’ElasticSearch, notamment utilisées pour ES8 en SSL et avec un user en paramètre",
+                                    "Voir [https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/config.html]() pour plus d'informations."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
                         }
                     },
                     "title": {
