@@ -1,5 +1,6 @@
 """Utils for Meeting and Import_video module."""
 import json
+import os
 import requests
 import shutil
 
@@ -42,6 +43,8 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
     ),
 )
 
+VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
+
 
 def secure_request_for_upload(request):
     """Check that the request is correct for uploading a recording.
@@ -55,7 +58,7 @@ def secure_request_for_upload(request):
     # Source_url and recording_name are necessary
     if request.POST.get("source_url") == "" or request.POST.get("recording_name") == "":
         msg = {}
-        msg["error"] = _("Impossible to upload to Pod the video")
+        msg["error"] = _("Unable to upload the video to Pod")
         msg["message"] = _("No URL found / No recording name")
         msg["proposition"] = _(
             "Try changing the record type or address for this recording"
@@ -81,7 +84,7 @@ def parse_remote_file(session, source_html_url):
         if response.status_code != 200:
             msg = {}
             msg["error"] = _(
-                "The HTML file for this recording was not found on the BBB server."
+                "The HTML file for this recording was not found on the server."
             )
             # If we want to display the 404/500... page to the user
             # msg["message"] = response.content.decode("utf-8")
@@ -89,12 +92,7 @@ def parse_remote_file(session, source_html_url):
             raise ValueError(msg)
 
         # Parse the BBB video HTML file
-        parser = video_parser()
-        # Manage the encoding
-        if response.encoding == "ISO-8859-1":
-            parser.feed(response.text.encode("ISO-8859-1").decode("utf-8"))
-        else:
-            parser.feed(response.text)
+        parser = create_parser(response)
 
         # Video file found
         if parser.video_check:
@@ -111,12 +109,17 @@ def parse_remote_file(session, source_html_url):
             # Returns the name of the video (if necessary, title is parser.title)
             return parser.video_file
         else:
-            msg = {}
-            msg["error"] = _(
-                "The video file for this recording was not found in the HTML file."
-            )
-            msg["message"] = _("No video file found.")
-            raise ValueError(msg)
+            msg = ""
+            # Useful tips for Pod links
+            if (
+                source_html_url.find("/video/") != -1
+                or source_html_url.find("/media/videos/") != -1
+            ):
+                msg = _(
+                    "In the case of a video from a Pod platform, please enter "
+                    "the source file address, available in the video edition."
+                )
+            raise ValueError("<div role='alert' class='alert alert-info'>%s</div>" % msg)
     except Exception as exc:
         msg = {}
         msg["error"] = _(
@@ -124,6 +127,16 @@ def parse_remote_file(session, source_html_url):
         )
         msg["message"] = mark_safe(str(exc))
         raise ValueError(msg)
+
+
+def create_parser(response):
+    """Parse the BBB video HTML file and manage its encoding."""
+    parser = video_parser()
+    if response.encoding == "ISO-8859-1":
+        parser.feed(response.text.encode("ISO-8859-1").decode("utf-8"))
+    else:
+        parser.feed(response.text)
+    return parser
 
 
 def manage_recording_url(source_url, video_file_add):
@@ -136,7 +149,7 @@ def manage_recording_url(source_url, video_file_add):
         video_file_add (String): Name of the video file to add to the URL
 
     Returns:
-        String: good URL of a BBB recording video
+        String: good URL of a BBB recording video or of the video file
     """
     try:
         bbb_playback_video = "/video/"
@@ -201,7 +214,7 @@ def manage_download(session, source_url, video_file_add, dest_file):
 
 
 def download_video_file(session, source_video_url, dest_file):
-    """Download BBB video file.
+    """Download video file.
 
     Args:
         session (Session) : session useful to achieve requests (and keep cookies between)
@@ -218,10 +231,7 @@ def download_video_file(session, source_video_url, dest_file):
             # print(session.cookies.get_dict())
             if response.status_code != 200:
                 raise ValueError(
-                    _(
-                        "The video file for this recording "
-                        "was not found on the BBB server."
-                    )
+                    _("The video file for this recording " "was not found on the server.")
                 )
 
             with open(dest_file, "wb+") as file:
@@ -281,10 +291,13 @@ def check_file_exists(source_url):
     Returns:
         Boolean: file exists (True) or not (False)
     """
-    response = requests.head(source_url, timeout=2)
-    if response.status_code < 400:
-        return True
-    else:
+    try:
+        response = requests.head(source_url, timeout=2)
+        if response.status_code < 400:
+            return True
+        else:
+            return False
+    except Exception:
         return False
 
 
@@ -297,12 +310,18 @@ def verify_video_exists_and_size(video_url):
     Raises:
         ValueError: exception raised if no video found in this URL or video oversized
     """
-    response = requests.head(video_url, timeout=2)
-    if response.status_code < 400:
-        # Video file size
-        size = int(response.headers.get("Content-Length", "0"))
-        check_video_size(size)
-    else:
+    try:
+        response = requests.head(video_url, timeout=2)
+        if response.status_code < 400:
+            # Video file size
+            size = int(response.headers.get("Content-Length", "0"))
+            check_video_size(size)
+        else:
+            msg = {}
+            msg["error"] = _("No video file found.")
+            msg["message"] = _("No video file found for this address.")
+            raise ValueError(msg)
+    except Exception:
         msg = {}
         msg["error"] = _("No video file found.")
         msg["message"] = _("No video file found for this address.")
@@ -327,6 +346,146 @@ def check_video_size(video_size):
             % MAX_UPLOAD_SIZE_ON_IMPORT
         )
         raise ValueError(msg)
+
+
+def check_source_url(source_url):  # noqa: C901
+    """Check the source URL to identify the used platform.
+
+    Platforms managed :
+     - Mediacad platform (Médiathèque académique) : rewrite source URL if required
+     and manage JSON API.
+    """
+    base_url = ""
+    media_id = ""
+    format = ""
+    url_api_video = ""
+    source_video_url = ""
+    platform = ""
+    platform_type = None
+    # Source URL array
+    array_url = source_url.split("/")
+    # Parse for parameters
+    url = urlparse(source_url)
+    if url.query:
+        query = parse_qs(url.query, keep_blank_values=True)
+
+    try:
+        if source_url.find("/download.php?t=") != -1 and url.query:
+            # Mediacad direct video link (with ##format## in: mp4, source, webm)
+            # ##mediacadBaseUrl##/download.php?t=##token##&e=##format##&m=##mediaId##
+            base_url = source_url[: source_url.find("/download.php?t=")]
+            media_id = query["m"][0]
+            format = query["e"][0].replace("source", "mp4")
+            # Force to download mp4 file if source
+            source_video_url = source_url.replace("&e=source", "&e=mp4")
+            platform = "Mediacad"
+        elif (
+            source_url.find("/d/d") != -1
+            and source_url.find("/default/media/display/m") != -1
+        ):
+            # Mediacad direct video link (with ##format## in: mp4, source, webm)
+            # ##mediacadBaseUrl##/default/media/display/m/##mediaId##/e/##format##/d/d
+            base_url = source_url[: source_url.find("/default/media/display/m/")]
+            media_id = array_url[-5]
+            format = array_url[-3].replace("source", "mp4")
+            # Force to download mp4 file if source
+            source_video_url = source_url.replace("/e/source", "/e/mp4")
+            platform = "Mediacad"
+        elif source_url.find("/d/m/e") != -1:
+            # Mediacad direct video link (with ##format## in: mp4, source, webm)
+            # ##mediacadBaseUrl##/m/##mediaId##/d/m/e/##format##
+            base_url = source_url[: source_url.find("/m/")]
+            media_id = array_url[-5]
+            format = array_url[-1].replace("source", "mp4")
+            source_video_url = source_url.replace("/e/source", "/e/mp4")
+            platform = "Mediacad"
+        elif source_url.find("/default/media/display/") != -1:
+            # Mediacad page link
+            # ##mediacadBaseUrl##/default/media/display/m/##mediaId##
+            # ##mediacadBaseUrl##/default/media/display/page/1/sort/date/m/##mediaId##
+            base_url = source_url[: source_url.find("/default/media/display/")]
+            media_id = array_url[-1]
+            format = "mp4"
+            source_video_url = source_url + "/e/mp4/d/d"
+            platform = "Mediacad"
+        elif source_url.find("/m/") != -1:
+            # Mediacad page link
+            # ##mediacadBaseUrl##/m/##mediaId##
+            base_url = source_url[: source_url.find("/m/")]
+            media_id = array_url[-1]
+            format = "mp4"
+            # Download possible on all Mediacad platform with such an URL
+            source_video_url = "%s/default/media/display/m/%s/e/mp4/d/d" % (
+                base_url,
+                media_id,
+            )
+            platform = "Mediacad"
+
+        # Platform's URL identified
+        if platform == "Mediacad":
+            # Mediacad API (JSON format) is available at :
+            # ##mediacadBaseUrl##/default/media/display/m/##mediaId##/d/j
+            url_api_video = "%s/default/media/display/m/%s/d/j" % (base_url, media_id)
+            # Platform type
+            platform_type = TypeSourceURL(
+                platform, source_video_url, format, url_api_video
+            )
+
+        return platform_type
+    except Exception as exc:
+        msg = {}
+        msg["error"] = _("The video file for this recording was not found.")
+        msg["message"] = mark_safe(str(exc))
+        raise ValueError(msg)
+
+
+def define_dest_file(request, id, extension):
+    """Define standard destination filename for an external recording."""
+    # Set a discriminant
+    discrim = dt.now().strftime("%Y%m%d%H%M%S")
+    dest_file = os.path.join(
+        settings.MEDIA_ROOT,
+        VIDEOS_DIR,
+        request.user.owner.hashkey,
+        os.path.basename("%s-%s.%s" % (discrim, id, extension)),
+    )
+    os.makedirs(os.path.dirname(dest_file), exist_ok=True)
+    return dest_file
+
+
+def define_dest_path(request, id, extension):
+    """Define standard destination path for an external recording."""
+    # Set a discriminant
+    discrim = dt.now().strftime("%Y%m%d%H%M%S")
+    dest_path = os.path.join(
+        VIDEOS_DIR,
+        request.user.owner.hashkey,
+        os.path.basename("%s-%s.%s" % (discrim, id, extension)),
+    )
+    return dest_path
+
+
+class TypeSourceURL:
+    """Manage external recording source URL.
+
+    Define context, and platform used, about a source URL.
+    """
+
+    # Source URL type, like Mediacad, Pod...
+    type = ""
+    # Source video file URL
+    url = ""
+    # Video extension (mp4, webm...)
+    extension = ""
+    # API URL if supplied
+    api_url = ""
+
+    def __init__(self, type, url, extension, api_url):
+        """Initialize."""
+        self.type = type
+        self.url = url
+        self.extension = extension
+        self.api_url = api_url
 
 
 class video_parser(HTMLParser):
