@@ -10,6 +10,7 @@
     }
   </style>
 {% endblock %}
+
 {% block breadcrumbs %}{{ block.super }}
   <li class="breadcrumb-item"><a href="{% url 'live:my_events' %}">{% trans 'My events' %}</a></li>
   {% if form.instance.title and form.instance.slug != '' %}
@@ -163,7 +164,6 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-  <script src="/admin/jsi18n/"></script>
   <script src="{% static 'admin/js/core.js' %}?ver={{ VERSION }}"></script>
   <script src="{% static 'js/broadcaster_from_building.js' %}?ver={{ VERSION }}"></script>
 
