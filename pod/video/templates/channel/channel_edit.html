@@ -3,15 +3,15 @@
 {% load static %}
 {% load thumbnail %}
 {% block page_extra_head %}
-<style>
-  {{ form.instance.style }}
+  <style>
+    {{ form.instance.style }}
 
-  {% if form.instance.color %}
-    body {
-      background-color: {{form.instance.color}};
-    }
-  {% endif %}
-</style>
+    {% if form.instance.color %}
+      body {
+        background-color: {{form.instance.color}};
+      }
+    {% endif %}
+  </style>
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
@@ -152,7 +152,6 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-  <script src="/admin/jsi18n/"></script>
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
   {{form.media}}

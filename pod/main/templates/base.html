@@ -40,11 +40,15 @@
     <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet">
   {% endif %}
   <!-- more styles for each App -->
-  {% block more_style %}
-  {% endblock more_style %}
-  <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|striptags|capfirst}}{% endblock %}</title>  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
-  {% block page_extra_head %}
-  {% endblock %}
+  {% block more_style %}{% endblock more_style %}
+
+  <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|striptags|capfirst}}{% endblock %}</title>
+
+  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+  <script id="jsi18n" src="{% url 'javascript-catalog' %}"></script>
+
+  {% block page_extra_head %}{% endblock %}
+
   {% if request.GET.is_iframe %}
     <link rel="stylesheet" href="{% static 'css/iframe.css' %}?ver={{VERSION}}" media="screen">
   {% endif %}
@@ -166,7 +170,7 @@
             <img src="{% static 'img/cookie.svg' %}" alt="" width="50">
             <span class="mt-2">{% trans 'We use third party cookies to personalize content, manage session and analyze site traffic.' %}</span>
             {% if COOKIE_LEARN_MORE != "" %}
-              <a class="d-flex align-items-center" href="{{COOKIE_LEARN_MORE}}">{% trans 'Learn more' %}<i class="bi bi-caret-right ms-2"></i></a>
+              <a class="d-flex align-items-center" href="{{COOKIE_LEARN_MORE}}">{% trans 'Learn more' %}<i class="bi bi-caret-right ms-2" aria-hidden="true"></i></a>
             {% endif %}
             <button class="btn btn-dark mt-3 px-4" type="button" id='okcookie'>{% trans 'I understand' %}</button>
           </div>
@@ -177,7 +181,6 @@
   <!-- Javascript migration from header to footer-->
   <!-- except for jquery, to do later ! -->
   <script src="{% static 'js-cookie/dist/js.cookie.min.js' %}?ver={{VERSION}}"></script>
-  <script src="{% url 'javascript-catalog' %}"></script>
   <!-- JS -->
   <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
 
