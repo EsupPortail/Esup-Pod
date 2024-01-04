@@ -2,7 +2,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html itemscope itemtype="https://schema.org/MediaObject" lang="eng">
+<html itemscope itemtype="https://schema.org/MediaObject">
     <head>
         <meta charset="utf-8">
 
@@ -27,7 +27,7 @@
 
         <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
         <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
-        <script src="{% url 'javascript-catalog' %}"></script>
+        <script id="jsi18n" src="{% url 'javascript-catalog' %}?ver={{VERSION}}"></script>
 
         <link rel="stylesheet" href="{% static 'css/video-iframe.css' %}?ver={{VERSION}}">
     </head>

@@ -141,6 +141,14 @@ class ExternalRecordingUploadTestView(TestCase):
             type="video",
             source_url="https://video.url",
         )
+        ExternalRecording.objects.create(
+            id=6,
+            name="test mediacad video recording1",
+            site=site,
+            owner=user2,
+            type="video",
+            source_url="https://mediacad.url",
+        )
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
         user2.owner.sites.add(Site.objects.get_current())
@@ -223,7 +231,7 @@ class ExternalRecordingUploadTestView(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         # Message for a bad URL
-        self.assertTrue(b"Impossible to upload to Pod the PeerTube" in response.content)
+        self.assertTrue(b"Unable to upload the video to Pod" in response.content)
 
         # External BBB type
         recordingBBB = ExternalRecording.objects.get(name="test external bbb recording1")
@@ -243,7 +251,7 @@ class ExternalRecordingUploadTestView(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         # Message for a bad URL
-        self.assertTrue(b"Impossible to upload to Pod the video" in response.content)
+        self.assertTrue(b"Unable to upload the video to Pod" in response.content)
 
         # Video type
         recordingVideo = ExternalRecording.objects.get(
@@ -258,13 +266,35 @@ class ExternalRecordingUploadTestView(TestCase):
         response = self.client.post(
             url,
             {
-                "recording_name": "test video recording1",
+                "recording_name": "test direct video recording1",
                 "source_url": "https://video.url",
             },
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         # Message for a bad URL
-        self.assertTrue(b"Impossible to upload to Pod the video" in response.content)
+        self.assertTrue(b"Unable to upload the video to Pod" in response.content)
+
+        # Video type - Mediacad video
+        recordingMediacad = ExternalRecording.objects.get(
+            name="test mediacad video recording1"
+        )
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        url = reverse(
+            "import_video:upload_external_recording_to_pod",
+            kwargs={"record_id": recordingMediacad.id},
+        )
+        response = self.client.post(
+            url,
+            {
+                "recording_name": "test mediacad video recording1",
+                "source_url": "https://video.url",
+            },
+            follow=True,
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        # Message for a bad URL
+        self.assertTrue(b"Unable to upload the video to Pod" in response.content)
 
         print(" --->  test_recording_upload_get_request of RecordingUploadTestView: OK!")

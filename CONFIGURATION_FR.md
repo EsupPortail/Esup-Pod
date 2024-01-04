@@ -2747,6 +2747,13 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l'enco
   >> et pour la 8, `pip3 install elasticsearch==8.8.1`. <br>
   >> Voir [https://elasticsearch-py.readthedocs.io/]() pour plus d'information. <br>
 
+ - `ES_OPTIONS`
+
+  > valeur par défaut : `{}`
+
+  >> Options d’ElasticSearch, notamment utilisées pour ES8 en SSL et avec un user en paramètre <br>
+  >> Voir [https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/config.html]() pour plus d'informations. <br>
+
 ### Configuration application xapi
 
 Application pour l’envoi d‘instructions xAPI à un LRS.<br>

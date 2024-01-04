@@ -2,10 +2,6 @@
 {% load i18n %}
 {% load static %}
 
-{% block page_extra_head %}
-{% endblock %}
-
-
 {% block breadcrumbs %}
 {{ block.super }}
 <li class="breadcrumb-item"><a href="{% url 'live:directs_all'%}">{% trans "Lives" %}</a></li>

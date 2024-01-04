@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-06 15:50+0000\n"
+"POT-Creation-Date: 2023-12-13 11:52+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1032,8 +1032,8 @@ msgstr "Ajouter un nouveau chapitre"
 #: pod/completion/templates/video_completion.html
 #: pod/cut/templates/video_cut.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/video/templates/videos/video_aside.html
 #: pod/video/templates/videos/video_edit.html
-#: pod/video/templates/videos/video_page_aside.html
 msgid "Manage video"
 msgstr "Gérer la vidéo"
 
@@ -1231,7 +1231,7 @@ msgstr "Vidéo"
 #: pod/completion/models.py
 #: pod/completion/templates/document/list_document.html
 #: pod/enrichment/models.py
-#: pod/enrichment/templates/enrichment/video_enrichment.html
+#: pod/enrichment/templates/enrichment/enrichment_informations_card_aside.html
 #: pod/podfile/models.py
 msgid "Document"
 msgstr "Document"
@@ -2003,8 +2003,8 @@ msgid "Type"
 msgstr "Type"
 
 #: pod/enrichment/models.py
-#: pod/enrichment/templates/enrichment/video_enrichment.html pod/main/models.py
-#: pod/podfile/models.py
+#: pod/enrichment/templates/enrichment/enrichment_informations_card_aside.html
+#: pod/main/models.py pod/podfile/models.py
 msgid "Image"
 msgstr "Image"
 
@@ -2013,7 +2013,7 @@ msgid "Integrate a document (PDF, text, html)"
 msgstr "Intégrer un document (PDF, texte, html)"
 
 #: pod/enrichment/models.py
-#: pod/enrichment/templates/enrichment/video_enrichment.html
+#: pod/enrichment/templates/enrichment/enrichment_informations_card_aside.html
 msgid "Richtext"
 msgstr "Texte riche"
 
@@ -2120,15 +2120,15 @@ msgstr "Le champ de titre est requis et doit contenir de 2 à 100 caractères."
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html
 msgid ""
-"The fields “Start“ and “End“ must contain an indication value in "
-"seconds. Start playback of the video, pause the video and click on “Get "
-"time from the player“ to fill in the field untitled “Start“. Then do the "
-"same to fill in the field untitled “End“."
+"The fields “Start“ and “End“ must contain an indication value in seconds. "
+"Start playback of the video, pause the video and click on “Get time from the "
+"player“ to fill in the field untitled “Start“. Then do the same to fill in "
+"the field untitled “End“."
 msgstr ""
 "Les champs « Début » et « Fin » doivent contenir des valeurs en secondes. "
 "Lancez la lecture de la vidéo, mettez sur pause et cliquez sur « Récupérer "
-"le temps depuis le lecteur » pour renseigner automatiquement le champ « Début"
-" ». Vous pouvez le faire également pour remplir le champ « Fin »."
+"le temps depuis le lecteur » pour renseigner automatiquement le champ « "
+"Début ». Vous pouvez le faire également pour remplir le champ « Fin »."
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html
 msgid "You cannot overlap enrichments."
@@ -2137,6 +2137,28 @@ msgstr "Vous ne pouvez faire des enrichissements qui se chevauchent."
 #: pod/enrichment/templates/enrichment/edit_enrichment.html
 msgid "You must save your enrichments to view the result."
 msgstr "Vous devez sauvegarder vos enrichissements pour voir le résultat."
+
+#: pod/enrichment/templates/enrichment/enrichment_informations_card_aside.html
+msgid "Informations"
+msgstr "Informations"
+
+#: pod/enrichment/templates/enrichment/enrichment_informations_card_aside.html
+msgid "To help you, the different types of enrichments have specific colors:"
+msgstr ""
+"Pour vous aider, les différents types d’enrichissements ont des couleurs "
+"spécifiques :"
+
+#: pod/enrichment/templates/enrichment/enrichment_informations_card_aside.html
+msgid "Weblink"
+msgstr "Lien web"
+
+#: pod/enrichment/templates/enrichment/enrichment_informations_card_aside.html
+msgid "Embed"
+msgstr "Intégrer"
+
+#: pod/enrichment/templates/enrichment/enrichment_informations_card_aside.html
+msgid "They are visible on the video playback bar."
+msgstr "Ils sont visibles sur la barre de lecture de la vidéo."
 
 #: pod/enrichment/templates/enrichment/form_enrichment.html
 msgid "Create / Edit enrichment"
@@ -2165,7 +2187,7 @@ msgid "Delete the enrichment “%(enrich_title)s”"
 msgstr "Supprimer l’enrichissement « %(enrich_title)s »"
 
 #: pod/enrichment/templates/enrichment/video_enrichment-iframe.html
-#: pod/enrichment/templates/enrichment/video_enrichment.html
+#: pod/enrichment/templates/enrichment/video_enrichment_page_title.html
 msgid "Enriched"
 msgstr "Enrichi"
 
@@ -2203,6 +2225,10 @@ msgstr "Ils sont visibles sur la barre de lecture de la vidéo."
 #: pod/enrichment/views.py
 msgid "You cannot enrich this video."
 msgstr "Vous ne pouvez pas enrichir cette vidéo."
+
+#: pod/enrichment/views.py pod/video/views.py
+msgid "You cannot access this playlist because it is private."
+msgstr "Vous ne pouvez pas accéder à cette liste de lecture car elle est privée."
 
 #: pod/import_video/apps.py
 msgid "Import External Video"
@@ -2364,8 +2390,8 @@ msgstr ""
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid "To do this, please use the 'Upload to Pod as video' button in the list."
 msgstr ""
-"Pour ce faire, veuillez utiliser le bouton « Télécharger sur le pod en tant "
-"que vidéo » dans la liste."
+"Pour ce faire, veuillez utiliser le bouton « Télécharger sur Pod en tant que "
+"vidéo » dans la liste."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
@@ -2382,6 +2408,29 @@ msgid "An email will be sent to you when all encoding tasks are completed."
 msgstr ""
 "Un courriel vous sera envoyé quand toutes les tâches d’encodage seront "
 "complétées."
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid "Useful tips"
+msgstr "Conseils pratiques"
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"The entered address must correspond to a video file. The platform to which "
+"you copy the link may offer several possibilities; feel free to test the "
+"different links provided."
+msgstr ""
+"L'adresse saisie doit correspondre à un fichier vidéo. La plateforme vers "
+"laquelle vous copiez le lien peut offrir plusieurs possibilités ; n'hésitez "
+"pas à tester les différents liens proposés."
+
+#: pod/import_video/templates/import_video/add_or_edit.html
+msgid ""
+"For example, in the case of a video from a Pod platform, please enter the "
+"source file address, available in the video edition."
+msgstr ""
+"Par exemple, dans le cas d'une vidéo provenant d'une plateforme Pod, "
+"veuillez entrer l'adresse du fichier source, disponible dans l'édition de la "
+"vidéo."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid "Terms of Service"
@@ -2543,7 +2592,7 @@ msgid "Delete the external recording"
 msgstr "Supprimer l’enregistrement externe"
 
 #: pod/import_video/utils.py pod/import_video/views.py pod/meeting/views.py
-msgid "Impossible to upload to Pod the video"
+msgid "Unable to upload the video to Pod"
 msgstr "Impossible de téléverser la vidéo sur Pod"
 
 #: pod/import_video/utils.py
@@ -2557,9 +2606,8 @@ msgstr ""
 "enregistrement"
 
 #: pod/import_video/utils.py
-msgid "The HTML file for this recording was not found on the BBB server."
-msgstr ""
-"Le fichier HTML de cet enregistrement est introuvable sur le serveur BBB."
+msgid "The HTML file for this recording was not found on the server."
+msgstr "Le fichier HTML de cet enregistrement est introuvable sur le serveur."
 
 #: pod/import_video/utils.py
 #, python-format
@@ -2576,18 +2624,25 @@ msgid "The found file is not a valid video."
 msgstr "Le fichier trouvé n’est pas une vidéo valide."
 
 #: pod/import_video/utils.py
-msgid "No video file found."
-msgstr "Aucun fichier vidéo trouvé."
+msgid ""
+"In the case of a video from a Pod platform, please enter the source file "
+"address, available in the video edition."
+msgstr ""
+"Dans le cas d'une vidéo provenant d'une plateforme Pod, veuillez indiquer "
+"l'adresse du fichier source, disponible dans l'édition de la vidéo."
 
 #: pod/import_video/utils.py
-msgid "The video file for this recording was not found on the BBB server."
+msgid "The video file for this recording was not found on the server."
 msgstr ""
-"Le fichier vidéo pour cet enregistrement n’a pas été trouvé sur le serveur "
-"BBB."
+"Le fichier vidéo pour cet enregistrement n’a pas été trouvé sur le serveur."
 
 #: pod/import_video/utils.py
 msgid "Impossible to create the Pod video"
 msgstr "Impossible de créer la vidéo Pod"
+
+#: pod/import_video/utils.py
+msgid "No video file found."
+msgstr "Aucun fichier vidéo trouvé."
 
 #: pod/import_video/utils.py
 msgid "No video file found for this address."
@@ -2602,6 +2657,10 @@ msgstr "Fichier trop volumineux."
 msgid "The size of the video file exceeds the maximum allowed value, %s Gb."
 msgstr ""
 "La taille du fichier vidéo dépasse la valeur maximale autorisée, %s Go."
+
+#: pod/import_video/utils.py
+msgid "The video file for this recording was not found."
+msgstr "Le fichier vidéo de cet enregistrement est introuvable."
 
 #: pod/import_video/views.py
 msgid "You cannot view this recording."
@@ -2642,6 +2701,14 @@ msgid "Try changing the record type or address for this recording."
 msgstr ""
 "Essayez de modifier le type d’enregistrement ou l’adresse de cet "
 "enregistrement."
+
+#: pod/import_video/views.py
+msgid ""
+"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+msgstr ""
+"Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
+"%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 
 #: pod/import_video/views.py
 #, python-format
@@ -3117,6 +3184,7 @@ msgid "Heartbeats"
 msgstr "Signaux"
 
 #: pod/live/templates/bbb/bbb_form.html
+#: pod/live/templates/meeting/bbb_form.html
 msgid "Send message"
 msgstr "Envoyer un message"
 
@@ -3134,10 +3202,12 @@ msgid "Message"
 msgstr "Message"
 
 #: pod/live/templates/bbb/bbb_form.html
+#: pod/live/templates/meeting/bbb_form.html
 msgid "You must be authenticated to send a message."
 msgstr "Vous devez être authentifié pour envoyer un message."
 
-#: pod/live/templates/bbb/bbb_form.html pod/main/templates/aside.html
+#: pod/live/templates/bbb/bbb_form.html
+#: pod/live/templates/meeting/bbb_form.html pod/main/templates/aside.html
 msgid "Submit"
 msgstr "Envoyer"
 
@@ -3306,6 +3376,13 @@ msgstr "%(start_date)s au %(end_date)s"
 #: pod/live/templates/live/event-info.html
 msgid "Location:"
 msgstr "Lieu :"
+
+#: pod/live/templates/live/event-info.html
+#: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_opengraph.html
+#: pod/video/templates/videos/video_page_content.html
+msgid "Added by:"
+msgstr "Ajouté par :"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
@@ -4653,14 +4730,14 @@ msgstr "Menu principal"
 msgid "Close main menu"
 msgstr "Ferme le menu principal"
 
-#: pod/main/templates/navbar.html
-msgid "Promoted playlists"
-msgstr "Listes de lecture promues"
-
 #: pod/main/templates/navbar.html pod/recorder/models.py pod/video/forms.py
 #: pod/video/models.py
 msgid "Channels"
 msgstr "Chaînes"
+
+#: pod/main/templates/navbar.html
+msgid "Promoted playlists"
+msgstr "Listes de lecture promues"
 
 #: pod/main/templates/navbar.html
 msgid "Search for a media on"
