@@ -3,6 +3,13 @@ console.log("P2P SCRIPT LOADED");
 console.log("player", player);
 
 /**
+ * Current index in the list of peer identifiers.
+ * @type {number}
+ * @default 0
+ */
+let currentIndex = 0;
+
+/**
  * Video identifier for the current session.
  * @type {string}
  * @default string // TODO Set true ID
@@ -44,13 +51,21 @@ let firstTime = false;
  */
 let connectedId = "";
 
+/**
+ * Connection to any peer.
+ *
+ * @async
+ *
+ * @returns {Promise<void>} - A promise that resolves when the connection is successful.
+ */
 async function connectToAnyPeers() {
   const functionName = "connectToAnyPeers()";
   try {
     const idList = await getIds();
     console.log(`[p2p-script.js] [${functionName}] idList:`, idList);
     await connectToNextPeer(idList);
-    console.log(`[p2p-script.js] [${functionName}] No successful connection`);
+    console.log(`[p2p-script.js] [${functionName}] No successful connection TODO Update this`); // TODO Update this
+    // location.reload();
   } catch (err) {
     console.error(
       `[p2p-script.js] [${functionName}] An error occurred: ${err}`,
@@ -58,6 +73,17 @@ async function connectToAnyPeers() {
   }
 }
 
+/**
+ * Attempts to connect to the next peer in the list.
+ * If the connection is unsuccessful, the function is called again with the next peer in the list.
+ *
+ * @async
+ *
+ * @param idList - The list of peer identifiers.
+ * @param index - The index of the current peer identifier.
+ *
+ * @returns {Promise<void>} - A promise that resolves when the connection is successful.
+ */
 async function connectToNextPeer(idList, index = 0) {
   const functionName = "connectToNextPeer()";
   if (index >= idList.length) {
@@ -81,16 +107,17 @@ async function connectToNextPeer(idList, index = 0) {
       console.error(
         `[p2p-script.js] [${functionName}] Connection error: ${err}`,
       );
-      reject();
+      connectToNextPeer(idList, index + 1);
     });
   }
-
-  await connectToNextPeer(idList, index + 1);
+  currentIndex++;
 }
 
 /**
  * Removes a peer from the cache.
+ *
  * @param {string} idPeer - The peer identifier with format: {videoSlug}_ID_{peerUuid}.
+ *
  * @returns {void}
  */
 function removePeerFromCache(idPeer) {
@@ -111,8 +138,10 @@ function removePeerFromCache(idPeer) {
 }
 
 /**
- * Extacts the peer identifier from an error message.
+ * Extracts the peer identifier from an error message.
+ *
  * @param {string} err - The error message returned by the Peer object.
+ *
  * @returns {string} - The peer identifier.
  */
 function extractPeerIdFromError(err) {
@@ -122,8 +151,12 @@ function extractPeerIdFromError(err) {
 
 /**
  * Establishes a peer-to-peer connection using the provided options.
+ *
+ * @async
+ *
  * @param {Object} options - Configuration options for the Peer object.
- * @returns {void}
+ *
+ * @returns {void} - A promise that resolves when the connection is successful.
  */
 async function startConnect(options) {
   console.log("[p2p-script.js] startConnect()");
@@ -178,12 +211,15 @@ async function startConnect(options) {
           );
         });
     }
+    connectToNextPeer(idList, currentIndex);
   });
 }
 
 /**
  * Retrieves peer identifiers associated with the current video.
+ *
  * @async
+ *
  * @returns {Array} - A list of peer identifiers.
  */
 async function getIds() {
@@ -210,7 +246,9 @@ async function getIds() {
 
 /**
  * Stores URLs associated with the current peer's ID on the server.
+ *
  * @async
+ *
  * @returns {void}
  */
 async function storeUrlsId() {
@@ -238,7 +276,7 @@ async function storeUrlsId() {
     })
     .then(function (json) {
       // console.log("FETCH-STATUS:", fetch_status);
-      if (fetch_status == 200) {
+      if (fetch_status === 200) {
         // console.log(json);
       }
     })
@@ -249,110 +287,137 @@ async function storeUrlsId() {
 
 // TODO Call the function
 
+
 /**
- * Sets up event hooks and overrides XHR behavior when the 'xhr-hooks-ready' event is triggered on the video player.
- * @listens player#xhr-hooks-ready
+ * Initializes peer-to-peer communication.
+ *
  * @returns {void}
  */
-player.on("xhr-hooks-ready", () => {
-  console.log("[p2p-script.js] xhr-hooks-ready event");
+function initP2p() {
+  console.log("[p2p-script.js] initP2p()");
 
   /**
-   * Handles the response hook for XHR requests.
-   * @param {Object} request - The XHR request object.
-   * @param {Object} error - The XHR error object.
-   * @param {Object} response - The XHR response object.
+   * Sets up event hooks and overrides XHR behavior when the 'xhr-hooks-ready' event is triggered on the video player.
+   * @listens player#xhr-hooks-ready
+   * @returns {void}
    */
-  const playerOnResponseHook = (request, error, response) => {
-    // console.log('[p2p-script.js] Inside playerOnResponseHook');
-    // console.log('[p2p-script.js] content_type:', content_type);
-    // console.log('[p2p-script.js] request: ', request);
-    // console.log('[p2p-script.js] response: ', response);
-    // if (content_type.includes(response.headers['content-type'])) {
-    // console.log('[p2p-script.js] Condition met');
-    urlList.push(peer.id);
-    coreCache[`${response.url}_ID_${peer.id}`] = response;
-    if (urlList.length > 10) {
-      delete coreCache[urlList[0]];
-      urlList.splice(0, 1);
-    }
-    storeUrlsId();
-    // }
-  };
+  player.on("xhr-hooks-ready", () => {
+    console.log("[p2p-script.js] xhr-hooks-ready event");
 
-  /**
-   * Handles the request hook for XHR requests.
-   * @param {Object} options - The XHR options object.
-   * @returns {Object} - Modified XHR options object.
-   */
-  const playerOnRequestHook = (options) => {
-    let headers = options["headers"];
-    if (headers && headers["Range"]) {
-      let add = "?";
-      if (options.uri.indexOf("?") > -1) add = "&";
-      options.uri = options.uri + add + headers["Range"];
-    }
-    return options;
-  };
+    /**
+     * Handles the response hook for XHR requests.
+     * @param {Object} request - The XHR request object.
+     * @param {Object} error - The XHR error object.
+     * @param {Object} response - The XHR response object.
+     */
+    const playerOnResponseHook = (request, error, response) => {
+      // console.log('[p2p-script.js] Inside playerOnResponseHook');
+      // console.log('[p2p-script.js] content_type:', content_type);
+      // console.log('[p2p-script.js] request: ', request);
+      // console.log('[p2p-script.js] response: ', response);
+      // if (content_type.includes(response.headers['content-type'])) {
+      // console.log('[p2p-script.js] Condition met');
+      urlList.push(peer.id);
+      coreCache[`${response.url}_ID_${peer.id}`] = response;
+      if (urlList.length > 10) {
+        delete coreCache[urlList[0]];
+        urlList.splice(0, 1);
+      }
+      storeUrlsId();
+      // }
+    };
 
-  console.log("[p2p-script.js] player.tech().vhs.xhr:", player.tech().vhs.xhr);
+    /**
+     * Handles the request hook for XHR requests.
+     * @param {Object} options - The XHR options object.
+     * @returns {Object} - Modified XHR options object.
+     */
+    const playerOnRequestHook = (options) => {
+      let headers = options["headers"];
+      if (headers && headers["Range"]) {
+        let add = "?";
+        if (options.uri.indexOf("?") > -1) add = "&";
+        options.uri = options.uri + add + headers["Range"];
+      }
+      return options;
+    };
 
-  /**
-   * Overrides the XHR behavior on the video player.
-   * @param {string|Object} urlC - The URL or XHR options.
-   * @param {Function} callback - The XHR callback function.
-   * @returns {Object} - XHR result.
-   */
-  player.tech().vhs.xhr = function (urlC, callback) {
-    let url = "";
-    // console.log('[p2p-script.js] player.tech().vhs.xhr');
-    if (typeof urlC === "object") {
-      url = urlC.uri;
-      // console.log('[p2p-script.js] url:', url);
-      // console.log('[p2p-script.js] urlC:', urlC);
-      // console.log('[p2p-script.js] urlC.responseType:', urlC.responseType);
-      if (urlC.responseType === "arraybuffer") {
-        firstTime = true;
-        if (nbLog < 10) {
-          console.log("urlC", urlC);
-          nbLog++;
+    console.log("[p2p-script.js] player.tech().vhs.xhr:", player.tech().vhs.xhr);
+
+    /**
+     * Overrides the XHR behavior on the video player.
+     * @param {string|Object} urlC - The URL or XHR options.
+     * @param {Function} callback - The XHR callback function.
+     * @returns {Object} - XHR result.
+     */
+    player.tech().vhs.xhr = function (urlC, callback) {
+      let url = "";
+      // console.log('[p2p-script.js] player.tech().vhs.xhr');
+      if (typeof urlC === "object") {
+        url = urlC.uri;
+        // console.log('[p2p-script.js] url:', url);
+        // console.log('[p2p-script.js] urlC:', urlC);
+        // console.log('[p2p-script.js] urlC.responseType:', urlC.responseType);
+        if (urlC.responseType === "arraybuffer") {
+          firstTime = true;
+          if (nbLog < 10) {
+            console.log("urlC", urlC);
+            nbLog++;
+          }
+          let ids = []; // TODO Go the search ID in the server
+          if (ids.length > 0) {
+            // console.log('youpi');
+          }
+          videojs.Vhs.xhr.onResponse(playerOnResponseHook);
+          return videojs.Vhs.xhr(urlC, callback);
+        } else if (!firstTime) {
+          firstTime = true;
+          url = urlC.url;
+          videojs.Vhs.xhr.onResponse(playerOnResponseHook);
+          return videojs.Vhs.xhr(urlC, callback);
         }
-        let ids = []; // TODO Go the search ID in the server
-        if (ids.length > 0) {
-          // console.log('youpi');
-        }
-        videojs.Vhs.xhr.onResponse(playerOnResponseHook);
-        return videojs.Vhs.xhr(urlC, callback);
-      } else if (!firstTime) {
-        firstTime = true;
-        url = urlC.url;
+        // } else {
+        //     url = urlC.url;
+        //     videojs.Vhs.xhr.onResponse(playerOnResponseHook);
+        //     return videojs.Vhs.xhr(urlC, callback);
+        // }
+      } else {
+        url = urlC;
         videojs.Vhs.xhr.onResponse(playerOnResponseHook);
         return videojs.Vhs.xhr(urlC, callback);
       }
-      // } else {
-      //     url = urlC.url;
-      //     videojs.Vhs.xhr.onResponse(playerOnResponseHook);
-      //     return videojs.Vhs.xhr(urlC, callback);
-      // }
-    } else {
-      url = urlC;
-      videojs.Vhs.xhr.onResponse(playerOnResponseHook);
-      return videojs.Vhs.xhr(urlC, callback);
-    }
-  };
+    };
 
-  player.tech().vhs.xhr.beforeRequest = function (options) {
-    console.log("HLS Request:", options);
-    return options;
-  };
+    player.tech().vhs.xhr.beforeRequest = function (options) {
+      console.log("HLS Request:", options);
+      return options;
+    };
 
-  // FIN player.on('xhr-hooks-ready', () => {
-});
+    console.log("[p2p-script.js>initP2p()] startConnect");
+  });
+}
 
-startConnect({
-  host: "134.206.5.156",
-  port: "9000",
-  path: "/",
-  key: "peerjs",
-  debug: 3,
-});
+if (player.tech() && player.tech().vhs) {
+  console.log("[p2p-script.js] player.tech().vhs:", player.tech().vhs);
+  initP2p();
+  startConnect({
+      host: "134.206.5.156",
+      port: "9000",
+      path: "/",
+      key: "peerjs",
+      debug: 3,
+  });
+} else {
+  console.log("[p2p-script.js] player.tech().vhs not ready");
+  player.one("loadedmetadata", () => {
+    console.log("[p2p-script.js] loadedmetadata event");
+    initP2p();
+    startConnect({
+      host: "134.206.5.156",
+      port: "9000",
+      path: "/",
+      key: "peerjs",
+      debug: 3,
+    });
+  });
+}
