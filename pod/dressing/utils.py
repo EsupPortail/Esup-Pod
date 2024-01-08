@@ -56,6 +56,16 @@ def get_dressing_input(dressing, FFMPEG_DRESSING_INPUT):
 
 
 def get_dressings(user, accessgroup_set):
+    """
+    Function that returns the list of dressings that the user can use.
+
+    Args:
+        user (:class:`django.contrib.auth.models.User`): The user object.
+        accessgroup_set (:class:`pod.authentication.models.AccessGroup`): User acess groups.
+
+    Returns:
+        dressings (list): list of dressings.
+    """
     dressings = Dressing.objects.filter(
         Q(owners=user) | Q(users=user) | Q(allow_to_groups__in=accessgroup_set)).distinct()
     return dressings

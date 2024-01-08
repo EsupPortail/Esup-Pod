@@ -58,7 +58,7 @@ DEFAULT_LANG_TRACK = getattr(settings, "DEFAULT_LANG_TRACK", "fr")
 
 class Contributor(models.Model):
     video = models.ForeignKey(Video, verbose_name=_("video"), on_delete=models.CASCADE)
-    name = models.CharField(_("lastname / firstname"), max_length=200)
+    name = models.CharField(_("lastname / firstname"), max_length=200, default="")
     email_address = models.EmailField(_("mail"), null=True, blank=True, default="")
     role = models.CharField(
         _("role"), max_length=200, choices=ROLE_CHOICES, default="author"
