@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-13 11:52+0100\n"
+"POT-Creation-Date: 2024-01-08 12:03+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1170,6 +1170,14 @@ msgstr ""
 #: pod/enrichment/templates/enrichment/enrichment_informations_card_aside.html
 #: pod/podfile/models.py
 msgid "Document"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Private document"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Document is private."
 msgstr ""
 
 #: pod/completion/models.py pod/podfile/models.py
@@ -2491,6 +2499,10 @@ msgstr ""
 msgid "Impossible to create the external recording"
 msgstr ""
 
+#: pod/import_video/views.py
+msgid "Impossible to upload to Pod the video"
+msgstr ""
+
 #: pod/import_video/views.py pod/meeting/views.py
 #, python-format
 msgid ""
@@ -2505,15 +2517,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2942,7 +2954,6 @@ msgid "Heartbeats"
 msgstr ""
 
 #: pod/live/templates/bbb/bbb_form.html
-#: pod/live/templates/meeting/bbb_form.html
 msgid "Send message"
 msgstr ""
 
@@ -2957,12 +2968,10 @@ msgid "Message"
 msgstr ""
 
 #: pod/live/templates/bbb/bbb_form.html
-#: pod/live/templates/meeting/bbb_form.html
 msgid "You must be authenticated to send a message."
 msgstr ""
 
-#: pod/live/templates/bbb/bbb_form.html
-#: pod/live/templates/meeting/bbb_form.html pod/main/templates/aside.html
+#: pod/live/templates/bbb/bbb_form.html pod/main/templates/aside.html
 msgid "Submit"
 msgstr ""
 
@@ -3468,12 +3477,6 @@ msgstr ""
 
 #: pod/live/templates/live/my_events.html
 msgid "Past events"
-msgstr ""
-
-#: pod/live/templates/meeting/bbb_form.html
-msgid ""
-"You can send a message (100 characters maximum) to the speakers/trainers. "
-"They will receive it in few seconds."
 msgstr ""
 
 #: pod/live/utils.py
@@ -5248,18 +5251,6 @@ msgstr ""
 msgid "occurrences"
 msgstr ""
 
-#: pod/meeting/templates/meeting/webinary_options_modal_form.html
-msgid "Enable the chat"
-msgstr ""
-
-#: pod/meeting/templates/meeting/webinary_options_modal_form.html
-msgid "enable_chat"
-msgstr ""
-
-#: pod/meeting/templates/meeting/webinary_options_modal_form.html
-msgid "Show chat"
-msgstr ""
-
 #: pod/meeting/utils.py
 #, python-format
 msgid "A new Big Blue Button recording for '%(name)s' meeting is available"
@@ -6333,8 +6324,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
