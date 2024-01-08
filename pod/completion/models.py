@@ -131,6 +131,11 @@ class Document(models.Model):
         verbose_name=_("Document"),
         on_delete=models.CASCADE,
     )
+    private = models.BooleanField(
+        _("Private document"),
+        default=False,
+        help_text=_("Document is private."),
+    )
 
     class Meta:
         verbose_name = _("Document")

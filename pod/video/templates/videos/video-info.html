@@ -281,15 +281,25 @@
 
           <!-- <div class="col-4"> -->
             {% if video.document_set.all %}
-              <span class="meta-title pod-meta-title pod-download-title"><i class="bi bi-files"></i>{% trans 'Document:' %}</span>
-                <ul>{% for doc in video.document_set.all %}
-                  <li>
-                    <form method="post" action="{% url 'download_file' %}">
-                      {% csrf_token %}
-                      <input type="hidden" value="{{doc.document.file.name}}" name="filename">
-                      <input type="submit" class="btn btn-link btn-sm" value="{{doc.document.name}} ({{doc.document.file_type}} - {{ doc.document.file.size|filesizeformat }})">
-                    </form>
-                  </li>
+              <span class="meta-title pod-meta-title pod-download-title"><i class="bi bi-files" aria-hidden="true"></i>{% trans 'Document:' %}</span>
+                <ul>
+                  {% for doc in video.document_set.all %}
+                    {% if request.user.is_superuser or not doc.private %}
+                    <li>
+                      <form method="post" action="{% url 'download_file' %}">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{doc.document.file.name}}" name="filename">
+                        <input type="submit" class="btn btn-link btn-sm" value="{{doc.document.name}} ({{doc.document.file_type}} - {{ doc.document.file.size|filesizeformat }})">
+                        {% if request.user.is_superuser %}
+                          {% if doc.private %}
+                            <i class="bi bi-eye-slash" aria-hidden="true"></i>
+                          {% else %}
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                          {% endif %}
+                        {% endif %}
+                      </form>
+                    </li>
+                    {% endif %}
                   {% endfor%}
                 </ul>
             {% endif %}
