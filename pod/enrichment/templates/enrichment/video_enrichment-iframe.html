@@ -19,6 +19,10 @@
 
 {% block more_script %}
   {{block.super}}
+  <script>
+    var enrichmentIsOn = true;
+  </script>
+
   <script id="enrichment_script_id" src="{% static 'js/videojs-slides.js' %}?ver={{VERSION}}"></script>
   {% include 'enrichment/video_enrichment-script.html' %}
 {% endblock more_script %}
