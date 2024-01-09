@@ -6,6 +6,9 @@ from django_select2 import forms as s2forms
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
+from django.contrib import admin
+from django.contrib.admin import widgets
+
 from pod.video.models import Video
 from .models import Dressing
 
@@ -111,3 +114,37 @@ class DressingDeleteForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(DressingDeleteForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
+
+
+class DressingAdminForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request", None)
+        super(DressingAdminForm, self).__init__(*args, **kwargs)
+        if __FILEPICKER__ and self.fields.get("watermark"):
+            self.fields["watermark"].widget = CustomFileWidget(type="image")
+
+    def clean(self):
+        super(DressingAdminForm, self).clean()            
+
+    class Meta(object):
+        model = Dressing
+        fields = "__all__"
+        exclude = ['videos']
+        widgets = {
+            "owners": widgets.AutocompleteSelectMultiple(
+                Dressing._meta.get_field("owners"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "users": widgets.AutocompleteSelectMultiple(
+                Dressing._meta.get_field("users"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+            "allow_to_groups": widgets.AutocompleteSelectMultiple(
+                Dressing._meta.get_field("allow_to_groups"),
+                admin.site,
+                attrs={"style": "width: 20em"},
+            ),
+        }
