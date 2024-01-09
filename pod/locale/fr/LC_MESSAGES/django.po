@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-30 16:26+0100\n"
+"POT-Creation-Date: 2024-01-09 14:58+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1394,7 +1394,6 @@ msgstr "Contenu"
 
 #: pod/completion/models.py pod/completion/templates/overlay/list_overlay.html
 #: pod/dressing/models.py pod/dressing/templates/my_dressings.html
-#: pod/dressing/templates/my_dressings.html
 #: pod/dressing/templates/video_dressing.html
 msgid "Position"
 msgstr "Position"
@@ -2137,10 +2136,6 @@ msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
 
 #: pod/dressing/views.py
-msgid "Edit the dressing"
-msgstr "Éditer l'habillage"
-
-#: pod/dressing/views.py
 msgid "The dressing has been deleted."
 msgstr "L’habillage a été supprimé."
 
@@ -2858,6 +2853,10 @@ msgstr "L’enregistrement externe a été supprimé."
 msgid "Impossible to create the external recording"
 msgstr "Impossible de créer l’enregistrement externe"
 
+#: pod/import_video/views.py
+msgid "Impossible to upload to Pod the video"
+msgstr "Impossible de téléverser la vidéo PeerTube sur Pod"
+
 #: pod/import_video/views.py pod/meeting/views.py
 #, python-format
 msgid ""
@@ -2874,9 +2873,10 @@ msgstr ""
 "enregistrement."
 
 #: pod/import_video/views.py
+#, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
@@ -3350,7 +3350,6 @@ msgid "Heartbeats"
 msgstr "Signaux"
 
 #: pod/live/templates/bbb/bbb_form.html
-#: pod/live/templates/meeting/bbb_form.html
 msgid "Send message"
 msgstr "Envoyer un message"
 
@@ -3368,12 +3367,10 @@ msgid "Message"
 msgstr "Message"
 
 #: pod/live/templates/bbb/bbb_form.html
-#: pod/live/templates/meeting/bbb_form.html
 msgid "You must be authenticated to send a message."
 msgstr "Vous devez être authentifié pour envoyer un message."
 
-#: pod/live/templates/bbb/bbb_form.html
-#: pod/live/templates/meeting/bbb_form.html pod/main/templates/aside.html
+#: pod/live/templates/bbb/bbb_form.html pod/main/templates/aside.html
 msgid "Submit"
 msgstr "Envoyer"
 
@@ -3759,6 +3756,16 @@ msgstr "L’évènement est actuellement en cours. La supression est impossible.
 #: pod/live/templates/live/event_delete.html
 msgid "To delete the event, please checked in and click send."
 msgstr "Pour supprimer l’évènement, veuillez cocher et cliquer sur envoyer."
+
+#: pod/live/templates/live/event_delete.html
+#: pod/meeting/templates/meeting/delete.html
+#: pod/playlist/templates/playlist/delete.html
+#: pod/recorder/templates/recorder/record_delete.html
+#: pod/video/templates/videos/video_delete.html
+#, fuzzy
+#| msgid "Agreement required"
+msgid "Agree required"
+msgstr "Accord requis"
 
 #: pod/live/templates/live/event_edit.html
 #: pod/live/templates/live/event_immediate_edit.html
@@ -7466,6 +7473,12 @@ msgstr ""
 "Si coché, la chaîne apparaîtra dans la liste des chaînes de la plateforme."
 
 #: pod/video/models.py
+msgid "Select one or more groups who can upload video to this channel."
+msgstr ""
+"Sélectionner un ou plusieurs groupes qui pourront ajouter des vidéos à cette "
+"chaine."
+
+#: pod/video/models.py
 msgid "Additionals channels tab"
 msgstr "Onglet additionnel de chaînes"
 
@@ -8906,6 +8919,9 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
+#~ msgid "Edit the dressing"
+#~ msgstr "Éditer l'habillage"
+
 #~ msgid "watermark"
 #~ msgstr "filigrane"
 
@@ -8914,9 +8930,6 @@ msgstr "xAPI Esup-Pod"
 
 #~ msgid "opacity"
 #~ msgstr "opacité"
-
-#~ msgid "Edit the dressing"
-#~ msgstr "Éditer l'habillage"
 
 #~ msgid "Dressing"
 #~ msgstr "Habillage"
