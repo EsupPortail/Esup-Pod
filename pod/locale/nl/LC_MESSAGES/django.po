@@ -1944,10 +1944,6 @@ msgid "Deleting the dressing"
 msgstr ""
 
 #: pod/dressing/templates/dressing_delete.html
-msgid "Deleting the dressing"
-msgstr ""
-
-#: pod/dressing/templates/dressing_delete.html
 #, python-format
 msgid "Deleting the dressing \"%(vtitle)s\""
 msgstr ""
@@ -2042,10 +2038,6 @@ msgstr ""
 #: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
 #: pod/meeting/views.py pod/video/views.py
 msgid "The changes have been saved."
-msgstr ""
-
-#: pod/dressing/views.py
-msgid "Edit the dressing"
 msgstr ""
 
 #: pod/dressing/views.py
@@ -3147,7 +3139,6 @@ msgid "Heartbeats"
 msgstr ""
 
 #: pod/live/templates/bbb/bbb_form.html
-#: pod/live/templates/meeting/bbb_form.html
 msgid "Send message"
 msgstr ""
 
@@ -3162,12 +3153,10 @@ msgid "Message"
 msgstr ""
 
 #: pod/live/templates/bbb/bbb_form.html
-#: pod/live/templates/meeting/bbb_form.html
 msgid "You must be authenticated to send a message."
 msgstr ""
 
-#: pod/live/templates/bbb/bbb_form.html
-#: pod/live/templates/meeting/bbb_form.html pod/main/templates/aside.html
+#: pod/live/templates/bbb/bbb_form.html pod/main/templates/aside.html
 msgid "Submit"
 msgstr ""
 
@@ -3543,6 +3532,14 @@ msgstr ""
 msgid "To delete the event, please checked in and click send."
 msgstr ""
 
+#: pod/live/templates/live/event_delete.html
+#: pod/meeting/templates/meeting/delete.html
+#: pod/playlist/templates/playlist/delete.html
+#: pod/recorder/templates/recorder/record_delete.html
+#: pod/video/templates/videos/video_delete.html
+msgid "Agree required"
+msgstr ""
+
 #: pod/live/templates/live/event_edit.html
 #: pod/live/templates/live/event_immediate_edit.html
 msgid ""
@@ -3660,12 +3657,6 @@ msgstr ""
 
 #: pod/live/templates/live/my_events.html
 msgid "Past events"
-msgstr ""
-
-#: pod/live/templates/meeting/bbb_form.html
-msgid ""
-"You can send a message (100 characters maximum) to the speakers/trainers. "
-"They will receive it in few seconds."
 msgstr ""
 
 #: pod/live/utils.py
@@ -5440,18 +5431,6 @@ msgstr ""
 msgid "occurrences"
 msgstr ""
 
-#: pod/meeting/templates/meeting/webinary_options_modal_form.html
-msgid "Enable the chat"
-msgstr ""
-
-#: pod/meeting/templates/meeting/webinary_options_modal_form.html
-msgid "enable_chat"
-msgstr ""
-
-#: pod/meeting/templates/meeting/webinary_options_modal_form.html
-msgid "Show chat"
-msgstr ""
-
 #: pod/meeting/utils.py
 #, python-format
 msgid "A new Big Blue Button recording for '%(name)s' meeting is available"
@@ -6525,8 +6504,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -7023,6 +7002,10 @@ msgstr ""
 msgid ""
 "If checked, the channel appear in a list of available channels on the "
 "platform."
+msgstr ""
+
+#: pod/video/models.py
+msgid "Select one or more groups who can upload video to this channel."
 msgstr ""
 
 #: pod/video/models.py
