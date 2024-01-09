@@ -125,7 +125,7 @@ class DressingAdminForm(forms.ModelForm):
             self.fields["watermark"].widget = CustomFileWidget(type="image")
 
     def clean(self):
-        super(DressingAdminForm, self).clean()            
+        super(DressingAdminForm, self).clean()
 
     class Meta(object):
         model = Dressing

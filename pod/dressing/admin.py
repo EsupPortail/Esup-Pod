@@ -8,7 +8,7 @@ class DressingAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         ModelForm = super(DressingAdmin, self).get_form(request, obj, **kwargs)
-        
+
         class ModelFormMetaClass(ModelForm):
             def __new__(cls, *args, **kwargs):
                 kwargs["request"] = request
@@ -17,7 +17,7 @@ class DressingAdmin(admin.ModelAdmin):
         return ModelFormMetaClass
 
     form = DressingAdminForm
-    
+
     list_display = (
         "title",
         "watermark",
