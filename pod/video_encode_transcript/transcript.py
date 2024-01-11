@@ -3,6 +3,7 @@ from django.conf import settings
 from django.core.files import File
 from pod.completion.models import Track
 from pod.main.tasks import task_start_transcript
+from webvtt import Caption
 
 from .utils import (
     send_email,
@@ -149,6 +150,7 @@ def saveVTT(video, webvtt):
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     webvtt.save(temp_vtt_file.name)
     if webvtt.captions:
+        improveCaptionsAccessibility(webvtt)
         msg += "\nstore vtt file in bdd with CustomFileModel model file field"
         if __FILEPICKER__:
             videodir, created = UserFolder.objects.get_or_create(
@@ -186,3 +188,80 @@ def saveVTT(video, webvtt):
     else:
         msg += "\nERROR SUBTITLES Output size is 0"
     return msg
+
+
+def improveCaptionsAccessibility(webvtt):
+    # see `https://github.com/knarf18/Bonnes-pratiques-du-sous-titrage/blob/master/Liste%20de%20bonnes%20pratiques.md` # noqa: E501
+    # 40 caractères maximum par ligne (CPL) 
+    # Deux lignes maximum
+    new_captions = []
+    for caption in webvtt.captions:
+        sent = split_string(caption.text, 40, sep=" ")
+        if len(sent) > 2:
+            num_captions = int(len(sent) / 2)
+            if len(sent) % 2 :
+                num_captions += 1
+            dur = caption.end_in_seconds - caption.start_in_seconds
+            for x in range(num_captions):
+                new_cap = Caption()
+                new_cap.start = sec_to_timestamp(
+                    caption.start_in_seconds + x * dur / num_captions
+                )
+                new_cap.end = sec_to_timestamp(
+                    caption.start_in_seconds + (x + 1) * dur / num_captions
+                )
+                new_cap.text = get_cap_text(sent, x)
+                new_captions.append(new_cap)
+        else:
+            new_cap = Caption()
+            new_cap.start = caption.start
+            new_cap.end = caption.end
+            new_cap.text = "\n".join(sent)
+            new_captions.append(new_cap)
+    # remove all old captions
+    while len(webvtt.captions) > 0:
+        del webvtt.captions[0]
+    # add the new one
+    for cap in new_captions:
+        webvtt.captions.append(cap)
+    webvtt.save()
+
+
+def get_cap_text(sent, x):
+    new_cap_text = sent[x * 2]
+    try:
+        new_cap_text += "\n" + sent[x * 2 + 1]
+    except IndexError:
+        pass
+    return new_cap_text
+
+
+def pad(line, limit):
+    return line + " " * (limit - len(line))
+
+
+def split_string(text, limit, sep=" "):
+    words = text.split()
+    if max(map(len, words)) > limit:
+        raise ValueError("limit is too small")
+    res = []
+    part = words[0]
+    others = words[1:]
+    for word in others:
+        if len(sep) + len(word) > limit - len(part):
+            res.append(part)
+            part = word
+        else:
+            part += sep + word
+    if part:
+        res.append(part)
+    # add space to the end of line
+    result = [pad(line, limit) for line in res]
+    return result
+
+
+def sec_to_timestamp(total_seconds):
+    hours = int(total_seconds / 3600)
+    minutes = int(total_seconds / 60 - hours * 60)
+    seconds = total_seconds - hours * 3600 - minutes * 60
+    return '{:02d}:{:02d}:{:06.3f}'.format(hours, minutes, seconds)
