@@ -98,7 +98,7 @@ XAPI_LRS_LOGIN = ""
 XAPI_LRS_PWD = ""
 
 # Uniquement lors d'environnement conteneurisé
-if USE_DOCKER :
+if USE_DOCKER:
     MIGRATION_MODULES = {"flatpages": "pod.db_migrations"}
     MIGRATION_DIRECTORY = os.path.join(settings_base_dir, "db_migrations")
     if not os.path.exists(MIGRATION_DIRECTORY):
