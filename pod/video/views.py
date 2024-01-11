@@ -636,7 +636,10 @@ def get_owners_has_instances(owners):
 
 
 def owner_is_searchable(user):
-    """Return if user is searchable according to HIDE_USER_FILTER setting and authenticated user"""
+    """
+    Return if user is searchable according to HIDE_USER_FILTER setting
+    and authenticated user.
+    """
     return not HIDE_USER_FILTER and user.is_authenticated
 
 
@@ -1210,12 +1213,26 @@ def video_transcript(request, slug=None):
         )
         return redirect(reverse("video:video_edit", args=(video.slug,)))
 
-    if video.get_video_mp3():
-        transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
-        transcript_video(video.id)
-        messages.add_message(
-            request, messages.INFO, _("The video transcript has been restarted.")
-        )
+    if video.get_video_mp3() :
+        available_transcript_lang = [lang[0] for lang in get_transcription_choices()]
+        if (
+            request.GET.get("lang", "") != ""
+            and request.GET["lang"] in available_transcript_lang
+        ):
+            if video.transcript != request.GET["lang"]:
+                video.transcript = request.GET["lang"]
+                video.save()
+            transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
+            transcript_video(video.id)
+            messages.add_message(
+                request, messages.INFO, _("The video transcript has been restarted.")
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _("An available transcription language must be specified."),
+            )
 
     return redirect(reverse("video:video_edit", args=(video.slug,)))
 
