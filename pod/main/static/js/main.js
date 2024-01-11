@@ -300,10 +300,12 @@ document.addEventListener("hidden.bs.collapse", (e) => {
   if (e.target.id === "qrcode") e.target.setAttribute("src", "");
 });
 
-document.getElementById("btnDowloadQrCode").addEventListener('click', (e) => {
-  let nameOfDownload = e.target.dataset.slug + "-qrcode.png";
-  downloadImage(document.getElementById('qrcode').src, nameOfDownload);
-});
+if(document.getElementById("btnDownloadQrCode") !== null){
+  document.getElementById("btnDownloadQrCode").addEventListener('click', (e) => {
+    let nameOfDownload = e.target.dataset.slug + "-qrcode.png";
+    downloadImage(document.getElementById('qrcode').src, nameOfDownload);
+  });
+}
 
 /**
  * Download image function with url

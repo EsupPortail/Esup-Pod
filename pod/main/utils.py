@@ -1,13 +1,21 @@
 """Useful functions for the entire Pod application."""
+import base64
+import io
+import qrcode
+
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
+from django.urls import reverse
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 
+from pod import settings
 from pod.playlist.utils import get_playlist_list_for_user
 from pod.video.models import Video
 
+SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
 def is_ajax(request) -> bool:
     """Check that the request is made by a javascript call."""
@@ -101,3 +109,37 @@ def secure_post_request(request):
             request, messages.WARNING, _("This view cannot be accessed directly.")
         )
         raise PermissionDenied
+
+
+def generate_qrcode(url, id, request=None):
+    """
+    Generate qrcode for live event or video share link
+
+    Args:
+        url (string): Url corresponding to link
+        id (number): Id of object
+        request (Request): HTTP Request
+
+    Returns:
+        string: HTML-formed qrcode
+
+    """
+    url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
+    url_immediate_event = reverse(url, args={id})
+    data = "".join(
+        [
+            url_scheme,
+            "://",
+            get_current_site(request).domain,
+            url_immediate_event,
+        ]
+    )
+    img = qrcode.make(data)
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
+    alt = _("QR code to record immediately an event")
+    return mark_safe(
+        f'<img id="qrcode" src="data:image/png;base64, {img_str}" '
+        + f'width="200px" height="200px" alt={alt}>'
+    )

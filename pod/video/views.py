@@ -30,6 +30,7 @@ from django.db.models import Sum, Min
 from dateutil.parser import parse
 import concurrent.futures as futures
 from pod.main.utils import is_ajax, dismiss_stored_messages, get_max_code_lvl_messages
+from pod.main.utils import generate_qrcode
 
 from pod.main.models import AdditionalChannelTab
 from pod.main.views import in_maintenance
@@ -1133,6 +1134,19 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                 _("You cannot access this playlist because it is private.")
             )
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
+
+
+def get_generated_qrcode(video):
+    """
+    Generate qr code for video link
+
+    Args:
+        video (::class::`pod.video.models.Video`)
+
+    Returns:
+        string: HTML-formed qrcode
+    """
+    return generate_qrcode("enrichment:video_enrichment", video.id)
 
 
 def toggle_render_video_user_can_see_video(

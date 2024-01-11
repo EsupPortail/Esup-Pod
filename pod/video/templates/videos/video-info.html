@@ -417,11 +417,11 @@ Anyone with this links can access it.{% endblocktrans %}
                 <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" readonly>
               </div>
               <div class="form-group m-2">
-                <label>{% trans 'QR code for this link:' %}&nbsp;</label>
-                  <a href="#" class="btn btn-primary m-2" title="{% trans 'Warning, it use google API' %}" role="button" data-bs-toggle="collapse" data-bs-target="#qrcode" aria-expanded="false" aria-controls="qrcode">{% trans 'Voir le QR Code' %}</a>
-                  <button id="btnDowloadQrCode" type="submit" data-slug={{ video.slug }} class="btn btn-primary" title="{% trans 'Warning, it use google API' %}">{% trans 'Download' %}</button>
-                  <img src="" data-src="//chart.apis.google.com/chart?cht=qr&amp;chs=200x200&amp;chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}"
-                     alt="{% trans 'QR code' %}" id="qrcode" loading="lazy" class="collapse m-2">
+              {% get_qrcode video as qrcode %}
+                <label>{% trans 'QR code for this link:' %}&nbsp;</label><br>
+                {{ qrcode }}
+                <br>
+                  <button id="btnDownloadQrCode" type="submit" data-slug="{{ video.slug }}" class="btn btn-primary my-2" title="{% trans 'Download qrcode' %}">{% trans 'Download' %}</button>
               </div>
             </fieldset>
 
