@@ -192,7 +192,7 @@ def saveVTT(video, webvtt):
 
 def improveCaptionsAccessibility(webvtt):
     # see `https://github.com/knarf18/Bonnes-pratiques-du-sous-titrage/blob/master/Liste%20de%20bonnes%20pratiques.md` # noqa: E501
-    # 40 caractères maximum par ligne (CPL) 
+    # 40 caractères maximum par ligne (CPL)
     # Deux lignes maximum
     new_captions = []
     for caption in webvtt.captions:
