@@ -132,7 +132,7 @@ class Document(models.Model):
         on_delete=models.CASCADE,
     )
     private = models.BooleanField(
-        _("Private document"),
+        verbose_name=_("Private document"),
         default=False,
         help_text=_("Document is private."),
     )
