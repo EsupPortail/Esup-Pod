@@ -186,6 +186,6 @@ function updateModalConfirmSelectedVideos(){
  */
 function showDashboardFormError(element, message, alertClass){
     let html = "<div class=\"alert "+alertClass+" alert-dismissible fade show my-2\" role=\"alert\">"+message+
-        "<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button></div>"
+        "<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\""+gettext("Close")+"\"></button></div>"
     element.insertAdjacentHTML("beforebegin", html);
 }
