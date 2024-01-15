@@ -20,6 +20,7 @@ if (
     or importlib.util.find_spec("whisper") is not None
 ):
     from .transcript_model import start_transcripting
+    from .transcript_model import sec_to_timestamp
 
 import os
 import time
@@ -191,9 +192,13 @@ def saveVTT(video, webvtt):
 
 
 def improveCaptionsAccessibility(webvtt):
-    # see `https://github.com/knarf18/Bonnes-pratiques-du-sous-titrage/blob/master/Liste%20de%20bonnes%20pratiques.md` # noqa: E501
-    # 40 caractères maximum par ligne (CPL)
-    # Deux lignes maximum
+    """Parse the vtt file in argument to render the caption conform to accessibility.
+     - see `https://github.com/knarf18/Bonnes-pratiques-du-sous-titrage/blob/master/Liste%20de%20bonnes%20pratiques.md` # noqa: E501
+     - 40 car maximum per ligne (CPL)
+     - 2 lines max by caption
+    Parameters:
+    webvtt (object): the webvtt file content
+    """
     new_captions = []
     for caption in webvtt.captions:
         sent = split_string(caption.text, 40, sep=" ")
@@ -228,6 +233,13 @@ def improveCaptionsAccessibility(webvtt):
 
 
 def get_cap_text(sent, x):
+    """Return the text of the caption at the specified entry.
+    Parameters:
+    sent (array of str): the text of the caption cut by 40 car
+    x (int): the current position in the caption text
+    returns:
+    str: the content for the caption
+    """
     new_cap_text = sent[x * 2]
     try:
         new_cap_text += "\n" + sent[x * 2 + 1]
@@ -237,10 +249,24 @@ def get_cap_text(sent, x):
 
 
 def pad(line, limit):
+    """Add some space at the end of line to specified limit.
+    Parameters:
+    line (str): the current line
+    x (int): the current position in the caption text
+    Returns:
+    str:the line with space
+    """
     return line + " " * (limit - len(line))
 
 
 def split_string(text, limit, sep=" "):
+    """Split text by word for specified limit.
+    Parameters:
+    text (string): the text of the caption cut by 40 car
+    x (int): the current position in the caption text
+    Returns:
+    array:the array of words in the text
+    """
     words = text.split()
     if max(map(len, words)) > limit:
         raise ValueError("limit is too small")
@@ -258,10 +284,3 @@ def split_string(text, limit, sep=" "):
     # add space to the end of line
     result = [pad(line, limit) for line in res]
     return result
-
-
-def sec_to_timestamp(total_seconds):
-    hours = int(total_seconds / 3600)
-    minutes = int(total_seconds / 60 - hours * 60)
-    seconds = total_seconds - hours * 3600 - minutes * 60
-    return '{:02d}:{:02d}:{:06.3f}'.format(hours, minutes, seconds)
