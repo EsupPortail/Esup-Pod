@@ -1250,6 +1250,14 @@ msgstr "Vidéo"
 msgid "Document"
 msgstr "Document"
 
+#: pod/completion/models.py
+msgid "Private document"
+msgstr "Document privé"
+
+#: pod/completion/models.py
+msgid "Document is private."
+msgstr "Le document est privé."
+
 #: pod/completion/models.py pod/podfile/models.py
 msgid "Documents"
 msgstr "Documents"
@@ -2872,9 +2880,10 @@ msgstr ""
 "enregistrement."
 
 #: pod/import_video/views.py
+#, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
@@ -3357,7 +3366,6 @@ msgid "Heartbeats"
 msgstr "Signaux"
 
 #: pod/live/templates/bbb/bbb_form.html
-#: pod/live/templates/meeting/bbb_form.html
 msgid "Send message"
 msgstr "Envoyer un message"
 
@@ -3375,12 +3383,10 @@ msgid "Message"
 msgstr "Message"
 
 #: pod/live/templates/bbb/bbb_form.html
-#: pod/live/templates/meeting/bbb_form.html
 msgid "You must be authenticated to send a message."
 msgstr "Vous devez être authentifié pour envoyer un message."
 
-#: pod/live/templates/bbb/bbb_form.html
-#: pod/live/templates/meeting/bbb_form.html pod/main/templates/aside.html
+#: pod/live/templates/bbb/bbb_form.html pod/main/templates/aside.html
 msgid "Submit"
 msgstr "Envoyer"
 
