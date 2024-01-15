@@ -191,3 +191,104 @@ class AdditionalChannelTab(models.Model):
     class Meta:
         verbose_name = _("Additional channels Tab")
         verbose_name_plural = _("Additional channel Tabs")
+
+class Bloc(models.Model):
+    """Class describing Bloc objects."""
+
+    SLIDER = 'slider'
+    SLIDER_MULTI = 'slider_multi'
+    CARD_LIST = 'card_list'
+    HTML = 'html'
+    TYPE = (
+        (SLIDER, _('Slider')),
+        (SLIDER_MULTI, _('Slider multi')),
+        (CARD_LIST, _('Card list')),
+        (HTML, _('HTML')),
+    )
+
+    CHANNEL = 'channel'
+    THEME = 'theme'
+    EVENT = 'event'
+    PLAYLIST = 'playlist'
+    LAST_VIDEOS = 'last_videos'
+    MOST_VIEWS = 'most_views'
+    DATA_TYPE = (
+        (CHANNEL, _('Channel')),
+        (THEME, _('Theme')),
+        (EVENT, _('Event')),
+        (PLAYLIST, _('Playlist')),
+        (LAST_VIDEOS, _('Last videos')),
+        (MOST_VIEWS, _('Most views')),
+    )
+
+    title = models.CharField(_("Title"), max_length=250, blank=True, null=True)
+    order = models.PositiveSmallIntegerField(_("order"), default=1, blank=True, null=True)
+    page = models.ForeignKey(
+        FlatPage,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        help_text=_("Select the page of Pod you want to link with."),
+    )
+    
+    sites = models.ManyToManyField(Site)
+
+    type = models.CharField(
+        verbose_name=_("Type"),
+        max_length=200,
+        choices=TYPE,
+        default=SLIDER,
+        blank=True,
+        null=True,
+    )
+    
+    data_type = models.CharField(
+        verbose_name=_("Data type"),
+        max_length=200,
+        choices=DATA_TYPE,
+        default=CHANNEL,
+        blank=True,
+        null=True,
+    )
+
+    html = models.TextField(
+        _("HTML"),
+        null=True,
+        blank=True,
+        help_text=_("Write in html inside this field."),
+    )
+
+    display_title = models.CharField(_("Display title"), max_length=250, blank=True, null=True)
+    
+    no_cache = models.BooleanField(
+        default=False,
+        help_text=_("Check this box if you don't want to keep the cache."),
+    )
+
+    debug = models.BooleanField(
+        default=False,
+        help_text=_("Check this box if you want to activate debug mode."),
+    )
+
+    show_restricted = models.BooleanField(
+        default=False,
+        help_text=_("Check this box if you want to show restricted content."),
+    )
+
+    must_be_auth = models.BooleanField(
+        verbose_name=_("Must be authenticated"),
+        default=False,
+        help_text=_("Check this box if users must be authenticated to view content."),
+    )
+
+    nb_element = models.PositiveIntegerField(_("Number of element"), default=10, blank=True, null=True)
+
+    slider_multi_nb = models.PositiveIntegerField(_("Number of element for slider multi"), default=5, blank=True, null=True)
+
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    class Meta:
+        verbose_name = _("Bloc")
+        verbose_name_plural = _("Blocs")

@@ -9,6 +9,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from modeltranslation.admin import TranslationAdmin
 from pod.main.models import LinkFooter, Configuration
 from pod.main.models import AdditionalChannelTab
+from pod.main.models import Bloc
 
 
 SITE_ID = getattr(settings, "SITE_ID", 1)
@@ -105,6 +106,8 @@ class LinkFooterAdmin(TranslationAdmin):
             kwargs["queryset"] = FlatPage.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
+class BlocAdmin(admin.ModelAdmin):
+    list_display = ("id", "title", 'order', 'type',)
 
 # Unregister the default FlatPage admin and register CustomFlatPageAdmin.
 admin.site.unregister(FlatPage)
@@ -112,3 +115,4 @@ admin.site.register(FlatPage, CustomFlatPageAdmin)
 admin.site.register(LinkFooter, LinkFooterAdmin)
 admin.site.register(Configuration, ConfigurationAdmin)
 admin.site.register(AdditionalChannelTab, AdditionalChannelTabAdmin)
+admin.site.register(Bloc, BlocAdmin)
