@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-09 14:58+0100\n"
+"POT-Creation-Date: 2024-01-16 09:57+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2406,6 +2406,7 @@ msgstr "Vous ne pouvez pas enrichir cette vidéo."
 
 #: pod/enrichment/views.py pod/video/views.py
 msgid "You cannot access this playlist because it is private."
+msgstr ""
 "Vous ne pouvez pas accéder à cette liste de lecture car elle est privée."
 
 #: pod/import_video/apps.py
@@ -2878,24 +2879,6 @@ msgid "Try changing the record type or address for this recording."
 msgstr ""
 "Essayez de modifier le type d’enregistrement ou l’adresse de cet "
 "enregistrement."
-
-#: pod/import_video/views.py
-#, python-format
-msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
-msgstr ""
-"Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
-"%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
-
-#: pod/import_video/views.py
-#, python-format
-msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
-msgstr ""
-"Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
-"%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 
 #: pod/import_video/views.py
 #, python-format
@@ -8943,18 +8926,6 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#~ msgid "Edit the dressing"
-#~ msgstr "Éditer l'habillage"
-
-#~ msgid "watermark"
-#~ msgstr "filigrane"
-
-#~ msgid "position"
-#~ msgstr "position"
-
-#~ msgid "opacity"
-#~ msgstr "opacité"
 
 #~ msgid "Edit the dressing"
 #~ msgstr "Éditer l'habillage"
