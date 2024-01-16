@@ -192,12 +192,15 @@ def saveVTT(video, webvtt):
 
 
 def improveCaptionsAccessibility(webvtt):
-    """Parse the vtt file in argument to render the caption conform to accessibility.
-     - see `https://github.com/knarf18/Bonnes-pratiques-du-sous-titrage/blob/master/Liste%20de%20bonnes%20pratiques.md` # noqa: E501
-     - 40 car maximum per ligne (CPL)
-     - 2 lines max by caption
-    Parameters:
-    webvtt (object): the webvtt file content
+    """
+    Parse the vtt file in argument to render the caption conform to accessibility.
+    - see `https://github.com/knarf18/Bonnes-pratiques-du-sous-titrage/blob/master/Liste%20de%20bonnes%20pratiques.md` # noqa: E501
+    - 40 car maximum per ligne (CPL)
+    - 2 lines max by caption
+
+    Args:
+        webvtt (:class:`webvtt.WebVTT`): the webvtt file content
+
     """
     new_captions = []
     for caption in webvtt.captions:
@@ -233,12 +236,15 @@ def improveCaptionsAccessibility(webvtt):
 
 
 def get_cap_text(sent, x):
-    """Return the text of the caption at the specified entry.
-    Parameters:
-    sent (array of str): the text of the caption cut by 40 car
-    x (int): the current position in the caption text
-    returns:
-    str: the content for the caption
+    """
+    Get the text in the sent array at the position gived in arg.
+
+    Args:
+        sent (list): The list of text
+        x (int): The position to extract
+
+    Returns:
+        str: The extracted text
     """
     new_cap_text = sent[x * 2]
     try:
@@ -249,23 +255,30 @@ def get_cap_text(sent, x):
 
 
 def pad(line, limit):
-    """Add some space at the end of line to specified limit.
-    Parameters:
-    line (str): the current line
-    x (int): the current position in the caption text
+    """
+    Add some space at the end of line to specified limit.
+
+    Args:
+        line (str): A line of text
+        limit (int): The size of line
+
     Returns:
-    str:the line with space
+        str: the line with space at the end
     """
     return line + " " * (limit - len(line))
 
 
 def split_string(text, limit, sep=" "):
-    """Split text by word for specified limit.
-    Parameters:
-    text (string): the text of the caption cut by 40 car
-    x (int): the current position in the caption text
+    """
+    Split text by word for specified limit.
+
+    Args:
+        text (str): the text of the caption
+        limit (int): size of line
+        sep (str): default " "
+
     Returns:
-    array:the array of words in the text
+        array: list of words in the text
     """
     words = text.split()
     if max(map(len, words)) > limit:

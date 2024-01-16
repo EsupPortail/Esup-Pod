@@ -639,6 +639,12 @@ def owner_is_searchable(user):
     """
     Return if user is searchable according to HIDE_USER_FILTER setting
     and authenticated user.
+
+    Args:
+        user (:class:`django.contrib.auth.models.User`): The user object
+
+    Returns:
+        bool: True if HIDE_USER_FILTER is False and user is authenticated, False otherwise
     """
     return not HIDE_USER_FILTER and user.is_authenticated
 
