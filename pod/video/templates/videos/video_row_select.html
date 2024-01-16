@@ -51,24 +51,20 @@
 
         {% if video.is_video %}
             <span title="{% trans 'Video content.' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
-                <i class="bi bi-film bi_content_type" aria-hidden="true">
-                    <span class="visually-hidden">{% trans 'Video content.' %}</span>
-                </i>
+                <i class="bi bi-film bi_content_type" aria-hidden="true"></i>
           </span>
         {% else %}
             <span title="{% trans 'Audio content.' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
-            <i class="bi bi-soundwave bi_content_type" aria-hidden="true">
-                <span class="visually-hidden">{% trans 'Audio content.' %}</span>
-            </i>
+                <i class="bi bi-soundwave bi_content_type" aria-hidden="true"></i>
           </span>
         {% endif %}
     </div>
     <div id="more-btn-group" class="btn-group ms-auto" role="group">
         <button id="more-actions-row-btn-{{ video.id }}" type="button" class="more-actions-row-btn"
-                data-bs-toggle="dropdown" aria-expanded="false" title="{% trans 'More' %}">
-            <i class="bi bi-three-dots more-actions-row-i" aria-hidden="true">
-                <span class="visually-hidden">{% trans 'More' %}</span>
-            </i>
+                data-bs-toggle="dropdown" aria-expanded="false">
+            <span title="{% trans 'More' %}">
+                <i class="bi bi-three-dots more-actions-row-i" aria-hidden="true"></i>
+            </span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="more-actions-row-btn-{{ video.id }}">
             <li><a href="{% url 'video:video' video.slug %}"
