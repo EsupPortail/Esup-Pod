@@ -9,9 +9,9 @@
         {% can_see_playlist_video video as can_see_video %}
     {% endif %}
     <div class="checked_overlay">
-      <span class="card-selected">
-        <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
-      </span>
+        <span class="card-selected" title="{% trans 'Selected' %}">
+            <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+        </span>
     </div>
     <!-- video as row -->
     <div class="col-1 thumbnail-item-video-row">{{ video.get_thumbnail_card|safe }}</div>
