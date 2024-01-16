@@ -117,7 +117,7 @@ class DressingDeleteForm(forms.Form):
 
 
 class DressingAdminForm(forms.ModelForm):
-
+    """Form for admin panel."""
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request", None)
         super(DressingAdminForm, self).__init__(*args, **kwargs)
