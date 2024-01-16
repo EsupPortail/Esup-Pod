@@ -3,6 +3,13 @@ console.log("P2P SCRIPT LOADED");
 console.log("player", player);
 
 /**
+ * Number of connections established.
+ * @type {number}
+ * @default 0
+ */
+let numberOfConnections = 0;
+
+/**
  * Current index in the list of peer identifiers.
  * @type {number}
  * @default 0
