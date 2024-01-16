@@ -207,7 +207,7 @@ def improveCaptionsAccessibility(webvtt):
         sent = split_string(caption.text, 40, sep=" ")
         if len(sent) > 2:
             num_captions = int(len(sent) / 2)
-            if len(sent) % 2 :
+            if len(sent) % 2:
                 num_captions += 1
             dur = caption.end_in_seconds - caption.start_in_seconds
             for x in range(num_captions):

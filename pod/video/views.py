@@ -1219,7 +1219,7 @@ def video_transcript(request, slug=None):
         )
         return redirect(reverse("video:video_edit", args=(video.slug,)))
 
-    if video.get_video_mp3() :
+    if video.get_video_mp3():
         available_transcript_lang = [lang[0] for lang in get_transcription_choices()]
         if (
             request.GET.get("lang", "") != ""
