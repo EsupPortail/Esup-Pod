@@ -18,6 +18,11 @@ TEST_SETTINGS = True
 TEMPLATES[0]["DIRS"].append(
     os.path.join(settings_base_dir, "custom", "static", "opencast")
 )
+USE_DOCKER = True
+path = "pod/custom/settings_local.py"
+if os.path.exists(path):
+    _temp = __import__("pod.custom", globals(), locals(), ["settings_local"])
+    USE_DOCKER = getattr(_temp.settings_local, "USE_DOCKER", True)
 
 for application in INSTALLED_APPS:
     if application.startswith("pod"):
@@ -27,7 +32,6 @@ for application in INSTALLED_APPS:
             for variable in dir(_temp.settings):
                 if variable == variable.upper():
                     locals()[variable] = getattr(_temp.settings, variable)
-
 
 DATABASES = {
     "default": {
@@ -95,9 +99,10 @@ XAPI_LRS_LOGIN = ""
 XAPI_LRS_PWD = ""
 
 # Uniquement lors d'environnement conteneurisé
-MIGRATION_MODULES = {"flatpages": "pod.db_migrations"}
-MIGRATION_DIRECTORY = os.path.join(settings_base_dir, "db_migrations")
-if not os.path.exists(MIGRATION_DIRECTORY):
-    os.mkdir(MIGRATION_DIRECTORY)
-    file = os.path.join(MIGRATION_DIRECTORY, "__init__.py")
-    open(file, "a").close()
+if USE_DOCKER:
+    MIGRATION_MODULES = {"flatpages": "pod.db_migrations"}
+    MIGRATION_DIRECTORY = os.path.join(settings_base_dir, "db_migrations")
+    if not os.path.exists(MIGRATION_DIRECTORY):
+        os.mkdir(MIGRATION_DIRECTORY)
+        file = os.path.join(MIGRATION_DIRECTORY, "__init__.py")
+        open(file, "a").close()

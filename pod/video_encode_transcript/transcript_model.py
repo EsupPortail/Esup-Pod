@@ -260,8 +260,8 @@ def words_to_vtt(
             change_previous_end_caption(webvtt, start_caption)
 
             caption = Caption(
-                format_time_caption(start_caption),
-                format_time_caption(stop_caption),
+                sec_to_timestamp(start_caption),
+                sec_to_timestamp(stop_caption),
                 " ".join(text_caption),
             )
 
@@ -274,8 +274,8 @@ def words_to_vtt(
         # on ajoute ici la dernière phrase de la vidéo
         stop_caption = start_trim + words[-1][start_key] + last_word_duration
         caption = Caption(
-            format_time_caption(start_caption),
-            format_time_caption(stop_caption),
+            sec_to_timestamp(start_caption),
+            sec_to_timestamp(stop_caption),
             " ".join(text_caption),
         )
         webvtt.captions.append(caption)
@@ -312,8 +312,8 @@ def main_vosk_transcript(norm_mp3_file, duration, transript_model):
             start_caption = words[0]["start"]
             stop_caption = words[-1]["end"]
             caption = Caption(
-                format_time_caption(start_caption),
-                format_time_caption(stop_caption),
+                sec_to_timestamp(start_caption),
+                sec_to_timestamp(stop_caption),
                 text,
             )
             webvtt.captions.append(caption)
@@ -422,8 +422,8 @@ def main_whisper_transcript(norm_mp3_file, lang):
 
     for segment in transcription["segments"]:
         caption = Caption(
-            format_time_caption(segment["start"]),
-            format_time_caption(segment["end"]),
+            sec_to_timestamp(segment["start"]),
+            sec_to_timestamp(segment["end"]),
             segment["text"],
         )
         webvtt.captions.append(caption)
@@ -444,14 +444,15 @@ def change_previous_end_caption(webvtt, start_caption):
             microseconds=prev_end.microsecond,
         ).total_seconds()
         if td_prev_end > start_caption:
-            webvtt.captions[-1].end = format_time_caption(start_caption)
+            webvtt.captions[-1].end = sec_to_timestamp(start_caption)
 
 
-def format_time_caption(time_caption):
+def sec_to_timestamp(total_seconds):
     """Format time for webvtt caption."""
-    return (
-        dt.datetime.utcfromtimestamp(0) + timedelta(seconds=float(time_caption))
-    ).strftime("%H:%M:%S.%f")[:-3]
+    hours = int(total_seconds / 3600)
+    minutes = int(total_seconds / 60 - hours * 60)
+    seconds = total_seconds - hours * 3600 - minutes * 60
+    return "{:02d}:{:02d}:{:06.3f}".format(hours, minutes, seconds)
 
 
 def get_text_caption(text_caption, last_word_added):

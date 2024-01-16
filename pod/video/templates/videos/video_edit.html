@@ -132,8 +132,8 @@
               {% if field.name == "transcript"  %}
                 {% if form.instance.id and form.instance.get_encoding_step == ""  or form.instance.encoding_in_progress %}
                 {% else %}
-                  {% if form.instance.slug != '' and form.instance.get_encoding_step == '0 : end of encoding' %}
-                    <a class="btn btn-primary btn-sm ps-2 pe-2 m-1" type="button" href="{% url 'video:video_transcript' form.instance.slug %}">
+                  {% if form.instance.slug != '' and form.instance.get_encoding_step|slice:":1" == '0' or 'no stt model' in form.instance.get_encoding_step %}
+                    <a class="btn btn-primary btn-sm ps-2 pe-2 m-1" type="button" href="{% url 'video:video_transcript' form.instance.slug %}" id="restart_transcript">
                       <i class="bi bi-translate" aria-hidden="true"></i>
                       {% trans "Restart transcription" %}
                     </a>
@@ -296,6 +296,24 @@
     passwordInput.addEventListener("click", function() {
       passwordInput.select();
     });
+    const select_transcript = document.getElementById("id_transcript");
+    const transcript_button = document.getElementById("restart_transcript");
+    if(transcript_button) {
+      let transcript_button_href = transcript_button.href.split('?')[0];
+      function change_transcript() {
+        if(select_transcript.value == "") {
+          transcript_button.href = transcript_button_href;
+          transcript_button.classList.add("invisible");
+        } else {
+          transcript_button.classList.remove("invisible");
+          transcript_button.href = transcript_button_href + "?lang=" + select_transcript.value;
+        }
+      }
+      select_transcript.addEventListener("change", function(event){
+        change_transcript();
+      });
+      change_transcript();
+    }
   </script>
 
   {% if form.instance.encoding_in_progress and request.user.owner.accepts_notifications is not False %}
