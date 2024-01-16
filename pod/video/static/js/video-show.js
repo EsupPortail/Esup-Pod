@@ -1,8 +1,7 @@
-var translationDone = false;
-
-document
-  .getElementById("podvideoplayer_html5_api")
-  .addEventListener("play", function () {
+let translationDone = false;
+let video_player = document.getElementById("podvideoplayer_html5_api");
+if (video_player) {
+  video_player.addEventListener("play", function () {
     if (!translationDone) {
       const elementToTranslateList = [
         [".skip-back", gettext("Seek back 10 seconds in the video")],
@@ -26,6 +25,7 @@ document
       }
     }
   });
+}
 
 /**
  * Translate the title of the video player button.

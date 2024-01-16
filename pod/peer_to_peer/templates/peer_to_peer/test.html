@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
+    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+    <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
+</head>
+<body>
+    <video
+        id="video"
+        class="video-js vjs-default-skin"
+        height="300"
+        width="600"
+        controls
+    >
+    </video>
+    <script>
+        var player = videojs('video');
+        player.src({
+            src: 'https://fly.live.ceeblue.tv/cmaf/out+de1e6f7c-e5db-450b-9603-c3644274779b/index.m3u8',
+            // src: 'https://live-medecine.univ-lille.fr/hls/medecine-amphi-7.m3u8',
+            // src : "https://pod.univ-lille.fr/media/videos/67abd9cc65de301556089e8c355f901ccce378cf6cf40c25d13e3d585fb492dd/35011/livestream.m3u8",
+            type: 'application/x-mpegURL'
+        });
+    </script>
+    <script src="{% static "peer_to_peer/js/p2p-script.js" %}"></script>
+</body>
+</html>

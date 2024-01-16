@@ -765,7 +765,6 @@ msgstr ""
 
 #: pod/chapter/apps.py pod/chapter/models.py
 #: pod/chapter/templates/video_chapter.html
-#: pod/video/templates/videos/video-element.html
 msgid "Chapters"
 msgstr ""
 
@@ -2088,6 +2087,35 @@ msgstr ""
 #: pod/enrichment/templates/enrichment/video_enrichment-iframe.html
 #: pod/enrichment/templates/enrichment/video_enrichment_page_title.html
 msgid "Enriched"
+msgstr ""
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html
+#: pod/live/templates/live/event-info.html
+#: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_opengraph.html
+#: pod/video/templates/videos/video_page_content.html
+msgid "Added by:"
+msgstr ""
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html
+#: pod/video/templates/videos/video-script.html
+msgid "Informations"
+msgstr ""
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html
+msgid "To help you, the different types of enrichments have specific colors:"
+msgstr ""
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html
+msgid "Weblink"
+msgstr ""
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html
+msgid "Embed"
+msgstr ""
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html
+msgid "They are visible on the video playback bar."
 msgstr ""
 
 #: pod/enrichment/views.py
@@ -7779,6 +7807,18 @@ msgstr ""
 msgid "New note"
 msgstr ""
 
+#: pod/video/templates/videos/video_p2p_stats.html
+msgid "Number of people sharing this resource."
+msgstr ""
+
+#: pod/video/templates/videos/video_p2p_stats.html
+msgid "Video data downloaded from the server or another peer."
+msgstr ""
+
+#: pod/video/templates/videos/video_p2p_stats.html
+msgid "Video data shared with other peer."
+msgstr ""
+
 #: pod/video/templates/videos/video_page_content.html
 msgid "Channel description"
 msgstr ""
@@ -7855,6 +7895,10 @@ msgstr ""
 
 #: pod/video/views.py
 msgid "You cannot edit this channel."
+msgstr ""
+
+#: pod/video/views.py
+msgid "Sorry, you can't access to the video chapter."
 msgstr ""
 
 #: pod/video/views.py

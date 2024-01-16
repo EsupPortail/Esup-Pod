@@ -1,14 +1,29 @@
-{% load static %}
+{% load static custom_tags %}
+{% get_setting "USE_VIDEO_P2P" False as use_video_p2p %}
+
+{% if use_video_p2p %}
+  <script src="{% static '@peertube/p2p-media-loader-core/build/p2p-media-loader-core.js' %}?ver={{VERSION}}" ></script>
+  <script src="{% static '@peertube/p2p-media-loader-hlsjs/build/p2p-media-loader-hlsjs.js' %}?ver={{VERSION}}" ></script>
+  <script src="{% static 'js/hls-plugin.js' %}?ver={{ VERSION }}" type="module"></script>
+{% endif %}
 
 <link href="{% static 'video.js/dist/video-js.min.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script id="videojs_script_id" src="{% static 'video.js/dist/video.min.js' %}?ver={{VERSION}}"></script>
-  {% with 'video.js/dist/lang/'|add:request.LANGUAGE_CODE|add:'.js' as videojs_lang %}
-    <script src="{% static videojs_lang %}?ver={{VERSION}}"></script>
-  {% endwith %}
+{% with 'video.js/dist/lang/'|add:request.LANGUAGE_CODE|add:'.js' as videojs_lang %}
+  <script src="{% static videojs_lang %}?ver={{VERSION}}"></script>
+{% endwith %}
+<!--
+<script src="{% static 'js/videojs-hlsjs-plugin.min.js' %}?ver={{VERSION}}"></script>
+-->
 
-<!-- seek button -->
-<link href="{% static 'videojs-seek-buttons/dist/videojs-seek-buttons.css' %}?ver={{VERSION}}" rel="stylesheet">
-<script src="{% static 'videojs-seek-buttons/dist/videojs-seek-buttons.min.js' %}?ver={{VERSION}}"></script>
+<link href="{% static 'videojs-quality-selector-hls/dist/videojs-quality-selector-hls.css' %}?ver={{VERSION}}" rel="stylesheet">
+
+<!-- mp4 quality selector
+  // remove it from videojs 8 due to extend error
+  // resolve in https://github.com/silvermine/videojs-quality-selector/commit/d16842b1acb16cb25f12404ce56d8577b1c61a8d
+  // wait for new version
+<script src="{% static '@silvermine/videojs-quality-selector/dist/js/silvermine-videojs-quality-selector.min.js' %}?ver={{VERSION}}"></script>
+-->
 
 {% if not video.is_video and event is None or playlist_in_get %}
   <!-- Audio wavesurfer -->
@@ -49,17 +64,6 @@
 <!-- cut video -->
 <link rel="stylesheet" href="{% static 'css/video_cut.css' %}?ver={{VERSION}}">
 
-
-<!-- quality selector -->
-<!-- NOTE: hls-quality-selector doesn't seem to work on Safari. -->
-<link href="{% static 'videojs-hls-quality-selector/dist/videojs-hls-quality-selector.css' %}?ver={{VERSION}}" rel="stylesheet">
-<script src="{% static 'videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js' %}?ver={{VERSION}}"></script>
-<script src="{% static 'videojs-hls-quality-selector/dist/videojs-hls-quality-selector.min.js' %}?ver={{VERSION}}"></script>
-<!-- mp4 quality selector -->
-<script src="{% static '@silvermine/videojs-quality-selector/dist/js/silvermine-videojs-quality-selector.min.js' %}?ver={{VERSION}}"></script>
-<!--
-<link href="{% static 'css/quality-selector.css' %}?ver={{VERSION}}" rel="stylesheet">
--->
 <!-- notes -->
 <link href="{% static 'css/video_notes.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/video_notes.js' %}?ver={{VERSION}}"></script>
@@ -70,12 +74,8 @@
 {% endif %}
 <!-- logo -->
 <link href="{% static 'css/videojs-controlbar.css' %}?ver={{VERSION}}" rel="stylesheet">
-<script src="{% static 'js/videojs-logo-controlbar.js' %}?ver={{VERSION}}"></script>
-<!-- chapitre : depuis videojs7, plus besoin de plugin js https://docs.videojs.com/tutorial-text-tracks.html -->
-<link href="{% static 'css/videojs-chapters.css' %}?ver={{VERSION}}" rel="stylesheet">
-<script src="{% static 'js/videojs-chapters.js' %}?ver={{VERSION}}"></script>
-{% if video.overview or playlist_in_get %}
 
+{% if video.overview or playlist_in_get %}
   <link id="overview_style_id" href="{% static 'videojs-vtt-thumbnails/dist/videojs-vtt-thumbnails.css' %}?ver={{VERSION}}" rel="stylesheet">
   <script id="overview_script_id" src="{% static 'videojs-vtt-thumbnails/dist/videojs-vtt-thumbnails.min.js' %}?ver={{VERSION}}"></script>
 {% endif %}

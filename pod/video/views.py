@@ -28,6 +28,7 @@ from django.db.models import Sum, Min
 
 from dateutil.parser import parse
 import concurrent.futures as futures
+from webvtt import WebVTT, Caption
 from pod.main.utils import is_ajax
 
 from pod.main.models import AdditionalChannelTab
@@ -78,9 +79,11 @@ import json
 import re
 import pandas
 from http import HTTPStatus
+from ..video_encode_transcript.transcript_model import format_time_caption
 from datetime import date
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
+from typing import Optional
 
 from django.db import transaction
 from django.db import IntegrityError
@@ -860,6 +863,53 @@ def video_xhr(request, slug, slug_private=None):
             return HttpResponse(data, content_type="application/json")
 
 
+def get_video_chapters(
+    request: WSGIRequest, slug: str, slug_private: Optional[str] = None
+) -> HttpResponse:
+    """
+    Return all video's chapters in webVTT format for video player.
+
+    Args:
+        request (:class:`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        slug (str): The chapter slug.
+        slug_private (str, optional): The chapter private slug. Defaults to None.
+
+    Raises:
+        SuspiciousOperation: Raised when an invalid video id is encountered.
+
+    Returns:
+        HttpResponse: WebVTT formatted response containing video chapters.
+    """
+    try:
+        id = int(slug.split("-")[0])
+    except ValueError:
+        raise SuspiciousOperation("Invalid video id")
+
+    video = get_object_or_404(Video, id=id, sites=get_current_site(request))
+    show_page = get_video_access(request, video, slug_private)
+    if show_page:
+        webvtt = WebVTT()
+        chapters = video.chapter_set.all()
+        prev_chapter = chapters.first()
+        for chapter in chapters[1:]:
+            caption = Caption(
+                format_time_caption(prev_chapter.time_start),
+                format_time_caption(chapter.time_start),
+                " ".join(prev_chapter.title),
+            )
+            webvtt.captions.append(caption)
+        last_chapter = chapters.last()
+        caption = Caption(
+            format_time_caption(last_chapter.time_start),
+            format_time_caption(video.duration),
+            " ".join(last_chapter.title),
+        )
+        webvtt.captions.append(caption)
+        return HttpResponse(webvtt.content, content_type="text/plain")
+    else:
+        return HttpResponseForbidden(_("Sorry, you can't access to the video chapter."))
+
+
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     try:
@@ -925,7 +975,6 @@ def toggle_render_video_user_can_see_video(
 def toggle_render_video_when_is_playlist_player(request):
     """Toggle `render_video()` when the user want to play a playlist."""
     playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-    print(playlist.visibility)
     if request.user.is_authenticated:
         video = (
             Video.objects.filter(

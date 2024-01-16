@@ -1,7 +1,25 @@
 {% load custom_tags %}
 {% load i18n %}
 {% load static %}
-<script>
+{% get_setting "USE_VIDEO_P2P" False as use_video_p2p %}
+{% get_setting "P2P_TRACKERS" "" as p2p_trackers %}
+{% get_setting "P2P_STUNS" "" as p2p_stuns %}
+
+{% if use_video_p2p and event.is_current %}
+  <script src="{% static 'js/video-p2p-stats.js' %}?ver={{VERSION}}"></script>
+{% endif %}
+
+<script type="module">
+  import '{% static 'video.js/dist/video.min.js' %}';
+  import '{% static 'videojs-quality-selector-hls/dist/videojs-quality-selector-hls.min.js' %}';
+  {% if video.overview or playlist_in_get %}
+    import '{% static 'js/videojs-vtt-thumbnails.js' %}';
+  {% endif %}
+  import '{% static 'js/videojs-logo-controlbar.js' %}';
+  {% if event.is_current %}
+    import '{% static 'js/viewcounter.js' %}';
+  {% endif %}
+
     // Debug if necessary, depends on the settings_local
     const debug = "{% get_setting "DEBUG" False %}" === "True";
 
@@ -12,15 +30,113 @@
     let nbLoop = 0;
     // Live seems stopped
     let stopped = false;
-    let video_on_hold_is_displayed = false;
+    let videoOnHoldIsDisplayed = false;
     let recordingDuration = 0;
+
+    {% if use_video_p2p and event.is_current %}
+      window.downloadTotals = { http: 0, p2p: 0 };
+      window.uploadTotal = 0;
+      window.nb_peers = 0;
+    {% endif %}
+
+    var VideoHlsjsConfig = {
+        maxBufferSize: 0,
+        maxBufferLength: 10,
+        liveSyncDurationCount: 10,
+        backBufferLength: 90,
+        enableWorker: true,
+        lowLatencyMode: true,
+        // debug: true, // TODO - REMOVE
+    }
+    {% if use_video_p2p and event.is_current %}
+      const p2p_config = {
+        segments:{
+          // number of segments to pass for processing to P2P algorithm
+          // forwardSegmentCount:50, // usually should be equal or greater than p2pDownloadMaxPriority and httpDownloadMaxPriority
+          swarmId: '{{ event.broadcaster.url }}',
+        },
+        loader:{
+          /** configure personal tracker and STUN servers */
+          trackerAnnounce: [
+            {% for tracker in p2p_trackers %}
+              "{{tracker}}"{% if not forloop.last %},{%endif%}
+            {% endfor %}
+          ],
+          rtcConfig: {
+            iceServers: [
+            {% for stun in p2p_stuns %}
+              { urls: "{{stun}}" }{% if not forloop.last %},{%endif%}
+            {% endfor %}
+            ]
+          },
+          /*
+          // how long to store the downloaded segments for P2P sharing
+          cachedSegmentExpiration:86400000,
+          // count of the downloaded segments to store for P2P sharing
+          cachedSegmentsCount:1000,
+
+          // first 4 segments (priorities 0, 1, 2 and 3) are required buffer for stable playback
+          requiredSegmentsPriority:3,
+
+          // each 1 second each of 10 segments ahead of playhead position gets 6% probability for random HTTP download
+          httpDownloadMaxPriority:9,
+          httpDownloadProbability:0.06,
+          httpDownloadProbabilityInterval: 1000,
+
+          // disallow randomly download segments over HTTP if there are no connected peers
+          httpDownloadProbabilitySkipIfNoPeers: true,
+
+          // P2P will try to download only first 51 segment ahead of playhead position
+          p2pDownloadMaxPriority: 50,
+
+          // 1 second timeout before retrying HTTP download of a segment in case of an error
+          httpFailedSegmentTimeout:1000,
+
+          // number of simultaneous downloads for P2P and HTTP methods
+          simultaneousP2PDownloads:20,
+          simultaneousHttpDownloads:3,
+
+          // enable mode, that try to prevent HTTP downloads on stream start-up
+          httpDownloadInitialTimeout: 120000, // try to prevent HTTP downloads during first 2 minutes
+          httpDownloadInitialTimeoutPerSegment: 17000, // try to prevent HTTP download per segment during first 17 seconds
+
+          // allow to continue aborted P2P downloads via HTTP
+          httpUseRanges: true,
+          */
+        }
+      };
+
+      if (p2pml.hlsjs.Engine.isSupported()) {
+        window.downloadTotals = { http: 0, p2p: 0 };
+        window.uploadTotal = 0;
+        window.nb_peers = 0;
+        window.engineHlsJs = new p2pml.hlsjs.Engine(p2p_config);
+        VideoHlsjsConfig["loader"] = window.engineHlsJs.createLoaderClass();
+        window.engineHlsJs.on(p2pml.core.Events.PeerConnect, onPeerConnect.bind(this));
+        window.engineHlsJs.on(p2pml.core.Events.PeerClose, onPeerClose.bind(this));
+        window.engineHlsJs.on(p2pml.core.Events.PieceBytesDownloaded, onBytesDownloaded.bind(this));
+        window.engineHlsJs.on(p2pml.core.Events.PieceBytesUploaded, onBytesUploaded.bind(this));
+        window.engineHlsJs.on("segment_loaded", (segment, peerId) => {
+          // console.log("-> segment_loaded from", peerId ? `peer ${peerId}` : "HTTP", segment.url); // TODO REMOVE
+          // console.log("Segment loaded:", segment);
+        })
+      }
+    {% endif %}
+
+
     let options = {
-        notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
-        language: "fr", //en or nl
-        fluid: !{{ request.GET.is_iframe|yesno:"true,false" }},
-        playbackRates: [0.5, 1, 1.5, 2],
-        errorDisplay: false,
-        loop: false
+      notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
+      language: "fr", //en or nl
+      fluid: !{{ request.GET.is_iframe|yesno:"true,false" }},
+      //playbackRates: [0.5, 1, 1.5, 2],
+      errorDisplay: false,
+      loop: false,
+      html5: {
+        hls: {
+          debug: true,
+        },
+        hlsjsConfig: VideoHlsjsConfig
+      },
     }
 
     /**
@@ -56,8 +172,8 @@
     }
 
     // Management of the end of the stream (for Firefox, Chrome... not working for Edge, Safari)
-    videojs.Hls.xhr.beforeRequest = function (options) {
-
+    /*videojs.Hls.xhr.onRequest = function (options) { */
+    videojs.Vhs.xhr.onRequest = (options) => {
         if ('{{event.is_past }}' === 'False') {
 
             // Reset counter if video state is ok
@@ -102,13 +218,27 @@
       // Management of the streaming live
       let player = videojs("podvideoplayer", options, function() {
       });
-
+      {% if use_video_p2p and event.is_current %}
+        if (p2pml.hlsjs.Engine.isSupported()) {
+          p2pml.hlsjs.initVideoJsContribHlsJsPlayer(player);
+          player.hlsjs({});
+        }
+      {% endif %}
+      var srcOptions = {
+        src: '{{ event.broadcaster.url }}',
+        type: 'application/x-mpegURL',
+      };
+      //Add source to player
+      player.src(srcOptions);
       player.videoJsLogo({
         imgsrc: '{% static LOGO_PLAYER %}',
         linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
         link: '{{ LINK_PLAYER }}'
       });
-
+      //add quality selector to player
+      player.qualitySelectorHls({
+          displayCurrentQuality: true,
+      });
       player.on("error", function() {
         // Handle successives errors to avoid multiple reload
         if (typeof (errored) == "undefined" || !errored) {
@@ -140,21 +270,38 @@
         }
 
         // dispose onHold resources
-        video_on_hold_is_displayed = false;
-        videojs(document.getElementById("divvideoonhold")).dispose();
+        videoOnHoldIsDisplayed = false;
+        let div_video_on_hold = document.getElementById("divvideoonhold");
+        if (div_video_on_hold) {
+          let videoPlayer = videojs(div_video_on_hold);
+          if (videoPlayer) {
+            videoPlayer.dispose();
+          }
+        }
 
         // Affichage du flux direct
         started = true;
-        document.getElementById("divvideoplayer").style.display = "block";
+        let divvideoplayer = document.getElementById("divvideoplayer");
+        if (divvideoplayer) {
+          divvideoplayer.style.display = "block";
+        }
 
-        // Affichage du nombre de spectateurs
         {% if event.broadcaster.enable_viewer_count %}
-          player.videoJsViewerCount();
+          try {
+            player.ready(function () {
+              player.videoJsViewerCount();
+            });
+          } catch {
+            console.log(gettext('A problem occurred displaying the number of viewers'));
+          }
         {% endif %}
 
         // Affichage des boutons de contrôle de l'enregistrement
         {% if can_record %}
-          document.getElementById("recording_btns").classList.remove("d-none");
+          let recordingBtns = document.getElementById("recording_btns");
+          if (recordingBtns) {
+            recordingBtns.classList.remove("d-none");
+          }
           updateStreamStatus();
           setInterval(updateStreamStatus, 60000); // every 60 sec
           setInterval(displayRecordingDuration, 1000); // every sec
@@ -635,13 +782,14 @@
      * @param withModal: if modal should be added on top.
      */
     function showWaitingVideo(withModal){
-        if (video_on_hold_is_displayed) {
+        if (videoOnHoldIsDisplayed) {
             return;
         }
 
         options["loop"] = true;
-        let playerOnHold = videojs('podvideoonholdplayer', options, function () {
-         });
+        options["html5"] = {};
+        // options["plugins"] = {"core": {"p2p": false}}
+        let playerOnHold = videojs('podvideoonholdplayer', options, function () { });
 
         if (withModal)
             playerOnHold.createModal('{% trans "Live not found, retry in 10 seconds" %}');
@@ -653,13 +801,15 @@
         });
 
         let mp4_sources = {{event.video_on_hold.get_video_mp4_json|safe|default:'null'}};
-        playerOnHold.src(mp4_sources);
+        if(mp4_sources) {
+          playerOnHold.src(mp4_sources);
+        }
 
         document.getElementById("divvideoonhold").style.display = "block";
         if (document.getElementById("divvideoplayer"))
           document.getElementById("divvideoplayer").style.display = "none";
 
-        video_on_hold_is_displayed = true;
+        videoOnHoldIsDisplayed = true;
     }
 
     /**
@@ -754,19 +904,19 @@
     document.addEventListener("DOMContentLoaded", () => {
 
         {% if event.is_past or event.is_current %}
-            {% if not request.GET.is_iframe %}
-                getEventVideos()
-            {% endif %}
+          {% if not request.GET.is_iframe %}
+            getEventVideos();
+          {% endif %}
         {% endif %}
 
         {% if event.is_coming %}
-            {% if event.video_on_hold.is_video %}
-                showWaitingVideo(false);
-            {% endif %}
+          {% if event.video_on_hold.is_video %}
+            showWaitingVideo(false);
+          {% endif %}
         {% endif %}
 
         {% if event.is_current %}
-            showWaitingVideo(true);
+          showWaitingVideo(true);
         {% endif %}
 
         reloadIfNeeded();

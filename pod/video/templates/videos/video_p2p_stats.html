@@ -1,0 +1,11 @@
+{% load i18n %}
+<div class="d-flex justify-content-end">
+    <span id="p2p-stat-peers" data-bs-toggle="tooltip" data-bs-title="{% trans 'Number of people sharing this resource.' %}">
+        <i class="bi bi-people-fill" aria-hidden="true"></i>&nbsp;0
+    </span>&nbsp;|&nbsp;
+    <span id="p2p-stat-info">
+        <span id="p2p-stat-info-download" data-bs-toggle="tooltip" data-bs-title="{% trans 'Video data downloaded from the server or another peer.' %}">&nbsp;</span>
+        &nbsp;-&nbsp;
+        <span id="p2p-stat-info-upload" data-bs-toggle="tooltip" data-bs-title="{% trans 'Video data shared with other peer.' %}">&nbsp;</span>
+    </span>
+</div>

@@ -14,6 +14,7 @@ from .views import (
     video_count,
     video_marker,
     video_version,
+    get_video_chapters,
     get_categories,
     add_category,
     edit_category,
@@ -87,12 +88,22 @@ urlpatterns = [
     ),
     url(r"^my/$", my_videos, name="my_videos"),
 ]
+
 # COMPLETION
 urlpatterns += [
     path("completion/", include("pod.completion.urls", namespace="completion")),
 ]
+
 # CHAPTER
 urlpatterns += [
+    path(
+        "get_video_chapters/<slug:slug>/<slug:slug_private>/",
+        get_video_chapters,
+        name="get_video_chapters",
+    ),
+    path(
+        "get_video_chapters/<slug:slug>/", get_video_chapters, name="get_video_chapters"
+    ),
     path("chapter/", include("pod.chapter.urls", namespace="chapter")),
 ]
 

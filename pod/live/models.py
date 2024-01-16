@@ -556,8 +556,13 @@ class Event(models.Model):
         else:
             return False
 
-    def is_coming(self):
-        """Test if event will happen in future."""
+    def is_coming(self) -> bool:
+        """
+        Chack if event will happen in future.
+
+        Returns:
+            bool: `True` if the event is scheduled to happen in the future, otherwise `False`.
+        """
         if self.start_date:
             return timezone.localtime(timezone.now()) < self.start_date
         else:

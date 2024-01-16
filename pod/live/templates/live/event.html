@@ -6,8 +6,8 @@
 {% block page_extra_head %}
 {% include 'videos/video-header.html' %}
 {% if event.is_current and event.broadcaster.enable_viewer_count %}
-    <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
-    <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}">
+    <script>
+      let heartbeat_delay = {{ heartbeat_delay }}</script>
     </script>
 {% endif %}
 {% if event.is_current and event.enable_transcription and event.broadcaster.status and event.broadcaster.transcription_file %}
@@ -83,7 +83,6 @@
                         <video id="podvideoplayer"
                                class="video-js vjs-default-skin vjs-big-play-centered"
                                controls height="360" muted autoplay>
-                            <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
                         </video>
                     </div>
                     {% if event.aside_iframe_url %}
@@ -152,6 +151,10 @@
       {% if not request.GET.is_iframe %}
         <div class="container-fluid">
           <div class="row">
+            {% get_setting "USE_VIDEO_P2P" False as use_video_p2p %}
+            {% if use_video_p2p and event.is_current %}
+              {% include 'videos/video_p2p_stats.html' %}
+            {% endif %}
             <h1 class="col-auto page_title pt-3 h2">
               {{ event.title|capfirst }}
             </h1>
@@ -161,13 +164,12 @@
                title="{% trans 'Report the event' %}">
               <i class="bi bi-exclamation-octagon" aria-hidden="true"></i>
             </a>
-
             {% if event.is_current and can_record %}
               {% if can_manage_stream %}
                 <div id="stream_btns" class="col-auto border border-secondary rounded d-none" style="margin: 10px 10px 10px 0">
                   <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
                           id="startstream" title="{% trans 'Start stream' %}" aria-label="{% trans 'Start stream' %}"
-                          data-url="{% url 'live:ajax_event_start_streaming'%}">
+                          data-url="{% url 'live:ajax_event_start_streaming' %}">
                     <i class="bi bi-person-video" aria-hidden="true" style="font-size: 2em"></i>
                   </button>
                   <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
@@ -218,7 +220,6 @@
             <div id="event_videos_list"></div>
           </div>
         </div>
-
         <div id="info-video-all">{% include 'live/event-all-info.html' %}</div>
 
       {% endif %}

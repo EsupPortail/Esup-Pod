@@ -1590,6 +1590,18 @@
                         "fr": "Configuration application meeting"
                     }
                 },
+                "peer_to_peer": {
+                    "description" : {
+                        "en": [
+                            "Peer to peer app for the peer to peer management.",
+                            "Set `USE_PEER_TO_PEER` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Peer to peer pour la gestion du pair à pair.",
+                            "Mettre `USE_PEER_TO_PEER` à True pour activer cette application."
+                        ]
+                    }
+                },
                 "playlist": {
                     "description": {
                         "en": [
@@ -2310,6 +2322,36 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "P2P_TRACKERS": {
+                            "default_value": "[]",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Array of trackers for the peer to peer file sharing"
+                                ],
+                                "fr": [
+                                    "",
+                                    "list des trackers pour le partage de fichier en mode pair à pair"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4.0"
+                        },
+                        "P2P_STUNS": {
+                            "default_value": "[]",
+                            "description": {
+                                "en": [
+                                    "",
+                                    "Array of stun server for the peer to peer file sharing"
+                                ],
+                                "fr": [
+                                    "",
+                                    "list des serveurs stun pour le partage de fichier en mode pair à pair"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4.0"
+                        },
                         "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY": {
                             "default_value": false,
                             "description": {
@@ -2429,6 +2471,21 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "USE_VIDEO_P2P": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "",
+                                    "active the peer to peer function for video player"
+                                ],
+                                "fr": [
+                                    "",
+                                    "Active la fonction pair à pair dans le lecteur vidéo de Pod"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4.0"
                         },
                         "USE_XAPI_VIDEO": {
                             "default_value": false,

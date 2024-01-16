@@ -815,7 +815,6 @@ msgstr "Le direct BigBlueButton a été publié et va bientôt démarrer."
 
 #: pod/chapter/apps.py pod/chapter/models.py
 #: pod/chapter/templates/video_chapter.html
-#: pod/video/templates/videos/video-element.html
 msgid "Chapters"
 msgstr "Chapitres"
 
@@ -2148,10 +2147,6 @@ msgid "You must save your enrichments to view the result."
 msgstr "Vous devez sauvegarder vos enrichissements pour voir le résultat."
 
 #: pod/enrichment/templates/enrichment/enrichment_informations_card_aside.html
-msgid "Informations"
-msgstr "Informations"
-
-#: pod/enrichment/templates/enrichment/enrichment_informations_card_aside.html
 msgid "To help you, the different types of enrichments have specific colors:"
 msgstr ""
 "Pour vous aider, les différents types d’enrichissements ont des couleurs "
@@ -2199,6 +2194,37 @@ msgstr "Supprimer l’enrichissement « %(enrich_title)s »"
 #: pod/enrichment/templates/enrichment/video_enrichment_page_title.html
 msgid "Enriched"
 msgstr "Enrichi"
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html
+#: pod/live/templates/live/event-info.html
+#: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_opengraph.html
+#: pod/video/templates/videos/video_page_content.html
+msgid "Added by:"
+msgstr "Ajouté par :"
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html
+#: pod/video/templates/videos/video-script.html
+msgid "Informations"
+msgstr "Informations"
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html
+msgid "To help you, the different types of enrichments have specific colors:"
+msgstr ""
+"Pour vous aider, les différents types d’enrichissements ont des couleurs "
+"spécifiques :"
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html
+msgid "Weblink"
+msgstr "Lien web"
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html
+msgid "Embed"
+msgstr "Intégrer"
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html
+msgid "They are visible on the video playback bar."
+msgstr "Ils sont visibles sur la barre de lecture de la vidéo."
 
 #: pod/enrichment/views.py
 msgid "You cannot enrich this video."
@@ -8298,6 +8324,18 @@ msgstr "Télécharger les notes"
 msgid "New note"
 msgstr "Nouvelle note"
 
+#: pod/video/templates/videos/video_p2p_stats.html
+msgid "Number of people sharing this resource."
+msgstr "Nombre de personnes partageant cette ressource."
+
+#: pod/video/templates/videos/video_p2p_stats.html
+msgid "Video data downloaded from the server or another peer."
+msgstr "Données vidéo téléchargées à partir du serveur ou d'un autre pair."
+
+#: pod/video/templates/videos/video_p2p_stats.html
+msgid "Video data shared with other peer."
+msgstr "Données vidéo partagées avec d'autres pairs."
+
 #: pod/video/templates/videos/video_page_content.html
 msgid "Channel description"
 msgstr "Description de la chaîne"
@@ -8380,6 +8418,10 @@ msgstr "-- désolé, aucune traduction fournie --"
 #: pod/video/views.py
 msgid "You cannot edit this channel."
 msgstr "Vous ne pouvez éditer cette chaîne."
+
+#: pod/video/views.py
+msgid "Sorry, you can't access to the video chapter."
+msgstr "Désolé, vous ne pouvez pas accéder au chapitrage de la vidéo."
 
 #: pod/video/views.py
 msgid "You cannot watch this video."
@@ -8760,6 +8802,9 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Information"
+#~ msgstr "Informations"
 
 #~ msgid "Toggle navigation"
 #~ msgstr "Basculer le menu"

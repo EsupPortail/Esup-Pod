@@ -45,7 +45,7 @@
      * Initialize the plugin.
      */
     videoJsLogo = function (options) {
-      var settings = videojs.mergeOptions(defaults, options),
+      var settings = videojs.obj.merge(defaults, options),
         player = this;
       player.ready(function () {
         if (settings.ui) {
