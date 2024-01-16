@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-16 09:57+0100\n"
+"POT-Creation-Date: 2024-01-16 10:31+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2100,6 +2100,11 @@ msgstr "Aucun groupe"
 #: pod/dressing/templates/video_dressing.html pod/video/views.py
 msgid "None"
 msgstr "Aucun"
+
+#: pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+msgid "No watermark"
+msgstr "Pas de filigrane"
 
 #: pod/dressing/templates/my_dressings.html
 #: pod/dressing/templates/video_dressing.html
@@ -8929,9 +8934,6 @@ msgstr "xAPI Esup-Pod"
 
 #~ msgid "Edit the dressing"
 #~ msgstr "Éditer l'habillage"
-
-#~ msgid "watermark"
-#~ msgstr "filigrane"
 
 #~ msgid "position"
 #~ msgstr "position"
