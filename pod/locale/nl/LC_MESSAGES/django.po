@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-16 09:57+0100\n"
+"POT-Creation-Date: 2024-01-17 09:49+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1953,7 +1953,12 @@ msgid "To delete the dressing, please check in and click send."
 msgstr ""
 
 #: pod/dressing/templates/dressing_delete.html
-msgid "Agreement required"
+#: pod/live/templates/live/event_delete.html
+#: pod/meeting/templates/meeting/delete.html
+#: pod/playlist/templates/playlist/delete.html
+#: pod/recorder/templates/recorder/record_delete.html
+#: pod/video/templates/videos/video_delete.html
+msgid "Agree required"
 msgstr ""
 
 #: pod/dressing/templates/dressing_delete.html
@@ -1996,6 +2001,11 @@ msgstr ""
 #: pod/dressing/templates/my_dressings.html
 #: pod/dressing/templates/video_dressing.html pod/video/views.py
 msgid "None"
+msgstr ""
+
+#: pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+msgid "No watermark"
 msgstr ""
 
 #: pod/dressing/templates/my_dressings.html
@@ -3530,14 +3540,6 @@ msgstr ""
 
 #: pod/live/templates/live/event_delete.html
 msgid "To delete the event, please checked in and click send."
-msgstr ""
-
-#: pod/live/templates/live/event_delete.html
-#: pod/meeting/templates/meeting/delete.html
-#: pod/playlist/templates/playlist/delete.html
-#: pod/recorder/templates/recorder/record_delete.html
-#: pod/video/templates/videos/video_delete.html
-msgid "Agree required"
 msgstr ""
 
 #: pod/live/templates/live/event_edit.html
