@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-08 12:08+0100\n"
+"POT-Creation-Date: 2024-01-17 11:17+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -28,7 +28,8 @@ msgstr "Établissement"
 msgid "Authentication"
 msgstr "Authentification"
 
-#: pod/authentication/forms.py pod/main/templates/navbar.html
+#: pod/authentication/forms.py pod/dressing/models.py
+#: pod/dressing/templates/my_dressings.html pod/main/templates/navbar.html
 #: pod/main/templates/navbar_collapse.html pod/podfile/models.py
 #: pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/filter_aside.html
@@ -114,8 +115,9 @@ msgstr "Recevez des notifications push sur vos appareils."
 msgid "Owner"
 msgstr "Propriétaire"
 
-#: pod/authentication/models.py pod/video/admin.py pod/video/forms.py
-#: pod/video/models.py
+#: pod/authentication/models.py pod/dressing/models.py
+#: pod/dressing/templates/my_dressings.html pod/video/admin.py
+#: pod/video/forms.py pod/video/models.py
 msgid "Owners"
 msgstr "Propriétaires"
 
@@ -209,6 +211,8 @@ msgstr "Fermer"
 #: pod/bbb/templates/bbb/live_publish_meeting.html
 #: pod/bbb/templates/bbb/publish_meeting.html pod/bbb/views.py
 #: pod/completion/templates/video_caption_maker.html
+#: pod/dressing/templates/dressing_delete.html
+#: pod/dressing/templates/dressing_edit.html pod/dressing/views.py
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/import_video/views.py pod/live/templates/live/event-form.html
@@ -240,6 +244,8 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 #: pod/bbb/templates/bbb/live_publish_meeting.html
 #: pod/bbb/templates/bbb/publish_meeting.html
 #: pod/completion/templates/video_caption_maker.html
+#: pod/dressing/templates/dressing_delete.html
+#: pod/dressing/templates/dressing_edit.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/live/templates/live/event-form.html
@@ -902,6 +908,7 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
 #: pod/completion/templates/overlay/form_overlay.html
 #: pod/completion/templates/track/form_track.html
 #: pod/completion/templates/video_caption_maker.html
+#: pod/dressing/templates/dressing_edit.html
 #: pod/enrichment/templates/enrichment/form_enrichment.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/import_video/templates/import_video/add_or_edit.html
@@ -940,7 +947,9 @@ msgid "List of chapters"
 msgstr "Liste des chapitres"
 
 #: pod/chapter/templates/chapter/list_chapter.html pod/completion/models.py
-#: pod/completion/templates/overlay/list_overlay.html
+#: pod/completion/templates/overlay/list_overlay.html pod/dressing/models.py
+#: pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
 #: pod/main/models.py pod/main/views.py pod/playlist/forms.py
 #: pod/playlist/models.py pod/video/models.py
@@ -954,6 +963,7 @@ msgstr "Titre"
 #: pod/completion/templates/document/list_document.html
 #: pod/completion/templates/overlay/list_overlay.html
 #: pod/completion/templates/track/list_track.html
+#: pod/dressing/templates/my_dressings.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #: pod/video/templates/channel/list_theme.html
 msgid "Actions"
@@ -984,6 +994,8 @@ msgstr "Supprimer le chapitre « %(chapter_title)s »"
 #: pod/completion/templates/contributor/list_contributor.html
 #: pod/completion/templates/document/list_document.html
 #: pod/completion/templates/overlay/list_overlay.html
+#: pod/dressing/templates/dressing_delete.html
+#: pod/dressing/templates/my_dressings.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #: pod/live/templates/live/event_delete.html
 #: pod/meeting/templates/meeting/delete.html
@@ -1002,7 +1014,7 @@ msgstr "Chapitre vidéo"
 #: pod/chapter/templates/video_chapter.html
 #: pod/completion/templates/video_caption_maker.html
 #: pod/completion/templates/video_completion.html
-#: pod/cut/templates/video_cut.html
+#: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/main/templates/navbar.html pod/video/templates/videos/add_video.html
 #: pod/video/templates/videos/my_videos.html
@@ -1020,6 +1032,7 @@ msgid "Back to the video “%(video_title)s”"
 msgstr "Retourner à la vidéo « %(video_title)s »"
 
 #: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
+#: pod/dressing/templates/video_dressing.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
 msgid "Back to the video"
@@ -1031,7 +1044,7 @@ msgstr "Ajouter un nouveau chapitre"
 
 #: pod/chapter/templates/video_chapter.html
 #: pod/completion/templates/video_completion.html
-#: pod/cut/templates/video_cut.html
+#: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/video/templates/videos/video_aside.html
 #: pod/video/templates/videos/video_edit.html
@@ -1388,6 +1401,8 @@ msgid "Content"
 msgstr "Contenu"
 
 #: pod/completion/models.py pod/completion/templates/overlay/list_overlay.html
+#: pod/dressing/models.py pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
 msgid "Position"
 msgstr "Position"
 
@@ -1861,7 +1876,7 @@ msgstr "Veuillez renseigner des valeurs comprises entre 00:00:00 et "
 msgid "Cut the video"
 msgstr "Découper la vidéo"
 
-#: pod/cut/templates/video_cut.html
+#: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
@@ -1884,7 +1899,7 @@ msgstr "Définir le temps de fin à partir du lecteur vidéo"
 msgid "Reset to previous start and end times"
 msgstr "Réinitialiser les temps de début et de fin à leurs valeurs précédentes"
 
-#: pod/cut/templates/video_cut.html
+#: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/playlist/templates/playlist/filter_aside.html
 #: pod/video/templates/videos/filter_aside.html
 msgid "Reset"
@@ -1941,6 +1956,207 @@ msgstr "Vous ne pouvez pas découper cette vidéo."
 msgid "The cut was made."
 msgstr "Découpe effectuée."
 
+#: pod/dressing/apps.py pod/dressing/models.py
+msgid "Video dressings"
+msgstr "Habillages de vidéos"
+
+#: pod/dressing/forms.py pod/live/forms.py pod/meeting/forms.py
+#: pod/playlist/forms.py pod/recorder/forms.py pod/video/forms.py
+msgid "I agree"
+msgstr "J’accepte"
+
+#: pod/dressing/forms.py
+msgid "Delete video dressing cannot be undone"
+msgstr "La suppression de l'habillage est définitive"
+
+#: pod/dressing/models.py
+msgid "Top right"
+msgstr "En haut à droite"
+
+#: pod/dressing/models.py
+msgid "Top left"
+msgstr "En haut à gauche"
+
+#: pod/dressing/models.py
+msgid "Bottom right"
+msgstr "En bas à droite"
+
+#: pod/dressing/models.py
+msgid "Bottom left"
+msgstr "En bas à gauche"
+
+#: pod/dressing/models.py pod/video/models.py
+msgid ""
+"Please choose a title as short and accurate as possible, reflecting the main "
+"subject / context of the content.(max length: 100 characters)"
+msgstr ""
+"Veuillez choisir un titre aussi court et précis que possible, qui reflète le "
+"sujet principal / le contexte de votre contenu. (taille maximale : 100 "
+"caractères)"
+
+#: pod/dressing/models.py pod/enrichment/forms.py pod/enrichment/models.py
+#: pod/live/models.py pod/meeting/models.py pod/podfile/models.py
+#: pod/recorder/models.py pod/video/models.py
+msgid "Groups"
+msgstr "Groupes"
+
+#: pod/dressing/models.py
+msgid "Select one or more groups who can manage and use this video dressing."
+msgstr ""
+"Sélectionner un ou plusieurs groupes qui pourront gérer et utiliser cet "
+"habillage de vidéo."
+
+#: pod/dressing/models.py pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+msgid "Watermark"
+msgstr "Filigrane"
+
+#: pod/dressing/models.py pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+msgid "Opacity"
+msgstr "Opacité"
+
+#: pod/dressing/models.py pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+msgid "Opening credits"
+msgstr "Générique de début"
+
+#: pod/dressing/models.py pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+msgid "Ending credits"
+msgstr "Générique de fin"
+
+#: pod/dressing/models.py pod/video/apps.py pod/video/models.py
+#: pod/video/templates/videos/videos.html
+msgid "Videos"
+msgstr "Vidéos"
+
+#: pod/dressing/models.py
+msgid "Video dressing"
+msgstr "Habillage de vidéos"
+
+#: pod/dressing/templates/dressing_delete.html
+#: pod/dressing/templates/dressing_edit.html
+#: pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html pod/main/templates/navbar.html
+msgid "My dressings"
+msgstr "Mes habillages"
+
+#: pod/dressing/templates/dressing_delete.html
+msgid "Deleting the dressing"
+msgstr "Supprimer l'habillage"
+
+#: pod/dressing/templates/dressing_delete.html
+#, python-format
+msgid "Deleting the dressing \"%(vtitle)s\""
+msgstr "Supprimer l'habillage « %(vtitle)s »"
+
+#: pod/dressing/templates/dressing_delete.html
+msgid "To delete the dressing, please check in and click send."
+msgstr "Pour supprimer l'habillage, veuillez cocher et cliquer sur envoyer."
+
+#: pod/dressing/templates/dressing_delete.html
+#: pod/live/templates/live/event_delete.html
+#: pod/meeting/templates/meeting/delete.html
+#: pod/playlist/templates/playlist/delete.html
+#: pod/recorder/templates/recorder/record_delete.html
+#: pod/video/templates/videos/video_delete.html
+msgid "Agreement required"
+msgstr "Accord requis"
+
+#: pod/dressing/templates/dressing_delete.html
+msgid "Back to the dressing"
+msgstr "Retour à l'habillage"
+
+#: pod/dressing/templates/dressing_edit.html
+msgid "Editing the dressing"
+msgstr "Éditer l'habillage"
+
+#: pod/dressing/templates/dressing_edit.html
+msgid "Create a new dressing"
+msgstr "Créer un nouvel habillage"
+
+#: pod/dressing/templates/my_dressings.html
+msgid "List of dressings I can use or manage."
+msgstr "Liste des habillages que je peux utiliser ou gérer."
+
+#: pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+msgid "Available video dressings"
+msgstr "Habillages de vidéo disponibles."
+
+#: pod/dressing/templates/my_dressings.html
+msgid "Allow to Groups"
+msgstr "Groupes autorisés"
+
+#: pod/dressing/templates/my_dressings.html
+msgid "No owners"
+msgstr "Aucun propriétaire"
+
+#: pod/dressing/templates/my_dressings.html
+msgid "No users"
+msgstr "Aucun utilisateur"
+
+#: pod/dressing/templates/my_dressings.html
+msgid "No groups"
+msgstr "Aucun groupe"
+
+#: pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html pod/video/views.py
+msgid "None"
+msgstr "Aucun"
+
+#: pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+msgid "No watermark"
+msgstr "Pas de filigrane"
+
+#: pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+#: pod/video/templates/videos/video_edit.html
+msgid "View the video"
+msgstr "Voir la vidéo"
+
+#: pod/dressing/templates/my_dressings.html pod/live/templates/live/direct.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Edit"
+msgstr "Éditer"
+
+#: pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+msgid "No dressings found."
+msgstr "Aucun habillage trouvé"
+
+#: pod/dressing/templates/my_dressings.html
+msgid "Add new object"
+msgstr "Ajouter un nouvel objet"
+
+#: pod/dressing/templates/video_dressing.html
+#: pod/video/templates/videos/link_video.html
+msgid "Dress the video"
+msgstr "Habiller la vidéo"
+
+#: pod/dressing/templates/video_dressing.html
+msgid "List of dressings that I can apply to the video."
+msgstr "Liste des habillages que je peux appliquer à la vidéo."
+
+#: pod/dressing/templates/video_dressing.html
+msgid "Select"
+msgstr "Sélectionner"
+
+#: pod/dressing/templates/video_dressing.html
+msgid "Apply"
+msgstr "Appliquer"
+
+#: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
+#: pod/meeting/views.py pod/video/views.py
+msgid "The changes have been saved."
+msgstr "Les modifications ont été sauvegardées."
+
+#: pod/dressing/views.py
+msgid "The dressing has been deleted."
+msgstr "L’habillage a été supprimé."
+
 #: pod/enrichment/apps.py pod/enrichment/models.py
 msgid "Enrichments"
 msgstr "Enrichissements"
@@ -1960,12 +2176,6 @@ msgstr "enrichissement"
 #: pod/enrichment/apps.py
 msgid "Edit the enrichment"
 msgstr "Éditer l’enrichissement"
-
-#: pod/enrichment/forms.py pod/enrichment/models.py pod/live/models.py
-#: pod/meeting/models.py pod/podfile/models.py pod/recorder/models.py
-#: pod/video/models.py
-msgid "Groups"
-msgstr "Groupes"
 
 #: pod/enrichment/models.py
 msgid "image"
@@ -2653,11 +2863,6 @@ msgstr ""
 "L’enregistrement a été téléversé sur Pod. Vous pouvez voir la vidéo générée "
 "dans Mes vidéos."
 
-#: pod/import_video/views.py pod/live/views.py pod/meeting/views.py
-#: pod/video/views.py
-msgid "The changes have been saved."
-msgstr "Les modifications ont été sauvegardées."
-
 #: pod/import_video/views.py
 msgid "The external recording has been deleted."
 msgstr "L’enregistrement externe a été supprimé."
@@ -2873,11 +3078,6 @@ msgstr "Bâtiment"
 #: pod/live/forms.py
 msgid "Broadcaster device"
 msgstr "Matériel de captation"
-
-#: pod/live/forms.py pod/meeting/forms.py pod/playlist/forms.py
-#: pod/recorder/forms.py pod/video/forms.py
-msgid "I agree"
-msgstr "J’accepte"
 
 #: pod/live/forms.py
 msgid "Delete event cannot be undo"
@@ -3217,11 +3417,6 @@ msgstr "Prochains évènements"
 #: pod/live/templates/live/direct.html
 msgid "Manage broadcaster"
 msgstr "Gérer le diffuseur"
-
-#: pod/live/templates/live/direct.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Edit"
-msgstr "Éditer"
 
 #: pod/live/templates/live/direct.html pod/live/templates/live/directs_all.html
 msgid "no broadcast in progress"
@@ -3579,14 +3774,6 @@ msgstr "L’évènement est actuellement en cours. La supression est impossible.
 #: pod/live/templates/live/event_delete.html
 msgid "To delete the event, please checked in and click send."
 msgstr "Pour supprimer l’évènement, veuillez cocher et cliquer sur envoyer."
-
-#: pod/live/templates/live/event_delete.html
-#: pod/meeting/templates/meeting/delete.html
-#: pod/playlist/templates/playlist/delete.html
-#: pod/recorder/templates/recorder/record_delete.html
-#: pod/video/templates/videos/video_delete.html
-msgid "Agree required"
-msgstr "Accord requis"
 
 #: pod/live/templates/live/event_edit.html
 #: pod/live/templates/live/event_immediate_edit.html
@@ -6822,10 +7009,6 @@ msgstr "Définir comme brouillon"
 msgid "Transcript selected"
 msgstr "Transcription selectionnée"
 
-#: pod/video/apps.py pod/video/models.py pod/video/templates/videos/videos.html
-msgid "Videos"
-msgstr "Vidéos"
-
 #: pod/video/forms.py
 msgid "File field"
 msgstr "Fichier"
@@ -7276,15 +7459,6 @@ msgstr "Version %(app)s"
 
 #: pod/video/models.py
 msgid ""
-"Please choose a title as short and accurate as possible, reflecting the main "
-"subject / context of the content.(max length: 100 characters)"
-msgstr ""
-"Veuillez choisir un titre aussi court et précis que possible, qui reflète le "
-"sujet principal / le contexte de votre contenu. (taille maximale : 100 "
-"caractères)"
-
-#: pod/video/models.py
-msgid ""
 "The background color for your channel. You can use the format #. i.e.: "
 "#ff0000 for red"
 msgstr ""
@@ -7309,8 +7483,8 @@ msgstr ""
 #: pod/video/models.py
 msgid "Select one or more groups who can upload video to this channel."
 msgstr ""
-"Sélectionnez un ou plusieurs groupes qui peuvent ajouter des vidéos à cette "
-"chaîne."
+"Sélectionner un ou plusieurs groupes qui pourront ajouter des vidéos à cette "
+"chaine."
 
 #: pod/video/models.py
 msgid "Additionals channels tab"
@@ -8164,10 +8338,6 @@ msgid "Add a new video"
 msgstr "Ajouter une nouvelle vidéo"
 
 #: pod/video/templates/videos/video_edit.html
-msgid "View the video"
-msgstr "Voir la vidéo"
-
-#: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
 msgid "The video is currently waiting for encoding."
 msgstr "La vidéo est actuellement en attente d’encodage."
@@ -8466,10 +8636,6 @@ msgid "The comment has been deleted."
 msgstr "Le commentaire a été supprimé."
 
 #: pod/video/views.py
-msgid "None"
-msgstr "Aucun"
-
-#: pod/video/views.py
 msgid "ID"
 msgstr "ID"
 
@@ -8760,9 +8926,3 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#~ msgid "Toggle navigation"
-#~ msgstr "Basculer le menu"
-
-#~ msgid "The password is / will be encrypted."
-#~ msgstr "Le mot de passe est / sera encrypté."

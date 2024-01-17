@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load thumbnail %}
+{% block page_title %}{% trans 'My dressings' %}{% endblock page_title %}
+{% block page_extra_head %}
+
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}
+{{block.super}}
+
+<li class="breadcrumb-item active" aria-current="page">        
+    {% trans 'My dressings' %}
+</li>
+
+{% endblock %}
+
+{% block page_content %}
+<table class="table table-sm table-striped table-bordered text-center" summary="{% trans 'List of dressings I can use or manage.' %}">
+    <caption class="caption-top">{% trans 'Available video dressings' %}</caption>
+    <thead>
+        <tr>
+            <th scope="col">{% trans 'Title' %}</th>
+            <th scope="col">{% trans 'Owners' %}</th>
+            <th scope="col">{% trans 'Users' %}</th>
+            <th scope="col">{% trans 'Allow to Groups' %}</th>
+            <th scope="col">{% trans 'Watermark' %}</th>
+            <th scope="col">{% trans 'Position' %}</th>
+            <th scope="col">{% trans 'Opacity' %}</th>
+            <th scope="col">{% trans 'Opening credits' %}</th>
+            <th scope="col">{% trans 'Ending credits' %}</th>
+            <th scope="col">{% trans 'Actions' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for dressing in dressings %}
+            <tr>
+                <td>{{ dressing.title }}</td>
+                <td>
+                    {% for owner in dressing.owners.all %}
+
+                    {% if owner.first_name %}
+                        {{ owner.first_name }} {{ owner.last_name }}
+                    {% else %}
+                        {{ owner.username }}
+                    {% endif %}
+                    {% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        {% trans 'No owners' %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for user in dressing.users.all %}
+
+                    {% if user.first_name %}
+                        {{ user.first_name }} {{ user.last_name }}
+                    {% else %}
+                        {{ user.username }}
+                    {% endif %}
+                    {% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        {% trans 'No users' %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for group in dressing.allow_to_groups.all %}
+                        {{ group }}{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        {% trans 'No groups' %}
+                    {% endfor %}
+                </td>
+                <td>
+                    {% if dressing.watermark %}
+                        <img src="{{ dressing.watermark.file.url }}" alt="{% trans 'Watermark'%}" width="50px">
+                    {% else %}
+                        {% trans 'None' %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if dressing.watermark %}
+                        {{ dressing.get_position_display }}
+                    {% else %}
+                    <div class="text-center">
+                        <span title="{%trans 'No watermark'%}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
+                    </div>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if dressing.watermark %}
+                        {{ dressing.opacity }}
+                    {% else %}
+                    <div class="text-center">
+                        <span title="{%trans 'No watermark'%}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
+                    </div>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if dressing.opening_credits %}
+                        <a href="../../video/{{ dressing.opening_credits|slugify }}" title="{% trans 'View the video'%}">{{ dressing.opening_credits }}</a>
+                    {% else %}
+                      {% trans 'None' %}
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if dressing.ending_credits %}
+                        <a href="../../video/{{ dressing.ending_credits|slugify }}" title="{% trans 'View the video'%}">{{ dressing.ending_credits }}</a>
+                    {% else %}
+                      {% trans 'None' %}
+                    {% endif %}
+                  </td>
+                <td>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'dressing:dressing_edit' dressing_id=dressing.pk %}" class="btn btn-primary" title="{% trans 'Edit'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                            <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                        </a>
+                        <a href="{% url 'dressing:dressing_delete' dressing_id=dressing.pk %}" class="btn btn-danger" title="{% trans 'Delete'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                            <i class="bi bi-trash" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="11">{% trans 'No dressings found.' %}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'dressing:dressing_create' %}" class="btn btn-primary" title="{% trans 'Add new object' %}" data-bs-toggle="tooltip" data-bs-placement="top">{% trans 'Add new object' %}</a>
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+{% endblock more_script %}

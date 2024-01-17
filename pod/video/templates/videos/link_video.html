@@ -56,6 +56,12 @@
     <i class="bi bi-card-list" aria-hidden="true"></i></a>
 {% endif %}
 {% if video.encoded and video.encoding_in_progress is False %}
+{% if video.owner == request.user or request.user.is_superuser %}
+  <a href="{% url 'video:dressing:video_dressing' slug=video.slug %}" title="{% trans 'Dress the video'%}" class="btn btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
+    <i class="bi bi-palette" aria-hidden="true"></i></a>
+{% endif %}
+{% endif %}
+{% if video.encoded and video.encoding_in_progress is False %}
 {% if video.owner == request.user or request.user.is_superuser or perms.video.delete_video %}
   <a href="{% url 'video:video_delete' slug=video.slug %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" title="{% trans 'Delete the video'%}" data-bs-toggle="tooltip" data-bs-placement="top">
     <i class="bi bi-trash" aria-hidden="true"></i></a>

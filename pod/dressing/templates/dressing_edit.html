@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load tagging_tags %}
+{% load thumbnail %}
+{% block page_extra_head %}
+
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}{{ block.super }}
+<li class="breadcrumb-item">
+  <a href="{% url 'dressing:my_dressings' %}">
+    {% trans 'My dressings' %}
+  </a>
+</li>
+
+<li class="breadcrumb-item active" aria-current="page">        
+  {% if form.instance.title %}{% trans "Editing the dressing" %} "{{form.instance.title}}"
+  {% else %}
+    {% trans "Create a new dressing" %}
+  {% endif %}
+</li>
+{% endblock %}
+
+{% block page_title %}
+{% if form.instance.title %}{% trans "Editing the dressing" %} "{{form.instance.title}}"
+{% else %}
+  {% trans "Create a new dressing" %}
+{% endif %}
+{% endblock %}
+
+{% block page_content %}
+<form method="POST" accept-charset="utf-8" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="list-group">
+      {% if form.errors %}
+        <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+      {% endif %}
+      {% for field_hidden in form.hidden_fields %}
+        {{field_hidden}}
+      {% endfor %}
+      {% for field in form.visible_fields %}
+      {% spaceless %}
+        <div class="{% if "title_" in field.name %} title{% endif %}">
+          <div class="list-group-item">
+            <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
+              {{ field.errors }}
+              {% if "form-check-input" in field.field.widget.attrs.class %}
+                <div class="form-check">
+                  {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                </div>
+              {% else %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+              {% endif %}
+              {% if field.help_text %}
+                <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+              {% endif %}
+              {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+            </div>
+          </div>
+        </div>
+        {% endspaceless %}
+        {% endfor %}
+      </div>
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+      </div>
+  </form>
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{{ block.super }}
+{% endblock collapse_page_aside %}
+
+{% block more_script %}
+<script src="/admin/jsi18n/"></script>
+<script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/video_dressing.js' %}?ver={{VERSION}}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
+{{form.media}}
+{% endblock more_script %}
