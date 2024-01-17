@@ -150,7 +150,7 @@ def upload_external_recording_to_pod(request, record_id):
     if upload and msg == "":
         msg += _(
             "The recording has been uploaded to Pod. "
-            "You can see the generated video in My videos."
+            "You can see the generated video in Dashboard."
         )
         display_message_with_icon(request, messages.INFO, msg)
     else:

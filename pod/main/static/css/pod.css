@@ -664,6 +664,131 @@ div.card a img {
   width: 100%;
 }
 
+/** Dashboard **/
+#bulk_update_container{
+    background-color: var(--pod-background-neutre2-bloc);
+    padding: 1em;
+    border-radius: var(--bs-border-radius);
+}
+#bulk_update_container .select2{
+  width: 100%!important;
+}
+.btn-dashboard-display-mode{
+    height: fit-content;
+}
+#countSelectedVideosBadge{
+  background-color: var(--pod-background-neutre1-bloc);
+  color: var(--pod-font-color);
+}
+/* Dashboard infinite container */
+.infinite-container{
+  margin: 1rem 0;
+}
+.infinite-container .infinite-item{
+    cursor: pointer;
+}
+.pod-infinite-container .infinite-item{
+    position: relative;
+}
+.infinite-item .checked_overlay{
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 9;
+    opacity: 0;
+    justify-content: center;
+    align-items: center;
+    outline: 2px solid var(--pod-link-color);
+    border-radius: var(--bs-border-radius-sm);
+    background-color: rgba(255, 255, 255, .8);
+    cursor: pointer;
+    transition: all .3s;
+}
+.infinite-item.selected .checked_overlay{
+    display: flex;
+    opacity: 1;
+}
+.infinite-item .checked_overlay .card_selected{
+    display: block;
+    transition: all .3s;
+}
+.pod-infinite-container .infinite-item:not(.selected):hover,
+.pod-infinite-container .infinite-item .checked_overlay:hover .card_selected,
+.pod-infinite-container .infinite-item:not(.selected):hover,
+.pod-infinite-container .infinite-item .checked_overlay:hover .card_selected{
+    -webkit-transform: scale(1.04);
+    -ms-transform: scale(1.04);
+    transform: scale(1.04);
+}
+.infinite-item.selected .checked_overlay .card-selected i{
+    font-size: 3rem;
+    color: var(--pod-link-color);
+}
+.pod-infinite-grid-container .infinite-item .video-card .card-thumbnail {
+    height: 146px;
+    overflow: hidden;
+}
+.pod-infinite-grid-container .infinite-item .video-card .card-thumbnail .pod-thumbnail{
+    width: 100%;
+}
+/* Specific list display mode */
+.pod-infinite-list-container .list-item-video-row {
+    padding: 0;
+    max-height: 50px;
+    border: none;
+    background-color: var(--pod-background-neutre2-bloc);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: background-color .3s;
+}
+.pod-infinite-list-container .list-item-video-row.selected{
+  border: 2px solid var(--pod-link-color);
+}
+.pod-infinite-list-container .list-item-video-row:hover{
+    background-color: var(--pod-background-neutre1-bloc);
+}
+.pod-infinite-list-container .list-item-video-row .checked_overlay .card-selected{
+  width: 100%;
+}
+.pod-infinite-list-container .list-item-video-row.selected .checked_overlay .card-selected i{
+  font-size: 2rem;
+  margin: 0 2rem;
+}
+.pod-infinite-list-container .list-item-video-row i:not(.checked_overlay .card-selected i){
+  font-size: 1.2rem;
+  padding: 0.2rem;
+  opacity: 0.3;
+}
+.thumbnail-item-video-row{
+  height: 50px;
+  overflow: hidden;
+  border-radius: 4px 0 0 4px;
+}
+.thumbnail-item-video-row img{
+  width: 100%;
+  min-height: 100%;
+}
+.title-item-video-row{
+  padding-left: 1rem;
+}
+.more-actions-row-btn{
+  border: none;
+  background-color: inherit;
+}
+.pod-infinite-list-container .list-item-video-row i.active,
+.pod-infinite-list-container .list-item-video-row i.bi_content_type,
+.pod-infinite-list-container .list-item-video-row .more-actions-row-btn i{
+  color: var(--pod-link-color);
+  opacity: 1!important;
+}
+/* custom badges for confirm modal bulk update */
+.bulk-update-confirm-badges{
+  background-color: var(--pod-link-color);
+  color: var(--pod-background);
+  padding: 10px;
+  margin: 5px;
+}
+
 /** video form **/
 
 /* as video filename can be very long,
@@ -714,7 +839,21 @@ div.card a img {
   margin: 0 auto;
   left: 50%;
   transform: translate(-50%, 0);
-  z-index: 1000;
+  z-index: 1031;
+}
+
+#formalertdivbottomright {
+  max-width: 95%;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  margin: 0 auto;
+  z-index: 1031;
+}
+
+#formalertdivbottomright > i {
+  margin-right: 0.8rem;
+  font-size: 1rem;
 }
 
 .flashing_field {
@@ -1202,7 +1341,7 @@ body {
   overflow: hidden;
   margin-left: 100%;
   transition: all 0.15s ease;
-  z-index: 5;
+  z-index: 9;
   padding-top: 5rem;
   box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgb(0 0 0 / 20%);
 }
@@ -1386,55 +1525,20 @@ table .alert.alert-danger.btn.pod-btn-social {
 .pod-callout-info {
   border-left-color: var(--bs-info);
 }
-
-/* Pure css loader */
-.lds-ring {
-  display: none;
-  position: relative;
-  width: 80px;
-  height: 80px;
-  margin: 0 auto;
-  z-index: 9999;
+/* Bootstrap loader-spinner */
+.loaderSpinner{
+  transition: opacity 150ms ease-in-out;
+  z-index: 1100;
 }
-
-.lds-ring.show {
-  display: flex;
-  align-items: center;
+.loaderSpinner.hide{
+  opacity: 0;
 }
-
-.lds-ring div {
-  box-sizing: border-box;
-  display: block;
-  position: absolute;
-  width: 51px;
-  height: 51px;
-  margin: 6px;
-  border: 6px solid var(--pod-font-color);
-  border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: var(--pod-font-color) transparent transparent transparent;
-}
-
-.lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
-}
-
-.lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
-}
-
-.lds-ring div:nth-child(3) {
-  animation-delay: -0.15s;
-}
-
-@keyframes lds-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+.loaderSpinner>.spinner-border{
+  color: var(--pod-primary);
+  width: 4rem;
+  height: 4rem;
+  margin: 2rem;
+  border-width: 0.5rem;
 }
 
 /* *** fix for calendar choice widget in modal dialog *** */

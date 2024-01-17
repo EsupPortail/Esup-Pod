@@ -1,0 +1,62 @@
+{% load i18n %}
+{% spaceless %}
+<div class="checked_overlay">
+    <span class="card-selected" title="{% trans 'Selected' %}">
+        <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+    </span>
+</div>
+<div class="card box-shadow pod-card--video video-card">
+  <!-- card.html -->
+  <div class="card-header">
+    <div class="d-flex justify-content-between align-items-center">
+      <small class="text-muted time">{{video.duration_in_time}}</small>
+      <span class="text-muted small d-flex">
+
+        {% if video.password or video.is_restricted %}
+          <span title="{% trans 'This content is password protected.' %}">
+            <i class="bi bi-lock" aria-hidden="true"></i>
+          </span>
+        {% endif %}
+
+        {% if video.is_draft %}
+            <span title="{% trans 'This content is in draft.' %}">
+                <i class="bi bi-incognito" aria-hidden="true"></i>
+            </span>
+        {% endif %}
+
+        {% if video.chapter_set.all %}
+          <span title="{% trans 'This content is chaptered.' %}">
+            <i class="bi bi-card-list" aria-hidden="true"></i>
+          </span>
+        {% endif %}
+
+        {% if video.is_video %}
+          <span title="{% trans 'Video content.' %}">
+            <i class="bi bi-film" aria-hidden="true"></i>
+          </span>
+        {% else %}
+          <span title="{% trans 'Audio content.' %}">
+            <i class="bi bi-soundwave" aria-hidden="true"></i>
+          </span>
+        {% endif %}
+
+      </span>
+    </div>
+  </div>
+  <div class="card-thumbnail">
+      {{video.get_thumbnail_card|safe}}
+  </div>
+  <div class="card-body px-3 py-2">
+
+    {% if request.user.is_authenticated %}
+      <footer class="card-footer card-footer-pod p-0 m-0">
+        {% include "videos/link_video.html" %}
+      </footer>
+    {% endif %}
+
+    <span title="{{video.title|capfirst}}" class="small video-title dashboard-video-title">
+        {{video.title|capfirst|truncatechars:25}}
+    </span>
+  </div>
+</div>
+{% endspaceless %}

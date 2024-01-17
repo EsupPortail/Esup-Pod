@@ -37,7 +37,7 @@
   let CURR_CATEGORY = {}; // current editing category (js object)
   let DOMCurrentEditCat = null; // current editing category (html DOM)
   // show loader
-  let loader = document.querySelector(".lds-ring");
+  const loader = document.getElementById("videosListLoader");
 
   const SAVED_DATA = {}; // To prevent too many requests to the server
   const CURR_FILTER = { slug: null, id: null }; // the category currently filtering
@@ -388,7 +388,7 @@
       let resp = await fetch(`${BASE_URL}${cat_slug}/`, { headers: HEADERS });
       return await resp.json();
     } catch (e) {
-      loader.classList.remove("show");
+      showLoader(loader, false);
       showAlertMessage(msg_error, false, (delay = 30000));
     }
   };
@@ -403,7 +403,7 @@
       });
       return await resp.json();
     } catch (e) {
-      loader.classList.remove("show");
+      showLoader(loader, false);
       showAlertMessage(msg_error_duplicate, false, (delay = 30000));
     }
   };
@@ -480,7 +480,7 @@
     </div>`;
   };
 
-  // Create video video html element for my_videos (on filtering with category)
+  // Create video video html element for dashboard (on filtering with category)
   // video = object
   let getVideoElement = (video) => {
     let span_info = `
@@ -618,7 +618,7 @@
   let editHandler = (c_e) => {
     c_e.addEventListener("click", (e) => {
       e.preventDefault();
-      loader.classList.add("show");
+      showLoader(loader, true);
       cat_edit_title = c_e.dataset.title.trim();
       cat_edit_slug = c_e.dataset.slug.trim();
       cat_edit_id = c_e.parentNode
@@ -638,7 +638,7 @@
       DOMCurrentEditCat = c_e.parentNode.parentNode;
       if (Object.keys(jsonData).length) {
         paginate(jsonData.videos);
-        loader.classList.remove("show");
+        showLoader(loader, false);
       } else {
         jsonData = fetchCategoryData(cat_edit_slug);
         jsonData
@@ -647,10 +647,10 @@
             // save data
             saveCategoryData(data);
             CURR_CATEGORY = data;
-            loader.classList.remove("show");
+            showLoader(loader, false);
           })
           .catch((e) => {
-            loader.classList.remove("show");
+            showLoader(loader, false);
             showAlertMessage(msg_error, false, (delay = 30000));
           });
       }
@@ -712,7 +712,7 @@
   // Add onclick event to delete a category
   let del_cat = document.querySelector("#confirm_remove_category_btn");
   del_cat.addEventListener("click", (e) => {
-    loader.classList.add("show");
+    showLoader(loader, true);
     if (CAT_TO_DELETE.slug && CAT_TO_DELETE.id && CAT_TO_DELETE.html) {
       // Delete category
       let cat = findCategory(
@@ -772,7 +772,7 @@
             delete CAT_TO_DELETE.html;
             delete CAT_TO_DELETE.id;
             delete CAT_TO_DELETE.slug;
-            loader.classList.remove("show");
+            showLoader(loader, false);
             // close modal
             document
               .querySelector("#deleteCategoryModal .modal-footer .close_modal")
@@ -781,11 +781,11 @@
         });
       } else {
         //TODO display msg error cat
-        loader.classList.remove("show");
+        showLoader(loader, false);
       }
     } else {
       // display msg error like 'no category to delete'
-      loader.classList.remove("show");
+      showLoader(loader, false);
     }
   });
 
@@ -794,7 +794,7 @@
     e.preventDefault();
     e.stopPropagation();
 
-    loader.classList.add("show");
+    showLoader(loader, true);
 
     //let videos = Array.from(document.querySelectorAll(".category_modal_videos_list .selected")).map(v_el => v_el.dataset.slug.trim());
     const videos = VIDEOS_LIST_CHUNK.videos.selected.map(
@@ -806,7 +806,7 @@
     };
     if (cat_input.value.trim() === "") {
       showAlertMessage(msg_title_empty, false, (delay = 30000));
-      loader.classList.remove("show");
+      showLoader(loader, false);
       return;
     }
 
@@ -835,10 +835,10 @@
           document.querySelector("#manageCategoryModal #cancelDialog").click();
           refreshDialog();
           showAlertMessage(msg_saved);
-          loader.classList.remove("show"); // hide loader
+          showLoader(loader, false); // hide loader
         })
         .catch((err) => {
-          loader.classList.remove("show");
+          showLoader(loader, false);
           showAlertMessage(msg_error, false, (delay = 30000));
         });
     } else {
@@ -854,7 +854,7 @@
           let msg_create = gettext("Category created successfully");
           showAlertMessage(msg_create);
           saveCategoryData(data.category); // saving cat localy to prevent more request to the server
-          loader.classList.remove("show"); // hide loader
+          showLoader(loader, false); // hide loader
         })
         .catch((err) => {
           //alert(err);

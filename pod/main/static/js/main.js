@@ -509,6 +509,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+
+/**
+ * Enable / Disable buttons with specific condition parameter.
+ *
+ * @param  {HTMLElement}    element               HTML element to enable / disable
+ * @param  {condition}      condition             Condition to evaluate for enabled disabled status
+ */
+function manageDisableBtn(element, condition) {
+
+    condition ? element.removeAttribute('disabled') : element.setAttribute('disabled','');
+}
 /** MENU ASIDE **/
 document.addEventListener("DOMContentLoaded", function () {
   //.collapseAside is on the toggle button
@@ -1270,23 +1281,23 @@ var videocheck = function (form, event) {
 /**
  * Display an alert message
  * @param  {[type]} message   [The message to be displayed]
- * @param  {[type]} alerttype Type of alert (info, success, danger, warning...)
+ * @param  {[type]} alertType Type of alert (info, success, danger, warning...)
  * @return {void}
  */
-var showalert = function (message, alerttype) {
+var showalert = function (message, alertType, idAlertType="formalertdiv") {
   const icon_types = {
-    "alert-success": "check2-circle",
-    "alert-info": "info-circle",
-    "alert-warning": "exclamation-triangle",
-    "alert-danger": "bug",
+    "alert-success": "check-circle-fill",
+    "alert-info": "info-fill",
+    "alert-warning": "exclamation-triangle-fill",
+    "alert-danger": "exclamation-triangle-fill",
   };
 
   let textHtml =
-    '<div id="formalertdiv" class="alert ' +
-    alerttype +
+    '<div id='+idAlertType+' class="alert ' +
+    alertType +
     ' alert-dismissible fade show" role="alert">' +
-    '<i class="bi bi-' +
-    icon_types[alerttype] +
+    '<i aria-hidden="true" class="bi bi-' +
+    icon_types[alertType] +
     ' me-2"></i>' +
     '<span class="alert-message">' +
     message +
@@ -1300,9 +1311,9 @@ var showalert = function (message, alerttype) {
 
   document.body.appendChild(parsedHTML);
   // Auto dismiss success and info types
-  if (["alert-success", "alert-info"].includes(alerttype)) {
+  if (["alert-success", "alert-info"].includes(alertType)) {
     setTimeout(function () {
-      let formalertdiv = document.getElementById("formalertdiv");
+      let formalertdiv = document.getElementById(idAlertType);
       window.setTimeout(function () {
         slideUpAndRemove(formalertdiv);
       });
@@ -1352,6 +1363,26 @@ function show_messages(msgText, msgClass, loadUrl) {
   }
 }
 */
+
+/***** MANAGE BOOTSTRAP LOADERS *****/
+/**
+ * Show or hide given loader
+ * @param  {HTMLElement}  loaderElement     [Loader element to show]
+ * @param  {boolean}      show              [True: enable full page loader / False: dismiss it]
+ * @return {void}
+ */
+function showLoader(loaderElement, show) {
+  if(show){
+    loaderElement.classList.remove("d-none");
+    loaderElement.classList.remove("hide");
+  }else{
+    loaderElement.classList.add("hide");
+    setTimeout(() => {
+      loaderElement.classList.add("d-none");
+    },150);
+  }
+}
+
 /**
  * [flashing description]
  * @param  {[type]} elem     [description]

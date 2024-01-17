@@ -1,0 +1,138 @@
+{% load i18n %}
+{% load favorites_playlist %}
+{% load playlist_buttons %}
+{% load video_tags %}
+
+{% spaceless %}
+    {% if playlist %}
+        {% load playlist_buttons %}
+        {% can_see_playlist_video video as can_see_video %}
+    {% endif %}
+    <div class="checked_overlay">
+        <span class="card-selected" title="{% trans 'Selected' %}">
+            <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+        </span>
+    </div>
+    <!-- video as row -->
+    <div class="col-1 thumbnail-item-video-row">{{ video.get_thumbnail_card|safe }}</div>
+    <span class="col-3 title-item-video-row dashboard-video-title" title="{{ video.title|capfirst }}">
+        {{ video.title|capfirst|truncatechars:20 }}</span>
+    <span class="col-2" title="{% trans 'Duration' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+        <span class="visually-hidden">{% trans 'Duration' %}</span>
+        <i class="bi bi-clock" aria-hidden="true"></i> {{ video.duration_in_time }}
+    </span>
+    <span class="col-3" title="{% trans 'Date added' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+        <span class="visually-hidden">{% trans 'Date added' %}</span>
+        <i class="bi bi-calendar-check" aria-hidden="true"></i> {{ video.date_added }}</span>
+    <div class="col-2 me-auto">
+
+        {% get_video_infos video as video_infos %}
+
+        <span title="{{ video_infos.password.translation }}"
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom">
+            <i class="bi bi-lock {% if video_infos.password.status %}active{% endif %}" aria-hidden="true"></i>
+            <span class="visually-hidden">{{ video_infos.password.translation }}</span>
+        </span>
+
+        <span title="{{ video_infos.draft.translation }}"
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom">
+            <i class="bi bi-incognito {% if video_infos.draft.status %}active{% endif %}" aria-hidden="true"></i>
+            <span class="visually-hidden">{{ video_infos.draft.translation }}</span>
+        </span>
+
+        <span title="{{ video_infos.chaptered.translation }}"
+              data-bs-toggle="tooltip"
+              data-bs-placement="bottom">
+            <i class="bi bi-card-list {% if video_infos.chaptered.status %}active{% endif %}" aria-hidden="true"></i>
+            <span class="visually-hidden">{{ video_infos.chaptered.translation }}</span>
+        </span>
+
+        {% if video.is_video %}
+            <span title="{% trans 'Video content.' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                <i class="bi bi-film bi_content_type" aria-hidden="true"></i>
+          </span>
+        {% else %}
+            <span title="{% trans 'Audio content.' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                <i class="bi bi-soundwave bi_content_type" aria-hidden="true"></i>
+          </span>
+        {% endif %}
+    </div>
+    <div id="more-btn-group" class="btn-group ms-auto" role="group">
+        <button id="more-actions-row-btn-{{ video.id }}" type="button" class="more-actions-row-btn"
+                data-bs-toggle="dropdown" aria-expanded="false">
+            <span title="{% trans 'More' %}">
+                <i class="bi bi-three-dots more-actions-row-i" aria-hidden="true"></i>
+            </span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="more-actions-row-btn-{{ video.id }}">
+            <li><a href="{% url 'video:video' video.slug %}"
+                   title="{% trans 'Play' %} {{ video.title }}"
+                   class="dropdown-item">{% trans "Play" %}</a></li>
+            {% if playlist %}
+                {% user_can_edit_or_remove playlist as can_edit_or_remove %}
+                {% if not in_favorites_playlist and can_edit_or_remove %}
+                    <li><a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" class="dropdown-item"
+                           id="remove-from-playlist-btn-{{ video.id }}">{% trans "Remove from playlist" %}</a></li>
+                {% endif %}
+            {% endif %}
+            {{ is_favorite }}
+            {% is_favorite user video as is_favorite %}
+            {% get_favorite_playlist user as fav_playlist %}
+            {% if USE_PLAYLIST and USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
+                <li>
+                    {% if is_favorite %}
+                        <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}"
+                           class="dropdown-item" id="favorite-btn-{{ video.id }}" aria-pressed="true"
+                           role="button">{% trans "Remove from favorite" %}</a>
+                    {% else %}
+                        <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}"
+                           class="dropdown-item" id="favorite-btn-{{ video.id }}" aria-pressed="false"
+                           role="button">{% trans "Add in favorite" %}</a>
+                    {% endif %}
+                </li>
+            {% endif %}
+            {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video %}
+                <li>
+                    <a href="{% url 'video:video_edit' slug=video.slug %}"
+                       title="{% trans 'Edit the video' %} {{ video.title }}"
+                       class="dropdown-item">{% trans 'Edit the video' %}</a>
+                </li>
+            {% endif %}
+            {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay %}
+                <li>
+                    <a href="{% url 'video:completion:video_completion' slug=video.slug %}"
+                       title="{% trans 'Complete the video' %} {{ video.title }}"
+                       class="dropdown-item">{% trans 'Complete the video' %}</a>
+                </li>
+            {% endif %}
+            {% if video.encoded and video.encoding_in_progress is False %}
+                {% if video.owner == request.user or request.user.is_superuser or perms.cut.cut_video %}
+                    <li>
+                        <a href="{% url 'video:cut:video_cut' slug=video.slug %}"
+                           title="{% trans 'Cut the video' %} {{ video.title }}"
+                           class="dropdown-item">{% trans 'Cut the video' %}</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+            {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.chapter.change_chapter %}
+                <li>
+                    <a href="{% url 'video:chapter:video_chapter' slug=video.slug %}"
+                       title="{% trans 'Chapter the video' %} {{ video.title }}"
+                       class="dropdown-item">{% trans 'Chapter the video' %}</a>
+                </li>
+            {% endif %}
+            {% if video.encoded and video.encoding_in_progress is False %}
+                {% if video.owner == request.user or request.user.is_superuser or perms.video.delete_video %}
+                    <li>
+                        <a href="{% url 'video:video_delete' slug=video.slug %}"
+                           title="{% trans 'Delete the video' %} {{ video.title }}"
+                           class="dropdown-item">{% trans 'Delete the video' %}</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        </ul>
+    </div>
+{% endspaceless %}
+

@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block more_style %}
+  {% if use_category %}
+    <link rel="stylesheet" href="{% static 'css/video_category.css' %}?ver={{VERSION}}">
+  {% endif %}
+{% endblock more_style %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans 'Dashboard' %}</li>{% endblock %}
+
+  <div class="row">
+    {% block page_title %}
+      {% trans 'Dashboard' %}
+    {% endblock %}
+  </div>
+
+{% block page_content %}
+
+{% if use_category %}
+  {% include "videos/category_modal.html" %}
+{% endif %}
+
+
+  <div id="bulk_update_container">
+
+    <h2>{% trans 'Multiple actions' %}</h2>
+    <p id="bulk_update_instructions">
+        {% trans "To edit several videos at the same time, you can select the ones you want by clicking on them then select an action to perform using the drop-down menu below, finally apply the modification. You can also refine your video search using the filters in the right menu." %}
+    </p>
+
+    <select id="bulkUpdateActionSelect" name="action" class="form-select mb-2" aria-label="{% trans 'Choose an action' %}">
+        <option value="" disabled selected>{% trans "Choose an action" %}</option>
+        <optgroup label="{% trans 'Edit a field' %}">
+            <option value="title">{% trans "Title" %}</option>
+            <option value="type">{% trans "Type" %}</option>
+            {% if request.user.is_superuser %}
+                <option value="owner">{% trans "Owner" %}</option>
+                <option value="additional_owners">{% trans "Additional owners" %}</option>
+            {% endif %}
+            <option value="description">{% trans "Description" %}</option>
+            {% if request.user.is_superuser %}
+                <option value="date_added">{% trans "Date added" %}</option>
+            {% endif %}
+            <option value="date_evt">{% trans "Date of the event field" %}</option>
+            <option value="cursus">{% trans "Cursus" %}</option>
+            <option value="main_lang">{% trans "Main language" %}</option>
+            <option value="tags">{% trans "Tags" %}</option>
+            <option value="discipline">{% trans "Disciplines" %}</option>
+            <option value="licence">{% trans "Licence" %}</option>
+            <option value="thumbnail">{% trans "Thumbnails" %}</option>
+            {% if request.user.is_staff and use_obsolescence %}
+                <option value="date_delete">{% trans "Date to delete" %}</option>
+            {% endif %}
+        </optgroup>
+        {% if use_transcription %}
+            <option value="transcript">{% trans "Transcript" %}</option>
+        {% endif %}
+        {% if request.user.is_staff  %}
+            <option value="access_restrictions">{% trans "Restrictions" %}</option>
+        {% endif %}
+        <option value="channel_option">{% trans "Channel options" %}</option>
+        <option value="advanced_options">{% trans "Advanced options" %}</option>
+        <option value="delete">{% trans "Delete" %}</option>
+    </select>
+
+    <form id="dashboardForm" enctype="multipart/form-data" name="dashboard_form" method="post" class="needs-validation" novalidate action="{% url 'video:dashboard' %}" accept-charset="utf-8">
+    {% csrf_token %}
+    {% if form.errors %}
+      <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+        {{form.errors}}
+    {% endif %}
+    {% for field_hidden in form.hidden_fields %}
+        {{field_hidden}}
+    {% endfor %}
+
+    {% for fieldset in form.fieldsets %}
+        {% with options=fieldset|last name=fieldset|first%}
+        {% if name in fieldsets_dashboard %}
+            <fieldset id="{{ name }}" class="fieldset-dashboard d-none">
+        {% endif %}
+        {% for field in form %}
+            {% if field.name in options.fields %}
+                <div class="my-2 {% if 'description_' in field.name or 'title_'  in field.name %}collapse ms-4{% endif %}{% if 'description_' in field.name %} description{% endif %}{% if 'title_' in field.name %} title{% endif %}{% with 'is_restricted restrict_access_to_groups password' as res %} {% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
+                    <div class="form-group form-group-dashboard {% if name not in fieldsets_dashboard %}d-none{% endif %}">
+                    {% if "form-check-input" in field.field.widget.attrs.class %}
+                        <div class="form-check">
+                        {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                        </div>
+                    {% else %}
+                        {% if field.label and name in fieldsets_dashboard %}
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {% endif %}
+                        {{field}}
+                    {% endif %}
+                    {% if field.help_text %}
+                          <small id="{{field.id_for_label}}Help" class="form-text"> {{ field.help_text|safe }}</small>
+                    {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% if name in fieldsets_dashboard %}
+            </fieldset>
+        {% endif %}
+        {% endwith %}
+    {% endfor %}
+    </form>
+
+    {% include "videos/dashboard_modal.html" %}
+
+    <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalBulkUpdate" disabled>
+        {% trans 'Apply' %} <span id="countSelectedVideosBadge" class="badge" title="{% trans 'No video found' %}">
+    {% blocktrans count counter=0 %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}</span></button>
+    <button id="resetSelectedVideosBtn" type="button" class="btn btn-secondary mt-2" onclick="clearSelectedVideo()" disabled>{% trans "Clear selection" %}</button>
+  </div>
+
+  <div>
+  {% if videos.paginator.count == 0 %}
+    <h2 class="h4">{% trans "No video found"%}</h2>
+    <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the ”Add a new video” button to add one'%}</p>
+  {% else %}
+    <div class="row mt-3">
+      <h2 id="video_count" class="col-5">{% blocktrans count counter=count_videos %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h2>
+      <div class="btn-group col-3" role="group">
+          <button title="{% trans 'Grid display mode' %}" class="btn btn-outline-primary bi bi-ui-checks-grid btn-dashboard-display-mode {% if display_mode == "grid" %}active{% endif %}" aria-current="page" onclick="changeDisplayMode('grid')"></button>
+          <button title="{% trans 'List display mode' %}" class="btn btn-outline-primary bi bi-list-check btn-dashboard-display-mode {% if display_mode == "list" %}active{% endif %}" onclick="changeDisplayMode('list')"></button>
+      </div>
+      <form id="sortForm" action="{% url 'videos:videos' %}" method="get" class="filterSortForms col-4 mb-2">
+        {% include "videos/video_sort_select.html" %}
+      </form>
+    </div>
+
+    <div id="video_list_content">
+    {% include 'loader.html' with loaderid="videosListLoader" %}
+    {% include video_list_template %}
+    </div>
+  {% endif %}
+  </div>
+
+{% endblock page_content %}
+
+{% block page_aside %}
+  {% include 'videos/filter_aside.html' %}
+{% endblock page_aside %}
+
+{% block more_script %}
+<script src="/admin/jsi18n/"></script>
+<script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
+{{form.media}}
+<script>
+  const urlVideos = "{% url 'video:dashboard' %}";
+  const urlUpdateVideos = "{% url 'video:bulk_update' %}";
+  const videosListLoader = document.getElementById("videosListLoader");
+  var displayMode = "{{ display_mode }}";
+  var csrftoken = "{{ csrf_token }}";
+  var page = 1;
+  var nextPage = false;
+  var ownerFilter = {{ owner_filter|yesno:'true,false'}};
+  var formFieldsets = {{ fieldsets_dashboard|safe }};
+
+  {% if videos.has_next %}
+      page = parseInt("{{videos.next_page_number}}");
+      nextPage = true;
+  {% endif %}
+</script>
+<script src="{% static 'js/infinite.js' %}"></script>
+<script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/dashboard.js' %}?ver={{VERSION}}"></script>
+<script>
+{% if use_category %}
+  const USE_CATEGORY = true;
+  const CATEGORIES_DATA = {{ categories | safe }};
+  const BASE_URL = `${window.location.origin}/video/my/categories/`;
+  {# create base url link for video management #}
+  {% url 'video:video_edit' slug="abcd" as video_edit %}
+  const EDIT_URL = `{{ video_edit|slice:"-5" }}`;
+  {% url 'video:completion:video_completion' slug="abcd" as video_completion %}
+  const COMPLETION_URL = `{{ video_completion|slice:"-5" }}`;
+  {% url 'video:chapter:video_chapter' slug="abcd" as video_chapter %}
+  const CHAPTER_URL = `{{ video_chapter|slice:"-5" }}`;
+  {% url 'video:video_delete' slug="abcd" as video_delete %}
+  const DELETE_URL = `{{ video_delete|slice:"-5" }}`;
+  const VIDEO_URL = `${window.location.origin}/video/`;
+  </script>
+  <script defer src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
+{% else %}
+  const USE_CATEGORY = false;
+</script>
+{% endif %}
+{% endblock more_script %}
