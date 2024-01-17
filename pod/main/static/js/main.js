@@ -517,8 +517,9 @@ document.addEventListener("DOMContentLoaded", function () {
  * @param  {condition}      condition             Condition to evaluate for enabled disabled status
  */
 function manageDisableBtn(element, condition) {
-
-    condition ? element.removeAttribute('disabled') : element.setAttribute('disabled','');
+  condition
+    ? element.removeAttribute("disabled")
+    : element.setAttribute("disabled", "");
 }
 /** MENU ASIDE **/
 document.addEventListener("DOMContentLoaded", function () {
@@ -1284,7 +1285,7 @@ var videocheck = function (form, event) {
  * @param  {[type]} alertType Type of alert (info, success, danger, warning...)
  * @return {void}
  */
-var showalert = function (message, alertType, idAlertType="formalertdiv") {
+var showalert = function (message, alertType, idAlertType = "formalertdiv") {
   const icon_types = {
     "alert-success": "check-circle-fill",
     "alert-info": "info-fill",
@@ -1293,7 +1294,9 @@ var showalert = function (message, alertType, idAlertType="formalertdiv") {
   };
 
   let textHtml =
-    '<div id='+idAlertType+' class="alert ' +
+    "<div id=" +
+    idAlertType +
+    ' class="alert ' +
     alertType +
     ' alert-dismissible fade show" role="alert">' +
     '<i aria-hidden="true" class="bi bi-' +
@@ -1372,14 +1375,14 @@ function show_messages(msgText, msgClass, loadUrl) {
  * @return {void}
  */
 function showLoader(loaderElement, show) {
-  if(show){
+  if (show) {
     loaderElement.classList.remove("d-none");
     loaderElement.classList.remove("hide");
-  }else{
+  } else {
     loaderElement.classList.add("hide");
     setTimeout(() => {
       loaderElement.classList.add("d-none");
-    },150);
+    }, 150);
   }
 }
 

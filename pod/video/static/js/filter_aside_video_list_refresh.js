@@ -14,10 +14,10 @@ onBeforePageLoad = function () {
 };
 onAfterPageLoad = function () {
   if (
-      urlVideos === "/video/dashboard/"
-      && selectedVideos
-      && selectedVideos.length !== 0
-  ){
+    urlVideos === "/video/dashboard/" &&
+    selectedVideos &&
+    selectedVideos.length !== 0
+  ) {
     setSelectedVideos();
   }
   infiniteLoading.style.display = "none";
@@ -69,9 +69,9 @@ function refreshInfiniteLoader(url, nextPage) {
  */
 function replaceCountVideos(newCount) {
   let videoFoundStr = ngettext(
-      `%(count)s video found`,
-      `%(count)s videos found`,
-      newCount,
+    `%(count)s video found`,
+    `%(count)s videos found`,
+    newCount,
   );
   videoFoundStr = interpolate(videoFoundStr, { count: newCount }, true);
   document.getElementById("video_count").innerHTML = videoFoundStr;
@@ -113,10 +113,10 @@ function refreshVideosSearch() {
         refreshInfiniteLoader(url, pageNext);
       }
       if (
-          urlVideos === "/video/dashboard/"
-          && selectedVideos
-          && selectedVideos.length !== 0
-      ){
+        urlVideos === "/video/dashboard/" &&
+        selectedVideos &&
+        selectedVideos.length !== 0
+      ) {
         setSelectedVideos();
       }
     })
@@ -158,8 +158,8 @@ function getUrlForRefresh() {
       "sort_direction=" + document.getElementById("sort_direction").value + "&";
   }
   // Add dashboard display mode param
-  if (urlVideos === "/video/dashboard/" && displayMode !== undefined){
-    newUrl += "display_mode="+displayMode + "&";
+  if (urlVideos === "/video/dashboard/" && displayMode !== undefined) {
+    newUrl += "display_mode=" + displayMode + "&";
   }
   // Add category checked if exists
   if (document.querySelectorAll(".categories_list_item.active").length !== 0) {
@@ -247,7 +247,9 @@ function createUserCheckBox(user) {
 document.getElementById("resetFilters").addEventListener("click", function () {
   checkedInputs = [];
   document
-    .querySelectorAll("#filters input[type=checkbox]:checked[class=form-check-input]")
+    .querySelectorAll(
+      "#filters input[type=checkbox]:checked[class=form-check-input]",
+    )
     .forEach((checkBox) => {
       checkBox.checked = false;
     });

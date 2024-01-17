@@ -665,124 +665,137 @@ div.card a img {
 }
 
 /** Dashboard **/
-#bulk_update_container{
-    background-color: var(--pod-background-neutre2-bloc);
-    padding: 1em;
-    border-radius: var(--bs-border-radius);
+#bulk_update_container {
+  background-color: var(--pod-background-neutre2-bloc);
+  padding: 1em;
+  border-radius: var(--bs-border-radius);
 }
-#bulk_update_container .select2{
-  width: 100%!important;
+#bulk_update_container .select2 {
+  width: 100% !important;
 }
-.btn-dashboard-display-mode{
-    height: fit-content;
+.btn-dashboard-display-mode {
+  height: fit-content;
 }
-#countSelectedVideosBadge{
+#countSelectedVideosBadge {
   background-color: var(--pod-background-neutre1-bloc);
   color: var(--pod-font-color);
 }
 /* Dashboard infinite container */
-.infinite-container{
+.infinite-container {
   margin: 1rem 0;
 }
-.infinite-container .infinite-item{
-    cursor: pointer;
+.infinite-container .infinite-item {
+  cursor: pointer;
 }
-.pod-infinite-container .infinite-item{
-    position: relative;
+.pod-infinite-container .infinite-item {
+  position: relative;
 }
-.infinite-item .checked_overlay{
-    display: none;
-    position: absolute;
-    inset: 0;
-    z-index: 9;
-    opacity: 0;
-    justify-content: center;
-    align-items: center;
-    outline: 2px solid var(--pod-link-color);
-    border-radius: var(--bs-border-radius-sm);
-    background-color: rgba(255, 255, 255, .8);
-    cursor: pointer;
-    transition: all .3s;
+.infinite-item .checked_overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  opacity: 0;
+  justify-content: center;
+  align-items: center;
+  outline: 2px solid var(--pod-link-color);
+  border-radius: var(--bs-border-radius-sm);
+  background-color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition: all 0.3s;
 }
-.infinite-item.selected .checked_overlay{
-    display: flex;
-    opacity: 1;
+.infinite-item.selected .checked_overlay {
+  display: flex;
+  opacity: 1;
 }
-.infinite-item .checked_overlay .card_selected{
-    display: block;
-    transition: all .3s;
+.infinite-item .checked_overlay .card_selected {
+  display: block;
+  transition: all 0.3s;
 }
 .pod-infinite-container .infinite-item:not(.selected):hover,
 .pod-infinite-container .infinite-item .checked_overlay:hover .card_selected,
 .pod-infinite-container .infinite-item:not(.selected):hover,
-.pod-infinite-container .infinite-item .checked_overlay:hover .card_selected{
-    -webkit-transform: scale(1.04);
-    -ms-transform: scale(1.04);
-    transform: scale(1.04);
+.pod-infinite-container .infinite-item .checked_overlay:hover .card_selected {
+  -webkit-transform: scale(1.04);
+  -ms-transform: scale(1.04);
+  transform: scale(1.04);
 }
-.infinite-item.selected .checked_overlay .card-selected i{
-    font-size: 3rem;
-    color: var(--pod-link-color);
+.infinite-item.selected .checked_overlay .card-selected i {
+  font-size: 3rem;
+  color: var(--pod-link-color);
 }
 .pod-infinite-grid-container .infinite-item .video-card .card-thumbnail {
-    height: 146px;
-    overflow: hidden;
+  height: 146px;
+  overflow: hidden;
 }
-.pod-infinite-grid-container .infinite-item .video-card .card-thumbnail .pod-thumbnail{
-    width: 100%;
+.pod-infinite-grid-container
+  .infinite-item
+  .video-card
+  .card-thumbnail
+  .pod-thumbnail {
+  width: 100%;
 }
 /* Specific list display mode */
 .pod-infinite-list-container .list-item-video-row {
-    padding: 0;
-    max-height: 50px;
-    border: none;
-    background-color: var(--pod-background-neutre2-bloc);
-    border-radius: 4px;
-    font-size: 0.9rem;
-    transition: background-color .3s;
+  padding: 0;
+  max-height: 50px;
+  border: none;
+  background-color: var(--pod-background-neutre2-bloc);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
 }
-.pod-infinite-list-container .list-item-video-row.selected{
+.pod-infinite-list-container .list-item-video-row.selected {
   border: 2px solid var(--pod-link-color);
 }
-.pod-infinite-list-container .list-item-video-row:hover{
-    background-color: var(--pod-background-neutre1-bloc);
+.pod-infinite-list-container .list-item-video-row:hover {
+  background-color: var(--pod-background-neutre1-bloc);
 }
-.pod-infinite-list-container .list-item-video-row .checked_overlay .card-selected{
+.pod-infinite-list-container
+  .list-item-video-row
+  .checked_overlay
+  .card-selected {
   width: 100%;
 }
-.pod-infinite-list-container .list-item-video-row.selected .checked_overlay .card-selected i{
+.pod-infinite-list-container
+  .list-item-video-row.selected
+  .checked_overlay
+  .card-selected
+  i {
   font-size: 2rem;
   margin: 0 2rem;
 }
-.pod-infinite-list-container .list-item-video-row i:not(.checked_overlay .card-selected i){
+.pod-infinite-list-container
+  .list-item-video-row
+  i:not(.checked_overlay .card-selected i) {
   font-size: 1.2rem;
   padding: 0.2rem;
   opacity: 0.3;
 }
-.thumbnail-item-video-row{
+.thumbnail-item-video-row {
   height: 50px;
   overflow: hidden;
   border-radius: 4px 0 0 4px;
 }
-.thumbnail-item-video-row img{
+.thumbnail-item-video-row img {
   width: 100%;
   min-height: 100%;
 }
-.title-item-video-row{
+.title-item-video-row {
   padding-left: 1rem;
 }
-.more-actions-row-btn{
+.more-actions-row-btn {
   border: none;
   background-color: inherit;
 }
 .pod-infinite-list-container .list-item-video-row i.active,
 .pod-infinite-list-container .list-item-video-row i.bi_content_type,
-.pod-infinite-list-container .list-item-video-row .more-actions-row-btn i{
+.pod-infinite-list-container .list-item-video-row .more-actions-row-btn i {
   color: var(--pod-link-color);
-  opacity: 1!important;
+  opacity: 1 !important;
 }
 /* custom badges for confirm modal bulk update */
-.bulk-update-confirm-badges{
+.bulk-update-confirm-badges {
   background-color: var(--pod-link-color);
   color: var(--pod-background);
   padding: 10px;
@@ -1526,14 +1539,14 @@ table .alert.alert-danger.btn.pod-btn-social {
   border-left-color: var(--bs-info);
 }
 /* Bootstrap loader-spinner */
-.loaderSpinner{
+.loaderSpinner {
   transition: opacity 150ms ease-in-out;
   z-index: 1100;
 }
-.loaderSpinner.hide{
+.loaderSpinner.hide {
   opacity: 0;
 }
-.loaderSpinner>.spinner-border{
+.loaderSpinner > .spinner-border {
   color: var(--pod-primary);
   width: 4rem;
   height: 4rem;
