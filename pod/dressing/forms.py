@@ -20,6 +20,7 @@ if getattr(settings, "USE_PODFILE", False):
 
 class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
     """Class AddOwnerWidget."""
+
     search_fields = [
         "username__icontains",
         "email__icontains",
@@ -28,6 +29,7 @@ class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
 
 class AddAccessGroupWidget(s2forms.ModelSelect2MultipleWidget):
     """Class AddAccessGroupWidget."""
+
     search_fields = [
         "display_name__icontains",
         "code_name__icontains",
@@ -36,14 +38,13 @@ class AddAccessGroupWidget(s2forms.ModelSelect2MultipleWidget):
 
 class AddVideoHoldWidget(s2forms.ModelSelect2Widget):
     """Class AddVideoHoldWidget."""
-    search_fields = [
-        "slug__icontains",
-        "title__icontains"
-    ]
+
+    search_fields = ["slug__icontains", "title__icontains"]
 
 
 class DressingForm(forms.ModelForm):
     """Form to add or edit a dressing."""
+
     is_staff = True
     is_superuser = False
     admin_form = True
@@ -86,14 +87,15 @@ class DressingForm(forms.ModelForm):
             self.fields["title_%s" % settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
         self.fields = add_placeholder_and_asterisk(self.fields)
-        self.fields["opacity"].widget.attrs.update({'max': '100'})
+        self.fields["opacity"].widget.attrs.update({"max": "100"})
         self.fields["owners"].initial = self.user
 
     class Meta(object):
         """Meta class."""
+
         model = Dressing
         fields = "__all__"
-        exclude = ['videos']
+        exclude = ["videos"]
         widgets = {
             "owners": AddOwnerWidget,
             "users": AddOwnerWidget,
@@ -105,6 +107,7 @@ class DressingForm(forms.ModelForm):
 
 class DressingDeleteForm(forms.Form):
     """Form to delete a dressing."""
+
     agree = forms.BooleanField(
         label=_("I agree"),
         help_text=_("Delete video dressing cannot be undone"),
@@ -118,6 +121,7 @@ class DressingDeleteForm(forms.Form):
 
 class DressingAdminForm(forms.ModelForm):
     """Form for admin panel."""
+
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop("request", None)
         super(DressingAdminForm, self).__init__(*args, **kwargs)
@@ -130,7 +134,7 @@ class DressingAdminForm(forms.ModelForm):
     class Meta(object):
         model = Dressing
         fields = "__all__"
-        exclude = ['videos']
+        exclude = ["videos"]
         widgets = {
             "owners": widgets.AutocompleteSelectMultiple(
                 Dressing._meta.get_field("owners"),

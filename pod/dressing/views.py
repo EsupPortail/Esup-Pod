@@ -24,7 +24,7 @@ def video_dressing(request, slug):
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     dressings = get_dressings(request.user, request.user.owner.accessgroup_set.all())
 
-    if request.method == 'POST':
+    if request.method == "POST":
         selected_dressing_value = request.POST.get("selected_dressing_value")
         if selected_dressing_value is not None:
             selected_dressing = get_object_or_404(Dressing, pk=selected_dressing_value)
@@ -49,7 +49,7 @@ def video_dressing(request, slug):
     return render(
         request,
         "video_dressing.html",
-        {"video": video, "dressings": dressings, "current": current}
+        {"video": video, "dressings": dressings, "current": current},
     )
 
 
@@ -65,26 +65,27 @@ def dressing_edit(request, dressing_id):
         user=request.user,
     )
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form_dressing = DressingForm(
             request.POST,
             instance=dressing_edit,
             user=request.user,
         )
         if form_dressing.is_valid():
-            messages.add_message(request, messages.INFO,
-                                 _("The changes have been saved."))
+            messages.add_message(
+                request, messages.INFO, _("The changes have been saved.")
+            )
             form_dressing.save()
             return redirect(reverse("dressing:my_dressings"))
     page_title = f'{_("Editing the dressing")} {dressing_edit.title}'
     return render(
         request,
-        'dressing_edit.html',
+        "dressing_edit.html",
         {
-            'dressing_edit': dressing_edit,
-            'form': form_dressing,
-            'page_title': page_title,
-        }
+            "dressing_edit": dressing_edit,
+            "form": form_dressing,
+            "page_title": page_title,
+        },
     )
 
 
@@ -92,18 +93,19 @@ def dressing_edit(request, dressing_id):
 @login_required(redirect_field_name="referrer")
 def dressing_create(request):
     """Create a dressing object."""
-    if request.method == 'POST':
+    if request.method == "POST":
         form_dressing = DressingForm(request.POST, user=request.user)
         if form_dressing.is_valid():
             form_dressing.save()
-            return redirect('dressing:my_dressings')
+            return redirect("dressing:my_dressings")
     else:
         form_dressing = DressingForm(user=request.user)
 
     return render(
         request,
-        'dressing_edit.html',
-        {'dressing_create': dressing_create, 'form': form_dressing})
+        "dressing_edit.html",
+        {"dressing_create": dressing_create, "form": form_dressing},
+    )
 
 
 @csrf_protect
@@ -114,13 +116,14 @@ def dressing_delete(request, dressing_id):
 
     form = DressingDeleteForm()
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = DressingDeleteForm(request.POST)
         if form.is_valid():
             dressing.delete()
-            messages.add_message(request, messages.INFO,
-                                 _("The dressing has been deleted."))
-            return redirect('dressing:my_dressings')
+            messages.add_message(
+                request, messages.INFO, _("The dressing has been deleted.")
+            )
+            return redirect("dressing:my_dressings")
         else:
             messages.add_message(
                 request,
@@ -128,8 +131,7 @@ def dressing_delete(request, dressing_id):
                 _("One or more errors have been found in the form."),
             )
 
-    return render(request, 'dressing_delete.html',
-                  {'dressing': dressing, "form": form})
+    return render(request, "dressing_delete.html", {"dressing": dressing, "form": form})
 
 
 @csrf_protect
@@ -140,5 +142,4 @@ def my_dressings(request):
         return redirect(reverse("maintenance"))
     dressings = get_dressings(request.user, request.user.owner.accessgroup_set.all())
 
-    return render(request, "my_dressings.html",
-                  {'dressings': dressings})
+    return render(request, "my_dressings.html", {"dressings": dressings})
