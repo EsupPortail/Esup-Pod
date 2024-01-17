@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-17 09:49+0100\n"
+"POT-Creation-Date: 2024-01-17 11:17+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2061,7 +2061,7 @@ msgstr "Pour supprimer l'habillage, veuillez cocher et cliquer sur envoyer."
 #: pod/playlist/templates/playlist/delete.html
 #: pod/recorder/templates/recorder/record_delete.html
 #: pod/video/templates/videos/video_delete.html
-msgid "Agree required"
+msgid "Agreement required"
 msgstr "Accord requis"
 
 #: pod/dressing/templates/dressing_delete.html
@@ -8926,24 +8926,3 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#~ msgid "Agreement required"
-#~ msgstr "Accord requis"
-
-#~ msgid "Edit the dressing"
-#~ msgstr "Éditer l'habillage"
-
-#~ msgid "position"
-#~ msgstr "position"
-
-#~ msgid "opacity"
-#~ msgstr "opacité"
-
-#~ msgid "Dressing"
-#~ msgstr "Habillage"
-
-#~ msgid "Toggle navigation"
-#~ msgstr "Basculer le menu"
-
-#~ msgid "The password is / will be encrypted."
-#~ msgstr "Le mot de passe est / sera encrypté."
