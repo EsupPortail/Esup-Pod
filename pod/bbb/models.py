@@ -232,7 +232,7 @@ class Livestream(models.Model):
         verbose_name=_("Save meeting in Dashboard"),
         help_text=_(
             "Do you want to save the video of "
-            'this meeting, at the end of the live, directly in “Dashboard“?'
+            "this meeting, at the end of the live, directly in “Dashboard“?"
         ),
         default=False,
     )

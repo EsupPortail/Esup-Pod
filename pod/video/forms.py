@@ -539,11 +539,11 @@ class FileSizeValidator(object):
 @receiver(post_save, sender=Video)
 def launch_encode(sender, instance, created, **kwargs):
     """
-        Launch encoding after save Video if requested.
+    Launch encoding after save Video if requested.
 
-        Args:
-            sender (:class:`pod.video.models.Video`): Video model class.
-            instance (:class:`pod.video.models.Video`): Video object instance.
+    Args:
+        sender (:class:`pod.video.models.Video`): Video model class.
+        instance (:class:`pod.video.models.Video`): Video object instance.
     """
     if hasattr(instance, "launch_encode") and instance.launch_encode is True:
         instance.launch_encode = False
@@ -554,11 +554,11 @@ def launch_encode(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Video)
 def launch_transcript(sender, instance, created, **kwargs):
     """
-        Launch transcription after save Video if requested.
+    Launch transcription after save Video if requested.
 
-        Args:
-            sender (:class:`pod.video.models.Video`): Video model class.
-            instance (:class:`pod.video.models.Video`): Video object instance.
+    Args:
+        sender (:class:`pod.video.models.Video`): Video model class.
+        instance (:class:`pod.video.models.Video`): Video object instance.
     """
     if hasattr(instance, "launch_transcript") and instance.launch_transcript is True:
         instance.launch_transcript = False
@@ -784,9 +784,8 @@ class VideoForm(forms.ModelForm):
             and hasattr(self.instance, "video")
             and cleaned_data["video"] != self.instance.video
         )
-        self.launch_transcript = (
-            "transcript" in cleaned_data.keys()
-            and hasattr(self.instance, "transcript")
+        self.launch_transcript = "transcript" in cleaned_data.keys() and hasattr(
+            self.instance, "transcript"
         )
         self.change_user = (
             self.launch_encode is False
@@ -911,10 +910,7 @@ class VideoForm(forms.ModelForm):
                     "description_%s" % key.replace("-", "_")
                 ].widget = CKEditorWidget(config_name="default")
         if self.fields.get("date_delete"):
-            if (
-                self.is_staff is False
-                or USE_OBSOLESCENCE is False
-            ):
+            if self.is_staff is False or USE_OBSOLESCENCE is False:
                 del self.fields["date_delete"]
             else:
                 self.fields["date_delete"].widget = forms.DateInput(
@@ -989,7 +985,7 @@ class VideoForm(forms.ModelForm):
             "date_evt": widgets.AdminDateWidget,
             "restrict_access_to_groups": AddAccessGroupWidget,
             "video": CustomClearableFileInput,
-            "restrict_access_to_groups": AddAccessGroupWidget
+            "restrict_access_to_groups": AddAccessGroupWidget,
         }
         initial = {
             "date_added": __TODAY__,
