@@ -396,6 +396,7 @@ class DashboardTestView(TestCase):
     """
     Test Dashboard view access and videos pagination
     """
+
     fixtures = [
         "initial_data.json",
     ]

@@ -490,6 +490,7 @@ def theme_edit_save(request, channel):
 # VIDEOS
 # ############################################################################
 
+
 @login_required(redirect_field_name="referrer")
 def dashboard(request):
     """
@@ -510,7 +511,6 @@ def dashboard(request):
     videos_list = videos_list.distinct()
 
     if USER_VIDEO_CATEGORY:
-
         cats = Category.objects.prefetch_related("video").filter(owner=request.user)
         """
         " user's videos categories format =>
@@ -521,7 +521,9 @@ def dashboard(request):
         """
         if request.GET.get("category") is not None:
             category_checked = request.GET.get("category")
-            videos_list = get_object_or_404(Category, slug=category_checked, owner=request.user).video.all()
+            videos_list = get_object_or_404(
+                Category, slug=category_checked, owner=request.user
+            ).video.all()
 
         videos_without_cat = videos_list.exclude(category__in=cats)
         cats = list(
@@ -552,7 +554,9 @@ def dashboard(request):
     filtered_videos_list = get_filtered_videos_list(request, videos_list)
     sort_field = request.GET.get("sort") if request.GET.get("sort") else "title"
     sort_direction = request.GET.get("sort_direction")
-    sorted_videos_list = sort_videos_list(filtered_videos_list, sort_field, sort_direction)
+    sorted_videos_list = sort_videos_list(
+        filtered_videos_list, sort_field, sort_direction
+    )
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     owner_filter = owner_is_searchable(request.user)
 
@@ -563,10 +567,15 @@ def dashboard(request):
 
     videos_list_templates = {
         "grid": "videos/video_list_grid_selectable.html",
-        "list": "videos/video_list_table_selectable.html"
+        "list": "videos/video_list_table_selectable.html",
     }
 
-    display_mode = request.GET.get("display_mode") if request.GET.get("display_mode") and request.GET.get("display_mode") in videos_list_templates.keys() else "grid"
+    display_mode = (
+        request.GET.get("display_mode")
+        if request.GET.get("display_mode")
+        and request.GET.get("display_mode") in videos_list_templates.keys()
+        else "grid"
+    )
     template = videos_list_templates[display_mode]
 
     if request.is_ajax():
@@ -591,7 +600,11 @@ def dashboard(request):
     )
 
     data_context["form"] = form
-    data_context["fieldsets_dashboard"] = ["channel_option", "access_restrictions", "advanced_options"]
+    data_context["fieldsets_dashboard"] = [
+        "channel_option",
+        "access_restrictions",
+        "advanced_options",
+    ]
     data_context["use_category"] = USER_VIDEO_CATEGORY
     data_context["use_obsolescence"] = USE_OBSOLESCENCE
     data_context["use_transcription"] = USE_TRANSCRIPTION
@@ -646,15 +659,8 @@ def bulk_update(request):
             if update_action == "fields":
                 # Bulk update fields
                 update_fields = json.loads(request.POST.get("update_fields"))
-                (
-                    result["updated_videos"],
-                    fields_errors,
-                    status
-                ) = (
-                    bulk_update_fields(
-                        request,
-                        videos_list,
-                        update_fields)
+                (result["updated_videos"], fields_errors, status) = bulk_update_fields(
+                    request, videos_list, update_fields
                 )
                 result["fields_errors"] = fields_errors
                 counter = len(result["updated_videos"])
@@ -668,7 +674,9 @@ def bulk_update(request):
                 pass
 
             delta = len(selected_videos) - counter
-            result, status = get_bulk_update_result(request, status, update_action, counter, delta, result)
+            result, status = get_bulk_update_result(
+                request, status, update_action, counter, delta, result
+            )
         else:
             status = 400
             result["message"] = _("Sorry, no video found.")
@@ -694,7 +702,7 @@ def bulk_update_fields(request, videos_list, update_fields):
     fields_errors = []
 
     for video in videos_list:
-        form = (VideoForm(
+        form = VideoForm(
             request.POST,
             request.FILES,
             instance=video,
@@ -702,7 +710,7 @@ def bulk_update_fields(request, videos_list, update_fields):
             is_superuser=request.user.is_superuser,
             current_user=request.user,
             current_lang=request.LANGUAGE_CODE,
-        ))
+        )
         form.create_with_fields(update_fields)
 
         if form.is_valid():
@@ -764,8 +772,10 @@ def get_bulk_update_result(request, status, update_action, counter, delta, resul
         # Get global error messages (transcript or delete) and set status 400 if error message exists
         if get_max_code_lvl_messages(request) >= 40:
             status = 400
-        result["message"] = ' '.join(map(str, messages.get_messages(request)))
-        result["message"] += ' ' + get_recap_message_bulk_update(request, update_action, counter, delta)
+        result["message"] = " ".join(map(str, messages.get_messages(request)))
+        result["message"] += " " + get_recap_message_bulk_update(
+            request, update_action, counter, delta
+        )
 
     # Prevent alert messages to popup on reload (asynchronous view)
     dismiss_stored_messages(request)
@@ -788,42 +798,26 @@ def get_recap_message_bulk_update(request, update_action, counter, delta):
     """
     # Define translations keys and message with plural management
     message_translations = {
-        "delete":
-            ngettext(
-                "%(counter)s video removed",
-                "%(counter)s videos removed",
-                counter
-            ) % {
-                "counter": counter
-            },
-        "transcript":
-            ngettext(
-                "%(counter)s video transcripted",
-                "%(counter)s videos transcripted",
-                counter
-            ) % {
-                "counter": counter
-            },
-        "fields":
-            ngettext(
-                "%(counter)s video modified",
-                "%(counter)s videos modified",
-                counter
-            ) % {
-                "counter": counter
-            },
+        "delete": ngettext(
+            "%(counter)s video removed", "%(counter)s videos removed", counter
+        )
+        % {"counter": counter},
+        "transcript": ngettext(
+            "%(counter)s video transcripted", "%(counter)s videos transcripted", counter
+        )
+        % {"counter": counter},
+        "fields": ngettext(
+            "%(counter)s video modified", "%(counter)s videos modified", counter
+        )
+        % {"counter": counter},
     }
     # Get plural translation for deleted, transcripted or updated videos
     msg = message_translations[update_action]
     counter = delta
     # Get plural translation for videos in error
     msg += ", " + ngettext(
-        "%(counter)s video in error",
-        "%(counter)s videos in error",
-        counter
-    ) % {
-        "counter": counter
-    }
+        "%(counter)s video in error", "%(counter)s videos in error", counter
+    ) % {"counter": counter}
     return msg
 
 
@@ -1398,14 +1392,15 @@ def video_delete(request, slug=None):
     """View to delete video. Show form to approve deletion and do it if sent."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     if video_is_deletable(request, video):
-
         form = VideoDeleteForm()
 
         if request.method == "POST":
             form = VideoDeleteForm(request.POST)
             if form.is_valid():
                 video.delete()
-                messages.add_message(request, messages.INFO, _("The video has been deleted."))
+                messages.add_message(
+                    request, messages.INFO, _("The video has been deleted.")
+                )
                 return redirect(reverse("video:dashboard"))
             else:
                 messages.add_message(
