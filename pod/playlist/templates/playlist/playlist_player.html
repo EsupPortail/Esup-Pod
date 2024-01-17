@@ -13,7 +13,7 @@
 <div class="card" id="card-playlistplayer">
     {% get_playlist_name playlist_in_get as playlist_name %}
     <h2 class="card-header card-title pod-card__title h4">
-        <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Playlist:" %} <a class="btn-link" href="{% url 'playlist:content' playlist_in_get.slug %}" title="{% trans "View the playlist" %}">{{ playlist_name|capfirst|truncatechars:20 }}</a>
+        <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans "Playlist:" %} <a class="btn-link" href="{% url 'playlist:content' playlist_in_get.slug %}" title="{% trans 'View the playlist' %}">{{ playlist_name|capfirst|truncatechars:20 }}</a>
     </h2>
     <div {% if videos|length > 5 %}class="scroll-container"{% endif %}>
         {% for video_in_playlist in videos %}
@@ -21,7 +21,7 @@
                 <a
                     {% if can_see_video %}
                         href="{% with default_version_link=video_in_playlist.get_default_version_link %}{% if default_version_link %}{{ default_version_link }}{% else %}{% url 'video:video' video_in_playlist.slug %}{% endif %}{% endwith %}?playlist={{ playlist_in_get.slug }}"
-                        title="{% trans "Watch the video" %}"
+                        title="{% trans 'Watch the video' %}"
                         aria-label="{{ video_in_playlist.title }}"
                     {% endif %}
                     id="{{ forloop.counter }}"
@@ -38,7 +38,7 @@
                         {% endif %}
                     </span>
                     <span class="card-img d-flex">
-                        <img class="card-img {% if can_see_video == False %}grayscale-image{% endif %}" src="{{ video_in_playlist.get_thumbnail_url }}" alt="{% trans "Playlist image" %}" loading="lazy">
+                        <img class="card-img {% if can_see_video == False %}grayscale-image{% endif %}" src="{{ video_in_playlist.get_thumbnail_url }}" alt="{% trans 'Playlist image' %}" loading="lazy">
                         {% if can_see_video == False %}
                             <span class="lock-icon-container">
                                 <i class="bi bi-lock-fill" aria-hidden="true"></i>

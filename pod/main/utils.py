@@ -62,6 +62,31 @@ def display_message_with_icon(request, type, message):
     messages.add_message(request, type, mark_safe(msg))
 
 
+def dismiss_stored_messages(request):
+    """
+    Tweak that dismiss messages (django.contrib.messages) stored to prevent them to pop on reload (asynchronous views)
+
+    Args:
+        request (Request): HTTP request
+    """
+    system_messages = messages.get_messages(request)
+    for msg in system_messages:
+        pass
+
+
+def get_max_code_lvl_messages(request):
+    """Get max level of request's stored messages.
+
+    Args:
+        request (Request): HTTP request
+    """
+    max_code_lvl = 0
+    system_messages = messages.get_messages(request)
+    if len(system_messages) > 0:
+        max_code_lvl = max(list(map(lambda x: x.level, system_messages)))
+    return max_code_lvl
+
+
 def secure_post_request(request):
     """Secure that this request is POST type.
 

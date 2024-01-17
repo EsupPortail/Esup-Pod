@@ -309,6 +309,10 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
 )
 
 if USE_TRANSCRIPTION:
+    from ..video_encode_transcript import transcript
+
+    TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
+
     transcript_help_text = OrderedDict(
         [
             (
@@ -534,10 +538,32 @@ class FileSizeValidator(object):
 
 @receiver(post_save, sender=Video)
 def launch_encode(sender, instance, created, **kwargs):
+    """
+        Launch encoding after save Video if requested.
+
+        Args:
+            sender (:class:`pod.video.models.Video`): Video model class.
+            instance (:class:`pod.video.models.Video`): Video object instance.
+    """
     if hasattr(instance, "launch_encode") and instance.launch_encode is True:
         instance.launch_encode = False
         encode_video = getattr(encode, ENCODE_VIDEO)
         encode_video(instance.id)
+
+
+@receiver(post_save, sender=Video)
+def launch_transcript(sender, instance, created, **kwargs):
+    """
+        Launch transcription after save Video if requested.
+
+        Args:
+            sender (:class:`pod.video.models.Video`): Video model class.
+            instance (:class:`pod.video.models.Video`): Video object instance.
+    """
+    if hasattr(instance, "launch_transcript") and instance.launch_transcript is True:
+        instance.launch_transcript = False
+        transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
+        transcript_video(instance.id)
 
 
 class VideoForm(forms.ModelForm):
@@ -633,6 +659,17 @@ class VideoForm(forms.ModelForm):
         if not hasattr(form, "admin_form"):
             form.remove_field("sites")
 
+    def create_with_fields(self, field_key):
+        """Create VideoForm with specific fields. Keep video field to prevent error on save."""
+        fields = set(self.fields)
+        if "description" in field_key:
+            field_key.append("description_%s" % self.current_lang)
+        if "title" in field_key:
+            field_key.append("title_%s" % self.current_lang)
+        for field in fields:
+            if field not in field_key and field != "video":
+                del self.fields[field]
+
     def move_video_source_file(self, new_path, new_dir, old_dir):
         """Move video source file in a new dir."""
         # create user repository
@@ -694,6 +731,9 @@ class VideoForm(forms.ModelForm):
 
         if hasattr(self, "launch_encode"):
             video.launch_encode = self.launch_encode
+
+        if hasattr(self, "launch_transcript"):
+            video.launch_transcript = self.launch_transcript
         return video
 
     def clean_date_delete(self):
@@ -744,7 +784,10 @@ class VideoForm(forms.ModelForm):
             and hasattr(self.instance, "video")
             and cleaned_data["video"] != self.instance.video
         )
-
+        self.launch_transcript = (
+            "transcript" in cleaned_data.keys()
+            and hasattr(self.instance, "transcript")
+        )
         self.change_user = (
             self.launch_encode is False
             and hasattr(self.instance, "encoding_in_progress")
@@ -870,7 +913,6 @@ class VideoForm(forms.ModelForm):
         if self.fields.get("date_delete"):
             if (
                 self.is_staff is False
-                or self.instance.id is None
                 or USE_OBSOLESCENCE is False
             ):
                 del self.fields["date_delete"]
@@ -945,8 +987,9 @@ class VideoForm(forms.ModelForm):
             "channel": ChannelWidget,
             "discipline": DisciplineWidget,
             "date_evt": widgets.AdminDateWidget,
-            "video": CustomClearableFileInput
-            # "restrict_access_to_groups": AddAccessGroupWidget
+            "restrict_access_to_groups": AddAccessGroupWidget,
+            "video": CustomClearableFileInput,
+            "restrict_access_to_groups": AddAccessGroupWidget
         }
         initial = {
             "date_added": __TODAY__,

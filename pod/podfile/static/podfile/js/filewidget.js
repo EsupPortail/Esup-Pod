@@ -5,11 +5,11 @@ if (typeof loaded == "undefined") {
   loaded = true;
 
   const loader = `
-    <div class="container-loader">
-      <div class="lds-ring" aria-label="{${gettext('Loading…')}">
-        <div></div><div></div><div></div><div></div>
-      </div>
+  <div id="loader" class="d-flex justify-content-center align-items-center d-none loaderSpinner">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">${gettext('Loading…')}</span>
     </div>
+  </div>
   `;
   document.addEventListener("click", (e) => {
     if (!e.target.parentNode) return;
@@ -808,7 +808,7 @@ if (typeof loaded == "undefined") {
 
   function seemore(e) {
     let parent_el = document.getElementById("more").parentNode;
-    parent_el.querySelector(".lds-ring").classList.add("show");
+    showLoader(parent_el.querySelector("#loader"), true);
     let next = document.getElementById("more").dataset.next;
     let search = document.getElementById("more").dataset.search;
     let currentFolder = getCurrentSessionFolder();

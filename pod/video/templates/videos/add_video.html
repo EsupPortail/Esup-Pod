@@ -4,8 +4,8 @@
 {% load tagging_tags %}
 
 {% block breadcrumbs %}{{ block.super }}
-  <li class="breadcrumb-item"><a href="{% url 'video:my_videos' %}">{% trans 'My videos' %}</a></li>
-  <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
+<li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans 'Dashboard' %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
 {% endblock %}
 
 {% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Choose an audio or video file to upload" %}{% endif %}{% endblock %}
@@ -44,7 +44,7 @@
 
   {% if TRANSCRIPT|length > 0 %}
   <div class="hide-on-processing">
-    <select class="form-select" aria-label="{% trans "Transcript" %}" id="select-transcript-lang">
+    <select class="form-select" aria-label="{% trans 'Transcript' %}" id="select-transcript-lang">
       <option selected value="">{% trans "Transcript" %}</option>
       {% for lang in TRANSCRIPT %}
       <option value="{{lang|first}}">{{lang|last}}</option>
@@ -124,9 +124,9 @@
 
 <script>
   /** formulaire **/
-  var max_chunk_size = {{ CHUNK_SIZE }}
-  var slug = "{{ slug }}"
-  var max_size = {{ max_size }}
+  var max_chunk_size = {{ CHUNK_SIZE }};
+  var slug = "{{ slug }}";
+  var max_size = {{ max_size }};
   var md5 = "",
     csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
     form_data = [{ "name": "csrfmiddlewaretoken", "value": csrf }];

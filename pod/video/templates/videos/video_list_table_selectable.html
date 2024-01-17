@@ -1,0 +1,30 @@
+{% load i18n %}
+{% load static %}
+{% spaceless %}
+
+<ul id="videos_list" class="pod-infinite-list-container infinite-container list-group list-group-action" data-nextpage="{{ videos.has_next|yesno:'true,false' }}" data-countvideos="{{ count_videos }}">
+  {% for video in videos %}
+  <li class="infinite-item list-group-item list-item-video-row d-flex align-items-center mb-3" data-slug={{video.slug}} onclick="toggleSelectedVideo(this)" onkeydown="toggleSelectedVideo(this)" tabindex="0">
+    {% include "videos/video_row_select.html" %}
+  </li>
+  {% empty %}
+  <li>
+    <p>{% trans "Sorry, no video found." %}</p>
+  </li>
+  {% endfor %}
+</ul>
+
+{% if videos.has_next %}
+  <a
+    style="display:none"
+    class="infinite-more-link"
+    href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ videos.next_page_number }}"
+    data-nextpagenumber = "{% if videos.has_next %}{{ videos.next_page_number }}{% else %}null{% endif %}" >{% trans "More" %}
+  </a>
+{% endif %}
+
+<div class="infinite-loading" style="display: none;">
+  {% trans "Loading..." %}
+</div>
+{% endspaceless %}
+<script defer src="{% static 'js/video_select.js' %}?ver={{VERSION}}"></script>

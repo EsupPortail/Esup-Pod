@@ -92,10 +92,9 @@ class InfiniteLoader {
     this.getData(url, this.next_page_number, this.nextPage).then((data) => {
       if (data !== null && data !== undefined) {
         const html = new DOMParser().parseFromString(data, "text/html");
-        /*if (html.getElementById("videos_list").dataset.nextpage !== "True") {
+        if (html.getElementById("videos_list").dataset.nextpage !== "True") {
           this.nextPage = false;
-        }*/
-        // data-nextpage="{{ videos.has_next|yesno:'true,false' }}"
+        }
         this.nextPage = html.getElementById("videos_list").dataset.nextpage;
         let element = this.videos_list;
 

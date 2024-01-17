@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block breadcrumbs %}{{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'video:my_videos' %}">{% trans 'My videos' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans 'Dashboard' %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{% trans "Editing group for the enrichment of the video" %}</li>
 {% endblock %}
 
