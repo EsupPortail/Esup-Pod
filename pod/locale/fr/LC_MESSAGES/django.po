@@ -4711,11 +4711,6 @@ msgstr "Menu principal"
 msgid "Close main menu"
 msgstr "Ferme le menu principal"
 
-#: pod/main/templates/navbar.html pod/recorder/models.py pod/video/forms.py
-#: pod/video/models.py
-msgid "Channels"
-msgstr "Chaînes"
-
 #: pod/main/templates/navbar.html
 msgid "Promoted playlists"
 msgstr "Listes de lecture promues"
