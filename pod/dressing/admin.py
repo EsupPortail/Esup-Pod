@@ -24,7 +24,7 @@ class DressingAdmin(admin.ModelAdmin):
         "opacity",
         "position",
         "opening_credits",
-        "ending_credits"
+        "ending_credits",
     )
 
     autocomplete_fields = [

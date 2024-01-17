@@ -11,15 +11,16 @@ from pod.video.models import Video
 
 class Dressing(models.Model):
     """Class describing Dressing objects."""
-    TOP_RIGHT = 'top_right'
-    TOP_LEFT = 'top_left'
-    BOTTOM_RIGHT = 'bottom_right'
-    BOTTOM_LEFT = 'bottom_left'
+
+    TOP_RIGHT = "top_right"
+    TOP_LEFT = "top_left"
+    BOTTOM_RIGHT = "bottom_right"
+    BOTTOM_LEFT = "bottom_left"
     POSITIONS = (
-        (TOP_RIGHT, _('Top right')),
-        (TOP_LEFT, _('Top left')),
-        (BOTTOM_RIGHT, _('Bottom right')),
-        (BOTTOM_LEFT, _('Bottom left')),
+        (TOP_RIGHT, _("Top right")),
+        (TOP_LEFT, _("Top left")),
+        (BOTTOM_RIGHT, _("Bottom right")),
+        (BOTTOM_LEFT, _("Bottom left")),
     )
 
     title = models.CharField(
@@ -51,7 +52,9 @@ class Dressing(models.Model):
         AccessGroup,
         blank=True,
         verbose_name=_("Groups"),
-        help_text=_("Select one or more groups who can manage and use this video dressing."),
+        help_text=_(
+            "Select one or more groups who can manage and use this video dressing."
+        ),
     )
 
     watermark = models.ForeignKey(
@@ -106,6 +109,7 @@ class Dressing(models.Model):
 
     class Meta:
         """Metadata for Dressing model."""
+
         verbose_name = _("Video dressing")
         verbose_name_plural = _("Video dressings")
 
@@ -114,12 +118,14 @@ class Dressing(models.Model):
         return {
             "id": self.id,
             "title": self.title,
-            "owners": list(self.owners.values_list('id', flat=True)),
-            "users": list(self.users.values_list('id', flat=True)),
-            "allow_to_groups": list(self.allow_to_groups.values_list('id', flat=True)),
+            "owners": list(self.owners.values_list("id", flat=True)),
+            "users": list(self.users.values_list("id", flat=True)),
+            "allow_to_groups": list(self.allow_to_groups.values_list("id", flat=True)),
             "watermark": self.watermark.file.url if self.watermark else None,
             "position": self.get_position_display(),
             "opacity": self.opacity,
-            "opening_credits": self.opening_credits.slug if self.opening_credits else None,
+            "opening_credits": self.opening_credits.slug
+            if self.opening_credits
+            else None,
             "ending_credits": self.ending_credits.slug if self.ending_credits else None,
         }

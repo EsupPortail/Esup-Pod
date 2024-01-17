@@ -403,7 +403,7 @@ class Encoding_video:
         """Get the command based on the dressing object parameters"""
         height = str(list(self.list_video_track.items())[0][1]["height"])
         order_opening_credits = 0
-        dressing_command_params = '[vid][0:a]'
+        dressing_command_params = "[vid][0:a]"
         number_concat = 1
         dressing_command = "%s " % FFMPEG_CMD
         dressing_command += FFMPEG_INPUT % {
@@ -413,49 +413,69 @@ class Encoding_video:
 
         dressing_command += get_dressing_input(self.dressing, FFMPEG_DRESSING_INPUT)
         dressing_command_filter = []
-        dressing_command_filter.append(FFMPEG_DRESSING_SCALE % {
-            "number": "0",
-            "height": height,
-            "name": "vid",
-        })
+        dressing_command_filter.append(
+            FFMPEG_DRESSING_SCALE
+            % {
+                "number": "0",
+                "height": height,
+                "name": "vid",
+            }
+        )
         if self.dressing.watermark:
-            dressing_command_params = '[video][0:a]'
+            dressing_command_params = "[video][0:a]"
             order_opening_credits = order_opening_credits + 1
             name_out = ""
             if self.dressing.opening_credits or self.dressing.ending_credits:
                 name_out = "[video]"
-            dressing_command_filter.append(FFMPEG_DRESSING_WATERMARK % {
-                "opacity": self.dressing.opacity / 100.0,
-                "position": get_position_value(self.dressing.position, height),
-                "name_out": name_out,
-            })
+            dressing_command_filter.append(
+                FFMPEG_DRESSING_WATERMARK
+                % {
+                    "opacity": self.dressing.opacity / 100.0,
+                    "position": get_position_value(self.dressing.position, height),
+                    "name_out": name_out,
+                }
+            )
         if self.dressing.opening_credits:
             order_opening_credits = order_opening_credits + 1
             number_concat = number_concat + 1
-            dressing_command_params = ('[debut][' + str(order_opening_credits)
-                                       + ':a]' + dressing_command_params)
-            dressing_command_filter.append(FFMPEG_DRESSING_SCALE % {
-                "number": str(order_opening_credits),
-                "height": height,
-                "name": "debut",
-            })
+            dressing_command_params = (
+                "[debut][" + str(order_opening_credits) + ":a]" + dressing_command_params
+            )
+            dressing_command_filter.append(
+                FFMPEG_DRESSING_SCALE
+                % {
+                    "number": str(order_opening_credits),
+                    "height": height,
+                    "name": "debut",
+                }
+            )
         if self.dressing.ending_credits:
             number_concat = number_concat + 1
-            dressing_command_params = (dressing_command_params + '[fin]['
-                                       + str(order_opening_credits + 1) + ':a]')
-            dressing_command_filter.append(FFMPEG_DRESSING_SCALE % {
-                "number": str(order_opening_credits + 1),
-                "height": str(list(self.list_video_track.items())[0][1]["height"]),
-                "name": "fin",
-            })
+            dressing_command_params = (
+                dressing_command_params
+                + "[fin]["
+                + str(order_opening_credits + 1)
+                + ":a]"
+            )
+            dressing_command_filter.append(
+                FFMPEG_DRESSING_SCALE
+                % {
+                    "number": str(order_opening_credits + 1),
+                    "height": str(list(self.list_video_track.items())[0][1]["height"]),
+                    "name": "fin",
+                }
+            )
         if self.dressing.opening_credits or self.dressing.ending_credits:
-            dressing_command_filter.append(FFMPEG_DRESSING_CONCAT % {
-                "params": dressing_command_params,
-                "number": number_concat,
-            })
+            dressing_command_filter.append(
+                FFMPEG_DRESSING_CONCAT
+                % {
+                    "params": dressing_command_params,
+                    "number": number_concat,
+                }
+            )
 
         dressing_command += FFMPEG_DRESSING_FILTER_COMPLEX % {
-            "filter": ';'.join(dressing_command_filter),
+            "filter": ";".join(dressing_command_filter),
         }
 
         if self.dressing.opening_credits or self.dressing.ending_credits:
@@ -471,8 +491,9 @@ class Encoding_video:
         """Encode the dressed video."""
         dressing_command = self.get_dressing_command()
         return_value, return_msg = launch_cmd(dressing_command)
-        self.add_encoding_log("dressing_command", dressing_command, return_value,
-                              return_msg)
+        self.add_encoding_log(
+            "dressing_command", dressing_command, return_value, return_msg
+        )
         self.video_file = self.get_dressing_file()
 
     def encode_video_part(self):
@@ -725,7 +746,7 @@ class Encoding_video:
     def export_to_json(self):
         data_to_dump = {}
         for attribute, value in self.__dict__.items():
-            if attribute == 'dressing' and value is not None:
+            if attribute == "dressing" and value is not None:
                 data_to_dump[attribute] = value.to_json()
             else:
                 data_to_dump[attribute] = value
@@ -794,8 +815,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print(args.start)
     filename = fix_input(args.input)
-    encoding_video = Encoding_video(args.id, filename, args.start, args.stop,
-                                    args.dressing)
+    encoding_video = Encoding_video(
+        args.id, filename, args.start, args.stop, args.dressing
+    )
     # error if uncommented
     # encoding_video.encoding_log += start
     # AttributeError: 'NoneType' object has no attribute 'get'

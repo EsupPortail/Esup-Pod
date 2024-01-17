@@ -32,8 +32,7 @@ def start_encoding_task(video_id, video_path, cut_start, cut_end, dressing):
     from .importing_tasks import start_importing_task
 
     print(video_id, video_path, cut_start, cut_end)
-    encoding_video = Encoding_video(video_id, video_path, cut_start, cut_end,
-                                    dressing)
+    encoding_video = Encoding_video(video_id, video_path, cut_start, cut_end, dressing)
     encoding_video.start_encode()
     print("End of the encoding of the video")
     start_importing_task.delay(
@@ -43,5 +42,5 @@ def start_encoding_task(video_id, video_path, cut_start, cut_end, dressing):
         cut_start,
         cut_end,
         encoding_video.stop,
-        encoding_video.dressing
+        encoding_video.dressing,
     )

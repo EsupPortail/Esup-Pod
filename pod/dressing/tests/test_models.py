@@ -20,6 +20,7 @@ else:
 
 class DressingModelTest(TestCase):
     """Test case for Pod dressing models."""
+
     def setUp(self):
         owner = User.objects.create(username="pod")
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -57,7 +58,7 @@ class DressingModelTest(TestCase):
             duration=20,
         )
         dressing = Dressing.objects.create(
-            title='Test Dressing',
+            title="Test Dressing",
             watermark=customImage,
             position=Dressing.TOP_RIGHT,
             opacity=50,
@@ -72,7 +73,7 @@ class DressingModelTest(TestCase):
         owner = User.objects.get(username="pod")
         video = Video.objects.get(id=1)
         video2 = Video.objects.get(id=2)
-        self.assertEqual(dressing.title, 'Test Dressing')
+        self.assertEqual(dressing.title, "Test Dressing")
         self.assertEqual(list(dressing.owners.all()), [owner])
         self.assertEqual(list(dressing.users.all()), [owner])
         self.assertEqual(list(dressing.allow_to_groups.all()), [])

@@ -30,6 +30,7 @@ USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", True)
 if USE_TRANSCRIPTION:
     from . import transcript
+
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
@@ -161,12 +162,13 @@ def get_encoding_video(video_to_encode):
         cut_start = time_to_seconds(cut.start)
         cut_end = time_to_seconds(cut.end)
         encoding_video = Encoding_video_model(
-            video_to_encode.id, video_to_encode.video.path, cut_start, cut_end,
-            dressing)
+            video_to_encode.id, video_to_encode.video.path, cut_start, cut_end, dressing
+        )
         return encoding_video
 
-    return Encoding_video_model(video_to_encode.id, video_to_encode.video.path, 0, 0,
-                                dressing)
+    return Encoding_video_model(
+        video_to_encode.id, video_to_encode.video.path, 0, 0, dressing
+    )
 
 
 def end_of_encoding(video):
