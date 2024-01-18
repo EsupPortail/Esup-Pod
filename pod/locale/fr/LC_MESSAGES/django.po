@@ -8157,6 +8157,10 @@ msgid ""
 "below, finally apply the modification. You can also refine your video search "
 "using the filters in the right menu."
 msgstr ""
+"Vous pouvez éditer plusieurs vidéos en même temps, pour cela cliquez sur celles "
+"que vous voulez modifier, sélectionnez une action à effectuer dans le formulaire "
+"ci-dessous puis appliquer. Vous pouvez également affiner le résultat de la recherche "
+"grâce aux filtres dans le menu de droite."
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Choose an action"
