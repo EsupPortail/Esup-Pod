@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-17 11:17+0100\n"
+"POT-Creation-Date: 2024-01-18 15:30+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -291,9 +291,21 @@ msgstr "Veuillez sélectionner un document"
 msgid "Iframe and Script tags are not allowed."
 msgstr "Les balises Iframe et Script ne sont pas autorisées."
 
+#: pod/custom/static/custom/assets/js/change_video_owner.js
+msgid "Aucun élément trouvé"
+msgstr ""
+
+#: pod/custom/static/custom/assets/js/change_video_owner.js
+msgid "Une erreur est survenue pendant le change de propriétaire"
+msgstr ""
+
+#: pod/custom/static/custom/assets/js/change_video_owner.js
+msgid "Veuillez remplir correctement tous les champs"
+msgstr ""
+
 #: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
 #: pod/video/static/js/ajax-display-channels.js
-#: pod/video/static/js/comment-script.js
+#: pod/video/static/js/comment-script.js pod/video/static/js/dashboard.js
 msgid "Close"
 msgstr "Fermer"
 
@@ -630,6 +642,7 @@ msgid "No channels found"
 msgstr "Aucun chaîne trouvée"
 
 #: pod/video/static/js/ajax-display-channels.js
+#: pod/video/static/js/video_select.js
 msgid "%(count)s video"
 msgid_plural "%(count)s videos"
 msgstr[0] "%(count)s vidéo"
@@ -720,6 +733,18 @@ msgid "%s comment"
 msgid_plural "%s comments"
 msgstr[0] "%s commentaire"
 msgstr[1] "%s commentaires"
+
+#: pod/video/static/js/dashboard.js
+msgid "Please confirm the editing of the following video:"
+msgid_plural "Please confirm the editing of the following videos:"
+msgstr[0] "Veuillez confirmer l'édition de la vidéo suivante:"
+msgstr[1] "Veuillez confirmer l'édition des vidéos suivantes:"
+
+#: pod/video/static/js/filter_aside_video_list_refresh.js
+msgid "%(count)s video found"
+msgid_plural "%(count)s videos found"
+msgstr[0] "%(count)s vidéo trouvée"
+msgstr[1] "%(count)s vidéos trouvée"
 
 #: pod/video/static/js/regroup_videos_by_theme.js
 #: pod/video/static/js/video_category.js

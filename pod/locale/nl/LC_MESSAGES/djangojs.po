@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-17 11:17+0100\n"
+"POT-Creation-Date: 2024-01-18 15:30+0100\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -271,9 +271,21 @@ msgstr ""
 msgid "Iframe and Script tags are not allowed."
 msgstr ""
 
+#: pod/custom/static/custom/assets/js/change_video_owner.js
+msgid "Aucun élément trouvé"
+msgstr ""
+
+#: pod/custom/static/custom/assets/js/change_video_owner.js
+msgid "Une erreur est survenue pendant le change de propriétaire"
+msgstr ""
+
+#: pod/custom/static/custom/assets/js/change_video_owner.js
+msgid "Veuillez remplir correctement tous les champs"
+msgstr ""
+
 #: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
 #: pod/video/static/js/ajax-display-channels.js
-#: pod/video/static/js/comment-script.js
+#: pod/video/static/js/comment-script.js pod/video/static/js/dashboard.js
 msgid "Close"
 msgstr ""
 
@@ -599,6 +611,7 @@ msgid "No channels found"
 msgstr ""
 
 #: pod/video/static/js/ajax-display-channels.js
+#: pod/video/static/js/video_select.js
 msgid "%(count)s video"
 msgid_plural "%(count)s videos"
 msgstr[0] ""
@@ -687,6 +700,18 @@ msgstr ""
 #, javascript-format
 msgid "%s comment"
 msgid_plural "%s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/static/js/dashboard.js
+msgid "Please confirm the editing of the following video:"
+msgid_plural "Please confirm the editing of the following videos:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/static/js/filter_aside_video_list_refresh.js
+msgid "%(count)s video found"
+msgid_plural "%(count)s videos found"
 msgstr[0] ""
 msgstr[1] ""
 
