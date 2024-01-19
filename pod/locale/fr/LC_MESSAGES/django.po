@@ -8729,7 +8729,7 @@ msgstr "La transcription de la vidéo a été relancée."
 
 #: pod/video/views.py
 msgid "An available transcription language must be specified."
-msgstr "Un language de transcription disponible doit être spécifié."
+msgstr "Une langue de transcription disponible doit être spécifié."
 
 #: pod/video/views.py
 #, python-format
