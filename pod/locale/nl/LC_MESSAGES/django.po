@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-18 15:30+0100\n"
+"POT-Creation-Date: 2024-01-19 09:07+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -20,8 +20,7 @@ msgstr ""
 msgid "Email"
 msgstr "E-mail"
 
-#: pod/authentication/admin.py pod/authentication/models.py
-#: pod/custom/management/commands/check_obsolete_videos.py pod/video/admin.py
+#: pod/authentication/admin.py pod/authentication/models.py pod/video/admin.py
 msgid "Establishment"
 msgstr ""
 
@@ -370,9 +369,8 @@ msgstr ""
 msgid "URL of the recording thumbnail of the BBB presentation."
 msgstr ""
 
-#: pod/bbb/models.py pod/custom/management/commands/check_obsolete_videos.py
-#: pod/import_video/models.py pod/meeting/models.py pod/playlist/models.py
-#: pod/recorder/models.py pod/video/models.py
+#: pod/bbb/models.py pod/import_video/models.py pod/meeting/models.py
+#: pod/playlist/models.py pod/recorder/models.py pod/video/models.py
 msgid "User"
 msgstr ""
 
@@ -1179,10 +1177,9 @@ msgstr ""
 msgid "There is already a contributor with the same name and role in the list."
 msgstr ""
 
-#: pod/completion/models.py
-#: pod/custom/management/commands/check_obsolete_videos.py
-#: pod/enrichment/models.py pod/playlist/models.py pod/recorder/models.py
-#: pod/video/models.py pod/video/templates/channel/channel.html
+#: pod/completion/models.py pod/enrichment/models.py pod/playlist/models.py
+#: pod/recorder/models.py pod/video/models.py
+#: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/video_breadcrumbs.html
 #: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
 msgid "Video"
@@ -1781,149 +1778,6 @@ msgstr ""
 
 #: pod/completion/views.py pod/podfile/views.py pod/video/views.py
 msgid "Please correct errors"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-msgid "Listing outdated videos and Sending an email to warn the owner"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-msgid "Archived videos"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-msgid "Deleted videos"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-msgid "Soon obsolete videos"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-msgid "An Error occurred while processing "
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-msgid "An error has occured"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-msgid "Url video"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-#, fuzzy
-#| msgid "Email sent?"
-msgid "Email addresse"
-msgstr "Email verzonden?"
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-msgid "Archive date"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-msgid "Delete date"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-#, python-format
-msgid ""
-"you can change the removal date by editing your video:<p><a href='%(url)s' "
-"rel='noopener' target='_blank'>click here to edit your video</a></p>."
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-#, python-format
-msgid ""
-"you can change the removal date by copying the link below on your browser:\n"
-"%(url)s\n"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-#, python-format
-msgid ""
-"Without modification on your part,the video will be deleted on %(deadline)s"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-msgid ""
-"Your video will soon arrive at the deletion deadline.If you want to keep it, "
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-#, python-format
-msgid ""
-"please contact the manager(s) in charge of your establishment at this "
-"address(es): %(email_address)s"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-#, python-format
-msgid "Hello %(name)s"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-#: pod/main/templates/mail/mail_sender.html
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid "Regards"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-#: pod/main/templates/mail/mail.html pod/main/templates/mail/mail_sender.html
-msgid "Hello"
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-msgid ""
-"For information, you will find attached the list of videos that will be soon "
-msgstr ""
-
-#: pod/custom/management/commands/check_obsolete_videos.py
-#: pod/video/management/commands/check_obsolete_videos.py
-msgid "The obsolete videos on Pod"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/base_custom.html
-#: pod/live/templates/live/direct.html
-#: pod/live/templates/live/event-script.html pod/main/context_processors.py
-#: pod/main/templates/base.html pod/main/templates/navbar.html
-#: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
-#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
-#: pod/video/templates/videos/video-script.html pod/video/utils.py
-#: pod/video/views.py pod/video_encode_transcript/utils.py
-msgid "Home"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/partials/_channel_list.html
-#: pod/main/templates/navbar.html pod/recorder/models.py pod/video/forms.py
-#: pod/video/models.py
-msgid "Channels"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/partials/_channel_list.html
-msgid "edit"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/partials/_footer.html
-#: pod/main/templates/maintenance.html pod/main/views.py
-msgid "Contact us"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/partials/_footer.html
-msgid "FAQ"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/partials/_footer.html
-msgid "Pod Project"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/partials/_footer.html
-#: pod/main/templates/footer.html pod/video/feeds.py
-msgid "video platform of"
-msgstr ""
-
-#: pod/custom/templates/custom/layouts/partials/_footer.html
-msgid "videos availables"
 msgstr ""
 
 #: pod/cut/apps.py pod/cut/models.py
@@ -3389,6 +3243,16 @@ msgid ""
 msgstr ""
 
 #: pod/live/templates/live/direct.html
+#: pod/live/templates/live/event-script.html pod/main/context_processors.py
+#: pod/main/templates/base.html pod/main/templates/navbar.html
+#: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
+#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
+#: pod/video/templates/videos/video-script.html pod/video/utils.py
+#: pod/video/views.py pod/video_encode_transcript/utils.py
+msgid "Home"
+msgstr ""
+
+#: pod/live/templates/live/direct.html
 #: pod/live/templates/live/event-script.html pod/main/templates/footer.html
 #: pod/video/templates/videos/video-script.html
 msgid "New window"
@@ -4722,6 +4586,10 @@ msgstr ""
 msgid "Esup-Pod Project"
 msgstr ""
 
+#: pod/main/templates/footer.html pod/video/feeds.py
+msgid "video platform of"
+msgstr ""
+
 #: pod/main/templates/footer.html
 msgid "View changes of version"
 msgstr ""
@@ -4736,6 +4604,10 @@ msgstr ""
 
 #: pod/main/templates/footer.html
 msgid "videos available"
+msgstr ""
+
+#: pod/main/templates/mail/mail.html pod/main/templates/mail/mail_sender.html
+msgid "Hello"
 msgstr ""
 
 #: pod/main/templates/mail/mail.html
@@ -4758,6 +4630,11 @@ msgstr ""
 msgid "You just sent a message from"
 msgstr ""
 
+#: pod/main/templates/mail/mail_sender.html
+#: pod/video/management/commands/check_obsolete_videos.py
+msgid "Regards"
+msgstr ""
+
 #: pod/main/templates/maintenance.html
 msgid ""
 "The maintenance is over, you can go back to work. Thank you for your "
@@ -4766,6 +4643,10 @@ msgstr ""
 
 #: pod/main/templates/maintenance.html
 msgid "Return to homepage"
+msgstr ""
+
+#: pod/main/templates/maintenance.html pod/main/views.py
+msgid "Contact us"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -4778,6 +4659,11 @@ msgstr ""
 
 #: pod/main/templates/navbar.html
 msgid "Close main menu"
+msgstr ""
+
+#: pod/main/templates/navbar.html pod/recorder/models.py pod/video/forms.py
+#: pod/video/models.py
+msgid "Channels"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -7054,6 +6940,10 @@ msgid ""
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+msgid "The obsolete videos on Pod"
+msgstr ""
+
+#: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid ""
 "Manager of '%(estab)s' notified for %(nb)s soon to be obsolete video(s)."
@@ -8638,3 +8528,8 @@ msgstr ""
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Email sent?"
+#~ msgid "Email addresse"
+#~ msgstr "Email verzonden?"

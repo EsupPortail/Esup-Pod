@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-18 15:30+0100\n"
+"POT-Creation-Date: 2024-01-19 09:07+0100\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -269,18 +269,6 @@ msgstr ""
 
 #: pod/completion/static/js/completion.js
 msgid "Iframe and Script tags are not allowed."
-msgstr ""
-
-#: pod/custom/static/custom/assets/js/change_video_owner.js
-msgid "Aucun élément trouvé"
-msgstr ""
-
-#: pod/custom/static/custom/assets/js/change_video_owner.js
-msgid "Une erreur est survenue pendant le change de propriétaire"
-msgstr ""
-
-#: pod/custom/static/custom/assets/js/change_video_owner.js
-msgid "Veuillez remplir correctement tous les champs"
 msgstr ""
 
 #: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
