@@ -1,5 +1,6 @@
 from ckeditor.widgets import CKEditorWidget
 from django.contrib import admin
+from django import forms
 from django.contrib.flatpages.admin import FlatpageForm
 from django.contrib.flatpages.models import FlatPage
 from django.contrib.sites.models import Site
@@ -10,6 +11,8 @@ from modeltranslation.admin import TranslationAdmin
 from pod.main.models import LinkFooter, Configuration
 from pod.main.models import AdditionalChannelTab
 from pod.main.models import Bloc
+from django.template.loader import render_to_string
+from django.utils.html import format_html
 
 
 SITE_ID = getattr(settings, "SITE_ID", 1)
@@ -106,8 +109,25 @@ class LinkFooterAdmin(TranslationAdmin):
             kwargs["queryset"] = FlatPage.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
+
+class BlocAdminForm(forms.ModelForm):
+    class Meta:
+        model = Bloc
+        fields = '__all__'
+
 class BlocAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", 'order', 'type',)
+    class Media:
+        js = ('admin/bloc_custom.js',)
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        data_type = form.base_fields.get('data_type')
+
+        if data_type and 'event' not in data_type.choices:
+            # Si 'event' n'est pas une option dans le champ 'data_type', masquer le champ 'Event'
+            form.base_fields['Event'].widget.attrs['style'] = 'display:none;'
+
+        return form
 
 # Unregister the default FlatPage admin and register CustomFlatPageAdmin.
 admin.site.unregister(FlatPage)

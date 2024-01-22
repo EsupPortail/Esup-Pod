@@ -11,6 +11,7 @@ from django.db import connection
 import os
 import mimetypes
 
+
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 
@@ -194,6 +195,8 @@ class AdditionalChannelTab(models.Model):
 
 class Bloc(models.Model):
     """Class describing Bloc objects."""
+    
+    ## from pod.playlist.models import Playlist
 
     SLIDER = 'slider'
     SLIDER_MULTI = 'slider_multi'
@@ -222,7 +225,9 @@ class Bloc(models.Model):
     )
 
     title = models.CharField(_("Title"), max_length=250, blank=True, null=True)
+
     order = models.PositiveSmallIntegerField(_("order"), default=1, blank=True, null=True)
+
     page = models.ForeignKey(
         FlatPage,
         blank=True,
@@ -249,6 +254,36 @@ class Bloc(models.Model):
         default=CHANNEL,
         blank=True,
         null=True,
+    )
+
+    Channel = models.ForeignKey(
+        'video.Channel',
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        help_text=_("Select the channel you want to link with."),
+    )
+
+    Theme = models.ForeignKey(
+        'video.Theme',
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        help_text=_("Select the theme you want to link with."),
+    )
+
+    Event = models.ManyToManyField(
+        'live.Event',
+        blank=True,
+        help_text=_("Select the event you want to link with."),
+    )
+
+    Playlist = models.ForeignKey(
+        'playlist.Playlist',
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        help_text=_("Select the playlist you want to link with."),
     )
 
     html = models.TextField(
@@ -292,3 +327,8 @@ class Bloc(models.Model):
     class Meta:
         verbose_name = _("Bloc")
         verbose_name_plural = _("Blocs")
+
+@receiver(post_save, sender=Bloc)
+def default_site_bloc(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
