@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-19 09:07+0100\n"
+"POT-Creation-Date: 2024-01-22 15:19+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -504,7 +504,7 @@ msgid "Do you want to show the public chat in the live?"
 msgstr ""
 
 #: pod/bbb/models.py
-msgid "Save meeting in Dashboard"
+msgid "Save meeting in dashboard"
 msgstr ""
 
 #: pod/bbb/models.py

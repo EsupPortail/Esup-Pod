@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-19 09:07+0100\n"
+"POT-Creation-Date: 2024-01-22 15:19+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -516,8 +516,8 @@ msgid "Do you want to show the public chat in the live?"
 msgstr "Souhaitez-vous montrer le tchat public en direct ?"
 
 #: pod/bbb/models.py
-msgid "Save meeting in Dashboard"
-msgstr "Enregistrer la session dans le tableau de bord"
+msgid "Save meeting in dashboard"
+msgstr "Enregistrer la réunion dans le tableau de bord"
 
 #: pod/bbb/models.py
 msgid ""
@@ -9064,4 +9064,3 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
