@@ -1136,19 +1136,6 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
 
-def get_generated_qrcode(video):
-    """
-    Generate qr code for video link
-
-    Args:
-        video (::class::`pod.video.models.Video`)
-
-    Returns:
-        string: HTML-formed qrcode
-    """
-    return generate_qrcode("enrichment:video_enrichment", video.id)
-
-
 def toggle_render_video_user_can_see_video(
     show_page, is_password_protected, request, slug_private, video
 ) -> bool:

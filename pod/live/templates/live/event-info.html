@@ -2,6 +2,7 @@
 {% load static %}
 {% load tagging_tags %}
 {% load thumbnail %}
+{% load event_tags %}
 
 <div class="tab-content w-100" id="video-meta">
   {% if event.description %}
@@ -121,7 +122,7 @@
                     <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'live:event' slug=event.slug %}{% if event.is_draft == True %}{{ event.get_hashkey }}/{% endif %}">
                   </div>
                   <div class="form-group m-2">
-                  {% get_qrcode video as qrcode %}
+                  {% get_event_qrcode event.id as qrcode %}
                     <label>{% trans 'QR code for this link:' %}&nbsp;</label><br>
                     {{ qrcode }}
                     <br>

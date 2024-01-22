@@ -18,10 +18,11 @@ from ..context_processors import get_available_videos
 from pod.video_encode_transcript.utils import check_file
 from django.contrib.auth.models import User
 from pod.video.models import Video
-from pod.video.views import get_generated_qrcode
 
 import importlib
 import os
+
+from ...main.utils import generate_qrcode
 
 register = template.Library()
 
@@ -123,10 +124,10 @@ def get_last_videos(context):
     return recent_vids
 
 
-@register.simple_tag(name="get_qrcode")
-def get_qrcode(video):
-    """Get the generated QR code."""
-    return get_generated_qrcode(video)
+@register.simple_tag(name="get_video_qrcode")
+def get_video_qrcode(video_id):
+    """Get the video generated QR code."""
+    return generate_qrcode("enrichment:video_enrichment", video_id)
 
 
 @register.simple_tag(name="get_video_infos")
