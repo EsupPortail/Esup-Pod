@@ -30,7 +30,6 @@ from django.db.models import Sum, Min
 from dateutil.parser import parse
 import concurrent.futures as futures
 from pod.main.utils import is_ajax, dismiss_stored_messages, get_max_code_lvl_messages
-from pod.main.utils import generate_qrcode
 
 from pod.main.models import AdditionalChannelTab
 from pod.main.views import in_maintenance

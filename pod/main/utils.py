@@ -17,6 +17,7 @@ from pod.video.models import Video
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
+
 def is_ajax(request) -> bool:
     """Check that the request is made by a javascript call."""
     return request.headers.get("x-requested-with") == "XMLHttpRequest"
