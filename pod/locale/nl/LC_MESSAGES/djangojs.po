@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-22 15:19+0000\n"
+"POT-Creation-Date: 2024-01-23 12:25+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -573,8 +573,21 @@ msgid "Error while subscribing to push notifications."
 msgstr ""
 
 #: pod/video/static/js/ajax-display-channels.js
+msgid "%(count)s channel"
+msgid_plural "%(count)s channels"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/static/js/ajax-display-channels.js
 msgid "No channels found"
 msgstr ""
+
+#: pod/video/static/js/ajax-display-channels.js
+#: pod/video/static/js/video_select.js
+msgid "%(count)s video"
+msgid_plural "%(count)s videos"
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/video/static/js/change_video_owner.js
 msgid "No element found"
@@ -643,6 +656,18 @@ msgstr ""
 #, javascript-format
 msgid "%s comment"
 msgid_plural "%s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/static/js/dashboard.js
+msgid "Please confirm the editing of the following video:"
+msgid_plural "Please confirm the editing of the following videos:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/static/js/filter_aside_video_list_refresh.js
+msgid "%(count)s video found"
+msgid_plural "%(count)s videos found"
 msgstr[0] ""
 msgstr[1] ""
 

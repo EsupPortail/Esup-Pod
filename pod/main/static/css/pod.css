@@ -723,6 +723,7 @@ div.card a img {
 .dashboard-container .infinite-item .checked_overlay:hover .card_selected {
   transform: scale(1.03);
   transition: transform 0.25s ease;
+  z-index: 6;
 }
 
 .infinite-item.selected .checked_overlay .card-selected i {
@@ -1379,7 +1380,7 @@ body {
   overflow: hidden;
   margin-left: 100%;
   transition: all 0.15s ease;
-  z-index: 9;
+  z-index: 5;
   padding-top: 5rem;
   box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgb(0 0 0 / 20%);
 }

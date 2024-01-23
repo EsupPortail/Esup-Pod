@@ -27,8 +27,8 @@ bulkUpdateActionSelect.addEventListener("change", function () {
 applyBulkUpdateBtn.addEventListener("click", (e) => {
   let selectedCount = selectedVideos.length;
   let modalConfirmStr = ngettext(
-    `Please confirm the editing of the following video:`,
-    `Please confirm the editing of the following videos:`,
+    'Please confirm the editing of the following video:',
+    'Please confirm the editing of the following videos:',
     selectedCount,
   );
   modalConfirmStr = interpolate(

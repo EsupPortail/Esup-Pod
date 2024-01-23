@@ -59,7 +59,7 @@ function setSelectedVideos() {
  */
 function replaceSelectedCountVideos() {
   let newCount = selectedVideos.length;
-  let videoCountStr = ngettext(`%(count)s video`, `%(count)s videos`, newCount);
+  let videoCountStr = ngettext("%(count)s video", "%(count)s videos", newCount);
   videoCountStr = interpolate(videoCountStr, { count: newCount }, true);
   countSelectedVideosBadge.innerHTML = videoCountStr;
   countSelectedVideosBadge.setAttribute("title", videoCountStr);
