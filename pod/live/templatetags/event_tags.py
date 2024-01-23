@@ -7,7 +7,6 @@ from pod.live.views import can_manage_event
 from pod.main.utils import generate_qrcode
 
 
-
 @register.simple_tag(takes_context=True)
 def get_next_events(context, broadcaster_id=None, limit_nb=4):
     request = context["request"]
