@@ -127,7 +127,8 @@ def get_last_videos(context):
 @register.simple_tag(name="get_video_qrcode")
 def get_video_qrcode(video_id):
     """Get the video generated QR code."""
-    return generate_qrcode("enrichment:video_enrichment", video_id)
+    alt = _("QR code video's link")
+    return generate_qrcode("enrichment:video_enrichment", video_id, alt)
 
 
 @register.simple_tag(name="get_video_infos")

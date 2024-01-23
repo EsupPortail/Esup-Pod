@@ -111,13 +111,14 @@ def secure_post_request(request):
         raise PermissionDenied
 
 
-def generate_qrcode(url, id, request=None):
+def generate_qrcode(url, id, alt, request=None):
     """
     Generate qrcode for live event or video share link
 
     Args:
         url (string): Url corresponding to link
-        id (number): Id of object
+        id (number): Identifier of object
+        alt (string): Translated string for alternative text
         request (Request): HTTP Request
 
     Returns:
@@ -138,7 +139,6 @@ def generate_qrcode(url, id, request=None):
     buffer = io.BytesIO()
     img.save(buffer, format="PNG")
     img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
-    alt = _("QR code to record immediately an event")
     return mark_safe(
         f'<img id="qrcode" src="data:image/png;base64, {img_str}" '
         + f'width="200px" height="200px" alt={alt}>'
