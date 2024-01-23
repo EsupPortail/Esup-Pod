@@ -116,6 +116,12 @@ class BlocAdminForm(forms.ModelForm):
         fields = '__all__'
 
 class BlocAdmin(admin.ModelAdmin):
+    list_display = (
+        "title",
+        "page",
+        "type",
+        "data_type",
+    )
     class Media:
         js = ('admin/bloc_custom.js',)
 

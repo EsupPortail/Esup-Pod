@@ -316,9 +316,25 @@ class Bloc(models.Model):
         help_text=_("Check this box if users must be authenticated to view content."),
     )
 
-    nb_element = models.PositiveIntegerField(_("Number of element"), default=10, blank=True, null=True)
+    auto_slide = models.BooleanField(
+        verbose_name=_("Auto slide"),
+        default=True,
+        help_text=_("Check this box if if you want auto slide."),
+    )
 
-    slider_multi_nb = models.PositiveIntegerField(_("Number of element for slider multi"), default=5, blank=True, null=True)
+    nb_element = models.PositiveIntegerField(
+        verbose_name=_("Number of element"),
+        default=5,
+        blank=True,
+        null=True
+    )
+
+    slider_multi_nb = models.PositiveIntegerField(
+        verbose_name=_("Number of element for slider multi"),
+        default=5,
+        blank=True,
+        null=True
+    )
 
 
     def __str__(self):
