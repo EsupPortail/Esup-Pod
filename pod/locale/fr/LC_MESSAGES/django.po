@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-23 12:25+0000\n"
+"POT-Creation-Date: 2024-01-23 15:34+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1129,52 +1129,72 @@ msgid "Video additions"
 msgstr "Compléments de la vidéo"
 
 #: pod/completion/models.py
-msgid "actor"
-msgstr "acteur"
+msgid "Acting Roles"
+msgstr "Rôles d'acteur"
 
 #: pod/completion/models.py
-msgid "author"
-msgstr "auteur"
+msgid "Actor"
+msgstr "Acteur"
 
 #: pod/completion/models.py
-msgid "designer"
-msgstr "concepteur"
+msgid "Voice-over"
+msgstr "Voix-off"
 
 #: pod/completion/models.py
-msgid "consultant"
-msgstr "consultant"
+msgid "Creative Roles"
+msgstr "Rôles créatifs"
 
 #: pod/completion/models.py
-msgid "contributor"
-msgstr "contributeur"
-
-#: pod/completion/models.py pod/completion/tests/test_views.py
-msgid "editor"
-msgstr "éditeur"
+msgid "Author"
+msgstr "Auteur"
 
 #: pod/completion/models.py
-msgid "speaker"
-msgstr "intervenant"
+msgid "Designer"
+msgstr "Concepteur"
 
 #: pod/completion/models.py
-msgid "soundman"
-msgstr "preneur de son"
+msgid "Editor"
+msgstr "Éditeur"
 
 #: pod/completion/models.py
-msgid "director"
-msgstr "réalisateur"
+msgid "Writer"
+msgstr "Scénariste"
 
 #: pod/completion/models.py
-msgid "writer"
-msgstr "scénariste"
+msgid "Consultation Roles"
+msgstr "Rôles de consultation"
 
 #: pod/completion/models.py
-msgid "technician"
-msgstr "technicien"
+msgid "Consultant"
+msgstr "Consultant"
 
 #: pod/completion/models.py
-msgid "voice-over"
-msgstr "voix-off"
+msgid "Production Roles"
+msgstr "Rôles de production"
+
+#: pod/completion/models.py
+msgid "Contributor"
+msgstr "Contributeur"
+
+#: pod/completion/models.py
+msgid "Director"
+msgstr "Réalisateur"
+
+#: pod/completion/models.py
+msgid "Technician"
+msgstr "Technicien"
+
+#: pod/completion/models.py
+msgid "Soundman"
+msgstr "Ingénieur du son"
+
+#: pod/completion/models.py
+msgid "Speaking Roles"
+msgstr "Rôles d'orateur"
+
+#: pod/completion/models.py
+msgid "Speaker"
+msgstr "Intervenant"
 
 #: pod/completion/models.py pod/completion/templates/video_caption_maker.html
 msgid "subtitles"
@@ -1211,10 +1231,6 @@ msgstr "rôle"
 #: pod/enrichment/models.py pod/main/models.py
 msgid "Web link"
 msgstr "Lien web"
-
-#: pod/completion/models.py
-msgid "Contributor"
-msgstr "Contributeur"
 
 #: pod/completion/models.py
 msgid "Contributors"
@@ -1849,6 +1865,10 @@ msgid ""
 msgstr ""
 "Vous pouvez ajouter un fond opaque ou transparent au texte que vous voulez "
 "afficher avec l’option \"Afficher le fond\""
+
+#: pod/completion/tests/test_views.py
+msgid "editor"
+msgstr "éditeur"
 
 #: pod/completion/views.py
 msgid "You cannot complement this video."
@@ -8058,6 +8078,10 @@ msgid "Cursus"
 msgstr "Cursus"
 
 #: pod/video/templates/videos/dashboard.html
+msgid "Other actions"
+msgstr "Autres actions"
+
+#: pod/video/templates/videos/dashboard.html
 msgid "No video found"
 msgstr "Aucune vidéo trouvée."
 
@@ -8555,7 +8579,7 @@ msgid "Create a note"
 msgstr "Créer une nouvelle note"
 
 #: pod/video/templates/videos/video_notes.html
-msgid "Download the notes"
+msgid "Download notes"
 msgstr "Télécharger les notes"
 
 #: pod/video/templates/videos/video_notes.html

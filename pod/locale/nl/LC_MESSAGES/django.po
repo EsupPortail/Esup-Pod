@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-23 12:25+0000\n"
+"POT-Creation-Date: 2024-01-23 15:34+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1066,51 +1066,71 @@ msgid "Video additions"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "actor"
+msgid "Acting Roles"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "author"
+msgid "Actor"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "designer"
+msgid "Voice-over"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "consultant"
+msgid "Creative Roles"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "contributor"
-msgstr ""
-
-#: pod/completion/models.py pod/completion/tests/test_views.py
-msgid "editor"
+msgid "Author"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "speaker"
+msgid "Designer"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "soundman"
+msgid "Editor"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "director"
+msgid "Writer"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "writer"
+msgid "Consultation Roles"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "technician"
+msgid "Consultant"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "voice-over"
+msgid "Production Roles"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Contributor"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Director"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Technician"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Soundman"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Speaking Roles"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Speaker"
 msgstr ""
 
 #: pod/completion/models.py pod/completion/templates/video_caption_maker.html
@@ -1147,10 +1167,6 @@ msgstr ""
 #: pod/completion/templates/contributor/list_contributor.html
 #: pod/enrichment/models.py pod/main/models.py
 msgid "Web link"
-msgstr ""
-
-#: pod/completion/models.py
-msgid "Contributor"
 msgstr ""
 
 #: pod/completion/models.py
@@ -1758,6 +1774,10 @@ msgstr ""
 msgid ""
 "You can add a solid background or a transparent background to the text you "
 "want to display with the option \"Show background\""
+msgstr ""
+
+#: pod/completion/tests/test_views.py
+msgid "editor"
 msgstr ""
 
 #: pod/completion/views.py
@@ -7561,6 +7581,10 @@ msgid "Cursus"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
+msgid "Other actions"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
 msgid "No video found"
 msgstr ""
 
@@ -8035,7 +8059,7 @@ msgid "Create a note"
 msgstr ""
 
 #: pod/video/templates/videos/video_notes.html
-msgid "Download the notes"
+msgid "Download notes"
 msgstr ""
 
 #: pod/video/templates/videos/video_notes.html
