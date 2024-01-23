@@ -1,8 +1,5 @@
 """Esup-Pod "live" models."""
-import base64
 import hashlib
-import io
-import qrcode
 import os
 
 from ckeditor.fields import RichTextField
@@ -21,7 +18,6 @@ from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from pod.main.lang_settings import ALL_LANG_CHOICES as __ALL_LANG_CHOICES__
