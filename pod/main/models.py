@@ -14,8 +14,6 @@ from ckeditor.fields import RichTextField
 
 
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
-VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS = getattr(settings, "VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS", False)
-SHOWS_PASSWORDED = getattr(settings, "SHOWS_PASSWORDED", False)
 
 def get_nextautoincrement(model):
     cursor = connection.cursor()
@@ -336,6 +334,18 @@ class Bloc(models.Model):
         default=5,
         blank=True,
         null=True
+    )
+
+    view_videos_from_non_visible_channels = models.BooleanField(
+        verbose_name=_("View videos from non visible channels"),
+        default=False,
+        help_text=_("Check this box if if you want view videos from non visible channels."),
+    )
+    
+    shows_passworded= models.BooleanField(
+        verbose_name=_("View videos with password"),
+        default=False,
+        help_text=_("Check this box if if you want view videos with password."),
     )
 
 

@@ -146,7 +146,6 @@ def findTypeInContent(content, request):
     if(content.data_type == 'most_views'):
         params['fct'] = 'render_most_view'
         params['type'] = 'event'
-        params['data'] = content.Event
 
     if(content.type == 'html'):
         params['template'] = 'bloc/html.html'
