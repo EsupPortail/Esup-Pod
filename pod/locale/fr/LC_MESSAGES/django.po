@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-24 10:04+0100\n"
+"POT-Creation-Date: 2024-01-24 12:51+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -3642,9 +3642,8 @@ msgid "Share the link"
 msgstr "Partager le lien"
 
 #: pod/live/templates/live/event-info.html
-#: pod/video/templates/videos/video-info.html
-msgid "Use this link to share the video:"
-msgstr "Utiliser ce lien pour partager la vidéo :"
+msgid "Use this link to share the event:"
+msgstr "Utiliser ce lien pour partager l'évènement :"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
@@ -3936,7 +3935,9 @@ msgid "Past events"
 msgstr "Évènements passés"
 
 #: pod/live/templatetags/event_tags.py
-msgid "QR code event's link:"
+#, fuzzy
+#| msgid "QR code event's link:"
+msgid "QR code event's link"
 msgstr "QR code pour le lien de l'évènement :"
 
 #: pod/live/utils.py
@@ -8392,6 +8393,10 @@ msgstr ""
 "Utilisez ces liens dans une conférence BigBlueButton ou une activité vidéo "
 "interactive H5P :"
 
+#: pod/video/templates/videos/video-info.html
+msgid "Use this link to share the video:"
+msgstr "Utiliser ce lien pour partager la vidéo :"
+
 #: pod/video/templates/videos/video_collaborate.html
 msgid "Collaborate"
 msgstr "Collaborer"
@@ -8585,7 +8590,9 @@ msgid ": "
 msgstr " : "
 
 #: pod/video/templatetags/video_tags.py
-msgid "QR code video's link:"
+#, fuzzy
+#| msgid "QR code video's link:"
+msgid "QR code video's link"
 msgstr "QR code pour le lien de la vidéo :"
 
 #: pod/video/templatetags/video_tags.py

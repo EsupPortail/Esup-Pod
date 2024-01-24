@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-24 10:04+0100\n"
+"POT-Creation-Date: 2024-01-24 12:51+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -3409,8 +3409,7 @@ msgid "Share the link"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
-#: pod/video/templates/videos/video-info.html
-msgid "Use this link to share the video:"
+msgid "Use this link to share the event:"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
@@ -7876,6 +7875,10 @@ msgstr ""
 msgid ""
 "Use these links in a BigBlueButton meeting or an interactive H5P video "
 "activity:"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
+msgid "Use this link to share the video:"
 msgstr ""
 
 #: pod/video/templates/videos/video_collaborate.html
