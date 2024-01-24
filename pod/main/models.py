@@ -14,7 +14,8 @@ from ckeditor.fields import RichTextField
 
 
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
-
+VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS = getattr(settings, "VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS", False)
+SHOWS_PASSWORDED = getattr(settings, "SHOWS_PASSWORDED", False)
 
 def get_nextautoincrement(model):
     cursor = connection.cursor()

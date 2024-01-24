@@ -142,7 +142,6 @@ def findTypeInContent(content, request):
     if(content.data_type == 'event_next'):
         params['fct'] = 'render_next_events'
         params['type'] = 'event'
-        params['data'] = content.Event
 
     if(content.data_type == 'most_views'):
         params['fct'] = 'render_most_view'
@@ -324,7 +323,7 @@ def render_next_events(uniq_id, params, type, debugElts):
     initial_list = Event.objects.filter(
         Q(start_date__gt=date.today())
         | (Q(start_date=date.today()) & Q(end_date__gte=datetime.now()))
-    )[:20]
+    )
     initial_list = initial_list.filter(is_draft=False)
     
     if(params['show-restricted'] == False):
