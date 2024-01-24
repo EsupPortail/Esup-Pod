@@ -304,7 +304,7 @@ def render_most_view(uniq_id, params, type, debugElts):
         if(params['debug']): 
            debugElts.append(' - Video informations is [ID:%s] [SLUG:%s] [TITLE:%s] [RECENT_VIW_COUNT:%s]'%(video.id, video.slug, video.title, video.recentViewcount))
 
-    part_content = loader.get_template(type['template']).render(
+    part_content = loader.get_template(params['template']).render(
         {   
             "uniq_id": uniq_id,
             "title" : params['title'],
@@ -346,7 +346,7 @@ def render_next_events(uniq_id, params, type, debugElts):
         if(videos_list['count'] >= int(params['nb-element'])):
             break
             
-    part_content = loader.get_template(type['template']).render(
+    part_content = loader.get_template(params['template']).render(
         {   
             "uniq_id" : uniq_id,
             "title" : params['title'],
@@ -362,7 +362,7 @@ def render_html(uniq_id, params, type, debugElts):
     if(params['debug']): 
         debugElts.append('Call function render_html')
             
-    part_content = loader.get_template(type['template']).render(
+    part_content = loader.get_template(params['template']).render(
         {   
             "body": params['data'] 
         }
