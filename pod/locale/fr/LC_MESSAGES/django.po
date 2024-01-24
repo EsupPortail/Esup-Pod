@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-23 15:38+0100\n"
+"POT-Creation-Date: 2024-01-24 10:04+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -3936,7 +3936,7 @@ msgid "Past events"
 msgstr "Évènements passés"
 
 #: pod/live/templatetags/event_tags.py
-msgid "QR code event's link"
+msgid "QR code event's link:"
 msgstr "QR code pour le lien de l'évènement :"
 
 #: pod/live/utils.py
@@ -8434,25 +8434,6 @@ msgid "Add a new video"
 msgstr "Ajouter une nouvelle vidéo"
 
 #: pod/video/templates/videos/video_edit.html
-#, python-format
-msgid ""
-"\n"
-"              By default, the deletion date of your video is set to "
-"%(counter)s year, in accordance with your profile. As a teacher, you can "
-"modify this date. If you are a student and wish to extend this period, add a "
-"teacher as an additional video owner\n"
-"          "
-msgid_plural ""
-"\n"
-"              By default, the deletion date of your video is set to "
-"%(counter)s years, in accordance with your profile. As a teacher, you can "
-"modify this date. If you are a student and wish to extend this period, add a "
-"teacher as an additional video owner\n"
-"          "
-msgstr[0] ""
-msgstr[1] ""
-
-#: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
 msgid "The video is currently waiting for encoding."
 msgstr "La vidéo est actuellement en attente d’encodage."
@@ -8604,7 +8585,7 @@ msgid ": "
 msgstr " : "
 
 #: pod/video/templatetags/video_tags.py
-msgid "QR code video's link"
+msgid "QR code video's link:"
 msgstr "QR code pour le lien de la vidéo :"
 
 #: pod/video/templatetags/video_tags.py
@@ -9089,4 +9070,3 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
