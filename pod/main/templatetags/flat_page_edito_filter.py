@@ -152,6 +152,7 @@ def findTypeInContent(content, request):
     if(content.type == 'html'):
         params['template'] = 'bloc/html.html'
         params['fct'] = 'render_html'
+        params['data'] = content.html
 
     if(content.type == 'slider'):
         params['template'] = 'bloc/slider.html'
