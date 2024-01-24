@@ -28,7 +28,7 @@ def can_manage_event_filter(user):
 
 
 @register.simple_tag(name="get_event_qrcode")
-def get_event_qrcode(event_id: int):
+def get_event_qrcode(event_id: int) -> str:
     """Get the event generated QR code.
 
     Args:
