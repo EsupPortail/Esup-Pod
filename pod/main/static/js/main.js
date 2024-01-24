@@ -300,8 +300,8 @@ document.addEventListener("hidden.bs.collapse", (e) => {
   if (e.target.id === "qrcode") e.target.setAttribute("src", "");
 });
 
-if(document.getElementById("btnDownloadQrCode") !== null){
-  document.getElementById("btnDownloadQrCode").addEventListener('click', (e) => {
+if(document.getElementById("btn-download-qr-code") !== null){
+  document.getElementById("btn-download-qr-code").addEventListener('click', (e) => {
     let nameOfDownload = e.target.dataset.slug + "-qrcode.png";
     downloadImage(document.getElementById('qrcode').src, nameOfDownload);
   });

@@ -112,7 +112,7 @@ def secure_post_request(request):
         raise PermissionDenied
 
 
-def generate_qrcode(url, id, alt, request=None):
+def generate_qrcode(url: str, id: int, alt: str, request=None):
     """
     Generate qrcode for live event or video share link
 

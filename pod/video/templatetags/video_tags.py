@@ -125,8 +125,16 @@ def get_last_videos(context):
 
 
 @register.simple_tag(name="get_video_qrcode")
-def get_video_qrcode(video_id):
-    """Get the video generated QR code."""
+def get_video_qrcode(video_id: int):
+    """Get the video generated QR code.
+
+    Args:
+        video_id (int): Identifier of video object
+
+    Returns:
+        string: HTML-formed generated qrcode
+
+    """
     alt = _("QR code video's link")
     return generate_qrcode("enrichment:video_enrichment", video_id, alt)
 
