@@ -30,8 +30,6 @@
     {% for link in BLOC %}
       {% if flatpage.url == link.page.url %}
         {{link|edito:request|safe}}
-        <p>{{ link.title }}</p>
-        <p>{{ link.type }}</p>
       {% endif %}
     {% endfor %}
   {% endif %}

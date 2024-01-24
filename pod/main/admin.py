@@ -127,11 +127,6 @@ class BlocAdmin(admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
-        data_type = form.base_fields.get('data_type')
-
-        if data_type and 'event' not in data_type.choices:
-            # Si 'event' n'est pas une option dans le champ 'data_type', masquer le champ 'Event'
-            form.base_fields['Event'].widget.attrs['style'] = 'display:none;'
 
         return form
 

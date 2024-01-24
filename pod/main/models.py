@@ -10,6 +10,7 @@ from django.db.models.signals import post_save
 from django.db import connection
 import os
 import mimetypes
+from ckeditor.fields import RichTextField
 
 
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
@@ -211,17 +212,17 @@ class Bloc(models.Model):
 
     CHANNEL = 'channel'
     THEME = 'theme'
-    EVENT = 'event'
     PLAYLIST = 'playlist'
     LAST_VIDEOS = 'last_videos'
     MOST_VIEWS = 'most_views'
+    EVENT_NEXT = 'event_next'
     DATA_TYPE = (
         (CHANNEL, _('Channel')),
         (THEME, _('Theme')),
-        (EVENT, _('Event')),
         (PLAYLIST, _('Playlist')),
         (LAST_VIDEOS, _('Last videos')),
         (MOST_VIEWS, _('Most views')),
+        (EVENT_NEXT, _('Event_next')),
     )
 
     title = models.CharField(_("Title"), max_length=250, blank=True, null=True)
@@ -272,12 +273,6 @@ class Bloc(models.Model):
         help_text=_("Select the theme you want to link with."),
     )
 
-    Event = models.ManyToManyField(
-        'live.Event',
-        blank=True,
-        help_text=_("Select the event you want to link with."),
-    )
-
     Playlist = models.ForeignKey(
         'playlist.Playlist',
         blank=True,
@@ -286,14 +281,20 @@ class Bloc(models.Model):
         help_text=_("Select the playlist you want to link with."),
     )
 
-    html = models.TextField(
-        _("HTML"),
+    html = RichTextField(
+        config_name="complete",
+        verbose_name=_("HTML"),
         null=True,
         blank=True,
         help_text=_("Write in html inside this field."),
     )
 
-    display_title = models.CharField(_("Display title"), max_length=250, blank=True, null=True)
+    display_title = models.CharField(
+        verbose_name=_("Display title"),
+        max_length=250,
+        blank=True,
+        null=True
+    )
     
     no_cache = models.BooleanField(
         default=False,

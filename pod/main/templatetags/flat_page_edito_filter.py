@@ -139,6 +139,19 @@ def findTypeInContent(content, request):
         params['type'] = 'playlist'
         params['data'] = content.Playlist
 
+    if(content.data_type == 'event_next'):
+        params['fct'] = 'render_next_events'
+        params['type'] = 'event'
+        params['data'] = content.Event
+
+    if(content.data_type == 'most_views'):
+        params['fct'] = 'render_most_view'
+        params['type'] = 'event'
+        params['data'] = content.Event
+
+    if(content.type == 'html'):
+        params['template'] = 'bloc/html.html'
+        params['fct'] = 'render_html'
 
     if(content.type == 'slider'):
         params['template'] = 'bloc/slider.html'
@@ -290,40 +303,7 @@ def render_most_view(uniq_id, params, type, debugElts):
     for video in most_viewed_videos:    
         if(params['debug']): 
            debugElts.append(' - Video informations is [ID:%s] [SLUG:%s] [TITLE:%s] [RECENT_VIW_COUNT:%s]'%(video.id, video.slug, video.title, video.recentViewcount))
-       
-    #####
-    #filters = {}
-    #filters['encoding_in_progress'] = False
-    #filters['is_draft'] = False
-    #
-    #if(params['show-restricted'] == False):
-    #    filters['is_restricted'] = False
-    #
-    #filter_q = Q(**filters)
-    #
-    #inital_list = Video.objects.filter(
-    #    filter_q & (Q(password="") | Q(password__isnull=True))
-    #).defer(
-    #    "video", "slug", "description"
-    #)[:int(params['nb-element'])]
-    #
-    #if(params['debug']): 
-    #    debugElts.append('Database query \"%s\"'%(str(inital_list.query)))
-    #    
-    #inital_list = sorted(inital_list, key=lambda x: x.recentViewcount, reverse=True)
-    #
-    #if(params['debug']): 
-    #    debugElts.append('Finded videos in container :')
-    #
-    #videos_list={'list': [], 'count': 0}
-    #for video in inital_list:
-    #    if(params['debug']): 
-    #        debugElts.append(' - Video informations is [ID:%s] [SLUG:%s] [TITLE:%s] [RECENT_VIW_COUNT:%s]'%(video.id, video.slug, video.title, video.recentViewcount))
-    #    videos_list['list'].append(video)
-    #    videos_list['count'] = videos_list['count'] + 1
-    #    if(videos_list['count'] >= int(params['nb-element'])):
-    #        break
-            
+
     part_content = loader.get_template(type['template']).render(
         {   
             "uniq_id": uniq_id,
@@ -378,7 +358,16 @@ def render_next_events(uniq_id, params, type, debugElts):
     )
     return "%s" %(part_content)
     
-
+def render_html(uniq_id, params, type, debugElts):
+    if(params['debug']): 
+        debugElts.append('Call function render_html')
+            
+    part_content = loader.get_template(type['template']).render(
+        {   
+            "body": params['data'] 
+        }
+    )
+    return "%s" %(part_content)
    
 def debugFile(str):
     f = open("/home/pod/debugJM.log", "a")
