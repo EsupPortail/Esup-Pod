@@ -142,5 +142,5 @@ def generate_qrcode(url: str, id: int, alt: str, request=None):
     img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
     return mark_safe(
         f'<img id="qrcode" src="data:image/png;base64, {img_str}" '
-        + f'width="200px" height="200px" alt={alt}>'
+        + f'width="200px" height="200px" alt="{alt}">'
     )
