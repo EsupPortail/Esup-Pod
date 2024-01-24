@@ -1,5 +1,8 @@
 import json
+from typing import Any
+
 import requests
+from requests import Response
 
 API_URL = "https://aristote-preprod.k8s-cloud.centralesupelec.fr/api"
 API_VERSION = "v1"
@@ -11,7 +14,7 @@ class AristoteAI:
         self.client_secret = client_secret
         self.token = None
 
-    def connect_to_api(self) -> object:
+    def connect_to_api(self) -> Response or None:
         """Connect to the API."""
         path = "/token"
         data = {
@@ -39,9 +42,8 @@ class AristoteAI:
             print(f"Request Exception: {e}")
             return None
 
-    def get_ai_enrichments(self) -> object:
-        """Get the AI enrichments."""
-        path = f"/{API_VERSION}/enrichments"
+    def get_response(self, path: str) -> Response or None:
+        """Get the AI response."""
         headers = {
             "Accept": "application/json",
             "Authorization": f"Bearer {self.token}",
@@ -60,9 +62,30 @@ class AristoteAI:
             print(f"Request Exception: {e}")
             return None
 
+    def get_ai_enrichments(self) -> Response or None:
+        """Get the AI enrichments."""
+        path = f"/{API_VERSION}/enrichments"
+        return self.get_response(path)
+
+    def get_specific_ai_enrichment(self, enrichment_id) -> Response or None:
+        """Get a specific AI enrichment."""
+        path = f"/{API_VERSION}/enrichments/{enrichment_id}"
+        return self.get_response(path)
+
 
 # TODO To remove after tests
+print("=== __init__ ===")
 aristote_ai = AristoteAI("pod_integration", "a3.dlYTV4dkhh109:M1")
+
+print("=== connect_to_api ===")
 print(aristote_ai.connect_to_api())
 print(aristote_ai.token)
-print(aristote_ai.get_ai_enrichments())
+
+print("=== get_ai_enrichments ===")
+enrichments = aristote_ai.get_ai_enrichments()
+print(enrichments)
+
+print("=== get_specific_ai_enrichment ===")
+test_id = enrichments["content"][0]["id"]
+print(test_id)
+print(aristote_ai.get_specific_ai_enrichment(test_id))
