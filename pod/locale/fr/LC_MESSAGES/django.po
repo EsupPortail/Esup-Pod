@@ -3935,9 +3935,7 @@ msgid "Past events"
 msgstr "Évènements passés"
 
 #: pod/live/templatetags/event_tags.py
-#, fuzzy
-#| msgid "QR code event's link:"
-msgid "QR code event's link"
+msgid "QR code event's link:"
 msgstr "QR code pour le lien de l'évènement :"
 
 #: pod/live/utils.py
@@ -8590,9 +8588,7 @@ msgid ": "
 msgstr " : "
 
 #: pod/video/templatetags/video_tags.py
-#, fuzzy
-#| msgid "QR code video's link:"
-msgid "QR code video's link"
+msgid "QR code video's link:"
 msgstr "QR code pour le lien de la vidéo :"
 
 #: pod/video/templatetags/video_tags.py
