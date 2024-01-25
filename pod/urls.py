@@ -151,6 +151,12 @@ if getattr(settings, "USE_PLAYLIST", True):
         path("playlist/", include("pod.playlist.urls", namespace="playlist")),
     ]
 
+# AI ENHANCEMENT
+if True:  # TODO Add the USE_AI_ENHANCEMENT setting
+    urlpatterns += [
+        path("ai-enhancement/", include("pod.ai_enhancement.urls", namespace="ai_enhancement")),
+    ]
+
 # IMPORT_VIDEO
 if getattr(settings, "USE_IMPORT_VIDEO", True):
     urlpatterns += [

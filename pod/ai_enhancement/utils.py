@@ -67,27 +67,7 @@ class AristoteAI:
         path = f"/{API_VERSION}/enrichments"
         return self.get_response(path)
 
-    def get_specific_ai_enrichment(self, enrichment_id) -> Response or None:
+    def get_specific_ai_enrichment(self, enrichment_id: str) -> Response or None:
         """Get a specific AI enrichment."""
         path = f"/{API_VERSION}/enrichments/{enrichment_id}"
         return self.get_response(path)
-
-
-# TODO To remove after tests
-"""
-print("=== __init__ ===")
-aristote_ai = AristoteAI("pod_integration", "a3.dlYTV4dkhh109:M1")
-
-print("=== connect_to_api ===")
-print(aristote_ai.connect_to_api())
-print(aristote_ai.token)
-
-print("=== get_ai_enrichments ===")
-enrichments = aristote_ai.get_ai_enrichments()
-print(enrichments)
-
-print("=== get_specific_ai_enrichment ===")
-test_id = enrichments["content"][0]["id"]
-print(test_id)
-print(aristote_ai.get_specific_ai_enrichment(test_id))
-"""
