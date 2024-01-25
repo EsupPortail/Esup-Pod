@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-25 15:49+0100\n"
+"POT-Creation-Date: 2024-01-25 15:58+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -4576,7 +4576,7 @@ msgid ""
 "analyze site traffic."
 msgstr ""
 
-#: pod/main/templates/base.html pod/video/templates/videos/add_video.html
+#: pod/main/templates/base.html
 msgid "Learn more"
 msgstr ""
 
@@ -7939,25 +7939,6 @@ msgstr ""
 #: pod/video/templates/videos/video_edit.html
 msgid "Add a new video"
 msgstr ""
-
-#: pod/video/templates/videos/video_edit.html
-#, python-format
-msgid ""
-"\n"
-"              By default, the deletion date of your video is set to "
-"%(counter)s year, in accordance with your profile. As a teacher, you can "
-"modify this date. If you are a student and wish to extend this period, add a "
-"teacher as an additional video owner\n"
-"          "
-msgid_plural ""
-"\n"
-"              By default, the deletion date of your video is set to "
-"%(counter)s years, in accordance with your profile. As a teacher, you can "
-"modify this date. If you are a student and wish to extend this period, add a "
-"teacher as an additional video owner\n"
-"          "
-msgstr[0] ""
-msgstr[1] ""
 
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
