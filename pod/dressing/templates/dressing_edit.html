@@ -14,7 +14,7 @@
   </a>
 </li>
 
-<li class="breadcrumb-item active" aria-current="page">        
+<li class="breadcrumb-item active" aria-current="page">
   {% if form.instance.title %}{% trans "Editing the dressing" %} "{{form.instance.title}}"
   {% else %}
     {% trans "Create a new dressing" %}
@@ -22,17 +22,13 @@
 </li>
 {% endblock %}
 
-{% block page_title %}
-{% if form.instance.title %}{% trans "Editing the dressing" %} "{{form.instance.title}}"
-{% else %}
-  {% trans "Create a new dressing" %}
-{% endif %}
-{% endblock %}
-
 {% block page_content %}
 <form method="POST" accept-charset="utf-8" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="list-group">
+      <h2 class="accordion-header">
+        {% trans "General settings" %}
+      </h2>
       {% if form.errors %}
         <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
       {% endif %}
@@ -42,7 +38,7 @@
       {% for field in form.visible_fields %}
       {% spaceless %}
         <div class="{% if "title_" in field.name %} title{% endif %}">
-          <div class="list-group-item">
+          <div class="list-group-item p-2 mb-2">
             <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
               {{ field.errors }}
               {% if "form-check-input" in field.field.widget.attrs.class %}

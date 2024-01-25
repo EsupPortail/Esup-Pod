@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-23 15:34+0000\n"
+"POT-Creation-Date: 2024-01-25 10:30+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2103,9 +2103,13 @@ msgstr "Retour à l'habillage"
 msgid "Editing the dressing"
 msgstr "Éditer l'habillage"
 
-#: pod/dressing/templates/dressing_edit.html
+#: pod/dressing/templates/dressing_edit.html pod/dressing/views.py
 msgid "Create a new dressing"
 msgstr "Créer un nouvel habillage"
+
+#: pod/dressing/templates/dressing_edit.html pod/video/forms.py
+msgid "General settings"
+msgstr "Paramètres généraux"
 
 #: pod/dressing/templates/my_dressings.html
 msgid "List of dressings I can use or manage."
@@ -2159,8 +2163,8 @@ msgid "No dressings found."
 msgstr "Aucun habillage trouvé"
 
 #: pod/dressing/templates/my_dressings.html
-msgid "Add new object"
-msgstr "Ajouter un nouvel objet"
+msgid "Add new dressing"
+msgstr "Ajouter un nouvel habillage"
 
 #: pod/dressing/templates/video_dressing.html
 #: pod/video/templates/videos/link_video.html
@@ -7284,10 +7288,6 @@ msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne
 #: pod/video/forms.py
 msgid "Source file"
 msgstr "Fichier source"
-
-#: pod/video/forms.py
-msgid "General settings"
-msgstr "Paramètres généraux"
 
 #: pod/video/forms.py pod/video/templates/videos/dashboard.html
 msgid "Channel options"

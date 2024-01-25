@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-23 15:34+0000\n"
+"POT-Creation-Date: 2024-01-25 10:30+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2000,8 +2000,12 @@ msgstr ""
 msgid "Editing the dressing"
 msgstr ""
 
-#: pod/dressing/templates/dressing_edit.html
+#: pod/dressing/templates/dressing_edit.html pod/dressing/views.py
 msgid "Create a new dressing"
+msgstr ""
+
+#: pod/dressing/templates/dressing_edit.html pod/video/forms.py
+msgid "General settings"
 msgstr ""
 
 #: pod/dressing/templates/my_dressings.html
@@ -2056,7 +2060,7 @@ msgid "No dressings found."
 msgstr ""
 
 #: pod/dressing/templates/my_dressings.html
-msgid "Add new object"
+msgid "Add new dressing"
 msgstr ""
 
 #: pod/dressing/templates/video_dressing.html
@@ -6835,10 +6839,6 @@ msgstr ""
 
 #: pod/video/forms.py
 msgid "Source file"
-msgstr ""
-
-#: pod/video/forms.py
-msgid "General settings"
 msgstr ""
 
 #: pod/video/forms.py pod/video/templates/videos/dashboard.html
