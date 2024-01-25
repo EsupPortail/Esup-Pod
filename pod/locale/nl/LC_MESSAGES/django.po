@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-19 09:07+0100\n"
+"POT-Creation-Date: 2024-01-25 15:42+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -967,7 +967,7 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
-#: pod/main/templates/navbar.html pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/add_video.html
 #: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
@@ -1521,7 +1521,6 @@ msgid "Caption"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
-#: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Play"
 msgstr ""
@@ -2058,13 +2057,33 @@ msgstr ""
 msgid "Apply"
 msgstr ""
 
+#: pod/dressing/views.py
+msgid "You cannot dress this video."
+msgstr ""
+
+#: pod/dressing/views.py
+msgid "You cannot edit this dressing."
+msgstr ""
+
 #: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
 #: pod/meeting/views.py pod/video/views.py
 msgid "The changes have been saved."
 msgstr ""
 
 #: pod/dressing/views.py
+msgid "You cannot create a video dressing."
+msgstr ""
+
+#: pod/dressing/views.py
+msgid "You cannot delete this dressing."
+msgstr ""
+
+#: pod/dressing/views.py
 msgid "The dressing has been deleted."
+msgstr ""
+
+#: pod/dressing/views.py
+msgid "You cannot access this page."
 msgstr ""
 
 #: pod/enrichment/apps.py pod/enrichment/models.py
@@ -2732,15 +2751,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -4699,6 +4718,10 @@ msgid "Show all my videos on"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+msgid "My videos"
+msgstr ""
+
+#: pod/main/templates/navbar.html
 msgid "Show all my meetings on"
 msgstr ""
 
@@ -6537,8 +6560,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
