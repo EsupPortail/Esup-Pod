@@ -300,11 +300,13 @@ document.addEventListener("hidden.bs.collapse", (e) => {
   if (e.target.id === "qrcode") e.target.setAttribute("src", "");
 });
 
-if(document.getElementById("btn-download-qr-code") !== null){
-  document.getElementById("btn-download-qr-code").addEventListener('click', (e) => {
-    let nameOfDownload = e.target.dataset.slug + "-qrcode.png";
-    downloadImage(document.getElementById('qrcode').src, nameOfDownload);
-  });
+if (document.getElementById("btn-download-qr-code") !== null) {
+  document
+    .getElementById("btn-download-qr-code")
+    .addEventListener("click", (e) => {
+      let nameOfDownload = e.target.dataset.slug + "-qrcode.png";
+      downloadImage(document.getElementById("qrcode").src, nameOfDownload);
+    });
 }
 
 /**
@@ -314,15 +316,12 @@ if(document.getElementById("btn-download-qr-code") !== null){
  * @param nameOfDownload Given name for download
  * @returns {Promise<void>}
  */
-async function downloadImage(
-  imageSrc,
-  nameOfDownload = 'default.png',
-) {
+async function downloadImage(imageSrc, nameOfDownload = "default.png") {
   const response = await fetch(imageSrc);
   const blobImage = await response.blob();
   const href = URL.createObjectURL(blobImage);
 
-  const anchorElement = document.createElement('a');
+  const anchorElement = document.createElement("a");
   anchorElement.href = href;
   anchorElement.download = nameOfDownload;
 
