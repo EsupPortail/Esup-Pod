@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-19 09:07+0100\n"
+"POT-Creation-Date: 2024-01-24 12:51+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -3016,8 +3016,8 @@ msgid "QR code to record immediately an event"
 msgstr "QR code pour la programmation d’un évènement immédiat"
 
 #: pod/live/admin.py
-msgid "QR Code"
-msgstr "QR Code"
+msgid "QR code"
+msgstr "QR code"
 
 #: pod/live/admin.py pod/live/models.py pod/recorder/models.py
 #: pod/video/models.py
@@ -3642,9 +3642,8 @@ msgid "Share the link"
 msgstr "Partager le lien"
 
 #: pod/live/templates/live/event-info.html
-#: pod/video/templates/videos/video-info.html
-msgid "Use this link to share the video:"
-msgstr "Utiliser ce lien pour partager la vidéo :"
+msgid "Use this link to share the event:"
+msgstr "Utiliser ce lien pour partager l'évènement :"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
@@ -3653,8 +3652,14 @@ msgstr "QR code pour le lien :"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
-msgid "Warning, it use google API"
-msgstr "Attention, utilise une API Google"
+msgid "Download this QR code"
+msgstr "Télécharger ce QR code"
+
+#: pod/live/templates/live/event-info.html
+#: pod/podfile/templates/podfile/list_folder_files.html
+#: pod/video/templates/videos/video-info.html
+msgid "Download"
+msgstr "Télécharger"
 
 #: pod/live/templates/live/event-script.html
 msgid "Recording not done: "
@@ -3928,6 +3933,10 @@ msgstr "Évènements à venir"
 #: pod/live/templates/live/my_events.html
 msgid "Past events"
 msgstr "Évènements passés"
+
+#: pod/live/templatetags/event_tags.py
+msgid "QR code event's link:"
+msgstr "QR code pour le lien de l'évènement :"
 
 #: pod/live/utils.py
 #, python-format
@@ -4804,7 +4813,7 @@ msgstr ""
 "droite, mode sombre ou dyslexie etc.), gérer la session (authentification) "
 "et analyser le trafic du site (pour certaines instances)."
 
-#: pod/main/templates/base.html
+#: pod/main/templates/base.html pod/video/templates/videos/add_video.html
 msgid "Learn more"
 msgstr "En savoir plus"
 
@@ -6548,10 +6557,6 @@ msgstr "Partager le dossier « %(folder_name)s » avec un autre utilisateur"
 #: pod/podfile/templates/podfile/list_folder_files.html
 msgid "Upload Files"
 msgstr "Téléverser des fichiers"
-
-#: pod/podfile/templates/podfile/list_folder_files.html
-msgid "Download"
-msgstr "Télécharger"
 
 #: pod/podfile/templates/podfile/list_folder_files.html
 msgid "Delete file"
@@ -8387,8 +8392,8 @@ msgstr ""
 "interactive H5P :"
 
 #: pod/video/templates/videos/video-info.html
-msgid "QR code"
-msgstr "QR code"
+msgid "Use this link to share the video:"
+msgstr "Utiliser ce lien pour partager la vidéo :"
 
 #: pod/video/templates/videos/video_collaborate.html
 msgid "Collaborate"
@@ -8581,6 +8586,10 @@ msgstr "Afficher les statistiques de visualisation de toutes les vidéos"
 #: pod/video/templates/videos/widgets/customclearablefileinput.html
 msgid ": "
 msgstr " : "
+
+#: pod/video/templatetags/video_tags.py
+msgid "QR code video's link:"
+msgstr "QR code pour le lien de la vidéo :"
 
 #: pod/video/templatetags/video_tags.py
 msgid "This content is not password protected."
@@ -9064,4 +9073,3 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-

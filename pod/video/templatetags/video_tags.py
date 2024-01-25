@@ -22,6 +22,8 @@ from pod.video.models import Video
 import importlib
 import os
 
+from ...main.utils import generate_qrcode
+
 register = template.Library()
 
 HOMEPAGE_SHOWS_PASSWORDED = getattr(django_settings, "HOMEPAGE_SHOWS_PASSWORDED", True)
@@ -120,6 +122,21 @@ def get_last_videos(context):
             break
 
     return recent_vids
+
+
+@register.simple_tag(name="get_video_qrcode")
+def get_video_qrcode(video_id: int) -> str:
+    """Get the video generated QR code.
+
+    Args:
+        video_id (int): Identifier of video object
+
+    Returns:
+        string: HTML-formed generated qrcode
+
+    """
+    alt = _("QR code video's link")
+    return generate_qrcode("enrichment:video_enrichment", video_id, alt)
 
 
 @register.simple_tag(name="get_video_infos")
