@@ -300,6 +300,38 @@ document.addEventListener("hidden.bs.collapse", (e) => {
   if (e.target.id === "qrcode") e.target.setAttribute("src", "");
 });
 
+if (document.getElementById("btn-download-qr-code") !== null) {
+  document
+    .getElementById("btn-download-qr-code")
+    .addEventListener("click", (e) => {
+      let nameOfDownload = e.target.dataset.slug + "-qrcode.png";
+      downloadImage(document.getElementById("qrcode").src, nameOfDownload);
+    });
+}
+
+/**
+ * Download image function with url
+ *
+ * @param imageSrc Source of image
+ * @param nameOfDownload Given name for download
+ * @returns {Promise<void>}
+ */
+async function downloadImage(imageSrc, nameOfDownload = "default.png") {
+  const response = await fetch(imageSrc);
+  const blobImage = await response.blob();
+  const href = URL.createObjectURL(blobImage);
+
+  const anchorElement = document.createElement("a");
+  anchorElement.href = href;
+  anchorElement.download = nameOfDownload;
+
+  document.body.appendChild(anchorElement);
+  anchorElement.click();
+
+  document.body.removeChild(anchorElement);
+  window.URL.revokeObjectURL(href);
+}
+
 document.addEventListener("change", (e) => {
   if (e.target.id !== "displaytime") return;
   let displayTime = document.getElementById("displaytime");
