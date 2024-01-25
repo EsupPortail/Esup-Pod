@@ -36,8 +36,8 @@ def video_dressing(request, slug):
 
         existing = Dressing.objects.filter(videos=video)
         for dressing in existing:
-                dressing.videos.remove(video)
-                dressing.save()
+            dressing.videos.remove(video)
+            dressing.save()
 
         if selected_dressing:
             selected_dressing.videos.add(video)
