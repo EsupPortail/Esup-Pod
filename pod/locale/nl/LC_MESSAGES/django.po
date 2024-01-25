@@ -2843,7 +2843,7 @@ msgid "QR code to record immediately an event"
 msgstr ""
 
 #: pod/live/admin.py
-msgid "QR Code"
+msgid "QR code"
 msgstr ""
 
 #: pod/live/admin.py pod/live/models.py pod/recorder/models.py
@@ -3428,8 +3428,7 @@ msgid "Share the link"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
-#: pod/video/templates/videos/video-info.html
-msgid "Use this link to share the video:"
+msgid "Use this link to share the event:"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
@@ -3439,7 +3438,13 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
-msgid "Warning, it use google API"
+msgid "Download this QR code"
+msgstr ""
+
+#: pod/live/templates/live/event-info.html
+#: pod/podfile/templates/podfile/list_folder_files.html
+#: pod/video/templates/videos/video-info.html
+msgid "Download"
 msgstr ""
 
 #: pod/live/templates/live/event-script.html
@@ -3700,6 +3705,10 @@ msgstr ""
 
 #: pod/live/templates/live/my_events.html
 msgid "Past events"
+msgstr ""
+
+#: pod/live/templatetags/event_tags.py
+msgid "QR code event's link"
 msgstr ""
 
 #: pod/live/utils.py
@@ -4567,7 +4576,7 @@ msgid ""
 "analyze site traffic."
 msgstr ""
 
-#: pod/main/templates/base.html
+#: pod/main/templates/base.html pod/video/templates/videos/add_video.html
 msgid "Learn more"
 msgstr ""
 
@@ -6207,10 +6216,6 @@ msgstr ""
 
 #: pod/podfile/templates/podfile/list_folder_files.html
 msgid "Upload Files"
-msgstr ""
-
-#: pod/podfile/templates/podfile/list_folder_files.html
-msgid "Download"
 msgstr ""
 
 #: pod/podfile/templates/podfile/list_folder_files.html
@@ -7896,7 +7901,7 @@ msgid ""
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
-msgid "QR code"
+msgid "Use this link to share the video:"
 msgstr ""
 
 #: pod/video/templates/videos/video_collaborate.html
@@ -7934,6 +7939,25 @@ msgstr ""
 #: pod/video/templates/videos/video_edit.html
 msgid "Add a new video"
 msgstr ""
+
+#: pod/video/templates/videos/video_edit.html
+#, python-format
+msgid ""
+"\n"
+"              By default, the deletion date of your video is set to "
+"%(counter)s year, in accordance with your profile. As a teacher, you can "
+"modify this date. If you are a student and wish to extend this period, add a "
+"teacher as an additional video owner\n"
+"          "
+msgid_plural ""
+"\n"
+"              By default, the deletion date of your video is set to "
+"%(counter)s years, in accordance with your profile. As a teacher, you can "
+"modify this date. If you are a student and wish to extend this period, add a "
+"teacher as an additional video owner\n"
+"          "
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
@@ -8083,6 +8107,10 @@ msgstr ""
 
 #: pod/video/templates/videos/widgets/customclearablefileinput.html
 msgid ": "
+msgstr ""
+
+#: pod/video/templatetags/video_tags.py
+msgid "QR code video's link"
 msgstr ""
 
 #: pod/video/templatetags/video_tags.py
