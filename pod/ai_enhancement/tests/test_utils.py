@@ -105,4 +105,3 @@ class AristoteAITestCase(TestCase):
         aristote_ai.token = "mocked_token"
         result = aristote_ai.get_specific_ai_enrichment("mocked_id")
         self.assertEqual(result, mock_response)
-

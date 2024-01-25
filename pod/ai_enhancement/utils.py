@@ -1,5 +1,4 @@
 import json
-from typing import Any
 
 import requests
 from requests import Response
