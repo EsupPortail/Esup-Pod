@@ -584,6 +584,8 @@ div.card a img {
   right: 0;
   border: none;
   display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: flex-end;
   background: #00000095;
 }
 
@@ -649,14 +651,14 @@ div.card a img {
 #filterDiscipline a.collapsed::after,
 #filterCursus a.collapsed::after,
 #filterTag a.collapsed::after {
-  content: "+";
+  content: "▼";
 }
 
 #filterType a:not(.collapsed)::after,
 #filterDiscipline a:not(.collapsed)::after,
 #filterCursus a:not(.collapsed)::after,
 #filterTag a:not(.collapsed)::after {
-  content: "-";
+  content: "▲";
 }
 
 /** ckeditor **/
