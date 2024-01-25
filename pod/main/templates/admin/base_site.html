@@ -41,3 +41,8 @@
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+<script src="{% static 'js/admin.js' %}?ver={{VERSION}}"></script>
+{% endblock %}

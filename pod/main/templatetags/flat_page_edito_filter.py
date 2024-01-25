@@ -233,9 +233,6 @@ def render_base_videos(uniq_id, params, type, debugElts):
       
     if(params['debug']): 
         debugElts.append('Database query \"%s\"'%(str(initial_list.query)))
-        
-    #Intégration au filter initial filter_q & (Q(password="") | Q(password__isnull=True))
-    # inital_list = inital_list.filter(Q(password="") | Q(password__isnull=True))
     
     videos_list={'list': [], 'count': 0}
     
@@ -269,11 +266,6 @@ def render_base_videos(uniq_id, params, type, debugElts):
             "slider_multi_nb_card" : params['slider-multi-nb-card']  
         }
     )
-    # if(params['debug']): 
-        # debugElts.append('Use template %s'%(type['template']))
-        # debugElts.append('Template content rendered :')
-        # debugElts.append('%s'%(html.escape(part_content)))
-        # debugElts.append('END Template content rendered')
     return "%s" %(part_content)
     
 def render_most_view(uniq_id, params, type, debugElts):
@@ -291,7 +283,7 @@ def render_most_view(uniq_id, params, type, debugElts):
     if not params['show-restricted']:
         query.filter(is_restricted=False)
 
-    most_viewed_videos = query.all().order_by('-nombre')[:int(params['nb-element'])]
+    most_viewed_videos = query.all().order_by('nombre')[:int(params['nb-element'])]
     if(params['debug']): 
         debugElts.append('Database query \"%s\"'%(str(most_viewed_videos.query)))
         

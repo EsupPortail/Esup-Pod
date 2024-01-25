@@ -251,7 +251,7 @@ class Bloc(models.Model):
         verbose_name=_("Data type"),
         max_length=200,
         choices=DATA_TYPE,
-        default=CHANNEL,
+        default=None,
         blank=True,
         null=True,
     )

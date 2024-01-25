@@ -33,7 +33,7 @@ class PageForm(FlatpageForm):
 # CustomFlatPage admin panel
 
 
-class AdditionalChannelTabAdmin(admin.ModelAdmin):
+class AdditionalChannelTabAdmin(TranslationAdmin):
     list_display = ("name",)
 
 
@@ -115,15 +115,13 @@ class BlocAdminForm(forms.ModelForm):
         model = Bloc
         fields = '__all__'
 
-class BlocAdmin(admin.ModelAdmin):
+class BlocAdmin(TranslationAdmin):
     list_display = (
         "title",
         "page",
         "type",
         "data_type",
     )
-    class Media:
-        js = ('admin/bloc_custom.js',)
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
