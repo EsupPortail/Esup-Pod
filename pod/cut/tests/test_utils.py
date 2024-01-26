@@ -20,12 +20,11 @@ class CleanDatabaseTest(TestCase):
         )
         self.chapter = Chapter.objects.create(video=self.video, title="Chapter 1")
         self.advanced_notes = AdvancedNotes.objects.create(
-            video=self.video,
-            user=self.user,
-            note="Advanced note content"
+            video=self.video, user=self.user, note="Advanced note content"
         )
         self.notes = Notes.objects.create(
-            video=self.video, user=self.user, note="Note content")
+            video=self.video, user=self.user, note="Note content"
+        )
         self.overlay = Overlay.objects.create(video=self.video, title="Overlay 1")
         self.track = Track.objects.create(video=self.video)
 

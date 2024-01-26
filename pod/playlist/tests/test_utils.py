@@ -391,15 +391,29 @@ class PlaylistTestUtils(TestCase):
 
     def test_sort_playlist_list(self):
         """Test if test_sort_playlist_list works correctly."""
-        self.playlist1 = Playlist.objects.create(name="Playlist3", owner=self.user, visibility="public")
-        self.playlist2 = Playlist.objects.create(name="Playlist1", owner=self.user2, visibility="public")
-        self.playlist3 = Playlist.objects.create(name="Playlist2", owner=self.user, visibility="public")
+        self.playlist1 = Playlist.objects.create(
+            name="Playlist3", owner=self.user, visibility="public"
+        )
+        self.playlist2 = Playlist.objects.create(
+            name="Playlist1", owner=self.user2, visibility="public"
+        )
+        self.playlist3 = Playlist.objects.create(
+            name="Playlist2", owner=self.user, visibility="public"
+        )
 
-        unsorted_playlist_list = Playlist.objects.filter(id__in=[self.playlist1.id, self.playlist2.id, self.playlist3.id])
+        unsorted_playlist_list = Playlist.objects.filter(
+            id__in=[self.playlist1.id, self.playlist2.id, self.playlist3.id]
+        )
 
-        sorted_playlist_list = sort_playlist_list(unsorted_playlist_list, sort_field="name", sort_direction="asc")
+        sorted_playlist_list = sort_playlist_list(
+            unsorted_playlist_list, sort_field="name", sort_direction="asc"
+        )
         expected_sorted_names = ["Playlist1", "Playlist2", "Playlist3"]
         actual_sorted_names = [playlist.name for playlist in sorted_playlist_list]
-        self.assertEqual(expected_sorted_names, actual_sorted_names, "Playlist list is not correctly sorted by name in ascending order.")
+        self.assertEqual(
+            expected_sorted_names,
+            actual_sorted_names,
+            "Playlist list is not correctly sorted by name in ascending order.",
+        )
 
         print(" --->  test_sort_playlist_list ok")

@@ -140,7 +140,7 @@ def dressing_create(request):
         {
             "dressing_create": dressing_create,
             "page_title": _("Create a new dressing"),
-            "form": form_dressing
+            "form": form_dressing,
         },
     )
 
