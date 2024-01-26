@@ -2166,10 +2166,8 @@ msgid "You cannot dress this video."
 msgstr "Vous ne pouvez pas habiller cette vidéo."
 
 #: pod/dressing/views.py
-#, fuzzy
-#| msgid "You cannot edit this meeting."
 msgid "You cannot edit this dressing."
-msgstr "Vous ne pouvez pas éditer cette réunion."
+msgstr "Vous ne pouvez pas éditer cet habillage."
 
 #: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
 #: pod/meeting/views.py pod/video/views.py
