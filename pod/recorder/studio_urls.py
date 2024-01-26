@@ -1,4 +1,5 @@
 """Opencast Studio urls for Esup-Pod Integration."""
+
 from django.conf.urls import url
 from .views import studio_pod, studio_static, studio_root_file
 from .views import ingest_createMediaPackage, ingest_addDCCatalog

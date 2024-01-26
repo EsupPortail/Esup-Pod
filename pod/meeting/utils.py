@@ -1,4 +1,5 @@
 """Utils for Meeting module."""
+
 from datetime import date, timedelta
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives

@@ -1,4 +1,5 @@
 """Models for the Meeting module."""
+
 import hashlib
 import random
 import requests

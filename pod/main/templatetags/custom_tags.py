@@ -1,4 +1,5 @@
 """Esup-Pod custom tags for templates."""
+
 from django import template
 from django.conf import settings
 from pod.main.models import Configuration

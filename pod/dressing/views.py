@@ -1,4 +1,5 @@
 """Esup-Pod dressing views."""
+
 from django.shortcuts import render, redirect, get_object_or_404
 from pod.main.views import in_maintenance
 from django.urls import reverse
@@ -26,13 +27,21 @@ def video_dressing(request, slug):
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     dressings = get_dressings(request.user, request.user.owner.accessgroup_set.all())
 
-    if not (request.user.is_superuser or request.user.is_staff or request.user.has_perm("dressing.video_dressing")):
+    if not (
+        request.user.is_superuser
+        or request.user.is_staff
+        or request.user.has_perm("dressing.video_dressing")
+    ):
         messages.add_message(request, messages.ERROR, _("You cannot dress this video."))
         raise PermissionDenied
 
-    if request.method == 'POST':
+    if request.method == "POST":
         selected_dressing_value = request.POST.get("selected_dressing_value")
-        selected_dressing = get_object_or_404(Dressing, pk=selected_dressing_value) if selected_dressing_value else None
+        selected_dressing = (
+            get_object_or_404(Dressing, pk=selected_dressing_value)
+            if selected_dressing_value
+            else None
+        )
 
         existing = Dressing.objects.filter(videos=video)
         for dressing in existing:
@@ -51,7 +60,7 @@ def video_dressing(request, slug):
     return render(
         request,
         "video_dressing.html",
-        {"video": video, "dressings": dressings, "current": current}
+        {"video": video, "dressings": dressings, "current": current},
     )
 
 
@@ -61,10 +70,11 @@ def dressing_edit(request, dressing_id):
     """Edit a dressing object."""
     dressing_edit = get_object_or_404(Dressing, id=dressing_id)
 
-    if (
-        dressing_edit
-        and (
-            not (request.user.is_superuser or request.user.is_staff or request.user.has_perm("dressing.dressing_edit"))
+    if dressing_edit and (
+        not (
+            request.user.is_superuser
+            or request.user.is_staff
+            or request.user.has_perm("dressing.dressing_edit")
         )
     ):
         messages.add_message(request, messages.ERROR, _("You cannot edit this dressing."))
@@ -77,26 +87,27 @@ def dressing_edit(request, dressing_id):
         user=request.user,
     )
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form_dressing = DressingForm(
             request.POST,
             instance=dressing_edit,
             user=request.user,
         )
         if form_dressing.is_valid():
-            messages.add_message(request, messages.INFO,
-                                 _("The changes have been saved."))
+            messages.add_message(
+                request, messages.INFO, _("The changes have been saved.")
+            )
             form_dressing.save()
             return redirect(reverse("dressing:my_dressings"))
     page_title = f'{_("Editing the dressing")} {dressing_edit.title}'
     return render(
         request,
-        'dressing_edit.html',
+        "dressing_edit.html",
         {
-            'dressing_edit': dressing_edit,
-            'form': form_dressing,
-            'page_title': page_title,
-        }
+            "dressing_edit": dressing_edit,
+            "form": form_dressing,
+            "page_title": page_title,
+        },
     )
 
 
@@ -105,22 +116,29 @@ def dressing_edit(request, dressing_id):
 def dressing_create(request):
     """Create a dressing object."""
 
-    if (not request.user.is_superuser or request.user.is_staff or request.user.has_perm("dressing.my_dressings")):
-        messages.add_message(request, messages.ERROR, _("You cannot create a video dressing."))
+    if (
+        not request.user.is_superuser
+        or request.user.is_staff
+        or request.user.has_perm("dressing.my_dressings")
+    ):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot create a video dressing.")
+        )
         raise PermissionDenied
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form_dressing = DressingForm(request.POST, user=request.user)
         if form_dressing.is_valid():
             form_dressing.save()
-            return redirect('dressing:my_dressings')
+            return redirect("dressing:my_dressings")
     else:
         form_dressing = DressingForm(user=request.user)
 
     return render(
         request,
-        'dressing_edit.html',
-        {'dressing_create': dressing_create, 'form': form_dressing})
+        "dressing_edit.html",
+        {"dressing_create": dressing_create, "form": form_dressing},
+    )
 
 
 @csrf_protect
@@ -129,24 +147,28 @@ def dressing_delete(request, dressing_id):
     """Delete the dressing identified by 'id'."""
     dressing = get_object_or_404(Dressing, id=dressing_id)
 
-    if (
-        dressing
-        and (
-            not (request.user.is_superuser or request.user.is_staff or request.user.has_perm("dressing.dressing_delete"))
+    if dressing and (
+        not (
+            request.user.is_superuser
+            or request.user.is_staff
+            or request.user.has_perm("dressing.dressing_delete")
         )
     ):
-        messages.add_message(request, messages.ERROR, _("You cannot delete this dressing."))
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete this dressing.")
+        )
         raise PermissionDenied
 
     form = DressingDeleteForm()
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = DressingDeleteForm(request.POST)
         if form.is_valid():
             dressing.delete()
-            messages.add_message(request, messages.INFO,
-                                 _("The dressing has been deleted."))
-            return redirect('dressing:my_dressings')
+            messages.add_message(
+                request, messages.INFO, _("The dressing has been deleted.")
+            )
+            return redirect("dressing:my_dressings")
         else:
             messages.add_message(
                 request,
@@ -154,8 +176,7 @@ def dressing_delete(request, dressing_id):
                 _("One or more errors have been found in the form."),
             )
 
-    return render(request, 'dressing_delete.html',
-                  {'dressing': dressing, "form": form})
+    return render(request, "dressing_delete.html", {"dressing": dressing, "form": form})
 
 
 @csrf_protect
@@ -163,12 +184,15 @@ def dressing_delete(request, dressing_id):
 def my_dressings(request):
     """Render the logged user's dressings."""
 
-    if not (request.user.is_superuser or request.user.is_staff or request.user.has_perm("dressing.my_dressings")):
+    if not (
+        request.user.is_superuser
+        or request.user.is_staff
+        or request.user.has_perm("dressing.my_dressings")
+    ):
         messages.add_message(request, messages.ERROR, _("You cannot access this page."))
         raise PermissionDenied
     if in_maintenance():
         return redirect(reverse("maintenance"))
     dressings = get_dressings(request.user, request.user.owner.accessgroup_set.all())
 
-    return render(request, "my_dressings.html",
-                  {'dressings': dressings})
+    return render(request, "my_dressings.html", {"dressings": dressings})

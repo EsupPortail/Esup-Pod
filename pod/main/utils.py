@@ -1,4 +1,5 @@
 """Useful functions for the entire Pod application."""
+
 import base64
 import io
 import qrcode

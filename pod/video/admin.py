@@ -1,4 +1,5 @@
 """Admin pages for Esup-Pod Video items."""
+
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import widgets

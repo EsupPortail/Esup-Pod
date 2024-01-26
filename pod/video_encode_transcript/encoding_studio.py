@@ -1,4 +1,5 @@
 """This module handles studio encoding with CPU."""
+
 from django.conf import settings
 from .utils import check_file, send_email_recording
 from . import encode

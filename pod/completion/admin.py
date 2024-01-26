@@ -1,4 +1,5 @@
 """Admin pages for Esup-Pod Completion items."""
+
 from django.conf import settings
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _

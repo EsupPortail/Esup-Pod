@@ -770,9 +770,11 @@ class VideoForm(forms.ModelForm):
             vidowner = (
                 self.instance.owner
                 if hasattr(self.instance, "owner")
-                else cleaned_data["owner"]
-                if "owner" in cleaned_data.keys()
-                else self.current_user
+                else (
+                    cleaned_data["owner"]
+                    if "owner" in cleaned_data.keys()
+                    else self.current_user
+                )
             )
             if vidowner and vidowner in self.cleaned_data["additional_owners"].all():
                 raise ValidationError(
@@ -906,9 +908,9 @@ class VideoForm(forms.ModelForm):
 
             self.fields["description"].widget = CKEditorWidget(config_name="default")
             for key, value in settings.LANGUAGES:
-                self.fields[
-                    "description_%s" % key.replace("-", "_")
-                ].widget = CKEditorWidget(config_name="default")
+                self.fields["description_%s" % key.replace("-", "_")].widget = (
+                    CKEditorWidget(config_name="default")
+                )
         if self.fields.get("date_delete"):
             if self.is_staff is False or USE_OBSOLESCENCE is False:
                 del self.fields["date_delete"]
@@ -920,9 +922,9 @@ class VideoForm(forms.ModelForm):
 
     def hide_default_language(self):
         if self.fields.get("description_%s" % settings.LANGUAGE_CODE):
-            self.fields[
-                "description_%s" % settings.LANGUAGE_CODE
-            ].widget = forms.HiddenInput()
+            self.fields["description_%s" % settings.LANGUAGE_CODE].widget = (
+                forms.HiddenInput()
+            )
         if self.fields.get("title_%s" % settings.LANGUAGE_CODE):
             self.fields["title_%s" % settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
@@ -1073,13 +1075,13 @@ class ChannelForm(forms.ModelForm):
             del self.fields["headband"]
             self.fields["description"].widget = CKEditorWidget(config_name="default")
             for key, value in settings.LANGUAGES:
-                self.fields[
-                    "description_%s" % key.replace("-", "_")
-                ].widget = CKEditorWidget(config_name="default")
+                self.fields["description_%s" % key.replace("-", "_")].widget = (
+                    CKEditorWidget(config_name="default")
+                )
         # hide default langage
-        self.fields[
-            "description_%s" % settings.LANGUAGE_CODE
-        ].widget = forms.HiddenInput()
+        self.fields["description_%s" % settings.LANGUAGE_CODE].widget = (
+            forms.HiddenInput()
+        )
         self.fields["title_%s" % settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
         self.fields = add_placeholder_and_asterisk(self.fields)
@@ -1102,9 +1104,9 @@ class ThemeForm(forms.ModelForm):
             self.fields["headband"].widget = CustomFileWidget(type="image")
 
         # hide default langage
-        self.fields[
-            "description_%s" % settings.LANGUAGE_CODE
-        ].widget = forms.HiddenInput()
+        self.fields["description_%s" % settings.LANGUAGE_CODE].widget = (
+            forms.HiddenInput()
+        )
         self.fields["title_%s" % settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
         self.fields = add_placeholder_and_asterisk(self.fields)

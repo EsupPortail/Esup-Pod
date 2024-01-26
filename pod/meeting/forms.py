@@ -1,4 +1,5 @@
 """Forms for the Meeting module."""
+
 import datetime
 import random
 import re
@@ -284,9 +285,11 @@ class MeetingForm(forms.ModelForm):
             meetingowner = (
                 self.instance.owner
                 if hasattr(self.instance, "owner")
-                else self.cleaned_data["owner"]
-                if "owner" in self.cleaned_data.keys()
-                else self.current_user
+                else (
+                    self.cleaned_data["owner"]
+                    if "owner" in self.cleaned_data.keys()
+                    else self.current_user
+                )
             )
             if (
                 meetingowner

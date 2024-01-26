@@ -1,4 +1,5 @@
 """Encode Test Case."""
+
 from django.conf import settings
 from django.test import TestCase
 from django.core.files.temp import NamedTemporaryFile

@@ -1,4 +1,5 @@
 """Esup-Pod video custom filters."""
+
 from django import template
 from html.parser import HTMLParser
 import html
