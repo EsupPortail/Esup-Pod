@@ -105,3 +105,35 @@ class AristoteAITestCase(TestCase):
         aristote_ai.token = "mocked_token"
         result = aristote_ai.get_specific_ai_enrichment("mocked_id")
         self.assertEqual(result, mock_response)
+
+    @patch("requests.post")
+    def test_create_enrichment_from_file_success(self, mock_post):
+        mock_response = Response()
+        mock_response.status_code = 200
+        mock_response.json = lambda: {
+            "status": "OK",
+            "id": "mocked_id",
+        }
+        mock_post.return_value = mock_response
+
+        aristote_ai = AristoteAI(self.client_id, self.client_secret)
+        result = aristote_ai.create_enrichment_from_file(
+            "mocked_url",
+            ["mocked_media_type_1", "mocked_media_type_2"],
+            "mocked_end_user_identifier",
+            "mocked_notification_webhook_url")
+        self.assertEqual(result, mock_response.json())
+
+    @patch("requests.post")
+    def test_create_enrichment_from_file_failure(self, mock_post):
+        mock_response = Response()
+        mock_response.status_code = 401
+        mock_post.return_value = mock_response
+
+        aristote_ai = AristoteAI(self.client_id, self.client_secret)
+        result = aristote_ai.create_enrichment_from_file(
+            "mocked_url",
+            ["mocked_media_type_1", "mocked_media_type_2"],
+            "mocked_end_user_identifier",
+            "mocked_notification_webhook_url")
+        self.assertEqual(result, mock_response)
