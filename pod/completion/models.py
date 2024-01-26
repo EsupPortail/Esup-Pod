@@ -19,26 +19,26 @@ ROLE_CHOICES = getattr(
     settings,
     "ROLE_CHOICES",
     (
-        (_("Acting Roles"), (
+        (_("Acting roles"), (
             ("actor", _("Actor")),
             ("voice-over", _("Voice-over")),
         )),
-        (_("Creative Roles"), (
+        (_("Creative roles"), (
             ("author", _("Author")),
             ("designer", _("Designer")),
             ("editor", _("Editor")),
             ("writer", _("Writer")),
         )),
-        (_("Consultation Roles"), (
+        (_("Consulting roles"), (
             ("consultant", _("Consultant")),
         )),
-        (_("Production Roles"), (
+        (_("Production roles"), (
             ("contributor", _("Contributor")),
             ("director", _("Director")),
             ("technician", _("Technician")),
             ("soundman", _("Soundman")),
         )),
-        (_("Speaking Roles"), (
+        (_("Speaking roles"), (
             ("speaker", _("Speaker")),
         )),
     ),

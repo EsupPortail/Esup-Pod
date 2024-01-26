@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-26 09:20+0000\n"
+"POT-Creation-Date: 2024-01-26 09:51+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1066,7 +1066,7 @@ msgid "Video additions"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "Acting Roles"
+msgid "Acting roles"
 msgstr ""
 
 #: pod/completion/models.py
@@ -1078,7 +1078,7 @@ msgid "Voice-over"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "Creative Roles"
+msgid "Creative roles"
 msgstr ""
 
 #: pod/completion/models.py
@@ -1098,7 +1098,7 @@ msgid "Writer"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "Consultation Roles"
+msgid "Consulting roles"
 msgstr ""
 
 #: pod/completion/models.py
@@ -1106,7 +1106,7 @@ msgid "Consultant"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "Production Roles"
+msgid "Production roles"
 msgstr ""
 
 #: pod/completion/models.py
@@ -1126,7 +1126,7 @@ msgid "Soundman"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "Speaking Roles"
+msgid "Speaking roles"
 msgstr ""
 
 #: pod/completion/models.py

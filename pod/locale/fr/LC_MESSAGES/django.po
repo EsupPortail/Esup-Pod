@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-26 09:20+0000\n"
+"POT-Creation-Date: 2024-01-26 09:51+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1129,7 +1129,7 @@ msgid "Video additions"
 msgstr "Compléments de la vidéo"
 
 #: pod/completion/models.py
-msgid "Acting Roles"
+msgid "Acting roles"
 msgstr "Rôles d'acteur"
 
 #: pod/completion/models.py
@@ -1141,7 +1141,7 @@ msgid "Voice-over"
 msgstr "Voix-off"
 
 #: pod/completion/models.py
-msgid "Creative Roles"
+msgid "Creative roles"
 msgstr "Rôles créatifs"
 
 #: pod/completion/models.py
@@ -1161,7 +1161,7 @@ msgid "Writer"
 msgstr "Scénariste"
 
 #: pod/completion/models.py
-msgid "Consultation Roles"
+msgid "Consulting roles"
 msgstr "Rôles de consultation"
 
 #: pod/completion/models.py
@@ -1169,7 +1169,7 @@ msgid "Consultant"
 msgstr "Consultant"
 
 #: pod/completion/models.py
-msgid "Production Roles"
+msgid "Production roles"
 msgstr "Rôles de production"
 
 #: pod/completion/models.py
@@ -1189,7 +1189,7 @@ msgid "Soundman"
 msgstr "Ingénieur du son"
 
 #: pod/completion/models.py
-msgid "Speaking Roles"
+msgid "Speaking roles"
 msgstr "Rôles d'orateur"
 
 #: pod/completion/models.py
