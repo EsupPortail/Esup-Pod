@@ -1703,6 +1703,11 @@ body[data-admin-utc-offset] .form-row.errors {
   max-width: 100% ;
 }
 
+.pod-container .select2-container--default .select2-selection--single .select2-selection__placeholder,
+.pod-container .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+  color: #666;
+}
+
 body[data-admin-utc-offset] .select2-selection--multiple {
   background-color: var(--pod-background);
   border-color: var(--border-color);

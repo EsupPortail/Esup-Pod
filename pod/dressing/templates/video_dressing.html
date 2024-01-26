@@ -59,11 +59,11 @@
         {% for dressing in dressings %}
         <tr>
           <td>
-            <input type="radio" name="selected_dressing_value" value="{{ dressing.pk }}"
+            <input type="radio" name="selected_dressing_value" value="{{ dressing.pk }}" id="dressing_{{ dressing.pk }}"
             {% if dressing.pk == current.pk %} checked="checked"{% endif %}>
 
           </td>
-          <td>{{ dressing.title }}</td>
+          <td><label for="dressing_{{ dressing.pk }}">{{ dressing.title }}</label></td>
           <td>
             {% if dressing.watermark %}
             <img src="{{ dressing.watermark.file.url }}" alt="{% trans 'Watermark' %}" width="50px">
