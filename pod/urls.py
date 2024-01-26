@@ -152,7 +152,7 @@ if getattr(settings, "USE_PLAYLIST", True):
     ]
 
 # AI ENHANCEMENT
-if True:  # TODO Add the USE_AI_ENHANCEMENT setting
+if getattr(settings, "USE_AI_ENHANCEMENT", True):
     urlpatterns += [
         path("ai-enhancement/", include("pod.ai_enhancement.urls", namespace="ai_enhancement")),
     ]
