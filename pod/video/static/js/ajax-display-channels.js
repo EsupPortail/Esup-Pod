@@ -113,8 +113,8 @@ function setModalTitle(modalContentElement, channelsCount) {
   const modalTitleElement = modalContentElement.querySelector(".modal-title");
   const channelIcon = '<i class="bi bi-play-btn" aria-hidden="true"></i>';
   var channelString = ngettext(
-    `%(count)s channel`,
-    `%(count)s channels`,
+    '%(count)s channel',
+    '%(count)s channels',
     channelsCount,
   );
   channelString = interpolate(channelString, { count: channelsCount }, true);
@@ -189,8 +189,8 @@ function convertToModalListElement(channel) {
   }
 
   var videoString = ngettext(
-    `%(count)s video`,
-    `%(count)s videos`,
+    '%(count)s video',
+    '%(count)s videos',
     channel.videoCount,
   );
   videoString = interpolate(videoString, { count: channel.videoCount }, true);

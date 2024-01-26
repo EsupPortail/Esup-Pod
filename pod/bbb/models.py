@@ -229,7 +229,7 @@ class Livestream(models.Model):
     )
     # If the user wants to download the video of this meeting after the live
     download_meeting = models.BooleanField(
-        verbose_name=_("Save meeting in Dashboard"),
+        verbose_name=_("Save meeting in dashboard"),
         help_text=_(
             "Do you want to save the video of "
             "this meeting, at the end of the live, directly in “Dashboard“?"

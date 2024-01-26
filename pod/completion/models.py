@@ -19,18 +19,28 @@ ROLE_CHOICES = getattr(
     settings,
     "ROLE_CHOICES",
     (
-        ("actor", _("actor")),
-        ("author", _("author")),
-        ("designer", _("designer")),
-        ("consultant", _("consultant")),
-        ("contributor", _("contributor")),
-        ("editor", _("editor")),
-        ("speaker", _("speaker")),
-        ("soundman", _("soundman")),
-        ("director", _("director")),
-        ("writer", _("writer")),
-        ("technician", _("technician")),
-        ("voice-over", _("voice-over")),
+        (_("Acting roles"), (
+            ("actor", _("Actor")),
+            ("voice-over", _("Voice-over")),
+        )),
+        (_("Creative roles"), (
+            ("author", _("Author")),
+            ("designer", _("Designer")),
+            ("editor", _("Editor")),
+            ("writer", _("Writer")),
+        )),
+        (_("Consulting roles"), (
+            ("consultant", _("Consultant")),
+        )),
+        (_("Production roles"), (
+            ("contributor", _("Contributor")),
+            ("director", _("Director")),
+            ("technician", _("Technician")),
+            ("soundman", _("Soundman")),
+        )),
+        (_("Speaking roles"), (
+            ("speaker", _("Speaker")),
+        )),
     ),
 )
 KIND_CHOICES = getattr(

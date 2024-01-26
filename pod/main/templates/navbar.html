@@ -32,7 +32,7 @@
         {% if HIDE_CHANNEL_TAB == False %}
           <li class="nav-item" id="nav-channels">
             <button class="nav-link" data-bs-toggle="modal" data-bs-target=".chaines-modal">
-              <i class="bi bi-play-btn pod-nav-link-icon" aria-hidden="true"></i> {% trans 'Channels' %}</button>
+              <i class="bi bi-play-btn pod-nav-link-icon" aria-hidden="true"></i>&nbsp;{% trans 'Channels' %}</button>
           </li>
           <li>
             <span class="progress">
@@ -49,7 +49,7 @@
         {% if "live" in THIRD_PARTY_APPS %}
           <li class="nav-item" id="nav-live">
             <a class="nav-link" href="{% url 'live:events'%}">
-              <i class="bi bi-broadcast pod-nav-link-icon" aria-hidden="true"></i> {% trans 'Lives' %}
+              <i class="bi bi-broadcast pod-nav-link-icon" aria-hidden="true"></i>&nbsp;{% trans 'Lives' %}
             </a>
           </li>
         {% endif %}
@@ -57,7 +57,7 @@
         {% if USE_PLAYLIST %}
           <li class="nav-item" id="nav-promoted-playlists">
             <a class="nav-link" href="{% url 'playlist:list' %}?visibility=promoted">
-              <i class="bi bi-list-stars pod-nav-link-icon" aria-hidden="true"></i> {% trans 'Promoted playlists' %}
+              <i class="bi bi-list-stars pod-nav-link-icon" aria-hidden="true"></i>&nbsp;{% trans 'Promoted playlists' %}
             </a>
           </li>
         {% endif %}
@@ -65,7 +65,7 @@
         {% if HIDE_TYPES_TAB == False %}
           <li class="nav-item" id="nav-types">
             <button class="nav-link" data-bs-toggle="modal" data-bs-target=".types-modal">
-              <i class="bi bi-tv pod-nav-link-icon" aria-hidden="true"></i> {% trans 'Types' %}
+              <i class="bi bi-tv pod-nav-link-icon" aria-hidden="true"></i>&nbsp;{% trans 'Types' %}
             </button>
           </li>
         {% endif %}
@@ -73,7 +73,7 @@
         {% if HIDE_USER_TAB == False and user.is_authenticated %}
           <li class="nav-item" id="nav-users">
             <button class="nav-link" data-bs-toggle="modal" data-bs-target=".users-modal">
-              <i class="bi bi-people pod-nav-link-icon" aria-hidden="true"></i> {% trans 'Users' %}
+              <i class="bi bi-people pod-nav-link-icon" aria-hidden="true"></i>&nbsp;{% trans 'Users' %}
             </button>
           </li>
         {% endif %}
@@ -269,7 +269,7 @@
                 <a class="nav-item nav-link" href="{% url 'channels:my_channels' %}"><i class="bi bi-play-btn pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My channels' %}</a>
               {% endif %}
               {% if request.user.is_superuser or perms.dressing.video_dressing or request.user.is_staff %}
-              <a class="nav-item nav-link" href="{% url 'dressing:my_dressings' %}"><i class="bi bi-palette pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My dressings' %}</a>
+                <a class="nav-item nav-link" href="{% url 'dressing:my_dressings' %}"><i class="bi bi-palette pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My dressings' %}</a>
               {% endif %}
               {% if request.user.is_staff and USE_PODFILE %}
                 <a class="nav-item nav-link" href="{% url 'podfile:home' %}"><i class="bi bi-folder pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My files' %}</a>

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-26 09:04+0100\n"
+"POT-Creation-Date: 2024-01-26 09:51+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -504,7 +504,7 @@ msgid "Do you want to show the public chat in the live?"
 msgstr ""
 
 #: pod/bbb/models.py
-msgid "Save meeting in Dashboard"
+msgid "Save meeting in dashboard"
 msgstr ""
 
 #: pod/bbb/models.py
@@ -1066,51 +1066,71 @@ msgid "Video additions"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "actor"
+msgid "Acting roles"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "author"
+msgid "Actor"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "designer"
+msgid "Voice-over"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "consultant"
+msgid "Creative roles"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "contributor"
-msgstr ""
-
-#: pod/completion/models.py pod/completion/tests/test_views.py
-msgid "editor"
+msgid "Author"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "speaker"
+msgid "Designer"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "soundman"
+msgid "Editor"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "director"
+msgid "Writer"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "writer"
+msgid "Consulting roles"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "technician"
+msgid "Consultant"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "voice-over"
+msgid "Production roles"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Contributor"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Director"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Technician"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Soundman"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Speaking roles"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Speaker"
 msgstr ""
 
 #: pod/completion/models.py pod/completion/templates/video_caption_maker.html
@@ -1147,10 +1167,6 @@ msgstr ""
 #: pod/completion/templates/contributor/list_contributor.html
 #: pod/enrichment/models.py pod/main/models.py
 msgid "Web link"
-msgstr ""
-
-#: pod/completion/models.py
-msgid "Contributor"
 msgstr ""
 
 #: pod/completion/models.py
@@ -1760,6 +1776,10 @@ msgid ""
 "want to display with the option \"Show background\""
 msgstr ""
 
+#: pod/completion/tests/test_views.py
+msgid "editor"
+msgstr ""
+
 #: pod/completion/views.py
 msgid "You cannot complement this video."
 msgstr ""
@@ -1980,8 +2000,12 @@ msgstr ""
 msgid "Editing the dressing"
 msgstr ""
 
-#: pod/dressing/templates/dressing_edit.html
+#: pod/dressing/templates/dressing_edit.html pod/dressing/views.py
 msgid "Create a new dressing"
+msgstr ""
+
+#: pod/dressing/templates/dressing_edit.html pod/video/forms.py
+msgid "General settings"
 msgstr ""
 
 #: pod/dressing/templates/my_dressings.html
@@ -2036,7 +2060,7 @@ msgid "No dressings found."
 msgstr ""
 
 #: pod/dressing/templates/my_dressings.html
-msgid "Add new object"
+msgid "Add new dressing"
 msgstr ""
 
 #: pod/dressing/templates/video_dressing.html
@@ -2752,15 +2776,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -6562,8 +6586,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -6840,10 +6864,6 @@ msgstr ""
 
 #: pod/video/forms.py
 msgid "Source file"
-msgstr ""
-
-#: pod/video/forms.py
-msgid "General settings"
 msgstr ""
 
 #: pod/video/forms.py pod/video/templates/videos/dashboard.html
@@ -7586,6 +7606,10 @@ msgid "Cursus"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
+msgid "Other actions"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
 msgid "No video found"
 msgstr ""
 
@@ -8060,7 +8084,7 @@ msgid "Create a note"
 msgstr ""
 
 #: pod/video/templates/videos/video_notes.html
-msgid "Download the notes"
+msgid "Download notes"
 msgstr ""
 
 #: pod/video/templates/videos/video_notes.html

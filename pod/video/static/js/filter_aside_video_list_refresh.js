@@ -68,11 +68,7 @@ function refreshInfiniteLoader(url, nextPage) {
  * @param newCount
  */
 function replaceCountVideos(newCount) {
-  let videoFoundStr = ngettext(
-    `%(count)s video found`,
-    `%(count)s videos found`,
-    newCount,
-  );
+  let videoFoundStr = ngettext("%(count)s video found", "%(count)s videos found", newCount,);
   videoFoundStr = interpolate(videoFoundStr, { count: newCount }, true);
   document.getElementById("video_count").innerHTML = videoFoundStr;
 }
@@ -305,9 +301,9 @@ if (urlParams.has("owner") && !ownerFilter) {
     null,
     "",
     location.protocol +
-      "//" +
-      location.host +
-      location.pathname +
-      urlParams.toString(),
+    "//" +
+    location.host +
+    location.pathname +
+    urlParams.toString(),
   );
 }

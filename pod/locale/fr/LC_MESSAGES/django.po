@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-26 09:04+0100\n"
+"POT-Creation-Date: 2024-01-26 09:51+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -516,8 +516,8 @@ msgid "Do you want to show the public chat in the live?"
 msgstr "Souhaitez-vous montrer le tchat public en direct ?"
 
 #: pod/bbb/models.py
-msgid "Save meeting in Dashboard"
-msgstr "Enregistrer la session dans le tableau de bord"
+msgid "Save meeting in dashboard"
+msgstr "Enregistrer la réunion dans le tableau de bord"
 
 #: pod/bbb/models.py
 msgid ""
@@ -1129,52 +1129,72 @@ msgid "Video additions"
 msgstr "Compléments de la vidéo"
 
 #: pod/completion/models.py
-msgid "actor"
-msgstr "acteur"
+msgid "Acting roles"
+msgstr "Rôles d'acteur"
 
 #: pod/completion/models.py
-msgid "author"
-msgstr "auteur"
+msgid "Actor"
+msgstr "Acteur"
 
 #: pod/completion/models.py
-msgid "designer"
-msgstr "concepteur"
+msgid "Voice-over"
+msgstr "Voix-off"
 
 #: pod/completion/models.py
-msgid "consultant"
-msgstr "consultant"
+msgid "Creative roles"
+msgstr "Rôles créatifs"
 
 #: pod/completion/models.py
-msgid "contributor"
-msgstr "contributeur"
-
-#: pod/completion/models.py pod/completion/tests/test_views.py
-msgid "editor"
-msgstr "éditeur"
+msgid "Author"
+msgstr "Auteur"
 
 #: pod/completion/models.py
-msgid "speaker"
-msgstr "intervenant"
+msgid "Designer"
+msgstr "Concepteur"
 
 #: pod/completion/models.py
-msgid "soundman"
-msgstr "preneur de son"
+msgid "Editor"
+msgstr "Éditeur"
 
 #: pod/completion/models.py
-msgid "director"
-msgstr "réalisateur"
+msgid "Writer"
+msgstr "Scénariste"
 
 #: pod/completion/models.py
-msgid "writer"
-msgstr "scénariste"
+msgid "Consulting roles"
+msgstr "Rôles de consultation"
 
 #: pod/completion/models.py
-msgid "technician"
-msgstr "technicien"
+msgid "Consultant"
+msgstr "Consultant"
 
 #: pod/completion/models.py
-msgid "voice-over"
-msgstr "voix-off"
+msgid "Production roles"
+msgstr "Rôles de production"
+
+#: pod/completion/models.py
+msgid "Contributor"
+msgstr "Contributeur"
+
+#: pod/completion/models.py
+msgid "Director"
+msgstr "Réalisateur"
+
+#: pod/completion/models.py
+msgid "Technician"
+msgstr "Technicien"
+
+#: pod/completion/models.py
+msgid "Soundman"
+msgstr "Ingénieur du son"
+
+#: pod/completion/models.py
+msgid "Speaking roles"
+msgstr "Rôles d'orateur"
+
+#: pod/completion/models.py
+msgid "Speaker"
+msgstr "Intervenant"
 
 #: pod/completion/models.py pod/completion/templates/video_caption_maker.html
 msgid "subtitles"
@@ -1211,10 +1231,6 @@ msgstr "rôle"
 #: pod/enrichment/models.py pod/main/models.py
 msgid "Web link"
 msgstr "Lien web"
-
-#: pod/completion/models.py
-msgid "Contributor"
-msgstr "Contributeur"
 
 #: pod/completion/models.py
 msgid "Contributors"
@@ -1850,6 +1866,10 @@ msgstr ""
 "Vous pouvez ajouter un fond opaque ou transparent au texte que vous voulez "
 "afficher avec l’option \"Afficher le fond\""
 
+#: pod/completion/tests/test_views.py
+msgid "editor"
+msgstr "éditeur"
+
 #: pod/completion/views.py
 msgid "You cannot complement this video."
 msgstr "Vous ne pouvez pas compléter cette vidéo."
@@ -2083,9 +2103,13 @@ msgstr "Retour à l'habillage"
 msgid "Editing the dressing"
 msgstr "Éditer l'habillage"
 
-#: pod/dressing/templates/dressing_edit.html
+#: pod/dressing/templates/dressing_edit.html pod/dressing/views.py
 msgid "Create a new dressing"
 msgstr "Créer un nouvel habillage"
+
+#: pod/dressing/templates/dressing_edit.html pod/video/forms.py
+msgid "General settings"
+msgstr "Paramètres généraux"
 
 #: pod/dressing/templates/my_dressings.html
 msgid "List of dressings I can use or manage."
@@ -2139,8 +2163,8 @@ msgid "No dressings found."
 msgstr "Aucun habillage trouvé"
 
 #: pod/dressing/templates/my_dressings.html
-msgid "Add new object"
-msgstr "Ajouter un nouvel objet"
+msgid "Add new dressing"
+msgstr "Ajouter un nouvel habillage"
 
 #: pod/dressing/templates/video_dressing.html
 #: pod/video/templates/videos/link_video.html
@@ -2916,8 +2940,8 @@ msgid ""
 "This video was uploaded to Pod; its origin is %(type)s: <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
-"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
 #: pod/import_video/views.py pod/meeting/views.py
 msgid "Try changing the record type or address for this recording."
@@ -2928,8 +2952,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video '%(name)s' was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
@@ -2937,8 +2961,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video '%(name)s' was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "Youtube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
@@ -3955,7 +3979,9 @@ msgid "Past events"
 msgstr "Évènements passés"
 
 #: pod/live/templatetags/event_tags.py
-msgid "QR code event's link:"
+#, fuzzy
+#| msgid "QR code event's link:"
+msgid "QR code event's link"
 msgstr "QR code pour le lien de l'évènement :"
 
 #: pod/live/utils.py
@@ -5886,16 +5912,16 @@ msgid ""
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à une réunion récurrente "
-"<b>%(meeting_title)s</b>.</p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente <b>"
+"%(meeting_title)s</b>.</p>\n"
 "        <p>Date de début : %(start_date_time)s </p>\n"
 "        <p>Récurrent jusqu’à la date : %(end_date)s </p>\n"
 "        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
 "p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<b>%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
+"%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -5921,8 +5947,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<b>%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
+"%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -6952,8 +6978,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -7032,10 +7058,9 @@ msgid ""
 msgstr ""
 "<p>Bonjour,<br> un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur « %(recorder)s ».<br>Pour "
-"l’ajouter, cliquez sur le lien ci-dessous.</p><p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br><em>Si le lien n’est pas actif, il "
-"faut le copier-coller dans la barre d’adresse de votre navigateur.</em></"
-"p><p>Cordialement.</p>"
+"l’ajouter, cliquez sur le lien ci-dessous.</p><p><a href=\"%(link_url)s\">"
+"%(link_url)s</a><br><em>Si le lien n’est pas actif, il faut le copier-coller "
+"dans la barre d’adresse de votre navigateur.</em></p><p>Cordialement.</p>"
 
 #: pod/recorder/views.py
 msgid "New recording added."
@@ -7291,10 +7316,6 @@ msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne
 msgid "Source file"
 msgstr "Fichier source"
 
-#: pod/video/forms.py
-msgid "General settings"
-msgstr "Paramètres généraux"
-
 #: pod/video/forms.py pod/video/templates/videos/dashboard.html
 msgid "Channel options"
 msgstr "Options de chaîne"
@@ -7379,8 +7400,8 @@ msgid ""
 "%(url)s</a></p>\n"
 msgstr ""
 "vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
-"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
-"target=\"_blank\">%(scheme)s:%(url)s</a></p>\n"
+"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" target=\"_blank\">"
+"%(scheme)s:%(url)s</a></p>\n"
 "\n"
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -8084,6 +8105,10 @@ msgid "Cursus"
 msgstr "Cursus"
 
 #: pod/video/templates/videos/dashboard.html
+msgid "Other actions"
+msgstr "Autres actions"
+
+#: pod/video/templates/videos/dashboard.html
 msgid "No video found"
 msgstr "Aucune vidéo trouvée."
 
@@ -8213,8 +8238,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
-"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
+"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html
 msgid "Other versions"
@@ -8581,7 +8606,7 @@ msgid "Create a note"
 msgstr "Créer une nouvelle note"
 
 #: pod/video/templates/videos/video_notes.html
-msgid "Download the notes"
+msgid "Download notes"
 msgstr "Télécharger les notes"
 
 #: pod/video/templates/videos/video_notes.html
@@ -8609,7 +8634,9 @@ msgid ": "
 msgstr " : "
 
 #: pod/video/templatetags/video_tags.py
-msgid "QR code video's link:"
+#, fuzzy
+#| msgid "QR code video's link:"
+msgid "QR code video's link"
 msgstr "QR code pour le lien de la vidéo :"
 
 #: pod/video/templatetags/video_tags.py
