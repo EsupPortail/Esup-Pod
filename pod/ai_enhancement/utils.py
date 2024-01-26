@@ -133,5 +133,10 @@ class AristoteAI:
 
     def get_latest_enrichment_version(self, enrichment_id: str) -> Response or None:
         """Get the latest enrichment version."""
-        path = f"/{API_VERSION}/enrichments/{enrichment_id}/latest"
+        path = f"/{API_VERSION}/enrichments/{enrichment_id}/versions/latest"
+        return self.get_response(path)
+
+    def get_enrichment_versions(self, enrichment_id: str, with_transcript: bool = True) -> Response or None:
+        """Get the enrichment versions."""
+        path = f"/{API_VERSION}/enrichments/{enrichment_id}/versions?withTranscript={with_transcript}"
         return self.get_response(path)

@@ -194,3 +194,33 @@ class AristoteAITestCase(TestCase):
         result = aristote_ai.get_latest_enrichment_version("mocked_id")
         self.assertEqual(result, mock_response)
         print(" --->  test_get_latest_enrichment_version_failure ok")
+
+    @patch("requests.get")
+    def test_get_enrichment_versions_success(self, mock_get):
+        mock_response = Response()
+        mock_response.status_code = 200
+        mock_response.json = lambda: {
+            "content": [],
+            "totalElements": 0,
+            "currentPage": 1,
+            "isLastPage": True,
+        }
+        mock_get.return_value = mock_response
+
+        aristote_ai = AristoteAI(self.client_id, self.client_secret)
+        aristote_ai.token = "mocked_token"
+        result = aristote_ai.get_enrichment_versions("mocked_id")
+        self.assertEqual(result, mock_response.json())
+        print(" --->  test_get_latest_enrichment_version_success ok")
+
+    @patch("requests.get")
+    def test_get_enrichment_versions_failure(self, mock_get):
+        mock_response = Response()
+        mock_response.status_code = 401
+        mock_get.return_value = mock_response
+
+        aristote_ai = AristoteAI(self.client_id, self.client_secret)
+        aristote_ai.token = "mocked_token"
+        result = aristote_ai.get_enrichment_versions("mocked_id")
+        self.assertEqual(result, mock_response)
+        print(" --->  test_get_latest_enrichment_version_failure ok")
