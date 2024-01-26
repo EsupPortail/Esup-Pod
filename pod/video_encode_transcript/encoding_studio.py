@@ -93,7 +93,7 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
         encode_video = getattr(encode, ENCODE_VIDEO)
         encode_video(video.id, False)
     else:
-        msg = "Wrong file or path:" + "\n%s" % video_output
+        msg = "Wrong file or path:\n%s" % video_output
         send_email_recording(msg, recording_id)
 
 

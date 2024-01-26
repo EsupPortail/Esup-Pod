@@ -113,7 +113,7 @@ def encode_video(video_id):
     video_to_encode.save()
 
     if not check_file(video_to_encode.video.path):
-        msg = "Wrong file or path:" + "\n%s" % video_to_encode.video.path
+        msg = "Wrong file or path:\n%s" % video_to_encode.video.path
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)

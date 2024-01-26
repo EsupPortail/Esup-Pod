@@ -20,7 +20,7 @@ from .utils import get_dressings
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_dressing(request, slug):
-    """View for video dressing"""
+    """View for video dressing."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
@@ -60,7 +60,10 @@ def video_dressing(request, slug):
     return render(
         request,
         "video_dressing.html",
-        {"video": video, "dressings": dressings, "current": current},
+        {"video": video,
+         "dressings": dressings,
+         "current": current,
+         "page_title": _("Dress the video “%s”" % video.title)},
     )
 
 
@@ -180,7 +183,14 @@ def dressing_delete(request, dressing_id):
                 _("One or more errors have been found in the form."),
             )
 
-    return render(request, "dressing_delete.html", {"dressing": dressing, "form": form})
+    return render(
+        request,
+        "dressing_delete.html",
+        {"dressing": dressing,
+         "form": form,
+         "page_title": _("Deleting the dressing “%s”" % dressing.title)
+         }
+    )
 
 
 @csrf_protect
@@ -199,4 +209,7 @@ def my_dressings(request):
         return redirect(reverse("maintenance"))
     dressings = get_dressings(request.user, request.user.owner.accessgroup_set.all())
 
-    return render(request, "my_dressings.html", {"dressings": dressings})
+    return render(
+        request,
+        "my_dressings.html",
+        {"dressings": dressings, "page_title": _("My dressings")})

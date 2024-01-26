@@ -5,11 +5,7 @@
 {% block breadcrumbs %}
     {{ block.super }}
     <li class="breadcrumb-item"><a href="{% url 'dressing:my_dressings' %}">{% trans 'My dressings' %}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{% trans "Deleting the dressing" %} "{{dressing.title}}"</li>
-{% endblock %}
-
-{% block page_title %}
-    {% blocktrans with vtitle=dressing.title %}Deleting the dressing "{{ vtitle }}"{% endblocktrans %}
+    <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
 {% endblock %}
 
 {% block page_content %}

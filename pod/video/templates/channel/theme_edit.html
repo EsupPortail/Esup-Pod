@@ -20,12 +20,12 @@
 {% endblock breadcrumbs %}
 
 {% block page_title %}
-{% trans "Editing the channel's themes" %} "{{channel.title}}"
+{% trans "Editing the channel’s themes" %} "{{channel.title}}"
 {% endblock %}
 
 
 {% block page_content %}
-<h1 class="page_title">{% trans "Editing the channel's themes" %} {{channel.title}}
+<h1 class="page_title">{% trans "Editing the channel’s themes" %} {{channel.title}}
   <span class="float-end">
     <a href="{% url 'channel-video:channel' slug_c=channel.slug %}" class="btn btn-link">
       <i class="bi bi-play-btn"></i>&nbsp;{% trans "View the channel"%}

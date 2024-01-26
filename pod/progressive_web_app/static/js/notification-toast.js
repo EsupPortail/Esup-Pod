@@ -66,7 +66,7 @@ async function setPushPreference(notificationSettingUrl) {
     notificationsPreferenceTips.classList.remove("alert-error");
     notificationsPreferenceTips.classList.add("alert-warning");
     notificationsPreferenceTips.textContent = gettext(
-      "Don't forget to allow notifications from this website in your browser's settings!",
+      "Don’t forget to allow notifications from this website in your browser’s settings!",
     );
 
     subscribe(registration, afterBrowserNotificationPermissionChanged);

@@ -1,3 +1,4 @@
+"""Esup-Pod Authentication backends."""
 from shibboleth.backends import ShibbolethRemoteUserBackend
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from django.contrib.sites.shortcuts import get_current_site
@@ -14,10 +15,13 @@ CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION
 
 
 def is_staff_affiliation(affiliation):
+    """Check if user affiliation correspond to AFFILIATION_STAFF."""
     return affiliation in AFFILIATION_STAFF
 
 
 class ShibbBackend(ShibbolethRemoteUserBackend):
+    """Shibboleth backend authentication."""
+
     def authenticate(self, request, remote_user, shib_meta):
         """
         Username passed as `remote_user` is considered trusted.
@@ -44,6 +48,7 @@ class ShibbBackend(ShibbolethRemoteUserBackend):
 
     @staticmethod
     def update_owner_params(user, params):
+        """Update owner params from Shibboleth."""
         user.owner.auth_type = "Shibboleth"
         if get_current_site(None) not in user.owner.sites.all():
             user.owner.sites.add(get_current_site(None))
@@ -73,7 +78,10 @@ OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = getattr(
 
 
 class OIDCBackend(OIDCAuthenticationBackend):
+    """OIDC backend authentication."""
+
     def create_user(self, claims):
+        """Create user connectd by OIDC."""
         user = super(OIDCBackend, self).create_user(claims)
 
         user.first_name = claims.get(OIDC_CLAIM_GIVEN_NAME, "")
@@ -93,6 +101,7 @@ class OIDCBackend(OIDCAuthenticationBackend):
         return user
 
     def update_user(self, user, claims):
+        """Update OIDC user."""
         user.first_name = claims.get(OIDC_CLAIM_GIVEN_NAME, "")
         user.last_name = claims.get(OIDC_CLAIM_FAMILY_NAME, "")
         user.save()

@@ -241,8 +241,8 @@ class Livestream(models.Model):
         verbose_name=_("Enable chat"),
         help_text=_(
             "Do you want a chat on the live page "
-            "for students? Messages sent in this live page's chat will "
-            "end up in BigBlueButton's public chat."
+            "for students? Messages sent in this live page’s chat will "
+            "end up in BigBlueButton’s public chat."
         ),
         default=False,
     )

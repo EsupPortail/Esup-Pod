@@ -130,7 +130,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                     _(
                         "In this field you can select and add additional owners to the "
                         "video. These additional owners will have the same rights as "
-                        "you except that they can't delete this video."
+                        "you except that they can’t delete this video."
                     )
                 ],
             ),
@@ -285,7 +285,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 "{0}".format(_("Restricted access")),
                 [
                     _(
-                        "If you don't select “Draft mode”, you can restrict "
+                        "If you don’t select “Draft mode”, you can restrict "
                         "the content access to only people who can log in"
                     )
                 ],
@@ -294,7 +294,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 "{0}".format(_("Password")),
                 [
                     _(
-                        "If you don't select “Draft mode”, you can add a password "
+                        "If you don’t select “Draft mode”, you can add a password "
                         "which will be asked to anybody willing to watch "
                         "your content."
                     ),
@@ -1217,7 +1217,7 @@ class AdvancedNotesForm(forms.ModelForm):
         self.fields["note"].widget.attrs["rows"] = 3
         self.fields["note"].widget.attrs["cols"] = 20
         self.fields["note"].required = True
-        self.fields["note"].help_text = _("A note can't be empty")
+        self.fields["note"].help_text = _("A note can’t be empty")
         self.fields["timestamp"].widget = forms.HiddenInput()
         self.fields["timestamp"].widget.attrs["class"] = "form-control"
         self.fields["timestamp"].widget.attrs["autocomplete"] = "off"
@@ -1241,7 +1241,7 @@ class NoteCommentsForm(forms.ModelForm):
         self.fields["comment"].widget.attrs["rows"] = 3
         self.fields["comment"].widget.attrs["cols"] = 20
         self.fields["comment"].required = True
-        self.fields["comment"].help_text = _("A comment can't be empty")
+        self.fields["comment"].help_text = _("A comment can’t be empty")
         self.fields["status"].widget.attrs["class"] = "form-select"
 
     class Meta(object):

@@ -1,3 +1,6 @@
+/**
+ * @file Esup-Pod functions for regroup_videos_by_theme.
+ */
 import { Helper } from "/static/js/utils.js";
 
 function run(has_more_themes, Helper) {

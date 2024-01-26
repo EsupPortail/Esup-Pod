@@ -2512,7 +2512,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   >>             "{0}".format(_("Restricted access")), 
   >>             [ 
   >>                 _( 
-  >>                     "If you don't select “Draft mode”, you can restrict " 
+  >>                     "If you don’t select “Draft mode”, you can restrict " 
   >>                     "the content access to only people who can log in" 
   >>                 ) 
   >>             ], 
@@ -2521,7 +2521,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   >>             "{0}".format(_("Password")), 
   >>             [ 
   >>                 _( 
-  >>                     "If you don't select “Draft mode”, you can add a password " 
+  >>                     "If you don’t select “Draft mode”, you can add a password " 
   >>                     "which will be asked to anybody willing to watch " 
   >>                     "your content." 
   >>                 ), 

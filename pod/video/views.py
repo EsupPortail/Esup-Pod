@@ -495,13 +495,14 @@ def theme_edit_save(request, channel):
 @login_required(redirect_field_name="referrer")
 def dashboard(request):
     """
-    Render the logged user's dashboard (videos list/bulk update's interface).
+    Render the logged user's dashboard: videos list/bulk update's interface.
 
     Args:
         request (Request): current HTTP Request.
 
     Returns:
-        Render of global views with updated filtered and sorted videos, categories, display_mode, etc...
+        Render of global views with updated filtered and sorted videos, categories,
+         display_mode, etc...
     """
     data_context = {}
     site = get_current_site(request)
@@ -599,6 +600,9 @@ def dashboard(request):
         current_user=request.user,
         initial={"owner": default_owner},
     )
+    # Remove fields we don't want to be bulk-modified
+    for unwanted in ['title', 'video']:
+        del form.fields[unwanted]
 
     data_context["form"] = form
     data_context["fieldsets_dashboard"] = [
@@ -2611,7 +2615,7 @@ def vote_post(request, video_slug, comment_id):
         return HttpResponseNotFound("<h1>Method Not Allowed</h1>", status=405)
     if in_maintenance():
         return HttpResponseForbidden(
-            _("Sorry, you can't vote a comment while the server is under maintenance.")
+            _("Sorry, you can’t vote a comment while the server is under maintenance.")
         )
     # current video
     c_video = get_object_or_404(Video, slug=video_slug)
@@ -2642,7 +2646,7 @@ def vote_post(request, video_slug, comment_id):
 def add_comment(request, video_slug, comment_id=None):
     if in_maintenance():
         return HttpResponseForbidden(
-            _("Sorry, you can't comment while the server is under maintenance.")
+            _("Sorry, you can’t comment while the server is under maintenance.")
         )
     if request.method == "POST":
         # current video
@@ -2833,7 +2837,7 @@ def delete_comment(request, video_slug, comment_id):
 
     if in_maintenance():
         return HttpResponseForbidden(
-            _("Sorry, you can't delete a comment while the server is under maintenance.")
+            _("Sorry, you can’t delete a comment while the server is under maintenance.")
         )
 
     if c.author == c_user or v.owner == c_user or c_user.is_superuser:

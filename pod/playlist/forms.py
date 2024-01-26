@@ -71,9 +71,7 @@ class PlaylistForm(forms.ModelForm):
         ),
         choices=Playlist.VISIBILITY_CHOICES,
         help_text=_(
-            """
-            Please chosse a right of access among 'public', 'password-protected', 'private'.
-            """
+            "Please choose an access right among “public”, “password-protected”, “private”."
         ),
     )
     password = forms.CharField(

@@ -1,3 +1,6 @@
+/**
+ * @file Esup-Pod functions for videojs-chapters.
+ */
 (function () {
   "use strict";
   var videojs = null;
