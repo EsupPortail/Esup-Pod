@@ -1,4 +1,5 @@
 """Esup-Pod videos views."""
+
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger

@@ -1,4 +1,5 @@
 """Encoding video."""
+
 import json
 import os
 import time

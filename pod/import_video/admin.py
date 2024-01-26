@@ -1,4 +1,5 @@
 """Admin for the Import video module."""
+
 from django.contrib import admin
 from .models import ExternalRecording
 

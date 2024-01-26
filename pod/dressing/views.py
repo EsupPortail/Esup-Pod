@@ -1,4 +1,5 @@
 """Esup-Pod dressing views."""
+
 from django.shortcuts import render, redirect, get_object_or_404
 from pod.main.views import in_maintenance
 from django.urls import reverse
@@ -7,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 
 from pod.video.models import Video
 from pod.video_encode_transcript.encode import start_encode
@@ -21,30 +23,39 @@ def video_dressing(request, slug):
     """View for video dressing"""
     if in_maintenance():
         return redirect(reverse("maintenance"))
+
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     dressings = get_dressings(request.user, request.user.owner.accessgroup_set.all())
 
+    if not (
+        request.user.is_superuser
+        or request.user.is_staff
+        or request.user.has_perm("dressing.video_dressing")
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot dress this video."))
+        raise PermissionDenied
+
     if request.method == "POST":
         selected_dressing_value = request.POST.get("selected_dressing_value")
-        if selected_dressing_value is not None:
-            selected_dressing = get_object_or_404(Dressing, pk=selected_dressing_value)
-            existing = Dressing.objects.filter(videos=video)
-            for dressing in existing:
-                dressing.videos.remove(video)
-                dressing.save()
+        selected_dressing = (
+            get_object_or_404(Dressing, pk=selected_dressing_value)
+            if selected_dressing_value
+            else None
+        )
 
+        existing = Dressing.objects.filter(videos=video)
+        for dressing in existing:
+            dressing.videos.remove(video)
+            dressing.save()
+
+        if selected_dressing:
             selected_dressing.videos.add(video)
             selected_dressing.save()
-            start_encode(video.id)
-        else:
-            start_encode(video.id)
 
+        start_encode(video.id)
         return redirect(reverse("video:video", args=(video.slug,)))
 
-    try:
-        current = Dressing.objects.get(videos=video)
-    except Dressing.DoesNotExist:
-        current = None
+    current = Dressing.objects.filter(videos=video).first()
 
     return render(
         request,
@@ -58,6 +69,17 @@ def video_dressing(request, slug):
 def dressing_edit(request, dressing_id):
     """Edit a dressing object."""
     dressing_edit = get_object_or_404(Dressing, id=dressing_id)
+
+    if dressing_edit and (
+        not (
+            request.user.is_superuser
+            or request.user.is_staff
+            or request.user.has_perm("dressing.dressing_edit")
+        )
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot edit this dressing."))
+        raise PermissionDenied
+
     form_dressing = DressingForm(
         instance=dressing_edit,
         is_staff=request.user.is_staff,
@@ -93,6 +115,17 @@ def dressing_edit(request, dressing_id):
 @login_required(redirect_field_name="referrer")
 def dressing_create(request):
     """Create a dressing object."""
+
+    if (
+        not request.user.is_superuser
+        or request.user.is_staff
+        or request.user.has_perm("dressing.my_dressings")
+    ):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot create a video dressing.")
+        )
+        raise PermissionDenied
+
     if request.method == "POST":
         form_dressing = DressingForm(request.POST, user=request.user)
         if form_dressing.is_valid():
@@ -118,6 +151,18 @@ def dressing_delete(request, dressing_id):
     """Delete the dressing identified by 'id'."""
     dressing = get_object_or_404(Dressing, id=dressing_id)
 
+    if dressing and (
+        not (
+            request.user.is_superuser
+            or request.user.is_staff
+            or request.user.has_perm("dressing.dressing_delete")
+        )
+    ):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete this dressing.")
+        )
+        raise PermissionDenied
+
     form = DressingDeleteForm()
 
     if request.method == "POST":
@@ -142,6 +187,14 @@ def dressing_delete(request, dressing_id):
 @login_required(redirect_field_name="referrer")
 def my_dressings(request):
     """Render the logged user's dressings."""
+
+    if not (
+        request.user.is_superuser
+        or request.user.is_staff
+        or request.user.has_perm("dressing.my_dressings")
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot access this page."))
+        raise PermissionDenied
     if in_maintenance():
         return redirect(reverse("maintenance"))
     dressings = get_dressings(request.user, request.user.owner.accessgroup_set.all())

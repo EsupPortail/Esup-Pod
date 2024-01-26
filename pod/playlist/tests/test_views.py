@@ -2,6 +2,7 @@
 
 *  run with 'python manage.py test pod.playlist.tests.test_views'
 """
+
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.urls import reverse

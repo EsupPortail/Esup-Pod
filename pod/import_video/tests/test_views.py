@@ -1,4 +1,5 @@
 """Tests the views for import_video module."""
+
 from ..models import ExternalRecording
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site

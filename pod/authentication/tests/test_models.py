@@ -9,7 +9,6 @@ SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 
 
 class OwnerTestCase(TestCase):
-
     """OwnerTestCase"""
 
     def setUp(self):
@@ -34,7 +33,6 @@ class OwnerTestCase(TestCase):
 
 
 class AccessGroupTestCase(TestCase):
-
     """AcessGroupTestCase"""
 
     def setUp(self):

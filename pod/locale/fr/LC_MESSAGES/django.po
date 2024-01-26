@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-25 10:30+0000\n"
+"POT-Creation-Date: 2024-01-26 09:20+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2185,14 +2185,34 @@ msgstr "Sélectionner"
 msgid "Apply"
 msgstr "Appliquer"
 
+#: pod/dressing/views.py
+msgid "You cannot dress this video."
+msgstr "Vous ne pouvez pas habiller cette vidéo."
+
+#: pod/dressing/views.py
+msgid "You cannot edit this dressing."
+msgstr "Vous ne pouvez pas éditer cet habillage."
+
 #: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
 #: pod/meeting/views.py pod/video/views.py
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
 
 #: pod/dressing/views.py
+msgid "You cannot create a video dressing."
+msgstr "Vous ne pouvez pas créer d'habillage de vidéo."
+
+#: pod/dressing/views.py
+msgid "You cannot delete this dressing."
+msgstr "Vous ne pouvez pas supprimer cet habillage."
+
+#: pod/dressing/views.py
 msgid "The dressing has been deleted."
 msgstr "L’habillage a été supprimé."
+
+#: pod/dressing/views.py
+msgid "You cannot access this page."
+msgstr "Vous ne pouvez pas accéder à cette page"
 
 #: pod/enrichment/apps.py pod/enrichment/models.py
 msgid "Enrichments"
@@ -3959,7 +3979,9 @@ msgid "Past events"
 msgstr "Évènements passés"
 
 #: pod/live/templatetags/event_tags.py
-msgid "QR code event's link:"
+#, fuzzy
+#| msgid "QR code event's link:"
+msgid "QR code event's link"
 msgstr "QR code pour le lien de l'évènement :"
 
 #: pod/live/utils.py
@@ -4837,7 +4859,7 @@ msgstr ""
 "droite, mode sombre ou dyslexie etc.), gérer la session (authentification) "
 "et analyser le trafic du site (pour certaines instances)."
 
-#: pod/main/templates/base.html pod/video/templates/videos/add_video.html
+#: pod/main/templates/base.html
 msgid "Learn more"
 msgstr "En savoir plus"
 
@@ -8612,7 +8634,9 @@ msgid ": "
 msgstr " : "
 
 #: pod/video/templatetags/video_tags.py
-msgid "QR code video's link:"
+#, fuzzy
+#| msgid "QR code video's link:"
+msgid "QR code video's link"
 msgstr "QR code pour le lien de la vidéo :"
 
 #: pod/video/templatetags/video_tags.py

@@ -1,4 +1,5 @@
 """Unit tests for Esup-Pod playlist utilities."""
+
 import hashlib
 from django.test import TestCase
 from django.contrib.auth.models import User

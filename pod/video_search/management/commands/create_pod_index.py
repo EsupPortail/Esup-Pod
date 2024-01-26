@@ -1,4 +1,5 @@
 """create_pod_index management command."""
+
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from pod.video_search.utils import create_index_es, delete_index_es

@@ -1,4 +1,5 @@
 """Esup-Pod dressing models."""
+
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
@@ -124,8 +125,8 @@ class Dressing(models.Model):
             "watermark": self.watermark.file.url if self.watermark else None,
             "position": self.get_position_display(),
             "opacity": self.opacity,
-            "opening_credits": self.opening_credits.slug
-            if self.opening_credits
-            else None,
+            "opening_credits": (
+                self.opening_credits.slug if self.opening_credits else None
+            ),
             "ending_credits": self.ending_credits.slug if self.ending_credits else None,
         }

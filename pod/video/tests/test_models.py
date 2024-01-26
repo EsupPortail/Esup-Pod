@@ -1,4 +1,5 @@
 """Video Models test cases."""
+
 from django.test import TestCase
 from django.db.models import Count, Q
 from django.template.defaultfilters import slugify

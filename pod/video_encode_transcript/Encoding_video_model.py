@@ -1,4 +1,5 @@
 """Model for video encoding."""
+
 import os
 import re
 from django.conf import settings
