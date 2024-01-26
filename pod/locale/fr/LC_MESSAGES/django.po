@@ -2176,7 +2176,7 @@ msgstr "Les modifications ont été sauvegardées."
 
 #: pod/dressing/views.py
 msgid "You cannot create a video dressing."
-msgstr "Vous ne pouvez créer d'habillage de vidéo."
+msgstr "Vous ne pouvez pas créer d'habillage de vidéo."
 
 #: pod/dressing/views.py
 msgid "You cannot delete this dressing."
