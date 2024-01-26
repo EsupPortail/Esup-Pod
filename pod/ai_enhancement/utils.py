@@ -10,10 +10,18 @@ API_VERSION = "v1"
 
 
 class AristoteAI:
+    """Aristote AI Enhancement utilities."""
+
     def __init__(self, client_id, client_secret):
         self.client_id = client_id
         self.client_secret = client_secret
         self.token = None
+
+    def get_token(self):
+        """Get the token."""
+        if self.token is None:
+            self.connect_to_api()
+        return self.token
 
     def connect_to_api(self) -> Response or None:
         """Connect to the API."""
@@ -44,10 +52,15 @@ class AristoteAI:
             return None
 
     def get_response(self, path: str) -> Response or None:
-        """Get the AI response."""
+        """
+        Get the AI response.
+
+        Args:
+            path (str): The path to the API endpoint.
+        """
         headers = {
             "Accept": "application/json",
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {self.get_token()}",
         }
         try:
             response = requests.get(
@@ -69,11 +82,16 @@ class AristoteAI:
         return self.get_response(path)
 
     def get_specific_ai_enrichment(self, enrichment_id: str) -> Response or None:
-        """Get a specific AI enrichment."""
+        """
+        Get a specific AI enrichment.
+
+        Args:
+            enrichment_id (str): The enrichment id.
+        """
         path = f"/{API_VERSION}/enrichments/{enrichment_id}"
         return self.get_response(path)
 
-    def create_enrichment_from_file(
+    def create_enrichment_from_url(
             self,
             url: str,
             media_types: list,
@@ -87,14 +105,16 @@ class AristoteAI:
             "notificationWebhookUrl": notification_webhook_url,
             "enrichmentParameters": {
                 "mediaTypes": media_types,
-                "disciplines": list(Discipline.objects.all().values_list("title", flat=True)),
+                "disciplines": list(
+                    Discipline.objects.all().values_list("title", flat=True)
+                ),
                 "aiEvaluation": "true"      # TODO: change this
             },
             "enduserIdentifier": end_user_identifier,
         }
         headers = {
             "Accept": "application/json",
-            "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {self.get_token()}",
         }
         try:
             response = requests.post(
@@ -110,3 +130,8 @@ class AristoteAI:
         except requests.exceptions.RequestException as e:
             print(f"Request Exception: {e}")
             return None
+
+    def get_latest_enrichment_version(self, enrichment_id: str) -> Response or None:
+        """Get the latest enrichment version."""
+        path = f"/{API_VERSION}/enrichments/{enrichment_id}/latest"
+        return self.get_response(path)
