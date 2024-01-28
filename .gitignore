@@ -55,6 +55,7 @@ transcription/*
 # Unit test utilities #
 #######################
 chromedriver
+**/integration_tests/**/*.png
 
 ## Others
 pod/static/

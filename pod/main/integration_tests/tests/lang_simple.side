@@ -1,0 +1,118 @@
+{
+  "id": "f060a750-1757-4b5d-8ed0-ce6b1c49b62b",
+  "version": "2.0",
+  "name": "pod-front",
+  "url": "http://localhost:9090/",
+  "tests": [
+    {
+      "id": "pod-change-lang",
+      "name": "lang",
+      "commands": [
+        {
+          "id": "pod-open-home",
+          "comment": "Ouvre la page d'accueil",
+          "command": "open",
+          "target": "/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "pod-open-configuration",
+          "comment": "Ouvre la page de configuration",
+          "command": "click",
+          "target": "id=pod-param-buttons__button",
+          "targets": [
+            ["id=pod-param-buttons__button", "id"],
+            ["css=#pod-param-buttons__button", "css:finder"],
+            [
+              "xpath=//button[@id='pod-param-buttons__button']",
+              "xpath:attributes"
+            ],
+            ["xpath=//li[@id='pod-param-buttons']/button", "xpath:idRelative"],
+            ["xpath=//nav/div/ul/li/button", "xpath:position"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "pod-toggle-langue-menu",
+          "comment": "Sélectionne menu choix langue",
+          "command": "mouseOver",
+          "target": "id=pod-lang-select",
+          "targets": [
+            ["id=pod-lang-select", "id"],
+            ["css=#pod-lang-select", "css:finder"],
+            ["xpath=//button[@id='pod-lang-select']", "xpath:attributes"],
+            [
+              "xpath=//div[@id='pod-navbar__menusettings']/div[2]/ul/li/div/div/button",
+              "xpath:idRelative"
+            ],
+            ["xpath=//div[2]/ul/li/div/div/button", "xpath:position"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "pod-toggle-lang-select",
+          "comment": "Sélectionne la langue",
+          "command": "click",
+          "target": "id=pod-lang-select",
+          "targets": [
+            ["id=pod-lang-select", "id"],
+            ["css=#pod-lang-select", "css:finder"],
+            ["xpath=//button[@id='pod-lang-select']", "xpath:attributes"],
+            [
+              "xpath=//div[@id='pod-navbar__menusettings']/div[2]/ul/li/div/div/button",
+              "xpath:idRelative"
+            ],
+            ["xpath=//div[2]/ul/li/div/div/button", "xpath:position"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "pod-toggle-lang-deselect",
+          "comment": "Déselectionne langue actuelle",
+          "command": "mouseOut",
+          "target": "id=pod-lang-select",
+          "targets": [
+            ["id=pod-lang-select", "id"],
+            ["css=#pod-lang-select", "css:finder"],
+            ["xpath=//button[@id='pod-lang-select']", "xpath:attributes"],
+            [
+              "xpath=//div[@id='pod-navbar__menusettings']/div[2]/ul/li/div/div/button",
+              "xpath:idRelative"
+            ],
+            ["xpath=//div[2]/ul/li/div/div/button", "xpath:position"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "pod-toggle-lang-confirmation",
+          "comment": "Sélectionne langue ciblée",
+          "command": "click",
+          "target": "css=.dropdown-item",
+          "targets": [
+            ["css=.dropdown-item", "css:finder"],
+            ["xpath=//input[@value='English (en)']", "xpath:attributes"],
+            [
+              "xpath=//div[@id='pod-navbar__menusettings']/div[2]/ul/li/div/div/div/form/input[3]",
+              "xpath:idRelative"
+            ],
+            ["xpath=//input[3]", "xpath:position"]
+          ],
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "pod-front",
+      "name": "Esup Pod test selenium",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": ["pod-change-lang"]
+    }
+  ],
+  "urls": ["http://localhost:9090/"],
+  "plugins": []
+}

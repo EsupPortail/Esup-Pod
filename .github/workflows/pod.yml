@@ -7,10 +7,13 @@ on:
   pull_request:
     branches: ["*"]
 
+permissions:
+  pull-requests: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions: write-all
     strategy:
       max-parallel: 4
       matrix:
@@ -51,7 +54,7 @@ jobs:
 
       - name: Flake8 compliance
         run: |
-          flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py
+          flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py,side_*.py
 
       - name: Runs Elasticsearch
         uses: elastic/elastic-github-actions/elasticsearch@refactor_with_plugins
@@ -73,6 +76,20 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           coverage run --append --source='.' manage.py test -v 3 --settings=pod.main.test_settings
+
+      - name: Add Gecko driver
+        if: matrix.python-version == '3.9'
+        uses: browser-actions/setup-geckodriver@latest
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Integration Tests
+        if: matrix.python-version == '3.9'
+        run: |
+          export DISPLAY=:99
+          geckodriver &
+          Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 & # optional
+          python manage.py test -v 3 --settings=pod.main.test_settings pod.main.integration_tests.selenium_pod_integration_tests
 
       ## Start Accessibility tests with pa11y ##
 
@@ -106,20 +123,6 @@ jobs:
         with:
           path: ./pa11y_output.txt
 
-      - name: Comment on pull request.
-        if: contains(steps.pa11y_output.outputs.content, 'Errors in http://')
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          message: '<details><summary>Pa11y testing results</summary>
-
-
-```
-
-${{ steps.pa11y_output.outputs.content }}```
-
-
-</details>'
       - name: Check for pa11y failures.
         if: contains(steps.pa11y_output.outputs.content, 'Errors in http://')
         run: |

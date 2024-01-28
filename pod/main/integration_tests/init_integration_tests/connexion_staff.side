@@ -1,0 +1,122 @@
+{
+  "id": "5ce4dc16-363c-4d63-8b80-7eb881c4720c",
+  "version": "2.0",
+  "name": "pod-front",
+  "url": "http://localhost:9090/",
+  "tests": [{
+    "id": "pod-connexion-staff",
+    "name": "connexion staff",
+    "commands": [{
+      "id": "pod-open-home",
+      "comment": "accueil",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "pod-click-connection-button",
+      "comment": "Clique sur bouton de connexion",
+      "command": "click",
+      "target": "xpath=//li[@id='nav-authentication']/a/i",
+      "targets": [
+        ["css=.bi-person-circle", "css:finder"],
+        ["xpath=//li[@id='nav-authentication']/a/i", "xpath:idRelative"],
+        ["xpath=//nav/div/ul/li[2]/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "pod-select-id",
+      "comment": "Sélectionne le formulaire d'identifiant",
+      "command": "click",
+      "target": "id=id_username",
+      "targets": [
+        ["id=id_username", "id"],
+        ["name=username", "name"],
+        ["css=#id_username", "css:finder"],
+        ["xpath=//input[@id='id_username']", "xpath:attributes"],
+        ["xpath=//form[@id='login-form']/div/input", "xpath:idRelative"],
+        ["xpath=//div/div/form/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "pod-type-id",
+      "comment": "Ecrit l'identifiant",
+      "command": "type",
+      "target": "id=id_username",
+      "targets": [
+        ["id=id_username", "id"],
+        ["name=username", "name"],
+        ["css=#id_username", "css:finder"],
+        ["xpath=//input[@id='id_username']", "xpath:attributes"],
+        ["xpath=//form[@id='login-form']/div/input", "xpath:idRelative"],
+        ["xpath=//div/div/form/div/input", "xpath:position"]
+      ],
+      "value": "staff_user"
+    }, {
+      "id": "pod-select-password",
+      "comment": "Sélectionne le formulaire de mot de passe",
+      "command": "click",
+      "target": "id=id_password",
+      "targets": [
+        ["id=id_password", "id"],
+        ["name=password", "name"],
+        ["css=#id_password", "css:finder"],
+        ["xpath=//input[@id='id_password']", "xpath:attributes"],
+        ["xpath=//form[@id='login-form']/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "pod-type-password",
+      "comment": "Ecrit le mot de passe",
+      "command": "type",
+      "target": "id=id_password",
+      "targets": [
+        ["id=id_password", "id"],
+        ["name=password", "name"],
+        ["css=#id_password", "css:finder"],
+        ["xpath=//input[@id='id_password']", "xpath:attributes"],
+        ["xpath=//form[@id='login-form']/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "user"
+    }, {
+      "id": "pod-send-login-form",
+      "comment": "Clique sur bouton de connexion",
+      "command": "click",
+      "target": "xpath=//form[@id='login-form']/button",
+      "targets": [
+        ["css=.btn:nth-child(4)", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//form[@id='login-form']/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Connexion')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "pod-get-url",
+      "comment": "Récupère et stocke dans la variable podURL la valeur de l'url",
+      "command": "executeScript",
+      "target": "return document.URL;",
+      "targets": [],
+      "value": "podURL"
+    }, {
+      "id": "pod-check-url",
+      "comment": "Vérifie qu'il y a bien redirection vers page d'accueil et donc connexion",
+      "command": "assert",
+      "target": "podURL",
+      "targets": [],
+      "value": "http://localhost:9090/"
+    }]
+  }],
+  "suites": [{
+  "id": "pod-front",
+  "name": "Esup Pod test selenium",
+  "persistSession": false,
+  "parallel": false,
+  "timeout": 300,
+  "tests": ["pod-connexion-staff"]
+  }],
+  "urls": ["http://localhost:9090/"],
+  "plugins": []
+}

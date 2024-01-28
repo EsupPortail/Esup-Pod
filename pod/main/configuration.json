@@ -4048,7 +4048,9 @@
                             "default_value": true,
                             "description": {
                                 "en": [
-                                    ""
+                                    "A boolean value to enable or disable debug mode.<br>",
+                                    "Never deploy a production site with DEBUG enabled.<br>",
+                                    "__ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#debug]()__"
                                 ],
                                 "fr": [
                                     "Une valeur booléenne qui active ou désactive le mode de débogage.<br>",
@@ -4058,6 +4060,23 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "USE_DEBUG_TOOLBAR": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "A boolean value that enables or disables the debugging tool.<br>",
+                                    "Never deploy a production site with USE_DEBUG_TOOLBAR enabled.<br>",
+                                    "__ref: [https://django-debug-toolbar.readthedocs.io/en/latest/]()__"
+                                ],
+                                "fr": [
+                                    "Une valeur booléenne qui active ou désactive l'outil de débogage.<br>",
+                                    "Ne déployez jamais de site en production avec le réglage USE_DEBUG_TOOLBAR activé.<br>",
+                                    "__ref: [https://django-debug-toolbar.readthedocs.io/en/latest/]()__"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.0"
                         },
                         "LOGIN_URL": {
                             "default_value": "/authentication_login/",

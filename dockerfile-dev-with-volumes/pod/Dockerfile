@@ -26,6 +26,17 @@ RUN apt-get clean && apt-get update \
                           imagemagick \
                           gettext
 
+RUN apt-get install -y firefox-esr xvfb
+
+# Download, unzip, and install geckodriver
+RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-linux64.tar.gz
+RUN tar -zxf geckodriver-v0.33.0-linux64.tar.gz -C /usr/local/bin
+RUN chmod +x /usr/local/bin/geckodriver
+
+# Set display port and dbus env to avoid hanging
+ENV DISPLAY=:99
+ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
+
 WORKDIR /usr/src/app
 
 COPY ./requirements.txt .

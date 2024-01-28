@@ -17,10 +17,12 @@ jobs:
           git config user.email github-actions@github.com
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
-      # Prettify js+css code with prettier
+      # Prettify .js | .json | .side | .css files with prettier
       - name: Running prettier
         run: |
           npx prettier --write pod/*/static/**/*.js
+          npx prettier --write pod/*/static/**/*.json
+          npx prettier --write --parser json pod/**/*.side
           npx prettier --write pod/*/static/**/*.css
 
       - name: Check for modified files
@@ -66,4 +68,18 @@ jobs:
         if: steps.config-git-check.outputs.modified == 'true'
         run: |
           git commit -am "Auto-update configuration files"
+          git push
+
+      # Compile lang files
+      - name: Compile lang files in fr and nl
+        run: make compilelang
+
+      - name: Check for modified files
+        id: compilelang-git-check
+        run: echo modified=$(if git diff --quiet; then echo "false"; else echo "true"; fi) >> $GITHUB_OUTPUT
+
+      - name: Push lang compilation changes
+        if: steps.compilelang-git-check.outputs.modified == 'true'
+        run: |
+          git commit -am "Compile lang files"
           git push
