@@ -1,4 +1,5 @@
 """Esup-Pod Authentication backends."""
+
 from shibboleth.backends import ShibbolethRemoteUserBackend
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 from django.contrib.sites.shortcuts import get_current_site

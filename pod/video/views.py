@@ -601,7 +601,7 @@ def dashboard(request):
         initial={"owner": default_owner},
     )
     # Remove fields we don't want to be bulk-modified
-    for unwanted in ['title', 'video']:
+    for unwanted in ["title", "video"]:
         del form.fields[unwanted]
 
     data_context["form"] = form

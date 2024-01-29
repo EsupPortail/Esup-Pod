@@ -60,10 +60,12 @@ def video_dressing(request, slug):
     return render(
         request,
         "video_dressing.html",
-        {"video": video,
-         "dressings": dressings,
-         "current": current,
-         "page_title": _("Dress the video “%s”" % video.title)},
+        {
+            "video": video,
+            "dressings": dressings,
+            "current": current,
+            "page_title": _("Dress the video “%s”" % video.title),
+        },
     )
 
 
@@ -185,10 +187,11 @@ def dressing_delete(request, dressing_id):
     return render(
         request,
         "dressing_delete.html",
-        {"dressing": dressing,
-         "form": form,
-         "page_title": _("Deleting the dressing “%s”" % dressing.title)
-         }
+        {
+            "dressing": dressing,
+            "form": form,
+            "page_title": _("Deleting the dressing “%s”" % dressing.title),
+        },
     )
 
 
@@ -210,4 +213,5 @@ def my_dressings(request):
     return render(
         request,
         "my_dressings.html",
-        {"dressings": dressings, "page_title": _("My dressings")})
+        {"dressings": dressings, "page_title": _("My dressings")},
+    )
