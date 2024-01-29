@@ -251,11 +251,11 @@
 
   // Fire this event when live started
   player.on('loadedmetadata', function() {
-  if(debug) { console.info("Streaming live starts."); }
-  // Display the streaming live
-  started = true;
-  if ($("#divvideoonhold")) { $("#divvideoonhold").html("");}
-  if ($("#divvideoplayer")) { $("#divvideoplayer").css("display", "block"); }
+    if(debug) { console.info("Streaming live starts."); }
+    // Display the streaming live
+    started = true;
+    if ($("#divvideoonhold")) { $("#divvideoonhold").html("");}
+    if ($("#divvideoplayer")) { $("#divvideoplayer").css("display", "block"); }
   })
 </script>
 {% if display_chat %}

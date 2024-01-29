@@ -673,6 +673,10 @@ div.card a img {
   border-radius: var(--bs-border-radius);
 }
 
+#bulk_update_container .select2 {
+  width: 100% !important;
+}
+
 .btn-dashboard-display-mode {
   height: fit-content;
 }
