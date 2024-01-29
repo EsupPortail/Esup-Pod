@@ -1700,7 +1700,7 @@ body[data-admin-utc-offset] .form-row.errors {
  */
 
 .select2-container {
-  max-width: 100% ;
+  max-width: 100%;
 }
 
 .pod-container .select2-container--default .select2-selection--single .select2-selection__placeholder,

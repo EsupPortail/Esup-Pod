@@ -1129,7 +1129,7 @@ msgstr "Compléments de la vidéo"
 
 #: pod/completion/models.py
 msgid "Acting roles"
-msgstr "Rôles d'acteur"
+msgstr "Rôles d’acteur"
 
 #: pod/completion/models.py
 msgid "Actor"
@@ -1189,7 +1189,7 @@ msgstr "Ingénieur du son"
 
 #: pod/completion/models.py
 msgid "Speaking roles"
-msgstr "Rôles d'orateur"
+msgstr "Rôles d’orateur"
 
 #: pod/completion/models.py
 msgid "Speaker"
@@ -1998,7 +1998,7 @@ msgstr "J’accepte"
 
 #: pod/dressing/forms.py
 msgid "Delete video dressing cannot be undone"
-msgstr "La suppression de l'habillage est définitive"
+msgstr "La suppression de l’habillage est définitive"
 
 #: pod/dressing/models.py
 msgid "Top right"
@@ -2090,7 +2090,7 @@ msgstr "Accord requis"
 
 #: pod/dressing/templates/dressing_edit.html
 msgid "Editing the dressing"
-msgstr "Éditer l'habillage"
+msgstr "Éditer l’habillage"
 
 #: pod/dressing/templates/dressing_edit.html pod/dressing/views.py
 msgid "Create a new dressing"
@@ -2198,7 +2198,7 @@ msgstr "Les modifications ont été sauvegardées."
 
 #: pod/dressing/views.py
 msgid "You cannot create a video dressing."
-msgstr "Vous ne pouvez pas créer d'habillage de vidéo."
+msgstr "Vous ne pouvez pas créer d’habillage de vidéo."
 
 #: pod/dressing/views.py
 msgid "You cannot delete this dressing."
@@ -2211,7 +2211,7 @@ msgstr "L’habillage a été supprimé."
 #: pod/dressing/views.py
 #, python-format
 msgid "Deleting the dressing “%s”"
-msgstr "Supprimer l'habillage « %s »"
+msgstr "Supprimer l’habillage « %s »"
 
 #: pod/dressing/views.py
 msgid "You cannot access this page."
@@ -2669,8 +2669,8 @@ msgid ""
 "you copy the link may offer several possibilities; feel free to test the "
 "different links provided."
 msgstr ""
-"L'adresse saisie doit correspondre à un fichier vidéo. La plateforme vers "
-"laquelle vous copiez le lien peut offrir plusieurs possibilités ; n'hésitez "
+"L’adresse saisie doit correspondre à un fichier vidéo. La plateforme vers "
+"laquelle vous copiez le lien peut offrir plusieurs possibilités ; n’hésitez "
 "pas à tester les différents liens proposés."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
@@ -2678,8 +2678,8 @@ msgid ""
 "For example, in the case of a video from a Pod platform, please enter the "
 "source file address, available in the video edition."
 msgstr ""
-"Par exemple, dans le cas d'une vidéo provenant d'une plateforme Pod, "
-"veuillez entrer l'adresse du fichier source, disponible dans l'édition de la "
+"Par exemple, dans le cas d’une vidéo provenant d’une plateforme Pod, "
+"veuillez entrer l’adresse du fichier source, disponible dans l’édition de la "
 "vidéo."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
@@ -2879,8 +2879,8 @@ msgid ""
 "In the case of a video from a Pod platform, please enter the source file "
 "address, available in the video edition."
 msgstr ""
-"Dans le cas d'une vidéo provenant d'une plateforme Pod, veuillez indiquer "
-"l'adresse du fichier source, disponible dans l'édition de la vidéo."
+"Dans le cas d’une vidéo provenant d’une plateforme Pod, veuillez indiquer "
+"l’adresse du fichier source, disponible dans l’édition de la vidéo."
 
 #: pod/import_video/utils.py
 msgid "The video file for this recording was not found on the server."
@@ -3690,7 +3690,7 @@ msgstr "Partager le lien"
 
 #: pod/live/templates/live/event-info.html
 msgid "Use this link to share the event:"
-msgstr "Utiliser ce lien pour partager l'évènement :"
+msgstr "Utiliser ce lien pour partager l’évènement :"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
@@ -3983,7 +3983,7 @@ msgstr "Évènements passés"
 
 #: pod/live/templatetags/event_tags.py
 msgid "QR code event’s link"
-msgstr "QR code pour le lien de l'évènement"
+msgstr "QR code pour le lien de l’évènement"
 
 #: pod/live/utils.py
 #, python-format
@@ -9141,10 +9141,3 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#, python-format
-#~ msgid "Deleting the dressing \"%(vtitle)s\""
-#~ msgstr "Supprimer l'habillage « %(vtitle)s »"
-
-#~ msgid "Back to the dressing"
-#~ msgstr "Retour à l'habillage"

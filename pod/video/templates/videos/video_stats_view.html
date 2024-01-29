@@ -10,10 +10,20 @@
 {% block page_extra_head %}
   <link type="text/css" rel="stylesheet" href="{% static 'jqGrid/css/ui.jqgrid-bootstrap5.css' %}?ver={{VERSION}}">
   <link rel="stylesheet" href="{% static 'css/video_stats_view.css' %}?ver={{VERSION}}">
+  <style>
+  .ui-jqgrid .ui-jqgrid-htable thead th div{
+    height: 5em;
+    text-wrap: auto;
+    white-space: normal;
+  }
+  .table-responsive {
+    max-width: 100%;
+  }
+  </style>
 {% endblock page_extra_head %}
 
 {% block content %}
-<div class="grid-container container">
+<div class="grid-container m-1">
   {% if form %}
     {% include "videos/video-form.html" %}
   {% else %}
@@ -24,7 +34,7 @@
         <input class="form-control" type="date" name="periode" id="jsperiode">
       </div>
     </div>
-    <div class="table-responsive-md mb-4">
+    <div class="table-responsive mb-4">
       <table id="grid"></table>
     </div>
     <div id="pager"></div>
