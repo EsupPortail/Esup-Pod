@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-26 16:37+0000\n"
+"POT-Creation-Date: 2024-01-29 10:06+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2053,6 +2053,10 @@ msgstr ""
 #: pod/dressing/templates/video_dressing.html
 #: pod/video/templates/videos/link_video.html
 msgid "Dress the video"
+msgstr ""
+
+#: pod/dressing/templates/video_dressing.html
+msgid "Pick a dressing below"
 msgstr ""
 
 #: pod/dressing/templates/video_dressing.html
