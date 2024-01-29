@@ -1,4 +1,5 @@
 """Tests for Video views."""
+
 from django.http import JsonResponse
 from django.test import Client
 from django.test import TestCase, override_settings, TransactionTestCase

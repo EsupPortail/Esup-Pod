@@ -1,4 +1,5 @@
 """Views of the Meeting module."""
+
 import bleach
 import jwt
 import logging

@@ -22,6 +22,8 @@ from pod.video.models import Video
 import importlib
 import os
 
+from ...main.utils import generate_qrcode
+
 register = template.Library()
 
 HOMEPAGE_SHOWS_PASSWORDED = getattr(django_settings, "HOMEPAGE_SHOWS_PASSWORDED", True)

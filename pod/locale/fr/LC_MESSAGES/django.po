@@ -1129,52 +1129,72 @@ msgid "Video additions"
 msgstr "Compléments de la vidéo"
 
 #: pod/completion/models.py
-msgid "actor"
-msgstr "acteur"
+msgid "Acting roles"
+msgstr "Rôles d'acteur"
 
 #: pod/completion/models.py
-msgid "author"
-msgstr "auteur"
+msgid "Actor"
+msgstr "Acteur"
 
 #: pod/completion/models.py
-msgid "designer"
-msgstr "concepteur"
+msgid "Voice-over"
+msgstr "Voix-off"
 
 #: pod/completion/models.py
-msgid "consultant"
-msgstr "consultant"
+msgid "Creative roles"
+msgstr "Rôles créatifs"
 
 #: pod/completion/models.py
-msgid "contributor"
-msgstr "contributeur"
-
-#: pod/completion/models.py pod/completion/tests/test_views.py
-msgid "editor"
-msgstr "éditeur"
+msgid "Author"
+msgstr "Auteur"
 
 #: pod/completion/models.py
-msgid "speaker"
-msgstr "intervenant"
+msgid "Designer"
+msgstr "Concepteur"
 
 #: pod/completion/models.py
-msgid "soundman"
-msgstr "preneur de son"
+msgid "Editor"
+msgstr "Éditeur"
 
 #: pod/completion/models.py
-msgid "director"
-msgstr "réalisateur"
+msgid "Writer"
+msgstr "Scénariste"
 
 #: pod/completion/models.py
-msgid "writer"
-msgstr "scénariste"
+msgid "Consulting roles"
+msgstr "Rôles de consultation"
 
 #: pod/completion/models.py
-msgid "technician"
-msgstr "technicien"
+msgid "Consultant"
+msgstr "Consultant"
 
 #: pod/completion/models.py
-msgid "voice-over"
-msgstr "voix-off"
+msgid "Production roles"
+msgstr "Rôles de production"
+
+#: pod/completion/models.py
+msgid "Contributor"
+msgstr "Contributeur"
+
+#: pod/completion/models.py
+msgid "Director"
+msgstr "Réalisateur"
+
+#: pod/completion/models.py
+msgid "Technician"
+msgstr "Technicien"
+
+#: pod/completion/models.py
+msgid "Soundman"
+msgstr "Ingénieur du son"
+
+#: pod/completion/models.py
+msgid "Speaking roles"
+msgstr "Rôles d'orateur"
+
+#: pod/completion/models.py
+msgid "Speaker"
+msgstr "Intervenant"
 
 #: pod/completion/models.py pod/completion/templates/video_caption_maker.html
 msgid "subtitles"
@@ -1211,10 +1231,6 @@ msgstr "rôle"
 #: pod/enrichment/models.py pod/main/models.py
 msgid "Web link"
 msgstr "Lien web"
-
-#: pod/completion/models.py
-msgid "Contributor"
-msgstr "Contributeur"
 
 #: pod/completion/models.py
 msgid "Contributors"
@@ -1849,6 +1865,10 @@ msgid ""
 msgstr ""
 "Vous pouvez ajouter un fond opaque ou transparent au texte que vous voulez "
 "afficher avec l’option \"Afficher le fond\""
+
+#: pod/completion/tests/test_views.py
+msgid "editor"
+msgstr "éditeur"
 
 #: pod/completion/views.py
 msgid "You cannot complement this video."
@@ -3016,8 +3036,8 @@ msgid "QR code to record immediately an event"
 msgstr "QR code pour la programmation d’un évènement immédiat"
 
 #: pod/live/admin.py
-msgid "QR Code"
-msgstr "QR Code"
+msgid "QR code"
+msgstr "QR code"
 
 #: pod/live/admin.py pod/live/models.py pod/recorder/models.py
 #: pod/video/models.py
@@ -3642,9 +3662,8 @@ msgid "Share the link"
 msgstr "Partager le lien"
 
 #: pod/live/templates/live/event-info.html
-#: pod/video/templates/videos/video-info.html
-msgid "Use this link to share the video:"
-msgstr "Utiliser ce lien pour partager la vidéo :"
+msgid "Use this link to share the event:"
+msgstr "Utiliser ce lien pour partager l'évènement :"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
@@ -3653,8 +3672,14 @@ msgstr "QR code pour le lien :"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
-msgid "Warning, it use google API"
-msgstr "Attention, utilise une API Google"
+msgid "Download this QR code"
+msgstr "Télécharger ce QR code"
+
+#: pod/live/templates/live/event-info.html
+#: pod/podfile/templates/podfile/list_folder_files.html
+#: pod/video/templates/videos/video-info.html
+msgid "Download"
+msgstr "Télécharger"
 
 #: pod/live/templates/live/event-script.html
 msgid "Recording not done: "
@@ -3928,6 +3953,12 @@ msgstr "Évènements à venir"
 #: pod/live/templates/live/my_events.html
 msgid "Past events"
 msgstr "Évènements passés"
+
+#: pod/live/templatetags/event_tags.py
+#, fuzzy
+#| msgid "QR code event's link:"
+msgid "QR code event's link"
+msgstr "QR code pour le lien de l'évènement :"
 
 #: pod/live/utils.py
 #, python-format
@@ -6545,10 +6576,6 @@ msgid "Upload Files"
 msgstr "Téléverser des fichiers"
 
 #: pod/podfile/templates/podfile/list_folder_files.html
-msgid "Download"
-msgstr "Télécharger"
-
-#: pod/podfile/templates/podfile/list_folder_files.html
 msgid "Delete file"
 msgstr "Supprimer le fichier"
 
@@ -8383,8 +8410,8 @@ msgstr ""
 "interactive H5P :"
 
 #: pod/video/templates/videos/video-info.html
-msgid "QR code"
-msgstr "QR code"
+msgid "Use this link to share the video:"
+msgstr "Utiliser ce lien pour partager la vidéo :"
 
 #: pod/video/templates/videos/video_collaborate.html
 msgid "Collaborate"
@@ -8551,7 +8578,7 @@ msgid "Create a note"
 msgstr "Créer une nouvelle note"
 
 #: pod/video/templates/videos/video_notes.html
-msgid "Download the notes"
+msgid "Download notes"
 msgstr "Télécharger les notes"
 
 #: pod/video/templates/videos/video_notes.html

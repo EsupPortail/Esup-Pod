@@ -1,4 +1,5 @@
 """Download the specified video source file from a previous instance."""
+
 from django.core.management.base import BaseCommand, CommandError
 import wget
 import os

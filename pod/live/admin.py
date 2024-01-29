@@ -139,7 +139,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
     def qrcode(self, obj):
         return obj.qrcode
 
-    qrcode.short_description = _("QR Code")
+    qrcode.short_description = _("QR code")
     qrcode.allow_tags = True
 
     class Media:

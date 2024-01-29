@@ -1,4 +1,5 @@
 """Esup-Pod "test mode" settings."""
+
 # test_settings.py
 # from ..settings import *
 from ..settings import BASE_DIR as settings_base_dir

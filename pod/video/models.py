@@ -1,4 +1,5 @@
 """Esup-Pod Video models."""
+
 import os
 import re
 import time
@@ -160,9 +161,11 @@ NOTES_STATUS = getattr(
 THIRD_PARTY_APPS = getattr(settings, "THIRD_PARTY_APPS", [])
 
 __THIRD_PARTY_APPS_CHOICES__ = THIRD_PARTY_APPS.copy()
-__THIRD_PARTY_APPS_CHOICES__.remove("live") if (
-    "live" in __THIRD_PARTY_APPS_CHOICES__
-) else __THIRD_PARTY_APPS_CHOICES__
+(
+    __THIRD_PARTY_APPS_CHOICES__.remove("live")
+    if ("live" in __THIRD_PARTY_APPS_CHOICES__)
+    else __THIRD_PARTY_APPS_CHOICES__
+)
 __THIRD_PARTY_APPS_CHOICES__.insert(0, "Original")
 
 __VERSION_CHOICES__ = [
@@ -1242,12 +1245,16 @@ class Video(models.Model):
                 "title": "%s" % self.title,
                 "owner": "%s" % self.owner.username,
                 "owner_full_name": "%s" % self.owner.get_full_name(),
-                "date_added": "%s" % self.date_added.strftime("%Y-%m-%dT%H:%M:%S")
-                if self.date_added
-                else None,
-                "date_evt": "%s" % self.date_evt.strftime("%Y-%m-%dT%H:%M:%S")
-                if self.date_evt
-                else None,
+                "date_added": (
+                    "%s" % self.date_added.strftime("%Y-%m-%dT%H:%M:%S")
+                    if self.date_added
+                    else None
+                ),
+                "date_evt": (
+                    "%s" % self.date_evt.strftime("%Y-%m-%dT%H:%M:%S")
+                    if self.date_evt
+                    else None
+                ),
                 "description": "%s" % self.description,
                 "thumbnail": "%s" % self.get_thumbnail_url(),
                 "duration": "%s" % self.duration,

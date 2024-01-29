@@ -3,6 +3,7 @@ Django global settings for pod_project.
 
 Django version: 3.2.
 """
+
 import os
 import importlib.util
 

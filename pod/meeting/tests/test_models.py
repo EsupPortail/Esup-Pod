@@ -1,4 +1,5 @@
 """Tests the models for meeting module."""
+
 import random
 
 from ..models import Meeting, InternalRecording

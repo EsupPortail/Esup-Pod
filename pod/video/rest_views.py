@@ -126,13 +126,15 @@ class VideoUserSerializer(serializers.ModelSerializer):
         video_data.update({"get_thumbnail_admin": instance.get_thumbnail_admin})
         video_data.update(
             {
-                "video_files": instance.get_audio_and_video_json(
-                    request.GET.get("extensions", default=None)
+                "video_files": (
+                    instance.get_audio_and_video_json(
+                        request.GET.get("extensions", default=None)
+                    )
+                    if instance.get_audio_and_video_json(
+                        request.GET.get("extensions", default=None)
+                    )
+                    else ""
                 )
-                if instance.get_audio_and_video_json(
-                    request.GET.get("extensions", default=None)
-                )
-                else ""
             }
         )
         data["video_data"] = video_data

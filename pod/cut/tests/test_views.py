@@ -1,6 +1,7 @@
 """
 Unit tests for CutVideo views
 """
+
 from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User

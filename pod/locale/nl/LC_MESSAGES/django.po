@@ -1066,51 +1066,71 @@ msgid "Video additions"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "actor"
+msgid "Acting roles"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "author"
+msgid "Actor"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "designer"
+msgid "Voice-over"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "consultant"
+msgid "Creative roles"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "contributor"
-msgstr ""
-
-#: pod/completion/models.py pod/completion/tests/test_views.py
-msgid "editor"
+msgid "Author"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "speaker"
+msgid "Designer"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "soundman"
+msgid "Editor"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "director"
+msgid "Writer"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "writer"
+msgid "Consulting roles"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "technician"
+msgid "Consultant"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "voice-over"
+msgid "Production roles"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Contributor"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Director"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Technician"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Soundman"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Speaking roles"
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Speaker"
 msgstr ""
 
 #: pod/completion/models.py pod/completion/templates/video_caption_maker.html
@@ -1147,10 +1167,6 @@ msgstr ""
 #: pod/completion/templates/contributor/list_contributor.html
 #: pod/enrichment/models.py pod/main/models.py
 msgid "Web link"
-msgstr ""
-
-#: pod/completion/models.py
-msgid "Contributor"
 msgstr ""
 
 #: pod/completion/models.py
@@ -1758,6 +1774,10 @@ msgstr ""
 msgid ""
 "You can add a solid background or a transparent background to the text you "
 "want to display with the option \"Show background\""
+msgstr ""
+
+#: pod/completion/tests/test_views.py
+msgid "editor"
 msgstr ""
 
 #: pod/completion/views.py
@@ -2824,7 +2844,7 @@ msgid "QR code to record immediately an event"
 msgstr ""
 
 #: pod/live/admin.py
-msgid "QR Code"
+msgid "QR code"
 msgstr ""
 
 #: pod/live/admin.py pod/live/models.py pod/recorder/models.py
@@ -3409,8 +3429,7 @@ msgid "Share the link"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
-#: pod/video/templates/videos/video-info.html
-msgid "Use this link to share the video:"
+msgid "Use this link to share the event:"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
@@ -3420,7 +3439,13 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
-msgid "Warning, it use google API"
+msgid "Download this QR code"
+msgstr ""
+
+#: pod/live/templates/live/event-info.html
+#: pod/podfile/templates/podfile/list_folder_files.html
+#: pod/video/templates/videos/video-info.html
+msgid "Download"
 msgstr ""
 
 #: pod/live/templates/live/event-script.html
@@ -6187,10 +6212,6 @@ msgid "Upload Files"
 msgstr ""
 
 #: pod/podfile/templates/podfile/list_folder_files.html
-msgid "Download"
-msgstr ""
-
-#: pod/podfile/templates/podfile/list_folder_files.html
 msgid "Delete file"
 msgstr ""
 
@@ -7873,7 +7894,7 @@ msgid ""
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
-msgid "QR code"
+msgid "Use this link to share the video:"
 msgstr ""
 
 #: pod/video/templates/videos/video_collaborate.html
@@ -8035,7 +8056,7 @@ msgid "Create a note"
 msgstr ""
 
 #: pod/video/templates/videos/video_notes.html
-msgid "Download the notes"
+msgid "Download notes"
 msgstr ""
 
 #: pod/video/templates/videos/video_notes.html

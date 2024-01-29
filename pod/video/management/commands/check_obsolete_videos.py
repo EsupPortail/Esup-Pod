@@ -1,4 +1,5 @@
 """Check Obsolete videos."""
+
 from django.conf import settings
 from django.utils import translation
 from django.core.management.base import BaseCommand, CommandError
