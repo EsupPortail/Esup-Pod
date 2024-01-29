@@ -426,7 +426,7 @@
     btnEdit.setAttribute("data-slug", slug);
     btnEdit.setAttribute("data-title", title);
     btnEdit.setAttribute("class", "btn btn-link edit_category");
-    btnEdit.innerHTML = `<i class="bi bi-pencil-square"></i>`;
+    btnEdit.innerHTML = `<i class="bi bi-pencil-square" aria-hidden="true"></i>`;
     editHandler(btnEdit); // append edit click event
 
     let btnDelete = document.createElement("button");
@@ -437,7 +437,7 @@
     btnDelete.setAttribute("data-slug", slug);
     btnDelete.setAttribute("data-title", title);
     btnDelete.setAttribute("class", "btn btn-link remove_category");
-    btnDelete.innerHTML = `<i class="bi bi-trash"></i>`;
+    btnDelete.innerHTML = `<i class="bi bi-trash" aria-hidden="true"></i>`;
     deleteHandler(btnDelete); // append delete click event
 
     let li = document.createElement("li");
@@ -507,7 +507,7 @@
       let title = gettext("This content is in draft.");
       if (video.is_draft) {
         span = `<span title="${title}">
-        <i class="bi bi-incognito"></i></span>`;
+        <i class="bi bi-incognito" aria-hidden="true"></i></span>`;
       }
       return span;
     };
@@ -587,7 +587,13 @@
     return infinite_item;
   };
 
-  // Create alert message
+  /**
+   * Create alert message
+   * @param  {String}  message message to be displayed
+   * @param  {String|Boolean} type    Message type
+   * @param  {Number}  delay   [description]
+   * @return {[type]}          [description]
+   */
   let showAlertMessage = (message, type = true, delay = 4000) => {
     let success = gettext("Success!");
     let error = gettext("Error…");
@@ -595,10 +601,10 @@
     let class_suffix = type ? "success" : "danger";
     let icon =
       type === "success"
-        ? `<i class="bi bi-check2-circle"></i>`
+        ? `<i class="bi bi-check2-circle" aria-hidden="true"></i>`
         : type === "error"
-          ? `<i class="bi bi-exclamation-triangle"></i>`
-          : `<i class="bi bi-info-circle"></i>`;
+          ? `<i class="bi bi-exclamation-triangle" aria-hidden="true"></i>`
+          : `<i class="bi bi-info-circle" aria-hidden="true"></i>`;
     let alert_message = document.createElement("div");
     alert_message.setAttribute(
       "class",
@@ -614,7 +620,11 @@
     }, delay);
   };
 
-  // Handler to edit category, c_e=current category to edit
+  /**
+   * Handler to edit category
+   * @param  {[type]} c_e current category to edit
+   * @return {[type]}     [description]
+   */
   let editHandler = (c_e) => {
     c_e.addEventListener("click", (e) => {
       e.preventDefault();
@@ -657,7 +667,12 @@
     });
   };
 
-  // get modal video card
+  /**
+   * get modal video card
+   * @param  {[type]}  v        [description]
+   * @param  {Boolean} selected [description]
+   * @return {[type]}           [description]
+   */
   let getModalVideoCard = (v, selected = true) => {
     let videoCard = createHtmlVideoCard(v);
     let v_wrapper = document.createElement("Div");
@@ -867,7 +882,7 @@
 
   // Add onclick event to add a new category
   let add_cat = document.querySelector("#add_category_btn");
-  add_cat.addEventListener("click", (e) => {
+  add_cat.addEventListener("click", () => {
     paginate([]);
     modal_title.innerText = gettext("Add new category");
     cat_input.value = "";

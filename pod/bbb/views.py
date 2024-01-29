@@ -96,7 +96,7 @@ def publish_meeting(request, id=None):
         messages.add_message(
             request,
             messages.ERROR,
-            _("You aren't the moderator of this BigBlueButton session."),
+            _("You aren’t the moderator of this BigBlueButton session."),
         )
         raise PermissionDenied
 
@@ -229,7 +229,7 @@ def live_publish_meeting(request, id=None):
         messages.add_message(
             request,
             messages.ERROR,
-            _("You aren't the moderator of this BigBlueButton session."),
+            _("You aren’t the moderator of this BigBlueButton session."),
         )
         raise PermissionDenied
 

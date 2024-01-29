@@ -1,3 +1,7 @@
+/**
+ * @file Esup-Pod functions for enrichment view.
+ */
+
 var id_form = "form_enrich";
 
 function removeLoadedScript(lib) {

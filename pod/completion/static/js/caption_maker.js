@@ -1,4 +1,6 @@
-// Esup-Pod Caption maker Tool
+/**
+ * @file Esup-Pod Caption maker Tool
+ */
 
 // Read-only globals defined in video_caption_maker.html
 /*
@@ -551,7 +553,7 @@ function validateForms(forms) {
     let captionInput = e.querySelector(".captionTextInput");
     if (captionInput.value.length > 80) {
       captionInput.setCustomValidity(
-        gettext("A caption cannot has more than 80 characters.") +
+        gettext("A caption cannot contain more than 80 characters.") +
           "[" +
           captionInput.value.length +
           "]",

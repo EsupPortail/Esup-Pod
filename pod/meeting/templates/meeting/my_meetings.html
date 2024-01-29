@@ -16,23 +16,23 @@
 </p>
 {% else %}
   {% if meetings|length != 0 %}
-  <h2 class="h4">
-    {% if request.GET.all == "true" %}
-      {% blocktrans count counter=meetings|length %}{{ counter }} meeting found{% plural %}{{ counter }} meetings found{% endblocktrans %}
-    {% else %}
-      {% blocktrans count counter=meetings|length %}{{ counter }} active meeting found{% plural %}{{ counter }} active meetings found{% endblocktrans %}
-    {% endif %}
-  </h2>
+    <h2 class="h4">
+      {% if request.GET.all == "true" %}
+        {% blocktrans count counter=meetings|length %}{{ counter }} meeting found{% plural %}{{ counter }} meetings found{% endblocktrans %}
+      {% else %}
+        {% blocktrans count counter=meetings|length %}{{ counter }} active meeting found{% plural %}{{ counter }} active meetings found{% endblocktrans %}
+      {% endif %}
+    </h2>
   {% else %}
-  <h2 class="h4">{% trans "No meetings found"%}</h2>
-  <p class="alert alert-info">
-      {% blocktrans %}You haven't got any meeting yet, please use the "Add a meeting" button to add one.{% endblocktrans %}
-  </p>
+    <h2 class="h4">{% trans "No meetings found"%}</h2>
+    <p class="alert alert-info">
+        {% trans "You haven’t got any meeting yet, please use the “Add a meeting” button to add one." %}
+    </p>
   {% endif %}
 
 <div class="d-grid gap-2 d-md-flex justify-content-md mb-2">
   <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{% url 'meeting:add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a meeting' %}">
-    <i class="bi bi-plus pod-add"></i><span>{% trans "Add a meeting" %}</span>
+    <i class="bi bi-plus pod-add" aria-hidden="true"></i><span>{% trans "Add a meeting" %}</span>
   </a>
 </div>
 

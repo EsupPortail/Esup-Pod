@@ -1,3 +1,7 @@
+/**
+ * @file Esup-Pod Main JavaScripts
+ */
+
 // this function (appendHTML) is not used elsewhere
 /*
 function appendHTML(node, html) {
@@ -718,7 +722,7 @@ document.addEventListener("submit", (e) => {
   if (action === "delete") {
     var deleteConfirm = confirm(
       interpolate(
-        gettext("Are you sure you want to delete theme '%(title)s'?"),
+        gettext("Are you sure you want to delete theme “%(title)s”?"),
         { title: form.dataset.title },
         true,
       ),

@@ -672,12 +672,15 @@ div.card a img {
   padding: 1em;
   border-radius: var(--bs-border-radius);
 }
+
 #bulk_update_container .select2 {
   width: 100% !important;
 }
+
 .btn-dashboard-display-mode {
   height: fit-content;
 }
+
 #countSelectedVideosBadge {
   background-color: var(--pod-background-neutre1-bloc);
   color: var(--pod-font-color);
@@ -706,7 +709,7 @@ div.card a img {
   align-items: center;
   outline: 2px solid var(--pod-link-color);
   border-radius: var(--bs-border-radius-sm);
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgb(255 255 255 / 80%);
   cursor: pointer;
   transition: all 0.3s;
 }
@@ -1699,6 +1702,16 @@ body[data-admin-utc-offset] .form-row.errors {
 /* css corrections for select2 autocompletion Multiple in dark theme.
  * (see "additional owners", or "disciplines" for sample.)
  */
+
+.select2-container {
+  max-width: 100%;
+}
+
+.pod-container .select2-container--default .select2-selection--single .select2-selection__placeholder,
+.pod-container .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+  color: #666;
+}
+
 body[data-admin-utc-offset] .select2-selection--multiple {
   background-color: var(--pod-background);
   border-color: var(--border-color);
@@ -1731,6 +1744,11 @@ body[data-admin-utc-offset]
 .cke_focus {
   box-shadow: 0 0 0 0.25rem rgb(var(--pod-primary-rgb) / 25%);
   border-radius: 5px;
+}
+
+/* overwrite default cke style for A11y */
+.pod-container .cke_resizer {
+  font-size: 1rem;
 }
 
 .select2-container--default.select2-container--focus

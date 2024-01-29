@@ -597,6 +597,6 @@ def get_video(request: WSGIRequest, video_slug: str, playlist_slug: str) -> Json
     else:
         response_data = {
             "error_type": 404,
-            "error_text": _("This video isn't present in this playlist."),
+            "error_text": _("This video isn’t present in this playlist."),
         }
     return JsonResponse(response_data)
