@@ -1,3 +1,12 @@
+/**
+ * Esup-Pod video category scripts.
+ */
+
+/* Read-only globals defined in filter_aside_video_list_refresh.js and my_videos.html */
+/*
+global refreshVideosSearch, CATEGORIES_DATA, BASE_URL, VIDEO_URL, EDIT_URL,
+ COMPLETION_URL, CHAPTER_URL, DELETE_URL
+*/
 (function (CATEGORIES_DATA) {
   const SERVER_DATA = CATEGORIES_DATA.filter((c) => !Number.isInteger(c));
   // Category to delete
@@ -180,7 +189,7 @@
       });
     }
   };
-  searchCatInput.addEventListener("input", (e) => {
+  searchCatInput.addEventListener("input", () => {
     searchCatHandler(searchCatInput.value.trim());
   });
 
