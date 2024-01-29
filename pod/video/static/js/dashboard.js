@@ -18,8 +18,6 @@
   global urlUpdateVideos csrftoken formFieldsets displayMode
 */
 
-
-
 var bulkUpdateActionSelect = document.getElementById("bulkUpdateActionSelect");
 var applyBulkUpdateBtn = document.getElementById("applyBulkUpdateBtn");
 var modalLoader = document.getElementById("bulkUpdateLoader");

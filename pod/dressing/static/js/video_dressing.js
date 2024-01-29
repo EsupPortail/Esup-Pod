@@ -44,7 +44,7 @@ var observer = new MutationObserver(function (mutations) {
 /**
  * Observe the mutations of the "value" attribute of the watermark field
  */
-if(watermarkField){
+if (watermarkField) {
   observer.observe(watermarkField, { attributes: true });
 }
 
