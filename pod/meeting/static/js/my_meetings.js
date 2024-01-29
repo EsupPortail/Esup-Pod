@@ -20,7 +20,7 @@ meetingModal.addEventListener('show.bs.modal', function (event) {
         modalBody.innerHTML = gettext('Unable to find information about the meeting')
         console.log(msg)
       } else {
-        const modalendlink = '<p><a href="'+ endurl +'" title="' + gettext('End the meeting') + '" class="btn btn-danger endlink" >' + gettext('End the meeting') + '</a></p>';
+        const modalendlink = '<p><a href="'+ endurl +'" class="btn btn-danger endlink">' + gettext('End the meeting') + '</a></p>';
         modalBody.innerHTML = generateHtml(data.info) + modalendlink
       }
   }).catch((error) => {
