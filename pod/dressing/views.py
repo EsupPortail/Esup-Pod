@@ -118,9 +118,8 @@ def dressing_edit(request, dressing_id):
 @login_required(redirect_field_name="referrer")
 def dressing_create(request):
     """Create a dressing object."""
-
-    if (
-        not request.user.is_superuser
+    if not (
+        request.user.is_superuser
         or request.user.is_staff
         or request.user.has_perm("dressing.my_dressings")
     ):
@@ -197,7 +196,6 @@ def dressing_delete(request, dressing_id):
 @login_required(redirect_field_name="referrer")
 def my_dressings(request):
     """Render the logged user's dressings."""
-
     if not (
         request.user.is_superuser
         or request.user.is_staff
