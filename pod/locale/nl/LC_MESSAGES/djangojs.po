@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-26 16:38+0000\n"
+"POT-Creation-Date: 2024-01-29 15:38+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -471,6 +471,22 @@ msgstr ""
 
 #: pod/main/static/js/videojs-info-controlbar.js
 msgid "Information"
+msgstr ""
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "Unable to find information about the meeting"
+msgstr ""
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "End the meeting"
+msgstr ""
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "Text copied."
+msgstr ""
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "Something went wrong."
 msgstr ""
 
 #: pod/playlist/static/playlist/js/add-or-edit.js

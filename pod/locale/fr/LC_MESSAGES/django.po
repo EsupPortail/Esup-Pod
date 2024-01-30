@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-29 10:06+0000\n"
+"POT-Creation-Date: 2024-01-29 15:38+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1001,7 +1001,6 @@ msgstr "Supprimer le chapitre « %(chapter_title)s »"
 #: pod/completion/templates/document/list_document.html
 #: pod/completion/templates/overlay/list_overlay.html
 #: pod/dressing/templates/dressing_delete.html
-#: pod/dressing/templates/my_dressings.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #: pod/live/templates/live/event_delete.html
 #: pod/meeting/templates/meeting/delete.html
@@ -2141,10 +2140,15 @@ msgstr "Pas de filigrane"
 msgid "View the video"
 msgstr "Voir la vidéo"
 
-#: pod/dressing/templates/my_dressings.html pod/live/templates/live/direct.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Edit"
-msgstr "Éditer"
+#: pod/dressing/templates/my_dressings.html
+#, python-format
+msgid "Edit “%(title)s”"
+msgstr "Modifier « %(title)s »"
+
+#: pod/dressing/templates/my_dressings.html
+#, python-format
+msgid "Delete “%(title)s”"
+msgstr "Supprimer « %(title)s »"
 
 #: pod/dressing/templates/my_dressings.html
 #: pod/dressing/templates/video_dressing.html
@@ -3484,6 +3488,11 @@ msgstr "Prochains évènements"
 #: pod/live/templates/live/direct.html
 msgid "Manage broadcaster"
 msgstr "Gérer le diffuseur"
+
+#: pod/live/templates/live/direct.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Edit"
+msgstr "Éditer"
 
 #: pod/live/templates/live/direct.html pod/live/templates/live/directs_all.html
 msgid "no broadcast in progress"
@@ -5779,14 +5788,6 @@ msgstr ""
 #: pod/meeting/templates/meeting/my_meetings.html
 msgid "Add a meeting"
 msgstr "Ajouter une réunion"
-
-#: pod/meeting/templates/meeting/my_meetings.html
-msgid "Unable to find information about the meeting"
-msgstr "Impossible de trouver des informations sur la réunion"
-
-#: pod/meeting/templates/meeting/my_meetings.html
-msgid "End the meeting"
-msgstr "Terminer la réunion"
 
 #: pod/meeting/templates/meeting/recurring_options_modal_form.html
 msgid "Repeat every"
@@ -8412,8 +8413,8 @@ msgstr "Document :"
 #: pod/video/templates/videos/video-info.html
 msgid ""
 "Please note that your video is in draft mode.<br>\n"
-"The following links contain a key allowing access.\n"
-"Anyone with this links can access it."
+"  The following links contain a key allowing access.\n"
+"  Anyone with this links can access it."
 msgstr ""
 "Veuillez noter que votre vidéo est en mode brouillon. <br>\n"
 "Les liens suivants contiennent une clé permettant l’accès.\n"
@@ -9141,3 +9142,9 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Unable to find information about the meeting"
+#~ msgstr "Impossible de trouver des informations sur la réunion"
+
+#~ msgid "End the meeting"
+#~ msgstr "Terminer la réunion"

@@ -51,8 +51,6 @@ div.alert.alert-dismissible {
   padding-left: 78px;
   position: relative;
   padding-right: 60px;
-  border: 1px solid #e6e6e6;
-  background: #fff;
 }
 
 div.alert .icon {
