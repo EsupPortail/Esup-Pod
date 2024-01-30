@@ -420,6 +420,8 @@ THEME_FORM_FIELDS_HELP_TEXT = getattr(
     ),
 )
 
+USE_DISCIPLINE =  getattr(settings, "USE_DISCIPLINE", True)
+
 
 class CustomClearableFileInput(ClearableFileInput):
     """A custom ClearableFileInput Widget a little more accessible."""
@@ -894,6 +896,8 @@ class VideoForm(forms.ModelForm):
 
         if not USE_TRANSCRIPTION:
             self.remove_field("transcript")
+        if not USE_DISCIPLINE:
+            self.remove_field("discipline")
 
     def manage_more_required_fields(self):
         """Set the required attribute to True for all VIDEO_REQUIRED_FIELDS."""
@@ -960,9 +964,10 @@ class VideoForm(forms.ModelForm):
         self.fields["restrict_access_to_groups"].queryset = self.fields[
             "restrict_access_to_groups"
         ].queryset.filter(sites=Site.objects.get_current())
-        self.fields["discipline"].queryset = Discipline.objects.all().filter(
-            site=Site.objects.get_current()
-        )
+        if USE_DISCIPLINE:
+            self.fields["discipline"].queryset = Discipline.objects.all().filter(
+                site=Site.objects.get_current()
+            )
         if "channel" in self.fields:
             self.fields["channel"].queryset = self.fields["channel"].queryset.filter(
                 site=Site.objects.get_current()
@@ -983,12 +988,13 @@ class VideoForm(forms.ModelForm):
             "owner": OwnerWidget,
             "additional_owners": AddOwnerWidget,
             "channel": ChannelWidget,
-            "discipline": DisciplineWidget,
             "date_evt": widgets.AdminDateWidget,
             "restrict_access_to_groups": AddAccessGroupWidget,
             "video": CustomClearableFileInput,
             "restrict_access_to_groups": AddAccessGroupWidget,
         }
+        if USE_DISCIPLINE:
+            widgets["discipline"] = DisciplineWidget
         initial = {
             "date_added": __TODAY__,
             "date_evt": __TODAY__,
