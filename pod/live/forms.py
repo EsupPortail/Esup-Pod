@@ -226,8 +226,9 @@ class EventForm(forms.ModelForm):
 
     fieldsets = (
         (
-            None,
+            "general",
             {
+                "legend": _("General settings"),
                 "fields": [
                     "title",
                     "start_date",

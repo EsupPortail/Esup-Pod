@@ -17,8 +17,6 @@
   <li class="breadcrumb-item active" aria-current="page">{{ broadcaster.name }}</li>
 {% endblock %}
 
-{% block page_title %}{% trans "Live" %} {{broadcaster.name}}{% endblock %}
-
 {% block page_content %}
   {% csrf_token %}
 
@@ -26,7 +24,7 @@
     {% include 'live/event-form.html' %}
   {% else %}
     <h3 id="livename" data-broadcasterid={{ broadcaster.id }}><i
-        class="bi bi-cast pe-2"></i> {% trans "Live" %} {{ broadcaster.name }}</h3>
+        class="bi bi-cast pe-2" aria-hidden="true"></i> {% trans "Live" %} {{ broadcaster.name }}</h3>
 
     {% if display_event_btn %}
       <div class="d-flex infinite-container mb-2" id="event_add">

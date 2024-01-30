@@ -19,14 +19,7 @@
 <li class="breadcrumb-item active" aria-current="page">{% if form.instance.title %}{{form.instance.title}}{% endif %}</li>
 {% endblock %}
 
-{% block page_title %}
-{% if form.instance.title %}{% trans "Editing the channel" %} "{{form.instance.title}}"{% endif %}
-{% endblock %}
-
 {% block page_content %}
-  {% if form.instance.title %}
-    <h1 class="page_title">{% trans "Editing the channel" %} "{{form.instance.title}}"
-  {% endif %}
   <span>
     <a href="{% url 'channel-video:channel' slug_c=form.instance.slug %}" class="btn btn-link">
       <i class="bi bi-play-btn"></i>&nbsp;{% trans "View the channel"%}
@@ -64,7 +57,7 @@
           </h2>
           <div id="videoEditCollapse{{forloop.counter}}" class="accordion-collapse collapse {{ options.classes }}">
         <div class="accordion-body">
-        <fieldset id="video_edit_{{fieldset|first}}_{{forloop.counter}}">
+        <fieldset id="channel_edit_{{fieldset|first}}_{{forloop.counter}}">
           {% if options.legend %}
             <legend>{{ options.legend|safe }}</legend>
           {% endif %}

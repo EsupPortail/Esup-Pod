@@ -4,7 +4,7 @@
 {% load thumbnail %}
 {% load event_tags %}
 
-<div class="tab-content w-100" id="video-meta">
+<div class="tab-content w-100" id="event-meta">
   {% if event.description %}
     <div class="tab-pane fade active show" id="summary" role="tabpanel" aria-labelledby="summary-tab">
       <h2 class="tab-title"><i class="bi bi-justify" aria-hidden="true"></i>&nbsp;{% trans 'Summary' %}</h2>
@@ -13,7 +13,7 @@
     </div>
   {% endif %}
 
-  <div id="info" role="tabpanel" aria-labelledby="info-tab"
+  <div id="info"
     {% if not event.description %}
       class="tab-pane fade active show pod-live-info"
     {% else %}

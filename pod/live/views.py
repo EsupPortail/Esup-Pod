@@ -1,3 +1,4 @@
+"""Esup-Pod Live views."""
 import json
 import logging
 import os.path
@@ -136,6 +137,7 @@ def direct(request, slug):
             "display_event_btn": can_manage_event(request.user),
             "broadcaster": broadcaster,
             "heartbeat_delay": HEARTBEAT_DELAY,
+            "page_title": _("Live “%s”") % broadcaster.name
         },
     )
 
