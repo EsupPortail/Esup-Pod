@@ -64,7 +64,7 @@ def video_dressing(request, slug):
             "video": video,
             "dressings": dressings,
             "current": current,
-            "page_title": _("Dress the video “%s”" % video.title),
+            "page_title": _("Dress the video “%s”") % video.title,
         },
     )
 
@@ -190,7 +190,7 @@ def dressing_delete(request, dressing_id):
         {
             "dressing": dressing,
             "form": form,
-            "page_title": _("Deleting the dressing “%s”" % dressing.title),
+            "page_title": _("Deleting the dressing “%s”") % dressing.title,
         },
     )
 
