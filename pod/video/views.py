@@ -79,7 +79,6 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 import re
 import pandas
-from http import HTTPStatus
 from datetime import date
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
