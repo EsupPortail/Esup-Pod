@@ -8,6 +8,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
 from pod.authentication.models import AccessGroup
 from django.contrib.sites.models import Site
+from django.contrib.messages import get_messages
 
 from pod.main.models import AdditionalChannelTab
 
@@ -1505,6 +1506,7 @@ class VideoTranscriptTestView(TestCase):
     ]
 
     def setUp(self):
+        """Set up data for test class"""
         user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
             title="Video1",
@@ -1515,6 +1517,7 @@ class VideoTranscriptTestView(TestCase):
         print(" --->  SetUp of VideoTranscriptTestView: OK!")
 
     def test_video_transcript_get_request(self):
+        """Check response for get request with default settings"""
         # anonyme
         self.client = Client()
         video = Video.objects.get(title="Video1")
@@ -1533,7 +1536,23 @@ class VideoTranscriptTestView(TestCase):
         response = self.client.get(url)
         # 403 permission denied
         self.assertEqual(response.status_code, 403)
-        """
+        print(" ---> test_video_transcript_get_request : OK!")
+
+    @override_settings(USE_TRANSCRIPTION=True)
+    def test_video_transcript_get_request_transcription(self):
+        """Check response for get request with use transcription"""
+        reload(views)
+        video = Video.objects.get(title="Video1")
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        url = reverse("video:video_transcript", kwargs={"slug": video.slug})
+        response = self.client.get(url)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(
+            str(messages[0]),
+            "You cannot launch transcript for a video that is being encoded."
+        )
+        self.assertEqual(response.status_code, 302)
         self.assertRedirects(
             response,
             reverse("video:video_edit", args=(video.slug,)),
@@ -1541,4 +1560,4 @@ class VideoTranscriptTestView(TestCase):
             target_status_code=200,
             fetch_redirect_response=True
         )
-        """
+        print(" ---> test_video_transcript_get_request_transcription : OK!")
