@@ -16,9 +16,7 @@
 {% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Add a new video" %}{% endif %}{% endblock %}
 
 {% block collapse_page_aside %}
-  {% if access_not_allowed == True %}
-
-  {% else %}
+  {% if access_not_allowed != True %}
     {{block.super}}
   {% endif %}
 {% endblock collapse_page_aside %}

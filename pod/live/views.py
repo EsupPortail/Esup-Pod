@@ -619,7 +619,9 @@ def event_delete(request, slug=None):
     return render(
         request,
         "live/event_delete.html",
-        {"event": evt, "form": form},
+        {"event": evt,
+         "form": form,
+         "page_title": _("Deleting the event “%s”") % evt.title},
     )
 
 

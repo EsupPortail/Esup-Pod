@@ -96,7 +96,9 @@ def edit_enrichment(request, slug):
         return render(
             request,
             "enrichment/edit_enrichment.html",
-            {"video": video, "list_enrichment": list_enrichment},
+            {"video": video,
+             "list_enrichment": list_enrichment,
+             "page_title": _("Enrichment of the video “%s”") % video.title},
         )
 
 

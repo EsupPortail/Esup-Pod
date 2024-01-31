@@ -276,3 +276,27 @@ li[class^="enrich_"] {
 li[class^="enrich_"]::marker {
   font-size: 1.5em;
 }
+
+td[class^="enrich_"] {
+  border-left: 3px solid transparent;
+}
+
+td.enrich_image {
+  border-color: var(--bs-purple);
+}
+
+td.enrich_document {
+  border-color: var(--bs-orange);
+}
+
+td.enrich_richtext {
+  border-color: var(--bs-blue);
+}
+
+td.enrich_weblink {
+  border-color: var(--bs-red);
+}
+
+td.enrich_embed {
+  border-color: var(--bs-green);
+}
