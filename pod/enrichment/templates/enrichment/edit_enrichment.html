@@ -98,7 +98,6 @@
     /*** For the Cancel button ***/
 
     document.addEventListener("reset",   (e) => {
-      alert("reset");
       if (e.target !== document.querySelector("#page-video form"))  return
       document.getElementById("form_enrich").innerHTML = "";
       document.querySelectorAll("form").forEach((form)=>{
