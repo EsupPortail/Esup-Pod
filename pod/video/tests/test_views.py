@@ -1112,7 +1112,7 @@ class video_countTestView(TestCase):
         print(" --->  test_video_countTestView_post_request of video_countTestView: OK!")
 
 
-class video_markerTestView(TestCase):
+class VideoMarkerTestView(TestCase):
     """Test the video marker view."""
 
     fixtures = [
@@ -1127,7 +1127,7 @@ class video_markerTestView(TestCase):
             video="test1.mp4",
             type=Type.objects.get(id=1),
         )
-        print(" --->  SetUp of video_markerTestView: OK!")
+        print(" --->  SetUp of VideoMarkerTestView: OK!")
 
     def test_video_markerTestView_get_request(self):
         # anonyme
@@ -1154,7 +1154,7 @@ class video_markerTestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"ok" in response.content)
         self.assertEqual(video.get_marker_time_for_user(self.user), 4)
-        print(" --->  test video markerTestView get request: OK!")
+        print(" --->  test VideoMarkerTestView get request: OK!")
 
 
 class VideoTestUpdateOwner(TransactionTestCase):
@@ -1495,3 +1495,45 @@ class ChannelJsonResponseViews(TestCase):
             "[test_get_channels_for_specific_channel_tab] Test if the response content is correct.",
         )
         print(" ---> test_get_channels_for_specific_channel_tab : OK!")
+
+
+class VideoTranscriptTestView(TestCase):
+    """Test the video marker view."""
+
+    fixtures = [
+        "initial_data.json",
+    ]
+
+    def setUp(self):
+        user = User.objects.create(username="pod", password="pod1234pod")
+        Video.objects.create(
+            title="Video1",
+            owner=user,
+            video="test1.mp4",
+            type=Type.objects.get(id=1),
+        )
+        print(" --->  SetUp of VideoTranscriptTestView: OK!")
+    
+    def test_video_transcript_get_request(self):
+        # anonyme
+        self.client = Client()
+        video = Video.objects.get(title="Video1")
+        url = reverse("video:video_transcript", kwargs={"slug": video.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        # login and video does not exist
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        url = reverse("video:video_transcript", kwargs={"slug": "1234"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+        # login and video exist
+        url = reverse("video:video_transcript", kwargs={"slug": video.slug})
+        response = self.client.get(url)
+        self.assertRedirects(
+            response,
+            reverse("video:video_edit", args=(video.slug,)),
+            status_code=302,
+            target_status_code=200,
+            fetch_redirect_response=True
+        )
