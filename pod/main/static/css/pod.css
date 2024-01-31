@@ -87,7 +87,7 @@
 
   /* better contrasts */
   --bs-border-color: #8e969d;
-  --bs-orange: #C85208;
+  --bs-orange: #c85208;
 
   /* Use system font (faster load) */
   --font-family-sans-serif: -apple-system, system-ui, "BlinkMacSystemFont",
