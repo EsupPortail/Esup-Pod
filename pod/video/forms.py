@@ -419,8 +419,7 @@ THEME_FORM_FIELDS_HELP_TEXT = getattr(
         ]
     ),
 )
-
-USE_DISCIPLINE =  getattr(settings, "USE_DISCIPLINE", True)
+USE_DISCIPLINE = getattr(settings, "USE_DISCIPLINE", True)
 
 
 class CustomClearableFileInput(ClearableFileInput):
