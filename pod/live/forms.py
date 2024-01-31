@@ -240,7 +240,7 @@ class EventForm(forms.ModelForm):
                     "password",
                     "is_restricted",
                     "restrict_access_to_groups",
-                ]
+                ],
             },
         ),
         (

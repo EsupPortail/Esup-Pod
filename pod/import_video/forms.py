@@ -37,7 +37,7 @@ class ExternalRecordingForm(forms.ModelForm):
                     "start_at",
                     "owner",
                     "site",
-                )
+                ),
             },
         ),
     )
