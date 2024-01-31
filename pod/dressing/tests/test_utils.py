@@ -11,10 +11,8 @@ from pod.dressing.models import Dressing
 
 class DressingUtilitiesTests(unittest.TestCase):
     """TestCase for Esup-Pod dressing utilities."""
-
     def test_get_position_value(self):
-        """Test for the get_position_value function"""
-
+        """Test for the get_position_value function."""
         result = get_position_value("top_right", "720")
         self.assertEqual(result, "overlay=main_w-overlay_w-36.0:36.0")
 
@@ -44,8 +42,7 @@ class DressingUtilitiesTests(unittest.TestCase):
         print(" ---> test_get_dressing_input: OK! --- DressingUtilsTest")
 
     def test_get_dressings(self):
-        """Test for the get_dressings function"""
-
+        """Test for the get_dressings function."""
         user = User.objects.create_user(
             username="user", password="password", is_staff=1
         )
@@ -71,8 +68,7 @@ class DressingUtilitiesTests(unittest.TestCase):
         print(" ---> test_get_dressings: OK! --- DressingUtilsTest")
 
     def test_get_dressings_empty(self):
-        """Test for the get_dressings_empty function"""
-
+        """Test for the get_dressings_empty function."""
         new_user = User.objects.create_user(username='newuser', password='newpassword')
 
         dressings = get_dressings(new_user, [])

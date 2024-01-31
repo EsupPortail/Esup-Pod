@@ -12,7 +12,6 @@ from pod.video.models import Type, Video
 
 class VideoDressingViewTest(TestCase):
     """Dressing page test case."""
-
     fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:
@@ -39,7 +38,6 @@ class VideoDressingViewTest(TestCase):
 
 class DressingDeleteViewTest(TestCase):
     """Dressing delete page test case."""
-
     fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:
@@ -119,13 +117,11 @@ class DressingDeleteViewTest(TestCase):
 
     def test_dressing_video_delete(self):
         """Test for dressing_delete view."""
-
         print(" ---> test_dressing_video_delete: OK! --- DressingDeleteViewTest")
 
 
 class DressingCreateViewTest(TestCase):
     """Dressing create page test case."""
-
     fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:
@@ -171,5 +167,4 @@ class DressingCreateViewTest(TestCase):
 
     def test_dressing_video_create(self):
         """Test for dressing_create view."""
-
         print(" ---> test_dressing_video_create: OK! --- DressingCreateViewTest")
