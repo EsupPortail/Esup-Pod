@@ -106,7 +106,7 @@
 
       {% for field in form.visible_fields %}
         {% if field.name in options.fields %}
-        <div class="mt-3 field_{{ field.name }} {% if 'description_' in field.name or 'title_'  in field.name %}collapse ms-4{% endif %}{% if 'description_' in field.name %} description{% endif %}{% if 'title_' in field.name %} title{% endif %}{% with 'is_restricted restrict_access_to_groups password' as res %} {% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
+        <div class="mt-3 field-{{ field.name }} {% if 'description_' in field.name or 'title_'  in field.name %}collapse ms-4{% endif %}{% if 'description_' in field.name %} description{% endif %}{% if 'title_' in field.name %} title{% endif %}{% with 'is_restricted restrict_access_to_groups password' as res %} {% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
           <div class="form-group{% if field.field.required %} form-group-required{% endif %}{% if field.errors %} errors{% endif %}{% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %} pod-largelink{% endif %}">
             {% if "form-check-input" in field.field.widget.attrs.class %}
               <div class="form-check">
