@@ -788,9 +788,9 @@ class VideoForm(forms.ModelForm):
             and hasattr(self.instance, "video")
             and cleaned_data["video"] != self.instance.video
         )
-        self.launch_transcript = "transcript" in cleaned_data.keys() and hasattr(
-            self.instance, "transcript"
-        )
+        # self.launch_transcript = "transcript" in cleaned_data.keys() and hasattr(
+        #     self.instance, "transcript"
+        # )
         self.change_user = (
             self.launch_encode is False
             and hasattr(self.instance, "encoding_in_progress")
