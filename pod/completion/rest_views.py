@@ -60,13 +60,16 @@ class ContributorViewSet(viewsets.ModelViewSet):
 class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
+    filterset_fields = ['video',]
 
 
 class TrackViewSet(viewsets.ModelViewSet):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
+    filterset_fields = ['video',]
 
 
 class OverlayViewSet(viewsets.ModelViewSet):
     queryset = Overlay.objects.all()
     serializer_class = OverlaySerializer
+    filterset_fields = ['video',]
