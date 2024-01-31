@@ -1498,7 +1498,7 @@ class ChannelJsonResponseViews(TestCase):
 
 
 class VideoTranscriptTestView(TestCase):
-    """Test the video marker view."""
+    """Test the video transcript view."""
 
     fixtures = [
         "initial_data.json",
@@ -1513,7 +1513,7 @@ class VideoTranscriptTestView(TestCase):
             type=Type.objects.get(id=1),
         )
         print(" --->  SetUp of VideoTranscriptTestView: OK!")
-    
+
     def test_video_transcript_get_request(self):
         # anonyme
         self.client = Client()
@@ -1528,8 +1528,12 @@ class VideoTranscriptTestView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 404)
         # login and video exist
+        # USE_TRANSCRIPTION is False
         url = reverse("video:video_transcript", kwargs={"slug": video.slug})
         response = self.client.get(url)
+        # 403 permission denied
+        self.assertEqual(response.status_code, 403)
+        """
         self.assertRedirects(
             response,
             reverse("video:video_edit", args=(video.slug,)),
@@ -1537,3 +1541,4 @@ class VideoTranscriptTestView(TestCase):
             target_status_code=200,
             fetch_redirect_response=True
         )
+        """

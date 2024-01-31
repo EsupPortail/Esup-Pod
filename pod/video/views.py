@@ -1403,7 +1403,12 @@ def video_transcript(request, slug=None):
                 messages.ERROR,
                 _("An available transcription language must be specified."),
             )
-
+    else:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("No audio file found."),
+        )
     return redirect(reverse("video:video_edit", args=(video.slug,)))
 
 
