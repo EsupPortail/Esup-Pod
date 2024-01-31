@@ -1,5 +1,6 @@
 """Tests for Video views."""
 
+from django.conf import settings
 from django.http import JsonResponse
 from django.test import Client
 from django.test import TestCase, override_settings, TransactionTestCase
@@ -9,6 +10,7 @@ from django.contrib.auth.models import User
 from pod.authentication.models import AccessGroup
 from django.contrib.sites.models import Site
 from django.contrib.messages import get_messages
+from django.core.files.temp import NamedTemporaryFile
 
 from pod.main.models import AdditionalChannelTab
 
@@ -18,6 +20,7 @@ from ..models import Video
 from ..models import Channel
 from ..models import Discipline
 from ..models import AdvancedNotes
+from pod.video_encode_transcript import encode
 from pod.video_encode_transcript.models import VideoRendition
 from pod.video_encode_transcript.models import EncodingVideo
 from .. import views
@@ -26,6 +29,10 @@ import re
 import json
 from http import HTTPStatus
 from importlib import reload
+import shutil
+import os
+
+AUDIO_TEST = getattr(settings, "AUDIO_TEST", "pod/main/static/video_test/pod.mp3")
 
 
 class ChannelTestView(TestCase):
@@ -1560,4 +1567,33 @@ class VideoTranscriptTestView(TestCase):
             target_status_code=200,
             fetch_redirect_response=True
         )
+        video.encoding_in_progress = False
+        video.save()
+        response = self.client.get(url)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(
+            str(messages[0]),
+            "You cannot launch transcript for a video that is being encoded."
+        )
+        audio = Video.objects.create(
+            title="Audio1",
+            owner=self.user,
+            video="test.mp3",
+            type=Type.objects.get(id=1),
+        )
+        tempfile = NamedTemporaryFile(delete=True)
+        audio.video.save("test.mp3", tempfile)
+        dest = os.path.join(settings.MEDIA_ROOT, audio.video.name)
+        shutil.copyfile(AUDIO_TEST, dest)
+        print("\n ---> Start Encoding audio")
+        encode.encode_video(audio.id)
+        print("\n ---> End Encoding audio")
+        url = reverse("video:video_transcript", kwargs={"slug": audio.slug})
+        response = self.client.get(url)
+        messages = list(get_messages(response.wsgi_request))
+        str_messages = []
+        for message in messages:
+            str_messages.append(str(message))
+        check_message = "An available transcription language must be specified."
+        self.assertTrue(check_message in str_messages)
         print(" ---> test_video_transcript_get_request_transcription : OK!")
