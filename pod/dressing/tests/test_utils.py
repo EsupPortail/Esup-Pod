@@ -11,6 +11,7 @@ from pod.dressing.models import Dressing
 
 class DressingUtilitiesTests(unittest.TestCase):
     """TestCase for Esup-Pod dressing utilities."""
+
     def test_get_position_value(self):
         """Test for the get_position_value function."""
         result = get_position_value("top_right", "720")
@@ -43,18 +44,18 @@ class DressingUtilitiesTests(unittest.TestCase):
 
     def test_get_dressings(self):
         """Test for the get_dressings function."""
-        user = User.objects.create_user(
-            username="user", password="password", is_staff=1
+        user = User.objects.create_user(username="user", password="password", is_staff=1)
+        access_group = AccessGroup.objects.create(
+            code_name="group1", display_name="Group 1"
         )
-        access_group = AccessGroup.objects.create(code_name="group1", display_name="Group 1")
 
-        dressing1 = Dressing.objects.create(title='Dressing 1')
+        dressing1 = Dressing.objects.create(title="Dressing 1")
         dressing1.owners.add(user.id)
 
-        dressing2 = Dressing.objects.create(title='Dressing 2')
+        dressing2 = Dressing.objects.create(title="Dressing 2")
         dressing2.users.add(user.id)
 
-        dressing3 = Dressing.objects.create(title='Dressing 3')
+        dressing3 = Dressing.objects.create(title="Dressing 3")
         dressing3.allow_to_groups.add(access_group)
 
         dressings = get_dressings(user.id, [access_group])
@@ -69,7 +70,7 @@ class DressingUtilitiesTests(unittest.TestCase):
 
     def test_get_dressings_empty(self):
         """Test for the get_dressings_empty function."""
-        new_user = User.objects.create_user(username='newuser', password='newpassword')
+        new_user = User.objects.create_user(username="newuser", password="newpassword")
 
         dressings = get_dressings(new_user, [])
 

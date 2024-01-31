@@ -12,6 +12,7 @@ from pod.video.models import Type, Video
 
 class VideoDressingViewTest(TestCase):
     """Dressing page test case."""
+
     fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:
@@ -38,6 +39,7 @@ class VideoDressingViewTest(TestCase):
 
 class DressingDeleteViewTest(TestCase):
     """Dressing delete page test case."""
+
     fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:
@@ -122,6 +124,7 @@ class DressingDeleteViewTest(TestCase):
 
 class DressingCreateViewTest(TestCase):
     """Dressing create page test case."""
+
     fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:
@@ -141,28 +144,30 @@ class DressingCreateViewTest(TestCase):
         self.dressing.users.set([self.user])
 
     def test_dressing_create_view_authenticated_user(self):
-        self.client.login(username='user', password='password')
-        response = self.client.get(reverse('dressing:dressing_create'))
+        self.client.login(username="user", password="password")
+        response = self.client.get(reverse("dressing:dressing_create"))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'dressing_edit.html')
+        self.assertTemplateUsed(response, "dressing_edit.html")
 
     def test_dressing_create_view_unauthenticated_user(self):
-        response = self.client.get(reverse('dressing:dressing_create'))
+        response = self.client.get(reverse("dressing:dressing_create"))
         self.assertEqual(response.status_code, 302)  # Redirect to login page
 
     def test_dressing_create_form_submission(self):
         Dressing.objects.all().delete()
         self.client.login(username="user", password="password")
         form_data = {
-            'title': 'Dressing test',
-            'owners': self.user.id,
-            'position': 'top_right',
-            'opacity': 50,
-            'opening_credits': 1,
-            'ending_credits': 1,
+            "title": "Dressing test",
+            "owners": self.user.id,
+            "position": "top_right",
+            "opacity": 50,
+            "opening_credits": 1,
+            "ending_credits": 1,
         }
-        response = self.client.post(reverse('dressing:dressing_create'), data=form_data)
-        self.assertEqual(response.status_code, 302)  # Redirect after creation of the video dressing
+        response = self.client.post(reverse("dressing:dressing_create"), data=form_data)
+        self.assertEqual(
+            response.status_code, 302
+        )  # Redirect after creation of the video dressing
         self.assertEqual(Dressing.objects.count(), 1)
 
     def test_dressing_video_create(self):
