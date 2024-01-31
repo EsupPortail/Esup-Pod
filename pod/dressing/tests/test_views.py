@@ -121,3 +121,52 @@ class DressingDeleteViewTest(TestCase):
         """Test for dressing_delete view."""
 
         print(" ---> test_dressing_video_delete: OK! --- DressingDeleteViewTest")
+
+
+class DressingCreateViewTest(TestCase):
+    """Dressing create page test case."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="user", password="password", is_staff=1
+        )
+        self.first_video = Video.objects.create(
+            title="First video",
+            slug="first-video",
+            owner=self.user,
+            video="first_video.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.dressing = Dressing.objects.create(title="Test Dressing")
+        self.dressing.owners.set([self.user])
+        self.dressing.users.set([self.user])
+
+    def test_dressing_create_view_authenticated_user(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('dressing:dressing_create'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'dressing_edit.html')
+
+    def test_dressing_create_view_unauthenticated_user(self):
+        response = self.client.get(reverse('dressing:dressing_create'))
+        self.assertEqual(response.status_code, 302)  # Redirect to login page
+
+    def test_dressing_create_form_submission(self):
+        self.client.login(username="user", password="password")
+        form_data = {
+            'title': 'Dressing test',
+            'owners': [self.dressing.owners],
+            'position': 'top_right',
+            'opacity': 50,
+            'opening_credits': 1,
+            'ending_credits': 1,
+        }
+        response = self.client.post(reverse('dressing:dressing_create'), data=form_data)
+        self.assertEqual(response.status_code, 302)  # Redirect after creation of the video dressing
+        self.assertEqual(Dressing.objects.count(), 1)
+
+    def test_dressing_video_create(self):
+        """Test for dressing_create view."""
+
+        print(" ---> test_dressing_video_create: OK! --- DressingCreateViewTest")
