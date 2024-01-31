@@ -264,7 +264,7 @@ def add_or_edit_external_recording(request, id=None):
             )
 
     page_title = (
-        "%s <b>%s</b>" % (_("Edit the external video"), recording.name)
+        _("Edit the external video “%s”") % recording.name
         if recording
         else _("Create an external video")
     )

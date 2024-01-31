@@ -150,3 +150,18 @@ All JavaScript code is linted with [eslint](https://eslint.org/).
 
 All python code is linted with [flake8](https://flake8.pycqa.org/en/latest/)
 
+### Typography
+
+Please use these typographic characters in all displayed strings:
+
+* Use Apostrophe (’) instead of single quote (')
+  * English samples: don’t, it’s
+  * French samples : J’aime, l’histoire
+* Use the ellipsis (…) instead of 3 dots (...)
+  * English sample: Loading…
+  * French sample : Chargement…
+* Use typographic quotes (“ ”) instead of neutral quotes (" ")
+  * English sample: You can use the “Description” field below.
+  * French sample : Utilisez le champ « Description » ci-dessous
+
+

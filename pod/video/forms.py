@@ -198,13 +198,13 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 "{0}".format(_("Licence")),
                 [
                     (
-                        '<a href="https://creativecommons.org/licenses/by/4.0/" '
-                        'title="%(lic)s" target="_blank">%(lic)s</a>'
+                        '<a href="https://creativecommons.org/licenses/by/4.0/"'
+                        ' target="_blank">%(lic)s</a>'
                     )
                     % {"lic": _("Attribution 4.0 International (CC BY 4.0)")},
                     (
-                        '<a href="https://creativecommons.org/licenses/by-nd/4.0/" '
-                        'title="%(lic)s" target="_blank">%(lic)s</a>'
+                        '<a href="https://creativecommons.org/licenses/by-nd/4.0/"'
+                        ' target="_blank">%(lic)s</a>'
                     )
                     % {
                         "lic": _(
@@ -213,8 +213,8 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                         )
                     },
                     (
-                        '<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" '
-                        'title="%(lic)s" target="_blank">%(lic)s</a>'
+                        '<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"'
+                        ' target="_blank">%(lic)s</a>'
                     )
                     % {
                         "lic": _(
@@ -223,8 +223,8 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                         )
                     },
                     (
-                        '<a href="https://creativecommons.org/licenses/by-nc/4.0/" '
-                        'title="%(lic)s" target="_blank">%(lic)s</a>'
+                        '<a href="https://creativecommons.org/licenses/by-nc/4.0/"'
+                        ' target="_blank">%(lic)s</a>'
                     )
                     % {
                         "lic": _(
@@ -233,8 +233,8 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                         )
                     },
                     (
-                        '<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" '
-                        'title="%(lic)s" target="_blank">%(lic)s</a>'
+                        '<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"'
+                        ' target="_blank">%(lic)s</a>'
                     )
                     % {
                         "lic": _(
@@ -243,8 +243,8 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                         )
                     },
                     (
-                        '<a href="https://creativecommons.org/licenses/by-sa/4.0/" '
-                        'title="%(lic)s" target="_blank">%(lic)s</a>'
+                        '<a href="https://creativecommons.org/licenses/by-sa/4.0/"'
+                        ' target="_blank">%(lic)s</a>'
                     )
                     % {
                         "lic": _(

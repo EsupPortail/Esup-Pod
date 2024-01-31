@@ -21,7 +21,7 @@
       </a>
     </span>
   </h3>
-  <p>{% trans 'To delete the record, please checked in and click send.' %}</p>
+  <p>{% trans 'To delete the record, please check the box and click “Delete”.' %}</p>
   <form method="post" action="{{ request.get_full_path }}" id="record_delete_form" class='needs-validation' novalidate>
     {% csrf_token %}
     <div class="list-group">

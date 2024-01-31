@@ -17,27 +17,20 @@
   <li class="breadcrumb-item active" aria-current="page">{{ broadcaster.name }}</li>
 {% endblock %}
 
-{% block page_title %}{% trans "Live" %} {{broadcaster.name}}{% endblock %}
+{% block main_page_title %}
+  <h1 id="livename" data-broadcasterid="{{ broadcaster.id }}"">
+    <i class="bi bi-cast pe-2" aria-hidden="true"></i>
+    {{ page_title }}
+  </h1>
+{% endblock main_page_title %}
 
 {% block page_content %}
   {% csrf_token %}
 
   {% if form %}
+    {# Password-protected event #}
     {% include 'live/event-form.html' %}
   {% else %}
-    <h3 id="livename" data-broadcasterid={{ broadcaster.id }}><i
-        class="bi bi-cast pe-2"></i> {% trans "Live" %} {{ broadcaster.name }}</h3>
-
-    {% if display_event_btn %}
-      <div class="d-flex infinite-container mb-2" id="event_add">
-        <a class="btn btn-primary"
-         href="{% url 'live:event_edit' %}?broadcaster_id={{ broadcaster.id }}&building_id={{ broadcaster.building.id }}"
-         title="{% trans 'Plan an event' %}">
-          <i class="bi bi-plus pod-add" aria-hidden="true"></i>
-          <span>{% trans "Plan an event" %}</span>
-        </a>
-      </div>
-    {% endif %}
 
     <div class="row">
       <div class="col">
@@ -76,8 +69,16 @@
       </div>
     {% endif %}
 
-    {% get_next_events broadcaster.id 8 as NEXT_EVENTS %}
+    {% if display_event_btn %}
+      <a class="btn btn-primary float-end" id="event_add"
+         href="{% url 'live:event_edit' %}?broadcaster_id={{ broadcaster.id }}&building_id={{ broadcaster.building.id }}"
+         title="{% trans 'Plan an event' %}">
+        <i class="bi bi-plus pod-add" aria-hidden="true"></i>
+        <span>{% trans "Plan an event" %}</span>
+      </a>
+    {% endif %}
 
+    {% get_next_events broadcaster.id 8 as NEXT_EVENTS %}
     {% if NEXT_EVENTS %}
       <div id="last_videos">
         <h3>{% trans "Next events" %}</h3>

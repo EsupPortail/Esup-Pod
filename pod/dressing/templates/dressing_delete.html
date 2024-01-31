@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block page_content %}
-  <p>{% trans "To delete the dressing, please check in and click “Delete”." %}</p>
+  <p>{% trans "To delete the dressing, please check the box and click “Delete”." %}</p>
   <form method="post" action="{{ request.get_full_path }}" id="dressing_delete_form" class='needs-validation' novalidate>
     {% csrf_token %}
     <div class="list-group">
@@ -56,7 +56,5 @@
   </form>
 {% endblock page_content %}
 
-{% block collapse_page_aside %}
-{% endblock collapse_page_aside %}
-{% block page_aside %}
-{% endblock page_aside %}
+{% block collapse_page_aside %}{% endblock collapse_page_aside %}
+{% block page_aside %}{% endblock page_aside %}

@@ -1750,7 +1750,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush). Elles peuvent être générées avec [https://web-push-codelab.glitch.me/]()"
+                                    "Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush). Elles peuvent être générées avec [https://web-push-codelab.glitch.me/]()."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1772,7 +1772,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "si True, active un lien dans le menu de l’utilisateur permettant de réclamer un enregistrement"
+                                    "Si True, active un lien dans le menu de l’utilisateur permettant de réclamer un enregistrement."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1826,7 +1826,7 @@
                                 ],
                                 "fr": [
                                     "Identifiant du type de vidéo par défaut (si non spécifié).",
-                                    "(Exemple : 3 pour Colloque/conférence, 4 pour Cours...)"
+                                    "(Exemple : 3 pour Colloque/conférence, 4 pour Cours…)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4411,7 +4411,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Si True, permet de ne pas afficher les cursus dans la colonne de droite"
+                                    "Si True, permet de ne pas afficher les cursus dans la colonne de droite."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4424,7 +4424,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Si True, permet de ne pas afficher les disciplines dans la colonne de droite"
+                                    "Si True, permet de ne pas afficher les disciplines dans la colonne de droite."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4476,7 +4476,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "si True, permet de ne pas afficher la liste des types dans la colonne de droite"
+                                    "Si True, permet de ne pas afficher la liste des types dans la colonne de droite."
                                 ]
                             },
                             "pod_version_end": "",

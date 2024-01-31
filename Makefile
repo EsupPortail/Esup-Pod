@@ -20,8 +20,8 @@ start:
 starts:
 	# nécessite les django-extensions
 	# cf https://timonweb.com/django/https-django-development-server-ssl-certificate/
-	(sleep 15 ; open https://localhost:8000) &
-	python3 manage.py runserver_plus --cert-file cert.pem --key-file key.pem
+	(sleep 15 ; open https://localhost:9090) &
+	python3 manage.py runserver_plus localhost:9090 --cert-file cert.pem --key-file key.pem
 
 # Première installation de pod (BDD SQLite intégrée)
 install:

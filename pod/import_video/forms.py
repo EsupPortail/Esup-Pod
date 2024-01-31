@@ -27,8 +27,9 @@ class ExternalRecordingForm(forms.ModelForm):
 
     fieldsets = (
         (
-            None,
+            "general",
             {
+                "legend": _("General settings"),
                 "fields": (
                     "name",
                     "type",
