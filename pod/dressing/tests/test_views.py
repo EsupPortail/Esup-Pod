@@ -101,7 +101,7 @@ class DressingDeleteViewTest(TestCase):
         self.assertEqual(response.context["dressing"], self.dressing)
         self.assertIsInstance(response.context["form"], DressingDeleteForm)
         messages = [m.message for m in get_messages(response.wsgi_request)]
-        self.assertIn("Une ou plusieurs erreurs ont été trouvées dans le formulaire.", messages)
+        self.assertIn("One or more errors have been found in the form.", messages)
 
     def test_dressing_delete_view_permission_denied(self):
         user_without_permission = User.objects.create_user(
