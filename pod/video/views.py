@@ -561,7 +561,7 @@ def dashboard(request):
         )
 
     filtered_videos_list = get_filtered_videos_list(request, videos_list)
-    sort_field = request.GET.get("sort") if request.GET.get("sort") else "title"
+    sort_field = request.GET.get("sort") if request.GET.get("sort") else "date_added"
     sort_direction = request.GET.get("sort_direction")
     sorted_videos_list = sort_videos_list(
         filtered_videos_list, sort_field, sort_direction
