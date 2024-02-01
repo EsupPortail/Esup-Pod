@@ -32,8 +32,6 @@ class BulkUpdateTestCase(TestCase):
             username="pod3", password="pod1234pod", email="pod@univ.fr"
         )
 
-        self.factory.user = user1
-
         type1 = Type.objects.create(title="type1")
         type2 = Type.objects.create(title="type2")
 
@@ -137,6 +135,7 @@ class BulkUpdateTestCase(TestCase):
             },
             content_type='application/json'
         )
+        post_request.user = user1
         response = bulk_update(post_request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Video.objects.filter(title="Test Title"), 2)
