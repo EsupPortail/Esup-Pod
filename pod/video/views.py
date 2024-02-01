@@ -655,7 +655,7 @@ def bulk_update(request):
     if request.method == "POST":
         status = 200
         # Get post parameters
-        update_action = json.loads(request.POST.get("update_action"))
+        update_action = request.POST.get("update_action")
         selected_videos = json.loads(request.POST.get("selected_videos"))
         videos_list = Video.objects.filter(slug__in=selected_videos)
 
