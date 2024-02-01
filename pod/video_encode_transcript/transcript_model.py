@@ -94,7 +94,7 @@ def start_transcripting(mp3filepath, duration, lang):
     if TRANSCRIPTION_NORMALIZE:
         mp3filepath = normalize_mp3(mp3filepath)
     if TRANSCRIPTION_TYPE == "WHISPER":
-        msg, webvtt, all_text = main_whisper_transcript(mp3filepath, lang)
+        msg, webvtt, all_text = main_whisper_transcript(mp3filepath, duration, lang)
     else:
         transript_model = get_model(lang)
         msg, webvtt, all_text = start_main_transcript(
@@ -142,7 +142,10 @@ def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
             ),
         )
 
-    return np.frombuffer(output, np.int16)
+    if TRANSCRIPTION_TYPE == "WHISPER":
+        return np.frombuffer(output, np.int16).flatten().astype(np.float32) / 32768.0
+    else:
+        return np.frombuffer(output, np.int16)
 
 
 def normalize_mp3(mp3filepath):
@@ -402,12 +405,13 @@ def main_stt_transcript(norm_mp3_file, duration, transript_model):
     return msg, webvtt, all_text
 
 
-def main_whisper_transcript(norm_mp3_file, lang):
+def main_whisper_transcript(norm_mp3_file, duration, lang):
     """Whisper transcription."""
     msg = ""
     all_text = ""
     webvtt = WebVTT()
     inference_start = timer()
+    desired_sample_rate = 16000
     msg += "\nInference start %0.3fs." % inference_start
 
     model = whisper.load_model(
@@ -417,16 +421,23 @@ def main_whisper_transcript(norm_mp3_file, lang):
         ],
     )
 
-    transcription = model.transcribe(norm_mp3_file, language=lang)
-    msg += "\nRunning inference."
-
-    for segment in transcription["segments"]:
-        caption = Caption(
-            sec_to_timestamp(segment["start"]),
-            sec_to_timestamp(segment["end"]),
-            segment["text"],
+    for start_trim in range(0, duration, TRANSCRIPTION_AUDIO_SPLIT_TIME):
+        log.info("start_trim: "+str(start_trim))
+        audio = convert_samplerate(
+            norm_mp3_file,
+            desired_sample_rate,
+            start_trim,
+            TRANSCRIPTION_AUDIO_SPLIT_TIME,  # dur
         )
-        webvtt.captions.append(caption)
+        transcription = model.transcribe(audio, language=lang)
+        msg += "\nRunning inference."
+        for segment in transcription["segments"]:
+            caption = Caption(
+                sec_to_timestamp(segment['start']+start_trim),
+                sec_to_timestamp(segment['end']+start_trim),
+                segment['text'],
+            )
+            webvtt.captions.append(caption)
 
     inference_end = timer() - inference_start
     msg += "\nInference took %0.3fs." % inference_end
