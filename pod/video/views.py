@@ -391,7 +391,14 @@ def channel_edit(request, slug):
                 messages.ERROR,
                 _("One or more errors have been found in the form."),
             )
-    return render(request, "channel/channel_edit.html", {"form": channel_form})
+    return render(
+        request,
+        "channel/channel_edit.html",
+        {
+            "form": channel_form,
+            "page_title": _("Editing the channel “%s”") % channel.title,
+        },
+    )
 
 
 # ############################################################################

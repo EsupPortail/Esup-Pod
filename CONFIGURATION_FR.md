@@ -739,13 +739,13 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   > valeur par défaut : `False`
 
-  >> Si True, permet de ne pas afficher les cursus dans la colonne de droite <br>
+  >> Si True, permet de ne pas afficher les cursus dans la colonne de droite. <br>
 
  - `HIDE_DISCIPLINES`
 
   > valeur par défaut : `False`
 
-  >> Si True, permet de ne pas afficher les disciplines dans la colonne de droite <br>
+  >> Si True, permet de ne pas afficher les disciplines dans la colonne de droite. <br>
 
  - `HIDE_LANGUAGE_SELECTOR`
 
@@ -769,7 +769,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   > valeur par défaut : `False`
 
-  >> si True, permet de ne pas afficher la liste des types dans la colonne de droite <br>
+  >> Si True, permet de ne pas afficher la liste des types dans la colonne de droite. <br>
 
  - `HIDE_TYPES_TAB`
 
@@ -1882,7 +1882,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   }
   ```
 
-  >> Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush). Elles peuvent être générées avec [https://web-push-codelab.glitch.me/]() <br>
+  >> Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush). Elles peuvent être générées avec [https://web-push-codelab.glitch.me/](). <br>
 
 ### Configuration application recorder
 
@@ -1890,7 +1890,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
 
   > valeur par défaut : `False`
 
-  >> si True, active un lien dans le menu de l’utilisateur permettant de réclamer un enregistrement <br>
+  >> Si True, active un lien dans le menu de l’utilisateur permettant de réclamer un enregistrement. <br>
 
  - `ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER`
 
@@ -1916,7 +1916,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   > valeur par défaut : `1`
 
   >> Identifiant du type de vidéo par défaut (si non spécifié). <br>
-  >> (Exemple : 3 pour Colloque/conférence, 4 pour Cours...) <br>
+  >> (Exemple : 3 pour Colloque/conférence, 4 pour Cours…) <br>
 
  - `DEFAULT_RECORDER_USER_ID`
 

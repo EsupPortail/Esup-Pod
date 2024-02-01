@@ -1,3 +1,5 @@
+"""Esup-Pod Live views."""
+
 import json
 import logging
 import os.path
@@ -136,6 +138,7 @@ def direct(request, slug):
             "display_event_btn": can_manage_event(request.user),
             "broadcaster": broadcaster,
             "heartbeat_delay": HEARTBEAT_DELAY,
+            "page_title": _("Live “%s”") % broadcaster.name,
         },
     )
 
@@ -617,7 +620,11 @@ def event_delete(request, slug=None):
     return render(
         request,
         "live/event_delete.html",
-        {"event": evt, "form": form},
+        {
+            "event": evt,
+            "form": form,
+            "page_title": _("Deleting the event “%s”") % evt.title,
+        },
     )
 
 

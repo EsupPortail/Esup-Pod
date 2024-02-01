@@ -87,6 +87,7 @@
 
   /* better contrasts */
   --bs-border-color: #8e969d;
+  --bs-orange: #c85208;
 
   /* Use system font (faster load) */
   --font-family-sans-serif: -apple-system, system-ui, "BlinkMacSystemFont",
@@ -264,7 +265,7 @@ a:not(.btn):focus {
   max-height: auto;
 }
 
-@media (min-width: 576px) {
+@media (width >= 576px) {
   .link-center-pod,
   .file-image {
     max-height: 10rem;
@@ -1126,7 +1127,7 @@ body {
   margin-top: auto;
 }
 
-@media (min-width: 1450px) {
+@media (width >= 1450px) {
   .pod-footer {
     margin-left: 5rem;
     margin-right: 5rem;
@@ -1171,7 +1172,7 @@ body {
   align-items: center;
 }
 
-@media (min-width: 992px) {
+@media (width >= 992px) {
   .pod-card__title,
   .pod-card__title label {
     flex-flow: wrap;
@@ -1226,7 +1227,7 @@ body {
   font-size: 90%;
 }
 
-@media (min-width: 992px) {
+@media (width >= 992px) {
   .modal-dialog {
     max-width: 80vw;
     margin: 1.75rem auto;
@@ -1330,7 +1331,7 @@ body {
   margin-left: auto;
 }
 
-@media (min-width: 992px) {
+@media (width >= 992px) {
   .pod-navbar__form {
     flex-basis: 350px;
   }
@@ -1344,7 +1345,7 @@ body {
 }
 
 /* medium screens */
-@media (min-width: 992px) {
+@media (width >= 992px) {
   .pod-grid-content {
     gap: 2rem;
     grid-template-columns: minmax(0%, 100%) repeat(auto-fit, 33%);
@@ -1352,7 +1353,7 @@ body {
 }
 
 /* large screens */
-@media (min-width: 1200px) {
+@media (width >= 1200px) {
   .pod-grid-content {
     grid-template-columns: minmax(0%, 100%) repeat(auto-fit, 25%);
   }
@@ -1395,7 +1396,7 @@ body {
   width: auto;
 }
 
-@media (min-width: 992px) {
+@media (width >= 992px) {
   .pod-show-lg {
     margin-left: 0;
     width: auto;
@@ -1415,7 +1416,7 @@ body {
   }
 }
 
-@media (min-width: 1450px) {
+@media (width >= 1450px) {
   .pod-mainContent {
     padding-left: 5rem;
     padding-right: 5rem;
@@ -1569,14 +1570,17 @@ table .alert.alert-danger.btn.pod-btn-social {
 .pod-callout-info {
   border-left-color: var(--bs-info);
 }
+
 /* Bootstrap loader-spinner */
 .loaderSpinner {
   transition: opacity 150ms ease-in-out;
   z-index: 1100;
 }
+
 .loaderSpinner.hide {
   opacity: 0;
 }
+
 .loaderSpinner > .spinner-border {
   color: var(--pod-primary);
   width: 4rem;

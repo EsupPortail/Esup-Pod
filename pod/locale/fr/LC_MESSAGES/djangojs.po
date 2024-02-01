@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-29 15:38+0000\n"
+"POT-Creation-Date: 2024-01-31 13:17+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -472,8 +472,8 @@ msgid "Text copied"
 msgstr "Texte copié"
 
 #: pod/main/static/js/main.js
-msgid "Errors appear in the form, please correct them"
-msgstr "Des erreurs sont présentes dans le formulaire, veuillez les corriger"
+msgid "There are errors in the form, please correct them."
+msgstr "Des erreurs sont présentes dans le formulaire, veuillez les corriger."
 
 #: pod/main/static/js/main.js
 msgid "The file size exceeds the maximum allowed value:"

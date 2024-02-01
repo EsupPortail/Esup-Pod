@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-29 15:38+0000\n"
+"POT-Creation-Date: 2024-01-31 13:17+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -522,10 +522,10 @@ msgstr "Enregistrer la réunion dans le tableau de bord"
 #: pod/bbb/models.py
 msgid ""
 "Do you want to save the video of this meeting, at the end of the live, "
-"directly in “Dashboard“?"
+"directly in “Dashboard”?"
 msgstr ""
 "Souhaitez-vous enregistrer la vidéo de cette session, à la fin du direct, "
-"directement dans « Tableau de bord » ?"
+"directement dans le « Tableau de bord » ?"
 
 #: pod/bbb/models.py
 msgid "Enable chat"
@@ -978,7 +978,7 @@ msgstr "Actions"
 #: pod/chapter/templates/chapter/list_chapter.html
 #, python-format
 msgid "Modify the chapter “%(chapter_title)s”"
-msgstr "Modifier le chapitre « %(chapter_title)s »"
+msgstr "Modifier le chapitre « %(chapter_title)s »"
 
 #: pod/chapter/templates/chapter/list_chapter.html
 #: pod/completion/templates/contributor/list_contributor.html
@@ -994,7 +994,7 @@ msgstr "Modifier"
 #: pod/chapter/templates/chapter/list_chapter.html
 #, python-format
 msgid "Delete the chapter “%(chapter_title)s”"
-msgstr "Supprimer le chapitre « %(chapter_title)s »"
+msgstr "Supprimer le chapitre « %(chapter_title)s »"
 
 #: pod/chapter/templates/chapter/list_chapter.html
 #: pod/completion/templates/contributor/list_contributor.html
@@ -1035,7 +1035,7 @@ msgstr "Tableau de bord"
 #: pod/video/templates/videos/video_delete.html
 #, python-format
 msgid "Back to the video “%(video_title)s”"
-msgstr "Retourner à la vidéo « %(video_title)s »"
+msgstr "Retourner à la vidéo « %(video_title)s »"
 
 #: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
 #: pod/dressing/templates/video_dressing.html
@@ -1502,12 +1502,12 @@ msgstr "Rôle"
 #: pod/completion/templates/contributor/list_contributor.html
 #, python-format
 msgid "Modify the contributor “%(contributor_name)s”"
-msgstr "Modifier le contributeur « %(contributor_name)s »"
+msgstr "Modifier le contributeur « %(contributor_name)s »"
 
 #: pod/completion/templates/contributor/list_contributor.html
 #, python-format
 msgid "Delete the contributor “%(contributor_name)s”"
-msgstr "Supprimer le contributeur « %(contributor_name)s »"
+msgstr "Supprimer le contributeur « %(contributor_name)s »"
 
 #: pod/completion/templates/document/list_document.html
 msgid "List of additional resources"
@@ -1516,12 +1516,12 @@ msgstr "Liste des documents complémentaires"
 #: pod/completion/templates/document/list_document.html
 #, python-format
 msgid "Modify the additional resource “%(document_name)s”"
-msgstr "Modifier le document complémentaire « %(document_name)s »"
+msgstr "Modifier le document complémentaire « %(document_name)s »"
 
 #: pod/completion/templates/document/list_document.html
 #, python-format
 msgid "Delete the additional resource “%(document_name)s”"
-msgstr "Supprimer le document complémentaire « %(document_name)s »"
+msgstr "Supprimer le document complémentaire « %(document_name)s »"
 
 #: pod/completion/templates/overlay/list_overlay.html
 msgid "List of overlays"
@@ -1543,12 +1543,12 @@ msgstr "Fin"
 #: pod/completion/templates/overlay/list_overlay.html
 #, python-format
 msgid "Modify the overlay “%(overlay_title)s”"
-msgstr "Modifier la superposition « %(overlay_title)s »"
+msgstr "Modifier la superposition « %(overlay_title)s »"
 
 #: pod/completion/templates/overlay/list_overlay.html
 #, python-format
 msgid "Delete the overlay “%(overlay_title)s”"
-msgstr "Supprimer la superposition « %(overlay_title)s »"
+msgstr "Supprimer la superposition « %(overlay_title)s »"
 
 #: pod/completion/templates/track/list_track.html
 msgid "List of subtitle or caption files"
@@ -1561,7 +1561,7 @@ msgstr "Fichier de piste vidéo"
 #: pod/completion/templates/track/list_track.html
 #, python-format
 msgid "Replace the subtitle or caption file “%(track_name)s”"
-msgstr "Remplacer le fichier de sous-titres ou de légendes « %(track_name)s »"
+msgstr "Remplacer le fichier de sous-titres ou de légendes « %(track_name)s »"
 
 #: pod/completion/templates/track/list_track.html
 msgid "Replace"
@@ -1570,12 +1570,12 @@ msgstr "Remplacer"
 #: pod/completion/templates/track/list_track.html
 #, python-format
 msgid "Modify the subtitle or caption file “%(track_name)s”"
-msgstr "Modifier le fichier de sous-titres ou de légendes « %(track_name)s »"
+msgstr "Modifier le fichier de sous-titres ou de légendes « %(track_name)s »"
 
 #: pod/completion/templates/track/list_track.html
 #, python-format
 msgid "Remove the subtitle or caption file “%(track_name)s”"
-msgstr "Retirer le fichier de sous-titres ou de légendes « %(track_name)s »"
+msgstr "Retirer le fichier de sous-titres ou de légendes « %(track_name)s »"
 
 #: pod/completion/templates/track/list_track.html
 msgid "Remove"
@@ -2073,7 +2073,7 @@ msgid "My dressings"
 msgstr "Mes habillages"
 
 #: pod/dressing/templates/dressing_delete.html
-msgid "To delete the dressing, please check in and click “Delete”."
+msgid "To delete the dressing, please check the box and click “Delete”."
 msgstr ""
 "Pour supprimer l’habillage, veuillez cocher la case et cliquer sur "
 "« Supprimer »."
@@ -2095,7 +2095,8 @@ msgstr "Éditer l’habillage"
 msgid "Create a new dressing"
 msgstr "Créer un nouvel habillage"
 
-#: pod/dressing/templates/dressing_edit.html pod/video/forms.py
+#: pod/dressing/templates/dressing_edit.html pod/import_video/forms.py
+#: pod/live/forms.py pod/video/forms.py
 msgid "General settings"
 msgstr "Paramètres généraux"
 
@@ -2143,12 +2144,12 @@ msgstr "Voir la vidéo"
 #: pod/dressing/templates/my_dressings.html
 #, python-format
 msgid "Edit “%(title)s”"
-msgstr "Modifier « %(title)s »"
+msgstr "Modifier « %(title)s »"
 
 #: pod/dressing/templates/my_dressings.html
 #, python-format
 msgid "Delete “%(title)s”"
-msgstr "Supprimer « %(title)s »"
+msgstr "Supprimer « %(title)s »"
 
 #: pod/dressing/templates/my_dressings.html
 #: pod/dressing/templates/video_dressing.html
@@ -2372,10 +2373,6 @@ msgid "Enrichment Video Groups"
 msgstr "Groupes pour les enrichissements"
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html
-msgid "Enrichment of the video"
-msgstr "Enrichissement de la vidéo"
-
-#: pod/enrichment/templates/enrichment/edit_enrichment.html
 msgid "Add a new enrichment"
 msgstr "Ajouter un nouvel enrichissement"
 
@@ -2404,15 +2401,15 @@ msgstr "Le champ de titre est requis et doit contenir de 2 à 100 caractères."
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html
 msgid ""
-"The fields “Start“ and “End“ must contain an indication value in seconds. "
+"The fields “Start” and “End” must contain an indication value in seconds. "
 "Start playback of the video, pause the video and click on “Get time from the "
-"player“ to fill in the field untitled “Start“. Then do the same to fill in "
-"the field untitled “End“."
+"player” to fill in the field untitled “Start”. Then do the same to fill in "
+"the field untitled “End”."
 msgstr ""
-"Les champs « Début » et « Fin » doivent contenir des valeurs en secondes. "
-"Lancez la lecture de la vidéo, mettez sur pause et cliquez sur « Récupérer "
-"le temps depuis le lecteur » pour renseigner automatiquement le champ « "
-"Début ». Vous pouvez le faire également pour remplir le champ « Fin »."
+"Les champs « Début » et « Fin » doivent contenir des valeurs en secondes. "
+"Lancez la lecture de la vidéo, mettez sur pause et cliquez sur « Récupérer "
+"le temps depuis le lecteur » pour renseigner automatiquement le champ "
+"« Début ». Vous pouvez le faire également pour remplir le champ « Fin »."
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html
 msgid "You cannot overlap enrichments."
@@ -2463,12 +2460,12 @@ msgstr "Liste des enrichissements"
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #, python-format
 msgid "Modify the enrichment “%(enrich_title)s”"
-msgstr "Modifier l’enrichissement « %(enrich_title)s »"
+msgstr "Modifier l’enrichissement « %(enrich_title)s »"
 
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #, python-format
 msgid "Delete the enrichment “%(enrich_title)s”"
-msgstr "Supprimer l’enrichissement « %(enrich_title)s »"
+msgstr "Supprimer l’enrichissement « %(enrich_title)s »"
 
 #: pod/enrichment/templates/enrichment/video_enrichment-iframe.html
 #: pod/enrichment/templates/enrichment/video_enrichment_page_title.html
@@ -2478,6 +2475,11 @@ msgstr "Enrichi"
 #: pod/enrichment/views.py
 msgid "You cannot enrich this video."
 msgstr "Vous ne pouvez pas enrichir cette vidéo."
+
+#: pod/enrichment/views.py
+#, python-format
+msgid "Enrichment of the video “%s”"
+msgstr "Enrichissement de la vidéo « %s »"
 
 #: pod/enrichment/views.py pod/video/views.py
 msgid "You cannot access this playlist because it is private."
@@ -2565,16 +2567,6 @@ msgstr "Enregistrements externes"
 #: pod/import_video/templates/import_video/list.html pod/import_video/views.py
 msgid "My external videos"
 msgstr "Mes vidéos externes"
-
-#: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/import_video/views.py
-msgid "Edit the external video"
-msgstr "Modifier la vidéo externe"
-
-#: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/import_video/templates/import_video/list.html pod/import_video/views.py
-msgid "Create an external video"
-msgstr "Créer une vidéo externe"
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
@@ -2775,6 +2767,10 @@ msgstr ""
 msgid "You need to create an external video before you can import it."
 msgstr "Vous devez créer une vidéo externe avant de pouvoir l’importer."
 
+#: pod/import_video/templates/import_video/list.html pod/import_video/views.py
+msgid "Create an external video"
+msgstr "Créer une vidéo externe"
+
 #: pod/import_video/templates/import_video/list.html
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid "Do not leave the page until the video upload to Pod is complete."
@@ -2928,6 +2924,11 @@ msgid ""
 msgstr ""
 "L’enregistrement a été téléversé sur Pod. Vous pouvez voir la vidéo générée "
 "dans le tableau de bord."
+
+#: pod/import_video/views.py
+#, python-format
+msgid "Edit the external video “%s”"
+msgstr "Modifier la vidéo externe « %s »"
 
 #: pod/import_video/views.py
 msgid "The external recording has been deleted."
@@ -3133,8 +3134,7 @@ msgstr "Un évenement est déjà planifié à cette date"
 msgid "Password"
 msgstr "Mot de passe"
 
-#: pod/live/forms.py pod/live/templates/live/event_edit.html pod/main/admin.py
-#: pod/meeting/forms.py pod/video/forms.py
+#: pod/live/forms.py pod/main/admin.py pod/meeting/forms.py pod/video/forms.py
 #: pod/video/templates/videos/dashboard.html
 msgid "Advanced options"
 msgstr "Options avancées"
@@ -3464,15 +3464,6 @@ msgid "Submit"
 msgstr "Envoyer"
 
 #: pod/live/templates/live/direct.html
-msgid "Live"
-msgstr "Directs"
-
-#: pod/live/templates/live/direct.html pod/live/templates/live/events.html
-#: pod/live/templates/live/my_events.html pod/live/views.py
-msgid "Plan an event"
-msgstr "Programmer un évènement"
-
-#: pod/live/templates/live/direct.html
 #: pod/live/templates/live/event-script.html
 msgid "Recording in progress"
 msgstr "Enregistrement en cours"
@@ -3480,6 +3471,11 @@ msgstr "Enregistrement en cours"
 #: pod/live/templates/live/direct.html
 msgid "No recording in progress"
 msgstr "Aucun enregistrement en cours"
+
+#: pod/live/templates/live/direct.html pod/live/templates/live/events.html
+#: pod/live/templates/live/my_events.html pod/live/views.py
+msgid "Plan an event"
+msgstr "Programmer un évènement"
 
 #: pod/live/templates/live/direct.html pod/live/templates/live/events_next.html
 msgid "Next events"
@@ -3599,7 +3595,7 @@ msgstr "Mot de passe requis"
 msgid "Send"
 msgstr "Envoyer"
 
-#: pod/live/templates/live/event-iframe.html pod/live/templates/live/event.html
+#: pod/live/templates/live/event-iframe.html
 msgid "Event is finished at:"
 msgstr "L’évènement s’est terminé à :"
 
@@ -3770,6 +3766,10 @@ msgid "My events"
 msgstr "Mes évènements"
 
 #: pod/live/templates/live/event.html
+msgid "The event ended on:"
+msgstr "L’événement s’est terminé le :"
+
+#: pod/live/templates/live/event.html
 msgid "Report the event"
 msgstr "Signaler l’évènement"
 
@@ -3842,11 +3842,6 @@ msgid "from %(start_date)s to %(end_date)s"
 msgstr "du %(start_date)s au %(end_date)s"
 
 #: pod/live/templates/live/event_delete.html
-#, python-format
-msgid "Deleting the event \"%(vtitle)s\""
-msgstr "Supprimer l’évènement « %(vtitle)s »"
-
-#: pod/live/templates/live/event_delete.html
 msgid "Back to the event"
 msgstr "Retour à l’évènement"
 
@@ -3855,8 +3850,10 @@ msgid "The event is currently in progress. Deletion is not possible."
 msgstr "L’évènement est actuellement en cours. La supression est impossible."
 
 #: pod/live/templates/live/event_delete.html
-msgid "To delete the event, please checked in and click send."
-msgstr "Pour supprimer l’évènement, veuillez cocher et cliquer sur envoyer."
+msgid "To delete the event, please check the box and click “Delete”."
+msgstr ""
+"Pour supprimer l’évenement, veuillez cocher la case et cliquer sur "
+"« Supprimer »."
 
 #: pod/live/templates/live/event_edit.html
 #: pod/live/templates/live/event_immediate_edit.html
@@ -4029,6 +4026,11 @@ msgid "You cannot view this page."
 msgstr "Vous ne pouvez pas accèder à cette page."
 
 #: pod/live/views.py
+#, python-format
+msgid "Live “%s”"
+msgstr "Direct « %s »"
+
+#: pod/live/views.py
 msgid "You cannot watch this event."
 msgstr "Vous ne pouvez pas accèder à cet évènement en direct."
 
@@ -4047,6 +4049,11 @@ msgstr "Vous ne pouvez pas supprimer cet évènement."
 #: pod/live/views.py
 msgid "The event has been deleted."
 msgstr "L’évènement a été supprimé."
+
+#: pod/live/views.py
+#, python-format
+msgid "Deleting the event “%s”"
+msgstr "Suppression de l’événement « %s »"
 
 #: pod/live/views.py
 msgid "Plan an immediate event"
@@ -6345,13 +6352,13 @@ msgstr "vidéos"
 
 #: pod/playlist/templates/playlist/playlist_link.html
 #, python-format
-msgid "Edit the playlist “%(playlist.name)s”"
-msgstr "Modifier la liste de lecture « %(playlist.name)s »"
+msgid "Edit the playlist “%(name)s”"
+msgstr "Modifier la liste de lecture « %(name)s »"
 
 #: pod/playlist/templates/playlist/playlist_link.html
 #, python-format
-msgid "Remove the playlist “%(playlist.name)s”"
-msgstr "Supprimer la liste de lecture « %(playlist.name)s »"
+msgid "Remove the playlist “%(name)s”"
+msgstr "Supprimer la liste de lecture « %(name)s »"
 
 #: pod/playlist/templates/playlist/playlist_link.html
 msgid "Remove the playlist"
@@ -6600,17 +6607,17 @@ msgstr "Afficher/masquer les actions de fichier"
 #: pod/podfile/templates/podfile/list_folder_files.html
 #, python-format
 msgid "Rename folder “%(folder_name)s”"
-msgstr "Renommer le dossier « %(folder_name)s »"
+msgstr "Renommer le dossier « %(folder_name)s »"
 
 #: pod/podfile/templates/podfile/list_folder_files.html
 #, python-format
 msgid "Delete folder “%(folder_name)s”"
-msgstr "Supprimer le dossier « %(folder_name)s »"
+msgstr "Supprimer le dossier « %(folder_name)s »"
 
 #: pod/podfile/templates/podfile/list_folder_files.html
 #, python-format
 msgid "Share folder “%(folder_name)s” with another user"
-msgstr "Partager le dossier « %(folder_name)s » avec un autre utilisateur"
+msgstr "Partager le dossier « %(folder_name)s » avec un autre utilisateur"
 
 #: pod/podfile/templates/podfile/list_folder_files.html
 msgid "Upload Files"
@@ -7034,8 +7041,10 @@ msgid "Back to record claiming"
 msgstr "Retour aux réclamations d’enregistrement"
 
 #: pod/recorder/templates/recorder/record_delete.html
-msgid "To delete the record, please checked in and click send."
-msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
+msgid "To delete the record, please check the box and click “Delete”."
+msgstr ""
+"Pour supprimer l’enregistrement, veuillez cocher la case et cliquer sur "
+"« Supprimer »."
 
 #: pod/recorder/views.py
 msgid "Recorder should be indicated."
@@ -7866,10 +7875,6 @@ msgid "Themes of"
 msgstr "Thèmes de"
 
 #: pod/video/templates/channel/channel_edit.html
-msgid "Editing the channel"
-msgstr "Éditer la chaîne"
-
-#: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/channel/theme_edit.html
 msgid "View the channel"
 msgstr "Voir la chaîne"
@@ -8498,8 +8503,10 @@ msgstr ""
 "intermédiaires ne sont visibles que par le propriétaire de la vidéo."
 
 #: pod/video/templates/videos/video_delete.html
-msgid "To delete the video, please checked in and click send."
-msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
+msgid "To delete the video, please check the box and click “Delete”."
+msgstr ""
+"Pour supprimer la vidéo, veuillez cocher la case et cliquer sur "
+"« Supprimer »."
 
 #: pod/video/templates/videos/video_edit.html
 msgid "Add a new video"
@@ -8734,6 +8741,11 @@ msgstr "-- désolé, aucune traduction fournie --"
 #: pod/video/views.py
 msgid "You cannot edit this channel."
 msgstr "Vous ne pouvez éditer cette chaîne."
+
+#: pod/video/views.py
+#, python-format
+msgid "Editing the channel “%s”"
+msgstr "Édition de la chaîne « %s »"
 
 #: pod/video/views.py
 #, python-format
@@ -9084,7 +9096,7 @@ msgid ""
 "%(content_type)s “%(content_title)s” has been %(action)s, and is now "
 "available on %(site_title)s."
 msgstr ""
-"%(content_type)s \"%(content_title)s\" a été %(action)s, et est maintenant "
+"%(content_type)s « %(content_title)s » a été %(action)s, et est maintenant "
 "disponible sur %(site_title)s."
 
 #: pod/video_encode_transcript/utils.py
@@ -9142,6 +9154,26 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Live"
+#~ msgstr "Directs"
+
+#, python-format
+#~ msgid "Deleting the event \"%(vtitle)s\""
+#~ msgstr "Supprimer l’évènement « %(vtitle)s »"
+
+#~ msgid "To delete the event, please checked in and click send."
+#~ msgstr "Pour supprimer l’évènement, veuillez cocher et cliquer sur envoyer."
+
+#, python-format
+#~ msgid "Edit the playlist “%(playlist.name)s”"
+#~ msgstr "Modifier la liste de lecture « %(playlist.name)s »"
+
+#~ msgid "To delete the record, please checked in and click send."
+#~ msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
+
+#~ msgid "To delete the video, please checked in and click send."
+#~ msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
 
 #~ msgid "Unable to find information about the meeting"
 #~ msgstr "Impossible de trouver des informations sur la réunion"

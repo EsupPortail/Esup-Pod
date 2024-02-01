@@ -226,8 +226,9 @@ class EventForm(forms.ModelForm):
 
     fieldsets = (
         (
-            None,
+            "general",
             {
+                "legend": _("General settings"),
                 "fields": [
                     "title",
                     "start_date",
@@ -239,7 +240,7 @@ class EventForm(forms.ModelForm):
                     "password",
                     "is_restricted",
                     "restrict_access_to_groups",
-                ]
+                ],
             },
         ),
         (
