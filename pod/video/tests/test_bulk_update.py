@@ -127,12 +127,12 @@ class BulkUpdateTestCase(TestCase):
 
         post_request = self.factory.post(
             '/bulk_update/',
-            {
+            json.dumps({
                 'title': 'Test Title',
-                'selected_videos': json.dumps(selected_videos),
-                'update_fields': json.dumps(update_fields),
+                'selected_videos': selected_videos,
+                'update_fields': update_fields,
                 'update_action': "fields",
-            },
+            }),
             content_type='application/json'
         )
         post_request.user = user1
