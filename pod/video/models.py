@@ -864,7 +864,11 @@ class Video(models.Model):
         verbose_name_plural = _("videos")
 
     def set_password(self):
-        """Encrypt the password if video is protected. An encrypted password cannot be re-encrypted."""
+        """
+        Encrypt the password if video is protected.
+
+         An encrypted password cannot be re-encrypted.
+        """
         if self.password and not self.password.startswith(("pbkdf2_sha256$")):
             self.password = make_password(self.password, hasher="pbkdf2_sha256")
 
@@ -974,7 +978,7 @@ class Video(models.Model):
         return new_year
 
     def affiliation_is_array(self, affiliation):
-        """Check if the user affiliation is an array of strings or a simple string"""
+        """Check if the user affiliation is an array of strings or a simple string."""
         return True if affiliation.find("[") != -1 else False
 
     def get_player_height(self):

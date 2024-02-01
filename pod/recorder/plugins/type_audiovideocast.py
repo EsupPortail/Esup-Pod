@@ -183,10 +183,10 @@ def open_zipfile(recording):
         zip = zipfile.ZipFile(recording.source_file)
         return zip
     except FileNotFoundError as e:
-        add_comment(recording.id, "Error : %s" % e)
+        add_comment(recording.id, "Error: %s" % e)
         return -1
     except zipfile.BadZipFile as e:
-        add_comment(recording.id, "Error : %s" % e)
+        add_comment(recording.id, "Error: %s" % e)
         return -1
 
 
@@ -205,7 +205,7 @@ def encode_recording(recording):
         xmldoc = minidom.parse(smil)
         smil.close()
     except KeyError as e:
-        add_comment(recording.id, "Error : %s" % e)
+        add_comment(recording.id, "Error: %s" % e)
         zip.close()
         return -1
 
@@ -224,7 +224,7 @@ def encode_recording(recording):
             zip.close()
             return -1
     else:
-        add_comment(recording.id, "Error : No video source found")
+        add_comment(recording.id, "Error: No video source found")
         zip.close()
         return -1
     zip.close()

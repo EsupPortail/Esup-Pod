@@ -1,3 +1,8 @@
+/**
+ * Esup-Pod video stats scripts
+ */
+
+
 function linkedCell(cellValue, options, rowObject) {
   return (
     "<a href='" +
@@ -9,6 +14,7 @@ function linkedCell(cellValue, options, rowObject) {
     "</a>"
   );
 }
+
 $(() => {
   let data_url = window.location.href;
   $("#grid").jqGrid({
@@ -118,7 +124,7 @@ $(() => {
   $("#jsperiode").val(today); // set date input value to today
   document.getElementById("jsperiode").max = today;
 
-  $("#jsperiode").on("change paste keyup", function (e) {
+  $("#jsperiode").on("change paste keyup", function () {
     if ($(this).val() != undefined && $(this).val().trim() !== "") {
       try {
         let data = { periode: $(this).val() };

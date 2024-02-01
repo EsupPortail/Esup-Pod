@@ -14,7 +14,7 @@
   </div>
   <div class="pod-info-video__view">
     <i class="bi bi-eye"></i> {% trans 'Number of views' %}
-    {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video">
+    {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video&amp;highlight=since_created">
       {{ video.get_viewcount }}</a>
     {% else %}
       {{ video.get_viewcount }}
@@ -23,7 +23,7 @@
   {% if USE_PLAYLIST %}
     <div class="pod-info-video__playlists">
       <i class="bi bi-list-ul"></i> {% trans 'Addition in a playlist' %}
-      {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video">
+      {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video&amp;highlight=playlist_since_created">
         <span id="addition_playlists_count">{% get_count_video_added_in_playlist video %}</span></a>
       {% else %}
         <span id="addition_playlists_count">{% get_count_video_added_in_playlist video %}</span>
@@ -33,7 +33,7 @@
   {% if USE_PLAYLIST and USE_FAVORITES %}
     <div class="pod-info-video__favorites">
       <i class="bi bi-stars"></i> {% trans 'Number of favorites' %}
-      {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video">
+      {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video&amp;highlight=fav_since_created">
         <span id="favorites_count">{% get_total_favorites_video video %}</span></a>
       {% else %}
         <span id="favorites_count">{% get_total_favorites_video video %}</span>
@@ -153,16 +153,16 @@
           <ul>
             {% for contrib in video.contributor_set.all %}
             <li>
-              {{ contrib.name }} ({% trans contrib.role %})
+              {{ contrib.name }} ({{ contrib.get_role_display }})
               {% if contrib.email_address %}
-              <a href="javascript:linkTo_UnCryptMailto('{{ contrib.get_base_mail }}');" title="{% trans 'send an email' %}">
-                <i class="bi bi-envelope"></i>
-              </a>
+                <a href="javascript:linkTo_UnCryptMailto('{{ contrib.get_base_mail }}');" title="{% trans 'send an email' %}">
+                  <i class="bi bi-envelope"></i>
+                </a>
               {% endif %}
               {% if contrib.weblink %}
-              <a href="{{ contrib.weblink }}" target="_blank" title="{% trans 'contributor web link' %}">
-                <i class="bi bi-box-arrow-up-right"></i>
-              </a>
+                <a href="{{ contrib.weblink }}" target="_blank" title="{% trans 'contributor web link' %}">
+                  <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                </a>
               {% endif %}
             </li>
             {% endfor %}

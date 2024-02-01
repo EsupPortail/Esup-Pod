@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1">
 {% endblock opengraph %}
-{% block page_title %}{{ title }}{% endblock page_title %}
+
 {% block page_extra_head %}
   <link type="text/css" rel="stylesheet" href="{% static 'jqGrid/css/ui.jqgrid-bootstrap5.css' %}?ver={{VERSION}}">
   <link rel="stylesheet" href="{% static 'css/video_stats_view.css' %}?ver={{VERSION}}">
@@ -19,6 +19,14 @@
   .table-responsive {
     max-width: 100%;
   }
+  .table-success a{
+    color: var(--pod-activelink-color);
+  }
+  {% if highlight %}
+    #grid_{{highlight}} {
+      background-color: var(--bs-highlight-bg);
+    }
+  {% endif %}
   </style>
 {% endblock page_extra_head %}
 
@@ -27,7 +35,7 @@
   {% if form %}
     {% include "videos/video-form.html" %}
   {% else %}
-    <h1 class="page_title h2">{{ title }}</h1>
+    <h1 class="page_title h2">{{ page_title }}</h1>
     <div class="form-group row stat-form-group mb-1">
       <label for="jsperiode" class="col-7 col-form-label">{% trans "Change the date" %}</label>
       <div class="col-5 col-date">

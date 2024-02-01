@@ -588,6 +588,7 @@ div.card a img {
   flex-wrap: wrap-reverse;
   justify-content: flex-end;
   background: #00000095;
+  z-index: 10;
 }
 
 .card-footer-pod a.btn,
