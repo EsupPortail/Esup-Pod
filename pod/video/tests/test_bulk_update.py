@@ -5,6 +5,7 @@ from django.test import TestCase, RequestFactory, Client
 
 from pod.authentication.backends import User
 from pod.video.models import Video, Type
+from pod.video.views import bulk_update
 
 
 class BulkUpdateTestCase(TestCase):
@@ -123,7 +124,7 @@ class BulkUpdateTestCase(TestCase):
 
         self.client.force_login(user1)
 
-        self.factory.post(
+        post_request = self.factory.post(
             '/bulk_update/',
             {
                 'title': 'Test Title',
@@ -133,6 +134,8 @@ class BulkUpdateTestCase(TestCase):
             },
             content_type='application/json'
         )
+        response = bulk_update(post_request)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(Video.objects.filter(title="Test Title"), 2)
 
         print(
