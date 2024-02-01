@@ -422,7 +422,7 @@ def main_whisper_transcript(norm_mp3_file, duration, lang):
     )
 
     for start_trim in range(0, duration, TRANSCRIPTION_AUDIO_SPLIT_TIME):
-        log.info("start_trim: "+str(start_trim))
+        log.info("start_trim: " + str(start_trim))
         audio = convert_samplerate(
             norm_mp3_file,
             desired_sample_rate,
@@ -433,9 +433,9 @@ def main_whisper_transcript(norm_mp3_file, duration, lang):
         msg += "\nRunning inference."
         for segment in transcription["segments"]:
             caption = Caption(
-                sec_to_timestamp(segment['start']+start_trim),
-                sec_to_timestamp(segment['end']+start_trim),
-                segment['text'],
+                sec_to_timestamp(segment["start"] + start_trim),
+                sec_to_timestamp(segment["end"] + start_trim),
+                segment["text"],
             )
             webvtt.captions.append(caption)
 
