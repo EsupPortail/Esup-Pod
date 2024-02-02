@@ -1246,9 +1246,6 @@ class VideoTestUpdateOwner(TransactionTestCase):
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
         self.assertEqual(Video.objects.filter(owner=self.simple_user).count(), 2)
 
-    def tearDown(self):
-        super(VideoTestUpdateOwner, self).tearDown()
-
 
 class VideoTestFiltersViews(TestCase):
     fixtures = [

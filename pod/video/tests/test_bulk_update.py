@@ -25,7 +25,7 @@ class BulkUpdateTestCase(TransactionTestCase):
         self.factory = RequestFactory()
         self.client = Client()
 
-        site = Site.objects.get(id=1)
+        site = Site.objects.get(pk=1)
         user1 = User.objects.create(
             username="pod1", password="pod1234pod", email="pod@univ.fr"
         )
@@ -121,8 +121,8 @@ class BulkUpdateTestCase(TransactionTestCase):
 
     def test_bulk_update_title(self):
         """Test bulk update of title attribute."""
-        video1 = Video.objects.get(id=1)
-        video2 = Video.objects.get(id=2)
+        video1 = Video.objects.get(pk=1)
+        video2 = Video.objects.get(pk=2)
 
         user1 = User.objects.get(username="pod1")
 
