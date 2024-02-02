@@ -136,7 +136,8 @@ class BulkUpdateTestCase(TestCase):
                 'update_fields': '["title"]',
                 'update_action': 'fields',
             },
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+            LANGUAGE_CODE='fr',
         )
 
         post_request.user = user1
