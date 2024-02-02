@@ -3,10 +3,9 @@
 {% load static %}
 {% load thumbnail %}
 
-{% block more_style %}
+{% block page_extra_head %}
   <link href="{% static 'css/import_video.css' %}?ver={{ VERSION }}" rel="stylesheet">
-{% endblock more_style %}
-
+{% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
   <li class="breadcrumb-item active" aria-current="page">{% trans "My external videos" %}</li>

@@ -156,7 +156,7 @@
               {{ contrib.name }} ({{ contrib.get_role_display }})
               {% if contrib.email_address %}
                 <a href="javascript:linkTo_UnCryptMailto('{{ contrib.get_base_mail }}');" title="{% trans 'send an email' %}">
-                  <i class="bi bi-envelope"></i>
+                  <i class="bi bi-envelope" aria-hidden="true"></i>
                 </a>
               {% endif %}
               {% if contrib.weblink %}

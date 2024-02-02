@@ -39,9 +39,10 @@
     {% endif %}
 
     {% if meeting.get_is_meeting_running %}
-      <a class="btn btn-primary btn-sm float-start meeting-infos" href="{% url 'meeting:join' meeting.meeting_id %}" data-bs-toggle="modal" data-bs-target="#meetingModal"
+      <a class="btn btn-primary btn-sm float-start" href="{% url 'meeting:join' meeting.meeting_id %}" data-bs-toggle="modal" data-bs-target="#meetingModal"
       data-bs-meeting-id="{{meeting.meeting_id}}" data-bs-meeting-title="{{meeting.name}}"
-      data-bs-meeting-end-url="{% url 'meeting:end' meeting.meeting_id %}" data-bs-meeting-info-url="{% url 'meeting:get_meeting_info' meeting.meeting_id %}" role="alert">
+      data-bs-meeting-end-url="{% url 'meeting:end' meeting.meeting_id %}" data-bs-meeting-info-url="{% url 'meeting:get_meeting_info' meeting.meeting_id %}"
+      aria-label="{% trans 'Show meeting informations' %}">
         <span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Show meeting informations' %}"><i class="bi bi-person-video2 pod-add" aria-hidden="true"></i></span>
       </a>
 

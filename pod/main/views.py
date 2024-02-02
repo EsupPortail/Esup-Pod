@@ -377,6 +377,7 @@ def info_pod(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def userpicture(request):
+    """Render the user picture."""
     frontOwnerForm = FrontOwnerForm(instance=request.user.owner)
 
     if request.method == "POST":

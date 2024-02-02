@@ -1524,6 +1524,14 @@ table .alert.alert-danger.btn.pod-btn-social {
   background-color: transparent !important;
 }
 
+/* Shrink vjs toolbar on very small screens */
+@media only screen and (width <= 400px) {
+  .pod-container .video-js .vjs-control {
+    width: 3em;
+    font-size: 75%;
+  }
+}
+
 /* replace default .video-js 10px font size to avoid an accessibility "Very small text" warning */
 #podvideoplayer {
   font-size: 11px;

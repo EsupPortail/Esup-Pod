@@ -2542,7 +2542,7 @@ def stats_view(request, slug=None, slug_t=None):
     ) or (
         request.method == "GET" and videos and target in ("videos", "channel", "theme")
     ):
-        return render(request, "videos/video_stats_view.html", {"title": title})
+        return render(request, "videos/video_stats_view.html", {"page_title": title})
     else:
         date_filter = request.POST.get("periode", date.today())
         if isinstance(date_filter, str):

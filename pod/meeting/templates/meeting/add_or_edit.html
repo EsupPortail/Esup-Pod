@@ -16,7 +16,8 @@
 {% block page_content %}
   {% if access_not_allowed == True %}
     <p class="text-info-emphasis">
-      <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding meeting has been restricted. If you want to add meetings on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
+      {% url "contact_us" as contact_us %}
+      <i class="bi bi-info-circle"></i>&nbsp;{% blocktrans with url=contact_us %}Access to adding meeting has been restricted. If you want to add meetings on the platform, please <a href="{{url}}">contact us</a>.{% endblocktrans %}
     </p>
   {% else %}
     {% if form.instance.meeting_id and form.instance.meeting_id != '' %}
