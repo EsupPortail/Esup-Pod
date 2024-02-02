@@ -13,6 +13,8 @@ document.addEventListener(
     selector.addEventListener("change", function () {
       display_option_desc(this, helpContainer);
     });
+
+
   },
   false,
 );
