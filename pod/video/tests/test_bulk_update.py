@@ -143,7 +143,7 @@ class BulkUpdateTestCase(TransactionTestCase):
         post_request.LANGUAGE_CODE = "fr"
         response = bulk_update(post_request)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Video.objects.filter(title="Modified Title"), 2)
+        self.assertEqual(len(Video.objects.filter(title="Modified Title")), 2)
 
         print(
             "--->  test_bulk_update_title of BulkUpdateTestCase: OK"
