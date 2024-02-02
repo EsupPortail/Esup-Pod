@@ -1545,10 +1545,29 @@ class VideoTranscriptTestView(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" ---> test_video_transcript_get_request : OK!")
 
-    @override_settings(USE_TRANSCRIPTION=True)
+    @override_settings(
+        USE_TRANSCRIPTION=True,
+        TRANSCRIPTION_TYPE="VOSK",
+        TRANSCRIPTION_MODEL_PARAM={
+            # les modèles Vosk
+            'VOSK': {
+                'fr': {
+                    'model': "",
+                },
+                'en': {
+                    'model': "",
+                }
+            }
+        }
+    )
     def test_video_transcript_get_request_transcription(self):
         """Check response for get request with use transcription"""
         reload(views)
+
+        def inner_get_transcription_choices():
+            return [("fr", "French"), ("en", "english")]
+
+        views.get_transcription_choices = inner_get_transcription_choices
         video = Video.objects.get(title="Video1")
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
@@ -1596,4 +1615,22 @@ class VideoTranscriptTestView(TestCase):
             str_messages.append(str(message))
         check_message = "An available transcription language must be specified."
         self.assertTrue(check_message in str_messages)
+        url = reverse("video:video_transcript", kwargs={"slug": audio.slug})
+        url += "?lang=fr"
+        response = self.client.get(url)
+        messages = list(get_messages(response.wsgi_request))
+        str_messages = []
+        for message in messages:
+            str_messages.append(str(message))
+        check_message = "The video transcript has been restarted."
+        self.assertTrue(check_message in str_messages)
+        self.assertRedirects(
+            response,
+            reverse("video:video_edit", args=(audio.slug,)),
+            status_code=302,
+            target_status_code=200,
+            fetch_redirect_response=True
+        )
+        audio.refresh_from_db()
+        self.assertEqual(audio.transcript, "fr")
         print(" ---> test_video_transcript_get_request_transcription : OK!")
