@@ -6,14 +6,14 @@
 from datetime import datetime
 
 from django.contrib.sites.models import Site
-from django.test import TestCase, RequestFactory, Client
+from django.test import RequestFactory, Client, TransactionTestCase
 
 from pod.authentication.backends import User
 from pod.video.models import Video, Type
 from pod.video.views import bulk_update
 
 
-class BulkUpdateTestCase(TestCase):
+class BulkUpdateTestCase(TransactionTestCase):
     """Test the videos bulk update."""
 
     fixtures = [
