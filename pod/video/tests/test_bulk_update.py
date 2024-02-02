@@ -137,10 +137,10 @@ class BulkUpdateTestCase(TestCase):
                 'update_action': 'fields',
             },
             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
-            LANGUAGE_CODE='fr',
         )
 
         post_request.user = user1
+        post_request.LANGUAGE_CODE = "fr"
         response = bulk_update(post_request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Video.objects.filter(title="Modified Title"), 2)
