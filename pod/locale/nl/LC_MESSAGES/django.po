@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-31 13:17+0000\n"
+"POT-Creation-Date: 2024-02-02 16:06+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -573,11 +573,6 @@ msgid "by"
 msgstr ""
 
 #: pod/bbb/templates/bbb/list_meeting.html
-#: pod/bbb/templates/bbb/publish_meeting.html pod/main/templates/navbar.html
-msgid "My BigBlueButton records"
-msgstr ""
-
-#: pod/bbb/templates/bbb/list_meeting.html
 msgid "Create a video from a BigBlueButton presentation"
 msgstr ""
 
@@ -630,8 +625,7 @@ msgid "Please note: this page refreshes automatically every 30 seconds."
 msgstr ""
 
 #: pod/bbb/templates/bbb/live_card.html
-#: pod/bbb/templates/bbb/live_list_meeting.html
-#: pod/bbb/templates/bbb/live_publish_meeting.html
+#: pod/bbb/templates/bbb/live_publish_meeting.html pod/bbb/views.py
 #: pod/main/templates/navbar.html
 msgid "Perform a BigBlueButton live"
 msgstr ""
@@ -665,28 +659,25 @@ msgstr[1] ""
 msgid ""
 "This is the list of current BigBlueButton sessions for which you are "
 "moderator. This module allows you to make a live stream from this "
-"BigBlueButton session (<i>useful if there are more than 100 users</i>)."
+"BigBlueButton session (<em>useful if there are more than 100 users</em>)."
 msgstr ""
 
 #: pod/bbb/templates/bbb/live_list_meeting.html
 msgid ""
-"<b>Remember to not use breakout rooms in this case and end the meeting once "
-"it is over.</b>"
+"Remember to not use breakout rooms in this case and end the meeting once it "
+"is over."
 msgstr ""
 
 #: pod/bbb/templates/bbb/live_list_meeting.html
 msgid ""
-"Shortly after clicking the \"Perform a BigBlueButton live\" button, and "
-"select the desired options, the live stream will be available to users on "
-"the <i class=\\\"bi bi-broadcast\\\"></i> <b>Lives</b> page."
+"Shortly after clicking the “Perform a BigBlueButton live” button, and select "
+"the desired options, the live stream will be available to users on the <i "
+"class=\"bi bi-broadcast\" aria-hidden=\"true\"></i> <strong>Lives</strong> "
+"page."
 msgstr ""
 
 #: pod/bbb/templates/bbb/live_list_meeting.html
 msgid "There are no BigBlueButton sessions in progress."
-msgstr ""
-
-#: pod/bbb/templates/bbb/live_publish_meeting.html
-msgid "Confirmation of performing a BigBlueButton live"
 msgstr ""
 
 #: pod/bbb/templates/bbb/live_publish_meeting.html
@@ -734,7 +725,13 @@ msgstr ""
 #: pod/recorder/templates/recorder/record_list.html
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_list.html
+#: pod/video/templates/videos/video_list_grid_selectable.html
 msgid "Loading…"
+msgstr ""
+
+#: pod/bbb/templates/bbb/publish_meeting.html pod/bbb/views.py
+#: pod/main/templates/navbar.html
+msgid "My BigBlueButton records"
 msgstr ""
 
 #: pod/bbb/templates/bbb/publish_meeting.html
@@ -772,6 +769,10 @@ msgstr ""
 
 #: pod/bbb/views.py
 msgid "The BigBlueButton live has been performed."
+msgstr ""
+
+#: pod/bbb/views.py
+msgid "Confirmation of performing a BigBlueButton live"
 msgstr ""
 
 #: pod/chapter/apps.py pod/chapter/models.py
@@ -966,7 +967,6 @@ msgstr ""
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/main/templates/navbar.html pod/video/templates/videos/add_video.html
-#: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
 #: pod/video/templates/videos/video_edit.html pod/video/views.py
@@ -2453,8 +2453,6 @@ msgstr ""
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/live/templates/live/event_edit.html
 #: pod/live/templates/live/event_immediate_edit.html
-#: pod/meeting/templates/meeting/add_or_edit.html
-#: pod/meeting/templates/meeting/my_meetings.html
 #: pod/video/templates/videos/add_video.html
 #: pod/video/templates/videos/video_edit.html
 msgid "contact us"
@@ -2900,8 +2898,7 @@ msgid "Thumbnails"
 msgstr ""
 
 #: pod/live/apps.py pod/live/templates/live/direct.html
-#: pod/live/templates/live/directs.html
-#: pod/live/templates/live/directs_all.html pod/main/templates/navbar.html
+#: pod/live/templates/live/directs.html pod/main/templates/navbar.html
 msgid "Lives"
 msgstr ""
 
@@ -3184,8 +3181,7 @@ msgstr ""
 msgid "Event"
 msgstr ""
 
-#: pod/live/models.py pod/live/templates/live/event.html
-#: pod/live/templates/live/events.html pod/live/views.py
+#: pod/live/models.py pod/live/templates/live/event.html pod/live/views.py
 msgid "Events"
 msgstr ""
 
@@ -3326,6 +3322,10 @@ msgstr ""
 #: pod/live/templates/live/direct.html
 #: pod/live/templates/live/event-script.html
 msgid "Message not sent: connection problem (REDIS)"
+msgstr ""
+
+#: pod/live/templates/live/directs_all.html
+msgid "Display all broadcasters of this building"
 msgstr ""
 
 #: pod/live/templates/live/directs_all.html
@@ -3524,8 +3524,7 @@ msgstr ""
 
 #: pod/live/templates/live/event.html pod/live/templates/live/event_delete.html
 #: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/live/templates/live/my_events.html pod/live/views.py
+#: pod/live/templates/live/event_immediate_edit.html pod/live/views.py
 #: pod/main/templates/navbar.html
 msgid "My events"
 msgstr ""
@@ -3769,6 +3768,15 @@ msgstr ""
 
 #: pod/live/utils.py
 msgid "You cannot view this page."
+msgstr ""
+
+#: pod/live/views.py
+msgid "All live streams"
+msgstr ""
+
+#: pod/live/views.py
+#, python-format
+msgid "Broadcasters of building “%s”"
 msgstr ""
 
 #: pod/live/views.py
@@ -4775,8 +4783,7 @@ msgstr ""
 #: pod/meeting/templates/meeting/delete.html
 #: pod/meeting/templates/meeting/internal_recordings.html
 #: pod/meeting/templates/meeting/invite.html
-#: pod/meeting/templates/meeting/join.html
-#: pod/meeting/templates/meeting/my_meetings.html pod/meeting/views.py
+#: pod/meeting/templates/meeting/join.html pod/meeting/views.py
 msgid "My meetings"
 msgstr ""
 
@@ -4850,8 +4857,7 @@ msgstr ""
 msgid "My channels"
 msgstr ""
 
-#: pod/main/templates/navbar.html pod/podfile/templates/podfile/home.html
-#: pod/podfile/views.py
+#: pod/main/templates/navbar.html pod/podfile/views.py
 msgid "My files"
 msgstr ""
 
@@ -5309,9 +5315,10 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/meeting/templates/meeting/my_meetings.html
+#, python-format
 msgid ""
 "Access to adding meeting has been restricted. If you want to add meetings on "
-"the platform, please"
+"the platform, please <a href=\"%(url)s\">contact us</a>."
 msgstr ""
 
 #: pod/meeting/templates/meeting/delete.html
@@ -5337,10 +5344,6 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside.html
 msgid "See all my meetings"
-msgstr ""
-
-#: pod/meeting/templates/meeting/internal_recordings.html pod/meeting/views.py
-msgid "Meeting recordings"
 msgstr ""
 
 #: pod/meeting/templates/meeting/internal_recordings.html
@@ -5574,6 +5577,10 @@ msgid "Password given is not correct."
 msgstr ""
 
 #: pod/meeting/views.py
+msgid "Meeting recordings"
+msgstr ""
+
+#: pod/meeting/views.py
 msgid "You cannot view the recordings of this meeting."
 msgstr ""
 
@@ -5644,7 +5651,6 @@ msgstr ""
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/playlist/templates/playlist/delete.html
 #: pod/playlist/templates/playlist/playlist.html
-#: pod/playlist/templates/playlist/playlists.html
 #: pod/playlist/templates/playlist/protected-playlist-form.html
 #: pod/playlist/views.py
 msgid "Playlists"
@@ -5842,8 +5848,12 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
 msgid ""
-"When you click on a choice in the form, you will be automatically redirected "
-"to the page dedicated to this filter."
+"When you click on a choice bellow, you will be automatically redirected to "
+"the page dedicated to this filter."
+msgstr ""
+
+#: pod/playlist/templates/playlist/filter_aside.html
+msgid "See my playlists"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
@@ -5856,10 +5866,6 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
 msgid "See my public playlists"
-msgstr ""
-
-#: pod/playlist/templates/playlist/filter_aside.html
-msgid "See my playlists"
 msgstr ""
 
 #: pod/playlist/templates/playlist/filter_aside.html
@@ -5980,6 +5986,11 @@ msgstr ""
 msgid "Drop the video on another to swap their position."
 msgstr "Déposez la vidéo sur une autre pour échanger leur position."
 
+#: pod/playlist/templates/playlist/playlist_card.html
+#, python-format
+msgid "See the list “%(playlist_name)s”"
+msgstr ""
+
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
 msgid "videos"
 msgstr ""
@@ -6011,7 +6022,7 @@ msgid "Watch the video"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_player.html
-msgid "Playlist image"
+msgid "Displayed video"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_sort_select.html
@@ -6055,8 +6066,8 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/playlists.html
 msgid ""
-"You haven’t got any playlist yet, please use the “Add a playlist” button to "
-"add one."
+"No playlist matches the selected filter. Change filter or use the “Add a "
+"playlist” button to add one."
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlists.html
@@ -7651,7 +7662,6 @@ msgid "List display mode"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard_modal.html
-#: pod/video/templates/videos/video_list_grid_selectable.html
 #: pod/video/templates/videos/video_list_table_selectable.html
 msgid "Loading..."
 msgstr ""
