@@ -45,6 +45,8 @@
   <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
   <script id="jsi18n" src="{% url 'javascript-catalog' %}"></script>
 
+  {% block page_extra_head %}{% endblock %}
+
   {% if request.GET.is_iframe %}
     <link rel="stylesheet" href="{% static 'css/iframe.css' %}?ver={{VERSION}}" media="screen">
   {% endif %}
@@ -54,7 +56,6 @@
     {% webpush_header %}
   {% endif %}
 
-  {% block page_extra_head %}{% endblock %}
 </head>
 
 <body>
