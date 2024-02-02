@@ -1,4 +1,8 @@
-import json
+"""Unit tests for videos bulk update.
+
+*  run with `python manage.py test pod.video.tests.test_bulk_update
+"""
+
 from datetime import datetime
 
 from django.contrib.sites.models import Site
@@ -116,32 +120,31 @@ class BulkUpdateTestCase(TestCase):
         print(" --->  SetUp of BulkUpdateTestCase: OK!")
 
     def test_bulk_update_title(self):
+        """Test bulk update of title attribute."""
         video1 = Video.objects.get(id=1)
         video2 = Video.objects.get(id=2)
 
         user1 = User.objects.get(username="pod1")
-        selected_videos = [video1.slug, video2.slug]
-        update_fields = ['title']
 
         self.client.force_login(user1)
 
         post_request = self.factory.post(
             '/bulk_update/',
-            json.dumps({
-                'title': 'Test Title',
-                'selected_videos': selected_videos,
-                'update_fields': update_fields,
-                'update_action': "fields",
-            }),
-            content_type='application/json'
+            {
+                'title': 'Modified Title',
+                'selected_videos': '["%s", "%s"]' % (video1.slug, video2.slug),
+                'update_fields': '["title"]',
+                'update_action': 'fields',
+            },
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
+
         post_request.user = user1
         response = bulk_update(post_request)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(Video.objects.filter(title="Test Title"), 2)
+        self.assertEqual(Video.objects.filter(title="Modified Title"), 2)
 
         print(
-            "--->  test_bulk_update_title of \
-            BulkUpdateTestCase: OK"
+            "--->  test_bulk_update_title of BulkUpdateTestCase: OK"
         )
         self.client.logout()
