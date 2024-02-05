@@ -150,3 +150,8 @@ class BulkUpdateTestCase(TransactionTestCase):
             "--->  test_bulk_update_title of BulkUpdateTestCase: OK"
         )
         self.client.logout()
+
+    def tearDown(self):
+        """Cleanup all created stuffs."""
+        del self.client
+        del self.factory
