@@ -19,6 +19,7 @@ class BulkUpdateTestCase(TransactionTestCase):
     fixtures = [
         "initial_data.json",
     ]
+    serialized_rollback = True
 
     def setUp(self):
         """Create videos to be tested."""
