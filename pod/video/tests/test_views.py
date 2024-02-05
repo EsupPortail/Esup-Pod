@@ -1550,15 +1550,15 @@ class VideoTranscriptTestView(TestCase):
         TRANSCRIPTION_TYPE="VOSK",
         TRANSCRIPTION_MODEL_PARAM={
             # les modèles Vosk
-            'VOSK': {
-                'fr': {
-                    'model': "",
+            "VOSK": {
+                "fr": {
+                    "model": "",
                 },
-                'en': {
-                    'model': "",
-                }
+                "en": {
+                    "model": "",
+                },
             }
-        }
+        },
     )
     def test_video_transcript_get_request_transcription(self):
         """Check response for get request with use transcription"""
@@ -1576,7 +1576,7 @@ class VideoTranscriptTestView(TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(
             str(messages[0]),
-            "You cannot launch transcript for a video that is being encoded."
+            "You cannot launch transcript for a video that is being encoded.",
         )
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(
@@ -1584,7 +1584,7 @@ class VideoTranscriptTestView(TestCase):
             reverse("video:video_edit", args=(video.slug,)),
             status_code=302,
             target_status_code=200,
-            fetch_redirect_response=True
+            fetch_redirect_response=True,
         )
         video.encoding_in_progress = False
         video.save()
@@ -1592,7 +1592,7 @@ class VideoTranscriptTestView(TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(
             str(messages[0]),
-            "You cannot launch transcript for a video that is being encoded."
+            "You cannot launch transcript for a video that is being encoded.",
         )
         audio = Video.objects.create(
             title="Audio1",
@@ -1629,7 +1629,7 @@ class VideoTranscriptTestView(TestCase):
             reverse("video:video_edit", args=(audio.slug,)),
             status_code=302,
             target_status_code=200,
-            fetch_redirect_response=True
+            fetch_redirect_response=True,
         )
         audio.refresh_from_db()
         self.assertEqual(audio.transcript, "fr")
