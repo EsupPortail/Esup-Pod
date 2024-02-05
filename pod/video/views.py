@@ -3169,7 +3169,7 @@ def update_video_owner(request, user_id):
         for v in videos:
             try:
                 change_owner(v, new_owner)
-            except Exception as e:
+            except Exception:
                 one_or_more_not_updated = True
 
         if one_or_more_not_updated:
