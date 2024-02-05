@@ -29,7 +29,6 @@ from django.db.models import Sum, Min
 # from django.contrib.auth.hashers import check_password
 
 from dateutil.parser import parse
-import concurrent.futures as futures
 from pod.main.utils import is_ajax, dismiss_stored_messages, get_max_code_lvl_messages
 
 from pod.main.models import AdditionalChannelTab
@@ -3141,6 +3140,16 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 @login_required(redirect_field_name="referrer")
 @admin_required
 def update_video_owner(request, user_id):
+    """
+    Update video owner.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        user_id (number): User identifier.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
     if request.method == "POST":
         post_data = json.loads(request.body.decode("utf-8"))
 
@@ -3165,14 +3174,7 @@ def update_video_owner(request, user_id):
                 safe=False,
             )
 
-        one_or_more_not_updated = False
-        for v in videos:
-            try:
-                change_owner(v, new_owner)
-            except Exception:
-                one_or_more_not_updated = True
-
-        if one_or_more_not_updated:
+        if some_videos_owner_not_updated(videos, new_owner):
             return JsonResponse(
                 {**response, "detail": "One or more videos not updated"}, safe=False
             )
@@ -3183,6 +3185,24 @@ def update_video_owner(request, user_id):
         {"success": False, "detail": "Method not allowed: Please use post method"},
         safe=False,
     )
+
+
+def some_videos_owner_not_updated(videos, new_owner):
+    """
+    Return boolean if some video's owners were not updated.
+
+    Args:
+        videos (List[number]): List of videos id to be updated
+        new_owner (number): New owner's id.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
+    one_or_more_not_updated = False
+    for v in videos:
+        if not change_owner(v, new_owner):
+            one_or_more_not_updated = True
+    return one_or_more_not_updated
 
 
 @login_required(redirect_field_name="referrer")
