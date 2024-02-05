@@ -40,9 +40,11 @@
             {% endfor %}
           </div>
           {% if building.gmapurl %}
-            <p class="card-text building-gmapurl"><small class="text-muted"><a href='{{building.gmapurl}}' title="{% trans 'access map' %}" target="_blank"><i class="bi bi-geo-alt" aria-hidden="true"></i> <span class="ms-1 access-map">
-              {% trans "access map" %}
-            </span></a></small></p>
+            <p class="card-text building-gmapurl"><small class="text-muted">
+              <a href='{{building.gmapurl}}' title="{% trans 'access map' %}" target="_blank">
+                <i class="bi bi-geo-alt" aria-hidden="true"></i>&nbsp;<span class="ms-1 access-map">{% trans "access map" %}</span>
+              </a>
+            </small></p>
           {% endif %}
         </div>
       </div>

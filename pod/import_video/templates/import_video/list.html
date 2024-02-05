@@ -8,29 +8,30 @@
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
-  <li class="breadcrumb-item active" aria-current="page">{% trans "My external videos" %}</li>
+  <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
 {% endblock %}
 
 {% block page_content %}
 
-<div class="pod-first-content">
-  <p>
-    {% trans "If you have achieved Big Blue Button meetings via another interface (typically via Moodle), or if you wish to centralize PeerTube, Youtube or other videos on Pod, it is possible to retrieve these recordings and be able to convert them into video in this platform (under certain conditions)." %}<br>
-    {% trans "You need to create an external video before you can import it." %}
-  </p>
-</div>
+  <div class="pod-first-content">
+    <p>
+      {% trans "If you have achieved Big Blue Button meetings via another interface (typically via Moodle), or if you wish to centralize PeerTube, Youtube or other videos on Pod, it is possible to retrieve these recordings and be able to convert them into video in this platform (under certain conditions)." %}<br>
+      {% trans "You need to create an external video before you can import it." %}
+    </p>
+  </div>
 
-<div class="d-grid gap-2 d-md-flex justify-content-md mb-2">
+  <div class="d-grid gap-2 d-md-flex justify-content-md mb-2">
     <a class="btn btn-primary pod-btn-primary btn-sm" href="{% url 'import_video:add_external_recording' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Create an external video' %}">
-      <i class="bi bi-plus pod-add"></i><span>{% trans "Create an external video" %}</span>
+      <i class="bi bi-plus pod-add" aria-hidden="true"></i>&nbsp;<span>{% trans "Create an external video" %}</span>
     </a>
-</div>
+  </div>
 
-<div id="recording-loader" class="recording-loader">
-  <div class="recording-loading"></div>
-  {% trans "Do not leave the page until the video upload to Pod is complete." %}
-</div>
-<table class="table align-middle table-sm table-bordered table-striped caption-top" id="recordings">
+  <div id="recording-loader" class="recording-loader">
+    <div class="recording-loading"></div>
+    {% trans "Do not leave the page until the video upload to Pod is complete." %}
+  </div>
+
+  <table class="table align-middle table-sm table-bordered table-striped caption-top" id="recordings">
     <thead>
       <tr>
         <th scope="col">{% trans "Name" %}</th>
@@ -43,51 +44,49 @@
       </tr>
     </thead>
     <tbody>
-        {% for record in recordings %}
+      {% for record in recordings %}
         <tr class="recordings_list_item">
-            <td class="recording_name">{{ record.name }}</td>
-            <td>{{ record.state }}</td>
-            <td>{{ record.startTime }}</td>
-            <td>{{ record.type }}</td>
-            <td>
-                {% if record.presentationUrl != "" %}
-                  <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.presentationUrl }}" target="_blank" title="{% trans 'Display the recording in presentation format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
-                    <i class="bi bi-file-earmark-play"></i>
-                  </a>
-                {% endif %}
-                {% if record.videoUrl != "" %}
-                  <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.videoUrl }}" target="_blank" title="{% trans 'Display the recording in video format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
-                    <i class="bi bi-camera-video"></i>
-                  </a>
-                {% endif %}
-            </td>
-            <td>
-              {% if record.canUpload %}
-                {% trans "Please confirm you want to upload the recording to Pod" as confirmUpload %}
-                <form method="post" action="{% url "import_video:upload_external_recording_to_pod" record_id=record.id %}" onsubmit="return confirmUploadToPod('{{ confirmUpload|escapejs }}');" style="display: inline;">
-                  <input type="hidden" name="recording_name" value="{{ record.name }}">
-                  <input type="hidden" name="source_url" value="{{ record.videoUrl }}">
-                  {% csrf_token %}
-                  <button type="submit" class="btn btn-secondary pod-btn-secondary btn-sm" title="{% trans 'Upload to Pod as a video'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-upload pod-add"></i></button>
-                </form>
-              {% endif %}
-            </td>
-            <td>
-              {% if record.canDelete %}
-                {% trans "Please confirm you want to delete the external recording" as confirmDelete %}
-                <a href="{% url 'import_video:edit_external_recording' record.id %}" class="btn btn-primary pod-btn-primary btn-sm" title="{% trans 'Edit the external recording'%}" data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="bi bi-pencil-square pod-add"></i>
-                </a>
-                <form method="post" action="{% url "import_video:delete_external_recording" id=record.id %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the external recording'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-trash3 pod-add"></i></button>
-                </form>
-              {% endif %}
-            </td>
+          <td class="recording_name">{{ record.name }}</td>
+          <td>{{ record.state }}</td>
+          <td>{{ record.startTime }}</td>
+          <td>{{ record.type }}</td>
+          <td>
+            {% if record.presentationUrl != "" %}
+              <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.presentationUrl }}" target="_blank" title="{% trans 'Display the recording in presentation format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                <i class="bi bi-file-earmark-play" aria-hidden="true"></i>
+              </a>
+            {% endif %}
+            {% if record.videoUrl != "" %}
+              <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.videoUrl }}" target="_blank" title="{% trans 'Display the recording in video format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                <i class="bi bi-camera-video" aria-hidden="true"></i>
+              </a>
+            {% endif %}
+          </td><td>
+            {% if record.canUpload %}
+              {% trans "Please confirm you want to upload the recording to Pod" as confirmUpload %}
+              <form method="post" action="{% url "import_video:upload_external_recording_to_pod" record_id=record.id %}" onsubmit="return confirmUploadToPod('{{ confirmUpload|escapejs }}');" style="display: inline;">
+                <input type="hidden" name="recording_name" value="{{ record.name }}">
+                <input type="hidden" name="source_url" value="{{ record.videoUrl }}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary pod-btn-secondary btn-sm" title="{% trans 'Upload to Pod as a video'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-upload pod-add" aria-hidden="true"></i></button>
+              </form>
+            {% endif %}
+          </td><td>
+            {% if record.canDelete %}
+              {% trans "Please confirm you want to delete the external recording" as confirmDelete %}
+              <a href="{% url 'import_video:edit_external_recording' record.id %}" class="btn btn-primary pod-btn-primary btn-sm" title="{% trans 'Edit the external recording'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                <i class="bi bi-pencil-square pod-add" aria-hidden="true"></i>
+              </a>
+              <form method="post" action="{% url "import_video:delete_external_recording" id=record.id %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the external recording'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-trash3 pod-add" aria-hidden="true"></i></button>
+              </form>
+            {% endif %}
+          </td>
         </tr>
-        {% endfor %}
+      {% endfor %}
     </tbody>
-</table>
+  </table>
 {% endblock page_content %}
 
 {% block collapse_page_aside %}

@@ -4,7 +4,7 @@
 {% spaceless %}
   {% user_can_edit_or_remove playlist as can_edit_or_remove %}
   {% get_playlist_name playlist as playlist_name %}
-  {% blocktrans asvar playlist_title %}See the list “{{playlist_name}}”{% endblocktrans %}
+  {% blocktrans asvar playlist_title %}View the playlist “{{playlist_name}}”{% endblocktrans %}
 
   {% with playlist_name|capfirst|truncatechars:20 as playlist_label %}
   <div class="card infinite-item pod-card--video">
@@ -16,7 +16,7 @@
           title="{% if playlist.description %}{% get_playlist_description playlist %}{% else %}{{ playlist_name }}{% endif %}"
         >
           <small class="text-muted time">
-            <b>{{ playlist_label }}</b>
+            <strong>{{ playlist_label }}</strong>
             <br>
             {{ playlist.get_number_video }}
             {% if playlist.get_number_video > 1 %}
@@ -42,7 +42,7 @@
       >
         <img class="card-img-bottom"
           {% if playlist.get_number_video > 0 %}
-             src="{{ playlist.get_first_video.get_thumbnail_url }}"
+            src="{{ playlist.get_first_video.get_thumbnail_url }}"
           {% else %}
             src="{{ DEFAULT_PLAYLIST_THUMBNAIL }}"
           {% endif %}

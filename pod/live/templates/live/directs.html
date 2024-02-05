@@ -2,18 +2,6 @@
 {% load i18n %}
 {% load static %}
 
-{% block page_extra_head %}
-  <style>
-    iframe{
-      padding: 0;
-      margin: 0;
-      border:0;
-      width: 100%;
-      height: 100%;
-    }
-  </style>
-{% endblock page_extra_head %}
-
 {% block breadcrumbs %}
   {{ block.super }}
   <li class="breadcrumb-item"><a href="{% url 'live:directs_all'%}">{% trans "Lives" %}</a></li>
@@ -36,7 +24,7 @@
       <div class="col-12 col-md-6 col-lg-4 mb-2">
         <div class="card pod-card">
           <div class="card-body" style="height:24em">
-            <iframe  title="{{broadcaster.name}}" loading="lazy"
+            <iframe class="w-100 h-100" title="{{broadcaster.name}}" loading="lazy"
               src="{% url 'live:direct' slug=broadcaster.slug %}?is_iframe=true"></iframe>
           </div>
           <div class="card-footer">
