@@ -3166,11 +3166,11 @@ def update_video_owner(request, user_id):
             )
 
         one_or_more_not_updated = False
-        with futures.ThreadPoolExecutor() as executor:
-            for v in videos:
-                res = executor.submit(change_owner, v, new_owner).result()
-                if res is False:
-                    one_or_more_not_updated = True
+        for v in videos:
+            try:
+                change_owner(v, new_owner)
+            except Exception as e:
+                one_or_more_not_updated = True
 
         if one_or_more_not_updated:
             return JsonResponse(
