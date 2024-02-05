@@ -12,11 +12,13 @@ class AristoteAITestCase(TestCase):
     fixtures = ["initial_data.json"]
 
     def setUp(self):
+        """Set up the tests."""
         self.client_id = "client_id"
         self.client_secret = "client_secret"
 
     @patch("requests.post")
     def test_connect_to_api_success(self, mock_post):
+        """Test the connect_to_api method when the request is successful."""
         mock_response = Response()
         mock_response.status_code = 200
         mock_response.json = lambda: {"access_token": "mocked_token"}
@@ -30,6 +32,7 @@ class AristoteAITestCase(TestCase):
 
     @patch("requests.post")
     def test_connect_to_api_failure(self, mock_post):
+        """Test the connect_to_api method when the request fails."""
         mock_response = Response()
         mock_response.status_code = 401
         mock_post.return_value = mock_response
@@ -42,6 +45,7 @@ class AristoteAITestCase(TestCase):
 
     @patch("requests.get")
     def test_get_ai_enrichments_success(self, mock_get):
+        """Test the get_ai_enrichments method when the request is successful."""
         mock_response = Response()
         mock_response.status_code = 200
         mock_response.json = lambda: {"content": "mocked_content"}
@@ -55,6 +59,7 @@ class AristoteAITestCase(TestCase):
 
     @patch("requests.get")
     def test_get_ai_enrichments_failure(self, mock_get):
+        """Test the get_ai_enrichments method when the request fails."""
         mock_response = Response()
         mock_response.status_code = 401
         mock_get.return_value = mock_response
@@ -67,6 +72,7 @@ class AristoteAITestCase(TestCase):
 
     @patch("requests.get")
     def test_get_specific_ai_enrichment_success(self, mock_get):
+        """Test the get_specific_ai_enrichment method when the request is successful."""
         content = {
             "id": "mocked_id",
             "status": "mocked_status",
@@ -102,6 +108,7 @@ class AristoteAITestCase(TestCase):
 
     @patch("requests.get")
     def test_get_specific_ai_enrichment_failure(self, mock_get):
+        """Test the get_specific_ai_enrichment method when the request fails."""
         mock_response = Response()
         mock_response.status_code = 401
         mock_get.return_value = mock_response
@@ -114,6 +121,7 @@ class AristoteAITestCase(TestCase):
 
     @patch("requests.post")
     def test_create_enrichment_from_url_success(self, mock_post):
+        """Test the create_enrichment_from_url method when the request is successful."""
         mock_response = Response()
         mock_response.status_code = 200
         mock_response.json = lambda: {
@@ -134,6 +142,7 @@ class AristoteAITestCase(TestCase):
 
     @patch("requests.post")
     def test_create_enrichment_from_url_failure(self, mock_post):
+        """Test the create_enrichment_from_url method when the request fails."""
         mock_response = Response()
         mock_response.status_code = 401
         mock_post.return_value = mock_response
@@ -150,6 +159,7 @@ class AristoteAITestCase(TestCase):
 
     @patch("requests.get")
     def test_get_latest_enrichment_version_success(self, mock_get):
+        """Test the get_latest_enrichment_version method when the request is successful."""
         mock_response = Response()
         mock_response.status_code = 200
         mock_response.json = lambda: {
@@ -185,6 +195,7 @@ class AristoteAITestCase(TestCase):
 
     @patch("requests.get")
     def test_get_latest_enrichment_version_failure(self, mock_get):
+        """Test the get_latest_enrichment_version method when the request fails."""
         mock_response = Response()
         mock_response.status_code = 401
         mock_get.return_value = mock_response
@@ -197,6 +208,7 @@ class AristoteAITestCase(TestCase):
 
     @patch("requests.get")
     def test_get_enrichment_versions_success(self, mock_get):
+        """Test the get_enrichment_versions method when the request is successful."""
         mock_response = Response()
         mock_response.status_code = 200
         mock_response.json = lambda: {
@@ -215,6 +227,7 @@ class AristoteAITestCase(TestCase):
 
     @patch("requests.get")
     def test_get_enrichment_versions_failure(self, mock_get):
+        """Test the get_enrichment_versions method when the request fails."""
         mock_response = Response()
         mock_response.status_code = 401
         mock_get.return_value = mock_response
@@ -224,3 +237,53 @@ class AristoteAITestCase(TestCase):
         result = aristote_ai.get_enrichment_versions("mocked_id")
         self.assertEqual(result, mock_response)
         print(" --->  test_get_latest_enrichment_version_failure ok")
+
+    @patch("requests.get")
+    def test_get_specific_enrichment_version_success(self, mock_get):
+        """Test the get_specific_enrichment_version method when the request is successful."""
+        mock_response = Response()
+        mock_response.status_code = 200
+        mock_response.json = lambda: {
+            "createdAt": "2024-01-26T14:40:05+01:00",
+            "updatedAt": "2024-01-26T14:40:05+01:00",
+            "id": "mocked_id",
+            "enrichmentVersionMetadata": {
+                "title": "Worker enrichment",
+                "description": "This is an example of an enrichment version",
+                "topics": [
+                    "Random topic 1",
+                    "Random topic 2",
+                ],
+                "discipline": "mocked_discipline",
+                "mediaType": "mocked_mediaType",
+            },
+            "transcript": {
+                "originalFilename": "transcript.json",
+                "language": "fr",
+                "text": "mocked_text",
+                "sentences": [],
+            },
+            "multipleChoiceQuestions": [],
+            "initialVersion": True,
+            "lastEvaluationDate": "mocked_last_evaluation_date",
+        }
+        mock_get.return_value = mock_response
+
+        aristote_ai = AristoteAI(self.client_id, self.client_secret)
+        aristote_ai.token = "mocked_token"
+        result = aristote_ai.get_specific_enrichment_version("mocked_enrichment_id", "mocked_version_id")
+        self.assertEqual(result, mock_response.json())
+        print(" --->  get_specific_enrichment_version ok")
+
+    @patch("requests.get")
+    def test_get_specific_enrichment_version_failure(self, mock_get):
+        """Test the get_specific_enrichment_version method when the request fails."""
+        mock_response = Response()
+        mock_response.status_code = 401
+        mock_get.return_value = mock_response
+
+        aristote_ai = AristoteAI(self.client_id, self.client_secret)
+        aristote_ai.token = "mocked_token"
+        result = aristote_ai.get_specific_enrichment_version("mocked_enrichment_id", "mocked_version_id")
+        self.assertEqual(result, mock_response)
+        print(" --->  test_get_specific_enrichment_version_failure ok")

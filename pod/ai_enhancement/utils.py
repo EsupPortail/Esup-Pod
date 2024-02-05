@@ -140,3 +140,8 @@ class AristoteAI:
         """Get the enrichment versions."""
         path = f"/{API_VERSION}/enrichments/{enrichment_id}/versions?withTranscript={with_transcript}"
         return self.get_response(path)
+
+    def get_specific_enrichment_version(self, enrichment_id: str, version_id: str) -> Response or None:
+        """Get a specific version."""
+        path = f"/{API_VERSION}/enrichments/{enrichment_id}/versions/{version_id}"
+        return self.get_response(path)
