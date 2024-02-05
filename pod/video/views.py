@@ -1,4 +1,5 @@
 """Esup-Pod videos views."""
+from concurrent import futures
 
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.core.handlers.wsgi import WSGIRequest
@@ -3174,7 +3175,14 @@ def update_video_owner(request, user_id):
                 safe=False,
             )
 
-        if some_videos_owner_not_updated(videos, new_owner):
+        one_or_more_not_updated = False
+        with futures.ThreadPoolExecutor() as executor:
+            for v in videos:
+                res = executor.submit(change_owner, v, new_owner).result()
+                if res is False:
+                    one_or_more_not_updated = True
+
+        if one_or_more_not_updated:
             return JsonResponse(
                 {**response, "detail": "One or more videos not updated"}, safe=False
             )
@@ -3185,24 +3193,6 @@ def update_video_owner(request, user_id):
         {"success": False, "detail": "Method not allowed: Please use post method"},
         safe=False,
     )
-
-
-def some_videos_owner_not_updated(videos, new_owner):
-    """
-    Return boolean if some video's owners were not updated.
-
-    Args:
-        videos (List[number]): List of videos id to be updated
-        new_owner (number): New owner's id.
-
-    Returns:
-        ::class::`django.http.JsonResponse`: The JSON response.
-    """
-    one_or_more_not_updated = False
-    for v in videos:
-        if not change_owner(v, new_owner):
-            one_or_more_not_updated = True
-    return one_or_more_not_updated
 
 
 @login_required(redirect_field_name="referrer")
