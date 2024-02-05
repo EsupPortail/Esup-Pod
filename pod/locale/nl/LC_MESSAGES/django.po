@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-02 16:06+0000\n"
+"POT-Creation-Date: 2024-02-05 16:03+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2440,22 +2440,16 @@ msgid "External recordings"
 msgstr ""
 
 #: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/import_video/templates/import_video/list.html pod/import_video/views.py
+#: pod/import_video/views.py
 msgid "My external videos"
 msgstr ""
 
 #: pod/import_video/templates/import_video/add_or_edit.html
+#, python-format
 msgid ""
 "Access to adding external recording has been restricted. If you want to add "
-"external recordings on the platform, please"
-msgstr ""
-
-#: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/video/templates/videos/add_video.html
-#: pod/video/templates/videos/video_edit.html
-msgid "contact us"
+"external recordings on the platform, please <a href=\"%(url)s\">contact us</"
+"a>."
 msgstr ""
 
 #: pod/import_video/templates/import_video/add_or_edit.html
@@ -3622,6 +3616,13 @@ msgstr ""
 msgid ""
 "Access to adding event has been restricted. If you want to add events on the "
 "platform, please"
+msgstr ""
+
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/video_edit.html
+msgid "contact us"
 msgstr ""
 
 #: pod/live/templates/live/event_edit.html
@@ -5988,7 +5989,7 @@ msgstr "Déposez la vidéo sur une autre pour échanger leur position."
 
 #: pod/playlist/templates/playlist/playlist_card.html
 #, python-format
-msgid "See the list “%(playlist_name)s”"
+msgid "View the playlist “%(playlist_name)s”"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
@@ -6643,10 +6644,6 @@ msgid "Please select the render you want"
 msgstr ""
 
 #: pod/recorder/templates/recorder/record_delete.html
-msgid "Deleting the record"
-msgstr ""
-
-#: pod/recorder/templates/recorder/record_delete.html
 msgid "Back to record claiming"
 msgstr ""
 
@@ -6667,7 +6664,7 @@ msgid "The selected record has been deleted."
 msgstr ""
 
 #: pod/recorder/views.py
-msgid "Mediapath should be indicated."
+msgid "Media path should be indicated."
 msgstr ""
 
 #: pod/recorder/views.py
@@ -6690,6 +6687,11 @@ msgstr ""
 
 #: pod/recorder/views.py
 msgid "The record has been deleted."
+msgstr ""
+
+#: pod/recorder/views.py
+#, python-format
+msgid "Deleting the record “%s”"
 msgstr ""
 
 #: pod/recorder/views.py

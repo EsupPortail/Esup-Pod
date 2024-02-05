@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-02 16:06+0000\n"
+"POT-Creation-Date: 2024-02-05 16:03+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2564,26 +2564,20 @@ msgid "External recordings"
 msgstr "Enregistrements externes"
 
 #: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/import_video/templates/import_video/list.html pod/import_video/views.py
+#: pod/import_video/views.py
 msgid "My external videos"
 msgstr "Mes vidéos externes"
 
 #: pod/import_video/templates/import_video/add_or_edit.html
+#, python-format
 msgid ""
 "Access to adding external recording has been restricted. If you want to add "
-"external recordings on the platform, please"
+"external recordings on the platform, please <a href=\"%(url)s\">contact us</"
+"a>."
 msgstr ""
-"L’accès à l’ajout d’un enregistrement externe a été restreint. Si vous "
-"souhaitez ajouter des enregistrements externes sur la plateforme, s’il vous "
-"plaît"
-
-#: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/video/templates/videos/add_video.html
-#: pod/video/templates/videos/video_edit.html
-msgid "contact us"
-msgstr "nous contacter"
+"L’accès à l’ajout d’enregistrements externes a été limité. Si vous souhaitez "
+"ajouter des enregistrements externes sur la plateforme, veuillez <a "
+"href=\"%(url)s\">nous contacter</a>."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
@@ -3862,6 +3856,13 @@ msgid ""
 msgstr ""
 "L’accès à l’ajout d’évènement est restreint. Si vous voulez ajouter des "
 "évènements, veuillez"
+
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/video_edit.html
+msgid "contact us"
+msgstr "nous contacter"
 
 #: pod/live/templates/live/event_edit.html
 msgid "The event is currently in progress. Editing options are limited."
@@ -6354,7 +6355,7 @@ msgstr "Déposez la vidéo sur une autre pour échanger leur position."
 
 #: pod/playlist/templates/playlist/playlist_card.html
 #, python-format
-msgid "See the list “%(playlist_name)s”"
+msgid "View the playlist “%(playlist_name)s”"
 msgstr "Voir la liste de lecture « %(playlist_name)s »"
 
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
@@ -7045,10 +7046,6 @@ msgid "Please select the render you want"
 msgstr "Veuillez sélectionner le rendu souhaité"
 
 #: pod/recorder/templates/recorder/record_delete.html
-msgid "Deleting the record"
-msgstr "Supprimer cet enregistrement"
-
-#: pod/recorder/templates/recorder/record_delete.html
 msgid "Back to record claiming"
 msgstr "Retour aux réclamations d’enregistrement"
 
@@ -7071,7 +7068,7 @@ msgid "The selected record has been deleted."
 msgstr "L’enregistrement a été supprimé."
 
 #: pod/recorder/views.py
-msgid "Mediapath should be indicated."
+msgid "Media path should be indicated."
 msgstr "La source du fichier doit être indiquée."
 
 #: pod/recorder/views.py
@@ -7103,6 +7100,11 @@ msgstr "Nouvel enregistrement ajouté."
 #: pod/recorder/views.py
 msgid "The record has been deleted."
 msgstr "L’enregistrement a été supprimé."
+
+#: pod/recorder/views.py
+#, python-format
+msgid "Deleting the record “%s”"
+msgstr "Suppression de l’enregistrement « %s »"
 
 #: pod/recorder/views.py
 msgid "Recorder for Studio not found."
@@ -9165,6 +9167,17 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid ""
+#~ "Access to adding external recording has been restricted. If you want to "
+#~ "add external recordings on the platform, please"
+#~ msgstr ""
+#~ "L’accès à l’ajout d’un enregistrement externe a été restreint. Si vous "
+#~ "souhaitez ajouter des enregistrements externes sur la plateforme, s’il "
+#~ "vous plaît"
+
+#~ msgid "Deleting the record"
+#~ msgstr "Supprimer cet enregistrement"
 
 #~ msgid "Playlist image"
 #~ msgstr "Image de la playlist"

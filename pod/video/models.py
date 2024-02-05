@@ -977,7 +977,7 @@ class Video(models.Model):
             new_year = DEFAULT_YEAR_DATE_DELETE
         return new_year
 
-    def affiliation_is_array(self, affiliation):
+    def affiliation_is_array(self, affiliation) -> bool:
         """Check if the user affiliation is an array of strings or a simple string."""
         return True if affiliation.find("[") != -1 else False
 
