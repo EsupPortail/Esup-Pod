@@ -1,7 +1,7 @@
 /**
- * Esup-Pod video stats scripts
+ * @file Esup-Pod video stats scripts
+ * @since 2.5.0
  */
-
 
 function linkedCell(cellValue, options, rowObject) {
   return (

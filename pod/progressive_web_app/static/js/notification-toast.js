@@ -1,5 +1,6 @@
 /**
- * Esup-Pod WebPush notifications
+ * @file Esup-Pod WebPush notifications
+ * @since 3.4.0
  */
 
 // Read-only globals defined in webpush/webpush.js

@@ -1,5 +1,6 @@
 /**
- * Esup-pod Playlist utils.
+ * @file Esup-pod Playlist utils.
+ * @since 3.4.0
  */
 
 /* Read-only Globals defined in playlist-modal.js */

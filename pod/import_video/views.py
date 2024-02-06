@@ -169,8 +169,12 @@ def external_recordings(request):
     Returns:
         HTTPResponse: external recordings list
     """
+    page_title = _("My external videos")
+
     if RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
-        return render(request, "import_video/list.html", {"access_not_allowed": True})
+        return render(
+            request, "import_video/list.html",
+            {"access_not_allowed": True, "page_title": page_title})
 
     site = get_current_site(request)
 
@@ -192,7 +196,7 @@ def external_recordings(request):
         "import_video/list.html",
         {
             "recordings": recordings,
-            "page_title": _("My external videos"),
+            "page_title": page_title,
         },
     )
 

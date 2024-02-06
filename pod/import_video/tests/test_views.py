@@ -1,4 +1,9 @@
-"""Tests the views for import_video module."""
+"""
+Tests the views for import_video module.
+
+*  run with `python manage.py test pod.import_video.tests.test_views`
+
+"""
 
 from ..models import ExternalRecording
 from django.contrib.auth.models import User

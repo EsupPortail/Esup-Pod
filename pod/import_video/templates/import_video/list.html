@@ -11,8 +11,16 @@
   <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
 {% endblock %}
 
-{% block page_content %}
 
+{% if access_not_allowed %}
+  {% block page_content %}
+    <p class="text-info-emphasis">
+      {% url "contact_us" as contact_us %}
+      <i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% blocktrans with url=contact_us %}Access to importing video has been restricted. If you want to import videos on the platform, please <a href="{{url}}">contact us</a>.{% endblocktrans %}
+    </p>
+  {% endblock page_content %}
+{% else %}
+  {% block page_content %}
   <div class="pod-first-content">
     <p>
       {% trans "If you have achieved Big Blue Button meetings via another interface (typically via Moodle), or if you wish to centralize PeerTube, Youtube or other videos on Pod, it is possible to retrieve these recordings and be able to convert them into video in this platform (under certain conditions)." %}<br>
@@ -87,54 +95,55 @@
       {% endfor %}
     </tbody>
   </table>
-{% endblock page_content %}
+  {% endblock page_content %}
 
-{% block collapse_page_aside %}
-  {{ block.super }}
-{% endblock collapse_page_aside %}
+  {% block collapse_page_aside %}
+    {{ block.super }}
+  {% endblock collapse_page_aside %}
 
-{% block page_aside %}
-  {% include 'import_video/filter_aside.html' %}
-{% endblock page_aside %}
+  {% block page_aside %}
+    {% include 'import_video/filter_aside.html' %}
+  {% endblock page_aside %}
 
-{% block more_script %}
-<script>
-  // Filter recordings
-  let searchRecInput = document.querySelector(
-    "#external_recordings_filter #searchrecordings"
-  );
-  let searchRecHandler = (s) => {
-    let recs = document.querySelectorAll(
-      ".recordings_list_item"
+  {% block more_script %}
+  <script>
+    // Filter recordings
+    let searchRecInput = document.querySelector(
+      "#external_recordings_filter #searchrecordings"
     );
-    if (s.length >= 3) {
-      // Display only recordings matching the filter
-      recs.forEach((rec) => {
-        if (!rec.innerHTML.trim().toLowerCase().includes(s)) {
-          rec.style.visibility = 'collapse';
-        }
-        else rec.style.visibility = 'visible';
-      });
-    } else {
-      // Display all recordings
-      recs.forEach((rec) => {
-        rec.style.visibility = 'visible';
-      });
-    }
-  };
-  searchRecInput.addEventListener("input", (e) => {
-    searchRecHandler(searchRecInput.value.trim());
-  });
+    let searchRecHandler = (s) => {
+      let recs = document.querySelectorAll(
+        ".recordings_list_item"
+      );
+      if (s.length >= 3) {
+        // Display only recordings matching the filter
+        recs.forEach((rec) => {
+          if (!rec.innerHTML.trim().toLowerCase().includes(s)) {
+            rec.style.visibility = 'collapse';
+          }
+          else rec.style.visibility = 'visible';
+        });
+      } else {
+        // Display all recordings
+        recs.forEach((rec) => {
+          rec.style.visibility = 'visible';
+        });
+      }
+    };
+    searchRecInput.addEventListener("input", (e) => {
+      searchRecHandler(searchRecInput.value.trim());
+    });
 
-  /**
-   *  Manage the upload To Pod : confirm and loader
-   */
-  function confirmUploadToPod(message) {
-    const answer=confirm(message);
-    if(answer){
-     document.getElementById("recording-loader").style.display = "block";
+    /**
+     *  Manage the upload To Pod : confirm and loader
+     */
+    function confirmUploadToPod(message) {
+      const answer=confirm(message);
+      if(answer){
+       document.getElementById("recording-loader").style.display = "block";
+      }
+      return answer;
     }
-    return answer;
-  }
-</script>
-{% endblock more_script %}
+  </script>
+  {% endblock more_script %}
+{% endif %}
