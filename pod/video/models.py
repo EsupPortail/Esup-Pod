@@ -863,7 +863,7 @@ class Video(models.Model):
         verbose_name = _("video")
         verbose_name_plural = _("videos")
 
-    def set_password(self):
+    def set_password(self) -> None:
         """
         Encrypt the password if video is protected.
 
@@ -872,7 +872,7 @@ class Video(models.Model):
         if self.password and not self.password.startswith(("pbkdf2_sha256$")):
             self.password = make_password(self.password, hasher="pbkdf2_sha256")
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """Store a video object in db."""
         newid = -1
 

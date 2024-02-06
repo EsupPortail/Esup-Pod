@@ -11,16 +11,13 @@
   <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
 {% endblock %}
 
-
-{% if access_not_allowed %}
-  {% block page_content %}
+{% block page_content %}
+  {% if access_not_allowed %}
     <p class="text-info-emphasis">
       {% url "contact_us" as contact_us %}
       <i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% blocktrans with url=contact_us %}Access to importing video has been restricted. If you want to import videos on the platform, please <a href="{{url}}">contact us</a>.{% endblocktrans %}
     </p>
-  {% endblock page_content %}
-{% else %}
-  {% block page_content %}
+  {% else %}
   <div class="pod-first-content">
     <p>
       {% trans "If you have achieved Big Blue Button meetings via another interface (typically via Moodle), or if you wish to centralize PeerTube, Youtube or other videos on Pod, it is possible to retrieve these recordings and be able to convert them into video in this platform (under certain conditions)." %}<br>
@@ -95,8 +92,10 @@
       {% endfor %}
     </tbody>
   </table>
-  {% endblock page_content %}
+  {% endif %}
+{% endblock page_content %}
 
+{% if not access_not_allowed %}
   {% block collapse_page_aside %}
     {{ block.super }}
   {% endblock collapse_page_aside %}

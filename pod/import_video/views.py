@@ -698,9 +698,9 @@ def upload_youtube_recording_to_pod(request, record_id):
     except PytubeError as pterror:
         msg = {}
         msg["error"] = _("YouTube error “%s”" % (mark_safe(pterror)))
-        msg["message"] = _(
-            "YouTube content is inaccessible. "
-            "This content does not appear to be publicly available."
+        msg["message"] = "%s\n%s" % (
+            _("YouTube content is inaccessible."),
+            _("This content does not appear to be publicly available.")
         )
         msg["proposition"] = _("Try changing the address of this recording.")
         raise ValueError(msg)

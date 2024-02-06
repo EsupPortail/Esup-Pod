@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-05 16:03+0000\n"
+"POT-Creation-Date: 2024-02-06 10:47+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2587,6 +2587,13 @@ msgid "Type at least 3 chars to filter"
 msgstr ""
 
 #: pod/import_video/templates/import_video/list.html
+#, python-format
+msgid ""
+"Access to importing video has been restricted. If you want to import videos "
+"on the platform, please <a href=\"%(url)s\">contact us</a>."
+msgstr ""
+
+#: pod/import_video/templates/import_video/list.html
 msgid ""
 "If you have achieved Big Blue Button meetings via another interface "
 "(typically via Moodle), or if you wish to centralize PeerTube, Youtube or "
@@ -2669,8 +2676,13 @@ msgstr ""
 msgid "Delete the external recording"
 msgstr ""
 
-#: pod/import_video/utils.py pod/import_video/views.py pod/meeting/views.py
+#: pod/import_video/tests/test_views.py pod/import_video/utils.py
+#: pod/import_video/views.py pod/meeting/views.py
 msgid "Unable to upload the video to Pod"
+msgstr ""
+
+#: pod/import_video/tests/test_views.py pod/import_video/views.py
+msgid "YouTube content is inaccessible."
 msgstr ""
 
 #: pod/import_video/utils.py
@@ -2805,9 +2817,7 @@ msgid "YouTube error “%s”"
 msgstr ""
 
 #: pod/import_video/views.py
-msgid ""
-"YouTube content is inaccessible. This content does not appear to be publicly "
-"available."
+msgid "This content does not appear to be publicly available."
 msgstr ""
 
 #: pod/import_video/views.py

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-05 16:03+0000\n"
+"POT-Creation-Date: 2024-02-06 10:47+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2743,6 +2743,15 @@ msgid "Type at least 3 chars to filter"
 msgstr "Tapez au moins 3 lettres pour filtrer"
 
 #: pod/import_video/templates/import_video/list.html
+#, python-format
+msgid ""
+"Access to importing video has been restricted. If you want to import videos "
+"on the platform, please <a href=\"%(url)s\">contact us</a>."
+msgstr ""
+"L’accès à l’import d’une vidéo a été limité. Si vous souhaitez importer des "
+"vidéos sur la plateforme, veuillez <a href=\"%(url)s\">nous contacter</a>."
+
+#: pod/import_video/templates/import_video/list.html
 msgid ""
 "If you have achieved Big Blue Button meetings via another interface "
 "(typically via Moodle), or if you wish to centralize PeerTube, Youtube or "
@@ -2834,9 +2843,14 @@ msgstr "Modifier l’enregistrement externe"
 msgid "Delete the external recording"
 msgstr "Supprimer l’enregistrement externe"
 
-#: pod/import_video/utils.py pod/import_video/views.py pod/meeting/views.py
+#: pod/import_video/tests/test_views.py pod/import_video/utils.py
+#: pod/import_video/views.py pod/meeting/views.py
 msgid "Unable to upload the video to Pod"
 msgstr "Impossible de téléverser la vidéo sur Pod"
+
+#: pod/import_video/tests/test_views.py pod/import_video/views.py
+msgid "YouTube content is inaccessible."
+msgstr "Ce contenu de YouTube est inaccessible."
 
 #: pod/import_video/utils.py
 msgid "No URL found / No recording name"
@@ -2990,12 +3004,8 @@ msgid "YouTube error “%s”"
 msgstr "Erreur en lien avec Youtube « %s »"
 
 #: pod/import_video/views.py
-msgid ""
-"YouTube content is inaccessible. This content does not appear to be publicly "
-"available."
-msgstr ""
-"Le contenu YouTube est inaccessible. Ce contenu ne semble pas être "
-"disponible publiquement."
+msgid "This content does not appear to be publicly available."
+msgstr "Ce contenu ne semble pas être disponible publiquement."
 
 #: pod/import_video/views.py
 msgid "Try changing the address of this recording."
@@ -9167,6 +9177,16 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "YouTube content is inaccessible"
+#~ msgstr "Le contenu YouTube n’est pas disponible"
+
+#~ msgid ""
+#~ "YouTube content is inaccessible. This content does not appear to be "
+#~ "publicly available."
+#~ msgstr ""
+#~ "Le contenu YouTube est inaccessible. Ce contenu ne semble pas être "
+#~ "disponible publiquement."
 
 #~ msgid ""
 #~ "Access to adding external recording has been restricted. If you want to "
