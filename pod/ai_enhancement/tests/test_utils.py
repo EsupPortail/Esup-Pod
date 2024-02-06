@@ -271,7 +271,10 @@ class AristoteAITestCase(TestCase):
 
         aristote_ai = AristoteAI(self.client_id, self.client_secret)
         aristote_ai.token = "mocked_token"
-        result = aristote_ai.get_specific_enrichment_version("mocked_enrichment_id", "mocked_version_id")
+        result = aristote_ai.get_specific_enrichment_version(
+            "mocked_enrichment_id",
+            "mocked_version_id",
+        )
         self.assertEqual(result, mock_response.json())
         print(" --->  get_specific_enrichment_version ok")
 
