@@ -3140,7 +3140,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 @admin_required
-def update_video_owner(request, user_id: int)-> JsonResponse::
+def update_video_owner(request, user_id: int)-> JsonResponse:
     """
     Update video owner.
 
