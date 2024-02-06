@@ -1,5 +1,7 @@
 """Esup-Pod videos views."""
 
+from concurrent import futures
+
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -29,7 +31,6 @@ from django.db.models import Sum, Min
 # from django.contrib.auth.hashers import check_password
 
 from dateutil.parser import parse
-import concurrent.futures as futures
 from pod.main.utils import is_ajax, dismiss_stored_messages, get_max_code_lvl_messages
 
 from pod.main.models import AdditionalChannelTab
@@ -79,7 +80,6 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 import re
 import pandas
-from http import HTTPStatus
 from datetime import date
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
@@ -655,7 +655,7 @@ def bulk_update(request):
     if request.method == "POST":
         status = 200
         # Get post parameters
-        update_action = json.loads(request.POST.get("update_action"))
+        update_action = request.POST.get("update_action")
         selected_videos = json.loads(request.POST.get("selected_videos"))
         videos_list = Video.objects.filter(slug__in=selected_videos)
 
@@ -1020,92 +1020,6 @@ def get_video_access(request, video, slug_private):
 
     else:
         return True
-
-
-def video_json_response(request, video):
-    template_info = (
-        "videos/video-info.html"
-        if request.GET.get("is_iframe") and request.GET.get("is_iframe") == "true"
-        else "videos/video-all-info.html"
-    )
-    template_video_element = "videos/video-element.html"
-    rendered_info = render_to_string(template_info, {"video": video}, request)
-    rendered_video = render_to_string(template_video_element, {"video": video}, request)
-    listNotes = get_adv_note_list(request, video)
-    rendered_note = render_to_string(
-        "videos/video_notes.html", {"video": video, "listNotes": listNotes}, request
-    )
-    return video.get_json_to_video_view(
-        {
-            "html_video_info": rendered_info,
-            "html_video_element": rendered_video,
-            "html_video_note": rendered_note,
-        }
-    )
-
-
-@ajax_required
-@csrf_protect
-def video_xhr(request, slug, slug_private=None):
-    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-    is_password_protected = video.password is not None and video.password != ""
-    show_page = get_video_access(request, video, slug_private)
-    if (
-        (show_page and not is_password_protected)
-        or (
-            show_page
-            and is_password_protected
-            and request.POST.get("password")
-            and request.POST.get("password") == video.password
-        )
-        or (slug_private and slug_private == video.get_hashkey())
-        or request.user == video.owner
-        or request.user.is_superuser
-        or request.user.has_perm("video.change_video")
-        or (request.user in video.additional_owners.all())
-    ):
-        data = video_json_response(request, video)
-        return HttpResponse(data, content_type="application/json")
-    else:
-        is_draft = video.is_draft
-        is_restricted = video.is_restricted
-        is_restricted_to_group = video.restrict_access_to_groups.all().exists()
-        is_access_protected = is_draft or is_restricted or is_restricted_to_group
-        if is_password_protected and (
-            not is_access_protected or (is_access_protected and show_page)
-        ):  # Should not go here has video with password are not allowed in playlist
-            # (but should work if need...)
-            form = (
-                VideoPasswordForm(request.POST) if request.POST else VideoPasswordForm()
-            )
-            rendered = render_to_string(
-                "videos/video-form.html",
-                {"video": video, "form": form},
-                request,
-            )
-            response = {
-                "status": HTTPStatus.FORBIDDEN,
-                "error": "password",
-                "html_content": rendered,
-            }
-            data = json.dumps(response)
-            return HttpResponse(data, content_type="application/json")
-        elif request.user.is_authenticated:
-            response = {
-                "status": HTTPStatus.FORBIDDEN,
-                "error": "deny",
-                "html_content": "",
-            }
-            data = json.dumps(response)
-            return HttpResponse(data, content_type="application/json")
-        else:
-            response = {
-                "status": HTTPStatus.FOUND,
-                "error": "access",
-                "url": settings.LOGIN_URL,
-            }
-            data = json.dumps(response)
-            return HttpResponse(data, content_type="application/json")
 
 
 @csrf_protect
@@ -1494,7 +1408,12 @@ def video_transcript(request, slug=None):
                 messages.ERROR,
                 _("An available transcription language must be specified."),
             )
-
+    else:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("No audio file found."),
+        )
     return redirect(reverse("video:video_edit", args=(video.slug,)))
 
 
@@ -3162,7 +3081,17 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 @admin_required
-def update_video_owner(request, user_id):
+def update_video_owner(request, user_id: int) -> JsonResponse:
+    """
+    Update video owner.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        user_id (int): User identifier.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
     if request.method == "POST":
         post_data = json.loads(request.body.decode("utf-8"))
 
