@@ -1,4 +1,5 @@
 """Esup-Pod transcript video functions."""
+
 from django.conf import settings
 from django.core.files import File
 from pod.completion.models import Track

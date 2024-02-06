@@ -59,13 +59,18 @@ function setSelectedVideos() {
  */
 function replaceSelectedCountVideos() {
   let newCount = selectedVideos.length;
-  let videoCountStr = ngettext(`%(count)s video`, `%(count)s videos`, newCount);
+  let videoCountStr = ngettext("%(count)s video", "%(count)s videos", newCount);
+  let videoCountTit = ngettext(
+    "%(count)s video selected",
+    "%(count)s videos selected",
+    newCount,
+  );
   videoCountStr = interpolate(videoCountStr, { count: newCount }, true);
   countSelectedVideosBadge.innerHTML = videoCountStr;
-  countSelectedVideosBadge.setAttribute("title", videoCountStr);
+  countSelectedVideosBadge.setAttribute("title", videoCountTit);
   manageDisableBtn(
     applyMultipleActionsBtn,
-    newCount > 0 && action.length !== 0,
+    newCount > 0 && dashboardAction.length !== 0,
   );
   manageDisableBtn(resetSelectedVideosBtn, newCount > 0);
 }

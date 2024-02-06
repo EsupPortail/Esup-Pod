@@ -1,4 +1,5 @@
 """Views of the Import_video module."""
+
 import os
 import requests
 
@@ -168,8 +169,14 @@ def external_recordings(request):
     Returns:
         HTTPResponse: external recordings list
     """
+    page_title = _("My external videos")
+
     if RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
-        return render(request, "import_video/list.html", {"access_not_allowed": True})
+        return render(
+            request,
+            "import_video/list.html",
+            {"access_not_allowed": True, "page_title": page_title},
+        )
 
     site = get_current_site(request)
 
@@ -191,7 +198,7 @@ def external_recordings(request):
         "import_video/list.html",
         {
             "recordings": recordings,
-            "page_title": _("My external videos"),
+            "page_title": page_title,
         },
     )
 
@@ -263,7 +270,7 @@ def add_or_edit_external_recording(request, id=None):
             )
 
     page_title = (
-        "%s <b>%s</b>" % (_("Edit the external video"), recording.name)
+        _("Edit the external video “%s”") % recording.name
         if recording
         else _("Create an external video")
     )
@@ -600,7 +607,7 @@ def get_mediacad_api_description(type_source_url):
         # Request API is a bonus (for title and description)
         pass
     description = _(
-        "This video '%(name)s' was uploaded to Pod; its origin is %(type)s: "
+        "This video “%(name)s” was uploaded to Pod; its origin is %(type)s: "
         '<a href="%(url)s" target="_blank">%(url)s</a><br><br>%(desc)s'
     ) % {
         "name": mc_video_title,
@@ -672,7 +679,7 @@ def upload_youtube_recording_to_pod(request, record_id):
 
         # Step 5: Save and encode Pod video
         description = _(
-            "This video '%(name)s' was uploaded to Pod; "
+            "This video “%(name)s” was uploaded to Pod; "
             'its origin is Youtube: <a href="%(url)s" target="_blank">%(url)s</a>'
         ) % {"name": yt_video.title, "url": source_url}
         recording_title = request.POST.get("recording_name")
@@ -692,10 +699,10 @@ def upload_youtube_recording_to_pod(request, record_id):
         raise ValueError(msg)
     except PytubeError as pterror:
         msg = {}
-        msg["error"] = _("YouTube error '%s'" % (mark_safe(pterror)))
-        msg["message"] = _(
-            "YouTube content is inaccessible. "
-            "This content does not appear to be publicly available."
+        msg["error"] = _("YouTube error “%s”" % (mark_safe(pterror)))
+        msg["message"] = "%s\n%s" % (
+            _("YouTube content is inaccessible."),
+            _("This content does not appear to be publicly available."),
         )
         msg["proposition"] = _("Try changing the address of this recording.")
         raise ValueError(msg)
@@ -817,7 +824,7 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
 
         # Step 5: Save and encode Pod video
         description = _(
-            "This video '%(name)s' was uploaded to Pod; its origin is PeerTube: "
+            "This video “%(name)s” was uploaded to Pod; its origin is PeerTube: "
             "<a href='%(url)s' target='blank'>%(url)s</a>."
         ) % {"name": pt_video_name, "url": pt_video_url}
         description = ("%s<br>%s") % (description, pt_video_description)

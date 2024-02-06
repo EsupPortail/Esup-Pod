@@ -1,4 +1,5 @@
 """Useful functions for the entire Pod application."""
+
 import base64
 import io
 import qrcode
@@ -73,7 +74,9 @@ def display_message_with_icon(request, type, message):
 
 def dismiss_stored_messages(request):
     """
-    Tweak that dismiss messages (django.contrib.messages) stored to prevent them to pop on reload (asynchronous views)
+    Tweak that dismiss messages (django.contrib.messages) stored.
+
+    to prevent them to pop on reload (asynchronous views)
 
     Args:
         request (Request): HTTP request
@@ -114,7 +117,7 @@ def secure_post_request(request):
 
 def generate_qrcode(url: str, id: int, alt: str, request=None):
     """
-    Generate qrcode for live event or video share link
+    Generate qrcode for live event or video share link.
 
     Args:
         url (string): Url corresponding to link

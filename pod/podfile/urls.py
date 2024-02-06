@@ -2,7 +2,6 @@
 podfile URL Configuration
 """
 
-
 from django.conf.urls import url
 
 from .views import home, get_folder_files, get_file

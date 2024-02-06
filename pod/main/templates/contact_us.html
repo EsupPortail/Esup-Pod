@@ -26,11 +26,11 @@
       {% for field in form.visible_fields %}
         {% spaceless %}
           <div class="list-group-item{% if field.id_for_label == 'id_valid_human' %} valid_human{% endif %}">
-            <div class="form-group {% if field.field.required %}form-group-required {% endif %}" >
+            <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
               {{ field.errors }}
               {% if "form-check-input" in field.field.widget.attrs.class %}
                 <div class="form-check">
-                  {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
+                  {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
                 </div>
               {% else %}
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
@@ -64,7 +64,7 @@
 {% block page_aside %}
   <div class="card card-body p-3">
     <h2 class="h4 card-title pod-card__title ps-2">{% trans "Mandatory fields" %}</h2>
-    <div class="card-text" >
+    <div class="card-text">
       <p>
         <span class="required_star">*</span>
         {% trans "Fields marked with an asterisk are mandatory." %}

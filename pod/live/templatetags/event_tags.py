@@ -38,5 +38,5 @@ def get_event_qrcode(event_id: int) -> str:
         string: HTML-formed generated qrcode
 
     """
-    alt = _("QR code event's link")
+    alt = _("QR code event’s link")
     return generate_qrcode("live:event_immediate_edit", event_id, alt)

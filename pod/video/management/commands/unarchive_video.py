@@ -1,4 +1,5 @@
 """Unarchive a video."""
+
 from django.core.management.base import BaseCommand
 from pod.video.models import Video, default_date_delete
 from django.contrib.auth.models import User
@@ -33,7 +34,7 @@ class Command(BaseCommand):
             if video.owner.username != ARCHIVE_OWNER_USERNAME:
                 self.stdout.write(
                     self.style.ERROR(
-                        'Error : Video not archived "%s"' % options["video_id"]
+                        'Error: Video not archived "%s"' % options["video_id"]
                     )
                 )
                 return

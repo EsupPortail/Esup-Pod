@@ -739,13 +739,13 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   > valeur par défaut : `False`
 
-  >> Si True, permet de ne pas afficher les cursus dans la colonne de droite <br>
+  >> Si True, permet de ne pas afficher les cursus dans la colonne de droite. <br>
 
  - `HIDE_DISCIPLINES`
 
   > valeur par défaut : `False`
 
-  >> Si True, permet de ne pas afficher les disciplines dans la colonne de droite <br>
+  >> Si True, permet de ne pas afficher les disciplines dans la colonne de droite. <br>
 
  - `HIDE_LANGUAGE_SELECTOR`
 
@@ -769,7 +769,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   > valeur par défaut : `False`
 
-  >> si True, permet de ne pas afficher la liste des types dans la colonne de droite <br>
+  >> Si True, permet de ne pas afficher la liste des types dans la colonne de droite. <br>
 
  - `HIDE_TYPES_TAB`
 
@@ -1552,13 +1552,13 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
  - `USE_BBB`
 
-  > valeur par défaut : `True`
+  > valeur par défaut : `False`
 
   >> Utilisation de BigBlueButton - [TODO] À retirer dans les futures versions de Pod <br>
 
  - `USE_BBB_LIVE`
 
-  > valeur par défaut : `False `
+  > valeur par défaut : `False`
 
   >> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - [TODO] À retirer dans les futures versions de Pod <br>
 
@@ -1882,7 +1882,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   }
   ```
 
-  >> Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush). Elles peuvent être générées avec [https://web-push-codelab.glitch.me/]() <br>
+  >> Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush). Elles peuvent être générées avec [https://web-push-codelab.glitch.me/](). <br>
 
 ### Configuration application recorder
 
@@ -1890,7 +1890,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
 
   > valeur par défaut : `False`
 
-  >> si True, active un lien dans le menu de l’utilisateur permettant de réclamer un enregistrement <br>
+  >> Si True, active un lien dans le menu de l’utilisateur permettant de réclamer un enregistrement. <br>
 
  - `ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER`
 
@@ -1916,7 +1916,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   > valeur par défaut : `1`
 
   >> Identifiant du type de vidéo par défaut (si non spécifié). <br>
-  >> (Exemple : 3 pour Colloque/conférence, 4 pour Cours...) <br>
+  >> (Exemple : 3 pour Colloque/conférence, 4 pour Cours…) <br>
 
  - `DEFAULT_RECORDER_USER_ID`
 
@@ -2357,7 +2357,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   >>                 _( 
   >>                     "In this field you can select and add additional owners to the " 
   >>                     "video. These additional owners will have the same rights as " 
-  >>                     "you except that they can't delete this video." 
+  >>                     "you except that they can’t delete this video." 
   >>                 ) 
   >>             ], 
   >>         ), 
@@ -2512,7 +2512,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   >>             "{0}".format(_("Restricted access")), 
   >>             [ 
   >>                 _( 
-  >>                     "If you don't select “Draft mode”, you can restrict " 
+  >>                     "If you don’t select “Draft mode”, you can restrict " 
   >>                     "the content access to only people who can log in" 
   >>                 ) 
   >>             ], 
@@ -2521,7 +2521,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   >>             "{0}".format(_("Password")), 
   >>             [ 
   >>                 _( 
-  >>                     "If you don't select “Draft mode”, you can add a password " 
+  >>                     "If you don’t select “Draft mode”, you can add a password " 
   >>                     "which will be asked to anybody willing to watch " 
   >>                     "your content." 
   >>                 ), 

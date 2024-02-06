@@ -14,12 +14,14 @@ let watermarkField = document.getElementById("id_watermark");
  * Manage field state when modifying watermark field
  */
 function handleWatermarkChange() {
-  if (watermarkField.value !== "") {
-    opacityField.disabled = false;
-    positionField.disabled = false;
-  } else {
-    opacityField.disabled = true;
-    positionField.disabled = true;
+  if (watermarkField) {
+    if (watermarkField.value !== "") {
+      opacityField.disabled = false;
+      positionField.disabled = false;
+    } else {
+      opacityField.disabled = true;
+      positionField.disabled = true;
+    }
   }
 }
 
@@ -42,7 +44,9 @@ var observer = new MutationObserver(function (mutations) {
 /**
  * Observe the mutations of the "value" attribute of the watermark field
  */
-observer.observe(watermarkField, { attributes: true });
+if (watermarkField) {
+  observer.observe(watermarkField, { attributes: true });
+}
 
 /**
  * Deselect all radio input buttons

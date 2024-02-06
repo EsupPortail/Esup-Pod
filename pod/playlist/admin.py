@@ -1,4 +1,5 @@
-"""Esup-Pod playlist admin"""
+"""Esup-Pod playlist admin."""
+
 from django.contrib import admin
 
 from .models import Playlist, PlaylistContent

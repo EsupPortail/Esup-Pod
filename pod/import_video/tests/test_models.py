@@ -1,4 +1,5 @@
 """Tests the models for import_video module."""
+
 from ..models import ExternalRecording
 from datetime import datetime
 from django.contrib.auth.models import User

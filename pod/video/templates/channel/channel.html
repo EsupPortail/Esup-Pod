@@ -15,7 +15,7 @@
 {% endblock %}
 {% block page_extra_head %}
     <style>
-        #treeview ul.list-group li {
+        #theme-tree-view ul.list-group li {
             padding: 0;
         }
         {{channel.style}}
@@ -59,6 +59,7 @@
                 {% if USE_STATS_VIEW %}
                     {% if theme %}
                         <a href="{% url 'video:video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                            <i class="bi bi-graph-up" aria-hidden="true">&nbsp;</i>
                             {% trans 'Statistics views' %}
                         </a>
                     {% else %}
@@ -136,9 +137,9 @@
                 {% if videos %}
                     <p class="video-count">
                         {% if theme %}
-                        {% blocktrans count counter=count_videos %}{{ counter }} video found for this theme{% plural %}{{ counter }} videos found for this theme{% endblocktrans %}
+                            {% blocktrans count counter=count_videos %}{{ counter }} video found for this theme{% plural %}{{ counter }} videos found for this theme{% endblocktrans %}
                         {% else %}
-                        {% blocktrans count counter=count_videos %}{{ counter }} video found without theme{% plural %}{{ counter }} videos found without theme{% endblocktrans %}
+                            {% blocktrans count counter=count_videos %}{{ counter }} video found without theme{% plural %}{{ counter }} videos found without theme{% endblocktrans %}
                         {% endif %}
                     </p>
                     {% include "videos/video_list.html" %}
@@ -160,7 +161,10 @@
             <span class="pod-float-end">
                 {% if theme %}
                     {% if USE_STATS_VIEW %}
-                        <a href="{% url 'video:video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">{% trans 'Statistics views' %}</a>
+                        <a href="{% url 'video:video_stats_view' slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                            <i class="bi bi-graph-up" aria-hidden="true">&nbsp;</i>
+                            {% trans 'Statistics views' %}
+                        </a>
                     {% endif %}
                     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'Subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
                         <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Video" %}
@@ -170,7 +174,10 @@
                     </a>
                 {% else %}
                     {% if USE_STATS_VIEW %}
-                        <a href="{% url 'video:video_stats_view' slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">{% trans 'Statistics views' %}</a>
+                        <a href="{% url 'video:video_stats_view' slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                            <i class="bi bi-graph-up" aria-hidden="true">&nbsp;</i>
+                            {% trans 'Statistics views' %}
+                        </a>
                     {% endif %}
                     <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video:rss-video' slug_c=channel.slug %}" title="{% trans 'Subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
                         <i class="bi bi-rss" aria-hidden="true"></i>&nbsp;{% trans "Video" %}
@@ -218,11 +225,11 @@
   {% if channel.themes.count > 0 %}
     <div class="card card-body p-2 p-md-3" id="card-channelthemes">
       <h2 class="card-title h4">
-        <i class="bi bi-card-list" aria-hidden="true" ></i>
+        <i class="bi bi-card-list" aria-hidden="true"></i>
         {% trans 'Themes of' %} "{{ channel.title }}"
       </h2>
-      <div class="card-text" id="treeview">
-        <ul class="list-group list-group-flush {% if channel.themes.count > 5 %}small{% endif %}" id="ultreeview" style="max-height:300px; overflow:auto;">
+      <div class="card-text" id="theme-tree-view">
+        <ul class="list-group list-group-flush {% if channel.themes.count > 5 %}small{% endif %}" id="theme-ul-tree-view" style="max-height:300px; overflow:auto;">
         </ul>
       </div>
     </div>
@@ -232,7 +239,7 @@
 
 {% block more_script %}
 
-    <script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}" ></script>
+    <script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
     <script>
         {% if theme %}
         url = "{% url 'channel-video:theme' slug_c=channel.slug slug_t=theme.slug %}?page="
@@ -287,7 +294,7 @@
             0,
             [],
             tag_type = "li",
-            li_class = "list-group-item",
+            li_class = "list-group-item bg-transparent border-0",
             attrs = '',
             add_link = true,
             current = "{{theme.slug}}",
@@ -295,17 +302,20 @@
             show_only_parent_themes,
             all_theme_parents
         );
-        document.getElementById("ultreeview").innerHTML = str;
-        setTimeout(function() {
-            const tree_item_info = document.querySelector("#ultreeview li.list-group-item-info");
-            const tree_item = document.querySelectorAll("#ultreeview li")
-            if(tree_item_info && tree_item)
-            {
-                const position = parseInt(tree_item_info.offsetTop) - parseInt(tree_item[0].offsetTop);
-                document.getElementById("ultreeview").scrollTop = position;
-            }
-        }, 500);
-        
+        let themeUlTreeView = document.getElementById("theme-ul-tree-view");
+        if(themeUlTreeView) {
+            themeUlTreeView.innerHTML = str;
+            setTimeout(function() {
+                const tree_item_info = document.querySelector("#theme-ul-tree-view li.list-group-item-info");
+                const tree_item = document.querySelectorAll("#theme-ul-tree-view li")
+                if(tree_item_info && tree_item)
+                {
+                    const position = parseInt(tree_item_info.offsetTop) - parseInt(tree_item[0].offsetTop);
+                    document.getElementById("theme-ul-tree-view").scrollTop = position;
+                }
+            }, 500);
+        }
+
     </script>
     {% if organize_theme %}
         <script>

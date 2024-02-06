@@ -1,4 +1,5 @@
 """Encoding video."""
+
 import json
 import os
 import time
@@ -212,7 +213,7 @@ class Encoding_video:
 
     def get_video_data(self):
         """Get alls tracks from video source and put it in object passed in parameter."""
-        msg = "--> get_info_video" + "\n"
+        msg = "--> get_info_video\n"
         probe_cmd = FFPROBE_GET_INFO % {
             "ffprobe": FFPROBE_CMD,
             "select_streams": "",
@@ -238,7 +239,7 @@ class Encoding_video:
             self.add_stream(stream)
 
     def fix_duration(self, input_file):
-        msg = "--> get_info_video" + "\n"
+        msg = "--> get_info_video\n"
         probe_cmd = 'ffprobe -v quiet -show_entries format=duration -hide_banner  \
                     -of default=noprint_wrappers=1:nokey=1 -print_format json -i \
                     "{}"'.format(

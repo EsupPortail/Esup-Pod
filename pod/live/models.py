@@ -1,4 +1,5 @@
 """Esup-Pod "live" models."""
+
 import hashlib
 import os
 
@@ -348,7 +349,7 @@ class Event(models.Model):
         help_text=_(
             "You can add additional owners to the event. They "
             "will have the same rights as you except that they "
-            "can't delete this event."
+            "can’t delete this event."
         ),
     )
     start_date = models.DateTimeField(

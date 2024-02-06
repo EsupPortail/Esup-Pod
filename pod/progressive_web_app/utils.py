@@ -1,4 +1,5 @@
 """Esup-Pod PWA utilities."""
+
 from webpush import send_user_notification
 from django.templatetags.static import static
 

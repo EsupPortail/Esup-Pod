@@ -1,4 +1,5 @@
 """Test authentication utils."""
+
 import json
 
 from django.test import TestCase

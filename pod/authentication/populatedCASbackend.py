@@ -1,3 +1,5 @@
+"""Esup-Pod CAS & LDAP authentication backend."""
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
@@ -72,6 +74,7 @@ __SUBTREE__ = "SUBTREE"
 
 
 def populateUser(tree):
+    """Populate user form CAS or LDAP attributes."""
     username_element = tree.find(
         ".//{http://www.yale.edu/tp/cas}%s" % AUTH_CAS_USER_SEARCH
     )
@@ -130,6 +133,7 @@ def get_server():
 
 
 def get_ldap_conn():
+    """Open and get LDAP connexion."""
     try:
         server = get_server()
         conn = Connection(
@@ -145,6 +149,7 @@ def get_ldap_conn():
 
 
 def get_entry(conn, username, list_value):
+    """Get LDAP entries."""
     try:
         conn.search(
             AUTH_LDAP_USER_SEARCH[0],
@@ -256,6 +261,7 @@ def populate_user_from_entry(user, owner, entry):
 
 
 def populate_user_from_tree(user, owner, tree):
+    """Populate user from CAS attributes."""
     if DEBUG:
         print_xml_tree(tree)
     # Mail
@@ -307,6 +313,7 @@ def populate_user_from_tree(user, owner, tree):
 
 
 def print_xml_tree(tree):
+    """Print XML tree for debug purpose."""
     import xml.etree.ElementTree as ET
     import xml.dom.minidom
     import os

@@ -1,6 +1,5 @@
-"""
-Unit tests for chapters views
-"""
+"""Unit tests for chapters views."""
+
 from django.conf import settings
 from django.test import TestCase
 from django.contrib.auth import authenticate
@@ -218,3 +217,41 @@ class ChapterViewsTestCase(TestCase):
         self.assertEqual(result.title, "Testchapter")
 
         print(" ---> test_video_chapter_import: OK!")
+
+    def test_video_chapter_modify(self):
+        video = Video.objects.get(id=1)
+        Chapter.objects.create(
+            title="Test Chapter",
+            video=video,
+            time_start=10,
+        )
+        url = reverse("video:chapter:video_chapter", kwargs={"slug": video.slug})
+        authenticate(username="test", password="hello")
+        login = self.client.login(username="test", password="hello")
+        self.assertTrue(login)
+
+        response_create = self.client.post(
+            url,
+            data={
+                "action": "save",
+                "video": video.id,
+                "title": "Test Chapter",
+                "time_start": 10,
+            },
+        )
+        self.assertEqual(response_create.status_code, 200)
+        created_chapter = Chapter.objects.get(title="Test Chapter")
+        response_modify = self.client.post(
+            url,
+            data={
+                "action": "modify",
+                "id": created_chapter.id,
+            },
+        )
+
+        self.assertEqual(response_modify.status_code, 200)
+        self.assertTemplateUsed(response_modify, "chapter/form_chapter.html")
+        form_chapter = response_modify.context["form_chapter"]
+        self.assertEqual(form_chapter.instance, created_chapter)
+
+        print(" ---> test_video_chapter_modify: OK!")

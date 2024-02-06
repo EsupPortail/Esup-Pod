@@ -44,6 +44,7 @@ VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.6; cd
 /data/www/%userpod%/django_projects/podv3; source
 /usr/bin/virtualenvwrapper.sh; workon django_pod; python manage.py bbb
 main' """
+
 import os
 import traceback
 from django.utils import translation

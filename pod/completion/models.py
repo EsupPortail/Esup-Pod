@@ -19,18 +19,33 @@ ROLE_CHOICES = getattr(
     settings,
     "ROLE_CHOICES",
     (
-        ("actor", _("actor")),
-        ("author", _("author")),
-        ("designer", _("designer")),
-        ("consultant", _("consultant")),
-        ("contributor", _("contributor")),
-        ("editor", _("editor")),
-        ("speaker", _("speaker")),
-        ("soundman", _("soundman")),
-        ("director", _("director")),
-        ("writer", _("writer")),
-        ("technician", _("technician")),
-        ("voice-over", _("voice-over")),
+        (
+            _("Acting roles"),
+            (
+                ("actor", _("Actor")),
+                ("voice-over", _("Voice-over")),
+            ),
+        ),
+        (
+            _("Creative roles"),
+            (
+                ("author", _("Author")),
+                ("designer", _("Designer")),
+                ("editor", _("Editor")),
+                ("writer", _("Writer")),
+            ),
+        ),
+        (_("Consulting roles"), (("consultant", _("Consultant")),)),
+        (
+            _("Production roles"),
+            (
+                ("contributor", _("Contributor")),
+                ("director", _("Director")),
+                ("technician", _("Technician")),
+                ("soundman", _("Soundman")),
+            ),
+        ),
+        (_("Speaking roles"), (("speaker", _("Speaker")),)),
     ),
 )
 KIND_CHOICES = getattr(
@@ -176,7 +191,7 @@ class Document(models.Model):
         if len(list_doc) > 0:
             for element in list_doc:
                 if self.document == element.document:
-                    msg.append(_("This document is already contained " + "in the list"))
+                    msg.append(_("This document is already contained in the list"))
             if len(msg) > 0:
                 return msg
         return list()
@@ -379,10 +394,10 @@ class Overlay(models.Model):
             )
         elif self.time_end > self.video.duration:
             msg.append(
-                _("The value of time end field is greater than the " + "video duration.")
+                _("The value of time end field is greater than the video duration.")
             )
         elif self.time_start == self.time_end:
-            msg.append(_("Time end field and time start field can't " + "be equal."))
+            msg.append(_("Time end field and time start field can’t be equal."))
         if len(msg) > 0:
             return msg
         else:

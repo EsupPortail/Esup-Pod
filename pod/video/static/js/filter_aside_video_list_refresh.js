@@ -69,8 +69,8 @@ function refreshInfiniteLoader(url, nextPage) {
  */
 function replaceCountVideos(newCount) {
   let videoFoundStr = ngettext(
-    `%(count)s video found`,
-    `%(count)s videos found`,
+    "%(count)s video found",
+    "%(count)s videos found",
     newCount,
   );
   videoFoundStr = interpolate(videoFoundStr, { count: newCount }, true);

@@ -130,7 +130,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                     _(
                         "In this field you can select and add additional owners to the "
                         "video. These additional owners will have the same rights as "
-                        "you except that they can't delete this video."
+                        "you except that they can’t delete this video."
                     )
                 ],
             ),
@@ -198,13 +198,13 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 "{0}".format(_("Licence")),
                 [
                     (
-                        '<a href="https://creativecommons.org/licenses/by/4.0/" '
-                        'title="%(lic)s" target="_blank">%(lic)s</a>'
+                        '<a href="https://creativecommons.org/licenses/by/4.0/"'
+                        ' target="_blank">%(lic)s</a>'
                     )
                     % {"lic": _("Attribution 4.0 International (CC BY 4.0)")},
                     (
-                        '<a href="https://creativecommons.org/licenses/by-nd/4.0/" '
-                        'title="%(lic)s" target="_blank">%(lic)s</a>'
+                        '<a href="https://creativecommons.org/licenses/by-nd/4.0/"'
+                        ' target="_blank">%(lic)s</a>'
                     )
                     % {
                         "lic": _(
@@ -213,8 +213,8 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                         )
                     },
                     (
-                        '<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" '
-                        'title="%(lic)s" target="_blank">%(lic)s</a>'
+                        '<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/"'
+                        ' target="_blank">%(lic)s</a>'
                     )
                     % {
                         "lic": _(
@@ -223,8 +223,8 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                         )
                     },
                     (
-                        '<a href="https://creativecommons.org/licenses/by-nc/4.0/" '
-                        'title="%(lic)s" target="_blank">%(lic)s</a>'
+                        '<a href="https://creativecommons.org/licenses/by-nc/4.0/"'
+                        ' target="_blank">%(lic)s</a>'
                     )
                     % {
                         "lic": _(
@@ -233,8 +233,8 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                         )
                     },
                     (
-                        '<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" '
-                        'title="%(lic)s" target="_blank">%(lic)s</a>'
+                        '<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"'
+                        ' target="_blank">%(lic)s</a>'
                     )
                     % {
                         "lic": _(
@@ -243,8 +243,8 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                         )
                     },
                     (
-                        '<a href="https://creativecommons.org/licenses/by-sa/4.0/" '
-                        'title="%(lic)s" target="_blank">%(lic)s</a>'
+                        '<a href="https://creativecommons.org/licenses/by-sa/4.0/"'
+                        ' target="_blank">%(lic)s</a>'
                     )
                     % {
                         "lic": _(
@@ -285,7 +285,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 "{0}".format(_("Restricted access")),
                 [
                     _(
-                        "If you don't select “Draft mode”, you can restrict "
+                        "If you don’t select “Draft mode”, you can restrict "
                         "the content access to only people who can log in"
                     )
                 ],
@@ -294,7 +294,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 "{0}".format(_("Password")),
                 [
                     _(
-                        "If you don't select “Draft mode”, you can add a password "
+                        "If you don’t select “Draft mode”, you can add a password "
                         "which will be asked to anybody willing to watch "
                         "your content."
                     ),
@@ -770,9 +770,11 @@ class VideoForm(forms.ModelForm):
             vidowner = (
                 self.instance.owner
                 if hasattr(self.instance, "owner")
-                else cleaned_data["owner"]
-                if "owner" in cleaned_data.keys()
-                else self.current_user
+                else (
+                    cleaned_data["owner"]
+                    if "owner" in cleaned_data.keys()
+                    else self.current_user
+                )
             )
             if vidowner and vidowner in self.cleaned_data["additional_owners"].all():
                 raise ValidationError(
@@ -784,9 +786,9 @@ class VideoForm(forms.ModelForm):
             and hasattr(self.instance, "video")
             and cleaned_data["video"] != self.instance.video
         )
-        self.launch_transcript = "transcript" in cleaned_data.keys() and hasattr(
-            self.instance, "transcript"
-        )
+        # self.launch_transcript = "transcript" in cleaned_data.keys() and hasattr(
+        #     self.instance, "transcript"
+        # )
         self.change_user = (
             self.launch_encode is False
             and hasattr(self.instance, "encoding_in_progress")
@@ -906,9 +908,9 @@ class VideoForm(forms.ModelForm):
 
             self.fields["description"].widget = CKEditorWidget(config_name="default")
             for key, value in settings.LANGUAGES:
-                self.fields[
-                    "description_%s" % key.replace("-", "_")
-                ].widget = CKEditorWidget(config_name="default")
+                self.fields["description_%s" % key.replace("-", "_")].widget = (
+                    CKEditorWidget(config_name="default")
+                )
         if self.fields.get("date_delete"):
             if self.is_staff is False or USE_OBSOLESCENCE is False:
                 del self.fields["date_delete"]
@@ -920,9 +922,9 @@ class VideoForm(forms.ModelForm):
 
     def hide_default_language(self):
         if self.fields.get("description_%s" % settings.LANGUAGE_CODE):
-            self.fields[
-                "description_%s" % settings.LANGUAGE_CODE
-            ].widget = forms.HiddenInput()
+            self.fields["description_%s" % settings.LANGUAGE_CODE].widget = (
+                forms.HiddenInput()
+            )
         if self.fields.get("title_%s" % settings.LANGUAGE_CODE):
             self.fields["title_%s" % settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
@@ -980,8 +982,8 @@ class VideoForm(forms.ModelForm):
         widgets = {
             "owner": OwnerWidget,
             "additional_owners": AddOwnerWidget,
-            "channel": ChannelWidget,
-            "discipline": DisciplineWidget,
+            "channel": ChannelWidget(attrs={"data-minimum-input-length": 0}),
+            "discipline": DisciplineWidget(attrs={"data-minimum-input-length": 0}),
             "date_evt": widgets.AdminDateWidget,
             "restrict_access_to_groups": AddAccessGroupWidget,
             "video": CustomClearableFileInput,
@@ -1073,13 +1075,13 @@ class ChannelForm(forms.ModelForm):
             del self.fields["headband"]
             self.fields["description"].widget = CKEditorWidget(config_name="default")
             for key, value in settings.LANGUAGES:
-                self.fields[
-                    "description_%s" % key.replace("-", "_")
-                ].widget = CKEditorWidget(config_name="default")
+                self.fields["description_%s" % key.replace("-", "_")].widget = (
+                    CKEditorWidget(config_name="default")
+                )
         # hide default langage
-        self.fields[
-            "description_%s" % settings.LANGUAGE_CODE
-        ].widget = forms.HiddenInput()
+        self.fields["description_%s" % settings.LANGUAGE_CODE].widget = (
+            forms.HiddenInput()
+        )
         self.fields["title_%s" % settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
         self.fields = add_placeholder_and_asterisk(self.fields)
@@ -1102,9 +1104,9 @@ class ThemeForm(forms.ModelForm):
             self.fields["headband"].widget = CustomFileWidget(type="image")
 
         # hide default langage
-        self.fields[
-            "description_%s" % settings.LANGUAGE_CODE
-        ].widget = forms.HiddenInput()
+        self.fields["description_%s" % settings.LANGUAGE_CODE].widget = (
+            forms.HiddenInput()
+        )
         self.fields["title_%s" % settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
         self.fields = add_placeholder_and_asterisk(self.fields)
@@ -1215,7 +1217,7 @@ class AdvancedNotesForm(forms.ModelForm):
         self.fields["note"].widget.attrs["rows"] = 3
         self.fields["note"].widget.attrs["cols"] = 20
         self.fields["note"].required = True
-        self.fields["note"].help_text = _("A note can't be empty")
+        self.fields["note"].help_text = _("A note can’t be empty")
         self.fields["timestamp"].widget = forms.HiddenInput()
         self.fields["timestamp"].widget.attrs["class"] = "form-control"
         self.fields["timestamp"].widget.attrs["autocomplete"] = "off"
@@ -1239,7 +1241,7 @@ class NoteCommentsForm(forms.ModelForm):
         self.fields["comment"].widget.attrs["rows"] = 3
         self.fields["comment"].widget.attrs["cols"] = 20
         self.fields["comment"].required = True
-        self.fields["comment"].help_text = _("A comment can't be empty")
+        self.fields["comment"].help_text = _("A comment can’t be empty")
         self.fields["status"].widget.attrs["class"] = "form-select"
 
     class Meta(object):

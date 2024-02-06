@@ -2,6 +2,7 @@
 
 *  run with 'python manage.py test pod.authentication.tests.test_views'
 """
+
 from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import User

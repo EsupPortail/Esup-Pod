@@ -2,6 +2,22 @@
  * @file Esup-Pod functions for dashboard view.
  * @since 3.5.0
  */
+
+// Read-only globals defined in video_select.js
+/*
+  global replaceSelectedCountVideos selectedVideos getHTMLBadgesSelectedTitles
+*/
+
+// Read-only globals defined in filter_aside_video_list_refresh.js
+/*
+  global refreshVideosSearch
+*/
+
+// Read-only globals defined in dashboard.html
+/*
+  global urlUpdateVideos csrftoken formFieldsets displayMode
+*/
+
 var bulkUpdateActionSelect = document.getElementById("bulkUpdateActionSelect");
 var applyBulkUpdateBtn = document.getElementById("applyBulkUpdateBtn");
 var modalLoader = document.getElementById("bulkUpdateLoader");
@@ -9,26 +25,26 @@ var modal = document.getElementById("modalBulkUpdate");
 var confirmModalBtn = document.getElementById("confirmModalBtn");
 var cancelModalBtn = document.getElementById("cancelModalBtn");
 var btnDisplayMode = document.querySelectorAll(".btn-dashboard-display-mode");
-var action = "";
-var value;
+var dashboardAction = "";
+var dashboardValue;
 
 /**
  * Add change event listener on select action to get related inputs
  */
 bulkUpdateActionSelect.addEventListener("change", function () {
-  action = bulkUpdateActionSelect.value;
-  appendDynamicForm(action);
+  dashboardAction = bulkUpdateActionSelect.value;
+  appendDynamicForm(dashboardAction);
   replaceSelectedCountVideos();
 });
 
 /**
  * Add click event listener on apply button to build and open confirm modal
  */
-applyBulkUpdateBtn.addEventListener("click", (e) => {
+applyBulkUpdateBtn.addEventListener("click", () => {
   let selectedCount = selectedVideos.length;
   let modalConfirmStr = ngettext(
-    `Please confirm the editing of the following video:`,
-    `Please confirm the editing of the following videos:`,
+    "Please confirm the editing of the following video:",
+    "Please confirm the editing of the following videos:",
     selectedCount,
   );
   modalConfirmStr = interpolate(
@@ -64,7 +80,7 @@ confirmModalBtn.addEventListener("click", (e) => {
 async function bulkUpdate() {
   // Init vars
   let formData = new FormData();
-  let updateAction = action === "delete" ? action : "fields";
+  let updateAction = dashboardAction === "delete" ? dashboardAction : "fields";
   let updateFields = [];
   let message = "";
 
@@ -82,17 +98,17 @@ async function bulkUpdate() {
       } else {
         switch (element.type) {
           case "checkbox":
-            value = element.checked;
+            dashboardValue = element.checked;
             break;
           case "textarea":
-            value = CKEDITOR.instances[element.id].getData();
+            dashboardValue = CKEDITOR.instances[element.id].getData();
             break;
           default:
-            value = document.getElementById(
+            dashboardValue = document.getElementById(
               "id_" + element.getAttribute("name"),
             ).value;
         }
-        formData.append(element.getAttribute("name"), value);
+        formData.append(element.getAttribute("name"), dashboardValue);
       }
       updateFields.push(element.name);
     });
@@ -101,7 +117,7 @@ async function bulkUpdate() {
   // Construct formData to send
   formData.append("selected_videos", JSON.stringify(selectedVideos));
   formData.append("update_fields", JSON.stringify(updateFields));
-  formData.append("update_action", JSON.stringify(updateAction));
+  formData.append("update_action", updateAction);
 
   // Post asynchronous request
   let response = await fetch(urlUpdateVideos, {
@@ -115,7 +131,7 @@ async function bulkUpdate() {
   let result = await response.text();
 
   // Parse result
-  data = JSON.parse(result);
+  let data = JSON.parse(result);
   message = data["message"];
 
   if (response.ok) {
@@ -183,13 +199,14 @@ function changeDisplayMode(display_mode) {
 /**
  * Update list of selected videos for modal confirm display
  */
+/* Unused function ?
 function updateModalConfirmSelectedVideos() {
   let str = "";
   Array.from(getListSelectedVideosTitles()).forEach((title) => {
     str += "<li>" + title + "</li>";
   });
   bulkUpdateConfirmSelectedVideos.innerHTML = str;
-}
+}*/
 
 /**
  * Show feedback message after bulk update

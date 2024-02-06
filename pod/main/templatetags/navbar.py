@@ -1,4 +1,5 @@
 """Functions useful for the navigation bar."""
+
 from django.template import Library
 
 from pod.main.utils import get_number_playlist_for_user, get_number_video_for_user
