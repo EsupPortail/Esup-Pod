@@ -3140,13 +3140,13 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 @admin_required
-def update_video_owner(request, user_id):
+def update_video_owner(request, user_id: int)-> JsonResponse::
     """
     Update video owner.
 
     Args:
         request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
-        user_id (number): User identifier.
+        user_id (int): User identifier.
 
     Returns:
         ::class::`django.http.JsonResponse`: The JSON response.
