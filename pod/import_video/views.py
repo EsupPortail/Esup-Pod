@@ -173,8 +173,10 @@ def external_recordings(request):
 
     if RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
         return render(
-            request, "import_video/list.html",
-            {"access_not_allowed": True, "page_title": page_title})
+            request,
+            "import_video/list.html",
+            {"access_not_allowed": True, "page_title": page_title},
+        )
 
     site = get_current_site(request)
 
@@ -700,7 +702,7 @@ def upload_youtube_recording_to_pod(request, record_id):
         msg["error"] = _("YouTube error “%s”" % (mark_safe(pterror)))
         msg["message"] = "%s\n%s" % (
             _("YouTube content is inaccessible."),
-            _("This content does not appear to be publicly available.")
+            _("This content does not appear to be publicly available."),
         )
         msg["proposition"] = _("Try changing the address of this recording.")
         raise ValueError(msg)

@@ -92,10 +92,7 @@ def directs_all(request):
     return render(
         request,
         "live/directs_all.html",
-        {
-            "buildings": buildings,
-            "page_title": _("All live streams")
-        },
+        {"buildings": buildings, "page_title": _("All live streams")},
     )
 
 
@@ -107,8 +104,10 @@ def directs(request, building_id):
     return render(
         request,
         "live/directs.html",
-        {"building": building,
-         "page_title": _("Broadcasters of building “%s”") % building.name},
+        {
+            "building": building,
+            "page_title": _("Broadcasters of building “%s”") % building.name,
+        },
     )
 
 

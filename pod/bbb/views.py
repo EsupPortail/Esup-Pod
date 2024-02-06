@@ -65,8 +65,11 @@ def list_meeting(request):
     return render(
         request,
         "bbb/list_meeting.html",
-        {"records": records, "full_path": full_path,
-         "page_title": _("My BigBlueButton records")},
+        {
+            "records": records,
+            "full_path": full_path,
+            "page_title": _("My BigBlueButton records"),
+        },
     )
 
 
@@ -189,7 +192,7 @@ def live_list_meeting(request):
             "records": records,
             "full_path": full_path,
             "max_limit_reached": max_limit_reached,
-            "page_title": _("Perform a BigBlueButton live")
+            "page_title": _("Perform a BigBlueButton live"),
         },
     )
 

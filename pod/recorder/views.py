@@ -131,7 +131,9 @@ def add_recording(request):
     if not mediapath and not (
         request.user.is_superuser or request.user.has_perm("recorder.add_recording")
     ):
-        messages.add_message(request, messages.ERROR, _("Media path should be indicated."))
+        messages.add_message(
+            request, messages.ERROR, _("Media path should be indicated.")
+        )
         raise PermissionDenied
 
     if mediapath != "":
@@ -352,12 +354,14 @@ def delete_record(request, id=None):
             )
 
     return render(
-        request, "recorder/record_delete.html",
+        request,
+        "recorder/record_delete.html",
         {
-            "record": record, "form": form,
-            "page_title": _("Deleting the record “%s”") % (
-                truncatechars(record.filename(), 43))
-        }
+            "record": record,
+            "form": form,
+            "page_title": _("Deleting the record “%s”")
+            % (truncatechars(record.filename(), 43)),
+        },
     )
 
 

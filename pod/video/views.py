@@ -2411,13 +2411,17 @@ def manage_access_rights_stats_video(request, video, page_title):
         or has_rights
     ):
         highlight = request.GET.get("highlight", None)
-        if highlight not in ("playlist_since_created",
-                             "since_created", "fav_since_created"):
+        if highlight not in (
+            "playlist_since_created",
+            "since_created",
+            "fav_since_created",
+        ):
             highlight = None
         return render(
             request,
             "videos/video_stats_view.html",
-            {"page_title": page_title, "highlight": highlight})
+            {"page_title": page_title, "highlight": highlight},
+        )
     return HttpResponseNotFound(
         _("You do not have access rights to this video: %s " % video.slug)
     )

@@ -229,7 +229,9 @@ class ExternalRecordingUploadTestView(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         # Message for a bad URL
-        self.assertTrue(_("YouTube content is inaccessible.").encode("utf-8") in response.content)
+        self.assertTrue(
+            _("YouTube content is inaccessible.").encode("utf-8") in response.content
+        )
 
         # Peertube type
         recordingPt = ExternalRecording.objects.get(name="test peertube recording1")
