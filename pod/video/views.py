@@ -870,7 +870,8 @@ def get_filtered_videos_list(request, videos_list):
     return videos_list.distinct()
 
 
-def get_owners_has_instances(owners):
+def get_owners_has_instances(owners: list) -> list:
+    """Return the list of owners who has instances in User.objects."""
     ownersInstances = []
     for owner in owners:
         try:
@@ -881,10 +882,11 @@ def get_owners_has_instances(owners):
     return ownersInstances
 
 
-def owner_is_searchable(user):
+def owner_is_searchable(user: User) -> bool:
     """
-    Return if user is searchable according to HIDE_USER_FILTER setting
-    and authenticated user.
+    Check if user is searchable.
+
+    according to HIDE_USER_FILTER setting and authenticated user.
 
     Args:
         user (:class:`django.contrib.auth.models.User`): The user object
@@ -1022,6 +1024,7 @@ def get_video_access(request, video, slug_private):
 
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
+    """Render a single video."""
     try:
         id = int(slug[: slug.find("-")])
     except ValueError:
@@ -1210,6 +1213,7 @@ def render_video(
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def video_edit(request, slug=None):
+    """Video Edit View."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
     video = (
@@ -1343,7 +1347,7 @@ def video_delete(request, slug=None):
 
 
 def video_is_deletable(request, video):
-    """Check if video is deletable, usage for delete form and multiple deletion"""
+    """Check if video is deletable, usage for delete form and multiple deletion."""
     if request.user != video.owner and not (
         request.user.is_superuser or request.user.has_perm("video.delete_video")
     ):
@@ -1434,6 +1438,7 @@ def get_adv_note_list(request, video):
 def get_adv_note_com_list(request, id):
     """
     Return the list of coms which are direct sons of the AdvancedNote id.
+
         ...that can be seen by the current user
     """
     if id:
@@ -1459,6 +1464,7 @@ def get_adv_note_com_list(request, id):
 def get_com_coms_dict(request, listComs):
     """
     Return the list of the direct sons of a com.
+
       for each encountered com
     Starting from the coms present in listComs
     Example, having the next tree of coms :
@@ -1494,6 +1500,7 @@ def get_com_coms_dict(request, listComs):
 def get_com_tree(com):
     """
     Return the list of the successive parents of com.
+
       including com from bottom to top
     """
     tree, c = [], com
@@ -1507,6 +1514,7 @@ def get_com_tree(com):
 def can_edit_or_remove_note_or_com(request, nc, action):
     """
     Check if the current user can apply action to the note or comment nc.
+
     Typically action is in ['edit', 'delete']
     If not raise PermissionDenied
     """
@@ -1530,6 +1538,7 @@ def can_edit_or_remove_note_or_com(request, nc, action):
 def can_see_note_or_com(request, nc):
     """
     Check if the current user can view the note or comment nc.
+
     If not raise PermissionDenied
     """
     if isinstance(nc, AdvancedNotes):
@@ -1997,6 +2006,7 @@ def video_note_remove(request, slug):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_note_download(request, slug):
+    """Download all notes of a video in CSV format."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     listNotes = get_adv_note_list(request, video)
     contentToDownload = {
@@ -2340,6 +2350,7 @@ def get_all_views_count(v_id, date_filter=date.today()):
 
 def get_videos(p_slug, target, p_slug_t=None):
     """Retourne une ou plusieurs videos selon le slug donné.
+
     Renvoi vidéo/s et titre de
     (theme, ou video ou channel ou videos pour toutes)
     selon la réference du slug donnée
@@ -2380,6 +2391,7 @@ def view_stats_if_authenticated(user):
 def manage_access_rights_stats_video(request, video, page_title):
     video_access_ok = get_video_access(request, video, slug_private=None)
     is_password_protected = video.password is not None and video.password != ""
+
     has_rights = (
         request.user == video.owner
         or request.user.is_superuser
@@ -2391,14 +2403,21 @@ def manage_access_rights_stats_video(request, video, page_title):
         return render(
             request,
             "videos/video_stats_view.html",
-            {"form": form, "title": page_title},
+            {"form": form, "page_title": page_title},
         )
     elif (
         (not has_rights and video_access_ok and not is_password_protected)
         or (video_access_ok and not is_password_protected)
         or has_rights
     ):
-        return render(request, "videos/video_stats_view.html", {"title": page_title})
+        highlight = request.GET.get("highlight", None)
+        if highlight not in ("playlist_since_created",
+                             "since_created", "fav_since_created"):
+            highlight = None
+        return render(
+            request,
+            "videos/video_stats_view.html",
+            {"page_title": page_title, "highlight": highlight})
     return HttpResponseNotFound(
         _("You do not have access rights to this video: %s " % video.slug)
     )
@@ -2443,7 +2462,7 @@ def stats_view(request, slug=None, slug_t=None):
     ) or (
         request.method == "GET" and videos and target in ("videos", "channel", "theme")
     ):
-        return render(request, "videos/video_stats_view.html", {"title": title})
+        return render(request, "videos/video_stats_view.html", {"page_title": title})
     else:
         date_filter = request.POST.get("periode", date.today())
         if isinstance(date_filter, str):
@@ -2470,6 +2489,7 @@ def stats_view(request, slug=None, slug_t=None):
 
 @login_required(redirect_field_name="referrer")
 def video_add(request):
+    """Video add view."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
     allow_extension = ".%s" % ", .".join(map(str, VIDEO_ALLOWED_EXTENSIONS))
@@ -2615,6 +2635,7 @@ def add_comment(request, video_slug, comment_id=None):
 def get_parent_comments(request, video):
     """
     Return only comments without parent.
+
     (direct comments to video) which contains
     number of votes and children
     """
@@ -2748,6 +2769,7 @@ def get_comments(request, video_slug):
 @csrf_protect
 def delete_comment(request, video_slug, comment_id):
     """Delete the comment `comment_id` associated to `video_slug`.
+
     Args:
         video_slug (string): the video associated to this comment
         comment_id (): id of the comment to be deleted

@@ -1,62 +1,61 @@
 {% load i18n %}
 {% load static %}
 
-{% block more_style %}
+{% block page_extra_head %}
   <link href="{% static 'css/event_list.css' %}?ver={{ VERSION }}" rel="stylesheet">
-{% endblock more_style %}
+{% endblock page_extra_head %}
 
 {% spaceless %}
-    <div id="events_content">
+  <div id="events_content">
 
-      {% if not hide_counter %}
-        <div id="event_count" class="pod-callout pod-callout-info">
-          {% blocktrans count counter=count_events %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}
-        </div>
-      {% endif %}
-
-      <div class="pod-infinite-container infinite-container" id="events_list">
-          {% for event in events %}
-              <div class="infinite-item card-group event-card-container"
-                   {% if categories %}data-slug={{ event.slug }}{% endif %}>
-                  {% include "live/event_card.html" %}
-              </div>
-          {% empty %}
-              <div class="col-12 mb-2">
-                  <p>{% trans "Sorry, no event found." %}</p>
-              </div>
-          {% endfor %}
+    {% if not hide_counter %}
+      <div id="event_count" class="pod-callout pod-callout-info">
+        {% blocktrans count counter=count_events %}{{ counter }} event found{% plural %}{{ counter }} events found{% endblocktrans %}
       </div>
+    {% endif %}
 
-      <div class="d-flex">
-        <div style="flex: 0 0 auto;">
-          {% if events.has_previous %}
-            <a class="btn btn-primary btn-sm"
-              {% if not urlpage %}
-                href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ events.previous_page_number }}"
-              {% else %}
-                href="?{{ urlpage }}={{ events.previous_page_number }}&{{ urland }}"
-              {% endif %}>
-              {% trans "Previous page" %}
-            </a>
-          {% endif %}
+    <div class="pod-infinite-container infinite-container" id="events_list">
+      {% for event in events %}
+        <div class="infinite-item event-card-container"
+           {% if categories %}data-slug={{ event.slug }}{% endif %}>
+          {% include "live/event_card.html" %}
         </div>
-        <div class="flex-grow-1">
-        </div>
-        <div style="flex: 0 0 auto;">
-          {% if events.has_next %}
-            <a class="btn btn-primary btn-sm"
-              {% if not urlpage %}
-                href="
-                  {{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ events.next_page_number }}"
-              {% else %}
-                href="?{{ urlpage }}={{ events.next_page_number }}&{{ urland }}"
-              {% endif %}>
-              {% trans "Next page" %}
-            </a>
-          {% endif %}
-        </div>
-      </div>
-
+      {% empty %}
+        <p class="mb-2 alert alert-info" role="alert"
+           style="grid-column-start: 1;grid-column-end: last;">
+          {% trans "Sorry, no event found." %}
+        </p>
+      {% endfor %}
     </div>
+
+    <div class="d-flex">
+      <div style="flex: 0 0 auto;">
+        {% if events.has_previous %}
+          <a class="btn btn-primary btn-sm"
+            {% if not urlpage %}
+              href="{{ full_path }}{% if '?' in full_path %}&amp;{% else %}?{% endif %}page={{ events.previous_page_number }}"
+            {% else %}
+              href="?{{ urlpage }}={{ events.previous_page_number }}&amp;{{ urland }}"
+            {% endif %}>
+            {% trans "Previous page" %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="flex-grow-1"></div>
+      <div style="flex: 0 0 auto;">
+        {% if events.has_next %}
+        <a class="btn btn-primary btn-sm"
+          {% if not urlpage %}
+            href="{{ full_path }}{% if '?' in full_path %}&amp;{% else %}?{% endif %}page={{ events.next_page_number }}"
+          {% else %}
+            href="?{{ urlpage }}={{ events.next_page_number }}&amp;{{ urland }}"
+          {% endif %}>
+          {% trans "Next page" %}
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
 
 {% endspaceless %}

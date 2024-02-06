@@ -75,7 +75,7 @@ EMAIL_ON_EVENT_SCHEDULING = getattr(settings, "EMAIL_ON_EVENT_SCHEDULING", False
 
 @login_required(redirect_field_name="referrer")
 def directs_all(request):
-    """Show all directs."""
+    """Show directs of all buildings. Called by `/live/directs/`."""
     check_permission(request)
 
     site = get_current_site(request)
@@ -94,19 +94,21 @@ def directs_all(request):
         "live/directs_all.html",
         {
             "buildings": buildings,
+            "page_title": _("All live streams")
         },
     )
 
 
 @login_required(redirect_field_name="referrer")
 def directs(request, building_id):
-    """Show all directs of a given building."""
+    """Show all broadcaster of given building(s). Called by `/live/directs/<ID>`."""
     check_permission(request)
     building = get_object_or_404(Building, id=building_id)
     return render(
         request,
         "live/directs.html",
-        {"building": building},
+        {"building": building,
+         "page_title": _("Broadcasters of building “%s”") % building.name},
     )
 
 

@@ -31,6 +31,7 @@ import hashlib
 from django.http import HttpResponseRedirect, JsonResponse
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.template.loader import render_to_string
+from django.template.defaultfilters import truncatechars
 from django.core.mail import EmailMultiAlternatives
 
 
@@ -130,7 +131,7 @@ def add_recording(request):
     if not mediapath and not (
         request.user.is_superuser or request.user.has_perm("recorder.add_recording")
     ):
-        messages.add_message(request, messages.ERROR, _("Mediapath should be indicated."))
+        messages.add_message(request, messages.ERROR, _("Media path should be indicated."))
         raise PermissionDenied
 
     if mediapath != "":
@@ -351,7 +352,12 @@ def delete_record(request, id=None):
             )
 
     return render(
-        request, "recorder/record_delete.html", {"record": record, "form": form}
+        request, "recorder/record_delete.html",
+        {
+            "record": record, "form": form,
+            "page_title": _("Deleting the record “%s”") % (
+                truncatechars(record.filename(), 43))
+        }
     )
 
 

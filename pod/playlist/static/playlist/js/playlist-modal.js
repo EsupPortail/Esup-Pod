@@ -1,4 +1,14 @@
 /**
+ * @file Esup-Pod Playlist modal functions
+ * @since 3.4.0
+ */
+
+/* Read-only Globals defined in utils-playlist.js */
+/*
+global preventRefreshButton
+*/
+
+/**
  * Add event listener for the playlist modal in video page.
  */
 function addEventListenerForModal() {

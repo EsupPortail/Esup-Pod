@@ -588,6 +588,7 @@ div.card a img {
   flex-wrap: wrap-reverse;
   justify-content: flex-end;
   background: #00000095;
+  z-index: 10;
 }
 
 .card-footer-pod a.btn,
@@ -1521,6 +1522,14 @@ table .alert.alert-danger.btn.pod-btn-social {
 .vjs-logo-button:focus {
   transform: rotate(30deg);
   background-color: transparent !important;
+}
+
+/* Shrink vjs toolbar on very small screens */
+@media only screen and (width <= 400px) {
+  .pod-container .video-js .vjs-control {
+    width: 3em;
+    font-size: 75%;
+  }
 }
 
 /* replace default .video-js 10px font size to avoid an accessibility "Very small text" warning */

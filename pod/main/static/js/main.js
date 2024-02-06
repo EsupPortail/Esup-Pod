@@ -491,7 +491,7 @@ if (typeof ownerBoxNavBar === undefined) {
 }
 if (ownerBoxNavBar) {
   let pod_users_list = document.getElementById("pod_users_list");
-  ownerBoxNavBar.addEventListener("input", (e) => {
+  ownerBoxNavBar.addEventListener("input", () => {
     if (ownerBoxNavBar.value && ownerBoxNavBar.value.length > 2) {
       var searchTerm = ownerBoxNavBar.value;
       getSearchListUsers(searchTerm).then((users) => {

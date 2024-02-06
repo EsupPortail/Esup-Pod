@@ -131,7 +131,7 @@ def encode_recording(recording):
     try:
         xmldoc = minidom.parse(recording.source_file)
     except KeyError as e:
-        add_comment(recording.id, "Error : %s" % e)
+        add_comment(recording.id, "Error: %s" % e)
         return -1
     videos = getElementsByName(xmldoc, "track")
     catalogs = getElementsByName(xmldoc, "catalog")

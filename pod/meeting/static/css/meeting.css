@@ -18,11 +18,6 @@
   width: 170px;
 }
 
-.meeting-infos {
-  background-color: #cfe2ff;
-  border: 1px solid #000;
-}
-
 #recordings.table {
   --bs-table-color: var(--pod-font-color);
   --bs-table-striped-color: var(--pod-font-color);

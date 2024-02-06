@@ -2,26 +2,19 @@
 {% load i18n %}
 {% load static %}
 
-{% block more_style %}
+{% block page_extra_head %}
   {% if use_category %}
     <link rel="stylesheet" href="{% static 'css/video_category.css' %}?ver={{VERSION}}">
   {% endif %}
-{% endblock more_style %}
+{% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans 'Dashboard' %}</li>{% endblock %}
-
-  <div class="row">
-    {% block page_title %}
-      {% trans 'Dashboard' %}
-    {% endblock %}
-  </div>
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>{% endblock %}
 
 {% block page_content %}
 
-{% if use_category %}
-  {% include "videos/category_modal.html" %}
-{% endif %}
-
+  {% if use_category %}
+    {% include "videos/category_modal.html" %}
+  {% endif %}
 
   <div id="bulk_update_container">
 
@@ -155,7 +148,6 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script src="/admin/jsi18n/"></script>
 <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
 {{form.media}}
@@ -179,25 +171,24 @@
 <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/filter_aside_video_list_refresh.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/dashboard.js' %}?ver={{VERSION}}"></script>
-<script>
 {% if use_category %}
-  const USE_CATEGORY = true;
-  const CATEGORIES_DATA = {{ categories | safe }};
-  const BASE_URL = `${window.location.origin}/video/my/categories/`;
-  {# create base url link for video management #}
-  {% url 'video:video_edit' slug="abcd" as video_edit %}
-  const EDIT_URL = `{{ video_edit|slice:"-5" }}`;
-  {% url 'video:completion:video_completion' slug="abcd" as video_completion %}
-  const COMPLETION_URL = `{{ video_completion|slice:"-5" }}`;
-  {% url 'video:chapter:video_chapter' slug="abcd" as video_chapter %}
-  const CHAPTER_URL = `{{ video_chapter|slice:"-5" }}`;
-  {% url 'video:video_delete' slug="abcd" as video_delete %}
-  const DELETE_URL = `{{ video_delete|slice:"-5" }}`;
-  const VIDEO_URL = `${window.location.origin}/video/`;
+  <script>
+    const USE_CATEGORY = true;
+    const CATEGORIES_DATA = {{ categories | safe }};
+    const BASE_URL = `${window.location.origin}/video/my/categories/`;
+    {# create base url link for video management #}
+    {% url 'video:video_edit' slug="abcd" as video_edit %}
+    const EDIT_URL = `{{ video_edit|slice:"-5" }}`;
+    {% url 'video:completion:video_completion' slug="abcd" as video_completion %}
+    const COMPLETION_URL = `{{ video_completion|slice:"-5" }}`;
+    {% url 'video:chapter:video_chapter' slug="abcd" as video_chapter %}
+    const CHAPTER_URL = `{{ video_chapter|slice:"-5" }}`;
+    {% url 'video:video_delete' slug="abcd" as video_delete %}
+    const DELETE_URL = `{{ video_delete|slice:"-5" }}`;
+    const VIDEO_URL = `${window.location.origin}/video/`;
   </script>
   <script defer src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
 {% else %}
-  const USE_CATEGORY = false;
-</script>
+  <script>const USE_CATEGORY = false;</script>
 {% endif %}
 {% endblock more_script %}
