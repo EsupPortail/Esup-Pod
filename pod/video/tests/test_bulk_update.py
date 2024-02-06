@@ -130,14 +130,14 @@ class BulkUpdateTestCase(TransactionTestCase):
         self.client.force_login(user1)
 
         post_request = self.factory.post(
-            '/bulk_update/',
+            "/bulk_update/",
             {
-                'title': 'Modified Title',
-                'selected_videos': '["%s", "%s"]' % (video1.slug, video2.slug),
-                'update_fields': '["title"]',
-                'update_action': 'fields',
+                "title": "Modified Title",
+                "selected_videos": '["%s", "%s"]' % (video1.slug, video2.slug),
+                "update_fields": '["title"]',
+                "update_action": "fields",
             },
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
 
         post_request.user = user1
@@ -146,9 +146,7 @@ class BulkUpdateTestCase(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(Video.objects.filter(title="Modified Title")), 2)
 
-        print(
-            "--->  test_bulk_update_title of BulkUpdateTestCase: OK"
-        )
+        print("--->  test_bulk_update_title of BulkUpdateTestCase: OK")
         self.client.logout()
 
     def tearDown(self):

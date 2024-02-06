@@ -1,4 +1,5 @@
 """Esup-Pod videos views."""
+
 from concurrent import futures
 
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
@@ -3058,7 +3059,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 @admin_required
-def update_video_owner(request, user_id: int)-> JsonResponse:
+def update_video_owner(request, user_id: int) -> JsonResponse:
     """
     Update video owner.
 
