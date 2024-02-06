@@ -117,7 +117,7 @@ async function bulkUpdate() {
   // Construct formData to send
   formData.append("selected_videos", JSON.stringify(selectedVideos));
   formData.append("update_fields", JSON.stringify(updateFields));
-  formData.append("update_action", JSON.stringify(updateAction));
+  formData.append("update_action", updateAction);
 
   // Post asynchronous request
   let response = await fetch(urlUpdateVideos, {

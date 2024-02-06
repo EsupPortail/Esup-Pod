@@ -1,4 +1,5 @@
 """Esup-Pod videos views."""
+from concurrent import futures
 
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.core.handlers.wsgi import WSGIRequest
@@ -29,7 +30,6 @@ from django.db.models import Sum, Min
 # from django.contrib.auth.hashers import check_password
 
 from dateutil.parser import parse
-import concurrent.futures as futures
 from pod.main.utils import is_ajax, dismiss_stored_messages, get_max_code_lvl_messages
 
 from pod.main.models import AdditionalChannelTab
@@ -654,7 +654,7 @@ def bulk_update(request):
     if request.method == "POST":
         status = 200
         # Get post parameters
-        update_action = json.loads(request.POST.get("update_action"))
+        update_action = request.POST.get("update_action")
         selected_videos = json.loads(request.POST.get("selected_videos"))
         videos_list = Video.objects.filter(slug__in=selected_videos)
 
@@ -3058,7 +3058,17 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 @admin_required
-def update_video_owner(request, user_id):
+def update_video_owner(request, user_id: int)-> JsonResponse:
+    """
+    Update video owner.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        user_id (int): User identifier.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
     if request.method == "POST":
         post_data = json.loads(request.body.decode("utf-8"))
 
