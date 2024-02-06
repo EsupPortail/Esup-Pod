@@ -124,7 +124,7 @@ async function updateToast() {
     notificationsPreferenceTips.classList.remove("alert-warning");
     notificationsPreferenceTips.classList.add("alert-warning");
     notificationsPreferenceTips.textContent = gettext(
-      "Notifications are currently disabled."
+      "Notifications are currently disabled.",
     );
     notificationButton.textContent = gettext("Enable notifications");
     notificationButton.disabled = false;
@@ -134,7 +134,7 @@ async function updateToast() {
     notificationsPreferenceTips.classList.remove("alert-warning");
     notificationsPreferenceTips.classList.add("alert-success");
     notificationsPreferenceTips.textContent = gettext(
-      "Notifications are currently enabled."
+      "Notifications are currently enabled.",
     );
     notificationButton.textContent = gettext("Disable notifications");
     notificationButton.disabled = false;
