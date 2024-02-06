@@ -1552,13 +1552,13 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
  - `USE_BBB`
 
-  > valeur par défaut : `True`
+  > valeur par défaut : `False`
 
   >> Utilisation de BigBlueButton - [TODO] À retirer dans les futures versions de Pod <br>
 
  - `USE_BBB_LIVE`
 
-  > valeur par défaut : `False `
+  > valeur par défaut : `False`
 
   >> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton - [TODO] À retirer dans les futures versions de Pod <br>
 
