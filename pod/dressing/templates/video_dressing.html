@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load tagging_tags %}
+{% load thumbnail %}
+{% load video_filters %}
+{% load video_tags %}
+
+{% block page_extra_head %}
+  {% include 'videos/video-header.html' %}
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}
+  {{block.super}}
+
+  <li class="breadcrumb-item">
+    <a href="{% url 'video:dashboard'%}">{% trans 'Dashboard' %}</a>
+  </li>
+
+  <li class="breadcrumb-item">
+    <a href="{% url 'video:video' slug=video.slug %}">
+      {{video.title|title|truncatechars:45}}
+    </a>
+  </li>
+
+  <li class="breadcrumb-item active" aria-current="page">
+    {% trans 'Dress the video' %}
+  </li>
+{% endblock %}
+
+{% block page_content %}
+
+{% if video.encoding_in_progress %}
+  <div class="alert alert-warning" role="alert">
+    {% trans "The video is currently being encoded." %}
+  </div>
+{% endif %}
+
+<span id="video_dressing">
+  {% include 'videos/video-element.html' %}
+</span>
+
+<form action="{% url 'video:dressing:video_dressing' slug=video.slug %}" method="POST" id="apply_dressing" accept-charset="utf-8" enctype="multipart/form-data">
+  {% csrf_token %}
+  <fieldset class="mt-3">
+    <legend>{% trans 'Pick a dressing below' %}</legend>
+    <table class="table table-sm table-striped table-bordered text-center" summary="{% trans 'List of dressings that I can apply to the video.' %}">
+      <caption class="caption-top text-center">{% trans 'Available video dressings' %}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{% trans 'Select' %}</th>
+          <th scope="col">{% trans 'Title' %}</th>
+          <th scope="col">{% trans 'Watermark' %}</th>
+          <th scope="col">{% trans 'Position' %}</th>
+          <th scope="col">{% trans 'Opacity' %}</th>
+          <th scope="col">{% trans 'Opening credits' %}</th>
+          <th scope="col">{% trans 'Ending credits' %}</th>
+        </tr>
+      </thead>
+      <tbody>
+          {% for dressing in dressings %}
+          <tr>
+            <td>
+              <input type="radio" name="selected_dressing_value" value="{{ dressing.pk }}" id="dressing_{{ dressing.pk }}"
+              {% if dressing.pk == current.pk %} checked="checked"{% endif %}>
+
+            </td>
+            <td><label for="dressing_{{ dressing.pk }}">{{ dressing.title }}</label></td>
+            <td>
+              {% if dressing.watermark %}
+                <img src="{{ dressing.watermark.file.url }}" alt="{{ dressing.watermark.name }}" width="50px">
+              {% else %}
+                {% trans 'None' %}
+              {% endif %}
+            </td>
+            <td>
+              {% if dressing.watermark %}
+                {{ dressing.get_position_display }}
+              {% else %}
+                <div class="text-center">
+                  <span title="{%trans 'No watermark'%}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
+                </div>
+              {% endif %}
+            </td>
+            <td>
+              {% if dressing.watermark %}
+              {{ dressing.opacity }}
+              {% else %}
+              <div class="text-center">
+                <span title="{%trans 'No watermark'%}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
+              </div>
+              {% endif %}
+            </td>
+            <td>
+              {% if dressing.opening_credits %}
+              <a href="../../{{ dressing.opening_credits|slugify }}" title="{% trans 'View the video'%}">{{ dressing.opening_credits }}</a>
+              {% else %}
+                {% trans 'None' %}
+              {% endif %}
+            </td>
+            <td>
+              {% if dressing.ending_credits %}
+                <a href="../../{{ dressing.ending_credits|slugify }}" title="{% trans 'View the video'%}">{{ dressing.ending_credits }}</a>
+              {% else %}
+                {% trans 'None' %}
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+            <tr>
+              <td colspan="11">{% trans 'No dressings found.' %}</td>
+            </tr>
+          {% endfor %}
+      </tbody>
+    </table>
+  </fieldset>
+  <button type="button" onclick="resetRadioButtons()" class="btn btn btn-secondary btn-sm">{% trans "Reset" %}</button>
+</form>
+
+<span class="float-end">
+  <button type="submit" form="apply_dressing" class="btn btn-primary btn-sm m-2">{% trans "Apply" %}</button>
+  <a class="btn btn btn-secondary btn-sm" href="{% url 'dressing:my_dressings' %}"><i class="bi bi-palette" aria-hidden="true"></i>&nbsp;{% trans 'My dressings' %}</a>
+  <a href="{% url 'video:video' slug=video.slug %}" class="btn btn btn-secondary btn-sm">
+    <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans 'Back to the video' %}
+  </a>
+</span>
+
+{% endblock page_content %}
+
+{% block page_aside %}
+  {% if access_not_allowed == True %}
+  {% else %}
+    <div class="card" id="card-managevideo">
+      <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage video" %}</h2>
+      <div class="card-body card-text text-center">
+        {% include "videos/link_video.html" %}
+      </div>
+    </div>
+  {% endif %}
+{% endblock page_aside %}
+
+{% block more_script %}
+  {% include 'videos/video-script.html'%}
+  <script src="{% static 'js/video_dressing.js' %}?ver={{VERSION}}"></script>
+{% endblock more_script %}

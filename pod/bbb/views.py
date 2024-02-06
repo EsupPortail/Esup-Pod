@@ -65,7 +65,11 @@ def list_meeting(request):
     return render(
         request,
         "bbb/list_meeting.html",
-        {"records": records, "full_path": full_path},
+        {
+            "records": records,
+            "full_path": full_path,
+            "page_title": _("My BigBlueButton records"),
+        },
     )
 
 
@@ -96,7 +100,7 @@ def publish_meeting(request, id=None):
         messages.add_message(
             request,
             messages.ERROR,
-            _("You aren't the moderator of this BigBlueButton session."),
+            _("You aren’t the moderator of this BigBlueButton session."),
         )
         raise PermissionDenied
 
@@ -188,6 +192,7 @@ def live_list_meeting(request):
             "records": records,
             "full_path": full_path,
             "max_limit_reached": max_limit_reached,
+            "page_title": _("Perform a BigBlueButton live"),
         },
     )
 
@@ -229,7 +234,7 @@ def live_publish_meeting(request, id=None):
         messages.add_message(
             request,
             messages.ERROR,
-            _("You aren't the moderator of this BigBlueButton session."),
+            _("You aren’t the moderator of this BigBlueButton session."),
         )
         raise PermissionDenied
 

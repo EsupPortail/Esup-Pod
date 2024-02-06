@@ -1,4 +1,5 @@
 """Admin pages for Esup-Pod Completion items."""
+
 from django.conf import settings
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
@@ -97,10 +98,11 @@ class DocumentAdmin(admin.ModelAdmin):
     autocomplete_fields = ["video"]
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
+        """Get the queryset based on the request."""
+        queryset = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(video__sites=get_current_site(request))
-        return qs
+            queryset = queryset.filter(video__sites=get_current_site(request))
+        return queryset
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "video":

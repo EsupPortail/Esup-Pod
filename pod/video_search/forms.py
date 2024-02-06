@@ -1,4 +1,5 @@
 """Handle the Advanced video search form."""
+
 from django import forms
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from django.utils.translation import ugettext_lazy as _

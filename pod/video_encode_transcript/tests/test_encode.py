@@ -1,4 +1,5 @@
 """Encode Test Case."""
+
 from django.conf import settings
 from django.test import TestCase
 from django.core.files.temp import NamedTemporaryFile
@@ -17,7 +18,7 @@ import os
 
 VIDEO_TEST = getattr(settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp4")
 
-AUDIO_TEST = getattr(settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp3")
+AUDIO_TEST = getattr(settings, "AUDIO_TEST", "pod/main/static/video_test/pod.mp3")
 
 
 class EncodeTestCase(TestCase):

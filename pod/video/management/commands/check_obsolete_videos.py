@@ -1,4 +1,5 @@
 """Check Obsolete videos."""
+
 from django.conf import settings
 from django.utils import translation
 from django.core.management.base import BaseCommand, CommandError
@@ -307,7 +308,7 @@ class Command(BaseCommand):
                 if MANAGERS:
                     print(
                         _(
-                            "Manager of '%(estab)s' notified for"
+                            "Manager of “%(estab)s” notified for"
                             + " %(nb)s soon to be obsolete video(s)."
                         )
                         % {"estab": estab, "nb": len(list_video[estab])}
@@ -366,7 +367,7 @@ class Command(BaseCommand):
                     )
                 if MANAGERS:
                     print(
-                        _("Manager of '%(et)s' notified for %(nb)s deleted video(s).")
+                        _("Manager of “%(et)s” notified for %(nb)s deleted video(s).")
                         % {"et": estab, "nb": len(list_video[estab])}
                     )
 
@@ -424,7 +425,7 @@ class Command(BaseCommand):
                     )
                 if MANAGERS:
                     print(
-                        _("Manager of '%(estab)s' notified for %(nb)s archived video(s).")
+                        _("Manager of “%(estab)s” notified for %(nb)s archived video(s).")
                         % {"estab": estab, "nb": len(list_video[estab])}
                     )
 

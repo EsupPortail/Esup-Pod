@@ -247,11 +247,9 @@ class Enrichment(models.Model):
                 )
             )
         if self.end > video.duration:
-            msg.append(
-                _("The value of end field is greater than " + "the video duration.")
-            )
+            msg.append(_("The value of end field is greater than the video duration."))
         if self.end and self.start == self.end:
-            msg.append(_("End field and start field can't be equal."))
+            msg.append(_("End field and start field can’t be equal."))
 
         if len(msg) > 0:
             return msg

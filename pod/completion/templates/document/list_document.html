@@ -14,7 +14,13 @@
 		<tbody>
 			{% for doc in list_document %}
 				<tr>
-					<td class="document_name">{{doc.document.name}} ({{ doc.document.file_ext }})</td>
+					<td class="document_name">{{doc.document.name}} ({{ doc.document.file_ext }}) 
+						{% if doc.private %} 
+							<i class="bi bi-eye-slash" aria-hidden="true"></i>
+						{% else %} 
+							<i class="bi bi-eye" aria-hidden="true"></i>
+						{% endif %}
+					</td>
 					<td>
 						<form class="form_modif completion d-inline-block" action="{% url 'video:completion:video_completion_document' slug=video.slug %}" method="POST">
 							{% csrf_token %}

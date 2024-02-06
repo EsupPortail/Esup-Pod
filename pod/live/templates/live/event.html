@@ -4,253 +4,251 @@
 {% load custom_tags %}
 
 {% block page_extra_head %}
-{% include 'videos/video-header.html' %}
-{% if event.is_current and event.broadcaster.enable_viewer_count %}
-    <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
-    <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}">
-    </script>
-{% endif %}
-{% if event.is_current and event.enable_transcription and event.broadcaster.status and event.broadcaster.transcription_file %}
-    <script id="tr_script"
-            src="{% static 'js/transcription.js' %}?ver={{ VERSION }}"
-            data-url="{{ event.broadcaster.transcription_file.url }}?d={% now 'U' %}"
-            data-language="{{ event.broadcaster.main_lang }}">
-    </script>
-{% endif %}
+  {% include 'videos/video-header.html' %}
 {% endblock %}
 
-{% block breadcrumbs %}{{ block.super }}
-
-    <li class="breadcrumb-item">
-    {% if event.owner == request.user or request.user in event.additional_owners.all  %}
-        <a href="{% url 'live:my_events' %}">{% trans 'My events' %}</a>
-    {% else %}
-        <a href="{% url 'live:events' %}">{% trans 'Events' %}</a>
-    {% endif %}
-    </li>
-    <li class="breadcrumb-item">
-        <a href="{% url 'live:event' slug=event.slug %}" title="{{ event.title }}">{{ event.title|title|truncatechars:45 }}</a>
-    </li>
-
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item">
+  {% if event.owner == request.user or request.user in event.additional_owners.all  %}
+    <a href="{% url 'live:my_events' %}">{% trans 'My events' %}</a>
+  {% else %}
+    <a href="{% url 'live:events' %}">{% trans 'Events' %}</a>
+  {% endif %}
+  </li>
+  <li class="breadcrumb-item">
+    <a href="{% url 'live:event' slug=event.slug %}" title="{{ event.title }}">{{ event.title|title|truncatechars:45 }}</a>
+  </li>
 {% endblock %}
 
 {% block page_title %}{{ event.title|title|truncatechars:45 }}{% endblock %}
 
 {% block page_content %}
-    {% csrf_token %}
-    <h3 id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast pe-2" aria-hidden="true"></i>{{ event.title|title }}</h3>
+  {% csrf_token %}
+  <h1 class="h2" id="livename" data-eventid="{{ event.id }}"><i class="bi bi-broadcast pe-2" aria-hidden="true"></i>{{ event.title|title }}</h1>
 
-    {% if form %}
-      {% include 'live/event-form.html' %}
-    {% else %}
-        {% if event.is_past %}
-            <div class="p-3 mb-2 bg-warning text-dark" style="width:fit-content">
-                {% trans 'Event is finished at:' %} {{ event.end_date }}
-                <br>
+  {% if form %}
+    {% include 'live/event-form.html' %}
+  {% else %}
+    {% if event.is_past %}
+      <div class="p-3 mb-2 bg-warning text-dark" style="width:fit-content">
+        {% trans 'The event ended on:' %} {{ event.end_date }}
+        <br>
+      </div>
+    {% elif event.is_coming %}
+      <div class="p-3 mb-2 bg-warning text-dark" style="width:fit-content">
+        {% trans 'The event is scheduled from:' %} {{ event.start_date }} {% trans 'to' %} {{ event.end_date }}
+      </div>
+
+      {# waiting video #}
+      {% if event.video_on_hold.is_video %}
+        <div id="divvideoonhold" style="display:block">
+          <video id="podvideoonholdplayer"
+               class="video-js vjs-default-skin vjs-big-play-centered"
+               controls height="360" muted autoplay>
+          </video>
+        </div>
+      {# event thumbnail  #}
+      {% elif event.thumbnail  %}
+        <div id="divvideoonhold" style="display:none"></div>
+        <img src="{{ event.get_thumbnail_card }}" alt="{{ event.title }}" style="max-height: 360px;">
+      {# broadcaster thumbnail  #}
+      {% elif event.broadcaster.poster %}
+        <div id="divvideoonhold" style="display:none"></div>
+        <img src="{{ event.broadcaster.get_poster_url }}" alt="{{ event.title }}" style="max-height: 360px;">
+      {% else %}
+        <div id="divvideoonhold" style="display:none">
+          <video id="podvideoonholdplayer"></video>
+        </div>
+      {% endif %}
+
+    {% elif event.is_current %}
+
+      <div id="divvideoplayer" style="display:block">
+        <div class="row">
+          <div class="col">
+            <video id="podvideoplayer"
+                 class="video-js vjs-default-skin vjs-big-play-centered"
+                 controls height="360" muted autoplay>
+              <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
+            </video>
+          </div>
+          {% if event.aside_iframe_url %}
+            <div class="col">
+              <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
+                  title="Inline Frame Example" loading="lazy"
+                  height="100%"
+                  src="{{ event.aside_iframe_url }}">
+              </iframe>
             </div>
-        {% elif event.is_coming %}
-            <div class="p-3 mb-2 bg-warning text-dark" style="width:fit-content">
-                {% trans 'The event is scheduled from:' %} {{ event.start_date }} {% trans 'to' %} {{ event.end_date }}
-            </div>
+          {% endif %}
+        </div>
+      </div>
 
-            {# waiting video #}
-            {% if event.video_on_hold.is_video %}
-                <div id="divvideoonhold" style="display:block">
-                    <video id="podvideoonholdplayer"
-                           class="video-js vjs-default-skin vjs-big-play-centered"
-                           controls height="360" muted autoplay>
-                    </video>
-                </div>
-            {# event thumbnail  #}
-            {% elif event.thumbnail  %}
-                <div id="divvideoonhold" style="display:none"></div>
-                <img src="{{ event.get_thumbnail_card }}" alt="{{ event.title }}" style="max-height: 360px;">
-            {# broadcaster thumbnail  #}
-            {% elif event.broadcaster.poster %}
-                <div id="divvideoonhold" style="display:none"></div>
-                <img src="{{ event.broadcaster.get_poster_url }}" alt="{{ event.title }}" style="max-height: 360px;">
-            {% else %}
-                <div id="divvideoonhold" style="display:none">
-                    <video id="podvideoonholdplayer"></video>
-                </div>
-            {% endif %}
+      <div id="divvideoonhold" style="display:none">
+        {# waiting video #}
+        {% if event.video_on_hold.is_video %}
+          <video id="podvideoonholdplayer"
+               class="video-js vjs-default-skin vjs-big-play-centered"
+               controls height="360" muted autoplay>
+          </video>
 
-        {% elif event.is_current %}
+          {# event thumbnail  #}
+        {% elif event.thumbnail %}
+          <video id="podvideoonholdplayer"
+               class="video-js vjs-default-skin vjs-big-play-centered"
+               poster="{{ event.get_thumbnail_card }}"
+               controls height="360" muted autoplay>
+          </video>
+          {# broadcaster thumbnail  #}
+        {% elif event.broadcaster.poster %}
+          <video id="podvideoonholdplayer"
+               class="video-js vjs-default-skin vjs-big-play-centered"
+               poster="{{ event.broadcaster.get_poster_url }}"
+               controls height="360" muted autoplay>
+          </video>
+        {% else %}
+          <video id="podvideoonholdplayer"
+               class="video-js vjs-default-skin vjs-big-play-centered"
+               controls height="360" muted autoplay>
+          </video>
+        {% endif %}
+      </div>
 
-            <div id="divvideoplayer" style="display:block">
-                <div class="row">
-                    <div class="col">
-                        <video id="podvideoplayer"
-                               class="video-js vjs-default-skin vjs-big-play-centered"
-                               controls height="360" muted autoplay>
-                            <source src="{{ event.broadcaster.url }}" type="application/x-mpegURL">
-                        </video>
-                    </div>
-                    {% if event.aside_iframe_url %}
-                        <div class="col">
-                            <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
-                                    title="Inline Frame Example" loading="lazy"
-                                    height="100%"
-                                    src="{{ event.aside_iframe_url }}">
-                            </iframe>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
+      {% if event.iframe_url != "" and event.iframe_url != None %}
+        <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
+            title="Inline Frame Example" loading="lazy"
+            height="{{ event.iframe_height }}"
+            src="{{ event.iframe_url }}">
+        </iframe>
+      {% endif %}
 
-            <div id="divvideoonhold" style="display:none">
-                {# waiting video #}
-                {% if event.video_on_hold.is_video %}
-                    <video id="podvideoonholdplayer"
-                           class="video-js vjs-default-skin vjs-big-play-centered"
-                           controls height="360" muted autoplay>
-                    </video>
+      {% if USE_BBB and USE_BBB_LIVE and display_chat %}
+        {% include "bbb/bbb_form.html" %}
+      {% endif %}
 
-                    {# event thumbnail  #}
-                {% elif event.thumbnail %}
-                    <video id="podvideoonholdplayer"
-                           class="video-js vjs-default-skin vjs-big-play-centered"
-                           poster="{{ event.get_thumbnail_card }}"
-                           controls height="360" muted autoplay>
-                    </video>
-                    {# broadcaster thumbnail  #}
-                {% elif event.broadcaster.poster %}
-                    <video id="podvideoonholdplayer"
-                           class="video-js vjs-default-skin vjs-big-play-centered"
-                           poster="{{ event.broadcaster.get_poster_url }}"
-                           controls height="360" muted autoplay>
-                    </video>
-                {% else %}
-                    <video id="podvideoonholdplayer"
-                           class="video-js vjs-default-skin vjs-big-play-centered"
-                           controls height="360" muted autoplay>
-                    </video>
-                {% endif %}
-            </div>
-
-            {% if event.iframe_url != "" and event.iframe_url != None %}
-                <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
-                        title="Inline Frame Example" loading="lazy"
-                        height="{{ event.iframe_height }}"
-                        src="{{ event.iframe_url }}">
-                </iframe>
-            {% endif %}
-
-            {% if USE_BBB and USE_BBB_LIVE and display_chat %}
-              {% include "bbb/bbb_form.html" %}
-            {% endif %}
-
-            <div id="viewers-list"><ul id="viewers-ul"></ul></div>
+      <div id="viewers-list"><ul id="viewers-ul"></ul></div>
 
 {#        {% else %}#}
 {#            <div id="divvideoonhold" style="display:none"></div>#}
 {#            <div id="divvideoplayer" style="display:none">#}
 {#                <video id="podvideoplayer"></video>#}
 {#            </div>#}
-        {% endif %}
+    {% endif %}
 
-      {% if not request.GET.is_iframe %}
-        <div class="container-fluid">
-          <div class="row">
-            <h1 class="col-auto page_title pt-3 h2">
+    {% if not request.GET.is_iframe %}
+      <div class="container-fluid">
+        <div class="row">
+          {% if event.is_current %}
+            <h2 class="col-auto page_title pt-3">
               {{ event.title|capfirst }}
-            </h1>
+            </h2>
 
             <a id="report" class="col-auto pod-info-video__signal pt-3"
                href="{% url 'contact_us' %}?video={{ video.id }}&subject=inappropriate_content"
                title="{% trans 'Report the event' %}">
               <i class="bi bi-exclamation-octagon" aria-hidden="true"></i>
             </a>
-
-            {% if event.is_current and can_record %}
-              {% if can_manage_stream %}
-                <div id="stream_btns" class="col-auto border border-secondary rounded d-none" style="margin: 10px 10px 10px 0">
-                  <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
-                          id="startstream" title="{% trans 'Start stream' %}" aria-label="{% trans 'Start stream' %}"
-                          data-url="{% url 'live:ajax_event_start_streaming'%}">
-                    <i class="bi bi-person-video" aria-hidden="true" style="font-size: 2em"></i>
-                  </button>
-                  <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
-                          id="stopstream" title="{% trans 'Stop stream' %}" aria-label="{% trans 'Stop stream' %}"
-                          data-url="{% url 'live:ajax_event_stop_streaming'%}">
-                    <i class="bi bi-stop-btn" aria-hidden="true" style="font-size: 2em"></i>
-                  </button>
-                  </button>
-                  <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
-                          id="startandrecord" title="{% trans 'Start stream and record' %}" aria-label="{% trans 'Start stream and record' %}">
-                    <i class="bi bi-person-video2" aria-hidden="true" style="font-size: 2em"></i>
-                  </button>
-                </div>
-              {% endif %}
-
-              <div id="recording_btns" class="col-auto border border-secondary rounded d-none" style="margin: 10px 0 10px 0">
-                <button type="button" class="btn btn-outline-danger btn-sm border-0 m-1" disabled
-                        id="startrecord" title="{% trans 'Start record' %}" aria-label="{% trans 'Start record' %}"
-                        data-url="{% url 'live:ajax_event_startrecord'%}">
-                  <i class="bi bi-circle-fill" aria-hidden="true" style="font-size: 2em"></i>
-                </button>
-                <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
-                        id="stoprecord" title="{% trans 'Stop record' %}" aria-label="{% trans 'Stop record' %}"
-                          data-url="{% url 'live:ajax_event_stoprecord'%}">
-                  <i class="bi bi-square-fill" aria-hidden="true" style="font-size: 2em"></i>
-                </button>
-                <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
-                        id="splitrecord" title="{% trans 'Split record' %}" aria-label="{% trans 'Split record' %}"
-                          data-url="{% url 'live:ajax_event_splitrecord'%}">
-                  <i class="bi bi-slash-circle-fill" aria-hidden="true" style="font-size: 2em"></i>
-                </button>
-              </div>
-
+          {% endif %}
+          {% if event.is_current and can_record %}
+            {% if can_manage_stream %}
+            <div id="stream_btns" class="col-auto border border-secondary rounded d-none" style="margin: 10px 10px 10px 0">
+              <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
+                  id="startstream" title="{% trans 'Start stream' %}" aria-label="{% trans 'Start stream' %}"
+                  data-url="{% url 'live:ajax_event_start_streaming'%}">
+              <i class="bi bi-person-video" aria-hidden="true" style="font-size: 2em"></i>
+              </button>
+              <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
+                  id="stopstream" title="{% trans 'Stop stream' %}" aria-label="{% trans 'Stop stream' %}"
+                  data-url="{% url 'live:ajax_event_stop_streaming'%}">
+              <i class="bi bi-stop-btn" aria-hidden="true" style="font-size: 2em"></i>
+              </button>
+              </button>
+              <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
+                  id="startandrecord" title="{% trans 'Start stream and record' %}" aria-label="{% trans 'Start stream and record' %}">
+              <i class="bi bi-person-video2" aria-hidden="true" style="font-size: 2em"></i>
+              </button>
+            </div>
             {% endif %}
 
-            <div id="user_message"></div>
-          </div>
+            <div id="recording_btns" class="col-auto border border-secondary rounded d-none" style="margin: 10px 0 10px 0">
+            <button type="button" class="btn btn-outline-danger btn-sm border-0 m-1" disabled
+                id="startrecord" title="{% trans 'Start record' %}" aria-label="{% trans 'Start record' %}"
+                data-url="{% url 'live:ajax_event_startrecord'%}">
+              <i class="bi bi-circle-fill" aria-hidden="true" style="font-size: 2em"></i>
+            </button>
+            <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
+                id="stoprecord" title="{% trans 'Stop record' %}" aria-label="{% trans 'Stop record' %}"
+                  data-url="{% url 'live:ajax_event_stoprecord'%}">
+              <i class="bi bi-square-fill" aria-hidden="true" style="font-size: 2em"></i>
+            </button>
+            <button type="button" class="btn btn-outline-primary btn-sm border-0 m-1" disabled
+                id="splitrecord" title="{% trans 'Split record' %}" aria-label="{% trans 'Split record' %}"
+                  data-url="{% url 'live:ajax_event_splitrecord'%}">
+              <i class="bi bi-slash-circle-fill" aria-hidden="true" style="font-size: 2em"></i>
+            </button>
+            </div>
 
-          {% if event.is_current %}
-            <div id="recordingduration"></div>
           {% endif %}
+
+          <div id="user_message"></div>
         </div>
 
-        <div id="list_videos_of_event" {% if event.videos.count == 0 %} class="d-none" {% else %}
-             class="mt-3" {% endif %}>
-          <div class="pl-0" id="event_videos">
-            <h4>{% trans 'Current event videos' %}</h4>
-            <div id="event_videos_list"></div>
-          </div>
+        {% if event.is_current %}
+          <div id="recordingduration"></div>
+        {% endif %}
+      </div>
+
+      <div id="list_videos_of_event" {% if event.videos.count == 0 %} class="d-none" {% else %}
+         class="mt-3" {% endif %}>
+        <div class="pl-0" id="event_videos">
+          <h3>{% trans 'Current event videos' %}</h3>
+          <div id="event_videos_list"></div>
         </div>
+      </div>
 
-        <div id="info-video-all">{% include 'live/event-all-info.html' %}</div>
-
-      {% endif %}
+      <div id="info-video-all">{% include 'live/event-all-info.html' %}</div>
 
     {% endif %}
-
+  {% endif %}
 {% endblock %}
 
 {% block page_aside %}
 
-    {% include 'aside.html' with HIDE_DISCIPLINES=True HIDE_TAGS=True %}
+  {% include 'aside.html' with HIDE_DISCIPLINES=True HIDE_TAGS=True %}
 
-    {% if event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser or perms.live.delete_event or perms.live.change_event %}
-        <div class="card mt-1" id="card-managevideo">
-            <h2 class="h4 card-header card-title pl-2"><i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans 'Manage event' %}
-            </h2>
-            <div class="card-body card-text text-center">
-                <a href="{% url 'live:event_edit' slug=event.slug %}" title="{% trans 'Edit the event' %}"
-                   class="btn btn-lg pod-btn-social p-1">
-                   <i class="bi bi-pencil-square" aria-hidden="true"></i>
-                </a>
-                <a href="{% url 'live:event_delete' slug=event.slug %}"
-                   class="btn btn-lg pod-btn-social p-1"
-                   title="{% trans 'Delete the event' %}">
-                   <i class="bi bi-trash" aria-hidden="true"></i>
-                </a>
-            </div>
-        </div>
-    {% endif %}
+  {% if event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser or perms.live.delete_event or perms.live.change_event %}
+    <div class="card mt-1" id="card-manage-video">
+      <h2 class="h4 card-header card-title pl-2"><i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans 'Manage event' %}
+      </h2>
+      <div class="card-body card-text text-center">
+        <a href="{% url 'live:event_edit' slug=event.slug %}" title="{% trans 'Edit the event' %}"
+           class="btn btn-lg pod-btn-social p-1">
+           <i class="bi bi-pencil-square" aria-hidden="true"></i>
+        </a>
+        <a href="{% url 'live:event_delete' slug=event.slug %}"
+           class="btn btn-lg pod-btn-social p-1"
+           title="{% trans 'Delete the event' %}">
+           <i class="bi bi-trash" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  {% endif %}
 
 {% endblock page_aside %}
 
 {% block more_script %}
-{% include 'live/event-script.html' %}
+  {% if event.is_current and event.broadcaster.enable_viewer_count %}
+    <script>let heartbeat_delay = {{ heartbeat_delay }}</script>
+    <script src="{% static 'js/viewcounter.js' %}?ver={{ VERSION }}">
+    </script>
+  {% endif %}
+  {% if event.is_current and event.enable_transcription and event.broadcaster.status and event.broadcaster.transcription_file %}
+    <script id="tr_script"
+        src="{% static 'js/transcription.js' %}?ver={{ VERSION }}"
+        data-url="{{ event.broadcaster.transcription_file.url }}?d={% now 'U' %}"
+        data-language="{{ event.broadcaster.main_lang }}">
+    </script>
+  {% endif %}
+  {% include 'live/event-script.html' %}
 {% endblock more_script %}

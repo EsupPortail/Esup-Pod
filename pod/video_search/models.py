@@ -1,4 +1,5 @@
 """Models for Esup-Pod video_search."""
+
 from django.conf import settings
 from pod.video_search.utils import index_es, delete_es
 from pod.video.models import Video

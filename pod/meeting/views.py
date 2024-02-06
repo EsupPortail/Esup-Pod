@@ -1,4 +1,5 @@
 """Views of the Meeting module."""
+
 import bleach
 import jwt
 import logging
@@ -1082,7 +1083,7 @@ def upload_internal_recording_to_pod(request, recording_id, meeting_id):
     if upload and msg == "":
         msg += _(
             "The recording has been uploaded to Pod. "
-            "You can see the generated video in My videos."
+            "You can see the generated video in Dashboard."
         )
         display_message_with_icon(request, messages.INFO, msg)
     else:
@@ -1164,7 +1165,7 @@ def upload_recording_to_pod(request, record_id, meeting_id=None):
     except Exception as exc:
         msg = {}
         proposition = ""
-        msg["error"] = _("Impossible to upload to Pod the video")
+        msg["error"] = _("Unable to upload the video to Pod")
         try:
             # Management of error messages from sub-functions
             message = "%s (%s)" % (exc.args[0]["error"], exc.args[0]["message"])
@@ -1251,7 +1252,7 @@ def upload_bbb_recording_to_pod(request, record_id, meeting_id):
         return True
     except Exception as exc:
         msg = {}
-        msg["error"] = _("Impossible to upload to Pod the video")
+        msg["error"] = _("Unable to upload the video to Pod")
         try:
             # Management of error messages from sub-functions
             message = "%s (%s)" % (exc.args[0]["error"], exc.args[0]["message"])

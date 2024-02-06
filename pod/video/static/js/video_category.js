@@ -1,3 +1,12 @@
+/**
+ * Esup-Pod video category scripts.
+ */
+
+/* Read-only globals defined in filter_aside_video_list_refresh.js and my_videos.html */
+/*
+global refreshVideosSearch, CATEGORIES_DATA, BASE_URL, VIDEO_URL, EDIT_URL,
+ COMPLETION_URL, CHAPTER_URL, DELETE_URL
+*/
 (function (CATEGORIES_DATA) {
   const SERVER_DATA = CATEGORIES_DATA.filter((c) => !Number.isInteger(c));
   // Category to delete
@@ -37,7 +46,7 @@
   let CURR_CATEGORY = {}; // current editing category (js object)
   let DOMCurrentEditCat = null; // current editing category (html DOM)
   // show loader
-  let loader = document.querySelector(".lds-ring");
+  const loader = document.getElementById("videosListLoader");
 
   const SAVED_DATA = {}; // To prevent too many requests to the server
   const CURR_FILTER = { slug: null, id: null }; // the category currently filtering
@@ -180,7 +189,7 @@
       });
     }
   };
-  searchCatInput.addEventListener("input", (e) => {
+  searchCatInput.addEventListener("input", () => {
     searchCatHandler(searchCatInput.value.trim());
   });
 
@@ -388,7 +397,7 @@
       let resp = await fetch(`${BASE_URL}${cat_slug}/`, { headers: HEADERS });
       return await resp.json();
     } catch (e) {
-      loader.classList.remove("show");
+      showLoader(loader, false);
       showAlertMessage(msg_error, false, (delay = 30000));
     }
   };
@@ -403,7 +412,7 @@
       });
       return await resp.json();
     } catch (e) {
-      loader.classList.remove("show");
+      showLoader(loader, false);
       showAlertMessage(msg_error_duplicate, false, (delay = 30000));
     }
   };
@@ -426,7 +435,7 @@
     btnEdit.setAttribute("data-slug", slug);
     btnEdit.setAttribute("data-title", title);
     btnEdit.setAttribute("class", "btn btn-link edit_category");
-    btnEdit.innerHTML = `<i class="bi bi-pencil-square"></i>`;
+    btnEdit.innerHTML = `<i class="bi bi-pencil-square" aria-hidden="true"></i>`;
     editHandler(btnEdit); // append edit click event
 
     let btnDelete = document.createElement("button");
@@ -437,7 +446,7 @@
     btnDelete.setAttribute("data-slug", slug);
     btnDelete.setAttribute("data-title", title);
     btnDelete.setAttribute("class", "btn btn-link remove_category");
-    btnDelete.innerHTML = `<i class="bi bi-trash"></i>`;
+    btnDelete.innerHTML = `<i class="bi bi-trash" aria-hidden="true"></i>`;
     deleteHandler(btnDelete); // append delete click event
 
     let li = document.createElement("li");
@@ -480,7 +489,7 @@
     </div>`;
   };
 
-  // Create video video html element for my_videos (on filtering with category)
+  // Create video video html element for dashboard (on filtering with category)
   // video = object
   let getVideoElement = (video) => {
     let span_info = `
@@ -507,7 +516,7 @@
       let title = gettext("This content is in draft.");
       if (video.is_draft) {
         span = `<span title="${title}">
-        <i class="bi bi-incognito"></i></span>`;
+        <i class="bi bi-incognito" aria-hidden="true"></i></span>`;
       }
       return span;
     };
@@ -587,7 +596,13 @@
     return infinite_item;
   };
 
-  // Create alert message
+  /**
+   * Create alert message
+   * @param  {String}  message message to be displayed
+   * @param  {String|Boolean} type    Message type
+   * @param  {Number}  delay   [description]
+   * @return {[type]}          [description]
+   */
   let showAlertMessage = (message, type = true, delay = 4000) => {
     let success = gettext("Success!");
     let error = gettext("Error…");
@@ -595,10 +610,10 @@
     let class_suffix = type ? "success" : "danger";
     let icon =
       type === "success"
-        ? `<i class="bi bi-check2-circle"></i>`
+        ? `<i class="bi bi-check2-circle" aria-hidden="true"></i>`
         : type === "error"
-        ? `<i class="bi bi-exclamation-triangle"></i>`
-        : `<i class="bi bi-info-circle"></i>`;
+          ? `<i class="bi bi-exclamation-triangle" aria-hidden="true"></i>`
+          : `<i class="bi bi-info-circle" aria-hidden="true"></i>`;
     let alert_message = document.createElement("div");
     alert_message.setAttribute(
       "class",
@@ -614,11 +629,15 @@
     }, delay);
   };
 
-  // Handler to edit category, c_e=current category to edit
+  /**
+   * Handler to edit category
+   * @param  {[type]} c_e current category to edit
+   * @return {[type]}     [description]
+   */
   let editHandler = (c_e) => {
     c_e.addEventListener("click", (e) => {
       e.preventDefault();
-      loader.classList.add("show");
+      showLoader(loader, true);
       cat_edit_title = c_e.dataset.title.trim();
       cat_edit_slug = c_e.dataset.slug.trim();
       cat_edit_id = c_e.parentNode
@@ -638,7 +657,7 @@
       DOMCurrentEditCat = c_e.parentNode.parentNode;
       if (Object.keys(jsonData).length) {
         paginate(jsonData.videos);
-        loader.classList.remove("show");
+        showLoader(loader, false);
       } else {
         jsonData = fetchCategoryData(cat_edit_slug);
         jsonData
@@ -647,17 +666,22 @@
             // save data
             saveCategoryData(data);
             CURR_CATEGORY = data;
-            loader.classList.remove("show");
+            showLoader(loader, false);
           })
           .catch((e) => {
-            loader.classList.remove("show");
+            showLoader(loader, false);
             showAlertMessage(msg_error, false, (delay = 30000));
           });
       }
     });
   };
 
-  // get modal video card
+  /**
+   * get modal video card
+   * @param  {[type]}  v        [description]
+   * @param  {Boolean} selected [description]
+   * @return {[type]}           [description]
+   */
   let getModalVideoCard = (v, selected = true) => {
     let videoCard = createHtmlVideoCard(v);
     let v_wrapper = document.createElement("Div");
@@ -712,7 +736,7 @@
   // Add onclick event to delete a category
   let del_cat = document.querySelector("#confirm_remove_category_btn");
   del_cat.addEventListener("click", (e) => {
-    loader.classList.add("show");
+    showLoader(loader, true);
     if (CAT_TO_DELETE.slug && CAT_TO_DELETE.id && CAT_TO_DELETE.html) {
       // Delete category
       let cat = findCategory(
@@ -772,7 +796,7 @@
             delete CAT_TO_DELETE.html;
             delete CAT_TO_DELETE.id;
             delete CAT_TO_DELETE.slug;
-            loader.classList.remove("show");
+            showLoader(loader, false);
             // close modal
             document
               .querySelector("#deleteCategoryModal .modal-footer .close_modal")
@@ -781,11 +805,11 @@
         });
       } else {
         //TODO display msg error cat
-        loader.classList.remove("show");
+        showLoader(loader, false);
       }
     } else {
       // display msg error like 'no category to delete'
-      loader.classList.remove("show");
+      showLoader(loader, false);
     }
   });
 
@@ -794,7 +818,7 @@
     e.preventDefault();
     e.stopPropagation();
 
-    loader.classList.add("show");
+    showLoader(loader, true);
 
     //let videos = Array.from(document.querySelectorAll(".category_modal_videos_list .selected")).map(v_el => v_el.dataset.slug.trim());
     const videos = VIDEOS_LIST_CHUNK.videos.selected.map(
@@ -806,7 +830,7 @@
     };
     if (cat_input.value.trim() === "") {
       showAlertMessage(msg_title_empty, false, (delay = 30000));
-      loader.classList.remove("show");
+      showLoader(loader, false);
       return;
     }
 
@@ -835,10 +859,10 @@
           document.querySelector("#manageCategoryModal #cancelDialog").click();
           refreshDialog();
           showAlertMessage(msg_saved);
-          loader.classList.remove("show"); // hide loader
+          showLoader(loader, false); // hide loader
         })
         .catch((err) => {
-          loader.classList.remove("show");
+          showLoader(loader, false);
           showAlertMessage(msg_error, false, (delay = 30000));
         });
     } else {
@@ -854,7 +878,7 @@
           let msg_create = gettext("Category created successfully");
           showAlertMessage(msg_create);
           saveCategoryData(data.category); // saving cat localy to prevent more request to the server
-          loader.classList.remove("show"); // hide loader
+          showLoader(loader, false); // hide loader
         })
         .catch((err) => {
           //alert(err);
@@ -867,7 +891,7 @@
 
   // Add onclick event to add a new category
   let add_cat = document.querySelector("#add_category_btn");
-  add_cat.addEventListener("click", (e) => {
+  add_cat.addEventListener("click", () => {
     paginate([]);
     modal_title.innerText = gettext("Add new category");
     cat_input.value = "";

@@ -1,7 +1,9 @@
 """Esup-Pod Video models."""
+
 import os
 import re
 import time
+from typing import Optional
 import unicodedata
 import json
 import logging
@@ -159,9 +161,11 @@ NOTES_STATUS = getattr(
 THIRD_PARTY_APPS = getattr(settings, "THIRD_PARTY_APPS", [])
 
 __THIRD_PARTY_APPS_CHOICES__ = THIRD_PARTY_APPS.copy()
-__THIRD_PARTY_APPS_CHOICES__.remove("live") if (
-    "live" in __THIRD_PARTY_APPS_CHOICES__
-) else __THIRD_PARTY_APPS_CHOICES__
+(
+    __THIRD_PARTY_APPS_CHOICES__.remove("live")
+    if ("live" in __THIRD_PARTY_APPS_CHOICES__)
+    else __THIRD_PARTY_APPS_CHOICES__
+)
 __THIRD_PARTY_APPS_CHOICES__.insert(0, "Original")
 
 __VERSION_CHOICES__ = [
@@ -561,7 +565,7 @@ class Theme(models.Model):
             raise ValidationError(
                 {
                     "parentId": ValidationError(
-                        _("A theme can't have itself or one of it's children as parent."),
+                        _("A theme can’t have itself or one of it’s children as parent."),
                         code="invalid_parent",
                     )
                 }
@@ -720,7 +724,7 @@ class Video(models.Model):
         help_text=_(
             "You can add additional owners to the video. "
             + "They will have the same rights as you except "
-            + "that they can't delete this video."
+            + "that they can’t delete this video."
         ),
     )
     description = RichTextField(
@@ -859,12 +863,16 @@ class Video(models.Model):
         verbose_name = _("video")
         verbose_name_plural = _("videos")
 
-    def set_password(self):
-        """Encrypt the password if video is protected. An encrypted password cannot be re-encrypted."""
+    def set_password(self) -> None:
+        """
+        Encrypt the password if video is protected.
+
+         An encrypted password cannot be re-encrypted.
+        """
         if self.password and not self.password.startswith(("pbkdf2_sha256$")):
             self.password = make_password(self.password, hasher="pbkdf2_sha256")
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """Store a video object in db."""
         newid = -1
 
@@ -969,8 +977,8 @@ class Video(models.Model):
             new_year = DEFAULT_YEAR_DATE_DELETE
         return new_year
 
-    def affiliation_is_array(self, affiliation):
-        """Check if the user affiliation is an array of strings or a simple string"""
+    def affiliation_is_array(self, affiliation) -> bool:
+        """Check if the user affiliation is an array of strings or a simple string."""
         return True if affiliation.find("[") != -1 else False
 
     def get_player_height(self):
@@ -1097,8 +1105,16 @@ class Video(models.Model):
                     )
         return version
 
-    def get_default_version_link(self, slug_private):
-        """Get link of the version of a video."""
+    def get_default_version_link(self, slug_private: str = None) -> Optional[str]:
+        """
+        Get link of the version of a video.
+
+        Args:
+            slug_private (str, optional): The private slug. Defaults to None.
+
+        Returns:
+            str | None: The default version link.
+        """
         for version in self.get_other_version():
             if version["link"] == __VERSION_CHOICES_DICT__[self.get_version]:
                 if slug_private:
@@ -1119,6 +1135,12 @@ class Video(models.Model):
         if count_sum["count__sum"] is None:
             return 0
         return count_sum["count__sum"]
+
+    def get_marker_time_for_user(self, user):
+        """Get the marker time of a video for the user in parameter."""
+        if self.usermarkertime_set.filter(user=user).exists():
+            return self.usermarkertime_set.get(user=user).markerTime
+        return 0
 
     def get_absolute_url(self):
         """Get the video absolute URL."""
@@ -1227,12 +1249,16 @@ class Video(models.Model):
                 "title": "%s" % self.title,
                 "owner": "%s" % self.owner.username,
                 "owner_full_name": "%s" % self.owner.get_full_name(),
-                "date_added": "%s" % self.date_added.strftime("%Y-%m-%dT%H:%M:%S")
-                if self.date_added
-                else None,
-                "date_evt": "%s" % self.date_evt.strftime("%Y-%m-%dT%H:%M:%S")
-                if self.date_evt
-                else None,
+                "date_added": (
+                    "%s" % self.date_added.strftime("%Y-%m-%dT%H:%M:%S")
+                    if self.date_added
+                    else None
+                ),
+                "date_evt": (
+                    "%s" % self.date_evt.strftime("%Y-%m-%dT%H:%M:%S")
+                    if self.date_evt
+                    else None
+                ),
                 "description": "%s" % self.description,
                 "thumbnail": "%s" % self.get_thumbnail_url(),
                 "duration": "%s" % self.duration,
@@ -1474,6 +1500,36 @@ class ViewCount(models.Model):
         verbose_name_plural = _("View counts")
 
 
+class UserMarkerTime(models.Model):
+    """Record the time of video played by a user."""
+
+    video = models.ForeignKey(
+        Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        User, verbose_name=_("User"), editable=False, on_delete=models.CASCADE
+    )
+    markerTime = models.IntegerField(_("Marker time"), default=0, editable=False)
+
+    @property
+    def sites(self):
+        """Return the sites of the video."""
+        return self.video.sites
+
+    def __str__(self):
+        """Render the user marker time as string."""
+        return "Marker time for user %s and video %s: %s" % (
+            self.user,
+            self.video,
+            self.markerTime,
+        )
+
+    class Meta:
+        unique_together = ("video", "user")
+        verbose_name = _("User viewing time marker of video")
+        verbose_name_plural = _("Users viewing time marker of video")
+
+
 class VideoVersion(models.Model):
     video = models.OneToOneField(
         Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
@@ -1500,6 +1556,7 @@ class VideoVersion(models.Model):
         return self.video.sites_set.all()
 
     def __str__(self):
+        """Render the video version as string."""
         return "Choice for default video version: %s - %s" % (
             self.video.id,
             self.version,
@@ -1520,15 +1577,20 @@ class Notes(models.Model):
         return self.video.sites_set.all()
 
     class Meta:
+        """Note Metadata."""
+
         verbose_name = _("Note")
         verbose_name_plural = _("Notes")
         unique_together = ("video", "user")
 
     def __str__(self):
+        """Render the Note as string."""
         return "%s-%s" % (self.user.username, self.video)
 
 
 class AdvancedNotes(models.Model):
+    """Advanced video notes Model."""
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
     status = models.CharField(
@@ -1557,6 +1619,7 @@ class AdvancedNotes(models.Model):
         return self.video.sites_set.all()
 
     def __str__(self):
+        """Render the advanced note as string."""
         return "%s-%s-%s" % (self.user.username, self.video, self.timestamp)
 
     def clean(self):
@@ -1594,6 +1657,8 @@ class AdvancedNotes(models.Model):
 
 
 class NoteComments(models.Model):
+    """Comments for Advanced video notes model."""
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     parentNote = models.ForeignKey(AdvancedNotes, on_delete=models.CASCADE)
     parentCom = models.ForeignKey(
@@ -1615,6 +1680,7 @@ class NoteComments(models.Model):
         verbose_name_plural = _("Note comments")
 
     def __str__(self):
+        """Render the note comment as string."""
         return "%s-%s-%s" % (self.user.username, self.parentNote, self.comment)
 
     def clean(self):
@@ -1640,10 +1706,13 @@ class VideoToDelete(models.Model):
         verbose_name_plural = _("Videos to delete")
 
     def __str__(self):
-        return "%s - nb videos : %s" % (self.date_deletion, self.video.count())
+        """Render the video to delete as string."""
+        return "%s - nb videos: %s" % (self.date_deletion, self.video.count())
 
 
 class Comment(models.Model):
+    """Video comment model."""
+
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     parent = models.ForeignKey(
@@ -1701,6 +1770,7 @@ class Comment(models.Model):
         )
 
     def __str__(self):
+        """Render the comment as string."""
         return self.content
 
 
@@ -1713,10 +1783,13 @@ class Vote(models.Model):
         verbose_name_plural = _("Votes")
 
     def __str__(self):
+        """Render the vote as string."""
         return str(self.user)
 
 
 class Category(models.Model):
+    """Video category Model."""
+
     title = models.CharField(
         _("Category title"),
         max_length=100,
@@ -1747,13 +1820,17 @@ class Category(models.Model):
     )
 
     def save(self, *args, **kwargs):
+        """Set a slug and save the category instance."""
         self.slug = "%s-%s" % (self.owner.id, slugify(self.title))
         super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
+        """Render the category as string."""
         return self.title
 
     class Meta:
+        """Category Metadata."""
+
         ordering = ["title", "id"]
         verbose_name = _("Category")
         verbose_name_plural = _("Categories")

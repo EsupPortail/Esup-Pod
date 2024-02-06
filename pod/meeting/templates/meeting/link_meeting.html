@@ -7,8 +7,8 @@
   </a>
 
   <a href="#" class="btn btn-lg pod-btn-social p-1 m-0 ms-1 pod-btn-copy" role="alert"
-  data-copyvalue="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}"
-  data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Copy the direct join link' %}">
+    data-copyvalue="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}"
+    data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Copy the direct join link' %}">
     <i class="bi bi-clipboard-check" aria-hidden="true"></i>
   </button>
 

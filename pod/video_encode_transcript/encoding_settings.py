@@ -64,6 +64,20 @@ FFMPEG_CREATE_THUMBNAIL = (
 )
 FFMPEG_EXTRACT_SUBTITLE = '-map 0:%(index)s -f webvtt -y  "%(output)s" '
 
+FFMPEG_DRESSING_OUTPUT = ' -c:v libx264 -y -vsync 0 "%(output)s" '
+FFMPEG_DRESSING_INPUT = ' -i "%(input)s"'
+FFMPEG_DRESSING_FILTER_COMPLEX = ' -filter_complex "%(filter)s" '
+FFMPEG_DRESSING_WATERMARK = (
+    " [1]format=rgba,colorchannelmixer=aa=%(opacity)s[logo]; "
+    + " [logo][vid]scale2ref=oh*mdar:ih*0.1[logo][video2]; "
+    + " [video2][logo]%(position)s%(name_out)s "
+)
+FFMPEG_DRESSING_SCALE = (
+    "[%(number)s]scale=-1:%(height)s:force_original_aspect_ratio= "
+    + "decrease,pad=ceil(ih*16/9):ih:(ow-iw)/2:(oh-ih)/2[%(name)s]"
+)
+FFMPEG_DRESSING_CONCAT = "%(params)sconcat=n=%(number)s:v=1:a=1:unsafe=1[v][a]"
+
 VIDEO_RENDITIONS = [
     {
         "resolution": "640x360",

@@ -44,7 +44,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="action" value="new">
                 <input type="hidden" name="id" value="{{theme.id}}">
-                <button type="submit" class="btn btn-primary btn-sm my-1"><i class="bi bi-plus pod-add"></i>{% trans 'Add new theme' %}</button>
+                <button type="submit" class="btn btn-primary btn-sm my-1"><i class="bi bi-plus pod-add" aria-hidden="true"></i>&nbsp;{% trans 'Add new theme' %}</button>
               </form>
           </td>
         </tr>

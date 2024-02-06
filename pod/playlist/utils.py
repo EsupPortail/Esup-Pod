@@ -1,6 +1,8 @@
 """Esup-Pod playlist utilities."""
+
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.db.models.functions import Lower
 from django.db.models import Max
 from django.urls import reverse
 from django.core.handlers.wsgi import WSGIRequest
@@ -350,7 +352,7 @@ def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") 
     Returns:
         list (:class:`list(pod.playlist.models.Playlist)`): The list of playlist
     """
-    if sort_field and sort_field in [
+    if sort_field and sort_field in {
         "id",
         "name",
         "visibility",
@@ -358,10 +360,16 @@ def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") 
         "owner",
         "date_created",
         "date_updated",
-    ]:
-        if not sort_direction:
+    }:
+        if sort_field in {"name"}:
+            sort_field = Lower(sort_field)
+            if not sort_direction:
+                sort_field = sort_field.desc()
+
+        elif not sort_direction:
             sort_field = "-" + sort_field
         playlist_list = playlist_list.order_by(sort_field)
+
     return playlist_list.distinct()
 
 
@@ -375,7 +383,28 @@ def check_password(form_password: str, playlist: Playlist) -> bool:
 
 
     Returns:
-        bool: True if the password provided matches the playlist password, False otherwise.
+        bool: `True` if the password provided matches the playlist password, `False` otherwise.
     """
     hashed_password = hashlib.sha256(form_password.encode("utf-8")).hexdigest()
     return hashed_password == playlist.password
+
+
+def playlist_can_be_displayed(request: WSGIRequest, playlist: Playlist) -> bool:
+    """
+    Check if the playlist can be displayed by the current user.
+
+    Args:
+        request (:class:`django.core.handlers.wsgi.WSGIRequest`): The current request.
+        playlist (:class:`pod.playlist.models.Playlist`): The playlist object.
+
+    Returns:
+        bool: `True` if the current user can be see the playlist, `False` otherwise.
+    """
+    return playlist.visibility in {"public", "protected"} or (
+        request.user.is_authenticated
+        and (
+            playlist.owner == request.user
+            or playlist in get_playlists_for_additional_owner(request.user)
+            or request.user.is_staff
+        )
+    )

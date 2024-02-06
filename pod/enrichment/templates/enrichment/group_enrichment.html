@@ -2,17 +2,12 @@
 {% load i18n %}
 {% load static %}
 
-{% block page_extra_head %}
-
-{% endblock page_extra_head %}
-
 {% block breadcrumbs %}{{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'video:my_videos' %}">{% trans 'My videos' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans 'Dashboard' %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{% trans "Editing group for the enrichment of the video" %}</li>
 {% endblock %}
 
 {% block page_title %}{% trans "Editing group for the enrichment of the video" %} "{{video.title}}"{% endblock %}
-
 
 {% block page_content %}
 {% spaceless %}
@@ -67,8 +62,10 @@
 
 {% block page_aside %}
 {% if video.owner == request.user or request.user.is_superuser or perms.video.change_video or request.user in video.additional_owners.all %}
-  <div class="card" id="card-managevideo">
-    <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
+  <div class="card" id="card-manage-video">
+    <h2 class="card-header card-title pod-card__title h4">
+      <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage video"%}
+    </h2>
     <div class="card-body card-text text-center">
       {% include "videos/link_video.html" %}
     </div>
@@ -77,7 +74,6 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-  <script src="/admin/jsi18n/"></script>
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>

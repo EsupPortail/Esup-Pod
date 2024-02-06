@@ -1,4 +1,5 @@
 """Forms for the Import_video module."""
+
 from django import forms
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -26,8 +27,9 @@ class ExternalRecordingForm(forms.ModelForm):
 
     fieldsets = (
         (
-            None,
+            "general",
             {
+                "legend": _("General settings"),
                 "fields": (
                     "name",
                     "type",
@@ -35,7 +37,7 @@ class ExternalRecordingForm(forms.ModelForm):
                     "start_at",
                     "owner",
                     "site",
-                )
+                ),
             },
         ),
     )

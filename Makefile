@@ -20,8 +20,8 @@ start:
 starts:
 	# nécessite les django-extensions
 	# cf https://timonweb.com/django/https-django-development-server-ssl-certificate/
-	(sleep 15 ; open https://localhost:8000) &
-	python3 manage.py runserver_plus --cert-file cert.pem --key-file key.pem
+	(sleep 15 ; open https://localhost:9090) &
+	python3 manage.py runserver_plus localhost:9090 --cert-file cert.pem --key-file key.pem
 
 # Première installation de pod (BDD SQLite intégrée)
 install:
@@ -49,9 +49,9 @@ createDB:
 # Mise à jour des fichiers de langue
 lang:
 	echo "Processing python files..."
-	python3 manage.py makemessages --all -i "opencast-studio/*" -i "pod/custom/settings_local.py" --add-location=file
+	python3 manage.py makemessages --all -i "opencast-studio/*" -i "pod/custom/*" --add-location=file
 	echo "Processing javascript files..."
-	python3 manage.py makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*" --add-location=file
+	python3 manage.py makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*"  -i "node_modules/*" -i "pod/custom/*" --add-location=file
 
 #compilation des fichiers de langue
 compilelang:
@@ -76,7 +76,7 @@ pystyle:
 
 # Collects all static files inside all apps and put a copy inside the static directory declared in settings.py
 statics:
-	cd pod; yarn upgrade
+	cd pod; yarn install; yarn upgrade
 	# --clear Clear the existing files before trying to copy or link the original file.
 	python3 manage.py collectstatic --clear
 

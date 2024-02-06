@@ -1110,7 +1110,7 @@
                             "pod_version_init": "3.1.0"
                         },
                         "USE_BBB": {
-                            "default_value": true,
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     ""
@@ -1123,7 +1123,7 @@
                             "pod_version_init": "3.1"
                         },
                         "USE_BBB_LIVE": {
-                            "default_value": "False ",
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     ""
@@ -1750,7 +1750,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush). Elles peuvent être générées avec [https://web-push-codelab.glitch.me/]()"
+                                    "Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush). Elles peuvent être générées avec [https://web-push-codelab.glitch.me/]()."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1772,7 +1772,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "si True, active un lien dans le menu de l’utilisateur permettant de réclamer un enregistrement"
+                                    "Si True, active un lien dans le menu de l’utilisateur permettant de réclamer un enregistrement."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1826,7 +1826,7 @@
                                 ],
                                 "fr": [
                                     "Identifiant du type de vidéo par défaut (si non spécifié).",
-                                    "(Exemple : 3 pour Colloque/conférence, 4 pour Cours...)"
+                                    "(Exemple : 3 pour Colloque/conférence, 4 pour Cours…)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2563,7 +2563,7 @@
                                     "                _(",
                                     "                    \"In this field you can select and add additional owners to the \"",
                                     "                    \"video. These additional owners will have the same rights as \"",
-                                    "                    \"you except that they can't delete this video.\"",
+                                    "                    \"you except that they can’t delete this video.\"",
                                     "                )",
                                     "            ],",
                                     "        ),",
@@ -2718,7 +2718,7 @@
                                     "            \"{0}\".format(_(\"Restricted access\")),",
                                     "            [",
                                     "                _(",
-                                    "                    \"If you don't select “Draft mode”, you can restrict \"",
+                                    "                    \"If you don’t select “Draft mode”, you can restrict \"",
                                     "                    \"the content access to only people who can log in\"",
                                     "                )",
                                     "            ],",
@@ -2727,7 +2727,7 @@
                                     "            \"{0}\".format(_(\"Password\")),",
                                     "            [",
                                     "                _(",
-                                    "                    \"If you don't select “Draft mode”, you can add a password \"",
+                                    "                    \"If you don’t select “Draft mode”, you can add a password \"",
                                     "                    \"which will be asked to anybody willing to watch \"",
                                     "                    \"your content.\"",
                                     "                ),",
@@ -3118,6 +3118,20 @@
                                     "Pour la 7, `pip3 install elasticsearch==7.17.7`,",
                                     "et pour la 8, `pip3 install elasticsearch==8.8.1`.",
                                     "Voir [https://elasticsearch-py.readthedocs.io/]() pour plus d'information."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
+                        "ES_OPTIONS": {
+                            "default_value": {},
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Options d’ElasticSearch, notamment utilisées pour ES8 en SSL et avec un user en paramètre",
+                                    "Voir [https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/config.html]() pour plus d'informations."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4397,7 +4411,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Si True, permet de ne pas afficher les cursus dans la colonne de droite"
+                                    "Si True, permet de ne pas afficher les cursus dans la colonne de droite."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4410,7 +4424,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Si True, permet de ne pas afficher les disciplines dans la colonne de droite"
+                                    "Si True, permet de ne pas afficher les disciplines dans la colonne de droite."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4462,7 +4476,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "si True, permet de ne pas afficher la liste des types dans la colonne de droite"
+                                    "Si True, permet de ne pas afficher la liste des types dans la colonne de droite."
                                 ]
                             },
                             "pod_version_end": "",

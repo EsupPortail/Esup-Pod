@@ -3,42 +3,43 @@
 {% load static %}
 {% load thumbnail %}
 
-{% block more_style %}
+{% block page_extra_head %}
   <link href="{% static 'css/meeting.css' %}?ver={{ VERSION }}" rel="stylesheet">
-{% endblock more_style %}
+{% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My meetings" %}</li>{% endblock %}
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>{% endblock %}
 
 {% block page_content %}
 {% if access_not_allowed == True %}
-<p class="text-info-emphasis">
-  <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding meeting has been restricted. If you want to add meetings on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
-</p>
+  <p class="text-info-emphasis">
+    {% url "contact_us" as contact_us %}
+    <i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% blocktrans with url=contact_us %}Access to adding meeting has been restricted. If you want to add meetings on the platform, please <a href="{{url}}">contact us</a>.{% endblocktrans %}
+  </p>
 {% else %}
   {% if meetings|length != 0 %}
-  <h2 class="h4">
-    {% if request.GET.all == "true" %}
-      {% blocktrans count counter=meetings|length %}{{ counter }} meeting found{% plural %}{{ counter }} meetings found{% endblocktrans %}
-    {% else %}
-      {% blocktrans count counter=meetings|length %}{{ counter }} active meeting found{% plural %}{{ counter }} active meetings found{% endblocktrans %}
-    {% endif %}
-  </h2>
+    <h2 class="h4">
+      {% if request.GET.all == "true" %}
+        {% blocktrans count counter=meetings|length %}{{ counter }} meeting found{% plural %}{{ counter }} meetings found{% endblocktrans %}
+      {% else %}
+        {% blocktrans count counter=meetings|length %}{{ counter }} active meeting found{% plural %}{{ counter }} active meetings found{% endblocktrans %}
+      {% endif %}
+    </h2>
   {% else %}
-  <h2 class="h4">{% trans "No meetings found"%}</h2>
-  <p class="alert alert-info">
-      {% blocktrans %}You haven't got any meeting yet, please use the "Add a meeting" button to add one.{% endblocktrans %}
-  </p>
+    <h2 class="h4">{% trans "No meetings found"%}</h2>
+    <p class="alert alert-info">
+        {% trans "You haven’t got any meeting yet, please use the “Add a meeting” button to add one." %}
+    </p>
   {% endif %}
 
 <div class="d-grid gap-2 d-md-flex justify-content-md mb-2">
   <a class="initials btn btn-primary pod-btn-primary btn-sm" href="{% url 'meeting:add' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a meeting' %}">
-    <i class="bi bi-plus pod-add"></i><span>{% trans "Add a meeting" %}</span>
+    <i class="bi bi-plus pod-add" aria-hidden="true"></i><span>{% trans "Add a meeting" %}</span>
   </a>
 </div>
 
 <div class="infinite-container pod-infinite-container" id="meetings_list">
   {% for meeting in meetings %}
-    <div class="infinite-item card-group">
+    <div class="infinite-item">
       {% include "meeting/meeting_card.html" %}
     </div>
   {% endfor %}
@@ -69,89 +70,5 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script>
-var meetingModal = document.getElementById('meetingModal')
-meetingModal.addEventListener('show.bs.modal', function (event) {
-  // Button that triggered the modal
-  const button = event.relatedTarget
-  // Extract info from data-bs-* attributes
-  const meeting_id = button.getAttribute('data-bs-meeting-id')
-  const title = button.getAttribute('data-bs-meeting-title')
-  const endurl = button.getAttribute('data-bs-meeting-end-url')
-  const modalHref = button.getAttribute('data-bs-meeting-info-url');
-
-  fetch(modalHref, {
-      method: 'GET',
-  }).then((response) => {
-      if (!response.ok) throw Error(response.statusText);
-      return response.json();
-  }).then(function(data){
-      if(data.msg != "") {
-        modalBody.innerHTML = "{% trans 'Unable to find information about the meeting' %}"
-        console.log(msg)
-      } else {
-        const modalendlink = '<p><a href="'+ endurl +'" title="{% trans 'End the meeting'%}" class="btn btn-danger endlink" >{% trans 'End the meeting'%}</a></p>';
-        modalBody.innerHTML = generateHtml(data.info) + modalendlink
-      }
-  }).catch((error) => {
-      console.error(error);
-  });
-
-  //
-  // Update the modal's content.
-  const modalTitle = meetingModal.querySelector('.modal-title')
-  const modalBody = meetingModal.querySelector('.modal-body')
-  //const modalFooterEndLink = meetingModal.querySelector('.modal-footer a.endlink')
-
-  modalTitle.textContent = title
-  modalBody.textContent = meeting_id
-  //modalFooterEndLink.setAttribute("href", endurl)
-
-})
-
-/* TODO: check if level parameter can be removed. */
-/**
- * Recursively generate an HTML unordered list version of data
- * @param  {Array} data   Data to be displayed
- * @param  {Number} level level of recursion (useless?)
- * @return {string}       Generated HTML
- */
-function generateHtml(data, level=0) {
-  html = "<ul>"
-  for (let k in data) {
-    if (typeof data[k] === "object") {
-      html += "<li><b>" + k + ":</b> " + generateHtml(data[k], level++) + "</li>";
-    } else {
-      html += "<li><b>" + k + ":</b> " + data[k] + "</li>";
-    }
-  }
-  html += "</ul>"
-  return html
-}
-
-var copyButtons = document.querySelectorAll('.pod-btn-copy')
-copyButtons.forEach(function (elt) {
-  elt.addEventListener('click', function (event) {
-    const input_id = this.dataset.copyvalue;
-    copyValue(input_id)
-  });
-});
-
-/**
- * Copy a value in client clipboard, then display a feedback.
- * @param  {String} value The value to be copied
- * @return {void}
- */
-function copyValue(value) {
-  navigator.clipboard
-    .writeText(value)
-    .then(() => {
-      showalert(gettext("Text copied."), "alert-success");
-    })
-    .catch(() => {
-      showalert(gettext("Something went wrong."), "alert-danger");
-    });
-}
-</script>
-
+  <script src="{% static 'js/my_meetings.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}

@@ -128,7 +128,7 @@ class Recorder(models.Model):
             "You can add additionals users to the recorder. They "
             "will become the additionnals owners of the published videos "
             "and will have the same rights as the owner except that they "
-            "can't delete the published videos."
+            "can’t delete the published videos."
         ),
     )
     # Default type of published videos by this recorder
@@ -314,7 +314,7 @@ class Recording(models.Model):
         if not self.source_file:
             msg.append(_("Please specify a source file."))
         elif not os.path.exists(self.source_file):
-            msg.append(_("Source file doesn't exists"))
+            msg.append(_("Source file doesn’t exists"))
         return msg
 
 

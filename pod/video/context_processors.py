@@ -21,10 +21,11 @@ HIDE_USER_FILTER = getattr(django_settings, "HIDE_USER_FILTER", False)
 OEMBED = getattr(django_settings, "OEMBED", False)
 USE_STATS_VIEW = getattr(django_settings, "USE_STATS_VIEW", False)
 CACHE_VIDEO_DEFAULT_TIMEOUT = getattr(django_settings, "CACHE_VIDEO_DEFAULT_TIMEOUT", 600)
+SITE_ID = getattr(django_settings, "SITE_ID", 1)
 __AVAILABLE_VIDEO_FILTER__ = {
     "encoding_in_progress": False,
     "is_draft": False,
-    "sites": 1,
+    "sites": SITE_ID,
 }
 
 CHANNELS_PER_BATCH = getattr(django_settings, "CHANNELS_PER_BATCH", 10)

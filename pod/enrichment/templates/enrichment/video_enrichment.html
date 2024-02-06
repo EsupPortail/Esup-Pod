@@ -4,45 +4,7 @@
 {% load video_filters %}
 
 {% block opengraph %}
-
-{% if OEMBED %}
-  <link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&amp;format=json&amp;version=enrichment">
-  <link rel="alternate" type="text/xml+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video_oembed' %}?url={{request.build_absolute_uri|urlencode}}&amp;format=xml&amp;version=enrichment">
-{% endif %}
-
-<meta property="og:site_name" content="{{ TITLE_SITE }}">
-<meta property="og:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'enrichment:video_enrichment' slug=video.slug %}">
-<meta property="og:title" content="{{ video.title }}">
-<meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
-<meta property="og:image:secure_url" content="https:{{ video.get_thumbnail_url }}">
-<meta property="og:image:alt" content="{{ video.title }}">
-<meta property="og:image:width" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.width}}{% else %}640{% endif %}">
-<meta property="og:image:height" content="{% if video.thumbnail.file_exist %}{{video.thumbnail.file.height}}{% else %}360{% endif %}">
-
-<meta property="og:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {% endfor %}%{% endif %}{% endif %} {% trans 'Added by:' %} {{ video.owner.get_full_name }}">
-
-<meta property="og:type" content="video">
-<meta property="og:video" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'enrichment:video_enrichment' slug=video.slug %}?is_iframe=true">
-<meta property="og:video:secure_url" content="https://{{ request.META.HTTP_HOST }}{% url 'enrichment:video_enrichment' slug=video.slug %}?is_iframe=true">
-<meta property="og:video:type" content="video/mp4">
-<meta property="og:video:width" content="640">
-<meta property="og:video:height" content="{{video.get_player_height}}">
-
-<meta name="twitter:card" content="player">
-<meta name="twitter:site" content="{{ TITLE_SITE }}">
-<meta name="twitter:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'enrichment:video_enrichment' slug=video.slug %}">
-<meta name="twitter:title" content="{{ video.title }}">
-<meta name="twitter:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {% endfor %}%{% endif %}{% endif %} {% trans 'Added by:' %} {{ video.owner.get_full_name }}">
-<meta name="twitter:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
-
-<meta name="twitter:player" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
-<meta name="twitter:player:width" content="640">
-<meta name="twitter:player:height" content="{{video.get_player_height}}">
-
-{% if video.is_draft == True %}
-  <meta name="robots" content="NONE,NOARCHIVE">
-{% endif %}
-
+  {% include 'videos/video_opengraph.html' %}
 {% endblock %}
 
 
@@ -51,46 +13,26 @@
   <link id="enrichment_style_id" href="{% static 'css/videojs-slides.css' %}?ver={{VERSION}}" rel="stylesheet">
 {% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }}
+{% block breadcrumbs %}
+  {{ block.super }}
 {% endblock %}
 
-{% block page_title %}{% if channel %}{{channel.title}} - {% endif %}{% if theme %}{{theme.title}} - {% endif %}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
+{% block page_title %}
+  {% include 'enrichment/video_enrichment_page_title.html' %}
+{% endblock %}
 
 {% block page_content %}
-  {% block video-element %}
-    {% if form %}
-      {% include 'videos/video-form.html' %}
-    {% else %}
-      {% include 'enrichment/video-element-enrichment.html' %}
-    {% endif %}
-    <div id="info-video" class="pod-info-video">{% include 'videos/video-all-info.html' with third_app=True %}</div>
-  {% endblock video-element %}
+  {% include 'enrichment/video_enrichment_page_content.html' %}
 {% endblock page_content %}
 
 {% block page_aside %}
-  <div class="card" id="card-enrichmentinformations">
-    <h2 class="card-header card-title pod-card__title h4">
-      <i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% trans 'Informations' %}
-    </h2>
-    <div class="card-body card-text">
-      <p>{% trans 'To help you, the different types of enrichments have specific colors:' %}</p>
-      <p>
-        <ul>
-          <li class="enrich_image">{% trans 'Image' %}</li>
-          <li class="enrich_document">{% trans 'Document' %}</li>
-          <li class="enrich_richtext">{% trans 'Richtext' %}</li>
-          <li class="enrich_weblink">{% trans 'Weblink' %}</li>
-          <li class="enrich_embed">{% trans 'Embed' %}</li>
-        </ul>
-      </p>
-      <p>{% trans 'They are visible on the video playback bar.' %}</p>
-    </div>
-  </div>
-  {{ block.super }}
+  {% include "enrichment/video_enrichment_page_aside.html" %}
 {% endblock page_aside %}
 
 {% block more_script %}
-  {{block.super}}
-  <script id="enrichment_script_id" src="{% static 'js/videojs-slides.js' %}?ver={{VERSION}}"></script>
-  {% include 'enrichment/video_enrichment-script.html' %}
+  {# This variable must be assigned to true on the first page load #}
+  <script>
+    var enrichmentIsOn = true;
+  </script>
+  {% include 'enrichment/video_enrichment_more_script.html' %}
 {% endblock more_script %}

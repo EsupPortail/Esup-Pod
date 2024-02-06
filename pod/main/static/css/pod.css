@@ -3,7 +3,7 @@
 :root {
   /* COMMON COLORS */
   --color-black: #000;
-  --color-black-alpha: rgba(0 0 0 0.6);
+  --color-black-alpha: rgb(0 0 0 / 60%);
   --color-alto: #ddd;
   --color-silver: #ccc;
   --color-silver-chalice: #aaa;
@@ -87,6 +87,7 @@
 
   /* better contrasts */
   --bs-border-color: #8e969d;
+  --bs-orange: #c85208;
 
   /* Use system font (faster load) */
   --font-family-sans-serif: -apple-system, system-ui, "BlinkMacSystemFont",
@@ -95,6 +96,11 @@
   /** reinit before cleaning all old css vars ***/
   --primary-background-color: var(--pod-background-neutre1-bloc) !important;
   --third-background-color: var(--pod-background-neutre1-bloc) !important;
+}
+
+.progress,
+.progress-stacked {
+  --bs-progress-bar-bg: var(--pod-primary);
 }
 
 :root[data-dyslexia="on"] {
@@ -259,7 +265,7 @@ a:not(.btn):focus {
   max-height: auto;
 }
 
-@media (min-width: 576px) {
+@media (width >= 576px) {
   .link-center-pod,
   .file-image {
     max-height: 10rem;
@@ -269,6 +275,7 @@ a:not(.btn):focus {
 .link-center-pod > img {
   min-width: 100%;
   height: 100%;
+  min-height: 146px;
 }
 
 /*********
@@ -311,7 +318,7 @@ a:not(.btn):focus {
     background-color 0.3s ease-in-out,
     color 0.3s ease-in-out;
   color: var(--pod-font-color);
-  box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgba(0 0 0 0.2);
+  box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgb(0 0 0 / 20%);
   border-radius: 0.15rem;
   margin-top: 1rem;
 }
@@ -563,7 +570,7 @@ a.btn-outline-primary:not(:hover) svg {
 }
 
 div.card a img {
-  transition: transform 0.5s ease;
+  transition: transform 0.2s ease;
   background: #000;
 }
 
@@ -574,11 +581,14 @@ div.card a img {
 
 .card-footer-pod {
   position: absolute;
-  bottom: 3.5rem;
+  bottom: 4rem;
   right: 0;
   border: none;
   display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: flex-end;
   background: #00000095;
+  z-index: 10;
 }
 
 .card-footer-pod a.btn,
@@ -643,19 +653,186 @@ div.card a img {
 #filterDiscipline a.collapsed::after,
 #filterCursus a.collapsed::after,
 #filterTag a.collapsed::after {
-  content: "+";
+  content: "▼";
 }
 
 #filterType a:not(.collapsed)::after,
 #filterDiscipline a:not(.collapsed)::after,
 #filterCursus a:not(.collapsed)::after,
 #filterTag a:not(.collapsed)::after {
-  content: "-";
+  content: "▲";
 }
 
 /** ckeditor **/
 .django-ckeditor-widget {
   width: 100%;
+}
+
+/** Dashboard **/
+#bulk_update_container {
+  background-color: var(--pod-background-neutre2-bloc);
+  padding: 1em;
+  border-radius: var(--bs-border-radius);
+}
+
+#bulk_update_container .select2 {
+  width: 100% !important;
+}
+
+.btn-dashboard-display-mode {
+  height: fit-content;
+}
+
+#countSelectedVideosBadge {
+  background-color: var(--pod-background-neutre1-bloc);
+  color: var(--pod-font-color);
+}
+
+/* Dashboard infinite container */
+.dashboard-container {
+  margin: 1rem 0;
+}
+
+.dashboard-container .infinite-item {
+  cursor: pointer;
+}
+
+.dashboard-container .infinite-item {
+  position: relative;
+}
+
+.infinite-item .checked_overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  opacity: 0;
+  justify-content: center;
+  align-items: center;
+  outline: 2px solid var(--pod-link-color);
+  border-radius: var(--bs-border-radius-sm);
+  background-color: rgb(255 255 255 / 80%);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.infinite-item.selected .checked_overlay {
+  display: flex;
+  opacity: 1;
+}
+
+.infinite-item .checked_overlay .card_selected {
+  display: block;
+  transition: all 0.3s;
+}
+
+.dashboard-container .infinite-item:not(.selected):hover,
+.dashboard-container .infinite-item .checked_overlay:hover .card_selected {
+  transform: scale(1.03);
+  transition: transform 0.25s ease;
+  z-index: 6;
+}
+
+.infinite-item.selected .checked_overlay .card-selected i {
+  font-size: 3rem;
+  color: var(--pod-link-color);
+}
+
+.pod-infinite-grid-container-dashbord
+  .infinite-item
+  .video-card
+  .card-thumbnail {
+  height: 146px;
+  overflow: hidden;
+}
+
+.pod-infinite-grid-container-dashbord
+  .infinite-item
+  .video-card
+  .card-thumbnail
+  .pod-thumbnail {
+  width: 100%;
+}
+
+/* Specific list display mode */
+.pod-infinite-list-container-dashboard .list-item-video-row {
+  padding: 0;
+  max-height: 50px;
+  border: none;
+  background-color: var(--pod-background-neutre2-bloc);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.pod-infinite-list-container-dashboard .list-item-video-row.selected {
+  border: 2px solid var(--pod-link-color);
+}
+
+.pod-infinite-list-container-dashboard .list-item-video-row:hover {
+  background-color: var(--pod-background-neutre1-bloc);
+}
+
+.pod-infinite-list-container-dashboard
+  .list-item-video-row
+  .checked_overlay
+  .card-selected {
+  width: 100%;
+}
+
+.pod-infinite-list-container-dashboard
+  .list-item-video-row.selected
+  .checked_overlay
+  .card-selected
+  i {
+  font-size: 2rem;
+  margin: 0 2rem;
+}
+
+.pod-infinite-list-container-dashboard
+  .list-item-video-row
+  i:not(.checked_overlay .card-selected i) {
+  font-size: 1.2rem;
+  padding: 0.2rem;
+  opacity: 0.3;
+}
+
+.thumbnail-item-video-row {
+  height: 50px;
+  overflow: hidden;
+  border-radius: 4px 0 0 4px;
+}
+
+.thumbnail-item-video-row img {
+  width: 100%;
+  min-height: 100%;
+}
+
+.title-item-video-row {
+  padding-left: 1rem;
+}
+
+.more-actions-row-btn {
+  border: none;
+  background-color: inherit;
+}
+
+.pod-infinite-list-container-dashboard .list-item-video-row i.active,
+.pod-infinite-list-container-dashboard .list-item-video-row i.bi_content_type,
+.pod-infinite-list-container-dashboard
+  .list-item-video-row
+  .more-actions-row-btn
+  i {
+  color: var(--pod-link-color);
+  opacity: 1 !important;
+}
+
+/* custom badges for confirm modal bulk update */
+.bulk-update-confirm-badges {
+  background-color: var(--pod-link-color);
+  color: var(--pod-background);
+  padding: 10px;
+  margin: 5px;
 }
 
 /** video form **/
@@ -681,7 +858,7 @@ div.card a img {
 }
 
 .errors > .form-control:focus {
-  box-shadow: 0 0 0 0.25rem rgba(var(--bs-danger-rgb) 0.25);
+  box-shadow: 0 0 0 0.25rem rgb(var(--bs-danger-rgb) / 25%);
   border-color: var(--bs-danger);
 }
 
@@ -708,7 +885,21 @@ div.card a img {
   margin: 0 auto;
   left: 50%;
   transform: translate(-50%, 0);
-  z-index: 1000;
+  z-index: 1031;
+}
+
+#formalertdivbottomright {
+  max-width: 95%;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  margin: 0 auto;
+  z-index: 1031;
+}
+
+#formalertdivbottomright > i {
+  margin-right: 0.8rem;
+  font-size: 1rem;
 }
 
 .flashing_field {
@@ -809,7 +1000,7 @@ body {
 
 .accordion {
   --bs-accordion-active-color: var(--pod-link-color);
-  --bs-accordion-active-bg: rgba(var(--bs-primary-rgb) 0.1);
+  --bs-accordion-active-bg: rgb(var(--bs-primary-rgb) 10%);
   --bs-accordion-btn-focus-border-color: var(--pod-primary);
 }
 
@@ -937,7 +1128,7 @@ body {
   margin-top: auto;
 }
 
-@media (min-width: 1450px) {
+@media (width >= 1450px) {
   .pod-footer {
     margin-left: 5rem;
     margin-right: 5rem;
@@ -982,7 +1173,7 @@ body {
   align-items: center;
 }
 
-@media (min-width: 992px) {
+@media (width >= 992px) {
   .pod-card__title,
   .pod-card__title label {
     flex-flow: wrap;
@@ -992,8 +1183,8 @@ body {
 .pod-navbar {
   background: var(--pod-background);
   box-shadow:
-    0 1px 3px rgba(0 0 0 0.12),
-    0 1px 2px rgba(0 0 0 0.24);
+    0 1px 3px rgb(0 0 0 / 12%),
+    0 1px 2px rgb(0 0 0 / 24%);
 }
 
 .pod-info-video {
@@ -1037,7 +1228,7 @@ body {
   font-size: 90%;
 }
 
-@media (min-width: 992px) {
+@media (width >= 992px) {
   .modal-dialog {
     max-width: 80vw;
     margin: 1.75rem auto;
@@ -1141,7 +1332,7 @@ body {
   margin-left: auto;
 }
 
-@media (min-width: 992px) {
+@media (width >= 992px) {
   .pod-navbar__form {
     flex-basis: 350px;
   }
@@ -1155,7 +1346,7 @@ body {
 }
 
 /* medium screens */
-@media (min-width: 992px) {
+@media (width >= 992px) {
   .pod-grid-content {
     gap: 2rem;
     grid-template-columns: minmax(0%, 100%) repeat(auto-fit, 33%);
@@ -1163,7 +1354,7 @@ body {
 }
 
 /* large screens */
-@media (min-width: 1200px) {
+@media (width >= 1200px) {
   .pod-grid-content {
     grid-template-columns: minmax(0%, 100%) repeat(auto-fit, 25%);
   }
@@ -1174,8 +1365,8 @@ body {
 .pod-card--video {
   border: none;
   box-shadow:
-    0 3px 6px rgba(0 0 0 0.16),
-    0 3px 6px rgba(0 0 0 0.23);
+    0 3px 6px rgb(0 0 0 / 16%),
+    0 3px 6px rgb(0 0 0 / 23%);
   background: var(--pod-background);
 }
 
@@ -1198,7 +1389,7 @@ body {
   transition: all 0.15s ease;
   z-index: 5;
   padding-top: 5rem;
-  box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgba(0 0 0 0.2);
+  box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgb(0 0 0 / 20%);
 }
 
 .pod-aside.show {
@@ -1206,7 +1397,7 @@ body {
   width: auto;
 }
 
-@media (min-width: 992px) {
+@media (width >= 992px) {
   .pod-show-lg {
     margin-left: 0;
     width: auto;
@@ -1226,7 +1417,7 @@ body {
   }
 }
 
-@media (min-width: 1450px) {
+@media (width >= 1450px) {
   .pod-mainContent {
     padding-left: 5rem;
     padding-right: 5rem;
@@ -1333,6 +1524,14 @@ table .alert.alert-danger.btn.pod-btn-social {
   background-color: transparent !important;
 }
 
+/* Shrink vjs toolbar on very small screens */
+@media only screen and (width <= 400px) {
+  .pod-container .video-js .vjs-control {
+    width: 3em;
+    font-size: 75%;
+  }
+}
+
 /* replace default .video-js 10px font size to avoid an accessibility "Very small text" warning */
 #podvideoplayer {
   font-size: 11px;
@@ -1381,54 +1580,22 @@ table .alert.alert-danger.btn.pod-btn-social {
   border-left-color: var(--bs-info);
 }
 
-/* Pure css loader */
-.lds-ring {
-  display: none;
-  position: relative;
-  width: 80px;
-  height: 80px;
-  margin: 0 auto;
-  z-index: 9999;
+/* Bootstrap loader-spinner */
+.loaderSpinner {
+  transition: opacity 150ms ease-in-out;
+  z-index: 1100;
 }
 
-.lds-ring.show {
-  display: flex;
-  align-items: center;
+.loaderSpinner.hide {
+  opacity: 0;
 }
 
-.lds-ring div {
-  box-sizing: border-box;
-  display: block;
-  position: absolute;
-  width: 51px;
-  height: 51px;
-  margin: 6px;
-  border: 6px solid var(--pod-font-color);
-  border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: var(--pod-font-color) transparent transparent transparent;
-}
-
-.lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
-}
-
-.lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
-}
-
-.lds-ring div:nth-child(3) {
-  animation-delay: -0.15s;
-}
-
-@keyframes lds-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+.loaderSpinner > .spinner-border {
+  color: var(--pod-primary);
+  width: 4rem;
+  height: 4rem;
+  margin: 2rem;
+  border-width: 0.5rem;
 }
 
 /* *** fix for calendar choice widget in modal dialog *** */
@@ -1445,11 +1612,11 @@ div.disabled,
 a.player-element.disabled {
   background-image: linear-gradient(
     45deg,
-    rgba(0 0 0 0.2) 25%,
+    rgb(0 0 0 / 20%) 25%,
     transparent 25%,
     transparent 50%,
-    rgba(0 0 0 0.2) 50%,
-    rgba(0 0 0 0.2) 75%,
+    rgb(0 0 0 / 20%) 50%,
+    rgb(0 0 0 / 20%) 75%,
     transparent 75%,
     transparent
   );
@@ -1492,7 +1659,7 @@ a.player-element.disabled {
 }
 
 .bg-primary .podfile-icon-selector:focus-visible {
-  box-shadow: 0 0 0 0.25rem rgba(0 0 0 0.5);
+  box-shadow: 0 0 0 0.25rem rgb(0 0 0 / 50%);
 }
 
 /** Django 3 Admin pages
@@ -1548,6 +1715,22 @@ body[data-admin-utc-offset] .form-row.errors {
 /* css corrections for select2 autocompletion Multiple in dark theme.
  * (see "additional owners", or "disciplines" for sample.)
  */
+
+.select2-container {
+  max-width: 100%;
+}
+
+.pod-container
+  .select2-container--default
+  .select2-selection--single
+  .select2-selection__placeholder,
+.pod-container
+  .select2-container--default
+  .select2-selection--multiple
+  .select2-selection__choice__remove {
+  color: #666;
+}
+
 body[data-admin-utc-offset] .select2-selection--multiple {
   background-color: var(--pod-background);
   border-color: var(--border-color);
@@ -1578,8 +1761,13 @@ body[data-admin-utc-offset]
 
 .select2-container--focus,
 .cke_focus {
-  box-shadow: 0 0 0 0.25rem rgba(var(--pod-primary-rgb) 0.25);
+  box-shadow: 0 0 0 0.25rem rgb(var(--pod-primary-rgb) / 25%);
   border-radius: 5px;
+}
+
+/* overwrite default cke style for A11y */
+.pod-container .cke_resizer {
+  font-size: 1rem;
 }
 
 .select2-container--default.select2-container--focus

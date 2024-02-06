@@ -1,4 +1,5 @@
 """Views of the Import_video module."""
+
 import os
 import requests
 
@@ -8,9 +9,10 @@ import json
 from .models import ExternalRecording
 from .forms import ExternalRecordingForm
 from .utils import StatelessRecording, check_file_exists, download_video_file
-from .utils import manage_recording_url, parse_remote_file
+from .utils import manage_recording_url, check_source_url, parse_remote_file
 from .utils import save_video, secure_request_for_upload
 from .utils import check_video_size, verify_video_exists_and_size
+from .utils import define_dest_file, define_dest_path
 from datetime import datetime
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -149,7 +151,7 @@ def upload_external_recording_to_pod(request, record_id):
     if upload and msg == "":
         msg += _(
             "The recording has been uploaded to Pod. "
-            "You can see the generated video in My videos."
+            "You can see the generated video in Dashboard."
         )
         display_message_with_icon(request, messages.INFO, msg)
     else:
@@ -167,8 +169,14 @@ def external_recordings(request):
     Returns:
         HTTPResponse: external recordings list
     """
+    page_title = _("My external videos")
+
     if RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
-        return render(request, "import_video/list.html", {"access_not_allowed": True})
+        return render(
+            request,
+            "import_video/list.html",
+            {"access_not_allowed": True, "page_title": page_title},
+        )
 
     site = get_current_site(request)
 
@@ -190,7 +198,7 @@ def external_recordings(request):
         "import_video/list.html",
         {
             "recordings": recordings,
-            "page_title": _("My external videos"),
+            "page_title": page_title,
         },
     )
 
@@ -262,7 +270,7 @@ def add_or_edit_external_recording(request, id=None):
             )
 
     page_title = (
-        "%s <b>%s</b>" % (_("Edit the external video"), recording.name)
+        _("Edit the external video “%s”") % recording.name
         if recording
         else _("Create an external video")
     )
@@ -394,6 +402,35 @@ def upload_recording_to_pod(request, record_id):
         elif recording.type == "peertube":
             return upload_peertube_recording_to_pod(request, record_id)
         else:
+            # Upload a standard or BBB video file
+            return upload_video_recording_to_pod(request, record_id)
+    except Exception as exc:
+        msg = {}
+        proposition = ""
+        msg["error"] = _("Unable to upload the video to Pod")
+        try:
+            # Management of error messages from sub-functions
+            message = exc.args[0]["message"]
+            proposition = exc.args[0].get("proposition")
+        except Exception:
+            # Management of error messages in all cases
+            message = str(exc)
+
+        msg["message"] = mark_safe(message)
+        msg["proposition"] = proposition
+        raise ValueError(msg)
+
+
+def upload_video_recording_to_pod(request, record_id):
+    """Upload a standard or BBB video file to Pod."""
+    try:
+        # Try to identify the platform (avoids multiple source types)
+        type_source_url = check_source_url(request.POST.get("source_url"))
+        # Mediacad platform
+        if type_source_url is not None and type_source_url.type == "Mediacad":
+            return upload_mediacad_recording_to_pod(request, record_id, type_source_url)
+        else:
+            # Video file (or BBB video file, same process) source URL
             return upload_bbb_recording_to_pod(request, record_id)
     except Exception as exc:
         msg = {}
@@ -401,7 +438,7 @@ def upload_recording_to_pod(request, record_id):
         msg["error"] = _("Impossible to upload to Pod the video")
         try:
             # Management of error messages from sub-functions
-            message = "%s (%s)" % (exc.args[0]["error"], exc.args[0]["message"])
+            message = exc.args[0]["message"]
             proposition = exc.args[0].get("proposition")
         except Exception:
             # Management of error messages in all cases
@@ -413,7 +450,7 @@ def upload_recording_to_pod(request, record_id):
 
 
 def upload_bbb_recording_to_pod(request, record_id):
-    """Upload a BBB or video file recording to Pod.
+    """Upload a video file (or BBB video file) recording to Pod.
 
     Args:
         request (Request): HTTP request
@@ -434,23 +471,11 @@ def upload_bbb_recording_to_pod(request, record_id):
 
         # Step 1: Download and parse the remote HTML file if necessary
         # Check if extension is a video extension
-        """
-        extension = source_url.split(".")[-1].lower()
-        if extension in VIDEO_ALLOWED_EXTENSIONS:
-            # URL corresponds to a video file
-            source_video_url = source_url
-        else:
-            # Download and parse the remote HTML file
-            video_file = parse_remote_file(session, source_url)
-            source_video_url = source_url + video_file
-        """
-
-        # Check if extension is a video extension
         extension = source_url.split(".")[-1].lower()
         # Name of the video file to add to the URL (if necessary)
         video_file_add = ""
         if extension not in VIDEO_ALLOWED_EXTENSIONS:
-            # Download and parse the remote HTML file
+            # Download and parse the remote HTML file (BBB specific)
             video_file_add = parse_remote_file(session, source_url)
             # Extension overload
             extension = video_file_add.split(".")[-1].lower()
@@ -461,20 +486,8 @@ def upload_bbb_recording_to_pod(request, record_id):
 
         # Step 2: Define destination source file
         extension = source_video_url.split(".")[-1].lower()
-        discrim = datetime.now().strftime("%Y%m%d%H%M%S")
-        dest_file = os.path.join(
-            settings.MEDIA_ROOT,
-            VIDEOS_DIR,
-            request.user.owner.hashkey,
-            os.path.basename("%s-%s.%s" % (discrim, recording.id, extension)),
-        )
-        os.makedirs(os.path.dirname(dest_file), exist_ok=True)
-
-        dest_path = os.path.join(
-            VIDEOS_DIR,
-            request.user.owner.hashkey,
-            os.path.basename("%s-%s.%s" % (discrim, recording.id, extension)),
-        )
+        dest_file = define_dest_file(request, recording.id, extension)
+        dest_path = define_dest_path(request, recording.id, extension)
 
         # Step 3: Download the video file
         source_video_url = manage_download(session, source_url, video_file_add, dest_file)
@@ -507,6 +520,102 @@ def upload_bbb_recording_to_pod(request, record_id):
             "Try changing the record type or address for this recording."
         )
         raise ValueError(msg)
+
+
+def upload_mediacad_recording_to_pod(request, record_id, type_source_url):
+    """Upload a Mediacad video file recording to Pod.
+
+    Args:
+        request (Request): HTTP request
+        record_id (Integer): id record in the database
+        type_source_url (TypeSourceURL): informations about source URL
+
+    Raises:
+        ValueError: exception raised if no video found at this URL
+
+    Returns:
+        Boolean: True if upload achieved
+    """
+    try:
+        # Session useful to achieve requests (and keep cookies between)
+        session = requests.Session()
+
+        recording = ExternalRecording.objects.get(id=record_id)
+
+        # Step 1: Define the source video file to download
+        # See utils.py/check_source_url()
+        source_video_url = type_source_url.url
+        extension = type_source_url.extension
+
+        # Verify that video exists and not oversised
+        verify_video_exists_and_size(source_video_url)
+
+        # Step 2: Define destination source file
+        dest_file = define_dest_file(request, recording.id, extension)
+        dest_path = define_dest_path(request, recording.id, extension)
+
+        # Step 3: Download the video file
+        download_video_file(session, source_video_url, dest_file)
+
+        # Step 4: Save informations about the recording
+        recording_title = request.POST.get("recording_name")
+        save_external_recording(request, record_id)
+
+        # Step 5: Save and encode Pod video
+        # Get description from JSON API
+        description = get_mediacad_api_description(type_source_url)
+        save_video(request, dest_path, recording_title, description)
+
+        return True
+    except Exception as exc:
+        msg = {}
+        msg["error"] = _("Impossible to upload to Pod the video")
+        try:
+            # Management of error messages from sub-functions
+            message = "%s %s" % (exc.args[0]["error"], exc.args[0]["message"])
+        except Exception:
+            # Management of error messages in all cases
+            message = str(exc)
+
+        msg["message"] = mark_safe(message)
+        msg["proposition"] = _(
+            "Try changing the record type or address for this recording."
+        )
+        raise ValueError(msg)
+
+
+def get_mediacad_api_description(type_source_url):
+    """Returns description of a Mediacad video, after a call to Mediacad JSON API.
+
+    Args:
+        type_source_url (TypeSourceURL): informations about source URL
+    Returns:
+        String: video description
+    """
+    url_api_video = type_source_url.api_url
+    mc_video_desc = ""
+    mc_video_title = ""
+    try:
+        with requests.get(url_api_video, timeout=3, stream=True) as response:
+            if response.status_code == 200:
+                mc_video_json = json.loads(response.content.decode("utf-8"))
+                mc_video_title = mc_video_json["title"]
+                mc_video_desc = mc_video_json["description"]
+                if mc_video_desc is not None:
+                    mc_video_desc = mc_video_desc.replace("\r\n", "<br>")
+    except Exception:
+        # Request API is a bonus (for title and description)
+        pass
+    description = _(
+        "This video “%(name)s” was uploaded to Pod; its origin is %(type)s: "
+        '<a href="%(url)s" target="_blank">%(url)s</a><br><br>%(desc)s'
+    ) % {
+        "name": mc_video_title,
+        "type": "Mediacad",
+        "url": type_source_url.url,
+        "desc": mc_video_desc,
+    }
+    return description
 
 
 def upload_youtube_recording_to_pod(request, record_id):
@@ -570,7 +679,7 @@ def upload_youtube_recording_to_pod(request, record_id):
 
         # Step 5: Save and encode Pod video
         description = _(
-            "This video '%(name)s' was uploaded to Pod; "
+            "This video “%(name)s” was uploaded to Pod; "
             'its origin is Youtube: <a href="%(url)s" target="_blank">%(url)s</a>'
         ) % {"name": yt_video.title, "url": source_url}
         recording_title = request.POST.get("recording_name")
@@ -590,10 +699,10 @@ def upload_youtube_recording_to_pod(request, record_id):
         raise ValueError(msg)
     except PytubeError as pterror:
         msg = {}
-        msg["error"] = _("YouTube error '%s'" % (mark_safe(pterror)))
-        msg["message"] = _(
-            "YouTube content is inaccessible. "
-            "This content does not appear to be publicly available."
+        msg["error"] = _("YouTube error “%s”" % (mark_safe(pterror)))
+        msg["message"] = "%s\n%s" % (
+            _("YouTube content is inaccessible."),
+            _("This content does not appear to be publicly available."),
         )
         msg["proposition"] = _("Try changing the address of this recording.")
         raise ValueError(msg)
@@ -702,21 +811,9 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
         verify_video_exists_and_size(source_video_url)
 
         # Step 2: Define destination source file
-        discrim = datetime.now().strftime("%Y%m%d%H%M%S")
         extension = source_video_url.split(".")[-1].lower()
-        dest_file = os.path.join(
-            settings.MEDIA_ROOT,
-            VIDEOS_DIR,
-            request.user.owner.hashkey,
-            os.path.basename("%s-%s.%s" % (discrim, pt_video_uuid, extension)),
-        )
-        os.makedirs(os.path.dirname(dest_file), exist_ok=True)
-
-        dest_path = os.path.join(
-            VIDEOS_DIR,
-            request.user.owner.hashkey,
-            os.path.basename("%s-%s.%s" % (discrim, pt_video_uuid, extension)),
-        )
+        dest_file = define_dest_file(request, pt_video_uuid, extension)
+        dest_path = define_dest_path(request, pt_video_uuid, extension)
 
         # Step 3: Download the video file
         download_video_file(session, source_video_url, dest_file)
@@ -727,7 +824,7 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
 
         # Step 5: Save and encode Pod video
         description = _(
-            "This video '%(name)s' was uploaded to Pod; its origin is PeerTube: "
+            "This video “%(name)s” was uploaded to Pod; its origin is PeerTube: "
             "<a href='%(url)s' target='blank'>%(url)s</a>."
         ) % {"name": pt_video_name, "url": pt_video_url}
         description = ("%s<br>%s") % (description, pt_video_description)

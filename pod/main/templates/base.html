@@ -20,7 +20,7 @@
     <meta property="og:site_name" content="{{ TITLE_SITE }}">
   {% endblock %}
   {% if FAVICON %}
-    <link rel="shortcut icon" href="{% static FAVICON %}?ver={{VERSION}}" sizes="any" >
+    <link rel="shortcut icon" href="{% static FAVICON %}?ver={{VERSION}}" sizes="any">
   {% endif %}
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
@@ -39,12 +39,14 @@
   {% if SHOW_EVENTS_ON_HOMEPAGE and "live" in THIRD_PARTY_APPS %}
     <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet">
   {% endif %}
-  <!-- more styles for each App -->
-  {% block more_style %}
-  {% endblock more_style %}
-  <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|striptags|capfirst}}{% endblock %}</title>  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
-  {% block page_extra_head %}
-  {% endblock %}
+
+  <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|striptags|capfirst}}{% endblock %}</title>
+
+  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+  <script id="jsi18n" src="{% url 'javascript-catalog' %}"></script>
+
+  {% block page_extra_head %}{% endblock %}
+
   {% if request.GET.is_iframe %}
     <link rel="stylesheet" href="{% static 'css/iframe.css' %}?ver={{VERSION}}" media="screen">
   {% endif %}
@@ -53,6 +55,7 @@
   {% if USE_NOTIFICATIONS %}
     {% webpush_header %}
   {% endif %}
+
 </head>
 
 <body>
@@ -166,7 +169,7 @@
             <img src="{% static 'img/cookie.svg' %}" alt="" width="50">
             <span class="mt-2">{% trans 'We use third party cookies to personalize content, manage session and analyze site traffic.' %}</span>
             {% if COOKIE_LEARN_MORE != "" %}
-              <a class="d-flex align-items-center" href="{{COOKIE_LEARN_MORE}}">{% trans 'Learn more' %}<i class="bi bi-caret-right ms-2"></i></a>
+              <a class="d-flex align-items-center" href="{{COOKIE_LEARN_MORE}}">{% trans 'Learn more' %}<i class="bi bi-caret-right ms-2" aria-hidden="true"></i></a>
             {% endif %}
             <button class="btn btn-dark mt-3 px-4" type="button" id='okcookie'>{% trans 'I understand' %}</button>
           </div>
@@ -177,7 +180,6 @@
   <!-- Javascript migration from header to footer-->
   <!-- except for jquery, to do later ! -->
   <script src="{% static 'js-cookie/dist/js.cookie.min.js' %}?ver={{VERSION}}"></script>
-  <script src="{% url 'javascript-catalog' %}"></script>
   <!-- JS -->
   <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
 
@@ -226,6 +228,7 @@
       // Set the body data-theme attribute to match the local storage item
       document.documentElement.dataset.theme = currentTheme?currentTheme:"light";
       document.documentElement.dataset.bsTheme = currentTheme?currentTheme:"light";
+      document.documentElement.dataset.colorScheme = currentTheme?currentTheme:"light";
       // If the current theme is dark, check the theme toggle
       if (currentTheme === "dark") {
         themeToggle.checked = true;
@@ -236,10 +239,12 @@
         if (e.target.checked) {
           document.documentElement.dataset.theme = "dark";
           document.documentElement.dataset.bsTheme = "dark";
+          document.documentElement.dataset.colorScheme = "dark";
           localStorage.setItem("theme", "dark");
         } else {
           document.documentElement.dataset.theme = "light";
           document.documentElement.dataset.bsTheme = "light";
+          document.documentElement.dataset.colorScheme = "light";
           localStorage.setItem("theme", "light");
         }
       }
@@ -290,6 +295,4 @@
   {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
   <script src="{% static 'js/pwa-installation.js' %}?ver={{VERSION}}"></script>
 </body>
-
 </html>
-

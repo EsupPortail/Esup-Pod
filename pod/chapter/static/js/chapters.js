@@ -1,3 +1,7 @@
+/**
+ * @file Esup-Pod functions for chapter view.
+ */
+
 var id_form = "form_chapter";
 function show_form(data) {
   let form_chapter = document.getElementById(id_form);

@@ -1,4 +1,5 @@
 """Models for the Import_video module."""
+
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User

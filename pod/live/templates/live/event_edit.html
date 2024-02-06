@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block more_style %}
+{% block page_extra_head %}
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{ VERSION }}">
   <style>
     .select2-container {
@@ -10,6 +10,7 @@
     }
   </style>
 {% endblock %}
+
 {% block breadcrumbs %}{{ block.super }}
   <li class="breadcrumb-item"><a href="{% url 'live:my_events' %}">{% trans 'My events' %}</a></li>
   {% if form.instance.title and form.instance.slug != '' %}
@@ -44,15 +45,14 @@
             method="post" class='needs-validation' novalidate>
     {% endif %}
 
-    {% csrf_token %}
-    {% if form.instance.slug and form.instance.slug != '' and form.instance.is_current %}
-      <div class="alert alert-warning" role="alert">
-        {% trans "The event is currently in progress. Editing options are limited." %}
-      </div>
-    {% endif %}
-    <div class="list-group">
+      {% csrf_token %}
+      {% if form.instance.slug and form.instance.slug != '' and form.instance.is_current %}
+        <div class="alert alert-warning" role="alert">
+          {% trans "The event is currently in progress. Editing options are limited." %}
+        </div>
+      {% endif %}
       {% if form.errors %}
-        <div class="text-danger">
+        <div class="alert alert-danger" role="alert">
           {% trans "One or more errors have been found in the form." %}
           <ul>
             {% for error in form.non_field_errors %}
@@ -68,41 +68,39 @@
         {% with last=fieldset|last %}
           {% if "collapse" in last.classes %}
             <div class="mb-3">
-                <a class="btn btn-link" data-bs-toggle="collapse" href="#event_form_{{fieldset|first}}{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
-                    {% trans "Advanced options" %} &nbsp;<i class="bi bi-chevron-down" aria-hidden="true"></i>
-                </a>
+              <a class="btn btn-link" data-bs-toggle="collapse" href="#event_form_{{fieldset|first}}{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="">
+                {{ last.legend }}&nbsp;<i class="bi bi-chevron-down" aria-hidden="true"></i>
+              </a>
             </div>
           {% endif %}
-          <fieldset class="{{ last.classes }} " id="event_form_{{fieldset|first}}{{forloop.counter}}" >
+          <fieldset class="border rounded-3 p-3 mb-3 {{ last.classes }}" id="event_form_{{fieldset|first}}{{forloop.counter}}" >
             {% if last.legend %}
               <legend>{{ last.legend }}</legend>
             {% endif %}
             {% for field in form.visible_fields %}
               {% if field.name in last.fields %}
                 {% spaceless %}
-                <div class="mb-3 field_{{ field.name }}
+                <div class="mb-3 field-{{ field.name }}
                   {% with 'password is_restricted' as res %}{% if field.name in res.split %} collapse draft_access hide{% endif %}{% endwith %}
                   {% with 'restrict_access_to_groups' as res %}{% if field.name in res.split %} collapse groups_access hide{% endif %}{% endwith %}"
                 >
-                  <div class="list-group-item" >
-                    <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
-                      {{ field.errors }}
-                      {% if "form-check-input" in field.field.widget.attrs.class %}
-                        <div class="form-check">
-                          {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
-                        </div>
-                      {% else %}
-                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                        {{ field }}
-                      {% endif %}
-                      {% if field.help_text %}
-                        <small id="{{ field.id_for_label }}Help"
-                          class="form-text">{{ field.help_text|safe }}</small>
-                      {% endif %}
-                      {% if field.field.required %}
-                        <div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>
-                      {% endif %}
-                    </div>
+                  <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
+                    {{ field.errors }}
+                    {% if "form-check-input" in field.field.widget.attrs.class %}
+                      <div class="form-check">
+                        {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                      </div>
+                    {% else %}
+                      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      {{ field }}
+                    {% endif %}
+                    {% if field.help_text %}
+                      <small id="{{ field.id_for_label }}Help"
+                        class="form-text">{{ field.help_text|safe }}</small>
+                    {% endif %}
+                    {% if field.field.required %}
+                      <div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>
+                    {% endif %}
                   </div>
                 </div>
                 {% endspaceless %}
@@ -111,10 +109,10 @@
           </fieldset>
         {% endwith %}
       {% endfor %}
-    </div>
-    <div class="text-center mb-3">
-      <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
-    </div>
+
+      <div class="text-center mb-3">
+        <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
+      </div>
 
     </form>
   {% endif %}
@@ -123,7 +121,7 @@
 {% block page_aside %}
   {% if access_not_allowed != True %}
     {% if form.instance.title  and form.instance.slug != '' %}
-      <div class="card mt-1" id="card-managevideo">
+      <div class="card mt-1" id="card-manage-video">
         <h2 class="h4 card-header card-title pl-2"><i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage event" %}
         </h2>
         <div class="card-body card-text text-center">
@@ -150,20 +148,19 @@
         <p>{% trans "Finally, remember to provide as precise a description as possible." %}<p>
       </div>
     </div>
-    <div class="card mt-1" id="card-mandatoryfields">
+    <div class="card mt-1" id="card-mandatory-fields">
       <h2 class="h4 card-header card-title pl-2">{% trans "Mandatory fields" %}</h2>
       <div class="card-body card-text">
-          <p>
-            <span class="required_star">*</span>
-            {% trans "Fields marked with an asterisk are mandatory." %}
-          </p>
-        </div>
+        <p>
+          <span class="required_star">*</span>
+          {% trans "Fields marked with an asterisk are mandatory." %}
+        </p>
+      </div>
     </div>
   {% endif %}
 {% endblock page_aside %}
 
 {% block more_script %}
-  <script src="/admin/jsi18n/"></script>
   <script src="{% static 'admin/js/core.js' %}?ver={{ VERSION }}"></script>
   <script src="{% static 'js/broadcaster_from_building.js' %}?ver={{ VERSION }}"></script>
 

@@ -11,7 +11,7 @@
 {% endblock page_extra_head %}
 {% block breadcrumbs %}
 {{block.super}}
-<li class="breadcrumb-item"><a href="{% url 'video:my_videos'%}">{% trans 'My videos' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'video:dashboard'%}">{% trans 'Dashboard' %}</a></li>
 <li class="breadcrumb-item">
   <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}">
     {{video.title|title|truncatechars:45}}
@@ -127,7 +127,7 @@
 {% block page_aside %}
 
 {% if video.owner == request.user or request.user.is_superuser or perms.video.change_video or request.user in video.additional_owners.all %}
-<div class="card mb-2" id="card-managevideo">
+<div class="card mb-2" id="card-manage-video">
   <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
   <div class="card-body card-text text-center">
     {% include "videos/link_video.html" with hide_favorite_link=True %}

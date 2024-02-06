@@ -3,21 +3,16 @@
 {% load static %}
 
 {% block breadcrumbs %}
-{{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'import_video:external_recordings' %}">{% trans "My external videos" %}</a></li>
-<li class="breadcrumb-item active" aria-current="page">
-  {% if form.instance.id and form.instance.id != '' %}
-    {% trans "Edit the external video" %} "{{form.instance.name}}"
-  {% else %}
-    {% trans "Create an external video" %}
-  {% endif %}
-</li>
-{% endblock %}
+  {{ block.super }}
+  <li class="breadcrumb-item"><a href="{% url 'import_video:external_recordings' %}">{% trans "My external videos" %}</a></li>
+  <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
+{% endblock breadcrumbs %}
 
 {% block page_content %}
 {% if access_not_allowed == True %}
   <p class="text-info-emphasis">
-    <i class="bi bi-info-circle"></i>&nbsp;{% trans "Access to adding external recording has been restricted. If you want to add external recordings on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
+    {% url "contact_us" as contact_us %}
+    <i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% blocktrans with url=contact_us %}Access to adding external recording has been restricted. If you want to add external recordings on the platform, please <a href="{{url}}">contact us</a>.{% endblocktrans %}
   </p>
 {% else %}
   <div class="pod-first-content">
@@ -27,27 +22,26 @@
     </p>
   </div>
 
-  {% if form.instance.id and form.instance.id != '' %}
-    <form id="external_recording_form" method="post" action="{% url 'import_video:edit_external_recording' form.instance.id %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
-  {% else %}
-    <form id="external_recording_form" method="post" action="{% url 'import_video:add_external_recording' %}" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
-  {% endif %}
+  <form id="external_recording_form" method="post" accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate
+    {% if form.instance.id and form.instance.id != '' %}
+      action="{% url 'import_video:edit_external_recording' form.instance.id %}"
+    {% else %}
+      action="{% url 'import_video:add_external_recording' %}"
+    {% endif %}>
 
     {% csrf_token %}
-    <div class="list-group">
-      {% if form.errors %}
-        <p class="text-danger">{% trans "One or more errors have been found in the form." %}<br>
-          {% for error in form.non_field_errors %}
+    {% if form.errors %}
+      <p class="text-danger">{% trans "One or more errors have been found in the form." %}<br>
+        {% for error in form.non_field_errors %}
           <span> - {{ error }}</span> <br>
-          {% endfor %}
-        </p>
-      {% endif %}
-      {% for field_hidden in form.hidden_fields %}
-        {{field_hidden}}
-      {% endfor %}
+        {% endfor %}
+      </p>
+    {% endif %}
+    {% for field_hidden in form.hidden_fields %}
+      {{field_hidden}}
+    {% endfor %}
 
-      {% for fieldset in form.fieldsets %}
-      {% with options=fieldset|last name=fieldset|first%}
+    {% for fieldset in form.fieldsets %}{% with options=fieldset|last name=fieldset|first%}
       {% if "collapse" in options.classes %}
         <div class="mb-3">
           <div class="list-group-item">
@@ -57,71 +51,25 @@
           </div>
         </div>
       {% endif %}
+
       {% if name != "modal" %}
-      <fieldset class="{{ options.classes }}" id="import_video_form_{{fieldset|first}}_{{forloop.counter}}" >
-        {% if options.legend %}
-          <legend>{{ options.legend|safe }}</legend>
-        {% endif %}
-        {% if name == "input-group" %}
-        <div class="list-group-item mb-3">
-          <div class="input-group">
-        {% endif %}
-        {% for field in form.visible_fields %}
-          {% if field.name in options.fields %}
-            {% spaceless %}
-            {% if name != "input-group" %}
-              <div class="mb-3 {% if "restrict_access_to_groups" in field.name %}collapse restricted_access{% endif %}">
-                <div class="list-group-item">
-            {% else %}
-              <div class="m-1">
-            {% endif %}
-                  <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
-                    {{ field.errors }}
-                    {% if "form-check-input" in field.field.widget.attrs.class %}
-                      <div class="form-check">
-                        {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
-                      </div>
-                    {% else %}
-                      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                      {{ field }}
-                    {% endif %}
-                    {% if field.help_text %}
-                      <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
-                    {% endif %}
-                    {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
-                  </div>
-            {% if name != "input-group" %}
-                </div>
-              </div>
-            {% else %}
-              </div>
-            {% endif %}
-            {% endspaceless %}
+        <fieldset class="border rounded-3 p-3 mb-3 {{ options.classes }}" id="import_video_form_{{fieldset|first}}_{{forloop.counter}}" >
+          {% if options.legend %}
+            <legend>{{ options.legend|safe }}</legend>
           {% endif %}
-        {% endfor %}
-        <div class="d-flex align-items-center">
-        {{ options.additional_data|safe }}
-        </div>
-        {% if name == "input-group" %}
-          </div> <!-- end list-group-item -->
-        </div>
-        {% endif %}
-      </fieldset>
-      {% endif %}
-      {% if name == "modal" %}
-      <div class="modal fade" id="{{options.id}}" tabindex="-1" aria-labelledby="{{ options.legend|safe|striptags }}" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">{{ options.legend|safe }}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              {% if options.template %}
-                {% include options.template %}
-              {% else %}
-                {% for field in form.visible_fields %}
-                  {% if field.name in options.fields %}
+          <div
+            {% if name == "input-group" %}
+              class="input-group"
+            {% endif %}>
+            {% for field in form.visible_fields %}
+              {% if field.name in options.fields %}
+                {% spaceless %}
+                <div
+                  {% if name != "input-group" %}
+                     class="mb-3 {% if "restrict_access_to_groups" in field.name %}collapse restricted_access{% endif %}"
+                  {% else %}
+                    class="m-1"
+                  {% endif %}>
                   <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
                     {{ field.errors }}
                     {% if "form-check-input" in field.field.widget.attrs.class %}
@@ -137,22 +85,59 @@
                     {% endif %}
                     {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
                   </div>
-                  {% endif %}
-                {% endfor %}
+                </div>
+                {% endspaceless %}
               {% endif %}
+            {% endfor %}
+            <div class="d-flex align-items-center">
+              {{ options.additional_data|safe }}
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans "Save" %}</button>
+          </div>
+        </fieldset>
+      {% else %}
+        <div class="modal fade" id="{{options.id}}" tabindex="-1" aria-labelledby="{{ options.legend|safe|striptags }}" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{ options.legend|safe }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                {% if options.template %}
+                  {% include options.template %}
+                {% else %}
+                  {% for field in form.visible_fields %}
+                    {% if field.name in options.fields %}
+                    <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
+                      {{ field.errors }}
+                      {% if "form-check-input" in field.field.widget.attrs.class %}
+                        <div class="form-check">
+                          {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                        </div>
+                      {% else %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                      {% endif %}
+                      {% if field.help_text %}
+                        <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+                      {% endif %}
+                      {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+                    </div>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Close" %}</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans "Save" %}</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
       {% endif %}
-      {% endwith %}
-      {% endfor %}
+    {% endwith %}
+    {% endfor %}
 
-    </div>
     <div class="text-center mb-3">
       <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
     </div>
@@ -169,15 +154,23 @@
   <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Uploading" %}</h2>
   <div class="card-body card-text">
     <p>{% trans "To retrieve recordings from other interfaces, just copy the link to the Big Blue Button, PeerTube, Youtube or other video from the app." %}</p>
-    <p>{% trans "All you have to do is paste this link in the 'Address of the recording to download' field, and enter the additional information." %}</p>
+    <p>{% trans "All you have to do is paste this link in the “Address of the recording to download” field, and enter the additional information." %}</p>
     <p>
       {% trans "Once the entry is made, you will be able - if the original application allows it and if the video is publicly available - to upload the video to this platform." %}
-      {% trans "To do this, please use the 'Upload to Pod as video' button in the list." %}
+      {% trans "To do this, please use the “Upload to Pod as video” button in the list." %}
     </p>
     <p>
-      {% trans "You will then be able to find the encoded video directly in the My videos tab after a while." %}
+      {% trans "You will then be able to find the encoded video directly in the Dashboard tab after a while." %}
       {% trans "An email will be sent to you when all encoding tasks are completed." %}
     </p>
+  </div>
+</div>
+
+<div class="card">
+  <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Useful tips" %}</h2>
+  <div class="card-body card-text">
+    <p>{% trans "The entered address must correspond to a video file. The platform to which you copy the link may offer several possibilities; feel free to test the different links provided." %}</p>
+    <p>{% trans "For example, in the case of a video from a Pod platform, please enter the source file address, available in the video edition." %}</p>
   </div>
 </div>
 
@@ -210,7 +203,7 @@
       </button>
       <div id="collapse-3" class="card-body collapse card-text small" aria-labelledby="heading-3" data-bs-parent="#formfields">
         <p>{% trans "Their terms of service state that you are not allowed to download any content unless permitted by YouTube or the person who owns the copyright to the content." %}</p>
-        <p><a href="https://www.youtube.com/t/terms#e8b39011d8" target="_blank">{% trans "YouTube's Terms of Service" %}</a></p>
+        <p><a href="https://www.youtube.com/t/terms#e8b39011d8" target="_blank">{% trans "YouTube’s Terms of Service" %}</a></p>
       </div>
     </div>
 
@@ -219,7 +212,6 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script src="/admin/jsi18n/"></script>
 <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
 {{form.media}}

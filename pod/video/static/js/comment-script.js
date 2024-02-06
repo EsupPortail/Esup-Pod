@@ -9,7 +9,7 @@ let all_comment = null;
 const lang_btn = document.querySelector(".btn-lang.btn-lang-active");
 const comment_title = document.querySelector(".comment_title");
 // Loader Element
-const loader = document.querySelector(".lds-ring");
+const loader = document.getElementById("loader");
 let VOTED_COMMENTS = [];
 const COLORS = [
   "rgb(15,166,2)",
@@ -526,7 +526,7 @@ function vote(comment_action_html, comment_id) {
       } else {
         let message = gettext("Bad response from the server.");
         if (response.status == 403) {
-          message = gettext("Sorry, you're not allowed to vote by now.");
+          message = gettext("Sorry, you’re not allowed to vote by now.");
         }
         throw new Error(message);
       }
@@ -588,7 +588,7 @@ function save_comment(
   textarea.setAttribute("readonly", true);
 
   // show loader
-  loader.classList.add("show");
+  showLoader(loader, true);
 
   let post_url = base_url.replace("comment", "comment/add");
   let top_parent_id = null;
@@ -616,7 +616,7 @@ function save_comment(
       } else {
         let message = gettext("Bad response from the server.");
         if (response.status == 403) {
-          message = gettext("Sorry, you can't comment this video by now.");
+          message = gettext("Sorry, you can’t comment this video by now.");
         }
         throw new Error(message);
       }
@@ -682,7 +682,7 @@ function save_comment(
       //console.log(raw_response.text())
     })
     .finally(() => {
-      loader.classList.remove("show");
+      showLoader(loader, false);
     });
 }
 
@@ -754,7 +754,7 @@ function delete_comment(comment) {
       } else {
         let message = gettext("Bad response from the server.");
         if (response.status == 403) {
-          message = gettext("Sorry, you can't delete this comment by now.");
+          message = gettext("Sorry, you can’t delete this comment by now.");
         }
         showalert(message, "alert-danger");
         //console.log("Bad response from network", response);
@@ -916,9 +916,8 @@ function setBorderLeftColor(comment, parent_element) {
       }`;
     } else {
       comment.dataset.level = index;
-      comment.querySelector(
-        ".comment_content",
-      ).style.borderLeft = `4px solid ${COLORS[index]}`;
+      comment.querySelector(".comment_content").style.borderLeft =
+        `4px solid ${COLORS[index]}`;
       comment.querySelector(".comments_icon").style.color = `${COLORS[index]}`;
     }
   } catch (e) {
@@ -982,7 +981,7 @@ function fetch_comment_children(
   if (
     all_comment.find((c) => c.id === parent_comment_id).children.length === 0
   ) {
-    loader.classList.add("show"); // waiting for charging children
+    showLoader(loader, true); // waiting for charging children
 
     let url = base_url.replace("/comment/", `/comment/${parent_comment_id}/`);
     fetch(url).then((response) => {
@@ -1043,7 +1042,7 @@ function fetch_comment_children(
                 scrollToComment(comment_child_html);
             });
           }
-          loader.classList.remove("show");
+          showLoader(loader, false);
           return parent_comment;
         });
       });
@@ -1255,7 +1254,7 @@ function set_comments_number() {
 
 /************  Get vote from the server  **************
  ******************************************************/
-loader.classList.add("show");
+showLoader(loader, true);
 fetch(base_vote_url)
   .then((response) => {
     response.json().then((data) => {
@@ -1305,5 +1304,5 @@ fetch(base_vote_url)
         set_comments_number(); // update number of comments from comment label
       });
     });
-    loader.classList.remove("show");
+    showLoader(loader, false);
   });

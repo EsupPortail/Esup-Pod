@@ -1,4 +1,6 @@
-// Esup-Pod Caption maker Tool
+/**
+ * @file Esup-Pod Caption maker Tool
+ */
 
 // Read-only globals defined in video_caption_maker.html
 /*
@@ -45,9 +47,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     send_form_data(url, data, "processProxyVttResponse");
   } else {
-    document.getElementById(
-      "captionFilename",
-    ).value = `${file_prefix}_captions_${Date.now()}`;
+    document.getElementById("captionFilename").value =
+      `${file_prefix}_captions_${Date.now()}`;
   }
 
   let placeholder = gettext(
@@ -552,7 +553,7 @@ function validateForms(forms) {
     let captionInput = e.querySelector(".captionTextInput");
     if (captionInput.value.length > 80) {
       captionInput.setCustomValidity(
-        gettext("A caption cannot has more than 80 characters.") +
+        gettext("A caption cannot contain more than 80 characters.") +
           "[" +
           captionInput.value.length +
           "]",
@@ -707,7 +708,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
       "text/html",
     ).body.firstChild,
     startTimeInput: new DOMParser().parseFromString(
-      `<input class="form-control" type="text" pattern="([0-9][0-9]:){0,1}([0-5][0-9]:){0,1}[0-5][0-9].([0-9]){3}" required>`,
+      `<input class="form-control" type="text" pattern="([0-9][0-9]:){0,1}([0-5][0-9]:){0,1}[0-5][0-9].([0-9]){3}" value="${start}" required>`,
       "text/html",
     ).body.firstChild,
     endTimeLabel: new DOMParser().parseFromString(
@@ -715,7 +716,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
       "text/html",
     ).body.firstChild,
     endTimeInput: new DOMParser().parseFromString(
-      `<input class="form-control" type="text" pattern="([0-9][0-9]:){0,1}([0-5][0-9]:){0,1}[0-5][0-9].([0-9]){3}" required>`,
+      `<input class="form-control" type="text" pattern="([0-9][0-9]:){0,1}([0-5][0-9]:){0,1}[0-5][0-9].([0-9]){3}" value="${end}" required>`,
       "text/html",
     ).body.firstChild,
 

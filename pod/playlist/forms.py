@@ -1,4 +1,5 @@
 """Forms used in playlist application."""
+
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
@@ -70,9 +71,7 @@ class PlaylistForm(forms.ModelForm):
         ),
         choices=Playlist.VISIBILITY_CHOICES,
         help_text=_(
-            """
-            Please chosse a right of access among 'public', 'password-protected', 'private'.
-            """
+            "Please choose an access right among “public”, “password-protected”, “private”."
         ),
     )
     password = forms.CharField(
@@ -152,9 +151,11 @@ class PlaylistForm(forms.ModelForm):
             playlist_owner = (
                 self.instance.owner
                 if hasattr(self.instance, "owner")
-                else cleaned_data["owner"]
-                if "owner" in cleaned_data.keys()
-                else self.current_user
+                else (
+                    cleaned_data["owner"]
+                    if "owner" in cleaned_data.keys()
+                    else self.current_user
+                )
             )
             if (
                 playlist_owner

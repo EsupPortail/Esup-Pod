@@ -33,6 +33,8 @@ if USE_TRANSCRIPTION:
         from vosk import Model, KaldiRecognizer
     elif TRANSCRIPTION_TYPE == "STT":
         from stt import Model
+    elif TRANSCRIPTION_TYPE == "WHISPER":
+        import whisper
 
 TRANSCRIPTION_NORMALIZE = getattr(settings_local, "TRANSCRIPTION_NORMALIZE", False)
 TRANSCRIPTION_NORMALIZE_TARGET_LEVEL = getattr(
@@ -91,8 +93,13 @@ def start_transcripting(mp3filepath, duration, lang):
     """
     if TRANSCRIPTION_NORMALIZE:
         mp3filepath = normalize_mp3(mp3filepath)
-    transript_model = get_model(lang)
-    msg, webvtt, all_text = start_main_transcript(mp3filepath, duration, transript_model)
+    if TRANSCRIPTION_TYPE == "WHISPER":
+        msg, webvtt, all_text = main_whisper_transcript(mp3filepath, duration, lang)
+    else:
+        transript_model = get_model(lang)
+        msg, webvtt, all_text = start_main_transcript(
+            mp3filepath, duration, transript_model
+        )
     if DEBUG:
         print(msg)
         print(webvtt)
@@ -135,7 +142,10 @@ def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
             ),
         )
 
-    return np.frombuffer(output, np.int16)
+    if TRANSCRIPTION_TYPE == "WHISPER":
+        return np.frombuffer(output, np.int16).flatten().astype(np.float32) / 32768.0
+    else:
+        return np.frombuffer(output, np.int16)
 
 
 def normalize_mp3(mp3filepath):
@@ -253,8 +263,8 @@ def words_to_vtt(
             change_previous_end_caption(webvtt, start_caption)
 
             caption = Caption(
-                format_time_caption(start_caption),
-                format_time_caption(stop_caption),
+                sec_to_timestamp(start_caption),
+                sec_to_timestamp(stop_caption),
                 " ".join(text_caption),
             )
 
@@ -267,8 +277,8 @@ def words_to_vtt(
         # on ajoute ici la dernière phrase de la vidéo
         stop_caption = start_trim + words[-1][start_key] + last_word_duration
         caption = Caption(
-            format_time_caption(start_caption),
-            format_time_caption(stop_caption),
+            sec_to_timestamp(start_caption),
+            sec_to_timestamp(stop_caption),
             " ".join(text_caption),
         )
         webvtt.captions.append(caption)
@@ -305,8 +315,8 @@ def main_vosk_transcript(norm_mp3_file, duration, transript_model):
             start_caption = words[0]["start"]
             stop_caption = words[-1]["end"]
             caption = Caption(
-                format_time_caption(start_caption),
-                format_time_caption(stop_caption),
+                sec_to_timestamp(start_caption),
+                sec_to_timestamp(stop_caption),
                 text,
             )
             webvtt.captions.append(caption)
@@ -395,6 +405,45 @@ def main_stt_transcript(norm_mp3_file, duration, transript_model):
     return msg, webvtt, all_text
 
 
+def main_whisper_transcript(norm_mp3_file, duration, lang):
+    """Whisper transcription."""
+    msg = ""
+    all_text = ""
+    webvtt = WebVTT()
+    inference_start = timer()
+    desired_sample_rate = 16000
+    msg += "\nInference start %0.3fs." % inference_start
+
+    model = whisper.load_model(
+        TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang]["model"],
+        download_root=TRANSCRIPTION_MODEL_PARAM[TRANSCRIPTION_TYPE][lang][
+            "download_root"
+        ],
+    )
+
+    for start_trim in range(0, duration, TRANSCRIPTION_AUDIO_SPLIT_TIME):
+        log.info("start_trim: " + str(start_trim))
+        audio = convert_samplerate(
+            norm_mp3_file,
+            desired_sample_rate,
+            start_trim,
+            TRANSCRIPTION_AUDIO_SPLIT_TIME,  # dur
+        )
+        transcription = model.transcribe(audio, language=lang)
+        msg += "\nRunning inference."
+        for segment in transcription["segments"]:
+            caption = Caption(
+                sec_to_timestamp(segment["start"] + start_trim),
+                sec_to_timestamp(segment["end"] + start_trim),
+                segment["text"],
+            )
+            webvtt.captions.append(caption)
+
+    inference_end = timer() - inference_start
+    msg += "\nInference took %0.3fs." % inference_end
+    return msg, webvtt, all_text
+
+
 def change_previous_end_caption(webvtt, start_caption):
     """Change the end time for caption."""
     if len(webvtt.captions) > 0:
@@ -406,14 +455,15 @@ def change_previous_end_caption(webvtt, start_caption):
             microseconds=prev_end.microsecond,
         ).total_seconds()
         if td_prev_end > start_caption:
-            webvtt.captions[-1].end = format_time_caption(start_caption)
+            webvtt.captions[-1].end = sec_to_timestamp(start_caption)
 
 
-def format_time_caption(time_caption):
+def sec_to_timestamp(total_seconds):
     """Format time for webvtt caption."""
-    return (
-        dt.datetime.utcfromtimestamp(0) + timedelta(seconds=float(time_caption))
-    ).strftime("%H:%M:%S.%f")[:-3]
+    hours = int(total_seconds / 3600)
+    minutes = int(total_seconds / 60 - hours * 60)
+    seconds = total_seconds - hours * 3600 - minutes * 60
+    return "{:02d}:{:02d}:{:06.3f}".format(hours, minutes, seconds)
 
 
 def get_text_caption(text_caption, last_word_added):

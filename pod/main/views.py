@@ -101,6 +101,7 @@ def in_maintenance():
 
 @csrf_protect
 def download_file(request):
+    """Direct download of requested file."""
     if request.POST and request.POST.get("filename"):
         filename = os.path.join(settings.MEDIA_ROOT, request.POST["filename"])
         wrapper = FileWrapper(open(filename, "rb"))
@@ -342,6 +343,7 @@ def user_autocomplete(request):
 
 
 def maintenance(request):
+    """Render the maintenance page with configured text."""
     text = Configuration.objects.get(key="maintenance_text_disabled").value
     return render(request, "maintenance.html", {"text": text})
 
@@ -375,6 +377,7 @@ def info_pod(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def userpicture(request):
+    """Render the user picture."""
     frontOwnerForm = FrontOwnerForm(instance=request.user.owner)
 
     if request.method == "POST":
@@ -400,7 +403,7 @@ def userpicture(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def set_notifications(request):
-    """Sets 'accepts_notifications' attribute on owner instance."""
+    """Set 'accepts_notifications' attribute on owner instance."""
     setNotificationForm = SetNotificationForm(instance=request.user.owner)
 
     if request.method == "POST":

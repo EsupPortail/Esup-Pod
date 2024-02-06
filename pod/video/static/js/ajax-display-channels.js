@@ -1,4 +1,14 @@
 /**
+ * @file Esup-Pod functions for displaying channels dynamically.
+ */
+
+// Read-only globals defined in base.html
+/*
+  global GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL, GET_CHANNEL_TAGS_REQUEST_URL,
+  GET_THEMES_FOR_SPECIFIC_CHANNEL_REQUEST_URL
+*/
+
+/**
  * Set attributes of an HTML element with a two-dimensional array.
  *
  * @param {HTMLElement} htmlElement The HTML element.
@@ -103,8 +113,8 @@ function setModalTitle(modalContentElement, channelsCount) {
   const modalTitleElement = modalContentElement.querySelector(".modal-title");
   const channelIcon = '<i class="bi bi-play-btn" aria-hidden="true"></i>';
   var channelString = ngettext(
-    `%(count)s channel`,
-    `%(count)s channels`,
+    "%(count)s channel",
+    "%(count)s channels",
     channelsCount,
   );
   channelString = interpolate(channelString, { count: channelsCount }, true);
@@ -179,8 +189,8 @@ function convertToModalListElement(channel) {
   }
 
   var videoString = ngettext(
-    `%(count)s video`,
-    `%(count)s videos`,
+    "%(count)s video",
+    "%(count)s videos",
     channel.videoCount,
   );
   videoString = interpolate(videoString, { count: channel.videoCount }, true);
@@ -334,9 +344,8 @@ function createModalFor(channelTab) {
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 class="modal-title">
-                        <i class="bi bi-play-btn"></i>&nbsp;
-                        <span class="spinner-border text-primary" role="status">
-                        </span>
+                        <i class="bi bi-play-btn" aria-hidden="true"></i>&nbsp;<span
+                           class="spinner-border text-primary" role="status"> </span>
                     </h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="${gettext(
                       "Close",
@@ -344,8 +353,7 @@ function createModalFor(channelTab) {
                 </div>
             <div class="modal-body">
                 <div class="text-center">
-                    <span class="spinner-border text-primary" role="status">
-                    </span>
+                    <span class="spinner-border text-primary" role="status"> </span>
             </div>
             </div>
                 <div class="modal-footer">
