@@ -3,7 +3,8 @@ import json
 import requests
 from requests import Response
 
-from pod.video.models import Discipline
+from pod.ai_enhancement.models import AIEnrichment
+from pod.video.models import Discipline, Video
 
 API_URL = "https://aristote-preprod.k8s-cloud.centralesupelec.fr/api"
 API_VERSION = "v1"
@@ -145,3 +146,8 @@ class AristoteAI:
         """Get a specific version."""
         path = f"/{API_VERSION}/enrichments/{enrichment_id}/versions/{version_id}"
         return self.get_response(path)
+
+
+def enrichment_is_already_asked(video: Video) -> bool:
+    """Check if the enrichment is already asked."""
+    return AIEnrichment.objects.filter(video=video).exists()

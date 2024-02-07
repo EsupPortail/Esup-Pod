@@ -28,4 +28,9 @@ class AIEnrichment(models.Model):
         upload_to=get_storage_path_ai_enrichment,
         max_length=255,
         help_text=_("Please choose an AI enrichment file."),
+        nullable=True,
     )
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
+    is_ready = models.BooleanField(_("Is ready"), default=False)
+    ai_enrichment_id_in_aristote = models.TextField(_("AI enrichment ID in Aristote"))
