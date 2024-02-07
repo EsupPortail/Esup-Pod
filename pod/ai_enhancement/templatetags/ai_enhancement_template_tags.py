@@ -4,6 +4,7 @@ from django.conf import settings
 from django.template import Library
 
 
+from pod.ai_enhancement.utils import enrichment_is_ready as eir
 from pod.video.models import Video
 
 
@@ -32,3 +33,21 @@ def user_can_enrich_video(context: dict, video: Video) -> bool:
         ((video.owner == request.user) or request.user.is_superuser or request.user in video.additional_owners.all())
         and USE_AI_ENHANCEMENT
     )
+
+
+@register.simple_tag(takes_context=True, name="enrichment_is_ready")
+def enrichment_is_ready(context: dict, video: Video) -> bool:
+    """
+    Template tag used to check if the enrichment of a specific video is ready.
+
+    Args:
+        context (dict): The context.
+        video (:class:`pod.video.models.Video`): The specific video.
+
+    Returns:
+        bool: `True` if the enrichment is ready. `False` otherwise.
+    """
+    request = context["request"]
+    if not request.user.is_authenticated:
+        return False
+    return eir(video) and USE_AI_ENHANCEMENT and user_can_enrich_video(context, video)

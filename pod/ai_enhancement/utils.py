@@ -151,3 +151,8 @@ class AristoteAI:
 def enrichment_is_already_asked(video: Video) -> bool:
     """Check if the enrichment is already asked."""
     return AIEnrichment.objects.filter(video=video).exists()
+
+
+def enrichment_is_ready(video: Video) -> bool:
+    """Check if the enrichment is ready."""
+    return AIEnrichment.objects.filter(video=video, is_ready=True).exists()
