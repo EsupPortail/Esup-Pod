@@ -301,6 +301,7 @@ class Bloc(models.Model):
 
     no_cache = models.BooleanField(
         default=False,
+        verbose_name=_("No cache"),
         help_text=_("Check this box if you don't want to keep the cache."),
     )
 
@@ -310,6 +311,7 @@ class Bloc(models.Model):
     )
 
     show_restricted = models.BooleanField(
+        verbose_name=_("Show restricted"),
         default=False,
         help_text=_("Check this box if you want to show restricted content."),
     )
@@ -341,9 +343,9 @@ class Bloc(models.Model):
     )
 
     view_videos_from_non_visible_channels = models.BooleanField(
-        verbose_name=_("View videos from non visible channels"),
+        verbose_name=_("View videos from non visible channel"),
         default=False,
-        help_text=_("Check this box if if you want view videos from non visible channels."),
+        help_text=_("Check this box if if you want view videos from non visible channel."),
     )
 
     shows_passworded = models.BooleanField(
