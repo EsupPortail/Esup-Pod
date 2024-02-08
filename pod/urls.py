@@ -151,6 +151,12 @@ if getattr(settings, "USE_PLAYLIST", True):
         path("playlist/", include("pod.playlist.urls", namespace="playlist")),
     ]
 
+# QUIZ
+if getattr(settings, "USE_QUIZ", True):
+    urlpatterns += [
+        path("quiz/", include("pod.quiz.urls", namespace="quiz")),
+    ]
+
 # IMPORT_VIDEO
 if getattr(settings, "USE_IMPORT_VIDEO", True):
     urlpatterns += [
