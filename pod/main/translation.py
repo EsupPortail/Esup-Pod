@@ -3,7 +3,7 @@ from django.contrib.flatpages.models import FlatPage
 from pod.main.models import LinkFooter
 from pod.main.models import Configuration
 from pod.main.models import AdditionalChannelTab
-from pod.main.models import Bloc
+from pod.main.models import Block
 
 
 class FlatPageTranslationOptions(TranslationOptions):
@@ -25,7 +25,7 @@ class AdditionalChannelTabTranslationOptions(TranslationOptions):
     fields = ("name",)
 
 
-class BlocTranslationOptions(TranslationOptions):
+class BlockTranslationOptions(TranslationOptions):
     fields = ("display_title",)
 
 
@@ -33,4 +33,4 @@ translator.register(FlatPage, FlatPageTranslationOptions)
 translator.register(LinkFooter, LinkFooterTranslationOptions)
 translator.register(Configuration, ConfigurationTranslationOptions)
 translator.register(AdditionalChannelTab, AdditionalChannelTabTranslationOptions)
-translator.register(Bloc, BlocTranslationOptions)
+translator.register(Block, BlockTranslationOptions)

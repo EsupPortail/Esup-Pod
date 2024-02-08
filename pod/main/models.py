@@ -197,8 +197,8 @@ class AdditionalChannelTab(models.Model):
         verbose_name_plural = _("Additional channel Tabs")
 
 
-class Bloc(models.Model):
-    """Class describing Bloc objects."""
+class Block(models.Model):
+    """Class describing Block objects."""
 
     # from pod.playlist.models import Playlist
 
@@ -225,7 +225,7 @@ class Bloc(models.Model):
         (PLAYLIST, _('Playlist')),
         (LAST_VIDEOS, _('Last videos')),
         (MOST_VIEWS, _('Most views')),
-        (EVENT_NEXT, _('Event_next')),
+        (EVENT_NEXT, _('Next events')),
     )
 
     title = models.CharField(_("Title"), max_length=250, blank=True, null=True)
@@ -358,11 +358,11 @@ class Bloc(models.Model):
         return "%s" % (self.title)
 
     class Meta:
-        verbose_name = _("Bloc")
-        verbose_name_plural = _("Blocs")
+        verbose_name = _("Block")
+        verbose_name_plural = _("Blocks")
 
 
-@receiver(post_save, sender=Bloc)
-def default_site_bloc(sender, instance, created, **kwargs):
+@receiver(post_save, sender=Block)
+def default_site_block(sender, instance, created, **kwargs):
     if len(instance.sites.all()) == 0:
         instance.sites.add(Site.objects.get_current())

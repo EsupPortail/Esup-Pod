@@ -10,7 +10,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from modeltranslation.admin import TranslationAdmin
 from pod.main.models import LinkFooter, Configuration
 from pod.main.models import AdditionalChannelTab
-from pod.main.models import Bloc
+from pod.main.models import Block
 
 
 SITE_ID = getattr(settings, "SITE_ID", 1)
@@ -108,13 +108,13 @@ class LinkFooterAdmin(TranslationAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
-class BlocAdminForm(forms.ModelForm):
+class BlockAdminForm(forms.ModelForm):
     class Meta:
-        model = Bloc
+        model = Block
         fields = '__all__'
 
 
-class BlocAdmin(TranslationAdmin):
+class BlockAdmin(TranslationAdmin):
     list_display = (
         "title",
         "page",
@@ -134,4 +134,4 @@ admin.site.register(FlatPage, CustomFlatPageAdmin)
 admin.site.register(LinkFooter, LinkFooterAdmin)
 admin.site.register(Configuration, ConfigurationAdmin)
 admin.site.register(AdditionalChannelTab, AdditionalChannelTabAdmin)
-admin.site.register(Bloc, BlocAdmin)
+admin.site.register(Block, BlockAdmin)

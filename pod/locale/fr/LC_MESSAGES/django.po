@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-06 10:47+0000\n"
+"POT-Creation-Date: 2024-02-08 12:41+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2281,7 +2281,7 @@ msgstr "Temps de fin de l’affichage de l’enrichissement en secondes."
 #: pod/enrichment/models.py
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #: pod/import_video/templates/import_video/list.html pod/live/models.py
-#: pod/video/forms.py pod/video/models.py
+#: pod/main/models.py pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/dashboard.html pod/video/views.py
 #: pod/video_search/templates/search/search.html
 msgid "Type"
@@ -3478,6 +3478,7 @@ msgid "Plan an event"
 msgstr "Programmer un évènement"
 
 #: pod/live/templates/live/direct.html pod/live/templates/live/events_next.html
+#: pod/main/models.py
 msgid "Next events"
 msgstr "Prochains évènements"
 
@@ -4811,6 +4812,141 @@ msgstr "Onglet additionnel de chaînes"
 msgid "Additional channel Tabs"
 msgstr "Onglets additionnels de chaînes"
 
+#: pod/main/models.py
+msgid "Slider"
+msgstr "Carrousel"
+
+#: pod/main/models.py
+msgid "Slider multi"
+msgstr "Carrousel multiple"
+
+#: pod/main/models.py
+msgid "Card list"
+msgstr "Liste de cartes"
+
+#: pod/main/models.py
+msgid "HTML"
+msgstr "HTML"
+
+#: pod/main/models.py pod/video/models.py
+#: pod/video_search/templates/search/search.html
+msgid "Channel"
+msgstr "Chaîne"
+
+#: pod/main/models.py pod/video/models.py
+msgid "Theme"
+msgstr "Thème"
+
+#: pod/main/models.py pod/playlist/models.py
+#: pod/playlist/templates/playlist/playlist_breadcrumbs.html
+#: pod/playlist/tests/test_models.py pod/playlist/views.py
+#: pod/video/templates/videos/video_breadcrumbs.html
+msgid "Playlist"
+msgstr "Liste de lecture"
+
+#: pod/main/models.py pod/video/templates/videos/last_videos.html
+msgid "Last videos"
+msgstr "Dernières vidéos"
+
+#: pod/main/models.py
+msgid "Most views"
+msgstr "Les plus vues"
+
+#: pod/main/models.py
+msgid "Data type"
+msgstr "Type de données"
+
+#: pod/main/models.py
+msgid "Select the channel you want to link with."
+msgstr "Sélectionner la chaîne que vous voulez joindre."
+
+#: pod/main/models.py
+msgid "Select the theme you want to link with."
+msgstr "Sélectionner le thème que vous voulez joindre."
+
+#: pod/main/models.py
+msgid "Select the playlist you want to link with."
+msgstr "Sélectionner la liste de lecture que vous voulez joindre."
+
+#: pod/main/models.py
+msgid "Write in html inside this field."
+msgstr "Écrire en html à l'intérieur de ce champ."
+
+#: pod/main/models.py
+msgid "Display title"
+msgstr "Titre affiché"
+
+#: pod/main/models.py
+msgid "No cache"
+msgstr "Pas de cache"
+
+#: pod/main/models.py
+msgid "Check this box if you don't want to keep the cache."
+msgstr "Cocher cette case si vous ne voulez pas garder le cache."
+
+#: pod/main/models.py
+msgid "Check this box if you want to activate debug mode."
+msgstr "Cocher cette case si vous voulez activer le mode débogage."
+
+#: pod/main/models.py
+msgid "Show restricted"
+msgstr "Montrer le contenu restreint"
+
+#: pod/main/models.py
+msgid "Check this box if you want to show restricted content."
+msgstr "Cocher cette case si vous voulez montrer le contenu restreint."
+
+#: pod/main/models.py
+msgid "Must be authenticated"
+msgstr "Doit être authentifié"
+
+#: pod/main/models.py
+msgid "Check this box if users must be authenticated to view content."
+msgstr ""
+"Cochez cette case si les utilisateurs doivent être authentifiés pour voir le "
+"contenu."
+
+#: pod/main/models.py
+msgid "Auto slide"
+msgstr "Défilement automatique"
+
+#: pod/main/models.py
+msgid "Check this box if if you want auto slide."
+msgstr "Cocher cette case si vous voulez activer le défilement automatique."
+
+#: pod/main/models.py
+msgid "Number of element"
+msgstr "Nombre d'élément"
+
+#: pod/main/models.py
+msgid "Number of element for slider multi"
+msgstr "Nombre d'élément pour la diapositive"
+
+#: pod/main/models.py
+msgid "View videos from non visible channel"
+msgstr "Voir les vidéos d'une chaine non visible"
+
+#: pod/main/models.py
+msgid "Check this box if if you want view videos from non visible channel."
+msgstr ""
+"Cocher cette case si vous voulez voir les vidéos d'une chaine non visible."
+
+#: pod/main/models.py
+msgid "View videos with password"
+msgstr "Voir les vidéos avec un mot de passe"
+
+#: pod/main/models.py
+msgid "Check this box if if you want view videos with password."
+msgstr "Cocher cette case si vous voulez voir les vidéos avec un mot de passe"
+
+#: pod/main/models.py
+msgid "Block"
+msgstr "Bloc"
+
+#: pod/main/models.py
+msgid "Blocks"
+msgstr "Blocs"
+
 #: pod/main/settings.py
 msgid ""
 "Pod is aimed at users of our institutions, by allowing the publication of "
@@ -4904,6 +5040,12 @@ msgstr "En savoir plus"
 #: pod/main/templates/base.html
 msgid "I understand"
 msgstr "J’ai compris"
+
+#: pod/main/templates/block/card_list.html pod/main/templates/block/slider.html
+#: pod/main/templates/block/slider_multi.html
+#: pod/video/templates/videos/last_videos.html
+msgid "Show all videos"
+msgstr "Afficher toutes les vidéos"
 
 #: pod/main/templates/contact_us.html
 msgid "Your message"
@@ -6108,13 +6250,6 @@ msgstr "Protégé par un mot de passe"
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
 msgstr "Privé"
-
-#: pod/playlist/models.py
-#: pod/playlist/templates/playlist/playlist_breadcrumbs.html
-#: pod/playlist/tests/test_models.py pod/playlist/views.py
-#: pod/video/templates/videos/video_breadcrumbs.html
-msgid "Playlist"
-msgstr "Liste de lecture"
 
 #: pod/playlist/models.py
 msgid ""
@@ -7613,10 +7748,6 @@ msgstr ""
 msgid "Additionals channels tab"
 msgstr "Onglet additionnel de chaînes"
 
-#: pod/video/models.py pod/video_search/templates/search/search.html
-msgid "Channel"
-msgstr "Chaîne"
-
 #: pod/video/models.py
 msgid "Theme parent"
 msgstr "Thème parent"
@@ -7633,10 +7764,6 @@ msgstr ""
 #: pod/video/models.py
 msgid "A theme must be in the same channel as its parent."
 msgstr "Un thème doit se trouver dans la même chaîne que son parent."
-
-#: pod/video/models.py
-msgid "Theme"
-msgstr "Thème"
 
 #: pod/video/models.py
 msgid "Icon"
@@ -8224,14 +8351,6 @@ msgstr "Éditer la catégorie"
 #: pod/video/templates/videos/footer_link.html
 msgid "Links"
 msgstr "Liens"
-
-#: pod/video/templates/videos/last_videos.html
-msgid "Last videos"
-msgstr "Dernières vidéos"
-
-#: pod/video/templates/videos/last_videos.html
-msgid "Show all videos"
-msgstr "Afficher toutes les vidéos"
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video_row_select.html

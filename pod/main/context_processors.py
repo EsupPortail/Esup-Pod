@@ -1,7 +1,7 @@
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 
-from pod.main.models import LinkFooter, Bloc
+from pod.main.models import LinkFooter, Block
 from django.core.exceptions import ObjectDoesNotExist
 
 from pod.main.models import Configuration
@@ -156,8 +156,8 @@ def context_footer(request):
     }
 
 
-def context_bloc(request):
-    bloc = Bloc.objects.all().filter(sites=get_current_site(request)).order_by('order')
+def context_block(request):
+    block = Block.objects.all().filter(sites=get_current_site(request)).order_by('order')
     return {
-        "BLOC": bloc,
+        "BLOCK": block,
     }

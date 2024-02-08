@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-06 10:47+0000\n"
+"POT-Creation-Date: 2024-02-08 12:41+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2176,7 +2176,7 @@ msgstr ""
 #: pod/enrichment/models.py
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #: pod/import_video/templates/import_video/list.html pod/live/models.py
-#: pod/video/forms.py pod/video/models.py
+#: pod/main/models.py pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/dashboard.html pod/video/views.py
 #: pod/video_search/templates/search/search.html
 msgid "Type"
@@ -3254,6 +3254,7 @@ msgid "Plan an event"
 msgstr ""
 
 #: pod/live/templates/live/direct.html pod/live/templates/live/events_next.html
+#: pod/main/models.py
 msgid "Next events"
 msgstr ""
 
@@ -4557,6 +4558,140 @@ msgstr ""
 msgid "Additional channel Tabs"
 msgstr ""
 
+#: pod/main/models.py
+msgid "Slider"
+msgstr ""
+
+#: pod/main/models.py
+msgid "Slider multi"
+msgstr ""
+
+#: pod/main/models.py
+msgid "Card list"
+msgstr ""
+
+#: pod/main/models.py
+msgid "HTML"
+msgstr ""
+
+#: pod/main/models.py pod/video/models.py
+#: pod/video_search/templates/search/search.html
+msgid "Channel"
+msgstr ""
+
+#: pod/main/models.py pod/video/models.py
+msgid "Theme"
+msgstr ""
+
+#: pod/main/models.py pod/playlist/models.py
+#: pod/playlist/templates/playlist/playlist_breadcrumbs.html
+#: pod/playlist/tests/test_models.py pod/playlist/views.py
+#: pod/video/templates/videos/video_breadcrumbs.html
+msgid "Playlist"
+msgstr ""
+
+#: pod/main/models.py pod/video/templates/videos/last_videos.html
+msgid "Last videos"
+msgstr ""
+
+#: pod/main/models.py
+msgid "Most views"
+msgstr ""
+
+#: pod/main/models.py
+msgid "Data type"
+msgstr ""
+
+#: pod/main/models.py
+msgid "Select the channel you want to link with."
+msgstr ""
+
+#: pod/main/models.py
+msgid "Select the theme you want to link with."
+msgstr ""
+
+#: pod/main/models.py
+msgid "Select the playlist you want to link with."
+msgstr ""
+
+#: pod/main/models.py
+msgid "Write in html inside this field."
+msgstr ""
+
+#: pod/main/models.py
+#, fuzzy
+#| msgid "Filter by title"
+msgid "Display title"
+msgstr "Filter op titel"
+
+#: pod/main/models.py
+msgid "No cache"
+msgstr ""
+
+#: pod/main/models.py
+msgid "Check this box if you don't want to keep the cache."
+msgstr ""
+
+#: pod/main/models.py
+msgid "Check this box if you want to activate debug mode."
+msgstr ""
+
+#: pod/main/models.py
+msgid "Show restricted"
+msgstr ""
+
+#: pod/main/models.py
+msgid "Check this box if you want to show restricted content."
+msgstr ""
+
+#: pod/main/models.py
+msgid "Must be authenticated"
+msgstr ""
+
+#: pod/main/models.py
+msgid "Check this box if users must be authenticated to view content."
+msgstr ""
+
+#: pod/main/models.py
+msgid "Auto slide"
+msgstr ""
+
+#: pod/main/models.py
+msgid "Check this box if if you want auto slide."
+msgstr ""
+
+#: pod/main/models.py
+msgid "Number of element"
+msgstr ""
+
+#: pod/main/models.py
+msgid "Number of element for slider multi"
+msgstr ""
+
+#: pod/main/models.py
+msgid "View videos from non visible channel"
+msgstr ""
+
+#: pod/main/models.py
+msgid "Check this box if if you want view videos from non visible channel."
+msgstr ""
+
+#: pod/main/models.py
+msgid "View videos with password"
+msgstr ""
+
+#: pod/main/models.py
+msgid "Check this box if if you want view videos with password."
+msgstr ""
+
+#: pod/main/models.py
+msgid "Block"
+msgstr ""
+
+#: pod/main/models.py
+msgid "Blocks"
+msgstr ""
+
 #: pod/main/settings.py
 msgid ""
 "Pod is aimed at users of our institutions, by allowing the publication of "
@@ -4641,6 +4776,12 @@ msgstr ""
 
 #: pod/main/templates/base.html
 msgid "I understand"
+msgstr ""
+
+#: pod/main/templates/block/card_list.html pod/main/templates/block/slider.html
+#: pod/main/templates/block/slider_multi.html
+#: pod/video/templates/videos/last_videos.html
+msgid "Show all videos"
 msgstr ""
 
 #: pod/main/templates/contact_us.html
@@ -5754,13 +5895,6 @@ msgstr ""
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
-msgstr ""
-
-#: pod/playlist/models.py
-#: pod/playlist/templates/playlist/playlist_breadcrumbs.html
-#: pod/playlist/tests/test_models.py pod/playlist/views.py
-#: pod/video/templates/videos/video_breadcrumbs.html
-msgid "Playlist"
 msgstr ""
 
 #: pod/playlist/models.py
@@ -7126,10 +7260,6 @@ msgstr ""
 msgid "Additionals channels tab"
 msgstr ""
 
-#: pod/video/models.py pod/video_search/templates/search/search.html
-msgid "Channel"
-msgstr ""
-
 #: pod/video/models.py
 msgid "Theme parent"
 msgstr ""
@@ -7144,10 +7274,6 @@ msgstr ""
 
 #: pod/video/models.py
 msgid "A theme must be in the same channel as its parent."
-msgstr ""
-
-#: pod/video/models.py
-msgid "Theme"
 msgstr ""
 
 #: pod/video/models.py
@@ -7710,14 +7836,6 @@ msgstr ""
 
 #: pod/video/templates/videos/footer_link.html
 msgid "Links"
-msgstr ""
-
-#: pod/video/templates/videos/last_videos.html
-msgid "Last videos"
-msgstr ""
-
-#: pod/video/templates/videos/last_videos.html
-msgid "Show all videos"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html
@@ -8302,6 +8420,10 @@ msgstr ""
 
 #: pod/video/views.py
 msgid "An available transcription language must be specified."
+msgstr ""
+
+#: pod/video/views.py
+msgid "No audio file found."
 msgstr ""
 
 #: pod/video/views.py

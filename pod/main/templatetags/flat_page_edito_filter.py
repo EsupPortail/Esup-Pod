@@ -33,11 +33,11 @@ EDITO_CACHE_PREFIX = getattr(settings, "EDITO_CACHE_PREFIX", "edito_cache_")
 
 @register.filter(name="edito")
 def edito(content, request):
-    bloc = display_content_by_bloc(content, request)
-    return bloc
+    block = display_content_by_block(content, request)
+    return block
 
 
-def display_content_by_bloc(content, request):  # noqa: C901
+def display_content_by_block(content, request):  # noqa: C901
     debugElts = []
 
     current_site = get_current_site(request)
@@ -127,16 +127,16 @@ def display_content_by_bloc(content, request):  # noqa: C901
         params['fct'] = 'render_last_view'
 
     if (content.type == 'html'):
-        params['template'] = 'bloc/html.html'
+        params['template'] = 'block/html.html'
         params['fct'] = 'render_html'
         params['data'] = content.html
 
     if (content.type == 'slider'):
-        params['template'] = 'bloc/slider.html'
+        params['template'] = 'block/slider.html'
     if (content.type == 'slider_multi'):
-        params['template'] = 'bloc/slider_multi.html'
+        params['template'] = 'block/slider_multi.html'
     if (content.type == 'card_list'):
-        params['template'] = 'bloc/card_list.html'
+        params['template'] = 'block/card_list.html'
 
     cached_content_part = None
 
