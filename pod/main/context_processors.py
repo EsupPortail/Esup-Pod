@@ -139,12 +139,12 @@ def context_settings(request):
     new_settings["COOKIE_LEARN_MORE"] = COOKIE_LEARN_MORE
     new_settings["SHOW_EVENTS_ON_HOMEPAGE"] = SHOW_EVENTS_ON_HOMEPAGE
     new_settings["USE_MEETING"] = USE_MEETING
-    new_settings["RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY"] = (
-        RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
-    )
-    new_settings["RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY"] = (
-        RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY
-    )
+    new_settings[
+        "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY"
+    ] = RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+    new_settings[
+        "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY"
+    ] = RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY
     new_settings["USE_NOTIFICATIONS"] = USE_NOTIFICATIONS
     return new_settings
 
@@ -157,7 +157,7 @@ def context_footer(request):
 
 
 def context_block(request):
-    block = Block.objects.all().filter(sites=get_current_site(request)).order_by('order')
+    block = Block.objects.all().filter(sites=get_current_site(request)).order_by("order")
     return {
         "BLOCK": block,
     }

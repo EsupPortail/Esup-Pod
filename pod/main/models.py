@@ -200,30 +200,30 @@ class AdditionalChannelTab(models.Model):
 class Block(models.Model):
     """Class describing Block objects."""
 
-    SLIDER = 'slider'
-    SLIDER_MULTI = 'slider_multi'
-    CARD_LIST = 'card_list'
-    HTML = 'html'
+    SLIDER = "slider"
+    SLIDER_MULTI = "slider_multi"
+    CARD_LIST = "card_list"
+    HTML = "html"
     TYPE = (
-        (SLIDER, _('Slider')),
-        (SLIDER_MULTI, _('Slider multi')),
-        (CARD_LIST, _('Card list')),
-        (HTML, _('HTML')),
+        (SLIDER, _("Slider")),
+        (SLIDER_MULTI, _("Slider multi")),
+        (CARD_LIST, _("Card list")),
+        (HTML, _("HTML")),
     )
 
-    CHANNEL = 'channel'
-    THEME = 'theme'
-    PLAYLIST = 'playlist'
-    LAST_VIDEOS = 'last_videos'
-    MOST_VIEWS = 'most_views'
-    EVENT_NEXT = 'event_next'
+    CHANNEL = "channel"
+    THEME = "theme"
+    PLAYLIST = "playlist"
+    LAST_VIDEOS = "last_videos"
+    MOST_VIEWS = "most_views"
+    EVENT_NEXT = "event_next"
     DATA_TYPE = (
-        (CHANNEL, _('Channel')),
-        (THEME, _('Theme')),
-        (PLAYLIST, _('Playlist')),
-        (LAST_VIDEOS, _('Last videos')),
-        (MOST_VIEWS, _('Most views')),
-        (EVENT_NEXT, _('Next events')),
+        (CHANNEL, _("Channel")),
+        (THEME, _("Theme")),
+        (PLAYLIST, _("Playlist")),
+        (LAST_VIDEOS, _("Last videos")),
+        (MOST_VIEWS, _("Most views")),
+        (EVENT_NEXT, _("Next events")),
     )
 
     title = models.CharField(_("Title"), max_length=250, blank=True, null=True)
@@ -259,7 +259,7 @@ class Block(models.Model):
     )
 
     Channel = models.ForeignKey(
-        'video.Channel',
+        "video.Channel",
         blank=True,
         null=True,
         on_delete=models.CASCADE,
@@ -267,7 +267,7 @@ class Block(models.Model):
     )
 
     Theme = models.ForeignKey(
-        'video.Theme',
+        "video.Theme",
         blank=True,
         null=True,
         on_delete=models.CASCADE,
@@ -275,7 +275,7 @@ class Block(models.Model):
     )
 
     Playlist = models.ForeignKey(
-        'playlist.Playlist',
+        "playlist.Playlist",
         blank=True,
         null=True,
         on_delete=models.CASCADE,
@@ -291,10 +291,7 @@ class Block(models.Model):
     )
 
     display_title = models.CharField(
-        verbose_name=_("Display title"),
-        max_length=250,
-        blank=True,
-        null=True
+        verbose_name=_("Display title"), max_length=250, blank=True, null=True
     )
 
     no_cache = models.BooleanField(
@@ -327,23 +324,22 @@ class Block(models.Model):
     )
 
     nb_element = models.PositiveIntegerField(
-        verbose_name=_("Number of element"),
-        default=5,
-        blank=True,
-        null=True
+        verbose_name=_("Number of element"), default=5, blank=True, null=True
     )
 
     slider_multi_nb = models.PositiveIntegerField(
         verbose_name=_("Number of element for slider multi"),
         default=5,
         blank=True,
-        null=True
+        null=True,
     )
 
     view_videos_from_non_visible_channels = models.BooleanField(
         verbose_name=_("View videos from non visible channel"),
         default=False,
-        help_text=_("Check this box if if you want view videos from non visible channel."),
+        help_text=_(
+            "Check this box if if you want view videos from non visible channel."
+        ),
     )
 
     shows_passworded = models.BooleanField(

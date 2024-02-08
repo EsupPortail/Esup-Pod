@@ -111,7 +111,7 @@ class LinkFooterAdmin(TranslationAdmin):
 class BlockAdminForm(forms.ModelForm):
     class Meta:
         model = Block
-        fields = '__all__'
+        fields = "__all__"
 
 
 class BlockAdmin(TranslationAdmin):
