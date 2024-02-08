@@ -8,7 +8,15 @@ from pod.video.models import Video
 
 
 class Quiz(models.Model):
-    """Quiz model."""
+    """
+    Quiz model.
+
+    Attributes:
+        video (OneToOneField <Video>): Video of the quiz.
+        connected_user_only (BooleanField): Connected user only.
+        activated_statistics (BooleanField): Activated statistics.
+        show_correct_answers (BooleanField): Show correct answers.
+    """
 
     video = models.OneToOneField(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     connected_user_only = models.BooleanField(
@@ -41,7 +49,16 @@ class Quiz(models.Model):
 
 
 class Question(models.Model):
-    """Question model."""
+    """
+    Question model.
+
+    Attributes:
+        quiz (ForeignKey <Quiz>): Quiz of the question.
+        title (CharField): Title of the question.
+        explanation (TextField): Explanation of the question.
+        start_timestamp (IntegerField): Start timestamp of the answer in the video.
+        end_timestamp (IntegerField): End timestamp of the answer in the video.
+    """
 
     quiz = models.ForeignKey(Quiz, verbose_name=_("Quiz"), on_delete=models.CASCADE)
     title = models.CharField(
@@ -102,7 +119,12 @@ class Question(models.Model):
 
 
 class UniqueChoiceQuestion(Question):
-    """Unique choice question model."""
+    """
+    Unique choice question model.
+
+    Attributes:
+        choices (JSONField <{question(str): is_correct(bool)}>): Choices of the question.
+    """
 
     choices = models.JSONField(
         verbose_name=_("Choices"),
@@ -112,3 +134,17 @@ class UniqueChoiceQuestion(Question):
     class Meta:
         verbose_name = _("Unique choice question")
         verbose_name_plural = _("Unique choice questions")
+
+    def clean(self):
+        super().clean()
+
+        # Check if there are at least 2 choices
+        if len(self.choices) < 2:
+            raise ValidationError(_("There must be at least 2 choices."))
+
+        # Check if there is only one correct answer
+        if sum([1 for choice in self.choices.values() if choice]) != 1:
+            raise ValidationError(_("There must be only one correct answer."))
+
+    def __str__(self):
+        return self.title
