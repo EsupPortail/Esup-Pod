@@ -40,7 +40,7 @@ def edito(content, request):
 
 
 def display_content_by_block(content, request):  # noqa: C901
-    debug_elts = []
+    debugElts = []
 
     current_site = get_current_site(request)
 
@@ -128,17 +128,17 @@ def display_content_by_block(content, request):  # noqa: C901
     if content.data_type == "last_videos":
         params["fct"] = "render_last_view"
 
-    if content.type == "html":
-        params["template"] = "block/html.html"
-        params["fct"] = "render_html"
-        params["data"] = content.html
+    if (content.type == 'html'):
+        params['template'] = 'block/html.html'
+        params['fct'] = 'render_html'
+        params['data'] = content.html
 
-    if content.type == "carousel":
-        params["template"] = "block/carousel.html"
-    if content.type == "multi_carousel":
-        params["template"] = "block/multi_carousel.html"
-    if content.type == "card_list":
-        params["template"] = "block/card_list.html"
+    if (content.type == 'slider'):
+        params['template'] = 'block/slider.html'
+    if (content.type == 'slider_multi'):
+        params['template'] = 'block/slider_multi.html'
+    if (content.type == 'card_list'):
+        params['template'] = 'block/card_list.html'
 
     cached_content_part = None
 

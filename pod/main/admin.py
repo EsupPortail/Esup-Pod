@@ -111,18 +111,12 @@ class LinkFooterAdmin(TranslationAdmin):
 
 
 class BlockAdminForm(forms.ModelForm):
-    """The form for Block administration in the Django admin panel."""
-
     class Meta:
-        """Metadata class defining the associated model and fields."""
-
         model = Block
-        fields = "__all__"
+        fields = '__all__'
 
 
 class BlockAdmin(TranslationAdmin):
-    """The admin configuration for the Block model in the Django admin panel."""
-
     list_display = (
         "title",
         "page",

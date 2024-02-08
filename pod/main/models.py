@@ -218,12 +218,12 @@ class Block(models.Model):
     MOST_VIEWS = "most_views"
     EVENT_NEXT = "event_next"
     DATA_TYPE = (
-        (CHANNEL, _("Channel")),
-        (THEME, _("Theme")),
-        (PLAYLIST, _("Playlist")),
-        (LAST_VIDEOS, _("Last videos")),
-        (MOST_VIEWS, _("Most views")),
-        (EVENT_NEXT, _("Next events")),
+        (CHANNEL, _('Channel')),
+        (THEME, _('Theme')),
+        (PLAYLIST, _('Playlist')),
+        (LAST_VIDEOS, _('Last videos')),
+        (MOST_VIEWS, _('Most views')),
+        (EVENT_NEXT, _('Next events')),
     )
 
     title = models.CharField(_("Title"), max_length=250, blank=True, null=True)
@@ -360,6 +360,5 @@ class Block(models.Model):
 
 @receiver(post_save, sender=Block)
 def default_site_block(sender, instance, created, **kwargs):
-    """Sets a default site for the instance if it has no associated sites upon creation."""
     if len(instance.sites.all()) == 0:
         instance.sites.add(Site.objects.get_current())
