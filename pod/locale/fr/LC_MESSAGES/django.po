@@ -4937,7 +4937,7 @@ msgstr "Voir les vidéos avec un mot de passe"
 
 #: pod/main/models.py
 msgid "Check this box if if you want view videos with password."
-msgstr "Cocher cette case si vous voulez voir les vidéos avec un mot de passe"
+msgstr "Cocher cette case si vous voulez voir les vidéos avec un mot de passe."
 
 #: pod/main/models.py
 msgid "Block"
