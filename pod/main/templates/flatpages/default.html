@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load flat_page_edito_filter %}
 
 {% block opengraph %}{% load video_filters static %}
   <meta name="description" content="{{ flatpage.content|metaformat|safe|striptags|truncatechars:150 }}">
@@ -24,4 +25,13 @@
 
 {% block page_content %}
 {{ flatpage.content }}
+
+  {% if BLOC %}
+    {% for link in BLOC %}
+      {% if flatpage.url == link.page.url %}
+        {{link|edito:request|safe}}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
 {% endblock page_content %}

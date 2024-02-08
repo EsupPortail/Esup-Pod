@@ -1,5 +1,6 @@
 from ckeditor.widgets import CKEditorWidget
 from django.contrib import admin
+from django import forms
 from django.contrib.flatpages.admin import FlatpageForm
 from django.contrib.flatpages.models import FlatPage
 from django.contrib.sites.models import Site
@@ -9,6 +10,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from modeltranslation.admin import TranslationAdmin
 from pod.main.models import LinkFooter, Configuration
 from pod.main.models import AdditionalChannelTab
+from pod.main.models import Bloc
 
 
 SITE_ID = getattr(settings, "SITE_ID", 1)
@@ -29,7 +31,7 @@ class PageForm(FlatpageForm):
 # CustomFlatPage admin panel
 
 
-class AdditionalChannelTabAdmin(admin.ModelAdmin):
+class AdditionalChannelTabAdmin(TranslationAdmin):
     list_display = ("name",)
 
 
@@ -106,9 +108,30 @@ class LinkFooterAdmin(TranslationAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+class BlocAdminForm(forms.ModelForm):
+    class Meta:
+        model = Bloc
+        fields = '__all__'
+
+
+class BlocAdmin(TranslationAdmin):
+    list_display = (
+        "title",
+        "page",
+        "type",
+        "data_type",
+    )
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+
+        return form
+
+
 # Unregister the default FlatPage admin and register CustomFlatPageAdmin.
 admin.site.unregister(FlatPage)
 admin.site.register(FlatPage, CustomFlatPageAdmin)
 admin.site.register(LinkFooter, LinkFooterAdmin)
 admin.site.register(Configuration, ConfigurationAdmin)
 admin.site.register(AdditionalChannelTab, AdditionalChannelTabAdmin)
+admin.site.register(Bloc, BlocAdmin)
