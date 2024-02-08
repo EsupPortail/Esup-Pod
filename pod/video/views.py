@@ -553,12 +553,7 @@ def dashboard(request):
             videos_list = videos_list.filter(pk__in=categories_videos)
 
         data_context["categories"] = categories
-
-        all_categories_videos = {}
-        for cat in categories:
-            videoss = list(cat.video.all().values_list("slug", flat=True))
-            all_categories_videos[cat.slug] = videoss
-        data_context["all_categories_videos"] = json.dumps(all_categories_videos)
+        data_context["all_categories_videos"] = get_json_videos_categories(request)
 
     page = request.GET.get("page", 1)
     full_path = ""
@@ -2971,6 +2966,16 @@ def get_categories_list(request):
 
 
 @login_required(redirect_field_name="referrer")
+def get_json_videos_categories(request):
+    categories = Category.objects.prefetch_related("video").filter(owner=request.user)
+    all_categories_videos = {}
+    for cat in categories:
+        videos = list(cat.video.all().values_list("slug", flat=True))
+        all_categories_videos[cat.slug] = videos
+    return json.dumps(all_categories_videos)
+    
+
+@login_required(redirect_field_name="referrer")
 @ajax_required
 def add_category(request):
     """
@@ -3096,17 +3101,9 @@ def edit_category(request, c_slug=None):
                 cat.title = title
                 cat.video.set(list(new_videos))
                 cat.save()
-                response["id"] = cat.id
-                response["title"] = cat.title
-                response["slug"] = cat.slug
-                response["success"] = True
+
                 response["message"] = _("Category updated successfully.")
-                response["videos"] = list(
-                    map(
-                        lambda v: get_video_data(v),
-                        cat.video.all(),
-                    )
-                )
+                response["all_categories_videos"] = get_json_videos_categories(request)
 
                 return HttpResponse(
                     json.dumps(response, cls=DjangoJSONEncoder),

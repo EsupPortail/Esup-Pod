@@ -128,6 +128,7 @@ function get_category_modal(url, page= null){
                   el.classList.remove("selected");
               }
           });
+          setSelectedVideos(catVideosListContainerId);
           url = url.replaceAll(/([?]page=)(\d+)/g, "");
       }else{
           categoryModal.innerHTML = html.innerHTML;
@@ -172,7 +173,12 @@ function post_category_modal(url){
     .then((data) => {
       data = JSON.parse(data);
       bootstrap.Modal.getInstance(categoryModal).toggle();
-      showalert(data["message"], "alert-success", "formalertdivbottomright");
+      let message = data["message"];
+      let videos = data["all_categories_videos"];
+      showalert(message, "alert-success", "formalertdivbottomright");
+      if(videos !== undefined){
+         all_categories_videos = JSON.parse(videos);
+      }
       refreshCategoriesLinks();
     })
     .catch(() => {

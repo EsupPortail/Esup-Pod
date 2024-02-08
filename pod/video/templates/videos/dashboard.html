@@ -193,6 +193,7 @@
     {% url 'video:video_delete' slug="abcd" as video_delete %}
     const DELETE_URL = `{{ video_delete|slice:"-5" }}`;
     const VIDEO_URL = `${window.location.origin}/video/`;
+    var all_categories_videos = JSON.parse("{{ all_categories_videos|escapejs }}");
   </script>
   <script src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
 {% else %}
