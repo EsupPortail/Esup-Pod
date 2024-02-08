@@ -15,9 +15,6 @@
 
 
 /* slider simple */
-.edito-slider {
-    margin-bottom: 3em;
-}
 .edito-slider .carousel img {
     width: 100%;
 object-fit:cover;
@@ -69,24 +66,6 @@ color: #fff!important;
 .edito-slider .carousel-control-next, .edito-slider .carousel-control-prev {
 	width:5%;
 }
-
-/* slider card list */
-.edito-card-list {
-    margin-bottom: 3em;
-}
-.video-card {
-    box-shadow: none;
-    border-radius: 0;
-    border: 2px solid #000;
-}
-.video-card .card-header {
-    border-bottom: 2px solid;
-}
-.video-card .video-title {
-    font-size: 14px;
-    font-weight: 700;
-}
-
 
 /* slider multiple */
 @media (min-width: 768px) {
