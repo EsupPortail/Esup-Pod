@@ -125,6 +125,7 @@ TEMPLATES = [
                 "pod.authentication.context_processors.context_authentication_settings",
                 "pod.recorder.context_processors.context_recorder_settings",
                 "pod.playlist.context_processors.context_settings",
+                "pod.quiz.context_processors.context_settings",
                 "pod.import_video.context_processors.context_settings",
             ],
         },
