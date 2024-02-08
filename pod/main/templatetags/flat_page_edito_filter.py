@@ -33,11 +33,11 @@ EDITO_CACHE_PREFIX = getattr(settings, "EDITO_CACHE_PREFIX", "edito_cache_")
 
 @register.filter(name="edito")
 def edito(content, request):
-    bloc = displayContentByBloc(content, request)
+    bloc = display_content_by_bloc(content, request)
     return bloc
 
 
-def displayContentByBloc(content, request):
+def display_content_by_bloc(content, request):  # noqa: C901
     debugElts = []
 
     current_site = get_current_site(request)
@@ -171,35 +171,31 @@ def render_base_videos(uniq_id, params, current_site, debugElts):
 
     filters = {}
 
-    if (params['container'] == 'playlist'):
-        container_playlist = PlaylistContent.objects.filter(
-            playlist=params['data']
-        )
-        container_playlistContent = []
-        for list in container_playlist:
-            container_playlistContent.append(list.video.id)
+    if params['container'] == 'playlist':
+        container_playlist = PlaylistContent.objects.filter(playlist=params['data'])
+        container_playlistContent = [list.video.id for list in container_playlist]
         filters["id__in"] = container_playlistContent
     else:
-        if (params['container'] == "theme"):
+        if params['container'] == "theme":
             container_childrens = container.get_all_children_flat()
             filters["theme__in"] = container_childrens
-            if (params['debug']):
-                if (len(container_childrens) > 1):
-                    debugElts.append('Theme has children(s)')
-                    for children in container_childrens:
-                        debugElts.append(' - children found [ID:%s] [SLUG:%s] [TITLE:%s]' % (children.id, children.slug, children.title))
+            if params['debug'] and len(container_childrens) > 1:
+                debugElts.append('Theme has children(s)')
+                debugElts.extend([
+                    f' - children found [ID:{children.id}] [SLUG:{children.slug}] [TITLE:{children.title}]'
+                    for children in container_childrens
+                ])
         else:
             filters[params['container']] = container
 
-    filters['encoding_in_progress'] = False
-    filters['is_draft'] = False
-    filters['sites'] = current_site
+    filters.update({
+        'encoding_in_progress': False,
+        'is_draft': False,
+        'sites': current_site,
+    })
 
     filter_q = Q(**filters)
-
-    query = Video.objects.filter(
-        filter_q)
-
+    query = Video.objects.filter(filter_q)
     query = addfilter(params, debugElts, query)
 
     videos = query.all().defer("video", "slug", "description").distinct()[:params['nb-element']]
@@ -207,32 +203,27 @@ def render_base_videos(uniq_id, params, current_site, debugElts):
     if params['debug']:
         debugElts.append(f"Database query '{str(videos.query)}'")
         debugElts.append('Found videos in container :')
-        for video in videos:
-            debugElts.append(f' - Video informations : [ID:{video.id}] [SLUG:{video.slug}] [TITLE:{video.title}]')
+        debugElts.extend([
+            f' - Video informations : [ID:{video.id}] [SLUG:{video.slug}] [TITLE:{video.title}]'
+            for video in videos
+        ])
 
-    if (params['title'] == ''):
-        if (params['container'] == 'playlist'):
-            title = container.name
-        else:
-            title = container.title
-    else:
-        title = params['title']
+    title = container.name if params['container'] == 'playlist' else container.title
+    title = title if params['title'] == '' else params['title']
 
-    if videos.count() < params['slider-multi-nb-card']:
-        params['slider-multi-nb-card'] = videos.count()
+    params['slider-multi-nb-card'] = min(params['slider-multi-nb-card'], videos.count())
 
-    part_content = loader.get_template(params['template']).render(
-        {
-            "uniq_id": uniq_id,
-            "container": container,
-            "title" : title,
-            "type": 'video',
-            "elements" : videos,
-            "nb_element": params['nb-element'],
-            "auto_slide": params['auto-slide'],
-            "slider_multi_nb_card" : params['slider-multi-nb-card']
-        }
-    )
+    part_content = loader.get_template(params['template']).render({
+        "uniq_id": uniq_id,
+        "container": container,
+        "title": title,
+        "type": 'video',
+        "elements": videos,
+        "nb_element": params['nb-element'],
+        "auto_slide": params['auto-slide'],
+        "slider_multi_nb_card": params['slider-multi-nb-card'],
+    })
+
     return part_content
 
 
