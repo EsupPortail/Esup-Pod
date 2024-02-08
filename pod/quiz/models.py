@@ -1,3 +1,5 @@
+"""EsupQuiz models."""
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext as _
@@ -7,8 +9,8 @@ from pod.video.models import Video
 
 class Quiz(models.Model):
     """Quiz model."""
-    video = models.OneToOneField(Video, verbose_name=_(
-        "Video"), on_delete=models.CASCADE)
+
+    video = models.OneToOneField(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     connected_user_only = models.BooleanField(
         verbose_name=_("Connected user only"),
         default=False,
@@ -40,8 +42,8 @@ class Quiz(models.Model):
 
 class Question(models.Model):
     """Question model."""
-    quiz = models.ForeignKey(Quiz, verbose_name=_(
-        "Quiz"), on_delete=models.CASCADE)
+
+    quiz = models.ForeignKey(Quiz, verbose_name=_("Quiz"), on_delete=models.CASCADE)
     title = models.CharField(
         verbose_name=_("Title"),
         max_length=250,
@@ -82,13 +84,31 @@ class Question(models.Model):
         super().clean()
 
         # Check if start_timestamp is greater than end_timestamp
-        if self.start_timestamp is not None and self.end_timestamp is not None and self.start_timestamp >= self.end_timestamp:
+        if (
+            self.start_timestamp is not None
+            and self.end_timestamp is not None
+            and self.start_timestamp >= self.end_timestamp
+        ):
             raise ValidationError(_("Start timestamp must be lower than end timestamp."))
 
         # Check if end_timestamp is defined without start_timestamp
         if self.end_timestamp is not None and self.start_timestamp is None:
             raise ValidationError(
-                _("End timestamp cannot be defined without a start timestamp."))
+                _("End timestamp cannot be defined without a start timestamp.")
+            )
 
     def __str__(self):
         return self.title
+
+
+class UniqueChoiceQuestion(Question):
+    """Unique choice question model."""
+
+    choices = models.JSONField(
+        verbose_name=_("Choices"),
+        default=dict,
+    )
+
+    class Meta:
+        verbose_name = _("Unique choice question")
+        verbose_name_plural = _("Unique choice questions")
