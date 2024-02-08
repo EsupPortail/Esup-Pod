@@ -69,7 +69,7 @@
   },
   {
     "pk": 1,
-    "model": "main.bloc",
+    "model": "main.block",
     "fields": {
         "title": "Dernières vidéos",
         "display_title_en": "Last videos",

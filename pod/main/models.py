@@ -200,8 +200,6 @@ class AdditionalChannelTab(models.Model):
 class Block(models.Model):
     """Class describing Block objects."""
 
-    # from pod.playlist.models import Playlist
-
     SLIDER = 'slider'
     SLIDER_MULTI = 'slider_multi'
     CARD_LIST = 'card_list'
