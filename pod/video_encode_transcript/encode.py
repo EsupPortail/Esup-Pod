@@ -139,7 +139,7 @@ def encode_video(video_id):
     else:
         encoding_video.start_encode()
         if encoding_video.error_encoding:
-            enc_log = EncodingLog.objects.get_or_create(video=video_to_encode)
+            enc_log, created = EncodingLog.objects.get_or_create(video=video_to_encode)
             msg = "Error during video encoding. See log at:\n%s" % enc_log.logfile.url
             log.warning(msg)
             change_encoding_step(video_id, -1, msg)
