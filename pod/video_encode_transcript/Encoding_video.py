@@ -1,4 +1,4 @@
-"""Encoding video."""
+"""Esup-Pod video encoding."""
 
 import json
 import os
@@ -401,7 +401,7 @@ class Encoding_video:
         return output_file
 
     def get_dressing_command(self):
-        """Get the command based on the dressing object parameters"""
+        """Get the command based on the dressing object parameters."""
         height = str(list(self.list_video_track.items())[0][1]["height"])
         order_opening_credits = 0
         dressing_command_params = "[vid][0:a]"
@@ -614,7 +614,7 @@ class Encoding_video:
         return thumbnail_command
 
     def get_first_item(self):
-        """get the first mp4 render from setting"""
+        """Get the first mp4 render from setting."""
         list_rendition = get_list_rendition()
         for rend in list_rendition.copy():
             if list_rendition[rend]["encode_mp4"] is False:

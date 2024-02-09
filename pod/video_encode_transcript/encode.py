@@ -6,6 +6,7 @@ from webpush.models import PushInformation
 from pod.video.models import Video
 from .Encoding_video_model import Encoding_video_model
 from .encoding_studio import encode_video_studio
+from .models import EncodingLog
 
 from pod.cut.models import CutVideo
 from pod.dressing.models import Dressing
@@ -137,8 +138,14 @@ def encode_video(video_id):
         )
     else:
         encoding_video.start_encode()
-        final_video = store_encoding_info(video_id, encoding_video)
-        end_of_encoding(final_video)
+        if encoding_video.error_encoding:
+            enc_log = EncodingLog.objects.get(video=video_to_encode)
+            msg = "Error during video encoding. See log at:\n%s" % enc_log.logfile.url
+            change_encoding_step(video_id, -1, msg)
+            send_email(msg, video_id)
+        else:
+            final_video = store_encoding_info(video_id, encoding_video)
+            end_of_encoding(final_video)
 
 
 def store_encoding_info(video_id, encoding_video):
