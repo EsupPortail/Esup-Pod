@@ -7144,7 +7144,7 @@ msgstr "Définir comme brouillon"
 
 #: pod/video/admin.py
 msgid "Transcript selected"
-msgstr "Transcrire la selection"
+msgstr "Transcrire la sélection"
 
 #: pod/video/forms.py
 msgid "File field"

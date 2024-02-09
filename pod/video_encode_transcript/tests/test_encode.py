@@ -38,6 +38,8 @@ class EncodeTestCase(TestCase):
         """Set up video and audio encoding tests."""
         if not self._one_time_setup_complete:
             self.before_running_all_tests()
+            self._one_time_setup_complete = True
+
         self.before_running_each_test()
 
     def before_running_all_tests(self):
@@ -134,7 +136,7 @@ class EncodeTestCase(TestCase):
         print(" --->  test_result_encoding_audio of EncodeTestCase: OK!")
 
     def test_delete_video(self):
-        """Tester la suppression de la video et la suppression en cascade."""
+        """Test video deletion and cascade deleting."""
         video_to_encode = Video.objects.get(id=1)
         video = video_to_encode.video.path
         video_dir = os.path.join(os.path.dirname(video), "%04d" % video_to_encode.id)
