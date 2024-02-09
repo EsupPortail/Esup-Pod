@@ -1,4 +1,8 @@
-"""Encode Test Case."""
+"""
+Video & Audio encoding test cases.
+
+*  run with `python manage.py test pod.video_encode_transcript.tests.test_encode`
+"""
 
 from django.conf import settings
 from django.test import TestCase
@@ -22,12 +26,18 @@ AUDIO_TEST = getattr(settings, "AUDIO_TEST", "pod/main/static/video_test/pod.mp3
 
 
 class EncodeTestCase(TestCase):
+    """Video and audio encoding tests."""
+
     fixtures = [
         "initial_data.json",
     ]
 
-    def setUp(self):
-        """Encode video and audio test files."""
+    @classmethod
+    def setUpClass(cls):
+        """Set up video and audio encoding tests."""
+        # Use setupClass to be sure setup is only done once.
+        super(EncodeTestCase, cls).setUpClass()
+
         user = User.objects.create(username="pod", password="pod1234pod")
         # owner1 = Owner.objects.get(user__username="pod")
         video = Video.objects.create(
@@ -40,9 +50,9 @@ class EncodeTestCase(TestCase):
         video.video.save("test.mp4", tempfile)
         dest = os.path.join(settings.MEDIA_ROOT, video.video.name)
         shutil.copyfile(VIDEO_TEST, dest)
-        print("\n ---> Start Encoding video")
+        print("\n ---> Start Encoding video test.mp4")
         encode.encode_video(video.id)
-        print("\n ---> End Encoding video")
+        print("\n ---> End Encoding video test.mp4")
 
         audio = Video.objects.create(
             title="Audio1",
@@ -54,9 +64,9 @@ class EncodeTestCase(TestCase):
         audio.video.save("test.mp3", tempfile)
         dest = os.path.join(settings.MEDIA_ROOT, audio.video.name)
         shutil.copyfile(AUDIO_TEST, dest)
-        print("\n ---> Start Encoding audio")
+        print("\n ---> Start Encoding audio test.mp3")
         encode.encode_video(audio.id)
-        print("\n ---> End Encoding audio")
+        print("\n ---> End Encoding audio test.mp3")
 
         print(" --->  SetUp of EncodeTestCase: OK!")
 
@@ -115,7 +125,7 @@ class EncodeTestCase(TestCase):
         self.assertFalse(audio.thumbnail)
         print(" --->  test_result_encoding_audio of EncodeTestCase: OK!")
 
-    def test_delete_object(self):
+    def test_delete_video(self):
         """Tester la suppression de la video et la suppression en cascade."""
         video_to_encode = Video.objects.get(id=1)
         video = video_to_encode.video.path
@@ -171,4 +181,4 @@ class EncodeTestCase(TestCase):
         # check audio folder remove
         self.assertFalse(os.path.isdir(audio_dir))
 
-        print("   --->  test_delete_object of EncodeTestCase: OK!")
+        print("   --->  test_delete_video of EncodeTestCase: OK!")
