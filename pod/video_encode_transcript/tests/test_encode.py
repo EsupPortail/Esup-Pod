@@ -32,12 +32,16 @@ class EncodeTestCase(TestCase):
         "initial_data.json",
     ]
 
-    @classmethod
-    def setUpClass(cls):
-        """Set up video and audio encoding tests."""
-        # Use setupClass to be sure setup is only done once.
-        super(EncodeTestCase, cls).setUpClass()
+    _one_time_setup_complete = False
 
+    def setUp(self):
+        """Set up video and audio encoding tests."""
+        if not self._one_time_setup_complete:
+            self.before_running_all_tests()
+        self.before_running_each_test()
+
+    def before_running_all_tests(self):
+        """Set up that must be run just once before all tests."""
         user = User.objects.create(username="pod", password="pod1234pod")
         # owner1 = Owner.objects.get(user__username="pod")
         video = Video.objects.create(
@@ -69,6 +73,10 @@ class EncodeTestCase(TestCase):
         print("\n ---> End Encoding audio test.mp3")
 
         print(" --->  SetUp of EncodeTestCase: OK!")
+
+    def before_running_each_test(self):
+        """Set up what must be run before each test."""
+        pass
 
     def test_encoding_wrong_file(self):
         """Test if a try to encode a wrong file ends well."""
