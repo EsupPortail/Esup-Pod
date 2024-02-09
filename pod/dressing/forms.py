@@ -1,3 +1,4 @@
+"""Esup-Pod dressing forms."""
 from django import forms
 from django.conf import settings
 from pod.main.forms_utils import add_placeholder_and_asterisk
@@ -19,7 +20,7 @@ if getattr(settings, "USE_PODFILE", False):
 
 
 class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
-    """Class AddOwnerWidget."""
+    """Widget to add a dressing owner."""
 
     search_fields = [
         "username__icontains",
@@ -28,7 +29,7 @@ class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
 
 
 class AddAccessGroupWidget(s2forms.ModelSelect2MultipleWidget):
-    """Class AddAccessGroupWidget."""
+    """Widget to add an access group to dressing."""
 
     search_fields = [
         "display_name__icontains",
@@ -37,7 +38,7 @@ class AddAccessGroupWidget(s2forms.ModelSelect2MultipleWidget):
 
 
 class AddVideoHoldWidget(s2forms.ModelSelect2Widget):
-    """Class AddVideoHoldWidget."""
+    """Widget to add video hold to dressing."""
 
     search_fields = ["slug__icontains", "title__icontains"]
 
@@ -50,7 +51,7 @@ class DressingForm(forms.ModelForm):
     admin_form = True
 
     def __init__(self, *args, **kwargs):
-        """Init method."""
+        """Init dressing form."""
         self.is_staff = (
             kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
         )
@@ -77,7 +78,7 @@ class DressingForm(forms.ModelForm):
             self.fields["opening_credits"].queryset = query_videos.all()
             self.fields["ending_credits"].queryset = query_videos.all()
 
-        # change ckeditor config for no staff user
+        # change CKEditor config for no staff user
         if not hasattr(self, "admin_form") and (
             self.is_staff is False and self.is_superuser is False
         ):
@@ -91,7 +92,7 @@ class DressingForm(forms.ModelForm):
         self.fields["owners"].initial = self.user
 
     class Meta(object):
-        """Meta class."""
+        """Video dressing metadata."""
 
         model = Dressing
         fields = "__all__"
@@ -115,6 +116,7 @@ class DressingDeleteForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        """Init a delete dressing form."""
         super(DressingDeleteForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
 
@@ -123,15 +125,19 @@ class DressingAdminForm(forms.ModelForm):
     """Form for admin panel."""
 
     def __init__(self, *args, **kwargs):
+        """Init admin dressing form."""
         self.request = kwargs.pop("request", None)
         super(DressingAdminForm, self).__init__(*args, **kwargs)
         if __FILEPICKER__ and self.fields.get("watermark"):
             self.fields["watermark"].widget = CustomFileWidget(type="image")
 
     def clean(self):
+        """Clean admin dressing form."""
         super(DressingAdminForm, self).clean()
 
     class Meta(object):
+        """Admin dressing form metadata."""
+
         model = Dressing
         fields = "__all__"
         exclude = ["videos"]

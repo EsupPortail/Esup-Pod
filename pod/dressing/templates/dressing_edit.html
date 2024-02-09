@@ -62,15 +62,12 @@
       <div class="text-center">
         <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
         <a href="{% url 'dressing:my_dressings' %}" class="btn btn-secondary">{% trans "Back" %}</a>
-
       </div>
   </form>
 {% endblock page_content %}
 
-{% block collapse_page_aside %}
-{% endblock collapse_page_aside %}
-{% block page_aside %}
-{% endblock page_aside %}
+{% block collapse_page_aside %}{% endblock collapse_page_aside %}
+{% block page_aside %}{% endblock page_aside %}
 
 {% block more_script %}
   <script src="/admin/jsi18n/"></script>

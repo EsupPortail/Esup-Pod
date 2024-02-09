@@ -106,7 +106,7 @@ def get_number_video_in_playlist(playlist: Playlist) -> int:
 
 def get_number_video_added_in_playlist(video: Video) -> int:
     """
-    Get the number of times a video has been added to a playlist
+    Get the number of times a video has been added to a playlist.
 
     Args:
         video (:class:`pod.video.models.Video`): The video object
@@ -119,7 +119,7 @@ def get_number_video_added_in_playlist(video: Video) -> int:
 
 def get_number_video_added_in_specific_playlist(playlist: Playlist) -> int:
     """
-    Get the number of times a video has been added to a specific playlist
+    Get the number of times a video has been added to a specific playlist.
 
     Args:
         playlist (:class:`pod.playlist.models.Playlist`): The playlist object
@@ -194,7 +194,7 @@ def get_video_list_for_playlist(playlist: Playlist) -> list:
 
 def get_playlist(slug: str) -> Playlist:
     """
-    Get a playlist with a slug
+    Get a playlist with a slug.
 
     Args:
         slug (str): The slug of the playlist

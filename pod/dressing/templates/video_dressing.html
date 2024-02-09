@@ -58,12 +58,11 @@
         </tr>
       </thead>
       <tbody>
-          {% for dressing in dressings %}
+        {% for dressing in dressings %}
           <tr>
             <td>
               <input type="radio" name="selected_dressing_value" value="{{ dressing.pk }}" id="dressing_{{ dressing.pk }}"
               {% if dressing.pk == current.pk %} checked="checked"{% endif %}>
-
             </td>
             <td><label for="dressing_{{ dressing.pk }}">{{ dressing.title }}</label></td>
             <td>
@@ -84,21 +83,19 @@
             </td>
             <td>
               {% if dressing.watermark %}
-              {{ dressing.opacity }}
+                {{ dressing.opacity }}
               {% else %}
-              <div class="text-center">
-                <span title="{%trans 'No watermark'%}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
-              </div>
+                <div class="text-center">
+                  <span title="{%trans 'No watermark'%}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
+                </div>
               {% endif %}
-            </td>
-            <td>
+            </td><td>
               {% if dressing.opening_credits %}
-              <a href="../../{{ dressing.opening_credits|slugify }}" title="{% trans 'View the video'%}">{{ dressing.opening_credits }}</a>
+                <a href="../../{{ dressing.opening_credits|slugify }}" title="{% trans 'View the video'%}">{{ dressing.opening_credits }}</a>
               {% else %}
                 {% trans 'None' %}
               {% endif %}
-            </td>
-            <td>
+            </td><td>
               {% if dressing.ending_credits %}
                 <a href="../../{{ dressing.ending_credits|slugify }}" title="{% trans 'View the video'%}">{{ dressing.ending_credits }}</a>
               {% else %}
@@ -106,11 +103,11 @@
               {% endif %}
             </td>
           </tr>
-          {% empty %}
-            <tr>
-              <td colspan="11">{% trans 'No dressings found.' %}</td>
-            </tr>
-          {% endfor %}
+        {% empty %}
+          <tr>
+            <td colspan="11">{% trans 'No dressings found.' %}</td>
+          </tr>
+        {% endfor %}
       </tbody>
     </table>
   </fieldset>
