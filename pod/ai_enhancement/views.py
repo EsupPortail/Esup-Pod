@@ -58,7 +58,8 @@ def enrich_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
     if enrichment_is_already_asked(video):
         enrichment = AIEnrichment.objects.filter(video=video).first()
         latest_version = aristote.get_latest_enrichment_version(enrichment.ai_enrichment_id_in_aristote)
-        if latest_version["status"] != "KO":
+        print("latest_version: ", latest_version)
+        if latest_version.get("status") != "KO":
             return HttpResponse(json.dumps(latest_version), content_type="application/json")
         else:
             return HttpResponse("Enrichment already asked. Wait please.", status=200)   # TODO: change this line

@@ -22,6 +22,14 @@ def get_storage_path_ai_enrichment(instance, filename):
 class AIEnrichment(models.Model):
     """AIEnrichment model."""
 
+    class Meta:
+        """Metadata class for AIEnrichment model."""
+
+        ordering = ["-created_at"]
+        get_latest_by = "updated_at"
+        verbose_name = _("AI enrichment")
+        verbose_name_plural = _("AI enrichments")
+
     video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     ai_enrichment_file = models.FileField(
         verbose_name=_("AI enrichment file"),
