@@ -23,10 +23,14 @@
 
   <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
   <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
-  <script src="{% url 'javascript-catalog' %}"></script>
+  <script id="jsi18n" src="{% url 'javascript-catalog' %}?ver={{VERSION}}"></script>
 
   <link rel="stylesheet" href="{% static 'css/video-iframe.css' %}?ver={{VERSION}}">
 
+  {% if CSS_OVERRIDE %}
+    <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen">
+  {% endif %}
+  
   <meta itemprop="duration" content="{{ video.duration }}">
   <meta itemprop="thumbnailUrl" content="{{ video.get_thumbnail_url }}">
   <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}: //{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">

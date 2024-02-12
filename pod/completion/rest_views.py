@@ -54,18 +54,31 @@ class OverlaySerializer(serializers.HyperlinkedModelSerializer):
 class ContributorViewSet(viewsets.ModelViewSet):
     queryset = Contributor.objects.all()
     serializer_class = ContributorSerializer
+    filterset_fields = [
+        "video",
+        "role",
+    ]
 
 
 class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
+    filterset_fields = [
+        "video",
+    ]
 
 
 class TrackViewSet(viewsets.ModelViewSet):
     queryset = Track.objects.all()
     serializer_class = TrackSerializer
+    filterset_fields = [
+        "video",
+    ]
 
 
 class OverlayViewSet(viewsets.ModelViewSet):
     queryset = Overlay.objects.all()
     serializer_class = OverlaySerializer
+    filterset_fields = [
+        "video",
+    ]

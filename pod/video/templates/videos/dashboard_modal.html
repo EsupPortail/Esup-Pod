@@ -1,0 +1,25 @@
+{% load i18n %}
+
+<div class="modal fade" id="modalBulkUpdate" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title h4">{% trans "Multiple actions" %}</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+          <button id="cancelModalBtn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              {% trans 'Cancel' %}
+          </button>
+          <button id="confirmModalBtn" type="button" class="btn btn-primary">
+              <span id="confirmModalBtnLabel">{% trans 'Apply' %}</span>
+          </button>
+          <div id="bulkUpdateLoader" tabindex="0" class="d-none">
+              <span class="spinner-border spinner-border-sm loaderSpinner" role="status" aria-hidden="true"></span>
+              <span class="visually-hidden">{% trans 'Loading...' %}</span>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

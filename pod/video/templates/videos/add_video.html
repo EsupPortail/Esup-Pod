@@ -3,13 +3,8 @@
 {% load static %}
 {% load tagging_tags %}
 
-
-{% block page_extra_head %}
-{% endblock page_extra_head %}
-
-
 {% block breadcrumbs %}{{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'video:my_videos' %}">{% trans 'My videos' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans 'Dashboard' %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
 {% endblock %}
 
@@ -49,7 +44,7 @@
 
   {% if TRANSCRIPT|length > 0 %}
   <div class="hide-on-processing">
-    <select class="form-select" aria-label="{% trans "Transcript" %}" id="select-transcript-lang">
+    <select class="form-select" aria-label="{% trans 'Transcript' %}" id="select-transcript-lang">
       <option selected value="">{% trans "Transcript" %}</option>
       {% for lang in TRANSCRIPT %}
       <option value="{{lang|first}}">{{lang|last}}</option>
@@ -113,7 +108,6 @@
 
 
 {% block more_script %}
-<script src="/admin/jsi18n/"></script>
 <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
@@ -130,9 +124,9 @@
 
 <script>
   /** formulaire **/
-  var max_chunk_size = {{ CHUNK_SIZE }}
-  var slug = "{{ slug }}"
-  var max_size = {{ max_size }}
+  var max_chunk_size = {{ CHUNK_SIZE }};
+  var slug = "{{ slug }}";
+  var max_size = {{ max_size }};
   var md5 = "",
     csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
     form_data = [{ "name": "csrfmiddlewaretoken", "value": csrf }];
@@ -166,13 +160,31 @@
     maxFileSize: 1,
     formData: form_data,
     add: function (e, data) { // Called before starting upload
-      // If this is the second file you're uploading we need to remove the
-      // old upload_id and just keep the csrftoken (which is always first).
-      $(".hide-on-processing").hide();
-      $(".show-on-processing").show();
-      form_data.splice(1);
-      calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
-      data.submit();
+	    // If this is the second file you're uploading we need to remove the
+	    // old upload_id and just keep the csrftoken (which is always first).
+	    var allow_extension_array = this.accept.replaceAll(' ', '').split(",");
+	    var extension = data.originalFiles[0].name.substr((data.originalFiles[0].name.lastIndexOf('.') +1)).toLowerCase();
+	    if (allow_extension_array.includes("."+extension) == false) {
+		    showalert(
+			    gettext("The file extension not in the allowed extension:") +
+			    "<br/>" +
+			    this.accept ,
+			    "alert-danger",
+		    );
+	    }
+	    else {
+		    var elementsHideProcessing = document.getElementsByClassName("hide-on-processing");
+		    for (let i = 0; i < elementsHideProcessing.length; i++) {
+			    elementsHideProcessing[i].classList.add('d-none');
+		    }
+		    var elementsShowProcessing = document.getElementsByClassName("show-on-processing");
+		    for (let i = 0; i < elementsShowProcessing.length; i++) {
+			    elementsShowProcessing[i].style.display = 'block';
+		    }
+		    form_data.splice(1);
+		    calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
+		    data.submit();
+	    }
     },
     chunkdone: function (e, data) { // Called after uploading each chunk
       $(this).is(':checked')

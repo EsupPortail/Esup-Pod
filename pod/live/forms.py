@@ -226,8 +226,9 @@ class EventForm(forms.ModelForm):
 
     fieldsets = (
         (
-            None,
+            "general",
             {
+                "legend": _("General settings"),
                 "fields": [
                     "title",
                     "start_date",
@@ -239,7 +240,7 @@ class EventForm(forms.ModelForm):
                     "password",
                     "is_restricted",
                     "restrict_access_to_groups",
-                ]
+                ],
             },
         ),
         (
@@ -321,10 +322,10 @@ class EventForm(forms.ModelForm):
             if query_buildings:
                 self.fields["building"].queryset = query_buildings.all()
                 self.initial["building"] = query_buildings.first().name
-                self.fields[
-                    "broadcaster"
-                ].queryset = get_available_broadcasters_of_building(
-                    self.user, query_buildings.first()
+                self.fields["broadcaster"].queryset = (
+                    get_available_broadcasters_of_building(
+                        self.user, query_buildings.first()
+                    )
                 )
         query_videos = Video.objects.filter(is_video=True).filter(
             Q(owner=self.user) | Q(additional_owners__in=[self.user])

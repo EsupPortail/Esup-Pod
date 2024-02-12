@@ -60,6 +60,6 @@
 }
 
 /* prevent bootstrap 5 from collapsing Django admin fieldset */
-fieldset.collapsed:not(.show) {
+fieldset.collapse:not(.show) {
   display: block;
 }

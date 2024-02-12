@@ -1,4 +1,5 @@
 """Tests for video comments and votes."""
+
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse, HttpResponse
 from django.test import TestCase, Client

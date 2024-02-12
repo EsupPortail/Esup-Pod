@@ -1,4 +1,5 @@
 """Completion forms."""
+
 from django import forms
 from django.conf import settings
 from django.forms.widgets import HiddenInput

@@ -61,7 +61,7 @@ var display_notes_place = function (data) {
       behavior: "smooth",
       block: "end",
     });
-  TriggerAlertClose();
+  triggerAlertClose();
   pod_note_comment_offset();
 };
 

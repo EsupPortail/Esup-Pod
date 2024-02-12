@@ -3,7 +3,7 @@
 {% spaceless %}
 <div class="pod-infinite-container infinite-container" id="videos_list" data-nextpage="{{ videos.has_next|yesno:'true,false' }}" data-countvideos="{{ count_videos }}">
   {% for video in videos %}
-  <div class="infinite-item card-group" {% if categories %}data-slug={{video.slug}}{% endif %} >
+  <div class="infinite-item" {% if categories %}data-slug={{video.slug}}{% endif %} >
     {% include "videos/card.html" %}
   </div>
   {% empty %}
@@ -14,10 +14,10 @@
 </div>
 {% if videos.has_next %}
   <a
-    style = "display:none"
+    style="display:none"
     class="infinite-more-link"
     href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ videos.next_page_number }}"
-    data-nextpagenumber = "{% if videos.has_next %}{{ videos.next_page_number }}{% else %}null{% endif %}" >{% trans "More" %}
+    data-nextpagenumber = "{% if videos.has_next %}{{ videos.next_page_number }}{% else %}null{% endif %}">{% trans "More" %}
   </a>
 {% endif %}
 <div class="infinite-loading" style="display: none;">

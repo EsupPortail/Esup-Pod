@@ -41,7 +41,7 @@
 {% endblock main_page_title %}
 
 {% block page_content %}
-  {% include 'loader.html' %}
+  {% include 'loader.html' with loaderid="videosListLoader" %}
   {% comment %}
   <p class="debug">
     "types": request.GET.getlist('type'),
@@ -63,6 +63,7 @@
 {% block more_script %}
   <script>
     const urlVideos = "{% url 'videos:videos' %}";
+    const videosListLoader = document.getElementById("videosListLoader");
     var page = 1;
     var nextPage = false;
     var ownerFilter = {{ owner_filter|yesno:'true,false'}};

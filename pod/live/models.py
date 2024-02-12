@@ -1,8 +1,6 @@
 """Esup-Pod "live" models."""
-import base64
+
 import hashlib
-import io
-import qrcode
 import os
 
 from ckeditor.fields import RichTextField
@@ -21,12 +19,12 @@ from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from pod.main.lang_settings import ALL_LANG_CHOICES as __ALL_LANG_CHOICES__
 from pod.main.lang_settings import PREF_LANG_CHOICES as __PREF_LANG_CHOICES__
 from django.utils.translation import get_language
+from pod.main.utils import generate_qrcode
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video, Type
@@ -272,25 +270,8 @@ class Broadcaster(models.Model):
 
     @property
     def qrcode(self, request=None):
-        url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
-        url_immediate_event = reverse("live:event_immediate_edit", args={self.id})
-        data = "".join(
-            [
-                url_scheme,
-                "://",
-                get_current_site(request).domain,
-                url_immediate_event,
-            ]
-        )
-        img = qrcode.make(data)
-        buffer = io.BytesIO()
-        img.save(buffer, format="PNG")
-        img_str = base64.b64encode(buffer.getvalue()).decode("utf-8")
         alt = _("QR code to record immediately an event")
-        return mark_safe(
-            f'<img src="data:image/png;base64, {img_str}" '
-            + f'width="300px" height="300px" alt={alt}>'
-        )
+        return generate_qrcode("live:event_immediate_edit", self.id, alt, request)
 
     def set_broadcaster_file(self, filename):
         trans_folder = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER)
@@ -368,7 +349,7 @@ class Event(models.Model):
         help_text=_(
             "You can add additional owners to the event. They "
             "will have the same rights as you except that they "
-            "can't delete this event."
+            "can’t delete this event."
         ),
     )
     start_date = models.DateTimeField(

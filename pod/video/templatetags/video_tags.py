@@ -22,6 +22,8 @@ from pod.video.models import Video
 import importlib
 import os
 
+from ...main.utils import generate_qrcode
+
 register = template.Library()
 
 HOMEPAGE_SHOWS_PASSWORDED = getattr(django_settings, "HOMEPAGE_SHOWS_PASSWORDED", True)
@@ -122,6 +124,62 @@ def get_last_videos(context):
     return recent_vids
 
 
+@register.simple_tag(name="get_video_qrcode")
+def get_video_qrcode(video_id: int) -> str:
+    """Get the video generated QR code.
+
+    Args:
+        video_id (int): Identifier of video object
+
+    Returns:
+        string: HTML-formed generated qrcode
+
+    """
+    alt = _("QR code video’s link")
+    return generate_qrcode("enrichment:video_enrichment", video_id, alt)
+
+
+@register.simple_tag(name="get_video_infos")
+def get_video_infos(video):
+    """
+    Get videos infos (password, draft and chaptered) to display in list mode.
+
+    Args:
+        video (:class:`pod.video.models.Video`): Video object instance.
+
+    Returns:
+        Return composite object of video's infos to be accessible in template
+    """
+    is_password_protected = video.password or video.is_restricted
+    is_chaptered = video.chapter_set.all().count() > 0
+    return {
+        "password": {
+            "status": is_password_protected,
+            "translation": (
+                _("This content is password protected.")
+                if is_password_protected
+                else _("This content is not password protected.")
+            ),
+        },
+        "draft": {
+            "status": video.is_draft,
+            "translation": (
+                _("This content is in draft.")
+                if video.is_draft
+                else _("This content is public.")
+            ),
+        },
+        "chaptered": {
+            "status": is_chaptered,
+            "translation": (
+                _("This content is chaptered.")
+                if is_chaptered
+                else _("This content is not chaptered.")
+            ),
+        },
+    }
+
+
 class getTagsForModelNode(TagsForModelNode):
     def __init__(self, model, context_var, counts):
         super(getTagsForModelNode, self).__init__(model, context_var, counts)
@@ -173,15 +231,15 @@ def do_tags_for_model(parser, token):
             _("%s tag requires either three or five arguments") % bits[0]
         )
     if bits[2] != "as":
-        raise TemplateSyntaxError(_("second argument to %s tag must be 'as'") % bits[0])
+        raise TemplateSyntaxError(_("second argument to %s tag must be “as”") % bits[0])
     if len_bits == 6:
         if bits[4] != "with":
             raise TemplateSyntaxError(
-                _("if given, fourth argument to %s tag must be 'with'") % bits[0]
+                _("if given, fourth argument to %s tag must be “with”") % bits[0]
             )
         if bits[5] != "counts":
             raise TemplateSyntaxError(
-                _("if given, fifth argument to %s tag must be 'counts'") % bits[0]
+                _("if given, fifth argument to %s tag must be “counts”") % bits[0]
             )
     if len_bits == 4:
         return getTagsForModelNode(bits[1], bits[3], counts=False)
@@ -234,12 +292,12 @@ def do_tag_cloud_for_model(parser, token):
             % bits[0]
         )
     if bits[2] != "as":
-        raise TemplateSyntaxError(_("second argument to %s tag must be 'as'") % bits[0])
+        raise TemplateSyntaxError(_("second argument to %s tag must be “as”") % bits[0])
     kwargs = {}
     if len_bits > 5:
         if bits[4] != "with":
             raise TemplateSyntaxError(
-                _("if given, fourth argument to %s tag must be 'with'") % bits[0]
+                _("if given, fourth argument to %s tag must be “with”") % bits[0]
             )
         kwargs = get_kwargs_for_cloud(len_bits, bits)
     return TagCloudForModelNode(bits[1], bits[3], **kwargs)
@@ -254,7 +312,7 @@ def get_kwargs_for_cloud(len_bits, bits):
                 kwargs = update_kwargs_from_bits(kwargs, name, value, bits)
             else:
                 raise TemplateSyntaxError(
-                    _("%(tag)s tag was given an invalid option: '%(option)s'")
+                    _("%(tag)s tag was given an invalid option: “%(option)s”")
                     % {
                         "tag": bits[0],
                         "option": name,
@@ -262,7 +320,7 @@ def get_kwargs_for_cloud(len_bits, bits):
                 )
         except ValueError:
             raise TemplateSyntaxError(
-                _("%(tag)s tag was given a badly formatted option: '%(option)s'")
+                _("%(tag)s tag was given a badly formatted option: “%(option)s”")
                 % {
                     "tag": bits[0],
                     "option": bits[i],
@@ -280,8 +338,8 @@ def update_kwargs_from_bits(kwargs, name, value, bits):
         except ValueError:
             raise TemplateSyntaxError(
                 _(
-                    "%(tag)s tag's '%(option)s' option was not "
-                    "a valid integer: '%(value)s'"
+                    "%(tag)s tag’s “%(option)s” option was not "
+                    "a valid integer: “%(value)s”"
                 )
                 % {
                     "tag": bits[0],
@@ -295,8 +353,8 @@ def update_kwargs_from_bits(kwargs, name, value, bits):
         else:
             raise TemplateSyntaxError(
                 _(
-                    "%(tag)s tag's '%(option)s' option was not "
-                    "a valid choice: '%(value)s'"
+                    "%(tag)s tag’s “%(option)s” option was not "
+                    "a valid choice: “%(value)s”"
                 )
                 % {
                     "tag": bits[0],

@@ -1,4 +1,5 @@
 """Models for Esup-Pod video_encode."""
+
 import os
 
 from django.db import models

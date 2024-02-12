@@ -29,6 +29,7 @@ cd /data/www/%userpod%/django_projects/podv3;
 source /usr/bin/virtualenvwrapper.sh; workon django_pod;
 python manage.py recorder checkDirectory'
 """
+
 import os
 import shutil
 from django.utils import translation

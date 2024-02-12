@@ -2,6 +2,7 @@
 
 *  run with 'python manage.py test pod.playlist.tests.test_views'
 """
+
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.urls import reverse
@@ -695,9 +696,13 @@ class TestPlaylistPage(TestCase):
         response = self.client.get(
             reverse("playlist:content", kwargs={"slug": self.playlist_user1.slug})
         )
-        self.assertTrue('class="bi bi-folder-minus"' in response.content.decode())
+        self.assertTrue(
+            'class="bi bi-folder-minus card-footer-link-i"' in response.content.decode()
+        )
         response = self.client.get(self.url_fav_user1)
-        self.assertFalse('class="bi bi-folder-minus"' in response.content.decode())
+        self.assertFalse(
+            'class="bi bi-folder-minus card-footer-link-i"' in response.content.decode()
+        )
         self.client.logout()
         print(" --->  test_folder_icon_in_video_links ok")
 

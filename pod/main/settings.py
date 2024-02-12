@@ -3,6 +3,7 @@ Django local settings for pod_project.
 
 Django version: 3.2.
 """
+
 import os
 from django.utils.translation import gettext_lazy as _
 

@@ -1,4 +1,5 @@
 """Unit tests for live views."""
+
 import json
 from http import HTTPStatus
 

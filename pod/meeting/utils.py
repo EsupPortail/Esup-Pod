@@ -1,4 +1,5 @@
 """Utils for Meeting module."""
+
 from datetime import date, timedelta
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
@@ -95,7 +96,7 @@ def send_email_recording_ready(meeting):
 
     subject = "[%s] %s" % (
         TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"),
-        _("A new Big Blue Button recording for '%(name)s' meeting is available")
+        _("A new Big Blue Button recording for “%(name)s” meeting is available")
         % {"name": meeting.name},
     )
 

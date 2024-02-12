@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-13 11:52+0100\n"
+"POT-Creation-Date: 2024-01-31 13:17+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -160,7 +160,7 @@ msgid "Pause to enter caption for segment from %s to %s."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
-msgid "A caption cannot has more than 80 characters."
+msgid "A caption cannot contain more than 80 characters."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
@@ -273,7 +273,7 @@ msgstr ""
 
 #: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
 #: pod/video/static/js/ajax-display-channels.js
-#: pod/video/static/js/comment-script.js
+#: pod/video/static/js/comment-script.js pod/video/static/js/dashboard.js
 msgid "Close"
 msgstr ""
 
@@ -414,7 +414,7 @@ msgid "User not found"
 msgstr ""
 
 #: pod/main/static/js/main.js
-msgid "Are you sure you want to delete theme '%(title)s'?"
+msgid "Are you sure you want to delete theme “%(title)s”?"
 msgstr ""
 
 #: pod/main/static/js/main.js
@@ -450,7 +450,7 @@ msgid "Text copied"
 msgstr ""
 
 #: pod/main/static/js/main.js
-msgid "Errors appear in the form, please correct them"
+msgid "There are errors in the form, please correct them."
 msgstr ""
 
 #: pod/main/static/js/main.js
@@ -471,6 +471,22 @@ msgstr ""
 
 #: pod/main/static/js/videojs-info-controlbar.js
 msgid "Information"
+msgstr ""
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "Unable to find information about the meeting"
+msgstr ""
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "End the meeting"
+msgstr ""
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "Text copied."
+msgstr ""
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "Something went wrong."
 msgstr ""
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
@@ -550,7 +566,7 @@ msgstr ""
 
 #: pod/progressive_web_app/static/js/notification-toast.js
 msgid ""
-"Don't forget to allow notifications from this website in your browser's "
+"Don’t forget to allow notifications from this website in your browser’s "
 "settings!"
 msgstr ""
 
@@ -599,6 +615,7 @@ msgid "No channels found"
 msgstr ""
 
 #: pod/video/static/js/ajax-display-channels.js
+#: pod/video/static/js/video_select.js
 msgid "%(count)s video"
 msgid_plural "%(count)s videos"
 msgstr[0] ""
@@ -668,11 +685,11 @@ msgid "Bad response from the server."
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
-msgid "Sorry, you're not allowed to vote by now."
+msgid "Sorry, you’re not allowed to vote by now."
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
-msgid "Sorry, you can't comment this video by now."
+msgid "Sorry, you can’t comment this video by now."
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
@@ -680,13 +697,25 @@ msgid "The comment has been deleted successfully."
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
-msgid "Sorry, you can't delete this comment by now."
+msgid "Sorry, you can’t delete this comment by now."
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
 #, javascript-format
 msgid "%s comment"
 msgid_plural "%s comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/static/js/dashboard.js
+msgid "Please confirm the editing of the following video:"
+msgid_plural "Please confirm the editing of the following videos:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/static/js/filter_aside_video_list_refresh.js
+msgid "%(count)s video found"
+msgid_plural "%(count)s videos found"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -834,6 +863,12 @@ msgstr ""
 #: pod/video/static/js/video_edit.js
 msgid "Get notified when the video encoding is finished."
 msgstr ""
+
+#: pod/video/static/js/video_select.js
+msgid "%(count)s video selected"
+msgid_plural "%(count)s videos selected"
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Title"

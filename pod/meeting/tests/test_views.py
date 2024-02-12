@@ -1,4 +1,5 @@
 """Tests the views for meeting module."""
+
 import random
 import requests
 

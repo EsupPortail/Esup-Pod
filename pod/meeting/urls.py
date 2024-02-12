@@ -1,4 +1,5 @@
 """URLs for Meeting module."""
+
 from django.urls import path
 
 from . import views

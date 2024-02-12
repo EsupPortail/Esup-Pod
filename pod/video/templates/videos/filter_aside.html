@@ -5,7 +5,7 @@
 {% spaceless %}
 <div class="card card-body">
   <h2 class="card-title pod-card__title h4">
-    <i class="bi bi-sliders2-vertical" aria-hidden="true"></i>&nbsp;{% trans 'Filters' %}
+      <i class="bi bi-sliders2-vertical" aria-hidden="true"></i>&nbsp;{% trans 'Filters' %}
     <button type="button" id="resetFilters" class="btn btn-outline-primary" title="{% trans 'Reset the filters' %}" data-bs-toggle="tooltip">{% trans 'Reset' %}</button>
   </h2>
   <p class="filter-info">
@@ -17,9 +17,9 @@
     {% include "videos/filter_aside_category.html" %}
   {% endif %}
 
-  {% if not HIDE_USER_FILTER and user.is_authenticated %}
+  {% if owner_filter %}
   <fieldset>
-    <legend  class="h5"><i class="bi bi-people" aria-hidden="true"></i> {% trans 'Users' %}</legend>
+    <legend class="h5"><i class="bi bi-people" aria-hidden="true"></i>&nbsp;{% trans 'Users' %}</legend>
     <div class="form-group">
       <label for="ownerbox">{% trans 'Filter by user' %}</label>
       <input placeholder="{% trans 'Search' %}" id="ownerbox" type="text" class="form-control">
@@ -41,7 +41,7 @@
   {% endif %}
   {% if HIDE_TYPES == False %}
   <fieldset class="border-right border-bottom mt-2">
-    <legend class="h5"><i class="bi bi-tv" aria-hidden="true"></i> {% trans 'Types' %} </legend>
+    <legend class="h5"><i class="bi bi-tv" aria-hidden="true"></i>&nbsp;{% trans 'Types' %} </legend>
     <div id="filterType">
       <div class="form-group collapse" id="collapseFilterType">
         {% for type in TYPES %}
@@ -56,7 +56,7 @@
       </div>
       {% if TYPES.count > 5 %}
         <span class="badge badge-light float-end">
-          <a class="collapsed" data-bs-toggle="collapse"
+          <a class="collapsed btn-link" data-bs-toggle="collapse"
              href="#collapseFilterType" role="button"
              aria-expanded="false" aria-controls="collapseFilterType"
              title="{% trans 'Fold/Unfold “Types” filters' %}"></a>
@@ -67,7 +67,7 @@
   {% endif %}
   {% if HIDE_DISCIPLINES == False %}
   <fieldset class="border-right border-bottom mt-2">
-    <legend class="h5"><i class="bi bi-book" aria-hidden="true"></i> {% trans 'Disciplines' %} </legend>
+    <legend class="h5"><i class="bi bi-book" aria-hidden="true"></i>&nbsp;{% trans 'Disciplines' %} </legend>
     <div id="filterDiscipline">
       <div class="form-group collapse" id="collapseFilterDiscipline">
         {% for discipline in DISCIPLINES %}
@@ -82,7 +82,7 @@
       </div>
       {% if DISCIPLINES.count > 5 %}
         <span class="badge badge-light float-end">
-          <a class="collapsed" data-bs-toggle="collapse"
+          <a class="collapsed btn-link" data-bs-toggle="collapse"
              href="#collapseFilterDiscipline" role="button"
              aria-expanded="false" aria-controls="collapseFilterDiscipline"
              title="{% trans 'Fold/Unfold “Disciplines” filters' %}"></a>
@@ -93,7 +93,7 @@
   {% endif %}
   {% if HIDE_TAGS == False %}
   <fieldset class="border-right border-bottom mt-2">
-    <legend class="h5"><i class="bi bi-tag" aria-hidden="true"></i> {% trans 'Tags' %}</legend>
+    <legend class="h5"><i class="bi bi-tag" aria-hidden="true"></i>&nbsp;{% trans 'Tags' %}</legend>
     <div id="filterTag">
       {% tags_for_model video.Video as tagscloud with counts %}
       {% with tagslist=tagscloud|dictsortreversed:"count"|slice:":20" %}
@@ -110,7 +110,7 @@
       </div>
       {% if tagslist|length > 5 %}
         <span class="badge badge-light float-end">
-          <a class="collapsed" data-bs-toggle="collapse"
+          <a class="collapsed btn-link" data-bs-toggle="collapse"
              href="#collapseFilterTag" role="button"
              aria-expanded="false" aria-controls="collapseFilterTag"
              title="{% trans 'Fold/Unfold “Tags” filters' %}"></a>
@@ -122,7 +122,7 @@
   {% endif %}
   {% if HIDE_CURSUS == False %}
   <fieldset class="border-right border-bottom mt-2">
-    <legend class="h5"><i class="bi bi-archive" aria-hidden="true"></i> {% trans 'University course' %}</legend>
+    <legend class="h5"><i class="bi bi-archive" aria-hidden="true"></i>&nbsp;{% trans 'University course' %}</legend>
     <div id="filterCursus">
       <div class="form-group collapse" id="collapseFilterCursus">
         {% for keyCursus , transCursus in cursus_list %}
@@ -136,7 +136,7 @@
         {% endfor %}
       </div>
       {% if cursus_list|length > 5 %}
-        <span class="badge badge-light float-end"><a class="collapsed" data-bs-toggle="collapse" href="#collapseFilterCursus" aria-expanded="false" aria-controls="collapseFilterCursus"></a></span>
+        <span class="badge badge-light float-end"><a class="collapsed btn-link" data-bs-toggle="collapse" href="#collapseFilterCursus" aria-expanded="false" aria-controls="collapseFilterCursus"></a></span>
       {% endif %}
     </div>
   </fieldset>

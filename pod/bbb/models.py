@@ -229,10 +229,10 @@ class Livestream(models.Model):
     )
     # If the user wants to download the video of this meeting after the live
     download_meeting = models.BooleanField(
-        verbose_name=_("Save meeting in My videos"),
+        verbose_name=_("Save meeting in dashboard"),
         help_text=_(
             "Do you want to save the video of "
-            'this meeting, at the end of the live, directly in "My videos"?'
+            "this meeting, at the end of the live, directly in “Dashboard”?"
         ),
         default=False,
     )
@@ -241,8 +241,8 @@ class Livestream(models.Model):
         verbose_name=_("Enable chat"),
         help_text=_(
             "Do you want a chat on the live page "
-            "for students? Messages sent in this live page's chat will "
-            "end up in BigBlueButton's public chat."
+            "for students? Messages sent in this live page’s chat will "
+            "end up in BigBlueButton’s public chat."
         ),
         default=False,
     )

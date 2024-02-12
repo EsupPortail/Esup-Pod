@@ -2,17 +2,12 @@
 {% load i18n %}
 {% load static %}
 
-{% block page_extra_head %}
-
-{% endblock page_extra_head %}
-
 {% block breadcrumbs %}{{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'video:my_videos' %}">{% trans 'My videos' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans 'Dashboard' %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{% trans "Editing group for the enrichment of the video" %}</li>
 {% endblock %}
 
 {% block page_title %}{% trans "Editing group for the enrichment of the video" %} "{{video.title}}"{% endblock %}
-
 
 {% block page_content %}
 {% spaceless %}
@@ -79,7 +74,6 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-  <script src="/admin/jsi18n/"></script>
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>

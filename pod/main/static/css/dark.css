@@ -101,11 +101,14 @@
   box-shadow: 0 0 0 0.2rem rgb(126 126 126 / 25%);
 }
 
-[data-theme="dark"]
+/*[data-theme="dark"]
   .category_modal_videos_list
   .infinite-item
   .checked_overlay {
   background-color: rgb(0 0 0 / 80%);
+}*/
+[data-theme="dark"] .infinite-item.selected .checked_overlay {
+  background-color: var(--dark-select-category-video-color);
 }
 
 [data-theme="dark"] #card-takenote .header:hover {

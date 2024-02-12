@@ -3,6 +3,7 @@ Django global settings for pod_project.
 
 Django version: 3.2.
 """
+
 import os
 import importlib.util
 
@@ -67,6 +68,7 @@ INSTALLED_APPS = [
     "pod.video_encode_transcript",
     "pod.import_video",
     "pod.progressive_web_app",
+    "pod.dressing",
     "pod.custom",
 ]
 
@@ -468,3 +470,11 @@ if locals()["DEBUG"] is True and importlib.util.find_spec("debug_toolbar") is no
 
     def show_toolbar(request):
         return True
+
+
+# Needed to start Esup-Pod with auto-signed https cert (with `make starts`)
+if (
+    locals()["DEBUG"] is True
+    and importlib.util.find_spec("django_extensions") is not None
+):
+    INSTALLED_APPS.append("django_extensions")

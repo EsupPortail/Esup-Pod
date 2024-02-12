@@ -40,7 +40,7 @@
 
 <div class="card card-body">
   <h2 class="card-title pod-card__title h4">{% trans "Advanced search" %}</h2>
-  <div class="card-text" >
+  <div class="card-text">
     <form method="get" action="{{ request.get_full_path }}" id="video_search_form">
     {% if form.errors %}
       <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
@@ -66,7 +66,7 @@
 
 <div class="card card-body">
   <h2 class="card-title pod-card__title h4">{% trans 'Filter' %}</h2>
-  <div class="card-text" >
+  <div class="card-text">
     <dl>
     {% if aggregations.owner_full_name and aggregations.owner_full_name.buckets %}
       <dt>{% trans 'Owner' %}</dt>
@@ -162,7 +162,6 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-
 <script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'waypoints/lib/shortcuts/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
@@ -188,7 +187,6 @@
   }
   });
 </script>
-<script src="/admin/jsi18n/"></script>
 <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>

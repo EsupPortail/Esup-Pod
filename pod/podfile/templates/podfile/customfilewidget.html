@@ -1,8 +1,9 @@
 {% load i18n static %}
 
-{% block more_style %}
-<link rel="stylesheet" type="text/css" href="{% static 'podfile/css/podfile.css' %}?ver={{VERSION}}">
-{% endblock more_style %}
+{% block page_extra_head %}
+  <link rel="stylesheet" type="text/css" href="{% static 'podfile/css/podfile.css' %}?ver={{VERSION}}">
+{% endblock page_extra_head %}
+
 <div>
   {{input|safe}}
   <span>
@@ -43,17 +44,17 @@
       {% endfor %}
       {% if type == "image" %}
           {% if id == "id_headband" %}
-            aria-label="{% trans "Headband - Select an image" %}"
+            aria-label="{% trans 'Headband - Select an image' %}"
           {% else %}
-            aria-label="{% trans "Thumbnail - Select an image" %}"
+            aria-label="{% trans 'Thumbnail - Select an image' %}"
           {% endif %}
     >
         {% trans 'Select an image' %}
       {% else %}
         {% if id == "id_slides" %}
-          aria-label="{% trans "Slides - Select a file" %}"
+          aria-label="{% trans 'Slides - Select a file' %}"
         {% else %}
-          aria-label="{% trans "File to import - Select a file" %}"
+          aria-label="{% trans 'File to import - Select a file' %}"
         {% endif %}
     >
         {% trans 'Select a file' %}
@@ -123,17 +124,17 @@ document.addEventListener("click", (event) => {
     <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" id="btn-fileinput_{{id}}"
       {% if type == "image" %}
           {% if id == "id_headband" %}
-            aria-label="{% trans "Headband - Select an image" %}"
+            aria-label="{% trans 'Headband - Select an image' %}"
           {% else %}
-            aria-label="{% trans "Thumbnail - Select an image" %}"
+            aria-label="{% trans 'Thumbnail - Select an image' %}"
           {% endif %}
     >
         {% trans 'Select an image' %}
       {% else %}
         {% if id == "id_slides" %}
-          aria-label="{% trans "Slides - Select a file" %}"
+          aria-label="{% trans 'Slides - Select a file' %}"
         {% else %}
-          aria-label="{% trans "File to import - Select a file" %}"
+          aria-label="{% trans 'File to import - Select a file' %}"
         {% endif %}
     >
         {% trans 'Select a file' %}
@@ -158,7 +159,7 @@ document.addEventListener("click", (event) => {
 });
 
 
-//let open_folder = document.querySelector(".open-folder").querySelector("button").style ="pointer-events : none" ;
+//let open_folder = document.querySelector(".open-folder").querySelector("button").style = "pointer-events: none";
 
 </script>
 {% endblock more_script %}
