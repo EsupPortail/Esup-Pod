@@ -122,8 +122,8 @@ class BulkUpdateTestCase(TransactionTestCase):
 
     def test_bulk_update_type(self):
         """Test bulk update of type attribute."""
-        video1 = Video.objects.get(pk=1)
-        video2 = Video.objects.get(pk=2)
+        video1 = Video.objects.get(title="Video1")
+        video2 = Video.objects.get(title="Video2")
 
         type1 = Type.objects.get(title="type1")
         type2 = Type.objects.get(title="type2")
