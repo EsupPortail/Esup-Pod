@@ -179,7 +179,7 @@ class BulkUpdateTestCase(TransactionTestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
 
-        post_request.user = user1
+        post_request.user = user2
         post_request.LANGUAGE_CODE = "fr"
         response = bulk_update(post_request)
         self.assertEqual(response.status_code, 200)
