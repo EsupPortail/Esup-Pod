@@ -143,6 +143,8 @@ def encode_video(video_id):
             msg = "Error during video `%s` encoding." % video_id
             if created is False:
                 msg += " See log at:\n%s" % enc_log.logfile.url
+            else:
+                enc_log.log = msg
 
             log.warning(msg)
             change_encoding_step(video_id, -1, msg)

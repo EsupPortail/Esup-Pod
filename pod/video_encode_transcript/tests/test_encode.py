@@ -125,6 +125,7 @@ class EncodeTestCase(TestCase):
         """Test if audio encoding worked properly."""
         # video id=1 & audio id=2
         audio = Video.objects.get(id=2)
+        self.assertEqual("Audio1", audio.title)
         list_m4a = EncodingAudio.objects.filter(video=audio, encoding_format="video/mp4")
         list_mp3 = EncodingAudio.objects.filter(video=audio, encoding_format="audio/mp3")
         el = EncodingLog.objects.get(video=audio)
