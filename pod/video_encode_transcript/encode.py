@@ -138,19 +138,16 @@ def encode_video(video_id):
         )
     else:
         encoding_video.start_encode()
+        final_video = store_encoding_info(video_id, encoding_video)
+
         if encoding_video.error_encoding:
-            enc_log, created = EncodingLog.objects.get_or_create(video=video_to_encode)
+            enc_log, created = EncodingLog.objects.get_or_create(video=final_video)
             msg = "Error during video `%s` encoding." % video_id
             if created is False:
                 msg += " See log at:\n%s" % enc_log.logfile.url
-            else:
-                enc_log.log = msg
 
-            log.warning(msg)
-            change_encoding_step(video_id, -1, msg)
             send_email(msg, video_id)
         else:
-            final_video = store_encoding_info(video_id, encoding_video)
             end_of_encoding(final_video)
 
 
@@ -185,7 +182,7 @@ def get_encoding_video(video_to_encode):
 
 
 def end_of_encoding(video):
-    """Send mail at the end of encoding, call transcription."""
+    """Notify user at the end of encoding & call transcription."""
     if (
         USE_NOTIFICATIONS
         and video.owner.owner.accepts_notifications

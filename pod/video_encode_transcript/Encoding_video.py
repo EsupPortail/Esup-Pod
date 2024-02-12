@@ -498,6 +498,7 @@ class Encoding_video:
         self.video_file = self.get_dressing_file()
 
     def encode_video_part(self):
+        """Encode the video part of a file."""
         mp4_command = self.get_mp4_command()
         return_value, return_msg = launch_cmd(mp4_command)
         self.add_encoding_log("mp4_command", mp4_command, return_value, return_msg)
@@ -565,6 +566,7 @@ class Encoding_video:
         return m4a_command
 
     def encode_audio_part(self):
+        """Encode the audio part of a video."""
         mp3_command = self.get_mp3_command()
         return_value, return_msg = launch_cmd(mp3_command)
         self.add_encoding_log("mp3_command", mp3_command, return_value, return_msg)
@@ -755,6 +757,7 @@ class Encoding_video:
             json.dump(data_to_dump, outfile, indent=2)
 
     def add_encoding_log(self, title, command, result, msg):
+        """Add Encoding step to the encoding_log local dict."""
         self.encoding_log[title] = {"command": command, "result": result, "msg": msg}
         if result is False and self.error_encoding is False:
             self.error_encoding = True

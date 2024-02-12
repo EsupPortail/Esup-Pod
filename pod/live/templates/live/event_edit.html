@@ -148,15 +148,7 @@
         <p>{% trans "Finally, remember to provide as precise a description as possible." %}<p>
       </div>
     </div>
-    <div class="card mt-1" id="card-mandatory-fields">
-      <h2 class="h4 card-header card-title pl-2">{% trans "Mandatory fields" %}</h2>
-      <div class="card-body card-text">
-        <p>
-          <span class="required_star">*</span>
-          {% trans "Fields marked with an asterisk are mandatory." %}
-        </p>
-      </div>
-    </div>
+    {% include 'main/mandatory_fields.html'%}
   {% endif %}
 {% endblock page_aside %}
 

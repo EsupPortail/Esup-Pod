@@ -97,6 +97,7 @@ class EncodeTestCase(TestCase):
         """Test if video encoding worked properly."""
         # video id=1 et audio id=2
         video_to_encode = Video.objects.get(id=1)
+        self.assertEqual("Video1", video_to_encode.title)
         list_mp2t = EncodingVideo.objects.filter(
             video=video_to_encode, encoding_format="video/mp2t"
         )
@@ -139,6 +140,7 @@ class EncodeTestCase(TestCase):
     def test_delete_video(self):
         """Test video deletion and cascade deleting."""
         video_to_encode = Video.objects.get(id=1)
+        self.assertEqual("Video1", video_to_encode.title)
         video = video_to_encode.video.path
         video_dir = os.path.join(os.path.dirname(video), "%04d" % video_to_encode.id)
         log_file = os.path.join(video_dir, "info_video.json")
@@ -183,6 +185,7 @@ class EncodeTestCase(TestCase):
         self.assertFalse(os.path.isdir(video_dir))
 
         audio = Video.objects.get(id=2)
+        self.assertEqual("Audio1", video_to_encode.title)
         audio_video_path = audio.video.path
         audio_dir = os.path.join(os.path.dirname(audio_video_path), "%04d" % audio.id)
         audio_log_file = os.path.join(audio_dir, "info_video.json")

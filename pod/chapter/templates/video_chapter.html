@@ -73,15 +73,7 @@
       <p>{% trans 'You must save your chapters to view the result.' %}</p>
     </div>
   </div>
-  <div class="card mt-1" id="card-mandatory-fields">
-    <h2 class="h4 card-header card-title pl-2">{% trans "Mandatory fields" %}</h2>
-    <div class="card-body card-text">
-      <p>
-        <span class="required_star">*</span>
-        {% trans "Fields marked with an asterisk are mandatory." %}
-      </p>
-    </div>
-  </div>
+  {% include 'mandatory_fields.html'%}
 {% endblock page_aside %}
 {% block more_script %}
   {% include 'videos/video-script.html'%}
