@@ -201,7 +201,7 @@ class Encoding_video:
         self.cutting_stop = stop or 0
         self.dressing = dressing or None
 
-    def is_video(self):
+    def is_video(self) -> bool:
         """Check if current encoding correspond to a video."""
         return len(self.list_video_track) > 0
 
@@ -757,7 +757,7 @@ class Encoding_video:
             json.dump(data_to_dump, outfile, indent=2)
 
     def add_encoding_log(self, title, command, result, msg):
-        """Add Encoding step to the encoding_log local dict."""
+        """Add Encoding step to the encoding_log dict."""
         self.encoding_log[title] = {"command": command, "result": result, "msg": msg}
         if result is False and self.error_encoding is False:
             self.error_encoding = True
