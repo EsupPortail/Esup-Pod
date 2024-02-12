@@ -155,30 +155,23 @@ class BulkUpdateTestCase(TransactionTestCase):
 
     def test_bulk_update_owner(self):
         """Test bulk update of owner attribute."""
-        video1 = Video.objects.get(pk=1)
-        video2 = Video.objects.get(pk=2)
-        video3 = Video.objects.get(pk=3)
-        video4 = Video.objects.get(pk=4)
-        video5 = Video.objects.get(pk=5)
+        video2 = Video.objects.get(title="Video2")
+        video3 = Video.objects.get(title="Video3")
 
         user1 = User.objects.get(username="pod1")
         user2 = User.objects.get(username="pod2")
-        user3 = User.objects.get(username="pod3")
 
-        self.client.force_login(user1)
+        self.client.force_login(user2)
 
         post_request = self.factory.post(
             "/bulk_update/",
             {
-                "owner": user2.id,
+                "owner": user1.id,
                 "selected_videos":
-                    '["%s", "%s", "%s", "%s", "%s"]'
+                    '["%s", "%s"]'
                     % (
-                        video1.slug,
                         video2.slug,
                         video3.slug,
-                        video4.slug,
-                        video5.slug,
                        ),
                 "update_fields": '["owner"]',
                 "update_action": "fields",
@@ -190,9 +183,8 @@ class BulkUpdateTestCase(TransactionTestCase):
         post_request.LANGUAGE_CODE = "fr"
         response = bulk_update(post_request)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(Video.objects.filter(owner=user1)), 0)
-        self.assertEqual(len(Video.objects.filter(owner=user2)), 5)
-        self.assertEqual(len(Video.objects.filter(owner=user3)), 0)
+        self.assertEqual(len(Video.objects.filter(owner=user1)), 3)
+        self.assertEqual(len(Video.objects.filter(owner=user2)), 0)
 
         print("--->  test_bulk_update_owner of BulkUpdateTestCase: OK")
         self.client.logout()
