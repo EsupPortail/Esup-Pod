@@ -120,10 +120,13 @@ class BulkUpdateTestCase(TransactionTestCase):
 
         print(" --->  SetUp of BulkUpdateTestCase: OK!")
 
-    def test_bulk_update_title(self):
-        """Test bulk update of title attribute."""
+    def test_bulk_update_type(self):
+        """Test bulk update of type attribute."""
         video1 = Video.objects.get(pk=1)
         video2 = Video.objects.get(pk=2)
+
+        type1 = Type.objects.get(title="type1")
+        type2 = Type.objects.get(title="type2")
 
         user1 = User.objects.get(username="pod1")
 
@@ -132,9 +135,9 @@ class BulkUpdateTestCase(TransactionTestCase):
         post_request = self.factory.post(
             "/bulk_update/",
             {
-                "title": "Modified Title",
+                "type": type2.id,
                 "selected_videos": '["%s", "%s"]' % (video1.slug, video2.slug),
-                "update_fields": '["title"]',
+                "update_fields": '["type"]',
                 "update_action": "fields",
             },
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
@@ -144,9 +147,54 @@ class BulkUpdateTestCase(TransactionTestCase):
         post_request.LANGUAGE_CODE = "fr"
         response = bulk_update(post_request)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(Video.objects.filter(title="Modified Title")), 2)
+        self.assertEqual(len(Video.objects.filter(type=type1)), 0)
+        self.assertEqual(len(Video.objects.filter(type=type2)), 5)
 
-        print("--->  test_bulk_update_title of BulkUpdateTestCase: OK")
+        print("--->  test_bulk_update_type of BulkUpdateTestCase: OK")
+        self.client.logout()
+
+    def test_bulk_update_owner(self):
+        """Test bulk update of owner attribute."""
+        video1 = Video.objects.get(pk=1)
+        video2 = Video.objects.get(pk=2)
+        video3 = Video.objects.get(pk=3)
+        video4 = Video.objects.get(pk=4)
+        video5 = Video.objects.get(pk=5)
+
+        user1 = User.objects.get(username="pod1")
+        user2 = User.objects.get(username="pod2")
+        user3 = User.objects.get(username="pod3")
+
+        self.client.force_login(user1)
+
+        post_request = self.factory.post(
+            "/bulk_update/",
+            {
+                "owner": user2.id,
+                "selected_videos":
+                    '["%s", "%s", "%s", "%s", "%s"]'
+                    % (
+                        video1.slug,
+                        video2.slug,
+                        video3.slug,
+                        video4.slug,
+                        video5.slug,
+                       ),
+                "update_fields": '["owner"]',
+                "update_action": "fields",
+            },
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+
+        post_request.user = user1
+        post_request.LANGUAGE_CODE = "fr"
+        response = bulk_update(post_request)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(Video.objects.filter(owner=user1)), 0)
+        self.assertEqual(len(Video.objects.filter(owner=user2)), 5)
+        self.assertEqual(len(Video.objects.filter(owner=user3)), 0)
+
+        print("--->  test_bulk_update_owner of BulkUpdateTestCase: OK")
         self.client.logout()
 
     def tearDown(self):
