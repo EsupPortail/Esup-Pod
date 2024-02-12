@@ -185,7 +185,7 @@ class EncodeTestCase(TestCase):
         self.assertFalse(os.path.isdir(video_dir))
 
         audio = Video.objects.get(id=2)
-        self.assertEqual("Audio1", video_to_encode.title)
+        self.assertEqual("Audio1", audio.title)
         audio_video_path = audio.video.path
         audio_dir = os.path.join(os.path.dirname(audio_video_path), "%04d" % audio.id)
         audio_log_file = os.path.join(audio_dir, "info_video.json")
