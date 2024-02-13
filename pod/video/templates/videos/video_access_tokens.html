@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block page_extra_head %}
+    {{ block.super }}
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans 'Dashboard' %}</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'video:video' slug=video.slug %}">{{video.title}}</a></li>
+  <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
+{% endblock %}
+
+{% block page_title %}
+    {{page_title}}
+{% endblock %}
+
+{% block page_content %}
+<div class="d-grid gap-2 d-md-flex justify-content-md mb-2">
+    <form method="post" action="{% url 'video:video_edit_access_tokens' video.slug %}" style="display: inline;">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="add" />
+    <button type="submit" class="initials btn btn-primary pod-btn-primary btn-sm" title="{% trans 'Add a token' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a token' %}">
+        <i class="bi bi-plus pod-add" aria-hidden="true"></i><span>{% trans "Add a token" %}</span>
+    </button>
+    </form>
+</div>
+
+<table class="table align-middle table-sm table-bordered table-striped caption-top" id="recordings">
+    <thead>
+      <tr>
+        <th scope="col"><i class="bi bi-universal-access-circle" aria-hidden="true"></i>&nbsp;{% trans "Token" %}</th>
+        <th scope="col"><i class="bi bi-link-45deg" aria-hidden="true"></i>&nbsp;{% trans 'Share the link' %}</th>
+        <th scope="col"><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Embed in a web page' %}</th>
+        <th scope="col"><i class="bi bi-trash3" aria-hidden="true"></i>&nbsp;{% trans "Delete" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for token in tokens %}
+        <tr class="recordings_list_item">
+            <td class="recording_name">&nbsp;{{ token.token }} </td>
+            <td>
+                <div class="form-group">
+                    <label for="txtpartage">{% trans 'Use this link to share the video:' %}</label>
+                    <textarea class="form-control" type="text" name="txtpartage" id="txtpartage" rows="4" 
+                    readonly>{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}{{ token.token }}/</textarea>
+                    
+                </div>
+            </td>
+            <td>
+                <div class="form-group ">
+                    <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:'%}</label>
+                    <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4"
+                    readonly>&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}{{ token.token }}/?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen title="{{ video.title }}" &gt;&lt;/iframe&gt;</textarea>
+                </div>
+            </td>
+            <td>
+            {% trans "Please confirm you want to delete the token" as confirmDelete %}
+            <form method="post" action="{% url 'video:video_edit_access_tokens' video.slug %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete" />
+            <input type="hidden" name="token" value="{{ token.token }}" />
+            <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the token'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                <i class="bi bi-trash3 pod-add" aria-hidden="true"></i>
+            </button>
+            </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock page_content %}
+
+{% block collapse_page_aside %}{% endblock collapse_page_aside %}
+{% block page_aside %}{% endblock page_aside %}
+
+{% block more_script %}{% endblock more_script %}

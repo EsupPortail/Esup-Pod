@@ -210,6 +210,8 @@
       <div class="card" id="card-sharedraftversion">
         <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans 'Embed/Share (Draft Mode)' %}</h2>
         <div class="card-body card-text">
+          <a href="{% url 'video:video_edit_access_tokens' video.slug %}" class="btn btn-primary my-2">{% trans 'Manage access tokens' %}</a>
+          <!--
           <label class="form-label" for="txtpartageprive">{% trans 'Use this link to share the video in draft mode' %}</label>
           <div class="input-group">
             <input class="form-control form-control-sm form-control-plaintext" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video/{{ form.instance.slug }}/{{ form.instance.get_hashkey }}/" readonly>
@@ -219,6 +221,7 @@
               </clipboard-copy>
             </div>
           </div>
+          -->
         </div>
       </div>
     {% endif %}

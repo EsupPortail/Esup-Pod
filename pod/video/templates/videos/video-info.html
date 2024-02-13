@@ -380,15 +380,22 @@
               </div>
 
             </fieldset>
-
+            {% if video.is_draft == True %}
+            <fieldset class="pod-share-fieldset">
+              <legend><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Embed in a web page' %}</legend>
+              <div class="form-group ">
+                <a href="{% url 'video:video_edit_access_tokens' video.slug %}" class="btn btn-primary my-2">{% trans 'Manage access tokens' %}</a>
+              </div>
+            </fieldset>
+            {% else %}
             <fieldset class="pod-share-fieldset">
               <legend><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Embed in a web page' %}</legend>
               <div class="form-group ">
                 <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:'%}</label>
-                <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4" readonly>&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen title="{{ video.title }}" &gt;&lt;/iframe&gt;</textarea>
+                <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4" readonly>&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen title="{{ video.title }}" &gt;&lt;/iframe&gt;</textarea>
               </div>
             </fieldset>
-
+            {% endif %}
             {% if request.user == video.owner or request.user in video.additional_owners.all%}
               <fieldset class="pod-share-fieldset">
                 <legend><i class="bi bi-cloud-upload" aria-hidden="true"></i>&nbsp;{% trans 'BigBlueButton/H5P Integration' %}</legend>
@@ -408,12 +415,19 @@
                 </div>
               </fieldset>
             {% endif %}
-
+            {% if video.is_draft == True %}
+            <fieldset class="pod-share-fieldset">
+              <legend><i class="bi bi-link-45deg" aria-hidden="true"></i>&nbsp;{% trans 'Share the link' %}</legend>
+              <div class="form-group">
+                <a href="{% url 'video:video_edit_access_tokens' video.slug %}" class="btn btn-primary my-2">{% trans 'Manage access tokens' %}</a>
+              </div>
+            </fieldset>
+            {% else %}
             <fieldset class="pod-share-fieldset">
               <legend><i class="bi bi-link-45deg" aria-hidden="true"></i>&nbsp;{% trans 'Share the link' %}</legend>
               <div class="form-group">
                 <label for="txtpartage">{% trans 'Use this link to share the video:' %}</label>
-                <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" readonly>
+                <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{% else %}{% url 'video:video' slug=video.slug %}{% endif %}" readonly>
               </div>
               <div class="form-group m-2">
               {% get_video_qrcode video.id as qrcode %}
@@ -423,6 +437,7 @@
                   <button id="btn-download-qr-code" type="submit" data-slug="{{ video.slug }}" class="btn btn-primary my-2" title="{% trans 'Download this QR code' %}">{% trans 'Download' %}</button>
               </div>
             </fieldset>
+            {% endif %}
           </div>
         </div>
       </div>
