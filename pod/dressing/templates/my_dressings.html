@@ -37,22 +37,14 @@
         <td>{{ dressing.title }}</td>
         <td>
           {% for owner in dressing.owners.all %}
-            {% if owner.first_name %}
-              {{ owner.first_name }} {{ owner.last_name }}
-            {% else %}
-              {{ owner.username }}
-            {% endif %}
+            {{ owner }}
             {% if not forloop.last %}, {% endif %}
           {% empty %}
             {% trans 'No owners' %}
           {% endfor %}
         </td><td>
           {% for user in dressing.users.all %}
-            {% if user.first_name %}
-              {{ user.first_name }} {{ user.last_name }}
-            {% else %}
-              {{ user.username }}
-            {% endif %}
+            {{ user }}
             {% if not forloop.last %}, {% endif %}
           {% empty %}
             {% trans 'No users' %}
@@ -74,7 +66,7 @@
             {{ dressing.get_position_display }}
           {% else %}
             <div class="text-center">
-              <span title="{%trans 'No watermark'%}"><i class="bi bi-x-lg" aria-hidden="true"></i></span>
+              <span title="{% trans 'No watermark' %}"><i class="bi bi-x-lg" aria-hidden="true"></i></span>
             </div>
           {% endif %}
         </td><td>
@@ -82,18 +74,18 @@
             {{ dressing.opacity }}
           {% else %}
             <div class="text-center">
-              <span title="{%trans 'No watermark'%}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
+              <span title="{% trans 'No watermark' %}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
             </div>
           {% endif %}
         </td><td>
           {% if dressing.opening_credits %}
-            <a href="../../video/{{ dressing.opening_credits|slugify }}" title="{% trans 'View the video'%}">{{ dressing.opening_credits }}</a>
+            <a href="{% url 'video:video' slug=dressing.opening_credits.slug %}" title="{% trans 'View the video' %}">{{ dressing.opening_credits }}</a>
           {% else %}
             {% trans 'None' %}
           {% endif %}
         </td><td>
           {% if dressing.ending_credits %}
-            <a href="../../video/{{ dressing.ending_credits|slugify }}" title="{% trans 'View the video'%}">{{ dressing.ending_credits }}</a>
+            <a href="{% url 'video:video' slug=dressing.ending_credits.slug %}" title="{% trans 'View the video' %}">{{ dressing.ending_credits }}</a>
           {% else %}
             {% trans 'None' %}
           {% endif %}

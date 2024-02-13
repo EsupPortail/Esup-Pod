@@ -11,6 +11,13 @@
   >
 {% endblock page_extra_head %}
 
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item active" aria-current="page">{{ page_title }}</li>
+{% endblock %}
+
+
 {% block page_content %}
   <form class="form" autocomplete="off">
     {% csrf_token %}
@@ -92,5 +99,5 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-  <script src="{% static 'js/change_video_owner.js' %}"></script>
+  <script src="{% static 'js/change_video_owner.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}

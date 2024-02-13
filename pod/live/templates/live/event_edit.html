@@ -148,7 +148,7 @@
         <p>{% trans "Finally, remember to provide as precise a description as possible." %}<p>
       </div>
     </div>
-    {% include 'main/mandatory_fields.html'%}
+    {% include "main/mandatory_fields.html" %}
   {% endif %}
 {% endblock page_aside %}
 
@@ -200,7 +200,6 @@
         var clockCount = 0;
         document.querySelectorAll('.clockbox').forEach( (e) => {
           var $this = e;
-          console.log('clockbox');
           $this.querySelector('h2').remove();
         });
         document.querySelectorAll('ul.timelist').forEach( (e) => {

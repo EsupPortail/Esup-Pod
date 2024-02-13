@@ -15,7 +15,7 @@
 
 {% block breadcrumbs %}
 {{block.super}}
-<li class="breadcrumb-item"><a href="{% url 'video:dashboard'%}">{% trans 'Dashboard' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans "Dashboard" %}</a></li>
 <li class="breadcrumb-item">
   <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}">
     {{video.title|title|truncatechars:45}}
@@ -23,7 +23,7 @@
 </li>
 
 <li class="breadcrumb-item active" aria-current="page">
-    {% trans 'Cut the video' %}
+  {% trans "Cut the video" %}
 </li>
 
 {% endblock %}
@@ -133,7 +133,6 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-{% include 'videos/video-script.html'%}
-<script src="{% static 'js/video_cut.js' %}?ver={{VERSION}}"></script>
-
+  {% include "videos/video-script.html" %}
+  <script src="{% static 'js/video_cut.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}

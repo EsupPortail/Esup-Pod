@@ -4,7 +4,7 @@
 {% load tagging_tags %}
 
 {% block breadcrumbs %}{{ block.super }}
-  <li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans 'Dashboard' %}</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans "Dashboard" %}</a></li>
   {% if form.instance.title and form.instance.slug != '' %}
     <li class="breadcrumb-item"><a href="{% url 'video:video' slug=form.instance.slug %}" title="{{form.instance.title}}">{{form.instance.title|title|truncatechars:45}}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>

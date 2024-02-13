@@ -14,7 +14,7 @@
   {{block.super}}
 
   <li class="breadcrumb-item">
-    <a href="{% url 'video:dashboard'%}">{% trans 'Dashboard' %}</a>
+    <a href="{% url 'video:dashboard' %}">{% trans 'Dashboard' %}</a>
   </li>
 
   <li class="breadcrumb-item">
@@ -77,7 +77,7 @@
                 {{ dressing.get_position_display }}
               {% else %}
                 <div class="text-center">
-                  <span title="{%trans 'No watermark'%}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
+                  <span title="{% trans 'No watermark' %}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
                 </div>
               {% endif %}
             </td>
@@ -86,18 +86,18 @@
                 {{ dressing.opacity }}
               {% else %}
                 <div class="text-center">
-                  <span title="{%trans 'No watermark'%}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
+                  <span title="{% trans 'No watermark' %}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
                 </div>
               {% endif %}
             </td><td>
               {% if dressing.opening_credits %}
-                <a href="../../{{ dressing.opening_credits|slugify }}" title="{% trans 'View the video'%}">{{ dressing.opening_credits }}</a>
+                <a href="{% url 'video:video' slug=dressing.opening_credits.slug %}" title="{% trans 'View the video' %}">{{ dressing.opening_credits }}</a>
               {% else %}
                 {% trans 'None' %}
               {% endif %}
             </td><td>
               {% if dressing.ending_credits %}
-                <a href="../../{{ dressing.ending_credits|slugify }}" title="{% trans 'View the video'%}">{{ dressing.ending_credits }}</a>
+                <a href="{% url 'video:video' slug=dressing.ending_credits.slug %}" title="{% trans 'View the video' %}">{{ dressing.ending_credits }}</a>
               {% else %}
                 {% trans 'None' %}
               {% endif %}
@@ -137,6 +137,6 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-  {% include 'videos/video-script.html'%}
+  {% include 'videos/video-script.html' %}
   <script src="{% static 'js/video_dressing.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}

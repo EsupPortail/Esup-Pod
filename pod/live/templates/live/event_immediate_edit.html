@@ -94,7 +94,7 @@
         <p>{% trans "Please note that 2 events cannot be scheduled in the same room simultaneously." %}<p>
       </div>
     </div>
-    {% include 'main/mandatory_fields.html'%}
+    {% include "main/mandatory_fields.html" %}
   {% endif %}
 {% endblock page_aside %}
 
@@ -111,7 +111,6 @@
         var clockCount = 0;
         document.querySelectorAll('.clockbox').forEach((e) => {
           var $this = e;
-          console.log('clockbox');
           $this.querySelector('h2').remove();
         });
         document.querySelectorAll('ul.timelist').forEach((e) => {
@@ -120,8 +119,7 @@
           console.log(originalHref);
           $this.querySelector('li').remove();
           for (i = 8; i <= 20; i++) {
-            var newLink = '<li><a href="javascript:DateTimeShortcuts.handleClockQuicklink(' + clockCount + ', ' + i
-              + ');"> ' + i + ':00</a></li>';
+            var newLink = `<li><a href="javascript:DateTimeShortcuts.handleClockQuicklink(${clockCount}, ${i});">${i}:00</a></li>`;
             // Plan B : forcer le format au lieu de changer TIME_INPUT_FORMATS dans settings.py
             // var newLink = '<li><a href="javascript:settime('+ clockCount + ', ' + i
             //    + ');"> ' + i + ':00</a></li>';
