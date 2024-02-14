@@ -1,3 +1,4 @@
+"""Esup-Pod Playlist list modal."""
 from django.template import Library
 from django.contrib.auth.models import User
 
@@ -13,7 +14,7 @@ register = Library()
 
 
 @register.simple_tag(name="get_user_playlists")
-def get_user_playlists(user: User) -> list:
+def get_user_playlists(user: User) -> list[Playlist]:
     """
     Get all playlist for a user.
 

@@ -57,7 +57,7 @@ def get_dressing_input(dressing: Dressing, FFMPEG_DRESSING_INPUT: str) -> str:
     return command
 
 
-def get_dressings(user, accessgroup_set) -> list:
+def get_dressings(user, accessgroup_set) -> list[Dressing]:
     """
     Return the list of dressings that the user can use.
 
