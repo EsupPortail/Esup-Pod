@@ -85,12 +85,14 @@
       </div>
     {% endif %}
   {% endif %}
-  {% enhancement_is_already_asked video as eiaa %}
-  {% if eiaa %}
-    <div class="alert alert-warning" role="alert">
-      <i class="bi bi-hourglass-split" aria-hidden="true"></i>
-      {% trans 'The video is currently waiting for Aristote AI treatment.' %}
-    </div>
+  {% if not video.is_external %}
+    {% enhancement_is_already_asked video as eiaa %}
+    {% if eiaa %}
+      <div class="alert alert-warning" role="alert">
+        <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+        {% trans 'The video is currently waiting for Aristote AI treatment.' %}
+      </div>
+    {% endif %}
   {% endif %}
   {% if not video.video %}
     <div class="alert alert-warning" role="alert">

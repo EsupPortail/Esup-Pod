@@ -148,7 +148,7 @@ Vous devriez obtenir ce message une fois esup-pod lancé
 ----
 $ pod-dev-with-volumes        | Superuser created successfully.
 ----
-L'application esup-pod est dès lors disponible via cette URL : localhost:8000
+L'application esup-pod est dès lors disponible via cette URL : pod.localhost:8000
 
 === Arrêt de la stack
 $ CTRL+C dans la fenetre depuis laquelle l'application esup-pod a été lancée

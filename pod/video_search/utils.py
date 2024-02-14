@@ -20,7 +20,7 @@ ES_VERSION = getattr(settings, "ES_VERSION", 6)
 ES_OPTIONS = getattr(settings, "ES_OPTIONS", {})
 
 
-def index_es(video):
+def index_es(media):
     """Get ElasticSearch index."""
     translation.activate(settings.LANGUAGE_CODE)
     es = Elasticsearch(
@@ -32,14 +32,19 @@ def index_es(video):
     )
     if es.ping():
         try:
-            data = video.get_json_to_index()
+            data = media.get_json_to_index()
             if data != "{}":
                 if ES_VERSION in [7, 8]:
-                    res = es.index(index=ES_INDEX, id=video.id, body=data, refresh=True)
+                    res = es.index(
+                        index=ES_INDEX,
+                        id=f"{media.id}_external" if media.is_external else media.id,
+                        body=data,
+                        refresh=True
+                    )
                 else:
                     res = es.index(
                         index=ES_INDEX,
-                        id=video.id,
+                        id=f"{media.id}_external" if media.is_external else media.id,
                         doc_type="pod",
                         body=data,
                         refresh=True,
@@ -55,8 +60,8 @@ def index_es(video):
     translation.deactivate()
 
 
-def delete_es(video):
-    """Delete an Elasticsearch video entry."""
+def delete_es(media):
+    """Delete an Elasticsearch media entry."""
     es = Elasticsearch(
         ES_URL,
         timeout=ES_TIMEOUT,
@@ -68,13 +73,16 @@ def delete_es(video):
         try:
             if ES_VERSION in [7, 8]:
                 delete = es.delete(
-                    index=ES_INDEX, id=video.id, refresh=True, ignore=[400, 404]
+                    index=ES_INDEX,
+                    id=f"{media.id}_external" if media.is_external else media.id,
+                    refresh=True,
+                    ignore=[400, 404]
                 )
             else:
                 delete = es.delete(
                     index=ES_INDEX,
                     doc_type="pod",
-                    id=video.id,
+                    id=f"{media.id}_external" if media.is_external else media.id,
                     refresh=True,
                     ignore=[400, 404],
                 )
@@ -83,7 +91,7 @@ def delete_es(video):
             return delete
         except TransportError as e:
             logger.error(
-                "An error occured during delete video: %s-%s: %s"
+                "An error occured during delete media: %s-%s: %s"
                 % (e.status_code, e.error, e.info)
             )
 
