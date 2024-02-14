@@ -58,15 +58,15 @@
                 </div>
             </td>
             <td class="text-center">
-            {% trans "Please confirm you want to delete the token" as confirmDelete %}
-            <form method="post" action="{% url 'video:video_edit_access_tokens' video.slug %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="delete" />
-            <input type="hidden" name="token" value="{{ token.token }}" />
-            <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the token'%}" data-bs-toggle="tooltip" data-bs-placement="top">
-                <i class="bi bi-trash3 pod-add" aria-hidden="true"></i>
-            </button>
-            </form>
+                {% trans "Please confirm you want to delete the token" as confirmDelete %}
+                <form method="post" action="{% url 'video:video_edit_access_tokens' video.slug %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete" />
+                    <input type="hidden" name="token" value="{{ token.token }}" />
+                    <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the token'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+                        <i class="bi bi-trash3 pod-add" aria-hidden="true"></i>
+                    </button>
+                </form>
             </td>
         </tr>
         {% endfor %}

@@ -1076,10 +1076,13 @@ def toggle_render_video_user_can_see_video(
             and request.POST.get("password") == video.password
             # and check_password(request.POST.get("password"), video.password)
         )
-        or (slug_private and (
+        or (
+            slug_private and (
                 slug_private == video.get_hashkey()
                 or slug_private in [
-                    str(tok.token) for tok in VideoAccessToken.objects.filter(video=video)
+                    str(tok.token) for tok in VideoAccessToken.objects.filter(
+                        video=video
+                    )
                 ]
             )
         )
