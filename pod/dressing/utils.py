@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db.models import Q
 
 
-def get_position_value(position, height) -> str:
+def get_position_value(position: str, height: str) -> str:
     """
     Obtain dimensions proportional to the video format.
 
@@ -28,7 +28,7 @@ def get_position_value(position, height) -> str:
         return "overlay=" + height + ":main_h-overlay_h-" + height
 
 
-def get_dressing_input(dressing, FFMPEG_DRESSING_INPUT) -> str:
+def get_dressing_input(dressing: Dressing, FFMPEG_DRESSING_INPUT: str) -> str:
     """
     Obtain the files necessary for encoding a dressed video.
 

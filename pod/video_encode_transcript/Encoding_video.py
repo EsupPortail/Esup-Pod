@@ -287,7 +287,7 @@ class Encoding_video:
                 language = stream.get("tags").get("language", "")
             self.list_subtitle_track["%s" % stream.get("index")] = {"language": language}
 
-    def get_output_dir(self):
+    def get_output_dir(self) -> str:
         dirname = os.path.dirname(self.video_file)
         return os.path.join(dirname, "%04d" % int(self.id))
 
@@ -297,7 +297,7 @@ class Encoding_video:
             os.makedirs(output_dir)
         self.output_dir = output_dir
 
-    def get_mp4_command(self):
+    def get_mp4_command(self) -> str:
         mp4_command = "%s " % FFMPEG_CMD
         list_rendition = get_list_rendition()
         # remove rendition if encode_mp4 == False
@@ -358,7 +358,7 @@ class Encoding_video:
                 self.list_mp4_files[rend] = output_file
         return mp4_command
 
-    def get_hls_command(self):
+    def get_hls_command(self) -> str:
         hls_command = "%s " % FFMPEG_CMD
         list_rendition = get_list_rendition()
         hls_command += FFMPEG_INPUT % {
@@ -393,14 +393,14 @@ class Encoding_video:
                 self.list_hls_files[rend] = output_file
         return hls_command
 
-    def get_dressing_file(self):
+    def get_dressing_file(self) -> str:
         """Create or replace the dressed video file."""
         dirname = os.path.dirname(self.video_file)
         filename, ext = os.path.splitext(os.path.basename(self.video_file))
         output_file = os.path.join(dirname, filename + "_dressing" + ext)
         return output_file
 
-    def get_dressing_command(self):
+    def get_dressing_command(self) -> str:
         """Get the command based on the dressing object parameters."""
         height = str(list(self.list_video_track.items())[0][1]["height"])
         order_opening_credits = 0
@@ -535,7 +535,7 @@ class Encoding_video:
         livestream_file.write(livestream_content.replace("\n\n", "\n"))
         livestream_file.close()
 
-    def get_mp3_command(self):
+    def get_mp3_command(self) -> str:
         mp3_command = "%s " % FFMPEG_CMD
         mp3_command += FFMPEG_INPUT % {
             "input": self.video_file,
@@ -550,7 +550,7 @@ class Encoding_video:
         self.list_mp3_files[FFMPEG_AUDIO_BITRATE] = output_file
         return mp3_command
 
-    def get_m4a_command(self):
+    def get_m4a_command(self) -> str:
         m4a_command = "%s " % FFMPEG_CMD
         m4a_command += FFMPEG_INPUT % {
             "input": self.video_file,
@@ -578,7 +578,7 @@ class Encoding_video:
             return_value, return_msg = launch_cmd(m4a_command)
             self.add_encoding_log("m4a_command", m4a_command, return_value, return_msg)
 
-    def get_extract_thumbnail_command(self):
+    def get_extract_thumbnail_command(self) -> str:
         thumbnail_command = "%s " % FFMPEG_CMD
         thumbnail_command += FFMPEG_INPUT % {
             "input": self.video_file,
@@ -593,7 +593,7 @@ class Encoding_video:
             self.list_thumbnail_files[img] = output_file
         return thumbnail_command
 
-    def get_create_thumbnail_command(self):
+    def get_create_thumbnail_command(self) -> str:
         thumbnail_command = "%s " % FFMPEG_CMD
         first_item = self.get_first_item()
         input_file = self.list_mp4_files[first_item[0]]
@@ -722,7 +722,7 @@ class Encoding_video:
         if self.is_video() and self.duration >= 10:
             self.create_overview()
 
-    def get_extract_subtitle_command(self):
+    def get_extract_subtitle_command(self) -> str:
         subtitle_command = "%s " % FFMPEG_CMD
         subtitle_command += FFMPEG_INPUT % {
             "input": self.video_file,
@@ -780,7 +780,7 @@ class Encoding_video:
         self.export_to_json()
 
 
-def fix_input(input):
+def fix_input(input) -> str:
     filename = ""
     if args.input.startswith("/"):
         path_file = args.input

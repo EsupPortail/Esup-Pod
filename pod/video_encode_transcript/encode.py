@@ -1,4 +1,4 @@
-"""This module handles video encoding with CPU."""
+"""Esup-Pod module to handle video encoding with CPU."""
 
 from django.conf import settings
 from webpush.models import PushInformation
@@ -49,7 +49,7 @@ if USE_DISTANT_ENCODING_TRANSCODING:
 
 # Disable for the moment, will be reactivated in future version
 """
-def start_remote_encode(video_id):
+def start_remote_encode(video_id: int):
     # load module here to prevent circular import
     from .remote_encode import remote_encode_video
 
@@ -60,7 +60,7 @@ def start_remote_encode(video_id):
 """
 
 
-def start_encode(video_id, threaded=True):
+def start_encode(video_id: int, threaded=True):
     """Start local encoding."""
     if threaded:
         if CELERY_TO_ENCODE:
@@ -105,7 +105,7 @@ def start_studio_remote_encode(recording_id, video_output, videos, subtime, pres
 """
 
 
-def encode_video(video_id):
+def encode_video(video_id: int) -> None:
     """ENCODE VIDEO: MAIN FUNCTION."""
     start = "Start at: %s" % time.ctime()
 
@@ -151,7 +151,7 @@ def encode_video(video_id):
             end_of_encoding(final_video)
 
 
-def store_encoding_info(video_id, encoding_video):
+def store_encoding_info(video_id: int, encoding_video: Encoding_video_model) -> Video:
     """Store all encoding file and informations from encoding tasks."""
     change_encoding_step(video_id, 3, "store encoding info")
     final_video = encoding_video.store_json_info()
@@ -161,7 +161,7 @@ def store_encoding_info(video_id, encoding_video):
     return final_video
 
 
-def get_encoding_video(video_to_encode):
+def get_encoding_video(video_to_encode: Video) -> Encoding_video_model:
     """Get the encoding video object from video."""
     dressing = None
     if Dressing.objects.filter(videos=video_to_encode).exists():
@@ -181,7 +181,7 @@ def get_encoding_video(video_to_encode):
     )
 
 
-def end_of_encoding(video):
+def end_of_encoding(video: Video):
     """Notify user at the end of encoding & call transcription."""
     if (
         USE_NOTIFICATIONS
@@ -196,7 +196,7 @@ def end_of_encoding(video):
     change_encoding_step(video.id, 0, "end of encoding")
 
 
-def transcript_video(video_id):
+def transcript_video(video_id: int):
     """Transcript video audio to text."""
     video = Video.objects.get(id=video_id)
     if USE_TRANSCRIPTION and video.transcript not in ["", "0", "1"]:
