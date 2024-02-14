@@ -56,7 +56,11 @@ urlpatterns = [
     url(r"^add/$", video_add, name="video_add"),
     url(r"^edit/$", video_edit, name="video_edit"),
     url(r"^edit/(?P<slug>[\-\d\w]+)/$", video_edit, name="video_edit"),
-    url(r"^edit_access_tokens/(?P<slug>[\-\d\w]+)/$", video_edit_access_tokens, name="video_edit_access_tokens"),
+    url(
+        r"^edit_access_tokens/(?P<slug>[\-\d\w]+)/$",
+        video_edit_access_tokens,
+        name="video_edit_access_tokens"
+    ),
     url(
         r"^delete/(?P<slug>[\-\d\w]+)/$",
         video_delete,

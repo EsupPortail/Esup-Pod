@@ -80,6 +80,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 import re
 import pandas
+import uuid
 from datetime import date
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
@@ -1394,19 +1395,9 @@ def video_edit_access_tokens(request, slug=None):
                     request, messages.INFO, _("A token has been created.")
                 )
             else:
-                if (
-                    request.POST["action"] == "delete"
-                    and VideoAccessToken.objects.filter(
-                        video=video,
-                        token=request.POST.get("token", None)).exists()
-                ):
-                    VideoAccessToken.objects.get(
-                        video=video,
-                        token=request.POST.get("token")
-                    ).delete()
-                    messages.add_message(
-                        request, messages.INFO, _("The token has been deleted.")
-                    )
+                if request.POST["action"] == "delete" and request.POST.get("token"):
+                    token = request.POST.get("token")
+                    delete_token(request, video, token)
                 else:
                     messages.add_message(
                         request, messages.ERROR, _("Token not found.")
@@ -1424,6 +1415,20 @@ def video_edit_access_tokens(request, slug=None):
         "videos/video_access_tokens.html",
         {"video": video, "tokens": tokens, "page_title": page_title},
     )
+
+
+def delete_token(request, video, token):
+    """Remove token for the video if exist."""
+    try:
+        uuid.UUID(str(token))
+        VideoAccessToken.objects.get(video=video, token=token).delete()
+        messages.add_message(
+            request, messages.INFO, _("The token has been deleted.")
+        )
+    except (ValueError, ObjectDoesNotExist):
+        messages.add_message(
+            request, messages.ERROR, _("Token not found.")
+        )
 
 
 @csrf_protect

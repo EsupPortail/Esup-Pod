@@ -982,6 +982,14 @@ class VideoAccessTokenTestCase(TestCase):
         self.assertEqual(VideoAccessToken.objects.all().count(), 1)
         self.assertEqual(accessToken.video, video)
         self.assertEqual(accessToken.token, uuid_test)
+        accessToken2 = VideoAccessToken(video=video, token="1234")
+        try:
+            with transaction.atomic():
+                accessToken2.save()
+            self.fail("Invalid token allowed.")
+        except ValidationError:
+            pass
+        self.assertEqual(VideoAccessToken.objects.all().count(), 1)
         print(" ---> test_create_VideoAccessToken_with_attribut: OK!")
 
     def test_create_VideoAccessToken_already_exist(self):
