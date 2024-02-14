@@ -8867,7 +8867,7 @@ msgstr "Un jeton a été créé."
 
 #: pod/video/views.py
 msgid "The token has been deleted."
-msgstr "La jeton a été supprimé."
+msgstr "Le jeton a été supprimé."
 
 #: pod/video/views.py
 msgid "Token not found."

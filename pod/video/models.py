@@ -1847,3 +1847,4 @@ class VideoAccessToken(models.Model):
         ordering = ["video", "token"]
         verbose_name = _("Video access token")
         verbose_name_plural = _("Video access tokens")
+        unique_together = ["video", "token"]
