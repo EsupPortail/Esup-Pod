@@ -34,8 +34,8 @@
       <tr>
         <th scope="col" class="text-center col-2"><i class="bi bi-universal-access-circle" aria-hidden="true"></i>&nbsp;{% trans "Token" %}</th>
         <th scope="col" class="text-center col-4"><i class="bi bi-link-45deg" aria-hidden="true"></i>&nbsp;{% trans 'Share the link' %}</th>
-        <th scope="col" class="text-center col-5"><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Embed in a web page' %}</th>
-        <th scope="col" class="text-center col-1"><i class="bi bi-trash3" aria-hidden="true"></i><!-- &nbsp;{% trans "Delete" %} --></th>
+        <th scope="col" class="text-center col-6"><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Embed in a web page' %}</th>
+        <th scope="col" class="text-center "><i class="bi bi-trash3" aria-hidden="true"></i><!-- &nbsp;{% trans "Delete" %} --></th>
       </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -65,7 +65,7 @@
                     readonly>&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}{{ token.token }}/?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen title="{{ video.title }}" &gt;&lt;/iframe&gt;</textarea>
                 </div>
             </td>
-            <td class="text-center">
+            <td class="text-center align-middle">
                 {% trans "Please confirm you want to delete the token" as confirmDelete %}
                 <form method="post" action="{% url 'video:video_edit_access_tokens' video.slug %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
                     {% csrf_token %}
