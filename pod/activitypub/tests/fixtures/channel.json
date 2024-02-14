@@ -1,0 +1,52 @@
+{
+    "@context": [
+        "https://www.w3.org/ns/activitystreams",
+        "https://w3id.org/security/v1",
+        {
+            "RsaSignature2017": "https://w3id.org/security#RsaSignature2017"
+        },
+        {
+            "pt": "https://joinpeertube.org/ns#",
+            "sc": "http://schema.org/",
+            "playlists": {
+                "@id": "pt:playlists",
+                "@type": "@id"
+            },
+            "support": {
+                "@type": "sc:Text",
+                "@id": "pt:support"
+            },
+            "lemmy": "https://join-lemmy.org/ns#",
+            "postingRestrictedToMods": "lemmy:postingRestrictedToMods",
+            "icons": "as:icon"
+        }
+    ],
+    "type": "Group",
+    "id": "http://peertube.test/video-channels/root_channel",
+    "following": "http://peertube.test/video-channels/root_channel/following",
+    "followers": "http://peertube.test/video-channels/root_channel/followers",
+    "playlists": "http://peertube.test/video-channels/root_channel/playlists",
+    "inbox": "http://peertube.test/video-channels/root_channel/inbox",
+    "outbox": "http://peertube.test/video-channels/root_channel/outbox",
+    "preferredUsername": "root_channel",
+    "url": "http://peertube.test/video-channels/root_channel",
+    "name": "Main root channel",
+    "endpoints": {
+        "sharedInbox": "http://peertube.test/inbox"
+    },
+    "publicKey": {
+        "id": "http://peertube.test/video-channels/root_channel#main-key",
+        "owner": "http://peertube.test/video-channels/root_channel",
+        "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDRVjuMdfndpsBj3azB0xp7Gr97\nEstojfwqRsushQ1iKD1CACe+0+PomdDmNdGBSbpDud3s8QGs/eV5/LmFvhgRhqHu\n9gnVvt3NPP1nFgqQtfF8UZrofaN975fGa7qbr2Z0PAYkltbv0NdtF4VxHPF/j/Ae\nyQGL2Yp1w2GLIFwxgwIDAQAB\n-----END PUBLIC KEY-----\n"
+    },
+    "published": "2024-05-15T11:09:12.978Z",
+    "summary": null,
+    "support": null,
+    "postingRestrictedToMods": true,
+    "attributedTo": [
+        {
+            "type": "Person",
+            "id": "http://peertube.test/accounts/root"
+        }
+    ]
+}
