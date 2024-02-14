@@ -167,12 +167,7 @@ class BulkUpdateTestCase(TransactionTestCase):
             "/bulk_update/",
             {
                 "owner": user1.id,
-                "selected_videos":
-                    '["%s", "%s"]'
-                    % (
-                        video2.slug,
-                        video3.slug,
-                       ),
+                "selected_videos": '["%s", "%s"]' % (video2.slug, video3.slug),
                 "update_fields": '["owner"]',
                 "update_action": "fields",
             },
@@ -204,11 +199,7 @@ class BulkUpdateTestCase(TransactionTestCase):
             {
                 "tags": tags_str,
                 "selected_videos":
-                    '["%s", "%s"]'
-                    % (
-                        video4.slug,
-                        video5.slug,
-                       ),
+                    '["%s", "%s"]' % (video4.slug, video5.slug),
                 "update_fields": '["tags"]',
                 "update_action": "fields",
             },
