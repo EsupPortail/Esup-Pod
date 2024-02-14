@@ -189,6 +189,42 @@ class BulkUpdateTestCase(TransactionTestCase):
         print("--->  test_bulk_update_owner of BulkUpdateTestCase: OK")
         self.client.logout()
 
+    def test_bulk_update_tags(self):
+        """Test bulk update of tags attribute."""
+        video4 = Video.objects.get(title="Video4")
+        video5 = Video.objects.get(title="Video5")
+
+        user = User.objects.get(username="pod3")
+
+        self.client.force_login(user)
+        tags_str = "tag1 tag2 tag3"
+
+        post_request = self.factory.post(
+            "/bulk_update/",
+            {
+                "tags": tags_str,
+                "selected_videos":
+                    '["%s", "%s"]'
+                    % (
+                        video4.slug,
+                        video5.slug,
+                       ),
+                "update_fields": '["tags"]',
+                "update_action": "fields",
+            },
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+
+        post_request.user = user
+        post_request.LANGUAGE_CODE = "fr"
+        response = bulk_update(post_request)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Video.objects.get(title="Video4").tags, "tag1 tag2 tag3")
+        self.assertEqual(Video.objects.get(title="Video5").tags, "tag1 tag2 tag3")
+
+        print("--->  test_bulk_update_tags of BulkUpdateTestCase: OK")
+        self.client.logout()
+
     def tearDown(self):
         """Cleanup all created stuffs."""
         del self.client
