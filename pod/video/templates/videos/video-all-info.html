@@ -7,7 +7,7 @@
     </h1>
     {% if video.date_evt %}<small class="pod-info-video__date">{{ video.date_evt }}</small>{% endif %}
   </div>
-  <a class="pod-info-video__signal" href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}">
+  <a class="pod-info-video__signal" href="{% url 'contact_us' %}?{% if video.is_external %}external_{% endif %}video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}">
     <i class="bi bi-exclamation-octagon"></i>
   </a>
 </div>

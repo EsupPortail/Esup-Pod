@@ -1,0 +1,281 @@
+{
+    "@context": [
+        "https://www.w3.org/ns/activitystreams",
+        "https://w3id.org/security/v1",
+        {
+            "RsaSignature2017": "https://w3id.org/security#RsaSignature2017"
+        },
+        {
+            "pt": "https://joinpeertube.org/ns#",
+            "sc": "http://schema.org/",
+            "Hashtag": "as:Hashtag",
+            "category": "sc:category",
+            "licence": "sc:license",
+            "subtitleLanguage": "sc:subtitleLanguage",
+            "sensitive": "as:sensitive",
+            "language": "sc:inLanguage",
+            "identifier": "sc:identifier",
+            "isLiveBroadcast": "sc:isLiveBroadcast",
+            "liveSaveReplay": {
+                "@type": "sc:Boolean",
+                "@id": "pt:liveSaveReplay"
+            },
+            "permanentLive": {
+                "@type": "sc:Boolean",
+                "@id": "pt:permanentLive"
+            },
+            "latencyMode": {
+                "@type": "sc:Number",
+                "@id": "pt:latencyMode"
+            },
+            "Infohash": "pt:Infohash",
+            "tileWidth": {
+                "@type": "sc:Number",
+                "@id": "pt:tileWidth"
+            },
+            "tileHeight": {
+                "@type": "sc:Number",
+                "@id": "pt:tileHeight"
+            },
+            "tileDuration": {
+                "@type": "sc:Number",
+                "@id": "pt:tileDuration"
+            },
+            "aspectRatio": {
+                "@type": "sc:Float",
+                "@id": "pt:aspectRatio"
+            },
+            "uuid": {
+                "@type": "sc:identifier",
+                "@id": "pt:uuid"
+            },
+            "originallyPublishedAt": "sc:datePublished",
+            "uploadDate": "sc:uploadDate",
+            "hasParts": "sc:hasParts",
+            "views": {
+                "@type": "sc:Number",
+                "@id": "pt:views"
+            },
+            "state": {
+                "@type": "sc:Number",
+                "@id": "pt:state"
+            },
+            "size": {
+                "@type": "sc:Number",
+                "@id": "pt:size"
+            },
+            "fps": {
+                "@type": "sc:Number",
+                "@id": "pt:fps"
+            },
+            "commentsEnabled": {
+                "@type": "sc:Boolean",
+                "@id": "pt:commentsEnabled"
+            },
+            "downloadEnabled": {
+                "@type": "sc:Boolean",
+                "@id": "pt:downloadEnabled"
+            },
+            "waitTranscoding": {
+                "@type": "sc:Boolean",
+                "@id": "pt:waitTranscoding"
+            },
+            "support": {
+                "@type": "sc:Text",
+                "@id": "pt:support"
+            },
+            "likes": {
+                "@id": "as:likes",
+                "@type": "@id"
+            },
+            "dislikes": {
+                "@id": "as:dislikes",
+                "@type": "@id"
+            },
+            "shares": {
+                "@id": "as:shares",
+                "@type": "@id"
+            },
+            "comments": {
+                "@id": "as:comments",
+                "@type": "@id"
+            }
+        }
+    ],
+    "to": [
+        "https://www.w3.org/ns/activitystreams#Public"
+    ],
+    "cc": [
+        "http://peertube.test/accounts/root/followers"
+    ],
+    "type": "Update",
+    "id": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d/updates/2024-05-15T12:40:45.399Z",
+    "actor": "http://other_peertube.test/accounts/root",
+    "object": {
+        "to": [
+            "https://www.w3.org/ns/activitystreams#Public"
+        ],
+        "cc": [
+            "http://peertube.test/accounts/root/followers"
+        ],
+        "type": "Video",
+        "id": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d",
+        "name": "terre",
+        "duration": "PT31S",
+        "uuid": "717c9d87-c912-4943-a392-49fadf2f235d",
+        "views": 0,
+        "sensitive": false,
+        "waitTranscoding": true,
+        "state": 1,
+        "commentsEnabled": true,
+        "downloadEnabled": true,
+        "published": "2024-05-15T12:39:43.713Z",
+        "originallyPublishedAt": null,
+        "updated": "2024-05-15T12:40:45.399Z",
+        "tag": [],
+        "mediaType": "text/markdown",
+        "content": "YOLO",
+        "support": null,
+        "subtitleLanguage": [],
+        "icon": [
+            {
+                "type": "Image",
+                "url": "http://peertube.test/lazy-static/thumbnails/17544b3a-610a-4ca8-890a-7ad33da1003a.jpg",
+                "mediaType": "image/jpeg",
+                "width": 280,
+                "height": 157
+            },
+            {
+                "type": "Image",
+                "url": "http://peertube.test/lazy-static/previews/e5433ef5-92eb-433b-99d7-a0868ea831d9.jpg",
+                "mediaType": "image/jpeg",
+                "width": 850,
+                "height": 480
+            }
+        ],
+        "preview": [
+            {
+                "type": "Image",
+                "rel": [
+                    "storyboard"
+                ],
+                "url": [
+                    {
+                        "mediaType": "image/jpeg",
+                        "href": "http://peertube.test/lazy-static/storyboards/ac8e9031-cd22-4b55-b13a-6ea7303d84e8.jpg",
+                        "width": 1920,
+                        "height": 324,
+                        "tileWidth": 192,
+                        "tileHeight": 108,
+                        "tileDuration": "PT1S"
+                    }
+                ]
+            }
+        ],
+        "aspectRatio": 1.7778,
+        "url": [
+            {
+                "type": "Link",
+                "mediaType": "text/html",
+                "href": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d"
+            },
+            {
+                "type": "Link",
+                "mediaType": "application/x-mpegURL",
+                "href": "http://peertube.test/static/streaming-playlists/hls/717c9d87-c912-4943-a392-49fadf2f235d/af301f93-0d7d-4940-8e5e-aba13049ac26-master.m3u8",
+                "tag": [
+                    {
+                        "type": "Infohash",
+                        "name": "b2a1f81a855cd472c54d08bf5a8efb7bc1b7f9a8"
+                    },
+                    {
+                        "type": "Link",
+                        "name": "sha256",
+                        "mediaType": "application/json",
+                        "href": "http://peertube.test/static/streaming-playlists/hls/717c9d87-c912-4943-a392-49fadf2f235d/dc1221ee-1090-40b8-bdfa-5a5f4cd67c98-segments-sha256.json"
+                    },
+                    {
+                        "type": "Link",
+                        "mediaType": "video/mp4",
+                        "href": "http://peertube.test/static/streaming-playlists/hls/717c9d87-c912-4943-a392-49fadf2f235d/519179ac-f8f9-4c50-a90c-2d6bf554e508-270-fragmented.mp4",
+                        "height": 270,
+                        "width": 480,
+                        "size": 653210,
+                        "fps": 30
+                    },
+                    {
+                        "type": "Link",
+                        "rel": [
+                            "metadata",
+                            "video/mp4"
+                        ],
+                        "mediaType": "application/json",
+                        "href": "http://peertube.test/api/v1/videos/717c9d87-c912-4943-a392-49fadf2f235d/metadata/3",
+                        "height": 270,
+                        "width": 480,
+                        "fps": 30
+                    },
+                    {
+                        "type": "Link",
+                        "mediaType": "application/x-bittorrent",
+                        "href": "http://peertube.test/lazy-static/torrents/b0e90759-ec93-47b1-a54b-124eecc7e920-270-hls.torrent",
+                        "height": 270,
+                        "width": 480,
+                        "fps": 30
+                    },
+                    {
+                        "type": "Link",
+                        "mediaType": "application/x-bittorrent;x-scheme-handler/magnet",
+                        "href": "magnet:?xs=http%3A%2F%2Fpeertube.localhost%3A9000%2Flazy-static%2Ftorrents%2Fb0e90759-ec93-47b1-a54b-124eecc7e920-270-hls.torrent&xt=urn:btih:5072ce02cf06578a6ea1c3aa95f80f25afc33949&dn=terre&tr=http%3A%2F%2Fpeertube.localhost%3A9000%2Ftracker%2Fannounce&tr=ws%3A%2F%2Fpeertube.localhost%3A9000%2Ftracker%2Fsocket&ws=http%3A%2F%2Fpeertube.localhost%3A9000%2Fstatic%2Fstreaming-playlists%2Fhls%2F717c9d87-c912-4943-a392-49fadf2f235d%2F519179ac-f8f9-4c50-a90c-2d6bf554e508-270-fragmented.mp4",
+                        "height": 270,
+                        "width": 480,
+                        "fps": 30
+                    }
+                ]
+            },
+            {
+                "type": "Link",
+                "name": "tracker-http",
+                "rel": [
+                    "tracker",
+                    "http"
+                ],
+                "href": "http://peertube.test/tracker/announce"
+            },
+            {
+                "type": "Link",
+                "name": "tracker-websocket",
+                "rel": [
+                    "tracker",
+                    "websocket"
+                ],
+                "href": "ws://peertube.test/tracker/socket"
+            }
+        ],
+        "likes": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d/likes",
+        "dislikes": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d/dislikes",
+        "shares": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d/announces",
+        "comments": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d/comments",
+        "hasParts": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d/chapters",
+        "attributedTo": [
+            {
+                "type": "Person",
+                "id": "http://peertube.test/accounts/root"
+            },
+            {
+                "type": "Group",
+                "id": "http://peertube.test/video-channels/root_channel"
+            }
+        ],
+        "isLiveBroadcast": false,
+        "liveSaveReplay": null,
+        "permanentLive": null,
+        "latencyMode": null
+    },
+    "signature": {
+        "type": "RsaSignature2017",
+        "creator": "http://other_peertube.test/accounts/root",
+        "created": "2024-05-15T12:40:45.468Z",
+        "signatureValue": "YYYLp2CBIqHwF3LbP9cRgRyButsY32qVAtrpNPRS93TkwOfst6maqpS7xRdRsTyj+i6qs4EnfW0wWEd5tEbhMNr4gBZdvQ+Ohe7pOX15QNhmDVuKSaf5hnR4q44hEjUU6QPerF1YIWNNiOoJW1u//q4JWuYSdGWJnleRANYEiuQ="
+    }
+}
