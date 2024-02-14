@@ -1,0 +1,24 @@
+{
+    "@context": [
+        "https://www.w3.org/ns/activitystreams",
+        "https://w3id.org/security/v1",
+        {
+            "RsaSignature2017": "https://w3id.org/security#RsaSignature2017"
+        }
+    ],
+    "type": "Accept",
+    "id": "http://peertube.test/accepts/follows/1",
+    "actor": "http://peertube.test/accounts/peertube",
+    "object": {
+        "type": "Follow",
+        "id": "http://pod.localhost:8000/ap/following/1",
+        "actor": "http://pod.localhost:8000/ap",
+        "object": "http://peertube.test/accounts/peertube"
+    },
+    "signature": {
+        "type": "RsaSignature2017",
+        "creator": "http://peertube.test/accounts/peertube",
+        "created": "2024-06-04T14:36:41.773Z",
+        "signatureValue": "k21ZCAXIyDVH6w+5hoy6sfSOEB4cQAfZ84XJyue2E8SoLfBV7Vf4IZWtlMa1mFuE3VWX98KsjkJUbhZGTOqk87nS+zidAozOK1LhXEQkglVBanDYOnoYyJbKXZIfQoan6elYuQ1U3EO0wizts42iapFAv7s3lXYC4M2JophY73o="
+    }
+}

@@ -2301,6 +2301,71 @@
                         "fr": "Configuration de l'application quiz"
                     }
                 },
+                "activitypub": {
+                    "description": {},
+                    "settings": {
+                        "USE_ACTIVITYPUB": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Activation du module ActivityPub."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.9.0"
+                        },
+                        "ACTIVITYPUB_CELERY_BROKER_URL": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Il faut renseigner l’url du redis sur lequel Celery",
+                                    "va chercher les tâches ActivityPub (follow, index, etc.)",
+                                    "par exemple : \"redis://redis.localhost:6379/6\""
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.9.0"
+                        },
+                        "ACTIVITYPUB_PRIVATE_KEY": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Une paire de clés RSA doit être générée pour identifier",
+                                    "les instances ActivityPub. Voir \"pod/activitypub/README.md\"."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.9.0"
+                        },
+                        "ACTIVITYPUB_PUBLIC_KEY": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Une paire de clés RSA doit être générée pour identifier",
+                                    "les instances ActivityPub. Voir \"pod/activitypub/README.md\"."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.9.0"
+                        },
+                    },
+                    "title": {
+                        "en": "",
+                        "fr": "Configuration application activitypub"
+                    }
+                },
                 "recorder": {
                     "description": {},
                     "settings": {
@@ -2703,6 +2768,20 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "DEFAULT_AP_THUMBNAIL": {
+                            "default_value": "img/default_ap.png",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Image par défaut envoyée comme vignette, utilisée pour communiquer via ActivityPub",
+                                    "Cette image doit être au format png et se situer dans le répertoire static."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.9.0"
                         },
                         "DEFAULT_TYPE_ID": {
                             "default_value": 1,

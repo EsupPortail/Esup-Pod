@@ -1,13 +1,17 @@
 """Pod video_search views."""
 
-from django.shortcuts import render
-from elasticsearch import Elasticsearch
-from pod.video_search.forms import SearchForm
+from collections.abc import Iterator
+
 from django.conf import settings
 from django.contrib import messages
-from pod.video.models import Video
-from django.utils.translation import ugettext_lazy as _
+from django.shortcuts import render
 from django.utils.html import strip_tags
+from django.utils.translation import ugettext_lazy as _
+from elasticsearch import Elasticsearch
+
+from pod.activitypub.models import ExternalVideo
+from pod.video.models import Video
+from pod.video_search.forms import SearchForm
 
 # import json
 
@@ -17,6 +21,23 @@ ES_TIMEOUT = getattr(settings, "ES_TIMEOUT", 30)
 ES_MAX_RETRIES = getattr(settings, "ES_MAX_RETRIES", 10)
 ES_VERSION = getattr(settings, "ES_VERSION", 6)
 ES_OPTIONS = getattr(settings, "ES_OPTIONS", {})
+
+
+class MediaResults(Iterator):
+    """Iterable class that gives pagination information."""
+    def __init__(self, sequence, has_next=False, next_page_number=1):
+        self._sequence = sequence
+        self._index = 0
+        self.has_next = has_next
+        self.next_page_number = next_page_number
+
+    def __next__(self):
+        if self._index < len(self._sequence):
+            item = self._sequence[self._index]
+            self._index += 1
+            return item
+        else:
+            raise StopIteration
 
 
 def get_filter_search(selected_facets, start_date, end_date):
@@ -234,21 +255,44 @@ def search_videos(request):
         .replace("&page=%s" % page, "")
     )
 
-    list_videos_id = [hit["_id"] for hit in result["hits"]["hits"]]
-    videos = Video.objects.filter(id__in=list_videos_id)
+    ordered_hit_ids = [hit["_id"] for hit in result["hits"]["hits"]]
+    video_hit_ids = [
+        hit["_id"]
+        for hit in result["hits"]["hits"]
+        if not hit["_source"]["is_external"]
+    ]
+    external_video_hit_ids = [
+        hit["_id"] for hit in result["hits"]["hits"] if hit["_source"]["is_external"]
+    ]
+
+    medias = list(Video.objects.filter(id__in=[i for i in video_hit_ids])) + list(
+        ExternalVideo.objects.filter(
+            id__in=[i.split("_external")[0] for i in external_video_hit_ids]
+        )
+    )
+    ordered_medias = sorted(
+        medias,
+        key=lambda media: ordered_hit_ids.index(
+            f"{media.id}_external" if media.is_external else str(media.id)
+        ),
+    )
     num_result = 0
     if ES_VERSION in [7, 8]:
         num_result = result["hits"]["total"]["value"]
     else:
         num_result = result["hits"]["total"]
-    videos.has_next = ((page + 1) * size) < num_result
-    videos.next_page_number = page + 1
+
+    media_results = MediaResults(
+        sequence=ordered_medias,
+        has_next=((page + 1) * size) < num_result,
+        next_page_number=page + 1
+    )
 
     if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path},
+            {"videos": media_results, "full_path": full_path},
         )
 
     return render(
@@ -256,7 +300,7 @@ def search_videos(request):
         "search/search.html",
         {
             "full_path": full_path,
-            "videos": videos,
+            "videos": media_results,
             "num_result": num_result,
             "aggregations": aggregations,
             "form": searchForm,

@@ -1,0 +1,24 @@
+{
+    "@context": [
+        "https://www.w3.org/ns/activitystreams",
+        "https://w3id.org/security/v1",
+        {"RsaSignature2017": "https://w3id.org/security#RsaSignature2017"}
+    ],
+    "to": [
+        "https://www.w3.org/ns/activitystreams#Public",
+        "http://peertube.test/video-channels/root_channel/followers",
+        "http://peertube.test/accounts/peertube/followers",
+        "http://peertube.test/accounts/root/followers"
+    ],
+    "cc": [],
+    "type": "Announce",
+    "id": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d/announces/1",
+    "actor": "http://peertube.test/accounts/peertube",
+    "object": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d",
+    "signature": {
+        "type": "RsaSignature2017",
+        "creator": "http://peertube.test/accounts/peertube",
+        "created": "2024-05-15T11:15:55.283Z",
+        "signatureValue": "I0hzAFwpnlBthbAVas/eN+wAFC2G7mUBPi4ZefgvYKAxm990D0AopzQDUoW+P7Cc8CW7iUv2pX6GwM/m6Ez8LvKaDERmjNjPmAPIAC2Hm/V4/FTuCZ4wiQoIVvRNEsV/4O40Rr+ZyU+A9pJGhFh3RwJ3ezMsCdI36LVx2UHvgBM="
+    }
+}

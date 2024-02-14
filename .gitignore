@@ -50,6 +50,7 @@ pod/main/static/custom/img
 !pod/custom/settings_local.py.example
 settings_local.py
 transcription/*
+docker-volume
 
 # Unit test utilities #
 #######################
@@ -73,6 +74,7 @@ compile-model
 *.crt
 *.key
 *.pem
+*.pub
 
 # NPM stuffs #
 ################

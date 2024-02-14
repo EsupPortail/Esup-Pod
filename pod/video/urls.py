@@ -37,6 +37,7 @@ from .views import (
     vote_get,
     vote_post,
     video_edit_access_tokens,
+    video_mp4_filename,
 )
 
 
@@ -208,5 +209,14 @@ urlpatterns += [
         r"^(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
         video,
         name="video_private",
+    ),
+]
+
+# MP4 FILENAME FOR ACTIVITYPUB PURPOSE
+urlpatterns += [
+    url(
+        r"^mp4/(?P<mp4_id>[\d]+)_(?P<id>[\d]+)\.mp4$",
+        video_mp4_filename,
+        name="video_mp4",
     ),
 ]

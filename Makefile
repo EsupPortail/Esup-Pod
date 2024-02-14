@@ -174,3 +174,9 @@ endif
 	sudo rm -rf ./pod/db.sqlite3
 	sudo rm -rf ./pod/db_remote.sqlite3
 	sudo rm -rf ./pod/media
+
+# Ouvre un shell avec le contexte Django dans le conteneur pod
+shell:
+	docker exec -it pod-activitypub-with-volumes pip install ipython
+	docker exec -it pod-activitypub-with-volumes env DJANGO_SETTINGS_MODULE=pod.settings ipython --ext=autoreload -c "%autoreload 2" -i
+	# then it is needed to call import django; django.setup()

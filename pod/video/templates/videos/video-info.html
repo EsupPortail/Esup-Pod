@@ -21,7 +21,7 @@
       {{ video.get_viewcount }}
     {% endif %}
   </div>
-  {% if USE_PLAYLIST %}
+  {% if USE_PLAYLIST and not video.is_external %}
     <div class="pod-info-video__playlists">
       <i class="bi bi-list-ul" aria-hidden="true"></i> {% trans 'Addition in a playlist' %}
       {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video&amp;highlight=playlist_since_created">
@@ -31,7 +31,7 @@
       {% endif %}
     </div>
   {% endif %}
-  {% if USE_PLAYLIST and USE_FAVORITES %}
+  {% if USE_PLAYLIST and not video.is_external and USE_FAVORITES %}
     <div class="pod-info-video__favorites">
       <i class="bi bi-stars" aria-hidden="true"></i> {% trans 'Number of favorites' %}
       {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video:video_stats_view' video.slug %}?from=video&amp;highlight=fav_since_created">
@@ -42,7 +42,7 @@
     </div>
   {% endif %}
   <div class="pod-info-video__buttons">
-    {% if USE_PLAYLIST and user.is_authenticated and not video.is_draft %}
+    {% if USE_PLAYLIST and not video.is_external and user.is_authenticated and not video.is_draft %}
       <button type="button" class="btn btn-link btn-lg pod-btn-share" title="{% trans 'Add the video to a playlist'%}" data-bs-toggle="modal" data-bs-target="#playlist-modal">
         <i class="bi bi-list-ul" aria-hidden="true"></i>
       </button>
@@ -50,7 +50,7 @@
 
       {% is_favorite user video as is_favorite %}
       {% get_favorite_playlist user as fav_playlist %}
-      {% if USE_PLAYLIST and USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
+      {% if USE_PLAYLIST and not video.is_external and USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
         {% if is_favorite %}
           <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" title="{% trans 'Remove from favorite' %}" class="btn btn-link btn-lg pod-btn-share remove-from-playlist-btn-link" id="favorite-button" aria-pressed="true" role="button">
             <i class="bi-star-fill" aria-hidden="true"></i>

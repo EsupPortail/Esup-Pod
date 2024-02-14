@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.conf import settings
 from django.http import JsonResponse
 from django.db.models import Q
+from django.db.models import QuerySet
 from django.utils.translation import ugettext_lazy as _
 
 from .models import Video
@@ -199,12 +200,9 @@ def get_videos(
     return JsonResponse(response, safe=False)
 
 
-def sort_videos_list(videos_list: list, sort_field: str, sort_direction: str = ""):
-    """Return videos list sorted by sort_field.
-
-    Sorted by specific column name and ascending or descending direction
-    """
-    if sort_field and sort_field in {
+def is_sort_field_usable(sort_field: str):
+    """Check if field is sortable."""
+    return sort_field and sort_field in {
         "category",
         "channel",
         "cursus",
@@ -228,7 +226,15 @@ def sort_videos_list(videos_list: list, sort_field: str, sort_direction: str = "
         "viewcount",
         "rank",
         "order",
-    }:
+    }
+
+
+def sort_videos_queryset(videos_list: QuerySet, sort_field: str, sort_direction: str = ""):
+    """Return videos list sorted by sort_field.
+
+    Sorted by specific column name and ascending or descending direction
+    """
+    if is_sort_field_usable(sort_field=sort_field):
         if sort_field in {"title", "title_fr", "title_en"}:
             sort_field = Lower(sort_field)
             if not sort_direction:
@@ -237,8 +243,13 @@ def sort_videos_list(videos_list: list, sort_field: str, sort_direction: str = "
         elif not sort_direction:
             sort_field = "-" + sort_field
         videos_list = videos_list.order_by(sort_field)
-
     return videos_list.distinct()
+
+
+def sort_medias_list(medias_list: list, sort_field: str, sort_direction: str = ""):
+    if is_sort_field_usable(sort_field=sort_field):
+        medias_list = sorted(medias_list, key=lambda media: getattr(media, sort_field), reverse=sort_direction == "on")
+        return medias_list
 
 
 def get_id_from_request(request, key):

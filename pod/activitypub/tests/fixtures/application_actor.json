@@ -1,0 +1,44 @@
+{
+    "@context": [
+        "https://www.w3.org/ns/activitystreams",
+        "https://w3id.org/security/v1",
+        {
+            "RsaSignature2017": "https://w3id.org/security#RsaSignature2017"
+        },
+        {
+            "pt": "https://joinpeertube.org/ns#",
+            "sc": "http://schema.org/",
+            "playlists": {
+                "@id": "pt:playlists",
+                "@type": "@id"
+            },
+            "support": {
+                "@type": "sc:Text",
+                "@id": "pt:support"
+            },
+            "lemmy": "https://join-lemmy.org/ns#",
+            "postingRestrictedToMods": "lemmy:postingRestrictedToMods",
+            "icons": "as:icon"
+        }
+    ],
+    "type": "Application",
+    "id": "http://peertube.test/accounts/peertube",
+    "following": "http://peertube.test/accounts/peertube/following",
+    "followers": "http://peertube.test/accounts/peertube/followers",
+    "playlists": "http://peertube.test/accounts/peertube/playlists",
+    "inbox": "http://peertube.test/accounts/peertube/inbox",
+    "outbox": "http://peertube.test/accounts/peertube/outbox",
+    "preferredUsername": "peertube",
+    "url": "http://peertube.test/accounts/peertube",
+    "name": "peertube",
+    "endpoints": {
+        "sharedInbox": "http://peertube.test/inbox"
+    },
+    "publicKey": {
+        "id": "http://peertube.test/accounts/peertube#main-key",
+        "owner": "http://peertube.test/accounts/peertube",
+        "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDIKnSziKKXcEtUwKeK8bA/0HtS\ngv2fuvaiMtGKggW6Mhmmq85nLFRo7+B5/HkEb95PJv8q7HkojpuAlJNuNYcr7FaJ\nob35GcaWA9p/h5XbLlNk7fHHj4SNvJyxK8zU8O+tysKswNtoaAifT1NAsnNJEuAJ\nsPXp5bwUyNsgyBBfSwIDAQAB\n-----END PUBLIC KEY-----\n"
+    },
+    "published": "2024-05-15T11:09:12.862Z",
+    "summary": null
+}
