@@ -79,6 +79,7 @@ TRANSCRIPTION_MODEL_PARAM = {
 }
 
 USE_XAPI_VIDEO = False
+ACTIVITYPUB_CELERY_BROKER_URL = "redis://redis:6379/5"
 XAPI_CELERY_BROKER_URL = "redis://redis.localhost:6379/6"
 
 # for maximum console logging\n

@@ -10,6 +10,7 @@ from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
 from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
 import os
 from bs4 import BeautifulSoup
+from Crypto.PublicKey import RSA
 import requests
 
 USE_OPENCAST_STUDIO = True
@@ -84,6 +85,7 @@ AFFILIATION_EVENT = ["employee"]
 
 USE_MEETING = True
 USE_SPEAKER = True
+USE_ACTIVITYPUB = True
 
 
 def get_shared_secret():
@@ -132,3 +134,12 @@ AI_ENHANCEMENT_API_VERSION = ""
 
 # DEBUG
 USE_DEBUG_TOOLBAR = False
+
+
+# Generate a temporary keypair for test purpose
+activitypub_key = RSA.generate(2048)
+ACTIVITYPUB_PRIVATE_KEY = activitypub_key.export_key().decode()
+ACTIVITYPUB_PUBLIC_KEY = activitypub_key.publickey().export_key().decode()
+
+# Directly execute celery tasks instead of delegating them to workers
+CELERY_TASK_ALWAYS_EAGER = True

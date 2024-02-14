@@ -1,5 +1,7 @@
 """Esup-Pod playlist utilities."""
 
+from typing import Union
+
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db.models.functions import Lower
@@ -8,6 +10,7 @@ from django.urls import reverse
 from django.core.handlers.wsgi import WSGIRequest
 
 from pod.video.models import Video
+from pod.activitypub.models import ExternalVideo
 from django.conf import settings
 
 from .apps import FAVORITE_PLAYLIST_NAME
@@ -16,7 +19,9 @@ from .models import Playlist, PlaylistContent
 import hashlib
 
 
-def check_video_in_playlist(playlist: Playlist, video: Video) -> bool:
+def check_video_in_playlist(
+    playlist: Playlist, video: Union[Video, ExternalVideo]
+) -> bool:
     """
     Verify if a video is present in a playlist.
 
@@ -27,7 +32,12 @@ def check_video_in_playlist(playlist: Playlist, video: Video) -> bool:
     Returns:
         bool: True if the video is on the playlist, False otherwise
     """
-    return PlaylistContent.objects.filter(playlist=playlist, video=video).exists()
+    if isinstance(video, Video):
+        return PlaylistContent.objects.filter(playlist=playlist, video=video).exists()
+    elif isinstance(video, ExternalVideo):
+        return PlaylistContent.objects.filter(
+            playlist=playlist, external_video=video
+        ).exists()
 
 
 def user_add_video_in_playlist(playlist: Playlist, video: Video) -> str:
