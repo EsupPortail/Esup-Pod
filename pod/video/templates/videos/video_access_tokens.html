@@ -32,10 +32,10 @@
     <caption>{% trans "List of active tokens" %}</caption>
     <thead>
       <tr>
-        <th scope="col"><i class="bi bi-universal-access-circle" aria-hidden="true"></i>&nbsp;{% trans "Token" %}</th>
-        <th scope="col"><i class="bi bi-link-45deg" aria-hidden="true"></i>&nbsp;{% trans 'Share the link' %}</th>
-        <th scope="col"><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Embed in a web page' %}</th>
-        <th scope="col"><i class="bi bi-trash3" aria-hidden="true"></i>&nbsp;{% trans "Delete" %}</th>
+        <th scope="col" class="text-center col-2"><i class="bi bi-universal-access-circle" aria-hidden="true"></i>&nbsp;{% trans "Token" %}</th>
+        <th scope="col" class="text-center col-4"><i class="bi bi-link-45deg" aria-hidden="true"></i>&nbsp;{% trans 'Share the link' %}</th>
+        <th scope="col" class="text-center col-5"><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Embed in a web page' %}</th>
+        <th scope="col" class="text-center col-1"><i class="bi bi-trash3" aria-hidden="true"></i><!-- &nbsp;{% trans "Delete" %} --></th>
       </tr>
     </thead>
     <tbody class="table-group-divider">
@@ -44,16 +44,24 @@
             <td scope="row">&nbsp;{{ token.token }} </td>
             <td>
                 <div class="form-group">
-                    <label for="txtpartage">{% trans 'Use this link to share the video:' %}</label>
-                    <textarea class="form-control" type="text" name="txtpartage" id="txtpartage" rows="4" 
+                    <label for="txtpartage-{{token.id}}" >{% trans 'Use this link to share the video:' %}
+                        <clipboard-copy aria-label="Copy to clipboard" class="btn pod-btn-social" tabindex="0" role="button" id="btnpartageprivelink-{{token.id}}">
+                            <i class="bi bi-clipboard"></i>
+                        </clipboard-copy>
+                    </label>
+                    <textarea class="form-control" type="text" name="txtpartage" id="txtpartage-{{token.id}}" rows="4" 
                     readonly>{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}{{ token.token }}/</textarea>
                     
                 </div>
             </td>
             <td>
                 <div class="form-group ">
-                    <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:'%}</label>
-                    <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4"
+                    <label for="txtintegration-{{token.id}}">{% trans 'Copy the content of this text box and paste it in the page:'%}
+                        <clipboard-copy aria-label="Copy to clipboard" class="btn pod-btn-social" tabindex="0" role="button" id="btnpartagepriveinte-{{token.id}}">
+                            <i class="bi bi-clipboard"></i>
+                        </clipboard-copy>
+                    </label>
+                    <textarea name="txtintegration" id="txtintegration-{{token.id}}" class="form-control" rows="4"
                     readonly>&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}{{ token.token }}/?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen title="{{ video.title }}" &gt;&lt;/iframe&gt;</textarea>
                 </div>
             </td>
@@ -78,4 +86,7 @@
 {% block collapse_page_aside %}{% endblock collapse_page_aside %}
 {% block page_aside %}{% endblock page_aside %}
 
-{% block more_script %}{% endblock more_script %}
+{% block more_script %}
+
+
+{% endblock more_script %}

@@ -684,6 +684,7 @@ class VideoTestView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(response.context["form"])
+        # ####################################################
         # TODO test with hashkey
         url = reverse(
             "video:video_private",
@@ -692,11 +693,49 @@ class VideoTestView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual("form" in response.context.keys(), False)
-        v.is_draft = True
-        v.save()
+        # random uuid
+        random_uuid = uuid.uuid4()
+        url = reverse(
+            "video:video_private",
+            kwargs={"slug": v.slug, "slug_private": random_uuid},
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual("form" in response.context.keys(), True)
+        # Access token but not good video
+        v2 = Video.objects.get(id=2)
+        accessTokenV2 = VideoAccessToken.objects.create(video=v2)
+        url = reverse(
+            "video:video_private",
+            kwargs={"slug": v.slug, "slug_private": accessTokenV2.token},
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual("form" in response.context.keys(), True)
+        # Good token
+        accessToken = VideoAccessToken.objects.create(video=v)
+        url = reverse(
+            "video:video_private",
+            kwargs={"slug": v.slug, "slug_private": accessToken.token},
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual("form" in response.context.keys(), False)
+        # Video in draft mode
+        v.is_draft = True
+        v.save()
+        # url with good video and token
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual("form" in response.context.keys(), False)
+        url = reverse(
+            "video:video_private",
+            kwargs={"slug": v.slug, "slug_private": accessTokenV2.token},
+        )
+        response = self.client.get(url)
+        # redirect to login page
+        self.assertEqual(response.status_code, 302)
+        # ####################################################
         # Tests for additional owners
         v = Video.objects.get(title="VideoWithAdditionalOwners")
         self.client = Client()
