@@ -7,3 +7,4 @@ httmock
 beautifulsoup4
 django-debug-toolbar
 django-extensions
+watchdog

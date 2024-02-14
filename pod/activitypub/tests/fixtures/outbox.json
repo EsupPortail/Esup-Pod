@@ -1,0 +1,13 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/activitystreams",
+    "https://w3id.org/security/v1",
+    {
+      "RsaSignature2017": "https://w3id.org/security#RsaSignature2017"
+    }
+  ],
+  "id": "http://peertube.test/accounts/peertube/outbox",
+  "type": "OrderedCollection",
+  "totalItems": 1,
+  "first": "http://peertube.test/accounts/peertube/outbox?page=1"
+}

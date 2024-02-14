@@ -72,7 +72,8 @@ from .utils import (
     get_id_from_request,
 )
 from .context_processors import get_available_videos
-from .utils import sort_videos_list
+from .utils import sort_videos_queryset
+from .utils import sort_medias_list
 
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import ObjectDoesNotExist
@@ -88,6 +89,8 @@ from itertools import chain
 from django.db import IntegrityError
 from django.db.models import QuerySet
 from django.db import transaction
+
+from pod.activitypub.context_processors import get_available_external_videos
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -600,7 +603,7 @@ def dashboard(request):
     filtered_videos_list = get_filtered_videos_list(request, videos_list)
     sort_field = request.GET.get("sort") if request.GET.get("sort") else "date_added"
     sort_direction = request.GET.get("sort_direction")
-    sorted_videos_list = sort_videos_list(
+    sorted_videos_list = sort_videos_queryset(
         filtered_videos_list, sort_field, sort_direction
     )
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
@@ -913,6 +916,15 @@ def get_filtered_videos_list(request, videos_list):
     return videos_list.distinct()
 
 
+def get_filtered_external_videos_list(request, external_videos_list):
+    """Return filtered external videos list by get parameters."""
+    if request.GET.getlist("source_instance"):
+        external_videos_list = external_videos_list.filter(
+            Q(source_instance__object__in=request.GET.getlist("source_instance"))
+        )
+    return external_videos_list.distinct()
+
+
 def get_owners_has_instances(owners: list) -> list:
     """Return the list of owners who has instances in User.objects."""
     ownersInstances = []
@@ -943,15 +955,21 @@ def owner_is_searchable(user: User) -> bool:
 def videos(request):
     """Render the main list of videos."""
     videos_list = get_filtered_videos_list(request, get_available_videos())
+    external_video_list = get_filtered_external_videos_list(
+        request, get_available_external_videos()
+    )
     sort_field = request.GET.get("sort") if request.GET.get("sort") else "date_added"
     sort_direction = request.GET.get("sort_direction")
 
-    videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+    if external_video_list:
+        media_list = sort_medias_list(list(videos_list) + list(external_video_list), sort_field, sort_direction)
+    else:
+        media_list = sort_videos_queryset(videos_list, sort_field, sort_direction)
 
     if not sort_field:
         # Get the default Video ordering
         sort_field = Video._meta.ordering[0].lstrip("-")
-    count_videos = len(videos_list)
+    count_medias = len(media_list)
 
     page = request.GET.get("page", 1)
     if page == "" or page is None:
@@ -964,8 +982,8 @@ def videos(request):
             .replace("&page=%s" % page, "")
         )
 
-    paginator = Paginator(videos_list, 12)
-    videos = get_paginated_videos(paginator, page)
+    paginator = Paginator(media_list, 12)
+    medias = get_paginated_videos(paginator, page)
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     owner_filter = owner_is_searchable(request.user)
 
@@ -974,9 +992,9 @@ def videos(request):
             request,
             "videos/video_list.html",
             {
-                "videos": videos,
+                "videos": medias,
                 "full_path": full_path,
-                "count_videos": count_videos,
+                "count_videos": count_medias,
                 "owner_filter": owner_filter,
             },
         )
@@ -984,8 +1002,8 @@ def videos(request):
         request,
         "videos/videos.html",
         {
-            "videos": videos,
-            "count_videos": count_videos,
+            "videos": medias,
+            "count_videos": count_medias,
             "types": request.GET.getlist("type"),
             "owners": request.GET.getlist("owner"),
             "disciplines": request.GET.getlist("discipline"),
@@ -1099,7 +1117,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         if playlist_can_be_displayed(request, playlist) and user_can_see_playlist_video(
             request, video, playlist
         ):
-            videos = sort_videos_list(get_video_list_for_playlist(playlist), "rank")
+            videos = sort_videos_queryset(get_video_list_for_playlist(playlist), "rank")
             params = {
                 "playlist_in_get": playlist,
                 "videos": videos,
@@ -3498,6 +3516,15 @@ def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> Json
     """
     channel = Channel.objects.get(slug=slug)
     return JsonResponse(json.loads(channel.get_all_theme_json()), safe=False)
+
+
+def video_mp4_filename(request, mp4_id, id):
+    """Get video filename for activitypub broadcast and keep it unique for follower instances."""
+    video = get_object_or_404(Video, id=id, sites=get_current_site(request))
+
+    mp4s = [v for v in video.get_video_mp4() if str(v.id) == mp4_id]
+    if len(mp4s) == 1:
+        return redirect(mp4s[0].source_file.url)
 
 
 """
