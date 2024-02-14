@@ -11,21 +11,17 @@
 
 {% block breadcrumbs %}
 {{ block.super }}
-    <li class="breadcrumb-item active" aria-current="page">{% trans "My BigBlueButton records" %}</li>
-{% endblock %}
-
-{% block page_title %}
-    {% trans "My BigBlueButton records" %}
+  <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
 {% endblock %}
 
 {% block page_content %}
 
-  <h3>{% trans "Create a video from a BigBlueButton presentation" %}</h3>
+  <h2 class="h3">{% trans "Create a video from a BigBlueButton presentation" %}</h2>
   {% if records.paginator.count == 0 %}
-    <h4>{% trans "No record found"%}</h4>
-    <p class="alert alert-info">{% trans 'There are no BigBlueButton records.'%}</p>
+    <h3 class="h4">{% trans "No record found"%}</h3>
+    <p class="alert alert-info" role="alert">{% trans 'There are no BigBlueButton records.'%}</p>
   {% else %}
-    <h4>{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}</h4>
+    <h3 class="h4">{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}</h4>
     {% trans "This is the list of the recorded BigBlueButton sessions for which you were moderator. This module allows you to create a video from a BigBlueButton presentation." %}<br>
     {% trans "Shortly after the presentation is published, the corresponding video will appear in your videos." %}<br>
     <small class="form-text">
@@ -61,11 +57,8 @@
 
 {% endblock page_content %}
 
-{% block collapse_page_aside %}
-{% endblock collapse_page_aside %}
-
-{% block page_aside %}
-{% endblock page_aside %}
+{% block collapse_page_aside %}{% endblock collapse_page_aside %}
+{% block page_aside %}{% endblock page_aside %}
 
 {% block more_script %}
 <script src="{% static 'waypoints/lib/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>

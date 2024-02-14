@@ -140,7 +140,7 @@
         </p>
       {% endif %}
     {% empty %}
-      <p class="card-text not-found">{% trans "Sorry, no lives found." %}</p>
+      <p class="alert alert-info" role="alert">{% trans "Sorry, no lives found." %}</p>
     {% endfor %}
 
     {% if broadcaster.building.gmapurl %}

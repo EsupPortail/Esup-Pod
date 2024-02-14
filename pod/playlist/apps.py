@@ -1,3 +1,5 @@
+"""Esup-Pod Playlist apps."""
+
 from django.apps import AppConfig
 from django.db import connection
 from django.db.models.signals import pre_migrate, post_migrate

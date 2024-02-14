@@ -1110,7 +1110,7 @@
                             "pod_version_init": "3.1.0"
                         },
                         "USE_BBB": {
-                            "default_value": true,
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     ""
@@ -1123,7 +1123,7 @@
                             "pod_version_init": "3.1"
                         },
                         "USE_BBB_LIVE": {
-                            "default_value": "False ",
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     ""

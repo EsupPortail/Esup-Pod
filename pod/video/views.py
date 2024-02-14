@@ -1,5 +1,7 @@
 """Esup-Pod videos views."""
 
+from concurrent import futures
+
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -29,7 +31,6 @@ from django.db.models import Sum, Min
 # from django.contrib.auth.hashers import check_password
 
 from dateutil.parser import parse
-import concurrent.futures as futures
 from pod.main.utils import is_ajax, dismiss_stored_messages, get_max_code_lvl_messages
 
 from pod.main.models import AdditionalChannelTab
@@ -79,7 +80,6 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 import re
 import pandas
-from http import HTTPStatus
 from datetime import date
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
@@ -655,7 +655,7 @@ def bulk_update(request):
     if request.method == "POST":
         status = 200
         # Get post parameters
-        update_action = json.loads(request.POST.get("update_action"))
+        update_action = request.POST.get("update_action")
         selected_videos = json.loads(request.POST.get("selected_videos"))
         videos_list = Video.objects.filter(slug__in=selected_videos)
 
@@ -870,7 +870,8 @@ def get_filtered_videos_list(request, videos_list):
     return videos_list.distinct()
 
 
-def get_owners_has_instances(owners):
+def get_owners_has_instances(owners: list) -> list:
+    """Return the list of owners who has instances in User.objects."""
     ownersInstances = []
     for owner in owners:
         try:
@@ -881,10 +882,11 @@ def get_owners_has_instances(owners):
     return ownersInstances
 
 
-def owner_is_searchable(user):
+def owner_is_searchable(user: User) -> bool:
     """
-    Return if user is searchable according to HIDE_USER_FILTER setting
-    and authenticated user.
+    Check if user is searchable.
+
+    according to HIDE_USER_FILTER setting and authenticated user.
 
     Args:
         user (:class:`django.contrib.auth.models.User`): The user object
@@ -1020,94 +1022,9 @@ def get_video_access(request, video, slug_private):
         return True
 
 
-def video_json_response(request, video):
-    template_info = (
-        "videos/video-info.html"
-        if request.GET.get("is_iframe") and request.GET.get("is_iframe") == "true"
-        else "videos/video-all-info.html"
-    )
-    template_video_element = "videos/video-element.html"
-    rendered_info = render_to_string(template_info, {"video": video}, request)
-    rendered_video = render_to_string(template_video_element, {"video": video}, request)
-    listNotes = get_adv_note_list(request, video)
-    rendered_note = render_to_string(
-        "videos/video_notes.html", {"video": video, "listNotes": listNotes}, request
-    )
-    return video.get_json_to_video_view(
-        {
-            "html_video_info": rendered_info,
-            "html_video_element": rendered_video,
-            "html_video_note": rendered_note,
-        }
-    )
-
-
-@ajax_required
-@csrf_protect
-def video_xhr(request, slug, slug_private=None):
-    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-    is_password_protected = video.password is not None and video.password != ""
-    show_page = get_video_access(request, video, slug_private)
-    if (
-        (show_page and not is_password_protected)
-        or (
-            show_page
-            and is_password_protected
-            and request.POST.get("password")
-            and request.POST.get("password") == video.password
-        )
-        or (slug_private and slug_private == video.get_hashkey())
-        or request.user == video.owner
-        or request.user.is_superuser
-        or request.user.has_perm("video.change_video")
-        or (request.user in video.additional_owners.all())
-    ):
-        data = video_json_response(request, video)
-        return HttpResponse(data, content_type="application/json")
-    else:
-        is_draft = video.is_draft
-        is_restricted = video.is_restricted
-        is_restricted_to_group = video.restrict_access_to_groups.all().exists()
-        is_access_protected = is_draft or is_restricted or is_restricted_to_group
-        if is_password_protected and (
-            not is_access_protected or (is_access_protected and show_page)
-        ):  # Should not go here has video with password are not allowed in playlist
-            # (but should work if need...)
-            form = (
-                VideoPasswordForm(request.POST) if request.POST else VideoPasswordForm()
-            )
-            rendered = render_to_string(
-                "videos/video-form.html",
-                {"video": video, "form": form},
-                request,
-            )
-            response = {
-                "status": HTTPStatus.FORBIDDEN,
-                "error": "password",
-                "html_content": rendered,
-            }
-            data = json.dumps(response)
-            return HttpResponse(data, content_type="application/json")
-        elif request.user.is_authenticated:
-            response = {
-                "status": HTTPStatus.FORBIDDEN,
-                "error": "deny",
-                "html_content": "",
-            }
-            data = json.dumps(response)
-            return HttpResponse(data, content_type="application/json")
-        else:
-            response = {
-                "status": HTTPStatus.FOUND,
-                "error": "access",
-                "url": settings.LOGIN_URL,
-            }
-            data = json.dumps(response)
-            return HttpResponse(data, content_type="application/json")
-
-
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
+    """Render a single video."""
     try:
         id = int(slug[: slug.find("-")])
     except ValueError:
@@ -1296,6 +1213,7 @@ def render_video(
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def video_edit(request, slug=None):
+    """Video Edit View."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
     video = (
@@ -1429,7 +1347,7 @@ def video_delete(request, slug=None):
 
 
 def video_is_deletable(request, video):
-    """Check if video is deletable, usage for delete form and multiple deletion"""
+    """Check if video is deletable, usage for delete form and multiple deletion."""
     if request.user != video.owner and not (
         request.user.is_superuser or request.user.has_perm("video.delete_video")
     ):
@@ -1490,7 +1408,12 @@ def video_transcript(request, slug=None):
                 messages.ERROR,
                 _("An available transcription language must be specified."),
             )
-
+    else:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("No audio file found."),
+        )
     return redirect(reverse("video:video_edit", args=(video.slug,)))
 
 
@@ -1515,6 +1438,7 @@ def get_adv_note_list(request, video):
 def get_adv_note_com_list(request, id):
     """
     Return the list of coms which are direct sons of the AdvancedNote id.
+
         ...that can be seen by the current user
     """
     if id:
@@ -1540,6 +1464,7 @@ def get_adv_note_com_list(request, id):
 def get_com_coms_dict(request, listComs):
     """
     Return the list of the direct sons of a com.
+
       for each encountered com
     Starting from the coms present in listComs
     Example, having the next tree of coms :
@@ -1575,6 +1500,7 @@ def get_com_coms_dict(request, listComs):
 def get_com_tree(com):
     """
     Return the list of the successive parents of com.
+
       including com from bottom to top
     """
     tree, c = [], com
@@ -1588,6 +1514,7 @@ def get_com_tree(com):
 def can_edit_or_remove_note_or_com(request, nc, action):
     """
     Check if the current user can apply action to the note or comment nc.
+
     Typically action is in ['edit', 'delete']
     If not raise PermissionDenied
     """
@@ -1611,6 +1538,7 @@ def can_edit_or_remove_note_or_com(request, nc, action):
 def can_see_note_or_com(request, nc):
     """
     Check if the current user can view the note or comment nc.
+
     If not raise PermissionDenied
     """
     if isinstance(nc, AdvancedNotes):
@@ -2078,6 +2006,7 @@ def video_note_remove(request, slug):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_note_download(request, slug):
+    """Download all notes of a video in CSV format."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     listNotes = get_adv_note_list(request, video)
     contentToDownload = {
@@ -2421,6 +2350,7 @@ def get_all_views_count(v_id, date_filter=date.today()):
 
 def get_videos(p_slug, target, p_slug_t=None):
     """Retourne une ou plusieurs videos selon le slug donné.
+
     Renvoi vidéo/s et titre de
     (theme, ou video ou channel ou videos pour toutes)
     selon la réference du slug donnée
@@ -2461,6 +2391,7 @@ def view_stats_if_authenticated(user):
 def manage_access_rights_stats_video(request, video, page_title):
     video_access_ok = get_video_access(request, video, slug_private=None)
     is_password_protected = video.password is not None and video.password != ""
+
     has_rights = (
         request.user == video.owner
         or request.user.is_superuser
@@ -2472,14 +2403,25 @@ def manage_access_rights_stats_video(request, video, page_title):
         return render(
             request,
             "videos/video_stats_view.html",
-            {"form": form, "title": page_title},
+            {"form": form, "page_title": page_title},
         )
     elif (
         (not has_rights and video_access_ok and not is_password_protected)
         or (video_access_ok and not is_password_protected)
         or has_rights
     ):
-        return render(request, "videos/video_stats_view.html", {"title": page_title})
+        highlight = request.GET.get("highlight", None)
+        if highlight not in (
+            "playlist_since_created",
+            "since_created",
+            "fav_since_created",
+        ):
+            highlight = None
+        return render(
+            request,
+            "videos/video_stats_view.html",
+            {"page_title": page_title, "highlight": highlight},
+        )
     return HttpResponseNotFound(
         _("You do not have access rights to this video: %s " % video.slug)
     )
@@ -2524,7 +2466,7 @@ def stats_view(request, slug=None, slug_t=None):
     ) or (
         request.method == "GET" and videos and target in ("videos", "channel", "theme")
     ):
-        return render(request, "videos/video_stats_view.html", {"title": title})
+        return render(request, "videos/video_stats_view.html", {"page_title": title})
     else:
         date_filter = request.POST.get("periode", date.today())
         if isinstance(date_filter, str):
@@ -2551,6 +2493,7 @@ def stats_view(request, slug=None, slug_t=None):
 
 @login_required(redirect_field_name="referrer")
 def video_add(request):
+    """Video add view."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
     allow_extension = ".%s" % ", .".join(map(str, VIDEO_ALLOWED_EXTENSIONS))
@@ -2696,6 +2639,7 @@ def add_comment(request, video_slug, comment_id=None):
 def get_parent_comments(request, video):
     """
     Return only comments without parent.
+
     (direct comments to video) which contains
     number of votes and children
     """
@@ -2829,6 +2773,7 @@ def get_comments(request, video_slug):
 @csrf_protect
 def delete_comment(request, video_slug, comment_id):
     """Delete the comment `comment_id` associated to `video_slug`.
+
     Args:
         video_slug (string): the video associated to this comment
         comment_id (): id of the comment to be deleted
@@ -3140,7 +3085,17 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 @admin_required
-def update_video_owner(request, user_id):
+def update_video_owner(request, user_id: int) -> JsonResponse:
+    """
+    Update video owner.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        user_id (int): User identifier.
+
+    Returns:
+        ::class::`django.http.JsonResponse`: The JSON response.
+    """
     if request.method == "POST":
         post_data = json.loads(request.body.decode("utf-8"))
 

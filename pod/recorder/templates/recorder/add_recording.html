@@ -41,11 +41,11 @@
           {% spaceless %}
           <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse{% else %}{% endif %}{% if "description_" in field.name %} description{% endif %}{% if "title_" in field.name %} title{% endif %}">
             <div class="list-group-item">
-              <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}" >
+              <div class="{% if field.name == "owners" or field.name == "users" %}form-row {% endif %}form-group {% if field.field.required %}form-group-required {% endif %}">
                 {{ field.errors }}
                 {% if "form-check-input" in field.field.widget.attrs.class %}
                   <div class="form-check">
-                    {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
+                    {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
                   </div>
                 {% else %}
                   <label for="{{ field.id_for_label }}">{{ field.label }}</label>

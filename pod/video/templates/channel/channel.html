@@ -225,7 +225,7 @@
   {% if channel.themes.count > 0 %}
     <div class="card card-body p-2 p-md-3" id="card-channelthemes">
       <h2 class="card-title h4">
-        <i class="bi bi-card-list" aria-hidden="true" ></i>
+        <i class="bi bi-card-list" aria-hidden="true"></i>
         {% trans 'Themes of' %} "{{ channel.title }}"
       </h2>
       <div class="card-text" id="theme-tree-view">
@@ -239,7 +239,7 @@
 
 {% block more_script %}
 
-    <script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}" ></script>
+    <script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
     <script>
         {% if theme %}
         url = "{% url 'channel-video:theme' slug_c=channel.slug slug_t=theme.slug %}?page="

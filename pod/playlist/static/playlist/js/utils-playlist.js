@@ -1,4 +1,14 @@
 /**
+ * @file Esup-pod Playlist utils.
+ * @since 3.4.0
+ */
+
+/* Read-only Globals defined in playlist-modal.js */
+/*
+global addEventListenerForModal
+*/
+
+/**
  * Disables the default refresh behavior of a button and performs an asynchronous GET request using the Fetch API.
  * @param {HTMLElement} button - The HTML button element.
  */
@@ -8,7 +18,7 @@ function preventRefreshButton(button, jsonFormat) {
   if (button) {
     button.addEventListener('click', function (e) {
       e.preventDefault();
-      console.log("oui")
+      console.log("oui");
       let url = this.getAttribute('href');
       if (button.classList.contains('action-btn')) {
         button.classList.add('disabled');
@@ -18,7 +28,7 @@ function preventRefreshButton(button, jsonFormat) {
         button.classList.add('disabled');
       }
       if (jsonFormat) {
-        url += '?json=true'
+        url += '?json=true';
       }
       fetch(url, {
         method: "GET"
@@ -68,7 +78,7 @@ function preventRefreshButton(button, jsonFormat) {
           }
         })
         .catch(error => {
-          console.error('Error : ', error);
+          console.error('Error: ', error);
         });
     });
   }

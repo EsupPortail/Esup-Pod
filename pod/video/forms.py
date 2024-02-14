@@ -982,8 +982,8 @@ class VideoForm(forms.ModelForm):
         widgets = {
             "owner": OwnerWidget,
             "additional_owners": AddOwnerWidget,
-            "channel": ChannelWidget,
-            "discipline": DisciplineWidget,
+            "channel": ChannelWidget(attrs={"data-minimum-input-length": 0}),
+            "discipline": DisciplineWidget(attrs={"data-minimum-input-length": 0}),
             "date_evt": widgets.AdminDateWidget,
             "restrict_access_to_groups": AddAccessGroupWidget,
             "video": CustomClearableFileInput,

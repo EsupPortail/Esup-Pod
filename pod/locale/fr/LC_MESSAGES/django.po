@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-31 13:17+0000\n"
+"POT-Creation-Date: 2024-02-06 10:47+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -590,11 +590,6 @@ msgid "by"
 msgstr "par"
 
 #: pod/bbb/templates/bbb/list_meeting.html
-#: pod/bbb/templates/bbb/publish_meeting.html pod/main/templates/navbar.html
-msgid "My BigBlueButton records"
-msgstr "Mes sessions BigBlueButton"
-
-#: pod/bbb/templates/bbb/list_meeting.html
 msgid "Create a video from a BigBlueButton presentation"
 msgstr "Créer une vidéo à partir d’une présentation BigBlueButton"
 
@@ -659,8 +654,7 @@ msgstr ""
 "Remarque : cette page s’actualise automatiquement toutes les 30 secondes."
 
 #: pod/bbb/templates/bbb/live_card.html
-#: pod/bbb/templates/bbb/live_list_meeting.html
-#: pod/bbb/templates/bbb/live_publish_meeting.html
+#: pod/bbb/templates/bbb/live_publish_meeting.html pod/bbb/views.py
 #: pod/main/templates/navbar.html
 msgid "Perform a BigBlueButton live"
 msgstr "Réaliser un direct BigBlueButton"
@@ -696,38 +690,35 @@ msgstr[1] "%(counter)s sessions BigBlueButton en cours trouvées"
 msgid ""
 "This is the list of current BigBlueButton sessions for which you are "
 "moderator. This module allows you to make a live stream from this "
-"BigBlueButton session (<i>useful if there are more than 100 users</i>)."
+"BigBlueButton session (<em>useful if there are more than 100 users</em>)."
 msgstr ""
 "Voici la liste des sessions BigBlueButton en cours pour lesquelles vous êtes "
 "modérateur. Ce module vous permet de réaliser un direct de cette session "
-"BigBlueButton (<i> utile s’il y a plus de 100 utilisateurs </i>)."
+"BigBlueButton (<em>utile s’il y a plus de 100 utilisateurs</em>)."
 
 #: pod/bbb/templates/bbb/live_list_meeting.html
 msgid ""
-"<b>Remember to not use breakout rooms in this case and end the meeting once "
-"it is over.</b>"
+"Remember to not use breakout rooms in this case and end the meeting once it "
+"is over."
 msgstr ""
-"<b>N’oubliez pas de ne pas utiliser les salles privées dans ce cas et de "
-"mettre fin à la réunion une fois celle-ci terminée.</b>"
+"N’oubliez pas de ne pas utiliser les salles privées dans ce cas et de mettre "
+"fin à la réunion une fois celle-ci terminée."
 
 #: pod/bbb/templates/bbb/live_list_meeting.html
 msgid ""
-"Shortly after clicking the \"Perform a BigBlueButton live\" button, and "
-"select the desired options, the live stream will be available to users on "
-"the <i class=\\\"bi bi-broadcast\\\"></i> <b>Lives</b> page."
+"Shortly after clicking the “Perform a BigBlueButton live” button, and select "
+"the desired options, the live stream will be available to users on the <i "
+"class=\"bi bi-broadcast\" aria-hidden=\"true\"></i> <strong>Lives</strong> "
+"page."
 msgstr ""
 "Peu de temps après avoir cliqué sur le bouton « Réaliser un direct "
 "BigBlueButton » et sélectionné les options souhaitées, le direct sera "
 "disponible pour les utilisateurs sur la page <i class=\\\"bi bi-broadcast\\"
-"\"></i> <b>Directs</b>."
+"\" aria-hidden=\"true\"></i> <strong>Directs</strong>."
 
 #: pod/bbb/templates/bbb/live_list_meeting.html
 msgid "There are no BigBlueButton sessions in progress."
 msgstr "Aucune session BigBlueButton n’est en cours."
-
-#: pod/bbb/templates/bbb/live_publish_meeting.html
-msgid "Confirmation of performing a BigBlueButton live"
-msgstr "Confirmation de la réalisation d’un direct BigBlueButton"
 
 #: pod/bbb/templates/bbb/live_publish_meeting.html
 msgid "Are you sure you want to perform a BigBlueButton live?"
@@ -780,8 +771,14 @@ msgstr "Plus"
 #: pod/recorder/templates/recorder/record_list.html
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_list.html
+#: pod/video/templates/videos/video_list_grid_selectable.html
 msgid "Loading…"
 msgstr "Chargement en cours…"
+
+#: pod/bbb/templates/bbb/publish_meeting.html pod/bbb/views.py
+#: pod/main/templates/navbar.html
+msgid "My BigBlueButton records"
+msgstr "Mes sessions BigBlueButton"
 
 #: pod/bbb/templates/bbb/publish_meeting.html
 msgid "Publish the BigBlueButton presentation"
@@ -823,6 +820,10 @@ msgstr "La session BigBlueButton a été publiée."
 #: pod/bbb/views.py
 msgid "The BigBlueButton live has been performed."
 msgstr "Le direct BigBlueButton a été publié et va bientôt démarrer."
+
+#: pod/bbb/views.py
+msgid "Confirmation of performing a BigBlueButton live"
+msgstr "Confirmation de la réalisation d’un direct BigBlueButton"
 
 #: pod/chapter/apps.py pod/chapter/models.py
 #: pod/chapter/templates/video_chapter.html
@@ -1023,7 +1024,6 @@ msgstr "Chapitre vidéo"
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/main/templates/navbar.html pod/video/templates/videos/add_video.html
-#: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
 #: pod/video/templates/videos/video_edit.html pod/video/views.py
@@ -2564,28 +2564,20 @@ msgid "External recordings"
 msgstr "Enregistrements externes"
 
 #: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/import_video/templates/import_video/list.html pod/import_video/views.py
+#: pod/import_video/views.py
 msgid "My external videos"
 msgstr "Mes vidéos externes"
 
 #: pod/import_video/templates/import_video/add_or_edit.html
+#, python-format
 msgid ""
 "Access to adding external recording has been restricted. If you want to add "
-"external recordings on the platform, please"
+"external recordings on the platform, please <a href=\"%(url)s\">contact us</"
+"a>."
 msgstr ""
-"L’accès à l’ajout d’un enregistrement externe a été restreint. Si vous "
-"souhaitez ajouter des enregistrements externes sur la plateforme, s’il vous "
-"plaît"
-
-#: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/meeting/templates/meeting/add_or_edit.html
-#: pod/meeting/templates/meeting/my_meetings.html
-#: pod/video/templates/videos/add_video.html
-#: pod/video/templates/videos/video_edit.html
-msgid "contact us"
-msgstr "nous contacter"
+"L’accès à l’ajout d’enregistrements externes a été limité. Si vous souhaitez "
+"ajouter des enregistrements externes sur la plateforme, veuillez <a "
+"href=\"%(url)s\">nous contacter</a>."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
@@ -2751,6 +2743,15 @@ msgid "Type at least 3 chars to filter"
 msgstr "Tapez au moins 3 lettres pour filtrer"
 
 #: pod/import_video/templates/import_video/list.html
+#, python-format
+msgid ""
+"Access to importing video has been restricted. If you want to import videos "
+"on the platform, please <a href=\"%(url)s\">contact us</a>."
+msgstr ""
+"L’accès à l’import d’une vidéo a été limité. Si vous souhaitez importer des "
+"vidéos sur la plateforme, veuillez <a href=\"%(url)s\">nous contacter</a>."
+
+#: pod/import_video/templates/import_video/list.html
 msgid ""
 "If you have achieved Big Blue Button meetings via another interface "
 "(typically via Moodle), or if you wish to centralize PeerTube, Youtube or "
@@ -2842,9 +2843,14 @@ msgstr "Modifier l’enregistrement externe"
 msgid "Delete the external recording"
 msgstr "Supprimer l’enregistrement externe"
 
-#: pod/import_video/utils.py pod/import_video/views.py pod/meeting/views.py
+#: pod/import_video/tests/test_views.py pod/import_video/utils.py
+#: pod/import_video/views.py pod/meeting/views.py
 msgid "Unable to upload the video to Pod"
 msgstr "Impossible de téléverser la vidéo sur Pod"
+
+#: pod/import_video/tests/test_views.py pod/import_video/views.py
+msgid "YouTube content is inaccessible."
+msgstr "Ce contenu de YouTube est inaccessible."
 
 #: pod/import_video/utils.py
 msgid "No URL found / No recording name"
@@ -2998,12 +3004,8 @@ msgid "YouTube error “%s”"
 msgstr "Erreur en lien avec Youtube « %s »"
 
 #: pod/import_video/views.py
-msgid ""
-"YouTube content is inaccessible. This content does not appear to be publicly "
-"available."
-msgstr ""
-"Le contenu YouTube est inaccessible. Ce contenu ne semble pas être "
-"disponible publiquement."
+msgid "This content does not appear to be publicly available."
+msgstr "Ce contenu ne semble pas être disponible publiquement."
 
 #: pod/import_video/views.py
 msgid "Try changing the address of this recording."
@@ -3094,8 +3096,7 @@ msgid "Thumbnails"
 msgstr "Vignettes"
 
 #: pod/live/apps.py pod/live/templates/live/direct.html
-#: pod/live/templates/live/directs.html
-#: pod/live/templates/live/directs_all.html pod/main/templates/navbar.html
+#: pod/live/templates/live/directs.html pod/main/templates/navbar.html
 msgid "Lives"
 msgstr "Directs"
 
@@ -3405,8 +3406,7 @@ msgstr "Évènement"
 
 # msgid "If this box is checked, the transcription will be enabled."
 # msgstr "Si cette case est cochée, la transcription sera activée."
-#: pod/live/models.py pod/live/templates/live/event.html
-#: pod/live/templates/live/events.html pod/live/views.py
+#: pod/live/models.py pod/live/templates/live/event.html pod/live/views.py
 msgid "Events"
 msgstr "Évènements"
 
@@ -3556,6 +3556,10 @@ msgstr "Message non envoyé: aucun diffuseur trouvé"
 #: pod/live/templates/live/event-script.html
 msgid "Message not sent: connection problem (REDIS)"
 msgstr "Message non envoyé: problème de connexion (REDIS)"
+
+#: pod/live/templates/live/directs_all.html
+msgid "Display all broadcasters of this building"
+msgstr "Afficher tous les diffuseurs de ce bâtiment"
 
 #: pod/live/templates/live/directs_all.html
 msgid "Sorry, no buildings found."
@@ -3759,8 +3763,7 @@ msgstr "Temps d’enregistrement"
 
 #: pod/live/templates/live/event.html pod/live/templates/live/event_delete.html
 #: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/live/templates/live/my_events.html pod/live/views.py
+#: pod/live/templates/live/event_immediate_edit.html pod/live/views.py
 #: pod/main/templates/navbar.html
 msgid "My events"
 msgstr "Mes évènements"
@@ -3863,6 +3866,13 @@ msgid ""
 msgstr ""
 "L’accès à l’ajout d’évènement est restreint. Si vous voulez ajouter des "
 "évènements, veuillez"
+
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/video_edit.html
+msgid "contact us"
+msgstr "nous contacter"
 
 #: pod/live/templates/live/event_edit.html
 msgid "The event is currently in progress. Editing options are limited."
@@ -4024,6 +4034,15 @@ msgstr "Posté par :"
 #: pod/live/utils.py
 msgid "You cannot view this page."
 msgstr "Vous ne pouvez pas accèder à cette page."
+
+#: pod/live/views.py
+msgid "All live streams"
+msgstr "Tous les directs"
+
+#: pod/live/views.py
+#, python-format
+msgid "Broadcasters of building “%s”"
+msgstr "Diffuseurs du bâtiment « %s »"
 
 #: pod/live/views.py
 #, python-format
@@ -5041,8 +5060,7 @@ msgstr "Afficher toutes mes réunions sur"
 #: pod/meeting/templates/meeting/delete.html
 #: pod/meeting/templates/meeting/internal_recordings.html
 #: pod/meeting/templates/meeting/invite.html
-#: pod/meeting/templates/meeting/join.html
-#: pod/meeting/templates/meeting/my_meetings.html pod/meeting/views.py
+#: pod/meeting/templates/meeting/join.html pod/meeting/views.py
 msgid "My meetings"
 msgstr "Mes réunions"
 
@@ -5116,8 +5134,7 @@ msgstr "Importer une vidéo externe"
 msgid "My channels"
 msgstr "Mes chaînes"
 
-#: pod/main/templates/navbar.html pod/podfile/templates/podfile/home.html
-#: pod/podfile/views.py
+#: pod/main/templates/navbar.html pod/podfile/views.py
 msgid "My files"
 msgstr "Mes fichiers"
 
@@ -5602,12 +5619,13 @@ msgstr "Ajouter une nouvelle réunion"
 
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/meeting/templates/meeting/my_meetings.html
+#, python-format
 msgid ""
 "Access to adding meeting has been restricted. If you want to add meetings on "
-"the platform, please"
+"the platform, please <a href=\"%(url)s\">contact us</a>."
 msgstr ""
 "L’accès à l’ajout d’une réunion a été limité. Si vous souhaitez ajouter des "
-"réunions sur la plateforme, veuillez"
+"réunions sur la plateforme, veuillez <a href=\"%(url)s\">nous contacter</a>."
 
 #: pod/meeting/templates/meeting/delete.html
 #, python-format
@@ -5634,10 +5652,6 @@ msgstr "Voir mes réunions actives"
 #: pod/meeting/templates/meeting/filter_aside.html
 msgid "See all my meetings"
 msgstr "Voir toutes mes réunions"
-
-#: pod/meeting/templates/meeting/internal_recordings.html pod/meeting/views.py
-msgid "Meeting recordings"
-msgstr "Enregistrements de réunion"
 
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid ""
@@ -5885,6 +5899,10 @@ msgid "Password given is not correct."
 msgstr "Le mot de passe est incorrect."
 
 #: pod/meeting/views.py
+msgid "Meeting recordings"
+msgstr "Enregistrements de réunion"
+
+#: pod/meeting/views.py
 msgid "You cannot view the recordings of this meeting."
 msgstr "Vous ne pouvez pas consulter les enregistrements de cette réunion."
 
@@ -5984,7 +6002,6 @@ msgstr "Impossible de créer l’enregistrement"
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/playlist/templates/playlist/delete.html
 #: pod/playlist/templates/playlist/playlist.html
-#: pod/playlist/templates/playlist/playlists.html
 #: pod/playlist/templates/playlist/protected-playlist-form.html
 #: pod/playlist/views.py
 msgid "Playlists"
@@ -6203,11 +6220,15 @@ msgstr "Retirer les filtres"
 
 #: pod/playlist/templates/playlist/filter_aside.html
 msgid ""
-"When you click on a choice in the form, you will be automatically redirected "
-"to the page dedicated to this filter."
+"When you click on a choice bellow, you will be automatically redirected to "
+"the page dedicated to this filter."
 msgstr ""
-"Lorsque vous cliquez sur un choix du formulaire, vous serez redirigé "
+"Lorsque vous cliquez sur un choix ci-dessous, vous serez redirigé "
 "automatiquement vers la page dédiée à ce filtre."
+
+#: pod/playlist/templates/playlist/filter_aside.html
+msgid "See my playlists"
+msgstr "Voir mes listes de lecture"
 
 #: pod/playlist/templates/playlist/filter_aside.html
 msgid "See my private playlists"
@@ -6220,10 +6241,6 @@ msgstr "Voir mes listes de lecture protégées par un mot de passe"
 #: pod/playlist/templates/playlist/filter_aside.html
 msgid "See my public playlists"
 msgstr "Voir mes listes de lecture publiques"
-
-#: pod/playlist/templates/playlist/filter_aside.html
-msgid "See my playlists"
-msgstr "Voir mes listes de lecture"
 
 #: pod/playlist/templates/playlist/filter_aside.html
 msgid "See the additional playlists"
@@ -6346,6 +6363,11 @@ msgstr ""
 msgid "Drop the video on another to swap their position."
 msgstr "Déposez la vidéo sur une autre pour échanger leur position."
 
+#: pod/playlist/templates/playlist/playlist_card.html
+#, python-format
+msgid "View the playlist “%(playlist_name)s”"
+msgstr "Voir la liste de lecture « %(playlist_name)s »"
+
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
 msgid "videos"
 msgstr "vidéos"
@@ -6377,8 +6399,8 @@ msgid "Watch the video"
 msgstr "Regarder la vidéo"
 
 #: pod/playlist/templates/playlist/playlist_player.html
-msgid "Playlist image"
-msgstr "Image de la playlist"
+msgid "Displayed video"
+msgstr "Vidéo affichée"
 
 #: pod/playlist/templates/playlist/playlist_sort_select.html
 #: pod/video/templates/videos/video_sort_select.html
@@ -6421,11 +6443,12 @@ msgstr "Aucune liste de lecture trouvée"
 
 #: pod/playlist/templates/playlist/playlists.html
 msgid ""
-"You haven’t got any playlist yet, please use the “Add a playlist” button to "
-"add one."
+"No playlist matches the selected filter. Change filter or use the “Add a "
+"playlist” button to add one."
 msgstr ""
-"Vous n’avez pas encore créé de liste de lecture, veuillez cliquer sur le "
-"bouton « Ajouter une nouvelle liste de lecture » pour en ajouter une."
+"Aucune liste de lecture ne correspond aux filtres demandés. Modifiez les "
+"filtres ou cliquez sur le bouton « Ajouter une nouvelle liste de lecture » "
+"pour en ajouter une."
 
 #: pod/playlist/templates/playlist/playlists.html
 msgid "Add a new playlist"
@@ -7033,10 +7056,6 @@ msgid "Please select the render you want"
 msgstr "Veuillez sélectionner le rendu souhaité"
 
 #: pod/recorder/templates/recorder/record_delete.html
-msgid "Deleting the record"
-msgstr "Supprimer cet enregistrement"
-
-#: pod/recorder/templates/recorder/record_delete.html
 msgid "Back to record claiming"
 msgstr "Retour aux réclamations d’enregistrement"
 
@@ -7059,7 +7078,7 @@ msgid "The selected record has been deleted."
 msgstr "L’enregistrement a été supprimé."
 
 #: pod/recorder/views.py
-msgid "Mediapath should be indicated."
+msgid "Media path should be indicated."
 msgstr "La source du fichier doit être indiquée."
 
 #: pod/recorder/views.py
@@ -7091,6 +7110,11 @@ msgstr "Nouvel enregistrement ajouté."
 #: pod/recorder/views.py
 msgid "The record has been deleted."
 msgstr "L’enregistrement a été supprimé."
+
+#: pod/recorder/views.py
+#, python-format
+msgid "Deleting the record “%s”"
+msgstr "Suppression de l’enregistrement « %s »"
 
 #: pod/recorder/views.py
 msgid "Recorder for Studio not found."
@@ -8161,7 +8185,6 @@ msgid "List display mode"
 msgstr "Mode d'affichage par liste"
 
 #: pod/video/templates/videos/dashboard_modal.html
-#: pod/video/templates/videos/video_list_grid_selectable.html
 #: pod/video/templates/videos/video_list_table_selectable.html
 msgid "Loading..."
 msgstr "Chargement en cours…"
@@ -9155,6 +9178,30 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
+#~ msgid "YouTube content is inaccessible"
+#~ msgstr "Le contenu YouTube n’est pas disponible"
+
+#~ msgid ""
+#~ "YouTube content is inaccessible. This content does not appear to be "
+#~ "publicly available."
+#~ msgstr ""
+#~ "Le contenu YouTube est inaccessible. Ce contenu ne semble pas être "
+#~ "disponible publiquement."
+
+#~ msgid ""
+#~ "Access to adding external recording has been restricted. If you want to "
+#~ "add external recordings on the platform, please"
+#~ msgstr ""
+#~ "L’accès à l’ajout d’un enregistrement externe a été restreint. Si vous "
+#~ "souhaitez ajouter des enregistrements externes sur la plateforme, s’il "
+#~ "vous plaît"
+
+#~ msgid "Deleting the record"
+#~ msgstr "Supprimer cet enregistrement"
+
+#~ msgid "Playlist image"
+#~ msgstr "Image de la playlist"
+
 #~ msgid "Live"
 #~ msgstr "Directs"
 
@@ -9164,10 +9211,6 @@ msgstr "xAPI Esup-Pod"
 
 #~ msgid "To delete the event, please checked in and click send."
 #~ msgstr "Pour supprimer l’évènement, veuillez cocher et cliquer sur envoyer."
-
-#, python-format
-#~ msgid "Edit the playlist “%(playlist.name)s”"
-#~ msgstr "Modifier la liste de lecture « %(playlist.name)s »"
 
 #~ msgid "To delete the record, please checked in and click send."
 #~ msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."

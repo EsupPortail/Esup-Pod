@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
           title.replaceWith(html.getElementById("video_count"));
         })
         .catch(error => {
-          console.error("Error : ", error)
+          console.error("Error: ", error)
         });
     })
   }

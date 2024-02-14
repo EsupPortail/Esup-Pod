@@ -20,7 +20,7 @@
     <meta property="og:site_name" content="{{ TITLE_SITE }}">
   {% endblock %}
   {% if FAVICON %}
-    <link rel="shortcut icon" href="{% static FAVICON %}?ver={{VERSION}}" sizes="any" >
+    <link rel="shortcut icon" href="{% static FAVICON %}?ver={{VERSION}}" sizes="any">
   {% endif %}
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
@@ -39,8 +39,6 @@
   {% if SHOW_EVENTS_ON_HOMEPAGE and "live" in THIRD_PARTY_APPS %}
     <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet">
   {% endif %}
-  <!-- more styles for each App -->
-  {% block more_style %}{% endblock more_style %}
 
   <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|striptags|capfirst}}{% endblock %}</title>
 
@@ -57,6 +55,7 @@
   {% if USE_NOTIFICATIONS %}
     {% webpush_header %}
   {% endif %}
+
 </head>
 
 <body>
@@ -296,6 +295,4 @@
   {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
   <script src="{% static 'js/pwa-installation.js' %}?ver={{VERSION}}"></script>
 </body>
-
 </html>
-

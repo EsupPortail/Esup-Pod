@@ -1,3 +1,13 @@
+/**
+ * @file Esup-Pod WebPush notifications
+ * @since 3.4.0
+ */
+
+// Read-only globals defined in webpush/webpush.js
+/*
+global registration, subBtn, urlB64ToUint8Array, postSubscribeObj, showMessage
+*/
+
 var notificationToast = document.querySelector("#notification-toast");
 notificationToast.addEventListener("shown.bs.toast", updateToast);
 

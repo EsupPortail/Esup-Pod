@@ -1,3 +1,5 @@
+"""Esup-Pod BBB forms."""
+
 from django import forms
 from django.conf import settings
 from .models import BBB_Meeting
