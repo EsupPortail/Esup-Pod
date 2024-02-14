@@ -41,27 +41,27 @@
     <tbody class="table-group-divider">
         {% for token in tokens %}
         <tr >
-            <td scope="row">&nbsp;{{ token.token }} </td>
+            <td scope="row">&nbsp;{{ token.token }}</td>
             <td>
                 <div class="form-group">
-                    <label for="txtpartage-{{token.id}}" >{% trans 'Use this link to share the video:' %}
-                        <clipboard-copy aria-label="Copy to clipboard" class="btn pod-btn-social" tabindex="0" role="button" id="btnpartageprivelink-{{token.id}}">
+                    <label for="txtpartage-{{ forloop.counter }}" >{% trans 'Use this link to share the video:' %}
+                        <clipboard-copy aria-label="Copy to clipboard" class="btn pod-btn-social btnpartageprive" tabindex="0" role="button" data-id="txtpartage-{{ forloop.counter }}">
                             <i class="bi bi-clipboard"></i>
                         </clipboard-copy>
                     </label>
-                    <textarea class="form-control" type="text" name="txtpartage" id="txtpartage-{{token.id}}" rows="4" 
+                    <textarea class="form-control" type="text" name="txtpartage" id="txtpartage-{{ forloop.counter }}" rows="4" 
                     readonly>{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}{{ token.token }}/</textarea>
                     
                 </div>
             </td>
             <td>
                 <div class="form-group ">
-                    <label for="txtintegration-{{token.id}}">{% trans 'Copy the content of this text box and paste it in the page:'%}
-                        <clipboard-copy aria-label="Copy to clipboard" class="btn pod-btn-social" tabindex="0" role="button" id="btnpartagepriveinte-{{token.id}}">
+                    <label for="txtintegration-{{ forloop.counter }}">{% trans 'Copy the content of this text box and paste it in the page:'%}
+                        <clipboard-copy aria-label="Copy to clipboard" class="btn pod-btn-social btnpartageprive" tabindex="0" role="button" data-id="txtintegration-{{ forloop.counter }}">
                             <i class="bi bi-clipboard"></i>
                         </clipboard-copy>
                     </label>
-                    <textarea name="txtintegration" id="txtintegration-{{token.id}}" class="form-control" rows="4"
+                    <textarea name="txtintegration" id="txtintegration-{{ forloop.counter }}" class="form-control" rows="4"
                     readonly>&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}{{ token.token }}/?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen title="{{ video.title }}" &gt;&lt;/iframe&gt;</textarea>
                 </div>
             </td>
@@ -87,6 +87,17 @@
 {% block page_aside %}{% endblock page_aside %}
 
 {% block more_script %}
-
+<script>
+const btnpartageprive = document.getElementsByClassName("btnpartageprive");
+for (let i = 0; i < btnpartageprive.length; i++) {
+    btn = btnpartageprive[i];
+    btn.addEventListener("click", function () {
+        var copyText = document.getElementById(btn.dataset.id);
+        copyText.select();
+        document.execCommand("copy");
+        showalert(gettext("Text copied"), "alert-info");
+  });
+}
+</script>>
 
 {% endblock more_script %}
