@@ -33,7 +33,11 @@ def user_can_enrich_video(context: dict, video: Video) -> bool:
     if not request.user.is_authenticated:
         return False
     return (
-        ((video.owner == request.user) or request.user.is_superuser or request.user in video.additional_owners.all())
+        (
+            (video.owner == request.user)
+            or request.user.is_superuser
+            or request.user in video.additional_owners.all()
+        )
         and USE_AI_ENHANCEMENT
     )
 
