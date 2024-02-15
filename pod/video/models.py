@@ -1839,13 +1839,11 @@ class Category(models.Model):
 
 class VideoAccessToken(models.Model):
     """Video access token model."""
-
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
     token = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     class Meta:
         """Video access token Metadata."""
-
         ordering = ["video", "token"]
         verbose_name = _("Video access token")
         verbose_name_plural = _("Video access tokens")
