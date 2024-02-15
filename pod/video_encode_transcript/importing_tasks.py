@@ -1,4 +1,5 @@
 """Esup-Pod import video tasks."""
+
 from celery import Celery
 
 try:

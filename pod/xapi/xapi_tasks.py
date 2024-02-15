@@ -1,4 +1,5 @@
 """Esup-pod xapi tasks."""
+
 from celery import Celery
 import requests
 import logging
