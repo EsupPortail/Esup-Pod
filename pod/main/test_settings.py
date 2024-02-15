@@ -21,9 +21,13 @@ TEMPLATES[0]["DIRS"].append(
 )
 USE_DOCKER = True
 path = "pod/custom/settings_local.py"
+ES_URL = ["http://127.0.0.1:9200/"]
+ES_VERSION = 6
 if os.path.exists(path):
     _temp = __import__("pod.custom", globals(), locals(), ["settings_local"])
     USE_DOCKER = getattr(_temp.settings_local, "USE_DOCKER", True)
+    ES_URL = getattr(_temp.settings_local, "ES_URL", ["http://127.0.0.1:9200/"])
+    ES_VERSION = getattr(_temp.settings_local, "ES_VERSION", 6)
 
 for application in INSTALLED_APPS:
     if application.startswith("pod"):
