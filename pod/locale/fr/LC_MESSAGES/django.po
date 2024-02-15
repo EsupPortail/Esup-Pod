@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-06 10:47+0000\n"
+"POT-Creation-Date: 2024-02-09 09:42+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -856,7 +856,7 @@ msgid "slug"
 msgstr "titre court"
 
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
-#: pod/live/models.py pod/playlist/models.py pod/video/models.py
+#: pod/live/models.py pod/video/models.py
 msgid ""
 "Used to access this instance, the \"slug\" is a short label containing only "
 "letters, numbers, underscore or dash top."
@@ -2018,7 +2018,7 @@ msgstr "En bas à gauche"
 #: pod/dressing/models.py pod/video/models.py
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
-"subject / context of the content.(max length: 100 characters)"
+"subject / context of the content. (max length: 100 characters)"
 msgstr ""
 "Veuillez choisir un titre aussi court et précis que possible, qui reflète le "
 "sujet principal / le contexte de votre contenu. (taille maximale : 100 "
@@ -6033,7 +6033,7 @@ msgstr "Veuillez choisir une description. Celle-ci est vide par défaut."
 msgid "Right of access"
 msgstr "Droit d’accès"
 
-#: pod/playlist/forms.py
+#: pod/playlist/forms.py pod/playlist/models.py
 msgid ""
 "Please choose an access right among “public”, “password-protected”, "
 "“private”."
@@ -6051,7 +6051,7 @@ msgstr ""
 msgid "Promoted"
 msgstr "Promue"
 
-#: pod/playlist/forms.py pod/playlist/models.py
+#: pod/playlist/forms.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated, "
@@ -6118,15 +6118,16 @@ msgstr "Liste de lecture"
 
 #: pod/playlist/models.py
 msgid ""
-"\n"
-"            Please chosse a right of access among 'public', 'password-"
-"protected', 'private'.\n"
-"            "
+"Selecting this setting causes your playlist to be promoted on the page "
+"listing promoted public playlists. However, if this setting is deactivated "
+"your playlist will still be accessible to everyone.<br>For general use, we "
+"recommend that you leave this setting disabled."
 msgstr ""
-"\n"
-"            Veuillez choisir un droit d’accès entre « public », « protégée "
-"par un mot de passe », « privée ».\n"
-"            "
+"En sélectionnant ce paramètre, votre liste de lecture sera mise en avant "
+"dans la page listant les listes de lecture publiques promues. En revanche, "
+"si ce paramètre est désactivé, votre liste de lecture restera tout de même "
+"accessible par tous.<br>Pour une utilisation générale, il est conseillé de "
+"laisser ce paramètre désactivé."
 
 #: pod/playlist/models.py
 msgid "Editable"
@@ -6135,6 +6136,15 @@ msgstr "Éditable"
 #: pod/playlist/models.py
 msgid "Please choose if this playlist is editable or not."
 msgstr "Veuillez choisir si cette playlist est éditable ou non."
+
+#: pod/playlist/models.py
+msgid ""
+"Used to access this instance, the “slug” is a short label containing only "
+"letters, numbers, underscore or dash top."
+msgstr ""
+"Utilisé pour accéder à cette instance, le « titre court » est une étiquette "
+"formée uniquement de lettres (non accentuées), de chiffres, de l’underscore "
+"(barre de soulignement) et du tiret."
 
 #: pod/playlist/models.py
 msgid "You can add additional owners to the playlist."
@@ -7134,7 +7144,7 @@ msgstr "Définir comme brouillon"
 
 #: pod/video/admin.py
 msgid "Transcript selected"
-msgstr "Transcription selectionnée"
+msgstr "Transcrire la sélection"
 
 #: pod/video/forms.py
 msgid "File field"
@@ -7582,6 +7592,15 @@ msgstr "Version %(app)s"
 
 #: pod/video/models.py
 msgid ""
+"Please choose a title as short and accurate as possible, reflecting the main "
+"subject / context of the content.(max length: 100 characters)"
+msgstr ""
+"Veuillez choisir un titre aussi court et précis que possible, qui reflète le "
+"sujet principal / le contexte de votre contenu. (taille maximale : 100 "
+"caractères)"
+
+#: pod/video/models.py
+msgid ""
 "The background color for your channel. You can use the format #. i.e.: "
 "#ff0000 for red"
 msgstr ""
@@ -7802,15 +7821,6 @@ msgstr "Votes"
 #: pod/video/models.py pod/video/templates/videos/category_modal.html
 msgid "Category title"
 msgstr "Titre de la catégorie"
-
-#: pod/video/models.py
-msgid ""
-"Please choose a title as short and accurate as possible, reflecting the main "
-"subject / context of the content. (max length: 100 characters)"
-msgstr ""
-"Veuillez choisir un titre aussi court et précis que possible, qui reflète le "
-"sujet principal / le contexte de votre contenu. (taille maximale : 100 "
-"caractères)"
 
 #: pod/video/models.py pod/video/templates/videos/category_modal.html
 msgid "Category"
@@ -8843,6 +8853,10 @@ msgstr "La transcription de la vidéo a été relancée."
 #: pod/video/views.py
 msgid "An available transcription language must be specified."
 msgstr "Une langue de transcription disponible doit être spécifié."
+
+#: pod/video/views.py
+msgid "No audio file found."
+msgstr "Aucun fichier audio trouvé."
 
 #: pod/video/views.py
 #, python-format

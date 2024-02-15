@@ -182,7 +182,7 @@ class ObsolescenceTestCase(TestCase):
         self.assertTrue(video7 in list_video["other"]["7"])
         print("--->  test_obsolete_video of ObsolescenceTestCase: OK")
 
-    def test_delete_video(self):
+    def test_delete_obsolete_video(self):
         """Check that obsolete videos are deleted."""
         from pod.video.management.commands import check_obsolete_videos
 
@@ -239,7 +239,7 @@ class ObsolescenceTestCase(TestCase):
         fd.close()
         self.assertEqual(n, 2)
 
-        print("--->  test_obsolete_video of ObsolescenceTestCase: OK")
+        print("--->  test_delete_obsolete_video of ObsolescenceTestCase: OK")
 
     def tearDown(self):
         """Cleanup all created stuffs."""

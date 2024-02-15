@@ -1,3 +1,4 @@
+"""Esup-Pod live transcription."""
 from django.conf import settings
 from vosk import Model, KaldiRecognizer, SetLogLevel
 from webvtt import WebVTT, Caption
@@ -15,7 +16,8 @@ threads_to_stop = []
 SetLogLevel(-1)
 
 
-def timestring(seconds):
+def timestring(seconds: int) -> str:
+    """Convert a number of seconds to a timestring."""
     minutes = seconds / 60
     seconds = seconds % 60
     hours = int(minutes / 60)
