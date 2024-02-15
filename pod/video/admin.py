@@ -660,17 +660,19 @@ class ViewCountAdmin(admin.ModelAdmin):
 
 
 class CategoryAdmin(admin.ModelAdmin):
+    """Admin for the Category model."""
     list_display = ("title", "owner", "videos_count")
     readonly_fields = ("slug",)
     # list_filter = ["owner"]
 
-    def videos_count(self, obj):
+    def videos_count(self, obj) -> int:
         return obj.video.all().count()
 
     videos_count.short_description = "Videos"
 
 
 class VideoAccessTokenAdmin(admin.ModelAdmin):
+    """Admin for the VideoAccessToken model."""
     list_display = ("video", "token")
     readonly_fields = ("token",)
     autocomplete_fields = ["video"]

@@ -1374,7 +1374,7 @@ def video_is_deletable(request, video):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def video_edit_access_tokens(request, slug=None):
+def video_edit_access_tokens(request: WSGIRequest, slug: str = None):
     """View to manage access token of a video."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     if (

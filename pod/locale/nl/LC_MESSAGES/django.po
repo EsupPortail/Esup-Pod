@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-14 10:53+0000\n"
+"POT-Creation-Date: 2024-02-15 10:00+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -7998,6 +7998,10 @@ msgid "Token"
 msgstr ""
 
 #: pod/video/templates/videos/video_access_tokens.html
+msgid "Copy to clipboard"
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Please confirm you want to delete the token"
 msgstr ""
 
@@ -8090,10 +8094,6 @@ msgstr ""
 #: pod/video/templates/videos/video_edit.html
 #, python-format
 msgid "Edit the %(app)s"
-msgstr ""
-
-#: pod/video/templates/videos/video_edit.html
-msgid "Use this link to share the video in draft mode"
 msgstr ""
 
 #: pod/video/templates/videos/video_licencebox.html
@@ -8261,6 +8261,22 @@ msgstr ""
 msgid "-- sorry, no translation provided --"
 msgstr ""
 
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "An action must be specified."
+msgstr ""
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "A token has been created."
+msgstr ""
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "Token not found."
+msgstr ""
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "The token has been deleted."
+msgstr ""
+
 #: pod/video/views.py
 msgid "You cannot edit this channel."
 msgstr ""
@@ -8321,22 +8337,6 @@ msgstr ""
 
 #: pod/video/views.py
 msgid "You cannot delete a video that is being encoded."
-msgstr ""
-
-#: pod/video/views.py
-msgid "A token has been created."
-msgstr ""
-
-#: pod/video/views.py
-msgid "The token has been deleted."
-msgstr ""
-
-#: pod/video/views.py
-msgid "Token not found."
-msgstr ""
-
-#: pod/video/views.py
-msgid "An action must be specified."
 msgstr ""
 
 #: pod/video/views.py

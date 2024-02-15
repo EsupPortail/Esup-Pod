@@ -954,18 +954,19 @@ class VideoAccessTokenTestCase(TestCase):
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
-        Video.objects.create(
+        print("VIDEO : %s" % Video.objects.all().count())
+        self.video = Video.objects.create(
             title="Video1",
             owner=user,
             video="test.mp4",
             type=Type.objects.get(id=1),
         )
+        print("SET UP VIDEO ID : %s" % self.video.id)
         print(" --->  SetUp of VideoAccessTokenTestCase: OK!")
 
     def test_create_VideoAccessToken_default(self):
         """Test create default acces token for a video."""
-        video = Video.objects.get(id=1)
-        accessToken = VideoAccessToken.objects.create(video=video)
+        accessToken = VideoAccessToken.objects.create(video=self.video)
         self.assertTrue(isinstance(accessToken, VideoAccessToken))
         self.assertTrue(isinstance(accessToken.token, uuid.UUID))
         self.assertEqual(VideoAccessToken.objects.all().count(), 1)
@@ -974,15 +975,14 @@ class VideoAccessTokenTestCase(TestCase):
 
     def test_create_VideoAccessToken_with_attribut(self):
         """Test create access token with uuid for a video."""
-        video = Video.objects.get(id=1)
         uuid_test = uuid.uuid4()
-        accessToken = VideoAccessToken(video=video, token=uuid_test)
+        accessToken = VideoAccessToken(video=self.video, token=uuid_test)
         accessToken.save()
         self.assertTrue(isinstance(accessToken, VideoAccessToken))
         self.assertEqual(VideoAccessToken.objects.all().count(), 1)
-        self.assertEqual(accessToken.video, video)
+        self.assertEqual(accessToken.video, self.video)
         self.assertEqual(accessToken.token, uuid_test)
-        accessToken2 = VideoAccessToken(video=video, token="1234")
+        accessToken2 = VideoAccessToken(video=self.video, token="1234")
         try:
             with transaction.atomic():
                 accessToken2.save()
@@ -994,10 +994,9 @@ class VideoAccessTokenTestCase(TestCase):
 
     def test_create_VideoAccessToken_already_exist(self):
         """Test unique access token for a video."""
-        video = Video.objects.get(id=1)
         uuid_test = uuid.uuid4()
-        VideoAccessToken.objects.create(video=video, token=uuid_test)
-        accessToken = VideoAccessToken(video=video, token=uuid_test)
+        VideoAccessToken.objects.create(video=self.video, token=uuid_test)
+        accessToken = VideoAccessToken(video=self.video, token=uuid_test)
         try:
             with transaction.atomic():
                 accessToken.save()
@@ -1009,8 +1008,7 @@ class VideoAccessTokenTestCase(TestCase):
 
     def test_delete_VideoAccessToken(self):
         """Test delete of access token for a video"""
-        video = Video.objects.get(id=1)
-        accessToken = VideoAccessToken.objects.create(video=video)
+        accessToken = VideoAccessToken.objects.create(video=self.video)
         self.assertEqual(VideoAccessToken.objects.all().count(), 1)
         accessToken.delete()
         self.assertEqual(VideoAccessToken.objects.all().count(), 0)

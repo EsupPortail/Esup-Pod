@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-14 10:53+0000\n"
+"POT-Creation-Date: 2024-02-15 10:00+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ptitloup <nicolas.can@univ-lille.fr.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -8523,6 +8523,10 @@ msgid "Token"
 msgstr "Jeton"
 
 #: pod/video/templates/videos/video_access_tokens.html
+msgid "Copy to clipboard"
+msgstr "Copier dans le presse-papiers"
+
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Please confirm you want to delete the token"
 msgstr "Veuillez confirmer que vous souhaitez supprimer le jeton"
 
@@ -8624,10 +8628,6 @@ msgstr ""
 #, python-format
 msgid "Edit the %(app)s"
 msgstr "Éditer le %(app)s"
-
-#: pod/video/templates/videos/video_edit.html
-msgid "Use this link to share the video in draft mode"
-msgstr "Utiliser ce lien pour partager la vidéo en mode brouillon"
 
 #: pod/video/templates/videos/video_licencebox.html
 msgid "Creative Commons license:"
@@ -8799,6 +8799,22 @@ msgstr ""
 msgid "-- sorry, no translation provided --"
 msgstr "-- désolé, aucune traduction fournie --"
 
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "An action must be specified."
+msgstr "Une action doit être précisée."
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "A token has been created."
+msgstr "Un jeton a été créé."
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "Token not found."
+msgstr "Jeton non trouvé."
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "The token has been deleted."
+msgstr "Le jeton a été supprimé."
+
 #: pod/video/views.py
 msgid "You cannot edit this channel."
 msgstr "Vous ne pouvez éditer cette chaîne."
@@ -8862,24 +8878,9 @@ msgid "You cannot delete a video that is being encoded."
 msgstr "Vous ne pouvez pas supprimer une vidéo en cours d’encodage."
 
 #: pod/video/views.py
-msgid "A token has been created."
-msgstr "Un jeton a été créé."
-
-#: pod/video/views.py
-msgid "The token has been deleted."
-msgstr "Le jeton a été supprimé."
-
-#: pod/video/views.py
-msgid "Token not found."
-msgstr "Jeton non trouvé."
-
-#: pod/video/views.py
-msgid "An action must be specified."
-msgstr "Une action doit être précisée."
-
-#: pod/video/views.py
+#, python-format
 msgid "Manage access tokens for the video \"%(vtitle)s\""
-msgstr "Gestion des jetons d'accès à la vidéo « %(vtitle)s »"
+msgstr "Gestion des jetons d’accès à la vidéo « %(vtitle)s »"
 
 #: pod/video/views.py
 msgid "Transcription not enabled on this platform."
@@ -9239,6 +9240,9 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Use this link to share the video in draft mode"
+#~ msgstr "Utiliser ce lien pour partager la vidéo en mode brouillon"
 
 #~ msgid "YouTube content is inaccessible"
 #~ msgstr "Le contenu YouTube n’est pas disponible"
