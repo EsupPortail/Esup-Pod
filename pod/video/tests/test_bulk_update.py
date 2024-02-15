@@ -5,6 +5,7 @@
 
 from datetime import datetime
 
+from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sites.models import Site
 from django.test import RequestFactory, Client, TransactionTestCase
 
@@ -265,6 +266,9 @@ class BulkUpdateTestCase(TransactionTestCase):
 
         post_request.user = user1
         post_request.LANGUAGE_CODE = "fr"
+        setattr(post_request, 'session', 'session')
+        messages = FallbackStorage(post_request)
+        setattr(post_request, '_messages', messages)
         response = bulk_update(post_request)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(Video.objects.filter(owner=user1)), 0)
