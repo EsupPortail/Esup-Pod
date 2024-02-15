@@ -1200,10 +1200,13 @@ class VideoTestUpdateOwner(TransactionTestCase):
     def test_update_video_owner(self):
         url = reverse("video:update_video_owner", kwargs={"user_id": self.admin.id})
 
+        video1_id = self.v1.id
+        video2_id = self.v2.id
+
         # Authentication required move TEMPORARY_REDIRECT
         response = self.client.post(
             url,
-            json.dumps({"videos": [1, 2], "owner": [self.simple_user.id]}),
+            json.dumps({"videos": [video1_id, video2_id], "owner": [self.simple_user.id]}),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
@@ -1231,8 +1234,8 @@ class VideoTestUpdateOwner(TransactionTestCase):
             url,
             json.dumps(
                 {
-                    # video with id 100 doesn't exist
-                    "videos": [1, 2, 100],
+                    # video with id 1000 doesn't exist
+                    "videos": [video1_id, video2_id, 1000],
                     "owner": self.simple_user.id,
                 }
             ),
@@ -1245,7 +1248,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
         # Good request
         response = self.client.post(
             url,
-            json.dumps({"videos": [1, 2], "owner": self.simple_user.id}),
+            json.dumps({"videos": [video1_id, video2_id], "owner": self.simple_user.id}),
             content_type="application/json",
         )
 
