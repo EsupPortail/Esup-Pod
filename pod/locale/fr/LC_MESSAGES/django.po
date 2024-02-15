@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-15 15:51+0100\n"
+"POT-Creation-Date: 2024-02-15 15:57+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ptitloup <nicolas.can@univ-lille.fr.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -4799,23 +4799,19 @@ msgstr "Onglets additionnels de chaînes"
 
 #: pod/main/models.py
 msgid "Carousel"
-msgstr ""
+msgstr "Carrousel"
 
 #: pod/main/models.py
-#, fuzzy
-#| msgid "Multiple actions"
 msgid "Multiple carousel"
-msgstr "Actions multiples"
+msgstr "Carrousel multiple"
 
 #: pod/main/models.py
-#, fuzzy
-#| msgid "Channel list"
 msgid "Card list"
-msgstr "Liste des chaînes"
+msgstr "Liste de cartes"
 
 #: pod/main/models.py
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: pod/main/models.py pod/video/models.py
 #: pod/video_search/templates/search/search.html
@@ -4839,133 +4835,103 @@ msgid "Last videos"
 msgstr "Dernières vidéos"
 
 #: pod/main/models.py pod/main/templatetags/flat_page_edito_filter.py
-#, fuzzy
-#| msgid "Max viewers"
 msgid "Most views"
-msgstr "Nombre maximum de spectateurs"
+msgstr "Les plus vues"
 
 #: pod/main/models.py
 msgid "Data type"
-msgstr ""
+msgstr "Type de données"
 
 #: pod/main/models.py
-#, fuzzy
-#| msgid "Select the page of Pod you want to link with."
 msgid "Select the channel you want to link with."
-msgstr "Sélectionner une page de Pod que vous voulez joindre."
+msgstr "Sélectionner la chaîne que vous voulez joindre."
 
 #: pod/main/models.py
-#, fuzzy
-#| msgid "Select the page of Pod you want to link with."
 msgid "Select the theme you want to link with."
-msgstr "Sélectionner une page de Pod que vous voulez joindre."
+msgstr "Sélectionner le thème que vous voulez joindre."
 
 #: pod/main/models.py
-#, fuzzy
-#| msgid "Select the page of Pod you want to link with."
 msgid "Select the playlist you want to link with."
-msgstr "Sélectionner une page de Pod que vous voulez joindre."
+msgstr "Sélectionner la liste de lecture que vous voulez joindre."
 
 #: pod/main/models.py
 msgid "Write in html inside this field."
-msgstr ""
+msgstr "Écrire en html à l'intérieur de ce champ."
 
 #: pod/main/models.py
-#, fuzzy
-#| msgid "Displayed video"
 msgid "Display title"
-msgstr "Vidéo affichée"
+msgstr "Titre affiché"
 
 #: pod/main/models.py
 msgid "No cache"
-msgstr ""
+msgstr "Pas de cache"
 
 #: pod/main/models.py
-#, fuzzy
-#| msgid "Check this box if you want to use the 360 player for the video"
 msgid "Check this box if you don't want to keep the cache."
-msgstr ""
-"Cocher cette case si vous voulez utiliser le lecteur 360 pour cette vidéo"
+msgstr "Cocher cette case si vous ne voulez pas garder le cache."
 
 #: pod/main/models.py
-#, fuzzy
-#| msgid "Check this box if you want to use the 360 player for the video"
 msgid "Check this box if you want to activate debug mode."
-msgstr ""
-"Cocher cette case si vous voulez utiliser le lecteur 360 pour cette vidéo"
+msgstr "Cocher cette case si vous voulez activer le mode débogage."
 
 #: pod/main/models.py
 msgid "Show restricted"
-msgstr ""
+msgstr "Montrer le contenu restreint"
 
 #: pod/main/models.py
-#, fuzzy
-#| msgid "Check this box if you want to use the 360 player for the video"
 msgid "Check this box if you want to show restricted content."
-msgstr ""
-"Cocher cette case si vous voulez utiliser le lecteur 360 pour cette vidéo"
+msgstr "Cocher cette case si vous voulez montrer le contenu restreint."
 
 #: pod/main/models.py
-#, fuzzy
-#| msgid "Authenticate"
 msgid "Must be authenticated"
-msgstr "S’authentifier"
+msgstr "Doit être authentifié"
 
 #: pod/main/models.py
-#, fuzzy
-#| msgid "You must be authenticated to send a message."
 msgid "Check this box if users must be authenticated to view content."
-msgstr "Vous devez être authentifié pour envoyer un message."
-
-#: pod/main/models.py
-#, fuzzy
-#| msgid "Auto synchronize"
-msgid "Auto slide"
-msgstr "Synchronisation automatique"
-
-#: pod/main/models.py
-#, fuzzy
-#| msgid "Check this box if you want to use the 360 player for the video"
-msgid "Check this box if if you want auto slide."
 msgstr ""
-"Cocher cette case si vous voulez utiliser le lecteur 360 pour cette vidéo"
+"Cochez cette case si les utilisateurs doivent être authentifiés pour voir le "
+"contenu."
 
 #: pod/main/models.py
-#, fuzzy
-#| msgid "Number of view"
+msgid "Auto slide"
+msgstr "Défilement automatique"
+
+#: pod/main/models.py
+msgid "Check this box if if you want auto slide."
+msgstr "Cocher cette case si vous voulez activer le défilement automatique."
+
+#: pod/main/models.py
 msgid "Number of element"
-msgstr "Nombre de vues"
+msgstr "Nombre d'élément"
 
 #: pod/main/models.py
 msgid "Number of element for multi carousel"
-msgstr ""
+msgstr "Nombre d'élément pour le carrousel multiple"
 
 #: pod/main/models.py
 msgid "View videos from non visible channel"
-msgstr ""
+msgstr "Voir les vidéos d'une chaine non visible"
 
 #: pod/main/models.py
 msgid "Check this box if if you want view videos from non visible channel."
 msgstr ""
+"Cocher cette case si vous voulez voir les vidéos d'une chaine non visible."
 
 #: pod/main/models.py
 msgid "View videos with password"
-msgstr ""
+msgstr "Voir les vidéos avec un mot de passe"
 
 #: pod/main/models.py
-#, fuzzy
-#| msgid "Check this box if you want to use the 360 player for the video"
 msgid "Check this box if if you want view videos with password."
-msgstr ""
-"Cocher cette case si vous voulez utiliser le lecteur 360 pour cette vidéo"
+msgstr "Cocher cette case si vous voulez voir les vidéos avec un mot de passe."
 
 #: pod/main/models.py
 msgid "Block"
-msgstr ""
+msgstr "Bloc"
 
 #: pod/main/models.py
 msgid "Blocks"
-msgstr ""
+msgstr "Blocs"
 
 #: pod/main/settings.py
 msgid ""
