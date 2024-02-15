@@ -2,7 +2,6 @@
 
 *  run with `python manage.py test pod.video.tests.test_bulk_update
 """
-
 import json
 from datetime import datetime
 
@@ -169,7 +168,8 @@ class BulkUpdateTestCase(TransactionTestCase):
             "/bulk_update/",
             {
                 "tags": tags_str,
-                "selected_videos": '["%s", "%s"]' % (video4.slug, video5.slug),
+                "selected_videos":
+                    '["%s", "%s"]' % (video4.slug, video5.slug),
                 "update_fields": '["tags"]',
                 "update_action": "fields",
             },
@@ -230,8 +230,9 @@ class BulkUpdateTestCase(TransactionTestCase):
         post_request = self.factory.post(
             "/bulk_update/",
             {
-                "selected_videos": '["%s", "%s"]' % (video4.slug, video5.slug),
-                "update_fields": "[]",
+                "selected_videos":
+                    '["%s", "%s"]' % (video4.slug, video5.slug),
+                "update_fields": '[]',
                 "update_action": "delete",
             },
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
@@ -239,16 +240,13 @@ class BulkUpdateTestCase(TransactionTestCase):
 
         post_request.user = user3
         post_request.LANGUAGE_CODE = "fr"
-        setattr(post_request, "session", "session")
+        setattr(post_request, 'session', 'session')
         messages = FallbackStorage(post_request)
-        setattr(post_request, "_messages", messages)
+        setattr(post_request, '_messages', messages)
         response = bulk_update(post_request)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            json.loads(response.content)["message"],
-            "You cannot delete a video that is being encoded. 0 videos removed, 2 videos in error",
-        )
+        self.assertEqual(json.loads(response.content)["message"], "You cannot delete a video that is being encoded. 0 videos removed, 2 videos in error")
 
         print("--->  test_bulk_delete of BulkUpdateTestCase: OK")
         self.client.logout()
