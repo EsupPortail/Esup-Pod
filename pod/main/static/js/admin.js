@@ -1,3 +1,7 @@
+/**
+ * @file Esup-Pod script for admin panel.
+* @since 3.5.1
+*/
 const selectedType = document.getElementById("id_type");
 const selectedDataType = document.getElementById("id_data_type");
 fieldDataType = document.getElementsByClassName('field-data_type');

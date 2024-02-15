@@ -7,6 +7,8 @@ from pod.main.models import Block
 
 
 class FlatPageTranslationOptions(TranslationOptions):
+    """Translation options for the FlatPage model."""
+
     fields = (
         "title",
         "content",
@@ -14,18 +16,26 @@ class FlatPageTranslationOptions(TranslationOptions):
 
 
 class LinkFooterTranslationOptions(TranslationOptions):
+    """Translation options for the LinkFooter model."""
+
     fields = ("title",)
 
 
 class ConfigurationTranslationOptions(TranslationOptions):
+    """Translation options for the Configuration model."""
+
     fields = ("description",)
 
 
 class AdditionalChannelTabTranslationOptions(TranslationOptions):
+    """Translation options for the AdditionalChannelTab model."""
+
     fields = ("name",)
 
 
 class BlockTranslationOptions(TranslationOptions):
+    """Translation options for the Block model."""
+
     fields = ("display_title",)
 
 

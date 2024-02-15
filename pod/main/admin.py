@@ -104,17 +104,25 @@ class LinkFooterAdmin(TranslationAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "page":
-            kwargs["queryset"] = FlatPage.objects.filter(sites=Site.objects.get_current())
+            kwargs["queryset"] = FlatPage.objects.filter(
+                sites=Site.objects.get_current()
+            )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class BlockAdminForm(forms.ModelForm):
+    """The form for Block administration in the Django admin panel."""
+
     class Meta:
+        """Metadata class defining the associated model and fields."""
+
         model = Block
         fields = "__all__"
 
 
 class BlockAdmin(TranslationAdmin):
+    """The admin configuration for the Block model in the Django admin panel."""
+
     list_display = (
         "title",
         "page",
@@ -123,6 +131,17 @@ class BlockAdmin(TranslationAdmin):
     )
 
     def get_form(self, request, obj=None, **kwargs):
+        """
+        Get the form to be used in the Django admin.
+
+        Args:
+            request: The Django request object.
+            obj: The Block object being edited, or None if creating a new one.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            Type[forms.ModelForm]: The form class to be used in the admin.
+        """
         form = super().get_form(request, obj, **kwargs)
 
         return form

@@ -14,6 +14,7 @@ from django.core.cache import cache
 from django.db.models import Q, Sum
 from django.template import loader
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 
 from pod.live.models import Event
 from pod.video.models import Video
@@ -39,7 +40,7 @@ def edito(content, request):
 
 
 def display_content_by_block(content, request):  # noqa: C901
-    debugElts = []
+    debug_elts = []
 
     current_site = get_current_site(request)
 
@@ -58,20 +59,20 @@ def display_content_by_block(content, request):  # noqa: C901
 
     if content.no_cache is True:
         params["cache"] = False
-        debugElts.append("Cache is disable for this part")
+        debug_elts.append("Cache is disable for this part")
     if content.no_cache is False:
         params["cache"] = True
-        debugElts.append("Cache is enable for this part")
+        debug_elts.append("Cache is enable for this part")
 
     if content.nb_element is not None or content.nb_element != "":
         params["nb-element"] = int(content.nb_element)
     else:
         params["nb-element"] = __DEFAULT_NB_ELEMENT__
 
-    if content.slider_multi_nb is not None or content.slider_multi_nb != "":
-        params["slider-multi-nb-card"] = int(content.slider_multi_nb)
+    if content.multi_carousel_nb is not None or content.multi_carousel_nb != "":
+        params["multi-carousel-nb-card"] = int(content.multi_carousel_nb)
     else:
-        params["slider-multi-nb-card"] = __DEFAULT_NB_CARD__
+        params["multi-carousel-nb-card"] = __DEFAULT_NB_CARD__
 
     if content.display_title is not None:
         params["title"] = content.display_title
@@ -132,45 +133,45 @@ def display_content_by_block(content, request):  # noqa: C901
         params["fct"] = "render_html"
         params["data"] = content.html
 
-    if content.type == "slider":
-        params["template"] = "block/slider.html"
-    if content.type == "slider_multi":
-        params["template"] = "block/slider_multi.html"
+    if content.type == "carousel":
+        params["template"] = "block/carousel.html"
+    if content.type == "multi_carousel":
+        params["template"] = "block/multi_carousel.html"
     if content.type == "card_list":
         params["template"] = "block/card_list.html"
 
     cached_content_part = None
 
     if params["mustbe-auth"] and not request.user.is_authenticated:
-        debugElts.append("User is not authenticated and mustbe-auth=true hide result")
+        debug_elts.append("User is not authenticated and mustbe-auth=true hide result")
         content_part = ""
     else:
         if params["cache"]:
             cached_content_part = cache.get(EDITO_CACHE_PREFIX + md5_part)
 
         if cached_content_part:
-            debugElts.append("Found in cache")
+            debug_elts.append("Found in cache")
             content_part = cached_content_part
         else:
-            debugElts.append("Not found in cache")
+            debug_elts.append("Not found in cache")
             uniq_id = "".join(random.choice(string.ascii_letters) for i in range(20))
             content_part = globals()["%s" % params["fct"]](
-                uniq_id, params, current_site, debugElts
+                uniq_id, params, current_site, debug_elts
             )
             cache.set(
                 EDITO_CACHE_PREFIX + md5_part, content_part, timeout=EDITO_CACHE_TIMEOUT
             )
 
     if params["debug"]:
-        content_part = "<pre>%s</pre>%s" % ("\n".join(debugElts), content_part)
+        content_part = "<pre>%s</pre>%s" % ("\n".join(debug_elts), content_part)
 
     content = content_part
 
     return content
 
 
-def render_base_videos(uniq_id, params, current_site, debugElts):
-    debugElts.append("Call function render_base_videos")
+def render_base_videos(uniq_id, params, current_site, debug_elts):
+    debug_elts.append("Call function render_base_videos")
 
     container = params["data"]
 
@@ -185,8 +186,8 @@ def render_base_videos(uniq_id, params, current_site, debugElts):
             container_childrens = container.get_all_children_flat()
             filters["theme__in"] = container_childrens
             if params["debug"] and len(container_childrens) > 1:
-                debugElts.append("Theme has children(s)")
-                debugElts.extend(
+                debug_elts.append("Theme has children(s)")
+                debug_elts.extend(
                     [
                         f" - children found [ID:{children.id}] [SLUG:{children.slug}] [TITLE:{children.title}]"
                         for children in container_childrens
@@ -205,7 +206,7 @@ def render_base_videos(uniq_id, params, current_site, debugElts):
 
     filter_q = Q(**filters)
     query = Video.objects.filter(filter_q)
-    query = addfilter(params, debugElts, query)
+    query = add_filter(params, debug_elts, query)
 
     videos = (
         query.all()
@@ -214,9 +215,9 @@ def render_base_videos(uniq_id, params, current_site, debugElts):
     )
 
     if params["debug"]:
-        debugElts.append(f"Database query '{str(videos.query)}'")
-        debugElts.append("Found videos in container :")
-        debugElts.extend(
+        debug_elts.append(f"Database query '{str(videos.query)}'")
+        debug_elts.append("Found videos in container :")
+        debug_elts.extend(
             [
                 f" - Video informations : [ID:{video.id}] [SLUG:{video.slug}] [TITLE:{video.title}]"
                 for video in videos
@@ -226,7 +227,9 @@ def render_base_videos(uniq_id, params, current_site, debugElts):
     title = container.name if params["container"] == "playlist" else container.title
     title = title if params["title"] == "" else params["title"]
 
-    params["slider-multi-nb-card"] = min(params["slider-multi-nb-card"], videos.count())
+    params["multi-carousel-nb-card"] = min(
+        params["multi-carousel-nb-card"], videos.count()
+    )
 
     part_content = loader.get_template(params["template"]).render(
         {
@@ -237,15 +240,15 @@ def render_base_videos(uniq_id, params, current_site, debugElts):
             "elements": videos,
             "nb_element": params["nb-element"],
             "auto_slide": params["auto-slide"],
-            "slider_multi_nb_card": params["slider-multi-nb-card"],
+            "multi_carousel_nb_card": params["multi-carousel-nb-card"],
         }
     )
 
     return part_content
 
 
-def render_most_view(uniq_id, params, current_site, debugElts):
-    debugElts.append("Call function render_most_view")
+def render_most_view(uniq_id, params, current_site, debug_elts):
+    debug_elts.append("Call function render_most_view")
 
     d = date.today() - timezone.timedelta(days=VIDEO_RECENT_VIEWCOUNT)
     query = Video.objects.filter(
@@ -255,25 +258,25 @@ def render_most_view(uniq_id, params, current_site, debugElts):
         & Q(sites=current_site)
     ).annotate(nombre=Sum("viewcount"))
 
-    query = addfilter(params, debugElts, query)
+    query = add_filter(params, debug_elts, query)
 
     most_viewed_videos = query.all().order_by("-nombre")[: int(params["nb-element"])]
 
-    debugElts.append(f"Database query '{str(most_viewed_videos.query)}'")
+    debug_elts.append(f"Database query '{str(most_viewed_videos.query)}'")
 
-    debugElts.append("Found videos in container :")
+    debug_elts.append("Found videos in container :")
 
     for video in most_viewed_videos:
-        debugElts.append(
+        debug_elts.append(
             f" - Video informations : "
             f"[ID:{video.id}] [SLUG:{video.slug}] [RECENT_VIW_COUNT:{video.recentViewcount}]"
         )
 
-    if most_viewed_videos.count() < params["slider-multi-nb-card"]:
-        params["slider-multi-nb-card"] = most_viewed_videos.count()
+    if most_viewed_videos.count() < params["multi-carousel-nb-card"]:
+        params["multi-carousel-nb-card"] = most_viewed_videos.count()
 
     if params["title"] == "":
-        title = "Les plus vues"
+        title = _("Most views")
     else:
         title = params["title"]
 
@@ -285,14 +288,14 @@ def render_most_view(uniq_id, params, current_site, debugElts):
             "elements": most_viewed_videos,
             "nb_element": params["nb-element"],
             "auto_slide": params["auto-slide"],
-            "slider_multi_nb_card": params["slider-multi-nb-card"],
+            "multi_carousel_nb_card": params["multi-carousel-nb-card"],
         }
     )
     return "%s" % (part_content)
 
 
-def render_next_events(uniq_id, params, current_site, debugElts):
-    debugElts.append("Call function render_next_events")
+def render_next_events(uniq_id, params, current_site, debug_elts):
+    debug_elts.append("Call function render_next_events")
 
     query = (
         Event.objects.filter(is_draft=False)
@@ -306,18 +309,18 @@ def render_next_events(uniq_id, params, current_site, debugElts):
     event_list = query.all().order_by("start_date")[: params["nb-element"]]
 
     if params["debug"]:
-        debugElts.append(f"Database query '{event_list.query}'")
-        debugElts.append("Found events in container :")
+        debug_elts.append(f"Database query '{event_list.query}'")
+        debug_elts.append("Found events in container :")
         for event in event_list:
-            debugElts.append(
+            debug_elts.append(
                 f" - Video informations is [ID:{event.id}] [SLUG:{event.slug}] [TITLE:{event.title}]"
             )
 
-    if event_list.count() < params["slider-multi-nb-card"]:
-        params["slider-multi-nb-card"] = event_list.count()
+    if event_list.count() < params["multi-carousel-nb-card"]:
+        params["multi-carousel-nb-card"] = event_list.count()
 
     if params["title"] == "":
-        title = "Les prochains événements"
+        title = _("Next events")
     else:
         title = params["title"]
 
@@ -328,14 +331,14 @@ def render_next_events(uniq_id, params, current_site, debugElts):
             "type": "event",
             "elements": event_list,
             "auto_slide": params["auto-slide"],
-            "slider_multi_nb_card": params["slider-multi-nb-card"],
+            "multi_carousel_nb_card": params["multi-carousel-nb-card"],
         }
     )
     return part_content
 
 
-def render_html(uniq_id, params, current_site, debugElts):
-    debugElts.append("Call function render_html")
+def render_html(uniq_id, params, current_site, debug_elts):
+    debug_elts.append("Call function render_html")
 
     part_content = loader.get_template(params["template"]).render(
         {"body": params["data"]}
@@ -343,32 +346,32 @@ def render_html(uniq_id, params, current_site, debugElts):
     return "%s" % (part_content)
 
 
-def render_last_view(uniq_id, params, current_site, debugElts):
-    debugElts.append("Call function render_last_view")
+def render_last_view(uniq_id, params, current_site, debug_elts):
+    debug_elts.append("Call function render_last_view")
 
     query = Video.objects.filter(
         Q(encoding_in_progress=False) & Q(is_draft=False) & Q(sites=current_site)
     )
 
-    query = addfilter(params, debugElts, query)
+    query = add_filter(params, debug_elts, query)
 
     last_viewed_videos = query.all()[: int(params["nb-element"])]
 
-    debugElts.append(f"Database query '{str(last_viewed_videos.query)}'")
+    debug_elts.append(f"Database query '{str(last_viewed_videos.query)}'")
 
-    debugElts.append("Found videos in container :")
+    debug_elts.append("Found videos in container :")
 
     for video in last_viewed_videos:
-        debugElts.append(
+        debug_elts.append(
             f" - Video informations : "
             f"[ID:{video.id}] [SLUG:{video.slug}] [RECENT_VIW_COUNT:{video.recentViewcount}]"
         )
 
-    if last_viewed_videos.count() < params["slider-multi-nb-card"]:
-        params["slider-multi-nb-card"] = last_viewed_videos.count()
+    if last_viewed_videos.count() < params["multi-carousel-nb-card"]:
+        params["multi-carousel-nb-card"] = last_viewed_videos.count()
 
     if params["title"] == "":
-        title = "Les dernières vidéos"
+        title = _("Last videos")
     else:
         title = params["title"]
 
@@ -380,24 +383,24 @@ def render_last_view(uniq_id, params, current_site, debugElts):
             "elements": last_viewed_videos,
             "nb_element": params["nb-element"],
             "auto_slide": params["auto-slide"],
-            "slider_multi_nb_card": params["slider-multi-nb-card"],
+            "multi_carousel_nb_card": params["multi-carousel-nb-card"],
         }
     )
     return part_content
 
 
-def addfilter(params, debugElts, data):
+def add_filter(params, debug_elts, data):
     if not params["show-restricted"]:
         data = data.filter(is_restricted=False)
-        debugElts.append("apply filter not show restricted")
+        debug_elts.append("apply filter not show restricted")
 
     if not params["view-videos-from-non-visible-channels"]:
         data = data.exclude(channel__visible=0)
-        debugElts.append("apply filter not show videos non visible channels")
+        debug_elts.append("apply filter not show videos non visible channels")
 
     if not params["show-passworded"]:
         data = data.filter(Q(password="") | Q(password__isnull=True))
-        debugElts.append("apply filter not show videos password")
+        debug_elts.append("apply filter not show videos password")
 
     return data
 

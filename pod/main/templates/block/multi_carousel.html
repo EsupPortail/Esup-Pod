@@ -2,7 +2,7 @@
 {% load video_filters static %}
 
 {% if elements.count >= 1 %}
-<div class="pod-inner edito-slider-multi ">
+<div class="pod-inner edito-multi-carousel ">
     <h2>{{ title |capfirst|truncatechars:43 }}</h2>
 
     <div id="carousel_{{ container.slug }}_{{ uniq_id }}" class="carousel carousel-multi slide"
@@ -15,7 +15,7 @@
                 {% else %}
                     <div class="carousel-item">
                 {% endif %}
-                        <div class="col-md-{% widthratio 12 slider_multi_nb_card 1 %}">
+                        <div class="col-md-{% widthratio 12 multi_carousel_nb_card 1 %}">
                             <div class="card">
                                 <a href="{{ element.get_absolute_url }}" title="{{ element.title }}">
                                     <div class="card-img">
@@ -32,7 +32,7 @@
                                         {% endif %}
                                     </div>
                                     <div class="carousel-caption d-none d-md-block">
-                                        <h5 class="video_title">{{ element.title|capfirst|truncatechars:43 }}</h5>
+                                        <h3 class="video_title">{{ element.title|capfirst|truncatechars:43 }}</h3>
                                             <p class="video_desc text-muted">
                                                 {{ element.description|metaformat|safe|striptags|truncatechars:250 }}
                                             </p>
@@ -47,7 +47,7 @@
             {% endfor %}
         </div>
 
-            {% if elements.count > slider_multi_nb_card %}
+            {% if elements.count > multi_carousel_nb_card %}
             <button class="carousel-control-prev" type="button"
                     data-bs-target="#carousel_{{ container.slug }}_{{ uniq_id }}" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -63,7 +63,7 @@
         {% if type == "last" %}
 			<div class="highlight">
 				<div class="d-flex justify-content-end">
-				  <p><a class="btn btn-lg btn-primary btn-sm" href="{% url 'videos:videos' %}">{% trans "Show all videos" %} <i class="bi bi-arrow-right-circle" aria-hidden="true"></i></a></p>
+				  <p><a class="btn btn-lg btn-primary btn-sm" href="{% url 'videos:videos' %}">{% trans "Show all videos" %}&nbsp;<i class="bi bi-arrow-right-circle" aria-hidden="true"></i></a></p>
 				</div>
 			  </div>
 		{% endif %}
@@ -75,7 +75,7 @@
             let items = document.querySelectorAll('#carousel_{{ container.slug }}_{{ uniq_id }} .carousel-item')
 
             items.forEach((el) => {
-                const minPerSlide = {{ slider_multi_nb_card }}
+                const minPerSlide = {{ multi_carousel_nb_card }}
                 let next = el.nextElementSibling
                 for (var i = 1; i < minPerSlide; i++) {
                     if (!next) {
@@ -89,5 +89,4 @@
             })
         });
     </script>
-
 {% endif %}

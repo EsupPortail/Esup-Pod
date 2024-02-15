@@ -157,7 +157,19 @@ def context_footer(request):
 
 
 def context_block(request):
-    block = Block.objects.all().filter(sites=get_current_site(request)).order_by("order")
+    """
+    Return the context for blocks to be displayed in templates.
+
+    Args:
+        request (HttpRequest): The Django request object.
+
+    Returns:
+        dict[str, Any]: A dictionary containing the context with the key "BLOCK"
+                       associated with the sorted list of blocks.
+    """
+    block = (
+        Block.objects.all().filter(sites=get_current_site(request)).order_by("order")
+    )
     return {
         "BLOCK": block,
     }

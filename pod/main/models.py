@@ -200,13 +200,13 @@ class AdditionalChannelTab(models.Model):
 class Block(models.Model):
     """Class describing Block objects."""
 
-    SLIDER = "slider"
-    SLIDER_MULTI = "slider_multi"
+    CAROUSEL = "carousel"
+    MULTI_CAROUSEL = "multi_carousel"
     CARD_LIST = "card_list"
     HTML = "html"
     TYPE = (
-        (SLIDER, _("Slider")),
-        (SLIDER_MULTI, _("Slider multi")),
+        (CAROUSEL, _("Carousel")),
+        (MULTI_CAROUSEL, _("Multiple carousel")),
         (CARD_LIST, _("Card list")),
         (HTML, _("HTML")),
     )
@@ -228,7 +228,9 @@ class Block(models.Model):
 
     title = models.CharField(_("Title"), max_length=250, blank=True, null=True)
 
-    order = models.PositiveSmallIntegerField(_("order"), default=1, blank=True, null=True)
+    order = models.PositiveSmallIntegerField(
+        _("order"), default=1, blank=True, null=True
+    )
 
     page = models.ForeignKey(
         FlatPage,
@@ -244,7 +246,7 @@ class Block(models.Model):
         verbose_name=_("Type"),
         max_length=200,
         choices=TYPE,
-        default=SLIDER,
+        default=CAROUSEL,
         blank=True,
         null=True,
     )
@@ -327,8 +329,8 @@ class Block(models.Model):
         verbose_name=_("Number of element"), default=5, blank=True, null=True
     )
 
-    slider_multi_nb = models.PositiveIntegerField(
-        verbose_name=_("Number of element for slider multi"),
+    multi_carousel_nb = models.PositiveIntegerField(
+        verbose_name=_("Number of element for multi carousel"),
         default=5,
         blank=True,
         null=True,
@@ -358,5 +360,6 @@ class Block(models.Model):
 
 @receiver(post_save, sender=Block)
 def default_site_block(sender, instance, created, **kwargs):
+    """Sets a default site for the instance if it has no associated sites upon creation."""
     if len(instance.sites.all()) == 0:
         instance.sites.add(Site.objects.get_current())

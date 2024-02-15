@@ -11,12 +11,12 @@
 }
 
 
-/* slider simple */
-.edito-slider .carousel img {
+/* Carousel*/
+.edito-carousel .carousel img {
     width: 100%;
 object-fit:cover;
 }
-.edito-slider .carousel-caption.d-md-block {
+.edito-carousel .carousel-caption.d-md-block {
     text-align: left;
     display: flex!important;
     flex-direction: column;
@@ -29,11 +29,11 @@ object-fit:cover;
     background-image: linear-gradient(rgba(0,0,0, 0.0), rgba(0,0,0, 0.6) 40%);
     padding: 5em 3em 3em 3em;
 }
-.edito-slider .video_title {
+.edito-carousel .video_title {
     font-size: 36px;
     font-family: var(--bs-body-font-family);
 }
-.edito-slider .video_title:after {
+.edito-carousel .video_title:after {
     content:"";
     display:block;
     width: 90px;
@@ -41,112 +41,92 @@ object-fit:cover;
     background-color: var(--pod-primary);
     margin-top: 15px;
 }
-.edito-slider .video_time {
+.edito-carousel .video_time {
     font-size: 18px;
     font-weight: 700;
     color: #fff!important;
 }
-.edito-slider .video_time:before {
+.edito-carousel .video_time:before {
     color: var(--pod-primary);
 }
-.edito-slider .video_desc.text-muted {
+.edito-carousel .video_desc.text-muted {
 color: #fff!important;
     margin-top: 10px;
 }
-.edito-slider .carousel-indicators [data-bs-target] {
+.edito-carousel .carousel-indicators [data-bs-target] {
     border: 3px solid #fff !important;
     height: 15px;
     width: 15px;
     background: none;
     border-radius: 100%;
 }
-.edito-slider .carousel-control-next, .edito-slider .carousel-control-prev {
+.edito-carousel .carousel-control-next, .edito-carousel .carousel-control-prev {
 	width:5%;
 }
 
-/* slider multiple */
-@media (min-width: 768px) {
-    .edito-slider-multi .carousel-inner .carousel-item-end.active,
-    .edito-slider-multi .carousel-inner .carousel-item-next {
-      transform: translateX(25%);
-    }
-    
-    .edito-slider-multi .carousel-inner .carousel-item-start.active, 
-    .edito-slider-multi .carousel-inner .carousel-item-prev {
-      transform: translateX(-25%);
-    }
-}
+/* Multiple carousel */
 
-@media (max-width: 767px) {
-	.edito-slider-multi .carousel-inner .carousel-item > div {
-        display: none;
-    }
-    .edito-slider-multi .carousel-inner .carousel-item > div:first-child {
-        display: block;
-    }
-}
-
-.edito-slider-multi {
+.edito-multi-carousel {
     margin-bottom: 3em;
 }
-.edito-slider-multi .carousel-control-next, .edito-slider-multi .carousel-control-prev {
+.edito-multi-carousel .carousel-control-next, .edito-multi-carousel .carousel-control-prev {
 	width:2%;
 	height: 185px;
 }
-.edito-slider-multi .carousel-control-prev {
+.edito-multi-carousel .carousel-control-prev {
 	background-image: linear-gradient(to left,rgba(0,0,0, 0.0), rgba(0,0,0, 0.3) 40%);
 }
-.edito-slider-multi .carousel-control-next{
+.edito-multi-carousel .carousel-control-next{
     background-image: linear-gradient(to right,rgba(0,0,0, 0.0), rgba(0,0,0, 0.3) 40%);
 }
 
-.edito-slider-multi .carousel-inner .carousel-item.active,
-.edito-slider-multi .carousel-inner .carousel-item-next,
-.edito-slider-multi .carousel-inner .carousel-item-prev {
+.edito-multi-carousel .carousel-inner .carousel-item.active,
+.edito-multi-carousel .carousel-inner .carousel-item-next,
+.edito-multi-carousel .carousel-inner .carousel-item-prev {
     display: flex;
 }
 
-.edito-slider-multi .carousel-inner .carousel-item-end,
-.edito-slider-multi .carousel-inner .carousel-item-start { 
+.edito-multi-carousel .carousel-inner .carousel-item-end,
+.edito-multi-carousel .carousel-inner .carousel-item-start { 
   transform: translateX(0);
 }
-.edito-slider-multi .card {
+.edito-multi-carousel .card {
     border: none;
     background: none;
 }
 
-.edito-slider-multi .carousel-item .card {
+.edito-multi-carousel .carousel-item .card {
     margin-right: 20px;
 }
 
-.edito-slider-multi .carousel-item .col-md-4 {
+.edito-multi-carousel .carousel-item .col-md-4 {
 	
 	background-color: #fafafa;
 }
 
-.edito-slider-multi .carousel-item .col-md-3:last-child .card,
-.edito-slider-multi .carousel-item .col-md-4:last-child .card {
+.edito-multi-carousel .carousel-item .col-md-3:last-child .card,
+.edito-multi-carousel .carousel-item .col-md-4:last-child .card {
     margin: 0;
 }
 
-.edito-slider-multi img {
+.edito-multi-carousel img {
     height: 185px;
     object-fit: cover;
     width: 100%;
 }
-.edito-slider-multi .carousel-caption {
+.edito-multi-carousel .carousel-caption {
     position: initial;
     color: #000;
     padding: 1rem 0;
 	background-color: #fafafa;
 }
-.edito-slider-multi a {
+.edito-multi-carousel a {
 text-decoration: none;
 }
-.edito-slider-multi .video_desc {
+.edito-multi-carousel .video_desc {
     display: none;
 }
-.edito-slider-multi .video_time {
+.edito-multi-carousel .video_time {
     justify-content: center;
 }
 
@@ -154,30 +134,52 @@ text-decoration: none;
 	media queries
 ******************************/
 @media (max-width: 767px) {	
-	.edito-slider .carousel-caption.d-md-block {
+	.edito-carousel .carousel-caption.d-md-block {
 		padding: 5em 1em 3em 1em;
 	}
-	.edito-slider .carousel img {
+	.edito-carousel .carousel img {
 		height: 450px;
 	}
 }
 
 
 @media (min-width: 1300px) {
-	.edito-slider .carousel img {
+	.edito-carousel .carousel img {
 	max-height:500px;
 	}
-	.edito-slider .carousel-inner, .edito-slider .carousel-item  {
+	.edito-carousel .carousel-inner, .edito-carousel .carousel-item  {
 	   max-height:500px;
 	}
 }
 
 
 @media (min-width: 1450px) {
-	.edito-slider .carousel img {
+	.edito-carousel .carousel img {
 	max-height:680px;
 	}
-	.edito-slider .carousel-inner, .edito-slider .carousel-item  {
+	.edito-carousel .carousel-inner, .edito-carousel .carousel-item  {
 	   max-height:680px;
 	}
+}
+
+/* Multiple carousel */
+@media (min-width: 768px) {
+    .edito-multi-carousel .carousel-inner .carousel-item-end.active,
+    .edito-multi-carousel .carousel-inner .carousel-item-next {
+      transform: translateX(25%);
+    }
+    
+    .edito-multi-carousel .carousel-inner .carousel-item-start.active, 
+    .edito-multi-carousel .carousel-inner .carousel-item-prev {
+      transform: translateX(-25%);
+    }
+}
+
+@media (max-width: 767px) {
+	.edito-multi-carousel .carousel-inner .carousel-item > div {
+        display: none;
+    }
+    .edito-multi-carousel .carousel-inner .carousel-item > div:first-child {
+        display: block;
+    }
 }
