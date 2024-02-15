@@ -1,3 +1,5 @@
+"""Esup-Pod import transcription tasks."""
+
 from celery import Celery
 
 try:

@@ -1,3 +1,5 @@
+"""Esup-Pod Playlist models."""
+
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.conf import settings
@@ -48,9 +50,8 @@ class Playlist(models.Model):
         choices=VISIBILITY_CHOICES,
         default="private",
         help_text=_(
-            """
-            Please chosse a right of access among 'public', 'password-protected', 'private'.
-            """
+            "Please choose an access right among “public”,"
+            + " “password-protected”, “private”."
         ),
     )
     autoplay = models.BooleanField(
@@ -63,7 +64,8 @@ class Playlist(models.Model):
         default=False,
         help_text=_(
             "Selecting this setting causes your playlist to be promoted on the page"
-            + " listing promoted public playlists. However, if this setting is deactivated,"
+            + " listing promoted public playlists."
+            + " However, if this setting is deactivated"
             + " your playlist will still be accessible to everyone."
             + "<br>For general use, we recommend that you leave this setting disabled."
         ),
@@ -78,9 +80,8 @@ class Playlist(models.Model):
         unique=True,
         max_length=105,
         help_text=_(
-            'Used to access this instance, the "slug" is a short'
-            + " label containing only letters, numbers, underscore"
-            + " or dash top."
+            "Used to access this instance, the “slug” is a short label"
+            + " containing only letters, numbers, underscore or dash top."
         ),
         editable=False,
     )

@@ -296,6 +296,7 @@ class updateOwnerAdmin(admin.ModelAdmin):
     def changelist_view(self, request, extra_context=None):
         """View for the change_video_owner admin page."""
         extra_context = extra_context or {}
+        extra_context["page_title"] = _("Change video owner")
         return super(updateOwnerAdmin, self).changelist_view(
             request, extra_context=extra_context
         )

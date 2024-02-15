@@ -2578,9 +2578,9 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l'enco
 
  - `CELERY_BROKER_URL`
 
-  > valeur par défaut : `amqp://pod:xxx@localhost/rabbitpod`
+  > valeur par défaut : `redis://127.0.0.1:6379/5`
 
-  >> URL de Celery pour la gestion des taches d’encodage. <br>
+  >> URL du courtier de messages où Celery stocke les ordres d’encodage et de transcription. <br>
 
  - `CELERY_TO_ENCODE`
 

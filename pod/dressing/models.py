@@ -31,7 +31,7 @@ class Dressing(models.Model):
         help_text=_(
             "Please choose a title as short and accurate as "
             "possible, reflecting the main subject / context "
-            "of the content.(max length: 100 characters)"
+            "of the content. (max length: 100 characters)"
         ),
     )
 
@@ -115,7 +115,7 @@ class Dressing(models.Model):
         verbose_name_plural = _("Video dressings")
 
     def to_json(self):
-        """Convert to json format for encoding logs"""
+        """Convert to json format for encoding logs."""
         return {
             "id": self.id,
             "title": self.title,

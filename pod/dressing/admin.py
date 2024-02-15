@@ -1,3 +1,5 @@
+"""Esup-Pod dressing admin page."""
+
 from django.contrib import admin
 from .models import Dressing
 from .forms import DressingAdminForm
@@ -7,6 +9,7 @@ class DressingAdmin(admin.ModelAdmin):
     """Dressing admin page."""
 
     def get_form(self, request, obj=None, **kwargs):
+        """Get the dressing admin form."""
         ModelForm = super(DressingAdmin, self).get_form(request, obj, **kwargs)
 
         class ModelFormMetaClass(ModelForm):
@@ -33,6 +36,8 @@ class DressingAdmin(admin.ModelAdmin):
     ]
 
     class Media:
+        """Media to add to admin dressing page."""
+
         css = {
             "all": (
                 # "bootstrap/dist/css/bootstrap.min.css",
