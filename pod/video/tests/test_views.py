@@ -1198,6 +1198,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
         print(" --->  SetUp of VideoTestUpdateOwner: OK!")
 
     def test_update_video_owner(self):
+        """Test update video owner."""
         url = reverse("video:update_video_owner", kwargs={"user_id": self.admin.id})
 
         video1_id = self.v1.id
