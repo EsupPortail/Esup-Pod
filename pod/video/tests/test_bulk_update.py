@@ -2,7 +2,7 @@
 
 *  run with `python manage.py test pod.video.tests.test_bulk_update
 """
-
+import json
 from datetime import datetime
 
 from django.contrib.messages.storage.fallback import FallbackStorage
@@ -244,8 +244,9 @@ class BulkUpdateTestCase(TransactionTestCase):
         messages = FallbackStorage(post_request)
         setattr(post_request, '_messages', messages)
         response = bulk_update(post_request)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(Video.objects.filter(owner=user3)), 0)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(json.loads(response.content)["message"], "You cannot delete a video that is being encoded. 0 videos removed, 2 videos in error")
 
         print("--->  test_bulk_delete of BulkUpdateTestCase: OK")
         self.client.logout()
