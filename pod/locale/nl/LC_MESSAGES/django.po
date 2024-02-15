@@ -806,7 +806,7 @@ msgid "slug"
 msgstr ""
 
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
-#: pod/live/models.py pod/playlist/models.py pod/video/models.py
+#: pod/live/models.py pod/video/models.py
 msgid ""
 "Used to access this instance, the \"slug\" is a short label containing only "
 "letters, numbers, underscore or dash top."
@@ -1922,7 +1922,7 @@ msgstr ""
 #: pod/dressing/models.py pod/video/models.py
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
-"subject / context of the content.(max length: 100 characters)"
+"subject / context of the content. (max length: 100 characters)"
 msgstr ""
 
 #: pod/dressing/models.py pod/enrichment/forms.py pod/enrichment/models.py
@@ -5698,7 +5698,7 @@ msgstr ""
 msgid "Right of access"
 msgstr ""
 
-#: pod/playlist/forms.py
+#: pod/playlist/forms.py pod/playlist/models.py
 msgid ""
 "Please choose an access right among “public”, “password-protected”, "
 "“private”."
@@ -5712,7 +5712,7 @@ msgstr ""
 msgid "Promoted"
 msgstr ""
 
-#: pod/playlist/forms.py pod/playlist/models.py
+#: pod/playlist/forms.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated, "
@@ -5770,10 +5770,10 @@ msgstr ""
 
 #: pod/playlist/models.py
 msgid ""
-"\n"
-"            Please chosse a right of access among 'public', 'password-"
-"protected', 'private'.\n"
-"            "
+"Selecting this setting causes your playlist to be promoted on the page "
+"listing promoted public playlists. However, if this setting is deactivated "
+"your playlist will still be accessible to everyone.<br>For general use, we "
+"recommend that you leave this setting disabled."
 msgstr ""
 
 #: pod/playlist/models.py
@@ -5782,6 +5782,12 @@ msgstr ""
 
 #: pod/playlist/models.py
 msgid "Please choose if this playlist is editable or not."
+msgstr ""
+
+#: pod/playlist/models.py
+msgid ""
+"Used to access this instance, the “slug” is a short label containing only "
+"letters, numbers, underscore or dash top."
 msgstr ""
 
 #: pod/playlist/models.py
@@ -7105,6 +7111,12 @@ msgstr ""
 
 #: pod/video/models.py
 msgid ""
+"Please choose a title as short and accurate as possible, reflecting the main "
+"subject / context of the content.(max length: 100 characters)"
+msgstr ""
+
+#: pod/video/models.py
+msgid ""
 "The background color for your channel. You can use the format #. i.e.: "
 "#ff0000 for red"
 msgstr ""
@@ -7317,12 +7329,6 @@ msgstr ""
 #: pod/video/models.py pod/video/templates/videos/category_modal.html
 msgid "Category title"
 msgstr "Categorie titel"
-
-#: pod/video/models.py
-msgid ""
-"Please choose a title as short and accurate as possible, reflecting the main "
-"subject / context of the content. (max length: 100 characters)"
-msgstr ""
 
 #: pod/video/models.py pod/video/templates/videos/category_modal.html
 msgid "Category"

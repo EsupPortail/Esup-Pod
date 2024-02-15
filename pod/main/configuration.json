@@ -2833,13 +2833,13 @@
                     },
                     "settings": {
                         "CELERY_BROKER_URL": {
-                            "default_value": "amqp://pod:xxx@localhost/rabbitpod",
+                            "default_value": "redis://127.0.0.1:6379/5",
                             "description": {
                                 "en": [
                                     ""
                                 ],
                                 "fr": [
-                                    "URL de Celery pour la gestion des taches d’encodage."
+                                    "URL du courtier de messages où Celery stocke les ordres d’encodage et de transcription."
                                 ]
                             },
                             "pod_version_end": "",
