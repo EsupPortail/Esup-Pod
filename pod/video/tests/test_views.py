@@ -1207,9 +1207,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
         # Authentication required move TEMPORARY_REDIRECT
         response = self.client.post(
             url,
-            json.dumps(
-                {"videos": [video1_id, video2_id], "owner": [self.simple_user.id]}
-            ),
+            json.dumps({"videos": [video1_id, video2_id], "owner": [self.simple_user.id]}),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
