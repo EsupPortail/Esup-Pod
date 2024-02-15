@@ -715,26 +715,32 @@ def bulk_update_fields(request, videos_list, update_fields):
     fields_errors = []
 
     for video in videos_list:
-        form = VideoForm(
-            request.POST,
-            request.FILES,
-            instance=video,
-            is_staff=request.user.is_staff,
-            is_superuser=request.user.is_superuser,
-            current_user=request.user,
-            current_lang=request.LANGUAGE_CODE,
-        )
-        form.create_with_fields(update_fields)
 
-        if form.is_valid():
-            video = save_video_form(request, form)
-            updated_videos.append(Video.objects.get(pk=video.id).slug)
+        if "owner" in update_fields:
+            new_owner = User.objects.get(pk=request.POST.get("owner")) or None
+            if change_owner(video.id, new_owner):
+                updated_videos.append(Video.objects.get(pk=video.id).slug)
         else:
-            # Prevent from duplicate error items
-            if dict(form.errors.items()) not in fields_errors:
-                fields_errors.append(dict(form.errors.items()))
-            status = 400
-            break
+            form = VideoForm(
+                request.POST,
+                request.FILES,
+                instance=video,
+                is_staff=request.user.is_staff,
+                is_superuser=request.user.is_superuser,
+                current_user=request.user,
+                current_lang=request.LANGUAGE_CODE,
+            )
+            form.create_with_fields(update_fields)
+
+            if form.is_valid():
+                video = save_video_form(request, form)
+                updated_videos.append(Video.objects.get(pk=video.id).slug)
+            else:
+                # Prevent from duplicate error items
+                if dict(form.errors.items()) not in fields_errors:
+                    fields_errors.append(dict(form.errors.items()))
+                status = 400
+                break
 
     return updated_videos, fields_errors, status
 
