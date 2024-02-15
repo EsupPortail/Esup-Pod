@@ -1,7 +1,8 @@
 /**
  * @file Esup-Pod functions to change owner of multiple videos.
  * @since 2.8.2
- */
+*/
+
 
 (function () {
   const base = window.location.origin;
