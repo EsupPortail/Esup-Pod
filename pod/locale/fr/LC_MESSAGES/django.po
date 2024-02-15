@@ -7,7 +7,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-02-15 12:40+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: obado <bado@unice.fr>\n"
+"Last-Translator: ptitloup <nicolas.can@univ-lille.fr.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -1010,6 +1010,7 @@ msgstr "Supprimer le chapitre « %(chapter_title)s »"
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/dashboard.html
+#: pod/video/templates/videos/video_access_tokens.html
 #: pod/video/templates/videos/video_delete.html
 msgid "Delete"
 msgstr "Supprimer"
@@ -1024,6 +1025,7 @@ msgstr "Chapitre vidéo"
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/main/templates/navbar.html pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/video_access_tokens.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
 #: pod/video/templates/videos/video_edit.html pod/video/views.py
@@ -2948,6 +2950,12 @@ msgstr ""
 "Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a href="
 "\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
+#: pod/import_video/views.py pod/meeting/views.py
+msgid "Try changing the record type or address for this recording."
+msgstr ""
+"Essayez de modifier le type d’enregistrement ou l’adresse de cet "
+"enregistrement."
+
 #: pod/import_video/views.py
 #, python-format
 msgid ""
@@ -3649,11 +3657,13 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Embed in a web page"
 msgstr "Intégrer dans une page web"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Copy the content of this text box and paste it in the page:"
 msgstr ""
 "Copiez le contenu de cette boîte de texte et collez-le sur votre page :"
@@ -3685,6 +3695,7 @@ msgstr "Partager sur LinkedIn"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Share the link"
 msgstr "Partager le lien"
 
@@ -7858,6 +7869,14 @@ msgstr "Catégorie"
 msgid "Categories"
 msgstr "Catégories"
 
+#: pod/video/models.py
+msgid "Video access token"
+msgstr "Jeton d'accès à la vidéo"
+
+#: pod/video/models.py
+msgid "Video access tokens"
+msgstr "Jetons d'accès à la vidéo"
+
 #: pod/video/templates/channel/channel.html
 msgid "Show view statistics for all videos in this theme"
 msgstr "Afficher les statistiques de vue pour toutes les vidéos de ce thème"
@@ -8511,6 +8530,11 @@ msgid "Check the box to indicate the beginning of playing desired."
 msgstr "Cocher la case pour indiquer le début de lecture souhaité."
 
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Manage access tokens"
+msgstr "Gestion des jetons d'accès"
+
+#: pod/video/templates/videos/video-info.html
 msgid "BigBlueButton/H5P Integration"
 msgstr "Intégration BigBlueButton/H5P"
 
@@ -8523,8 +8547,33 @@ msgstr ""
 "interactive H5P :"
 
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Use this link to share the video:"
 msgstr "Utiliser ce lien pour partager la vidéo :"
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Add a token"
+msgstr "Ajouter un jeton"
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "List of active tokens"
+msgstr "Liste des jetons actif"
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Token"
+msgstr "Jeton"
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Copy to clipboard"
+msgstr "Copier dans le presse-papiers"
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Please confirm you want to delete the token"
+msgstr "Veuillez confirmer que vous souhaitez supprimer le jeton"
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Delete the token"
+msgstr "Supprimer le jeton"
 
 #: pod/video/templates/videos/video_collaborate.html
 msgid "Collaborate"
@@ -8620,10 +8669,6 @@ msgstr ""
 #, python-format
 msgid "Edit the %(app)s"
 msgstr "Éditer le %(app)s"
-
-#: pod/video/templates/videos/video_edit.html
-msgid "Use this link to share the video in draft mode"
-msgstr "Utiliser ce lien pour partager la vidéo en mode brouillon"
 
 #: pod/video/templates/videos/video_licencebox.html
 msgid "Creative Commons license:"
@@ -8795,6 +8840,22 @@ msgstr ""
 msgid "-- sorry, no translation provided --"
 msgstr "-- désolé, aucune traduction fournie --"
 
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "An action must be specified."
+msgstr "Une action doit être précisée."
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "A token has been created."
+msgstr "Un jeton a été créé."
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "Token not found."
+msgstr "Jeton non trouvé."
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "The token has been deleted."
+msgstr "Le jeton a été supprimé."
+
 #: pod/video/views.py
 msgid "You cannot edit this channel."
 msgstr "Vous ne pouvez éditer cette chaîne."
@@ -8856,6 +8917,11 @@ msgstr "Vous ne pouvez pas supprimer cette vidéo."
 #: pod/video/views.py
 msgid "You cannot delete a video that is being encoded."
 msgstr "Vous ne pouvez pas supprimer une vidéo en cours d’encodage."
+
+#: pod/video/views.py
+#, python-format
+msgid "Manage access tokens for the video \"%(vtitle)s\""
+msgstr "Gestion des jetons d’accès à la vidéo « %(vtitle)s »"
 
 #: pod/video/views.py
 msgid "Transcription not enabled on this platform."
@@ -9222,7 +9288,6 @@ msgstr "xAPI Esup-Pod"
 #~ msgid "Live"
 #~ msgstr "Directs"
 
-#, python-format
 #~ msgid "Deleting the event \"%(vtitle)s\""
 #~ msgstr "Supprimer l’évènement « %(vtitle)s »"
 
