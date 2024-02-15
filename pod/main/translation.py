@@ -34,6 +34,8 @@ class AdditionalChannelTabTranslationOptions(TranslationOptions):
 
 
 class BlockTranslationOptions(TranslationOptions):
+    """Translation options for the Block model."""
+
     fields = ("display_title",)
 
 

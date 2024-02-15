@@ -360,5 +360,6 @@ class Block(models.Model):
 
 @receiver(post_save, sender=Block)
 def default_site_block(sender, instance, created, **kwargs):
+    """Sets a default site for the instance if it has no associated sites upon creation."""
     if len(instance.sites.all()) == 0:
         instance.sites.add(Site.objects.get_current())

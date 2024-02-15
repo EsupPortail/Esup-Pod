@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-09 09:42+0000\n"
+"POT-Creation-Date: 2024-02-15 12:14+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1026,26 +1026,6 @@ msgstr ""
 
 #: pod/chapter/templates/video_chapter.html
 msgid "You must save your chapters to view the result."
-msgstr ""
-
-#: pod/chapter/templates/video_chapter.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Mandatory fields"
-msgstr ""
-
-#: pod/chapter/templates/video_chapter.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Fields marked with an asterisk are mandatory."
 msgstr ""
 
 #: pod/chapter/views.py
@@ -3256,7 +3236,7 @@ msgid "Plan an event"
 msgstr ""
 
 #: pod/live/templates/live/direct.html pod/live/templates/live/events_next.html
-#: pod/main/models.py
+#: pod/main/models.py pod/main/templatetags/flat_page_edito_filter.py
 msgid "Next events"
 msgstr ""
 
@@ -4564,11 +4544,11 @@ msgid "Additional channel Tabs"
 msgstr ""
 
 #: pod/main/models.py
-msgid "Slider"
+msgid "Carousel"
 msgstr ""
 
 #: pod/main/models.py
-msgid "Slider multi"
+msgid "Multiple carousel"
 msgstr ""
 
 #: pod/main/models.py
@@ -4595,11 +4575,12 @@ msgstr ""
 msgid "Playlist"
 msgstr ""
 
-#: pod/main/models.py pod/video/templates/videos/last_videos.html
+#: pod/main/models.py pod/main/templatetags/flat_page_edito_filter.py
+#: pod/video/templates/videos/last_videos.html
 msgid "Last videos"
 msgstr ""
 
-#: pod/main/models.py
+#: pod/main/models.py pod/main/templatetags/flat_page_edito_filter.py
 msgid "Most views"
 msgstr ""
 
@@ -4670,7 +4651,7 @@ msgid "Number of element"
 msgstr ""
 
 #: pod/main/models.py
-msgid "Number of element for slider multi"
+msgid "Number of element for multi carousel"
 msgstr ""
 
 #: pod/main/models.py
@@ -4783,8 +4764,9 @@ msgstr ""
 msgid "I understand"
 msgstr ""
 
-#: pod/main/templates/block/card_list.html pod/main/templates/block/slider.html
-#: pod/main/templates/block/slider_multi.html
+#: pod/main/templates/block/card_list.html
+#: pod/main/templates/block/carousel.html
+#: pod/main/templates/block/multi_carousel.html
 #: pod/video/templates/videos/last_videos.html
 msgid "Show all videos"
 msgstr ""
@@ -4866,6 +4848,14 @@ msgstr ""
 #: pod/main/templates/mail/mail_sender.html
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid "Regards"
+msgstr ""
+
+#: pod/main/templates/main/mandatory_fields.html
+msgid "Mandatory fields"
+msgstr ""
+
+#: pod/main/templates/main/mandatory_fields.html
+msgid "Fields marked with an asterisk are mandatory."
 msgstr ""
 
 #: pod/main/templates/maintenance.html
@@ -6869,6 +6859,10 @@ msgstr ""
 msgid "Transcript selected"
 msgstr ""
 
+#: pod/video/admin.py
+msgid "Change video owner"
+msgstr ""
+
 #: pod/video/forms.py
 msgid "File field"
 msgstr ""
@@ -7721,10 +7715,6 @@ msgstr ""
 
 #: pod/video/templates/videos/category_modal.html
 msgid "Permanently delete your category?"
-msgstr ""
-
-#: pod/video/templates/videos/change_video_owner.html
-msgid "Change video owner"
 msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html

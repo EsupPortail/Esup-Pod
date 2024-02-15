@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-09 09:42+0000\n"
+"POT-Creation-Date: 2024-02-15 12:14+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ptitloup <nicolas.can@univ-lille.fr.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1090,26 +1090,6 @@ msgstr "Les chapitres ne peuvent commencer au même moment."
 #: pod/chapter/templates/video_chapter.html
 msgid "You must save your chapters to view the result."
 msgstr "Vous devez sauvegarder vos chapitres pour voir le résultat."
-
-#: pod/chapter/templates/video_chapter.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Mandatory fields"
-msgstr "Champs obligatoires"
-
-#: pod/chapter/templates/video_chapter.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Fields marked with an asterisk are mandatory."
-msgstr "Les champs marqués avec un astérisque sont obligatoires."
 
 #: pod/chapter/views.py
 msgid "You cannot chapter this video."
@@ -3480,7 +3460,7 @@ msgid "Plan an event"
 msgstr "Programmer un évènement"
 
 #: pod/live/templates/live/direct.html pod/live/templates/live/events_next.html
-#: pod/main/models.py
+#: pod/main/models.py pod/main/templatetags/flat_page_edito_filter.py
 msgid "Next events"
 msgstr "Prochains évènements"
 
@@ -4818,11 +4798,11 @@ msgid "Additional channel Tabs"
 msgstr "Onglets additionnels de chaînes"
 
 #: pod/main/models.py
-msgid "Slider"
+msgid "Carousel"
 msgstr "Carrousel"
 
 #: pod/main/models.py
-msgid "Slider multi"
+msgid "Multiple carousel"
 msgstr "Carrousel multiple"
 
 #: pod/main/models.py
@@ -4849,11 +4829,12 @@ msgstr "Thème"
 msgid "Playlist"
 msgstr "Liste de lecture"
 
-#: pod/main/models.py pod/video/templates/videos/last_videos.html
+#: pod/main/models.py pod/main/templatetags/flat_page_edito_filter.py
+#: pod/video/templates/videos/last_videos.html
 msgid "Last videos"
 msgstr "Dernières vidéos"
 
-#: pod/main/models.py
+#: pod/main/models.py pod/main/templatetags/flat_page_edito_filter.py
 msgid "Most views"
 msgstr "Les plus vues"
 
@@ -4924,8 +4905,8 @@ msgid "Number of element"
 msgstr "Nombre d'élément"
 
 #: pod/main/models.py
-msgid "Number of element for slider multi"
-msgstr "Nombre d'élément pour la diapositive"
+msgid "Number of element for multi carousel"
+msgstr "Nombre d'élément pour le carrousel multiple"
 
 #: pod/main/models.py
 msgid "View videos from non visible channel"
@@ -5046,8 +5027,9 @@ msgstr "En savoir plus"
 msgid "I understand"
 msgstr "J’ai compris"
 
-#: pod/main/templates/block/card_list.html pod/main/templates/block/slider.html
-#: pod/main/templates/block/slider_multi.html
+#: pod/main/templates/block/card_list.html
+#: pod/main/templates/block/carousel.html
+#: pod/main/templates/block/multi_carousel.html
 #: pod/video/templates/videos/last_videos.html
 msgid "Show all videos"
 msgstr "Afficher toutes les vidéos"
@@ -5132,6 +5114,14 @@ msgstr "Vous venez d’envoyer un message depuis"
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid "Regards"
 msgstr "Cordialement"
+
+#: pod/main/templates/main/mandatory_fields.html
+msgid "Mandatory fields"
+msgstr "Champs obligatoires"
+
+#: pod/main/templates/main/mandatory_fields.html
+msgid "Fields marked with an asterisk are mandatory."
+msgstr "Les champs marqués avec un astérisque sont obligatoires."
 
 #: pod/main/templates/maintenance.html
 msgid ""
@@ -7285,6 +7275,10 @@ msgstr "Définir comme brouillon"
 msgid "Transcript selected"
 msgstr "Transcrire la sélection"
 
+#: pod/video/admin.py
+msgid "Change video owner"
+msgstr "Changer le propriétaire de vidéos"
+
 #: pod/video/forms.py
 msgid "File field"
 msgstr "Fichier"
@@ -8233,10 +8227,6 @@ msgstr "Supprimer la catégorie"
 #: pod/video/templates/videos/category_modal.html
 msgid "Permanently delete your category?"
 msgstr "Supprimer définitivement votre catégorie ?"
-
-#: pod/video/templates/videos/change_video_owner.html
-msgid "Change video owner"
-msgstr "Changer le propriétaire de vidéos"
 
 #: pod/video/templates/videos/change_video_owner.html
 msgid "Old owner"
@@ -9369,51 +9359,3 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#~ msgid "Use this link to share the video in draft mode"
-#~ msgstr "Utiliser ce lien pour partager la vidéo en mode brouillon"
-
-#~ msgid "YouTube content is inaccessible"
-#~ msgstr "Le contenu YouTube n’est pas disponible"
-
-#~ msgid ""
-#~ "YouTube content is inaccessible. This content does not appear to be "
-#~ "publicly available."
-#~ msgstr ""
-#~ "Le contenu YouTube est inaccessible. Ce contenu ne semble pas être "
-#~ "disponible publiquement."
-
-#~ msgid ""
-#~ "Access to adding external recording has been restricted. If you want to "
-#~ "add external recordings on the platform, please"
-#~ msgstr ""
-#~ "L’accès à l’ajout d’un enregistrement externe a été restreint. Si vous "
-#~ "souhaitez ajouter des enregistrements externes sur la plateforme, s’il "
-#~ "vous plaît"
-
-#~ msgid "Deleting the record"
-#~ msgstr "Supprimer cet enregistrement"
-
-#~ msgid "Playlist image"
-#~ msgstr "Image de la playlist"
-
-#~ msgid "Live"
-#~ msgstr "Directs"
-
-#~ msgid "Deleting the event \"%(vtitle)s\""
-#~ msgstr "Supprimer l’évènement « %(vtitle)s »"
-
-#~ msgid "To delete the event, please checked in and click send."
-#~ msgstr "Pour supprimer l’évènement, veuillez cocher et cliquer sur envoyer."
-
-#~ msgid "To delete the record, please checked in and click send."
-#~ msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
-
-#~ msgid "To delete the video, please checked in and click send."
-#~ msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
-
-#~ msgid "Unable to find information about the meeting"
-#~ msgstr "Impossible de trouver des informations sur la réunion"
-
-#~ msgid "End the meeting"
-#~ msgstr "Terminer la réunion"

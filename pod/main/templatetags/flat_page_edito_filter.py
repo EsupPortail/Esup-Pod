@@ -40,7 +40,7 @@ def edito(content, request):
 
 
 def display_content_by_block(content, request):  # noqa: C901
-    debugElts = []
+    debug_elts = []
 
     current_site = get_current_site(request)
 
@@ -133,12 +133,12 @@ def display_content_by_block(content, request):  # noqa: C901
         params['fct'] = 'render_html'
         params['data'] = content.html
 
-    if (content.type == 'slider'):
-        params['template'] = 'block/slider.html'
-    if (content.type == 'slider_multi'):
-        params['template'] = 'block/slider_multi.html'
-    if (content.type == 'card_list'):
-        params['template'] = 'block/card_list.html'
+    if content.type == "carousel":
+        params["template"] = "block/carousel.html"
+    if content.type == "multi_carousel":
+        params["template"] = "block/multi_carousel.html"
+    if content.type == "card_list":
+        params["template"] = "block/card_list.html"
 
     cached_content_part = None
 
