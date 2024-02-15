@@ -130,7 +130,7 @@ def get_number_video_added_in_specific_playlist(playlist: Playlist) -> int:
     return PlaylistContent.objects.filter(playlist=playlist).count()
 
 
-def get_public_playlist() -> list[Playlist]:
+def get_public_playlist() -> list:
     """
     Get all public playlists in the application.
 
@@ -140,7 +140,7 @@ def get_public_playlist() -> list[Playlist]:
     return Playlist.objects.filter(visibility="public", site=Site.objects.get_current())
 
 
-def get_promoted_playlist() -> list[Playlist]:
+def get_promoted_playlist() -> list:
     """
     Get all promoted playlists in the application.
 
@@ -150,7 +150,7 @@ def get_promoted_playlist() -> list[Playlist]:
     return Playlist.objects.filter(promoted=True, site=Site.objects.get_current())
 
 
-def get_playlist_list_for_user(user: User) -> list[Playlist]:
+def get_playlist_list_for_user(user: User) -> list:
     """
     Get all playlist for a user.
 
@@ -168,7 +168,7 @@ def get_playlist_list_for_user(user: User) -> list[Playlist]:
         ).exclude(name="Favorites")
 
 
-def get_video_list_for_playlist(playlist: Playlist) -> list[Video]:
+def get_video_list_for_playlist(playlist: Playlist) -> list:
     """
     Get all videos for a playlist.
 
@@ -232,7 +232,7 @@ def remove_playlist(user: User, playlist: Playlist) -> None:
         playlist.delete()
 
 
-def get_playlists_for_additional_owner(user: User) -> list[Playlist]:
+def get_playlists_for_additional_owner(user: User) -> list:
     """
     Get playlist list for a specific additional owner.
 
@@ -340,7 +340,7 @@ def user_can_see_playlist_video(request: WSGIRequest, video: Video) -> bool:
         return True
 
 
-def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") -> list[Playlist]:
+def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") -> list:
     """
     Return playlist list sorted by specific column name and asc or desc direction.
 

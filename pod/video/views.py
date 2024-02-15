@@ -870,7 +870,7 @@ def get_filtered_videos_list(request, videos_list):
     return videos_list.distinct()
 
 
-def get_owners_has_instances(owners: list) -> list[User]:
+def get_owners_has_instances(owners: list) -> list:
     """Return the list of owners who has instances in User.objects."""
     ownersInstances = []
     for owner in owners:

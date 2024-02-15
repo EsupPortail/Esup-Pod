@@ -14,7 +14,7 @@ register = Library()
 
 
 @register.simple_tag(name="get_user_playlists")
-def get_user_playlists(user: User) -> list[Playlist]:
+def get_user_playlists(user: User) -> list:
     """
     Get all playlist for a user.
 
