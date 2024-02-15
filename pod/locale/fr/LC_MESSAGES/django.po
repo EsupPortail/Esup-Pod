@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-15 14:27+0100\n"
+"POT-Creation-Date: 2024-02-15 10:00+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ptitloup <nicolas.can@univ-lille.fr.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -7275,10 +7275,6 @@ msgstr "Définir comme brouillon"
 msgid "Transcript selected"
 msgstr "Transcrire la sélection"
 
-#: pod/video/admin.py
-msgid "Change video owner"
-msgstr "Partagé avec le propriétaire de la vidéo"
-
 #: pod/video/forms.py
 msgid "File field"
 msgstr "Fichier"
@@ -9359,3 +9355,51 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Use this link to share the video in draft mode"
+#~ msgstr "Utiliser ce lien pour partager la vidéo en mode brouillon"
+
+#~ msgid "YouTube content is inaccessible"
+#~ msgstr "Le contenu YouTube n’est pas disponible"
+
+#~ msgid ""
+#~ "YouTube content is inaccessible. This content does not appear to be "
+#~ "publicly available."
+#~ msgstr ""
+#~ "Le contenu YouTube est inaccessible. Ce contenu ne semble pas être "
+#~ "disponible publiquement."
+
+#~ msgid ""
+#~ "Access to adding external recording has been restricted. If you want to "
+#~ "add external recordings on the platform, please"
+#~ msgstr ""
+#~ "L’accès à l’ajout d’un enregistrement externe a été restreint. Si vous "
+#~ "souhaitez ajouter des enregistrements externes sur la plateforme, s’il "
+#~ "vous plaît"
+
+#~ msgid "Deleting the record"
+#~ msgstr "Supprimer cet enregistrement"
+
+#~ msgid "Playlist image"
+#~ msgstr "Image de la playlist"
+
+#~ msgid "Live"
+#~ msgstr "Directs"
+
+#~ msgid "Deleting the event \"%(vtitle)s\""
+#~ msgstr "Supprimer l’évènement « %(vtitle)s »"
+
+#~ msgid "To delete the event, please checked in and click send."
+#~ msgstr "Pour supprimer l’évènement, veuillez cocher et cliquer sur envoyer."
+
+#~ msgid "To delete the record, please checked in and click send."
+#~ msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
+
+#~ msgid "To delete the video, please checked in and click send."
+#~ msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
+
+#~ msgid "Unable to find information about the meeting"
+#~ msgstr "Impossible de trouver des informations sur la réunion"
+
+#~ msgid "End the meeting"
+#~ msgstr "Terminer la réunion"
