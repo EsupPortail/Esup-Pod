@@ -14,7 +14,8 @@ class ModelNameAdmin(admin.ModelAdmin):
         "ai_enrichment_id_in_aristote",
         "video",
         "is_ready",
-        "ai_enrichment_file",
+        "created_at",
+        "updated_at",
     )
     list_display_links = ("id", "ai_enrichment_id_in_aristote")
     list_filter = ("is_ready", )

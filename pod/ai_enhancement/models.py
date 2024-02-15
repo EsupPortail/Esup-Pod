@@ -31,13 +31,6 @@ class AIEnrichment(models.Model):
         verbose_name_plural = _("AI enrichments")
 
     video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
-    ai_enrichment_file = models.FileField(
-        verbose_name=_("AI enrichment file"),
-        upload_to=get_storage_path_ai_enrichment,
-        max_length=255,
-        help_text=_("Please choose an AI enrichment file."),
-        null=True,
-    )
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
     is_ready = models.BooleanField(_("Is ready"), default=False)

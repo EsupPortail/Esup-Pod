@@ -4,7 +4,10 @@ from django.conf import settings
 from django.template import Library
 
 
-from pod.ai_enhancement.utils import enrichment_is_ready as eir
+from pod.ai_enhancement.utils import (
+    enrichment_is_ready as eir,
+    enrichment_is_already_asked as eia,
+)
 from pod.video.models import Video
 
 
@@ -51,3 +54,21 @@ def enrichment_is_ready(context: dict, video: Video) -> bool:
     if not request.user.is_authenticated:
         return False
     return eir(video) and USE_AI_ENHANCEMENT and user_can_enrich_video(context, video)
+
+
+@register.simple_tag(takes_context=True, name="enrichment_is_already_asked")
+def enrichment_is_already_asked(context: dict, video: Video) -> bool:
+    """
+    Template tag used to check if the enrichment of a specific video is already asked.
+
+    Args:
+        context (dict): The context.
+        video (:class:`pod.video.models.Video`): The specific video.
+
+    Returns:
+        bool: `True` if the enrichment is already asked. `False` otherwise.
+    """
+    request = context["request"]
+    if not request.user.is_authenticated:
+        return False
+    return eia(video) and USE_AI_ENHANCEMENT and user_can_enrich_video(context, video) and not eir(video)

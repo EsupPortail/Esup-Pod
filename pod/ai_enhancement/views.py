@@ -40,20 +40,27 @@ def send_enrichment_creation_request(request: WSGIRequest, aristote: AristoteAI,
         # TODO change this
         ["video/mp4"],
         request.user.username,
-        "https://webhook.site/30e3559f-67f6-4078-b4d4-51a357d63354",  # TODO change this
+        "https://webhook.site/da793ba0-5b38-4f80-a1d6-6f472c504f47",  # TODO change this
     )
-    if creation_response["status"] == "OK":
-        AIEnrichment.objects.create(
-            video=video,
-            ai_enrichment_id_in_aristote=creation_response["id"],
-        )
-        return HttpResponse(
-            "Enrichment has been created. Please wait. You will receive an email when Aristote is finished.",
-            status=200,
-        )
-    else:
-        print("Error: ", creation_response["status"])   # TODO create a real error
-    return redirect("video:video", slug=video.slug)
+    if creation_response:
+        if creation_response["status"] == "OK":
+            AIEnrichment.objects.create(
+                video=video,
+                ai_enrichment_id_in_aristote=creation_response["id"],
+            )
+            return HttpResponse(
+                "Enrichment has been created. Please wait. You will receive an email when Aristote is finished.",
+                status=200,
+            )
+        else:
+            return HttpResponse(
+                "Error: ", creation_response["status"],
+                status=500,
+            )  # TODO create a real error
+    return HttpResponse(
+        "An error occurred when creating the enrichment.",
+        status=500,
+    )  # TODO create a real error
 
 
 @csrf_protect
@@ -66,9 +73,7 @@ def enrich_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
     if enrichment_is_already_asked(video):
         enrichment = AIEnrichment.objects.filter(video=video).first()
         latest_version = aristote.get_latest_enrichment_version(enrichment.ai_enrichment_id_in_aristote)
-        if latest_version.get("status") != "KO":
-            enrichment.is_ready = True
-            enrichment.save()
+        if enrichment.is_ready:
             return enrich_form(request, video)
         else:
             return HttpResponse("Enrichment already asked. Wait please.", status=200)   # TODO: change this line
