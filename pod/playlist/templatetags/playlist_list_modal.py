@@ -1,5 +1,4 @@
 """Esup-Pod Playlist list modal."""
-
 from django.template import Library
 from django.contrib.auth.models import User
 

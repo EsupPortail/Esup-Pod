@@ -41,7 +41,9 @@ def get_dressing_input(dressing: Dressing, FFMPEG_DRESSING_INPUT: str) -> str:
     """
     command = ""
     if dressing.watermark:
-        command += FFMPEG_DRESSING_INPUT % {"input": dressing.watermark.file.path}
+        command += FFMPEG_DRESSING_INPUT % {
+            "input": dressing.watermark.file.path
+        }
     if dressing.opening_credits:
         command += FFMPEG_DRESSING_INPUT % {
             "input": os.path.join(

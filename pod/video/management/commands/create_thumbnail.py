@@ -1,5 +1,4 @@
 """Esup-Pod Django command to create a video thumbnail."""
-
 from django.core.management.base import BaseCommand
 from pod.video.models import Video
 from pod.video_encode_transcript.Encoding_video_model import Encoding_video_model

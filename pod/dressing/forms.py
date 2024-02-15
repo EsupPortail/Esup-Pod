@@ -1,5 +1,4 @@
 """Esup-Pod dressing forms."""
-
 from django import forms
 from django.conf import settings
 from pod.main.forms_utils import add_placeholder_and_asterisk
