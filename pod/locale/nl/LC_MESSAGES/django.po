@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-09 09:42+0000\n"
+"POT-Creation-Date: 2024-02-15 12:40+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1024,26 +1024,6 @@ msgstr ""
 
 #: pod/chapter/templates/video_chapter.html
 msgid "You must save your chapters to view the result."
-msgstr ""
-
-#: pod/chapter/templates/video_chapter.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Mandatory fields"
-msgstr ""
-
-#: pod/chapter/templates/video_chapter.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Fields marked with an asterisk are mandatory."
 msgstr ""
 
 #: pod/chapter/views.py
@@ -2431,6 +2411,10 @@ msgid ""
 "match the record type selected."
 msgstr ""
 
+#: pod/import_video/models.py
+msgid "Recording state"
+msgstr ""
+
 #: pod/import_video/models.py pod/meeting/models.py
 msgid "User who uploaded to Pod the video file"
 msgstr ""
@@ -2685,6 +2669,11 @@ msgstr ""
 msgid "YouTube content is inaccessible."
 msgstr ""
 
+#: pod/import_video/tests/test_views.py pod/import_video/views.py
+msgid ""
+"Impossible to upload to Pod the video, the link provided does not seem valid."
+msgstr ""
+
 #: pod/import_video/utils.py
 msgid "No URL found / No recording name"
 msgstr ""
@@ -2779,22 +2768,18 @@ msgid ""
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
 
-#: pod/import_video/views.py pod/meeting/views.py
-msgid "Try changing the record type or address for this recording."
+#: pod/import_video/views.py
+#, python-format
+msgid ""
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
-msgstr ""
-
-#: pod/import_video/views.py
-#, python-format
-msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2854,12 +2839,7 @@ msgid ""
 msgstr ""
 
 #: pod/import_video/views.py
-msgid "Impossible to upload to Pod the PeerTube video"
-msgstr ""
-
-#: pod/import_video/views.py
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Video file not uploaded to Pod"
+msgid "Convert web presentation to video in progress..."
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2867,8 +2847,17 @@ msgstr ""
 msgid "Video file already uploaded to Pod"
 msgstr ""
 
+#: pod/import_video/views.py pod/meeting/views.py
+msgid "Try changing the record type or address for this recording."
+msgstr ""
+
 #: pod/import_video/views.py
 msgid "No video file found. Upload to Pod as a video is not possible."
+msgstr ""
+
+#: pod/import_video/views.py
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Video file not uploaded to Pod"
 msgstr ""
 
 #: pod/live/admin.py pod/live/models.py
@@ -4722,6 +4711,14 @@ msgstr ""
 msgid "Regards"
 msgstr ""
 
+#: pod/main/templates/main/mandatory_fields.html
+msgid "Mandatory fields"
+msgstr ""
+
+#: pod/main/templates/main/mandatory_fields.html
+msgid "Fields marked with an asterisk are mandatory."
+msgstr ""
+
 #: pod/main/templates/maintenance.html
 msgid ""
 "The maintenance is over, you can go back to work. Thank you for your "
@@ -5656,6 +5653,32 @@ msgstr ""
 
 #: pod/meeting/views.py
 msgid "Impossible to create the internal recording"
+msgstr ""
+
+#: pod/meeting/webinar_utils.py
+msgid "Too many webinars"
+msgstr ""
+
+#: pod/meeting/webinar_utils.py
+#, python-format
+msgid ""
+"There are too many webinars (%s) for the number of ingesters allocated (%s). "
+"The next meeting has been created but not like a webinar:%s %s [%s-%s].\n"
+"Please fix the problem either by increasing the number of ingesters or by "
+"modifying/deleting one of the affected webinars (with the users' "
+"agreement).\n"
+"Other webinars : %s"
+msgstr ""
+
+#: pod/meeting/webinar_utils.py
+#, python-format
+msgid ""
+"<p>There are too many webinars (<b>%s</b>) for the number of ingesters "
+"allocated (<b>%s</b>). The next webinar has been created but <b>not like a "
+"webinar</b>:<ul><li><b>%s %s</b> [%s-%s].</li></ul><p>Please fix the problem "
+"either by increasing the number of ingesters or by modifying/deleting one of "
+"the affected webinars (with the users' agreement).<br>Other webinars : <b>"
+"%s</b>"
 msgstr ""
 
 #: pod/playlist/apps.py pod/playlist/models.py
@@ -6627,8 +6650,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -6728,6 +6751,10 @@ msgstr ""
 
 #: pod/video/admin.py
 msgid "Transcript selected"
+msgstr ""
+
+#: pod/video/admin.py
+msgid "Change video owner"
 msgstr ""
 
 #: pod/video/forms.py
@@ -7582,10 +7609,6 @@ msgstr ""
 
 #: pod/video/templates/videos/category_modal.html
 msgid "Permanently delete your category?"
-msgstr ""
-
-#: pod/video/templates/videos/change_video_owner.html
-msgid "Change video owner"
 msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
