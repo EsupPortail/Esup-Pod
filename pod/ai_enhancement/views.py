@@ -72,7 +72,6 @@ def enrich_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
     aristote = AristoteAI(AI_ENRICHMENT_CLIENT_ID, AI_ENRICHMENT_CLIENT_SECRET)
     if enrichment_is_already_asked(video):
         enrichment = AIEnrichment.objects.filter(video=video).first()
-        latest_version = aristote.get_latest_enrichment_version(enrichment.ai_enrichment_id_in_aristote)
         if enrichment.is_ready:
             return enrich_form(request, video)
         else:
@@ -93,11 +92,24 @@ def enrich_video_json(request: WSGIRequest, video_slug: str) -> HttpResponse:
 @csrf_protect
 def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
     """The view to choose the title of a video with the AI enrichment."""
-    form = AIEnrichmentChoice(
-        instance=video,
-    )
-    return render(
-        request,
-        "choose_video_element/choose_video_title.html",
-        {"video": video, "form": form, "page_title": "Enrich with Aristote AI"},
-    )
+    if request.method == "POST":
+        form = AIEnrichmentChoice(request.POST, instance=video)
+        if form.is_valid():
+            form.save()
+            AIEnrichment.objects.filter(video=video).delete()
+            return redirect(reverse("video:video", args=[video.slug]))
+        else:
+            return render(
+                request,
+                "choose_video_element/choose_video_title.html",
+                {"video": video, "form": form, "page_title": "Enrich with Aristote AI"},
+            )
+    else:
+        form = AIEnrichmentChoice(
+            instance=video,
+        )
+        return render(
+            request,
+            "choose_video_element/choose_video_title.html",
+            {"video": video, "form": form, "page_title": "Enrich with Aristote AI"},
+        )

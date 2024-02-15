@@ -118,6 +118,6 @@
   </style>
   <script src="{% static 'ai_enhancement/js/enrich-form.js' %}?ver={{ VERSION }}"></script>
   <script>
-    addEventListeners("{{ video.slug }}", "{{ video.title }}", "{{ video.description }}");
+    addEventListeners("{{ video.slug }}", "{{ video.title }}", "{{ video.description }}", "{{ video.description }}");
   </script>
 {% endblock more_script %}
