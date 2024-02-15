@@ -1,4 +1,5 @@
 """Esup-Pod dressing admin page."""
+
 from django.contrib import admin
 from .models import Dressing
 from .forms import DressingAdminForm
