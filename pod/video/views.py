@@ -53,7 +53,7 @@ from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
 from pod.video.models import get_transcription_choices
-from pod.video.models import UserMarkerTime
+from pod.video.models import UserMarkerTime, VideoAccessToken
 
 from tagging.models import TaggedItem
 
@@ -80,6 +80,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 import re
 import pandas
+import uuid
 from datetime import date
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
@@ -1082,7 +1083,16 @@ def toggle_render_video_user_can_see_video(
             and request.POST.get("password") == video.password
             # and check_password(request.POST.get("password"), video.password)
         )
-        or (slug_private and slug_private == video.get_hashkey())
+        or (
+            slug_private and (
+                slug_private == video.get_hashkey()
+                or slug_private in [
+                    str(tok.token) for tok in VideoAccessToken.objects.filter(
+                        video=video
+                    )
+                ]
+            )
+        )
         or request.user == video.owner
         or request.user.is_superuser
         or request.user.has_perm("video.change_video")
@@ -1366,6 +1376,65 @@ def video_is_deletable(request, video):
         )
         return False
     return True
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def video_edit_access_tokens(request: WSGIRequest, slug: str = None):
+    """View to manage access token of a video."""
+    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
+    if (
+        video
+        and request.user != video.owner
+        and (
+            not (request.user.is_superuser or request.user.has_perm("video.change_video"))
+        )
+        and (request.user not in video.additional_owners.all())
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot edit this video."))
+        raise PermissionDenied
+    if request.method == "POST":
+        if request.POST.get("action") and request.POST.get("action") in ["add", "delete"]:
+            if request.POST["action"] == "add":
+                VideoAccessToken.objects.create(video=video)
+                messages.add_message(
+                    request, messages.INFO, _("A token has been created.")
+                )
+            else:
+                if request.POST["action"] == "delete" and request.POST.get("token"):
+                    token = request.POST.get("token")
+                    delete_token(request, video, token)
+                else:
+                    messages.add_message(
+                        request, messages.ERROR, _("Token not found.")
+                    )
+        else:
+            messages.add_message(
+                request, messages.ERROR, _("An action must be specified.")
+            )
+        # redirect to remove post data
+        return redirect(reverse('video:video_edit_access_tokens', args=(video.slug,)))
+    tokens = VideoAccessToken.objects.filter(video=video)
+    page_title = _('Manage access tokens for the video "%(vtitle)s"') % {"vtitle": video.title}
+    return render(
+        request,
+        "videos/video_access_tokens.html",
+        {"video": video, "tokens": tokens, "page_title": page_title},
+    )
+
+
+def delete_token(request, video:Video, token:VideoAccessToken):
+    """Remove token for the video if exist."""
+    try:
+        uuid.UUID(str(token))
+        VideoAccessToken.objects.get(video=video, token=token).delete()
+        messages.add_message(
+            request, messages.INFO, _("The token has been deleted.")
+        )
+    except (ValueError, ObjectDoesNotExist):
+        messages.add_message(
+            request, messages.ERROR, _("Token not found.")
+        )
 
 
 @csrf_protect

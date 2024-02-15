@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-09 09:42+0000\n"
+"POT-Creation-Date: 2024-02-15 10:00+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -953,6 +953,7 @@ msgstr ""
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/dashboard.html
+#: pod/video/templates/videos/video_access_tokens.html
 #: pod/video/templates/videos/video_delete.html
 msgid "Delete"
 msgstr ""
@@ -967,6 +968,7 @@ msgstr ""
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/main/templates/navbar.html pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/video_access_tokens.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
 #: pod/video/templates/videos/video_edit.html pod/video/views.py
@@ -2786,15 +2788,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -3424,11 +3426,13 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Embed in a web page"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Copy the content of this text box and paste it in the page:"
 msgstr ""
 
@@ -3459,6 +3463,7 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Share the link"
 msgstr ""
 
@@ -6627,8 +6632,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -7333,6 +7338,14 @@ msgstr ""
 msgid "Categories"
 msgstr ""
 
+#: pod/video/models.py
+msgid "Video access token"
+msgstr ""
+
+#: pod/video/models.py
+msgid "Video access tokens"
+msgstr ""
+
 #: pod/video/templates/channel/channel.html
 msgid "Show view statistics for all videos in this theme"
 msgstr ""
@@ -7959,6 +7972,11 @@ msgid "Check the box to indicate the beginning of playing desired."
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Manage access tokens"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
 msgid "BigBlueButton/H5P Integration"
 msgstr ""
 
@@ -7969,7 +7987,32 @@ msgid ""
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Use this link to share the video:"
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Add a token"
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "List of active tokens"
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Token"
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Copy to clipboard"
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Please confirm you want to delete the token"
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Delete the token"
 msgstr ""
 
 #: pod/video/templates/videos/video_collaborate.html
@@ -8057,10 +8100,6 @@ msgstr ""
 #: pod/video/templates/videos/video_edit.html
 #, python-format
 msgid "Edit the %(app)s"
-msgstr ""
-
-#: pod/video/templates/videos/video_edit.html
-msgid "Use this link to share the video in draft mode"
 msgstr ""
 
 #: pod/video/templates/videos/video_licencebox.html
@@ -8228,6 +8267,22 @@ msgstr ""
 msgid "-- sorry, no translation provided --"
 msgstr ""
 
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "An action must be specified."
+msgstr ""
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "A token has been created."
+msgstr ""
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "Token not found."
+msgstr ""
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "The token has been deleted."
+msgstr ""
+
 #: pod/video/views.py
 msgid "You cannot edit this channel."
 msgstr ""
@@ -8288,6 +8343,11 @@ msgstr ""
 
 #: pod/video/views.py
 msgid "You cannot delete a video that is being encoded."
+msgstr ""
+
+#: pod/video/views.py
+#, python-format
+msgid "Manage access tokens for the video \"%(vtitle)s\""
 msgstr ""
 
 #: pod/video/views.py
