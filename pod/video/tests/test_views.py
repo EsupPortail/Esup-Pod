@@ -1754,9 +1754,7 @@ class VideoAccessTokenTestView(TestCase):
         self.assertEqual(VideoAccessToken.objects.all().count(), 0)
         # ###################################
         # post random action
-        response = self.client.post(url, {
-            "action": "toto"
-        })
+        response = self.client.post(url, {"action": "toto"})
         # 302 redirect to remove post action
         self.assertEqual(response.status_code, 302)
         msg = _("An action must be specified.")
@@ -1767,9 +1765,7 @@ class VideoAccessTokenTestView(TestCase):
         self.assertEqual(VideoAccessToken.objects.all().count(), 0)
         # ###################################
         # post add action
-        response = self.client.post(url, {
-            "action": "add"
-        })
+        response = self.client.post(url, {"action": "add"})
         # 302 redirect to remove post action
         self.assertEqual(response.status_code, 302)
         msg = _("A token has been created.")
@@ -1780,9 +1776,7 @@ class VideoAccessTokenTestView(TestCase):
         self.assertEqual(VideoAccessToken.objects.all().count(), 1)
         # ###################################
         # post empty delete action
-        response = self.client.post(url, {
-            "action": "delete"
-        })
+        response = self.client.post(url, {"action": "delete"})
         # 302 redirect to remove post action
         self.assertEqual(response.status_code, 302)
         msg = _("Token not found.")
@@ -1793,10 +1787,7 @@ class VideoAccessTokenTestView(TestCase):
         self.assertEqual(VideoAccessToken.objects.all().count(), 1)
         # ###################################
         # post invalid token delete action
-        response = self.client.post(url, {
-            "action": "delete",
-            "token": "1234"
-        })
+        response = self.client.post(url, {"action": "delete", "token": "1234"})
         # 302 redirect to remove post action
         self.assertEqual(response.status_code, 302)
         msg = _("Token not found.")
@@ -1807,10 +1798,7 @@ class VideoAccessTokenTestView(TestCase):
         self.assertEqual(VideoAccessToken.objects.all().count(), 1)
         # ###################################
         # post randmon token delete action
-        response = self.client.post(url, {
-            "action": "delete",
-            "token": uuid.uuid4()
-        })
+        response = self.client.post(url, {"action": "delete", "token": uuid.uuid4()})
         # 302 redirect to remove post action
         self.assertEqual(response.status_code, 302)
         msg = _("Token not found.")
@@ -1822,10 +1810,7 @@ class VideoAccessTokenTestView(TestCase):
         # ###################################
         # post good token delete action
         token = VideoAccessToken.objects.all().first().token
-        response = self.client.post(url, {
-            "action": "delete",
-            "token": token
-        })
+        response = self.client.post(url, {"action": "delete", "token": token})
         # 302 redirect to remove post action
         self.assertEqual(response.status_code, 302)
         msg = _("The token has been deleted.")

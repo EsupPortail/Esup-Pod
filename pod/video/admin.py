@@ -662,6 +662,7 @@ class ViewCountAdmin(admin.ModelAdmin):
 
 class CategoryAdmin(admin.ModelAdmin):
     """Admin for the Category model."""
+
     list_display = ("title", "owner", "videos_count")
     readonly_fields = ("slug",)
     # list_filter = ["owner"]
@@ -674,6 +675,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 class VideoAccessTokenAdmin(admin.ModelAdmin):
     """Admin for the VideoAccessToken model."""
+
     list_display = ("video", "token")
     readonly_fields = ("token",)
     autocomplete_fields = ["video"]
