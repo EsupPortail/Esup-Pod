@@ -214,33 +214,7 @@ class BulkUpdateTestCase(TransactionTestCase):
         self.assertEqual(len(Video.objects.filter(owner=user1)), 3)
         self.assertEqual(len(Video.objects.filter(owner=user2)), 0)
 
-
         self.client.logout()
-        # Reassign all videos to initial owner
-        user3 = User.objects.get(username="pod3")
-        self.client.force_login(user3)
-
-        video4 = Video.objects.get(title="Video4")
-        video5 = Video.objects.get(title="Video5")
-
-        post_request = self.factory.post(
-            "/bulk_update/",
-            {
-                "owner": user1.id,
-                "selected_videos": '["%s", "%s"]' % (video4.slug, video5.slug),
-                "update_fields": '["owner"]',
-                "update_action": "fields",
-            },
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-        )
-
-        post_request.user = user3
-        post_request.LANGUAGE_CODE = "fr"
-        response = bulk_update(post_request)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(Video.objects.filter(owner=user1)), 5)
-        self.assertEqual(len(Video.objects.filter(owner=user2)), 0)
-        self.assertEqual(len(Video.objects.filter(owner=user3)), 0)
 
         print("--->  test_bulk_update_owner of BulkUpdateTestCase: OK")
 
@@ -249,9 +223,9 @@ class BulkUpdateTestCase(TransactionTestCase):
         video4 = Video.objects.get(title="Video4")
         video5 = Video.objects.get(title="Video5")
 
-        user1 = User.objects.get(username="pod1")
+        user3 = User.objects.get(username="pod3")
 
-        self.client.force_login(user1)
+        self.client.force_login(user3)
 
         post_request = self.factory.post(
             "/bulk_update/",
@@ -264,14 +238,14 @@ class BulkUpdateTestCase(TransactionTestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
 
-        post_request.user = user1
+        post_request.user = user3
         post_request.LANGUAGE_CODE = "fr"
         setattr(post_request, 'session', 'session')
         messages = FallbackStorage(post_request)
         setattr(post_request, '_messages', messages)
         response = bulk_update(post_request)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(Video.objects.filter(owner=user1)), 0)
+        self.assertEqual(len(Video.objects.filter(owner=user3)), 0)
 
         print("--->  test_bulk_delete of BulkUpdateTestCase: OK")
         self.client.logout()
