@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 from pod.video.models import Video, Type
-from ..utils import index_es
+from ..utils import index_es, delete_es
 
 
 class VideoSearchTestUtils(TestCase):
@@ -25,8 +25,11 @@ class VideoSearchTestUtils(TestCase):
             type=Type.objects.get(id=1),
         )
 
-    def test_index_es(self):
-        """Test if index video working well."""
+    def test_index_and_delete_es(self):
         res = index_es(self.v)
-        print("\n - RES : %s" % res)
-        print("--> test_index_es ok ! ")
+        self.assertTrue(res['result'] in ['created', 'updated'])
+        self.assertEqual(res['_id'], str(self.v.id))
+        delete = delete_es(self.v)
+        self.assertEqual(delete['result'], 'deleted')
+        self.assertEqual(delete['_id'], str(self.v.id))
+        print("--> test_index_and_delete_es ok ! ")
