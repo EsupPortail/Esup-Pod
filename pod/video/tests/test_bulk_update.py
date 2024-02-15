@@ -2,6 +2,7 @@
 
 *  run with `python manage.py test pod.video.tests.test_bulk_update
 """
+
 import json
 from datetime import datetime
 

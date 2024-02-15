@@ -1,4 +1,5 @@
 """Esup-Pod live transcription."""
+
 from django.conf import settings
 from vosk import Model, KaldiRecognizer, SetLogLevel
 from webvtt import WebVTT, Caption
