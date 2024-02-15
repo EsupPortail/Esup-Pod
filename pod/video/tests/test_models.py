@@ -20,7 +20,7 @@ from ..models import ViewCount
 from ..models import get_storage_path_video
 from ..models import VIDEOS_DIR
 from ..models import Notes, AdvancedNotes
-from ..models import UserMarkerTime
+from ..models import UserMarkerTime, VideoAccessToken
 
 from pod.video_encode_transcript.models import VideoRendition
 from pod.video_encode_transcript.models import EncodingVideo
@@ -33,6 +33,7 @@ from datetime import datetime
 from datetime import timedelta
 
 import os
+import uuid
 
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
@@ -942,3 +943,73 @@ class UserMarkerTimeTestCase(TestCase):
         markerTime.delete()
         self.assertEqual(UserMarkerTime.objects.all().count(), 0)
         print(" ---> test_delete_UserMarkerTime: OK!")
+
+
+class VideoAccessTokenTestCase(TestCase):
+    """Test the VideoAccessToken model."""
+
+    fixtures = [
+        "initial_data.json",
+    ]
+
+    def setUp(self):
+        user = User.objects.create(username="pod", password="pod1234pod")
+        print("VIDEO : %s" % Video.objects.all().count())
+        self.video = Video.objects.create(
+            title="Video1",
+            owner=user,
+            video="test.mp4",
+            type=Type.objects.get(id=1),
+        )
+        print("SET UP VIDEO ID : %s" % self.video.id)
+        print(" --->  SetUp of VideoAccessTokenTestCase: OK!")
+
+    def test_create_VideoAccessToken_default(self):
+        """Test create default acces token for a video."""
+        accessToken = VideoAccessToken.objects.create(video=self.video)
+        self.assertTrue(isinstance(accessToken, VideoAccessToken))
+        self.assertTrue(isinstance(accessToken.token, uuid.UUID))
+        self.assertEqual(VideoAccessToken.objects.all().count(), 1)
+        self.assertNotEqual(accessToken.token, "")
+        print(" ---> test_create_VideoAccessToken_default: OK!")
+
+    def test_create_VideoAccessToken_with_attribut(self):
+        """Test create access token with uuid for a video."""
+        uuid_test = uuid.uuid4()
+        accessToken = VideoAccessToken(video=self.video, token=uuid_test)
+        accessToken.save()
+        self.assertTrue(isinstance(accessToken, VideoAccessToken))
+        self.assertEqual(VideoAccessToken.objects.all().count(), 1)
+        self.assertEqual(accessToken.video, self.video)
+        self.assertEqual(accessToken.token, uuid_test)
+        accessToken2 = VideoAccessToken(video=self.video, token="1234")
+        try:
+            with transaction.atomic():
+                accessToken2.save()
+            self.fail("Invalid token allowed.")
+        except ValidationError:
+            pass
+        self.assertEqual(VideoAccessToken.objects.all().count(), 1)
+        print(" ---> test_create_VideoAccessToken_with_attribut: OK!")
+
+    def test_create_VideoAccessToken_already_exist(self):
+        """Test unique access token for a video."""
+        uuid_test = uuid.uuid4()
+        VideoAccessToken.objects.create(video=self.video, token=uuid_test)
+        accessToken = VideoAccessToken(video=self.video, token=uuid_test)
+        try:
+            with transaction.atomic():
+                accessToken.save()
+            self.fail("Duplicate token allowed.")
+        except IntegrityError:
+            pass
+        self.assertEqual(VideoAccessToken.objects.all().count(), 1)
+        print(" ---> test_create_VideoAccessToken_already_exist: OK!")
+
+    def test_delete_VideoAccessToken(self):
+        """Test delete of access token for a video"""
+        accessToken = VideoAccessToken.objects.create(video=self.video)
+        self.assertEqual(VideoAccessToken.objects.all().count(), 1)
+        accessToken.delete()
+        self.assertEqual(VideoAccessToken.objects.all().count(), 0)
+        print(" ---> test_delete_VideoAccessToken: OK!")
