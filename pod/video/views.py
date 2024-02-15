@@ -1423,7 +1423,7 @@ def video_edit_access_tokens(request: WSGIRequest, slug: str = None):
     )
 
 
-def delete_token(request, video, token):
+def delete_token(request, video:Video, token:VideoAccessToken):
     """Remove token for the video if exist."""
     try:
         uuid.UUID(str(token))
