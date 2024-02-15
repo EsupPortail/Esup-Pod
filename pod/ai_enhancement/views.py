@@ -2,11 +2,15 @@ import json
 
 from django.conf import settings
 from django.core.handlers.wsgi import WSGIRequest
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.views.decorators.csrf import csrf_protect
 
+from pod.ai_enhancement.forms import AIEnrichmentChoice
 from pod.ai_enhancement.models import AIEnrichment
 from pod.ai_enhancement.utils import AristoteAI, enrichment_is_already_asked
+from pod.main.views import in_maintenance
 from pod.video.models import Discipline, Video
 
 AI_ENRICHMENT_CLIENT_ID = getattr(settings, "AI_ENRICHMENT_CLIENT_ID", "mocked_id")
@@ -28,6 +32,7 @@ def receive_webhook(request: WSGIRequest):
     return HttpResponse(json.dumps(data_to_serialize), content_type="application/json")
 
 
+@csrf_protect
 def send_enrichment_creation_request(request: WSGIRequest, aristote: AristoteAI, video: Video) -> HttpResponse:
     """Send a request to create an enrichment."""
     creation_response = aristote.create_enrichment_from_url(
@@ -51,17 +56,43 @@ def send_enrichment_creation_request(request: WSGIRequest, aristote: AristoteAI,
     return redirect("video:video", slug=video.slug)
 
 
+@csrf_protect
 def enrich_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
     """The view to enrich a video."""
+    if in_maintenance():
+        return redirect(reverse("maintenance"))
     video = get_object_or_404(Video, slug=video_slug)
     aristote = AristoteAI(AI_ENRICHMENT_CLIENT_ID, AI_ENRICHMENT_CLIENT_SECRET)
     if enrichment_is_already_asked(video):
         enrichment = AIEnrichment.objects.filter(video=video).first()
         latest_version = aristote.get_latest_enrichment_version(enrichment.ai_enrichment_id_in_aristote)
-        print("latest_version: ", latest_version)
         if latest_version.get("status") != "KO":
-            return HttpResponse(json.dumps(latest_version), content_type="application/json")
+            enrichment.is_ready = True
+            enrichment.save()
+            return enrich_form(request, video)
         else:
             return HttpResponse("Enrichment already asked. Wait please.", status=200)   # TODO: change this line
     else:
         return send_enrichment_creation_request(request, aristote, video)
+
+
+def enrich_video_json(request: WSGIRequest, video_slug: str) -> HttpResponse:
+    """The view to get the JSON of Aristote version."""
+    video = get_object_or_404(Video, slug=video_slug)
+    aristote = AristoteAI(AI_ENRICHMENT_CLIENT_ID, AI_ENRICHMENT_CLIENT_SECRET)
+    enrichment = AIEnrichment.objects.filter(video=video).first()
+    latest_version = aristote.get_latest_enrichment_version(enrichment.ai_enrichment_id_in_aristote)
+    return JsonResponse(latest_version)
+
+
+@csrf_protect
+def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
+    """The view to choose the title of a video with the AI enrichment."""
+    form = AIEnrichmentChoice(
+        instance=video,
+    )
+    return render(
+        request,
+        "choose_video_element/choose_video_title.html",
+        {"video": video, "form": form, "page_title": "Enrich with Aristote AI"},
+    )
