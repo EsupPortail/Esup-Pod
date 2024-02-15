@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-15 12:40+0100\n"
+"POT-Creation-Date: 2024-02-15 17:20+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -5996,32 +5996,6 @@ msgstr ""
 #: pod/meeting/views.py
 msgid "Impossible to create the internal recording"
 msgstr "Impossible de créer l’enregistrement"
-
-#: pod/meeting/webinar_utils.py
-msgid "Too many webinars"
-msgstr ""
-
-#: pod/meeting/webinar_utils.py
-#, python-format
-msgid ""
-"There are too many webinars (%s) for the number of ingesters allocated (%s). "
-"The next meeting has been created but not like a webinar:%s %s [%s-%s].\n"
-"Please fix the problem either by increasing the number of ingesters or by "
-"modifying/deleting one of the affected webinars (with the users' "
-"agreement).\n"
-"Other webinars : %s"
-msgstr ""
-
-#: pod/meeting/webinar_utils.py
-#, python-format
-msgid ""
-"<p>There are too many webinars (<b>%s</b>) for the number of ingesters "
-"allocated (<b>%s</b>). The next webinar has been created but <b>not like a "
-"webinar</b>:<ul><li><b>%s %s</b> [%s-%s].</li></ul><p>Please fix the problem "
-"either by increasing the number of ingesters or by modifying/deleting one of "
-"the affected webinars (with the users' agreement).<br>Other webinars : <b>"
-"%s</b>"
-msgstr ""
 
 #: pod/playlist/apps.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/add_or_edit.html

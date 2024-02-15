@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-15 12:40+0100\n"
+"POT-Creation-Date: 2024-02-15 17:20+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -5655,32 +5655,6 @@ msgstr ""
 msgid "Impossible to create the internal recording"
 msgstr ""
 
-#: pod/meeting/webinar_utils.py
-msgid "Too many webinars"
-msgstr ""
-
-#: pod/meeting/webinar_utils.py
-#, python-format
-msgid ""
-"There are too many webinars (%s) for the number of ingesters allocated (%s). "
-"The next meeting has been created but not like a webinar:%s %s [%s-%s].\n"
-"Please fix the problem either by increasing the number of ingesters or by "
-"modifying/deleting one of the affected webinars (with the users' "
-"agreement).\n"
-"Other webinars : %s"
-msgstr ""
-
-#: pod/meeting/webinar_utils.py
-#, python-format
-msgid ""
-"<p>There are too many webinars (<b>%s</b>) for the number of ingesters "
-"allocated (<b>%s</b>). The next webinar has been created but <b>not like a "
-"webinar</b>:<ul><li><b>%s %s</b> [%s-%s].</li></ul><p>Please fix the problem "
-"either by increasing the number of ingesters or by modifying/deleting one of "
-"the affected webinars (with the users' agreement).<br>Other webinars : <b>"
-"%s</b>"
-msgstr ""
-
 #: pod/playlist/apps.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/playlist/templates/playlist/delete.html
@@ -7657,10 +7631,8 @@ msgid "Choose an action"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
-#, fuzzy
-#| msgid "Title field"
 msgid "Edit a field"
-msgstr "Titel veld"
+msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Cursus"
@@ -8660,8 +8632,3 @@ msgstr ""
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr ""
-
-#, fuzzy
-#~| msgid "Email sent?"
-#~ msgid "Email addresse"
-#~ msgstr "Email verzonden?"
