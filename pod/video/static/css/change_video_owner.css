@@ -8,8 +8,6 @@
   align-items: center;
 }
 
-
-
 .full-width {
   width: 100% !important;
   flex-grow: 1 !important;
@@ -110,8 +108,8 @@
   opacity: 1;
 }
 
-.choosed>.card-body {
-  opacity:.66;
+.choosed > .card-body {
+  opacity: 0.66;
 }
 
 .form-wrapper__control.select-videos .card.manage_video img {
