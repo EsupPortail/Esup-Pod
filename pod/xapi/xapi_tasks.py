@@ -1,4 +1,4 @@
-# xapi/tasks.py
+"""Esup-pod xapi tasks."""
 from celery import Celery
 import requests
 import logging
@@ -24,7 +24,7 @@ xapi_app.conf.task_routes = {"pod.xapi.xapi_tasks.*": {"queue": "xapi"}}
 
 @xapi_app.task
 def send_xapi_statement_task(statement):
-    """Sends the xapi statement to the specified LRS."""
+    """Send the xapi statement to the specified LRS."""
     x = requests.post(
         XAPI_LRS_URL, json=statement, auth=HTTPBasicAuth(XAPI_LRS_LOGIN, XAPI_LRS_PWD)
     )

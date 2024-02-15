@@ -1,3 +1,9 @@
+/**
+ * @file Esup-Pod functions to change owner of multiple videos.
+ * @since 2.8.2
+*/
+
+
 (function () {
   const base = window.location.origin;
   const update_videos_url = `${base}/video/updateowner/put/`;
@@ -73,7 +79,7 @@
     constructor(message, alert_class = "success") {
       super();
       let html = document.createElement("DIV");
-      html.setAttribute("class", "alert " + `alert-${alert_class}`);
+      html.setAttribute("class", "m-2 alert " + `alert-${alert_class}`);
       let content = document.createElement("DIV");
       content.setAttribute("class", "alert_message");
       content.innerText = message || alert_class;
@@ -355,7 +361,7 @@
         const url = `${get_videos_url}${current_username_id}?limit=${limit}&offset=${offset}`;
         getVideos(url, (data) => {
           DATA = data;
-          if (!!!data.results.length) {
+          if (!data.results.length) {
             addNotFound(videos_container);
             return;
           }
@@ -434,19 +440,19 @@
       });
 
       const body = document.createElement("DIV");
-      body.setAttribute("class", "body");
+      body.setAttribute("class", "card-body");
 
       const footer = document.createElement("DIV");
-      footer.setAttribute("class", "footer");
+      footer.setAttribute("class", "card-footer");
 
       const title = document.createElement("SPAN");
       title.setAttribute("class", "video-title");
       title.setAttribute("title", video.title);
       title.innerText = video.title;
 
-      img = document.createElement("img");
+      const img = document.createElement("img");
       img.setAttribute("src", video.thumbnail);
-      img.setAttribute("alt", video.title);
+      img.setAttribute("alt", "");
       body.appendChild(img);
       footer.appendChild(title);
       card.appendChild(body);
@@ -483,7 +489,7 @@
       listenerCallback(search, id, input, search_text, url);
       input.nextElementSibling.appendChild(search);
     }
-    p = document.createElement("P");
+    const p = document.createElement("P");
     p.setAttribute("class", cls);
     p.innerText = `${text}`;
     listenerCallback(p, id, input, null, url);
@@ -499,7 +505,7 @@
     if (username.length >= 3) {
       getUsers(username).then((users) => {
         clearSuggestions(input.nextElementSibling);
-        if (!!!users.length) addNotFound(input.nextElementSibling, true);
+        if (!users.length) addNotFound(input.nextElementSibling, true);
         users.forEach((user) => {
           addSuggestionElement(
             `${user.first_name} ${user.last_name}`,
@@ -533,7 +539,7 @@
         url,
         (data) => {
           DATA = { ...data };
-          if (!!!data.results.length) {
+          if (!data.results.length) {
             addNotFound(list_videos__search.nextElementSibling, true);
           } else {
             // Remove loader
