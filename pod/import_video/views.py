@@ -1,4 +1,4 @@
-"""Views of the Import_video module.
+"""Esup-Pod import_video views.
 More information on this module at: https://www.esup-portail.org/wiki/x/BQCnSw
 """
 import logging
@@ -18,10 +18,12 @@ from .utils import manage_recording_url, check_source_url, parse_remote_file
 from .utils import save_video, secure_request_for_upload
 from .utils import check_video_size, verify_video_exists_and_size
 from .utils import define_dest_file_and_path, check_file_exists, move_file
+from .utils import TypeSourceURL
 from datetime import datetime
 from django.conf import settings
-from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -103,7 +105,7 @@ IMPORT_VIDEO_BBB_RECORDER_PATH = getattr(
 log = logging.getLogger(__name__)
 
 
-def secure_external_recording(request, recording):
+def secure_external_recording(request, recording: ExternalRecording):
     """Secure an external recording.
 
     Args:
@@ -127,7 +129,7 @@ def secure_external_recording(request, recording):
         raise PermissionDenied
 
 
-def get_can_delete_external_recording(request, owner):
+def get_can_delete_external_recording(request, owner: User):
     """Return True if current user can delete this recording."""
     can_delete = False
 
@@ -144,7 +146,7 @@ def get_can_delete_external_recording(request, owner):
 @csrf_protect
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
-def upload_external_recording_to_pod(request, record_id):
+def upload_external_recording_to_pod(request, record_id: int):
     """Upload external recording to Pod.
 
     Args:
@@ -316,7 +318,7 @@ def add_or_edit_external_recording(request, id=None):
 @csrf_protect
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
-def delete_external_recording(request, id):
+def delete_external_recording(request, id: int):
     """Delete an external recording.
 
     Args:
@@ -385,7 +387,7 @@ def save_recording_form(request, form):
 
 
 # ##############################    Upload recordings to Pod
-def save_external_recording(user, record_id):
+def save_external_recording(user, record_id: int):
     """Save an external recording in database.
 
     Args:
@@ -408,7 +410,7 @@ def save_external_recording(user, record_id):
         raise ValueError(msg)
 
 
-def upload_recording_to_pod(request, record_id):
+def upload_recording_to_pod(request, record_id: int) -> bool:
     """Upload recording to Pod (main function).
 
     Args:
@@ -453,7 +455,7 @@ def upload_recording_to_pod(request, record_id):
         raise ValueError(msg)
 
 
-def upload_video_recording_to_pod(request, record_id):  # noqa: C901
+def upload_video_recording_to_pod(request, record_id: int):  # noqa: C901
     """Upload a standard or BBB video file, or a BBB presentation to Pod."""
     try:
         # Try to identify the type of the source URL (avoids multiple source types)
@@ -494,7 +496,7 @@ def upload_video_recording_to_pod(request, record_id):  # noqa: C901
         raise ValueError(msg)
 
 
-def upload_standard_video_recording_to_pod(record_id):
+def upload_standard_video_recording_to_pod(record_id: int) -> bool:
     """Upload a standard video file (or BBB video file) recording to Pod.
     Used with an URL.
 
@@ -562,7 +564,7 @@ def upload_standard_video_recording_to_pod(record_id):
         manage_standard_exception(exc)
 
 
-def upload_local_video_recording_to_pod(record_id, dest_file, dest_path):
+def upload_local_video_recording_to_pod(record_id: id, dest_file: str, dest_path: str):
     """Upload a local (typically in Pod filesystem) video file recording to Pod.
     Useful for video files that have been encoded following
     the recording of a BBB presentation.
@@ -599,7 +601,11 @@ def upload_local_video_recording_to_pod(record_id, dest_file, dest_path):
         manage_standard_exception(exc)
 
 
-def upload_mediacad_recording_to_pod(request, record_id, type_source_url):
+def upload_mediacad_recording_to_pod(
+    request,
+    record_id: int,
+    type_source_url: TypeSourceURL
+):
     """Upload a Mediacad video file recording to Pod.
 
     Args:
@@ -651,7 +657,7 @@ def upload_mediacad_recording_to_pod(request, record_id, type_source_url):
         manage_standard_exception(exc)
 
 
-def get_mediacad_api_description(type_source_url):
+def get_mediacad_api_description(type_source_url: TypeSourceURL) -> str:
     """Returns description of a Mediacad video, after a call to Mediacad JSON API.
 
     Args:
@@ -685,7 +691,7 @@ def get_mediacad_api_description(type_source_url):
     return description
 
 
-def upload_youtube_recording_to_pod(request, record_id):
+def upload_youtube_recording_to_pod(request, record_id: int):
     """Upload Youtube recording to Pod.
 
     Use PyTube with its API
@@ -777,7 +783,7 @@ def upload_youtube_recording_to_pod(request, record_id):
         manage_standard_exception(exc)
 
 
-def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
+def upload_peertube_recording_to_pod(request, record_id: int) -> bool:  # noqa: C901
     """Upload Peertube recording to Pod.
 
     More information: https://docs.joinpeertube.org/api/rest-getting-started
@@ -892,7 +898,11 @@ def upload_peertube_recording_to_pod(request, record_id):  # noqa: C901
         manage_standard_exception(exc)
 
 
-def start_bbb_encode_presentation_and_upload_to_pod(record_id, url, extension):
+def start_bbb_encode_presentation_and_upload_to_pod(
+    record_id: int,
+    url: str,
+    extension: str
+):
     """Send an asynchronous task or a thread to encode a BBB presentation
     into a video file and upload it to Pod.
 
@@ -918,7 +928,11 @@ def start_bbb_encode_presentation_and_upload_to_pod(record_id, url, extension):
         t.start()
 
 
-def start_bbb_encode_presentation_and_move_to_destination(filename, url, dest_file):
+def start_bbb_encode_presentation_and_move_to_destination(
+    filename: str,
+    url: str,
+    dest_file: str
+):
     """Send an asynchronous task to encode or encode direclty a BBB presentation
     into a video file and move it to a specific directory.
 
@@ -938,7 +952,7 @@ def start_bbb_encode_presentation_and_move_to_destination(filename, url, dest_fi
         bbb_encode_presentation_and_move_to_destination(filename, url, dest_file)
 
 
-def bbb_encode_presentation(filename, url):
+def bbb_encode_presentation(filename: str, url: str) -> str:
     """Encode a BBB presentation into a video file.
 
     Use bbb-recorder github project to do this.
@@ -992,7 +1006,11 @@ def bbb_encode_presentation(filename, url):
     return source_generated_file
 
 
-def bbb_encode_presentation_and_move_to_destination(filename, url, dest_file):
+def bbb_encode_presentation_and_move_to_destination(
+    filename: str,
+    url: str,
+    dest_file: str
+):
     """Encode a BBB presentation into a video file and put it on a specific directory.
 
     Use bbb-recorder github project to do this.
@@ -1014,7 +1032,7 @@ def bbb_encode_presentation_and_move_to_destination(filename, url, dest_file):
         log.error("- Video file not generated: %s" % source_generated_file)
 
 
-def bbb_encode_presentation_and_upload_to_pod(record_id, url, extension):
+def bbb_encode_presentation_and_upload_to_pod(record_id: int, url: str, extension: str):
     """Encode a BBB presentation into a video file and upload it to Pod.
 
     Use bbb-recorder github project to do this.
@@ -1063,7 +1081,7 @@ def bbb_encode_presentation_and_upload_to_pod(record_id, url, extension):
         recording.save()
 
 
-def manage_standard_exception(exc):
+def manage_standard_exception(exc: Exception):
     """Manage standard exception to raise a specific error."""
     msg = {}
     msg["error"] = _("Impossible to upload to Pod the video")
