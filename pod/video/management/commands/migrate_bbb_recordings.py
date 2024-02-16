@@ -85,6 +85,7 @@ Documentation for this system is available on the Esup-Pod Wiki:
 https://www.esup-portail.org/wiki/x/C4CFUQ
 
 """
+
 import hashlib
 import json
 import os
@@ -120,9 +121,9 @@ from psycopg2 import sql
 # # Script config (TO EDIT) # #
 # Old BigBlueButton config #
 # Old BigBlueButton/Scalelite server URL
-SCRIPT_BBB_SERVER_URL = 'https://bbb.univ.fr/'
+SCRIPT_BBB_SERVER_URL = "https://bbb.univ.fr/"
 # BigBlueButton key or Scalelite LOADBALANCER_SECRET
-SCRIPT_BBB_SECRET_KEY = ''
+SCRIPT_BBB_SECRET_KEY = ""
 # BBB or Scalelite version is greater than 2.3
 # Useful for presentation playback in 2.0 (for BBB <= 2.2) or 2.3 (for BBB >= 2.3) format
 # Set to True by default
@@ -143,12 +144,12 @@ SCRIPT_ADMIN_ID = 1
 # use-database-moodle #
 # Moodle database connection parameters
 DB_PARAMS = {
-    'host': 'bddmoodle.univ.fr',
-    'database': 'moodle',
-    'user': 'moodle',
-    'password': '',
-    'port': '',
-    'connect_timeout': '10'
+    "host": "bddmoodle.univ.fr",
+    "database": "moodle",
+    "user": "moodle",
+    "password": "",
+    "port": "",
+    "connect_timeout": "10",
 }
 # Information message set in Moodle database, table mdl_bigbluebuttonbn, field intro
 SCRIPT_INFORM = (
@@ -223,7 +224,7 @@ def process(options):
     print("***Total number of records: %s***" % len(recordings))
 
     number_record_processed = (
-        options['max_value_record_process'] - options['min_value_record_process'] + 1
+        options["max_value_record_process"] - options["min_value_record_process"] + 1
     )
     print("***Number of records to be processed: %s***" % number_record_processed)
 
@@ -233,31 +234,27 @@ def process(options):
         i += 1
         # Only recordings within the interval are taken into account.
         if (
-            i >= options['min_value_record_process']
-            and i <= options['max_value_record_process']
+            i >= options["min_value_record_process"]
+            and i <= options["max_value_record_process"]
         ):
             # Get the recording
             generic_recording = get_recording(recording)
-            if options['use_manual_claim']:
+            if options["use_manual_claim"]:
                 # #1 Use Manual claim
                 print(
                     "------------------------------\n"
-                    "Use manual claim for recording #%s %s" % (
-                        str(i),
-                        generic_recording.internal_meeting_id
-                    )
+                    "Use manual claim for recording #%s %s"
+                    % (str(i), generic_recording.internal_meeting_id)
                 )
                 # The claim requires the encoding of records in presentation.
                 process_recording_to_claim(options, generic_recording)
                 print("------------------------------")
-            elif options['use_import_video']:
+            elif options["use_import_video"]:
                 # #2 Use import video
                 print(
                     "------------------------------\n"
-                    "Use import video for recording #%s %s" % (
-                        str(i),
-                        generic_recording.internal_meeting_id
-                    )
+                    "Use import video for recording #%s %s"
+                    % (str(i), generic_recording.internal_meeting_id)
                 )
                 process_recording_to_import_video(options, generic_recording)
                 print("------------------------------")
@@ -281,9 +278,7 @@ def get_bbb_recordings_by_xml():
         urlToRequest = SCRIPT_BBB_SERVER_URL
         urlToRequest += "bigbluebutton/api/getRecordings?checksum=" + checksum
         addr = requests.get(urlToRequest)
-        print(
-            "Request on URL: " + urlToRequest + ", status: " + str(addr.status_code)
-        )
+        print("Request on URL: " + urlToRequest + ", status: " + str(addr.status_code))
         # XML result to parse
         xmldoc = minidom.parseString(addr.text)
         returncode = xmldoc.getElementsByTagName("returncode")[0].firstChild.data
@@ -312,21 +307,13 @@ def get_recording(recording):  # noqa: C901
             0
         ].firstChild.data
 
-        meeting_id = recording.getElementsByTagName("meetingID")[
-            0
-        ].firstChild.data
-        meeting_name = recording.getElementsByTagName("name")[
-            0
-        ].firstChild.data
-        start_time = recording.getElementsByTagName("startTime")[
-            0
-        ].firstChild.data
+        meeting_id = recording.getElementsByTagName("meetingID")[0].firstChild.data
+        meeting_name = recording.getElementsByTagName("name")[0].firstChild.data
+        start_time = recording.getElementsByTagName("startTime")[0].firstChild.data
         # Origin can be empty (Pod or other clients), Greenlight, Moodle...
         origin = ""
         if recording.getElementsByTagName("bbb-origin"):
-            origin = recording.getElementsByTagName("bbb-origin")[
-                0
-            ].firstChild.data
+            origin = recording.getElementsByTagName("bbb-origin")[0].firstChild.data
 
         # Get recording URL that corresponds to the presentation URL
         # Take only the "presentation" or "video" format
@@ -346,8 +333,7 @@ def get_recording(recording):  # noqa: C901
                     ].firstChild.data
                     # Convert format 2.0 to 2.3 if necessary
                     presentation_url = convert_format(
-                        presentation_url,
-                        internal_meeting_id
+                        presentation_url, internal_meeting_id
                     )
                 if type == "video":
                     # Recording URL is the BBB video URL
@@ -361,7 +347,7 @@ def get_recording(recording):  # noqa: C901
             start_time,
             origin,
             presentation_url,
-            video_url
+            video_url,
         )
     except Exception as e:
         err = "Problem to get BBB recording: " + str(e) + ". " + traceback.format_exc()
@@ -384,12 +370,7 @@ def download_bbb_video_file(source_url, dest_file):
     source_video_url = manage_recording_url(source_url, video_file_add)
     if check_url_exists(source_video_url):
         # Download the video file
-        source_video_url = manage_download(
-            session,
-            source_url,
-            video_file_add,
-            dest_file
-        )
+        source_video_url = manage_download(session, source_url, video_file_add, dest_file)
     else:
         print("Unable to download %s : video file doesn't exist." % source_url)
 
@@ -408,9 +389,7 @@ def process_recording_to_claim(options, generic_recording):
         # Video playback
         source_url = generic_recording.video_url
         file_name = get_video_file_name(
-            generic_recording.meeting_name,
-            generic_recording.start_date,
-            "m4v"
+            generic_recording.meeting_name, generic_recording.start_date, "m4v"
         )
         # Video file in the recorder directory
         dest_file = os.path.join(
@@ -420,14 +399,10 @@ def process_recording_to_claim(options, generic_recording):
         )
         print(
             " - Recording %s, video playback %s: "
-            "download video file into %s." %
-            (
-                generic_recording.internal_meeting_id,
-                source_url,
-                dest_file
-            )
+            "download video file into %s."
+            % (generic_recording.internal_meeting_id, source_url, dest_file)
         )
-        if not options['dry']:
+        if not options["dry"]:
             # Download the video file
             download_bbb_video_file(source_url, dest_file)
     else:
@@ -437,9 +412,7 @@ def process_recording_to_claim(options, generic_recording):
 
         source_url = generic_recording.presentation_url
         file_name = get_video_file_name(
-            generic_recording.meeting_name,
-            generic_recording.start_date,
-            "webm"
+            generic_recording.meeting_name, generic_recording.start_date, "webm"
         )
         # Video file generated in the recorder directory
         dest_file = os.path.join(
@@ -449,20 +422,14 @@ def process_recording_to_claim(options, generic_recording):
         )
         print(
             " - Recording %s - presentation playback %s: "
-            "encode presentation into %s" %
-            (
-                generic_recording.internal_meeting_id,
-                source_url,
-                dest_file
-            )
+            "encode presentation into %s"
+            % (generic_recording.internal_meeting_id, source_url, dest_file)
         )
-        if not options['dry']:
+        if not options["dry"]:
             # Send asynchronous/synchronous encode task (depends on CELERY_TO_ENCODE)
             # to convert presentation in video and move it into the recorder directory
             start_bbb_encode_presentation_and_move_to_destination(
-                file_name,
-                source_url,
-                dest_file
+                file_name, source_url, dest_file
             )
 
 
@@ -511,9 +478,7 @@ def get_created_in_pod(generic_recording):
 
     In such a case, we know the meeting (owner information)."""
     # Check if the recording was made by Pod client
-    meeting = Meeting.objects.filter(
-        meeting_id=generic_recording.meeting_id
-    ).first()
+    meeting = Meeting.objects.filter(meeting_id=generic_recording.meeting_id).first()
     return meeting
 
 
@@ -529,7 +494,7 @@ def get_or_create_user_pod(options, generic_owner):
         # Create user in Pod database
         # Owner are necessary staff;
         # if not, this will be changed at the user 1st connection.
-        if not options['dry']:
+        if not options["dry"]:
             # Create
             user = User.objects.create(
                 username=generic_owner.username,
@@ -537,7 +502,7 @@ def get_or_create_user_pod(options, generic_owner):
                 last_name=generic_owner.lastname,
                 email=generic_owner.email,
                 is_staff=True,
-                is_active=True
+                is_active=True,
             )
             return user
         else:
@@ -548,15 +513,15 @@ def manage_external_recording(options, generic_recording, site, owner, msg):
     """Print and create an external recording for a BBB recording, if necessary."""
     print(
         " - Recording %s, playback %s, owner %s: "
-        "create an external recording if necessary. %s" %
-        (
+        "create an external recording if necessary. %s"
+        % (
             generic_recording.internal_meeting_id,
             generic_recording.source_url,
             owner,
-            msg
+            msg,
         )
     )
-    if not options['dry']:
+    if not options["dry"]:
         # Create the external recording for the owner
         create_external_recording(generic_recording, site, owner)
 
@@ -565,8 +530,7 @@ def create_external_recording(generic_recording, site, owner):
     """Create an external recording for a BBB recording, if necessary."""
     # Check if external recording already exists for this owner
     external_recording = ExternalRecording.objects.filter(
-        source_url=generic_recording.source_url,
-        owner=owner
+        source_url=generic_recording.source_url, owner=owner
     ).first()
     if not external_recording:
         # We need to create a new external recording
@@ -576,7 +540,7 @@ def create_external_recording(generic_recording, site, owner):
             type="bigbluebutton",
             source_url=generic_recording.source_url,
             site=site,
-            owner=owner
+            owner=owner,
         )
 
 
@@ -597,7 +561,7 @@ def get_created_in_moodle(generic_recording):  # noqa: C901
                 "WHERE r.bigbluebuttonbnid = b.id "
                 "AND r.recordingid = '%s' "
                 "AND r.status = 2" % (generic_recording.internal_meeting_id)
-            ).format(sql.Identifier('type'))
+            ).format(sql.Identifier("type"))
             c.execute(select_query)
             results = c.fetchall()
             for res in results:
@@ -618,10 +582,10 @@ def get_created_in_moodle(generic_recording):  # noqa: C901
                             user_id_moodle = item["selectionid"]
                             user_moodle = get_moodle_user(user_id_moodle)
                             if user_moodle:
-                                print(" - Moderator found in Moodle: %s %s" % (
-                                    user_moodle.username,
-                                    user_moodle.email
-                                ))
+                                print(
+                                    " - Moderator found in Moodle: %s %s"
+                                    % (user_moodle.username, user_moodle.email)
+                                )
                                 owners_found.append(user_moodle)
 
     except Exception as e:
@@ -650,7 +614,7 @@ def set_information_in_moodle(options, generic_recording):
                 "WHERE r.bigbluebuttonbnid = b.id "
                 "AND r.recordingid = '%s' "
                 "AND r.status = 2" % (generic_recording.internal_meeting_id)
-            ).format(sql.Identifier('type'))
+            ).format(sql.Identifier("type"))
             c.execute(select_query)
             results = c.fetchall()
             for res in results:
@@ -659,11 +623,11 @@ def set_information_in_moodle(options, generic_recording):
                 # course_id = res["course"]
                 print(" - Set information in Moodle.")
                 # If SCRIPT_INFORM wasn't already added
-                if not options['dry'] and intro.find("Pod") == -1:
+                if not options["dry"] and intro.find("Pod") == -1:
                     # Update
                     update_query = sql.SQL(
                         "UPDATE public.mdl_bigbluebuttonbn SET {} = %s WHERE id = %s"
-                    ).format(sql.Identifier('intro'))
+                    ).format(sql.Identifier("intro"))
                     # New value for the intro column
                     new_intro = "%s<br>%s" % (intro, SCRIPT_INFORM)
                     # Execute the UPDATE query
@@ -691,7 +655,7 @@ def get_moodle_user(user_id):
         select_query = sql.SQL(
             "SELECT id, username, firstname, lastname, email FROM public.mdl_user "
             "WHERE id = '%s' " % (user_id)
-        ).format(sql.Identifier('type'))
+        ).format(sql.Identifier("type"))
         c.execute(select_query)
         dict_user = c.fetchone()
         generic_user = Generic_user(
@@ -699,7 +663,7 @@ def get_moodle_user(user_id):
             dict_user["username"],
             dict_user["firstname"],
             dict_user["lastname"],
-            dict_user["email"]
+            dict_user["email"],
         )
 
     return generic_user
@@ -725,7 +689,7 @@ def convert_format(source_url, internal_meeting_id):
 def check_system(options):  # noqa: C901
     """Check the system (configuration, recorder, access rights). Blocking function."""
     error = False
-    if options['use_manual_claim']:
+    if options["use_manual_claim"]:
         # A recorder is mandatory in the event of a claim
         recorder = Recorder.objects.filter(id=SCRIPT_RECORDER_ID).first()
         if not recorder:
@@ -743,7 +707,7 @@ def check_system(options):  # noqa: C901
                     "ERROR : Directory %s doesn't exist. "
                     "Please configure one." % claim_path
                 )
-    if options['use_import_video']:
+    if options["use_import_video"]:
         # Administrator to whom recordings will be added,
         # whose moderators have not been identified
         administrator = User.objects.filter(id=SCRIPT_ADMIN_ID).first()
@@ -753,7 +717,7 @@ def check_system(options):  # noqa: C901
                 "ERROR : No administrator found with id %s. "
                 "Please create one." % SCRIPT_ADMIN_ID
             )
-    if options['use_database_moodle']:
+    if options["use_database_moodle"]:
         # Check connection to Moodle database
         connection, cursor = connect_moodle_database()
         if not cursor:
@@ -771,6 +735,7 @@ def check_system(options):  # noqa: C901
 
 class Generic_user:
     """Class for a generic user."""
+
     def __init__(self, user_id, username, firstname, lastname, email):
         """Initialize."""
         self.id = user_id
@@ -789,15 +754,16 @@ class Generic_user:
 
 class Generic_recording:
     """Class for a generic recording."""
+
     def __init__(
-            self,
-            internal_meeting_id,
-            meeting_id,
-            meeting_name,
-            start_time,
-            origin,
-            presentation_url,
-            video_url
+        self,
+        internal_meeting_id,
+        meeting_id,
+        meeting_name,
+        start_time,
+        origin,
+        presentation_url,
+        video_url,
     ):
         """Initialize."""
         self.internal_meeting_id = internal_meeting_id
@@ -827,13 +793,13 @@ class Command(BaseCommand):
             "--use-manual-claim",
             action="store_true",
             default=False,
-            help="Use manual claim (default=False)?"
+            help="Use manual claim (default=False)?",
         )
         parser.add_argument(
             "--use-import-video",
             action="store_true",
             default=False,
-            help="Use import video module to get recordings (default=False)?"
+            help="Use import video module to get recordings (default=False)?",
         )
         parser.add_argument(
             "--use-database-moodle",
@@ -842,19 +808,19 @@ class Command(BaseCommand):
             help=(
                 "Use Moodle database to search for moderators (default=False)? "
                 "Only useful when --use-import-video was set to True."
-            )
+            ),
         )
         parser.add_argument(
             "--min-value-record-process",
             type=int,
             default=1,
-            help="Minimum value of records to process (default=1)."
+            help="Minimum value of records to process (default=1).",
         )
         parser.add_argument(
             "--max-value-record-process",
             type=int,
             default=10000,
-            help="Maximum value of records to process (default=10000)."
+            help="Maximum value of records to process (default=10000).",
         )
         parser.add_argument(
             "--dry",

@@ -184,10 +184,7 @@ def manage_recording_url(source_url: str, video_file_add: str) -> str:
 
 
 def manage_download(
-    session: Session,
-    source_url: str,
-    video_file_add: str,
-    dest_file: str
+    session: Session, source_url: str, video_file_add: str, dest_file: str
 ) -> str:
     """Manage the download of a BBB video file.
 
@@ -258,11 +255,7 @@ def download_video_file(session: Session, source_video_url: str, dest_file: str)
 
 
 def save_video(
-    user: User,
-    dest_path: str,
-    recording_name: str,
-    description: str,
-    date_evt=None
+    user: User, dest_path: str, recording_name: str, description: str, date_evt=None
 ):
     """Save and encode the Pod video file.
 
@@ -463,9 +456,7 @@ def check_source_url(source_url: str):  # noqa: C901
             )
         if platform == "BBB_Presentation":
             # Platform type: older BBB, format presentation
-            platform_type = TypeSourceURL(
-                platform, source_video_url, format, ""
-            )
+            platform_type = TypeSourceURL(platform, source_video_url, format, "")
 
         return platform_type
     except Exception as exc:

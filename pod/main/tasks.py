@@ -69,10 +69,7 @@ def task_end_live_transcription(self, slug):
 
 @app.task(bind=True)
 def task_start_bbb_presentation_encode_and_upload_to_pod(
-    self,
-    record_id: int,
-    url: str,
-    extension: str
+    self, record_id: int, url: str, extension: str
 ):
     """Start BBB presentation encoding with Celery, then upload to Pod."""
     print("CELERY START BBB ENCODE PRESENTATION/UPLOAD RECORD ID %s" % record_id)
@@ -83,10 +80,7 @@ def task_start_bbb_presentation_encode_and_upload_to_pod(
 
 @app.task(bind=True)
 def task_start_bbb_presentation_encode_and_move_to_destination(
-    self,
-    filename: str,
-    url: str,
-    dest_file: str
+    self, filename: str, url: str, dest_file: str
 ):
     """Start BBB presentation encoding with Celery, then move the video file."""
     print("CELERY START BBB ENCODE PRESENTATION/MOVE %s" % filename)

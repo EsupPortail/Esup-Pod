@@ -78,7 +78,10 @@ class ExternalRecordingForm(forms.ModelForm):
         self.fields = add_placeholder_and_asterisk(self.fields)
 
         # We don't change the user who uploaded the record neither the state
-        hidden_fields = ("uploaded_to_pod_by", "state",)
+        hidden_fields = (
+            "uploaded_to_pod_by",
+            "state",
+        )
         for field in hidden_fields:
             if self.fields.get(field, None):
                 self.fields[field].widget = forms.HiddenInput()
