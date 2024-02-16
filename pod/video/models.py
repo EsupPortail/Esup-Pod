@@ -1398,7 +1398,7 @@ class Video(models.Model):
                     self.type.title,
                     ", ".join(
                         self.discipline.all()
-                        .filter(sites=current_site)
+                        .filter(site=current_site)
                         .values_list("title", flat=True)
                     ),
                 ),

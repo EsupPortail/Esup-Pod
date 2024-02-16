@@ -268,6 +268,7 @@ class DublinCoreView(APIView):
 
     def get(self, request, format=None):
         list_videos = get_available_videos(request)
+        print(list_videos)
         if request.GET:
             list_videos = list_videos.filter(**request.GET.dict())
         xmlcontent = '<?xml version="1.0" encoding="utf-8"?>\n'

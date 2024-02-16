@@ -7,7 +7,12 @@ from pod.video.rest_views import VideoSerializer
 from rest_framework.decorators import action
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import SuspiciousOperation
+
+import json
 
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
@@ -136,7 +141,7 @@ class PlaylistVideoViewSet(viewsets.ModelViewSet):
     serializer_class = PlaylistVideoSerializer
 
 
-@api_view(["GET"])
+@api_view(['GET'])
 def launch_encode_view(request):
     """API view for launching video encoding."""
     video = get_object_or_404(Video, slug=request.GET.get("slug"))
@@ -161,10 +166,30 @@ def launch_transcript_view(request):
     return Response(VideoSerializer(instance=video, context={"request": request}).data)
 
 
-@api_view(["GET"])
+@csrf_exempt
+@api_view(["POST"])
 def store_remote_encoded_video(request):
     """API view for storing remote encoded videos."""
     video_id = request.GET.get("id", 0)
     video = get_object_or_404(Video, id=video_id)
     # start_store_remote_encoding_video(video_id)
+    # check if video is encoding !!!
+    data = json.loads(request.body.decode("utf-8"))
+    if video.encoding_in_progress is False:
+        raise SuspiciousOperation("video not encoding in progress")
+    if video_id != data["video_id"]:
+        raise SuspiciousOperation("different video id")
+    print("Start the importing of the video: %s" % video_id)
+    from .Encoding_video_model import Encoding_video_model
+    from .encode import store_encoding_info, end_of_encoding
+    encoding_video = Encoding_video_model(
+        video_id,
+        data["video_path"],
+        data["cut_start"],
+        data["cut_end"]
+    )
+    encoding_video.start = data["start"]
+    encoding_video.stop = data["stop"]
+    final_video = store_encoding_info(video_id, encoding_video)
+    end_of_encoding(final_video)
     return Response(VideoSerializer(instance=video, context={"request": request}).data)

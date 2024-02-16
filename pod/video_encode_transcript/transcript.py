@@ -51,10 +51,10 @@ if USE_TRANSCRIPTION:
 TRANSCRIPTION_NORMALIZE = getattr(settings, "TRANSCRIPTION_NORMALIZE", False)
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 
-USE_DISTANT_ENCODING_TRANSCODING = getattr(
-    settings, "USE_DISTANT_ENCODING_TRANSCODING", False
+USE_REMOTE_ENCODING_TRANSCODING = getattr(
+    settings, "USE_REMOTE_ENCODING_TRANSCODING", False
 )
-if USE_DISTANT_ENCODING_TRANSCODING:
+if USE_REMOTE_ENCODING_TRANSCODING:
     from .transcripting_tasks import start_transcripting_task
 
 log = logging.getLogger(__name__)
@@ -123,7 +123,7 @@ def main_threaded_transcript(video_to_encode_id):
             send_email(msg, video_to_encode.id)
         else:
             mp3filepath = mp3file.path
-            if USE_DISTANT_ENCODING_TRANSCODING:
+            if USE_REMOTE_ENCODING_TRANSCODING:
                 start_transcripting_task.delay(
                     video_to_encode.id, mp3filepath, video_to_encode.duration, lang
                 )

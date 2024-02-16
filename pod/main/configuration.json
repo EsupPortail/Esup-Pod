@@ -2984,7 +2984,7 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
-                        "USE_DISTANT_ENCODING_TRANSCODING": {
+                        "USE_REMOTE_ENCODING_TRANSCODING": {
                             "default_value": false,
                             "description": {
                                 "en": [
