@@ -387,7 +387,7 @@ def save_recording_form(request, form):
 
 
 # ##############################    Upload recordings to Pod
-def save_external_recording(user, record_id: int):
+def save_external_recording(user: User, record_id: int):
     """Save an external recording in database.
 
     Args:
@@ -1099,7 +1099,7 @@ def manage_standard_exception(exc: Exception):
     raise ValueError(msg)
 
 
-def get_stateless_recording(request, data):
+def get_stateless_recording(request, data: ExternalRecording):
     """Return a stateless recording from an external recording.
 
     Args:
@@ -1157,7 +1157,7 @@ def get_stateless_recording(request, data):
     return recording
 
 
-def get_status_recording(data):
+def get_status_recording(data: ExternalRecording) -> str:
     """Get the status of an external recording."""
     if data.uploaded_to_pod_by is None and data.state is None:
         state = _("Video file not uploaded to Pod")
