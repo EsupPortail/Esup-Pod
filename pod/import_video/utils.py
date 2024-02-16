@@ -1,4 +1,4 @@
-"""Utils for Meeting and Import_video module."""
+"""Esup-Pod meeting and import_video utils."""
 
 import json
 import os
@@ -7,12 +7,14 @@ import shutil
 
 from datetime import datetime as dt
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 from html.parser import HTMLParser
 from pod.video.models import Video
 from pod.video.models import Type
 from urllib.parse import parse_qs, urlparse
+from requests import Session
 
 MAX_UPLOAD_SIZE_ON_IMPORT = getattr(settings, "MAX_UPLOAD_SIZE_ON_IMPORT", 4)
 
@@ -67,7 +69,7 @@ def secure_request_for_upload(request):
         raise ValueError(msg)
 
 
-def parse_remote_file(session, source_html_url):
+def parse_remote_file(session: Session, source_html_url: str):
     """Parse the remote HTML file on the BBB server.
 
     Args:
@@ -140,7 +142,7 @@ def create_parser(response):
     return parser
 
 
-def manage_recording_url(source_url, video_file_add):
+def manage_recording_url(source_url: str, video_file_add: str) -> str:
     """Generate the BBB video URL.
 
     See more explanations in manage_download() function.
@@ -181,7 +183,12 @@ def manage_recording_url(source_url, video_file_add):
         return source_url + video_file_add
 
 
-def manage_download(session, source_url, video_file_add, dest_file):
+def manage_download(
+    session: Session,
+    source_url: str,
+    video_file_add: str,
+    dest_file: str
+) -> str:
     """Manage the download of a BBB video file.
 
     2 possibilities :
@@ -195,7 +202,7 @@ def manage_download(session, source_url, video_file_add, dest_file):
     and download_video_file.
 
     Args:
-        session (Session) : session useful to achieve requests (and keep cookies between)
+        session (Session) : Session useful to achieve requests (and keep cookies between)
         source_url (String): Source file URL
         video_file_add (String): Name of the video file to add to the URL
         dest_file (String): Destination file of the Pod video
@@ -214,11 +221,11 @@ def manage_download(session, source_url, video_file_add, dest_file):
         raise ValueError(mark_safe(str(exc)))
 
 
-def download_video_file(session, source_video_url, dest_file):
+def download_video_file(session: Session, source_video_url: str, dest_file: str):
     """Download video file.
 
     Args:
-        session (Session) : session useful to achieve requests (and keep cookies between)
+        session (Session) : Session useful to achieve requests (and keep cookies between)
         source_video_url (String): Video file URL
         dest_file (String): Destination file of the Pod video
 
@@ -250,15 +257,21 @@ def download_video_file(session, source_video_url, dest_file):
         raise ValueError(mark_safe(str(exc)))
 
 
-def save_video(request, dest_path, recording_name, description, date_evt=None):
+def save_video(
+    user: User,
+    dest_path: str,
+    recording_name: str,
+    description: str,
+    date_evt=None
+):
     """Save and encode the Pod video file.
 
     Args:
-        request (Request): HTTP request
+        user (User): User who saved the video
         dest_path (String): Destination path of the Pod video
-        recording_name (String): recording name
-        description (String): description added to the Pod video
-        date_evt (Datetime, optional): Event date. Defaults to None.
+        recording_name (String): Recording name
+        description (String): Description added to the Pod video
+        date_evt (Datetime, optional): Event date. Default to None
 
     Raises:
         ValueError: if impossible creation
@@ -267,7 +280,7 @@ def save_video(request, dest_path, recording_name, description, date_evt=None):
         video = Video.objects.create(
             video=dest_path,
             title=recording_name,
-            owner=request.user,
+            owner=user,
             description=description,
             is_draft=True,
             type=Type.objects.get(id=DEFAULT_TYPE_ID),
@@ -283,14 +296,14 @@ def save_video(request, dest_path, recording_name, description, date_evt=None):
         raise ValueError(msg)
 
 
-def check_file_exists(source_url):
-    """Check that the URL exists.
+def check_url_exists(source_url: str) -> bool:
+    """Check that the source URL exists.
 
     Args:
         source_url (String): Source URL
 
     Returns:
-        Boolean: file exists (True) or not (False)
+        Boolean: URL exists (True) or not (False)
     """
     try:
         response = requests.head(source_url, timeout=2)
@@ -302,7 +315,7 @@ def check_file_exists(source_url):
         return False
 
 
-def verify_video_exists_and_size(video_url):
+def verify_video_exists_and_size(video_url: str):
     """Check that the video file exists and its size does not exceed the limit.
 
     Args:
@@ -329,7 +342,7 @@ def verify_video_exists_and_size(video_url):
         raise ValueError(msg)
 
 
-def check_video_size(video_size):
+def check_video_size(video_size: int):
     """Check that the video file size does not exceed the limit.
 
     Args:
@@ -349,12 +362,13 @@ def check_video_size(video_size):
         raise ValueError(msg)
 
 
-def check_source_url(source_url):  # noqa: C901
+def check_source_url(source_url: str):  # noqa: C901
     """Check the source URL to identify the used platform.
 
     Platforms managed :
      - Mediacad platform (Médiathèque académique) : rewrite source URL if required
      and manage JSON API.
+     - Old BigBlueButton : source URL for old BBB presentation playback
     """
     base_url = ""
     media_id = ""
@@ -421,6 +435,22 @@ def check_source_url(source_url):  # noqa: C901
                 media_id,
             )
             platform = "Mediacad"
+        elif source_url.find("/playback/presentation/2.0/playback.html?") != -1:
+            # Old BBB 2.x (<2.3) presentation link
+            # Conversion from
+            # https://xxx/playback/presentation/2.0/playback.html?meetingId=ID
+            # to https://xxx/playback/presentation/2.3/ID?meetingId=ID
+            media_id = array_url[-1]
+            source_video_url = source_url.replace(
+                "/2.0/playback.html", "/2.3/" + media_id
+            ).replace("playback.html?meetingId=", "")
+            format = "webm"
+            platform = "BBB_Presentation"
+        elif source_url.find("/playback/presentation/2.3/") != -1:
+            # Old BBB 2.3 presentation link : no conversion needed
+            source_video_url = source_url
+            format = "webm"
+            platform = "BBB_Presentation"
 
         # Platform's URL identified
         if platform == "Mediacad":
@@ -431,6 +461,11 @@ def check_source_url(source_url):  # noqa: C901
             platform_type = TypeSourceURL(
                 platform, source_video_url, format, url_api_video
             )
+        if platform == "BBB_Presentation":
+            # Platform type: older BBB, format presentation
+            platform_type = TypeSourceURL(
+                platform, source_video_url, format, ""
+            )
 
         return platform_type
     except Exception as exc:
@@ -440,30 +475,45 @@ def check_source_url(source_url):  # noqa: C901
         raise ValueError(msg)
 
 
-def define_dest_file(request, id, extension):
-    """Define standard destination filename for an external recording."""
+def define_dest_file_and_path(user: User, id: str, extension: str):
+    """Define standard destination filename and path for an external recording."""
     # Set a discriminant
     discrim = dt.now().strftime("%Y%m%d%H%M%S")
     dest_file = os.path.join(
         settings.MEDIA_ROOT,
         VIDEOS_DIR,
-        request.user.owner.hashkey,
+        user.owner.hashkey,
+        os.path.basename("%s-%s.%s" % (discrim, id, extension)),
+    )
+    dest_path = os.path.join(
+        VIDEOS_DIR,
+        user.owner.hashkey,
         os.path.basename("%s-%s.%s" % (discrim, id, extension)),
     )
     os.makedirs(os.path.dirname(dest_file), exist_ok=True)
-    return dest_file
+    return dest_file, dest_path
 
 
-def define_dest_path(request, id, extension):
-    """Define standard destination path for an external recording."""
-    # Set a discriminant
-    discrim = dt.now().strftime("%Y%m%d%H%M%S")
-    dest_path = os.path.join(
-        VIDEOS_DIR,
-        request.user.owner.hashkey,
-        os.path.basename("%s-%s.%s" % (discrim, id, extension)),
-    )
-    return dest_path
+def check_file_exists(source: str) -> bool:
+    """Check that a local file exists."""
+    if os.path.exists(source):
+        return True
+    else:
+        return False
+
+
+def move_file(source: str, destination: str):
+    """Move a file from a source to another destination."""
+    try:
+        # Ensure that the source file exists
+        if not check_file_exists(source):
+            print(f"The source file '{source}' does not exist.")
+            return
+
+        # Move the file to the destination directory
+        shutil.move(source, destination)
+    except Exception as e:
+        print(f"Error moving the file: {e}")
 
 
 class TypeSourceURL:

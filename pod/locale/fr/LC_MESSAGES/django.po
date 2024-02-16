@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-15 10:00+0000\n"
+"POT-Creation-Date: 2024-02-15 17:43+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ptitloup <nicolas.can@univ-lille.fr.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1090,26 +1090,6 @@ msgstr "Les chapitres ne peuvent commencer au même moment."
 #: pod/chapter/templates/video_chapter.html
 msgid "You must save your chapters to view the result."
 msgstr "Vous devez sauvegarder vos chapitres pour voir le résultat."
-
-#: pod/chapter/templates/video_chapter.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Mandatory fields"
-msgstr "Champs obligatoires"
-
-#: pod/chapter/templates/video_chapter.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Fields marked with an asterisk are mandatory."
-msgstr "Les champs marqués avec un astérisque sont obligatoires."
 
 #: pod/chapter/views.py
 msgid "You cannot chapter this video."
@@ -2557,6 +2537,10 @@ msgstr ""
 "Veuillez entrer l’adresse de l’enregistrement à télécharger. Cette adresse "
 "doit correspondre au type d’enregistrement sélectionné."
 
+#: pod/import_video/models.py
+msgid "Recording state"
+msgstr "Etat de l’enregistrement"
+
 #: pod/import_video/models.py pod/meeting/models.py
 msgid "User who uploaded to Pod the video file"
 msgstr "Utilisateur qui a téléversé le fichier vidéo sur Pod"
@@ -2854,6 +2838,13 @@ msgstr "Impossible de téléverser la vidéo sur Pod"
 msgid "YouTube content is inaccessible."
 msgstr "Ce contenu de YouTube est inaccessible."
 
+#: pod/import_video/tests/test_views.py pod/import_video/views.py
+msgid ""
+"Impossible to upload to Pod the video, the link provided does not seem valid."
+msgstr ""
+"Impossible de télécharger sur Pod la vidéo, le lien fourni ne semble pas "
+"valide."
+
 #: pod/import_video/utils.py
 msgid "No URL found / No recording name"
 msgstr "Aucune URL trouvée / Aucun nom d’enregistrement"
@@ -3048,24 +3039,30 @@ msgstr ""
 "PeerTube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>."
 
 #: pod/import_video/views.py
-msgid "Impossible to upload to Pod the PeerTube video"
-msgstr "Impossible de téléverser la vidéo PeerTube sur Pod"
-
-#: pod/import_video/views.py
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Video file not uploaded to Pod"
-msgstr "Le fichier vidéo n’a pas été téléversé sur Pod"
+msgid "Convert web presentation to video in progress..."
+msgstr "Conversion de la présentation web en vidéo en cours..."
 
 #: pod/import_video/views.py
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid "Video file already uploaded to Pod"
 msgstr "Fichier vidéo déjà téléversé sur Pod"
 
+#: pod/import_video/views.py pod/meeting/views.py
+msgid "Try changing the record type or address for this recording."
+msgstr ""
+"Essayez de modifier le type d’enregistrement ou l’adresse de cet "
+"enregistrement."
+
 #: pod/import_video/views.py
 msgid "No video file found. Upload to Pod as a video is not possible."
 msgstr ""
 "Aucun fichier vidéo trouvé. Le téléversement sur Pod en tant que vidéo n’est "
 "pas possible."
+
+#: pod/import_video/views.py
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Video file not uploaded to Pod"
+msgstr "Le fichier vidéo n’a pas été téléversé sur Pod"
 
 #: pod/live/admin.py pod/live/models.py
 msgid "QR code to record immediately an event"
@@ -4990,6 +4987,14 @@ msgstr "Vous venez d’envoyer un message depuis"
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid "Regards"
 msgstr "Cordialement"
+
+#: pod/main/templates/main/mandatory_fields.html
+msgid "Mandatory fields"
+msgstr "Champs obligatoires"
+
+#: pod/main/templates/main/mandatory_fields.html
+msgid "Fields marked with an asterisk are mandatory."
+msgstr "Les champs marqués avec un astérisque sont obligatoires."
 
 #: pod/main/templates/maintenance.html
 msgid ""
@@ -7150,6 +7155,10 @@ msgstr "Définir comme brouillon"
 msgid "Transcript selected"
 msgstr "Transcrire la sélection"
 
+#: pod/video/admin.py
+msgid "Change video owner"
+msgstr "Changer le propriétaire de vidéos"
+
 #: pod/video/forms.py
 msgid "File field"
 msgstr "Fichier"
@@ -8106,10 +8115,6 @@ msgstr "Supprimer la catégorie"
 #: pod/video/templates/videos/category_modal.html
 msgid "Permanently delete your category?"
 msgstr "Supprimer définitivement votre catégorie ?"
-
-#: pod/video/templates/videos/change_video_owner.html
-msgid "Change video owner"
-msgstr "Changer le propriétaire de vidéos"
 
 #: pod/video/templates/videos/change_video_owner.html
 msgid "Old owner"
@@ -9250,30 +9255,6 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#~ msgid "Use this link to share the video in draft mode"
-#~ msgstr "Utiliser ce lien pour partager la vidéo en mode brouillon"
-
-#~ msgid "YouTube content is inaccessible"
-#~ msgstr "Le contenu YouTube n’est pas disponible"
-
-#~ msgid ""
-#~ "YouTube content is inaccessible. This content does not appear to be "
-#~ "publicly available."
-#~ msgstr ""
-#~ "Le contenu YouTube est inaccessible. Ce contenu ne semble pas être "
-#~ "disponible publiquement."
-
-#~ msgid ""
-#~ "Access to adding external recording has been restricted. If you want to "
-#~ "add external recordings on the platform, please"
-#~ msgstr ""
-#~ "L’accès à l’ajout d’un enregistrement externe a été restreint. Si vous "
-#~ "souhaitez ajouter des enregistrements externes sur la plateforme, s’il "
-#~ "vous plaît"
-
-#~ msgid "Deleting the record"
-#~ msgstr "Supprimer cet enregistrement"
 
 #~ msgid "Playlist image"
 #~ msgstr "Image de la playlist"
