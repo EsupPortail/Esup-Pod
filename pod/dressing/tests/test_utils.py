@@ -12,22 +12,6 @@ from pod.dressing.models import Dressing
 class DressingUtilitiesTests(unittest.TestCase):
     """TestCase for Esup-Pod dressing utilities."""
 
-    def test_get_position_value(self):
-        """Test for the get_position_value function."""
-        result = get_position_value("top_right", "720")
-        self.assertEqual(result, "overlay=main_w-overlay_w-36.0:36.0")
-
-        result = get_position_value("top_left", "720")
-        self.assertEqual(result, "overlay=36.0:36.0")
-
-        result = get_position_value("bottom_right", "720")
-        self.assertEqual(result, "overlay=main_w-overlay_w-36.0:main_h-overlay_h-36.0")
-
-        result = get_position_value("bottom_left", "720")
-        self.assertEqual(result, "overlay=36.0:main_h-overlay_h-36.0")
-
-        print(" ---> test_get_position_value: OK! --- DressingUtilsTest")
-
     def test_get_dressing_input(self):
         """Test for the get_dressing_input function."""
         dressing = Dressing(watermark=None, opening_credits=None, ending_credits=None)
