@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import patch
 from django.contrib.auth.models import User
 from pod.authentication.models import AccessGroup
-from pod.dressing.utils import get_dressings, get_position_value, get_dressing_input
+from pod.dressing.utils import get_dressings, get_dressing_input
 from pod.dressing.models import Dressing
 
 
