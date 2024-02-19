@@ -50,12 +50,16 @@ encoding_app.conf.task_routes = {
 
 # celery -A pod.video_encode_transcript.encoding_tasks worker -l INFO -Q encoding
 @encoding_app.task
-def start_encoding_task(video_id, video_path, cut_start, cut_end, dressing):
+def start_encoding_task(
+    video_id, video_path, cut_start, cut_end, json_dressing, dressing_input
+):
     """Start the encoding of the video."""
     print("Start the encoding of the video")
     from .Encoding_video import Encoding_video
     print(video_id, video_path, cut_start, cut_end)
-    encoding_video = Encoding_video(video_id, video_path, cut_start, cut_end, dressing)
+    encoding_video = Encoding_video(
+        video_id, video_path, cut_start, cut_end, json_dressing, dressing_input
+    )
     encoding_video.start_encode()
     print("End of the encoding of the video")
     Headers = {"Authorization" : "Token %s" % POD_API_TOKEN}
@@ -67,7 +71,8 @@ def start_encoding_task(video_id, video_path, cut_start, cut_end, dressing):
         "cut_start": cut_start,
         "cut_end": cut_end,
         "stop": encoding_video.stop,
-        "dressing": dressing
+        "json_dressing": json_dressing,
+        "dressing_input": dressing_input
     }
     try:
         response = requests.post(url, json=data, headers=Headers)
