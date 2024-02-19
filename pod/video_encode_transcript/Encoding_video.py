@@ -752,7 +752,7 @@ class Encoding_video:
     def export_to_json(self):
         data_to_dump = {}
         for attribute, value in self.__dict__.items():
-                data_to_dump[attribute] = value
+            data_to_dump[attribute] = value
         with open(self.output_dir + "/info_video.json", "w") as outfile:
             json.dump(data_to_dump, outfile, indent=2)
 
