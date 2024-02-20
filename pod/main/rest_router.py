@@ -85,6 +85,11 @@ urlpatterns = [
         name="store_remote_encoded_video",
     ),
     url(
+        r"store_remote_transcripted_video/$",
+        encode_views.store_remote_transcripted_video,
+        name="store_remote_transcripted_video",
+    ),
+    url(
         r"accessgroups_set_users_by_name/$",
         auth_views.accessgroups_set_users_by_name,
         name="accessgroups_set_users_by_name",

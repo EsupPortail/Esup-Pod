@@ -84,19 +84,12 @@ def start_encoding_task(
             logger.error(msg + "\n" + str(response.content))
         else:
             logger.info("Call importing task ok")
-    except requests.exceptions.HTTPError as exception:
-        msg = "Exception: {}".format(type(exception).__name__)
-        msg += "\nException message: {}".format(exception)
-        logger.error(msg)
-    except requests.exceptions.ConnectionError as exception:
-        msg = "Exception: {}".format(type(exception).__name__)
-        msg += "\nException message: {}".format(exception)
-        logger.error(msg)
-    except requests.exceptions.InvalidURL as exception:
-        msg = "Exception: {}".format(type(exception).__name__)
-        msg += "\nException message: {}".format(exception)
-        logger.error(msg)
-    except requests.exceptions.Timeout as exception:
+    except (
+        requests.exceptions.HTTPError,
+        requests.exceptions.ConnectionError,
+        requests.exceptions.InvalidURL,
+        requests.exceptions.Timeout
+    ) as exception:
         msg = "Exception: {}".format(type(exception).__name__)
         msg += "\nException message: {}".format(exception)
         logger.error(msg)
