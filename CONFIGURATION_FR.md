@@ -1444,6 +1444,27 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
   >> Activation de l’application d'import des vidéos <br>
 
+ - `USE_IMPORT_VIDEO_BBB_RECORDER`
+
+  > valeur par défaut : `False`
+
+  >> Utilisation du plugin bbb-recorder pour le module import-vidéo;  <br>
+  >> utile pour convertir une présentation BigBlueButton en fichier vidéo. <br>
+
+ - `IMPORT_VIDEO_BBB_RECORDER_PLUGIN`
+
+  > valeur par défaut : `/home/pod/bbb-recorder/`
+
+  >> Répertoire du plugin bbb-recorder (voir la documentation https://github.com/jibon57/bbb-recorder). <br>
+  >> bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d'encodage. <br>
+  >> bbb-recorder crée un répertoire Downloads, au même niveau, qui nécessite de l'espace disque. <br>
+
+ - `IMPORT_VIDEO_BBB_RECORDER_PATH`
+
+  > valeur par défaut : `True`
+
+  >> Répertoire qui contiendra les fichiers vidéo générés par bbb-recorder. <br>
+
 ### Configuration application live
 
  - `AFFILIATION_EVENT`
@@ -2578,9 +2599,9 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l'enco
 
  - `CELERY_BROKER_URL`
 
-  > valeur par défaut : `amqp://pod:xxx@localhost/rabbitpod`
+  > valeur par défaut : `redis://127.0.0.1:6379/5`
 
-  >> URL de Celery pour la gestion des taches d’encodage. <br>
+  >> URL du courtier de messages où Celery stocke les ordres d’encodage et de transcription. <br>
 
  - `CELERY_TO_ENCODE`
 

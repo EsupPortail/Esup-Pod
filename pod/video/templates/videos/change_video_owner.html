@@ -1,95 +1,103 @@
 {% extends "base.html" %} {% load i18n %} {% load static %}
 
-{% block opengraph %}
- {{block.super }}
-  <link rel="stylesheet" href="{% static 'css/change_video_owner.css' %}">
+{% block page_extra_head %}
+  <link
+    rel="stylesheet"
+    href="{% static 'css/change_video_owner.css' %}?ver={{VERSION}}"
+  >
   <link
     rel="stylesheet"
     href="{% static 'css/paginator.css' %}?ver={{VERSION}}"
- >
-{% endblock opengraph %}
+  >
+{% endblock page_extra_head %}
 
-{% block page_title %}
-  {% trans "Change video owner" %}
-{%endblock page_title %}
-{% block more_script %}
-  <script src="{% static 'js/change_video_owner.js' %}"></script>
-{% endblock more_script %}
-{% block content %}
-<main>
-  <div class="container change_video_owner">
-    <div class="content">
-      <h1 class="page_title">{% trans "Change video owner" %}</h1>
-      <form class="form" autocomplete="off">
-        {% csrf_token %}
 
-        <div class="form-wrapper">
-          <label for="oldlogin" class="form-label"
-            >{% trans "Old owner" %}<i class="required">*</i></label
-          >
-          <input
-            type="text"
-            id="oldlogin"
-            class="form-control"
-            placeholder="{% trans 'FirstName/LastName' %}"
-            required
-         >
-          <div class="oldlogin suggestions"></div>
-        </div>
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item active" aria-current="page">{{ page_title }}</li>
+{% endblock %}
 
-        <div class="form-wrapper">
-          <label for="newlogin" class="form-label"
-            >{% trans "New owner" %}<i class="required">*</i></label
-          >
-          <input
-            type="text"
-            id="newlogin"
-            class="form-control"
-            placeholder="{% trans 'FirstName/LastName' %}"
-            required
-         >
-          <div class="newlogin suggestions"></div>
-        </div>
 
-        <div class="form-wrapper full-width">
-          <label for="list_videos__search">{% trans "Filter" %}</label>
-          <input
-            name="all"
-            placeholder="{% trans 'Filter by title' %}"
-            type="text"
-            id="list_videos__search"
-            class="form-control"
-         >
-          <div class="filter suggestions semi-width"></div>
-        </div>
+{% block page_content %}
+  <form class="form" autocomplete="off">
+    {% csrf_token %}
 
-        <div class="form-wrapper select_all_wrapper">
-            <label class="label-control"
-              >{% trans "Select video(s) to edit" %}<i class="required"
-                >*</i
-              ></label
-            >
-            <div class="flex">
-              <label for="select_all" class="form-check-label"
-                >{% trans "Select/Deselect all videos" %}</label
-              >
-              <input
-                name="select_all"
-                type="checkbox"
-                id="select_all"
-                class="select_all form-check-input"
-             >
-            </div>
-        </div>
-        <div class="form-wrapper__control select-videos form-control"></div>
-        {% include "videos/paginator.html" with disable_next=True%}
-        <div class="form-wrapper children-center">
-          <button id="submitChanges" class="btn btn-primary">
-            {% trans "Submit changes" %}
-          </button>
-        </div>
-      </form>
+    <div class="row">
+      <div class="mt-3 field-oldlogin col-md-6">
+        <label for="oldlogin" class="form-label">
+          {% trans "Old owner" %}
+          <span class="required_star">*</span>
+        </label>
+        <input
+          type="text"
+          id="oldlogin"
+          class="required form-control"
+          placeholder="{% trans 'FirstName/LastName' %}"
+          required
+        >
+        <div class="oldlogin suggestions"></div>
+      </div>
+
+      <div class="mt-3 field-newlogin col-md-6">
+        <label for="newlogin" class="form-label">
+          {% trans "New owner" %}
+          <span class="required_star">*</span>
+        </label>
+        <input
+          type="text"
+          id="newlogin"
+          class="required form-control"
+          placeholder="{% trans 'FirstName/LastName' %}"
+          required
+        >
+        <div class="newlogin suggestions"></div>
+      </div>
     </div>
-  </div>
-</main>
-{% endblock content %}
+
+    <div class="mt-3 field-filter">
+      <label for="list_videos__search">{% trans "Filter" %}</label>
+      <input
+        name="all"
+        placeholder="{% trans 'Filter by title' %}"
+        type="text"
+        id="list_videos__search"
+        class="form-control"
+      >
+      <div class="filter suggestions semi-width"></div>
+    </div>
+
+    <fieldset class="mt-4 field-select_all row">
+      <legend>
+        {% trans "Select video(s) to edit" %}
+        <span class="required_star">*</span>
+      </legend>
+      <div class="text-end">
+        <label for="select_all" class="form-check-label">
+          {% trans "Select/Deselect all videos" %}
+        </label>
+        <input
+          name="select_all"
+          type="checkbox"
+          id="select_all"
+          class="select_all form-check-input"
+        >
+      </div>
+      <div class="form-wrapper__control select-videos form-control"></div>
+      {% include "videos/paginator.html" with disable_next=True%}
+    </fieldset>
+
+    <div class="form-wrapper children-center">
+      <button id="submitChanges" class="btn btn-primary" type="submit">
+        {% trans "Submit changes" %}
+      </button>
+    </div>
+  </form>
+{% endblock page_content %}
+
+{% block page_aside %}
+  {% include 'main/mandatory_fields.html'%}
+{% endblock page_aside %}
+
+{% block more_script %}
+  <script src="{% static 'js/change_video_owner.js' %}?ver={{VERSION}}"></script>
+{% endblock more_script %}

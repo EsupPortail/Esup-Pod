@@ -80,7 +80,7 @@
             <fieldset class="pod-share-fieldset">
               <legend><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Embed in a web page' %}</legend>
               <div class="form-group ">
-                <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:'%}</label>
+                <label for="txtintegration">{% trans "Copy the content of this text box and paste it in the page:" %}</label>
                 <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'live:event' slug=event.slug %}{% if event.is_draft == True %}{{ event.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
               </div>
             </fieldset>

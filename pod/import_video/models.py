@@ -102,6 +102,13 @@ class ExternalRecording(models.Model):
         ),
     )
 
+    state = models.CharField(
+        max_length=250,
+        verbose_name=_("Recording state"),
+        blank=True,
+        null=True,
+    )
+
     # User who uploaded to Pod the video file
     uploaded_to_pod_by = models.ForeignKey(
         User,

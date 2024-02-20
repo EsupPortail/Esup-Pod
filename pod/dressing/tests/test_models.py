@@ -22,6 +22,7 @@ class DressingModelTest(TestCase):
     """Test case for Pod dressing models."""
 
     def setUp(self):
+        """Set up DressingModel Tests."""
         owner = User.objects.create(username="pod")
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         simplefile = SimpleUploadedFile(
@@ -85,6 +86,7 @@ class DressingModelTest(TestCase):
         print(" ---> test_attributs_full: OK! --- DressingModelTest")
 
     def test_dressing_to_json(self):
+        """Test the to_json function."""
         dressing = Dressing.objects.get(id=1)
         dressing_json = dressing.to_json()
         owner = User.objects.get(username="pod")

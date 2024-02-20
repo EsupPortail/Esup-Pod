@@ -37,77 +37,59 @@
         <td>{{ dressing.title }}</td>
         <td>
           {% for owner in dressing.owners.all %}
-
-          {% if owner.first_name %}
-            {{ owner.first_name }} {{ owner.last_name }}
-          {% else %}
-            {{ owner.username }}
-          {% endif %}
-          {% if not forloop.last %}, {% endif %}
+            {{ owner }}
+            {% if not forloop.last %}, {% endif %}
           {% empty %}
             {% trans 'No owners' %}
           {% endfor %}
-        </td>
-        <td>
+        </td><td>
           {% for user in dressing.users.all %}
-
-          {% if user.first_name %}
-            {{ user.first_name }} {{ user.last_name }}
-          {% else %}
-            {{ user.username }}
-          {% endif %}
-          {% if not forloop.last %}, {% endif %}
+            {{ user }}
+            {% if not forloop.last %}, {% endif %}
           {% empty %}
             {% trans 'No users' %}
           {% endfor %}
-        </td>
-        <td>
+        </td><td>
           {% for group in dressing.allow_to_groups.all %}
             {{ group }}{% if not forloop.last %}, {% endif %}
           {% empty %}
             {% trans 'No groups' %}
           {% endfor %}
-        </td>
-        <td>
+        </td><td>
           {% if dressing.watermark %}
             <img src="{{ dressing.watermark.file.url }}" alt="{{ dressing.watermark.name }}" width="50px">
           {% else %}
             {% trans 'None' %}
           {% endif %}
-        </td>
-        <td>
+        </td><td>
           {% if dressing.watermark %}
             {{ dressing.get_position_display }}
           {% else %}
-          <div class="text-center">
-            <span title="{%trans 'No watermark'%}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
-          </div>
+            <div class="text-center">
+              <span title="{% trans 'No watermark' %}"><i class="bi bi-x-lg" aria-hidden="true"></i></span>
+            </div>
           {% endif %}
-        </td>
-        <td>
+        </td><td>
           {% if dressing.watermark %}
             {{ dressing.opacity }}
           {% else %}
-          <div class="text-center">
-            <span title="{%trans 'No watermark'%}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
-          </div>
+            <div class="text-center">
+              <span title="{% trans 'No watermark' %}"> <i class="bi bi-x-lg" aria-hidden="true"></i> </span>
+            </div>
           {% endif %}
-        </td>
-        <td>
+        </td><td>
           {% if dressing.opening_credits %}
-            <a href="../../video/{{ dressing.opening_credits|slugify }}" title="{% trans 'View the video'%}">{{ dressing.opening_credits }}</a>
+            <a href="{% url 'video:video' slug=dressing.opening_credits.slug %}" title="{% trans 'View the video' %}">{{ dressing.opening_credits }}</a>
           {% else %}
             {% trans 'None' %}
           {% endif %}
-          </td>
-          <td>
+        </td><td>
           {% if dressing.ending_credits %}
-            <a href="../../video/{{ dressing.ending_credits|slugify }}" title="{% trans 'View the video'%}">{{ dressing.ending_credits }}</a>
+            <a href="{% url 'video:video' slug=dressing.ending_credits.slug %}" title="{% trans 'View the video' %}">{{ dressing.ending_credits }}</a>
           {% else %}
             {% trans 'None' %}
           {% endif %}
-          </td>
-        <td>
+        </td><td>
           <div class="d-flex justify-content-between">
             <a href="{% url 'dressing:dressing_edit' dressing_id=dressing.pk %}" class="btn btn-primary me-1" title="{% blocktrans with title=dressing.title %}Edit “{{title}}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="top">
               <i class="bi bi-pencil-square" aria-hidden="true"></i>
@@ -129,10 +111,6 @@
 <a href="{% url 'dressing:dressing_create' %}" class="btn btn-primary">{% trans 'Add new dressing' %}</a>
 {% endblock page_content %}
 
-{% block collapse_page_aside %}
-{% endblock collapse_page_aside %}
-{% block page_aside %}
-{% endblock page_aside %}
-
-{% block more_script %}
-{% endblock more_script %}
+{% block collapse_page_aside %}{% endblock collapse_page_aside %}
+{% block page_aside %}{% endblock page_aside %}
+{% block more_script %}{% endblock more_script %}
