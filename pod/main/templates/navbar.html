@@ -48,7 +48,7 @@
 
         {% if "live" in THIRD_PARTY_APPS %}
           <li class="nav-item" id="nav-live">
-            <a class="nav-link" href="{% url 'live:events'%}">
+            <a class="nav-link" href="{% url 'live:events' %}">
               <i class="bi bi-broadcast pod-nav-link-icon" aria-hidden="true"></i>&nbsp;{% trans 'Lives' %}
             </a>
           </li>
@@ -131,14 +131,14 @@
       <button class="btn btn-link pod-params-button px-1"
         type="button" id="pod-param-buttons__button"
         data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menusettings"
-        data-pod-tooltip="true" aria-label="{% trans 'Configuration panel'%}"
-        title="{% trans 'Toggle configuration panel'%}"
+        data-pod-tooltip="true" aria-label="{% trans 'Configuration panel' %}"
+        title="{% trans 'Toggle configuration panel' %}"
         >
         <i class="bi bi-gear" aria-hidden="true"></i>
       </button>
       <div class="offcanvas offcanvas-end pod-offcanvas" tabindex="-1" id="pod-navbar__menusettings" aria-labelledby="pod-navbar__menusettingsLabel">
         <div class="offcanvas-header">
-          <h5 id="pod-navbar__menusettingsLabel">{% trans 'Configuration'%}</h5>
+          <h5 id="pod-navbar__menusettingsLabel">{% trans 'Configuration' %}</h5>
           <button type="button" class="btn-close text-reset"
             data-bs-dismiss="offcanvas" data-pod-tooltip="true"
             aria-label="{% trans 'Close' %}"
@@ -250,15 +250,15 @@
                 <a class="nav-item nav-link" href="{% url 'playlist:content' slug=playlist.slug %}"><i class="bi bi-star pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My favorite videos' %}</a>
               {% endif %}
               {% if USE_OPENCAST_STUDIO %}
-                <a class="nav-item nav-link" href="{% url 'recorder:studio_pod'%}"><i class="bi bi-camera-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Video Record' %}</a>
+                <a class="nav-item nav-link" href="{% url 'recorder:studio_pod' %}"><i class="bi bi-camera-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Video Record' %}</a>
               {% endif %}
               {% show_meeting_button as meeting_button %}
               {% if meeting_button %}
-                <a class="nav-item nav-link" href="{% url 'meeting:my_meetings'%}"><i class="bi bi-person-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My meetings' %}</a>
+                <a class="nav-item nav-link" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My meetings' %}</a>
               {% endif %}
               {% show_import_video_button as import_video_button %}
               {% if import_video_button %}
-                <a class="nav-item nav-link" href="{% url 'import_video:external_recordings'%}"><i class="bi bi-collection-play-fill pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Import an external video' %}</a>
+                <a class="nav-item nav-link" href="{% url 'import_video:external_recordings' %}"><i class="bi bi-collection-play-fill pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Import an external video' %}</a>
               {% endif %}
               {% if "live" in THIRD_PARTY_APPS and request.user|can_manage_event_filter %}
                 <a class="nav-item nav-link" href="{% url 'live:my_events' %}" title="{% trans 'My events' %}">

@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-06 10:47+0000\n"
+"POT-Creation-Date: 2024-02-15 17:43+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: obado <bado@unice.fr>\n"
+"Last-Translator: ptitloup <nicolas.can@univ-lille.fr.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -721,6 +721,10 @@ msgid "There are no BigBlueButton sessions in progress."
 msgstr "Aucune session BigBlueButton n’est en cours."
 
 #: pod/bbb/templates/bbb/live_publish_meeting.html
+msgid "Confirmation of performing a BigBlueButton live"
+msgstr "Confirmation de la réalisation d’un direct BigBlueButton"
+
+#: pod/bbb/templates/bbb/live_publish_meeting.html
 msgid "Are you sure you want to perform a BigBlueButton live?"
 msgstr "Êtes-vous sûr de vouloir réaliser un direct BigBlueButton ?"
 
@@ -821,10 +825,6 @@ msgstr "La session BigBlueButton a été publiée."
 msgid "The BigBlueButton live has been performed."
 msgstr "Le direct BigBlueButton a été publié et va bientôt démarrer."
 
-#: pod/bbb/views.py
-msgid "Confirmation of performing a BigBlueButton live"
-msgstr "Confirmation de la réalisation d’un direct BigBlueButton"
-
 #: pod/chapter/apps.py pod/chapter/models.py
 #: pod/chapter/templates/video_chapter.html
 #: pod/video/templates/videos/video-element.html
@@ -856,7 +856,7 @@ msgid "slug"
 msgstr "titre court"
 
 #: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
-#: pod/live/models.py pod/playlist/models.py pod/video/models.py
+#: pod/live/models.py pod/video/models.py
 msgid ""
 "Used to access this instance, the \"slug\" is a short label containing only "
 "letters, numbers, underscore or dash top."
@@ -1010,6 +1010,7 @@ msgstr "Supprimer le chapitre « %(chapter_title)s »"
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/dashboard.html
+#: pod/video/templates/videos/video_access_tokens.html
 #: pod/video/templates/videos/video_delete.html
 msgid "Delete"
 msgstr "Supprimer"
@@ -1024,6 +1025,7 @@ msgstr "Chapitre vidéo"
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/main/templates/navbar.html pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/video_access_tokens.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
 #: pod/video/templates/videos/video_edit.html pod/video/views.py
@@ -1088,26 +1090,6 @@ msgstr "Les chapitres ne peuvent commencer au même moment."
 #: pod/chapter/templates/video_chapter.html
 msgid "You must save your chapters to view the result."
 msgstr "Vous devez sauvegarder vos chapitres pour voir le résultat."
-
-#: pod/chapter/templates/video_chapter.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Mandatory fields"
-msgstr "Champs obligatoires"
-
-#: pod/chapter/templates/video_chapter.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/theme_edit.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Fields marked with an asterisk are mandatory."
-msgstr "Les champs marqués avec un astérisque sont obligatoires."
 
 #: pod/chapter/views.py
 msgid "You cannot chapter this video."
@@ -2018,7 +2000,7 @@ msgstr "En bas à gauche"
 #: pod/dressing/models.py pod/video/models.py
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
-"subject / context of the content.(max length: 100 characters)"
+"subject / context of the content. (max length: 100 characters)"
 msgstr ""
 "Veuillez choisir un titre aussi court et précis que possible, qui reflète le "
 "sujet principal / le contexte de votre contenu. (taille maximale : 100 "
@@ -2555,6 +2537,10 @@ msgstr ""
 "Veuillez entrer l’adresse de l’enregistrement à télécharger. Cette adresse "
 "doit correspondre au type d’enregistrement sélectionné."
 
+#: pod/import_video/models.py
+msgid "Recording state"
+msgstr "Etat de l’enregistrement"
+
 #: pod/import_video/models.py pod/meeting/models.py
 msgid "User who uploaded to Pod the video file"
 msgstr "Utilisateur qui a téléversé le fichier vidéo sur Pod"
@@ -2576,8 +2562,8 @@ msgid ""
 "a>."
 msgstr ""
 "L’accès à l’ajout d’enregistrements externes a été limité. Si vous souhaitez "
-"ajouter des enregistrements externes sur la plateforme, veuillez <a "
-"href=\"%(url)s\">nous contacter</a>."
+"ajouter des enregistrements externes sur la plateforme, veuillez <a href="
+"\"%(url)s\">nous contacter</a>."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
@@ -2852,6 +2838,13 @@ msgstr "Impossible de téléverser la vidéo sur Pod"
 msgid "YouTube content is inaccessible."
 msgstr "Ce contenu de YouTube est inaccessible."
 
+#: pod/import_video/tests/test_views.py pod/import_video/views.py
+msgid ""
+"Impossible to upload to Pod the video, the link provided does not seem valid."
+msgstr ""
+"Impossible de télécharger sur Pod la vidéo, le lien fourni ne semble pas "
+"valide."
+
 #: pod/import_video/utils.py
 msgid "No URL found / No recording name"
 msgstr "Aucune URL trouvée / Aucun nom d’enregistrement"
@@ -2954,8 +2947,8 @@ msgid ""
 "This video was uploaded to Pod; its origin is %(type)s: <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
-"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
 #: pod/import_video/views.py pod/meeting/views.py
 msgid "Try changing the record type or address for this recording."
@@ -2966,8 +2959,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
@@ -2975,8 +2968,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "Youtube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
@@ -3046,24 +3039,30 @@ msgstr ""
 "PeerTube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>."
 
 #: pod/import_video/views.py
-msgid "Impossible to upload to Pod the PeerTube video"
-msgstr "Impossible de téléverser la vidéo PeerTube sur Pod"
-
-#: pod/import_video/views.py
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Video file not uploaded to Pod"
-msgstr "Le fichier vidéo n’a pas été téléversé sur Pod"
+msgid "Convert web presentation to video in progress..."
+msgstr "Conversion de la présentation web en vidéo en cours..."
 
 #: pod/import_video/views.py
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid "Video file already uploaded to Pod"
 msgstr "Fichier vidéo déjà téléversé sur Pod"
 
+#: pod/import_video/views.py pod/meeting/views.py
+msgid "Try changing the record type or address for this recording."
+msgstr ""
+"Essayez de modifier le type d’enregistrement ou l’adresse de cet "
+"enregistrement."
+
 #: pod/import_video/views.py
 msgid "No video file found. Upload to Pod as a video is not possible."
 msgstr ""
 "Aucun fichier vidéo trouvé. Le téléversement sur Pod en tant que vidéo n’est "
 "pas possible."
+
+#: pod/import_video/views.py
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Video file not uploaded to Pod"
+msgstr "Le fichier vidéo n’a pas été téléversé sur Pod"
 
 #: pod/live/admin.py pod/live/models.py
 msgid "QR code to record immediately an event"
@@ -3658,11 +3657,13 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Embed in a web page"
 msgstr "Intégrer dans une page web"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Copy the content of this text box and paste it in the page:"
 msgstr ""
 "Copiez le contenu de cette boîte de texte et collez-le sur votre page :"
@@ -3694,6 +3695,7 @@ msgstr "Partager sur LinkedIn"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Share the link"
 msgstr "Partager le lien"
 
@@ -4986,6 +4988,14 @@ msgstr "Vous venez d’envoyer un message depuis"
 msgid "Regards"
 msgstr "Cordialement"
 
+#: pod/main/templates/main/mandatory_fields.html
+msgid "Mandatory fields"
+msgstr "Champs obligatoires"
+
+#: pod/main/templates/main/mandatory_fields.html
+msgid "Fields marked with an asterisk are mandatory."
+msgstr "Les champs marqués avec un astérisque sont obligatoires."
+
 #: pod/main/templates/maintenance.html
 msgid ""
 "The maintenance is over, you can go back to work. Thank you for your "
@@ -5941,16 +5951,16 @@ msgid ""
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à une réunion récurrente "
-"<b>%(meeting_title)s</b>.</p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente <b>"
+"%(meeting_title)s</b>.</p>\n"
 "        <p>Date de début : %(start_date_time)s </p>\n"
 "        <p>Récurrent jusqu’à la date : %(end_date)s </p>\n"
 "        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
 "p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<b>%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
+"%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -5976,8 +5986,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<b>%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
+"%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -6033,7 +6043,7 @@ msgstr "Veuillez choisir une description. Celle-ci est vide par défaut."
 msgid "Right of access"
 msgstr "Droit d’accès"
 
-#: pod/playlist/forms.py
+#: pod/playlist/forms.py pod/playlist/models.py
 msgid ""
 "Please choose an access right among “public”, “password-protected”, "
 "“private”."
@@ -6051,7 +6061,7 @@ msgstr ""
 msgid "Promoted"
 msgstr "Promue"
 
-#: pod/playlist/forms.py pod/playlist/models.py
+#: pod/playlist/forms.py
 msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated, "
@@ -6118,15 +6128,16 @@ msgstr "Liste de lecture"
 
 #: pod/playlist/models.py
 msgid ""
-"\n"
-"            Please chosse a right of access among 'public', 'password-"
-"protected', 'private'.\n"
-"            "
+"Selecting this setting causes your playlist to be promoted on the page "
+"listing promoted public playlists. However, if this setting is deactivated "
+"your playlist will still be accessible to everyone.<br>For general use, we "
+"recommend that you leave this setting disabled."
 msgstr ""
-"\n"
-"            Veuillez choisir un droit d’accès entre « public », « protégée "
-"par un mot de passe », « privée ».\n"
-"            "
+"En sélectionnant ce paramètre, votre liste de lecture sera mise en avant "
+"dans la page listant les listes de lecture publiques promues. En revanche, "
+"si ce paramètre est désactivé, votre liste de lecture restera tout de même "
+"accessible par tous.<br>Pour une utilisation générale, il est conseillé de "
+"laisser ce paramètre désactivé."
 
 #: pod/playlist/models.py
 msgid "Editable"
@@ -6135,6 +6146,15 @@ msgstr "Éditable"
 #: pod/playlist/models.py
 msgid "Please choose if this playlist is editable or not."
 msgstr "Veuillez choisir si cette playlist est éditable ou non."
+
+#: pod/playlist/models.py
+msgid ""
+"Used to access this instance, the “slug” is a short label containing only "
+"letters, numbers, underscore or dash top."
+msgstr ""
+"Utilisé pour accéder à cette instance, le « titre court » est une étiquette "
+"formée uniquement de lettres (non accentuées), de chiffres, de l’underscore "
+"(barre de soulignement) et du tiret."
 
 #: pod/playlist/models.py
 msgid "You can add additional owners to the playlist."
@@ -7020,8 +7040,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -7098,10 +7118,9 @@ msgid ""
 msgstr ""
 "<p>Bonjour,<br> un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur « %(recorder)s ».<br>Pour "
-"l’ajouter, cliquez sur le lien ci-dessous.</p><p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br><em>Si le lien n’est pas actif, il "
-"faut le copier-coller dans la barre d’adresse de votre navigateur.</em></"
-"p><p>Cordialement.</p>"
+"l’ajouter, cliquez sur le lien ci-dessous.</p><p><a href=\"%(link_url)s\">"
+"%(link_url)s</a><br><em>Si le lien n’est pas actif, il faut le copier-coller "
+"dans la barre d’adresse de votre navigateur.</em></p><p>Cordialement.</p>"
 
 #: pod/recorder/views.py
 msgid "New recording added."
@@ -7134,7 +7153,11 @@ msgstr "Définir comme brouillon"
 
 #: pod/video/admin.py
 msgid "Transcript selected"
-msgstr "Transcription selectionnée"
+msgstr "Transcrire la sélection"
+
+#: pod/video/admin.py
+msgid "Change video owner"
+msgstr "Changer le propriétaire de vidéos"
 
 #: pod/video/forms.py
 msgid "File field"
@@ -7446,8 +7469,8 @@ msgid ""
 "%(url)s</a></p>\n"
 msgstr ""
 "vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
-"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
-"target=\"_blank\">%(scheme)s:%(url)s</a></p>\n"
+"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" target=\"_blank\">"
+"%(scheme)s:%(url)s</a></p>\n"
 "\n"
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -7579,6 +7602,15 @@ msgstr "Partagé avec le propriétaire de la vidéo"
 #, python-format
 msgid "%(app)s version"
 msgstr "Version %(app)s"
+
+#: pod/video/models.py
+msgid ""
+"Please choose a title as short and accurate as possible, reflecting the main "
+"subject / context of the content.(max length: 100 characters)"
+msgstr ""
+"Veuillez choisir un titre aussi court et précis que possible, qui reflète le "
+"sujet principal / le contexte de votre contenu. (taille maximale : 100 "
+"caractères)"
 
 #: pod/video/models.py
 msgid ""
@@ -7803,15 +7835,6 @@ msgstr "Votes"
 msgid "Category title"
 msgstr "Titre de la catégorie"
 
-#: pod/video/models.py
-msgid ""
-"Please choose a title as short and accurate as possible, reflecting the main "
-"subject / context of the content. (max length: 100 characters)"
-msgstr ""
-"Veuillez choisir un titre aussi court et précis que possible, qui reflète le "
-"sujet principal / le contexte de votre contenu. (taille maximale : 100 "
-"caractères)"
-
 #: pod/video/models.py pod/video/templates/videos/category_modal.html
 msgid "Category"
 msgstr "Catégorie"
@@ -7819,6 +7842,14 @@ msgstr "Catégorie"
 #: pod/video/models.py pod/video/templates/videos/filter_aside_category.html
 msgid "Categories"
 msgstr "Catégories"
+
+#: pod/video/models.py
+msgid "Video access token"
+msgstr "Jeton d'accès à la vidéo"
+
+#: pod/video/models.py
+msgid "Video access tokens"
+msgstr "Jetons d'accès à la vidéo"
 
 #: pod/video/templates/channel/channel.html
 msgid "Show view statistics for all videos in this theme"
@@ -8086,10 +8117,6 @@ msgid "Permanently delete your category?"
 msgstr "Supprimer définitivement votre catégorie ?"
 
 #: pod/video/templates/videos/change_video_owner.html
-msgid "Change video owner"
-msgstr "Changer le propriétaire de vidéos"
-
-#: pod/video/templates/videos/change_video_owner.html
 msgid "Old owner"
 msgstr "Ancien propriétaire"
 
@@ -8289,8 +8316,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
-"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
+"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html
 msgid "Other versions"
@@ -8477,6 +8504,11 @@ msgid "Check the box to indicate the beginning of playing desired."
 msgstr "Cocher la case pour indiquer le début de lecture souhaité."
 
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Manage access tokens"
+msgstr "Gestion des jetons d'accès"
+
+#: pod/video/templates/videos/video-info.html
 msgid "BigBlueButton/H5P Integration"
 msgstr "Intégration BigBlueButton/H5P"
 
@@ -8489,8 +8521,33 @@ msgstr ""
 "interactive H5P :"
 
 #: pod/video/templates/videos/video-info.html
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Use this link to share the video:"
 msgstr "Utiliser ce lien pour partager la vidéo :"
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Add a token"
+msgstr "Ajouter un jeton"
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "List of active tokens"
+msgstr "Liste des jetons actif"
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Token"
+msgstr "Jeton"
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Copy to clipboard"
+msgstr "Copier dans le presse-papiers"
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Please confirm you want to delete the token"
+msgstr "Veuillez confirmer que vous souhaitez supprimer le jeton"
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Delete the token"
+msgstr "Supprimer le jeton"
 
 #: pod/video/templates/videos/video_collaborate.html
 msgid "Collaborate"
@@ -8586,10 +8643,6 @@ msgstr ""
 #, python-format
 msgid "Edit the %(app)s"
 msgstr "Éditer le %(app)s"
-
-#: pod/video/templates/videos/video_edit.html
-msgid "Use this link to share the video in draft mode"
-msgstr "Utiliser ce lien pour partager la vidéo en mode brouillon"
 
 #: pod/video/templates/videos/video_licencebox.html
 msgid "Creative Commons license:"
@@ -8761,6 +8814,22 @@ msgstr ""
 msgid "-- sorry, no translation provided --"
 msgstr "-- désolé, aucune traduction fournie --"
 
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "An action must be specified."
+msgstr "Une action doit être précisée."
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "A token has been created."
+msgstr "Un jeton a été créé."
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "Token not found."
+msgstr "Jeton non trouvé."
+
+#: pod/video/tests/test_views.py pod/video/views.py
+msgid "The token has been deleted."
+msgstr "Le jeton a été supprimé."
+
 #: pod/video/views.py
 msgid "You cannot edit this channel."
 msgstr "Vous ne pouvez éditer cette chaîne."
@@ -8824,6 +8893,11 @@ msgid "You cannot delete a video that is being encoded."
 msgstr "Vous ne pouvez pas supprimer une vidéo en cours d’encodage."
 
 #: pod/video/views.py
+#, python-format
+msgid "Manage access tokens for the video \"%(vtitle)s\""
+msgstr "Gestion des jetons d’accès à la vidéo « %(vtitle)s »"
+
+#: pod/video/views.py
 msgid "Transcription not enabled on this platform."
 msgstr "Transcription non activée sur cette plateforme."
 
@@ -8843,6 +8917,10 @@ msgstr "La transcription de la vidéo a été relancée."
 #: pod/video/views.py
 msgid "An available transcription language must be specified."
 msgstr "Une langue de transcription disponible doit être spécifié."
+
+#: pod/video/views.py
+msgid "No audio file found."
+msgstr "Aucun fichier audio trouvé."
 
 #: pod/video/views.py
 #, python-format
@@ -9178,34 +9256,12 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
-#~ msgid "YouTube content is inaccessible"
-#~ msgstr "Le contenu YouTube n’est pas disponible"
-
-#~ msgid ""
-#~ "YouTube content is inaccessible. This content does not appear to be "
-#~ "publicly available."
-#~ msgstr ""
-#~ "Le contenu YouTube est inaccessible. Ce contenu ne semble pas être "
-#~ "disponible publiquement."
-
-#~ msgid ""
-#~ "Access to adding external recording has been restricted. If you want to "
-#~ "add external recordings on the platform, please"
-#~ msgstr ""
-#~ "L’accès à l’ajout d’un enregistrement externe a été restreint. Si vous "
-#~ "souhaitez ajouter des enregistrements externes sur la plateforme, s’il "
-#~ "vous plaît"
-
-#~ msgid "Deleting the record"
-#~ msgstr "Supprimer cet enregistrement"
-
 #~ msgid "Playlist image"
 #~ msgstr "Image de la playlist"
 
 #~ msgid "Live"
 #~ msgstr "Directs"
 
-#, python-format
 #~ msgid "Deleting the event \"%(vtitle)s\""
 #~ msgstr "Supprimer l’évènement « %(vtitle)s »"
 

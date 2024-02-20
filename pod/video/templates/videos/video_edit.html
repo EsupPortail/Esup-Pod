@@ -4,7 +4,7 @@
 {% load tagging_tags %}
 
 {% block breadcrumbs %}{{ block.super }}
-  <li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans 'Dashboard' %}</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans "Dashboard" %}</a></li>
   {% if form.instance.title and form.instance.slug != '' %}
     <li class="breadcrumb-item"><a href="{% url 'video:video' slug=form.instance.slug %}" title="{{form.instance.title}}">{{form.instance.title|title|truncatechars:45}}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
@@ -210,15 +210,7 @@
       <div class="card" id="card-sharedraftversion">
         <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans 'Embed/Share (Draft Mode)' %}</h2>
         <div class="card-body card-text">
-          <label class="form-label" for="txtpartageprive">{% trans 'Use this link to share the video in draft mode' %}</label>
-          <div class="input-group">
-            <input class="form-control form-control-sm form-control-plaintext" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video/{{ form.instance.slug }}/{{ form.instance.get_hashkey }}/" readonly>
-            <div class="input-group-button">
-              <clipboard-copy aria-label="Copy to clipboard" class="btn pod-btn-social" tabindex="0" role="button" id="btnpartageprive">
-                <i class="bi bi-clipboard"></i>
-              </clipboard-copy>
-            </div>
-          </div>
+          <a href="{% url 'video:video_edit_access_tokens' video.slug %}" class="btn btn-primary my-2">{% trans 'Manage access tokens' %}</a>
         </div>
       </div>
     {% endif %}
@@ -229,19 +221,12 @@
       <p>{% blocktrans with form.VIDEO_MAX_UPLOAD_SIZE as video_max_upload_size %}The file size must be lower than {{video_max_upload_size}} Go.{% endblocktrans %}</p>
       <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
       <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
-      <p>{% trans "An email will be sent to you when all encoding tasks are completed." %}
-      <p>
+      <p>{% trans "An email will be sent to you when all encoding tasks are completed." %}</p>
     </div>
   </div>
-  <div class="card" id="card-mandatory-fields">
-    <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Mandatory fields" %}</h2>
-    <div class="card-body card-text">
-      <p>
-        <span class="required_star">*</span>
-        {% trans "Fields marked with an asterisk are mandatory." %}
-      </p>
-    </div>
-  </div>
+
+  {% include 'main/mandatory_fields.html'%}
+
   <div class="card" id="card-helpfields">
     <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Help for form fields" %}</h2>
     <div class="card-body" id="formfields">
