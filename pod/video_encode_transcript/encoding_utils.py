@@ -11,6 +11,14 @@ except (ImportError, ValueError):
     from encoding_settings import VIDEO_RENDITIONS
 
 
+def sec_to_timestamp(total_seconds):
+    """Format time for webvtt caption."""
+    hours = int(total_seconds / 3600)
+    minutes = int(total_seconds / 60 - hours * 60)
+    seconds = total_seconds - hours * 3600 - minutes * 60
+    return "{:02d}:{:02d}:{:06.3f}".format(hours, minutes, seconds)
+
+
 def get_dressing_position_value(position: str, height: str) -> str:
     """
     Obtain dimensions proportional to the video format.

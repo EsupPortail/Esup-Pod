@@ -183,8 +183,8 @@ def store_remote_encoded_video(request):
     data = json.loads(request.body.decode("utf-8"))
     if video.encoding_in_progress is False:
         raise SuspiciousOperation("video not encoding in progress")
-    if video_id != data["video_id"]:
-        raise SuspiciousOperation("different video id")
+    if str(video_id) != str(data["video_id"]):
+        raise SuspiciousOperation("different video id : %s - %s" % (video_id, data["video_id"]))
     print("Start the importing of the video: %s" % video_id)
     encoding_video = Encoding_video_model(
         video_id,
@@ -208,9 +208,7 @@ def store_remote_transcripted_video(request):
     video = get_object_or_404(Video, id=video_id)
     # check if video is encoding !!!
     data = json.loads(request.body.decode("utf-8"))
-    if video.encoding_in_progress is False:
-        raise SuspiciousOperation("video not encoding in progress")
-    if video_id != data["video_id"]:
+    if str(video_id) != str(data["video_id"]):
         raise SuspiciousOperation("different video id")
     print("Start the import of transcription of the video: %s" % video_id)
     print("temp_vtt_file: %s" % data["temp_vtt_file"])

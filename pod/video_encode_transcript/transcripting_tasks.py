@@ -79,7 +79,7 @@ def start_transcripting_task(video_id, mp3filepath, duration, lang):
     data = {
         "video_id": video_id,
         "msg": msg,
-        "temp_vtt_file": temp_vtt_file
+        "temp_vtt_file": temp_vtt_file.name
     }
     try:
         response = requests.post(url, json=data, headers=Headers)

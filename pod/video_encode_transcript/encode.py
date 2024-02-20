@@ -137,8 +137,8 @@ def encode_video(video_id: int) -> None:
     if USE_REMOTE_ENCODING_TRANSCODING:
         dressing = None
         dressing_input = ""
-        if Dressing.objects.filter(videos=encoding_video).exists():
-            dressing = Dressing.objects.get(videos=encoding_video).to_json()
+        if Dressing.objects.filter(videos=video_to_encode).exists():
+            dressing = Dressing.objects.get(videos=video_to_encode).to_json()
             if dressing:
                 dressing_input = get_dressing_input(
                     dressing,
