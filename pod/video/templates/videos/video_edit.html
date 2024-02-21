@@ -210,7 +210,7 @@
       <div class="card" id="card-sharedraftversion">
         <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans 'Embed/Share (Draft Mode)' %}</h2>
         <div class="card-body card-text">
-          <a href="{% url 'video:video_edit_access_tokens' video.slug %}" class="btn btn-primary my-2">{% trans 'Manage access tokens' %}</a>
+          <a href="{% url 'video:video_edit_access_tokens' form.instance.slug %}" class="btn btn-primary my-2">{% trans 'Manage access tokens' %}</a>
         </div>
       </div>
     {% endif %}
