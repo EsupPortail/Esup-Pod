@@ -17,6 +17,7 @@ class ExternalRecordingAdmin(admin.ModelAdmin):
         "start_at",
         "type",
         "source_url",
+        "state",
         "owner",
     )
     search_fields = [
