@@ -28,7 +28,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.http import JsonResponse
 from wsgiref.util import FileWrapper
@@ -103,14 +103,18 @@ def in_maintenance():
 def download_file(request):
     """Direct download of requested file."""
     if request.POST and request.POST.get("filename"):
-        filename = os.path.join(settings.MEDIA_ROOT, request.POST["filename"])
-        wrapper = FileWrapper(open(filename, "rb"))
-        response = HttpResponse(wrapper, content_type=mimetypes.guess_type(filename)[0])
-        response["Content-Length"] = os.path.getsize(filename)
-        response["Content-Disposition"] = 'attachment; filename="%s"' % os.path.basename(
-            filename
-        )
-        return response
+        post_filename = request.POST["filename"].strip('/')
+        filename = os.path.join(settings.MEDIA_ROOT, post_filename)
+        if os.path.isfile(filename) and filename.startswith(settings.MEDIA_ROOT):
+            wrapper = FileWrapper(open(filename, "rb"))
+            response = HttpResponse(wrapper, content_type=mimetypes.guess_type(filename)[0])
+            response["Content-Length"] = os.path.getsize(filename)
+            response["Content-Disposition"] = 'attachment; filename="%s"' % os.path.basename(
+                filename
+            )
+            return response
+        else:
+            raise SuspiciousOperation("file not exist or not in media path")
     else:
         raise PermissionDenied
 
