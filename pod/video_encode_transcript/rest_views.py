@@ -209,12 +209,12 @@ def store_remote_transcripted_video(request):
     # check if video is encoding !!!
     data = json.loads(request.body.decode("utf-8"))
     if str(video_id) != str(data["video_id"]):
-        raise SuspiciousOperation("different video id")
+        raise SuspiciousOperation("different video id : %s - %s" % (video_id, data["video_id"]))
     print("Start the import of transcription of the video: %s" % video_id)
-    print("temp_vtt_file: %s" % data["temp_vtt_file"])
     filename = os.path.basename(data["temp_vtt_file"])
     media_temp_dir = os.path.join(MEDIA_ROOT, "temp")
     filepath = os.path.join(media_temp_dir, filename)
     new_vtt = webvtt.read(filepath)
     save_vtt_and_notify(video, data["msg"], new_vtt)
     os.remove(filepath)
+    return Response(VideoSerializer(instance=video, context={"request": request}).data)

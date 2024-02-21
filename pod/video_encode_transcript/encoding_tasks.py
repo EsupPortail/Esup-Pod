@@ -83,7 +83,7 @@ def start_encoding_task(
             )
             logger.error(msg + "\n" + str(response.content))
         else:
-            logger.info("Call importing task ok")
+            logger.info("Call importing encoded task ok")
     except (
         requests.exceptions.HTTPError,
         requests.exceptions.ConnectionError,

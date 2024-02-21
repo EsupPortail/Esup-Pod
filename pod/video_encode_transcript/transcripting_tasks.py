@@ -90,7 +90,7 @@ def start_transcripting_task(video_id, mp3filepath, duration, lang):
             )
             logger.error(msg + "\n" + str(response.content))
         else:
-            logger.info("Call importing task ok")
+            logger.info("Call importing transcript task ok")
     except (
         requests.exceptions.HTTPError,
         requests.exceptions.ConnectionError,
