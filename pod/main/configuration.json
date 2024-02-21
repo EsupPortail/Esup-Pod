@@ -2996,7 +2996,37 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "3.4.0"
+                            "pod_version_init": "3.5.1"
+                        },
+                        "POD_API_URL": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Adresse de l'API rest a appeler en fin d'encodage distant ou de transcription à distance",
+                                    "Exemple : https://pod.univ.fr/rest/"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.1"
+                        },
+                        "POD_API_TOKEN": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "",
+                                    "Token d'authentification utilisé pour l'appel en fin d'encodage distant ou de transcription à distance",
+                                    "Pour le créer, il faut aller dans la partie Admin > Jeton d'authentification > token"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.1"
                         },
                         "VIDEO_RENDITIONS": {
                             "default_value": "[]",
@@ -5007,7 +5037,7 @@
                             "Mise en place du mode PWA grâce à l'application Django-pwa",
                             "Voici la configuration par défaut pour Pod, vous pouvez surcharger chaque variable dans votre fichier de configuration.",
                             "PWA_APP_NAME = \"Pod\"",
-                            "PWA_APP_DESCRIPTION = _(",
+                            "PWA_APP_DESCRIPTION = (",
                             "    \"Pod is aimed at users of our institutions, by allowing the publication of \"",
                             "    \"videos in the fields of research (promotion of platforms, etc.), training \"",
                             "    \"(tutorials, distance training, student reports, etc.), institutional life (video \"",
