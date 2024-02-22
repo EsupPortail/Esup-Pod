@@ -42,7 +42,58 @@ jobs:
           run: |
             ls ${{ github.workspace }}
         - run: echo "🍏 This job's status is ${{ job.status }}."
+        - name: Create settings local file
+          run: |
+            SETTINGS_LOCAL="\n
+                            USE_PODFILE = True\n
+                            EMAIL_ON_ENCODING_COMPLETION = False\n
+                            SECRET_KEY = 'A_CHANGER'\n
+                            DEBUG = True\n
+                            # on précise ici qu'on utilise ES version 7\n
+                            ES_VERSION = 7\n
+                            ES_URL = ['http://elasticsearch:9200/']\n
+                            CACHES = {\n
+                                'default': {\n
+                                    'BACKEND': 'django_redis.cache.RedisCache',\n
+                                    'LOCATION': 'redis://redis:6379/3',\n
+                                    'OPTIONS': {\n
+                                        'CLIENT_CLASS': 'django_redis.client.DefaultClient',\n
+                                    },\n
+                                    'KEY_PREFIX': 'pod'\n
+                                },\n
+                                'select2': {\n
+                                    'BACKEND': 'django_redis.cache.RedisCache',\n
+                                    'LOCATION': 'redis://redis:6379/2',\n
+                                    'OPTIONS': {\n
+                                        'CLIENT_CLASS': 'django_redis.client.DefaultClient',\n
+                                    },\n
+                                },\n
+                            }\n
+                            SESSION_ENGINE = 'redis_sessions.session'\n
+                            SESSION_REDIS = {\n
+                                'host': 'redis',\n
+                                'port': 6379,\n
+                                'db': 4,\n
+                                'prefix': 'session',\n
+                                'socket_timeout': 1,\n
+                                'retry_on_timeout': False,\n
+                            }\n
 
+                            # Uniquement lors d’environnement conteneurisé
+                            MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}\n
+                            \n
+                            # Si DOCKER_ENV = full il faut activer l'encodage et la transcription distante
+                            USE_REMOTE_ENCODING_TRANSCODING = True\n
+                            ENCODING_TRANSCODING_CELERY_BROKER_URL = 'redis://redis:6379/7'\n
+                            \n
+                            # pour avoir le maximum de log sur la console\n
+                            LOGGING = {}\n
+                        "
+            touch .pod/custom/settings_local.py
+            echo $SETTINGS_LOCAL >> .pod/custom/settings_local.py
+            echo "EOF" >> .pod/custom/settings_local.py
+        - name: cat settings local
+          run: cat .pod/custom/settings_local.py
         - name: Create env file containers
           run: |
             touch .env.dev
@@ -60,8 +111,15 @@ jobs:
         - name: cat env
           run: cat .env.dev
         - name: make Build container
-          run:
-            make docker-build
+          run: |
+            sudo rm -rf ./pod/log
+            sudo rm -rf ./pod/static
+            sudo rm -rf ./pod/node_modules
+            docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG) --no-cache
+            docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod up
+            #  -detach --wait --wait-timeout 300
+        - name: Wait for healthchecks
+          run: timeout 60s sh -c 'until docker ps | grep <CONTAINER_NAME> | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 2; done'          
         - name: show running container
           run: docker ps 
         - run: echo "🍏 Docker is UP ${{ job.status }}."
