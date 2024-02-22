@@ -59,14 +59,15 @@ jobs:
             REDIS_TAG: "redis:alpine3.16"
           run:
             docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG --build-arg NODE_VERSION=$NODE_TAG --build-arg PYTHON_VERSION=$PYTHON_TAG --no-cache --detach --wait --wait-timeout 120
-        - name: Up container
+        - name: Docker Up container
           env:
             ELASTICSEARCH_TAG: "elasticsearch:7.17.18"
             ELASTICSEARCH_VERSION: "elasticsearch:7.17.18"
             NODE_TAG: "node:19"
             PYTHON_TAG: "python:3.9-buster"
             REDIS_TAG: "redis:alpine3.16"
-          run:
+          run: |
+            export ELASTICSEARCH_VERSION=elasticsearch:7.17.18
             docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod up
         - name: show running container
           run: docker ps 
