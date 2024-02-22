@@ -14,6 +14,15 @@ on:
       - main
       - master
       - develop
+env:
+    DJANGO_SUPERUSER_USERNAME: "admin"
+    DJANGO_SUPERUSER_PASSWORD: "passwd"
+    DJANGO_SUPERUSER_EMAIL: "noreplay@uni.fr"
+    ELASTICSEARCH_TAG: "elasticsearch:7.17.18"
+    ELASTICSEARCH_VERION: "elasticsearch:7.17.18"
+    NODE_TAG: "node:19"
+    PYTHON_TAG: "python:3.9-buster"
+    REDIS_TAG: "redis:alpine3.16"
 
 jobs:
   Pod-Docker-Encoding-Actions:
@@ -32,14 +41,6 @@ jobs:
         - run: echo "🍏 This job's status is ${{ job.status }}."
 
         - name: Create env file containers
-          env:
-            DJANGO_SUPERUSER_USERNAME: "admin"
-            DJANGO_SUPERUSER_PASSWORD: "passwd"
-            DJANGO_SUPERUSER_EMAIL: "noreplay@uni.fr"
-            ELASTICSEARCH_TAG: "elasticsearch:7.17.18"
-            NODE_TAG: "node:19"
-            PYTHON_TAG: "python:3.9-buster"
-            REDIS_TAG: "redis:alpine3.16"
           run: |
             touch .env.dev
             echo DJANGO_SUPERUSER_USERNAME="$DJANGO_SUPERUSER_USERNAME" >> .env.dev
@@ -50,24 +51,13 @@ jobs:
             echo NODE_TAG="$NODE_TAG" >> .env.dev
             echo PYTHON_TAG="$PYTHON_TAG" >> .env.dev
             echo REDIS_TAG="$REDIS_TAG" >> .env.dev
+        - name: cat env
+          run: cat .env.dev
         - name: Build container
-          env:
-            ELASTICSEARCH_TAG: "elasticsearch:7.17.18"
-            ELASTICSEARCH_VERSION: "elasticsearch:7.17.18"
-            NODE_TAG: "node:19"
-            PYTHON_TAG: "python:3.9-buster"
-            REDIS_TAG: "redis:alpine3.16"
           run:
             docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG --build-arg NODE_VERSION=$NODE_TAG --build-arg PYTHON_VERSION=$PYTHON_TAG --no-cache --detach --wait --wait-timeout 120
         - name: Docker Up container
-          env:
-            ELASTICSEARCH_TAG: "elasticsearch:7.17.18"
-            ELASTICSEARCH_VERSION: "elasticsearch:7.17.18"
-            NODE_TAG: "node:19"
-            PYTHON_TAG: "python:3.9-buster"
-            REDIS_TAG: "redis:alpine3.16"
-          run: |
-            export ELASTICSEARCH_VERSION=elasticsearch:7.17.18
+          run: 
             docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod up
         - name: show running container
           run: docker ps 
