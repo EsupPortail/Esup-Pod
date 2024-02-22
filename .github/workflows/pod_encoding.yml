@@ -89,8 +89,9 @@ jobs:
             # pour avoir le maximum de log sur la console\n
             LOGGING = {}\n
                         "
-            echo $SETTINGS_LOCAL >> .pod/custom/settings_local.py
-            echo "EOF" >> .pod/custom/settings_local.py
+            touch pod/custom/settings_local.py
+            echo $SETTINGS_LOCAL >> pod/custom/settings_local.py
+            echo "EOF" >> pod/custom/settings_local.py
         - name: cat settings local
           run: cat .pod/custom/settings_local.py
         - name: Create env file containers
