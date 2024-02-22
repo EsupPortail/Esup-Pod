@@ -23,6 +23,9 @@ env:
     NODE_TAG: "node:19"
     PYTHON_TAG: "python:3.9-buster"
     REDIS_TAG: "redis:alpine3.16"
+    DOCKER_ENV: "full"
+    GECKODRIVER_VER: "v0.29.0"
+    FIREFOX_VER: "87.0"
 
 jobs:
   Pod-Docker-Encoding-Actions:
@@ -43,22 +46,22 @@ jobs:
         - name: Create env file containers
           run: |
             touch .env.dev
-            echo DJANGO_SUPERUSER_USERNAME="$DJANGO_SUPERUSER_USERNAME" >> .env.dev
-            echo DJANGO_SUPERUSER_PASSWORD="$DJANGO_SUPERUSER_PASSWORD" >> .env.dev
-            echo DJANGO_SUPERUSER_EMAIL="$DJANGO_SUPERUSER_EMAIL" >> .env.dev
-            echo ELASTICSEARCH_TAG="$ELASTICSEARCH_TAG" >> .env.dev
-            echo ELASTICSEARCH_VERSION="$ELASTICSEARCH_TAG" >> .env.dev
-            echo NODE_TAG="$NODE_TAG" >> .env.dev
-            echo PYTHON_TAG="$PYTHON_TAG" >> .env.dev
-            echo REDIS_TAG="$REDIS_TAG" >> .env.dev
+            echo DJANGO_SUPERUSER_USERNAME=$DJANGO_SUPERUSER_USERNAME >> .env.dev
+            echo DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD >> .env.dev
+            echo DJANGO_SUPERUSER_EMAIL=$DJANGO_SUPERUSER_EMAIL >> .env.dev
+            echo ELASTICSEARCH_TAG=$ELASTICSEARCH_TAG >> .env.dev
+            echo ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG >> .env.dev
+            echo NODE_TAG=$NODE_TAG >> .env.dev
+            echo PYTHON_TAG=$PYTHON_TAG >> .env.dev
+            echo REDIS_TAG=$REDIS_TAG >> .env.dev
+            echo DOCKER_ENV=full >> .env.dev
+            echo GECKODRIVER_VER=v0.29.0
+            echo FIREFOX_VER=87.0
         - name: cat env
           run: cat .env.dev
-        - name: Build container
+        - name: make Build container
           run:
-            docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG --build-arg NODE_VERSION=$NODE_TAG --build-arg PYTHON_VERSION=$PYTHON_TAG --no-cache --detach --wait --wait-timeout 120
-        - name: Docker Up container
-          run: 
-            docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod up
+            make docker-build
         - name: show running container
           run: docker ps 
         - run: echo "🍏 Docker is UP ${{ job.status }}."
