@@ -95,7 +95,7 @@ jobs:
             echo $SETTINGS_LOCAL >> pod/custom/settings_local.py
             echo "EOF" >> pod/custom/settings_local.py
         - name: cat settings local
-          run: cat .pod/custom/settings_local.py
+          run: cat pod/custom/settings_local.py
         - name: Create env file containers
           run: |
             touch .env.dev
