@@ -44,7 +44,9 @@ jobs:
         - run: echo "🍏 This job's status is ${{ job.status }}."
         - name: Create settings local file
           run: |
-            SETTINGS_LOCAL="\n
+            pwd
+            ls -al
+            SETTINGS_LOCAL="""\n
             USE_PODFILE = True\n
             EMAIL_ON_ENCODING_COMPLETION = False\n
             SECRET_KEY = 'A_CHANGER'\n
@@ -88,7 +90,7 @@ jobs:
             \n
             # pour avoir le maximum de log sur la console\n
             LOGGING = {}\n
-                        "
+            """
             touch pod/custom/settings_local.py
             echo $SETTINGS_LOCAL >> pod/custom/settings_local.py
             echo "EOF" >> pod/custom/settings_local.py
