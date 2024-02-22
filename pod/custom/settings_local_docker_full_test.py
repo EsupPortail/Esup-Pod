@@ -35,9 +35,11 @@ SESSION_REDIS = {
 # Uniquement lors d’environnement conteneurisé
 MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
 
-# Si DOCKER_ENV = full il faut activer l'encodage et la transcription distante
+# Si DOCKER_ENV = full il faut activer l'encodage, la transcription et l'xapi distante
 USE_REMOTE_ENCODING_TRANSCODING = True
 ENCODING_TRANSCODING_CELERY_BROKER_URL = 'redis://redis:6379/7'
+USE_XAPI_VIDEO = False
+XAPI_CELERY_BROKER_URL = "redis://redis:6379/6"
 
 # pour avoir le maximum de log sur la console\n
 LOGGING = {}
