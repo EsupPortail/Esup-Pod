@@ -1,8 +1,22 @@
 name: Pod Encoding Full Docker
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+
+on:
+    push:
+      branches:
+      - main
+      - master
+      - develop
+      - features/**
+      - dependabot/**
+    pull_request:
+      branches:
+      - main
+      - master
+      - develop
+
 jobs:
-  Explore-GitHub-Actions:
+  Pod-Docker-Encoding-Actions:
     runs-on: ubuntu-latest
     steps:
         - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -16,15 +30,8 @@ jobs:
           run: |
             ls ${{ github.workspace }}
         - run: echo "🍏 This job's status is ${{ job.status }}."
-        - name: Docker compose
-          uses: adambirds/docker-compose-action@v1.3.0
-          with:
-            compose-file: "./docker-compose-full-dev-with-volumes.yml"
-            services: ""
-            test-container: "esup-pod"
-            test-command: "npm test"
-            up-flags: ""
-            compose-flags: "build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG) --no-cache"
+
+        - name: Start containers
           env:
             DJANGO_SUPERUSER_USERNAME: "admin"
             DJANGO_SUPERUSER_PASSWORD: "passwd"
@@ -33,3 +40,9 @@ jobs:
             NODE_TAG: "node:19"
             PYTHON_TAG": "python:3.9-buster"
             REDIS_TAG": "redis:alpine3.16"
+          run: docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod up -d --build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG) --no-cache
+        - run: echo "🍏 Docker is UP ${{ job.status }}."
+        - name: Stop containers
+          if: always()
+          run: docker-compose -f "docker-compose.yml" down
+        - run: echo "END"
