@@ -69,7 +69,7 @@ jobs:
             sudo rm -rf ./pod/static
             sudo rm -rf ./pod/node_modules
             docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG --build-arg NODE_VERSION=$NODE_TAG --build-arg PYTHON_VERSION=$PYTHON_TAG --no-cache
-            docker-compose -f ./docker-compose-full-dev-with-volumes.yml up --detach --wait --wait-timeout 300
+            docker-compose -f ./docker-compose-full-dev-with-volumes.yml up --detach --force-recreate --always-recreate-deps
         - name: Wait for healthchecks
           run: timeout 120s sh -c 'until docker ps | grep pod-back-with-volumes | grep -q healthy; do echo "Waiting for container to be healthy..."; sleep 2; done'          
         - name: show running container
