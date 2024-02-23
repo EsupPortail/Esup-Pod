@@ -1,6 +1,7 @@
 DEBUG = True
 
 TEST_REMOTE_ENCODE = True
+TEST_SETTINGS = True
 
 ALLOWED_HOSTS = ["*"]
 

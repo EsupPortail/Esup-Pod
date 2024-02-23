@@ -14,6 +14,7 @@ from pod.video.models import Video, Type
 from ..models import EncodingVideo
 from ..models import PlaylistVideo
 from ..models import EncodingStep
+from .. import encode
 
 import shutil
 import os
@@ -21,7 +22,7 @@ import time
 
 VIDEO_TEST = "pod/main/static/video_test/video_test_encodage_transcription.webm"
 TEST_REMOTE_ENCODE = getattr(settings, "TEST_REMOTE_ENCODE", False)
-
+ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
 
 class TestRemoteEncodeTestCase(TestCase):
     """Video and audio encoding tests."""
@@ -32,9 +33,9 @@ class TestRemoteEncodeTestCase(TestCase):
 
     def setUp(self):
         """Set up video for remote encoding tests."""
-        self.user, created = User.objects.update_or_create(username="pod", password="pod1234pod")
+        self.user = User.objects.create(username="pod", password="pod1234pod")
         # owner1 = Owner.objects.get(user__username="pod")
-        self.video, created = Video.objects.update_or_create(
+        self.video = Video.objects.create(
             title="Video1",
             owner=self.user,
             video="test.mp4",
@@ -49,26 +50,18 @@ class TestRemoteEncodeTestCase(TestCase):
         dest = os.path.join(settings.MEDIA_ROOT, self.video.video.name)
         shutil.copyfile(VIDEO_TEST, dest)
         print("\n ---> Start Encoding video test")
-        self.video.launch_encode = True
-        self.video.encoding_in_progress = True
-        self.video.save()
-
+        encode_video = getattr(encode, ENCODE_VIDEO)
+        encode_video(self.video.id, threaded=False)
         self.video.refresh_from_db()
-
-        encoding_step, created = EncodingStep.objects.get_or_create(
-            video=self.video
-        )
-
         n = 0
         while self.video.encoding_in_progress:
-            encoding_step.refresh_from_db()
-            encodingstep = "%s : %s" % (encoding_step.num_step, encoding_step.desc_step)
-            print("... Encoding in progress %s" % encodingstep)
+            print("... Encoding in progress : %s " % self.video.get_encoding_step)
             self.video.refresh_from_db()
             time.sleep(2)
             n += 1
-            if n > 30:
+            if n > 60:
                 raise Exception('Error while encoding !!!')
+
         print("\n ---> End of Encoding video test")
         list_mp2t = EncodingVideo.objects.filter(
             video=self.video, encoding_format="video/mp2t"
@@ -76,7 +69,7 @@ class TestRemoteEncodeTestCase(TestCase):
         list_playlist_video = PlaylistVideo.objects.filter(
             video=self.video, encoding_format="application/x-mpegURL"
         )
-        list_playlist_master = PlaylistVideo.objects.get(
+        list_playlist_master = PlaylistVideo.objects.filter(
             name="playlist",
             video=self.video,
             encoding_format="application/x-mpegURL",
