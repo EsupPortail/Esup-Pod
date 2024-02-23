@@ -1,4 +1,4 @@
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 from django.conf import settings
 from django.core.files.temp import NamedTemporaryFile
@@ -8,7 +8,7 @@ from pod.video.models import Video, Type
 
 import shutil
 import os
-# import time
+import time
 
 VIDEO_TEST = "pod/main/static/video_test/video_test_encodage_transcription.webm"
 
@@ -38,26 +38,25 @@ class Command(BaseCommand):
         dest = os.path.join(settings.MEDIA_ROOT, video.video.name)
         shutil.copyfile(VIDEO_TEST, dest)
         self.stdout.write(self.style.WARNING("\n ---> Start Encoding video test"))
-        # video.launch_encode = True
+        video.launch_encode = True
         video.encoding_in_progress = True
         video.save()
-        self.stdout.write(self.style.SUCCESS('Successfully encode video'))
 
-        """
         video.refresh_from_db()
-        print("start")
+
         n = 0
         while video.encoding_in_progress:
             self.stdout.write(self.style.WARNING("\n ... Encoding in progress"))
-            print("start")
             video.refresh_from_db()
             time.sleep(2)
             n += 1
             if n > 30:
                 raise CommandError('Error while encoding !!!')
-                break
         self.stdout.write(self.style.WARNING("\n ---> End of Encoding video test"))
-        print("end")
-        # raise CommandError('Poll "%s" does not exist' % poll_id)
+        self.test_result_encoding_video(video)
         self.stdout.write(self.style.SUCCESS('Successfully encode video'))
-        """
+
+    def test_result_encoding_video(self, video):
+        # check good video
+        if not video.title == "Video1":
+            raise CommandError('Error video title')

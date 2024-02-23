@@ -116,8 +116,10 @@ def download_file(request):
                     filename
                 )
                 return response
+            else:
+                raise SuspiciousOperation("file not exist or not in media")
         else:
-            raise SuspiciousOperation("file not exist or not in media path")
+            raise SuspiciousOperation("not valid file")
     else:
         raise PermissionDenied
 

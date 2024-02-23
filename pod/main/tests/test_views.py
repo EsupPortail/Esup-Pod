@@ -9,17 +9,18 @@ from django.test import Client
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
+from django.conf import settings
 from captcha.models import CaptchaStore
 from http import HTTPStatus
 from pod.main import context_processors
 from pod.main.models import Configuration
+from pod.playlist.models import Playlist
+from pod.video.models import Type, Video
+
 import tempfile
 import os
 import importlib
-from pod.playlist.models import Playlist
-
-from pod.video.models import Type, Video
 
 
 class MainViewsTestCase(TestCase):
@@ -34,9 +35,9 @@ class MainViewsTestCase(TestCase):
         User.objects.create(username="pod", password="podv3")
         print(" --->  SetUp of MainViewsTestCase: OK!")
 
-    @override_settings(MEDIA_ROOT=tempfile.gettempdir())
+    @override_settings()
     def test_download_file(self):
-        """Test download folder."""
+        """Test download file."""
         self.client = Client()
 
         # GET method is used
@@ -48,14 +49,16 @@ class MainViewsTestCase(TestCase):
         response = self.client.post("/download/")
         self.assertRaises(PermissionDenied)
         # filename is properly set
-        temp_file = tempfile.NamedTemporaryFile()
-        response = self.client.post("/download/", {"filename": temp_file.name})
-        self.assertEqual(
-            response["Content-Disposition"],
-            'attachment; filename="%s"' % (os.path.basename(temp_file.name)),
-        )
+        response = self.client.post("/download/", {"filename": "/etc/passwd"})
+        self.assertRaises(SuspiciousOperation)
+        filename = os.path.join(settings.MEDIA_ROOT, "test/test_file.txt")
+        if not os.path.exists(os.path.join(settings.MEDIA_ROOT, "test")):
+            os.mkdir(os.path.join(settings.MEDIA_ROOT, "test"))
+        f = open(filename, "w")
+        f.write("ok")
+        f.close()
+        response = self.client.post("/download/", {"filename": "test/test_file.txt"})
         self.assertEqual(response.status_code, 200)
-
         print("   --->  download_file of mainViewsTestCase: OK!")
 
     def test_contact_us(self):
