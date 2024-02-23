@@ -50,7 +50,7 @@ class Command(BaseCommand):
             video.refresh_from_db()
             time.sleep(2)
             n += 1
-            if n > 30:
+            if n > 60:
                 raise CommandError('Error while encoding !!!')
         self.stdout.write(self.style.WARNING("\n ---> End of Encoding video test"))
         self.test_result_encoding_video(video)

@@ -18,7 +18,6 @@ from pod.main.models import Configuration
 from pod.playlist.models import Playlist
 from pod.video.models import Type, Video
 
-import tempfile
 import os
 import importlib
 
