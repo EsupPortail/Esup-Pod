@@ -55,6 +55,6 @@ class Command(BaseCommand):
             time.sleep(2)
             n += 1
             if n > 60:
-                raise Exception('Error while encoding !!!')
+                raise CommandError('Error while encoding !!!')
 
         print("\n ---> End of Encoding video test")
