@@ -1,7 +1,17 @@
+DEBUG = True
+
+TEST_REMOTE_ENCODE = True
+
+ALLOWED_HOSTS = ["*"]
+
+ADMINS = (
+    ('Nicolas', 'nicolas@univ.fr'),
+)
+
 USE_PODFILE = True
 EMAIL_ON_ENCODING_COMPLETION = False
 SECRET_KEY = 'A_CHANGER'
-DEBUG = True
+
 # on précise ici qu'on utilise ES version 7\n
 ES_VERSION = 7
 ES_URL = ['http://elasticsearch:9200/']
