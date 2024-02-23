@@ -27,6 +27,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print("handle")
         user, created = User.objects.update_or_create(username="pod", password="pod1234pod")
+        user.is_staff = True
         user.is_superuser = True
         user.save()
         # create token
