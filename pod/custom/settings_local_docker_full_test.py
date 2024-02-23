@@ -1,3 +1,6 @@
+import os
+import binascii
+
 DEBUG = True
 
 TEST_REMOTE_ENCODE = True
@@ -50,6 +53,9 @@ MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
 # Si DOCKER_ENV = full il faut activer l'encodage, la transcription et l'xapi distante
 USE_REMOTE_ENCODING_TRANSCODING = True
 ENCODING_TRANSCODING_CELERY_BROKER_URL = 'redis://redis:6379/7'
+POD_API_URL = "http://pod-back:8080/rest"
+POD_API_TOKEN = binascii.hexlify(os.urandom(20)).decode()
+
 USE_XAPI_VIDEO = False
 XAPI_CELERY_BROKER_URL = "redis://redis:6379/6"
 
