@@ -80,7 +80,7 @@ jobs:
             echo "🍏 Docker is UP ${{ job.status }}."
             docker exec pod-back-with-volumes ps auxf
         - name: run test in docker
-          run: docker exec pod-back-with-volumes python manage.py test pod.video_encode_transcript.tests.test_encode_transcode
+          run: docker exec pod-back-with-volumes python manage.py test_encode_transcode
         - name: Stop containers
           if: always()
           run: docker-compose -f ./docker-compose-full-dev-with-volumes.yml down
