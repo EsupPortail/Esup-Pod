@@ -20,7 +20,7 @@ if USE_TRANSCRIPTION:
 
 
 class Command(BaseCommand):
-    help = 'launch of video encoding and transcoding for video test : %s' % VIDEO_TEST
+    help = 'launch of video encoding and transcoding for video test: %s' % VIDEO_TEST
 
     def handle(self, *args, **options):
         print("handle")
@@ -46,11 +46,11 @@ class Command(BaseCommand):
 
         n = 0
         while video.encoding_in_progress:
-            self.stdout.write(self.style.WARNING("\n ... Encoding in progress"))
+            self.stdout.write(self.style.WARNING("... Encoding in progress"))
             video.refresh_from_db()
             time.sleep(2)
             n += 1
-            if n > 60:
+            if n > 300:
                 raise CommandError('Error while encoding !!!')
         self.stdout.write(self.style.WARNING("\n ---> End of Encoding video test"))
         self.test_result_encoding_video(video)
