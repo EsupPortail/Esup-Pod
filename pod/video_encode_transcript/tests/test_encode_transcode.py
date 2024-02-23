@@ -11,6 +11,8 @@ from django.contrib.auth.models import User
 
 
 from pod.video.models import Video, Type
+from ..models import EncodingVideo
+from ..models import PlaylistVideo
 from ..models import EncodingStep
 
 import shutil
@@ -68,4 +70,22 @@ class TestRemoteEncodeTestCase(TestCase):
             if n > 30:
                 raise Exception('Error while encoding !!!')
         print("\n ---> End of Encoding video test")
+        list_mp2t = EncodingVideo.objects.filter(
+            video=self.video, encoding_format="video/mp2t"
+        )
+        list_playlist_video = PlaylistVideo.objects.filter(
+            video=self.video, encoding_format="application/x-mpegURL"
+        )
+        list_playlist_master = PlaylistVideo.objects.get(
+            name="playlist",
+            video=self.video,
+            encoding_format="application/x-mpegURL",
+        )
+        list_mp4 = EncodingVideo.objects.filter(
+            video=self.video, encoding_format="video/mp4"
+        )
+        print(list_mp2t)
+        print(list_playlist_video)
+        print(list_playlist_master)
+        print(list_mp4)
         print('Successfully encode video')
