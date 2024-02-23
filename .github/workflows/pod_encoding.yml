@@ -70,15 +70,15 @@ jobs:
             sudo rm -rf ./pod/node_modules
             docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG --build-arg NODE_VERSION=$NODE_TAG --build-arg PYTHON_VERSION=$PYTHON_TAG --no-cache
             docker-compose -f ./docker-compose-full-dev-with-volumes.yml up --detach --force-recreate --always-recreate-deps
-        - name: Sleep for 30 seconds
+        - name: Sleep for 60 seconds
           uses: jakejarvis/wait-action@master
           with:
-            time: '30s'         
+            time: '60s'
         - name: show running container
           run: docker ps 
         - run: echo "🍏 Docker is UP ${{ job.status }}."
         - name: run test in docker
-          run: docker exec pod-back-with-volumes ps auxf
+          run: docker exec pod-back-with-volumes python manage.py test_encode_transcode
         - name: Stop containers
           if: always()
           run: docker-compose -f ./docker-compose-full-dev-with-volumes.yml down

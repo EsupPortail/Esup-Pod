@@ -17,6 +17,7 @@
 import bleach
 
 from .forms import ContactUsForm, SUBJECT_CHOICES
+from .forms import DownloadFileForm
 from django.shortcuts import render
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
@@ -103,16 +104,18 @@ def in_maintenance():
 def download_file(request):
     """Direct download of requested file."""
     if request.POST and request.POST.get("filename"):
-        post_filename = request.POST["filename"].strip('/')
-        filename = os.path.join(settings.MEDIA_ROOT, post_filename)
-        if os.path.isfile(filename) and filename.startswith(settings.MEDIA_ROOT):
-            wrapper = FileWrapper(open(filename, "rb"))
-            response = HttpResponse(wrapper, content_type=mimetypes.guess_type(filename)[0])
-            response["Content-Length"] = os.path.getsize(filename)
-            response["Content-Disposition"] = 'attachment; filename="%s"' % os.path.basename(
-                filename
-            )
-            return response
+        filename = os.path.join(settings.MEDIA_ROOT, request.POST.get("filename"))
+        form = DownloadFileForm({"filename": filename})
+        if form.is_valid():
+            cleaned_filename = form.cleaned_data["filename"]
+            if os.path.isfile(cleaned_filename) and cleaned_filename.startswith(settings.MEDIA_ROOT):
+                wrapper = FileWrapper(open(filename, "rb"))
+                response = HttpResponse(wrapper, content_type=mimetypes.guess_type(filename)[0])
+                response["Content-Length"] = os.path.getsize(filename)
+                response["Content-Disposition"] = 'attachment; filename="%s"' % os.path.basename(
+                    filename
+                )
+                return response
         else:
             raise SuspiciousOperation("file not exist or not in media path")
     else:
