@@ -323,6 +323,19 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "OIDC_CLAIM_PREFERRED_USERNAME": {
+                            "default_value": "preferred_username",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Noms des Claim permettant de récupérer l'attribut login mais dépendant de l'attribut du client dans l'IDP"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
                         "OIDC_CLAIM_GIVEN_NAME": {
                             "default_value": "given_name",
                             "description": {
