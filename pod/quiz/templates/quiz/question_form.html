@@ -1,0 +1,14 @@
+<div class="question-form">
+    <h2>Question n°{{ question_number }}</h2>
+    <button class="delete-question-button" type="button">Delete question</button>
+    <div class="question-attributes">
+        {{ form }}
+    </div>
+    <div class="question-choices-section">
+        <h3>-- Choix --</h3>
+        <form action="post" class="question-choices-form" > {% comment %} Modify classes in create_edit_quiz.html too {% endcomment %}
+            <!-- There is nothing & it's normal. The content is managed in JS -->
+        </form>
+    </div>
+    <hr>
+</div>

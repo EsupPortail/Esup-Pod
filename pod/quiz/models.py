@@ -31,7 +31,7 @@ class Quiz(models.Model):
     )
     show_correct_answers = models.BooleanField(
         verbose_name=_("Show correct answers"),
-        default=False,
+        default=True,
         help_text=_("Please choose if the correct answers will be displayed or not."),
     )
 
@@ -145,6 +145,80 @@ class UniqueChoiceQuestion(Question):
         # Check if there is only one correct answer
         if sum([1 for choice in self.choices.values() if choice]) != 1:
             raise ValidationError(_("There must be only one correct answer."))
+
+    def __str__(self):
+        return self.title
+
+
+class MultipleChoiceQuestion(Question):
+    """
+    Multiple choice question model.
+
+    Attributes:
+        choices (JSONField <{question(str): is_correct(bool)}>): Choices of the question.
+    """
+    choices = models.JSONField(
+        verbose_name="Choices",
+        default=dict,
+    )
+
+    class Meta:
+        verbose_name = "Multiple choice question"
+        verbose_name_plural = "Multiple choice questions"
+
+    def clean(self):
+        super().clean()
+
+        # Check if there are at least 2 choices
+        if len(self.choices) < 2:
+            raise ValidationError("There must be at least 2 choices.")
+
+        # Check if there is at least one correct answer
+        if not any(self.choices.values()):
+            raise ValidationError("There must be at least one correct answer.")
+
+    def __str__(self):
+        return self.title
+
+
+class TrueFalseQuestion(Question):
+    """
+    True/false question model.
+
+    Attributes:
+        is_true (BooleanField): Is true.
+    """
+    is_true = models.BooleanField(
+        verbose_name="Is true",
+        default=True,
+        help_text="Please choose if the answer is true or false.",
+    )
+
+    class Meta:
+        verbose_name = "True/false question"
+        verbose_name_plural = "True/false questions"
+
+    def __str__(self):
+        return self.title
+
+
+class ShortAnswerQuestion(Question):
+    """
+    Short answer question model.
+
+    Attributes:
+        answer (CharField): Answer of the question.
+    """
+    answer = models.CharField(
+        verbose_name="Answer",
+        max_length=250,
+        default="",
+        help_text="Please choose an answer between 1 and 250 characters.",
+    )
+
+    class Meta:
+        verbose_name = "Short answer question"
+        verbose_name_plural = "Short answer questions"
 
     def __str__(self):
         return self.title
