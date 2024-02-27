@@ -14,6 +14,7 @@ from .views import (
     video_count,
     video_marker,
     video_version,
+    get_categories_list,
     add_category,
     edit_category,
     delete_category,
@@ -112,6 +113,7 @@ if getattr(settings, "OEMBED", False):
 # VIDEO CATEGORY
 if getattr(settings, "USER_VIDEO_CATEGORY", False):
     urlpatterns += [
+        url(r"^categories/$", get_categories_list, name="get_categories_list"),
         url(r"^category/add/$", add_category, name="add_category"),
         url(r"^category/edit/(?P<c_slug>[\-\d\w]+)/$", edit_category, name="edit_category"),
         url(r"^category/delete/(?P<c_slug>[\-\d\w]+)/$", delete_category, name="delete_category"),

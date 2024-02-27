@@ -2940,16 +2940,12 @@ def get_videos_without_categories(request, videos_list: dict):
 
 
 @login_required(redirect_field_name="referrer")
-def get_videos_for_categories(request, videos_list: list[Video]) -> dict:
-    cats = Category.objects.prefetch_related("video").filter(owner=request.user)
-    videos_without_cat = videos_list.exclude(category__in=cats)
-    return videos_without_cat
-
-
-@login_required(redirect_field_name="referrer")
 @ajax_required
-def get_videos_for_categorie(request, category_slug: str = None):
-    return True
+def get_categories_list(request):
+    data_context = {}
+    categories = Category.objects.prefetch_related("video").filter(owner=request.user)
+    data_context["categories"] = categories
+    return render(request, "videos/filter_aside_categories_list.html", data_context)
 
 
 @login_required(redirect_field_name="referrer")
@@ -2981,7 +2977,7 @@ def add_category(request):
             try:
                 cat = Category.objects.create(title=title, owner=c_user)
                 cat.video.add(*videos)
-                #cat.save()
+                cat.save()
             except IntegrityError:  # cannot duplicate category
                 return HttpResponse(status=409)
 
@@ -3047,7 +3043,7 @@ def edit_category(request, c_slug=None):
             if c_user == cat.owner or c_user.is_superuser:
                 cat.title = title
                 cat.video.set(list(new_videos))
-                #cat.save()
+                cat.save()
                 response["id"] = cat.id
                 response["title"] = cat.title
                 response["slug"] = cat.slug
