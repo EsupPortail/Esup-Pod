@@ -1,32 +1,39 @@
 {% load i18n %}
 {% load video_filters %}
-<div id="manageCategoryModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal_title" aria-hidden="true">
+
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal_title" id="modal_title">{% trans "Category" %}</h2>
+        <h2 class="modal_title" id="modal_title">{{ modal_title }}</h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
       </div>
       <div class="modal-body">
+
+        {% if modal_action != "delete" %}
+
         <div class="form-group">
           <label for="catTitle" class="form-label">
             {% trans "Category title" %}
             <span class="required_star">*</span>
           </label>
-          <input type="text" placeholder="{% trans 'category title' %}" id="catTitle" name="catTitle" class="catTitle_input form-control" required>
+          <input type="text" placeholder="{% trans 'category title' %}" id="catTitle" name="catTitle"
+                 {% if category %} value="{{ category.title }}" {% endif %}
+                 class="catTitle_input form-control" required>
         </div>
         <div class="form-group mt-3">
           <p class="form-label">{% trans "Check the videos to add in the category" %}</p>
 
           <div class="row infinite-modal-container category_modal_videos_list" id="cat_mod_vid_list">
-            {% for video in videos_without_cat %}
-              <div data-slug="{{ video.slug }}" class="infinite-item col-12 col-md-6 col-lg-3 mb-2">
+            {% for video in videos %}
+              <div data-slug="{{ video.slug }}"
+                   class="infinite-item col-12 col-md-6 col-lg-3 mb-2
+                    {% if video.id in category_videos %}selected{% endif %}">
                 <div class="checked_overlay">
                   <span class="card_selected">
                     <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
                   </span>
                 </div>
-                {% include "videos/category_modal_card.html" %}
+                {% include "videos/card_select.html" with category_modal="True" %}
               </div>
             {% endfor %}
             <!-- Paginator -->
@@ -43,30 +50,22 @@
             </nav>
           </div>
         </div>
+
+        {% else %}
+            <span class="category_title">{{ category.title }}</span>
+            {% trans "Permanently delete your category?" %}
+        {% endif %}
+
       </div>
       <div class="modal-footer">
-        <button type="button" id="saveCategory" class="btn btn-primary">{% trans "Save category" %} </button>
+      {% if modal_action == "add" %}
+        <button type="button" id="confirm_category_btn" data-action="add" class="btn btn-primary">{% trans "Save category" %} </button>
+      {% elif modal_action == "edit" %}
+        <button type="button" id="confirm_category_btn" data-action="edit" data-slug="{{ category.slug }}" class="btn btn-primary">{% trans "Save category" %} </button>
+      {% elif modal_action == "delete" %}
+        <button type="button" id="confirm_category_btn" data-action="delete" data-slug="{{ category.slug }}" class="btn btn-danger">{% trans "Delete" %}</button>
+      {% endif %}
         <button type="button" id="cancelDialog" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
       </div>
     </div>
   </div>
-</div>
-<!-- DELETE CATEGORY MODAL  -->
-<div class="modal fade" id="deleteCategoryModal" tabindex="-1" role="dialog" aria-labelledby="deleteCategory" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title" id="deleteCategory">{% trans "Delete the category" %}</h2>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
-      </div>
-      <div class="modal-body">
-        <span class="category_title"></span>
-        {% trans "Permanently delete your category?" %}
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary close_modal" id="close_modal"  data-bs-dismiss="modal">{% trans "Cancel" %}</button>
-        <button type="button" class="btn btn-danger" id="confirm_remove_category_btn">{% trans "Delete" %}</button>
-      </div>
-    </div>
-  </div>
-</div>

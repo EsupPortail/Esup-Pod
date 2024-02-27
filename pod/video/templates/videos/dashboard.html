@@ -13,7 +13,7 @@
 {% block page_content %}
 
   {% if use_category %}
-    {% include "videos/category_modal.html" %}
+      <div id="category_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal_title" aria-hidden="true"></div>
   {% endif %}
 
   <div id="bulk_update_container">
@@ -174,8 +174,11 @@
 {% if use_category %}
   <script>
     const USE_CATEGORY = true;
-    const CATEGORIES_DATA = {{ categories | safe }};
-    const BASE_URL = `${window.location.origin}/video/my/categories/`;
+    const categoryModal = document.getElementById("category_modal");
+    const CATEGORIES_ADD_URL = "{% url 'video:add_category' %}";
+    const CATEGORIES_EDIT_URL = `${window.location.origin}/video/category/edit/`;
+    const CATEGORIES_DELETE_URL = `${window.location.origin}/video/category/delete/`;
+    //const BASE_URL = `${window.location.origin}/video/my/categories/`;
     {# create base url link for video management #}
     {% url 'video:video_edit' slug="abcd" as video_edit %}
     const EDIT_URL = `{{ video_edit|slice:"-5" }}`;
