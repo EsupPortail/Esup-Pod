@@ -1,3 +1,5 @@
+"""Esup-Pod live utilities."""
+
 import json
 import logging
 import os
@@ -149,7 +151,8 @@ def send_email(subject, message, from_email, to_email, cc_email, html_message):
 
 def date_string_to_second(date_string):
     """
-    Calcul the number of seconds from a date string.
+    Calculate the number of seconds from a date string.
+
     Args:
         date_string: the format must be like "hh:mm:ss".
     Returns:
@@ -169,7 +172,8 @@ def date_string_to_second(date_string):
 
 def get_event_id_and_broadcaster_id(request):
     """
-    Extracts the event ID and broadcaster ID from the given HTTP request.
+    Extract the event ID and broadcaster ID from the given HTTP request.
+
     Args:
         request: An HTTP request object.
     Returns:
@@ -192,7 +196,8 @@ def get_event_id_and_broadcaster_id(request):
 
 def check_size_not_changing(resource_path, max_attempt=EVENT_CHECK_MAX_ATTEMPT):
     """
-    Checks  if the size of a resource remains unchanged over a specified number of attempts.
+    Check if the size of a resource remains unchanged over a specified number of attempts.
+
     Args:
         resource_path: resource path and name.
         max_attempt: number of attempt before aborting if the resource size still changes.
@@ -224,7 +229,8 @@ def check_size_not_changing(resource_path, max_attempt=EVENT_CHECK_MAX_ATTEMPT):
 
 def check_exists(resource_path, is_dir, max_attempt=EVENT_CHECK_MAX_ATTEMPT):
     """
-    Checks whether a file or directory exists.
+    Check whether a file or directory exists.
+
     Args:
         resource_path: resource path and name.
         is_dir(bool): True for a dir, False for a file .
@@ -248,7 +254,8 @@ def check_exists(resource_path, is_dir, max_attempt=EVENT_CHECK_MAX_ATTEMPT):
 
 def check_permission(request):
     """
-    Checks whether the current user has permission to view a page.
+    Check whether the current user has permission to view a page.
+
     Args:
         request: An HTTP request object.
     Raises:

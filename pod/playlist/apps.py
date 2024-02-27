@@ -213,7 +213,7 @@ class PlaylistConfig(AppConfig):
         print("update_playlists --> OK")
 
     def add_playlists_contents(self):
-        """Add playlist content record from existing datas"""
+        """Add playlist content record from existing datas."""
         from pod.playlist.models import PlaylistContent
 
         print("Start add_playlists_contents")

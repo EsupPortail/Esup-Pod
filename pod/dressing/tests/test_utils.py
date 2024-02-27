@@ -29,8 +29,7 @@ class DressingUtilitiesTests(unittest.TestCase):
         print(" ---> test_get_position_value: OK! --- DressingUtilsTest")
 
     def test_get_dressing_input(self):
-        """Test for the get_dressing_input function"""
-
+        """Test for the get_dressing_input function."""
         dressing = Dressing(watermark=None, opening_credits=None, ending_credits=None)
 
         FFMPEG_DRESSING_INPUT = "input=%s"
