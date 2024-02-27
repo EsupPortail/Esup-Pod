@@ -2,26 +2,69 @@
 {% load i18n %}
 {% load static %}
 
-{% block page_content %}
-    <form method="POST">
-        {% csrf_token %}
-        {{ quiz_form.as_table }}
-        <hr>
-        {{ question_formset.management_form }}
-        <div id="question-form-list">
-            {% for question_form in question_formset %}
-                {% include "quiz/question_form.html" with form=question_form %}
-            {% endfor %}
-        </div>
-        <div id='empty-form' class="d-none">
-            {% include "quiz/question_form.html" with form=question_formset.empty_form %}
-        </div>
+{% block breadcrumbs %}
+  {{block.super}}
+  <li class="breadcrumb-item"><a href="{% url 'video:dashboard'%}">{% trans 'Dashboard' %}</a></li>
+  <li class="breadcrumb-item">
+    <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}">
+      {{video.title|title|truncatechars:45}}
+    </a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">
+      {% trans 'Quiz editor' %}
+  </li>
+{% endblock %}
 
-        <button id="add-question" type="button">Add a question</button>
-        <br>
-        <a href="">Go back to video</a>
-        <input type="submit" value="Submit">
-    </form>
+
+{% block page_content %}
+  <form method="POST">
+    {% csrf_token %}
+    {% if form.errors %}
+      <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+    {% endif %}
+    {% for field_hidden in quiz_form.hidden_fields %}
+      {{field_hidden}}
+    {% endfor %}
+    {% for field in quiz_form.visible_fields %}
+      {% spaceless %}
+        <div class="form-group {% if field.field.required %}form-group-required {% endif %}{% if field.field.errors %}errors{% endif %}">
+          {{ field.errors }}
+          {% if "form-check-input" in field.field.widget.attrs.class %}
+            <div class="form-check">
+              {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+            </div>
+          {% else %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+          {% endif %}
+          {% if field.help_text %}
+            <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+          {% endif %}
+          {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+        </div>
+      {% endspaceless %}
+    {% endfor %}
+
+    <hr>
+    {{ question_formset.management_form }}
+    <div id="question-form-list">
+        {% for question_form in question_formset %}
+            {% include "quiz/question_form.html" with form=question_form %}
+        {% endfor %}
+    </div>
+    <div id='empty-form' class="d-none">
+        {% include "quiz/question_form.html" with form=question_formset.empty_form %}
+    </div>
+
+    <button id="add-question" type="button" class="btn btn-primary">{% trans "Add a question" %}</button>
+
+    <br>
+
+    <div class="text-center mt-2">
+      <a href="{% url 'video:video' slug=video.slug %}" class="btn btn-secondary">{% trans "Go back to video" %}</a>
+      <button type="submit" class="btn btn-primary">{% trans "Validate" %}</button>
+    </div>
+  </form>
 {% endblock page_content %}
 
 {% block collapse_page_aside %}
@@ -32,160 +75,166 @@
 {% block more_script %}
 
 <script>
-    let addQuestionButton = document.getElementById("add-question");
-    const totalNewForms = document.getElementById('id_questions-TOTAL_FORMS');
+  let addQuestionButton = document.getElementById("add-question");
+  const totalNewForms = document.getElementById('id_questions-TOTAL_FORMS');
 
-    let defaultQuestionForms = document.querySelectorAll(".question-form");
-    for (defaultQuestionForm of defaultQuestionForms) {
-        handleQuestionType(defaultQuestionForm);
+  let defaultQuestionForms = document.querySelectorAll(".question-form");
+  for (defaultQuestionForm of defaultQuestionForms) {
+      handleQuestionType(defaultQuestionForm);
+  }
+
+  let questionsTypeElements = document.querySelectorAll(".question-select-type");
+  for (questionTypeEl of questionsTypeElements) {
+      addEventListenerQuestionType(questionTypeEl);
+  }
+
+  let deleteQuestionsButtons = document.querySelectorAll("delete-question-button");
+  for (deleteQuestionButton of deleteQuestionsButtons) {
+    deleteQuestionsButton.addEventListener("click", function(event) {
+      let questionFormToDelete = deleteQuestionsButton.closest(".question-form");
+    })
+  }
+
+  function addEventListenerQuestionType(questionTypeElement) {
+    questionTypeElement.addEventListener("change", function(event) {
+      console.log(event.target.value);
+      let questionForm = questionTypeElement.closest('.question-form');
+      handleQuestionType(questionForm);
+    })
+  }
+
+  addQuestionButton.addEventListener('click', addNewQuestionForm);
+  let removeQuestionButtons = document.querySelectorAll(".delete-question-button");
+  for (removeQuestionButton of removeQuestionButtons) {
+    removeQuestionButton.addEventListener('click', removeQuestionForm);
+  }
+
+  function addNewQuestionForm(event) {
+    if (event) {
+      event.preventDefault();
     }
 
-    let questionsTypeElements = document.querySelectorAll(".question-select-type");
-    for (questionTypeEl of questionsTypeElements) {
-        addEventListenerQuestionType(questionTypeEl);
+    const currentQuestionForms = document.getElementsByClassName('question-form');
+    let currentFormCount = currentQuestionForms.length - 1;
+
+    const formCopyTarget = document.getElementById("question-form-list");
+    let copyEmptyQuestionFormEl = document.getElementById("empty-form").cloneNode(true).firstElementChild;
+    copyEmptyQuestionFormEl.setAttribute("class", "question-form");
+    copyEmptyQuestionFormEl.removeAttribute("id");
+
+    const regex = new RegExp('__prefix__', 'g');
+    copyEmptyQuestionFormEl.innerHTML = copyEmptyQuestionFormEl.innerHTML.replace(regex, currentFormCount);
+    totalNewForms.setAttribute('value', currentFormCount + 1);
+    let newQuestionTypeElement = copyEmptyQuestionFormEl.querySelector(".question-select-type");
+    addEventListenerQuestionType(newQuestionTypeElement);
+    let removeQuestionButton = copyEmptyQuestionFormEl.querySelector(".delete-question-button");
+    removeQuestionButton.addEventListener('click', removeQuestionForm);
+
+    formCopyTarget.append(copyEmptyQuestionFormEl);
+  }
+
+  function removeQuestionForm(event) {
+    if (event) {
+      event.preventDefault();
     }
 
-    let deleteQuestionsButtons = document.querySelectorAll("delete-question-button");
-    for (deleteQuestionButton of deleteQuestionsButtons) {
-        deleteQuestionsButton.addEventListener("click", function(event) {
-            let questionFormToDelete = deleteQuestionsButton.closest(".question-form");
-        })
-    }
-
-    function addEventListenerQuestionType(questionTypeElement) {
-        questionTypeElement.addEventListener("change", function(event) {
-            console.log(event.target.value);
-            let questionForm = questionTypeElement.closest('.question-form');
-            handleQuestionType(questionForm);
-        })
-    }
-
-    addQuestionButton.addEventListener('click', addNewQuestionForm);
-
-    function addNewQuestionForm(event) {
-        if (event) {
-            event.preventDefault();
-        }
-
-        const currentQuestionForms = document.getElementsByClassName('question-form');
-        let currentFormCount = currentQuestionForms.length - 1;
-
-        const formCopyTarget = document.getElementById("question-form-list");
-        let copyEmptyQuestionFormEl = document.getElementById("empty-form").cloneNode(true).firstElementChild;
-        copyEmptyQuestionFormEl.setAttribute("class", "question-form");
-        copyEmptyQuestionFormEl.removeAttribute("id");
-
-        const regex = new RegExp('__prefix__', 'g');
-        copyEmptyQuestionFormEl.innerHTML = copyEmptyQuestionFormEl.innerHTML.replace(regex, currentFormCount);
-        totalNewForms.setAttribute('value', currentFormCount + 1);
-        let newQuestionTypeElement = copyEmptyQuestionFormEl.querySelector(".question-select-type");
-        addEventListenerQuestionType(newQuestionTypeElement);
-        formCopyTarget.append(copyEmptyQuestionFormEl);
-    }
+    const questionFormToDelete = event.target.closest('.question-form');
+    questionFormToDelete.remove();
+    const currentQuestionForms = document.getElementsByClassName('question-form');
+    totalNewForms.setAttribute('value', currentQuestionForms.length - 1);
+  }
 
 
-    function handleShortAnswerQuestion(questionForm) {
-    // Ajouter un simple input de texte
+  function handleShortAnswerQuestion(questionForm) {
     const input = document.createElement("input");
     input.type = "text";
     input.name = questionForm.querySelector('.question-choices-form').name;
     questionForm.querySelector('.question-choices-form').appendChild(input);
-}
+  }
 
-function handleLongAnswerQuestion(questionForm) {
-    // Ajouter un textArea
-    const textarea = document.createElement("textarea");
-    textarea.name = questionForm.querySelector('.question-choices-form').name;
-    questionForm.querySelector('.question-choices-form').appendChild(textarea);
-}
+  function handleLongAnswerQuestion(questionForm) {
+      const textarea = document.createElement("textarea");
+      textarea.name = questionForm.querySelector('.question-choices-form').name;
+      questionForm.querySelector('.question-choices-form').appendChild(textarea);
+  }
 
-function handleUniqueChoiceQuestion(questionForm) {
-    console.log(questionForm)
+  function handleUniqueChoiceQuestion(questionForm) {
     let choicesForm = questionForm.querySelector('.question-choices-form');
 
     let counter = document.querySelectorAll('.question-choices-form input[type="radio"]').length + 1;
 
-    // Ajouter un fieldset avec une légende
     const fieldset = document.createElement("fieldset");
     const legend = document.createElement("legend");
     legend.textContent = "Vos choix";
     fieldset.appendChild(legend);
 
-    // Ajouter les éléments radio dans le fieldset
     for (let i = 0; i < 2; i++) {
-        // Créer une div pour chaque choix
-        const choiceDiv = document.createElement("div");
+      const choiceDiv = document.createElement("div");
+      choiceDiv.classList.add('form-check');
 
-        const input = document.createElement("input");
-        input.type = "radio";
-        input.name = `choices_${counter}_${i}`;
-        choiceDiv.appendChild(input);
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.classList.add("form-check-input");
+      input.name = `choices_${counter}`;
+      choiceDiv.appendChild(input);
 
-        // Ajouter un input text pour le texte du choix
-        const textInput = document.createElement("input");
-        textInput.type = "text";
-        textInput.placeholder = `Choice ${i + 1}`;
-        choiceDiv.appendChild(textInput);
+      const textInput = document.createElement("input");
+      textInput.type = "text";
+      textInput.placeholder = `Choice ${i + 1}`;
+      choiceDiv.appendChild(textInput);
 
-        // Ajouter la div au fieldset
-        fieldset.appendChild(choiceDiv);
+      fieldset.appendChild(choiceDiv);
     }
 
-    // Ajouter le fieldset avec les choix et le bouton "Ajouter un choix"
     choicesForm.appendChild(fieldset);
 
-    // Ajouter un bouton "Ajouter un choix"
     const addButton = document.createElement("button");
     addButton.textContent = "Add a choice";
     addButton.type = "button";
+    addButton.classList.add("btn", "btn-outline-secondary", "btn-sm", "mt-2");
     addButton.addEventListener("click", function() {
-        // Créer une nouvelle div pour le nouveau choix
-        const newChoiceDiv = document.createElement("div");
+      const newChoiceDiv = document.createElement("div");
+      newChoiceDiv.classList.add('form-check');
 
-        const input = document.createElement("input");
-        input.type = "radio";
-        input.name = `choices_${counter}`;
-        newChoiceDiv.appendChild(input);
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.classList.add("form-check-input");
+      input.name = `choices_${counter}`;
+      newChoiceDiv.appendChild(input);
 
-        // Ajouter un input text pour le texte du choix
-        const textInput = document.createElement("input");
-        textInput.type = "text";
-        textInput.placeholder = `Choice ${document.querySelectorAll('.question-choices-form input[type="radio"]').length}`;
-        newChoiceDiv.appendChild(textInput);
+      const textInput = document.createElement("input");
+      textInput.type = "text";
+      textInput.placeholder = `Choice ${document.querySelectorAll('.question-choices-form input[type="radio"]').length}`;
+      newChoiceDiv.appendChild(textInput);
 
-        // Ajouter la nouvelle div au fieldset
-        fieldset.appendChild(newChoiceDiv);
+      fieldset.appendChild(newChoiceDiv);
     });
 
     choicesForm.appendChild(addButton);
-}
+  }
 
-// Appel à la fonction appropriée en fonction du type de question
-function handleQuestionType(questionForm) {
+  function handleQuestionType(questionForm) {
     const questionType = questionForm.querySelector(".question-select-type").value;
 
     let questionChoicesForm = questionForm.querySelector('.question-choices-form');
     if (!questionChoicesForm) {
-        let choicesSection = questionForm.querySelector('.question-choices-section');
-        let newChoicesForm = document.createElement('form');
-        newChoicesForm.setAttribute('action', 'post');
-        newChoicesForm.classList.add('question-choices-form');
+      let choicesSection = questionForm.querySelector('.question-choices-section');
+      let newChoicesForm = document.createElement('form');
+      newChoicesForm.setAttribute('action', 'post');
+      newChoicesForm.classList.add('question-choices-form');
 
-        // Ajouter le nouveau formulaire à la section des choix
-        choicesSection.appendChild(newChoicesForm);
+      choicesSection.appendChild(newChoicesForm);
     }
-    // Nettoyer la zone des choix
     questionForm.querySelector('.question-choices-form').innerHTML = "";
 
-    // Appeler la fonction appropriée en fonction du type de question
     if (questionType === "short_answer") {
-        handleShortAnswerQuestion(questionForm);
+      handleShortAnswerQuestion(questionForm);
     } else if (questionType === "long_answer") {
-        handleLongAnswerQuestion(questionForm);
+      handleLongAnswerQuestion(questionForm);
     } else if (questionType === "unique_choice") {
-        handleUniqueChoiceQuestion(questionForm);
-    } // Ajouter d'autres conditions pour les autres types de questions
-}
+      handleUniqueChoiceQuestion(questionForm);
+    } // Add other conditions for other question types.
+  }
 
 </script>
 

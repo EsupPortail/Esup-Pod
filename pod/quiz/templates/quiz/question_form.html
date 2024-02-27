@@ -1,14 +1,41 @@
+{% load i18n %}
+
 <div class="question-form">
-    <h2>Question n°{{ question_number }}</h2>
-    <button class="delete-question-button" type="button">Delete question</button>
-    <div class="question-attributes">
-        {{ form }}
-    </div>
-    <div class="question-choices-section">
-        <h3>-- Choix --</h3>
-        <form action="post" class="question-choices-form" > {% comment %} Modify classes in create_edit_quiz.html too {% endcomment %}
-            <!-- There is nothing & it's normal. The content is managed in JS -->
-        </form>
-    </div>
-    <hr>
+  <div class="my-4 gap-4 d-flex">
+    <h2>Question</h2>
+    <button class="btn btn-danger delete-question-button" type="button"><i class="bi bi-trash" aria-hidden="true"></i></button>
+  </div>
+  <div class="question-attributes">
+    {% if form.errors %}
+      <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+    {% endif %}
+    {% for field_hidden in form.hidden_fields %}
+      {{ field_hidden }}
+    {% endfor %}
+    {% for field in form.visible_fields %}
+      {% spaceless %}
+        <div class="form-group {% if field.field.required %}form-group-required {% endif %}{% if field.field.errors %}errors{% endif %}">
+          {{ field.errors }}
+          {% if "form-check-input" in field.field.widget.attrs.class %}
+            <div class="form-check">
+              {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+            </div>
+          {% else %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+          {% endif %}
+          {% if field.help_text %}
+            <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+          {% endif %}
+          {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+        </div>
+      {% endspaceless %}
+    {% endfor %}
+  </div>
+  <div class="question-choices-section">
+    <form action="post" class="question-choices-form" >
+      <!-- There is nothing & it's normal. The content is managed in JS -->
+    </form>
+  </div>
+  <hr>
 </div>
