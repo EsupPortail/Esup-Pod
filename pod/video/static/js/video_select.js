@@ -41,9 +41,10 @@ function getListSelectedVideosTitles() {
 /**
  * Set shared/global variable selectedVideos with selected videos based on class selected
  */
-function setListSelectedVideos() {
+function setListSelectedVideos(container) {
   selectedVideos = [];
-  document.querySelectorAll(".infinite-item.selected").forEach((elt) => {
+  let selector = container + ".infinite-item.selected";
+  document.querySelectorAll(selector).forEach((elt) => {
     selectedVideos.push(elt.dataset.slug);
   });
 }
@@ -89,7 +90,7 @@ function replaceSelectedCountVideos() {
  * Toggle class selected for video cards or list-item, avoid select a video when click on links
  * @param item
  */
-function toggleSelectedVideo(item) {
+function toggleSelectedVideo(item, container) {
   // Prevent item to select if link is clicked
   if (
     event.target.tagName === "A" ||
@@ -101,7 +102,7 @@ function toggleSelectedVideo(item) {
     return;
   }
   item.classList.toggle("selected");
-  setListSelectedVideos();
+  setListSelectedVideos(container);
   replaceSelectedCountVideos();
 }
 
