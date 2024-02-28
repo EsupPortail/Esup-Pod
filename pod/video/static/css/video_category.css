@@ -225,3 +225,11 @@
 .loader_wrapper.show {
   display: flex;
 }
+
+#category_modal_videos_list .video-card > .card-thumbnail{
+  min-height: auto;
+}
+
+#category_modal_videos_list .pod-thumbnail{
+  width: 100%;
+}

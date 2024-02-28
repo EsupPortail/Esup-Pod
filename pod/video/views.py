@@ -84,6 +84,7 @@ import uuid
 from datetime import date
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
+from itertools import chain
 
 from django.db import IntegrityError
 from django.db.models import QuerySet
@@ -3076,7 +3077,8 @@ def edit_category(request, c_slug=None):
         category = get_object_or_404(Category, slug=c_slug, owner=request.user)
         category_videos = category.video.all()
         videos_list = get_videos_for_owner(request)
-        videos = get_videos_without_categories(request, videos_list)
+        videos_without_categories = get_videos_without_categories(request, videos_list)
+        videos = chain(videos_without_categories, category_videos)
 
         data_context = {
             "modal_action": "edit",

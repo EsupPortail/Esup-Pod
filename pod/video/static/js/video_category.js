@@ -76,8 +76,9 @@ function get_category_modal(url){
 
 function post_category_modal(url){
     let formData = new FormData();
-    let selected_videos_categories = getCategoriesSelectedVideosSlugs();
-    formData.append("videos", JSON.stringify(selected_videos_categories));
+    if(selectedVideos && selectedVideos.length > 0){
+        formData.append("videos", JSON.stringify(selectedVideos));
+    }
     if(document.getElementById("catTitle")){
         formData.append("title", document.getElementById("catTitle").value);
     }
@@ -131,11 +132,6 @@ function getCategoriesUrl(action, slug = null){
             url = "";
     }
     return url
-}
-
-function getCategoriesSelectedVideosSlugs(){
-    // test slugs
-    return ["0025-melancholymp4","0026-melancholymp4"];
 }
 
 function refreshCategoriesLinks(){
