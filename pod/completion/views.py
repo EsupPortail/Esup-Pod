@@ -75,11 +75,11 @@ def video_caption_maker(request, slug):
     else:
         track_language = LANGUAGE_CODE
         track_kind = "captions"
-        captionFileId = request.GET.get("src")
-        if captionFileId:
-            captionFile = CustomFileModel.objects.filter(id=captionFileId).first()
-            if captionFile:
-                track = Track.objects.filter(video=video, src=captionFile).first()
+        caption_file_id = request.GET.get("src")
+        if caption_file_id:
+            caption_file = CustomFileModel.objects.filter(id=caption_file_id).first()
+            if caption_file:
+                track = Track.objects.filter(video=video, src=caption_file).first()
                 if track:
                     track_language = track.lang
                     track_kind = track.kind
@@ -119,12 +119,12 @@ def video_caption_maker_save(request, video):
         response = file_edit_save(request, cur_folder)
         response_data = json.loads(response.content)
         if ("list_element" in response_data) and (lang in __LANG_CHOICES_DICT__):
-            captFile = get_object_or_404(CustomFileModel, id=response_data["file_id"])
+            cap_file = get_object_or_404(CustomFileModel, id=response_data["file_id"])
             # immediately assign the newly created captions file to the video
-            desired = Track.objects.filter(video=video, src=captFile)
+            desired = Track.objects.filter(video=video, src=cap_file)
             if desired.exists():
                 desired.update(
-                    lang=lang, kind=kind, src=captFile, enrich_ready=enrich_ready
+                    lang=lang, kind=kind, src=cap_file, enrich_ready=enrich_ready
                 )
             else:
                 # check if the same combination of lang and kind exists
@@ -133,7 +133,7 @@ def video_caption_maker_save(request, video):
                         video=video,
                         kind=kind,
                         lang=lang,
-                        src=captFile,
+                        src=cap_file,
                         enrich_ready=enrich_ready,
                     )
                     track.save()
