@@ -18,13 +18,13 @@
   <a
     style="display:none"
     class="infinite-more-link"
-    href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{% endif %}page={{ videos.next_page_number }}"
-    data-nextpagenumber = "{% if videos.has_next %}{{ videos.next_page_number }}{% else %}null{% endif %}">{% trans "More" %}
+    href="{{ full_path }}{% if '?' in full_path %}&amp;{% else %}?{% endif %}page={{ videos.next_page_number }}"
+    data-nextpagenumber="{% if videos.has_next %}{{ videos.next_page_number }}{% else %}null{% endif %}">{% trans "More" %}
   </a>
 {% endif %}
 
 <div class="infinite-loading" style="display: none;">
-  {% trans "Loading..." %}
+  {% trans "Loading…" %}
 </div>
 {% endspaceless %}
 <script defer src="{% static 'js/video_select.js' %}?ver={{VERSION}}"></script>

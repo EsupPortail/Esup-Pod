@@ -226,11 +226,11 @@
       });
       player.on('loadedmetadata', function() {
         {% if request.GET.start and request.GET.start != '0' %}
-        player.currentTime({{request.GET.start}});
+          player.currentTime({{request.GET.start}});
         {% else %}
-          {% if request.user and not playlist_in_get.autoplay %}
-          const markerTime = {% get_marker_time_for_user video request.user %};
-          if(markerTime !=0) player.currentTime(markerTime);
+          {% if request.user.is_authenticated and not playlist_in_get.autoplay %}
+            const markerTime = {% get_marker_time_for_user video request.user %};
+            if(markerTime !=0) player.currentTime(markerTime);
           {% endif %}
         {% endif %}
       });

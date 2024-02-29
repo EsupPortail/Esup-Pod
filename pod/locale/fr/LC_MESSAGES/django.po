@@ -8753,7 +8753,7 @@ msgstr "Ce contenu est visible par tous."
 
 #: pod/video/templatetags/video_tags.py
 msgid "This content is not chaptered."
-msgstr "Ce contenu n'est pas chapitré."
+msgstr "Ce contenu n’est pas chapitré."
 
 #: pod/video/templatetags/video_tags.py
 #, python-format
