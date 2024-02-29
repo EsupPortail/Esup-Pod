@@ -207,5 +207,5 @@ function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipl
         }
       }
     })
-    .catch(err => console.error('An error occurred: '+ err));  // TODO Make a real error
+    .catch(err => showalert(gettext("An error has occurred. Please try later."), 'alert-danger'));
 }

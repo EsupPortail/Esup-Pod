@@ -48,7 +48,7 @@ function addSubtitles(captionText, startTime, endTime, initialCodeNumber) {
       newCaptionsEditor.innerHTML += htmlCode;
     }
   } else {
-    console.error('newCaptionsEditor not found');     // TODO make a real error
+    showalert(gettext('An error occurred when adding the caption/subtitles. Please try later.'), 'alert-danger');
   }
 }
 
