@@ -18,14 +18,15 @@
     <img class="pod-thumbnail" src="{{ video.get_thumbnail_url }}" alt="" loading="lazy">
   </div>
   <span class="col-3 title-item-video-row dashboard-video-title" title="{{ video.title|capfirst }}">
-    {{ video.title|capfirst|truncatechars:20 }}</span>
+    {{ video.title|capfirst|truncatechars:20 }}
+  </span>
   <span class="col-2" title="{% trans 'Duration' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
     <span class="visually-hidden">{% trans 'Duration' %}</span>
-    <i class="bi bi-clock text-muted" aria-hidden="true"></i> {{ video.duration_in_time }}
+    <i class="bi bi-clock text-muted" aria-hidden="true"></i>&nbsp;{{ video.duration_in_time }}
   </span>
   <span class="col-3" title="{% trans 'Date added' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
     <span class="visually-hidden">{% trans 'Date added' %}</span>
-    <i class="bi bi-calendar-check text-muted" aria-hidden="true"></i> {{ video.date_added }}
+    <i class="bi bi-calendar-check text-muted" aria-hidden="true"></i>&nbsp;{{ video.date_added }}
   </span>
 
   <div class="col-2 me-auto">

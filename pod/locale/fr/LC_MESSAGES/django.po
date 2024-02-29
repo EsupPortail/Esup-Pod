@@ -8534,7 +8534,7 @@ msgstr "Lien de partage"
 
 #: pod/video/templates/videos/video_access_tokens.html
 msgid "Code to embed in a web page"
-msgstr "Code à intégrer dans une page Web"
+msgstr "Code à intégrer dans une page web"
 
 #: pod/video/templates/videos/video_access_tokens.html
 msgid "Copy to clipboard"
