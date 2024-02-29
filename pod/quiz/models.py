@@ -24,11 +24,11 @@ class Quiz(models.Model):
         default=False,
         help_text=_("Please choose if this quiz is only for connected users or not."),
     )
-    activated_statistics = models.BooleanField(
-        verbose_name=_("Activated statistics"),
-        default=False,
-        help_text=_("Please choose if the statistics are activated or not."),
-    )
+    # activated_statistics = models.BooleanField(
+    #     verbose_name=_("Activated statistics"),
+    #     default=False,
+    #     help_text=_("Please choose if the statistics are activated or not."),
+    # )
     show_correct_answers = models.BooleanField(
         verbose_name=_("Show correct answers"),
         default=True,
@@ -46,6 +46,9 @@ class Quiz(models.Model):
                 name="unique_video",
             ),
         ]
+
+    def clean(self):
+        super().clean()
 
 
 class Question(models.Model):
@@ -123,7 +126,7 @@ class UniqueChoiceQuestion(Question):
     Unique choice question model.
 
     Attributes:
-        choices (JSONField <{question(str): is_correct(bool)}>): Choices of the question.
+        choices (JSONField <{choice(str): is_correct(bool)}>): Choices of the question.
     """
 
     choices = models.JSONField(
@@ -219,6 +222,27 @@ class ShortAnswerQuestion(Question):
     class Meta:
         verbose_name = "Short answer question"
         verbose_name_plural = "Short answer questions"
+
+    def __str__(self):
+        return self.title
+
+
+class LongAnswerQuestion(Question):
+    """
+    Long answer question model.
+
+    Attributes:
+        answer (TextField): Answer of the question.
+    """
+    answer = models.TextField(
+        verbose_name="Answer",
+        default="",
+        help_text="Please choose an answer.",
+    )
+
+    class Meta:
+        verbose_name = "Long answer question"
+        verbose_name_plural = "Long answer questions"
 
     def __str__(self):
         return self.title

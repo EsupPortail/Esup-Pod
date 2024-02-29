@@ -74,6 +74,7 @@ function handleLongAnswerQuestion(questionForm) {
   const textarea = document.createElement("textarea");
   textarea.name = questionForm.querySelector('.question-choices-form').name;
   textarea.placeholder = "The long answer";
+  textarea.classList.add("long-answer-field");
   questionForm.querySelector('.question-choices-form').appendChild(textarea);
 }
 
@@ -124,7 +125,7 @@ function handleUniqueChoiceQuestion(questionForm) {
 
     const textInput = document.createElement("input");
     textInput.type = "text";
-    textInput.placeholder = `Choice ${document.querySelectorAll('.question-choices-form input[type="radio"]').length + 1}`;
+    textInput.placeholder = `Choice ${choicesForm.querySelectorAll('.question-choices-form input[type="radio"]').length + 1}`;
 
     newChoiceDiv.appendChild(input);
     newChoiceDiv.appendChild(textInput);
@@ -193,6 +194,9 @@ function manage_form_submission() {
         hiddenUniqueChoiceAnswerInput.value = JSON.stringify(choicesData);
       } // Add other conditions for other question types.
     }
+
+    let form = document.getElementById("quiz-form");
+    form.submit();
   });
 }
 
