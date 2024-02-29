@@ -1,9 +1,9 @@
 {% load i18n %}
 
 <div class="question-form">
-  <div class="my-4 gap-4 d-flex">
+  <div class="my-4 gap-2 d-flex">
     <h2>Question</h2>
-    <button class="btn btn-danger delete-question-button" type="button"><i class="bi bi-trash" aria-hidden="true"></i></button>
+    <button class="btn btn-danger btn-small delete-question-button" type="button"><i class="bi bi-trash" aria-hidden="true"></i></button>
   </div>
   <div class="question-attributes">
     {% if form.errors %}
@@ -33,9 +33,9 @@
     {% endfor %}
   </div>
   <div class="question-choices-section">
-    <form action="post" class="question-choices-form" >
+    <div class="question-choices-form" >
       <!-- There is nothing & it's normal. The content is managed in JS -->
-    </form>
+    </div>
   </div>
   <hr>
 </div>
