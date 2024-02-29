@@ -109,9 +109,9 @@ from xml.dom import minidom
 # For PostgreSQL database #
 # Don't forget to run the following command the 1st time
 # pip install psycopg2-binary
-# import psycopg2
-# import psycopg2.extras
-# from psycopg2 import sql
+import psycopg2
+import psycopg2.extras
+from psycopg2 import sql
 
 # For MariaDB/MySQL database #
 # Don't forget to run the following command the 1st time

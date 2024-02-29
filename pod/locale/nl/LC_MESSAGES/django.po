@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-15 17:43+0100\n"
+"POT-Creation-Date: 2024-02-29 10:01+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -717,7 +717,6 @@ msgstr ""
 #: pod/video/templates/videos/video_list.html
 #: pod/video/templates/videos/video_list_grid_selectable.html
 #: pod/video/templates/videos/video_list_table_selectable.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "More"
 msgstr ""
 
@@ -730,6 +729,7 @@ msgstr ""
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_list.html
 #: pod/video/templates/videos/video_list_grid_selectable.html
+#: pod/video/templates/videos/video_list_table_selectable.html
 msgid "Loading…"
 msgstr ""
 
@@ -916,6 +916,7 @@ msgstr "Titel"
 #: pod/dressing/templates/my_dressings.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #: pod/video/templates/channel/list_theme.html
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Actions"
 msgstr ""
 
@@ -953,7 +954,6 @@ msgstr ""
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/dashboard.html
-#: pod/video/templates/videos/video_access_tokens.html
 #: pod/video/templates/videos/video_delete.html
 msgid "Delete"
 msgstr ""
@@ -2773,15 +2773,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -3415,7 +3415,6 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_access_tokens.html
 msgid "Embed in a web page"
 msgstr ""
 
@@ -3452,7 +3451,6 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_access_tokens.html
 msgid "Share the link"
 msgstr ""
 
@@ -6629,8 +6627,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -7518,7 +7516,6 @@ msgid ""
 msgstr ""
 
 #: pod/video/templates/videos/add_video.html
-#: pod/video/templates/videos/video_edit.html
 #, python-format
 msgid "The file size must be lower than %(video_max_upload_size)s Go."
 msgstr ""
@@ -7688,7 +7685,6 @@ msgid "List display mode"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard_modal.html
-#: pod/video/templates/videos/video_list_table_selectable.html
 msgid "Loading..."
 msgstr ""
 
@@ -7991,11 +7987,19 @@ msgid "Add a token"
 msgstr ""
 
 #: pod/video/templates/videos/video_access_tokens.html
-msgid "List of active tokens"
+msgid "List of active tokens:"
 msgstr ""
 
 #: pod/video/templates/videos/video_access_tokens.html
 msgid "Token"
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Share link"
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Code to embed in a web page"
 msgstr ""
 
 #: pod/video/templates/videos/video_access_tokens.html
@@ -8097,6 +8101,11 @@ msgstr ""
 msgid "Edit the %(app)s"
 msgstr ""
 
+#: pod/video/templates/videos/video_edit.html
+#, python-format
+msgid "The file size must be lower than %(video_max_upload_size)s GB."
+msgstr ""
+
 #: pod/video/templates/videos/video_licencebox.html
 msgid "Creative Commons license:"
 msgstr ""
@@ -8178,6 +8187,10 @@ msgstr ""
 
 #: pod/video/templates/videos/video_page_content.html
 msgid "Theme description"
+msgstr ""
+
+#: pod/video/templates/videos/video_row_select.html
+msgid "Toggle actions menu"
 msgstr ""
 
 #: pod/video/templates/videos/video_stats_view.html
