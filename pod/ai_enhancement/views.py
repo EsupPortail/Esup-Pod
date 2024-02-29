@@ -1,20 +1,35 @@
 import json
 
 from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 
 from pod.ai_enhancement.forms import AIEnrichmentChoice
 from pod.ai_enhancement.models import AIEnrichment
 from pod.ai_enhancement.utils import AristoteAI, enrichment_is_already_asked
+from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.views import in_maintenance
+from pod.podfile.models import UserFolder
 from pod.video.models import Discipline, Video
 
 AI_ENRICHMENT_CLIENT_ID = getattr(settings, "AI_ENRICHMENT_CLIENT_ID", "mocked_id")
 AI_ENRICHMENT_CLIENT_SECRET = getattr(settings, "AI_ENRICHMENT_CLIENT_SECRET", "mocked_secret")
+LANG_CHOICES = getattr(
+    settings,
+    "LANG_CHOICES",
+    (
+        (_("-- Frequently used languages --"), PREF_LANG_CHOICES),
+        (_("-- All languages --"), ALL_LANG_CHOICES),
+    ),
+)
+__LANG_CHOICES_DICT__ = {
+    key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
+}
 
 
 def receive_webhook(request: WSGIRequest):
@@ -40,7 +55,7 @@ def send_enrichment_creation_request(request: WSGIRequest, aristote: AristoteAI,
         # TODO change this
         ["video/mp4"],
         request.user.username,
-        "https://webhook.site/da793ba0-5b38-4f80-a1d6-6f472c504f47",  # TODO change this
+        "https://webhook.site/a28f0753-439b-40ac-a4a3-ee70506bf099",  # TODO change this
     )
     if creation_response:
         if creation_response["status"] == "OK":
@@ -90,18 +105,44 @@ def enrich_video_json(request: WSGIRequest, video_slug: str) -> HttpResponse:
 
 
 @csrf_protect
+def enrich_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
+    """The view to enrich the subtitles of a video."""
+    # AIEnrichment.objects.filter(video=video).delete()
+    video = get_object_or_404(Video, slug=video_slug, sites=get_current_site(request))
+    video_folder, created = UserFolder.objects.get_or_create(
+        name=video.slug,
+        owner=request.user,
+    )
+    if enrichment_is_already_asked(video):
+        enrichment = AIEnrichment.objects.filter(video=video).first()
+        if enrichment.is_ready:
+            return render(
+                request,
+                "video_caption_maker.html",
+                {
+                    "current_folder": video_folder,
+                    "video": video,
+                    "languages": LANG_CHOICES,
+                    "page_title": _("Video Caption Maker - Aristote AI Version"),
+                    "ai_enrichment": enrichment,
+                },
+            )
+        return redirect(reverse("video:video", args=[video.slug]))
+    return redirect(reverse("video:video", args=[video.slug]))
+
+
+@csrf_protect
 def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
     """The view to choose the title of a video with the AI enrichment."""
     if request.method == "POST":
         form = AIEnrichmentChoice(request.POST, instance=video)
         if form.is_valid():
             form.save()
-            AIEnrichment.objects.filter(video=video).delete()
-            return redirect(reverse("video:video", args=[video.slug]))
+            return redirect(reverse("ai_enhancement:enrich_subtitles", args=[video.slug]) + '?generated=true')
         else:
             return render(
                 request,
-                "choose_video_element/templates/choose_video_element.html",
+                "choose_video_element.html",
                 {"video": video, "form": form, "page_title": "Enrich with Aristote AI"},
             )
     else:
@@ -110,6 +151,6 @@ def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
         )
         return render(
             request,
-            "choose_video_element/templates/choose_video_element.html",
+            "choose_video_element.html",
             {"video": video, "form": form, "page_title": "Enrich with Aristote AI"},
         )

@@ -79,6 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("submit", (e) => {
+  console.log('Add event listener submit');
   if (e.target.id != "form_save_captions") return;
   e.preventDefault();
   let caption_content = document.getElementById("captionContent");
@@ -103,6 +104,15 @@ document.addEventListener("submit", (e) => {
   } else {
     document.querySelector('input[name="file_id"]').value = "";
     send_form_save_captions();
+  }
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('generated') === 'true') {
+    showalert(gettext("You will soon be redirected."), "alert-warning");
+    let pathParts = window.location.pathname.split('/');
+    let slug = pathParts[pathParts.length - 2];
+    setTimeout(function() {
+      window.location.href = '/video/' + slug;
+    }, 2000);
   }
 });
 
@@ -136,6 +146,7 @@ document.addEventListener("click", (evt) => {
  * Send the captions form to be saved
  */
 const send_form_save_captions = function () {
+  console.log('=== send_form_save_captions function ===');
   let fileName = document.getElementById("captionFilename").value;
   if (fileName.length == 0) {
     fileName = `${file_prefix}_captions_${Date.now()}`;

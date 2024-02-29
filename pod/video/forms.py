@@ -44,8 +44,11 @@ MAX_DURATION_DATE_DELETE = getattr(settings, "MAX_DURATION_DATE_DELETE", 10)
 
 __TODAY__ = datetime.date.today()
 
-__MAX_D__ = __TODAY__.replace(year=__TODAY__.year + MAX_DURATION_DATE_DELETE)
-
+try:
+    __MAX_D__ = __TODAY__.replace(year=__TODAY__.year + MAX_DURATION_DATE_DELETE)
+except ValueError:
+    # avoid ValueError: day is out of range for month on february 29th
+    __MAX_D__ = __TODAY__.replace(year=__TODAY__.year + MAX_DURATION_DATE_DELETE, day=__TODAY__.day - 1)
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
