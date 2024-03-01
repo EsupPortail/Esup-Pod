@@ -116,8 +116,12 @@ class InfiniteLoader {
       }
       this.callBackAfterLoad();
       /* Refresh Bootstrap tooltips after load */
-      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"], [data-pod-tooltip="true"]');
-      [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+      const tooltipTriggerList = document.querySelectorAll(
+        '[data-bs-toggle="tooltip"], [data-pod-tooltip="true"]',
+      );
+      [...tooltipTriggerList].map(
+        (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
+      );
     });
   }
 
