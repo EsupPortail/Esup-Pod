@@ -1903,7 +1903,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   }
   ```
 
-  >> Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush). Elles peuvent être générées avec https://web-push-codelab.glitch.me/. <br>
+  >> Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush). Elles peuvent être générées avec [https://web-push-codelab.glitch.me/](). <br>
 
 ### Configuration application recorder
 
