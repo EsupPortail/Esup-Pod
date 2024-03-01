@@ -79,7 +79,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
   >> Mise en place du mode PWA grâce à l'application Django-pwa <br>
   >> Voici la configuration par défaut pour Pod, vous pouvez surcharger chaque variable dans votre fichier de configuration. <br>
   >> PWA_APP_NAME = "Pod" <br>
-  >> PWA_APP_DESCRIPTION = _( <br>
+  >> PWA_APP_DESCRIPTION = ( <br>
   >>     "Pod is aimed at users of our institutions, by allowing the publication of " <br>
   >>     "videos in the fields of research (promotion of platforms, etc.), training " <br>
   >>     "(tutorials, distance training, student reports, etc.), institutional life (video " <br>
@@ -2689,12 +2689,26 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l'enco
   >>
   >> ```
 
- - `USE_DISTANT_ENCODING_TRANSCODING`
+ - `USE_REMOTE_ENCODING_TRANSCODING`
 
   > valeur par défaut : `False`
 
 
   >> Si True, active l'encodage et la transcription sur un environnement distant via redis+celery <br>
+
+ - `POD_API_URL`
+
+  > valeur par défaut : ``
+
+  >> Adresse de l'API rest a appeler en fin d'encodage distant ou de transcription à distance. <br>
+  >> Exemple : https://pod.univ.fr/rest/ <br>
+
+ - `POD_API_TOKEN`
+
+  > valeur par défaut : ``
+
+  >> Token d'authentification utilisé pour l'appel en fin d'encodage distant ou de transcription à distance. <br>
+  >> Pour le créer, il faut aller dans la partie Admin > Jeton d'authentification > token. <br>
 
  - `VIDEO_RENDITIONS`
 
