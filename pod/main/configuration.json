@@ -3047,11 +3047,11 @@
                             "default_value": "",
                             "description": {
                                 "en": [
-                                    ""
+                                    "Address of API rest to be called at the end of remote encoding or remote transcription.",
+                                    "Example : https://pod.univ.fr/rest/"
                                 ],
                                 "fr": [
-                                    "",
-                                    "Adresse de l'API rest a appeler en fin d'encodage distant ou de transcription à distance",
+                                    "Adresse de l'API rest a appeler en fin d'encodage distant ou de transcription à distance.",
                                     "Exemple : https://pod.univ.fr/rest/"
                                 ]
                             },
@@ -3062,12 +3062,12 @@
                             "default_value": "",
                             "description": {
                                 "en": [
-                                    ""
+                                    "Authentication token used for the call at the end of remote encoding or remote transcription.",
+                                    "To create it, go to Admin > Authentication token > token."
                                 ],
                                 "fr": [
-                                    "",
-                                    "Token d'authentification utilisé pour l'appel en fin d'encodage distant ou de transcription à distance",
-                                    "Pour le créer, il faut aller dans la partie Admin > Jeton d'authentification > token"
+                                    "Token d'authentification utilisé pour l'appel en fin d'encodage distant ou de transcription à distance.",
+                                    "Pour le créer, il faut aller dans la partie Admin > Jeton d'authentification > token."
                                 ]
                             },
                             "pod_version_end": "",
