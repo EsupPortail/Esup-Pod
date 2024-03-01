@@ -53,6 +53,21 @@ ENCODING_TRANSCODING_CELERY_BROKER_URL = 'redis://redis:6379/7'
 POD_API_URL = "http://pod-back:8080/rest"
 POD_API_TOKEN = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
+USE_TRANSCRIPTION = True
+TRANSCRIPTION_TYPE = "WHISPER"
+TRANSCRIPTION_MODEL_PARAM = {
+     'WHISPER':{
+       'fr': {
+         'model': "small",
+         'download_root': "/usr/src/app/transcription/whisper/",
+       },
+       'en': {
+         'model': "small",
+         'download_root': "/usr/src/app/transcription/whisper/",
+       }
+    }
+}
+
 USE_XAPI_VIDEO = False
 XAPI_CELERY_BROKER_URL = "redis://redis:6379/6"
 

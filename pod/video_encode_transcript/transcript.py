@@ -104,7 +104,8 @@ def main_threaded_transcript(video_to_encode_id):
     change_encoding_step(video_to_encode_id, 5, "transcripting audio")
 
     video_to_encode = Video.objects.get(id=video_to_encode_id)
-
+    video_to_encode.encoding_in_progress = True
+    video_to_encode.save()
     msg = ""
     lang = video_to_encode.transcript
     # check if TRANSCRIPTION_MODEL_PARAM [lang] exist
@@ -141,6 +142,8 @@ def save_vtt_and_notify(video_to_encode, msg, webvtt):
     """Call save vtt file function and notify by mail at the end."""
     msg += saveVTT(video_to_encode, webvtt)
     change_encoding_step(video_to_encode.id, 0, "done")
+    video_to_encode.encoding_in_progress = False
+    video_to_encode.save()
     # envois mail fin transcription
     if EMAIL_ON_TRANSCRIPTING_COMPLETION:
         send_email_transcript(video_to_encode)

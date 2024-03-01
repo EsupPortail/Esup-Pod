@@ -21,13 +21,16 @@ POD_API_URL = getattr(
 POD_API_TOKEN = getattr(
     settings, "POD_API_TOKEN", ""
 )
+USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
+if USE_TRANSCRIPTION:
+    from pod.video_encode_transcript import transcript
+    TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 
 class Command(BaseCommand):
     help = 'launch of video encoding and transcoding for video test : %s' % VIDEO_TEST
 
     def handle(self, *args, **options):
-        print("handle")
         user, created = User.objects.update_or_create(
             username="pod",
             password="pod1234pod"
@@ -42,14 +45,40 @@ class Command(BaseCommand):
         video, created = Video.objects.update_or_create(
             title="Video1",
             owner=user,
-            video="test.mp4",
+            # video="test.mp4",
             type=Type.objects.get(id=1),
+            transcript = ""
         )
-
         tempfile = NamedTemporaryFile(delete=True)
         video.video.save("test.mp4", tempfile)
         dest = os.path.join(settings.MEDIA_ROOT, video.video.name)
         shutil.copyfile(VIDEO_TEST, dest)
+        self.test_encoding(video)
+        self.test_transcoding(video)
+        print("\n -----> End of Encoding/transcoding video test")
+
+    def test_transcoding(self, video):
+        print("\n ---> Start Transcoding video test")
+        if video.get_video_mp3() and not video.encoding_in_progress:
+            video.transcript = "fr"
+            video.save()
+            transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
+            transcript_video(video.id, threaded=False)
+            video.refresh_from_db()
+            n = 0
+            while video.encoding_in_progress:
+                print("... Transcoding in progress : %s " % video.get_encoding_step)
+                video.refresh_from_db()
+                time.sleep(2)
+                n += 1
+                if n > 60:
+                    raise CommandError('Error while transcoding !!!')
+            video.refresh_from_db()
+        else:
+            raise CommandError('No mp3 found !!!')
+        print("\n ---> End of Transcoding video test")
+
+    def test_encoding(self, video):
         print("\n ---> Start Encoding video test")
         encode_video = getattr(encode, ENCODE_VIDEO)
         encode_video(video.id, threaded=False)

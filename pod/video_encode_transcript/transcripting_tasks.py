@@ -21,6 +21,7 @@ EMAIL_HOST = getattr(settings_local, 'EMAIL_HOST', "")
 DEFAULT_FROM_EMAIL = getattr(settings_local, 'DEFAULT_FROM_EMAIL', "")
 ADMINS = getattr(settings_local, 'ADMINS', ())
 DEBUG = getattr(settings_local, 'DEBUG', True)
+TEST_REMOTE_ENCODE = getattr(settings_local, "TEST_REMOTE_ENCODE", False)
 
 admins_email = [ad[1] for ad in ADMINS]
 
@@ -33,7 +34,8 @@ smtp_handler = logging.handlers.SMTPHandler(
     toaddrs=admins_email,
     subject='[POD ENCODING] Encoding Log Mail'
 )
-logger.addHandler(smtp_handler)
+if not TEST_REMOTE_ENCODE:
+    logger.addHandler(smtp_handler)
 
 POD_API_URL = getattr(
     settings_local, "POD_API_URL", ""
