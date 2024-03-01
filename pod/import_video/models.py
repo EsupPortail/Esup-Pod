@@ -147,11 +147,16 @@ class ExternalRecording(models.Model):
             parameters["recordID"] = recording_id
             query = urlencode(parameters)
             hashed = api_call(query, action)
+            if BBB_API_URL == "":
+                msg = {}
+                msg["error"] = _("Unable to call BBB server.")
+                msg["message"] = _("Parameter %s needs to be defined.") % "BBB_API_URL"
+                raise ValueError(msg)
             url = slash_join(BBB_API_URL, action, "?%s" % hashed)
             response = requests.get(url)
             if response.status_code != 200:
                 msg = {}
-                msg["error"] = "Unable to call BBB server."
+                msg["error"] = _("Unable to call BBB server.")
                 msg["returncode"] = response.status_code
                 msg["message"] = response.content.decode("utf-8")
                 raise ValueError(msg)
@@ -168,7 +173,7 @@ class ExternalRecording(models.Model):
             else:
                 return recording_json
         else:
-            return ValueError(_("Method Not Allowed"))
+            return ValueError(_("Method not allowed"))
 
     def __unicode__(self):
         return "%s - %s" % (self.id, self.name)
