@@ -10,7 +10,9 @@ from .models import EncodingLog
 
 from pod.cut.models import CutVideo
 from pod.dressing.models import Dressing
+from pod.dressing.utils import get_dressing_input
 from pod.main.tasks import task_start_encode, task_start_encode_studio
+from .encoding_settings import FFMPEG_DRESSING_INPUT
 from .utils import (
     change_encoding_step,
     check_file,
@@ -37,11 +39,15 @@ if USE_TRANSCRIPTION:
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 EMAIL_ON_ENCODING_COMPLETION = getattr(settings, "EMAIL_ON_ENCODING_COMPLETION", True)
 
-USE_DISTANT_ENCODING_TRANSCODING = getattr(
-    settings, "USE_DISTANT_ENCODING_TRANSCODING", False
+USE_REMOTE_ENCODING_TRANSCODING = getattr(
+    settings, "USE_REMOTE_ENCODING_TRANSCODING", False
 )
-if USE_DISTANT_ENCODING_TRANSCODING:
+if USE_REMOTE_ENCODING_TRANSCODING:
     from .encoding_tasks import start_encoding_task
+
+FFMPEG_DRESSING_INPUT = getattr(
+    settings, "FFMPEG_DRESSING_INPUT", FFMPEG_DRESSING_INPUT
+)
 
 # ##########################################################################
 # ENCODE VIDEO: THREAD TO LAUNCH ENCODE
@@ -128,13 +134,23 @@ def encode_video(video_id: int) -> None:
     encoding_video.remove_old_data()
 
     change_encoding_step(video_id, 2, "start encoding")
-    if USE_DISTANT_ENCODING_TRANSCODING:
+    if USE_REMOTE_ENCODING_TRANSCODING:
+        dressing = None
+        dressing_input = ""
+        if Dressing.objects.filter(videos=video_to_encode).exists():
+            dressing = Dressing.objects.get(videos=video_to_encode).to_json()
+            if dressing:
+                dressing_input = get_dressing_input(
+                    dressing,
+                    FFMPEG_DRESSING_INPUT
+                )
         start_encoding_task.delay(
             encoding_video.id,
             encoding_video.video_file,
             encoding_video.cutting_start,
             encoding_video.cutting_stop,
-            encoding_video.dressing,
+            json_dressing=dressing,
+            dressing_input=dressing_input
         )
     else:
         encoding_video.start_encode()
@@ -164,20 +180,35 @@ def store_encoding_info(video_id: int, encoding_video: Encoding_video_model) -> 
 def get_encoding_video(video_to_encode: Video) -> Encoding_video_model:
     """Get the encoding video object from video."""
     dressing = None
+    dressing_input = ""
     if Dressing.objects.filter(videos=video_to_encode).exists():
-        dressing = Dressing.objects.get(videos=video_to_encode)
+        dressing = Dressing.objects.get(videos=video_to_encode).to_json()
+        if dressing:
+            dressing_input = get_dressing_input(
+                dressing,
+                FFMPEG_DRESSING_INPUT
+            )
 
     if CutVideo.objects.filter(video=video_to_encode).exists():
         cut = CutVideo.objects.get(video=video_to_encode)
         cut_start = time_to_seconds(cut.start)
         cut_end = time_to_seconds(cut.end)
         encoding_video = Encoding_video_model(
-            video_to_encode.id, video_to_encode.video.path, cut_start, cut_end, dressing
+            video_to_encode.id,
+            video_to_encode.video.path,
+            cut_start, cut_end,
+            json_dressing=dressing,
+            dressing_input=dressing_input
         )
         return encoding_video
 
     return Encoding_video_model(
-        video_to_encode.id, video_to_encode.video.path, 0, 0, dressing
+        video_to_encode.id,
+        video_to_encode.video.path,
+        0,
+        0,
+        json_dressing=dressing,
+        dressing_input=dressing_input
     )
 
 

@@ -17,6 +17,7 @@
 import bleach
 
 from .forms import ContactUsForm, SUBJECT_CHOICES
+from .forms import DownloadFileForm
 from django.shortcuts import render
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
@@ -28,7 +29,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.http import JsonResponse
 from wsgiref.util import FileWrapper
@@ -103,14 +104,22 @@ def in_maintenance():
 def download_file(request):
     """Direct download of requested file."""
     if request.POST and request.POST.get("filename"):
-        filename = os.path.join(settings.MEDIA_ROOT, request.POST["filename"])
-        wrapper = FileWrapper(open(filename, "rb"))
-        response = HttpResponse(wrapper, content_type=mimetypes.guess_type(filename)[0])
-        response["Content-Length"] = os.path.getsize(filename)
-        response["Content-Disposition"] = 'attachment; filename="%s"' % os.path.basename(
-            filename
-        )
-        return response
+        filename = os.path.join(settings.MEDIA_ROOT, request.POST.get("filename"))
+        form = DownloadFileForm({"filename": filename})
+        if form.is_valid():
+            cleaned_filename = form.cleaned_data["filename"]
+            if os.path.isfile(cleaned_filename) and cleaned_filename.startswith(settings.MEDIA_ROOT):
+                wrapper = FileWrapper(open(filename, "rb"))
+                response = HttpResponse(wrapper, content_type=mimetypes.guess_type(filename)[0])
+                response["Content-Length"] = os.path.getsize(filename)
+                response["Content-Disposition"] = 'attachment; filename="%s"' % os.path.basename(
+                    filename
+                )
+                return response
+            else:
+                raise SuspiciousOperation("file not exist or not in media")
+        else:
+            raise SuspiciousOperation("not valid file")
     else:
         raise PermissionDenied
 
