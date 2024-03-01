@@ -108,12 +108,16 @@ def download_file(request):
         form = DownloadFileForm({"filename": filename})
         if form.is_valid():
             cleaned_filename = form.cleaned_data["filename"]
-            if os.path.isfile(cleaned_filename) and cleaned_filename.startswith(settings.MEDIA_ROOT):
+            if os.path.isfile(cleaned_filename) and cleaned_filename.startswith(
+                settings.MEDIA_ROOT
+            ):
                 wrapper = FileWrapper(open(filename, "rb"))
-                response = HttpResponse(wrapper, content_type=mimetypes.guess_type(filename)[0])
+                response = HttpResponse(
+                    wrapper, content_type=mimetypes.guess_type(filename)[0]
+                )
                 response["Content-Length"] = os.path.getsize(filename)
-                response["Content-Disposition"] = 'attachment; filename="%s"' % os.path.basename(
-                    filename
+                response["Content-Disposition"] = (
+                    'attachment; filename="%s"' % os.path.basename(filename)
                 )
                 return response
             else:

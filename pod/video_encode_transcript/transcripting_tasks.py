@@ -8,6 +8,7 @@ from tempfile import NamedTemporaryFile
 import logging
 import os
 import requests
+
 # call local settings directly
 # no need to load pod application to send statement
 try:
@@ -17,10 +18,10 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-EMAIL_HOST = getattr(settings_local, 'EMAIL_HOST', "")
-DEFAULT_FROM_EMAIL = getattr(settings_local, 'DEFAULT_FROM_EMAIL', "")
-ADMINS = getattr(settings_local, 'ADMINS', ())
-DEBUG = getattr(settings_local, 'DEBUG', True)
+EMAIL_HOST = getattr(settings_local, "EMAIL_HOST", "")
+DEFAULT_FROM_EMAIL = getattr(settings_local, "DEFAULT_FROM_EMAIL", "")
+ADMINS = getattr(settings_local, "ADMINS", ())
+DEBUG = getattr(settings_local, "DEBUG", True)
 TEST_REMOTE_ENCODE = getattr(settings_local, "TEST_REMOTE_ENCODE", False)
 
 admins_email = [ad[1] for ad in ADMINS]
@@ -32,17 +33,13 @@ smtp_handler = logging.handlers.SMTPHandler(
     mailhost=EMAIL_HOST,
     fromaddr=DEFAULT_FROM_EMAIL,
     toaddrs=admins_email,
-    subject='[POD ENCODING] Encoding Log Mail'
+    subject="[POD ENCODING] Encoding Log Mail",
 )
 if not TEST_REMOTE_ENCODE:
     logger.addHandler(smtp_handler)
 
-POD_API_URL = getattr(
-    settings_local, "POD_API_URL", ""
-)
-POD_API_TOKEN = getattr(
-    settings_local, "POD_API_TOKEN", ""
-)
+POD_API_URL = getattr(settings_local, "POD_API_URL", "")
+POD_API_TOKEN = getattr(settings_local, "POD_API_TOKEN", "")
 
 ENCODING_TRANSCODING_CELERY_BROKER_URL = getattr(
     settings_local, "ENCODING_TRANSCODING_CELERY_BROKER_URL", ""
@@ -76,19 +73,14 @@ def start_transcripting_task(video_id, mp3filepath, duration, lang):
     temp_vtt_file = NamedTemporaryFile(dir=media_temp_dir, delete=False, suffix=".vtt")
     text_webvtt.save(temp_vtt_file.name)
     print("End of the transcoding of the video")
-    Headers = {"Authorization" : "Token %s" % POD_API_TOKEN}
+    Headers = {"Authorization": "Token %s" % POD_API_TOKEN}
     url = POD_API_URL.strip("/") + "/store_remote_transcripted_video/?id=%s" % video_id
-    data = {
-        "video_id": video_id,
-        "msg": msg,
-        "temp_vtt_file": temp_vtt_file.name
-    }
+    data = {"video_id": video_id, "msg": msg, "temp_vtt_file": temp_vtt_file.name}
     try:
         response = requests.post(url, json=data, headers=Headers)
         if response.status_code != 200:
             msg = "Calling store remote transcoding error : {} {}".format(
-                response.status_code,
-                response.reason
+                response.status_code, response.reason
             )
             logger.error(msg + "\n" + str(response.content))
         else:
@@ -97,7 +89,7 @@ def start_transcripting_task(video_id, mp3filepath, duration, lang):
         requests.exceptions.HTTPError,
         requests.exceptions.ConnectionError,
         requests.exceptions.InvalidURL,
-        requests.exceptions.Timeout
+        requests.exceptions.Timeout,
     ) as exception:
         msg = "Exception: {}".format(type(exception).__name__)
         msg += "\nException message: {}".format(exception)

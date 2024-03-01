@@ -45,9 +45,7 @@ USE_REMOTE_ENCODING_TRANSCODING = getattr(
 if USE_REMOTE_ENCODING_TRANSCODING:
     from .encoding_tasks import start_encoding_task
 
-FFMPEG_DRESSING_INPUT = getattr(
-    settings, "FFMPEG_DRESSING_INPUT", FFMPEG_DRESSING_INPUT
-)
+FFMPEG_DRESSING_INPUT = getattr(settings, "FFMPEG_DRESSING_INPUT", FFMPEG_DRESSING_INPUT)
 
 # ##########################################################################
 # ENCODE VIDEO: THREAD TO LAUNCH ENCODE
@@ -140,17 +138,14 @@ def encode_video(video_id: int) -> None:
         if Dressing.objects.filter(videos=video_to_encode).exists():
             dressing = Dressing.objects.get(videos=video_to_encode).to_json()
             if dressing:
-                dressing_input = get_dressing_input(
-                    dressing,
-                    FFMPEG_DRESSING_INPUT
-                )
+                dressing_input = get_dressing_input(dressing, FFMPEG_DRESSING_INPUT)
         start_encoding_task.delay(
             encoding_video.id,
             encoding_video.video_file,
             encoding_video.cutting_start,
             encoding_video.cutting_stop,
             json_dressing=dressing,
-            dressing_input=dressing_input
+            dressing_input=dressing_input,
         )
     else:
         encoding_video.start_encode()
@@ -184,10 +179,7 @@ def get_encoding_video(video_to_encode: Video) -> Encoding_video_model:
     if Dressing.objects.filter(videos=video_to_encode).exists():
         dressing = Dressing.objects.get(videos=video_to_encode).to_json()
         if dressing:
-            dressing_input = get_dressing_input(
-                dressing,
-                FFMPEG_DRESSING_INPUT
-            )
+            dressing_input = get_dressing_input(dressing, FFMPEG_DRESSING_INPUT)
 
     if CutVideo.objects.filter(video=video_to_encode).exists():
         cut = CutVideo.objects.get(video=video_to_encode)
@@ -196,9 +188,10 @@ def get_encoding_video(video_to_encode: Video) -> Encoding_video_model:
         encoding_video = Encoding_video_model(
             video_to_encode.id,
             video_to_encode.video.path,
-            cut_start, cut_end,
+            cut_start,
+            cut_end,
             json_dressing=dressing,
-            dressing_input=dressing_input
+            dressing_input=dressing_input,
         )
         return encoding_video
 
@@ -208,7 +201,7 @@ def get_encoding_video(video_to_encode: Video) -> Encoding_video_model:
         0,
         0,
         json_dressing=dressing,
-        dressing_input=dressing_input
+        dressing_input=dressing_input,
     )
 
 

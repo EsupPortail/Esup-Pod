@@ -1,4 +1,5 @@
 """Unit tests for Esup-Pod dressing utilities."""
+
 import unittest
 from ..encoding_utils import get_dressing_position_value
 

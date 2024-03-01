@@ -145,7 +145,7 @@ class PlaylistVideoViewSet(viewsets.ModelViewSet):
     serializer_class = PlaylistVideoSerializer
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def launch_encode_view(request):
     """API view for launching video encoding."""
     video = get_object_or_404(Video, slug=request.GET.get("slug"))
@@ -176,6 +176,7 @@ def store_remote_encoded_video(request):
     """API view for storing remote encoded videos."""
     from .Encoding_video_model import Encoding_video_model
     from .encode import store_encoding_info, end_of_encoding
+
     video_id = request.GET.get("id", 0)
     video = get_object_or_404(Video, id=video_id)
     # start_store_remote_encoding_video(video_id)
@@ -184,13 +185,12 @@ def store_remote_encoded_video(request):
     if video.encoding_in_progress is False:
         raise SuspiciousOperation("video not encoding in progress")
     if str(video_id) != str(data["video_id"]):
-        raise SuspiciousOperation("different video id : %s - %s" % (video_id, data["video_id"]))
+        raise SuspiciousOperation(
+            "different video id : %s - %s" % (video_id, data["video_id"])
+        )
     print("Start the importing of the video: %s" % video_id)
     encoding_video = Encoding_video_model(
-        video_id,
-        data["video_path"],
-        data["cut_start"],
-        data["cut_end"]
+        video_id, data["video_path"], data["cut_start"], data["cut_end"]
     )
     encoding_video.start = data["start"]
     encoding_video.stop = data["stop"]
@@ -204,12 +204,15 @@ def store_remote_encoded_video(request):
 def store_remote_transcripted_video(request):
     """API view for storing remote transcripted videos."""
     from .transcript import save_vtt_and_notify
+
     video_id = request.GET.get("id", 0)
     video = get_object_or_404(Video, id=video_id)
     # check if video is encoding !!!
     data = json.loads(request.body.decode("utf-8"))
     if str(video_id) != str(data["video_id"]):
-        raise SuspiciousOperation("different video id : %s - %s" % (video_id, data["video_id"]))
+        raise SuspiciousOperation(
+            "different video id : %s - %s" % (video_id, data["video_id"])
+        )
     print("Start the import of transcription of the video: %s" % video_id)
     filename = os.path.basename(data["temp_vtt_file"])
     media_temp_dir = os.path.join(MEDIA_ROOT, "temp")

@@ -16,25 +16,21 @@ import time
 
 VIDEO_TEST = "pod/main/static/video_test/video_test_encodage_transcription.webm"
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
-POD_API_URL = getattr(
-    settings, "POD_API_URL", ""
-)
-POD_API_TOKEN = getattr(
-    settings, "POD_API_TOKEN", ""
-)
+POD_API_URL = getattr(settings, "POD_API_URL", "")
+POD_API_TOKEN = getattr(settings, "POD_API_TOKEN", "")
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
     from pod.video_encode_transcript import transcript
+
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 
 class Command(BaseCommand):
-    help = 'launch of video encoding and transcripting for video test : %s' % VIDEO_TEST
+    help = "launch of video encoding and transcripting for video test : %s" % VIDEO_TEST
 
     def handle(self, *args, **options):
         user, created = User.objects.update_or_create(
-            username="pod",
-            password="pod1234pod"
+            username="pod", password="pod1234pod"
         )
         user.is_staff = True
         user.is_superuser = True
@@ -48,7 +44,7 @@ class Command(BaseCommand):
             owner=user,
             # video="test.mp4",
             type=Type.objects.get(id=1),
-            transcript=""
+            transcript="",
         )
         tempfile = NamedTemporaryFile(delete=True)
         video.video.save("test.mp4", tempfile)
@@ -73,16 +69,16 @@ class Command(BaseCommand):
                 time.sleep(2)
                 n += 1
                 if n > 60:
-                    raise CommandError('Error while transcripting !!!')
+                    raise CommandError("Error while transcripting !!!")
             video.refresh_from_db()
             self.test_result_transcripting(video)
         else:
-            raise CommandError('No mp3 found !!!')
+            raise CommandError("No mp3 found !!!")
         print("\n ---> End of transcripting video test")
 
     def test_result_transcripting(self, video):
         if not Track.objects.filter(video=video, lang="fr").exists():
-            raise CommandError('Error while transcripting !!!')
+            raise CommandError("Error while transcripting !!!")
 
     def test_encoding(self, video):
         print("\n ---> Start Encoding video test")
@@ -96,7 +92,7 @@ class Command(BaseCommand):
             time.sleep(2)
             n += 1
             if n > 60:
-                raise CommandError('Error while encoding !!!')
+                raise CommandError("Error while encoding !!!")
         video.refresh_from_db()
         self.test_result_encoding(video)
         print("\n ---> End of Encoding video test")
@@ -113,9 +109,7 @@ class Command(BaseCommand):
             video=video,
             encoding_format="application/x-mpegURL",
         )
-        list_mp4 = EncodingVideo.objects.filter(
-            video=video, encoding_format="video/mp4"
-        )
+        list_mp4 = EncodingVideo.objects.filter(video=video, encoding_format="video/mp4")
         if not len(list_mp2t) > 0:
             raise CommandError("no video/mp2t found")
         if not len(list_mp2t) + 1 == len(list_playlist_video):

@@ -23,12 +23,13 @@ SUBJECT_CHOICES = getattr(
 
 class DownloadFileForm(forms.Form):
     """Manage "Download File" form."""
+
     filename = forms.FilePathField(
         required=True,
         path=settings.MEDIA_ROOT,
         recursive=True,
         allow_files=True,
-        allow_folders=False
+        allow_folders=False,
     )
 
     def __init__(self, *args, **kwargs):

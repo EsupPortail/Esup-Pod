@@ -178,7 +178,9 @@ class Encoding_video:
     json_dressing = None
     dressing_input = ""
 
-    def __init__(self, id=0, video_file="", start=0, stop=0, json_dressing=None, dressing_input=""):
+    def __init__(
+        self, id=0, video_file="", start=0, stop=0, json_dressing=None, dressing_input=""
+    ):
         """Initialize a new Encoding_video object."""
         self.id = id
         self.video_file = video_file
@@ -429,13 +431,18 @@ class Encoding_video:
             dressing_command_params = "[video][0:a]"
             order_opening_credits = order_opening_credits + 1
             name_out = ""
-            if self.json_dressing["opening_credits"] or self.json_dressing["ending_credits"]:
+            if (
+                self.json_dressing["opening_credits"]
+                or self.json_dressing["ending_credits"]
+            ):
                 name_out = "[video]"
             dressing_command_filter.append(
                 FFMPEG_DRESSING_WATERMARK
                 % {
                     "opacity": self.json_dressing.opacity / 100.0,
-                    "position": get_dressing_position_value(self.json_dressing["position"], height),
+                    "position": get_dressing_position_value(
+                        self.json_dressing["position"], height
+                    ),
                     "name_out": name_out,
                 }
             )
