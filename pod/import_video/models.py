@@ -1,4 +1,8 @@
 """Models for the Import_video module."""
+import requests
+
+from urllib.parse import urlencode
+import xml.etree.ElementTree as et
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -9,7 +13,15 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from pod.meeting.utils import (
+    api_call,
+    parseXmlToJson,
+    slash_join,
+)
+
 SITE_ID = getattr(settings, "SITE_ID", 1)
+USE_MEETING = getattr(settings, "USE_MEETING", False)
+BBB_API_URL = getattr(settings, "BBB_API_URL", "")
 
 
 class ExternalRecording(models.Model):
@@ -120,6 +132,48 @@ class ExternalRecording(models.Model):
         blank=True,
         help_text=_("User who uploaded to Pod the video file"),
     )
+
+    def search_internal_recording(self, recording_id):
+        """Search for an internal recording that corresponds to recording_id.
+
+        This function checks whether an external recording has been made on the BBB
+        environment used by internal recordings and the meetings module.
+        Typically, this function recovers the single-use token of a BBB session
+        performed on the ESR infrastructure.
+        """
+        if USE_MEETING:
+            action = "getRecordings"
+            parameters = {}
+            parameters["recordID"] = recording_id
+            query = urlencode(parameters)
+            hashed = api_call(query, action)
+            if BBB_API_URL == "":
+                msg = {}
+                msg["error"] = _("Unable to call BBB server.")
+                msg["message"] = _("Parameter %s needs to be defined.") % "BBB_API_URL"
+                raise ValueError(msg)
+            url = slash_join(BBB_API_URL, action, "?%s" % hashed)
+            response = requests.get(url)
+            if response.status_code != 200:
+                msg = {}
+                msg["error"] = _("Unable to call BBB server.")
+                msg["returncode"] = response.status_code
+                msg["message"] = response.content.decode("utf-8")
+                raise ValueError(msg)
+            result = response.content.decode("utf-8")
+            xmldoc = et.fromstring(result)
+            recording_json = parseXmlToJson(xmldoc)
+            if recording_json.get("returncode", "") != "SUCCESS":
+                msg = {}
+                msg["error"] = _("Unable to get recording!")
+                msg["returncode"] = recording_json.get("returncode", "")
+                msg["messageKey"] = recording_json.get("messageKey", "")
+                msg["message"] = recording_json.get("message", "")
+                raise ValueError(msg)
+            else:
+                return recording_json
+        else:
+            return ValueError(_("Method not allowed"))
 
     def __unicode__(self):
         return "%s - %s" % (self.id, self.name)
