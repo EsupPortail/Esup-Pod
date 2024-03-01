@@ -56,15 +56,15 @@ POD_API_TOKEN = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 USE_TRANSCRIPTION = True
 TRANSCRIPTION_TYPE = "WHISPER"
 TRANSCRIPTION_MODEL_PARAM = {
-     'WHISPER':{
-       'fr': {
-         'model': "small",
-         'download_root': "/usr/src/app/transcription/whisper/",
-       },
-       'en': {
-         'model': "small",
-         'download_root': "/usr/src/app/transcription/whisper/",
-       }
+    'WHISPER': {
+        'fr': {
+            'model': "small",
+            'download_root': "/usr/src/app/transcription/whisper/",
+        },
+        'en': {
+            'model': "small",
+            'download_root': "/usr/src/app/transcription/whisper/",
+        }
     }
 }
 
