@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from pod.quiz.forms import QuestionForm, QuizForm
-from pod.quiz.models import LongAnswerQuestion, Quiz, ShortAnswerQuestion, UniqueChoiceQuestion
+from pod.quiz.models import LongAnswerQuestion, Question, Quiz, ShortAnswerQuestion, UniqueChoiceQuestion
 from pod.video.models import Video
 from django.contrib import messages
 
@@ -44,14 +44,13 @@ def handle_post_request_for_create_or_edit_quiz(request, video: Video, question_
             connected_user_only=connected_user_only,
             show_correct_answers=show_correct_answers,
         )
-        # new_quiz.save()
+        new_quiz.save()
 
         for question_form in question_formset:
             # Check the type of question and create an instance accordingly
             question_type = question_form.cleaned_data.get('type')
-            qu = None
             if question_type == 'short_answer':
-                qu = ShortAnswerQuestion(
+                ShortAnswerQuestion.objects.update_or_create(
                     quiz=new_quiz,
                     title=question_form.cleaned_data['title'],
                     explanation=question_form.cleaned_data['explanation'],
@@ -60,7 +59,8 @@ def handle_post_request_for_create_or_edit_quiz(request, video: Video, question_
                     answer=question_form.cleaned_data['short_answer'],
                 )
             elif question_type == 'long_answer':
-                qu = LongAnswerQuestion(
+                LongAnswerQuestion.objects.update_or_create(
+                    quiz=new_quiz,
                     title=question_form.cleaned_data['title'],
                     explanation=question_form.cleaned_data['explanation'],
                     start_timestamp=question_form.cleaned_data['start_timestamp'],
@@ -68,7 +68,7 @@ def handle_post_request_for_create_or_edit_quiz(request, video: Video, question_
                     answer=question_form.cleaned_data['long_answer'],
                 )
             elif question_type == 'unique_choice':
-                qu = UniqueChoiceQuestion(
+                UniqueChoiceQuestion.objects.update_or_create(
                     quiz=new_quiz,
                     title=question_form.cleaned_data['title'],
                     explanation=question_form.cleaned_data['explanation'],

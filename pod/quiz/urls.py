@@ -9,5 +9,4 @@ urlpatterns = [
     path("add/<slug:video_slug>/", create_quiz, name="add_quiz"),
     path("edit/<slug:video_slug>/", to_do, name="edit_quiz"),  # TODO
     path("remove/<slug:video_slug>/", to_do, name="remove_quiz"),  # TODO
-    path("<slug:video_slug>/statistics/", to_do, name="statistics_quiz"),  # TODO
 ]
