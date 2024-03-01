@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from pod.video.models import Video, Type
 from pod.video_encode_transcript import encode
+from pod.video_encode_transcript.models import EncodingVideo
+from pod.video_encode_transcript.models import PlaylistVideo
 
 import shutil
 import os
@@ -26,7 +28,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print("handle")
-        user, created = User.objects.update_or_create(username="pod", password="pod1234pod")
+        user, created = User.objects.update_or_create(
+            username="pod",
+            password="pod1234pod"
+        )
         user.is_staff = True
         user.is_superuser = True
         user.save()
@@ -57,5 +62,34 @@ class Command(BaseCommand):
             n += 1
             if n > 60:
                 raise CommandError('Error while encoding !!!')
-
+        video.refresh_from_db()
+        self.test_result_encoding(video)
         print("\n ---> End of Encoding video test")
+
+    def test_result_encoding(self, video):
+        list_mp2t = EncodingVideo.objects.filter(
+            video=video, encoding_format="video/mp2t"
+        )
+        list_playlist_video = PlaylistVideo.objects.filter(
+            video=video, encoding_format="application/x-mpegURL"
+        )
+        list_playlist_master = PlaylistVideo.objects.get(
+            name="playlist",
+            video=video,
+            encoding_format="application/x-mpegURL",
+        )
+        list_mp4 = EncodingVideo.objects.filter(
+            video=video, encoding_format="video/mp4"
+        )
+        if not len(list_mp2t) > 0:
+            raise CommandError("no video/mp2t found")
+        if not len(list_mp2t) + 1 == len(list_playlist_video):
+            raise CommandError("Error in playlist count")
+        if not list_playlist_master:
+            raise CommandError("No playlist master found")
+        if not len(list_mp4) > 0:
+            raise CommandError("No encoding mp4")
+        if not video.overview:
+            raise CommandError("No overview")
+        if not video.thumbnail:
+            raise CommandError("No thumbnails")

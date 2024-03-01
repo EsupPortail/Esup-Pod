@@ -207,18 +207,20 @@
           </div>
         </div>
       {% endif %}
-      <div class="card" id="card-sharedraftversion">
-        <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans 'Embed/Share (Draft Mode)' %}</h2>
-        <div class="card-body card-text">
-          <a href="{% url 'video:video_edit_access_tokens' form.instance.slug %}" class="btn btn-primary my-2">{% trans 'Manage access tokens' %}</a>
+      {% if form.instance.slug != '' %}
+        <div class="card" id="card-sharedraftversion">
+          <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans 'Embed/Share (Draft Mode)' %}</h2>
+          <div class="card-body card-text">
+            <a href="{% url 'video:video_edit_access_tokens' form.instance.slug %}" class="btn btn-primary my-2">{% trans 'Manage access tokens' %}</a>
+          </div>
         </div>
-      </div>
+      {% endif %}
     {% endif %}
   {% endif %}
   <div class="card">
     <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Uploading" %}</h2>
     <div class="card-body card-text">
-      <p>{% blocktrans with form.VIDEO_MAX_UPLOAD_SIZE as video_max_upload_size %}The file size must be lower than {{video_max_upload_size}} Go.{% endblocktrans %}</p>
+      <p>{% blocktrans with form.VIDEO_MAX_UPLOAD_SIZE as video_max_upload_size %}The file size must be lower than {{video_max_upload_size}} GB.{% endblocktrans %}</p>
       <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
       <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
       <p>{% trans "An email will be sent to you when all encoding tasks are completed." %}</p>

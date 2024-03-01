@@ -129,19 +129,12 @@ class ObsolescenceTestCase(TestCase):
     def test_check_video_date_delete(self):
         """Check that the videos deletion date complies with the settings."""
         video = Video.objects.get(id=1)
-        date1 = date(
-            date.today().year + DEFAULT_YEAR_DATE_DELETE,
-            date.today().month,
-            date.today().day,
-        )
+        date1 = date.today() + timedelta(days=DEFAULT_YEAR_DATE_DELETE * 365)
         self.assertEqual(video.date_delete, date1)
 
         video2 = Video.objects.get(id=2)
-        date2 = date(
-            date.today().year
-            + settings.ACCOMMODATION_YEARS[video2.owner.owner.affiliation],
-            date.today().month,
-            date.today().day,
+        date2 = date.today() + timedelta(
+            days=settings.ACCOMMODATION_YEARS[video2.owner.owner.affiliation] * 365
         )
         self.assertEqual(video2.date_delete, date2)
 
