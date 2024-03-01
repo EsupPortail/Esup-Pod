@@ -181,7 +181,7 @@ msgstr "Une légende / sous-titre ne peut comporter plus de 80 caractères."
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Add a caption/subtitle after this one"
-msgstr "Ajouter un(e) légende/sous-titre ci-dessous"
+msgstr "Ajouter un(e) légende/sous-titre après celui-ci"
 
 #: pod/completion/static/js/caption_maker.js
 #: pod/podfile/static/podfile/js/filewidget.js
