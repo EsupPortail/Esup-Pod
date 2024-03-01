@@ -1164,6 +1164,12 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 
 
+ - `OIDC_CLAIM_PREFERRED_USERNAME`
+
+  > valeur par défaut : `preferred_username`
+
+  >> Noms des Claim permettant de récupérer l'attribut login mais dépendant de l'attribut du client dans l'IDP <br>
+
  - `OIDC_CLAIM_GIVEN_NAME`
 
   > valeur par défaut : `given_name`
