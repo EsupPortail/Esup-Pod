@@ -70,7 +70,9 @@ class ShibbBackend(ShibbolethRemoteUserBackend):
 # #changing-how-django-users-are-created
 OIDC_CLAIM_GIVEN_NAME = getattr(settings, "OIDC_CLAIM_GIVEN_NAME", "given_name")
 OIDC_CLAIM_FAMILY_NAME = getattr(settings, "OIDC_CLAIM_FAMILY_NAME", "family_name")
-OIDC_CLAIM_PREFERRED_USERNAME = getattr(settings, "OIDC_CLAIM_PREFERRED_USERNAME", "preferred_username")
+OIDC_CLAIM_PREFERRED_USERNAME = getattr(
+    settings, "OIDC_CLAIM_PREFERRED_USERNAME", "preferred_username"
+)
 OIDC_DEFAULT_AFFILIATION = getattr(
     settings, "OIDC_DEFAULT_AFFILIATION", DEFAULT_AFFILIATION
 )
