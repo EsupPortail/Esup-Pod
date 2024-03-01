@@ -8,6 +8,7 @@ from pod.video.models import Video, Type
 from pod.video_encode_transcript import encode
 from pod.video_encode_transcript.models import EncodingVideo
 from pod.video_encode_transcript.models import PlaylistVideo
+from pod.completion.models import Track
 
 import shutil
 import os
@@ -28,7 +29,7 @@ if USE_TRANSCRIPTION:
 
 
 class Command(BaseCommand):
-    help = 'launch of video encoding and transcoding for video test : %s' % VIDEO_TEST
+    help = 'launch of video encoding and transcripting for video test : %s' % VIDEO_TEST
 
     def handle(self, *args, **options):
         user, created = User.objects.update_or_create(
@@ -47,18 +48,18 @@ class Command(BaseCommand):
             owner=user,
             # video="test.mp4",
             type=Type.objects.get(id=1),
-            transcript = ""
+            transcript=""
         )
         tempfile = NamedTemporaryFile(delete=True)
         video.video.save("test.mp4", tempfile)
         dest = os.path.join(settings.MEDIA_ROOT, video.video.name)
         shutil.copyfile(VIDEO_TEST, dest)
         self.test_encoding(video)
-        self.test_transcoding(video)
-        print("\n -----> End of Encoding/transcoding video test")
+        self.test_transcripting(video)
+        print("\n -----> End of Encoding/transcripting video test")
 
-    def test_transcoding(self, video):
-        print("\n ---> Start Transcoding video test")
+    def test_transcripting(self, video):
+        print("\n ---> Start Transcripting video test")
         if video.get_video_mp3() and not video.encoding_in_progress:
             video.transcript = "fr"
             video.save()
@@ -67,16 +68,21 @@ class Command(BaseCommand):
             video.refresh_from_db()
             n = 0
             while video.encoding_in_progress:
-                print("... Transcoding in progress : %s " % video.get_encoding_step)
+                print("... Transcripting in progress : %s " % video.get_encoding_step)
                 video.refresh_from_db()
                 time.sleep(2)
                 n += 1
                 if n > 60:
-                    raise CommandError('Error while transcoding !!!')
+                    raise CommandError('Error while transcripting !!!')
             video.refresh_from_db()
+            self.test_result_transcripting(video)
         else:
             raise CommandError('No mp3 found !!!')
-        print("\n ---> End of Transcoding video test")
+        print("\n ---> End of transcripting video test")
+
+    def test_result_transcripting(self, video):
+        if not Track.objects.filter(video=video, lang="fr").exists():
+            raise CommandError('Error while transcripting !!!')
 
     def test_encoding(self, video):
         print("\n ---> Start Encoding video test")
