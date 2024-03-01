@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-15 17:43+0100\n"
+"POT-Creation-Date: 2024-03-01 10:17+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ptitloup <nicolas.can@univ-lille.fr.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2545,6 +2545,14 @@ msgstr "Etat de l’enregistrement"
 msgid "User who uploaded to Pod the video file"
 msgstr "Utilisateur qui a téléversé le fichier vidéo sur Pod"
 
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "Unable to get recording!"
+msgstr "Impossible d’obtenir l’enregistrement !"
+
+#: pod/import_video/models.py pod/video/views.py
+msgid "Method Not Allowed"
+msgstr "Méthode non autorisée"
+
 #: pod/import_video/models.py
 msgid "External recordings"
 msgstr "Enregistrements externes"
@@ -2856,15 +2864,6 @@ msgstr ""
 "enregistrement"
 
 #: pod/import_video/utils.py
-msgid "The HTML file for this recording was not found on the server."
-msgstr "Le fichier HTML de cet enregistrement est introuvable sur le serveur."
-
-#: pod/import_video/utils.py
-#, python-format
-msgid "Error number: %s"
-msgstr "Numéro d’erreur : %s"
-
-#: pod/import_video/utils.py
 msgid "The video file for this recording was not found in the HTML file."
 msgstr ""
 "Le fichier vidéo de cet enregistrement est introuvable dans le fichier HTML."
@@ -2950,11 +2949,13 @@ msgstr ""
 "Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a href="
 "\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
-#: pod/import_video/views.py pod/meeting/views.py
-msgid "Try changing the record type or address for this recording."
+#: pod/import_video/views.py
+msgid ""
+"This video has been uploaded to Pod and its source is the virtual classroom "
+"solution of the French Ministry of Higher Education and Research."
 msgstr ""
-"Essayez de modifier le type d’enregistrement ou l’adresse de cet "
-"enregistrement."
+"Cette vidéo a été téléversée sur Pod et sa source est la solution de classe "
+"virtuelle du Ministère Français de l'Enseignement Supérieur et de la Recherche."
 
 #: pod/import_video/views.py
 #, python-format
@@ -5601,10 +5602,6 @@ msgstr "Impossible de terminer la réunion !"
 #: pod/meeting/models.py
 msgid "Unable to get meeting recordings!"
 msgstr "Impossible d’obtenir les enregistrements de la réunion !"
-
-#: pod/meeting/models.py
-msgid "Unable to get recording!"
-msgstr "Impossible d’obtenir l’enregistrement !"
 
 #: pod/meeting/models.py
 msgid "Unable to delete recording!"
@@ -9051,10 +9048,6 @@ msgid "Title field is required"
 msgstr "Champ de titre est requis"
 
 #: pod/video/views.py
-msgid "Method Not Allowed"
-msgstr "Méthode non autorisée"
-
-#: pod/video/views.py
 msgid "Category updated successfully."
 msgstr "Catégorie mise à jour avec succès."
 
@@ -9255,6 +9248,14 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "The HTML file for this recording was not found on the server."
+#~ msgstr ""
+#~ "Le fichier HTML de cet enregistrement est introuvable sur le serveur."
+
+#, python-format
+#~ msgid "Error number: %s"
+#~ msgstr "Numéro d’erreur : %s"
 
 #~ msgid "Playlist image"
 #~ msgstr "Image de la playlist"
