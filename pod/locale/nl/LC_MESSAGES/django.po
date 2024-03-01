@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-01 10:17+0100\n"
+"POT-Creation-Date: 2024-03-01 13:49+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2422,11 +2422,20 @@ msgid "User who uploaded to Pod the video file"
 msgstr ""
 
 #: pod/import_video/models.py pod/meeting/models.py
+msgid "Unable to call BBB server."
+msgstr ""
+
+#: pod/import_video/models.py
+#, python-format
+msgid "Parameter %s needs to be defined."
+msgstr ""
+
+#: pod/import_video/models.py pod/meeting/models.py
 msgid "Unable to get recording!"
 msgstr ""
 
-#: pod/import_video/models.py pod/video/views.py
-msgid "Method Not Allowed"
+#: pod/import_video/models.py
+msgid "Method not allowed"
 msgstr ""
 
 #: pod/import_video/models.py
@@ -8493,6 +8502,10 @@ msgstr ""
 #: pod/video/views.py
 msgid "Title field is required"
 msgstr "Titelveld is verplicht"
+
+#: pod/video/views.py
+msgid "Method Not Allowed"
+msgstr ""
 
 #: pod/video/views.py
 msgid "Category updated successfully."
