@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-29 10:01+0000\n"
+"POT-Creation-Date: 2024-03-01 13:49+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2421,6 +2421,23 @@ msgstr ""
 msgid "User who uploaded to Pod the video file"
 msgstr ""
 
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "Unable to call BBB server."
+msgstr ""
+
+#: pod/import_video/models.py
+#, python-format
+msgid "Parameter %s needs to be defined."
+msgstr ""
+
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "Unable to get recording!"
+msgstr ""
+
+#: pod/import_video/models.py
+msgid "Method not allowed"
+msgstr ""
+
 #: pod/import_video/models.py
 msgid "External recordings"
 msgstr ""
@@ -2685,15 +2702,6 @@ msgid "Try changing the record type or address for this recording"
 msgstr ""
 
 #: pod/import_video/utils.py
-msgid "The HTML file for this recording was not found on the server."
-msgstr ""
-
-#: pod/import_video/utils.py
-#, python-format
-msgid "Error number: %s"
-msgstr ""
-
-#: pod/import_video/utils.py
 msgid "The video file for this recording was not found in the HTML file."
 msgstr ""
 
@@ -2768,6 +2776,12 @@ msgstr ""
 msgid ""
 "This video was uploaded to Pod; its origin is %(type)s: <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
+msgstr ""
+
+#: pod/import_video/views.py
+msgid ""
+"This video has been uploaded to Pod and its source is the virtual classroom "
+"solution of the French Ministry of Higher Education and Research."
 msgstr ""
 
 #: pod/import_video/views.py
@@ -5297,10 +5311,6 @@ msgstr ""
 
 #: pod/meeting/models.py
 msgid "Unable to get meeting recordings!"
-msgstr ""
-
-#: pod/meeting/models.py
-msgid "Unable to get recording!"
 msgstr ""
 
 #: pod/meeting/models.py
