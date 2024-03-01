@@ -1,11 +1,12 @@
 """
-Useful script for migrating BBB records when changing BBB
-infrastructure. Typically, when moving from a local architecture to the
+Useful script for migrating BBB records when changing BBB infrastructure.
+
+Typically, when moving from a local architecture to the
 French Ministry of Higher Education and Research (ESR) BBB architecture.
 
 More information on this module at: https://www.esup-portail.org/wiki/x/C4CFUQ
 
-Reminder of constraints :
+Reminder of constraints:
  - no use of Pod's old BBB module (this module will be phased out in the near future)
  - problem with the BBB API: moderators are only available when the BBB session
  session is in progress. After that, the information is no longer available in BBB.
@@ -16,7 +17,7 @@ Reminder of constraints :
  are still present.
  By default, these raw files are deleted after 14 days.
 
-Principle :
+Principle:
  - add recording management to the external video import module,
  BBB, presentation type. This means using the Github project bbb-recorder;
  in any case, there's no choice for this migration.
@@ -63,12 +64,12 @@ the --use-database-moodle parameter and setup directly in this file.
 This script has already been tested with Moodle 4.
 
 
-This script also allows you to :
+This script also allows you to:
  - simulate what will be done via the --dry parameter
  - process only certain lines via the --min-value-record-process
  and --max-value-record-process parameters.
 
-Examples and use cases :
+Examples and use cases:
  * Use of record claim for all records, in simulation only:
  python -W ignore manage.py migrate_bbb_recordings --use-manual-claim --dry
 
@@ -204,20 +205,19 @@ def connect_moodle_database():
 
 
 def disconnect_moodle_database(connection, cursor):
-    """Disconnect to Moodle database."""
+    """Disconnect the Moodle database."""
     try:
         if cursor:
             cursor.close()
         if connection:
             connection.close()
     except Exception as e:
-        print("Error: Unable to disconnect to the Moodle database.")
+        print("Error: Unable to close connection to Moodle database.")
         print(e)
 
 
 def process(options):
-    """Achieve the BBB recordings migration"""
-
+    """Achieve the BBB recordings migration."""
     # Get the BBB recordings from BBB/Scalelite server API
     recordings = get_bbb_recordings_by_xml()
 
@@ -285,7 +285,7 @@ def get_bbb_recordings_by_xml():
         # Management of FAILED error (basically error in checksum)
         if returncode == "FAILED":
             err = "Return code = FAILED for: " + urlToRequest
-            err += " => : " + xmldoc.toxml() + ""
+            err += " => " + xmldoc.toxml() + ""
             print(err)
         # Actual recordings
         recordings = xmldoc.getElementsByTagName("recording")
@@ -299,7 +299,7 @@ def get_bbb_recordings_by_xml():
 
 
 def get_recording(recording):  # noqa: C901
-    """Returns a BBB recording, using the Generic_recording class."""
+    """Return a BBB recording, using the Generic_recording class."""
     generic_recording = None
     try:
         # Get recording informations
@@ -356,13 +356,13 @@ def get_recording(recording):  # noqa: C901
 
 
 def get_video_file_name(file_name, date, extension):
-    """Normalize a video file name"""
+    """Normalize a video file name."""
     slug = slugify("%s %s" % (file_name[0:40], str(date)[0:10]))
     return "%s.%s" % (slug, extension)
 
 
 def download_bbb_video_file(source_url, dest_file):
-    """Download a BBB video playback"""
+    """Download a BBB video playback."""
     session = requests.Session()
     # Download and parse the remote HTML file (BBB specific)
     video_file_add = parse_remote_file(session, source_url)
@@ -372,7 +372,7 @@ def download_bbb_video_file(source_url, dest_file):
         # Download the video file
         source_video_url = manage_download(session, source_url, video_file_add, dest_file)
     else:
-        print("Unable to download %s : video file doesn't exist." % source_url)
+        print("Unable to download %s: video file doesn't exist." % source_url)
 
 
 def process_recording_to_claim(options, generic_recording):
@@ -380,7 +380,7 @@ def process_recording_to_claim(options, generic_recording):
 
     Please note: the claim requires the encoding of records in presentation playback.
     For a presentation playback, a process (asynchronous if CELERY_TO_ENCODE) is started.
-    Be careful : if not asynchronous, each encoding is made in a subprocess.
+    Be careful: if not asynchronous, each encoding is made in a subprocess.
     Must used in an asynchronous way.
     """
     recorder = Recorder.objects.get(id=SCRIPT_RECORDER_ID)
@@ -476,16 +476,18 @@ def process_recording_to_import_video(options, generic_recording):
 def get_created_in_pod(generic_recording):
     """Allow to know if this recording was made with Pod.
 
-    In such a case, we know the meeting (owner information)."""
+    In such a case, we know the meeting (owner information).
+    """
     # Check if the recording was made by Pod client
     meeting = Meeting.objects.filter(meeting_id=generic_recording.meeting_id).first()
     return meeting
 
 
 def get_or_create_user_pod(options, generic_owner):
-    """Returns the Pod user corresponding to the generic owner.
+    """Return the Pod user corresponding to the generic owner.
 
-    If necessary, create this user in Pod."""
+    If necessary, create this user in Pod.
+    """
     # Search for user in Pod database
     user = User.objects.filter(username=generic_owner.username).first()
     if user:
@@ -547,7 +549,8 @@ def create_external_recording(generic_recording, site, owner):
 def get_created_in_moodle(generic_recording):  # noqa: C901
     """Allow to know if this recording was made with Moodle.
 
-    In such a case, we know the list of owners."""
+    In such a case, we know the list of owners.
+    """
     # Default value
     owners_found = []
     try:
@@ -600,7 +603,7 @@ def get_created_in_moodle(generic_recording):  # noqa: C901
 def set_information_in_moodle(options, generic_recording):
     """Set information about this migration in Moodle (if possible).
 
-    Update the field : public.mdl_bigbluebuttonbn.intro in Moodle
+    Update the field: public.mdl_bigbluebuttonbn.intro in Moodle
     to store information, if possible (database user in read/write, permissions...).
     Use SCRIPT_INFORM.
     """
@@ -646,7 +649,7 @@ def set_information_in_moodle(options, generic_recording):
 
 
 def get_moodle_user(user_id):
-    """Returns a generic user by user id in Moodle database."""
+    """Return a generic user by user id in Moodle database."""
     dict_user = []
     generic_user = None
     connection, cursor = connect_moodle_database()
@@ -695,7 +698,7 @@ def check_system(options):  # noqa: C901
         if not recorder:
             error = True
             print(
-                "ERROR : No recorder found with id %s. "
+                "ERROR: No recorder found with id %s. "
                 "Please create one." % SCRIPT_RECORDER_ID
             )
         else:
@@ -704,7 +707,7 @@ def check_system(options):  # noqa: C901
             if not os.path.exists(claim_path):
                 error = True
                 print(
-                    "ERROR : Directory %s doesn't exist. "
+                    "ERROR: Directory %s doesn't exist. "
                     "Please configure one." % claim_path
                 )
     if options["use_import_video"]:
@@ -714,7 +717,7 @@ def check_system(options):  # noqa: C901
         if not administrator:
             error = True
             print(
-                "ERROR : No administrator found with id %s. "
+                "ERROR: No administrator found with id %s. "
                 "Please create one." % SCRIPT_ADMIN_ID
             )
     if options["use_database_moodle"]:
@@ -723,7 +726,7 @@ def check_system(options):  # noqa: C901
         if not cursor:
             error = True
             print(
-                "ERROR : Unable to connect to Moodle database. Please configure "
+                "ERROR: Unable to connect to Moodle database. Please configure "
                 "DB_PARAMS in this file, check firewall rules and permissions."
             )
         else:
@@ -775,7 +778,7 @@ class Generic_recording:
         self.video_url = video_url
         # Generated formatted date
         self.start_date = dt.fromtimestamp(float(start_time) / 1000)
-        # Generated source URL : video playback if possible
+        # Generated source URL: video playback if possible
         self.source_url = self.video_url
         if self.source_url == "":
             # Else presentation playback
@@ -831,7 +834,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Handle the BBB migration command call."""
-
         if options["dry"]:
             print("Simulation mode ('dry'). Nothing will be achieved.")
 

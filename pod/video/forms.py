@@ -44,7 +44,7 @@ MAX_DURATION_DATE_DELETE = getattr(settings, "MAX_DURATION_DATE_DELETE", 10)
 
 __TODAY__ = datetime.date.today()
 
-__MAX_D__ = __TODAY__.replace(year=__TODAY__.year + MAX_DURATION_DATE_DELETE)
+__MAX_D__ = __TODAY__ + datetime.timedelta(days=MAX_DURATION_DATE_DELETE * 365)
 
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
