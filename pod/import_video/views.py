@@ -470,10 +470,7 @@ def upload_video_recording_to_pod(request, record_id: int):  # noqa: C901
         elif type_source_url is not None and type_source_url.type == "BBB_ESR":
             # BBB ESR platform
             # For BBB ESR infrastructure, there is always a video playback
-            return upload_bbb_esr_video_recording_to_pod(
-                record_id,
-                type_source_url.url
-            )
+            return upload_bbb_esr_video_recording_to_pod(record_id, type_source_url.url)
         else:
             # Video file (or BBB video file, same process) source URL
             return upload_standard_video_recording_to_pod(record_id)
@@ -597,8 +594,8 @@ def upload_bbb_esr_video_recording_to_pod(record_id: int, source_url: str) -> bo
 
         # Step 5: Save and encode Pod video
         description = _(
-            'This video has been uploaded to Pod and its source is the virtual '
-            'classroom solution of the French Ministry of Higher Education and Research.'
+            "This video has been uploaded to Pod and its source is the virtual "
+            "classroom solution of the French Ministry of Higher Education and Research."
         )
 
         save_video(recording.owner, dest_path, recording.name, description)

@@ -92,7 +92,7 @@ def parse_remote_file(session: Session, source_html_url: str):
         response = session.get(source_html_url)
         if response.status_code != 200:
             # No more informations needed for common error
-            msg = ''
+            msg = ""
             raise ValueError(msg)
 
         # Parse the BBB video HTML file
@@ -439,9 +439,9 @@ def check_source_url(source_url: str):  # noqa: C901
         elif source_url.find("bbb.numerique-esr.fr/playback/presentation/2.3/") != -1:
             # BBB ESR presentation link : rewrite for video source URL
             # https://univ.scalelite.bbb.numerique-esr.fr/playback/presentation/2.3/#id#
-            source_video_url = source_url.replace(
-                "/playback/presentation/2.3/", "/video/"
-            ) + "/"
+            source_video_url = (
+                source_url.replace("/playback/presentation/2.3/", "/video/") + "/"
+            )
             format = "m4v"
             platform = "BBB_ESR"
         elif source_url.find("bbb.numerique-esr.fr/recording/") != -1:
@@ -531,7 +531,7 @@ def move_file(source: str, destination: str):
 
 
 def check_url_format_presentation(source_url: str) -> bool:
-    """ Check if the URL looks like a BBB presentation."""
+    """Check if the URL looks like a BBB presentation."""
     presentation = False
     # Management for old presentation URLs with BBB or Scalelite server
     if source_url.find("/playback/presentation/2.0/playback.html?") != -1:
@@ -543,7 +543,7 @@ def check_url_format_presentation(source_url: str) -> bool:
 
 
 def check_url_need_token(source_url: str) -> str:
-    """ Check if the URL is used by an infrastructure that need a token.
+    """Check if the URL is used by an infrastructure that need a token.
 
     Useful for generating the single-use token required to access video file.
     2 conditions :
@@ -579,7 +579,7 @@ def check_url_need_token(source_url: str) -> str:
 
 
 def get_playbacks_urls_with_token(recording):
-    """ Get presentation and video source URL, with token, for a recording.
+    """Get presentation and video source URL, with token, for a recording.
 
     Check if the recording was made by an infrastructure that need a token.
     In such a case, request the BBB infrastructure to get playbacks with token.
