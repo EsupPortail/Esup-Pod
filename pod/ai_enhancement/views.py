@@ -7,7 +7,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import ugettext as _
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
 from pod.ai_enhancement.forms import AIEnrichmentChoice
 from pod.ai_enhancement.models import AIEnrichment
@@ -15,7 +15,7 @@ from pod.ai_enhancement.utils import AristoteAI, enrichment_is_already_asked
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.views import in_maintenance
 from pod.podfile.models import UserFolder
-from pod.video.models import Discipline, Video
+from pod.video.models import Video
 
 AI_ENRICHMENT_CLIENT_ID = getattr(settings, "AI_ENRICHMENT_CLIENT_ID", "mocked_id")
 AI_ENRICHMENT_CLIENT_SECRET = getattr(settings, "AI_ENRICHMENT_CLIENT_SECRET", "mocked_secret")
@@ -32,19 +32,28 @@ __LANG_CHOICES_DICT__ = {
 }
 
 
-def receive_webhook(request: WSGIRequest):
+@csrf_exempt
+def toggle_webhook(request: WSGIRequest):
     """Receive webhook from the AI Enhancement service."""
-    data_to_serialize = {
-        "method": request.method,
-        "GET": dict(request.GET),
-        "POST": dict(request.POST),
-        "files": request.FILES,
-        "headers": dict(request.headers),
-        "path": request.path,
-        "query_params": request.GET,
-        "disciplines": list(Discipline.objects.all().values_list("title", flat=True)),
-    }
-    return HttpResponse(json.dumps(data_to_serialize), content_type="application/json")
+    if request.method != "POST":
+        return JsonResponse({"error": "Only POST requests are allowed."}, status=405)
+    if "application/json" not in request.headers.get("Content-Type"):
+        return JsonResponse({"error": "Only application/json content type is allowed."}, status=415)
+    if "application/json" in request.headers.get("Content-Type"):
+        data = json.loads(request.body)
+        if "id" in data:
+            enrichment = AIEnrichment.objects.filter(ai_enrichment_id_in_aristote=data["id"]).first()
+            if enrichment:
+                if "status" in data and data["status"] == "SUCCESS":
+                    enrichment.is_ready = True
+                    enrichment.save()
+                    return JsonResponse({"status": "OK"}, status=200)
+                else:
+                    return JsonResponse({"status": "Enrichment has not yet been successfully achieved."}, status=500)
+            else:
+                return JsonResponse({"error": "Enrichment not found."}, status=404)
+        else:
+            return JsonResponse({"error": "No id in the request."}, status=400)
 
 
 @csrf_protect
@@ -55,7 +64,7 @@ def send_enrichment_creation_request(request: WSGIRequest, aristote: AristoteAI,
         # TODO change this
         ["video/mp4"],
         request.user.username,
-        "https://webhook.site/a28f0753-439b-40ac-a4a3-ee70506bf099",  # TODO change this
+        "https://webhook.site/02dce66d-1bb1-42dd-b204-39fb4df27b94",  # TODO change this
     )
     if creation_response:
         if creation_response["status"] == "OK":
@@ -64,18 +73,18 @@ def send_enrichment_creation_request(request: WSGIRequest, aristote: AristoteAI,
                 ai_enrichment_id_in_aristote=creation_response["id"],
             )
             return HttpResponse(
-                "Enrichment has been created. Please wait. You will receive an email when Aristote is finished.",
+                _("Enrichment has been created. Please wait. You will receive an email when Aristote is finished."),
                 status=200,
             )
         else:
             return HttpResponse(
                 "Error: ", creation_response["status"],
                 status=500,
-            )  # TODO create a real error
+            )
     return HttpResponse(
-        "An error occurred when creating the enrichment.",
+        _("An error occurred when creating the enrichment."),
         status=500,
-    )  # TODO create a real error
+    )
 
 
 @csrf_protect

@@ -28,12 +28,9 @@ class AIEnrichmentModelTest(TestCase):
             owner=self.owner,
             type=Type.objects.create(title="Test Type"),
         )
-        self.ai_enrichment = AIEnrichment.objects.create(
-            video=self.video, ai_enrichment_file="test.json"
-        )
+        self.ai_enrichment = AIEnrichment.objects.create(video=self.video)
 
     def test_create_ai_enrichment(self):
         """Test the model creation."""
         self.assertEqual(self.ai_enrichment.video, self.video)
-        self.assertEqual(self.ai_enrichment.ai_enrichment_file, "test.json")
         print(" --->  test_create_ai_enrichment ok")
