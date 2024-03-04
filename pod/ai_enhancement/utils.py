@@ -110,9 +110,9 @@ class AristoteAI:
                     "disciplines": list(
                         Discipline.objects.all().values_list("title", flat=True)
                     ),
-                    # "aiEvaluation": "true"      # TODO: change this
+                    # "aiEvaluation": "true"                    # TODO: change this
                 },
-                "enduserIdentifier": end_user_identifier,
+                # "enduserIdentifier": end_user_identifier,     # TODO: change this
             }
             headers = {
                 "Accept": "application/json",

@@ -72,19 +72,11 @@ def send_enrichment_creation_request(request: WSGIRequest, aristote: AristoteAI,
                 video=video,
                 ai_enrichment_id_in_aristote=creation_response["id"],
             )
-            return HttpResponse(
-                _("Enrichment has been created. Please wait. You will receive an email when Aristote is finished."),
-                status=200,
-            )
+            return redirect(reverse("video:video", args=[video.slug]))
         else:
-            return HttpResponse(
-                "Error: ", creation_response["status"],
-                status=500,
-            )
-    return HttpResponse(
-        _("An error occurred when creating the enrichment."),
-        status=500,
-    )
+            raise Exception("Error: ", creation_response["status"])
+    else:
+        raise Exception("Error: no response from Aristote AI.")
 
 
 @csrf_protect
@@ -98,8 +90,6 @@ def enrich_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
         enrichment = AIEnrichment.objects.filter(video=video).first()
         if enrichment.is_ready:
             return enrich_form(request, video)
-        else:
-            return HttpResponse("Enrichment already asked. Wait please.", status=200)   # TODO: change this line
     else:
         return send_enrichment_creation_request(request, aristote, video)
 
