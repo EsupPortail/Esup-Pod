@@ -1,5 +1,6 @@
 """EsupQuiz models."""
 
+from json import JSONDecodeError, loads
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext as _
@@ -49,6 +50,11 @@ class Quiz(models.Model):
 
     def clean(self):
         super().clean()
+
+    def get_questions(self):
+        from pod.quiz.utils import get_quiz_questions
+
+        return get_quiz_questions(self)
 
 
 class Question(models.Model):
@@ -120,6 +126,36 @@ class Question(models.Model):
     def __str__(self):
         return self.title
 
+    def get_question_form(self, data=None):
+        from pod.quiz.forms import (
+            LongAnswerQuestionForm,
+            MultipleChoiceQuestionForm,
+            ShortAnswerQuestionForm,
+            UniqueChoiceQuestionForm,
+        )
+
+        if isinstance(self, UniqueChoiceQuestion):
+            return UniqueChoiceQuestionForm(
+                data, instance=self, prefix=f"question_{self.pk}"
+            )
+        elif isinstance(self, MultipleChoiceQuestion):
+            return MultipleChoiceQuestionForm(
+                data, instance=self, prefix=f"question_{self.pk}"
+            )
+        elif isinstance(self, ShortAnswerQuestion):
+            return ShortAnswerQuestionForm(
+                data, instance=self, prefix=f"question_{self.pk}"
+            )
+        elif isinstance(self, LongAnswerQuestion):
+            return LongAnswerQuestionForm(
+                data, instance=self, prefix=f"question_{self.pk}"
+            )
+        else:
+            return None
+
+    def get_answer(self):
+        return None
+
 
 class UniqueChoiceQuestion(Question):
     """
@@ -141,6 +177,12 @@ class UniqueChoiceQuestion(Question):
     def clean(self):
         super().clean()
 
+        if isinstance(self.choices, str):
+            try:
+                self.choices = loads(self.choices)
+            except JSONDecodeError:
+                return
+
         # Check if there are at least 2 choices
         if len(self.choices) < 2:
             raise ValidationError(_("There must be at least 2 choices."))
@@ -152,6 +194,17 @@ class UniqueChoiceQuestion(Question):
     def __str__(self):
         return self.title
 
+    def get_answer(self):
+        if isinstance(self.choices, str):
+            try:
+                self.choices = loads(self.choices)
+            except JSONDecodeError:
+                raise ValidationError(_("Invalid JSON format for choices."))
+        correct_answer = next(
+            choice for choice, is_correct in self.choices.items() if is_correct
+        )
+        return correct_answer
+
 
 class MultipleChoiceQuestion(Question):
     """
@@ -160,6 +213,7 @@ class MultipleChoiceQuestion(Question):
     Attributes:
         choices (JSONField <{question(str): is_correct(bool)}>): Choices of the question.
     """
+
     choices = models.JSONField(
         verbose_name="Choices",
         default=dict,
@@ -191,6 +245,7 @@ class TrueFalseQuestion(Question):
     Attributes:
         is_true (BooleanField): Is true.
     """
+
     is_true = models.BooleanField(
         verbose_name="Is true",
         default=True,
@@ -212,6 +267,7 @@ class ShortAnswerQuestion(Question):
     Attributes:
         answer (CharField): Answer of the question.
     """
+
     answer = models.CharField(
         verbose_name="Answer",
         max_length=250,
@@ -226,6 +282,9 @@ class ShortAnswerQuestion(Question):
     def __str__(self):
         return self.title
 
+    def get_answer(self):
+        return self.answer
+
 
 class LongAnswerQuestion(Question):
     """
@@ -234,6 +293,7 @@ class LongAnswerQuestion(Question):
     Attributes:
         answer (TextField): Answer of the question.
     """
+
     answer = models.TextField(
         verbose_name="Answer",
         default="",
@@ -246,3 +306,6 @@ class LongAnswerQuestion(Question):
 
     def __str__(self):
         return self.title
+
+    def get_answer(self):
+        return self.answer

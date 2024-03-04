@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block breadcrumbs %}
+  {{block.super}}
+  <li class="breadcrumb-item">
+    <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}">
+      {{video.title|title|truncatechars:45}}
+    </a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">
+    {{ page_title }}
+  </li>
+{% endblock %}
+
+
+{% block page_content %}
+  <form method="post" id="quiz-form" action="{% url 'quiz:video_quiz' video_slug=video.slug %}">
+    {% csrf_token %}
+
+    {% for question in quiz.get_questions %}
+        <div class="question-container">
+            <h2>{{ question.title }}</h2>
+            {% with form=question.get_question_form %}
+              {{ form.as_p }}
+            {% endwith %}
+
+            {% if form_submitted %}
+              <p>Réponse :{{ question.get_answer }}</p>
+              <p>Explication :{{ question.explanation }}</p>
+            {% endif %}
+
+            <hr>
+        </div>
+    {% endfor %}
+
+    <div class="text-center mt-2">
+      <button type="submit" id="quiz-submission-button" class="btn btn-primary">{% trans "Validate" %}</button>
+      <a href="{% url 'video:video' slug=video.slug %}" class="btn btn-secondary">{% trans "Back to video" %}</a>
+    </div>
+  </form>
+{% endblock page_content %}
+
+{% block collapse_page_aside %}{% endblock collapse_page_aside %}
+{% block page_aside %}{% endblock page_aside %}
+
+{% block more_script %}
+{% endblock more_script %}
