@@ -127,6 +127,20 @@ class QuizForm(forms.Form):
         self.fields = add_placeholder_and_asterisk(self.fields)
 
 
+class QuizDeleteForm(forms.Form):
+    """Form to delete a quiz."""
+
+    agree = forms.BooleanField(
+        label=_("I agree"),
+        help_text=_("Delete video quiz cannot be undone"),
+        widget=forms.CheckboxInput(),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(QuizDeleteForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
+
+
 # TYPES FORMS
 
 

@@ -1,10 +1,10 @@
 from django.forms import formset_factory
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from pod.quiz.forms import QuestionForm, QuizForm
+from pod.quiz.forms import QuestionForm, QuizDeleteForm, QuizForm
 from pod.quiz.models import (
     LongAnswerQuestion,
     MultipleChoiceQuestion,
@@ -15,6 +15,7 @@ from pod.quiz.models import (
 from pod.quiz.utils import get_video_quiz
 from pod.video.models import Video
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 
 
 def to_do(request):  # TODO remove this view
@@ -168,5 +169,43 @@ def video_quiz(request, video_slug: str):
             "video": video,
             "quiz": quiz,
             "form_submitted": form_submitted,
+        },
+    )
+
+
+def delete_quiz(request, video_slug: str):
+    """Delete a quiz associated to a video."""
+    video = get_object_or_404(Video, slug=video_slug)
+    quiz = get_video_quiz(video)
+
+    if quiz and (not (request.user.is_superuser or request.user.is_staff)):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot delete this dressing.")
+        )
+        raise PermissionDenied
+
+    form = QuizDeleteForm()
+
+    if request.method == "POST":
+        form = QuizDeleteForm(request.POST)
+        if form.is_valid():
+            quiz.delete()
+            messages.add_message(request, messages.INFO, _("The quiz has been deleted."))
+            return redirect(reverse("video:video", kwargs={"slug": video.slug}))
+        else:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _("One or more errors have been found in the form."),
+            )
+
+    return render(
+        request,
+        "quiz/delete_quiz.html",
+        {
+            "page_title": _("Deleting the quiz for the video “%s”") % video.title,
+            "quiz": quiz,
+            "video": video,
+            "form": form,
         },
     )
