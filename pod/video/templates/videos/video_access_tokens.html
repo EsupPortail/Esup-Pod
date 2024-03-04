@@ -25,35 +25,35 @@
 </div>
 {% if tokens %}
 <div class="table-responsive">
-  <table class="table align-top table-sm table-bordered table-striped caption-top" id="recordings">
-    <caption>{% trans "List of active tokens" %} :</caption>
+  <table class="table align-top table-sm table-bordered table-striped caption-top">
+    <caption>{% trans "List of active tokens:" %}</caption>
     <thead>
       <tr>
         <th scope="col" class="text-center col-2"><i class="bi bi-universal-access-circle" aria-hidden="true"></i>&nbsp;{% trans "Token" %}</th>
-        <th scope="col" class="text-center col-4"><i class="bi bi-link-45deg" aria-hidden="true"></i>&nbsp;{% trans 'Share the link' %}</th>
-        <th scope="col" class="text-center col-6"><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Embed in a web page' %}</th>
-        <th scope="col" class="text-center "><i class="bi bi-trash3" aria-hidden="true"></i><!-- &nbsp;{% trans "Delete" %} --></th>
+        <th scope="col" class="text-center col-4"><i class="bi bi-link-45deg" aria-hidden="true"></i>&nbsp;{% trans 'Share link' %}</th>
+        <th scope="col" class="text-center col-6"><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Code to embed in a web page' %}</th>
+        <th scope="col" class="text-center" aria-label="{% trans 'Actions' %}"><i class="bi bi-trash3" aria-hidden="true"></i></th>
       </tr>
     </thead>
     <tbody class="table-group-divider">
       {% for token in tokens %}
-      <tr >
-        <td >&nbsp;{{ token.token }}</td>
+      <tr>
+        <td>&nbsp;{{ token.token }}</td>
         <td>
           <div class="form-group">
-            <label for="txtpartage-{{ forloop.counter }}" >{% trans 'Use this link to share the video:' %}
-              <clipboard-copy aria-label="{% trans 'Copy to clipboard'%}" class="btn pod-btn-social btnpartageprive" tabindex="0" role="button" data-id="txtpartage-{{ forloop.counter }}">
+            <label for="txtpartage-{{ forloop.counter }}">{% trans 'Use this link to share the video:' %}
+              <clipboard-copy title="{% trans 'Copy to clipboard' %}" class="btn pod-btn-social btnpartageprive" tabindex="0" role="button" data-id="txtpartage-{{ forloop.counter }}">
                 <i class="bi bi-clipboard" aria-hidden="true"></i>
               </clipboard-copy>
             </label>
-            <textarea class="form-control" type="text" name="txtpartage" id="txtpartage-{{ forloop.counter }}" rows="4" 
+            <textarea class="form-control" type="text" name="txtpartage" id="txtpartage-{{ forloop.counter }}" rows="4"
               readonly>{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}{{ token.token }}/</textarea>
           </div>
         </td>
         <td>
           <div class="form-group ">
-            <label for="txtintegration-{{ forloop.counter }}">{% trans 'Copy the content of this text box and paste it in the page:'%}
-              <clipboard-copy aria-label="{% trans 'Copy to clipboard'%}" class="btn pod-btn-social btnpartageprive" tabindex="0" role="button" data-id="txtintegration-{{ forloop.counter }}">
+            <label for="txtintegration-{{ forloop.counter }}">{% trans 'Copy the content of this text box and paste it in the page:' %}
+              <clipboard-copy title="{% trans 'Copy to clipboard' %}" class="btn pod-btn-social btnpartageprive" tabindex="0" role="button" data-id="txtintegration-{{ forloop.counter }}">
                 <i class="bi bi-clipboard" aria-hidden="true"></i>
               </clipboard-copy>
             </label>
@@ -67,7 +67,7 @@
             {% csrf_token %}
             <input type="hidden" name="action" value="delete" />
             <input type="hidden" name="token" value="{{ token.token }}" />
-            <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the token'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+            <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the token' %}" data-bs-toggle="tooltip" data-bs-placement="top">
               <i class="bi bi-trash3" aria-hidden="true"></i>
             </button>
           </form>

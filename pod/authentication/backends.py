@@ -70,6 +70,9 @@ class ShibbBackend(ShibbolethRemoteUserBackend):
 # #changing-how-django-users-are-created
 OIDC_CLAIM_GIVEN_NAME = getattr(settings, "OIDC_CLAIM_GIVEN_NAME", "given_name")
 OIDC_CLAIM_FAMILY_NAME = getattr(settings, "OIDC_CLAIM_FAMILY_NAME", "family_name")
+OIDC_CLAIM_PREFERRED_USERNAME = getattr(
+    settings, "OIDC_CLAIM_PREFERRED_USERNAME", "preferred_username"
+)
 OIDC_DEFAULT_AFFILIATION = getattr(
     settings, "OIDC_DEFAULT_AFFILIATION", DEFAULT_AFFILIATION
 )
@@ -87,6 +90,7 @@ class OIDCBackend(OIDCAuthenticationBackend):
 
         user.first_name = claims.get(OIDC_CLAIM_GIVEN_NAME, "")
         user.last_name = claims.get(OIDC_CLAIM_FAMILY_NAME, "")
+        user.username = claims.get(OIDC_CLAIM_PREFERRED_USERNAME, "")
         user.owner.affiliation = OIDC_DEFAULT_AFFILIATION
         for code_name in OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES:
             try:
@@ -105,6 +109,7 @@ class OIDCBackend(OIDCAuthenticationBackend):
         """Update OIDC user."""
         user.first_name = claims.get(OIDC_CLAIM_GIVEN_NAME, "")
         user.last_name = claims.get(OIDC_CLAIM_FAMILY_NAME, "")
+        user.username = claims.get(OIDC_CLAIM_PREFERRED_USERNAME, "")
         user.save()
 
         user.owner.auth_type = "OIDC"

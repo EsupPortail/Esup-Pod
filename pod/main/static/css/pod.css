@@ -165,8 +165,8 @@ tr,
   color: inherit;
 }
 
-a:not(.btn):hover,
-a:not(.btn):focus {
+a:not(.btn, .dropdown-item):hover,
+a:not(.btn, .dropdown-item):focus {
   color: var(--pod-activelink-color);
   text-decoration: underline;
 }
@@ -794,7 +794,6 @@ div.card a img {
   i:not(.checked_overlay .card-selected i) {
   font-size: 1.2rem;
   padding: 0.2rem;
-  opacity: 0.3;
 }
 
 .thumbnail-item-video-row {
@@ -812,19 +811,8 @@ div.card a img {
   padding-left: 1rem;
 }
 
-.more-actions-row-btn {
-  border: none;
-  background-color: inherit;
-}
-
-.pod-infinite-list-container-dashboard .list-item-video-row i.active,
-.pod-infinite-list-container-dashboard .list-item-video-row i.bi_content_type,
-.pod-infinite-list-container-dashboard
-  .list-item-video-row
-  .more-actions-row-btn
-  i {
+.pod-infinite-list-container-dashboard .list-item-video-row i.active {
   color: var(--pod-link-color);
-  opacity: 1 !important;
 }
 
 /* custom badges for confirm modal bulk update */
@@ -833,6 +821,10 @@ div.card a img {
   color: var(--pod-background);
   padding: 10px;
   margin: 5px;
+}
+
+span[data-bs-placement] {
+  cursor: help;
 }
 
 /** video form **/

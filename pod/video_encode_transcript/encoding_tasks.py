@@ -5,6 +5,7 @@
 # pip3 install redis==4.5.4
 from celery import Celery
 import logging
+import requests
 
 # call local settings directly
 # no need to load pod application to send statement
@@ -13,12 +14,32 @@ try:
 except ImportError:
     from .. import settings as settings_local
 
+EMAIL_HOST = getattr(settings_local, "EMAIL_HOST", "")
+DEFAULT_FROM_EMAIL = getattr(settings_local, "DEFAULT_FROM_EMAIL", "")
+ADMINS = getattr(settings_local, "ADMINS", ())
+DEBUG = getattr(settings_local, "DEBUG", True)
+TEST_REMOTE_ENCODE = getattr(settings_local, "TEST_REMOTE_ENCODE", False)
+
+admins_email = [ad[1] for ad in ADMINS]
+
 logger = logging.getLogger(__name__)
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
+
+smtp_handler = logging.handlers.SMTPHandler(
+    mailhost=EMAIL_HOST,
+    fromaddr=DEFAULT_FROM_EMAIL,
+    toaddrs=admins_email,
+    subject="[POD ENCODING] Encoding Log Mail",
+)
+if not TEST_REMOTE_ENCODE:
+    logger.addHandler(smtp_handler)
 
 ENCODING_TRANSCODING_CELERY_BROKER_URL = getattr(
     settings_local, "ENCODING_TRANSCODING_CELERY_BROKER_URL", ""
 )
-
+POD_API_URL = getattr(settings_local, "POD_API_URL", "")
+POD_API_TOKEN = getattr(settings_local, "POD_API_TOKEN", "")
 encoding_app = Celery("encoding_tasks", broker=ENCODING_TRANSCODING_CELERY_BROKER_URL)
 encoding_app.conf.task_routes = {
     "pod.video_encode_transcript.encoding_tasks.*": {"queue": "encoding"}
@@ -27,22 +48,46 @@ encoding_app.conf.task_routes = {
 
 # celery -A pod.video_encode_transcript.encoding_tasks worker -l INFO -Q encoding
 @encoding_app.task
-def start_encoding_task(video_id, video_path, cut_start, cut_end, dressing):
+def start_encoding_task(
+    video_id, video_path, cut_start, cut_end, json_dressing, dressing_input
+):
     """Start the encoding of the video."""
     print("Start the encoding of the video")
     from .Encoding_video import Encoding_video
-    from .importing_tasks import start_importing_task
 
     print(video_id, video_path, cut_start, cut_end)
-    encoding_video = Encoding_video(video_id, video_path, cut_start, cut_end, dressing)
+    encoding_video = Encoding_video(
+        video_id, video_path, cut_start, cut_end, json_dressing, dressing_input
+    )
     encoding_video.start_encode()
     print("End of the encoding of the video")
-    start_importing_task.delay(
-        encoding_video.start,
-        video_id,
-        video_path,
-        cut_start,
-        cut_end,
-        encoding_video.stop,
-        encoding_video.dressing,
-    )
+    Headers = {"Authorization": "Token %s" % POD_API_TOKEN}
+    url = POD_API_URL.strip("/") + "/store_remote_encoded_video/?id=%s" % video_id
+    data = {
+        "start": encoding_video.start,
+        "video_id": video_id,
+        "video_path": video_path,
+        "cut_start": cut_start,
+        "cut_end": cut_end,
+        "stop": encoding_video.stop,
+        "json_dressing": json_dressing,
+        "dressing_input": dressing_input,
+    }
+    try:
+        response = requests.post(url, json=data, headers=Headers)
+        if response.status_code != 200:
+            msg = "Calling store remote encoding error : {} {}".format(
+                response.status_code, response.reason
+            )
+            logger.error(msg + "\n" + str(response.content))
+        else:
+            logger.info("Call importing encoded task ok")
+    except (
+        requests.exceptions.HTTPError,
+        requests.exceptions.ConnectionError,
+        requests.exceptions.InvalidURL,
+        requests.exceptions.Timeout,
+    ) as exception:
+        msg = "Exception: {}".format(type(exception).__name__)
+        msg += "\nException message: {}".format(exception)
+        logger.error(msg)
