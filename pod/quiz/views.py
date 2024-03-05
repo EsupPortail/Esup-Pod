@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
+from pod.main.views import in_maintenance
 
 from pod.quiz.forms import QuestionForm, QuizDeleteForm, QuizForm
 from pod.quiz.models import (
@@ -24,6 +25,9 @@ from django.conf import settings
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def create_quiz(request, video_slug: str):
+    if in_maintenance():
+        return redirect(reverse("maintenance"))
+
     video = get_object_or_404(Video, slug=video_slug)
     question_formset_factory = formset_factory(QuestionForm, extra=2)
     if not (
@@ -46,7 +50,7 @@ def create_quiz(request, video_slug: str):
         request,
         "quiz/create_edit_quiz.html",
         {
-            "page_title": _(f"Quiz edition for the video: {video.title}"),
+            "page_title": _(f"Quiz creation for the video: {video.title}"),
             "quiz_form": quiz_form,
             "question_formset": question_formset,
             "video": video,
@@ -136,6 +140,9 @@ def create_questions(new_quiz, question_formset):
 
 
 def video_quiz(request, video_slug: str):
+    if in_maintenance():
+        return redirect(reverse("maintenance"))
+
     video = get_object_or_404(Video, slug=video_slug)
     quiz = get_video_quiz(video)
     form_submitted = False
@@ -197,6 +204,9 @@ def video_quiz(request, video_slug: str):
 @login_required(redirect_field_name="referrer")
 def delete_quiz(request, video_slug: str):
     """Delete a quiz associated to a video."""
+    if in_maintenance():
+        return redirect(reverse("maintenance"))
+
     video = get_object_or_404(Video, slug=video_slug)
     quiz = get_video_quiz(video)
 
@@ -241,6 +251,9 @@ def delete_quiz(request, video_slug: str):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def edit_quiz(request, video_slug: str):
+    if in_maintenance():
+        return redirect(reverse("maintenance"))
+
     video = get_object_or_404(Video, slug=video_slug)
     question_formset_factory = formset_factory(QuestionForm, extra=0)
 
