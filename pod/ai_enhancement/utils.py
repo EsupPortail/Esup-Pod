@@ -112,10 +112,11 @@ class AristoteAI:
                     ),
                     # "aiEvaluation": "true"                    # TODO: change this
                 },
-                # "enduserIdentifier": end_user_identifier,     # TODO: change this
+                "enduserIdentifier": end_user_identifier,     # TODO: change this
             }
             headers = {
                 "Accept": "application/json",
+                "Content-Type": "application/json",
                 "Authorization": f"Bearer {self.get_token()}",
             }
             try:
@@ -125,7 +126,7 @@ class AristoteAI:
                     headers=headers,
                 )
                 if response.status_code == 200:
-                    return response.json()
+                    return extract_json_from_str(response.content.decode("utf-8"))
                 else:
                     print(f"Error: {response.status_code}")
                 return None
@@ -159,3 +160,14 @@ def enrichment_is_already_asked(video: Video) -> bool:
 def enrichment_is_ready(video: Video) -> bool:
     """Check if the enrichment is ready."""
     return AIEnrichment.objects.filter(video=video, is_ready=True).exists()
+
+
+def extract_json_from_str(content_to_extract: str) -> dict:
+    """Extract the JSON from a string."""
+    start_index = content_to_extract.find("{")
+    end_index = content_to_extract.rfind("}")
+    json_string = content_to_extract[start_index:end_index + 1]
+    try:
+        return json.loads(json_string)
+    except json.JSONDecodeError:
+        return {"error": "JSONDecodeError: The string is not a valid JSON string."}
