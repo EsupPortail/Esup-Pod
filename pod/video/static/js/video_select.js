@@ -143,3 +143,17 @@ function getHTMLBadgesSelectedTitles() {
   });
   return str;
 }
+
+/**
+ * Select all videos (visible infinite-item) on given container
+ *
+ * @param {string} container : Identifier of the infinite-items's container
+ */
+function selectAllVideos(container){
+  let selector = "#" + container + " .infinite-item";
+  document.querySelectorAll("#videos_list .infinite-item").forEach((elt) => {
+    elt.classList.add("selected");
+  });
+  setListSelectedVideos(container);
+  replaceSelectedCountVideos();
+}
