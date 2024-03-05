@@ -160,12 +160,6 @@
 
   <script>
 
-    if (document.getElementById("event_is_draft")){
-      document.getElementById("event_is_draft").addEventListener("click", () => showRestrictions());
-    }
-    if (document.getElementById("event_is_restricted")){
-      document.getElementById("event_is_restricted").addEventListener("click", () => showGroups());
-    }
     {# fields selectable only if not draft #}
     let showRestrictions = () => {
       document.querySelectorAll(".draft_access, .groups_access").forEach((draft_access) => {
@@ -178,7 +172,6 @@
           showGroups();
         }
       })
-
     };
 
     {# groups field available only if restricted #}
@@ -192,8 +185,16 @@
           gp_access.classList.add("hide");
         }
       })
-
     };
+
+    if (document.getElementById("event_is_draft")){
+        showRestrictions();
+        document.getElementById("event_is_draft").addEventListener("click", () => showRestrictions());
+    }
+    if (document.getElementById("event_is_restricted")){
+        showGroups();
+        document.getElementById("event_is_restricted").addEventListener("click", () => showGroups());
+    }
 
     document.addEventListener("DOMContentLoaded",function () {
       DateTimeShortcuts.overrideTimeOptions = function () {
