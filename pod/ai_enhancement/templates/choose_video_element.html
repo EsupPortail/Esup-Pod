@@ -106,16 +106,7 @@
   <script src="{% static 'admin/js/core.js' %}?ver={{ VERSION }}"></script>
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{ VERSION }}">
   {{ form.media }}
-  <style>
-    .border-d {
-      border: 1px dashed;
-    }
-
-    .border-d:hover, .enrich-input-selected {
-      border: 1px solid;
-      background-color: var(--background-color);
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="{% static 'ai_enhancement/css/choose-video-element.css' %}">
   <script src="{% static 'ai_enhancement/js/enrich-form.js' %}?ver={{ VERSION }}"></script>
   <script>
     addEventListeners("{{ video.slug }}", "{{ video.title }}", "{{ video.description|safe }}", "{{ video.disciplines }}");
