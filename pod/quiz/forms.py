@@ -15,6 +15,8 @@ from pod.quiz.models import (
 
 
 class QuestionForm(forms.Form):
+    """Form to add or edit a question."""
+
     QUESTION_TYPES = [
         (
             _("Redaction"),
@@ -74,6 +76,12 @@ class QuestionForm(forms.Form):
     )
 
     def clean(self):
+        """
+        Clean and validate the form data.
+
+        Raises:
+            ValidationError: If there are validation errors.
+        """
         cleaned_data = super().clean()
         question_type = cleaned_data.get("type")
 
@@ -111,6 +119,8 @@ class QuestionForm(forms.Form):
 
 
 class QuizForm(forms.Form):
+    """Form to add or edit a quiz."""
+
     connected_user_only = forms.BooleanField(
         label=_("Connected User Only"),
         required=False,
@@ -126,7 +136,7 @@ class QuizForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs) -> None:
-        """Init method."""
+        """Init quiz form."""
         super(QuizForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
 
@@ -141,6 +151,7 @@ class QuizDeleteForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        """Init deletion quiz form."""
         super(QuizDeleteForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
 
@@ -149,6 +160,8 @@ class QuizDeleteForm(forms.Form):
 
 
 class UniqueChoiceQuestionForm(forms.ModelForm):
+    """Form to add or edit a unique choice question form."""
+
     selected_choice = forms.CharField(widget=forms.RadioSelect(), required=False)
 
     class Meta:
@@ -156,6 +169,7 @@ class UniqueChoiceQuestionForm(forms.ModelForm):
         fields = ["selected_choice"]
 
     def __init__(self, *args, **kwargs):
+        """Init unique choice question form."""
         super(UniqueChoiceQuestionForm, self).__init__(*args, **kwargs)
 
         choices_str = self.instance.choices
@@ -170,6 +184,8 @@ class UniqueChoiceQuestionForm(forms.ModelForm):
 
 
 class MultipleChoiceQuestionForm(forms.ModelForm):
+    """Form to add or edit a multiple choice question form."""
+
     class Meta:
         model = MultipleChoiceQuestion
         fields = ["choices"]
@@ -178,6 +194,7 @@ class MultipleChoiceQuestionForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        """Init multiple choice question form."""
         super(MultipleChoiceQuestionForm, self).__init__(*args, **kwargs)
 
         choices_str = self.instance.choices
@@ -192,6 +209,8 @@ class MultipleChoiceQuestionForm(forms.ModelForm):
 
 
 class ShortAnswerQuestionForm(forms.ModelForm):
+    """Form to add or edit a short answer question form."""
+
     user_answer = forms.CharField(widget=forms.TextInput(), required=False)
 
     class Meta:
@@ -200,6 +219,8 @@ class ShortAnswerQuestionForm(forms.ModelForm):
 
 
 class LongAnswerQuestionForm(forms.ModelForm):
+    """Form to add or edit a long answer question form."""
+
     user_answer = forms.CharField(widget=forms.Textarea(), required=False)
 
     class Meta:

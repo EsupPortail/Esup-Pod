@@ -1,7 +1,7 @@
 """Esup-Pod quiz views."""
 
 from django.forms import formset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -22,11 +22,25 @@ from pod.video.models import Video
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.conf import settings
+from django.core.handlers.wsgi import WSGIRequest
 
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def create_quiz(request, video_slug: str):
+def create_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
+    """
+    View function for creating a quiz associated with a video.
+
+    Args:
+        request (WSGIRequest): The HTTP request.
+        video_slug (str): The slug of the associated video.
+
+    Raises:
+        PermissionDenied: If the user lacks the required privileges.
+
+    Returns:
+        HttpResponse: The HTTP response for rendering the quiz creation form.
+    """
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
@@ -61,8 +75,19 @@ def create_quiz(request, video_slug: str):
 
 
 def handle_post_request_for_create_or_edit_quiz(
-    request, video: Video, question_formset_factory
-):
+    request: WSGIRequest, video: Video, question_formset_factory
+) -> HttpResponse:
+    """
+    Handles the POST request for creating or editing a quiz associated with a video.
+
+    Args:
+        request (WSGIRequest): The HTTP request.
+        video (Video): The associated video instance.
+        question_formset_factory: The formset factory for handling question forms.
+
+    Returns:
+        HttpResponse: The HTTP response for rendering the appropriate template.
+    """
     quiz_form = QuizForm(request.POST)
     question_formset = question_formset_factory(request.POST, prefix="questions")
 
@@ -96,7 +121,17 @@ def handle_post_request_for_create_or_edit_quiz(
     )
 
 
-def create_quiz_instance(video, quiz_form):
+def create_quiz_instance(video: Video, quiz_form: QuizForm) -> Quiz:
+    """
+    Creates a new quiz instance based on the provided video and quiz form.
+
+    Args:
+        video (Video): The associated video instance.
+        quiz_form (QuizForm): The form containing quiz data.
+
+    Returns:
+        Quiz: The created quiz instance.
+    """
     return Quiz.objects.create(
         video=video,
         connected_user_only=quiz_form.cleaned_data["connected_user_only"],
@@ -104,7 +139,14 @@ def create_quiz_instance(video, quiz_form):
     )
 
 
-def create_questions(new_quiz, question_formset):
+def create_questions(new_quiz: Quiz, question_formset) -> None:
+    """
+    Creates and associates questions with a given quiz based on the provided formset.
+
+    Args:
+        new_quiz (Quiz): The newly created quiz instance.
+        question_formset: The formset containing question data.
+    """
     for question_form in question_formset:
         question_type = question_form.cleaned_data.get("type")
         title = question_form.cleaned_data["title"]
@@ -141,7 +183,17 @@ def create_questions(new_quiz, question_formset):
             )
 
 
-def video_quiz(request, video_slug: str):
+def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
+    """
+    View function for rendering a quiz associated with a video.
+
+    Args:
+        request (WSGIRequest): The HTTP request.
+        video_slug (str): The slug of the video.
+
+    Returns:
+        HttpResponse: The HTTP response.
+    """
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
@@ -204,8 +256,17 @@ def video_quiz(request, video_slug: str):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def delete_quiz(request, video_slug: str):
-    """Delete a quiz associated to a video."""
+def delete_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
+    """
+    View function for rendering the quiz deletion page for a given video.
+
+    Args:
+        request (WSGIRequest): The HTTP request.
+        video_slug (str): The slug of the video.
+
+    Returns:
+        HttpResponse: The HTTP response.
+    """
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
@@ -252,7 +313,17 @@ def delete_quiz(request, video_slug: str):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def edit_quiz(request, video_slug: str):
+def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
+    """
+    View function for rendering the quiz editing page for a given video.
+
+    Args:
+        request (WSGIRequest): The HTTP request.
+        video_slug (str): The slug of the video.
+
+    Returns:
+        HttpResponse: The HTTP response.
+    """
     if in_maintenance():
         return redirect(reverse("maintenance"))
 

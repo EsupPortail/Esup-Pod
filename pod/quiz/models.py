@@ -15,21 +15,20 @@ class Quiz(models.Model):
     Attributes:
         video (OneToOneField <Video>): Video of the quiz.
         connected_user_only (BooleanField): Connected user only.
-        activated_statistics (BooleanField): Activated statistics.
         show_correct_answers (BooleanField): Show correct answers.
     """
 
-    video = models.OneToOneField(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
+    video = models.OneToOneField(
+        Video,
+        verbose_name=_("Video"),
+        on_delete=models.CASCADE,
+        help_text=_("Please choose a video associated with the quiz."),
+    )
     connected_user_only = models.BooleanField(
         verbose_name=_("Connected user only"),
         default=False,
         help_text=_("Please choose if this quiz is only for connected users or not."),
     )
-    # activated_statistics = models.BooleanField(
-    #     verbose_name=_("Activated statistics"),
-    #     default=False,
-    #     help_text=_("Please choose if the statistics are activated or not."),
-    # )
     show_correct_answers = models.BooleanField(
         verbose_name=_("Show correct answers"),
         default=True,
@@ -49,9 +48,16 @@ class Quiz(models.Model):
         ]
 
     def clean(self):
+        """Clean method for Quiz model."""
         super().clean()
 
     def get_questions(self):
+        """
+        Retrieve questions associated with the quiz.
+
+        Returns:
+            List[Question]: List of questions associated with the quiz.
+        """
         from pod.quiz.utils import get_quiz_questions
 
         return get_quiz_questions(self)
@@ -69,11 +75,15 @@ class Question(models.Model):
         end_timestamp (IntegerField): End timestamp of the answer in the video.
     """
 
-    quiz = models.ForeignKey(Quiz, verbose_name=_("Quiz"), on_delete=models.CASCADE)
+    quiz = models.ForeignKey(
+        Quiz,
+        verbose_name=_("Quiz"),
+        on_delete=models.CASCADE,
+        help_text=_("Please choose a quiz associated with the question."),
+    )
     title = models.CharField(
         verbose_name=_("Title"),
         max_length=250,
-        default=_("Question"),
         help_text=_("Please choose a title between 1 and 250 characters."),
     )
     explanation = models.TextField(
@@ -107,6 +117,7 @@ class Question(models.Model):
         ]
 
     def clean(self):
+        """Clean method for Question model."""
         super().clean()
 
         # Check if start_timestamp is greater than end_timestamp
@@ -124,9 +135,19 @@ class Question(models.Model):
             )
 
     def __str__(self):
+        """String representation of the question."""
         return self.title
 
     def get_question_form(self, data=None):
+        """
+        Get the form for the question.
+
+        Args:
+            data (dict): Form data.
+
+        Returns:
+            BaseQuestionForm: Form for the question.
+        """
         from pod.quiz.forms import (
             LongAnswerQuestionForm,
             MultipleChoiceQuestionForm,
@@ -154,9 +175,21 @@ class Question(models.Model):
             return None
 
     def get_answer(self):
+        """
+        Get the answer for the question.
+
+        Returns:
+            str: Answer for the question.
+        """
         return None
 
     def get_type(self):
+        """
+        Get the type of the question.
+
+        Returns:
+            str: Type of the question.
+        """
         return None
 
 
@@ -172,7 +205,7 @@ class UniqueChoiceQuestion(Question):
         verbose_name=_("Choices"),
         default=dict,
         help_text=_(
-            "Choices must be like this: {'choice 1': true, 'choice 2': false, ...} | true for the right choice, false for the wrong choices"
+            "Choices must be like this: {'choice 1': true, 'choice 2': false, ...} | true for the right choice, false for the wrong choices."
         ),
     )
 
@@ -181,6 +214,7 @@ class UniqueChoiceQuestion(Question):
         verbose_name_plural = _("Unique choice questions")
 
     def clean(self):
+        """Clean method for UniqueChoiceQuestion model."""
         super().clean()
 
         if isinstance(self.choices, str):
@@ -198,6 +232,7 @@ class UniqueChoiceQuestion(Question):
             raise ValidationError(_("There must be only one correct answer."))
 
     def __str__(self):
+        """String representation of the UniqueChoiceQuestion."""
         return self.title
 
     def get_answer(self):
@@ -226,6 +261,9 @@ class MultipleChoiceQuestion(Question):
     choices = models.JSONField(
         verbose_name=_("Choices"),
         default=dict,
+        help_text=_(
+            "Choices must be like this: {'choice 1': true, 'choice 2': true, 'choice 3': false, ...} | true for the right choice, false for the wrong choices."
+        ),
     )
 
     class Meta:
@@ -233,6 +271,7 @@ class MultipleChoiceQuestion(Question):
         verbose_name_plural = _("Multiple choice questions")
 
     def clean(self):
+        """Clean method for MultipleChoiceQuestion model."""
         super().clean()
 
         # Check if there are at least 2 choices
@@ -244,6 +283,7 @@ class MultipleChoiceQuestion(Question):
             raise ValidationError(_("There must be at least one correct answer."))
 
     def __str__(self):
+        """String representation of the MultipleChoiceQuestion."""
         return self.title
 
     def get_type(self):
@@ -269,6 +309,7 @@ class TrueFalseQuestion(Question):
         verbose_name_plural = _("True/false questions")
 
     def __str__(self):
+        """String representation of the TrueFalseQuestion."""
         return self.title
 
     def get_type(self):
@@ -295,6 +336,7 @@ class ShortAnswerQuestion(Question):
         verbose_name_plural = _("Short answer questions")
 
     def __str__(self):
+        """String representation of the ShortAnswerQuestion."""
         return self.title
 
     def get_answer(self):
@@ -323,6 +365,7 @@ class LongAnswerQuestion(Question):
         verbose_name_plural = _("Long answer questions")
 
     def __str__(self):
+        """String representation of the LongAnswerQuestion."""
         return self.title
 
     def get_answer(self):
