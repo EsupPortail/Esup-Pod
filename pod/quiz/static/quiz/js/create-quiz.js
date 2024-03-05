@@ -1,3 +1,8 @@
+/**
+ * @file Esup-Pod functions for the quiz creation or edit form.
+ * @since 3.5.2
+ */
+
 let addQuestionButton = document.getElementById("add-question");
 const totalNewForms = document.getElementById("id_questions-TOTAL_FORMS");
 
@@ -94,7 +99,7 @@ function handleShortAnswerQuestion(questionForm) {
   const input = document.createElement("input");
   input.type = "text";
   input.name = questionForm.querySelector(".question-choices-form").name;
-  input.placeholder = "The short answer";
+  input.placeholder = gettext("The short answer");
   input.classList.add("short-answer-field");
   questionForm.querySelector(".question-choices-form").appendChild(input);
 }
@@ -102,7 +107,7 @@ function handleShortAnswerQuestion(questionForm) {
 function handleLongAnswerQuestion(questionForm) {
   const textarea = document.createElement("textarea");
   textarea.name = questionForm.querySelector(".question-choices-form").name;
-  textarea.placeholder = "The long answer";
+  textarea.placeholder = gettext("The long answer");
   textarea.classList.add("long-answer-field");
   questionForm.querySelector(".question-choices-form").appendChild(textarea);
 }
@@ -121,7 +126,7 @@ function handleUniqueChoiceQuestion(questionForm) {
     input.name = `choices_${counter}`;
 
     const deleteButton = document.createElement("button");
-    deleteButton.textContent = "Delete";
+    deleteButton.textContent = gettext("Delete");
     deleteButton.type = "button";
     deleteButton.classList.add("btn", "btn-outline-danger", "btn-sm", "mt-2");
     deleteButton.addEventListener("click", function () {
@@ -130,7 +135,7 @@ function handleUniqueChoiceQuestion(questionForm) {
 
     const textInput = document.createElement("input");
     textInput.type = "text";
-    textInput.placeholder = `Choice ${index}`;
+    textInput.placeholder = gettext("Choice") + ` ${index}`;
 
     choiceDiv.appendChild(input);
     choiceDiv.appendChild(textInput);
@@ -141,7 +146,7 @@ function handleUniqueChoiceQuestion(questionForm) {
 
   const fieldset = document.createElement("fieldset");
   const legend = document.createElement("legend");
-  legend.textContent = "Vos choix";
+  legend.textContent = gettext("Your choices");
   fieldset.appendChild(legend);
 
   for (let i = 0; i < 2; i++) {
@@ -149,7 +154,7 @@ function handleUniqueChoiceQuestion(questionForm) {
   }
 
   const addButton = document.createElement("button");
-  addButton.textContent = "Add a choice";
+  addButton.textContent = gettext("Add a choice");
   addButton.type = "button";
   addButton.classList.add("btn", "btn-outline-secondary", "btn-sm", "mt-2");
   addButton.addEventListener("click", function () {

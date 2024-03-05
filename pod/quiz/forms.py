@@ -1,3 +1,5 @@
+"""Esup-Pod quiz forms."""
+
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from pod.main.forms_utils import add_placeholder_and_asterisk
@@ -58,6 +60,7 @@ class QuestionForm(forms.Form):
     unique_choice = forms.CharField(
         widget=forms.HiddenInput(attrs={"class": "hidden-unique-choice-field"}),
         required=False,
+        label=_("Unique choice"),
     )
     short_answer = forms.CharField(
         widget=forms.HiddenInput(attrs={"class": "hidden-short-answer-field"}),

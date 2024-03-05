@@ -1,3 +1,5 @@
+"""Esup-Pod quiz urls."""
+
 from django.urls import path
 
 from pod.quiz.views import edit_quiz, video_quiz, create_quiz, delete_quiz

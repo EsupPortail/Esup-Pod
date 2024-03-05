@@ -1,3 +1,5 @@
+"""Esup-Pod quiz views."""
+
 from django.forms import formset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
@@ -185,7 +187,7 @@ def video_quiz(request, video_slug: str):
                 # Add similar logic for other question types...
 
         percentage_score = (score / total_questions) * 100
-        messages.success(request, f"Your score: {percentage_score:.2f}%")
+        messages.success(request, _("Your score is: %.2f%%") % percentage_score)
         form_submitted = True
 
     return render(

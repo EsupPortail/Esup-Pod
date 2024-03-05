@@ -219,7 +219,7 @@
   <script>
     var current_folder = {{ current_folder.id }};
   </script>
+  {% include "videos/video-script.html" %}
   <script src="{% static 'js/caption_maker.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/completion.js' %}?ver={{VERSION}}"></script>
-  {% include "videos/video-script.html" %}
 {% endblock more_script %}

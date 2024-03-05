@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-01 13:49+0100\n"
+"POT-Creation-Date: 2024-03-05 13:10+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: obado <bado@unice.fr>\n"
+"Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -228,7 +228,10 @@ msgstr "Fermer"
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/playlist/templates/playlist/delete.html
 #: pod/playlist/templates/playlist/protected-playlist-form.html
-#: pod/playlist/views.py pod/recorder/templates/recorder/add_recording.html
+#: pod/playlist/views.py pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/delete_quiz.html
+#: pod/quiz/templates/quiz/question_form.html pod/quiz/views.py
+#: pod/recorder/templates/recorder/add_recording.html
 #: pod/recorder/templates/recorder/record_delete.html pod/recorder/views.py
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/videos/dashboard.html
@@ -262,6 +265,9 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/playlist/templates/playlist/delete.html
 #: pod/playlist/templates/playlist/protected-playlist-form.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/delete_quiz.html
+#: pod/quiz/templates/quiz/question_form.html
 #: pod/recorder/templates/recorder/add_recording.html
 #: pod/recorder/templates/recorder/record_delete.html
 #: pod/video/templates/channel/channel_edit.html
@@ -920,6 +926,7 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/playlist/templates/playlist/add_or_edit.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/recorder/templates/recorder/add_recording.html
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/channel/form_theme.html
@@ -959,8 +966,8 @@ msgstr "Liste des chapitres"
 #: pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
 #: pod/main/models.py pod/main/views.py pod/playlist/forms.py
-#: pod/playlist/models.py pod/video/models.py
-#: pod/video/templates/channel/list_theme.html
+#: pod/playlist/models.py pod/quiz/forms.py pod/quiz/models.py
+#: pod/video/models.py pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Title"
 msgstr "Titre"
@@ -1007,6 +1014,7 @@ msgstr "Supprimer le chapitre « %(chapter_title)s »"
 #: pod/live/templates/live/event_delete.html
 #: pod/meeting/templates/meeting/delete.html
 #: pod/playlist/templates/playlist/delete.html
+#: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/recorder/templates/recorder/record_delete.html
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/category_modal.html
@@ -1024,7 +1032,8 @@ msgstr "Chapitre vidéo"
 #: pod/completion/templates/video_completion.html
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
-#: pod/main/templates/navbar.html pod/video/templates/videos/add_video.html
+#: pod/main/templates/navbar.html pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/video/templates/videos/add_video.html
 #: pod/video/templates/videos/video_access_tokens.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
@@ -1239,7 +1248,7 @@ msgstr ""
 "liste."
 
 #: pod/completion/models.py pod/enrichment/models.py pod/playlist/models.py
-#: pod/recorder/models.py pod/video/models.py
+#: pod/quiz/models.py pod/recorder/models.py pod/video/models.py
 #: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/video_breadcrumbs.html
 #: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
@@ -1756,6 +1765,38 @@ msgid "Add a new overlay"
 msgstr "Ajouter une nouvelle superposition"
 
 #: pod/completion/templates/video_completion.html
+msgid "Display &quot;quizzes&quot; section"
+msgstr "Afficher la section « quiz »"
+
+#: pod/completion/templates/video_completion.html pod/quiz/models.py
+msgid "Quizzes"
+msgstr "Quiz"
+
+#: pod/completion/templates/video_completion.html
+msgid "Edit your quiz"
+msgstr "Éditez votre quiz"
+
+#: pod/completion/templates/video_completion.html
+msgid "To edit your quiz for this video."
+msgstr "Pour éditer votre quiz pour cette vidéo."
+
+#: pod/completion/templates/video_completion.html
+msgid "Create a quiz"
+msgstr "Créer un quiz"
+
+#: pod/completion/templates/video_completion.html
+msgid "To create a quiz for this video."
+msgstr "Pour créer un quiz pour cette vidéo."
+
+#: pod/completion/templates/video_completion.html
+msgid "Delete your quiz"
+msgstr "Supprimez votre quiz"
+
+#: pod/completion/templates/video_completion.html
+msgid "To delete your quiz for this video."
+msgstr "Pour supprimer votre quiz pour cette vidéo."
+
+#: pod/completion/templates/video_completion.html
 msgid "List of people related to this video."
 msgstr "Liste des contributeurs relatifs à cette vidéo."
 
@@ -1846,6 +1887,13 @@ msgstr ""
 "Vous pouvez ajouter un fond opaque ou transparent au texte que vous voulez "
 "afficher avec l’option \"Afficher le fond\""
 
+#: pod/completion/templates/video_completion.html
+msgid ""
+"Quizzes allow you to test the memorization and comprehension of your video."
+msgstr ""
+"Les quiz vous permettent de tester la mémorisation et la compréhension de "
+"votre vidéo."
+
 #: pod/completion/tests/test_views.py
 msgid "editor"
 msgstr "éditeur"
@@ -1933,6 +1981,7 @@ msgstr ""
 
 #: pod/cut/templates/video_cut.html pod/dressing/templates/dressing_delete.html
 #: pod/dressing/templates/dressing_edit.html
+#: pod/quiz/templates/quiz/delete_quiz.html
 msgid "Back"
 msgstr "Retour"
 
@@ -1973,7 +2022,8 @@ msgid "Video dressings"
 msgstr "Habillages de vidéos"
 
 #: pod/dressing/forms.py pod/live/forms.py pod/meeting/forms.py
-#: pod/playlist/forms.py pod/recorder/forms.py pod/video/forms.py
+#: pod/playlist/forms.py pod/quiz/forms.py pod/recorder/forms.py
+#: pod/video/forms.py
 msgid "I agree"
 msgstr "J’accepte"
 
@@ -2064,6 +2114,7 @@ msgstr ""
 #: pod/live/templates/live/event_delete.html
 #: pod/meeting/templates/meeting/delete.html
 #: pod/playlist/templates/playlist/delete.html
+#: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/recorder/templates/recorder/record_delete.html
 #: pod/video/templates/videos/video_delete.html
 msgid "Agreement required"
@@ -2579,8 +2630,8 @@ msgid ""
 "a>."
 msgstr ""
 "L’accès à l’ajout d’enregistrements externes a été limité. Si vous souhaitez "
-"ajouter des enregistrements externes sur la plateforme, veuillez <a "
-"href=\"%(url)s\">nous contacter</a>."
+"ajouter des enregistrements externes sur la plateforme, veuillez <a href="
+"\"%(url)s\">nous contacter</a>."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
@@ -2970,8 +3021,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
@@ -2979,8 +3030,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "Youtube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
@@ -4822,17 +4873,6 @@ msgstr "Onglet additionnel de chaînes"
 msgid "Additional channel Tabs"
 msgstr "Onglets additionnels de chaînes"
 
-#: pod/main/settings.py
-msgid ""
-"Pod is aimed at users of our institutions, by allowing the publication of "
-"videos in the fields of research (promotion of platforms, etc.), training "
-"(tutorials, distance training, student reports, etc.), institutional life "
-"(video of events), offering several days of content."
-msgstr ""
-"Pod a pour but de faciliter la mise à disposition de vidéos et de ce fait, "
-"d’encourager l’utilisation de celles-ci dans le cadre de l’enseignement et "
-"la recherche."
-
 #: pod/main/templates/403.html
 msgid "Permission denied"
 msgstr "Accès refusé"
@@ -5956,16 +5996,16 @@ msgid ""
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à une réunion récurrente "
-"<b>%(meeting_title)s</b>.</p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente <b>"
+"%(meeting_title)s</b>.</p>\n"
 "        <p>Date de début : %(start_date_time)s </p>\n"
 "        <p>Récurrent jusqu’à la date : %(end_date)s </p>\n"
 "        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
 "p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<b>%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
+"%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -5991,8 +6031,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<b>%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
+"%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -6035,7 +6075,7 @@ msgstr "Informations générales"
 msgid "Security informations"
 msgstr "Informations de sécurité"
 
-#: pod/playlist/forms.py pod/playlist/models.py
+#: pod/playlist/forms.py pod/playlist/models.py pod/quiz/models.py
 msgid "Please choose a title between 1 and 250 characters."
 msgstr "Veuillez entrer un titre contenant entre 1 et 250 caractères."
 
@@ -6757,6 +6797,305 @@ msgstr ""
 msgid "Allow"
 msgstr "Autoriser"
 
+#: pod/quiz/apps.py pod/quiz/models.py
+msgid "Quiz"
+msgstr "Quiz"
+
+#: pod/quiz/forms.py
+msgid "Redaction"
+msgstr "Rédaction"
+
+#: pod/quiz/forms.py
+msgid "Short Answer"
+msgstr "Réponse Courte"
+
+#: pod/quiz/forms.py
+msgid "Long Answer"
+msgstr "Réponse Longue"
+
+#: pod/quiz/forms.py
+msgid "Choice"
+msgstr "Choix"
+
+#: pod/quiz/forms.py
+msgid "Unique Choice"
+msgstr "Choix Unique"
+
+#: pod/quiz/forms.py
+msgid "Your question"
+msgstr "Votre question"
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Explanation"
+msgstr "Explication"
+
+#: pod/quiz/forms.py
+msgid "Explanation of the question"
+msgstr "Explication de la question"
+
+#: pod/quiz/forms.py
+msgid "Start Timestamp"
+msgstr "Horodatage de Départ"
+
+#: pod/quiz/forms.py
+msgid "End Timestamp"
+msgstr "Horodatage de Fin"
+
+#: pod/quiz/forms.py
+msgid "Question Type"
+msgstr "Type de Question"
+
+#: pod/quiz/forms.py
+msgid "Unique choice"
+msgstr "Choix unique"
+
+#: pod/quiz/forms.py
+msgid "Short answer"
+msgstr "Réponse courte"
+
+#: pod/quiz/forms.py
+msgid "Long answer"
+msgstr "Réponse longue"
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Invalid JSON format for choices."
+msgstr "Format JSON invalide pour les choix."
+
+#: pod/quiz/forms.py
+msgid "There must be at least 2 choices for a choice question."
+msgstr "Il doit y avoir au moins 2 choix pour une question à choix."
+
+#: pod/quiz/forms.py
+msgid "There must be only one correct answer for a unique choice question."
+msgstr ""
+"Il ne doit y avoir qu'une seule réponse correcte pour une question à choix "
+"unique."
+
+#: pod/quiz/forms.py
+msgid "Connected User Only"
+msgstr "Utilisateur Connecté Uniquement"
+
+#: pod/quiz/forms.py
+msgid "Only the connected users can answer to this quiz."
+msgstr "Seuls les utilisateurs connectés peuvent répondre à ce quiz."
+
+#: pod/quiz/forms.py
+msgid "Show Correct Answers"
+msgstr "Afficher les Réponses Correctes"
+
+#: pod/quiz/forms.py
+msgid "The correction page can be reach."
+msgstr "La page de correction est accessible"
+
+#: pod/quiz/forms.py
+msgid "Delete video quiz cannot be undone"
+msgstr "La suppression d'un quiz pour une vidéo est définitive"
+
+#: pod/quiz/models.py
+msgid "Connected user only"
+msgstr "Utilisateur connecté uniquement"
+
+#: pod/quiz/models.py
+msgid "Please choose if this quiz is only for connected users or not."
+msgstr ""
+"Veuillez choisir si ce quiz est réservé aux utilisateurs connectés ou non."
+
+#: pod/quiz/models.py
+msgid "Show correct answers"
+msgstr "Afficher les réponses correctes"
+
+#: pod/quiz/models.py
+msgid "Please choose if the correct answers will be displayed or not."
+msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
+
+#: pod/quiz/models.py pod/quiz/templates/quiz/question_form.html
+msgid "Question"
+msgstr "Question"
+
+#: pod/quiz/models.py
+msgid "Please choose an explanation."
+msgstr "Veuillez choisir une explication."
+
+#: pod/quiz/models.py
+msgid "Start timestamp"
+msgstr "Horodatage de départ"
+
+#: pod/quiz/models.py
+msgid "Please choose the beginning time of the answer in the video."
+msgstr "Veuillez choisir l'heure de début de la réponse dans la vidéo."
+
+#: pod/quiz/models.py
+msgid "End timestamp"
+msgstr "Horodatage de fin"
+
+#: pod/quiz/models.py
+msgid "Please choose the end time of the answer in the video."
+msgstr "Veuillez choisir l'heure de fin de la réponse dans la vidéo."
+
+#: pod/quiz/models.py
+msgid "Questions"
+msgstr "Questions"
+
+#: pod/quiz/models.py
+msgid "Start timestamp must be lower than end timestamp."
+msgstr "L'horodatage de début doit être inférieure à l'heure de fin."
+
+#: pod/quiz/models.py
+msgid "End timestamp cannot be defined without a start timestamp."
+msgstr "L'horodatage de fin ne peut être définie sans l'heure de début."
+
+#: pod/quiz/models.py
+msgid "Choices"
+msgstr "Choix"
+
+#: pod/quiz/models.py
+msgid ""
+"Choices must be like this: {'choice 1': true, 'choice 2': false, ...} | true "
+"for the right choice, false for the wrong choices"
+msgstr ""
+"Les choix doivent ressembler à ceci : {'choix 1': true, 'choix 2': "
+"false, ...} | true pour le bon choix, false pour les mauvais choix"
+
+#: pod/quiz/models.py
+msgid "Unique choice question"
+msgstr "Question à choix unique"
+
+#: pod/quiz/models.py
+msgid "Unique choice questions"
+msgstr "Questions à choix unique"
+
+#: pod/quiz/models.py
+msgid "There must be at least 2 choices."
+msgstr "Il doit y avoir au moins 2 choix."
+
+#: pod/quiz/models.py
+msgid "There must be only one correct answer."
+msgstr "Il ne doit y avoir qu'une seule réponse correcte."
+
+#: pod/quiz/models.py
+msgid "Multiple choice question"
+msgstr "Question à choix multiple"
+
+#: pod/quiz/models.py
+msgid "Multiple choice questions"
+msgstr "Questions à choix multiple"
+
+#: pod/quiz/models.py
+msgid "There must be at least one correct answer."
+msgstr "Il doit y avoir au moins une réponse correcte."
+
+#: pod/quiz/models.py
+msgid "Please choose if the answer is true or false."
+msgstr "Veuillez indiquer si la réponse est vraie ou fausse."
+
+#: pod/quiz/models.py
+msgid "True/false question"
+msgstr "Question vrai/faux"
+
+#: pod/quiz/models.py
+msgid "True/false questions"
+msgstr "Questions vrai/faux"
+
+#: pod/quiz/models.py
+msgid "Answer"
+msgstr "Réponse"
+
+#: pod/quiz/models.py
+msgid "Please choose an answer between 1 and 250 characters."
+msgstr "Veuillez choisir une réponse entre 1 et 250 caractères."
+
+#: pod/quiz/models.py
+msgid "Short answer question"
+msgstr "Question à réponse courte"
+
+#: pod/quiz/models.py
+msgid "Short answer questions"
+msgstr "Questions à réponse courte"
+
+#: pod/quiz/models.py
+msgid "Please choose an answer."
+msgstr "Veuillez choisir une réponse."
+
+#: pod/quiz/models.py
+msgid "Long answer question"
+msgstr "Question à réponse longue"
+
+#: pod/quiz/models.py
+msgid "Long answer questions"
+msgstr "Questions à réponse longue"
+
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+msgid "Quiz editor"
+msgstr "Éditeur de quiz"
+
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+msgid "Add a question"
+msgstr "Ajouter une question"
+
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Back to video"
+msgstr "Retour à la vidéo"
+
+#: pod/quiz/templates/quiz/delete_quiz.html
+msgid "To delete the quiz, please check the box and click “Delete”."
+msgstr ""
+"Pour supprimer la vidéo, veuillez cocher la case et cliquer sur "
+"« Supprimer »."
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Validate"
+msgstr "Valider"
+
+#: pod/quiz/views.py
+msgid "You cannot create a quiz for this video."
+msgstr "Vous ne pouvez pas créer de quiz pour cette vidéo."
+
+#: pod/quiz/views.py
+#, python-brace-format
+msgid "Quiz creation for the video: {video.title}"
+msgstr "Création d'un quiz pour la vidéo : {video.title}"
+
+#: pod/quiz/views.py
+msgid "Quiz successfully created."
+msgstr "Quiz créé avec succès"
+
+#: pod/quiz/views.py
+msgid "The data sent to create the quiz are invalid."
+msgstr "Les données envoyées pour créer le quiz ne sont pas valides."
+
+#: pod/quiz/views.py
+#, python-brace-format
+msgid "Quiz edition for the video: {video.title}"
+msgstr "Édition du quiz pour la vidéo : {video.title}"
+
+#: pod/quiz/views.py
+#, python-format
+msgid "Your score is: %.2f%%"
+msgstr "Votre score est de : %.2f%%"
+
+#: pod/quiz/views.py
+#, python-brace-format
+msgid "Quiz for the video: {video.title}"
+msgstr "Quiz pour la vidéo : {video.title}"
+
+#: pod/quiz/views.py
+msgid "You cannot delete the quiz for this video."
+msgstr "Vous ne pouvez pas supprimer le quiz de cette vidéo."
+
+#: pod/quiz/views.py
+msgid "The quiz has been deleted."
+msgstr "Le quiz a été supprimée."
+
+#: pod/quiz/views.py
+#, python-format
+msgid "Deleting the quiz for the video “%s”"
+msgstr "Suppression du quiz pour la vidéo « %s »"
+
+#: pod/quiz/views.py
+msgid "You cannot edit this quiz."
+msgstr "Vous ne pouvez pas éditer ce quiz."
+
 #: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
 msgstr ""
@@ -7045,8 +7384,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -7123,10 +7462,9 @@ msgid ""
 msgstr ""
 "<p>Bonjour,<br> un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur « %(recorder)s ».<br>Pour "
-"l’ajouter, cliquez sur le lien ci-dessous.</p><p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br><em>Si le lien n’est pas actif, il "
-"faut le copier-coller dans la barre d’adresse de votre navigateur.</em></"
-"p><p>Cordialement.</p>"
+"l’ajouter, cliquez sur le lien ci-dessous.</p><p><a href=\"%(link_url)s\">"
+"%(link_url)s</a><br><em>Si le lien n’est pas actif, il faut le copier-coller "
+"dans la barre d’adresse de votre navigateur.</em></p><p>Cordialement.</p>"
 
 #: pod/recorder/views.py
 msgid "New recording added."
@@ -7475,8 +7813,8 @@ msgid ""
 "%(url)s</a></p>\n"
 msgstr ""
 "vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
-"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
-"target=\"_blank\">%(scheme)s:%(url)s</a></p>\n"
+"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" target=\"_blank\">"
+"%(scheme)s:%(url)s</a></p>\n"
 "\n"
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -8320,8 +8658,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
-"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
+"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html
 msgid "Other versions"
@@ -8386,6 +8724,10 @@ msgstr "Nombre d’ajouts dans une liste de lecture"
 #: pod/video/templates/videos/video-info.html
 msgid "Number of favorites"
 msgstr "Nombre de favoris"
+
+#: pod/video/templates/videos/video-info.html
+msgid "Answer the quiz"
+msgstr "Répondre au quiz"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Add the video to a playlist"
@@ -9278,11 +9620,20 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
+#~ msgid ""
+#~ "Pod is aimed at users of our institutions, by allowing the publication of "
+#~ "videos in the fields of research (promotion of platforms, etc.), training "
+#~ "(tutorials, distance training, student reports, etc.), institutional life "
+#~ "(video of events), offering several days of content."
+#~ msgstr ""
+#~ "Pod a pour but de faciliter la mise à disposition de vidéos et de ce "
+#~ "fait, d’encourager l’utilisation de celles-ci dans le cadre de "
+#~ "l’enseignement et la recherche."
+
 #~ msgid "The HTML file for this recording was not found on the server."
 #~ msgstr ""
 #~ "Le fichier HTML de cet enregistrement est introuvable sur le serveur."
 
-#, python-format
 #~ msgid "Error number: %s"
 #~ msgstr "Numéro d’erreur : %s"
 

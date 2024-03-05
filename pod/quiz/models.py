@@ -1,4 +1,4 @@
-"""EsupQuiz models."""
+"""Esup-Pod quiz models."""
 
 from json import JSONDecodeError, loads
 from django.core.exceptions import ValidationError
@@ -224,24 +224,24 @@ class MultipleChoiceQuestion(Question):
     """
 
     choices = models.JSONField(
-        verbose_name="Choices",
+        verbose_name=_("Choices"),
         default=dict,
     )
 
     class Meta:
-        verbose_name = "Multiple choice question"
-        verbose_name_plural = "Multiple choice questions"
+        verbose_name = _("Multiple choice question")
+        verbose_name_plural = _("Multiple choice questions")
 
     def clean(self):
         super().clean()
 
         # Check if there are at least 2 choices
         if len(self.choices) < 2:
-            raise ValidationError("There must be at least 2 choices.")
+            raise ValidationError(_("There must be at least 2 choices."))
 
         # Check if there is at least one correct answer
         if not any(self.choices.values()):
-            raise ValidationError("There must be at least one correct answer.")
+            raise ValidationError(_("There must be at least one correct answer."))
 
     def __str__(self):
         return self.title
@@ -261,12 +261,12 @@ class TrueFalseQuestion(Question):
     is_true = models.BooleanField(
         verbose_name="Is true",
         default=True,
-        help_text="Please choose if the answer is true or false.",
+        help_text=_("Please choose if the answer is true or false."),
     )
 
     class Meta:
-        verbose_name = "True/false question"
-        verbose_name_plural = "True/false questions"
+        verbose_name = _("True/false question")
+        verbose_name_plural = _("True/false questions")
 
     def __str__(self):
         return self.title
@@ -284,15 +284,15 @@ class ShortAnswerQuestion(Question):
     """
 
     answer = models.CharField(
-        verbose_name="Answer",
+        verbose_name=_("Answer"),
         max_length=250,
         default="",
-        help_text="Please choose an answer between 1 and 250 characters.",
+        help_text=_("Please choose an answer between 1 and 250 characters."),
     )
 
     class Meta:
-        verbose_name = "Short answer question"
-        verbose_name_plural = "Short answer questions"
+        verbose_name = _("Short answer question")
+        verbose_name_plural = _("Short answer questions")
 
     def __str__(self):
         return self.title
@@ -313,14 +313,14 @@ class LongAnswerQuestion(Question):
     """
 
     answer = models.TextField(
-        verbose_name="Answer",
+        verbose_name=_("Answer"),
         default="",
-        help_text="Please choose an answer.",
+        help_text=_("Please choose an answer."),
     )
 
     class Meta:
-        verbose_name = "Long answer question"
-        verbose_name_plural = "Long answer questions"
+        verbose_name = _("Long answer question")
+        verbose_name_plural = _("Long answer questions")
 
     def __str__(self):
         return self.title
