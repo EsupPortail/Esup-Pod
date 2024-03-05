@@ -156,6 +156,9 @@ class Question(models.Model):
     def get_answer(self):
         return None
 
+    def get_type(self):
+        return None
+
 
 class UniqueChoiceQuestion(Question):
     """
@@ -205,6 +208,9 @@ class UniqueChoiceQuestion(Question):
         )
         return correct_answer
 
+    def get_type(self):
+        return "unique_choice"
+
 
 class MultipleChoiceQuestion(Question):
     """
@@ -237,6 +243,9 @@ class MultipleChoiceQuestion(Question):
     def __str__(self):
         return self.title
 
+    def get_type(self):
+        return "multiple_choice"
+
 
 class TrueFalseQuestion(Question):
     """
@@ -258,6 +267,9 @@ class TrueFalseQuestion(Question):
 
     def __str__(self):
         return self.title
+
+    def get_type(self):
+        return "true_false"
 
 
 class ShortAnswerQuestion(Question):
@@ -285,6 +297,9 @@ class ShortAnswerQuestion(Question):
     def get_answer(self):
         return self.answer
 
+    def get_type(self):
+        return "short_answer"
+
 
 class LongAnswerQuestion(Question):
     """
@@ -309,3 +324,6 @@ class LongAnswerQuestion(Question):
 
     def get_answer(self):
         return self.answer
+
+    def get_type(self):
+        return "long_answer"

@@ -117,6 +117,7 @@ class QuizForm(forms.Form):
     show_correct_answers = forms.BooleanField(
         label=_("Show Correct Answers"),
         required=False,
+        initial=True,
         widget=forms.CheckboxInput(),
         help_text=_("The correction page can be reach."),
     )

@@ -26,7 +26,7 @@
               {{ form.as_p }}
             {% endwith %}
 
-            {% if form_submitted %}
+            {% if form_submitted and quiz.show_correct_answers %}
               <p>Réponse :{{ question.get_answer }}</p>
               <p>Explication :{{ question.explanation }}</p>
             {% endif %}

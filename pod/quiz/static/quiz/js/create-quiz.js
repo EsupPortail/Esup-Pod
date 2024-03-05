@@ -13,7 +13,6 @@ for (questionTypeEl of questionsTypeElements) {
 
 function addEventListenerQuestionType(questionTypeElement) {
   questionTypeElement.addEventListener("change", function (event) {
-    console.log(event.target.value);
     let questionForm = questionTypeElement.closest(".question-form");
     handleQuestionType(questionForm);
   });
@@ -33,12 +32,24 @@ function addNewQuestionForm(event) {
   }
 
   const currentQuestionForms = document.getElementsByClassName("question-form");
-  let currentFormCount = currentQuestionForms.length - 1;
+  const currentFormCount = currentQuestionForms.length - 1;
 
   const formCopyTarget = document.getElementById("question-form-list");
-  let copyEmptyQuestionFormEl = document
-    .getElementById("empty-form")
-    .cloneNode(true).firstElementChild;
+  const copyEmptyQuestionFormEl = cloneQuestionForm(currentFormCount);
+
+  const newQuestionTypeElement = copyEmptyQuestionFormEl.querySelector(".question-select-type");
+
+  handleQuestionForm(copyEmptyQuestionFormEl);
+  addEventListenerQuestionType(newQuestionTypeElement);
+
+  const removeQuestionButton = copyEmptyQuestionFormEl.querySelector(".delete-question-button");
+  removeQuestionButton.addEventListener("click", removeQuestionForm);
+
+  formCopyTarget.append(copyEmptyQuestionFormEl);
+}
+
+function cloneQuestionForm(currentFormCount) {
+  const copyEmptyQuestionFormEl = document.getElementById("empty-form").cloneNode(true).firstElementChild;
   copyEmptyQuestionFormEl.setAttribute("class", "question-form");
   copyEmptyQuestionFormEl.removeAttribute("id");
 
@@ -47,18 +58,20 @@ function addNewQuestionForm(event) {
     regex,
     currentFormCount,
   );
-  totalNewForms.setAttribute("value", currentFormCount + 1);
-  let newQuestionTypeElement = copyEmptyQuestionFormEl.querySelector(
-    ".question-select-type",
-  );
-  addEventListenerQuestionType(newQuestionTypeElement);
-  let removeQuestionButton = copyEmptyQuestionFormEl.querySelector(
-    ".delete-question-button",
-  );
-  removeQuestionButton.addEventListener("click", removeQuestionForm);
 
-  formCopyTarget.append(copyEmptyQuestionFormEl);
+  totalNewForms.setAttribute("value", currentFormCount + 1);
+
+  return copyEmptyQuestionFormEl;
 }
+
+function handleQuestionForm(questionForm) {
+  const questionTypeElement = questionForm.querySelector(".question-select-type");
+  handleQuestionType(questionForm);
+  addEventListenerQuestionType(questionTypeElement);
+}
+
+
+// REMOVE
 
 function removeQuestionForm(event) {
   if (event) {
@@ -66,10 +79,16 @@ function removeQuestionForm(event) {
   }
 
   const questionFormToDelete = event.target.closest(".question-form");
-  questionFormToDelete.remove();
-  const currentQuestionForms = document.getElementsByClassName("question-form");
-  totalNewForms.setAttribute("value", currentQuestionForms.length - 1);
+
+  if (questionFormToDelete) {
+    questionFormToDelete.remove();
+
+    const currentQuestionForms = document.querySelectorAll(".question-form");
+    totalNewForms.setAttribute("value", currentQuestionForms.length - 1);
+  }
 }
+
+// Handle different types of form
 
 function handleShortAnswerQuestion(questionForm) {
   const input = document.createElement("input");
@@ -89,18 +108,10 @@ function handleLongAnswerQuestion(questionForm) {
 }
 
 function handleUniqueChoiceQuestion(questionForm) {
-  let choicesForm = questionForm.querySelector(".question-choices-form");
+  const choicesForm = questionForm.querySelector(".question-choices-form");
+  const counter = choicesForm.querySelectorAll('input[type="radio"]').length + 1;
 
-  let counter =
-    document.querySelectorAll('.question-choices-form input[type="radio"]')
-      .length + 1;
-
-  const fieldset = document.createElement("fieldset");
-  const legend = document.createElement("legend");
-  legend.textContent = "Vos choix";
-  fieldset.appendChild(legend);
-
-  for (let i = 0; i < 2; i++) {
+  const createChoiceElement = (index) => {
     const choiceDiv = document.createElement("div");
     choiceDiv.classList.add("form-check");
 
@@ -109,41 +120,43 @@ function handleUniqueChoiceQuestion(questionForm) {
     input.classList.add("form-check-input");
     input.name = `choices_${counter}`;
 
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.type = "button";
+    deleteButton.classList.add("btn", "btn-outline-danger", "btn-sm", "mt-2");
+    deleteButton.addEventListener("click", function () {
+      choiceDiv.remove();
+    });
+
     const textInput = document.createElement("input");
     textInput.type = "text";
-    textInput.placeholder = `Choice ${i + 1}`;
+    textInput.placeholder = `Choice ${index}`;
 
     choiceDiv.appendChild(input);
     choiceDiv.appendChild(textInput);
+    choiceDiv.appendChild(deleteButton);
 
-    fieldset.appendChild(choiceDiv);
+    return choiceDiv;
+  };
+
+  const fieldset = document.createElement("fieldset");
+  const legend = document.createElement("legend");
+  legend.textContent = "Vos choix";
+  fieldset.appendChild(legend);
+
+  for (let i = 0; i < 2; i++) {
+    fieldset.appendChild(createChoiceElement(i + 1));
   }
-
-  choicesForm.appendChild(fieldset);
 
   const addButton = document.createElement("button");
   addButton.textContent = "Add a choice";
   addButton.type = "button";
   addButton.classList.add("btn", "btn-outline-secondary", "btn-sm", "mt-2");
   addButton.addEventListener("click", function () {
-    const newChoiceDiv = document.createElement("div");
-    newChoiceDiv.classList.add("form-check");
-
-    const input = document.createElement("input");
-    input.type = "radio";
-    input.classList.add("form-check-input");
-    input.name = `choices_${counter}`;
-
-    const textInput = document.createElement("input");
-    textInput.type = "text";
-    textInput.placeholder = `Choice ${choicesForm.querySelectorAll('.question-choices-form input[type="radio"]').length + 1}`;
-
-    newChoiceDiv.appendChild(input);
-    newChoiceDiv.appendChild(textInput);
-
-    fieldset.appendChild(newChoiceDiv);
+    fieldset.appendChild(createChoiceElement(choicesForm.querySelectorAll('input[type="radio"]').length + 1));
   });
 
+  choicesForm.appendChild(fieldset);
   choicesForm.appendChild(addButton);
 }
 
@@ -155,6 +168,7 @@ function handleQuestionType(questionForm) {
   let questionChoicesForm = questionForm.querySelector(
     ".question-choices-form",
   );
+
   if (!questionChoicesForm) {
     let choicesSection = questionForm.querySelector(
       ".question-choices-section",
@@ -165,16 +179,26 @@ function handleQuestionType(questionForm) {
 
     choicesSection.appendChild(newChoicesForm);
   }
+
   questionForm.querySelector(".question-choices-form").innerHTML = "";
 
-  if (questionType === "short_answer") {
-    handleShortAnswerQuestion(questionForm);
-  } else if (questionType === "long_answer") {
-    handleLongAnswerQuestion(questionForm);
-  } else if (questionType === "unique_choice") {
-    handleUniqueChoiceQuestion(questionForm);
-  } // Add other conditions for other question types.
+  switch (questionType) {
+    case "short_answer":
+      handleShortAnswerQuestion(questionForm);
+      break;
+    case "long_answer":
+      handleLongAnswerQuestion(questionForm);
+      break;
+    case "unique_choice":
+      handleUniqueChoiceQuestion(questionForm);
+      break;
+    // Add other cases for other type of question
+    default:
+      break;
+  }
 }
+
+// SUBMISSION
 
 function manage_form_submission() {
   let submissionButton = document.getElementById("quiz-submission-button");
@@ -189,45 +213,50 @@ function manage_form_submission() {
       const questionType = questionForm.querySelector(
         ".question-select-type",
       ).value;
-      if (questionType === "short_answer") {
-        let shortAnswerInput = questionForm.querySelector(
-          ".short-answer-field",
-        );
-        let hiddenShortAnswerInput = questionForm.querySelector(
-          ".hidden-short-answer-field",
-        );
-        hiddenShortAnswerInput.value = shortAnswerInput.value;
-      } else if (questionType === "long_answer") {
-        let longAnswerInput = questionForm.querySelector(".long-answer-field");
-        let hiddenLongAnswerInput = questionForm.querySelector(
-          ".hidden-long-answer-field",
-        );
-        hiddenLongAnswerInput.value = longAnswerInput.value;
-      } else if (questionType === "unique_choice") {
-        let choicesData = {};
-
-        const radioInputs = questionForm.querySelectorAll(
-          '.form-check > input[type="radio"]',
-        );
-        const textInputs = questionForm.querySelectorAll(
-          '.form-check > input[type="text"]',
-        );
-        console.log(radioInputs);
-        console.log(textInputs);
-        radioInputs.forEach((input, index) => {
-          choicesData[textInputs[index].value] = input.checked;
-        });
-
-        let hiddenUniqueChoiceAnswerInput = questionForm.querySelector(
-          ".hidden-unique-choice-field",
-        );
-        hiddenUniqueChoiceAnswerInput.value = JSON.stringify(choicesData);
-      } // Add other conditions for other question types.
+      switch (questionType) {
+        case "short_answer":
+          handleShortAnswerSubmission(questionForm);
+          break;
+        case "long_answer":
+          handleLongAnswerSubmission(questionForm);
+          break;
+        case "unique_choice":
+          handleUniqueChoiceSubmission(questionForm);
+          break;
+        // Add other cases for other type of question
+        default:
+          break;
+      }
     }
-
     let form = document.getElementById("quiz-form");
     form.submit();
   });
+}
+
+function handleShortAnswerSubmission(questionForm) {
+  let shortAnswerInput = questionForm.querySelector(".short-answer-field");
+  let hiddenShortAnswerInput = questionForm.querySelector(".hidden-short-answer-field");
+  hiddenShortAnswerInput.value = shortAnswerInput.value;
+}
+
+function handleLongAnswerSubmission(questionForm) {
+  let longAnswerInput = questionForm.querySelector(".long-answer-field");
+  let hiddenLongAnswerInput = questionForm.querySelector(".hidden-long-answer-field");
+  hiddenLongAnswerInput.value = longAnswerInput.value;
+}
+
+function handleUniqueChoiceSubmission(questionForm) {
+  let choicesData = {};
+
+  const radioInputs = questionForm.querySelectorAll('.form-check > input[type="radio"]');
+  const textInputs = questionForm.querySelectorAll('.form-check > input[type="text"]');
+
+  radioInputs.forEach((input, index) => {
+    choicesData[textInputs[index].value] = input.checked;
+  });
+
+  let hiddenUniqueChoiceAnswerInput = questionForm.querySelector(".hidden-unique-choice-field");
+  hiddenUniqueChoiceAnswerInput.value = JSON.stringify(choicesData);
 }
 
 manage_form_submission();

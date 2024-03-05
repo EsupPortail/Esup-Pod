@@ -29,4 +29,4 @@ def get_quiz_questions(quiz: Quiz):
 
 
 def get_video_quiz(video: Video):
-    return Quiz.objects.get(video=video)
+    return Quiz.objects.filter(video=video).first()
