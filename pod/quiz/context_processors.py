@@ -6,5 +6,5 @@ USE_QUIZ = getattr(django_settings, "USE_QUIZ", True)
 def context_settings(request):
     """Return all context settings for quiz app"""
     new_settings = {}
-    new_settings["USE_PLAYLIST"] = USE_QUIZ
+    new_settings["USE_QUIZ"] = USE_QUIZ
     return new_settings

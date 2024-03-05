@@ -2,6 +2,8 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load video_quiz %}
+
 {% block page_title %}{% trans 'Video additions' %} "{{video.title}}"{% endblock page_title %}
 
 {% block page_extra_head %}
@@ -47,79 +49,110 @@
   </li>
   &nbsp;
   {% if request.user.is_staff %}
-  <li>
-    <a id="section_track" href="#" title="{% trans 'Display &quot;Subtitle(s) and Caption(s) &quot; section' %}" class="title">
-      {% trans 'Subtitle(s) and Caption(s)' %}&nbsp;<i class="bi bi-chevron-down"></i>
-    </a>
-  </li>
-  <li class="contenuTitre">
-    <span id="list_track">
-      {% include 'track/list_track.html' with dest='video_completion_track' %}
-    </span>
+    <li>
+      <a id="section_track" href="#" title="{% trans 'Display &quot;Subtitle(s) and Caption(s) &quot; section' %}" class="title">
+        {% trans 'Subtitle(s) and Caption(s)' %}&nbsp;<i class="bi bi-chevron-down"></i>
+      </a>
+    </li>
+    <li class="contenuTitre">
+      <span id="list_track">
+        {% include 'track/list_track.html' with dest='video_completion_track' %}
+      </span>
+      &nbsp;
+      <div class="breadcrumb">
+        <p>
+          <a class="btn btn-secondary" href="{% url 'video:completion:video_caption_maker' slug=video.slug %}">{% trans 'Video Caption Maker' %}</a>
+          <span class="form-text">{% trans 'To create your subtitles and/or caption(s) files' %}</span>
+        </p>
+        <span id="form_track">
+          {% if form_track %}
+            {% include 'track/form_track.html' with form_track=form_track %}
+          {% endif %}
+        </span>
+        <form class="form_new completion" id="form_new_track" action="{% url 'video:completion:video_completion_track' slug=video.slug %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="new">
+          <input type="submit" value="{% trans 'Add a new subtitle or caption file' %}" class="new_track btn btn-primary">
+          <span class="form-text">{% trans 'The file must be in VTT format.' %}</span>
+        </form>
+      </div>
+    </li>
     &nbsp;
-    <div class="breadcrumb">
-      <p>
-        <a class="btn btn-secondary" href="{% url 'video:completion:video_caption_maker' slug=video.slug %}">{% trans 'Video Caption Maker' %}</a>
-        <span class="form-text">{% trans 'To create your subtitles and/or caption(s) files' %}</span>
-      </p>
-      <span id="form_track">
-        {% if form_track %}
-          {% include 'track/form_track.html' with form_track=form_track %}
+    <li>
+      <a id="section_document" href="#" title="{% trans 'Display &quot; Additional resource(s)&quot; section' %}" class="title">
+        {% trans 'Additional resource(s)' %}&nbsp;<i class="bi bi-chevron-down"></i>
+      </a>
+    </li>
+    <li class="contenuTitre">
+      <span id="list_document">
+        {% include 'document/list_document.html' %}
+      </span>
+      &nbsp;
+      <span id="form_document">
+        {% if form_document %}
+        {% include 'document/form_document.html' with form_document=form_document %}
         {% endif %}
       </span>
-      <form class="form_new completion" id="form_new_track" action="{% url 'video:completion:video_completion_track' slug=video.slug %}" method="POST">
+      <form class="form_new completion" id="form_new_document" action="{% url 'video:completion:video_completion_document' slug=video.slug %}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="action" value="new">
-        <input type="submit" value="{% trans 'Add a new subtitle or caption file' %}" class="new_track btn btn-primary">
-        <span class="form-text">{% trans 'The file must be in VTT format.' %}</span>
+        <input type="submit" value="{% trans 'Add a new additional resource' %}" class="new_document btn btn-primary">
       </form>
-    </div>
-  </li>
-  &nbsp;
-  <li>
-    <a id="section_document" href="#" title="{% trans 'Display &quot; Additional resource(s)&quot; section' %}" class="title">
-      {% trans 'Additional resource(s)' %}&nbsp;<i class="bi bi-chevron-down"></i>
-    </a>
-  </li>
-  <li class="contenuTitre">
-    <span id="list_document">
-      {% include 'document/list_document.html' %}
-    </span>
+    </li>
     &nbsp;
-    <span id="form_document">
-      {% if form_document %}
-      {% include 'document/form_document.html' with form_document=form_document %}
-      {% endif %}
-    </span>
-    <form class="form_new completion" id="form_new_document" action="{% url 'video:completion:video_completion_document' slug=video.slug %}" method="POST">
-      {% csrf_token %}
-      <input type="hidden" name="action" value="new">
-      <input type="submit" value="{% trans 'Add a new additional resource' %}" class="new_document btn btn-primary">
-    </form>
-  </li>
-  &nbsp;
-  <li>
-    <a id="section_overlay" href="#" title="{% trans 'Display &quot; Overlay(s)&quot; section' %}" class="title">
-      {% trans 'Overlay(s)' %}&nbsp;<i class="bi bi-chevron-down"></i>
-    </a>
-  </li>
-  <li class="contenuTitre">
-    <span id="list_overlay">
-      {% include 'overlay/list_overlay.html' %}
-    </span>
+    <li>
+      <a id="section_overlay" href="#" title="{% trans 'Display &quot; Overlay(s)&quot; section' %}" class="title">
+        {% trans 'Overlay(s)' %}&nbsp;<i class="bi bi-chevron-down"></i>
+      </a>
+    </li>
+    <li class="contenuTitre">
+      <span id="list_overlay">
+        {% include 'overlay/list_overlay.html' %}
+      </span>
+      &nbsp;
+      <span id="form_overlay">
+        {% if form_overlay %}
+        {% include 'overlay/form_overlay.html' with form_overlay=form_overlay %}
+        {% endif %}
+      </span>
+      <form class="form_new completion" id="form_new_overlay" action="{% url 'video:completion:video_completion_overlay' slug=video.slug %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="new">
+        <input type="submit" value="{% trans 'Add a new overlay' %}" class="new_overlay btn btn-primary">
+      </form>
+    </li>
     &nbsp;
-    <span id="form_overlay">
-      {% if form_overlay %}
-      {% include 'overlay/form_overlay.html' with form_overlay=form_overlay %}
-      {% endif %}
-    </span>
-    <form class="form_new completion" id="form_new_overlay" action="{% url 'video:completion:video_completion_overlay' slug=video.slug %}" method="POST">
-      {% csrf_token %}
-      <input type="hidden" name="action" value="new">
-      <input type="submit" value="{% trans 'Add a new overlay' %}" class="new_overlay btn btn-primary">
-    </form>
-  </li>
-  &nbsp;
+    <!-- Quiz -->
+    {% if USE_QUIZ %}
+      <li>
+        <a id="quiz-overlay" href="#" title="{% trans 'Display &quot;quizzes&quot; section' %}" class="title">
+          {% trans 'Quizzes' %}&nbsp;<i class="bi bi-chevron-down"></i>
+        </a>
+      </li>
+      &nbsp;
+      <li class="contenuTitre">
+        <span id="list-quiz">
+          <p>
+            {% is_quiz_exists video as is_quiz_exists %}
+            {% if is_quiz_exists %}
+              <a class="btn btn-secondary" href="{% url 'quiz:edit_quiz' video_slug=video.slug %}">{% trans 'Edit your quiz' %}</a>
+              <span class="form-text">{% trans 'To edit your quiz for this video.' %}</span>
+            {% else %}
+              <a class="btn btn-secondary" href="{% url 'quiz:add_quiz' video_slug=video.slug %}">{% trans 'Create a quiz' %}</a>
+              <span class="form-text">{% trans 'To create a quiz for this video.' %}</span>
+            {% endif %}
+          </p>
+          {% if is_quiz_exists %}
+            <p>
+              <a class="btn btn-secondary btn-danger" href="{% url 'quiz:remove_quiz' video_slug=video.slug %}">{% trans 'Delete your quiz' %}</a>
+              <span class="form-text">{% trans 'To delete your quiz for this video.' %}</span>
+            </p>
+          {% endif %}
+        </span>
+        &nbsp;
+      </li>
+      &nbsp;
+    {% endif %}
   {% endif %}
 </div>
 {% endblock page_content %}
@@ -185,9 +218,21 @@
         <p>{% trans 'You can add a solid background or a transparent background to the text you want to display with the option "Show background"' %}</p>
       </div>
     </div>
+    <!-- Quiz -->
+    {% if USE_QUIZ %}
+      <div id="quiz-info">
+        <button class="btn btn-link rounded-0 pod-btn" id="heading-4" data-bs-toggle="collapse" data-bs-target="#collapse-5" aria-expanded="false" aria-controls="collapse-5">
+          {% trans 'Quizzes' %}
+        </button>
+        <div id="collapse-5" class="collapse card-text small">
+          <p>{% trans 'Quizzes allow you to test the memorization and comprehension of your video.' %}</p>
+        </div>
+      </div>
+    {% endif %}
   </div>
 </div>
 {% endblock page_aside %}
+
 {% block more_script %}
-<script src="{% static 'js/completion.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/completion.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}
