@@ -1247,7 +1247,7 @@ def upload_bbb_recording_to_pod(request, record_id, meeting_id):
             '<a href="%(url)s" target="_blank">%(url)s</a>'
         ) % {"type": "Big Blue Button", "url": source_video_url}
 
-        save_video(request, dest_path, recording_title, description)
+        save_video(request.user, dest_path, recording_title, description)
 
         return True
     except Exception as exc:

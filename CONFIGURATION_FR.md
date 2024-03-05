@@ -79,7 +79,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
   >> Mise en place du mode PWA grâce à l'application Django-pwa <br>
   >> Voici la configuration par défaut pour Pod, vous pouvez surcharger chaque variable dans votre fichier de configuration. <br>
   >> PWA_APP_NAME = "Pod" <br>
-  >> PWA_APP_DESCRIPTION = _( <br>
+  >> PWA_APP_DESCRIPTION = ( <br>
   >>     "Pod is aimed at users of our institutions, by allowing the publication of " <br>
   >>     "videos in the fields of research (promotion of platforms, etc.), training " <br>
   >>     "(tutorials, distance training, student reports, etc.), institutional life (video " <br>
@@ -1164,6 +1164,12 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
 
 
+ - `OIDC_CLAIM_PREFERRED_USERNAME`
+
+  > valeur par défaut : `preferred_username`
+
+  >> Noms des Claim permettant de récupérer l'attribut login mais dépendant de l'attribut du client dans l'IDP <br>
+
  - `OIDC_CLAIM_GIVEN_NAME`
 
   > valeur par défaut : `given_name`
@@ -1443,6 +1449,27 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
   > valeur par défaut : `True`
 
   >> Activation de l’application d'import des vidéos <br>
+
+ - `USE_IMPORT_VIDEO_BBB_RECORDER`
+
+  > valeur par défaut : `False`
+
+  >> Utilisation du plugin bbb-recorder pour le module import-vidéo;  <br>
+  >> utile pour convertir une présentation BigBlueButton en fichier vidéo. <br>
+
+ - `IMPORT_VIDEO_BBB_RECORDER_PLUGIN`
+
+  > valeur par défaut : `/home/pod/bbb-recorder/`
+
+  >> Répertoire du plugin bbb-recorder (voir la documentation https://github.com/jibon57/bbb-recorder). <br>
+  >> bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d'encodage. <br>
+  >> bbb-recorder crée un répertoire Downloads, au même niveau, qui nécessite de l'espace disque. <br>
+
+ - `IMPORT_VIDEO_BBB_RECORDER_PATH`
+
+  > valeur par défaut : `True`
+
+  >> Répertoire qui contiendra les fichiers vidéo générés par bbb-recorder. <br>
 
 ### Configuration application live
 
@@ -2578,9 +2605,9 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l'enco
 
  - `CELERY_BROKER_URL`
 
-  > valeur par défaut : `amqp://pod:xxx@localhost/rabbitpod`
+  > valeur par défaut : `redis://127.0.0.1:6379/5`
 
-  >> URL de Celery pour la gestion des taches d’encodage. <br>
+  >> URL du courtier de messages où Celery stocke les ordres d’encodage et de transcription. <br>
 
  - `CELERY_TO_ENCODE`
 
@@ -2662,12 +2689,26 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l'enco
   >>
   >> ```
 
- - `USE_DISTANT_ENCODING_TRANSCODING`
+ - `USE_REMOTE_ENCODING_TRANSCODING`
 
   > valeur par défaut : `False`
 
 
   >> Si True, active l'encodage et la transcription sur un environnement distant via redis+celery <br>
+
+ - `POD_API_URL`
+
+  > valeur par défaut : ``
+
+  >> Adresse de l'API rest a appeler en fin d'encodage distant ou de transcription à distance. <br>
+  >> Exemple : https://pod.univ.fr/rest/ <br>
+
+ - `POD_API_TOKEN`
+
+  > valeur par défaut : ``
+
+  >> Token d'authentification utilisé pour l'appel en fin d'encodage distant ou de transcription à distance. <br>
+  >> Pour le créer, il faut aller dans la partie Admin > Jeton d'authentification > token. <br>
 
  - `VIDEO_RENDITIONS`
 

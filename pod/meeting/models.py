@@ -635,7 +635,7 @@ class Meeting(models.Model):
         response = self.get_create_response(url)
         if response.status_code != 200:
             msg = {}
-            msg["error"] = "Unable to call BBB server."
+            msg["error"] = _("Unable to call BBB server.")
             msg["returncode"] = response.status_code
             msg["message"] = response.content.decode("utf-8")
             raise ValueError(msg)
@@ -774,7 +774,7 @@ class Meeting(models.Model):
         response = requests.get(url)
         if response.status_code != 200:
             msg = {}
-            msg["error"] = "Unable to call BBB server."
+            msg["error"] = _("Unable to call BBB server.")
             msg["returncode"] = response.status_code
             msg["message"] = response.content.decode("utf-8")
             raise ValueError(msg)
@@ -810,7 +810,7 @@ class Meeting(models.Model):
         response = requests.get(url)
         if response.status_code != 200:
             msg = {}
-            msg["error"] = "Unable to call BBB server."
+            msg["error"] = _("Unable to call BBB server.")
             msg["returncode"] = response.status_code
             msg["message"] = response.content.decode("utf-8")
             raise ValueError(msg)
@@ -838,7 +838,7 @@ class Meeting(models.Model):
         response = requests.get(url)
         if response.status_code != 200:
             msg = {}
-            msg["error"] = "Unable to call BBB server."
+            msg["error"] = _("Unable to call BBB server.")
             msg["returncode"] = response.status_code
             msg["message"] = response.content.decode("utf-8")
             raise ValueError(msg)
@@ -868,7 +868,7 @@ class Meeting(models.Model):
         response = requests.get(url)
         if response.status_code != 200:
             msg = {}
-            msg["error"] = "Unable to call BBB server."
+            msg["error"] = _("Unable to call BBB server.")
             msg["returncode"] = response.status_code
             msg["message"] = response.content.decode("utf-8")
             raise ValueError(msg)
@@ -897,7 +897,7 @@ class Meeting(models.Model):
         response = requests.get(url)
         if response.status_code != 200:
             msg = {}
-            msg["error"] = "Unable to call BBB server."
+            msg["error"] = _("Unable to call BBB server.")
             msg["returncode"] = response.status_code
             msg["message"] = response.content.decode("utf-8")
             raise ValueError(msg)
@@ -925,7 +925,7 @@ class Meeting(models.Model):
         response = requests.get(url)
         if response.status_code != 200:
             msg = {}
-            msg["error"] = "Unable to call BBB server."
+            msg["error"] = _("Unable to call BBB server.")
             msg["returncode"] = response.status_code
             msg["message"] = response.content.decode("utf-8")
             raise ValueError(msg)
@@ -955,7 +955,7 @@ class Meeting(models.Model):
         response = requests.get(url)
         if response.status_code != 200:
             msg = {}
-            msg["error"] = "Unable to call BBB server."
+            msg["error"] = _("Unable to call BBB server.")
             msg["returncode"] = response.status_code
             msg["message"] = response.content.decode("utf-8")
             raise ValueError(msg)

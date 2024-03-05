@@ -21,7 +21,9 @@ if (
     or importlib.util.find_spec("whisper") is not None
 ):
     from .transcript_model import start_transcripting
-    from .transcript_model import sec_to_timestamp
+
+
+from .encoding_utils import sec_to_timestamp
 
 import os
 import time
@@ -51,10 +53,10 @@ if USE_TRANSCRIPTION:
 TRANSCRIPTION_NORMALIZE = getattr(settings, "TRANSCRIPTION_NORMALIZE", False)
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 
-USE_DISTANT_ENCODING_TRANSCODING = getattr(
-    settings, "USE_DISTANT_ENCODING_TRANSCODING", False
+USE_REMOTE_ENCODING_TRANSCODING = getattr(
+    settings, "USE_REMOTE_ENCODING_TRANSCODING", False
 )
-if USE_DISTANT_ENCODING_TRANSCODING:
+if USE_REMOTE_ENCODING_TRANSCODING:
     from .transcripting_tasks import start_transcripting_task
 
 log = logging.getLogger(__name__)
@@ -102,7 +104,8 @@ def main_threaded_transcript(video_to_encode_id):
     change_encoding_step(video_to_encode_id, 5, "transcripting audio")
 
     video_to_encode = Video.objects.get(id=video_to_encode_id)
-
+    video_to_encode.encoding_in_progress = True
+    video_to_encode.save()
     msg = ""
     lang = video_to_encode.transcript
     # check if TRANSCRIPTION_MODEL_PARAM [lang] exist
@@ -123,7 +126,7 @@ def main_threaded_transcript(video_to_encode_id):
             send_email(msg, video_to_encode.id)
         else:
             mp3filepath = mp3file.path
-            if USE_DISTANT_ENCODING_TRANSCODING:
+            if USE_REMOTE_ENCODING_TRANSCODING:
                 start_transcripting_task.delay(
                     video_to_encode.id, mp3filepath, video_to_encode.duration, lang
                 )
@@ -139,6 +142,8 @@ def save_vtt_and_notify(video_to_encode, msg, webvtt):
     """Call save vtt file function and notify by mail at the end."""
     msg += saveVTT(video_to_encode, webvtt)
     change_encoding_step(video_to_encode.id, 0, "done")
+    video_to_encode.encoding_in_progress = False
+    video_to_encode.save()
     # envois mail fin transcription
     if EMAIL_ON_TRANSCRIPTING_COMPLETION:
         send_email_transcript(video_to_encode)

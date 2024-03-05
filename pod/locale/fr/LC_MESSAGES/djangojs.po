@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-31 13:17+0000\n"
+"POT-Creation-Date: 2024-03-01 13:49+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -181,7 +181,7 @@ msgstr "Une légende / sous-titre ne peut comporter plus de 80 caractères."
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Add a caption/subtitle after this one"
-msgstr "Ajouter un(e) légende/sous-titre ci-dessous"
+msgstr "Ajouter un(e) légende/sous-titre après celui-ci"
 
 #: pod/completion/static/js/caption_maker.js
 #: pod/podfile/static/podfile/js/filewidget.js

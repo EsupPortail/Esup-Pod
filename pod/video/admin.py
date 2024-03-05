@@ -20,7 +20,7 @@ from .models import Notes, AdvancedNotes, NoteComments
 from .models import ViewCount
 from .models import VideoToDelete
 from .models import VideoVersion
-from .models import Category
+from .models import Category, VideoAccessToken
 
 
 from .forms import VideoForm, VideoVersionForm
@@ -296,6 +296,7 @@ class updateOwnerAdmin(admin.ModelAdmin):
     def changelist_view(self, request, extra_context=None):
         """View for the change_video_owner admin page."""
         extra_context = extra_context or {}
+        extra_context["page_title"] = _("Change video owner")
         return super(updateOwnerAdmin, self).changelist_view(
             request, extra_context=extra_context
         )
@@ -660,14 +661,24 @@ class ViewCountAdmin(admin.ModelAdmin):
 
 
 class CategoryAdmin(admin.ModelAdmin):
+    """Admin for the Category model."""
+
     list_display = ("title", "owner", "videos_count")
     readonly_fields = ("slug",)
     # list_filter = ["owner"]
 
-    def videos_count(self, obj):
-        return len(obj.video.all())
+    def videos_count(self, obj) -> int:
+        return obj.video.all().count()
 
     videos_count.short_description = "Videos"
+
+
+class VideoAccessTokenAdmin(admin.ModelAdmin):
+    """Admin for the VideoAccessToken model."""
+
+    list_display = ("video", "token")
+    readonly_fields = ("token",)
+    autocomplete_fields = ["video"]
 
 
 admin.site.register(Channel, ChannelAdmin)
@@ -682,3 +693,4 @@ admin.site.register(NoteComments, NoteCommentsAdmin)
 admin.site.register(VideoToDelete, VideoToDeleteAdmin)
 admin.site.register(ViewCount, ViewCountAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(VideoAccessToken, VideoAccessTokenAdmin)

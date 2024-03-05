@@ -24,7 +24,7 @@
   </p>
 
   {% if records.paginator.count == 0 %}
-    <p class="alert alert-info" role="alert">{% trans 'There are no BigBlueButton sessions in progress.'%}</p>
+    <p class="alert alert-info" role="alert">{% trans "There are no BigBlueButton sessions in progress." %}</p>
   {% else %}
     {% include "bbb/live_record_list.html" %}
   {% endif %}

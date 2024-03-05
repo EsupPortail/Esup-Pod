@@ -13,7 +13,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "3.5.0"
+VERSION = "3.5.1"
 
 ##
 # Installed applications list
@@ -469,6 +469,7 @@ if locals()["DEBUG"] is True and importlib.util.find_spec("debug_toolbar") is no
     DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": "pod.settings.show_toolbar"}
 
     def show_toolbar(request):
+        """Define if Debug Toolbar must be shown."""
         return True
 
 

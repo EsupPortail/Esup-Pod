@@ -129,19 +129,12 @@ class ObsolescenceTestCase(TestCase):
     def test_check_video_date_delete(self):
         """Check that the videos deletion date complies with the settings."""
         video = Video.objects.get(id=1)
-        date1 = date(
-            date.today().year + DEFAULT_YEAR_DATE_DELETE,
-            date.today().month,
-            date.today().day,
-        )
+        date1 = date.today() + timedelta(days=DEFAULT_YEAR_DATE_DELETE * 365)
         self.assertEqual(video.date_delete, date1)
 
         video2 = Video.objects.get(id=2)
-        date2 = date(
-            date.today().year
-            + settings.ACCOMMODATION_YEARS[video2.owner.owner.affiliation],
-            date.today().month,
-            date.today().day,
+        date2 = date.today() + timedelta(
+            days=settings.ACCOMMODATION_YEARS[video2.owner.owner.affiliation] * 365
         )
         self.assertEqual(video2.date_delete, date2)
 
@@ -182,7 +175,7 @@ class ObsolescenceTestCase(TestCase):
         self.assertTrue(video7 in list_video["other"]["7"])
         print("--->  test_obsolete_video of ObsolescenceTestCase: OK")
 
-    def test_delete_video(self):
+    def test_delete_obsolete_video(self):
         """Check that obsolete videos are deleted."""
         from pod.video.management.commands import check_obsolete_videos
 
@@ -239,7 +232,7 @@ class ObsolescenceTestCase(TestCase):
         fd.close()
         self.assertEqual(n, 2)
 
-        print("--->  test_obsolete_video of ObsolescenceTestCase: OK")
+        print("--->  test_delete_obsolete_video of ObsolescenceTestCase: OK")
 
     def tearDown(self):
         """Cleanup all created stuffs."""

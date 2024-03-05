@@ -1,3 +1,5 @@
+"""Esup-Pod dressing urls."""
+
 from django.urls import path
 from pod.dressing.views import video_dressing, my_dressings, dressing_edit
 from pod.dressing.views import dressing_create, dressing_delete

@@ -15,7 +15,7 @@ class ExternalRecordingTestCase(TestCase):
     """
 
     def setUp(self):
-        """Setup for the recordings."""
+        """Set up for the recordings."""
         user = User.objects.create(username="pod")
         ExternalRecording.objects.create(
             id=1,

@@ -75,7 +75,7 @@ if getattr(settings, "USE_BBB", True):
 urlpatterns = [
     url(r"dublincore/$", video_views.DublinCoreView.as_view(), name="dublincore"),
     url(
-        r"launch_encode_view/$",
+        r"^launch_encode_view/$",
         encode_views.launch_encode_view,
         name="launch_encode_view",
     ),
@@ -83,6 +83,11 @@ urlpatterns = [
         r"store_remote_encoded_video/$",
         encode_views.store_remote_encoded_video,
         name="store_remote_encoded_video",
+    ),
+    url(
+        r"store_remote_transcripted_video/$",
+        encode_views.store_remote_transcripted_video,
+        name="store_remote_transcripted_video",
     ),
     url(
         r"accessgroups_set_users_by_name/$",

@@ -1,4 +1,4 @@
-"""Encoding video."""
+"""Esup-Pod video encoding."""
 
 import json
 import os
@@ -6,10 +6,10 @@ import time
 from webvtt import WebVTT, Caption
 import argparse
 import unicodedata
-from pod.dressing.utils import get_position_value, get_dressing_input
 
 if __name__ == "__main__":
     from encoding_utils import (
+        get_dressing_position_value,
         get_info_from_video,
         get_list_rendition,
         launch_cmd,
@@ -46,6 +46,7 @@ if __name__ == "__main__":
     )
 else:
     from .encoding_utils import (
+        get_dressing_position_value,
         get_info_from_video,
         get_list_rendition,
         launch_cmd,
@@ -174,9 +175,12 @@ class Encoding_video:
     error_encoding = False
     cutting_start = 0
     cutting_stop = 0
-    dressing = None
+    json_dressing = None
+    dressing_input = ""
 
-    def __init__(self, id=0, video_file="", start=0, stop=0, dressing=None):
+    def __init__(
+        self, id=0, video_file="", start=0, stop=0, json_dressing=None, dressing_input=""
+    ):
         """Initialize a new Encoding_video object."""
         self.id = id
         self.video_file = video_file
@@ -199,9 +203,10 @@ class Encoding_video:
         self.error_encoding = False
         self.cutting_start = start or 0
         self.cutting_stop = stop or 0
-        self.dressing = dressing or None
+        self.json_dressing = json_dressing
+        self.dressing_input = dressing_input
 
-    def is_video(self):
+    def is_video(self) -> bool:
         """Check if current encoding correspond to a video."""
         return len(self.list_video_track) > 0
 
@@ -287,7 +292,7 @@ class Encoding_video:
                 language = stream.get("tags").get("language", "")
             self.list_subtitle_track["%s" % stream.get("index")] = {"language": language}
 
-    def get_output_dir(self):
+    def get_output_dir(self) -> str:
         dirname = os.path.dirname(self.video_file)
         return os.path.join(dirname, "%04d" % int(self.id))
 
@@ -297,7 +302,7 @@ class Encoding_video:
             os.makedirs(output_dir)
         self.output_dir = output_dir
 
-    def get_mp4_command(self):
+    def get_mp4_command(self) -> str:
         mp4_command = "%s " % FFMPEG_CMD
         list_rendition = get_list_rendition()
         # remove rendition if encode_mp4 == False
@@ -358,7 +363,7 @@ class Encoding_video:
                 self.list_mp4_files[rend] = output_file
         return mp4_command
 
-    def get_hls_command(self):
+    def get_hls_command(self) -> str:
         hls_command = "%s " % FFMPEG_CMD
         list_rendition = get_list_rendition()
         hls_command += FFMPEG_INPUT % {
@@ -393,15 +398,15 @@ class Encoding_video:
                 self.list_hls_files[rend] = output_file
         return hls_command
 
-    def get_dressing_file(self):
+    def get_dressing_file(self) -> str:
         """Create or replace the dressed video file."""
         dirname = os.path.dirname(self.video_file)
         filename, ext = os.path.splitext(os.path.basename(self.video_file))
         output_file = os.path.join(dirname, filename + "_dressing" + ext)
         return output_file
 
-    def get_dressing_command(self):
-        """Get the command based on the dressing object parameters"""
+    def get_dressing_command(self) -> str:
+        """Get the command based on the dressing object parameters."""
         height = str(list(self.list_video_track.items())[0][1]["height"])
         order_opening_credits = 0
         dressing_command_params = "[vid][0:a]"
@@ -412,7 +417,7 @@ class Encoding_video:
             "nb_threads": FFMPEG_NB_THREADS,
         }
 
-        dressing_command += get_dressing_input(self.dressing, FFMPEG_DRESSING_INPUT)
+        dressing_command += self.dressing_input
         dressing_command_filter = []
         dressing_command_filter.append(
             FFMPEG_DRESSING_SCALE
@@ -422,21 +427,26 @@ class Encoding_video:
                 "name": "vid",
             }
         )
-        if self.dressing.watermark:
+        if self.json_dressing["watermark"]:
             dressing_command_params = "[video][0:a]"
             order_opening_credits = order_opening_credits + 1
             name_out = ""
-            if self.dressing.opening_credits or self.dressing.ending_credits:
+            if (
+                self.json_dressing["opening_credits"]
+                or self.json_dressing["ending_credits"]
+            ):
                 name_out = "[video]"
             dressing_command_filter.append(
                 FFMPEG_DRESSING_WATERMARK
                 % {
-                    "opacity": self.dressing.opacity / 100.0,
-                    "position": get_position_value(self.dressing.position, height),
+                    "opacity": self.json_dressing.opacity / 100.0,
+                    "position": get_dressing_position_value(
+                        self.json_dressing["position"], height
+                    ),
                     "name_out": name_out,
                 }
             )
-        if self.dressing.opening_credits:
+        if self.json_dressing["opening_credits"]:
             order_opening_credits = order_opening_credits + 1
             number_concat = number_concat + 1
             dressing_command_params = (
@@ -450,7 +460,7 @@ class Encoding_video:
                     "name": "debut",
                 }
             )
-        if self.dressing.ending_credits:
+        if self.json_dressing["ending_credits"]:
             number_concat = number_concat + 1
             dressing_command_params = (
                 dressing_command_params
@@ -466,7 +476,7 @@ class Encoding_video:
                     "name": "fin",
                 }
             )
-        if self.dressing.opening_credits or self.dressing.ending_credits:
+        if self.json_dressing["opening_credits"] or self.json_dressing["ending_credits"]:
             dressing_command_filter.append(
                 FFMPEG_DRESSING_CONCAT
                 % {
@@ -479,7 +489,7 @@ class Encoding_video:
             "filter": ";".join(dressing_command_filter),
         }
 
-        if self.dressing.opening_credits or self.dressing.ending_credits:
+        if self.json_dressing["opening_credits"] or self.json_dressing["ending_credits"]:
             dressing_command += " -map '[v]' -map '[a]' "
 
         output_file = self.get_dressing_file()
@@ -498,6 +508,7 @@ class Encoding_video:
         self.video_file = self.get_dressing_file()
 
     def encode_video_part(self):
+        """Encode the video part of a file."""
         mp4_command = self.get_mp4_command()
         return_value, return_msg = launch_cmd(mp4_command)
         self.add_encoding_log("mp4_command", mp4_command, return_value, return_msg)
@@ -534,7 +545,7 @@ class Encoding_video:
         livestream_file.write(livestream_content.replace("\n\n", "\n"))
         livestream_file.close()
 
-    def get_mp3_command(self):
+    def get_mp3_command(self) -> str:
         mp3_command = "%s " % FFMPEG_CMD
         mp3_command += FFMPEG_INPUT % {
             "input": self.video_file,
@@ -549,7 +560,7 @@ class Encoding_video:
         self.list_mp3_files[FFMPEG_AUDIO_BITRATE] = output_file
         return mp3_command
 
-    def get_m4a_command(self):
+    def get_m4a_command(self) -> str:
         m4a_command = "%s " % FFMPEG_CMD
         m4a_command += FFMPEG_INPUT % {
             "input": self.video_file,
@@ -565,6 +576,7 @@ class Encoding_video:
         return m4a_command
 
     def encode_audio_part(self):
+        """Encode the audio part of a video."""
         mp3_command = self.get_mp3_command()
         return_value, return_msg = launch_cmd(mp3_command)
         self.add_encoding_log("mp3_command", mp3_command, return_value, return_msg)
@@ -576,7 +588,7 @@ class Encoding_video:
             return_value, return_msg = launch_cmd(m4a_command)
             self.add_encoding_log("m4a_command", m4a_command, return_value, return_msg)
 
-    def get_extract_thumbnail_command(self):
+    def get_extract_thumbnail_command(self) -> str:
         thumbnail_command = "%s " % FFMPEG_CMD
         thumbnail_command += FFMPEG_INPUT % {
             "input": self.video_file,
@@ -591,7 +603,7 @@ class Encoding_video:
             self.list_thumbnail_files[img] = output_file
         return thumbnail_command
 
-    def get_create_thumbnail_command(self):
+    def get_create_thumbnail_command(self) -> str:
         thumbnail_command = "%s " % FFMPEG_CMD
         first_item = self.get_first_item()
         input_file = self.list_mp4_files[first_item[0]]
@@ -614,7 +626,7 @@ class Encoding_video:
         return thumbnail_command
 
     def get_first_item(self):
-        """get the first mp4 render from setting"""
+        """Get the first mp4 render from setting."""
         list_rendition = get_list_rendition()
         for rend in list_rendition.copy():
             if list_rendition[rend]["encode_mp4"] is False:
@@ -720,7 +732,7 @@ class Encoding_video:
         if self.is_video() and self.duration >= 10:
             self.create_overview()
 
-    def get_extract_subtitle_command(self):
+    def get_extract_subtitle_command(self) -> str:
         subtitle_command = "%s " % FFMPEG_CMD
         subtitle_command += FFMPEG_INPUT % {
             "input": self.video_file,
@@ -747,14 +759,12 @@ class Encoding_video:
     def export_to_json(self):
         data_to_dump = {}
         for attribute, value in self.__dict__.items():
-            if attribute == "dressing" and value is not None:
-                data_to_dump[attribute] = value.to_json()
-            else:
-                data_to_dump[attribute] = value
+            data_to_dump[attribute] = value
         with open(self.output_dir + "/info_video.json", "w") as outfile:
             json.dump(data_to_dump, outfile, indent=2)
 
     def add_encoding_log(self, title, command, result, msg):
+        """Add Encoding step to the encoding_log dict."""
         self.encoding_log[title] = {"command": command, "result": result, "msg": msg}
         if result is False and self.error_encoding is False:
             self.error_encoding = True
@@ -763,7 +773,7 @@ class Encoding_video:
         self.start = time.ctime()
         self.create_output_dir()
         self.get_video_data()
-        if self.dressing is not None:
+        if self.json_dressing is not None:
             self.encode_video_dressing()
         print(self.id, self.video_file, self.duration)
         if self.is_video():
@@ -777,7 +787,7 @@ class Encoding_video:
         self.export_to_json()
 
 
-def fix_input(input):
+def fix_input(input) -> str:
     filename = ""
     if args.input.startswith("/"):
         path_file = args.input

@@ -1,3 +1,12 @@
+/**
+ * Esup-Pod Infinite scroll script
+ */
+
+/* Read-only Globals defined in utils-playlist.js */
+/*
+  global preventRefreshButton
+*/
+
 // this function (isFooterInView) is not used elsewhere
 /*
 function isFooterInView() {
@@ -38,7 +47,7 @@ function detect_visibility() {
 */
 
 const isElementXPercentInViewport = function () {
-  percentVisible = 95;
+  const percentVisible = 95;
   var footer = document.querySelector(
     "footer.container-fluid.pod-footer-container",
   );
@@ -69,9 +78,8 @@ class InfiniteLoader {
     this.callBackBeforeLoad = callBackBeforeLoad;
     this.callBackAfterLoad = callBackAfterLoad;
     this.url = url;
-    this.scroller_init = (e) => {
-      if (document.body.getBoundingClientRect().top > this.scrollPos) {
-      } else {
+    this.scroller_init = () => {
+      if (document.body.getBoundingClientRect().top <= this.scrollPos) {
         if (isElementXPercentInViewport()) {
           if (
             this.nextPage &&
@@ -107,6 +115,13 @@ class InfiniteLoader {
         }
       }
       this.callBackAfterLoad();
+      /* Refresh Bootstrap tooltips after load */
+      const tooltipTriggerList = document.querySelectorAll(
+        '[data-bs-toggle="tooltip"], [data-pod-tooltip="true"]',
+      );
+      [...tooltipTriggerList].map(
+        (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
+      );
     });
   }
 
