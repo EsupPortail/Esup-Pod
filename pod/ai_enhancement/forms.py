@@ -26,11 +26,11 @@ strings = {
         "ai_information": _("The tags proposed by the Aristote AI is loading..."),
     },
     "discipline": {
-        "choose_information_string": _("Choose the description"),
-        "initial_information": _("The initial description is loading..."),
-        "initial_information_t": _("Your initial description"),
-        "ai_information": _("The description proposed by the Aristote AI is loading..."),
-        "ai_information_t": _("The description proposed by the Aristote AI"),
+        "choose_information_string": _("Choose the discipline"),
+        "initial_information": _("The initial discipline is loading..."),
+        "initial_information_t": _("Your initial discipline"),
+        "ai_information": _("The discipline proposed by the Aristote AI is loading..."),
+        "ai_information_t": _("The discipline proposed by the Aristote AI"),
     },
 }
 

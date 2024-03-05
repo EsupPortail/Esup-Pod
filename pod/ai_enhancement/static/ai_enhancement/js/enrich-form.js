@@ -18,7 +18,9 @@ const TAGS_PER_LINE = 10;
  * @return {string} The decoded string.
  */
 function decodeString(str) {
-  return str.replace(/&#x([0-9A-Fa-f]+);/g, (match, p1) => String.fromCharCode(parseInt(p1, 16)));
+  str = str.replace(/&#x([0-9A-Fa-f]+);/g, (match, p1) => String.fromCharCode(parseInt(p1, 16)));
+  str = str.replace(/&#(\d+);/g, (match, p1) => String.fromCharCode(parseInt(p1, 10)));
+  return str;
 }
 
 
@@ -148,7 +150,7 @@ function addTagsElements(tags, input) {
  */
 function setInformationOrEmptyString(element, value, message) {
   if (value.length > 0) {
-    element.children[0].textContent = decodeString(value);
+    element.children[0].innerHTML = decodeString(value);
   } else {
     element.children[0].textContent = gettext(message);
     element.children[0].style.color = 'grey';
