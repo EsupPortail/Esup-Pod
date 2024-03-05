@@ -16,7 +16,7 @@ from pod.ai_enhancement.utils import AristoteAI, enrichment_is_already_asked
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.views import in_maintenance
 from pod.podfile.models import UserFolder
-from pod.video.models import Video
+from pod.video.models import Video, Discipline
 
 AI_ENRICHMENT_CLIENT_ID = getattr(settings, "AI_ENRICHMENT_CLIENT_ID", "mocked_id")
 AI_ENRICHMENT_CLIENT_SECRET = getattr(settings, "AI_ENRICHMENT_CLIENT_SECRET", "mocked_secret")
@@ -137,7 +137,16 @@ def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
     if request.method == "POST":
         form = AIEnrichmentChoice(request.POST, instance=video)
         if form.is_valid():
+            print(form.cleaned_data["disciplines"])
+            print("===== get_object_or_404(Discipline, title=form.cleaned_data['disciplines']) =====")
+            disciplines = video.discipline.all()
             form.save()
+            discipline = get_object_or_404(Discipline, title=form.cleaned_data["disciplines"])
+            for dis in disciplines:
+                video.discipline.add(dis)
+            video.discipline.add(discipline)
+            video.save()
+            video = form.instance
             return redirect(reverse("ai_enhancement:enrich_subtitles", args=[video.slug]) + '?generated=true')
         else:
             return render(
