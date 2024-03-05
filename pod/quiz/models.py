@@ -171,6 +171,9 @@ class UniqueChoiceQuestion(Question):
     choices = models.JSONField(
         verbose_name=_("Choices"),
         default=dict,
+        help_text=_(
+            "Choices must be like this: {'choice 1': true, 'choice 2': false, ...} | true for the right choice, false for the wrong choices"
+        ),
     )
 
     class Meta:

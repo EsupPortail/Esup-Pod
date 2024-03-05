@@ -234,6 +234,7 @@ def delete_quiz(request, video_slug: str):
         },
     )
 
+
 # EDIT
 
 
@@ -246,9 +247,7 @@ def edit_quiz(request, video_slug: str):
     if not (
         request.user.is_superuser or request.user.is_staff or request.user == video.owner
     ):
-        messages.add_message(
-            request, messages.ERROR, _("You cannot edit this quiz.")
-        )
+        messages.add_message(request, messages.ERROR, _("You cannot edit this quiz."))
         raise PermissionDenied
 
     quiz = get_object_or_404(Quiz, video=video)
@@ -258,22 +257,27 @@ def edit_quiz(request, video_slug: str):
             request, video, question_formset_factory, quiz=quiz
         )
     else:
-        quiz_form = QuizForm(initial={
-            'connected_user_only': quiz.connected_user_only,
-            'show_correct_answers': quiz.show_correct_answers,
-        })
+        quiz_form = QuizForm(
+            initial={
+                "connected_user_only": quiz.connected_user_only,
+                "show_correct_answers": quiz.show_correct_answers,
+            }
+        )
 
         existing_questions = quiz.get_questions()
 
         question_formset = question_formset_factory(
             prefix="questions",
-            initial=[{
-                'type': question.get_type(),
-                'title': question.title,
-                'explanation': question.explanation,
-                'start_timestamp': question.start_timestamp,
-                'end_timestamp': question.end_timestamp,
-            } for question in existing_questions]
+            initial=[
+                {
+                    "type": question.get_type(),
+                    "title": question.title,
+                    "explanation": question.explanation,
+                    "start_timestamp": question.start_timestamp,
+                    "end_timestamp": question.end_timestamp,
+                }
+                for question in existing_questions
+            ],
         )
 
     return render(
