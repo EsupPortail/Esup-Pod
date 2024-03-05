@@ -3,12 +3,12 @@
 import os
 import re
 import time
+import uuid
 from typing import Optional
 import unicodedata
 import json
 import logging
 import hashlib
-import datetime
 
 from django.db import models
 from django.conf import settings
@@ -230,11 +230,8 @@ def get_transcription_choices():
 
 
 def default_date_delete():
-    return date(
-        date.today().year + DEFAULT_YEAR_DATE_DELETE,
-        date.today().month,
-        date.today().day,
-    )
+    """Get the default deletion date."""
+    return date.today() + timezone.timedelta(days=DEFAULT_YEAR_DATE_DELETE * 365)
 
 
 def select_video_owner():
@@ -889,12 +886,9 @@ class Video(models.Model):
             # fix date_delete depends of owner affiliation
             ACCOMMODATION_YEARS = getattr(settings, "ACCOMMODATION_YEARS", {})
             if len(ACCOMMODATION_YEARS) and len(self.owner.owner.affiliation):
-                new_year = self.get_date_delete_for_affiliation(ACCOMMODATION_YEARS)
-                self.date_delete = date(
-                    date.today().year + new_year,
-                    date.today().month,
-                    date.today().day,
-                )
+                add_year = self.get_date_delete_for_affiliation(ACCOMMODATION_YEARS)
+                self.date_delete = date.today() + timezone.timedelta(days=add_year * 365)
+
         # Modifying existing Video
         else:
             newid = self.id
@@ -1125,7 +1119,7 @@ class Video(models.Model):
     def get_viewcount(self, from_nb_day=0):
         """Get the view counter of a video."""
         if from_nb_day > 0:
-            d = datetime.date.today() - timezone.timedelta(days=from_nb_day)
+            d = date.today() - timezone.timedelta(days=from_nb_day)
             set = self.viewcount_set.filter(date__gte=d)
         else:
             set = self.viewcount_set.all()
@@ -1397,7 +1391,7 @@ class Video(models.Model):
                     self.type.title,
                     ", ".join(
                         self.discipline.all()
-                        .filter(sites=current_site)
+                        .filter(site=current_site)
                         .values_list("title", flat=True)
                     ),
                 ),
@@ -1834,3 +1828,18 @@ class Category(models.Model):
         ordering = ["title", "id"]
         verbose_name = _("Category")
         verbose_name_plural = _("Categories")
+
+
+class VideoAccessToken(models.Model):
+    """Video access token model."""
+
+    video = models.ForeignKey(Video, on_delete=models.CASCADE)
+    token = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    class Meta:
+        """Video access token Metadata."""
+
+        ordering = ["video", "token"]
+        verbose_name = _("Video access token")
+        verbose_name_plural = _("Video access tokens")
+        unique_together = ["video", "token"]
