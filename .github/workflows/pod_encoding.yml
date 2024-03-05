@@ -80,11 +80,10 @@ jobs:
             echo "🍏 Docker is UP ${{ job.status }}."
             docker exec pod-back-with-volumes ps auxf
         - name: run test in docker
-          run: docker exec pod-back-with-volumes coverage run --source='.' manage.py test_encode_transcript
+          run: docker exec -it pod-back-with-volumes coverage run --source='.' manage.py test_encode_transcript
         - name: Send coverage to coveralls.io
           run:
-            docker exec pod-back-with-volumes export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-            docker exec pod-back-with-volumes coveralls  --service=github
+            docker exec -it -e GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} pod-back-with-volumes coveralls  --service=github
         - name: Stop containers
           if: always()
           run: docker-compose -f ./docker-compose-full-dev-with-volumes.yml down
