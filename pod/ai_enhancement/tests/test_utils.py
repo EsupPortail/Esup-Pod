@@ -3,7 +3,7 @@ from unittest.mock import patch
 from django.test import TestCase
 from requests import Response
 
-from pod.ai_enhancement.utils import AristoteAI
+from pod.ai_enhancement.utils import AristoteAI, extract_json_from_str
 from pod.video.models import Discipline
 
 
@@ -293,3 +293,26 @@ class AristoteAITestCase(TestCase):
         result = aristote_ai.get_specific_enrichment_version("mocked_enrichment_id", "mocked_version_id")
         self.assertEqual(result, mock_response)
         print(" --->  test_get_specific_enrichment_version__failure ok")
+
+    def test_extract_json_from_str__valid_json(self):
+        """Test the extract_json_from_str function with a valid JSON string."""
+        content_to_extract = "This is some text {\"key\": \"value\"} and more text."
+        result = extract_json_from_str(content_to_extract)
+        self.assertEqual(result, {"key": "value"})
+        print(" --->  test_extract_json_from_str__valid_json ok")
+
+    def test_extract_json_from_str__invalid_json(self):
+        """Test the extract_json_from_str function with an invalid JSON string."""
+        content_to_extract = "This is some text {\"key\": \"value\" and more text."
+        result = extract_json_from_str(content_to_extract)
+        expected_result = {"error": "JSONDecodeError: The string is not a valid JSON string."}
+        self.assertEqual(result, expected_result)
+        print(" --->  test_extract_json_from_str__invalid_json ok")
+
+    def test_extract_json_from_str__no_json(self):
+        """Test the extract_json_from_str function with a string without JSON content."""
+        content_to_extract = "This is some text without JSON content."
+        result = extract_json_from_str(content_to_extract)
+        expected_result = {"error": "JSONDecodeError: The string is not a valid JSON string."}
+        self.assertEqual(result, expected_result)
+        print(" --->  test_extract_json_from_str__no_json ok")
