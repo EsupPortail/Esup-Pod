@@ -547,11 +547,10 @@ def dashboard(request):
 
     if USER_VIDEO_CATEGORY:
         categories = Category.objects.prefetch_related("video").filter(owner=request.user)
-        if request.GET.get("category") is not None:
-            category_checked = request.GET.get("category")
-            videos_list = get_object_or_404(
-                Category, slug=category_checked, owner=request.user
-            ).video.all()
+        if len(request.GET.getlist("categories")):
+            categories_checked = request.GET.getlist("categories")
+            categories_videos = categories.filter(slug__in=categories_checked).values_list("video", flat=True)
+            videos_list = videos_list.filter(pk__in=categories_videos)
 
         data_context["categories"] = categories
 
@@ -2488,7 +2487,7 @@ def get_videos(p_slug, target, p_slug_t=None):
     return (videos, title)
 
 
-def get_videos_for_owner(request) -> dict:
+def get_videos_for_owner(request):
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
     videos_list = request.user.video_set.all().filter(

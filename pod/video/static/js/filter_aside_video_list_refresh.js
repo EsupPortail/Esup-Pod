@@ -174,11 +174,11 @@ function getUrlForRefresh() {
   if (urlVideos === "/video/dashboard/" && displayMode !== undefined) {
     newUrl += "display_mode=" + displayMode + "&";
   }
-  // Add category checked if exists
+  // Add categories checked if exists
   if (document.querySelectorAll(".categories_list_item.active").length !== 0) {
-    checkedCategory = document.querySelector(".categories_list_item.active")
-      .firstElementChild["dataset"]["slug"];
-    newUrl += "category=" + checkedCategory + "&";
+    Array.from(document.querySelectorAll(".categories_list_item.active")).forEach((cat) => {
+      newUrl += "categories=" + cat.firstElementChild["dataset"]["slug"] + "&";
+    });
   }
   // Add all other parameters (filters)
   checkedInputs.forEach((input) => {
