@@ -2,6 +2,37 @@
     {
         "configuration_apps": {
             "description": {
+                "ai_enhancement": {
+                    "description": {
+                        "en": [
+                            "AI Enhancement app to be able to use artificial intelligence enhancements.",
+                            "Set `USE_AI_ENHANCEMENT` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application AI Enhancement pour pouvoir utiliser les améliorations de l'intelligence artifficielle.",
+                            "Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "USE_AI_ENHANCEMENT": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of artificial intelligence enhancements. Allows users to use it."
+                                ],
+                                "fr": [
+                                    "Activation des améliorations de l'intelligence artificielle. Permet aux utilisateurs de l'utiliser."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "5.2"
+                        }
+                    },
+                    "title": {
+                        "en": "AI Enhancement application configuration",
+                        "fr": "Configuration application AI Enhancement"
+                    }
+                },
                 "authentication": {
                     "description": {},
                     "settings": {
