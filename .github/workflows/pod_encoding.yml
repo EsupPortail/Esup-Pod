@@ -59,6 +59,7 @@ jobs:
             echo PYTHON_TAG=$PYTHON_TAG >> .env.dev
             echo REDIS_TAG=$REDIS_TAG >> .env.dev
             echo DOCKER_ENV=full >> .env.dev
+            echo GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}  >> .env.dev
             echo GECKODRIVER_VER=v0.29.0
             echo FIREFOX_VER=87.0
         - name: cat env
@@ -81,6 +82,11 @@ jobs:
             docker exec pod-back-with-volumes ps auxf
         - name: run test in docker
           run: docker exec pod-back-with-volumes coverage run --source='.' manage.py test_encode_transcript
+        - name: Send coverage to coveralls.io
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          run:
+            docker exec pod-back-with-volumes coveralls  --service=github
         - name: Stop containers
           if: always()
           run: docker-compose -f ./docker-compose-full-dev-with-volumes.yml down
