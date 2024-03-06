@@ -108,7 +108,6 @@ def enrich_video_json(request: WSGIRequest, video_slug: str) -> HttpResponse:
 @csrf_protect
 def enrich_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
     """The view to enrich the subtitles of a video."""
-    # AIEnrichment.objects.filter(video=video).delete()
     video = get_object_or_404(Video, slug=video_slug, sites=get_current_site(request))
     video_folder, created = UserFolder.objects.get_or_create(
         name=video.slug,
@@ -128,7 +127,7 @@ def enrich_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
                     # "ai_enrichment": enrichment,
                 },
             )
-        return redirect(reverse("video:video", args=[video.slug]))
+    AIEnrichment.objects.filter(video=video).delete()
     return redirect(reverse("video:video", args=[video.slug]))
 
 
