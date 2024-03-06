@@ -140,10 +140,11 @@ def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
         if form.is_valid():
             disciplines = video.discipline.all()
             form.save()
-            discipline = get_object_or_404(Discipline, title=form.cleaned_data["disciplines"])
+            discipline = Discipline.objects.filter(title=form.cleaned_data["disciplines"]).first()
             for dis in disciplines:
                 video.discipline.add(dis)
-            video.discipline.add(discipline)
+            if discipline in Discipline.objects.all():
+                video.discipline.add(discipline)
             video.save()
             video = form.instance
             aristote = AristoteAI(AI_ENRICHMENT_CLIENT_ID, AI_ENRICHMENT_CLIENT_SECRET)
