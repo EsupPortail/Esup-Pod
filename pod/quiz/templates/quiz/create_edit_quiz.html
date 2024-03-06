@@ -49,11 +49,13 @@
     {{ question_formset.management_form }}
     <div id="question-form-list">
       {% for question_form in question_formset %}
-        {% include "quiz/question_form.html" with form=question_form %}
+        {% with form_index=forloop.counter0 %}
+          {% include "quiz/question_form.html" with form=question_form form_index=form_index %}
+        {% endwith %}
       {% endfor %}
     </div>
     <div id='empty-form' class="d-none">
-      {% include "quiz/question_form.html" with form=question_formset.empty_form %}
+      {% include "quiz/question_form.html" with form=question_formset.empty_form form_index="__prefix__" %}
     </div>
 
     <button id="add-question" type="button" class="btn btn-primary">{% trans "Add a question" %}</button>
@@ -71,5 +73,12 @@
 {% block page_aside %}{% endblock page_aside %}
 
 {% block more_script %}
+  <script>
+    {% if initial_data %}
+      const initialData = JSON.parse('{{ initial_data|escapejs }}');
+    {% else %}
+      const initialData = null;
+    {% endif %}
+  </script>
   <script src="{% static 'quiz/js/create-quiz.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}

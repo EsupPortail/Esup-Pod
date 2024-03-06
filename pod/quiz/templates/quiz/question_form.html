@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<div class="question-form">
+<div class="question-form" data-question-index="{{ form_index }}">
   <div class="my-4 gap-2 d-flex">
     <h2>{% trans "Question" %}</h2>
     <button class="btn btn-danger btn-small delete-question-button" type="button"><i class="bi bi-trash" aria-hidden="true"></i></button>

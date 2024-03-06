@@ -1,5 +1,6 @@
 """Esup-Pod quiz views."""
 
+import json
 from django.forms import formset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
@@ -351,6 +352,7 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         )
 
         existing_questions = quiz.get_questions()
+        initial_data = get_initial_data(existing_questions=existing_questions)
 
         question_formset = question_formset_factory(
             prefix="questions",
@@ -374,5 +376,28 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
             "quiz_form": quiz_form,
             "question_formset": question_formset,
             "video": video,
+            "initial_data": initial_data,
         },
     )
+
+
+def get_initial_data(existing_questions=None):
+    if existing_questions:
+        initial_data = {
+            "existing_questions": [
+                {
+                    "short_answer": question.answer
+                    if question.get_type() == "short_answer"
+                    else None,
+                    "long_answer": question.answer
+                    if question.get_type() == "long_answer"
+                    else None,
+                    "choices": json.loads(question.choices)
+                    if question.get_type() == "unique_choice"
+                    else None,
+                    # Ajoutez d'autres données nécessaires pour les champs JS
+                }
+                for question in existing_questions
+            ],
+        }
+    return json.dumps(initial_data)
