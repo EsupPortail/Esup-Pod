@@ -44,11 +44,9 @@ function getListSelectedVideosTitles() {
 function setListSelectedVideos(container) {
   selectedVideos = [];
   let selector = "#" + container + " .infinite-item.selected";
-  console.log(selector)
   document.querySelectorAll(selector).forEach((elt) => {
     selectedVideos.push(elt.dataset.slug);
   });
-  console.log(selectedVideos);
 }
 
 /**

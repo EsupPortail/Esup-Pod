@@ -1,10 +1,14 @@
 /**
  * Esup-Pod video category scripts.
  */
+var currentUrl;
 document.getElementById("add_category_btn").addEventListener("click", () => {
   get_category_modal(CATEGORIES_ADD_URL);
 });
 
+/**
+ * Manage categories links (edit and delete in filter aside)
+ */
 function manageCategoriesLinks(){
     Array.from(document.getElementsByClassName("edit_category_btn")).forEach((el) => {
       el.addEventListener("click", () => {
@@ -28,11 +32,21 @@ if(searchCategoriesInput){
     });
 }
 
+/**
+ * Toggle category links and filter dashboard's videos list with given categories
+ *
+ * @param el {HTMLElement} : Category link clicked
+ */
 function toggleCategoryLink(el) {
     el.parentNode.classList.toggle("active");
     refreshVideosSearch();
 }
 
+/**
+ * Manage search category input to display chosen ones
+ *
+ * @param search {string} : Search input string
+ */
 function manageSearchCategories(search){
     let categories = document.querySelectorAll(
       ".categories_list .cat_title:not(.hidden)",
@@ -51,7 +65,39 @@ function manageSearchCategories(search){
     }
 }
 
-function get_category_modal(url){
+/**
+ * Manage category videos pagination (category modal's videos list)
+ *
+ * @param el {HTMLElement} : Previous or next clicked button
+ */
+function manageCategoryVideosPagination(el){
+    let currentPage = parseInt(document.getElementById("pages_infos").dataset.currentPage);
+    if(el.dataset.pageaction === "previous"){
+        get_category_modal(currentUrl, currentPage - 1);
+    }else if(el.dataset.pageaction === "next"){
+        get_category_modal(currentUrl, currentPage + 1);
+    }
+}
+
+function managePaginationBtn(action){
+    Array.from(document.getElementsByClassName("delete_category_btn")).forEach((el) => {
+      el.addEventListener("click", () => {
+        let url_delete = getCategoriesUrl("delete", el.dataset.slug);
+        get_category_modal(url_delete);
+      });
+    });
+}
+
+/**
+ * Async call to create Add, Edit or Delete Modal for categories managment
+ *
+ * @param url {string} : Url to call (add, edit, delete)
+ * @param page {number} : Page url managment (can be null)
+ */
+function get_category_modal(url, page= null){
+    if(page){
+        url += "?page=" + page;
+    }
     fetch(url, {
     method: "GET",
     headers: {
@@ -65,15 +111,27 @@ function get_category_modal(url){
       // Parse data into html and create new modal
       let parser = new DOMParser();
       let html = parser.parseFromString(data, "text/html").body;
-      categoryModal.innerHTML = html.innerHTML;
-      new bootstrap.Modal(document.getElementById('category_modal')).toggle();
-      manageModalConfirmBtn();
+      if(page){
+          document.getElementById("category_modal_videos_list").outerHTML = html.innerHTML;
+          url = url.replaceAll(/([?]page=)(\d+)/g, "");
+      }else{
+          categoryModal.innerHTML = html.innerHTML;
+          new bootstrap.Modal(document.getElementById('category_modal')).toggle();
+          manageModalConfirmBtn();
+          managePaginationBtn();
+      }
+      currentUrl = url;
     })
     .catch(() => {
       showalert(gettext("An Error occurred while processing."), "alert-danger", "formalertdivbottomright");
     });
 }
 
+/**
+ * Async call to post Add, Edit or Delete categories
+ *
+ * @param url {string} : Url to call (add, edit, delete)
+ */
 function post_category_modal(url){
     let formData = new FormData();
     if(selectedVideos && selectedVideos.length > 0){
@@ -104,6 +162,9 @@ function post_category_modal(url){
     });
 }
 
+/**
+ * Dynamically add event listener on confirm button (Add, Edit or Delete) of category modal
+ */
 function manageModalConfirmBtn(){
     let btn = document.getElementById("confirm_category_btn");
     if(btn !== undefined && btn.dataset.action !== undefined){
@@ -116,6 +177,13 @@ function manageModalConfirmBtn(){
     }
 }
 
+/**
+ * Build and return url for Get or Post categories methods
+ *
+ * @param action {string} : Action defined "add", "edit" or "delete"
+ * @param slug {string} : Category slug given for edit or delete (can be null)
+ * @returns {string} : Returns built URL
+ */
 function getCategoriesUrl(action, slug = null){
     let url;
     switch (action){
@@ -134,6 +202,9 @@ function getCategoriesUrl(action, slug = null){
     return url
 }
 
+/**
+ * Refresh filter aside's category links after treatment
+ */
 function refreshCategoriesLinks(){
     fetch(CATEGORIES_LIST_URL, {
     method: "GET",

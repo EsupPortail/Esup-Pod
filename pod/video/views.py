@@ -11,7 +11,7 @@ from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from django.http import HttpResponseNotAllowed, HttpResponseNotFound
+from django.http import HttpResponseNotFound
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.http import QueryDict, Http404
 from django.views.decorators.csrf import csrf_protect
@@ -2920,20 +2920,27 @@ def delete_comment(request, video_slug, comment_id):
 
 
 @login_required(redirect_field_name="referrer")
-def get_videos_without_categories(request, videos_list: dict):
+def get_videos_for_category(request, videos_list: dict, category=None):
+    """
+    Get paginated videos for category modal.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        videos_list (::class::`django.http.QueryDict`): The video list.
+        category (::class::`pod.video.models.Category`): Optional category object.
+
+    Returns:
+        Return paginated videos in paginator object.
+    """
     cats = Category.objects.prefetch_related("video").filter(owner=request.user)
-    videos_without_cat = videos_list.exclude(category__in=cats)
+    videos = videos_list.exclude(category__in=cats)
+
+    if category is not None:
+        videos = list(chain(category.video.all(), videos))
 
     page = request.GET.get("page", 1)
-    full_path = ""
-    if page:
-        full_path = (
-            request.get_full_path()
-            .replace("?page=%s" % page, "")
-            .replace("&page=%s" % page, "")
-        )
 
-    paginator = Paginator(videos_without_cat, 12)
+    paginator = Paginator(videos, 12)
     paginated_videos_without_cat = get_paginated_videos(paginator, page)
 
     return paginated_videos_without_cat
@@ -2942,6 +2949,15 @@ def get_videos_without_categories(request, videos_list: dict):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def get_categories_list(request):
+    """
+    Get actual categories list for filter_aside elements.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+
+    Returns:
+        Template of categories list item in filter aside.
+    """
     data_context = {}
     categories = Category.objects.prefetch_related("video").filter(owner=request.user)
     data_context["categories"] = categories
@@ -2951,6 +2967,15 @@ def get_categories_list(request):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def add_category(request):
+    """
+    Add category managment. Get method return datas to fill the modal interface. Post method perform the insert.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+
+    Returns:
+        ::class::`django.http.HttpResponse`: The HTTP response.
+    """
     if request.method == "POST":
 
         response = {"success": False}
@@ -3004,8 +3029,18 @@ def add_category(request):
             content_type="application/json",
         )
     else:
+        data_context = {}
+
         videos_list = get_videos_for_owner(request)
-        videos = get_videos_without_categories(request, videos_list)
+        videos = get_videos_for_category(request, videos_list)
+        data_context["videos"] = videos
+
+        if request.GET.get("page"):
+            return render(
+                request,
+                "videos/category_modal_video_list.html",
+                data_context
+            )
 
         data_context = {
             "modal_action": "add",
@@ -3018,6 +3053,16 @@ def add_category(request):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def edit_category(request, c_slug=None):
+    """
+    Edit category managment. Get method return datas to fill the modal interface. Post method perform the update.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        c_slug (str): The optionnal category's slug.
+
+    Returns:
+        ::class::`django.http.HttpResponse`: The HTTP response.
+    """
     if request.method == "POST":
         response = {"success": False}
         c_user = request.user
@@ -3028,7 +3073,7 @@ def edit_category(request, c_slug=None):
         new_videos = Video.objects.filter(slug__in=videos_slugs)
 
         # constraint, video can be only in one of user's categories,
-        # excepte current category
+        # except current category
         user_cats = Category.objects.filter(owner=c_user).exclude(id=cat.id)
         v_already_in_user_cat = new_videos.filter(category__in=user_cats)
         if v_already_in_user_cat:
@@ -3074,17 +3119,27 @@ def edit_category(request, c_slug=None):
         )
     else:
         category = get_object_or_404(Category, slug=c_slug, owner=request.user)
-        category_videos = category.video.all()
+        category_videos = list(category.video.all().values_list("id", flat=True))
+
         videos_list = get_videos_for_owner(request)
-        videos_without_categories = get_videos_without_categories(request, videos_list)
-        videos = chain(videos_without_categories, category_videos)
+        videos = get_videos_for_category(request, videos_list, category)
+
+        if request.GET.get("page"):
+            return render(
+                request,
+                "videos/category_modal_video_list.html",
+                {
+                    "videos": videos,
+                    "category_videos": category_videos,
+                }
+            )
 
         data_context = {
             "modal_action": "edit",
             "modal_title": _("Edit the category") + " " + category.title,
             "videos": videos,
             "category": category,
-            "category_videos": list(category_videos.values_list("id", flat=True)),
+            "category_videos": category_videos,
         }
     return render(request, "videos/category_modal.html", data_context)
 
@@ -3092,6 +3147,16 @@ def edit_category(request, c_slug=None):
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def delete_category(request, c_slug):
+    """
+    Delete category managment. Get method return datas to fill the modal interface. Post method perform the deletion.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        c_slug (str): The category's slug.
+
+    Returns:
+        ::class::`django.http.HttpResponse`: The HTTP response.
+    """
     if request.method == "POST":
         response = {"success": False}
         c_user = request.user  # connected user

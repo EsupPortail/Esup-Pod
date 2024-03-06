@@ -23,28 +23,7 @@
         <div class="form-group mt-3">
           <p class="form-label">{% trans "Check the videos to add in the category" %}</p>
 
-          <div class="row infinite-modal-container category_modal_videos_list" id="category_modal_videos_list">
-            {% for video in videos %}
-              <div data-slug="{{ video.slug }}"
-                   onclick="toggleSelectedVideo(this,'category_modal_videos_list')" onkeydown="toggleSelectedVideo(this,'category_modal_videos_list')"
-                   class="infinite-item col-12 col-md-6 col-lg-3 mb-2
-                    {% if video.id in category_videos %}selected{% endif %}">
-                {% include "videos/card_select.html" with category_modal="True" %}
-              </div>
-            {% endfor %}
-            <!-- Paginator -->
-            <nav class="paginator">
-              <div class="paginator-content">
-                <button class="btn btn-lg btn-link previous_content" id="previous_content" title="{% trans 'Previous page' %}" role="nav">
-                  <i class="bi bi-arrow-left-circle-fill"></i>
-                </button>
-                <span class="pages_infos" id="pages_infos"> </span>
-                <button class="btn btn-lg btn-link next_content" id="next_content" title="{% trans 'Next page' %}">
-                  <i class="bi bi-arrow-right-circle-fill"></i>
-                </button>
-              </div>
-            </nav>
-          </div>
+          {% include "videos/category_modal_video_list.html" %}
         </div>
 
         {% else %}

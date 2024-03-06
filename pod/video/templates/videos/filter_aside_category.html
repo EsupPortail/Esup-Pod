@@ -17,7 +17,6 @@
       <label for="searchCategoriesInput" class="form-label">{% trans "Search" %}</label>
       <input id="searchCategoriesInput" type="text" class="form-control" placeholder="{% trans 'Type at least 3 chars to filter categories' %}">
     </div>
-    {% include 'loader.html' with loaderid="categoriesListLoader" %}
     <div class="form-group navList categories" id="collapseFilterCategory">
       <ul id="categories_list" class="categories_list">
         {% include "videos/filter_aside_categories_list.html" %}
