@@ -110,11 +110,17 @@
             <!-- THEME SECTION -->
             <section class="theme-section">
                 <p class="theme-count">
-                    {% if count_themes > 0 %}
-                    {% blocktrans count counter=count_themes %}{{ counter }} theme found for this channel{% plural %}{{ counter }} themes found for this channel{% endblocktrans %}
-                    -
+                    {% if not parent_title %}
+                      {% if count_themes > 0 %}
+                        {% blocktrans count counter=count_themes %}{{ counter }} theme found for this channel{% plural %}{{ counter }} themes found for this channel{% endblocktrans %}
+                        -
+                      {% endif %}
+                      {% blocktrans count counter=channel.video_count %}{{counter}} video for this channel{% plural %}{{counter}} videos for this channel{% endblocktrans %}
+                    {% else %}
+                      {% if count_themes > 0 %}
+                        {% blocktrans count counter=count_themes %}{{ counter }} subtheme found for this theme{% plural %}{{ counter }} subthemes found for this theme{% endblocktrans %}
+                      {% endif %}
                     {% endif %}
-                    {% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}
                 </p>
                 {% if theme_children|length %}
                     <div class="scroll_wrapper">
