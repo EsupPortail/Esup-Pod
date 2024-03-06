@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-01 13:49+0100\n"
+"POT-Creation-Date: 2024-03-06 15:20+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -15,6 +15,302 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.4\n"
+
+#: pod/ai_enhancement/forms.py
+#, fuzzy
+#| msgid "Choose File"
+msgid "Choose the title"
+msgstr "Choisissez un fichier"
+
+#: pod/ai_enhancement/forms.py
+msgid "The initial title is loading..."
+msgstr "Le titre initial est en cours de chargement..."
+
+#: pod/ai_enhancement/forms.py
+msgid "Your initial title"
+msgstr "Votre titre initial"
+
+#: pod/ai_enhancement/forms.py
+msgid "The title proposed by the Aristote AI is loading..."
+msgstr "Le titre proposé par l’IA Aristote est en cours de chargement..."
+
+#: pod/ai_enhancement/forms.py
+msgid "The title proposed by the Aristote AI"
+msgstr "Le titre proposé par l’IA Aristote"
+
+#: pod/ai_enhancement/forms.py
+msgid "Choose the description"
+msgstr "Choisissez une description"
+
+#: pod/ai_enhancement/forms.py
+msgid "The initial description is loading..."
+msgstr "La description initiale est en cours de chargement..."
+
+#: pod/ai_enhancement/forms.py
+msgid "Your initial description"
+msgstr "Votre description initiale"
+
+#: pod/ai_enhancement/forms.py
+msgid "The description proposed by the Aristote AI is loading..."
+msgstr "La description proposée par l’IA Aristote est en cours de chargement..."
+
+#: pod/ai_enhancement/forms.py
+msgid "The description proposed by the Aristote AI"
+msgstr "La description proposée par l’IA Aristote"
+
+#: pod/ai_enhancement/forms.py
+msgid "Choose the tags"
+msgstr "Choisissez des mots clés"
+
+#: pod/ai_enhancement/forms.py
+msgid "The tags proposed by the Aristote AI is loading..."
+msgstr "Les mots clés proposés par l’IA Aristote sont en cours de chargement..."
+
+#: pod/ai_enhancement/forms.py
+msgid "Choose the discipline"
+msgstr "Choisissez une discipline"
+
+#: pod/ai_enhancement/forms.py
+msgid "The initial discipline is loading..."
+msgstr "La discipline initiale est en cours de chargement..."
+
+#: pod/ai_enhancement/forms.py
+msgid "Your initial discipline"
+msgstr "Votre discipline initiale"
+
+#: pod/ai_enhancement/forms.py
+msgid "The discipline proposed by the Aristote AI is loading..."
+msgstr "La discipline proposée par l’IA Aristote est en cours de chargement..."
+
+#: pod/ai_enhancement/forms.py
+msgid "The discipline proposed by the Aristote AI"
+msgstr "La discipline proposée par l’IA Aristote"
+
+#: pod/ai_enhancement/forms.py pod/chapter/templates/chapter/list_chapter.html
+#: pod/completion/models.py pod/completion/templates/overlay/list_overlay.html
+#: pod/dressing/models.py pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+#: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
+#: pod/main/models.py pod/main/views.py pod/playlist/forms.py
+#: pod/playlist/models.py pod/video/models.py
+#: pod/video/templates/channel/list_theme.html
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Title"
+msgstr "Titre"
+
+#: pod/ai_enhancement/forms.py
+#, fuzzy
+#| msgid "Please choose a title between 1 and 250 characters."
+msgid ""
+"\n"
+"            Please choose a title between 1 and 250 characters.\n"
+"        "
+msgstr "Veuillez entrer un titre contenant entre 1 et 250 caractères."
+
+#: pod/ai_enhancement/forms.py pod/live/models.py pod/main/forms.py
+#: pod/main/models.py pod/playlist/forms.py pod/playlist/models.py
+#: pod/video/forms.py pod/video/models.py
+#: pod/video/templates/channel/list_theme.html
+#: pod/video/templates/videos/dashboard.html
+msgid "Description"
+msgstr "Description"
+
+#: pod/ai_enhancement/forms.py
+msgid "Please choose a description."
+msgstr "Veuillez choisir une description."
+
+#: pod/ai_enhancement/forms.py
+#, fuzzy
+#| msgid ""
+#| "Separate tags with spaces, enclose the tags consist of several words in "
+#| "quotation marks."
+msgid ""
+"\n"
+"            Please choose tags for your video.\n"
+"            Separate tags with spaces, enclose the tags consist of several "
+"words in quotation marks.\n"
+"        "
+msgstr ""
+"Veuillez choisir des mots clés pour votre vidéo.\n"
+"Séparez les mots clés par des espaces, encadrez les mots clés composés de "
+"plusieurs mots par des guillemets."
+
+#: pod/ai_enhancement/forms.py
+#: pod/import_video/templates/import_video/filter_aside.html
+#: pod/main/templates/aside.html
+#: pod/meeting/templates/meeting/filter_aside_recording.html
+#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
+#: pod/video/templates/videos/dashboard.html
+#: pod/video/templates/videos/filter_aside.html
+#: pod/video_search/templates/search/search.html
+msgid "Tags"
+msgstr "Mots clés"
+
+#: pod/ai_enhancement/forms.py pod/video/models.py
+#: pod/video_search/templates/search/search.html
+msgid "Discipline"
+msgstr "Discipline"
+
+#: pod/ai_enhancement/forms.py
+msgid "Please choose the discipline of your video."
+msgstr "Veuillez choisir la discipline de votre vidéo."
+
+#: pod/ai_enhancement/models.py
+msgid "Please choose a JSON file."
+msgstr "Veuillez choisir un fichier JSON."
+
+#: pod/ai_enhancement/models.py
+msgid "AI enrichment"
+msgstr "Enrichissement AI"
+
+#: pod/ai_enhancement/models.py
+msgid "AI enrichments"
+msgstr "Enrichissements AI"
+
+#: pod/ai_enhancement/models.py
+#: pod/ai_enhancement/templates/choose_video_element.html
+#: pod/completion/models.py pod/enrichment/models.py pod/playlist/models.py
+#: pod/recorder/models.py pod/video/models.py
+#: pod/video/templates/channel/channel.html
+#: pod/video/templates/videos/video_breadcrumbs.html
+#: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
+msgid "Video"
+msgstr "Vidéo"
+
+#: pod/ai_enhancement/models.py
+msgid "Created at"
+msgstr "Créé le"
+
+#: pod/ai_enhancement/models.py
+msgid "Updated at"
+msgstr "Mis à jour le"
+
+#: pod/ai_enhancement/models.py
+msgid "Is ready"
+msgstr "Est prêt"
+
+#: pod/ai_enhancement/models.py
+msgid "AI enrichment ID in Aristote"
+msgstr "ID d’enrichissement AI dans Aristote"
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Video name: %(video.title)s"
+msgstr "Nom de la vidéo : %(video.title)s"
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+#: pod/dressing/models.py pod/video/apps.py pod/video/models.py
+#: pod/video/templates/videos/videos.html
+msgid "Videos"
+msgstr "Vidéos"
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Enrich with Aristote AI"
+msgstr "Enrichir avec l’IA Aristote"
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+#: pod/authentication/templates/userpicture/userpicture.html
+#: pod/authentication/tests/test_views.py
+#: pod/bbb/templates/bbb/live_publish_meeting.html
+#: pod/bbb/templates/bbb/publish_meeting.html pod/bbb/views.py
+#: pod/completion/templates/video_caption_maker.html
+#: pod/dressing/templates/dressing_delete.html
+#: pod/dressing/templates/dressing_edit.html pod/dressing/views.py
+#: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/import_video/views.py pod/live/templates/live/event-form.html
+#: pod/live/templates/live/event_delete.html
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html pod/live/views.py
+#: pod/main/templates/contact_us.html pod/main/tests/test_views.py
+#: pod/main/views.py pod/meeting/templates/meeting/add_or_edit.html
+#: pod/meeting/templates/meeting/delete.html
+#: pod/meeting/templates/meeting/invite.html
+#: pod/meeting/templates/meeting/join.html pod/meeting/views.py
+#: pod/playlist/templates/playlist/add_or_edit.html
+#: pod/playlist/templates/playlist/delete.html
+#: pod/playlist/templates/playlist/protected-playlist-form.html
+#: pod/playlist/views.py pod/recorder/templates/recorder/add_recording.html
+#: pod/recorder/templates/recorder/record_delete.html pod/recorder/views.py
+#: pod/video/templates/channel/channel_edit.html
+#: pod/video/templates/videos/dashboard.html
+#: pod/video/templates/videos/video-form.html
+#: pod/video/templates/videos/video_delete.html
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_note_comments_display.html
+#: pod/video/templates/videos/video_note_display.html
+#: pod/video/templates/videos/video_notes.html pod/video/views.py
+#: pod/video_search/templates/search/search.html
+msgid "One or more errors have been found in the form."
+msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+#: pod/authentication/templates/userpicture/userpicture.html
+#: pod/bbb/templates/bbb/live_publish_meeting.html
+#: pod/bbb/templates/bbb/publish_meeting.html
+#: pod/completion/templates/video_caption_maker.html
+#: pod/dressing/templates/dressing_delete.html
+#: pod/dressing/templates/dressing_edit.html
+#: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/live/templates/live/event-form.html
+#: pod/live/templates/live/event_delete.html
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/main/templates/contact_us.html
+#: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/meeting/templates/meeting/delete.html
+#: pod/meeting/templates/meeting/invite.html
+#: pod/meeting/templates/meeting/join.html
+#: pod/playlist/templates/playlist/add_or_edit.html
+#: pod/playlist/templates/playlist/delete.html
+#: pod/playlist/templates/playlist/protected-playlist-form.html
+#: pod/recorder/templates/recorder/add_recording.html
+#: pod/recorder/templates/recorder/record_delete.html
+#: pod/video/templates/channel/channel_edit.html
+#: pod/video/templates/videos/video-form.html
+#: pod/video/templates/videos/video_delete.html
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_note_comments_display.html
+#: pod/video/templates/videos/video_note_display.html
+#: pod/video/templates/videos/video_notes.html
+msgid "Please provide a valid value for this field."
+msgstr "Veuillez renseigner une valeur valide pour ce champ."
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+#: pod/chapter/templates/chapter/form_chapter.html
+#: pod/completion/templates/contributor/form_contributor.html
+#: pod/completion/templates/document/form_document.html
+#: pod/completion/templates/overlay/form_overlay.html
+#: pod/completion/templates/track/form_track.html
+#: pod/completion/templates/video_caption_maker.html
+#: pod/dressing/templates/dressing_edit.html
+#: pod/enrichment/templates/enrichment/form_enrichment.html
+#: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/playlist/templates/playlist/add_or_edit.html
+#: pod/recorder/templates/recorder/add_recording.html
+#: pod/video/templates/channel/channel_edit.html
+#: pod/video/templates/channel/form_theme.html
+#: pod/video/templates/videos/video_note_comments_display.html
+#: pod/video/templates/videos/video_note_display.html
+#: pod/video/templates/videos/video_notes.html
+msgid "Save"
+msgstr "Sauvegarder"
+
+#: pod/ai_enhancement/views.py pod/completion/models.py pod/completion/views.py
+#: pod/live/models.py pod/recorder/models.py pod/video/models.py
+msgid "-- Frequently used languages --"
+msgstr "-- Langues fréquemment utilisées --"
+
+#: pod/ai_enhancement/views.py pod/completion/models.py pod/completion/views.py
+#: pod/live/models.py pod/recorder/models.py pod/video/models.py
+msgid "-- All languages --"
+msgstr "-- Toutes les langues --"
+
+#: pod/ai_enhancement/views.py
+msgid "Video Caption Maker - Aristote AI Version"
+msgstr "Outil de création de fichier de sous-titres/légende - Version de l'IA Aristote"
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -206,73 +502,6 @@ msgstr "Changer votre image de profil"
 #: pod/video/templates/videos/video_notes.html
 msgid "Close"
 msgstr "Fermer"
-
-#: pod/authentication/templates/userpicture/userpicture.html
-#: pod/authentication/tests/test_views.py
-#: pod/bbb/templates/bbb/live_publish_meeting.html
-#: pod/bbb/templates/bbb/publish_meeting.html pod/bbb/views.py
-#: pod/completion/templates/video_caption_maker.html
-#: pod/dressing/templates/dressing_delete.html
-#: pod/dressing/templates/dressing_edit.html pod/dressing/views.py
-#: pod/enrichment/templates/enrichment/group_enrichment.html
-#: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/import_video/views.py pod/live/templates/live/event-form.html
-#: pod/live/templates/live/event_delete.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html pod/live/views.py
-#: pod/main/templates/contact_us.html pod/main/tests/test_views.py
-#: pod/main/views.py pod/meeting/templates/meeting/add_or_edit.html
-#: pod/meeting/templates/meeting/delete.html
-#: pod/meeting/templates/meeting/invite.html
-#: pod/meeting/templates/meeting/join.html pod/meeting/views.py
-#: pod/playlist/templates/playlist/add_or_edit.html
-#: pod/playlist/templates/playlist/delete.html
-#: pod/playlist/templates/playlist/protected-playlist-form.html
-#: pod/playlist/views.py pod/recorder/templates/recorder/add_recording.html
-#: pod/recorder/templates/recorder/record_delete.html pod/recorder/views.py
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/videos/dashboard.html
-#: pod/video/templates/videos/video-form.html
-#: pod/video/templates/videos/video_delete.html
-#: pod/video/templates/videos/video_edit.html
-#: pod/video/templates/videos/video_note_comments_display.html
-#: pod/video/templates/videos/video_note_display.html
-#: pod/video/templates/videos/video_notes.html pod/video/views.py
-#: pod/video_search/templates/search/search.html
-msgid "One or more errors have been found in the form."
-msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
-
-#: pod/authentication/templates/userpicture/userpicture.html
-#: pod/bbb/templates/bbb/live_publish_meeting.html
-#: pod/bbb/templates/bbb/publish_meeting.html
-#: pod/completion/templates/video_caption_maker.html
-#: pod/dressing/templates/dressing_delete.html
-#: pod/dressing/templates/dressing_edit.html
-#: pod/enrichment/templates/enrichment/group_enrichment.html
-#: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/live/templates/live/event-form.html
-#: pod/live/templates/live/event_delete.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/meeting/templates/meeting/add_or_edit.html
-#: pod/meeting/templates/meeting/delete.html
-#: pod/meeting/templates/meeting/invite.html
-#: pod/meeting/templates/meeting/join.html
-#: pod/playlist/templates/playlist/add_or_edit.html
-#: pod/playlist/templates/playlist/delete.html
-#: pod/playlist/templates/playlist/protected-playlist-form.html
-#: pod/recorder/templates/recorder/add_recording.html
-#: pod/recorder/templates/recorder/record_delete.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/videos/video-form.html
-#: pod/video/templates/videos/video_delete.html
-#: pod/video/templates/videos/video_edit.html
-#: pod/video/templates/videos/video_note_comments_display.html
-#: pod/video/templates/videos/video_note_display.html
-#: pod/video/templates/videos/video_notes.html
-msgid "Please provide a valid value for this field."
-msgstr "Veuillez renseigner une valeur valide pour ce champ."
 
 #: pod/authentication/templates/userpicture/userpicture.html
 #: pod/podfile/templates/podfile/home_content.html
@@ -913,27 +1142,6 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
 #: pod/completion/templates/track/form_track.html
-#: pod/completion/templates/video_caption_maker.html
-#: pod/dressing/templates/dressing_edit.html
-#: pod/enrichment/templates/enrichment/form_enrichment.html
-#: pod/enrichment/templates/enrichment/group_enrichment.html
-#: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/meeting/templates/meeting/add_or_edit.html
-#: pod/playlist/templates/playlist/add_or_edit.html
-#: pod/recorder/templates/recorder/add_recording.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/form_theme.html
-#: pod/video/templates/videos/video_note_comments_display.html
-#: pod/video/templates/videos/video_note_display.html
-#: pod/video/templates/videos/video_notes.html
-msgid "Save"
-msgstr "Sauvegarder"
-
-#: pod/chapter/templates/chapter/form_chapter.html
-#: pod/completion/templates/contributor/form_contributor.html
-#: pod/completion/templates/document/form_document.html
-#: pod/completion/templates/overlay/form_overlay.html
-#: pod/completion/templates/track/form_track.html
 #: pod/enrichment/templates/enrichment/form_enrichment.html
 #: pod/playlist/templates/playlist/playlist.html
 #: pod/video/templates/channel/form_theme.html
@@ -952,18 +1160,6 @@ msgstr "Importer les chapitres"
 #: pod/chapter/templates/chapter/list_chapter.html
 msgid "List of chapters"
 msgstr "Liste des chapitres"
-
-#: pod/chapter/templates/chapter/list_chapter.html pod/completion/models.py
-#: pod/completion/templates/overlay/list_overlay.html pod/dressing/models.py
-#: pod/dressing/templates/my_dressings.html
-#: pod/dressing/templates/video_dressing.html
-#: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
-#: pod/main/models.py pod/main/views.py pod/playlist/forms.py
-#: pod/playlist/models.py pod/video/models.py
-#: pod/video/templates/channel/list_theme.html
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Title"
-msgstr "Titre"
 
 #: pod/chapter/templates/chapter/list_chapter.html
 #: pod/completion/templates/contributor/list_contributor.html
@@ -1012,6 +1208,7 @@ msgstr "Supprimer le chapitre « %(chapter_title)s »"
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/video_delete.html
+#: venv/lib/python3.10/site-packages/django/forms/formsets.py
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -1184,16 +1381,6 @@ msgstr "sous-titres"
 msgid "captions"
 msgstr "légendes"
 
-#: pod/completion/models.py pod/completion/views.py pod/live/models.py
-#: pod/recorder/models.py pod/video/models.py
-msgid "-- Frequently used languages --"
-msgstr "-- Langues fréquemment utilisées --"
-
-#: pod/completion/models.py pod/completion/views.py pod/live/models.py
-#: pod/recorder/models.py pod/video/models.py
-msgid "-- All languages --"
-msgstr "-- Toutes les langues --"
-
 #: pod/completion/models.py
 msgid "lastname / firstname"
 msgstr "nom / prénom"
@@ -1238,14 +1425,6 @@ msgstr ""
 "Il existe déjà un contributeur avec le même nom et le même rôle dans cette "
 "liste."
 
-#: pod/completion/models.py pod/enrichment/models.py pod/playlist/models.py
-#: pod/recorder/models.py pod/video/models.py
-#: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/video_breadcrumbs.html
-#: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
-msgid "Video"
-msgstr "Vidéo"
-
 #: pod/completion/models.py
 #: pod/completion/templates/document/list_document.html
 #: pod/enrichment/models.py
@@ -1275,6 +1454,7 @@ msgid "This document is already contained in the list"
 msgstr "Ce document existe déjà dans cette liste"
 
 #: pod/completion/models.py
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
 msgid "Text"
 msgstr "Text"
 
@@ -1573,7 +1753,12 @@ msgid "Video Caption Maker"
 msgstr "Outil de création de fichier de sous-titres/légende"
 
 #: pod/completion/templates/video_caption_maker.html
+msgid "Enrichment is ready. You can now edit the subtitles."
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html
 #: pod/video/templates/videos/add_video.html
+#: venv/lib/python3.10/site-packages/django/db/models/fields/files.py
 msgid "File"
 msgstr "Fichier"
 
@@ -2038,11 +2223,6 @@ msgstr "Générique de début"
 msgid "Ending credits"
 msgstr "Générique de fin"
 
-#: pod/dressing/models.py pod/video/apps.py pod/video/models.py
-#: pod/video/templates/videos/videos.html
-msgid "Videos"
-msgstr "Vidéos"
-
 #: pod/dressing/models.py
 msgid "Video dressing"
 msgstr "Habillage de vidéos"
@@ -2109,6 +2289,7 @@ msgstr "Aucun groupe"
 
 #: pod/dressing/templates/my_dressings.html
 #: pod/dressing/templates/video_dressing.html pod/video/views.py
+#: venv/lib/python3.10/site-packages/modeltranslation/widgets.py
 msgid "None"
 msgstr "Aucun"
 
@@ -2272,6 +2453,7 @@ msgstr "Type"
 #: pod/enrichment/models.py
 #: pod/enrichment/templates/enrichment/enrichment_informations_card_aside.html
 #: pod/main/models.py pod/podfile/models.py
+#: venv/lib/python3.10/site-packages/django/db/models/fields/files.py
 msgid "Image"
 msgstr "Image"
 
@@ -2579,8 +2761,8 @@ msgid ""
 "a>."
 msgstr ""
 "L’accès à l’ajout d’enregistrements externes a été limité. Si vous souhaitez "
-"ajouter des enregistrements externes sur la plateforme, veuillez <a "
-"href=\"%(url)s\">nous contacter</a>."
+"ajouter des enregistrements externes sur la plateforme, veuillez <a href="
+"\"%(url)s\">nous contacter</a>."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
@@ -2598,6 +2780,7 @@ msgstr "Ensuite, vous pouvez importer cette vidéo dans Pod."
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/video/templates/videos/add_video.html
 #: pod/video/templates/videos/video_edit.html
+#: venv/lib/python3.10/site-packages/chunked_upload/constants.py
 msgid "Uploading"
 msgstr "Mise en ligne"
 
@@ -2720,16 +2903,6 @@ msgstr "Conditions d’utilisation de YouTube"
 #: pod/video/templates/videos/filter_aside.html
 msgid "Filters"
 msgstr "Filtres"
-
-#: pod/import_video/templates/import_video/filter_aside.html
-#: pod/main/templates/aside.html
-#: pod/meeting/templates/meeting/filter_aside_recording.html
-#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
-#: pod/video/templates/videos/dashboard.html
-#: pod/video/templates/videos/filter_aside.html
-#: pod/video_search/templates/search/search.html
-msgid "Tags"
-msgstr "Mots clés"
 
 #: pod/import_video/templates/import_video/filter_aside.html
 #: pod/main/templates/navbar_collapse.html
@@ -2970,8 +3143,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
@@ -2979,8 +3152,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "Youtube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
@@ -3089,10 +3262,12 @@ msgid "password"
 msgstr "mot de passe"
 
 #: pod/live/admin.py pod/meeting/admin.py pod/video/admin.py
+#: venv/lib/python3.10/site-packages/django/forms/widgets.py
 msgid "Yes"
 msgstr "Oui"
 
 #: pod/live/admin.py pod/meeting/admin.py pod/video/admin.py
+#: venv/lib/python3.10/site-packages/django/forms/widgets.py
 msgid "No"
 msgstr "Non"
 
@@ -3168,6 +3343,7 @@ msgid "Recording of %(user)s the %(date)s"
 msgstr "Enregistrement de %(user)s le %(date)s"
 
 #: pod/live/models.py pod/recorder/models.py
+#: venv/lib/python3.10/site-packages/tagging/models.py
 msgid "name"
 msgstr "nom"
 
@@ -3192,6 +3368,7 @@ msgid "Poster"
 msgstr "Affiche"
 
 #: pod/live/models.py
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
 msgid "URL"
 msgstr "URL"
 
@@ -3277,13 +3454,6 @@ msgid ""
 msgstr ""
 "Choissez un titre aussi court et précis que possible, reflétant le sujet "
 "principal / le contexte de ce contenu. (taille maximale : 250 caractères)"
-
-#: pod/live/models.py pod/main/forms.py pod/main/models.py
-#: pod/playlist/forms.py pod/playlist/models.py pod/video/forms.py
-#: pod/video/models.py pod/video/templates/channel/list_theme.html
-#: pod/video/templates/videos/dashboard.html
-msgid "Description"
-msgstr "Description"
 
 #: pod/live/models.py pod/video/forms.py pod/video/models.py
 msgid ""
@@ -4822,17 +4992,6 @@ msgstr "Onglet additionnel de chaînes"
 msgid "Additional channel Tabs"
 msgstr "Onglets additionnels de chaînes"
 
-#: pod/main/settings.py
-msgid ""
-"Pod is aimed at users of our institutions, by allowing the publication of "
-"videos in the fields of research (promotion of platforms, etc.), training "
-"(tutorials, distance training, student reports, etc.), institutional life "
-"(video of events), offering several days of content."
-msgstr ""
-"Pod a pour but de faciliter la mise à disposition de vidéos et de ce fait, "
-"d’encourager l’utilisation de celles-ci dans le cadre de l’enseignement et "
-"la recherche."
-
 #: pod/main/templates/403.html
 msgid "Permission denied"
 msgstr "Accès refusé"
@@ -5230,6 +5389,7 @@ msgstr "Récurrence"
 #: pod/meeting/forms.py pod/video/feeds.py pod/video/models.py
 #: pod/video/templates/videos/video_row_select.html
 #: pod/video/templates/videos/video_sort_select.html
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
 msgid "Duration"
 msgstr "Durée"
 
@@ -5238,31 +5398,31 @@ msgstr "Durée"
 msgid "Specify a duration in hour between 1 and %(max_duration)s hours"
 msgstr "Spécifiez une durée en heure entre 1 et %(max_duration)s heures"
 
-#: pod/meeting/forms.py
+#: pod/meeting/forms.py venv/lib/python3.10/site-packages/django/utils/dates.py
 msgid "Monday"
 msgstr "Lundi"
 
-#: pod/meeting/forms.py
+#: pod/meeting/forms.py venv/lib/python3.10/site-packages/django/utils/dates.py
 msgid "Tuesday"
 msgstr "Mardi"
 
-#: pod/meeting/forms.py
+#: pod/meeting/forms.py venv/lib/python3.10/site-packages/django/utils/dates.py
 msgid "Wednesday"
 msgstr "Mercredi"
 
-#: pod/meeting/forms.py
+#: pod/meeting/forms.py venv/lib/python3.10/site-packages/django/utils/dates.py
 msgid "Thursday"
 msgstr "Jeudi"
 
-#: pod/meeting/forms.py
+#: pod/meeting/forms.py venv/lib/python3.10/site-packages/django/utils/dates.py
 msgid "Friday"
 msgstr "Vendredi"
 
-#: pod/meeting/forms.py
+#: pod/meeting/forms.py venv/lib/python3.10/site-packages/django/utils/dates.py
 msgid "Saturday"
 msgstr "Samedi"
 
-#: pod/meeting/forms.py
+#: pod/meeting/forms.py venv/lib/python3.10/site-packages/django/utils/dates.py
 msgid "Sunday"
 msgstr "Dimanche"
 
@@ -5956,16 +6116,16 @@ msgid ""
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à une réunion récurrente "
-"<b>%(meeting_title)s</b>.</p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente <b>"
+"%(meeting_title)s</b>.</p>\n"
 "        <p>Date de début : %(start_date_time)s </p>\n"
 "        <p>Récurrent jusqu’à la date : %(end_date)s </p>\n"
 "        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
 "p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<b>%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
+"%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -5991,8 +6151,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<b>%(password)s</b> </p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
+"%(password)s</b> </p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -6498,6 +6658,7 @@ msgid "Favorites"
 msgstr "Favoris"
 
 #: pod/playlist/tests/test_forms.py
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
 msgid "This field is required."
 msgstr "Ce champ est requis."
 
@@ -6645,6 +6806,7 @@ msgid "Enter new username"
 msgstr "Entrer un nom d’utilisateur"
 
 #: pod/podfile/templates/podfile/list_folder_files.html
+#: venv/lib/python3.10/site-packages/click/types.py
 msgid "file"
 msgstr "fichier"
 
@@ -7045,8 +7207,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -7123,10 +7285,9 @@ msgid ""
 msgstr ""
 "<p>Bonjour,<br> un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur « %(recorder)s ».<br>Pour "
-"l’ajouter, cliquez sur le lien ci-dessous.</p><p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br><em>Si le lien n’est pas actif, il "
-"faut le copier-coller dans la barre d’adresse de votre navigateur.</em></"
-"p><p>Cordialement.</p>"
+"l’ajouter, cliquez sur le lien ci-dessous.</p><p><a href=\"%(link_url)s\">"
+"%(link_url)s</a><br><em>Si le lien n’est pas actif, il faut le copier-coller "
+"dans la barre d’adresse de votre navigateur.</em></p><p>Cordialement.</p>"
 
 #: pod/recorder/views.py
 msgid "New recording added."
@@ -7475,8 +7636,8 @@ msgid ""
 "%(url)s</a></p>\n"
 msgstr ""
 "vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
-"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
-"target=\"_blank\">%(scheme)s:%(url)s</a></p>\n"
+"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" target=\"_blank\">"
+"%(scheme)s:%(url)s</a></p>\n"
 "\n"
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -7679,10 +7840,6 @@ msgstr "Thème"
 #: pod/video/models.py
 msgid "Icon"
 msgstr "Icone"
-
-#: pod/video/models.py pod/video_search/templates/search/search.html
-msgid "Discipline"
-msgstr "Discipline"
 
 #: pod/video/models.py
 msgid "Select the general type of the video."
@@ -8287,6 +8444,12 @@ msgid "Edit the video"
 msgstr "Éditer la vidéo"
 
 #: pod/video/templates/videos/link_video.html
+#, fuzzy
+#| msgid "Edit the video"
+msgid "Enrich the video with AI"
+msgstr "Éditer la vidéo"
+
+#: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Complete the video"
 msgstr "Compléter la vidéo"
@@ -8320,8 +8483,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
-"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
+"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html
 msgid "Other versions"
@@ -8480,6 +8643,7 @@ msgstr ""
 "Toute personne disposant de ces liens peut y accéder."
 
 #: pod/video/templates/videos/video-info.html
+#: venv/lib/python3.10/site-packages/click/core.py
 msgid "Options"
 msgstr "Options"
 
@@ -8745,6 +8909,18 @@ msgstr "Description de la chaîne"
 msgid "Theme description"
 msgstr "Description du thème"
 
+#: pod/video/templates/videos/video_page_content.html
+#, fuzzy
+#| msgid "The video is currently waiting for encoding."
+msgid "The video is currently waiting for Aristote AI treatment."
+msgstr "La vidéo est actuellement en attente d’encodage."
+
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"The video was treated by Aristotle. You must verify and validate the "
+"processing by pressing the robot icon."
+msgstr ""
+
 #: pod/video/templates/videos/video_row_select.html
 msgid "Toggle actions menu"
 msgstr "Afficher/masquer les actions"
@@ -8778,11 +8954,13 @@ msgid "This content is not chaptered."
 msgstr "Ce contenu n’est pas chapitré."
 
 #: pod/video/templatetags/video_tags.py
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
 #, python-format
 msgid "tags_for_model tag was given an invalid model: %s"
 msgstr "la balise tags_for_model a reçu un modèle invalide : %s"
 
 #: pod/video/templatetags/video_tags.py
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
 #, python-format
 msgid "%s tag requires either three or five arguments"
 msgstr "la balise %s requiert trois ou cinq arguments"
@@ -8804,6 +8982,7 @@ msgid "if given, fifth argument to %s tag must be “counts”"
 msgstr "si donné, le 5e argument de la balise %s doit être « counts »"
 
 #: pod/video/templatetags/video_tags.py
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
 #, python-format
 msgid "%s tag requires either three or between five and seven arguments"
 msgstr "la balise %s requiert soit trois, soit entre cinq et sept arguments"
@@ -9278,11 +9457,1812 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
+#: venv/lib/python3.10/site-packages/chunked_upload/constants.py
+msgid "Complete"
+msgstr "Complétion de la vidéo"
+
+#: venv/lib/python3.10/site-packages/ckeditor_uploader/forms.py
+msgid "Search files"
+msgstr "Chercher un dossier"
+
+#: venv/lib/python3.10/site-packages/ckeditor_uploader/templates/ckeditor/browse.html
+msgid "Select an image to embed"
+msgstr "Sélectionner une image"
+
+#: venv/lib/python3.10/site-packages/ckeditor_uploader/templates/ckeditor/browse.html
+msgid "Browse for the image you want, then click 'Embed Image' to continue..."
+msgstr "Recherchez l’image que vous voulez, puis cliquez sur « Intégrer l’image » pour continuer..."
+
+#: venv/lib/python3.10/site-packages/ckeditor_uploader/templates/ckeditor/browse.html
+msgid ""
+"No images found. Upload images using the 'Image Button' dialog's 'Upload' "
+"tab."
+msgstr ""
+"Aucune image trouvée. Téléversez des images en utilisant l’onglet « Téléverser » de la boîte de dialogue « Bouton d’image »."
+
+#: venv/lib/python3.10/site-packages/ckeditor_uploader/templates/ckeditor/browse.html
+msgid "Images in: "
+msgstr "Images"
+
+#: venv/lib/python3.10/site-packages/ckeditor_uploader/templates/ckeditor/browse.html
+msgid "Embed Image"
+msgstr "Code d’intégration"
+
+#: venv/lib/python3.10/site-packages/ckeditor_uploader/templates/ckeditor/browse.html
+msgid "Play Slideshow"
+msgstr "Liste de lecture"
+
+#: venv/lib/python3.10/site-packages/ckeditor_uploader/templates/ckeditor/browse.html
+msgid "Pause Slideshow"
+msgstr "Suspendre le diaporama"
+
+#: venv/lib/python3.10/site-packages/ckeditor_uploader/templates/ckeditor/browse.html
+msgid "&lsaquo; Previous Photo"
+msgstr "&lsaquo; Photo précédente"
+
+#: venv/lib/python3.10/site-packages/ckeditor_uploader/templates/ckeditor/browse.html
+msgid "Next Photo &rsaquo;"
+msgstr "Photo suivante &rsaquo;"
+
+#: venv/lib/python3.10/site-packages/ckeditor_uploader/templates/ckeditor/browse.html
+msgid "Next &rsaquo;"
+msgstr "Suivant &rsaquo;"
+
+#: venv/lib/python3.10/site-packages/ckeditor_uploader/templates/ckeditor/browse.html
+msgid "&lsaquo; Prev"
+msgstr "&lsaquo; Précédent"
+
+#: venv/lib/python3.10/site-packages/click/_termui_impl.py
+#, fuzzy, python-brace-format
+#| msgid "Recording file"
+msgid "{editor}: Editing failed"
+msgstr "{editor} : Échec de l’édition"
+
+#: venv/lib/python3.10/site-packages/click/_termui_impl.py
+#, python-brace-format
+msgid "{editor}: Editing failed: {e}"
+msgstr "{editor} : Échec de l’édition : {e}"
+
+#: venv/lib/python3.10/site-packages/click/core.py
+msgid "Aborted!"
+msgstr "Avorté !"
+
+#: venv/lib/python3.10/site-packages/click/core.py
+#: venv/lib/python3.10/site-packages/click/decorators.py
+msgid "Show this message and exit."
+msgstr "Affichez ce message et quittez."
+
+#: venv/lib/python3.10/site-packages/click/core.py
+#, python-brace-format
+msgid "(Deprecated) {text}"
+msgstr "(Obsolète) {text}"
+
+#: venv/lib/python3.10/site-packages/click/core.py
+#, python-brace-format
+msgid "Got unexpected extra argument ({args})"
+msgid_plural "Got unexpected extra arguments ({args})"
+msgstr[0] "Vous avez un argument supplémentaire inattendu ({args})"
+msgstr[1] "Vous avez des arguments supplémentaires inattendus ({args})"
+
+#: venv/lib/python3.10/site-packages/click/core.py
+msgid "DeprecationWarning: The command {name!r} is deprecated."
+msgstr "DeprecationWarning : La commande {name!r} est obsolète."
+
+#: venv/lib/python3.10/site-packages/click/core.py
+msgid "Commands"
+msgstr "Commentaires"
+
+#: venv/lib/python3.10/site-packages/click/core.py
+msgid "Missing command."
+msgstr "Commande manquante."
+
+#: venv/lib/python3.10/site-packages/click/core.py
+msgid "No such command {name!r}."
+msgstr "Aucune commande de ce type {name!r}."
+
+#: venv/lib/python3.10/site-packages/click/core.py
+msgid "Value must be an iterable."
+msgstr "La valeur doit être un itérable."
+
+#: venv/lib/python3.10/site-packages/click/core.py
+#, python-brace-format
+msgid "Takes {nargs} values but 1 was given."
+msgid_plural "Takes {nargs} values but {len} were given."
+msgstr[0] "Prend des valeurs {nargs} mais 1 a été donnée."
+msgstr[1] "Prend des valeurs {nargs} mais {len} ont été données."
+
+#: venv/lib/python3.10/site-packages/click/core.py
+#, python-brace-format
+msgid "env var: {var}"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/core.py
+msgid "(dynamic)"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/core.py
+#, fuzzy, python-brace-format
+#| msgid "default value:"
+msgid "default: {default}"
+msgstr "valeur par défaut :"
+
+#: venv/lib/python3.10/site-packages/click/core.py
+#, fuzzy
+#| msgid "retired"
+msgid "required"
+msgstr "retraité"
+
+#: venv/lib/python3.10/site-packages/click/decorators.py
+#, python-format
+msgid "%(prog)s, version %(version)s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/decorators.py
+msgid "Show the version and exit."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/exceptions.py
+#, fuzzy, python-brace-format
+#| msgid "Your message"
+msgid "Error: {message}"
+msgstr "Votre message"
+
+#: venv/lib/python3.10/site-packages/click/exceptions.py
+#, python-brace-format
+msgid "Try '{command} {option}' for help."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/exceptions.py
+#, python-brace-format
+msgid "Invalid value: {message}"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/exceptions.py
+#, python-brace-format
+msgid "Invalid value for {param_hint}: {message}"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/exceptions.py
+msgid "Missing argument"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/exceptions.py
+#, fuzzy
+#| msgid "Recurring options"
+msgid "Missing option"
+msgstr "Options de récurrence"
+
+#: venv/lib/python3.10/site-packages/click/exceptions.py
+msgid "Missing parameter"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/exceptions.py
+#, python-brace-format
+msgid "Missing {param_type}"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/exceptions.py
+#, python-brace-format
+msgid "Missing parameter: {param_name}"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/exceptions.py
+#, python-brace-format
+msgid "No such option: {name}"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/exceptions.py
+#, python-brace-format
+msgid "Did you mean {possibility}?"
+msgid_plural "(Possible options: {possibilities})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/click/exceptions.py
+msgid "unknown error"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/exceptions.py
+msgid "Could not open file {filename!r}: {message}"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/parser.py
+msgid "Argument {name!r} takes {nargs} values."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/parser.py
+msgid "Option {name!r} does not take a value."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/parser.py
+msgid "Option {name!r} requires an argument."
+msgid_plural "Option {name!r} requires {nargs} arguments."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/click/shell_completion.py
+msgid "Shell completion is not supported for Bash versions older than 4.4."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/shell_completion.py
+msgid "Couldn't detect Bash version, shell completion is not supported."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/termui.py
+#, fuzzy
+#| msgid "Request more information"
+msgid "Repeat for confirmation"
+msgstr "Demander plus d’informations"
+
+#: venv/lib/python3.10/site-packages/click/termui.py
+msgid "Error: The value you entered was invalid."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/termui.py
+#, fuzzy, python-brace-format
+#| msgid "Your message"
+msgid "Error: {e.message}"
+msgstr "Votre message"
+
+#: venv/lib/python3.10/site-packages/click/termui.py
+msgid "Error: The two entered values do not match."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/termui.py
+#, fuzzy
+#| msgid "Error calling"
+msgid "Error: invalid input"
+msgstr "Erreur à l’appel de"
+
+#: venv/lib/python3.10/site-packages/click/termui.py
+msgid "Press any key to continue..."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/types.py
+#, python-brace-format
+msgid ""
+"Choose from:\n"
+"\t{choices}"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/types.py
+msgid "{value!r} is not {choice}."
+msgid_plural "{value!r} is not one of {choices}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/click/types.py
+msgid "{value!r} does not match the format {format}."
+msgid_plural "{value!r} does not match the formats {formats}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/click/types.py
+msgid "{value!r} is not a valid {number_type}."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/types.py
+#, python-brace-format
+msgid "{value} is not in the range {range}."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/types.py
+msgid "{value!r} is not a valid boolean."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/types.py
+msgid "{value!r} is not a valid UUID."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/types.py
+#, fuzzy
+#| msgid "Director"
+msgid "directory"
+msgstr "Réalisateur"
+
+#: venv/lib/python3.10/site-packages/click/types.py
+msgid "path"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/types.py
+#, fuzzy
+#| msgid "Source file doesn’t exists"
+msgid "{name} {filename!r} does not exist."
+msgstr "Le fichier source n’existe pas"
+
+#: venv/lib/python3.10/site-packages/click/types.py
+msgid "{name} {filename!r} is a file."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/types.py
+#, python-brace-format
+msgid "{name} '{filename}' is a directory."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/types.py
+msgid "{name} {filename!r} is not readable."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/types.py
+msgid "{name} {filename!r} is not writable."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/types.py
+msgid "{name} {filename!r} is not executable."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/click/types.py
+#, python-brace-format
+msgid "{len_type} values are required, but {len_value} was given."
+msgid_plural "{len_type} values are required, but {len_value} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/contrib/messages/apps.py
+#, fuzzy
+#| msgid "Message"
+msgid "Messages"
+msgstr "Message"
+
+#: venv/lib/python3.10/site-packages/django/contrib/sitemaps/apps.py
+#, fuzzy
+#| msgid "Site"
+msgid "Site Maps"
+msgstr "Site"
+
+#: venv/lib/python3.10/site-packages/django/contrib/staticfiles/apps.py
+#, fuzzy
+#| msgid "Statistics views"
+msgid "Static Files"
+msgstr "Statistiques de vues"
+
+#: venv/lib/python3.10/site-packages/django/contrib/syndication/apps.py
+#, fuzzy
+#| msgid "rendition"
+msgid "Syndication"
+msgstr "rendu"
+
+#. Translators: String used to replace omitted page numbers in elided page
+#. range generated by paginators, e.g. [1, 2, '…', 5, 6, 7, '…', 9, 10].
+#: venv/lib/python3.10/site-packages/django/core/paginator.py
+msgid "…"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/paginator.py
+msgid "That page number is not an integer"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/paginator.py
+msgid "That page number is less than 1"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/paginator.py
+msgid "That page contains no results"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, fuzzy
+#| msgid "Please enter a valid address"
+msgid "Enter a valid value."
+msgstr "Veuillez entrer une adresse valide"
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+msgid "Enter a valid URL."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+msgid "Enter a valid integer."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, fuzzy
+#| msgid "Enter at least one e-mail address."
+msgid "Enter a valid email address."
+msgstr "Veuillez renseigner au moins une adresse électronique."
+
+#. Translators: "letters" means latin letters: a-z and A-Z.
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, fuzzy
+#| msgid ""
+#| "Used to access this instance, the “slug” is a short label containing only "
+#| "letters, numbers, underscore or dash top."
+msgid ""
+"Enter a valid “slug” consisting of letters, numbers, underscores or hyphens."
+msgstr ""
+"Utilisé pour accéder à cette instance, le « titre court » est une étiquette "
+"formée uniquement de lettres (non accentuées), de chiffres, de l’underscore "
+"(barre de soulignement) et du tiret."
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, fuzzy
+#| msgid ""
+#| "Used to access this instance, the “slug” is a short label containing only "
+#| "letters, numbers, underscore or dash top."
+msgid ""
+"Enter a valid “slug” consisting of Unicode letters, numbers, underscores, or "
+"hyphens."
+msgstr ""
+"Utilisé pour accéder à cette instance, le « titre court » est une étiquette "
+"formée uniquement de lettres (non accentuées), de chiffres, de l’underscore "
+"(barre de soulignement) et du tiret."
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, fuzzy
+#| msgid "Please enter a valid address"
+msgid "Enter a valid IPv4 address."
+msgstr "Veuillez entrer une adresse valide"
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, fuzzy
+#| msgid "Please enter a valid address"
+msgid "Enter a valid IPv6 address."
+msgstr "Veuillez entrer une adresse valide"
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, fuzzy
+#| msgid "Please enter a valid address"
+msgid "Enter a valid IPv4 or IPv6 address."
+msgstr "Veuillez entrer une adresse valide"
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+msgid "Enter only digits separated by commas."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, python-format
+msgid "Ensure this value is %(limit_value)s (it is %(show_value)s)."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, python-format
+msgid "Ensure this value is less than or equal to %(limit_value)s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, python-format
+msgid "Ensure this value is greater than or equal to %(limit_value)s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, python-format
+msgid ""
+"Ensure this value has at least %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at least %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, python-format
+msgid ""
+"Ensure this value has at most %(limit_value)d character (it has "
+"%(show_value)d)."
+msgid_plural ""
+"Ensure this value has at most %(limit_value)d characters (it has "
+"%(show_value)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+#, fuzzy
+#| msgid "Please enter a name."
+msgid "Enter a number."
+msgstr "Veuillez entrer un nom."
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, python-format
+msgid "Ensure that there are no more than %(max)s digit in total."
+msgid_plural "Ensure that there are no more than %(max)s digits in total."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, python-format
+msgid "Ensure that there are no more than %(max)s decimal place."
+msgid_plural "Ensure that there are no more than %(max)s decimal places."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, python-format
+msgid ""
+"Ensure that there are no more than %(max)s digit before the decimal point."
+msgid_plural ""
+"Ensure that there are no more than %(max)s digits before the decimal point."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+#, python-format
+msgid ""
+"File extension “%(extension)s” is not allowed. Allowed extensions are: "
+"%(allowed_extensions)s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/core/validators.py
+msgid "Null characters are not allowed."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/base.py
+#: venv/lib/python3.10/site-packages/django/forms/models.py
+#, fuzzy
+#| msgid "End"
+msgid "and"
+msgstr "Fin"
+
+#: venv/lib/python3.10/site-packages/django/db/models/base.py
+#, python-format
+msgid "%(model_name)s with this %(field_labels)s already exists."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, fuzzy, python-format
+#| msgid "The found file is not a valid video."
+msgid "Value %(value)r is not a valid choice."
+msgstr "Le fichier trouvé n’est pas une vidéo valide."
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, fuzzy
+#| msgid "This field allows you to add an url."
+msgid "This field cannot be null."
+msgstr "Ce champ vous permet d’ajouter un lien."
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, fuzzy
+#| msgid "The file has not been saved."
+msgid "This field cannot be blank."
+msgstr "Le fichier n’a pas été enregistré."
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid "%(model_name)s with this %(field_label)s already exists."
+msgstr ""
+
+#. Translators: The 'lookup_type' is one of 'date', 'year' or 'month'.
+#. Eg: "Title must be unique for pub_date year"
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid ""
+"%(field_label)s must be unique for %(date_field_label)s %(lookup_type)s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid "Field of type: %(field_type)s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid "“%(value)s” value must be either True or False."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid "“%(value)s” value must be either True, False, or None."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+msgid "Boolean (Either True or False)"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid "String (up to %(max_length)s)"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+msgid "Comma-separated integers"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid date format. It must be in YYYY-MM-DD "
+"format."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD) but it is an invalid "
+"date."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, fuzzy
+#| msgid "Date to delete"
+msgid "Date (without time)"
+msgstr "Date de suppression"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in YYYY-MM-DD HH:MM[:ss[."
+"uuuuuu]][TZ] format."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (YYYY-MM-DD HH:MM[:ss[.uuuuuu]]"
+"[TZ]) but it is an invalid date/time."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, fuzzy
+#| msgid "Date to delete"
+msgid "Date (with time)"
+msgstr "Date de suppression"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid "“%(value)s” value must be a decimal number."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+msgid "Decimal number"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in [DD] [[HH:]MM:]ss[."
+"uuuuuu] format."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, fuzzy
+#| msgid "Emails"
+msgid "Email address"
+msgstr "Courriels"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, fuzzy
+#| msgid "File"
+msgid "File path"
+msgstr "Fichier"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid "“%(value)s” value must be a float."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+msgid "Floating point number"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid "“%(value)s” value must be an integer."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, fuzzy
+#| msgid "Interlingue"
+msgid "Integer"
+msgstr "Interlingue"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+msgid "Big (8 byte) integer"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+msgid "Small integer"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+msgid "IPv4 address"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, fuzzy
+#| msgid "Address IP"
+msgid "IP address"
+msgstr "Adresse IP"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid "“%(value)s” value must be either None, True or False."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+msgid "Boolean (Either True, False or None)"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+msgid "Positive big integer"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+msgid "Positive integer"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+msgid "Positive small integer"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid "Slug (up to %(max_length)s)"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid ""
+"“%(value)s” value has an invalid format. It must be in HH:MM[:ss[.uuuuuu]] "
+"format."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid ""
+"“%(value)s” value has the correct format (HH:MM[:ss[.uuuuuu]]) but it is an "
+"invalid time."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, fuzzy
+#| msgid "Time:"
+msgid "Time"
+msgstr "Heure:"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+msgid "Raw binary data"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+#, python-format
+msgid "“%(value)s” is not a valid UUID."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py
+msgid "Universally unique identifier"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/json.py
+#, fuzzy
+#| msgid "Subject"
+msgid "A JSON object"
+msgstr "Sujet"
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/json.py
+msgid "Value must be valid JSON."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/related.py
+#, python-format
+msgid "%(model)s instance with %(field)s %(value)r does not exist."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/related.py
+msgid "Foreign Key (type determined by related field)"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/related.py
+msgid "One-to-one relationship"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/related.py
+#, python-format
+msgid "%(from)s-%(to)s relationship"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/related.py
+#, python-format
+msgid "%(from)s-%(to)s relationships"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/db/models/fields/related.py
+msgid "Many-to-many relationship"
+msgstr ""
+
+#. Translators: If found as last label character, these punctuation
+#. characters will prevent the default label_suffix to be appended to the label
+#: venv/lib/python3.10/site-packages/django/forms/boundfield.py
+msgid ":?.!"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+msgid "Enter a whole number."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+#, fuzzy
+#| msgid "Please enter a valid address"
+msgid "Enter a valid date."
+msgstr "Veuillez entrer une adresse valide"
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+msgid "Enter a valid time."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+msgid "Enter a valid date/time."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+#, fuzzy
+#| msgid "Total video duration"
+msgid "Enter a valid duration."
+msgstr "Durée totale de la vidéo"
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+#, python-brace-format
+msgid "The number of days must be between {min_days} and {max_days}."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+msgid "No file was submitted. Check the encoding type on the form."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+msgid "No file was submitted."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+msgid "The submitted file is empty."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+#, python-format
+msgid "Ensure this filename has at most %(max)d character (it has %(length)d)."
+msgid_plural ""
+"Ensure this filename has at most %(max)d characters (it has %(length)d)."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+msgid "Please either submit a file or check the clear checkbox, not both."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+#: venv/lib/python3.10/site-packages/sorl/thumbnail/fields.py
+msgid ""
+"Upload a valid image. The file you uploaded was either not an image or a "
+"corrupted image."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+#: venv/lib/python3.10/site-packages/django/forms/models.py
+#, python-format
+msgid "Select a valid choice. %(value)s is not one of the available choices."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+#: venv/lib/python3.10/site-packages/django/forms/models.py
+#, fuzzy
+#| msgid "Enter at least one e-mail address."
+msgid "Enter a list of values."
+msgstr "Veuillez renseigner au moins une adresse électronique."
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+msgid "Enter a complete value."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+msgid "Enter a valid UUID."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/fields.py
+msgid "Enter a valid JSON."
+msgstr ""
+
+#. Translators: This is the default suffix added to form field labels
+#: venv/lib/python3.10/site-packages/django/forms/forms.py
+#, fuzzy
+#| msgid ": "
+msgid ":"
+msgstr " : "
+
+#: venv/lib/python3.10/site-packages/django/forms/forms.py
+#, python-format
+msgid "(Hidden field %(name)s) %(error)s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/formsets.py
+#, python-format
+msgid ""
+"ManagementForm data is missing or has been tampered with. Missing fields: "
+"%(field_names)s. You may need to file a bug report if the issue persists."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/formsets.py
+#, python-format
+msgid "Please submit at most %d form."
+msgid_plural "Please submit at most %d forms."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/forms/formsets.py
+#, python-format
+msgid "Please submit at least %d form."
+msgid_plural "Please submit at least %d forms."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/forms/formsets.py
+#, fuzzy
+#| msgid "order"
+msgid "Order"
+msgstr "ordre"
+
+#: venv/lib/python3.10/site-packages/django/forms/models.py
+#, fuzzy, python-format
+#| msgid "Please correct the error below."
+msgid "Please correct the duplicate data for %(field)s."
+msgstr "Veuillez corriger l’erreur ci-dessous."
+
+#: venv/lib/python3.10/site-packages/django/forms/models.py
+#, python-format
+msgid "Please correct the duplicate data for %(field)s, which must be unique."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/models.py
+#, python-format
+msgid ""
+"Please correct the duplicate data for %(field_name)s which must be unique "
+"for the %(lookup)s in %(date_field)s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/models.py
+#, fuzzy
+#| msgid "Please correct the errors below."
+msgid "Please correct the duplicate values below."
+msgstr "Veuillez corriger les erreurs ci-dessous."
+
+#: venv/lib/python3.10/site-packages/django/forms/models.py
+msgid "The inline value did not match the parent instance."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/models.py
+msgid "Select a valid choice. That choice is not one of the available choices."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/models.py
+#, python-format
+msgid "“%(pk)s” is not a valid value."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/utils.py
+#, python-format
+msgid ""
+"%(datetime)s couldn’t be interpreted in time zone %(current_timezone)s; it "
+"may be ambiguous or it may not exist."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/forms/widgets.py
+#, fuzzy
+#| msgid "Clear All"
+msgid "Clear"
+msgstr "Tout effacer"
+
+#: venv/lib/python3.10/site-packages/django/forms/widgets.py
+#, fuzzy
+#| msgid "Current event"
+msgid "Currently"
+msgstr "Évènement en cours"
+
+#: venv/lib/python3.10/site-packages/django/forms/widgets.py
+#, fuzzy
+#| msgid "Channel"
+msgid "Change"
+msgstr "Chaîne"
+
+#: venv/lib/python3.10/site-packages/django/forms/widgets.py
+msgid "Unknown"
+msgstr ""
+
+#. Translators: Please do not add spaces around commas.
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py
+msgid "yes,no,maybe"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py
+#, python-format
+msgid "%(size)d byte"
+msgid_plural "%(size)d bytes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py
+#, python-format
+msgid "%s KB"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py
+#, python-format
+msgid "%s MB"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py
+#, python-format
+msgid "%s GB"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py
+#, python-format
+msgid "%s TB"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/template/defaultfilters.py
+#, python-format
+msgid "%s PB"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dateformat.py
+msgid "p.m."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dateformat.py
+msgid "a.m."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dateformat.py
+msgid "PM"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dateformat.py
+msgid "AM"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dateformat.py
+#, fuzzy
+#| msgid "right"
+msgid "midnight"
+msgstr "droite"
+
+#: venv/lib/python3.10/site-packages/django/utils/dateformat.py
+msgid "noon"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "on"
+msgid "Mon"
+msgstr "sur"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "YouTube"
+msgid "Tue"
+msgstr "Youtube"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "Wed"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "Thu"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "Farsi"
+msgid "Fri"
+msgstr "Farsi"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "at"
+msgid "Sat"
+msgstr "à"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "Sunday"
+msgid "Sun"
+msgstr "Dimanche"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "January"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "February"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "Search"
+msgid "March"
+msgstr "Rechercher"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "Malay"
+msgid "May"
+msgstr "Malais"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "August"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "member"
+msgid "September"
+msgstr "membre"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "October"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "member"
+msgid "November"
+msgstr "membre"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "member"
+msgid "December"
+msgstr "membre"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "jan"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "feb"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "Aymara"
+msgid "mar"
+msgstr "Aymara"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "Chapter"
+msgid "apr"
+msgstr "Chapitre"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "Summary"
+msgid "may"
+msgstr "Description"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "jun"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "jul"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "aug"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "sep"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "oct"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "nov"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgid "dec"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "abbrev. month"
+msgid "Jan."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "abbrev. month"
+msgid "Feb."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "Search"
+msgctxt "abbrev. month"
+msgid "March"
+msgstr "Rechercher"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "abbrev. month"
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "Malay"
+msgctxt "abbrev. month"
+msgid "May"
+msgstr "Malais"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "abbrev. month"
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "abbrev. month"
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "abbrev. month"
+msgid "Aug."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "abbrev. month"
+msgid "Sept."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "abbrev. month"
+msgid "Oct."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "abbrev. month"
+msgid "Nov."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "abbrev. month"
+msgid "Dec."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "alt. month"
+msgid "January"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "alt. month"
+msgid "February"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "Search"
+msgctxt "alt. month"
+msgid "March"
+msgstr "Rechercher"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "alt. month"
+msgid "April"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "Malay"
+msgctxt "alt. month"
+msgid "May"
+msgstr "Malais"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "alt. month"
+msgid "June"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "alt. month"
+msgid "July"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "alt. month"
+msgid "August"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "member"
+msgctxt "alt. month"
+msgid "September"
+msgstr "membre"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+msgctxt "alt. month"
+msgid "October"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "member"
+msgctxt "alt. month"
+msgid "November"
+msgstr "membre"
+
+#: venv/lib/python3.10/site-packages/django/utils/dates.py
+#, fuzzy
+#| msgid "member"
+msgctxt "alt. month"
+msgid "December"
+msgstr "membre"
+
+#: venv/lib/python3.10/site-packages/django/utils/ipv6.py
+#, fuzzy
+#| msgid "The found file is not a valid video."
+msgid "This is not a valid IPv6 address."
+msgstr "Le fichier trouvé n’est pas une vidéo valide."
+
+#: venv/lib/python3.10/site-packages/django/utils/text.py
+#, python-format
+msgctxt "String to return when truncating text"
+msgid "%(truncated_text)s…"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/text.py
+#, fuzzy
+#| msgid "More"
+msgid "or"
+msgstr "Plus"
+
+#. Translators: This string is used as a separator between list elements
+#: venv/lib/python3.10/site-packages/django/utils/text.py
+#: venv/lib/python3.10/site-packages/django/utils/timesince.py
+msgid ", "
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/utils/timesince.py
+#, python-format
+msgid "%d year"
+msgid_plural "%d years"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/utils/timesince.py
+#, python-format
+msgid "%d month"
+msgid_plural "%d months"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/utils/timesince.py
+#, python-format
+msgid "%d week"
+msgid_plural "%d weeks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/utils/timesince.py
+#, python-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/utils/timesince.py
+#, python-format
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/utils/timesince.py
+#, python-format
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py
+msgid "Forbidden"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py
+msgid "CSRF verification failed. Request aborted."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py
+msgid ""
+"You are seeing this message because this HTTPS site requires a “Referer "
+"header” to be sent by your Web browser, but none was sent. This header is "
+"required for security reasons, to ensure that your browser is not being "
+"hijacked by third parties."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py
+msgid ""
+"If you have configured your browser to disable “Referer” headers, please re-"
+"enable them, at least for this site, or for HTTPS connections, or for “same-"
+"origin” requests."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py
+msgid ""
+"If you are using the <meta name=\"referrer\" content=\"no-referrer\"> tag or "
+"including the “Referrer-Policy: no-referrer” header, please remove them. The "
+"CSRF protection requires the “Referer” header to do strict referer checking. "
+"If you’re concerned about privacy, use alternatives like <a rel=\"noreferrer"
+"\" …> for links to third-party sites."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py
+msgid ""
+"You are seeing this message because this site requires a CSRF cookie when "
+"submitting forms. This cookie is required for security reasons, to ensure "
+"that your browser is not being hijacked by third parties."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py
+msgid ""
+"If you have configured your browser to disable cookies, please re-enable "
+"them, at least for this site, or for “same-origin” requests."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/csrf.py
+#, fuzzy
+#| msgid "No information available"
+msgid "More information is available with DEBUG=True."
+msgstr "Aucune information disponible"
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py
+msgid "No year specified"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py
+#, fuzzy
+#| msgid "Date of recording."
+msgid "Date out of range"
+msgstr "Date de l’enregistrement."
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py
+#, fuzzy
+#| msgid "An action must be specified."
+msgid "No month specified"
+msgstr "Une action doit être précisée."
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py
+msgid "No day specified"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py
+msgid "No week specified"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py
+#, python-format
+msgid "No %(verbose_name_plural)s available"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py
+#, python-format
+msgid ""
+"Future %(verbose_name_plural)s not available because %(class_name)s."
+"allow_future is False."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/dates.py
+#, python-format
+msgid "Invalid date string “%(datestr)s” given format “%(format)s”"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/detail.py
+#, python-format
+msgid "No %(verbose_name)s found matching the query"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/list.py
+msgid "Page is not “last”, nor can it be converted to an int."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/list.py
+#, python-format
+msgid "Invalid page (%(page_number)s): %(message)s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/generic/list.py
+#, python-format
+msgid "Empty list and “%(class_name)s.allow_empty” is False."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/static.py
+msgid "Directory indexes are not allowed here."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/static.py
+#, python-format
+msgid "“%(path)s” does not exist"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/static.py
+#, fuzzy, python-format
+#| msgid "User directory"
+msgid "Index of %(directory)s"
+msgstr "Répertoire utilisateur"
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html
+msgid "The install worked successfully! Congratulations!"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html
+#, python-format
+msgid ""
+"View <a href=\"https://docs.djangoproject.com/en/%(version)s/releases/\" "
+"target=\"_blank\" rel=\"noopener\">release notes</a> for Django %(version)s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html
+#, python-format
+msgid ""
+"You are seeing this page because <a href=\"https://docs.djangoproject.com/en/"
+"%(version)s/ref/settings/#debug\" target=\"_blank\" rel=\"noopener"
+"\">DEBUG=True</a> is in your settings file and you have not configured any "
+"URLs."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html
+#, fuzzy
+#| msgid "Django administration"
+msgid "Django Documentation"
+msgstr "Administration de Pod"
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html
+msgid "Topics, references, &amp; how-to’s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html
+msgid "Tutorial: A Polling App"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html
+msgid "Get started with Django"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html
+msgid "Django Community"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html
+msgid "Connect, get help, or contribute"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/httplib2/__init__.py
+#, python-format
+msgid "Content purported to be compressed with %s but failed to decompress."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/httplib2/__init__.py
+#, python-format
+msgid "Unsupported value for qop: %s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/httplib2/__init__.py
+#, python-format
+msgid "Unsupported value for algorithm: %s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/httplib2/__init__.py
+msgid "The challenge doesn't contain a server nonce, or this one is empty."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/httplib2/__init__.py
+#, python-format
+msgid "Unsupported value for pw-algorithm: %s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/httplib2/__init__.py
+msgid "Redirected but the response is missing a Location: header."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/kombu/transport/qpid.py
+#, python-format
+msgid "Attempting to connect to qpid with SASL mechanism %s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/kombu/transport/qpid.py
+#, python-format
+msgid "Connected to qpid with SASL mechanism %s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/kombu/transport/qpid.py
+#, python-format
+msgid "Unable to connect to qpid with SASL mechanism %s"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/apps.py
+msgid "Tagging"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/fields.py
+#, python-format
+msgid "%s can only be set on instances."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/forms.py
+msgid "Multiple tags were given."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/forms.py
+#, python-format
+msgid "Each tag may be no more than %s characters long."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/models.py
+#, python-format
+msgid "No tags were given: \"%s\"."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/models.py
+#, python-format
+msgid "Multiple tags were given: \"%s\"."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/models.py
+msgid "tag"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/models.py
+msgid "tags"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/models.py
+#, fuzzy
+#| msgid "content"
+msgid "content type"
+msgstr "contenu"
+
+#: venv/lib/python3.10/site-packages/tagging/models.py
+#, fuzzy
+#| msgid "Subject"
+msgid "object id"
+msgstr "Sujet"
+
+#: venv/lib/python3.10/site-packages/tagging/models.py
+msgid "tagged item"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/models.py
+msgid "tagged items"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
+#, fuzzy, python-format
+#| msgid "tags_for_model tag was given an invalid model: %s"
+msgid "tag_cloud_for_model tag was given an invalid model: %s"
+msgstr "la balise tags_for_model a reçu un modèle invalide : %s"
+
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
+#, fuzzy, python-format
+#| msgid "tags_for_model tag was given an invalid model: %s"
+msgid "tagged_objects tag was given an invalid model: %s"
+msgstr "la balise tags_for_model a reçu un modèle invalide : %s"
+
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
+#, fuzzy, python-format
+#| msgid "second argument to %s tag must be “as”"
+msgid "second argument to %s tag must be 'as'"
+msgstr "le deuxième argument de la balise %s doit être « as »"
+
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
+#, fuzzy, python-format
+#| msgid "if given, fourth argument to %s tag must be “with”"
+msgid "if given, fourth argument to %s tag must be 'with'"
+msgstr ""
+"s’il est donné, le quatrième argument de la balise %s doit être « with »"
+
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
+#, fuzzy, python-format
+#| msgid "if given, fifth argument to %s tag must be “counts”"
+msgid "if given, fifth argument to %s tag must be 'counts'"
+msgstr "si donné, le 5e argument de la balise %s doit être « counts »"
+
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
+#, fuzzy, python-format
+#| msgid ""
+#| "%(tag)s tag’s “%(option)s” option was not a valid integer: “%(value)s”"
+msgid "%(tag)s tag's '%(option)s' option was not a valid integer: '%(value)s'"
+msgstr ""
+"l’option « %(option)s » de la balise %(tag)s n’est pas un entier valide : "
+"’%(value)s’"
+
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
+#, fuzzy, python-format
+#| msgid ""
+#| "%(tag)s tag’s “%(option)s” option was not a valid choice: “%(value)s”"
+msgid "%(tag)s tag's '%(option)s' option was not a valid choice: '%(value)s'"
+msgstr ""
+"l’option « %(option)s » de la balise %(tag)s n’est pas un choix valide : "
+"’%(value)s’"
+
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
+#, fuzzy, python-format
+#| msgid "%(tag)s tag was given an invalid option: “%(option)s”"
+msgid "%(tag)s tag was given an invalid option: '%(option)s'"
+msgstr "l’option « %(option)s » est invalide pour la balise %(tag)s"
+
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
+#, fuzzy, python-format
+#| msgid "%(tag)s tag was given a badly formatted option: “%(option)s”"
+msgid "%(tag)s tag was given a badly formatted option: '%(option)s'"
+msgstr "l’option « %(option)s » n’est pas au bon format pour la balise %(tag)s"
+
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
+#, fuzzy, python-format
+#| msgid "%s tag requires either three or five arguments"
+msgid "%s tag requires exactly three arguments"
+msgstr "la balise %s requiert trois ou cinq arguments"
+
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
+#, fuzzy, python-format
+#| msgid "%s tag requires either three or five arguments"
+msgid "%s tag requires exactly five arguments"
+msgstr "la balise %s requiert trois ou cinq arguments"
+
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
+#, fuzzy, python-format
+#| msgid "second argument to %s tag must be “as”"
+msgid "second argument to %s tag must be 'in'"
+msgstr "le deuxième argument de la balise %s doit être « as »"
+
+#: venv/lib/python3.10/site-packages/tagging/templatetags/tagging_tags.py
+#, fuzzy, python-format
+#| msgid "second argument to %s tag must be “as”"
+msgid "fourth argument to %s tag must be 'as'"
+msgstr "le deuxième argument de la balise %s doit être « as »"
+
+#: venv/lib/python3.10/site-packages/tagging/utils.py
+msgid ""
+"If a list or tuple of tags is provided, they must all be tag names, Tag "
+"objects or Tag ids."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/utils.py
+msgid "The tag input given was invalid."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/utils.py
+#, python-format
+msgid "Invalid distribution algorithm specified: %s."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/views.py
+msgid "TaggedObjectList must be called with a tag."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/tagging/views.py
+#, python-format
+msgid "No Tag found matching \"%s\"."
+msgstr "Aucune balise correspondant à \"%s\" trouvée."
+
+#~ msgid ""
+#~ "Pod is aimed at users of our institutions, by allowing the publication of "
+#~ "videos in the fields of research (promotion of platforms, etc.), training "
+#~ "(tutorials, distance training, student reports, etc.), institutional life "
+#~ "(video of events), offering several days of content."
+#~ msgstr ""
+#~ "Pod a pour but de faciliter la mise à disposition de vidéos et de ce "
+#~ "fait, d’encourager l’utilisation de celles-ci dans le cadre de "
+#~ "l’enseignement et la recherche."
+
 #~ msgid "The HTML file for this recording was not found on the server."
 #~ msgstr ""
 #~ "Le fichier HTML de cet enregistrement est introuvable sur le serveur."
 
-#, python-format
 #~ msgid "Error number: %s"
 #~ msgstr "Numéro d’erreur : %s"
 

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-01 13:49+0100\n"
+"POT-Creation-Date: 2024-03-06 15:20+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -15,6 +15,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.2.2\n"
+
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "No discipline"
+msgstr ""
+
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "No description"
+msgstr ""
+
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "An error has occurred. Please try later."
+msgstr ""
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 msgid "Get time from the player"
@@ -96,6 +108,10 @@ msgid "There is no caption/subtitle to save."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
+msgid "You will soon be redirected."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
 msgid "Not a valid time track file."
 msgstr ""
 
@@ -164,16 +180,8 @@ msgid "A caption cannot contain more than 80 characters."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
-msgid "Add a caption/subtitle after this one"
-msgstr ""
-
-#: pod/completion/static/js/caption_maker.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Add"
-msgstr ""
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Delete this caption/subtitle"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
@@ -521,14 +529,6 @@ msgid "Loading…"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
-msgid "Change image"
-msgstr ""
-
-#: pod/podfile/static/podfile/js/filewidget.js
-msgid "Change file"
-msgstr ""
-
-#: pod/podfile/static/podfile/js/filewidget.js
 msgid "Open file in a new tab"
 msgstr ""
 
@@ -593,14 +593,17 @@ msgid "Disable notifications"
 msgstr ""
 
 #: pod/progressive_web_app/static/js/notification-toast.js
+#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
 msgid "Unsubscribe from Push Messaging"
 msgstr ""
 
 #: pod/progressive_web_app/static/js/notification-toast.js
+#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
 msgid "Successfully subscribed to push notifications."
 msgstr ""
 
 #: pod/progressive_web_app/static/js/notification-toast.js
+#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
 msgid "Error while subscribing to push notifications."
 msgstr ""
 
@@ -646,34 +649,11 @@ msgid "Cancel"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
-#, javascript-format
-msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
-msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pod/video/static/js/comment-script.js
 msgid "Agree with the comment"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
-msgid "Reply to comment"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js
-msgid "Reply"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js
 msgid "Remove this comment"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js
-msgid "Add a public comment"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js
-msgid "Send"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
@@ -687,6 +667,13 @@ msgstr ""
 #: pod/video/static/js/comment-script.js
 msgid "Sorry, you’re not allowed to vote by now."
 msgstr ""
+
+#: pod/video/static/js/comment-script.js
+#, javascript-format
+msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
+msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/video/static/js/comment-script.js
 msgid "Sorry, you can’t comment this video by now."
@@ -720,47 +707,38 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is password protected."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is chaptered."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is in draft."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Video content."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Audio content."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Edit the video"
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Complete the video"
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Chapter the video"
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Delete the video"
 msgstr ""
 
@@ -830,18 +808,6 @@ msgstr ""
 
 #: pod/video/static/js/video_category.js
 msgid "Edit the category"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Delete the category"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Success!"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Error…"
 msgstr ""
 
 #: pod/video/static/js/video_category.js
@@ -924,4 +890,36 @@ msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
+msgid "Service workers are not supported in your browser."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
+msgid "Showing notifications are not supported in your browser."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
+msgid "Subscribe to Push Messaging"
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
+msgid "Push notifications are blocked by your browser."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
+msgid "Push notifications are not available in your browser."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
+msgid "Subscription is not available."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
+msgid "Successfully unsubscribed from push notifications."
+msgstr ""
+
+#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
+msgid "Error while unsubscribing from push notifications."
 msgstr ""
