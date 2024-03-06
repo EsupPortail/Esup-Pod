@@ -13,6 +13,7 @@ from pod.completion.models import Track
 import shutil
 import os
 import time
+import coverage
 
 VIDEO_TEST = "pod/main/static/video_test/video_test_encodage_transcription.webm"
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
@@ -29,6 +30,8 @@ class Command(BaseCommand):
     help = "launch of video encoding and transcripting for video test : %s" % VIDEO_TEST
 
     def handle(self, *args, **options):
+        cov = coverage.coverage()
+        cov.start()
         user, created = User.objects.update_or_create(
             username="pod", password="pod1234pod"
         )
@@ -52,6 +55,9 @@ class Command(BaseCommand):
         shutil.copyfile(VIDEO_TEST, dest)
         self.test_encoding(video)
         self.test_transcripting(video)
+        cov.stop()
+        cov.save()
+        cov.html_report()
         print("\n -----> End of Encoding/transcripting video test")
 
     def test_transcripting(self, video):

@@ -9,6 +9,16 @@ ADMINS = (
     ('Nicolas', 'nicolas@univ.fr'),
 )
 
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        'NAME': '/usr/src/app/pod/db_remote.sqlite3',
+        'TEST': {
+            'NAME': '/usr/src/app/pod/db_remote.sqlite3',
+        },
+    }
+}
+
 USE_PODFILE = True
 USE_NOTIFICATIONS = False
 EMAIL_ON_ENCODING_COMPLETION = False

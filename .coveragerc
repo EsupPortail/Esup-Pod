@@ -10,6 +10,7 @@ omit = pod/*settings*.py
        pod/*apps.py
        pod/wsgi.py
        */tests/*
+       */commands/*
        */migrations/*
        pod/recorder/plugins/type_*.py
        pod/*/forms.py
