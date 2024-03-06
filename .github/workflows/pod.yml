@@ -30,7 +30,7 @@ env:
   FIREFOX_VER: "87.0"
 
 jobs:
-  Pod-Docker-Encoding-Actions:
+  Pod-Test-Docker-Encoding-Actions:
     runs-on: ubuntu-latest
 
     strategy:

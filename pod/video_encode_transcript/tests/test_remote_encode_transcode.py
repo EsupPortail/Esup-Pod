@@ -56,11 +56,13 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         print(" --->  SetUp of RemoteEncodeTranscriptTestCase: OK!")
 
     def tearDown(self):
-        if getattr(self, "video"):
+        if not TEST_REMOTE_ENCODE:
+            return
+        if getattr(self, "video", False):
             self.video.delete()
         if Token.objects.filter(key=POD_API_TOKEN).exists():
             Token.objects.get(key=POD_API_TOKEN).delete()
-        if getattr(self, "user"):
+        if getattr(self, "user", False):
             self.user.delete()
         print(" --->  tearDown of RemoteEncodeTranscriptTestCase: OK!")
 
