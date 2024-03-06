@@ -127,7 +127,7 @@ class AristoteAI:
                     headers=headers,
                 )
                 if response.status_code == 200:
-                    return extract_json_from_str(response.content.decode("utf-8"))
+                    return extract_json_from_str(response.content.decode("utf-8")) if response.content else None
                 else:
                     print(f"Error: {response.status_code}")
                 return None

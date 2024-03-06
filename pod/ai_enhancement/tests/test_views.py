@@ -66,7 +66,7 @@ class EnrichVideoJsonViewTest(TestCase):
         mock_aristote_instance.get_latest_enrichment_version.assert_called_once_with(
             self.enrichment.ai_enrichment_id_in_aristote,
         )
-        expected_json = json
+        expected_json = json_data
         self.assertJSONEqual(str(response.content, encoding="utf-8"), expected_json)
         print(" --->  test_enrich_video_json__success ok")
 
