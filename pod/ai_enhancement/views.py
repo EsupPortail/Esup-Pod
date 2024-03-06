@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
-from webvtt import WebVTT
 
 from pod.ai_enhancement.forms import AIEnrichmentChoice
 from pod.ai_enhancement.models import AIEnrichment
@@ -116,7 +115,6 @@ def enrich_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
         owner=request.user,
     )
     if enrichment_is_already_asked(video):
-        aristote = AristoteAI(AI_ENRICHMENT_CLIENT_ID, AI_ENRICHMENT_CLIENT_SECRET)
         enrichment = AIEnrichment.objects.filter(video=video).first()
         if enrichment.is_ready:
             return render(
