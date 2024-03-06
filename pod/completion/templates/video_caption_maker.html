@@ -231,7 +231,9 @@
   {% if ai_enrichment %}
     <script src="{% static 'ai_enhancement/js/enrich-transcription.js' %}?={{ VERSION }}"></script>
     <script>
-      loadSubtitles('{{ video.slug }}');
+      document.addEventListener('DOMContentLoaded', function () {
+        loadSubtitles('{{ video.slug }}');
+      });
     </script>
   {% endif %}
 {% endblock more_script %}

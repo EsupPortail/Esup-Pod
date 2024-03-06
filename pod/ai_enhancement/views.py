@@ -8,14 +8,17 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from webvtt import WebVTT
 
 from pod.ai_enhancement.forms import AIEnrichmentChoice
 from pod.ai_enhancement.models import AIEnrichment
-from pod.ai_enhancement.utils import AristoteAI, enrichment_is_already_asked
+from pod.ai_enhancement.utils import AristoteAI, enrichment_is_already_asked, json_to_web_vtt
+from pod.completion.models import Track
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.views import in_maintenance
 from pod.podfile.models import UserFolder
 from pod.video.models import Video, Discipline
+from pod.video_encode_transcript.transcript import saveVTT
 
 AI_ENRICHMENT_CLIENT_ID = getattr(settings, "AI_ENRICHMENT_CLIENT_ID", "mocked_id")
 AI_ENRICHMENT_CLIENT_SECRET = getattr(settings, "AI_ENRICHMENT_CLIENT_SECRET", "mocked_secret")
@@ -113,6 +116,7 @@ def enrich_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
         owner=request.user,
     )
     if enrichment_is_already_asked(video):
+        aristote = AristoteAI(AI_ENRICHMENT_CLIENT_ID, AI_ENRICHMENT_CLIENT_SECRET)
         enrichment = AIEnrichment.objects.filter(video=video).first()
         if enrichment.is_ready:
             return render(
@@ -123,7 +127,7 @@ def enrich_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
                     "video": video,
                     "languages": LANG_CHOICES,
                     "page_title": _("Video Caption Maker - Aristote AI Version"),
-                    "ai_enrichment": enrichment,
+                    # "ai_enrichment": enrichment,
                 },
             )
         return redirect(reverse("video:video", args=[video.slug]))
@@ -136,8 +140,6 @@ def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
     if request.method == "POST":
         form = AIEnrichmentChoice(request.POST, instance=video)
         if form.is_valid():
-            print(form.cleaned_data["disciplines"])
-            print("===== get_object_or_404(Discipline, title=form.cleaned_data['disciplines']) =====")
             disciplines = video.discipline.all()
             form.save()
             discipline = get_object_or_404(Discipline, title=form.cleaned_data["disciplines"])
@@ -146,7 +148,13 @@ def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
             video.discipline.add(discipline)
             video.save()
             video = form.instance
-            return redirect(reverse("ai_enhancement:enrich_subtitles", args=[video.slug]) + '?generated=true')
+            aristote = AristoteAI(AI_ENRICHMENT_CLIENT_ID, AI_ENRICHMENT_CLIENT_SECRET)
+            enrichment = AIEnrichment.objects.filter(video=video).first()
+            latest_version = aristote.get_latest_enrichment_version(enrichment.ai_enrichment_id_in_aristote)
+            web_vtt = json_to_web_vtt(latest_version["transcript"]["sentences"], video.duration)
+            saveVTT(video, web_vtt, latest_version["transcript"]["language"])
+            latest_track = Track.objects.filter(video=video,).order_by("id").first()
+            return redirect(reverse("ai_enhancement:enrich_subtitles", args=[video.slug]) + '?src=' + str(latest_track.src_id))
         else:
             return render(
                 request,
