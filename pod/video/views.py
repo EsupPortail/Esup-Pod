@@ -190,6 +190,23 @@ CHANNELS_PER_BATCH = getattr(settings, "CHANNELS_PER_BATCH", 10)
 # ############################################################################
 
 
+def get_theme_children_as_list(channel, theme_children, limit, offset):
+    """Get theme children as a list, and not a Queryset."""
+    # List of children's themes
+    children = list()
+    for child in theme_children:
+        if child is not None:
+            # Get a flat list of all theme children.
+            list_theme = child.get_all_children_flat()
+            # Videos for each child theme
+            videos_list = get_available_videos().filter(channel=channel)
+            videos_list = videos_list.filter(theme__in=list_theme)
+            child.video_count = videos_list.count()
+            child.offset = limit + offset
+            children.append(child)
+    return children
+
+
 def _regroup_videos_by_theme(request, videos, channel, theme=None):
     """Regroup videos by theme.
 
@@ -234,12 +251,12 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
     if theme_children is not None:
         count_themes = theme_children.count()
         has_more_themes = (offset + limit) < count_themes
+        # Default value for each child theme
         theme_children = theme_children.annotate(
-            video_count=Count("video", filter=Q(video__is_draft=False), distinct=True)
+            video_count=Value(0)
         )
-        theme_children = theme_children.values("slug", "title", "video_count")[
-            offset : limit + offset
-        ]
+        # List of children's themes
+        children = get_theme_children_as_list(channel, theme_children, limit, offset)
         next_url, previous_url, theme_pages_info = pagination_data(
             request.path, offset, limit, count_themes
         )
@@ -249,7 +266,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
             "previous": previous_url,
             "has_more_themes": has_more_themes,
             "count_themes": count_themes,
-            "theme_children": list(theme_children),
+            "theme_children": children,
             "pages_info": theme_pages_info,
         }
     title = channel.title if theme is None else theme.title
@@ -302,7 +319,6 @@ def paginator(videos_list, page):
 
 def channel(request, slug_c, slug_t=None):
     channel = get_object_or_404(Channel, slug=slug_c, site=get_current_site(request))
-
     videos_list = get_available_videos().filter(channel=channel)
     channel.video_count = videos_list.count()
 
