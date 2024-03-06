@@ -189,6 +189,7 @@ def json_to_web_vtt(json_data: dict, duration: int) -> WebVTT:
 
 
 def convert_time(seconds):
+    """Convert time from seconds to minutes, seconds and milliseconds."""
     minutes = seconds // 60
     remaining_seconds = seconds % 60
     milliseconds = int((seconds - int(seconds)) * 1000)
@@ -202,4 +203,5 @@ def convert_time(seconds):
 
 
 def pad_zero(number, width):
+    """Pad zero."""
     return str(number).zfill(width)
