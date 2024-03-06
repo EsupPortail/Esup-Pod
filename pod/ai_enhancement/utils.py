@@ -113,7 +113,7 @@ class AristoteAI:
                     ),
                     # "aiEvaluation": "true"                    # TODO: change this
                 },
-                "enduserIdentifier": end_user_identifier,     # TODO: change this
+                "enduserIdentifier": end_user_identifier,
             }
             headers = {
                 "Accept": "application/json",

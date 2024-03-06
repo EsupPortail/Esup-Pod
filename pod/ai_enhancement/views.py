@@ -1,6 +1,7 @@
 import json
 
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse, JsonResponse
@@ -62,11 +63,10 @@ def toggle_webhook(request: WSGIRequest):
 def send_enrichment_creation_request(request: WSGIRequest, aristote: AristoteAI, video: Video) -> HttpResponse:
     """Send a request to create an enrichment."""
     creation_response = aristote.create_enrichment_from_url(
-        "https://pod.univ-lille.fr/media/videos/585da9d28e5b53c539a1da3ad0d3a3c294a85b5941e9ce46a40b2e006fa69189/35596/360p.mp4",
-        # TODO change this
+        get_current_site(request).domain + video.video.url,
         ["video/mp4"],
         request.user.username,
-        "https://webhook.site/02dce66d-1bb1-42dd-b204-39fb4df27b94",  # TODO change this
+        reverse("ai_enhancement:webhook"),
     )
     if creation_response:
         if creation_response["status"] == "OK":
