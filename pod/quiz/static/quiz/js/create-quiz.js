@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const copyEmptyQuestionFormEl = document
       .getElementById("empty-form")
       .cloneNode(true).firstElementChild;
-    copyEmptyQuestionFormEl.setAttribute("class", "question-form");
+    copyEmptyQuestionFormEl.classList.add("border", "rounded-3", "p-3", "mb-3", "question-form");
     copyEmptyQuestionFormEl.removeAttribute("id");
 
     const regex = new RegExp("__prefix__", "g");
@@ -82,7 +82,8 @@ document.addEventListener("DOMContentLoaded", function () {
       copyEmptyQuestionFormEl.innerHTML.replace(regex, currentFormCount);
 
     totalNewForms.setAttribute("value", currentFormCount + 1);
-
+    copyEmptyQuestionFormEl.querySelector(".question-number").innerHTML = currentFormCount + 1;
+    copyEmptyQuestionFormEl.setAttribute("data-question-index", currentFormCount)
     return copyEmptyQuestionFormEl;
   }
 
@@ -118,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
     input.type = "text";
     input.name = questionForm.querySelector(".question-choices-form").name;
     input.placeholder = gettext("The short answer");
-    input.classList.add("short-answer-field");
+    input.classList.add("short-answer-field", "form-control");
 
     let initialData = getQuestionData(questionForm);
     if (initialData && initialData["short_answer"] != null) {
@@ -131,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const textarea = document.createElement("textarea");
     textarea.name = questionForm.querySelector(".question-choices-form").name;
     textarea.placeholder = gettext("The long answer");
-    textarea.classList.add("long-answer-field");
+    textarea.classList.add("long-answer-field", "form-control");
 
     let initialData = getQuestionData(questionForm);
     if (initialData && initialData["long_answer"] != null) {
@@ -148,17 +149,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const createChoiceElement = (index, choice) => {
       const choiceDiv = document.createElement("div");
-      choiceDiv.classList.add("form-check");
+      choiceDiv.classList.add("form-check", "d-flex", "align-items-center");
 
       const input = document.createElement("input");
       input.type = "radio";
       input.classList.add("form-check-input");
       input.name = `choices_${counter}`;
 
-      const deleteButton = document.createElement("button");
-      deleteButton.textContent = gettext("Delete");
-      deleteButton.type = "button";
-      deleteButton.classList.add("btn", "btn-outline-danger", "btn-sm", "mt-2");
+      const deleteButton = document.createElement("i");
+      deleteButton.setAttribute("aria-hidden", "true");
+      deleteButton.classList.add("bi", "bi-trash", "btn", "btn-link", "pod-btn-social");
       deleteButton.addEventListener("click", function () {
         choiceDiv.remove();
       });
@@ -166,6 +166,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const textInput = document.createElement("input");
       textInput.type = "text";
       textInput.placeholder = gettext("Choice") + ` ${index}`;
+      textInput.classList.add("form-control", "ms-2");
       if (choice) {
         textInput.value = choice[0];
         console.log(input);

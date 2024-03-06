@@ -23,7 +23,7 @@
       <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
     {% endif %}
     {% for field_hidden in quiz_form.hidden_fields %}
-      {{field_hidden}}
+      {{ field_hidden }}
     {% endfor %}
     {% for field in quiz_form.visible_fields %}
       {% spaceless %}
@@ -45,7 +45,8 @@
       {% endspaceless %}
     {% endfor %}
 
-    <hr>
+    <br>
+
     {{ question_formset.management_form }}
     <div id="question-form-list">
       {% for question_form in question_formset %}

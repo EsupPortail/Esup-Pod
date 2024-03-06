@@ -37,26 +37,29 @@ class QuestionForm(forms.Form):
         label=_("Title"),
         required=True,
         widget=forms.TextInput(attrs={"placeholder": _("Your question")}),
+        help_text=_("Please choose a title between 1 and 250 characters."),
     )
     explanation = forms.CharField(
         label=_("Explanation"),
         widget=forms.Textarea(
             attrs={
                 "placeholder": _("Explanation of the question"),
-                "cols": "40",
-                "rows": "5",
             }
         ),
         required=False,
+        help_text=_("Please choose an explanation."),
     )
-    start_timestamp = forms.IntegerField(label=_("Start Timestamp"), required=False)
-    end_timestamp = forms.IntegerField(label=_("End Timestamp"), required=False)
+    start_timestamp = forms.IntegerField(label=_("Start Timestamp"), required=False, help_text=_(
+        "Please choose the beginning time of the answer in the video."),)
+    end_timestamp = forms.IntegerField(label=_("End Timestamp"), required=False, help_text=_(
+        "Please choose the end time of the answer in the video."))
     type = forms.ChoiceField(
         choices=QUESTION_TYPES,
         initial="unique_choice",
         widget=forms.Select(attrs={"class": "question-select-type"}),
         label=_("Question Type"),
         required=True,
+        help_text=_("Please choose the question type."),
     )
 
     unique_choice = forms.CharField(
@@ -117,6 +120,10 @@ class QuestionForm(forms.Form):
                 return
         return cleaned_data
 
+    def __init__(self, *args, **kwargs) -> None:
+        """Init question form."""
+        super(QuestionForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
 
 class QuizForm(forms.Form):
     """Form to add or edit a quiz."""
