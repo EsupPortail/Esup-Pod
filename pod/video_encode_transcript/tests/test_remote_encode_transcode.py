@@ -9,6 +9,7 @@ from pod.video_encode_transcript import encode
 from pod.video_encode_transcript.models import EncodingVideo
 from pod.video_encode_transcript.models import PlaylistVideo
 from pod.video_encode_transcript.models import EncodingLog
+from pod.completion.models import Track
 
 import shutil
 import os
@@ -22,7 +23,6 @@ POD_API_TOKEN = getattr(settings, "POD_API_TOKEN", "")
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
     from pod.video_encode_transcript import transcript
-
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 
@@ -56,11 +56,11 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         print(" --->  SetUp of RemoteEncodeTranscriptTestCase: OK!")
 
     def tearDown(self):
-        if self.video:
+        if getattr(self, "video"):
             self.video.delete()
         if Token.objects.filter(key=POD_API_TOKEN).exists():
             Token.objects.get(key=POD_API_TOKEN).delete()
-        if self.user:
+        if getattr(self, "user"):
             self.user.delete()
         print(" --->  tearDown of RemoteEncodeTranscriptTestCase: OK!")
 
@@ -134,6 +134,8 @@ class RemoteEncodeTranscriptTestCase(TestCase):
                 if n > 60:
                     raise ValidationError("Error while transcripting !!!")
             self.video.refresh_from_db()
+            if not Track.objects.filter(video=self.video, lang="fr").exists():
+                raise ValidationError("Error while transcripting !!!")
         else:
             raise ValidationError("No mp3 found !!!")
         print("\n ---> End of transcripting video test")
