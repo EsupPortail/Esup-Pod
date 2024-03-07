@@ -225,12 +225,8 @@ def improveCaptionsAccessibility(webvtt):
                 new_cap.text = get_cap_text(sent, x)
                 # Durée d'affichage au prorata du nombre de mots
                 timeCalc = dur * (len(new_cap.text.split()) / nbTotWords)
-                new_cap.start = sec_to_timestamp(
-                    startTime
-                )
-                new_cap.end = sec_to_timestamp(
-                    startTime + timeCalc
-                )
+                new_cap.start = sec_to_timestamp(startTime)
+                new_cap.end = sec_to_timestamp(startTime + timeCalc)
                 startTime = startTime + timeCalc
                 new_captions.append(new_cap)
         else:
