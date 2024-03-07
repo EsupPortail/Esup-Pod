@@ -1,0 +1,50 @@
+name: Pod Main test
+run-name: ${{ github.actor }} is testing Pod main 🚀
+
+on:
+    push:
+      branches:
+      - main
+      - master
+    pull_request:
+      branches:
+      - main
+      - master
+
+env:
+    DJANGO_SUPERUSER_USERNAME: "admin"
+    DJANGO_SUPERUSER_PASSWORD: "passwd"
+    DJANGO_SUPERUSER_EMAIL: "noreplay@uni.fr"
+    ELASTICSEARCH_TAG: "elasticsearch:7.17.18"
+    ELASTICSEARCH_VERION: "elasticsearch:7.17.18"
+    NODE_TAG: "node:19"
+    PYTHON_TAG: "python:3.9-buster"
+    REDIS_TAG: "redis:alpine3.16"
+    DOCKER_ENV: "full"
+    GECKODRIVER_VER: "v0.29.0"
+    FIREFOX_VER: "87.0"
+
+jobs:
+    Pod-Main:
+        runs-on: ubuntu-latest
+        strategy:
+            max-parallel: 4
+            matrix:
+              python-version: ['3.8', '3.9', '3.10']
+        steps:
+            - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+            - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+            - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+            - run: echo "🚀 Run test for Python ${{ matrix.python-version }}"
+            - uses: actions/checkout@v4
+            - name: Configure sysctl limits (for ES)
+              run: |
+                sudo swapoff -a
+                sudo sysctl -w vm.swappiness=1
+                sudo sysctl -w fs.file-max=262144
+                sudo sysctl -w vm.max_map_count=262144
+
+            - name: Set up Python ${{ matrix.python-version }}
+              uses: actions/setup-python@v5
+              with:
+                python-version: ${{ matrix.python-version }}
