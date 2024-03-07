@@ -12,34 +12,35 @@ register = Library()
 @register.simple_tag(takes_context=True, name="is_quiz_accessible")
 def is_quiz_accessible(context: dict, video: Video) -> bool:
     """
-    Template tag used to get the quiz of the video.
+    Template tag used to know if a quiz is accessible or not.
 
     Args:
-        Video (:class:`pod.video.models.Video`): The specific video.
+        video (:class:`pod.video.models.Video`): The specific video.
 
 
     Returns:
-        str: Link to start the playlist.
+        bool: True if the video is accessible.
     """
     if get_video_quiz(video):
         quiz = get_video_quiz(video)
         request = context["request"]
-        if quiz.connected_user_only and request.user.is_authenticated:
-            return True
-    return False
+        print(quiz.connected_user_only)
+        if quiz.connected_user_only and not request.user.is_authenticated:
+            return False
+    return True
 
 
 @register.simple_tag(name="is_quiz_exists")
 def is_quiz_exists(video: Video) -> bool:
     """
-    Template tag used to check if the quiz of the video.
+    Template tag used to check if the quiz of the video exists.
 
     Args:
         Video (:class:`pod.video.models.Video`): The specific video.
 
 
     Returns:
-        str: Link to start the playlist.
+        bool: True if the quiz exists.
     """
     if get_video_quiz(video):
         return True

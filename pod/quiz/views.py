@@ -1,6 +1,7 @@
 """Esup-Pod quiz views."""
 
 import json
+from typing import Optional
 from django.forms import formset_factory
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
@@ -57,7 +58,7 @@ def create_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
 
     if request.method == "POST":
         return handle_post_request_for_create_or_edit_quiz(
-            request, video, question_formset_factory
+            request, video, question_formset_factory, action="create"
         )
     else:
         quiz_form = QuizForm()
@@ -75,8 +76,40 @@ def create_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
     )
 
 
+def update_questions(existing_quiz: Quiz, question_formset) -> None:
+    """
+    Updates existing questions in a given quiz based on the provided formset.
+
+    Args:
+        existing_quiz (Quiz): The existing quiz instance.
+        question_formset: The formset containing updated question data.
+    """
+    for question_form, existing_question in zip(
+        question_formset, existing_quiz.get_questions()
+    ):
+        question_type = question_form.cleaned_data.get("type")
+        title = question_form.cleaned_data["title"]
+        explanation = question_form.cleaned_data["explanation"]
+        start_timestamp = question_form.cleaned_data["start_timestamp"]
+        end_timestamp = question_form.cleaned_data["end_timestamp"]
+
+        if question_type == "short_answer":
+            existing_question.answer = question_form.cleaned_data["short_answer"]
+        elif question_type == "long_answer":
+            existing_question.answer = question_form.cleaned_data["long_answer"]
+        elif question_type == "unique_choice":
+            existing_question.choices = question_form.cleaned_data["unique_choice"]
+
+        existing_question.title = title
+        existing_question.explanation = explanation
+        existing_question.start_timestamp = start_timestamp
+        existing_question.end_timestamp = end_timestamp
+
+        existing_question.save()
+
+
 def handle_post_request_for_create_or_edit_quiz(
-    request: WSGIRequest, video: Video, question_formset_factory
+    request: WSGIRequest, video: Video, question_formset_factory, action: str
 ) -> HttpResponse:
     """
     Handles the POST request for creating or editing a quiz associated with a video.
@@ -91,16 +124,23 @@ def handle_post_request_for_create_or_edit_quiz(
     """
     quiz_form = QuizForm(request.POST)
     question_formset = question_formset_factory(request.POST, prefix="questions")
-
     if quiz_form.is_valid() and question_formset.is_valid():
-        new_quiz = create_quiz_instance(video, quiz_form)
-        create_questions(new_quiz, question_formset)
-
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            _("Quiz successfully created."),
-        )
+        if action == "create":
+            new_quiz = create_or_edit_quiz_instance(video, quiz_form, action)
+            create_questions(new_quiz, question_formset)
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                _("Quiz successfully created."),
+            )
+        elif action == "edit":
+            new_quiz = create_or_edit_quiz_instance(video, quiz_form, action)
+            update_questions(new_quiz, question_formset)
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                _("Quiz successfully updated."),
+            )
 
         return HttpResponseRedirect(reverse("video:video", kwargs={"slug": video.slug}))
     else:
@@ -122,22 +162,34 @@ def handle_post_request_for_create_or_edit_quiz(
     )
 
 
-def create_quiz_instance(video: Video, quiz_form: QuizForm) -> Quiz:
+def create_or_edit_quiz_instance(
+    video: Video, quiz_form: QuizForm, action: str
+) -> Optional[Quiz]:
     """
-    Creates a new quiz instance based on the provided video and quiz form.
+    Creates a new quiz instance or updates an existing one based on the provided action.
 
     Args:
         video (Video): The associated video instance.
         quiz_form (QuizForm): The form containing quiz data.
+        action (str): The action to perform - "create" or "edit".
 
     Returns:
-        Quiz: The created quiz instance.
+        Optional[Quiz]: The created or updated quiz instance, or None if the action is invalid.
     """
-    return Quiz.objects.create(
-        video=video,
-        connected_user_only=quiz_form.cleaned_data["connected_user_only"],
-        show_correct_answers=quiz_form.cleaned_data["show_correct_answers"],
-    )
+    if action == "create":
+        return Quiz.objects.create(
+            video=video,
+            connected_user_only=quiz_form.cleaned_data["connected_user_only"],
+            show_correct_answers=quiz_form.cleaned_data["show_correct_answers"],
+        )
+    elif action == "edit":
+        existing_quiz = get_object_or_404(Quiz, video=video)
+        existing_quiz.connected_user_only = quiz_form.cleaned_data["connected_user_only"]
+        existing_quiz.show_correct_answers = quiz_form.cleaned_data[
+            "show_correct_answers"
+        ]
+        existing_quiz.save()
+        return existing_quiz
 
 
 def create_questions(new_quiz: Quiz, question_formset) -> None:
@@ -338,10 +390,11 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         raise PermissionDenied
 
     quiz = get_object_or_404(Quiz, video=video)
-
+    print("non")
     if request.method == "POST":
+        print("POST")
         return handle_post_request_for_create_or_edit_quiz(
-            request, video, question_formset_factory, quiz=quiz
+            request, video, question_formset_factory, action="edit"
         )
     else:
         quiz_form = QuizForm(

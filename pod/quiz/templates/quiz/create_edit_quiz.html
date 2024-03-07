@@ -17,7 +17,7 @@
 
 
 {% block page_content %}
-  <form method="post" id="quiz-form" action="{% url 'quiz:add_quiz' video_slug=video.slug %}">
+  <form method="post" id="quiz-form">
     {% csrf_token %}
     {% if quiz_form.errors %}
       <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>

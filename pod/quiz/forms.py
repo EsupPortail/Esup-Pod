@@ -49,10 +49,16 @@ class QuestionForm(forms.Form):
         required=False,
         help_text=_("Please choose an explanation."),
     )
-    start_timestamp = forms.IntegerField(label=_("Start Timestamp"), required=False, help_text=_(
-        "Please choose the beginning time of the answer in the video."),)
-    end_timestamp = forms.IntegerField(label=_("End Timestamp"), required=False, help_text=_(
-        "Please choose the end time of the answer in the video."))
+    start_timestamp = forms.IntegerField(
+        label=_("Start Timestamp"),
+        required=False,
+        help_text=_("Please choose the beginning time of the answer in the video."),
+    )
+    end_timestamp = forms.IntegerField(
+        label=_("End Timestamp"),
+        required=False,
+        help_text=_("Please choose the end time of the answer in the video."),
+    )
     type = forms.ChoiceField(
         choices=QUESTION_TYPES,
         initial="unique_choice",
@@ -125,6 +131,7 @@ class QuestionForm(forms.Form):
         super(QuestionForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
 
+
 class QuizForm(forms.Form):
     """Form to add or edit a quiz."""
 
@@ -169,7 +176,12 @@ class QuizDeleteForm(forms.Form):
 class UniqueChoiceQuestionForm(forms.ModelForm):
     """Form to add or edit a unique choice question form."""
 
-    selected_choice = forms.CharField(widget=forms.RadioSelect(), required=False)
+    selected_choice = forms.CharField(
+        label=_("Unique choice question"),
+        widget=forms.RadioSelect(),
+        required=False,
+        help_text=_("Please choose one answer."),
+    )
 
     class Meta:
         model = UniqueChoiceQuestion
@@ -218,18 +230,38 @@ class MultipleChoiceQuestionForm(forms.ModelForm):
 class ShortAnswerQuestionForm(forms.ModelForm):
     """Form to add or edit a short answer question form."""
 
-    user_answer = forms.CharField(widget=forms.TextInput(), required=False)
+    user_answer = forms.CharField(
+        label=_("Short answer question"),
+        widget=forms.TextInput(),
+        required=False,
+        help_text=_("Write a short answer."),
+    )
 
     class Meta:
         model = ShortAnswerQuestion
         fields = ["user_answer"]
 
+    def __init__(self, *args, **kwargs) -> None:
+        """Init short answer question form."""
+        super(ShortAnswerQuestionForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
+
 
 class LongAnswerQuestionForm(forms.ModelForm):
     """Form to add or edit a long answer question form."""
 
-    user_answer = forms.CharField(widget=forms.Textarea(), required=False)
+    user_answer = forms.CharField(
+        label=_("Long answer question"),
+        widget=forms.Textarea(),
+        required=False,
+        help_text=_("Write a long answer."),
+    )
 
     class Meta:
         model = LongAnswerQuestion
         fields = ["user_answer"]
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Init short answer question form."""
+        super(LongAnswerQuestionForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
