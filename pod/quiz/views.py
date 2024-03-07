@@ -14,7 +14,7 @@ from pod.main.views import in_maintenance
 from pod.quiz.forms import QuestionForm, QuizDeleteForm, QuizForm
 from pod.quiz.models import (
     LongAnswerQuestion,
-    MultipleChoiceQuestion,
+    Question,
     Quiz,
     ShortAnswerQuestion,
     UniqueChoiceQuestion,
@@ -236,6 +236,41 @@ def create_questions(new_quiz: Quiz, question_formset) -> None:
             )
 
 
+def calculate_score(question : Question, form):
+    if isinstance(question, UniqueChoiceQuestion):
+        user_answer = form.cleaned_data.get("selected_choice")
+        correct_answer = question.get_answer()
+        return user_answer == correct_answer
+
+    # elif isinstance(question, MultipleChoiceQuestion):
+    #     user_answers = form.cleaned_data.get("user_answer")
+    #     correct_answers = question.get_answer()
+    #     return user_answers == correct_answers
+
+    elif isinstance(question, (ShortAnswerQuestion, LongAnswerQuestion)):
+        user_answer = form.cleaned_data.get("user_answer")
+        correct_answer = question.get_answer()
+        return user_answer.lower() == correct_answer.lower()
+
+    # Add similar logic for other question types...
+
+    return False
+
+
+def process_quiz_submission(request, quiz: Quiz):
+    total_questions = len(quiz.get_questions())
+    score = 0
+
+    for question in quiz.get_questions():
+        form = question.get_question_form(request.POST)
+        if form.is_valid():
+            if calculate_score(question, form):
+                score += 1
+
+    percentage_score = (score / total_questions) * 100
+    return percentage_score
+
+
 def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
     """
     View function for rendering a quiz associated with a video.
@@ -259,41 +294,7 @@ def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         return redirect("%s?referrer=%s" % (settings.LOGIN_URL, request.get_full_path()))
 
     if request.method == "POST":
-        total_questions = len(quiz.get_questions())
-        score = 0
-
-        for question in quiz.get_questions():
-            form = question.get_question_form(request.POST)
-            if form.is_valid():
-                if isinstance(question, UniqueChoiceQuestion):
-                    user_answer = form.cleaned_data.get("selected_choice")
-                    correct_answer = question.get_answer()
-                    is_correct = user_answer == correct_answer
-
-                    if is_correct:
-                        score += 1
-
-                elif isinstance(question, MultipleChoiceQuestion):
-                    user_answers = form.cleaned_data.get("user_answer")
-                    correct_answers = question.get_answer()
-                    is_correct = user_answers == correct_answers
-
-                    if is_correct:
-                        score += 1
-
-                elif isinstance(question, ShortAnswerQuestion) or isinstance(
-                    question, LongAnswerQuestion
-                ):
-                    user_answer = form.cleaned_data.get("user_answer")
-                    correct_answer = question.get_answer()
-                    is_correct = user_answer.lower() == correct_answer.lower()
-
-                    if is_correct:
-                        score += 1
-
-                # Add similar logic for other question types...
-
-        percentage_score = (score / total_questions) * 100
+        percentage_score = process_quiz_submission(request, quiz)
         form_submitted = True
 
     return render(
