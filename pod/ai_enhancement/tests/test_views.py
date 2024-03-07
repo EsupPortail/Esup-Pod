@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
-from pod.ai_enhancement.models import AIEnrichment
+from pod.ai_enhancement.models import AIEnhancement
 from pod.ai_enhancement.views import enrich_video_json, toggle_webhook
 from pod.video.models import Video, Type
 
@@ -28,7 +28,7 @@ class EnrichVideoJsonViewTest(TestCase):
             description="This is a test video.",
             type=Type.objects.get(id=1),
         )
-        self.enrichment = AIEnrichment.objects.create(video=self.video, ai_enrichment_id_in_aristote="123")
+        self.enhancement = AIEnhancement.objects.create(video=self.video, ai_enhancement_id_in_aristote="123")
 
     @patch("pod.ai_enhancement.views.AristoteAI")
     def test_enrich_video_json__success(self, mock_aristote_ai):
@@ -37,9 +37,9 @@ class EnrichVideoJsonViewTest(TestCase):
             "createdAt": "2024-01-26T14:40:05+01:00",
             "updatedAt": "2024-01-26T14:40:05+01:00",
             "id": "018d45ff-bfe7-772f-b671-723ac7de674e",
-            "enrichmentVersionMetadata": {
+            "enhancementVersionMetadata": {
                 "title": "Random title",
-                "description": "This is an example of an enrichment version",
+                "description": "This is an example of an enhancement version",
                 "topics": [
                     "Random topic 1",
                     "Random topic 2",
@@ -57,14 +57,14 @@ class EnrichVideoJsonViewTest(TestCase):
             "initialVersion": True,
         }
         mock_aristote_instance = mock_aristote_ai.return_value
-        mock_aristote_instance.get_latest_enrichment_version.return_value = json_data
+        mock_aristote_instance.get_latest_enhancement_version.return_value = json_data
         url = reverse("ai_enhancement:enrich_video_json", args=[self.video.slug])
         request = self.factory.get(url)
         response = enrich_video_json(request, self.video.slug)
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, JsonResponse)
-        mock_aristote_instance.get_latest_enrichment_version.assert_called_once_with(
-            self.enrichment.ai_enrichment_id_in_aristote,
+        mock_aristote_instance.get_latest_enhancement_version.assert_called_once_with(
+            self.enhancement.ai_enhancement_id_in_aristote,
         )
         expected_json = json_data
         self.assertJSONEqual(str(response.content, encoding="utf-8"), expected_json)
@@ -88,9 +88,9 @@ class ReceiveWebhookViewTest(TestCase):
             description="This is a test video.",
             type=Type.objects.get(id=1),
         )
-        self.enrichment = AIEnrichment.objects.create(
+        self.enhancement = AIEnhancement.objects.create(
             video=self.video,
-            ai_enrichment_id_in_aristote="123"
+            ai_enhancement_id_in_aristote="123"
         )
 
     def test_toggle_webhook__success(self):
@@ -104,8 +104,8 @@ class ReceiveWebhookViewTest(TestCase):
         }
         request = self.factory.post(url, data=request_data, content_type="application/json")
         response = toggle_webhook(request)
-        self.enrichment.refresh_from_db()
-        self.assertTrue(self.enrichment.is_ready)
+        self.enhancement.refresh_from_db()
+        self.assertTrue(self.enhancement.is_ready)
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, JsonResponse)
         self.assertEqual(json.loads(response.content.decode()), {"status": "OK"})
@@ -116,15 +116,15 @@ class ReceiveWebhookViewTest(TestCase):
         url = reverse("ai_enhancement:webhook")
         request = self.factory.get(url)
         response = toggle_webhook(request)
-        self.enrichment.refresh_from_db()
-        self.assertFalse(self.enrichment.is_ready)
+        self.enhancement.refresh_from_db()
+        self.assertFalse(self.enhancement.is_ready)
         self.assertEqual(response.status_code, 405)
         self.assertIsInstance(response, JsonResponse)
         self.assertEqual(json.loads(response.content.decode()), {"error": "Only POST requests are allowed."})
         print(" --->  test_toggle_webhook__bad_method ok")
 
-    def test_toggle_webhook__enrichment_not_found(self):
-        """Test the receive_webhook view when the enrichment is not found."""
+    def test_toggle_webhook__enhancement_not_found(self):
+        """Test the receive_webhook view when the enhancement is not found."""
         url = reverse("ai_enhancement:webhook")
         request_data = {
             "id": "456",
@@ -134,12 +134,12 @@ class ReceiveWebhookViewTest(TestCase):
         }
         request = self.factory.post(url, data=request_data, content_type="application/json")
         response = toggle_webhook(request)
-        self.enrichment.refresh_from_db()
-        self.assertFalse(self.enrichment.is_ready)
+        self.enhancement.refresh_from_db()
+        self.assertFalse(self.enhancement.is_ready)
         self.assertEqual(response.status_code, 404)
         self.assertIsInstance(response, JsonResponse)
         self.assertEqual(json.loads(response.content.decode()), {"error": "Enrichment not found."})
-        print(" --->  test_toggle_webhook__enrichment_not_found ok")
+        print(" --->  test_toggle_webhook__enhancement_not_found ok")
 
     def test_toggle_webhook__no_id_in_request(self):
         """Test the receive_webhook view when there is no id in the request."""
@@ -151,8 +151,8 @@ class ReceiveWebhookViewTest(TestCase):
         }
         request = self.factory.post(url, data=request_data, content_type="application/json")
         response = toggle_webhook(request)
-        self.enrichment.refresh_from_db()
-        self.assertFalse(self.enrichment.is_ready)
+        self.enhancement.refresh_from_db()
+        self.assertFalse(self.enhancement.is_ready)
         self.assertEqual(response.status_code, 400)
         self.assertIsInstance(response, JsonResponse)
         self.assertEqual(json.loads(response.content.decode()), {"error": "No id in the request."})

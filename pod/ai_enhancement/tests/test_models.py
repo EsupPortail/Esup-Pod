@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from pod.ai_enhancement.models import AIEnrichment
+from pod.ai_enhancement.models import AIEnhancement
 from pod.video.models import Video, Type
 
 
@@ -24,9 +24,9 @@ class AIEnrichmentModelTest(TestCase):
             owner=self.owner,
             type=Type.objects.create(title="Test Type"),
         )
-        self.ai_enrichment = AIEnrichment.objects.create(video=self.video)
+        self.ai_enhancement = AIEnhancement.objects.create(video=self.video)
 
-    def test_create_ai_enrichment(self):
+    def test_create_ai_enhancement(self):
         """Test the model creation."""
-        self.assertEqual(self.ai_enrichment.video, self.video)
-        print(" --->  test_create_ai_enrichment ok")
+        self.assertEqual(self.ai_enhancement.video, self.video)
+        print(" --->  test_create_ai_enhancement ok")

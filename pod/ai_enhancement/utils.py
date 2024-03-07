@@ -6,11 +6,11 @@ import requests
 from requests import Response
 from webvtt import WebVTT, Caption
 
-from pod.ai_enhancement.models import AIEnrichment
+from pod.ai_enhancement.models import AIEnhancement
 from pod.video.models import Discipline, Video
 
-API_URL = getattr(settings, "AI_ENRICHMENT_API_URL", "")
-API_VERSION = getattr(settings, "AI_ENRICHMENT_API_VERSION", "")
+API_URL = getattr(settings, "API_URL", "")
+API_VERSION = getattr(settings, "API_VERSION", "")
 
 
 class AristoteAI:
@@ -80,35 +80,35 @@ class AristoteAI:
             print(f"Request Exception: {e}")
             return None
 
-    def get_ai_enrichments(self) -> dict or None:
-        """Get the AI enrichments."""
-        path = f"/{API_VERSION}/enrichments"
+    def get_ai_enhancements(self) -> dict or None:
+        """Get the AI enhancements."""
+        path = f"/{API_VERSION}/enhancements"
         return self.get_response(path)
 
-    def get_specific_ai_enrichment(self, enrichment_id: str) -> dict or None:
+    def get_specific_ai_enhancement(self, enhancement_id: str) -> dict or None:
         """
-        Get a specific AI enrichment.
+        Get a specific AI enhancement.
 
         Args:
-            enrichment_id (str): The enrichment id.
+            enhancement_id (str): The enhancement id.
         """
-        path = f"/{API_VERSION}/enrichments/{enrichment_id}"
+        path = f"/{API_VERSION}/enhancements/{enhancement_id}"
         return self.get_response(path)
 
-    def create_enrichment_from_url(
+    def create_enhancement_from_url(
             self,
             url: str,
             media_types: list,
             end_user_identifier: str,
             notification_webhook_url: str
     ) -> dict or None:
-        """Create an enrichment from a file."""
+        """Create an enhancement from a file."""
         if Discipline.objects.count() > 0:
-            path = f"/{API_VERSION}/enrichments/url"
+            path = f"/{API_VERSION}/enhancements/url"
             data = {
                 "url": url,
                 "notificationWebhookUrl": notification_webhook_url,
-                "enrichmentParameters": {
+                "enhancementParameters": {
                     "mediaTypes": media_types,
                     "disciplines": list(
                         Discipline.objects.all().values_list("title", flat=True)
@@ -139,30 +139,30 @@ class AristoteAI:
         else:
             raise ValueError("No discipline in the database.")
 
-    def get_latest_enrichment_version(self, enrichment_id: str) -> dict or None:
-        """Get the latest enrichment version."""
-        path = f"/{API_VERSION}/enrichments/{enrichment_id}/versions/latest"
+    def get_latest_enhancement_version(self, enhancement_id: str) -> dict or None:
+        """Get the latest enhancement version."""
+        path = f"/{API_VERSION}/enhancements/{enhancement_id}/versions/latest"
         return self.get_response(path)
 
-    def get_enrichment_versions(self, enrichment_id: str, with_transcript: bool = True) -> dict or None:
-        """Get the enrichment versions."""
-        path = f"/{API_VERSION}/enrichments/{enrichment_id}/versions?withTranscript={with_transcript}"
+    def get_enhancement_versions(self, enhancement_id: str, with_transcript: bool = True) -> dict or None:
+        """Get the enhancement versions."""
+        path = f"/{API_VERSION}/enhancements/{enhancement_id}/versions?withTranscript={with_transcript}"
         return self.get_response(path)
 
-    def get_specific_enrichment_version(self, enrichment_id: str, version_id: str) -> dict or None:
+    def get_specific_enhancement_version(self, enhancement_id: str, version_id: str) -> dict or None:
         """Get a specific version."""
-        path = f"/{API_VERSION}/enrichments/{enrichment_id}/versions/{version_id}"
+        path = f"/{API_VERSION}/enhancements/{enhancement_id}/versions/{version_id}"
         return self.get_response(path)
 
 
-def enrichment_is_already_asked(video: Video) -> bool:
-    """Check if the enrichment is already asked."""
-    return AIEnrichment.objects.filter(video=video).exists()
+def enhancement_is_already_asked(video: Video) -> bool:
+    """Check if the enhancement is already asked."""
+    return AIEnhancement.objects.filter(video=video).exists()
 
 
-def enrichment_is_ready(video: Video) -> bool:
-    """Check if the enrichment is ready."""
-    return AIEnrichment.objects.filter(video=video, is_ready=True).exists()
+def enhancement_is_ready(video: Video) -> bool:
+    """Check if the enhancement is ready."""
+    return AIEnhancement.objects.filter(video=video, is_ready=True).exists()
 
 
 def extract_json_from_str(content_to_extract: str) -> dict:

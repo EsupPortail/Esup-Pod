@@ -1,8 +1,8 @@
 from django.conf import settings as django_settings
 
-USE_AI_ENRICHMENT = getattr(
+USE_AI_ENHANCEMENT = getattr(
     django_settings,
-    "USE_AI_ENRICHMENT",
+    "USE_AI_ENHANCEMENT",
     True
 )
 AI_ENHANCEMENT_CLIENT_ID = getattr(
@@ -17,12 +17,12 @@ AI_ENHANCEMENT_CLIENT_SECRET = getattr(
 )
 API_URL = getattr(
     django_settings,
-    "AI_ENRICHMENT_API_URL",
+    "API_URL",
     "",
 )
 API_VERSION = getattr(
     django_settings,
-    "AI_ENRICHMENT_API_VERSION",
+    "API_VERSION",
     "",
 )
 
@@ -30,7 +30,7 @@ API_VERSION = getattr(
 def context_settings(request):
     """Return all context settings for ai_enhancement app"""
     new_settings = {
-        "USE_AI_ENRICHMENT": USE_AI_ENRICHMENT,
+        "USE_AI_ENHANCEMENT": USE_AI_ENHANCEMENT,
         "AI_ENHANCEMENT_CLIENT_ID": AI_ENHANCEMENT_CLIENT_ID,
         "AI_ENHANCEMENT_CLIENT_SECRET": AI_ENHANCEMENT_CLIENT_SECRET,
         "API_URL": API_URL,

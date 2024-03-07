@@ -204,20 +204,20 @@ function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipl
         switch (element) {
           case 'title':
             initialVersionElement.children[0].textContent = decodeString(videoTitle);
-            aiVersionElement.children[0].textContent = response['enrichmentVersionMetadata']['title'];
+            aiVersionElement.children[0].textContent = response['enhancementVersionMetadata']['title'];
             addTogglePairInput(aiVersionElement, initialVersionElement, input, element);
             break;
           case 'description':
             setInformationOrEmptyString(initialVersionElement, videoDescription, gettext('No description'));
-            aiVersionElement.children[0].textContent = response['enrichmentVersionMetadata']['description'];
+            aiVersionElement.children[0].textContent = response['enhancementVersionMetadata']['description'];
             addTogglePairInput(aiVersionElement, initialVersionElement, input, element);
             break;
           case 'tags':
-            addTagsElements(response['enrichmentVersionMetadata']['topics'], input);
+            addTagsElements(response['enhancementVersionMetadata']['topics'], input);
             break;
           case 'disciplines':
             setInformationOrEmptyString(initialVersionElement, videoDiscipline, gettext('No discipline'));
-            aiVersionElement.children[0].textContent = response['enrichmentVersionMetadata']['discipline'];
+            aiVersionElement.children[0].textContent = response['enhancementVersionMetadata']['discipline'];
             toggleMultiplePairInput(aiVersionElement, initialVersionElement, input);
             initialVersionElement.addEventListener('click', () => {
               toggleMultiplePairInput(initialVersionElement, aiVersionElement, input);

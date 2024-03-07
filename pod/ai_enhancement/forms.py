@@ -35,8 +35,8 @@ strings = {
 }
 
 
-class AIEnrichmentChoice(forms.ModelForm):
-    """Form class for choosing the title of a video with the AI enrichment."""
+class AIEnhancementChoice(forms.ModelForm):
+    """Form class for choosing the title of a video with the AI enhancement."""
 
     class Meta:
         """Meta class."""
@@ -188,5 +188,5 @@ class AIEnrichmentChoice(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """Init method."""
-        super(AIEnrichmentChoice, self).__init__(*args, **kwargs)
+        super(AIEnhancementChoice, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)

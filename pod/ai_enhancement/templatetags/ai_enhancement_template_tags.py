@@ -5,8 +5,8 @@ from django.template import Library
 
 
 from pod.ai_enhancement.utils import (
-    enrichment_is_ready as eir,
-    enrichment_is_already_asked as eia,
+    enhancement_is_ready as eir,
+    enhancement_is_already_asked as eia,
 )
 from pod.video.models import Video
 
@@ -42,17 +42,17 @@ def user_can_enrich_video(context: dict, video: Video) -> bool:
     )
 
 
-@register.simple_tag(takes_context=True, name="enrichment_is_ready")
-def enrichment_is_ready(context: dict, video: Video) -> bool:
+@register.simple_tag(takes_context=True, name="enhancement_is_ready")
+def enhancement_is_ready(context: dict, video: Video) -> bool:
     """
-    Template tag used to check if the enrichment of a specific video is ready.
+    Template tag used to check if the enhancement of a specific video is ready.
 
     Args:
         context (dict): The context.
         video (:class:`pod.video.models.Video`): The specific video.
 
     Returns:
-        bool: `True` if the enrichment is ready. `False` otherwise.
+        bool: `True` if the enhancement is ready. `False` otherwise.
     """
     request = context["request"]
     if not request.user.is_authenticated:
@@ -60,17 +60,17 @@ def enrichment_is_ready(context: dict, video: Video) -> bool:
     return eir(video) and USE_AI_ENHANCEMENT and user_can_enrich_video(context, video)
 
 
-@register.simple_tag(takes_context=True, name="enrichment_is_already_asked")
-def enrichment_is_already_asked(context: dict, video: Video) -> bool:
+@register.simple_tag(takes_context=True, name="enhancement_is_already_asked")
+def enhancement_is_already_asked(context: dict, video: Video) -> bool:
     """
-    Template tag used to check if the enrichment of a specific video is already asked.
+    Template tag used to check if the enhancement of a specific video is already asked.
 
     Args:
         context (dict): The context.
         video (:class:`pod.video.models.Video`): The specific video.
 
     Returns:
-        bool: `True` if the enrichment is already asked. `False` otherwise.
+        bool: `True` if the enhancement is already asked. `False` otherwise.
     """
     request = context["request"]
     if not request.user.is_authenticated:

@@ -9,9 +9,9 @@ from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
-from pod.ai_enhancement.forms import AIEnrichmentChoice
-from pod.ai_enhancement.models import AIEnrichment
-from pod.ai_enhancement.utils import AristoteAI, enrichment_is_already_asked, json_to_web_vtt
+from pod.ai_enhancement.forms import AIEnhancementChoice
+from pod.ai_enhancement.models import AIEnhancement
+from pod.ai_enhancement.utils import AristoteAI, enhancement_is_already_asked, json_to_web_vtt
 from pod.completion.models import Track
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.views import in_maintenance
@@ -44,11 +44,11 @@ def toggle_webhook(request: WSGIRequest):
     if "application/json" in request.headers.get("Content-Type"):
         data = json.loads(request.body)
         if "id" in data:
-            enrichment = AIEnrichment.objects.filter(ai_enrichment_id_in_aristote=data["id"]).first()
-            if enrichment:
+            enhancement = AIEnhancement.objects.filter(ai_enhancement_id_in_aristote=data["id"]).first()
+            if enhancement:
                 if "status" in data and data["status"] == "SUCCESS":
-                    enrichment.is_ready = True
-                    enrichment.save()
+                    enhancement.is_ready = True
+                    enhancement.save()
                     return JsonResponse({"status": "OK"}, status=200)
                 else:
                     return JsonResponse({"status": "Enrichment has not yet been successfully achieved."}, status=500)
@@ -59,9 +59,9 @@ def toggle_webhook(request: WSGIRequest):
 
 
 @csrf_protect
-def send_enrichment_creation_request(request: WSGIRequest, aristote: AristoteAI, video: Video) -> HttpResponse:
-    """Send a request to create an enrichment."""
-    creation_response = aristote.create_enrichment_from_url(
+def send_enhancement_creation_request(request: WSGIRequest, aristote: AristoteAI, video: Video) -> HttpResponse:
+    """Send a request to create an enhancement."""
+    creation_response = aristote.create_enhancement_from_url(
         get_current_site(request).domain + video.video.url,
         ["video/mp4"],
         request.user.username,
@@ -69,9 +69,9 @@ def send_enrichment_creation_request(request: WSGIRequest, aristote: AristoteAI,
     )
     if creation_response:
         if creation_response["status"] == "OK":
-            AIEnrichment.objects.create(
+            AIEnhancement.objects.create(
                 video=video,
-                ai_enrichment_id_in_aristote=creation_response["id"],
+                ai_enhancement_id_in_aristote=creation_response["id"],
             )
             return redirect(reverse("video:video", args=[video.slug]))
         else:
@@ -87,20 +87,20 @@ def enrich_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
         return redirect(reverse("maintenance"))
     video = get_object_or_404(Video, slug=video_slug)
     aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
-    if enrichment_is_already_asked(video):
-        enrichment = AIEnrichment.objects.filter(video=video).first()
-        if enrichment.is_ready:
+    if enhancement_is_already_asked(video):
+        enhancement = AIEnhancement.objects.filter(video=video).first()
+        if enhancement.is_ready:
             return enrich_form(request, video)
     else:
-        return send_enrichment_creation_request(request, aristote, video)
+        return send_enhancement_creation_request(request, aristote, video)
 
 
 def enrich_video_json(request: WSGIRequest, video_slug: str) -> HttpResponse:
     """The view to get the JSON of Aristote version."""
     video = get_object_or_404(Video, slug=video_slug)
     aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
-    enrichment = AIEnrichment.objects.filter(video=video).first()
-    latest_version = aristote.get_latest_enrichment_version(enrichment.ai_enrichment_id_in_aristote)
+    enhancement = AIEnhancement.objects.filter(video=video).first()
+    latest_version = aristote.get_latest_enhancement_version(enhancement.ai_enhancement_id_in_aristote)
     return JsonResponse(latest_version)
 
 
@@ -112,9 +112,9 @@ def enrich_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
         name=video.slug,
         owner=request.user,
     )
-    if enrichment_is_already_asked(video):
-        enrichment = AIEnrichment.objects.filter(video=video).first()
-        if enrichment.is_ready:
+    if enhancement_is_already_asked(video):
+        enhancement = AIEnhancement.objects.filter(video=video).first()
+        if enhancement.is_ready:
             return render(
                 request,
                 "video_caption_maker.html",
@@ -123,18 +123,18 @@ def enrich_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
                     "video": video,
                     "languages": LANG_CHOICES,
                     "page_title": _("Video Caption Maker - Aristote AI Version"),
-                    # "ai_enrichment": enrichment,
+                    # "ai_enhancement": enhancement,
                 },
             )
-    AIEnrichment.objects.filter(video=video).delete()
+    AIEnhancement.objects.filter(video=video).delete()
     return redirect(reverse("video:video", args=[video.slug]))
 
 
 @csrf_protect
 def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
-    """The view to choose the title of a video with the AI enrichment."""
+    """The view to choose the title of a video with the AI enhancement."""
     if request.method == "POST":
-        form = AIEnrichmentChoice(request.POST, instance=video)
+        form = AIEnhancementChoice(request.POST, instance=video)
         if form.is_valid():
             disciplines = video.discipline.all()
             form.save()
@@ -146,8 +146,8 @@ def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
             video.save()
             video = form.instance
             aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
-            enrichment = AIEnrichment.objects.filter(video=video).first()
-            latest_version = aristote.get_latest_enrichment_version(enrichment.ai_enrichment_id_in_aristote)
+            enhancement = AIEnhancement.objects.filter(video=video).first()
+            latest_version = aristote.get_latest_enhancement_version(enhancement.ai_enhancement_id_in_aristote)
             web_vtt = json_to_web_vtt(latest_version["transcript"]["sentences"], video.duration)
             saveVTT(video, web_vtt, latest_version["transcript"]["language"])
             latest_track = Track.objects.filter(video=video,).order_by("id").first()
@@ -159,7 +159,7 @@ def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
                 {"video": video, "form": form, "page_title": "Enrich with Aristote AI"},
             )
     else:
-        form = AIEnrichmentChoice(
+        form = AIEnhancementChoice(
             instance=video,
         )
         return render(
