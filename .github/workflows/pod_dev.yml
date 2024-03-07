@@ -113,12 +113,6 @@ jobs:
       - name: delete unused file and change owner
         run: |
           sudo rm -f pod/custom/settings_local.py
-          sudo rm -rf ./pod/log
-          sudo rm -rf ./pod/static
-          sudo rm -rf ./pod/node_modules
-          sudo rm -rf ./pod/db_migrations
-          sudo rm -rf ./pod/db.sqlite3
-          sudo rm -rf ./pod/media
           sudo chown -R runner:runner .
 
       ## Start unit test test ##
@@ -134,8 +128,6 @@ jobs:
           coverage run --append --source='.' manage.py create_pod_index --settings=pod.main.test_settings
           python manage.py makemigrations --settings=pod.main.test_settings
           python manage.py migrate --settings=pod.main.test_settings
-          cd pod
-          yarn
 
       - name: Run Tests with coverage
         env:
