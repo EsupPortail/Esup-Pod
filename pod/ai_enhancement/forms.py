@@ -1,4 +1,4 @@
-"""Forms used in playlist application."""
+"""Forms used in ai_enhancement application."""
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from tagging.fields import TagField
@@ -9,27 +9,27 @@ from pod.video.models import Video, Discipline
 strings = {
     "title": {
         "choose_information_string": _("Choose the title"),
-        "initial_information": _("The initial title is loading..."),
+        "initial_information": _("The initial title is loading…"),
         "initial_information_t": _("Your initial title"),
-        "ai_information": _("The title proposed by the Aristote AI is loading..."),
+        "ai_information": _("The title proposed by the Aristote AI is loading…"),
         "ai_information_t": _("The title proposed by the Aristote AI"),
     },
     "description": {
         "choose_information_string": _("Choose the description"),
-        "initial_information": _("The initial description is loading..."),
+        "initial_information": _("The initial description is loading…"),
         "initial_information_t": _("Your initial description"),
-        "ai_information": _("The description proposed by the Aristote AI is loading..."),
+        "ai_information": _("The description proposed by the Aristote AI is loading…"),
         "ai_information_t": _("The description proposed by the Aristote AI"),
     },
     "tags": {
         "choose_information_string": _("Choose the tags"),
-        "ai_information": _("The tags proposed by the Aristote AI is loading..."),
+        "ai_information": _("The tags proposed by the Aristote AI is loading…"),
     },
     "discipline": {
         "choose_information_string": _("Choose the discipline"),
-        "initial_information": _("The initial discipline is loading..."),
+        "initial_information": _("The initial discipline is loading…"),
         "initial_information_t": _("Your initial discipline"),
-        "ai_information": _("The discipline proposed by the Aristote AI is loading..."),
+        "ai_information": _("The discipline proposed by the Aristote AI is loading…"),
         "ai_information_t": _("The discipline proposed by the Aristote AI"),
     },
 }
