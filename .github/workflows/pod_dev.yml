@@ -40,10 +40,10 @@ jobs:
           sudo sysctl -w fs.file-max=262144
           sudo sysctl -w vm.max_map_count=262144
 
-      - name: Set up Python $PYTHON_VERSION
+      - name: Set up Python ${{env.PYTHON_VERSION}}
         uses: actions/setup-python@v5
         with:
-          python-version: $PYTHON_VERSION
+          python-version: ${{env.PYTHON_VERSION}}
 
       # Remove apt repos that are known to break from time to time
       # See https://github.com/actions/virtual-environments/issues/323
