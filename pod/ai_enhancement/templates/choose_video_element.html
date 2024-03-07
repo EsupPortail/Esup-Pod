@@ -10,7 +10,6 @@
     <a
       href="{% url 'videos:videos' %}"
       title="{% blocktrans %}Video name: {{ video.title }}{% endblocktrans %}"
-      aria-label="{% trans 'Videos' %}"
     >
       {% trans 'Videos' %}
     </a>
@@ -19,7 +18,6 @@
     <a
       href="{% url 'video:video' slug=video.slug %}"
       title="{% blocktrans %}Nom de la vidéo : {{ video.title }}{% endblocktrans %}"
-      aria-label="{% trans 'Video' %}"
     >
       {{ video.title }}
     </a>
@@ -92,15 +90,9 @@
   </form>
 {% endblock page_content %}
 
-
-
 {% block collapse_page_aside %}{% endblock collapse_page_aside %}
 
-
-
 {% block page_aside %}{% endblock page_aside %}
-
-
 
 {% block more_script %}
   <script src="{% static 'admin/js/core.js' %}?ver={{ VERSION }}"></script>
