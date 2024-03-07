@@ -6,9 +6,6 @@ from pod.ai_enhancement.models import AIEnrichment
 from pod.video.models import Video, Type
 
 
-AI_ENRICHMENT_DIR = getattr(settings, "AI_ENRICHMENT_DIR", "ai-enrichments")
-
-
 class AIEnrichmentModelTest(TestCase):
     """
     Test the AIEnrichment model.

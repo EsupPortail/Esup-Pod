@@ -1,22 +1,10 @@
 import os
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import ugettext as _
 
 from pod.video.models import Video
-
-AI_ENRICHMENT_DIR = getattr(settings, "AI_ENRICHMENT_DIR", "ai-enrichments")
-
-
-def get_storage_path_ai_enrichment(instance, filename):
-    """Get the storage path for AI enrichment files."""
-    fname, dot, extension = filename.rpartition(".")
-    if extension.lower() not in ["json"]:
-        raise ValidationError(_("Please choose a JSON file."))
-    fname.index("/")
-    return os.path.join(AI_ENRICHMENT_DIR, str(filename))
 
 
 class AIEnrichment(models.Model):
