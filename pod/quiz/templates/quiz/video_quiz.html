@@ -16,27 +16,69 @@
 
 
 {% block page_content %}
+  {% if form_submitted %}
+    {% if percentage_score >= 75 %}
+      <div class="alert alert-success" role="alert">
+        <p>{% trans "Your score is:" %} {{ percentage_score|floatformat:2 }}%</p>
+        <p class="m-0">{% trans "That's great! Bravo!" %}</p>
+      </div>
+    {% elif percentage_score >= 45 %}
+      <div class="alert alert-warning" role="alert">
+        <p>{% trans "Your score is:" %} {{ percentage_score|floatformat:2 }}%</p>
+        <p class="m-0">{% trans "Can do better." %}</p>
+      </div>
+    {% else %}
+      <div class="alert alert-danger" role="alert">
+        <p>{% trans "Your score is:" %} {{ percentage_score|floatformat:2 }}%</p>
+        <p class="m-0">{% trans "It's not terrible, but there's room for improvement!" %}</p>
+      </div>
+    {% endif %}
+  {% endif %}
   <form method="post" id="quiz-form" action="{% url 'quiz:video_quiz' video_slug=video.slug %}">
     {% csrf_token %}
 
     {% for question in quiz.get_questions %}
-        <div class="question-container">
-            <h2>{{ question.title }}</h2>
-            {% with form=question.get_question_form %}
-              {{ form.as_p }}
-            {% endwith %}
+      <fieldset class="border rounded-3 p-3 mb-3 question-container">
+        <legend>
+          <i class="bi bi-patch-question" aria-hidden='true'></i>&nbsp;
+          {{ question.title }}
+        </legend>
+        {% with form=question.get_question_form %}
+          {% for field in form.visible_fields %}
+            {% spaceless %}
+              <div class="mb-3">
+                <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
+                  {{ field.errors }}
+                  {% if "form-check-input" in field.field.widget.attrs.class %}
+                    <div class="form-check">
+                      {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                    </div>
+                  {% else %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                  {% endif %}
+                  {% if field.help_text %}
+                    <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+                  {% endif %}
+                  {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+                </div>
+              </div>
+            {% endspaceless %}
+          {% endfor %}
+        {% endwith %}
 
-            {% if form_submitted and quiz.show_correct_answers %}
-              <p>Réponse :{{ question.get_answer }}</p>
-              <p>Explication :{{ question.explanation }}</p>
-            {% endif %}
-
-            <hr>
-        </div>
+        {% if form_submitted and quiz.show_correct_answers %}
+          <p>{% trans "Right answer:" %} {{ question.get_answer }}</p>
+          <p>{% trans "Explanation:" %} {{ question.explanation }}</p>
+        {% endif %}
+      </fieldset>
     {% endfor %}
 
     <div class="text-center mt-2">
-      <button type="submit" id="quiz-submission-button" class="btn btn-primary">{% trans "Validate" %}</button>
+      <button type="submit" id="quiz-submission-button" class="btn btn-primary"
+              {% if form_submitted %}disabled aria-disabled="true"{% endif %}>
+        {% trans "Validate" %}
+      </button>
       <a href="{% url 'video:video' slug=video.slug %}" class="btn btn-secondary">{% trans "Back to video" %}</a>
     </div>
   </form>

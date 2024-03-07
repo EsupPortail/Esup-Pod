@@ -24,7 +24,6 @@ def is_quiz_accessible(context: dict, video: Video) -> bool:
     if get_video_quiz(video):
         quiz = get_video_quiz(video)
         request = context["request"]
-        print(quiz.connected_user_only)
         if quiz.connected_user_only and not request.user.is_authenticated:
             return False
     return True

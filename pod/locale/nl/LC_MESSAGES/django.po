@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-05 13:10+0000\n"
+"POT-Creation-Date: 2024-03-07 10:04+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -225,8 +225,7 @@ msgstr ""
 #: pod/playlist/templates/playlist/delete.html
 #: pod/playlist/templates/playlist/protected-playlist-form.html
 #: pod/playlist/views.py pod/quiz/templates/quiz/create_edit_quiz.html
-#: pod/quiz/templates/quiz/delete_quiz.html
-#: pod/quiz/templates/quiz/question_form.html pod/quiz/views.py
+#: pod/quiz/templates/quiz/delete_quiz.html pod/quiz/views.py
 #: pod/recorder/templates/recorder/add_recording.html
 #: pod/recorder/templates/recorder/record_delete.html pod/recorder/views.py
 #: pod/video/templates/channel/channel_edit.html
@@ -264,6 +263,7 @@ msgstr ""
 #: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/quiz/templates/quiz/question_form.html
+#: pod/quiz/templates/quiz/video_quiz.html
 #: pod/recorder/templates/recorder/add_recording.html
 #: pod/recorder/templates/recorder/record_delete.html
 #: pod/video/templates/channel/channel_edit.html
@@ -5731,7 +5731,8 @@ msgstr ""
 msgid "Security informations"
 msgstr ""
 
-#: pod/playlist/forms.py pod/playlist/models.py pod/quiz/models.py
+#: pod/playlist/forms.py pod/playlist/models.py pod/quiz/forms.py
+#: pod/quiz/models.py
 msgid "Please choose a title between 1 and 250 characters."
 msgstr ""
 
@@ -6449,17 +6450,35 @@ msgstr ""
 msgid "Explanation of the question"
 msgstr ""
 
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Please choose an explanation."
+msgstr ""
+
 #: pod/quiz/forms.py
 msgid "Start Timestamp"
+msgstr ""
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Please choose the beginning time of the answer in the video."
 msgstr ""
 
 #: pod/quiz/forms.py
 msgid "End Timestamp"
 msgstr ""
 
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Please choose the end time of the answer in the video."
+msgstr ""
+
 #: pod/quiz/forms.py
 msgid "Question Type"
 msgstr ""
+
+#: pod/quiz/forms.py
+#, fuzzy
+#| msgid "Please enter a title."
+msgid "Please choose the question type."
+msgstr "Voer een titel in."
 
 #: pod/quiz/forms.py
 msgid "Unique choice"
@@ -6505,6 +6524,36 @@ msgstr ""
 msgid "Delete video quiz cannot be undone"
 msgstr ""
 
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Unique choice question"
+msgstr ""
+
+#: pod/quiz/forms.py
+#, fuzzy
+#| msgid "Please enter a title."
+msgid "Please choose one answer."
+msgstr "Voer een titel in."
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Short answer question"
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Write a short answer."
+msgstr ""
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Long answer question"
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Write a long answer."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Please choose a video associated with the quiz."
+msgstr ""
+
 #: pod/quiz/models.py
 msgid "Connected user only"
 msgstr ""
@@ -6521,12 +6570,8 @@ msgstr ""
 msgid "Please choose if the correct answers will be displayed or not."
 msgstr ""
 
-#: pod/quiz/models.py pod/quiz/templates/quiz/question_form.html
-msgid "Question"
-msgstr ""
-
 #: pod/quiz/models.py
-msgid "Please choose an explanation."
+msgid "Please choose a quiz associated with the question."
 msgstr ""
 
 #: pod/quiz/models.py
@@ -6534,15 +6579,11 @@ msgid "Start timestamp"
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Please choose the beginning time of the answer in the video."
-msgstr ""
-
-#: pod/quiz/models.py
 msgid "End timestamp"
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Please choose the end time of the answer in the video."
+msgid "Question"
 msgstr ""
 
 #: pod/quiz/models.py
@@ -6564,11 +6605,7 @@ msgstr ""
 #: pod/quiz/models.py
 msgid ""
 "Choices must be like this: {'choice 1': true, 'choice 2': false, ...} | true "
-"for the right choice, false for the wrong choices"
-msgstr ""
-
-#: pod/quiz/models.py
-msgid "Unique choice question"
+"for the right choice, false for the wrong choices."
 msgstr ""
 
 #: pod/quiz/models.py
@@ -6581,6 +6618,12 @@ msgstr ""
 
 #: pod/quiz/models.py
 msgid "There must be only one correct answer."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid ""
+"Choices must be like this: {'choice 1': true, 'choice 2': true, 'choice 3': "
+"false, ...} | true for the right choice, false for the wrong choices."
 msgstr ""
 
 #: pod/quiz/models.py
@@ -6616,19 +6659,11 @@ msgid "Please choose an answer between 1 and 250 characters."
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Short answer question"
-msgstr ""
-
-#: pod/quiz/models.py
 msgid "Short answer questions"
 msgstr ""
 
 #: pod/quiz/models.py
 msgid "Please choose an answer."
-msgstr ""
-
-#: pod/quiz/models.py
-msgid "Long answer question"
 msgstr ""
 
 #: pod/quiz/models.py
@@ -6652,6 +6687,38 @@ msgstr ""
 msgid "To delete the quiz, please check the box and click “Delete”."
 msgstr ""
 
+#: pod/quiz/templates/quiz/question_form.html
+msgid "Question no."
+msgstr ""
+
+#: pod/quiz/templates/quiz/question_form.html
+msgid "One or more errors have been found in the question."
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Your score is:"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "That's great! Bravo!"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Can do better."
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "It's not terrible, but there's room for improvement!"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Right answer:"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Explanation:"
+msgstr ""
+
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Validate"
 msgstr ""
@@ -6670,17 +6737,16 @@ msgid "Quiz successfully created."
 msgstr ""
 
 #: pod/quiz/views.py
+msgid "Quiz successfully updated."
+msgstr ""
+
+#: pod/quiz/views.py
 msgid "The data sent to create the quiz are invalid."
 msgstr ""
 
 #: pod/quiz/views.py
 #, python-brace-format
 msgid "Quiz edition for the video: {video.title}"
-msgstr ""
-
-#: pod/quiz/views.py
-#, python-format
-msgid "Your score is: %.2f%%"
 msgstr ""
 
 #: pod/quiz/views.py

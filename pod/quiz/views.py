@@ -253,6 +253,8 @@ def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
     video = get_object_or_404(Video, slug=video_slug)
     quiz = get_video_quiz(video)
     form_submitted = False
+    percentage_score = None
+
     if quiz.connected_user_only and not request.user.is_authenticated:
         return redirect("%s?referrer=%s" % (settings.LOGIN_URL, request.get_full_path()))
 
@@ -292,7 +294,6 @@ def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
                 # Add similar logic for other question types...
 
         percentage_score = (score / total_questions) * 100
-        messages.success(request, _("Your score is: %.2f%%") % percentage_score)
         form_submitted = True
 
     return render(
@@ -303,6 +304,7 @@ def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
             "video": video,
             "quiz": quiz,
             "form_submitted": form_submitted,
+            "percentage_score": percentage_score
         },
     )
 
