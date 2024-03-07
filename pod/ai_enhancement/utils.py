@@ -7,6 +7,7 @@ from requests import Response
 from webvtt import WebVTT, Caption
 
 from pod.ai_enhancement.models import AIEnhancement
+from pod.main.utils import extract_json_from_str
 from pod.video.models import Discipline, Video
 
 API_URL = getattr(settings, "API_URL", "")
@@ -163,47 +164,3 @@ def enhancement_is_already_asked(video: Video) -> bool:
 def enhancement_is_ready(video: Video) -> bool:
     """Check if the enhancement is ready."""
     return AIEnhancement.objects.filter(video=video, is_ready=True).exists()
-
-
-def extract_json_from_str(content_to_extract: str) -> dict:
-    """Extract the JSON from a string."""
-    start_index = content_to_extract.find("{")
-    end_index = content_to_extract.rfind("}")
-    json_string = content_to_extract[start_index:end_index + 1]
-    try:
-        return json.loads(json_string)
-    except json.JSONDecodeError:
-        return {"error": "JSONDecodeError: The string is not a valid JSON string."}
-
-
-def json_to_web_vtt(json_data: dict, duration: int) -> WebVTT:
-    """Convert the JSON to WebVTT."""
-    web_vtt = WebVTT()
-    for caption in json_data:
-        if caption["start"] >= duration:
-            break
-        # identifier = f"{caption['start']}-{caption['end']}"
-        start = convert_time(caption["start"])["formatted_output"]
-        end = convert_time(caption["end"] if caption["end"] < duration else duration)["formatted_output"]
-        caption = Caption(start=start, end=end, text=caption["text"])
-        web_vtt.captions.append(caption)
-    return web_vtt
-
-
-def convert_time(seconds):
-    """Convert time from seconds to minutes, seconds and milliseconds."""
-    minutes = seconds // 60
-    remaining_seconds = seconds % 60
-    milliseconds = int((seconds - int(seconds)) * 1000)
-    formatted_output = f"{pad_zero(minutes, 2)}:{pad_zero(remaining_seconds, 2)}.{pad_zero(milliseconds, 3)}"
-    return {
-        "minutes": minutes,
-        "seconds": remaining_seconds,
-        "milliseconds": milliseconds,
-        "formatted_output": formatted_output,
-    }
-
-
-def pad_zero(number, width):
-    """Pad zero."""
-    return str(number).zfill(width)

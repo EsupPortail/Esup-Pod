@@ -11,9 +11,10 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
 from pod.ai_enhancement.forms import AIEnhancementChoice
 from pod.ai_enhancement.models import AIEnhancement
-from pod.ai_enhancement.utils import AristoteAI, enhancement_is_already_asked, json_to_web_vtt
+from pod.ai_enhancement.utils import AristoteAI, enhancement_is_already_asked
 from pod.completion.models import Track
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
+from pod.main.utils import json_to_web_vtt
 from pod.main.views import in_maintenance
 from pod.podfile.models import UserFolder
 from pod.video.models import Video, Discipline

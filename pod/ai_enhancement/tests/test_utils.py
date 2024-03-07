@@ -3,7 +3,8 @@ from unittest.mock import patch
 from django.test import TestCase
 from requests import Response
 
-from pod.ai_enhancement.utils import AristoteAI, extract_json_from_str, convert_time
+from pod.ai_enhancement.utils import AristoteAI
+from pod.main.utils import extract_json_from_str, convert_time
 from pod.video.models import Discipline
 
 
