@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-06 15:20+0000\n"
+"POT-Creation-Date: 2024-03-07 15:13+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -624,17 +624,14 @@ msgid "Disable notifications"
 msgstr "Désactiver les notifications"
 
 #: pod/progressive_web_app/static/js/notification-toast.js
-#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
 msgid "Unsubscribe from Push Messaging"
 msgstr "Se désinscrire des notifications push"
 
 #: pod/progressive_web_app/static/js/notification-toast.js
-#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
 msgid "Successfully subscribed to push notifications."
 msgstr "Souscription aux notifications réussie."
 
 #: pod/progressive_web_app/static/js/notification-toast.js
-#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
 msgid "Error while subscribing to push notifications."
 msgstr "Une erreur est survenue lors de la souscription aux notifications."
 
