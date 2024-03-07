@@ -53,6 +53,13 @@ function togglePairInput(selectedElement, notSelectedElement, input, elementName
 }
 
 
+/**
+ * Toggle the input and the multiple versions of the element.
+ *
+ * @param selectedElement {HTMLElement} The selected element.
+ * @param notSelectedElement {HTMLElement} The not selected element.
+ * @param input {HTMLElement} The input element.
+ */
 function toggleMultiplePairInput(selectedElement, notSelectedElement, input) {
   selectedElement.children[0].classList.remove(BORDER_CLASS);
   selectedElement.children[0].classList.add(ENRICH_INPUT_SELECTED);
@@ -108,6 +115,12 @@ function event__inputChange(initialVersionElement, aiVersionElement) {
 }
 
 
+/**
+ * Add the tags elements to the tags container.
+ *
+ * @param tags {Array} The list of tags.
+ * @param input {HTMLElement} The input element.
+ */
 function addTagsElements(tags, input) {
   const tagsContainerElement = document.getElementById('tags-container');
   let tagLineElement = tagsContainerElement.children[tagsContainerElement.children.length - 1];
@@ -160,6 +173,14 @@ function setInformationOrEmptyString(element, value, message) {
 }
 
 
+/**
+ * Add event listeners to the elements.
+ *
+ * @param videoSlug {string} The video slug.
+ * @param videoTitle {string} The video title.
+ * @param videoDescription {string} The video description.
+ * @param videoDiscipline {string} The video discipline.
+ */
 function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipline) {
   const elements = [
     'title',
