@@ -157,7 +157,7 @@ def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
             return render(
                 request,
                 "choose_video_element.html",
-                {"video": video, "form": form, "page_title": "Enrich with Aristote AI"},
+                {"video": video, "form": form, "page_title": str("Enrich with Aristote AI")},
             )
     else:
         form = AIEnhancementChoice(
@@ -166,5 +166,5 @@ def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
         return render(
             request,
             "choose_video_element.html",
-            {"video": video, "form": form, "page_title": "Enrich with Aristote AI"},
+            {"video": video, "form": form, "page_title": str("Enrich with Aristote AI")},
         )
