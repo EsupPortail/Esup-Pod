@@ -13,6 +13,7 @@ on:
     - develop
 
 env:
+  PYTHON_VERSION: '3.9'
   DJANGO_SUPERUSER_USERNAME: "admin"
   DJANGO_SUPERUSER_PASSWORD: "passwd"
   DJANGO_SUPERUSER_EMAIL: "noreplay@uni.fr"
@@ -20,7 +21,6 @@ env:
   ELASTICSEARCH_VERION: "elasticsearch:7.17.18"
   NODE_TAG: "node:19"
   PYTHON_TAG: "python:3.9-buster"
-  PYTHON_VERSION: '3.9'
   REDIS_TAG: "redis:alpine3.16"
   DOCKER_ENV: "full"
   GECKODRIVER_VER: "v0.29.0"
@@ -110,7 +110,8 @@ jobs:
       - name: Stop containers
         if: always()
         run: docker-compose -f ./docker-compose-full-dev-with-volumes.yml down
-      
+      - name: delete settings local
+        run: rm -f pod/custom/settings_local.py
       ## Start unit test test ##
       - name: Runs Elasticsearch
         uses: elastic/elastic-github-actions/elasticsearch@refactor_with_plugins
@@ -121,7 +122,7 @@ jobs:
 
       - name: Setup Pod
         run: |
-          coverage run --source='.' manage.py create_pod_index --settings=pod.main.test_settings
+          coverage run --append --source='.' manage.py create_pod_index --settings=pod.main.test_settings
           python manage.py makemigrations --settings=pod.main.test_settings
           python manage.py migrate --settings=pod.main.test_settings
           cd pod
