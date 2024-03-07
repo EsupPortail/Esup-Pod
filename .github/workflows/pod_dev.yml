@@ -1,19 +1,15 @@
 ---
-name: Django Pod CI with remote encoding
-run-name: ${{ github.actor }} is testing Pod encoding 🚀
+name: Django DEV Pod CI with remote encoding
+run-name: ${{ github.actor }} is testing Pod encoding in Dev 🚀
 
 on:
   push:
     branches:
-    - main
-    - master
     - develop
     - features/**
     - dependabot/**
   pull_request:
     branches:
-    - main
-    - master
     - develop
 
 env:
@@ -24,19 +20,15 @@ env:
   ELASTICSEARCH_VERION: "elasticsearch:7.17.18"
   NODE_TAG: "node:19"
   PYTHON_TAG: "python:3.9-buster"
+  PYTHON_VERSION: '3.9'
   REDIS_TAG: "redis:alpine3.16"
   DOCKER_ENV: "full"
   GECKODRIVER_VER: "v0.29.0"
   FIREFOX_VER: "87.0"
 
 jobs:
-  Pod-Test-Docker-Encoding-Actions:
+  Pod-Dev:
     runs-on: ubuntu-latest
-
-    strategy:
-      max-parallel: 3
-      matrix:
-        python-version: ['3.9']
 
     steps:
       - uses: actions/checkout@v4
@@ -48,10 +40,10 @@ jobs:
           sudo sysctl -w fs.file-max=262144
           sudo sysctl -w vm.max_map_count=262144
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python $PYTHON_VERSION
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: $PYTHON_VERSION
 
       # Remove apt repos that are known to break from time to time
       # See https://github.com/actions/virtual-environments/issues/323
@@ -70,16 +62,61 @@ jobs:
           pip install -r requirements-dev.txt
           sudo npm install -g yarn
 
+      # FLAKE 8
       - name: Flake8 compliance
         run: |
           flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py
-
+      
+      ## Start remote encoding and transcoding test ##
+      - name: Create settings local file
+        run: |
+            mv pod/custom/settings_local_docker_full_test.py pod/custom/settings_local.py
+      - name: cat settings local
+        run: cat pod/custom/settings_local.py
+      - name: Create env file containers
+        run: |
+          touch .env.dev
+          echo DJANGO_SUPERUSER_USERNAME=$DJANGO_SUPERUSER_USERNAME >> .env.dev
+          echo DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD >> .env.dev
+          echo DJANGO_SUPERUSER_EMAIL=$DJANGO_SUPERUSER_EMAIL >> .env.dev
+          echo ELASTICSEARCH_TAG=$ELASTICSEARCH_TAG >> .env.dev
+          echo ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG >> .env.dev
+          echo NODE_TAG=$NODE_TAG >> .env.dev
+          echo PYTHON_TAG=$PYTHON_TAG >> .env.dev
+          echo REDIS_TAG=$REDIS_TAG >> .env.dev
+          echo DOCKER_ENV=full >> .env.dev
+          echo GECKODRIVER_VER=v0.29.0
+          echo FIREFOX_VER=87.0
+      - name: cat env
+        run: cat .env.dev
+      - name: make Build container
+        run: |
+          sudo rm -rf ./pod/log
+          sudo rm -rf ./pod/static
+          sudo rm -rf ./pod/node_modules
+          docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG --build-arg NODE_VERSION=$NODE_TAG --build-arg PYTHON_VERSION=$PYTHON_TAG --no-cache
+          docker-compose -f ./docker-compose-full-dev-with-volumes.yml up --detach --force-recreate --always-recreate-deps
+      - name: Sleep for 60 seconds to wait run server on pod back
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '60s'
+      - name: show running container
+        run: |
+          docker ps
+          echo "🍏 Docker is UP ${{ job.status }}."
+          docker exec pod-back-with-volumes ps auxf
+      - name: run test in docker
+        run: docker exec pod-back-with-volumes coverage run --append --source='.' manage.py test -v 3 --keepdb pod.video_encode_transcript.tests.test_remote_encode_transcode
+      - name: Stop containers
+        if: always()
+        run: docker-compose -f ./docker-compose-full-dev-with-volumes.yml down
+      
+      ## Start unit test test ##
       - name: Runs Elasticsearch
         uses: elastic/elastic-github-actions/elasticsearch@refactor_with_plugins
         with:
           # stack-version: 7.6.0
           stack-version: 6.8.23
-          port: 9300
           plugins: analysis-icu
 
       - name: Setup Pod
@@ -96,65 +133,13 @@ jobs:
         run: |
           coverage run --append --source='.' manage.py test -v 3 --settings=pod.main.test_settings
 
-      ## Start remote encoding test ##
-
-      - name: Create settings local file
-        if: matrix.python-version == '3.9'
-        run: |
-            mv pod/custom/settings_local_docker_full_test.py pod/custom/settings_local.py
-      - name: cat settings local
-        if: matrix.python-version == '3.9'
-        run: cat pod/custom/settings_local.py
-      - name: Create env file containers
-        if: matrix.python-version == '3.9'
-        run: |
-          touch .env.dev
-          echo DJANGO_SUPERUSER_USERNAME=$DJANGO_SUPERUSER_USERNAME >> .env.dev
-          echo DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD >> .env.dev
-          echo DJANGO_SUPERUSER_EMAIL=$DJANGO_SUPERUSER_EMAIL >> .env.dev
-          echo ELASTICSEARCH_TAG=$ELASTICSEARCH_TAG >> .env.dev
-          echo ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG >> .env.dev
-          echo NODE_TAG=$NODE_TAG >> .env.dev
-          echo PYTHON_TAG=$PYTHON_TAG >> .env.dev
-          echo REDIS_TAG=$REDIS_TAG >> .env.dev
-          echo DOCKER_ENV=full >> .env.dev
-          echo GECKODRIVER_VER=v0.29.0
-          echo FIREFOX_VER=87.0
-      - name: cat env
-        if: matrix.python-version == '3.9'
-        run: cat .env.dev
-      - name: make Build container
-        if: matrix.python-version == '3.9'
-        run: |
-          sudo rm -rf ./pod/log
-          sudo rm -rf ./pod/static
-          sudo rm -rf ./pod/node_modules
-          docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG --build-arg NODE_VERSION=$NODE_TAG --build-arg PYTHON_VERSION=$PYTHON_TAG --no-cache
-          docker-compose -f ./docker-compose-full-dev-with-volumes.yml up --detach --force-recreate --always-recreate-deps
-      - name: Sleep for 60 seconds to wait run server on pod back
-        if: matrix.python-version == '3.9'
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '60s'
-      - name: show running container
-        if: matrix.python-version == '3.9'
-        run: |
-          docker ps
-          echo "🍏 Docker is UP ${{ job.status }}."
-          docker exec pod-back-with-volumes ps auxf
-      - name: run test in docker
-        if: matrix.python-version == '3.9'
-        run: docker exec pod-back-with-volumes coverage run --append --source='.' manage.py test -v 3 --keepdb pod.video_encode_transcript.tests.test_remote_encode_transcode
-
       ## Start Accessibility tests with pa11y ##
 
       - name: Install pa11y-ci dependencies.
-        if: matrix.python-version == '3.9'
         run: |
           npm install -g Badatos/pa11y-ci
 
       - name: Run Django test server
-        if: matrix.python-version == '3.9'
         env:
           PYTHONUNBUFFERED: 1
         run: |
@@ -166,14 +151,12 @@ jobs:
           sleep 5
 
       - name: Run pa11y-ci.
-        if: matrix.python-version == '3.9'
         # tee reads `stdin` and writes it to both `stdout` and a file
         run: |
           pa11y-ci 2>&1 | tee pa11y_output.txt
 
       - name: Read pa11y_output file.
         id: pa11y_output
-        if: matrix.python-version == '3.9'
         uses: juliangruber/read-file-action@v1
         with:
           path: ./pa11y_output.txt
@@ -191,7 +174,6 @@ jobs:
           exit 1
       - name: Send coverage to coveralls.io
         # coveralls command has been installed by requirements-dev.txt
-        if: matrix.python-version == '3.9'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run:
