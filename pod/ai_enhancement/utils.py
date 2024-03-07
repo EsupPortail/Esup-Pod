@@ -1,5 +1,7 @@
 import json
 
+from django.conf import settings
+
 import requests
 from requests import Response
 from webvtt import WebVTT, Caption
@@ -7,8 +9,8 @@ from webvtt import WebVTT, Caption
 from pod.ai_enhancement.models import AIEnrichment
 from pod.video.models import Discipline, Video
 
-API_URL = "https://aristote-preprod.k8s-cloud.centralesupelec.fr/api"
-API_VERSION = "v1"
+API_URL = getattr(settings, "AI_ENRICHMENT_API_URL", "")
+API_VERSION = getattr(settings, "AI_ENRICHMENT_API_VERSION", "")
 
 
 class AristoteAI:

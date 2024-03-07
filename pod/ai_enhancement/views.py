@@ -19,8 +19,8 @@ from pod.podfile.models import UserFolder
 from pod.video.models import Video, Discipline
 from pod.video_encode_transcript.transcript import saveVTT
 
-AI_ENRICHMENT_CLIENT_ID = getattr(settings, "AI_ENRICHMENT_CLIENT_ID", "mocked_id")
-AI_ENRICHMENT_CLIENT_SECRET = getattr(settings, "AI_ENRICHMENT_CLIENT_SECRET", "mocked_secret")
+AI_ENHANCEMENT_CLIENT_ID = getattr(settings, "AI_ENHANCEMENT_CLIENT_ID", "mocked_id")
+AI_ENHANCEMENT_CLIENT_SECRET = getattr(settings, "AI_ENHANCEMENT_CLIENT_SECRET", "mocked_secret")
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
@@ -86,7 +86,7 @@ def enrich_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
     if in_maintenance():
         return redirect(reverse("maintenance"))
     video = get_object_or_404(Video, slug=video_slug)
-    aristote = AristoteAI(AI_ENRICHMENT_CLIENT_ID, AI_ENRICHMENT_CLIENT_SECRET)
+    aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
     if enrichment_is_already_asked(video):
         enrichment = AIEnrichment.objects.filter(video=video).first()
         if enrichment.is_ready:
@@ -98,7 +98,7 @@ def enrich_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
 def enrich_video_json(request: WSGIRequest, video_slug: str) -> HttpResponse:
     """The view to get the JSON of Aristote version."""
     video = get_object_or_404(Video, slug=video_slug)
-    aristote = AristoteAI(AI_ENRICHMENT_CLIENT_ID, AI_ENRICHMENT_CLIENT_SECRET)
+    aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
     enrichment = AIEnrichment.objects.filter(video=video).first()
     latest_version = aristote.get_latest_enrichment_version(enrichment.ai_enrichment_id_in_aristote)
     return JsonResponse(latest_version)
@@ -145,7 +145,7 @@ def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
                 video.discipline.add(discipline)
             video.save()
             video = form.instance
-            aristote = AristoteAI(AI_ENRICHMENT_CLIENT_ID, AI_ENRICHMENT_CLIENT_SECRET)
+            aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
             enrichment = AIEnrichment.objects.filter(video=video).first()
             latest_version = aristote.get_latest_enrichment_version(enrichment.ai_enrichment_id_in_aristote)
             web_vtt = json_to_web_vtt(latest_version["transcript"]["sentences"], video.duration)

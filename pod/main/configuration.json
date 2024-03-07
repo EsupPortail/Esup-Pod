@@ -14,27 +14,53 @@
                         ]
                     },
                     "settings": {
-                        "AI_ENRICHMENT_CLIENT_ID": {
-                            "default_value": "mocked_id",
+                        "API_URL": {
+                            "default_value": "",
                             "description": {
                                 "en": [
-                                    "The enrichment AI client ID."
+                                    "API URL for the AI video enhancement."
                                 ],
                                 "fr": [
-                                    "L’ID du client de l’IA d’enrichissement."
+                                    "L’URL de l’API pour l’IA d’amélioration des vidéos."
                                 ]
                             },
                             "pod_version_end": "",
                             "pod_version_init": "5.2"
                         },
-                        "AI_ENRICHMENT_CLIENT_SECRET": {
+                        "API_VERSION": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "API version for the AI video enhancement."
+                                ],
+                                "fr": [
+                                    "La version de l’API pour l’IA d’amélioration des vidéos."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "5.2"
+                        },
+                        "AI_ENHANCEMENT_CLIENT_ID": {
+                            "default_value": "mocked_id",
+                            "description": {
+                                "en": [
+                                    "The video enhancement AI client ID."
+                                ],
+                                "fr": [
+                                    "L’ID du client de l’IA d’amélioration des vidéos."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "5.2"
+                        },
+                        "AI_ENHANCEMENT_CLIENT_SECRET": {
                             "default_value": "mocked_secret",
                             "description": {
                                 "en": [
-                                    "The enrichment AI client secret password."
+                                    "The video enhancement AI client secret password."
                                 ],
                                 "fr": [
-                                    "Le mot de passe secret du client de l’IA d’enrichissement."
+                                    "Le mot de passe secret du client de l’IA d’amélioration des vidéos."
                                 ]
                             },
                             "pod_version_end": "",

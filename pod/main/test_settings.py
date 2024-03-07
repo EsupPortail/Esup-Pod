@@ -110,3 +110,11 @@ if USE_DOCKER:
         os.mkdir(MIGRATION_DIRECTORY)
         file = os.path.join(MIGRATION_DIRECTORY, "__init__.py")
         open(file, "a").close()
+
+
+# AI Enhancement settings
+USE_AI_ENRICHMENT = True
+AI_ENHANCEMENT_CLIENT_ID = "mocked_id"
+AI_ENHANCEMENT_CLIENT_SECRET = "mock_secret"
+AI_ENRICHMENT_API_URL = ""
+AI_ENRICHMENT_API_VERSION = ""
