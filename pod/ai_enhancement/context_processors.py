@@ -8,12 +8,12 @@ USE_AI_ENRICHMENT = getattr(
 AI_ENRICHMENT_CLIENT_ID = getattr(
     django_settings,
     "AI_ENRICHMENT_CLIENT_ID",
-    "mocked_id"
+    "mocked_id",
 )
 AI_ENRICHMENT_CLIENT_SECRET = getattr(
     django_settings,
     "AI_ENRICHMENT_CLIENT_SECRET",
-    "mocked_secret"
+    "mocked_secret",
 )
 
 

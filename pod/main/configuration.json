@@ -14,6 +14,32 @@
                         ]
                     },
                     "settings": {
+                        "AI_ENRICHMENT_CLIENT_ID": {
+                            "default_value": "mocked_id",
+                            "description": {
+                                "en": [
+                                    "The enrichment AI client ID."
+                                ],
+                                "fr": [
+                                    "L’ID du client de l’IA d’enrichissement."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "5.2"
+                        },
+                        "AI_ENRICHMENT_CLIENT_SECRET": {
+                            "default_value": "mocked_secret",
+                            "description": {
+                                "en": [
+                                    "The enrichment AI client secret password."
+                                ],
+                                "fr": [
+                                    "Le mot de passe secret du client de l’IA d’enrichissement."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "5.2"
+                        },
                         "USE_AI_ENHANCEMENT": {
                             "default_value": true,
                             "description": {
