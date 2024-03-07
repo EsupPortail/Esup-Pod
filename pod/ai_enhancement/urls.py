@@ -1,3 +1,4 @@
+"""URL patterns used in ai_enhancement application."""
 from django.urls import path
 
 from pod.ai_enhancement.views import (
