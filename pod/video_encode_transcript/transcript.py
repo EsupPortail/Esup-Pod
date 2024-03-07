@@ -211,20 +211,27 @@ def improveCaptionsAccessibility(webvtt):
     new_captions = []
     for caption in webvtt.captions:
         sent = split_string(caption.text, 40, sep=" ")
+        # nb mots total
+        nbTotWords = len(caption.text.split())
         if len(sent) > 2:
             num_captions = int(len(sent) / 2)
             if len(sent) % 2:
                 num_captions += 1
             dur = caption.end_in_seconds - caption.start_in_seconds
+            # On se positionne sur le point de départ en sec
+            startTime = caption.start_in_seconds
             for x in range(num_captions):
                 new_cap = Caption()
+                new_cap.text = get_cap_text(sent, x)
+                # Durée d'affichage au prorata du nombre de mots
+                timeCalc = dur * (len(new_cap.text.split()) / nbTotWords)
                 new_cap.start = sec_to_timestamp(
-                    caption.start_in_seconds + x * dur / num_captions
+                    startTime
                 )
                 new_cap.end = sec_to_timestamp(
-                    caption.start_in_seconds + (x + 1) * dur / num_captions
+                    startTime + timeCalc
                 )
-                new_cap.text = get_cap_text(sent, x)
+                startTime = startTime + timeCalc
                 new_captions.append(new_cap)
         else:
             new_cap = Caption()
