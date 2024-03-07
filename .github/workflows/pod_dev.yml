@@ -112,8 +112,14 @@ jobs:
         run: docker-compose -f ./docker-compose-full-dev-with-volumes.yml down
       - name: delete unused file and change owner
         run: |
-          rm -f pod/custom/settings_local.py
-          sudo chown -R runner .
+          sudo rm -f pod/custom/settings_local.py
+          sudo rm -rf ./pod/log
+          sudo rm -rf ./pod/static
+          sudo rm -rf ./pod/node_modules
+          sudo rm -rf ./pod/db_migrations
+          sudo rm -rf ./pod/db.sqlite3
+          sudo rm -rf ./pod/media
+          sudo chown -R runner:runner .
 
       ## Start unit test test ##
       - name: Runs Elasticsearch
@@ -125,10 +131,7 @@ jobs:
 
       - name: Setup Pod
         run: |
-          whoami
-          ls -al
           coverage run --append --source='.' manage.py create_pod_index --settings=pod.main.test_settings
-          ls -al
           python manage.py makemigrations --settings=pod.main.test_settings
           python manage.py migrate --settings=pod.main.test_settings
           cd pod
