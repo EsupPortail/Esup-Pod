@@ -85,8 +85,9 @@ from datetime import date
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 
-from django.db import transaction
 from django.db import IntegrityError
+from django.db.models import QuerySet
+from django.db import transaction
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -190,20 +191,33 @@ CHANNELS_PER_BATCH = getattr(settings, "CHANNELS_PER_BATCH", 10)
 # ############################################################################
 
 
-def get_theme_children_as_list(channel, theme_children, limit, offset):
-    """Get theme children as a list, and not a Queryset."""
-    # List of children's themes
+def get_theme_children_as_list(channel: Channel, theme_children: QuerySet) -> list:
+    """Get theme children as a list, and not a Queryset.
+
+    Args:
+        channel (Channel): current channel
+        theme_children (QuerySet): QuerySet of children in the theme
+    Returns:
+        list: list of children in the theme, with the right number of videos
+    """
+    # List of children in the theme
     children = list()
     for child in theme_children:
         if child is not None:
             # Get a flat list of all theme children.
             list_theme = child.get_all_children_flat()
             # Videos for each child theme
-            videos_list = get_available_videos().filter(channel=channel)
-            videos_list = videos_list.filter(theme__in=list_theme)
+            videos_list = get_available_videos().filter(
+                channel=channel,
+                theme__in=list_theme
+            )
             child.video_count = videos_list.count()
-            child.offset = limit + offset
-            children.append(child)
+            child_serializable = {
+                "slug": child.slug,
+                "title": child.title,
+                "video_count": child.video_count
+            }
+            children.append(child_serializable)
     return children
 
 
@@ -255,8 +269,8 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         theme_children = theme_children.annotate(
             video_count=Value(0)
         )
-        # List of children's themes
-        children = get_theme_children_as_list(channel, theme_children, limit, offset)
+        # List of children in the theme
+        children = get_theme_children_as_list(channel, theme_children)
         next_url, previous_url, theme_pages_info = pagination_data(
             request.path, offset, limit, count_themes
         )
