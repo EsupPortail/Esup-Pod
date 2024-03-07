@@ -154,8 +154,6 @@ def saveVTT(video: Video, webvtt: WebVTT, lang_code: str = None):
     """Save webvtt file with the video."""
     msg = "\nSAVE TRANSCRIPT WEBVTT : %s" % time.ctime()
     lang = lang_code if lang_code else video.transcript
-    print("===== lang =====")
-    print(lang)
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     webvtt.save(temp_vtt_file.name)
     if webvtt.captions:
