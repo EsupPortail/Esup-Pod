@@ -1,0 +1,92 @@
+x-pod-volumes: &pod-volumes
+  - .:/usr/src/app
+
+x-elasticsearch-volumes: &elasticsearch-volumes
+  - ./dockerfile-dev-with-volumes/config/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+
+version: '3.7'
+
+services:
+  pod-back:
+    container_name: pod-back-with-volumes
+    build:
+      context: .
+      dockerfile: dockerfile-dev-with-volumes/pod-back/Dockerfile
+    depends_on:
+      - elasticsearch
+      - redis
+    env_file:
+      - ./.env.dev
+    ports:
+      - 9090:8080
+    volumes: *pod-volumes
+
+  pod-encode:
+    container_name: pod-encode-with-volumes
+    build:
+      context: .
+      dockerfile: dockerfile-dev-with-volumes/pod-encode/Dockerfile
+    depends_on:
+      - pod-back
+    env_file:
+      - ./.env.dev
+    volumes: *pod-volumes
+  
+  pod-transcript:
+    container_name: pod-transcript-with-volumes
+    build:
+      context: .
+      dockerfile: dockerfile-dev-with-volumes/pod-transcript/Dockerfile
+    depends_on:
+      - pod-back
+    env_file:
+      - ./.env.dev
+    volumes: *pod-volumes
+
+  pod-xapi:
+    container_name: pod-xapi-with-volumes
+    build:
+      context: .
+      dockerfile: dockerfile-dev-with-volumes/pod-xapi/Dockerfile
+    depends_on:
+      - pod-back
+    env_file:
+      - ./.env.dev
+    volumes: *pod-volumes
+
+  elasticsearch:
+    container_name: elasticsearch-with-volumes
+    build:
+      context: .
+      dockerfile: dockerfile-dev-with-volumes/elasticsearch/dockerfile-elasticsearch-dev
+    ports:
+      - 9200:9200
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+    volumes: *elasticsearch-volumes
+
+  redis:
+    container_name: redis-with-volumes
+    image: ${REDIS_TAG}
+    env_file:
+      - ./.env.dev
+    ports:
+      - 6379:6379
+
+  pa11y-ci:
+    container_name: pa11y-ci
+    build:
+      context: .
+      dockerfile: dockerfile-dev-with-volumes/pa11y-ci/dockerfile-pa11y-ci
+  
+#  redis-commander:
+#    container_name: redis-commander
+#    hostname: redis-commander
+#    image: rediscommander/redis-commander:latest
+#    restart: always
+#    environment:
+#    - REDIS_HOSTS=local:redis:6379
+#    ports:
+#    - "8081:8081"
