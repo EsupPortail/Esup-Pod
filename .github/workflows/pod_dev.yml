@@ -87,7 +87,7 @@ jobs:
           echo NODE_TAG=$NODE_TAG >> .env.dev
           echo PYTHON_TAG=$PYTHON_TAG >> .env.dev
           echo REDIS_TAG=$REDIS_TAG >> .env.dev
-          echo DOCKER_ENV=full >> .env.dev
+          echo DOCKER_ENV=$DOCKER_ENV >> .env.dev
           echo GECKODRIVER_VER=v0.29.0
           echo FIREFOX_VER=87.0
       - name: cat env
