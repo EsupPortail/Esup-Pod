@@ -190,3 +190,24 @@ class AIEnhancementChoice(forms.ModelForm):
         """Init method."""
         super(AIEnhancementChoice, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
+
+
+class NotifyUserThirdPartyServicesForm(forms.Form):
+    """Form to notify user about third party services."""
+
+    agree = forms.BooleanField(
+        label=_("I agree to use third-party services"),
+        help_text=_(
+            "Please check this box if you agree to use a third-party service to improve this video."
+        ),
+        widget=forms.CheckboxInput(
+            attrs={
+                "aria-describedby": "id_agreeHelp",
+            },
+        ),
+    )
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Init method."""
+        super(NotifyUserThirdPartyServicesForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)

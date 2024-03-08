@@ -1,6 +1,7 @@
 import json
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse, JsonResponse
@@ -9,7 +10,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
-from pod.ai_enhancement.forms import AIEnhancementChoice
+from pod.ai_enhancement.forms import AIEnhancementChoice, NotifyUserThirdPartyServicesForm
 from pod.ai_enhancement.models import AIEnhancement
 from pod.ai_enhancement.utils import AristoteAI, enhancement_is_already_asked
 from pod.completion.models import Track
@@ -62,23 +63,39 @@ def toggle_webhook(request: WSGIRequest):
 @csrf_protect
 def send_enhancement_creation_request(request: WSGIRequest, aristote: AristoteAI, video: Video) -> HttpResponse:
     """Send a request to create an enhancement."""
-    creation_response = aristote.create_enhancement_from_url(
-        get_current_site(request).domain + video.video.url,
-        ["video/mp4"],
-        request.user.username,
-        reverse("ai_enhancement:webhook"),
-    )
-    if creation_response:
-        if creation_response["status"] == "OK":
-            AIEnhancement.objects.create(
-                video=video,
-                ai_enhancement_id_in_aristote=creation_response["id"],
+    if request.method == "POST":
+        form = NotifyUserThirdPartyServicesForm(request.POST)
+        if form.is_valid():
+            creation_response = aristote.create_enhancement_from_url(
+                get_current_site(request).domain + video.video.url,
+                ["video/mp4"],
+                request.user.username,
+                reverse("ai_enhancement:webhook"),
             )
-            return redirect(reverse("video:video", args=[video.slug]))
+            if creation_response:
+                if creation_response["status"] == "OK":
+                    AIEnhancement.objects.create(
+                        video=video,
+                        ai_enhancement_id_in_aristote=creation_response["id"],
+                    )
+                    return redirect(reverse("video:video", args=[video.slug]))
+                else:
+                    raise Exception("Error: ", creation_response["status"])
+            else:
+                raise Exception("Error: no response from Aristote AI.")
         else:
-            raise Exception("Error: ", creation_response["status"])
+            messages.add_message(request, messages.ERROR, _("One or more errors have been found in the form."))
     else:
-        raise Exception("Error: no response from Aristote AI.")
+        form = NotifyUserThirdPartyServicesForm()
+    return render(
+        request,
+        "create_enhancement.html",
+        {
+            "form": form,
+            "video": video,
+            "page_title": _("Enhance the video with Aristote AI"),
+        }
+    )
 
 
 @csrf_protect
