@@ -80,6 +80,9 @@ services:
     build:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pa11y-ci/dockerfile-pa11y-ci
+    depends_on:
+      - pod-back
+    volumes: *pod-volumes
   
 #  redis-commander:
 #    container_name: redis-commander
