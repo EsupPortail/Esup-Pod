@@ -14,7 +14,7 @@
                         ]
                     },
                     "settings": {
-                        "API_URL": {
+                        "AI_ENHANCEMENT_API_URL": {
                             "default_value": "",
                             "description": {
                                 "en": [
@@ -27,7 +27,7 @@
                             "pod_version_end": "",
                             "pod_version_init": "5.2"
                         },
-                        "API_VERSION": {
+                        "AI_ENHANCEMENT_API_VERSION": {
                             "default_value": "",
                             "description": {
                                 "en": [

@@ -15,14 +15,14 @@ AI_ENHANCEMENT_CLIENT_SECRET = getattr(
     "AI_ENHANCEMENT_CLIENT_SECRET",
     "mocked_secret",
 )
-API_URL = getattr(
+AI_ENHANCEMENT_API_URL = getattr(
     django_settings,
-    "API_URL",
+    "AI_ENHANCEMENT_API_URL",
     "",
 )
-API_VERSION = getattr(
+AI_ENHANCEMENT_API_VERSION = getattr(
     django_settings,
-    "API_VERSION",
+    "AI_ENHANCEMENT_API_VERSION",
     "",
 )
 
@@ -33,7 +33,7 @@ def context_settings(request):
         "USE_AI_ENHANCEMENT": USE_AI_ENHANCEMENT,
         "AI_ENHANCEMENT_CLIENT_ID": AI_ENHANCEMENT_CLIENT_ID,
         "AI_ENHANCEMENT_CLIENT_SECRET": AI_ENHANCEMENT_CLIENT_SECRET,
-        "API_URL": API_URL,
-        "API_VERSION": API_VERSION,
+        "AI_ENHANCEMENT_API_URL": AI_ENHANCEMENT_API_URL,
+        "AI_ENHANCEMENT_API_VERSION": AI_ENHANCEMENT_API_VERSION,
     }
     return new_settings
