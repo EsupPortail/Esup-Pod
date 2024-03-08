@@ -8344,7 +8344,7 @@ msgstr ""
 
 #: pod/video/templates/videos/video_page_content.html
 msgid ""
-"The video was treated by Aristotle. You must verify and validate the "
+"The video was treated by Aristote. You must verify and validate the "
 "processing by pressing the robot icon."
 msgstr ""
 

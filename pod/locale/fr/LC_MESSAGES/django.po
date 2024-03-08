@@ -8891,9 +8891,11 @@ msgstr "La vidéo est actuellement en attente d’encodage."
 
 #: pod/video/templates/videos/video_page_content.html
 msgid ""
-"The video was treated by Aristotle. You must verify and validate the "
+"The video was treated by Aristote. You must verify and validate the "
 "processing by pressing the robot icon."
 msgstr ""
+"La vidéo a été traitée par Aristote. Vous devez vérifier et valider le "
+"traitement en appuyant sur l’icône du robot."
 
 #: pod/video/templates/videos/video_row_select.html
 msgid "Toggle actions menu"
@@ -8909,7 +8911,7 @@ msgstr "Afficher les statistiques de visualisation de toutes les vidéos"
 
 #: pod/video/templates/videos/widgets/customclearablefileinput.html
 msgid ": "
-msgstr " : "
+msgstr " : "
 
 #: pod/video/templatetags/video_tags.py
 msgid "QR code video’s link"
