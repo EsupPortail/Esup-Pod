@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-06 12:13+0100\n"
+"POT-Creation-Date: 2024-03-08 16:45+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -5584,6 +5584,18 @@ msgstr "Pont vocal"
 msgid "BBB Create Time"
 msgstr "date de création dans BBB"
 
+#: pod/meeting/models.py pod/meeting/views.py
+msgid "Personal meeting room"
+msgstr "Salle de réunion personnelle"
+
+#: pod/meeting/models.py
+msgid ""
+"If this box is checked, this meeting corresponds to the user's personal "
+"meeting room."
+msgstr ""
+"Si cette case est cochée, cette réunion correspond à la salle de "
+"réunion personnelle de l’utilisateur."
+
 #: pod/meeting/models.py
 msgid ""
 "The day of the start date of the meeting must be included in the recurrence "
@@ -5630,6 +5642,29 @@ msgid ""
 msgstr ""
 "L’accès à l’ajout d’une réunion a été limité. Si vous souhaitez ajouter des "
 "réunions sur la plateforme, veuillez <a href=\"%(url)s\">nous contacter</a>."
+
+#: pod/meeting/templates/meeting/add_or_edit.html
+msgid ""
+"Your personal meeting room is a room specific to your profile, which is "
+"always available."
+msgstr ""
+"Votre salle de réunion personnelle est une salle spécifique à votre profil, "
+"qui est toujours disponible."
+
+#: pod/meeting/templates/meeting/add_or_edit.html
+msgid "You can start it at any time, or schedule it for later use."
+msgstr "Vous pouvez la lancer à tout moment ou la programmer "
+"pour une utilisation ultérieure."
+
+#: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/meeting/templates/meeting/meeting_card.html
+#, python-format
+msgid ""
+"This is “%(full_name)s”'s personal meeting room, a room specific to his "
+"profile, which is always available."
+msgstr ""
+"Il s’agit de la salle de réunion personnelle de “%(full_name)s”, "
+"une salle spécifique à son profil, qui est toujours disponible."
 
 #: pod/meeting/templates/meeting/delete.html
 #, python-format
@@ -5769,6 +5804,14 @@ msgid "Delete the meeting"
 msgstr "Supprimer la réunion"
 
 #: pod/meeting/templates/meeting/meeting_card.html
+msgid ""
+"This is your personal meeting room, a room specific to your profile, which "
+"is always available."
+msgstr ""
+"Il s’agit de votre salle de réunion personnelle, une salle spécifique "
+"à votre profil, qui est toujours disponible."
+
+#: pod/meeting/templates/meeting/meeting_card.html
 msgid "Access to this meeting is restricted"
 msgstr "L’accès à cette réunion est restreint"
 
@@ -5891,6 +5934,10 @@ msgid "You cannot delete this meeting."
 msgstr "Vous ne pouvez pas supprimer cette réunion."
 
 #: pod/meeting/views.py
+msgid "You cannot delete a personal meeting room."
+msgstr "Vous ne pouvez pas supprimer une salle de réunion personnelle."
+
+#: pod/meeting/views.py
 msgid "The meeting has been deleted."
 msgstr "La réunion a été supprimée."
 
@@ -5959,19 +6006,42 @@ msgstr ""
 "    "
 
 #: pod/meeting/views.py
-#, python-format
 msgid ""
 "\n"
-"            <p>Hello,</p>\n"
-"            <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>."
-"</p>\n"
-"            <p>Start date: %(start_date_time)s </p>\n"
-"            <p>End date: %(end_date)s </p>\n"
-"            <p>here the link to join the meeting:\n"
-"            <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"            <p>You need this password to enter: <b>%(password)s</b> </p>\n"
-"            <p>Regards</p>\n"
-"        "
+"                <p>Hello,</p>\n"
+"                <p>%(owner)s invites you to the meeting <b>"
+"%(meeting_title)s</b>.</p>\n"
+"                <p>here the link to join the meeting:\n"
+"                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
+"                <p>You need this password to enter: <b>%(password)s</b> </"
+"p>\n"
+"                <p>Regards</p>\n"
+"            "
+msgstr ""
+"\n"
+"        <p>Bonjour,\n"
+"        <p>%(owner)s vous invite à la réunion <b>%(meeting_title)s</b>.</p>\n"
+"        <p>Voici le lien pour rejoindre la réunion :\n"
+"        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <b>"
+"%(password)s</b> </p>\n"
+"        <p>Cordialement</p>\n"
+"    "
+
+#: pod/meeting/views.py
+msgid ""
+"\n"
+"                <p>Hello,</p>\n"
+"                <p>%(owner)s invites you to the meeting <b>"
+"%(meeting_title)s</b>.</p>\n"
+"                <p>Start date: %(start_date_time)s </p>\n"
+"                <p>End date: %(end_date)s </p>\n"
+"                <p>here the link to join the meeting:\n"
+"                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
+"                <p>You need this password to enter: <b>%(password)s</b> </"
+"p>\n"
+"                <p>Regards</p>\n"
+"            "
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
@@ -7884,12 +7954,14 @@ msgstr[0] "%(counter)s thème trouvé dans cette chaine"
 msgstr[1] "%(counter)s thèmes trouvés dans cette chaine"
 
 #: pod/video/templates/channel/channel.html
+#, python-format
 msgid "%(counter)s video for this channel"
 msgid_plural "%(counter)s videos for this channel"
 msgstr[0] "%(counter)s vidéo trouvée dans cette chaine"
 msgstr[1] "%(counter)s vidéos trouvées dans cette chaine"
 
 #: pod/video/templates/channel/channel.html
+#, python-format
 msgid "%(counter)s subtheme found for this theme"
 msgid_plural "%(counter)s subthemes found for this theme"
 msgstr[0] "%(counter)s sous-thème trouvé dans ce thème"
