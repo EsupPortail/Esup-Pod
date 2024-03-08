@@ -75,7 +75,7 @@
             {% endfor %}
             <div class="text-center mt-1">
                 <button type="submit" class="btn btn-secondary btn-sm btn-danger">{% trans 'Delete' %}</button>
-                <a href="{% url 'meeting:my_meetings' %}" title="{% trans 'Back to my playlists' %}" class="btn btn-secondary btn-sm">
+                <a href="{% url 'playlist:list' %}" title="{% trans 'Back to my playlists' %}" class="btn btn-secondary btn-sm">
                     <i class="bi bi-list-ul" aria-hidden="true"></i>&nbsp;{% trans 'Back to my playlists' %}
                 </a>
             </div>
