@@ -28,8 +28,23 @@ class QuizTestUtils(TestCase):
             is_draft=False,
             type=Type.objects.get(id=1),
         )
+        self.video2 = Video.objects.create(
+            title="Video2",
+            owner=self.user,
+            video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        self.video3 = Video.objects.create(
+            title="Video3",
+            owner=self.user,
+            video="test.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
 
     def test_get_quiz_questions(self):
+        """Test if test_get_quiz_questions works correctly."""
         quiz = Quiz.objects.create(video=self.video)
         UniqueChoiceQuestion.objects.create(quiz=quiz, title="UCQ1")
         MultipleChoiceQuestion.objects.create(quiz=quiz, title="MCQ1")
@@ -39,23 +54,26 @@ class QuizTestUtils(TestCase):
         questions = get_quiz_questions(quiz)
         self.assertEqual(len(questions), 4)
 
+        quiz_with_unique_choice = Quiz.objects.create(video=self.video2)
+        UniqueChoiceQuestion.objects.create(quiz=quiz_with_unique_choice, title="UCQ2")
+        questions_with_unique_choice = get_quiz_questions(quiz_with_unique_choice)
+        self.assertEqual(len(questions_with_unique_choice), 1)
+
+        quiz_with_all_question_types = Quiz.objects.create(video=self.video3)
+        UniqueChoiceQuestion.objects.create(
+            quiz=quiz_with_all_question_types, title="UCQ3")
+        MultipleChoiceQuestion.objects.create(
+            quiz=quiz_with_all_question_types, title="MCQ2")
+        ShortAnswerQuestion.objects.create(
+            quiz=quiz_with_all_question_types, title="SAQ2")
+        LongAnswerQuestion.objects.create(quiz=quiz_with_all_question_types, title="LAQ2")
+        questions_with_all_types = get_quiz_questions(quiz_with_all_question_types)
+        self.assertEqual(len(questions_with_all_types), 4)
+        print(" --->  test_get_quiz_questions ok")
+
     def test_get_video_quiz(self):
-        video_without_quiz = Video.objects.create(
-            title="Video2",
-            owner=self.user,
-            video="test2.mp4",
-            is_draft=False,
-            type=Type.objects.get(id=1),
-        )
-
-        video_with_quiz = Video.objects.create(
-            title="Video3",
-            owner=self.user,
-            video="test3.mp4",
-            is_draft=False,
-            type=Type.objects.get(id=1),
-        )
-        Quiz.objects.create(video=video_with_quiz)
-
-        self.assertIsNone(get_video_quiz(video_without_quiz))
-        self.assertIsNotNone(get_video_quiz(video_with_quiz))
+        """Test if test_get_video_quiz works correctly."""
+        Quiz.objects.create(video=self.video2)
+        self.assertIsNone(get_video_quiz(self.video))
+        self.assertIsNotNone(get_video_quiz(self.video2))
+        print(" --->  test_get_video_quiz ok")
