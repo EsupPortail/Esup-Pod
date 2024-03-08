@@ -1,6 +1,6 @@
 """Esup-Pod quiz utilities."""
 
-from typing import List, Optional, Union
+from typing import Optional
 from pod.quiz.models import (
     LongAnswerQuestion,
     MultipleChoiceQuestion,
@@ -15,14 +15,7 @@ from pod.video.models import Video
 
 def get_quiz_questions(
     quiz: Quiz,
-) -> List[
-    Union[
-        UniqueChoiceQuestion,
-        MultipleChoiceQuestion,
-        ShortAnswerQuestion,
-        LongAnswerQuestion,
-    ]
-]:
+) -> list:
     """
     Retrieve all questions associated with a given quiz.
 
@@ -30,7 +23,7 @@ def get_quiz_questions(
         quiz (Quiz): The quiz for which to retrieve the questions.
 
     Returns:
-        List[Union[UniqueChoiceQuestion, MultipleChoiceQuestion, ShortAnswerQuestion, LongAnswerQuestion]]: A list of questions associated with the quiz.
+        list: A list of questions associated with the quiz.
     """
     unique_choice_questions = UniqueChoiceQuestion.objects.filter(quiz=quiz)
     multiple_choice_questions = MultipleChoiceQuestion.objects.filter(quiz=quiz)
