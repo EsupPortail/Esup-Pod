@@ -99,7 +99,7 @@ def send_enhancement_creation_request(request: WSGIRequest, aristote: AristoteAI
 
 
 @csrf_protect
-def enrich_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
+def enhance_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
     """The view to enrich a video."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
@@ -113,7 +113,7 @@ def enrich_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
         return send_enhancement_creation_request(request, aristote, video)
 
 
-def enrich_video_json(request: WSGIRequest, video_slug: str) -> HttpResponse:
+def enhance_video_json(request: WSGIRequest, video_slug: str) -> HttpResponse:
     """The view to get the JSON of Aristote version."""
     video = get_object_or_404(Video, slug=video_slug)
     aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)

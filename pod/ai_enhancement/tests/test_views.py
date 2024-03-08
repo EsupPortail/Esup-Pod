@@ -7,12 +7,12 @@ from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
 from pod.ai_enhancement.models import AIEnhancement
-from pod.ai_enhancement.views import enrich_video_json, toggle_webhook
+from pod.ai_enhancement.views import enhance_video_json, toggle_webhook
 from pod.video.models import Video, Type
 
 
 class EnrichVideoJsonViewTest(TestCase):
-    """Test the enrich_video_json view."""
+    """Test the enhance_video_json view."""
 
     fixtures = ["initial_data.json"]
 
@@ -31,8 +31,8 @@ class EnrichVideoJsonViewTest(TestCase):
         self.enhancement = AIEnhancement.objects.create(video=self.video, ai_enhancement_id_in_aristote="123")
 
     @patch("pod.ai_enhancement.views.AristoteAI")
-    def test_enrich_video_json__success(self, mock_aristote_ai):
-        """Test the enrich_video_json view when successful."""
+    def test_enhance_video_json__success(self, mock_aristote_ai):
+        """Test the enhance_video_json view when successful."""
         json_data = {
             "createdAt": "2024-01-26T14:40:05+01:00",
             "updatedAt": "2024-01-26T14:40:05+01:00",
@@ -58,9 +58,9 @@ class EnrichVideoJsonViewTest(TestCase):
         }
         mock_aristote_instance = mock_aristote_ai.return_value
         mock_aristote_instance.get_latest_enhancement_version.return_value = json_data
-        url = reverse("ai_enhancement:enrich_video_json", args=[self.video.slug])
+        url = reverse("ai_enhancement:enhance_video_json", args=[self.video.slug])
         request = self.factory.get(url)
-        response = enrich_video_json(request, self.video.slug)
+        response = enhance_video_json(request, self.video.slug)
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, JsonResponse)
         mock_aristote_instance.get_latest_enhancement_version.assert_called_once_with(
@@ -68,7 +68,7 @@ class EnrichVideoJsonViewTest(TestCase):
         )
         expected_json = json_data
         self.assertJSONEqual(str(response.content, encoding="utf-8"), expected_json)
-        print(" --->  test_enrich_video_json__success ok")
+        print(" --->  test_enhance_video_json__success ok")
 
 
 class ReceiveWebhookViewTest(TestCase):
