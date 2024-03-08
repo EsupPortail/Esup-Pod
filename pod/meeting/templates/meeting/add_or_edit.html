@@ -41,6 +41,20 @@
       {{field_hidden}}
     {% endfor %}
 
+    {% if form.instance.is_personal %}
+      <div class="pod-first-content">
+        <p>
+          {% if form.instance.owner == user %}
+            {% trans "Your personal meeting room is a room specific to your profile, which is always available." %}
+            {% trans "You can start it at any time, or schedule it for later use." %}
+          {% else %}
+            {% blocktrans with full_name=form.instance.owner.get_full_name %}This is “{{ full_name }}”'s personal meeting room, a room specific to his profile, which is always available.{% endblocktrans %}
+            {% trans "You can start it at any time, or schedule it for later use." %}
+          {% endif %}
+        </p>
+      </div>
+    {% endif %}
+
     {% for fieldset in form.fieldsets %}
     {% with options=fieldset|last name=fieldset|first%}
       {% if "collapse" in options.classes %}
@@ -260,5 +274,26 @@ if(modal_recurring_fields) {
   })
 }
 
+/* Manage personal meeting room */
+var field_is_personal = document.getElementById('id_is_personal');
+var time_fieldset = document.getElementById('see_recurring_fields').parentElement.parentElement.parentElement;
+var is_personal = false; 
+if (field_is_personal) {
+  is_personal = (field_is_personal.value == "True");
+}
+if (is_personal && time_fieldset){
+    // Hide the time fieldset
+    time_fieldset.style.display = 'none';
+}
+
+/* Manage when voice bridge is modified in a bad format, after a BBB session start */
+var field_voice_bridge = document.getElementById('id_voice_bridge');
+if (field_voice_bridge) {
+  // Good format : between 10000 and 99999
+  if (field_voice_bridge.value > 99999 || field_voice_bridge.value < 10000) {
+    new_voice_bridge = Math.floor(10000 + (Math.random() * 89999));
+    field_voice_bridge.value = new_voice_bridge;
+  }
+}
 </script>
 {% endblock more_script %}
