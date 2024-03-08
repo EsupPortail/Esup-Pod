@@ -51,14 +51,18 @@ class QuestionForm(forms.Form):
         help_text=_("Please choose an explanation."),
     )
     start_timestamp = forms.IntegerField(
-        label=_("Start Timestamp"),
+        label=_("Start timestamp"),
         required=False,
-        help_text=_("Please choose the beginning time of the answer in the video."),
+        min_value=0,
+        widget=forms.NumberInput(attrs={"class": "start-timestamp-field"}),
+        help_text=_("Please choose the beginning time of the answer in the video (in seconds)."),
     )
     end_timestamp = forms.IntegerField(
-        label=_("End Timestamp"),
+        label=_("End timestamp"),
         required=False,
-        help_text=_("Please choose the end time of the answer in the video."),
+        min_value=0,
+        widget=forms.NumberInput(attrs={"class": "end-timestamp-field"}),
+        help_text=_("Please choose the end time of the answer in the video (in seconds)."),
     )
     type = forms.ChoiceField(
         choices=QUESTION_TYPES,

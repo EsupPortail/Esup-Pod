@@ -1,6 +1,6 @@
 /**
  * @file Esup-Pod functions for the quiz creation or edit form.
- * @since 3.5.2
+ * @since 3.6.0
  */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -8,8 +8,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const totalNewForms = document.getElementById("id_questions-TOTAL_FORMS");
 
   let defaultQuestionForms = document.querySelectorAll(".question-form");
-  for (defaultQuestionForm of defaultQuestionForms) {
+  for (let i = 0; i < defaultQuestionForms.length - 1; i++) {
+    const defaultQuestionForm = defaultQuestionForms[i];
     handleQuestionType(defaultQuestionForm);
+    handleQuestionTimestamps(defaultQuestionForm);
   }
 
   let questionsTypeElements = document.querySelectorAll(
@@ -92,7 +94,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const copyEmptyQuestionFormEl = document
       .getElementById("empty-form")
       .cloneNode(true).firstElementChild;
-    copyEmptyQuestionFormEl.classList.add("border", "rounded-3", "p-3", "mb-3", "question-form");
+    copyEmptyQuestionFormEl.classList.add(
+      "border",
+      "rounded-3",
+      "p-3",
+      "mb-3",
+      "question-form",
+    );
     copyEmptyQuestionFormEl.removeAttribute("id");
 
     const regex = new RegExp("__prefix__", "g");
@@ -100,8 +108,12 @@ document.addEventListener("DOMContentLoaded", function () {
       copyEmptyQuestionFormEl.innerHTML.replace(regex, currentFormCount);
 
     totalNewForms.setAttribute("value", currentFormCount + 1);
-    copyEmptyQuestionFormEl.querySelector(".question-number").innerHTML = currentFormCount + 1;
-    copyEmptyQuestionFormEl.setAttribute("data-question-index", currentFormCount)
+    copyEmptyQuestionFormEl.querySelector(".question-number").innerHTML =
+      currentFormCount + 1;
+    copyEmptyQuestionFormEl.setAttribute(
+      "data-question-index",
+      currentFormCount,
+    );
     return copyEmptyQuestionFormEl;
   }
 
@@ -114,6 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
       ".question-select-type",
     );
     handleQuestionType(questionForm);
+    handleQuestionTimestamps(questionForm);
     addEventListenerQuestionType(questionTypeElement);
   }
 
@@ -194,7 +207,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const deleteButton = document.createElement("i");
       deleteButton.setAttribute("aria-hidden", "true");
-      deleteButton.classList.add("bi", "bi-trash", "btn", "btn-link", "pod-btn-social");
+      deleteButton.classList.add(
+        "bi",
+        "bi-trash",
+        "btn",
+        "btn-link",
+        "pod-btn-social",
+      );
       deleteButton.addEventListener("click", function () {
         choiceDiv.remove();
       });
@@ -252,9 +271,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /**
- * Handles the setup for a multiple choice question in the question form.
- * @param {HTMLElement} questionForm - The question form element.
- */
+   * Handles the setup for a multiple choice question in the question form.
+   * @param {HTMLElement} questionForm - The question form element.
+   */
   function handleMultipleChoiceQuestion(questionForm) {
     const choicesForm = questionForm.querySelector(".question-choices-form");
 
@@ -269,7 +288,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const deleteButton = document.createElement("i");
       deleteButton.setAttribute("aria-hidden", "true");
-      deleteButton.classList.add("bi", "bi-trash", "btn", "btn-link", "pod-btn-social");
+      deleteButton.classList.add(
+        "bi",
+        "bi-trash",
+        "btn",
+        "btn-link",
+        "pod-btn-social",
+      );
       deleteButton.addEventListener("click", function () {
         choiceDiv.remove();
       });
@@ -326,7 +351,6 @@ document.addEventListener("DOMContentLoaded", function () {
     choicesForm.appendChild(addButton);
   }
 
-
   /**
    * Handles the setup for the specific question type in the question form.
    * @param {HTMLElement} questionForm - The question form element.
@@ -370,6 +394,41 @@ document.addEventListener("DOMContentLoaded", function () {
       default:
         break;
     }
+  }
+
+  /**
+   * Handles the setup for timestamps in the question form.
+   * @param {HTMLElement} questionForm - The question form element.
+   */
+  function handleQuestionTimestamps(questionForm) {
+    const startTimestampInput = questionForm.querySelector(
+      ".start-timestamp-field",
+    );
+    const endTimestampInput = questionForm.querySelector(
+      ".end-timestamp-field",
+    );
+
+    function addGetTimestampButton(htmlElement) {
+      var buttonElement = document.createElement("a");
+      buttonElement.classList.add(
+        "get-timestamp-from-video",
+        "btn",
+        "btn-outline-secondary",
+        "btn-sm",
+      );
+      buttonElement.textContent = gettext("Get time from the player");
+
+      buttonElement.addEventListener("click", (event) => {
+        if (!(typeof player === "undefined")) {
+          htmlElement.value = Math.floor(player.currentTime());
+        }
+      });
+
+      htmlElement.parentNode.insertBefore(buttonElement, htmlElement);
+    }
+
+    addGetTimestampButton(startTimestampInput);
+    addGetTimestampButton(endTimestampInput);
   }
 
   // SUBMISSION
@@ -426,7 +485,6 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     hiddenShortAnswerInput.value = shortAnswerInput.value;
   }
-
 
   /**
    * Handles the submission process for long answer questions in the quiz form.

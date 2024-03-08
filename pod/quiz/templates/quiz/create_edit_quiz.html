@@ -2,6 +2,10 @@
 {% load i18n %}
 {% load static %}
 
+{% block page_extra_head %}
+  {% include 'videos/video-header.html' %}
+{% endblock page_extra_head %}
+
 {% block breadcrumbs %}
   {{block.super}}
   <li class="breadcrumb-item"><a href="{% url 'video:dashboard'%}">{% trans 'Dashboard' %}</a></li>
@@ -17,6 +21,10 @@
 
 
 {% block page_content %}
+  <span id="quiz-player">
+    {% include 'videos/video-element.html' %}
+  </span>
+  <hr>
   <form method="post" id="quiz-form">
     {% csrf_token %}
     {% if quiz_form.errors %}
@@ -70,10 +78,25 @@
   </form>
 {% endblock page_content %}
 
-{% block collapse_page_aside %}{% endblock collapse_page_aside %}
-{% block page_aside %}{% endblock page_aside %}
+{% block page_aside %}
+  {% if video.owner == request.user or request.user.is_superuser or perms.chapter.add_chapter or request.user in video.additional_owners.all %}
+  <div class="card" id="card-manage-video">
+    <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
+    <div class="card-body card-text text-center">
+      {% include "videos/link_video.html" with hide_favorite_link=True %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% include "main/mandatory_fields.html" %}
+
+{% endblock page_aside %}
 
 {% block more_script %}
+  <script>
+    const video_duration = {{ video.duration }};
+  </script>
+  {% include "videos/video-script.html" %}
   <script>
     {% if initial_data %}
       const initialData = JSON.parse('{{ initial_data|escapejs }}');

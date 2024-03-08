@@ -96,15 +96,16 @@ class Question(models.Model):
         default="",
         help_text=_("Please choose an explanation."),
     )
-    start_timestamp = models.IntegerField(
+    start_timestamp = models.PositiveIntegerField(
         verbose_name=_("Start timestamp"),
         null=True,
-        help_text=_("Please choose the beginning time of the answer in the video."),
+        help_text=_(
+            "Please choose the beginning time of the answer in the video (in seconds)."),
     )
-    end_timestamp = models.IntegerField(
+    end_timestamp = models.PositiveIntegerField(
         verbose_name=_("End timestamp"),
         null=True,
-        help_text=_("Please choose the end time of the answer in the video."),
+        help_text=_("Please choose the end time of the answer in the video (in seconds)."),
     )
 
     class Meta:
