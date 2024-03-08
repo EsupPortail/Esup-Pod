@@ -3,7 +3,7 @@ from django.conf import settings as django_settings
 USE_AI_ENHANCEMENT = getattr(
     django_settings,
     "USE_AI_ENHANCEMENT",
-    True
+    False,
 )
 AI_ENHANCEMENT_CLIENT_ID = getattr(
     django_settings,
