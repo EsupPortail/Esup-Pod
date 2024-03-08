@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-07 10:04+0000\n"
+"POT-Creation-Date: 2024-03-08 10:06+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -985,6 +985,7 @@ msgid "Dashboard"
 msgstr ""
 
 #: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
+#: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
 #, python-format
@@ -993,6 +994,7 @@ msgstr ""
 
 #: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
 #: pod/dressing/templates/video_dressing.html
+#: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
 msgid "Back to the video"
@@ -1887,7 +1889,6 @@ msgstr ""
 
 #: pod/cut/templates/video_cut.html pod/dressing/templates/dressing_delete.html
 #: pod/dressing/templates/dressing_edit.html
-#: pod/quiz/templates/quiz/delete_quiz.html
 msgid "Back"
 msgstr ""
 
@@ -6423,11 +6424,11 @@ msgid "Redaction"
 msgstr ""
 
 #: pod/quiz/forms.py
-msgid "Short Answer"
+msgid "Short answer"
 msgstr ""
 
 #: pod/quiz/forms.py
-msgid "Long Answer"
+msgid "Long answer"
 msgstr ""
 
 #: pod/quiz/forms.py
@@ -6435,7 +6436,11 @@ msgid "Choice"
 msgstr ""
 
 #: pod/quiz/forms.py
-msgid "Unique Choice"
+msgid "Unique choice"
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Multiple choice"
 msgstr ""
 
 #: pod/quiz/forms.py
@@ -6480,40 +6485,16 @@ msgstr ""
 msgid "Please choose the question type."
 msgstr "Voer een titel in."
 
-#: pod/quiz/forms.py
-msgid "Unique choice"
-msgstr ""
-
-#: pod/quiz/forms.py
-msgid "Short answer"
-msgstr ""
-
-#: pod/quiz/forms.py
-msgid "Long answer"
-msgstr ""
-
 #: pod/quiz/forms.py pod/quiz/models.py
-msgid "Invalid JSON format for choices."
-msgstr ""
-
-#: pod/quiz/forms.py
-msgid "There must be at least 2 choices for a choice question."
-msgstr ""
-
-#: pod/quiz/forms.py
-msgid "There must be only one correct answer for a unique choice question."
-msgstr ""
-
-#: pod/quiz/forms.py
-msgid "Connected User Only"
+msgid "Connected user only"
 msgstr ""
 
 #: pod/quiz/forms.py
 msgid "Only the connected users can answer to this quiz."
 msgstr ""
 
-#: pod/quiz/forms.py
-msgid "Show Correct Answers"
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Show correct answers"
 msgstr ""
 
 #: pod/quiz/forms.py
@@ -6532,6 +6513,16 @@ msgstr ""
 #, fuzzy
 #| msgid "Please enter a title."
 msgid "Please choose one answer."
+msgstr "Voer een titel in."
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Multiple choice question"
+msgstr ""
+
+#: pod/quiz/forms.py
+#, fuzzy
+#| msgid "Please enter a title."
+msgid "Please check any answers you want."
 msgstr "Voer een titel in."
 
 #: pod/quiz/forms.py pod/quiz/models.py
@@ -6555,19 +6546,15 @@ msgid "Please choose a video associated with the quiz."
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Connected user only"
-msgstr ""
-
-#: pod/quiz/models.py
 msgid "Please choose if this quiz is only for connected users or not."
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Show correct answers"
+msgid "Please choose if the correct answers will be displayed or not."
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Please choose if the correct answers will be displayed or not."
+msgid "Quiz of video"
 msgstr ""
 
 #: pod/quiz/models.py
@@ -6621,13 +6608,13 @@ msgid "There must be only one correct answer."
 msgstr ""
 
 #: pod/quiz/models.py
-msgid ""
-"Choices must be like this: {'choice 1': true, 'choice 2': true, 'choice 3': "
-"false, ...} | true for the right choice, false for the wrong choices."
+msgid "Invalid JSON format for choices."
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Multiple choice question"
+msgid ""
+"Choices must be like this: {'choice 1': true, 'choice 2': true, 'choice 3': "
+"false, ...} | true for the right choice, false for the wrong choices."
 msgstr ""
 
 #: pod/quiz/models.py

@@ -21,14 +21,15 @@ class QuestionForm(forms.Form):
         (
             _("Redaction"),
             [
-                ("short_answer", _("Short Answer")),
-                ("long_answer", _("Long Answer")),
+                ("short_answer", _("Short answer")),
+                ("long_answer", _("Long answer")),
             ],
         ),
         (
             _("Choice"),
             [
-                ("unique_choice", _("Unique Choice")),
+                ("unique_choice", _("Unique choice")),
+                ("multiple_choice", _("Multiple choice")),
             ],
         ),
     ]
@@ -83,6 +84,12 @@ class QuestionForm(forms.Form):
         required=False,
         label=_("Long answer"),
     )
+    multiple_choice = forms.CharField(
+        widget=forms.HiddenInput(attrs={"class": "hidden-multiple-choice-field"}),
+        required=False,
+        label=_("Multiple choice"),
+    )
+    # Add other question types
 
     def clean(self):
         """
@@ -95,35 +102,9 @@ class QuestionForm(forms.Form):
         question_type = cleaned_data.get("type")
 
         if question_type == "unique_choice":
-            choices_str = cleaned_data.get("unique_choice")
-            try:
-                choices = json.loads(choices_str)
-            except json.JSONDecodeError:
-                self.add_error(
-                    "type", ValidationError(_("Invalid JSON format for choices."))
-                )
-                return cleaned_data
-
-            # Check if there are at least 2 choices
-            if len(choices) < 2:
-                self.add_error(
-                    "type",
-                    ValidationError(
-                        _("There must be at least 2 choices for a choice question.")
-                    ),
-                )
-                return
-            # Check if there is only one correct answer
-            if sum([1 for choice in choices.values() if choice]) != 1:
-                self.add_error(
-                    "type",
-                    ValidationError(
-                        _(
-                            "There must be only one correct answer for a unique choice question."
-                        )
-                    ),
-                )
-                return
+            self._clean_unique_choice()
+        elif question_type == "multiple_choice":
+            self._clean_multiple_choice()
         return cleaned_data
 
     def __init__(self, *args, **kwargs) -> None:
@@ -131,18 +112,38 @@ class QuestionForm(forms.Form):
         super(QuestionForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
 
+    def _clean_unique_choice(self):
+        """Call UniqueChoiceQuestion's clean method."""
+        choices_str = self.cleaned_data.get("unique_choice")
+        unique_choice_question = UniqueChoiceQuestion(choices=choices_str)
+        try:
+            unique_choice_question.clean()
+        except ValidationError as e:
+            for error in e.error_list:
+                self.add_error("unique_choice", error)
+
+    def _clean_multiple_choice(self):
+        """Call MultipleChoiceQuestion's clean method."""
+        choices_str = self.cleaned_data.get("multiple_choice")
+        multiple_choice_question = MultipleChoiceQuestion(choices=choices_str)
+        try:
+            multiple_choice_question.clean()
+        except ValidationError as e:
+            for error in e.error_list:
+                self.add_error("multiple_choice", error)
+
 
 class QuizForm(forms.Form):
     """Form to add or edit a quiz."""
 
     connected_user_only = forms.BooleanField(
-        label=_("Connected User Only"),
+        label=_("Connected user only"),
         required=False,
         widget=forms.CheckboxInput(),
         help_text=_("Only the connected users can answer to this quiz."),
     )
     show_correct_answers = forms.BooleanField(
-        label=_("Show Correct Answers"),
+        label=_("Show correct answers"),
         required=False,
         initial=True,
         widget=forms.CheckboxInput(),
@@ -205,12 +206,16 @@ class UniqueChoiceQuestionForm(forms.ModelForm):
 class MultipleChoiceQuestionForm(forms.ModelForm):
     """Form to add or edit a multiple choice question form."""
 
+    selected_choice = forms.CharField(
+        label=_("Multiple choice question"),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False,
+        help_text=_("Please check any answers you want."),
+    )
+
     class Meta:
         model = MultipleChoiceQuestion
-        fields = ["choices"]
-        widgets = {
-            "choices": forms.CheckboxSelectMultiple,
-        }
+        fields = ["selected_choice"]
 
     def __init__(self, *args, **kwargs):
         """Init multiple choice question form."""
@@ -224,7 +229,7 @@ class MultipleChoiceQuestionForm(forms.ModelForm):
 
         choices_list = [(choice, choice) for choice in choices_dict.keys()]
 
-        self.fields["choices"].widget.choices = choices_list
+        self.fields["selected_choice"].widget.choices = choices_list
 
 
 class ShortAnswerQuestionForm(forms.ModelForm):

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-07 10:04+0000\n"
+"POT-Creation-Date: 2024-03-08 10:06+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1042,6 +1042,7 @@ msgid "Dashboard"
 msgstr "Tableau de bord"
 
 #: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
+#: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
 #, python-format
@@ -1050,6 +1051,7 @@ msgstr "Retourner à la vidéo « %(video_title)s »"
 
 #: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
 #: pod/dressing/templates/video_dressing.html
+#: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
 msgid "Back to the video"
@@ -1981,7 +1983,6 @@ msgstr ""
 
 #: pod/cut/templates/video_cut.html pod/dressing/templates/dressing_delete.html
 #: pod/dressing/templates/dressing_edit.html
-#: pod/quiz/templates/quiz/delete_quiz.html
 msgid "Back"
 msgstr "Retour"
 
@@ -6807,20 +6808,24 @@ msgid "Redaction"
 msgstr "Rédaction"
 
 #: pod/quiz/forms.py
-msgid "Short Answer"
-msgstr "Réponse Courte"
+msgid "Short answer"
+msgstr "Réponse courte"
 
 #: pod/quiz/forms.py
-msgid "Long Answer"
-msgstr "Réponse Longue"
+msgid "Long answer"
+msgstr "Réponse longue"
 
 #: pod/quiz/forms.py
 msgid "Choice"
 msgstr "Choix"
 
 #: pod/quiz/forms.py
-msgid "Unique Choice"
-msgstr "Choix Unique"
+msgid "Unique choice"
+msgstr "Choix unique"
+
+#: pod/quiz/forms.py
+msgid "Multiple choice"
+msgstr "Question à choix multiple"
 
 #: pod/quiz/forms.py
 msgid "Your question"
@@ -6862,43 +6867,17 @@ msgstr "Type de Question"
 msgid "Please choose the question type."
 msgstr "Veuillez choisir le type de la question."
 
-#: pod/quiz/forms.py
-msgid "Unique choice"
-msgstr "Choix unique"
-
-#: pod/quiz/forms.py
-msgid "Short answer"
-msgstr "Réponse courte"
-
-#: pod/quiz/forms.py
-msgid "Long answer"
-msgstr "Réponse longue"
-
 #: pod/quiz/forms.py pod/quiz/models.py
-msgid "Invalid JSON format for choices."
-msgstr "Format JSON invalide pour les choix."
-
-#: pod/quiz/forms.py
-msgid "There must be at least 2 choices for a choice question."
-msgstr "Il doit y avoir au moins 2 choix pour une question à choix."
-
-#: pod/quiz/forms.py
-msgid "There must be only one correct answer for a unique choice question."
-msgstr ""
-"Il ne doit y avoir qu'une seule réponse correcte pour une question à choix "
-"unique."
-
-#: pod/quiz/forms.py
-msgid "Connected User Only"
-msgstr "Utilisateur Connecté Uniquement"
+msgid "Connected user only"
+msgstr "Utilisateur connecté uniquement"
 
 #: pod/quiz/forms.py
 msgid "Only the connected users can answer to this quiz."
 msgstr "Seuls les utilisateurs connectés peuvent répondre à ce quiz."
 
-#: pod/quiz/forms.py
-msgid "Show Correct Answers"
-msgstr "Afficher les Réponses Correctes"
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Show correct answers"
+msgstr "Afficher les réponses correctes"
 
 #: pod/quiz/forms.py
 msgid "The correction page can be reach."
@@ -6915,6 +6894,14 @@ msgstr "Question à choix unique"
 #: pod/quiz/forms.py
 msgid "Please choose one answer."
 msgstr "Veuillez choisir une réponse."
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Multiple choice question"
+msgstr "Question à choix multiple"
+
+#: pod/quiz/forms.py
+msgid "Please check any answers you want."
+msgstr "Veuillez sélectionner autant de réponses que vous souhaitez."
 
 #: pod/quiz/forms.py pod/quiz/models.py
 msgid "Short answer question"
@@ -6937,21 +6924,17 @@ msgid "Please choose a video associated with the quiz."
 msgstr "Veuillez choisir une vidéo associée au quiz."
 
 #: pod/quiz/models.py
-msgid "Connected user only"
-msgstr "Utilisateur connecté uniquement"
-
-#: pod/quiz/models.py
 msgid "Please choose if this quiz is only for connected users or not."
 msgstr ""
 "Veuillez choisir si ce quiz est réservé aux utilisateurs connectés ou non."
 
 #: pod/quiz/models.py
-msgid "Show correct answers"
-msgstr "Afficher les réponses correctes"
-
-#: pod/quiz/models.py
 msgid "Please choose if the correct answers will be displayed or not."
 msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
+
+#: pod/quiz/models.py
+msgid "Quiz of video"
+msgstr "Quiz de la vidéo"
 
 #: pod/quiz/models.py
 msgid "Please choose a quiz associated with the question."
@@ -7006,16 +6989,17 @@ msgid "There must be only one correct answer."
 msgstr "Il ne doit y avoir qu'une seule réponse correcte."
 
 #: pod/quiz/models.py
+msgid "Invalid JSON format for choices."
+msgstr "Format JSON invalide pour les choix."
+
+#: pod/quiz/models.py
 msgid ""
 "Choices must be like this: {'choice 1': true, 'choice 2': true, 'choice 3': "
 "false, ...} | true for the right choice, false for the wrong choices."
 msgstr ""
 "Les choix doivent ressembler à ceci : {'choix 1': true, 'choix 2': true, "
-"'choix 3': false, ...} | true pour le bon choix, false pour les mauvais choix."
-
-#: pod/quiz/models.py
-msgid "Multiple choice question"
-msgstr "Question à choix multiple"
+"'choix 3': false, ...} | true pour le bon choix, false pour les mauvais "
+"choix."
 
 #: pod/quiz/models.py
 msgid "Multiple choice questions"
@@ -7102,7 +7086,7 @@ msgstr "Ce n'est pas terrible, mais de l'amélioration est possible !"
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Right answer:"
-msgstr "Réponse courte :"
+msgstr "Bonne réponse :"
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Explanation:"
@@ -9683,6 +9667,29 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Short Answer"
+#~ msgstr "Réponse Courte"
+
+#~ msgid "Long Answer"
+#~ msgstr "Réponse Longue"
+
+#~ msgid "Unique Choice"
+#~ msgstr "Choix Unique"
+
+#~ msgid "There must be at least 2 choices for a choice question."
+#~ msgstr "Il doit y avoir au moins 2 choix pour une question à choix."
+
+#~ msgid "There must be only one correct answer for a unique choice question."
+#~ msgstr ""
+#~ "Il ne doit y avoir qu'une seule réponse correcte pour une question à "
+#~ "choix unique."
+
+#~ msgid "Connected User Only"
+#~ msgstr "Utilisateur Connecté Uniquement"
+
+#~ msgid "Show Correct Answers"
+#~ msgstr "Afficher les Réponses Correctes"
 
 #~ msgid ""
 #~ "Pod is aimed at users of our institutions, by allowing the publication of "

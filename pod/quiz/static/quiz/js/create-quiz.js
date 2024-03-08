@@ -19,6 +19,11 @@ document.addEventListener("DOMContentLoaded", function () {
     addEventListenerQuestionType(questionTypeEl);
   }
 
+  /**
+   * Retrieves question data from the initial data based on the provided question form.
+   * @param {HTMLElement} questionForm - The HTML form element representing a question.
+   * @returns {Object|null} - The data associated with the question or null if no initial data is available.
+   */
   function getQuestionData(questionForm) {
     if (!initialData) {
       return null;
@@ -28,6 +33,10 @@ document.addEventListener("DOMContentLoaded", function () {
     return questionData;
   }
 
+  /**
+   * Adds an event listener to the question type element to handle changes.
+   * @param {HTMLElement} questionTypeElement - The HTML element representing the question type.
+   */
   function addEventListenerQuestionType(questionTypeElement) {
     questionTypeElement.addEventListener("change", function (event) {
       let questionForm = questionTypeElement.closest(".question-form");
@@ -43,6 +52,10 @@ document.addEventListener("DOMContentLoaded", function () {
     removeQuestionButton.addEventListener("click", removeQuestionForm);
   }
 
+  /**
+   * Adds a new question form to the list of forms.
+   * @param {Event} event - The triggering event.
+   */
   function addNewQuestionForm(event) {
     if (event) {
       event.preventDefault();
@@ -70,6 +83,11 @@ document.addEventListener("DOMContentLoaded", function () {
     formCopyTarget.append(copyEmptyQuestionFormEl);
   }
 
+  /**
+   * Clones an empty question form and adjusts its attributes.
+   * @param {number} currentFormCount - The current count of question forms.
+   * @returns {HTMLElement} - The cloned question form.
+   */
   function cloneQuestionForm(currentFormCount) {
     const copyEmptyQuestionFormEl = document
       .getElementById("empty-form")
@@ -87,6 +105,10 @@ document.addEventListener("DOMContentLoaded", function () {
     return copyEmptyQuestionFormEl;
   }
 
+  /**
+   * Handles a question form by updating its type and adding event listeners.
+   * @param {HTMLElement} questionForm - The question form to handle.
+   */
   function handleQuestionForm(questionForm) {
     const questionTypeElement = questionForm.querySelector(
       ".question-select-type",
@@ -97,6 +119,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // REMOVE
 
+  /**
+   * Removes a question form from the DOM and updates the total form count.
+   * @param {Event} event - The click event triggering the removal.
+   */
   function removeQuestionForm(event) {
     if (event) {
       event.preventDefault();
@@ -114,6 +140,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Handle different types of form
 
+  /**
+   * Handles the setup for a short answer question in the question form.
+   * @param {HTMLElement} questionForm - The question form element.
+   */
   function handleShortAnswerQuestion(questionForm) {
     const input = document.createElement("input");
     input.type = "text";
@@ -128,6 +158,10 @@ document.addEventListener("DOMContentLoaded", function () {
     questionForm.querySelector(".question-choices-form").appendChild(input);
   }
 
+  /**
+   * Handles the setup for a long answer question in the question form.
+   * @param {HTMLElement} questionForm - The question form element.
+   */
   function handleLongAnswerQuestion(questionForm) {
     const textarea = document.createElement("textarea");
     textarea.name = questionForm.querySelector(".question-choices-form").name;
@@ -142,10 +176,12 @@ document.addEventListener("DOMContentLoaded", function () {
     questionForm.querySelector(".question-choices-form").appendChild(textarea);
   }
 
+  /**
+   * Handles the setup for a unique choice question in the question form.
+   * @param {HTMLElement} questionForm - The question form element.
+   */
   function handleUniqueChoiceQuestion(questionForm) {
     const choicesForm = questionForm.querySelector(".question-choices-form");
-    const counter =
-      choicesForm.querySelectorAll('input[type="radio"]').length + 1;
 
     const createChoiceElement = (index, choice) => {
       const choiceDiv = document.createElement("div");
@@ -154,7 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const input = document.createElement("input");
       input.type = "radio";
       input.classList.add("form-check-input");
-      input.name = `choices_${counter}`;
+      input.name = `choices_${questionForm.getAttribute("data-question-index")}`;
 
       const deleteButton = document.createElement("i");
       deleteButton.setAttribute("aria-hidden", "true");
@@ -215,6 +251,86 @@ document.addEventListener("DOMContentLoaded", function () {
     choicesForm.appendChild(addButton);
   }
 
+  /**
+ * Handles the setup for a multiple choice question in the question form.
+ * @param {HTMLElement} questionForm - The question form element.
+ */
+  function handleMultipleChoiceQuestion(questionForm) {
+    const choicesForm = questionForm.querySelector(".question-choices-form");
+
+    const createChoiceElement = (index, choice) => {
+      const choiceDiv = document.createElement("div");
+      choiceDiv.classList.add("form-check", "d-flex", "align-items-center");
+
+      const input = document.createElement("input");
+      input.type = "checkbox";
+      input.classList.add("form-check-input");
+      input.name = `choices_${questionForm.getAttribute("data-question-index")}`;
+
+      const deleteButton = document.createElement("i");
+      deleteButton.setAttribute("aria-hidden", "true");
+      deleteButton.classList.add("bi", "bi-trash", "btn", "btn-link", "pod-btn-social");
+      deleteButton.addEventListener("click", function () {
+        choiceDiv.remove();
+      });
+
+      const textInput = document.createElement("input");
+      textInput.type = "text";
+      textInput.placeholder = gettext("Choice") + ` ${index}`;
+      textInput.classList.add("form-control", "ms-2");
+      if (choice) {
+        textInput.value = choice[0];
+        console.log(input);
+        if (choice[1]) {
+          input.checked = true;
+        }
+      }
+
+      choiceDiv.appendChild(input);
+      choiceDiv.appendChild(textInput);
+      choiceDiv.appendChild(deleteButton);
+
+      return choiceDiv;
+    };
+
+    const fieldset = document.createElement("fieldset");
+    const legend = document.createElement("legend");
+    legend.textContent = gettext("Your choices");
+    fieldset.appendChild(legend);
+
+    let initialData = getQuestionData(questionForm);
+    if (initialData && initialData["choices"] != null) {
+      const initialChoices = Object.entries(initialData["choices"]);
+      for (let i = 0; i < initialChoices.length; i++) {
+        fieldset.appendChild(createChoiceElement(i + 1, initialChoices[i]));
+      }
+    } else {
+      for (let i = 0; i < 2; i++) {
+        fieldset.appendChild(createChoiceElement(i + 1, null));
+      }
+    }
+
+    const addButton = document.createElement("button");
+    addButton.textContent = gettext("Add a choice");
+    addButton.type = "button";
+    addButton.classList.add("btn", "btn-outline-secondary", "btn-sm", "mt-2");
+    addButton.addEventListener("click", function () {
+      fieldset.appendChild(
+        createChoiceElement(
+          choicesForm.querySelectorAll('input[type="checkbox"]').length + 1,
+        ),
+      );
+    });
+
+    choicesForm.appendChild(fieldset);
+    choicesForm.appendChild(addButton);
+  }
+
+
+  /**
+   * Handles the setup for the specific question type in the question form.
+   * @param {HTMLElement} questionForm - The question form element.
+   */
   function handleQuestionType(questionForm) {
     const questionType = questionForm.querySelector(
       ".question-select-type",
@@ -247,6 +363,9 @@ document.addEventListener("DOMContentLoaded", function () {
       case "unique_choice":
         handleUniqueChoiceQuestion(questionForm);
         break;
+      case "multiple_choice":
+        handleMultipleChoiceQuestion(questionForm);
+        break;
       // Add other cases for other type of question
       default:
         break;
@@ -255,6 +374,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // SUBMISSION
 
+  /**
+   * Manages the form submission process for the quiz.
+   */
   function manage_form_submission() {
     let submissionButton = document.getElementById("quiz-submission-button");
 
@@ -265,6 +387,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       let questionFormsList = document.querySelectorAll(".question-form");
       for (questionForm of questionFormsList) {
+        console.log(questionForm);
         const questionType = questionForm.querySelector(
           ".question-select-type",
         ).value;
@@ -278,6 +401,9 @@ document.addEventListener("DOMContentLoaded", function () {
           case "unique_choice":
             handleUniqueChoiceSubmission(questionForm);
             break;
+          case "multiple_choice":
+            handleMultipleChoiceSubmission(questionForm);
+            break;
           // Add other cases for other type of question
           default:
             break;
@@ -288,6 +414,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  /**
+   * Handles the submission process for short answer questions in the quiz form.
+   *
+   * @param {HTMLElement} questionForm - The form element representing the short answer question.
+   */
   function handleShortAnswerSubmission(questionForm) {
     let shortAnswerInput = questionForm.querySelector(".short-answer-field");
     let hiddenShortAnswerInput = questionForm.querySelector(
@@ -296,6 +427,12 @@ document.addEventListener("DOMContentLoaded", function () {
     hiddenShortAnswerInput.value = shortAnswerInput.value;
   }
 
+
+  /**
+   * Handles the submission process for long answer questions in the quiz form.
+   *
+   * @param {HTMLElement} questionForm - The form element representing the long answer question.
+   */
   function handleLongAnswerSubmission(questionForm) {
     let longAnswerInput = questionForm.querySelector(".long-answer-field");
     let hiddenLongAnswerInput = questionForm.querySelector(
@@ -304,6 +441,11 @@ document.addEventListener("DOMContentLoaded", function () {
     hiddenLongAnswerInput.value = longAnswerInput.value;
   }
 
+  /**
+   * Handles the submission process for unique choice questions in the quiz form.
+   *
+   * @param {HTMLElement} questionForm - The form element representing the unique choice question.
+   */
   function handleUniqueChoiceSubmission(questionForm) {
     let choicesData = {};
 
@@ -322,6 +464,31 @@ document.addEventListener("DOMContentLoaded", function () {
       ".hidden-unique-choice-field",
     );
     hiddenUniqueChoiceAnswerInput.value = JSON.stringify(choicesData);
+  }
+
+  /**
+   * Handles the submission process for multiple choice questions in the quiz form.
+   *
+   * @param {HTMLElement} questionForm - The form element representing the multiple choice question.
+   */
+  function handleMultipleChoiceSubmission(questionForm) {
+    let choicesData = {};
+
+    const checkboxInputs = questionForm.querySelectorAll(
+      '.form-check > input[type="checkbox"]',
+    );
+    const textInputs = questionForm.querySelectorAll(
+      '.form-check > input[type="text"]',
+    );
+
+    checkboxInputs.forEach((input, index) => {
+      choicesData[textInputs[index].value] = input.checked;
+    });
+
+    let hiddenMultipleChoiceAnswerInput = questionForm.querySelector(
+      ".hidden-multiple-choice-field",
+    );
+    hiddenMultipleChoiceAnswerInput.value = JSON.stringify(choicesData);
   }
 
   manage_form_submission();

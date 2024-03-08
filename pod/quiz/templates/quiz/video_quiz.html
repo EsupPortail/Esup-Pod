@@ -3,10 +3,10 @@
 {% load static %}
 
 {% block breadcrumbs %}
-  {{block.super}}
+  {{ block.super }}
   <li class="breadcrumb-item">
-    <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}">
-      {{video.title|title|truncatechars:45}}
+    <a href="{% url 'video:video' slug=video.slug %}" title="{{ video.title }}">
+      {{ video.title|title|truncatechars:45 }}
     </a>
   </li>
   <li class="breadcrumb-item active" aria-current="page">
@@ -60,7 +60,9 @@
                   {% if field.help_text %}
                     <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
                   {% endif %}
-                  {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+                  {% if field.field.required %}
+                    <div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>
+                  {% endif %}
                 </div>
               </div>
             {% endspaceless %}
@@ -87,5 +89,4 @@
 {% block collapse_page_aside %}{% endblock collapse_page_aside %}
 {% block page_aside %}{% endblock page_aside %}
 
-{% block more_script %}
-{% endblock more_script %}
+{% block more_script %}{% endblock more_script %}

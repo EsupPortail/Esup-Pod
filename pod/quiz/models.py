@@ -47,6 +47,10 @@ class Quiz(models.Model):
             ),
         ]
 
+    def __str__(self):
+        """String representation of the quiz."""
+        return _("Quiz of video") + " " + str(self.video)
+
     def clean(self):
         """Clean method for Quiz model."""
         super().clean()
@@ -136,7 +140,7 @@ class Question(models.Model):
 
     def __str__(self):
         """String representation of the question."""
-        return self.title
+        return _("Question") + " " + self.title
 
     def get_question_form(self, data=None):
         """
@@ -148,31 +152,7 @@ class Question(models.Model):
         Returns:
             BaseQuestionForm: Form for the question.
         """
-        from pod.quiz.forms import (
-            LongAnswerQuestionForm,
-            MultipleChoiceQuestionForm,
-            ShortAnswerQuestionForm,
-            UniqueChoiceQuestionForm,
-        )
-
-        if isinstance(self, UniqueChoiceQuestion):
-            return UniqueChoiceQuestionForm(
-                data, instance=self, prefix=f"question_{self.pk}"
-            )
-        elif isinstance(self, MultipleChoiceQuestion):
-            return MultipleChoiceQuestionForm(
-                data, instance=self, prefix=f"question_{self.pk}"
-            )
-        elif isinstance(self, ShortAnswerQuestion):
-            return ShortAnswerQuestionForm(
-                data, instance=self, prefix=f"question_{self.pk}"
-            )
-        elif isinstance(self, LongAnswerQuestion):
-            return LongAnswerQuestionForm(
-                data, instance=self, prefix=f"question_{self.pk}"
-            )
-        else:
-            return None
+        return None
 
     def get_answer(self):
         """
@@ -233,7 +213,7 @@ class UniqueChoiceQuestion(Question):
 
     def __str__(self):
         """String representation of the UniqueChoiceQuestion."""
-        return self.title
+        return super().__str__()
 
     def get_answer(self):
         if isinstance(self.choices, str):
@@ -248,6 +228,21 @@ class UniqueChoiceQuestion(Question):
 
     def get_type(self):
         return "unique_choice"
+
+    def get_question_form(self, data=None):
+        """
+        Get the form for the question.
+
+        Args:
+            data (dict): Form data.
+
+        Returns:
+            BaseQuestionForm: Form for the question.
+        """
+        from pod.quiz.forms import UniqueChoiceQuestionForm
+        return UniqueChoiceQuestionForm(
+            data, instance=self, prefix=f"question_{self.pk}"
+        )
 
 
 class MultipleChoiceQuestion(Question):
@@ -274,6 +269,12 @@ class MultipleChoiceQuestion(Question):
         """Clean method for MultipleChoiceQuestion model."""
         super().clean()
 
+        if isinstance(self.choices, str):
+            try:
+                self.choices = loads(self.choices)
+            except JSONDecodeError:
+                return
+
         # Check if there are at least 2 choices
         if len(self.choices) < 2:
             raise ValidationError(_("There must be at least 2 choices."))
@@ -284,13 +285,42 @@ class MultipleChoiceQuestion(Question):
 
     def __str__(self):
         """String representation of the MultipleChoiceQuestion."""
-        return self.title
+        return super().__str__()
 
     def get_type(self):
         return "multiple_choice"
 
+    def get_answer(self):
+        if isinstance(self.choices, str):
+            try:
+                self.choices = loads(self.choices)
+            except JSONDecodeError:
+                raise ValidationError(_("Invalid JSON format for choices."))
+        correct_answer = [
+            choice for choice, is_correct in self.choices.items() if is_correct
+        ]
+        return correct_answer
 
-class TrueFalseQuestion(Question):
+    def get_question_form(self, data=None):
+        """
+        Get the form for the question.
+
+        Args:
+            data (dict): Form data.
+
+        Returns:
+            BaseQuestionForm: Form for the question.
+        """
+        from pod.quiz.forms import (
+            MultipleChoiceQuestionForm,
+        )
+
+        return MultipleChoiceQuestionForm(
+            data, instance=self, prefix=f"question_{self.pk}"
+        )
+
+
+class TrueFalseQuestion(Question):  # TODO
     """
     True/false question model.
 
@@ -310,7 +340,7 @@ class TrueFalseQuestion(Question):
 
     def __str__(self):
         """String representation of the TrueFalseQuestion."""
-        return self.title
+        return super().__str__()
 
     def get_type(self):
         return "true_false"
@@ -337,13 +367,28 @@ class ShortAnswerQuestion(Question):
 
     def __str__(self):
         """String representation of the ShortAnswerQuestion."""
-        return self.title
+        return super().__str__()
 
     def get_answer(self):
         return self.answer
 
     def get_type(self):
         return "short_answer"
+
+    def get_question_form(self, data=None):
+        """
+        Get the form for the question.
+        Args:
+            data (dict): Form data.
+        Returns:
+            BaseQuestionForm: Form for the question.
+        """
+        from pod.quiz.forms import (
+            ShortAnswerQuestionForm,
+        )
+        return ShortAnswerQuestionForm(
+            data, instance=self, prefix=f"question_{self.pk}"
+        )
 
 
 class LongAnswerQuestion(Question):
@@ -366,10 +411,26 @@ class LongAnswerQuestion(Question):
 
     def __str__(self):
         """String representation of the LongAnswerQuestion."""
-        return self.title
+        return super().__str__()
 
     def get_answer(self):
         return self.answer
 
     def get_type(self):
         return "long_answer"
+
+    def get_question_form(self, data=None):
+        """
+        Get the form for the question.
+        Args:
+            data (dict): Form data.
+        Returns:
+            BaseQuestionForm: Form for the question.
+        """
+        from pod.quiz.forms import (
+            LongAnswerQuestionForm,
+        )
+
+        return LongAnswerQuestionForm(
+            data, instance=self, prefix=f"question_{self.pk}"
+        )

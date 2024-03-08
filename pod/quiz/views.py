@@ -14,6 +14,7 @@ from pod.main.views import in_maintenance
 from pod.quiz.forms import QuestionForm, QuizDeleteForm, QuizForm
 from pod.quiz.models import (
     LongAnswerQuestion,
+    MultipleChoiceQuestion,
     Question,
     Quiz,
     ShortAnswerQuestion,
@@ -47,6 +48,9 @@ def create_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         return redirect(reverse("maintenance"))
 
     video = get_object_or_404(Video, slug=video_slug)
+    if get_video_quiz(video):
+        return redirect(reverse("quiz:edit_quiz", kwargs={"video_slug": video.slug}))
+
     question_formset_factory = formset_factory(QuestionForm, extra=2)
     if not (
         request.user.is_superuser or request.user.is_staff or request.user == video.owner
@@ -99,6 +103,8 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
             existing_question.answer = question_form.cleaned_data["long_answer"]
         elif question_type == "unique_choice":
             existing_question.choices = question_form.cleaned_data["unique_choice"]
+        elif question_type == "multiple_choice":
+            existing_question.choices = question_form.cleaned_data["multiple_choice"]
 
         existing_question.title = title
         existing_question.explanation = explanation
@@ -118,6 +124,7 @@ def handle_post_request_for_create_or_edit_quiz(
         request (WSGIRequest): The HTTP request.
         video (Video): The associated video instance.
         question_formset_factory: The formset factory for handling question forms.
+        action (str): The action to perform - "create" or "edit".
 
     Returns:
         HttpResponse: The HTTP response for rendering the appropriate template.
@@ -234,38 +241,72 @@ def create_questions(new_quiz: Quiz, question_formset) -> None:
                 end_timestamp=end_timestamp,
                 choices=question_form.cleaned_data["unique_choice"],
             )
+        elif question_type == "multiple_choice":
+            MultipleChoiceQuestion.objects.get_or_create(
+                quiz=new_quiz,
+                title=title,
+                explanation=explanation,
+                start_timestamp=start_timestamp,
+                end_timestamp=end_timestamp,
+                choices=question_form.cleaned_data["multiple_choice"],
+            )
 
 
-def calculate_score(question : Question, form):
-    if isinstance(question, UniqueChoiceQuestion):
+def calculate_score(question: Question, form) -> float:
+    """
+    Calculate the score for a given question and form.
+
+    Args:
+        question (Question): The question object.
+        form: The form object containing the user's answers.
+
+    Returns:
+        float: The calculated score, a value between 0 and 1.
+    """
+    user_answer = None
+    correct_answer = None
+
+    if question.get_type() == "unique_choice":
         user_answer = form.cleaned_data.get("selected_choice")
         correct_answer = question.get_answer()
-        return user_answer == correct_answer
 
-    # elif isinstance(question, MultipleChoiceQuestion):
-    #     user_answers = form.cleaned_data.get("user_answer")
-    #     correct_answers = question.get_answer()
-    #     return user_answers == correct_answers
+    elif question.get_type() == "multiple_choice":
+        user_answer = form.cleaned_data.get("selected_choice")
+        correct_answer = question.get_answer()
+        intersection = set(user_answer) & set(correct_answer)
+        score = len(intersection) / len(correct_answer)
+        return score
 
-    elif isinstance(question, (ShortAnswerQuestion, LongAnswerQuestion)):
+    elif question.get_type() in {"short_answer", "long_answer"}:
         user_answer = form.cleaned_data.get("user_answer")
         correct_answer = question.get_answer()
-        return user_answer.lower() == correct_answer.lower()
 
     # Add similar logic for other question types...
 
-    return False
+    if user_answer is not None and correct_answer is not None:
+        return 1.0 if user_answer.lower() == correct_answer.lower() else 0.0
+
+    return 0.0
 
 
-def process_quiz_submission(request, quiz: Quiz):
+def process_quiz_submission(request: WSGIRequest, quiz: Quiz) -> float:
+    """
+    Process the submission of a quiz and calculate the user's percentage score.
+
+    Args:
+        request (WSGIRequest): The HTTP request object.
+        quiz (Quiz): The quiz object.
+
+    Returns:
+        float: The percentage score based on correct answers, ranging from 0 to 100.
+    """
     total_questions = len(quiz.get_questions())
-    score = 0
+    score = 0.0
 
     for question in quiz.get_questions():
         form = question.get_question_form(request.POST)
         if form.is_valid():
-            if calculate_score(question, form):
-                score += 1
+            score += calculate_score(question, form)
 
     percentage_score = (score / total_questions) * 100
     return percentage_score
@@ -327,7 +368,7 @@ def delete_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         return redirect(reverse("maintenance"))
 
     video = get_object_or_404(Video, slug=video_slug)
-    quiz = get_video_quiz(video)
+    quiz = get_object_or_404(Quiz, video=video)
 
     if quiz and not (
         request.user.is_superuser or request.user.is_staff or request.user == video.owner
@@ -393,9 +434,8 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         raise PermissionDenied
 
     quiz = get_object_or_404(Quiz, video=video)
-    print("non")
+
     if request.method == "POST":
-        print("POST")
         return handle_post_request_for_create_or_edit_quiz(
             request, video, question_formset_factory, action="edit"
         )
@@ -437,7 +477,16 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
     )
 
 
-def get_initial_data(existing_questions=None):
+def get_initial_data(existing_questions=None) -> str:
+    """
+    Generate initial data for JavaScript based on existing questions.
+
+    Args:
+        existing_questions (list): List of existing question objects.
+
+    Returns:
+        str: JSON-encoded initial data for JavaScript fields.
+    """
     if existing_questions:
         initial_data = {
             "existing_questions": [
@@ -449,9 +498,9 @@ def get_initial_data(existing_questions=None):
                     if question.get_type() == "long_answer"
                     else None,
                     "choices": json.loads(question.choices)
-                    if question.get_type() == "unique_choice"
+                    if question.get_type() in {"unique_choice", "multiple_choice"}
                     else None,
-                    # Ajoutez d'autres données nécessaires pour les champs JS
+                    # Add other datas needed for JS fields
                 }
                 for question in existing_questions
             ],

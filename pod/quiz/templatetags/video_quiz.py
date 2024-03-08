@@ -21,12 +21,12 @@ def is_quiz_accessible(context: dict, video: Video) -> bool:
     Returns:
         bool: True if the video is accessible.
     """
-    if get_video_quiz(video):
-        quiz = get_video_quiz(video)
+    quiz = get_video_quiz(video)
+    if quiz:
         request = context["request"]
-        if quiz.connected_user_only and not request.user.is_authenticated:
-            return False
-    return True
+        if (quiz.connected_user_only and request.user.is_authenticated) or not quiz.connected_user_only:
+            return True
+    return False
 
 
 @register.simple_tag(name="is_quiz_exists")

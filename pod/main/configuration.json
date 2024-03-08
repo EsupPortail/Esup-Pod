@@ -1827,7 +1827,7 @@
                             "Set `USE_QUIZ` to True to activate this application."
                         ],
                         "fr": [
-                            "Application Quiz pour la gestion des Quiz.",
+                            "Application Quiz pour la gestion des quiz.",
                             "Mettre `USE_QUIZ` à True pour activer cette application."
                         ]
                     },
