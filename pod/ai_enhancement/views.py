@@ -108,7 +108,7 @@ def enhance_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
     if enhancement_is_already_asked(video):
         enhancement = AIEnhancement.objects.filter(video=video).first()
         if enhancement.is_ready:
-            return enrich_form(request, video)
+            return enhance_form(request, video)
     else:
         return send_enhancement_creation_request(request, aristote, video)
 
@@ -149,7 +149,7 @@ def enhance_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
 
 
 @csrf_protect
-def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
+def enhance_form(request: WSGIRequest, video: Video) -> HttpResponse:
     """The view to choose the title of a video with the AI enhancement."""
     if request.method == "POST":
         form = AIEnhancementChoice(request.POST, instance=video)
