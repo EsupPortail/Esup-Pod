@@ -410,6 +410,9 @@ class EventForm(forms.ModelForm):
             cleaned_data["is_restricted"] = False
             cleaned_data["restrict_access_to_groups"] = []
 
+        if not cleaned_data.get("is_restricted", True):
+            cleaned_data["restrict_access_to_groups"] = []
+
     class Meta(object):
         model = Event
         fields = [
