@@ -8286,12 +8286,16 @@ msgstr[0] "%(counter)s thème trouvé dans cette chaine"
 msgstr[1] "%(counter)s thèmes trouvés dans cette chaine"
 
 #: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/dashboard.html
-#, python-format
-msgid "%(counter)s video"
-msgid_plural "%(counter)s videos"
-msgstr[0] "%(counter)s vidéo"
-msgstr[1] "%(counter)s vidéos"
+msgid "%(counter)s video for this channel"
+msgid_plural "%(counter)s videos for this channel"
+msgstr[0] "%(counter)s vidéo trouvée dans cette chaine"
+msgstr[1] "%(counter)s vidéos trouvées dans cette chaine"
+
+#: pod/video/templates/channel/channel.html
+msgid "%(counter)s subtheme found for this theme"
+msgid_plural "%(counter)s subthemes found for this theme"
+msgstr[0] "%(counter)s sous-thème trouvé dans ce thème"
+msgstr[1] "%(counter)s sous-thèmes trouvés dans ce thème"
 
 #  python-format
 #: pod/video/templates/channel/channel.html
@@ -8585,6 +8589,13 @@ msgstr "Nouvelle valeur pour le champ %(field_label)s"
 #: pod/video/templates/videos/dashboard.html
 msgid "No video found"
 msgstr "Aucune vidéo trouvée."
+
+#: pod/video/templates/videos/dashboard.html
+#, python-format
+msgid "%(counter)s video"
+msgid_plural "%(counter)s videos"
+msgstr[0] "%(counter)s vidéo"
+msgstr[1] "%(counter)s vidéos"
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Clear selection"

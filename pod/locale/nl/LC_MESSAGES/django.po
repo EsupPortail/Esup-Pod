@@ -7784,10 +7784,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/dashboard.html
 #, python-format
-msgid "%(counter)s video"
-msgid_plural "%(counter)s videos"
+msgid "%(counter)s video for this channel"
+msgid_plural "%(counter)s videos for this channel"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/templates/channel/channel.html
+#, python-format
+msgid "%(counter)s subtheme found for this theme"
+msgid_plural "%(counter)s subthemes found for this theme"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -8065,6 +8071,13 @@ msgstr ""
 #: pod/video/templates/videos/dashboard.html
 msgid "No video found"
 msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+#, python-format
+msgid "%(counter)s video"
+msgid_plural "%(counter)s videos"
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Clear selection"
