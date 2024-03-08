@@ -6,7 +6,7 @@
             ]
         },
         "reporters": [
-            ["json", { "fileName": "./pa11y-results.json" }]
+            ["json", { "fileName": "/usr/src/app/pa11y-results.json" }]
         ]
     },
     "urls": [

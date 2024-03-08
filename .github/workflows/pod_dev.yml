@@ -22,7 +22,7 @@ env:
   NODE_TAG: "node:19"
   PYTHON_TAG: "python:3.9-buster"
   REDIS_TAG: "redis:alpine3.16"
-  DOCKER_ENV: "full"
+  DOCKER_ENV: "full-test"
   GECKODRIVER_VER: "v0.29.0"
   FIREFOX_VER: "87.0"
 
@@ -111,14 +111,12 @@ jobs:
           docker exec pod-back-with-volumes python manage.py loaddata pod/video/fixtures/sample_videos.json
       - name: run test in docker
         run: docker exec pod-back-with-volumes coverage run --append --source='.' manage.py test -v 3 --keepdb pod.video_encode_transcript.tests.test_remote_encode_transcode
-
-      - name: Install pa11y-ci.
-        # tee reads `stdin` and writes it to both `stdout` and a file
-        run: |
-          npm install -g pa11y-ci
       
       - name: Run pa11y-ci
-        run: pa11y-ci -c ./dockerfile-dev-with-volumes/pa11y-ci/config.json
+        run: docker exec pa11y-ci pa11y-ci -c /usr/src/app/dockerfile-dev-with-volumes/pa11y-ci/config.json
+      
+      - name: show pa11y results
+        run: cat pa11y-results.json
 
       - name: Stop containers
         if: always()
