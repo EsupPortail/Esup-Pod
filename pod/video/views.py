@@ -208,14 +208,13 @@ def get_theme_children_as_list(channel: Channel, theme_children: QuerySet) -> li
             list_theme = child.get_all_children_flat()
             # Videos for each child theme
             videos_list = get_available_videos().filter(
-                channel=channel,
-                theme__in=list_theme
+                channel=channel, theme__in=list_theme
             )
             child.video_count = videos_list.count()
             child_serializable = {
                 "slug": child.slug,
                 "title": child.title,
-                "video_count": child.video_count
+                "video_count": child.video_count,
             }
             children.append(child_serializable)
     return children
@@ -266,9 +265,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         count_themes = theme_children.count()
         has_more_themes = (offset + limit) < count_themes
         # Default value for each child theme
-        theme_children = theme_children.annotate(
-            video_count=Value(0)
-        )
+        theme_children = theme_children.annotate(video_count=Value(0))
         # List of children in the theme
         children = get_theme_children_as_list(channel, theme_children)
         next_url, previous_url, theme_pages_info = pagination_data(
