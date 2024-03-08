@@ -13,23 +13,11 @@
         </a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-        {% trans 'Create enhancement' %}
+        {{ page_title }}
     </li>
 {% endblock breadcrumbs %}
 
 {% block page_content %}
-    <style>
-        .page_title {
-            display: none;
-        }
-    </style>
-    <h3>{% blocktrans with title=video.title %}Enhance the video <strong>{{ title }}</strong> with Aristote AI{% endblocktrans %}
-        <span class="float-end">
-            <a href="{% url 'video:video' slug=video.slug %}" title="{% trans 'Back to my video' %}" class="btn btn-secondary btn-sm" aria-label="{% trans 'Back to my video' %}">
-                <i class="bi bi-play-circle" aria-hidden="true"></i>&nbsp;{% trans 'Back to my video' %}
-            </a>
-        </span>
-    </h3>
     <p>{% trans 'To enhance the video with Aristote AI, please check the box and click confirm.' %}</p>
     <form method="POST" action="{{ request.get_full_path }}" class='needs-validation' novalidate>
         {% csrf_token %}
@@ -59,7 +47,7 @@
                 {% endspaceless %}
             {% endfor %}
             <div class="text-center mt-1">
-                <a href="{% url 'video:video' slug=video.slug %}" title="{% trans 'Back to my video' %}" class="btn btn-secondary btn-sm">
+                <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans %}Back to the {{ video.title }} video{% endblocktrans %}}" class="btn btn-secondary btn-sm">
                     <i class="bi bi-play-circle" aria-hidden="true"></i>&nbsp;{% trans 'Back to my video' %}
                 </a>
                 <button type="submit" class="btn btn-secondary btn-sm btn-success">{% trans 'Confirm' %}</button>
@@ -74,6 +62,3 @@
 
 {% block page_aside %}
 {% endblock page_aside %}
-
-{% block more_script %}
-{% endblock more_script %}
