@@ -382,6 +382,16 @@ class Meeting(models.Model):
         editable=False,
     )
 
+    # Personal meeting room
+    is_personal = models.BooleanField(
+        verbose_name=_("Personal meeting room"),
+        help_text=_(
+            "If this box is checked, "
+            "this meeting corresponds to the user's personal meeting room."
+        ),
+        default=False,
+    )
+
     # Time related Info
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -573,6 +583,9 @@ class Meeting(models.Model):
     @property
     def is_active(self):
         """Compute meeting to know if it is past or not."""
+        # Specific case for the personal meeting room
+        if self.is_personal:
+            return True
         start_datetime = self.start_at + self.expected_duration
         if self.recurrence is None and start_datetime > timezone.now():
             return True
