@@ -4,7 +4,6 @@ from django.conf import settings
 
 import requests
 from requests import Response
-from webvtt import WebVTT, Caption
 
 from pod.ai_enhancement.models import AIEnhancement
 from pod.main.utils import extract_json_from_str
