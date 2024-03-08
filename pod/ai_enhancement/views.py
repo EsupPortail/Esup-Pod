@@ -123,7 +123,7 @@ def enhance_video_json(request: WSGIRequest, video_slug: str) -> HttpResponse:
 
 
 @csrf_protect
-def enrich_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
+def enhance_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
     """The view to enrich the subtitles of a video."""
     video = get_object_or_404(Video, slug=video_slug, sites=get_current_site(request))
     video_folder, created = UserFolder.objects.get_or_create(
@@ -169,7 +169,7 @@ def enrich_form(request: WSGIRequest, video: Video) -> HttpResponse:
             web_vtt = json_to_web_vtt(latest_version["transcript"]["sentences"], video.duration)
             saveVTT(video, web_vtt, latest_version["transcript"]["language"])
             latest_track = Track.objects.filter(video=video,).order_by("id").first()
-            return redirect(reverse("ai_enhancement:enrich_subtitles", args=[video.slug]) + '?src=' + str(latest_track.src_id))
+            return redirect(reverse("ai_enhancement:enhance_subtitles", args=[video.slug]) + '?src=' + str(latest_track.src_id))
         else:
             return render(
                 request,

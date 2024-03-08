@@ -2,7 +2,7 @@
 from django.urls import path
 
 from pod.ai_enhancement.views import (
-    enrich_subtitles,
+    enhance_subtitles,
     enhance_video,
     enhance_video_json,
     toggle_webhook,
@@ -15,8 +15,8 @@ urlpatterns = [
     path("enrich-video/<str:video_slug>/", enhance_video, name="enhance_video"),
     path(
         "enrich-subtitles/<str:video_slug>/",
-        enrich_subtitles,
-        name="enrich_subtitles"
+        enhance_subtitles,
+        name="enhance_subtitles"
     ),
     path(
         "enrich-video/<str:video_slug>/json/",
