@@ -97,8 +97,8 @@ jobs:
           sudo rm -rf ./pod/log
           sudo rm -rf ./pod/static
           sudo rm -rf ./pod/node_modules
-          docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG --build-arg NODE_VERSION=$NODE_TAG --build-arg PYTHON_VERSION=$PYTHON_TAG --no-cache
-          docker-compose -f ./docker-compose-full-dev-with-volumes.yml up --detach --force-recreate --always-recreate-deps
+          docker-compose -f ./docker-compose-full-dev-with-volumes-test.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG --build-arg NODE_VERSION=$NODE_TAG --build-arg PYTHON_VERSION=$PYTHON_TAG --no-cache
+          docker-compose -f ./docker-compose-full-dev-with-volumes-test.yml up --detach --force-recreate --always-recreate-deps
       - name: Sleep for 60 seconds to wait run server on pod back
         uses: jakejarvis/wait-action@master
         with:
