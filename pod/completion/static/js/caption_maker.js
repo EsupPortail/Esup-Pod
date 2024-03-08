@@ -79,7 +79,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("submit", (e) => {
-  console.log('Add event listener submit');
   if (e.target.id != "form_save_captions") return;
   e.preventDefault();
   let caption_content = document.getElementById("captionContent");
@@ -146,7 +145,6 @@ document.addEventListener("click", (evt) => {
  * Send the captions form to be saved
  */
 const send_form_save_captions = function () {
-  console.log('=== send_form_save_captions function ===');
   let fileName = document.getElementById("captionFilename").value;
   if (fileName.length == 0) {
     fileName = `${file_prefix}_captions_${Date.now()}`;
