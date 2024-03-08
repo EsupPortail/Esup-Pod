@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-08 10:06+0000\n"
+"POT-Creation-Date: 2024-03-08 12:30+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1065,6 +1065,8 @@ msgstr "Ajouter un nouveau chapitre"
 #: pod/completion/templates/video_completion.html
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/video_quiz.html
 #: pod/video/templates/videos/video_aside.html
 #: pod/video/templates/videos/video_edit.html
 msgid "Manage video"
@@ -6843,21 +6845,22 @@ msgstr "Explication de la question"
 msgid "Please choose an explanation."
 msgstr "Veuillez choisir une explication."
 
-#: pod/quiz/forms.py
-msgid "Start Timestamp"
-msgstr "Horodatage de Départ"
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Start timestamp"
+msgstr "Horodatage de départ"
 
 #: pod/quiz/forms.py pod/quiz/models.py
-msgid "Please choose the beginning time of the answer in the video."
-msgstr "Veuillez choisir l'heure de début de la réponse dans la vidéo."
-
-#: pod/quiz/forms.py
-msgid "End Timestamp"
-msgstr "Horodatage de Fin"
+msgid ""
+"Please choose the beginning time of the answer in the video (in seconds)."
+msgstr "Veuillez choisir l'heure de début de la réponse dans la vidéo (en secondes)."
 
 #: pod/quiz/forms.py pod/quiz/models.py
-msgid "Please choose the end time of the answer in the video."
-msgstr "Veuillez choisir l'heure de fin de la réponse dans la vidéo."
+msgid "End timestamp"
+msgstr "Horodatage de fin"
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Please choose the end time of the answer in the video (in seconds)."
+msgstr "Veuillez choisir l'heure de fin de la réponse dans la vidéo (en secondes)."
 
 #: pod/quiz/forms.py
 msgid "Question Type"
@@ -6939,14 +6942,6 @@ msgstr "Quiz de la vidéo"
 #: pod/quiz/models.py
 msgid "Please choose a quiz associated with the question."
 msgstr "Veuillez choisir un quiz associé à la question."
-
-#: pod/quiz/models.py
-msgid "Start timestamp"
-msgstr "Horodatage de départ"
-
-#: pod/quiz/models.py
-msgid "End timestamp"
-msgstr "Horodatage de fin"
 
 #: pod/quiz/models.py
 msgid "Question"
@@ -7093,6 +7088,10 @@ msgid "Explanation:"
 msgstr "Explication :"
 
 #: pod/quiz/templates/quiz/video_quiz.html
+msgid "Show answer in the video"
+msgstr "Afficher la réponse dans la vidéo"
+
+#: pod/quiz/templates/quiz/video_quiz.html
 msgid "Validate"
 msgstr "Valider"
 
@@ -7101,9 +7100,9 @@ msgid "You cannot create a quiz for this video."
 msgstr "Vous ne pouvez pas créer de quiz pour cette vidéo."
 
 #: pod/quiz/views.py
-#, python-brace-format
-msgid "Quiz creation for the video: {video.title}"
-msgstr "Création d'un quiz pour la vidéo : {video.title}"
+#, python-format
+msgid "Quiz creation for the video “%s”"
+msgstr "Création du quiz de la vidéo « %s »"
 
 #: pod/quiz/views.py
 msgid "Quiz successfully created."
@@ -7123,9 +7122,9 @@ msgid "Quiz edition for the video: {video.title}"
 msgstr "Édition du quiz pour la vidéo : {video.title}"
 
 #: pod/quiz/views.py
-#, python-brace-format
-msgid "Quiz for the video: {video.title}"
-msgstr "Quiz pour la vidéo : {video.title}"
+#, python-format
+msgid "Quiz for the video “%s”"
+msgstr "Quiz pour la vidéo « %s »"
 
 #: pod/quiz/views.py
 msgid "You cannot delete the quiz for this video."
@@ -7143,6 +7142,11 @@ msgstr "Suppression du quiz pour la vidéo « %s »"
 #: pod/quiz/views.py
 msgid "You cannot edit this quiz."
 msgstr "Vous ne pouvez pas éditer ce quiz."
+
+#: pod/quiz/views.py
+#, python-format
+msgid "Quiz edition for the video “%s”"
+msgstr "Suppression du quiz pour la vidéo « %s »"
 
 #: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
@@ -9667,6 +9671,18 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Start Timestamp"
+#~ msgstr "Horodatage de Départ"
+
+#~ msgid "End Timestamp"
+#~ msgstr "Horodatage de Fin"
+
+#~ msgid "Quiz creation for the video: {video.title}"
+#~ msgstr "Création d'un quiz pour la vidéo : {video.title}"
+
+#~ msgid "Quiz for the video: {video.title}"
+#~ msgstr "Quiz pour la vidéo : {video.title}"
 
 #~ msgid "Short Answer"
 #~ msgstr "Réponse Courte"

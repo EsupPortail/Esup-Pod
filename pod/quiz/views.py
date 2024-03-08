@@ -72,7 +72,7 @@ def create_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         request,
         "quiz/create_edit_quiz.html",
         {
-            "page_title": _(f"Quiz creation for the video: {video.title}"),
+            "page_title": _("Quiz creation for the video “%s”") % video.title,
             "quiz_form": quiz_form,
             "question_formset": question_formset,
             "video": video,
@@ -342,11 +342,11 @@ def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         request,
         "quiz/video_quiz.html",
         {
-            "page_title": _(f"Quiz for the video: {video.title}"),
+            "page_title": _("Quiz for the video “%s”") % video.title,
             "video": video,
             "quiz": quiz,
             "form_submitted": form_submitted,
-            "percentage_score": percentage_score
+            "percentage_score": percentage_score,
         },
     )
 
@@ -468,7 +468,7 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         request,
         "quiz/create_edit_quiz.html",
         {
-            "page_title": _(f"Quiz edition for the video: {video.title}"),
+            "page_title": _("Quiz edition for the video “%s”") % video.title,
             "quiz_form": quiz_form,
             "question_formset": question_formset,
             "video": video,

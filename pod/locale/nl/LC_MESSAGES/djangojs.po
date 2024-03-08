@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-08 10:06+0000\n"
+"POT-Creation-Date: 2024-03-08 12:30+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -17,6 +17,7 @@ msgstr ""
 "X-Generator: Poedit 3.2.2\n"
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
+#: pod/quiz/static/quiz/js/create-quiz.js
 msgid "Get time from the player"
 msgstr ""
 

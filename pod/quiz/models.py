@@ -100,12 +100,15 @@ class Question(models.Model):
         verbose_name=_("Start timestamp"),
         null=True,
         help_text=_(
-            "Please choose the beginning time of the answer in the video (in seconds)."),
+            "Please choose the beginning time of the answer in the video (in seconds)."
+        ),
     )
     end_timestamp = models.PositiveIntegerField(
         verbose_name=_("End timestamp"),
         null=True,
-        help_text=_("Please choose the end time of the answer in the video (in seconds)."),
+        help_text=_(
+            "Please choose the end time of the answer in the video (in seconds)."
+        ),
     )
 
     class Meta:
@@ -241,9 +244,8 @@ class UniqueChoiceQuestion(Question):
             BaseQuestionForm: Form for the question.
         """
         from pod.quiz.forms import UniqueChoiceQuestionForm
-        return UniqueChoiceQuestionForm(
-            data, instance=self, prefix=f"question_{self.pk}"
-        )
+
+        return UniqueChoiceQuestionForm(data, instance=self, prefix=f"question_{self.pk}")
 
 
 class MultipleChoiceQuestion(Question):
@@ -387,9 +389,8 @@ class ShortAnswerQuestion(Question):
         from pod.quiz.forms import (
             ShortAnswerQuestionForm,
         )
-        return ShortAnswerQuestionForm(
-            data, instance=self, prefix=f"question_{self.pk}"
-        )
+
+        return ShortAnswerQuestionForm(data, instance=self, prefix=f"question_{self.pk}")
 
 
 class LongAnswerQuestion(Question):
@@ -432,6 +433,4 @@ class LongAnswerQuestion(Question):
             LongAnswerQuestionForm,
         )
 
-        return LongAnswerQuestionForm(
-            data, instance=self, prefix=f"question_{self.pk}"
-        )
+        return LongAnswerQuestionForm(data, instance=self, prefix=f"question_{self.pk}")

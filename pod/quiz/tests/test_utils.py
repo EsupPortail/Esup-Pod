@@ -2,7 +2,13 @@
 
 from django.test import TestCase
 from django.contrib.auth.models import User
-from pod.quiz.models import LongAnswerQuestion, MultipleChoiceQuestion, Quiz, ShortAnswerQuestion, UniqueChoiceQuestion
+from pod.quiz.models import (
+    LongAnswerQuestion,
+    MultipleChoiceQuestion,
+    Quiz,
+    ShortAnswerQuestion,
+    UniqueChoiceQuestion,
+)
 from pod.quiz.utils import get_quiz_questions, get_video_quiz
 
 from pod.video.models import Type, Video

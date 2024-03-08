@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-08 10:06+0000\n"
+"POT-Creation-Date: 2024-03-08 12:30+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1008,6 +1008,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/video_quiz.html
 #: pod/video/templates/videos/video_aside.html
 #: pod/video/templates/videos/video_edit.html
 msgid "Manage video"
@@ -6459,20 +6461,21 @@ msgstr ""
 msgid "Please choose an explanation."
 msgstr ""
 
-#: pod/quiz/forms.py
-msgid "Start Timestamp"
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Start timestamp"
 msgstr ""
 
 #: pod/quiz/forms.py pod/quiz/models.py
-msgid "Please choose the beginning time of the answer in the video."
-msgstr ""
-
-#: pod/quiz/forms.py
-msgid "End Timestamp"
+msgid ""
+"Please choose the beginning time of the answer in the video (in seconds)."
 msgstr ""
 
 #: pod/quiz/forms.py pod/quiz/models.py
-msgid "Please choose the end time of the answer in the video."
+msgid "End timestamp"
+msgstr ""
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Please choose the end time of the answer in the video (in seconds)."
 msgstr ""
 
 #: pod/quiz/forms.py
@@ -6559,14 +6562,6 @@ msgstr ""
 
 #: pod/quiz/models.py
 msgid "Please choose a quiz associated with the question."
-msgstr ""
-
-#: pod/quiz/models.py
-msgid "Start timestamp"
-msgstr ""
-
-#: pod/quiz/models.py
-msgid "End timestamp"
 msgstr ""
 
 #: pod/quiz/models.py
@@ -6707,6 +6702,10 @@ msgid "Explanation:"
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
+msgid "Show answer in the video"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
 msgid "Validate"
 msgstr ""
 
@@ -6715,8 +6714,8 @@ msgid "You cannot create a quiz for this video."
 msgstr ""
 
 #: pod/quiz/views.py
-#, python-brace-format
-msgid "Quiz creation for the video: {video.title}"
+#, python-format
+msgid "Quiz creation for the video “%s”"
 msgstr ""
 
 #: pod/quiz/views.py
@@ -6737,8 +6736,8 @@ msgid "Quiz edition for the video: {video.title}"
 msgstr ""
 
 #: pod/quiz/views.py
-#, python-brace-format
-msgid "Quiz for the video: {video.title}"
+#, python-format
+msgid "Quiz for the video “%s”"
 msgstr ""
 
 #: pod/quiz/views.py
@@ -6756,6 +6755,11 @@ msgstr ""
 
 #: pod/quiz/views.py
 msgid "You cannot edit this quiz."
+msgstr ""
+
+#: pod/quiz/views.py
+#, python-format
+msgid "Quiz edition for the video “%s”"
 msgstr ""
 
 #: pod/recorder/admin.py

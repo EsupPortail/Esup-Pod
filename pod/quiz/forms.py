@@ -55,14 +55,18 @@ class QuestionForm(forms.Form):
         required=False,
         min_value=0,
         widget=forms.NumberInput(attrs={"class": "start-timestamp-field"}),
-        help_text=_("Please choose the beginning time of the answer in the video (in seconds)."),
+        help_text=_(
+            "Please choose the beginning time of the answer in the video (in seconds)."
+        ),
     )
     end_timestamp = forms.IntegerField(
         label=_("End timestamp"),
         required=False,
         min_value=0,
         widget=forms.NumberInput(attrs={"class": "end-timestamp-field"}),
-        help_text=_("Please choose the end time of the answer in the video (in seconds)."),
+        help_text=_(
+            "Please choose the end time of the answer in the video (in seconds)."
+        ),
     )
     type = forms.ChoiceField(
         choices=QUESTION_TYPES,
