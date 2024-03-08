@@ -108,7 +108,7 @@ jobs:
           docker ps
           echo "🍏 Docker is UP ${{ job.status }}."
           docker exec pod-back-with-volumes ps auxf
-          docker exec pod-back-with-volumes python manage.py loaddata pod/video/fixtures/sample_videos.json --settings=pod.main.test_settings
+          docker exec pod-back-with-volumes python manage.py loaddata pod/video/fixtures/sample_videos.json
       - name: run test in docker
         run: docker exec pod-back-with-volumes coverage run --append --source='.' manage.py test -v 3 --keepdb pod.video_encode_transcript.tests.test_remote_encode_transcode
 
