@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-07 15:13+0000\n"
+"POT-Creation-Date: 2024-03-08 09:41+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -593,17 +593,14 @@ msgid "Disable notifications"
 msgstr ""
 
 #: pod/progressive_web_app/static/js/notification-toast.js
-#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
 msgid "Unsubscribe from Push Messaging"
 msgstr ""
 
 #: pod/progressive_web_app/static/js/notification-toast.js
-#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
 msgid "Successfully subscribed to push notifications."
 msgstr ""
 
 #: pod/progressive_web_app/static/js/notification-toast.js
-#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
 msgid "Error while subscribing to push notifications."
 msgstr ""
 
@@ -890,36 +887,4 @@ msgstr ""
 
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
-msgstr ""
-
-#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
-msgid "Service workers are not supported in your browser."
-msgstr ""
-
-#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
-msgid "Showing notifications are not supported in your browser."
-msgstr ""
-
-#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
-msgid "Subscribe to Push Messaging"
-msgstr ""
-
-#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
-msgid "Push notifications are blocked by your browser."
-msgstr ""
-
-#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
-msgid "Push notifications are not available in your browser."
-msgstr ""
-
-#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
-msgid "Subscription is not available."
-msgstr ""
-
-#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
-msgid "Successfully unsubscribed from push notifications."
-msgstr ""
-
-#: venv/lib/python3.10/site-packages/webpush/static/webpush/webpush.js
-msgid "Error while unsubscribing from push notifications."
 msgstr ""

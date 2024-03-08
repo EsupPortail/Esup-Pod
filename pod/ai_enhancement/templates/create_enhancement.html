@@ -26,7 +26,7 @@
     </style>
     <h3>{% blocktrans with title=video.title %}Enhance the video <strong>{{ title }}</strong> with Aristote AI{% endblocktrans %}
         <span class="float-end">
-            <a href="{% url 'video:video' slug=video.slug %}" title="{% trans 'Back to my video' %}" class="btn btn-secondary btn-sm" aria-label="{% trans 'Back to my playlists' %}">
+            <a href="{% url 'video:video' slug=video.slug %}" title="{% trans 'Back to my video' %}" class="btn btn-secondary btn-sm" aria-label="{% trans 'Back to my video' %}">
                 <i class="bi bi-play-circle" aria-hidden="true"></i>&nbsp;{% trans 'Back to my video' %}
             </a>
         </span>
