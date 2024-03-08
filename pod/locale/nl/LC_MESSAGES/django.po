@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-08 09:41+0000\n"
+"POT-Creation-Date: 2024-03-06 12:13+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -7570,10 +7570,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/dashboard.html
 #, python-format
-msgid "%(counter)s video"
-msgid_plural "%(counter)s videos"
+msgid "%(counter)s video for this channel"
+msgid_plural "%(counter)s videos for this channel"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/templates/channel/channel.html
+#, python-format
+msgid "%(counter)s subtheme found for this theme"
+msgid_plural "%(counter)s subthemes found for this theme"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -7851,6 +7857,13 @@ msgstr ""
 #: pod/video/templates/videos/dashboard.html
 msgid "No video found"
 msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+#, python-format
+msgid "%(counter)s video"
+msgid_plural "%(counter)s videos"
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Clear selection"
