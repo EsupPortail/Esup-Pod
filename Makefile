@@ -173,7 +173,8 @@ endif
 	sudo rm -rf ./pod/node_modules
 	# sudo rm -rf ./pod/db_migrations
 	sudo rm -rf ./pod/db_migrations
-	# sudo rm -rf ./pod/db.sqlite3"
+	# sudo rm -rf ./pod/db.sqlite3
 	sudo rm -rf ./pod/db.sqlite3
-	# sudo rm -rf ./pod/media"
+	sudo rm -rf ./pod/db_remote.sqlite3
+	# sudo rm -rf ./pod/media
 	sudo rm -rf ./pod/media
