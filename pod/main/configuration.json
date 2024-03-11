@@ -18,10 +18,14 @@
                             "default_value": "",
                             "description": {
                                 "en": [
-                                    "API URL for the AI video enhancement."
+                                    "API URL for the AI video enhancement.",
+                                    "Example: 'https://aristote.univ.fr/api'",
+                                    "Project Link: https://www.demainestingenieurs.centralesupelec.fr/aristote/"
                                 ],
                                 "fr": [
-                                    "L’URL de l’API pour l’IA d’amélioration des vidéos."
+                                    "L’URL de l’API pour l’IA d’amélioration des vidéos.",
+                                    "Exemple : 'https://aristote.univ.fr/api'",
+                                    "Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/"
                                 ]
                             },
                             "pod_version_end": "",
@@ -44,10 +48,12 @@
                             "default_value": "mocked_id",
                             "description": {
                                 "en": [
-                                    "The video enhancement AI client ID."
+                                    "The video enhancement AI client ID.",
+                                    "Example: 'v1'"
                                 ],
                                 "fr": [
-                                    "L’ID du client de l’IA d’amélioration des vidéos."
+                                    "L’ID du client de l’IA d’amélioration des vidéos.",
+                                    "Exemple : 'v1'"
                                 ]
                             },
                             "pod_version_end": "",
