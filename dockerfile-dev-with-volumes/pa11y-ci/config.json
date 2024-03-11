@@ -1,11 +1,19 @@
 {
     "defaults": {
+        "timeout": 10000,
+        "viewport": {
+            "width": 1280,
+            "height": 1024
+        },
+        "concurrency": 1,
+        "debug": true,
         "chromeLaunchConfig": {
             "args": [
                 "--no-sandbox"
             ]
         },
         "reporters": [
+            "cli",
             ["json", { "fileName": "/usr/src/app/pa11y-results.json" }]
         ]
     },
