@@ -1,3 +1,4 @@
+"""Esup-Pod AI Enhancement apps."""
 from django.apps import AppConfig
 
 

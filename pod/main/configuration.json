@@ -29,7 +29,7 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "5.2"
+                            "pod_version_init": "5.6"
                         },
                         "AI_ENHANCEMENT_API_VERSION": {
                             "default_value": "",
@@ -42,7 +42,7 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "5.2"
+                            "pod_version_init": "5.6"
                         },
                         "AI_ENHANCEMENT_CLIENT_ID": {
                             "default_value": "mocked_id",
@@ -57,7 +57,7 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "5.2"
+                            "pod_version_init": "5.6"
                         },
                         "AI_ENHANCEMENT_CLIENT_SECRET": {
                             "default_value": "mocked_secret",
@@ -70,7 +70,7 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "5.2"
+                            "pod_version_init": "5.6"
                         },
                         "USE_AI_ENHANCEMENT": {
                             "default_value": true,
@@ -83,7 +83,7 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "5.2"
+                            "pod_version_init": "5.6"
                         }
                     },
                     "title": {

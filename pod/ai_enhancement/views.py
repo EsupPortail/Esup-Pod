@@ -1,3 +1,4 @@
+"""Views for ai_enhancement module."""
 import json
 
 from django.conf import settings
