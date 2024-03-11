@@ -143,7 +143,6 @@ def get_video_qrcode(context, video_slug: str, enrichment: bool) -> str:
     else:
         url = reverse("video:video", args={video_slug})
         return generate_qrcode(url, alt, request)
-        
 
 
 @register.simple_tag(name="get_video_infos")
