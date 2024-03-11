@@ -120,7 +120,7 @@ jobs:
 
       - name: Stop containers
         if: always()
-        run: docker-compose -f ./docker-compose-full-dev-with-volumes.yml down
+        run: docker-compose -f ./docker-compose-full-dev-with-volumes-test.yml down
       - name: delete unused file and change owner
         run: |
           sudo rm -f pod/custom/settings_local.py
