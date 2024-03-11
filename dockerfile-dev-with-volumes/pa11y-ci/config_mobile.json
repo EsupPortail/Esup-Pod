@@ -1,0 +1,28 @@
+{
+    "defaults": {
+        "timeout": 10000,
+        "viewport": {
+            "width": 320,
+            "height": 480,
+            "isMobile": true
+        },
+        "concurrency": 1,
+        "debug": true,
+        "chromeLaunchConfig": {
+            "args": [
+                "--no-sandbox"
+            ]
+        },
+        "reporters": [
+            "cli",
+            ["json", { "fileName": "/usr/src/app/pa11y-results-mobile.json" }]
+        ]
+    },
+    "urls": [
+        "http://pod-back:8080/",
+        "http://pod-back:8080/accounts/login",
+        "http://pod-back:8080/videos",
+        "http://pod-back:8080/video/0001-video-test/",
+        "http://pod-back:8080/live/events/"
+    ]
+}

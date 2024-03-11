@@ -11,24 +11,11 @@ on:
       - main
       - master
 
-env:
-    DJANGO_SUPERUSER_USERNAME: "admin"
-    DJANGO_SUPERUSER_PASSWORD: "passwd"
-    DJANGO_SUPERUSER_EMAIL: "noreplay@uni.fr"
-    ELASTICSEARCH_TAG: "elasticsearch:7.17.18"
-    ELASTICSEARCH_VERION: "elasticsearch:7.17.18"
-    NODE_TAG: "node:19"
-    PYTHON_TAG: "python:3.9-buster"
-    REDIS_TAG: "redis:alpine3.16"
-    DOCKER_ENV: "full"
-    GECKODRIVER_VER: "v0.29.0"
-    FIREFOX_VER: "87.0"
-
 jobs:
     Pod-Main:
         runs-on: ubuntu-latest
         strategy:
-            max-parallel: 4
+            max-parallel: 2
             matrix:
               python-version: ['3.8', '3.10']
         steps:
@@ -49,137 +36,41 @@ jobs:
               with:
                 python-version: ${{ matrix.python-version }}
             
-            # # Remove apt repos that are known to break from time to time
-            # # See https://github.com/actions/virtual-environments/issues/323
-            # - name: Remove broken apt repos [Ubuntu]
-            #   run: |
-            #     for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
+            # Remove apt repos that are known to break from time to time
+            # See https://github.com/actions/virtual-environments/issues/323
+            - name: Remove broken apt repos [Ubuntu]
+              run: |
+                for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
 
-            # - name: Install Dependencies
-            #   run: |
-            #     sudo apt-get clean
-            #     sudo apt-get update
-            #     sudo apt-get install ffmpeg
-            #     sudo apt-get install -y ffmpegthumbnailer
-            #     sudo apt-get install -y npm
-            #     python -m pip install --upgrade pip
-            #     pip install -r requirements-dev.txt
-            #     sudo npm install -g yarn
+            - name: Install Dependencies
+              run: |
+                sudo apt-get clean
+                sudo apt-get update
+                sudo apt-get install ffmpeg
+                sudo apt-get install -y ffmpegthumbnailer
+                sudo apt-get install -y npm
+                python -m pip install --upgrade pip
+                pip install -r requirements-dev.txt
+                sudo npm install -g yarn
 
-            # # FLAKE 8
-            # - name: Flake8 compliance
-            #   run: |
-            #     flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py
-            
-            # ## Start remote encoding and transcoding test ##
-            # - name: Create settings local file
-            #   run: |
-            #     mv pod/custom/settings_local_docker_full_test.py pod/custom/settings_local.py
-            # - name: cat settings local
-            #   run: cat pod/custom/settings_local.py
-            # - name: Create env file containers
-            #   run: |
-            #     touch .env.dev
-            #     echo DJANGO_SUPERUSER_USERNAME=$DJANGO_SUPERUSER_USERNAME >> .env.dev
-            #     echo DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD >> .env.dev
-            #     echo DJANGO_SUPERUSER_EMAIL=$DJANGO_SUPERUSER_EMAIL >> .env.dev
-            #     echo ELASTICSEARCH_TAG=$ELASTICSEARCH_TAG >> .env.dev
-            #     echo ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG >> .env.dev
-            #     echo NODE_TAG=$NODE_TAG >> .env.dev
-            #     echo PYTHON_TAG=$PYTHON_TAG >> .env.dev
-            #     echo REDIS_TAG=$REDIS_TAG >> .env.dev
-            #     echo DOCKER_ENV=full >> .env.dev
-            #     echo GECKODRIVER_VER=v0.29.0
-            #     echo FIREFOX_VER=87.0
-            # - name: cat env
-            #   run: cat .env.dev
-            # - name: make Build container
-            #   run: |
-            #     sudo rm -rf ./pod/log
-            #     sudo rm -rf ./pod/static
-            #     sudo rm -rf ./pod/node_modules
-            #     docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG --build-arg NODE_VERSION=$NODE_TAG --build-arg PYTHON_VERSION=$PYTHON_TAG --no-cache
-            #     docker-compose -f ./docker-compose-full-dev-with-volumes.yml up --detach --force-recreate --always-recreate-deps
-            # - name: Sleep for 60 seconds to wait run server on pod back
-            #   uses: jakejarvis/wait-action@master
-            #   with:
-            #     time: '60s'
-            # - name: show running container
-            #   run: |
-            #     docker ps
-            #     echo "🍏 Docker is UP ${{ job.status }}."
-            #     docker exec pod-back-with-volumes ps auxf
-            # - name: run test in docker
-            #   run: docker exec pod-back-with-volumes python manage.py test -v 3 --keepdb pod.video_encode_transcript.tests.test_remote_encode_transcode
-            # - name: Stop containers
-            #   if: always()
-            #   run: docker-compose -f ./docker-compose-full-dev-with-volumes.yml down
-            # - name: delete settings local
-            #   run: rm -f pod/custom/settings_local.py
-            # ## Start unit test test ##
-            # - name: Runs Elasticsearch
-            #   uses: elastic/elastic-github-actions/elasticsearch@refactor_with_plugins
-            #   with:
-            #     # stack-version: 7.6.0
-            #     stack-version: 6.8.23
-            #     plugins: analysis-icu
+            ## Start unit test test ##
+            - name: Runs Elasticsearch
+              uses: elastic/elastic-github-actions/elasticsearch@refactor_with_plugins
+              with:
+                # stack-version: 7.6.0
+                stack-version: 6.8.23
+                plugins: analysis-icu
 
-            # - name: Setup Pod
-            #   run: |
-            #     python manage.py create_pod_index --settings=pod.main.test_settings
-            #     python manage.py makemigrations --settings=pod.main.test_settings
-            #     python manage.py migrate --settings=pod.main.test_settings
-            #     cd pod
-            #     yarn
+            - name: Setup Pod
+              run: |
+                python manage.py create_pod_index --settings=pod.main.test_settings
+                python manage.py makemigrations --settings=pod.main.test_settings
+                python manage.py migrate --settings=pod.main.test_settings
+                cd pod
+                yarn
 
-            # - name: Run Tests without coverage
-            #   env:
-            #     PYTHONUNBUFFERED: 1
-            #   run: |
-            #     python manage.py test -v 3 --settings=pod.main.test_settings
-
-            # ## Start Accessibility tests with pa11y ##
-
-            # - name: Install pa11y-ci dependencies.
-            #   run: |
-            #     npm install -g Badatos/pa11y-ci
-
-            # - name: Run Django test server
-            #   env:
-            #     PYTHONUNBUFFERED: 1
-            #   run: |
-            #     python manage.py loaddata pod/video/fixtures/initial_data.json --settings=pod.main.test_settings
-            #     python manage.py loaddata pod/main/fixtures/initial_data.json --settings=pod.main.test_settings
-            #     python manage.py loaddata pod/video/fixtures/sample_videos.json --settings=pod.main.test_settings
-            #     python manage.py collectstatic --clear --settings=pod.main.test_settings
-            #     python manage.py runserver localhost:9090 --insecure --settings=pod.main.test_settings &
-            #     sleep 5
-
-            # - name: Run pa11y-ci.
-            #   # tee reads `stdin` and writes it to both `stdout` and a file
-            #   run: |
-            #     pa11y-ci 2>&1 | tee pa11y_output.txt
-
-            # - name: Read pa11y_output file.
-            #   id: pa11y_output
-            #   uses: juliangruber/read-file-action@v1
-            #   with:
-            #     path: ./pa11y_output.txt
-
-            # - name: Comment on pull request.
-            #   if: contains(steps.pa11y_output.outputs.content, 'Errors in http://')
-            #   uses: thollander/actions-comment-pull-request@v2
-            #   with:
-            #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            #     message: '<details><summary>Pa11y testing results</summary>```${{ steps.pa11y_output.outputs.content }}```</details>'
-            # - name: Check for pa11y failures.
-            #   if: contains(steps.pa11y_output.outputs.content, 'Errors in http://')
-            #   run: |
-            #     echo "::error::The site is failing accessibility tests. Please review the comment in the pull request or the pa11y-ci step in the workflow for details."
-            #     exit 1
-            # - name: Send coverage to coveralls.io
-            #   # coveralls command has been installed by requirements-dev.txt
-            #   env:
-            #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            #   run:
-            #     coveralls  --service=github
+            - name: Run Tests without coverage
+              env:
+                PYTHONUNBUFFERED: 1
+              run: |
+                python manage.py test -v 3 --settings=pod.main.test_settings
