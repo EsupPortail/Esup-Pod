@@ -938,10 +938,10 @@ def get_html_content(request, meeting):
                 _(
                     """
                 <p>Hello,</p>
-                <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>.</p>
+                <p>%(owner)s invites you to the meeting <strong>%(meeting_title)s</strong>.</p>
                 <p>here the link to join the meeting:
                 <a href="%(join_link)s">%(join_link)s</a></p>
-                <p>You need this password to enter: <b>%(password)s</b> </p>
+                <p>You need this password to enter: <strong>%(password)s</strong> </p>
                 <p>Regards</p>
             """
                 )
@@ -961,12 +961,12 @@ def get_html_content(request, meeting):
                 _(
                     """
                 <p>Hello,</p>
-                <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>.</p>
+                <p>%(owner)s invites you to the meeting <strong>%(meeting_title)s</strong>.</p>
                 <p>Start date: %(start_date_time)s </p>
                 <p>End date: %(end_date)s </p>
                 <p>here the link to join the meeting:
                 <a href="%(join_link)s">%(join_link)s</a></p>
-                <p>You need this password to enter: <b>%(password)s</b> </p>
+                <p>You need this password to enter: <strong>%(password)s</strong> </p>
                 <p>Regards</p>
             """
                 )
