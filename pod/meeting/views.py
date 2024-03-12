@@ -119,7 +119,8 @@ def my_meetings(request):
             for meeting in (
                 request.user.owner_meeting.all().filter(
                     site=site
-                ).order_by("-is_personal", "-start_at")
+                ) | request.user.owners_meetings.all().filter(site=site)
+                .order_by("-is_personal", "-start_at")
             )
             if meeting.is_active
         ]
@@ -185,6 +186,12 @@ def add_or_edit(request, meeting_id=None):
         )
         and (request.user not in meeting.additional_owners.all())
     ):
+        display_message_with_icon(
+            request, messages.ERROR, _("You cannot edit this meeting.")
+        )
+        raise PermissionDenied
+
+    if meeting and meeting.is_personal and request.user != meeting.owner:
         display_message_with_icon(
             request, messages.ERROR, _("You cannot edit this meeting.")
         )
@@ -720,6 +727,7 @@ def secure_internal_recordings(request, meeting):
         and not (
             request.user.is_superuser or request.user.has_perm("meeting.view_meeting")
         )
+        and (request.user not in meeting.additional_owners.all())
     ):
         display_message_with_icon(
             request, messages.ERROR, _("You cannot view the recordings of this meeting.")
