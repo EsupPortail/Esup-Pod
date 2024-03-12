@@ -23,6 +23,7 @@ POD_API_TOKEN = getattr(settings, "POD_API_TOKEN", "")
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
     from pod.video_encode_transcript import transcript
+
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
 
@@ -127,9 +128,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             self.video.refresh_from_db()
             n = 0
             while self.video.encoding_in_progress:
-                print(
-                    "... Transcripting in progress: %s " % self.video.get_encoding_step
-                )
+                print("... Transcripting in progress: %s " % self.video.get_encoding_step)
                 self.video.refresh_from_db()
                 time.sleep(2)
                 n += 1
