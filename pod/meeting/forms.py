@@ -388,8 +388,8 @@ class MeetingForm(forms.ModelForm):
     def manage_personal_meeting_room(self):
         """Manage fields for a personal meeting room."""
         if self.instance.is_personal:
-            # If we want that name is a readonly field in such a case
-            # self.fields["name"].widget.attrs["readonly"] = True
+            # Name is a readonly field in such a case
+            self.fields["name"].widget.attrs["readonly"] = True
             # Hide time settings
             hidden_fields = ("start", "start_time", "expected_duration", "is_personal")
             for field in hidden_fields:
