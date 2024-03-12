@@ -100,7 +100,7 @@
     {% if event.is_current %}
 
       // Management of the streaming live
-      pvp_options = options;
+      let pvp_options = options;
       pvp_options["muted"] = false;
       let player = videojs("podvideoplayer", pvp_options, function() {
       });
@@ -641,7 +641,7 @@
             return;
         }
 
-        pvohp_options = options;
+        let pvohp_options = options;
         pvohp_options["loop"] = true;
         pvohp_options["muted"] = false;
         let playerOnHold = videojs('podvideoonholdplayer', pvohp_options, function () {
