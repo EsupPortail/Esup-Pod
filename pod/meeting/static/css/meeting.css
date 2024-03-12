@@ -6,6 +6,10 @@
   border: 1px solid #f5a391;
 }
 
+.meeting-card-personal {
+  border: 1px solid #91a3f5;
+}
+
 .link-meeting {
   right: 1rem;
   border-radius: 0.375rem;

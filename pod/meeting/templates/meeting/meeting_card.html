@@ -1,6 +1,6 @@
 {% load i18n l10n %}
 {% spaceless %}
-<div class="card box-shadow pod-card--video meeting-card {% if not meeting.is_active %}meeting-card-inactive{% endif %}">
+<div class="card box-shadow pod-card--video meeting-card {% if meeting.is_personal %}meeting-card-personal{% endif %} {% if not meeting.is_active %}meeting-card-inactive{% endif %}">
   <!-- meeting_card.html -->
   <div class="card-header">
     <div class="d-flex justify-content-between align-items-center" style="min-height: 4rem;">
