@@ -82,7 +82,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.video.refresh_from_db()
         n = 0
         while self.video.encoding_in_progress:
-            print("... Encoding in progress : %s " % self.video.get_encoding_step)
+            print("... Encoding in progress: %s " % self.video.get_encoding_step)
             self.video.refresh_from_db()
             time.sleep(2)
             n += 1
@@ -128,7 +128,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             n = 0
             while self.video.encoding_in_progress:
                 print(
-                    "... Transcripting in progress : %s " % self.video.get_encoding_step
+                    "... Transcripting in progress: %s " % self.video.get_encoding_step
                 )
                 self.video.refresh_from_db()
                 time.sleep(2)
