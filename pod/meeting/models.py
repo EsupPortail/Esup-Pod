@@ -390,6 +390,7 @@ class Meeting(models.Model):
             "this meeting corresponds to the user's personal meeting room."
         ),
         default=False,
+        editable=False,
     )
 
     # Time related Info
