@@ -20,6 +20,7 @@
         fluid: !{{ request.GET.is_iframe|yesno:"true,false" }},
         playbackRates: [0.5, 1, 1.5, 2],
         errorDisplay: false,
+        muted: false,
         loop: false
     }
 
@@ -100,9 +101,7 @@
     {% if event.is_current %}
 
       // Management of the streaming live
-      let pvp_options = options;
-      pvp_options["muted"] = false;
-      let player = videojs("podvideoplayer", pvp_options, function() {
+      let player = videojs("podvideoplayer", options, function() {
       });
 
       player.videoJsLogo({
@@ -641,10 +640,8 @@
             return;
         }
 
-        let pvohp_options = options;
-        pvohp_options["loop"] = true;
-        pvohp_options["muted"] = false;
-        let playerOnHold = videojs('podvideoonholdplayer', pvohp_options, function () {
+        options["loop"] = true;
+        let playerOnHold = videojs('podvideoonholdplayer', options, function () {
          });
 
         if (withModal)
