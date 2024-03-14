@@ -275,15 +275,11 @@ if(modal_recurring_fields) {
 }
 
 /* Manage personal meeting room */
-var field_is_personal = document.getElementById('id_is_personal');
-var time_fieldset = document.getElementById('see_recurring_fields').parentElement.parentElement.parentElement;
-var is_personal = false; 
-if (field_is_personal) {
-  is_personal = (field_is_personal.value == "True");
-}
+var is_personal = ('{{ form.instance.is_personal }}' == "True");
+var time_fieldset = document.getElementById('see_recurring_fields').parentElement.parentElement.parentElement; 
 if (is_personal && time_fieldset){
-    // Hide the time fieldset
-    time_fieldset.classList.add("d-none");
+  // Hide the time fieldset
+  time_fieldset.classList.add("d-none");
 }
 
 /* Manage when voice bridge is modified in a bad format, after a BBB session start */
