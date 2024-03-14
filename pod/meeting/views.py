@@ -117,9 +117,9 @@ def my_meetings(request):
         meetings = [
             meeting
             for meeting in (
-                request.user.owner_meeting.all().filter(
-                    site=site
-                ) | request.user.owners_meetings.all().filter(site=site)
+                request.user.owner_meeting.all().filter(site=site)
+                | request.user.owners_meetings.all()
+                .filter(site=site)
                 .order_by("-is_personal", "-start_at")
             )
             if meeting.is_active
@@ -144,9 +144,7 @@ def manage_personal_meeting_room(request):
     """
     site = get_current_site(request)
     personal_meeting_room = Meeting.objects.filter(
-        owner=request.user,
-        site=site,
-        is_personal=True
+        owner=request.user, site=site, is_personal=True
     ).first()
 
     if not personal_meeting_room:
@@ -159,7 +157,7 @@ def manage_personal_meeting_room(request):
             moderator_password=get_random_string(8),
             start_at=datetime.now().replace(minute=0, second=0, microsecond=0),
             recurrence=None,
-            is_personal=True
+            is_personal=True,
         )
 
 

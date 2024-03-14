@@ -47,9 +47,11 @@ class meeting_TestView(TestCase):
         list_id = [meeting.id for meeting in response.context["meetings"]]
         self.assertEqual(
             list_id,
-            list(self.user.owner_meeting.all().values_list(
-                "id", flat=True
-            ).order_by("-is_personal", "-start_at")),
+            list(
+                self.user.owner_meeting.all()
+                .values_list("id", flat=True)
+                .order_by("-is_personal", "-start_at")
+            ),
         )
         print(" --->  test_meeting_TestView_get_request of meeting_TestView: OK!")
 
@@ -71,9 +73,11 @@ class meeting_TestView(TestCase):
         list_id = [meeting.id for meeting in response.context["meetings"]]
         self.assertEqual(
             list_id,
-            list(self.user.owner_meeting.all().values_list(
-                "id", flat=True
-            ).order_by("-is_personal", "-start_at")),
+            list(
+                self.user.owner_meeting.all()
+                .values_list("id", flat=True)
+                .order_by("-is_personal", "-start_at")
+            ),
         )
         print(
             " --->  test_meeting_TestView_get_request_restrict ",
