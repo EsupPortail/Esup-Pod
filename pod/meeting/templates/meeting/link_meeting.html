@@ -2,9 +2,11 @@
 
 {% spaceless %}
 {% if meeting.owner == request.user or request.user.is_superuser or request.user in meeting.additional_owners.all or perms.meeting.change_meeting %}
-  <a href="{% url 'meeting:edit' meeting.meeting_id %}" title="{% trans 'Edit the meeting'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
-    <i class="bi bi-pencil-square" aria-hidden="true"></i>
-  </a>
+  {% if not meeting.is_personal or meeting.owner == request.user %}
+    <a href="{% url 'meeting:edit' meeting.meeting_id %}" title="{% trans 'Edit the meeting'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
+      <i class="bi bi-pencil-square" aria-hidden="true"></i>
+    </a>
+  {% endif %}
 
   <a href="#" class="btn btn-lg pod-btn-social p-1 m-0 ms-1 pod-btn-copy" role="alert"
     data-copyvalue="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}"
@@ -24,8 +26,11 @@
 {% endif %}
 
 {% if meeting.owner == request.user or request.user.is_superuser or perms.meeting.delete_meeting %}
-  <a href="{% url 'meeting:delete' meeting.meeting_id %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" title="{% trans 'Delete the meeting'%}" data-bs-toggle="tooltip" data-bs-placement="top">
-    <i class="bi bi-trash" aria-hidden="true"></i></a>
+  {% if not meeting.is_personal %}
+    <a href="{% url 'meeting:delete' meeting.meeting_id %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" title="{% trans 'Delete the meeting'%}" data-bs-toggle="tooltip" data-bs-placement="top">
+      <i class="bi bi-trash" aria-hidden="true"></i>
+    </a>
+  {% endif %}
 {% endif %}
 
 {%endspaceless%}
