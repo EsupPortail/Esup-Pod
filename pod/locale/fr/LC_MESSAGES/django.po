@@ -348,8 +348,7 @@ msgid "Agreement required"
 msgstr "Accord requis"
 
 #: pod/ai_enhancement/templates/create_enhancement.html
-#, fuzzy, python-format
-#| msgid "Back to the video “%(video_title)s”"
+#, python-format"
 msgid "Back to the %(video.title)s video"
 msgstr "Retourner à la vidéo « %(video_title)s »"
 
@@ -1822,7 +1821,7 @@ msgstr "Outil de création de fichier de sous-titres/légende"
 
 #: pod/completion/templates/video_caption_maker.html
 msgid "Enrichment is ready. You can now edit the subtitles."
-msgstr ""
+msgstr "L'enrichissement est prêt. Vous pouvez maintenant éditer les sous-titres."
 
 #: pod/completion/templates/video_caption_maker.html
 #: pod/video/templates/videos/add_video.html
@@ -8580,10 +8579,8 @@ msgid "Edit the video"
 msgstr "Éditer la vidéo"
 
 #: pod/video/templates/videos/link_video.html
-#, fuzzy
-#| msgid "Edit the video"
 msgid "Enrich the video with AI"
-msgstr "Éditer la vidéo"
+msgstr "Enrichir la vidéo avec l’IA"
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video_row_select.html
@@ -9045,10 +9042,8 @@ msgid "Theme description"
 msgstr "Description du thème"
 
 #: pod/video/templates/videos/video_page_content.html
-#, fuzzy
-#| msgid "The video is currently waiting for encoding."
 msgid "The video is currently waiting for Aristote AI treatment."
-msgstr "La vidéo est actuellement en attente d’encodage."
+msgstr "La vidéo est actuellement en attente de traitement par l'IA Aristote."
 
 #: pod/video/templates/videos/video_page_content.html
 msgid ""
