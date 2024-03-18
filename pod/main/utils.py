@@ -18,6 +18,7 @@ from webvtt import Caption, WebVTT
 from pod import settings
 from pod.playlist.utils import get_playlist_list_for_user
 from pod.video.models import Video
+from pod.video_encode_transcript.encoding_utils import sec_to_timestamp
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
@@ -170,27 +171,8 @@ def json_to_web_vtt(json_data: dict, duration: int) -> WebVTT:
         if caption["start"] >= duration:
             break
         # identifier = f"{caption['start']}-{caption['end']}"
-        start = convert_time(caption["start"])["formatted_output"]
-        end = convert_time(caption["end"] if caption["end"] < duration else duration)["formatted_output"]
+        start = sec_to_timestamp(caption["start"])
+        end = sec_to_timestamp(caption["end"] if caption["end"] < duration else duration)
         caption = Caption(start=start, end=end, text=caption["text"])
         web_vtt.captions.append(caption)
     return web_vtt
-
-
-def convert_time(seconds):
-    """Convert time from seconds to minutes, seconds and milliseconds."""
-    minutes = seconds // 60
-    remaining_seconds = seconds % 60
-    milliseconds = int((seconds - int(seconds)) * 1000)
-    formatted_output = f"{pad_zero(minutes, 2)}:{pad_zero(remaining_seconds, 2)}.{pad_zero(milliseconds, 3)}"
-    return {
-        "minutes": minutes,
-        "seconds": remaining_seconds,
-        "milliseconds": milliseconds,
-        "formatted_output": formatted_output,
-    }
-
-
-def pad_zero(number, width):
-    """Pad zero."""
-    return str(number).zfill(width)

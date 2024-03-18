@@ -5,7 +5,7 @@ from django.test import TestCase
 from requests import Response
 
 from pod.ai_enhancement.utils import AristoteAI
-from pod.main.utils import extract_json_from_str, convert_time
+from pod.main.utils import extract_json_from_str
 from pod.video.models import Discipline
 
 
@@ -318,33 +318,3 @@ class AristoteAITestCase(TestCase):
         expected_result = {"error": "JSONDecodeError: The string is not a valid JSON string."}
         self.assertEqual(result, expected_result)
         print(" --->  test_extract_json_from_str__no_json ok")
-
-    def test_convert_time__basic(self):
-        """Test the convert_time function with a basic case."""
-        result = convert_time(125)
-        self.assertIsInstance(result, dict)
-        self.assertIn("minutes", result)
-        self.assertIn("seconds", result)
-        self.assertIn("milliseconds", result)
-        self.assertIn("formatted_output", result)
-
-        self.assertEqual(result["minutes"], 2)
-        self.assertEqual(int(result["seconds"]), 5)
-        self.assertEqual(result["milliseconds"], 0)
-        self.assertEqual(result["formatted_output"], "02:05.000")
-        print(" --->  test_convert_time__basic ok")
-
-    def test_convert_time__zero(self):
-        """Test the convert_time function with a zero case."""
-        result = convert_time(0)
-        self.assertIsInstance(result, dict)
-        self.assertIn("minutes", result)
-        self.assertIn("seconds", result)
-        self.assertIn("milliseconds", result)
-        self.assertIn("formatted_output", result)
-
-        self.assertEqual(result["minutes"], 0)
-        self.assertEqual(int(result["seconds"]), 0)
-        self.assertEqual(result["milliseconds"], 0)
-        self.assertEqual(result["formatted_output"], "00:00.000")
-        print(" --->  test_convert_time__zero ok")
