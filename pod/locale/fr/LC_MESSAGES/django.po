@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-18 10:02+0000\n"
+"POT-Creation-Date: 2024-03-18 12:48+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -54,8 +54,7 @@ msgstr "Votre description initiale."
 
 #: pod/ai_enhancement/forms.py
 msgid "The description proposed by the Aristote AI is loading…"
-msgstr ""
-"La description proposée par l’IA Aristote est en cours de chargement…"
+msgstr "La description proposée par l’IA Aristote est en cours de chargement…"
 
 #: pod/ai_enhancement/forms.py
 msgid "The description proposed by the Aristote AI."
@@ -67,8 +66,7 @@ msgstr "Choisissez des mots clés."
 
 #: pod/ai_enhancement/forms.py
 msgid "The tags proposed by the Aristote AI is loading…"
-msgstr ""
-"Les mots clés proposés par l’IA Aristote sont en cours de chargement…"
+msgstr "Les mots clés proposés par l’IA Aristote sont en cours de chargement…"
 
 #: pod/ai_enhancement/forms.py
 msgid "Choose the discipline."

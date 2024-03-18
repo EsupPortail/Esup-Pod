@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-18 10:02+0000\n"
+"POT-Creation-Date: 2024-03-18 12:58+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -921,35 +921,46 @@ msgstr "Ajouts en favoris total depuis la création"
 msgid "Slug"
 msgstr "Titre court"
 
-#~ msgid "Add a caption/subtitle after this one"
-#~ msgstr "Ajouter un(e) légende/sous-titre après celui-ci"
+#: pod/completion/static/js/caption_maker.js
+msgid "Add a caption/subtitle after this one"
+msgstr "Ajouter un(e) légende/sous-titre après celui-ci"
 
-#~ msgid "Delete this caption/subtitle"
-#~ msgstr "Supprimer ce(tte) légende/sous-titre"
+#: pod/completion/static/js/caption_maker.js
+msgid "Delete this caption/subtitle"
+msgstr "Supprimer ce(tte) légende/sous-titre"
 
-#~ msgid "Change image"
-#~ msgstr "Changer d’image"
+#: pod/video/static/podfile/js/filewidget.js
+msgid "Change image"
+msgstr "Changer d’image"
 
-#~ msgid "Change file"
-#~ msgstr "Changer de fichier"
+#: pod/video/static/podfile/js/filewidget.js
+msgid "Change file"
+msgstr "Changer de fichier"
 
-#~ msgid "Reply to comment"
-#~ msgstr "Répondre au commentaire"
+#: pod/video/static/js/comment-script.js
+msgid "Reply to comment"
+msgstr "Répondre au commentaire"
 
-#~ msgid "Reply"
-#~ msgstr "Répondre"
+#: pod/video/static/js/comment-script.js
+msgid "Reply"
+msgstr "Répondre"
 
-#~ msgid "Add a public comment"
-#~ msgstr "Ajouter un commentaire public"
+#: pod/video/static/js/comment-script.js
+msgid "Add a public comment"
+msgstr "Ajouter un commentaire public"
 
-#~ msgid "Send"
-#~ msgstr "Envoyer"
+#: pod/video/static/js/comment-script.js
+msgid "Send"
+msgstr "Envoyer"
 
-#~ msgid "Delete the category"
-#~ msgstr "Supprimer la catégorie"
+#: pod/video/static/js/video_category.js
+msgid "Delete the category"
+msgstr "Supprimer la catégorie"
 
-#~ msgid "Success!"
-#~ msgstr "Succès !"
+#: pod/video/static/js/video_category.js
+msgid "Success!"
+msgstr "Succès !"
 
-#~ msgid "Error…"
-#~ msgstr "Erreur…"
+#: pod/video/static/js/video_category.js
+msgid "Error…"
+msgstr "Erreur…"
