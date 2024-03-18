@@ -36,7 +36,6 @@ def user_can_enhance_video(context: dict, video: Video) -> bool:
         (
             request.user.is_staff
             or request.user.is_superuser
-            or request.user in video.additional_owners.all()
         )
         and USE_AI_ENHANCEMENT
     )

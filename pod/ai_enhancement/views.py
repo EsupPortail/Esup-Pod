@@ -170,7 +170,9 @@ def enhance_form(request: WSGIRequest, video: Video) -> HttpResponse:
             web_vtt = json_to_web_vtt(latest_version["transcript"]["sentences"], video.duration)
             saveVTT(video, web_vtt, latest_version["transcript"]["language"])
             latest_track = Track.objects.filter(video=video,).order_by("id").first()
-            return redirect(reverse("ai_enhancement:enhance_subtitles", args=[video.slug]) + '?src=' + str(latest_track.src_id))
+            return redirect(
+                reverse("ai_enhancement:enhance_subtitles", args=[video.slug]) + '?src=' + _(latest_track.src_id)
+            )
         else:
             return render(
                 request,
