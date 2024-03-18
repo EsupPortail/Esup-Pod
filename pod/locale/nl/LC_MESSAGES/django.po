@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-08 12:30+0000\n"
+"POT-Creation-Date: 2024-03-18 13:17+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1648,7 +1648,7 @@ msgid "Completion video"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "Display &quot;Contributor(s)&quot; section"
+msgid "Display “Contributor(s)” section"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -1660,7 +1660,7 @@ msgid "Add a new contributor"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "Display &quot;Subtitle(s) and Caption(s) &quot; section"
+msgid "Display “Subtitle(s) and Caption(s)” section"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -1676,7 +1676,7 @@ msgid "Add a new subtitle or caption file"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "Display &quot; Additional resource(s)&quot; section"
+msgid "Display “Additional resource(s)” section"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -1688,7 +1688,7 @@ msgid "Add a new additional resource"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "Display &quot; Overlay(s)&quot; section"
+msgid "Display “Overlay(s)” section"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -1700,7 +1700,7 @@ msgid "Add a new overlay"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "Display &quot;quizzes&quot; section"
+msgid "Display “quizzes” section"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html pod/quiz/models.py
@@ -6438,7 +6438,7 @@ msgid "Choice"
 msgstr ""
 
 #: pod/quiz/forms.py
-msgid "Unique choice"
+msgid "Single choice"
 msgstr ""
 
 #: pod/quiz/forms.py
@@ -6479,7 +6479,7 @@ msgid "Please choose the end time of the answer in the video (in seconds)."
 msgstr ""
 
 #: pod/quiz/forms.py
-msgid "Question Type"
+msgid "Question type"
 msgstr ""
 
 #: pod/quiz/forms.py
@@ -6509,7 +6509,7 @@ msgid "Delete video quiz cannot be undone"
 msgstr ""
 
 #: pod/quiz/forms.py pod/quiz/models.py
-msgid "Unique choice question"
+msgid "Single choice question"
 msgstr ""
 
 #: pod/quiz/forms.py
@@ -6591,7 +6591,7 @@ msgid ""
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Unique choice questions"
+msgid "Single choice questions"
 msgstr ""
 
 #: pod/quiz/models.py
@@ -6653,10 +6653,6 @@ msgid "Long answer questions"
 msgstr ""
 
 #: pod/quiz/templates/quiz/create_edit_quiz.html
-msgid "Quiz editor"
-msgstr ""
-
-#: pod/quiz/templates/quiz/create_edit_quiz.html
 msgid "Add a question"
 msgstr ""
 
@@ -6670,8 +6666,14 @@ msgid "To delete the quiz, please check the box and click “Delete”."
 msgstr ""
 
 #: pod/quiz/templates/quiz/question_form.html
-msgid "Question no."
+msgid "Question #"
 msgstr ""
+
+#: pod/quiz/templates/quiz/question_form.html
+#, fuzzy
+#| msgid "Please enter a title."
+msgid "Delete the question #"
+msgstr "Voer een titel in."
 
 #: pod/quiz/templates/quiz/question_form.html
 msgid "One or more errors have been found in the question."

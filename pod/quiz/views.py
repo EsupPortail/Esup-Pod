@@ -18,7 +18,7 @@ from pod.quiz.models import (
     Question,
     Quiz,
     ShortAnswerQuestion,
-    UniqueChoiceQuestion,
+    SingleChoiceQuestion,
 )
 from pod.quiz.utils import get_video_quiz
 from pod.video.models import Video
@@ -101,8 +101,8 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
             existing_question.answer = question_form.cleaned_data["short_answer"]
         elif question_type == "long_answer":
             existing_question.answer = question_form.cleaned_data["long_answer"]
-        elif question_type == "unique_choice":
-            existing_question.choices = question_form.cleaned_data["unique_choice"]
+        elif question_type == "single_choice":
+            existing_question.choices = question_form.cleaned_data["single_choice"]
         elif question_type == "multiple_choice":
             existing_question.choices = question_form.cleaned_data["multiple_choice"]
 
@@ -232,14 +232,14 @@ def create_questions(new_quiz: Quiz, question_formset) -> None:
                 end_timestamp=end_timestamp,
                 answer=question_form.cleaned_data["long_answer"],
             )
-        elif question_type == "unique_choice":
-            UniqueChoiceQuestion.objects.get_or_create(
+        elif question_type == "single_choice":
+            SingleChoiceQuestion.objects.get_or_create(
                 quiz=new_quiz,
                 title=title,
                 explanation=explanation,
                 start_timestamp=start_timestamp,
                 end_timestamp=end_timestamp,
-                choices=question_form.cleaned_data["unique_choice"],
+                choices=question_form.cleaned_data["single_choice"],
             )
         elif question_type == "multiple_choice":
             MultipleChoiceQuestion.objects.get_or_create(
@@ -266,7 +266,7 @@ def calculate_score(question: Question, form) -> float:
     user_answer = None
     correct_answer = None
 
-    if question.get_type() == "unique_choice":
+    if question.get_type() == "single_choice":
         user_answer = form.cleaned_data.get("selected_choice")
         correct_answer = question.get_answer()
 
@@ -498,7 +498,7 @@ def get_initial_data(existing_questions=None) -> str:
                     if question.get_type() == "long_answer"
                     else None,
                     "choices": json.loads(question.choices)
-                    if question.get_type() in {"unique_choice", "multiple_choice"}
+                    if question.get_type() in {"single_choice", "multiple_choice"}
                     else None,
                     # Add other datas needed for JS fields
                 }

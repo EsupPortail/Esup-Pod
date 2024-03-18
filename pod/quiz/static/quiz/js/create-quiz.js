@@ -159,16 +159,26 @@ document.addEventListener("DOMContentLoaded", function () {
    */
   function handleShortAnswerQuestion(questionForm) {
     const input = document.createElement("input");
+    const inputId = "short-answer-" + questionForm.getAttribute("data-question-index");
+    const label = document.createElement("label");
+
     input.type = "text";
-    input.name = questionForm.querySelector(".question-choices-form").name;
+    input.id = inputId;
+    input.name = inputId;
     input.placeholder = gettext("The short answer");
     input.classList.add("short-answer-field", "form-control");
+
+    label.setAttribute("for", inputId);
+    label.textContent = gettext("Short answer");
 
     let initialData = getQuestionData(questionForm);
     if (initialData && initialData["short_answer"] != null) {
       input.value = initialData["short_answer"];
     }
-    questionForm.querySelector(".question-choices-form").appendChild(input);
+
+    const questionChoicesForm = questionForm.querySelector(".question-choices-form");
+    questionChoicesForm.appendChild(label);
+    questionChoicesForm.appendChild(input);
   }
 
   /**
@@ -177,23 +187,32 @@ document.addEventListener("DOMContentLoaded", function () {
    */
   function handleLongAnswerQuestion(questionForm) {
     const textarea = document.createElement("textarea");
-    textarea.name = questionForm.querySelector(".question-choices-form").name;
+    const textareaId = "long-answer-" + questionForm.getAttribute("data-question-index");
+    const label = document.createElement("label");
+
+    textarea.id = textareaId;
+    textarea.name = textareaId;
     textarea.placeholder = gettext("The long answer");
     textarea.classList.add("long-answer-field", "form-control");
+
+    label.setAttribute("for", textareaId);
+    label.textContent = gettext("Long answer");
 
     let initialData = getQuestionData(questionForm);
     if (initialData && initialData["long_answer"] != null) {
       textarea.value = initialData["long_answer"];
     }
 
-    questionForm.querySelector(".question-choices-form").appendChild(textarea);
+    const questionChoicesForm = questionForm.querySelector(".question-choices-form");
+    questionChoicesForm.appendChild(label);
+    questionChoicesForm.appendChild(textarea);
   }
 
   /**
-   * Handles the setup for a unique choice question in the question form.
+   * Handles the setup for a single choice question in the question form.
    * @param {HTMLElement} questionForm - The question form element.
    */
-  function handleUniqueChoiceQuestion(questionForm) {
+  function handleSingleChoiceQuestion(questionForm) {
     const choicesForm = questionForm.querySelector(".question-choices-form");
 
     const createChoiceElement = (index, choice) => {
@@ -201,12 +220,15 @@ document.addEventListener("DOMContentLoaded", function () {
       choiceDiv.classList.add("form-check", "d-flex", "align-items-center");
 
       const input = document.createElement("input");
+      const inputId = `choice-${questionForm.getAttribute("data-question-index")}-${index}`
       input.type = "radio";
       input.classList.add("form-check-input");
-      input.name = `choices_${questionForm.getAttribute("data-question-index")}`;
+      input.name = inputId;
+      input.id = inputId;
 
-      const deleteButton = document.createElement("i");
-      deleteButton.setAttribute("aria-hidden", "true");
+      const deleteButton = document.createElement("a");
+      deleteButton.setAttribute('title', gettext("Remove choice") + ` ${index}`)
+      deleteButton.setAttribute('role', 'button')
       deleteButton.classList.add(
         "bi",
         "bi-trash",
@@ -219,18 +241,32 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       const textInput = document.createElement("input");
+      const textInputId = `choice-text-${questionForm.getAttribute("data-question-index")}-${index}`;
+      textInput.id = textInputId;
+      textInput.name = textInputId;
       textInput.type = "text";
       textInput.placeholder = gettext("Choice") + ` ${index}`;
       textInput.classList.add("form-control", "ms-2");
       if (choice) {
         textInput.value = choice[0];
-        console.log(input);
         if (choice[1]) {
           input.checked = true;
         }
       }
 
+      const inputLabel = document.createElement("label");
+      inputLabel.setAttribute("for", input.id);
+      inputLabel.textContent = textInput.placeholder;
+      inputLabel.classList.add("d-none")
+
+      const textInputLabel = document.createElement("label");
+      textInputLabel.setAttribute("for", textInput.id);
+      textInputLabel.textContent = textInput.placeholder;
+      textInputLabel.classList.add("d-none")
+
+      choiceDiv.appendChild(inputLabel);
       choiceDiv.appendChild(input);
+      choiceDiv.appendChild(textInputLabel);
       choiceDiv.appendChild(textInput);
       choiceDiv.appendChild(deleteButton);
 
@@ -281,13 +317,17 @@ document.addEventListener("DOMContentLoaded", function () {
       const choiceDiv = document.createElement("div");
       choiceDiv.classList.add("form-check", "d-flex", "align-items-center");
 
+
       const input = document.createElement("input");
+      const inputId = `choice-${questionForm.getAttribute("data-question-index")}-${index}`;
       input.type = "checkbox";
       input.classList.add("form-check-input");
-      input.name = `choices_${questionForm.getAttribute("data-question-index")}`;
+      input.name = inputId;
+      input.id = inputId;
 
-      const deleteButton = document.createElement("i");
-      deleteButton.setAttribute("aria-hidden", "true");
+      const deleteButton = document.createElement("a");
+      deleteButton.setAttribute('title', gettext("Remove choice") + ` ${index}`)
+      deleteButton.setAttribute('role', 'button')
       deleteButton.classList.add(
         "bi",
         "bi-trash",
@@ -300,7 +340,10 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       const textInput = document.createElement("input");
+      const textInputId = `choice-text-${questionForm.getAttribute("data-question-index")}-${index}`;
       textInput.type = "text";
+      textInput.id = textInputId;
+      textInput.name = textInputId;
       textInput.placeholder = gettext("Choice") + ` ${index}`;
       textInput.classList.add("form-control", "ms-2");
       if (choice) {
@@ -311,7 +354,19 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
 
+      const inputLabel = document.createElement("label");
+      inputLabel.setAttribute("for", inputId);
+      inputLabel.textContent = gettext("Choice");
+      inputLabel.classList.add("d-none");
+
+      const textInputLabel = document.createElement("label");
+      textInputLabel.setAttribute("for", textInputId);
+      textInputLabel.textContent = textInput.placeholder;
+      textInputLabel.classList.add("d-none");
+
+      choiceDiv.appendChild(inputLabel);
       choiceDiv.appendChild(input);
+      choiceDiv.appendChild(textInputLabel);
       choiceDiv.appendChild(textInput);
       choiceDiv.appendChild(deleteButton);
 
@@ -384,8 +439,8 @@ document.addEventListener("DOMContentLoaded", function () {
       case "long_answer":
         handleLongAnswerQuestion(questionForm);
         break;
-      case "unique_choice":
-        handleUniqueChoiceQuestion(questionForm);
+      case "single_choice":
+        handleSingleChoiceQuestion(questionForm);
         break;
       case "multiple_choice":
         handleMultipleChoiceQuestion(questionForm);
@@ -457,8 +512,8 @@ document.addEventListener("DOMContentLoaded", function () {
           case "long_answer":
             handleLongAnswerSubmission(questionForm);
             break;
-          case "unique_choice":
-            handleUniqueChoiceSubmission(questionForm);
+          case "single_choice":
+            handleSingleChoiceSubmission(questionForm);
             break;
           case "multiple_choice":
             handleMultipleChoiceSubmission(questionForm);
@@ -500,11 +555,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /**
-   * Handles the submission process for unique choice questions in the quiz form.
+   * Handles the submission process for single choice questions in the quiz form.
    *
-   * @param {HTMLElement} questionForm - The form element representing the unique choice question.
+   * @param {HTMLElement} questionForm - The form element representing the single choice question.
    */
-  function handleUniqueChoiceSubmission(questionForm) {
+  function handleSingleChoiceSubmission(questionForm) {
     let choicesData = {};
 
     const radioInputs = questionForm.querySelectorAll(
@@ -518,10 +573,10 @@ document.addEventListener("DOMContentLoaded", function () {
       choicesData[textInputs[index].value] = input.checked;
     });
 
-    let hiddenUniqueChoiceAnswerInput = questionForm.querySelector(
-      ".hidden-unique-choice-field",
+    let hiddenSingleChoiceAnswerInput = questionForm.querySelector(
+      ".hidden-single-choice-field",
     );
-    hiddenUniqueChoiceAnswerInput.value = JSON.stringify(choicesData);
+    hiddenSingleChoiceAnswerInput.value = JSON.stringify(choicesData);
   }
 
   /**

@@ -4,9 +4,9 @@
   <legend class="d-flex justify-content-between align-items-center">
     <div>
       <i class="bi bi-patch-question" aria-hidden='true'></i>&nbsp;
-      {% trans "Question no." %}<span class="question-number">{{ form_index|add:1 }}</span>
+      {% trans "Question #" %}<span class="question-number">{{ form_index|add:1 }}</span>
     </div>
-    <button class="btn btn-danger btn-small delete-question-button" type="button">
+    <button class="btn btn-danger btn-small delete-question-button" type="button" title="{% trans 'Delete the question #' %}{{ form_index|add:1 }}" data-bs-toggle="tooltip" data-bs-placement="left">
       <i class="bi bi-trash" aria-hidden="true"></i>
     </button>
   </legend>

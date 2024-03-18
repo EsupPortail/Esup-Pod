@@ -1823,11 +1823,11 @@
                 "quiz": {
                     "description": {
                         "en": [
-                            "Quiz app for the quiz management.",
+                            "Quiz App to add various questions on videos.",
                             "Set `USE_QUIZ` to True to activate this application."
                         ],
                         "fr": [
-                            "Application Quiz pour la gestion des quiz.",
+                            "Application Quiz pour ajouter des questions sur les vidéos.",
                             "Mettre `USE_QUIZ` à True pour activer cette application."
                         ]
                     },

@@ -15,7 +15,7 @@
     </a>
   </li>
   <li class="breadcrumb-item active" aria-current="page">
-      {% trans 'Quiz editor' %}
+      {{ page_title }}
   </li>
 {% endblock %}
 
@@ -53,10 +53,8 @@
       {% endspaceless %}
     {% endfor %}
 
-    <br>
-
     {{ question_formset.management_form }}
-    <div id="question-form-list">
+    <div id="question-form-list mt-2">
       {% for question_form in question_formset %}
         {% with form_index=forloop.counter0 %}
           {% include "quiz/question_form.html" with form=question_form form_index=form_index %}
@@ -69,9 +67,7 @@
 
     <button id="add-question" type="button" class="btn btn-primary">{% trans "Add a question" %}</button>
 
-    <br>
-
-    <div class="text-center mt-2">
+    <div class="text-center mt-4">
       <button type="submit" id="quiz-submission-button" class="btn btn-primary">{% trans "Save" %}</button>
       <a href="{% url 'video:video' slug=video.slug %}" class="btn btn-secondary">{% trans "Back to video" %}</a>
     </div>

@@ -7,7 +7,7 @@ from pod.quiz.models import (
     MultipleChoiceQuestion,
     Quiz,
     ShortAnswerQuestion,
-    UniqueChoiceQuestion,
+    SingleChoiceQuestion,
 )
 from pod.quiz.utils import get_quiz_questions, get_video_quiz
 
@@ -46,7 +46,7 @@ class QuizTestUtils(TestCase):
     def test_get_quiz_questions(self):
         """Test if test_get_quiz_questions works correctly."""
         quiz = Quiz.objects.create(video=self.video)
-        UniqueChoiceQuestion.objects.create(quiz=quiz, title="UCQ1")
+        SingleChoiceQuestion.objects.create(quiz=quiz, title="UCQ1")
         MultipleChoiceQuestion.objects.create(quiz=quiz, title="MCQ1")
         ShortAnswerQuestion.objects.create(quiz=quiz, title="SAQ1")
         LongAnswerQuestion.objects.create(quiz=quiz, title="LAQ1")
@@ -54,13 +54,13 @@ class QuizTestUtils(TestCase):
         questions = get_quiz_questions(quiz)
         self.assertEqual(len(questions), 4)
 
-        quiz_with_unique_choice = Quiz.objects.create(video=self.video2)
-        UniqueChoiceQuestion.objects.create(quiz=quiz_with_unique_choice, title="UCQ2")
-        questions_with_unique_choice = get_quiz_questions(quiz_with_unique_choice)
-        self.assertEqual(len(questions_with_unique_choice), 1)
+        quiz_with_single_choice = Quiz.objects.create(video=self.video2)
+        SingleChoiceQuestion.objects.create(quiz=quiz_with_single_choice, title="UCQ2")
+        questions_with_single_choice = get_quiz_questions(quiz_with_single_choice)
+        self.assertEqual(len(questions_with_single_choice), 1)
 
         quiz_with_all_question_types = Quiz.objects.create(video=self.video3)
-        UniqueChoiceQuestion.objects.create(
+        SingleChoiceQuestion.objects.create(
             quiz=quiz_with_all_question_types, title="UCQ3")
         MultipleChoiceQuestion.objects.create(
             quiz=quiz_with_all_question_types, title="MCQ2")

@@ -7,7 +7,7 @@ from pod.quiz.models import (
     MultipleChoiceQuestion,
     Quiz,
     ShortAnswerQuestion,
-    UniqueChoiceQuestion,
+    SingleChoiceQuestion,
 )
 
 
@@ -29,9 +29,9 @@ class BaseQuestionAdmin(admin.ModelAdmin):
     list_filter = ("quiz",)
 
 
-@admin.register(UniqueChoiceQuestion)
-class UniqueChoiceQuestionAdmin(BaseQuestionAdmin):
-    """Admin configuration for UniqueChoiceQuestion."""
+@admin.register(SingleChoiceQuestion)
+class SingleChoiceQuestionAdmin(BaseQuestionAdmin):
+    """Admin configuration for SingleChoiceQuestion."""
 
 
 @admin.register(MultipleChoiceQuestion)
@@ -52,10 +52,10 @@ class ShortAnswerQuestionAdmin(BaseQuestionAdmin):
 # Questions types inlines
 
 
-class UniqueChoiceQuestionInline(admin.StackedInline):
-    """Inline configuration for UniqueChoiceQuestion."""
+class SingleChoiceQuestionInline(admin.StackedInline):
+    """Inline configuration for SingleChoiceQuestion."""
 
-    model = UniqueChoiceQuestion
+    model = SingleChoiceQuestion
     extra = 0
 
 
@@ -89,7 +89,7 @@ class QuizAdmin(admin.ModelAdmin):
 
     list_display = ("video", "connected_user_only", "show_correct_answers")
     inlines = [
-        UniqueChoiceQuestionInline,
+        SingleChoiceQuestionInline,
         MultipleChoiceQuestionInline,
         LongAnswerQuestionInline,
         ShortAnswerQuestionInline,

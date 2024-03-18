@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-08 12:30+0000\n"
+"POT-Creation-Date: 2024-03-18 13:17+0000\n"
 "PO-Revision-Date: 2023-02-08 15:22+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -594,7 +594,19 @@ msgid "The short answer"
 msgstr ""
 
 #: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Short answer"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
 msgid "The long answer"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Long answer"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Remove choice"
 msgstr ""
 
 #: pod/quiz/static/quiz/js/create-quiz.js

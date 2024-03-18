@@ -154,9 +154,9 @@ class Question(models.Model):
             data (dict): Form data.
 
         Returns:
-            BaseQuestionForm: Form for the question.
+            QuestionForm: Form for the question.
         """
-        return None
+        return "This method must be redefined in child class."
 
     def get_answer(self):
         """
@@ -177,9 +177,9 @@ class Question(models.Model):
         return None
 
 
-class UniqueChoiceQuestion(Question):
+class SingleChoiceQuestion(Question):
     """
-    Unique choice question model.
+    Single choice question model.
 
     Attributes:
         choices (JSONField <{choice(str): is_correct(bool)}>): Choices of the question.
@@ -194,11 +194,11 @@ class UniqueChoiceQuestion(Question):
     )
 
     class Meta:
-        verbose_name = _("Unique choice question")
-        verbose_name_plural = _("Unique choice questions")
+        verbose_name = _("Single choice question")
+        verbose_name_plural = _("Single choice questions")
 
     def clean(self):
-        """Clean method for UniqueChoiceQuestion model."""
+        """Clean method for SingleChoiceQuestion model."""
         super().clean()
 
         if isinstance(self.choices, str):
@@ -216,7 +216,7 @@ class UniqueChoiceQuestion(Question):
             raise ValidationError(_("There must be only one correct answer."))
 
     def __str__(self):
-        """String representation of the UniqueChoiceQuestion."""
+        """String representation of the SingleChoiceQuestion."""
         return super().__str__()
 
     def get_answer(self):
@@ -231,7 +231,7 @@ class UniqueChoiceQuestion(Question):
         return correct_answer
 
     def get_type(self):
-        return "unique_choice"
+        return "single_choice"
 
     def get_question_form(self, data=None):
         """
@@ -241,11 +241,11 @@ class UniqueChoiceQuestion(Question):
             data (dict): Form data.
 
         Returns:
-            BaseQuestionForm: Form for the question.
+            SingleChoiceQuestionForm: Form for the question.
         """
-        from pod.quiz.forms import UniqueChoiceQuestionForm
+        from pod.quiz.forms import SingleChoiceQuestionForm
 
-        return UniqueChoiceQuestionForm(data, instance=self, prefix=f"question_{self.pk}")
+        return SingleChoiceQuestionForm(data, instance=self, prefix=f"question_{self.pk}")
 
 
 class MultipleChoiceQuestion(Question):
@@ -312,7 +312,7 @@ class MultipleChoiceQuestion(Question):
             data (dict): Form data.
 
         Returns:
-            BaseQuestionForm: Form for the question.
+            MultipleChoiceQuestionForm: Form for the question.
         """
         from pod.quiz.forms import (
             MultipleChoiceQuestionForm,
@@ -384,7 +384,7 @@ class ShortAnswerQuestion(Question):
         Args:
             data (dict): Form data.
         Returns:
-            BaseQuestionForm: Form for the question.
+            ShortAnswerQuestionForm: Form for the question.
         """
         from pod.quiz.forms import (
             ShortAnswerQuestionForm,
@@ -427,7 +427,7 @@ class LongAnswerQuestion(Question):
         Args:
             data (dict): Form data.
         Returns:
-            BaseQuestionForm: Form for the question.
+            LongAnswerQuestionForm: Form for the question.
         """
         from pod.quiz.forms import (
             LongAnswerQuestionForm,

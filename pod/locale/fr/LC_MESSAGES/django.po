@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-08 12:30+0000\n"
+"POT-Creation-Date: 2024-03-18 13:17+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1717,8 +1717,8 @@ msgid "Completion video"
 msgstr "Complétion de la vidéo"
 
 #: pod/completion/templates/video_completion.html
-msgid "Display &quot;Contributor(s)&quot; section"
-msgstr "Afficher la section « Contributeurs »"
+msgid "Display “Contributor(s)” section"
+msgstr "Afficher la section « Contributeur(s) »"
 
 #: pod/completion/templates/video_completion.html
 msgid "Contributor(s)"
@@ -1729,8 +1729,8 @@ msgid "Add a new contributor"
 msgstr "Ajouter un nouveau contributeur"
 
 #: pod/completion/templates/video_completion.html
-msgid "Display &quot;Subtitle(s) and Caption(s) &quot; section"
-msgstr "Afficher la section « Sous-titres et Légendes »"
+msgid "Display “Subtitle(s) and Caption(s)” section"
+msgstr "Afficher la section « Sous-titre(s) et Légende(s) »"
 
 #: pod/completion/templates/video_completion.html
 msgid "Subtitle(s) and Caption(s)"
@@ -1745,8 +1745,8 @@ msgid "Add a new subtitle or caption file"
 msgstr "Ajouter un nouveau fichier de sous-titres ou de légende"
 
 #: pod/completion/templates/video_completion.html
-msgid "Display &quot; Additional resource(s)&quot; section"
-msgstr "Afficher la section « Documents complémentaires »"
+msgid "Display “Additional resource(s)” section"
+msgstr "Afficher la section « Document(s) complémentaire(s) »"
 
 #: pod/completion/templates/video_completion.html
 msgid "Additional resource(s)"
@@ -1757,8 +1757,8 @@ msgid "Add a new additional resource"
 msgstr "Ajouter un document complémentaire"
 
 #: pod/completion/templates/video_completion.html
-msgid "Display &quot; Overlay(s)&quot; section"
-msgstr "Afficher la section « Superpositions »"
+msgid "Display “Overlay(s)” section"
+msgstr "Afficher la section « Superposition(s) »"
 
 #: pod/completion/templates/video_completion.html
 msgid "Overlay(s)"
@@ -1769,7 +1769,7 @@ msgid "Add a new overlay"
 msgstr "Ajouter une nouvelle superposition"
 
 #: pod/completion/templates/video_completion.html
-msgid "Display &quot;quizzes&quot; section"
+msgid "Display “quizzes” section"
 msgstr "Afficher la section « quiz »"
 
 #: pod/completion/templates/video_completion.html pod/quiz/models.py
@@ -3018,7 +3018,7 @@ msgid ""
 "solution of the French Ministry of Higher Education and Research."
 msgstr ""
 "Cette vidéo a été téléversée sur Pod et sa source est la solution de classe "
-"virtuelle du Ministère Français de l'Enseignement Supérieur et de la "
+"virtuelle du Ministère Français de l’Enseignement Supérieur et de la "
 "Recherche."
 
 #: pod/import_video/views.py
@@ -6822,12 +6822,12 @@ msgid "Choice"
 msgstr "Choix"
 
 #: pod/quiz/forms.py
-msgid "Unique choice"
+msgid "Single choice"
 msgstr "Choix unique"
 
 #: pod/quiz/forms.py
 msgid "Multiple choice"
-msgstr "Question à choix multiple"
+msgstr "Choix multiples"
 
 #: pod/quiz/forms.py
 msgid "Your question"
@@ -6852,7 +6852,8 @@ msgstr "Horodatage de départ"
 #: pod/quiz/forms.py pod/quiz/models.py
 msgid ""
 "Please choose the beginning time of the answer in the video (in seconds)."
-msgstr "Veuillez choisir l'heure de début de la réponse dans la vidéo (en secondes)."
+msgstr ""
+"Veuillez choisir l’heure de début de la réponse dans la vidéo (en secondes)."
 
 #: pod/quiz/forms.py pod/quiz/models.py
 msgid "End timestamp"
@@ -6860,11 +6861,12 @@ msgstr "Horodatage de fin"
 
 #: pod/quiz/forms.py pod/quiz/models.py
 msgid "Please choose the end time of the answer in the video (in seconds)."
-msgstr "Veuillez choisir l'heure de fin de la réponse dans la vidéo (en secondes)."
+msgstr ""
+"Veuillez choisir l’heure de fin de la réponse dans la vidéo (en secondes)."
 
 #: pod/quiz/forms.py
-msgid "Question Type"
-msgstr "Type de Question"
+msgid "Question type"
+msgstr "Type de question"
 
 #: pod/quiz/forms.py
 msgid "Please choose the question type."
@@ -6888,10 +6890,10 @@ msgstr "La page de correction est accessible"
 
 #: pod/quiz/forms.py
 msgid "Delete video quiz cannot be undone"
-msgstr "La suppression d'un quiz pour une vidéo est définitive"
+msgstr "La suppression d’un quiz pour une vidéo est définitive"
 
 #: pod/quiz/forms.py pod/quiz/models.py
-msgid "Unique choice question"
+msgid "Single choice question"
 msgstr "Question à choix unique"
 
 #: pod/quiz/forms.py
@@ -6900,7 +6902,7 @@ msgstr "Veuillez choisir une réponse."
 
 #: pod/quiz/forms.py pod/quiz/models.py
 msgid "Multiple choice question"
-msgstr "Question à choix multiple"
+msgstr "Question à choix multiples"
 
 #: pod/quiz/forms.py
 msgid "Please check any answers you want."
@@ -6953,11 +6955,11 @@ msgstr "Questions"
 
 #: pod/quiz/models.py
 msgid "Start timestamp must be lower than end timestamp."
-msgstr "L'horodatage de début doit être inférieure à l'heure de fin."
+msgstr "L’horodatage de début doit être inférieur à l’heure de fin."
 
 #: pod/quiz/models.py
 msgid "End timestamp cannot be defined without a start timestamp."
-msgstr "L'horodatage de fin ne peut être définie sans l'heure de début."
+msgstr "L’horodatage de fin ne peut être défini sans l’heure de début."
 
 #: pod/quiz/models.py
 msgid "Choices"
@@ -6972,8 +6974,8 @@ msgstr ""
 "false, ...} | true pour le bon choix, false pour les mauvais choix."
 
 #: pod/quiz/models.py
-msgid "Unique choice questions"
-msgstr "Questions à choix unique"
+msgid "Single choice questions"
+msgstr "Questions à choix multiples"
 
 #: pod/quiz/models.py
 msgid "There must be at least 2 choices."
@@ -6998,7 +7000,7 @@ msgstr ""
 
 #: pod/quiz/models.py
 msgid "Multiple choice questions"
-msgstr "Questions à choix multiple"
+msgstr "Questions à choix multiples"
 
 #: pod/quiz/models.py
 msgid "There must be at least one correct answer."
@@ -7037,10 +7039,6 @@ msgid "Long answer questions"
 msgstr "Questions à réponse longue"
 
 #: pod/quiz/templates/quiz/create_edit_quiz.html
-msgid "Quiz editor"
-msgstr "Éditeur de quiz"
-
-#: pod/quiz/templates/quiz/create_edit_quiz.html
 msgid "Add a question"
 msgstr "Ajouter une question"
 
@@ -7056,8 +7054,12 @@ msgstr ""
 "« Supprimer »."
 
 #: pod/quiz/templates/quiz/question_form.html
-msgid "Question no."
+msgid "Question #"
 msgstr "Question n°"
+
+#: pod/quiz/templates/quiz/question_form.html
+msgid "Delete the question #"
+msgstr "Supprimer la question n°"
 
 #: pod/quiz/templates/quiz/question_form.html
 msgid "One or more errors have been found in the question."
@@ -7077,7 +7079,7 @@ msgstr "Peut mieux faire."
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "It's not terrible, but there's room for improvement!"
-msgstr "Ce n'est pas terrible, mais de l'amélioration est possible !"
+msgstr "Ce n'est pas terrible, mais de l’amélioration est possible !"
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Right answer:"
@@ -7106,11 +7108,11 @@ msgstr "Création du quiz de la vidéo « %s »"
 
 #: pod/quiz/views.py
 msgid "Quiz successfully created."
-msgstr "Quiz créé avec succès"
+msgstr "Quiz créé avec succès."
 
 #: pod/quiz/views.py
 msgid "Quiz successfully updated."
-msgstr "Quiz mis à jour avec succès"
+msgstr "Quiz mis à jour avec succès."
 
 #: pod/quiz/views.py
 msgid "The data sent to create the quiz are invalid."
@@ -7132,7 +7134,7 @@ msgstr "Vous ne pouvez pas supprimer le quiz de cette vidéo."
 
 #: pod/quiz/views.py
 msgid "The quiz has been deleted."
-msgstr "Le quiz a été supprimée."
+msgstr "Le quiz a été supprimé."
 
 #: pod/quiz/views.py
 #, python-format
@@ -7146,7 +7148,7 @@ msgstr "Vous ne pouvez pas éditer ce quiz."
 #: pod/quiz/views.py
 #, python-format
 msgid "Quiz edition for the video “%s”"
-msgstr "Suppression du quiz pour la vidéo « %s »"
+msgstr "Modification du quiz pour la vidéo « %s »"
 
 #: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
@@ -8241,11 +8243,11 @@ msgstr "Catégories"
 
 #: pod/video/models.py
 msgid "Video access token"
-msgstr "Jeton d'accès à la vidéo"
+msgstr "Jeton d’accès à la vidéo"
 
 #: pod/video/models.py
 msgid "Video access tokens"
-msgstr "Jetons d'accès à la vidéo"
+msgstr "Jetons d’accès à la vidéo"
 
 #: pod/video/templates/channel/channel.html
 msgid "Show view statistics for all videos in this theme"
@@ -8286,12 +8288,14 @@ msgstr[0] "%(counter)s thème trouvé dans cette chaine"
 msgstr[1] "%(counter)s thèmes trouvés dans cette chaine"
 
 #: pod/video/templates/channel/channel.html
+#, python-format
 msgid "%(counter)s video for this channel"
 msgid_plural "%(counter)s videos for this channel"
 msgstr[0] "%(counter)s vidéo trouvée dans cette chaine"
 msgstr[1] "%(counter)s vidéos trouvées dans cette chaine"
 
 #: pod/video/templates/channel/channel.html
+#, python-format
 msgid "%(counter)s subtheme found for this theme"
 msgid_plural "%(counter)s subthemes found for this theme"
 msgstr[0] "%(counter)s sous-thème trouvé dans ce thème"
@@ -8611,11 +8615,11 @@ msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Grid display mode"
-msgstr "Mode d'affichage par grille"
+msgstr "Mode d’affichage par grille"
 
 #: pod/video/templates/videos/dashboard.html
 msgid "List display mode"
-msgstr "Mode d'affichage par liste"
+msgstr "Mode d’affichage par liste"
 
 #: pod/video/templates/videos/dashboard_modal.html
 msgid "Loading..."
@@ -8915,7 +8919,7 @@ msgstr "Cocher la case pour indiquer le début de lecture souhaité."
 #: pod/video/templates/videos/video-info.html
 #: pod/video/templates/videos/video_edit.html
 msgid "Manage access tokens"
-msgstr "Gestion des jetons d'accès"
+msgstr "Gestion des jetons d’accès"
 
 #: pod/video/templates/videos/video-info.html
 msgid "BigBlueButton/H5P Integration"
@@ -9701,16 +9705,8 @@ msgstr "xAPI Esup-Pod"
 #~ msgid "Long Answer"
 #~ msgstr "Réponse Longue"
 
-#~ msgid "Unique Choice"
-#~ msgstr "Choix Unique"
-
 #~ msgid "There must be at least 2 choices for a choice question."
 #~ msgstr "Il doit y avoir au moins 2 choix pour une question à choix."
-
-#~ msgid "There must be only one correct answer for a unique choice question."
-#~ msgstr ""
-#~ "Il ne doit y avoir qu'une seule réponse correcte pour une question à "
-#~ "choix unique."
 
 #~ msgid "Connected User Only"
 #~ msgstr "Utilisateur Connecté Uniquement"

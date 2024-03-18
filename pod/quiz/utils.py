@@ -6,7 +6,7 @@ from pod.quiz.models import (
     MultipleChoiceQuestion,
     Quiz,
     ShortAnswerQuestion,
-    UniqueChoiceQuestion,
+    SingleChoiceQuestion,
 )
 from itertools import chain
 
@@ -25,14 +25,14 @@ def get_quiz_questions(
     Returns:
         list: A list of questions associated with the quiz.
     """
-    unique_choice_questions = UniqueChoiceQuestion.objects.filter(quiz=quiz)
+    single_choice_questions = SingleChoiceQuestion.objects.filter(quiz=quiz)
     multiple_choice_questions = MultipleChoiceQuestion.objects.filter(quiz=quiz)
     short_answer_questions = ShortAnswerQuestion.objects.filter(quiz=quiz)
     long_answer_questions = LongAnswerQuestion.objects.filter(quiz=quiz)
 
     return list(
         chain(
-            unique_choice_questions,
+            single_choice_questions,
             multiple_choice_questions,
             short_answer_questions,
             long_answer_questions,

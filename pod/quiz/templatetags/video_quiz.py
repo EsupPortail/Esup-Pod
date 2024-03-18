@@ -1,4 +1,4 @@
-"""Template tags used for video quiz."""
+"""Template tags used for Esup-Pod video quiz."""
 
 from django.template import Library
 from pod.quiz.utils import get_video_quiz

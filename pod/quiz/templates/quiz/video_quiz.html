@@ -50,8 +50,7 @@
     {% for question in quiz.get_questions %}
       <fieldset class="border rounded-3 p-3 mb-3 question-container">
         <legend>
-          <i class="bi bi-patch-question" aria-hidden='true'></i>&nbsp;
-          {{ question.title }}
+          <i class="bi bi-patch-question" aria-hidden='true'></i>&nbsp;{{ question.title }}
         </legend>
         {% with form=question.get_question_form %}
           {% for field in form.visible_fields %}

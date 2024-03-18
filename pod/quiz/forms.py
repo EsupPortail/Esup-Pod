@@ -10,7 +10,7 @@ from pod.quiz.models import (
     LongAnswerQuestion,
     MultipleChoiceQuestion,
     ShortAnswerQuestion,
-    UniqueChoiceQuestion,
+    SingleChoiceQuestion,
 )
 
 
@@ -28,7 +28,7 @@ class QuestionForm(forms.Form):
         (
             _("Choice"),
             [
-                ("unique_choice", _("Unique choice")),
+                ("single_choice", _("Single choice")),
                 ("multiple_choice", _("Multiple choice")),
             ],
         ),
@@ -70,17 +70,17 @@ class QuestionForm(forms.Form):
     )
     type = forms.ChoiceField(
         choices=QUESTION_TYPES,
-        initial="unique_choice",
+        initial="single_choice",
         widget=forms.Select(attrs={"class": "question-select-type"}),
-        label=_("Question Type"),
+        label=_("Question type"),
         required=True,
         help_text=_("Please choose the question type."),
     )
 
-    unique_choice = forms.CharField(
-        widget=forms.HiddenInput(attrs={"class": "hidden-unique-choice-field"}),
+    single_choice = forms.CharField(
+        widget=forms.HiddenInput(attrs={"class": "hidden-single-choice-field"}),
         required=False,
-        label=_("Unique choice"),
+        label=_("Single choice"),
     )
     short_answer = forms.CharField(
         widget=forms.HiddenInput(attrs={"class": "hidden-short-answer-field"}),
@@ -109,8 +109,8 @@ class QuestionForm(forms.Form):
         cleaned_data = super().clean()
         question_type = cleaned_data.get("type")
 
-        if question_type == "unique_choice":
-            self._clean_unique_choice()
+        if question_type == "single_choice":
+            self._clean_single_choice()
         elif question_type == "multiple_choice":
             self._clean_multiple_choice()
         return cleaned_data
@@ -120,15 +120,15 @@ class QuestionForm(forms.Form):
         super(QuestionForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
 
-    def _clean_unique_choice(self):
-        """Call UniqueChoiceQuestion's clean method."""
-        choices_str = self.cleaned_data.get("unique_choice")
-        unique_choice_question = UniqueChoiceQuestion(choices=choices_str)
+    def _clean_single_choice(self):
+        """Call SingleChoiceQuestion's clean method."""
+        choices_str = self.cleaned_data.get("single_choice")
+        single_choice_question = SingleChoiceQuestion(choices=choices_str)
         try:
-            unique_choice_question.clean()
+            single_choice_question.clean()
         except ValidationError as e:
             for error in e.error_list:
-                self.add_error("unique_choice", error)
+                self.add_error("single_choice", error)
 
     def _clean_multiple_choice(self):
         """Call MultipleChoiceQuestion's clean method."""
@@ -182,23 +182,23 @@ class QuizDeleteForm(forms.Form):
 # TYPES FORMS
 
 
-class UniqueChoiceQuestionForm(forms.ModelForm):
-    """Form to add or edit a unique choice question form."""
+class SingleChoiceQuestionForm(forms.ModelForm):
+    """Form to add or edit a single choice question form."""
 
     selected_choice = forms.CharField(
-        label=_("Unique choice question"),
+        label=_("Single choice question"),
         widget=forms.RadioSelect(),
         required=False,
         help_text=_("Please choose one answer."),
     )
 
     class Meta:
-        model = UniqueChoiceQuestion
+        model = SingleChoiceQuestion
         fields = ["selected_choice"]
 
     def __init__(self, *args, **kwargs):
-        """Init unique choice question form."""
-        super(UniqueChoiceQuestionForm, self).__init__(*args, **kwargs)
+        """Init single choice question form."""
+        super(SingleChoiceQuestionForm, self).__init__(*args, **kwargs)
 
         choices_str = self.instance.choices
         try:
