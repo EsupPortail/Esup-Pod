@@ -48,7 +48,7 @@
             {% endfor %}
             <div class="text-center mt-1">
                 <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans %}Back to the {{ video.title }} video{% endblocktrans %}}" class="btn btn-secondary btn-sm">
-                    <i class="bi bi-play-circle" aria-hidden="true"></i>&nbsp;{% trans 'Back to my video' %}
+                    <i class="bi bi-play-circle" aria-hidden="true"></i>&nbsp;{% trans 'Back to the video' %}
                 </a>
                 <button type="submit" class="btn btn-secondary btn-sm btn-success">{% trans 'Confirm' %}</button>
             </div>
