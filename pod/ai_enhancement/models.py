@@ -15,8 +15,28 @@ class AIEnhancement(models.Model):
         verbose_name = _("AI enhancement")
         verbose_name_plural = _("AI enhancements")
 
-    video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
-    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
-    updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
-    is_ready = models.BooleanField(_("Is ready"), default=False)
-    ai_enhancement_id_in_aristote = models.TextField(_("AI enhancement ID in Aristote"))
+    video = models.ForeignKey(
+        Video,
+        verbose_name=_("Video"),
+        on_delete=models.CASCADE,
+        help_text=_("Select the video to enhance with AI"),
+    )
+    created_at = models.DateTimeField(
+        verbose_name=_("Created at"),
+        auto_now_add=True,
+        help_text=_("The date and time when the enhancement was created"),
+    )
+    updated_at = models.DateTimeField(
+        verbose_name=_("Updated at"),
+        auto_now=True,
+        help_text=_("The date and time when the enhancement was updated"),
+    )
+    is_ready = models.BooleanField(
+        verbose_name=_("Is ready"),
+        default=False,
+        help_text=_("Check if the enhancement is ready"),
+    )
+    ai_enhancement_id_in_aristote = models.TextField(
+        verbose_name=_("AI enhancement ID in Aristote"),
+        help_text=_("Enter the ID of the enhancement in Aristote"),
+    )
