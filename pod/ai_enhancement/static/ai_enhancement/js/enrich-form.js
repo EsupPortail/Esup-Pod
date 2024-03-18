@@ -168,8 +168,8 @@ function setInformationOrEmptyString(element, value, message) {
     element.children[0].innerHTML = decodeString(value);
   } else {
     element.children[0].textContent = gettext(message);
-    element.children[0].style.color = 'grey';
-    element.children[0].style.fontStyle = 'italic';
+    element.children[0].classList.add('text-muted');
+    element.children[0].classList.add('font-italic');
     element.children[0].classList.add('no-content');
   }
 }
