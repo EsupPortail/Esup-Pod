@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-06 12:13+0100\n"
+"POT-Creation-Date: 2024-03-18 10:02+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -16,75 +16,79 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.4\n"
 
+#: pod/ai_enhancement/apps.py
+msgid "Artificial Intelligence Enhancement"
+msgstr "Amélioration par l'intelligence artificielle"
+
 #: pod/ai_enhancement/forms.py
-msgid "Choose the title"
-msgstr "Choisissez le titre"
+msgid "Choose the title."
+msgstr "Choisissez le titre."
 
 #: pod/ai_enhancement/forms.py
 msgid "The initial title is loading…"
-msgstr "Le titre initial est en cours de chargement..."
+msgstr "Le titre initial est en cours de chargement…"
 
 #: pod/ai_enhancement/forms.py
-msgid "Your initial title"
-msgstr "Votre titre initial"
+msgid "Your initial title."
+msgstr "Votre titre initial."
 
 #: pod/ai_enhancement/forms.py
 msgid "The title proposed by the Aristote AI is loading…"
-msgstr "Le titre proposé par l’IA Aristote est en cours de chargement..."
+msgstr "Le titre proposé par l’IA Aristote est en cours de chargement…"
 
 #: pod/ai_enhancement/forms.py
-msgid "The title proposed by the Aristote AI"
-msgstr "Le titre proposé par l’IA Aristote"
+msgid "The title proposed by the Aristote AI."
+msgstr "Le titre proposé par l’IA Aristote."
 
 #: pod/ai_enhancement/forms.py
-msgid "Choose the description"
-msgstr "Choisissez une description"
+msgid "Choose the description."
+msgstr "Choisissez une description."
 
 #: pod/ai_enhancement/forms.py
 msgid "The initial description is loading…"
-msgstr "La description initiale est en cours de chargement..."
+msgstr "La description initiale est en cours de chargement…"
 
 #: pod/ai_enhancement/forms.py
-msgid "Your initial description"
-msgstr "Votre description initiale"
+msgid "Your initial description."
+msgstr "Votre description initiale."
 
 #: pod/ai_enhancement/forms.py
 msgid "The description proposed by the Aristote AI is loading…"
 msgstr ""
-"La description proposée par l’IA Aristote est en cours de chargement..."
+"La description proposée par l’IA Aristote est en cours de chargement…"
 
 #: pod/ai_enhancement/forms.py
-msgid "The description proposed by the Aristote AI"
-msgstr "La description proposée par l’IA Aristote"
+msgid "The description proposed by the Aristote AI."
+msgstr "La description proposée par l’IA Aristote."
 
 #: pod/ai_enhancement/forms.py
-msgid "Choose the tags"
-msgstr "Choisissez des mots clés"
+msgid "Choose the tags."
+msgstr "Choisissez des mots clés."
 
 #: pod/ai_enhancement/forms.py
 msgid "The tags proposed by the Aristote AI is loading…"
 msgstr ""
-"Les mots clés proposés par l’IA Aristote sont en cours de chargement..."
+"Les mots clés proposés par l’IA Aristote sont en cours de chargement…"
 
 #: pod/ai_enhancement/forms.py
-msgid "Choose the discipline"
-msgstr "Choisissez une discipline"
+msgid "Choose the discipline."
+msgstr "Choisissez une discipline."
 
 #: pod/ai_enhancement/forms.py
 msgid "The initial discipline is loading…"
-msgstr "La discipline initiale est en cours de chargement..."
+msgstr "La discipline initiale est en cours de chargement…"
 
 #: pod/ai_enhancement/forms.py
-msgid "Your initial discipline"
-msgstr "Votre discipline initiale"
+msgid "Your initial discipline."
+msgstr "Votre discipline initiale."
 
 #: pod/ai_enhancement/forms.py
 msgid "The discipline proposed by the Aristote AI is loading…"
-msgstr "La discipline proposée par l’IA Aristote est en cours de chargement..."
+msgstr "La discipline proposée par l’IA Aristote est en cours de chargement…"
 
 #: pod/ai_enhancement/forms.py
-msgid "The discipline proposed by the Aristote AI"
-msgstr "La discipline proposée par l’IA Aristote"
+msgid "The discipline proposed by the Aristote AI."
+msgstr "La discipline proposée par l’IA Aristote."
 
 #: pod/ai_enhancement/forms.py pod/chapter/templates/chapter/list_chapter.html
 #: pod/completion/models.py pod/completion/templates/overlay/list_overlay.html
@@ -105,7 +109,7 @@ msgid ""
 "        "
 msgstr ""
 "\n"
-"            Veuillez entrer un titre contenant entre 1 et 250 caractères."
+"            Veuillez entrer un titre contenant entre 1 et 250 caractères.\n"
 "        "
 
 #: pod/ai_enhancement/forms.py pod/live/models.py pod/main/forms.py
@@ -130,8 +134,8 @@ msgid ""
 msgstr ""
 "\n"
 "            Veuillez choisir des mots clés pour votre vidéo.\n"
-"            Séparez les mots clés par des espaces, encadrez les mots clés composés de "
-"plusieurs mots par des guillemets.\n"
+"            Séparez les mots clés par des espaces, encadrez les mots clés "
+"composés de plusieurs mots par des guillemets.\n"
 "        "
 
 #: pod/ai_enhancement/forms.py
@@ -163,11 +167,10 @@ msgid ""
 "Please check this box if you agree to use a third-party service to improve "
 "this video."
 msgstr ""
-"Veuillez cocher cette case si vous consentez à utiliser un service tiers pour "
-"améliorer cette vidéo."
+"Veuillez cocher cette case si vous consentez à utiliser un service tiers "
+"pour améliorer cette vidéo."
 
 #: pod/ai_enhancement/models.py
-#, fuzzy
 msgid "AI enhancement"
 msgstr "Enrichissement AI"
 
@@ -184,31 +187,51 @@ msgid "Video"
 msgstr "Vidéo"
 
 #: pod/ai_enhancement/models.py
+msgid "Select the video to enhance with AI"
+msgstr "Sélectionnez la vidéo à améliorer avec l’IA"
+
+#: pod/ai_enhancement/models.py
 msgid "Created at"
 msgstr "Créé le"
+
+#: pod/ai_enhancement/models.py
+msgid "The date and time when the enhancement was created"
+msgstr "La date et l'heure à laquelle l'enrichissement a été créé"
 
 #: pod/ai_enhancement/models.py
 msgid "Updated at"
 msgstr "Mis à jour le"
 
 #: pod/ai_enhancement/models.py
+msgid "The date and time when the enhancement was updated"
+msgstr "La date et l'heure à laquelle l'enrichissement a été mis à jour"
+
+#: pod/ai_enhancement/models.py
 msgid "Is ready"
 msgstr "Est prêt"
+
+#: pod/ai_enhancement/models.py
+msgid "Check if the enhancement is ready"
+msgstr "Créer un enrichissement"
 
 #: pod/ai_enhancement/models.py
 msgid "AI enhancement ID in Aristote"
 msgstr "ID d’enrichissement AI dans Aristote"
 
-#: pod/ai_enhancement/templates/choose_video_element.html
-#, python-format
-msgid "Video name: %(video.title)s"
-msgstr "Nom de la vidéo : %(video.title)s"
+#: pod/ai_enhancement/models.py
+msgid "Enter the ID of the enhancement in Aristote"
+msgstr "Entrez l'identifiant d’enrichissement de l'IA dans Aristote"
 
 #: pod/ai_enhancement/templates/choose_video_element.html
 #: pod/dressing/models.py pod/video/apps.py pod/video/models.py
 #: pod/video/templates/videos/videos.html
 msgid "Videos"
 msgstr "Vidéos"
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+#, python-format
+msgid "Video name: %(video.title)s"
+msgstr "Nom de la vidéo : %(video.title)s"
 
 #: pod/ai_enhancement/templates/choose_video_element.html
 #: pod/ai_enhancement/templates/create_enhancement.html
@@ -309,29 +332,12 @@ msgid "Access the video"
 msgstr "Accéder à la vidéo"
 
 #: pod/ai_enhancement/templates/create_enhancement.html
-msgid "Create enhancement"
-msgstr "Créer un enrichissement"
-
-#: pod/ai_enhancement/templates/create_enhancement.html
-#, python-format
-msgid "Enhance the video <strong>%(title)s</strong> with Aristote AI"
-msgstr "Améliorer la vidéo <strong>%(title)s</strong> avec l’IA Aristote"
-
-#: pod/ai_enhancement/templates/create_enhancement.html
-msgid "Back to my video"
-msgstr "Retour à ma vidéo"
-
-#: pod/playlist/templates/playlist/delete.html
-msgid "Back to my playlists"
-msgstr "Retour à mes listes de lecture"
-
-#: pod/ai_enhancement/templates/create_enhancement.html
 msgid ""
 "To enhance the video with Aristote AI, please check the box and click "
 "confirm."
 msgstr ""
-"Pour améliorer la vidéo avec l'IA Aristote, veuillez cocher la case et cliquer sur "
-"« Supprimer »."
+"Pour améliorer la vidéo avec l'IA Aristote, veuillez cocher la case et "
+"cliquer sur confirmer."
 
 #: pod/ai_enhancement/templates/create_enhancement.html
 #: pod/dressing/templates/dressing_delete.html
@@ -342,6 +348,20 @@ msgstr ""
 #: pod/video/templates/videos/video_delete.html
 msgid "Agreement required"
 msgstr "Accord requis"
+
+#: pod/ai_enhancement/templates/create_enhancement.html
+#, fuzzy, python-format
+#| msgid "Back to the video “%(video_title)s”"
+msgid "Back to the %(video.title)s video"
+msgstr "Retourner à la vidéo « %(video_title)s »"
+
+#: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
+#: pod/dressing/templates/video_dressing.html
+#: pod/video/templates/videos/video_collaborate.html
+#: pod/video/templates/videos/video_delete.html
+msgid "Back to the video"
+msgstr "Retour à la vidéo"
 
 #: pod/ai_enhancement/templates/create_enhancement.html
 msgid "Confirm"
@@ -366,6 +386,10 @@ msgid "Video Caption Maker - Aristote AI Version"
 msgstr ""
 "Outil de création de fichier de sous-titres/légende - Version de l'IA "
 "Aristote"
+
+#: pod/ai_enhancement/views.py
+msgid "Enrich with Aristote AI"
+msgstr "Améliorer la vidéo avec l’IA Aristote"
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -1289,13 +1313,6 @@ msgstr "Tableau de bord"
 #, python-format
 msgid "Back to the video “%(video_title)s”"
 msgstr "Retourner à la vidéo « %(video_title)s »"
-
-#: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
-#: pod/dressing/templates/video_dressing.html
-#: pod/video/templates/videos/video_collaborate.html
-#: pod/video/templates/videos/video_delete.html
-msgid "Back to the video"
-msgstr "Retour à la vidéo"
 
 #: pod/chapter/templates/video_chapter.html
 msgid "Add a new chapter"
@@ -6424,6 +6441,10 @@ msgid "Delete the playlist <strong>%(name)s</strong>"
 msgstr "Supprimer la liste de lecture <strong>%(name)s</strong>"
 
 #: pod/playlist/templates/playlist/delete.html
+msgid "Back to my playlists"
+msgstr "Retour à mes listes de lecture"
+
+#: pod/playlist/templates/playlist/delete.html
 msgid "To delete the playlist, please check the box in and click delete."
 msgstr ""
 "Pour supprimer la liste de lecture, veuillez cocher la case et cliquer sur "
@@ -8082,12 +8103,14 @@ msgstr[0] "%(counter)s thème trouvé dans cette chaine"
 msgstr[1] "%(counter)s thèmes trouvés dans cette chaine"
 
 #: pod/video/templates/channel/channel.html
+#, python-format
 msgid "%(counter)s video for this channel"
 msgid_plural "%(counter)s videos for this channel"
 msgstr[0] "%(counter)s vidéo trouvée dans cette chaine"
 msgstr[1] "%(counter)s vidéos trouvées dans cette chaine"
 
 #: pod/video/templates/channel/channel.html
+#, python-format
 msgid "%(counter)s subtheme found for this theme"
 msgid_plural "%(counter)s subthemes found for this theme"
 msgstr[0] "%(counter)s sous-thème trouvé dans ce thème"
