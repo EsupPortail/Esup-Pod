@@ -190,7 +190,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.assertTrue(len(list_mp4) > 0)
         self.assertTrue(self.video.overview)
         self.assertTrue(self.video.thumbnail)
-        print("\n ---> End of Encoding video dressing test")
+        print("\n ---> End of Encoding video cut test")
 
     def remote_encoding_dressing(self):
         """Launch test of video remote encoding for dressing."""
