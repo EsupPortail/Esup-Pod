@@ -155,7 +155,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         CutVideo.objects.create(
             video=self.video,
             start="00:00:00",
-            end=f"00:00:{duration % 60 - 1}",
+            end=f"00:00:{str(duration % 60 - 1)}",
         )
         encode_video(self.video.id, threaded=False)
         self.video.refresh_from_db()
