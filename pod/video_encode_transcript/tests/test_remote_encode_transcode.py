@@ -98,6 +98,8 @@ class RemoteEncodeTranscriptTestCase(TestCase):
     def test_remote_encoding_transcoding(self):
         """Launch test of video remote encoding."""
         self.remote_encoding()
+        self.remote_encoding_cut()
+        self.remote_encoding_dressing()
         self.remote_transcripting()
         print(" --->  test_remote_encoding_transcoding: OK!")
 
