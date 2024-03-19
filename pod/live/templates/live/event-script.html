@@ -20,7 +20,6 @@
         fluid: !{{ request.GET.is_iframe|yesno:"true,false" }},
         playbackRates: [0.5, 1, 1.5, 2],
         errorDisplay: false,
-        muted: false,
         loop: false
     }
 
@@ -767,10 +766,7 @@
         {% endif %}
 
         {% if event.is_current %}
-            // timeout pour éviter que la video d'attente démarre pour moins d'une sec et demie
-            setTimeout(() => {
-                showWaitingVideo(true);
-            }, 1500);
+            showWaitingVideo(true);
         {% endif %}
 
         reloadIfNeeded();
