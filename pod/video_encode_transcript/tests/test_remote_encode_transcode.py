@@ -149,7 +149,6 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         encode_video = getattr(encode, ENCODE_VIDEO)
         encode_video(self.video.id, threaded=False)
         self.video.refresh_from_db()
-        cutting = ""
         duration = self.video.duration_in_time
         CutVideo.objects.create(
             video=self.video,
