@@ -68,10 +68,10 @@ def send_enhancement_creation_request(request: WSGIRequest, aristote: AristoteAI
         form = NotifyUserThirdPartyServicesForm(request.POST)
         if form.is_valid():
             creation_response = aristote.create_enhancement_from_url(
-                get_current_site(request).domain + video.video.url,
+                "https://" + get_current_site(request).domain + video.video.url,
                 ["video/mp4"],
                 request.user.username,
-                reverse("ai_enhancement:webhook"),
+                "https://" + get_current_site(request).domain + reverse("ai_enhancement:webhook"),
             )
             if creation_response:
                 if creation_response["status"] == "OK":
@@ -171,7 +171,7 @@ def enhance_form(request: WSGIRequest, video: Video) -> HttpResponse:
             saveVTT(video, web_vtt, latest_version["transcript"]["language"])
             latest_track = Track.objects.filter(video=video,).order_by("id").first()
             return redirect(
-                reverse("ai_enhancement:enhance_subtitles", args=[video.slug]) + '?src=' + _(latest_track.src_id)
+                reverse("ai_enhancement:enhance_subtitles", args=[video.slug]) + '?src=' + str(latest_track.src_id) + '&generated=' + str(True)
             )
         else:
             return render(

@@ -83,7 +83,7 @@ class AristoteAI:
 
     def get_ai_enhancements(self) -> dict or None:
         """Get the AI enhancements."""
-        path = f"/{AI_ENHANCEMENT_API_VERSION}/enhancements"
+        path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments"
         return self.get_response(path)
 
     def get_specific_ai_enhancement(self, enhancement_id: str) -> dict or None:
@@ -93,7 +93,7 @@ class AristoteAI:
         Args:
             enhancement_id (str): The enhancement id.
         """
-        path = f"/{AI_ENHANCEMENT_API_VERSION}/enhancements/{enhancement_id}"
+        path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}"
         return self.get_response(path)
 
     def create_enhancement_from_url(
@@ -105,7 +105,7 @@ class AristoteAI:
     ) -> dict or None:
         """Create an enhancement from a file."""
         if Discipline.objects.count() > 0:
-            path = f"/{AI_ENHANCEMENT_API_VERSION}/enhancements/url"
+            path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/url"
             data = {
                 "url": url,
                 "notificationWebhookUrl": notification_webhook_url,
@@ -142,17 +142,17 @@ class AristoteAI:
 
     def get_latest_enhancement_version(self, enhancement_id: str) -> dict or None:
         """Get the latest enhancement version."""
-        path = f"/{AI_ENHANCEMENT_API_VERSION}/enhancements/{enhancement_id}/versions/latest"
+        path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}/versions/latest"
         return self.get_response(path)
 
     def get_enhancement_versions(self, enhancement_id: str, with_transcript: bool = True) -> dict or None:
         """Get the enhancement versions."""
-        path = f"/{AI_ENHANCEMENT_API_VERSION}/enhancements/{enhancement_id}/versions?withTranscript={with_transcript}"
+        path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}/versions?withTranscript={with_transcript}"
         return self.get_response(path)
 
     def get_specific_enhancement_version(self, enhancement_id: str, version_id: str) -> dict or None:
         """Get a specific version."""
-        path = f"/{AI_ENHANCEMENT_API_VERSION}/enhancements/{enhancement_id}/versions/{version_id}"
+        path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}/versions/{version_id}"
         return self.get_response(path)
 
 
