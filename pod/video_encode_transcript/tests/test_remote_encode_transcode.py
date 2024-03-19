@@ -5,6 +5,8 @@ from django.core.files.temp import NamedTemporaryFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+
+from pod.cut.models import CutVideo
 from pod.dressing.models import Dressing
 from pod.video.models import Video, Type
 from pod.video_encode_transcript import encode
@@ -140,6 +142,55 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.assertTrue(self.video.overview)
         self.assertTrue(self.video.thumbnail)
         print("\n ---> End of Encoding video test")
+
+    def remote_encoding_cut(self):
+        """Launch test of cut video remote encoding."""
+        print("\n ---> Start Encoding cut video test")
+        encode_video = getattr(encode, ENCODE_VIDEO)
+        encode_video(self.video.id, threaded=False)
+        self.video.refresh_from_db()
+        cutting = ""
+        duration = self.video.duration_in_time
+        CutVideo.objects.create(
+            video=self.video,
+            start="00:00:00",
+            end=f"00:00:{duration % 60 - 1}",
+        )
+        encode_video(self.video.id, threaded=False)
+        self.video.refresh_from_db()
+        n = 0
+        while self.video.encoding_in_progress:
+            print("... Encoding in progress: %s " % self.video.get_encoding_step)
+            self.video.refresh_from_db()
+            time.sleep(2)
+            n += 1
+            if n > 30:
+                raise ValidationError("Error while encoding !!!")
+        self.video.refresh_from_db()
+        self.assertEqual("Video1", self.video.title)
+        list_mp2t = EncodingVideo.objects.filter(
+            video=self.video, encoding_format="video/mp2t"
+        )
+        list_playlist_video = PlaylistVideo.objects.filter(
+            video=self.video, encoding_format="application/x-mpegURL"
+        )
+        list_playlist_master = PlaylistVideo.objects.get(
+            name="playlist",
+            video=self.video,
+            encoding_format="application/x-mpegURL",
+        )
+        list_mp4 = EncodingVideo.objects.filter(
+            video=self.video, encoding_format="video/mp4"
+        )
+        el = EncodingLog.objects.get(video=self.video)
+        self.assertTrue("NO VIDEO AND AUDIO FOUND" not in el.log)
+        self.assertTrue(len(list_mp2t) > 0)
+        self.assertEqual(len(list_mp2t) + 1, len(list_playlist_video))
+        self.assertTrue(list_playlist_master)
+        self.assertTrue(len(list_mp4) > 0)
+        self.assertTrue(self.video.overview)
+        self.assertTrue(self.video.thumbnail)
+        print("\n ---> End of Encoding video dressing test")
 
     def remote_encoding_dressing(self):
         """Launch test of video remote encoding for dressing."""
