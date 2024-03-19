@@ -18,7 +18,8 @@ import os
 import time
 
 TEST_REMOTE_ENCODE = getattr(settings, "TEST_REMOTE_ENCODE", False)
-VIDEO_TEST = "pod/main/static/video_test/video_test_encodage_transcription.webm"
+VIDEO_TEST = "pod/main/static/video_test/video_test_encodage_transcription.mp4"
+VIDEO_CREDIT_TEST = "pod/main/static/video_test/pod.mp4"
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
 POD_API_URL = getattr(settings, "POD_API_URL", "")
 POD_API_TOKEN = getattr(settings, "POD_API_TOKEN", "")
@@ -65,6 +66,20 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         shutil.copyfile(VIDEO_TEST, dest)
         self.user = user
         self.video = video
+
+        # Add credit video for dressing
+        credit_video, created = Video.objects.update_or_create(
+            title="credit_video",
+            owner=user,
+            # video="pod.mp4",
+            type=Type.objects.get(id=1),
+            transcript="",
+        )
+        tempfile = NamedTemporaryFile(delete=True)
+        credit_video.video.save("pod.mp4", tempfile)
+        dest = os.path.join(settings.MEDIA_ROOT, credit_video.video.name)
+        shutil.copyfile(VIDEO_CREDIT_TEST, dest)
+        self.credit_video = credit_video
         print(" --->  SetUp of RemoteEncodeTranscriptTestCase: OK!")
 
     def tearDown(self):
@@ -155,8 +170,8 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             watermark=customImage,
             position=Dressing.TOP_RIGHT,
             opacity=50,
-            opening_credits=self.credit_video,  # Add credit_video
-            ending_credits=self.credit_video,  # Add credit_video
+            opening_credits=self.credit_video,
+            ending_credits=self.credit_video,
         )
         dressing.videos.add(self.video)
         dressing.save()
