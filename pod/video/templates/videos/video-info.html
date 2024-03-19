@@ -5,6 +5,7 @@
 {% load video_tags %}
 {% load playlist_stats %}
 {% load favorites_playlist %}
+{% load video_quiz %}
 
 <div class="video-info_duration-view-share">
   <div class="video-info__duration">
@@ -41,6 +42,12 @@
     </div>
   {% endif %}
   <div class="pod-info-video__buttons">
+    {% is_quiz_accessible video as is_quiz_accessible %}
+    {% if USE_QUIZ and is_quiz_accessible %}
+      <a href="{% url 'quiz:video_quiz' video.slug %}" title="{% trans "Answer the quiz" %}" class="btn btn-link btn-lg pod-btn-share" aria-pressed="true" role="button">
+        <i class="bi bi-controller" aria-hidden="true"></i>
+      </a>
+    {% endif %}
     {% if USE_PLAYLIST and user.is_authenticated and not video.is_draft %}
       <button type="button" class="btn btn-link btn-lg pod-btn-share" title="{% trans 'Add the video to a playlist'%}" data-bs-toggle="modal" data-bs-target="#playlist-modal">
         <i class="bi bi-list-ul" aria-hidden="true"></i>
