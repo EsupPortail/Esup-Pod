@@ -588,6 +588,7 @@ def update_event(form):
         d_fin = timezone.make_aware(d_fin)
         evt.end_date = d_fin
         evt.save()
+        form.save_m2m()
         return evt
 
 
