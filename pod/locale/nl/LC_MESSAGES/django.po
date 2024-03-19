@@ -5343,6 +5343,16 @@ msgstr ""
 msgid "BBB Create Time"
 msgstr ""
 
+#: pod/meeting/models.py pod/meeting/views.py
+msgid "Personal meeting room"
+msgstr ""
+
+#: pod/meeting/models.py
+msgid ""
+"If this box is checked, this meeting corresponds to the user's personal "
+"meeting room."
+msgstr ""
+
 #: pod/meeting/models.py
 msgid ""
 "The day of the start date of the meeting must be included in the recurrence "
@@ -5384,6 +5394,24 @@ msgstr ""
 msgid ""
 "Access to adding meeting has been restricted. If you want to add meetings on "
 "the platform, please <a href=\"%(url)s\">contact us</a>."
+msgstr ""
+
+#: pod/meeting/templates/meeting/add_or_edit.html
+msgid ""
+"Your personal meeting room is a room specific to your profile, which is "
+"always available."
+msgstr ""
+
+#: pod/meeting/templates/meeting/add_or_edit.html
+msgid "You can start it at any time, or schedule it for later use."
+msgstr ""
+
+#: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/meeting/templates/meeting/meeting_card.html
+#, python-format
+msgid ""
+"This is “%(full_name)s”'s personal meeting room, a room specific to his "
+"profile, which is always available."
 msgstr ""
 
 #: pod/meeting/templates/meeting/delete.html
@@ -5514,6 +5542,12 @@ msgid "Delete the meeting"
 msgstr ""
 
 #: pod/meeting/templates/meeting/meeting_card.html
+msgid ""
+"This is your personal meeting room, a room specific to your profile, which "
+"is always available."
+msgstr ""
+
+#: pod/meeting/templates/meeting/meeting_card.html
 msgid "Access to this meeting is restricted"
 msgstr ""
 
@@ -5630,6 +5664,10 @@ msgid "You cannot delete this meeting."
 msgstr ""
 
 #: pod/meeting/views.py
+msgid "You cannot delete a personal meeting room."
+msgstr ""
+
+#: pod/meeting/views.py
 msgid "The meeting has been deleted."
 msgstr ""
 
@@ -5687,16 +5725,32 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"            <p>Hello,</p>\n"
-"            <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>."
-"</p>\n"
-"            <p>Start date: %(start_date_time)s </p>\n"
-"            <p>End date: %(end_date)s </p>\n"
-"            <p>here the link to join the meeting:\n"
-"            <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"            <p>You need this password to enter: <b>%(password)s</b> </p>\n"
-"            <p>Regards</p>\n"
-"        "
+"                <p>Hello,</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
+"                <p>here the link to join the meeting:\n"
+"                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
+"                <p>You need this password to enter: <strong>%(password)s</"
+"strong> </p>\n"
+"                <p>Regards</p>\n"
+"            "
+msgstr ""
+
+#: pod/meeting/views.py
+#, python-format
+msgid ""
+"\n"
+"                <p>Hello,</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
+"                <p>Start date: %(start_date_time)s </p>\n"
+"                <p>End date: %(end_date)s </p>\n"
+"                <p>here the link to join the meeting:\n"
+"                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
+"                <p>You need this password to enter: <strong>%(password)s</"
+"strong> </p>\n"
+"                <p>Regards</p>\n"
+"            "
 msgstr ""
 
 #: pod/meeting/views.py

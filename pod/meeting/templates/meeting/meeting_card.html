@@ -1,18 +1,35 @@
 {% load i18n l10n %}
 {% spaceless %}
-<div class="card box-shadow pod-card--video meeting-card {% if not meeting.is_active %}meeting-card-inactive{% endif %}">
+<div class="card box-shadow pod-card--video meeting-card {% if meeting.is_personal %}meeting-card-personal{% endif %} {% if not meeting.is_active %}meeting-card-inactive{% endif %}">
   <!-- meeting_card.html -->
   <div class="card-header">
-    <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex justify-content-between align-items-center" style="min-height: 4rem;">
       <small class="text-muted time">
         <b>{{meeting.name|capfirst|truncatechars:43}}</b><br>
-        {% if meeting.recurrence %}
-          {{meeting.next_occurrence_from_today}} {% localize on %}{{ meeting.start_at|time }}{% endlocalize %}
+        {% if meeting.is_personal %}
+          {% if meeting.owner != request.user %}
+            {{ meeting.owner.get_full_name }}
+          {% endif %}
         {% else %}
-          {% localize on %}{{ meeting.start_at }}{% endlocalize %}
+          {% if meeting.recurrence %}
+            {{meeting.next_occurrence_from_today}} {% localize on %}{{ meeting.start_at|time }}{% endlocalize %}
+          {% else %}
+            {% localize on %}{{ meeting.start_at }}{% endlocalize %}
+          {% endif %}
         {% endif %}
       </small>
       <span class="text-muted small d-flex">
+        {% if meeting.is_personal %}
+          {% if meeting.owner == request.user %}
+            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'This is your personal meeting room, a room specific to your profile, which is always available.' %}">
+              <i class="bi bi-file-earmark-person" aria-hidden="true"></i>
+            </span>
+          {% else %}
+            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{% blocktrans with full_name=meeting.owner.get_full_name %}This is “{{ full_name }}”'s personal meeting room, a room specific to his profile, which is always available.{% endblocktrans %}">
+              <i class="bi bi-file-person" aria-hidden="true"></i>
+            </span>
+          {% endif%}
+        {% endif %}
         {% if meeting.is_restricted %}
           <span data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Access to this meeting is restricted' %}">
             <i class="bi bi-lock" aria-hidden="true"></i>

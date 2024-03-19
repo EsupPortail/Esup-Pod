@@ -21,9 +21,11 @@
   <div>
     <p>
       {% trans "After recording a Big Blue Button meeting, recordings of that meeting will be available at that level after a while." %}<br>
-      <p class="text-info-emphasis">
-        <i class="bi bi-info-circle" aria-hidden="true"></i> {% trans "When a new recording is available at this level, you will receive an email to inform you." %}
-      </p>
+      {% if meeting.owner == request.user %}
+        <p class="text-info-emphasis">
+          <i class="bi bi-info-circle" aria-hidden="true"></i> {% trans "When a new recording is available at this level, you will receive an email to inform you." %}
+        </p>
+      {% endif %}
     </p>
   </div>
 
