@@ -588,11 +588,7 @@ def update_event(form):
         d_fin = timezone.make_aware(d_fin)
         evt.end_date = d_fin
         evt.save()
-        # need to manually set many-to-many data because of a side effect of commit=False on save
-        if form.cleaned_data.get("additional_owners"):
-            evt.additional_owners.set(form.cleaned_data["additional_owners"])
-        if form.cleaned_data.get("restrict_access_to_groups"):
-            evt.restrict_access_to_groups.set(form.cleaned_data["restrict_access_to_groups"])
+        form.save_m2m()
         return evt
 
 
