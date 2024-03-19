@@ -18,15 +18,15 @@ def get_dressing_input(dressing: Dressing, FFMPEG_DRESSING_INPUT: str) -> str:
         command (str): params for the ffmpeg command.
     """
     command = ""
-    if dressing.get("watermark_path", "") != "":
+    if dressing["watermark_path"] != "":
         command += FFMPEG_DRESSING_INPUT % {"input": dressing["watermark_path"]}
-    if dressing.get("opening_credits_video", "") != "":
+    if dressing["opening_credits_video"] != "":
         command += FFMPEG_DRESSING_INPUT % {
             "input": os.path.join(
                 settings.MEDIA_ROOT, dressing["opening_credits_video"]
             )
         }
-    if dressing.get("ending_credits_video", "") != "":
+    if dressing["ending_credits_video"] != "":
         command += FFMPEG_DRESSING_INPUT % {
             "input": os.path.join(settings.MEDIA_ROOT, dressing["ending_credits_video"])
         }
