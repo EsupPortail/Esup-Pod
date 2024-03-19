@@ -2,8 +2,10 @@ from unittest import TestCase
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.temp import NamedTemporaryFile
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
+from pod.dressing.models import Dressing
 from pod.video.models import Video, Type
 from pod.video_encode_transcript import encode
 from pod.video_encode_transcript.models import EncodingVideo
@@ -25,6 +27,15 @@ if USE_TRANSCRIPTION:
     from pod.video_encode_transcript import transcript
 
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
+
+if getattr(settings, "USE_PODFILE", False):
+    from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import UserFolder
+
+    FILEPICKER = True
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomImageModel
 
 
 class RemoteEncodeTranscriptTestCase(TestCase):
@@ -114,6 +125,78 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.assertTrue(self.video.overview)
         self.assertTrue(self.video.thumbnail)
         print("\n ---> End of Encoding video test")
+
+    def remote_encoding_dressing(self):
+        """Launch test of video remote encoding for dressing."""
+        if not TEST_REMOTE_ENCODE:
+            return
+        print("\n ---> Start Encoding video dressing test")
+        encode_video = getattr(encode, ENCODE_VIDEO)
+        currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        simplefile = SimpleUploadedFile(
+            name="testimage.jpg",
+            content=open(os.path.join(currentdir, "tests", "testimage.jpg"), "rb").read(),
+            content_type="image/jpeg",
+        )
+        if FILEPICKER:
+            home = UserFolder.objects.get(name="home", owner=self.user)
+            customImage = CustomImageModel.objects.create(
+                name="testimage",
+                description="testimage",
+                created_by=self.user,
+                folder=home,
+                file=simplefile,
+            )
+        else:
+            customImage = CustomImageModel.objects.create(file=simplefile)
+
+        dressing = Dressing.objects.create(
+            title="Watermark dressing top right",
+            watermark=customImage,
+            position=Dressing.TOP_RIGHT,
+            opacity=50,
+            opening_credits=self.credit_video,  # Add credit_video
+            ending_credits=self.credit_video,  # Add credit_video
+        )
+        dressing.videos.add(self.video)
+        dressing.save()
+
+        # Start encoding
+        encode_video(self.video.id, threaded=False)
+        self.video.refresh_from_db()
+        n = 0
+        while self.video.encoding_in_progress:
+            print("... Encoding in progress: %s " % self.video.get_encoding_step)
+            self.video.refresh_from_db()
+            time.sleep(2)
+            n += 1
+            if n > 30:
+                raise ValidationError("Error while encoding !!!")
+        self.video.refresh_from_db()
+        self.assertEqual("Video1", self.video.title)
+        list_mp2t = EncodingVideo.objects.filter(
+            video=self.video, encoding_format="video/mp2t"
+        )
+        list_playlist_video = PlaylistVideo.objects.filter(
+            video=self.video, encoding_format="application/x-mpegURL"
+        )
+        list_playlist_master = PlaylistVideo.objects.get(
+            name="playlist",
+            video=self.video,
+            encoding_format="application/x-mpegURL",
+        )
+        list_mp4 = EncodingVideo.objects.filter(
+            video=self.video, encoding_format="video/mp4"
+        )
+        el = EncodingLog.objects.get(video=self.video)
+        self.assertTrue("NO VIDEO AND AUDIO FOUND" not in el.log)
+        self.assertTrue(len(list_mp2t) > 0)
+        self.assertEqual(len(list_mp2t) + 1, len(list_playlist_video))
+        self.assertTrue(list_playlist_master)
+        self.assertTrue(len(list_mp4) > 0)
+        self.assertTrue(self.video.overview)
+        self.assertTrue(self.video.thumbnail)
+        print("\n ---> End of Encoding video dressing test")
 
     def remote_transcripting(self):
         """Launch test of video remote transcripting."""
