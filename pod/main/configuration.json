@@ -852,6 +852,37 @@
                         "fr": "Configuration application completion"
                     }
                 },
+                "dressing": {
+                    "description": {
+                        "en": [
+                            "Dressing App to customize a video with watermark & credits.",
+                            "Set `USE_DRESSING` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Dressing pour customiser une vidéo avec un filigrane et des crédits.",
+                            "Mettre `USE_DRESSING` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "USE_DRESSING": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of dressings. Allows users to customize a video with watermark & credits."
+                                ],
+                                "fr": [
+                                    "Activation des habillages. Permet aux utilisateurs de customiser une vidéo avec un filigrane et des crédits."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.0"
+                        }
+                    },
+                    "title": {
+                        "en": "Dressing application configuration",
+                        "fr": "Configuration de l'application dressing"
+                    }
+                },
                 "enrichment": {
                     "description": {},
                     "settings": {},

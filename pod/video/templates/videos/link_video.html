@@ -59,7 +59,7 @@
   <a href="{% url 'video:chapter:video_chapter' slug=video.slug %}" title="{% trans 'Chapter the video'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
     <i class="bi bi-card-list card-footer-link-i" aria-hidden="true"></i></a>
 {% endif %}
-{% if video.encoded and video.encoding_in_progress is False %}
+{% if USE_DRESSING and video.encoded and video.encoding_in_progress is False %}
   {% if request.user.is_superuser or perms.dressing.video_dressing or request.user.is_staff %}
     <a href="{% url 'video:dressing:video_dressing' slug=video.slug %}" title="{% trans 'Dress the video'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
       <i class="bi bi-palette" aria-hidden="true"></i></a>

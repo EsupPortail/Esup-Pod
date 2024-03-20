@@ -84,8 +84,6 @@ urlpatterns = [
     url(r"^cut/", include("pod.cut.urls")),
     # pwa
     url("", include("pwa.urls")),
-    # dressing
-    path("dressing/", include("pod.dressing.urls", namespace="dressing")),
 ]
 
 # WEBPUSH
@@ -149,6 +147,12 @@ for apps in settings.THIRD_PARTY_APPS:
 if getattr(settings, "USE_PLAYLIST", True):
     urlpatterns += [
         path("playlist/", include("pod.playlist.urls", namespace="playlist")),
+    ]
+
+# DRESSING
+if getattr(settings, "USE_DRESSING", True):
+    urlpatterns += [
+        path("dressing/", include("pod.dressing.urls", namespace="dressing")),
     ]
 
 # IMPORT_VIDEO
