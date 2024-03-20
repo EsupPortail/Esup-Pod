@@ -126,6 +126,7 @@ TEMPLATES = [
                 "pod.playlist.context_processors.context_settings",
                 "pod.dressing.context_processors.context_settings",
                 "pod.import_video.context_processors.context_settings",
+                "pod.cut.context_processors.context_settings",
             ],
         },
     },

@@ -41,7 +41,7 @@
 
 <div id="wrapper_cut">
   <div id="values_cut" class="bg-primary text-white">
-    <form action="{% url 'video:cut:video_cut' slug=video.slug %}" method="POST" id="time_for_cut" accept-charset="utf-8" enctype="multipart/form-data">
+    <form action="{% url 'cut:video_cut' slug=video.slug %}" method="POST" id="time_for_cut" accept-charset="utf-8" enctype="multipart/form-data">
       {% csrf_token %}
 
       <button id="button_start" class="btn btn-link" title="{% trans 'Get the start time from the video player' %}">
