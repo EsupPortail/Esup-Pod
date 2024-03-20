@@ -1,6 +1,5 @@
 """Esup-Pod dressing views."""
 
-from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from pod.main.views import in_maintenance
 from django.urls import reverse
