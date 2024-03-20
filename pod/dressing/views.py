@@ -1,5 +1,6 @@
 """Esup-Pod dressing views."""
 
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from pod.main.views import in_maintenance
 from django.urls import reverse
@@ -25,6 +26,11 @@ def video_dressing(request, slug):
         return redirect(reverse("maintenance"))
 
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
+    if not video.encoded and video.encoding_in_progress is True:
+        messages.add_message(request, messages.ERROR, _(
+            "The video is currently being encoded."))
+        raise PermissionDenied
+
     dressings = get_dressings(request.user, request.user.owner.accessgroup_set.all())
 
     if not (
