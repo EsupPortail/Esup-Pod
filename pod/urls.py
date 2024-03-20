@@ -28,6 +28,7 @@ USE_CAS = getattr(settings, "USE_CAS", False)
 USE_SHIB = getattr(settings, "USE_SHIB", False)
 USE_OIDC = getattr(settings, "USE_OIDC", False)
 USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", True)
+USE_CUT = getattr(settings, "USE_CUT", True)
 
 if USE_CAS:
     from cas import views as cas_views
@@ -80,8 +81,6 @@ urlpatterns = [
     url(r"^download/$", download_file, name="download_file"),
     # custom
     url(r"^custom/", include("pod.custom.urls")),
-    # cut
-    url(r"^cut/", include("pod.cut.urls")),
     # pwa
     url("", include("pwa.urls")),
 ]
@@ -141,6 +140,12 @@ if getattr(settings, "USE_PODFILE", False):
 for apps in settings.THIRD_PARTY_APPS:
     urlpatterns += [
         url(r"^" + apps + "/", include("pod.%s.urls" % apps, namespace=apps)),
+    ]
+
+# CUT
+if USE_CUT:
+    urlpatterns += [
+        path("cut/", include("pod.cut.urls", namespace="cut")),
     ]
 
 # PLAYLIST

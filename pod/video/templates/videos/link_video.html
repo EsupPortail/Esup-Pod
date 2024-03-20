@@ -50,9 +50,12 @@
     <i class="bi bi-file-text card-footer-link-i" aria-hidden="true"></i></a>
 {% endif %}
 {% if video.encoded and video.encoding_in_progress is False %}
-  {% if video.owner == request.user or request.user.is_superuser or perms.cut.cut_video %}
-    <a href="{% url 'video:cut:video_cut' slug=video.slug %}" title="{% trans 'Cut the video'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
-      <i class="bi bi-scissors card-footer-link-i" aria-hidden="true"></i></a>
+  {% if USE_CUT %}
+    {% if video.owner == request.user or request.user.is_superuser or perms.cut.cut_video %}
+      <a href="{% url 'cut:video_cut' slug=video.slug %}" title="{% trans 'Cut the video'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
+        <i class="bi bi-scissors card-footer-link-i" aria-hidden="true"></i>
+      </a>
+    {% endif %}
   {% endif %}
 {% endif %}
 {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.chapter.change_chapter %}

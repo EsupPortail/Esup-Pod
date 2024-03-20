@@ -852,6 +852,37 @@
                         "fr": "Configuration application completion"
                     }
                 },
+                "cut": {
+                    "description": {
+                        "en": [
+                            "Cut application to cut videos.",
+                            "Set `USE_CUT` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Cut permettant de découper des vidéos.",
+                            "Mettre `USE_CUT` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "USE_CUT": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of the cut application"
+                                ],
+                                "fr": [
+                                    "Activation de l'application cut"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.2"
+                        }
+                    },
+                    "title": {
+                        "en": "Cut application configuration",
+                        "fr": "Configuration de l'application cut"
+                    }
+                },
                 "dressing": {
                     "description": {
                         "en": [
