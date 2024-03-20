@@ -1151,10 +1151,7 @@ var restrict_access_to_groups = function () {
     let id_restricted_to_groups = document.getElementById(
       "id_restrict_access_to_groups",
     );
-    let div_restricted = id_restricted_to_groups.closest(
-      "div.restricted_access",
-    );
-    div_restricted.style.display = "block";
+    id_restricted_to_groups.parentElement.classList.remove("d-none");
   } else {
     document
       .querySelectorAll("#id_restrict_access_to_groups select")
@@ -1168,11 +1165,7 @@ var restrict_access_to_groups = function () {
     let id_restricted_to_groups = document.getElementById(
       "id_restrict_access_to_groups",
     );
-    let div_restricted = id_restricted_to_groups.closest(
-      "div.restricted_access",
-    );
-
-    div_restricted.style.display = "none";
+    id_restricted_to_groups.parentElement.classList.add("d-none");
   }
 };
 
