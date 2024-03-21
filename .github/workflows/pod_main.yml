@@ -1,0 +1,76 @@
+name: Pod Main test
+run-name: ${{ github.actor }} is testing Pod main 🚀
+
+on:
+    push:
+      branches:
+      - main
+      - master
+    pull_request:
+      branches:
+      - main
+      - master
+
+jobs:
+    Pod-Main:
+        runs-on: ubuntu-latest
+        strategy:
+            max-parallel: 2
+            matrix:
+              python-version: ['3.8', '3.10']
+        steps:
+            - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+            - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+            - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+            - run: echo "🚀 Run test for Python ${{ matrix.python-version }}"
+            - uses: actions/checkout@v4
+            - name: Configure sysctl limits (for ES)
+              run: |
+                sudo swapoff -a
+                sudo sysctl -w vm.swappiness=1
+                sudo sysctl -w fs.file-max=262144
+                sudo sysctl -w vm.max_map_count=262144
+
+            - name: Set up Python ${{ matrix.python-version }}
+              uses: actions/setup-python@v5
+              with:
+                python-version: ${{ matrix.python-version }}
+            
+            # Remove apt repos that are known to break from time to time
+            # See https://github.com/actions/virtual-environments/issues/323
+            - name: Remove broken apt repos [Ubuntu]
+              run: |
+                for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
+
+            - name: Install Dependencies
+              run: |
+                sudo apt-get clean
+                sudo apt-get update
+                sudo apt-get install ffmpeg
+                sudo apt-get install -y ffmpegthumbnailer
+                sudo apt-get install -y npm
+                python -m pip install --upgrade pip
+                pip install -r requirements-dev.txt
+                sudo npm install -g yarn
+
+            ## Start unit test test ##
+            - name: Runs Elasticsearch
+              uses: elastic/elastic-github-actions/elasticsearch@refactor_with_plugins
+              with:
+                # stack-version: 7.6.0
+                stack-version: 6.8.23
+                plugins: analysis-icu
+
+            - name: Setup Pod
+              run: |
+                python manage.py create_pod_index --settings=pod.main.test_settings
+                python manage.py makemigrations --settings=pod.main.test_settings
+                python manage.py migrate --settings=pod.main.test_settings
+                cd pod
+                yarn
+
+            - name: Run Tests without coverage
+              env:
+                PYTHONUNBUFFERED: 1
+              run: |
+                python manage.py test -v 3 --settings=pod.main.test_settings

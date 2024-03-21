@@ -124,8 +124,8 @@ def get_last_videos(context):
     return recent_vids
 
 
-@register.simple_tag(name="get_video_qrcode")
-def get_video_qrcode(video_id: int) -> str:
+@register.simple_tag(name="get_video_qrcode", takes_context=True)
+def get_video_qrcode(context, video_slug: str, enrichment: bool) -> str:
     """Get the video generated QR code.
 
     Args:
@@ -135,8 +135,14 @@ def get_video_qrcode(video_id: int) -> str:
         string: HTML-formed generated qrcode
 
     """
+    request = context["request"]
     alt = _("QR code video’s link")
-    return generate_qrcode("enrichment:video_enrichment", video_id, alt)
+    if enrichment:
+        url = reverse("enrichment:video_enrichment", args={video_slug})
+        return generate_qrcode(url, alt, request)
+    else:
+        url = reverse("video:video", args={video_slug})
+        return generate_qrcode(url, alt, request)
 
 
 @register.simple_tag(name="get_video_infos")

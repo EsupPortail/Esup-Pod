@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-15 15:57+0100\n"
+"POT-Creation-Date: 2024-03-12 12:01+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -717,7 +717,6 @@ msgstr ""
 #: pod/video/templates/videos/video_list.html
 #: pod/video/templates/videos/video_list_grid_selectable.html
 #: pod/video/templates/videos/video_list_table_selectable.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "More"
 msgstr ""
 
@@ -730,6 +729,7 @@ msgstr ""
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_list.html
 #: pod/video/templates/videos/video_list_grid_selectable.html
+#: pod/video/templates/videos/video_list_table_selectable.html
 msgid "Loading…"
 msgstr ""
 
@@ -916,6 +916,7 @@ msgstr "Titel"
 #: pod/dressing/templates/my_dressings.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #: pod/video/templates/channel/list_theme.html
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Actions"
 msgstr ""
 
@@ -953,7 +954,6 @@ msgstr ""
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/dashboard.html
-#: pod/video/templates/videos/video_access_tokens.html
 #: pod/video/templates/videos/video_delete.html
 msgid "Delete"
 msgstr ""
@@ -2413,8 +2413,29 @@ msgid ""
 "match the record type selected."
 msgstr ""
 
+#: pod/import_video/models.py
+msgid "Recording state"
+msgstr ""
+
 #: pod/import_video/models.py pod/meeting/models.py
 msgid "User who uploaded to Pod the video file"
+msgstr ""
+
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "Unable to call BBB server."
+msgstr ""
+
+#: pod/import_video/models.py
+#, python-format
+msgid "Parameter %s needs to be defined."
+msgstr ""
+
+#: pod/import_video/models.py pod/meeting/models.py
+msgid "Unable to get recording!"
+msgstr ""
+
+#: pod/import_video/models.py
+msgid "Method not allowed"
 msgstr ""
 
 #: pod/import_video/models.py
@@ -2667,21 +2688,17 @@ msgstr ""
 msgid "YouTube content is inaccessible."
 msgstr ""
 
+#: pod/import_video/tests/test_views.py pod/import_video/views.py
+msgid ""
+"Impossible to upload to Pod the video, the link provided does not seem valid."
+msgstr ""
+
 #: pod/import_video/utils.py
 msgid "No URL found / No recording name"
 msgstr ""
 
 #: pod/import_video/utils.py
 msgid "Try changing the record type or address for this recording"
-msgstr ""
-
-#: pod/import_video/utils.py
-msgid "The HTML file for this recording was not found on the server."
-msgstr ""
-
-#: pod/import_video/utils.py
-#, python-format
-msgid "Error number: %s"
 msgstr ""
 
 #: pod/import_video/utils.py
@@ -2761,8 +2778,10 @@ msgid ""
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
 
-#: pod/import_video/views.py pod/meeting/views.py
-msgid "Try changing the record type or address for this recording."
+#: pod/import_video/views.py
+msgid ""
+"This video has been uploaded to Pod and its source is the virtual classroom "
+"solution of the French Ministry of Higher Education and Research."
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2836,12 +2855,7 @@ msgid ""
 msgstr ""
 
 #: pod/import_video/views.py
-msgid "Impossible to upload to Pod the PeerTube video"
-msgstr ""
-
-#: pod/import_video/views.py
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "Video file not uploaded to Pod"
+msgid "Convert web presentation to video in progress..."
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2849,8 +2863,17 @@ msgstr ""
 msgid "Video file already uploaded to Pod"
 msgstr ""
 
+#: pod/import_video/views.py pod/meeting/views.py
+msgid "Try changing the record type or address for this recording."
+msgstr ""
+
 #: pod/import_video/views.py
 msgid "No video file found. Upload to Pod as a video is not possible."
+msgstr ""
+
+#: pod/import_video/views.py
+#: pod/meeting/templates/meeting/internal_recordings.html
+msgid "Video file not uploaded to Pod"
 msgstr ""
 
 #: pod/live/admin.py pod/live/models.py
@@ -3407,7 +3430,6 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_access_tokens.html
 msgid "Embed in a web page"
 msgstr ""
 
@@ -3444,7 +3466,6 @@ msgstr ""
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_access_tokens.html
 msgid "Share the link"
 msgstr ""
 
@@ -5421,6 +5442,16 @@ msgstr ""
 msgid "BBB Create Time"
 msgstr ""
 
+#: pod/meeting/models.py pod/meeting/views.py
+msgid "Personal meeting room"
+msgstr ""
+
+#: pod/meeting/models.py
+msgid ""
+"If this box is checked, this meeting corresponds to the user's personal "
+"meeting room."
+msgstr ""
+
 #: pod/meeting/models.py
 msgid ""
 "The day of the start date of the meeting must be included in the recurrence "
@@ -5433,10 +5464,6 @@ msgstr ""
 
 #: pod/meeting/models.py
 msgid "Unable to get meeting recordings!"
-msgstr ""
-
-#: pod/meeting/models.py
-msgid "Unable to get recording!"
 msgstr ""
 
 #: pod/meeting/models.py
@@ -5466,6 +5493,24 @@ msgstr ""
 msgid ""
 "Access to adding meeting has been restricted. If you want to add meetings on "
 "the platform, please <a href=\"%(url)s\">contact us</a>."
+msgstr ""
+
+#: pod/meeting/templates/meeting/add_or_edit.html
+msgid ""
+"Your personal meeting room is a room specific to your profile, which is "
+"always available."
+msgstr ""
+
+#: pod/meeting/templates/meeting/add_or_edit.html
+msgid "You can start it at any time, or schedule it for later use."
+msgstr ""
+
+#: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/meeting/templates/meeting/meeting_card.html
+#, python-format
+msgid ""
+"This is “%(full_name)s”'s personal meeting room, a room specific to his "
+"profile, which is always available."
 msgstr ""
 
 #: pod/meeting/templates/meeting/delete.html
@@ -5596,6 +5641,12 @@ msgid "Delete the meeting"
 msgstr ""
 
 #: pod/meeting/templates/meeting/meeting_card.html
+msgid ""
+"This is your personal meeting room, a room specific to your profile, which "
+"is always available."
+msgstr ""
+
+#: pod/meeting/templates/meeting/meeting_card.html
 msgid "Access to this meeting is restricted"
 msgstr ""
 
@@ -5712,6 +5763,10 @@ msgid "You cannot delete this meeting."
 msgstr ""
 
 #: pod/meeting/views.py
+msgid "You cannot delete a personal meeting room."
+msgstr ""
+
+#: pod/meeting/views.py
 msgid "The meeting has been deleted."
 msgstr ""
 
@@ -5769,16 +5824,32 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"            <p>Hello,</p>\n"
-"            <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>."
-"</p>\n"
-"            <p>Start date: %(start_date_time)s </p>\n"
-"            <p>End date: %(end_date)s </p>\n"
-"            <p>here the link to join the meeting:\n"
-"            <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"            <p>You need this password to enter: <b>%(password)s</b> </p>\n"
-"            <p>Regards</p>\n"
-"        "
+"                <p>Hello,</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
+"                <p>here the link to join the meeting:\n"
+"                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
+"                <p>You need this password to enter: <strong>%(password)s</"
+"strong> </p>\n"
+"                <p>Regards</p>\n"
+"            "
+msgstr ""
+
+#: pod/meeting/views.py
+#, python-format
+msgid ""
+"\n"
+"                <p>Hello,</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
+"                <p>Start date: %(start_date_time)s </p>\n"
+"                <p>End date: %(end_date)s </p>\n"
+"                <p>here the link to join the meeting:\n"
+"                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
+"                <p>You need this password to enter: <strong>%(password)s</"
+"strong> </p>\n"
+"                <p>Regards</p>\n"
+"            "
 msgstr ""
 
 #: pod/meeting/views.py
@@ -7505,10 +7576,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/dashboard.html
 #, python-format
-msgid "%(counter)s video"
-msgid_plural "%(counter)s videos"
+msgid "%(counter)s video for this channel"
+msgid_plural "%(counter)s videos for this channel"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/templates/channel/channel.html
+#, python-format
+msgid "%(counter)s subtheme found for this theme"
+msgid_plural "%(counter)s subthemes found for this theme"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -7637,7 +7714,6 @@ msgid ""
 msgstr ""
 
 #: pod/video/templates/videos/add_video.html
-#: pod/video/templates/videos/video_edit.html
 #, python-format
 msgid "The file size must be lower than %(video_max_upload_size)s Go."
 msgstr ""
@@ -7763,10 +7839,8 @@ msgid "Choose an action"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
-#, fuzzy
-#| msgid "Title field"
 msgid "Edit a field"
-msgstr "Titel veld"
+msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Cursus"
@@ -7791,6 +7865,13 @@ msgid "No video found"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
+#, python-format
+msgid "%(counter)s video"
+msgid_plural "%(counter)s videos"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/templates/videos/dashboard.html
 msgid "Clear selection"
 msgstr ""
 
@@ -7809,7 +7890,6 @@ msgid "List display mode"
 msgstr ""
 
 #: pod/video/templates/videos/dashboard_modal.html
-#: pod/video/templates/videos/video_list_table_selectable.html
 msgid "Loading..."
 msgstr ""
 
@@ -8104,11 +8184,19 @@ msgid "Add a token"
 msgstr ""
 
 #: pod/video/templates/videos/video_access_tokens.html
-msgid "List of active tokens"
+msgid "List of active tokens:"
 msgstr ""
 
 #: pod/video/templates/videos/video_access_tokens.html
 msgid "Token"
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Share link"
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Code to embed in a web page"
 msgstr ""
 
 #: pod/video/templates/videos/video_access_tokens.html
@@ -8210,6 +8298,11 @@ msgstr ""
 msgid "Edit the %(app)s"
 msgstr ""
 
+#: pod/video/templates/videos/video_edit.html
+#, python-format
+msgid "The file size must be lower than %(video_max_upload_size)s GB."
+msgstr ""
+
 #: pod/video/templates/videos/video_licencebox.html
 msgid "Creative Commons license:"
 msgstr ""
@@ -8291,6 +8384,10 @@ msgstr ""
 
 #: pod/video/templates/videos/video_page_content.html
 msgid "Theme description"
+msgstr ""
+
+#: pod/video/templates/videos/video_row_select.html
+msgid "Toggle actions menu"
 msgstr ""
 
 #: pod/video/templates/videos/video_stats_view.html
@@ -8805,8 +8902,3 @@ msgstr ""
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr ""
-
-#, fuzzy
-#~| msgid "Email sent?"
-#~ msgid "Email addresse"
-#~ msgstr "Email verzonden?"
