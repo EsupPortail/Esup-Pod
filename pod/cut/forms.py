@@ -14,6 +14,16 @@ class CutVideoForm(forms.ModelForm):
         model = CutVideo
         fields = ["video", "start", "end", "duration"]
         widgets = {
-            "start": forms.TimeInput(attrs={"type": "time", "step": "1"}),
-            "end": forms.TimeInput(attrs={"type": "time", "step": "1"}),
+            "start": forms.TimeInput(attrs={
+                "step": "1",
+                "required": "required",
+                "size": "8",
+                "style": "text-align: center;",
+            }),
+            "end": forms.TimeInput(attrs={
+                "step": "1",
+                "required": "required",
+                "size": "8",
+                "style": "text-align: center;",
+            }),
         }

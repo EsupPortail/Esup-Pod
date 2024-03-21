@@ -30,9 +30,12 @@ class CutVideo(models.Model):
                 return False
 
         # Convert start and end to seconds
-        start = time_to_seconds(self.start)
-        end = time_to_seconds(self.end)
-        duration = time_to_seconds(self.duration)
+        try:
+            start = time_to_seconds(self.start)
+            end = time_to_seconds(self.end)
+            duration = time_to_seconds(self.duration)
+        except ValueError:
+            return False
         if start < 0 or start >= end or end is None or start is None or end > duration:
             return False
         else:
