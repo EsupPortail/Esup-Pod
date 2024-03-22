@@ -121,11 +121,9 @@ def create_first_block(sender, **kwargs):
     count = 0
     for fixture in json_data:
         if fixture["model"] == "main.block":
-            id = fixture["pk"]
             title = fixture["fields"]["title"]
             type = fixture["fields"]["type"]
             data_type = fixture["fields"]["data_type"]
-            page = fixture["fields"]["page"]
             display_title_en = fixture["fields"]["display_title_en"]
             display_title_fr = fixture["fields"]["display_title_fr"]
             block_count = Block.objects.all().count()
