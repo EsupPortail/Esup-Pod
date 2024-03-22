@@ -270,7 +270,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         '''
         with open(self.video.encodinglog.logfile.path) as json_file:
             info_video = json.load(json_file)
-            print(json.dumps(info_video,indent=4,sort_keys=True))
+            print(json.dumps(info_video, indent=4, sort_keys=True))
         print("\n ---> End of Encoding video dressing test")
 
     def remote_transcripting(self):
