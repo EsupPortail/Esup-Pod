@@ -41,7 +41,7 @@ class CutVideoViewsTestCase(TestCase):
 
     def test_video_cut_owner(self):
         video = Video.objects.get(id=1)
-        url = reverse("video:cut:video_cut", kwargs={"slug": video.slug})
+        url = reverse("cut:video_cut", kwargs={"slug": video.slug})
 
         self.user = User.objects.get(username="test")
         self.client.force_login(self.user)

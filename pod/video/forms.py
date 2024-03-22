@@ -988,6 +988,7 @@ class VideoForm(forms.ModelForm):
             "restrict_access_to_groups": AddAccessGroupWidget,
             "video": CustomClearableFileInput,
             "restrict_access_to_groups": AddAccessGroupWidget,
+            "password": forms.PasswordInput(),
         }
         initial = {
             "date_added": __TODAY__,

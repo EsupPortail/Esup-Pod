@@ -127,7 +127,7 @@
       {% if video.encoded and video.encoding_in_progress is False %}
         {% if video.owner == request.user or request.user.is_superuser or perms.cut.cut_video %}
           <li>
-            <a href="{% url 'video:cut:video_cut' slug=video.slug %}"
+            <a href="{% url 'cut:video_cut' slug=video.slug %}"
                title="{% trans 'Cut the video' %} {{ video.title }}"
                class="dropdown-item">{% trans 'Cut the video' %}</a>
           </li>
