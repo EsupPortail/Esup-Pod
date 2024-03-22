@@ -272,7 +272,12 @@ def calculate_score(question: Question, form) -> float:
 
     elif question.get_type() == "multiple_choice":
         user_answer = form.cleaned_data.get("selected_choice")
+        print(user_answer)
+        user_answer = json.loads(user_answer)
+        print(user_answer)
+
         correct_answer = question.get_answer()
+        print(type(user_answer))
         intersection = set(user_answer) & set(correct_answer)
         score = len(intersection) / len(correct_answer)
         return score

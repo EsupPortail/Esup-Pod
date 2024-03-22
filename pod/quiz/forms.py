@@ -209,6 +209,7 @@ class SingleChoiceQuestionForm(forms.ModelForm):
         choices_list = [(choice, choice) for choice in choices_dict.keys()]
 
         self.fields["selected_choice"].widget.choices = choices_list
+        self.fields["selected_choice"].widget.attrs["class"] = "list-unstyled ps-2"
 
 
 class MultipleChoiceQuestionForm(forms.ModelForm):
@@ -238,6 +239,7 @@ class MultipleChoiceQuestionForm(forms.ModelForm):
         choices_list = [(choice, choice) for choice in choices_dict.keys()]
 
         self.fields["selected_choice"].widget.choices = choices_list
+        self.fields["selected_choice"].widget.attrs["class"] = "list-unstyled ps-2"
 
 
 class ShortAnswerQuestionForm(forms.ModelForm):
