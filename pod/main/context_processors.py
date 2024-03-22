@@ -168,7 +168,7 @@ def context_block(request):
                        associated with the sorted list of blocks.
     """
     block = (
-        Block.objects.all().filter(sites=get_current_site(request)).order_by("order")
+        Block.objects.all().filter(sites=get_current_site(request)).filter(visible=True).order_by("order")
     )
     return {
         "BLOCK": block,

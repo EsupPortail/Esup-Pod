@@ -232,6 +232,12 @@ class Block(models.Model):
         _("order"), default=1, blank=True, null=True
     )
 
+    visible = models.BooleanField(
+        verbose_name=_("Visible"),
+        default=True,
+        help_text=_("Check this box if block is visible in page."),
+    )
+
     page = models.ForeignKey(
         FlatPage,
         blank=True,
@@ -321,7 +327,7 @@ class Block(models.Model):
 
     auto_slide = models.BooleanField(
         verbose_name=_("Auto slide"),
-        default=True,
+        default=False,
         help_text=_("Check this box if if you want auto slide."),
     )
 
