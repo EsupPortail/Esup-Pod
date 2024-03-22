@@ -66,22 +66,5 @@
         "description_fr": "Texte annoncant une maintenance.",
         "description_en": "Text announcing a sheduled maintenance."
     }
-  },
-  {
-    "pk": 1,
-    "model": "main.block",
-    "fields": {
-        "title": "Dernières vidéos",
-        "display_title_en": "Last videos",
-        "display_title_fr": "Dernières vidéos",
-        "type": "card_list",
-        "data_type": "last_videos",
-        "order": 0,
-        "no_cache": true,
-        "page": 1,
-        "sites": [
-            1
-        ]
-    }
   }
 ]

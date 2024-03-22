@@ -108,6 +108,45 @@ def create_missing_conf(sender, **kwargs):
         print("--> No missing configurations found, all is up to date!")
 
 
+def create_first_block(sender, **kwargs):
+    """Create first block from first_block.json."""
+    from pod.main.models import Block
+    from django.contrib.flatpages.models import FlatPage
+
+    print("---> Creating block if not exist...")
+    json_data = []
+    with open("./pod/main/fixtures/first_block.json", encoding="utf-8") as data_file:
+        json_data = json.loads(data_file.read())
+
+    count = 0
+    for fixture in json_data:
+        if fixture["model"] == "main.block":
+            id = fixture["pk"]
+            title = fixture["fields"]["title"]
+            type = fixture["fields"]["type"]
+            data_type = fixture["fields"]["data_type"]
+            page = fixture["fields"]["page"]
+            display_title_en = fixture["fields"]["display_title_en"]
+            display_title_fr = fixture["fields"]["display_title_fr"]
+            block_count = Block.objects.all().count()
+            if block_count > 0:
+                print("-> block exist...")
+            else:
+                print("-> Creating block...")
+                count = count + 1
+                url_homepage = "/"
+                Block.objects.create(
+                    title=title,
+                    type=type,
+                    data_type=data_type,
+                    page=FlatPage.objects.get(url=url_homepage),
+                    display_title_en=display_title_en,
+                    display_title_fr=display_title_fr,
+                )
+    if count == 0:
+        print("--> No block add, all is up to date!")
+
+
 class MainConfig(AppConfig):
     """Esup-pod Main configurations class."""
 
@@ -119,3 +158,4 @@ class MainConfig(AppConfig):
         """Run code when Django starts."""
         post_migrate.connect(create_missing_conf, sender=self)
         post_migrate.connect(create_missing_pages, sender=self)
+        post_migrate.connect(create_first_block, sender=self)

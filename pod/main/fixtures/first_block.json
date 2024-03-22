@@ -1,0 +1,18 @@
+[
+    {
+      "pk": 1,
+      "model": "main.block",
+      "fields": {
+          "title": "Dernières vidéos",
+          "display_title_en": "Last videos",
+          "display_title_fr": "Dernières vidéos",
+          "type": "card_list",
+          "data_type": "last_videos",
+          "page": 1,
+          "sites": [
+              1
+          ]
+      }
+    }
+  ]
+  
