@@ -45,6 +45,7 @@ else:
 class RemoteEncodeTranscriptTestCase(TestCase):
 
     def setUp(self):
+        print("===== SetUp of RemoteEncodeTranscriptTestCase =====")
         if not TEST_REMOTE_ENCODE:
             return
         user, created = User.objects.update_or_create(
