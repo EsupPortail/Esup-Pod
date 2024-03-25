@@ -1,4 +1,5 @@
 """Esup-Pod video encoding and transcripting utilities."""
+
 import os
 import bleach
 import time
@@ -108,9 +109,9 @@ def create_outputdir(video_id, video_path):
 
 def send_email_item(msg, item, item_id):
     """Send email notification when encoding fails for a specific item."""
-    subject = "[" + __TITLE_SITE__ + "] Error Encoding %s id:%s" % (item, item_id)
-    message = "Error Encoding  %s id : %s\n%s" % (item, item_id, msg)
-    html_message = "<p>Error Encoding %s id : %s</p><p>%s</p>" % (
+    subject = "[" + __TITLE_SITE__ + "] Error Encoding %s id: %s" % (item, item_id)
+    message = "Error Encoding %s id: %s\n%s" % (item, item_id, msg)
+    html_message = "<p>Error Encoding %s id: %s</p><p>%s</p>" % (
         item,
         item_id,
         msg.replace("\n", "<br>"),

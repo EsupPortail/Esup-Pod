@@ -1,4 +1,5 @@
 """Tests the views for meeting module."""
+
 import random
 import requests
 
@@ -35,6 +36,7 @@ class meeting_TestView(TestCase):
 
     def test_meeting_TestView_get_request(self):
         self.client = Client()
+        # A personal meeting room is created at this moment
         url = reverse("meeting:my_meetings", kwargs={})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
@@ -45,7 +47,11 @@ class meeting_TestView(TestCase):
         list_id = [meeting.id for meeting in response.context["meetings"]]
         self.assertEqual(
             list_id,
-            list(self.user.owner_meeting.all().values_list("id", flat=True)),
+            list(
+                self.user.owner_meeting.all()
+                .values_list("id", flat=True)
+                .order_by("-is_personal", "-start_at")
+            ),
         )
         print(" --->  test_meeting_TestView_get_request of meeting_TestView: OK!")
 
@@ -67,7 +73,11 @@ class meeting_TestView(TestCase):
         list_id = [meeting.id for meeting in response.context["meetings"]]
         self.assertEqual(
             list_id,
-            list(self.user.owner_meeting.all().values_list("id", flat=True)),
+            list(
+                self.user.owner_meeting.all()
+                .values_list("id", flat=True)
+                .order_by("-is_personal", "-start_at")
+            ),
         )
         print(
             " --->  test_meeting_TestView_get_request_restrict ",
@@ -153,7 +163,8 @@ class MeetingAddEditTestView(TestCase):
         # check if meeting has been updated
         m = Meeting.objects.get(name="test1")
         self.assertEqual(m.attendee_password, "1234")
-        self.assertEqual(Meeting.objects.all().count(), nb_meeting + 1)
+        # Also includes personal meeting room
+        self.assertEqual(Meeting.objects.all().count(), nb_meeting + 2)
         self.assertEqual(m.start_at, timezone.make_aware(datetime(2022, 8, 26, 21, 0, 0)))
         print("   --->  test_meeting_add_post_request of MeetingEditTestView: OK!")
 
@@ -271,7 +282,8 @@ class MeetingDeleteTestView(TestCase):
         response = self.client.post(url, {"agree": True}, follow=True)
         self.assertTrue(b"The meeting has been deleted." in response.content)
         # check if meeting has been deleted
-        self.assertEqual(Meeting.objects.all().count(), 0)
+        # Also includes personal meeting room
+        self.assertEqual(Meeting.objects.all().count(), 1)
         print(" --->  test_meeting_delete_post_request of MeetingDeleteTestView: OK!")
 
 

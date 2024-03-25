@@ -8,7 +8,7 @@
 {% block breadcrumbs %}
   {{ block.super }}
   <li class="breadcrumb-item active" aria-current="page">
-    <a href="{% url 'playlist:list'%}" title="{% trans "Access the list of playlists" %}" aria-label="{% trans "Playlists" %}">
+    <a href="{% url 'playlist:list'%}" title="{% trans 'Access the list of playlists' %}" aria-label="{% trans "Playlists" %}">
       {% trans "Playlists" %}
     </a>
   </li>
@@ -33,7 +33,7 @@
         {% endfor %}
         {% for field in form.visible_fields %}
           {% spaceless %}
-            <div class="form-group {% if field.field.required %}form-group-required {% endif %}{% if field.field.errors %}errors{% endif %}" >
+            <div class="form-group {% if field.field.required %}form-group-required {% endif %}{% if field.field.errors %}errors{% endif %}">
               {{ field.errors }}
               <label for="{{ field.id_for_label }}">{{ field.label }}</label>
               {{ field }}

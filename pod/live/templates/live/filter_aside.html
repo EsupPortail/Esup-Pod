@@ -11,7 +11,7 @@
 
     <form action="{% url 'live:events' %}" method="get" id="filters">
       <fieldset class="border-right border-bottom mt-2">
-        <legend class="h5"><i class="bi bi-tv" aria-hidden="true"></i> {% trans "Types" %} </legend>
+        <legend class="h5"><i class="bi bi-tv" aria-hidden="true"></i>&nbsp;{% trans "Types" %} </legend>
         <div id="filterType">
           <div class="form-group collapse" id="collapseFilterType">
             {% for type in types %}
@@ -33,11 +33,12 @@
           </div>
           {% if types.count > 5 %}
             <span class="badge badge-light float-end">
-              <a class="collapsed" data-bs-toggle="collapse"
+              <a class="collapsed btn-link" data-bs-toggle="collapse"
                  href="#collapseFilterType" role="button"
                  aria-expanded="false" aria-controls="collapseFilterType"
                  title="{% trans 'Fold/Unfold “Types” filters' %}">
-              </a></span>
+              </a>
+            </span>
           {% endif %}
         </div>
       </fieldset>

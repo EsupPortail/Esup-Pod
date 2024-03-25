@@ -1,8 +1,11 @@
 from django.template.defaultfilters import register
 from django.utils import timezone
 
+from django.utils.translation import ugettext_lazy as _
 from pod.live.models import Event
 from pod.live.views import can_manage_event
+from pod.main.utils import generate_qrcode
+from django.urls import reverse
 
 
 @register.simple_tag(takes_context=True)
@@ -23,3 +26,20 @@ def get_next_events(context, broadcaster_id=None, limit_nb=4):
 @register.filter
 def can_manage_event_filter(user):
     return can_manage_event(user)
+
+
+@register.simple_tag(name="get_event_qrcode", takes_context=True)
+def get_event_qrcode(context, event_id: int) -> str:
+    """Get the event generated QR code.
+
+    Args:
+        event_id (int): Identifier of event object
+
+    Returns:
+        string: HTML-formed generated qrcode
+
+    """
+    request = context["request"]
+    alt = _("QR code event’s link")
+    url = reverse("live:event_immediate_edit", args={event_id})
+    return generate_qrcode(url, alt, request)

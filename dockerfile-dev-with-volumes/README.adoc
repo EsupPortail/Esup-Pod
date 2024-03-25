@@ -102,7 +102,7 @@ SESSION_REDIS = {
 MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
 
 # Si DOCKER_ENV = full il faut activer l'encodage et la transcription distante
-# USE_DISTANT_ENCODING_TRANSCODING = True
+# USE_REMOTE_ENCODING_TRANSCODING = True
 # ENCODING_TRANSCODING_CELERY_BROKER_URL = "redis://redis:6379/7"
 
 # pour avoir le maximum de log sur la console

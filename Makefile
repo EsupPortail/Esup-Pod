@@ -20,8 +20,8 @@ start:
 starts:
 	# nécessite les django-extensions
 	# cf https://timonweb.com/django/https-django-development-server-ssl-certificate/
-	(sleep 15 ; open https://localhost:8000) &
-	python3 manage.py runserver_plus --cert-file cert.pem --key-file key.pem
+	(sleep 15 ; open https://localhost:9090) &
+	python3 manage.py runserver_plus localhost:9090 --cert-file cert.pem --key-file key.pem
 
 # Première installation de pod (BDD SQLite intégrée)
 install:
@@ -49,9 +49,9 @@ createDB:
 # Mise à jour des fichiers de langue
 lang:
 	echo "Processing python files..."
-	python3 manage.py makemessages --all -i "opencast-studio/*" -i "pod/custom/settings_local.py" --add-location=file
+	python3 manage.py makemessages --all -i "opencast-studio/*" -i "pod/custom/*" --add-location=file
 	echo "Processing javascript files..."
-	python3 manage.py makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*"  -i "node_modules/*" --add-location=file
+	python3 manage.py makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*"  -i "node_modules/*" -i "pod/custom/*" --add-location=file
 
 #compilation des fichiers de langue
 compilelang:
@@ -91,6 +91,7 @@ createconfigs:
 export
 COMPOSE = docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
 COMPOSE_FULL = docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod
+COMPOSE_FULL_TEST = docker-compose -f ./docker-compose-full-dev-with-volumes-test.yml -p esup-pod
 DOCKER_LOGS = docker logs -f
 
 #docker-start-build:
@@ -123,6 +124,9 @@ docker-build:
 ifeq ($(DOCKER_ENV), full)
 	@$(COMPOSE_FULL) build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG) --no-cache
 	@$(COMPOSE_FULL) up
+else ifeq ($(DOCKER_ENV), full-test)
+	@$(COMPOSE_FULL_TEST) build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG) --no-cache
+	@$(COMPOSE_FULL_TEST) up
 else
 	@$(COMPOSE) build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG) --no-cache
 	@$(COMPOSE) up
@@ -135,6 +139,8 @@ docker-start:
 	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
 ifeq ($(DOCKER_ENV), full)
 	@$(COMPOSE_FULL) up
+else ifeq ($(DOCKER_ENV), full-test)
+	@$(COMPOSE_FULL_TEST) up
 else
 	@$(COMPOSE) up
 endif
@@ -145,6 +151,8 @@ endif
 docker-stop:
 ifeq ($(DOCKER_ENV), full)
 	@$(COMPOSE_FULL) down -v
+else ifeq ($(DOCKER_ENV), full-test)
+	@$(COMPOSE_FULL_TEST)  down -v
 else
 	@$(COMPOSE) down -v
 endif
@@ -152,6 +160,8 @@ endif
 docker-reset:
 ifeq ($(DOCKER_ENV), full)
 	@$(COMPOSE_FULL) down -v
+else ifeq ($(DOCKER_ENV), full-test)
+	@$(COMPOSE_FULL_TEST)  down -v
 else
 	@$(COMPOSE) down -v
 endif
@@ -163,7 +173,8 @@ endif
 	sudo rm -rf ./pod/node_modules
 	# sudo rm -rf ./pod/db_migrations
 	sudo rm -rf ./pod/db_migrations
-	# sudo rm -rf ./pod/db.sqlite3"
+	# sudo rm -rf ./pod/db.sqlite3
 	sudo rm -rf ./pod/db.sqlite3
-	# sudo rm -rf ./pod/media"
+	sudo rm -rf ./pod/db_remote.sqlite3
+	# sudo rm -rf ./pod/media
 	sudo rm -rf ./pod/media

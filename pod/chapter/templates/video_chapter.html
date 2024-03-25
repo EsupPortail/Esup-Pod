@@ -5,14 +5,10 @@
 {% block page_title %}{% trans 'Chapter video' %} "{{video.title}}" {% endblock page_title %}
 {% block page_extra_head %}
   {% include 'videos/video-header.html' %}
-  <script src="{% static 'js/chapters.js' %}?ver={{VERSION}}"></script>
-  <script>
-    const video_duration = {{ video.duration }};
-  </script>
 {% endblock page_extra_head %}
 {% block breadcrumbs %}
   {{block.super}}
-  <li class="breadcrumb-item"><a href="{% url 'video:my_videos'%}">{% trans 'My videos' %}</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans "Dashboard" %}</a></li>
   <li class="breadcrumb-item">
     <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}">
       {{video.title|title|truncatechars:45}}
@@ -39,7 +35,7 @@
       </div>
       <span class="float-end">
         <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the video “{{ video_title }}”{% endblocktrans %}" class="btn btn btn-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom">
-          <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans "Back to the video"%}
+          <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans "Back to the video" %}
         </a>
       </span>
       {% if not form_chapter %}
@@ -67,22 +63,18 @@
       {% trans 'Chapters' %}
     </button>
     <div id="collapse-0" class="card-body collapse card-text small">
-      <p>{% trans '“Add a new chapter” allows you to add a chapter to the video, “modify” allows you to edit it and “delete” allows you to remove the chapter.' %}</p>
-      <p>{% trans 'Start playback of the video, pause the video and click on “Get time from the player” to fill in the field untitled “Start time”.' %}</p>
-      <p>{% trans 'The chapters cannot start at the same time.' %}</p>
-      <p>{% trans 'You must save your chapters to view the result.' %}</p>
+      <p>{% trans "“Add a new chapter” allows you to add a chapter to the video, “modify” allows you to edit it and “delete” allows you to remove the chapter." %}</p>
+      <p>{% trans "Start playback of the video, pause the video and click on “Get time from the player” to fill in the field untitled “Start time”." %}</p>
+      <p>{% trans "The chapters cannot start at the same time." %}</p>
+      <p>{% trans "You must save your chapters to view the result." %}</p>
     </div>
   </div>
-  <div class="card mt-1" id="card-mandatory-fields">
-    <h2 class="h4 card-header card-title pl-2">{% trans "Mandatory fields" %}</h2>
-    <div class="card-body card-text">
-      <p>
-        <span class="required_star">*</span>
-        {% trans "Fields marked with an asterisk are mandatory." %}
-      </p>
-    </div>
-  </div>
+  {% include "main/mandatory_fields.html" %}
 {% endblock page_aside %}
 {% block more_script %}
-  {% include 'videos/video-script.html'%}
+  <script src="{% static 'js/chapters.js' %}?ver={{VERSION}}"></script>
+  <script>
+    const video_duration = {{ video.duration }};
+  </script>
+  {% include "videos/video-script.html" %}
 {% endblock more_script %}

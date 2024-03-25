@@ -1,4 +1,8 @@
-let loader = document.querySelector(".lds-ring");
+/**
+ * @file Esup-Pod functions for events list refresh and aside manage.
+ * @since 3.4.1
+ */
+let loader = document.querySelector(".loaderSpinner");
 let checkedInputs = [];
 
 /**

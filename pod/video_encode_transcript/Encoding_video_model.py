@@ -1,4 +1,5 @@
 """Model for video encoding."""
+
 import os
 import re
 from django.conf import settings
@@ -284,7 +285,7 @@ class Encoding_video_model(Encoding_video):
                 os.remove(list_thumbnail_files[thumbnail_path])
         return video
 
-    def store_json_list_overview_files(self, info_video):
+    def store_json_list_overview_files(self, info_video) -> Video:
         list_overview_files = info_video["list_overview_files"]
         video = Video.objects.get(id=self.id)
         if len(list_overview_files) > 0:
@@ -297,7 +298,7 @@ class Encoding_video_model(Encoding_video):
             video.save()
         return video
 
-    def store_json_info(self):
+    def store_json_info(self) -> Video:
         """Open json file and store its data in current instance."""
         with open(self.get_output_dir() + "/info_video.json") as json_file:
             info_video = json.load(json_file)

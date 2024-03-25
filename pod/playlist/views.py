@@ -558,15 +558,21 @@ def get_video(request: WSGIRequest, video_slug: str, playlist_slug: str) -> Json
             "breadcrumbs": "playlist/playlist_breadcrumbs.html",
             "opengraph": "videos/video_opengraph.html",
             "more_script": "enrichment/video_enrichment_more_script.html",
-            "page_aside": "enrichment/video_enrichment_page_aside.html"
-            if video_is_enrichment
-            else "videos/video_page_aside.html",
-            "page_content": "enrichment/video_enrichment_page_content.html"
-            if video_is_enrichment
-            else "videos/video_page_content.html",
-            "page_title": "enrichment/video_enrichment_page_title.html"
-            if video_is_enrichment
-            else "videos/video_page_title.html",
+            "page_aside": (
+                "enrichment/video_enrichment_page_aside.html"
+                if video_is_enrichment
+                else "videos/video_page_aside.html"
+            ),
+            "page_content": (
+                "enrichment/video_enrichment_page_content.html"
+                if video_is_enrichment
+                else "videos/video_page_content.html"
+            ),
+            "page_title": (
+                "enrichment/video_enrichment_page_title.html"
+                if video_is_enrichment
+                else "videos/video_page_title.html"
+            ),
         }
         breadcrumbs = render_to_string(templates["breadcrumbs"], context, request)
         opengraph = render_to_string(templates["opengraph"], context, request)
@@ -591,6 +597,6 @@ def get_video(request: WSGIRequest, video_slug: str, playlist_slug: str) -> Json
     else:
         response_data = {
             "error_type": 404,
-            "error_text": _("This video isn't present in this playlist."),
+            "error_text": _("This video isn’t present in this playlist."),
         }
     return JsonResponse(response_data)

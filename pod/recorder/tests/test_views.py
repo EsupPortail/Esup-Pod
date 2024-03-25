@@ -1,4 +1,5 @@
 """Unit tests for recorder views."""
+
 import hashlib
 
 from django.conf import settings

@@ -1,3 +1,6 @@
+/**
+ * @file Esup-Pod functions for regroup_videos_by_theme.
+ */
 import { Helper } from "/static/js/utils.js";
 
 function run(has_more_themes, Helper) {
@@ -90,7 +93,7 @@ function run(has_more_themes, Helper) {
     let chapter_text = gettext("Chapter the video");
     let delete_text = gettext("Delete the video");
     let infinite_item = document.createElement("div");
-    infinite_item.setAttribute("class", "infinite-item card-group");
+    infinite_item.setAttribute("class", "infinite-item");
     //infinite_item.setAttribute("style", "min-width: 12rem; min-height: 11rem;");
     infinite_item.setAttribute("data-slug", video.slug);
     let card = document.createElement("div");

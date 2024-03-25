@@ -23,10 +23,6 @@
   display: block;
 }
 
-.chapters-list h6 {
-  text-align: center;
-}
-
 .chapters-list.active p,
 .chapters-list.inactive p {
   text-align: center;

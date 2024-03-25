@@ -1,4 +1,5 @@
 """Admin for the Import video module."""
+
 from django.contrib import admin
 from .models import ExternalRecording
 
@@ -16,6 +17,7 @@ class ExternalRecordingAdmin(admin.ModelAdmin):
         "start_at",
         "type",
         "source_url",
+        "state",
         "owner",
     )
     search_fields = [

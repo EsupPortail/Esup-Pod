@@ -9,7 +9,7 @@
 
 {% block breadcrumbs %}
     {{block.super}}
-    <li class="breadcrumb-item"><a href="{% url 'video:my_videos' %}">{% trans 'My videos' %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans "Dashboard" %}</a></li>
 
     <li class="breadcrumb-item">
         <a href="{% url 'video:video' slug=video.slug %}">
@@ -39,7 +39,7 @@
     {% endfor %}
     <script>
         document.addEventListener('DOMContentLoaded',function () {
-            TriggerAlertClose();
+            triggerAlertClose();
         });
     </script>
     </div>
@@ -57,7 +57,7 @@
         <div style="padding-top: 6px;">
           <h5>{% trans "Tricks" %} :</h5>
           <p>{% trans "Start the video than click the + icon to write a comment at the choosen time. Video will be paused." %}<br>
-          {% trans "Click on comment's timecode to go at this time in the video." %}<br>
+          {% trans "Click on comment’s timecode to go at this time in the video." %}<br>
           {% trans "Black notes are public. The clearest are private. The intermediary is visible to the owner of the video." %}
         </p>
             <span class="float-end">

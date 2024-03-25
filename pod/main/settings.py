@@ -3,8 +3,8 @@ Django local settings for pod_project.
 
 Django version: 3.2.
 """
+
 import os
-from django.utils.translation import gettext_lazy as _
 
 ##
 # flatpages
@@ -311,7 +311,7 @@ HONEYPOT_FIELD_NAME = "firstname"
 # PWA
 
 PWA_APP_NAME = "Pod"
-PWA_APP_DESCRIPTION = _(
+PWA_APP_DESCRIPTION = (
     "Pod is aimed at users of our institutions, by allowing the publication of "
     "videos in the fields of research (promotion of platforms, etc.), training "
     "(tutorials, distance training, student reports, etc.), institutional life (video "

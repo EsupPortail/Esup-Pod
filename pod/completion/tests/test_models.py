@@ -1,4 +1,5 @@
 """Unit tests for completion models."""
+
 from django.conf import settings
 from django.test import TestCase
 from django.contrib.auth.models import User

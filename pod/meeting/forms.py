@@ -1,4 +1,5 @@
 """Forms for the Meeting module."""
+
 import datetime
 import random
 import re
@@ -284,9 +285,11 @@ class MeetingForm(forms.ModelForm):
             meetingowner = (
                 self.instance.owner
                 if hasattr(self.instance, "owner")
-                else self.cleaned_data["owner"]
-                if "owner" in self.cleaned_data.keys()
-                else self.current_user
+                else (
+                    self.cleaned_data["owner"]
+                    if "owner" in self.cleaned_data.keys()
+                    else self.current_user
+                )
             )
             if (
                 meetingowner
@@ -379,8 +382,26 @@ class MeetingForm(forms.ModelForm):
         self.remove_field("start_at")
         # set min frequency to 1
         self.fields["frequency"].widget.attrs["min"] = 1
+        # Manage personal meeting room
+        self.manage_personal_meeting_room()
+
+    def manage_personal_meeting_room(self):
+        """Manage fields for a personal meeting room."""
+        if self.instance.is_personal:
+            # Name is a readonly field in such a case
+            self.fields["name"].widget.attrs["readonly"] = True
+            # Hide time settings
+            hidden_fields = ("start", "start_time", "expected_duration", "is_personal")
+            for field in hidden_fields:
+                self.hide_field(field)
+
+    def hide_field(self, field):
+        """Hide a field from the form."""
+        if self.fields.get(field):
+            self.fields[field].widget = forms.HiddenInput()
 
     def remove_field(self, field):
+        """Remove a field from the form."""
         if self.fields.get(field):
             del self.fields[field]
 

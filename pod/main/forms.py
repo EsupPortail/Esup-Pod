@@ -1,4 +1,5 @@
 """Esup-Pod forms handling."""
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
@@ -18,6 +19,22 @@ SUBJECT_CHOICES = getattr(
         ("other", _("Other (please specify)")),
     ),
 )
+
+
+class DownloadFileForm(forms.Form):
+    """Manage "Download File" form."""
+
+    filename = forms.FilePathField(
+        required=True,
+        path=settings.MEDIA_ROOT,
+        recursive=True,
+        allow_files=True,
+        allow_folders=False,
+    )
+
+    def __init__(self, *args, **kwargs):
+        """Init download file form."""
+        super(DownloadFileForm, self).__init__(*args, **kwargs)
 
 
 class ContactUsForm(forms.Form):

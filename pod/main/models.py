@@ -45,6 +45,8 @@ def get_upload_path_files(instance, filename):
 
 
 class CustomImageModel(models.Model):
+    """Esup-Pod custom image Model."""
+
     file = models.ImageField(
         _("Image"),
         null=True,

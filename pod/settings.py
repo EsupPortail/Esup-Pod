@@ -3,6 +3,7 @@ Django global settings for pod_project.
 
 Django version: 3.2.
 """
+
 import os
 import importlib.util
 
@@ -12,7 +13,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "3.5.0"
+VERSION = "3.5.1"
 
 ##
 # Installed applications list
@@ -67,6 +68,7 @@ INSTALLED_APPS = [
     "pod.video_encode_transcript",
     "pod.import_video",
     "pod.progressive_web_app",
+    "pod.dressing",
     "pod.custom",
 ]
 
@@ -467,4 +469,13 @@ if locals()["DEBUG"] is True and importlib.util.find_spec("debug_toolbar") is no
     DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": "pod.settings.show_toolbar"}
 
     def show_toolbar(request):
+        """Define if Debug Toolbar must be shown."""
         return True
+
+
+# Needed to start Esup-Pod with auto-signed https cert (with `make starts`)
+if (
+    locals()["DEBUG"] is True
+    and importlib.util.find_spec("django_extensions") is not None
+):
+    INSTALLED_APPS.append("django_extensions")

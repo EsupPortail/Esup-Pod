@@ -1,4 +1,5 @@
 """Esup-Pod playlist utilities."""
+
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db.models.functions import Lower
@@ -105,7 +106,7 @@ def get_number_video_in_playlist(playlist: Playlist) -> int:
 
 def get_number_video_added_in_playlist(video: Video) -> int:
     """
-    Get the number of times a video has been added to a playlist
+    Get the number of times a video has been added to a playlist.
 
     Args:
         video (:class:`pod.video.models.Video`): The video object
@@ -118,7 +119,7 @@ def get_number_video_added_in_playlist(video: Video) -> int:
 
 def get_number_video_added_in_specific_playlist(playlist: Playlist) -> int:
     """
-    Get the number of times a video has been added to a specific playlist
+    Get the number of times a video has been added to a specific playlist.
 
     Args:
         playlist (:class:`pod.playlist.models.Playlist`): The playlist object
@@ -193,7 +194,7 @@ def get_video_list_for_playlist(playlist: Playlist) -> list:
 
 def get_playlist(slug: str) -> Playlist:
     """
-    Get a playlist with a slug
+    Get a playlist with a slug.
 
     Args:
         slug (str): The slug of the playlist
@@ -341,7 +342,7 @@ def user_can_see_playlist_video(request: WSGIRequest, video: Video) -> bool:
 
 def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") -> list:
     """
-    Return playlist list sorted by specific column name and ascending or descending direction.
+    Return playlist list sorted by specific column name and asc or desc direction.
 
     Args:
         playlist_list (:class:`list(pod.playlist.models.Playlist)`): The list of playlist

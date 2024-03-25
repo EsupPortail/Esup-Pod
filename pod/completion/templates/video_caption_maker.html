@@ -9,7 +9,7 @@
 
 {% block breadcrumbs %}
   {{block.super}}
-  <li class="breadcrumb-item"><a href="{% url 'video:my_videos' %}">{% trans 'My videos' %}</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans "Dashboard" %}</a></li>
 
   <li class="breadcrumb-item">
     <a href="{% url 'video:video' slug=video.slug %}">
@@ -70,7 +70,7 @@
   {% endfor %}
   <script>
     document.addEventListener('DOMContentLoaded',function () {
-      TriggerAlertClose();
+      triggerAlertClose();
     });
   </script>
   </div>
@@ -221,5 +221,5 @@
   </script>
   <script src="{% static 'js/caption_maker.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/completion.js' %}?ver={{VERSION}}"></script>
-{% include 'videos/video-script.html'%}
+  {% include "videos/video-script.html" %}
 {% endblock more_script %}

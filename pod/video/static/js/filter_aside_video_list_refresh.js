@@ -1,17 +1,26 @@
+/**
+ * @file Esup-Pod functions for videos list refresh and aside manage.
+ * @since 3.4.1
+ */
 var infinite;
 var checkedInputs = [];
-var listUser;
 
-let loader = document.querySelector(".lds-ring");
-let infinite_loading = document.querySelector(".infinite-loading");
+let infiniteLoading = document.querySelector(".infinite-loading");
 let ownerBox = document.getElementById("ownerbox");
 let filterOwnerContainer = document.getElementById("collapseFilterOwner");
 
 onBeforePageLoad = function () {
-  infinite_loading.style.display = "block";
+  infiniteLoading.style.display = "block";
 };
 onAfterPageLoad = function () {
-  infinite_loading.style.display = "none";
+  if (
+    urlVideos === "/video/dashboard/" &&
+    selectedVideos &&
+    selectedVideos.length !== 0
+  ) {
+    setSelectedVideos();
+  }
+  infiniteLoading.style.display = "none";
   let footer = document.querySelector("footer.static-pod");
   if (!footer) return;
   footer.classList.add("small");
@@ -36,6 +45,11 @@ onAfterPageLoad = function () {
   });
 };
 
+/**
+ * Refresh Infinite Loader (Waypoint Infinite's)
+ * @param url
+ * @param nextPage
+ */
 function refreshInfiniteLoader(url, nextPage) {
   if (infinite !== undefined) {
     infinite.removeLoader();
@@ -49,19 +63,28 @@ function refreshInfiniteLoader(url, nextPage) {
   );
 }
 
-// Replace count videos label (h1) with translation and plural
+/**
+ * Replace count videos label (h1) with translation and plural
+ * @param newCount
+ */
 function replaceCountVideos(newCount) {
-  var transVideoCount = newCount > 1 ? "videos found" : "video found";
-  document.getElementById("video_count").innerHTML =
-    newCount + " " + gettext(transVideoCount);
+  let videoFoundStr = ngettext(
+    "%(count)s video found",
+    "%(count)s videos found",
+    newCount,
+  );
+  videoFoundStr = interpolate(videoFoundStr, { count: newCount }, true);
+  document.getElementById("video_count").innerHTML = videoFoundStr;
 }
 
-// Async request to refresh view with filtered and sorted video list
+/**
+ * Async request to refresh view with filtered and sorted video list
+ */
 function refreshVideosSearch() {
-  // Erase list and enable loader
+  // Erase videos list and show loader
   document.getElementById("videos_list").innerHTML = "";
-  loader.classList.add("show");
-  url = getUrlForRefresh();
+  showLoader(videosListLoader, true);
+  let url = getUrlForRefresh();
   // Async GET request wth parameters by fetch method
   fetch(url, {
     method: "GET",
@@ -89,6 +112,13 @@ function refreshVideosSearch() {
           .nextpagenumber;
         refreshInfiniteLoader(url, pageNext);
       }
+      if (
+        urlVideos === "/video/dashboard/" &&
+        selectedVideos &&
+        selectedVideos.length !== 0
+      ) {
+        setSelectedVideos();
+      }
     })
     .catch((error) => {
       document.getElementById("videos_list").innerHTML = gettext(
@@ -98,11 +128,13 @@ function refreshVideosSearch() {
     .finally(() => {
       // Finally re-enable inputs and dismiss loader
       disabledInputs(false);
-      loader.classList.remove("show");
+      showLoader(videosListLoader, false);
     });
 }
 
-// Add trigger event to manage sort direction.
+/**
+ * Add click event listener to manage sort direction
+ */
 document
   .getElementById("sort_direction_label")
   .addEventListener("click", function (e) {
@@ -111,7 +143,10 @@ document
     refreshVideosSearch();
   });
 
-// Return url with filter and sort parameters
+/**
+ * Get built url with filter and sort and page parameters
+ * @returns {string}
+ */
 function getUrlForRefresh() {
   let newUrl = window.location.pathname;
   // Add sort-related parameters
@@ -121,6 +156,10 @@ function getUrlForRefresh() {
   if (sortDirectionAsc) {
     newUrl +=
       "sort_direction=" + document.getElementById("sort_direction").value + "&";
+  }
+  // Add dashboard display mode param
+  if (urlVideos === "/video/dashboard/" && displayMode !== undefined) {
+    newUrl += "display_mode=" + displayMode + "&";
   }
   // Add category checked if exists
   if (document.querySelectorAll(".categories_list_item.active").length !== 0) {
@@ -137,7 +176,10 @@ function getUrlForRefresh() {
   return newUrl;
 }
 
-// Add trigger event on change on inputs (filters, sort column and sort direction)
+/**
+ * Add change event listener on inputs (filters, sort column and sort direction) to refresh video list
+ * @param el
+ */
 function setListenerChangeInputs(el) {
   el.addEventListener("change", (e) => {
     checkedInputs = [];
@@ -151,7 +193,9 @@ function setListenerChangeInputs(el) {
   });
 }
 
-// Add event listener to search user input to create checkboxes
+/**
+ * Add event listener to search user input to create checkboxes
+ */
 if (ownerBox) {
   ownerBox.addEventListener("input", (e) => {
     if (ownerBox.value && ownerBox.value.length > 2) {
@@ -171,7 +215,11 @@ if (ownerBox) {
   });
 }
 
-// Create checkbox for user search
+/**
+ * Create checkbox for user search
+ * @param user
+ * @returns {HTMLDivElement}
+ */
 function createUserCheckBox(user) {
   let div = document.createElement("div");
   div.classList.add("form-check");
@@ -193,11 +241,15 @@ function createUserCheckBox(user) {
   return div;
 }
 
-// Add trigger event to manage reset of filters
+/**
+ * Add click event listener to manage reset of filters
+ */
 document.getElementById("resetFilters").addEventListener("click", function () {
   checkedInputs = [];
   document
-    .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
+    .querySelectorAll(
+      "#filters input[type=checkbox]:checked[class=form-check-input]",
+    )
     .forEach((checkBox) => {
       checkBox.checked = false;
     });
@@ -212,7 +264,10 @@ document.getElementById("resetFilters").addEventListener("click", function () {
   refreshVideosSearch();
 });
 
-// Enable / Disable toggle inputs to prevent user actions during loading
+/**
+ * Toggle (enable/disable) inputs to prevent user actions during loading
+ * @param value
+ */
 function disabledInputs(value) {
   document
     .querySelectorAll("input[type=checkbox][class=form-check-input]")
@@ -221,14 +276,12 @@ function disabledInputs(value) {
     });
 }
 
-// Add event listener on inputs on launch
 document
-  .querySelectorAll(".form-check-input,#sort,#sort_direction")
+  .querySelectorAll("#filters .form-check-input,#sort,#sort_direction")
   .forEach((el) => {
     setListenerChangeInputs(el);
   });
 
-//initiate checkedInputs
 document
   .querySelectorAll("input[type=checkbox]:checked[class=form-check-input]")
   .forEach((e) => {

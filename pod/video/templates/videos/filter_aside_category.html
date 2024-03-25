@@ -3,10 +3,12 @@
 
 {% spaceless %}
 <fieldset class="category_fieldset">
-  <legend class="h5"><i class="bi bi-collection-fill"></i> {% trans "Categories" %}</legend>
+  <legend class="h5">
+    <i class="bi bi-collection-fill" aria-hidden="true"></i>&nbsp;{% trans "Categories" %}
+  </legend>
   <div class="align_flex">
     <button type="button" class="btn btn-outline-primary align_flex add_category_btn" data-bs-toggle="modal" data-bs-target="#manageCategoryModal" id="add_category_btn">
-      <i class="bi bi-plus-lg"></i>
+      <i class="bi bi-plus-lg" aria-hidden="true"></i>
       {% trans "Add new category" %}
     </button>
   </div>
@@ -23,10 +25,10 @@
             <button type="button" class="btn btn-link cat_title" data-slug="{{ category.slug}}">{{ category.title }}</button>
             <div class="category_actions">
               <button type="button" title="{% trans 'Edit the category' %}" data-bs-toggle="modal" data-bs-target="#manageCategoryModal" data-slug="{{category.slug}}" data-title="{{category.title}}" class="btn btn-link edit_category">
-                <i class="bi bi-pencil-square"></i>
+                <i class="bi bi-pencil-square" aria-hidden="true"></i>
               </button>
               <button type="button" title="{% trans 'Delete the category' %}" data-bs-toggle="modal" data-del="{{category.id}}" data-bs-target="#deleteCategoryModal" data-title="{{category.title}}" data-slug="{{category.slug}}" class="btn btn-link remove_category">
-                <i class="bi bi-trash"></i>
+                <i class="bi bi-trash" aria-hidden="true"></i>
               </button>
             </div>
           </li>

@@ -1,3 +1,13 @@
+/**
+ * @file Esup-Pod WebPush notifications
+ * @since 3.4.0
+ */
+
+// Read-only globals defined in webpush/webpush.js
+/*
+global registration, subBtn, urlB64ToUint8Array, postSubscribeObj, showMessage
+*/
+
 var notificationToast = document.querySelector("#notification-toast");
 notificationToast.addEventListener("shown.bs.toast", updateToast);
 
@@ -66,7 +76,7 @@ async function setPushPreference(notificationSettingUrl) {
     notificationsPreferenceTips.classList.remove("alert-error");
     notificationsPreferenceTips.classList.add("alert-warning");
     notificationsPreferenceTips.textContent = gettext(
-      "Don't forget to allow notifications from this website in your browser's settings!",
+      "Don’t forget to allow notifications from this website in your browser’s settings!",
     );
 
     subscribe(registration, afterBrowserNotificationPermissionChanged);

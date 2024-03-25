@@ -1,4 +1,5 @@
 """Forms for the Import_video module."""
+
 from django import forms
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -26,8 +27,9 @@ class ExternalRecordingForm(forms.ModelForm):
 
     fieldsets = (
         (
-            None,
+            "general",
             {
+                "legend": _("General settings"),
                 "fields": (
                     "name",
                     "type",
@@ -35,7 +37,7 @@ class ExternalRecordingForm(forms.ModelForm):
                     "start_at",
                     "owner",
                     "site",
-                )
+                ),
             },
         ),
     )
@@ -75,8 +77,11 @@ class ExternalRecordingForm(forms.ModelForm):
         self.filter_fields_admin()
         self.fields = add_placeholder_and_asterisk(self.fields)
 
-        # We don't change the user who uploaded the record
-        hidden_fields = ("uploaded_to_pod_by",)
+        # We don't change the user who uploaded the record neither the state
+        hidden_fields = (
+            "uploaded_to_pod_by",
+            "state",
+        )
         for field in hidden_fields:
             if self.fields.get(field, None):
                 self.fields[field].widget = forms.HiddenInput()

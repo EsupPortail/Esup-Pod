@@ -1,4 +1,5 @@
 """index_videos management command."""
+
 from django.core.management.base import BaseCommand
 from django.utils import translation
 from pod.video.models import Video

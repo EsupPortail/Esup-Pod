@@ -36,7 +36,10 @@ module.exports = {
     "interpolate": "readonly",
     "bootstrap": "readonly",
     "videojs": "readonly",
+    "CKEDITOR": "readonly",
     "send_form_data": "writable",
     "showalert": "writable",
+    "showLoader": "writable",
+    "manageDisableBtn": "writable"
   }
 };

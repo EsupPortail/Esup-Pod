@@ -1,3 +1,5 @@
+"""Esup-Pod Live views."""
+
 import json
 import logging
 import os.path
@@ -73,7 +75,7 @@ EMAIL_ON_EVENT_SCHEDULING = getattr(settings, "EMAIL_ON_EVENT_SCHEDULING", False
 
 @login_required(redirect_field_name="referrer")
 def directs_all(request):
-    """Show all directs."""
+    """Show directs of all buildings. Called by `/live/directs/`."""
     check_permission(request)
 
     site = get_current_site(request)
@@ -90,21 +92,22 @@ def directs_all(request):
     return render(
         request,
         "live/directs_all.html",
-        {
-            "buildings": buildings,
-        },
+        {"buildings": buildings, "page_title": _("All live streams")},
     )
 
 
 @login_required(redirect_field_name="referrer")
 def directs(request, building_id):
-    """Show all directs of a given building."""
+    """Show all broadcaster of given building(s). Called by `/live/directs/<ID>`."""
     check_permission(request)
     building = get_object_or_404(Building, id=building_id)
     return render(
         request,
         "live/directs.html",
-        {"building": building},
+        {
+            "building": building,
+            "page_title": _("Broadcasters of building “%s”") % building.name,
+        },
     )
 
 
@@ -136,6 +139,7 @@ def direct(request, slug):
             "display_event_btn": can_manage_event(request.user),
             "broadcaster": broadcaster,
             "heartbeat_delay": HEARTBEAT_DELAY,
+            "page_title": _("Live “%s”") % broadcaster.name,
         },
     )
 
@@ -584,6 +588,7 @@ def update_event(form):
         d_fin = timezone.make_aware(d_fin)
         evt.end_date = d_fin
         evt.save()
+        form.save_m2m()
         return evt
 
 
@@ -617,7 +622,11 @@ def event_delete(request, slug=None):
     return render(
         request,
         "live/event_delete.html",
-        {"event": evt, "form": form},
+        {
+            "event": evt,
+            "form": form,
+            "page_title": _("Deleting the event “%s”") % evt.title,
+        },
     )
 
 

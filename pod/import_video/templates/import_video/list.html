@@ -3,64 +3,83 @@
 {% load static %}
 {% load thumbnail %}
 
-{% block more_style %}
+{% block page_extra_head %}
   <link href="{% static 'css/import_video.css' %}?ver={{ VERSION }}" rel="stylesheet">
-{% endblock more_style %}
-
+{% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
-  <li class="breadcrumb-item active" aria-current="page">{% trans "My external videos" %}</li>
+  <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
 {% endblock %}
 
 {% block page_content %}
+  {% if access_not_allowed %}
+    <p class="text-info-emphasis">
+      {% url "contact_us" as contact_us %}
+      <i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% blocktrans with url=contact_us %}Access to importing video has been restricted. If you want to import videos on the platform, please <a href="{{url}}">contact us</a>.{% endblocktrans %}
+    </p>
+  {% else %}
+    <div class="pod-first-content">
+      <p>
+        {% trans "If you have achieved Big Blue Button meetings via another interface (typically via Moodle), or if you wish to centralize PeerTube, Youtube or other videos on Pod, it is possible to retrieve these recordings and be able to convert them into video in this platform (under certain conditions)." %}<br>
+        {% trans "You need to create an external video before you can import it." %}
+      </p>
+    </div>
 
-<div class="pod-first-content">
-  <p>
-    {% trans "If you have achieved Big Blue Button meetings via another interface (typically via Moodle), or if you wish to centralize PeerTube, Youtube or other videos on Pod, it is possible to retrieve these recordings and be able to convert them into video in this platform (under certain conditions)." %}<br>
-    {% trans "You need to create an external video before you can import it." %}
-  </p>
-</div>
+    <div class="d-grid gap-2 d-md-flex justify-content-md mb-2">
+      <a class="btn btn-primary pod-btn-primary btn-sm" href="{% url 'import_video:add_external_recording' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Create an external video' %}">
+        <i class="bi bi-plus pod-add" aria-hidden="true"></i>&nbsp;<span>{% trans "Create an external video" %}</span>
+      </a>
+    </div>
 
-<div class="d-grid gap-2 d-md-flex justify-content-md mb-2">
-    <a class="btn btn-primary pod-btn-primary btn-sm" href="{% url 'import_video:add_external_recording' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Create an external video' %}">
-      <i class="bi bi-plus pod-add"></i><span>{% trans "Create an external video" %}</span>
-    </a>
-</div>
+    <div id="recording-loader" class="recording-loader">
+      <div class="recording-loading"></div>
+      {% trans "Do not leave the page until the video upload to Pod is complete." %}
+    </div>
 
-<div id="recording-loader" class="recording-loader">
-  <div class="recording-loading"></div>
-  {% trans "Do not leave the page until the video upload to Pod is complete." %}
-</div>
-<table class="table align-middle table-sm table-bordered table-striped caption-top" id="recordings">
-    <thead>
-      <tr>
-        <th scope="col">{% trans "Name" %}</th>
-        <th scope="col">{% trans "State" %}</th>
-        <th scope="col">{% trans "Date" %}</th>
-        <th scope="col">{% trans "Type" %}</th>
-        <th scope="col">{% trans "Playback" %}</th>
-        <th scope="col">{% trans "Import" %}</th>
-        <th scope="col">{% trans "Manage" %}</th>
-      </tr>
-    </thead>
-    <tbody>
+    <table class="table align-middle table-sm table-bordered table-striped caption-top" id="recordings">
+      <thead>
+        <tr>
+          <th scope="col">{% trans "Name" %}</th>
+          <th scope="col">{% trans "State" %}</th>
+          <th scope="col">{% trans "Date" %}</th>
+          <th scope="col">{% trans "Type" %}</th>
+          <th scope="col">{% trans "Playback" %}</th>
+          <th scope="col">{% trans "Import" %}</th>
+          <th scope="col">{% trans "Manage" %}</th>
+        </tr>
+      </thead>
+      <tbody>
         {% for record in recordings %}
-        <tr class="recordings_list_item">
+          <tr class="recordings_list_item">
             <td class="recording_name">{{ record.name }}</td>
-            <td>{{ record.state }}</td>
+            <td>{{ record.state | safe }}</td>
             <td>{{ record.startTime }}</td>
             <td>{{ record.type }}</td>
             <td>
-                {% if record.presentationUrl != "" %}
-                  <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.presentationUrl }}" target="_blank" title="{% trans 'Display the recording in presentation format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
-                    <i class="bi bi-file-earmark-play"></i>
+              {% if record.presentationUrl != "" %}
+                {% if record.recordingId == "" %}
+                  <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.presentationUrl }}" target="_blank" title="{% trans 'Display the recording in presentation format' %}" data-bs-toggle="tooltip" data-bs-placement="top">
+                    <i class="bi bi-file-earmark-play" aria-hidden="true"></i>
+                  </a>
+                {% else %}
+                  <a id="{{ record.id }}-presentation" class="btn btn-primary pod-btn-primary btn-sm" href="javascript:void(0);" onclick="manageTokenLink('presentation', this);" title="{% trans 'Display the recording in presentation format' %}" data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-pod-recording-id="{{ record.id }}" data-pod-recording-presentation-url="{{ record.presentationUrl }}">
+                    <i class="bi bi-file-earmark-play" aria-hidden="true"></i>
                   </a>
                 {% endif %}
-                {% if record.videoUrl != "" %}
-                  <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.videoUrl }}" target="_blank" title="{% trans 'Display the recording in video format'%}" data-bs-toggle="tooltip" data-bs-placement="top">
-                    <i class="bi bi-camera-video"></i>
+              {% endif %}
+              {% if record.videoUrl != "" and record.videoUrl != record.presentationUrl %}
+                {% if record.recordingId == "" %}
+                  <a class="btn btn-primary pod-btn-primary btn-sm" href="{{ record.videoUrl }}" target="_blank" title="{% trans 'Display the recording in video format' %}" data-bs-toggle="tooltip" data-bs-placement="top">
+                    <i class="bi bi-camera-video" aria-hidden="true"></i>
+                  </a>
+                {% else %}
+                  <a id="{{ record.id }}-video" class="btn btn-primary pod-btn-primary btn-sm" href="javascript:void(0);" onclick="manageTokenLink('video', this);" title="{% trans 'Display the recording in video format' %}" data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-pod-recording-id="{{ record.id }}" data-pod-recording-video-url="{{ record.videoUrl }}">
+                    <i class="bi bi-camera-video" aria-hidden="true"></i>
                   </a>
                 {% endif %}
+              {% endif %}
             </td>
             <td>
               {% if record.canUpload %}
@@ -69,26 +88,27 @@
                   <input type="hidden" name="recording_name" value="{{ record.name }}">
                   <input type="hidden" name="source_url" value="{{ record.videoUrl }}">
                   {% csrf_token %}
-                  <button type="submit" class="btn btn-secondary pod-btn-secondary btn-sm" title="{% trans 'Upload to Pod as a video'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-upload pod-add"></i></button>
+                  <button type="submit" class="btn btn-secondary pod-btn-secondary btn-sm" title="{% trans 'Upload to Pod as a video' %}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-upload pod-add" aria-hidden="true"></i></button>
                 </form>
               {% endif %}
             </td>
             <td>
               {% if record.canDelete %}
                 {% trans "Please confirm you want to delete the external recording" as confirmDelete %}
-                <a href="{% url 'import_video:edit_external_recording' record.id %}" class="btn btn-primary pod-btn-primary btn-sm" title="{% trans 'Edit the external recording'%}" data-bs-toggle="tooltip" data-bs-placement="top">
-                  <i class="bi bi-pencil-square pod-add"></i>
+                <a href="{% url 'import_video:edit_external_recording' record.id %}" class="btn btn-primary pod-btn-primary btn-sm" title="{% trans 'Edit the external recording' %}" data-bs-toggle="tooltip" data-bs-placement="top">
+                  <i class="bi bi-pencil-square pod-add" aria-hidden="true"></i>
                 </a>
                 <form method="post" action="{% url "import_video:delete_external_recording" id=record.id %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the external recording'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-trash3 pod-add"></i></button>
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the external recording' %}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-trash3 pod-add" aria-hidden="true"></i></button>
                 </form>
               {% endif %}
             </td>
-        </tr>
+          </tr>
         {% endfor %}
-    </tbody>
-</table>
+      </tbody>
+    </table>
+  {% endif %}
 {% endblock page_content %}
 
 {% block collapse_page_aside %}
@@ -137,6 +157,43 @@
      document.getElementById("recording-loader").style.display = "block";
     }
     return answer;
+  }
+
+  /**
+   * Function that allow to manage the link of recordings (video and presentation playback) to take into account the single-use token.
+   **/
+   function manageTokenLink(type, element) {
+    // Get important information from element
+    let recordId = element.dataset.podRecordingId;
+    // AJAX Pod server to re-request the BBB server
+    urlGetRecording = "/import_video/recording_with_token/" + recordId + "/";
+
+    // Get infos from the recording (new token appears here)
+    fetch(urlGetRecording, {
+      method: "GET",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+      dataType: "html",
+      cache: "no-store",
+    })
+      .then((response) => response.text())
+      .then((data) => {
+        // Get new playback URL
+        let jsonData = JSON.parse(data);
+        var urlNew;
+        if (type == "presentation") {
+          urlNew = jsonData.presentationUrl;
+        } else {
+          urlNew = jsonData.videoUrl;
+        }
+        // Open the good URL in a new tab
+        window.open(urlNew, '_blank');
+      })
+      .catch((error) => {
+        console.debug(error);
+      });
   }
 </script>
 {% endblock more_script %}

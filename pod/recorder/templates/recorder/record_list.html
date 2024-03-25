@@ -2,7 +2,7 @@
 {% spaceless %}
 <div class="pod-infinite-container infinite-container" id="videos_list">
   {% for record in records %}
-    <div class="infinite-item card-group"> <!-- min-width: 15rem; -->
+    <div class="infinite-item">
       {% include "recorder/card.html" %}
     </div>
   {% empty %}

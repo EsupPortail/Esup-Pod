@@ -1,3 +1,5 @@
+"""Esup-Pod recorder utilities."""
+
 import time
 import os
 import uuid
@@ -12,7 +14,7 @@ MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
 
 
 def add_comment(recording_id, comment):
-    """Adds a comment to a recording."""
+    """Add a comment to a recording."""
     recording = Recording.objects.get(id=recording_id)
     recording.comment = "%s\n%s" % (recording.comment, comment)
     recording.save()
@@ -20,7 +22,8 @@ def add_comment(recording_id, comment):
 
 def studio_clean_old_files():
     """
-    Cleans up old files in the "opencast-files" folder.
+    Clean up old files in the "opencast-files" folder.
+
     The function removes files that are older than 7 days
     from the "opencast-files" folder in the media root.
     """
@@ -101,9 +104,7 @@ def handle_upload_file(request, element_name, mimetype, tag_name):
 
 
 def get_id_media(request):
-    """
-    Extracts and returns idMedia from the mediaPackage in the request.
-    """
+    """Extract and returns idMedia from the mediaPackage in the request."""
     if (
         request.POST.get("mediaPackage") != ""
         and request.POST.get("mediaPackage") != "{}"
@@ -118,9 +119,7 @@ def get_id_media(request):
 
 
 def get_media_package_content(mediaPackage_dir, idMedia):
-    """
-    Retrieve the media package content and the media package file by parsing an XML file.
-    """
+    """Retrieve media package content & media package file by parsing an XML file."""
     mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
     mediaPackage_content = minidom.parse(mediaPackage_file)  # parse an open file
     mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]

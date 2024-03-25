@@ -1,4 +1,5 @@
 """Test BBB models."""
+
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -11,6 +12,7 @@ class MeetingTestCase(TestCase):
     ]
 
     def setUp(self):
+        """Set up MeetingTestCase."""
         Meeting.objects.create(
             id=1,
             meeting_id="id1",
@@ -31,8 +33,8 @@ class MeetingTestCase(TestCase):
 
         print(" --->  SetUp of MeetingTestCase: OK!")
 
-    # Test attributes
     def test_attributes(self):
+        """Test Meeting attributes."""
         meeting = Meeting.objects.get(id=1)
         self.assertEqual(meeting.meeting_name, "Session BBB1")
         self.assertEqual(meeting.internal_meeting_id, "internalid1")

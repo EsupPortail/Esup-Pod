@@ -3,14 +3,13 @@
 {% load static %}
 {% load thumbnail %}
 
-{% block more_style %}
+{% block page_extra_head %}
   <link href="{% static 'css/meeting.css' %}?ver={{ VERSION }}" rel="stylesheet">
-{% endblock more_style %}
-
+{% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
   <li class="breadcrumb-item"><a href="{% url 'meeting:my_meetings' %}">{% trans "My meetings" %}</a></li>
-  <li class="breadcrumb-item active" aria-current="page">{% trans "Meeting recordings" %}</li>
+  <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>
 {% endblock %}
 
 {% block page_content %}
@@ -22,9 +21,11 @@
   <div>
     <p>
       {% trans "After recording a Big Blue Button meeting, recordings of that meeting will be available at that level after a while." %}<br>
-      <p class="text-info-emphasis">
-        <i class="bi bi-info-circle" aria-hidden="true"></i> {% trans "When a new recording is available at this level, you will receive an email to inform you." %}
-      </p>
+      {% if meeting.owner == request.user %}
+        <p class="text-info-emphasis">
+          <i class="bi bi-info-circle" aria-hidden="true"></i> {% trans "When a new recording is available at this level, you will receive an email to inform you." %}
+        </p>
+      {% endif %}
     </p>
   </div>
 
@@ -72,9 +73,9 @@
                 {% if record.canUpload %}
                   {% trans "Please confirm you want to upload the recording To Pod" as confirmUpload %}
                   <form method="post" action="{% url "meeting:upload_internal_recording_to_pod" recording_id=record.id meeting_id=meeting.meeting_id %}" onsubmit="return confirmUploadToPod('{{ confirmUpload|escapejs }}');" style="display: inline;">
-                    <input type="hidden" name="recording_name" value="{{ record.name }}" >
-                    <input type="hidden" name="start_timestamp" value="{{ record.startTime }}" >
-                    <input type="hidden" name="end_timestamp" value="{{ record.endTime }}" >
+                    <input type="hidden" name="recording_name" value="{{ record.name }}">
+                    <input type="hidden" name="start_timestamp" value="{{ record.startTime }}">
+                    <input type="hidden" name="end_timestamp" value="{{ record.endTime }}">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-secondary pod-btn-secondary btn-sm" title="{% trans 'Upload to Pod as a video'%}" data-bs-toggle="tooltip" data-bs-placement="top"><i class="bi bi-upload pod-add" aria-hidden="true"></i></button>
                   </form>
@@ -150,7 +151,7 @@
     let url = element.getAttribute("data-pod-recording-" + type + "-url");
     // Open presentation/video recording on other window
     window.open(url, '_blank');
-    // AJAX Pod server to re-request the BBB server 
+    // AJAX Pod server to re-request the BBB server
     urlGetRecording = "/meeting/internal_recording/" + meetingId + "/" + recordingId + "/";
 
     // Get infos from the recording (new token appears here)

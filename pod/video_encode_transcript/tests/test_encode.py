@@ -1,4 +1,9 @@
-"""Encode Test Case."""
+"""
+Video & Audio encoding test cases.
+
+*  run with `python manage.py test pod.video_encode_transcript.tests.test_encode`
+"""
+
 from django.conf import settings
 from django.test import TestCase
 from django.core.files.temp import NamedTemporaryFile
@@ -17,16 +22,28 @@ import os
 
 VIDEO_TEST = getattr(settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp4")
 
-AUDIO_TEST = getattr(settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp3")
+AUDIO_TEST = getattr(settings, "AUDIO_TEST", "pod/main/static/video_test/pod.mp3")
 
 
 class EncodeTestCase(TestCase):
+    """Video and audio encoding tests."""
+
     fixtures = [
         "initial_data.json",
     ]
 
+    _one_time_setup_complete = False
+
     def setUp(self):
-        """Encode video and audio test files."""
+        """Set up video and audio encoding tests."""
+        if not self._one_time_setup_complete:
+            self.before_running_all_tests()
+            self._one_time_setup_complete = True
+
+        self.before_running_each_test()
+
+    def before_running_all_tests(self):
+        """Set up that must be run just once before all tests."""
         user = User.objects.create(username="pod", password="pod1234pod")
         # owner1 = Owner.objects.get(user__username="pod")
         video = Video.objects.create(
@@ -39,9 +56,9 @@ class EncodeTestCase(TestCase):
         video.video.save("test.mp4", tempfile)
         dest = os.path.join(settings.MEDIA_ROOT, video.video.name)
         shutil.copyfile(VIDEO_TEST, dest)
-        print("\n ---> Start Encoding video")
+        print("\n ---> Start Encoding video test.mp4")
         encode.encode_video(video.id)
-        print("\n ---> End Encoding video")
+        print("\n ---> End Encoding video test.mp4")
 
         audio = Video.objects.create(
             title="Audio1",
@@ -53,11 +70,15 @@ class EncodeTestCase(TestCase):
         audio.video.save("test.mp3", tempfile)
         dest = os.path.join(settings.MEDIA_ROOT, audio.video.name)
         shutil.copyfile(AUDIO_TEST, dest)
-        print("\n ---> Start Encoding audio")
+        print("\n ---> Start Encoding audio test.mp3")
         encode.encode_video(audio.id)
-        print("\n ---> End Encoding audio")
+        print("\n ---> End Encoding audio test.mp3")
 
         print(" --->  SetUp of EncodeTestCase: OK!")
+
+    def before_running_each_test(self):
+        """Set up what must be run before each test."""
+        pass
 
     def test_encoding_wrong_file(self):
         """Test if a try to encode a wrong file ends well."""
@@ -76,6 +97,7 @@ class EncodeTestCase(TestCase):
         """Test if video encoding worked properly."""
         # video id=1 et audio id=2
         video_to_encode = Video.objects.get(id=1)
+        self.assertEqual("Video1", video_to_encode.title)
         list_mp2t = EncodingVideo.objects.filter(
             video=video_to_encode, encoding_format="video/mp2t"
         )
@@ -104,6 +126,7 @@ class EncodeTestCase(TestCase):
         """Test if audio encoding worked properly."""
         # video id=1 & audio id=2
         audio = Video.objects.get(id=2)
+        self.assertEqual("Audio1", audio.title)
         list_m4a = EncodingAudio.objects.filter(video=audio, encoding_format="video/mp4")
         list_mp3 = EncodingAudio.objects.filter(video=audio, encoding_format="audio/mp3")
         el = EncodingLog.objects.get(video=audio)
@@ -114,9 +137,10 @@ class EncodeTestCase(TestCase):
         self.assertFalse(audio.thumbnail)
         print(" --->  test_result_encoding_audio of EncodeTestCase: OK!")
 
-    def test_delete_object(self):
-        """Tester la suppression de la video et la suppression en cascade."""
+    def test_delete_video(self):
+        """Test video deletion and cascade deleting."""
         video_to_encode = Video.objects.get(id=1)
+        self.assertEqual("Video1", video_to_encode.title)
         video = video_to_encode.video.path
         video_dir = os.path.join(os.path.dirname(video), "%04d" % video_to_encode.id)
         log_file = os.path.join(video_dir, "info_video.json")
@@ -161,6 +185,7 @@ class EncodeTestCase(TestCase):
         self.assertFalse(os.path.isdir(video_dir))
 
         audio = Video.objects.get(id=2)
+        self.assertEqual("Audio1", audio.title)
         audio_video_path = audio.video.path
         audio_dir = os.path.join(os.path.dirname(audio_video_path), "%04d" % audio.id)
         audio_log_file = os.path.join(audio_dir, "info_video.json")
@@ -170,4 +195,4 @@ class EncodeTestCase(TestCase):
         # check audio folder remove
         self.assertFalse(os.path.isdir(audio_dir))
 
-        print("   --->  test_delete_object of EncodeTestCase: OK!")
+        print("   --->  test_delete_video of EncodeTestCase: OK!")

@@ -2,28 +2,24 @@
 {% load i18n %}
 {% load static %}
 
-{% block more_style %}
+{% block page_extra_head %}
   <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet">
-{% endblock more_style %}
+{% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Events" %}</li>{% endblock %}
-
-{% block page_title %}
-  {% trans "Events" %}
-{% endblock %}
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{{page_title}}</li>{% endblock %}
 
 {% block page_content %}
 
   <div class="d-flex infinite-container mb-2" id="event_add">
     {% if display_direct_button %}
-      <a class="btn btn-primary" href="{% url 'live:directs_all' %}" title="{% trans 'Supervise broadcasters' %}">
+      <a class="btn btn-primary" href="{% url 'live:directs_all' %}">
         <i class="bi bi-activity" aria-hidden="true"></i>
         {% trans "Supervise broadcasters" %}
       </a>
     {% endif %}
     {% if display_creation_button %}
-      <a class="btn btn-primary" href="{% url 'live:event_edit' %}" title="{% trans 'Plan an event' %}">
-        <i class="bi bi-plus pod-add" aria-hidden="true"></i>
+      <a class="btn btn-primary" href="{% url 'live:event_edit' %}">
+        <i class="bi bi-plus" aria-hidden="true"></i>
         {% trans "Plan an event" %}
       </a>
     {% endif %}

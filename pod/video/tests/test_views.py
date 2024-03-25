@@ -1,4 +1,6 @@
 """Tests for Video views."""
+
+from django.conf import settings
 from django.http import JsonResponse
 from django.test import Client
 from django.test import TestCase, override_settings, TransactionTestCase
@@ -7,6 +9,9 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
 from pod.authentication.models import AccessGroup
 from django.contrib.sites.models import Site
+from django.contrib.messages import get_messages
+from django.core.files.temp import NamedTemporaryFile
+from django.utils.translation import ugettext_lazy as _
 
 from pod.main.models import AdditionalChannelTab
 
@@ -16,6 +21,8 @@ from ..models import Video
 from ..models import Channel
 from ..models import Discipline
 from ..models import AdvancedNotes
+from ..models import VideoAccessToken
+from pod.video_encode_transcript import encode
 from pod.video_encode_transcript.models import VideoRendition
 from pod.video_encode_transcript.models import EncodingVideo
 from .. import views
@@ -24,6 +31,11 @@ import re
 import json
 from http import HTTPStatus
 from importlib import reload
+import shutil
+import os
+import uuid
+
+AUDIO_TEST = getattr(settings, "AUDIO_TEST", "pod/main/static/video_test/pod.mp3")
 
 
 class ChannelTestView(TestCase):
@@ -392,7 +404,11 @@ class ThemeEditTestView(TestCase):
         print(" --->  test_theme_edit_post_request of ThemeEditTestView: OK!")
 
 
-class MyVideosTestView(TestCase):
+class DashboardTestView(TestCase):
+    """
+    Test Dashboard view access and videos pagination
+    """
+
     fixtures = [
         "initial_data.json",
     ]
@@ -440,11 +456,11 @@ class MyVideosTestView(TestCase):
 
         print(" --->  SetUp of MyChannelsTestView: OK!")
 
-    def test_get_myvideos_view(self):
+    def test_get_dashboard_view(self):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        url = reverse("video:my_videos")
+        url = reverse("video:dashboard")
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 3)
@@ -453,7 +469,7 @@ class MyVideosTestView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 1)
-        print(" --->  test_get_myvideos_view of MyVideosTestView: OK!")
+        print(" --->  test_get_dashboard_view of MyVideosTestView: OK!")
 
 
 class VideosTestView(TestCase):
@@ -668,6 +684,7 @@ class VideoTestView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(response.context["form"])
+        # ####################################################
         # TODO test with hashkey
         url = reverse(
             "video:video_private",
@@ -676,11 +693,49 @@ class VideoTestView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual("form" in response.context.keys(), False)
-        v.is_draft = True
-        v.save()
+        # random uuid
+        random_uuid = uuid.uuid4()
+        url = reverse(
+            "video:video_private",
+            kwargs={"slug": v.slug, "slug_private": random_uuid},
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual("form" in response.context.keys(), True)
+        # Access token but not good video
+        v2 = Video.objects.get(id=2)
+        accessTokenV2 = VideoAccessToken.objects.create(video=v2)
+        url = reverse(
+            "video:video_private",
+            kwargs={"slug": v.slug, "slug_private": accessTokenV2.token},
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual("form" in response.context.keys(), True)
+        # Good token
+        accessToken = VideoAccessToken.objects.create(video=v)
+        url = reverse(
+            "video:video_private",
+            kwargs={"slug": v.slug, "slug_private": accessToken.token},
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual("form" in response.context.keys(), False)
+        # Video in draft mode
+        v.is_draft = True
+        v.save()
+        # url with good video and token
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual("form" in response.context.keys(), False)
+        url = reverse(
+            "video:video_private",
+            kwargs={"slug": v.slug, "slug_private": accessTokenV2.token},
+        )
+        response = self.client.get(url)
+        # redirect to login page
+        self.assertEqual(response.status_code, 302)
+        # ####################################################
         # Tests for additional owners
         v = Video.objects.get(title="VideoWithAdditionalOwners")
         self.client = Client()
@@ -974,7 +1029,7 @@ class video_deleteTestView(TestCase):
                 "agree": True,
             },
         )
-        url = reverse("video:my_videos", kwargs={})
+        url = reverse("video:dashboard", kwargs={})
         self.assertRedirects(response, url)
         self.assertEqual(Video.objects.all().count(), 1)
         video = Video.objects.get(title="VideoWithAdditionalOwners")
@@ -985,7 +1040,7 @@ class video_deleteTestView(TestCase):
                 "agree": True,
             },
         )
-        url = reverse("video:my_videos", kwargs={})
+        url = reverse("video:dashboard", kwargs={})
         self.assertRedirects(response, url)
         self.assertEqual(Video.objects.all().count(), 0)
         print(" --->  test_video_edit_post_request of video_deleteTestView: OK!")
@@ -1107,7 +1162,7 @@ class video_countTestView(TestCase):
         print(" --->  test_video_countTestView_post_request of video_countTestView: OK!")
 
 
-class video_markerTestView(TestCase):
+class VideoMarkerTestView(TestCase):
     """Test the video marker view."""
 
     fixtures = [
@@ -1122,7 +1177,7 @@ class video_markerTestView(TestCase):
             video="test1.mp4",
             type=Type.objects.get(id=1),
         )
-        print(" --->  SetUp of video_markerTestView: OK!")
+        print(" --->  SetUp of VideoMarkerTestView: OK!")
 
     def test_video_markerTestView_get_request(self):
         # anonyme
@@ -1149,7 +1204,7 @@ class video_markerTestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"ok" in response.content)
         self.assertEqual(video.get_marker_time_for_user(self.user), 4)
-        print(" --->  test video markerTestView get request: OK!")
+        print(" --->  test VideoMarkerTestView get request: OK!")
 
 
 class VideoTestUpdateOwner(TransactionTestCase):
@@ -1185,12 +1240,18 @@ class VideoTestUpdateOwner(TransactionTestCase):
         print(" --->  SetUp of VideoTestUpdateOwner: OK!")
 
     def test_update_video_owner(self):
+        """Test update video owner."""
         url = reverse("video:update_video_owner", kwargs={"user_id": self.admin.id})
+
+        video1_id = self.v1.id
+        video2_id = self.v2.id
 
         # Authentication required move TEMPORARY_REDIRECT
         response = self.client.post(
             url,
-            json.dumps({"videos": [1, 2], "owner": [self.simple_user.id]}),
+            json.dumps(
+                {"videos": [video1_id, video2_id], "owner": [self.simple_user.id]}
+            ),
             content_type="application/json",
         )
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
@@ -1218,8 +1279,8 @@ class VideoTestUpdateOwner(TransactionTestCase):
             url,
             json.dumps(
                 {
-                    # video with id 100 doesn't exist
-                    "videos": [1, 2, 100],
+                    # video with id 1000 doesn't exist
+                    "videos": [video1_id, video2_id, 1000],
                     "owner": self.simple_user.id,
                 }
             ),
@@ -1232,7 +1293,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
         # Good request
         response = self.client.post(
             url,
-            json.dumps({"videos": [1, 2], "owner": self.simple_user.id}),
+            json.dumps({"videos": [video1_id, video2_id], "owner": self.simple_user.id}),
             content_type="application/json",
         )
 
@@ -1240,9 +1301,6 @@ class VideoTestUpdateOwner(TransactionTestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
         self.assertEqual(Video.objects.filter(owner=self.simple_user).count(), 2)
-
-    def tearDown(self):
-        super(VideoTestUpdateOwner, self).tearDown()
 
 
 class VideoTestFiltersViews(TestCase):
@@ -1381,136 +1439,6 @@ class VideoTestFiltersViews(TestCase):
         super(VideoTestFiltersViews, self).tearDown()
 
 
-class VideoTestJSONView(TestCase):
-    fixtures = [
-        "initial_data.json",
-    ]
-
-    def setUp(self):
-        # type, discipline, owner et tag
-        site = Site.objects.get(id=1)
-        user = User.objects.create(username="pod", password="pod1234pod")
-        user2 = User.objects.create(username="pod2", password="pod1234pod")
-        user3 = User.objects.create(username="pod3", password="pod1234pod")
-        AccessGroup.objects.create(code_name="group1", display_name="Group 1")
-        AccessGroup.objects.create(code_name="group2", display_name="Group 2")
-        AccessGroup.objects.create(code_name="group3", display_name="Group 3")
-        v0 = Video.objects.create(
-            title="Video1",
-            owner=user,
-            video="test1.mp4",
-            type=Type.objects.get(id=1),
-        )
-        v = Video.objects.create(
-            title="VideoWithAdditionalOwners",
-            owner=user,
-            video="test2.mp4",
-            type=Type.objects.get(id=1),
-            id=2,
-        )
-        v0.sites.add(site)
-        v.sites.add(site)
-        v.additional_owners.add(user2)
-
-        user.owner.sites.add(Site.objects.get_current())
-        user.owner.save()
-
-        user2.owner.sites.add(Site.objects.get_current())
-        user2.owner.save()
-
-        user3.owner.sites.add(Site.objects.get_current())
-        user3.owner.save()
-
-    def test_video_get_request(self):
-        # csrf_client = Client(enforce_csrf_checks=True)
-        v = Video.objects.get(title="Video1")
-        self.assertEqual(v.is_draft, True)
-        url = reverse("video:video_xhr", kwargs={"slug": v.slug})
-        # test draft
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.json()["status"], 302)
-        self.assertEqual(response.json()["error"], "access")
-        self.client = Client()
-        self.user = User.objects.get(username="pod")
-        self.client.force_login(self.user)
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.json()["status"], "ok")
-        self.user = User.objects.get(username="pod2")
-        self.client.force_login(self.user)
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.json()["status"], 403)
-        self.assertEqual(response.json()["error"], "deny")
-        # test normal
-        self.client.logout()
-        v.is_draft = False
-        v.save()
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.json()["status"], "ok")
-        # test restricted
-        v.is_restricted = True
-        v.save()
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.json()["status"], 302)
-        self.assertEqual(response.json()["error"], "access")
-        self.user = User.objects.get(username="pod2")
-        self.client.force_login(self.user)
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.json()["status"], "ok")
-        # test restricted group
-        v.restrict_access_to_groups.add(AccessGroup.objects.get(code_name="group2"))
-        v.restrict_access_to_groups.add(AccessGroup.objects.get(code_name="group3"))
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.json()["status"], 403)
-        self.assertEqual(response.json()["error"], "deny")
-        self.user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="group1"))
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.json()["status"], 403)
-        self.assertEqual(response.json()["error"], "deny")
-        self.user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="group2"))
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.json()["status"], "ok")
-        # TODO test with password (actualy not used in playlist)
-        """v.is_restricted = False
-        v.restrict_access_to_groups = []
-        v.password = "password"
-        v.save()
-        self.client.logout()
-        response = self.client.get("/video_xhr/%s/" % v.slug,
-        HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.json()['status'], 'ok')
-        self.assertTrue(response.context["form"])
-        """
-        # TODO test with hashkey (actualy not used in playlist)
-        """response = self.client.get("/video_xhr/%s/%s/" % (v.slug, v.get_hashkey()))
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual("form" in response.context.keys(), False)
-        v.is_draft = True
-        v.save()
-        response = self.client.get("/video_xhr/%s/%s/" % (v.slug, v.get_hashkey()))
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual("form" in response.context.keys(), False)"""
-        # Tests for additional owners
-        v = Video.objects.get(title="VideoWithAdditionalOwners")
-        url = reverse("video:video_xhr", kwargs={"slug": v.slug})
-        self.client = Client()
-        self.user = User.objects.get(username="pod")
-        self.client.force_login(self.user)
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.json()["status"], "ok")
-        self.user = User.objects.get(username="pod2")
-        self.client.force_login(self.user)
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.json()["status"], "ok")
-        self.user = User.objects.get(username="pod3")
-        self.client.force_login(self.user)
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
-        self.assertEqual(response.json()["status"], 403)
-        self.assertEqual(response.json()["error"], "deny")
-
-
 class ChannelJsonResponseViews(TestCase):
     """
     Test for views to get channel informations in JSON format.
@@ -1620,3 +1548,278 @@ class ChannelJsonResponseViews(TestCase):
             "[test_get_channels_for_specific_channel_tab] Test if the response content is correct.",
         )
         print(" ---> test_get_channels_for_specific_channel_tab : OK!")
+
+
+class VideoTranscriptTestView(TestCase):
+    """Test the video transcript view."""
+
+    fixtures = [
+        "initial_data.json",
+    ]
+
+    def setUp(self):
+        """Set up data for test class"""
+        user = User.objects.create(username="pod", password="pod1234pod")
+        Video.objects.create(
+            title="Video1",
+            owner=user,
+            video="test1.mp4",
+            type=Type.objects.get(id=1),
+        )
+        print(" --->  SetUp of VideoTranscriptTestView: OK!")
+
+    def test_video_transcript_get_request(self):
+        """Check response for get request with default settings."""
+        # anonyme
+        self.client = Client()
+        video = Video.objects.get(title="Video1")
+        url = reverse("video:video_transcript", kwargs={"slug": video.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        # login and video does not exist
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        url = reverse("video:video_transcript", kwargs={"slug": "1234"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+        # login and video exist
+        # USE_TRANSCRIPTION is False
+        url = reverse("video:video_transcript", kwargs={"slug": video.slug})
+        response = self.client.get(url)
+        # 403 permission denied
+        self.assertEqual(response.status_code, 403)
+        print(" ---> test_video_transcript_get_request : OK!")
+
+    @override_settings(
+        USE_TRANSCRIPTION=True,
+        TRANSCRIPTION_TYPE="VOSK",
+        TRANSCRIPTION_MODEL_PARAM={
+            # les modèles Vosk
+            "VOSK": {
+                "fr": {
+                    "model": "",
+                },
+                "en": {
+                    "model": "",
+                },
+            }
+        },
+    )
+    def test_video_transcript_get_request_transcription(self):
+        """Check response for get request with use transcription."""
+        reload(views)
+
+        def inner_get_transcription_choices():
+            return [("fr", "French"), ("en", "english")]
+
+        views.get_transcription_choices = inner_get_transcription_choices
+        video = Video.objects.get(title="Video1")
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        url = reverse("video:video_transcript", kwargs={"slug": video.slug})
+        response = self.client.get(url)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(
+            str(messages[0]),
+            "You cannot launch transcript for a video that is being encoded.",
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response,
+            reverse("video:video_edit", args=(video.slug,)),
+            status_code=302,
+            target_status_code=200,
+            fetch_redirect_response=True,
+        )
+        video.encoding_in_progress = False
+        video.save()
+        response = self.client.get(url)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(
+            str(messages[0]),
+            "You cannot launch transcript for a video that is being encoded.",
+        )
+        audio = Video.objects.create(
+            title="Audio1",
+            owner=self.user,
+            video="test.mp3",
+            type=Type.objects.get(id=1),
+        )
+        tempfile = NamedTemporaryFile(delete=True)
+        audio.video.save("test.mp3", tempfile)
+        dest = os.path.join(settings.MEDIA_ROOT, audio.video.name)
+        shutil.copyfile(AUDIO_TEST, dest)
+        print("\n ---> Start Encoding audio")
+        encode.encode_video(audio.id)
+        print("\n ---> End Encoding audio")
+        url = reverse("video:video_transcript", kwargs={"slug": audio.slug})
+        response = self.client.get(url)
+        messages = list(get_messages(response.wsgi_request))
+        str_messages = []
+        for message in messages:
+            str_messages.append(str(message))
+        check_message = "An available transcription language must be specified."
+        self.assertTrue(check_message in str_messages)
+        url = reverse("video:video_transcript", kwargs={"slug": audio.slug})
+        url += "?lang=fr"
+        response = self.client.get(url)
+        messages = list(get_messages(response.wsgi_request))
+        str_messages = []
+        for message in messages:
+            str_messages.append(str(message))
+        check_message = "The video transcript has been restarted."
+        self.assertTrue(check_message in str_messages)
+        self.assertRedirects(
+            response,
+            reverse("video:video_edit", args=(audio.slug,)),
+            status_code=302,
+            target_status_code=200,
+            fetch_redirect_response=True,
+        )
+        audio.refresh_from_db()
+        self.assertEqual(audio.transcript, "fr")
+        print(" ---> test_video_transcript_get_request_transcription : OK!")
+
+
+class VideoAccessTokenTestView(TestCase):
+    """Test the video access token view."""
+
+    fixtures = [
+        "initial_data.json",
+    ]
+
+    def setUp(self):
+        """Set up data for test class."""
+        user = User.objects.create(username="pod", password="pod1234pod")
+        User.objects.create(username="pod2", password="pod1234pod")
+        User.objects.create(username="pod3", password="pod1234pod")
+        Video.objects.create(
+            title="Video1",
+            owner=user,
+            video="test1.mp4",
+            type=Type.objects.get(id=1),
+        )
+        print(" --->  SetUp of VideoAccessTokenTestView: OK!")
+
+    def test_video_access_tokens_get_request(self):
+        """Check response for get request with default settings."""
+        # anonyme
+        self.client = Client()
+        video = Video.objects.get(title="Video1")
+        url = reverse("video:video_edit_access_tokens", kwargs={"slug": video.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        # login and video does not exist
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        url = reverse("video:video_edit_access_tokens", kwargs={"slug": "1234"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+        # login and video exist - user not allowed
+        url = reverse("video:video_edit_access_tokens", kwargs={"slug": video.slug})
+        self.user2 = User.objects.get(username="pod2")
+        self.client.force_login(self.user2)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+        # login and video exist - user allowed
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        # additionnal_user
+        self.user3 = User.objects.get(username="pod3")
+        self.client.force_login(self.user3)
+        video.additional_owners.add(self.user3)
+        video.save()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        print(" ---> test_video_access_tokens_get_request : OK!")
+
+    def test_video_access_tokens_post_request(self):
+        """Check response for post request."""
+        video = Video.objects.get(title="Video1")
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        url = reverse("video:video_edit_access_tokens", kwargs={"slug": video.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        # ###################################
+        # Empty post
+        response = self.client.post(url, {})
+        # 302 redirect to remove post action
+        self.assertEqual(response.status_code, 302)
+        msg = _("An action must be specified.")
+        all_messages = [msg for msg in get_messages(response.wsgi_request)]
+        # here's how you test the first message
+        self.assertEqual(all_messages[-1].tags, "error")
+        self.assertEqual(all_messages[-1].message, msg)
+        self.assertEqual(VideoAccessToken.objects.all().count(), 0)
+        # ###################################
+        # post random action
+        response = self.client.post(url, {"action": "toto"})
+        # 302 redirect to remove post action
+        self.assertEqual(response.status_code, 302)
+        msg = _("An action must be specified.")
+        all_messages = [msg for msg in get_messages(response.wsgi_request)]
+        # here's how you test the first message
+        self.assertEqual(all_messages[-1].tags, "error")
+        self.assertEqual(all_messages[-1].message, msg)
+        self.assertEqual(VideoAccessToken.objects.all().count(), 0)
+        # ###################################
+        # post add action
+        response = self.client.post(url, {"action": "add"})
+        # 302 redirect to remove post action
+        self.assertEqual(response.status_code, 302)
+        msg = _("A token has been created.")
+        all_messages = [msg for msg in get_messages(response.wsgi_request)]
+        # here's how you test the first message
+        self.assertEqual(all_messages[-1].tags, "info")
+        self.assertEqual(all_messages[-1].message, msg)
+        self.assertEqual(VideoAccessToken.objects.all().count(), 1)
+        # ###################################
+        # post empty delete action
+        response = self.client.post(url, {"action": "delete"})
+        # 302 redirect to remove post action
+        self.assertEqual(response.status_code, 302)
+        msg = _("Token not found.")
+        all_messages = [msg for msg in get_messages(response.wsgi_request)]
+        # here's how you test the first message
+        self.assertEqual(all_messages[-1].tags, "error")
+        self.assertEqual(all_messages[-1].message, msg)
+        self.assertEqual(VideoAccessToken.objects.all().count(), 1)
+        # ###################################
+        # post invalid token delete action
+        response = self.client.post(url, {"action": "delete", "token": "1234"})
+        # 302 redirect to remove post action
+        self.assertEqual(response.status_code, 302)
+        msg = _("Token not found.")
+        all_messages = [msg for msg in get_messages(response.wsgi_request)]
+        # here's how you test the first message
+        self.assertEqual(all_messages[-1].tags, "error")
+        self.assertEqual(all_messages[-1].message, msg)
+        self.assertEqual(VideoAccessToken.objects.all().count(), 1)
+        # ###################################
+        # post randmon token delete action
+        response = self.client.post(url, {"action": "delete", "token": uuid.uuid4()})
+        # 302 redirect to remove post action
+        self.assertEqual(response.status_code, 302)
+        msg = _("Token not found.")
+        all_messages = [msg for msg in get_messages(response.wsgi_request)]
+        # here's how you test the first message
+        self.assertEqual(all_messages[-1].tags, "error")
+        self.assertEqual(all_messages[-1].message, msg)
+        self.assertEqual(VideoAccessToken.objects.all().count(), 1)
+        # ###################################
+        # post good token delete action
+        token = VideoAccessToken.objects.all().first().token
+        response = self.client.post(url, {"action": "delete", "token": token})
+        # 302 redirect to remove post action
+        self.assertEqual(response.status_code, 302)
+        msg = _("The token has been deleted.")
+        all_messages = [msg for msg in get_messages(response.wsgi_request)]
+        # here's how you test the first message
+        self.assertEqual(all_messages[-1].tags, "info")
+        self.assertEqual(all_messages[-1].message, msg)
+        self.assertEqual(VideoAccessToken.objects.all().count(), 0)
+
+        print(" ---> test_video_access_tokens_post_request : OK!")

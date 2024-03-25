@@ -1,8 +1,10 @@
 """Esup-Pod transcript video functions."""
+
 from django.conf import settings
 from django.core.files import File
 from pod.completion.models import Track
 from pod.main.tasks import task_start_transcript
+from webvtt import Caption
 
 from .utils import (
     send_email,
@@ -19,6 +21,9 @@ if (
     or importlib.util.find_spec("whisper") is not None
 ):
     from .transcript_model import start_transcripting
+
+
+from .encoding_utils import sec_to_timestamp
 
 import os
 import time
@@ -48,10 +53,10 @@ if USE_TRANSCRIPTION:
 TRANSCRIPTION_NORMALIZE = getattr(settings, "TRANSCRIPTION_NORMALIZE", False)
 CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 
-USE_DISTANT_ENCODING_TRANSCODING = getattr(
-    settings, "USE_DISTANT_ENCODING_TRANSCODING", False
+USE_REMOTE_ENCODING_TRANSCODING = getattr(
+    settings, "USE_REMOTE_ENCODING_TRANSCODING", False
 )
-if USE_DISTANT_ENCODING_TRANSCODING:
+if USE_REMOTE_ENCODING_TRANSCODING:
     from .transcripting_tasks import start_transcripting_task
 
 log = logging.getLogger(__name__)
@@ -99,7 +104,8 @@ def main_threaded_transcript(video_to_encode_id):
     change_encoding_step(video_to_encode_id, 5, "transcripting audio")
 
     video_to_encode = Video.objects.get(id=video_to_encode_id)
-
+    video_to_encode.encoding_in_progress = True
+    video_to_encode.save()
     msg = ""
     lang = video_to_encode.transcript
     # check if TRANSCRIPTION_MODEL_PARAM [lang] exist
@@ -120,7 +126,7 @@ def main_threaded_transcript(video_to_encode_id):
             send_email(msg, video_to_encode.id)
         else:
             mp3filepath = mp3file.path
-            if USE_DISTANT_ENCODING_TRANSCODING:
+            if USE_REMOTE_ENCODING_TRANSCODING:
                 start_transcripting_task.delay(
                     video_to_encode.id, mp3filepath, video_to_encode.duration, lang
                 )
@@ -136,6 +142,8 @@ def save_vtt_and_notify(video_to_encode, msg, webvtt):
     """Call save vtt file function and notify by mail at the end."""
     msg += saveVTT(video_to_encode, webvtt)
     change_encoding_step(video_to_encode.id, 0, "done")
+    video_to_encode.encoding_in_progress = False
+    video_to_encode.save()
     # envois mail fin transcription
     if EMAIL_ON_TRANSCRIPTING_COMPLETION:
         send_email_transcript(video_to_encode)
@@ -149,6 +157,7 @@ def saveVTT(video, webvtt):
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     webvtt.save(temp_vtt_file.name)
     if webvtt.captions:
+        improveCaptionsAccessibility(webvtt)
         msg += "\nstore vtt file in bdd with CustomFileModel model file field"
         if __FILEPICKER__:
             videodir, created = UserFolder.objects.get_or_create(
@@ -186,3 +195,114 @@ def saveVTT(video, webvtt):
     else:
         msg += "\nERROR SUBTITLES Output size is 0"
     return msg
+
+
+def improveCaptionsAccessibility(webvtt):
+    """
+    Parse the vtt file in argument to render the caption conform to accessibility.
+    - see `https://github.com/knarf18/Bonnes-pratiques-du-sous-titrage/blob/master/Liste%20de%20bonnes%20pratiques.md` # noqa: E501
+    - 40 car maximum per ligne (CPL)
+    - 2 lines max by caption
+
+    Args:
+        webvtt (:class:`webvtt.WebVTT`): the webvtt file content
+
+    """
+    new_captions = []
+    for caption in webvtt.captions:
+        sent = split_string(caption.text, 40, sep=" ")
+        # nb mots total
+        nbTotWords = len(caption.text.split())
+        if len(sent) > 2:
+            num_captions = int(len(sent) / 2)
+            if len(sent) % 2:
+                num_captions += 1
+            dur = caption.end_in_seconds - caption.start_in_seconds
+            # On se positionne sur le point de départ en sec
+            startTime = caption.start_in_seconds
+            for x in range(num_captions):
+                new_cap = Caption()
+                new_cap.text = get_cap_text(sent, x)
+                # Durée d'affichage au prorata du nombre de mots
+                timeCalc = dur * (len(new_cap.text.split()) / nbTotWords)
+                new_cap.start = sec_to_timestamp(startTime)
+                new_cap.end = sec_to_timestamp(startTime + timeCalc)
+                startTime = startTime + timeCalc
+                new_captions.append(new_cap)
+        else:
+            new_cap = Caption()
+            new_cap.start = caption.start
+            new_cap.end = caption.end
+            new_cap.text = "\n".join(sent)
+            new_captions.append(new_cap)
+    # remove all old captions
+    while len(webvtt.captions) > 0:
+        del webvtt.captions[0]
+    # add the new one
+    for cap in new_captions:
+        webvtt.captions.append(cap)
+    webvtt.save()
+
+
+def get_cap_text(sent, x):
+    """
+    Get the text in the sent array at the position gived in arg.
+
+    Args:
+        sent (list): The list of text
+        x (int): The position to extract
+
+    Returns:
+        str: The extracted text
+    """
+    new_cap_text = sent[x * 2]
+    try:
+        new_cap_text += "\n" + sent[x * 2 + 1]
+    except IndexError:
+        pass
+    return new_cap_text
+
+
+def pad(line, limit):
+    """
+    Add some space at the end of line to specified limit.
+
+    Args:
+        line (str): A line of text
+        limit (int): The size of line
+
+    Returns:
+        str: the line with space at the end
+    """
+    return line + " " * (limit - len(line))
+
+
+def split_string(text, limit, sep=" "):
+    """
+    Split text by word for specified limit.
+
+    Args:
+        text (str): the text of the caption
+        limit (int): size of line
+        sep (str): default " "
+
+    Returns:
+        array: list of words in the text
+    """
+    words = text.split()
+    if max(map(len, words)) > limit:
+        raise ValueError("limit is too small")
+    res = []
+    part = words[0]
+    others = words[1:]
+    for word in others:
+        if len(sep) + len(word) > limit - len(part):
+            res.append(part)
+            part = word
+        else:
+            part += sep + word
+    if part:
+        res.append(part)
+    # add space to the end of line
+    result = [pad(line, limit) for line in res]
+    return result

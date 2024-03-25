@@ -1,4 +1,5 @@
 """Tests the models for import_video module."""
+
 from ..models import ExternalRecording
 from datetime import datetime
 from django.contrib.auth.models import User
@@ -14,7 +15,7 @@ class ExternalRecordingTestCase(TestCase):
     """
 
     def setUp(self):
-        """Setup for the recordings."""
+        """Set up for the recordings."""
         user = User.objects.create(username="pod")
         ExternalRecording.objects.create(
             id=1,

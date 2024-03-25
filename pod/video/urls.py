@@ -8,9 +8,9 @@ from .views import (
     video_add,
     video_delete,
     video_transcript,
-    my_videos,
+    dashboard,
+    bulk_update,
     video_notes,
-    video_xhr,
     video_count,
     video_marker,
     video_version,
@@ -34,6 +34,7 @@ from .views import (
     delete_comment,
     vote_get,
     vote_post,
+    video_edit_access_tokens,
 )
 
 
@@ -56,6 +57,11 @@ urlpatterns = [
     url(r"^edit/$", video_edit, name="video_edit"),
     url(r"^edit/(?P<slug>[\-\d\w]+)/$", video_edit, name="video_edit"),
     url(
+        r"^edit_access_tokens/(?P<slug>[\-\d\w]+)/$",
+        video_edit_access_tokens,
+        name="video_edit_access_tokens",
+    ),
+    url(
         r"^delete/(?P<slug>[\-\d\w]+)/$",
         video_delete,
         name="video_delete",
@@ -69,12 +75,6 @@ urlpatterns = [
     url(r"^count/(?P<id>[\d]+)/$", video_count, name="video_count"),
     url(r"^marker/(?P<id>[\d]+)/(?P<time>[\d]+)/$", video_marker, name="video_marker"),
     url(r"^version/(?P<id>[\d]+)/$", video_version, name="video_version"),
-    url(r"^xhr/(?P<slug>[\-\d\w]+)/$", video_xhr, name="video_xhr"),
-    url(
-        r"^xhr/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
-        video_xhr,
-        name="video_xhr",
-    ),
     url(
         "api/chunked_upload_complete/",
         PodChunkedUploadCompleteView.as_view(),
@@ -85,7 +85,8 @@ urlpatterns = [
         PodChunkedUploadView.as_view(),
         name="api_chunked_upload",
     ),
-    url(r"^my/$", my_videos, name="my_videos"),
+    path("dashboard/", dashboard, name="dashboard"),
+    path("bulk_update/", bulk_update, name="bulk_update"),
 ]
 # COMPLETION
 urlpatterns += [
@@ -99,6 +100,11 @@ urlpatterns += [
 # CUT
 urlpatterns += [
     path("cut/", include("pod.cut.urls", namespace="video_cut")),
+]
+
+# DRESSING
+urlpatterns += [
+    path("dressing/", include("pod.dressing.urls", namespace="video_dressing")),
 ]
 
 ##

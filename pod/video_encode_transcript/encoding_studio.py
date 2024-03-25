@@ -1,4 +1,5 @@
 """This module handles studio encoding with CPU."""
+
 from django.conf import settings
 from .utils import check_file, send_email_recording
 from . import encode
@@ -92,7 +93,7 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
         encode_video = getattr(encode, ENCODE_VIDEO)
         encode_video(video.id, False)
     else:
-        msg = "Wrong file or path:" + "\n%s" % video_output
+        msg = "Wrong file or path:\n%s" % video_output
         send_email_recording(msg, recording_id)
 
 
