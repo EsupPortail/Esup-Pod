@@ -254,9 +254,11 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             if n > 30:
                 raise ValidationError("Error while encoding !!!")
             print(
-                "===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003")
+                "===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003"
+            )
             print(os.listdir(
-                "/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003"))
+                "/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003")
+            )
         self.video.refresh_from_db()
         print("end of dressing encoding")
         print(self.video.get_encoding_step)
