@@ -210,18 +210,12 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             return
         print("\n ---> Start Encoding video dressing test")
         encode_video = getattr(encode, ENCODE_VIDEO)
-        print("===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003")
-        print(os.listdir("/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003"))
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        print("===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003")
-        print(os.listdir("/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003"))
         simplefile = SimpleUploadedFile(
             name="testimage.jpg",
             content=open(os.path.join(currentdir, "tests", "testimage.jpg"), "rb").read(),
             content_type="image/jpeg",
         )
-        print("===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003")
-        print(os.listdir("/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003"))
         if FILEPICKER:
             home = UserFolder.objects.get(name="home", owner=self.user)
             customImage = CustomImageModel.objects.create(
@@ -233,8 +227,6 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             )
         else:
             customImage = CustomImageModel.objects.create(file=simplefile)
-        print("===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003")
-        print(os.listdir("/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003"))
 
         dressing = Dressing.objects.create(
             title="Watermark dressing top right",
@@ -261,6 +253,10 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             n += 1
             if n > 30:
                 raise ValidationError("Error while encoding !!!")
+            print(
+                "===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003")
+            print(os.listdir(
+                "/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003"))
         self.video.refresh_from_db()
         print("end of dressing encoding")
         print(self.video.get_encoding_step)
@@ -295,8 +291,6 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         with open(self.video.encodinglog.logfile.path) as json_file:
             info_video = json.load(json_file)
             print(json.dumps(info_video, indent=4, sort_keys=True))
-        print("===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003")
-        print(os.listdir("/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003"))
         print("\n ---> End of Encoding video dressing test")
 
     def remote_transcripting(self):
