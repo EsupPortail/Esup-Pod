@@ -196,8 +196,12 @@ class RemoteEncodeTranscriptTestCase(TestCase):
     def remote_encoding_dressing(self):
         """Launch test of video remote encoding for dressing."""
         print("===== LS =====")
+        print("===> /usr/src/app/pod")
         print(os.listdir("/usr/src/app/pod"))
+        print("===> /usr/src/app/pod/main/static/video_test")
         print(os.listdir("/usr/src/app/pod/main/static/video_test"))
+        print("===> /usr/src/app/pod/media/videos")
+        print(os.listdir("/usr/src/app/pod/media/videos"))
         if not TEST_REMOTE_ENCODE:
             return
         print("\n ---> Start Encoding video dressing test")
