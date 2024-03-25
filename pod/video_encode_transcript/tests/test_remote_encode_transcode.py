@@ -63,12 +63,19 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             type=Type.objects.get(id=1),
             transcript="",
         )
+        print("===> video.video.name: %s" % video.video.name)
         tempfile = NamedTemporaryFile(delete=True)
+        print("===> tempfile: %s" % tempfile)
         video.video.save("test.mp4", tempfile)
+        print("===> video.video: %s" % video.video)
         dest = os.path.join(settings.MEDIA_ROOT, video.video.name)
+        print("===> dest: %s" % dest)
+        print("===> VIDEO_TEST: %s" % VIDEO_TEST)
         shutil.copyfile(VIDEO_TEST, dest)
         self.user = user
+        print("===> self.user: %s" % self.user)
         self.video = video
+        print("===> self.video: %s" % self.video)
 
         # Add credit video for dressing
         credit_video, created = Video.objects.update_or_create(
@@ -150,6 +157,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         """Launch test of cut video remote encoding."""
         print("\n ---> Start Encoding cut video test")
         encode_video = getattr(encode, ENCODE_VIDEO)
+        print("===> self.video.id: %s" % self.video.id)
         encode_video(self.video.id, threaded=False)
         self.video.refresh_from_db()
         CutVideo.objects.create(
