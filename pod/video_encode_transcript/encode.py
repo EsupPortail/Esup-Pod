@@ -136,7 +136,7 @@ def encode_video(video_id: int) -> None:
         dressing = None
         dressing_input = ""
         if Dressing.objects.filter(videos=video_to_encode).exists():
-            dressing = Dressing.objects.get(videos=video_to_encode).to_json()
+            dressing = Dressing.objects.get(videos=video_to_encode)
             if dressing:
                 dressing_input = get_dressing_input(dressing, FFMPEG_DRESSING_INPUT)
         start_encoding_task.delay(
@@ -144,7 +144,7 @@ def encode_video(video_id: int) -> None:
             encoding_video.video_file,
             encoding_video.cutting_start,
             encoding_video.cutting_stop,
-            json_dressing=dressing,
+            json_dressing=dressing.to_json(),
             dressing_input=dressing_input,
         )
     else:
@@ -177,7 +177,7 @@ def get_encoding_video(video_to_encode: Video) -> Encoding_video_model:
     dressing = None
     dressing_input = ""
     if Dressing.objects.filter(videos=video_to_encode).exists():
-        dressing = Dressing.objects.get(videos=video_to_encode).to_json()
+        dressing = Dressing.objects.get(videos=video_to_encode)
         if dressing:
             dressing_input = get_dressing_input(dressing, FFMPEG_DRESSING_INPUT)
 
@@ -190,7 +190,7 @@ def get_encoding_video(video_to_encode: Video) -> Encoding_video_model:
             video_to_encode.video.path,
             cut_start,
             cut_end,
-            json_dressing=dressing,
+            json_dressing=dressing.to_json(),
             dressing_input=dressing_input,
         )
         return encoding_video
@@ -200,7 +200,7 @@ def get_encoding_video(video_to_encode: Video) -> Encoding_video_model:
         video_to_encode.video.path,
         0,
         0,
-        json_dressing=dressing,
+        json_dressing=dressing.to_json(),
         dressing_input=dressing_input,
     )
 
