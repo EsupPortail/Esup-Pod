@@ -202,6 +202,10 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         print(os.listdir("/usr/src/app/pod/main/static/video_test"))
         print("===> /usr/src/app/pod/media/videos")
         print(os.listdir("/usr/src/app/pod/media/videos"))
+        print("===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d")
+        print(os.listdir("/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d"))
+        print("===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003")
+        print(os.listdir("/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003"))
         if not TEST_REMOTE_ENCODE:
             return
         print("\n ---> Start Encoding video dressing test")
