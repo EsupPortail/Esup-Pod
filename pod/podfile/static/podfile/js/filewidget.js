@@ -766,7 +766,6 @@ if (typeof loaded == "undefined") {
             string_html,
             "text/html"
           ).body.firstChild;
-          console.log("deb");
           const listFoldersSub = document.getElementById("list_folders_sub");
           if (listFoldersSub) {
             listFoldersSub.appendChild(parsedHTML);
