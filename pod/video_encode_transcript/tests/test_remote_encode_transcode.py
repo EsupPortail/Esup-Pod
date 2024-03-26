@@ -268,6 +268,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             video=self.video,
             encoding_format="application/x-mpegURL",
         )
+        print("===> self.video: %s" % self.video)
         list_mp4 = EncodingVideo.objects.filter(
             video=self.video, encoding_format="video/mp4"
         )
@@ -276,6 +277,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.assertTrue(len(list_mp2t) > 0)
         self.assertEqual(len(list_mp2t) + 1, len(list_playlist_video))
         self.assertTrue(list_playlist_master)
+        print("===> list_mp4: %s" % list_mp4)
         self.assertTrue(len(list_mp4) > 0)
         self.assertTrue(self.video.overview)
         self.assertTrue(self.video.thumbnail)
