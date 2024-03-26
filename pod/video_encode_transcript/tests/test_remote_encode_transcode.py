@@ -106,6 +106,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             self.user.delete()
         print(" --->  tearDown of RemoteEncodeTranscriptTestCase: OK!")
 
+    '''
     def test_remote_encoding_transcoding(self):
         """Launch test of video remote encoding."""
         self.remote_encoding()
@@ -113,8 +114,9 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.remote_encoding_dressing()
         self.remote_transcripting()
         print(" --->  test_remote_encoding_transcoding: OK!")
+    '''
 
-    def remote_encoding(self):
+    def test_remote_encoding(self):
         """Launch test of video remote encoding."""
         if not TEST_REMOTE_ENCODE:
             return
@@ -156,7 +158,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.assertTrue(self.video.thumbnail)
         print("\n ---> End of Encoding video test")
 
-    def remote_encoding_cut(self):
+    def test_remote_encoding_cut(self):
         """Launch test of cut video remote encoding."""
         if not TEST_REMOTE_ENCODE:
             return
@@ -206,7 +208,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.assertTrue(self.video.thumbnail)
         print("\n ---> End of Encoding video cut test")
 
-    def remote_encoding_dressing(self):
+    def test_remote_encoding_dressing(self):
         """Launch test of video remote encoding for dressing."""
         if not TEST_REMOTE_ENCODE:
             return
@@ -287,7 +289,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             print(json.dumps(info_video, indent=4, sort_keys=True))
         print("\n ---> End of Encoding video dressing test")
 
-    def remote_transcripting(self):
+    def test_remote_transcripting(self):
         """Launch test of video remote transcripting."""
         if not TEST_REMOTE_ENCODE:
             return
