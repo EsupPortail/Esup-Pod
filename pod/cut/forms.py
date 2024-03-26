@@ -18,12 +18,12 @@ class CutVideoForm(forms.ModelForm):
                 "step": "1",
                 "required": "required",
                 "size": "8",
-                "style": "text-align: center;",
+                "class": "text-center",
             }),
             "end": forms.TimeInput(attrs={
                 "step": "1",
                 "required": "required",
                 "size": "8",
-                "style": "text-align: center;",
+                "class": "text-center",
             }),
         }
