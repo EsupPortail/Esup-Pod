@@ -226,10 +226,10 @@ class Block(models.Model):
         (EVENT_NEXT, _('Next events')),
     )
 
-    title = models.CharField(_("Title"), max_length=250, blank=True, null=True)
+    title = models.CharField(verbose_name=_("Title"), max_length=250, blank=True, null=True)
 
     order = models.PositiveSmallIntegerField(
-        _("order"), default=1, blank=True, null=True
+        verbose_name=_("Order"), default=1, blank=True, null=True
     )
 
     visible = models.BooleanField(
@@ -314,7 +314,7 @@ class Block(models.Model):
     )
 
     show_restricted = models.BooleanField(
-        verbose_name=_("Show restricted"),
+        verbose_name=_("Show restricted content"),
         default=False,
         help_text=_("Check this box if you want to show restricted content."),
     )
@@ -328,7 +328,7 @@ class Block(models.Model):
     auto_slide = models.BooleanField(
         verbose_name=_("Auto slide"),
         default=False,
-        help_text=_("Check this box if if you want auto slide."),
+        help_text=_("Check this box if you want auto slide."),
     )
 
     nb_element = models.PositiveIntegerField(
@@ -346,14 +346,14 @@ class Block(models.Model):
         verbose_name=_("View videos from non visible channel"),
         default=False,
         help_text=_(
-            "Check this box if if you want view videos from non visible channel."
+            "Check this box if you want view videos from non visible channel."
         ),
     )
 
     shows_passworded = models.BooleanField(
         verbose_name=_("View videos with password"),
         default=False,
-        help_text=_("Check this box if if you want view videos with password."),
+        help_text=_("Check this box if you want view videos with password."),
     )
 
     def __str__(self):

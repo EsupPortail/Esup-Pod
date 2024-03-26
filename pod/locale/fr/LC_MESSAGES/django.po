@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-21 15:18+0000\n"
+"POT-Creation-Date: 2024-03-26 14:27+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -4864,6 +4864,10 @@ msgstr "Dernières vidéos"
 msgid "Most views"
 msgstr "Les plus vues"
 
+#: pod/main/models.py
+msgid "Order"
+msgstr "ordre"
+
 #: pod/main/models.py pod/video/models.py
 msgid "Visible"
 msgstr "Visible"
@@ -4894,7 +4898,7 @@ msgstr "Écrire en html à l'intérieur de ce champ."
 
 #: pod/main/models.py
 msgid "Display title"
-msgstr "Titre affiché"
+msgstr "Afficher le titre"
 
 #: pod/main/models.py
 msgid "No cache"
@@ -4909,7 +4913,7 @@ msgid "Check this box if you want to activate debug mode."
 msgstr "Cocher cette case si vous voulez activer le mode débogage."
 
 #: pod/main/models.py
-msgid "Show restricted"
+msgid "Show restricted content"
 msgstr "Montrer le contenu restreint"
 
 #: pod/main/models.py
@@ -4931,23 +4935,23 @@ msgid "Auto slide"
 msgstr "Défilement automatique"
 
 #: pod/main/models.py
-msgid "Check this box if if you want auto slide."
+msgid "Check this box if you want auto slide."
 msgstr "Cocher cette case si vous voulez activer le défilement automatique."
 
 #: pod/main/models.py
 msgid "Number of element"
-msgstr "Nombre d'élément"
+msgstr "Nombre d'éléments"
 
 #: pod/main/models.py
 msgid "Number of element for multi carousel"
-msgstr "Nombre d'élément pour le carrousel multiple"
+msgstr "Nombre d'éléments pour le carrousel multiple"
 
 #: pod/main/models.py
 msgid "View videos from non visible channel"
 msgstr "Voir les vidéos d'une chaine non visible"
 
 #: pod/main/models.py
-msgid "Check this box if if you want view videos from non visible channel."
+msgid "Check this box if you want view videos from non visible channel."
 msgstr ""
 "Cocher cette case si vous voulez voir les vidéos d'une chaine non visible."
 
@@ -4956,7 +4960,7 @@ msgid "View videos with password"
 msgstr "Voir les vidéos avec un mot de passe"
 
 #: pod/main/models.py
-msgid "Check this box if if you want view videos with password."
+msgid "Check this box if you want view videos with password."
 msgstr "Cocher cette case si vous voulez voir les vidéos avec un mot de passe."
 
 #: pod/main/models.py
@@ -5056,6 +5060,26 @@ msgstr "J’ai compris"
 #: pod/video/templates/videos/last_videos.html
 msgid "Show all videos"
 msgstr "Afficher toutes les vidéos"
+
+#: pod/main/templates/block/carousel.html
+#, fuzzy, python-format
+#| msgid "Video versions"
+msgid "Video %(video_number)s"
+msgstr "Versions de la video"
+
+#: pod/main/templates/block/carousel.html
+#: pod/main/templates/block/multi_carousel.html
+#, fuzzy
+#| msgid "Previous page"
+msgid "Previous"
+msgstr "Page précédente"
+
+#: pod/main/templates/block/carousel.html
+#: pod/main/templates/block/multi_carousel.html
+#, fuzzy
+#| msgid "Next page"
+msgid "Next"
+msgstr "Page suivante"
 
 #: pod/main/templates/contact_us.html
 msgid "Your message"

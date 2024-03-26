@@ -1,3 +1,5 @@
+"""Esup-Pod main admin page."""
+
 from ckeditor.widgets import CKEditorWidget
 from django.contrib import admin
 from django import forms
@@ -31,6 +33,7 @@ class PageForm(FlatpageForm):
 # CustomFlatPage admin panel
 
 
+""" Create translation for additional Channel Tab Field"""
 class AdditionalChannelTabAdmin(TranslationAdmin):
     list_display = ("name",)
 

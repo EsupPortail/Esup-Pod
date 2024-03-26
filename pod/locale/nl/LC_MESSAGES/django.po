@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-21 15:18+0000\n"
+"POT-Creation-Date: 2024-03-26 14:27+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -4605,6 +4605,10 @@ msgstr ""
 msgid "Most views"
 msgstr ""
 
+#: pod/main/models.py
+msgid "Order"
+msgstr ""
+
 #: pod/main/models.py pod/video/models.py
 msgid "Visible"
 msgstr ""
@@ -4652,7 +4656,7 @@ msgid "Check this box if you want to activate debug mode."
 msgstr ""
 
 #: pod/main/models.py
-msgid "Show restricted"
+msgid "Show restricted content"
 msgstr ""
 
 #: pod/main/models.py
@@ -4672,7 +4676,7 @@ msgid "Auto slide"
 msgstr ""
 
 #: pod/main/models.py
-msgid "Check this box if if you want auto slide."
+msgid "Check this box if you want auto slide."
 msgstr ""
 
 #: pod/main/models.py
@@ -4688,7 +4692,7 @@ msgid "View videos from non visible channel"
 msgstr ""
 
 #: pod/main/models.py
-msgid "Check this box if if you want view videos from non visible channel."
+msgid "Check this box if you want view videos from non visible channel."
 msgstr ""
 
 #: pod/main/models.py
@@ -4696,7 +4700,7 @@ msgid "View videos with password"
 msgstr ""
 
 #: pod/main/models.py
-msgid "Check this box if if you want view videos with password."
+msgid "Check this box if you want view videos with password."
 msgstr ""
 
 #: pod/main/models.py
@@ -4790,6 +4794,21 @@ msgstr ""
 #: pod/main/templates/block/multi_carousel.html
 #: pod/video/templates/videos/last_videos.html
 msgid "Show all videos"
+msgstr ""
+
+#: pod/main/templates/block/carousel.html
+#, python-format
+msgid "Video %(video_number)s"
+msgstr ""
+
+#: pod/main/templates/block/carousel.html
+#: pod/main/templates/block/multi_carousel.html
+msgid "Previous"
+msgstr ""
+
+#: pod/main/templates/block/carousel.html
+#: pod/main/templates/block/multi_carousel.html
+msgid "Next"
 msgstr ""
 
 #: pod/main/templates/contact_us.html

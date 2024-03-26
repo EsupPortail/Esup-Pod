@@ -38,7 +38,7 @@ def edito(content, request):
     block = display_content_by_block(content, request)
     return block
 
-
+""" display content by block"""
 def display_content_by_block(content, request):  # noqa: C901
     debug_elts = []
 
@@ -48,10 +48,12 @@ def display_content_by_block(content, request):  # noqa: C901
 
     params = dict()
 
-    if content.debug is True:
-        params["debug"] = True
-    if content.debug is False:
-        params["debug"] = False
+    params["show-restricted"] = content.show_restricted
+    params["view-videos-from-non-visible-channels"] = content.view_videos_from_non_visible_channels
+    params["show-passworded"] = content.shows_passworded
+    params["mustbe-auth"] = content.must_be_auth
+    params["auto-slide"] = content.auto_slide
+    params["debug"] = content.debug
 
     if "debug" in request.GET:
         if request.GET["debug"] is True:
@@ -78,31 +80,6 @@ def display_content_by_block(content, request):  # noqa: C901
         params["title"] = content.display_title
     else:
         params["title"] = __DEFAULT_TITLE__
-
-    if content.show_restricted is True:
-        params["show-restricted"] = True
-    if content.show_restricted is False:
-        params["show-restricted"] = False
-
-    if content.view_videos_from_non_visible_channels is True:
-        params["view-videos-from-non-visible-channels"] = True
-    if content.view_videos_from_non_visible_channels is False:
-        params["view-videos-from-non-visible-channels"] = False
-
-    if content.shows_passworded is True:
-        params["show-passworded"] = True
-    if content.shows_passworded is False:
-        params["show-passworded"] = False
-
-    if content.must_be_auth is True:
-        params["mustbe-auth"] = True
-    if content.must_be_auth is False:
-        params["mustbe-auth"] = False
-
-    if content.auto_slide is True:
-        params["auto-slide"] = True
-    if content.auto_slide is False:
-        params["auto-slide"] = False
 
     if content.data_type == "channel":
         params["fct"] = "render_base_videos"
@@ -135,8 +112,10 @@ def display_content_by_block(content, request):  # noqa: C901
 
     if content.type == "carousel":
         params["template"] = "block/carousel.html"
+
     if content.type == "multi_carousel":
         params["template"] = "block/multi_carousel.html"
+        
     if content.type == "card_list":
         params["template"] = "block/card_list.html"
 
@@ -169,7 +148,7 @@ def display_content_by_block(content, request):  # noqa: C901
 
     return content
 
-
+""" render block with videos in channel or theme or playlist"""
 def render_base_videos(uniq_id, params, current_site, debug_elts):
     debug_elts.append("Call function render_base_videos")
 
@@ -246,7 +225,7 @@ def render_base_videos(uniq_id, params, current_site, debug_elts):
 
     return part_content
 
-
+""" render block with most view videos"""
 def render_most_view(uniq_id, params, current_site, debug_elts):
     debug_elts.append("Call function render_most_view")
 
@@ -293,7 +272,7 @@ def render_most_view(uniq_id, params, current_site, debug_elts):
     )
     return "%s" % (part_content)
 
-
+""" render block with next events"""
 def render_next_events(uniq_id, params, current_site, debug_elts):
     debug_elts.append("Call function render_next_events")
 
@@ -336,7 +315,7 @@ def render_next_events(uniq_id, params, current_site, debug_elts):
     )
     return part_content
 
-
+""" render block with html content"""
 def render_html(uniq_id, params, current_site, debug_elts):
     debug_elts.append("Call function render_html")
 
@@ -345,7 +324,7 @@ def render_html(uniq_id, params, current_site, debug_elts):
     )
     return "%s" % (part_content)
 
-
+""" render block with last view videos"""
 def render_last_view(uniq_id, params, current_site, debug_elts):
     debug_elts.append("Call function render_last_view")
 

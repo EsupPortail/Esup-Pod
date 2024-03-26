@@ -38,7 +38,7 @@
   {% if CSS_OVERRIDE %}
     <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen">
   {% endif %}
-  {% if SHOW_EVENTS_ON_HOMEPAGE and "live" in THIRD_PARTY_APPS %}
+  {% if "live" in THIRD_PARTY_APPS %}
     <link href="{% static 'css/event.css' %}?ver={{ VERSION }}" rel="stylesheet">
   {% endif %}
 

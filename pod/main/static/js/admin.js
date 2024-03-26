@@ -1,61 +1,109 @@
 /**
  * @file Esup-Pod script for admin panel.
-* @since 3.5.1
-*/
+ * @since 3.6.0
+ */
 const selectedType = document.getElementById("id_type");
 const selectedDataType = document.getElementById("id_data_type");
-fieldDataType = document.getElementsByClassName('field-data_type');
-fieldChannel = document.getElementsByClassName('field-Channel');
-fieldTheme = document.getElementsByClassName('field-Theme');
-fieldPlaylist = document.getElementsByClassName('field-Playlist');
-fieldHtml = document.getElementsByClassName('field-html');
+fieldDataType = document.getElementsByClassName("field-data_type")[0];
+fieldChannel = document.getElementsByClassName("field-Channel")[0];
+fieldTheme = document.getElementsByClassName("field-Theme")[0];
+fieldPlaylist = document.getElementsByClassName("field-Playlist")[0];
+fieldHtml = document.getElementsByClassName("field-html")[0];
 
-if (selectedDataType.value != 'channel') {
-    fieldChannel[0].style.display = 'none';
+// Function for show field
+function showField(field) {
+  field.classList.remove("d-none");
+  field.classList.add("d-block");
 }
 
-if (selectedDataType.value != 'theme') {
-    fieldTheme[0].style.display = 'none';
+// Function for hide field
+function hideField(field) {
+  field.classList.remove("d-block");
+  field.classList.add("d-none");
 }
 
-if (selectedDataType.value != 'playlist') {
-    fieldPlaylist[0].style.display = 'none';
+// Function init
+function initializeFieldDisplay() {
+  if (selectedType && selectedDataType) {
+    if (selectedType.value === "html") {
+      showField(fieldHtml);
+      hideField(fieldDataType);
+    } else {
+      hideField(fieldHtml);
+      showField(fieldDataType);
+    }
+
+    switch (selectedDataType.value) {
+      case "channel":
+        showField(fieldChannel);
+        break;
+      case "theme":
+        showField(fieldTheme);
+        break;
+      case "playlist":
+        showField(fieldPlaylist);
+        break;
+      default:
+        hideField(fieldChannel);
+        hideField(fieldTheme);
+        hideField(fieldPlaylist);
+        break;
+    }
+  }
 }
 
-if (selectedType.value != 'html') {
-    fieldHtml[0].style.display = 'none';
-}
-
+// Event listen
 if (selectedType) {
-    selectedType.addEventListener('change', function() {
-        if (selectedType.value == 'html') {
-            fieldHtml[0].style.display = 'block';
-            fieldDataType[0].style.display = 'none';
-        } else {
-            fieldHtml[0].style.display = 'none';
-            fieldDataType[0].style.display = 'block';
-        }
-    });
+  selectedType.addEventListener("change", function () {
+    handleTypeChange();
+    handleDataTypeChange();
+  });
 }
 
 if (selectedDataType) {
-    selectedDataType.addEventListener('change', function() {
-        if (selectedDataType.value == 'channel') {
-            fieldChannel[0].style.display = 'block';
-            fieldTheme[0].style.display = 'none';
-            fieldPlaylist[0].style.display = 'none';
-        } else if (selectedDataType.value == 'theme') {
-            fieldTheme[0].style.display = 'block';
-            fieldChannel[0].style.display = 'none';
-            fieldPlaylist[0].style.display = 'none';
-        } else if (selectedDataType.value == 'playlist') {
-            fieldPlaylist[0].style.display = 'block';
-            fieldTheme[0].style.display = 'none';
-            fieldChannel[0].style.display = 'none';
-        } else {
-            fieldChannel[0].style.display = 'none';
-            fieldTheme[0].style.display = 'none';
-            fieldPlaylist[0].style.display = 'none';
-        }
-    });
+  selectedDataType.addEventListener("change", handleDataTypeChange);
 }
+
+// Function change type
+function handleTypeChange() {
+  if (selectedType && selectedDataType) {
+    if (selectedType.value === "html") {
+      showField(fieldHtml);
+      hideField(fieldDataType);
+    } else {
+      hideField(fieldHtml);
+      showField(fieldDataType);
+    }
+  }
+}
+
+// Function change data type
+function handleDataTypeChange() {
+  if (selectedType && selectedDataType) {
+    switch (selectedDataType.value) {
+      case "channel":
+        showField(fieldChannel);
+        hideField(fieldTheme);
+        hideField(fieldPlaylist);
+        break;
+      case "theme":
+        showField(fieldTheme);
+        hideField(fieldChannel);
+        hideField(fieldPlaylist);
+        break;
+      case "playlist":
+        showField(fieldPlaylist);
+        hideField(fieldChannel);
+        hideField(fieldTheme);
+        break;
+      default:
+        hideField(fieldChannel);
+        hideField(fieldTheme);
+        hideField(fieldPlaylist);
+        break;
+    }
+  }
+}
+
+// Call init function
+initializeFieldDisplay();
