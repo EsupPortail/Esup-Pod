@@ -769,10 +769,8 @@ if (typeof loaded == "undefined") {
           console.log("deb");
           const listFoldersSub = document.getElementById("list_folders_sub");
           if (listFoldersSub) {
-            console.log(listFoldersSub);
             listFoldersSub.appendChild(parsedHTML);
           }
-          console.log("f");
         });
         if (nextPage != -1) {
           search = data.search !== "" ? data.search : null;
