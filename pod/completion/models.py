@@ -139,7 +139,7 @@ class Contributor(models.Model):
 
     def get_base_mail(self):
         data = base64.b64encode(self.email_address.encode())
-        return data
+        return data.decode("utf-8")
 
     def get_noscript_mail(self):
         return self.email_address.replace("@", "__AT__")
