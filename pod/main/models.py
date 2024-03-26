@@ -309,6 +309,7 @@ class Block(models.Model):
     )
 
     debug = models.BooleanField(
+        verbose_name=_("Debug"),
         default=False,
         help_text=_("Check this box if you want to activate debug mode."),
     )

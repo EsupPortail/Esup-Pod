@@ -4718,7 +4718,7 @@
                                     "Si True, affiche les prochains évènements sur la page d’accueil."
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.6.0",
                             "pod_version_init": "3.1.0"
                         },
                         "SHOW_ONLY_PARENT_THEMES": {

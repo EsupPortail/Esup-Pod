@@ -38,7 +38,10 @@ def edito(content, request):
     block = display_content_by_block(content, request)
     return block
 
+
 """ display content by block"""
+
+
 def display_content_by_block(content, request):  # noqa: C901
     debug_elts = []
 
@@ -62,7 +65,7 @@ def display_content_by_block(content, request):  # noqa: C901
     if content.no_cache is True:
         params["cache"] = False
         debug_elts.append("Cache is disable for this part")
-    if content.no_cache is False:
+    else:
         params["cache"] = True
         debug_elts.append("Cache is enable for this part")
 
@@ -115,7 +118,7 @@ def display_content_by_block(content, request):  # noqa: C901
 
     if content.type == "multi_carousel":
         params["template"] = "block/multi_carousel.html"
-        
+
     if content.type == "card_list":
         params["template"] = "block/card_list.html"
 
@@ -148,7 +151,10 @@ def display_content_by_block(content, request):  # noqa: C901
 
     return content
 
+
 """ render block with videos in channel or theme or playlist"""
+
+
 def render_base_videos(uniq_id, params, current_site, debug_elts):
     debug_elts.append("Call function render_base_videos")
 
@@ -225,7 +231,10 @@ def render_base_videos(uniq_id, params, current_site, debug_elts):
 
     return part_content
 
+
 """ render block with most view videos"""
+
+
 def render_most_view(uniq_id, params, current_site, debug_elts):
     debug_elts.append("Call function render_most_view")
 
@@ -272,7 +281,10 @@ def render_most_view(uniq_id, params, current_site, debug_elts):
     )
     return "%s" % (part_content)
 
+
 """ render block with next events"""
+
+
 def render_next_events(uniq_id, params, current_site, debug_elts):
     debug_elts.append("Call function render_next_events")
 
@@ -315,7 +327,10 @@ def render_next_events(uniq_id, params, current_site, debug_elts):
     )
     return part_content
 
+
 """ render block with html content"""
+
+
 def render_html(uniq_id, params, current_site, debug_elts):
     debug_elts.append("Call function render_html")
 
@@ -324,7 +339,10 @@ def render_html(uniq_id, params, current_site, debug_elts):
     )
     return "%s" % (part_content)
 
+
 """ render block with last view videos"""
+
+
 def render_last_view(uniq_id, params, current_site, debug_elts):
     debug_elts.append("Call function render_last_view")
 

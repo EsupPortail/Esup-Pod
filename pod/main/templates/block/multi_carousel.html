@@ -54,16 +54,16 @@
                     <button class="carousel-control-prev"
                             type="button"
                             data-bs-target="#carousel_{{ container.slug }}_{{ uniq_id }}"
-                            data-bs-slide="prev">
+                            data-bs-slide="prev"
+                            title="{% trans 'Previous' %}">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">{% trans "Previous" %}</span>
                     </button>
                     <button class="carousel-control-next"
                             type="button"
                             data-bs-target="#carousel_{{ container.slug }}_{{ uniq_id }}"
-                            data-bs-slide="next">
+                            data-bs-slide="next"
+                            title="{% trans 'Next' %}">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">{% trans "Next" %}</span>
                     </button>
                 {% endif %}
             </div>

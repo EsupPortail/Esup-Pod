@@ -34,6 +34,8 @@ class PageForm(FlatpageForm):
 
 
 """ Create translation for additional Channel Tab Field"""
+
+
 class AdditionalChannelTabAdmin(TranslationAdmin):
     list_display = ("name",)
 

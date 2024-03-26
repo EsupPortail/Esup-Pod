@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.contrib.flatpages.models import FlatPage
 from django.conf import settings
 from django.contrib.sites.models import Site
-from pod.main.models import Configuration, AdditionalChannelTab
+from pod.main.models import Configuration, AdditionalChannelTab, Block
 
 SITE_ID = getattr(settings, "SITE_ID", 1)
 
@@ -143,3 +143,20 @@ class AdditionalChannelTabTestCase(TestCase):
         self.assertEquals(AdditionalChannelTab.objects.filter(name="Tab0").count(), 0)
 
         print("--->  test_delete_object of AdditionalChannelTabTestCase: OK!")
+
+
+class BlockTestCase(TestCase):
+    def setUp(self):
+        print(" --->  SetUp of BlockTestCase: OK!")
+
+    def test_default_site_assigned_on_creation(self):
+
+        """
+        Test if add block assign default site.
+        """
+
+        block = Block.objects.create(title="Test Block")
+        self.assertEqual(block.sites.count(), 1)
+        self.assertEqual(block.sites.first(), Site.objects.filter(id=SITE_ID))
+
+        print("   --->  test add block with default site assign: OK!")
