@@ -156,7 +156,8 @@ class BlockTestCase(TestCase):
         """
 
         block = Block.objects.create(title="Test Block")
+        default_site = Site.objects.get(id=SITE_ID)
         self.assertEqual(block.sites.count(), 1)
-        self.assertEqual(block.sites.first(), Site.objects.filter(id=SITE_ID))
+        self.assertEqual(block.sites.first(), default_site)
 
         print("   --->  test add block with default site assign: OK!")
