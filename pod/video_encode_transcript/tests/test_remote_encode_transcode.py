@@ -156,6 +156,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
 
     def remote_encoding_cut(self):
         """Launch test of cut video remote encoding."""
+        self.setUp()
         print("\n ---> Start Encoding cut video test")
         encode_video = getattr(encode, ENCODE_VIDEO)
         print("===> self.video.id: %s" % self.video.id)
