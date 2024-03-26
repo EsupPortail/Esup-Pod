@@ -741,7 +741,7 @@ class VideoForm(forms.ModelForm):
         today_date = datetime.date.today()
         mddd = MAX_DURATION_DATE_DELETE
         date_delete = self.cleaned_data["date_delete"]
-        in_dt = relativedelta(date_delete, datetime.date.today())
+        in_dt = relativedelta(date_delete, today_date)
         if (
             (in_dt.years > mddd)
             or (in_dt.years == mddd and in_dt.months > 0)
