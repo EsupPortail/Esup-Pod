@@ -738,6 +738,7 @@ class VideoForm(forms.ModelForm):
 
     def clean_date_delete(self):
         """Validate 'date_delete' field."""
+        today_date = datetime.date.today()
         mddd = MAX_DURATION_DATE_DELETE
         date_delete = self.cleaned_data["date_delete"]
         in_dt = relativedelta(date_delete, datetime.date.today())
@@ -746,7 +747,7 @@ class VideoForm(forms.ModelForm):
             or (in_dt.years == mddd and in_dt.months > 0)
             or (in_dt.years == mddd and in_dt.months == 0 and in_dt.days > 0)
         ):
-            max_d = datetime.date.today() + datetime.timedelta(days=MAX_DURATION_DATE_DELETE * 365)
+            max_d = today_date + datetime.timedelta(days=MAX_DURATION_DATE_DELETE * 365)
             raise ValidationError(
                 _(
                     "The date must be before or equal to %(date)s."
@@ -754,7 +755,7 @@ class VideoForm(forms.ModelForm):
                 ),
                 code="date_too_far",
             )
-        if date_delete < datetime.date.today():
+        if date_delete < today_date:
             raise ValidationError(
                 _("The deletion date can’t be earlier than today."),
                 code="date_before_today",
