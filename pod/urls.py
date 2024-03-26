@@ -29,6 +29,14 @@ USE_SHIB = getattr(settings, "USE_SHIB", False)
 USE_OIDC = getattr(settings, "USE_OIDC", False)
 USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", True)
 USE_CUT = getattr(settings, "USE_CUT", True)
+USE_MEETING = getattr(settings, "USE_MEETING", False)
+USE_XAPI = getattr(settings, "USE_XAPI", False)
+USE_BBB = getattr(settings, "USE_BBB", False)
+USE_OPENCAST_STUDIO = getattr(settings, "USE_OPENCAST_STUDIO", False)
+USE_PODFILE = getattr(settings, "USE_PODFILE", False)
+USE_PLAYLIST = getattr(settings, "USE_PLAYLIST", True)
+USE_DRESSING = getattr(settings, "USE_DRESSING", True)
+USE_IMPORT_VIDEO = getattr(settings, "USE_IMPORT_VIDEO", True)
 
 if USE_CAS:
     from cas import views as cas_views
@@ -114,25 +122,30 @@ urlpatterns += [
 ]
 
 # BBB: TODO REPLACE BBB BY MEETING
-if getattr(settings, "USE_MEETING", False):
+if USE_MEETING:
     urlpatterns += [
         url(r"^meeting/", include("pod.meeting.urls")),
     ]
-if getattr(settings, "USE_XAPI", False):
+
+if USE_XAPI:
     urlpatterns += [
         url(r"^xapi/", include("pod.xapi.urls")),
     ]
-if getattr(settings, "USE_BBB", False):
+
+# BBB
+if USE_BBB:
     urlpatterns += [
         url(r"^bbb/", include("pod.bbb.urls")),
     ]
 
-if getattr(settings, "USE_OPENCAST_STUDIO", False):
+# RECORDER
+if USE_OPENCAST_STUDIO:
     urlpatterns += [
         url(r"^studio/", include("pod.recorder.studio_urls")),
     ]
 
-if getattr(settings, "USE_PODFILE", False):
+# PODFILE
+if USE_PODFILE:
     urlpatterns += [
         url(r"^podfile/", include("pod.podfile.urls")),
     ]
@@ -149,19 +162,19 @@ if USE_CUT:
     ]
 
 # PLAYLIST
-if getattr(settings, "USE_PLAYLIST", True):
+if USE_PLAYLIST:
     urlpatterns += [
         path("playlist/", include("pod.playlist.urls", namespace="playlist")),
     ]
 
 # DRESSING
-if getattr(settings, "USE_DRESSING", True):
+if USE_DRESSING:
     urlpatterns += [
         path("dressing/", include("pod.dressing.urls", namespace="dressing")),
     ]
 
 # IMPORT_VIDEO
-if getattr(settings, "USE_IMPORT_VIDEO", True):
+if USE_IMPORT_VIDEO:
     urlpatterns += [
         url(
             r"^import_video/", include("pod.import_video.urls", namespace="import_video")
