@@ -1,0 +1,8 @@
+.border-d {
+    border: 1px dashed;
+}
+
+.border-d:hover, .enrich-input-selected {
+    border: 1px solid;
+    background-color: var(--background-color);
+}

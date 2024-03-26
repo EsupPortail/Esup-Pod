@@ -89,6 +89,8 @@ from django.db import IntegrityError
 from django.db.models import QuerySet
 from django.db import transaction
 
+from ..ai_enhancement.models import AIEnhancement
+
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
 )
@@ -1065,6 +1067,8 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         raise SuspiciousOperation("Invalid video id")
 
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
+    if request.GET.get("generated"):
+        enhancement = AIEnhancement.objects.filter(video=video).first().delete()
 
     if (
         video.get_version != "O"
