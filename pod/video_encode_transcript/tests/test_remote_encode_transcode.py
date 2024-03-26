@@ -46,6 +46,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
 
     def setUp(self):
         print("===== SetUp of RemoteEncodeTranscriptTestCase =====")
+        print("===> TEST_REMOTE_ENCODE: %s" % TEST_REMOTE_ENCODE)
         if not TEST_REMOTE_ENCODE:
             return
         user, created = User.objects.update_or_create(
@@ -54,6 +55,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         user.is_staff = True
         user.is_superuser = True
         user.save()
+        print("===> user: %s" % user)
         # create token
         if not Token.objects.filter(key=POD_API_TOKEN).exists():
             Token.objects.create(key=POD_API_TOKEN, user=user)
@@ -156,7 +158,8 @@ class RemoteEncodeTranscriptTestCase(TestCase):
 
     def remote_encoding_cut(self):
         """Launch test of cut video remote encoding."""
-        self.setUp()
+        if not TEST_REMOTE_ENCODE:
+            return
         print("\n ---> Start Encoding cut video test")
         encode_video = getattr(encode, ENCODE_VIDEO)
         print("===> self.video.id: %s" % self.video.id)
@@ -205,6 +208,8 @@ class RemoteEncodeTranscriptTestCase(TestCase):
 
     def remote_encoding_dressing(self):
         """Launch test of video remote encoding for dressing."""
+        if not TEST_REMOTE_ENCODE:
+            return
         print("===== LS =====")
         print("===> /usr/src/app/pod")
         print(os.listdir("/usr/src/app/pod"))
