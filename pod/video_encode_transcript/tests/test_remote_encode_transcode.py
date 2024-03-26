@@ -210,19 +210,6 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         """Launch test of video remote encoding for dressing."""
         if not TEST_REMOTE_ENCODE:
             return
-        print("===== LS =====")
-        print("===> /usr/src/app/pod")
-        print(os.listdir("/usr/src/app/pod"))
-        print("===> /usr/src/app/pod/main/static/video_test")
-        print(os.listdir("/usr/src/app/pod/main/static/video_test"))
-        print("===> /usr/src/app/pod/media/videos")
-        print(os.listdir("/usr/src/app/pod/media/videos"))
-        print("===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d")
-        print(os.listdir("/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d"))
-        print("===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003")
-        print(os.listdir("/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003"))
-        if not TEST_REMOTE_ENCODE:
-            return
         print("\n ---> Start Encoding video dressing test")
         encode_video = getattr(encode, ENCODE_VIDEO)
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -254,9 +241,6 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         dressing.videos.add(self.video)
         dressing.save()
 
-        print("===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003")
-        print(os.listdir("/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003"))
-
         # Start encoding
         encode_video(self.video.id, threaded=False)
         self.video.refresh_from_db()
@@ -268,19 +252,10 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             n += 1
             if n > 30:
                 raise ValidationError("Error while encoding !!!")
-            print(
-                "===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003"
-            )
-            print(os.listdir(
-                "/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003")
-            )
         self.video.refresh_from_db()
         print("end of dressing encoding")
         print(self.video.get_encoding_step)
-        print("===> /usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003")
-        print(os.listdir("/usr/src/app/pod/media/videos/1b2385219d50b162c9451b5cd47d337ca794d719dc159bc61c1b1c797134445d/0003"))
 
-        '''
         self.assertEqual("Video1", self.video.title)
         list_mp2t = EncodingVideo.objects.filter(
             video=self.video, encoding_format="video/mp2t"
@@ -304,7 +279,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.assertTrue(len(list_mp4) > 0)
         self.assertTrue(self.video.overview)
         self.assertTrue(self.video.thumbnail)
-        '''
+
         with open(self.video.encodinglog.logfile.path) as json_file:
             info_video = json.load(json_file)
             print(json.dumps(info_video, indent=4, sort_keys=True))
