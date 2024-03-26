@@ -43,10 +43,10 @@
         <option value="discipline">{% trans "Disciplines" %}</option>
         <option value="licence">{% trans "Licence" %}</option>
         {% if request.user.is_staff  %}
-        <option value="thumbnail">{% trans "Thumbnails" %}</option>
+          <option value="thumbnail">{% trans "Thumbnails" %}</option>
         {% endif %}
         {% if request.user.is_staff and use_obsolescence %}
-            <option value="date_delete">{% trans "Date to delete" %}</option>
+          <option value="date_delete">{% trans "Date to delete" %}</option>
         {% endif %}
       </optgroup>
 
@@ -163,8 +163,8 @@
   var formFieldsets = {{ fieldsets_dashboard|safe }};
 
   {% if videos.has_next %}
-      page = parseInt("{{videos.next_page_number}}");
-      nextPage = true;
+    page = parseInt("{{videos.next_page_number}}");
+    nextPage = true;
   {% endif %}
 </script>
 <script src="{% static 'js/infinite.js' %}"></script>
