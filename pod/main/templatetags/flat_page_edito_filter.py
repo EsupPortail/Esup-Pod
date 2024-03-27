@@ -389,9 +389,3 @@ def add_filter(params, debug_elts, data):
         debug_elts.append("apply filter not show videos password")
 
     return data
-
-
-def debugFile(str):
-    f = open("/home/pod/debugJM.log", "a")
-    f.write("%s\n" % (str))
-    f.close()

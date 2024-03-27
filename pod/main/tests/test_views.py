@@ -14,11 +14,12 @@ from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.conf import settings
 from captcha.models import CaptchaStore
 from http import HTTPStatus
-from datetime import datetime
+from datetime import datetime, timedelta
 from pod.main import context_processors
 from pod.main.models import Configuration, Block
 from pod.playlist.models import Playlist
 from pod.video.models import Type, Video, Channel
+from pod.live.models import Building, Broadcaster, Event
 
 import os
 import importlib
@@ -642,3 +643,41 @@ class TestBlock(TestCase):
             "test if video VideoOnHold is present.",
         )
         print(" --->  test_Video_in_channel_block ok")
+
+    def test_next_events_type_block(self):
+        """
+        Test if create create next event present in block type next events.
+        """
+        building = Building.objects.create(name="building1")
+        broad = Broadcaster.objects.create(
+            name="broadcaster1",
+            url="http://test.live",
+            status=True,
+            is_restricted=True,
+            building=building,
+            public=False,
+        )
+        user = User.objects.create(username="pod")
+        h_type = Type.objects.create(title="type1")
+        event = Event.objects.create(
+            title="MonEventDeTest", owner=user, broadcaster=broad, type=h_type, is_draft=False
+        )
+        event.start_date = datetime.today() + timedelta(days=+1)
+        event.end_date = datetime.today() + timedelta(days=+2)
+        event.save()
+
+        Block.objects.create(
+            title="block next events",
+            type="card_list",
+            page=FlatPage.objects.get(id=1),
+            data_type="event_next",
+            no_cache=True,
+            visible=True,
+        )
+        self.client = Client()
+        response = self.client.get("/")
+        self.assertTrue(
+            'MonEventDeTest' in response.content.decode(),
+            "test if event MonEventDeTest is present.",
+        )
+        print(" --->  test_Next_Event_in_Block_next_event_type ok")
