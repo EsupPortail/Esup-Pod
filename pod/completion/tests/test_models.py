@@ -1,6 +1,8 @@
 """Unit tests for completion models."""
+import base64
 
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -30,11 +32,13 @@ class ContributorModelTestCase(TestCase):
     ]
 
     def setUp(self):
+        self.site = Site.objects.get(id=1)
         owner = User.objects.create(username="test")
-        videotype = Type.objects.create(title="others")
+        video_type = Type.objects.create(title="others")
         video = Video.objects.create(
-            title="video", type=videotype, owner=owner, video="test.mp4"
+            title="video", type=video_type, owner=owner, video="test.mp4",
         )
+        video.sites.add(self.site)
         Contributor.objects.create(
             video=video,
             name="contributor",
@@ -97,6 +101,33 @@ class ContributorModelTestCase(TestCase):
         self.assertTrue(Contributor.objects.all().count() == 0)
 
         print(" ---> test_delete: OK! --- ContributorModel")
+
+    def test_sites_property(self):
+        """Test the sites property of the Contributor model."""
+        contributor = Contributor.objects.get(id=1)
+        self.assertEqual(contributor.sites, Video.objects.get(id=1).sites)
+        print(" ---> test_sites_property: OK! --- ContributorModel")
+
+    def test_str(self):
+        """Test the sites property of the Contributor model when the video is deleted."""
+        contributor = Contributor.objects.get(id=1)
+        video = Video.objects.get(id=1)
+        self.assertEqual(str(contributor), f"Video:{video} - Name:{contributor.name} - Role:{contributor.role}")
+        print(" ---> test_str: OK! --- ContributorModel")
+
+    def test_get_base_mail(self):
+        """Test the get_base_mail method of the Contributor model."""
+        contributor = Contributor.objects.get(id=1)
+        self.assertEqual(
+            contributor.get_base_mail(),
+            base64.b64encode(contributor.email_address.encode()).decode("utf-8")
+        )
+        print(" ---> test_get_base_mail: OK! --- ContributorModel")
+
+    def test_get_noscript_mail(self):
+        """Test the get_noscript_mail method of the Contributor model."""
+        contributor = Contributor.objects.get(id=1)
+        self.assertEqual(contributor.get_noscript_mail(), "contributor__AT__pod.com")
 
 
 class DocumentModelTestCase(TestCase):
