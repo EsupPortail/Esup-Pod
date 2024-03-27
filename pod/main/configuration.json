@@ -868,10 +868,10 @@
                             "default_value": true,
                             "description": {
                                 "en": [
-                                    "Activation of the cut application"
+                                    "Activation of the Cut application"
                                 ],
                                 "fr": [
-                                    "Activation de l'application cut"
+                                    "Activation de l'application Cut"
                                 ]
                             },
                             "pod_version_end": "",
@@ -880,7 +880,7 @@
                     },
                     "title": {
                         "en": "Cut application configuration",
-                        "fr": "Configuration de l'application cut"
+                        "fr": "Configuration de l'application Cut"
                     }
                 },
                 "dressing": {
@@ -906,7 +906,7 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "3.5.0"
+                            "pod_version_init": "3.5.2"
                         }
                     },
                     "title": {
