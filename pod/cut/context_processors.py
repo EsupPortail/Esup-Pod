@@ -1,3 +1,4 @@
+"""Esup-Pod context processors for cut app."""
 from django.conf import settings as django_settings
 
 USE_CUT = getattr(django_settings, "USE_CUT", True)
