@@ -55,7 +55,6 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         user.is_staff = True
         user.is_superuser = True
         user.save()
-        print("===> user: %s" % user)
         # create token
         if not Token.objects.filter(key=POD_API_TOKEN).exists():
             Token.objects.create(key=POD_API_TOKEN, user=user)
