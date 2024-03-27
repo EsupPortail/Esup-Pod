@@ -180,10 +180,7 @@ class Document(models.Model):
         msg = list()
         if not self.document:
             msg.append(_("Please enter a document."))
-        if len(msg) > 0:
-            return msg
-        else:
-            return list()
+        return msg
 
     def verify_not_same_document(self):
         msg = list()
