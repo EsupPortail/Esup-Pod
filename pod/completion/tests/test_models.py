@@ -7,6 +7,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 from pod.video.models import Video
 from pod.video.models import Type
 from pod.completion.models import Contributor
@@ -185,6 +186,27 @@ class DocumentModelTestCase(TestCase):
         self.assertTrue(Document.objects.all().count() == 0)
 
         print(" ---> test_delete: OK! --- DocumentModel")
+
+    def test_sites_property(self):
+        """Test the sites property of the Contributor model."""
+        document = Document.objects.get(id=1)
+        self.assertEqual(document.sites, Video.objects.get(id=1).sites)
+        print(" ---> test_sites_property: OK! --- DocumentModel")
+
+    def test_str(self):
+        """Test the __str__ method of the Document model."""
+        document = Document.objects.get(id=1)
+        video = Video.objects.get(id=1)
+        self.assertEqual(str(document), f"Document: {document.document.name} - Video: {video}")
+        print(" ---> test_str: OK! --- DocumentModel")
+
+    def test_verify_document(self):
+        """Test the verify_document method of the Document model."""
+        document = Document.objects.get(id=1)
+        document.document = None
+        document.save()
+        self.assertIn(_("Please enter a document."), document.verify_document())
+        print(" ---> test_verify_document: OK! --- DocumentModel")
 
 
 class OverlayModelTestCase(TestCase):
