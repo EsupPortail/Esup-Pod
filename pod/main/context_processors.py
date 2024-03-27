@@ -164,9 +164,7 @@ def context_block(request):
         dict[str, Any]: A dictionary containing the context with the key "BLOCK"
                        associated with the sorted list of blocks.
     """
-    block = (
-        Block.objects.all().filter(sites=get_current_site(request)).filter(visible=True).order_by("order")
-    )
+    block = Block.objects.filter(sites=get_current_site(request), visible=True).order_by("order")
     return {
         "BLOCK": block,
     }

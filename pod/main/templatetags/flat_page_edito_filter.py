@@ -39,10 +39,8 @@ def edito(content, request):
     return block
 
 
-""" display content by block"""
-
-
 def display_content_by_block(content, request):  # noqa: C901
+    """ display content by block"""
     debug_elts = []
 
     current_site = get_current_site(request)
@@ -152,10 +150,8 @@ def display_content_by_block(content, request):  # noqa: C901
     return content
 
 
-""" render block with videos in channel or theme or playlist"""
-
-
 def render_base_videos(uniq_id, params, current_site, debug_elts):
+    """ render block with videos in channel or theme or playlist"""
     debug_elts.append("Call function render_base_videos")
 
     container = params["data"]
@@ -232,10 +228,8 @@ def render_base_videos(uniq_id, params, current_site, debug_elts):
     return part_content
 
 
-""" render block with most view videos"""
-
-
 def render_most_view(uniq_id, params, current_site, debug_elts):
+    """ render block with most view videos"""
     debug_elts.append("Call function render_most_view")
 
     d = date.today() - timezone.timedelta(days=VIDEO_RECENT_VIEWCOUNT)
@@ -282,10 +276,8 @@ def render_most_view(uniq_id, params, current_site, debug_elts):
     return "%s" % (part_content)
 
 
-""" render block with next events"""
-
-
 def render_next_events(uniq_id, params, current_site, debug_elts):
+    """ render block with next events"""
     debug_elts.append("Call function render_next_events")
 
     query = (
@@ -328,10 +320,8 @@ def render_next_events(uniq_id, params, current_site, debug_elts):
     return part_content
 
 
-""" render block with html content"""
-
-
 def render_html(uniq_id, params, current_site, debug_elts):
+    """ render block with html content"""
     debug_elts.append("Call function render_html")
 
     part_content = loader.get_template(params["template"]).render(
@@ -340,10 +330,8 @@ def render_html(uniq_id, params, current_site, debug_elts):
     return "%s" % (part_content)
 
 
-""" render block with last view videos"""
-
-
 def render_last_view(uniq_id, params, current_site, debug_elts):
+    """ render block with last view videos"""
     debug_elts.append("Call function render_last_view")
 
     query = Video.objects.filter(
@@ -387,6 +375,7 @@ def render_last_view(uniq_id, params, current_site, debug_elts):
 
 
 def add_filter(params, debug_elts, data):
+    """ create filter for videos list"""
     if not params["show-restricted"]:
         data = data.filter(is_restricted=False)
         debug_elts.append("apply filter not show restricted")

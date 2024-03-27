@@ -303,7 +303,7 @@ class Block(models.Model):
     )
 
     no_cache = models.BooleanField(
-        default=False,
+        default=True,
         verbose_name=_("No cache"),
         help_text=_("Check this box if you don't want to keep the cache."),
     )

@@ -30,13 +30,8 @@ class PageForm(FlatpageForm):
         widgets = content_widget
 
 
-# CustomFlatPage admin panel
-
-
-""" Create translation for additional Channel Tab Field"""
-
-
 class AdditionalChannelTabAdmin(TranslationAdmin):
+    """ Create translation for additional Channel Tab Field"""
     list_display = ("name",)
 
 
