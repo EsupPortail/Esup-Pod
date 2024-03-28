@@ -1,30 +1,23 @@
 {% load i18n %} {% load video_filters static %} {% if elements.count >= 1 %}
 <div class="pod-inner edito-carousel">
   <h2>{{ title |capfirst|truncatechars:43 }}</h2>
-  <div
-    id="carousel_{{ container.slug }}_{{ uniq_id }}"
-    class="carousel slide"
-    data-bs-ride="{% if auto_slide %}carousel{% else %}false{% endif %}"
-  >
+  <div id="carousel_{{ container.slug }}_{{ uniq_id }}" class="carousel slide" data-bs-ride="{% if auto_slide %}carousel{% else %}false{% endif %}">
     {% if elements.count > 1 %}
     <div class="carousel-indicators">
-      {% for element in elements %} {% with video_number=forloop.counter0 %} {%
-      if forloop.first %}
+      {% for element in elements %} {% with video_number=forloop.counter0 %} {% if forloop.first %}
       <button
         type="button"
         data-bs-target="#carousel_{{ container.slug }}_{{ uniq_id }}"
         data-bs-slide-to="{{ video_number }}"
         class="active"
         aria-current="true"
-        title="{% blocktrans %}Video {{ video_number }}{% endblocktrans %}"
-      ></button>
+        title="{% blocktrans %}Video {{ video_number }}{% endblocktrans %}"></button>
       {% else %}
       <button
         type="button"
         data-bs-target="#carousel_{{ container.slug }}_{{ uniq_id }}"
         data-bs-slide-to="{{ video_number }}"
-        title="{% blocktrans %}Video {{ video_number }}{% endblocktrans %}"
-      ></button>
+        title="{% blocktrans %}Video {{ video_number }}{% endblocktrans %}"></button>
       {% endif %} {% endwith %} {% endfor %}
     </div>
     {% endif %}
@@ -39,40 +32,32 @@
             <img
               src="{{ element.get_thumbnail_url }}"
               class="img-fluid d-block w-100"
-              alt=""
-            />
+              alt=""/>
             {% elif type == "event" %} {% if element.thumbnail %}
             <img
               src="{{ element.get_thumbnail_card }}"
               class="img-fluid d-block w-100"
-              alt=""
-            />
+              alt=""/>
             {% elif element.broadcaster.poster %}
             <img
               src="{{ element.broadcaster.get_poster_url }}"
               class="img-fluid d-block w-100"
-              alt=""
-            />
+              alt=""/>
             {% else %}
             <img
               src="{{ element.get_thumbnail_card }}"
               class="img-fluid d-block w-100"
-              alt=""
-            />
+              alt=""/>
             {% endif %} {% endif %}
             <div class="carousel-caption d-none d-md-block">
               <h3 class="video_title">
                 {{ element.title|capfirst|truncatechars:43 }}
               </h3>
               <p class="video_desc mt-2 text-white">
-                {{
-                element.description|metaformat|safe|striptags|truncatechars:250
-                }}
+                {{ element.description|metaformat|safe|striptags|truncatechars:250 }}
               </p>
               {% if type == "video" or type == "last" %}
-              <small class="video_time text-muted time d-none d-md-block"
-                >{{ element.duration_in_time }}</small
-              >
+              <small class="video_time text-muted time d-none d-md-block">{{ element.duration_in_time }}</small>
               {% endif %}
             </div>
           </a>
@@ -84,8 +69,7 @@
         class="carousel-control-prev"
         type="button"
         data-bs-target="#carousel_{{ container.slug }}_{{ uniq_id }}"
-        data-bs-slide="prev"
-      >
+        data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">{% trans "Previous" %}</span>
       </button>
@@ -93,8 +77,7 @@
         class="carousel-control-next"
         type="button"
         data-bs-target="#carousel_{{ container.slug }}_{{ uniq_id }}"
-        data-bs-slide="next"
-      >
+        data-bs-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="visually-hidden">{% trans "Next" %}</span>
       </button>
@@ -104,14 +87,9 @@
     <div class="highlight">
       <div class="d-flex justify-content-end mt-2">
         <p>
-          <a
-            class="btn btn-lg btn-primary btn-sm"
-            href="{% url 'videos:videos' %}"
-            >{% trans "Show all videos" %}&nbsp;<i
-              class="bi bi-arrow-right-circle"
-              aria-hidden="true"
-            ></i
-          ></a>
+          <a class="btn btn-lg btn-primary btn-sm"
+            href="{% url 'videos:videos' %}">{% trans "Show all videos" %}&nbsp;<i class="bi bi-arrow-right-circle"
+              aria-hidden="true"></i></a>
         </p>
       </div>
     </div>

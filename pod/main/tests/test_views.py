@@ -609,8 +609,8 @@ class TestBlock(TestCase):
         bk1 = Block.objects.get(id=1)
         bk1.visible = False
         bk1.save()
-        user = User.objects.create(username="pod", password="podv3")
         channel = Channel.objects.create(title="monChannel")
+        user = User.objects.create(username="pod", password="podv3")
         video = Video.objects.create(
             title="VideoOnHold",
             owner=user,
@@ -744,7 +744,7 @@ class TestBlock(TestCase):
             "test if video VideoOnHold is present.",
         )
         self.assertTrue(
-            '<div class="pod-inner edito-multi-carousel ">' in response.content.decode(),
+            '<div class="pod-inner edito-multi-carousel">' in response.content.decode(),
             "test if block is carousel multi.",
         )
         print(" --->  test_Video_in_type_most_views_block ok")
