@@ -55,7 +55,8 @@ class VideoDressingViewTest(TestCase):
         """Test test_video_dressing_page in MyDressingViewTest."""
         self.client.force_login(self.user)
         response = self.client.get(
-            reverse("dressing:video_dressing", args=[self.first_video.slug]))
+            reverse("dressing:video_dressing", args=[self.first_video.slug])
+        )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_dressing.html")
         print(" --->  test_video_dressing_page ok")
@@ -136,7 +137,8 @@ class DressingEditViewTest(TestCase):
         """Test test_dressing_edit_page."""
         self.client.force_login(self.user)
         response = self.client.get(
-            reverse("dressing:dressing_edit", args=[self.dressing.id]))
+            reverse("dressing:dressing_edit", args=[self.dressing.id])
+        )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "dressing_edit.html")
         print(" --->  test_my_dressing_page ok")
@@ -148,7 +150,8 @@ class DressingEditViewTest(TestCase):
         )
         self.client.force_login(user_without_permission)
         response = self.client.get(
-            reverse("dressing:dressing_edit", args=[self.dressing.id]))
+            reverse("dressing:dressing_edit", args=[self.dressing.id])
+        )
         messages = [m.message for m in get_messages(response.wsgi_request)]
         self.assertIn(_("You cannot edit this dressing."), messages)
         print(" --->  test_dressing_create_view_permission_denied ok")
@@ -210,7 +213,7 @@ class DressingDeleteViewTest(TestCase):
             response,
             reverse("dressing:my_dressings"),
             status_code=302,
-            target_status_code=200
+            target_status_code=200,
         )
         messages = [m.message for m in get_messages(response.wsgi_request)]
         self.assertIn(_("The dressing has been deleted."), messages)

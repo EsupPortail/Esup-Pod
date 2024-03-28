@@ -1,4 +1,5 @@
 """Unit tests for enrichment models."""
+
 from django.contrib.sites.models import Site
 from django.test import TestCase
 from django.contrib.auth.models import User, Group
@@ -105,7 +106,9 @@ class EnrichmentModelTestCase(TestCase):
         current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         simple_file = SimpleUploadedFile(
             name="testimage.jpg",
-            content=open(os.path.join(current_dir, "tests", "testimage.jpg"), "rb").read(),
+            content=open(
+                os.path.join(current_dir, "tests", "testimage.jpg"), "rb"
+            ).read(),
             content_type="image/jpeg",
         )
 
@@ -242,5 +245,7 @@ class EnrichmentModelTestCase(TestCase):
     def test_str(self):
         """Test the str method of the Enrichment model."""
         enrichment = Enrichment.objects.get(id=1)
-        self.assertEqual(str(enrichment), f"Media: {enrichment.title} - Video: {enrichment.video}")
+        self.assertEqual(
+            str(enrichment), f"Media: {enrichment.title} - Video: {enrichment.video}"
+        )
         print(" ---> test_str: OK! --- EnrichmentModel")

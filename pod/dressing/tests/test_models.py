@@ -105,13 +105,9 @@ class DressingModelTest(TestCase):
             "position_orig": dressing.position,
             "opacity": 50,
             "opening_credits": video.slug,
-            "opening_credits_video": (
-                dressing.opening_credits.video.name
-            ),
+            "opening_credits_video": (dressing.opening_credits.video.name),
             "ending_credits": video2.slug,
-            "ending_credits_video": (
-                dressing.ending_credits.video.name
-            ),
+            "ending_credits_video": (dressing.ending_credits.video.name),
         }
         self.assertEqual(dressing_json, expected_json)
         print(" ---> test_dressing_to_json: OK! --- DressingModelTest")

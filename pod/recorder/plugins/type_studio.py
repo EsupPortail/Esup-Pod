@@ -116,11 +116,11 @@ def get_subtime(clip_begin, clip_end):
     return subtime
 
 
-'''
+"""
 def encode_recording_id(recording_id):
     recording = Recording.objects.get(id=recording_id)
     encode_recording(recording)
-'''
+"""
 
 
 # flake ignore complexity with noqa: C901

@@ -1,4 +1,5 @@
 """Unit tests for completion models."""
+
 import base64
 
 from django.conf import settings
@@ -37,7 +38,10 @@ class ContributorModelTestCase(TestCase):
         owner = User.objects.create(username="test")
         video_type = Type.objects.create(title="others")
         video = Video.objects.create(
-            title="video", type=video_type, owner=owner, video="test.mp4",
+            title="video",
+            type=video_type,
+            owner=owner,
+            video="test.mp4",
         )
         video.sites.add(self.site)
         Contributor.objects.create(
@@ -113,7 +117,10 @@ class ContributorModelTestCase(TestCase):
         """Test the sites property of the Contributor model when the video is deleted."""
         contributor = Contributor.objects.get(id=1)
         video = Video.objects.get(id=1)
-        self.assertEqual(str(contributor), f"Video:{video} - Name:{contributor.name} - Role:{contributor.role}")
+        self.assertEqual(
+            str(contributor),
+            f"Video:{video} - Name:{contributor.name} - Role:{contributor.role}",
+        )
         print(" ---> test_str: OK! --- ContributorModel")
 
     def test_get_base_mail(self):
@@ -121,7 +128,7 @@ class ContributorModelTestCase(TestCase):
         contributor = Contributor.objects.get(id=1)
         self.assertEqual(
             contributor.get_base_mail(),
-            base64.b64encode(contributor.email_address.encode()).decode("utf-8")
+            base64.b64encode(contributor.email_address.encode()).decode("utf-8"),
         )
         print(" ---> test_get_base_mail: OK! --- ContributorModel")
 
@@ -197,7 +204,9 @@ class DocumentModelTestCase(TestCase):
         """Test the __str__ method of the Document model."""
         document = Document.objects.get(id=1)
         video = Video.objects.get(id=1)
-        self.assertEqual(str(document), f"Document: {document.document.name} - Video: {video}")
+        self.assertEqual(
+            str(document), f"Document: {document.document.name} - Video: {video}"
+        )
         print(" ---> test_str: OK! --- DocumentModel")
 
     def test_verify_document(self):

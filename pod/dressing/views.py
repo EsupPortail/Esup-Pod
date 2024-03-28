@@ -26,8 +26,9 @@ def video_dressing(request, slug):
 
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     if not video.encoded and video.encoding_in_progress is True:
-        messages.add_message(request, messages.ERROR, _(
-            "The video is currently being encoded."))
+        messages.add_message(
+            request, messages.ERROR, _("The video is currently being encoded.")
+        )
         raise PermissionDenied
 
     dressings = get_dressings(request.user, request.user.owner.accessgroup_set.all())
