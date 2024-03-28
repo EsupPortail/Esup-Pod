@@ -18,7 +18,7 @@ from .models import CutVideo
 from .forms import CutVideoForm
 from .utils import clean_database
 
-from pod.video.models import RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+from django.conf import settings
 
 
 @csrf_protect
@@ -36,8 +36,13 @@ def cut_video(request, slug):  # noqa: C901
         cutting = CutVideo.objects.get(video=video.id)
         duration = cutting.duration
 
-    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
-        return render(request, "video_cut.html", {"access_not_allowed": True})
+    if (
+        settings.RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+        and request.user.is_staff is False
+    ):
+        return render(
+            request, "video_cut.html", {"access_not_allowed": True, "video": video}
+        )
 
     if (
         video
@@ -84,5 +89,10 @@ def cut_video(request, slug):  # noqa: C901
     return render(
         request,
         "video_cut.html",
-        {"cutting": cutting, "video": video, "form_cut": form_cut},
+        {
+            "cutting": cutting,
+            "video": video,
+            "form_cut": form_cut,
+            "access_not_allowed": False,
+        },
     )
