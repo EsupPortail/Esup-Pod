@@ -36,7 +36,7 @@ def get_video_info(command):
     return json.loads(ffproberesult.stdout.decode("utf-8"))
 
 
-def start_encode_video_studio(recording_id, video_output, videos, subtime, presenter):
+def start_encode_video_studio(video_output, videos, subtime, presenter):
     """Encode video from studio."""
     presenter_source = None
     presentation_source = None
