@@ -111,3 +111,6 @@ if USE_DOCKER:
         os.mkdir(MIGRATION_DIRECTORY)
         file = os.path.join(MIGRATION_DIRECTORY, "__init__.py")
         open(file, "a").close()
+
+# DEBUG
+USE_DEBUG_TOOLBAR = False
