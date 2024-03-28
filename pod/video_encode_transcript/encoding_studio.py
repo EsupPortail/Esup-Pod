@@ -1,32 +1,27 @@
 """This module handles studio encoding with CPU."""
 
-from django.conf import settings
-from .utils import check_file, send_email_recording
-from . import encode
-
 import time
 import subprocess
 import json
 
-from .encoding_settings import (
-    FFMPEG_CMD,
-    FFPROBE_CMD,
-    FFMPEG_CRF,
-    FFMPEG_NB_THREADS,
-    FFPROBE_GET_INFO,
-    FFMPEG_STUDIO_COMMAND,
-)
-
-FFMPEG_CMD = getattr(settings, "FFMPEG_CMD", FFMPEG_CMD)
-FFPROBE_CMD = getattr(settings, "FFPROBE_CMD", FFPROBE_CMD)
-FFMPEG_CRF = getattr(settings, "FFMPEG_CRF", FFMPEG_CRF)
-FFMPEG_NB_THREADS = getattr(settings, "FFMPEG_NB_THREADS", FFMPEG_NB_THREADS)
-FFPROBE_GET_INFO = getattr(settings, "FFPROBE_GET_INFO", FFPROBE_GET_INFO)
-FFMPEG_STUDIO_COMMAND = getattr(settings, "FFMPEG_STUDIO_COMMAND", FFMPEG_STUDIO_COMMAND)
-
-DEBUG = getattr(settings, "DEBUG", True)
-
-ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
+if __name__ == "__main__":
+    from encoding_settings import (
+        FFMPEG_CMD,
+        FFPROBE_CMD,
+        FFMPEG_CRF,
+        FFMPEG_NB_THREADS,
+        FFPROBE_GET_INFO,
+        FFMPEG_STUDIO_COMMAND,
+    )
+else:
+    from .encoding_settings import (
+        FFMPEG_CMD,
+        FFPROBE_CMD,
+        FFMPEG_CRF,
+        FFMPEG_NB_THREADS,
+        FFPROBE_GET_INFO,
+        FFMPEG_STUDIO_COMMAND,
+    )
 
 # ##########################################################################
 # ENCODE VIDEO STUDIO: MAIN ENCODE
@@ -41,7 +36,7 @@ def get_video_info(command):
     return json.loads(ffproberesult.stdout.decode("utf-8"))
 
 
-def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
+def start_encode_video_studio(recording_id, video_output, videos, subtime, presenter):
     """Encode video from studio."""
     presenter_source = None
     presentation_source = None
@@ -80,21 +75,7 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
         subcmd = " -vsync 0 "
     subcmd += " -movflags +faststart -f mp4 "
 
-    msg = launch_encode_video_studio(input_video, subtime, subcmd, video_output)
-    from pod.recorder.models import Recording
-
-    recording = Recording.objects.get(id=recording_id)
-    recording.comment += msg
-    recording.save()
-    if check_file(video_output):
-        from pod.recorder.plugins.type_studio import save_basic_video
-
-        video = save_basic_video(recording, video_output)
-        encode_video = getattr(encode, ENCODE_VIDEO)
-        encode_video(video.id, False)
-    else:
-        msg = "Wrong file or path:\n%s" % video_output
-        send_email_recording(msg, recording_id)
+    return launch_encode_video_studio(input_video, subtime, subcmd, video_output)
 
 
 def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
@@ -181,8 +162,4 @@ def launch_encode_video_studio(input_video, subtime, subcmd, video_output):
         f.write(b"\n\ffmpegstudio:\n\n")
         f.write(ffmpegstudio.stdout)
     msg += "\n- Encoding Mp4: %s" % time.ctime()
-    if DEBUG:
-        print(msg)
-        print(ffmpegstudio.stdout)
-        print(ffmpegstudio.stderr)
     return msg

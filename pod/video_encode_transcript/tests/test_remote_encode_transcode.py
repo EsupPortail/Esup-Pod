@@ -43,7 +43,6 @@ else:
 
 
 class RemoteEncodeTranscriptTestCase(TestCase):
-
     def setUp(self):
         print("===== SetUp of RemoteEncodeTranscriptTestCase =====")
         print("===> TEST_REMOTE_ENCODE: %s" % TEST_REMOTE_ENCODE)
