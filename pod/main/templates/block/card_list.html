@@ -1,23 +1,27 @@
-{% load i18n %}
-{% load video_filters static %}
+{% load i18n %} {% load video_filters static %} {% if elements.count >= 1 %}
 
-{% if elements.count >= 1 %}
+<div class="pod-inner edito-card-list" id="edito-videos-list-{{ uniq_id }}">
+  <h2>{{ title |capfirst|truncatechars:43 }}</h2>
 
-	<div class="pod-inner edito-card-list" id="edito-videos-list-{{ uniq_id }}">
-		<h2>{{ title |capfirst|truncatechars:43 }}</h2>
-
-		{% if type == "video" %}
-			{% include "videos/video_list.html" with videos=elements %}
-		{% elif type == "event" %}
-			{% include "live/events_list.html" with events=elements hide_counter=True %}
-		{% elif type == "last" %}
-			{% include "videos/video_list.html" with videos=elements %}
-			<div class="highlight">
-				<div class="d-flex justify-content-end">
-				  <p><a class="btn btn-lg btn-primary btn-sm" href="{% url 'videos:videos' %}">{% trans "Show all videos" %}&nbsp;<i class="bi bi-arrow-right-circle" aria-hidden="true"></i></a></p>
-				</div>
-			  </div>
-		{% endif %}
-	</div>
+  {% if type == "video" %} {% include "videos/video_list.html" with
+  videos=elements %} {% elif type == "event" %} {% include
+  "live/events_list.html" with events=elements hide_counter=True %} {% elif type
+  == "last" %} {% include "videos/video_list.html" with videos=elements %}
+  <div class="highlight">
+    <div class="d-flex justify-content-end">
+      <p>
+        <a
+          class="btn btn-lg btn-primary btn-sm"
+          href="{% url 'videos:videos' %}"
+          >{% trans "Show all videos" %}&nbsp;<i
+            class="bi bi-arrow-right-circle"
+            aria-hidden="true"
+          ></i
+        ></a>
+      </p>
+    </div>
+  </div>
+  {% endif %}
+</div>
 
 {% endif %}

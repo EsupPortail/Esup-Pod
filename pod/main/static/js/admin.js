@@ -10,19 +10,29 @@ fieldTheme = document.getElementsByClassName("field-Theme")[0];
 fieldPlaylist = document.getElementsByClassName("field-Playlist")[0];
 fieldHtml = document.getElementsByClassName("field-html")[0];
 
-// Function for show field
+/**
+ * Function for show field.
+ *
+ * @param {HTMLElement} field The field to show.
+ */
 function showField(field) {
   field.classList.remove("d-none");
   field.classList.add("d-block");
 }
 
-// Function for hide field
+/**
+ * Function for hide field.
+ *
+ * @param {HTMLElement} field The field to hide.
+ */
 function hideField(field) {
   field.classList.remove("d-block");
   field.classList.add("d-none");
 }
 
-// Function init
+/**
+ * Function init.
+ */
 function initializeFieldDisplay() {
   if (selectedType && selectedDataType) {
     if (selectedType.value === "html") {
@@ -52,7 +62,9 @@ function initializeFieldDisplay() {
   }
 }
 
-// Event listen
+/**
+ * listen selectedType and selectedDataType if change.
+ */
 if (selectedType) {
   selectedType.addEventListener("change", function () {
     handleTypeChange();
@@ -64,7 +76,9 @@ if (selectedDataType) {
   selectedDataType.addEventListener("change", handleDataTypeChange);
 }
 
-// Function change type
+/**
+ * Function change Type.
+ */
 function handleTypeChange() {
   if (selectedType && selectedDataType) {
     if (selectedType.value === "html") {
@@ -77,7 +91,9 @@ function handleTypeChange() {
   }
 }
 
-// Function change data type
+/**
+ * Function change Data Type.
+ */
 function handleDataTypeChange() {
   if (selectedType && selectedDataType) {
     switch (selectedDataType.value) {
@@ -105,5 +121,7 @@ function handleDataTypeChange() {
   }
 }
 
-// Call init function
+/**
+ * Call init function.
+ */
 initializeFieldDisplay();

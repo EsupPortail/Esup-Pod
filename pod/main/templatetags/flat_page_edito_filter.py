@@ -35,12 +35,13 @@ EDITO_CACHE_PREFIX = getattr(settings, "EDITO_CACHE_PREFIX", "edito_cache_")
 
 @register.filter(name="edito")
 def edito(content, request):
+    """ Return block content"""
     block = display_content_by_block(content, request)
     return block
 
 
 def display_content_by_block(content, request):  # noqa: C901
-    """ display content by block"""
+    """ Display content by block"""
     debug_elts = []
 
     current_site = get_current_site(request)
