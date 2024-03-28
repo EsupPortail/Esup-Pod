@@ -1,5 +1,5 @@
 """Unit tests for enrichment models."""
-
+from django.contrib.sites.models import Site
 from django.test import TestCase
 from django.contrib.auth.models import User, Group
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -85,38 +85,41 @@ class EnrichmentGroupModelTestCase(TestCase):
 
 
 class EnrichmentModelTestCase(TestCase):
+    """Test case for Enrichment model tests."""
+
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
+        """Set up for Enrichment model tests."""
         owner = User.objects.create(username="test")
-        videotype = Type.objects.create(title="others")
+        video_type = Type.objects.create(title="others")
         video = Video.objects.create(
             title="video",
-            type=videotype,
+            type=video_type,
             owner=owner,
             video="test.mp4",
             duration=20,
         )
-        currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        simplefile = SimpleUploadedFile(
+        current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        simple_file = SimpleUploadedFile(
             name="testimage.jpg",
-            content=open(os.path.join(currentdir, "tests", "testimage.jpg"), "rb").read(),
+            content=open(os.path.join(current_dir, "tests", "testimage.jpg"), "rb").read(),
             content_type="image/jpeg",
         )
 
         if FILEPICKER:
             home = UserFolder.objects.get(name="home", owner=owner)
-            customImage = CustomImageModel.objects.create(
+            custom_image = CustomImageModel.objects.create(
                 name="testimage",
                 description="testimage",
                 created_by=owner,
                 folder=home,
-                file=simplefile,
+                file=simple_file,
             )
         else:
-            customImage = CustomImageModel.objects.create(file=simplefile)
+            custom_image = CustomImageModel.objects.create(file=simple_file)
         Enrichment.objects.create(
             video=video,
             title="testimg",
@@ -124,7 +127,7 @@ class EnrichmentModelTestCase(TestCase):
             end=2,
             stop_video=True,
             type="image",
-            image=customImage,
+            image=custom_image,
         )
         Enrichment.objects.create(
             video=video,
@@ -134,6 +137,7 @@ class EnrichmentModelTestCase(TestCase):
         )
 
     def test_attributs_full(self):
+        """Test the attributs of the Enrichment model."""
         enrichment = Enrichment.objects.get(id=1)
         video = Video.objects.get(id=1)
         self.assertEqual(enrichment.video, video)
@@ -146,6 +150,7 @@ class EnrichmentModelTestCase(TestCase):
         print(" ---> test_attributs_full: OK! --- EnrichmentModel")
 
     def test_attributs(self):
+        """Test the attributs of the Enrichment model."""
         enrichment = Enrichment.objects.get(id=2)
         video = Video.objects.get(id=1)
         self.assertEqual(enrichment.video, video)
@@ -160,6 +165,7 @@ class EnrichmentModelTestCase(TestCase):
         print(" ---> test_attributs: OK! --- EnrichmentModel")
 
     def test_type(self):
+        """Test the type of the Enrichment model."""
         video = Video.objects.get(id=1)
         enrichment = Enrichment()
         enrichment.title = "test"
@@ -171,6 +177,7 @@ class EnrichmentModelTestCase(TestCase):
         print(" [ END ENRICHMENT_TEST MODEL ] ")
 
     def test_bad_attributs(self):
+        """Test the bad attributs of the Enrichment model."""
         video = Video.objects.get(id=1)
         enrichment = Enrichment()
         enrichment.video = video
@@ -190,6 +197,7 @@ class EnrichmentModelTestCase(TestCase):
         print(" ---> test_bad_attributs: OK! --- EnrichmentModel")
 
     def test_overlap(self):
+        """Test overlap."""
         video = Video.objects.get(id=1)
         enrichment = Enrichment()
         enrichment.video = video
@@ -201,6 +209,7 @@ class EnrichmentModelTestCase(TestCase):
         print(" ---> test_overlap: OK! --- EnrichmentModel")
 
     def test_delete(self):
+        """Test the delete method of the Enrichment model."""
         video = Video.objects.get(id=1)
         list_enrichment = video.enrichment_set.all()
         self.assertEqual(list_enrichment.count(), 2)
@@ -210,3 +219,28 @@ class EnrichmentModelTestCase(TestCase):
         self.assertTrue(Enrichment.objects.all().count() == 0)
         self.assertEqual(EnrichmentVtt.objects.filter(video=video).count(), 0)
         print(" ---> test_delete: OK! --- EnrichmentModel")
+
+    def test_sites_property__not_empty(self):
+        """Test the sites property of the Enrichment model when the video has site."""
+        video = Video.objects.get(id=1)
+        video.sites.add(Site.objects.get(pk=1))
+        video.save()
+        enrichment = Enrichment.objects.get(id=1)
+        self.assertEqual(enrichment.sites, video.sites)
+        print(" ---> test_sites_property__not_empty: OK! --- EnrichmentModel")
+
+    def test_sites_property__empty(self):
+        """Test the sites property of the Enrichment model when the video has no site."""
+        video = Video.objects.get(id=1)
+        video.sites.clear()
+        enrichment = Enrichment.objects.get(id=1)
+        self.assertEqual(enrichment.sites, video.sites)
+        self.assertEqual(enrichment.sites.count(), 0)
+        self.assertEqual(video.sites.count(), 0)
+        print(" ---> test_sites_property__empty: OK! --- EnrichmentModel")
+
+    def test_str(self):
+        """Test the str method of the Enrichment model."""
+        enrichment = Enrichment.objects.get(id=1)
+        self.assertEqual(str(enrichment), f"Media: {enrichment.title} - Video: {enrichment.video}")
+        print(" ---> test_str: OK! --- EnrichmentModel")
