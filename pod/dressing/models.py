@@ -123,10 +123,18 @@ class Dressing(models.Model):
             "users": list(self.users.values_list("id", flat=True)),
             "allow_to_groups": list(self.allow_to_groups.values_list("id", flat=True)),
             "watermark": self.watermark.file.url if self.watermark else None,
+            "watermark_path": self.watermark.file.path if self.watermark else "",
             "position": self.get_position_display(),
+            "position_orig": self.position,
             "opacity": self.opacity,
             "opening_credits": (
                 self.opening_credits.slug if self.opening_credits else None
             ),
+            "opening_credits_video": (
+                self.opening_credits.video.name if self.opening_credits else ""
+            ),
             "ending_credits": self.ending_credits.slug if self.ending_credits else None,
+            "ending_credits_video": (
+                self.ending_credits.video.name if self.ending_credits else ""
+            ),
         }

@@ -8,7 +8,7 @@ import requests
 import traceback
 
 from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm
-from .forms import MeetingInviteForm
+from .forms import MeetingInviteForm, get_random_string
 from .models import Meeting, InternalRecording
 from .utils import get_nth_week_number, send_email_recording_ready
 from datetime import datetime
@@ -104,16 +104,24 @@ def my_meetings(request):
     site = get_current_site(request)
     if RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
         return render(request, "meeting/my_meetings.html", {"access_not_allowed": True})
+    # Manage personal meeting room
+    manage_personal_meeting_room(request)
     if request.GET and request.GET.get("all") == "true":
         meetings = request.user.owner_meeting.all().filter(
             site=site
         ) | request.user.owners_meetings.all().filter(site=site)
         meetings = meetings.distinct()
+        meetings = meetings.order_by("-is_personal", "-start_at")
     else:
         # remove past meeting
         meetings = [
             meeting
-            for meeting in (request.user.owner_meeting.all().filter(site=site))
+            for meeting in (
+                request.user.owner_meeting.all().filter(site=site)
+                | request.user.owners_meetings.all()
+                .filter(site=site)
+                .order_by("-is_personal", "-start_at")
+            )
             if meeting.is_active
         ]
     return render(
@@ -126,6 +134,31 @@ def my_meetings(request):
             "meeting_disable_record": MEETING_DISABLE_RECORD,
         },
     )
+
+
+def manage_personal_meeting_room(request):
+    """Create, if necessary, the personal meeting room for this user.
+
+    Args:
+        request (Request): HTTP request
+    """
+    site = get_current_site(request)
+    personal_meeting_room = Meeting.objects.filter(
+        owner=request.user, site=site, is_personal=True
+    ).first()
+
+    if not personal_meeting_room:
+        # Create 1st time the personal meeting room
+        Meeting.objects.create(
+            name=_("Personal meeting room"),
+            owner=request.user,
+            site=site,
+            attendee_password=get_random_string(8),
+            moderator_password=get_random_string(8),
+            start_at=datetime.now().replace(minute=0, second=0, microsecond=0),
+            recurrence=None,
+            is_personal=True,
+        )
 
 
 @csrf_protect
@@ -151,6 +184,12 @@ def add_or_edit(request, meeting_id=None):
         )
         and (request.user not in meeting.additional_owners.all())
     ):
+        display_message_with_icon(
+            request, messages.ERROR, _("You cannot edit this meeting.")
+        )
+        raise PermissionDenied
+
+    if meeting and meeting.is_personal and request.user != meeting.owner:
         display_message_with_icon(
             request, messages.ERROR, _("You cannot edit this meeting.")
         )
@@ -238,6 +277,12 @@ def delete(request, meeting_id):
     ):
         display_message_with_icon(
             request, messages.ERROR, _("You cannot delete this meeting.")
+        )
+        raise PermissionDenied
+
+    if meeting.is_personal:
+        display_message_with_icon(
+            request, messages.ERROR, _("You cannot delete a personal meeting room.")
         )
         raise PermissionDenied
 
@@ -680,6 +725,7 @@ def secure_internal_recordings(request, meeting):
         and not (
             request.user.is_superuser or request.user.has_perm("meeting.view_meeting")
         )
+        and (request.user not in meeting.additional_owners.all())
     ):
         display_message_with_icon(
             request, messages.ERROR, _("You cannot view the recordings of this meeting.")
@@ -789,8 +835,15 @@ def invite(request, meeting_id):
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
 
-    if request.user != meeting.owner and not (
-        request.user.is_superuser or request.user.has_perm("meeting.delete_meeting")
+    if (
+        request.user != meeting.owner
+        and (
+            not (
+                request.user.is_superuser
+                or request.user.has_perm("meeting.delete_meeting")
+            )
+        )
+        and (request.user not in meeting.additional_owners.all())
     ):
         display_message_with_icon(
             request, messages.ERROR, _("You cannot invite for this meeting.")
@@ -886,30 +939,54 @@ def get_html_content(request, meeting):
             }
         )
     else:
-        html_content = (
-            _(
-                """
-            <p>Hello,</p>
-            <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>.</p>
-            <p>Start date: %(start_date_time)s </p>
-            <p>End date: %(end_date)s </p>
-            <p>here the link to join the meeting:
-            <a href="%(join_link)s">%(join_link)s</a></p>
-            <p>You need this password to enter: <b>%(password)s</b> </p>
-            <p>Regards</p>
-        """
+        if meeting.is_personal:
+            html_content = (
+                _(
+                    """
+                <p>Hello,</p>
+                <p>%(owner)s invites you to the meeting <strong>%(meeting_title)s</strong>.</p>
+                <p>here the link to join the meeting:
+                <a href="%(join_link)s">%(join_link)s</a></p>
+                <p>You need this password to enter: <strong>%(password)s</strong> </p>
+                <p>Regards</p>
+            """
+                )
+                % {
+                    "owner": full_name,
+                    "meeting_title": meeting.name,
+                    "start_date_time": meeting_start_datetime,
+                    "end_date": timezone.localtime(
+                        meeting.start_at + meeting.expected_duration
+                    ).strftime("%d/%m/%Y %H:%M"),
+                    "join_link": join_link,
+                    "password": meeting.attendee_password,
+                }
             )
-            % {
-                "owner": full_name,
-                "meeting_title": meeting.name,
-                "start_date_time": meeting_start_datetime,
-                "end_date": timezone.localtime(
-                    meeting.start_at + meeting.expected_duration
-                ).strftime("%d/%m/%Y %H:%M"),
-                "join_link": join_link,
-                "password": meeting.attendee_password,
-            }
-        )
+        else:
+            html_content = (
+                _(
+                    """
+                <p>Hello,</p>
+                <p>%(owner)s invites you to the meeting <strong>%(meeting_title)s</strong>.</p>
+                <p>Start date: %(start_date_time)s </p>
+                <p>End date: %(end_date)s </p>
+                <p>here the link to join the meeting:
+                <a href="%(join_link)s">%(join_link)s</a></p>
+                <p>You need this password to enter: <strong>%(password)s</strong> </p>
+                <p>Regards</p>
+            """
+                )
+                % {
+                    "owner": full_name,
+                    "meeting_title": meeting.name,
+                    "start_date_time": meeting_start_datetime,
+                    "end_date": timezone.localtime(
+                        meeting.start_at + meeting.expected_duration
+                    ).strftime("%d/%m/%Y %H:%M"),
+                    "join_link": join_link,
+                    "password": meeting.attendee_password,
+                }
+            )
     return html_content
 
 

@@ -271,7 +271,8 @@ class Broadcaster(models.Model):
     @property
     def qrcode(self, request=None):
         alt = _("QR code to record immediately an event")
-        return generate_qrcode("live:event_immediate_edit", self.id, alt, request)
+        url = reverse("live:event_immediate_edit", args={self.id})
+        return generate_qrcode(url, alt, request)
 
     def set_broadcaster_file(self, filename):
         trans_folder = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER)

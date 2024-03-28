@@ -74,6 +74,7 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
     "Shibboleth-unscoped-affiliation": (False, "affiliations"),
 }
 REMOTE_USER_HEADER = "REMOTE_USER"
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = False
 EXISTING_BROADCASTER_IMPLEMENTATIONS = ["Wowza", "Test"]
 AFFILIATION_EVENT = ["employee"]
 
@@ -110,3 +111,6 @@ if USE_DOCKER:
         os.mkdir(MIGRATION_DIRECTORY)
         file = os.path.join(MIGRATION_DIRECTORY, "__init__.py")
         open(file, "a").close()
+
+# DEBUG
+USE_DEBUG_TOOLBAR = False

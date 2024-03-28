@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-01 13:49+0100\n"
+"POT-Creation-Date: 2024-03-12 12:01+0100\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2787,15 +2787,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -4563,14 +4563,6 @@ msgstr ""
 msgid "Additional channel Tabs"
 msgstr ""
 
-#: pod/main/settings.py
-msgid ""
-"Pod is aimed at users of our institutions, by allowing the publication of "
-"videos in the fields of research (promotion of platforms, etc.), training "
-"(tutorials, distance training, student reports, etc.), institutional life "
-"(video of events), offering several days of content."
-msgstr ""
-
 #: pod/main/templates/403.html
 msgid "Permission denied"
 msgstr ""
@@ -5299,6 +5291,16 @@ msgstr ""
 msgid "BBB Create Time"
 msgstr ""
 
+#: pod/meeting/models.py pod/meeting/views.py
+msgid "Personal meeting room"
+msgstr ""
+
+#: pod/meeting/models.py
+msgid ""
+"If this box is checked, this meeting corresponds to the user's personal "
+"meeting room."
+msgstr ""
+
 #: pod/meeting/models.py
 msgid ""
 "The day of the start date of the meeting must be included in the recurrence "
@@ -5340,6 +5342,24 @@ msgstr ""
 msgid ""
 "Access to adding meeting has been restricted. If you want to add meetings on "
 "the platform, please <a href=\"%(url)s\">contact us</a>."
+msgstr ""
+
+#: pod/meeting/templates/meeting/add_or_edit.html
+msgid ""
+"Your personal meeting room is a room specific to your profile, which is "
+"always available."
+msgstr ""
+
+#: pod/meeting/templates/meeting/add_or_edit.html
+msgid "You can start it at any time, or schedule it for later use."
+msgstr ""
+
+#: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/meeting/templates/meeting/meeting_card.html
+#, python-format
+msgid ""
+"This is “%(full_name)s”'s personal meeting room, a room specific to his "
+"profile, which is always available."
 msgstr ""
 
 #: pod/meeting/templates/meeting/delete.html
@@ -5470,6 +5490,12 @@ msgid "Delete the meeting"
 msgstr ""
 
 #: pod/meeting/templates/meeting/meeting_card.html
+msgid ""
+"This is your personal meeting room, a room specific to your profile, which "
+"is always available."
+msgstr ""
+
+#: pod/meeting/templates/meeting/meeting_card.html
 msgid "Access to this meeting is restricted"
 msgstr ""
 
@@ -5586,6 +5612,10 @@ msgid "You cannot delete this meeting."
 msgstr ""
 
 #: pod/meeting/views.py
+msgid "You cannot delete a personal meeting room."
+msgstr ""
+
+#: pod/meeting/views.py
 msgid "The meeting has been deleted."
 msgstr ""
 
@@ -5643,16 +5673,32 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"            <p>Hello,</p>\n"
-"            <p>%(owner)s invites you to the meeting <b>%(meeting_title)s</b>."
-"</p>\n"
-"            <p>Start date: %(start_date_time)s </p>\n"
-"            <p>End date: %(end_date)s </p>\n"
-"            <p>here the link to join the meeting:\n"
-"            <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"            <p>You need this password to enter: <b>%(password)s</b> </p>\n"
-"            <p>Regards</p>\n"
-"        "
+"                <p>Hello,</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
+"                <p>here the link to join the meeting:\n"
+"                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
+"                <p>You need this password to enter: <strong>%(password)s</"
+"strong> </p>\n"
+"                <p>Regards</p>\n"
+"            "
+msgstr ""
+
+#: pod/meeting/views.py
+#, python-format
+msgid ""
+"\n"
+"                <p>Hello,</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
+"                <p>Start date: %(start_date_time)s </p>\n"
+"                <p>End date: %(end_date)s </p>\n"
+"                <p>here the link to join the meeting:\n"
+"                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
+"                <p>You need this password to enter: <strong>%(password)s</"
+"strong> </p>\n"
+"                <p>Regards</p>\n"
+"            "
 msgstr ""
 
 #: pod/meeting/views.py
@@ -6637,8 +6683,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -7394,10 +7440,16 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/dashboard.html
 #, python-format
-msgid "%(counter)s video"
-msgid_plural "%(counter)s videos"
+msgid "%(counter)s video for this channel"
+msgid_plural "%(counter)s videos for this channel"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/templates/channel/channel.html
+#, python-format
+msgid "%(counter)s subtheme found for this theme"
+msgid_plural "%(counter)s subthemes found for this theme"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -7675,6 +7727,13 @@ msgstr ""
 #: pod/video/templates/videos/dashboard.html
 msgid "No video found"
 msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+#, python-format
+msgid "%(counter)s video"
+msgid_plural "%(counter)s videos"
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Clear selection"

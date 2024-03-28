@@ -8,7 +8,6 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
-from django.urls import reverse
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 
@@ -115,7 +114,7 @@ def secure_post_request(request):
         raise PermissionDenied
 
 
-def generate_qrcode(url: str, id: int, alt: str, request=None):
+def generate_qrcode(url: str, alt: str, request=None):
     """
     Generate qrcode for live event or video share link.
 
@@ -130,13 +129,12 @@ def generate_qrcode(url: str, id: int, alt: str, request=None):
 
     """
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
-    url_immediate_event = reverse(url, args={id})
     data = "".join(
         [
             url_scheme,
             "://",
             get_current_site(request).domain,
-            url_immediate_event,
+            url,
         ]
     )
     img = qrcode.make(data)
