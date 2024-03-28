@@ -91,3 +91,39 @@ def start_encoding_task(
         msg = "Exception: {}".format(type(exception).__name__)
         msg += "\nException message: {}".format(exception)
         logger.error(msg)
+
+
+@encoding_app.task
+def start_studio_task(recording_id, video_output, videos, subtime, presenter):
+    from .encoding_studio import start_encode_video_studio
+
+    print("Start the encoding studio of the video")
+    msg = start_encode_video_studio(video_output, videos, subtime, presenter)
+    print("End of the encoding studio of the video")
+    Headers = {"Authorization": "Token %s" % POD_API_TOKEN}
+    url = (
+        POD_API_URL.strip("/")
+        + "/store_remote_encoded_video_studio/?recording_id=%s" % recording_id
+    )
+    data = {
+        "video_output": video_output,
+        "msg": msg,
+    }
+    try:
+        response = requests.post(url, json=data, headers=Headers)
+        if response.status_code != 200:
+            msg = "Calling store remote encoding studio error : {} {}".format(
+                response.status_code, response.reason
+            )
+            logger.error(msg + "\n" + str(response.content))
+        else:
+            logger.info("Call importing encoded studio task ok")
+    except (
+        requests.exceptions.HTTPError,
+        requests.exceptions.ConnectionError,
+        requests.exceptions.InvalidURL,
+        requests.exceptions.Timeout,
+    ) as exception:
+        msg = "Exception: {}".format(type(exception).__name__)
+        msg += "\nException message: {}".format(exception)
+        logger.error(msg)

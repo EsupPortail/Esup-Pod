@@ -137,11 +137,13 @@ class Contributor(models.Model):
     def __str__(self):
         return "Video:{0} - Name:{1} - Role:{2}".format(self.video, self.name, self.role)
 
-    def get_base_mail(self):
+    def get_base_mail(self) -> str:
+        """Encode an email as base64 to prevent robots crawling."""
         data = base64.b64encode(self.email_address.encode())
-        return data
+        return data.decode("utf-8")
 
-    def get_noscript_mail(self):
+    def get_noscript_mail(self) -> str:
+        """Replace @ by __AT__ in email adress to prevent robots crawling."""
         return self.email_address.replace("@", "__AT__")
 
 
@@ -178,10 +180,7 @@ class Document(models.Model):
         msg = list()
         if not self.document:
             msg.append(_("Please enter a document."))
-        if len(msg) > 0:
-            return msg
-        else:
-            return list()
+        return msg
 
     def verify_not_same_document(self):
         msg = list()
