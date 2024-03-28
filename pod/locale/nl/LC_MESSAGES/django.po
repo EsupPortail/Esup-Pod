@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-26 15:02+0000\n"
+"POT-Creation-Date: 2024-03-28 10:01+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -4597,7 +4597,6 @@ msgid "Playlist"
 msgstr ""
 
 #: pod/main/models.py pod/main/templatetags/flat_page_edito_filter.py
-#: pod/video/templates/videos/last_videos.html
 msgid "Last videos"
 msgstr ""
 
@@ -4796,7 +4795,6 @@ msgstr ""
 #: pod/main/templates/block/card_list.html
 #: pod/main/templates/block/carousel.html
 #: pod/main/templates/block/multi_carousel.html
-#: pod/video/templates/videos/last_videos.html
 msgid "Show all videos"
 msgstr ""
 
