@@ -1,8 +1,6 @@
-from django.conf import settings as django_settings
 from django import template
 from django.utils.text import capfirst
 from django.urls import reverse
-from django.db.models import Q
 from django.contrib.sites.shortcuts import get_current_site
 from django.template import TemplateSyntaxError
 from django.apps.registry import apps
@@ -14,7 +12,6 @@ from tagging.utils import LINEAR
 from tagging.utils import LOGARITHMIC
 
 from ..forms import VideoVersionForm
-from ..context_processors import get_available_videos
 from pod.video_encode_transcript.utils import check_file
 from django.contrib.auth.models import User
 from pod.video.models import Video
@@ -25,13 +22,6 @@ import os
 from ...main.utils import generate_qrcode
 
 register = template.Library()
-
-HOMEPAGE_SHOWS_PASSWORDED = getattr(django_settings, "HOMEPAGE_SHOWS_PASSWORDED", True)
-HOMEPAGE_SHOWS_RESTRICTED = getattr(django_settings, "HOMEPAGE_SHOWS_RESTRICTED", True)
-HOMEPAGE_NB_VIDEOS = getattr(django_settings, "HOMEPAGE_NB_VIDEOS", 12)
-HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS = getattr(
-    django_settings, "HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS", False
-)
 
 
 @register.simple_tag(name="get_marker_time_for_user")
@@ -95,33 +85,6 @@ def get_app_link(video, app):
 def get_version_form(video):
     form = VideoVersionForm()
     return form
-
-
-@register.simple_tag(takes_context=True)
-def get_last_videos(context):
-    request = context["request"]
-    videos = get_available_videos().filter(
-        sites=get_current_site(request),
-    )
-
-    if not HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS:
-        videos = videos.exclude(channel__visible=0)
-
-    if not HOMEPAGE_SHOWS_PASSWORDED:
-        videos = videos.filter(Q(password="") | Q(password__isnull=True))
-    if not HOMEPAGE_SHOWS_RESTRICTED:
-        videos = videos.filter(is_restricted=False)
-    videos = videos.defer("video", "slug", "owner", "additional_owners", "description")
-    count = 0
-    recent_vids = []
-    for vid in videos:
-        if vid.encoded:
-            recent_vids.append(vid)
-            count = count + 1
-        if count >= HOMEPAGE_NB_VIDEOS:
-            break
-
-    return recent_vids
 
 
 @register.simple_tag(name="get_video_qrcode", takes_context=True)
