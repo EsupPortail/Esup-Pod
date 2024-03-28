@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 from pod.main import context_processors
 from pod.main.models import Configuration, Block
 from pod.playlist.models import Playlist
-from pod.video.models import Type, Video, Channel
+from pod.video.models import Type, Video, Channel, ViewCount
 from pod.live.models import Building, Broadcaster, Event
 
 import os
@@ -557,6 +557,23 @@ class TestBlock(TestCase):
             '<p>MaChaineDeTest</p>' in response.content.decode(),
             "test if block html is not present.",
         )
+        bl2.visible = True
+        bl2.must_be_auth = True
+        bl2.save()
+        response = self.client.get("/")
+        self.assertFalse(
+            '<p>MaChaineDeTest</p>' in response.content.decode(),
+            "test if block html is not present.",
+        )
+
+        User.objects.create(username="test", password="azerty")
+        self.user = User.objects.get(username="test")
+        self.client.force_login(self.user)
+        response = self.client.get("/")
+        self.assertTrue(
+            '<p>MaChaineDeTest</p>' in response.content.decode(),
+            "test if block html is present.",
+        )
 
         print(" --->  test_Block_Html ok")
 
@@ -589,6 +606,9 @@ class TestBlock(TestCase):
         """
         Test if create channel with video, this video is present in block type channel.
         """
+        bk1 = Block.objects.get(id=1)
+        bk1.visible = False
+        bk1.save()
         user = User.objects.create(username="pod", password="podv3")
         channel = Channel.objects.create(title="monChannel")
         video = Video.objects.create(
@@ -606,7 +626,7 @@ class TestBlock(TestCase):
         video.channel.add(channel)
         bl2 = Block.objects.create(
             title="block channel",
-            type="card_list",
+            type="carousel",
             page=FlatPage.objects.get(id=1),
             data_type="channel",
             Channel=Channel.objects.get(id=1),
@@ -641,6 +661,10 @@ class TestBlock(TestCase):
         self.assertTrue(
             'VideoOnHold' in response.content.decode(),
             "test if video VideoOnHold is present.",
+        )
+        self.assertTrue(
+            '<div class="pod-inner edito-carousel">' in response.content.decode(),
+            "test if type block is carousel.",
         )
         print(" --->  test_Video_in_channel_block ok")
 
@@ -680,4 +704,47 @@ class TestBlock(TestCase):
             'MonEventDeTest' in response.content.decode(),
             "test if event MonEventDeTest is present.",
         )
+        self.assertTrue(
+            '<div class="pod-inner edito-card-list"' in response.content.decode(),
+            "test if block is card list.",
+        )
         print(" --->  test_Next_Event_in_Block_next_event_type ok")
+
+    def test_most_views_type_block(self):
+        """
+        Test if most views video is present in block type most view.
+        """
+        bk1 = Block.objects.get(id=1)
+        bk1.visible = False
+        bk1.save()
+        user = User.objects.create(username="pod", password="podv3")
+        vd1 = Video.objects.create(
+            title="VideoOnHold",
+            owner=user,
+            video="test.mp4",
+            type=Type.objects.get(id=1),
+            is_draft=False,
+            slug="video-on-hold",
+            duration=20,
+            encoding_in_progress=False,
+        )
+        ViewCount.objects.create(video=vd1, date=datetime.today(), count=1)
+        Block.objects.create(
+            title="block most views",
+            type="multi_carousel",
+            page=FlatPage.objects.get(id=1),
+            data_type="most_views",
+            no_cache=True,
+            visible=True,
+        )
+        self.client = Client()
+        response = self.client.get("/")
+        self.assertTrue(
+            'VideoOnHold' in response.content.decode(),
+            "test if video VideoOnHold is present.",
+        )
+        self.assertTrue(
+            '<div class="pod-inner edito-multi-carousel ">' in response.content.decode(),
+            "test if block is carousel multi.",
+        )
+        print(" --->  test_Video_in_type_most_views_block ok")
