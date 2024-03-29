@@ -1,3 +1,5 @@
+"""Forms for Esup-Pod video app."""
+
 from django import forms
 from django.contrib.admin import widgets
 from django.contrib.auth.models import User
@@ -428,6 +430,7 @@ class CustomClearableFileInput(ClearableFileInput):
 
 
 class OwnerWidget(s2forms.ModelSelect2Widget):
+    """Widget for selecting a single owner."""
     search_fields = [
         "username__icontains",
         "email__icontains",
@@ -435,6 +438,7 @@ class OwnerWidget(s2forms.ModelSelect2Widget):
 
 
 class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
+    """Widget for selecting multiple owners."""
     search_fields = [
         "username__icontains",
         "email__icontains",
@@ -442,6 +446,7 @@ class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
 
 
 class AddAccessGroupWidget(s2forms.ModelSelect2MultipleWidget):
+    """Widget for selecting multiple access groups."""
     search_fields = [
         "display_name__icontains",
         "code_name__icontains",
@@ -449,12 +454,14 @@ class AddAccessGroupWidget(s2forms.ModelSelect2MultipleWidget):
 
 
 class ChannelWidget(s2forms.ModelSelect2MultipleWidget):
+    """Widget for selecting multiple channels."""
     search_fields = [
         "title__icontains",
     ]
 
 
 class DisciplineWidget(s2forms.ModelSelect2MultipleWidget):
+    """Widget for selecting multiple disciplines."""
     search_fields = [
         "title__icontains",
     ]
@@ -513,6 +520,7 @@ class DescribedChoiceField(forms.ModelChoiceField):
 
 @deconstructible
 class FileSizeValidator(object):
+    """File size validator."""
     message = _(
         "The current file %(size)s, which is too large. "
         "The maximum file size is %(allowed_size)s."
@@ -520,6 +528,7 @@ class FileSizeValidator(object):
     code = "invalid_max_size"
 
     def __init__(self, *args, **kwargs):
+        """Initialize a new FileSizeValidator instance."""
         self.max_size = VIDEO_MAX_UPLOAD_SIZE * 1024 * 1024 * 1024  # GO
 
     def __call__(self, value):
@@ -905,6 +914,7 @@ class VideoForm(forms.ModelForm):
                 self.fields[field].required = True
 
     def set_nostaff_config(self):
+        """Set the configuration for non staff user."""
         if self.is_staff is False:
             del self.fields["thumbnail"]
 
@@ -923,6 +933,7 @@ class VideoForm(forms.ModelForm):
                 )
 
     def hide_default_language(self):
+        """Hide default language."""
         if self.fields.get("description_%s" % settings.LANGUAGE_CODE):
             self.fields["description_%s" % settings.LANGUAGE_CODE].widget = (
                 forms.HiddenInput()
@@ -931,10 +942,12 @@ class VideoForm(forms.ModelForm):
             self.fields["title_%s" % settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
     def remove_field(self, field):
+        """Remove a field from the form."""
         if self.fields.get(field):
             del self.fields[field]
 
     def set_queryset(self):
+        """Set the queryset for the form fields."""
         if self.current_user is not None:
             users_groups = self.current_user.owner.accessgroup_set.all()
             user_channels = (
@@ -990,7 +1003,7 @@ class VideoForm(forms.ModelForm):
             "restrict_access_to_groups": AddAccessGroupWidget,
             "video": CustomClearableFileInput,
             "restrict_access_to_groups": AddAccessGroupWidget,
-            "password": forms.PasswordInput(),
+            "password": forms.PasswordInput(attrs={"autocomplete": "new-password"}),
         }
         initial = {
             "date_added": datetime.date.today(),
@@ -1044,6 +1057,7 @@ class ChannelForm(forms.ModelForm):
             cleaned_data["title_%s" % settings.LANGUAGE_CODE] = cleaned_data["title"]
 
     def __init__(self, *args, **kwargs):
+        """Initialize a new ChannelForm instance."""
         self.is_staff = (
             kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
         )
@@ -1091,6 +1105,7 @@ class ChannelForm(forms.ModelForm):
         self.fields = add_describedby_attr(self.fields)
 
     class Meta(object):
+        """Define the ChannelForm metadata."""
         model = Channel
         fields = "__all__"
         widgets = {
@@ -1101,7 +1116,10 @@ class ChannelForm(forms.ModelForm):
 
 
 class ThemeForm(forms.ModelForm):
+    """Form class for Theme editing."""
+
     def __init__(self, *args, **kwargs):
+        """Initialize a new ThemeForm instance."""
         super(ThemeForm, self).__init__(*args, **kwargs)
         if __FILEPICKER__:
             self.fields["headband"].widget = CustomFileWidget(type="image")
@@ -1124,11 +1142,14 @@ class ThemeForm(forms.ModelForm):
             cleaned_data["title_%s" % settings.LANGUAGE_CODE] = cleaned_data["title"]
 
     class Meta(object):
+        """Define the ThemeForm metadata."""
         model = Theme
         fields = "__all__"
 
 
 class FrontThemeForm(ThemeForm):
+    """Form class for Theme editing in front."""
+
     def __init__(self, *args, **kwargs):
         self.THEME_FORM_FIELDS_HELP_TEXT = THEME_FORM_FIELDS_HELP_TEXT
 
@@ -1141,19 +1162,25 @@ class FrontThemeForm(ThemeForm):
             self.fields["parentId"].queryset = themes_queryset
 
     class Meta(object):
+        """Define the FrontThemeForm metadata."""
         model = Theme
         fields = "__all__"
 
 
 class VideoPasswordForm(forms.Form):
+    """Form class for video password."""
+
     password = forms.CharField(label=_("Password"), widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
+        """Initialize a new VideoPasswordForm instance."""
         super(VideoPasswordForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
 
 
 class VideoDeleteForm(forms.Form):
+    """Form class for video deletion."""
+
     agree = forms.BooleanField(
         label=_("I agree"),
         help_text=_("Delete video cannot be undo"),
@@ -1161,43 +1188,59 @@ class VideoDeleteForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        """Initialize a new VideoDeleteForm instance."""
         super(VideoDeleteForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
 
 
 class TypeForm(forms.ModelForm):
+    """Form class for Type editing."""
+
     def __init__(self, *args, **kwargs):
+        """Initialize a new TypeForm instance."""
         super(TypeForm, self).__init__(*args, **kwargs)
         if __FILEPICKER__:
             self.fields["icon"].widget = CustomFileWidget(type="image")
 
     class Meta(object):
+        """Define the TypeForm metadata."""
         model = Type
         fields = "__all__"
 
 
 class DisciplineForm(forms.ModelForm):
+    """Form class for Discipline editing."""
+
     def __init__(self, *args, **kwargs):
+        """Initialize a new DisciplineForm instance."""
         super(DisciplineForm, self).__init__(*args, **kwargs)
         if __FILEPICKER__:
             self.fields["icon"].widget = CustomFileWidget(type="image")
 
     class Meta(object):
+        """Define the DisciplineForm metadata."""
         model = Discipline
         fields = "__all__"
 
 
 class VideoVersionForm(forms.ModelForm):
+    """Form class for VideoVersion editing."""
+
     def __init__(self, *args, **kwargs):
+        """Initialize a new VideoVersionForm instance."""
         super(VideoVersionForm, self).__init__(*args, **kwargs)
 
     class Meta(object):
+        """Define the VideoVersionForm metadata."""
         model = VideoVersion
         fields = "__all__"
 
 
 class NotesForm(forms.ModelForm):
+    """Form class for Notes editing."""
+
     def __init__(self, *args, **kwargs):
+        """Initialize a new NotesForm instance."""
         super(NotesForm, self).__init__(*args, **kwargs)
         # self.fields["user"].widget = forms.HiddenInput()
         # self.fields["video"].widget = forms.HiddenInput()
@@ -1206,12 +1249,16 @@ class NotesForm(forms.ModelForm):
         self.fields["note"].widget.attrs["rows"] = 5
 
     class Meta(object):
+        """Define the NotesForm metadata."""
         model = Notes
         fields = ["note"]
 
 
 class AdvancedNotesForm(forms.ModelForm):
+    """Form class for AdvancedNotes editing."""
+
     def __init__(self, *args, **kwargs):
+        """Initialize a new AdvancedNotesForm instance."""
         super(AdvancedNotesForm, self).__init__(*args, **kwargs)
         # self.fields["user"].widget = forms.HiddenInput()
         self.fields["video"].widget = forms.HiddenInput()
@@ -1227,12 +1274,16 @@ class AdvancedNotesForm(forms.ModelForm):
         self.fields["status"].widget.attrs["class"] = "form-select"
 
     class Meta(object):
+        """Define the AdvancedNotesForm metadata."""
         model = AdvancedNotes
         fields = ["video", "note", "timestamp", "status"]
 
 
 class NoteCommentsForm(forms.ModelForm):
+    """Form class for NoteComments editing."""
+
     def __init__(self, *args, **kwargs):
+        """Initialize a new NoteCommentsForm instance."""
         super(NoteCommentsForm, self).__init__(*args, **kwargs)
         # self.fields["user"].widget = forms.HiddenInput()
         # self.fields["note"].widget = forms.HiddenInput()
@@ -1248,5 +1299,6 @@ class NoteCommentsForm(forms.ModelForm):
         self.fields["status"].widget.attrs["class"] = "form-select"
 
     class Meta(object):
+        """Define the NoteCommentsForm metadata."""
         model = NoteComments
         fields = ["comment", "status"]
