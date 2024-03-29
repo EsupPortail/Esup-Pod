@@ -1,6 +1,4 @@
-"""
-Forms for video app.
-"""
+"""Forms for Esup-Pod video app."""
 
 from django import forms
 from django.contrib.admin import widgets
