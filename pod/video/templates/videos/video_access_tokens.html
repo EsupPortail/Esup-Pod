@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block page_extra_head %}
-    {{ block.super }}
+  {{ block.super }}
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}
@@ -84,17 +84,16 @@
 {% block page_aside %}{% endblock page_aside %}
 
 {% block more_script %}
-<script>
-const btnpartageprive = document.getElementsByClassName("btnpartageprive");
-for (let i = 0; i < btnpartageprive.length; i++) {
-    btn = btnpartageprive[i];
-    btn.addEventListener("click", function () {
+  <script>
+    const btnpartageprive = document.getElementsByClassName("btnpartageprive");
+    for (let i = 0; i < btnpartageprive.length; i++) {
+      let btn = btnpartageprive[i];
+      btn.addEventListener("click", function () {
         var copyText = document.getElementById(btn.dataset.id);
         copyText.select();
         document.execCommand("copy");
         showalert(gettext("Text copied"), "alert-info");
-  });
-}
-</script>>
-
+      });
+    }
+  </script>
 {% endblock more_script %}

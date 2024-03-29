@@ -42,9 +42,9 @@ if getattr(settings, "USE_PODFILE", False):
 
 MAX_DURATION_DATE_DELETE = getattr(settings, "MAX_DURATION_DATE_DELETE", 10)
 
-__TODAY__ = datetime.date.today()
+# __TODAY__ = datetime.date.today()
 
-__MAX_D__ = __TODAY__ + datetime.timedelta(days=MAX_DURATION_DATE_DELETE * 365)
+# __MAX_D__ = __TODAY__ + datetime.timedelta(days=MAX_DURATION_DATE_DELETE * 365)
 
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 
@@ -738,22 +738,24 @@ class VideoForm(forms.ModelForm):
 
     def clean_date_delete(self):
         """Validate 'date_delete' field."""
+        today_date = datetime.date.today()
         mddd = MAX_DURATION_DATE_DELETE
         date_delete = self.cleaned_data["date_delete"]
-        in_dt = relativedelta(date_delete, __TODAY__)
+        in_dt = relativedelta(date_delete, today_date)
         if (
             (in_dt.years > mddd)
             or (in_dt.years == mddd and in_dt.months > 0)
             or (in_dt.years == mddd and in_dt.months == 0 and in_dt.days > 0)
         ):
+            max_d = today_date + datetime.timedelta(days=MAX_DURATION_DATE_DELETE * 365)
             raise ValidationError(
                 _(
                     "The date must be before or equal to %(date)s."
-                    % {"date": __MAX_D__.strftime("%d-%m-%Y")}
+                    % {"date": max_d.strftime("%d-%m-%Y")}
                 ),
                 code="date_too_far",
             )
-        if date_delete < __TODAY__:
+        if date_delete < today_date:
             raise ValidationError(
                 _("The deletion date can’t be earlier than today."),
                 code="date_before_today",
@@ -988,10 +990,11 @@ class VideoForm(forms.ModelForm):
             "restrict_access_to_groups": AddAccessGroupWidget,
             "video": CustomClearableFileInput,
             "restrict_access_to_groups": AddAccessGroupWidget,
+            "password": forms.PasswordInput(),
         }
         initial = {
-            "date_added": __TODAY__,
-            "date_evt": __TODAY__,
+            "date_added": datetime.date.today(),
+            "date_evt": datetime.date.today(),
         }
 
 

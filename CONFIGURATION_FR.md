@@ -552,6 +552,14 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   >> Ne déployez jamais de site en production avec le réglage DEBUG activé.<br> <br>
   >> __ref: [https://docs.djangoproject.com/fr/3.2/ref/settings/#debug]()__ <br>
 
+ - `USE_DEBUG_TOOLBAR`
+
+  > valeur par défaut : `True`
+
+  >> Une valeur booléenne qui active ou désactive l'outil de débogage.<br> <br>
+  >> Ne déployez jamais de site en production avec le réglage USE_DEBUG_TOOLBAR activé.<br> <br>
+  >> __ref: [https://django-debug-toolbar.readthedocs.io/en/latest/]()__ <br>
+
  - `LOGIN_URL`
 
   > valeur par défaut : `/authentication_login/`
@@ -1424,6 +1432,26 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   > valeur par défaut : `False `
 
   >> voir `ACTIVE_MODEL_ENRICH` <br>
+
+### Configuration de l'application Cut
+Application Cut permettant de découper des vidéos.<br>
+Mettre `USE_CUT` à True pour activer cette application.<br>
+
+ - `USE_CUT`
+
+  > valeur par défaut : `True`
+
+  >> Activation de l'application Cut <br>
+
+### Configuration de l'application dressing
+Application Dressing pour customiser une vidéo avec un filigrane et des crédits.<br>
+Mettre `USE_DRESSING` à True pour activer cette application.<br>
+
+ - `USE_DRESSING`
+
+  > valeur par défaut : `True`
+
+  >> Activation des habillages. Permet aux utilisateurs de customiser une vidéo avec un filigrane et des crédits. <br>
 
 ### Configuration application enrichment
 

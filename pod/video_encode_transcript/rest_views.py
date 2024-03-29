@@ -2,6 +2,7 @@ from rest_framework import serializers, viewsets
 from django.conf import settings
 from .models import EncodingVideo, EncodingAudio, VideoRendition, PlaylistVideo
 from pod.video.models import Video
+from pod.recorder.models import Recording
 from pod.video.rest_views import VideoSerializer
 
 from rest_framework.decorators import action
@@ -197,6 +198,18 @@ def store_remote_encoded_video(request):
     final_video = store_encoding_info(video_id, encoding_video)
     end_of_encoding(final_video)
     return Response(VideoSerializer(instance=video, context={"request": request}).data)
+
+
+@csrf_exempt
+@api_view(["POST"])
+def store_remote_encoded_video_studio(request):
+    from .encode import store_encoding_studio_info
+
+    recording_id = request.GET.get("recording_id", 0)
+    get_object_or_404(Recording, id=recording_id)
+    data = json.loads(request.body.decode("utf-8"))
+    store_encoding_studio_info(recording_id, data["video_output"], data["msg"])
+    return Response("ok")
 
 
 @csrf_exempt
