@@ -941,6 +941,68 @@
                         "fr": "Configuration application completion"
                     }
                 },
+                "cut": {
+                    "description": {
+                        "en": [
+                            "Cut application to cut videos.",
+                            "Set `USE_CUT` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Cut permettant de découper des vidéos.",
+                            "Mettre `USE_CUT` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "USE_CUT": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of the Cut application"
+                                ],
+                                "fr": [
+                                    "Activation de l'application Cut"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.2"
+                        }
+                    },
+                    "title": {
+                        "en": "Cut application configuration",
+                        "fr": "Configuration de l'application Cut"
+                    }
+                },
+                "dressing": {
+                    "description": {
+                        "en": [
+                            "Dressing App to customize a video with watermark & credits.",
+                            "Set `USE_DRESSING` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Dressing pour customiser une vidéo avec un filigrane et des crédits.",
+                            "Mettre `USE_DRESSING` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "USE_DRESSING": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of dressings. Allows users to customize a video with watermark & credits."
+                                ],
+                                "fr": [
+                                    "Activation des habillages. Permet aux utilisateurs de customiser une vidéo avec un filigrane et des crédits."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.2"
+                        }
+                    },
+                    "title": {
+                        "en": "Dressing application configuration",
+                        "fr": "Configuration de l'application dressing"
+                    }
+                },
                 "enrichment": {
                     "description": {},
                     "settings": {},
@@ -4235,6 +4297,23 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "USE_DEBUG_TOOLBAR": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "A boolean value that enables or disables the debugging tool.<br>",
+                                    "Never deploy a production site with USE_DEBUG_TOOLBAR enabled.<br>",
+                                    "__ref: [https://django-debug-toolbar.readthedocs.io/en/latest/]()__"
+                                ],
+                                "fr": [
+                                    "Une valeur booléenne qui active ou désactive l'outil de débogage.<br>",
+                                    "Ne déployez jamais de site en production avec le réglage USE_DEBUG_TOOLBAR activé.<br>",
+                                    "__ref: [https://django-debug-toolbar.readthedocs.io/en/latest/]()__"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.0"
                         },
                         "LOGIN_URL": {
                             "default_value": "/authentication_login/",

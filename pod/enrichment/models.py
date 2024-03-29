@@ -251,10 +251,7 @@ class Enrichment(models.Model):
         if self.end and self.start == self.end:
             msg.append(_("End field and start field can’t be equal."))
 
-        if len(msg) > 0:
-            return msg
-        else:
-            return list()
+        return msg
 
     def overlap(self):
         msg = list()

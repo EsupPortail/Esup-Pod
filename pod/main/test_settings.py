@@ -1,16 +1,15 @@
 """Esup-Pod "test mode" settings."""
 
+import os
+
+import requests
+from bs4 import BeautifulSoup
+
 # test_settings.py
 # from ..settings import *
 from ..settings import BASE_DIR as settings_base_dir
-from ..settings import USE_TZ, REST_FRAMEWORK, LOG_DIRECTORY, LOGGING
-from ..settings import LOCALE_PATHS, STATICFILES_DIRS, DEFAULT_AUTO_FIELD
-from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N, USE_L10N
-from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
-from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
-import os
-from bs4 import BeautifulSoup
-import requests
+from ..settings import INSTALLED_APPS
+from ..settings import TEMPLATES
 
 USE_OPENCAST_STUDIO = True
 
@@ -74,6 +73,7 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
     "Shibboleth-unscoped-affiliation": (False, "affiliations"),
 }
 REMOTE_USER_HEADER = "REMOTE_USER"
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = False
 EXISTING_BROADCASTER_IMPLEMENTATIONS = ["Wowza", "Test"]
 AFFILIATION_EVENT = ["employee"]
 
@@ -111,10 +111,12 @@ if USE_DOCKER:
         file = os.path.join(MIGRATION_DIRECTORY, "__init__.py")
         open(file, "a").close()
 
-
 # AI Enhancement settings
 USE_AI_ENHANCEMENT = True
 AI_ENHANCEMENT_CLIENT_ID = "mocked_id"
 AI_ENHANCEMENT_CLIENT_SECRET = "mock_secret"
 AI_ENHANCEMENT_API_URL = ""
 AI_ENHANCEMENT_API_VERSION = ""
+
+# DEBUG
+USE_DEBUG_TOOLBAR = False

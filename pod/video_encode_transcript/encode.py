@@ -5,13 +5,14 @@ from webpush.models import PushInformation
 
 from pod.video.models import Video
 from .Encoding_video_model import Encoding_video_model
-from .encoding_studio import encode_video_studio
+from .encoding_studio import start_encode_video_studio
 from .models import EncodingLog
 
 from pod.cut.models import CutVideo
 from pod.dressing.models import Dressing
 from pod.dressing.utils import get_dressing_input
 from pod.main.tasks import task_start_encode, task_start_encode_studio
+from pod.recorder.models import Recording
 from .encoding_settings import FFMPEG_DRESSING_INPUT
 from .utils import (
     change_encoding_step,
@@ -19,6 +20,7 @@ from .utils import (
     add_encoding_log,
     send_email,
     send_email_encoding,
+    send_email_recording,
     send_notification_encoding,
     time_to_seconds,
 )
@@ -44,6 +46,7 @@ USE_REMOTE_ENCODING_TRANSCODING = getattr(
 )
 if USE_REMOTE_ENCODING_TRANSCODING:
     from .encoding_tasks import start_encoding_task
+    from .encoding_tasks import start_studio_task
 
 FFMPEG_DRESSING_INPUT = getattr(settings, "FFMPEG_DRESSING_INPUT", FFMPEG_DRESSING_INPUT)
 
@@ -52,20 +55,10 @@ FFMPEG_DRESSING_INPUT = getattr(settings, "FFMPEG_DRESSING_INPUT", FFMPEG_DRESSI
 # ##########################################################################
 
 # Disable for the moment, will be reactivated in future version
-"""
-def start_remote_encode(video_id: int):
-    # load module here to prevent circular import
-    from .remote_encode import remote_encode_video
-
-    log.info("START ENCODE VIDEO ID %s" % video_id)
-    t = threading.Thread(target=remote_encode_video, args=[video_id])
-    t.setDaemon(True)
-    t.start()
-"""
 
 
 def start_encode(video_id: int, threaded=True):
-    """Start local encoding."""
+    """Start video encoding."""
     if threaded:
         if CELERY_TO_ENCODE:
             task_start_encode.delay(video_id)
@@ -78,35 +71,49 @@ def start_encode(video_id: int, threaded=True):
         encode_video(video_id)
 
 
-def start_encode_studio(recording_id, video_output, videos, subtime, presenter):
-    """Start local encoding."""
-    if CELERY_TO_ENCODE:
-        task_start_encode_studio.delay(
-            recording_id, video_output, videos, subtime, presenter
-        )
+def start_encode_studio(
+    recording_id, video_output, videos, subtime, presenter, threaded=True
+):
+    """Start studio encoding."""
+    if threaded:
+        if CELERY_TO_ENCODE:
+            task_start_encode_studio.delay(
+                recording_id, video_output, videos, subtime, presenter
+            )
+        else:
+            log.info("START ENCODE VIDEO ID %s" % recording_id)
+            t = threading.Thread(
+                target=encode_video_studio,
+                args=[recording_id, video_output, videos, subtime, presenter],
+            )
+            t.setDaemon(True)
+            t.start()
     else:
-        log.info("START ENCODE VIDEO ID %s" % recording_id)
-        t = threading.Thread(
-            target=encode_video_studio,
-            args=[recording_id, video_output, videos, subtime, presenter],
-        )
-        t.setDaemon(True)
-        t.start()
+        encode_video_studio(recording_id, video_output, videos, subtime, presenter)
 
 
-"""
-def start_studio_remote_encode(recording_id, video_output, videos, subtime, presenter):
-    # load module here to prevent circular import
-    from .remote_encode import remote_encode_studio
+def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
+    """ENCODE STUDIO: MAIN FUNCTION"""
+    msg = ""
+    if USE_REMOTE_ENCODING_TRANSCODING:
+        start_studio_task.delay(recording_id, video_output, videos, subtime, presenter)
+    else:
+        msg = start_encode_video_studio(video_output, videos, subtime, presenter)
+        store_encoding_studio_info(recording_id, video_output, msg)
 
-    log.info("START ENCODE RECORDING ID %s" % recording_id)
-    t = threading.Thread(
-        target=remote_encode_studio,
-        args=[recording_id, video_output, videos, subtime, presenter],
-    )
-    t.setDaemon(True)
-    t.start()
-"""
+
+def store_encoding_studio_info(recording_id, video_output, msg):
+    recording = Recording.objects.get(id=recording_id)
+    recording.comment += msg
+    recording.save()
+    if check_file(video_output):
+        from pod.recorder.plugins.type_studio import save_basic_video
+
+        video = save_basic_video(recording, video_output)
+        encode_video(video.id)
+    else:
+        msg = "Wrong file or path:\n%s" % video_output
+        send_email_recording(msg, recording_id)
 
 
 def encode_video(video_id: int) -> None:
@@ -136,7 +143,7 @@ def encode_video(video_id: int) -> None:
         dressing = None
         dressing_input = ""
         if Dressing.objects.filter(videos=video_to_encode).exists():
-            dressing = Dressing.objects.get(videos=video_to_encode).to_json()
+            dressing = Dressing.objects.get(videos=video_to_encode)
             if dressing:
                 dressing_input = get_dressing_input(dressing, FFMPEG_DRESSING_INPUT)
         start_encoding_task.delay(
@@ -144,7 +151,7 @@ def encode_video(video_id: int) -> None:
             encoding_video.video_file,
             encoding_video.cutting_start,
             encoding_video.cutting_stop,
-            json_dressing=dressing,
+            json_dressing=dressing.to_json() if dressing else None,
             dressing_input=dressing_input,
         )
     else:
@@ -177,7 +184,7 @@ def get_encoding_video(video_to_encode: Video) -> Encoding_video_model:
     dressing = None
     dressing_input = ""
     if Dressing.objects.filter(videos=video_to_encode).exists():
-        dressing = Dressing.objects.get(videos=video_to_encode).to_json()
+        dressing = Dressing.objects.get(videos=video_to_encode)
         if dressing:
             dressing_input = get_dressing_input(dressing, FFMPEG_DRESSING_INPUT)
 
@@ -190,7 +197,7 @@ def get_encoding_video(video_to_encode: Video) -> Encoding_video_model:
             video_to_encode.video.path,
             cut_start,
             cut_end,
-            json_dressing=dressing,
+            json_dressing=dressing.to_json() if dressing else None,
             dressing_input=dressing_input,
         )
         return encoding_video
@@ -200,7 +207,7 @@ def get_encoding_video(video_to_encode: Video) -> Encoding_video_model:
         video_to_encode.video.path,
         0,
         0,
-        json_dressing=dressing,
+        json_dressing=dressing.to_json() if dressing else None,
         dressing_input=dressing_input,
     )
 

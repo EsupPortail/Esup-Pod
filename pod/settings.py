@@ -13,7 +13,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "3.5.1"
+VERSION = "3.5.2"
 
 ##
 # Installed applications list
@@ -126,7 +126,9 @@ TEMPLATES = [
                 "pod.recorder.context_processors.context_recorder_settings",
                 "pod.playlist.context_processors.context_settings",
                 "pod.ai_enhancement.context_processors.context_settings",
+                "pod.dressing.context_processors.context_settings",
                 "pod.import_video.context_processors.context_settings",
+                "pod.cut.context_processors.context_settings",
             ],
         },
     },
@@ -463,7 +465,11 @@ the_update_settings = update_settings(locals())
 for variable in the_update_settings:
     locals()[variable] = the_update_settings[variable]
 
-if locals()["DEBUG"] is True and importlib.util.find_spec("debug_toolbar") is not None:
+if (
+    locals()["DEBUG"] is True
+    and importlib.util.find_spec("debug_toolbar") is not None
+    and locals()["USE_DEBUG_TOOLBAR"]
+):
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE = [
         "debug_toolbar.middleware.DebugToolbarMiddleware",
