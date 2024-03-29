@@ -1103,9 +1103,12 @@ body {
   color: var(--pod-btn-text);
 }
 
-/*.pod-aside-collapse[aria-expanded="true"] {
+/* Commented in 3.6.0
+[Todo] remove in 3.7.0
+.pod-aside-collapse[aria-expanded="true"] {
   transform: rotate(-90deg);
-}*/
+}
+*/
 
 /*** footer **/
 .pod-footer {
@@ -1378,6 +1381,8 @@ body {
   padding: 1rem;
 
   /*
+  Commented in 3.6.0
+  [Todo] remove in 3.7.0
   width: 0;
   overflow: hidden;
   margin-left: 100%;
@@ -1390,18 +1395,14 @@ body {
 }
 
 /*
+Commented in 3.6.0
+[Todo] remove in 3.7.0
+ */
 .pod-aside.show {
   margin-left: 0;
   width: auto;
 }
 */
-
-@media (width >= 992px) {
-  .pod-show-lg {
-    margin-left: 0;
-    width: auto;
-  }
-}
 
 @media (max-width: 992px) {
   /*
@@ -1409,6 +1410,8 @@ body {
     /* THIS IS NORMAL, it's to fit with pod-aside-collapse */
 
     /*
+    Commented in 3.6.0
+    [Todo] remove in 3.7.0
     width: 101% !important;
     min-height: 100%;
     position: absolute;
@@ -1432,6 +1435,8 @@ body {
 }
 
 /*
+Commented in 3.6.0
+[Todo] remove in 3.7.0
 .pod-aside.collapsing {
   height: auto;
 }
