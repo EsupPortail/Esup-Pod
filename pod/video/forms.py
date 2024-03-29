@@ -431,6 +431,7 @@ class CustomClearableFileInput(ClearableFileInput):
 
 class OwnerWidget(s2forms.ModelSelect2Widget):
     """Widget for selecting a single owner."""
+
     search_fields = [
         "username__icontains",
         "email__icontains",
@@ -439,6 +440,7 @@ class OwnerWidget(s2forms.ModelSelect2Widget):
 
 class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
     """Widget for selecting multiple owners."""
+
     search_fields = [
         "username__icontains",
         "email__icontains",
@@ -447,6 +449,7 @@ class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
 
 class AddAccessGroupWidget(s2forms.ModelSelect2MultipleWidget):
     """Widget for selecting multiple access groups."""
+
     search_fields = [
         "display_name__icontains",
         "code_name__icontains",
@@ -455,6 +458,7 @@ class AddAccessGroupWidget(s2forms.ModelSelect2MultipleWidget):
 
 class ChannelWidget(s2forms.ModelSelect2MultipleWidget):
     """Widget for selecting multiple channels."""
+
     search_fields = [
         "title__icontains",
     ]
@@ -462,6 +466,7 @@ class ChannelWidget(s2forms.ModelSelect2MultipleWidget):
 
 class DisciplineWidget(s2forms.ModelSelect2MultipleWidget):
     """Widget for selecting multiple disciplines."""
+
     search_fields = [
         "title__icontains",
     ]
@@ -521,6 +526,7 @@ class DescribedChoiceField(forms.ModelChoiceField):
 @deconstructible
 class FileSizeValidator(object):
     """File size validator."""
+
     message = _(
         "The current file %(size)s, which is too large. "
         "The maximum file size is %(allowed_size)s."
@@ -1106,6 +1112,7 @@ class ChannelForm(forms.ModelForm):
 
     class Meta(object):
         """Define the ChannelForm metadata."""
+
         model = Channel
         fields = "__all__"
         widgets = {
@@ -1143,6 +1150,7 @@ class ThemeForm(forms.ModelForm):
 
     class Meta(object):
         """Define the ThemeForm metadata."""
+
         model = Theme
         fields = "__all__"
 
@@ -1163,6 +1171,7 @@ class FrontThemeForm(ThemeForm):
 
     class Meta(object):
         """Define the FrontThemeForm metadata."""
+
         model = Theme
         fields = "__all__"
 
@@ -1204,6 +1213,7 @@ class TypeForm(forms.ModelForm):
 
     class Meta(object):
         """Define the TypeForm metadata."""
+
         model = Type
         fields = "__all__"
 
@@ -1219,6 +1229,7 @@ class DisciplineForm(forms.ModelForm):
 
     class Meta(object):
         """Define the DisciplineForm metadata."""
+
         model = Discipline
         fields = "__all__"
 
@@ -1232,6 +1243,7 @@ class VideoVersionForm(forms.ModelForm):
 
     class Meta(object):
         """Define the VideoVersionForm metadata."""
+
         model = VideoVersion
         fields = "__all__"
 
@@ -1250,6 +1262,7 @@ class NotesForm(forms.ModelForm):
 
     class Meta(object):
         """Define the NotesForm metadata."""
+
         model = Notes
         fields = ["note"]
 
@@ -1275,6 +1288,7 @@ class AdvancedNotesForm(forms.ModelForm):
 
     class Meta(object):
         """Define the AdvancedNotesForm metadata."""
+
         model = AdvancedNotes
         fields = ["video", "note", "timestamp", "status"]
 
@@ -1300,5 +1314,6 @@ class NoteCommentsForm(forms.ModelForm):
 
     class Meta(object):
         """Define the NoteCommentsForm metadata."""
+
         model = NoteComments
         fields = ["comment", "status"]
