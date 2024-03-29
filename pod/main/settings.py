@@ -37,6 +37,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = True
 
 ##
+# USE_DEBUG_TOOLBAR option activation
+#
+# https://django-debug-toolbar.readthedocs.io/en/latest/
+#
+USE_DEBUG_TOOLBAR = True
+
+##
 # A list of strings representing the host/domain names
 # that this Django site is allowed to serve.
 #

@@ -766,7 +766,10 @@ if (typeof loaded == "undefined") {
             string_html,
             "text/html"
           ).body.firstChild;
-          document.getElementById("list_folders_sub").appendChild(parsedHTML);
+          const listFoldersSub = document.getElementById("list_folders_sub");
+          if (listFoldersSub) {
+            listFoldersSub.appendChild(parsedHTML);
+          }
         });
         if (nextPage != -1) {
           search = data.search !== "" ? data.search : null;
