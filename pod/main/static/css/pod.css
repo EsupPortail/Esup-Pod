@@ -1391,7 +1391,6 @@ body {
   z-index: 5;
   padding-top: 5rem;
   box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgb(0 0 0 / 20%);
-
 }
 
 /*
@@ -1402,14 +1401,12 @@ Commented in 3.6.0
   margin-left: 0;
   width: auto;
 }
-*/
-
-@media (max-width: 992px) {
+*/ @media (max-width: 992px) {
   /*
   .pod-aside {
     /* THIS IS NORMAL, it's to fit with pod-aside-collapse */
 
-    /*
+  /*
     Commented in 3.6.0
     [Todo] remove in 3.7.0
     width: 101% !important;
