@@ -188,3 +188,9 @@ def enhance_form(request: WSGIRequest, video: Video) -> HttpResponse:
             "choose_video_element.html",
             {"video": video, "form": form, "page_title": _("Enrich with Aristote AI")},
         )
+
+
+def check_video_generated(request: WSGIRequest, video: Video) -> None:
+    """Check if the video is generated and delete the enhancement if it is."""
+    if enhancement_is_already_asked(video) and request.GET.get("generated") == "True":
+        AIEnhancement.objects.filter(video=video).first().delete()
