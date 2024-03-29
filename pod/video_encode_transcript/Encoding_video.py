@@ -439,9 +439,9 @@ class Encoding_video:
             dressing_command_filter.append(
                 FFMPEG_DRESSING_WATERMARK
                 % {
-                    "opacity": self.json_dressing.opacity / 100.0,
+                    "opacity": self.json_dressing["opacity"] / 100.0,
                     "position": get_dressing_position_value(
-                        self.json_dressing["position"], height
+                        self.json_dressing["position_orig"], height
                     ),
                     "name_out": name_out,
                 }

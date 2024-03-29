@@ -85,6 +85,11 @@ urlpatterns = [
         name="store_remote_encoded_video",
     ),
     url(
+        r"store_remote_encoded_video_studio/$",
+        encode_views.store_remote_encoded_video_studio,
+        name="store_remote_encoded_video_studio",
+    ),
+    url(
         r"store_remote_transcripted_video/$",
         encode_views.store_remote_transcripted_video,
         name="store_remote_transcripted_video",

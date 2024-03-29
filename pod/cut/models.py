@@ -23,16 +23,19 @@ class CutVideo(models.Model):
             )
 
     def verify_time(self):
-        """Vérifier si ce sont les mêmes valeurs (pour éviter un réencodage inutile)"""
+        """Check if they are the same values (to avoid unnecessary re-encoding)."""
         if CutVideo.objects.filter(video=self.video.id).exists():
             previous_cut = CutVideo.objects.get(video=self.video.id)
             if previous_cut.start == self.start and previous_cut.end == self.end:
                 return False
 
         # Convert start and end to seconds
-        start = time_to_seconds(self.start)
-        end = time_to_seconds(self.end)
-        duration = time_to_seconds(self.duration)
+        try:
+            start = time_to_seconds(self.start)
+            end = time_to_seconds(self.end)
+            duration = time_to_seconds(self.duration)
+        except ValueError:
+            return False
         if start < 0 or start >= end or end is None or start is None or end > duration:
             return False
         else:

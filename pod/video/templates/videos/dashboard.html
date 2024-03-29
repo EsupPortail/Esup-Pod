@@ -42,9 +42,11 @@
         <option value="tags">{% trans "Tags" %}</option>
         <option value="discipline">{% trans "Disciplines" %}</option>
         <option value="licence">{% trans "Licence" %}</option>
-        <option value="thumbnail">{% trans "Thumbnails" %}</option>
+        {% if request.user.is_staff  %}
+          <option value="thumbnail">{% trans "Thumbnails" %}</option>
+        {% endif %}
         {% if request.user.is_staff and use_obsolescence %}
-            <option value="date_delete">{% trans "Date to delete" %}</option>
+          <option value="date_delete">{% trans "Date to delete" %}</option>
         {% endif %}
       </optgroup>
 
@@ -52,9 +54,7 @@
         {% if use_transcription %}
           <option value="transcript">{% trans "Transcript" %}</option>
         {% endif %}
-        {% if request.user.is_staff  %}
           <option value="access_restrictions">{% trans "Restrictions" %}</option>
-        {% endif %}
           <option value="channel_option">{% trans "Channel options" %}</option>
           <option value="advanced_options">{% trans "Advanced options" %}</option>
           <option value="delete">{% trans "Delete" %}</option>
@@ -163,8 +163,8 @@
   var formFieldsets = {{ fieldsets_dashboard|safe }};
 
   {% if videos.has_next %}
-      page = parseInt("{{videos.next_page_number}}");
-      nextPage = true;
+    page = parseInt("{{videos.next_page_number}}");
+    nextPage = true;
   {% endif %}
 </script>
 <script src="{% static 'js/infinite.js' %}"></script>

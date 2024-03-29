@@ -9,7 +9,6 @@ from xml.dom import minidom
 from django.conf import settings
 
 from ..utils import add_comment, studio_clean_old_files
-from ..models import Recording
 from pod.video.models import Video, get_storage_path_video
 from pod.video_encode_transcript import encode
 from django.template.defaultfilters import slugify
@@ -117,9 +116,11 @@ def get_subtime(clip_begin, clip_end):
     return subtime
 
 
+"""
 def encode_recording_id(recording_id):
     recording = Recording.objects.get(id=recording_id)
     encode_recording(recording)
+"""
 
 
 # flake ignore complexity with noqa: C901
