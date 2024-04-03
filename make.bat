@@ -3,7 +3,7 @@ for /f "delims=" %%a in (.env.dev) do call set %%a
 if /i "%1"=="docker-build" (
   echo "Suppression du repertoire node_modules"
   rmdir /s /q .\pod\node_modules
-  echo "Suppression du repertoire node_modules"
+  echo "Suppression du repertoire static"
   rmdir /s /q .\pod\static
   echo "Suppression du repertoire log"
   rmdir /s /q .\pod\log
