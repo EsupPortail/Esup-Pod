@@ -29,13 +29,13 @@ if /i "%1"=="docker-build" (
   docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod down -v
   echo "Suppression du repertoire node_modules"
   rmdir /s /q .\pod\node_modules
-  echo "Suppression du repertoire node_modules"
+  echo "Suppression du repertoire static"
   rmdir /s /q .\pod\static
   echo "Suppression du repertoire log"
   rmdir /s /q .\pod\log
   echo "Suppression du repertoire db_migrations"
   rmdir /s /q .\pod\db_migrations
-  echo "Suppression du repertoire db.sqlite3"
+  echo "Suppression du fichier db.sqlite3"
   del /s /q .\pod\db.sqlite3
   echo "Suppression du repertoire media"
   rmdir /s /q .\pod\media

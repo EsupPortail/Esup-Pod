@@ -4299,10 +4299,12 @@
                             "pod_version_init": "3.1"
                         },
                         "SECURE_SSL_REDIRECT": {
-                            "default_value": "not DEBUG",
+                            "default_value": "False",
                             "description": {
                                 "en": [
-                                    ""
+                                    "À moins que votre site ne doive être disponible sur des connexions SSL et non SSL,",
+                                    " vous souhaiterez probablement définir ce paramètre sur True ou configurer un",
+                                    " load balancer ou reverse-proxy pour rediriger toutes les connexions vers HTTPS."
                                 ],
                                 "fr": [
                                     ""
