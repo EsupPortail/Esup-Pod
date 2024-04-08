@@ -1,0 +1,28 @@
+{% load i18n %}
+
+<div id="container-fluid" class="tab-pane fade active show pod-live-info">
+  <div class="row">
+    <h2>{% trans 'Send message' %}</h2>
+    {% if user.is_authenticated %}
+        <form method="post" action="" id="live_meeting_chat_form">
+            {% csrf_token %}
+            <div class="form-group">
+                <p>
+                    {% trans 'You can send a message to the webinar presenters (100 characters maximum).' %}
+                    {% if show_chat %}
+                        {% trans 'It will be displayed after 10 to 30 seconds on the live stream.' %}
+                    {% endif %}
+                </p>
+                <textarea name="message" rows="2" cols="70" maxlength="100" class="form-control" id="message"></textarea>
+            </div>
+
+            <div id="message_return" style="float:right; width:30%"></div>
+
+            <br><button type="submit" id="webinar-send-message" class="btn btn-primary">{% trans 'Submit' %}</button>
+        </form>
+    {% else %}
+    <div class="form-group">{% trans 'You must be authenticated to send a message.' %}</div>
+    {% endif %}
+  </div>
+</div>
+<div id="container-fluid" class="tab-pane fade active show pod-live-info"></div>
