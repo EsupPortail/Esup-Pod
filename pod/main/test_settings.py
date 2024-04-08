@@ -103,6 +103,12 @@ XAPI_LRS_URL = ""
 XAPI_LRS_LOGIN = ""
 XAPI_LRS_PWD = ""
 
+# Webinar options
+USE_MEETING_WEBINAR = True
+MEETING_WEBINAR_SIPMEDIAGW_URL = "https://127.0.0.1"
+MEETING_WEBINAR_SIPMEDIAGW_TOKEN = "token"
+MEETING_WEBINAR_AFFILIATION = ["faculty", "employee", "staff"]
+
 # Uniquement lors d'environnement conteneurisé
 if USE_DOCKER:
     MIGRATION_MODULES = {"flatpages": "pod.db_migrations"}
