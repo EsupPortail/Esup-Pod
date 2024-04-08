@@ -4,8 +4,9 @@ import json
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ValidationError
 from django.core.handlers.wsgi import WSGIRequest
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import ugettext as _
@@ -81,9 +82,13 @@ def send_enhancement_creation_request(request: WSGIRequest, aristote: AristoteAI
                     )
                     return redirect(reverse("video:video", args=[video.slug]))
                 else:
-                    raise Exception("Error: ", creation_response["status"])
+                    messages.add_message(
+                        request,
+                        messages.ERROR,
+                        _("Something wrong... Status error: ") + creation_response["status"],
+                    )
             else:
-                raise Exception("Error: no response from Aristote AI.")
+                messages.add_message(request, messages.ERROR, _("Error: no response from Aristote AI."))
         else:
             messages.add_message(request, messages.ERROR, _("One or more errors have been found in the form."))
     else:
