@@ -109,7 +109,7 @@ class AristoteAI:
             data = {
                 "url": url,
                 "notificationWebhookUrl": notification_webhook_url,
-                "enhancementParameters": {
+                "enrichmentParameters": {
                     "mediaTypes": media_types,
                     "disciplines": list(
                         Discipline.objects.all().values_list("title", flat=True)
