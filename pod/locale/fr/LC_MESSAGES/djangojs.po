@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-12 12:01+0100\n"
+"POT-Creation-Date: 2024-04-08 15:56+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -500,6 +500,18 @@ msgstr "Information"
 #: pod/meeting/static/js/my_meetings.js
 msgid "Unable to find information about the meeting"
 msgstr "Impossible de trouver des informations sur la réunion"
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "Restart only the live"
+msgstr "Redémarrer seulement le direct"
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "End only the live"
+msgstr "Arrêter seulement le direct"
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "End the webinar (meeting and live)"
+msgstr "Terminer le webinaire (réunion et direct)"
 
 #: pod/meeting/static/js/my_meetings.js
 msgid "End the meeting"

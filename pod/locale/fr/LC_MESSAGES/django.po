@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-12 12:01+0100\n"
+"POT-Creation-Date: 2024-04-08 15:55+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -228,7 +228,8 @@ msgstr "Fermer"
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/playlist/templates/playlist/delete.html
 #: pod/playlist/templates/playlist/protected-playlist-form.html
-#: pod/playlist/views.py pod/recorder/templates/recorder/add_recording.html
+#: pod/playlist/tests/test_views.py pod/playlist/views.py
+#: pod/recorder/templates/recorder/add_recording.html
 #: pod/recorder/templates/recorder/record_delete.html pod/recorder/views.py
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/videos/dashboard.html
@@ -460,19 +461,19 @@ msgstr "Date de fin"
 msgid "End date of the live."
 msgstr "Date de fin du direct."
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Live not started"
 msgstr "Le direct n’a pas encore démarré"
 
-#: pod/bbb/models.py pod/bbb/templates/bbb/live_card.html
+#: pod/bbb/models.py pod/bbb/templates/bbb/live_card.html pod/meeting/models.py
 msgid "Live in progress"
 msgstr "Le direct est en cours"
 
-#: pod/bbb/models.py pod/bbb/templates/bbb/live_card.html
+#: pod/bbb/models.py pod/bbb/templates/bbb/live_card.html pod/meeting/models.py
 msgid "Live stopped"
 msgstr "Le direct a été arrêté"
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Live status"
 msgstr "Statut du direct"
 
@@ -499,7 +500,7 @@ msgstr "Accès restreint"
 msgid "Is live only accessible to authenticated users?"
 msgstr "Le direct est-il uniquement accessible aux utilisateurs authentifiés ?"
 
-#: pod/bbb/models.py pod/live/admin.py pod/live/models.py
+#: pod/bbb/models.py pod/live/admin.py pod/live/models.py pod/meeting/models.py
 msgid "Broadcaster"
 msgstr "Diffuseur"
 
@@ -507,13 +508,13 @@ msgstr "Diffuseur"
 msgid "Broadcaster in charge to perform live."
 msgstr "Diffuseur en charge de réaliser le direct."
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Show public chat"
-msgstr "Affichage du tchat public"
+msgstr "Affichage du chat public"
 
 #: pod/bbb/models.py
 msgid "Do you want to show the public chat in the live?"
-msgstr "Souhaitez-vous montrer le tchat public en direct ?"
+msgstr "Souhaitez-vous montrer le chat public en direct ?"
 
 #: pod/bbb/models.py
 msgid "Save meeting in dashboard"
@@ -527,17 +528,17 @@ msgstr ""
 "Souhaitez-vous enregistrer la vidéo de cette session, à la fin du direct, "
 "directement dans le « Tableau de bord » ?"
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Enable chat"
-msgstr "Activer le tchat"
+msgstr "Activer le chat"
 
 #: pod/bbb/models.py
 msgid ""
 "Do you want a chat on the live page for students? Messages sent in this live "
 "page’s chat will end up in BigBlueButton’s public chat."
 msgstr ""
-"Voulez-vous un tchat sur la page de direct pour les étudiants ? Les messages "
-"envoyés dans le tchat de cette page de direct se retrouveront dans le tchat "
+"Voulez-vous un chat sur la page de direct pour les étudiants ? Les messages "
+"envoyés dans le chat de cette page de direct se retrouveront dans le chat "
 "public de BigBlueButton."
 
 #: pod/bbb/models.py
@@ -546,7 +547,7 @@ msgstr "Nom d’hôte REDIS"
 
 #: pod/bbb/models.py
 msgid "Redis hostname, useful for chat"
-msgstr "Nom d’hôte REDIS, utile pour le tchat"
+msgstr "Nom d’hôte REDIS, utile pour le chat"
 
 #: pod/bbb/models.py
 msgid "Redis port"
@@ -554,7 +555,7 @@ msgstr "Port REDIS"
 
 #: pod/bbb/models.py
 msgid "Redis port, useful for chat"
-msgstr "Port REDIS, utile pour le tchat"
+msgstr "Port REDIS, utile pour le chat"
 
 #: pod/bbb/models.py
 msgid "Redis channel"
@@ -562,13 +563,13 @@ msgstr "Channel REDIS"
 
 #: pod/bbb/models.py
 msgid "Redis channel, useful for chat"
-msgstr "Channel REDIS, utile pour le tchat"
+msgstr "Channel REDIS, utile pour le chat"
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Livestream"
 msgstr "Direct"
 
-#: pod/bbb/models.py
+#: pod/bbb/models.py pod/meeting/models.py
 msgid "Livestreams"
 msgstr "Directs"
 
@@ -1266,7 +1267,7 @@ msgstr "Le document est privé."
 msgid "Documents"
 msgstr "Documents"
 
-#: pod/completion/models.py
+#: pod/completion/models.py pod/completion/tests/test_models.py
 msgid "Please enter a document."
 msgstr "Veuillez joindre un document."
 
@@ -1888,6 +1889,7 @@ msgid "Cut the video"
 msgstr "Découper la vidéo"
 
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
+#: pod/dressing/views.py
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
@@ -1960,13 +1962,17 @@ msgstr ""
 "Lors de la sauvegarde de votre découpe, un encodage est relancé pour "
 "remplacer l’ancien."
 
+#: pod/cut/tests/test_views.py pod/cut/views.py
+msgid "The cut was made."
+msgstr "Découpe effectuée."
+
+#: pod/cut/tests/test_views.py
+msgid "Please select values between 00:00:00 and 00:00:20."
+msgstr "Veuillez renseigner des valeurs comprises entre 00:00:00 et 00:00:20."
+
 #: pod/cut/views.py
 msgid "You cannot cut this video."
 msgstr "Vous ne pouvez pas découper cette vidéo."
-
-#: pod/cut/views.py
-msgid "The cut was made."
-msgstr "Découpe effectuée."
 
 #: pod/dressing/apps.py pod/dressing/models.py
 msgid "Video dressings"
@@ -2165,6 +2171,18 @@ msgstr "Sélectionner"
 msgid "Apply"
 msgstr "Appliquer"
 
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "You cannot edit this dressing."
+msgstr "Vous ne pouvez pas éditer cet habillage."
+
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "The dressing has been deleted."
+msgstr "L’habillage a été supprimé."
+
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "You cannot create a video dressing."
+msgstr "Vous ne pouvez pas créer d’habillage de vidéo."
+
 #: pod/dressing/views.py
 msgid "You cannot dress this video."
 msgstr "Vous ne pouvez pas habiller cette vidéo."
@@ -2174,26 +2192,14 @@ msgstr "Vous ne pouvez pas habiller cette vidéo."
 msgid "Dress the video “%s”"
 msgstr "Habiller la vidéo « %s »"
 
-#: pod/dressing/views.py
-msgid "You cannot edit this dressing."
-msgstr "Vous ne pouvez pas éditer cet habillage."
-
 #: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
 #: pod/meeting/views.py pod/video/views.py
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
 
 #: pod/dressing/views.py
-msgid "You cannot create a video dressing."
-msgstr "Vous ne pouvez pas créer d’habillage de vidéo."
-
-#: pod/dressing/views.py
 msgid "You cannot delete this dressing."
 msgstr "Vous ne pouvez pas supprimer cet habillage."
-
-#: pod/dressing/views.py
-msgid "The dressing has been deleted."
-msgstr "L’habillage a été supprimé."
 
 #: pod/dressing/views.py
 #, python-format
@@ -2651,6 +2657,7 @@ msgstr ""
 "complétées."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid "Useful tips"
 msgstr "Conseils pratiques"
 
@@ -3448,31 +3455,6 @@ msgstr "Signal"
 msgid "Heartbeats"
 msgstr "Signaux"
 
-#: pod/live/templates/bbb/bbb_form.html
-msgid "Send message"
-msgstr "Envoyer un message"
-
-#: pod/live/templates/bbb/bbb_form.html
-msgid ""
-"You can send a message (100 characters maximum) to the BigBlueButton "
-"session. It will be displayed within 15 to 30 seconds on the live video."
-msgstr ""
-"Vous pouvez envoyer un message (100 caractères maximum) à la session "
-"BigBlueButton. Il sera affiché dans les 15 à 30 secondes sur la vidéo en "
-"direct."
-
-#: pod/live/templates/bbb/bbb_form.html
-msgid "Message"
-msgstr "Message"
-
-#: pod/live/templates/bbb/bbb_form.html
-msgid "You must be authenticated to send a message."
-msgstr "Vous devez être authentifié pour envoyer un message."
-
-#: pod/live/templates/bbb/bbb_form.html pod/main/templates/aside.html
-msgid "Submit"
-msgstr "Envoyer"
-
 #: pod/live/templates/live/direct.html
 #: pod/live/templates/live/event-script.html
 msgid "Recording in progress"
@@ -3551,21 +3533,6 @@ msgid "Live not found, retry in 10 seconds"
 msgstr ""
 "Le direct n’a pas encore commencé, nouvelle tentative de lecture dans 10 "
 "secondes"
-
-#: pod/live/templates/live/direct.html
-#: pod/live/templates/live/event-script.html
-msgid "Message sent"
-msgstr "Message envoyé"
-
-#: pod/live/templates/live/direct.html
-#: pod/live/templates/live/event-script.html
-msgid "Message not sent: no broadcaster found"
-msgstr "Message non envoyé: aucun diffuseur trouvé"
-
-#: pod/live/templates/live/direct.html
-#: pod/live/templates/live/event-script.html
-msgid "Message not sent: connection problem (REDIS)"
-msgstr "Message non envoyé: problème de connexion (REDIS)"
 
 #: pod/live/templates/live/directs_all.html
 msgid "Display all broadcasters of this building"
@@ -3771,6 +3738,14 @@ msgstr "Impossible de fermer le flux vidéo"
 #: pod/live/templates/live/event-script.html
 msgid "Recording duration"
 msgstr "Temps d’enregistrement"
+
+#: pod/live/templates/live/event-script.html
+msgid "Message sent"
+msgstr "Message envoyé"
+
+#: pod/live/templates/live/event-script.html
+msgid "Message not sent"
+msgstr "Le message n'a pas été envoyé"
 
 #: pod/live/templates/live/event.html pod/live/templates/live/event_delete.html
 #: pod/live/templates/live/event_edit.html
@@ -4007,6 +3982,30 @@ msgstr "Évènements à venir"
 #: pod/live/templates/live/my_events.html
 msgid "Past events"
 msgstr "Évènements passés"
+
+#: pod/live/templates/meeting/meeting_live_form.html
+msgid "Send message"
+msgstr "Envoyer un message"
+
+#: pod/live/templates/meeting/meeting_live_form.html
+msgid ""
+"You can send a message to the webinar presenters (100 characters maximum)."
+msgstr ""
+"Vous pouvez envoyer un message aux présentateurs du webinaire (100 "
+"caractères maximum)."
+
+#: pod/live/templates/meeting/meeting_live_form.html
+msgid "It will be displayed after 10 to 30 seconds on the live stream."
+msgstr "Il sera affiché après 10 à 30 secondes lors de la diffusion en direct."
+
+#: pod/live/templates/meeting/meeting_live_form.html
+#: pod/main/templates/aside.html
+msgid "Submit"
+msgstr "Envoyer"
+
+#: pod/live/templates/meeting/meeting_live_form.html
+msgid "You must be authenticated to send a message."
+msgstr "Vous devez être authentifié pour envoyer un message."
 
 #: pod/live/templatetags/event_tags.py
 msgid "QR code event’s link"
@@ -5216,6 +5215,10 @@ msgstr "rejoindre"
 msgid "Recurring"
 msgstr "Récurrence"
 
+#: pod/meeting/admin.py pod/meeting/forms.py
+msgid "Webinar options"
+msgstr "Options du webinaire"
+
 #: pod/meeting/forms.py pod/video/feeds.py pod/video/models.py
 #: pod/video/templates/videos/video_row_select.html
 #: pod/video/templates/videos/video_sort_select.html
@@ -5521,6 +5524,26 @@ msgstr ""
 "défaut)"
 
 #: pod/meeting/models.py
+msgid "Always accept"
+msgstr "Toujours accepter"
+
+#: pod/meeting/models.py
+msgid "Always deny"
+msgstr "Toujours refuser"
+
+#: pod/meeting/models.py
+msgid "Ask moderator"
+msgstr "Demander au modérateur"
+
+#: pod/meeting/models.py
+msgid "Guest policy"
+msgstr "Politique à l’égard des invités"
+
+#: pod/meeting/models.py
+msgid "Will set the guest policy for the meeting."
+msgstr "Fixera la politique des invités pour la réunion."
+
+#: pod/meeting/models.py
 msgid "Disable Camera"
 msgstr "Désactiver les caméras"
 
@@ -5597,6 +5620,34 @@ msgstr ""
 "personnelle de l’utilisateur."
 
 #: pod/meeting/models.py
+msgid "Webinar mode"
+msgstr "Mode webinaire"
+
+#: pod/meeting/models.py
+msgid ""
+"Do you want to start this meeting as a webinar? In such a case, you can "
+"invite presenters to join you in BigBlueButton, and listeners will have "
+"direct access to a livestream in the livestreams page. "
+msgstr ""
+"Souhaitez-vous commencer cette réunion sous la forme d'un webinaire ? Dans "
+"ce cas, vous pouvez inviter les présentateurs à se joindre à vous dans "
+"BigBlueButton, et les auditeurs auront un accès via un direct dans la page "
+"des directs."
+
+#: pod/meeting/models.py
+msgid "Do you want to show the public chat in the live (Not recommended)?"
+msgstr "Voulez-vous afficher le chat public dans le live (Non recommandé) ?"
+
+#: pod/meeting/models.py
+msgid ""
+"Do you want a chat on the live page for listeners? Messages sent in this "
+"live page's chat will end up in BigBlueButton's public chat."
+msgstr ""
+"Voulez-vous un chat sur la page en direct pour les auditeurs ? Les messages "
+"envoyés dans le chat de cette page en direct se retrouveront dans le chat "
+"public de BigBlueButton."
+
+#: pod/meeting/models.py
 msgid ""
 "The day of the start date of the meeting must be included in the recurrence "
 "weekdays."
@@ -5623,6 +5674,42 @@ msgstr "Identifiant de l’enregistrement"
 #: pod/meeting/models.py pod/recorder/models.py
 msgid "Recordings"
 msgstr "Enregistrements"
+
+#: pod/meeting/models.py
+msgid "URL of the RTMP stream"
+msgstr "Adresse URL du flux RTMP"
+
+#: pod/meeting/models.py
+msgid "Example format: rtmp://live.univ.fr/live/name.m3u8"
+msgstr "Exemple de format : rtmp://live.univ.fr/live/nom.m3u8"
+
+#: pod/meeting/models.py
+msgid "Broadcaster in charge to perform lives."
+msgstr "Diffuseur chargé de réaliser des directs."
+
+#: pod/meeting/models.py
+msgid "Ingester"
+msgstr "Serveur d’ingestion"
+
+#: pod/meeting/models.py
+msgid "Ingesters"
+msgstr "Serveurs d’ingestion"
+
+#: pod/meeting/models.py
+msgid "Event managed for this live"
+msgstr "Gestion de l'événement pour ce direct"
+
+#: pod/meeting/models.py
+msgid "Live event for this livestream"
+msgstr "Événement en direct pour cette diffusion"
+
+#: pod/meeting/models.py
+msgid "Ingester used for this live"
+msgstr "Serveur d’ingestion utilisé pour ce direct"
+
+#: pod/meeting/models.py
+msgid "Ingester (encoder and broadcaster) that perform the livestream"
+msgstr "Serveur d’ingestion (encodeur et diffuseur) qui réalise la diffusion"
 
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/meeting/templates/meeting/link_meeting.html pod/meeting/views.py
@@ -5692,6 +5779,137 @@ msgstr "Voir mes réunions actives"
 #: pod/meeting/templates/meeting/filter_aside.html
 msgid "See all my meetings"
 msgstr "Voir toutes mes réunions"
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid "Informations about meetings"
+msgstr "Informations sur les réunions"
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid ""
+"This meeting module is based on the OpenSource <strong>BigBlueButton</"
+"strong> solution."
+msgstr ""
+"Ce module de réunion est basé sur la solution OpenSource "
+"<strong>BigBlueButton</strong>."
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid ""
+"This solution enables voice and video image sharing, presentations with or "
+"without a whiteboard, public and private chat tools, screen sharing, voice "
+"over IP, online polling and the use of office documents."
+msgstr ""
+"Cette solution permet le partage d’images vocales et vidéo, des "
+"présentations avec ou sans tableau blanc, des outils de chat public et "
+"privé, le partage d’écran, la voix sur IP, les sondages en ligne et "
+"l’utilisation de documents bureautiques."
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid "Informations about webinars"
+msgstr "Informations sur les webinaires"
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid ""
+"If you want to hold an online conference for a large audience (over 200 "
+"users), you can use the Webinar mode, accessible from this meetings module."
+msgstr ""
+"Si vous souhaitez organiser une conférence en ligne pour un large public "
+"(plus de 200 utilisateurs), vous pouvez utiliser le mode Webinaire, "
+"accessible à partir de ce module de réunions."
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid ""
+"This Webinar mode enables you to transmit information to a large audience "
+"via a live broadcast (accessible from the platform's live page) and "
+"interaction - if you wish - via an integrated chat."
+msgstr ""
+"Ce mode Webinaire vous permet de transmettre des informations à un large "
+"public via une diffusion en direct (accessible depuis la page des directs de "
+"la plateforme) et une interaction - si vous le souhaitez - via un chat "
+"intégré."
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid ""
+"Once you've saved the form, you can start the webinar by clicking on the "
+"'Start the webinar' button."
+msgstr ""
+"Une fois le formulaire enregistré, vous pouvez démarrer le webinaire en "
+"cliquant sur le bouton « Démarrer le webinaire »."
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid ""
+"Shortly after clicking the 'Start the webinar' button, the live stream will "
+"be available to users on the <i class='bi bi-broadcast mx-1' aria-"
+"hidden='true'></i> <b>Lives</b> page."
+msgstr ""
+"Peu de temps après avoir cliqué sur le bouton « Démarrer le webinaire », le "
+"direct sera disponible pour les utilisateurs sur la page <i class='bi bi-"
+"broadcast mx-1' aria-hidden='true'></i> <b>Directs</b>."
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid ""
+"You can invite other speakers/trainers to join you in BigBlueButton. Live "
+"should only be used by listeners. "
+msgstr ""
+"Vous pouvez inviter d'autres orateurs/formateurs à vous rejoindre dans "
+"BigBlueButton. Le direct ne doit être utilisé que par les auditeurs. "
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid ""
+"Once the webinar has been created, you can modify the date and time "
+"information as you wish, and the live webinar will be updated accordingly."
+msgstr ""
+"Une fois le webinaire créé, vous pouvez modifier la date et l’heure à votre "
+"guise, et le webinaire en direct sera mis à jour en conséquence."
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid "This can be very useful for pre-event testing."
+msgstr ""
+"Cela peut s’avérer très utile pour les tests préalables aux événements."
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid ""
+"Once started, you can access the webinar information and additional actions "
+"via <i class='bi bi-person-video2 pod-add mx-1' aria-hidden='true'></i> "
+"<b>Show webinar informations</b> in the meetings list."
+msgstr ""
+"Une fois démarré, vous pouvez accéder aux informations sur le webinaire et à "
+"des actions supplémentaires via <i class='bi bi-person-video2 pod-add mx-1' "
+"aria-hidden='true'></i> <b>Afficher les informations sur le webinaire</b> "
+"dans la liste des réunions."
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid ""
+"As you have the appropriate rights, once the webinar has been created, you "
+"can access additional settings for the created event via <i class='bi bi-"
+"broadcast mx-1' aria-hidden='true'></i> <b>My Events</b> in the main menu."
+msgstr ""
+"Comme vous disposez des droits appropriés, une fois le webinaire créé, vous "
+"pouvez accéder à des paramètres supplémentaires pour l'événement créé via <i "
+"class='bi bi-broadcast mx-1' aria-hidden='true'></i> <b>Mes événements</b> "
+"dans le menu principal."
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid "Recommendations"
+msgstr "Recommandations"
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid "There are just a few recommendations to follow: "
+msgstr "Il y a juste quelques recommandations à suivre : "
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid "Please do not <b>end the meeting</b> before it is actually over."
+msgstr ""
+"Veuillez ne pas <b>terminer la réunion</b> avant qu’elle ne soit réellement "
+"terminée."
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid "No <b>recurrence available</b> for webinars."
+msgstr "Aucune <b>récurrence disponible</b> pour les webinaires."
+
+#: pod/meeting/templates/meeting/filter_aside_meeting.html
+msgid "Remember to not use <b>breakout rooms</b> in this case."
+msgstr ""
+"N'oubliez pas de ne pas utiliser les <b>salles privées</b> dans ce cas."
 
 #: pod/meeting/templates/meeting/internal_recordings.html
 msgid ""
@@ -5813,6 +6031,10 @@ msgstr ""
 "votre profil, qui est toujours disponible."
 
 #: pod/meeting/templates/meeting/meeting_card.html
+msgid "This meeting is a webinar"
+msgstr "Cette réunion est un webinaire"
+
+#: pod/meeting/templates/meeting/meeting_card.html
 msgid "Access to this meeting is restricted"
 msgstr "L’accès à cette réunion est restreint"
 
@@ -5821,8 +6043,20 @@ msgid "This meeting is inactive"
 msgstr "Cette réunion est inactive"
 
 #: pod/meeting/templates/meeting/meeting_card.html
+msgid "Show webinar informations"
+msgstr "Voir les informations sur le webinaire"
+
+#: pod/meeting/templates/meeting/meeting_card.html
+msgid "Join the webinar"
+msgstr "Rejoindre le webinaire"
+
+#: pod/meeting/templates/meeting/meeting_card.html
 msgid "Show meeting informations"
 msgstr "Voir les informations sur la réunion"
+
+#: pod/meeting/templates/meeting/meeting_card.html
+msgid "Start the webinar"
+msgstr "Démarrer le webinaire"
 
 #: pod/meeting/templates/meeting/meeting_card.html
 msgid "Start the meeting"
@@ -5931,6 +6165,16 @@ msgid "You cannot edit this meeting."
 msgstr "Vous ne pouvez pas éditer cette réunion."
 
 #: pod/meeting/views.py
+msgid ""
+"It is not possible to hold a webinar during this period. Webinar mode has "
+"been disabled for this meeting. Please try to change the period or contact "
+"the administrator."
+msgstr ""
+"Il n’est pas possible d’organiser un webinaire pendant cette période. Le "
+"mode webinaire a été désactivé pour cette réunion. Veuillez essayer de "
+"modifier la période ou contacter l’administrateur."
+
+#: pod/meeting/views.py
 msgid "You cannot delete this meeting."
 msgstr "Vous ne pouvez pas supprimer cette réunion."
 
@@ -5949,6 +6193,14 @@ msgstr "Vous ne pouvez pas accéder à cette réunion."
 #: pod/meeting/views.py
 msgid "Password given is not correct."
 msgstr "Le mot de passe est incorrect."
+
+#: pod/meeting/views.py
+msgid "You cannot end this meeting."
+msgstr "Vous ne pouvez pas arrêter cette réunion."
+
+#: pod/meeting/views.py
+msgid "The meeting was successfully stopped."
+msgstr "La réunion a été arrêtée avec succès."
 
 #: pod/meeting/views.py
 msgid "Meeting recordings"
@@ -6076,6 +6328,81 @@ msgstr ""
 #: pod/meeting/views.py
 msgid "Impossible to create the internal recording"
 msgstr "Impossible de créer l’enregistrement"
+
+#: pod/meeting/views.py
+msgid "You can't end this webinar live."
+msgstr "Vous ne pouvez pas terminer ce webinaire en direct."
+
+#: pod/meeting/views.py
+msgid "You can't restart this webinar live."
+msgstr "Vous ne pouvez pas redémarrer ce webinaire en direct."
+
+#: pod/meeting/webinar.py
+#, python-format
+msgid "Webinar mode has been successfully started for “%s” meeting."
+msgstr "Le mode webinaire a bien été démarré pour la réunion “%s”."
+
+#: pod/meeting/webinar.py
+#, python-format
+msgid "Error to start webinar mode for “%s” meeting: %s"
+msgstr "Erreur de démarrage du mode webinaire pour la réunion “%s” : %s"
+
+#: pod/meeting/webinar.py
+#, python-format
+msgid "Webinar mode has been successfully stopped for “%s” meeting."
+msgstr "Le mode webinaire a bien été arrêté pour la réunion “%s”."
+
+#: pod/meeting/webinar.py
+#, python-format
+msgid "Error to stop webinar mode for “%s” meeting: %s"
+msgstr "Erreur dans l’arrêt du mode webinaire pour la réunion “%s” : %s"
+
+#: pod/meeting/webinar.py
+msgid ""
+"it is not possible to use a development server (localhost) for this "
+"functionality."
+msgstr ""
+"il n’est pas possible d’utiliser un serveur de développement (localhost) "
+"pour cette fonctionnalité."
+
+#: pod/meeting/webinar_utils.py
+msgid "Too many webinars"
+msgstr "Trop de webinaires"
+
+#: pod/meeting/webinar_utils.py
+#, python-format
+msgid ""
+"There are too many webinars (%s) for the number of ingesters allocated (%s). "
+"The next meeting has been created but not like a webinar:%s %s [%s-%s].\n"
+"Please fix the problem either by increasing the number of ingesters or by "
+"modifying/deleting one of the affected webinars (with the users' "
+"agreement).\n"
+"Other webinars : %s"
+msgstr ""
+"Il y a trop de webinaires (%s) pour le nombre de serveurs d’ingestion "
+"alloués (%s). La prochaine réunion a été créée mais pas comme un webinaire :"
+"%s %s [%s-%s].\n"
+"Veuillez résoudre le problème en augmentant le nombre de serveurs "
+"d’ingestion ou en modifiant/supprimant l’un des webinaires concernés (avec "
+"l’accord des utilisateurs).\n"
+"Autres webinaires : %s"
+
+#: pod/meeting/webinar_utils.py
+#, python-format
+msgid ""
+"<p>There are too many webinars (<b>%s</b>) for the number of ingesters "
+"allocated (<b>%s</b>). The next webinar has been created but <b>not like a "
+"webinar</b>:<ul><li><b>%s %s</b> [%s-%s].</li></ul><p>Please fix the problem "
+"either by increasing the number of ingesters or by modifying/deleting one of "
+"the affected webinars (with the users' agreement).<br>Other webinars : <b>"
+"%s</b>"
+msgstr ""
+"<p>Il y a trop de webinaires (<b>%s</b>) pour le nombre de serveurs "
+"d’ingestion alloués (<b>%s</b>). La prochaine réunion a été créée mais "
+"<b>pas comme un webinaire</b> : <ul><li><b>%s %s</b> [%s-%s].</li></"
+"ul><p>Veuillez résoudre le problème en augmentant le nombre de serveurs "
+"d’ingestion ou en modifiant/supprimant l’un des webinaires concernés (avec "
+"l'accord des utilisateurs).<br>Autres webinaires : <b>%s</b>"
 
 #: pod/playlist/apps.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/add_or_edit.html
@@ -6569,7 +6896,7 @@ msgstr "Ce champ est requis."
 msgid "You cannot create a playlist named \"Favorites\""
 msgstr "Vous ne pouvez créer une liste de lecture nommé \"Favoris\""
 
-#: pod/playlist/views.py
+#: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
 
@@ -9353,6 +9680,23 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid ""
+#~ "You can send a message (100 characters maximum) to the BigBlueButton "
+#~ "session. It will be displayed within 15 to 30 seconds on the live video."
+#~ msgstr ""
+#~ "Vous pouvez envoyer un message (100 caractères maximum) à la session "
+#~ "BigBlueButton. Il sera affiché dans les 15 à 30 secondes sur la vidéo en "
+#~ "direct."
+
+#~ msgid "Message"
+#~ msgstr "Message"
+
+#~ msgid "Message not sent: no broadcaster found"
+#~ msgstr "Message non envoyé: aucun diffuseur trouvé"
+
+#~ msgid "Message not sent: connection problem (REDIS)"
+#~ msgstr "Message non envoyé: problème de connexion (REDIS)"
 
 #~ msgid ""
 #~ "Pod is aimed at users of our institutions, by allowing the publication of "
