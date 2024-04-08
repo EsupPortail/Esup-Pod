@@ -30,9 +30,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+from pod.meeting.models import Livestream
 from rest_framework import status
-
-from pod.bbb.models import Livestream
 from .forms import EventPasswordForm, EventForm, EventDeleteForm, EventImmediateForm
 from .models import (
     Building,
@@ -55,8 +54,8 @@ from ..video.models import Video, Type
 
 HEARTBEAT_DELAY = getattr(settings, "HEARTBEAT_DELAY", 45)
 
-USE_BBB = getattr(settings, "USE_BBB", False)
-USE_BBB_LIVE = getattr(settings, "USE_BBB_LIVE", False)
+USE_MEETING = getattr(settings, "USE_MEETING", False)
+USE_MEETING_WEBINAR = getattr(settings, "USE_MEETING_WEBINAR", False)
 
 DEFAULT_EVENT_PATH = getattr(settings, "DEFAULT_EVENT_PATH", "")
 DEFAULT_EVENT_THUMBNAIL = getattr(
@@ -124,18 +123,11 @@ def direct(request, slug):
             "%s?%sreferrer=%s"
             % (settings.LOGIN_URL, iframe_param, request.get_full_path())
         )
-    # Search if broadcaster is used to display a BBB streaming live
-    # for which students can send message from this live page
-    display_chat = False
-    if USE_BBB and USE_BBB_LIVE:
-        livestreams_list = Livestream.objects.filter(broadcaster_id=broadcaster.id)
-        for livestream in livestreams_list:
-            display_chat = livestream.enable_chat
+
     return render(
         request,
         "live/direct.html",
         {
-            "display_chat": display_chat,
             "display_event_btn": can_manage_event(request.user),
             "broadcaster": broadcaster,
             "heartbeat_delay": HEARTBEAT_DELAY,
@@ -340,20 +332,22 @@ def render_event_template(request, evemnt, user_owns_event):
             },
         )
 
-    # Search if broadcaster is used to display a BBB streaming live
+    # Search if livestream is used to display a webinar streaming live
     # for which students can send message from this live page
-    display_chat = False
-    if USE_BBB and USE_BBB_LIVE:
-        livestreams_list = Livestream.objects.filter(broadcaster_id=evemnt.broadcaster_id)
-        for livestream in livestreams_list:
-            display_chat = livestream.enable_chat
+    enable_chat = False
+    if USE_MEETING and USE_MEETING_WEBINAR:
+        livestream = Livestream.objects.filter(event=evemnt).first()
+        if livestream:
+            enable_chat = livestream.meeting.enable_chat
+            show_chat = livestream.meeting.show_chat
 
     return render(
         request,
         template_event,
         {
             "event": evemnt,
-            "display_chat": display_chat,
+            "enable_chat": enable_chat,
+            "show_chat": show_chat,
             "can_record": (
                 user_owns_event
                 and evemnt.broadcaster.piloting_implementation
