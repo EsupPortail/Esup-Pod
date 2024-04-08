@@ -259,46 +259,5 @@
     if ($("#divvideoplayer")) { $("#divvideoplayer").css("display", "block"); }
   })
 </script>
-{% if display_chat %}
-  <script>
-  // Send question for BBB live
-  $(document).ready(function () {
-    $('.send-message').click(function (e) {
-      e.preventDefault();
-      var message = $('#message').val();
-      $.ajax
-      ({
-        type: "GET",
-        url: "{% url 'bbb:live_publish_chat' id=broadcaster.id %}",
-        data: { "message": message },
-        success: function (data) {
-          $('#live_bbb_chat_form')[0].reset();
-          if (data.is_sent) {
-            // message_sent
-            displayReturnMessage("info", data.message_return);
-          } else {
-            // error_no_broadcaster_found: Message not sent: no broadcaster found
-            // error_no_connection: Message not sent: no connection to REDIS
-            displayReturnMessage("error", data.message_return);
-          }
-        }
-      });
-    });
-  });
-  function displayReturnMessage(level, returnCode) {
-    let returnMessage = "";
-    if (level == "info"){
-      $("#message_return").attr('class', 'alert alert-info');
-    } else {
-      $("#message_return").attr('class', 'alert alert-warning');
-    }
-    if (returnCode == "message_sent") { returnMessage = "{% trans 'Message sent' %}";}
-    if (returnCode == "error_no_broadcaster_found") { returnMessage = "{% trans 'Message not sent: no broadcaster found' %}";}
-    if (returnCode == "error_no_connection") { returnMessage = "{% trans 'Message not sent: connection problem (REDIS)' %}";}
-    $("#message_return").html(returnMessage);
-    $("#message_return").show("slow").delay(3000).hide("slow");
-  }
-  </script>
-{% endif %}
 
 {% endblock more_script %}
