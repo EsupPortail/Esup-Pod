@@ -247,7 +247,7 @@
       }
     },
     chunkdone: function (e, data) { // Called after uploading each chunk
-      $(this).is(':checked');
+      //$(this).is(':checked');
       if (form_data.length < 2) {
         form_data.push(
           { "name": "upload_id", "value": data.result.upload_id }
