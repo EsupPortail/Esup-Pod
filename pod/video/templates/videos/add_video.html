@@ -63,7 +63,10 @@
       <p>{% trans "Please note: make sure that you respect the Intellectual Property Code before publishing a video." %}</p>
       <div class="form-check">
         <input type="checkbox" id="legal_notice" required>
-        <label for="legal_notice" class="form-check-label d-inline">{% trans "I confirm that I have the necessary authorizations signed by the parties involved in the uploaded content." %}
+        <label for="legal_notice" class="form-check-label d-inline">
+          {% trans "I confirm that I have the necessary authorizations signed by the parties involved in the uploaded content." %}
+          <span class="required_star">*</span>
+        </label>
       </div>
     </div>
 
