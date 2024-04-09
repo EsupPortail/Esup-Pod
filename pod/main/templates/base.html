@@ -76,21 +76,30 @@
   {% endif %}
   <div class="container-fluid pod-container mt-sm-4 mt-5">
     <main class="mt-0 mb-3">
+      {% if not request.GET.is_iframe %}
+        <div class="pod-aside-collapse" id="collapse-button">
+          {% block collapse_page_aside %}
+            <a role="button" href="#collapseAside"
+            class="btn btn-outline-primary collapseAside pod-aside-collapse__button"
+            data-bs-toggle="collapse"
+            aria-expanded="false" aria-controls="collapseAside"
+            aria-label="{% trans 'Side menu' %}" data-pod-tooltip="true"
+            title="{% trans 'Toggle side menu' %}">
+              <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+            </a>
+          {% endblock collapse_page_aside %}
+        </div>
+      {% endif %}
       <div class="pod-grid-content">
+        {% if not request.GET.is_iframe %}
+          <aside class="pod-aside collapse" id="collapseAside">
+            {% block page_aside %}
+              {% include "aside.html" %}
+            {% endblock page_aside %}
+          </aside>
+        {% endif %}
         <div class="pod-mainContent mt-2" id="pod-mainContent">
           {% if not request.GET.is_iframe %}
-            <div class="pod-aside-collapse" id="collapse-button">
-              {% block collapse_page_aside %}
-                <a role="button" href="#collapseAside"
-                class="btn btn-outline-primary collapseAside pod-aside-collapse__button"
-                data-bs-toggle="collapse"
-                aria-expanded="false" aria-controls="collapseAside"
-                aria-label="{% trans 'Side menu' %}" data-pod-tooltip="true"
-                title="{% trans 'Toggle side menu' %}">
-                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
-                </a>
-              {% endblock collapse_page_aside %}
-            </div>
             {% if MAINTENANCE_SHEDULED %}
               <div class="alert alert-warning" role="alert">{{MAINTENANCE_TEXT_SHEDULED|safe}}</div>
             {% endif %}
@@ -123,13 +132,6 @@
             </div>
           </div>
         </div>
-        {% if not request.GET.is_iframe %}
-          <aside class="pod-aside collapse" id="collapseAside">
-            {% block page_aside %}
-              {% include "aside.html" %}
-            {% endblock page_aside %}
-          </aside>
-        {% endif %}
       </div>
     </main>
     {% if USE_NOTIFICATIONS %}
