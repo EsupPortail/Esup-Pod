@@ -3,12 +3,13 @@ import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import User
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpRequest
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
 from pod.ai_enhancement.models import AIEnhancement
-from pod.ai_enhancement.views import enhance_video_json, toggle_webhook
+from pod.ai_enhancement.views import enhance_video_json, toggle_webhook, send_enhancement_creation_request
+from pod.main.models import Configuration
 from pod.video.models import Video, Type
 
 
@@ -158,3 +159,94 @@ class ReceiveWebhookViewTest(TestCase):
         self.assertIsInstance(response, JsonResponse)
         self.assertEqual(json.loads(response.content.decode()), {"error": "No id in the request."})
         print(" --->  test_toggle_webhook__no_id_in_request ok")
+
+    def test_toggle_webhook__bad_content_type(self):
+        """Test the receive_webhook view when using a bad content type."""
+        url = reverse("ai_enhancement:webhook")
+        request_data = {
+            "status": "SUCCESS",
+            "initialVersionId": "018e08b5-9ea0-73a7-bcd7-34764e3b0775",
+            "failureCause": None,
+        }
+        request = self.factory.post(url, data=request_data, content_type="image/png")
+        response = toggle_webhook(request)
+        self.enhancement.refresh_from_db()
+        self.assertFalse(self.enhancement.is_ready)
+        self.assertEqual(response.status_code, 415)
+        self.assertIsInstance(response, JsonResponse)
+        self.assertEqual(
+            json.loads(response.content.decode()),
+            {"error": "Only application/json content type is allowed."},
+        )
+        print(" --->  test_toggle_webhook__bad_content_type ok")
+
+    def test_toggle_webhook__enrichment_not_achieved(self):
+        """Test the receive_webhook view when the enrichment has not been achieved."""
+        url = reverse("ai_enhancement:webhook")
+        request_data = {
+            "id": "123",
+            "status": "FAILURE",
+            "initialVersionId": "018e08b5-9ea0-73a7-bcd7-34764e3b0775",
+            "failureCause": "mocked_failure_cause",
+        }
+        request = self.factory.post(url, data=request_data, content_type="application/json")
+        response = toggle_webhook(request)
+        self.enhancement.refresh_from_db()
+        self.assertFalse(self.enhancement.is_ready)
+        self.assertEqual(response.status_code, 500)
+        self.assertIsInstance(response, JsonResponse)
+        self.assertEqual(
+            json.loads(response.content.decode()),
+            {"status": "Enrichment has not yet been successfully achieved."},
+        )
+        print(" --->  test_toggle_webhook__enrichment_not_achieved ok")
+
+
+class EnhanceVideoViewTest(TestCase):
+    """Test the enhance_video view."""
+
+    fixtures = ["initial_data.json"]
+
+    def setUp(self):
+        """Set up the test."""
+        self.factory = RequestFactory()
+        self.user = User.objects.create_user(username="test_user")
+        self.video = Video.objects.create(
+            slug="test-video",
+            owner=self.user,
+            video="test_video.mp4",
+            title="Test video",
+            description="This is a test video.",
+            type=Type.objects.get(id=1),
+        )
+        self.client.force_login(self.user)
+
+    def test_enhance_video__success(self):
+        """Test the enhance_video view when success."""
+        url = reverse("ai_enhancement:enhance_video", args=[self.video.slug])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'base.html')
+        self.assertTemplateUsed(response, 'navbar.html')
+        self.assertTemplateUsed(response, 'navbar_collapse.html')
+        self.assertTemplateUsed(response, 'footer.html')
+        self.assertTemplateUsed(response, 'create_enhancement.html')
+        print(" --->  test_enhance_video__success ok")
+
+    def test_enhance_video__video_not_exists(self):
+        """Test the enhance_video view when the video not exists."""
+        url = reverse("ai_enhancement:enhance_video", args=["fake-slug"])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+        print(" --->  test_enhance_video__video_not_exists ok")
+
+    def test_enhance_video__in_maintenance(self):
+        """Test the enhance_video view when in maintenance."""
+        maintenance_mode_conf = Configuration.objects.get(key="maintenance_mode")
+        maintenance_mode_conf.value = "1"
+        maintenance_mode_conf.save()
+        print("MAINTENANCE MODE: ", True if Configuration.objects.get(key="maintenance_mode").value == "1" else False)
+        url = reverse("ai_enhancement:enhance_video", args=[self.video.slug])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        print(" --->  test_enhance_video__in_maintenance ok")
