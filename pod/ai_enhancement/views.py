@@ -4,9 +4,8 @@ import json
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.exceptions import ValidationError
 from django.core.handlers.wsgi import WSGIRequest
-from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest, Http404
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import ugettext as _
