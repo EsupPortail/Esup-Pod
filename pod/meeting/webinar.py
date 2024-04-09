@@ -133,7 +133,7 @@ def stop_webinar_livestream(meet_id: int, force: bool):
     """Stop the webinar when meeting is stopped or when user forces to stop it."""
     try:
         log.info(
-            "stop_webinar_livestream %s : %s" % (
+            "stop_webinar_livestream %s: %s" % (
                 meet_id,
                 "stop"
             )
