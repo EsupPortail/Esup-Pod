@@ -9,7 +9,7 @@ import traceback
 
 from .forms import MeetingForm, MeetingDeleteForm, MeetingPasswordForm
 from .forms import MeetingInviteForm, get_random_string
-from .models import Meeting, InternalRecording
+from .models import Meeting, InternalRecording, MeetingSessionLog
 from .utils import get_nth_week_number, send_email_recording_ready
 from datetime import datetime
 from django.conf import settings
@@ -347,6 +347,12 @@ def render_show_page(request, meeting, show_page, direct_access):
             else request.user.get_username()
         )
         join_url = meeting.get_join_url(fullname, "VIEWER", request.user.get_username())
+        # session log
+        sess = meeting.get_current_session()
+        viewers = sess.get_viewers()
+        viewers.append([datetime.now(), fullname])
+        sess.set_viewers(viewers)
+        sess.save()
         return redirect(join_url)
     if show_page:
         remove_password_in_form = direct_access is not None
@@ -365,7 +371,11 @@ def render_show_page(request, meeting, show_page, direct_access):
 def join_as_moderator(request, meeting):
     """Join as a moderator."""
     try:
-        created = meeting.create(request)
+        created = True
+        if meeting.get_is_meeting_running() is not True:
+            created = meeting.create(request)
+            MeetingSessionLog.objects.create(meeting=meeting, creator=request.user)
+
         if created:
             # get user name and redirect to BBB with moderator rights
             fullname = (
@@ -376,6 +386,12 @@ def join_as_moderator(request, meeting):
             join_url = meeting.get_join_url(
                 fullname, "MODERATOR", request.user.get_username()
             )
+            # session log
+            sess = meeting.get_current_session()
+            mods = sess.get_moderators()
+            mods.append([datetime.now(), fullname])
+            sess.set_moderators(mods)
+            sess.save()
             return redirect(join_url)
         else:
             msg = "Unable to create meeting ! "
@@ -430,6 +446,7 @@ def check_form(request, meeting, remove_password_in_form):
             if access_granted:
                 # get user name from form and redirect to BBB
                 join_url = ""
+                fullname = ""
                 if current_user:
                     fullname = (
                         request.user.get_full_name()
@@ -442,6 +459,12 @@ def check_form(request, meeting, remove_password_in_form):
                 else:
                     fullname = form.cleaned_data["name"]
                     join_url = meeting.get_join_url(fullname, "VIEWER")
+                # session log
+                sess = meeting.get_current_session()
+                viewers = sess.get_viewers()
+                viewers.append([datetime.now(), fullname])
+                sess.set_viewers(viewers)
+                sess.save()
                 return redirect(join_url)
             else:
                 display_message_with_icon(
