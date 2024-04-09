@@ -1,5 +1,5 @@
 """Tests the util functions and classes for ai_enhancement module."""
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 from django.test import TestCase
 from requests import Response
@@ -318,3 +318,11 @@ class AristoteAITestCase(TestCase):
         expected_result = {"error": "JSONDecodeError: The string is not a valid JSON string."}
         self.assertEqual(result, expected_result)
         print(" --->  test_extract_json_from_str__no_json ok")
+
+    def test_get_token(self):
+        """Test the get_token method."""
+        aristote = AristoteAI(self.client_id, self.client_secret)
+        aristote.connect_to_api = lambda: setattr(aristote, "token", "mocked_token")
+        token = aristote.get_token()
+        self.assertEqual(token, "mocked_token")
+        print(" --->  test_get_token__success ok")
