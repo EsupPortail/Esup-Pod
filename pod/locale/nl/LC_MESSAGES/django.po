@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-28 10:01+0000\n"
+"POT-Creation-Date: 2024-04-09 09:25+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -224,7 +224,8 @@ msgstr ""
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/playlist/templates/playlist/delete.html
 #: pod/playlist/templates/playlist/protected-playlist-form.html
-#: pod/playlist/views.py pod/recorder/templates/recorder/add_recording.html
+#: pod/playlist/tests/test_views.py pod/playlist/views.py
+#: pod/recorder/templates/recorder/add_recording.html
 #: pod/recorder/templates/recorder/record_delete.html pod/recorder/views.py
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/videos/dashboard.html
@@ -1201,7 +1202,7 @@ msgstr ""
 msgid "Documents"
 msgstr ""
 
-#: pod/completion/models.py
+#: pod/completion/models.py pod/completion/tests/test_models.py
 msgid "Please enter a document."
 msgstr ""
 
@@ -1798,6 +1799,7 @@ msgid "Cut the video"
 msgstr ""
 
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
+#: pod/dressing/views.py
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
@@ -1862,12 +1864,16 @@ msgstr ""
 msgid "When saving your cut, an encoding is restarted to replace the old one."
 msgstr ""
 
-#: pod/cut/views.py
-msgid "You cannot cut this video."
+#: pod/cut/tests/test_views.py pod/cut/views.py
+msgid "The cut was made."
+msgstr ""
+
+#: pod/cut/tests/test_views.py
+msgid "Please select values between 00:00:00 and 00:00:20."
 msgstr ""
 
 #: pod/cut/views.py
-msgid "The cut was made."
+msgid "You cannot cut this video."
 msgstr ""
 
 #: pod/dressing/apps.py pod/dressing/models.py
@@ -2060,6 +2066,18 @@ msgstr ""
 msgid "Apply"
 msgstr ""
 
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "You cannot edit this dressing."
+msgstr ""
+
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "The dressing has been deleted."
+msgstr ""
+
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "You cannot create a video dressing."
+msgstr ""
+
 #: pod/dressing/views.py
 msgid "You cannot dress this video."
 msgstr ""
@@ -2069,25 +2087,13 @@ msgstr ""
 msgid "Dress the video “%s”"
 msgstr ""
 
-#: pod/dressing/views.py
-msgid "You cannot edit this dressing."
-msgstr ""
-
 #: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
 #: pod/meeting/views.py pod/video/views.py
 msgid "The changes have been saved."
 msgstr ""
 
 #: pod/dressing/views.py
-msgid "You cannot create a video dressing."
-msgstr ""
-
-#: pod/dressing/views.py
 msgid "You cannot delete this dressing."
-msgstr ""
-
-#: pod/dressing/views.py
-msgid "The dressing has been deleted."
 msgstr ""
 
 #: pod/dressing/views.py
@@ -6338,7 +6344,7 @@ msgstr ""
 msgid "You cannot create a playlist named \"Favorites\""
 msgstr ""
 
-#: pod/playlist/views.py
+#: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
 msgstr ""
 

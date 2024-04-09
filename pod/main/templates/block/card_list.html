@@ -5,20 +5,20 @@
 
   {% if type == "video" %} 
     {% include "videos/video_list.html" with videos=elements %}
-    {% elif type == "event" %}
-      {% include "live/events_list.html" with events=elements hide_counter=True %}
-      {% elif type == "last" %}
-        {% include "videos/video_list.html" with videos=elements %}
-        <div class="highlight">
-          <div class="d-flex justify-content-end">
-           <p>
-             <a class="btn btn-lg btn-primary btn-sm"
-               href="{% url 'videos:videos' %}">{% trans "Show all videos" %}&nbsp;<i
-                  class="bi bi-arrow-right-circle"
-                  aria-hidden="true"></i></a>
-           </p>
-          </div>
-       </div>
-       {% endif %}
+  {% elif type == "event" %}
+    {% include "live/events_list.html" with events=elements hide_counter=True %}
+  {% elif type == "last" %}
+    {% include "videos/video_list.html" with videos=elements %}
+    <div class="highlight">
+      <div class="d-flex justify-content-end">
+        <p>
+          <a class="btn btn-lg btn-primary btn-sm"
+            href="{% url 'videos:videos' %}">{% trans "Show all videos" %}&nbsp;<i
+              class="bi bi-arrow-right-circle"
+              aria-hidden="true"></i></a>
+        </p>
       </div>
-    {% endif %}
+    </div>
+  {% endif %}
+  </div>
+  {% endif %}
