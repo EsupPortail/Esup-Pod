@@ -63,7 +63,7 @@ function initializeFieldDisplay() {
 }
 
 /**
- * listen selectedType and selectedDataType if change.
+ * Listen selectedType and selectedDataType if change.
  */
 if (selectedType) {
   selectedType.addEventListener("change", function () {
