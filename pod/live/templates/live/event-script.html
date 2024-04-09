@@ -693,11 +693,9 @@
           let toReturn = "";
           let returnElement = document.getElementById("message_return");
           if (level === "info") {
-              returnElement.classList.add('alert');
-              returnElement.classList.add('alert-info');
+              returnElement.classList.add('alert', 'alert-info');
           } else {
-              returnElement.classList.add('alert');
-              returnElement.classList.add('alert-danger');
+              returnElement.classList.add('alert', 'alert-danger');
           }
           if (returnCode === "message_sent") {
               toReturn = "{% trans 'Message sent' %}";
@@ -707,9 +705,9 @@
           }
 
           returnElement.innerHTML = toReturn;
-          returnElement.style.display = "block";
+          returnElement.classList.remove("d-none");
           setTimeout(function() {
-              returnElement.style.display = "none";
+              returnElement.classList.add("d-none");
           }, 3000)
       }
 
