@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-08 15:55+0200\n"
+"POT-Creation-Date: 2024-04-09 09:24+0200\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -3745,6 +3745,10 @@ msgid "It will be displayed after 10 to 30 seconds on the live stream."
 msgstr ""
 
 #: pod/live/templates/meeting/meeting_live_form.html
+msgid "Message"
+msgstr ""
+
+#: pod/live/templates/meeting/meeting_live_form.html
 #: pod/main/templates/aside.html
 msgid "Submit"
 msgstr ""
@@ -5518,7 +5522,7 @@ msgstr ""
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
 "You can invite other speakers/trainers to join you in BigBlueButton. Live "
-"should only be used by listeners. "
+"should only be used by listeners."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
@@ -5535,14 +5539,15 @@ msgstr ""
 msgid ""
 "Once started, you can access the webinar information and additional actions "
 "via <i class='bi bi-person-video2 pod-add mx-1' aria-hidden='true'></i> "
-"<b>Show webinar informations</b> in the meetings list."
+"<strong>Show webinar informations</strong> in the meetings list."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
 "As you have the appropriate rights, once the webinar has been created, you "
 "can access additional settings for the created event via <i class='bi bi-"
-"broadcast mx-1' aria-hidden='true'></i> <b>My Events</b> in the main menu."
+"broadcast mx-1' aria-hidden='true'></i> <strong>My Events</strong> in the "
+"main menu."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
@@ -5554,15 +5559,16 @@ msgid "There are just a few recommendations to follow: "
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
-msgid "Please do not <b>end the meeting</b> before it is actually over."
+msgid ""
+"Please do not <strong>end the meeting</strong> before it is actually over."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
-msgid "No <b>recurrence available</b> for webinars."
+msgid "No <strong>recurrence available</strong> for webinars."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
-msgid "Remember to not use <b>breakout rooms</b> in this case."
+msgid "Remember to not use <strong>breakout rooms</strong> in this case."
 msgstr ""
 
 #: pod/meeting/templates/meeting/internal_recordings.html
@@ -5969,7 +5975,7 @@ msgid ""
 "Please fix the problem either by increasing the number of ingesters or by "
 "modifying/deleting one of the affected webinars (with the users' "
 "agreement).\n"
-"Other webinars : %s"
+"Other webinars: %s"
 msgstr ""
 
 #: pod/meeting/webinar_utils.py
@@ -5979,8 +5985,8 @@ msgid ""
 "allocated (<b>%s</b>). The next webinar has been created but <b>not like a "
 "webinar</b>:<ul><li><b>%s %s</b> [%s-%s].</li></ul><p>Please fix the problem "
 "either by increasing the number of ingesters or by modifying/deleting one of "
-"the affected webinars (with the users' agreement).<br>Other webinars : <b>"
-"%s</b>"
+"the affected webinars (with the users' agreement).<br>Other webinars: <b>%s</"
+"b>"
 msgstr ""
 
 #: pod/playlist/apps.py pod/playlist/models.py
