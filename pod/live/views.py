@@ -335,6 +335,7 @@ def render_event_template(request, evemnt, user_owns_event):
     # Search if livestream is used to display a webinar streaming live
     # for which students can send message from this live page
     enable_chat = False
+    show_chat = False
     if USE_MEETING and USE_MEETING_WEBINAR:
         livestream = Livestream.objects.filter(event=evemnt).first()
         if livestream:
