@@ -1520,7 +1520,7 @@ def recording_ready(request: WSGIRequest) -> HttpResponse:
 
 
 def can_manage_webinar(user: User) -> bool:
-    """Manage a webinar is possible for the user?
+    """Find out if the user can manage a webinar.
 
     Specific case: not allowed for a personal room.
     """
@@ -1550,7 +1550,7 @@ def can_manage_webinar_and_event(user: User):
 
 
 def can_end_meeting(request: WSGIRequest, meeting: Meeting) -> bool:
-    """End a meeting is allowed for the user?"""
+    """Shows if the user can stop a meeting."""
     if request.user != meeting.owner and not (
         request.user.is_superuser or request.user.has_perm("meeting.end_meeting")
     ):
