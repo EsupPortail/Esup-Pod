@@ -3,12 +3,12 @@ import json
 from unittest.mock import patch
 
 from django.contrib.auth.models import User
-from django.http import JsonResponse, HttpRequest
+from django.http import JsonResponse
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
 from pod.ai_enhancement.models import AIEnhancement
-from pod.ai_enhancement.views import enhance_video_json, toggle_webhook, send_enhancement_creation_request
+from pod.ai_enhancement.views import enhance_video_json, toggle_webhook
 from pod.main.models import Configuration
 from pod.video.models import Video, Type
 
