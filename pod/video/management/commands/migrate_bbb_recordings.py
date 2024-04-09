@@ -335,7 +335,7 @@ def disconnect_moodle_database(connection, cursor):
         print(e)
 
 
-def process(options):
+def process(options):  # noqa: C901
     """Achieve the BBB recordings migration."""
     # Get the BBB recordings from BBB/Scalelite server API
     recordings = get_bbb_recordings_by_xml()
