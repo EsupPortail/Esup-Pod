@@ -107,7 +107,7 @@ def send_email_webinars(
         "Please fix the problem either by increasing the number of ingesters "
         "or by modifying/deleting one of the affected webinars "
         "(with the users' agreement).\n"
-        "Other webinars : %s"
+        "Other webinars: %s"
     ) % (
         nb_webinars,
         nb_ingesters,
@@ -125,7 +125,7 @@ def send_email_webinars(
         "Please fix the problem either by increasing the number of ingesters "
         "or by modifying/deleting one of the affected webinars "
         "(with the users' agreement).<br>"
-        "Other webinars : <b>%s</b>"
+        "Other webinars: <b>%s</b>"
     ) % (
         nb_webinars,
         nb_ingesters,
