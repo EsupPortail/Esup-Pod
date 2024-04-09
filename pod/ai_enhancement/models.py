@@ -40,3 +40,12 @@ class AIEnhancement(models.Model):
         verbose_name=_("AI enhancement ID in Aristote"),
         help_text=_("Enter the ID of the enhancement in Aristote"),
     )
+
+    @property
+    def sites(self) -> models.QuerySet:
+        """Return the sites of the video."""
+        return self.video.sites
+
+    def __str__(self) -> str:
+        """Return the string representation of the AI enhancement."""
+        return f"{self.video.title} - {self.ai_enhancement_id_in_aristote}"
