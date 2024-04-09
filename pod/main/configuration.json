@@ -4299,13 +4299,18 @@
                             "pod_version_init": "3.1"
                         },
                         "SECURE_SSL_REDIRECT": {
-                            "default_value": "not DEBUG",
+                            "default_value": "False",
                             "description": {
                                 "en": [
-                                    ""
+                                    "Unless your site should be available over both SSL and non-SSL ",
+                                    "connections, you may want to either set this setting True ",
+                                    "or configure a load balancer or reverse-proxy server ",
+                                    "to redirect all connections to HTTPS."
                                 ],
                                 "fr": [
-                                    ""
+                                    "À moins que votre site ne doive être disponible sur des connexions SSL et non SSL,",
+                                    " vous souhaiterez probablement définir ce paramètre sur True ou configurer un",
+                                    " load balancer ou reverse-proxy pour rediriger toutes les connexions vers HTTPS."
                                 ]
                             },
                             "pod_version_end": "",
