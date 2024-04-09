@@ -57,7 +57,7 @@ Just in case, if records are not identifiable, they will be associated
 to an administrator. In this way, for records from sources other than Pod or Moodle,
 they will automatically be associated with an administrator (unless
 this script is modified).
-It is also planned (if access to the Moodle database is write-only, of course) to add
+It is also planned (if access to the Moodle database is writable, of course) to add
 information directly to the BBB session in Moodle (intro field).
 This is made possible by using the --use-import-video parameter,
 the --use-database-moodle parameter and setup directly in this file.
@@ -106,20 +106,28 @@ from pod.meeting.models import Meeting
 from pod.recorder.models import Recorder
 from xml.dom import minidom
 
-# For PostgreSQL database #
-# Don't forget to run the following command the 1st time
-# pip install psycopg2-binary
-import psycopg2
-import psycopg2.extras
-from psycopg2 import sql
-
-# For MariaDB/MySQL database #
-# Don't forget to run the following command the 1st time
-# pip install mysql-connector-python
-# import mysql.connector
-
-
 # # Script config (TO EDIT) # #
+# Moodle database engine (postgresql, mysql or None)
+MOODLE_DB_TYPE = None
+
+MOODLE_DB_TYPE = "postgresql"
+
+if MOODLE_DB_TYPE == "postgresql":
+    # For PostgreSQL database #
+    # Don't forget to run the following command the 1st time
+    # pip install psycopg2-binary
+    from psycopg2 import connect
+    import psycopg2.extras
+    from psycopg2 import sql
+    from psycopg2 import Error as DBError
+elif MOODLE_DB_TYPE == "mysql":
+    # For MariaDB/MySQL database #
+    # Don't forget to run the following command the 1st time
+    # pip install mysql-connector-python
+    from mysql.connector import connect
+    from mysql.connector import Error as DBError
+
+
 # Old BigBlueButton config #
 # Old BigBlueButton/Scalelite server URL
 SCRIPT_BBB_SERVER_URL = "https://bbb.univ.fr/"
@@ -143,33 +151,51 @@ SCRIPT_ADMIN_ID = 1
 # #
 
 # use-database-moodle #
-# Moodle database connection parameters
+# Moodle databases connection parameters
 DB_PARAMS = {
-    "host": "bddmoodle.univ.fr",
-    "database": "moodle",
-    "user": "moodle",
-    "password": "",
-    "port": "",
-    "connect_timeout": "10",
+    # The default Moodle DB (if a recording has no bbb-origin-server-name)
+    "default": {
+        "host": "bddmoodle.univ.fr",
+        "database": "moodle",
+        "user": "moodle",
+        "password": "",
+        "port": None,
+        "connect_timeout": 10,
+    },
+    # Add as many Moodle DB as bbb-origin-server-name you have
+    "server2": {
+        "host": "bddmoodle.univ.fr",
+        "database": "moodle2",
+        "user": "moodle2",
+        "password": "",
+        "port": None,
+        "connect_timeout": 10,
+    },
 }
+
+# List of origin_server_name to be ignored by this script
+IGNORED_SERVERS = ["not-a-moodle.univ.fr"]
+
+# Site domain (like pod.univ.fr)
+SITE_DOMAIN = get_current_site(None).domain
+
 # Information message set in Moodle database, table mdl_bigbluebuttonbn, field intro
 SCRIPT_INFORM = (
     "<p class='alert alert-dark'>"
-    "Suite au changement d'infrastructure BigBlueButton, les enregistrements BBB "
-    "réalisées avant le 01/06/2024 ne sont plus accessibles par défaut dans Moodle.<br>"
-    "Ces enregistrements seront disponibles du 01/06/2024 au 01/12/2024 sur Pod"
-    "(<a class='alert-link' href='https://pod.univ.fr' target='_blank'>"
-    "pod.univ.fr</a>), "
-    "via le module <b>Importer une vidéo externe</b>.<br>"
-    "Vous retrouverez dans ce module vos anciens enregistrements BBB, qu'il vous sera "
+    "Suite au changement d’infrastructure BigBlueButton, les enregistrements BBB "
+    "réalisées avant le XX/XX/2024 ne sont plus accessibles par défaut dans Moodle.<br>"
+    "Ces enregistrements seront disponibles du XX/XX/2024 au YY/YY/2024 sur Pod"
+    "(<a class='alert-link' href='https://%s' target='_blank'>%s</a>), "
+    "via le module <strong>Importer une vidéo externe</strong>.<br>"
+    "Vous retrouverez dans ce module vos anciens enregistrements BBB, qu’il vous sera "
     "possible de convertir en vidéo pour les rendre accessibles à vos usagers.<br>"
-    "Pour plus d'informations sur cette migration, n'hésitez pas à consulter "
+    "Pour plus d’informations sur cette migration, n’hésitez pas à consulter "
     "la page dédiée sur le site <a class='alert-link' "
     "href='https://numerique.univ.fr' target='_blank'>numerique.univ.fr"
-    "</a>.<br><a href='https://pod.univ.fr/import_video/'"
+    "</a>.<br><a href='https://%s/import_video/'"
     " class='btn btn-primary' target='_blank'>"
-    "Accéder au module d'import des vidéos dans Pod</a>."
-    "</p>"
+    "Accéder au module d’import des vidéos dans Pod</a>."
+    "</p>" % (SITE_DOMAIN, SITE_DOMAIN, SITE_DOMAIN)
 )
 # #
 # # # #
@@ -183,23 +209,116 @@ DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-po
 # Global variable
 number_records_to_encode = 0
 
+# Ask BBB or load previous xml
+USE_CACHE = False
 
-def connect_moodle_database():
+
+class Generic_user:
+    """Class for a generic user."""
+
+    def __init__(
+        self, user_id: str, username: str, firstname: str, lastname: str, email: str
+    ):
+        """Initialize."""
+        self.id = user_id
+        self.username = username
+        self.firstname = firstname
+        self.lastname = lastname
+        self.email = email
+
+    def __str__(self):
+        """Display a generic user object as string."""
+        if self.id:
+            return "%s %s (%s)" % (self.firstname, self.lastname, self.username)
+        else:
+            return "None"
+
+
+class Generic_recording:
+    """Class for a generic recording."""
+
+    # Optional BBB recording fields
+    origin_server_name = ""
+    origin_version = ""
+    origin_context = ""
+    recording_name = ""
+    origin_id = ""
+    origin_label = ""
+    description = ""
+    published = ""
+    state = ""
+
+    def __init__(
+        self,
+        internal_meeting_id,
+        meeting_id,
+        meeting_name,
+        start_time,
+        origin,
+        presentation_url,
+        video_url,
+    ):
+        """Initialize."""
+        self.internal_meeting_id = internal_meeting_id
+        self.meeting_id = meeting_id
+        self.meeting_name = meeting_name
+        self.start_time = start_time
+        self.origin = origin
+        self.presentation_url = presentation_url
+        self.video_url = video_url
+        # Generated formatted date
+        self.start_date = dt.fromtimestamp(float(start_time) / 1000)
+        # Generated source URL: video playback if possible
+        self.source_url = self.video_url
+        if self.source_url == "":
+            # Else presentation playback
+            self.source_url = self.presentation_url
+
+    def as_list(self) -> list:
+        """Get a Generic_recording as list."""
+        return [
+            self.meeting_name,
+            self.recording_name,
+            self.start_date.strftime("%Y-%m-%d"),
+            self.origin,
+            self.origin_server_name,
+            self.origin_version,
+            self.origin_context,
+            self.origin_id,
+            self.origin_label,
+            self.description,
+            self.published,
+            self.state,
+            self.source_url,
+        ]
+
+    def __str__(self):
+        """Get a Generic_recording as string."""
+        return "%s,%s,%s,%s" % (
+            self.meeting_name,
+            self.start_date,
+            self.origin,
+            self.source_url,
+        )
+
+
+def connect_moodle_database(generic_recording=None):
     """Connect to the Moodle database and returns cursor."""
+    if generic_recording and generic_recording.origin_server_name:
+        server = generic_recording.origin_server_name
+    else:
+        server = "default"
+
     try:
-        # For Postgre database
-        connection = psycopg2.connect(**DB_PARAMS)
-        cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        # For MariaDB/MySQL database
-        # connection = mysql.connector.connect(**DB_PARAMS)
-        # cursor = connection.cursor()
+        connection = connect(**DB_PARAMS[server])
+        if MOODLE_DB_TYPE == "postgresql":
+            cursor = connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        else:
+            cursor = connection.cursor()
         return connection, cursor
 
-    # For MariaDB/MySQL database
-    # except mysql.connector.Error as e:
-    # For Postgre database
-    except psycopg2.Error as e:
-        print("Error: Unable to connect to the Moodle database.")
+    except DBError as e:
+        print("Error: Unable to connect to the Moodle database for server `%s`." % server)
         print(e)
         return None, None
 
@@ -230,6 +349,7 @@ def process(options):
 
     # Manage the recordings
     i = 0
+    record_strings = []
     for recording in recordings:
         i += 1
         # Only recordings within the interval are taken into account.
@@ -258,11 +378,51 @@ def process(options):
                 )
                 process_recording_to_import_video(options, generic_recording)
                 print("------------------------------")
+            elif options["use_export_csv"]:
+                # #3 Use Export recordings as CSV
+                print(
+                    "\n#%s ; %s" % (str(i), generic_recording)
+                )
+
+                line = generic_recording.as_list()
+                if options["use_database_moodle"]:
+                    generic_owners = get_created_in_moodle(generic_recording)
+                    generic_owners = [str(o) for o in generic_owners]
+                    line.append(generic_owners)
+
+                record_strings.append(line)
+    if options["use_export_csv"]:
+        header = [
+            "meeting_name",
+            "recording_name",
+            "start_date",
+            "origin",
+            "origin_server_name",
+            "origin_version",
+            "origin_context",
+            "origin_id",
+            "origin_label",
+            "description",
+            "published",
+            "state",
+            "source_url",
+        ]
+
+        if options["use_database_moodle"]:
+            header.append("Moodle_owners")
+        import csv
+
+        with open("out.csv", "w", newline="") as f:
+            writer = csv.writer(
+                f, delimiter=";", quotechar='"', quoting=csv.QUOTE_MINIMAL
+            )
+            writer.writerow(header)
+            writer.writerows(record_strings)
     # Number of recordings to encode
     print("***Number of records to encode in video: %s***" % number_records_to_encode)
 
 
-def get_bbb_recordings_by_xml():
+def get_bbb_recordings_by_xml() -> list:
     """Get the BBB recordings from BBB/Scalelite server."""
     print("\n*** Get the BBB recordings from BBB/Scalelite server.  ***")
     recordings = []
@@ -275,12 +435,21 @@ def get_bbb_recordings_by_xml():
         # Request on BBB/Scalelite server (API)
         # URL example:
         # https://bbb.univ.fr/bigbluebutton/api/getRecordings?checksum=xxxx
-        urlToRequest = SCRIPT_BBB_SERVER_URL
-        urlToRequest += "bigbluebutton/api/getRecordings?checksum=" + checksum
-        addr = requests.get(urlToRequest)
-        print("Request on URL: " + urlToRequest + ", status: " + str(addr.status_code))
-        # XML result to parse
-        xmldoc = minidom.parseString(addr.text)
+        if USE_CACHE is False:
+            urlToRequest = SCRIPT_BBB_SERVER_URL
+            urlToRequest += "bigbluebutton/api/getRecordings?checksum=" + checksum
+            addr = requests.get(urlToRequest)
+            print(
+                "Request on URL: " + urlToRequest + ", status: " + str(addr.status_code)
+            )
+            with open("getRecordings.xml", "w") as f:
+                f.write(addr.text)
+                print("BBB Response saved to `getRecordings.xml`.")
+            # XML result to parse
+            xmldoc = minidom.parseString(addr.text)
+        else:
+            xmldoc = minidom.parse("getRecordings.xml")
+            print("Parsing `getRecordings.xml`...")
         returncode = xmldoc.getElementsByTagName("returncode")[0].firstChild.data
         # Management of FAILED error (basically error in checksum)
         if returncode == "FAILED":
@@ -298,7 +467,7 @@ def get_bbb_recordings_by_xml():
     return recordings
 
 
-def get_recording(recording):  # noqa: C901
+def get_recording(recording) -> Generic_recording:  # noqa: C901
     """Return a BBB recording, using the Generic_recording class."""
     generic_recording = None
     try:
@@ -343,25 +512,45 @@ def get_recording(recording):  # noqa: C901
         generic_recording = Generic_recording(
             internal_meeting_id,
             meeting_id,
-            meeting_name,
+            meeting_name.strip(),
             start_time,
             origin,
             presentation_url,
             video_url,
         )
+
+        # Get other optional BBB tags
+        for name, tag in [
+            ("origin_server_name", "bbb-origin-server-name"),
+            ("origin_version", "bbb-origin-version"),
+            ("origin_context", "bbb-context"),
+            ("origin_id", "bbb-context-id"),
+            ("origin_label", "bbb-context-label"),
+            ("description", "bbb-recording-description"),
+            ("published", "published"),
+            ("state", "state"),
+            ("recording_name", "bbb-recording-name"),
+        ]:
+            # Check that tag exists
+            if recording.getElementsByTagName(tag):
+                # Check that tag is not empty
+                if recording.getElementsByTagName(tag)[0].firstChild:
+                    value = recording.getElementsByTagName(tag)[0].firstChild.data
+                    setattr(generic_recording, name, value.strip())
+
     except Exception as e:
         err = "Problem to get BBB recording: " + str(e) + ". " + traceback.format_exc()
         print(err)
     return generic_recording
 
 
-def get_video_file_name(file_name, date, extension):
+def get_video_file_name(file_name: str, date: dt, extension: str) -> str:
     """Normalize a video file name."""
     slug = slugify("%s %s" % (file_name[0:40], str(date)[0:10]))
     return "%s.%s" % (slug, extension)
 
 
-def download_bbb_video_file(source_url, dest_file):
+def download_bbb_video_file(source_url: str, dest_file: str):
     """Download a BBB video playback."""
     session = requests.Session()
     # Download and parse the remote HTML file (BBB specific)
@@ -457,7 +646,8 @@ def process_recording_to_import_video(options, generic_recording):
         # Search if this recording was made with Moodle (if configured)
         if options["use_database_moodle"]:
             generic_owners = get_created_in_moodle(generic_recording)
-            msg = "BBB session made with Moodle."
+            if generic_owners:
+                msg = "BBB session made with Moodle."
     if generic_owners:
         msg += " Create user in Pod if necessary."
         # Owners found in Moodle
@@ -466,14 +656,31 @@ def process_recording_to_import_video(options, generic_recording):
             pod_owner = get_or_create_user_pod(options, generic_owner)
             # Create the external recording for an owner, if necessary
             manage_external_recording(options, generic_recording, site, pod_owner, msg)
-        # Update information in Moodle (field intro)
-        set_information_in_moodle(options, generic_recording)
+        if options["use_database_moodle"]:
+            # Update information in Moodle (field intro)
+            set_information_in_moodle(options, generic_recording)
     else:
         # Only 1 owner (administrator at least if not found)
         manage_external_recording(options, generic_recording, site, owner, msg)
 
 
-def get_created_in_pod(generic_recording):
+def process_recording_to_export_csv(options, generic_recording) -> str:
+    """Convert a recording to a comma separated values."""
+    print(
+        " - Recording %s, playback %s"
+        "create an external recording if necessary."
+        % (
+            generic_recording.internal_meeting_id,
+            generic_recording.source_url,
+        )
+    )
+    return "%s,%s" % (
+        generic_recording.internal_meeting_id,
+        generic_recording.source_url,
+    )
+
+
+def get_created_in_pod(generic_recording: Generic_recording) -> Meeting:
     """Allow to know if this recording was made with Pod.
 
     In such a case, we know the meeting (owner information).
@@ -483,7 +690,7 @@ def get_created_in_pod(generic_recording):
     return meeting
 
 
-def get_or_create_user_pod(options, generic_owner):
+def get_or_create_user_pod(options, generic_owner: Generic_user):
     """Return the Pod user corresponding to the generic owner.
 
     If necessary, create this user in Pod.
@@ -528,7 +735,7 @@ def manage_external_recording(options, generic_recording, site, owner, msg):
         create_external_recording(generic_recording, site, owner)
 
 
-def create_external_recording(generic_recording, site, owner):
+def create_external_recording(generic_recording: Generic_recording, site, owner):
     """Create an external recording for a BBB recording, if necessary."""
     # Check if external recording already exists for this owner
     external_recording = ExternalRecording.objects.filter(
@@ -546,25 +753,31 @@ def create_external_recording(generic_recording, site, owner):
         )
 
 
-def get_created_in_moodle(generic_recording):  # noqa: C901
+def get_created_in_moodle(generic_recording: Generic_recording):  # noqa: C901
     """Allow to know if this recording was made with Moodle.
 
     In such a case, we know the list of owners.
     """
     # Default value
     owners_found = []
+    # Do not search in IGNORED_SERVERS
+    if generic_recording.origin_server_name in IGNORED_SERVERS:
+        print("origin_server_name ignored (%s)." % generic_recording.origin_server_name)
+        return owners_found
     try:
         participants = ""
 
-        connection, cursor = connect_moodle_database()
+        connection, cursor = connect_moodle_database(generic_recording)
         with cursor as c:
-            select_query = sql.SQL(
+            select_query = (
                 "SELECT b.id, b.intro, b.course, b.participants FROM "
                 "public.mdl_bigbluebuttonbn_recordings r, public.mdl_bigbluebuttonbn b "
                 "WHERE r.bigbluebuttonbnid = b.id "
                 "AND r.recordingid = '%s' "
                 "AND r.status = 2" % (generic_recording.internal_meeting_id)
-            ).format(sql.Identifier("type"))
+            )
+            if MOODLE_DB_TYPE == "postgresql":
+                select_query = sql.SQL(select_query).format(sql.Identifier("type"))
             c.execute(select_query)
             results = c.fetchall()
             for res in results:
@@ -577,20 +790,25 @@ def get_created_in_moodle(generic_recording):  # noqa: C901
                     # Parse participants as a JSON string
                     parsed_data = json.loads(participants)
                     for item in parsed_data:
+                        print("%s participants in this recording." % len(parsed_data))
                         # Search for moderators
                         if (
                             item["selectiontype"] == "user"
                             and item["role"] == "moderator"
                         ):
                             user_id_moodle = item["selectionid"]
-                            user_moodle = get_moodle_user(user_id_moodle)
+                            user_moodle = get_moodle_user(
+                                user_id_moodle, connection, cursor
+                            )
                             if user_moodle:
                                 print(
                                     " - Moderator found in Moodle: %s %s"
                                     % (user_moodle.username, user_moodle.email)
                                 )
                                 owners_found.append(user_moodle)
-
+                else:
+                    print("No participant in this recording.")
+        disconnect_moodle_database(connection, cursor)
     except Exception as e:
         err = (
             "Problem to find moderators for BBB recording in Moodle"
@@ -608,7 +826,7 @@ def set_information_in_moodle(options, generic_recording):
     Use SCRIPT_INFORM.
     """
     try:
-        connection, cursor = connect_moodle_database()
+        connection, cursor = connect_moodle_database(generic_recording)
         with cursor as c:
             # Request for Moodle v4
             select_query = sql.SQL(
@@ -648,11 +866,10 @@ def set_information_in_moodle(options, generic_recording):
         print(err)
 
 
-def get_moodle_user(user_id):
+def get_moodle_user(user_id: str, connection, cursor) -> Generic_user:
     """Return a generic user by user id in Moodle database."""
     dict_user = []
     generic_user = None
-    connection, cursor = connect_moodle_database()
     with cursor as c:
         # Most important field: username
         select_query = sql.SQL(
@@ -672,7 +889,7 @@ def get_moodle_user(user_id):
     return generic_user
 
 
-def convert_format(source_url, internal_meeting_id):
+def convert_format(source_url: str, internal_meeting_id: str):
     """Convert presentation playback URL if necessary (see SCRIPT_PLAYBACK_URL_23)."""
     try:
         # Conversion - if necessary - from
@@ -686,7 +903,7 @@ def convert_format(source_url, internal_meeting_id):
         err = "Problem to convert format: " + str(e) + ". " + traceback.format_exc()
         print(err)
 
-    return source_url
+    return source_url.strip()
 
 
 def check_system(options):  # noqa: C901
@@ -722,67 +939,25 @@ def check_system(options):  # noqa: C901
             )
     if options["use_database_moodle"]:
         # Check connection to Moodle database
-        connection, cursor = connect_moodle_database()
-        if not cursor:
+        if MOODLE_DB_TYPE is None:
             error = True
             print(
-                "ERROR: Unable to connect to Moodle database. Please configure "
-                "DB_PARAMS in this file, check firewall rules and permissions."
+                "ERROR: Undefined MOODLE_DB_TYPE."
+                " Please set your Moodle DB type (postgresql or mysql)."
             )
         else:
-            disconnect_moodle_database(connection, cursor)
+            connection, cursor = connect_moodle_database()
+            if not cursor:
+                error = True
+                print(
+                    "ERROR: Unable to connect to Moodle database. Please configure "
+                    "DB_PARAMS in this file, check firewall rules and permissions."
+                )
+            else:
+                disconnect_moodle_database(connection, cursor)
 
     if error:
         exit()
-
-
-class Generic_user:
-    """Class for a generic user."""
-
-    def __init__(self, user_id, username, firstname, lastname, email):
-        """Initialize."""
-        self.id = user_id
-        self.username = username
-        self.firstname = firstname
-        self.lastname = lastname
-        self.email = email
-
-    def __str__(self):
-        """Display a generic user object as string."""
-        if self.id:
-            return "%s %s (%s)" % (self.firstname, self.lastname, self.username)
-        else:
-            return "None"
-
-
-class Generic_recording:
-    """Class for a generic recording."""
-
-    def __init__(
-        self,
-        internal_meeting_id,
-        meeting_id,
-        meeting_name,
-        start_time,
-        origin,
-        presentation_url,
-        video_url,
-    ):
-        """Initialize."""
-        self.internal_meeting_id = internal_meeting_id
-        self.meeting_id = meeting_id
-        self.meeting_name = meeting_name
-        self.start_time = start_time
-        self.origin = origin
-        self.presentation_url = presentation_url
-        self.video_url = video_url
-        # Generated formatted date
-        self.start_date = dt.fromtimestamp(float(start_time) / 1000)
-        # Generated source URL: video playback if possible
-        self.source_url = self.video_url
-        if self.source_url == "":
-            # Else presentation playback
-            self.source_url = self.presentation_url
 
 
 class Command(BaseCommand):
@@ -803,6 +978,12 @@ class Command(BaseCommand):
             action="store_true",
             default=False,
             help="Use import video module to get recordings (default=False)?",
+        )
+        parser.add_argument(
+            "--use_export_csv",
+            action="store_true",
+            default=False,
+            help="Export BBB recordings in csv format (default=False)?",
         )
         parser.add_argument(
             "--use-database-moodle",
