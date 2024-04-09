@@ -1,6 +1,6 @@
 """REST API for the Meeting module."""
 from rest_framework import serializers, viewsets
-from .models import Meeting, Ingester, InternalRecording, Livestream
+from .models import Meeting, InternalRecording, Livestream
 
 
 class MeetingModelSerializer(serializers.HyperlinkedModelSerializer):
