@@ -89,9 +89,9 @@ createconfigs:
 # Use for docker run and docker exec commands
 -include .env.dev
 export
-COMPOSE = docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
-COMPOSE_FULL = docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod
-COMPOSE_FULL_TEST = docker-compose -f ./docker-compose-full-dev-with-volumes-test.yml -p esup-pod
+COMPOSE = docker compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
+COMPOSE_FULL = docker compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod
+COMPOSE_FULL_TEST = docker compose -f ./docker-compose-full-dev-with-volumes-test.yml -p esup-pod
 DOCKER_LOGS = docker logs -f
 
 #docker-start-build:

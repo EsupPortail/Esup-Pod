@@ -599,9 +599,11 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
  - `SECURE_SSL_REDIRECT`
 
-  > valeur par défaut : `not DEBUG`
+  > valeur par défaut : `False`
 
-
+  >> À moins que votre site ne doive être disponible sur des connexions SSL et non SSL, <br>
+  >>  vous souhaiterez probablement définir ce paramètre sur True ou configurer un <br>
+  >>  load balancer ou reverse-proxy pour rediriger toutes les connexions vers HTTPS. <br>
 
  - `SESSION_COOKIE_AGE`
 
