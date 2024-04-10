@@ -1,6 +1,6 @@
 # <img src="./pod/main/static/img/pod_favicon.svg" width="80" alt="" role="presentation"> Esup-Pod
 
-[![Licence LGPL 3.0](https://img.shields.io/github/license/EsupPortail/Esup-Pod)](https://github.com/EsupPortail/Esup-Pod/blob/master/LICENSE) [![Testing Status](https://github.com/EsupPortail/Esup-Pod/actions/workflows/pod_main.yml/badge.svg)](https://github.com/EsupPortail/Esup-Pod/actions) [![Coverage Status](https://coveralls.io/repos/github/EsupPortail/Esup-Pod/badge.svg?branch=master)](https://coveralls.io/github/EsupPortail/Esup-Pod?branch=master)
+[![Licence LGPL 3.0](https://img.shields.io/github/license/EsupPortail/Esup-Pod)](https://github.com/EsupPortail/Esup-Pod/blob/master/LICENSE) [![Testing Status](https://github.com/EsupPortail/Esup-Pod/actions/workflows/pod_main.yml/badge.svg)](https://github.com/EsupPortail/Esup-Pod/actions) [![Coverage Status](https://coveralls.io/repos/github/EsupPortail/Esup-Pod/badge.svg?branch=master)](https://coveralls.io/github/EsupPortail/Esup-Pod?branch=master) [![Awesome CodeGouvFr score](https://img.shields.io/badge/awesome-codegouvfr_8/10-blue)(https://github.com/codegouvfr/awesome-codegouvfr#awesome-codegouvfr-score)]
 
 [FR]
 ## Plateforme de gestion de fichier vidéo
@@ -29,4 +29,3 @@ The project and the platform of the same name are aimed at users of our institut
 
 <img src="https://www.univ-lille.fr/typo3conf/ext/ul2fpfb/Resources/Public/assets/img/UL-ROSE-dark-2014.svg" height="50"> | <img src="https://www.esup-portail.org/sites/default/files/logo-esupportail_1.png" height="50"> | <img src="https://upload.wikimedia.org/wikipedia/fr/5/50/Bloc_Marianne.svg" height="30"> Ministère de lʼEnseignement supérieur et de la Recherche
 :-----:|:-----:|:----:
-
