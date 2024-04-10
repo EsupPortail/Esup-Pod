@@ -380,9 +380,7 @@ def process(options):  # noqa: C901
                 print("------------------------------")
             elif options["use_export_csv"]:
                 # #3 Use Export recordings as CSV
-                print(
-                    "\n#%s ; %s" % (str(i), generic_recording)
-                )
+                print("\n#%s ; %s" % (str(i), generic_recording))
 
                 line = generic_recording.as_list()
                 if options["use_database_moodle"]:
