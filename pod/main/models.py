@@ -333,11 +333,11 @@ class Block(models.Model):
     )
 
     nb_element = models.PositiveIntegerField(
-        verbose_name=_("Number of element"), default=5, blank=True, null=True
+        verbose_name=_("Maximum number of element"), default=5, blank=True, null=True
     )
 
     multi_carousel_nb = models.PositiveIntegerField(
-        verbose_name=_("Number of element for multi carousel"),
+        verbose_name=_("Number of element per page (multi carousel)"),
         default=5,
         blank=True,
         null=True,

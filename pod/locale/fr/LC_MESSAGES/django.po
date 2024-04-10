@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-09 09:25+0000\n"
+"POT-Creation-Date: 2024-04-10 14:22+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -4948,11 +4948,11 @@ msgid "Check this box if you want auto slide."
 msgstr "Cocher cette case si vous voulez activer le défilement automatique."
 
 #: pod/main/models.py
-msgid "Number of element"
+msgid "Maximum number of element"
 msgstr "Nombre d'éléments maximum"
 
 #: pod/main/models.py
-msgid "Number of element for multi carousel"
+msgid "Number of element per page (multi carousel)"
 msgstr "Nombre d'éléments par page (carrousel multiple)"
 
 #: pod/main/models.py
@@ -5076,12 +5076,12 @@ msgstr "Vidéo %(video_number)s"
 
 #: pod/main/templates/block/carousel.html
 #: pod/main/templates/block/multi_carousel.html
-msgid "Previous"
+msgid "Previous thumbnail"
 msgstr "Vignette précédente"
 
 #: pod/main/templates/block/carousel.html
 #: pod/main/templates/block/multi_carousel.html
-msgid "Next"
+msgid "Next thumbnail"
 msgstr "Vignette suivante"
 
 #: pod/main/templates/contact_us.html
@@ -9534,6 +9534,12 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Previous"
+#~ msgstr "Vignette précédente"
+
+#~ msgid "Next"
+#~ msgstr "Vignette suivante"
 
 #~ msgid ""
 #~ "Pod is aimed at users of our institutions, by allowing the publication of "

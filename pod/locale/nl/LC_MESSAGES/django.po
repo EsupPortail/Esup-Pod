@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-09 09:25+0000\n"
+"POT-Creation-Date: 2024-04-10 14:22+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1202,7 +1202,6 @@ msgstr ""
 msgid "Documents"
 msgstr ""
 
-#: pod/completion/models.py pod/completion/tests/test_models.py
 #: pod/completion/models.py pod/completion/tests/test_models.py
 msgid "Please enter a document."
 msgstr ""
@@ -2794,15 +2793,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -4690,11 +4689,11 @@ msgid "Check this box if you want auto slide."
 msgstr ""
 
 #: pod/main/models.py
-msgid "Number of element"
+msgid "Maximum number of element"
 msgstr ""
 
 #: pod/main/models.py
-msgid "Number of element for multi carousel"
+msgid "Number of element per page (multi carousel)"
 msgstr ""
 
 #: pod/main/models.py
@@ -4812,12 +4811,12 @@ msgstr ""
 
 #: pod/main/templates/block/carousel.html
 #: pod/main/templates/block/multi_carousel.html
-msgid "Previous"
+msgid "Previous thumbnail"
 msgstr ""
 
 #: pod/main/templates/block/carousel.html
 #: pod/main/templates/block/multi_carousel.html
-msgid "Next"
+msgid "Next thumbnail"
 msgstr ""
 
 #: pod/main/templates/contact_us.html
@@ -5853,8 +5852,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
@@ -5868,8 +5867,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
@@ -6345,7 +6344,6 @@ msgstr ""
 msgid "You cannot create a playlist named \"Favorites\""
 msgstr ""
 
-#: pod/playlist/tests/test_views.py pod/playlist/views.py
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
 msgstr ""
@@ -6856,8 +6854,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
