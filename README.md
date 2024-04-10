@@ -1,6 +1,6 @@
 # <img src="./pod/main/static/img/pod_favicon.svg" width="80" alt="" role="presentation"> Esup-Pod
 
-[![Licence LGPL 3.0](https://img.shields.io/github/license/EsupPortail/Esup-Pod)](https://github.com/EsupPortail/Esup-Pod/blob/master/LICENSE) [![Testing Status](https://github.com/EsupPortail/Esup-Pod/actions/workflows/pod_main.yml/badge.svg)](https://github.com/EsupPortail/Esup-Pod/actions) [![Coverage Status](https://coveralls.io/repos/github/EsupPortail/Esup-Pod/badge.svg?branch=master)](https://coveralls.io/github/EsupPortail/Esup-Pod?branch=master) [![Awesome CodeGouvFr score](https://img.shields.io/badge/awesome-codegouvfr_8/10-blue)(https://github.com/codegouvfr/awesome-codegouvfr#awesome-codegouvfr-score)]
+[![Licence LGPL 3.0](https://img.shields.io/github/license/EsupPortail/Esup-Pod)](https://github.com/EsupPortail/Esup-Pod/blob/master/LICENSE) [![Testing Status](https://github.com/EsupPortail/Esup-Pod/actions/workflows/pod_main.yml/badge.svg)](https://github.com/EsupPortail/Esup-Pod/actions) [![Coverage Status](https://coveralls.io/repos/github/EsupPortail/Esup-Pod/badge.svg?branch=master)](https://coveralls.io/github/EsupPortail/Esup-Pod?branch=master) [![Awesome CodeGouvFr score](https://img.shields.io/badge/awesome-codegouvfr_8/10-blue)](https://github.com/codegouvfr/awesome-codegouvfr#awesome-codegouvfr-score)
 
 [FR]
 ## Plateforme de gestion de fichier vidéo
