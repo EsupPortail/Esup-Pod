@@ -2,14 +2,10 @@
 {% load i18n %}
 {% load static %}
 
-
-
 {% block page_extra_head %}
   <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{ VERSION }}">
   <link rel="stylesheet" type="text/css" href="{% static 'ai_enhancement/css/choose-video-element.css' %}?ver={{ VERSION }}">
 {% endblock page_extra_head %}
-
-
 
 {% block breadcrumbs %}
   {{ block.super }}
@@ -32,8 +28,6 @@
     {{ page_title }}
   </li>
 {% endblock breadcrumbs %}
-
-
 
 {% block page_content %}
   <form method="POST" action="{% url 'ai_enhancement:enhance_video' video_slug=video.slug %}">
