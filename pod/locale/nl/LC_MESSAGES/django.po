@@ -1203,6 +1203,7 @@ msgid "Documents"
 msgstr ""
 
 #: pod/completion/models.py pod/completion/tests/test_models.py
+#: pod/completion/models.py pod/completion/tests/test_models.py
 msgid "Please enter a document."
 msgstr ""
 
@@ -2793,15 +2794,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -5852,8 +5853,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
@@ -5867,8 +5868,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
@@ -6344,6 +6345,7 @@ msgstr ""
 msgid "You cannot create a playlist named \"Favorites\""
 msgstr ""
 
+#: pod/playlist/tests/test_views.py pod/playlist/views.py
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
 msgstr ""
@@ -6854,8 +6856,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -7717,9 +7719,22 @@ msgstr ""
 
 #: pod/video/templates/videos/add_video.html
 msgid ""
-"Please note: make sure that you have the necessary authorizations signed by "
-"the speakers and that you respect the Intellectual Property Code before "
-"publishing a video."
+"Please note: make sure that you respect the Intellectual Property Code "
+"before publishing a video."
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html
+msgid ""
+"I confirm that I have the necessary authorizations signed by the parties "
+"involved in the uploaded content."
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html
+msgid "Selected file:"
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html
+msgid "Undo"
 msgstr ""
 
 #: pod/video/templates/videos/add_video.html
@@ -7734,6 +7749,10 @@ msgstr ""
 msgid ""
 "Do not leave the page if you encounter a connection problem during the "
 "upload, it will resume automatically when your connection is available again."
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html
+msgid "Upload"
 msgstr ""
 
 #: pod/video/templates/videos/add_video.html
@@ -7758,6 +7777,14 @@ msgstr ""
 #: pod/video/templates/videos/add_video.html
 #: pod/video/templates/videos/video_edit.html
 msgid "Help for form fields"
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html
+msgid "Upload a media file first."
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html
+msgid "The file extension is not in the allowed extension:"
 msgstr ""
 
 #: pod/video/templates/videos/card.html
@@ -8855,7 +8882,7 @@ msgid "Encoding"
 msgstr "Videocodering"
 
 #: pod/video_encode_transcript/utils.py
-msgid "The transcripting"
+msgid "The transcripting of content"
 msgstr ""
 
 #: pod/video_encode_transcript/utils.py

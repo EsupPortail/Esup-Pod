@@ -89,9 +89,9 @@ createconfigs:
 # Use for docker run and docker exec commands
 -include .env.dev
 export
-COMPOSE = docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
-COMPOSE_FULL = docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod
-COMPOSE_FULL_TEST = docker-compose -f ./docker-compose-full-dev-with-volumes-test.yml -p esup-pod
+COMPOSE = docker compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
+COMPOSE_FULL = docker compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod
+COMPOSE_FULL_TEST = docker compose -f ./docker-compose-full-dev-with-volumes-test.yml -p esup-pod
 DOCKER_LOGS = docker logs -f
 
 #docker-start-build:
@@ -156,6 +156,7 @@ else ifeq ($(DOCKER_ENV), full-test)
 else
 	@$(COMPOSE) down -v
 endif
+
 # Arrête le serveur de test et supprime les fichiers générés
 docker-reset:
 ifeq ($(DOCKER_ENV), full)
@@ -165,16 +166,11 @@ else ifeq ($(DOCKER_ENV), full-test)
 else
 	@$(COMPOSE) down -v
 endif
-	# sudo rm -rf ./pod/log
+	# Supprime les fichiers générés.
 	sudo rm -rf ./pod/log
-	# sudo rm -rf ./pod/static
 	sudo rm -rf ./pod/static
-	# sudo rm -rf ./pod/node_modules
 	sudo rm -rf ./pod/node_modules
-	# sudo rm -rf ./pod/db_migrations
 	sudo rm -rf ./pod/db_migrations
-	# sudo rm -rf ./pod/db.sqlite3
 	sudo rm -rf ./pod/db.sqlite3
 	sudo rm -rf ./pod/db_remote.sqlite3
-	# sudo rm -rf ./pod/media
 	sudo rm -rf ./pod/media

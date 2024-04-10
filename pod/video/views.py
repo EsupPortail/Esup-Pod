@@ -742,7 +742,6 @@ def bulk_update_fields(request, videos_list, update_fields):
     fields_errors = []
 
     for video in videos_list:
-
         if "owner" in update_fields:
             new_owner = User.objects.get(pk=request.POST.get("owner")) or None
             if change_owner(video.id, new_owner):
