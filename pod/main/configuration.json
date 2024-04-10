@@ -1355,7 +1355,7 @@
                                     "Affiche les vidéos de chaines non visibles sur la page d'accueil"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.6.0",
                             "pod_version_init": "3.2.0"
                         },
                         "USE_BBB": {
@@ -4723,7 +4723,7 @@
                                     "Nombre de vidéos à afficher sur la page d’accueil."
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.6.0",
                             "pod_version_init": "3.1.0"
                         },
                         "HOMEPAGE_SHOWS_PASSWORDED": {
@@ -4736,7 +4736,7 @@
                                     "Afficher les vidéos dont l’accès est protégé par mot de passe sur la page d’accueil."
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.6.0",
                             "pod_version_init": "3.1.0"
                         },
                         "HOMEPAGE_SHOWS_RESTRICTED": {
@@ -4749,7 +4749,7 @@
                                     "Afficher les vidéos dont l’accès est protégé par authentification sur la page d’accueil."
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.6.0",
                             "pod_version_init": "3.1.0"
                         },
                         "MENUBAR_HIDE_INACTIVE_OWNERS": {
@@ -4802,7 +4802,7 @@
                                     "Si True, affiche les prochains évènements sur la page d’accueil."
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.6.0",
                             "pod_version_init": "3.1.0"
                         },
                         "SHOW_ONLY_PARENT_THEMES": {
