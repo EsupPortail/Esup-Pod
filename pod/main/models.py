@@ -218,15 +218,17 @@ class Block(models.Model):
     MOST_VIEWS = "most_views"
     EVENT_NEXT = "event_next"
     DATA_TYPE = (
-        (CHANNEL, _('Channel')),
-        (THEME, _('Theme')),
-        (PLAYLIST, _('Playlist')),
-        (LAST_VIDEOS, _('Last videos')),
-        (MOST_VIEWS, _('Most views')),
-        (EVENT_NEXT, _('Next events')),
+        (CHANNEL, _("Channel")),
+        (THEME, _("Theme")),
+        (PLAYLIST, _("Playlist")),
+        (LAST_VIDEOS, _("Last videos")),
+        (MOST_VIEWS, _("Most views")),
+        (EVENT_NEXT, _("Next events")),
     )
 
-    title = models.CharField(verbose_name=_("Title"), max_length=250, blank=True, null=True)
+    title = models.CharField(
+        verbose_name=_("Title"), max_length=250, blank=True, null=True
+    )
 
     order = models.PositiveSmallIntegerField(
         verbose_name=_("Order"), default=1, blank=True, null=True
@@ -346,9 +348,7 @@ class Block(models.Model):
     view_videos_from_non_visible_channels = models.BooleanField(
         verbose_name=_("View videos from non visible channel"),
         default=False,
-        help_text=_(
-            "Check this box if you want view videos from non visible channel."
-        ),
+        help_text=_("Check this box if you want view videos from non visible channel."),
     )
 
     shows_passworded = models.BooleanField(

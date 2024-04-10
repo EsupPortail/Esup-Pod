@@ -542,19 +542,19 @@ class TestBlock(TestCase):
             page=FlatPage.objects.get(id=1),
             html="<p>MaChaineDeTest</p>",
             no_cache=True,
-            visible=True
+            visible=True,
         )
         self.client = Client()
         response = self.client.get("/")
         self.assertTrue(
-            '<p>MaChaineDeTest</p>' in response.content.decode(),
+            "<p>MaChaineDeTest</p>" in response.content.decode(),
             "test if block html is present.",
         )
         bl2.visible = False
         bl2.save()
         response = self.client.get("/")
         self.assertFalse(
-            '<p>MaChaineDeTest</p>' in response.content.decode(),
+            "<p>MaChaineDeTest</p>" in response.content.decode(),
             "test if block html is not present.",
         )
         bl2.visible = True
@@ -562,7 +562,7 @@ class TestBlock(TestCase):
         bl2.save()
         response = self.client.get("/")
         self.assertFalse(
-            '<p>MaChaineDeTest</p>' in response.content.decode(),
+            "<p>MaChaineDeTest</p>" in response.content.decode(),
             "test if block html is not present.",
         )
 
@@ -571,7 +571,7 @@ class TestBlock(TestCase):
         self.client.force_login(self.user)
         response = self.client.get("/")
         self.assertTrue(
-            '<p>MaChaineDeTest</p>' in response.content.decode(),
+            "<p>MaChaineDeTest</p>" in response.content.decode(),
             "test if block html is present.",
         )
 
@@ -597,7 +597,7 @@ class TestBlock(TestCase):
         self.client = Client()
         response = self.client.get("/")
         self.assertTrue(
-            'VideoOnHold' in response.content.decode(),
+            "VideoOnHold" in response.content.decode(),
             "test if video VideoOnHold is present.",
         )
         print(" --->  test_Video_in_default_block ok")
@@ -639,7 +639,7 @@ class TestBlock(TestCase):
         response = self.client.get("/")
 
         self.assertFalse(
-            'VideoOnHold' in response.content.decode(),
+            "VideoOnHold" in response.content.decode(),
             "test if video VideoOnHold is not present.",
         )
 
@@ -648,7 +648,7 @@ class TestBlock(TestCase):
         response = self.client.get("/")
 
         self.assertTrue(
-            'VideoOnHold' in response.content.decode(),
+            "VideoOnHold" in response.content.decode(),
             "test if video VideoOnHold is present.",
         )
 
@@ -659,7 +659,7 @@ class TestBlock(TestCase):
         response = self.client.get("/")
 
         self.assertTrue(
-            'VideoOnHold' in response.content.decode(),
+            "VideoOnHold" in response.content.decode(),
             "test if video VideoOnHold is present.",
         )
         self.assertTrue(
@@ -684,7 +684,11 @@ class TestBlock(TestCase):
         user = User.objects.create(username="pod")
         h_type = Type.objects.create(title="type1")
         event = Event.objects.create(
-            title="MonEventDeTest", owner=user, broadcaster=broad, type=h_type, is_draft=False
+            title="MonEventDeTest",
+            owner=user,
+            broadcaster=broad,
+            type=h_type,
+            is_draft=False,
         )
         event.start_date = datetime.today() + timedelta(days=+1)
         event.end_date = datetime.today() + timedelta(days=+2)
@@ -701,7 +705,7 @@ class TestBlock(TestCase):
         self.client = Client()
         response = self.client.get("/")
         self.assertTrue(
-            'MonEventDeTest' in response.content.decode(),
+            "MonEventDeTest" in response.content.decode(),
             "test if event MonEventDeTest is present.",
         )
         self.assertTrue(
@@ -740,7 +744,7 @@ class TestBlock(TestCase):
         self.client = Client()
         response = self.client.get("/")
         self.assertTrue(
-            'VideoOnHold' in response.content.decode(),
+            "VideoOnHold" in response.content.decode(),
             "test if video VideoOnHold is present.",
         )
         self.assertTrue(

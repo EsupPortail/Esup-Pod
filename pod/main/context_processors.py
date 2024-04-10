@@ -136,12 +136,12 @@ def context_settings(request):
     new_settings["USE_OPENCAST_STUDIO"] = USE_OPENCAST_STUDIO
     new_settings["COOKIE_LEARN_MORE"] = COOKIE_LEARN_MORE
     new_settings["USE_MEETING"] = USE_MEETING
-    new_settings[
-        "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY"
-    ] = RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
-    new_settings[
-        "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY"
-    ] = RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY
+    new_settings["RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY"] = (
+        RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+    )
+    new_settings["RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY"] = (
+        RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY
+    )
     new_settings["USE_NOTIFICATIONS"] = USE_NOTIFICATIONS
     return new_settings
 
@@ -164,7 +164,9 @@ def context_block(request):
         dict[str, Any]: A dictionary containing the context with the key "BLOCK"
                        associated with the sorted list of blocks.
     """
-    block = Block.objects.filter(sites=get_current_site(request), visible=True).order_by("order")
+    block = Block.objects.filter(sites=get_current_site(request), visible=True).order_by(
+        "order"
+    )
     return {
         "BLOCK": block,
     }

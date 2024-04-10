@@ -51,7 +51,9 @@ def display_content_by_block(content, request):  # noqa: C901
     params = dict()
 
     params["show-restricted"] = content.show_restricted
-    params["view-videos-from-non-visible-channels"] = content.view_videos_from_non_visible_channels
+    params["view-videos-from-non-visible-channels"] = (
+        content.view_videos_from_non_visible_channels
+    )
     params["show-passworded"] = content.shows_passworded
     params["mustbe-auth"] = content.must_be_auth
     params["auto-slide"] = content.auto_slide
@@ -107,10 +109,10 @@ def display_content_by_block(content, request):  # noqa: C901
     if content.data_type == "last_videos":
         params["fct"] = "render_last_view"
 
-    if (content.type == 'html'):
-        params['template'] = 'block/html.html'
-        params['fct'] = 'render_html'
-        params['data'] = content.html
+    if content.type == "html":
+        params["template"] = "block/html.html"
+        params["fct"] = "render_html"
+        params["data"] = content.html
 
     if content.type == "carousel":
         params["template"] = "block/carousel.html"

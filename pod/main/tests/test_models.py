@@ -150,7 +150,6 @@ class BlockTestCase(TestCase):
         print(" --->  SetUp of BlockTestCase: OK!")
 
     def test_default_site_assigned_on_creation(self):
-
         """
         Test if add block assign default site.
         """

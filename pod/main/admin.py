@@ -31,7 +31,8 @@ class PageForm(FlatpageForm):
 
 
 class AdditionalChannelTabAdmin(TranslationAdmin):
-    """ Create translation for additional Channel Tab Field"""
+    """Create translation for additional Channel Tab Field"""
+
     list_display = ("name",)
 
 
@@ -105,9 +106,7 @@ class LinkFooterAdmin(TranslationAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         """Exclude sites fields in admin for non-superuser"""
         if (db_field.name) == "page":
-            kwargs["queryset"] = FlatPage.objects.filter(
-                sites=Site.objects.get_current()
-            )
+            kwargs["queryset"] = FlatPage.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
@@ -118,7 +117,7 @@ class BlockAdminForm(forms.ModelForm):
         """Metadata class defining the associated model and fields."""
 
         model = Block
-        fields = '__all__'
+        fields = "__all__"
 
 
 class BlockAdmin(TranslationAdmin):
