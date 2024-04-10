@@ -31,9 +31,5 @@ def context_settings(request):
     """Return all context settings for ai_enhancement app"""
     new_settings = {
         "USE_AI_ENHANCEMENT": USE_AI_ENHANCEMENT,
-        "AI_ENHANCEMENT_CLIENT_ID": AI_ENHANCEMENT_CLIENT_ID,
-        "AI_ENHANCEMENT_CLIENT_SECRET": AI_ENHANCEMENT_CLIENT_SECRET,
-        "AI_ENHANCEMENT_API_URL": AI_ENHANCEMENT_API_URL,
-        "AI_ENHANCEMENT_API_VERSION": AI_ENHANCEMENT_API_VERSION,
     }
     return new_settings
