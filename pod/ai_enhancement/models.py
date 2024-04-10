@@ -15,7 +15,7 @@ class AIEnhancement(models.Model):
         verbose_name = _("AI enhancement")
         verbose_name_plural = _("AI enhancements")
 
-    video = models.ForeignKey(
+    video = models.OneToOneField(
         Video,
         verbose_name=_("Video"),
         on_delete=models.CASCADE,
