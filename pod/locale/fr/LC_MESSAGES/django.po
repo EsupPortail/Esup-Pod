@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-11 11:52+0200\n"
+"POT-Creation-Date: 2024-04-11 17:13+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -2269,7 +2269,7 @@ msgstr "Temps de fin de l’affichage de l’enrichissement en secondes."
 #: pod/enrichment/models.py
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #: pod/import_video/templates/import_video/list.html pod/live/models.py
-#: pod/video/forms.py pod/video/models.py
+#: pod/main/models.py pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/dashboard.html pod/video/views.py
 #: pod/video_search/templates/search/search.html
 msgid "Type"
@@ -3470,6 +3470,7 @@ msgid "Plan an event"
 msgstr "Programmer un évènement"
 
 #: pod/live/templates/live/direct.html pod/live/templates/live/events_next.html
+#: pod/main/models.py pod/main/templatetags/flat_page_edito_filter.py
 msgid "Next events"
 msgstr "Prochains évènements"
 
@@ -4825,6 +4826,157 @@ msgstr "Onglet additionnel de chaînes"
 msgid "Additional channel Tabs"
 msgstr "Onglets additionnels de chaînes"
 
+#: pod/main/models.py
+msgid "Carousel"
+msgstr "Carrousel"
+
+#: pod/main/models.py
+msgid "Multiple carousel"
+msgstr "Carrousel multiple"
+
+#: pod/main/models.py
+msgid "Card list"
+msgstr "Liste de cartes"
+
+#: pod/main/models.py
+msgid "HTML"
+msgstr "HTML"
+
+#: pod/main/models.py pod/video/models.py
+#: pod/video_search/templates/search/search.html
+msgid "Channel"
+msgstr "Chaîne"
+
+#: pod/main/models.py pod/video/models.py
+msgid "Theme"
+msgstr "Thème"
+
+#: pod/main/models.py pod/playlist/models.py
+#: pod/playlist/templates/playlist/playlist_breadcrumbs.html
+#: pod/playlist/tests/test_models.py pod/playlist/views.py
+#: pod/video/templates/videos/video_breadcrumbs.html
+msgid "Playlist"
+msgstr "Liste de lecture"
+
+#: pod/main/models.py pod/main/templatetags/flat_page_edito_filter.py
+msgid "Last videos"
+msgstr "Dernières vidéos"
+
+#: pod/main/models.py pod/main/templatetags/flat_page_edito_filter.py
+msgid "Most views"
+msgstr "Les plus vues"
+
+#: pod/main/models.py
+msgid "Order"
+msgstr "ordre"
+
+#: pod/main/models.py pod/video/models.py
+msgid "Visible"
+msgstr "Visible"
+
+#: pod/main/models.py
+msgid "Check this box if block is visible in page."
+msgstr "Cocher cette case si vous voulez voir le bloc sur la page."
+
+#: pod/main/models.py
+msgid "Data type"
+msgstr "Type de données"
+
+#: pod/main/models.py
+msgid "Select the channel you want to link with."
+msgstr "Sélectionner la chaîne que vous voulez joindre."
+
+#: pod/main/models.py
+msgid "Select the theme you want to link with."
+msgstr "Sélectionner le thème que vous voulez joindre."
+
+#: pod/main/models.py
+msgid "Select the playlist you want to link with."
+msgstr "Sélectionner la liste de lecture que vous voulez joindre."
+
+#: pod/main/models.py
+msgid "Write in html inside this field."
+msgstr "Écrire en html à l'intérieur de ce champ."
+
+#: pod/main/models.py
+msgid "Display title"
+msgstr "Afficher le titre"
+
+#: pod/main/models.py
+msgid "No cache"
+msgstr "Pas de cache"
+
+#: pod/main/models.py
+msgid "Check this box if you don't want to keep the cache."
+msgstr "Cocher cette case si vous ne voulez pas garder le cache."
+
+#: pod/main/models.py
+msgid "Debug"
+msgstr "Debug"
+
+#: pod/main/models.py
+msgid "Check this box if you want to activate debug mode."
+msgstr "Cocher cette case si vous voulez activer le mode débogage."
+
+#: pod/main/models.py
+msgid "Show restricted content"
+msgstr "Montrer le contenu restreint"
+
+#: pod/main/models.py
+msgid "Check this box if you want to show restricted content."
+msgstr "Cocher cette case si vous voulez montrer le contenu restreint."
+
+#: pod/main/models.py
+msgid "Must be authenticated"
+msgstr "Doit être authentifié"
+
+#: pod/main/models.py
+msgid "Check this box if users must be authenticated to view content."
+msgstr ""
+"Cochez cette case si les utilisateurs doivent être authentifiés pour voir le "
+"contenu."
+
+#: pod/main/models.py
+msgid "Auto slide"
+msgstr "Défilement automatique"
+
+#: pod/main/models.py
+msgid "Check this box if you want auto slide."
+msgstr "Cocher cette case si vous voulez activer le défilement automatique."
+
+#: pod/main/models.py
+msgid "Maximum number of element"
+msgstr "Nombre d'éléments maximum"
+
+#: pod/main/models.py
+msgid "Number of element per page (multi carousel)"
+msgstr "Nombre d'éléments par page (carrousel multiple)"
+
+#: pod/main/models.py
+msgid "View videos from non visible channel"
+msgstr "Voir les vidéos d'une chaine non visible"
+
+#: pod/main/models.py
+msgid "Check this box if you want view videos from non visible channel."
+msgstr ""
+"Cocher cette case si vous voulez voir les vidéos d'une chaine non visible."
+
+#: pod/main/models.py
+msgid "View videos with password"
+msgstr "Voir les vidéos avec un mot de passe"
+
+#: pod/main/models.py
+msgid "Check this box if you want view videos with password."
+msgstr "Cocher cette case si vous voulez voir les vidéos avec un mot de passe."
+
+#: pod/main/models.py
+msgid "Block"
+msgstr "Bloc"
+
+#: pod/main/models.py
+msgid "Blocks"
+msgstr "Blocs"
+
 #: pod/main/templates/403.html
 msgid "Permission denied"
 msgstr "Accès refusé"
@@ -4907,6 +5059,27 @@ msgstr "En savoir plus"
 #: pod/main/templates/base.html
 msgid "I understand"
 msgstr "J’ai compris"
+
+#: pod/main/templates/block/card_list.html
+#: pod/main/templates/block/carousel.html
+#: pod/main/templates/block/multi_carousel.html
+msgid "Show all videos"
+msgstr "Afficher toutes les vidéos"
+
+#: pod/main/templates/block/carousel.html
+#, python-format
+msgid "Video %(video_number)s"
+msgstr "Vidéo %(video_number)s"
+
+#: pod/main/templates/block/carousel.html
+#: pod/main/templates/block/multi_carousel.html
+msgid "Previous thumbnail"
+msgstr "Vignette précédente"
+
+#: pod/main/templates/block/carousel.html
+#: pod/main/templates/block/multi_carousel.html
+msgid "Next thumbnail"
+msgstr "Vignette suivante"
 
 #: pod/main/templates/contact_us.html
 msgid "Your message"
@@ -5646,7 +5819,8 @@ msgid ""
 msgstr ""
 "Voulez-vous un chat sur la page en direct pour les auditeurs ? Les messages "
 "envoyés dans le chat de cette page en direct se retrouveront dans le chat "
-"public de BigBlueButton. Cette discussion publique sera également affichée en direct."
+"public de BigBlueButton. Cette discussion publique sera également affichée "
+"en direct."
 
 #: pod/meeting/models.py
 msgid ""
@@ -6384,15 +6558,16 @@ msgid ""
 "agreement).\n"
 "Other webinars: %s"
 msgstr ""
-"Il y a trop de webinaires (%s) pour le nombre de passerelles de live allouées "
-"(%s). La prochaine réunion a été créée mais pas comme un webinaire :%s %s "
-"[%s-%s].\n"
+"Il y a trop de webinaires (%s) pour le nombre de passerelles de live "
+"allouées (%s). La prochaine réunion a été créée mais pas comme un webinaire :"
+"%s %s [%s-%s].\n"
 "Veuillez résoudre le problème en augmentant le nombre de passerelles de live "
 "ou en modifiant/supprimant l’un des webinaires concernés (avec l’accord des "
 "utilisateurs).\n"
 "Autres webinaires : %s"
 
 #: pod/meeting/webinar_utils.py
+#, python-format
 msgid ""
 "<p>There are too many webinars (<b>%s</b>) for the number of live gateways "
 "allocated (<b>%s</b>). The next webinar has been created but <b>not like a "
@@ -6401,12 +6576,12 @@ msgid ""
 "one of the affected webinars (with the users' agreement).<br>Other webinars: "
 "<b>%s</b>"
 msgstr ""
-"<p>Il y a trop de webinaires (<b>%s</b>) pour le nombre de passerelles "
-"live allouées (<b>%s</b>). La prochaine réunion a été créée mais "
-"<b>pas comme un webinaire</b> : <ul><li><b>%s %s</b> [%s-%s].</li></"
-"ul><p>Veuillez résoudre le problème en augmentant le nombre de passerelles "
-"live ou en modifiant/supprimant l’un des webinaires concernés (avec "
-"l'accord des utilisateurs).<br>Autres webinaires : <b>%s</b>"
+"<p>Il y a trop de webinaires (<b>%s</b>) pour le nombre de passerelles live "
+"allouées (<b>%s</b>). La prochaine réunion a été créée mais <b>pas comme un "
+"webinaire</b> : <ul><li><b>%s %s</b> [%s-%s].</li></ul><p>Veuillez résoudre "
+"le problème en augmentant le nombre de passerelles live ou en modifiant/"
+"supprimant l’un des webinaires concernés (avec l'accord des utilisateurs)."
+"<br>Autres webinaires : <b>%s</b>"
 
 #: pod/playlist/apps.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/add_or_edit.html
@@ -6518,13 +6693,6 @@ msgstr "Protégé par un mot de passe"
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
 msgstr "Privé"
-
-#: pod/playlist/models.py
-#: pod/playlist/templates/playlist/playlist_breadcrumbs.html
-#: pod/playlist/tests/test_models.py pod/playlist/views.py
-#: pod/video/templates/videos/video_breadcrumbs.html
-msgid "Playlist"
-msgstr "Liste de lecture"
 
 #: pod/playlist/models.py
 msgid ""
@@ -8025,10 +8193,6 @@ msgid "The style will be added to your channel to show it"
 msgstr "Le style sera ajouté à votre chaîne"
 
 #: pod/video/models.py
-msgid "Visible"
-msgstr "Visible"
-
-#: pod/video/models.py
 msgid ""
 "If checked, the channel appear in a list of available channels on the "
 "platform."
@@ -8044,10 +8208,6 @@ msgstr ""
 #: pod/video/models.py
 msgid "Additionals channels tab"
 msgstr "Onglet additionnel de chaînes"
-
-#: pod/video/models.py pod/video_search/templates/search/search.html
-msgid "Channel"
-msgstr "Chaîne"
 
 #: pod/video/models.py
 msgid "Theme parent"
@@ -8065,10 +8225,6 @@ msgstr ""
 #: pod/video/models.py
 msgid "A theme must be in the same channel as its parent."
 msgstr "Un thème doit se trouver dans la même chaîne que son parent."
-
-#: pod/video/models.py
-msgid "Theme"
-msgstr "Thème"
 
 #: pod/video/models.py
 msgid "Icon"
@@ -8690,14 +8846,6 @@ msgstr "Éditer la catégorie"
 #: pod/video/templates/videos/footer_link.html
 msgid "Links"
 msgstr "Liens"
-
-#: pod/video/templates/videos/last_videos.html
-msgid "Last videos"
-msgstr "Dernières vidéos"
-
-#: pod/video/templates/videos/last_videos.html
-msgid "Show all videos"
-msgstr "Afficher toutes les vidéos"
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video_row_select.html
@@ -9713,22 +9861,11 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
-#~ msgid "Do you want to show the public chat in the live (Not recommended)?"
-#~ msgstr "Voulez-vous afficher le chat public dans le live (Non recommandé) ?"
+#~ msgid "Previous"
+#~ msgstr "Vignette précédente"
 
-#~ msgid ""
-#~ "You can send a message (100 characters maximum) to the BigBlueButton "
-#~ "session. It will be displayed within 15 to 30 seconds on the live video."
-#~ msgstr ""
-#~ "Vous pouvez envoyer un message (100 caractères maximum) à la session "
-#~ "BigBlueButton. Il sera affiché dans les 15 à 30 secondes sur la vidéo en "
-#~ "direct."
-
-#~ msgid "Message not sent: no broadcaster found"
-#~ msgstr "Message non envoyé: aucun diffuseur trouvé"
-
-#~ msgid "Message not sent: connection problem (REDIS)"
-#~ msgstr "Message non envoyé: problème de connexion (REDIS)"
+#~ msgid "Next"
+#~ msgstr "Vignette suivante"
 
 #~ msgid ""
 #~ "Pod is aimed at users of our institutions, by allowing the publication of "
@@ -9744,7 +9881,6 @@ msgstr "xAPI Esup-Pod"
 #~ msgstr ""
 #~ "Le fichier HTML de cet enregistrement est introuvable sur le serveur."
 
-#, python-format
 #~ msgid "Error number: %s"
 #~ msgstr "Numéro d’erreur : %s"
 
