@@ -6,7 +6,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.core.mail import mail_admins
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from .models import Meeting, Ingester, Livestream
+from .models import Meeting, LiveGateway, Livestream
 from pod.live.models import Event
 from pod.main.views import TEMPLATE_VISIBLE_SETTINGS
 from pod.video.models import Type
@@ -20,15 +20,15 @@ __TITLE_SITE__ = (
 DEFAULT_EVENT_TYPE_ID = getattr(settings, "DEFAULT_EVENT_TYPE_ID", 1)
 
 
-def search_for_available_ingester(request: WSGIRequest, meeting: Meeting) -> Ingester:  # noqa: C901
-    """Search and returns an ingester available during the period of the webinar.
+def search_for_available_livegateway(request: WSGIRequest, meeting: Meeting) -> LiveGateway:  # noqa: C901
+    """Search and returns a live gateway available during the period of the webinar.
 
-    If more webinars are created than ingesters, an email is sent to warn administrators.
+    If more webinars are created than live gateways, an email is sent to warn administrators.
     In such a case, this function returns a None value.
     """
     site = get_current_site(request)
-    # List of ingesters used
-    ingesters_id_used = []
+    # List of live gateways used
+    live_gateways_id_used = []
 
     # Tip to allow same date format
     meeting = Meeting.objects.get(id=meeting.id)
@@ -43,7 +43,7 @@ def search_for_available_ingester(request: WSGIRequest, meeting: Meeting) -> Ing
     nb_webinars = 0
     names_webinars = ""
     meeting_end_date = meeting.start_at + meeting.expected_duration
-    # Search for ingesters at the same moment of this webinar
+    # Search for live gateways at the same moment of this webinar
     for webinar in webinars_list:
         webinar_overlapping = False
         webinar_end_date = webinar.start_at + webinar.expected_duration
@@ -73,44 +73,44 @@ def search_for_available_ingester(request: WSGIRequest, meeting: Meeting) -> Ing
                 meeting=webinar
             ).order_by('-id').first()
             if livestream:
-                # Ingester already used, add it to the list
-                ingesters_id_used.append(livestream.ingester.id)
+                # Live gateway already used, add it to the list
+                live_gateways_id_used.append(livestream.live_gateway.id)
 
-    # Available ingester at the same moment of this webinar
-    ingester_available = Ingester.objects.filter(
+    # Available live gateway at the same moment of this webinar
+    live_gateway_available = LiveGateway.objects.filter(
         site=site
-    ).exclude(id__in=ingesters_id_used).first()
+    ).exclude(id__in=live_gateways_id_used).first()
 
-    # Number total of ingesters
-    nb_ingesters = Ingester.objects.filter(site=site).count()
+    # Number total of live gateways
+    nb_live_gateways = LiveGateway.objects.filter(site=site).count()
     # Remember that nb_webinars does not include the current webinar
-    if nb_webinars + 1 > nb_ingesters:
+    if nb_webinars + 1 > nb_live_gateways:
         # Send notification to administrators
-        send_email_webinars(meeting, nb_webinars + 1, nb_ingesters, names_webinars)
+        send_email_webinars(meeting, nb_webinars + 1, nb_live_gateways, names_webinars)
 
     # None possible
-    return ingester_available
+    return live_gateway_available
 
 
 def send_email_webinars(
     meeting: Meeting,
     nb_webinars: int,
-    nb_ingesters: int,
+    nb_live_gateways: int,
     names_webinars: str
 ):
     """Send email notification to administrators when too many webinars."""
     subject = "[" + __TITLE_SITE__ + "] %s" % _("Too many webinars")
     message = _(
         "There are too many webinars (%s) for the number of "
-        "ingesters allocated (%s). "
+        "live gateways allocated (%s). "
         "The next meeting has been created but not like a webinar:%s %s [%s-%s].\n"
-        "Please fix the problem either by increasing the number of ingesters "
+        "Please fix the problem either by increasing the number of live gateways "
         "or by modifying/deleting one of the affected webinars "
         "(with the users' agreement).\n"
         "Other webinars: %s"
     ) % (
         nb_webinars,
-        nb_ingesters,
+        nb_live_gateways,
         meeting.id,
         meeting.name,
         meeting.start_at,
@@ -119,16 +119,16 @@ def send_email_webinars(
     )
     html_message = _(
         "<p>There are too many webinars (<b>%s</b>) for the number of "
-        "ingesters allocated (<b>%s</b>). "
+        "live gateways allocated (<b>%s</b>). "
         "The next webinar has been created but <b>not like a webinar</b>:"
         "<ul><li><b>%s %s</b> [%s-%s].</li></ul><p>"
-        "Please fix the problem either by increasing the number of ingesters "
+        "Please fix the problem either by increasing the number of live gateways "
         "or by modifying/deleting one of the affected webinars "
         "(with the users' agreement).<br>"
         "Other webinars: <b>%s</b>"
     ) % (
         nb_webinars,
-        nb_ingesters,
+        nb_live_gateways,
         meeting.id,
         meeting.name,
         meeting.start_at,
@@ -138,7 +138,7 @@ def send_email_webinars(
     mail_admins(subject, message, fail_silently=False, html_message=html_message)
 
 
-def manage_webinar(meeting: Meeting, created: bool, ingester: Ingester):  # noqa: C901
+def manage_webinar(meeting: Meeting, created: bool, live_gateway: LiveGateway):  # noqa: C901
     """Manage the livestream and the event when a webinar is created or updated."""
     # When created a webinar
     if meeting.is_webinar and created:
@@ -146,7 +146,7 @@ def manage_webinar(meeting: Meeting, created: bool, ingester: Ingester):  # noqa
         meeting.reccurence = None
         meeting.save()
         # Create livestream and event
-        create_livestream_event(meeting, ingester)
+        create_livestream_event(meeting, live_gateway)
 
     # Search if a livestream exists for this meeting
     livestream = Livestream.objects.filter(meeting=meeting).first()
@@ -175,7 +175,7 @@ def manage_webinar(meeting: Meeting, created: bool, ingester: Ingester):  # noqa
     # When check is_webinar for an existent meeting
     if meeting.is_webinar and not created and not livestream:
         # Create livestream and event
-        create_livestream_event(meeting, ingester)
+        create_livestream_event(meeting, live_gateway)
 
     # When uncheck is_webinar for an existent meeting
     if not meeting.is_webinar and livestream:
@@ -183,13 +183,13 @@ def manage_webinar(meeting: Meeting, created: bool, ingester: Ingester):  # noqa
         livestream.event.delete()
 
 
-def create_livestream_event(meeting: Meeting, ingester: Ingester):
+def create_livestream_event(meeting: Meeting, live_gateway: LiveGateway):
     """Create a livestream and an event for a new webinar."""
     # Create live event
     event = Event.objects.create(
         title=meeting.name,
         owner=meeting.owner,
-        broadcaster=ingester.broadcaster,
+        broadcaster=live_gateway.broadcaster,
         type=Type.objects.get(id=DEFAULT_EVENT_TYPE_ID),
         start_date=meeting.start_at,
         end_date=meeting.start_at + meeting.expected_duration,
@@ -206,5 +206,5 @@ def create_livestream_event(meeting: Meeting, ingester: Ingester):
         # Status : live not started
         status=0,
         event=event,
-        ingester=ingester
+        live_gateway=live_gateway
     )

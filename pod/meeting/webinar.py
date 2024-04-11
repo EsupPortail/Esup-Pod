@@ -49,8 +49,8 @@ def start_webinar(request: WSGIRequest, meet_id: int):
                 "Webinar mode has been successfully started for “%s” meeting."
             ) % (meeting.name)
         )
-        # Manage show_chat is False by default
-        if meeting.show_chat is False:
+        # Manage enable_chat is False by default
+        if meeting.enable_chat is False:
             # Send a toggle request to SIPMediaGW
             toggle_rtmp_gateway(meet_id)
     except Exception as exc:
@@ -86,10 +86,11 @@ def stop_webinar(request: WSGIRequest, meet_id: int):
         )
     except Exception as exc:
         log.error(
-            "Error to stop webinar mode for “%s” meeting: %s"
-        ) % (
-            meet_id,
-            str(exc)
+            "Error to stop webinar mode for “%s” meeting: %s" %
+            (
+                meet_id,
+                str(exc)
+            )
         )
         display_message_with_icon(
             request, messages.ERROR, _(
@@ -248,7 +249,7 @@ def start_rtmp_gateway(pod_host: str, meet_id: int, livestream_id: int):
     # Domain (without last 10 caracters)
     domain = meeting_base_url[:-10]
     # RTMP stream URL
-    rtmp_stream_url = livestream.ingester.rtmp_stream_url
+    rtmp_stream_url = livestream.live_gateway.rtmp_stream_url
     # Start URL on SIPMediaGW server
     sipmediagw_url = slash_join(
         MEETING_WEBINAR_SIPMEDIAGW_URL,

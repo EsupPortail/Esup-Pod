@@ -48,7 +48,7 @@ from pod.meeting.webinar import (
     start_webinar,
     stop_webinar
 )
-from pod.meeting.webinar_utils import search_for_available_ingester, manage_webinar
+from pod.meeting.webinar_utils import search_for_available_livegateway, manage_webinar
 from pod.live.models import Event
 from pod.live.views import can_manage_event
 
@@ -315,17 +315,17 @@ def save_meeting_form(request: WSGIRequest, form: MeetingForm) -> Meeting:
         and can_manage_webinar(request.user)
         and meeting.is_webinar
     ):
-        # Check if at least one ingester is available during this meeting
-        # Search an available ingester (None possible)
-        ingester = search_for_available_ingester(request, meeting)
-        if ingester:
+        # Check if at least one live gateway is available during this meeting
+        # Search an available live gateway (None possible)
+        live_gateway = search_for_available_livegateway(request, meeting)
+        if live_gateway:
             # Manage webinar for event and livestream
-            manage_webinar(meeting, created, ingester)
+            manage_webinar(meeting, created, live_gateway)
             display_message_with_icon(
                 request, messages.INFO, _("The changes have been saved.")
             )
         else:
-            # Disable webinar mode if no ingester available
+            # Disable webinar mode if no live gateway available
             meeting.is_webinar = False
             meeting.save()
             display_message_with_icon(
