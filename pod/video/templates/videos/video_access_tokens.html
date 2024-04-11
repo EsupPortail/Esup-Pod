@@ -29,6 +29,7 @@
     <caption>{% trans "List of active tokens:" %}</caption>
     <thead>
       <tr>
+        <th scope="col" class="text-center col-2"><i class="bi bi-tag" aria-hidden="true"></i>&nbsp;{% trans "Token name" %}</th>
         <th scope="col" class="text-center col-2"><i class="bi bi-universal-access-circle" aria-hidden="true"></i>&nbsp;{% trans "Token" %}</th>
         <th scope="col" class="text-center col-4"><i class="bi bi-link-45deg" aria-hidden="true"></i>&nbsp;{% trans 'Share link' %}</th>
         <th scope="col" class="text-center col-6"><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Code to embed in a web page' %}</th>
@@ -38,6 +39,7 @@
     <tbody class="table-group-divider">
       {% for token in tokens %}
       <tr>
+        <td>&nbsp;{{ token.name }}</td>
         <td>&nbsp;{{ token.token }}</td>
         <td>
           <div class="form-group">
