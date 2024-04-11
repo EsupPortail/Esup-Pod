@@ -9,9 +9,7 @@
         <div class="form-group">
           <p>
             {% trans 'You can send a message to the webinar presenters (100 characters maximum).' %}
-            {% if show_chat %}
-              {% trans 'It will be displayed after 10 to 30 seconds on the live stream.' %}
-            {% endif %}
+            {% trans 'It will be displayed after 10 to 30 seconds on the live stream.' %}
           </p>
           <label class="col-form-label" for="message">{% trans "Message" %}</label>
           <textarea name="message" rows="2" cols="70" maxlength="100" class="form-control" id="message"></textarea>
