@@ -72,6 +72,20 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.6.0"
                         },
+
+                        "AI_ENHANCEMENT_FIELDS_HELP_TEXT": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "Set of help texts displayed with the form for improving a video with Aristotle's AI."
+                                ],
+                                "fr": [
+                                    "Ensemble des textes d’aide affichés avec le formulaire d'amélioration d'une vidéo avec l'IA d'Aristote."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1.0"
+                        },
                         "USE_AI_ENHANCEMENT": {
                             "default_value": true,
                             "description": {

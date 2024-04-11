@@ -1,38 +1,43 @@
 """Forms used in ai_enhancement application."""
 from django import forms
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from tagging.fields import TagField
 
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from pod.video.models import Video, Discipline
 
-strings = {
-    "title": {
-        "choose_information_string": _("Choose the title."),
-        "initial_information": _("The initial title is loading…"),
-        "initial_information_t": _("Your initial title."),
-        "ai_information": _("The title proposed by the Aristote AI is loading…"),
-        "ai_information_t": _("The title proposed by the Aristote AI."),
+AI_ENHANCEMENT_FIELDS_HELP_TEXT = getattr(
+    settings,
+    "AI_ENHANCEMENT_FIELDS_HELP_TEXT",
+    {
+        "title": {
+            "choose_information_string": _("Choose the title."),
+            "initial_information": _("The initial title is loading…"),
+            "initial_information_t": _("Your initial title."),
+            "ai_information": _("The title proposed by the Aristote AI is loading…"),
+            "ai_information_t": _("The title proposed by the Aristote AI."),
+        },
+        "description": {
+            "choose_information_string": _("Choose the description."),
+            "initial_information": _("The initial description is loading…"),
+            "initial_information_t": _("Your initial description."),
+            "ai_information": _("The description proposed by the Aristote AI is loading…"),
+            "ai_information_t": _("The description proposed by the Aristote AI."),
+        },
+        "tags": {
+            "choose_information_string": _("Choose the tags."),
+            "ai_information": _("The tags proposed by the Aristote AI is loading…"),
+        },
+        "discipline": {
+            "choose_information_string": _("Choose the discipline."),
+            "initial_information": _("The initial discipline is loading…"),
+            "initial_information_t": _("Your initial discipline."),
+            "ai_information": _("The discipline proposed by the Aristote AI is loading…"),
+            "ai_information_t": _("The discipline proposed by the Aristote AI."),
+        },
     },
-    "description": {
-        "choose_information_string": _("Choose the description."),
-        "initial_information": _("The initial description is loading…"),
-        "initial_information_t": _("Your initial description."),
-        "ai_information": _("The description proposed by the Aristote AI is loading…"),
-        "ai_information_t": _("The description proposed by the Aristote AI."),
-    },
-    "tags": {
-        "choose_information_string": _("Choose the tags."),
-        "ai_information": _("The tags proposed by the Aristote AI is loading…"),
-    },
-    "discipline": {
-        "choose_information_string": _("Choose the discipline."),
-        "initial_information": _("The initial discipline is loading…"),
-        "initial_information_t": _("Your initial discipline."),
-        "ai_information": _("The discipline proposed by the Aristote AI is loading…"),
-        "ai_information_t": _("The discipline proposed by the Aristote AI."),
-    },
-}
+)
 
 
 class AIEnhancementChoice(forms.ModelForm):
@@ -92,21 +97,21 @@ class AIEnhancementChoice(forms.ModelForm):
             "choose_title",
             {
                 "legend": f"<i class='bi bi-info-lg' aria-hidden='true'></i>&nbsp;\
-                    {strings['title']['choose_information_string']}<br>\
+                    {AI_ENHANCEMENT_FIELDS_HELP_TEXT['title']['choose_information_string']}<br>\
                     <div>\
                         <div class='row'>\
                             <div id='initial-version-title' class='col'>\
                                 <div\
                                     class='border-d rounded-4 p-3 mb-3 mt-3 blockquote'\
-                                    title='{strings['title']['initial_information_t']}'>\
-                                        {strings['title']['initial_information']}\
+                                    title='{AI_ENHANCEMENT_FIELDS_HELP_TEXT['title']['initial_information_t']}'>\
+                                        {AI_ENHANCEMENT_FIELDS_HELP_TEXT['title']['initial_information']}\
                                 </div>\
                             </div>\
                             <div id='ai-version-title' class='col'>\
                                 <div\
                                     class='border-d rounded-4 p-3 mb-3 mt-3 blockquote'\
-                                    title={strings['title']['ai_information_t']}>\
-                                        {strings['title']['ai_information']}\
+                                    title={AI_ENHANCEMENT_FIELDS_HELP_TEXT['title']['ai_information_t']}>\
+                                        {AI_ENHANCEMENT_FIELDS_HELP_TEXT['title']['ai_information']}\
                                 </div>\
                             </div>\
                         </div>\
@@ -118,21 +123,21 @@ class AIEnhancementChoice(forms.ModelForm):
             "choose_description",
             {
                 "legend": f"<i class='bi bi-info-lg' aria-hidden='true'></i>&nbsp;\
-                {strings['description']['choose_information_string']}<br>\
+                {AI_ENHANCEMENT_FIELDS_HELP_TEXT['description']['choose_information_string']}<br>\
                 <div>\
                     <div class='row'>\
                         <div id='initial-version-description' class='col'>\
                             <div\
                                 class='border-d rounded-4 p-3 mb-3 mt-3 blockquote'\
-                                title='{strings['description']['initial_information_t']}'>\
-                                    {strings['description']['initial_information']}\
+                                title='{AI_ENHANCEMENT_FIELDS_HELP_TEXT['description']['initial_information_t']}'>\
+                                    {AI_ENHANCEMENT_FIELDS_HELP_TEXT['description']['initial_information']}\
                             </div>\
                         </div>\
                         <div id='ai-version-description' class='col'>\
                             <div\
                                 class='border-d rounded-4 p-3 mb-3 mt-3 blockquote'\
-                                title={strings['description']['ai_information_t']}>\
-                                    {strings['description']['ai_information']}\
+                                title={AI_ENHANCEMENT_FIELDS_HELP_TEXT['description']['ai_information_t']}>\
+                                    {AI_ENHANCEMENT_FIELDS_HELP_TEXT['description']['ai_information']}\
                             </div>\
                         </div>\
                     </div>\
@@ -144,13 +149,13 @@ class AIEnhancementChoice(forms.ModelForm):
             "choose_tags",
             {
                 "legend": f"<i class='bi bi-info-lg' aria-hidden='true'></i>&nbsp;\
-            {strings['tags']['choose_information_string']}<br>\
+            {AI_ENHANCEMENT_FIELDS_HELP_TEXT['tags']['choose_information_string']}<br>\
             <div id='tags-container'>\
                 <div class='row'>\
                     <div class='col' id='tags-informations-text'>\
                         <div\
                             class='border-d rounded-4 p-3 mb-3 mt-3 blockquote'>\
-                                {strings['tags']['ai_information']}\
+                                {AI_ENHANCEMENT_FIELDS_HELP_TEXT['tags']['ai_information']}\
                         </div>\
                     </div>\
                 </div>\
@@ -162,21 +167,21 @@ class AIEnhancementChoice(forms.ModelForm):
             "choose_disciplines",
             {
                 "legend": f"<i class='bi bi-info-lg' aria-hidden='true'></i>&nbsp;\
-            {strings['discipline']['choose_information_string']}<br>\
+            {AI_ENHANCEMENT_FIELDS_HELP_TEXT['discipline']['choose_information_string']}<br>\
             <div>\
                 <div class='row'>\
                     <div id='initial-version-disciplines' class='col'>\
                         <div\
                             class='border-d rounded-4 p-3 mb-3 mt-3 blockquote'\
-                            title='{strings['discipline']['initial_information_t']}'>\
-                                {strings['discipline']['initial_information']}\
+                            title='{AI_ENHANCEMENT_FIELDS_HELP_TEXT['discipline']['initial_information_t']}'>\
+                                {AI_ENHANCEMENT_FIELDS_HELP_TEXT['discipline']['initial_information']}\
                         </div>\
                     </div>\
                     <div id='ai-version-disciplines' class='col'>\
                         <div\
                             class='border-d rounded-4 p-3 mb-3 mt-3 blockquote'\
-                            title={strings['discipline']['ai_information_t']}>\
-                                {strings['discipline']['ai_information']}\
+                            title={AI_ENHANCEMENT_FIELDS_HELP_TEXT['discipline']['ai_information_t']}>\
+                                {AI_ENHANCEMENT_FIELDS_HELP_TEXT['discipline']['ai_information']}\
                         </div>\
                     </div>\
                 </div>\
