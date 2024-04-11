@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-10 14:22+0000\n"
+"POT-Creation-Date: 2024-04-11 20:03+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1804,6 +1804,19 @@ msgstr ""
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
 msgid "The video is currently being encoded."
+msgstr ""
+
+#: pod/cut/templates/video_cut.html
+msgid ""
+"Access to cutting video has been restricted. If you want to cut videos on "
+"the platform, please"
+msgstr ""
+
+#: pod/cut/templates/video_cut.html pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/video_edit.html
+msgid "contact us"
 msgstr ""
 
 #: pod/cut/templates/video_cut.html
@@ -3639,13 +3652,6 @@ msgstr ""
 msgid ""
 "Access to adding event has been restricted. If you want to add events on the "
 "platform, please"
-msgstr ""
-
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/video/templates/videos/add_video.html
-#: pod/video/templates/videos/video_edit.html
-msgid "contact us"
 msgstr ""
 
 #: pod/live/templates/live/event_edit.html
