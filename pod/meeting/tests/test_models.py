@@ -842,8 +842,8 @@ class MeetingSessionLogTestCase(TestCase):
         msl = MeetingSessionLog.objects.create(
             meeting=self.meeting,
             creator=self.user,
-            moderators = [[now, "moderator1"]],
-            viewers = [[now, "viewer1"]]
+            moderators=[[now, "moderator1"]],
+            viewers=[[now, "viewer1"]]
         )
         self.assertEqual(msl.meeting, self.meeting)
         self.assertEqual(msl.creator, self.user)

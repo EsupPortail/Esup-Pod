@@ -349,6 +349,9 @@ class MeetingJoinTestView(TestCase):
             msg_prefix="",
             fetch_redirect_response=False,
         )
+        sess = newmeeting.get_current_session()
+        self.assertEqual(len(sess.get_moderators()), 1)
+        self.assertEqual(sess.get_moderators()[0][1], fullname)
         # check if meeting is created, try to join it
         response = requests.get(join_url)
         self.assertEqual(response.status_code, 200)  # OK
@@ -377,7 +380,9 @@ class MeetingJoinTestView(TestCase):
             msg_prefix="",
             fetch_redirect_response=False,
         )
-
+        sess = newmeeting.get_current_session()
+        self.assertEqual(len(sess.get_viewers()), 1)
+        self.assertEqual(sess.get_viewers()[0][1], "anonymous")
         # Authenticated User --> ask for name and attendee_password
         self.user2 = User.objects.get(username="pod2")
         self.client.force_login(self.user2)
