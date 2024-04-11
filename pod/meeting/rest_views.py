@@ -1,6 +1,6 @@
 """REST API for the Meeting module."""
 from rest_framework import serializers, viewsets
-from .models import Meeting, InternalRecording, Livestream
+from .models import InternalRecording, LiveGateway, Livestream, Meeting
 
 
 class MeetingModelSerializer(serializers.HyperlinkedModelSerializer):
@@ -50,6 +50,7 @@ class LivestreamModelSerializer(serializers.HyperlinkedModelSerializer):
             "meeting",
             "status",
             "event",
+            "live_gateway_id"
         )
         filter_fields = ("status")
 
@@ -58,3 +59,21 @@ class LivestreamModelViewSet(viewsets.ModelViewSet):
     queryset = Livestream.objects.all()
     serializer_class = LivestreamModelSerializer
     filterset_fields = ["status"]
+
+
+class LiveGatewayModelSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = LiveGateway
+        fields = (
+            "id",
+            "rtmp_stream_url",
+            "broadcaster_id",
+            "site_id",
+        )
+        filter_fields = ("site_id")
+
+
+class LiveGatewayModelViewSet(viewsets.ModelViewSet):
+    queryset = LiveGateway.objects.all()
+    serializer_class = LiveGatewayModelSerializer
+    filterset_fields = ["site_id"]
