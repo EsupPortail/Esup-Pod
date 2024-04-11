@@ -20,6 +20,10 @@ from .utils import clean_database
 
 from django.conf import settings
 
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
+    settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
+)
+
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
@@ -37,7 +41,7 @@ def cut_video(request, slug):  # noqa: C901
         duration = cutting.duration
 
     if (
-        settings.RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+        RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
         and request.user.is_staff is False
     ):
         return render(
