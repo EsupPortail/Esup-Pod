@@ -335,12 +335,10 @@ def render_event_template(request, evemnt, user_owns_event):
     # Search if livestream is used to display a webinar streaming live
     # for which students can send message from this live page
     enable_chat = False
-    show_chat = False
     if USE_MEETING and USE_MEETING_WEBINAR:
         livestream = Livestream.objects.filter(event=evemnt).first()
         if livestream:
             enable_chat = livestream.meeting.enable_chat
-            show_chat = livestream.meeting.show_chat
 
     return render(
         request,
@@ -348,7 +346,6 @@ def render_event_template(request, evemnt, user_owns_event):
         {
             "event": evemnt,
             "enable_chat": enable_chat,
-            "show_chat": show_chat,
             "can_record": (
                 user_owns_event
                 and evemnt.broadcaster.piloting_implementation
