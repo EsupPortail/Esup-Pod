@@ -2,7 +2,7 @@
 
 import random
 
-from ..models import Meeting, InternalRecording
+from ..models import Meeting, InternalRecording, MeetingSessionLog
 from datetime import datetime, date
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
@@ -88,7 +88,7 @@ class MeetingTestCase(TestCase):
         self.assertEqual(meeting1.is_running, False)
 
     def test_with_attributs(self):
-        """Check all attributs values passed when creating a meeting"""
+        """Check all attributs values passed when creating a meeting."""
         meeting2 = Meeting.objects.get(id=2)
         self.assertEqual(meeting2.name, "test2")
         meeting_id = "%04d-%s" % (meeting2.id, slugify(meeting2.name))
@@ -101,7 +101,7 @@ class MeetingTestCase(TestCase):
         self.assertEqual(meeting2.is_restricted, True)
 
     def test_change_attributs(self):
-        """Change attributs values in a meeting and save it"""
+        """Change attributs values in a meeting and save it."""
         meeting1 = Meeting.objects.get(id=1)
         self.assertEqual(meeting1.name, "test")
         meeting_id = "%04d-%s" % (meeting1.id, slugify(meeting1.name))
@@ -813,3 +813,66 @@ class InternalRecordingTestCase(TestCase):
         """Delete a recording."""
         InternalRecording.objects.filter(name="test recording2").delete()
         self.assertEqual(InternalRecording.objects.all().count(), 1)
+
+
+class MeetingSessionLogTestCase(TestCase):
+    """MeetingSessionLog model tests list.
+
+    Args:
+        TestCase (class): test case
+    """
+    def setUp(self):
+        self.user = User.objects.create(username="pod")
+        self.meeting = Meeting.objects.create(id=1, name="test", owner=self.user)
+
+    def test_default_attributs(self):
+        """Check all attributs default values when creating a MeetingSessionLog."""
+        now = datetime.now()
+        msl = MeetingSessionLog.objects.create(meeting=self.meeting, creator=self.user)
+        self.assertEqual(msl.meeting, self.meeting)
+        self.assertEqual(msl.creator, self.user)
+        self.assertTrue(msl.creation_date > now)
+        self.assertTrue(msl.creation_date < datetime.now())
+        self.assertEqual(msl.moderators, [])
+        self.assertEqual(msl.viewers, [])
+
+    def test_with_attributs(self):
+        """Check all attributs values passed when creating a MeetingSessionLog."""
+        now = datetime.now()
+        msl = MeetingSessionLog.objects.create(
+            meeting=self.meeting,
+            creator=self.user,
+            moderators = [[now, "moderator1"]],
+            viewers = [[now, "viewer1"]]
+        )
+        self.assertEqual(msl.meeting, self.meeting)
+        self.assertEqual(msl.creator, self.user)
+        self.assertEqual(msl.moderators, [[now, "moderator1"]])
+        self.assertEqual(msl.viewers, [[now, "viewer1"]])
+
+    def test_change_attributs(self):
+        """Change attributs values in a MeetingSessionLog and save it."""
+        now = datetime.now()
+        msl = MeetingSessionLog.objects.create(meeting=self.meeting, creator=self.user)
+        sess = self.meeting.get_current_session()
+        self.assertEqual(msl.id, sess.id)
+        mods = sess.get_moderators()
+        mods.append([now, "moderator1"])
+        sess.set_moderators(mods)
+        sess.save()
+        msl.refresh_from_db()
+        self.assertEqual(msl.moderators, [[now, "moderator1"]])
+        viewers = sess.get_viewers()
+        viewers.append([now, "viewer1"])
+        sess.set_viewers(viewers)
+        sess.save()
+        msl.refresh_from_db()
+        self.assertEqual(msl.viewers, [[now, "viewer1"]])
+
+    def test_delete_object(self):
+        """Delete a MeetingSessionLog."""
+        self.assertEqual(Meeting.objects.all().count(), 0)
+        msl = MeetingSessionLog.objects.create(meeting=self.meeting, creator=self.user)
+        self.assertEqual(Meeting.objects.all().count(), 1)
+        msl.delete()
+        self.assertEqual(Meeting.objects.all().count(), 0)
