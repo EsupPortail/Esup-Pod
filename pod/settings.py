@@ -120,6 +120,7 @@ TEMPLATES = [
                 # Local contexts
                 "pod.main.context_processors.context_settings",
                 "pod.main.context_processors.context_footer",
+                "pod.main.context_processors.context_block",
                 "pod.video.context_processors.context_video_data",
                 "pod.video.context_processors.context_video_settings",
                 "pod.authentication.context_processors.context_authentication_settings",

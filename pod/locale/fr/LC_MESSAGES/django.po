@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-03 15:23+0000\n"
+"POT-Creation-Date: 2024-04-10 14:22+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: pod/ai_enhancement/apps.py
 msgid "Artificial Intelligence Enhancement"
@@ -2500,7 +2500,7 @@ msgstr "Temps de fin de l’affichage de l’enrichissement en secondes."
 #: pod/enrichment/models.py
 #: pod/enrichment/templates/enrichment/list_enrichment.html
 #: pod/import_video/templates/import_video/list.html pod/live/models.py
-#: pod/video/forms.py pod/video/models.py
+#: pod/main/models.py pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/dashboard.html pod/video/views.py
 #: pod/video_search/templates/search/search.html
 msgid "Type"
@@ -3708,6 +3708,7 @@ msgid "Plan an event"
 msgstr "Programmer un évènement"
 
 #: pod/live/templates/live/direct.html pod/live/templates/live/events_next.html
+#: pod/main/models.py pod/main/templatetags/flat_page_edito_filter.py
 msgid "Next events"
 msgstr "Prochains évènements"
 
@@ -5042,6 +5043,157 @@ msgstr "Onglet additionnel de chaînes"
 msgid "Additional channel Tabs"
 msgstr "Onglets additionnels de chaînes"
 
+#: pod/main/models.py
+msgid "Carousel"
+msgstr "Carrousel"
+
+#: pod/main/models.py
+msgid "Multiple carousel"
+msgstr "Carrousel multiple"
+
+#: pod/main/models.py
+msgid "Card list"
+msgstr "Liste de cartes"
+
+#: pod/main/models.py
+msgid "HTML"
+msgstr "HTML"
+
+#: pod/main/models.py pod/video/models.py
+#: pod/video_search/templates/search/search.html
+msgid "Channel"
+msgstr "Chaîne"
+
+#: pod/main/models.py pod/video/models.py
+msgid "Theme"
+msgstr "Thème"
+
+#: pod/main/models.py pod/playlist/models.py
+#: pod/playlist/templates/playlist/playlist_breadcrumbs.html
+#: pod/playlist/tests/test_models.py pod/playlist/views.py
+#: pod/video/templates/videos/video_breadcrumbs.html
+msgid "Playlist"
+msgstr "Liste de lecture"
+
+#: pod/main/models.py pod/main/templatetags/flat_page_edito_filter.py
+msgid "Last videos"
+msgstr "Dernières vidéos"
+
+#: pod/main/models.py pod/main/templatetags/flat_page_edito_filter.py
+msgid "Most views"
+msgstr "Les plus vues"
+
+#: pod/main/models.py
+msgid "Order"
+msgstr "ordre"
+
+#: pod/main/models.py pod/video/models.py
+msgid "Visible"
+msgstr "Visible"
+
+#: pod/main/models.py
+msgid "Check this box if block is visible in page."
+msgstr "Cocher cette case si vous voulez voir le bloc sur la page."
+
+#: pod/main/models.py
+msgid "Data type"
+msgstr "Type de données"
+
+#: pod/main/models.py
+msgid "Select the channel you want to link with."
+msgstr "Sélectionner la chaîne que vous voulez joindre."
+
+#: pod/main/models.py
+msgid "Select the theme you want to link with."
+msgstr "Sélectionner le thème que vous voulez joindre."
+
+#: pod/main/models.py
+msgid "Select the playlist you want to link with."
+msgstr "Sélectionner la liste de lecture que vous voulez joindre."
+
+#: pod/main/models.py
+msgid "Write in html inside this field."
+msgstr "Écrire en html à l'intérieur de ce champ."
+
+#: pod/main/models.py
+msgid "Display title"
+msgstr "Afficher le titre"
+
+#: pod/main/models.py
+msgid "No cache"
+msgstr "Pas de cache"
+
+#: pod/main/models.py
+msgid "Check this box if you don't want to keep the cache."
+msgstr "Cocher cette case si vous ne voulez pas garder le cache."
+
+#: pod/main/models.py
+msgid "Debug"
+msgstr "Debug"
+
+#: pod/main/models.py
+msgid "Check this box if you want to activate debug mode."
+msgstr "Cocher cette case si vous voulez activer le mode débogage."
+
+#: pod/main/models.py
+msgid "Show restricted content"
+msgstr "Montrer le contenu restreint"
+
+#: pod/main/models.py
+msgid "Check this box if you want to show restricted content."
+msgstr "Cocher cette case si vous voulez montrer le contenu restreint."
+
+#: pod/main/models.py
+msgid "Must be authenticated"
+msgstr "Doit être authentifié"
+
+#: pod/main/models.py
+msgid "Check this box if users must be authenticated to view content."
+msgstr ""
+"Cochez cette case si les utilisateurs doivent être authentifiés pour voir le "
+"contenu."
+
+#: pod/main/models.py
+msgid "Auto slide"
+msgstr "Défilement automatique"
+
+#: pod/main/models.py
+msgid "Check this box if you want auto slide."
+msgstr "Cocher cette case si vous voulez activer le défilement automatique."
+
+#: pod/main/models.py
+msgid "Maximum number of element"
+msgstr "Nombre d'éléments maximum"
+
+#: pod/main/models.py
+msgid "Number of element per page (multi carousel)"
+msgstr "Nombre d'éléments par page (carrousel multiple)"
+
+#: pod/main/models.py
+msgid "View videos from non visible channel"
+msgstr "Voir les vidéos d'une chaine non visible"
+
+#: pod/main/models.py
+msgid "Check this box if you want view videos from non visible channel."
+msgstr ""
+"Cocher cette case si vous voulez voir les vidéos d'une chaine non visible."
+
+#: pod/main/models.py
+msgid "View videos with password"
+msgstr "Voir les vidéos avec un mot de passe"
+
+#: pod/main/models.py
+msgid "Check this box if you want view videos with password."
+msgstr "Cocher cette case si vous voulez voir les vidéos avec un mot de passe."
+
+#: pod/main/models.py
+msgid "Block"
+msgstr "Bloc"
+
+#: pod/main/models.py
+msgid "Blocks"
+msgstr "Blocs"
+
 #: pod/main/templates/403.html
 msgid "Permission denied"
 msgstr "Accès refusé"
@@ -5124,6 +5276,27 @@ msgstr "En savoir plus"
 #: pod/main/templates/base.html
 msgid "I understand"
 msgstr "J’ai compris"
+
+#: pod/main/templates/block/card_list.html
+#: pod/main/templates/block/carousel.html
+#: pod/main/templates/block/multi_carousel.html
+msgid "Show all videos"
+msgstr "Afficher toutes les vidéos"
+
+#: pod/main/templates/block/carousel.html
+#, python-format
+msgid "Video %(video_number)s"
+msgstr "Vidéo %(video_number)s"
+
+#: pod/main/templates/block/carousel.html
+#: pod/main/templates/block/multi_carousel.html
+msgid "Previous thumbnail"
+msgstr "Vignette précédente"
+
+#: pod/main/templates/block/carousel.html
+#: pod/main/templates/block/multi_carousel.html
+msgid "Next thumbnail"
+msgstr "Vignette suivante"
 
 #: pod/main/templates/contact_us.html
 msgid "Your message"
@@ -6407,13 +6580,6 @@ msgstr "Protégé par un mot de passe"
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
 msgstr "Privé"
-
-#: pod/playlist/models.py
-#: pod/playlist/templates/playlist/playlist_breadcrumbs.html
-#: pod/playlist/tests/test_models.py pod/playlist/views.py
-#: pod/video/templates/videos/video_breadcrumbs.html
-msgid "Playlist"
-msgstr "Liste de lecture"
 
 #: pod/playlist/models.py
 msgid ""
@@ -7915,10 +8081,6 @@ msgid "The style will be added to your channel to show it"
 msgstr "Le style sera ajouté à votre chaîne"
 
 #: pod/video/models.py
-msgid "Visible"
-msgstr "Visible"
-
-#: pod/video/models.py
 msgid ""
 "If checked, the channel appear in a list of available channels on the "
 "platform."
@@ -7934,10 +8096,6 @@ msgstr ""
 #: pod/video/models.py
 msgid "Additionals channels tab"
 msgstr "Onglet additionnel de chaînes"
-
-#: pod/video/models.py pod/video_search/templates/search/search.html
-msgid "Channel"
-msgstr "Chaîne"
 
 #: pod/video/models.py
 msgid "Theme parent"
@@ -7955,10 +8113,6 @@ msgstr ""
 #: pod/video/models.py
 msgid "A theme must be in the same channel as its parent."
 msgstr "Un thème doit se trouver dans la même chaîne que son parent."
-
-#: pod/video/models.py
-msgid "Theme"
-msgstr "Thème"
 
 #: pod/video/models.py
 msgid "Icon"
@@ -8562,14 +8716,6 @@ msgstr "Éditer la catégorie"
 #: pod/video/templates/videos/footer_link.html
 msgid "Links"
 msgstr "Liens"
-
-#: pod/video/templates/videos/last_videos.html
-msgid "Last videos"
-msgstr "Dernières vidéos"
-
-#: pod/video/templates/videos/last_videos.html
-msgid "Show all videos"
-msgstr "Afficher toutes les vidéos"
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video_row_select.html
@@ -9601,6 +9747,12 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
+#~ msgid "Previous"
+#~ msgstr "Vignette précédente"
+
+#~ msgid "Next"
+#~ msgstr "Vignette suivante"
+
 #~ msgid ""
 #~ "Pod is aimed at users of our institutions, by allowing the publication of "
 #~ "videos in the fields of research (promotion of platforms, etc.), training "
@@ -9615,7 +9767,6 @@ msgstr "xAPI Esup-Pod"
 #~ msgstr ""
 #~ "Le fichier HTML de cet enregistrement est introuvable sur le serveur."
 
-#, python-format
 #~ msgid "Error number: %s"
 #~ msgstr "Numéro d’erreur : %s"
 

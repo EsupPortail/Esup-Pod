@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-18 12:58+0000\n"
+"POT-Creation-Date: 2024-04-10 14:22+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -840,6 +840,18 @@ msgid "Edit the category"
 msgstr "Éditer la catégorie"
 
 #: pod/video/static/js/video_category.js
+msgid "Delete the category"
+msgstr "Supprimer la catégorie"
+
+#: pod/video/static/js/video_category.js
+msgid "Success!"
+msgstr "Succès !"
+
+#: pod/video/static/js/video_category.js
+msgid "Error…"
+msgstr "Erreur…"
+
+#: pod/video/static/js/video_category.js
 msgid "Category created successfully"
 msgstr "Catégorie créée avec succès"
 
@@ -952,15 +964,3 @@ msgstr "Ajouter un commentaire public"
 #: pod/video/static/js/comment-script.js
 msgid "Send"
 msgstr "Envoyer"
-
-#: pod/video/static/js/video_category.js
-msgid "Delete the category"
-msgstr "Supprimer la catégorie"
-
-#: pod/video/static/js/video_category.js
-msgid "Success!"
-msgstr "Succès !"
-
-#: pod/video/static/js/video_category.js
-msgid "Error…"
-msgstr "Erreur…"
