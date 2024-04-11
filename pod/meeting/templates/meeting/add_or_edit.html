@@ -303,7 +303,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var is_webinar = document.querySelector('input[name=is_webinar]');
     let see_recurring_fields = document.getElementById('see_recurring_fields');
     let field_guest_policy = document.getElementById('id_guest_policy');
-    let field_show_chat = document.getElementById('id_show_chat');
     let field_enable_chat = document.getElementById('id_enable_chat');
     // Manage webinar mode : no recurring in such a case and guest policy = Always accept
     if (is_webinar && see_recurring_fields && field_guest_policy) {
@@ -322,8 +321,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
           see_recurring_fields.classList.remove("d-none");
           field_guest_policy.disabled = false;
           // No chat options for a normal meeting
-          if (field_show_chat && field_enable_chat) {
-            field_show_chat.checked = false;
+          if (field_enable_chat) {
             field_enable_chat.checked = false;
           }
         }
