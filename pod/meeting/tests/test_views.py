@@ -17,7 +17,7 @@ from http import HTTPStatus
 from importlib import reload
 from pod.authentication.models import AccessGroup
 from pod.live.models import Building, Broadcaster
-from pod.meeting.models import Ingester
+from pod.meeting.models import LiveGateway
 from pod.video.models import Type
 
 
@@ -264,8 +264,8 @@ class MeetingWebinarTestView(TestCase):
             is_restricted=True,
             building=building,
         )
-        # Create an ingester
-        Ingester.objects.create(
+        # Create a live gateway
+        LiveGateway.objects.create(
             id=1,
             rtmp_stream_url="rtmp://localhost:1935/live/sipmediagw",
             broadcaster=broadcaster,

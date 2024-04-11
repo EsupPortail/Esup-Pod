@@ -6,7 +6,7 @@ from django.contrib.sites.models import Site
 from django.test import TestCase
 from pod.authentication.models import AccessGroup
 from pod.live.models import Building, Broadcaster
-from pod.meeting.models import Ingester
+from pod.meeting.models import LiveGateway
 from pod.meeting.webinar import (
     chat_rtmp_gateway,
     start_webinar_livestream,
@@ -58,8 +58,8 @@ class MeetingTestUtils(TestCase):
             is_restricted=True,
             building=building,
         )
-        # Create an ingester
-        Ingester.objects.create(
+        # Create a live gateway
+        LiveGateway.objects.create(
             id=1,
             rtmp_stream_url="rtmp://127.0.0.1:1935/live/sipmediagw",
             broadcaster=broadcaster,
@@ -71,9 +71,9 @@ class MeetingTestUtils(TestCase):
     def test_sipmediagw_commands1(self):
         """Check start and stop SIPMediaGW commands (on 127.0.0.1, so management of exceptions)."""
         meeting = Meeting.objects.get(id=1)
-        ingester = Ingester.objects.get(id=1)
+        live_gateway = LiveGateway.objects.get(id=1)
         # Manage the livestream and the event when the webinar is created
-        manage_webinar(meeting, True, ingester)
+        manage_webinar(meeting, True, live_gateway)
         # Start
         try:
             start_webinar_livestream("https://127.0.0.1", 1)
@@ -90,9 +90,9 @@ class MeetingTestUtils(TestCase):
     def test_sipmediagw_commands2(self):
         """Check chat and toggle SIPMediaGW commands (on 127.0.0.1, so management of exceptions)."""
         meeting = Meeting.objects.get(id=1)
-        ingester = Ingester.objects.get(id=1)
+        live_gateway = LiveGateway.objects.get(id=1)
         # Manage the livestream and the event when the webinar is created
-        manage_webinar(meeting, True, ingester)
+        manage_webinar(meeting, True, live_gateway)
         # Toggle
         try:
             toggle_rtmp_gateway(1)
