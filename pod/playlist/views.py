@@ -112,7 +112,6 @@ def playlist_list(request):
     )
 
 
-@login_required(redirect_field_name="referrer")
 def playlist_content(request, slug):
     """Render the videos list of a playlist."""
     sort_field = request.GET.get("sort", "rank")
@@ -139,7 +138,7 @@ def render_playlist_page(
     in_favorites_playlist,
     count_videos,
     sort_field,
-    sort_direction,
+    sort_direction=None,
     form=None,
 ):
     """Render playlist page with the videos list of this."""
@@ -179,7 +178,6 @@ def render_playlist_page(
         "sort_direction": sort_direction,
         "form": form,
     }
-
     return render(request, "playlist/playlist.html", context)
 
 
@@ -226,7 +224,6 @@ def toggle_render_playlist_user_has_right(
         )
 
 
-@login_required(redirect_field_name="referrer")
 def render_playlist(
     request: dict, playlist: Playlist, sort_field: str, sort_direction: str
 ):
@@ -251,19 +248,42 @@ def render_playlist(
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)
 
-    playlist_url = reverse(
-        "playlist:content",
-        kwargs={
-            "slug": get_favorite_playlist_for_user(request.user).slug,
-        },
-    )
-    in_favorites_playlist = playlist_url == request.path
-    if (
-        playlist.visibility == "protected"
-        and playlist.owner != request.user
-        and request.user not in get_additional_owners(playlist)
-    ):
-        return toggle_render_playlist_user_has_right(
+    if request.user.is_authenticated:
+        playlist_url = reverse(
+            "playlist:content",
+            kwargs={
+                "slug": get_favorite_playlist_for_user(request.user).slug,
+            },
+        )
+        in_favorites_playlist = playlist_url == request.path
+        if (
+            playlist.visibility == "protected"
+            and playlist.owner != request.user
+            and request.user not in get_additional_owners(playlist)
+        ):
+            return toggle_render_playlist_user_has_right(
+                request,
+                playlist,
+                videos,
+                in_favorites_playlist,
+                count_videos,
+                sort_field,
+                sort_direction,
+            )
+
+        if is_ajax(request):
+            return render(
+                request,
+                "playlist/playlist-videos-list.html",
+                {
+                    "videos": videos,
+                    "playlist": playlist,
+                    "in_favorites_playlist": in_favorites_playlist,
+                    "full_path": full_path,
+                    "count_videos": count_videos,
+                },
+            )
+        return render_playlist_page(
             request,
             playlist,
             videos,
@@ -272,24 +292,11 @@ def render_playlist(
             sort_field,
             sort_direction,
         )
-
-    if is_ajax(request):
-        return render(
-            request,
-            "playlist/playlist-videos-list.html",
-            {
-                "videos": videos,
-                "playlist": playlist,
-                "in_favorites_playlist": in_favorites_playlist,
-                "full_path": full_path,
-                "count_videos": count_videos,
-            },
-        )
     return render_playlist_page(
         request,
         playlist,
         videos,
-        in_favorites_playlist,
+        False,
         count_videos,
         sort_field,
         sort_direction,
