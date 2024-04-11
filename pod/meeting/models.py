@@ -425,20 +425,14 @@ class Meeting(models.Model):
         default=False,
     )
 
-    # If the user wants that show the public chat in the live
-    show_chat = models.BooleanField(
-        verbose_name=_("Show public chat"),
-        help_text=_("Do you want to show the public chat in the live (Not recommended)?"),
-        default=False,
-    )
-
     # If the user wants that students have a chat in the live page
     enable_chat = models.BooleanField(
         verbose_name=_("Enable chat"),
         help_text=_(
             "Do you want a chat on the live page "
             "for listeners? Messages sent in this live page's chat will "
-            "end up in BigBlueButton's public chat."
+            "end up in BigBlueButton's public chat. "
+            "This public chat will be also displayed in the live."
         ),
         default=False,
     )
@@ -1197,18 +1191,18 @@ def default_site_recording(sender, instance, **kwargs):
         instance.site = Site.objects.get_current()
 
 
-class Ingester(models.Model):
-    """Hold information about ingesters, encoders and broadcasters informations.
+class LiveGateway(models.Model):
+    """Hold information about live gateways, encoders and broadcasters informations.
 
     Useful for BigBlueButton livestreams."""
 
     # RTMP Stream URL
-    # Format, without authentication : rtmp://rtmpserver.univ.fr:port/application/name.m3u8
+    # Format, without authentication : rtmp://rtmpserver.univ.fr:port/application/name
     # Format, with authentication : rtmp://user@password:rtmpserver.univ.fr:port/application/name.m3u8
     rtmp_stream_url = models.CharField(
         _("URL of the RTMP stream"),
         max_length=200,
-        help_text=_("Example format: rtmp://live.univ.fr/live/name.m3u8"),
+        help_text=_("Example format: rtmp://live.univ.fr/live/name"),
     )
     # Broadcaster in charge to perform the live
     broadcaster = models.ForeignKey(
@@ -1218,7 +1212,7 @@ class Ingester(models.Model):
         help_text=_("Broadcaster in charge to perform lives."),
     )
 
-    # Ingester's site
+    # LiveGateway's site
     site = models.ForeignKey(
         Site, verbose_name=_("Site"), on_delete=models.CASCADE, default=SITE_ID
     )
@@ -1230,16 +1224,16 @@ class Ingester(models.Model):
         return "%s - %s" % (self.rtmp_stream_url, self.broadcaster)
 
     def save(self, *args, **kwargs):
-        super(Ingester, self).save(*args, **kwargs)
+        super(LiveGateway, self).save(*args, **kwargs)
 
     class Meta:
-        verbose_name = _("Ingester")
-        verbose_name_plural = _("Ingesters")
+        verbose_name = _("Live gateway")
+        verbose_name_plural = _("Live gateways")
 
 
-@receiver(pre_save, sender=Ingester)
-def default_site_ingester(sender, instance, **kwargs):
-    """Save default site for this ingester."""
+@receiver(pre_save, sender=LiveGateway)
+def default_site_livegateway(sender, instance, **kwargs):
+    """Save default site for this live gateway."""
     if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
 
@@ -1270,12 +1264,12 @@ class Livestream(models.Model):
         help_text=_("Live event for this livestream"),
     )
 
-    # Ingester that manage this stream
-    ingester = models.ForeignKey(
-        Ingester,
+    # Live gateway that manage this stream
+    live_gateway = models.ForeignKey(
+        LiveGateway,
         on_delete=models.CASCADE,
-        verbose_name=_("Ingester used for this live"),
-        help_text=_("Ingester (encoder and broadcaster) that perform the livestream"),
+        verbose_name=_("Live gateway used for this live"),
+        help_text=_("Live gateway (encoder and broadcaster) that perform the livestream"),
     )
 
     def __unicode__(self):

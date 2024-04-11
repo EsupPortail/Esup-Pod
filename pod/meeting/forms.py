@@ -81,7 +81,6 @@ MEETING_WEBINAR_FIELDS = getattr(
     "MEETING_WEBINAR_FIELDS",
     (
         "is_webinar",
-        "show_chat",
         "enable_chat",
     ),
 )
@@ -292,7 +291,6 @@ class MeetingForm(forms.ModelForm):
             and form.is_superuser is False
         ) or (form.is_personal):
             form.remove_field("is_webinar")
-            form.remove_field("show_chat")
             form.remove_field("enable_chat")
 
     def clean_start_date(self):
@@ -390,7 +388,7 @@ class MeetingForm(forms.ModelForm):
             )
         # Manage when user has changed webinar fields
         self.is_webinar_has_changed()
-        self.show_chat_has_changed()
+        self.enable_chat_has_changed()
 
     def is_webinar_has_changed(self):
         """Manage when user has changed is_webinar field and disable the webinar mode."""
@@ -412,12 +410,12 @@ class MeetingForm(forms.ModelForm):
                     # Start the webinar in this case
                     start_webinar(self.request, self.instance.id)
 
-    def show_chat_has_changed(self):
-        """Manage when user has changed show_chat field."""
-        if self.instance.pk is not None and "show_chat" in self.cleaned_data:
-            if self.instance.show_chat != self.cleaned_data["show_chat"]:
+    def enable_chat_has_changed(self):
+        """Manage when user has changed enable_chat field."""
+        if self.instance.pk is not None and "enable_chat" in self.cleaned_data:
+            if self.instance.enable_chat != self.cleaned_data["enable_chat"]:
                 if self.instance.get_is_meeting_running() is True:
-                    # When show chat field changed, send a toggle request
+                    # When enable chat field changed, send a toggle request
                     # to SIPMediaGW if webinar already started
                     toggle_rtmp_gateway(self.instance.id)
 

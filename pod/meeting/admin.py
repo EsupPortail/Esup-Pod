@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
 from django.contrib.admin import widgets
 
-from .models import Meeting, InternalRecording, Livestream, Ingester
+from .models import Meeting, InternalRecording, Livestream, LiveGateway
 from .forms import (
     MeetingForm,
     MEETING_MAIN_FIELDS,
@@ -198,7 +198,7 @@ class LivestreamAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "meeting",
-        "ingester",
+        "live_gateway",
         "event",
         "status",
     )
@@ -214,8 +214,8 @@ class LivestreamAdmin(admin.ModelAdmin):
     ]
 
 
-@admin.register(Ingester)
-class IngesterAdmin(admin.ModelAdmin):
+@admin.register(LiveGateway)
+class LiveGatewayAdmin(admin.ModelAdmin):
     list_display = (
         "id",
         "rtmp_stream_url",
