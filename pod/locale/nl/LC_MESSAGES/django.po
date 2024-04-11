@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-09 09:24+0200\n"
+"POT-Creation-Date: 2024-04-11 11:52+0200\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -496,7 +496,7 @@ msgstr ""
 msgid "Broadcaster in charge to perform live."
 msgstr ""
 
-#: pod/bbb/models.py pod/meeting/models.py
+#: pod/bbb/models.py
 msgid "Show public chat"
 msgstr ""
 
@@ -2794,15 +2794,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -5341,13 +5341,10 @@ msgid ""
 msgstr ""
 
 #: pod/meeting/models.py
-msgid "Do you want to show the public chat in the live (Not recommended)?"
-msgstr ""
-
-#: pod/meeting/models.py
 msgid ""
 "Do you want a chat on the live page for listeners? Messages sent in this "
-"live page's chat will end up in BigBlueButton's public chat."
+"live page's chat will end up in BigBlueButton's public chat. This public "
+"chat will be also displayed in the live."
 msgstr ""
 
 #: pod/meeting/models.py
@@ -5381,7 +5378,7 @@ msgid "URL of the RTMP stream"
 msgstr ""
 
 #: pod/meeting/models.py
-msgid "Example format: rtmp://live.univ.fr/live/name.m3u8"
+msgid "Example format: rtmp://live.univ.fr/live/name"
 msgstr ""
 
 #: pod/meeting/models.py
@@ -5389,11 +5386,11 @@ msgid "Broadcaster in charge to perform lives."
 msgstr ""
 
 #: pod/meeting/models.py
-msgid "Ingester"
+msgid "Live gateway"
 msgstr ""
 
 #: pod/meeting/models.py
-msgid "Ingesters"
+msgid "Live gateways"
 msgstr ""
 
 #: pod/meeting/models.py
@@ -5405,11 +5402,11 @@ msgid "Live event for this livestream"
 msgstr ""
 
 #: pod/meeting/models.py
-msgid "Ingester used for this live"
+msgid "Live gateway used for this live"
 msgstr ""
 
 #: pod/meeting/models.py
-msgid "Ingester (encoder and broadcaster) that perform the livestream"
+msgid "Live gateway (encoder and broadcaster) that perform the livestream"
 msgstr ""
 
 #: pod/meeting/templates/meeting/add_or_edit.html
@@ -5889,8 +5886,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
@@ -5904,8 +5901,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
@@ -5970,10 +5967,11 @@ msgstr ""
 #: pod/meeting/webinar_utils.py
 #, python-format
 msgid ""
-"There are too many webinars (%s) for the number of ingesters allocated (%s). "
-"The next meeting has been created but not like a webinar:%s %s [%s-%s].\n"
-"Please fix the problem either by increasing the number of ingesters or by "
-"modifying/deleting one of the affected webinars (with the users' "
+"There are too many webinars (%s) for the number of live gateways allocated "
+"(%s). The next meeting has been created but not like a webinar:%s %s [%s-"
+"%s].\n"
+"Please fix the problem either by increasing the number of live gateways or "
+"by modifying/deleting one of the affected webinars (with the users' "
 "agreement).\n"
 "Other webinars: %s"
 msgstr ""
@@ -5981,12 +5979,12 @@ msgstr ""
 #: pod/meeting/webinar_utils.py
 #, python-format
 msgid ""
-"<p>There are too many webinars (<b>%s</b>) for the number of ingesters "
+"<p>There are too many webinars (<b>%s</b>) for the number of live gateways "
 "allocated (<b>%s</b>). The next webinar has been created but <b>not like a "
 "webinar</b>:<ul><li><b>%s %s</b> [%s-%s].</li></ul><p>Please fix the problem "
-"either by increasing the number of ingesters or by modifying/deleting one of "
-"the affected webinars (with the users' agreement).<br>Other webinars: <b>%s</"
-"b>"
+"either by increasing the number of live gateways or by modifying/deleting "
+"one of the affected webinars (with the users' agreement).<br>Other webinars: "
+"<b>%s</b>"
 msgstr ""
 
 #: pod/playlist/apps.py pod/playlist/models.py
@@ -6958,8 +6956,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
