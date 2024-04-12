@@ -143,10 +143,13 @@ class PlaylistForm(forms.ModelForm):
     def __init__(self, *args, **kwargs) -> None:
         """Init method."""
         self.user = kwargs.pop("user", None)
-        print(self.user)
         super(PlaylistForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
-        if not self.user.is_staff and RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY:
+        if self.user:
+            if not self.user.is_staff and RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY:
+                if "promoted" in self.fields:
+                    del self.fields["promoted"]
+        else:
             if "promoted" in self.fields:
                 del self.fields["promoted"]
 
