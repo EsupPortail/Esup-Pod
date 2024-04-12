@@ -1,3 +1,5 @@
+"""Esup-Pod video cutting app views."""
+
 from django.shortcuts import render
 from pod.main.views import in_maintenance
 from django.shortcuts import redirect
@@ -28,7 +30,7 @@ RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def cut_video(request, slug):  # noqa: C901
-    """View for video cutting"""
+    """View for video cutting."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))

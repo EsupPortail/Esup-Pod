@@ -1,4 +1,4 @@
-"""Download the specified video source file from a previous instance."""
+"""Esup-Pod previous instance video download command."""
 
 from django.core.management.base import BaseCommand, CommandError
 import wget
@@ -11,6 +11,8 @@ FROM_URL = getattr(settings, "FROM_URL", "https://pod.univ.fr/media/")
 
 
 class Command(BaseCommand):
+    """Download the specified video source file from a previous instance."""
+
     help = "Download the specified video source file from previous instance"
 
     def add_arguments(self, parser):
@@ -19,7 +21,7 @@ class Command(BaseCommand):
     def download(self, vid, video_id, source_url, dest_file):
         try:
             self.stdout.write(
-                "\n - download %s : from %s to %s\n" % (video_id, source_url, dest_file)
+                "\n - download %s: from %s to %s\n" % (video_id, source_url, dest_file)
             )
             new_file = wget.download(source_url, dest_file)
             self.stdout.write("\n")

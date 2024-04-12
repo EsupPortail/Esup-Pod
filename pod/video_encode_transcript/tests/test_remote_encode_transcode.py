@@ -118,7 +118,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             time.sleep(2)
             n += 1
             if n > 30:
-                raise ValidationError("Error while encoding !!!")
+                raise ValidationError("Error while encoding!!!")
         self.video.refresh_from_db()
         self.assertEqual("Video1", self.video.title)
         list_mp2t = EncodingVideo.objects.filter(
@@ -167,7 +167,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             time.sleep(2)
             n += 1
             if n > 30:
-                raise ValidationError("Error while encoding !!!")
+                raise ValidationError("Error while encoding!!!")
         self.video.refresh_from_db()
         self.assertEqual("Video1", self.video.title)
         list_mp2t = EncodingVideo.objects.filter(
@@ -239,7 +239,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             time.sleep(2)
             n += 1
             if n > 30:
-                raise ValidationError("Error while encoding !!!")
+                raise ValidationError("Error while encoding!!!")
         self.video.refresh_from_db()
         print("end of dressing encoding")
         print(self.video.get_encoding_step)
@@ -291,10 +291,10 @@ class RemoteEncodeTranscriptTestCase(TestCase):
                 time.sleep(2)
                 n += 1
                 if n > 60:
-                    raise ValidationError("Error while transcripting !!!")
+                    raise ValidationError("Error while transcripting!!!")
             self.video.refresh_from_db()
             if not Track.objects.filter(video=self.video, lang="fr").exists():
-                raise ValidationError("Error while transcripting !!!")
+                raise ValidationError("Error while transcripting!!!")
         else:
-            raise ValidationError("No mp3 found !!!")
+            raise ValidationError("No mp3 found!!!")
         print("\n ---> End of transcripting video test")

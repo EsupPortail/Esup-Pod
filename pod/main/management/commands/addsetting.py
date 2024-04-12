@@ -41,7 +41,7 @@ class Command(BaseCommand):
         if settings.get(options["setting_name"]):
             self.stdout.write(self.style.WARNING(20 * "*"))
             self.stdout.write(
-                self.style.WARNING("Setting found in json file, you will modify it !")
+                self.style.WARNING("Setting found in json file, you will modify it!")
             )
             setting_json = json.dumps(
                 settings[options["setting_name"]],
@@ -79,9 +79,9 @@ class Command(BaseCommand):
             json.dump(data, f, sort_keys=True, indent=4, ensure_ascii=False)
 
     def fix_default_value(self, default_value):
-        msg = "Default value (leave blank to keep previous value : %s) : " % default_value
+        msg = "Default value (leave blank to keep previous value: %s): " % default_value
         if default_value == "":
-            msg = "Default value : "
+            msg = "Default value: "
         input_value = input(msg)
         if input_value != "":
             default_value = input_value
@@ -95,7 +95,7 @@ class Command(BaseCommand):
 
     def get_description(self, previous_description):
         if previous_description != [""]:
-            print("(--> Type enter directly to keep previous value !)")
+            print("(--> Type enter directly to keep previous value!)")
         description = [""]
         while True:
             user_input = input()
@@ -117,7 +117,7 @@ class Command(BaseCommand):
         config_part = "main"
         if options["app_name"] == "pod":
             list_conf = self.get_configuration_pod()
-            print("Here is available configuration : %s" % ", ".join(list_conf))
+            print("Here is available configuration: %s" % ", ".join(list_conf))
             config_part = input(
                 "Give configuration part in available configuration, "
                 + "leave blank to use main: "
@@ -125,19 +125,19 @@ class Command(BaseCommand):
             if config_part == "":
                 config_part = "main"
             if config_part not in list_conf:
-                self.stdout.write(self.style.ERROR("Configuration not available !"))
+                self.stdout.write(self.style.ERROR("Configuration not available!"))
                 return
 
         setting = self.get_setting(options, config_part)
 
         pod_version_init = input(
-            "Pod initial version (leave blank to put current version : %s): " % VERSION
+            "Pod initial version (leave blank to put current version: %s): " % VERSION
         )
         if pod_version_init == "":
             pod_version_init = VERSION
 
         pod_version_end = input(
-            "Pod last version (i.e : 2.9.0, deprecated or not use anymore): "
+            "Pod last version (i.e: 2.9.0, deprecated or not use anymore): "
         )
 
         default_value = self.fix_default_value(setting.get("default_value", ""))
@@ -167,11 +167,11 @@ class Command(BaseCommand):
             ensure_ascii=False,
         )
         self.stdout.write(self.style.SUCCESS(setting_json))
-        confirm = input("Save it to config file ? y/n : ")
+        confirm = input("Save it to config file? y/n: ")
         if confirm != "y":
-            self.stdout.write(self.style.ERROR("Not saving, End !"))
+            self.stdout.write(self.style.ERROR("Not saving, End!"))
             return
 
         self.save_setting(options, config_part, setting)
 
-        self.stdout.write(self.style.SUCCESS("End !"))
+        self.stdout.write(self.style.SUCCESS("End!"))

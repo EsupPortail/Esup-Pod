@@ -226,7 +226,7 @@ def recorder_notify(request):
             m = hashlib.md5()
             m.update(recording_place.encode("utf-8") + recorder.salt.encode("utf-8"))
             if key != m.hexdigest():
-                return HttpResponse("nok : key is not valid")
+                return HttpResponse("nok: key is not valid")
 
             link_url = "".join(
                 [
@@ -272,10 +272,10 @@ def recorder_notify(request):
             return HttpResponse("ok")
         else:
             return HttpResponse(
-                "nok : address_ip not valid or recorder not found in this site"
+                "nok: address_ip not valid or recorder not found in this site"
             )
     else:
-        return HttpResponse("nok : recordingPlace or mediapath or key are missing")
+        return HttpResponse("nok: recordingPlace or mediapath or key are missing")
 
 
 @csrf_protect
@@ -381,13 +381,13 @@ def studio_pod(request):
     )
     head = opencast_studio_rendered[
         opencast_studio_rendered.index("<head>")
-        + len("<head>") : opencast_studio_rendered.index("</head>")
+        + len("<head>"): opencast_studio_rendered.index("</head>")
     ]
     scripts = re.findall('<script .[a-z="]+ src=".[a-z/.0-9]+"></script>', head)
     styles = re.findall("<style>.*</style>", head)
     body = opencast_studio_rendered[
         opencast_studio_rendered.index("<body>")
-        + len("<body>") : opencast_studio_rendered.index("</body>")
+        + len("<body>"): opencast_studio_rendered.index("</body>")
     ]
     body = "".join(scripts) + "".join(styles) + body
     return render(
@@ -448,7 +448,7 @@ def settings_toml(request):
     """Render a settings.toml configuration file for Opencast Studio."""
     # OpenCast Studio configuration
     # See https://github.com/elan-ev/opencast-studio/blob/master/CONFIGURATION.md
-    # Add parameter : the pod studio URL
+    # Add parameter: the pod studio URL
     studio_url = request.build_absolute_uri(
         reverse(
             "recorder:studio_pod",
@@ -493,9 +493,9 @@ def info_me_json(request):
 @login_required(redirect_field_name="referrer")
 def ingest_createMediaPackage(request):
     # URI createMediaPackage useful for OpenCast Studio
-    # Necessary id. Example format : a3d9e9f3-66d0-403b-a775-acb3f79196d4
+    # Necessary id. Example format: a3d9e9f3-66d0-403b-a775-acb3f79196d4
     idMedia = uuid.uuid4()
-    # Necessary start date. Example format : 2021-12-08T08:52:28Z
+    # Necessary start date. Example format: 2021-12-08T08:52:28Z
     start = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%dT%H:%M:%S%zZ")
     mediaPackage_dir = os.path.join(
         settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
@@ -524,7 +524,7 @@ def ingest_createMediaPackage(request):
 @csrf_exempt
 def ingest_addDCCatalog(request):
     # URI addDCCatalog useful for OpenCast Studio
-    # Form management with 3 parameters : mediaPackage, dublinCore, flavor
+    # Form management with 3 parameters: mediaPackage, dublinCore, flavor
     # For Pod, management of dublinCore is useless
     if (
         request.POST.get("mediaPackage")
@@ -585,8 +585,8 @@ def ingest_addDCCatalog(request):
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addAttachment(request):
-    # URI addAttachment useful for OpenCast Studio
-    # Form management with 3 parameters : mediaPackage, flavor, BODY (acl.xml file)
+    """URI addAttachment useful for OpenCast Studio."""
+    # Form management with 3 parameters: mediaPackage, flavor, BODY (acl.xml file)
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
@@ -599,8 +599,8 @@ def ingest_addAttachment(request):
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addTrack(request):
-    # URI addTrack useful for OpenCast Studio
-    # Form management with 4 parameters : mediaPackage, flavor, tags, BODY (video file)
+    """URI addTrack useful for OpenCast Studio."""
+    # Form management with 4 parameters: mediaPackage, flavor, tags, BODY (video file)
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
@@ -614,8 +614,8 @@ def ingest_addTrack(request):
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addCatalog(request):
-    # URI ingest useful for OpenCast Studio (when cutting video)
-    # Form management with 3 parameter : flavor, mediaPackage, BODY(smil file)
+    """URI ingest useful for OpenCast Studio (when cutting video)."""
+    # Form management with 3 parameter: flavor, mediaPackage, BODY(smil file)
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
@@ -628,8 +628,8 @@ def ingest_addCatalog(request):
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_ingest(request):
-    # URI ingest useful for OpenCast Studio
-    # Form management with 1 parameter : mediaPackage
+    """URI ingest useful for OpenCast Studio."""
+    # Form management with 1 parameter: mediaPackage
     # Management of the mediaPackage (XML)
     if request.POST.get("mediaPackage"):
         idMedia = get_id_media(request)

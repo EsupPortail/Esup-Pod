@@ -76,7 +76,7 @@ def start_encoding_task(
     try:
         response = requests.post(url, json=data, headers=Headers)
         if response.status_code != 200:
-            msg = "Calling store remote encoding error : {} {}".format(
+            msg = "Calling store remote encoding error: {} {}".format(
                 response.status_code, response.reason
             )
             logger.error(msg + "\n" + str(response.content))
@@ -112,7 +112,7 @@ def start_studio_task(recording_id, video_output, videos, subtime, presenter):
     try:
         response = requests.post(url, json=data, headers=Headers)
         if response.status_code != 200:
-            msg = "Calling store remote encoding studio error : {} {}".format(
+            msg = "Calling store remote encoding studio error: {} {}".format(
                 response.status_code, response.reason
             )
             logger.error(msg + "\n" + str(response.content))

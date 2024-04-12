@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-12 12:54+0200\n"
+"POT-Creation-Date: 2024-04-12 15:36+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2807,15 +2807,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -3101,7 +3101,6 @@ msgid ""
 msgstr ""
 
 #: pod/live/models.py pod/meeting/models.py pod/playlist/models.py
-#: pod/playlist/templates/playlist/playlist-informations-card.html
 #: pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/dashboard.html
 msgid "Additional owners"
@@ -4655,7 +4654,7 @@ msgid "No cache"
 msgstr ""
 
 #: pod/main/models.py
-msgid "Check this box if you don't want to keep the cache."
+msgid "Check this box if you don’t want to keep the cache."
 msgstr ""
 
 #: pod/main/models.py
@@ -5501,7 +5500,7 @@ msgstr ""
 
 #: pod/meeting/models.py
 msgid ""
-"If this box is checked, this meeting corresponds to the user's personal "
+"If this box is checked, this meeting corresponds to the user’s personal "
 "meeting room."
 msgstr ""
 
@@ -5513,7 +5512,7 @@ msgstr ""
 msgid ""
 "Do you want to start this meeting as a webinar? In such a case, you can "
 "invite presenters to join you in BigBlueButton, and listeners will have "
-"direct access to a livestream in the livestreams page. "
+"direct access to a livestream in the livestreams page."
 msgstr ""
 
 #: pod/meeting/models.py
@@ -5675,19 +5674,19 @@ msgstr ""
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
 "This Webinar mode enables you to transmit information to a large audience "
-"via a live broadcast (accessible from the platform's live page) and "
+"via a live broadcast (accessible from the platform’s live page) and "
 "interaction - if you wish - via an integrated chat."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
-"Once you've saved the form, you can start the webinar by clicking on the "
-"'Start the webinar' button."
+"Once you’ve saved the form, you can start the webinar by clicking on the "
+"“Start the webinar” button."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
-"Shortly after clicking the 'Start the webinar' button, the live stream will "
+"Shortly after clicking the “Start the webinar” button, the live stream will "
 "be available to users on the <i class='bi bi-broadcast mx-1' aria-"
 "hidden='true'></i> <b>Lives</b> page."
 msgstr ""
@@ -6062,8 +6061,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
@@ -6077,8 +6076,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
@@ -6103,11 +6102,11 @@ msgid "Impossible to create the internal recording"
 msgstr ""
 
 #: pod/meeting/views.py
-msgid "You can't end this webinar live."
+msgid "You can’t end this webinar live."
 msgstr ""
 
 #: pod/meeting/views.py
-msgid "You can't restart this webinar live."
+msgid "You can’t restart this webinar live."
 msgstr ""
 
 #: pod/meeting/webinar.py
@@ -6421,6 +6420,10 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/playlist-informations-card.html
 msgid "Access to playlist owner profile"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "Additional owners:"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist-informations-card.html
@@ -7125,8 +7128,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -7524,8 +7527,8 @@ msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid ""
-"For information, you will find below the list of video will soon arrive at "
-"the deletion deadline."
+"For your information, below is the list of videos that will soon reach the "
+"deletion deadline."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -8539,7 +8542,7 @@ msgid "Video Collaborate"
 msgstr ""
 
 #: pod/video/templates/videos/video_collaborate.html
-msgid "Tricks"
+msgid "Tricks:"
 msgstr ""
 
 #: pod/video/templates/videos/video_collaborate.html

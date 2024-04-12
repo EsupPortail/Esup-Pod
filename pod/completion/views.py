@@ -364,7 +364,6 @@ def video_completion_contributor_modify(request, video):
 
 def video_completion_contributor_delete(request, video):
     """View to delete a video contributor."""
-
     contributor = get_object_or_404(Contributor, id=request.POST["id"])
     contributor.delete()
     list_contributor = video.contributor_set.all()
@@ -504,7 +503,6 @@ def video_completion_document_modify(request, video):
 
 def video_completion_document_delete(request, video):
     """View to delete a document associated to a video."""
-
     document = get_object_or_404(Document, id=request.POST["id"])
     document.delete()
     list_document = video.document_set.all()

@@ -90,7 +90,7 @@ class FolderViewTestCase(TestCase):
         # type nok SuspiciousOperation
         self.assertEqual(response.status_code, 400)
 
-        print(" ---> test_list_folders : OK!")
+        print(" ---> test_list_folders: OK!")
 
     def test_edit_folders(self):
         self.client = Client()
@@ -120,7 +120,7 @@ class FolderViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(UserFolder.objects.get(owner=self.user, name="NewFolder2"))
         self.assertEqual(response.context["user_folder"].count(), 2)
-        print(" ---> test_edit_folders : OK!")
+        print(" ---> test_edit_folders: OK!")
 
     def test_delete_folders(self):
         self.client = Client()
@@ -134,7 +134,7 @@ class FolderViewTestCase(TestCase):
             {"id": UserFolder.objects.get(owner=self.user, name="home").id},
             follow=True,
         )
-        self.assertEqual(response.status_code, 403)  # forbidden name=home !
+        self.assertEqual(response.status_code, 403)  # forbidden name=home!
 
         response = self.client.post(
             reverse("podfile:deletefolder"),
@@ -145,7 +145,7 @@ class FolderViewTestCase(TestCase):
             },
             follow=True,
         )
-        self.assertEqual(response.status_code, 403)  # forbidden name=home !
+        self.assertEqual(response.status_code, 403)  # forbidden name=home!
 
         self.user = User.objects.get(username="pod")
         self.user.is_staff = True
@@ -158,7 +158,7 @@ class FolderViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        print(" ---> test_delete_folders : OK!")
+        print(" ---> test_delete_folders: OK!")
 
 
 class FileViewTestCase(TestCase):
@@ -243,7 +243,7 @@ class FileViewTestCase(TestCase):
             UserFolder.objects.get(owner=self.user, name="Child"),
         )
 
-        print(" ---> test_list_files : OK!")
+        print(" ---> test_list_files: OK!")
 
     def test_edit_files(self):
         self.client = Client()
