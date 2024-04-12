@@ -196,6 +196,11 @@ class InternalRecordingAdmin(admin.ModelAdmin):
 
 @admin.register(MeetingSessionLog)
 class MeetingSessionLogAdmin(admin.ModelAdmin):
+    """Administration for BBB session log.
+
+    Args:
+        admin (ModelAdmin): admin model
+    """
     list_display = (
         "meeting",
         "creation_date",
@@ -207,6 +212,7 @@ class MeetingSessionLogAdmin(admin.ModelAdmin):
     ]
 
     def decrypt_mods_as_json(self, obj):
+        """Decrypt moderators value to json and show it pretty."""
         if not obj:
             return _("Mode insert, nothing to display")
         moderators = '<pre>{}</pre>'.format(
@@ -217,6 +223,7 @@ class MeetingSessionLogAdmin(admin.ModelAdmin):
     decrypt_mods_as_json.allow_tags = True
 
     def decrypt_viewers_as_json(self, obj):
+        """Decrypt viewers value to json and show it pretty."""
         if not obj:
             return _("Mode insert, nothing to display")
         viewers = '<pre>{}</pre>'.format(
@@ -236,11 +243,20 @@ class MeetingSessionLogAdmin(admin.ModelAdmin):
     )
 
     def has_add_permission(self, request):
+        """
+        Check if user had permission to add new log.
+        Always return false to prevent it.
+        """
         return False
 
 
 @admin.register(Livestream)
 class LivestreamAdmin(admin.ModelAdmin):
+    """Administration for BBB live stream.
+
+    Args:
+        admin (ModelAdmin): admin model
+    """
     list_display = (
         "id",
         "meeting",
@@ -262,6 +278,11 @@ class LivestreamAdmin(admin.ModelAdmin):
 
 @admin.register(LiveGateway)
 class LiveGatewayAdmin(admin.ModelAdmin):
+    """Administration for BBB live gateway.
+
+    Args:
+        admin (ModelAdmin): admin model
+    """
     list_display = (
         "id",
         "rtmp_stream_url",

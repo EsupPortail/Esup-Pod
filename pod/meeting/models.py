@@ -1081,6 +1081,11 @@ def default_site_meeting(sender, instance, **kwargs):
 
 
 class MeetingSessionLog(models.Model):
+    """This model hold information about Big Blue Button session.
+
+    An object is created each time that session of meeting is created.
+    It store all moderators and viewers connected during the session.
+    """
     meeting = models.ForeignKey(
         Meeting, editable=False, verbose_name=_('meeting'), on_delete=models.CASCADE
     )
