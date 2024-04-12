@@ -9,9 +9,11 @@ meetingModal.addEventListener("show.bs.modal", function (event) {
   const title = button.getAttribute("data-bs-meeting-title");
   const endUrl = button.getAttribute("data-bs-meeting-end-url");
   const modalHref = button.getAttribute("data-bs-meeting-info-url");
-  const isWebinar = (button.getAttribute("data-bs-meeting-webinar") == "True");
+  const isWebinar = button.getAttribute("data-bs-meeting-webinar") == "True";
   const endLiveUrl = button.getAttribute("data-bs-meeting-end-live-url");
-  const restartLiveUrl = button.getAttribute("data-bs-meeting-restart-live-url");
+  const restartLiveUrl = button.getAttribute(
+    "data-bs-meeting-restart-live-url",
+  );
 
   fetch(modalHref, {
     method: "GET",
@@ -31,24 +33,44 @@ meetingModal.addEventListener("show.bs.modal", function (event) {
         var allLinks = "";
         if (isWebinar) {
           // Buttons for webinar
-          const modalRestartLiveLink = '<p><a onClick="javascript:displayLoader();" href="' + restartLiveUrl + '" class="btn btn-primary"><i class="bi bi-broadcast"></i> ' + gettext("Restart only the live") + '</a></p>';
-          const modalEndLiveLink = '<p><a onClick="javascript:displayLoader();" href="' + endLiveUrl + '" class="btn btn-secondary"><i class="bi bi-stop-circle"></i> ' + gettext("End only the live") + '</a></p>';
-          const modalEndLink = '<p><a onClick="javascript:displayLoader();" href="' + endUrl + '" class="btn btn-danger"><i class="bi bi-stop-circle"></i> ' + gettext("End the webinar (meeting and live)") + '</a></p>';
+          const modalRestartLiveLink =
+            '<p><a onClick="javascript:displayLoader();" href="' +
+            restartLiveUrl +
+            '" class="btn btn-primary"><i class="bi bi-broadcast"></i> ' +
+            gettext("Restart only the live") +
+            "</a></p>";
+          const modalEndLiveLink =
+            '<p><a onClick="javascript:displayLoader();" href="' +
+            endLiveUrl +
+            '" class="btn btn-secondary"><i class="bi bi-stop-circle"></i> ' +
+            gettext("End only the live") +
+            "</a></p>";
+          const modalEndLink =
+            '<p><a onClick="javascript:displayLoader();" href="' +
+            endUrl +
+            '" class="btn btn-danger"><i class="bi bi-stop-circle"></i> ' +
+            gettext("End the webinar (meeting and live)") +
+            "</a></p>";
           allLinks = modalRestartLiveLink + modalEndLiveLink + modalEndLink;
         } else {
           // Buttons for standard meeting
-          const modalEndLink = '<p><a onClick="javascript:displayLoader();" href="' + endUrl + '" class="btn btn-danger endlink">' + gettext("End the meeting") + '</a></p>';
+          const modalEndLink =
+            '<p><a onClick="javascript:displayLoader();" href="' +
+            endUrl +
+            '" class="btn btn-danger endlink">' +
+            gettext("End the meeting") +
+            "</a></p>";
           allLinks = modalEndLink;
         }
         modalBody.innerHTML =
           '<div class="d-flex panel">' +
           '  <div class="item flex-grow-1">' +
-              generateHtml(data.info) +
-          '  </div>' +
+          generateHtml(data.info) +
+          "  </div>" +
           '  <div class="item">' +
-              allLinks +
-          '  </div>' +
-          '</div>';
+          allLinks +
+          "  </div>" +
+          "</div>";
       }
     })
     .catch((error) => {
@@ -115,5 +137,5 @@ function copyValue(value) {
  * Display a loading cursor.
  */
 function displayLoader() {
-  document.body.style.cursor = 'wait';
+  document.body.style.cursor = "wait";
 }
