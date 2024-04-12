@@ -390,9 +390,9 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
     """Handle post request for add_or_edit function."""
     page_title = ""
     form = (
-        PlaylistForm(request.POST, instance=playlist)
+        PlaylistForm(request.POST, instance=playlist, user=request.user)
         if playlist
-        else PlaylistForm(request.POST)
+        else PlaylistForm(request.POST, user=request.user)
     )
     if playlist:
         page_title = _("Edit the playlist “%(pname)s”") % {"pname": playlist.name}
@@ -457,12 +457,12 @@ def handle_get_request_for_add_or_edit_function(request, slug: str) -> None:
             or request.user.is_staff
             or request.user in get_additional_owners(playlist)
         ) and playlist.editable:
-            form = PlaylistForm(instance=playlist)
+            form = PlaylistForm(instance=playlist, user=request.user)
             page_title = _("Edit the playlist") + f' "{playlist.name}"'
         else:
             return redirect(reverse("playlist:list"))
     else:
-        form = PlaylistForm()
+        form = PlaylistForm(user=request.user)
         page_title = _("Add a playlist")
     return render(
         request,

@@ -13,6 +13,11 @@ from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist
 
 USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", True)
+RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY = getattr(
+    settings,
+    "RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY",
+    False,
+)
 
 general_informations = _("General informations")
 security_informations = _("Security informations")
@@ -137,8 +142,13 @@ class PlaylistForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs) -> None:
         """Init method."""
+        self.user = kwargs.pop("user", None)
+        print(self.user)
         super(PlaylistForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
+        if not self.user.is_staff and RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY:
+            if "promoted" in self.fields:
+                del self.fields["promoted"]
 
     def clean_name(self):
         """Method to check if the playlist name asked is correct."""

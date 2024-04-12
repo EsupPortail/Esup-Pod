@@ -2,6 +2,11 @@ from django.conf import settings as django_settings
 
 USE_PLAYLIST = getattr(django_settings, "USE_PLAYLIST", True)
 USE_PROMOTED_PLAYLIST = getattr(django_settings, "USE_PROMOTED_PLAYLIST", True)
+RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY = getattr(
+    django_settings,
+    "RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY",
+    False,
+)
 USE_FAVORITES = getattr(django_settings, "USE_FAVORITES", True)
 DEFAULT_PLAYLIST_THUMBNAIL = getattr(
     django_settings,
