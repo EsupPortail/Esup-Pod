@@ -17,6 +17,8 @@ from pod.video.utils import sort_videos_list
 
 SITE_ID = getattr(settings, "SITE_ID")
 
+MAX_LENGTH_FOR_PLAYLIST_NAME = 200
+
 
 class Playlist(models.Model):
     """Playlist model."""
@@ -28,9 +30,9 @@ class Playlist(models.Model):
     ]
     name = models.CharField(
         verbose_name=_("Title"),
-        max_length=200,
+        max_length=MAX_LENGTH_FOR_PLAYLIST_NAME,
         default=_("Playlist"),
-        help_text=_("Please choose a title between 1 and 250 characters."),
+        help_text=_(f"Please choose a title between 1 {MAX_LENGTH_FOR_PLAYLIST_NAME} and characters."),
     )
     description = models.TextField(
         verbose_name=_("Description"),
