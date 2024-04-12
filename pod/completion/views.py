@@ -119,12 +119,12 @@ def video_caption_maker_save(request, video):
         response = file_edit_save(request, cur_folder)
         response_data = json.loads(response.content)
         if ("list_element" in response_data) and (lang in __LANG_CHOICES_DICT__):
-            captFile = get_object_or_404(CustomFileModel, id=response_data["file_id"])
+            capt_file = get_object_or_404(CustomFileModel, id=response_data["file_id"])
             # immediately assign the newly created captions file to the video
-            desired = Track.objects.filter(video=video, src=captFile)
+            desired = Track.objects.filter(video=video, src=capt_file)
             if desired.exists():
                 desired.update(
-                    lang=lang, kind=kind, src=captFile, enrich_ready=enrich_ready
+                    lang=lang, kind=kind, src=capt_file, enrich_ready=enrich_ready
                 )
             else:
                 # check if the same combination of lang and kind exists
@@ -133,7 +133,7 @@ def video_caption_maker_save(request, video):
                         video=video,
                         kind=kind,
                         lang=lang,
-                        src=captFile,
+                        src=capt_file,
                         enrich_ready=enrich_ready,
                     )
                     track.save()
