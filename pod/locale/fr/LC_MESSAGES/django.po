@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-12 12:19+0200\n"
+"POT-Creation-Date: 2024-04-12 12:54+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1895,6 +1895,21 @@ msgstr "Découper la vidéo"
 #: pod/video/templates/videos/video_page_content.html
 msgid "The video is currently being encoded."
 msgstr "La vidéo est en cours d’encodage."
+
+#: pod/cut/templates/video_cut.html
+msgid ""
+"Access to cutting video has been restricted. If you want to cut videos on "
+"the platform, please"
+msgstr ""
+"L’accès au découpage de vidéo est restreint, si vous voulez couper des "
+"vidéos, veuillez"
+
+#: pod/cut/templates/video_cut.html pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/video/templates/videos/add_video.html
+#: pod/video/templates/videos/video_edit.html
+msgid "contact us"
+msgstr "nous contacter"
 
 #: pod/cut/templates/video_cut.html
 msgid "Get the start time from the video player"
@@ -3853,13 +3868,6 @@ msgid ""
 msgstr ""
 "L’accès à l’ajout d’évènement est restreint. Si vous voulez ajouter des "
 "évènements, veuillez"
-
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/video/templates/videos/add_video.html
-#: pod/video/templates/videos/video_edit.html
-msgid "contact us"
-msgstr "nous contacter"
 
 #: pod/live/templates/live/event_edit.html
 msgid "The event is currently in progress. Editing options are limited."
