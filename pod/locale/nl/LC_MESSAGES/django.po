@@ -5128,8 +5128,21 @@ msgstr ""
 msgid "Recurring"
 msgstr ""
 
+<<<<<<< HEAD
+#: pod/meeting/admin.py
+msgid "Mode insert, nothing to display"
+msgstr ""
+
+#: pod/meeting/admin.py
+msgid "Moderators"
+msgstr ""
+
+#: pod/meeting/admin.py
+msgid "Viewers"
+=======
 #: pod/meeting/admin.py pod/meeting/forms.py
 msgid "Webinar options"
+>>>>>>> 56264661a737be361900b2c80eaa3648bb3eac18
 msgstr ""
 
 #: pod/meeting/forms.py pod/video/feeds.py pod/video/models.py
@@ -5542,6 +5555,27 @@ msgid "Unable to delete recording!"
 msgstr ""
 
 #: pod/meeting/models.py
+msgid "meeting"
+msgstr ""
+
+#: pod/meeting/models.py
+msgid "creator"
+msgstr ""
+
+#: pod/meeting/models.py
+#, python-format
+msgid "Session of the %(meeting_name)s meeting on %(creation_date)s"
+msgstr ""
+
+#: pod/meeting/models.py
+msgid "Meeting session log"
+msgstr ""
+
+#: pod/meeting/models.py
+msgid "Meeting session logs"
+msgstr ""
+
+#: pod/meeting/models.py
 msgid "Recording ID"
 msgstr ""
 
@@ -5832,6 +5866,10 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/link_meeting.html
 msgid "Copy the direct join link"
+msgstr ""
+
+#: pod/meeting/templates/meeting/link_meeting.html
+msgid "Copy the join link"
 msgstr ""
 
 #: pod/meeting/templates/meeting/link_meeting.html
