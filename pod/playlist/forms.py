@@ -1,6 +1,7 @@
 """Forms used in playlist application."""
 
 from django import forms
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
 from django.utils.translation import ugettext_lazy as _
@@ -10,6 +11,8 @@ from pod.meeting.forms import AddOwnerWidget
 
 from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist
+
+USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", True)
 
 general_informations = _("General informations")
 security_informations = _("Security informations")
@@ -30,6 +33,8 @@ class PlaylistForm(forms.ModelForm):
             "date_updated",
             "site",
         ]
+        if not USE_PROMOTED_PLAYLIST:
+            exclude.append("promoted")
         widgets = {
             "additional_owners": AddOwnerWidget,
         }
@@ -85,21 +90,22 @@ class PlaylistForm(forms.ModelForm):
         required=False,
         help_text=_("Please choose a password if this playlist is password-protected."),
     )
-    promoted = forms.BooleanField(
-        label=_("Promoted"),
-        widget=forms.CheckboxInput(
-            attrs={
-                "aria-describedby": "id_promotedHelp",
-            },
-        ),
-        required=False,
-        help_text=_(
-            "Selecting this setting causes your playlist to be promoted on the page"
-            + " listing promoted public playlists. However, if this setting is deactivated,"
-            + " your playlist will still be accessible to everyone."
-            + "<br>For general use, we recommend that you leave this setting disabled."
-        ),
-    )
+    if USE_PROMOTED_PLAYLIST:
+        promoted = forms.BooleanField(
+            label=_("Promoted"),
+            widget=forms.CheckboxInput(
+                attrs={
+                    "aria-describedby": "id_promotedHelp",
+                },
+            ),
+            required=False,
+            help_text=_(
+                "Selecting this setting causes your playlist to be promoted on the page"
+                + " listing promoted public playlists. However, if this setting is deactivated,"
+                + " your playlist will still be accessible to everyone."
+                + "<br>For general use, we recommend that you leave this setting disabled."
+            ),
+        )
     autoplay = forms.BooleanField(
         label=_("Autoplay"),
         widget=forms.CheckboxInput(

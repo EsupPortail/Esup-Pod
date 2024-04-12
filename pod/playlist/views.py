@@ -71,6 +71,8 @@ __TITLE_SITE__ = (
     else "Pod"
 )
 
+USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", True)
+
 
 def playlist_list(request):
     """Render playlists page."""
@@ -89,7 +91,7 @@ def playlist_list(request):
             | get_public_playlist()
             | get_playlists_for_additional_owner(request.user)
         )
-    elif visibility == "promoted" or not request.user.is_authenticated:
+    elif (visibility == "promoted" and USE_PROMOTED_PLAYLIST) or not request.user.is_authenticated:
         playlists = get_promoted_playlist()
     else:
         return redirect(reverse("playlist:list"))
