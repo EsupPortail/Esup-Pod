@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-11 20:03+0000\n"
+"POT-Creation-Date: 2024-04-12 08:46+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -5132,6 +5132,18 @@ msgstr ""
 msgid "Recurring"
 msgstr ""
 
+#: pod/meeting/admin.py
+msgid "Mode insert, nothing to display"
+msgstr ""
+
+#: pod/meeting/admin.py
+msgid "Moderators"
+msgstr ""
+
+#: pod/meeting/admin.py
+msgid "Viewers"
+msgstr ""
+
 #: pod/meeting/forms.py pod/video/feeds.py pod/video/models.py
 #: pod/video/templates/videos/video_row_select.html
 #: pod/video/templates/videos/video_sort_select.html
@@ -5504,6 +5516,27 @@ msgid "Unable to delete recording!"
 msgstr ""
 
 #: pod/meeting/models.py
+msgid "meeting"
+msgstr ""
+
+#: pod/meeting/models.py
+msgid "creator"
+msgstr ""
+
+#: pod/meeting/models.py
+#, python-format
+msgid "Session of the %(meeting_name)s meeting on %(creation_date)s"
+msgstr ""
+
+#: pod/meeting/models.py
+msgid "Meeting session log"
+msgstr ""
+
+#: pod/meeting/models.py
+msgid "Meeting session logs"
+msgstr ""
+
+#: pod/meeting/models.py
 msgid "Recording ID"
 msgstr ""
 
@@ -5659,6 +5692,10 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/link_meeting.html
 msgid "Copy the direct join link"
+msgstr ""
+
+#: pod/meeting/templates/meeting/link_meeting.html
+msgid "Copy the join link"
 msgstr ""
 
 #: pod/meeting/templates/meeting/link_meeting.html
