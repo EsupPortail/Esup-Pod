@@ -180,7 +180,6 @@ def video_chapter_modify(request, video):
 
 
 def video_chapter_delete(request, video):
-    list_chapter = video.chapter_set.all()
     chapter = get_object_or_404(Chapter, id=request.POST.get("id"))
     chapter.delete()
     list_chapter = video.chapter_set.all()
