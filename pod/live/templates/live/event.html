@@ -123,8 +123,8 @@
         </iframe>
       {% endif %}
 
-      {% if USE_BBB and USE_BBB_LIVE and display_chat %}
-        {% include "bbb/bbb_form.html" %}
+      {% if USE_MEETING and USE_MEETING_WEBINAR and enable_chat %}
+        {% include "meeting/meeting_live_form.html" %}
       {% endif %}
 
       <div id="viewers-list"><ul id="viewers-ul"></ul></div>
