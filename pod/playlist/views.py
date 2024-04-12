@@ -72,25 +72,24 @@ __TITLE_SITE__ = (
 )
 
 
-@login_required(redirect_field_name="referrer")
 def playlist_list(request):
     """Render playlists page."""
     visibility = request.GET.get("visibility", "all")
-    if visibility in ["private", "protected", "public"]:
+    if visibility in ["private", "protected", "public"] and request.user.is_authenticated:
         playlists = get_playlist_list_for_user(request.user).filter(visibility=visibility)
-    elif visibility == "additional":
+    elif visibility == "additional" and request.user.is_authenticated:
         playlists = get_playlists_for_additional_owner(request.user)
-    elif visibility == "allpublic":
+    elif visibility == "allpublic" and request.user.is_authenticated:
         playlists = get_public_playlist()
-    elif visibility == "allmy":
+    elif visibility == "allmy" and request.user.is_authenticated:
         playlists = get_playlist_list_for_user(request.user)
-    elif visibility == "all":
+    elif visibility == "all" and request.user.is_authenticated:
         playlists = (
             get_playlist_list_for_user(request.user)
             | get_public_playlist()
             | get_playlists_for_additional_owner(request.user)
         )
-    elif visibility == "promoted":
+    elif visibility == "promoted" or not request.user.is_authenticated:
         playlists = get_promoted_playlist()
     else:
         return redirect(reverse("playlist:list"))
