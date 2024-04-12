@@ -64,7 +64,7 @@ def search_for_available_livegateway(
     names_webinars = ""
     # Search for live gateways at the same moment of this webinar
     for webinar in webinars_list:
-        webinar_overlapping = get_webinar_overlapping(webinar)
+        webinar_overlapping = get_webinar_overlapping(meeting, webinar)
         if webinar_overlapping:
             names_webinars += "%s, " % webinar.name
             nb_webinars += 1
