@@ -36,6 +36,7 @@ from django.db.models import F, Q
 
 from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
+from pod.live.models import Broadcaster, Event
 
 from .utils import (
     api_call,
@@ -59,6 +60,7 @@ MEETING_PRE_UPLOAD_SLIDES = getattr(settings, "MEETING_PRE_UPLOAD_SLIDES", "")
 MEETING_DISABLE_RECORD = getattr(settings, "MEETING_DISABLE_RECORD", True)
 STATIC_ROOT = getattr(settings, "STATIC_ROOT", "")
 TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
+USE_MEETING_WEBINAR = getattr(settings, "USE_MEETING_WEBINAR", False)
 
 SITE_ID = getattr(settings, "SITE_ID", 1)
 
@@ -107,7 +109,7 @@ meeting_to_bbb = {
     # "lockSettingsLockOnJoin",
     # "lockSettingsLockOnJoinConfigurable",
     # "lockSettingsHideViewersCursor",
-    # "guestPolicy",
+    "guestPolicy": "guest_policy",
     # "meetingKeepEvents",
     # "endWhenNoModerator",
     # "endWhenNoModeratorDelayInMinutes",
@@ -288,7 +290,7 @@ class Meeting(models.Model):
 
     # #################### Configs
     max_participants = models.IntegerField(
-        default=100, verbose_name=_("Max Participants")
+        default=150, verbose_name=_("Max Participants")
     )
     welcome_text = models.TextField(
         default=_("Welcome!"), verbose_name=_("Meeting Text in Bigbluebutton")
@@ -322,6 +324,20 @@ class Meeting(models.Model):
         default=True,
         verbose_name=_("Allow Stop/Start Recording"),
         help_text=_("Allow the user to start/stop recording. (default true)"),
+    )
+    # #################### Guest policy for the meeting
+    GUEST_POLICY = (
+        ("ALWAYS_ACCEPT", _("Always accept")),
+        ("ALWAYS_DENY", _("Always deny")),
+        ("ASK_MODERATOR", _("Ask moderator")),
+    )
+    guest_policy = models.CharField(
+        null=True,
+        blank=True,
+        choices=GUEST_POLICY,
+        max_length=50,
+        verbose_name=_("Guest policy"),
+        help_text=_("Will set the guest policy for the meeting."),
     )
 
     # #################### Lock settings
@@ -399,6 +415,30 @@ class Meeting(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # #################### WEBINAR PART
+    # Webinar mode
+    is_webinar = models.BooleanField(
+        verbose_name=_("Webinar mode"),
+        help_text=_(
+            "Do you want to start this meeting as a webinar? In such a case, "
+            "you can invite presenters to join you in BigBlueButton, and listeners "
+            "will have direct access to a livestream in the livestreams page. "
+        ),
+        default=False,
+    )
+
+    # If the user wants that students have a chat in the live page
+    enable_chat = models.BooleanField(
+        verbose_name=_("Enable chat"),
+        help_text=_(
+            "Do you want a chat on the live page "
+            "for listeners? Messages sent in this live page's chat will "
+            "end up in BigBlueButton's public chat. "
+            "This public chat will be also displayed in the live."
+        ),
+        default=False,
+    )
+
     def __str__(self):
         return "{}-{}".format("%04d" % self.id, self.name)
 
@@ -473,7 +513,7 @@ class Meeting(models.Model):
             self.reset_recurrence()
 
     def save(self, *args, **kwargs):
-        """Store a video object in db."""
+        """Store a meeting object in db."""
         self.check_recurrence()
         newid = -1
         if not self.id:
@@ -1033,6 +1073,7 @@ class Meeting(models.Model):
 
 @receiver(pre_save, sender=Meeting)
 def default_site_meeting(sender, instance, **kwargs):
+    """Presave method for a meeting."""
     if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
     if instance.recurring_until and instance.start > instance.recurring_until:
@@ -1199,3 +1240,97 @@ def default_site_recording(sender, instance, **kwargs):
     """Save default site for this recording."""
     if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
+
+
+class LiveGateway(models.Model):
+    """Hold information about live gateways, encoders and broadcasters informations.
+
+    Useful for BigBlueButton livestreams."""
+
+    # RTMP Stream URL
+    # Format, without authentication : rtmp://rtmpserver.univ.fr:port/application/name
+    # Format, with authentication : rtmp://user@password:rtmpserver.univ.fr:port/application/name.m3u8
+    rtmp_stream_url = models.CharField(
+        _("URL of the RTMP stream"),
+        max_length=200,
+        help_text=_("Example format: rtmp://live.univ.fr/live/name"),
+    )
+    # Broadcaster in charge to perform the live
+    broadcaster = models.ForeignKey(
+        Broadcaster,
+        on_delete=models.CASCADE,
+        verbose_name=_("Broadcaster"),
+        help_text=_("Broadcaster in charge to perform lives."),
+    )
+
+    # LiveGateway's site
+    site = models.ForeignKey(
+        Site, verbose_name=_("Site"), on_delete=models.CASCADE, default=SITE_ID
+    )
+
+    def __unicode__(self):
+        return "%s - %s" % (self.rtmp_stream_url, self.broadcaster)
+
+    def __str__(self):
+        return "%s - %s" % (self.rtmp_stream_url, self.broadcaster)
+
+    def save(self, *args, **kwargs):
+        super(LiveGateway, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = _("Live gateway")
+        verbose_name_plural = _("Live gateways")
+
+
+@receiver(pre_save, sender=LiveGateway)
+def default_site_livegateway(sender, instance, **kwargs):
+    """Save default site for this live gateway."""
+    if not hasattr(instance, "site"):
+        instance.site = Site.objects.get_current()
+
+
+class Livestream(models.Model):
+    """Hold information about BigBlueButton/Webinar livestream."""
+
+    # Meeting
+    meeting = models.ForeignKey(
+        Meeting, on_delete=models.CASCADE, verbose_name=_("Meeting")
+    )
+    # Live status
+    STATUS = (
+        (0, _("Live not started")),
+        (1, _("Live in progress")),
+        (2, _("Live stopped")),
+    )
+    status = models.IntegerField(_("Live status"), choices=STATUS, default=0)
+
+    # Live event
+    event = models.ForeignKey(
+        Event,
+        # We delete the livestream when delete the linked event
+        on_delete=models.CASCADE,
+        verbose_name=_("Event managed for this live"),
+        help_text=_("Live event for this livestream"),
+    )
+
+    # Live gateway that manage this stream
+    live_gateway = models.ForeignKey(
+        LiveGateway,
+        on_delete=models.CASCADE,
+        verbose_name=_("Live gateway used for this live"),
+        help_text=_("Live gateway (encoder and broadcaster) that perform the livestream"),
+    )
+
+    def __unicode__(self):
+        return "%s - %s" % (self.meeting, self.status)
+
+    def __str__(self):
+        return "%s - %s" % (self.meeting, self.status)
+
+    def save(self, *args, **kwargs):
+        super(Livestream, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = _("Livestream")
+        verbose_name_plural = _("Livestreams")
+        ordering = ["id"]

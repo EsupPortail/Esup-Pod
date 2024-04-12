@@ -16,6 +16,9 @@ from django.utils import timezone
 from http import HTTPStatus
 from importlib import reload
 from pod.authentication.models import AccessGroup
+from pod.live.models import Building, Broadcaster
+from pod.meeting.models import LiveGateway
+from pod.video.models import Type
 
 
 VIDEO_TEST = getattr(settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp4")
@@ -207,6 +210,233 @@ class MeetingAddEditTestView(TestCase):
         self.assertEqual(m.attendee_password, "1234")
         self.assertEqual(m.start_at, timezone.make_aware(datetime(2022, 8, 26, 14, 0, 0)))
         print("   --->  test_meeting_edit_post_request of MeetingEditTestView: OK!")
+
+
+class MeetingWebinarTestView(TestCase):
+    """List of tests for useful views for a webinar.
+
+    Args:
+        TestCase (class): test case
+    """
+
+    def setUp(self):
+        site = Site.objects.get(id=1)
+        AccessGroup.objects.create(code_name="faculty", display_name="Group Faculty")
+        user = User.objects.create(username="pod", password="pod1234pod")
+        # User with faculty affiliation
+        user_faculty = User.objects.create(
+            username="pod_faculty", password="pod1234pod", email="pod@univ.fr"
+        )
+        user_faculty.owner.auth_type = "CAS"
+        user_faculty.owner.affiliation = "faculty"
+        user_faculty.owner.sites.add(Site.objects.get_current())
+        user_faculty.owner.accessgroup_set.add(
+            AccessGroup.objects.get(code_name="faculty")
+        )
+        user_faculty.owner.save()
+
+        Meeting.objects.create(
+            id=1, name="webinar", owner=user, site=site, is_webinar=True
+        )
+        Meeting.objects.create(
+            id=2, name="webinar_faculty", owner=user_faculty, site=site, is_webinar=True
+        )
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        # Default event type
+        Type.objects.create(title="type1")
+
+        # Create a broadcaster
+        building = Building.objects.create(name="building1")
+        broadcaster = Broadcaster.objects.create(
+            name="broadcaster1",
+            url="http://test.live",
+            status=True,
+            enable_add_event=True,
+            is_restricted=True,
+            building=building,
+        )
+        # Create a live gateway
+        LiveGateway.objects.create(
+            id=1,
+            rtmp_stream_url="rtmp://localhost:1935/live/sipmediagw",
+            broadcaster=broadcaster,
+            site=site,
+        )
+
+        print(" --->  SetUp of MeetingWebinarTestView: OK!")
+
+    def test_meeting_webinar_add_edit1_get_request(self):
+        self.client = Client()
+        url = reverse("meeting:add", kwargs={})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["form"].instance.id, None)
+        self.assertEqual(response.context["form"].current_user, self.user)
+        meeting = Meeting.objects.get(name="webinar")
+        url = reverse("meeting:edit", kwargs={"meeting_id": meeting.meeting_id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["form"].instance, meeting)
+        print(
+            " --->  test_meeting_webinar_add_edit1_get_request of MeetingWebinarTestView: OK!"
+        )
+
+    def test_meeting_webinar_add_edit2_get_request(self):
+        self.client = Client()
+        url = reverse("meeting:add", kwargs={})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.user = User.objects.get(username="pod_faculty")
+        self.client.force_login(self.user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["form"].instance.id, None)
+        self.assertEqual(response.context["form"].current_user, self.user)
+        meeting = Meeting.objects.get(name="webinar_faculty")
+        url = reverse("meeting:edit", kwargs={"meeting_id": meeting.meeting_id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["form"].instance, meeting)
+        print(
+            " --->  test_meeting_webinar_add_edit2_get_request of MeetingWebinarTestView: OK!"
+        )
+
+    def test_meeting_webinar_add1_post_request(self):
+        self.client = Client()
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        nb_meeting = Meeting.objects.all().count()
+        url = reverse("meeting:add", kwargs={})
+        response = self.client.post(
+            url,
+            {
+                "name": "webinar1",
+            },
+            follow=True,
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTrue(response.context["form"].errors)
+        response = self.client.post(
+            url,
+            {
+                "name": "webinar1",
+                "voice_bridge": 70000 + random.randint(0, 9999),
+                "attendee_password": "1234",
+                "start": "2022-08-26",
+                "start_time": "21:00:00",
+                "expected_duration": "2",
+                "frequency": "1",
+                "monthly_type": "date_day",
+                "max_participants": 100,
+                "welcome_text": "Hello",
+                "is_webinar": True,
+            },
+            follow=True,
+        )
+        self.assertTrue(b"The changes have been saved." in response.content)
+        # check if meeting has been updated
+        m = Meeting.objects.get(name="webinar1")
+        self.assertEqual(m.attendee_password, "1234")
+        # Also includes personal meeting room
+        self.assertEqual(Meeting.objects.all().count(), nb_meeting + 2)
+        self.assertEqual(m.start_at, timezone.make_aware(datetime(2022, 8, 26, 21, 0, 0)))
+        print(
+            "   --->  test_meeting_webinar_add1_post_request of MeetingWebinarTestView: OK!"
+        )
+
+    def test_meeting_webinar_add2_post_request(self):
+        self.client = Client()
+        self.user = User.objects.get(username="pod_faculty")
+        self.client.force_login(self.user)
+        nb_meeting = Meeting.objects.all().count()
+        url = reverse("meeting:add", kwargs={})
+        response = self.client.post(
+            url,
+            {
+                "name": "webinar_faculty1",
+            },
+            follow=True,
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTrue(response.context["form"].errors)
+        response = self.client.post(
+            url,
+            {
+                "name": "webinar_faculty1",
+                "voice_bridge": 70000 + random.randint(0, 9999),
+                "attendee_password": "1234",
+                "start": "2022-08-26",
+                "start_time": "21:00:00",
+                "expected_duration": "2",
+                "frequency": "1",
+                "monthly_type": "date_day",
+                "max_participants": 100,
+                "welcome_text": "Hello",
+                "is_webinar": True,
+            },
+            follow=True,
+        )
+        # self.assertTrue(b"It is not possible to hold a webinar during this period" in response.content)
+        self.assertTrue(b"The changes have been saved." in response.content)
+        # check if meeting has been updated
+        m = Meeting.objects.get(name="webinar_faculty1")
+        self.assertEqual(m.attendee_password, "1234")
+        # Also includes personal meeting room
+        self.assertEqual(Meeting.objects.all().count(), nb_meeting + 2)
+        self.assertEqual(m.start_at, timezone.make_aware(datetime(2022, 8, 26, 21, 0, 0)))
+        print(
+            "   --->  test_meeting_webinar_add2_post_request of MeetingWebinarTestView: OK!"
+        )
+
+    def test_meeting_webinar_edit_post_request(self):
+        self.client = Client()
+        meeting = Meeting.objects.get(name="webinar")
+        url = reverse("meeting:edit", kwargs={"meeting_id": meeting.meeting_id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.post(
+            url,
+            {
+                "name": "webinar1",
+            },
+            follow=True,
+        )
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTrue(response.context["form"].errors)
+        response = self.client.post(
+            url,
+            {
+                "name": "webinar1",
+                "voice_bridge": 70000 + random.randint(0, 9999),
+                "attendee_password": "1234",
+                "start": "2022-08-26",
+                "start_time": "14:00:00",
+                "expected_duration": "2",
+                "frequency": "1",
+                "monthly_type": "date_day",
+                "max_participants": 100,
+                "welcome_text": "Hello",
+                "is_webinar": True,
+            },
+            follow=True,
+        )
+        self.assertTrue(b"The changes have been saved." in response.content)
+        # check if meeting has been updated
+        m = Meeting.objects.get(name="webinar1")
+        self.assertEqual(m.attendee_password, "1234")
+        self.assertEqual(m.start_at, timezone.make_aware(datetime(2022, 8, 26, 14, 0, 0)))
+        print(
+            "   --->  test_meeting_webinar_edit1_post_request of MeetingWebinarTestView: OK!"
+        )
 
 
 class MeetingDeleteTestView(TestCase):

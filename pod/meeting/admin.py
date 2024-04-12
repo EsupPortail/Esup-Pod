@@ -7,12 +7,14 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
 from django.contrib.admin import widgets
 from django.utils.safestring import SafeText
-from .models import Meeting, InternalRecording, MeetingSessionLog
+from .models import MeetingSessionLog
+from .models import Meeting, InternalRecording, Livestream, LiveGateway
 from .forms import (
     MeetingForm,
     MEETING_MAIN_FIELDS,
     MEETING_DATE_FIELDS,
     MEETING_RECURRING_FIELDS,
+    MEETING_WEBINAR_FIELDS,
     get_meeting_fields,
 )
 
@@ -143,6 +145,7 @@ class MeetingAdmin(admin.ModelAdmin):
         (None, {"fields": MEETING_MAIN_FIELDS}),
         (_("Date"), {"fields": MEETING_DATE_FIELDS}),
         (_("Recurring"), {"fields": MEETING_RECURRING_FIELDS}),
+        (_("Webinar options"), {"fields": MEETING_WEBINAR_FIELDS}),
         (
             "Advanced options",
             {
@@ -234,3 +237,40 @@ class MeetingSessionLogAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
+
+@admin.register(Livestream)
+class LivestreamAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "meeting",
+        "live_gateway",
+        "event",
+        "status",
+    )
+    list_display_links = ("id", "meeting")
+    ordering = ("-id", "meeting")
+    readonly_fields = []
+    search_fields = [
+        "id",
+        "meeting__meeting_name",
+        "meeting__owner__username",
+        "meeting__owner__first_name",
+        "meeting__owner__last_name",
+    ]
+
+
+@admin.register(LiveGateway)
+class LiveGatewayAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "rtmp_stream_url",
+        "broadcaster",
+    )
+    list_display_links = ("id", "rtmp_stream_url")
+    ordering = ("-id", "rtmp_stream_url")
+    readonly_fields = []
+    search_fields = [
+        "id",
+        "broadcaster__broadcaster_name",
+    ]
