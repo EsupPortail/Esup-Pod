@@ -40,10 +40,7 @@ def cut_video(request, slug):  # noqa: C901
         cutting = CutVideo.objects.get(video=video.id)
         duration = cutting.duration
 
-    if (
-        RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
-        and request.user.is_staff is False
-    ):
+    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
         return render(
             request, "video_cut.html", {"access_not_allowed": True, "video": video}
         )
