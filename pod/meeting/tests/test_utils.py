@@ -11,7 +11,7 @@ from pod.meeting.webinar import (
     chat_rtmp_gateway,
     start_webinar_livestream,
     stop_webinar_livestream,
-    toggle_rtmp_gateway
+    toggle_rtmp_gateway,
 )
 from pod.meeting.webinar_utils import manage_webinar
 from pod.video.models import Type
@@ -34,7 +34,9 @@ class MeetingTestUtils(TestCase):
         user_faculty.owner.auth_type = "CAS"
         user_faculty.owner.affiliation = "faculty"
         user_faculty.owner.sites.add(Site.objects.get_current())
-        user_faculty.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="faculty"))
+        user_faculty.owner.accessgroup_set.add(
+            AccessGroup.objects.get(code_name="faculty")
+        )
         user_faculty.owner.save()
 
         Meeting.objects.create(
@@ -63,7 +65,7 @@ class MeetingTestUtils(TestCase):
             id=1,
             rtmp_stream_url="rtmp://127.0.0.1:1935/live/sipmediagw",
             broadcaster=broadcaster,
-            site=site
+            site=site,
         )
 
         print(" --->  SetUp of MeetingTestUtils: OK!")
@@ -79,7 +81,10 @@ class MeetingTestUtils(TestCase):
             start_webinar_livestream("https://127.0.0.1", 1)
         except ValueError as ve:
             self.assertTrue("/start?room=" in str(ve))
-            self.assertTrue("&domain=https%3A%2F%2F127.0.0.1%2Fmeeting%2F0001-webinar_faculty" in str(ve))
+            self.assertTrue(
+                "&domain=https%3A%2F%2F127.0.0.1%2Fmeeting%2F0001-webinar_faculty"
+                in str(ve)
+            )
         # Stop
         try:
             stop_webinar_livestream(1, True)

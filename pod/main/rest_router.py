@@ -77,7 +77,9 @@ if getattr(settings, "USE_BBB", True):
 
 if getattr(settings, "USE_MEETING", True):
     router.register(r"meeting_session", meeting_views.MeetingModelViewSet)
-    router.register(r"meeting_internal_recording", meeting_views.InternalRecordingModelViewSet)
+    router.register(
+        r"meeting_internal_recording", meeting_views.InternalRecordingModelViewSet
+    )
     router.register(r"meeting_livestream", meeting_views.LivestreamModelViewSet)
     router.register(r"meeting_live_gateway", meeting_views.LiveGatewayModelViewSet)
 

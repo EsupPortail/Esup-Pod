@@ -18,11 +18,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from pod.main.forms_utils import OwnerWidget, AddOwnerWidget
-from pod.meeting.webinar import (
-    start_webinar,
-    stop_webinar,
-    toggle_rtmp_gateway
-)
+from pod.meeting.webinar import start_webinar, stop_webinar, toggle_rtmp_gateway
 
 
 __FILEPICKER__ = False
@@ -420,7 +416,7 @@ class MeetingForm(forms.ModelForm):
                     toggle_rtmp_gateway(self.instance.id)
 
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request', None)
+        self.request = kwargs.pop("request", None)
         self.is_staff = (
             kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
         )

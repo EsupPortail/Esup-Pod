@@ -1243,9 +1243,7 @@ class Livestream(models.Model):
 
     # Meeting
     meeting = models.ForeignKey(
-        Meeting,
-        on_delete=models.CASCADE,
-        verbose_name=_("Meeting")
+        Meeting, on_delete=models.CASCADE, verbose_name=_("Meeting")
     )
     # Live status
     STATUS = (

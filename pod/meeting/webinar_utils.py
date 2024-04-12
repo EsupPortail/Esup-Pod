@@ -20,7 +20,9 @@ __TITLE_SITE__ = (
 DEFAULT_EVENT_TYPE_ID = getattr(settings, "DEFAULT_EVENT_TYPE_ID", 1)
 
 
-def search_for_available_livegateway(request: WSGIRequest, meeting: Meeting) -> LiveGateway:  # noqa: C901
+def search_for_available_livegateway(
+    request: WSGIRequest, meeting: Meeting
+) -> LiveGateway:  # noqa: C901
     """Search and returns a live gateway available during the period of the webinar.
 
     If more webinars are created than live gateways, an email is sent to warn administrators.
@@ -38,8 +40,9 @@ def search_for_available_livegateway(request: WSGIRequest, meeting: Meeting) -> 
         Meeting.objects.filter(
             is_webinar=True,
             start_at__gte=timezone.now() - timezone.timedelta(hours=5),
-            site=site
-        ).exclude(id=meeting.id))
+            site=site,
+        ).exclude(id=meeting.id)
+    )
     nb_webinars = 0
     names_webinars = ""
     meeting_end_date = meeting.start_at + meeting.expected_duration
@@ -48,38 +51,32 @@ def search_for_available_livegateway(request: WSGIRequest, meeting: Meeting) -> 
         webinar_overlapping = False
         webinar_end_date = webinar.start_at + webinar.expected_duration
         # Search on the overlapping period
-        if (
-            meeting.start_at >= webinar.start_at and meeting.start_at < webinar_end_date
-        ):
+        if meeting.start_at >= webinar.start_at and meeting.start_at < webinar_end_date:
             webinar_overlapping = True
-        elif (
-            meeting.start_at <= webinar.start_at and meeting_end_date > webinar.start_at
-        ):
+        elif meeting.start_at <= webinar.start_at and meeting_end_date > webinar.start_at:
             webinar_overlapping = True
-        elif (
-            meeting.start_at >= webinar.start_at and meeting_end_date < webinar_end_date
-        ):
+        elif meeting.start_at >= webinar.start_at and meeting_end_date < webinar_end_date:
             webinar_overlapping = True
-        elif (
-            meeting.start_at <= webinar.start_at and meeting_end_date > webinar_end_date
-        ):
+        elif meeting.start_at <= webinar.start_at and meeting_end_date > webinar_end_date:
             webinar_overlapping = True
 
         if webinar_overlapping:
             names_webinars += "%s, " % webinar.name
             nb_webinars += 1
             # Last livestream for the webinar
-            livestream = Livestream.objects.filter(
-                meeting=webinar
-            ).order_by('-id').first()
+            livestream = (
+                Livestream.objects.filter(meeting=webinar).order_by("-id").first()
+            )
             if livestream:
                 # Live gateway already used, add it to the list
                 live_gateways_id_used.append(livestream.live_gateway.id)
 
     # Available live gateway at the same moment of this webinar
-    live_gateway_available = LiveGateway.objects.filter(
-        site=site
-    ).exclude(id__in=live_gateways_id_used).first()
+    live_gateway_available = (
+        LiveGateway.objects.filter(site=site)
+        .exclude(id__in=live_gateways_id_used)
+        .first()
+    )
 
     # Number total of live gateways
     nb_live_gateways = LiveGateway.objects.filter(site=site).count()
@@ -93,10 +90,7 @@ def search_for_available_livegateway(request: WSGIRequest, meeting: Meeting) -> 
 
 
 def send_email_webinars(
-    meeting: Meeting,
-    nb_webinars: int,
-    nb_live_gateways: int,
-    names_webinars: str
+    meeting: Meeting, nb_webinars: int, nb_live_gateways: int, names_webinars: str
 ):
     """Send email notification to administrators when too many webinars."""
     subject = "[" + __TITLE_SITE__ + "] %s" % _("Too many webinars")
@@ -115,7 +109,7 @@ def send_email_webinars(
         meeting.name,
         meeting.start_at,
         meeting.start_at + meeting.expected_duration,
-        names_webinars
+        names_webinars,
     )
     html_message = _(
         "<p>There are too many webinars (<b>%s</b>) for the number of "
@@ -133,12 +127,14 @@ def send_email_webinars(
         meeting.name,
         meeting.start_at,
         meeting.start_at + meeting.expected_duration,
-        names_webinars
+        names_webinars,
     )
     mail_admins(subject, message, fail_silently=False, html_message=html_message)
 
 
-def manage_webinar(meeting: Meeting, created: bool, live_gateway: LiveGateway):  # noqa: C901
+def manage_webinar(
+    meeting: Meeting, created: bool, live_gateway: LiveGateway
+):  # noqa: C901
     """Manage the livestream and the event when a webinar is created or updated."""
     # When created a webinar
     if meeting.is_webinar and created:
@@ -162,9 +158,7 @@ def manage_webinar(meeting: Meeting, created: bool, live_gateway: LiveGateway): 
             livestream.event.end_date = meeting.start_at + meeting.expected_duration
         if livestream.event.is_restricted != meeting.is_restricted:
             livestream.event.is_restricted = meeting.is_restricted
-        livestream.event.additional_owners.set(
-            meeting.additional_owners.all()
-        )
+        livestream.event.additional_owners.set(meeting.additional_owners.all())
         livestream.event.restrict_access_to_groups.set(
             meeting.restrict_access_to_groups.all()
         )
@@ -196,9 +190,7 @@ def create_livestream_event(meeting: Meeting, live_gateway: LiveGateway):
         is_draft=False,
         is_restricted=meeting.is_restricted,
     )
-    event.restrict_access_to_groups.set(
-        meeting.restrict_access_to_groups.all()
-    )
+    event.restrict_access_to_groups.set(meeting.restrict_access_to_groups.all())
 
     # Create the livestream
     Livestream.objects.create(
@@ -206,5 +198,5 @@ def create_livestream_event(meeting: Meeting, live_gateway: LiveGateway):
         # Status : live not started
         status=0,
         event=event,
-        live_gateway=live_gateway
+        live_gateway=live_gateway,
     )

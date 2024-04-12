@@ -1,4 +1,5 @@
 """REST API for the Meeting module."""
+
 from rest_framework import serializers, viewsets
 from .models import InternalRecording, LiveGateway, Livestream, Meeting
 
@@ -27,14 +28,7 @@ class MeetingModelViewSet(viewsets.ModelViewSet):
 class InternalRecordingModelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = InternalRecording
-        fields = (
-            "id",
-            "name",
-            "start_at",
-            "recording_id",
-            "meeting",
-            "site_id"
-        )
+        fields = ("id", "name", "start_at", "recording_id", "meeting", "site_id")
 
 
 class InternalRecordingModelViewSet(viewsets.ModelViewSet):
@@ -45,14 +39,8 @@ class InternalRecordingModelViewSet(viewsets.ModelViewSet):
 class LivestreamModelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Livestream
-        fields = (
-            "id",
-            "meeting",
-            "status",
-            "event",
-            "live_gateway_id"
-        )
-        filter_fields = ("status")
+        fields = ("id", "meeting", "status", "event", "live_gateway_id")
+        filter_fields = "status"
 
 
 class LivestreamModelViewSet(viewsets.ModelViewSet):
@@ -70,7 +58,7 @@ class LiveGatewayModelSerializer(serializers.HyperlinkedModelSerializer):
             "broadcaster_id",
             "site_id",
         )
-        filter_fields = ("site_id")
+        filter_fields = "site_id"
 
 
 class LiveGatewayModelViewSet(viewsets.ModelViewSet):

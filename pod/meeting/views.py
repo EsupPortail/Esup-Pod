@@ -43,11 +43,7 @@ from pod.import_video.utils import manage_download, parse_remote_file
 from pod.import_video.utils import save_video, secure_request_for_upload
 from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
 from pod.main.utils import secure_post_request, display_message_with_icon
-from pod.meeting.webinar import (
-    chat_rtmp_gateway,
-    start_webinar,
-    stop_webinar
-)
+from pod.meeting.webinar import chat_rtmp_gateway, start_webinar, stop_webinar
 from pod.meeting.webinar_utils import search_for_available_livegateway, manage_webinar
 from pod.live.models import Event
 from pod.live.views import can_manage_event
@@ -116,14 +112,10 @@ __TITLE_SITE__ = (
 USE_MEETING = getattr(settings, "USE_MEETING", False)
 USE_MEETING_WEBINAR = getattr(settings, "USE_MEETING_WEBINAR", False)
 MEETING_WEBINAR_AFFILIATION = getattr(
-    settings,
-    "MEETING_WEBINAR_AFFILIATION",
-    ("faculty", "employee", "staff")
+    settings, "MEETING_WEBINAR_AFFILIATION", ("faculty", "employee", "staff")
 )
 MEETING_WEBINAR_GROUP_ADMIN = getattr(
-    settings,
-    "MEETING_WEBINAR_GROUP_ADMIN",
-    "meeting webinar admin"
+    settings, "MEETING_WEBINAR_GROUP_ADMIN", "meeting webinar admin"
 )
 
 DEFAULT_EVENT_TYPE_ID = getattr(settings, "DEFAULT_EVENT_TYPE_ID", 1)
@@ -150,9 +142,9 @@ def my_meetings(request: WSGIRequest) -> HttpResponse:
         meetings = [
             meeting
             for meeting in (
-                request.user.owner_meeting.all().filter(
-                    site=site
-                ) | request.user.owners_meetings.all().filter(site=site)
+                request.user.owner_meeting.all().filter(site=site)
+                | request.user.owners_meetings.all()
+                .filter(site=site)
                 .order_by("-is_personal", "-start_at")
             )
             if meeting.is_active
@@ -173,9 +165,7 @@ def manage_personal_meeting_room(request: WSGIRequest):
     """Create, if necessary, the personal meeting room for this user."""
     site = get_current_site(request)
     personal_meeting_room = Meeting.objects.filter(
-        owner=request.user,
-        site=site,
-        is_personal=True
+        owner=request.user, site=site, is_personal=True
     ).first()
 
     if not personal_meeting_room:
@@ -188,7 +178,7 @@ def manage_personal_meeting_room(request: WSGIRequest):
             moderator_password=get_random_string(8),
             start_at=datetime.now().replace(minute=0, second=0, microsecond=0),
             recurrence=None,
-            is_personal=True
+            is_personal=True,
         )
 
 
@@ -242,7 +232,7 @@ def add_or_edit(request: WSGIRequest, meeting_id=None) -> HttpResponse:
         current_user=request.user,
         initial={"owner": default_owner},
         manage_webinar=manage_webinar,
-        is_personal=is_personal
+        is_personal=is_personal,
     )
 
     if request.method == "POST":
@@ -255,7 +245,7 @@ def add_or_edit(request: WSGIRequest, meeting_id=None) -> HttpResponse:
             current_user=request.user,
             current_lang=request.LANGUAGE_CODE,
             manage_webinar=manage_webinar,
-            is_personal=is_personal
+            is_personal=is_personal,
         )
         if form.is_valid():
             meeting = save_meeting_form(request, form)
@@ -280,7 +270,7 @@ def add_or_edit(request: WSGIRequest, meeting_id=None) -> HttpResponse:
             "start_date_formats": start_date_formats,
             "page_title": mark_safe(page_title),
             "manage_webinar": manage_webinar,
-            "manage_event": manage_event
+            "manage_event": manage_event,
         },
     )
 
@@ -310,11 +300,7 @@ def save_meeting_form(request: WSGIRequest, form: MeetingForm) -> Meeting:
     form.save_m2m()
 
     # Manage webinar
-    if (
-        USE_MEETING_WEBINAR
-        and can_manage_webinar(request.user)
-        and meeting.is_webinar
-    ):
+    if USE_MEETING_WEBINAR and can_manage_webinar(request.user) and meeting.is_webinar:
         # Check if at least one live gateway is available during this meeting
         # Search an available live gateway (None possible)
         live_gateway = search_for_available_livegateway(request, meeting)
@@ -329,11 +315,13 @@ def save_meeting_form(request: WSGIRequest, form: MeetingForm) -> Meeting:
             meeting.is_webinar = False
             meeting.save()
             display_message_with_icon(
-                request, messages.ERROR, _(
+                request,
+                messages.ERROR,
+                _(
                     "It is not possible to hold a webinar during this period. "
                     "Webinar mode has been disabled for this meeting. "
                     "Please try to change the period or contact the administrator."
-                )
+                ),
             )
     else:
         display_message_with_icon(
@@ -423,10 +411,7 @@ def join(request: WSGIRequest, meeting_id: str, direct_access=None) -> HttpRespo
 
 
 def render_show_page(
-    request: WSGIRequest,
-    meeting: Meeting,
-    show_page: bool,
-    direct_access: bool
+    request: WSGIRequest, meeting: Meeting, show_page: bool, direct_access: bool
 ) -> HttpResponse:
     """Render show page."""
     if show_page and direct_access and request.user.is_authenticated:
@@ -505,9 +490,7 @@ def check_user(request: WSGIRequest) -> HttpResponse:
 
 
 def check_form(
-    request: WSGIRequest,
-    meeting: Meeting,
-    remove_password_in_form: bool
+    request: WSGIRequest, meeting: Meeting, remove_password_in_form: bool
 ) -> HttpResponse:
     """Check form."""
     current_user = request.user if request.user.is_authenticated else None
@@ -643,11 +626,7 @@ def end(request: WSGIRequest, meeting_id: str) -> HttpResponse:
             display_message_with_icon(request, messages.ERROR, msg)
         else:
             display_message_with_icon(
-                request,
-                messages.INFO,
-                _(
-                    "The meeting was successfully stopped."
-                )
+                request, messages.INFO, _("The meeting was successfully stopped.")
             )
         return redirect(reverse("meeting:my_meetings"))
 
@@ -689,9 +668,7 @@ def get_meeting_info(request: WSGIRequest, meeting_id: str) -> JsonResponse:
 
 @login_required(redirect_field_name="referrer")
 def get_internal_recordings(
-    request: WSGIRequest,
-    meeting_id: str,
-    recording_id=None
+    request: WSGIRequest, meeting_id: str, recording_id=None
 ) -> list:
     """List the internal recordings, depends on parameters (core function).
 
@@ -798,9 +775,7 @@ def internal_recordings(request: WSGIRequest, meeting_id: str) -> HttpResponse:
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def internal_recording(
-    request: WSGIRequest,
-    meeting_id: str,
-    recording_id: str
+    request: WSGIRequest, meeting_id: str, recording_id: str
 ) -> HttpResponse:
     """Get an internal recording, in JSON format (main function).
 
@@ -1226,9 +1201,7 @@ def get_video_url(request: WSGIRequest, meeting_id: str, recording_id: str) -> s
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def upload_internal_recording_to_pod(
-    request: WSGIRequest,
-    recording_id: str,
-    meeting_id: str
+    request: WSGIRequest, recording_id: str, meeting_id: str
 ) -> HttpResponse:
     """Upload internal recording to Pod.
 
@@ -1294,7 +1267,7 @@ def save_internal_recording(
     recording_id: str,
     recording_name: str,
     meeting_id: str,
-    source_url=None
+    source_url=None,
 ):
     """Save an internal recording in database.
 
@@ -1345,9 +1318,7 @@ def save_internal_recording(
 
 
 def upload_recording_to_pod(
-    request: WSGIRequest,
-    record_id: int,
-    meeting_id=None
+    request: WSGIRequest, record_id: int, meeting_id=None
 ) -> bool:
     """Upload recording to Pod (main function).
 
@@ -1385,9 +1356,7 @@ def upload_recording_to_pod(
 
 
 def upload_bbb_recording_to_pod(
-    request: WSGIRequest,
-    record_id: int,
-    meeting_id: str
+    request: WSGIRequest, record_id: int, meeting_id: str
 ) -> bool:
     """Upload a BBB or video file recording to Pod.
 

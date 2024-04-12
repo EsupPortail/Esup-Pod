@@ -230,22 +230,16 @@ class MeetingWebinarTestView(TestCase):
         user_faculty.owner.auth_type = "CAS"
         user_faculty.owner.affiliation = "faculty"
         user_faculty.owner.sites.add(Site.objects.get_current())
-        user_faculty.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="faculty"))
+        user_faculty.owner.accessgroup_set.add(
+            AccessGroup.objects.get(code_name="faculty")
+        )
         user_faculty.owner.save()
 
         Meeting.objects.create(
-            id=1,
-            name="webinar",
-            owner=user,
-            site=site,
-            is_webinar=True
+            id=1, name="webinar", owner=user, site=site, is_webinar=True
         )
         Meeting.objects.create(
-            id=2,
-            name="webinar_faculty",
-            owner=user_faculty,
-            site=site,
-            is_webinar=True
+            id=2, name="webinar_faculty", owner=user_faculty, site=site, is_webinar=True
         )
 
         user.owner.sites.add(Site.objects.get_current())
@@ -269,7 +263,7 @@ class MeetingWebinarTestView(TestCase):
             id=1,
             rtmp_stream_url="rtmp://localhost:1935/live/sipmediagw",
             broadcaster=broadcaster,
-            site=site
+            site=site,
         )
 
         print(" --->  SetUp of MeetingWebinarTestView: OK!")
@@ -290,7 +284,9 @@ class MeetingWebinarTestView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["form"].instance, meeting)
-        print(" --->  test_meeting_webinar_add_edit1_get_request of MeetingWebinarTestView: OK!")
+        print(
+            " --->  test_meeting_webinar_add_edit1_get_request of MeetingWebinarTestView: OK!"
+        )
 
     def test_meeting_webinar_add_edit2_get_request(self):
         self.client = Client()
@@ -308,7 +304,9 @@ class MeetingWebinarTestView(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["form"].instance, meeting)
-        print(" --->  test_meeting_webinar_add_edit2_get_request of MeetingWebinarTestView: OK!")
+        print(
+            " --->  test_meeting_webinar_add_edit2_get_request of MeetingWebinarTestView: OK!"
+        )
 
     def test_meeting_webinar_add1_post_request(self):
         self.client = Client()
@@ -338,7 +336,7 @@ class MeetingWebinarTestView(TestCase):
                 "monthly_type": "date_day",
                 "max_participants": 100,
                 "welcome_text": "Hello",
-                "is_webinar": True
+                "is_webinar": True,
             },
             follow=True,
         )
@@ -349,7 +347,9 @@ class MeetingWebinarTestView(TestCase):
         # Also includes personal meeting room
         self.assertEqual(Meeting.objects.all().count(), nb_meeting + 2)
         self.assertEqual(m.start_at, timezone.make_aware(datetime(2022, 8, 26, 21, 0, 0)))
-        print("   --->  test_meeting_webinar_add1_post_request of MeetingWebinarTestView: OK!")
+        print(
+            "   --->  test_meeting_webinar_add1_post_request of MeetingWebinarTestView: OK!"
+        )
 
     def test_meeting_webinar_add2_post_request(self):
         self.client = Client()
@@ -379,7 +379,7 @@ class MeetingWebinarTestView(TestCase):
                 "monthly_type": "date_day",
                 "max_participants": 100,
                 "welcome_text": "Hello",
-                "is_webinar": True
+                "is_webinar": True,
             },
             follow=True,
         )
@@ -391,7 +391,9 @@ class MeetingWebinarTestView(TestCase):
         # Also includes personal meeting room
         self.assertEqual(Meeting.objects.all().count(), nb_meeting + 2)
         self.assertEqual(m.start_at, timezone.make_aware(datetime(2022, 8, 26, 21, 0, 0)))
-        print("   --->  test_meeting_webinar_add2_post_request of MeetingWebinarTestView: OK!")
+        print(
+            "   --->  test_meeting_webinar_add2_post_request of MeetingWebinarTestView: OK!"
+        )
 
     def test_meeting_webinar_edit_post_request(self):
         self.client = Client()
@@ -423,7 +425,7 @@ class MeetingWebinarTestView(TestCase):
                 "monthly_type": "date_day",
                 "max_participants": 100,
                 "welcome_text": "Hello",
-                "is_webinar": True
+                "is_webinar": True,
             },
             follow=True,
         )
@@ -432,7 +434,9 @@ class MeetingWebinarTestView(TestCase):
         m = Meeting.objects.get(name="webinar1")
         self.assertEqual(m.attendee_password, "1234")
         self.assertEqual(m.start_at, timezone.make_aware(datetime(2022, 8, 26, 14, 0, 0)))
-        print("   --->  test_meeting_webinar_edit1_post_request of MeetingWebinarTestView: OK!")
+        print(
+            "   --->  test_meeting_webinar_edit1_post_request of MeetingWebinarTestView: OK!"
+        )
 
 
 class MeetingDeleteTestView(TestCase):
