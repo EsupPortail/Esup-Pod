@@ -822,6 +822,7 @@ class MeetingSessionLogTestCase(TestCase):
     Args:
         TestCase (class): test case
     """
+
     def setUp(self):
         self.user = User.objects.create(username="pod")
         self.meeting = Meeting.objects.create(id=1, name="test", owner=self.user)
@@ -844,7 +845,7 @@ class MeetingSessionLogTestCase(TestCase):
             meeting=self.meeting,
             creator=self.user,
             moderators=[[now, "moderator1"]],
-            viewers=[[now, "viewer1"]]
+            viewers=[[now, "viewer1"]],
         )
         self.assertEqual(msl.meeting, self.meeting)
         self.assertEqual(msl.creator, self.user)
@@ -865,11 +866,8 @@ class MeetingSessionLogTestCase(TestCase):
         self.assertEqual(
             msl.moderators,
             json.dumps(
-                [[now, "moderator1"]],
-                sort_keys=True,
-                indent=1,
-                cls=DjangoJSONEncoder
-            )
+                [[now, "moderator1"]], sort_keys=True, indent=1, cls=DjangoJSONEncoder
+            ),
         )
         viewers = sess.get_viewers()
         viewers.append([now, "viewer1"])
@@ -879,11 +877,8 @@ class MeetingSessionLogTestCase(TestCase):
         self.assertEqual(
             msl.viewers,
             json.dumps(
-                [[now, "viewer1"]],
-                sort_keys=True,
-                indent=1,
-                cls=DjangoJSONEncoder
-            )
+                [[now, "viewer1"]], sort_keys=True, indent=1, cls=DjangoJSONEncoder
+            ),
         )
 
     def test_delete_object(self):

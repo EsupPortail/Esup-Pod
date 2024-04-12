@@ -201,6 +201,7 @@ class MeetingSessionLogAdmin(admin.ModelAdmin):
     Args:
         admin (ModelAdmin): admin model
     """
+
     list_display = (
         "meeting",
         "creation_date",
@@ -215,8 +216,7 @@ class MeetingSessionLogAdmin(admin.ModelAdmin):
         """Decrypt moderators value to json and show it pretty."""
         if not obj:
             return _("Mode insert, nothing to display")
-        moderators = '<pre>{}</pre>'.format(
-            obj.moderators.replace(' ', '&nbsp;'))
+        moderators = "<pre>{}</pre>".format(obj.moderators.replace(" ", "&nbsp;"))
         return SafeText(moderators)
 
     decrypt_mods_as_json.short_description = _("Moderators")
@@ -226,8 +226,7 @@ class MeetingSessionLogAdmin(admin.ModelAdmin):
         """Decrypt viewers value to json and show it pretty."""
         if not obj:
             return _("Mode insert, nothing to display")
-        viewers = '<pre>{}</pre>'.format(
-            obj.viewers.replace(' ', '&nbsp;'))
+        viewers = "<pre>{}</pre>".format(obj.viewers.replace(" ", "&nbsp;"))
         return SafeText(viewers)
 
     decrypt_viewers_as_json.short_description = _("Viewers")
@@ -239,7 +238,7 @@ class MeetingSessionLogAdmin(admin.ModelAdmin):
         "creation_date",
         "creator",
         "decrypt_mods_as_json",
-        "decrypt_viewers_as_json"
+        "decrypt_viewers_as_json",
     )
 
     def has_add_permission(self, request):
@@ -257,6 +256,7 @@ class LivestreamAdmin(admin.ModelAdmin):
     Args:
         admin (ModelAdmin): admin model
     """
+
     list_display = (
         "id",
         "meeting",
@@ -283,6 +283,7 @@ class LiveGatewayAdmin(admin.ModelAdmin):
     Args:
         admin (ModelAdmin): admin model
     """
+
     list_display = (
         "id",
         "rtmp_stream_url",

@@ -1086,48 +1086,42 @@ class MeetingSessionLog(models.Model):
     An object is created each time that session of meeting is created.
     It store all moderators and viewers connected during the session.
     """
+
     meeting = models.ForeignKey(
-        Meeting, editable=False, verbose_name=_('meeting'), on_delete=models.CASCADE
+        Meeting, editable=False, verbose_name=_("meeting"), on_delete=models.CASCADE
     )
     creation_date = models.DateTimeField(editable=False, auto_now_add=True)
     creator = models.ForeignKey(
-        User, editable=False, verbose_name=_('creator'), on_delete=models.CASCADE
+        User, editable=False, verbose_name=_("creator"), on_delete=models.CASCADE
     )
     moderators = models.TextField(editable=False, default=[])
     viewers = models.TextField(editable=False, default=[])
 
     def set_moderators(self, lst):
-        self.moderators = json.dumps(
-            lst,
-            sort_keys=True,
-            indent=1,
-            cls=DjangoJSONEncoder
-        )
+        self.moderators = json.dumps(lst, sort_keys=True, indent=1, cls=DjangoJSONEncoder)
 
     def get_moderators(self):
         return json.loads(self.moderators)
 
     def set_viewers(self, lst):
-        self.viewers = json.dumps(
-            lst,
-            sort_keys=True,
-            indent=1,
-            cls=DjangoJSONEncoder
-        )
+        self.viewers = json.dumps(lst, sort_keys=True, indent=1, cls=DjangoJSONEncoder)
 
     def get_viewers(self):
         return json.loads(self.viewers)
 
     def __str__(self):
         return _("Session of the %(meeting_name)s meeting on %(creation_date)s") % {
-            'meeting_name': self.meeting.name,
-            'creation_date': self.creation_date,
+            "meeting_name": self.meeting.name,
+            "creation_date": self.creation_date,
         }
 
     class Meta:
         verbose_name = _("Meeting session log")
         verbose_name_plural = _("Meeting session logs")
-        ordering = ("meeting", "-creation_date",)
+        ordering = (
+            "meeting",
+            "-creation_date",
+        )
         get_latest_by = "creation_date"
 
 
