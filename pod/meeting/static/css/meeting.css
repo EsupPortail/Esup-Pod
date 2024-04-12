@@ -2,7 +2,7 @@
  * Esup-Pod Meeting styles
  */
 
-.meeting-card-inactive {
+ .meeting-card-inactive {
   border: 1px solid #f5a391;
 }
 
@@ -128,4 +128,13 @@ div.alert .proposition::before {
   margin-right: 15px;
   font-family: bootstrap-icons;
   vertical-align: -0.125em;
+}
+
+/* Max 16rem for meeting card */
+.pod-infinite-container {
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+}
+
+.meeting-nowrap {
+  white-space: nowrap !important;
 }
