@@ -81,6 +81,37 @@ def video_chapter_new(request, video):
         )
 
 
+def toggle_valid_form__video_chapter(request, video):
+    """Toggle the form validity."""
+    list_chapter = video.chapter_set.all()
+    if is_ajax(request):
+        csrf_token_value = get_token(request)
+        some_data_to_dump = {
+            "list_chapter": render_to_string(
+                "chapter/list_chapter.html",
+                {
+                    "list_chapter": list_chapter,
+                    "video": video,
+                    "csrf_token_value": csrf_token_value,
+                },
+                request=request,
+            ),
+            "video-elem": render_to_string(
+                "videos/video-element.html",
+                {"video": video},
+                request=request,
+            ),
+        }
+        data = json.dumps(some_data_to_dump)
+        return HttpResponse(data, content_type="application/json")
+    else:
+        return render(
+            request,
+            "video_chapter.html",
+            {"video": video, "list_chapter": list_chapter},
+        )
+
+
 def video_chapter_save(request, video):
     """Save a video chapter form request."""
     list_chapter = video.chapter_set.all()
@@ -94,33 +125,7 @@ def video_chapter_save(request, video):
         form_chapter = ChapterForm(request.POST)
     if form_chapter.is_valid():
         form_chapter.save()
-        list_chapter = video.chapter_set.all()
-        if is_ajax(request):
-            csrf_token_value = get_token(request)
-            some_data_to_dump = {
-                "list_chapter": render_to_string(
-                    "chapter/list_chapter.html",
-                    {
-                        "list_chapter": list_chapter,
-                        "video": video,
-                        "csrf_token_value": csrf_token_value,
-                    },
-                    request=request,
-                ),
-                "video-elem": render_to_string(
-                    "videos/video-element.html",
-                    {"video": video},
-                    request=request,
-                ),
-            }
-            data = json.dumps(some_data_to_dump)
-            return HttpResponse(data, content_type="application/json")
-        else:
-            return render(
-                request,
-                "video_chapter.html",
-                {"video": video, "list_chapter": list_chapter},
-            )
+        return toggle_valid_form__video_chapter(request, video)
     else:
         if is_ajax(request):
             csrf_token_value = get_token(request)
@@ -220,33 +225,7 @@ def video_chapter_import(request, video):
     form_chapter = ChapterForm(initial={"video": video})
     form_import = ChapterImportForm(request.POST, user=request.user, video=video)
     if form_import.is_valid():
-        list_chapter = video.chapter_set.all()
-        if is_ajax(request):
-            csrf_token_value = get_token(request)
-            some_data_to_dump = {
-                "list_chapter": render_to_string(
-                    "chapter/list_chapter.html",
-                    {
-                        "list_chapter": list_chapter,
-                        "video": video,
-                        "csrf_token_value": csrf_token_value,
-                    },
-                    request=request,
-                ),
-                "video-elem": render_to_string(
-                    "videos/video-element.html",
-                    {"video": video},
-                    request=request,
-                ),
-            }
-            data = json.dumps(some_data_to_dump)
-            return HttpResponse(data, content_type="application/json")
-        else:
-            return render(
-                request,
-                "video_chapter.html",
-                {"video": video, "list_chapter": list_chapter},
-            )
+        return toggle_valid_form__video_chapter(request, video)
     else:
         if is_ajax(request):
             some_data_to_dump = {
