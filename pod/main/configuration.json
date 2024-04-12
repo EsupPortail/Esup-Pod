@@ -1752,6 +1752,19 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.4"
                         },
+                        "RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Restrict access to promoted playlists creation to staff only."
+                                ],
+                                "fr": [
+                                    "Restreindre l’accès à la création de listes de lecture promues au staff uniquement."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.6"
+                        },
                         "USE_FAVORITES": {
                             "default_value": true,
                             "description": {
@@ -1777,6 +1790,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.4"
+                        },
+                        "USE_PROMOTED_PLAYLIST": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of promoted playlists. Allows users to use the promoted playlists."
+                                ],
+                                "fr": [
+                                    "Activation des playlist promues. Permet aux utilisateurs d'utiliser les listes de lecture promues."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.6"
                         }
                     },
                     "title": {
