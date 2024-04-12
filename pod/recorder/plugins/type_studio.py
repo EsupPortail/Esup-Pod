@@ -8,7 +8,7 @@ from xml.dom import minidom
 
 from django.conf import settings
 
-from ..utils import add_comment, studio_clean_old_files
+from ..utils import add_comment, studio_clean_old_entries
 from pod.video.models import Video, get_storage_path_video
 from pod.video_encode_transcript import encode
 from django.template.defaultfilters import slugify
@@ -93,7 +93,7 @@ def save_basic_video(recording, video_src):
     # Rename the XML file
     # os.rename(recording.source_file, recording.source_file + "_treated")
 
-    studio_clean_old_files()
+    studio_clean_old_entries()
 
     return video
 

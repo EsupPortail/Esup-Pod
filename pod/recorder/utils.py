@@ -1,5 +1,6 @@
 """Esup-Pod recorder utilities."""
 
+import shutil
 import time
 import os
 import uuid
@@ -20,21 +21,23 @@ def add_comment(recording_id, comment):
     recording.save()
 
 
-def studio_clean_old_files():
+def studio_clean_old_entries():
     """
-    Clean up old files in the "opencast-files" folder.
+    Clean up old entries in the opencast folder.
 
-    The function removes files that are older than 7 days
-    from the "opencast-files" folder in the media root.
+    The function removes entries that are older than 7 days
+    from the opencast folder in the media root.
     """
-    folder_to_clean = os.path.join(settings.MEDIA_ROOT, "opencast-files")
+    folder_to_clean = os.path.join(settings.MEDIA_ROOT, OPENCAST_FILES_DIR)
     now = time.time()
 
-    for f in os.listdir(folder_to_clean):
-        f = os.path.join(folder_to_clean, f)
-        if os.stat(f).st_mtime < now - 7 * 86400:
-            if os.path.isfile(f):
-                os.remove(f)
+    for entry in os.listdir(folder_to_clean):
+        entry_path = os.path.join(folder_to_clean, entry)
+        if os.stat(entry_path).st_mtime < now - 7 * 86400:
+            if os.path.isdir(entry_path):
+                shutil.rmtree(entry_path)
+            else:
+                os.remove(entry_path)
 
 
 def handle_upload_file(request, element_name, mimetype, tag_name):
