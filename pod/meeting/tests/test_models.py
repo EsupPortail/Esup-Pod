@@ -1,7 +1,7 @@
 """Tests the models for meeting module."""
 
 import random
-
+import json
 from ..models import Meeting, InternalRecording, MeetingSessionLog
 from datetime import datetime, date
 from django.contrib.auth.models import User
@@ -9,6 +9,7 @@ from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.template.defaultfilters import slugify
+from django.core.serializers.json import DjangoJSONEncoder
 from pod.authentication.models import AccessGroup
 from django.utils import timezone
 
@@ -831,8 +832,8 @@ class MeetingSessionLogTestCase(TestCase):
         msl = MeetingSessionLog.objects.create(meeting=self.meeting, creator=self.user)
         self.assertEqual(msl.meeting, self.meeting)
         self.assertEqual(msl.creator, self.user)
-        self.assertTrue(msl.creation_date > now)
-        self.assertTrue(msl.creation_date < datetime.now())
+        self.assertTrue(msl.creation_date > timezone.make_aware(now))
+        self.assertTrue(msl.creation_date < timezone.make_aware(datetime.now()))
         self.assertEqual(msl.moderators, [])
         self.assertEqual(msl.viewers, [])
 
@@ -861,18 +862,40 @@ class MeetingSessionLogTestCase(TestCase):
         sess.set_moderators(mods)
         sess.save()
         msl.refresh_from_db()
-        self.assertEqual(msl.moderators, [[now, "moderator1"]])
+        self.assertEqual(
+            msl.moderators,
+            json.dumps(
+                [[now, "moderator1"]],
+                sort_keys=True,
+                indent=1,
+                cls=DjangoJSONEncoder
+            )
+        )
         viewers = sess.get_viewers()
         viewers.append([now, "viewer1"])
         sess.set_viewers(viewers)
         sess.save()
         msl.refresh_from_db()
-        self.assertEqual(msl.viewers, [[now, "viewer1"]])
+        self.assertEqual(
+            msl.viewers,
+            json.dumps(
+                [[now, "viewer1"]],
+                sort_keys=True,
+                indent=1,
+                cls=DjangoJSONEncoder
+            )
+        )
 
     def test_delete_object(self):
         """Delete a MeetingSessionLog."""
-        self.assertEqual(Meeting.objects.all().count(), 0)
+        self.assertEqual(MeetingSessionLog.objects.all().count(), 0)
         msl = MeetingSessionLog.objects.create(meeting=self.meeting, creator=self.user)
-        self.assertEqual(Meeting.objects.all().count(), 1)
+        self.assertEqual(MeetingSessionLog.objects.all().count(), 1)
         msl.delete()
+        self.assertEqual(MeetingSessionLog.objects.all().count(), 0)
+        # test delete cascade
+        msl = MeetingSessionLog.objects.create(meeting=self.meeting, creator=self.user)
+        self.assertEqual(MeetingSessionLog.objects.all().count(), 1)
+        self.meeting.delete()
+        self.assertEqual(MeetingSessionLog.objects.all().count(), 0)
         self.assertEqual(Meeting.objects.all().count(), 0)
