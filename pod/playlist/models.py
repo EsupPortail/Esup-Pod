@@ -28,7 +28,7 @@ class Playlist(models.Model):
     ]
     name = models.CharField(
         verbose_name=_("Title"),
-        max_length=250,
+        max_length=200,
         default=_("Playlist"),
         help_text=_("Please choose a title between 1 and 250 characters."),
     )
@@ -78,7 +78,7 @@ class Playlist(models.Model):
     slug = models.SlugField(
         _("slug"),
         unique=True,
-        max_length=105,
+        max_length=255,
         help_text=_(
             "Used to access this instance, the “slug” is a short label"
             + " containing only letters, numbers, underscore or dash top."
