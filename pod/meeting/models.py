@@ -4,6 +4,7 @@ import hashlib
 import random
 import requests
 import os
+import json
 import base64
 
 from datetime import timedelta, datetime as dt
@@ -29,6 +30,7 @@ from django.core.validators import RegexValidator
 from django.core.validators import MinLengthValidator
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinValueValidator
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import F, Q
 
 
@@ -448,6 +450,9 @@ class Meeting(models.Model):
     @property
     def start_time(self):
         return self.start_at.time()
+
+    def get_current_session(self):
+        return self.meetingsessionlog_set.first()
 
     def reset_recurrence(self):
         """
@@ -1074,6 +1079,51 @@ def default_site_meeting(sender, instance, **kwargs):
         instance.site = Site.objects.get_current()
     if instance.recurring_until and instance.start > instance.recurring_until:
         raise ValueError(_("Start date must be less than recurring until date"))
+
+
+class MeetingSessionLog(models.Model):
+    """This model hold information about Big Blue Button session.
+
+    An object is created each time that session of meeting is created.
+    It store all moderators and viewers connected during the session.
+    """
+
+    meeting = models.ForeignKey(
+        Meeting, editable=False, verbose_name=_("meeting"), on_delete=models.CASCADE
+    )
+    creation_date = models.DateTimeField(editable=False, auto_now_add=True)
+    creator = models.ForeignKey(
+        User, editable=False, verbose_name=_("creator"), on_delete=models.CASCADE
+    )
+    moderators = models.TextField(editable=False, default=[])
+    viewers = models.TextField(editable=False, default=[])
+
+    def set_moderators(self, lst):
+        self.moderators = json.dumps(lst, sort_keys=True, indent=1, cls=DjangoJSONEncoder)
+
+    def get_moderators(self):
+        return json.loads(self.moderators)
+
+    def set_viewers(self, lst):
+        self.viewers = json.dumps(lst, sort_keys=True, indent=1, cls=DjangoJSONEncoder)
+
+    def get_viewers(self):
+        return json.loads(self.viewers)
+
+    def __str__(self):
+        return _("Session of the %(meeting_name)s meeting on %(creation_date)s") % {
+            "meeting_name": self.meeting.name,
+            "creation_date": self.creation_date,
+        }
+
+    class Meta:
+        verbose_name = _("Meeting session log")
+        verbose_name_plural = _("Meeting session logs")
+        ordering = (
+            "meeting",
+            "-creation_date",
+        )
+        get_latest_by = "creation_date"
 
 
 class InternalRecording(models.Model):

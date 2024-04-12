@@ -5399,6 +5399,18 @@ msgstr "rejoindre"
 msgid "Recurring"
 msgstr "Récurrence"
 
+#: pod/meeting/admin.py
+msgid "Mode insert, nothing to display"
+msgstr "Mode insertion, rien à afficher"
+
+#: pod/meeting/admin.py
+msgid "Moderators"
+msgstr "Modérateurs"
+
+#: pod/meeting/admin.py
+msgid "Viewers"
+msgstr "Spectateurs"
+
 #: pod/meeting/admin.py pod/meeting/forms.py
 msgid "Webinar options"
 msgstr "Options du webinaire"
@@ -5850,6 +5862,27 @@ msgid "Unable to delete recording!"
 msgstr "Impossible de supprimer l’enregistrement !"
 
 #: pod/meeting/models.py
+msgid "meeting"
+msgstr "reunion"
+
+#: pod/meeting/models.py
+msgid "creator"
+msgstr "createur"
+
+#: pod/meeting/models.py
+#, python-format
+msgid "Session of the %(meeting_name)s meeting on %(creation_date)s"
+msgstr "Session de la reunion %(meeting_name)s le %(creation_date)s"
+
+#: pod/meeting/models.py
+msgid "Meeting session log"
+msgstr "Journal des sessions des réunions"
+
+#: pod/meeting/models.py
+msgid "Meeting session logs"
+msgstr "Journaux des sessions des réunions"
+
+#: pod/meeting/models.py
 msgid "Recording ID"
 msgstr "Identifiant de l’enregistrement"
 
@@ -6194,6 +6227,10 @@ msgstr "S’authentifier"
 #: pod/meeting/templates/meeting/link_meeting.html
 msgid "Copy the direct join link"
 msgstr "Copiez le lien d’accès direct"
+
+#: pod/meeting/templates/meeting/link_meeting.html
+msgid "Copy the join link"
+msgstr "Copiez le lien d’accès avec restriction d'accès"
 
 #: pod/meeting/templates/meeting/link_meeting.html
 msgid "Invite to the meeting"
