@@ -150,9 +150,9 @@ def context_settings(request):
 
 
 def context_footer(request):
-    linkFooter = LinkFooter.objects.all().filter(sites=get_current_site(request))
+    link_footer = LinkFooter.objects.all().filter(sites=get_current_site(request))
     return {
-        "LINK_FOOTER": linkFooter,
+        "LINK_FOOTER": link_footer,
     }
 
 
