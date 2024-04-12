@@ -20,6 +20,23 @@ __TITLE_SITE__ = (
 DEFAULT_EVENT_TYPE_ID = getattr(settings, "DEFAULT_EVENT_TYPE_ID", 1)
 
 
+def get_webinar_overlapping(meeting, webinar):
+    """search if webinar overlapp a meeting."""
+    webinar_overlapping = False
+    meeting_end_date = meeting.start_at + meeting.expected_duration
+    webinar_end_date = webinar.start_at + webinar.expected_duration
+    # Search on the overlapping period
+    if meeting.start_at >= webinar.start_at and meeting.start_at < webinar_end_date:
+        webinar_overlapping = True
+    elif meeting.start_at <= webinar.start_at and meeting_end_date > webinar.start_at:
+        webinar_overlapping = True
+    elif meeting.start_at >= webinar.start_at and meeting_end_date < webinar_end_date:
+        webinar_overlapping = True
+    elif meeting.start_at <= webinar.start_at and meeting_end_date > webinar_end_date:
+        webinar_overlapping = True
+    return webinar_overlapping
+
+
 def search_for_available_livegateway(
     request: WSGIRequest, meeting: Meeting
 ) -> LiveGateway:  # noqa: C901
@@ -45,21 +62,9 @@ def search_for_available_livegateway(
     )
     nb_webinars = 0
     names_webinars = ""
-    meeting_end_date = meeting.start_at + meeting.expected_duration
     # Search for live gateways at the same moment of this webinar
     for webinar in webinars_list:
-        webinar_overlapping = False
-        webinar_end_date = webinar.start_at + webinar.expected_duration
-        # Search on the overlapping period
-        if meeting.start_at >= webinar.start_at and meeting.start_at < webinar_end_date:
-            webinar_overlapping = True
-        elif meeting.start_at <= webinar.start_at and meeting_end_date > webinar.start_at:
-            webinar_overlapping = True
-        elif meeting.start_at >= webinar.start_at and meeting_end_date < webinar_end_date:
-            webinar_overlapping = True
-        elif meeting.start_at <= webinar.start_at and meeting_end_date > webinar_end_date:
-            webinar_overlapping = True
-
+        webinar_overlapping = get_webinar_overlapping(webinar)
         if webinar_overlapping:
             names_webinars += "%s, " % webinar.name
             nb_webinars += 1
@@ -132,6 +137,25 @@ def send_email_webinars(
     mail_admins(subject, message, fail_silently=False, html_message=html_message)
 
 
+def update_livestream_event(livestream, meeting):
+    """Update event livestream from meeeting attributes."""
+    if livestream.event.title != meeting.name:
+        livestream.event.title = meeting.name
+    if livestream.event.start_date != meeting.start_at:
+        livestream.event.start_date = meeting.start_at
+    if livestream.event.end_date != meeting.start_at + meeting.expected_duration:
+        livestream.event.end_date = meeting.start_at + meeting.expected_duration
+    if livestream.event.is_restricted != meeting.is_restricted:
+        livestream.event.is_restricted = meeting.is_restricted
+    livestream.event.additional_owners.set(meeting.additional_owners.all())
+    livestream.event.restrict_access_to_groups.set(
+        meeting.restrict_access_to_groups.all()
+    )
+
+    # Update the livestream event
+    livestream.event.save()
+
+
 def manage_webinar(
     meeting: Meeting, created: bool, live_gateway: LiveGateway
 ):  # noqa: C901
@@ -150,21 +174,7 @@ def manage_webinar(
     # When updated a webinar
     if meeting.is_webinar and not created and livestream:
         # If update on meeting (for event-related fields) was achieved
-        if livestream.event.title != meeting.name:
-            livestream.event.title = meeting.name
-        if livestream.event.start_date != meeting.start_at:
-            livestream.event.start_date = meeting.start_at
-        if livestream.event.end_date != meeting.start_at + meeting.expected_duration:
-            livestream.event.end_date = meeting.start_at + meeting.expected_duration
-        if livestream.event.is_restricted != meeting.is_restricted:
-            livestream.event.is_restricted = meeting.is_restricted
-        livestream.event.additional_owners.set(meeting.additional_owners.all())
-        livestream.event.restrict_access_to_groups.set(
-            meeting.restrict_access_to_groups.all()
-        )
-
-        # Update the livestream event
-        livestream.event.save()
+        update_livestream_event(livestream, meeting)
 
     # When check is_webinar for an existent meeting
     if meeting.is_webinar and not created and not livestream:
