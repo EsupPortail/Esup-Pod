@@ -206,7 +206,7 @@ def getElementsByName(xmldoc, name):
         urlElement = element.getElementsByTagName("url")[0]
         if urlElement.firstChild and urlElement.firstChild.data != "":
             element_path = urlElement.firstChild.data[
-                urlElement.firstChild.data.index(MEDIA_URL) + len(MEDIA_URL):
+                urlElement.firstChild.data.index(MEDIA_URL) + len(MEDIA_URL) :
             ]
             src = os.path.join(settings.MEDIA_ROOT, element_path)
             if os.path.isfile(src):

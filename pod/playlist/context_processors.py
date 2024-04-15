@@ -1,4 +1,5 @@
 """Esup-Pod playlists context processors."""
+
 from django.conf import settings as django_settings
 
 USE_PLAYLIST = getattr(django_settings, "USE_PLAYLIST", True)

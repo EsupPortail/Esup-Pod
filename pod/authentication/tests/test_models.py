@@ -1,4 +1,5 @@
 """Esup-Pod authentication models test cases."""
+
 from django.test import TestCase
 from pod.authentication.models import Owner, AccessGroup
 from django.contrib.auth.models import User

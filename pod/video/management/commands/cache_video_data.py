@@ -1,4 +1,5 @@
 """Esup-Pod Video data caching command."""
+
 from django.core.management.base import BaseCommand
 from django.core.cache import cache
 from pod.video.context_processors import context_video_data

@@ -666,10 +666,7 @@ class Smp(PilotingInterface):
             pod_file_name = file_head_tail[1]
             pod_file_path = os.path.join(DEFAULT_EVENT_PATH, pod_file_name)
             logger.debug(
-                "-- try to copy from SMP: "
-                + smp_file_path
-                + " to Pod: "
-                + pod_file_path
+                "-- try to copy from SMP: " + smp_file_path + " to Pod: " + pod_file_path
             )
 
             # copy from remote to local

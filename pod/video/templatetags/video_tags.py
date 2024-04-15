@@ -1,4 +1,5 @@
 """Esup-Pod Video tags."""
+
 from django import template
 from django.utils.text import capfirst
 from django.urls import reverse

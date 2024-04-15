@@ -1,4 +1,5 @@
 """Esup-Pod playlists signals."""
+
 from django.contrib.sites.models import Site
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver

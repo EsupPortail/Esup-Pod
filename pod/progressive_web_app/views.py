@@ -1,4 +1,5 @@
 """Esup-Pod progressive Web App views."""
+
 from django.shortcuts import render
 from .utils import notify_user
 from django.http import JsonResponse

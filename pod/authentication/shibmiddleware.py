@@ -1,4 +1,5 @@
 """Esup-Pod Shibboleth middleware authentication."""
+
 from shibboleth.middleware import ShibbolethRemoteUserMiddleware
 from django.conf import settings
 from pod.authentication.models import AFFILIATION_STAFF
