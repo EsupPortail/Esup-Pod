@@ -720,8 +720,9 @@ class TestPlaylistPage(TestCase):
         importlib.reload(context_processors)
         self.client.force_login(self.user)
         response = self.client.get(self.url_fav_user1)
-        self.assertTrue(
-            f'{_("Playlist:")} {_(FAVORITE_PLAYLIST_NAME)}' in response.content.decode()
+        self.assertContains(
+            response.content.decode(),
+            _("Playlist: %(name)s") % {"name": _(FAVORITE_PLAYLIST_NAME)}
         )
         self.client.logout()
         print(" --->  test_folder_icon_in_video_links ok")
