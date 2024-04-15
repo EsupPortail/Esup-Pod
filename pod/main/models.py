@@ -10,6 +10,8 @@ from django.db.models.signals import post_save
 from django.db import connection
 import os
 import mimetypes
+from ckeditor.fields import RichTextField
+
 
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
@@ -193,3 +195,178 @@ class AdditionalChannelTab(models.Model):
     class Meta:
         verbose_name = _("Additional channels Tab")
         verbose_name_plural = _("Additional channel Tabs")
+
+
+class Block(models.Model):
+    """Class describing Block objects."""
+
+    CAROUSEL = "carousel"
+    MULTI_CAROUSEL = "multi_carousel"
+    CARD_LIST = "card_list"
+    HTML = "html"
+    TYPE = (
+        (CAROUSEL, _("Carousel")),
+        (MULTI_CAROUSEL, _("Multiple carousel")),
+        (CARD_LIST, _("Card list")),
+        (HTML, _("HTML")),
+    )
+
+    CHANNEL = "channel"
+    THEME = "theme"
+    PLAYLIST = "playlist"
+    LAST_VIDEOS = "last_videos"
+    MOST_VIEWS = "most_views"
+    EVENT_NEXT = "event_next"
+    DATA_TYPE = (
+        (CHANNEL, _("Channel")),
+        (THEME, _("Theme")),
+        (PLAYLIST, _("Playlist")),
+        (LAST_VIDEOS, _("Last videos")),
+        (MOST_VIEWS, _("Most views")),
+        (EVENT_NEXT, _("Next events")),
+    )
+
+    title = models.CharField(
+        verbose_name=_("Title"), max_length=250, blank=True, null=True
+    )
+
+    order = models.PositiveSmallIntegerField(
+        verbose_name=_("Order"), default=1, blank=True, null=True
+    )
+
+    visible = models.BooleanField(
+        verbose_name=_("Visible"),
+        default=True,
+        help_text=_("Check this box if block is visible in page."),
+    )
+
+    page = models.ForeignKey(
+        FlatPage,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        help_text=_("Select the page of Pod you want to link with."),
+    )
+
+    sites = models.ManyToManyField(Site)
+
+    type = models.CharField(
+        verbose_name=_("Type"),
+        max_length=200,
+        choices=TYPE,
+        default=CAROUSEL,
+        blank=True,
+        null=True,
+    )
+
+    data_type = models.CharField(
+        verbose_name=_("Data type"),
+        max_length=200,
+        choices=DATA_TYPE,
+        default=None,
+        blank=True,
+        null=True,
+    )
+
+    Channel = models.ForeignKey(
+        "video.Channel",
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        help_text=_("Select the channel you want to link with."),
+    )
+
+    Theme = models.ForeignKey(
+        "video.Theme",
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        help_text=_("Select the theme you want to link with."),
+    )
+
+    Playlist = models.ForeignKey(
+        "playlist.Playlist",
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        help_text=_("Select the playlist you want to link with."),
+    )
+
+    html = RichTextField(
+        config_name="complete",
+        verbose_name=_("HTML"),
+        null=True,
+        blank=True,
+        help_text=_("Write in html inside this field."),
+    )
+
+    display_title = models.CharField(
+        verbose_name=_("Display title"), max_length=250, blank=True, null=True
+    )
+
+    no_cache = models.BooleanField(
+        default=True,
+        verbose_name=_("No cache"),
+        help_text=_("Check this box if you don't want to keep the cache."),
+    )
+
+    debug = models.BooleanField(
+        verbose_name=_("Debug"),
+        default=False,
+        help_text=_("Check this box if you want to activate debug mode."),
+    )
+
+    show_restricted = models.BooleanField(
+        verbose_name=_("Show restricted content"),
+        default=False,
+        help_text=_("Check this box if you want to show restricted content."),
+    )
+
+    must_be_auth = models.BooleanField(
+        verbose_name=_("Must be authenticated"),
+        default=False,
+        help_text=_("Check this box if users must be authenticated to view content."),
+    )
+
+    auto_slide = models.BooleanField(
+        verbose_name=_("Auto slide"),
+        default=False,
+        help_text=_("Check this box if you want auto slide."),
+    )
+
+    nb_element = models.PositiveIntegerField(
+        verbose_name=_("Maximum number of element"), default=5, blank=True, null=True
+    )
+
+    multi_carousel_nb = models.PositiveIntegerField(
+        verbose_name=_("Number of element per page (multi carousel)"),
+        default=5,
+        blank=True,
+        null=True,
+    )
+
+    view_videos_from_non_visible_channels = models.BooleanField(
+        verbose_name=_("View videos from non visible channel"),
+        default=False,
+        help_text=_("Check this box if you want view videos from non visible channel."),
+    )
+
+    shows_passworded = models.BooleanField(
+        verbose_name=_("View videos with password"),
+        default=False,
+        help_text=_("Check this box if you want view videos with password."),
+    )
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    class Meta:
+        verbose_name = _("Block")
+        verbose_name_plural = _("Blocks")
+
+
+@receiver(post_save, sender=Block)
+def default_site_block(sender, instance, created, **kwargs):
+    """Sets a default site for the instance if it has no associated sites upon creation."""
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())

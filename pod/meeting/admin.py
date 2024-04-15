@@ -6,13 +6,15 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.utils.html import mark_safe
 from django.contrib.admin import widgets
-
-from .models import Meeting, InternalRecording
+from django.utils.safestring import SafeText
+from .models import MeetingSessionLog
+from .models import Meeting, InternalRecording, Livestream, LiveGateway
 from .forms import (
     MeetingForm,
     MEETING_MAIN_FIELDS,
     MEETING_DATE_FIELDS,
     MEETING_RECURRING_FIELDS,
+    MEETING_WEBINAR_FIELDS,
     get_meeting_fields,
 )
 
@@ -143,6 +145,7 @@ class MeetingAdmin(admin.ModelAdmin):
         (None, {"fields": MEETING_MAIN_FIELDS}),
         (_("Date"), {"fields": MEETING_DATE_FIELDS}),
         (_("Recurring"), {"fields": MEETING_RECURRING_FIELDS}),
+        (_("Webinar options"), {"fields": MEETING_WEBINAR_FIELDS}),
         (
             "Advanced options",
             {
@@ -188,4 +191,108 @@ class InternalRecordingAdmin(admin.ModelAdmin):
         "meeting",
         "source_url",
         "owner",
+    ]
+
+
+@admin.register(MeetingSessionLog)
+class MeetingSessionLogAdmin(admin.ModelAdmin):
+    """Administration for BBB session log.
+
+    Args:
+        admin (ModelAdmin): admin model
+    """
+
+    list_display = (
+        "meeting",
+        "creation_date",
+        "creator",
+    )
+    search_fields = [
+        "meeting",
+        "creator",
+    ]
+
+    def decrypt_mods_as_json(self, obj):
+        """Decrypt moderators value to json and show it pretty."""
+        if not obj:
+            return _("Mode insert, nothing to display")
+        moderators = "<pre>{}</pre>".format(obj.moderators.replace(" ", "&nbsp;"))
+        return SafeText(moderators)
+
+    decrypt_mods_as_json.short_description = _("Moderators")
+    decrypt_mods_as_json.allow_tags = True
+
+    def decrypt_viewers_as_json(self, obj):
+        """Decrypt viewers value to json and show it pretty."""
+        if not obj:
+            return _("Mode insert, nothing to display")
+        viewers = "<pre>{}</pre>".format(obj.viewers.replace(" ", "&nbsp;"))
+        return SafeText(viewers)
+
+    decrypt_viewers_as_json.short_description = _("Viewers")
+    decrypt_viewers_as_json.allow_tags = True
+
+    list_filter = ["creation_date"]
+    readonly_fields = (
+        "meeting",
+        "creation_date",
+        "creator",
+        "decrypt_mods_as_json",
+        "decrypt_viewers_as_json",
+    )
+
+    def has_add_permission(self, request):
+        """
+        Check if user had permission to add new log.
+        Always return false to prevent it.
+        """
+        return False
+
+
+@admin.register(Livestream)
+class LivestreamAdmin(admin.ModelAdmin):
+    """Administration for BBB live stream.
+
+    Args:
+        admin (ModelAdmin): admin model
+    """
+
+    list_display = (
+        "id",
+        "meeting",
+        "live_gateway",
+        "event",
+        "status",
+    )
+    list_display_links = ("id", "meeting")
+    ordering = ("-id", "meeting")
+    readonly_fields = []
+    search_fields = [
+        "id",
+        "meeting__meeting_name",
+        "meeting__owner__username",
+        "meeting__owner__first_name",
+        "meeting__owner__last_name",
+    ]
+
+
+@admin.register(LiveGateway)
+class LiveGatewayAdmin(admin.ModelAdmin):
+    """Administration for BBB live gateway.
+
+    Args:
+        admin (ModelAdmin): admin model
+    """
+
+    list_display = (
+        "id",
+        "rtmp_stream_url",
+        "broadcaster",
+    )
+    list_display_links = ("id", "rtmp_stream_url")
+    ordering = ("-id", "rtmp_stream_url")
+    readonly_fields = []
+    search_fields = [
+        "id",
+        "broadcaster__broadcaster_name",
     ]

@@ -1855,6 +1855,52 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
 
   >> Seuls les utilisateurs "staff" pourront éditer les réunions <br>
 
+ - `USE_MEETING_WEBINAR`
+
+  > valeur par défaut : `False`
+
+  >> Activation du mode Webinaire pour le module des réunions <br>
+
+ - `MEETING_WEBINAR_SIPMEDIAGW_URL`
+
+  > valeur par défaut : ``
+
+  >> URL du serveur SIPMediaGW qui gère les webinaires (Ex: https://sipmediagw.univ.fr) <br>
+
+ - `MEETING_WEBINAR_SIPMEDIAGW_TOKEN`
+
+  > valeur par défaut : ``
+
+  >> Jeton bearer du serveur SIPMediaGW qui gère les webinaires <br>
+
+ - `MEETING_WEBINAR_FIELDS`
+
+  > valeur par défaut : `("is_webinar", "enable_chat")`
+
+  >> Permet de définir les champs complémentaires du formulaire de création d’un webinaire <br>
+  >> ces champs complémentaires sont affichés directement dans la page de formulaire d’un webinaire <br>
+  >>
+  >> ```
+  >> MEETING_WEBINAR_FIELDS: 
+  >> ( 
+  >>     "is_webinar", 
+  >>     "enable_chat", 
+  >> ) 
+  >>
+  >> ```
+
+ - `MEETING_WEBINAR_AFFILIATION`
+
+  > valeur par défaut : `['faculty', 'employee', 'staff']`
+
+  >> Groupes d’accès ou affiliations des personnes autorisées à créer un webinaire <br>
+
+ - `MEETING_WEBINAR_GROUP_ADMIN`
+
+  > valeur par défaut : `webinar admin`
+
+  >> Groupe des personnes autorisées à créer un webinaire <br>
+
  - `USE_MEETING`
 
   > valeur par défaut : `False`

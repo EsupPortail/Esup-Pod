@@ -1,7 +1,7 @@
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 
-from pod.main.models import LinkFooter
+from pod.main.models import LinkFooter, Block
 from django.core.exceptions import ObjectDoesNotExist
 
 from pod.main.models import Configuration
@@ -70,11 +70,11 @@ USE_BBB_LIVE = getattr(django_settings, "USE_BBB_LIVE", False)
 
 COOKIE_LEARN_MORE = getattr(django_settings, "COOKIE_LEARN_MORE", "")
 
-SHOW_EVENTS_ON_HOMEPAGE = getattr(django_settings, "SHOW_EVENTS_ON_HOMEPAGE", False)
-
 USE_OPENCAST_STUDIO = getattr(django_settings, "USE_OPENCAST_STUDIO", False)
 
 USE_MEETING = getattr(django_settings, "USE_MEETING", False)
+
+USE_MEETING_WEBINAR = getattr(django_settings, "USE_MEETING_WEBINAR", False)
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     django_settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -137,8 +137,8 @@ def context_settings(request):
     new_settings["DYSLEXIAMODE_ENABLED"] = DYSLEXIAMODE_ENABLED
     new_settings["USE_OPENCAST_STUDIO"] = USE_OPENCAST_STUDIO
     new_settings["COOKIE_LEARN_MORE"] = COOKIE_LEARN_MORE
-    new_settings["SHOW_EVENTS_ON_HOMEPAGE"] = SHOW_EVENTS_ON_HOMEPAGE
     new_settings["USE_MEETING"] = USE_MEETING
+    new_settings["USE_MEETING_WEBINAR"] = USE_MEETING_WEBINAR
     new_settings["RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY"] = (
         RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
     )
@@ -153,4 +153,23 @@ def context_footer(request):
     linkFooter = LinkFooter.objects.all().filter(sites=get_current_site(request))
     return {
         "LINK_FOOTER": linkFooter,
+    }
+
+
+def context_block(request):
+    """
+    Return the context for blocks to be displayed in templates.
+
+    Args:
+        request (HttpRequest): The Django request object.
+
+    Returns:
+        dict[str, Any]: A dictionary containing the context with the key "BLOCK"
+                       associated with the sorted list of blocks.
+    """
+    block = Block.objects.filter(sites=get_current_site(request), visible=True).order_by(
+        "order"
+    )
+    return {
+        "BLOCK": block,
     }

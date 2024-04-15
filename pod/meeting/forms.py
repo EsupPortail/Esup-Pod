@@ -18,6 +18,8 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from pod.main.forms_utils import OwnerWidget, AddOwnerWidget
+from pod.meeting.webinar import start_webinar, stop_webinar, toggle_rtmp_gateway
+
 
 __FILEPICKER__ = False
 if getattr(settings, "USE_PODFILE", False):
@@ -68,12 +70,24 @@ MEETING_RECORD_FIELDS = getattr(
     ("record", "auto_start_recording"),  # , "allow_start_stop_recording"
 )
 
+USE_MEETING_WEBINAR = getattr(settings, "USE_MEETING_WEBINAR", False)
+
+MEETING_WEBINAR_FIELDS = getattr(
+    settings,
+    "MEETING_WEBINAR_FIELDS",
+    (
+        "is_webinar",
+        "enable_chat",
+    ),
+)
+
 __MEETING_EXCLUDE_FIELDS__ = (
     MEETING_MAIN_FIELDS
     + MEETING_DATE_FIELDS
     + MEETING_RECURRING_FIELDS
     + ("id", "start_at")
     + MEETING_RECORD_FIELDS
+    + MEETING_WEBINAR_FIELDS
 )
 
 
@@ -83,7 +97,8 @@ for field in Meeting._meta.fields:
         __MEETING_EXCLUDE_FIELDS__ = __MEETING_EXCLUDE_FIELDS__ + (field.name,)
 
 
-def get_meeting_fields():
+def get_meeting_fields() -> list:
+    """Get all meeting fields."""
     fields = []
     for field in Meeting._meta.fields:
         if field.name not in __MEETING_EXCLUDE_FIELDS__:
@@ -91,7 +106,8 @@ def get_meeting_fields():
     return fields
 
 
-def get_random_string(length):
+def get_random_string(length: int) -> str:
+    """Get a random string, with lowercase letters."""
     # choose from all lowercase letter
     letters = string.ascii_lowercase
     result_str = "".join(random.choice(letters) for i in range(length))
@@ -103,6 +119,8 @@ class MeetingForm(forms.ModelForm):
     required_css_class = "required"
     is_admin = False
     is_superuser = False
+    manage_webinar = False
+    is_personal = False
 
     def get_time_choices(
         start_time=datetime.time(0, 0, 0),
@@ -211,6 +229,20 @@ class MeetingForm(forms.ModelForm):
             ),
         )
 
+    if USE_MEETING_WEBINAR:
+        fieldsets += (
+            (
+                "input-group-webinar",
+                {
+                    "legend": (
+                        '<i class="bi bi-cast" aria-hidden="true"></i>'
+                        + " %s" % _("Webinar options")
+                    ),
+                    "fields": MEETING_WEBINAR_FIELDS,
+                },
+            ),
+        )
+
     fieldsets += (
         (
             "modal",
@@ -238,6 +270,7 @@ class MeetingForm(forms.ModelForm):
     )
 
     def filter_fields_admin(form):
+        """Remove fields for not admin user."""
         if form.is_superuser is False and form.is_admin is False:
             form.remove_field("owner")
 
@@ -245,6 +278,16 @@ class MeetingForm(forms.ModelForm):
             form.remove_field("site")
         else:
             form.remove_field("days_of_week")
+
+    def filter_fields_webinar(form):
+        """Display webinar fields only for authorized user."""
+        if (
+            form.manage_webinar is False
+            and form.is_admin is False
+            and form.is_superuser is False
+        ) or (form.is_personal):
+            form.remove_field("is_webinar")
+            form.remove_field("enable_chat")
 
     def clean_start_date(self):
         """Check two things:
@@ -300,6 +343,7 @@ class MeetingForm(forms.ModelForm):
                 )
 
     def clean(self):
+        """Clean all form fields."""
         self.cleaned_data = super(MeetingForm, self).clean()
         if "expected_duration" in self.cleaned_data.keys():
             self.cleaned_data["expected_duration"] = timezone.timedelta(
@@ -338,8 +382,41 @@ class MeetingForm(forms.ModelForm):
             raise ValidationError(
                 _("Voice bridge must be a 5-digit number in the range 10000 to 99999")
             )
+        # Manage when user has changed webinar fields
+        self.is_webinar_has_changed()
+        self.enable_chat_has_changed()
+
+    def is_webinar_has_changed(self):
+        """Manage when user has changed is_webinar field and disable the webinar mode."""
+        if self.instance.pk is not None and "is_webinar" in self.cleaned_data:
+            if self.instance.is_webinar != self.cleaned_data["is_webinar"]:
+                # Disable webinar mode when meeting running
+                if (
+                    self.instance.get_is_meeting_running() is True
+                    and self.cleaned_data["is_webinar"] is False
+                ):
+                    # Stop the webinar in this case
+                    stop_webinar(self.request, self.instance.id)
+                # Enable webinar mode when meeting running and owner
+                if (
+                    self.instance.get_is_meeting_running() is True
+                    and self.cleaned_data["is_webinar"] is True
+                    and self.instance.owner == self.request.user
+                ):
+                    # Start the webinar in this case
+                    start_webinar(self.request, self.instance.id)
+
+    def enable_chat_has_changed(self):
+        """Manage when user has changed enable_chat field."""
+        if self.instance.pk is not None and "enable_chat" in self.cleaned_data:
+            if self.instance.enable_chat != self.cleaned_data["enable_chat"]:
+                if self.instance.get_is_meeting_running() is True:
+                    # When enable chat field changed, send a toggle request
+                    # to SIPMediaGW if webinar already started
+                    toggle_rtmp_gateway(self.instance.id)
 
     def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop("request", None)
         self.is_staff = (
             kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
         )
@@ -351,10 +428,14 @@ class MeetingForm(forms.ModelForm):
         )
         self.current_lang = kwargs.pop("current_lang", settings.LANGUAGE_CODE)
         self.current_user = kwargs.pop("current_user", None)
+        self.manage_webinar = kwargs.pop("manage_webinar", False)
+        self.is_personal = kwargs.pop("is_personal", False)
         super(MeetingForm, self).__init__(*args, **kwargs)
+
         self.set_queryset()
         self.filter_fields_admin()
         self.date_time_duration()
+        self.filter_fields_webinar()
         # Manage required fields html
         self.fields = add_placeholder_and_asterisk(self.fields)
 
@@ -367,7 +448,7 @@ class MeetingForm(forms.ModelForm):
             self.instance, "weekdays", None
         ):
             self.initial["days_of_week"] = list(self.instance.weekdays)
-        # remove recurring until value if recurrence is None
+        # Remove recurring until value if recurrence is None
         if (
             getattr(self.instance, "id", None)
             and getattr(self.instance, "recurrence", None) is None
@@ -391,7 +472,12 @@ class MeetingForm(forms.ModelForm):
             # Name is a readonly field in such a case
             self.fields["name"].widget.attrs["readonly"] = True
             # Hide time settings
-            hidden_fields = ("start", "start_time", "expected_duration", "is_personal")
+            hidden_fields = (
+                "start",
+                "start_time",
+                "expected_duration",
+                "is_personal",
+            )
             for field in hidden_fields:
                 self.hide_field(field)
 

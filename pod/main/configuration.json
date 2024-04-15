@@ -1355,7 +1355,7 @@
                                     "Affiche les vidéos de chaines non visibles sur la page d'accueil"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.6.0",
                             "pod_version_init": "3.2.0"
                         },
                         "USE_BBB": {
@@ -1690,6 +1690,93 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "USE_MEETING_WEBINAR": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Activate Webinar mode for the meetings module"
+                                ],
+                                "fr": [
+                                    "Activation du mode Webinaire pour le module des réunions"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.6.0"
+                        },
+                        "MEETING_WEBINAR_SIPMEDIAGW_URL": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "URL of the SIPMediaGW server that manages webinars (e.g. https://sipmediagw.univ.fr)"
+                                ],
+                                "fr": [
+                                    "URL du serveur SIPMediaGW qui gère les webinaires (Ex: https://sipmediagw.univ.fr)"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.6.0"
+                        },
+                        "MEETING_WEBINAR_SIPMEDIAGW_TOKEN": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "Bearer token for the SIPMediaGW server that manages webinars"
+                                ],
+                                "fr": [
+                                    "Jeton bearer du serveur SIPMediaGW qui gère les webinaires"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.6.0"
+                        },
+                        "MEETING_WEBINAR_FIELDS": {
+                            "default_value": "(\"is_webinar\", \"enable_chat\")",
+                            "description": {
+                                "en": [
+                                    "List the additional fields for the webinar session form",
+                                    "the additional fields are displayed directly in the form page of a webinar"
+                                ],
+                                "fr": [
+                                    "Permet de définir les champs complémentaires du formulaire de création d’un webinaire",
+                                    "ces champs complémentaires sont affichés directement dans la page de formulaire d’un webinaire",
+                                    "```",
+                                    "MEETING_WEBINAR_FIELDS:",
+                                    "(",
+                                    "    \"is_webinar\",",
+                                    "    \"enable_chat\",",
+                                    ")",
+                                    "```"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.6.0"
+                        },
+                        "MEETING_WEBINAR_AFFILIATION": {
+                            "default_value": "['faculty', 'employee', 'staff']",
+                            "description": {
+                                "en": [
+                                    "Access groups or affiliations of people authorized to create a webinar"
+                                ],
+                                "fr": [
+                                    "Groupes d’accès ou affiliations des personnes autorisées à créer un webinaire"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.6.0"
+                        },
+                        "MEETING_WEBINAR_GROUP_ADMIN": {
+                            "default_value": "webinar admin",
+                            "description": {
+                                "en": [
+                                    "Group of people authorized to create a webinar"
+                                ],
+                                "fr": [
+                                    "Groupe des personnes autorisées à créer un webinaire"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.6.0"
                         },
                         "USE_MEETING": {
                             "default_value": false,
@@ -4749,7 +4836,7 @@
                                     "Nombre de vidéos à afficher sur la page d’accueil."
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.6.0",
                             "pod_version_init": "3.1.0"
                         },
                         "HOMEPAGE_SHOWS_PASSWORDED": {
@@ -4762,7 +4849,7 @@
                                     "Afficher les vidéos dont l’accès est protégé par mot de passe sur la page d’accueil."
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.6.0",
                             "pod_version_init": "3.1.0"
                         },
                         "HOMEPAGE_SHOWS_RESTRICTED": {
@@ -4775,7 +4862,7 @@
                                     "Afficher les vidéos dont l’accès est protégé par authentification sur la page d’accueil."
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.6.0",
                             "pod_version_init": "3.1.0"
                         },
                         "MENUBAR_HIDE_INACTIVE_OWNERS": {
@@ -4828,7 +4915,7 @@
                                     "Si True, affiche les prochains évènements sur la page d’accueil."
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.6.0",
                             "pod_version_init": "3.1.0"
                         },
                         "SHOW_ONLY_PARENT_THEMES": {

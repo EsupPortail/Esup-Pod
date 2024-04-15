@@ -129,3 +129,12 @@ div.alert .proposition::before {
   font-family: bootstrap-icons;
   vertical-align: -0.125em;
 }
+
+/* Max 16rem for meeting card */
+.pod-infinite-container {
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+}
+
+.meeting-nowrap {
+  white-space: nowrap !important;
+}
