@@ -75,11 +75,11 @@ def video_caption_maker(request, slug):
     else:
         track_language = LANGUAGE_CODE
         track_kind = "captions"
-        captionFileId = request.GET.get("src")
-        if captionFileId:
-            captionFile = CustomFileModel.objects.filter(id=captionFileId).first()
-            if captionFile:
-                track = Track.objects.filter(video=video, src=captionFile).first()
+        caption_file_id = request.GET.get("src")
+        if caption_file_id:
+            caption_file = CustomFileModel.objects.filter(id=caption_file_id).first()
+            if caption_file:
+                track = Track.objects.filter(video=video, src=caption_file).first()
                 if track:
                     track_language = track.lang
                     track_kind = track.kind
@@ -119,12 +119,12 @@ def video_caption_maker_save(request, video):
         response = file_edit_save(request, cur_folder)
         response_data = json.loads(response.content)
         if ("list_element" in response_data) and (lang in __LANG_CHOICES_DICT__):
-            captFile = get_object_or_404(CustomFileModel, id=response_data["file_id"])
+            capt_file = get_object_or_404(CustomFileModel, id=response_data["file_id"])
             # immediately assign the newly created captions file to the video
-            desired = Track.objects.filter(video=video, src=captFile)
+            desired = Track.objects.filter(video=video, src=capt_file)
             if desired.exists():
                 desired.update(
-                    lang=lang, kind=kind, src=captFile, enrich_ready=enrich_ready
+                    lang=lang, kind=kind, src=capt_file, enrich_ready=enrich_ready
                 )
             else:
                 # check if the same combination of lang and kind exists
@@ -133,7 +133,7 @@ def video_caption_maker_save(request, video):
                         video=video,
                         kind=kind,
                         lang=lang,
-                        src=captFile,
+                        src=capt_file,
                         enrich_ready=enrich_ready,
                     )
                     track.save()
@@ -587,6 +587,27 @@ def video_completion_get_form_track(request):
     return form_track
 
 
+def toggle_form_track_is_valid__video_completion_track(request, video, list_track):
+    """Toggle form_track is valid."""
+    if request.is_ajax():
+        some_data_to_dump = {
+            "list_data": render_to_string(
+                "track/list_track.html",
+                {"list_track": list_track, "video": video},
+                request=request,
+            )
+        }
+        data = json.dumps(some_data_to_dump)
+        return HttpResponse(data, content_type="application/json")
+    else:
+        context = get_video_completion_context(video, list_track=list_track)
+        return render(
+            request,
+            "video_completion.html",
+            context,
+        )
+
+
 def video_completion_track_save(request, video):
     """View to save a track associated to a video."""
     form_track = video_completion_get_form_track(request)
@@ -594,24 +615,7 @@ def video_completion_track_save(request, video):
 
     if form_track.is_valid():
         form_track.save()
-
-        if request.is_ajax():
-            some_data_to_dump = {
-                "list_data": render_to_string(
-                    "track/list_track.html",
-                    {"list_track": list_track, "video": video},
-                    request=request,
-                )
-            }
-            data = json.dumps(some_data_to_dump)
-            return HttpResponse(data, content_type="application/json")
-        else:
-            context = get_video_completion_context(video, list_track=list_track)
-            return render(
-                request,
-                "video_completion.html",
-                context,
-            )
+        return toggle_form_track_is_valid__video_completion_track(request, video, list_track)
     else:
         if request.is_ajax():
             some_data_to_dump = {
@@ -659,24 +663,7 @@ def video_completion_track_delete(request, video):
     track = get_object_or_404(Track, id=request.POST["id"])
     track.delete()
     list_track = video.track_set.all()
-
-    if request.is_ajax():
-        some_data_to_dump = {
-            "list_data": render_to_string(
-                "track/list_track.html",
-                {"list_track": list_track, "video": video},
-                request=request,
-            )
-        }
-        data = json.dumps(some_data_to_dump)
-        return HttpResponse(data, content_type="application/json")
-    else:
-        context = get_video_completion_context(video, list_track=list_track)
-        return render(
-            request,
-            "video_completion.html",
-            context,
-        )
+    return toggle_form_track_is_valid__video_completion_track(request, video, list_track)
 
 
 def is_already_link(url, text):

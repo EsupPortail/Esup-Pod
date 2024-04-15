@@ -35,9 +35,9 @@ def start_webinar(request: WSGIRequest, meet_id: int):
         start_webinar_livestream(request.get_host(), meet_id)
 
         # Thread for stop the webinar
-        tStop = threading.Thread(target=stop_webinar_livestream, args=[meet_id, False])
-        tStop.setDaemon(True)
-        tStop.start()
+        t_stop = threading.Thread(target=stop_webinar_livestream, args=[meet_id, False])
+        t_stop.setDaemon(True)
+        t_stop.start()
         display_message_with_icon(
             request,
             messages.INFO,

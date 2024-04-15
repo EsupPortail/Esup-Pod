@@ -256,6 +256,7 @@ def video_enrichment(
         slug (`str`): The video slug.
         slug_c (`str`): The channel slug.
         slug_t (`str`): The theme slug.
+        slug_private (`str`): The private slug.
 
     Returns:
         :class:`django.http.HttpResponse`: The HTTP response.

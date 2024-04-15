@@ -391,12 +391,12 @@ def info_pod(request):
 @login_required(redirect_field_name="referrer")
 def userpicture(request):
     """Render the user picture."""
-    frontOwnerForm = FrontOwnerForm(instance=request.user.owner)
+    front_owner_form = FrontOwnerForm(instance=request.user.owner)
 
     if request.method == "POST":
-        frontOwnerForm = FrontOwnerForm(request.POST, instance=request.user.owner)
-        if frontOwnerForm.is_valid():
-            frontOwnerForm.save()
+        front_owner_form = FrontOwnerForm(request.POST, instance=request.user.owner)
+        if front_owner_form.is_valid():
+            front_owner_form.save()
             # messages.add_message(
             #    request, messages.INFO, _('Your picture has been saved.'))
         else:
@@ -409,7 +409,7 @@ def userpicture(request):
     return render(
         request,
         "userpicture/userpicture.html",
-        {"frontOwnerForm": frontOwnerForm},
+        {"frontOwnerForm": front_owner_form},
     )
 
 
@@ -417,14 +417,14 @@ def userpicture(request):
 @login_required(redirect_field_name="referrer")
 def set_notifications(request):
     """Set 'accepts_notifications' attribute on owner instance."""
-    setNotificationForm = SetNotificationForm(instance=request.user.owner)
+    set_notification_form = SetNotificationForm(instance=request.user.owner)
 
     if request.method == "POST":
-        setNotificationForm = SetNotificationForm(
+        set_notification_form = SetNotificationForm(
             request.POST, instance=request.user.owner
         )
-        if setNotificationForm.is_valid():
-            setNotificationForm.save()
+        if set_notification_form.is_valid():
+            set_notification_form.save()
             return JsonResponse(
                 {
                     "success": True,
