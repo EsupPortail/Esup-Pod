@@ -615,7 +615,9 @@ def video_completion_track_save(request, video):
 
     if form_track.is_valid():
         form_track.save()
-        return toggle_form_track_is_valid__video_completion_track(request, video, list_track)
+        return toggle_form_track_is_valid__video_completion_track(
+            request, video, list_track
+        )
     else:
         if request.is_ajax():
             some_data_to_dump = {
