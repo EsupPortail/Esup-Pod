@@ -5,11 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2024-04-12 15:36+0000\n"
-=======
-"POT-Creation-Date: 2024-04-15 09:44+0000\n"
->>>>>>> develop
+"POT-Creation-Date: 2024-04-15 12:26+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -4864,7 +4860,7 @@ msgstr "Thème"
 
 #: pod/main/models.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_breadcrumbs.html
-#: pod/playlist/tests/test_models.py pod/playlist/views.py
+#: pod/playlist/tests/test_models.py
 #: pod/video/templates/videos/video_breadcrumbs.html
 msgid "Playlist"
 msgstr "Liste de lecture"
@@ -7128,6 +7124,11 @@ msgstr "Ce champ est requis."
 #: pod/playlist/tests/test_forms.py
 msgid "You cannot create a playlist named \"Favorites\""
 msgstr "Vous ne pouvez créer une liste de lecture nommé \"Favoris\""
+
+#: pod/playlist/tests/test_views.py pod/playlist/views.py
+#, python-format
+msgid "Playlist: %(name)s"
+msgstr "Liste de lecture : %(name)s"
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."

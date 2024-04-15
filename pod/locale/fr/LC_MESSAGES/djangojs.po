@@ -5,11 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2024-04-12 15:36+0000\n"
-=======
-"POT-Creation-Date: 2024-04-15 09:44+0000\n"
->>>>>>> develop
+"POT-Creation-Date: 2024-04-15 12:26+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"

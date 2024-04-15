@@ -493,15 +493,9 @@ def info_me_json(request):
 @login_required(redirect_field_name="referrer")
 def ingest_createMediaPackage(request):
     # URI createMediaPackage useful for OpenCast Studio
-<<<<<<< HEAD
     # Necessary id. Example format: a3d9e9f3-66d0-403b-a775-acb3f79196d4
-    idMedia = uuid.uuid4()
-    # Necessary start date. Example format: 2021-12-08T08:52:28Z
-=======
-    # Necessary id. Example format : a3d9e9f3-66d0-403b-a775-acb3f79196d4
     id_media = uuid.uuid4()
-    # Necessary start date. Example format : 2021-12-08T08:52:28Z
->>>>>>> develop
+    # Necessary start date. Example format: 2021-12-08T08:52:28Z
     start = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%dT%H:%M:%S%zZ")
     media_package_dir = os.path.join(
         settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % id_media
@@ -530,13 +524,8 @@ def ingest_createMediaPackage(request):
 @csrf_exempt
 def ingest_addDCCatalog(request):
     # URI addDCCatalog useful for OpenCast Studio
-<<<<<<< HEAD
-    # Form management with 3 parameters: mediaPackage, dublinCore, flavor
-    # For Pod, management of dublinCore is useless
-=======
-    # Form management with 3 parameters : mediaPackage, dublin_core, flavor
+    # Form management with 3 parameters: mediaPackage, dublin_core, flavor
     # For Pod, management of dublin_core is useless
->>>>>>> develop
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
