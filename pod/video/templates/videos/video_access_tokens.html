@@ -39,7 +39,20 @@
     <tbody class="table-group-divider">
       {% for token in tokens %}
       <tr>
-        <td>&nbsp;{{ token.name }}</td>
+        <td class="align-middle">
+          <form method="post" action="{% url 'video:video_edit_access_tokens' video.slug %}" class="form-inline">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update" />
+            <input type="hidden" name="token" value="{{ token.token }}" />
+            <input class="form-control" type="text" name="name" value="{{ token.name }}" />
+            <button type="submit" class="btn btn-secondary pod-btn-primary btn-sm" title="{% trans 'Update the token name' %}" data-bs-toggle="tooltip" data-bs-placement="top">
+              <i class="bi bi-floppy2-fill" aria-hidden="true"></i>
+            </button>
+          </form>
+
+
+
+        </td>
         <td>&nbsp;{{ token.token }}</td>
         <td>
           <div class="form-group">
@@ -82,8 +95,19 @@
 {% endif %}
 {% endblock page_content %}
 
-{% block collapse_page_aside %}{% endblock collapse_page_aside %}
-{% block page_aside %}{% endblock page_aside %}
+{% block collapse_page_aside %}
+{{block.super}}
+{% endblock collapse_page_aside %}
+{% block page_aside %}
+    <div class="card mt-1" id="card-sharedraftversion">
+      <h2 class="h4 card-header card-title pl-2">{% trans "Tokens" %}</h2>
+      <div class="card-body card-text">
+        <p>{% trans "When your video is in draft mode, you can share it using a token." %}</p>
+        <p>{% trans "Add a token, then copy the direct link or link to insert. You can name your token to identify it." %}</p>
+        <p>{% trans "It is possible to create several tokens, to be able to differentiate the users who can access your video. When it is no longer necessary to grant access to your users, simply delete the token(s) concerned." %}<p>
+      </div>
+    </div>
+{% endblock page_aside %}
 
 {% block more_script %}
   <script>
