@@ -205,7 +205,7 @@ def create_livestream_event(meeting: Meeting, live_gateway: LiveGateway):
     # Create the livestream
     Livestream.objects.create(
         meeting=meeting,
-        # Status : live not started
+        # Status: live not started
         status=0,
         event=event,
         live_gateway=live_gateway,

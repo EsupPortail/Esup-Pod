@@ -28,7 +28,7 @@ COPY ./requirements-encode.txt .
 
 RUN pip3 install --no-cache-dir -r requirements-encode.txt
 
-# ENTRYPOINT :
+# ENTRYPOINT:
 COPY ./dockerfile-dev-with-volumes/pod-encode/my-entrypoint-encode.sh /tmp/my-entrypoint-encode.sh
 RUN chmod 755 /tmp/my-entrypoint-encode.sh
 

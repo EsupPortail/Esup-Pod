@@ -796,8 +796,9 @@ def ajax_event_splitrecord(request):
 
 
 def event_splitrecord(event_id, broadcaster_id):
-    """Call the split method of the broadcaster's implementation
-    and converts the file to a Pod video (linked to the event).
+    """Call the split method of the broadcaster's implementation.
+
+    And converts the file to a Pod video (linked to the event).
 
      Returns: a JsonResponse with success state and the error (in case of failure).
     """
@@ -832,8 +833,9 @@ def ajax_event_stoprecord(request):
 
 
 def event_stoprecord(event_id, broadcaster_id):
-    """Call the stop method of the broadcaster's implementation
-    and converts the file to a Pod video (linked to the event).
+    """Call the stop method of the broadcaster's implementation.
+
+    And converts the file to a Pod video (linked to the event).
 
      Returns: a JsonResponse with success state and the error (in case of failure).
     """
@@ -870,8 +872,9 @@ def ajax_event_info_record(request):
 
 
 def event_info_record(event_id, broadcaster_id):
-    """Return a JsonResponse with success state and :
+    """Return a JsonResponse with state and duration.
 
+    JsonResponse contains success state and:
     * the duration of the recording in seconds
     * or the error (in case of failure).
     """
@@ -1143,6 +1146,8 @@ def is_recording(broadcaster: Broadcaster, with_file_check=False) -> bool:
 
 def transform_to_video(broadcaster, event_id, current_record_info):
     """
+    Transform current_record_info to video.
+
     Args:
         broadcaster (Broadcaster): the broadcaster
         event_id (int): event's id
@@ -1183,7 +1188,8 @@ def transform_to_video(broadcaster, event_id, current_record_info):
 
 def copy_and_transform(impl_class, event_id, current_record_info):
     """
-    Copy the file from remote to Pod and create the video
+    Copy the file from remote to Pod and create the video.
+
     Args:
         impl_class (PilotingInterface): the piloting interface of the broadcaster
         event_id (int): event's id

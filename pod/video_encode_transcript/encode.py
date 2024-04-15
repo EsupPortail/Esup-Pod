@@ -93,7 +93,7 @@ def start_encode_studio(
 
 
 def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
-    """ENCODE STUDIO: MAIN FUNCTION"""
+    """ENCODE STUDIO: MAIN FUNCTION."""
     msg = ""
     if USE_REMOTE_ENCODING_TRANSCODING:
         start_studio_task.delay(recording_id, video_output, videos, subtime, presenter)
@@ -132,7 +132,7 @@ def encode_video(video_id: int) -> None:
         return
 
     change_encoding_step(video_id, 0, "start")
-    # start and stop cut ?
+    # start and stop cut?
     encoding_video = get_encoding_video(video_to_encode)
     encoding_video.add_encoding_log("start_time", "", True, start)
     change_encoding_step(video_id, 1, "remove old data")

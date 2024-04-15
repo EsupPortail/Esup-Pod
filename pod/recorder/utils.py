@@ -51,7 +51,7 @@ def handle_upload_file(request, element_name, mimetype, tag_name):
     Handle file upload and create XML element in the media package.
 
     Args:
-        request : The HTTP request object.
+        request: The HTTP request object.
         element_name (str): The name of the XML element.
         mimetype (str): The mimetype of the uploaded file.
         tag_name (str): The tag name of the media package element.
@@ -162,10 +162,10 @@ def create_xml_element(
         type_name (str): The type of the XML element.
         mimetype (str): The mimetype of the XML element.
         url_text (str): The URL text of the XML element.
-        opencast_filename : defaults to None.
+        opencast_filename: defaults to None.
 
     Returns:
-        element : The created XML element.
+        element: The created XML element.
     """
     element = media_package_content.createElement(element_name)
     element.setAttributeNode(media_package_content.createAttribute("id"))

@@ -269,13 +269,12 @@ class Command(BaseCommand):
                 msg_html += (
                     "<br>\n<p>"
                     + _(
-                        "For information, "
-                        + "you will find below the list of video will soon arrive "
-                        + "at the deletion deadline."
+                        "For your information, "
+                        + "below is the list of videos that will soon reach "
+                        + "the deletion deadline."
                     )
                     + "</p>"
                 )
-
                 msg_html += "\n<p>"
                 msg_html += self.get_list_video_html(list_video[estab], False)
                 msg_html += "\n</p>"

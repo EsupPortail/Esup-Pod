@@ -18,7 +18,6 @@ class CustomFileWidget(widgets.TextInput):
 
     def render(self, name, value, attrs=None, renderer=None):
         """Render the CustomFileWidget as HTML."""
-
         document = None
 
         if value:

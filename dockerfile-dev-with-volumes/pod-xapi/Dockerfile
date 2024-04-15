@@ -24,7 +24,7 @@ COPY ./requirements-encode.txt .
 
 RUN pip3 install --no-cache-dir -r requirements-encode.txt
 
-# ENTRYPOINT :
+# ENTRYPOINT:
 COPY ./dockerfile-dev-with-volumes/pod-xapi/my-entrypoint-xapi.sh /tmp/my-entrypoint-xapi.sh
 RUN chmod 755 /tmp/my-entrypoint-xapi.sh
 

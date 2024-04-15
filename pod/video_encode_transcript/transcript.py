@@ -152,7 +152,7 @@ def save_vtt_and_notify(video_to_encode, msg, webvtt):
 
 def saveVTT(video, webvtt):
     """Save webvtt file with the video."""
-    msg = "\nSAVE TRANSCRIPT WEBVTT : %s" % time.ctime()
+    msg = "\nSAVE TRANSCRIPT WEBVTT: %s" % time.ctime()
     lang = video.transcript
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     webvtt.save(temp_vtt_file.name)
@@ -200,6 +200,7 @@ def saveVTT(video, webvtt):
 def improveCaptionsAccessibility(webvtt):
     """
     Parse the vtt file in argument to render the caption conform to accessibility.
+
     - see `https://github.com/knarf18/Bonnes-pratiques-du-sous-titrage/blob/master/Liste%20de%20bonnes%20pratiques.md` # noqa: E501
     - 40 car maximum per ligne (CPL)
     - 2 lines max by caption

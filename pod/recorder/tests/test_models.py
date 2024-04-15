@@ -88,7 +88,7 @@ class RecorderTestCase(TestCase):
     def test_ipunder(self):
         recorder1 = Recorder.objects.get(id=1)
         self.assertEqual(recorder1.ipunder(), "16_3_10_37")
-        print("   --->  test_ipunder of RecorderTestCase: OK !")
+        print("   --->  test_ipunder of RecorderTestCase: OK!")
 
     def test_delete_object(self):
         Recorder.objects.filter(name="recorder1").delete()

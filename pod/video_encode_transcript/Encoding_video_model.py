@@ -192,7 +192,7 @@ class Encoding_video_model(Encoding_video):
         # Need to modify start and stop
         log_to_text = ""
         # logs = info_video["encoding_log"]
-        log_to_text = log_to_text + "Start : " + self.start
+        log_to_text = log_to_text + "Start: " + self.start
         """
         for log in logs:
             log_to_text = log_to_text + "[" + log + "]\n\n"
@@ -208,9 +208,9 @@ class Encoding_video_model(Encoding_video):
                 )
         """
         # add path to log file to easily open it
-        log_to_text = log_to_text + "\nLog File : \n"
+        log_to_text = log_to_text + "\nLog File: \n"
         log_to_text = log_to_text + self.get_output_dir() + "/info_video.json"
-        log_to_text = log_to_text + "\nEnd : " + self.stop
+        log_to_text = log_to_text + "\nEnd: " + self.stop
 
         encoding_log, created = EncodingLog.objects.get_or_create(video=video_to_encode)
         encoding_log.log = log_to_text

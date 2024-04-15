@@ -1,3 +1,5 @@
+"""Esup-Pod Main models."""
+
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -307,7 +309,7 @@ class Block(models.Model):
     no_cache = models.BooleanField(
         default=True,
         verbose_name=_("No cache"),
-        help_text=_("Check this box if you don't want to keep the cache."),
+        help_text=_("Check this box if you don’t want to keep the cache."),
     )
 
     debug = models.BooleanField(
@@ -367,6 +369,6 @@ class Block(models.Model):
 
 @receiver(post_save, sender=Block)
 def default_site_block(sender, instance, created, **kwargs):
-    """Sets a default site for the instance if it has no associated sites upon creation."""
+    """Set a default site for the instance if it has no associated sites upon creation."""
     if len(instance.sites.all()) == 0:
         instance.sites.add(Site.objects.get_current())

@@ -812,7 +812,7 @@ def fix_input(input) -> str:
 
 
 """
-  remote encode ???
+  remote encode???
 """
 if __name__ == "__main__":
     start = "Start at: %s" % time.ctime()

@@ -249,7 +249,7 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), data_no_viewers)
-        print(" --->  test_heartbeat broadcaster with current event (no viewer): OK !")
+        print(" --->  test_heartbeat broadcaster with current event (no viewer): OK!")
 
         # with event (anonymous)
         url_with_event = "%s?key=anonymous_key&eventid=1" % heartbeat_url
@@ -533,7 +533,7 @@ class LiveViewsTestCase(TestCase):
         )
         self.assertFalse(form.is_valid())
         self.assertIn("An event cannot be planned in the past", form.errors["__all__"])
-        print("   --->  test_crossing_events in the past: NOK !")
+        print("   --->  test_crossing_events in the past: NOK!")
 
         # event 1 hour before the previous and half an hour after starting
         # crossing the start
@@ -556,7 +556,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events in the futur and crossing the start: NOK !")
+        print("   --->  test_crossing_events in the futur and crossing the start: NOK!")
         # test changing broadcaster
         data["broadcaster"] = 2
         form = EventForm(
@@ -589,7 +589,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events in the futur and crossing the start: NOK !")
+        print("   --->  test_crossing_events in the futur and crossing the start: NOK!")
 
         # event start during the previous and finish before
         # crossing inside
@@ -612,7 +612,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events crossing inside: NOK !")
+        print("   --->  test_crossing_events crossing inside: NOK!")
 
         # event start before the previous and finish after
         # crossing outside
@@ -635,7 +635,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events crossing outside: NOK !")
+        print("   --->  test_crossing_events crossing outside: NOK!")
 
         # --------------------------------------------------------------------------
         print(20 * "/")
@@ -684,7 +684,7 @@ class LiveViewsTestCase(TestCase):
         # for err in form.errors:
         #     print("- ", err, form.errors[err])
         self.assertIn("An event cannot be planned in the past", form.errors["__all__"])
-        print("   --->  test_crossing_events in the past: NOK !")
+        print("   --->  test_crossing_events in the past: NOK!")
 
         # event 1 hour before the previous and half an hour after starting
         # crossing the start
@@ -708,7 +708,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events in the futur and crossing the start: NOK !")
+        print("   --->  test_crossing_events in the futur and crossing the start: NOK!")
 
         # event start during the previous and finish after
         # crossing the end
@@ -732,7 +732,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events in the futur and crossing the start: NOK !")
+        print("   --->  test_crossing_events in the futur and crossing the start: NOK!")
 
         # event start during the previous and finish before
         # crossing inside
@@ -756,7 +756,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events crossing inside: NOK !")
+        print("   --->  test_crossing_events crossing inside: NOK!")
 
         # event start before the previous and finish after
         # crossing outside
@@ -780,7 +780,7 @@ class LiveViewsTestCase(TestCase):
             "An event is already planned at these dates", form.errors["start_date"]
         )
         self.assertIn("Planification error.", form.errors["__all__"])
-        print("   --->  test_crossing_events crossing outside: NOK !")
+        print("   --->  test_crossing_events crossing outside: NOK!")
 
         print("   --->  test_crossing_events of liveViewsTestCase: OK!")
 
@@ -799,11 +799,11 @@ class LiveViewsTestCase(TestCase):
 
         response = self.client.get("/live/events/?page=100")
         self.assertTemplateUsed(response, "live/events.html")
-        print("   --->  test_events of live/events paginator empty: OK !")
+        print("   --->  test_events of live/events paginator empty: OK!")
 
         response = self.client.get("/live/events/?page=notint")
         self.assertTemplateUsed(response, "live/events.html")
-        print("   --->  test_events of live/events paginator not integer: OK !")
+        print("   --->  test_events of live/events paginator not integer: OK!")
 
         response = self.client.get("/live/my_events/")
         self.assertRedirects(
@@ -923,11 +923,11 @@ class LiveViewsTestCase(TestCase):
 
         response = self.client.get("/live/my_events/?ppage=100")
         self.assertTemplateUsed(response, "live/my_events.html")
-        print("   --->  test_events of live/my_events paginator empty: OK !")
+        print("   --->  test_events of live/my_events paginator empty: OK!")
 
         response = self.client.get("/live/my_events/?ppage=notint")
         self.assertTemplateUsed(response, "live/my_events.html")
-        print("   --->  test_events of live/my_events paginator not integer: OK !")
+        print("   --->  test_events of live/my_events paginator not integer: OK!")
 
         # event draft (permission denied)
         self.event = Event.objects.get(title="event1")
@@ -957,13 +957,13 @@ class LiveViewsTestCase(TestCase):
         self.user.owner.accessgroup_set.add(access_group, through_defaults={"site": 1})
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertEqual(200, response.status_code)
-        print("   --->  test_events restricted access group match: OK !")
+        print("   --->  test_events restricted access group match: OK!")
 
         # recording buttons (only for owner)
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event.html")
         self.assertFalse(response.context["can_record"])
-        print("   --->  test_events can_record event for not owner: OK !")
+        print("   --->  test_events can_record event for not owner: OK!")
 
         # wrong event id
         response = self.client.get("/live/event/what-ever/")
@@ -1000,7 +1000,7 @@ class LiveViewsTestCase(TestCase):
         response = self.client.get("/live/my_events/")
         self.assertTemplateUsed(response, "live/my_events.html")
         self.assertTemplateUsed(response, "live/events_list.html")
-        print("   --->  test_events owner sees his event's list: OK !")
+        print("   --->  test_events owner sees his event's list: OK!")
 
         # user's event draft
         self.event.is_draft = True
@@ -1008,20 +1008,20 @@ class LiveViewsTestCase(TestCase):
         self.event.password = None
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event.html")
-        print("   --->  test_events access of restricted event for owner: OK !")
+        print("   --->  test_events access of restricted event for owner: OK!")
 
         # user's event restricted
         self.event.is_draft = False
         self.event.is_restricted = True
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event.html")
-        print("   --->  test_events access of restricted event for owner: OK !")
+        print("   --->  test_events access of restricted event for owner: OK!")
 
         # user's event password
         self.event.password = event_pswd
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event.html")
-        print("   --->  test_events access of restricted event for owner: OK !")
+        print("   --->  test_events access of restricted event for owner: OK!")
 
         # user's event edition
         response = self.client.get("/live/event_edit/%s/" % self.event.slug)
@@ -1033,7 +1033,7 @@ class LiveViewsTestCase(TestCase):
         response = self.client.get("/live/event/%s/" % self.event.slug)
         self.assertTemplateUsed(response, "live/event.html")
         self.assertFalse(response.context["can_record"])
-        print("   --->  test_events can_record event for owner no impl broadcaster: OK !")
+        print("   --->  test_events can_record event for owner no impl broadcaster: OK!")
 
         br2 = Broadcaster.objects.get(id=2)
         self.event.broadcaster = br2
@@ -1042,7 +1042,7 @@ class LiveViewsTestCase(TestCase):
         self.assertTemplateUsed(response, "live/event.html")
         self.assertTrue(response.context["can_record"])
         print(
-            "   --->  test_events can_record event for owner with impl broadcaster: OK !"
+            "   --->  test_events can_record event for owner with impl broadcaster: OK!"
         )
 
         # Superuser logged in
@@ -1378,7 +1378,7 @@ class LiveViewsTestCase(TestCase):
 
         response = is_available_to_record(broadcaster)
         self.assertFalse(response)
-        print("   --->  test misc_broadcaster is_available_to_record no impl: OK !")
+        print("   --->  test misc_broadcaster is_available_to_record no impl: OK!")
 
         with HTTMock(response_is_recording_ok):
             response = is_available_to_record(broad_with_impl)
@@ -1508,7 +1508,7 @@ class LiveViewsTestCase(TestCase):
         }
         response = get_info_current_record(broadcaster)
         self.assertEqual(response, expected_on_error)
-        print("   --->  test misc_broadcaster get_info_current_record no impl: OK !")
+        print("   --->  test misc_broadcaster get_info_current_record no impl: OK!")
 
         with HTTMock(response_info_current_record_ko):
             response = get_info_current_record(broad_with_impl)
@@ -1580,7 +1580,7 @@ class LiveViewsTestCase(TestCase):
             status_code=302,
             target_status_code=302,
         )
-        print("   --->  test test_immediate_event not logged OK !")
+        print("   --->  test test_immediate_event not logged OK!")
 
         # Superuser logged in
         self.client.force_login(self.superuser)
@@ -1588,7 +1588,7 @@ class LiveViewsTestCase(TestCase):
             "/live/event_immediate_edit/%s/" % notExistingBroadcasterId
         )
         self.assertEqual(response.status_code, 404)
-        print("   --->  test test_immediate_event logged event non existant OK !")
+        print("   --->  test test_immediate_event logged event non existant OK!")
 
         # Récup d'un broadcaster
         self.broadcaster = Broadcaster.objects.get(id=1)
@@ -1598,13 +1598,13 @@ class LiveViewsTestCase(TestCase):
         response = self.client.get("/live/event_immediate_edit/%s/" % self.broadcaster.id)
         self.assertTemplateUsed(response, "live/event_edit.html")
         self.assertEqual(response.context["access_not_allowed"], True)
-        print("   --->  test test_immediate_event logged sans droit event existant OK !")
+        print("   --->  test test_immediate_event logged sans droit event existant OK!")
 
         # Superuser avec broadcaster existant
         self.client.force_login(self.superuser)
         response = self.client.get("/live/event_immediate_edit/%s/" % self.broadcaster.id)
         self.assertTemplateUsed(response, "live/event_immediate_edit.html")
-        print("   --->  test test_immediate_event logged event existant OK !")
+        print("   --->  test test_immediate_event logged event existant OK!")
 
     def test_immediate_event_form_post(self):
         """Test immediate event form."""
@@ -1634,7 +1634,7 @@ class LiveViewsTestCase(TestCase):
             "/live/event_immediate_edit/%s/" % self.broadcaster.id, data, format="json"
         )
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        print("   --->  test test_immediate_event_form_post valid OK !")
+        print("   --->  test test_immediate_event_form_post valid OK!")
 
         # same form submitted again - fail because start and end dates are the same
         response = self.client.post(
@@ -1642,7 +1642,7 @@ class LiveViewsTestCase(TestCase):
         )
         messages = list(response.context["messages"])
         self.assertGreaterEqual(len(messages), 1)
-        print("   --->  test test_immediate_event_form_post not valid OK !")
+        print("   --->  test test_immediate_event_form_post not valid OK!")
 
     def test_immediate_event_maintenance(self):
         """Test immediate event maintenance."""
@@ -1663,7 +1663,7 @@ class LiveViewsTestCase(TestCase):
             status_code=302,
             target_status_code=200,
         )
-        print("   --->  test test_immediate_event in maintenance OK !")
+        print("   --->  test test_immediate_event in maintenance OK!")
 
     def test_transform_to_video(self):
         """Test transform event to video."""
@@ -1680,7 +1680,7 @@ class LiveViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("error" in json_response)
         self.assertEqual(json_response["error"], "implementation error")
-        print("   --->  test test_transform_to_video no impl OK !")
+        print("   --->  test test_transform_to_video no impl OK!")
 
         # FIXME: this leads to the following error "database table is locked: video_video"
         # # Create a temporary file for testing
@@ -1691,7 +1691,7 @@ class LiveViewsTestCase(TestCase):
         # # This should create the video
         # response = transform_to_video(broad_wowza, 1, infos)
         # self.assertEqual(response.status_code, 200)
-        # print("   --->  test test_transform_to_video wowza OK !")
+        # print("   --->  test test_transform_to_video wowza OK!")
         # # remove the temporary file
         # os.unlink(video_file_path)
 
@@ -1701,7 +1701,7 @@ class LiveViewsTestCase(TestCase):
         json_response = json.loads(response.content)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(json_response["success"])
-        print("   --->  test test_transform_to_video smp OK !")
+        print("   --->  test test_transform_to_video smp OK!")
 
     def test_create_video(self):
         """Test create_video."""
@@ -1720,7 +1720,7 @@ class LiveViewsTestCase(TestCase):
         #
         # self.assertEqual(Video.objects.count(), nbr_videos + 1)
         # self.assertEqual(event.videos.count(), nbr_event_videos + 1)
-        # print("   --->  test test_create_video smp OK !")
+        # print("   --->  test test_create_video smp OK!")
 
     def test_ajax_event_get_rtmp_config(self):
         """Test ajax_event_get_rtmp_config."""
@@ -1831,7 +1831,7 @@ class LiveViewsTestCase(TestCase):
             "success": True,
         }
         self.assertEqual(response.json(), expected)
-        print("   --->  test ajax_event_get_rtmp_config rtmp_response_data : OK!")
+        print("   --->  test ajax_event_get_rtmp_config rtmp_response_data: OK!")
 
     def test_ajax_event_start_streaming(self):
         """Test ajax_event_start_streaming."""

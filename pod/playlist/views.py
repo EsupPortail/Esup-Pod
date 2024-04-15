@@ -145,7 +145,7 @@ def render_playlist_page(
     form=None,
 ):
     """Render playlist page with the videos list of this."""
-    page_title = _("Playlist") + " : " + get_playlist_name(playlist)
+    page_title = _("Playlist: %(name)s") % {"name": get_playlist_name(playlist)}
     types = request.GET.getlist("type")
     owners = request.GET.getlist("owner")
     disciplines = request.GET.getlist("discipline")

@@ -231,7 +231,7 @@ def recorder_notify(request):
             m = hashlib.md5()
             m.update(recording_place.encode("utf-8") + recorder.salt.encode("utf-8"))
             if key != m.hexdigest():
-                return HttpResponse("nok : key is not valid")
+                return HttpResponse("nok: key is not valid")
 
             link_url = "".join(
                 [
@@ -277,10 +277,10 @@ def recorder_notify(request):
             return HttpResponse("ok")
         else:
             return HttpResponse(
-                "nok : address_ip not valid or recorder not found in this site"
+                "nok: address_ip not valid or recorder not found in this site"
             )
     else:
-        return HttpResponse("nok : recordingPlace or mediapath or key are missing")
+        return HttpResponse("nok: recordingPlace or mediapath or key are missing")
 
 
 @csrf_protect
@@ -374,7 +374,7 @@ def studio_toml(request, studio_url):
     """Render a settings.toml configuration file for Opencast Studio."""
     # OpenCast Studio configuration
     # See https://github.com/elan-ev/opencast-studio/blob/master/CONFIGURATION.md
-    # Add parameter : the pod studio URL
+    # Add parameter: the pod studio URL
     studio_url = request.build_absolute_uri(
         reverse(
             "recorder:studio_pod",
@@ -480,9 +480,9 @@ def open_info_me_json(request):
 
 def open_ingest_createMediaPackage(request):
     # URI createMediaPackage useful for OpenCast Studio
-    # Necessary id. Example format : a3d9e9f3-66d0-403b-a775-acb3f79196d4
+    # Necessary id. Example format: a3d9e9f3-66d0-403b-a775-acb3f79196d4
     id_media = uuid.uuid4()
-    # Necessary start date. Example format : 2021-12-08T08:52:28Z
+    # Necessary start date. Example format: 2021-12-08T08:52:28Z
     start = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%dT%H:%M:%S%zZ")
     media_package_dir = os.path.join(
         settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % id_media
@@ -508,8 +508,8 @@ def open_ingest_createMediaPackage(request):
 
 
 def open_ingest_addDCCatalog(request):
-    # URI addDCCatalog useful for OpenCast Studio
-    # Form management with 3 parameters : mediaPackage, dublin_core, flavor
+    """URI addDCCatalog useful for OpenCast Studio."""
+    # Form management with 3 parameters: mediaPackage, dublin_core, flavor
     # For Pod, management of dublin_core is useless
     if (
         request.POST.get("mediaPackage")
@@ -573,8 +573,8 @@ def open_ingest_addDCCatalog(request):
 
 
 def open_ingest_addAttachment(request):
-    # URI addAttachment useful for OpenCast Studio
-    # Form management with 3 parameters : mediaPackage, flavor, BODY (acl.xml file)
+    """URI addAttachment useful for OpenCast Studio."""
+    # Form management with 3 parameters: mediaPackage, flavor, BODY (acl.xml file)
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
@@ -585,8 +585,8 @@ def open_ingest_addAttachment(request):
 
 
 def open_ingest_addTrack(request):
-    # URI addTrack useful for OpenCast Studio
-    # Form management with 4 parameters : mediaPackage, flavor, tags, BODY (video file)
+    """URI addTrack useful for OpenCast Studio."""
+    # Form management with 4 parameters: mediaPackage, flavor, tags, BODY (video file)
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
@@ -599,7 +599,7 @@ def open_ingest_addTrack(request):
 
 def open_ingest_addCatalog(request):
     # URI ingest useful for OpenCast Studio (when cutting video)
-    # Form management with 3 parameter : flavor, mediaPackage, BODY(smil file)
+    # Form management with 3 parameter: flavor, mediaPackage, BODY(smil file)
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
@@ -611,7 +611,7 @@ def open_ingest_addCatalog(request):
 
 def open_ingest_ingest(request):
     # URI ingest useful for OpenCast Studio
-    # Form management with 1 parameter : mediaPackage
+    # Form management with 1 parameter: mediaPackage
     # Management of the mediaPackage (XML)
 
     if request.POST.get("mediaPackage"):

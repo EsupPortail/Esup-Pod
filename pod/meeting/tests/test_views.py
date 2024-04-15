@@ -1,4 +1,4 @@
-"""Tests the views for meeting module."""
+"""Esup-Pod - tests the views for meeting module."""
 
 import random
 import requests
@@ -1172,7 +1172,7 @@ class InternalRecordingUploadTestView(TestCase):
     """
 
     def setUp(self):
-        """Setup for tests views."""
+        """Set up tests views."""
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user.save()

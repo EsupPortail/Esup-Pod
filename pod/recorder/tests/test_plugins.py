@@ -79,7 +79,7 @@ class PluginVideoTestCase(TestCase):
         nbnow = Video.objects.all().count()
         nbtest = nbnow + 1
         mod.encode_recording(recording)
-        # print("Number of video after encode : ", Video.objects.all().count())
+        # print("Number of video after encode: ", Video.objects.all().count())
         self.assertEqual(Video.objects.all().count(), nbtest)
         video = Video.objects.last()
         self.assertEqual(video.is_draft, recorder.is_draft)
@@ -102,10 +102,10 @@ class PluginVideoTestCase(TestCase):
         nbnow = Video.objects.all().count()
         nbtest = nbnow + 1
         mod.encode_recording(recording)
-        # print("Number of video after encode : ", Video.objects.all().count())
+        # print("Number of video after encode: ", Video.objects.all().count())
         self.assertEqual(Video.objects.all().count(), nbtest)
         video = Video.objects.last()
-        # print("Number of slide after encode : ",
+        # print("Number of slide after encode: ",
         #       video.enrichment_set.all().count())
         self.assertEqual((video.enrichment_set.all().count() > 0), True)
         self.assertEqual(video.is_draft, recorder.is_draft)
@@ -119,7 +119,7 @@ class PluginVideoTestCase(TestCase):
         self.assertEqual(video.tags, recorder.tags)
         print(
             "   --->  test_type_video_published_attributs "
-            "of PluginAudioVideoCastTestCase: OK !"
+            "of PluginAudioVideoCastTestCase: OK!"
         )
 
     def test_change_title(self):

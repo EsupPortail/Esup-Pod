@@ -59,7 +59,7 @@ class FlatpageTestCase(TestCase):
             transform=lambda x: x,
         )
         self.assertEqual(flatPage.registration_required, False)
-        self.assertEqual(flatPage.title, "Home")  # langage code : en
+        self.assertEqual(flatPage.title, "Home")  # langage code: en
         self.assertEqual(flatPage.title_fr, "Accueil")
         self.assertEqual(flatPage.title_en, "Home")
         self.assertEqual(flatPage.content_en, "<p>Welcome</p>\r\n")
@@ -111,7 +111,7 @@ class ConfigurationTestCase(TestCase):
     def test_delete_object(self):
         Configuration.objects.filter(key="maintenance_mode").delete()
         self.assertEquals(Configuration.objects.filter(key="maintenance_mode").count(), 0)
-        print("--->  test_delete_object of ConfigurationTestCase: OK !")
+        print("--->  test_delete_object of ConfigurationTestCase: OK!")
 
 
 class AdditionalChannelTabTestCase(TestCase):
@@ -150,10 +150,7 @@ class BlockTestCase(TestCase):
         print(" --->  SetUp of BlockTestCase: OK!")
 
     def test_default_site_assigned_on_creation(self):
-        """
-        Test if add block assign default site.
-        """
-
+        """Test if add block assign default site."""
         block = Block.objects.create(title="Test Block")
         default_site = Site.objects.get(id=SITE_ID)
         self.assertEqual(block.sites.count(), 1)

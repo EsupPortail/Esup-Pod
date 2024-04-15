@@ -1,4 +1,4 @@
-"""Unit tests for main views.
+"""Esup-Pod unit tests for main views.
 
 *  run with 'python manage.py test pod.main.tests.test_views'
 """
@@ -118,7 +118,7 @@ class MainViewsTestCase(TestCase):
 
 
 class MaintenanceViewsTestCase(TestCase):
-    """`TestCase for the maintenance view.`"""
+    """TestCase for the maintenance view."""
 
     fixtures = [
         "initial_data.json",
@@ -533,9 +533,7 @@ class TestBlock(TestCase):
         print(" --->  init blocktest ok")
 
     def test_html_block_content(self):
-        """
-        Test html block.
-        """
+        """Test html block."""
         bl2 = Block.objects.create(
             title="block html",
             type="html",
@@ -578,9 +576,7 @@ class TestBlock(TestCase):
         print(" --->  test_Block_Html ok")
 
     def test_default_block(self):
-        """
-        Test when add video if present in default block.
-        """
+        """Test when add video if present in default block."""
         user = User.objects.create(username="pod", password="podv3")
         Video.objects.create(
             title="VideoOnHold",
@@ -603,9 +599,7 @@ class TestBlock(TestCase):
         print(" --->  test_Video_in_default_block ok")
 
     def test_channel_type_block(self):
-        """
-        Test if create channel with video, this video is present in block type channel.
-        """
+        """Test if create channel with video, this video is present in block type channel."""
         bk1 = Block.objects.get(id=1)
         bk1.visible = False
         bk1.save()
@@ -669,9 +663,7 @@ class TestBlock(TestCase):
         print(" --->  test_Video_in_channel_block ok")
 
     def test_next_events_type_block(self):
-        """
-        Test if create create next event present in block type next events.
-        """
+        """Test if create create next event present in block type next events."""
         building = Building.objects.create(name="building1")
         broad = Broadcaster.objects.create(
             name="broadcaster1",
@@ -715,9 +707,7 @@ class TestBlock(TestCase):
         print(" --->  test_Next_Event_in_Block_next_event_type ok")
 
     def test_most_views_type_block(self):
-        """
-        Test if most views video is present in block type most view.
-        """
+        """Test if most views video is present in block type most view."""
         bk1 = Block.objects.get(id=1)
         bk1.visible = False
         bk1.save()

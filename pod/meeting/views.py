@@ -712,7 +712,7 @@ def get_internal_recordings(
     # Secure the list of internal recordings
     secure_internal_recordings(request, meeting)
 
-    # The user can delete this recording ?
+    # The user can delete this recording?
     can_delete = get_can_delete_recordings(request, meeting)
 
     # Get one or more recordings
@@ -1486,7 +1486,7 @@ def recording_ready(request: WSGIRequest) -> HttpResponse:
             # Get parameters, encoded in HS256
             signed_parameters = request.POST.get("signed_parameters")
             # Decoded parameters with BBB secret key
-            # Returns JSON format like : {'meeting_id': 'xxx', 'record_id': 'xxx'}
+            # Returns JSON format like: {'meeting_id': 'xxx', 'record_id': 'xxx'}
             decoded_parameters = jwt.decode(
                 signed_parameters, BBB_SECRET_KEY, algorithms=["HS256"]
             )
@@ -1525,7 +1525,7 @@ def can_manage_webinar(user: User) -> bool:
 
 
 def can_manage_webinar_and_event(user: User):
-    """Manage a webinar and event are possible for the user?"""
+    """Check if managing webinar & event are possible for the user."""
     # User can manage a webinar?
     if USE_MEETING_WEBINAR and can_manage_webinar(user):
         manage_webinar = True
@@ -1541,7 +1541,7 @@ def can_manage_webinar_and_event(user: User):
 
 
 def can_end_meeting(request: WSGIRequest, meeting: Meeting) -> bool:
-    """Shows if the user can stop a meeting."""
+    """Show if the user can stop a meeting."""
     if request.user != meeting.owner and not (
         request.user.is_superuser or request.user.has_perm("meeting.end_meeting")
     ):
@@ -1576,7 +1576,7 @@ def end_live(request: WSGIRequest, meeting_id: str) -> HttpResponse:
         request.user.is_superuser or request.user.has_perm("meeting.end_meeting")
     ):
         display_message_with_icon(
-            request, messages.ERROR, _("You can't end this webinar live.")
+            request, messages.ERROR, _("You can’t end this webinar live.")
         )
         raise PermissionDenied
     # Stop also webinar, if necessary
@@ -1597,7 +1597,7 @@ def restart_live(request: WSGIRequest, meeting_id: str) -> HttpResponse:
         request.user.is_superuser or request.user.has_perm("meeting.end_meeting")
     ):
         display_message_with_icon(
-            request, messages.ERROR, _("You can't restart this webinar live.")
+            request, messages.ERROR, _("You can’t restart this webinar live.")
         )
         raise PermissionDenied
     msg = ""
