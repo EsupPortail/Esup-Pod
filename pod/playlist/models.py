@@ -32,7 +32,9 @@ class Playlist(models.Model):
         verbose_name=_("Title"),
         max_length=__MAX_LENGTH_FOR_PLAYLIST_NAME__,
         default=_("Playlist"),
-        help_text=_(f"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} characters."),
+        help_text=_(
+            f"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} characters."
+        ),
     )
     description = models.TextField(
         verbose_name=_("Description"),

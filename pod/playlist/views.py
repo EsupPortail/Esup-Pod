@@ -91,7 +91,9 @@ def playlist_list(request):
             | get_public_playlist()
             | get_playlists_for_additional_owner(request.user)
         )
-    elif (visibility == "promoted" and USE_PROMOTED_PLAYLIST) or not request.user.is_authenticated:
+    elif (
+        visibility == "promoted" and USE_PROMOTED_PLAYLIST
+    ) or not request.user.is_authenticated:
         playlists = get_promoted_playlist()
     else:
         return redirect(reverse("playlist:list"))
@@ -250,7 +252,9 @@ def render_playlist(
         videos = paginator.page(paginator.num_pages)
 
     if request.user.is_authenticated:
-        render_playlist__authenticated_user(request, playlist, videos, count_videos, sort_field, sort_direction, full_path)
+        render_playlist__authenticated_user(
+            request, playlist, videos, count_videos, sort_field, sort_direction, full_path
+        )
     return render_playlist_page(
         request,
         playlist,
@@ -264,13 +268,13 @@ def render_playlist(
 
 @login_required(redirect_field_name="referrer")
 def render_playlist__authenticated_user(
-        request: dict,
-        playlist: Playlist,
-        videos: list,
-        count_videos: int,
-        sort_field: str,
-        sort_direction: str,
-        full_path: str,
+    request: dict,
+    playlist: Playlist,
+    videos: list,
+    count_videos: int,
+    sort_field: str,
+    sort_direction: str,
+    full_path: str,
 ):
     """
     Render playlist page with the videos list of this for authenticated user.
@@ -283,9 +287,9 @@ def render_playlist__authenticated_user(
     )
     in_favorites_playlist = playlist_url == request.path
     if (
-            playlist.visibility == "protected"
-            and playlist.owner != request.user
-            and request.user not in get_additional_owners(playlist)
+        playlist.visibility == "protected"
+        and playlist.owner != request.user
+        and request.user not in get_additional_owners(playlist)
     ):
         return toggle_render_playlist_user_has_right(
             request,
