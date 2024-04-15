@@ -721,7 +721,7 @@ class TestPlaylistPage(TestCase):
         self.client.force_login(self.user)
         response = self.client.get(self.url_fav_user1)
         self.assertContains(
-            response.content.decode(),
+            response,
             _("Playlist: %(name)s") % {"name": _(FAVORITE_PLAYLIST_NAME)}
         )
         self.client.logout()
