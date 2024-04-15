@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-15 08:35+0000\n"
+"POT-Creation-Date: 2024-04-15 09:44+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -6740,12 +6740,13 @@ msgid "Private"
 msgstr "Privé"
 
 #: pod/playlist/models.py
+#, python-brace-format
 msgid ""
 "Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
 "characters."
 msgstr ""
-"Veuillez entrer un titre contenant entre 1 et {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"caractères."
+"Veuillez entrer un titre contenant entre 1 et "
+"{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
 
 #: pod/playlist/models.py
 msgid ""
