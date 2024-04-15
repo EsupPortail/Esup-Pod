@@ -9217,12 +9217,16 @@ msgstr "Jetons"
 #: pod/video/templates/videos/video_access_tokens.html
 msgid "When your video is in draft mode, you can share it using a token."
 msgstr ""
+"Lorsque votre vidéo est en mode brouillon, vous pouvez la partager en "
+"utilisant un jeton."
 
 #: pod/video/templates/videos/video_access_tokens.html
 msgid ""
 "Add a token, then copy the direct link or link to insert. You can name your "
 "token to identify it."
 msgstr ""
+"Ajouter un jeton, puis copier le lien direct ou le lien à insérer. Vous "
+"pouvez nommer votre jeton pour l’identifier."
 
 #: pod/video/templates/videos/video_access_tokens.html
 msgid ""
@@ -9230,6 +9234,10 @@ msgid ""
 "users who can access your video. When it is no longer necessary to grant "
 "access to your users, simply delete the token(s) concerned."
 msgstr ""
+"Il est possible de créer plusieurs jetons, pour pouvoir différencier les "
+"utilisateurs pouvant accéder à votre vidéo. Quand il n’est plus nécessaire "
+"de laisser l’accès à vos utilisateurs, il suffit de supprimer le ou les "
+"jetons concernés."
 
 #: pod/video/templates/videos/video_collaborate.html
 msgid "Collaborate"
