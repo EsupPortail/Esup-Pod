@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-12 12:54+0200\n"
+"POT-Creation-Date: 2024-04-15 09:44+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -5400,6 +5400,10 @@ msgstr "rejoindre"
 msgid "Recurring"
 msgstr "Récurrence"
 
+#: pod/meeting/admin.py pod/meeting/forms.py
+msgid "Webinar options"
+msgstr "Options du webinaire"
+
 #: pod/meeting/admin.py
 msgid "Mode insert, nothing to display"
 msgstr "Mode insertion, rien à afficher"
@@ -5411,10 +5415,6 @@ msgstr "Modérateurs"
 #: pod/meeting/admin.py
 msgid "Viewers"
 msgstr "Spectateurs"
-
-#: pod/meeting/admin.py pod/meeting/forms.py
-msgid "Webinar options"
-msgstr "Options du webinaire"
 
 #: pod/meeting/forms.py pod/video/feeds.py pod/video/models.py
 #: pod/video/templates/videos/video_row_select.html
@@ -6650,7 +6650,7 @@ msgstr "Informations générales"
 msgid "Security informations"
 msgstr "Informations de sécurité"
 
-#: pod/playlist/forms.py pod/playlist/models.py
+#: pod/playlist/forms.py
 msgid "Please choose a title between 1 and 250 characters."
 msgstr "Veuillez entrer un titre contenant entre 1 et 250 caractères."
 
@@ -6738,6 +6738,15 @@ msgstr "Protégé par un mot de passe"
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
 msgstr "Privé"
+
+#: pod/playlist/models.py
+#, python-brace-format
+msgid ""
+"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+"characters."
+msgstr ""
+"Veuillez entrer un titre contenant entre 1 et "
+"{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
 
 #: pod/playlist/models.py
 msgid ""
@@ -9905,50 +9914,3 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#~ msgid "Previous"
-#~ msgstr "Vignette précédente"
-
-#~ msgid "Next"
-#~ msgstr "Vignette suivante"
-
-#~ msgid ""
-#~ "Pod is aimed at users of our institutions, by allowing the publication of "
-#~ "videos in the fields of research (promotion of platforms, etc.), training "
-#~ "(tutorials, distance training, student reports, etc.), institutional life "
-#~ "(video of events), offering several days of content."
-#~ msgstr ""
-#~ "Pod a pour but de faciliter la mise à disposition de vidéos et de ce "
-#~ "fait, d’encourager l’utilisation de celles-ci dans le cadre de "
-#~ "l’enseignement et la recherche."
-
-#~ msgid "The HTML file for this recording was not found on the server."
-#~ msgstr ""
-#~ "Le fichier HTML de cet enregistrement est introuvable sur le serveur."
-
-#~ msgid "Error number: %s"
-#~ msgstr "Numéro d’erreur : %s"
-
-#~ msgid "Playlist image"
-#~ msgstr "Image de la playlist"
-
-#~ msgid "Live"
-#~ msgstr "Directs"
-
-#~ msgid "Deleting the event \"%(vtitle)s\""
-#~ msgstr "Supprimer l’évènement « %(vtitle)s »"
-
-#~ msgid "To delete the event, please checked in and click send."
-#~ msgstr "Pour supprimer l’évènement, veuillez cocher et cliquer sur envoyer."
-
-#~ msgid "To delete the record, please checked in and click send."
-#~ msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
-
-#~ msgid "To delete the video, please checked in and click send."
-#~ msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
-
-#~ msgid "Unable to find information about the meeting"
-#~ msgstr "Impossible de trouver des informations sur la réunion"
-
-#~ msgid "End the meeting"
-#~ msgstr "Terminer la réunion"

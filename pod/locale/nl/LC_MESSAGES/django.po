@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-12 12:54+0200\n"
+"POT-Creation-Date: 2024-04-15 09:44+0000\n"
 "PO-Revision-Date: 2023-06-08 14:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -4647,8 +4647,10 @@ msgid "Write in html inside this field."
 msgstr ""
 
 #: pod/main/models.py
+#, fuzzy
+#| msgid "Filter by title"
 msgid "Display title"
-msgstr ""
+msgstr "Filter op titel"
 
 #: pod/main/models.py
 msgid "No cache"
@@ -5128,7 +5130,10 @@ msgstr ""
 msgid "Recurring"
 msgstr ""
 
-<<<<<<< HEAD
+#: pod/meeting/admin.py pod/meeting/forms.py
+msgid "Webinar options"
+msgstr ""
+
 #: pod/meeting/admin.py
 msgid "Mode insert, nothing to display"
 msgstr ""
@@ -5139,10 +5144,6 @@ msgstr ""
 
 #: pod/meeting/admin.py
 msgid "Viewers"
-=======
-#: pod/meeting/admin.py pod/meeting/forms.py
-msgid "Webinar options"
->>>>>>> 56264661a737be361900b2c80eaa3648bb3eac18
 msgstr ""
 
 #: pod/meeting/forms.py pod/video/feeds.py pod/video/models.py
@@ -6223,7 +6224,7 @@ msgstr ""
 msgid "Security informations"
 msgstr ""
 
-#: pod/playlist/forms.py pod/playlist/models.py
+#: pod/playlist/forms.py
 msgid "Please choose a title between 1 and 250 characters."
 msgstr ""
 
@@ -6297,6 +6298,13 @@ msgstr ""
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
+msgstr ""
+
+#: pod/playlist/models.py
+#, python-brace-format
+msgid ""
+"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+"characters."
 msgstr ""
 
 #: pod/playlist/models.py
@@ -9259,3 +9267,71 @@ msgstr ""
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr ""
+
+#, fuzzy
+#~| msgid "Please enter a valid address"
+#~ msgid "Enter a valid value."
+#~ msgstr "Vul alstublieft een geldig adres in"
+
+#, fuzzy
+#~| msgid "Please enter a valid address"
+#~ msgid "Enter a valid email address."
+#~ msgstr "Vul alstublieft een geldig adres in"
+
+#, fuzzy
+#~| msgid "Please enter a valid address"
+#~ msgid "Enter a valid IPv4 address."
+#~ msgstr "Vul alstublieft een geldig adres in"
+
+#, fuzzy
+#~| msgid "Please enter a valid address"
+#~ msgid "Enter a valid IPv6 address."
+#~ msgstr "Vul alstublieft een geldig adres in"
+
+#, fuzzy
+#~| msgid "Please enter a valid address"
+#~ msgid "Enter a valid IPv4 or IPv6 address."
+#~ msgstr "Vul alstublieft een geldig adres in"
+
+#, fuzzy
+#~| msgid "Please enter a valid address"
+#~ msgid "Enter a valid date."
+#~ msgstr "Vul alstublieft een geldig adres in"
+
+#, fuzzy
+#~| msgid "member"
+#~ msgid "September"
+#~ msgstr "lid"
+
+#, fuzzy
+#~| msgid "member"
+#~ msgid "November"
+#~ msgstr "lid"
+
+#, fuzzy
+#~| msgid "member"
+#~ msgid "December"
+#~ msgstr "lid"
+
+#, fuzzy
+#~| msgid "member"
+#~ msgctxt "alt. month"
+#~ msgid "September"
+#~ msgstr "lid"
+
+#, fuzzy
+#~| msgid "member"
+#~ msgctxt "alt. month"
+#~ msgid "November"
+#~ msgstr "lid"
+
+#, fuzzy
+#~| msgid "member"
+#~ msgctxt "alt. month"
+#~ msgid "December"
+#~ msgstr "lid"
+
+#, fuzzy
+#~| msgid "Please enter a valid address"
+#~ msgid "This is not a valid IPv6 address."
+#~ msgstr "Vul alstublieft een geldig adres in"
