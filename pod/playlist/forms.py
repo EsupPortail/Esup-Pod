@@ -1,4 +1,4 @@
-"""Forms used in playlist application."""
+"""Esup-Pod playlist application forms."""
 
 from django import forms
 from django.conf import settings
@@ -154,7 +154,7 @@ class PlaylistForm(forms.ModelForm):
                 del self.fields["promoted"]
 
     def clean_name(self):
-        """Method to check if the playlist name asked is correct."""
+        """Check if the playlist name asked is correct."""
         name = self.cleaned_data["name"]
         if name == FAVORITE_PLAYLIST_NAME:
             raise forms.ValidationError(
@@ -163,7 +163,7 @@ class PlaylistForm(forms.ModelForm):
         return name
 
     def clean_add_owner(self, cleaned_data):
-        """Method to check if the owner is correct."""
+        """Check if the owner is correct."""
         if "additional_owners" in cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
         ):

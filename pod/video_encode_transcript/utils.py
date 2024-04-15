@@ -55,7 +55,7 @@ VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
 
 
 # ##########################################################################
-# ENCODE VIDEO : GENERIC FUNCTIONS
+# ENCODE VIDEO: GENERIC FUNCTIONS
 # ##########################################################################
 
 

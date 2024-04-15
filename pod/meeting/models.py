@@ -138,8 +138,9 @@ def get_random():
 
 
 class Meeting(models.Model):
-    """This models hold information about each meeting room.
-    When creating a big blue button room with BBB APIs,
+    """Information about each meeting room.
+
+    When creating a BigBlueButton room with BBB APIs,
     Will store it's info here for later usages.
     // Recurring code come from
     // https://github.com/openfun/jitsi-magnify/blob/main/src/magnify/apps/core/models.py
@@ -405,7 +406,7 @@ class Meeting(models.Model):
         verbose_name=_("Personal meeting room"),
         help_text=_(
             "If this box is checked, "
-            "this meeting corresponds to the user's personal meeting room."
+            "this meeting corresponds to the user’s personal meeting room."
         ),
         default=False,
         editable=False,
@@ -422,7 +423,7 @@ class Meeting(models.Model):
         help_text=_(
             "Do you want to start this meeting as a webinar? In such a case, "
             "you can invite presenters to join you in BigBlueButton, and listeners "
-            "will have direct access to a livestream in the livestreams page. "
+            "will have direct access to a livestream in the livestreams page."
         ),
         default=False,
     )
@@ -769,7 +770,7 @@ class Meeting(models.Model):
 
     def get_join_url(self, fullname, role, userID=""):
         """
-        Returns join URL.
+        Return join URL.
 
         fullName  (required)
         meetingID  (required)
@@ -878,7 +879,7 @@ class Meeting(models.Model):
         meeting_json = parseXmlToJson(xmldoc)
         if meeting_json.get("returncode", "") != "SUCCESS":
             msg = {}
-            msg["error"] = "Unable to get meeting info ! "
+            msg["error"] = "Unable to get meeting info! "
             msg["returncode"] = meeting_json.get("returncode", "")
             msg["messageKey"] = meeting_json.get("messageKey", "")
             msg["message"] = meeting_json.get("message", "")
@@ -1244,11 +1245,12 @@ def default_site_recording(sender, instance, **kwargs):
 class LiveGateway(models.Model):
     """Hold information about live gateways, encoders and broadcasters informations.
 
-    Useful for BigBlueButton livestreams."""
+    Useful for BigBlueButton livestreams.
+    """
 
     # RTMP Stream URL
-    # Format, without authentication : rtmp://rtmpserver.univ.fr:port/application/name
-    # Format, with authentication : rtmp://user@password:rtmpserver.univ.fr:port/application/name.m3u8
+    # Format, without authentication: rtmp://rtmpserver.univ.fr:port/application/name
+    # Format, with authentication: rtmp://user@password:rtmpserver.univ.fr:port/application/name.m3u8
     rtmp_stream_url = models.CharField(
         _("URL of the RTMP stream"),
         max_length=200,

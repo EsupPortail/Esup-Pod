@@ -32,4 +32,4 @@ class VideoSearchTestUtils(TestCase):
         delete = delete_es(self.v)
         self.assertEqual(delete["result"], "deleted")
         self.assertEqual(delete["_id"], str(self.v.id))
-        print("--> test_index_and_delete_es ok ! ")
+        print("--> test_index_and_delete_es ok! ")

@@ -1,4 +1,4 @@
-"""Tests the models for meeting module."""
+"""Esup-Pod - Tests the models for meeting module."""
 
 import random
 import json
@@ -38,7 +38,7 @@ class MeetingTestCase(TestCase):
         meeting2.additional_owners.add(user2)
 
     def test_default_attributs(self):
-        """Check all default attributs values when creating a meeting"""
+        """Check all default attributs values when creating a meeting."""
         meetings = Meeting.objects.all()
         self.assertGreaterEqual(meetings[0].start, meetings[1].start)
         self.assertGreaterEqual(meetings[0].start_time, meetings[1].start_time)
@@ -59,7 +59,7 @@ class MeetingTestCase(TestCase):
             attendee_password="1234",
             moderator_password="1234",
         )
-        m1.full_clean()  # ok !
+        m1.full_clean()  # ok!
         with self.assertRaises(ValidationError) as context:
             m2 = Meeting.objects.create(
                 name="a" * 260,
@@ -109,10 +109,10 @@ class MeetingTestCase(TestCase):
         self.assertEqual(meeting1.meeting_id, meeting_id)
         created_at = meeting1.created_at
         updated_at = meeting1.updated_at
-        meeting1.name = "New Test !"
+        meeting1.name = "New Test!"
         meeting1.save()
         newmeeting1 = Meeting.objects.get(id=1)
-        self.assertEqual(newmeeting1.name, "New Test !")
+        self.assertEqual(newmeeting1.name, "New Test!")
         self.assertEqual(newmeeting1.get_hashkey(), meeting1.get_hashkey())
         meeting_id = "%04d-%s" % (newmeeting1.id, slugify(newmeeting1.name))
         self.assertEqual(newmeeting1.meeting_id, meeting_id)
@@ -432,7 +432,7 @@ class OccurencesMeetingTestCase(TestCase):
         )
 
     def test_models_meetings_get_occurrences_weekly_reset_weekdays(self):
-        """reset weekdays if recurrence not equal to weekly"""
+        """Reset weekdays if recurrence not equal to weekly."""
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = timezone.make_aware(datetime(2022, 7, 6, 14, 0, 0))
         meeting.recurrence = "weekly"
@@ -456,7 +456,7 @@ class OccurencesMeetingTestCase(TestCase):
         self.assertEqual(meeting.weekdays, "126")
 
     def test_models_meetings_get_occurrences_weekly_on_monday(self):
-        """check a recurring meeting each monday"""
+        """Check a recurring meeting each monday."""
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = timezone.make_aware(datetime(2023, 9, 18, 10, 0, 0))
         meeting.recurrence = "weekly"
@@ -475,8 +475,11 @@ class OccurencesMeetingTestCase(TestCase):
     # Monthly
 
     def test_models_meetings_get_occurrences_monthly_nb_occurrences_filled_date(self):
-        """Monthly occurences with date of end of recurrence filled in but not number of \
-        occurences. The monthly reccurence is on the precise date each month"""
+        """Check Monthly amount of occurences.
+
+        Monthly occurences with date of end of recurrence filled in but not number of \
+        occurences. The monthly reccurence is on the precise date each month.
+        """
         meeting = Meeting.objects.get(id=1)
         meeting.start_at = datetime(2022, 10, 7, 14, 0, 0)
         meeting.recurrence = "monthly"
@@ -748,7 +751,7 @@ class InternalRecordingTestCase(TestCase):
     """
 
     def setUp(self):
-        """Setup for the recordings."""
+        """Set up the recordings."""
         user = User.objects.create(username="pod")
         user1 = User.objects.create(username="pod1")
         user2 = User.objects.create(username="pod2")
@@ -803,11 +806,11 @@ class InternalRecordingTestCase(TestCase):
         recording1 = InternalRecording.objects.get(id=1)
         self.assertEqual(recording1.name, "test recording1")
         self.assertEqual(recording1.recording_id, "c057c39d3dc59d9e9516d95f76eb")
-        recording1.name = "New test recording1 !"
+        recording1.name = "New test recording1!"
         recording1.recording_id = "d058c39d3dc59d9e9516d95f76eb"
         recording1.save()
         newrecording1 = InternalRecording.objects.get(id=1)
-        self.assertEqual(newrecording1.name, "New test recording1 !")
+        self.assertEqual(newrecording1.name, "New test recording1!")
         self.assertEqual(newrecording1.recording_id, "d058c39d3dc59d9e9516d95f76eb")
 
     def test_delete_object(self):

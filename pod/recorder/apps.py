@@ -17,6 +17,7 @@ def set_default_site(sender, **kwargs):
 def fix_transcript(sender, **kwargs):
     """
     Transcript field change from boolean to charfield since the version 3.2.0.
+
     This fix change value to set the default lang value if necessary.
     """
     from pod.recorder.models import Recorder

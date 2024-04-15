@@ -99,7 +99,7 @@ def save_basic_video(recording, video_src):
 
 
 def generate_intermediate_video(recording, videos, clip_begin, clip_end, presenter):
-    # Video file output : at the same directory than the XML file
+    # Video file output: at the same directory than the XML file
     # And with the same name .mp4
     video_output = recording.source_file.replace(".xml", ".mp4")
     subtime = get_subtime(clip_begin, clip_end)
@@ -206,7 +206,7 @@ def getElementsByName(xmldoc, name):
         urlElement = element.getElementsByTagName("url")[0]
         if urlElement.firstChild and urlElement.firstChild.data != "":
             element_path = urlElement.firstChild.data[
-                urlElement.firstChild.data.index(MEDIA_URL) + len(MEDIA_URL) :
+                urlElement.firstChild.data.index(MEDIA_URL) + len(MEDIA_URL):
             ]
             src = os.path.join(settings.MEDIA_ROOT, element_path)
             if os.path.isfile(src):

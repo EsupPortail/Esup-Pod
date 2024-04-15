@@ -51,7 +51,7 @@ class Command(BaseCommand):
     def print_log(self, title: str, data: List[str]) -> None:
         """Pretty print of array with title."""
         print(20 * "-")
-        print(f"{title} :")
+        print(f"{title}:")
         print("\n    - " + "\n    - ".join(data))
 
     def get_local_missing(self, distant_configuration, local_configuration):

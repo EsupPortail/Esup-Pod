@@ -27,7 +27,7 @@ if USE_TRANSCRIPTION:
 
 
 class Command(BaseCommand):
-    help = "launch of video encoding and transcripting for video test : %s" % VIDEO_TEST
+    help = "launch of video encoding and transcripting for video test: %s" % VIDEO_TEST
 
     def handle(self, *args, **options):
         cov = coverage.coverage()
@@ -70,21 +70,21 @@ class Command(BaseCommand):
             video.refresh_from_db()
             n = 0
             while video.encoding_in_progress:
-                print("... Transcripting in progress : %s " % video.get_encoding_step)
+                print("... Transcripting in progress: %s " % video.get_encoding_step)
                 video.refresh_from_db()
                 time.sleep(2)
                 n += 1
                 if n > 60:
-                    raise CommandError("Error while transcripting !!!")
+                    raise CommandError("Error while transcripting!!!")
             video.refresh_from_db()
             self.test_result_transcripting(video)
         else:
-            raise CommandError("No mp3 found !!!")
+            raise CommandError("No mp3 found!!!")
         print("\n ---> End of transcripting video test")
 
     def test_result_transcripting(self, video):
         if not Track.objects.filter(video=video, lang="fr").exists():
-            raise CommandError("Error while transcripting !!!")
+            raise CommandError("Error while transcripting!!!")
 
     def test_encoding(self, video):
         print("\n ---> Start Encoding video test")
@@ -93,12 +93,12 @@ class Command(BaseCommand):
         video.refresh_from_db()
         n = 0
         while video.encoding_in_progress:
-            print("... Encoding in progress : %s " % video.get_encoding_step)
+            print("... Encoding in progress: %s " % video.get_encoding_step)
             video.refresh_from_db()
             time.sleep(2)
             n += 1
             if n > 60:
-                raise CommandError("Error while encoding !!!")
+                raise CommandError("Error while encoding!!!")
         video.refresh_from_db()
         self.test_result_encoding(video)
         print("\n ---> End of Encoding video test")

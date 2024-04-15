@@ -1,3 +1,6 @@
+"""Esup-Pod completion app utilities."""
+
+
 def get_video_completion_context(
     video,
     list_contributor=None,
@@ -10,7 +13,8 @@ def get_video_completion_context(
     form_overlay=None,
 ):
     """
-    Returns a dictionary containing information extracted from the video
+    Return a dictionary containing information extracted from the video.
+
     and its associated objects
     (video, list of contributors, list of documents, track and overlay,
     as well as forms for creating or updating these objects)

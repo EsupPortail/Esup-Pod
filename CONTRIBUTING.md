@@ -108,7 +108,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
 
 ### Git config
 
-Warning about the configuration of line ending : https://docs.github.com/fr/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
+Warning about the configuration of line ending: https://docs.github.com/fr/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
 We add a .gitattributes file at the root of repository
 
 ### Git Commit Messages

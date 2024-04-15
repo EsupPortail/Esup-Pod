@@ -87,7 +87,7 @@ if (typeof loaded == "undefined") {
   });
 
   /*document.querySelectorAll("#open-folder-icon > *").forEach((el) => {
-    el.style = "pointer-events: none; cursor : pointer;";
+    el.style = "pointer-events: none; cursor: pointer;";
   });
   if (document.getElementById("open-folder-icon")) {
     document.getElementById("open-folder-icon").style.cursor = "pointer";

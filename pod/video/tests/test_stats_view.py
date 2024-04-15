@@ -132,7 +132,7 @@ class TestStatsView(TestCase):
             USE_STATS_VIEW = True
         except NoReverseMatch:
             USE_STATS_VIEW = False
-            print("Statistics URL defined =======> : " + USE_STATS_VIEW)
+            print("Statistics URL defined =======>: " + USE_STATS_VIEW)
 
     @skipUnless(USE_STATS_VIEW, "Require URL video_stats_view")
     def test_stats_view_GET_request_video(self):
@@ -160,7 +160,7 @@ class TestStatsView(TestCase):
         """
         self.assertContains(
                 response,
-                b"The following video does not exist : \
+                b"The following video does not exist: \
                         0001_videodoesnotexist",
                 status_code=404)
         """

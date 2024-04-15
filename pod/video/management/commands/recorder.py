@@ -1,5 +1,7 @@
 """
-This command is useful to check the directory DEFAULT_RECORDER_PATH,
+Esup-Pod video recorder command.
+
+Useful to check the directory DEFAULT_RECORDER_PATH,
 and its subdirectories, if they contain videos that were published by recorders.
 The idea is to have one directory for each recorder.
 This command manage also the directory /media/opencast-files which contains the videos
@@ -21,7 +23,7 @@ and processed by these command.
 To have more details, see online documentation:
 https://www.esup-portail.org/wiki/x/DgB8Lw
 
-This script must be executed regurlaly (for an example, with a CRON task).
+This script must be executed regularly (for an example, with a CRON task).
 Example: crontab -e */5 * * * * /usr/bin/bash -c '
 export WORKON_HOME=/data/www/%userpod%/.virtualenvs;
 export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.6;

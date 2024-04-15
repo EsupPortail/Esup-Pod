@@ -184,7 +184,7 @@ def validate_json_implementation(broadcaster: Broadcaster) -> bool:
         logger.error(
             "'piloting_conf' format value for '"
             + broadcaster.name
-            + "' broadcaster must be like : "
+            + "' broadcaster must be like: "
             + "{"
             + mandatory[:-1]
             + "}"
@@ -233,9 +233,9 @@ def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
 
     if piloting_impl.lower() == "smp":
         logger.debug(
-            "piloting_implementation found : '"
+            "piloting_implementation found: '"
             + piloting_impl.lower()
-            + "' for broadcaster : '"
+            + "' for broadcaster: '"
             + broadcaster.name
             + "'"
         )
@@ -666,9 +666,9 @@ class Smp(PilotingInterface):
             pod_file_name = file_head_tail[1]
             pod_file_path = os.path.join(DEFAULT_EVENT_PATH, pod_file_name)
             logger.debug(
-                "-- try to copy from SMP : "
+                "-- try to copy from SMP: "
                 + smp_file_path
-                + " to Pod : "
+                + " to Pod: "
                 + pod_file_path
             )
 
@@ -681,7 +681,7 @@ class Smp(PilotingInterface):
             sftp.close()
             return True
         except OSError as e:
-            logger.error("Failed to copy file over SFTP : " + str(e))
+            logger.error("Failed to copy file over SFTP: " + str(e))
         return False
 
     def can_manage_stream(self) -> bool:
