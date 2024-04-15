@@ -161,11 +161,11 @@ class TrackAdmin(admin.ModelAdmin):
     def check_if_treatment_in_progress() -> bool:
         return EnrichModelQueue.objects.filter(in_treatment=True).exists()
 
-    def write_into_kaldi_file(enrichModelQueue: EnrichModelQueue):
+    def write_into_kaldi_file(enrich_model_queue: EnrichModelQueue):
         with open(
-            MODEL_COMPILE_DIR + "/" + enrichModelQueue.lang + "/db/extra.txt", "w"
+            MODEL_COMPILE_DIR + "/" + enrich_model_queue.lang + "/db/extra.txt", "w"
         ) as f:
-            f.write(enrichModelQueue.text)
+            f.write(enrich_model_queue.text)
         subprocess.call(
             [
                 "docker",
@@ -174,18 +174,18 @@ class TrackAdmin(admin.ModelAdmin):
                 MODEL_COMPILE_DIR + ":/kaldi/compile-model",
                 "-it",
                 "kaldi",
-                enrichModelQueue.lang,
+                enrich_model_queue.lang,
             ]
         )
 
-    def copy_result_into_current_model(enrichModelQueue: EnrichModelQueue):
+    def copy_result_into_current_model(enrich_model_queue: EnrichModelQueue):
         from_path: str = (
-            MODEL_COMPILE_DIR + "/" + enrichModelQueue.lang + "/exp/chain/tdnn/graph"
+            MODEL_COMPILE_DIR + "/" + enrich_model_queue.lang + "/exp/chain/tdnn/graph"
         )
         to_path: str = (
-            TRANSCRIPTION_MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang][
-                "model"
-            ]
+            TRANSCRIPTION_MODEL_PARAM[enrich_model_queue.model_type][
+                enrich_model_queue.lang
+            ]["model"]
             + "/graph"
         )
         if os.path.exists(to_path):
@@ -193,12 +193,12 @@ class TrackAdmin(admin.ModelAdmin):
         shutil.copytree(from_path, to_path)
 
         from_path: str = (
-            MODEL_COMPILE_DIR + "/" + enrichModelQueue.lang + "/data/lang_test_rescore"
+            MODEL_COMPILE_DIR + "/" + enrich_model_queue.lang + "/data/lang_test_rescore"
         )
         to_path: str = (
-            TRANSCRIPTION_MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang][
-                "model"
-            ]
+            TRANSCRIPTION_MODEL_PARAM[enrich_model_queue.model_type][
+                enrich_model_queue.lang
+            ]["model"]
             + "/rescore/"
         )
         if os.path.isfile(from_path + "/G.fst") and os.path.isfile(
@@ -208,12 +208,12 @@ class TrackAdmin(admin.ModelAdmin):
             shutil.copy(from_path + "/G.carpa", to_path)
 
         from_path: str = (
-            MODEL_COMPILE_DIR + "/" + enrichModelQueue.lang + "/exp/rnnlm_out"
+            MODEL_COMPILE_DIR + "/" + enrich_model_queue.lang + "/exp/rnnlm_out"
         )
         to_path: str = (
-            TRANSCRIPTION_MODEL_PARAM[enrichModelQueue.model_type][enrichModelQueue.lang][
-                "model"
-            ]
+            TRANSCRIPTION_MODEL_PARAM[enrich_model_queue.model_type][
+                enrich_model_queue.lang
+            ]["model"]
             + "/rnnlm/"
         )
         if os.path.exists(from_path):
@@ -221,17 +221,17 @@ class TrackAdmin(admin.ModelAdmin):
 
     def enrich_kaldi_model_launch():
         TrackAdmin.debug("enrich_kaldi_model")
-        enrichModelQueue = EnrichModelQueue.objects.filter(model_type="VOSK").first()
-        if enrichModelQueue is not None:
-            enrichModelQueue.in_treatment = True
-            enrichModelQueue.save()
+        enrich_model_queue = EnrichModelQueue.objects.filter(model_type="VOSK").first()
+        if enrich_model_queue is not None:
+            enrich_model_queue.in_treatment = True
+            enrich_model_queue.save()
             TrackAdmin.debug("start subprocess")
-            TrackAdmin.write_into_kaldi_file(enrichModelQueue)
+            TrackAdmin.write_into_kaldi_file(enrich_model_queue)
             TrackAdmin.debug("finish subprocess")
             TrackAdmin.debug("start copy result")
-            TrackAdmin.copy_result_into_current_model(enrichModelQueue)
+            TrackAdmin.copy_result_into_current_model(enrich_model_queue)
             TrackAdmin.debug("finish copy result")
-            enrichModelQueue.delete()
+            enrich_model_queue.delete()
             TrackAdmin.enrich_kaldi_model_launch()
             return
         else:

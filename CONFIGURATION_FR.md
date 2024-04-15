@@ -1925,6 +1925,12 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   >> Image par défaut affichée comme poster ou vignette, utilisée pour présenter la playlist. <br>
   >> Cette image doit se situer dans le répertoire `static`. <br>
 
+ - `RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY`
+
+  > valeur par défaut : `True`
+
+  >> Restreindre l’accès à la création de listes de lecture promues au staff uniquement. <br>
+
  - `USE_FAVORITES`
 
   > valeur par défaut : `True`
@@ -1936,6 +1942,12 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   > valeur par défaut : `True`
 
   >> Activation des playlist. Permet aux utilisateurs d'ajouter des vidéos dans une playlist. <br>
+
+ - `USE_PROMOTED_PLAYLIST`
+
+  > valeur par défaut : `True`
+
+  >> Activation des playlist promues. Permet aux utilisateurs d'utiliser les listes de lecture promues. <br>
 
 ### Configuration application podfile
 

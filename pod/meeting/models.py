@@ -672,14 +672,14 @@ class Meeting(models.Model):
             if (BBB_LOGOUT_URL != "")
             else "".join(["https://", get_current_site(None).domain])
         )
-        endCallbackUrl = "".join(
+        end_callback_url = "".join(
             [
                 "https://",
                 get_current_site(None).domain,
                 reverse("meeting:end_callback", kwargs={"meeting_id": self.meeting_id}),
             ]
         )
-        parameters["meta_endCallbackUrl"] = endCallbackUrl
+        parameters["meta_endCallbackUrl"] = end_callback_url
         if not MEETING_DISABLE_RECORD:
             recordingReadyUrl = "".join(
                 [
