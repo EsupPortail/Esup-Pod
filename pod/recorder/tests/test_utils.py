@@ -24,7 +24,10 @@ from ...settings import BASE_DIR
 
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
-
+# ggignore-start
+# gitguardian:ignore
+PWD = "thisisnotpassword"
+# ggignore-end
 
 class UtilsTestCase(TestCase):
     fixtures = [
@@ -194,7 +197,7 @@ class DigestTestCase(TestCase):
 
     def setUp(self):
         r_type = Type.objects.create(title="others")
-        user = User.objects.create(username="pod", password="pod_v3")
+        user = User.objects.create(username="pod", password=PWD)
         recorder = Recorder.objects.create(
             id=1,
             user=user,
