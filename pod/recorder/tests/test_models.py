@@ -103,7 +103,7 @@ class RecorderTestCase(TestCase):
 
 class RecordingTestCase(TestCase):
     """Test case for Pod Recording."""
-    
+
     fixtures = [
         "initial_data.json",
     ]
@@ -192,7 +192,7 @@ class RecordingTestCase(TestCase):
 
 class RecordingFileTreatmentTestCase(TestCase):
     """Test case for Pod RecordingFileTreatment."""
-    
+
     fixtures = [
         "initial_data.json",
     ]
@@ -243,7 +243,7 @@ class RecordingFileTreatmentTestCase(TestCase):
 
 class RecordingFileTestCase(TestCase):
     """Test case for Pod RecordingFile."""
-    
+
     fixtures = [
         "initial_data.json",
     ]

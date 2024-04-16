@@ -6,6 +6,7 @@ import os
 import re
 import uuid
 from datetime import datetime, timedelta
+
 # import urllib
 from urllib.parse import unquote
 from xml.dom import minidom
@@ -24,8 +25,10 @@ from django.core.mail import EmailMultiAlternatives
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.http import HttpResponseRedirect, JsonResponse
+
 # import urllib.parse
 from django.shortcuts import get_object_or_404
+
 # from django.core.exceptions import SuspiciousOperation
 from django.shortcuts import redirect
 from django.shortcuts import render

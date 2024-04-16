@@ -29,7 +29,7 @@ class PluginVideoTestCase(TestCase):
 
     def setUp(self):
         mediatype = Type.objects.create(title="others")
-        sec_type = Type.objects.create(title="second")
+        Type.objects.create(title="second")
         user = User.objects.create(username="pod", is_staff=True)
         # Setup recorder and recording for Video
         recorder1 = Recorder.objects.create(

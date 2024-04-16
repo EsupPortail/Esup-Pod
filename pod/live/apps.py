@@ -72,6 +72,7 @@ def send_previous_data(sender, **kwargs):
 
 class LiveConfig(AppConfig):
     """Config file for live app."""
+
     name = "pod.live"
     default_auto_field = "django.db.models.BigAutoField"
     # event_data = {}

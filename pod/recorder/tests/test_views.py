@@ -170,7 +170,7 @@ class RecorderViewsTestCase(TestCase):
 
 class StudioPodTestView(TestCase):
     """Test case for Pod studio views."""
-    
+
     fixtures = [
         "initial_data.json",
     ]
@@ -211,7 +211,7 @@ class StudioPodTestView(TestCase):
         # not logged
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        
+
         # user logged in
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
@@ -222,12 +222,12 @@ class StudioPodTestView(TestCase):
 
     def test_StudioPodTestView_get_request_restrict(self):
         """Test view studio_pod."""
-        
+
         views.__REVATSO__ = True  # override setting value to test
         self.create_index_file()
         url = reverse("recorder:studio_pod", kwargs={})
         self.client = Client()
-        
+
         # not logged
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
@@ -249,7 +249,7 @@ class StudioPodTestView(TestCase):
 
     def test_studio_presenter_post(self):
         """Test view presenter_post."""
-        
+
         self.client = Client()
         url = reverse("recorder:presenter_post", kwargs={})
 
@@ -277,7 +277,7 @@ class StudioPodTestView(TestCase):
 
     def test_studio_info_me_json(self):
         """Test view info_me_json."""
-        
+
         self.client = Client()
         url = reverse("recorder:info_me_json", kwargs={})
 
@@ -299,10 +299,10 @@ class StudioPodTestView(TestCase):
 
     def test_studio_ingest_createMediaPackage(self):
         """Test view ingest_createMediaPackage."""
-        
+
         self.client = Client()
         url = reverse("recorder:ingest_createMediaPackage", kwargs={})
-        
+
         # not logged
         self.client.get(url)
         self.assertRaises(PermissionDenied)
@@ -337,7 +337,7 @@ class StudioPodTestView(TestCase):
 
     def test_studio_ingest_createMediaPackage_with_presenter(self):
         """Test view presenter_post."""
-        
+
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.user.is_staff = True
@@ -382,7 +382,7 @@ class StudioPodTestView(TestCase):
 
     def test_studio_ingest_addDCCatalog(self):
         """Test view ingest_addDCCatalog."""
-        
+
         self.client = Client()
         url_addDCCatalog = reverse("recorder:ingest_addDCCatalog", kwargs={})
 
@@ -460,7 +460,7 @@ class StudioPodTestView(TestCase):
 
     def test_studio_ingest_addAttachment(self):
         """Test view ingest_addAttachment."""
-        
+
         self.client = Client()
         url_addAttachment = reverse("recorder:ingest_addAttachment", kwargs={})
 
@@ -526,7 +526,7 @@ class StudioPodTestView(TestCase):
 
     def test_studio_ingest_addTrack(self):
         """Test view ingest_addTrack."""
-        
+
         self.client = Client()
         url_addTrack = reverse("recorder:ingest_addTrack", kwargs={})
 
@@ -602,10 +602,10 @@ class StudioPodTestView(TestCase):
 
     def test_studio_ingest_addCatalog(self):
         """Test view ingest_addCatalog."""
-        
+
         self.client = Client()
         url_addCatalog = reverse("recorder:ingest_addCatalog", kwargs={})
-        
+
         # not logged
         response = self.client.get(url_addCatalog)
         self.assertRaises(PermissionDenied)
@@ -673,7 +673,7 @@ class StudioPodTestView(TestCase):
 
     def test_studio_ingest_ingest(self):
         """Test view ingest_ingest."""
-        
+
         self.client = Client()
         url_ingest = reverse("recorder:ingest_ingest", kwargs={})
 
@@ -755,7 +755,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_presenter_post(self):
         """Test Digest restriction on view presenter_post."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:presenter_post", kwargs={})
         response = self.client.post(url)
@@ -764,7 +764,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_studio_static(self):
         """Test Digest restriction on view studio_static."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:studio_static", kwargs={"file": "test"})
         response = self.client.get(url)
@@ -773,7 +773,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_settings_toml(self):
         """Test Digest restriction on view settings_toml."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:settings_toml", kwargs={})
         response = self.client.get(url)
@@ -782,7 +782,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_info_me_json(self):
         """Test Digest restriction on view info_me_json."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:info_me_json", kwargs={})
         response = self.client.get(url)
@@ -791,7 +791,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_ingest_createMediaPackage(self):
         """Test Digest restriction on view ingest_createMediaPackage."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:ingest_createMediaPackage", kwargs={})
         response = self.client.get(url)
@@ -800,7 +800,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_ingest_addDCCatalog(self):
         """Test Digest restriction on view ingest_addDCCatalog."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:ingest_addDCCatalog", kwargs={})
         response = self.client.post(url)
@@ -809,7 +809,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_ingest_addAttachment(self):
         """Test Digest restriction on view ingest_addAttachment."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:ingest_addAttachment", kwargs={})
         response = self.client.post(url)
@@ -818,7 +818,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_ingest_addTrack(self):
         """Test Digest restriction on view ingest_addTrack."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:ingest_addTrack", kwargs={})
         response = self.client.post(url)
@@ -827,7 +827,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_ingest_addCatalog(self):
         """Test Digest restriction on view ingest_addCatalog."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:ingest_addCatalog", kwargs={})
         response = self.client.post(url)
@@ -836,7 +836,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_ingest_ingest(self):
         """Test Digest restriction on view ingest_ingest."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:ingest_ingest", kwargs={})
         response = self.client.post(url)
@@ -845,7 +845,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_hosts_json(self):
         """Test Digest restriction on view hosts_json."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:hosts_json", kwargs={})
         response = self.client.get(url)
@@ -854,7 +854,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_capture_admin_config(self):
         """Test Digest restriction on view capture_admin_config."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:capture_admin_config", kwargs={"name": "test"})
         response = self.client.post(url)
@@ -863,7 +863,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_capture_admin(self):
         """Test Digest restriction on view capture_admin_agent."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:capture_admin_agent", kwargs={"name": "test"})
         response = self.client.post(url)
@@ -872,7 +872,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_admin_ng_series(self):
         """Test Digest restriction on view admin_ng_series."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:admin_ng_series", kwargs={})
         response = self.client.get(url)
@@ -881,7 +881,7 @@ class StudioDigestViews(TestCase):
 
     def test_digest_services_available(self):
         """Test Digest restriction on view services_available."""
-        
+
         self.client = Client()
         url = reverse("recorder_digest:services_available", kwargs={})
         response = self.client.get(url)
