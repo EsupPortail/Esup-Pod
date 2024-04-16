@@ -27,11 +27,14 @@ OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
 
 
 class UtilsTestCase(TestCase):
+    """Test case for utils methods."""
+
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
+        """Create models to be tested."""
         r_type = Type.objects.create(title="others")
         user = User.objects.create(username="pod")
         recorder1 = Recorder.objects.create(
@@ -58,6 +61,7 @@ class UtilsTestCase(TestCase):
         print(" --->  SetUp of UtilsTestCase: OK!")
 
     def test_add_comment(self):
+        """Test method add_comment()."""
         recording = Recording.objects.get(id=1)
         first_comment = recording.comment
         new_comment = "line2"
@@ -68,9 +72,7 @@ class UtilsTestCase(TestCase):
         print("   --->  test_add_comment of UtilsTestCase: OK !")
 
     def test_clean_old_files(self):
-        """
-        Test case for cleaning old folders in opencast-files directory.
-        """
+        """Test case for cleaning old folders in opencast-files directory."""
 
         opencast_dir_path = os.path.join(MEDIA_ROOT, OPENCAST_FILES_DIR)
 
@@ -107,6 +109,8 @@ class UtilsTestCase(TestCase):
         print("   --->  test_clean_old_files of UtilsTestCase: OK !")
 
     def test_get_id_media(self):
+        """Test method get_id_media()."""
+
         # Test with no data
         request = RequestFactory().post("/")
         id_media = get_id_media(request)
@@ -135,6 +139,8 @@ class UtilsTestCase(TestCase):
         print("   --->  test_get_id_media of UtilsTestCase: OK !")
 
     def test_create_xml_element(self):
+        """Test method create_xml_element()."""
+
         # Create a mock mediaPackage_content
         mediaPackage_content = minidom.Document()
 
@@ -193,13 +199,14 @@ class DigestTestCase(TestCase):
     ]
 
     def setUp(self):
+        """Create models to be tested."""
         r_type = Type.objects.create(title="others")
         user = User.objects.create(username="pod")
         recorder = Recorder.objects.create(
             id=1,
             user=user,
             name="recorder1",
-            address_ip="16.3.10.37",
+            address_ip="127.1.1.1",
             type=r_type,
             directory="dir1",
             recording_type="video",
@@ -210,6 +217,7 @@ class DigestTestCase(TestCase):
         print(" --->  SetUp of UtilsTestCase: OK!")
 
     def test_create_digest_auth_response(self):
+        """Test method create_digest_auth_response()."""
         request = RequestFactory().get("/")
 
         # test 403
@@ -229,6 +237,8 @@ class DigestTestCase(TestCase):
         print("   --->  test_create_digest_auth_response of DigestTestCase: OK!")
 
     def test_get_auth_headers_as_dict(self):
+        """Test method get_auth_headers_as_dict()."""
+
         # test no auth_headers
         request = RequestFactory().get("/")
         response = get_auth_headers_as_dict(request)
@@ -243,6 +253,8 @@ class DigestTestCase(TestCase):
         print("   --->  test_get_auth_headers_as_dict of DigestTestCase: OK!")
 
     def test_digest_is_valid(self):
+        """Test digest validation."""
+
         # test no auth_headers
         request = RequestFactory().get("/")
         response = digest_is_valid(request)
@@ -270,25 +282,25 @@ class DigestTestCase(TestCase):
         self.assertFalse(response)
 
         # compute digest
-        lg = recorder.credentials_login
-        rlm = "any"
+        login = recorder.credentials_login
+        realm = "any"
         passw = recorder.credentials_password
         method = "GET"
         uri = "/"
         salt = recorder.salt
-        cpt = compute_digest(lg, rlm, passw, method, uri, salt)
+        computed = compute_digest(login, realm, passw, method, uri, salt)
 
         # Request Ip and Username match Recorder address_ip and credentials_login
         # Computed Hash sent by the client must be the same as th one calculated by the server
         header = {
             "HTTP_Authorization": 'username="'
-            + lg
+            + login
             + '",realm="'
-            + rlm
+            + realm
             + '",uri="'
             + uri
             + '",response="'
-            + cpt
+            + computed
             + '"'
         }
 

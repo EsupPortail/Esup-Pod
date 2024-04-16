@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """Esup-pod recorder views."""
-import datetime
 import hashlib
 import logging
 import os
 import re
 import uuid
-
+from datetime import datetime, timedelta
 # import urllib
 from urllib.parse import unquote
 from xml.dom import minidom
@@ -25,10 +24,8 @@ from django.core.mail import EmailMultiAlternatives
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.http import HttpResponseRedirect, JsonResponse
-
 # import urllib.parse
 from django.shortcuts import get_object_or_404
-
 # from django.core.exceptions import SuspiciousOperation
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -82,12 +79,21 @@ MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
 logger = logging.getLogger("pod.recorder.view")
 
 
-def check_recorder(recorder, request):
-    if recorder is None:
+def check_recorder(recorder_id, request):
+    """Check if a Recorder with this id exist.
+    Args:
+        recorder_id (int): The recorder id.
+        request (WSGIRequest): The request.
+
+    Returns:
+        The Recorder if exists or PermissionDenied otherwise.
+
+    """
+    if recorder_id is None:
         messages.add_message(request, messages.ERROR, _("Recorder should be indicated."))
         raise PermissionDenied
     try:
-        recorder = Recorder.objects.get(id=recorder)
+        recorder = Recorder.objects.get(id=recorder_id)
     except ObjectDoesNotExist:
         messages.add_message(request, messages.ERROR, _("Recorder not found."))
         raise PermissionDenied
@@ -95,6 +101,7 @@ def check_recorder(recorder, request):
 
 
 def case_delete(form, request):
+    """Delete a file."""
     file = form.cleaned_data["source_file"]
     try:
         if os.path.exists(file):
@@ -108,6 +115,8 @@ def case_delete(form, request):
 
 
 def fetch_user(request, form):
+    """Return the user from the request."""
+
     if request.POST.get("user") and request.POST.get("user") != "":
         return form.cleaned_data["user"]
     else:
@@ -210,6 +219,8 @@ def reformat_url_if_use_cas_or_shib(request, link_url):
 
 
 def recorder_notify(request):
+    """Notify the recorder."""
+
     # Used by URL like https://pod.univ.fr/recorder_notify/?recordingPlace
     # =192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
     mediapath = request.GET.get("mediapath") or ""
@@ -287,6 +298,8 @@ def recorder_notify(request):
 @login_required(redirect_field_name="referrer")
 @staff_member_required(redirect_field_name="referrer")
 def claim_record(request):
+    """Claim a record."""
+
     if in_maintenance():
         return redirect(reverse("maintenance"))
     site = get_current_site(request)
@@ -337,6 +350,7 @@ def claim_record(request):
     redirect_field_name="referrer",
 )
 def delete_record(request, id=None):
+    """Delete a record."""
     record = get_object_or_404(RecordingFileTreatment, id=id)
 
     form = RecordingFileTreatmentDeleteForm()
@@ -479,11 +493,13 @@ def open_info_me_json(request):
 
 
 def open_ingest_createMediaPackage(request):
+    """Create and return a mediaPacakge xml file."""
+
     # URI createMediaPackage useful for OpenCast Studio
     # Necessary id. Example format: a3d9e9f3-66d0-403b-a775-acb3f79196d4
     id_media = uuid.uuid4()
     # Necessary start date. Example format: 2021-12-08T08:52:28Z
-    start = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%dT%H:%M:%S%zZ")
+    start = datetime.now().strftime("%Y-%m-%dT%H:%M:%S%zZ")
     media_package_dir = os.path.join(
         settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % id_media
     )
@@ -598,7 +614,7 @@ def open_ingest_addTrack(request):
 
 
 def open_ingest_addCatalog(request):
-    # URI ingest useful for OpenCast Studio (when cutting video)
+    """URI ingest useful for OpenCast Studio (when cutting video)."""
     # Form management with 3 parameter: flavor, mediaPackage, BODY(smil file)
     if (
         request.POST.get("mediaPackage")
@@ -610,7 +626,7 @@ def open_ingest_addCatalog(request):
 
 
 def open_ingest_ingest(request):
-    # URI ingest useful for OpenCast Studio
+    """URI ingest useful for OpenCast Studio."""
     # Form management with 1 parameter: mediaPackage
     # Management of the mediaPackage (XML)
 
@@ -630,26 +646,19 @@ def open_ingest_ingest(request):
         ).first()
 
         if recorder:
-            # TODO remove try catch
             if not request.user.is_anonymous:
                 req_user = request.user
             else:
                 req_user = User.objects.get(id=DEFAULT_RECORDER_USER_ID)
 
-            try:
-                recording = Recording.objects.create(
-                    user=req_user,
-                    title=id_media,
-                    type="studio",
-                    # Source file corresponds to Pod XML file
-                    source_file=media_package_file,
-                    recorder=recorder,
-                )
-            except Exception as e:
-                print("ERROR on creation")
-                print(e)
-                return HttpResponseBadRequest()
-
+            recording = Recording.objects.create(
+                user=req_user,
+                title=id_media,
+                type="studio",
+                # Source file corresponds to Pod XML file
+                source_file=media_package_file,
+                recorder=recorder,
+            )
             recording.save()
         else:
             messages.add_message(
@@ -665,17 +674,20 @@ def open_ingest_ingest(request):
 # OPENCAST VIEWS WITH LOGIN MANDATORY
 @login_required(redirect_field_name="referrer")
 def studio_pod(request):
+    """Call open_studio_pod() if user is logged in."""
     return open_studio_pod(request)
 
 
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def presenter_post(request):
+    """Call open_presenter_post() if user is logged in."""
     return open_presenter_post(request)
 
 
 @login_required(redirect_field_name="referrer")
 def studio_static(request, file):
+    """Call open_studio_static() if user is logged in."""
     return open_studio_static(request, file)
 
 
@@ -707,41 +719,48 @@ def settings_toml(request):
 
 @login_required(redirect_field_name="referrer")
 def info_me_json(request):
+    """Call open_info_me_json() if user is logged in."""
     return open_info_me_json(request)
 
 
 @login_required(redirect_field_name="referrer")
 def ingest_createMediaPackage(request):
+    """Call open_ingest_createMediaPackage() if user is logged in."""
     return open_ingest_createMediaPackage(request)
 
 
 @login_required(redirect_field_name="referrer")
 @csrf_exempt
 def ingest_addDCCatalog(request):
+    """Call open_ingest_addDCCatalog() if user is logged in."""
     return open_ingest_addDCCatalog(request)
 
 
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addAttachment(request):
+    """Call open_ingest_addAttachment() if user is logged in."""
     return open_ingest_addAttachment(request)
 
 
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addTrack(request):
+    """Call open_ingest_addTrack() if user is logged in."""
     return open_ingest_addTrack(request)
 
 
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addCatalog(request):
+    """Call open_ingest_addCatalog() if user is logged in."""
     return open_ingest_addCatalog(request)
 
 
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_ingest(request):
+    """Call open_ingest_ingest() if user is logged in."""
     return open_ingest_ingest(request)
 
 
@@ -749,6 +768,7 @@ def ingest_ingest(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def digest_presenter_post(request):
+    """Call open_presenter_post() if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -757,6 +777,7 @@ def digest_presenter_post(request):
 
 @require_http_methods(["GET"])
 def digest_studio_static(request, file):
+    """Call open_studio_static() if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -780,6 +801,7 @@ def digest_settings_toml(request):
 
 @require_http_methods(["GET"])
 def digest_info_me_json(request):
+    """Call open_info_me_json() if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -788,6 +810,7 @@ def digest_info_me_json(request):
 
 @require_http_methods(["GET"])
 def digest_ingest_createMediaPackage(request):
+    """Call open_ingest_createMediaPackage() if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -797,6 +820,7 @@ def digest_ingest_createMediaPackage(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def digest_ingest_addDCCatalog(request):
+    """Call open_ingest_addDCCatalog() if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -806,6 +830,7 @@ def digest_ingest_addDCCatalog(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def digest_ingest_addAttachment(request):
+    """Call open_ingest_addAttachment() if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -815,6 +840,7 @@ def digest_ingest_addAttachment(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def digest_ingest_addTrack(request):
+    """Call open_ingest_addTrack() if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -824,6 +850,7 @@ def digest_ingest_addTrack(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def digest_ingest_addCatalog(request):
+    """Call open_ingest_addCatalog() if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -833,6 +860,7 @@ def digest_ingest_addCatalog(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def digest_ingest_ingest(request):
+    """Call open_ingest_ingest() if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -841,6 +869,7 @@ def digest_ingest_ingest(request):
 
 @require_http_methods(["GET"])
 def digest_hosts_json(request):
+    """URI hosts_json useful for OpenCast Studio."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -854,6 +883,7 @@ def digest_hosts_json(request):
     )
     server_ip = server_ip.split(",")[0] if server_ip else None
 
+    # cf https://stable.opencast.org/docs.html?path=/services & https://stable.opencast.org/services/hosts.json
     return JsonResponse(
         {
             "hosts": {
@@ -877,6 +907,7 @@ def digest_hosts_json(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def digest_capture_admin(request, name):
+    """URI capture_admin useful for OpenCast Studio."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -898,6 +929,7 @@ def digest_capture_admin(request, name):
 @csrf_exempt
 @require_http_methods(["POST"])
 def digest_capture_admin_configuration(request, name):
+    """URI capture_admin_configuration useful for OpenCast Studio."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -924,8 +956,13 @@ def digest_capture_admin_configuration(request, name):
 
 @require_http_methods(["GET"])
 def digest_admin_ng_series(request):
+    """URI admin_ng_series useful for OpenCast Studio."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
+
+    # Example format: 2021-12-08T08:52:28Z
+    one_minute_ago = datetime.now() + timedelta(minutes=-1)
+    creation_date = one_minute_ago.strftime("%Y-%m-%dT%H:%M:%S%zZ")
 
     return JsonResponse(
         {
@@ -939,7 +976,7 @@ def digest_admin_ng_series(request):
                     "organizers": [],
                     "id": "ID-blender-foundation",
                     "contributors": [],
-                    "creation_date": "2023-12-11T01:09:00Z",
+                    "creation_date": creation_date,
                     "title": "admin",
                 }
             ],
@@ -950,6 +987,7 @@ def digest_admin_ng_series(request):
 
 @require_http_methods(["GET"])
 def digest_available(request):
+    """URI available useful for OpenCast Studio."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -958,6 +996,10 @@ def digest_available(request):
         if (request.is_secure())
         else "http://%s" % request.get_host()
     )
+
+    # Example format: 2021-12-08T08:52:28Z
+    yesterday = datetime.now() + timedelta(days=-1)
+    online = yesterday.strftime("%Y-%m-%dT%H:%M:%S%zZ")
     return JsonResponse(
         {
             "services": {
@@ -969,9 +1011,9 @@ def digest_available(request):
                     "online": True,
                     "maintenance": False,
                     "jobproducer": False,
-                    "onlinefrom": "2023-10-12T02:01:38.325+02:00",
+                    "onlinefrom": online,
                     "service_state": "NORMAL",
-                    "state_changed": "2023-10-12T02:01:38.325+02:00",
+                    "state_changed": online,
                     "error_state_trigger": 0,
                     "warning_state_trigger": 0,
                 }

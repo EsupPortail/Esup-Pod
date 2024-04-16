@@ -261,11 +261,14 @@ class Recorder(models.Model):
         super(Recorder, self).save(*args, **kwargs)
 
     def clean(self):
+        """Custom model validation."""
         cred_msg = _("All credentials must be set.")
         cred_error = {
             "credentials_login": cred_msg,
             "credentials_password": cred_msg,
         }
+
+        # Ensure all credentials are set
         if (not self.credentials_login and self.credentials_password) or (
             self.credentials_login and not self.credentials_password
         ):

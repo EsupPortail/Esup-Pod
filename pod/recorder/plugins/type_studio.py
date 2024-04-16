@@ -187,7 +187,7 @@ def extract_infos_from_catalog(catalogs, recording):
         try:
             xml_doc = minidom.parse(catalog.get("src"))
         except FileNotFoundError as e:
-            add_comment(recording.id, "Error : %s" % e)
+            add_comment(recording.id, "Error: %s" % e)
             continue
 
         # if title or creator defined, update Recording
@@ -243,6 +243,7 @@ def change_user(recording, username):
 def link_video_to_event(recording, video, event_id):
     """Associate the Video to the Event.
     Add Event's creator as additional owner of the video.
+    Set same description, type and restrictions.
     """
     if isinstance(event_id, int) or event_id.isdigit():
         msg = "*** Associating Event '%s' to Video ***" % (event_id,)
@@ -253,7 +254,20 @@ def link_video_to_event(recording, video, event_id):
             evt.videos.add(video)
             evt.save()
 
-            video.additional_owners.add(evt.owner)
+            video.description = evt.description
+            video.type = evt.type
+            video.is_draft = evt.is_draft
+            if video.owner != evt.owner:
+                video.additional_owners.add(evt.owner)
+            if evt.is_draft:
+                video.password = None
+                video.is_restricted = False
+                video.restrict_access_to_groups.clear()
+            else:
+                video.password = evt.password
+                video.is_restricted = evt.is_restricted
+                video.restrict_access_to_groups.set(evt.restrict_access_to_groups.all())
+
             video.save()
 
 

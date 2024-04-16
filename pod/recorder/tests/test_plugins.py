@@ -29,6 +29,7 @@ class PluginVideoTestCase(TestCase):
 
     def setUp(self):
         mediatype = Type.objects.create(title="others")
+        sec_type = Type.objects.create(title="second")
         user = User.objects.create(username="pod", is_staff=True)
         # Setup recorder and recording for Video
         recorder1 = Recorder.objects.create(
@@ -159,6 +160,9 @@ class PluginVideoTestCase(TestCase):
             owner=user_pod,
             video="test.mp4",
             type=Type.objects.get(id=1),
+            is_restricted=True,
+            is_draft=False,
+            password="pod1234pod",
         )
         building = Building.objects.create(name="building1")
         broadcaster = Broadcaster.objects.create(
@@ -166,24 +170,45 @@ class PluginVideoTestCase(TestCase):
             building=building,
         )
         user2 = User.objects.create(username="another_user", is_staff=True)
-        event = Event.objects.create(
+        event_draft = Event.objects.create(
             title="event1",
             owner=user2,
-            type=Type.objects.get(id=1),
+            is_draft=True,
+            type=Type.objects.get(id=2),
             broadcaster=broadcaster,
+            description="random desc",
+        )
+        event_not_draft = Event.objects.create(
+            title="event2",
+            owner=user2,
+            is_draft=False,
+            type=Type.objects.get(id=2),
+            broadcaster=broadcaster,
+            description="event_draft desc",
         )
 
-        self.assertTrue(event.videos.count() == 0)
-        self.assertNotIn(event.owner, video.additional_owners.all())
+        self.assertTrue(event_draft.videos.count() == 0)
+        self.assertNotIn(event_draft.owner, video.additional_owners.all())
+
+        self.assertNotEqual(event_draft.description, video.description)
+        self.assertNotEqual(event_draft.is_draft, video.is_draft)
+        self.assertNotEqual(event_draft.type, video.type)
 
         # Call the method
-        link_video_to_event(recording, video, event.id)
+        link_video_to_event(recording, video, event_draft.id)
+
+        self.assertEqual(event_draft.description, video.description)
+        self.assertEqual(event_draft.is_draft, video.is_draft)
+        self.assertEqual(event_draft.type, video.type)
+        self.assertIsNone(video.password)
+        self.assertFalse(video.is_restricted)
+        self.assertEqual(video.restrict_access_to_groups.count(), 0)
 
         # Test the association
-        self.assertTrue(event.videos.count() == 1)
+        self.assertTrue(event_draft.videos.count() == 1)
 
         # Test Video additional users contains Event's owner
-        self.assertIn(event.owner, video.additional_owners.all())
+        self.assertIn(event_draft.owner, video.additional_owners.all())
 
         # Test persistence in db
         event_from_db = Event.objects.get(id=1)
@@ -191,6 +216,11 @@ class PluginVideoTestCase(TestCase):
 
         video_from_db = Video.objects.get(id=video.id)
         self.assertIn(event_from_db.owner, video_from_db.additional_owners.all())
+
+        # With not draft event
+        link_video_to_event(recording, video, event_not_draft.id)
+        self.assertEqual(event_not_draft.is_draft, video.is_draft)
+        self.assertEqual(event_not_draft.is_restricted, video.is_restricted)
 
         print("   --->  test_link_video_to_event of PluginVideoTestCase: OK!")
 

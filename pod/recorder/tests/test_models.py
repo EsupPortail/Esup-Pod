@@ -16,7 +16,8 @@ class RecorderTestCase(TestCase):
     ]
 
     def setUp(self):
-        videotype = Type.objects.create(title="others")
+        """Create models to be tested."""
+        other_type = Type.objects.create(title="others")
         user = User.objects.create(username="pod")
         user1 = User.objects.create(username="pod1")
         user2 = User.objects.create(username="pod2")
@@ -26,7 +27,7 @@ class RecorderTestCase(TestCase):
             user=user,
             name="recorder1",
             address_ip="16.3.10.37",
-            type=videotype,
+            type=other_type,
             cursus="0",
             is_draft=False,
             is_restricted=True,
@@ -40,7 +41,8 @@ class RecorderTestCase(TestCase):
         recorder1.additional_users.add(user2)
         recorder1.restrict_access_to_groups.add(group)
 
-    def test_attributs(self):
+    def test_attributes(self):
+        """Test model attributes."""
         recorder1 = Recorder.objects.get(id=1)
         self.assertEqual(recorder1.name, "recorder1")
         self.assertEqual(recorder1.address_ip, "16.3.10.37")
@@ -53,9 +55,10 @@ class RecorderTestCase(TestCase):
         self.assertEqual(recorder1.salt, "pepper")
         self.assertEqual(recorder1.credentials_login, "simplelogin")
         self.assertEqual(recorder1.credentials_password, "randompassword")
-        print("   --->  test_attributs of RecorderTestCase: OK !")
+        print("   --->  test_attributes of RecorderTestCase: OK!")
 
     def test_clean_method(self):
+        """Test method clean()."""
         # credential are not defined: clean is fine
         recorder1 = Recorder.objects.get(id=1)
         recorder1.credentials_login = ""
@@ -85,40 +88,45 @@ class RecorderTestCase(TestCase):
         self.assertTrue("credentials_login" in str(context.exception))
         self.assertTrue("salt" in str(context.exception))
 
-    def test_ipunder(self):
+    def test_ip_under(self):
+        """Test method ipunder()."""
         recorder1 = Recorder.objects.get(id=1)
         self.assertEqual(recorder1.ipunder(), "16_3_10_37")
-        print("   --->  test_ipunder of RecorderTestCase: OK!")
+        print("   --->  test_ip_under of RecorderTestCase: OK!")
 
     def test_delete_object(self):
+        """Test model delete."""
         Recorder.objects.filter(name="recorder1").delete()
         self.assertEqual(Recorder.objects.all().count(), 0)
         print("   --->  test_delete_object of RecorderTestCase: OK!")
 
 
 class RecordingTestCase(TestCase):
+    """Test case for Pod Recording."""
+    
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
-        videotype = Type.objects.create(title="others")
+        """Create models to be tested."""
+        other_type = Type.objects.create(title="others")
         user = User.objects.create(username="pod")
         recorder1 = Recorder.objects.create(
             id=1,
             user=user,
             name="recorder1",
             address_ip="16.3.10.37",
-            type=videotype,
+            type=other_type,
             cursus="0",
             directory="dir1",
         )
         source_file = "/home/pod/files/video.mp4"
-        type = "video"
+        video_type = "video"
         recording = Recording.objects.create(
             user=user,
             title="media1",
-            type=type,
+            type=video_type,
             source_file=source_file,
             recorder=recorder1,
         )
@@ -126,11 +134,8 @@ class RecordingTestCase(TestCase):
 
         print(" --->  SetUp of RecordingTestCase: OK!")
 
-    """
-        test attributs
-    """
-
-    def test_attributs(self):
+    def test_attributes(self):
+        """Test model attributes."""
         recording = Recording.objects.get(id=1)
         recorder = Recorder.objects.get(id=1)
         self.assertEqual(recording.title, "media1")
@@ -141,10 +146,11 @@ class RecordingTestCase(TestCase):
         self.assertEqual(recording.date_added.year, date.year)
         self.assertEqual(recording.date_added.month, date.month)
         self.assertEqual(recording.date_added.day, date.day)
-        print("   --->  test_attributs of RecordingTestCase: OK!")
+        print("   --->  test_attributes of RecordingTestCase: OK!")
 
     # Testing the two if cases of verify_attibuts method
     def test_verifying_attributs_fst_cases(self):
+        """Test method verifying_attributs()."""
         recording = Recording.objects.get(id=1)
         recording.type = ""
         recording.source_file = ""
@@ -157,6 +163,7 @@ class RecordingTestCase(TestCase):
 
     # Testing the two elif cases of verify_attibuts method
     def test_verifying_attributs_snd_cases(self):
+        """Test method verifying_attributs()."""
         recording = Recording.objects.get(id=1)
         recording.type = "something"
         recording.source_file = "/home/pod/files/somefile.mp4"
@@ -168,17 +175,15 @@ class RecordingTestCase(TestCase):
         )
 
     def test_clean_raise_exception(self):
+        """Test method clean()."""
         recording = Recording.objects.get(id=1)
         recording.type = "something"
         recording.save()
         self.assertRaises(ValidationError, recording.clean)
         print("   --->  test_clean_raise_exception of RecordingTestCase: OK!")
 
-    """
-        test delete object
-    """
-
     def test_delete_object(self):
+        """Test method delete()."""
         Recording.objects.filter(title="media1").delete()
         self.assertEqual(Recording.objects.all().count(), 0)
 
@@ -186,12 +191,15 @@ class RecordingTestCase(TestCase):
 
 
 class RecordingFileTreatmentTestCase(TestCase):
+    """Test case for Pod RecordingFileTreatment."""
+    
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
-        videotype = Type.objects.create(title="others")
+        """Create models to be tested."""
+        other_type = Type.objects.create(title="others")
         user1 = User.objects.create(username="pod")
         recorder1 = Recorder.objects.create(
             id=1,
@@ -199,7 +207,7 @@ class RecordingFileTreatmentTestCase(TestCase):
             name="recorder1",
             address_ip="16.3.10.37",
             cursus="0",
-            type=videotype,
+            type=other_type,
             directory="dir1",
         )
         recording_file = RecordingFileTreatment.objects.create(
@@ -210,11 +218,8 @@ class RecordingFileTreatmentTestCase(TestCase):
         recording_file.save()
         print(" --->  SetUp of RecordingFileTestCase: OK!")
 
-    """
-        test attributs
-    """
-
-    def test_attributs(self):
+    def test_attributes(self):
+        """Test model attributes."""
         recording_file = RecordingFileTreatment.objects.get(id=1)
         recorder = Recorder.objects.get(id=1)
         self.assertEqual(recording_file.type, "video")
@@ -225,13 +230,10 @@ class RecordingFileTreatmentTestCase(TestCase):
         self.assertEqual(recording_file.date_added.year, date.year)
         self.assertEqual(recording_file.date_added.month, date.month)
         self.assertEqual(recording_file.date_added.day, date.day)
-        print("   --->  test_attributs of RecordingFileTreatmentTestCase: OK!")
-
-    """
-        test delete object
-    """
+        print("   --->  test_attributes of RecordingFileTreatmentTestCase: OK!")
 
     def test_delete_object(self):
+        """Test method delete()."""
         filepath = "/home/pod/files/somefile.mp4"
         RecordingFileTreatment.objects.filter(file=filepath).delete()
         self.assertEqual(RecordingFileTreatment.objects.all().count(), 0)
@@ -240,12 +242,15 @@ class RecordingFileTreatmentTestCase(TestCase):
 
 
 class RecordingFileTestCase(TestCase):
+    """Test case for Pod RecordingFile."""
+    
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
-        videotype = Type.objects.create(title="others")
+        """Create models to be tested."""
+        other_type = Type.objects.create(title="others")
         user1 = User.objects.create(username="pod")
         recorder1 = Recorder.objects.create(
             id=1,
@@ -253,7 +258,7 @@ class RecordingFileTestCase(TestCase):
             name="recorder1",
             address_ip="16.3.10.37",
             cursus="0",
-            type=videotype,
+            type=other_type,
             directory="dir1",
         )
         recording_file = RecordingFile.objects.create(recorder=recorder1)
@@ -261,20 +266,14 @@ class RecordingFileTestCase(TestCase):
         recording_file.save()
         print(" --->  SetUp of RecordingFileTestCase: OK!")
 
-    """
-        test attributs
-    """
-
-    def test_attributs(self):
+    def test_attributes(self):
+        """Test model attributes."""
         recording_file = RecordingFile.objects.get(id=1)
         self.assertEqual(recording_file.file, "/home/pod/files/somefile.mp4")
         print("   --->  test_attributs of RecordingFileTestCase: OK!")
 
-    """
-        test delete object
-    """
-
     def test_delete_object(self):
+        """Test method delete()."""
         filepath = "/home/pod/files/somefile.mp4"
         RecordingFile.objects.filter(file=filepath).delete()
         self.assertEqual(RecordingFile.objects.all().count(), 0)

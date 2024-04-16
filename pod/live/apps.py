@@ -71,12 +71,14 @@ def send_previous_data(sender, **kwargs):
 
 
 class LiveConfig(AppConfig):
+    """Config file for live app."""
     name = "pod.live"
     default_auto_field = "django.db.models.BigAutoField"
     # event_data = {}
     verbose_name = _("Lives")
 
     def ready(self):
+        """Init tasks."""
         pre_migrate.connect(save_previous_data, sender=self)
         post_migrate.connect(add_default_opencast, sender=self)
         post_migrate.connect(set_default_site, sender=self)

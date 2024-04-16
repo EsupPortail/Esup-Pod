@@ -259,6 +259,7 @@ def get_auth_headers_as_dict(request) -> dict:
 
 
 def compute_digest_recorder(recorder, realm, method, uri):
+    """Call method compute_digest() with recorder data."""
     return compute_digest(
         recorder.credentials_login,
         realm,
