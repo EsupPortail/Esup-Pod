@@ -3017,6 +3017,7 @@ def add_category(request):
                     cat.video.all(),
                 )
             )
+            response["message"] = _("Category successfully added.")
 
             return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
