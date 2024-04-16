@@ -103,7 +103,9 @@ function toggleSelectedVideo(item, container) {
   }
   item.classList.toggle("selected");
   setListSelectedVideos(container);
-  replaceSelectedCountVideos();
+  if(container === "videos_list") {
+    replaceSelectedCountVideos();
+  }
 }
 
 /**
