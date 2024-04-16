@@ -32,6 +32,9 @@ class RecorderTestCase(TestCase):
             is_restricted=True,
             password="secret",
             directory="dir1",
+            salt="pepper",
+            credentials_login="simplelogin",
+            credentials_password="randompassword",
         )
         recorder1.additional_users.add(user1)
         recorder1.additional_users.add(user2)
@@ -47,7 +50,40 @@ class RecorderTestCase(TestCase):
         self.assertEqual(recorder1.password, "secret")
         self.assertEqual(recorder1.additional_users.count(), 2)
         self.assertEqual(recorder1.restrict_access_to_groups.count(), 1)
-        print("   --->  test_attributs of RecorderTestCase: OK!")
+        self.assertEqual(recorder1.salt, "pepper")
+        self.assertEqual(recorder1.credentials_login, "simplelogin")
+        self.assertEqual(recorder1.credentials_password, "randompassword")
+        print("   --->  test_attributs of RecorderTestCase: OK !")
+
+    def test_clean_method(self):
+        # credential are not defined: clean is fine
+        recorder1 = Recorder.objects.get(id=1)
+        recorder1.credentials_login = ""
+        recorder1.credentials_password = ""
+        recorder1.clean()
+        print("   --->  test_clean_raise_exception of RecorderTestCase: OK!")
+
+        #  credentials_login needed if credentials_password set
+        recorder1 = Recorder.objects.get(id=1)
+        recorder1.credentials_login = ""
+        self.assertRaises(ValidationError, recorder1.clean)
+        print("   --->  test_clean_raise_exception of RecorderTestCase: OK!")
+
+        #  credentials_password needed if credentials_login set
+        recorder1 = Recorder.objects.get(id=1)
+        recorder1.credentials_password = ""
+        self.assertRaises(ValidationError, recorder1.clean)
+        print("   --->  test_clean_raise_exception of RecorderTestCase: OK!")
+
+        # check exception content
+        recorder1 = Recorder.objects.get(id=1)
+        recorder1.salt = ""
+        recorder1.credentials_login = ""
+        with self.assertRaises(Exception) as context:
+            recorder1.clean()
+        self.assertTrue("credentials_password" in str(context.exception))
+        self.assertTrue("credentials_login" in str(context.exception))
+        self.assertTrue("salt" in str(context.exception))
 
     def test_ipunder(self):
         recorder1 = Recorder.objects.get(id=1)
@@ -57,7 +93,6 @@ class RecorderTestCase(TestCase):
     def test_delete_object(self):
         Recorder.objects.filter(name="recorder1").delete()
         self.assertEqual(Recorder.objects.all().count(), 0)
-
         print("   --->  test_delete_object of RecorderTestCase: OK!")
 
 

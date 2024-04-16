@@ -1,57 +1,60 @@
 # -*- coding: utf-8 -*-
 """Esup-pod recorder views."""
-import os
 import datetime
-import uuid
+import hashlib
+import logging
+import os
 import re
-import bleach
+import uuid
 
 # import urllib
 from urllib.parse import unquote
+from xml.dom import minidom
 
-from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.shortcuts import render
+import bleach
 from django.conf import settings
-from django.urls import reverse
-from django.core.exceptions import PermissionDenied
-
-# from django.core.exceptions import SuspiciousOperation
-from django.shortcuts import redirect
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.admin.views.decorators import user_passes_test
-from django.views.decorators.csrf import csrf_protect
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.sites.shortcuts import get_current_site
-from pod.recorder.models import Recorder, Recording, RecordingFileTreatment
-from .forms import RecordingForm, RecordingFileTreatmentDeleteForm
-from .models import __REVATSO__
-from django.contrib import messages
-import hashlib
-from django.http import HttpResponseRedirect, JsonResponse
-from django.http import HttpResponse, HttpResponseBadRequest
-from django.template.loader import render_to_string
-from django.template.defaultfilters import truncatechars
-from django.core.mail import EmailMultiAlternatives
-
-
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import PermissionDenied
+from django.core.mail import EmailMultiAlternatives
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponseRedirect, JsonResponse
 
 # import urllib.parse
 from django.shortcuts import get_object_or_404
-from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
-from django.views.decorators.csrf import csrf_exempt
-from xml.dom import minidom
 
+# from django.core.exceptions import SuspiciousOperation
+from django.shortcuts import redirect
+from django.shortcuts import render
+from django.template.defaultfilters import truncatechars
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_http_methods
+
+from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
+from pod.recorder.models import Recorder, Recording, RecordingFileTreatment
+from .forms import RecordingForm, RecordingFileTreatmentDeleteForm
+from .models import __REVATSO__
 from .utils import (
     get_id_media,
     handle_upload_file,
     create_xml_element,
     get_media_package_content,
+    digest_is_valid,
+    create_digest_auth_response,
 )
 
 DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
+DEFAULT_RECORDER_USER_ID = getattr(settings, "DEFAULT_RECORDER_USER_ID", 1)
 
 # USE_CAS = getattr(settings, "USE_CAS", False)
 # USE_SHIB = getattr(settings, "USE_SHIB", False)
@@ -75,6 +78,8 @@ OPENCAST_MEDIAPACKAGE = getattr(
 OPENCAST_DEFAULT_PRESENTER = getattr(settings, "OPENCAST_DEFAULT_PRESENTER", "mid")
 
 MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
+
+logger = logging.getLogger("pod.recorder.view")
 
 
 def check_recorder(recorder, request):
@@ -365,86 +370,7 @@ def delete_record(request, id=None):
     )
 
 
-# OPENCAST VIEWS
-@login_required(redirect_field_name="referrer")
-def studio_pod(request):
-    """Render the Opencast studio view in Esup-Pod."""
-    if in_maintenance():
-        return redirect(reverse("maintenance"))
-    if __REVATSO__ and request.user.is_staff is False:
-        return render(
-            request, "recorder/opencast-studio.html", {"access_not_allowed": True}
-        )
-    # Render the Opencast studio index file
-    opencast_studio_rendered = (
-        render_to_string("studio/index.html").replace("\r", "").replace("\n", "")
-    )
-    head = opencast_studio_rendered[
-        opencast_studio_rendered.index("<head>")
-        + len("<head>") : opencast_studio_rendered.index("</head>")
-    ]
-    scripts = re.findall('<script .[a-z="]+ src=".[a-z/.0-9]+"></script>', head)
-    styles = re.findall("<style>.*</style>", head)
-    body = opencast_studio_rendered[
-        opencast_studio_rendered.index("<body>")
-        + len("<body>") : opencast_studio_rendered.index("</body>")
-    ]
-    body = "".join(scripts) + "".join(styles) + body
-    return render(
-        # Render the Opencast studio index file
-        request,
-        "recorder/opencast-studio.html",
-        {"body": body, "default_presenter": OPENCAST_DEFAULT_PRESENTER},
-    )
-
-
-@csrf_exempt
-@login_required(redirect_field_name="referrer")
-def presenter_post(request):
-    """Check if the value for `presenter` is valid."""
-    if (
-        request.POST
-        and request.POST.get("presenter")
-        and request.POST.get("presenter") in ["mid", "piph", "pipb"]
-    ):
-        request.session["presenter"] = request.POST.get("presenter")
-        return JsonResponse({"valid": True}, status=200)
-
-    return HttpResponseBadRequest()
-
-
-@login_required(redirect_field_name="referrer")
-def studio_static(request, file):
-    """Redirect to all static files inside Opencast studio static subfolder."""
-    extension = file.split(".")[-1]
-    if extension == "js":
-        path_file = os.path.join(
-            settings.BASE_DIR, "custom", "static", "opencast", "studio/static/%s" % file
-        )
-        f = open(path_file, "r")
-        content_file = f.read()
-        content_file = content_file.replace("Opencast", "Pod")
-        return HttpResponse(content_file, content_type="application/javascript")
-    return HttpResponseRedirect("/static/opencast/studio/static/%s" % file)
-
-
-@login_required(redirect_field_name="referrer")
-def studio_root_file(request, file):
-    """Redirect to root static files of Opencast studio folder."""
-    extension = file.split(".")[-1]
-    if extension == "js":
-        path_file = os.path.join(
-            settings.BASE_DIR, "custom", "static", "opencast", "studio/%s" % file
-        )
-        f = open(path_file, "r")
-        content_file = f.read()
-        content_file = content_file.replace("Opencast", "Pod")
-        return HttpResponse(content_file, content_type="application/javascript")
-    return HttpResponseRedirect("/static/opencast/studio/%s" % file)
-
-
-@login_required(redirect_field_name="referrer")
-def settings_toml(request):
+def studio_toml(request, studio_url):
     """Render a settings.toml configuration file for Opencast Studio."""
     # OpenCast Studio configuration
     # See https://github.com/elan-ev/opencast-studio/blob/master/CONFIGURATION.md
@@ -482,16 +408,77 @@ def settings_toml(request):
     return HttpResponse(content_text, content_type="text/plain")
 
 
-@login_required(redirect_field_name="referrer")
-def info_me_json(request):
-    """Render a info/me.json file for current user roles in Opencast Studio."""
+# INNER METHODS
+def open_studio_pod(request):
+    """Render the Opencast studio view in Esup-Pod."""
+
+    if in_maintenance():
+        return redirect(reverse("maintenance"))
+    if __REVATSO__ and request.user.is_staff is False:
+        return render(
+            request, "recorder/opencast-studio.html", {"access_not_allowed": True}
+        )
+    # Render the Opencast studio index file
+    opencast_studio_rendered = (
+        render_to_string("studio/index.html").replace("\r", "").replace("\n", "")
+    )
+    head = opencast_studio_rendered[
+        opencast_studio_rendered.index("<head>")
+        + len("<head>") : opencast_studio_rendered.index("</head>")
+    ]
+    scripts = re.findall('<script .[a-z="]+ src=".[a-z/.0-9]+"></script>', head)
+    styles = re.findall("<style>.*</style>", head)
+    body = opencast_studio_rendered[
+        opencast_studio_rendered.index("<body>")
+        + len("<body>") : opencast_studio_rendered.index("</body>")
+    ]
+    body = "".join(scripts) + "".join(styles) + body
+    return render(
+        # Render the Opencast studio index file
+        request,
+        "recorder/opencast-studio.html",
+        {"body": body, "default_presenter": OPENCAST_DEFAULT_PRESENTER},
+    )
+
+
+def open_presenter_post(request):
+    """Check if the value for `presenter` is valid."""
+
+    if (
+        request.POST
+        and request.POST.get("presenter")
+        and request.POST.get("presenter") in ["mid", "piph", "pipb"]
+    ):
+        request.session["presenter"] = request.POST.get("presenter")
+        return JsonResponse({"valid": True}, status=200)
+
+    return HttpResponseBadRequest()
+
+
+def open_studio_static(request, file):
+    """Redirect to all static files inside Opencast studio static subfolder."""
+
+    extension = file.split(".")[-1]
+    if extension == "js":
+        path_file = os.path.join(
+            settings.BASE_DIR, "custom", "static", "opencast", "studio/static/%s" % file
+        )
+        f = open(path_file, "r")
+        content_file = f.read()
+        content_file = content_file.replace("Opencast", "Pod")
+        return HttpResponse(content_file, content_type="application/javascript")
+    return HttpResponseRedirect("/static/opencast/studio/static/%s" % file)
+
+
+def open_info_me_json(request):
+    """Render an info/me.json file for current user roles in Opencast Studio."""
+
     # Providing a user with ROLE_STUDIO should grant all necessary rights.
     # See https://github.com/elan-ev/opencast-studio/blob/master/README.md
     return render(request, "studio/me.json", {}, content_type="application/json")
 
 
-@login_required(redirect_field_name="referrer")
-def ingest_createMediaPackage(request):
+def open_ingest_createMediaPackage(request):
     # URI createMediaPackage useful for OpenCast Studio
     # Necessary id. Example format: a3d9e9f3-66d0-403b-a775-acb3f79196d4
     id_media = uuid.uuid4()
@@ -520,43 +507,46 @@ def ingest_createMediaPackage(request):
     return HttpResponse(media_package_content.toxml(), content_type="application/xml")
 
 
-@login_required(redirect_field_name="referrer")
-@csrf_exempt
-def ingest_addDCCatalog(request):
-    # URI addDCCatalog useful for OpenCast Studio
+def open_ingest_addDCCatalog(request):
+    """URI addDCCatalog useful for OpenCast Studio."""
     # Form management with 3 parameters: mediaPackage, dublin_core, flavor
     # For Pod, management of dublin_core is useless
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
-        and request.POST.get("dublinCore")
+        and (request.POST.get("dublinCore") or request.FILES.getlist("dublinCore"))
     ):
         typeCatalog = "dublincore/episode"
-        # Id catalog. Example format: 798017b1-2c45-42b1-85b0-41ce804fa527
-        # idCatalog = uuid.uuid4()
-        # Id media package
-        id_media = ""
-        # dublinCore
-        dublin_core = ""
         id_media = get_id_media(request)
-        if request.POST.get("flavor") and request.POST.get("flavor") != "":
-            typeCatalog = request.POST.get("flavor")
-        if request.POST.get("dublinCore") and request.POST.get("dublinCore") != "":
-            dublin_core = request.POST.get("dublinCore")
 
+        # Create directory to store the data
         media_package_dir = os.path.join(
             settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % id_media
         )
-        # create directory to store the dublincore file.
         os.makedirs(media_package_dir, exist_ok=True)
-        # store the dublin core file
-        dublin_core_file = os.path.join(media_package_dir, "dublincore.xml")
-        with open(dublin_core_file, "w+") as f:
-            f.write(unquote(dublin_core))
 
         media_package_content, media_package_file = get_media_package_content(
             media_package_dir, id_media
         )
+
+        # Create the dublincore file.
+        dublincore_file = os.path.join(media_package_dir, "dublincore.xml")
+
+        # Get and store the content of dublincore file.
+        if request.POST.get("dublinCore") and request.POST.get("dublinCore") != "":
+            dublin_core_file = request.POST.get("dublinCore")
+            with open(dublincore_file, "w+") as f:
+                f.write(unquote(dublin_core_file))
+
+        elif request.FILES.getlist("dublinCore"):
+            file = request.FILES.getlist("dublinCore")[0]
+            with open(dublincore_file, "wb+") as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+
+        # Create the xml file with the same name as the folder with typeCatalog access url
+        if request.POST.get("flavor") and request.POST.get("flavor") != "":
+            typeCatalog = request.POST.get("flavor")
 
         dc_url = str(
             "%(http)s://%(host)s%(media)sopencast-files/%(id_media)s/dublincore.xml"
@@ -582,55 +572,48 @@ def ingest_addDCCatalog(request):
     return HttpResponseBadRequest()
 
 
-@csrf_exempt
-@login_required(redirect_field_name="referrer")
-def ingest_addAttachment(request):
+def open_ingest_addAttachment(request):
     """URI addAttachment useful for OpenCast Studio."""
     # Form management with 3 parameters: mediaPackage, flavor, BODY (acl.xml file)
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
-        and request.FILES.get("BODY")
+        and (request.FILES.get("BODY") or request.FILES.getlist("file"))
     ):
         return handle_upload_file(request, "attachment", "text/xml", "attachments")
     return HttpResponseBadRequest()
 
 
-@csrf_exempt
-@login_required(redirect_field_name="referrer")
-def ingest_addTrack(request):
+def open_ingest_addTrack(request):
     """URI addTrack useful for OpenCast Studio."""
     # Form management with 4 parameters: mediaPackage, flavor, tags, BODY (video file)
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
+        and (request.FILES.get("BODY") or request.FILES.getlist("file"))
         # and request.POST.get("tags") # unused tags
-        and request.FILES.get("BODY")
     ):
         return handle_upload_file(request, "track", "video/webm", "media")
     return HttpResponseBadRequest()
 
 
-@csrf_exempt
-@login_required(redirect_field_name="referrer")
-def ingest_addCatalog(request):
-    """URI ingest useful for OpenCast Studio (when cutting video)."""
+def open_ingest_addCatalog(request):
+    # URI ingest useful for OpenCast Studio (when cutting video)
     # Form management with 3 parameter: flavor, mediaPackage, BODY(smil file)
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
-        and request.FILES.get("BODY")
+        and (request.FILES.get("BODY") or request.FILES.getlist("file"))
     ):
         return handle_upload_file(request, "catalog", "text/xml", "metadata")
     return HttpResponseBadRequest()
 
 
-@csrf_exempt
-@login_required(redirect_field_name="referrer")
-def ingest_ingest(request):
-    """URI ingest useful for OpenCast Studio."""
+def open_ingest_ingest(request):
+    # URI ingest useful for OpenCast Studio
     # Form management with 1 parameter: mediaPackage
     # Management of the mediaPackage (XML)
+
     if request.POST.get("mediaPackage"):
         id_media = get_id_media(request)
         media_package_dir = os.path.join(
@@ -639,20 +622,34 @@ def ingest_ingest(request):
         media_package_content, media_package_file = get_media_package_content(
             media_package_dir, id_media
         )
+
         # Create the recording
         # Search for the recorder corresponding to the Studio
         recorder = Recorder.objects.filter(
             recording_type="studio", sites=get_current_site(None)
         ).first()
+
         if recorder:
-            recording = Recording.objects.create(
-                user=request.user,
-                title=id_media,
-                type="studio",
-                # Source file corresponds to Pod XML file
-                source_file=media_package_file,
-                recorder=recorder,
-            )
+            # TODO remove try catch
+            if not request.user.is_anonymous:
+                req_user = request.user
+            else:
+                req_user = User.objects.get(id=DEFAULT_RECORDER_USER_ID)
+
+            try:
+                recording = Recording.objects.create(
+                    user=req_user,
+                    title=id_media,
+                    type="studio",
+                    # Source file corresponds to Pod XML file
+                    source_file=media_package_file,
+                    recorder=recorder,
+                )
+            except Exception as e:
+                print("ERROR on creation")
+                print(e)
+                return HttpResponseBadRequest()
+
             recording.save()
         else:
             messages.add_message(
@@ -663,3 +660,322 @@ def ingest_ingest(request):
         return HttpResponse(media_package_content.toxml(), content_type="application/xml")
 
     return HttpResponseBadRequest()
+
+
+# OPENCAST VIEWS WITH LOGIN MANDATORY
+@login_required(redirect_field_name="referrer")
+def studio_pod(request):
+    return open_studio_pod(request)
+
+
+@csrf_exempt
+@login_required(redirect_field_name="referrer")
+def presenter_post(request):
+    return open_presenter_post(request)
+
+
+@login_required(redirect_field_name="referrer")
+def studio_static(request, file):
+    return open_studio_static(request, file)
+
+
+@login_required(redirect_field_name="referrer")
+def studio_root_file(request, file):
+    """Redirect to root static files of Opencast studio folder."""
+    extension = file.split(".")[-1]
+    if extension == "js":
+        path_file = os.path.join(
+            settings.BASE_DIR, "custom", "static", "opencast", "studio/%s" % file
+        )
+        f = open(path_file, "r")
+        content_file = f.read()
+        content_file = content_file.replace("Opencast", "Pod")
+        return HttpResponse(content_file, content_type="application/javascript")
+    return HttpResponseRedirect("/static/opencast/studio/%s" % file)
+
+
+@login_required(redirect_field_name="referrer")
+def settings_toml(request):
+    """Render a settings.toml configuration file for Opencast Studio."""
+    studio_url = request.build_absolute_uri(
+        reverse(
+            "recorder:studio_pod",
+        )
+    )
+    return studio_toml(request, studio_url)
+
+
+@login_required(redirect_field_name="referrer")
+def info_me_json(request):
+    return open_info_me_json(request)
+
+
+@login_required(redirect_field_name="referrer")
+def ingest_createMediaPackage(request):
+    return open_ingest_createMediaPackage(request)
+
+
+@login_required(redirect_field_name="referrer")
+@csrf_exempt
+def ingest_addDCCatalog(request):
+    return open_ingest_addDCCatalog(request)
+
+
+@csrf_exempt
+@login_required(redirect_field_name="referrer")
+def ingest_addAttachment(request):
+    return open_ingest_addAttachment(request)
+
+
+@csrf_exempt
+@login_required(redirect_field_name="referrer")
+def ingest_addTrack(request):
+    return open_ingest_addTrack(request)
+
+
+@csrf_exempt
+@login_required(redirect_field_name="referrer")
+def ingest_addCatalog(request):
+    return open_ingest_addCatalog(request)
+
+
+@csrf_exempt
+@login_required(redirect_field_name="referrer")
+def ingest_ingest(request):
+    return open_ingest_ingest(request)
+
+
+# OPENCAST VIEWS WITH Almost DIGEST AUTH (FOR EXTERNAL API CALL)
+@csrf_exempt
+@require_http_methods(["POST"])
+def digest_presenter_post(request):
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    return open_presenter_post(request)
+
+
+@require_http_methods(["GET"])
+def digest_studio_static(request, file):
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    return open_studio_static(request, file)
+
+
+@require_http_methods(["GET"])
+def digest_settings_toml(request):
+    """Render a settings.toml configuration file for Opencast Studio."""
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    studio_url = request.build_absolute_uri(
+        reverse(
+            "recorder_digest:digest_studio_pod",
+        )
+    )
+
+    return studio_toml(request, studio_url)
+
+
+@require_http_methods(["GET"])
+def digest_info_me_json(request):
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    return open_info_me_json(request)
+
+
+@require_http_methods(["GET"])
+def digest_ingest_createMediaPackage(request):
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    return open_ingest_createMediaPackage(request)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def digest_ingest_addDCCatalog(request):
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    return open_ingest_addDCCatalog(request)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def digest_ingest_addAttachment(request):
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    return open_ingest_addAttachment(request)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def digest_ingest_addTrack(request):
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    return open_ingest_addTrack(request)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def digest_ingest_addCatalog(request):
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    return open_ingest_addCatalog(request)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def digest_ingest_ingest(request):
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    return open_ingest_ingest(request)
+
+
+@require_http_methods(["GET"])
+def digest_hosts_json(request):
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    host = (
+        "https://%s" % request.get_host()
+        if (request.is_secure())
+        else "http://%s" % request.get_host()
+    )
+    server_ip = request.META.get(
+        "HTTP_X_FORWARDED_FOR", request.META.get("REMOTE_ADDR", "")
+    )
+    server_ip = server_ip.split(",")[0] if server_ip else None
+
+    return JsonResponse(
+        {
+            "hosts": {
+                "host": {
+                    "base_url": host,
+                    "address": server_ip,
+                    "node_name": "AllInOne",
+                    "memory": 2082471936,
+                    "cores": 2,
+                    "max_load": 2,
+                    "online": True,
+                    "active": True,
+                    "maintenance": False,
+                }
+            },
+        },
+        status=200,
+    )
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def digest_capture_admin(request, name):
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    known_states = [
+        "idle",
+        "shutting_down",
+        "capturing",
+        "uploading",
+        "unknown",
+        "offline",
+        "error",
+    ]
+    if request.POST.get("state", "") not in known_states:
+        return HttpResponseBadRequest()
+
+    return HttpResponse(name + " set to " + request.POST.get("state"))
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def digest_capture_admin_configuration(request, name):
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    xml_to_return = '<?xml version="1.0" encoding="utf-8"?>'
+
+    # attention clés / valeurs identiques à ce qui est envoyé
+    if request.content_type == "multipart/form-data":
+        dom = minidom.parseString(request.POST.get("configuration"))
+        entries = dom.getElementsByTagName("entry")
+
+        xml_to_return += (
+            '<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">'
+        )
+        xml_to_return += "<properties>"
+        for entry in entries:
+            key = entry.getAttribute("key")
+            value = entry.firstChild.nodeValue if entry.firstChild else None
+            if key and value:
+                xml_to_return += f'<entry key="{key}">{value}</entry>'
+        xml_to_return += "</properties>"
+
+    return HttpResponse(xml_to_return, content_type="application/xml")
+
+
+@require_http_methods(["GET"])
+def digest_admin_ng_series(request):
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    return JsonResponse(
+        {
+            "total": 1,
+            "offset": 0,
+            "count": 1,
+            "limit": 100,
+            "results": [
+                {
+                    "createdBy": "admin",
+                    "organizers": [],
+                    "id": "ID-blender-foundation",
+                    "contributors": [],
+                    "creation_date": "2023-12-11T01:09:00Z",
+                    "title": "admin",
+                }
+            ],
+        },
+        status=200,
+    )
+
+
+@require_http_methods(["GET"])
+def digest_available(request):
+    if not digest_is_valid(request):
+        return create_digest_auth_response(request)
+
+    host = (
+        "https://%s" % request.get_host()
+        if (request.is_secure())
+        else "http://%s" % request.get_host()
+    )
+    return JsonResponse(
+        {
+            "services": {
+                "service": {
+                    "type": "org.opencastproject.capture.admin",
+                    "host": host,
+                    "path": "open/studio/capture-admin",
+                    "active": True,
+                    "online": True,
+                    "maintenance": False,
+                    "jobproducer": False,
+                    "onlinefrom": "2023-10-12T02:01:38.325+02:00",
+                    "service_state": "NORMAL",
+                    "state_changed": "2023-10-12T02:01:38.325+02:00",
+                    "error_state_trigger": 0,
+                    "warning_state_trigger": 0,
+                }
+            }
+        },
+        status=200,
+    )
