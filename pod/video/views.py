@@ -3179,6 +3179,7 @@ def delete_category(request, c_slug):
 
             cat.delete()
             response["success"] = True
+            response["message"] = _("Category successfully deleted.")
 
             return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
