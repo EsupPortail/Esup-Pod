@@ -35,13 +35,19 @@
 </div>
 {% endif %}
 
+{% if access_not_allowed == True %}
+<p class="text-info-emphasis">
+  <i class="bi bi-info-circle" aria-hidden="true"></i>&nbsp;{% trans "Access to cutting video has been restricted. If you want to cut videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
+</p>
+{% else %}
+
 <span id="cut_video">
   {% include 'videos/video-element.html' %}
 </span>
 
 <div id="wrapper_cut">
   <div id="values_cut" class="bg-primary text-white">
-    <form action="{% url 'video:cut:video_cut' slug=video.slug %}" method="POST" id="time_for_cut" accept-charset="utf-8" enctype="multipart/form-data">
+    <form action="{% url 'cut:video_cut' slug=video.slug %}" method="POST" id="time_for_cut" accept-charset="utf-8" enctype="multipart/form-data">
       {% csrf_token %}
 
       <button id="button_start" class="btn btn-link" title="{% trans 'Get the start time from the video player' %}">
@@ -106,6 +112,8 @@
     </div>
   </div>
 </div>
+
+{% endif %}
 
 {% endblock page_content %}
 

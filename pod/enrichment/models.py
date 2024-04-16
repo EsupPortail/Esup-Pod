@@ -62,26 +62,26 @@ def enrichment_to_vtt(list_enrichment, video):
         videodir, created = UserFolder.objects.get_or_create(
             name="%s" % video.slug, owner=video.owner
         )
-        previousEnrichmentFile = CustomFileModel.objects.filter(
+        previous_enrichment_file = CustomFileModel.objects.filter(
             name__startswith="enrichment",
             folder=videodir,
             created_by=video.owner,
         )
-        for enr in previousEnrichmentFile:
+        for enr in previous_enrichment_file:
             enr.delete()  # do it like this to delete file
-        enrichmentFile, created = CustomFileModel.objects.get_or_create(
+        enrichment_file, created = CustomFileModel.objects.get_or_create(
             name="enrichment", folder=videodir, created_by=video.owner
         )
 
-        if enrichmentFile.file and os.path.isfile(enrichmentFile.file.path):
-            os.remove(enrichmentFile.file.path)
+        if enrichment_file.file and os.path.isfile(enrichment_file.file.path):
+            os.remove(enrichment_file.file.path)
     else:
-        enrichmentFile, created = CustomFileModel.objects.get_or_create()
-    enrichmentFile.file.save("enrichment.vtt", File(temp_vtt_file))
-    enrichmentVtt, created = EnrichmentVtt.objects.get_or_create(video=video)
-    enrichmentVtt.src = enrichmentFile
-    enrichmentVtt.save()
-    return enrichmentFile.file.path
+        enrichment_file, created = CustomFileModel.objects.get_or_create()
+    enrichment_file.file.save("enrichment.vtt", File(temp_vtt_file))
+    enrichment_vtt, created = EnrichmentVtt.objects.get_or_create(video=video)
+    enrichment_vtt.src = enrichment_file
+    enrichment_vtt.save()
+    return enrichment_file.file.path
 
 
 def enrichment_to_vtt_type(enrich):
@@ -251,10 +251,7 @@ class Enrichment(models.Model):
         if self.end and self.start == self.end:
             msg.append(_("End field and start field can’t be equal."))
 
-        if len(msg) > 0:
-            return msg
-        else:
-            return list()
+        return msg
 
     def overlap(self):
         msg = list()

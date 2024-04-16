@@ -1,6 +1,7 @@
-"""Forms used in playlist application."""
+"""Esup-Pod playlist application forms."""
 
 from django import forms
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
 from django.utils.translation import ugettext_lazy as _
@@ -10,6 +11,13 @@ from pod.meeting.forms import AddOwnerWidget
 
 from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist
+
+USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", True)
+RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY = getattr(
+    settings,
+    "RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY",
+    False,
+)
 
 general_informations = _("General informations")
 security_informations = _("Security informations")
@@ -30,6 +38,8 @@ class PlaylistForm(forms.ModelForm):
             "date_updated",
             "site",
         ]
+        if not USE_PROMOTED_PLAYLIST:
+            exclude.append("promoted")
         widgets = {
             "additional_owners": AddOwnerWidget,
         }
@@ -85,21 +95,22 @@ class PlaylistForm(forms.ModelForm):
         required=False,
         help_text=_("Please choose a password if this playlist is password-protected."),
     )
-    promoted = forms.BooleanField(
-        label=_("Promoted"),
-        widget=forms.CheckboxInput(
-            attrs={
-                "aria-describedby": "id_promotedHelp",
-            },
-        ),
-        required=False,
-        help_text=_(
-            "Selecting this setting causes your playlist to be promoted on the page"
-            + " listing promoted public playlists. However, if this setting is deactivated,"
-            + " your playlist will still be accessible to everyone."
-            + "<br>For general use, we recommend that you leave this setting disabled."
-        ),
-    )
+    if USE_PROMOTED_PLAYLIST:
+        promoted = forms.BooleanField(
+            label=_("Promoted"),
+            widget=forms.CheckboxInput(
+                attrs={
+                    "aria-describedby": "id_promotedHelp",
+                },
+            ),
+            required=False,
+            help_text=_(
+                "Selecting this setting causes your playlist to be promoted on the page"
+                + " listing promoted public playlists. However, if this setting is deactivated,"
+                + " your playlist will still be accessible to everyone."
+                + "<br>For general use, we recommend that you leave this setting disabled."
+            ),
+        )
     autoplay = forms.BooleanField(
         label=_("Autoplay"),
         widget=forms.CheckboxInput(
@@ -131,11 +142,19 @@ class PlaylistForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs) -> None:
         """Init method."""
+        self.user = kwargs.pop("user", None)
         super(PlaylistForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
+        if self.user:
+            if not self.user.is_staff and RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY:
+                if "promoted" in self.fields:
+                    del self.fields["promoted"]
+        else:
+            if "promoted" in self.fields:
+                del self.fields["promoted"]
 
     def clean_name(self):
-        """Method to check if the playlist name asked is correct."""
+        """Check if the playlist name asked is correct."""
         name = self.cleaned_data["name"]
         if name == FAVORITE_PLAYLIST_NAME:
             raise forms.ValidationError(
@@ -144,7 +163,7 @@ class PlaylistForm(forms.ModelForm):
         return name
 
     def clean_add_owner(self, cleaned_data):
-        """Method to check if the owner is correct."""
+        """Check if the owner is correct."""
         if "additional_owners" in cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
         ):

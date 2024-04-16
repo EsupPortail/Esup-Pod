@@ -11,8 +11,13 @@
   <a href="#" class="btn btn-lg pod-btn-social p-1 m-0 ms-1 pod-btn-copy" role="alert"
     data-copyvalue="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}"
     data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Copy the direct join link' %}">
-    <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-  </button>
+    <i class="bi bi-person-check" aria-hidden="true"></i>
+  </a>
+  <a href="#" class="btn btn-lg pod-btn-social p-1 m-0 ms-1 pod-btn-copy" role="alert"
+    data-copyvalue="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id %}"
+    data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Copy the join link' %}">
+    <i class="bi bi-person-lock" aria-hidden="true"></i>
+  </a>
 
   <a href="{% url 'meeting:invite' meeting.meeting_id %}" title="{% trans 'Invite to the meeting'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
     <i class="bi bi-envelope" aria-hidden="true"></i>

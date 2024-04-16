@@ -98,7 +98,7 @@ def command_migrate_groups(options):
 
 
 class Command(BaseCommand):
-    # First possible argument : checkDirectory
+    # First possible argument: checkDirectory
     args = "import_json"
     help = "Import groups from json"
     "published by the recorders. "

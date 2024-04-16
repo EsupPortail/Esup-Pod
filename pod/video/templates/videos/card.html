@@ -77,7 +77,7 @@
     {% endif %}
   </div>
   <div class="card-body px-3 py-2">
-    {# TODO: replace test below by "if video.is_editable" ? #}
+    {# TODO: replace test below by "if video.is_editable"? #}
     {% if request.user.is_authenticated %}
       <footer class="card-footer card-footer-pod p-0 m-0">
         {% include "videos/link_video.html" %}

@@ -302,7 +302,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         )
         response["videos"] = videos
         return JsonResponse(response, safe=False)
-        # TODO : replace this return by a
+        # TODO: replace this return by a
         #  render(request,"videos/video_list.html") like in channel
 
     return render(
@@ -742,7 +742,6 @@ def bulk_update_fields(request, videos_list, update_fields):
     fields_errors = []
 
     for video in videos_list:
-
         if "owner" in update_fields:
             new_owner = User.objects.get(pk=request.POST.get("owner")) or None
             if change_owner(video.id, new_owner):
@@ -1565,7 +1564,7 @@ def get_com_coms_dict(request, listComs):
 
       for each encountered com
     Starting from the coms present in listComs
-    Example, having the next tree of coms :
+    Example, having the next tree of coms:
     |- C1     (id: 1)
     |- C2     (id: 2)
        |- C3  (id: 3)
@@ -2794,7 +2793,7 @@ def get_children_comment(request, comment_id, video_slug):
             .first()
         )
         if parent_comment is None:
-            raise Exception("Error: comment doesn't exist : " + comment_id)
+            raise Exception("Error: comment doesn't exist: " + comment_id)
 
         children = parent_comment.get_json_children(request.user.id)
         parent_comment_data = {

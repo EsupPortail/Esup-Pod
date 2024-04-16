@@ -20,7 +20,7 @@ env:
   ELASTICSEARCH_TAG: "elasticsearch:7.17.18"
   NODE_VERSION: "19"
   NODE_TAG: "node:19"
-  PYTHON_TAG: "python:3.9-buster"
+  PYTHON_TAG: "python:3.9-bullseye"
   REDIS_TAG: "redis:alpine3.16"
   DOCKER_ENV: "full-test"
 
@@ -67,7 +67,7 @@ jobs:
       - name: Flake8 compliance
         run: |
           flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py
-      
+
       ## Start remote encoding and transcoding test ##
       - name: Create settings local file
         run: |
@@ -93,8 +93,8 @@ jobs:
           sudo rm -rf ./pod/log
           sudo rm -rf ./pod/static
           sudo rm -rf ./pod/node_modules
-          docker-compose -f ./docker-compose-full-dev-with-volumes-test.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG --build-arg NODE_VERSION=$NODE_TAG --build-arg PYTHON_VERSION=$PYTHON_TAG --no-cache
-          docker-compose -f ./docker-compose-full-dev-with-volumes-test.yml up --detach --force-recreate --always-recreate-deps
+          docker compose -f ./docker-compose-full-dev-with-volumes-test.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG --build-arg NODE_VERSION=$NODE_TAG --build-arg PYTHON_VERSION=$PYTHON_TAG --no-cache
+          docker compose -f ./docker-compose-full-dev-with-volumes-test.yml up --detach --force-recreate --always-recreate-deps
       - name: Sleep for 60 seconds to wait run server on pod back
         uses: jakejarvis/wait-action@master
         with:
@@ -107,19 +107,19 @@ jobs:
           docker exec pod-back-with-volumes python manage.py loaddata pod/video/fixtures/sample_videos.json
       - name: run test in docker
         run: docker exec pod-back-with-volumes coverage run --append --source='.' manage.py test -v 3 --keepdb pod.video_encode_transcript.tests.test_remote_encode_transcode
-      
+
       - name: Run pa11y-ci full
         run: docker exec pa11y-ci pa11y-ci -c /usr/src/app/dockerfile-dev-with-volumes/pa11y-ci/config.json
 
       - name: Run pa11y-ci mobile
         run: docker exec pa11y-ci pa11y-ci -c /usr/src/app/dockerfile-dev-with-volumes/pa11y-ci/config_mobile.json
-      
+
       - name: show pa11y results
         run: cat pa11y-results.json
 
       - name: Stop containers
         if: always()
-        run: docker-compose -f ./docker-compose-full-dev-with-volumes-test.yml down
+        run: docker compose -f ./docker-compose-full-dev-with-volumes-test.yml down
       - name: delete unused file and change owner
         run: |
           sudo rm -f pod/custom/settings_local.py

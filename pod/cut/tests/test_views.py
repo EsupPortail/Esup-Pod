@@ -1,13 +1,16 @@
-"""
-Unit tests for CutVideo views
-"""
+"""Unit tests for CutVideo views."""
 
-from django.test import TestCase
-from django.contrib.auth import authenticate
+from django.test import TestCase, override_settings
 from django.contrib.auth.models import User
+from pod.cut.models import CutVideo
 from pod.video.models import Video, Type
-from django.contrib.sites.models import Site
 from django.urls import reverse
+from pod.main.models import Configuration
+from datetime import time
+from django.contrib.messages import get_messages
+from django.utils.translation import ugettext_lazy as _
+from .. import views
+from importlib import reload
 
 
 class CutVideoViewsTestCase(TestCase):
@@ -16,43 +19,105 @@ class CutVideoViewsTestCase(TestCase):
     ]
 
     def setUp(self):
-        site = Site.objects.get(id=1)
-        owner = User.objects.create(username="test", password="azerty", is_staff=True)
-        owner.set_password("hello")
-        owner.save()
-        owner2 = User.objects.create(username="test2", password="azerty")
-        owner2.set_password("hello")
-        owner2.save()
-        vid = Video.objects.create(
+        self.user = User.objects.create(username="test", password="azerty", is_staff=True)
+        self.user2 = User.objects.create(username="test2", password="azerty")
+        self.video = Video.objects.create(
             title="videotest",
-            owner=owner,
+            owner=self.user,
             video="test.mp4",
             duration=20,
             type=Type.objects.get(id=1),
         )
+        self.video.additional_owners.add(self.user2)
 
-        owner.owner.sites.add(Site.objects.get_current())
-        owner.owner.save()
-
-        owner2.owner.sites.add(Site.objects.get_current())
-        owner2.owner.save()
-
-        vid.sites.add(site)
-
-    def test_video_cut_owner(self):
-        video = Video.objects.get(id=1)
-        url = reverse("video:cut:video_cut", kwargs={"slug": video.slug})
-
-        self.user = User.objects.get(username="test")
+    def test_maintenance(self):
+        """Test Pod maintenance mode in CutVideoViewsTestCase."""
         self.client.force_login(self.user)
+        url = reverse("cut:video_cut", kwargs={"slug": self.video.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-        authenticate(username="test2", password="hello")
-        login = self.client.login(username="test2", password="hello")
-        self.assertTrue(login)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 403)  # forbidden
+        conf = Configuration.objects.get(key="maintenance_mode")
+        conf.value = "1"
+        conf.save()
 
-        print(" ---> test_video_cut_owner: OK!")
-        print(" [ END CUT VIEWS ] ")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, "/maintenance/")
+        print(" --->  test_maintenance ok")
+
+    def test_get_full_duration(self):
+        """Test test_get_full_duration."""
+        CutVideo.objects.create(
+            video=self.video, start=time(0, 0, 0), end=time(0, 0, 10), duration="00:00:10"
+        )
+
+        duration = self.video.duration_in_time
+        if CutVideo.objects.filter(video=self.video).exists():
+            cutting = CutVideo.objects.get(video=self.video)
+            duration = cutting.duration_in_int
+
+        self.assertEqual(duration, 10)
+        print(" --->  test_get_full_duration ok")
+
+    @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True, USE_CUT=True)
+    def test_restrict_edit_video_access_staff_only(self):
+        """Test test_restrict_edit_video_access_staff_only."""
+        reload(views)
+        self.client.force_login(self.user2)
+        url = reverse("cut:video_cut", kwargs={"slug": self.video.slug})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "video_cut.html")
+        self.assertTrue(response.context["access_not_allowed"])
+
+        self.client.logout()
+        self.client.force_login(self.user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "video_cut.html")
+        self.assertFalse(response.context["access_not_allowed"])
+
+        print(" --->  test_restrict_edit_video_access_staff_only ok")
+
+    def test_post_cut_valid_form(self):
+        """Test test_post_cut_valid_form."""
+        self.client.force_login(self.user)
+        post_data = {
+            "video": self.video.id,
+            "start": "00:00:00",
+            "end": "00:00:10",
+            "duration": 10,
+        }
+
+        response = self.client.post(
+            reverse("cut:video_cut", kwargs={"slug": self.video.slug}), data=post_data
+        )
+
+        self.assertTrue(CutVideo.objects.filter(video=self.video).exists())
+        self.assertRedirects(response, reverse("video:dashboard"))
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(_("The cut was made."), messages)
+
+        print(" --->  test_post_cut_valid_form ok")
+
+    def test_post_cut_invalid_form(self):
+        """Test test_post_cut_invalid_form."""
+        self.client.force_login(self.user)
+        post_data = {
+            "video": self.video.id,
+            "start": "00:00:10",
+            "end": "00:00:00",
+            "duration": 10,
+        }
+        response = self.client.post(
+            reverse("cut:video_cut", kwargs={"slug": self.video.slug}), data=post_data
+        )
+        self.assertFalse(CutVideo.objects.filter(video=self.video).exists())
+        self.assertEqual(response.status_code, 200)
+
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        print("MESSAGE", messages)
+        self.assertIn(_("Please select values between 00:00:00 and 00:00:20."), messages)
+
+        print(" --->  test_post_cut_invalid_form ok")

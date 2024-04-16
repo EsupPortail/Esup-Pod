@@ -24,6 +24,9 @@ if getattr(settings, "USE_PODFILE", False):
 if getattr(settings, "USE_BBB", True):
     from pod.bbb import rest_views as bbb_views
 
+if getattr(settings, "USE_MEETING", True):
+    from pod.meeting import rest_views as meeting_views
+
 router = routers.DefaultRouter()
 
 router.register(r"mainfiles", main_views.CustomFileModelViewSet)
@@ -72,6 +75,14 @@ if getattr(settings, "USE_BBB", True):
     router.register(r"bbb_attendee", bbb_views.AttendeeModelViewSet)
     router.register(r"bbb_livestream", bbb_views.LivestreamModelViewSet)
 
+if getattr(settings, "USE_MEETING", True):
+    router.register(r"meeting_session", meeting_views.MeetingModelViewSet)
+    router.register(
+        r"meeting_internal_recording", meeting_views.InternalRecordingModelViewSet
+    )
+    router.register(r"meeting_livestream", meeting_views.LivestreamModelViewSet)
+    router.register(r"meeting_live_gateway", meeting_views.LiveGatewayModelViewSet)
+
 urlpatterns = [
     url(r"dublincore/$", video_views.DublinCoreView.as_view(), name="dublincore"),
     url(
@@ -83,6 +94,11 @@ urlpatterns = [
         r"store_remote_encoded_video/$",
         encode_views.store_remote_encoded_video,
         name="store_remote_encoded_video",
+    ),
+    url(
+        r"store_remote_encoded_video_studio/$",
+        encode_views.store_remote_encoded_video_studio,
+        name="store_remote_encoded_video_studio",
     ),
     url(
         r"store_remote_transcripted_video/$",

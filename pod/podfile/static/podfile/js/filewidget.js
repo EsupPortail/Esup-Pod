@@ -87,7 +87,7 @@ if (typeof loaded == "undefined") {
   });
 
   /*document.querySelectorAll("#open-folder-icon > *").forEach((el) => {
-    el.style = "pointer-events: none; cursor : pointer;";
+    el.style = "pointer-events: none; cursor: pointer;";
   });
   if (document.getElementById("open-folder-icon")) {
     document.getElementById("open-folder-icon").style.cursor = "pointer";
@@ -766,7 +766,10 @@ if (typeof loaded == "undefined") {
             string_html,
             "text/html"
           ).body.firstChild;
-          document.getElementById("list_folders_sub").appendChild(parsedHTML);
+          const listFoldersSub = document.getElementById("list_folders_sub");
+          if (listFoldersSub) {
+            listFoldersSub.appendChild(parsedHTML);
+          }
         });
         if (nextPage != -1) {
           search = data.search !== "" ? data.search : null;

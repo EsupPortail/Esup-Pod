@@ -226,7 +226,7 @@ def recorder_notify(request):
             m = hashlib.md5()
             m.update(recording_place.encode("utf-8") + recorder.salt.encode("utf-8"))
             if key != m.hexdigest():
-                return HttpResponse("nok : key is not valid")
+                return HttpResponse("nok: key is not valid")
 
             link_url = "".join(
                 [
@@ -272,10 +272,10 @@ def recorder_notify(request):
             return HttpResponse("ok")
         else:
             return HttpResponse(
-                "nok : address_ip not valid or recorder not found in this site"
+                "nok: address_ip not valid or recorder not found in this site"
             )
     else:
-        return HttpResponse("nok : recordingPlace or mediapath or key are missing")
+        return HttpResponse("nok: recordingPlace or mediapath or key are missing")
 
 
 @csrf_protect
@@ -448,7 +448,7 @@ def settings_toml(request):
     """Render a settings.toml configuration file for Opencast Studio."""
     # OpenCast Studio configuration
     # See https://github.com/elan-ev/opencast-studio/blob/master/CONFIGURATION.md
-    # Add parameter : the pod studio URL
+    # Add parameter: the pod studio URL
     studio_url = request.build_absolute_uri(
         reverse(
             "recorder:studio_pod",
@@ -493,20 +493,20 @@ def info_me_json(request):
 @login_required(redirect_field_name="referrer")
 def ingest_createMediaPackage(request):
     # URI createMediaPackage useful for OpenCast Studio
-    # Necessary id. Example format : a3d9e9f3-66d0-403b-a775-acb3f79196d4
-    idMedia = uuid.uuid4()
-    # Necessary start date. Example format : 2021-12-08T08:52:28Z
+    # Necessary id. Example format: a3d9e9f3-66d0-403b-a775-acb3f79196d4
+    id_media = uuid.uuid4()
+    # Necessary start date. Example format: 2021-12-08T08:52:28Z
     start = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%dT%H:%M:%S%zZ")
-    mediaPackage_dir = os.path.join(
-        settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
+    media_package_dir = os.path.join(
+        settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % id_media
     )
-    mediaPackage_file = os.path.join(mediaPackage_dir, "%s.xml" % idMedia)
+    media_package_file = os.path.join(media_package_dir, "%s.xml" % id_media)
     # create directory to store all the data.
-    os.makedirs(mediaPackage_dir, exist_ok=True)
+    os.makedirs(media_package_dir, exist_ok=True)
 
-    mediaPackage_content = minidom.parseString(OPENCAST_MEDIAPACKAGE)
-    mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
-    mediapackage.setAttribute("id", "%s" % idMedia)
+    media_package_content = minidom.parseString(OPENCAST_MEDIAPACKAGE)
+    mediapackage = media_package_content.getElementsByTagName("mediapackage")[0]
+    mediapackage.setAttribute("id", "%s" % id_media)
     mediapackage.setAttribute("start", start)
 
     presenter = OPENCAST_DEFAULT_PRESENTER
@@ -515,17 +515,17 @@ def ingest_createMediaPackage(request):
         del request.session["presenter"]
     mediapackage.setAttribute("presenter", presenter)
 
-    with open(mediaPackage_file, "w") as f:
-        f.write(mediaPackage_content.toxml())
-    return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
+    with open(media_package_file, "w") as f:
+        f.write(media_package_content.toxml())
+    return HttpResponse(media_package_content.toxml(), content_type="application/xml")
 
 
 @login_required(redirect_field_name="referrer")
 @csrf_exempt
 def ingest_addDCCatalog(request):
     # URI addDCCatalog useful for OpenCast Studio
-    # Form management with 3 parameters : mediaPackage, dublinCore, flavor
-    # For Pod, management of dublinCore is useless
+    # Form management with 3 parameters: mediaPackage, dublin_core, flavor
+    # For Pod, management of dublin_core is useless
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
@@ -535,49 +535,49 @@ def ingest_addDCCatalog(request):
         # Id catalog. Example format: 798017b1-2c45-42b1-85b0-41ce804fa527
         # idCatalog = uuid.uuid4()
         # Id media package
-        idMedia = ""
+        id_media = ""
         # dublinCore
-        dublinCore = ""
-        idMedia = get_id_media(request)
+        dublin_core = ""
+        id_media = get_id_media(request)
         if request.POST.get("flavor") and request.POST.get("flavor") != "":
             typeCatalog = request.POST.get("flavor")
         if request.POST.get("dublinCore") and request.POST.get("dublinCore") != "":
-            dublinCore = request.POST.get("dublinCore")
+            dublin_core = request.POST.get("dublinCore")
 
-        mediaPackage_dir = os.path.join(
-            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
+        media_package_dir = os.path.join(
+            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % id_media
         )
         # create directory to store the dublincore file.
-        os.makedirs(mediaPackage_dir, exist_ok=True)
+        os.makedirs(media_package_dir, exist_ok=True)
         # store the dublin core file
-        dublinCore_file = os.path.join(mediaPackage_dir, "dublincore.xml")
-        with open(dublinCore_file, "w+") as f:
-            f.write(unquote(dublinCore))
+        dublin_core_file = os.path.join(media_package_dir, "dublincore.xml")
+        with open(dublin_core_file, "w+") as f:
+            f.write(unquote(dublin_core))
 
-        mediaPackage_content, mediaPackage_file = get_media_package_content(
-            mediaPackage_dir, idMedia
+        media_package_content, media_package_file = get_media_package_content(
+            media_package_dir, id_media
         )
 
         dc_url = str(
-            "%(http)s://%(host)s%(media)sopencast-files/%(idMedia)s/dublincore.xml"
+            "%(http)s://%(host)s%(media)sopencast-files/%(id_media)s/dublincore.xml"
             % {
                 "http": "https" if request.is_secure() else "http",
                 "host": request.get_host(),
                 "media": MEDIA_URL,
-                "idMedia": "%s" % idMedia,
+                "id_media": "%s" % id_media,
             }
         )
         catalog = create_xml_element(
-            mediaPackage_content, "catalog", typeCatalog, "text/xml", dc_url
+            media_package_content, "catalog", typeCatalog, "text/xml", dc_url
         )
 
-        metadata = mediaPackage_content.getElementsByTagName("metadata")[0]
+        metadata = media_package_content.getElementsByTagName("metadata")[0]
         metadata.appendChild(catalog)
 
-        with open(mediaPackage_file, "w+") as f:
-            f.write(mediaPackage_content.toxml())
+        with open(media_package_file, "w+") as f:
+            f.write(media_package_content.toxml())
 
-        return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
+        return HttpResponse(media_package_content.toxml(), content_type="application/xml")
 
     return HttpResponseBadRequest()
 
@@ -585,8 +585,8 @@ def ingest_addDCCatalog(request):
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addAttachment(request):
-    # URI addAttachment useful for OpenCast Studio
-    # Form management with 3 parameters : mediaPackage, flavor, BODY (acl.xml file)
+    """URI addAttachment useful for OpenCast Studio."""
+    # Form management with 3 parameters: mediaPackage, flavor, BODY (acl.xml file)
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
@@ -599,8 +599,8 @@ def ingest_addAttachment(request):
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addTrack(request):
-    # URI addTrack useful for OpenCast Studio
-    # Form management with 4 parameters : mediaPackage, flavor, tags, BODY (video file)
+    """URI addTrack useful for OpenCast Studio."""
+    # Form management with 4 parameters: mediaPackage, flavor, tags, BODY (video file)
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
@@ -614,8 +614,8 @@ def ingest_addTrack(request):
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addCatalog(request):
-    # URI ingest useful for OpenCast Studio (when cutting video)
-    # Form management with 3 parameter : flavor, mediaPackage, BODY(smil file)
+    """URI ingest useful for OpenCast Studio (when cutting video)."""
+    # Form management with 3 parameter: flavor, mediaPackage, BODY(smil file)
     if (
         request.POST.get("mediaPackage")
         and request.POST.get("flavor")
@@ -628,16 +628,16 @@ def ingest_addCatalog(request):
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_ingest(request):
-    # URI ingest useful for OpenCast Studio
-    # Form management with 1 parameter : mediaPackage
+    """URI ingest useful for OpenCast Studio."""
+    # Form management with 1 parameter: mediaPackage
     # Management of the mediaPackage (XML)
     if request.POST.get("mediaPackage"):
-        idMedia = get_id_media(request)
-        mediaPackage_dir = os.path.join(
-            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % idMedia
+        id_media = get_id_media(request)
+        media_package_dir = os.path.join(
+            settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % id_media
         )
-        mediaPackage_content, mediaPackage_file = get_media_package_content(
-            mediaPackage_dir, idMedia
+        media_package_content, media_package_file = get_media_package_content(
+            media_package_dir, id_media
         )
         # Create the recording
         # Search for the recorder corresponding to the Studio
@@ -647,10 +647,10 @@ def ingest_ingest(request):
         if recorder:
             recording = Recording.objects.create(
                 user=request.user,
-                title=idMedia,
+                title=id_media,
                 type="studio",
                 # Source file corresponds to Pod XML file
-                source_file=mediaPackage_file,
+                source_file=media_package_file,
                 recorder=recorder,
             )
             recording.save()
@@ -660,6 +660,6 @@ def ingest_ingest(request):
             )
             raise PermissionDenied
 
-        return HttpResponse(mediaPackage_content.toxml(), content_type="application/xml")
+        return HttpResponse(media_package_content.toxml(), content_type="application/xml")
 
     return HttpResponseBadRequest()

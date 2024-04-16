@@ -45,9 +45,7 @@ class VideoAvailableTestCase(TestCase):
         )
 
     def test_available_video_filter(self):
-        """
-        Test available filter for videos.
-        """
+        """Test available filter for videos."""
         self.assertEqual(Video.objects.all().count(), 3)
         vids = Video.objects.filter(**__AVAILABLE_VIDEO_FILTER__)
         self.assertEqual(vids.count(), 0)
@@ -62,9 +60,7 @@ class VideoAvailableTestCase(TestCase):
         self.assertEqual(vids.count(), 0)
 
     def test_video_filter_encoding(self):
-        """
-        Test available videos for encoding.
-        """
+        """Test available videos for encoding."""
         vid1 = Video.objects.get(id=1)
         vid2 = Video.objects.get(id=2)
         vid3 = Video.objects.get(id=3)

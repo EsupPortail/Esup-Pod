@@ -1,0 +1,109 @@
+{% load i18n %} {% load video_filters static %} {% if elements.count >= 1 %}
+<div class="pod-inner edito-multi-carousel">
+  <h2>{{ title |capfirst|truncatechars:43 }}</h2>
+  <div
+    id="carousel_{{ container.slug }}_{{ uniq_id }}"
+    class="carousel carousel-multi slide"
+    data-bs-ride="{% if auto_slide %}carousel{% else %}false{% endif %}">
+    <div class="carousel-inner" role="listbox">
+      {% for element in elements %} {% if forloop.first %}
+      <div class="carousel-item active">
+        {% else %}
+        <div class="carousel-item">
+          {% endif %}
+          <div class="col-md-{% widthratio 12 multi_carousel_nb_card 1 %}">
+            <div class="card border-0 bg-transparent">
+              <a
+                href="{{ element.get_absolute_url }}"
+                title="{{ element.title }}">
+                <div class="card-img">
+                  {% if type == 'video' or type == 'last' %}
+                  <img
+                    src="{{ element.get_thumbnail_url }}"
+                    class="img-fluid"
+                    alt=""/>
+                  {% elif type == 'event' %} {% if element.thumbnail %}
+                  <img
+                    src="{{ element.get_thumbnail_card }}"
+                    class="img-fluid"
+                    alt=""/>
+                  {% elif element.broadcaster.poster %}
+                  <img
+                    src="{{ element.broadcaster.get_poster_url }}"
+                    class="img-fluid"
+                    alt=""/>
+                  {% else %}
+                  <img
+                    src="{{ element.get_thumbnail_card }}"
+                    class="img-fluid"
+                    alt=""/>
+                  {% endif %} {% endif %}
+                </div>
+                <div class="carousel-caption d-none d-md-block">
+                  <h3 class="video_title">
+                    {{ element.title|capfirst|truncatechars:43 }}
+                  </h3>
+                  <p class="video_desc text-muted">
+                    {{ element.description|metaformat|safe|striptags|truncatechars:250 }}
+                  </p>
+                  {% if type == 'video' %}
+                  <small class="video_time text-muted time d-none d-md-block">{{ element.duration_in_time }}</small>
+                  {% endif %}
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% if elements.count > multi_carousel_nb_card %}
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#carousel_{{ container.slug }}_{{ uniq_id }}"
+        data-bs-slide="prev"
+        title="{% trans 'Previous thumbnail' %}">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      </button>
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#carousel_{{ container.slug }}_{{ uniq_id }}"
+        data-bs-slide="next"
+        title="{% trans 'Next thumbnail' %}">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      </button>
+      {% endif %}
+    </div>
+    {% if type == "last" %}
+    <div class="highlight">
+      <div class="d-flex justify-content-end">
+        <p>
+          <a
+            class="btn btn-lg btn-primary btn-sm"
+            href="{% url 'videos:videos' %}">{% trans "Show all videos" %}&nbsp;<i
+              class="bi bi-arrow-right-circle"
+              aria-hidden="true"></i></a>
+        </p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  <script type="text/javascript">
+    let items = document.querySelectorAll('.carousel .carousel-item')
+    items.forEach((el) => {
+        const minPerSlide = {{ multi_carousel_nb_card }}
+        let next = el.nextElementSibling
+        for (var i=1; i<minPerSlide; i++) {
+            if (!next) {
+                // wrap carousel by using first child
+            	next = items[0]
+          	}
+            let cloneChild = next.cloneNode(true)
+            el.appendChild(cloneChild.children[0])
+            next = next.nextElementSibling
+        }
+    })
+  </script>
+  {% endif %}
+</div>

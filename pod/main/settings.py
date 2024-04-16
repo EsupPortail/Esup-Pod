@@ -37,6 +37,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = True
 
 ##
+# USE_DEBUG_TOOLBAR option activation
+#
+# https://django-debug-toolbar.readthedocs.io/en/latest/
+#
+USE_DEBUG_TOOLBAR = True
+
+##
 # A list of strings representing the host/domain names
 # that this Django site is allowed to serve.
 #
@@ -274,7 +281,6 @@ LTI_PROPERTY_USER_USERNAME = "ext_user_username"
 # https://sorl-thumbnail.readthedocs.io/en/latest/reference/settings.html
 THUMBNAIL_PRESERVE_FORMAT = True
 
-SHOW_EVENTS_ON_HOMEPAGE = False
 DEFAULT_EVENT_PATH = ""
 DEFAULT_EVENT_THUMBNAIL = "/img/default-event.svg"
 DEFAULT_EVENT_TYPE_ID = 1

@@ -55,7 +55,7 @@ VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
 
 
 # ##########################################################################
-# ENCODE VIDEO : GENERIC FUNCTIONS
+# ENCODE VIDEO: GENERIC FUNCTIONS
 # ##########################################################################
 
 
@@ -143,7 +143,7 @@ def send_email(msg, video_id):
 
 def send_email_transcript(video_to_encode):
     """Send email on transcripting completion."""
-    subject_prefix = _("The transcripting")
+    subject_prefix = _("The transcripting of content")
     send_notification_email(video_to_encode, subject_prefix)
 
 
@@ -171,13 +171,13 @@ def send_notification_email(video_to_encode, subject_prefix):
             % {
                 "content_type": (
                     _("The content")
-                    if subject_prefix == _("The transcripting")
+                    if subject_prefix == _("The transcripting of content")
                     else _("The video")
                 ),
                 "content_title": "<b>%s</b>" % video_to_encode.title,
                 "action": (
                     _("automatically transcripted")
-                    if (subject_prefix == _("The transcripting"))
+                    if (subject_prefix == _("The transcripting of content"))
                     else _("encoded to Web formats")
                 ),
                 "site_title": __TITLE_SITE__,

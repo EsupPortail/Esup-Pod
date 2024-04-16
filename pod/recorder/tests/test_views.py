@@ -138,7 +138,7 @@ class recorderViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.content,
-            b"nok : recordingPlace or " b"mediapath or key are missing",
+            b"nok: recordingPlace or " b"mediapath or key are missing",
         )
 
         response = self.client.get(
@@ -147,7 +147,7 @@ class recorderViewsTestCase(TestCase):
             "&course_title=title"
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, b"nok : key is not valid")
+        self.assertEqual(response.content, b"nok: key is not valid")
 
         m = hashlib.md5()
         m.update(record.ipunder().encode("utf-8") + record.salt.encode("utf-8"))

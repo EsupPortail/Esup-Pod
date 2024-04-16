@@ -290,7 +290,7 @@ class Command(BaseCommand):
         except webvtt.errors.MalformedFileError:
             print(
                 "************ "
-                "The file does not have a valid format. !!!!! "
+                "The file does not have a valid format!!!!! "
                 "************"
             )
             print(new_file)
@@ -493,7 +493,7 @@ for p in Pod.objects.all():
     if p.trackpods_set.all().count() > 0:
         list_track["%s" %p.id] = []
         for d in p.trackpods_set.all():
-            if d.src :
+            if d.src:
                 data = {}
                 data['kind'] = d.kind
                 data['lang'] = d.lang

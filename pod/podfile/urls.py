@@ -1,6 +1,4 @@
-"""
-podfile URL Configuration
-"""
+"""Esup-Pod podfile URL Configuration."""
 
 from django.conf.urls import url
 

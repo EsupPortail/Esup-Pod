@@ -1,3 +1,5 @@
+"""Esup-Pod playlists signals."""
+
 from django.contrib.sites.models import Site
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
@@ -12,7 +14,7 @@ from .models import Playlist
 @receiver(m2m_changed, sender=Owner.sites.through)
 def update_favorite_playlist(sender, instance, action, reverse, model, pk_set, **kwargs):
     """
-    This signal update favorite playlist.
+    Update favorite playlist.
 
     When an owner has been created.
     """
