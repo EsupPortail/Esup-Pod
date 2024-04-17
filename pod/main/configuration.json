@@ -3008,7 +3008,7 @@
                             "default_value": 180,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Duration (in number of days) over which we wish to count the number of recent views."
                                 ],
                                 "fr": [
                                     "Durée (en nombre de jours) sur laquelle on souhaite compter le nombre de vues récentes."
