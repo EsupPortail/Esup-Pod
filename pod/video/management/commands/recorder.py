@@ -112,7 +112,7 @@ USE_OPENCAST_STUDIO = getattr(settings, "USE_OPENCAST_STUDIO", False)
 opencastMediaDir = os.path.join(settings.MEDIA_ROOT, "opencast-files")
 
 
-def print_if_debug(str):
+def print_if_debug(str) -> None:
     if DEBUG:
         print(str)
 

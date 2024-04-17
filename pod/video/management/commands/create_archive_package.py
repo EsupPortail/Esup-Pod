@@ -111,7 +111,7 @@ class Command(BaseCommand):
         vids = Video.objects.filter(
             owner__username=ARCHIVE_OWNER_USERNAME,
             date_delete__lte=datetime.now() - timedelta(days=HOW_MANY_DAYS),
-            recentViewcount=0
+            recentViewcount=0,
         )
 
         for vid in vids:
@@ -147,13 +147,10 @@ class Command(BaseCommand):
                         shutil.move(
                             vid.video.path,
                             os.path.join(
-                                mediaPackage_dir,
-                                os.path.basename(vid.video.name)
-                            )
+                                mediaPackage_dir, os.path.basename(vid.video.name)
+                            ),
                         )
-                        # os.rename(vid.video.path, os.path.join(mediaPackage_dir,
-                        # os.path.basename(vid.video.name)))
-                        # delete video
+                        # Delete Video object
                         vid.delete()
                     # Supprime l'objet vidéo et le dossier associé (encodage, logs, etc..)
                     # Supprime les thumbnails (x3)

@@ -1,4 +1,7 @@
-"""Unarchive a video."""
+"""Unarchive a video.
+
+*  run with 'python manage.py unarchive_video vid_id [user_id]'
+"""
 
 from django.core.management.base import BaseCommand
 from pod.video.models import Video, default_date_delete
@@ -8,7 +11,7 @@ from django.utils.translation import gettext as _
 from django.conf import settings
 from django.utils.translation import activate
 
-from create_archive_package import read_archived_csv
+from pod.video.management.commands.create_archive_package import read_archived_csv
 
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
@@ -22,24 +25,45 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser) -> None:
         """Add possible args to the command."""
+        # Video ID is required
         parser.add_argument("video_id", type=int, help="Video id")
-        parser.add_argument("user_id", type=int, help="User id")
 
-    def get_previous_owner(self, options: dict[str], video_id: int) -> str:
-        """Get previous owner id of an archived video."""
-        user_id = options["user_id"]
-        # Get user_id from ARCHIVE_CSV
-        if user_id is None:
+        # Optional arguments
+        parser.add_argument("--user_id", type=int, help="User id")
+
+    def get_previous_owner(self, options: dict[str], video_id: int) -> User:
+        """Get previous owner of an archived video."""
+        owner = None
+        if options["user_id"]:
+            try:
+                owner = User.objects.get(id=options["user_id"])
+            except ObjectDoesNotExist:
+                self.stdout.write(
+                    self.style.ERROR('User not found by id "%s"' % options["user_id"])
+                )
+        else:
+            # Get user from ARCHIVE_CSV
             csv_data = read_archived_csv()
             csv_entry = csv_data.get(str(video_id))
             if csv_entry:
-                user_id = csv_entry["User name"]
+                user_name = csv_entry["User name"].split("(")
+                # extract username from "Fullname (username)" string
+                user_name = user_name[-1][:-1]
+                try:
+                    owner = User.objects.get(username=user_name)
+                except ObjectDoesNotExist:
+                    self.stdout.write(
+                        self.style.ERROR('User not found by name "%s"' % user_name)
+                    )
             else:
                 self.stdout.write(
                     self.style.ERROR(
-                        "Video not found in %s. You must specify user_id manually." % ARCHIVE_CSV)
+                        "Video not found in %s. You must specify user_id manually."
+                        % ARCHIVE_CSV
+                    )
                 )
-        return user_id
+
+        return owner
 
     def handle(self, *args, **options) -> None:
         """Handle the unarchive_video command call."""
@@ -62,18 +86,14 @@ class Command(BaseCommand):
             )
             return
 
-        user_id = self.get_previous_owner(options, video.id)
-
-        try:
-            user = User.objects.get(id=user_id)
-        except ObjectDoesNotExist:
+        user = self.get_previous_owner(options, video.id)
+        if user:
+            video.owner = user
+            video.title = video.title[to_remove:]
+            video.date_delete = default_date_delete()
+            video.save()
             self.stdout.write(
-                self.style.ERROR('User not found "%s"' % user_id)
+                self.style.SUCCESS(
+                    'Video "%s" has been unarchived and assigned to %s' % (video.id, user)
+                )
             )
-            return
-
-        video.owner = user
-        video.title = video.title[to_remove:]
-        video.date_delete = default_date_delete()
-        video.save()
-        self.stdout.write(self.style.SUCCESS('Video "%s" has been unarchived' % video.id))
