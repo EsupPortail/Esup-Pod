@@ -42,7 +42,9 @@ function getListSelectedVideosTitles(container) {
  * Set shared/global variable selectedVideos with selected videos based on class selected
  */
 function setListSelectedVideos(container) {
-  selectedVideos[container] = [];
+  if(container === "videosListContainerId"){
+    selectedVideos[container] = [];
+  }
   let selector = "#" + container + " .infinite-item.selected";
   document.querySelectorAll(selector).forEach((elt) => {
     selectedVideos[container].push(elt.dataset.slug);
