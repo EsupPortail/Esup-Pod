@@ -9,12 +9,26 @@ from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.db import connection
 import os
 import mimetypes
 from ckeditor.fields import RichTextField
 
 
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
+
+
+def get_nextautoincrement(model):
+    cursor = connection.cursor()
+    cursor.execute(
+        "SELECT Auto_increment FROM information_schema.tables "
+        + 'WHERE table_name="{0}" AND table_schema=DATABASE();'.format(
+            model._meta.db_table
+        )
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    return row[0]
 
 
 def get_upload_path_files(instance, filename):
