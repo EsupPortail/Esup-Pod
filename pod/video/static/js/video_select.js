@@ -47,7 +47,9 @@ function setListSelectedVideos(container) {
   }
   let selector = "#" + container + " .infinite-item.selected";
   document.querySelectorAll(selector).forEach((elt) => {
-    selectedVideos[container].push(elt.dataset.slug);
+    if(!selectedVideos[container].indexOf(elt)){
+      selectedVideos[container].push(elt.dataset.slug);
+    }
   });
 }
 
