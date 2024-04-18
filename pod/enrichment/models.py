@@ -12,7 +12,6 @@ from tempfile import NamedTemporaryFile
 from django.contrib.auth.models import Group
 
 from pod.video.models import Video
-from pod.main.models import get_nextautoincrement
 
 import os
 import datetime
@@ -279,20 +278,8 @@ class Enrichment(models.Model):
         return list()
 
     def save(self, *args, **kwargs):
-        newid = -1
-        if not self.id:
-            try:
-                newid = get_nextautoincrement(Enrichment)
-            except Exception:
-                try:
-                    newid = Enrichment.objects.latest("id").id
-                    newid += 1
-                except Exception:
-                    newid = 1
-        else:
-            newid = self.id
-        newid = "{0}".format(newid)
-        self.slug = "{0} - {1}".format(newid, slugify(self.title))
+        super(Enrichment, self).save(*args, **kwargs)
+        self.slug = "{0} - {1}".format(self.id, slugify(self.title))
         super(Enrichment, self).save(*args, **kwargs)
 
     def __str__(self):

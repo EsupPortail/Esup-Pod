@@ -26,7 +26,6 @@ from pod.main.lang_settings import PREF_LANG_CHOICES as __PREF_LANG_CHOICES__
 from django.utils.translation import get_language
 from pod.main.utils import generate_qrcode
 from pod.authentication.models import AccessGroup
-from pod.main.models import get_nextautoincrement
 from pod.video.models import Video, Type
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
@@ -466,19 +465,8 @@ class Event(models.Model):
         ordering = ["start_date"]
 
     def save(self, *args, **kwargs):
-        if not self.id:
-            try:
-                new_id = get_nextautoincrement(Event)
-            except Exception:
-                try:
-                    new_id = Event.objects.latest("id").id
-                    new_id += 1
-                except Exception:
-                    new_id = 1
-        else:
-            new_id = self.id
-        new_id = "%04d" % new_id
-        self.slug = "%s-%s" % (new_id, slugify(self.title))
+        super(Event, self).save(*args, **kwargs)
+        self.slug = "%s-%s" % ("%04d" % self.id, slugify(self.title))
         super(Event, self).save(*args, **kwargs)
 
     def __str__(self):

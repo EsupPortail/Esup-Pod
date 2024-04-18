@@ -35,7 +35,6 @@ from django.db.models import F, Q
 
 
 from pod.authentication.models import AccessGroup
-from pod.main.models import get_nextautoincrement
 from pod.live.models import Broadcaster, Event
 
 from .utils import (
@@ -516,22 +515,10 @@ class Meeting(models.Model):
     def save(self, *args, **kwargs):
         """Store a meeting object in db."""
         self.check_recurrence()
-        newid = -1
-        if not self.id:
-            try:
-                newid = get_nextautoincrement(Meeting)
-            except Exception:
-                try:
-                    newid = Meeting.objects.latest("id").id
-                    newid += 1
-                except Exception:
-                    newid = 1
-        else:
-            newid = self.id
-        newid = "%04d" % newid
-        self.meeting_id = "%s-%s" % (newid, slugify(self.name))
         if MEETING_DISABLE_RECORD:
             self.record = False
+        super(Meeting, self).save(*args, **kwargs)
+        self.meeting_id = "%s-%s" % ("%04d" % self.id, slugify(self.name))
         super(Meeting, self).save(*args, **kwargs)
 
     def get_hashkey(self):

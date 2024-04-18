@@ -6,7 +6,6 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 
 from pod.video.models import Video
-from pod.main.models import get_nextautoincrement
 
 
 class Chapter(models.Model):
@@ -100,20 +99,8 @@ class Chapter(models.Model):
         return list()
 
     def save(self, *args, **kwargs):
-        newid = -1
-        if not self.id:
-            try:
-                newid = get_nextautoincrement(Chapter)
-            except Exception:
-                try:
-                    newid = Chapter.objects.latest("id").id
-                    newid += 1
-                except Exception:
-                    newid = 1
-        else:
-            newid = self.id
-        newid = "{0}".format(newid)
-        self.slug = "{0}-{1}".format(newid, slugify(self.title))
+        super(Chapter, self).save(*args, **kwargs)
+        self.slug = "{0}-{1}".format(self.id, slugify(self.title))
         super(Chapter, self).save(*args, **kwargs)
 
     @property

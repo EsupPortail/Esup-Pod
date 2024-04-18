@@ -10,7 +10,6 @@ from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.template.defaultfilters import slugify
 
-from pod.main.models import get_nextautoincrement
 from pod.video.models import Video
 from pod.video.utils import sort_videos_list
 
@@ -125,19 +124,8 @@ class Playlist(models.Model):
         verbose_name_plural = _("Playlists")
 
     def save(self, *args, **kwargs) -> None:
-        newid = -1
-        if not self.id:
-            try:
-                newid = get_nextautoincrement(Playlist)
-            except Exception:
-                try:
-                    newid = Playlist.objects.latest("id").id
-                    newid += 1
-                except Exception:
-                    newid = 1
-        else:
-            newid = self.id
-        self.slug = f"{newid}-{slugify(self.name)}"
+        super().save(*args, **kwargs)
+        self.slug = f"{self.id}-{slugify(self.name)}"
         super().save(*args, **kwargs)
 
     def clean(self) -> None:

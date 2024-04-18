@@ -40,7 +40,6 @@ from django.contrib.auth.hashers import make_password
 
 from sorl.thumbnail import get_thumbnail
 from pod.authentication.models import AccessGroup
-from pod.main.models import get_nextautoincrement
 from pod.main.lang_settings import ALL_LANG_CHOICES as __ALL_LANG_CHOICES__
 from pod.main.lang_settings import PREF_LANG_CHOICES as __PREF_LANG_CHOICES__
 from django.db.models import Count, Case, When, Value, BooleanField, Q
@@ -871,18 +870,9 @@ class Video(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         """Store a video object in db."""
-        newid = -1
 
         # In case of creating new Video
         if not self.id:
-            try:
-                newid = get_nextautoincrement(Video)
-            except Exception:
-                try:
-                    newid = Video.objects.latest("id").id
-                    newid += 1
-                except Exception:
-                    newid = 1
             # fix date_delete depends of owner affiliation
             ACCOMMODATION_YEARS = getattr(settings, "ACCOMMODATION_YEARS", {})
             if len(ACCOMMODATION_YEARS) and len(self.owner.owner.affiliation):
@@ -890,12 +880,10 @@ class Video(models.Model):
                 self.date_delete = date.today() + timezone.timedelta(days=add_year * 365)
 
         # Modifying existing Video
-        else:
-            newid = self.id
-        newid = "%04d" % newid
-        self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
         # self.set_password()
+        super(Video, self).save(*args, **kwargs)
+        self.slug = "%s-%s" % ("%04d" % self.id, slugify(self.title))
         super(Video, self).save(*args, **kwargs)
 
     def __str__(self):
