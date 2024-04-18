@@ -39,7 +39,7 @@ var dashboardValue;
 bulkUpdateActionSelect.addEventListener("change", function () {
   dashboardAction = bulkUpdateActionSelect.value;
   appendDynamicForm(dashboardAction);
-  replaceSelectedCountVideos();
+  replaceSelectedCountVideos(videosListContainerId);
   manageDisableBtn(resetDashboardElementsBtn, dashboardAction != "");
 });
 
@@ -47,7 +47,7 @@ bulkUpdateActionSelect.addEventListener("change", function () {
  * Add click event listener on apply button to build and open confirm modal
  */
 applyBulkUpdateBtn.addEventListener("click", () => {
-  let selectedCount = selectedVideos.length;
+  let selectedCount = selectedVideos[videosListContainerId].length;
   let modalEditionConfirmStr = ngettext(
     "Please confirm the editing of the following video:",
     "Please confirm the editing of the following videos:",
@@ -152,7 +152,7 @@ async function bulkUpdate() {
   }
 
   // Construct formData to send
-  formData.append("selected_videos", JSON.stringify(selectedVideos));
+  formData.append("selected_videos", JSON.stringify(selectedVideos[videosListContainerId]));
   formData.append("update_fields", JSON.stringify(updateFields));
   formData.append("update_action", updateAction);
 
@@ -173,7 +173,7 @@ async function bulkUpdate() {
 
   if (response.ok) {
     // Set selected videos with new slugs if changed during update
-    selectedVideos = data["updated_videos"];
+    selectedVideos[videosListContainerId] = data["updated_videos"];
     showalert(message, "alert-success", "formalertdivbottomright");
     refreshVideosSearch();
   } else {

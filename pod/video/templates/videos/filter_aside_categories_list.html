@@ -2,7 +2,7 @@
 
 {% for category in categories %}
   <li class="categories_list_item">
-    <button type="button" class="btn btn-link cat_title" data-slug="{{ category.slug}}" onclick="toggleCategoryLink(this)">{{ category.title }}</button>
+    <button type="button" class="btn btn-link cat_title" data-slug="{{category.slug}}" onclick="toggleCategoryLink(this)">{{category.title}}</button>
     <div class="category_actions">
       <button type="button" title="{% trans 'Edit the category' %}" data-slug="{{category.slug}}" data-title="{{category.title}}" class="btn btn-link edit_category_btn">
         <i class="bi bi-pencil-square" aria-hidden="true"></i>

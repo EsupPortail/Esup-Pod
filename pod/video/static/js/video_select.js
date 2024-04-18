@@ -10,7 +10,7 @@
 
 /* exported resetDashboardElements getHTMLBadgesSelectedTitles toggleSelectedVideo setSelectedVideos */
 
-var selectedVideos = [];
+var selectedVideos = {};
 var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
 var resetDashboardElementsBtn = document.getElementById(
   "reset-dashboard-elements-btn",
@@ -23,10 +23,10 @@ var countSelectedVideosBadge = document.getElementById(
  * Get list of selected videos's titles based on class selected
  * @returns {*[video_title]}
  */
-function getListSelectedVideosTitles() {
+function getListSelectedVideosTitles(container) {
   let selectedTitles = [];
-  if (selectedVideos.length > 0) {
-    Array.from(selectedVideos).forEach((v) => {
+  if (selectedVideos[container].length > 0) {
+    Array.from(selectedVideos[container]).forEach((v) => {
       let item = document.querySelector(
         ".infinite-item.selected[data-slug='" + v + "']",
       );
@@ -42,21 +42,20 @@ function getListSelectedVideosTitles() {
  * Set shared/global variable selectedVideos with selected videos based on class selected
  */
 function setListSelectedVideos(container) {
-  selectedVideos = [];
+  selectedVideos[container] = [];
   let selector = "#" + container + " .infinite-item.selected";
   document.querySelectorAll(selector).forEach((elt) => {
-    selectedVideos.push(elt.dataset.slug);
+    selectedVideos[container].push(elt.dataset.slug);
   });
 }
 
 /**
  * Set directly selected videos on interface to improve user experience
  */
-function setSelectedVideos() {
-  Array.from(selectedVideos).forEach((elt) => {
-    let domElt = document.querySelector(
-      '#videos_list .infinite-item[data-slug="' + elt + '"]',
-    );
+function setSelectedVideos(container) {
+  Array.from(selectedVideos[container]).forEach((elt) => {
+    let selector = '#' + container + ' .infinite-item[data-slug="' + elt + '"]';
+    let domElt = document.querySelector(selector);
     if (domElt && !domElt.classList.contains("selected")) {
       if (!domElt.classList.contains("selected")) {
         domElt.classList.add("selected");
@@ -68,8 +67,8 @@ function setSelectedVideos() {
 /**
  * Replace count of selected videos (count label in "Apply" bulk update's badge)
  */
-function replaceSelectedCountVideos() {
-  let newCount = selectedVideos.length;
+function replaceSelectedCountVideos(container) {
+  let newCount = selectedVideos[container].length;
   let videoCountStr = ngettext("%(count)s video", "%(count)s videos", newCount);
   let videoCountTit = ngettext(
     "%(count)s video selected",
@@ -104,19 +103,19 @@ function toggleSelectedVideo(item, container) {
   item.classList.toggle("selected");
   setListSelectedVideos(container);
   if(container === "videos_list") {
-    replaceSelectedCountVideos();
+    replaceSelectedCountVideos(container);
   }
 }
 
 /**
  * Clear videos selection : deselect all videos, reset badge count
  */
-function clearSelectedVideo() {
-  selectedVideos = [];
+function clearSelectedVideo(container) {
+  selectedVideos[container] = [];
   document.querySelectorAll(".infinite-item.selected").forEach((elt) => {
     elt.classList.remove("selected");
   });
-  replaceSelectedCountVideos();
+  replaceSelectedCountVideos(container);
 }
 
 /**
@@ -135,7 +134,7 @@ function resetDashboardElements() {
  */
 function getHTMLBadgesSelectedTitles() {
   let str = "";
-  Array.from(getListSelectedVideosTitles()).forEach((title) => {
+  Array.from(getListSelectedVideosTitles(container)).forEach((title) => {
     str +=
       "<span class='badge rounded-pill bulk-update-confirm-badges'>" +
       title +
@@ -151,9 +150,9 @@ function getHTMLBadgesSelectedTitles() {
  */
 function selectAllVideos(container){
   let selector = "#" + container + " .infinite-item";
-  document.querySelectorAll("#videos_list .infinite-item").forEach((elt) => {
+  document.querySelectorAll(selector).forEach((elt) => {
     elt.classList.add("selected");
   });
   setListSelectedVideos(container);
-  replaceSelectedCountVideos();
+  replaceSelectedCountVideos(container);
 }

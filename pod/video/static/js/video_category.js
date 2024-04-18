@@ -1,7 +1,10 @@
 /**
  * Esup-Pod video category scripts.
  */
+const catVideosListContainerId = "category_modal_videos_list";
 var currentUrl;
+selectedVideos[catVideosListContainerId] = [];
+
 document.getElementById("add_category_btn").addEventListener("click", () => {
   get_category_modal(CATEGORIES_ADD_URL);
 });
@@ -113,6 +116,7 @@ function get_category_modal(url, page= null){
       let html = parser.parseFromString(data, "text/html").body;
       if(page){
           document.getElementById("category_modal_videos_list").outerHTML = html.innerHTML;
+          setSelectedVideos(catVideosListContainerId);
           url = url.replaceAll(/([?]page=)(\d+)/g, "");
       }else{
           categoryModal.innerHTML = html.innerHTML;
@@ -134,8 +138,8 @@ function get_category_modal(url, page= null){
  */
 function post_category_modal(url){
     let formData = new FormData();
-    if(selectedVideos && selectedVideos.length > 0){
-        formData.append("videos", JSON.stringify(selectedVideos));
+    if(selectedVideos[catVideosListContainerId] && selectedVideos[catVideosListContainerId].length > 0){
+        formData.append("videos", JSON.stringify(selectedVideos[catVideosListContainerId]));
     }
     if(document.getElementById("catTitle")){
         formData.append("title", document.getElementById("catTitle").value);

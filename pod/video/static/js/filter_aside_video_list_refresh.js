@@ -28,10 +28,10 @@ function onBeforePageLoad() {
 function onAfterPageLoad() {
   if (
     urlVideos === "/video/dashboard/" &&
-    selectedVideos &&
-    selectedVideos.length !== 0
+    selectedVideos[videosListContainerId] &&
+    selectedVideos[videosListContainerId].length !== 0
   ) {
-    setSelectedVideos();
+    setSelectedVideos(videosListContainerId);
   }
   infiniteLoading.style.display = "none";
   let footer = document.querySelector("footer.static-pod");
@@ -127,10 +127,10 @@ function refreshVideosSearch() {
       }
       if (
         urlVideos === "/video/dashboard/" &&
-        selectedVideos &&
-        selectedVideos.length !== 0
+        selectedVideos[videosListContainerId] &&
+        selectedVideos[videosListContainerId].length !== 0
       ) {
-        setSelectedVideos();
+        setSelectedVideos(videosListContainerId);
       }
     })
     .catch(() => {

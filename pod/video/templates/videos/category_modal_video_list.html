@@ -8,7 +8,6 @@
   <div data-slug="{{ video.slug }}"
        onclick="toggleSelectedVideo(this,'category_modal_videos_list')" onkeydown="toggleSelectedVideo(this,'category_modal_videos_list')"
        class="infinite-item col-12 col-md-6 col-lg-3 mb-2
-       {{ category_videos }}
         {% if video.id in category_videos %}selected{% endif %}">
     {% include "videos/card_select.html" with category_modal="True" %}
   </div>
