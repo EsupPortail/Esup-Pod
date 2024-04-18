@@ -47,7 +47,7 @@ function setListSelectedVideos(container) {
   }
   let selector = "#" + container + " .infinite-item.selected";
   document.querySelectorAll(selector).forEach((elt) => {
-    if(!selectedVideos[container].indexOf(elt)){
+    if(!selectedVideos[container].indexOf(elt.dataset.slug)){
       selectedVideos[container].push(elt.dataset.slug);
     }
   });
