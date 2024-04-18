@@ -195,6 +195,18 @@
                 </label>
               </li>
             {% endif %}
+            <li class="pod-navbar__theme-switch__item" id="subtitle-switch-wrapper" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Automaticaly select and display the first availiable subtitle at the start of each video play.' %}">
+              <label for="checkbox-subtitle">
+                <span class="form-label">{% trans 'Automatic subtitles' %}</span>
+                <span class="dyslexia-switch">
+                  <input type="checkbox" id="checkbox-subtitle">
+                  <span class="slider">
+                    <i class="bi bi-subtitle" aria-hidden="true"></i>
+                    <i class="bi bi-subtitle slash" aria-hidden="true"></i>
+                  </span>
+                </span>
+              </label>
+            </li>
           </ul>
         </div>
       </div>

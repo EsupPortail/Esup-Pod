@@ -4,6 +4,12 @@
 {% get_setting "VIDEO_PLAYBACKRATES" '[0.5, 1, 1.5, 2]' as video_playbackrates %}
 {% get_setting "USE_VIDEO_EVENT_TRACKING" False as video_event_tracking %}
 <script id="id_video_script">
+  // Check subtitle track
+  // /!\ the following query will work only before player initialisation
+  const subtitle = document.querySelector('video#podvideoplayer > track[kind="subtitles"]');
+  if(subtitle && localStorage.getItem('autoshowsubtitles')) {
+    subtitle.setAttribute('default',null);
+  }
   var seektime = 10;
   var options = {};
   var player;
