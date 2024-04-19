@@ -19,6 +19,8 @@ FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 
 def get_nextautoincrement(model):
+    if connection.vendor == "postgresql":
+        raise Exception
     cursor = connection.cursor()
     cursor.execute(
         "SELECT Auto_increment FROM information_schema.tables "
