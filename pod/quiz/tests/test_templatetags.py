@@ -6,10 +6,6 @@ from pod.quiz.models import MultipleChoiceQuestion, Quiz, SingleChoiceQuestion
 from pod.quiz.templatetags.video_quiz import is_quiz_accessible, is_quiz_exists
 
 from pod.video.models import Type, Video
-from django.test import TestCase
-from django.contrib.auth.models import User
-
-from pod.video.models import Type, Video
 
 
 class VideoQuizTemplateTagsTestCase(TestCase):
