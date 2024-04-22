@@ -1,4 +1,4 @@
-"""Unit tests for main views.
+"""Esup-Pod unit tests for main views.
 
 *  run with 'python manage.py test pod.main.tests.test_views'
 """
@@ -8,15 +8,18 @@ from django.test import TestCase
 from django.test import Client
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.flatpages.models import FlatPage
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.conf import settings
 from captcha.models import CaptchaStore
 from http import HTTPStatus
+from datetime import datetime, timedelta
 from pod.main import context_processors
-from pod.main.models import Configuration
+from pod.main.models import Configuration, Block
 from pod.playlist.models import Playlist
-from pod.video.models import Type, Video
+from pod.video.models import Type, Video, Channel, ViewCount
+from pod.live.models import Building, Broadcaster, Event
 
 import os
 import importlib
@@ -115,7 +118,7 @@ class MainViewsTestCase(TestCase):
 
 
 class MaintenanceViewsTestCase(TestCase):
-    """`TestCase for the maintenance view.`"""
+    """TestCase for the maintenance view."""
 
     fixtures = [
         "initial_data.json",
@@ -519,3 +522,223 @@ class TestNavbar(TestCase):
         )
 
         print(" --->  test_statistics_playlists ok")
+
+
+class TestBlock(TestCase):
+    """Block tests case."""
+
+    fixtures = ["initial_data.json"]
+
+    def setUp(self):
+        print(" --->  init blocktest ok")
+
+    def test_html_block_content(self):
+        """Test html block."""
+        bl2 = Block.objects.create(
+            title="block html",
+            type="html",
+            page=FlatPage.objects.get(id=1),
+            html="<p>MaChaineDeTest</p>",
+            no_cache=True,
+            visible=True,
+        )
+        self.client = Client()
+        response = self.client.get("/")
+        self.assertTrue(
+            "<p>MaChaineDeTest</p>" in response.content.decode(),
+            "test if block html is present.",
+        )
+        bl2.visible = False
+        bl2.save()
+        response = self.client.get("/")
+        self.assertFalse(
+            "<p>MaChaineDeTest</p>" in response.content.decode(),
+            "test if block html is not present.",
+        )
+        bl2.visible = True
+        bl2.must_be_auth = True
+        bl2.save()
+        response = self.client.get("/")
+        self.assertFalse(
+            "<p>MaChaineDeTest</p>" in response.content.decode(),
+            "test if block html is not present.",
+        )
+
+        User.objects.create(username="test", password="azerty")
+        self.user = User.objects.get(username="test")
+        self.client.force_login(self.user)
+        response = self.client.get("/")
+        self.assertTrue(
+            "<p>MaChaineDeTest</p>" in response.content.decode(),
+            "test if block html is present.",
+        )
+
+        print(" --->  test_Block_Html ok")
+
+    def test_default_block(self):
+        """Test when add video if present in default block."""
+        user = User.objects.create(username="pod", password="podv3")
+        Video.objects.create(
+            title="VideoOnHold",
+            owner=user,
+            video="test.mp4",
+            type=Type.objects.get(id=1),
+            is_draft=False,
+            slug="video-on-hold",
+            duration=20,
+            date_added=datetime.today(),
+            encoding_in_progress=False,
+            date_evt=datetime.today(),
+        )
+        self.client = Client()
+        response = self.client.get("/")
+        self.assertTrue(
+            "VideoOnHold" in response.content.decode(),
+            "test if video VideoOnHold is present.",
+        )
+        print(" --->  test_Video_in_default_block ok")
+
+    def test_channel_type_block(self):
+        """Test if create channel with video, this video is present in block type channel."""
+        bk1 = Block.objects.get(id=1)
+        bk1.visible = False
+        bk1.save()
+        channel = Channel.objects.create(title="monChannel")
+        user = User.objects.create(username="pod", password="podv3")
+        video = Video.objects.create(
+            title="VideoOnHold",
+            owner=user,
+            video="test.mp4",
+            type=Type.objects.get(id=1),
+            is_draft=False,
+            slug="video-on-hold",
+            duration=20,
+            date_added=datetime.today(),
+            encoding_in_progress=False,
+            date_evt=datetime.today(),
+        )
+        video.channel.add(channel)
+        bl2 = Block.objects.create(
+            title="block channel",
+            type="carousel",
+            page=FlatPage.objects.get(id=1),
+            data_type="channel",
+            Channel=Channel.objects.get(id=1),
+            no_cache=True,
+            visible=True,
+            view_videos_from_non_visible_channels=False,
+        )
+
+        self.client = Client()
+        response = self.client.get("/")
+
+        self.assertFalse(
+            "VideoOnHold" in response.content.decode(),
+            "test if video VideoOnHold is not present.",
+        )
+
+        bl2.view_videos_from_non_visible_channels = True
+        bl2.save()
+        response = self.client.get("/")
+
+        self.assertTrue(
+            "VideoOnHold" in response.content.decode(),
+            "test if video VideoOnHold is present.",
+        )
+
+        bl2.view_videos_from_non_visible_channels = False
+        bl2.save()
+        channel.visible = True
+        channel.save()
+        response = self.client.get("/")
+
+        self.assertTrue(
+            "VideoOnHold" in response.content.decode(),
+            "test if video VideoOnHold is present.",
+        )
+        self.assertTrue(
+            '<div class="pod-inner edito-carousel">' in response.content.decode(),
+            "test if type block is carousel.",
+        )
+        print(" --->  test_Video_in_channel_block ok")
+
+    def test_next_events_type_block(self):
+        """Test if create create next event present in block type next events."""
+        building = Building.objects.create(name="building1")
+        broad = Broadcaster.objects.create(
+            name="broadcaster1",
+            url="http://test.live",
+            status=True,
+            is_restricted=True,
+            building=building,
+            public=False,
+        )
+        user = User.objects.create(username="pod")
+        h_type = Type.objects.create(title="type1")
+        event = Event.objects.create(
+            title="MonEventDeTest",
+            owner=user,
+            broadcaster=broad,
+            type=h_type,
+            is_draft=False,
+        )
+        event.start_date = datetime.today() + timedelta(days=+1)
+        event.end_date = datetime.today() + timedelta(days=+2)
+        event.save()
+
+        Block.objects.create(
+            title="block next events",
+            type="card_list",
+            page=FlatPage.objects.get(id=1),
+            data_type="event_next",
+            no_cache=True,
+            visible=True,
+        )
+        self.client = Client()
+        response = self.client.get("/")
+        self.assertTrue(
+            "MonEventDeTest" in response.content.decode(),
+            "test if event MonEventDeTest is present.",
+        )
+        self.assertTrue(
+            '<div class="pod-inner edito-card-list"' in response.content.decode(),
+            "test if block is card list.",
+        )
+        print(" --->  test_Next_Event_in_Block_next_event_type ok")
+
+    def test_most_views_type_block(self):
+        """Test if most views video is present in block type most view."""
+        bk1 = Block.objects.get(id=1)
+        bk1.visible = False
+        bk1.save()
+        user = User.objects.create(username="pod", password="podv3")
+        vd1 = Video.objects.create(
+            title="VideoOnHold",
+            owner=user,
+            video="test.mp4",
+            type=Type.objects.get(id=1),
+            is_draft=False,
+            slug="video-on-hold",
+            duration=20,
+            encoding_in_progress=False,
+        )
+        ViewCount.objects.create(video=vd1, date=datetime.today(), count=1)
+        Block.objects.create(
+            title="block most views",
+            type="multi_carousel",
+            page=FlatPage.objects.get(id=1),
+            data_type="most_views",
+            no_cache=True,
+            visible=True,
+        )
+        self.client = Client()
+        response = self.client.get("/")
+        self.assertTrue(
+            "VideoOnHold" in response.content.decode(),
+            "test if video VideoOnHold is present.",
+        )
+        self.assertTrue(
+            '<div class="pod-inner edito-multi-carousel">' in response.content.decode(),
+            "test if block is carousel multi.",
+        )
+        print(" --->  test_Video_in_type_most_views_block ok")

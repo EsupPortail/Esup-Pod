@@ -51,7 +51,7 @@
 {% endif %}
 {% if video.encoded and video.encoding_in_progress is False %}
   {% if USE_CUT %}
-    {% if video.owner == request.user or request.user.is_superuser or perms.cut.cut_video %}
+    {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.cut.cut_video %}
       <a href="{% url 'cut:video_cut' slug=video.slug %}" title="{% trans 'Cut the video'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
         <i class="bi bi-scissors card-footer-link-i" aria-hidden="true"></i>
       </a>

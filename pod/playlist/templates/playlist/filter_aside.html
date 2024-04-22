@@ -49,10 +49,12 @@
             <input onChange="window.location = `{% url 'playlist:list' %}?visibility=allpublic`;" class="form-check-input" type="radio" name="type" value="allpublic" id="idallpublic_type" {% if request.GET.visibility == "allpublic" %}checked="true"{% endif %}>
             <label class="form-check-label" for="idallpublic_type">&nbsp;{% trans "See all public playlists"%}</label>
         </div>
-        <div class="form-check">
-          <input onChange="window.location = `{% url 'playlist:list' %}?visibility=promoted`;" class="form-check-input" type="radio" name="type" value="promoted" id="idpromoted_type" {% if request.GET.visibility == "promoted" %}checked="true"{% endif %}>
-          <label class="form-check-label" for="idpromoted_type">&nbsp;{% trans "See all promoted playlists"%}</label>
-        </div>
+        {% if USE_PROMOTED_PLAYLIST %}
+          <div class="form-check">
+            <input onChange="window.location = `{% url 'playlist:list' %}?visibility=promoted`;" class="form-check-input" type="radio" name="type" value="promoted" id="idpromoted_type" {% if request.GET.visibility == "promoted" %}checked="true"{% endif %}>
+            <label class="form-check-label" for="idpromoted_type">&nbsp;{% trans "See all promoted playlists"%}</label>
+          </div>
+        {% endif %}
         <div class="form-check">
           <input onChange="window.location = `{% url 'playlist:list' %}?visibility=all`;" class="form-check-input" type="radio" name="type" value="all" id="idall_type" {% if request.GET.visibility == "all" %}checked="true"{% endif %}>
           <label class="form-check-label" for="idall_type">&nbsp;{% trans "See all playlists"%}</label>

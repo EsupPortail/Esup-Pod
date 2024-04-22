@@ -76,7 +76,7 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
 
   > valeur par défaut : `1.1.0`
 
-  >> Mise en place du mode PWA grâce à l'application Django-pwa <br>
+  >> Mise en place du mode PWA grâce à l’application Django-pwa <br>
   >> Voici la configuration par défaut pour Pod, vous pouvez surcharger chaque variable dans votre fichier de configuration. <br>
   >> PWA_APP_NAME = "Pod" <br>
   >> PWA_APP_DESCRIPTION = ( <br>
@@ -94,13 +94,13 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
   >> PWA_APP_STATUS_BAR_COLOR = "default" <br>
   >> PWA_APP_DIR = "ltr" <br>
   >> PWA_APP_LANG = "fr-FR" <br>
-  >> Pour en savoir plus : [https://github.com/silviolleite/django-pwa]() <br>
+  >> Pour en savoir plus : [https://github.com/silviolleite/django-pwa]() <br>
 
  - `rest_framework`
 
   > valeur par défaut : `3.14.0`
 
-  >> version 3.14.0: mise en place de l’API rest pour l’application <br>
+  >> version 3.14.0 : mise en place de l’API rest pour l’application <br>
   >> [https://www.django-rest-framework.org/]() <br>
 
  - `shibboleth`
@@ -556,7 +556,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   > valeur par défaut : `True`
 
-  >> Une valeur booléenne qui active ou désactive l'outil de débogage.<br> <br>
+  >> Une valeur booléenne qui active ou désactive l’outil de débogage.<br> <br>
   >> Ne déployez jamais de site en production avec le réglage USE_DEBUG_TOOLBAR activé.<br> <br>
   >> __ref: [https://django-debug-toolbar.readthedocs.io/en/latest/]()__ <br>
 
@@ -599,9 +599,11 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
  - `SECURE_SSL_REDIRECT`
 
-  > valeur par défaut : `not DEBUG`
+  > valeur par défaut : `False`
 
-
+  >> À moins que votre site ne doive être disponible sur des connexions SSL et non SSL, <br>
+  >>  vous souhaiterez probablement définir ce paramètre sur True ou configurer un <br>
+  >>  load balancer ou reverse-proxy pour rediriger toutes les connexions vers HTTPS. <br>
 
  - `SESSION_COOKIE_AGE`
 
@@ -905,8 +907,8 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
   >> 'FAVICON': 'img/pod_favicon.svg', 
   >>   
   >> # Si souhaitée, à créer et sauvegarder 
-  >> #  dans le répertoire static de l'application custom et 
-  >> #  préciser le chemin d'accès. Par exemple : "custom/etab.css" 
+  >> #  dans le répertoire static de l’application custom et 
+  >> #  préciser le chemin d’accès. Par exemple : "custom/etab.css" 
   >> 'CSS_OVERRIDE': '', 
   >>   
   >> # Vous pouvez créer un template dans votre application custom et 
@@ -1176,7 +1178,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   > valeur par défaut : `preferred_username`
 
-  >> Noms des Claim permettant de récupérer l'attribut login mais dépendant de l'attribut du client dans l'IDP <br>
+  >> Noms des Claim permettant de récupérer l’attribut login mais dépendant de l’attribut du client dans l’IDP <br>
 
  - `OIDC_CLAIM_GIVEN_NAME`
 
@@ -1433,7 +1435,7 @@ Vous pouvez tout à fait rajouter des langues comme vous le souhaitez. Il faudra
 
   >> voir `ACTIVE_MODEL_ENRICH` <br>
 
-### Configuration de l'application Cut
+### Configuration de l’application Cut
 Application Cut permettant de découper des vidéos.<br>
 Mettre `USE_CUT` à True pour activer cette application.<br>
 
@@ -1441,9 +1443,9 @@ Mettre `USE_CUT` à True pour activer cette application.<br>
 
   > valeur par défaut : `True`
 
-  >> Activation de l'application Cut <br>
+  >> Activation de l’application Cut <br>
 
-### Configuration de l'application dressing
+### Configuration de l’application dressing
 Application Dressing pour customiser une vidéo avec un filigrane et des crédits.<br>
 Mettre `USE_DRESSING` à True pour activer cette application.<br>
 
@@ -1455,8 +1457,8 @@ Mettre `USE_DRESSING` à True pour activer cette application.<br>
 
 ### Configuration application enrichment
 
-### Configuration application d'import vidéo
-Application Import_video permettant d'importer des vidéos externes dans Pod.<br>
+### Configuration application d’import vidéo
+Application Import_video permettant d’importer des vidéos externes dans Pod.<br>
 Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
  - `MAX_UPLOAD_SIZE_ON_IMPORT`
@@ -1464,7 +1466,7 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
   > valeur par défaut : `4`
 
   >> Taille maximum en Go des fichiers vidéos qui peuvent être importés sur la plateforme  <br>
-  >> via l'application import_video (0 = pas de taille maximum). <br>
+  >> via l’application import_video (0 = pas de taille maximum). <br>
 
  - `RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY`
 
@@ -1476,7 +1478,7 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
   > valeur par défaut : `True`
 
-  >> Activation de l’application d'import des vidéos <br>
+  >> Activation de l’application d’import des vidéos <br>
 
  - `USE_IMPORT_VIDEO_BBB_RECORDER`
 
@@ -1490,8 +1492,8 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
   > valeur par défaut : `/home/pod/bbb-recorder/`
 
   >> Répertoire du plugin bbb-recorder (voir la documentation https://github.com/jibon57/bbb-recorder). <br>
-  >> bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d'encodage. <br>
-  >> bbb-recorder crée un répertoire Downloads, au même niveau, qui nécessite de l'espace disque. <br>
+  >> bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d’encodage. <br>
+  >> bbb-recorder crée un répertoire Downloads, au même niveau, qui nécessite de l’espace disque. <br>
 
  - `IMPORT_VIDEO_BBB_RECORDER_PATH`
 
@@ -1558,7 +1560,7 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
   > valeur par défaut : `10`
 
-  >> Nombre de tentatives maximum pour vérifier la présence / taille d'un fichier sur le filesystem <br>
+  >> Nombre de tentatives maximum pour vérifier la présence / taille d’un fichier sur le filesystem <br>
 
  - `EVENT_GROUP_ADMIN`
 
@@ -1622,7 +1624,7 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
   > valeur par défaut : `False`
 
 
-  >> Activer l'auto-transcription pour les directs <br>
+  >> Activer l’auto-transcription pour les directs <br>
 
  - `VIEW_EXPIRATION_DELAY`
 
@@ -1661,7 +1663,7 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
   > valeur par défaut : `False`
 
-  >> Affiche les vidéos de chaines non visibles sur la page d'accueil <br>
+  >> Affiche les vidéos de chaines non visibles sur la page d’accueil <br>
 
  - `USE_BBB`
 
@@ -1679,7 +1681,7 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 
   > valeur par défaut : `True`
 
-  >> Activation de l’application d'import des vidéos <br>
+  >> Activation de l’application d’import des vidéos <br>
 
  - `USE_MEETING`
 
@@ -1813,7 +1815,7 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
 
 
   >> Diaporama préchargé pour les réunions virtuelles. <br>
-  >> Un utilisateur peut remplacer cette valeur en choisissant un diaporama lors de la création d'une réunion virtuelle. <br>
+  >> Un utilisateur peut remplacer cette valeur en choisissant un diaporama lors de la création d’une réunion virtuelle. <br>
   >> Doit se trouver dans le répertoire statique. <br>
 
  - `MEETING_RECORD_FIELDS`
@@ -1853,6 +1855,52 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
 
   >> Seuls les utilisateurs "staff" pourront éditer les réunions <br>
 
+ - `USE_MEETING_WEBINAR`
+
+  > valeur par défaut : `False`
+
+  >> Activation du mode Webinaire pour le module des réunions <br>
+
+ - `MEETING_WEBINAR_SIPMEDIAGW_URL`
+
+  > valeur par défaut : ``
+
+  >> URL du serveur SIPMediaGW qui gère les webinaires (Ex: https://sipmediagw.univ.fr) <br>
+
+ - `MEETING_WEBINAR_SIPMEDIAGW_TOKEN`
+
+  > valeur par défaut : ``
+
+  >> Jeton bearer du serveur SIPMediaGW qui gère les webinaires <br>
+
+ - `MEETING_WEBINAR_FIELDS`
+
+  > valeur par défaut : `("is_webinar", "enable_chat")`
+
+  >> Permet de définir les champs complémentaires du formulaire de création d’un webinaire <br>
+  >> ces champs complémentaires sont affichés directement dans la page de formulaire d’un webinaire <br>
+  >>
+  >> ```
+  >> MEETING_WEBINAR_FIELDS: 
+  >> ( 
+  >>     "is_webinar", 
+  >>     "enable_chat", 
+  >> ) 
+  >>
+  >> ```
+
+ - `MEETING_WEBINAR_AFFILIATION`
+
+  > valeur par défaut : `['faculty', 'employee', 'staff']`
+
+  >> Groupes d’accès ou affiliations des personnes autorisées à créer un webinaire <br>
+
+ - `MEETING_WEBINAR_GROUP_ADMIN`
+
+  > valeur par défaut : `webinar admin`
+
+  >> Groupe des personnes autorisées à créer un webinaire <br>
+
  - `USE_MEETING`
 
   > valeur par défaut : `False`
@@ -1867,8 +1915,8 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
 
   > valeur par défaut : `0`
 
-  >> Compte à rebours utilisé entre chaque vidéo lors de la lecture d'une playlist en lecture automatique. <br>
-  >> Le compte à rebours n'est pas présent s'il est à 0. <br>
+  >> Compte à rebours utilisé entre chaque vidéo lors de la lecture d’une playlist en lecture automatique. <br>
+  >> Le compte à rebours n’est pas présent s’il est à 0. <br>
 
  - `DEFAULT_PLAYLIST_THUMBNAIL`
 
@@ -1877,17 +1925,29 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   >> Image par défaut affichée comme poster ou vignette, utilisée pour présenter la playlist. <br>
   >> Cette image doit se situer dans le répertoire `static`. <br>
 
+ - `RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY`
+
+  > valeur par défaut : `True`
+
+  >> Restreindre l’accès à la création de listes de lecture promues au staff uniquement. <br>
+
  - `USE_FAVORITES`
 
   > valeur par défaut : `True`
 
-  >> Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris. <br>
+  >> Activation des vidéos favorites. Permet aux utilisateurs d’ajouter des vidéos dans leurs favoris. <br>
 
  - `USE_PLAYLIST`
 
   > valeur par défaut : `True`
 
-  >> Activation des playlist. Permet aux utilisateurs d'ajouter des vidéos dans une playlist. <br>
+  >> Activation des playlist. Permet aux utilisateurs d’ajouter des vidéos dans une playlist. <br>
+
+ - `USE_PROMOTED_PLAYLIST`
+
+  > valeur par défaut : `True`
+
+  >> Activation des playlist promues. Permet aux utilisateurs d'utiliser les listes de lecture promues. <br>
 
 ### Configuration application podfile
 
@@ -2088,7 +2148,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   > valeur par défaut : `600`
 
 
-  >> Temps en seconde de conservation des données de l'application video <br>
+  >> Temps en seconde de conservation des données de l’application video <br>
 
  - `CHANNEL_FORM_FIELDS_HELP_TEXT`
 
@@ -2353,7 +2413,7 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   > valeur par défaut : `100`
 
 
-  >> nombre d'item renvoyé par le flux rss <br>
+  >> nombre d’item renvoyé par le flux rss <br>
 
  - `VIDEO_FORM_FIELDS`
 
@@ -2628,8 +2688,8 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
 ### Configuration application video encodage et transcription
 
 Application pour l’encodage et la transcription de vidéo.<br>
-Il est possible d'encoder en local ou en distant.<br>
-Attention, il faut configurer Celery pour l’envoi des instructions pour l'encodage distant.<br>
+Il est possible d’encoder en local ou en distant.<br>
+Attention, il faut configurer Celery pour l’envoi des instructions pour l’encodage distant.<br>
 
  - `CELERY_BROKER_URL`
 
@@ -2696,8 +2756,8 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l'enco
   > valeur par défaut : `False`
 
 
-  >> Il faut renseigner l'url du redis sur lequel Celery va chercher les ordres d'encodage et de transcription <br>
-  >> par exemple : "redis://redis:6379/7" <br>
+  >> Il faut renseigner l’url du redis sur lequel Celery va chercher les ordres d’encodage et de transcription <br>
+  >> par exemple : "redis://redis:6379/7" <br>
 
  - `FORMAT_CHOICES`
 
@@ -2722,21 +2782,21 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l'enco
   > valeur par défaut : `False`
 
 
-  >> Si True, active l'encodage et la transcription sur un environnement distant via redis+celery <br>
+  >> Si True, active l’encodage et la transcription sur un environnement distant via redis+celery <br>
 
  - `POD_API_URL`
 
   > valeur par défaut : ``
 
-  >> Adresse de l'API rest a appeler en fin d'encodage distant ou de transcription à distance. <br>
-  >> Exemple : https://pod.univ.fr/rest/ <br>
+  >> Adresse de l’API rest à appeler en fin d’encodage distant ou de transcription à distance. <br>
+  >> Exemple : https://pod.univ.fr/rest/ <br>
 
  - `POD_API_TOKEN`
 
   > valeur par défaut : ``
 
-  >> Token d'authentification utilisé pour l'appel en fin d'encodage distant ou de transcription à distance. <br>
-  >> Pour le créer, il faut aller dans la partie Admin > Jeton d'authentification > token. <br>
+  >> Token d’authentification utilisé pour l’appel en fin d’encodage distant ou de transcription à distance. <br>
+  >> Pour le créer, il faut aller dans la partie Admin > Jeton d’authentification > token. <br>
 
  - `VIDEO_RENDITIONS`
 
@@ -2814,14 +2874,14 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l'enco
   >> Pour utiliser la version 7 ou 8, faire une mise à jour du paquet elasticsearch-py  <br>
   >> Pour la 7, `pip3 install elasticsearch==7.17.7`, <br>
   >> et pour la 8, `pip3 install elasticsearch==8.8.1`. <br>
-  >> Voir [https://elasticsearch-py.readthedocs.io/]() pour plus d'information. <br>
+  >> Voir [https://elasticsearch-py.readthedocs.io/]() pour plus d’information. <br>
 
  - `ES_OPTIONS`
 
   > valeur par défaut : `{}`
 
   >> Options d’ElasticSearch, notamment utilisées pour ES8 en SSL et avec un user en paramètre <br>
-  >> Voir [https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/config.html]() pour plus d'informations. <br>
+  >> Voir [https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/config.html]() pour plus d’informations. <br>
 
 ### Configuration application xapi
 
@@ -2834,32 +2894,32 @@ Attention, il faut configurer Celery pour l’envoi des instructions.<br>
   > valeur par défaut : `False`
 
 
-  >> Activation de l'application xAPI <br>
+  >> Activation de l’application xAPI <br>
 
  - `XAPI_ANONYMIZE_ACTOR`
 
   > valeur par défaut : `True`
 
 
-  >> Si False, le nom de l'utilisateur sera stocké en clair dans les statements xAPI, si True, son nom d'utilisateur sera anonymisé <br>
+  >> Si False, le nom de l’utilisateur sera stocké en clair dans les statements xAPI, si True, son nom d’utilisateur sera anonymisé <br>
 
  - `XAPI_LRS_LOGIN`
 
   > valeur par défaut : ``
 
 
-  >> identifiant de connexion du LRS pour l'envoi des statements <br>
+  >> identifiant de connexion du LRS pour l’envoi des statements <br>
 
  - `XAPI_LRS_PWD`
 
   > valeur par défaut : ``
 
 
-  >> mot de passe de connexion du LRS pour l'envoi des statements <br>
+  >> mot de passe de connexion du LRS pour l’envoi des statements <br>
 
  - `XAPI_LRS_URL`
 
   > valeur par défaut : ``
 
 
-  >> URL de destination pour l'envoi des statements. I.E. : https://ralph.univ.fr/xAPI/statements <br>
+  >> URL de destination pour l’envoi des statements. I.E. : https://ralph.univ.fr/xAPI/statements <br>

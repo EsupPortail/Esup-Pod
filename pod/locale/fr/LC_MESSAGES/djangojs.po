@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-18 13:17+0000\n"
+"POT-Creation-Date: 2024-04-15 12:26+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 #: pod/quiz/static/quiz/js/create-quiz.js
@@ -493,6 +493,18 @@ msgstr "Information"
 #: pod/meeting/static/js/my_meetings.js
 msgid "Unable to find information about the meeting"
 msgstr "Impossible de trouver des informations sur la réunion"
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "Restart only the live"
+msgstr "Redémarrer seulement le direct"
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "End only the live"
+msgstr "Arrêter seulement le direct"
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "End the webinar (meeting and live)"
+msgstr "Terminer le webinaire (réunion et direct)"
 
 #: pod/meeting/static/js/my_meetings.js
 msgid "End the meeting"

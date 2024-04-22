@@ -73,26 +73,29 @@ __TITLE_SITE__ = (
     else "Pod"
 )
 
+USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", True)
 
-@login_required(redirect_field_name="referrer")
+
 def playlist_list(request):
     """Render playlists page."""
     visibility = request.GET.get("visibility", "all")
-    if visibility in ["private", "protected", "public"]:
+    if visibility in ["private", "protected", "public"] and request.user.is_authenticated:
         playlists = get_playlist_list_for_user(request.user).filter(visibility=visibility)
-    elif visibility == "additional":
+    elif visibility == "additional" and request.user.is_authenticated:
         playlists = get_playlists_for_additional_owner(request.user)
-    elif visibility == "allpublic":
+    elif visibility == "allpublic" and request.user.is_authenticated:
         playlists = get_public_playlist()
-    elif visibility == "allmy":
+    elif visibility == "allmy" and request.user.is_authenticated:
         playlists = get_playlist_list_for_user(request.user)
-    elif visibility == "all":
+    elif visibility == "all" and request.user.is_authenticated:
         playlists = (
             get_playlist_list_for_user(request.user)
             | get_public_playlist()
             | get_playlists_for_additional_owner(request.user)
         )
-    elif visibility == "promoted":
+    elif (
+        visibility == "promoted" and USE_PROMOTED_PLAYLIST
+    ) or not request.user.is_authenticated:
         playlists = get_promoted_playlist()
     else:
         return redirect(reverse("playlist:list"))
@@ -114,7 +117,6 @@ def playlist_list(request):
     )
 
 
-@login_required(redirect_field_name="referrer")
 def playlist_content(request, slug):
     """Render the videos list of a playlist."""
     sort_field = request.GET.get("sort", "rank")
@@ -141,11 +143,11 @@ def render_playlist_page(
     in_favorites_playlist,
     count_videos,
     sort_field,
-    sort_direction,
+    sort_direction=None,
     form=None,
 ):
     """Render playlist page with the videos list of this."""
-    page_title = _("Playlist") + " : " + get_playlist_name(playlist)
+    page_title = _("Playlist: %(name)s") % {"name": get_playlist_name(playlist)}
     types = request.GET.getlist("type")
     owners = request.GET.getlist("owner")
     disciplines = request.GET.getlist("discipline")
@@ -181,7 +183,6 @@ def render_playlist_page(
         "sort_direction": sort_direction,
         "form": form,
     }
-
     return render(request, "playlist/playlist.html", context)
 
 
@@ -228,7 +229,6 @@ def toggle_render_playlist_user_has_right(
         )
 
 
-@login_required(redirect_field_name="referrer")
 def render_playlist(
     request: dict, playlist: Playlist, sort_field: str, sort_direction: str
 ):
@@ -253,6 +253,34 @@ def render_playlist(
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)
 
+    if request.user.is_authenticated:
+        render_playlist__authenticated_user(
+            request, playlist, videos, count_videos, sort_field, sort_direction, full_path
+        )
+    return render_playlist_page(
+        request,
+        playlist,
+        videos,
+        False,
+        count_videos,
+        sort_field,
+        sort_direction,
+    )
+
+
+@login_required(redirect_field_name="referrer")
+def render_playlist__authenticated_user(
+    request: dict,
+    playlist: Playlist,
+    videos: list,
+    count_videos: int,
+    sort_field: str,
+    sort_direction: str,
+    full_path: str,
+):
+    """
+    Render playlist page with the videos list of this for authenticated user.
+    """
     playlist_url = reverse(
         "playlist:content",
         kwargs={
@@ -368,9 +396,9 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
     """Handle post request for add_or_edit function."""
     page_title = ""
     form = (
-        PlaylistForm(request.POST, instance=playlist)
+        PlaylistForm(request.POST, instance=playlist, user=request.user)
         if playlist
-        else PlaylistForm(request.POST)
+        else PlaylistForm(request.POST, user=request.user)
     )
     if playlist:
         page_title = _("Edit the playlist “%(pname)s”") % {"pname": playlist.name}
@@ -435,12 +463,12 @@ def handle_get_request_for_add_or_edit_function(request, slug: str) -> None:
             or request.user.is_staff
             or request.user in get_additional_owners(playlist)
         ) and playlist.editable:
-            form = PlaylistForm(instance=playlist)
+            form = PlaylistForm(instance=playlist, user=request.user)
             page_title = _("Edit the playlist") + f' "{playlist.name}"'
         else:
             return redirect(reverse("playlist:list"))
     else:
-        form = PlaylistForm()
+        form = PlaylistForm(user=request.user)
         page_title = _("Add a playlist")
     return render(
         request,

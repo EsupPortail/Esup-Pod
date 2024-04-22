@@ -1,5 +1,8 @@
+"""Esup-Pod main admin page."""
+
 from ckeditor.widgets import CKEditorWidget
 from django.contrib import admin
+from django import forms
 from django.contrib.flatpages.admin import FlatpageForm
 from django.contrib.flatpages.models import FlatPage
 from django.contrib.sites.models import Site
@@ -9,6 +12,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from modeltranslation.admin import TranslationAdmin
 from pod.main.models import LinkFooter, Configuration
 from pod.main.models import AdditionalChannelTab
+from pod.main.models import Block
 
 
 SITE_ID = getattr(settings, "SITE_ID", 1)
@@ -26,10 +30,9 @@ class PageForm(FlatpageForm):
         widgets = content_widget
 
 
-# CustomFlatPage admin panel
+class AdditionalChannelTabAdmin(TranslationAdmin):
+    """Create translation for additional Channel Tab Field."""
 
-
-class AdditionalChannelTabAdmin(admin.ModelAdmin):
     list_display = ("name",)
 
 
@@ -101,9 +104,47 @@ class LinkFooterAdmin(TranslationAdmin):
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """Exclude sites fields in admin for non-superuser."""
         if (db_field.name) == "page":
             kwargs["queryset"] = FlatPage.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+class BlockAdminForm(forms.ModelForm):
+    """The form for Block administration in the Django admin panel."""
+
+    class Meta:
+        """Metadata class defining the associated model and fields."""
+
+        model = Block
+        fields = "__all__"
+
+
+class BlockAdmin(TranslationAdmin):
+    """The admin configuration for the Block model in the Django admin panel."""
+
+    list_display = (
+        "title",
+        "page",
+        "type",
+        "data_type",
+    )
+
+    def get_form(self, request, obj=None, **kwargs):
+        """
+        Get the form to be used in the Django admin.
+
+        Args:
+            request: The Django request object.
+            obj: The Block object being edited, or None if creating a new one.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            Type[forms.ModelForm]: The form class to be used in the admin.
+        """
+        form = super().get_form(request, obj, **kwargs)
+
+        return form
 
 
 # Unregister the default FlatPage admin and register CustomFlatPageAdmin.
@@ -112,3 +153,4 @@ admin.site.register(FlatPage, CustomFlatPageAdmin)
 admin.site.register(LinkFooter, LinkFooterAdmin)
 admin.site.register(Configuration, ConfigurationAdmin)
 admin.site.register(AdditionalChannelTab, AdditionalChannelTabAdmin)
+admin.site.register(Block, BlockAdmin)

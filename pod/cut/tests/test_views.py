@@ -9,6 +9,8 @@ from pod.main.models import Configuration
 from datetime import time
 from django.contrib.messages import get_messages
 from django.utils.translation import ugettext_lazy as _
+from .. import views
+from importlib import reload
 
 
 class CutVideoViewsTestCase(TestCase):
@@ -58,13 +60,13 @@ class CutVideoViewsTestCase(TestCase):
         self.assertEqual(duration, 10)
         print(" --->  test_get_full_duration ok")
 
-    @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
+    @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True, USE_CUT=True)
     def test_restrict_edit_video_access_staff_only(self):
         """Test test_restrict_edit_video_access_staff_only."""
+        reload(views)
         self.client.force_login(self.user2)
         url = reverse("cut:video_cut", kwargs={"slug": self.video.slug})
         response = self.client.get(url)
-
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_cut.html")
         self.assertTrue(response.context["access_not_allowed"])

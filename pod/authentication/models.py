@@ -1,3 +1,5 @@
+"""Esup-Pod authentication models."""
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User, Permission, Group
@@ -66,7 +68,7 @@ FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 def get_name(self) -> str:
     """
-    Returns the user's full name, including the username if not hidden.
+    Return the user's full name, including the username if not hidden.
 
     Returns:
         str: The user's full name and username if not hidden.

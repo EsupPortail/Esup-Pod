@@ -5,11 +5,11 @@
 
 En tant que membres, contributeur·trice·s et dirigeant·e·s, nous nous
 engageons à faire de la participation à notre communauté
-une expérience sans harcèlement, quel que soit l'âge, 
+une expérience sans harcèlement, quel que soit l'âge,
 la taille corporelle, le handicap visible ou invisible, l'appartenance ethnique,
-les caractéristiques sexuelles, l'identité et l'expression de genre, 
-le niveau d'expérience, l'éducation, le statut socio-économique, 
-la nationalité, l'apparence personnelle, la race, la religion, 
+les caractéristiques sexuelles, l'identité et l'expression de genre,
+le niveau d'expérience, l'éducation, le statut socio-économique,
+la nationalité, l'apparence personnelle, la race, la religion,
 ou l'identité et l'orientation sexuelle.
 
 Nous nous engageons à agir et interagir de manière à contribuer à une communauté ouverte, accueillante, diversifiée, inclusive et saine.
@@ -56,7 +56,7 @@ communauté l'utilisation d'une adresse électronique officielle, la publication
 
 Les cas de comportements abusifs, harcelants ou tout autre comportement
 inacceptables peuvent être signalés aux dirigeant·e·s de la communauté responsables de l'application du code de conduite à
-[Esup-Pod](https://github.com/EsupPortail/Esup-Pod). 
+[Esup-Pod](https://github.com/EsupPortail/Esup-Pod).
 Toutes les plaintes seront examinées et feront l'objet d'une enquête rapide et équitable.
 
 Tou·te·s les dirigeant·e·s de la communauté sont tenu·e·s de respecter la vie privée et la sécurité des personnes ayant signalé un incident.
@@ -77,7 +77,7 @@ le comportement était inapproprié. Des excuses publiques peuvent être demand�
 **Impact communautaire** : un non-respect par un seul incident ou une série d'actions.
 
 **Conséquence** : un avertissement avec des conséquences dû à la poursuite du comportement.
-Aucune interaction avec les personnes concernées, y compris l'interaction non sollicitée avec celles et ceux qui sont chargé·e·s de l'application de ce code de conduite, pendant une période déterminée. 
+Aucune interaction avec les personnes concernées, y compris l'interaction non sollicitée avec celles et ceux qui sont chargé·e·s de l'application de ce code de conduite, pendant une période déterminée.
 Cela comprend le fait d'éviter les interactions dans les espaces communautaires ainsi que sur les canaux externes comme les médias sociaux.
 Le non-respect de ces conditions peut entraîner un bannissement temporaire ou permanent.
 
@@ -113,4 +113,3 @@ Les traductions sont disponibles sur [https://www.contributor-covenant.org/trans
 [Mozilla CoC]: https://github.com/mozilla/diversity
 [FAQ]: https://www.contributor-covenant.org/faq
 [translations]: https://www.contributor-covenant.org/translations
-

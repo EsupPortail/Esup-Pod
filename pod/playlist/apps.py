@@ -235,4 +235,4 @@ class PlaylistConfig(AppConfig):
         except Exception as e:
             print(e)
             pass
-        print("Remove previous table : favorite_favorite --> OK")
+        print("Remove previous table: favorite_favorite --> OK")

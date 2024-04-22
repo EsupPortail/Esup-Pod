@@ -1103,9 +1103,12 @@ body {
   color: var(--pod-btn-text);
 }
 
+/* Commented in 3.6.0
+[Todo] remove in 3.7.0
 .pod-aside-collapse[aria-expanded="true"] {
   transform: rotate(-90deg);
 }
+*/
 
 /*** footer **/
 .pod-footer {
@@ -1332,16 +1335,16 @@ body {
 
 /* small screens */
 .pod-grid-content {
-  display: grid;
-  grid-template-columns: minmax(0%, 100%) repeat(auto-fit, 100%);
   position: relative;
 }
 
 /* medium screens */
 @media (width >= 992px) {
   .pod-grid-content {
+    display: grid;
     gap: 2rem;
     grid-template-columns: minmax(0%, 100%) repeat(auto-fit, 33%);
+    grid-template-areas: "main sidebar";
   }
 }
 
@@ -1367,6 +1370,7 @@ body {
 }
 
 .pod-aside {
+  grid-area: sidebar;
   display: grid;
   gap: 1rem;
   grid-template-columns: 1fr;
@@ -1375,34 +1379,41 @@ body {
   grid-auto-rows: min-content;
   background: var(--pod-background-neutre2-bloc);
   padding: 1rem;
+
+  /*
+  Commented in 3.6.0
+  [Todo] remove in 3.7.0
   width: 0;
   overflow: hidden;
   margin-left: 100%;
   transition: all 0.15s ease;
+  */
   z-index: 5;
   padding-top: 5rem;
   box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgb(0 0 0 / 20%);
 }
 
+/*
+Commented in 3.6.0
+[Todo] remove in 3.7.0
+ */
 .pod-aside.show {
   margin-left: 0;
   width: auto;
 }
-
-@media (width >= 992px) {
-  .pod-show-lg {
-    margin-left: 0;
-    width: auto;
-  }
-}
-
-@media (max-width: 992px) {
+*/ @media (max-width: 992px) {
+  /*
   .pod-aside {
     /* THIS IS NORMAL, it's to fit with pod-aside-collapse */
+
+  /*
+    Commented in 3.6.0
+    [Todo] remove in 3.7.0
     width: 101% !important;
     min-height: 100%;
     position: absolute;
   }
+  */
 
   .pod-aside-collapse {
     position: fixed;
@@ -1420,9 +1431,13 @@ body {
   }
 }
 
+/*
+Commented in 3.6.0
+[Todo] remove in 3.7.0
 .pod-aside.collapsing {
   height: auto;
 }
+*/
 
 .pod-aside .card {
   background: none;
@@ -1529,13 +1544,18 @@ table .alert.alert-danger.btn.pod-btn-social {
   font-size: 11px;
 }
 
-/* Upload page */
+/** Upload page **/
 
 .form-group.hide-on-processing {
   border: dotted var(--pod-link-color);
   margin-bottom: 0.5rem;
   border-radius: 1rem;
   width: fit-content;
+}
+
+/* Drag over styles */
+.dragover .form-group.hide-on-processing {
+  border: solid var(--bs-form-valid-border-color);
 }
 
 /** Esup-Pod callout messages **/

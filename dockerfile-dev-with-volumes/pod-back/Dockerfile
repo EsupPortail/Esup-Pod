@@ -34,7 +34,7 @@ COPY --from=source-build-js /tmp/pod/node_modules/ /tmp/node_modules/
 RUN pip3 install --no-cache-dir -r requirements-conteneur.txt \
     && pip3 install elasticsearch==7.17.7
 
-# ENTRYPOINT :
+# ENTRYPOINT:
 COPY ./dockerfile-dev-with-volumes/pod-back/my-entrypoint-back.sh /tmp/my-entrypoint-back.sh
 RUN chmod 755 /tmp/my-entrypoint-back.sh
 

@@ -10,14 +10,14 @@ Contributors for the V3
 ----------------------------
 A list of much-appreciated contributors who have submitted patches and reported bugs for the V3:
 * Olivier Bado-Faustin, University Cote d'Azur (design and template)
-* Nicolas Lahoche, University of Lille (design and template) with all the PRI Team 
+* Nicolas Lahoche, University of Lille (design and template) with all the PRI Team
 * Nathaniel Burlot, University of Lille (member of PRI team for Logo and color of V3)
 * Céline Didier and Matthieu Bildstein, University of Lorraine (Live's Event App)
 * Farid Ait Karra, University of Lille (Docker part)
 * Maxime Taisne and Laurine Sajdak, University of Lille (Documentation and User part)
 * French Ministry of Education (who funded the development of some features)
 
-Partnership 
+Partnership
 ----------------------------
 * Elygames
 * OrionStudio

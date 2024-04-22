@@ -54,7 +54,7 @@
           </li>
         {% endif %}
 
-        {% if USE_PLAYLIST %}
+        {% if USE_PLAYLIST and USE_PROMOTED_PLAYLIST %}
           <li class="nav-item" id="nav-promoted-playlists">
             <a class="nav-link" href="{% url 'playlist:list' %}?visibility=promoted">
               <i class="bi bi-list-stars pod-nav-link-icon" aria-hidden="true"></i>&nbsp;{% trans 'Promoted playlists' %}

@@ -42,14 +42,20 @@
 {% endblock page_content %}
 
 {% block collapse_page_aside %}
-  {{ block.super }}
+  {% if request.user.is_authenticated %}
+    {{ block.super }}
+  {% endif %}
 {% endblock collapse_page_aside %}
 
 {% block page_aside %}
-  {% include 'playlist/filter_aside.html' %}
+  {% if request.user.is_authenticated %}
+    {% include 'playlist/filter_aside.html' %}
+  {% endif %}
 {% endblock page_aside %}
 
 {% block more_script %}
-  <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'playlist/js/filter-aside-playlist-list-refresh.js' %}?ver={{VERSION}}"></script>
+  {% if request.user.is_authenticated %}
+    <script src="{% static 'js/filter-aside-element-list-refresh.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'playlist/js/filter-aside-playlist-list-refresh.js' %}?ver={{VERSION}}"></script>
+  {% endif %}
 {% endblock more_script %}

@@ -39,7 +39,7 @@ COPY --from=source-build-js /tmp/pod/node_modules/ /tmp/node_modules/
 RUN pip3 install --no-cache-dir -r requirements-conteneur.txt \
     && pip3 install elasticsearch==8.9.0
 
-# ENTRYPOINT :
+# ENTRYPOINT:
 COPY ./dockerfile-dev-with-volumes/pod/my-entrypoint.sh /tmp/my-entrypoint.sh
 RUN chmod 755 /tmp/my-entrypoint.sh
 
