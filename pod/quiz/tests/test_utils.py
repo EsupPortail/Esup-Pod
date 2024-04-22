@@ -60,18 +60,25 @@ class QuizTestUtils(TestCase):
         self.assertEqual(len(questions_with_single_choice), 1)
 
         quiz_with_all_question_types = Quiz.objects.create(video=self.video3)
-        SingleChoiceQuestion.objects.create(
+        UCQ3 = SingleChoiceQuestion.objects.create(
             quiz=quiz_with_all_question_types, title="UCQ3"
         )
-        MultipleChoiceQuestion.objects.create(
+        MCQ2 = MultipleChoiceQuestion.objects.create(
             quiz=quiz_with_all_question_types, title="MCQ2"
         )
-        ShortAnswerQuestion.objects.create(
+        SAQ2 = ShortAnswerQuestion.objects.create(
             quiz=quiz_with_all_question_types, title="SAQ2"
         )
-        LongAnswerQuestion.objects.create(quiz=quiz_with_all_question_types, title="LAQ2")
+        LAQ2 = LongAnswerQuestion.objects.create(
+            quiz=quiz_with_all_question_types, title="LAQ2")
         questions_with_all_types = get_quiz_questions(quiz_with_all_question_types)
+
+        self.assertIsInstance(questions_with_all_types, list)
         self.assertEqual(len(questions_with_all_types), 4)
+        self.assertListEqual(
+            questions_with_all_types,
+            [UCQ3, MCQ2, SAQ2, LAQ2],
+        )
         print(" --->  test_get_quiz_questions ok")
 
     def test_get_video_quiz(self):
