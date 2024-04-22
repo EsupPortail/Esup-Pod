@@ -51,10 +51,6 @@ class Quiz(models.Model):
         """String representation of the quiz."""
         return _("Quiz of video") + " " + str(self.video)
 
-    def clean(self):
-        """Clean method for Quiz model."""
-        super().clean()
-
     def get_questions(self):
         """
         Retrieve questions associated with the quiz.
