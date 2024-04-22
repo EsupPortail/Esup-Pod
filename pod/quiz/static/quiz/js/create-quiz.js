@@ -220,11 +220,10 @@ document.addEventListener("DOMContentLoaded", function () {
       choiceDiv.classList.add("form-check", "d-flex", "align-items-center");
 
       const input = document.createElement("input");
-      const inputId = `choice-${questionForm.getAttribute("data-question-index")}-${index}`
       input.type = "radio";
       input.classList.add("form-check-input");
-      input.name = inputId;
-      input.id = inputId;
+      input.name = `choice-${questionForm.getAttribute("data-question-index")}`;
+      input.id = `choice-${questionForm.getAttribute("data-question-index")}-${index}`;
 
       const deleteButton = document.createElement("a");
       deleteButton.setAttribute('title', gettext("Remove choice") + ` ${index}`)
@@ -241,9 +240,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       const textInput = document.createElement("input");
-      const textInputId = `choice-text-${questionForm.getAttribute("data-question-index")}-${index}`;
-      textInput.id = textInputId;
-      textInput.name = textInputId;
+      textInput.id = `choice-text-${questionForm.getAttribute("data-question-index")}-${index}`;
+      textInput.name = `choice-text-${questionForm.getAttribute("data-question-index")}`;
       textInput.type = "text";
       textInput.placeholder = gettext("Choice") + ` ${index}`;
       textInput.classList.add("form-control", "ms-2");
@@ -319,11 +317,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
       const input = document.createElement("input");
-      const inputId = `choice-${questionForm.getAttribute("data-question-index")}-${index}`;
       input.type = "checkbox";
       input.classList.add("form-check-input");
-      input.name = inputId;
-      input.id = inputId;
+      input.name = `choice-${questionForm.getAttribute("data-question-index")}`;
+      input.id = `choice-${questionForm.getAttribute("data-question-index")}-${index}`;
 
       const deleteButton = document.createElement("a");
       deleteButton.setAttribute('title', gettext("Remove choice") + ` ${index}`)
@@ -340,10 +337,9 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       const textInput = document.createElement("input");
-      const textInputId = `choice-text-${questionForm.getAttribute("data-question-index")}-${index}`;
       textInput.type = "text";
-      textInput.id = textInputId;
-      textInput.name = textInputId;
+      textInput.id = `choice-text-${questionForm.getAttribute("data-question-index")}-${index}`;
+      textInput.name = `choice-text-${questionForm.getAttribute("data-question-index")}`;
       textInput.placeholder = gettext("Choice") + ` ${index}`;
       textInput.classList.add("form-control", "ms-2");
       if (choice) {
@@ -355,12 +351,12 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const inputLabel = document.createElement("label");
-      inputLabel.setAttribute("for", inputId);
+      inputLabel.setAttribute("for", input.id);
       inputLabel.textContent = gettext("Choice");
       inputLabel.classList.add("d-none");
 
       const textInputLabel = document.createElement("label");
-      textInputLabel.setAttribute("for", textInputId);
+      textInputLabel.setAttribute("for", textInput.id);
       textInputLabel.textContent = textInput.placeholder;
       textInputLabel.classList.add("d-none");
 

@@ -1,5 +1,6 @@
 """Esup-Pod quiz views."""
 
+import ast
 import json
 from typing import Optional
 from django.forms import formset_factory
@@ -265,19 +266,16 @@ def calculate_score(question: Question, form) -> float:
     """
     user_answer = None
     correct_answer = None
-
     if question.get_type() == "single_choice":
         user_answer = form.cleaned_data.get("selected_choice")
         correct_answer = question.get_answer()
 
     elif question.get_type() == "multiple_choice":
         user_answer = form.cleaned_data.get("selected_choice")
-        print(user_answer)
-        user_answer = json.loads(user_answer)
-        print(user_answer)
-
         correct_answer = question.get_answer()
-        print(type(user_answer))
+        user_answer = ast.literal_eval(
+            user_answer
+        )  # Cannot use JSON.loads in case of quotes in a user answer.
         intersection = set(user_answer) & set(correct_answer)
         score = len(intersection) / len(correct_answer)
         return score

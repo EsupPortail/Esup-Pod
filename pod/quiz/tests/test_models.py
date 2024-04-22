@@ -31,7 +31,7 @@ class QuizModelTests(TestCase):
         question1 = SingleChoiceQuestion.objects.create(quiz=self.quiz, title="UCQ1")
         question2 = MultipleChoiceQuestion.objects.create(quiz=self.quiz, title="MCQ1")
 
-        with patch.object(Quiz, 'get_questions') as mock_get_questions:
+        with patch.object(Quiz, "get_questions") as mock_get_questions:
             mock_get_questions.return_value = [question1, question2]
 
             questions = self.quiz.get_questions()

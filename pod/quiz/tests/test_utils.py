@@ -61,11 +61,14 @@ class QuizTestUtils(TestCase):
 
         quiz_with_all_question_types = Quiz.objects.create(video=self.video3)
         SingleChoiceQuestion.objects.create(
-            quiz=quiz_with_all_question_types, title="UCQ3")
+            quiz=quiz_with_all_question_types, title="UCQ3"
+        )
         MultipleChoiceQuestion.objects.create(
-            quiz=quiz_with_all_question_types, title="MCQ2")
+            quiz=quiz_with_all_question_types, title="MCQ2"
+        )
         ShortAnswerQuestion.objects.create(
-            quiz=quiz_with_all_question_types, title="SAQ2")
+            quiz=quiz_with_all_question_types, title="SAQ2"
+        )
         LongAnswerQuestion.objects.create(quiz=quiz_with_all_question_types, title="LAQ2")
         questions_with_all_types = get_quiz_questions(quiz_with_all_question_types)
         self.assertEqual(len(questions_with_all_types), 4)

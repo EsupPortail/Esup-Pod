@@ -274,16 +274,16 @@ class MultipleChoiceQuestion(Question):
 
         if isinstance(self.choices, str):
             try:
-                self.choices = loads(self.choices)
+                choices = loads(self.choices)
             except JSONDecodeError:
                 return
 
         # Check if there are at least 2 choices
-        if len(self.choices) < 2:
+        if len(choices) < 2:
             raise ValidationError(_("There must be at least 2 choices."))
 
         # Check if there is at least one correct answer
-        if not any(self.choices.values()):
+        if not any(choices.values()):
             raise ValidationError(_("There must be at least one correct answer."))
 
     def __str__(self):

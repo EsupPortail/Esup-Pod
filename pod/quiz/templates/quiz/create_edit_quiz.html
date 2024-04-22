@@ -54,7 +54,7 @@
     {% endfor %}
 
     {{ question_formset.management_form }}
-    <div id="question-form-list mt-2">
+    <div id="question-form-list" class="mt-2">
       {% for question_form in question_formset %}
         {% with form_index=forloop.counter0 %}
           {% include "quiz/question_form.html" with form=question_form form_index=form_index %}
