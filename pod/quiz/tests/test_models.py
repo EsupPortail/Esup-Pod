@@ -1,13 +1,24 @@
 """Unit tests for Esup-Pod quiz models."""
 
-from json import JSONDecodeError
 from unittest.mock import patch
 from django.contrib.auth.models import User
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
 from django.test import TestCase
-from pod.quiz.forms import LongAnswerQuestionForm, MultipleChoiceQuestionForm, ShortAnswerQuestionForm, SingleChoiceQuestionForm
-from pod.quiz.models import LongAnswerQuestion, MultipleChoiceQuestion, Question, Quiz, ShortAnswerQuestion, SingleChoiceQuestion
+from pod.quiz.forms import (
+    LongAnswerQuestionForm,
+    MultipleChoiceQuestionForm,
+    ShortAnswerQuestionForm,
+    SingleChoiceQuestionForm,
+)
+from pod.quiz.models import (
+    LongAnswerQuestion,
+    MultipleChoiceQuestion,
+    Question,
+    Quiz,
+    ShortAnswerQuestion,
+    SingleChoiceQuestion,
+)
 
 from pod.video.models import Type, Video
 
@@ -76,8 +87,10 @@ class QuestionModelTests(TestCase):
 
     def test_get_question_form(self):
         """Test if test_get_question_form works correctly."""
-        self.assertEqual(Question.get_question_form(self),
-                         "This method must be redefined in child class.")
+        self.assertEqual(
+            Question.get_question_form(self),
+            "This method must be redefined in child class.",
+        )
         print(" --->  test_get_question_form ok")
 
     def test_get_type(self):
@@ -88,14 +101,23 @@ class QuestionModelTests(TestCase):
     def test_clean(self):
         """Test if test_clean works correctly."""
         question_start_timestamp_more_than_end_timestamp = SingleChoiceQuestion(
-            quiz=self.quiz, title="question_start_timestamp_more_than_end_timestamp", start_timestamp=2, end_timestamp=1)
+            quiz=self.quiz,
+            title="question_start_timestamp_more_than_end_timestamp",
+            start_timestamp=2,
+            end_timestamp=1,
+        )
         self.assertRaises(
-            ValidationError, question_start_timestamp_more_than_end_timestamp.clean)
+            ValidationError, question_start_timestamp_more_than_end_timestamp.clean
+        )
 
         question_end_timestamp_withou_start_timestamp = SingleChoiceQuestion(
-            quiz=self.quiz, title="question_end_timestamp_withou_start_timestamp", end_timestamp=1)
+            quiz=self.quiz,
+            title="question_end_timestamp_withou_start_timestamp",
+            end_timestamp=1,
+        )
         self.assertRaises(
-            ValidationError, question_end_timestamp_withou_start_timestamp.clean)
+            ValidationError, question_end_timestamp_withou_start_timestamp.clean
+        )
         print(" --->  test_clean ok")
 
 
@@ -117,24 +139,31 @@ class SingleChoiceQuestionModelTests(TestCase):
         self.quiz = Quiz.objects.create(video=self.video)
 
         self.normal_question = SingleChoiceQuestion(
-            quiz=self.quiz, title="UCQ1", choices='{"choice 1": true, "choice 2": false}')
+            quiz=self.quiz, title="UCQ1", choices='{"choice 1": true, "choice 2": false}'
+        )
 
     def test_clean(self):
         """Test if test_clean works correctly."""
         question_with_one_choice = SingleChoiceQuestion(
-            quiz=self.quiz, title="question_with_one_choice", choices='{"choice 1": true}')
-        self.assertRaises(
-            ValidationError, question_with_one_choice.clean)
+            quiz=self.quiz, title="question_with_one_choice", choices='{"choice 1": true}'
+        )
+        self.assertRaises(ValidationError, question_with_one_choice.clean)
 
         question_with_no_correct_choice = SingleChoiceQuestion(
-            quiz=self.quiz, title="question_with_no_choice", choices='{"choice 1": false, "choice 2": false}')
-        self.assertRaises(
-            ValidationError, question_with_no_correct_choice.clean)
+            quiz=self.quiz,
+            title="question_with_no_choice",
+            choices='{"choice 1": false, "choice 2": false}',
+        )
+        self.assertRaises(ValidationError, question_with_no_correct_choice.clean)
 
         question_with_more_than_one_correct_choice = SingleChoiceQuestion(
-            quiz=self.quiz, title="question_with_more_than_one_correct_choice", choices='{"choice 1": true, "choice 2": true}')
+            quiz=self.quiz,
+            title="question_with_more_than_one_correct_choice",
+            choices='{"choice 1": true, "choice 2": true}',
+        )
         self.assertRaises(
-            ValidationError, question_with_more_than_one_correct_choice.clean)
+            ValidationError, question_with_more_than_one_correct_choice.clean
+        )
 
         print(" --->  test_clean ok")
 
@@ -161,8 +190,10 @@ class SingleChoiceQuestionModelTests(TestCase):
         )
         actual_form = self.normal_question.get_question_form()
 
-        self.assertEqual(expected_form.fields['selected_choice'].widget.choices,
-                         actual_form.fields['selected_choice'].widget.choices)
+        self.assertEqual(
+            expected_form.fields["selected_choice"].widget.choices,
+            actual_form.fields["selected_choice"].widget.choices,
+        )
         self.assertEqual(expected_form.prefix, actual_form.prefix)
 
         print(" --->  test_get_question_form ok")
@@ -186,19 +217,24 @@ class MultipleChoiceQuestionModelTests(TestCase):
         self.quiz = Quiz.objects.create(video=self.video)
 
         self.normal_question = MultipleChoiceQuestion(
-            quiz=self.quiz, title="MCQ1", choices='{"choice 1": true, "choice 2": false, "choice 3": true}')
+            quiz=self.quiz,
+            title="MCQ1",
+            choices='{"choice 1": true, "choice 2": false, "choice 3": true}',
+        )
 
     def test_clean(self):
         """Test if test_clean works correctly."""
         question_with_one_choice = MultipleChoiceQuestion(
-            quiz=self.quiz, title="question_with_one_choice", choices='{"choice 1": true}')
-        self.assertRaises(
-            ValidationError, question_with_one_choice.clean)
+            quiz=self.quiz, title="question_with_one_choice", choices='{"choice 1": true}'
+        )
+        self.assertRaises(ValidationError, question_with_one_choice.clean)
 
         question_with_no_correct_choice = MultipleChoiceQuestion(
-            quiz=self.quiz, title="question_with_no_choice", choices='{"choice 1": false, "choice 2": false}')
-        self.assertRaises(
-            ValidationError, question_with_no_correct_choice.clean)
+            quiz=self.quiz,
+            title="question_with_no_choice",
+            choices='{"choice 1": false, "choice 2": false}',
+        )
+        self.assertRaises(ValidationError, question_with_no_correct_choice.clean)
 
         print(" --->  test_clean ok")
 
@@ -226,8 +262,10 @@ class MultipleChoiceQuestionModelTests(TestCase):
 
         actual_form = self.normal_question.get_question_form()
 
-        self.assertEqual(expected_form.fields['selected_choice'].widget.choices,
-                         actual_form.fields['selected_choice'].widget.choices)
+        self.assertEqual(
+            expected_form.fields["selected_choice"].widget.choices,
+            actual_form.fields["selected_choice"].widget.choices,
+        )
         self.assertEqual(expected_form.prefix, actual_form.prefix)
 
         print(" --->  test_get_question_form ok")
@@ -251,7 +289,8 @@ class ShortAnwerQuestionTest(TestCase):
         self.quiz = Quiz.objects.create(video=self.video)
 
         self.normal_question = ShortAnswerQuestion(
-            quiz=self.quiz, title="SAQ1", answer="answer")
+            quiz=self.quiz, title="SAQ1", answer="answer"
+        )
 
     def test_string_representation(self):
         """Test if test_string_representation works correctly."""
@@ -277,8 +316,10 @@ class ShortAnwerQuestionTest(TestCase):
 
         actual_form = self.normal_question.get_question_form()
 
-        self.assertEqual(expected_form.fields['user_answer'].widget.attrs,
-                         actual_form.fields['user_answer'].widget.attrs)
+        self.assertEqual(
+            expected_form.fields["user_answer"].widget.attrs,
+            actual_form.fields["user_answer"].widget.attrs,
+        )
         self.assertEqual(expected_form.prefix, actual_form.prefix)
 
         print(" --->  test_get_question_form ok")
@@ -302,7 +343,8 @@ class LongAnswerQuestionTest(TestCase):
         self.quiz = Quiz.objects.create(video=self.video)
 
         self.normal_question = LongAnswerQuestion(
-            quiz=self.quiz, title="LAQ1", answer="long answer")
+            quiz=self.quiz, title="LAQ1", answer="long answer"
+        )
 
     def test_string_representation(self):
         """Test if test_string_representation works correctly."""
@@ -327,8 +369,10 @@ class LongAnswerQuestionTest(TestCase):
         )
         actual_form = self.normal_question.get_question_form()
 
-        self.assertEqual(expected_form.fields['user_answer'].widget.attrs,
-                         actual_form.fields['user_answer'].widget.attrs)
+        self.assertEqual(
+            expected_form.fields["user_answer"].widget.attrs,
+            actual_form.fields["user_answer"].widget.attrs,
+        )
         self.assertEqual(expected_form.prefix, actual_form.prefix)
 
         print(" --->  test_get_question_form ok")

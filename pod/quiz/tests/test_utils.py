@@ -70,7 +70,8 @@ class QuizTestUtils(TestCase):
             quiz=quiz_with_all_question_types, title="SAQ2"
         )
         LAQ2 = LongAnswerQuestion.objects.create(
-            quiz=quiz_with_all_question_types, title="LAQ2")
+            quiz=quiz_with_all_question_types, title="LAQ2"
+        )
         questions_with_all_types = get_quiz_questions(quiz_with_all_question_types)
 
         self.assertIsInstance(questions_with_all_types, list)
