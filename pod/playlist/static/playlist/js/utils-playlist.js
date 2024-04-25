@@ -18,7 +18,6 @@ function preventRefreshButton(button, jsonFormat) {
   if (button) {
     button.addEventListener('click', function (e) {
       e.preventDefault();
-      console.log("oui");
       let url = this.getAttribute('href');
       if (button.classList.contains('action-btn')) {
         button.classList.add('disabled');

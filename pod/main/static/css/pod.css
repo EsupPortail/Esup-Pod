@@ -211,6 +211,10 @@ a:not(.btn, .dropdown-item):focus {
   margin-bottom: 1.5rem;
 }
 
+.pod-share-draft-icon {
+  font-size: 1.5rem;
+}
+
 :not(footer) > .pod-btn-social {
   font-size: 2rem;
 }
@@ -1079,7 +1083,7 @@ body {
 
 .pod-aside-collapse {
   position: absolute;
-  right: 0.5rem;
+  right: 0.75rem;
   z-index: 6;
 }
 
@@ -1396,12 +1400,13 @@ body {
 /*
 Commented in 3.6.0
 [Todo] remove in 3.7.0
- */
 .pod-aside.show {
   margin-left: 0;
   width: auto;
 }
-*/ @media (max-width: 992px) {
+*/
+
+@media (max-width: 992px) {
   /*
   .pod-aside {
     /* THIS IS NORMAL, it's to fit with pod-aside-collapse */
