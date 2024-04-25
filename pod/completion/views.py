@@ -227,6 +227,7 @@ def video_completion(request, slug):
 def video_completion_contributor(request, slug):
     """View to manage contributors of a video."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
+    page_title = _("Video additions")
     if request.user != video.owner and not (
         request.user.is_superuser
         or request.user.has_perm("completion.add_contributor")
@@ -256,12 +257,12 @@ def video_completion_contributor(request, slug):
             request,
             "video_completion.html",
             {
+                "page_title": page_title,
                 "video": video,
                 "list_contributor": list_contributor,
                 "list_track": list_track,
                 "list_document": list_document,
                 "list_overlay": list_overlay,
-                "page_title": _("Video additions"),
             },
         )
     else:
@@ -269,9 +270,9 @@ def video_completion_contributor(request, slug):
             request,
             "video_completion.html",
             {
+                "page_title": page_title,
                 "video": video,
                 "list_contributor": list_contributor,
-                "page_title": _("Video additions"),
             },
         )
 
@@ -280,6 +281,7 @@ def video_completion_contributor_new(request, video):
     """View to add new contributor to a video."""
     form_contributor = ContributorForm(initial={"video": video})
     context = get_video_completion_context(video, form_contributor=form_contributor)
+    context["page_title"] = _("Add a new contributor")
     if request.is_ajax():
         return render(
             request,
@@ -319,6 +321,10 @@ def video_completion_contributor_save(request, video):
             context = get_video_completion_context(
                 video, list_contributor=list_contributor
             )
+            context["page_title"] = _("Video additions")
+            messages.add_message(
+                request, messages.SUCCESS, _("The contributor has been saved.")
+            )
             return render(
                 request,
                 "video_completion.html",
@@ -348,6 +354,7 @@ def video_completion_contributor_modify(request, video):
     """View to modify a video contributor."""
     contributor = get_object_or_404(Contributor, id=request.POST["id"])
     form_contributor = ContributorForm(instance=contributor)
+    page_title = _("Edit the contributor “%s”") % contributor.name
     if request.is_ajax():
         return render(
             request,
@@ -355,6 +362,7 @@ def video_completion_contributor_modify(request, video):
             {"form_contributor": form_contributor, "video": video},
         )
     context = get_video_completion_context(video, form_contributor=form_contributor)
+    context["page_title"] = page_title
     return render(
         request,
         "video_completion.html",
