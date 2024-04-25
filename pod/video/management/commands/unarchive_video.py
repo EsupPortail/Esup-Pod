@@ -1,6 +1,6 @@
-"""Unarchive a video.
+"""Esup-Pod command to unarchive a video.
 
-*  run with 'python manage.py unarchive_video vid_id [user_id]'
+*  run with 'python manage.py unarchive_video vid_id [--user_id=userid]'
 """
 
 from django.core.management.base import BaseCommand
