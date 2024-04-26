@@ -294,9 +294,9 @@
                       <input type="submit" class="btn btn-link btn-sm" value="{{doc.document.name}} ({{doc.document.file_type}} - {{ doc.document.file.size|filesizeformat }})">
                       {% if request.user.is_superuser %}
                         {% if doc.private %}
-                          <i class="bi bi-eye-slash" aria-hidden="true"></i>
+                          <i class="bi bi-eye-slash" title="{% trans "Private document" %}"></i>
                         {% else %}
-                          <i class="bi bi-eye" aria-hidden="true"></i>
+                          <i class="bi bi-eye" title="{% trans "Public document" %}"></i>
                         {% endif %}
                       {% endif %}
                     </form>
@@ -333,19 +333,16 @@
                     <li class="list-inline-item">
                       <a target="_blank" href="https://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} Facebook" data-bs-toggle="tooltip" data-bs-placement="bottom">
                         <i class="bi bi-facebook" aria-hidden="true"></i>
-                        <span class="visually-hidden">{% trans 'Share on Facebook' %}</span>
                       </a>
                     </li>
                     <li class="list-inline-item">
                       <a target="_blank" href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} X (Twitter)" data-bs-toggle="tooltip" data-bs-placement="bottom">
                         <i class="bi bi-twitter-x" aria-hidden="true"></i>
-                        <span class="visually-hidden">{% trans 'Share on X (Twitter)' %}</span>
                       </a>
                     </li>
                     <li class="list-inline-item">
                       <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn pod-btn pod-btn-social  m-1" title="{% trans 'Share on' %} LinkedIn" data-bs-toggle="tooltip" data-bs-placement="bottom">
                         <i class="bi bi-linkedin" aria-hidden="true"></i>
-                        <span class="visually-hidden">{% trans 'Share on LinkedIn' %}</span>
                       </a>
                     </li>
                   </ul>
