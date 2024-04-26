@@ -792,10 +792,10 @@ var send_form_data = async function (
     typeof callbackSuccess === "function"
       ? callbackSuccess
       : function ($data) {
-        return $data;
-      };
+          return $data;
+        };
   callbackFail =
-    typeof callbackFail === "function" ? callbackFail : function ($xhr) { };
+    typeof callbackFail === "function" ? callbackFail : function ($xhr) {};
 
   // console.log("send_form_data. fct=" + fct);
   method = method || "post";
@@ -841,10 +841,10 @@ var send_form_data = async function (
   } catch (error) {
     showalert(
       gettext("Error during exchange") +
-      "(" +
-      error +
-      ")<br>" +
-      gettext("No data could be stored."),
+        "(" +
+        error +
+        ")<br>" +
+        gettext("No data could be stored."),
       "alert-danger",
     );
 
@@ -874,10 +874,10 @@ var send_form_data_vanilla = function (
     typeof callbackSuccess === "function"
       ? callbackSuccess
       : function (data) {
-        return data;
-      };
+          return data;
+        };
   callbackFail =
-    typeof callbackFail === "function" ? callbackFail : function (err) { };
+    typeof callbackFail === "function" ? callbackFail : function (err) {};
   if (data_form) {
     data_form = new FormData(data_form);
   }
@@ -903,10 +903,10 @@ var send_form_data_vanilla = function (
     .catch(function (err) {
       showalert(
         gettext("Error during exchange") +
-        " (" +
-        err +
-        ")<br>" +
-        gettext("No data could be stored."),
+          " (" +
+          err +
+          ")<br>" +
+          gettext("No data could be stored."),
         "alert-danger",
       );
       callbackFail(err);
@@ -1029,8 +1029,8 @@ var show_picture_form = function (data) {
       .insertAdjacentHTML(
         "beforeend",
         '<img src="' +
-        htmlData.querySelector("#userpictureurl").value +
-        '" class="userpicture rounded" alt="avatar" loading="lazy">',
+          htmlData.querySelector("#userpictureurl").value +
+          '" class="userpicture rounded" alt="avatar" loading="lazy">',
       );
     //$(".get_form_userpicture").html($(".get_form_userpicture").children());
     document.querySelector(".get_form_userpicture").innerHTML =
@@ -1273,9 +1273,9 @@ var videocheck = function (form, event) {
         window.scrollTo(document.getElementById("video_form").scrollTop(), 0);
         showalert(
           gettext("The file size exceeds the maximum allowed value:") +
-          " " +
-          VIDEO_MAX_UPLOAD_SIZE +
-          gettext(" GB."),
+            " " +
+            VIDEO_MAX_UPLOAD_SIZE +
+            gettext(" GB."),
           "alert-danger",
         );
         event.preventDefault();
@@ -1296,9 +1296,9 @@ var videocheck = function (form, event) {
       window.scrollTo(document.getElementById("video_form").scrollTop(), 0);
       showalert(
         gettext("The file extension not in the allowed extension:") +
-        " " +
-        listext +
-        ".",
+          " " +
+          listext +
+          ".",
         "alert-danger",
       );
       event.preventDefault();

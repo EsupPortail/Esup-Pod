@@ -20,6 +20,9 @@
 
 var bulkUpdateActionSelect = document.getElementById("bulkUpdateActionSelect");
 var applyBulkUpdateBtn = document.getElementById("applyBulkUpdateBtn");
+var resetDashboardElementsBtn = document.getElementById(
+  "reset-dashboard-elements-btn",
+);
 var modalLoader = document.getElementById("bulkUpdateLoader");
 var modal = document.getElementById("modalBulkUpdate");
 var confirmModalBtn = document.getElementById("confirmModalBtn");
@@ -35,6 +38,7 @@ bulkUpdateActionSelect.addEventListener("change", function () {
   dashboardAction = bulkUpdateActionSelect.value;
   appendDynamicForm(dashboardAction);
   replaceSelectedCountVideos();
+  manageDisableBtn(resetDashboardElementsBtn, dashboardAction != "");
 });
 
 /**
@@ -72,6 +76,16 @@ confirmModalBtn.addEventListener("click", (e) => {
     manageDisableBtn(confirmModalBtn, true);
   });
 });
+
+/**
+ * Reset action and value of dashboard form elements when reset button is clicked.
+ */
+function dashboardActionReset() {
+  dashboardAction = "";
+  dashboardValue = "";
+  bulkUpdateActionSelect.value = "";
+  bulkUpdateActionSelect.dispatchEvent(new Event("change"));
+}
 
 /**
  * Perform asynchronously bulk update on selected videos

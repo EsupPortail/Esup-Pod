@@ -79,7 +79,7 @@ def cut_video(request, slug):  # noqa: C901
 
             start_encode(video.id)
 
-            messages.add_message(request, messages.INFO, _("The cut was made."))
+            messages.add_message(request, messages.SUCCESS, _("The cut was made."))
             return redirect(reverse("video:dashboard"))
 
         else:

@@ -218,11 +218,13 @@
       {% if video.discipline.all %}
         <li class="col-6 col-md-4">
           <span class="pod-meta-title">{% trans 'Discipline(s):' %}</span>
-          <ul>
-            {% for disc in video.discipline.all %}
-              <li><a href="{% url 'videos:videos' %}?discipline={{ disc.slug }}" {% if request.GET.is_iframe %}target="_blank" {% endif %} title="{% blocktrans with discipline_title=disc.title %}Show video list of discipline “{{ discipline_title }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="right">{{ disc.title }}</a></li>
-            {% endfor %}
-          </ul>
+          <div>
+            <ul>
+              {% for disc in video.discipline.all %}
+                <li><a href="{% url 'videos:videos' %}?discipline={{ disc.slug }}" {% if request.GET.is_iframe %}target="_blank" {% endif %} title="{% blocktrans with discipline_title=disc.title %}Show video list of discipline “{{ discipline_title }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="right">{{ disc.title }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
         </li>
       {% endif %}
 

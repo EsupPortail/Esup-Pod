@@ -343,7 +343,6 @@ a:not(.btn, .dropdown-item):focus {
 
 /** modal **/
 .modal-title svg {
-  /* color:var(--pod-primary); */
   height: 40px;
   width: 40px;
 }
@@ -730,10 +729,15 @@ div.card a img {
   transition: all 0.3s;
 }
 
+.dashboard-container .infinite-item:not(.selected),
+.dashboard-container .infinite-item .checked_overlay .card_selected {
+  transition: transform 0.2s ease-in-out;
+}
+
 .dashboard-container .infinite-item:not(.selected):hover,
 .dashboard-container .infinite-item .checked_overlay:hover .card_selected {
   transform: scale(1.03);
-  transition: transform 0.25s ease;
+  transition: transform 0.2s ease-in-out;
   z-index: 6;
 }
 
@@ -912,10 +916,6 @@ span[data-bs-placement] {
     flex-direction: column;
   }
 }
-
-/*
-@media screen and (min-width:768px) {  }
-*/
 
 @media screen and (min-width: 992px) {
   .card-img-top {
@@ -1136,10 +1136,6 @@ body {
 
 .pod-footer__credits {
   font-size: 85%;
-
-  /*
-  opacity: .8;
-  */
 }
 
 .pod-footer__links {
@@ -1650,7 +1646,6 @@ a.player-element.disabled {
 }
 
 .podfile-icon-selector {
-  /* display: inline-block; */
   width: 1.6em;
   padding: 1.7em 1em 0;
   margin-top: 0.1em;
