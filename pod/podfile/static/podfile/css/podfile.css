@@ -152,7 +152,7 @@ button.close {
   border-bottom: none;
 }
 
-#shareModalCenter #shared-people.list-group .list-group-item .username {
+#shareModalCenter #shared-people.list-group .list-group-item .username, #user-search .list-group-item .empty-user-text {
   color: var(--bs-gray-dark);
   font-weight: 700;
 }
