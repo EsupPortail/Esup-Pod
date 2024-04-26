@@ -1085,21 +1085,20 @@ body {
   position: absolute;
   right: 0.75rem;
   z-index: 6;
+  margin: 0.5rem;
 }
 
 .pod-aside-collapse__button {
-  border-radius: 50%;
+  border-radius: var(--bs-btn-border-radius);
   width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.4rem;
-  transition: all 0.5s ease-in;
   background: none;
   border: 1px solid silver;
   color: var(--pod-font-color);
-  text-shadow: 1px 1px 0 var(--pod-background);
 }
 
 .pod-aside-collapse__button:hover {
@@ -1379,7 +1378,7 @@ body {
   grid-auto-rows: min-content;
   background: var(--pod-background-neutre2-bloc);
   padding: 1rem;
-
+  border-radius: var(--bs-border-radius-sm);
   /*
   Commented in 3.6.0
   [Todo] remove in 3.7.0
