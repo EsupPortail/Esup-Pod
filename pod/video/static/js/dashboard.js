@@ -87,6 +87,7 @@ confirmModalBtn.addEventListener("click", (e) => {
     manageDisableBtn(cancelModalBtn, true);
     manageDisableBtn(confirmModalBtn, true);
   });
+  dashboardActionReset();
 });
 
 /**
