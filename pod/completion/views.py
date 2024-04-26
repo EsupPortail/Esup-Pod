@@ -47,6 +47,9 @@ __LANG_CHOICES_DICT__ = {
     key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
 }
 
+def get_completion_home_page_title(video: Video):
+    """Get page title."""
+    return _("Additions for the video “%s”") % video.title
 
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
@@ -173,7 +176,7 @@ def video_caption_maker_save(request, video):
 def video_completion(request: WSGIRequest, slug: str):
     """Video Completion view."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-    page_title = _("Video additions of the video “%s”") % video.title
+    page_title = get_completion_home_page_title(video)
     if (
         request.user != video.owner
         and not (
@@ -204,12 +207,12 @@ def video_completion(request: WSGIRequest, slug: str):
             request,
             "video_completion.html",
             {
+                "page_title": page_title,
                 "video": video,
                 "list_contributor": list_contributor,
                 "list_track": list_track,
                 "list_document": list_document,
                 "list_overlay": list_overlay,
-                "page_title": page_title,
             },
         )
     else:
@@ -217,9 +220,9 @@ def video_completion(request: WSGIRequest, slug: str):
             request,
             "video_completion.html",
             {
+                "page_title": page_title,
                 "video": video,
                 "list_contributor": list_contributor,
-                "page_title": page_title,
             },
         )
 
@@ -229,7 +232,7 @@ def video_completion(request: WSGIRequest, slug: str):
 def video_completion_contributor(request: WSGIRequest, slug: str):
     """View to manage contributors of a video."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-    page_title = _("Video additions of the video “%s”") % video.title
+    page_title = get_completion_home_page_title(video)
     if request.user != video.owner and not (
         request.user.is_superuser
         or request.user.has_perm("completion.add_contributor")
@@ -288,7 +291,7 @@ def video_completion_contributor_new(request: WSGIRequest, video: Video):
         return render(
             request,
             "contributor/form_contributor.html",
-            {"form_contributor": form_contributor, "video": video},
+            {"page_title": context["page_title"], "form_contributor": form_contributor, "video": video},
         )
     else:
         return render(
@@ -328,7 +331,7 @@ def video_completion_contributor_save(request: WSGIRequest, video: Video):
             context = get_video_completion_context(
                 video, list_contributor=list_contributor
             )
-            context["page_title"] = _("Video additions of the video “%s”") % video.title
+            context["page_title"] = get_completion_home_page_title(video)
             messages.add_message(
                 request, messages.SUCCESS, _("The contributor has been saved.")
             )
@@ -355,7 +358,7 @@ def video_completion_contributor_save(request: WSGIRequest, video: Video):
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type="application/json")
         context = get_video_completion_context(video, form_contributor=form_contributor)
-        context["page_title"] = _("Video additions of the video “%s”") % video.title
+        context["page_title"] = get_completion_home_page_title(video)
         return render(
             request,
             "video_completion.html",
@@ -391,7 +394,7 @@ def video_completion_contributor_delete(request: WSGIRequest, video: Video):
     """View to delete a video contributor."""
     contributor = get_object_or_404(Contributor, id=request.POST["id"])
     contributor.delete()
-    page_title = _("Video additions of the video “%s”") % video.title
+    page_title = get_completion_home_page_title(video)
     list_contributor = video.contributor_set.all()
     if request.is_ajax():
         some_data_to_dump = {

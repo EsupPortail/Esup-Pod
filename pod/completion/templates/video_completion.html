@@ -35,7 +35,7 @@
     &nbsp;
     <span id="form_contributor">
       {% if form_contributor %}
-      {% include 'contributor/form_contributor.html' with form_contributor=form_contributor %}
+        {% include 'contributor/form_contributor.html' with form_contributor=form_contributor %}
       {% endif %}
     </span>
     <form class="form_new completion" id="form_new_contributor" action="{% url 'video:completion:video_completion_contributor' slug=video.slug %}" method="POST">
