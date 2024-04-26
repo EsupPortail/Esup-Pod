@@ -2,6 +2,18 @@
  * @file Esup-Pod functions for chapter view.
  */
 
+
+// Read-only globals defined in video_chapter.html
+/*
+  global video_duration
+*/
+
+// Read-only globals defined in video-script.html
+/*
+global player
+*/
+
+
 var id_form = "form_chapter";
 function show_form(data) {
   let form_chapter = document.getElementById(id_form);
@@ -247,7 +259,7 @@ function verify_start_title_items() {
     inputTitle.value.length > 100
   ) {
     if (typeof lengthErrorMsg === "undefined") {
-      lengthErrorMsg = document.createElement("div");
+      let lengthErrorMsg = document.createElement("div");
       lengthErrorMsg.id = errormsg_id;
       lengthErrorMsg.className = "invalid-feedback";
       lengthErrorMsg.innerHTML = gettext(
@@ -288,7 +300,7 @@ function verify_start_title_items() {
     inputStart.value >= video_duration
   ) {
     if (typeof timeErrorMsg === "undefined") {
-      timeErrorMsg = document.createElement("div");
+      let timeErrorMsg = document.createElement("div");
       timeErrorMsg.id = errormsg_id;
       timeErrorMsg.className = "invalid-feedback";
       timeErrorMsg.innerHTML =
@@ -317,6 +329,7 @@ function verify_start_title_items() {
   return ret;
 }
 
+/* Unused function ??
 function overlaptest() {
   var new_start = parseInt(document.getElementById("id_time_start").value);
   var id = parseInt(document.getElementById("id_chapter").value);
@@ -337,6 +350,7 @@ function overlaptest() {
   });
   return msg;
 }
+*/
 
 /*** Display element of form enrich ***/
 Number.prototype.toHHMMSS = function () {
@@ -386,7 +400,7 @@ document.addEventListener("click", (event) => {
 });
 
 var updateDom = function (data) {
-  let player = window.videojs.players.podvideoplayer;
+  // let player = window.videojs.players.podvideoplayer;
   let n1 = document.getElementById("chapters");
   let n2 = document.querySelector("div.chapters-list");
   let tmp_node = document.createElement("div");
@@ -430,6 +444,7 @@ var manageDelete = function () {
   }
 };
 
+/** Unused function ??
 var manageImport = function () {
   let player = window.videojs.players.podvideoplayer;
   let n = document.querySelector("div.chapters-list");
@@ -448,3 +463,4 @@ var manageImport = function () {
     }
   }
 };
+*/

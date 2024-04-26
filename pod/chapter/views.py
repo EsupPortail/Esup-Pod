@@ -1,3 +1,4 @@
+"""Esup-Pod Chapter views."""
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 from django.shortcuts import render

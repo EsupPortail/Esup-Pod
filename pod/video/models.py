@@ -405,18 +405,18 @@ class Channel(models.Model):
             )
         return list_theme
 
-    def get_all_theme_json(self):
+    def get_all_theme_json(self) -> str:
         """Return theme list in json format."""
         return json.dumps(self.get_all_theme())
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """Store the channel object in db."""
         self.slug = slugify(self.title)
         super(Channel, self).save(*args, **kwargs)
 
 
 @receiver(pre_save, sender=Channel)
-def default_site_channel(sender, instance, **kwargs):
+def default_site_channel(sender, instance, **kwargs) -> None:
     if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
 
@@ -484,17 +484,17 @@ class Theme(models.Model):
         """Return sites associated to parent channel."""
         return self.channel.site
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Display current theme as string."""
         return "%s: %s" % (self.channel.title, self.title)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Get current theme absolute URL."""
         return reverse(
             "channel-video:theme", args=[str(self.channel.slug), str(self.slug)]
         )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """Store current theme object in db."""
         self.slug = slugify(self.title)
         super(Theme, self).save(*args, **kwargs)
@@ -541,7 +541,7 @@ class Theme(models.Model):
             parents.extend(parent.get_all_parents())
         return parents
 
-    def clean(self):
+    def clean(self) -> None:
         """Validate Theme fields."""
         # Dans le cas où on modifie un theme
         if (
@@ -609,10 +609,10 @@ class Type(models.Model):
     )
     sites = models.ManyToManyField(Site)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s" % (self.title)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """Store current Type in DB."""
         self.slug = slugify(self.title)
         super(Type, self).save(*args, **kwargs)
@@ -654,10 +654,10 @@ class Discipline(models.Model):
         Site, verbose_name=_("Site"), on_delete=models.CASCADE, default=SITE_ID
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s" % (self.title)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """Store current Discipline in DB."""
         self.slug = slugify(self.title)
         super(Discipline, self).save(*args, **kwargs)
@@ -1813,12 +1813,12 @@ class Category(models.Model):
         editable=False,
     )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """Set a slug and save the category instance."""
         self.slug = "%s-%s" % (self.owner.id, slugify(self.title))
         super(Category, self).save(*args, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Render the category as string."""
         return self.title
 

@@ -1,4 +1,7 @@
-"""Check Obsolete videos."""
+"""Esup-Pod - Check for obsolete videos.
+
+*  run with 'python manage.py check_obsolete_videos [--dry]'
+"""
 
 from django.conf import settings
 from django.utils import translation
@@ -25,7 +28,7 @@ MANAGERS = getattr(settings, "MANAGERS", [])
 CONTACT_US_EMAIL = getattr(
     settings,
     "CONTACT_US_EMAIL",
-    [mail for name, mail in getattr(settings, "MANAGERS")],
+    [mail for name, mail in MANAGERS],
 )
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
@@ -71,9 +74,23 @@ class Command(BaseCommand):
     """Checking obsolete videos."""
 
     help = "Treatment of obsolete videos."
+    dry_mode = False
+
+    def add_arguments(self, parser) -> None:
+        """Add possible args to the command."""
+        parser.add_argument(
+            "--dry",
+            help="Simulate what would be done.",
+            action="store_true",
+            default=False,
+        )
 
     def handle(self, *args, **options) -> None:
         """Handle the check_obsolete_videos command call."""
+        if options["dry"]:
+            self.dry_mode = True
+            print("Simulation mode ('dry'). Nothing will be deleted.")
+
         # Activate a fixed locale fr
         translation.activate(LANGUAGE_CODE)
 
@@ -103,7 +120,8 @@ class Command(BaseCommand):
                 date_delete=step_date, sites=get_current_site(settings.SITE_ID)
             )
             for video in videos:
-                self.notify_user(video, step_day)
+                if not self.dry_mode:
+                    self.notify_user(video, step_day)
                 if (
                     USE_ESTABLISHMENT
                     and MANAGERS
@@ -141,29 +159,30 @@ class Command(BaseCommand):
             estab = vid.owner.owner.establishment.lower()
 
             if vid.owner.owner.affiliation in POD_ARCHIVE_AFFILIATION:
-                self.write_in_csv(vid, "archived")
-                archive_user, created = User.objects.get_or_create(
-                    username=ARCHIVE_OWNER_USERNAME,
-                )
-                # Rename video and change owner.
-                vid.owner = archive_user
-                vid.is_draft = True
-                vid.title = "%s %s %s" % (
-                    _("Archived"),
-                    date.today(),
-                    vid.title,
-                )
-                # Trunc title to 250 chars max.
-                vid.title = vid.title[:250]
-                vid.save()
-                nb_archived += 1
+                if not self.dry_mode:
+                    self.write_in_csv(vid, "archived")
+                    archive_user, created = User.objects.get_or_create(
+                        username=ARCHIVE_OWNER_USERNAME,
+                    )
+                    # Rename video and change owner.
+                    vid.owner = archive_user
+                    vid.is_draft = True
+                    vid.title = "%s %s %s" % (
+                        _("Archived"),
+                        date.today(),
+                        vid.title,
+                    )
+                    # Trunc title to 250 chars max.
+                    vid.title = vid.title[:250]
+                    vid.save()
 
-                # add video to delete
-                vid_delete, created = VideoToDelete.objects.get_or_create(
-                    date_deletion=vid.date_delete
-                )
-                vid_delete.video.add(vid)
-                vid_delete.save()
+                    # add video to delete
+                    vid_delete, created = VideoToDelete.objects.get_or_create(
+                        date_deletion=vid.date_delete
+                    )
+                    vid_delete.video.add(vid)
+                    vid_delete.save()
+                nb_archived += 1
                 if USE_ESTABLISHMENT and MANAGERS and estab in dict(MANAGERS):
                     list_video_archived_by_establishment.setdefault(estab, {})
                     list_video_archived_by_establishment[estab].setdefault(
@@ -175,8 +194,11 @@ class Command(BaseCommand):
                     ).append(vid)
 
             else:
-                self.write_in_csv(vid, "deleted")
-                vid.delete()
+                if not self.dry_mode:
+                    self.write_in_csv(vid, "deleted")
+                    vid.delete()
+                else:
+                    print("Video %s would have been deleted." % vid)
                 nb_deleted += 1
                 if USE_ESTABLISHMENT and MANAGERS and estab in dict(MANAGERS):
                     list_video_deleted_by_establishment.setdefault(estab, {})

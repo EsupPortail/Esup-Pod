@@ -3,15 +3,15 @@
 *  run with 'python manage.py unarchive_video vid_id [--user_id=userid]'
 """
 
-from django.core.management.base import BaseCommand
-from pod.video.models import Video, default_date_delete
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.management.base import BaseCommand
 from django.utils.translation import gettext as _
-from django.conf import settings
 from django.utils.translation import activate
 
 from pod.video.management.commands.create_archive_package import read_archived_csv
+from pod.video.models import Video, default_date_delete
 
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
