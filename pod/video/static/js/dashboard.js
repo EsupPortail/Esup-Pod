@@ -46,11 +46,23 @@ bulkUpdateActionSelect.addEventListener("change", function () {
  */
 applyBulkUpdateBtn.addEventListener("click", () => {
   let selectedCount = selectedVideos.length;
-  let modalConfirmStr = ngettext(
+  let modalEditionConfirmStr = ngettext(
     "Please confirm the editing of the following video:",
     "Please confirm the editing of the following videos:",
     selectedCount,
   );
+  let modalDeleteConfirmStr = ngettext(
+    "Please confirm the deletion of the following video:",
+    "Please confirm the deletion of the following videos:",
+    selectedCount,
+  );
+  let modalConfirmStr;
+  if (dashboardAction === "delete") {
+    modalConfirmStr = modalDeleteConfirmStr;
+  } else {
+    modalConfirmStr = modalEditionConfirmStr;
+  }
+
   modalConfirmStr = interpolate(
     modalConfirmStr,
     { count: selectedCount },
