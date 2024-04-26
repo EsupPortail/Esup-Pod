@@ -202,7 +202,7 @@
 
     {% if user.is_authenticated %}
       <li class="nav-item" id="nav-usermenu">
-        <button class="btn btn-sm nav-item {% if not request.user.owner.userpicture  %}initials btn btn-primary {% else %} nav-link{% endif %} ps-2 pe-2 d-flex justify-content-center align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menuuser" aria-controls="pod-navbar__menuuser" title="{% trans 'Toggle user menu' %}"
+        <button class="btn btn-sm nav-item {% if not request.user.owner.userpicture  %}initials btn btn-primary {% else %} nav-link{% endif %} d-flex justify-content-center align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menuuser" aria-controls="pod-navbar__menuuser" title="{% trans 'Toggle user menu' %}"
          data-pod-tooltip="true">
           {% if request.user.owner.userpicture %}
             <img src="{{ user.owner.userpicture.file.url }}" class="userpicture rounded" alt="{{ user }}" loading="lazy">
