@@ -820,6 +820,17 @@
                                     "            'model': \"/path/of/project/Esup-Pod/transcription/model_fr/vosk/vosk-model-fr-0.6-linto-2.2.0\",",
                                     "        }",
                                     "    }",
+                                    "    # le modèle Whisper",
+                                    "    'WHISPER': {",
+                                    "        'fr': {",
+                                    "            'model': \"small\",",
+                                    "            'download_root': \"/pod-transcription/transcription/whisper/\",",
+                                    "        },",
+                                    "        'en': {",
+                                    "            'model': \"small\",",
+                                    "            'download_root': \"/pod-transcription/transcription/whisper/\",",
+                                    "        }",
+                                    "    }",
                                     "}",
                                     "```"
                                 ]
@@ -834,7 +845,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "STT ou VOSK"
+                                    "STT, VOSK ou WHISPER (à partir de Pod 3.5.0)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3075,7 +3086,7 @@
                                 "fr": [
                                     "Permet d’ajouter l’attribut obligatoire dans",
                                     "le formulaire d’edition et d’ajout d’une video :",
-                                    "Exemple de valeur : [\"discipline\", \"tags\"]",
+                                    "Exemple de valeur : `[\"discipline\", \"tags\"]`",
                                     "NB : les champs cachés et suivant ne sont pas pris en compte :",
                                     "`(video, title, type, owner, date_added, cursus, main_lang)`"
                                 ]
@@ -3755,7 +3766,7 @@
                                     "Si la liste est vide, les mails de contact seront envoyés au(x) manager(s).",
                                     "Valeurs possibles :",
                                     "`info`, `contribute`, `request_password`,",
-                                    "`inapropriate_content`, `bug`, `other"
+                                    "`inapropriate_content`, `bug`, `other`"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4509,8 +4520,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "_Valeur par défaut : 14400 (secondes, soit 4 heures)_<br>",
-                                    "L’âge des cookies de sessions, en secondes."
+                                    "L’âge des cookies de sessions, en secondes (4h par défaut)."
                                 ]
                             },
                             "pod_version_end": "",
@@ -4885,7 +4895,7 @@
                                 ],
                                 "fr": [
                                     "Si 'True', le filtre des vidéos par utilisateur ne sera plus visible",
-                                    "si 'False' le filtre sera visible qu’aux personnes authentifiées.",
+                                    "si 'False' le filtre ne sera visible qu’aux personnes authentifiées.",
                                     "(pour respecter le RGPD)"
                                 ]
                             },
@@ -5205,7 +5215,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Choix de l’outil pour la transcription : STT ou VOSK."
+                                    "Choix de l’outil pour la transcription : `STT`, `VOSK`ou `WHISPER`."
                                 ]
                             },
                             "pod_version_end": "",

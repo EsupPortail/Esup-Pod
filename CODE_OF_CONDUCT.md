@@ -1,4 +1,3 @@
-
 # Code de conduite *Esup-Pod*
 
 ## Notre engagement
