@@ -5,7 +5,7 @@
 
 // Read-only globals defined in video_select.js
 /*
-  global replaceSelectedCountVideos selectedVideos getHTMLBadgesSelectedTitles
+  global replaceSelectedCountVideos selectedVideos getHTMLBadgesSelectedTitles resetDashboardElements
 */
 
 // Read-only globals defined in filter_aside_video_list_refresh.js
@@ -87,7 +87,7 @@ confirmModalBtn.addEventListener("click", (e) => {
     manageDisableBtn(cancelModalBtn, true);
     manageDisableBtn(confirmModalBtn, true);
   });
-  dashboardActionReset();
+  resetDashboardElements();
 });
 
 /**
@@ -222,18 +222,6 @@ function changeDisplayMode(display_mode) {
   btnDisplayMode.forEach((e) => e.classList.toggle("active"));
   refreshVideosSearch();
 }
-
-/**
- * Update list of selected videos for modal confirm display
- */
-/* Unused function ?
-function updateModalConfirmSelectedVideos() {
-  let str = "";
-  Array.from(getListSelectedVideosTitles()).forEach((title) => {
-    str += "<li>" + title + "</li>";
-  });
-  bulkUpdateConfirmSelectedVideos.innerHTML = str;
-}*/
 
 /**
  * Show feedback message after bulk update

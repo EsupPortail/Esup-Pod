@@ -74,7 +74,7 @@ function replaceSelectedCountVideos() {
     newCount,
   );
   videoCountStr = interpolate(videoCountStr, { count: newCount }, true);
-  countSelectedVideosBadge.innerHTML = videoCountStr;
+  countSelectedVideosBadge.textContent = videoCountStr;
   countSelectedVideosBadge.setAttribute("title", videoCountTit);
   manageDisableBtn(
     applyMultipleActionsBtn,
