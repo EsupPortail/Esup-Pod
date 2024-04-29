@@ -43,7 +43,7 @@
         },
         "title": {
           "type":"text",
-          "analyzer" : "icu_french",
+          "analyzer": "icu_french",
           "term_vector": "with_positions_offsets",
           "search_analyzer": "icu_french"
         },
@@ -52,25 +52,25 @@
         },
         "owner_full_name": {
           "type":"text",
-          "analyzer" : "icu_french",
+          "analyzer": "icu_french",
           "term_vector": "with_positions_offsets",
           "search_analyzer": "icu_french"
         },
         "date_added": {
           "type":"date"
         },
-        "date_evt" : {
+        "date_evt": {
           "type": "date"
         },
         "description": {
           "type":"text",
-          "analyzer" : "icu_french",
+          "analyzer": "icu_french",
           "term_vector": "with_positions_offsets",
           "search_analyzer": "icu_french"
         },
         "thumbnail": {
           "type":"keyword",
-          "index" : false
+          "index": false
         },
         "duration": {
           "type":"integer"
@@ -79,11 +79,11 @@
           "properties": {
             "name": {
               "type":"text",
-              "analyzer" : "icu_french",
+              "analyzer": "icu_french",
               "term_vector": "with_positions_offsets",
               "search_analyzer": "icu_french",
               "fields": {
-                "raw" : {
+                "raw": {
                   "type": "keyword",
                   "index": false
                 }
@@ -98,11 +98,11 @@
           "properties": {
             "title": {
               "type":"text",
-              "analyzer" : "icu_french",
+              "analyzer": "icu_french",
               "term_vector": "with_positions_offsets",
               "search_analyzer": "icu_french",
               "fields": {
-                "raw" : {
+                "raw": {
                   "type": "keyword",
                   "index": false
                 }
@@ -117,11 +117,11 @@
           "properties": {
             "title": {
               "type":"text",
-              "analyzer" : "icu_french",
+              "analyzer": "icu_french",
               "term_vector": "with_positions_offsets",
               "search_analyzer": "icu_french",
               "fields": {
-                "raw" : {
+                "raw": {
                   "type": "keyword",
                   "index": false
                 }
@@ -136,11 +136,11 @@
           "properties": {
             "title": {
               "type":"text",
-              "analyzer" : "icu_french",
+              "analyzer": "icu_french",
               "term_vector": "with_positions_offsets",
               "search_analyzer": "icu_french",
               "fields": {
-                "raw" : {
+                "raw": {
                   "type": "keyword",
                   "index": false
                 }
@@ -155,11 +155,11 @@
           "properties": {
             "title": {
               "type":"text",
-              "analyzer" : "icu_french",
+              "analyzer": "icu_french",
               "term_vector": "with_positions_offsets",
               "search_analyzer": "icu_french",
               "fields": {
-                "raw" : {
+                "raw": {
                   "type": "keyword",
                   "index": false
                 }
@@ -174,11 +174,11 @@
           "properties": {
             "name": {
               "type":"text",
-              "analyzer" : "icu_french",
+              "analyzer": "icu_french",
               "term_vector": "with_positions_offsets",
               "search_analyzer": "icu_french",
               "fields": {
-                "raw" : {
+                "raw": {
                   "type": "keyword",
                   "index": false
                 }
@@ -193,11 +193,11 @@
           "properties": {
             "title": {
               "type":"text",
-              "analyzer" : "icu_french",
+              "analyzer": "icu_french",
               "term_vector": "with_positions_offsets",
               "search_analyzer": "icu_french",
               "fields": {
-                "raw" : {
+                "raw": {
                   "type": "keyword",
                   "index": false
                 }
@@ -212,11 +212,11 @@
           "properties": {
             "title": {
               "type":"text",
-              "analyzer" : "icu_french",
+              "analyzer": "icu_french",
               "term_vector": "with_positions_offsets",
               "search_analyzer": "icu_french",
               "fields": {
-                "raw" : {
+                "raw": {
                   "type": "keyword",
                   "index": false
                 }
@@ -229,7 +229,7 @@
         },
         "full_url": {
           "type":"keyword",
-          "index" : false
+          "index": false
         },
         "is_restricted": {
           "type":"boolean"

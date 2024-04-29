@@ -47,12 +47,12 @@ class RecorderTestCase(TestCase):
         self.assertEqual(recorder1.password, "secret")
         self.assertEqual(recorder1.additional_users.count(), 2)
         self.assertEqual(recorder1.restrict_access_to_groups.count(), 1)
-        print("   --->  test_attributs of RecorderTestCase: OK !")
+        print("   --->  test_attributs of RecorderTestCase: OK!")
 
     def test_ipunder(self):
         recorder1 = Recorder.objects.get(id=1)
         self.assertEqual(recorder1.ipunder(), "16_3_10_37")
-        print("   --->  test_ipunder of RecorderTestCase: OK !")
+        print("   --->  test_ipunder of RecorderTestCase: OK!")
 
     def test_delete_object(self):
         Recorder.objects.filter(name="recorder1").delete()

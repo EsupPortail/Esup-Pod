@@ -79,7 +79,7 @@ def parse_remote_file(session: Session, source_html_url: str):
     """Parse the remote HTML file on the BBB server.
 
     Args:
-        session (Session) : session useful to achieve requests (and keep cookies between)
+        session (Session): session useful to achieve requests (and keep cookies between)
         source_html_url (String): URL to parse
 
     Raises:
@@ -189,7 +189,7 @@ def manage_download(
 ) -> str:
     """Manage the download of a BBB video file.
 
-    2 possibilities :
+    2 possibilities:
      - Download BBB video file directly.
      - Download BBB video file where source URL is protected by a single-use token.
     In such a case, 2 requests are made, using the same session.
@@ -200,13 +200,13 @@ def manage_download(
     and download_video_file.
 
     Args:
-        session (Session) : Session useful to achieve requests (and keep cookies between)
+        session (Session): Session useful to achieve requests (and keep cookies between)
         source_url (String): Source file URL
         video_file_add (String): Name of the video file to add to the URL
         dest_file (String): Destination file of the Pod video
 
     Returns:
-        source_video_url (String) : video source file URL
+        source_video_url (String): video source file URL
 
     Raises:
         ValueError: if impossible download
@@ -223,7 +223,7 @@ def download_video_file(session: Session, source_video_url: str, dest_file: str)
     """Download video file.
 
     Args:
-        session (Session) : Session useful to achieve requests (and keep cookies between)
+        session (Session): Session useful to achieve requests (and keep cookies between)
         source_video_url (String): Video file URL
         dest_file (String): Destination file of the Pod video
 
@@ -244,12 +244,12 @@ def download_video_file(session: Session, source_video_url: str, dest_file: str)
                 # Total size, in bytes, from response header
                 # total_size = int(response.headers.get('content-length', 0))
                 # Other possible methods
-                # Method 1 : iterate over every chunk and calculate % of total
+                # Method 1: iterate over every chunk and calculate % of total
                 # for chunk in response.iter_content(chunk_size=1024*1024):
                 #    file.write(chunk)
-                # Method 2 : Binary download
+                # Method 2: Binary download
                 # file.write(response.content)
-                # Method 3 : The fastest
+                # Method 3: The fastest
                 shutil.copyfileobj(response.raw, file)
     except Exception as exc:
         raise ValueError(mark_safe(str(exc)))
@@ -359,11 +359,11 @@ def check_video_size(video_size: int):
 def check_source_url(source_url: str):  # noqa: C901
     """Check the source URL to identify the used platform.
 
-    Platforms managed :
-     - Mediacad platform (Médiathèque académique) : rewrite source URL if required
+    Platforms managed:
+     - Mediacad platform (Médiathèque académique): rewrite source URL if required
      and manage JSON API.
-     - BBB ESR infrastructure : rewrite source URL if required
-     - Old BigBlueButton presentation : source URL for old BBB presentation playback
+     - BBB ESR infrastructure: rewrite source URL if required
+     - Old BigBlueButton presentation: source URL for old BBB presentation playback
     """
     base_url = ""
     media_id = ""
@@ -437,7 +437,7 @@ def check_source_url(source_url: str):  # noqa: C901
             format = "m4v"
             platform = "BBB_ESR"
         elif source_url.find("bbb.numerique-esr.fr/playback/presentation/2.3/") != -1:
-            # BBB ESR presentation link : rewrite for video source URL
+            # BBB ESR presentation link: rewrite for video source URL
             # https://univ.scalelite.bbb.numerique-esr.fr/playback/presentation/2.3/#id#
             source_video_url = (
                 source_url.replace("/playback/presentation/2.3/", "/video/") + "/"
@@ -445,7 +445,7 @@ def check_source_url(source_url: str):  # noqa: C901
             format = "m4v"
             platform = "BBB_ESR"
         elif source_url.find("bbb.numerique-esr.fr/recording/") != -1:
-            # BBB ESR video or presentation link : rewrite for video source URL if pres
+            # BBB ESR video or presentation link: rewrite for video source URL if pres
             # https://univ.scalelite.bbb.numerique-esr.fr/recording/#id#/presentation?
             # https://univ.scalelite.bbb.numerique-esr.fr/recording/#id#/video?
             source_video_url = source_url.replace("/presentation", "/video")
@@ -463,14 +463,14 @@ def check_source_url(source_url: str):  # noqa: C901
             format = "webm"
             platform = "BBB_Presentation"
         elif source_url.find("/playback/presentation/2.3/") != -1:
-            # Old BBB 2.3 presentation link : no conversion needed
+            # Old BBB 2.3 presentation link: no conversion needed
             source_video_url = source_url
             format = "webm"
             platform = "BBB_Presentation"
 
         # Platform's URL identified
         if platform == "Mediacad":
-            # Mediacad API (JSON format) is available at :
+            # Mediacad API (JSON format) is available at:
             # ##mediacadBaseUrl##/default/media/display/m/##mediaId##/d/j
             url_api_video = "%s/default/media/display/m/%s/d/j" % (base_url, media_id)
             # Platform type
@@ -546,7 +546,7 @@ def check_url_need_token(source_url: str) -> str:
     """Check if the URL is used by an infrastructure that need a token.
 
     Useful for generating the single-use token required to access video file.
-    2 conditions :
+    2 conditions:
      - URL was created on the same BBB infrastructure as the meeting module,
      - At present, only ESR's BBB infrastructure uses single-use tokens.
     If both conditions are met, then returns the recording_id.
@@ -651,9 +651,9 @@ class video_parser(HTMLParser):
         attrs = dict(attrs)
         # Search for source tag
         if tag == "source":
-            # Found the line. Managed format :
+            # Found the line. Managed format:
             # attrs = {'src': 'video-0.m4v', 'type': 'video/mp4'}
-            # print("video line : %s" % attrs)
+            # print("video line: %s" % attrs)
             self.video_check = True
             self.video_file = attrs.get("src", "")
             self.video_type = attrs.get("type", "")
@@ -673,7 +673,7 @@ class video_parser(HTMLParser):
 class StatelessRecording:
     """Recording model, not saved in database.
 
-    Useful to manage :
+    Useful to manage:
      - internal (meeting module) recordings
      - external (import_video module) recordings
     for the views.

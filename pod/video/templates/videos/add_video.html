@@ -11,58 +11,104 @@
 {% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Choose an audio or video file to upload" %}{% endif %}{% endblock %}
 
 {% block collapse_page_aside %}
-{% if access_not_allowed != True %}
-{{block.super}}
-{% endif %}
+  {% if access_not_allowed != True %}
+    {{block.super}}
+  {% endif %}
 {% endblock collapse_page_aside %}
 
+{% block page_extra_head %}
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
+  <style>
+    .file {
+      position: relative;
+      background: linear-gradient(to right, lightblue 50%, transparent 50%);
+      background-size: 200% 100%;
+      background-position: right bottom;
+      transition: all 1s ease;
+    }
+
+    .file.done {
+      background: lightgreen;
+    }
+
+    .file a {
+      display: block;
+      position: relative;
+      padding: 5px;
+      color: black;
+    }
+
+    #progBar {
+      width: 100%;
+    }
+
+    .show-on-processing {
+      display: none;
+    }
+  </style>
+{% endblock page_extra_head %}
 
 {% block page_content %}
 
 {% if restricted_to_staff and not user.is_staff %}
-<p class="text-info-emphasis">
-  <i class="bi bi-broadcast" aria-hidden="true"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
-</p>
+  <p class="text-info-emphasis">
+    <i class="bi bi-broadcast" aria-hidden="true"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
+  </p>
 {% else %}
 
-<div id="uploadblock">
-  {% csrf_token %}
-  <div class="mb-5">
-    <h2><i class="bi bi-pin-angle" aria-hidden="true"></i>&nbsp;{% trans "Legal notice" %}</h2>
-    <p>{% trans "Please note: make sure that you have the necessary authorizations signed by the speakers and that you respect the Intellectual Property Code before publishing a video." %}</p>
-  </div>
+  <form id="uploadForm">
+    {% csrf_token %}
+    <div class="mb-5">
+      <h2><i class="bi bi-pin-angle" aria-hidden="true"></i>&nbsp;{% trans "Legal notice" %}</h2>
+      <p>{% trans "Please note: make sure that you respect the Intellectual Property Code before publishing a video." %}</p>
+      <div class="form-check">
+        <input type="checkbox" id="legal_notice" required>
+        <label for="legal_notice" class="form-check-label d-inline">
+          {% trans "I confirm that I have the necessary authorizations signed by the parties involved in the uploaded content." %}
+          <span class="required_star">*</span>
+        </label>
+      </div>
+    </div>
 
-  <h2><i class="bi bi-upload" aria-hidden="true"></i>&nbsp;{% trans "Uploading" %}</h2>
-  <div class="form-group hide-on-processing py-3 px-2 px-md-5 mx-auto">
-    <label for="chunked_upload">{% trans "Choose an audio or video file to upload" %}</label><br>
-    <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file" class="form-control-file">
-  </div>
-  <div class="show-on-processing">
-    <label for="progBar">{% trans "Upload progress:" %}</label>
-    <progress id="progBar" value="0" max="100"></progress>
-  </div>
+    <div id="uploadblock">
+      <h2><i class="bi bi-upload" aria-hidden="true"></i>&nbsp;{% trans "Uploading" %}</h2>
+      <div class="form-group hide-on-processing py-3 px-2 px-md-5 mx-auto" id="file_field">
+        <label for="chunked_upload">{% trans "Choose an audio or video file to upload" %}</label><br>
+        <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file" class="form-control-file">
+      </div>
+      <div class="form-group hide-on-processing py-3 px-2 px-md-5 mx-auto d-none" id="file_selected">
+        <span>{% trans "Selected file:"%}</span>
+        <code id="file_name"></code>
+        <button type="button" id="resetButton" class="btn btn-secondary">{% trans "Undo" %}</button>
+      </div>
+      <div class="show-on-processing">
+        <label for="progBar">{% trans "Upload progress:" %}</label>
+        <progress id="progBar" value="0" max="100"></progress>
+      </div>
+    </div>
 
-  {% if TRANSCRIPT|length > 0 %}
-  <div class="hide-on-processing">
-    <select class="form-select" aria-label="{% trans 'Transcript' %}" id="select-transcript-lang">
-      <option selected value="">{% trans "Transcript" %}</option>
-      {% for lang in TRANSCRIPT %}
-      <option value="{{lang|first}}">{{lang|last}}</option>
-      {% endfor %}
-    </select>
-    <small class="form-text">{% trans "Select an available language if you want to transcribe the audio." %}</small>
-  </div>
+    {% if TRANSCRIPT|length > 0 %}
+      <select class="form-select" aria-label="{% trans 'Transcript' %}" id="select-transcript-lang">
+        <option selected value="">{% trans "Transcript" %}</option>
+        {% for lang in TRANSCRIPT %}
+        <option value="{{lang|first}}">{{lang|last}}</option>
+        {% endfor %}
+      </select>
+      <small class="form-text">{% trans "Select an available language if you want to transcribe the audio." %}</small>
+    {% endif %}
+
+    <p class="pod-callout pod-callout-warning">{% trans "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again." %}</p>
+
+    <div class="d-grid">
+      <input id="submitVideo" class="btn btn-primary btn-block" type="submit" value="{% trans 'Upload' %}" disabled>
+    </div>
+  </form>
+
+  {% if slug %}
+    <a href="{% url 'video:video_edit' slug=slug %}" class="btn btn-primary btn-sm m-2">
+      <i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Back to video edit" %}
+    </a>
   {% endif %}
-
-  <p class="pod-callout pod-callout-warning">{% trans "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again." %}</p>
-
-</div>
-{% if slug %}
-<a href="{% url 'video:video_edit' slug=slug %}" class="btn btn-primary btn-sm m-2">
-  <i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Back to video edit"%}
-</a>
-{% endif %}
-
 {% endif %}
 {% endblock page_content %}
 
@@ -106,7 +152,6 @@
 </div>
 {% endblock page_aside %}
 
-
 {% block more_script %}
 <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
@@ -119,17 +164,16 @@
 <script src="{% static 'blueimp-file-upload/js/jquery.fileupload-ui.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'spark-md5/spark-md5.min.js' %}?ver={{VERSION}}"></script>
 
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
-
-
 <script>
   /** formulaire **/
   var max_chunk_size = {{ CHUNK_SIZE }};
   var slug = "{{ slug }}";
   var max_size = {{ max_size }};
+  var global_data;
   var md5 = "",
-    csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
+    csrf = document.getElementsByName("csrfmiddlewaretoken")[0].value,
     form_data = [{ "name": "csrfmiddlewaretoken", "value": csrf }];
+  /* Calculate an md5 checksum of uploaded file. */
   function calculate_md5(file, chunk_size) {
     var slice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
       chunks = chunks = Math.ceil(file.size / chunk_size),
@@ -143,58 +187,82 @@
       } else {
         md5 = spark.end();
       }
-    };
+    }
     function read_next_chunk() {
       var reader = new FileReader();
       reader.onload = onload;
       var start = current_chunk * chunk_size,
         end = Math.min(start + chunk_size, file.size);
       reader.readAsArrayBuffer(slice.call(file, start, end));
-    };
+    }
     read_next_chunk();
   }
+
+  /* Upload file to Pod on form submit */
+  document.getElementById("uploadForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    let legalNoticeCheckbox = document.getElementById("legal_notice");
+    if (!legalNoticeCheckbox.checked) {
+      showalert("{% trans 'You must accept the necessary authorizations to continue.' %}", "alert-warning");
+      return;
+    }
+    if (global_data) {
+      let elementsHideProcessing = document.getElementsByClassName("hide-on-processing");
+      for (let i = 0; i < elementsHideProcessing.length; i++) {
+        elementsHideProcessing[i].classList.add('d-none');
+      }
+      let elementsShowProcessing = document.getElementsByClassName("show-on-processing");
+      for (let i = 0; i < elementsShowProcessing.length; i++) {
+        elementsShowProcessing[i].style.display = 'block';
+      }
+      global_data.submit();
+    } else {
+      showalert("{% trans 'Upload a media file first.' %}", "alert-warning");
+    }
+  });
+
+  // See https://github.com/blueimp/jQuery-File-Upload/wiki and django_chunked_upload
   $("#chunked_upload").fileupload({
     url: "{% url 'video:api_chunked_upload' %}",
     dataType: "json",
     maxChunkSize: max_chunk_size, // Chunks of 100 kB
     maxFileSize: 1,
     formData: form_data,
+    showElementClass: 'show',
     add: function (e, data) { // Called before starting upload
-	    // If this is the second file you're uploading we need to remove the
-	    // old upload_id and just keep the csrftoken (which is always first).
-	    var allow_extension_array = this.accept.replaceAll(' ', '').split(",");
-	    var extension = data.originalFiles[0].name.substr((data.originalFiles[0].name.lastIndexOf('.') +1)).toLowerCase();
-	    if (allow_extension_array.includes("."+extension) == false) {
-		    showalert(
-			    gettext("The file extension not in the allowed extension:") +
-			    "<br/>" +
-			    this.accept ,
-			    "alert-danger",
-		    );
-	    }
-	    else {
-		    var elementsHideProcessing = document.getElementsByClassName("hide-on-processing");
-		    for (let i = 0; i < elementsHideProcessing.length; i++) {
-			    elementsHideProcessing[i].classList.add('d-none');
-		    }
-		    var elementsShowProcessing = document.getElementsByClassName("show-on-processing");
-		    for (let i = 0; i < elementsShowProcessing.length; i++) {
-			    elementsShowProcessing[i].style.display = 'block';
-		    }
-		    form_data.splice(1);
-		    calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
-		    data.submit();
-	    }
+      document.body.classList.remove("dragover");
+      // If this is the second file you're uploading we need to remove the
+      // old upload_id and just keep the csrftoken (which is always first).
+      var allow_extension_array = this.accept.replaceAll(' ', '').split(",");
+      var extension = data.originalFiles[0].name.substr((data.originalFiles[0].name.lastIndexOf('.') +1)).toLowerCase();
+      if (allow_extension_array.includes("."+extension) == false) {
+        showalert(
+          "{% trans 'The file extension is not in the allowed extension:' %}" +
+            "<br/>" + this.accept ,
+          "alert-danger",
+        );
+      }
+      else {
+        form_data.splice(1);
+        calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
+        $(this).value=data.files[0];
+        document.getElementById("file_field").classList.add("d-none");
+        document.getElementById("file_name").innerHTML = data.originalFiles[0].name;
+        document.getElementById("file_selected").classList.remove("d-none");
+
+        global_data = data;
+        document.getElementById("submitVideo").disabled = false;
+      }
     },
     chunkdone: function (e, data) { // Called after uploading each chunk
-      $(this).is(':checked')
+      //$(this).is(':checked');
       if (form_data.length < 2) {
         form_data.push(
           { "name": "upload_id", "value": data.result.upload_id }
         );
       }
       var progress = parseInt(data.loaded / data.total * 100.0, 10);
-      $('#progBar').val(progress);
+      document.getElementById("progBar").value = progress;
     },
     done: function (e, data) { // Called when the file has completely uploaded
       $.ajax({
@@ -205,46 +273,39 @@
           upload_id: data.result.upload_id,
           md5: md5,
           slug: slug,
-          transcript: $("#select-transcript-lang").val()
+          {% if TRANSCRIPT|length > 0 %}
+            transcript: document.getElementById("select-transcript-lang").value
+          {% endif %}
         },
         dataType: "json",
         success: function (data) {
-          location.href = data.redirlink
+          location.href = data.redirlink;
         }
       });
     },
+  }).on('fileuploaddragover', function (e) {
+    if (!document.body.classList.contains("dragover")) {
+      document.body.classList.add("dragover");
+    }
   });
+
+  document.addEventListener("dragleave", (event) => {
+    // reset style of potential drop target when the draggable element leaves it.
+    if (document.body.classList.contains("dragover")) {
+      document.body.classList.remove("dragover");
+    }
+  });
+
+  /* Reset a pending upload */
+  document.getElementById("resetButton").addEventListener("click", (e) => {
+    global_data = undefined;
+    document.getElementById("file_field").classList.remove("d-none");
+    document.getElementById("file_name").innerHTML = "";
+    document.getElementById("file_selected").classList.add("d-none");
+  });
+
 </script>
 
 {{form.media}}
-
-<style>
-  .file {
-    position: relative;
-    background: linear-gradient(to right, lightblue 50%, transparent 50%);
-    background-size: 200% 100%;
-    background-position: right bottom;
-    transition: all 1s ease;
-  }
-
-  .file.done {
-    background: lightgreen;
-  }
-
-  .file a {
-    display: block;
-    position: relative;
-    padding: 5px;
-    color: black;
-  }
-
-  #progBar {
-    width: 100%;
-  }
-
-  .show-on-processing {
-    display: none;
-  }
-</style>
 
 {% endblock more_script %}

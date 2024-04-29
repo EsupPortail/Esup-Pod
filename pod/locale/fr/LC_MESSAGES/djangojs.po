@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-03-12 12:01+0100\n"
+"POT-Creation-Date: 2024-04-29 07:03+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 msgid "Get time from the player"
@@ -502,6 +502,18 @@ msgid "Unable to find information about the meeting"
 msgstr "Impossible de trouver des informations sur la réunion"
 
 #: pod/meeting/static/js/my_meetings.js
+msgid "Restart only the live"
+msgstr "Redémarrer seulement le direct"
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "End only the live"
+msgstr "Arrêter seulement le direct"
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "End the webinar (meeting and live)"
+msgstr "Terminer le webinaire (réunion et direct)"
+
+#: pod/meeting/static/js/my_meetings.js
 msgid "End the meeting"
 msgstr "Terminer la réunion"
 
@@ -565,6 +577,10 @@ msgstr "Changer"
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Enter new name of folder"
 msgstr "Indiquer un nouveau nom au dossier"
+
+#: pod/podfile/static/podfile/js/filewidget.js
+msgid "No user found"
+msgstr "Aucun utilisateur trouvé"
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Remove"
@@ -743,6 +759,12 @@ msgid "Please confirm the editing of the following video:"
 msgid_plural "Please confirm the editing of the following videos:"
 msgstr[0] "Veuillez confirmer l'édition de la vidéo suivante :"
 msgstr[1] "Veuillez confirmer l'édition des vidéos suivantes :"
+
+#: pod/video/static/js/dashboard.js
+msgid "Please confirm the deletion of the following video:"
+msgid_plural "Please confirm the deletion of the following videos:"
+msgstr[0] "Veuillez confirmer la suppression de la vidéo suivante :"
+msgstr[1] "Veuillez confirmer la suppression des vidéos suivantes :"
 
 #: pod/video/static/js/filter_aside_video_list_refresh.js
 msgid "%(count)s video found"

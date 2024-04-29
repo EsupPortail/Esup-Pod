@@ -1,4 +1,9 @@
 /**
+ * @file Esup-pod Add or edit playlist.
+ * @since 3.4.0
+ */
+
+/**
  * Hide or show the password field. If it is show, it is required.
  *
  * @param {boolean} toHide For hide the field, set to `true`.
@@ -40,10 +45,10 @@ visibilityHelpElement.parentNode.insertBefore(document.createElement('br'), visi
 
 const visibilitySelectElement = document.getElementById('id_visibility');
 const passwordInputElement = document.getElementById('id_password');
-const passwordDivElement = passwordInputElement.closest(".list-group-item");
+const passwordDivElement = passwordInputElement.closest(".form-group-item");
 
 const promotedInputElement = document.getElementById('id_promoted');
-const promotedDivElement = promotedInputElement.closest(".list-group-item");
+const promotedDivElement = promotedInputElement.closest(".form-group-item");
 
 if (visibilitySelectElement.value !== 'protected') {
     hidePasswordField(true);

@@ -13,7 +13,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "3.5.2"
+VERSION = "3.6.0"
 
 ##
 # Installed applications list
@@ -119,6 +119,7 @@ TEMPLATES = [
                 # Local contexts
                 "pod.main.context_processors.context_settings",
                 "pod.main.context_processors.context_footer",
+                "pod.main.context_processors.context_block",
                 "pod.video.context_processors.context_video_data",
                 "pod.video.context_processors.context_video_settings",
                 "pod.authentication.context_processors.context_authentication_settings",

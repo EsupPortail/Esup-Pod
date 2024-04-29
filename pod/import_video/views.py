@@ -1,4 +1,5 @@
 """Esup-Pod import_video views.
+
 More information on this module at: https://www.esup-portail.org/wiki/x/BQCnSw
 """
 
@@ -286,7 +287,7 @@ def add_or_edit_external_recording(request, id=None):
         if form.is_valid():
             recording = save_recording_form(request, form)
             display_message_with_icon(
-                request, messages.INFO, _("The changes have been saved.")
+                request, messages.SUCCESS, _("The changes have been saved.")
             )
             return redirect(reverse("import_video:external_recordings"))
         else:
@@ -347,7 +348,7 @@ def delete_external_recording(request, id: int):
             msg += args["message"]
     if delete and msg == "":
         msg += _("The external recording has been deleted.")
-        display_message_with_icon(request, messages.INFO, msg)
+        display_message_with_icon(request, messages.SUCCESS, msg)
     else:
         display_message_with_icon(request, messages.ERROR, msg)
     return redirect(reverse("import_video:external_recordings", args=()))
@@ -457,7 +458,7 @@ def upload_video_recording_to_pod(request, record_id: int):  # noqa: C901
             # Mediacad platform
             return upload_mediacad_recording_to_pod(request, record_id, type_source_url)
         elif type_source_url is not None and type_source_url.type == "BBB_Presentation":
-            # Old BigBlueBlutton playback (presentation format) :
+            # Old BigBlueBlutton playback (presentation format):
             # convert this presentation in video and upload automatically to Pod
             # via an asynchronous task
             if USE_IMPORT_VIDEO_BBB_RECORDER:
@@ -493,6 +494,7 @@ def upload_video_recording_to_pod(request, record_id: int):  # noqa: C901
 
 def upload_standard_video_recording_to_pod(record_id: int) -> bool:
     """Upload a standard video file (or BBB video file) recording to Pod.
+
     Used with an URL.
 
     Args:
@@ -607,6 +609,7 @@ def upload_bbb_esr_video_recording_to_pod(record_id: int, source_url: str) -> bo
 
 def upload_local_video_recording_to_pod(record_id: id, dest_file: str, dest_path: str):
     """Upload a local (typically in Pod filesystem) video file recording to Pod.
+
     Useful for video files that have been encoded following
     the recording of a BBB presentation.
 
@@ -695,7 +698,7 @@ def upload_mediacad_recording_to_pod(
 
 
 def get_mediacad_api_description(type_source_url: TypeSourceURL) -> str:
-    """Returns description of a Mediacad video, after a call to Mediacad JSON API.
+    """Return description of a Mediacad video, after a call to Mediacad JSON API.
 
     Args:
         type_source_url (TypeSourceURL): informations about source URL
@@ -936,7 +939,8 @@ def upload_peertube_recording_to_pod(request, record_id: int) -> bool:  # noqa: 
 def start_bbb_encode_presentation_and_upload_to_pod(
     record_id: int, url: str, extension: str
 ):
-    """Send an asynchronous task or a thread to encode a BBB presentation
+    """Send an asynchronous task or a thread to encode a BBB presentation.
+
     into a video file and upload it to Pod.
 
     With Celery, logs can be found in encoding servers, worker.log.
@@ -962,7 +966,8 @@ def start_bbb_encode_presentation_and_upload_to_pod(
 def start_bbb_encode_presentation_and_move_to_destination(
     filename: str, url: str, dest_file: str
 ):
-    """Send an asynchronous task to encode or encode direclty a BBB presentation
+    """Send an asynchronous task to encode or encode direclty a BBB presentation.
+
     into a video file and move it to a specific directory.
 
     With Celery, logs can be found in encoding servers, worker.log.
@@ -1087,7 +1092,7 @@ def bbb_encode_presentation_and_upload_to_pod(record_id: int, url: str, extensio
             recording.save()
 
     else:
-        # Video file not generated : inform the user via the recording state
+        # Video file not generated: inform the user via the recording state
         recording.state = _(
             "Impossible to upload to Pod the video, "
             "the link provided does not seem valid."
@@ -1185,7 +1190,9 @@ def get_status_recording(data: ExternalRecording) -> str:
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
 def recording_with_token(request, id):
-    """Get for specific recording (recording created on BBB infrastructure that need a
+    """Get for specific recording.
+
+    (recording created on BBB infrastructure that need a
     token and used by meeting module), the presentation and video source URL, in JSON.
 
     Args:

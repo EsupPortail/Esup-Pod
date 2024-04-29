@@ -87,7 +87,7 @@ if (typeof loaded == "undefined") {
   });
 
   /*document.querySelectorAll("#open-folder-icon > *").forEach((el) => {
-    el.style = "pointer-events: none; cursor : pointer;";
+    el.style = "pointer-events: none; cursor: pointer;";
   });
   if (document.getElementById("open-folder-icon")) {
     document.getElementById("open-folder-icon").style.cursor = "pointer";
@@ -266,6 +266,20 @@ if (typeof loaded == "undefined") {
     return li;
   }
 
+  /**
+   * Creates a list item element in case of empty user list.
+   */
+  function emptyUserLi() {
+    const li = document.createElement("li");
+    li.classList.add("list-group-item");
+
+    const span = document.createElement("span");
+    span.classList.add("empty-user-text");
+    span.textContent = gettext("No user found");
+    li.appendChild(span);
+    return li;
+  }
+
   function reloadRemoveBtn() {
       let remove = gettext("Remove");
       const sharedPeopleContainer = document.getElementById("shared-people");
@@ -317,12 +331,16 @@ if (typeof loaded == "undefined") {
         .then((response) => response.json())
         .then((data) => {
           const userSearchContainer = document.getElementById("user-search");
-          userSearchContainer.innerHTML = "";
-          data.forEach((elt) => {
-            const listItem = user_li(add, elt, "add");
-            userSearchContainer.appendChild(listItem);
-          });
-          fadeIn(userSearchContainer);
+          userSearchContainer.textContent = "";
+          if (data.length === 0) {
+            userSearchContainer.appendChild(emptyUserLi());
+          } else {
+            data.forEach((elt) => {
+              const listItem = user_li(add, elt, "add");
+              userSearchContainer.appendChild(listItem);
+            });
+          }
+          userSearchContainer.classList.remove("d-none");
         })
         .catch((error) => {
           showalert(gettext("Server error") + "<br>" + error, "alert-danger");
@@ -337,7 +355,7 @@ if (typeof loaded == "undefined") {
   document.addEventListener("show.bs.modal", (event) => {
     if (event.target.id != "shareModalCenter") return;
     event.stopPropagation();
-    document.getElementById("user-search").style.display = "none";
+    document.getElementById("user-search").classList.add("d-none");
     document.getElementById("shared-people").textContent = "";
     let button = event.relatedTarget;
     var folder_id = button.dataset.folderid;

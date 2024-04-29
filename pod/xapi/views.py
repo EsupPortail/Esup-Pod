@@ -13,7 +13,7 @@ from ralph.models.selector import ModelSelector
 from ralph.models.validator import Validator
 
 """
-To use Ralph :
+To use Ralph:
 pip3 install ralph-malph==3.3.0
 from ralph.models.xapi.fields.actors import AccountActorField
 from ralph.models.xapi.video.statements import VideoPlayed
@@ -24,7 +24,7 @@ actor = AccountActorField(
         "name": get_actor_name(request)
     },
 )
-To test with celery :
+To test with celery:
 (django_pod3) pod@pod:/.../podv3$
     celery -A pod.xapi.xapi_tasks -l INFO -Q xapi --concurrency 1 -n xapi
 """
@@ -120,5 +120,5 @@ def validate_statement(statement):
         else:
             return False
     except Exception as e:
-        print("Statement validation exception : \n%s" % e)
+        print("Statement validation exception: \n%s" % e)
         return False

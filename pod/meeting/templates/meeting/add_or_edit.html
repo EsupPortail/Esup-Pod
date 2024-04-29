@@ -154,8 +154,13 @@
   {% endif %}
 {% endblock page_content %}
 
-{% block collapse_page_aside %}{% endblock collapse_page_aside %}
-{% block page_aside %}{% endblock page_aside %}
+{% block collapse_page_aside %}
+  {{ block.super }}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+  {% include 'meeting/filter_aside_meeting.html' %}
+{% endblock page_aside %}
 
 {% block more_script %}
   <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
@@ -276,20 +281,56 @@ if(modal_recurring_fields) {
 
 /* Manage personal meeting room */
 var is_personal = ('{{ form.instance.is_personal }}' == "True");
-var time_fieldset = document.getElementById('see_recurring_fields').parentElement.parentElement.parentElement; 
+var time_fieldset = document.getElementById('see_recurring_fields').parentElement.parentElement.parentElement;
 if (is_personal && time_fieldset){
-  // Hide the time fieldset
-  time_fieldset.classList.add("d-none");
+    // Hide the time fieldset
+    time_fieldset.classList.add("d-none");
 }
 
 /* Manage when voice bridge is modified in a bad format, after a BBB session start */
 var field_voice_bridge = document.getElementById('id_voice_bridge');
 if (field_voice_bridge) {
-  // Good format : between 10000 and 99999
+  // Good format: between 10000 and 99999
   if (field_voice_bridge.value > 99999 || field_voice_bridge.value < 10000) {
     new_voice_bridge = Math.floor(10000 + (Math.random() * 89999));
     field_voice_bridge.value = new_voice_bridge;
   }
 }
+
+/* Manage webinars */
+document.addEventListener("DOMContentLoaded", function (event) {
+    var webinar_input_group = document.querySelectorAll('[id^=meeting_form_input-group-webinar]')
+    var is_webinar = document.querySelector('input[name=is_webinar]');
+    let see_recurring_fields = document.getElementById('see_recurring_fields');
+    let field_guest_policy = document.getElementById('id_guest_policy');
+    let field_enable_chat = document.getElementById('id_enable_chat');
+    // Manage webinar mode: no recurring in such a case and guest policy = Always accept
+    if (is_webinar && see_recurring_fields && field_guest_policy) {
+      if (is_webinar.checked) {
+        see_recurring_fields.classList.add("d-none");
+        field_guest_policy.value = "ALWAYS_ACCEPT";
+        field_guest_policy.disabled = true;
+      }
+      is_webinar.addEventListener('change', function (event) {
+        if (is_webinar.checked) {
+          // No recurrence available for webinars
+          see_recurring_fields.classList.add("d-none");
+          field_guest_policy.disabled = true;
+        } else {
+          // Recurrence
+          see_recurring_fields.classList.remove("d-none");
+          field_guest_policy.disabled = false;
+          // No chat options for a normal meeting
+          if (field_enable_chat) {
+            field_enable_chat.checked = false;
+          }
+        }
+      });
+    }
+    // Do not display legend when no webinar fields
+    if (!is_webinar && webinar_input_group && webinar_input_group.length > 0) {
+      webinar_input_group[0].classList.add("d-none");
+    }
+});
 </script>
 {% endblock more_script %}

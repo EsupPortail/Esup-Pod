@@ -1,3 +1,5 @@
+"""Esup-Pod Shibboleth middleware authentication."""
+
 from shibboleth.middleware import ShibbolethRemoteUserMiddleware
 from django.conf import settings
 from pod.authentication.models import AFFILIATION_STAFF
@@ -46,7 +48,7 @@ class ShibbMiddleware(ShibbolethRemoteUserMiddleware):
     header = REMOTE_USER_HEADER
 
     def check_user_meta(self, user, shib_meta):
-        """Check shibboleth access rights with user's meta
+        """Check Shibboleth access rights with user's meta.
 
         Args:
             user: User,
@@ -62,7 +64,7 @@ class ShibbMiddleware(ShibbolethRemoteUserMiddleware):
         )
 
     def is_staffable(self, user):
-        """Check that given user, his domain is in authorized domains of shibboleth staff
+        """Check that given user, his domain is in authorized domains of shibboleth staff.
 
         Args:
             user: User

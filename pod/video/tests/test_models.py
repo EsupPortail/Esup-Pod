@@ -954,14 +954,14 @@ class VideoAccessTokenTestCase(TestCase):
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
-        print("VIDEO : %s" % Video.objects.all().count())
+        print("VIDEO: %s" % Video.objects.all().count())
         self.video = Video.objects.create(
             title="Video1",
             owner=user,
             video="test.mp4",
             type=Type.objects.get(id=1),
         )
-        print("SET UP VIDEO ID : %s" % self.video.id)
+        print("SET UP VIDEO ID: %s" % self.video.id)
         print(" --->  SetUp of VideoAccessTokenTestCase: OK!")
 
     def test_create_VideoAccessToken_default(self):
@@ -1007,7 +1007,7 @@ class VideoAccessTokenTestCase(TestCase):
         print(" ---> test_create_VideoAccessToken_already_exist: OK!")
 
     def test_delete_VideoAccessToken(self):
-        """Test delete of access token for a video"""
+        """Test delete of access token for a video."""
         accessToken = VideoAccessToken.objects.create(video=self.video)
         self.assertEqual(VideoAccessToken.objects.all().count(), 1)
         accessToken.delete()

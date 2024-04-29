@@ -1,4 +1,4 @@
-"""Tests for Video views."""
+"""Esup-Pod tests for Video views."""
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -405,9 +405,7 @@ class ThemeEditTestView(TestCase):
 
 
 class DashboardTestView(TestCase):
-    """
-    Test Dashboard view access and videos pagination
-    """
+    """Test Dashboard view access and videos pagination."""
 
     fixtures = [
         "initial_data.json",
@@ -771,7 +769,7 @@ class VideoEditTestView(TestCase):
             type=Type.objects.get(id=1),
         )
         rendition = VideoRendition.objects.get(resolution__contains="x360")
-        # add encoding to change file in test !
+        # add encoding to change file in test!
         encoding, created = EncodingVideo.objects.get_or_create(
             name="360p",
             video=video0,
@@ -1152,7 +1150,7 @@ class video_countTestView(TestCase):
     def test_video_countTestView_post_request(self):
         self.client = Client()
         video = Video.objects.get(title="Video1")
-        print("count : %s" % video.get_viewcount())
+        print("count: %s" % video.get_viewcount())
         self.assertEqual(video.get_viewcount(), 0)
         url = reverse("video:video_count", kwargs={"id": video.id})
         response = self.client.post(url, {})
@@ -1503,7 +1501,7 @@ class ChannelJsonResponseViews(TestCase):
             b'{"channels": {"0": {"id": 1, "url": "/first-channel/", "title": "First channel", "description": "", "headband": null, "color": null, "style": null, "owners": ["http://testserver/rest/users/1/"], "users": [], "visible": true, "themes": 0, "site": "http://testserver/rest/sites/1/", "videoCount": 1, "headbandImage": ""}}, "currentPage": 1, "totalPages": 1, "count": 1}',
             "[test_get_channels_for_navbar] Test if the response content is correct.",
         )
-        print(" ---> test_get_channels_for_navbar : OK!")
+        print(" ---> test_get_channels_for_navbar: OK!")
 
     @override_settings(HIDE_CHANNEL_TAB=False)
     def test_get_channel_tabs_for_navbar(self):
@@ -1524,7 +1522,7 @@ class ChannelJsonResponseViews(TestCase):
             b'{"0": {"id": 1, "name": "Simple addional channel tab"}}',
             "[test_get_channel_tabs_for_navbar] Test if the response content is correct.",
         )
-        print(" ---> test_get_channel_tabs_for_navbar : OK!")
+        print(" ---> test_get_channel_tabs_for_navbar: OK!")
 
     @override_settings(HIDE_CHANNEL_TAB=False)
     def test_get_channels_for_specific_channel_tab(self):
@@ -1547,7 +1545,7 @@ class ChannelJsonResponseViews(TestCase):
             b'{"channels": {"0": {"id": 2, "url": "/second-channel/", "title": "Second channel", "description": "", "headband": null, "color": null, "style": null, "owners": ["http://testserver/rest/users/1/"], "users": [], "visible": true, "themes": 0, "site": "http://testserver/rest/sites/1/", "videoCount": 1, "headbandImage": ""}}, "currentPage": 1, "totalPages": 1, "count": 1}',
             "[test_get_channels_for_specific_channel_tab] Test if the response content is correct.",
         )
-        print(" ---> test_get_channels_for_specific_channel_tab : OK!")
+        print(" ---> test_get_channels_for_specific_channel_tab: OK!")
 
 
 class VideoTranscriptTestView(TestCase):
@@ -1558,7 +1556,7 @@ class VideoTranscriptTestView(TestCase):
     ]
 
     def setUp(self):
-        """Set up data for test class"""
+        """Set up data for test class."""
         user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
             title="Video1",
@@ -1588,7 +1586,7 @@ class VideoTranscriptTestView(TestCase):
         response = self.client.get(url)
         # 403 permission denied
         self.assertEqual(response.status_code, 403)
-        print(" ---> test_video_transcript_get_request : OK!")
+        print(" ---> test_video_transcript_get_request: OK!")
 
     @override_settings(
         USE_TRANSCRIPTION=True,
@@ -1678,7 +1676,7 @@ class VideoTranscriptTestView(TestCase):
         )
         audio.refresh_from_db()
         self.assertEqual(audio.transcript, "fr")
-        print(" ---> test_video_transcript_get_request_transcription : OK!")
+        print(" ---> test_video_transcript_get_request_transcription: OK!")
 
 
 class VideoAccessTokenTestView(TestCase):
@@ -1733,7 +1731,7 @@ class VideoAccessTokenTestView(TestCase):
         video.save()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        print(" ---> test_video_access_tokens_get_request : OK!")
+        print(" ---> test_video_access_tokens_get_request: OK!")
 
     def test_video_access_tokens_post_request(self):
         """Check response for post request."""
@@ -1773,7 +1771,7 @@ class VideoAccessTokenTestView(TestCase):
         msg = _("A token has been created.")
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
         # here's how you test the first message
-        self.assertEqual(all_messages[-1].tags, "info")
+        self.assertEqual(all_messages[-1].tags, "success")
         self.assertEqual(all_messages[-1].message, msg)
         self.assertEqual(VideoAccessToken.objects.all().count(), 1)
         # ###################################
@@ -1818,8 +1816,8 @@ class VideoAccessTokenTestView(TestCase):
         msg = _("The token has been deleted.")
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
         # here's how you test the first message
-        self.assertEqual(all_messages[-1].tags, "info")
+        self.assertEqual(all_messages[-1].tags, "success")
         self.assertEqual(all_messages[-1].message, msg)
         self.assertEqual(VideoAccessToken.objects.all().count(), 0)
 
-        print(" ---> test_video_access_tokens_post_request : OK!")
+        print(" ---> test_video_access_tokens_post_request: OK!")

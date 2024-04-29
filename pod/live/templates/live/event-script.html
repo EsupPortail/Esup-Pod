@@ -684,69 +684,69 @@
         {% endif %}
     }
 
-    // BBB message sending
-    {% if display_chat %}
-        function displayReturnMessage(level, returnCode) {
-            let toReturn = "";
-            let returnElement = document.getElementById("message_return");
-            if (level === "info") {
-                returnElement.classList.add('alert');
-                returnElement.classList.add('alert-info');
-            } else {
-                returnElement.classList.add('alert');
-                returnElement.classList.add('alert-warning');
-            }
-            if (returnCode === "message_sent") {
-                toReturn = "{% trans 'Message sent' %}";
-            }
-            if (returnCode === "error_no_broadcaster_found") {
-                toReturn = "{% trans 'Message not sent: no broadcaster found' %}";
-            }
-            if (returnCode === "error_no_connection") {
-                toReturn = "{% trans 'Message not sent: connection problem (REDIS)' %}";
-            }
+    // Webinar message sending
+    {% if enable_chat %}
+      /**
+       *  Display if message was sent, or not, to the server.
+       */
+      function displayReturnMessage(level, returnCode) {
+          let toReturn = "";
+          let returnElement = document.getElementById("message_return");
+          if (level === "info") {
+              returnElement.classList.add('alert', 'alert-info');
+          } else {
+              returnElement.classList.add('alert', 'alert-danger');
+          }
+          if (returnCode === "message_sent") {
+              toReturn = "{% trans 'Message sent' %}";
+          }
+          if (returnCode === "error") {
+              toReturn = "{% trans 'Message not sent' %}";
+          }
 
-            returnElement.innerHTML = toReturn;
-            returnElement.style.display = "block";
-            setTimeout(function() {
-                returnElement.style.display = "none";
-            }, 3000)
-        }
+          returnElement.innerHTML = toReturn;
+          returnElement.classList.remove("d-none");
+          setTimeout(function() {
+              returnElement.classList.add("d-none");
+          }, 3000)
+      }
 
-        function sendBBBMessage(e) {
-            e.preventDefault();
-            let message = document.getElementById("message").value;
-            fetch("{% url 'bbb:live_publish_chat' id=event.broadcaster.id %}", {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    "X-CSRFToken": '{{ csrf_token }}'
-                },
-                body: JSON.stringify({"message": message}),
-            }).then((response) => {
-                if (response.ok)
-                    return response.json();
-                else
-                    return Promise.reject(response);
-            }).then((data) => {
-                document.getElementById('live_bbb_chat_form').reset();
-                if (data.is_sent) {
-                    // message_sent
-                    displayReturnMessage("info", data.message_return);
-                } else {
-                    // error_no_broadcaster_found: Message not sent: no broadcaster found
-                    // error_no_connection: Message not sent: no connection to REDIS
-                    displayReturnMessage("error", data.message_return);
-                }
-            }).catch((error) => {
-                console.log("{% trans 'Error calling' %} 'sendBBBMessage' " + error);
-            });
-        }
+      /**
+       * Send a message to a webinar live.
+       * */
+      function sendWebinarMessage(e) {
+          e.preventDefault();
+          let message = document.getElementById("message").value;
+          fetch("{% url 'meeting:live_publish_chat' id=event.id %}", {
+              method: 'POST',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                  "X-CSRFToken": '{{ csrf_token }}'
+              },
+              body: JSON.stringify({"message": message}),
+          }).then((response) => {
+              if (response.ok)
+                  return response.json();
+              else
+                  return Promise.reject(response);
+          }).then((data) => {
+              document.getElementById('live_meeting_chat_form').reset();
+              console.info(data);
+              if (data.res) {
+                  // Message_sent
+                  displayReturnMessage("info", data.message_return);
+              } else {
+                  displayReturnMessage("error", data.message_return);
+              }
+          }).catch((error) => {
+              console.log("{% trans 'Error calling' %} 'sendWebinarMessage' " + error);
+          });
+      }
 
-        document.getElementById('bbb-send-message').onclick = function ($this) {
-            sendBBBMessage($this);
-        };
+      document.getElementById('webinar-send-message').onclick = function ($this) {
+          sendWebinarMessage($this);
+      };
 
     {% endif %}
 
