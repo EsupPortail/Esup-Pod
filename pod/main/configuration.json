@@ -330,7 +330,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Noms des Claim permettant de récupérer l'attribut login mais dépendant de l'attribut du client dans l'IDP"
+                                    "Noms des Claim permettant de récupérer l’attribut login mais dépendant de l’attribut du client dans l’IDP"
                                 ]
                             },
                             "pod_version_end": "",
@@ -871,7 +871,7 @@
                                     "Activation of the Cut application"
                                 ],
                                 "fr": [
-                                    "Activation de l'application Cut"
+                                    "Activation de l’application Cut"
                                 ]
                             },
                             "pod_version_end": "",
@@ -880,7 +880,7 @@
                     },
                     "title": {
                         "en": "Cut application configuration",
-                        "fr": "Configuration de l'application Cut"
+                        "fr": "Configuration de l’application Cut"
                     }
                 },
                 "dressing": {
@@ -911,7 +911,7 @@
                     },
                     "title": {
                         "en": "Dressing application configuration",
-                        "fr": "Configuration de l'application dressing"
+                        "fr": "Configuration de l’application dressing"
                     }
                 },
                 "enrichment": {
@@ -929,7 +929,7 @@
                             "Set `USE_IMPORT_VIDEO` to True to activate this application."
                         ],
                         "fr": [
-                            "Application Import_video permettant d'importer des vidéos externes dans Pod.",
+                            "Application Import_video permettant d’importer des vidéos externes dans Pod.",
                             "Mettre `USE_IMPORT_VIDEO` à True pour activer cette application."
                         ]
                     },
@@ -943,7 +943,7 @@
                                 ],
                                 "fr": [
                                     "Taille maximum en Go des fichiers vidéos qui peuvent être importés sur la plateforme ",
-                                    "via l'application import_video (0 = pas de taille maximum)."
+                                    "via l’application import_video (0 = pas de taille maximum)."
                                 ]
                             },
                             "pod_version_end": "",
@@ -969,7 +969,7 @@
                                     "Activation of the video import application"
                                 ],
                                 "fr": [
-                                    "Activation de l’application d'import des vidéos"
+                                    "Activation de l’application d’import des vidéos"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1000,8 +1000,8 @@
                                 ],
                                 "fr": [
                                     "Répertoire du plugin bbb-recorder (voir la documentation https://github.com/jibon57/bbb-recorder).",
-                                    "bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d'encodage.",
-                                    "bbb-recorder crée un répertoire Downloads, au même niveau, qui nécessite de l'espace disque."
+                                    "bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d’encodage.",
+                                    "bbb-recorder crée un répertoire Downloads, au même niveau, qui nécessite de l’espace disque."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1023,7 +1023,7 @@
                     },
                     "title": {
                         "en": "Video import application configuration",
-                        "fr": "Configuration application d'import vidéo"
+                        "fr": "Configuration application d’import vidéo"
                     }
                 },
                 "live": {
@@ -1145,7 +1145,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Nombre de tentatives maximum pour vérifier la présence / taille d'un fichier sur le filesystem"
+                                    "Nombre de tentatives maximum pour vérifier la présence / taille d’un fichier sur le filesystem"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1264,7 +1264,7 @@
                                 ],
                                 "fr": [
                                     "",
-                                    "Activer l'auto-transcription pour les directs"
+                                    "Activer l’auto-transcription pour les directs"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1352,7 +1352,7 @@
                                     "Display videos from non visible channels on the homepage"
                                 ],
                                 "fr": [
-                                    "Affiche les vidéos de chaines non visibles sur la page d'accueil"
+                                    "Affiche les vidéos de chaines non visibles sur la page d’accueil"
                                 ]
                             },
                             "pod_version_end": "3.6.0",
@@ -1391,7 +1391,7 @@
                                     "Activation of the video import application"
                                 ],
                                 "fr": [
-                                    "Activation de l’application d'import des vidéos"
+                                    "Activation de l’application d’import des vidéos"
                                 ]
                             },
                             "pod_version_end": "",
@@ -1629,7 +1629,7 @@
                                 "fr": [
                                     "",
                                     "Diaporama préchargé pour les réunions virtuelles.",
-                                    "Un utilisateur peut remplacer cette valeur en choisissant un diaporama lors de la création d'une réunion virtuelle.",
+                                    "Un utilisateur peut remplacer cette valeur en choisissant un diaporama lors de la création d’une réunion virtuelle.",
                                     "Doit se trouver dans le répertoire statique."
                                 ]
                             },
@@ -1817,8 +1817,8 @@
                                     "The coutdown is not present if it at 0."
                                 ],
                                 "fr": [
-                                    "Compte à rebours utilisé entre chaque vidéo lors de la lecture d'une playlist en lecture automatique.",
-                                    "Le compte à rebours n'est pas présent s'il est à 0."
+                                    "Compte à rebours utilisé entre chaque vidéo lors de la lecture d’une playlist en lecture automatique.",
+                                    "Le compte à rebours n’est pas présent s’il est à 0."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1839,6 +1839,19 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.4"
                         },
+                        "RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Restrict access to promoted playlists creation to staff only."
+                                ],
+                                "fr": [
+                                    "Restreindre l’accès à la création de listes de lecture promues au staff uniquement."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.6"
+                        },
                         "USE_FAVORITES": {
                             "default_value": true,
                             "description": {
@@ -1846,7 +1859,7 @@
                                     "Activation of favorite videos. Allows users to add videos to their favorites."
                                 ],
                                 "fr": [
-                                    "Activation des vidéos favorites. Permet aux utilisateurs d'ajouter des vidéos dans leurs favoris."
+                                    "Activation des vidéos favorites. Permet aux utilisateurs d’ajouter des vidéos dans leurs favoris."
                                 ]
                             },
                             "pod_version_end": "",
@@ -1859,11 +1872,24 @@
                                     "Activation of playlist. Allows users to add videos in a playlist."
                                 ],
                                 "fr": [
-                                    "Activation des playlist. Permet aux utilisateurs d'ajouter des vidéos dans une playlist."
+                                    "Activation des playlist. Permet aux utilisateurs d’ajouter des vidéos dans une playlist."
                                 ]
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.4"
+                        },
+                        "USE_PROMOTED_PLAYLIST": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of promoted playlists. Allows users to use the promoted playlists."
+                                ],
+                                "fr": [
+                                    "Activation des playlist promues. Permet aux utilisateurs d'utiliser les listes de lecture promues."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.6"
                         }
                     },
                     "title": {
@@ -2266,7 +2292,7 @@
                                 ],
                                 "fr": [
                                     "",
-                                    "Temps en seconde de conservation des données de l'application video"
+                                    "Temps en seconde de conservation des données de l’application video"
                                 ]
                             },
                             "pod_version_end": "",
@@ -2698,7 +2724,7 @@
                                 ],
                                 "fr": [
                                     "",
-                                    "nombre d'item renvoyé par le flux rss"
+                                    "nombre d’item renvoyé par le flux rss"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3034,8 +3060,8 @@
                         "fr": [
                             "",
                             "Application pour l’encodage et la transcription de vidéo.",
-                            "Il est possible d'encoder en local ou en distant.",
-                            "Attention, il faut configurer Celery pour l’envoi des instructions pour l'encodage distant."
+                            "Il est possible d’encoder en local ou en distant.",
+                            "Attention, il faut configurer Celery pour l’envoi des instructions pour l’encodage distant."
                         ]
                     },
                     "settings": {
@@ -3161,8 +3187,8 @@
                                 ],
                                 "fr": [
                                     "",
-                                    "Il faut renseigner l'url du redis sur lequel Celery va chercher les ordres d'encodage et de transcription",
-                                    "par exemple : \"redis://redis:6379/7\""
+                                    "Il faut renseigner l’url du redis sur lequel Celery va chercher les ordres d’encodage et de transcription",
+                                    "par exemple : \"redis://redis:6379/7\""
                                 ]
                             },
                             "pod_version_end": "",
@@ -3199,7 +3225,7 @@
                                 ],
                                 "fr": [
                                     "",
-                                    "Si True, active l'encodage et la transcription sur un environnement distant via redis+celery"
+                                    "Si True, active l’encodage et la transcription sur un environnement distant via redis+celery"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3210,11 +3236,11 @@
                             "description": {
                                 "en": [
                                     "Address of API rest to be called at the end of remote encoding or remote transcription.",
-                                    "Example : https://pod.univ.fr/rest/"
+                                    "Example: https://pod.univ.fr/rest/"
                                 ],
                                 "fr": [
-                                    "Adresse de l'API rest a appeler en fin d'encodage distant ou de transcription à distance.",
-                                    "Exemple : https://pod.univ.fr/rest/"
+                                    "Adresse de l’API rest à appeler en fin d’encodage distant ou de transcription à distance.",
+                                    "Exemple : https://pod.univ.fr/rest/"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3228,8 +3254,8 @@
                                     "To create it, go to Admin > Authentication token > token."
                                 ],
                                 "fr": [
-                                    "Token d'authentification utilisé pour l'appel en fin d'encodage distant ou de transcription à distance.",
-                                    "Pour le créer, il faut aller dans la partie Admin > Jeton d'authentification > token."
+                                    "Token d’authentification utilisé pour l’appel en fin d’encodage distant ou de transcription à distance.",
+                                    "Pour le créer, il faut aller dans la partie Admin > Jeton d’authentification > token."
                                 ]
                             },
                             "pod_version_end": "",
@@ -3354,7 +3380,7 @@
                                     "Pour utiliser la version 7 ou 8, faire une mise à jour du paquet elasticsearch-py ",
                                     "Pour la 7, `pip3 install elasticsearch==7.17.7`,",
                                     "et pour la 8, `pip3 install elasticsearch==8.8.1`.",
-                                    "Voir [https://elasticsearch-py.readthedocs.io/]() pour plus d'information."
+                                    "Voir [https://elasticsearch-py.readthedocs.io/]() pour plus d’information."
                                 ]
                             },
                             "pod_version_end": "",
@@ -3368,7 +3394,7 @@
                                 ],
                                 "fr": [
                                     "Options d’ElasticSearch, notamment utilisées pour ES8 en SSL et avec un user en paramètre",
-                                    "Voir [https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/config.html]() pour plus d'informations."
+                                    "Voir [https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/config.html]() pour plus d’informations."
                                 ]
                             },
                             "pod_version_end": "",
@@ -3404,7 +3430,7 @@
                                 ],
                                 "fr": [
                                     "",
-                                    "Activation de l'application xAPI"
+                                    "Activation de l’application xAPI"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3418,7 +3444,7 @@
                                 ],
                                 "fr": [
                                     "",
-                                    "Si False, le nom de l'utilisateur sera stocké en clair dans les statements xAPI, si True, son nom d'utilisateur sera anonymisé"
+                                    "Si False, le nom de l’utilisateur sera stocké en clair dans les statements xAPI, si True, son nom d’utilisateur sera anonymisé"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3432,7 +3458,7 @@
                                 ],
                                 "fr": [
                                     "",
-                                    "identifiant de connexion du LRS pour l'envoi des statements"
+                                    "identifiant de connexion du LRS pour l’envoi des statements"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3446,7 +3472,7 @@
                                 ],
                                 "fr": [
                                     "",
-                                    "mot de passe de connexion du LRS pour l'envoi des statements"
+                                    "mot de passe de connexion du LRS pour l’envoi des statements"
                                 ]
                             },
                             "pod_version_end": "",
@@ -3460,7 +3486,7 @@
                                 ],
                                 "fr": [
                                     "",
-                                    "URL de destination pour l'envoi des statements. I.E. : https://ralph.univ.fr/xAPI/statements"
+                                    "URL de destination pour l’envoi des statements. I.E. : https://ralph.univ.fr/xAPI/statements"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4305,7 +4331,7 @@
                                     "__ref: [https://django-debug-toolbar.readthedocs.io/en/latest/]()__"
                                 ],
                                 "fr": [
-                                    "Une valeur booléenne qui active ou désactive l'outil de débogage.<br>",
+                                    "Une valeur booléenne qui active ou désactive l’outil de débogage.<br>",
                                     "Ne déployez jamais de site en production avec le réglage USE_DEBUG_TOOLBAR activé.<br>",
                                     "__ref: [https://django-debug-toolbar.readthedocs.io/en/latest/]()__"
                                 ]
@@ -4953,8 +4979,8 @@
                                     "'FAVICON': 'img/pod_favicon.svg',",
                                     " ",
                                     "# Si souhaitée, à créer et sauvegarder",
-                                    "#  dans le répertoire static de l'application custom et",
-                                    "#  préciser le chemin d'accès. Par exemple : \"custom/etab.css\"",
+                                    "#  dans le répertoire static de l’application custom et",
+                                    "#  préciser le chemin d’accès. Par exemple : \"custom/etab.css\"",
                                     "'CSS_OVERRIDE': '',",
                                     " ",
                                     "# Vous pouvez créer un template dans votre application custom et",
@@ -5263,7 +5289,7 @@
                     "description": {
                         "en": "",
                         "fr": [
-                            "Mise en place du mode PWA grâce à l'application Django-pwa",
+                            "Mise en place du mode PWA grâce à l’application Django-pwa",
                             "Voici la configuration par défaut pour Pod, vous pouvez surcharger chaque variable dans votre fichier de configuration.",
                             "PWA_APP_NAME = \"Pod\"",
                             "PWA_APP_DESCRIPTION = (",
@@ -5281,7 +5307,7 @@
                             "PWA_APP_STATUS_BAR_COLOR = \"default\"",
                             "PWA_APP_DIR = \"ltr\"",
                             "PWA_APP_LANG = \"fr-FR\"",
-                            "Pour en savoir plus : [https://github.com/silviolleite/django-pwa]()"
+                            "Pour en savoir plus : [https://github.com/silviolleite/django-pwa]()"
                         ]
                     },
                     "pod_version_end": "",
@@ -5292,7 +5318,7 @@
                     "description": {
                         "en": "",
                         "fr": [
-                            "version 3.14.0: mise en place de l’API rest pour l’application",
+                            "version 3.14.0 : mise en place de l’API rest pour l’application",
                             "[https://www.django-rest-framework.org/]()"
                         ]
                     },

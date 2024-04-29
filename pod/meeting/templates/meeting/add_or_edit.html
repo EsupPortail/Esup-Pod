@@ -290,7 +290,7 @@ if (is_personal && time_fieldset){
 /* Manage when voice bridge is modified in a bad format, after a BBB session start */
 var field_voice_bridge = document.getElementById('id_voice_bridge');
 if (field_voice_bridge) {
-  // Good format : between 10000 and 99999
+  // Good format: between 10000 and 99999
   if (field_voice_bridge.value > 99999 || field_voice_bridge.value < 10000) {
     new_voice_bridge = Math.floor(10000 + (Math.random() * 89999));
     field_voice_bridge.value = new_voice_bridge;
@@ -304,7 +304,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     let see_recurring_fields = document.getElementById('see_recurring_fields');
     let field_guest_policy = document.getElementById('id_guest_policy');
     let field_enable_chat = document.getElementById('id_enable_chat');
-    // Manage webinar mode : no recurring in such a case and guest policy = Always accept
+    // Manage webinar mode: no recurring in such a case and guest policy = Always accept
     if (is_webinar && see_recurring_fields && field_guest_policy) {
       if (is_webinar.checked) {
         see_recurring_fields.classList.add("d-none");
@@ -328,7 +328,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
     // Do not display legend when no webinar fields
-    if (!is_webinar && webinar_input_group) {
+    if (!is_webinar && webinar_input_group && webinar_input_group.length > 0) {
       webinar_input_group[0].classList.add("d-none");
     }
 });

@@ -1,6 +1,4 @@
-"""
-Unit tests for completion views
-"""
+"""Unit tests for completion views."""
 
 from django.test import TestCase
 from django.conf import settings

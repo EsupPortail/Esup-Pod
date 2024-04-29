@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-15 07:45+0000\n"
-"PO-Revision-Date: 2023-02-08 15:22+0100\n"
+"POT-Creation-Date: 2024-04-29 10:28+0000\n"
+"PO-Revision-Date: 2024-04-15 14:27+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 msgid "Get time from the player"
@@ -537,6 +537,10 @@ msgid "Enter new name of folder"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
+msgid "No user found"
+msgstr ""
+
+#: pod/podfile/static/podfile/js/filewidget.js
 msgid "Remove"
 msgstr ""
 
@@ -690,6 +694,12 @@ msgstr[1] ""
 #: pod/video/static/js/dashboard.js
 msgid "Please confirm the editing of the following video:"
 msgid_plural "Please confirm the editing of the following videos:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/static/js/dashboard.js
+msgid "Please confirm the deletion of the following video:"
+msgid_plural "Please confirm the deletion of the following videos:"
 msgstr[0] ""
 msgstr[1] ""
 

@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-15 07:45+0000\n"
-"PO-Revision-Date: 2023-06-08 14:37+0200\n"
+"POT-Creation-Date: 2024-04-29 10:28+0000\n"
+"PO-Revision-Date: 2024-04-15 14:27+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.3\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -1005,7 +1005,7 @@ msgstr ""
 
 #: pod/chapter/templates/video_chapter.html
 #: pod/completion/templates/video_completion.html
-#: pod/cut/templates/video_cut.html
+#: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 msgid "Help"
 msgstr ""
 
@@ -1041,8 +1041,7 @@ msgstr ""
 msgid "Enrich with selected subtitles"
 msgstr ""
 
-#: pod/completion/apps.py pod/completion/templates/video_completion.html
-#: pod/completion/views.py
+#: pod/completion/apps.py
 msgid "Video additions"
 msgstr ""
 
@@ -1190,7 +1189,7 @@ msgstr ""
 msgid "Document"
 msgstr ""
 
-#: pod/completion/models.py
+#: pod/completion/models.py pod/video/templates/videos/video-info.html
 msgid "Private document"
 msgstr ""
 
@@ -1762,6 +1761,11 @@ msgid "editor"
 msgstr ""
 
 #: pod/completion/views.py
+#, python-format
+msgid "Additions for the video “%s”"
+msgstr ""
+
+#: pod/completion/views.py
 msgid "You cannot complement this video."
 msgstr ""
 
@@ -1777,8 +1781,22 @@ msgstr ""
 msgid "The file has not been saved."
 msgstr ""
 
+#: pod/completion/views.py
+#, python-format
+msgid "Add a new contributor to the video “%s”"
+msgstr ""
+
+#: pod/completion/views.py
+msgid "The contributor has been saved."
+msgstr ""
+
 #: pod/completion/views.py pod/podfile/views.py pod/video/views.py
 msgid "Please correct errors"
+msgstr ""
+
+#: pod/completion/views.py
+#, python-format
+msgid "Edit the contributor “%s”"
 msgstr ""
 
 #: pod/cut/apps.py pod/cut/models.py
@@ -1837,6 +1855,7 @@ msgstr ""
 
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/playlist/templates/playlist/filter_aside.html
+#: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/filter_aside.html
 msgid "Reset"
 msgstr ""
@@ -1983,14 +2002,6 @@ msgstr ""
 msgid "Agreement required"
 msgstr ""
 
-#: pod/dressing/templates/dressing_edit.html
-msgid "Editing the dressing"
-msgstr ""
-
-#: pod/dressing/templates/dressing_edit.html pod/dressing/views.py
-msgid "Create a new dressing"
-msgstr ""
-
 #: pod/dressing/templates/dressing_edit.html pod/import_video/forms.py
 #: pod/live/forms.py pod/video/forms.py
 msgid "General settings"
@@ -2057,11 +2068,6 @@ msgid "Add new dressing"
 msgstr ""
 
 #: pod/dressing/templates/video_dressing.html
-#: pod/video/templates/videos/link_video.html
-msgid "Dress the video"
-msgstr ""
-
-#: pod/dressing/templates/video_dressing.html
 msgid "Pick a dressing below"
 msgstr ""
 
@@ -2077,6 +2083,32 @@ msgstr ""
 #: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/dashboard_modal.html
 msgid "Apply"
+msgstr ""
+
+#: pod/dressing/templates/video_dressing.html
+msgid "Dressings"
+msgstr ""
+
+#: pod/dressing/templates/video_dressing.html
+msgid ""
+"Dressings are a way to customize your video. You can add a watermark, "
+"opening and ending credits"
+msgstr ""
+
+#: pod/dressing/templates/video_dressing.html
+msgid ""
+"A watermark is an image that will be displayed on the video. You can choose "
+"the position and the opacity of the watermark."
+msgstr ""
+
+#: pod/dressing/templates/video_dressing.html
+msgid "Credits"
+msgstr ""
+
+#: pod/dressing/templates/video_dressing.html
+msgid ""
+"Opening and ending credits are videos that will be displayed at the "
+"beginning or at the end of the video."
 msgstr ""
 
 #: pod/dressing/tests/test_views.py pod/dressing/views.py
@@ -2103,6 +2135,15 @@ msgstr ""
 #: pod/dressing/views.py pod/import_video/views.py pod/live/views.py
 #: pod/meeting/views.py pod/video/views.py
 msgid "The changes have been saved."
+msgstr ""
+
+#: pod/dressing/views.py
+#, python-format
+msgid "Edit the dressing “%s”"
+msgstr ""
+
+#: pod/dressing/views.py
+msgid "Create a new dressing"
 msgstr ""
 
 #: pod/dressing/views.py
@@ -3101,7 +3142,6 @@ msgid ""
 msgstr ""
 
 #: pod/live/models.py pod/meeting/models.py pod/playlist/models.py
-#: pod/playlist/templates/playlist/playlist-informations-card.html
 #: pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/dashboard.html
 msgid "Additional owners"
@@ -3430,21 +3470,6 @@ msgstr ""
 #: pod/live/templates/live/event-info.html pod/main/templates/aside.html
 #: pod/video/templates/videos/video-info.html
 msgid "Share on"
-msgstr ""
-
-#: pod/live/templates/live/event-info.html pod/main/templates/aside.html
-#: pod/video/templates/videos/video-info.html
-msgid "Share on Facebook"
-msgstr ""
-
-#: pod/live/templates/live/event-info.html pod/main/templates/aside.html
-#: pod/video/templates/videos/video-info.html
-msgid "Share on X (Twitter)"
-msgstr ""
-
-#: pod/live/templates/live/event-info.html pod/main/templates/aside.html
-#: pod/video/templates/videos/video-info.html
-msgid "Share on LinkedIn"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
@@ -4601,7 +4626,7 @@ msgstr ""
 
 #: pod/main/models.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_breadcrumbs.html
-#: pod/playlist/tests/test_models.py pod/playlist/views.py
+#: pod/playlist/tests/test_models.py
 #: pod/video/templates/videos/video_breadcrumbs.html
 msgid "Playlist"
 msgstr ""
@@ -4655,7 +4680,7 @@ msgid "No cache"
 msgstr ""
 
 #: pod/main/models.py
-msgid "Check this box if you don't want to keep the cache."
+msgid "Check this box if you don’t want to keep the cache."
 msgstr ""
 
 #: pod/main/models.py
@@ -5513,7 +5538,7 @@ msgstr ""
 
 #: pod/meeting/models.py
 msgid ""
-"If this box is checked, this meeting corresponds to the user's personal "
+"If this box is checked, this meeting corresponds to the user’s personal "
 "meeting room."
 msgstr ""
 
@@ -5525,7 +5550,7 @@ msgstr ""
 msgid ""
 "Do you want to start this meeting as a webinar? In such a case, you can "
 "invite presenters to join you in BigBlueButton, and listeners will have "
-"direct access to a livestream in the livestreams page. "
+"direct access to a livestream in the livestreams page."
 msgstr ""
 
 #: pod/meeting/models.py
@@ -5708,19 +5733,19 @@ msgstr ""
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
 "This Webinar mode enables you to transmit information to a large audience "
-"via a live broadcast (accessible from the platform's live page) and "
+"via a live broadcast (accessible from the platform’s live page) and "
 "interaction - if you wish - via an integrated chat."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
-"Once you've saved the form, you can start the webinar by clicking on the "
-"'Start the webinar' button."
+"Once you’ve saved the form, you can start the webinar by clicking on the "
+"“Start the webinar” button."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
-"Shortly after clicking the 'Start the webinar' button, the live stream will "
+"Shortly after clicking the “Start the webinar” button, the live stream will "
 "be available to users on the <i class='bi bi-broadcast mx-1' aria-"
 "hidden='true'></i> <b>Lives</b> page."
 msgstr ""
@@ -6140,11 +6165,11 @@ msgid "Impossible to create the internal recording"
 msgstr ""
 
 #: pod/meeting/views.py
-msgid "You can't end this webinar live."
+msgid "You can’t end this webinar live."
 msgstr ""
 
 #: pod/meeting/views.py
-msgid "You can't restart this webinar live."
+msgid "You can’t restart this webinar live."
 msgstr ""
 
 #: pod/meeting/webinar.py
@@ -6222,7 +6247,7 @@ msgstr ""
 msgid "Security informations"
 msgstr ""
 
-#: pod/playlist/forms.py pod/playlist/models.py
+#: pod/playlist/forms.py
 msgid "Please choose a title between 1 and 250 characters."
 msgstr ""
 
@@ -6296,6 +6321,13 @@ msgstr ""
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
+msgstr ""
+
+#: pod/playlist/models.py
+#, python-brace-format
+msgid ""
+"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+"characters."
 msgstr ""
 
 #: pod/playlist/models.py
@@ -6458,6 +6490,10 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/playlist-informations-card.html
 msgid "Access to playlist owner profile"
+msgstr ""
+
+#: pod/playlist/templates/playlist/playlist-informations-card.html
+msgid "Additional owners:"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist-informations-card.html
@@ -6650,6 +6686,11 @@ msgstr ""
 
 #: pod/playlist/tests/test_forms.py
 msgid "You cannot create a playlist named \"Favorites\""
+msgstr ""
+
+#: pod/playlist/tests/test_views.py pod/playlist/views.py
+#, python-format
+msgid "Playlist: %(name)s"
 msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
@@ -7561,8 +7602,8 @@ msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
 msgid ""
-"For information, you will find below the list of video will soon arrive at "
-"the deletion deadline."
+"For your information, below is the list of videos that will soon reach the "
+"deletion deadline."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -8094,6 +8135,10 @@ msgid "Help for form fields"
 msgstr ""
 
 #: pod/video/templates/videos/add_video.html
+msgid "You must accept the necessary authorizations to continue."
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html
 msgid "Upload a media file first."
 msgstr ""
 
@@ -8236,10 +8281,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/video/templates/videos/dashboard.html
-msgid "Clear selection"
-msgstr ""
-
-#: pod/video/templates/videos/dashboard.html
 msgid ""
 "You have not uploaded any videos yet, please use the ”Add a new video” "
 "button to add one"
@@ -8321,6 +8362,10 @@ msgstr ""
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Chapter the video"
+msgstr ""
+
+#: pod/video/templates/videos/link_video.html
+msgid "Dress the video"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html
@@ -8427,11 +8472,21 @@ msgid "Tags:"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
+#, python-format
+msgid "Show video list having tag “%(video_tag)s”"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
 msgid "No information available"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
 msgid "Infos"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
+#, python-format
+msgid "Show video list of user “%(video_user_name)s”"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
@@ -8443,11 +8498,12 @@ msgid "Contributor(s):"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
-msgid "send an email"
-msgstr "stuur een email"
+#, python-format
+msgid "Send an email to “%(contributor_name)s”"
+msgstr ""
 
 #: pod/video/templates/videos/video-info.html
-msgid "contributor web link"
+msgid "Contributor web link"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
@@ -8461,6 +8517,11 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/video/templates/videos/video-info.html
+#, python-format
+msgid "Show video list of type “%(type_title)s”"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
 msgid "Main language:"
 msgstr ""
 
@@ -8470,6 +8531,11 @@ msgstr ""
 
 #: pod/video/templates/videos/video-info.html
 msgid "Discipline(s):"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
+#, python-format
+msgid "Show video list of discipline “%(discipline_title)s”"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
@@ -8489,10 +8555,17 @@ msgid "Document:"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
+msgid "Public document"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
+msgid "Please note that your video is in draft mode."
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
 msgid ""
-"Please note that your video is in draft mode.<br>\n"
-"  The following links contain a key allowing access.\n"
-"  Anyone with this links can access it."
+"The following links contain a key allowing access. Anyone with this links "
+"can access it."
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
@@ -8524,8 +8597,11 @@ msgid "Check the box to indicate the beginning of playing desired."
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Manage access tokens"
+msgid "Use an embed code to display the video in a web page."
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
+msgid "Manage integration code in access tokens page"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
@@ -8536,6 +8612,14 @@ msgstr ""
 msgid ""
 "Use these links in a BigBlueButton meeting or an interactive H5P video "
 "activity:"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
+msgid "By sharing a link, you allow others to view the video."
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
+msgid "Manage sharing link in access tokens page"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
@@ -8613,7 +8697,7 @@ msgid "Video Collaborate"
 msgstr ""
 
 #: pod/video/templates/videos/video_collaborate.html
-msgid "Tricks"
+msgid "Tricks:"
 msgstr ""
 
 #: pod/video/templates/videos/video_collaborate.html
@@ -8689,6 +8773,10 @@ msgstr ""
 #: pod/video/templates/videos/video_edit.html
 #, python-format
 msgid "Edit the %(app)s"
+msgstr ""
+
+#: pod/video/templates/videos/video_edit.html
+msgid "Manage access tokens"
 msgstr ""
 
 #: pod/video/templates/videos/video_edit.html

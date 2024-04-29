@@ -1,3 +1,5 @@
+"""Esup-Pod authentication models test cases."""
+
 from django.test import TestCase
 from pod.authentication.models import Owner, AccessGroup
 from django.contrib.auth.models import User
@@ -9,15 +11,15 @@ SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 
 
 class OwnerTestCase(TestCase):
-    """OwnerTestCase"""
+    """Owner Test Case."""
 
     def setUp(self):
-        """setUp OwnerTestCase create user pod"""
+        """Set up OwnerTestCase create user Pod."""
         User.objects.create(username="pod", password="pod1234pod")
         # Owner.objects.create(user=user)
 
     def test_creation_owner(self):
-        """check if owner exist with username pod and check hashkey"""
+        """Check if owner exist with username pod and check hashkey."""
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
         self.assertEqual(user.owner, owner)
@@ -33,16 +35,16 @@ class OwnerTestCase(TestCase):
 
 
 class AccessGroupTestCase(TestCase):
-    """AcessGroupTestCase"""
+    """Acess Group Test Case."""
 
     def setUp(self):
-        """setUp AcessGroupTestCase create user pod"""
+        """Set up AcessGroupTestCase create user Pod."""
         User.objects.create(username="pod", password="pod1234pod")
 
         AccessGroup.objects.create(code_name="group1", display_name="Group 1")
 
     def test_creation_accessgroup(self):
-        """check if owner exist with username pod and check hashkey"""
+        """Check if owner exist with username pod and check hashkey."""
         accessgroup = AccessGroup.objects.get(code_name="group1")
         self.assertEqual(accessgroup.code_name, "group1")
         self.assertEqual(accessgroup.display_name, "Group 1")

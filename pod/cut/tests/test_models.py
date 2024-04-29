@@ -40,7 +40,7 @@ class CutVideoModelTestCase(TestCase):
         cut.start = "00:00:12"
         cut.end = "00:00:08"
         self.assertRaises(ValidationError, cut.clean)
-        print(" ---> test_bad_time: OK ! --- CutVideoModel")
+        print(" ---> test_bad_time: OK! --- CutVideoModel")
 
     def test_verify_time__value_error(self):
         """Test verify_time method with bad values."""
@@ -51,7 +51,7 @@ class CutVideoModelTestCase(TestCase):
         cut.start = "bad_value"
         cut.end = "bad_value"
         self.assertFalse(cut.verify_time())
-        print(" ---> test_verify_time_value_error: OK ! --- CutVideoModel")
+        print(" ---> test_verify_time_value_error: OK! --- CutVideoModel")
 
     def test_verify_time__good_values(self):
         """Test verify_time method with good values."""
@@ -62,16 +62,16 @@ class CutVideoModelTestCase(TestCase):
         cut.start = "00:00:00"
         cut.end = "00:00:15"
         self.assertTrue(cut.verify_time())
-        print(" ---> test_verify_time_good_values: OK ! --- CutVideoModel")
+        print(" ---> test_verify_time_good_values: OK! --- CutVideoModel")
 
     def test_start_in_int(self):
         """Test the start_in_int property."""
         cut = CutVideo.objects.get(id=1)
         self.assertEqual(cut.start_in_int, 0)
-        print(" ---> test_start_in_int: OK ! --- CutVideoModel")
+        print(" ---> test_start_in_int: OK! --- CutVideoModel")
 
     def test_end_in_int(self):
         """Test the end_in_int property."""
         cut = CutVideo.objects.get(id=1)
         self.assertEqual(cut.end_in_int, 20)
-        print(" ---> test_end_in_int: OK ! --- CutVideoModel")
+        print(" ---> test_end_in_int: OK! --- CutVideoModel")

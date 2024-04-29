@@ -1,4 +1,4 @@
-"""start or stop broadcaster recording based on live events."""
+"""Esup-Pod start or stop broadcaster recording based on live events."""
 
 import json
 from datetime import datetime
@@ -55,6 +55,7 @@ class Command(BaseCommand):
     def stop_finished(self):
         """
         Stop all the recording of today's already finished events but yet not stopped.
+
         Including the non auto-started events (to be sure they are not forgotten).
         """
         self.stdout.write("- Stopping finished events (if started with Pod) -")
@@ -70,7 +71,7 @@ class Command(BaseCommand):
 
         for event in events:
             self.stdout.write(
-                f"Event : '{event.slug}', " f"on Broadcaster '{event.broadcaster_id}' ",
+                f"Event: '{event.slug}', " f"on Broadcaster '{event.broadcaster_id}' ",
                 ending="",
             )
 
@@ -96,7 +97,8 @@ class Command(BaseCommand):
 
     def start_new(self):
         """
-        Starts all recording of the current events
+        Start all recording of the current events.
+
         that are auto-started configured and not stopped by manager.
         """
         self.stdout.write("- Starting new events -")
@@ -110,7 +112,7 @@ class Command(BaseCommand):
 
         for event in events:
             self.stdout.write(
-                f"Event : '{event.slug}', " f"on Broadcaster '{event.broadcaster_id}'",
+                f"Event: '{event.slug}', " f"on Broadcaster '{event.broadcaster_id}'",
                 ending="",
             )
 

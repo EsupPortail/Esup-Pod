@@ -302,7 +302,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         )
         response["videos"] = videos
         return JsonResponse(response, safe=False)
-        # TODO : replace this return by a
+        # TODO: replace this return by a
         #  render(request,"videos/video_list.html") like in channel
 
     return render(
@@ -1428,7 +1428,7 @@ def video_edit_access_tokens(request: WSGIRequest, slug: str = None):
             if request.POST["action"] == "add":
                 VideoAccessToken.objects.create(video=video)
                 messages.add_message(
-                    request, messages.INFO, _("A token has been created.")
+                    request, messages.SUCCESS, _("A token has been created.")
                 )
             elif request.POST["action"] == "delete" and request.POST.get("token"):
                 token = request.POST.get("token")
@@ -1460,7 +1460,7 @@ def delete_token(request, video: Video, token: VideoAccessToken):
     try:
         uuid.UUID(str(token))
         VideoAccessToken.objects.get(video=video, token=token).delete()
-        messages.add_message(request, messages.INFO, _("The token has been deleted."))
+        messages.add_message(request, messages.SUCCESS, _("The token has been deleted."))
     except (ValueError, ObjectDoesNotExist):
         messages.add_message(request, messages.ERROR, _("Token not found."))
 
@@ -1581,7 +1581,7 @@ def get_com_coms_dict(request, listComs):
 
       for each encountered com
     Starting from the coms present in listComs
-    Example, having the next tree of coms :
+    Example, having the next tree of coms:
     |- C1     (id: 1)
     |- C2     (id: 2)
        |- C3  (id: 3)
@@ -2810,7 +2810,7 @@ def get_children_comment(request, comment_id, video_slug):
             .first()
         )
         if parent_comment is None:
-            raise Exception("Error: comment doesn't exist : " + comment_id)
+            raise Exception("Error: comment doesn't exist: " + comment_id)
 
         children = parent_comment.get_json_children(request.user.id)
         parent_comment_data = {

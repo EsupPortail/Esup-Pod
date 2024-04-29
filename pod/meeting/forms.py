@@ -1,4 +1,4 @@
-"""Forms for the Meeting module."""
+"""Esup-Pod forms for the Meeting module."""
 
 import datetime
 import random
@@ -128,7 +128,8 @@ class MeetingForm(forms.ModelForm):
         delta=datetime.timedelta(minutes=30),
     ):
         """
-        Builds a choices tuple of (time object, time string) tuples
+        Build a choices tuple of (time object, time string) tuples.
+
         starting at the start time specified and ending at or before
         the end time specified in increments of size delta.
 
@@ -290,10 +291,12 @@ class MeetingForm(forms.ModelForm):
             form.remove_field("enable_chat")
 
     def clean_start_date(self):
-        """Check two things:
+        """Check two things about start date.
+
         - the start date is before the recurrence deadline.
         - in the case of weekly recurrence, the start day must be selected from the list of weekdays.
-        The function raise a validation error if a condition is not met."""
+        The function raise a validation error if a condition is not met.
+        """
         if (
             "start" in self.cleaned_data.keys()
             and "recurring_until" in self.cleaned_data.keys()

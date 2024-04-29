@@ -200,10 +200,10 @@ def render_base_videos(uniq_id, params, current_site, debug_elts):
 
     if params["debug"]:
         debug_elts.append(f"Database query '{str(videos.query)}'")
-        debug_elts.append("Found videos in container :")
+        debug_elts.append("Found videos in container:")
         debug_elts.extend(
             [
-                f" - Video informations : [ID:{video.id}] [SLUG:{video.slug}] [TITLE:{video.title}]"
+                f" - Video informations: [ID:{video.id}] [SLUG:{video.slug}] [TITLE:{video.title}]"
                 for video in videos
             ]
         )
@@ -249,11 +249,11 @@ def render_most_view(uniq_id, params, current_site, debug_elts):
 
     debug_elts.append(f"Database query '{str(most_viewed_videos.query)}'")
 
-    debug_elts.append("Found videos in container :")
+    debug_elts.append("Found videos in container:")
 
     for video in most_viewed_videos:
         debug_elts.append(
-            f" - Video informations : "
+            f" - Video informations: "
             f"[ID:{video.id}] [SLUG:{video.slug}] [RECENT_VIW_COUNT:{video.recentViewcount}]"
         )
 
@@ -296,7 +296,7 @@ def render_next_events(uniq_id, params, current_site, debug_elts):
 
     if params["debug"]:
         debug_elts.append(f"Database query '{event_list.query}'")
-        debug_elts.append("Found events in container :")
+        debug_elts.append("Found events in container:")
         for event in event_list:
             debug_elts.append(
                 f" - Video informations is [ID:{event.id}] [SLUG:{event.slug}] [TITLE:{event.title}]"
@@ -347,11 +347,11 @@ def render_last_view(uniq_id, params, current_site, debug_elts):
 
     debug_elts.append(f"Database query '{str(last_viewed_videos.query)}'")
 
-    debug_elts.append("Found videos in container :")
+    debug_elts.append("Found videos in container:")
 
     for video in last_viewed_videos:
         debug_elts.append(
-            f" - Video informations : "
+            f" - Video informations: "
             f"[ID:{video.id}] [SLUG:{video.slug}] [RECENT_VIW_COUNT:{video.recentViewcount}]"
         )
 

@@ -1,3 +1,5 @@
+"""Esup-Pod Video tags."""
+
 from django import template
 from django.utils.text import capfirst
 from django.urls import reverse
@@ -170,7 +172,8 @@ class getTagsForModelNode(TagsForModelNode):
 
 def do_tags_for_model(parser, token):
     """
-    Retrieves a list of ``Tag`` objects associated with a given model
+    Retrieve a list of `Tag` objects associated with a given model.
+
     and stores them in a context variable.
 
     Usage::
@@ -218,8 +221,10 @@ def do_tags_for_model(parser, token):
 
 def do_tag_cloud_for_model(parser, token):
     """
-    Retrieves a list of ``Tag`` objects for a given model, with tag
-    cloud attributes set, and stores them in a context variable.
+    Retrieve a list of `Tag` objects with tag cloud attributes set.
+
+    Retriev tags for a given model,
+    and stores them in a context variable.
 
     Usage::
 

@@ -20,7 +20,7 @@ env:
   ELASTICSEARCH_TAG: "elasticsearch:7.17.18"
   NODE_VERSION: "19"
   NODE_TAG: "node:19"
-  PYTHON_TAG: "python:3.9-buster"
+  PYTHON_TAG: "python:3.9-bullseye"
   REDIS_TAG: "redis:alpine3.16"
   DOCKER_ENV: "full-test"
 

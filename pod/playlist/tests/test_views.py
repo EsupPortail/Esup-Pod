@@ -153,9 +153,7 @@ class TestPlaylistsPageTestCase(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_private_filter(self) -> None:
-        """
-        Test if private playlists only are visible when the private filter is active.
-        """
+        """Test if private playlists only are visible when the private filter is active."""
         importlib.reload(context_processors)
         self.client.force_login(self.first_user)
         response = self.client.get(f"{self.url}?visibility=private")
@@ -181,9 +179,7 @@ class TestPlaylistsPageTestCase(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_protected_filter(self) -> None:
-        """
-        Test if protected playlists only are visible when the protected filter is active.
-        """
+        """Test if protected playlists only are visible when the protected filter is active."""
         importlib.reload(context_processors)
         self.client.force_login(self.first_user)
         response = self.client.get(f"{self.url}?visibility=protected")
@@ -724,8 +720,8 @@ class TestPlaylistPage(TestCase):
         importlib.reload(context_processors)
         self.client.force_login(self.user)
         response = self.client.get(self.url_fav_user1)
-        self.assertTrue(
-            f'{_("Playlist")} : {_(FAVORITE_PLAYLIST_NAME)}' in response.content.decode()
+        self.assertContains(
+            response, _("Playlist: %(name)s") % {"name": _(FAVORITE_PLAYLIST_NAME)}
         )
         self.client.logout()
         print(" --->  test_folder_icon_in_video_links ok")
@@ -1245,7 +1241,7 @@ class StartPlaylistViewTest(TestCase):
         print(" --->  test_start_playlist_private_not_owner ok")
 
     def test_start_playlist_protected_get_request_not_owner(self):
-        """Test if form password is present when not owner of a protected playlist"""
+        """Test if form password is present when not owner of a protected playlist."""
         importlib.reload(context_processors)
         self.client.force_login(self.user2)
         response = self.client.get(
@@ -1258,7 +1254,7 @@ class StartPlaylistViewTest(TestCase):
         print(" --->  test_start_playlist_protected_get_request_not_owner ok")
 
     def test_start_playlist_protected_get_request_owner(self):
-        """Test if form password is not present when owner of a protected playlist"""
+        """Test if form password is not present when owner of a protected playlist."""
         importlib.reload(context_processors)
         self.client.force_login(self.user)
         response = self.client.get(

@@ -15,7 +15,7 @@
 
 {% block page_content %}
 <div class="d-grid gap-2 d-md-flex justify-content-md mb-2">
-    <form method="post" action="{% url 'video:video_edit_access_tokens' video.slug %}" style="display: inline;">
+    <form method="post" action="{% url 'video:video_edit_access_tokens' video.slug %}" class="d-inline">
     {% csrf_token %}
     <input type="hidden" name="action" value="add" />
     <button type="submit" class="initials btn btn-primary pod-btn-primary btn-sm" title="{% trans 'Add a token' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a token' %}">
@@ -57,7 +57,7 @@
         <td>
           <div class="form-group">
             <label for="txtpartage-{{ forloop.counter }}">{% trans 'Use this link to share the video:' %}
-              <clipboard-copy title="{% trans 'Copy to clipboard' %}" class="btn pod-btn-social btnpartageprive" tabindex="0" role="button" data-id="txtpartage-{{ forloop.counter }}">
+              <clipboard-copy data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Copy to clipboard' %}" class="btn pod-btn-social btnpartageprive" tabindex="0" role="button" data-id="txtpartage-{{ forloop.counter }}">
                 <i class="bi bi-clipboard" aria-hidden="true"></i>
               </clipboard-copy>
             </label>
@@ -68,7 +68,7 @@
         <td>
           <div class="form-group ">
             <label for="txtintegration-{{ forloop.counter }}">{% trans 'Copy the content of this text box and paste it in the page:' %}
-              <clipboard-copy title="{% trans 'Copy to clipboard' %}" class="btn pod-btn-social btnpartageprive" tabindex="0" role="button" data-id="txtintegration-{{ forloop.counter }}">
+              <clipboard-copy data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Copy to clipboard' %}" class="btn pod-btn-social btnpartageprive" tabindex="0" role="button" data-id="txtintegration-{{ forloop.counter }}">
                 <i class="bi bi-clipboard" aria-hidden="true"></i>
               </clipboard-copy>
             </label>

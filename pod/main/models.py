@@ -1,3 +1,5 @@
+"""Esup-Pod Main models."""
+
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -7,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from django.db import connection
+from django.db.models import Max
 import os
 import mimetypes
 from ckeditor.fields import RichTextField
@@ -17,16 +19,11 @@ FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 
 def get_nextautoincrement(model):
-    cursor = connection.cursor()
-    cursor.execute(
-        "SELECT Auto_increment FROM information_schema.tables "
-        + 'WHERE table_name="{0}" AND table_schema=DATABASE();'.format(
-            model._meta.db_table
-        )
-    )
-    row = cursor.fetchone()
-    cursor.close()
-    return row[0]
+    """Get potential next id for the current model when an object will be created"""
+    objects = model.objects.all()
+    if objects:
+        return objects.aggregate(Max("id"))["id__max"] + 1
+    return 1
 
 
 def get_upload_path_files(instance, filename):
@@ -307,7 +304,7 @@ class Block(models.Model):
     no_cache = models.BooleanField(
         default=True,
         verbose_name=_("No cache"),
-        help_text=_("Check this box if you don't want to keep the cache."),
+        help_text=_("Check this box if you don’t want to keep the cache."),
     )
 
     debug = models.BooleanField(
@@ -367,6 +364,6 @@ class Block(models.Model):
 
 @receiver(post_save, sender=Block)
 def default_site_block(sender, instance, created, **kwargs):
-    """Sets a default site for the instance if it has no associated sites upon creation."""
+    """Set a default site for the instance if it has no associated sites upon creation."""
     if len(instance.sites.all()) == 0:
         instance.sites.add(Site.objects.get_current())

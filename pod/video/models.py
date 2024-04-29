@@ -944,7 +944,7 @@ class Video(models.Model):
     def get_encoding_step(self):
         """Get the current encoding step of a video."""
         if hasattr(self, "encodingstep"):
-            return "%s : %s" % (self.encodingstep.num_step, self.encodingstep.desc_step)
+            return "%s: %s" % (self.encodingstep.num_step, self.encodingstep.desc_step)
         else:
             return ""
 

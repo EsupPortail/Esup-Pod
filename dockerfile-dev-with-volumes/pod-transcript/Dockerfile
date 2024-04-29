@@ -27,9 +27,9 @@ COPY ./requirements-encode.txt .
 COPY ./requirements-transcripts.txt .
 
 RUN pip3 install --no-cache-dir -r requirements-transcripts.txt \
-    && pip3 install --no-cache-dir -r requirements-encode.txt 
+    && pip3 install --no-cache-dir -r requirements-encode.txt
 
-# ENTRYPOINT :
+# ENTRYPOINT:
 COPY ./dockerfile-dev-with-volumes/pod-transcript/my-entrypoint-transcript.sh /tmp/my-entrypoint-transcript.sh
 RUN chmod 755 /tmp/my-entrypoint-transcript.sh
 

@@ -42,7 +42,7 @@ class Command(BaseCommand):
 
     def print_log(self, title: str, data: List[str]) -> None:
         print(20 * "-")
-        print(f"{title} :")
+        print(f"{title}:")
         print("\n    - " + "\n    - ".join(data))
         # print(20 * "-")
 

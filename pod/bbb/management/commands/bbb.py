@@ -1,4 +1,6 @@
 """
+Esup-Pod BBB command.
+
 This command is used to manage the recordings made by BigBlueButton.
 To achieve this, this command performs the following tasks:
 
@@ -43,7 +45,8 @@ WORKON_HOME=/data/www/%userpod%/.virtualenvs; export
 VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.6; cd
 /data/www/%userpod%/django_projects/podv3; source
 /usr/bin/virtualenvwrapper.sh; workon django_pod; python manage.py bbb
-main' """
+main'
+"""
 
 import os
 import traceback
