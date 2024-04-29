@@ -105,7 +105,16 @@ function toggleSelectedVideo(item, container) {
     return;
   }
   item.classList.toggle("selected");
-  setListSelectedVideos(container);
+  if(item.classList.contains("selected")){
+    if(!selectedVideos[container].includes(item.dataset.slug)){
+      selectedVideos[container].append(item.dataset.slug);
+    }
+  }else{
+    if (!item.classList.contains("selected") && selectedVideos[container].includes(item.dataset.slug)){
+      selectedVideos[container].splice(selectedVideos[container].indexOf(item.dataset.slug),1);
+    }
+  }
+  //setListSelectedVideos(container);
   if(container === "videos_list") {
     replaceSelectedCountVideos(container);
   }
