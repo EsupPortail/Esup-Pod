@@ -269,7 +269,7 @@
                 <a class="nav-item nav-link" href="{% url 'channels:my_channels' %}"><i class="bi bi-play-btn pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My channels' %}</a>
               {% endif %}
               {% if USE_DRESSING %}
-                {% if request.user.is_superuser or perms.dressing.video_dressing or request.user.is_staff %}
+                {% if request.user.is_superuser or request.user.is_staff %}
                   <a class="nav-item nav-link" href="{% url 'dressing:my_dressings' %}"><i class="bi bi-palette pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My dressings' %}</a>
                 {% endif %}
               {% endif %}
