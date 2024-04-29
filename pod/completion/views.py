@@ -47,9 +47,11 @@ __LANG_CHOICES_DICT__ = {
     key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
 }
 
+
 def get_completion_home_page_title(video: Video):
     """Get page title."""
     return _("Additions for the video “%s”") % video.title
+
 
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
@@ -291,7 +293,11 @@ def video_completion_contributor_new(request: WSGIRequest, video: Video):
         return render(
             request,
             "contributor/form_contributor.html",
-            {"page_title": context["page_title"], "form_contributor": form_contributor, "video": video},
+            {
+                "page_title": context["page_title"],
+                "form_contributor": form_contributor,
+                "video": video,
+            },
         )
     else:
         return render(

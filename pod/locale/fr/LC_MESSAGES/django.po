@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-25 07:51+0000\n"
+"POT-Creation-Date: 2024-04-29 07:03+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1062,7 +1062,7 @@ msgstr "Gérer la vidéo"
 
 #: pod/chapter/templates/video_chapter.html
 #: pod/completion/templates/video_completion.html
-#: pod/cut/templates/video_cut.html
+#: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 msgid "Help"
 msgstr "Aide"
 
@@ -1104,8 +1104,7 @@ msgstr "Veuillez corriger les erreurs."
 msgid "Enrich with selected subtitles"
 msgstr "Enrichir avec les sous-titres sélectionnés"
 
-#: pod/completion/apps.py pod/completion/templates/video_completion.html
-#: pod/completion/views.py
+#: pod/completion/apps.py
 msgid "Video additions"
 msgstr "Compléments de la vidéo"
 
@@ -1255,7 +1254,7 @@ msgstr "Vidéo"
 msgid "Document"
 msgstr "Document"
 
-#: pod/completion/models.py
+#: pod/completion/models.py pod/video/templates/videos/video-info.html
 msgid "Private document"
 msgstr "Document privé"
 
@@ -1852,6 +1851,10 @@ msgid "editor"
 msgstr "éditeur"
 
 #: pod/completion/views.py
+msgid "Additions for the video “%s”"
+msgstr "Compléments pour la vidéo « %s »"
+
+#: pod/completion/views.py
 msgid "You cannot complement this video."
 msgstr "Vous ne pouvez pas compléter cette vidéo."
 
@@ -1867,9 +1870,21 @@ msgstr "Le fichier a été sauvegardé."
 msgid "The file has not been saved."
 msgstr "Le fichier n’a pas été enregistré."
 
+#: pod/completion/views.py
+msgid "Add a new contributor to the video “%s”"
+msgstr "Ajouter un nouveau contributeur à la vidéo « %s »"
+
+#: pod/completion/views.py
+msgid "The contributor has been saved."
+msgstr "Le contributeur a été sauvegardé."
+
 #: pod/completion/views.py pod/podfile/views.py pod/video/views.py
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
+
+#: pod/completion/views.py
+msgid "Edit the contributor “%s”"
+msgstr "Modifier le contributeur « %s »"
 
 #: pod/cut/apps.py pod/cut/models.py
 msgid "Video cuts"
@@ -1929,6 +1944,7 @@ msgstr "Réinitialiser les temps de début et de fin à leurs valeurs précéden
 
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/playlist/templates/playlist/filter_aside.html
+#: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/filter_aside.html
 msgid "Reset"
 msgstr "Réinitialiser"
@@ -2185,6 +2201,38 @@ msgstr "Sélectionner"
 #: pod/video/templates/videos/dashboard_modal.html
 msgid "Apply"
 msgstr "Appliquer"
+
+#: pod/dressing/templates/video_dressing.html
+msgid "Dressings"
+msgstr "Habillages"
+
+#: pod/dressing/templates/video_dressing.html
+msgid ""
+"Dressings are a way to customize your video. You can add a watermark, "
+"opening and ending credits"
+msgstr ""
+"Les habillages sont un moyen de personnaliser votre vidéo. Vous pouvez ajouter un filigrane, "
+"un générique de début et de fin"
+
+#: pod/dressing/templates/video_dressing.html
+msgid ""
+"A watermark is an image that will be displayed on the video. You can choose "
+"the position and the opacity of the watermark."
+msgstr ""
+"Un filigrane est une image qui sera affichée sur la vidéo. Vous pouvez choisir "
+"la position et l'opacité du filigrane."
+
+#: pod/dressing/templates/video_dressing.html
+msgid "Credits"
+msgstr "Générique"
+
+#: pod/dressing/templates/video_dressing.html
+msgid ""
+"Opening and ending credits are videos that will be displayed at the "
+"beginning or at the end of the video."
+msgstr ""
+"Les génériques de début et de fin sont des vidéos qui s'affichent au "
+"début ou à la fin de la vidéo."
 
 #: pod/dressing/tests/test_views.py pod/dressing/views.py
 msgid "You cannot edit this dressing."
@@ -3669,21 +3717,6 @@ msgstr "Réseaux sociaux"
 #: pod/video/templates/videos/video-info.html
 msgid "Share on"
 msgstr "Partager sur"
-
-#: pod/live/templates/live/event-info.html pod/main/templates/aside.html
-#: pod/video/templates/videos/video-info.html
-msgid "Share on Facebook"
-msgstr "Partager sur Facebook"
-
-#: pod/live/templates/live/event-info.html pod/main/templates/aside.html
-#: pod/video/templates/videos/video-info.html
-msgid "Share on X (Twitter)"
-msgstr "Partager sur X (Twitter)"
-
-#: pod/live/templates/live/event-info.html pod/main/templates/aside.html
-#: pod/video/templates/videos/video-info.html
-msgid "Share on LinkedIn"
-msgstr "Partager sur LinkedIn"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
@@ -8854,10 +8887,6 @@ msgstr[0] "%(counter)s vidéo"
 msgstr[1] "%(counter)s vidéos"
 
 #: pod/video/templates/videos/dashboard.html
-msgid "Clear selection"
-msgstr "Effacer la sélection"
-
-#: pod/video/templates/videos/dashboard.html
 msgid ""
 "You have not uploaded any videos yet, please use the ”Add a new video” "
 "button to add one"
@@ -9057,12 +9086,22 @@ msgid "Tags:"
 msgstr "Mots clés :"
 
 #: pod/video/templates/videos/video-info.html
+#, python-format
+msgid "Show video list having tag “%(video_tag)s”"
+msgstr "Afficher la liste des vidéos ayant le tag « %(video_tag)s »"
+
+#: pod/video/templates/videos/video-info.html
 msgid "No information available"
 msgstr "Aucune information disponible"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Infos"
 msgstr "Informations"
+
+#: pod/video/templates/videos/video-info.html
+#, python-format
+msgid "Show video list of user “%(video_user_name)s”"
+msgstr "Afficher la liste des vidéos de l'utilisateur « %(video_user_name)s »"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Additional owner(s):"
@@ -9073,12 +9112,13 @@ msgid "Contributor(s):"
 msgstr "Contributeur(s) :"
 
 #: pod/video/templates/videos/video-info.html
-msgid "send an email"
-msgstr "envoyer un courriel"
+#, python-format
+msgid "Send an email to “%(contributor_name)s”"
+msgstr "Envoyer un courriel à « %(contributor_name)s »"
 
 #: pod/video/templates/videos/video-info.html
-msgid "contributor web link"
-msgstr "lien du contributeur"
+msgid "Contributor web link"
+msgstr "Lien du contributeur"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Updated on:"
@@ -9091,6 +9131,11 @@ msgstr[0] "Chaîne :"
 msgstr[1] " Chaînes :"
 
 #: pod/video/templates/videos/video-info.html
+#, python-format
+msgid "Show video list of type “%(type_title)s”"
+msgstr "Afficher la liste des vidéos de type « %(type_title)s »"
+
+#: pod/video/templates/videos/video-info.html
 msgid "Main language:"
 msgstr "Langue principale :"
 
@@ -9101,6 +9146,11 @@ msgstr "Public :"
 #: pod/video/templates/videos/video-info.html
 msgid "Discipline(s):"
 msgstr "Discipline(s) :"
+
+#: pod/video/templates/videos/video-info.html
+#, python-format
+msgid "Show video list of discipline “%(discipline_title)s”"
+msgstr "Afficher la liste des vidéos de la discipline « %(discipline_title)s »"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Licence:"
@@ -9119,14 +9169,20 @@ msgid "Document:"
 msgstr "Document :"
 
 #: pod/video/templates/videos/video-info.html
+msgid "Public document"
+msgstr "Document public"
+
+#: pod/video/templates/videos/video-info.html
+msgid "Please note that your video is in draft mode."
+msgstr "Veuillez noter que votre vidéo est en mode brouillon."
+
+#: pod/video/templates/videos/video-info.html
 msgid ""
-"Please note that your video is in draft mode.<br>\n"
-"  The following links contain a key allowing access.\n"
-"  Anyone with this links can access it."
+"The following links contain a key allowing access. Anyone with this links "
+"can access it."
 msgstr ""
-"Veuillez noter que votre vidéo est en mode brouillon. <br>\n"
-"Les liens suivants contiennent une clé permettant l’accès.\n"
-"Toute personne disposant de ces liens peut y accéder."
+"Les liens suivants contiennent une clé permettant l’accès. Toute personne disposant de ces liens "
+"peut y accéder."
 
 #: pod/video/templates/videos/video-info.html
 msgid "Options"
@@ -9157,9 +9213,12 @@ msgid "Check the box to indicate the beginning of playing desired."
 msgstr "Cocher la case pour indiquer le début de lecture souhaité."
 
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Manage access tokens"
-msgstr "Gestion des jetons d’accès"
+msgid "Use an embed code to display the video in a web page."
+msgstr "Utilisez un code d'intégration pour afficher la vidéo dans une page web."
+
+#: pod/video/templates/videos/video-info.html
+msgid "Manage integration code in access tokens page"
+msgstr "Gérer le code d'intégration dans la page des jetons d'accès"
 
 #: pod/video/templates/videos/video-info.html
 msgid "BigBlueButton/H5P Integration"
@@ -9172,6 +9231,14 @@ msgid ""
 msgstr ""
 "Utilisez ces liens dans une conférence BigBlueButton ou une activité vidéo "
 "interactive H5P :"
+
+#: pod/video/templates/videos/video-info.html
+msgid "By sharing a link, you allow others to view the video."
+msgstr "En partageant un lien, vous permettez à d'autres personnes de visionner la vidéo."
+
+#: pod/video/templates/videos/video-info.html
+msgid "Manage sharing link in access tokens page"
+msgstr "Gérer le lien de partage dans la page des jetons d'accès"
 
 #: pod/video/templates/videos/video-info.html
 #: pod/video/templates/videos/video_access_tokens.html
@@ -9304,6 +9371,10 @@ msgstr ""
 #, python-format
 msgid "Edit the %(app)s"
 msgstr "Éditer le %(app)s"
+
+#: pod/video/templates/videos/video_edit.html
+msgid "Manage access tokens"
+msgstr "Gestion des jetons d’accès"
 
 #: pod/video/templates/videos/video_edit.html
 #, python-format
