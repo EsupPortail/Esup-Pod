@@ -1835,7 +1835,9 @@ class VideoAccessToken(models.Model):
 
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
     token = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(_("token name"), max_length=100, blank=True, default=_("change me"))
+    name = models.CharField(
+        verbose_name=_("Token name"), max_length=100, blank=True, default=_("Change me!")
+    )
 
     class Meta:
         """Video access token Metadata."""

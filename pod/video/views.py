@@ -1420,7 +1420,11 @@ def video_edit_access_tokens(request: WSGIRequest, slug: str = None):
         messages.add_message(request, messages.ERROR, _("You cannot edit this video."))
         raise PermissionDenied
     if request.method == "POST":
-        if request.POST.get("action") and request.POST.get("action") in ["add", "delete", "update"]:
+        if request.POST.get("action") and request.POST.get("action") in {
+            "add",
+            "delete",
+            "update",
+        }:
             if request.POST["action"] == "add":
                 VideoAccessToken.objects.create(video=video)
                 messages.add_message(
