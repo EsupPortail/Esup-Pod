@@ -28,7 +28,7 @@ else:
 
 # ggignore-start
 # gitguardian:ignore
-PWD = "azerty1234"
+PWD = "azerty1234"  # nosec
 # ggignore-end
 
 
@@ -116,7 +116,7 @@ class CompletionContributorViewsTestCase(TestCase):
         staff.owner.sites.add(Site.objects.get_current())
         staff.owner.save()
 
-    def test_video_completion_contributor(self):
+    def test_video_completion_contributor(self) -> None:
         video = Video.objects.get(id=1)
         url = reverse(
             "video:completion:video_completion_contributor", kwargs={"slug": video.slug}

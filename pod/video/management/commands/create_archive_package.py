@@ -148,6 +148,48 @@ class Command(BaseCommand):
         else:
             print("ERROR: Cannot acces to file '%s'." % vid.video.path)
 
+    def archive_pack(self, video_dir: str, user_name: str, vid: Video) -> None:
+        """Create a archive package for Video vid."""
+        # Get username from CSV
+        user_name = user_name.split("(")
+        # extract username from "Fullname (username)" string
+        user_name = user_name[-1][:-1]
+
+        # Create video folder
+        # ICI il faudrait le faire à partir de l'owner d'origine, sinon tout est à ARCHIVE
+        mediaPackage_dir = os.path.join(
+            ARCHIVE_ROOT, user_name, video_dir
+        )
+
+        # Create directory to store all the data
+        os.makedirs(mediaPackage_dir, exist_ok=True)
+
+        # Move video file
+        store_as_dublincore(vid, mediaPackage_dir, user_name)
+
+        # Store Video complements as json
+        for model in [Chapter, Contributor, Overlay, Enrichment]:
+            # nb: contributors are already exported in dublincore.xml
+            export_complement(mediaPackage_dir,
+                              model.__name__,
+                              model.objects.filter(video=vid))
+
+        # Store file complements.
+        for file in Document.objects.filter(video=vid):
+            print("Copying %s..." % file.document.file.path)
+            shutil.copy(file.document.file.path, mediaPackage_dir)
+
+        # Store additional tracks (caption / subtitles)
+        for track in Track.objects.filter(video=vid):
+            print("Copying %s..." % track.src.file.path)
+            shutil.copy(track.src.file.path, mediaPackage_dir)
+
+        # TODO:
+        # - Que faire du fichier CSV ? il faudrait y retirer toutes les
+        # lignes supprimées, quitte à faire un nouveau CSV
+
+        self.move_video_to_archive(mediaPackage_dir, vid)
+
     def handle(self, *args, **options) -> None:
         """Handle a command call."""
         activate(LANGUAGE_CODE)
@@ -183,46 +225,7 @@ class Command(BaseCommand):
 
             csv_entry = csv_data.get(str(vid.id))
             if csv_entry:
-
-                # Get username from CSV
-                user_name = csv_entry["User name"].split("(")
-                # extract username from "Fullname (username)" string
-                user_name = user_name[-1][:-1]
-
-                # Create video folder
-                # ICI il faudrait le faire à partir de l'owner d'origine, sinon tout est à ARCHIVE
-                mediaPackage_dir = os.path.join(
-                    ARCHIVE_ROOT, user_name, video_dir
-                )
-
-                # Create directory to store all the data
-                os.makedirs(mediaPackage_dir, exist_ok=True)
-
-                # Move video file
-                store_as_dublincore(vid, mediaPackage_dir, csv_entry["User name"])
-
-                # Store Video complements as json
-                for model in [Chapter, Contributor, Overlay, Enrichment]:
-                    # nb: contributors are already exported in dublincore.xml
-                    export_complement(mediaPackage_dir,
-                                      model.__name__,
-                                      model.objects.filter(video=vid))
-
-                # Store file complements.
-                for file in Document.objects.filter(video=vid):
-                    print("Copying %s..." % file.document.file.path)
-                    shutil.copy(file.document.file.path, mediaPackage_dir)
-
-                # Store additional tracks (caption / subtitles)
-                for track in Track.objects.filter(video=vid):
-                    print("Copying %s..." % track.src.file.path)
-                    shutil.copy(track.src.file.path, mediaPackage_dir)
-
-                # TODO:
-                # - Que faire du fichier CSV ? il faudrait y retirer toutes les
-                # lignes supprimées, quitte à faire un nouveau CSV
-
-                self.move_video_to_archive(mediaPackage_dir, vid)
+                self.archive_pack(video_dir, csv_entry["User name"])
             else:
                 print("Video %s not present in archived file" % vid.id)
             print("---")
