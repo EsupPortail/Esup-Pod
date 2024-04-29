@@ -29,7 +29,7 @@ class CompletionViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         site = Site.objects.get(id=1)
         user = User.objects.create(username="test", password="azerty")
         user.set_password("hello")
@@ -98,7 +98,7 @@ class CompletionContributorViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         site = Site.objects.get(id=1)
         staff = User.objects.create(username="staff", password="azerty", is_staff=True)
         staff.set_password("hello")
@@ -274,7 +274,7 @@ class CompletionTrackViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         site = Site.objects.get(id=1)
         staff = User.objects.create(username="staff", password="azerty", is_staff=True)
         staff.set_password("hello")
@@ -495,7 +495,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         site = Site.objects.get(id=1)
         staff = User.objects.create(username="staff", password="azerty", is_staff=True)
         staff.set_password("hello")
@@ -725,7 +725,7 @@ class CompletionOverlayViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         staff = User.objects.create(username="staff", password="azerty", is_staff=True)
         staff.set_password("hello")
         staff.save()

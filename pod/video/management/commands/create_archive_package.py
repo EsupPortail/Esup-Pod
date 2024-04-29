@@ -155,10 +155,10 @@ class Command(BaseCommand):
             self.dry_mode = True
             print("Simulation mode ('dry'). Nothing will be deleted.")
 
-        # get data from ARCHIVE_CSV
+        # Get data from ARCHIVE_CSV
         csv_data = read_archived_csv()
 
-        # get videos
+        # Get videos
         vids = Video.objects.filter(
             owner__username=ARCHIVE_OWNER_USERNAME,
             date_delete__lte=datetime.now() - timedelta(days=HOW_MANY_DAYS),
@@ -194,17 +194,28 @@ class Command(BaseCommand):
                     ARCHIVE_ROOT, user_name, video_dir
                 )
 
-                # create directory to store all the data.
+                # Create directory to store all the data
                 os.makedirs(mediaPackage_dir, exist_ok=True)
 
-                # move video file
+                # Move video file
                 store_as_dublincore(vid, mediaPackage_dir, csv_entry["User name"])
 
-                # Store Video complements
-                for type in [Chapter, Contributor, Document, Overlay, Track]:
+                # Store Video complements as json
+                for model in [Chapter, Contributor, Overlay, Enrichment]:
+                    # nb: contributors are already exported in dublincore.xml
                     export_complement(mediaPackage_dir,
-                                      type.__name__,
-                                      type.objects.filter(video=vid))
+                                      model.__name__,
+                                      model.objects.filter(video=vid))
+
+                # Store file complements.
+                for file in Document.objects.filter(video=vid):
+                    print("Copying %s..." % file.document.file.path)
+                    shutil.copy(file.document.file.path, mediaPackage_dir)
+
+                # Store additional tracks (caption / subtitles)
+                for track in Track.objects.filter(video=vid):
+                    print("Copying %s..." % track.src.file.path)
+                    shutil.copy(track.src.file.path, mediaPackage_dir)
 
                 # TODO:
                 # - Que faire du fichier CSV ? il faudrait y retirer toutes les

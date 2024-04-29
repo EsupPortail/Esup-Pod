@@ -1,3 +1,4 @@
+"""Esup-Pod video completion models."""
 import base64
 
 from django.db import models
@@ -96,13 +97,13 @@ class Contributor(models.Model):
     def sites(self):
         return self.video.sites
 
-    def clean(self):
+    def clean(self) -> None:
         msg = list()
         msg = self.verify_attributs() + self.verify_not_same_contributor()
         if len(msg) > 0:
             raise ValidationError(msg)
 
-    def verify_attributs(self):
+    def verify_attributs(self) -> list:
         msg = list()
         if not self.name or self.name == "":
             msg.append(_("Please enter a name."))
@@ -117,7 +118,7 @@ class Contributor(models.Model):
         else:
             return list()
 
-    def verify_not_same_contributor(self):
+    def verify_not_same_contributor(self) -> list:
         msg = list()
         list_contributor = Contributor.objects.filter(video=self.video)
         if self.id:
@@ -148,6 +149,8 @@ class Contributor(models.Model):
 
 
 class Document(models.Model):
+    """Video additional documents."""
+
     video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     document = models.ForeignKey(
         CustomFileModel,
@@ -163,6 +166,8 @@ class Document(models.Model):
     )
 
     class Meta:
+        """Video additional document metadata."""
+
         verbose_name = _("Document")
         verbose_name_plural = _("Documents")
 
@@ -170,19 +175,21 @@ class Document(models.Model):
     def sites(self):
         return self.video.sites
 
-    def clean(self):
+    def clean(self) -> None:
         msg = list()
         msg = self.verify_document() + self.verify_not_same_document()
         if len(msg) > 0:
             raise ValidationError(msg)
 
-    def verify_document(self):
+    def verify_document(self) -> list:
+        """Check that additional ressource include a file."""
         msg = list()
         if not self.document:
             msg.append(_("Please enter a document."))
         return msg
 
-    def verify_not_same_document(self):
+    def verify_not_same_document(self) -> list:
+        """Check if document is not already contained in the list."""
         msg = list()
         list_doc = Document.objects.filter(video=self.video)
         if self.id:
@@ -195,7 +202,7 @@ class Document(models.Model):
                 return msg
         return list()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Document: {0} - Video: {1}".format(self.document.name, self.video)
 
 
@@ -210,14 +217,14 @@ class EnrichModelQueue(models.Model):
     )
     in_treatment = models.BooleanField(_("In Treatment"), default=False)
 
-    def get_label_lang(self):
+    def get_label_lang(self) -> str:
         return "%s" % __LANG_CHOICES_DICT__[self.lang]
 
     class Meta:
         verbose_name = _("EnrichModelQueue")
         verbose_name_plural = _("EnrichModelQueue")
 
-    def verify_attributs(self):
+    def verify_attributs(self) -> list:
         msg = list()
         if not self.text:
             msg.append(_("Please enter a text."))
@@ -232,6 +239,8 @@ class EnrichModelQueue(models.Model):
 
 
 class Track(models.Model):
+    """Video additional tracks (captions or subtitles)."""
+
     video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
     kind = models.CharField(
         _("Kind"), max_length=10, choices=KIND_CHOICES, default="subtitles"
@@ -252,20 +261,22 @@ class Track(models.Model):
     def sites(self):
         return self.video.sites
 
-    def get_label_lang(self):
+    def get_label_lang(self) -> str:
+        """Get human readable label of additional track."""
         return "%s" % __LANG_CHOICES_DICT__[self.lang]
 
     class Meta:
+        """Video additional tracks metadata."""
         verbose_name = _("Track")
         verbose_name_plural = _("Tracks")
 
-    def clean(self):
+    def clean(self) -> None:
         msg = list()
         msg = self.verify_attributs() + self.verify_not_same_track()
         if len(msg) > 0:
             raise ValidationError(msg)
 
-    def verify_attributs(self):
+    def verify_attributs(self) -> list:
         msg = list()
         if not self.kind:
             msg.append(_("Please enter a kind."))
@@ -282,28 +293,30 @@ class Track(models.Model):
         else:
             return list()
 
-    def verify_not_same_track(self):
+    def verify_not_same_track(self) -> list:
+        """Check that there's not already a track with same kind & lang."""
         msg = list()
         list_track = Track.objects.filter(video=self.video)
         if self.id:
             list_track = list_track.exclude(id=self.id)
-        if len(list_track) > 0:
-            for element in list_track:
-                if self.kind == element.kind and self.lang == element.lang:
-                    msg.append(
-                        _(
-                            "There is already a subtitle with the "
-                            + "same kind and language in the list."
-                        )
-                    )
-                    return msg
-        return list()
 
-    def __str__(self):
+        for element in list_track:
+            if self.kind == element.kind and self.lang == element.lang:
+                msg.append(
+                    _(
+                        "There is already a subtitle with the "
+                        + "same kind and language in the list."
+                    )
+                )
+        return msg
+
+    def __str__(self) -> str:
         return "{0} - File: {1} - Video: {2}".format(self.kind, self.src.name, self.video)
 
 
 class Overlay(models.Model):
+    """Video overlay."""
+
     POSITION_CHOICES = (
         ("top-left", _("top-left")),
         ("top", _("top")),
@@ -359,11 +372,13 @@ class Overlay(models.Model):
         return self.video.sites
 
     class Meta:
+        """Video overlay metadata."""
+
         verbose_name = _("Overlay")
         verbose_name_plural = _("Overlays")
         ordering = ["time_start"]
 
-    def clean(self):
+    def clean(self) -> None:
         msg = list()
         msg += self.verify_title_items()
         msg += self.verify_time_items()
@@ -371,7 +386,7 @@ class Overlay(models.Model):
         if len(msg) > 0:
             raise ValidationError(msg)
 
-    def verify_title_items(self):
+    def verify_title_items(self) -> list:
         msg = list()
         if not self.title or self.title == "":
             msg.append(_("Please enter a title."))
@@ -382,7 +397,7 @@ class Overlay(models.Model):
         else:
             return list()
 
-    def verify_time_items(self):
+    def verify_time_items(self) -> list:
         msg = list()
         if self.time_start > self.time_end:
             msg.append(
@@ -402,7 +417,7 @@ class Overlay(models.Model):
         else:
             return list()
 
-    def verify_overlap(self):
+    def verify_overlap(self) -> list:
         msg = list()
         instance = None
         if self.slug:
@@ -429,7 +444,8 @@ class Overlay(models.Model):
                 return msg
         return list()
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
+        """Store Overlay Object in db."""
         newid = -1
         if not self.id:
             try:
@@ -446,5 +462,5 @@ class Overlay(models.Model):
         self.slug = "{0}-{1}".format(newid, slugify(self.title))
         super(Overlay, self).save(*args, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Overlay: {0} - Video: {1}".format(self.title, self.video)
