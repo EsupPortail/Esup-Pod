@@ -42,7 +42,7 @@ function getListSelectedVideosTitles(container) {
  * Set shared/global variable selectedVideos with selected videos based on class selected
  */
 function setListSelectedVideos(container) {
-  if(container === "videosListContainerId"){
+  if(container === videosListContainerId){
     selectedVideos[container] = [];
   }
   let selector = "#" + container + " .infinite-item.selected";
