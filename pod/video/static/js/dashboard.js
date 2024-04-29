@@ -32,6 +32,7 @@ var cancelModalBtn = document.getElementById("cancelModalBtn");
 var btnDisplayMode = document.querySelectorAll(".btn-dashboard-display-mode");
 var dashboardAction = "";
 var dashboardValue;
+selectedVideos[videosListContainerId] = [];
 
 /**
  * Add change event listener on select action to get related inputs
