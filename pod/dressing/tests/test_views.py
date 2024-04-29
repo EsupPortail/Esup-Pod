@@ -74,9 +74,7 @@ class VideoDressingViewTest(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0].tags, "error")
-        self.assertEqual(
-            messages[0].message, _("The video is currently being encoded.")
-        )
+        self.assertEqual(messages[0].message, _("The video is currently being encoded."))
         print(" --->  test_video_encoding_in_progress ok")
 
     def test_video_dressing_permission_denied(self):
@@ -93,9 +91,7 @@ class VideoDressingViewTest(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0].tags, "error")
-        self.assertEqual(
-            messages[0].message, _("You cannot dress this video.")
-        )
+        self.assertEqual(messages[0].message, _("You cannot dress this video."))
         print(" --->  test_video_dressing_permission_denied ok")
 
 
@@ -158,9 +154,7 @@ class MyDressingViewTest(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0].tags, "error")
-        self.assertEqual(
-            messages[0].message, _("You cannot access this page.")
-        )
+        self.assertEqual(messages[0].message, _("You cannot access this page."))
         print(" --->  test_my_dressing_permission_denied ok")
 
 

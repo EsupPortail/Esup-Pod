@@ -34,10 +34,7 @@ def video_dressing(request, slug):
 
     dressings = get_dressings(request.user, request.user.owner.accessgroup_set.all())
 
-    if not (
-        request.user.is_superuser
-        or request.user.is_staff
-    ):
+    if not (request.user.is_superuser or request.user.is_staff):
         messages.add_message(request, messages.ERROR, _("You cannot dress this video."))
         raise PermissionDenied
 
@@ -81,12 +78,7 @@ def dressing_edit(request, dressing_id):
     """Edit a dressing object."""
     dressing_edit = get_object_or_404(Dressing, id=dressing_id)
 
-    if dressing_edit and (
-        not (
-            request.user.is_superuser
-            or request.user.is_staff
-        )
-    ):
+    if dressing_edit and (not (request.user.is_superuser or request.user.is_staff)):
         messages.add_message(request, messages.ERROR, _("You cannot edit this dressing."))
         raise PermissionDenied
 
@@ -125,10 +117,7 @@ def dressing_edit(request, dressing_id):
 @login_required(redirect_field_name="referrer")
 def dressing_create(request):
     """Create a dressing object."""
-    if not (
-        request.user.is_superuser
-        or request.user.is_staff
-    ):
+    if not (request.user.is_superuser or request.user.is_staff):
         messages.add_message(
             request, messages.ERROR, _("You cannot create a video dressing.")
         )
@@ -161,12 +150,7 @@ def dressing_delete(request, dressing_id):
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
-    if dressing and (
-        not (
-            request.user.is_superuser
-            or request.user.is_staff
-        )
-    ):
+    if dressing and (not (request.user.is_superuser or request.user.is_staff)):
         messages.add_message(
             request, messages.ERROR, _("You cannot delete this dressing.")
         )
@@ -207,10 +191,7 @@ def my_dressings(request):
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
-    if not (
-        request.user.is_superuser
-        or request.user.is_staff
-    ):
+    if not (request.user.is_superuser or request.user.is_staff):
         messages.add_message(request, messages.ERROR, _("You cannot access this page."))
         raise PermissionDenied
 
