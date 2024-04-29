@@ -116,7 +116,6 @@ function get_category_modal(url, page= null){
       let html = parser.parseFromString(data, "text/html").body;
       if(page){
           document.getElementById("category_modal_videos_list").outerHTML = html.innerHTML;
-          setSelectedVideos(catVideosListContainerId);
           url = url.replaceAll(/([?]page=)(\d+)/g, "");
       }else{
           categoryModal.innerHTML = html.innerHTML;
@@ -124,6 +123,7 @@ function get_category_modal(url, page= null){
           manageModalConfirmBtn();
           managePaginationBtn();
       }
+      setSelectedVideos(catVideosListContainerId);
       currentUrl = url;
     })
     .catch(() => {
