@@ -107,7 +107,7 @@ function toggleSelectedVideo(item, container) {
   item.classList.toggle("selected");
   if(item.classList.contains("selected")){
     if(!selectedVideos[container].includes(item.dataset.slug)){
-      selectedVideos[container].append(item.dataset.slug);
+      selectedVideos[container].push(item.dataset.slug);
     }
   }else{
     if (!item.classList.contains("selected") && selectedVideos[container].includes(item.dataset.slug)){
