@@ -219,6 +219,7 @@ class TrackAdmin(admin.ModelAdmin):
         if os.path.exists(from_path):
             shutil.copy(from_path, to_path)
 
+    @staticmethod
     def enrich_kaldi_model_launch() -> None:
         TrackAdmin.debug("enrich_kaldi_model")
         enrich_model_queue = EnrichModelQueue.objects.filter(model_type="VOSK").first()

@@ -19,6 +19,7 @@ from django.utils.translation import gettext as _
 from pod.video.models import Video
 from pod.chapter.models import Chapter
 from pod.completion.models import Contributor, Document, Overlay, Track
+from pod.enrichment.models import Enrichment
 
 
 """TODO
