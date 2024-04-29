@@ -155,6 +155,7 @@
   const urlVideos = "{% url 'video:dashboard' %}";
   const urlUpdateVideos = "{% url 'video:bulk_update' %}";
   const videosListLoader = document.getElementById("videosListLoader");
+  const videosListContainerId = "videos_list";
   var displayMode = "{{ display_mode }}";
   var csrftoken = "{{ csrf_token }}";
   var page = 1;
@@ -174,7 +175,6 @@
 {% if use_category %}
   <script>
     const USE_CATEGORY = true;
-    const videosListContainerId = "videos_list";
     const categoryModal = document.getElementById("category_modal");
     const CATEGORIES_ADD_URL = "{% url 'video:add_category' %}";
     const CATEGORIES_EDIT_URL = `${window.location.origin}/video/category/edit/`;
