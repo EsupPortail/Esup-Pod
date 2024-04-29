@@ -40,8 +40,12 @@ class CompletionViewsTestCase(TestCase):
     def setUp(self) -> None:
         """Set up the CompletionViews test case."""
         site = Site.objects.get(id=1)
-        user = User.objects.create(username="test", password=PWD)
-        staff = User.objects.create(username="staff", password=PWD, is_staff=True)
+        user = User.objects.create(username="test")
+        user.set_password(PWD)
+        user.save()
+        staff = User.objects.create(username="staff", is_staff=True)
+        staff.set_password(PWD)
+        staff.save()
         vid1 = Video.objects.create(
             title="videotest",
             owner=user,
@@ -104,8 +108,11 @@ class CompletionContributorViewsTestCase(TestCase):
     ]
 
     def setUp(self) -> None:
+        """Set up the CompletionContributorViews test case."""
         site = Site.objects.get(id=1)
-        staff = User.objects.create(username="staff", password=PWD, is_staff=True)
+        staff = User.objects.create(username="staff", is_staff=True)
+        staff.set_password(PWD)
+        staff.save()
         vid = Video.objects.create(
             title="videotest2",
             owner=staff,
@@ -278,8 +285,11 @@ class CompletionTrackViewsTestCase(TestCase):
     ]
 
     def setUp(self) -> None:
+        """Set up the CompletionTrackViews test case."""
         site = Site.objects.get(id=1)
-        staff = User.objects.create(username="staff", password=PWD, is_staff=True)
+        staff = User.objects.create(username="staff", is_staff=True)
+        staff.set_password(PWD)
+        staff.save()
         if FILEPICKER:
             UserFolder.objects.create(owner=staff, name="Home")
         vid = Video.objects.create(
@@ -497,8 +507,11 @@ class CompletionDocumentViewsTestCase(TestCase):
     ]
 
     def setUp(self) -> None:
+        """Set up the CompletionDocumentViews test case."""
         site = Site.objects.get(id=1)
-        staff = User.objects.create(username="staff", password=PWD, is_staff=True)
+        staff = User.objects.create(username="staff", is_staff=True)
+        staff.set_password(PWD)
+        staff.save()
         if FILEPICKER:
             UserFolder.objects.create(owner=staff, name="Home")
         vid = Video.objects.create(
@@ -725,7 +738,10 @@ class CompletionOverlayViewsTestCase(TestCase):
     ]
 
     def setUp(self) -> None:
-        staff = User.objects.create(username="staff", password=PWD, is_staff=True)
+        """Set up the CompletionOverlayViews test case."""
+        staff = User.objects.create(username="staff", is_staff=True)
+        staff.set_password(PWD)
+        staff.save()
         Video.objects.create(
             title="videotest2",
             owner=staff,

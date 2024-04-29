@@ -225,7 +225,7 @@ class Command(BaseCommand):
 
             csv_entry = csv_data.get(str(vid.id))
             if csv_entry:
-                self.archive_pack(video_dir, csv_entry["User name"])
+                self.archive_pack(video_dir, csv_entry["User name"], vid)
             else:
                 print("Video %s not present in archived file" % vid.id)
             print("---")
