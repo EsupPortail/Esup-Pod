@@ -287,7 +287,7 @@ def add_or_edit_external_recording(request, id=None):
         if form.is_valid():
             recording = save_recording_form(request, form)
             display_message_with_icon(
-                request, messages.INFO, _("The changes have been saved.")
+                request, messages.SUCCESS, _("The changes have been saved.")
             )
             return redirect(reverse("import_video:external_recordings"))
         else:
@@ -348,7 +348,7 @@ def delete_external_recording(request, id: int):
             msg += args["message"]
     if delete and msg == "":
         msg += _("The external recording has been deleted.")
-        display_message_with_icon(request, messages.INFO, msg)
+        display_message_with_icon(request, messages.SUCCESS, msg)
     else:
         display_message_with_icon(request, messages.ERROR, msg)
     return redirect(reverse("import_video:external_recordings", args=()))

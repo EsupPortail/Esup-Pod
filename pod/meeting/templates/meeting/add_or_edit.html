@@ -328,7 +328,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
       });
     }
     // Do not display legend when no webinar fields
-    if (!is_webinar && webinar_input_group) {
+    if (!is_webinar && webinar_input_group && webinar_input_group.length > 0) {
       webinar_input_group[0].classList.add("d-none");
     }
 });

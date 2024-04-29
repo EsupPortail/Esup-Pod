@@ -61,6 +61,43 @@ class VideoDressingViewTest(TestCase):
         self.assertTemplateUsed(response, "video_dressing.html")
         print(" --->  test_video_dressing_page ok")
 
+    def test_video_encoding_in_progress(self):
+        """Test video encoding in progress in VideoDressingViewTest."""
+        self.first_video.encoding_in_progress = True
+        self.first_video.save()
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse("dressing:video_dressing", args=[self.first_video.slug])
+        )
+        messages = [m for m in get_messages(response.wsgi_request)]
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].tags, "error")
+        self.assertEqual(
+            messages[0].message, _("The video is currently being encoded.")
+        )
+        print(" --->  test_video_encoding_in_progress ok")
+
+    def test_video_dressing_permission_denied(self):
+        """Test test_video_dressing_permission_denied in VideoDressingViewTest."""
+        user_without_permission = User.objects.create_user(
+            username="useless_user", password="testpass"
+        )
+        self.client.force_login(user_without_permission)
+        response = self.client.get(
+            reverse("dressing:video_dressing", args=[self.first_video.slug])
+        )
+        messages = [m for m in get_messages(response.wsgi_request)]
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].tags, "error")
+        self.assertEqual(
+            messages[0].message, _("You cannot dress this video.")
+        )
+        print(" --->  test_video_dressing_permission_denied ok")
+
 
 class MyDressingViewTest(TestCase):
     """My dressing page tests case."""
@@ -108,6 +145,23 @@ class MyDressingViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "my_dressings.html")
         print(" --->  test_my_dressing_page ok")
+
+    def test_my_dressing_permission_denied(self):
+        """Test test_my_dressing_permission_denied in MyDressingViewTest."""
+        user_without_permission = User.objects.create_user(
+            username="useless_user", password="testpass"
+        )
+        self.client.force_login(user_without_permission)
+        response = self.client.get(reverse("dressing:my_dressings"))
+        messages = [m for m in get_messages(response.wsgi_request)]
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(messages[0].tags, "error")
+        self.assertEqual(
+            messages[0].message, _("You cannot access this page.")
+        )
+        print(" --->  test_my_dressing_permission_denied ok")
 
 
 class DressingEditViewTest(TestCase):
@@ -179,6 +233,22 @@ class DressingDeleteViewTest(TestCase):
         self.dressing.owners.set([self.user])
         self.dressing.users.set([self.user])
         self.dressing.videos.set([self.first_video])
+
+    def test_maintenance(self):
+        """Test Pod maintenance mode in VideoDressingViewTest."""
+        self.client.force_login(self.user)
+        url = reverse("dressing:dressing_delete", args=[self.dressing.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+        conf = Configuration.objects.get(key="maintenance_mode")
+        conf.value = "1"
+        conf.save()
+
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, "/maintenance/")
+        print(" --->  test_maintenance ok")
 
     def test_dressing_delete_view_get(self):
         """Test test_dressing_delete_view_get."""
