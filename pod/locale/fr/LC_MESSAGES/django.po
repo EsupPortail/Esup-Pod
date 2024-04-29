@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-29 07:03+0000\n"
+"POT-Creation-Date: 2024-04-29 10:28+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1851,6 +1851,7 @@ msgid "editor"
 msgstr "éditeur"
 
 #: pod/completion/views.py
+#, python-format
 msgid "Additions for the video “%s”"
 msgstr "Compléments pour la vidéo « %s »"
 
@@ -1871,6 +1872,7 @@ msgid "The file has not been saved."
 msgstr "Le fichier n’a pas été enregistré."
 
 #: pod/completion/views.py
+#, python-format
 msgid "Add a new contributor to the video “%s”"
 msgstr "Ajouter un nouveau contributeur à la vidéo « %s »"
 
@@ -1883,6 +1885,7 @@ msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
 
 #: pod/completion/views.py
+#, python-format
 msgid "Edit the contributor “%s”"
 msgstr "Modifier le contributeur « %s »"
 
@@ -2106,14 +2109,6 @@ msgstr ""
 msgid "Agreement required"
 msgstr "Accord requis"
 
-#: pod/dressing/templates/dressing_edit.html
-msgid "Editing the dressing"
-msgstr "Éditer l’habillage"
-
-#: pod/dressing/templates/dressing_edit.html pod/dressing/views.py
-msgid "Create a new dressing"
-msgstr "Créer un nouvel habillage"
-
 #: pod/dressing/templates/dressing_edit.html pod/import_video/forms.py
 #: pod/live/forms.py pod/video/forms.py
 msgid "General settings"
@@ -2180,11 +2175,6 @@ msgid "Add new dressing"
 msgstr "Ajouter un nouvel habillage"
 
 #: pod/dressing/templates/video_dressing.html
-#: pod/video/templates/videos/link_video.html
-msgid "Dress the video"
-msgstr "Habiller la vidéo"
-
-#: pod/dressing/templates/video_dressing.html
 msgid "Pick a dressing below"
 msgstr "Choisissez un habillage ci-dessous"
 
@@ -2211,16 +2201,16 @@ msgid ""
 "Dressings are a way to customize your video. You can add a watermark, "
 "opening and ending credits"
 msgstr ""
-"Les habillages sont un moyen de personnaliser votre vidéo. Vous pouvez ajouter un filigrane, "
-"un générique de début et de fin"
+"Les habillages sont un moyen de personnaliser votre vidéo. Vous pouvez "
+"ajouter un filigrane, un générique de début et de fin"
 
 #: pod/dressing/templates/video_dressing.html
 msgid ""
 "A watermark is an image that will be displayed on the video. You can choose "
 "the position and the opacity of the watermark."
 msgstr ""
-"Un filigrane est une image qui sera affichée sur la vidéo. Vous pouvez choisir "
-"la position et l'opacité du filigrane."
+"Un filigrane est une image qui sera affichée sur la vidéo. Vous pouvez "
+"choisir la position et l'opacité du filigrane."
 
 #: pod/dressing/templates/video_dressing.html
 msgid "Credits"
@@ -2231,8 +2221,8 @@ msgid ""
 "Opening and ending credits are videos that will be displayed at the "
 "beginning or at the end of the video."
 msgstr ""
-"Les génériques de début et de fin sont des vidéos qui s'affichent au "
-"début ou à la fin de la vidéo."
+"Les génériques de début et de fin sont des vidéos qui s'affichent au début "
+"ou à la fin de la vidéo."
 
 #: pod/dressing/tests/test_views.py pod/dressing/views.py
 msgid "You cannot edit this dressing."
@@ -2259,6 +2249,15 @@ msgstr "Habiller la vidéo « %s »"
 #: pod/meeting/views.py pod/video/views.py
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
+
+#: pod/dressing/views.py
+#, python-format
+msgid "Edit the dressing “%s”"
+msgstr "Modifier l’habillage « %s »"
+
+#: pod/dressing/views.py
+msgid "Create a new dressing"
+msgstr "Créer un nouvel habillage"
 
 #: pod/dressing/views.py
 msgid "You cannot delete this dressing."
@@ -8975,6 +8974,10 @@ msgid "Chapter the video"
 msgstr "Chapitrer la vidéo"
 
 #: pod/video/templates/videos/link_video.html
+msgid "Dress the video"
+msgstr "Habiller la vidéo"
+
+#: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Delete the video"
@@ -9181,8 +9184,8 @@ msgid ""
 "The following links contain a key allowing access. Anyone with this links "
 "can access it."
 msgstr ""
-"Les liens suivants contiennent une clé permettant l’accès. Toute personne disposant de ces liens "
-"peut y accéder."
+"Les liens suivants contiennent une clé permettant l’accès. Toute personne "
+"disposant de ces liens peut y accéder."
 
 #: pod/video/templates/videos/video-info.html
 msgid "Options"
@@ -9214,7 +9217,8 @@ msgstr "Cocher la case pour indiquer le début de lecture souhaité."
 
 #: pod/video/templates/videos/video-info.html
 msgid "Use an embed code to display the video in a web page."
-msgstr "Utilisez un code d'intégration pour afficher la vidéo dans une page web."
+msgstr ""
+"Utilisez un code d'intégration pour afficher la vidéo dans une page web."
 
 #: pod/video/templates/videos/video-info.html
 msgid "Manage integration code in access tokens page"
@@ -9234,7 +9238,9 @@ msgstr ""
 
 #: pod/video/templates/videos/video-info.html
 msgid "By sharing a link, you allow others to view the video."
-msgstr "En partageant un lien, vous permettez à d'autres personnes de visionner la vidéo."
+msgstr ""
+"En partageant un lien, vous permettez à d'autres personnes de visionner la "
+"vidéo."
 
 #: pod/video/templates/videos/video-info.html
 msgid "Manage sharing link in access tokens page"
