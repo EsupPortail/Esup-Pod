@@ -9,9 +9,10 @@ import shutil
 from datetime import datetime, timedelta
 from defusedxml import minidom
 from django.conf import settings
+from django.core.mail import mail_managers
 from django.core.management.base import BaseCommand
 from django.core.serializers import serialize
-from django.template.defaultfilters import slugify
+from django.template.defaultfilters import slugify, striptags
 from django.template.loader import render_to_string
 from django.utils.translation import activate
 from django.utils.translation import gettext as _
@@ -23,22 +24,18 @@ from pod.enrichment.models import Enrichment
 from pod.main.utils import sizeof_fmt
 
 
-"""TODO
-* Verifier si ca supp egalement les encodages
-* Exporter tous les compléments avant suppression :
-* [x] Chapitrage
-* [x] Completion
-* [x] Enrichissements
-* [x] SS-titres
-* Estimer duree totale video et taille
-"""
-
 """CUSTOM PARAMETERS."""
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 ARCHIVE_ROOT = getattr(settings, "ARCHIVE_ROOT", "/video_archiving")
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 ARCHIVE_CSV = "%s/archived.csv" % settings.LOG_DIRECTORY
 HOW_MANY_DAYS = 365  # Delay before an archived video is moved to archive_ROOT
+
+__TITLE_SITE__ = (
+    settings.TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
+    if (settings.TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
+    else "Pod"
+)
 
 
 def store_as_dublincore(vid: Video, mediaPackage_dir: str, user_name: str) -> None:
@@ -197,12 +194,21 @@ class Command(BaseCommand):
 
         self.move_video_to_archive(mediaPackage_dir, vid)
 
+    def get_list_video_html(self, list_video: list) -> str:
+        """Generate an html version of list_video."""
+        msg_html = "<ol>"
+        for vid in list_video:
+            msg_html += "\n<li>%s</li>" % vid
+        msg_html += "</ol>"
+        return msg_html
+
     def handle(self, *args, **options) -> None:
         """Handle a command call."""
         activate(LANGUAGE_CODE)
         total_duration = 0
         total_processed = 0
         total_weight = 0
+        list_video = []
 
         if options["dry"]:
             self.dry_mode = True
@@ -217,12 +223,12 @@ class Command(BaseCommand):
             date_delete__lte=datetime.now() - timedelta(days=HOW_MANY_DAYS),
         )
 
-        for vid in vids:
 
         print(
             "%s videos archived since more than %s days found."
             % (len(vids), HOW_MANY_DAYS)
         )
+        for vid in vids:
             # vid = Video.objects.get(id=video_id)
             print("- Video slug: %s -" % vid.slug)
 
@@ -244,12 +250,52 @@ class Command(BaseCommand):
                 total_duration += vid.duration
                 total_processed += 1
                 total_weight += os.path.getsize(vid.video.path)
+                list_video.append(str(vid))
                 self.archive_pack(video_dir, csv_entry["User name"], vid)
             else:
                 print("Video %s not present in archived file" % vid.id)
             print("---")
+        # Convert seconds in human readable time
         total_duration = str(timedelta(seconds=total_duration))
         print(
             "Package archiving done. %s video packaged (%s - [%s])"
             % (total_processed, sizeof_fmt(total_weight), total_duration)
         )
+
+        if total_processed > 0:
+            msg_html = _("Hello manager(s) of  %s,") % __TITLE_SITE__
+
+            if self.dry_mode:
+                msg_html += (
+                    "<br>\n<p>"
+                    + _(
+                        "For your information, "
+                        + "below is the list of archived videos that have been packaged in "
+                        + "your ARCHIVE_ROOT folder, and definitely deleted from %s."
+                    )
+                    % __TITLE_SITE__
+                    + "</p>"
+                )
+            else:
+                msg_html += (
+                    "<br>\n<p>"
+                    + _(
+                        "For your information, "
+                        + "below is the list of archived videos that would've been packaged in "
+                        + "your ARCHIVE_ROOT folder. Run the create_archive_package command "
+                        + "without the --dry option to delete them from %s."
+                    )
+                    % __TITLE_SITE__
+                    + "</p>"
+                )
+            msg_html += self.get_list_video_html(list_video)
+            msg_html += "\n<p>" + _("Regards.") + "</p>\n"
+
+            subject = _("Packaging archived videos on Pod")
+            mail_managers(
+                subject,
+                striptags(msg_html),
+                fail_silently=False,
+                html_message=msg_html,
+            )
+            print("Summary sent by email to managers.")
