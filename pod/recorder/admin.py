@@ -138,6 +138,7 @@ class RecorderAdmin(admin.ModelAdmin):
         "name",
         "Description",
         "address_ip",
+        "credentials_login",
         "user",
         "type",
         "recording_type",

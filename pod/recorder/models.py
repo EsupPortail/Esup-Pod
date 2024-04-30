@@ -96,8 +96,23 @@ class Recorder(models.Model):
     salt = models.CharField(
         _("salt"), max_length=50, blank=True, help_text=_("Recorder salt.")
     )
-
-    # Recording type (video, AUdioVideoCasst, etc)
+    # Login for digest connexion
+    credentials_login = models.CharField(
+        _("credentials_login"),
+        blank=True,
+        default="",
+        max_length=255,
+        help_text=_("Recorder credentials login."),
+    )
+    # Password for digest connexion
+    credentials_password = models.CharField(
+        _("credentials_password"),
+        blank=True,
+        default="",
+        max_length=255,
+        help_text=_("Recorder credentials password."),
+    )
+    # Recording type (video, AudioVideoCast, etc,)
     recording_type = models.CharField(
         _("Recording Type"),
         max_length=50,
@@ -118,7 +133,7 @@ class Recorder(models.Model):
         null=True,
         blank=True,
     )
-    # Additionnal additional_users
+    # Additional users
     additional_users = models.ManyToManyField(
         User,
         blank=True,
@@ -244,6 +259,22 @@ class Recorder(models.Model):
 
     def save(self, *args, **kwargs):
         super(Recorder, self).save(*args, **kwargs)
+
+    def clean(self):
+        """Custom model validation."""
+        cred_msg = _("All credentials must be set.")
+        cred_error = {
+            "credentials_login": cred_msg,
+            "credentials_password": cred_msg,
+        }
+
+        # Ensure all credentials are set
+        if (not self.credentials_login and self.credentials_password) or (
+            self.credentials_login and not self.credentials_password
+        ):
+            if not self.salt:
+                cred_error["salt"] = cred_msg
+            raise ValidationError(cred_error)
 
     class Meta:
         verbose_name = _("Recorder")
