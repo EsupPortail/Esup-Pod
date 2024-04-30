@@ -1471,7 +1471,7 @@ def update_token(request, video: Video, token: VideoAccessToken):
         Token = VideoAccessToken.objects.get(video=video, token=token)
         Token.name = request.POST.get("name")
         Token.save()
-        messages.add_message(request, messages.INFO, _("The token has been updated."))
+        messages.add_message(request, messages.SUCCESS, _("The token has been updated."))
     except (ValueError, ObjectDoesNotExist):
         messages.add_message(request, messages.ERROR, _("Token not found."))
 
