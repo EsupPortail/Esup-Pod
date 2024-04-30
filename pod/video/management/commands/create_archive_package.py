@@ -20,6 +20,7 @@ from pod.video.models import Video
 from pod.chapter.models import Chapter
 from pod.completion.models import Contributor, Document, Overlay, Track
 from pod.enrichment.models import Enrichment
+from pod.main.utils import sizeof_fmt
 
 
 """TODO
@@ -27,8 +28,9 @@ from pod.enrichment.models import Enrichment
 * Exporter tous les compléments avant suppression :
 * [x] Chapitrage
 * [x] Completion
-* [] enrichissements
-* [] SS-titres
+* [x] Enrichissements
+* [x] SS-titres
+* Estimer duree totale video et taille
 """
 
 """CUSTOM PARAMETERS."""
@@ -105,7 +107,7 @@ def export_complement(folder: str, export_type: str, export_objects: list) -> No
         export_file = os.path.join(folder, "%s.json" % export_type)
         print("Export %s %s." % (len(export_objects), export_type))
         with open(export_file, "w") as out:
-            content = serialize('json', export_objects)
+            content = serialize("json", export_objects)
             print("export_file=%s" % export_file)
             out.write(content)
 
@@ -132,9 +134,7 @@ class Command(BaseCommand):
             if not self.dry_mode:
                 shutil.move(
                     vid.video.path,
-                    os.path.join(
-                        mediaPackage_dir, os.path.basename(vid.video.name)
-                    ),
+                    os.path.join(mediaPackage_dir, os.path.basename(vid.video.name)),
                 )
                 # Delete Video object
                 vid.delete()
@@ -157,9 +157,7 @@ class Command(BaseCommand):
 
         # Create video folder
         # ICI il faudrait le faire à partir de l'owner d'origine, sinon tout est à ARCHIVE
-        mediaPackage_dir = os.path.join(
-            ARCHIVE_ROOT, user_name, video_dir
-        )
+        mediaPackage_dir = os.path.join(ARCHIVE_ROOT, user_name, video_dir)
 
         # Create directory to store all the data
         os.makedirs(mediaPackage_dir, exist_ok=True)
@@ -170,9 +168,18 @@ class Command(BaseCommand):
         # Store Video complements as json
         for model in [Chapter, Contributor, Overlay, Enrichment]:
             # nb: contributors are already exported in dublincore.xml
-            export_complement(mediaPackage_dir,
-                              model.__name__,
-                              model.objects.filter(video=vid))
+            export_complement(
+                mediaPackage_dir, model.__name__, model.objects.filter(video=vid)
+            )
+
+        # Store also files linked to Enrichments
+        for enrich in Enrichment.objects.filter(video=vid):
+            if enrich.document:
+                print("Copying %s..." % enrich.document.file.path)
+                shutil.copy(enrich.document.file.path, mediaPackage_dir)
+            if enrich.image:
+                print("Copying %s..." % enrich.image.file.path)
+                shutil.copy(enrich.image.file.path, mediaPackage_dir)
 
         # Store file complements.
         for file in Document.objects.filter(video=vid):
@@ -193,6 +200,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options) -> None:
         """Handle a command call."""
         activate(LANGUAGE_CODE)
+        total_duration = 0
+        total_processed = 0
+        total_weight = 0
 
         if options["dry"]:
             self.dry_mode = True
@@ -207,16 +217,22 @@ class Command(BaseCommand):
             date_delete__lte=datetime.now() - timedelta(days=HOW_MANY_DAYS),
         )
 
-        print("%s videos archived since more than %s days found." % (len(vids), HOW_MANY_DAYS))
         for vid in vids:
 
+        print(
+            "%s videos archived since more than %s days found."
+            % (len(vids), HOW_MANY_DAYS)
+        )
             # vid = Video.objects.get(id=video_id)
             print("- Video slug: %s -" % vid.slug)
 
             if vid.recentViewcount > 0:
                 # Do not archive a video with recent views.
                 # (if video has been shared with a token, it can still be viewed)
-                print("- Video %s ignored (%s recent views)" % (vid.slug, vid.recentViewcount))
+                print(
+                    "- Video %s ignored (%s recent views)"
+                    % (vid.slug, vid.recentViewcount)
+                )
                 continue
 
             # Recover original video slug
@@ -225,7 +241,15 @@ class Command(BaseCommand):
 
             csv_entry = csv_data.get(str(vid.id))
             if csv_entry:
+                total_duration += vid.duration
+                total_processed += 1
+                total_weight += os.path.getsize(vid.video.path)
                 self.archive_pack(video_dir, csv_entry["User name"], vid)
             else:
                 print("Video %s not present in archived file" % vid.id)
             print("---")
+        total_duration = str(timedelta(seconds=total_duration))
+        print(
+            "Package archiving done. %s video packaged (%s - [%s])"
+            % (total_processed, sizeof_fmt(total_weight), total_duration)
+        )
