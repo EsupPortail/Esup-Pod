@@ -93,6 +93,7 @@ confirmModalBtn.addEventListener("click", (e) => {
 /**
  * Reset action and value of dashboard form elements when reset button is clicked.
  */
+/* exported dashboardActionReset */
 function dashboardActionReset() {
   dashboardAction = "";
   dashboardValue = "";

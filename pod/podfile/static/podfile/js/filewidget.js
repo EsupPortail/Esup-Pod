@@ -1,8 +1,8 @@
-// podfile:filewidjet.js
+// podfile:filewidget.js
 // select file
 
 if (typeof loaded == "undefined") {
-  loaded = true;
+  var loaded = true;
 
   const loader = `
   <div id="loader" class="d-flex justify-content-center align-items-center d-none loaderSpinner">
@@ -215,7 +215,7 @@ if (typeof loaded == "undefined") {
         modal.getElementById("file_type").value = button.dataset.filetype;
         document.getElementById("formchangefile").style.display = "block";
         break;
-      default: // Extract info from data-* attributes
+      default: { // Extract info from data-* attributes
         document.getElementById("folderFormName").style.display = "block";
         document.getElementById("folderModalCenterTitle").innerHTML = gettext(
           "Enter new name of folder"
@@ -230,6 +230,7 @@ if (typeof loaded == "undefined") {
         folder_input.dispatchEvent(focus);
         modal.querySelector(".modal-body input#formfolderid").value = folder_id;
         break;
+      }
     }
   });
 
@@ -369,7 +370,7 @@ if (typeof loaded == "undefined") {
   document.addEventListener("click", (e) => {
 
     if (!e.target.classList.contains("btn-remove")) return;
-    url =
+    let url =
       "/podfile/ajax_calls/remove_shared_user?foldid=" +
       document.getElementById("formuserid").value +
       "&userid=" +
@@ -404,7 +405,7 @@ if (typeof loaded == "undefined") {
 
   document.addEventListener("click", (e) => {
     if (!e.target.classList.contains("btn-add")) return;
-    url =
+    let url =
       "/podfile/ajax_calls/add_shared_user?foldid=" +
       document.getElementById("formuserid").value +
       "&userid=" +

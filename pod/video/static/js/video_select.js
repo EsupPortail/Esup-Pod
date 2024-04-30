@@ -119,6 +119,7 @@ function clearSelectedVideo() {
  * @see dashboardActionReset
  * @see resetDashboardElementsBtn
  */
+/* exported resetDashboardElements */
 function resetDashboardElements() {
   clearSelectedVideo();
   dashboardActionReset();
