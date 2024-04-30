@@ -17,7 +17,7 @@ from django.template.loader import render_to_string
 from django.utils.translation import activate
 from django.utils.translation import gettext as _
 
-from pod.video.models import Video
+from pod.video.models import Video, Notes, AdvancedNotes, Comment
 from pod.chapter.models import Chapter
 from pod.completion.models import Contributor, Document, Overlay, Track
 from pod.enrichment.models import Enrichment
@@ -163,7 +163,7 @@ class Command(BaseCommand):
         store_as_dublincore(vid, mediaPackage_dir, user_name)
 
         # Store Video complements as json
-        for model in [Chapter, Contributor, Overlay, Enrichment]:
+        for model in [Chapter, Contributor, Overlay, Enrichment, Notes, AdvancedNotes, Comment]:
             # nb: contributors are already exported in dublincore.xml
             export_complement(
                 mediaPackage_dir, model.__name__, model.objects.filter(video=vid)

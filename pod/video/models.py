@@ -1600,6 +1600,8 @@ class AdvancedNotes(models.Model):
     modified_on = models.DateTimeField(_("Date modified"), default=timezone.now)
 
     class Meta:
+        """AdvancedNotes Metadata."""
+
         verbose_name = _("Advanced Note")
         verbose_name_plural = _("Advanced Notes")
         unique_together = ("video", "user", "timestamp", "status")
@@ -1727,6 +1729,8 @@ class Comment(models.Model):
     added = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        """Video comment metadata."""
+
         verbose_name = _("Comment")
         verbose_name_plural = _("Comments")
 

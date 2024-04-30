@@ -81,7 +81,7 @@ def dismiss_stored_messages(request) -> None:
         request (Request): HTTP request
     """
     system_messages = messages.get_messages(request)
-    for msg in system_messages:
+    for _msg in system_messages:
         pass
 
 

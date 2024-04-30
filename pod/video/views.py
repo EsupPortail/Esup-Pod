@@ -2118,7 +2118,7 @@ def video_note_download(request, slug):
         "content": [],
     }
 
-    def write_to_dict(t, id, s, rn, rc, dc, dm, nt, c):
+    def write_to_dict(t, id, s, rn, rc, dc, dm, nt, c) -> None:
         contentToDownload["type"].append(t)
         contentToDownload["id"].append(id)
         contentToDownload["status"].append(s)
@@ -2129,7 +2129,7 @@ def video_note_download(request, slug):
         contentToDownload["noteTimestamp"].append(nt)
         contentToDownload["content"].append(c)
 
-    def rec_expl_coms(idNote, lComs):
+    def rec_expl_coms(idNote, lComs) -> None:
         dictComs = get_com_coms_dict(request, lComs)
         for c in lComs:
             write_to_dict(
