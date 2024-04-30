@@ -6,15 +6,9 @@ import re
 import shutil
 import time
 import uuid
-<<<<<<< HEAD
-from .models import Recording
-from django.conf import settings
 from defusedxml import minidom
-=======
-from xml.dom import minidom
 
 from django.conf import settings
->>>>>>> develop
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 

@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 
 # import urllib
 from urllib.parse import unquote
-from xml.dom import minidom
+from defusedxml import minidom
 
 import bleach
 from django.conf import settings
