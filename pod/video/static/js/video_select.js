@@ -86,7 +86,6 @@ function replaceSelectedCountVideos(container) {
     applyMultipleActionsBtn,
     newCount > 0 && dashboardAction.length !== 0,
   );
-  manageDisableBtn(resetDashboardElementsBtn, newCount > 0);
 }
 
 /**
