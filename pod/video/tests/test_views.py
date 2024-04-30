@@ -1771,7 +1771,7 @@ class VideoAccessTokenTestView(TestCase):
         msg = _("A token has been created.")
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
         # here's how you test the first message
-        self.assertEqual(all_messages[-1].tags, "info")
+        self.assertEqual(all_messages[-1].tags, "success")
         self.assertEqual(all_messages[-1].message, msg)
         self.assertEqual(VideoAccessToken.objects.all().count(), 1)
         # ###################################
@@ -1816,7 +1816,7 @@ class VideoAccessTokenTestView(TestCase):
         msg = _("The token has been deleted.")
         all_messages = [msg for msg in get_messages(response.wsgi_request)]
         # here's how you test the first message
-        self.assertEqual(all_messages[-1].tags, "info")
+        self.assertEqual(all_messages[-1].tags, "success")
         self.assertEqual(all_messages[-1].message, msg)
         self.assertEqual(VideoAccessToken.objects.all().count(), 0)
 

@@ -2,9 +2,17 @@
  * @file Esup-Pod functions for video selection manage.
  * @since 3.5.0
  */
+
+// Read-only globals defined in dashboard.js
+/*
+  global dashboardActionReset
+*/
+
 var selectedVideos = [];
 var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
-var resetSelectedVideosBtn = document.getElementById("resetSelectedVideosBtn");
+var resetDashboardElementsBtn = document.getElementById(
+  "reset-dashboard-elements-btn",
+);
 var countSelectedVideosBadge = document.getElementById(
   "countSelectedVideosBadge",
 );
@@ -66,13 +74,13 @@ function replaceSelectedCountVideos() {
     newCount,
   );
   videoCountStr = interpolate(videoCountStr, { count: newCount }, true);
-  countSelectedVideosBadge.innerHTML = videoCountStr;
+  countSelectedVideosBadge.textContent = videoCountStr;
   countSelectedVideosBadge.setAttribute("title", videoCountTit);
   manageDisableBtn(
     applyMultipleActionsBtn,
     newCount > 0 && dashboardAction.length !== 0,
   );
-  manageDisableBtn(resetSelectedVideosBtn, newCount > 0);
+  manageDisableBtn(resetDashboardElementsBtn, newCount > 0);
 }
 
 /**
@@ -104,6 +112,17 @@ function clearSelectedVideo() {
     elt.classList.remove("selected");
   });
   replaceSelectedCountVideos();
+}
+
+/**
+ * Reset dashboard elements (selected videos, action)
+ * @see dashboardActionReset
+ * @see resetDashboardElementsBtn
+ */
+function resetDashboardElements() {
+  clearSelectedVideo();
+  dashboardActionReset();
+  window.scrollTo(0, 0);
 }
 
 /**

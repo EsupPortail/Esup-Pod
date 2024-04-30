@@ -1424,7 +1424,7 @@ def video_edit_access_tokens(request: WSGIRequest, slug: str = None):
             if request.POST["action"] == "add":
                 VideoAccessToken.objects.create(video=video)
                 messages.add_message(
-                    request, messages.INFO, _("A token has been created.")
+                    request, messages.SUCCESS, _("A token has been created.")
                 )
             else:
                 if request.POST["action"] == "delete" and request.POST.get("token"):
@@ -1454,7 +1454,7 @@ def delete_token(request, video: Video, token: VideoAccessToken):
     try:
         uuid.UUID(str(token))
         VideoAccessToken.objects.get(video=video, token=token).delete()
-        messages.add_message(request, messages.INFO, _("The token has been deleted."))
+        messages.add_message(request, messages.SUCCESS, _("The token has been deleted."))
     except (ValueError, ObjectDoesNotExist):
         messages.add_message(request, messages.ERROR, _("Token not found."))
 

@@ -175,6 +175,7 @@ a.player-element:hover {
   color: inherit;
   text-decoration: none;
   border: var(--bs-border-width) solid var(--color-alto) !important;
+  border-radius: var(--bs-border-radius);
 }
 
 a.player-element.selected {

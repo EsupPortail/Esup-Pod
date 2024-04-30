@@ -211,6 +211,10 @@ a:not(.btn, .dropdown-item):focus {
   margin-bottom: 1.5rem;
 }
 
+.pod-share-draft-icon {
+  font-size: 1.5rem;
+}
+
 :not(footer) > .pod-btn-social {
   font-size: 2rem;
 }
@@ -339,7 +343,6 @@ a:not(.btn, .dropdown-item):focus {
 
 /** modal **/
 .modal-title svg {
-  /* color:var(--pod-primary); */
   height: 40px;
   width: 40px;
 }
@@ -726,10 +729,15 @@ div.card a img {
   transition: all 0.3s;
 }
 
+.dashboard-container .infinite-item:not(.selected),
+.dashboard-container .infinite-item .checked_overlay .card_selected {
+  transition: transform 0.2s ease-in-out;
+}
+
 .dashboard-container .infinite-item:not(.selected):hover,
 .dashboard-container .infinite-item .checked_overlay:hover .card_selected {
   transform: scale(1.03);
-  transition: transform 0.25s ease;
+  transition: transform 0.2s ease-in-out;
   z-index: 6;
 }
 
@@ -909,10 +917,6 @@ span[data-bs-placement] {
   }
 }
 
-/*
-@media screen and (min-width:768px) {  }
-*/
-
 @media screen and (min-width: 992px) {
   .card-img-top {
     max-height: 195.36px;
@@ -1079,23 +1083,22 @@ body {
 
 .pod-aside-collapse {
   position: absolute;
-  right: 0.5rem;
+  right: 0.75rem;
   z-index: 6;
+  margin: 0.25rem;
 }
 
 .pod-aside-collapse__button {
-  border-radius: 50%;
+  border-radius: var(--bs-btn-border-radius);
   width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.4rem;
-  transition: all 0.5s ease-in;
   background: none;
   border: 1px solid silver;
   color: var(--pod-font-color);
-  text-shadow: 1px 1px 0 var(--pod-background);
 }
 
 .pod-aside-collapse__button:hover {
@@ -1132,10 +1135,6 @@ body {
 
 .pod-footer__credits {
   font-size: 85%;
-
-  /*
-  opacity: .8;
-  */
 }
 
 .pod-footer__links {
@@ -1379,7 +1378,7 @@ body {
   grid-auto-rows: min-content;
   background: var(--pod-background-neutre2-bloc);
   padding: 1rem;
-
+  border-radius: var(--bs-border-radius-sm);
   /*
   Commented in 3.6.0
   [Todo] remove in 3.7.0
@@ -1396,12 +1395,13 @@ body {
 /*
 Commented in 3.6.0
 [Todo] remove in 3.7.0
- */
 .pod-aside.show {
   margin-left: 0;
   width: auto;
 }
-*/ @media (max-width: 992px) {
+*/
+
+@media (max-width: 992px) {
   /*
   .pod-aside {
     /* THIS IS NORMAL, it's to fit with pod-aside-collapse */
@@ -1645,7 +1645,6 @@ a.player-element.disabled {
 }
 
 .podfile-icon-selector {
-  /* display: inline-block; */
   width: 1.6em;
   padding: 1.7em 1em 0;
   margin-top: 0.1em;
