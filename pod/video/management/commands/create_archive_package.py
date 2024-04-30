@@ -223,7 +223,6 @@ class Command(BaseCommand):
             date_delete__lte=datetime.now() - timedelta(days=HOW_MANY_DAYS),
         )
 
-
         print(
             "%s videos archived since more than %s days found."
             % (len(vids), HOW_MANY_DAYS)
