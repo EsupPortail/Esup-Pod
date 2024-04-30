@@ -4,7 +4,7 @@ import threading
 import logging
 import datetime
 import os
-from xml.dom import minidom
+from defusedxml import minidom
 
 from django.conf import settings
 

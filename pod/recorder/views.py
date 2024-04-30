@@ -42,7 +42,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
 from django.views.decorators.csrf import csrf_exempt
-from xml.dom import minidom
+from defusedxml import minidom
 
 from .utils import (
     get_id_media,

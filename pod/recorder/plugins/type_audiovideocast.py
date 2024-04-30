@@ -5,7 +5,7 @@ import logging
 import datetime
 import zipfile
 import os
-from xml.dom import minidom
+from defusedxml import minidom
 
 from django.conf import settings
 from django.template.defaultfilters import slugify

@@ -6,7 +6,7 @@ import os
 import uuid
 from .models import Recording
 from django.conf import settings
-from xml.dom import minidom
+from defusedxml import minidom
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 

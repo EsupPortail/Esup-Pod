@@ -7,7 +7,7 @@ import os
 import shutil
 
 from datetime import datetime, timedelta
-from xml.dom import minidom
+from defusedxml import minidom
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.core.serializers import serialize

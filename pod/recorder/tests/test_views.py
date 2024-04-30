@@ -14,7 +14,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from ..models import Recorder, Recording, RecordingFileTreatment
 from pod.video.models import Type
 
-from xml.dom import minidom
+from defusedxml import minidom
 
 from .. import views
 from http import HTTPStatus
