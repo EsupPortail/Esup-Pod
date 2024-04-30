@@ -41,10 +41,10 @@ class CompletionViewsTestCase(TestCase):
         """Set up the CompletionViews test case."""
         site = Site.objects.get(id=1)
         user = User.objects.create(username="test")
-        user.set_password(PWD)
+        user.set_password(PWD)  # nosem
         user.save()
         staff = User.objects.create(username="staff", is_staff=True)
-        staff.set_password(PWD)
+        staff.set_password(PWD)  # nosem
         staff.save()
         vid1 = Video.objects.create(
             title="videotest",
@@ -111,7 +111,7 @@ class CompletionContributorViewsTestCase(TestCase):
         """Set up the CompletionContributorViews test case."""
         site = Site.objects.get(id=1)
         staff = User.objects.create(username="staff", is_staff=True)
-        staff.set_password(PWD)
+        staff.set_password(PWD)  # nosem
         staff.save()
         vid = Video.objects.create(
             title="videotest2",
@@ -288,7 +288,7 @@ class CompletionTrackViewsTestCase(TestCase):
         """Set up the CompletionTrackViews test case."""
         site = Site.objects.get(id=1)
         staff = User.objects.create(username="staff", is_staff=True)
-        staff.set_password(PWD)
+        staff.set_password(PWD)  # nosem
         staff.save()
         if FILEPICKER:
             UserFolder.objects.create(owner=staff, name="Home")
@@ -510,7 +510,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         """Set up the CompletionDocumentViews test case."""
         site = Site.objects.get(id=1)
         staff = User.objects.create(username="staff", is_staff=True)
-        staff.set_password(PWD)
+        staff.set_password(PWD)  # nosem
         staff.save()
         if FILEPICKER:
             UserFolder.objects.create(owner=staff, name="Home")
@@ -740,7 +740,7 @@ class CompletionOverlayViewsTestCase(TestCase):
     def setUp(self) -> None:
         """Set up the CompletionOverlayViews test case."""
         staff = User.objects.create(username="staff", is_staff=True)
-        staff.set_password(PWD)
+        staff.set_password(PWD)  # nosem
         staff.save()
         Video.objects.create(
             title="videotest2",
