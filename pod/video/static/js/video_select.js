@@ -109,7 +109,7 @@ function toggleSelectedVideo(item, container) {
       selectedVideos[container].push(item.dataset.slug);
     }
   }else{
-    if (!item.classList.contains("selected") && selectedVideos[container].includes(item.dataset.slug)){
+    if (selectedVideos[container].includes(item.dataset.slug)){
       selectedVideos[container].splice(selectedVideos[container].indexOf(item.dataset.slug),1);
     }
   }
