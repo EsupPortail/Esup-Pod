@@ -123,10 +123,12 @@ document.addEventListener("submit", (e) => {
   var form = "form_" + name_form;
   var list = "list_" + name_form;
   var action = e.target.querySelector("input[name=action]").value;
-  sendandgetform(e.target, action, name_form, form, list);
+  console.log("e.target", e.target);
+  sendAndGetForm(e.target, action, name_form, form, list).then(r => "").catch(e => sendAndGetForm(e.target, action, name_form, form, list));
 });
 
-var sendandgetform = async function (elt, action, name, form, list) {
+var sendAndGetForm = async function (elt, action, name, form, list) {
+  console.log("sendAndGetForm", elt, action, name, form, list);
   var href = elt.getAttribute("action");
   if (action == "new" || action == "form_save_new") {
     document.getElementById(form).innerHTML =
