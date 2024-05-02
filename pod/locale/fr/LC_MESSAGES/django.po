@@ -8278,9 +8278,9 @@ msgid ""
 "been packaged in your ARCHIVE_ROOT folder. Run the create_archive_package "
 "command without the --dry option to delete them from %s."
 msgstr ""
-"Pour votre information, voici la liste des vidéos archivées qui ont été "
-"placées dans votre dossier ARCHIVE_ROOT. Lancez la commande "
-"create_archive_package sans l’option --dry pour les supprimer de %s."
+"Pour votre information, voici la liste des vidéos archivées à placer dans "
+"votre dossier ARCHIVE_ROOT. Lancez la commande create_archive_package sans "
+"l’option --dry pour les supprimer de %s."
 
 #: pod/video/management/commands/create_archive_package.py
 #, python-format

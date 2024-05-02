@@ -2,7 +2,7 @@
 
 import os
 import time
-from xml.dom import minidom
+from xml.dom import minidom  # nosec
 
 from django.conf import settings
 from django.contrib.auth.models import User
