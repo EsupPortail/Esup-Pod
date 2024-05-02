@@ -128,6 +128,7 @@ document.addEventListener("submit", (e) => {
 });
 
 var sendAndGetForm = async function (elt, action, name, form, list) {
+  console.log("-------------------");
   console.log("sendAndGetForm", elt, action, name, form, list);
   var href = elt.getAttribute("action");
   if (action == "new" || action == "form_save_new") {
