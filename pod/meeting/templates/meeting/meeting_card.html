@@ -25,7 +25,7 @@
               <i class="bi bi-file-earmark-person" aria-hidden="true"></i>
             </span>
           {% else %}
-            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{% blocktrans with full_name=meeting.owner.get_full_name %}This is “{{ full_name }}”'s personal meeting room, a room specific to his profile, which is always available.{% endblocktrans %}">
+            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{% blocktrans with full_name=meeting.owner.get_full_name %}This is “{{ full_name }}”’s personal meeting room, a room specific to his profile, which is always available.{% endblocktrans %}">
               <i class="bi bi-file-person" aria-hidden="true"></i>
             </span>
           {% endif%}
@@ -80,10 +80,10 @@
           data-bs-meeting-end-url="{% url 'meeting:end' meeting.meeting_id %}" data-bs-meeting-info-url="{% url 'meeting:get_meeting_info' meeting.meeting_id %}"
           data-bs-meeting-webinar="{{meeting.is_webinar}}" aria-label="{% trans 'Show meeting informations' %}">
             <span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Show meeting informations' %}"><i class="bi bi-person-video2 pod-add" aria-hidden="true"></i></span>
-          </a>  
+          </a>
           <a class="btn btn-primary btn-sm mx-1 meeting-nowrap" href="{% url 'meeting:join' meeting.meeting_id %}" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans "Join the meeting" %}">
             <span><i class="bi bi-play pod-add" aria-hidden="true"></i>{% trans "Join the meeting" %}</span>
-          </a>  
+          </a>
         {% endif %}
       </div>
     {% else %}

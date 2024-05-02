@@ -98,17 +98,6 @@ def read_archived_csv() -> dict:
     return csv_data
 
 
-def export_complement(folder: str, export_type: str, export_objects: list) -> None:
-    """Store a video complement as json."""
-    if len(export_objects) > 0:
-        export_file = os.path.join(folder, "%s.json" % export_type)
-        print("Export %s %s." % (len(export_objects), export_type))
-        with open(export_file, "w") as out:
-            content = serialize("json", export_objects)
-            print("export_file=%s" % export_file)
-            out.write(content)
-
-
 class Command(BaseCommand):
     """Move old archived videos from disk to ARCHIVE_ROOT."""
 
@@ -124,6 +113,18 @@ class Command(BaseCommand):
             default=False,
         )
 
+    def export_complement(
+        self, folder: str, export_type: str, export_objects: list
+    ) -> None:
+        """Store a video complement as json."""
+        if len(export_objects) > 0:
+            export_file = os.path.join(folder, "%s.json" % export_type)
+            print("Export %s %s." % (len(export_objects), export_type))
+            if not self.dry_mode:
+                with open(export_file, "w") as out:
+                    content = serialize("json", export_objects)
+                    out.write(content)
+
     def move_video_to_archive(self, mediaPackage_dir: str, vid: Video) -> None:
         """Move video source file to mediaPackage_dir."""
         if os.access(vid.video.path, os.F_OK):
@@ -137,11 +138,6 @@ class Command(BaseCommand):
                 vid.delete()
             # Supprime l'objet vidéo et le dossier associé (encodage, logs, etc..)
             # Supprime les thumbnails (x3)
-            # Les completion semblent stockée uniquement en bdd
-            # (voir "Completion Track") par exemple pour les ss/titres
-            # Documents complémentaires ?
-            # https://pod-test.univ-cotedazur.fr/media/files/8e5785441e2778e256f91df587311eecb14bb13441a609922d248277ccfcbb67/pod-webinaire.pdf
-            # Notes / Commentaires ?
         else:
             print("ERROR: Cannot acces to file '%s'." % vid.video.path)
 
@@ -153,7 +149,6 @@ class Command(BaseCommand):
         user_name = user_name[-1][:-1]
 
         # Create video folder
-        # ICI il faudrait le faire à partir de l'owner d'origine, sinon tout est à ARCHIVE
         mediaPackage_dir = os.path.join(ARCHIVE_ROOT, user_name, video_dir)
 
         # Create directory to store all the data
@@ -163,9 +158,17 @@ class Command(BaseCommand):
         store_as_dublincore(vid, mediaPackage_dir, user_name)
 
         # Store Video complements as json
-        for model in [Chapter, Contributor, Overlay, Enrichment, Notes, AdvancedNotes, Comment]:
+        for model in [
+            Chapter,
+            Contributor,
+            Overlay,
+            Enrichment,
+            Notes,
+            AdvancedNotes,
+            Comment,
+        ]:
             # nb: contributors are already exported in dublincore.xml
-            export_complement(
+            self.export_complement(
                 mediaPackage_dir, model.__name__, model.objects.filter(video=vid)
             )
 
@@ -256,10 +259,15 @@ class Command(BaseCommand):
             print("---")
         # Convert seconds in human readable time
         total_duration = str(timedelta(seconds=total_duration))
-        print(
-            "Package archiving done. %s video packaged (%s - [%s])"
-            % (total_processed, sizeof_fmt(total_weight), total_duration)
-        )
+        total_msg = _(
+            "Package archiving done. %(amount)s video packaged (%(weight)s - [%(duration)s])"
+        ) % {
+            "amount": total_processed,
+            "weight": sizeof_fmt(total_weight),
+            "duration": total_duration,
+        }
+
+        print(total_msg)
 
         if total_processed > 0:
             msg_html = _("Hello manager(s) of  %s,") % __TITLE_SITE__
@@ -269,25 +277,26 @@ class Command(BaseCommand):
                     "<br>\n<p>"
                     + _(
                         "For your information, "
-                        + "below is the list of archived videos that have been packaged in "
-                        + "your ARCHIVE_ROOT folder, and definitely deleted from %s."
+                        + "below is the list of archived videos that would’ve been packaged in "
+                        + "your ARCHIVE_ROOT folder. Run the create_archive_package command "
+                        + "without the --dry option to delete them from %s."
                     )
                     % __TITLE_SITE__
-                    + "</p>"
+                    + "</p>\n"
                 )
             else:
                 msg_html += (
                     "<br>\n<p>"
                     + _(
                         "For your information, "
-                        + "below is the list of archived videos that would've been packaged in "
-                        + "your ARCHIVE_ROOT folder. Run the create_archive_package command "
-                        + "without the --dry option to delete them from %s."
+                        + "below is the list of archived videos that have been packaged in "
+                        + "your ARCHIVE_ROOT folder, and definitely deleted from %s."
                     )
                     % __TITLE_SITE__
-                    + "</p>"
+                    + "</p>\n"
                 )
             msg_html += self.get_list_video_html(list_video)
+            msg_html += "<p>%s</p>\n" % total_msg
             msg_html += "\n<p>" + _("Regards.") + "</p>\n"
 
             subject = _("Packaging archived videos on Pod")

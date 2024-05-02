@@ -1,3 +1,4 @@
+"""Esup-Pod recorder models."""
 import os
 import importlib
 
@@ -98,7 +99,7 @@ class Recorder(models.Model):
     )
     # Login for digest connexion
     credentials_login = models.CharField(
-        _("credentials_login"),
+        _("Credentials login"),
         blank=True,
         default="",
         max_length=255,
@@ -106,7 +107,7 @@ class Recorder(models.Model):
     )
     # Password for digest connexion
     credentials_password = models.CharField(
-        _("credentials_password"),
+        _("Credentials password"),
         blank=True,
         default="",
         max_length=255,
@@ -431,13 +432,13 @@ class RecordingFile(models.Model):
 
 
 @receiver(post_save, sender=RecordingFile)
-def process_recording_file(sender, instance, created, **kwargs):
+def process_recording_file(sender, instance, created, **kwargs) -> None:
     if created and instance.file and os.path.isfile(instance.file.path):
         # deplacement du fichier source vers destination
         create_recording(instance)
 
 
-def create_recording(recordingFile):
+def create_recording(recordingFile) -> None:
     new_path = os.path.join(
         DEFAULT_RECORDER_PATH, os.path.basename(recordingFile.file.path)
     )
