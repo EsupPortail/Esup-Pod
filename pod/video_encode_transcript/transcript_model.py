@@ -464,7 +464,7 @@ def get_text_caption(text_caption, last_word_added):
     """Get the text for a caption."""
     try:
         first_index = text_caption.index(last_word_added)
-        return text_caption[first_index + 1 :]
+        return text_caption[first_index + 1:]
     except ValueError:
         return text_caption
 
