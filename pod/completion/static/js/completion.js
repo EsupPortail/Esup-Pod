@@ -95,10 +95,10 @@ var ajaxfail = function (data, form) {
 
 document.addEventListener("submit", (e) => {
   if (
-    e.target.id != "form_new_contributor" &&
-    e.target.id != "form_new_document" &&
-    e.target.id != "form_new_track" &&
-    e.target.id != "form_new_overlay" &&
+    e.target.id !== "form_new_contributor" &&
+    e.target.id !== "form_new_document" &&
+    e.target.id !== "form_new_track" &&
+    e.target.id !== "form_new_overlay" &&
     !e.target.matches(".form_change") &&
     !e.target.matches(".form_delete")
   )
@@ -124,14 +124,14 @@ document.addEventListener("submit", (e) => {
   var list = "list_" + name_form;
   var action = e.target.querySelector("input[name=action]").value;
   console.log("e.target", e.target);
-  sendAndGetForm(e.target, action, name_form, form, list).then(r => "").catch(e => sendAndGetForm(e.target, action, name_form, form, list));
+  sendAndGetForm(e.target, action, name_form, form, list).then(r => "").catch(e => console.log("error", e));
 });
 
 var sendAndGetForm = async function (elt, action, name, form, list) {
   console.log("-------------------");
   console.log("sendAndGetForm", elt, action, name, form, list);
   var href = elt.getAttribute("action");
-  if (action == "new" || action == "form_save_new") {
+  if (action === "new" || action === "form_save_new") {
     document.getElementById(form).innerHTML =
       '<div style="width:100%; margin: 2rem;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
 
@@ -145,8 +145,13 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         }).hide();
       });
     /* Display associated help in side menu */
+    console.log("name", name);
     var compInfo = document.querySelector(`#${name}-info>.collapse`);
-    bootstrap.Collapse.getOrCreateInstance(compInfo).show();
+    try {
+      bootstrap.Collapse.getOrCreateInstance(compInfo).show();
+    } catch (e) {
+      // do nothing
+    }
 
     let url = window.location.origin + href;
     let token = elt.csrfmiddlewaretoken.value;
