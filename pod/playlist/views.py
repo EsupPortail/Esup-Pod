@@ -1,3 +1,5 @@
+"""Esup-Pod playlist views."""
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -74,10 +76,10 @@ __TITLE_SITE__ = (
 USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", True)
 
 
-def playlist_list(request):
+def playlist_list(request: WSGIRequest):
     """Render playlists page."""
     visibility = request.GET.get("visibility", "all")
-    if visibility in ["private", "protected", "public"] and request.user.is_authenticated:
+    if visibility in {"private", "protected", "public"} and request.user.is_authenticated:
         playlists = get_playlist_list_for_user(request.user).filter(visibility=visibility)
     elif visibility == "additional" and request.user.is_authenticated:
         playlists = get_playlists_for_additional_owner(request.user)
@@ -115,11 +117,11 @@ def playlist_list(request):
     )
 
 
-def playlist_content(request, slug):
+def playlist_content(request: WSGIRequest, slug: str):
     """Render the videos list of a playlist."""
     sort_field = request.GET.get("sort", "rank")
     sort_direction = request.GET.get("sort_direction")
-    playlist = get_playlist(slug)
+    playlist = get_object_or_404(Playlist, slug=slug)
     if (
         playlist.visibility == "public"
         or playlist.visibility == "protected"
@@ -135,13 +137,13 @@ def playlist_content(request, slug):
 
 
 def render_playlist_page(
-    request,
-    playlist,
-    videos,
-    in_favorites_playlist,
-    count_videos,
-    sort_field,
-    sort_direction=None,
+    request: WSGIRequest,
+    playlist: Playlist,
+    videos: list[Video],
+    in_favorites_playlist: bool,
+    count_videos: int,
+    sort_field: str,
+    sort_direction: str = None,
     form=None,
 ):
     """Render playlist page with the videos list of this."""
@@ -185,13 +187,13 @@ def render_playlist_page(
 
 
 def toggle_render_playlist_user_has_right(
-    request,
-    playlist,
-    videos,
-    in_favorites_playlist,
-    count_videos,
-    sort_field,
-    sort_direction,
+    request: WSGIRequest,
+    playlist: Playlist,
+    videos: list[Video],
+    in_favorites_playlist: bool,
+    count_videos: int,
+    sort_field: str,
+    sort_direction: str,
 ):
     """Toggle render_playlist() when the user has right."""
     if request.method == "POST":
@@ -228,7 +230,7 @@ def toggle_render_playlist_user_has_right(
 
 
 def render_playlist(
-    request: dict, playlist: Playlist, sort_field: str, sort_direction: str
+    request: WSGIRequest, playlist: Playlist, sort_field: str, sort_direction: str
 ):
     """Render playlist page with the videos list of this."""
     videos_list = sort_videos_list(
@@ -325,10 +327,10 @@ def render_playlist__authenticated_user(
 
 
 @login_required(redirect_field_name="referrer")
-def remove_video_in_playlist(request, slug, video_slug):
+def remove_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
     """Remove a video in playlist."""
     playlist = get_object_or_404(Playlist, slug=slug)
-    video = Video.objects.get(slug=video_slug)
+    video = get_object_or_404(Video, slug=video_slug)
     user_remove_video_from_playlist(playlist, video)
     if request.GET.get("json"):
         return JsonResponse(
@@ -340,10 +342,10 @@ def remove_video_in_playlist(request, slug, video_slug):
 
 
 @login_required(redirect_field_name="referrer")
-def add_video_in_playlist(request, slug, video_slug):
+def add_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
     """Add a video in playlist."""
-    playlist = get_playlist(slug)
-    video = Video.objects.get(slug=video_slug)
+    playlist = get_object_or_404(Playlist, slug=slug)
+    video = get_object_or_404(Video, slug=video_slug)
     user_add_video_in_playlist(playlist, video)
     if request.GET.get("json"):
         return JsonResponse(
@@ -355,7 +357,7 @@ def add_video_in_playlist(request, slug, video_slug):
 
 
 @login_required(redirect_field_name="referrer")
-def remove_playlist_view(request, slug: str):
+def remove_playlist_view(request: WSGIRequest, slug: str):
     """Remove playlist with form."""
     playlist = get_object_or_404(Playlist, slug=slug)
     if in_maintenance():
@@ -390,7 +392,9 @@ def remove_playlist_view(request, slug: str):
 
 
 @login_required(redirect_field_name="referrer")
-def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) -> None:
+def handle_post_request_for_add_or_edit_function(
+    request: WSGIRequest, playlist: Playlist
+) -> None:
     """Handle post request for add_or_edit function."""
     page_title = ""
     form = (
@@ -448,7 +452,7 @@ def handle_post_request_for_add_or_edit_function(request, playlist: Playlist) ->
 
 
 @login_required(redirect_field_name="referrer")
-def handle_get_request_for_add_or_edit_function(request, slug: str) -> None:
+def handle_get_request_for_add_or_edit_function(request: WSGIRequest, slug: str) -> None:
     """Handle get request for add_or_edit function."""
     if request.GET.get("next"):
         options = f"?next={request.GET.get('next')}"
@@ -482,7 +486,7 @@ def handle_get_request_for_add_or_edit_function(request, slug: str) -> None:
 @csrf_protect
 @ensure_csrf_cookie
 @login_required(redirect_field_name="referrer")
-def add_or_edit(request, slug: str = None):
+def add_or_edit(request: WSGIRequest, slug: str = None):
     """Add or edit view with form."""
     playlist = get_object_or_404(Playlist, slug=slug) if slug else None
     if in_maintenance():
@@ -495,7 +499,7 @@ def add_or_edit(request, slug: str = None):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def favorites_save_reorganisation(request, slug: str):
+def favorites_save_reorganisation(request: WSGIRequest, slug: str):
     """Save reorganization when the user click on save button."""
     if request.method == "POST":
         json_data = request.POST.get("json-data")
@@ -525,7 +529,7 @@ def favorites_save_reorganisation(request, slug: str):
         raise Http404()
 
 
-def start_playlist(request, slug, video=None):
+def start_playlist(request: WSGIRequest, slug: str, video: Video = None):
     playlist = get_object_or_404(Playlist, slug=slug)
 
     if (
