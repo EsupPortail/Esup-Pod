@@ -192,7 +192,7 @@ class Encoding_video_model(Encoding_video):
         # Need to modify start and stop
         log_to_text = ""
         # logs = info_video["encoding_log"]
-        log_to_text += "Start: %s " %str(self.start)
+        log_to_text += "Start: %s " % str(self.start)
         """
         for log in logs:
             log_to_text = log_to_text + "[" + log + "]\n\n"
@@ -210,7 +210,7 @@ class Encoding_video_model(Encoding_video):
         # add path to log file to easily open it
         log_to_text += "\nLog File: \n"
         log_to_text += self.get_output_dir() + "/info_video.json"
-        log_to_text += "\nEnd: %s" %str(self.stop)
+        log_to_text += "\nEnd: %s" % str(self.stop)
 
         encoding_log, created = EncodingLog.objects.get_or_create(video=video_to_encode)
         encoding_log.log = log_to_text
@@ -300,7 +300,8 @@ class Encoding_video_model(Encoding_video):
 
     def wait_for_file(self, filepath):
         import time
-        os.system('ls -l %s' % self.get_output_dir())
+
+        os.system("ls -l %s" % self.get_output_dir())
         time_to_wait = 40
         time_counter = 0
         while not os.path.exists(filepath):
@@ -313,11 +314,11 @@ class Encoding_video_model(Encoding_video):
 
     def store_json_info(self) -> Video:
         """Open json file and store its data in current instance."""
-        infovideojsonfilepath = os.path.join(self.get_output_dir(),"info_video.json")
+        infovideojsonfilepath = os.path.join(self.get_output_dir(), "info_video.json")
         if not check_file(infovideojsonfilepath):
             self.wait_for_file(infovideojsonfilepath)
 
-        with open(infovideojsonfilepath, 'r') as json_file:
+        with open(infovideojsonfilepath, "r") as json_file:
             info_video = json.load(json_file)
             video_to_encode = Video.objects.get(id=self.id)
             video_to_encode.duration = info_video["duration"]

@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.flatpages.models import FlatPage
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied, SuspiciousOperation
+from django.core.exceptions import PermissionDenied
 from django.conf import settings
 from captcha.models import CaptchaStore
 from http import HTTPStatus
@@ -50,9 +50,11 @@ class MainViewsTestCase(TestCase):
         # filename is not set
         response = self.client.post("/download/")
         self.assertRaises(PermissionDenied)
-        # filename is properly set
-        response = self.client.post("/download/", {"filename": "/etc/passwd"})
-        self.assertRaises(SuspiciousOperation)
+        # Wrong filename --> not in MEDIA folder
+        with self.assertRaises(ValueError):
+            response = self.client.post("/download/", {"filename": "/etc/passwd"})
+
+        # Good filename
         filename = os.path.join(settings.MEDIA_ROOT, "test/test_file.txt")
         if not os.path.exists(os.path.join(settings.MEDIA_ROOT, "test")):
             os.mkdir(os.path.join(settings.MEDIA_ROOT, "test"))
