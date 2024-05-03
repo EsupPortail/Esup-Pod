@@ -16,7 +16,7 @@ env:
   PYTHON_VERSION: '3.9'
   DJANGO_SUPERUSER_USERNAME: "admin"
   DJANGO_SUPERUSER_PASSWORD: "passwd"
-  DJANGO_SUPERUSER_EMAIL: "noreplay@uni.fr"
+  DJANGO_SUPERUSER_EMAIL: "noreply@uni.fr"
   ELASTICSEARCH_TAG: "elasticsearch:7.17.18"
   NODE_VERSION: "20"
   NODE_TAG: "node:20"
@@ -144,6 +144,11 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           coverage run --append --source='.' manage.py test -v 3 --settings=pod.main.test_settings
+
+      - name: Coveralls
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: coverallsapp/github-action@v2
 
       - name: Send coverage to coveralls.io
         # coveralls command has been installed by requirements-dev.txt
