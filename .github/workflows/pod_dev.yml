@@ -66,7 +66,7 @@ jobs:
       # FLAKE 8
       - name: Flake8 compliance
         run: |
-          flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py,pod/static/*.py
+          flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,test_settings.py,node_modules/*/*.py,pod/static/*.py,pod/custom/tenants/*/*.py
 
       ## Start remote encoding and transcoding test ##
       - name: Create settings local file
