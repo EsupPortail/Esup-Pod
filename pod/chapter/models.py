@@ -7,6 +7,7 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 
 from pod.video.models import Video
+from pod.video.utils import verify_field_length
 from pod.main.models import get_nextautoincrement
 
 
@@ -45,24 +46,12 @@ class Chapter(models.Model):
         )
 
     def clean(self) -> None:
+        """Check chapter fields validity."""
         msg = list()
-        msg = self.verify_title_items() + self.verify_time()
+        msg = verify_field_length(self.title) + self.verify_time()
         msg = msg + self.verify_overlap()
         if len(msg) > 0:
             raise ValidationError(msg)
-
-    def verify_title_items(self) -> list:
-        msg = list()
-        if (
-            not self.title
-            or self.title == ""
-            or len(self.title) < 2
-            or len(self.title) > 100
-        ):
-            msg.append(_("Please enter a title from 2 to 100 characters."))
-        if len(msg) > 0:
-            return msg
-        return list()
 
     def verify_time(self) -> list:
         """Check that start time is included inside video duration."""
@@ -78,9 +67,7 @@ class Chapter(models.Model):
                     + "{0}".format(self.video.duration - 1)
                 )
             )
-        if len(msg) > 0:
-            return msg
-        return list()
+        return msg
 
     def verify_overlap(self) -> list:
         msg = list()
@@ -100,9 +87,7 @@ class Chapter(models.Model):
                             + "end values."
                         ).format(element.title)
                     )
-            if len(msg) > 0:
-                return msg
-        return list()
+        return msg
 
     def save(self, *args, **kwargs) -> None:
         """Save a chapter."""

@@ -154,3 +154,14 @@ def sizeof_fmt(num: float, suffix: str = "B") -> str:
             return f"{num:3.1f}{unit}{suffix}"
         num /= 1024.0
     return f"{num:.1f}Yi{suffix}"
+
+
+def remove_trailing_spaces(input: str) -> str:
+    """Remove trailing spaces in a multi-line string."""
+    lines = input.splitlines()
+    cleaned_lines = []
+    for line in lines:
+        line = line.rstrip()
+        if line != "":
+            cleaned_lines.append(line)
+    return '\n'.join(cleaned_lines)

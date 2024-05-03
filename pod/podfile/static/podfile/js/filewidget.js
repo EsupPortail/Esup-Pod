@@ -1,5 +1,7 @@
-// podfile:filewidget.js
-// select file
+/**
+ * @file Esup-Pod File selector widget.
+ * @since 2.5.0
+ */
 
 if (typeof loaded == "undefined") {
   var loaded = true;
@@ -283,7 +285,7 @@ if (typeof loaded == "undefined") {
   function reloadRemoveBtn() {
     let remove = gettext("Remove");
     const sharedPeopleContainer = document.getElementById("shared-people");
-    sharedPeopleContainer.innerHTML = "";
+    sharedPeopleContainer.textContent = "";
     const foldId = document.getElementById("formuserid").value;
     const url = "/podfile/ajax_calls/folder_shared_with?foldid=" + foldId;
     const token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
@@ -649,10 +651,11 @@ if (typeof loaded == "undefined") {
     }
   }
 
+  /* exported append_folder_html_in_modal */
   function append_folder_html_in_modal(data) {
     document.getElementById("modal-folder_" + id_input).innerHTML = data;
     getFolders("");
-    folder_observer = add_folder_observer()
+    folder_observer = add_folder_observer();
     folder_observer.observe(list_folders_sub, { childList: true, subtree: true });
   }
 
@@ -675,7 +678,7 @@ if (typeof loaded == "undefined") {
       .then((data) => {
         folder = data.folder;
       })
-      .catch((error) => {});
+      .catch(() => {});
     return folder;
   }
 
@@ -895,7 +898,7 @@ if (typeof loaded == "undefined") {
 
 
     document.getElementById("files").classList.add("loading");
-    let id = cible.dataset.id;
+    // let id = cible.dataset.id;
 
     document.getElementById("files").innerHTML = loader;
 
@@ -914,7 +917,7 @@ if (typeof loaded == "undefined") {
       }
       return $data;
     };
-    let error_func = function ($xhr) {};
+    let error_func = function () {};
     send_form_data(
       cible.dataset.target,
       {},

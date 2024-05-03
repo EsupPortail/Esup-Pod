@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 from ckeditor.fields import RichTextField
 from pod.video.models import Video
+from pod.video.utils import verify_field_length
 from pod.main.models import get_nextautoincrement
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 
@@ -104,6 +105,7 @@ class Contributor(models.Model):
             raise ValidationError(msg)
 
     def verify_attributs(self) -> list:
+        """Validate contributor fields."""
         msg = list()
         if not self.name or self.name == "":
             msg.append(_("Please enter a name."))
@@ -113,29 +115,25 @@ class Contributor(models.Model):
             msg.append(_("You cannot enter a weblink with more than 200 caracters."))
         if not self.role:
             msg.append(_("Please enter a role."))
-        if len(msg) > 0:
-            return msg
-        else:
-            return list()
+        return msg
 
     def verify_not_same_contributor(self) -> list:
+        """Check that there is not already a contributor with same name+role."""
         msg = list()
         list_contributor = Contributor.objects.filter(video=self.video)
         if self.id:
             list_contributor = list_contributor.exclude(id=self.id)
-        if len(list_contributor) > 0:
-            for element in list_contributor:
-                if self.name == element.name and self.role == element.role:
-                    msg.append(
-                        _(
-                            "There is already a contributor with the same "
-                            + "name and role in the list."
-                        )
+        for element in list_contributor:
+            if self.name == element.name and self.role == element.role:
+                msg.append(
+                    _(
+                        "There is already a contributor with the same "
+                        + "name and role in the list."
                     )
-                    return msg
-        return list()
+                )
+        return msg
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Video:{0} - Name:{1} - Role:{2}".format(self.video, self.name, self.role)
 
     def get_base_mail(self) -> str:
@@ -218,12 +216,16 @@ class EnrichModelQueue(models.Model):
     in_treatment = models.BooleanField(_("In Treatment"), default=False)
 
     def get_label_lang(self) -> str:
+        """Get translated label."""
         return "%s" % __LANG_CHOICES_DICT__[self.lang]
 
     class Meta:
-        verbose_name = _("EnrichModelQueue")
-        verbose_name_plural = _("EnrichModelQueue")
+        """EnrichModelQueue Metadata."""
 
+        verbose_name = _("Enrich model queue")
+        verbose_name_plural = _("Enrich model queues")
+
+    """ Unused function ? TODO: delete in 3.7.0
     def verify_attributs(self) -> list:
         msg = list()
         if not self.text:
@@ -232,10 +234,8 @@ class EnrichModelQueue(models.Model):
             msg.append(_("Please enter a model type."))
         if not self.lang:
             msg.append(_("Please enter a language."))
-        if len(msg) > 0:
-            return msg
-        else:
-            return list()
+        return msg
+    """
 
 
 class Track(models.Model):
@@ -271,12 +271,14 @@ class Track(models.Model):
         verbose_name_plural = _("Tracks")
 
     def clean(self) -> None:
+        """Validate Track fields and eventually raise ValidationError."""
         msg = list()
         msg = self.verify_attributs() + self.verify_not_same_track()
         if len(msg) > 0:
             raise ValidationError(msg)
 
     def verify_attributs(self) -> list:
+        """Validate Track fields."""
         msg = list()
         if not self.kind:
             msg.append(_("Please enter a kind."))
@@ -288,10 +290,7 @@ class Track(models.Model):
             msg.append(_("Please specify a track file."))
         elif "vtt" not in self.src.file_type:
             msg.append(_("Only “.vtt” format is allowed."))
-        if len(msg) > 0:
-            return msg
-        else:
-            return list()
+        return msg
 
     def verify_not_same_track(self) -> list:
         """Check that there's not already a track with same kind & lang."""
@@ -380,22 +379,11 @@ class Overlay(models.Model):
 
     def clean(self) -> None:
         msg = list()
-        msg += self.verify_title_items()
+        msg += verify_field_length(self.title)
         msg += self.verify_time_items()
         msg += self.verify_overlap()
         if len(msg) > 0:
             raise ValidationError(msg)
-
-    def verify_title_items(self) -> list:
-        msg = list()
-        if not self.title or self.title == "":
-            msg.append(_("Please enter a title."))
-        elif len(self.title) < 2 or len(self.title) > 100:
-            msg.append(_("Please enter a title from 2 to 100 characters."))
-        if len(msg) > 0:
-            return msg
-        else:
-            return list()
 
     def verify_time_items(self) -> list:
         msg = list()
@@ -412,10 +400,7 @@ class Overlay(models.Model):
             )
         elif self.time_start == self.time_end:
             msg.append(_("Time end field and time start field can’t be equal."))
-        if len(msg) > 0:
-            return msg
-        else:
-            return list()
+        return msg
 
     def verify_overlap(self) -> list:
         msg = list()

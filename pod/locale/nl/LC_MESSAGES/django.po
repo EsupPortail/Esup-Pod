@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-02 09:12+0000\n"
+"POT-Creation-Date: 2024-05-03 14:28+0000\n"
 "PO-Revision-Date: 2024-04-15 14:27+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -827,10 +827,6 @@ msgstr ""
 msgid "Chapter"
 msgstr ""
 
-#: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
-msgid "Please enter a title from 2 to 100 characters."
-msgstr ""
-
 #: pod/chapter/models.py
 #, python-brace-format
 msgid "Please enter a correct start field between 0 and {0}"
@@ -1231,19 +1227,11 @@ msgid "In Treatment"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "EnrichModelQueue"
+msgid "Enrich model queue"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "Please enter a text."
-msgstr ""
-
-#: pod/completion/models.py
-msgid "Please enter a model type."
-msgstr ""
-
-#: pod/completion/models.py
-msgid "Please enter a language."
+msgid "Enrich model queues"
 msgstr ""
 
 #: pod/completion/models.py pod/completion/templates/track/list_track.html
@@ -1273,6 +1261,10 @@ msgstr ""
 
 #: pod/completion/models.py
 msgid "Please enter a correct kind."
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Please enter a language."
 msgstr ""
 
 #: pod/completion/models.py
@@ -1365,10 +1357,6 @@ msgstr ""
 #: pod/completion/models.py
 msgid "Overlays"
 msgstr ""
-
-#: pod/completion/models.py
-msgid "Please enter a title."
-msgstr "Voer een titel in."
 
 #: pod/completion/models.py
 msgid ""
@@ -1658,7 +1646,7 @@ msgid "Subtitle(s) and Caption(s)"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html pod/completion/views.py
-msgid "Video Caption Maker"
+msgid "Video caption maker"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -1726,6 +1714,10 @@ msgstr ""
 
 #: pod/completion/templates/video_completion.html
 msgid "You can use"
+msgstr ""
+
+#: pod/completion/templates/video_completion.html
+msgid "Video Caption Maker"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -2257,6 +2249,10 @@ msgstr ""
 #: pod/enrichment/models.py
 #, python-brace-format
 msgid "Please enter a correct {0}."
+msgstr ""
+
+#: pod/enrichment/models.py
+msgid "Please enter a title from 2 to 100 characters."
 msgstr ""
 
 #: pod/enrichment/models.py
@@ -7692,15 +7688,9 @@ msgstr ""
 #, python-format
 msgid ""
 "For your information, below is the list of archived videos that would’ve "
-"been packaged in your ARCHIVE_ROOT folder. Run the create_archive_package "
-"command without the --dry option to delete them from %s."
-msgstr ""
-
-#: pod/video/management/commands/create_archive_package.py
-#, python-format
-msgid ""
-"For your information, below is the list of archived videos that have been "
-"packaged in your ARCHIVE_ROOT folder, and definitely deleted from %s."
+"been packaged in your ARCHIVE_ROOT folder. Run the "
+"<code>create_archive_package</code> command without the <code>--dry</code> "
+"option to delete them from %s."
 msgstr ""
 
 #: pod/video/management/commands/create_archive_package.py
@@ -8983,6 +8973,16 @@ msgstr ""
 #: pod/video/tests/test_views.py pod/video/views.py
 msgid "The token has been deleted."
 msgstr ""
+
+#: pod/video/utils.py
+msgid "Please enter a title."
+msgstr "Voer een titel in."
+
+#: pod/video/utils.py
+#, fuzzy, python-format
+#| msgid "Please enter a title."
+msgid "Please enter a %s from 2 to %s characters."
+msgstr "Voer een titel in."
 
 #: pod/video/views.py
 msgid "You cannot edit this channel."

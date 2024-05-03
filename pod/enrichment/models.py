@@ -198,6 +198,7 @@ class Enrichment(models.Model):
             return _("Please enter a correct {0}.".format(type))
 
     def verify_all_fields(self) -> list:
+        """Validate all Enrichment fields."""
         msg = list()
         if (
             not self.title
@@ -336,12 +337,14 @@ class EnrichmentVtt(models.Model):
         return self.video.sites
 
     def clean(self) -> None:
+        """Validate EnrichmentVTT fields and eventually raise ValidationError."""
         msg = list()
         msg = self.verify_attributs() + self.verify_not_same_track()
         if len(msg) > 0:
             raise ValidationError(msg)
 
     def verify_attributs(self) -> list:
+        """Validate EnrichmentVTT fields."""
         msg = list()
         if "vtt" not in self.src.file_type:
             msg.append(_("Only “.vtt” format is allowed."))

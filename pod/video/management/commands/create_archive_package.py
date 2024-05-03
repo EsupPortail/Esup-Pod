@@ -58,9 +58,15 @@ def store_as_dublincore(vid: Video, mediaPackage_dir: str, user_name: str) -> No
     xmlcontent += rendered
     xmlcontent += "</rdf:RDF>"
     # complete creator
-    mediaPackage_content = minidom.parseString(xmlcontent.replace("&", ""))
-    mediapackage = mediaPackage_content.getElementsByTagName("dc.creator")[0]
-    mediapackage.firstChild.replaceWholeText(user_name)
+    mediaPackage_content = minidom.parseString(xmlcontent)
+
+    dc_creator = mediaPackage_content.getElementsByTagName("dc.creator")[0]
+
+    if dc_creator.firstChild is None:
+        new_node = mediaPackage_content.createTextNode(user_name)
+        dc_creator.appendChild(new_node)
+    else:
+        dc_creator.firstChild.replaceWholeText(user_name)
 
     mediaPackage_file = os.path.join(mediaPackage_dir, "dublincore.xml")
     with open(mediaPackage_file, "w") as f:
@@ -136,8 +142,8 @@ class Command(BaseCommand):
                 )
                 # Delete Video object
                 vid.delete()
-            # Supprime l'objet vidéo et le dossier associé (encodage, logs, etc..)
-            # Supprime les thumbnails (x3)
+            # Deletes the video object and the associated folder (encoding, logs, etc.)
+            # Remove thumbnails (x3)
         else:
             print("ERROR: Cannot acces to file '%s'." % vid.video.path)
 
@@ -199,11 +205,11 @@ class Command(BaseCommand):
 
     def get_list_video_html(self, list_video: list) -> str:
         """Generate an html version of list_video."""
-        msg_html = "<ol>"
+        msg_html = ["<ol>"]
         for vid in list_video:
-            msg_html += "\n<li>%s</li>" % vid
-        msg_html += "</ol>"
-        return msg_html
+            msg_html.append("<li>%s</li>" % vid)
+        msg_html.append("</ol>")
+        return "\n".join(msg_html)
 
     def handle(self, *args, **options) -> None:
         """Handle a command call."""
@@ -269,42 +275,37 @@ class Command(BaseCommand):
         }
 
         print(total_msg)
-
         if total_processed > 0:
-            msg_html = _("Hello manager(s) of  %s,") % __TITLE_SITE__
+            self.inform_managers(list_video, total_msg)
 
-            if self.dry_mode:
-                msg_html += (
-                    "<br>\n<p>"
-                    + _(
-                        "For your information, "
-                        + "below is the list of archived videos that would’ve been packaged in "
-                        + "your ARCHIVE_ROOT folder. Run the create_archive_package command "
-                        + "without the --dry option to delete them from %s."
-                    )
-                    % __TITLE_SITE__
-                    + "</p>\n"
-                )
-            else:
-                msg_html += (
-                    "<br>\n<p>"
-                    + _(
-                        "For your information, "
-                        + "below is the list of archived videos that have been packaged in "
-                        + "your ARCHIVE_ROOT folder, and definitely deleted from %s."
-                    )
-                    % __TITLE_SITE__
-                    + "</p>\n"
-                )
-            msg_html += self.get_list_video_html(list_video)
-            msg_html += "<p>%s</p>\n" % total_msg
-            msg_html += "\n<p>" + _("Regards.") + "</p>\n"
+    def inform_managers(self, list_video: list, total_msg: str) -> None:
+        """Inform site managers of packaged archives."""
+        msg_html = [_("Hello manager(s) of  %s,") % __TITLE_SITE__]
+        msg_html.append("<br>")
+        if self.dry_mode:
+            msg = _(
+                "For your information, "
+                "below is the list of archived videos that would’ve been packaged in "
+                "your ARCHIVE_ROOT folder. Run the <code>create_archive_package</code> command "
+                "without the <code>--dry</code> option to delete them from %s."
+            ) % __TITLE_SITE__
+        else:
+            msg = _(
+                ("For your information, "
+                 "below is the list of archived videos that have been packaged in "
+                 "your ARCHIVE_ROOT folder, and definitely deleted from %s.")
+            ) % __TITLE_SITE__
 
-            subject = _("Packaging archived videos on Pod")
-            mail_managers(
-                subject,
-                striptags(msg_html),
-                fail_silently=False,
-                html_message=msg_html,
-            )
-            print("Summary sent by email to managers.")
+        msg_html.append("<p>%s</p>" % msg)
+        msg_html.append(self.get_list_video_html(list_video))
+        msg_html.append("<p>%s</p>" % total_msg)
+        msg_html.append("<p>%s</p>" % _("Regards."))
+        msg_html = "\n".join(msg_html)
+        subject = _("Packaging archived videos on Pod")
+        mail_managers(
+            subject,
+            striptags(msg_html),
+            fail_silently=False,
+            html_message=msg_html,
+        )
+        print("Summary sent by email to managers.")

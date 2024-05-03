@@ -329,7 +329,7 @@ function verify_start_title_items() {
   return ret;
 }
 
-/* Unused function ??
+/** Unused function. TODO: delete in 3.7.0
 function overlaptest() {
   var new_start = parseInt(document.getElementById("id_time_start").value);
   var id = parseInt(document.getElementById("id_chapter").value);
@@ -444,7 +444,7 @@ var manageDelete = function () {
   }
 };
 
-/** Unused function ??
+/** Unused function. TODO: delete in 3.7.0
 var manageImport = function () {
   let player = window.videojs.players.podvideoplayer;
   let n = document.querySelector("div.chapters-list");

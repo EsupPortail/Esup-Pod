@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-02 09:12+0000\n"
+"POT-Creation-Date: 2024-05-03 14:28+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -880,10 +880,6 @@ msgstr "Début du chapitre, en secondes."
 msgid "Chapter"
 msgstr "Chapitre"
 
-#: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
-msgid "Please enter a title from 2 to 100 characters."
-msgstr "Veuillez entrer un titre contenant entre 2 et 100 caractères."
-
 #: pod/chapter/models.py
 #, python-brace-format
 msgid "Please enter a correct start field between 0 and {0}"
@@ -1296,20 +1292,12 @@ msgid "In Treatment"
 msgstr "En traitement"
 
 #: pod/completion/models.py
-msgid "EnrichModelQueue"
+msgid "Enrich model queue"
 msgstr "File d’attente d’enrichissement du modèle"
 
 #: pod/completion/models.py
-msgid "Please enter a text."
-msgstr "Veuillez entrer un texte."
-
-#: pod/completion/models.py
-msgid "Please enter a model type."
-msgstr "Veuillez entrer un type."
-
-#: pod/completion/models.py
-msgid "Please enter a language."
-msgstr "Veuillez renseigner une langue."
+msgid "Enrich model queues"
+msgstr "Files d’attente d’enrichissement du modèle"
 
 #: pod/completion/models.py pod/completion/templates/track/list_track.html
 #: pod/completion/templates/video_caption_maker.html
@@ -1339,6 +1327,10 @@ msgstr "Veuillez entrer un genre."
 #: pod/completion/models.py
 msgid "Please enter a correct kind."
 msgstr "Veuillez entrer un genre correct."
+
+#: pod/completion/models.py
+msgid "Please enter a language."
+msgstr "Veuillez renseigner une langue."
 
 #: pod/completion/models.py
 msgid "Please specify a track file."
@@ -1432,10 +1424,6 @@ msgstr "Superposition"
 #: pod/completion/models.py
 msgid "Overlays"
 msgstr "Superpositions"
-
-#: pod/completion/models.py
-msgid "Please enter a title."
-msgstr "Veuillez entrer un titre."
 
 #: pod/completion/models.py
 msgid ""
@@ -1727,7 +1715,7 @@ msgid "Subtitle(s) and Caption(s)"
 msgstr "Sous-titres et légendes"
 
 #: pod/completion/templates/video_completion.html pod/completion/views.py
-msgid "Video Caption Maker"
+msgid "Video caption maker"
 msgstr "Outil de création de fichier de sous-titres/légende"
 
 #: pod/completion/templates/video_completion.html
@@ -1805,6 +1793,10 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 msgid "You can use"
 msgstr "Vous pouvez utiliser"
+
+#: pod/completion/templates/video_completion.html
+msgid "Video Caption Maker"
+msgstr "Outil de création de fichier de sous-titres/légende"
 
 #: pod/completion/templates/video_completion.html
 msgid "to create your subtitle(s) and/or caption(s) file(s)."
@@ -2371,6 +2363,10 @@ msgstr "Collez ici un code d’une source externe pour l’intégrer."
 #, python-brace-format
 msgid "Please enter a correct {0}."
 msgstr "Veuillez entrer un correct {0}."
+
+#: pod/enrichment/models.py
+msgid "Please enter a title from 2 to 100 characters."
+msgstr "Veuillez entrer un titre contenant entre 2 et 100 caractères."
 
 #: pod/enrichment/models.py
 #, python-brace-format
@@ -8275,21 +8271,13 @@ msgstr "Bonjour au(x) gestionnaire(s) de %s,"
 #, python-format
 msgid ""
 "For your information, below is the list of archived videos that would’ve "
-"been packaged in your ARCHIVE_ROOT folder. Run the create_archive_package "
-"command without the --dry option to delete them from %s."
+"been packaged in your ARCHIVE_ROOT folder. Run the "
+"<code>create_archive_package</code> command without the <code>--dry</code> "
+"option to delete them from %s."
 msgstr ""
 "Pour votre information, voici la liste des vidéos archivées à placer dans "
-"votre dossier ARCHIVE_ROOT. Lancez la commande create_archive_package sans "
-"l’option --dry pour les supprimer de %s."
-
-#: pod/video/management/commands/create_archive_package.py
-#, python-format
-msgid ""
-"For your information, below is the list of archived videos that have been "
-"packaged in your ARCHIVE_ROOT folder, and definitely deleted from %s."
-msgstr ""
-"Pour votre information, voici la liste des vidéos archivées qui ont été "
-"placées dans votre dossier ARCHIVE_ROOT, et définitivement supprimées de %s."
+"votre dossier ARCHIVE_ROOT. Lancez la commande <code>create_archive_package</"
+"code> sans l’option <code>--dry</code> pour les supprimer de %s."
 
 #: pod/video/management/commands/create_archive_package.py
 msgid "Packaging archived videos on Pod"
@@ -9637,6 +9625,15 @@ msgstr "Jeton non trouvé."
 msgid "The token has been deleted."
 msgstr "Le jeton a été supprimé."
 
+#: pod/video/utils.py
+msgid "Please enter a title."
+msgstr "Veuillez entrer un titre."
+
+#: pod/video/utils.py
+#, python-format
+msgid "Please enter a %s from 2 to %s characters."
+msgstr "Veuillez entrer un %s contenant entre 2 et %s caractères."
+
 #: pod/video/views.py
 msgid "You cannot edit this channel."
 msgstr "Vous ne pouvez éditer cette chaîne."
@@ -10062,3 +10059,18 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Please enter a text."
+#~ msgstr "Veuillez entrer un texte."
+
+#~ msgid "Please enter a model type."
+#~ msgstr "Veuillez entrer un type."
+
+#, python-format
+#~ msgid ""
+#~ "For your information, below is the list of archived videos that have been "
+#~ "packaged in your ARCHIVE_ROOT folder, and definitely deleted from %s."
+#~ msgstr ""
+#~ "Pour votre information, voici la liste des vidéos archivées qui ont été "
+#~ "placées dans votre dossier ARCHIVE_ROOT, et définitivement supprimées de "
+#~ "%s."
