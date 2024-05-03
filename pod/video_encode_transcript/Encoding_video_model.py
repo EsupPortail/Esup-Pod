@@ -21,7 +21,7 @@ from .Encoding_video import (
 )
 from pod.video.models import LANG_CHOICES
 import json
-
+import time
 from .encoding_utils import (
     launch_cmd,
     check_file,
@@ -299,9 +299,6 @@ class Encoding_video_model(Encoding_video):
         return video
 
     def wait_for_file(self, filepath):
-        import time
-
-        os.system("ls -l %s" % self.get_output_dir())
         time_to_wait = 40
         time_counter = 0
         while not os.path.exists(filepath):
