@@ -27,7 +27,7 @@ from django.db.models.signals import pre_delete, post_delete
 from tagging.models import Tag
 from datetime import date
 from django.utils import timezone
-from django.utils.html import format_html
+from django.utils.html import format_html, escape
 from django.utils.text import capfirst
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
@@ -1383,9 +1383,9 @@ class Video(models.Model):
             contributors.append(" ".join(contrib))
         try:
             data_to_dump = {
-                "dc.title": "%s" % self.title,
+                "dc.title": "%s" % escape(self.title),
                 "dc.creator": "%s" % self.owner.get_full_name(),
-                "dc.description": "%s" % self.description,
+                "dc.description": "%s" % escape(self.description),
                 "dc.subject": "%s, %s"
                 % (
                     self.type.title,

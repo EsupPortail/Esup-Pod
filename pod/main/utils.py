@@ -156,9 +156,9 @@ def sizeof_fmt(num: float, suffix: str = "B") -> str:
     return f"{num:.1f}Yi{suffix}"
 
 
-def remove_trailing_spaces(input: str) -> str:
+def remove_trailing_spaces(text: str) -> str:
     """Remove trailing spaces in a multi-line string."""
-    lines = input.splitlines()
+    lines = text.splitlines()
     cleaned_lines = []
     for line in lines:
         line = line.rstrip()
