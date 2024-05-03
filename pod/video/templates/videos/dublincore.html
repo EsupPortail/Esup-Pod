@@ -5,7 +5,7 @@
 {% for key, value in video.get_dublin_core.items %}
   {% if xml == True %}
     <{{key}}>
-        {{value|metaformat|safe|striptags|truncatechars:300}}
+        {{value|metaformat|striptags|truncatechars:300}}
     </{{key}}>
   {% else %}
     <meta name="{{key}}" content="{{key|metaformat|safe|striptags|truncatechars:300}}" />

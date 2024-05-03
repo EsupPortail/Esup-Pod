@@ -23,14 +23,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sites.shortcuts import get_current_site
 from django.templatetags.static import static
 from django.dispatch import receiver
-from django.utils.html import format_html
 from django.db.models.signals import pre_delete, post_delete
 from tagging.models import Tag
 from datetime import date
 from django.utils import timezone
+from django.utils.html import format_html, escape
+from django.utils.text import capfirst
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
-from django.utils.text import capfirst
 from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
 from django.db.models.signals import pre_save

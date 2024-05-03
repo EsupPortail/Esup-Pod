@@ -251,7 +251,8 @@ class Command(BaseCommand):
             if csv_entry:
                 total_duration += vid.duration
                 total_processed += 1
-                total_weight += os.path.getsize(vid.video.path)
+                if os.access(vid.video.path, os.F_OK):
+                    total_weight += os.path.getsize(vid.video.path)
                 list_video.append(str(vid))
                 self.archive_pack(video_dir, csv_entry["User name"], vid)
             else:

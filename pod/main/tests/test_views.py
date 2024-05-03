@@ -32,13 +32,13 @@ class MainViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Create fictive user who will make tests."""
         User.objects.create(username="pod", password="podv3")
         print(" --->  SetUp of MainViewsTestCase: OK!")
 
     @override_settings()
-    def test_download_file(self):
+    def test_download_file(self) -> None:
         """Test download file."""
         self.client = Client()
 
@@ -63,7 +63,7 @@ class MainViewsTestCase(TestCase):
         self.assertTrue(response.status_code in [200, 400])
         print("   --->  download_file of mainViewsTestCase: OK!")
 
-    def test_contact_us(self):
+    def test_contact_us(self) -> None:
         """Test the "contact us" form."""
         self.client = Client()
 
@@ -124,11 +124,11 @@ class MaintenanceViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up function for the tests."""
         User.objects.create(username="pod", password="podv3")
 
-    def test_maintenance(self):
+    def test_maintenance(self) -> None:
         """Test Pod maintenance mode."""
         self.client = Client()
         self.user = User.objects.get(username="pod")
@@ -151,7 +151,7 @@ class MaintenanceViewsTestCase(TestCase):
 class RobotsTxtTests(TestCase):
     """Robots.txt test cases."""
 
-    def test_robots_get(self):
+    def test_robots_get(self) -> None:
         """Test if we get a robot.txt file."""
         response = self.client.get("/robots.txt")
 
@@ -160,7 +160,7 @@ class RobotsTxtTests(TestCase):
         lines = response.content.decode().splitlines()
         self.assertEqual(lines[0], "User-Agent: *")
 
-    def test_robots_post_disallowed(self):
+    def test_robots_post_disallowed(self) -> None:
         """Test if POST method is disallowed when getting robot.txt file."""
         response = self.client.post("/robots.txt")
 
@@ -170,12 +170,12 @@ class RobotsTxtTests(TestCase):
 class XSSTests(TestCase):
     """Tests against some Reflected XSS security breach."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up some generic test strings."""
         self.XSS_inject = "</script><script>alert(document.domain)</script>"
         self.XSS_detect = b"<script>alert(document.domain)</script>"
 
-    def test_videos_XSS(self):
+    def test_videos_XSS(self) -> None:
         """Test if /videos/ is safe against some XSS."""
         for param in ["owner", "discipline", "tag", "cursus"]:
             response = self.client.get("/videos/?%s=%s" % (param, self.XSS_inject))
@@ -183,7 +183,7 @@ class XSSTests(TestCase):
             self.assertEqual(response.status_code, HTTPStatus.OK)
             self.assertFalse(self.XSS_detect in response.content)
 
-    def test_search_XSS(self):
+    def test_search_XSS(self) -> None:
         """Test if /search/ is safe against some XSS."""
         for param in ["q", "start_date", "end_date"]:
             response = self.client.get("/search/?%s=%s" % (param, self.XSS_inject))
@@ -206,7 +206,7 @@ class TestShowVideoButtons(TestCase):
 
     fixtures = ["initial_data.json"]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up function for the tests."""
         self.factory = RequestFactory()
         User.objects.create(
@@ -216,7 +216,7 @@ class TestShowVideoButtons(TestCase):
         User.objects.create(username="student", password="student", is_staff=False)
 
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
-    def test_show_video_buttons_admin_restrict(self):
+    def test_show_video_buttons_admin_restrict(self) -> None:
         """
         Test if video buttons present in header for admins.
 
@@ -232,7 +232,7 @@ class TestShowVideoButtons(TestCase):
         self.client.logout()
 
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
-    def test_show_video_buttons_staff_restrict(self):
+    def test_show_video_buttons_staff_restrict(self) -> None:
         """
         Test if video buttons present in header for staff.
 
@@ -248,7 +248,7 @@ class TestShowVideoButtons(TestCase):
         self.client.logout()
 
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
-    def test_show_video_buttons_student_restrict(self):
+    def test_show_video_buttons_student_restrict(self) -> None:
         """
         Test if video buttons not present in header for student.
 
@@ -264,7 +264,7 @@ class TestShowVideoButtons(TestCase):
         self.client.logout()
 
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False)
-    def test_show_video_buttons_admin_not_restrict(self):
+    def test_show_video_buttons_admin_not_restrict(self) -> None:
         """
         Test if video buttons present in header for admin.
 
@@ -280,7 +280,7 @@ class TestShowVideoButtons(TestCase):
         self.client.logout()
 
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False)
-    def test_show_video_buttons_staff_not_restrict(self):
+    def test_show_video_buttons_staff_not_restrict(self) -> None:
         """
         Test if video buttons present in header for staff.
 
@@ -296,7 +296,7 @@ class TestShowVideoButtons(TestCase):
         self.client.logout()
 
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=False)
-    def test_show_video_buttons_student_not_restrict(self):
+    def test_show_video_buttons_student_not_restrict(self) -> None:
         """
         Test if video buttons present in header for student.
 
@@ -317,7 +317,7 @@ class TestShowMeetingButton(TestCase):
 
     fixtures = ["initial_data.json"]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up function for the tests."""
         self.factory = RequestFactory()
         User.objects.create(
@@ -327,7 +327,7 @@ class TestShowMeetingButton(TestCase):
         User.objects.create(username="student", password="student", is_staff=False)
 
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True, USE_MEETING=True)
-    def test_show_meeting_button_admin_restrict(self):
+    def test_show_meeting_button_admin_restrict(self) -> None:
         """
         Test if meeting button present in header for admin.
 
@@ -342,7 +342,7 @@ class TestShowMeetingButton(TestCase):
         self.client.logout()
 
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True, USE_MEETING=True)
-    def test_show_meeting_button_staff_restrict(self):
+    def test_show_meeting_button_staff_restrict(self) -> None:
         """
         Test if meeting button present in header for staff.
 
@@ -357,7 +357,7 @@ class TestShowMeetingButton(TestCase):
         self.client.logout()
 
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=True, USE_MEETING=True)
-    def test_show_meeting_button_student_restrict(self):
+    def test_show_meeting_button_student_restrict(self) -> None:
         """
         Test if meeting button not present in header for student.
 
@@ -372,7 +372,7 @@ class TestShowMeetingButton(TestCase):
         self.client.logout()
 
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False, USE_MEETING=True)
-    def test_show_meeting_button_admin_not_restrict(self):
+    def test_show_meeting_button_admin_not_restrict(self) -> None:
         """
         Test if meeting button present in header for admin.
 
@@ -387,7 +387,7 @@ class TestShowMeetingButton(TestCase):
         self.client.logout()
 
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False, USE_MEETING=True)
-    def test_show_meeting_button_staff_not_restrict(self):
+    def test_show_meeting_button_staff_not_restrict(self) -> None:
         """
         Test if meeting button present in header for staff.
 
@@ -402,7 +402,7 @@ class TestShowMeetingButton(TestCase):
         self.client.logout()
 
     @override_settings(RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY=False, USE_MEETING=True)
-    def test_show_meeting_button_student_not_restrict(self):
+    def test_show_meeting_button_student_not_restrict(self) -> None:
         """
         Test if meeting button not present in header for student.
 
@@ -427,7 +427,7 @@ class TestNavbar(TestCase):
         self.user = User.objects.create(username="pod", password="pod1234pod")
 
     @override_settings(USE_FAVORITES=False)
-    def test_statistics_category_hidden(self):
+    def test_statistics_category_hidden(self) -> None:
         """Test if statistics are hidden when we don't have stats."""
         importlib.reload(context_processors)
         self.client.force_login(self.user)
@@ -440,7 +440,7 @@ class TestNavbar(TestCase):
         print(" --->  test_statistics_category_hidden ok")
 
     @override_settings(USE_FAVORITES=False)
-    def test_statistics_videos(self):
+    def test_statistics_videos(self) -> None:
         """Test if videos statistics are correctly shown."""
         importlib.reload(context_processors)
         self.client.force_login(self.user)
@@ -481,7 +481,7 @@ class TestNavbar(TestCase):
         print(" --->  test_statistics_videos ok")
 
     @override_settings(USE_PLAYLIST=True, USE_FAVORITES=False)
-    def test_statistics_playlists(self):
+    def test_statistics_playlists(self) -> None:
         """Test if playlists statistics are correctly shown."""
         importlib.reload(context_processors)
         self.client.force_login(self.user)
@@ -529,10 +529,11 @@ class TestBlock(TestCase):
 
     fixtures = ["initial_data.json"]
 
-    def setUp(self):
+    def setUp(self) -> None:
+        """Set up Block tests."""
         print(" --->  init blocktest ok")
 
-    def test_html_block_content(self):
+    def test_html_block_content(self) -> None:
         """Test html block."""
         bl2 = Block.objects.create(
             title="block html",
@@ -575,7 +576,7 @@ class TestBlock(TestCase):
 
         print(" --->  test_Block_Html ok")
 
-    def test_default_block(self):
+    def test_default_block(self) -> None:
         """Test when add video if present in default block."""
         user = User.objects.create(username="pod", password="podv3")
         Video.objects.create(
@@ -598,7 +599,7 @@ class TestBlock(TestCase):
         )
         print(" --->  test_Video_in_default_block ok")
 
-    def test_channel_type_block(self):
+    def test_channel_type_block(self) -> None:
         """Test if create channel with video, this video is present in block type channel."""
         bk1 = Block.objects.get(id=1)
         bk1.visible = False
@@ -662,7 +663,7 @@ class TestBlock(TestCase):
         )
         print(" --->  test_Video_in_channel_block ok")
 
-    def test_next_events_type_block(self):
+    def test_next_events_type_block(self) -> None:
         """Test if create create next event present in block type next events."""
         building = Building.objects.create(name="building1")
         broad = Broadcaster.objects.create(
@@ -706,7 +707,7 @@ class TestBlock(TestCase):
         )
         print(" --->  test_Next_Event_in_Block_next_event_type ok")
 
-    def test_most_views_type_block(self):
+    def test_most_views_type_block(self) -> None:
         """Test if most views video is present in block type most view."""
         bk1 = Block.objects.get(id=1)
         bk1.visible = False

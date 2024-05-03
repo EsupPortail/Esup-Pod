@@ -4,7 +4,8 @@ import datetime
 import logging
 import os
 import threading
-from xml.dom import minidom
+from xml.dom.minidom import Text as Dom_text
+from defusedxml.minidom import parse as dom_parse
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -131,7 +132,7 @@ def encode_recording(recording):
     add_comment(recording.id, "Start at %s\n--\n" % datetime.datetime.now())
 
     try:
-        xml_doc = minidom.parse(recording.source_file)
+        xml_doc = dom_parse(recording.source_file)
     except KeyError as e:
         add_comment(recording.id, "Error: %s" % e)
         return -1
@@ -185,7 +186,7 @@ def extract_infos_from_catalog(catalogs, recording):
     for catalog in catalogs:
         # check if file exists before parsing
         try:
-            xml_doc = minidom.parse(catalog.get("src"))
+            xml_doc = dom_parse(catalog.get("src"))
         except FileNotFoundError as e:
             add_comment(recording.id, "Error: %s" % e)
             continue
@@ -350,7 +351,7 @@ def getElementValueByName(xml_doc, name) -> str:
         print(f"element {name} not found in xml")
         return ""
     element = list_elements[0]
-    if not isinstance(element.firstChild, minidom.Text):
+    if not isinstance(element.firstChild, Dom_text):
         print(f"element {name} not a minidom.Text")
         return ""
     return element.firstChild.data
