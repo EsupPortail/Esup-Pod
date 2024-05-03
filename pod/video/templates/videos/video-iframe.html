@@ -37,7 +37,7 @@
   <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}: //{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
 
 </head>
-<body>
+<body class="iframe">
 {% block page_content %}
 <div class="overlay" id="div-video-wrapper">
 
