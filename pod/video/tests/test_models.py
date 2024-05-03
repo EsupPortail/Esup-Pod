@@ -421,6 +421,7 @@ class VideoTestCase(TestCase):
 
         print("   --->  test_get_dublin_core of Video: OK!")
 
+
 class VideoRenditionTestCase(TestCase):
     """Test the Video Rendition."""
 
