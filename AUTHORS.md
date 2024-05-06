@@ -1,14 +1,22 @@
+Esup-Pod Authors
+================
+
 Maintainer
 ----------
+
  [Esup Portail](https://www.esup-portail.org/)
 
 Original Authors
 ----------------
+
 * Nicolas Can, University of Lille, France ([@ptitloup](https://github.com/ptitloup))
 
 Contributors for the V3
 ----------------------------
-A list of much-appreciated contributors who have submitted patches and reported bugs for the V3:
+
+A list of much-appreciated contributors
+who have submitted patches and reported bugs for the V3:
+
 * Olivier Bado-Faustin, University Cote d'Azur (design and template)
 * Nicolas Lahoche, University of Lille (design and template) with all the PRI Team
 * Nathaniel Burlot, University of Lille (member of PRI team for Logo and color of V3)
@@ -19,12 +27,15 @@ A list of much-appreciated contributors who have submitted patches and reported 
 
 Partnership
 ----------------------------
+
 * Elygames
 * OrionStudio
 
 Previous Author/Contributors
 ----------------------------
+
 A list of much-appreciated contributors who have submitted patches and reported bugs:
+
 * Joël Obled, Esup-Portail Consortium, France ([@DrClockwork](https://github.com/DrClockwork))
 * Charlotte Benard (Logo and color of V2)
 * Frederic Sene, INSA Rennes
@@ -35,6 +46,11 @@ A list of much-appreciated contributors who have submitted patches and reported 
 
 Pictures credits
 ----------------------------
-* default.svg: adapted from Play button Icon by [Freepik](https://www.freepik.com/free-vector) - Freepik License
-* cookie.svg: [Broken oatmeal cookie created by pch.vector](https://www.freepik.com/vectors/logo) - Freepik License
-* default-playlist.svg: Music, Note, Musical Note by [krzysztof-m](https://pixabay.com/fr/users/1363864/) - [Pixabay free for use & download licence](https://pixabay.com/fr/service/terms/)
+
+* default.svg: adapted from Play button Icon
+  by [Freepik](https://www.freepik.com/free-vector) - Freepik License
+* cookie.svg:
+  [oatmeal cookie created by pch.vector](https://www.freepik.com/vectors/logo) - Freepik License
+* default-playlist.svg: Music, Note, Musical Note
+  by [krzysztof-m](https://pixabay.com/fr/users/1363864/) -
+  [Pixabay free for use & download licence](https://pixabay.com/fr/service/terms/)

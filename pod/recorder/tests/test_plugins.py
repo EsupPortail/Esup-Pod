@@ -3,7 +3,7 @@
 import os
 import shutil
 import importlib
-from xml.dom import minidom
+from defusedxml import minidom
 
 from django.conf import settings
 from django.test import TestCase

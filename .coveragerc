@@ -9,6 +9,7 @@ source = pod/
 omit = pod/*settings*.py
        pod/*apps.py
        pod/wsgi.py
+       pod/db_migrations/*
        */tests/*
        */commands/*
        */migrations/*

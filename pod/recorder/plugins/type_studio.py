@@ -1,10 +1,11 @@
-# type_studio.py
+"""Esup-Pod recorder plugin 'type_studio'."""
 
 import datetime
 import logging
 import os
 import threading
-from xml.dom import minidom
+from xml.dom.minidom import Text as Dom_text
+from defusedxml.minidom import parse as dom_parse
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -28,12 +29,12 @@ OPENCAST_DEFAULT_PRESENTER = getattr(settings, "OPENCAST_DEFAULT_PRESENTER", "mi
 log = logging.getLogger(__name__)
 
 
-def process(recording):
+def process(recording) -> None:
     log.info("START PROCESS OF RECORDING %s" % recording)
     threading.Thread(target=encode_recording, args=[recording], daemon=True).start()
 
 
-def save_basic_video(recording, video_src):
+def save_basic_video(recording, video_src) -> Video:
     # Save & encode one video corresponding to the recording without cut
     # We don't generate an intermediate video
     recorder = recording.recorder
@@ -109,7 +110,7 @@ def generate_intermediate_video(recording, videos, clip_begin, clip_end, present
     encode_studio(recording.id, video_output, videos, subtime, presenter)
 
 
-def get_subtime(clip_begin, clip_end):
+def get_subtime(clip_begin, clip_end) -> str:
     subtime = ""
     if clip_begin:
         subtime += "-ss %s " % str(clip_begin)
@@ -131,7 +132,7 @@ def encode_recording(recording):
     add_comment(recording.id, "Start at %s\n--\n" % datetime.datetime.now())
 
     try:
-        xml_doc = minidom.parse(recording.source_file)
+        xml_doc = dom_parse(recording.source_file)
     except KeyError as e:
         add_comment(recording.id, "Error: %s" % e)
         return -1
@@ -185,7 +186,7 @@ def extract_infos_from_catalog(catalogs, recording):
     for catalog in catalogs:
         # check if file exists before parsing
         try:
-            xml_doc = minidom.parse(catalog.get("src"))
+            xml_doc = dom_parse(catalog.get("src"))
         except FileNotFoundError as e:
             add_comment(recording.id, "Error: %s" % e)
             continue
@@ -213,7 +214,7 @@ def extract_infos_from_catalog(catalogs, recording):
     return clip_begin, clip_end, event_id
 
 
-def change_title(recording, title):
+def change_title(recording, title) -> None:
     """
     Change recording title.
 
@@ -226,7 +227,7 @@ def change_title(recording, title):
         recording.save()
 
 
-def change_user(recording, username):
+def change_user(recording, username) -> None:
     """
     Change recording user.
 
@@ -240,7 +241,7 @@ def change_user(recording, username):
         recording.save()
 
 
-def link_video_to_event(recording, video, event_id):
+def link_video_to_event(recording, video, event_id) -> None:
     """Associate the Video to the Event.
     Add Event's creator as additional owner of the video.
     Set same description, type and restrictions.
@@ -337,11 +338,11 @@ def getElementsByName(xml_doc, name) -> list:
 
 def getElementValueByName(xml_doc, name) -> str:
     """
-    Gets the value of a xml element.
+    Get the value of a xml element.
 
     Args:
-        xml_doc(minidom.Element): parsed minidom file .
-        name(str): element name .
+        xml_doc(minidom.Element): parsed minidom file
+        name(str): element name
     Returns:
         str: the value of xml element or empty string
     """
@@ -350,7 +351,7 @@ def getElementValueByName(xml_doc, name) -> str:
         print(f"element {name} not found in xml")
         return ""
     element = list_elements[0]
-    if not isinstance(element.firstChild, minidom.Text):
+    if not isinstance(element.firstChild, Dom_text):
         print(f"element {name} not a minidom.Text")
         return ""
     return element.firstChild.data

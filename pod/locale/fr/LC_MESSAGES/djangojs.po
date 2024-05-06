@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-29 07:03+0000\n"
+"POT-Creation-Date: 2024-05-02 09:12+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -66,14 +66,6 @@ msgstr "Veuillez entrer un titre contenant entre 2 et 100 caractères."
 #: pod/chapter/static/js/chapters.js
 msgid "Please enter a correct start field between 0 and"
 msgstr "Veuillez entrer un correct temps de début compris entre 0 et"
-
-#: pod/chapter/static/js/chapters.js
-msgid "The chapter"
-msgstr "Le chapitre"
-
-#: pod/chapter/static/js/chapters.js
-msgid "starts at the same time."
-msgstr "commencent au même moment."
 
 #: pod/chapter/static/js/videojs-chapters.js
 msgid "Chapters"
@@ -406,7 +398,7 @@ msgstr ""
 "authentifiés."
 
 #: pod/live/static/js/broadcaster_from_building.js
-msgid "An error occurred on broadcaster fetch..."
+msgid "An error occurred on broadcaster fetch…"
 msgstr "Une erreur s’est produite lors du chargement du diffuseur…"
 
 #: pod/live/static/js/broadcaster_from_building.js
@@ -414,7 +406,7 @@ msgid "No broadcaster set for this building"
 msgstr "Pas de diffuseur pour ce bâtiment"
 
 #: pod/live/static/js/broadcaster_from_building.js
-msgid "An error occurred during broadcasters loading..."
+msgid "An error occurred during broadcasters loading…"
 msgstr "Une erreur s’est produite lors du chargement des diffuseurs…"
 
 #: pod/live/static/js/filter_aside_event_list.js
@@ -979,3 +971,9 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "The chapter"
+#~ msgstr "Le chapitre"
+
+#~ msgid "starts at the same time."
+#~ msgstr "commencent au même moment."

@@ -1,3 +1,4 @@
+"""Esup-Pod Chapter utilities."""
 import time
 import datetime
 
@@ -5,7 +6,8 @@ from webvtt import WebVTT
 from pod.chapter.models import Chapter
 
 
-def vtt_to_chapter(vtt, video):
+def vtt_to_chapter(vtt, video):  # -> str | None:
+    """Convert a vtt file to Pod chapters."""
     Chapter.objects.filter(video=video).delete()
     webvtt = WebVTT().read(vtt.file.path)
     for caption in webvtt:

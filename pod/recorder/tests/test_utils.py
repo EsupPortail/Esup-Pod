@@ -1,8 +1,8 @@
-"""Unit tests for recorder utils."""
+"""Esup-Pod - Unit tests for recorder utils."""
 
 import os
 import time
-from xml.dom import minidom
+from xml.dom import minidom  # nosec
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -33,7 +33,7 @@ class UtilsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Create models to be tested."""
         r_type = Type.objects.create(title="others")
         user = User.objects.create(username="pod")
@@ -60,7 +60,7 @@ class UtilsTestCase(TestCase):
 
         print(" --->  SetUp of UtilsTestCase: OK!")
 
-    def test_add_comment(self):
+    def test_add_comment(self) -> None:
         """Test method add_comment()."""
         recording = Recording.objects.get(id=1)
         first_comment = recording.comment
@@ -71,9 +71,8 @@ class UtilsTestCase(TestCase):
         self.assertEqual(recording.comment, first_comment + "\n" + new_comment)
         print("   --->  test_add_comment of UtilsTestCase: OK !")
 
-    def test_clean_old_files(self):
+    def test_clean_old_files(self) -> None:
         """Test case for cleaning old folders in opencast-files directory."""
-
         opencast_dir_path = os.path.join(MEDIA_ROOT, OPENCAST_FILES_DIR)
 
         # create a directory with a text file
@@ -108,9 +107,8 @@ class UtilsTestCase(TestCase):
 
         print("   --->  test_clean_old_files of UtilsTestCase: OK !")
 
-    def test_get_id_media(self):
+    def test_get_id_media(self) -> None:
         """Test method get_id_media()."""
-
         # Test with no data
         request = RequestFactory().post("/")
         id_media = get_id_media(request)
@@ -138,9 +136,8 @@ class UtilsTestCase(TestCase):
 
         print("   --->  test_get_id_media of UtilsTestCase: OK !")
 
-    def test_create_xml_element(self):
+    def test_create_xml_element(self) -> None:
         """Test method create_xml_element()."""
-
         # Create a mock mediaPackage_content
         mediaPackage_content = minidom.Document()
 
@@ -198,7 +195,7 @@ class DigestTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Create models to be tested."""
         r_type = Type.objects.create(title="others")
         user = User.objects.create(username="pod")
@@ -216,7 +213,7 @@ class DigestTestCase(TestCase):
         recorder.save()
         print(" --->  SetUp of UtilsTestCase: OK!")
 
-    def test_create_digest_auth_response(self):
+    def test_create_digest_auth_response(self) -> None:
         """Test method create_digest_auth_response()."""
         request = RequestFactory().get("/")
 
@@ -236,9 +233,8 @@ class DigestTestCase(TestCase):
 
         print("   --->  test_create_digest_auth_response of DigestTestCase: OK!")
 
-    def test_get_auth_headers_as_dict(self):
+    def test_get_auth_headers_as_dict(self) -> None:
         """Test method get_auth_headers_as_dict()."""
-
         # test no auth_headers
         request = RequestFactory().get("/")
         response = get_auth_headers_as_dict(request)
@@ -252,9 +248,8 @@ class DigestTestCase(TestCase):
 
         print("   --->  test_get_auth_headers_as_dict of DigestTestCase: OK!")
 
-    def test_digest_is_valid(self):
+    def test_digest_is_valid(self) -> None:
         """Test digest validation."""
-
         # test no auth_headers
         request = RequestFactory().get("/")
         response = digest_is_valid(request)

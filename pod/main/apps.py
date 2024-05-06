@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import json
 
 
-def create_missing_pages(sender, **kwargs):
+def create_missing_pages(sender, **kwargs) -> None:
     """Create missing flat pages from json fixtures."""
     print("---> Creating missing flat pages and links...")
 
@@ -47,7 +47,7 @@ def create_pages_and_links(fixture):
     return count
 
 
-def update_object_fields(obj, fields, title=None):
+def update_object_fields(obj, fields, title=None) -> None:
     """Update all fields values on object obj."""
     from django.contrib.sites.models import Site
     from django.contrib.flatpages.models import FlatPage
@@ -66,7 +66,7 @@ def update_object_fields(obj, fields, title=None):
     obj.save()
 
 
-def create_missing_conf(sender, **kwargs):
+def create_missing_conf(sender, **kwargs) -> None:
     """Create missing configurations from initial_data.json."""
     from pod.main.models import Configuration
 
@@ -108,7 +108,7 @@ def create_missing_conf(sender, **kwargs):
         print("--> No missing configurations found, all is up to date!")
 
 
-def create_first_block(sender, **kwargs):
+def create_first_block(sender, **kwargs) -> None:
     """Create first block from first_block.json."""
     from pod.main.models import Block
     from django.contrib.flatpages.models import FlatPage

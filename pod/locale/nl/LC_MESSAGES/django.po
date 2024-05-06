@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-29 10:28+0000\n"
+"POT-Creation-Date: 2024-05-03 14:28+0000\n"
 "PO-Revision-Date: 2024-04-15 14:27+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -727,6 +727,7 @@ msgstr ""
 #: pod/podfile/templates/podfile/home_content.html
 #: pod/podfile/templates/podfile/list_folder_files.html
 #: pod/recorder/templates/recorder/record_list.html
+#: pod/video/templates/videos/dashboard_modal.html
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_list.html
 #: pod/video/templates/videos/video_list_grid_selectable.html
@@ -824,10 +825,6 @@ msgstr ""
 
 #: pod/chapter/models.py
 msgid "Chapter"
-msgstr ""
-
-#: pod/chapter/models.py pod/completion/models.py pod/enrichment/models.py
-msgid "Please enter a title from 2 to 100 characters."
 msgstr ""
 
 #: pod/chapter/models.py
@@ -1189,7 +1186,9 @@ msgstr ""
 msgid "Document"
 msgstr ""
 
-#: pod/completion/models.py pod/video/templates/videos/video-info.html
+#: pod/completion/models.py
+#: pod/completion/templates/document/list_document.html
+#: pod/video/templates/videos/video-info.html
 msgid "Private document"
 msgstr ""
 
@@ -1228,19 +1227,11 @@ msgid "In Treatment"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "EnrichModelQueue"
+msgid "Enrich model queue"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "Please enter a text."
-msgstr ""
-
-#: pod/completion/models.py
-msgid "Please enter a model type."
-msgstr ""
-
-#: pod/completion/models.py
-msgid "Please enter a language."
+msgid "Enrich model queues"
 msgstr ""
 
 #: pod/completion/models.py pod/completion/templates/track/list_track.html
@@ -1270,6 +1261,10 @@ msgstr ""
 
 #: pod/completion/models.py
 msgid "Please enter a correct kind."
+msgstr ""
+
+#: pod/completion/models.py
+msgid "Please enter a language."
 msgstr ""
 
 #: pod/completion/models.py
@@ -1364,10 +1359,6 @@ msgid "Overlays"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "Please enter a title."
-msgstr "Voer een titel in."
-
-#: pod/completion/models.py
 msgid ""
 "The value of the time start field is greater than the value of the end time "
 "field."
@@ -1424,6 +1415,11 @@ msgstr ""
 
 #: pod/completion/templates/document/list_document.html
 msgid "List of additional resources"
+msgstr ""
+
+#: pod/completion/templates/document/list_document.html
+#: pod/video/templates/videos/video-info.html
+msgid "Public document"
 msgstr ""
 
 #: pod/completion/templates/document/list_document.html
@@ -1496,11 +1492,6 @@ msgstr ""
 
 #: pod/completion/templates/track/list_track.html
 msgid "menu"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html
-#: pod/completion/templates/video_completion.html pod/completion/views.py
-msgid "Video Caption Maker"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
@@ -1654,6 +1645,10 @@ msgstr ""
 msgid "Subtitle(s) and Caption(s)"
 msgstr ""
 
+#: pod/completion/templates/video_completion.html pod/completion/views.py
+msgid "Video caption maker"
+msgstr ""
+
 #: pod/completion/templates/video_completion.html
 msgid "To create your subtitles and/or caption(s) files"
 msgstr ""
@@ -1719,6 +1714,10 @@ msgstr ""
 
 #: pod/completion/templates/video_completion.html
 msgid "You can use"
+msgstr ""
+
+#: pod/completion/templates/video_completion.html
+msgid "Video Caption Maker"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -1817,7 +1816,7 @@ msgid "Cut the video"
 msgstr ""
 
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
-#: pod/dressing/views.py
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
@@ -2112,6 +2111,14 @@ msgid ""
 msgstr ""
 
 #: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "You cannot dress this video."
+msgstr ""
+
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "You cannot access this page."
+msgstr ""
+
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
 msgid "You cannot edit this dressing."
 msgstr ""
 
@@ -2121,10 +2128,6 @@ msgstr ""
 
 #: pod/dressing/tests/test_views.py pod/dressing/views.py
 msgid "You cannot create a video dressing."
-msgstr ""
-
-#: pod/dressing/views.py
-msgid "You cannot dress this video."
 msgstr ""
 
 #: pod/dressing/views.py
@@ -2153,10 +2156,6 @@ msgstr ""
 #: pod/dressing/views.py
 #, python-format
 msgid "Deleting the dressing “%s”"
-msgstr ""
-
-#: pod/dressing/views.py
-msgid "You cannot access this page."
 msgstr ""
 
 #: pod/enrichment/apps.py pod/enrichment/models.py
@@ -2250,6 +2249,10 @@ msgstr ""
 #: pod/enrichment/models.py
 #, python-brace-format
 msgid "Please enter a correct {0}."
+msgstr ""
+
+#: pod/enrichment/models.py
+msgid "Please enter a title from 2 to 100 characters."
 msgstr ""
 
 #: pod/enrichment/models.py
@@ -2848,15 +2851,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -2916,7 +2919,7 @@ msgid ""
 msgstr ""
 
 #: pod/import_video/views.py
-msgid "Convert web presentation to video in progress..."
+msgid "Convert web presentation to video in progress…"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -3811,6 +3814,7 @@ msgid ""
 msgstr ""
 
 #: pod/live/utils.py pod/main/templates/mail/mail.html pod/meeting/utils.py
+#: pod/video/management/commands/create_archive_package.py
 #: pod/video_encode_transcript/utils.py
 msgid "Regards."
 msgstr ""
@@ -5556,7 +5560,7 @@ msgstr ""
 #: pod/meeting/models.py
 msgid ""
 "Do you want a chat on the live page for listeners? Messages sent in this "
-"live page's chat will end up in BigBlueButton's public chat. This public "
+"live page’s chat will end up in BigBlueButton’s public chat. This public "
 "chat will be also displayed in the live."
 msgstr ""
 
@@ -5674,7 +5678,7 @@ msgstr ""
 #: pod/meeting/templates/meeting/meeting_card.html
 #, python-format
 msgid ""
-"This is “%(full_name)s”'s personal meeting room, a room specific to his "
+"This is “%(full_name)s”’s personal meeting room, a room specific to his "
 "profile, which is always available."
 msgstr ""
 
@@ -6124,8 +6128,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
@@ -6139,8 +6143,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
@@ -6209,7 +6213,7 @@ msgid ""
 "(%s). The next meeting has been created but not like a webinar:%s %s [%s-"
 "%s].\n"
 "Please fix the problem either by increasing the number of live gateways or "
-"by modifying/deleting one of the affected webinars (with the users' "
+"by modifying/deleting one of the affected webinars (with the users’ "
 "agreement).\n"
 "Other webinars: %s"
 msgstr ""
@@ -6221,7 +6225,7 @@ msgid ""
 "allocated (<b>%s</b>). The next webinar has been created but <b>not like a "
 "webinar</b>:<ul><li><b>%s %s</b> [%s-%s].</li></ul><p>Please fix the problem "
 "either by increasing the number of live gateways or by modifying/deleting "
-"one of the affected webinars (with the users' agreement).<br>Other webinars: "
+"one of the affected webinars (with the users’ agreement).<br>Other webinars: "
 "<b>%s</b>"
 msgstr ""
 
@@ -6987,6 +6991,22 @@ msgid "Recorder salt."
 msgstr ""
 
 #: pod/recorder/models.py
+msgid "Credentials login"
+msgstr ""
+
+#: pod/recorder/models.py
+msgid "Recorder credentials login."
+msgstr ""
+
+#: pod/recorder/models.py
+msgid "Credentials password"
+msgstr ""
+
+#: pod/recorder/models.py
+msgid "Recorder credentials password."
+msgstr ""
+
+#: pod/recorder/models.py
 msgid "Recording Type"
 msgstr ""
 
@@ -7105,6 +7125,10 @@ msgid "Basic directory containing the videos published by the recorder."
 msgstr ""
 
 #: pod/recorder/models.py
+msgid "All credentials must be set."
+msgstr ""
+
+#: pod/recorder/models.py
 msgid "Recorder"
 msgstr ""
 
@@ -7203,8 +7227,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -7526,6 +7550,7 @@ msgid "USE_OBSOLESCENCE is FALSE"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
+#: pod/video/management/commands/create_archive_package.py
 #: pod/video/management/commands/unarchive_video.py
 #: pod/video/tests/test_obsolescence.py
 msgid "Archived"
@@ -7645,6 +7670,31 @@ msgstr ""
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
 msgid "In %(deadline)s days:"
+msgstr ""
+
+#: pod/video/management/commands/create_archive_package.py
+#, python-format
+msgid ""
+"Package archiving done. %(amount)s video packaged (%(weight)s - "
+"[%(duration)s])"
+msgstr ""
+
+#: pod/video/management/commands/create_archive_package.py
+#, python-format
+msgid "Hello manager(s) of  %s,"
+msgstr ""
+
+#: pod/video/management/commands/create_archive_package.py
+#, python-format
+msgid ""
+"For your information, below is the list of archived videos that would’ve "
+"been packaged in your ARCHIVE_ROOT folder. Run the "
+"<code>create_archive_package</code> command without the <code>--dry</code> "
+"option to delete them from %s."
+msgstr ""
+
+#: pod/video/management/commands/create_archive_package.py
+msgid "Packaging archived videos on Pod"
 msgstr ""
 
 #: pod/video/models.py pod/video/views.py
@@ -8286,10 +8336,6 @@ msgstr ""
 msgid "List display mode"
 msgstr ""
 
-#: pod/video/templates/videos/dashboard_modal.html
-msgid "Loading..."
-msgstr ""
-
 #: pod/video/templates/videos/filter_aside.html
 msgid ""
 "The videos on the left are automatically sorted according to the filters "
@@ -8544,10 +8590,6 @@ msgstr ""
 
 #: pod/video/templates/videos/video-info.html
 msgid "Document:"
-msgstr ""
-
-#: pod/video/templates/videos/video-info.html
-msgid "Public document"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
@@ -8931,6 +8973,16 @@ msgstr ""
 #: pod/video/tests/test_views.py pod/video/views.py
 msgid "The token has been deleted."
 msgstr ""
+
+#: pod/video/utils.py
+msgid "Please enter a title."
+msgstr "Voer een titel in."
+
+#: pod/video/utils.py
+#, fuzzy, python-format
+#| msgid "Please enter a title."
+msgid "Please enter a %s from 2 to %s characters."
+msgstr "Voer een titel in."
 
 #: pod/video/views.py
 msgid "You cannot edit this channel."

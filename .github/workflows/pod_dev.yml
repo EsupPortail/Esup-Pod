@@ -16,10 +16,10 @@ env:
   PYTHON_VERSION: '3.9'
   DJANGO_SUPERUSER_USERNAME: "admin"
   DJANGO_SUPERUSER_PASSWORD: "passwd"
-  DJANGO_SUPERUSER_EMAIL: "noreplay@uni.fr"
+  DJANGO_SUPERUSER_EMAIL: "noreply@uni.fr"
   ELASTICSEARCH_TAG: "elasticsearch:7.17.18"
-  NODE_VERSION: "19"
-  NODE_TAG: "node:19"
+  NODE_VERSION: "20"
+  NODE_TAG: "node:20"
   PYTHON_TAG: "python:3.9-bullseye"
   REDIS_TAG: "redis:alpine3.16"
   DOCKER_ENV: "full-test"

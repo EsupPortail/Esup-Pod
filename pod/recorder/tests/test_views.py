@@ -3,7 +3,7 @@
 import hashlib
 import os
 from http import HTTPStatus
-from xml.dom import minidom
+from defusedxml import minidom
 
 from django.conf import settings
 from django.contrib.auth.models import User
