@@ -2,7 +2,6 @@
  * @file Esup-Pod functions for chapter view.
  */
 
-
 // Read-only globals defined in video_chapter.html
 /*
   global video_duration
@@ -12,7 +11,6 @@
 /*
 global player
 */
-
 
 var id_form = "form_chapter";
 function show_form(data) {
