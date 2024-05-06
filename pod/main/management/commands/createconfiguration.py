@@ -115,7 +115,7 @@ class Command(BaseCommand):
                         msg += "  >> %s\n  >>\n" % line
                     continue
 
-                if code :
+                if code:
                     endline = "\n"
                 else:
                     endline = "<br>\n"

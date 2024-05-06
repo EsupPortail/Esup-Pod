@@ -402,14 +402,14 @@ class VideoTestCase(TestCase):
             description="Desc containing <strong>HTML</strong> and special chars like <tt>`>&éè§çà€<`</tt>.",
             video="test.mp4",
             owner=User.objects.get(username="pod"),
-            type=Type.objects.get(id=1)
+            type=Type.objects.get(id=1),
         )
 
         expected = {
             "dc.title": "Title containing special chars like `&gt;&amp;éè§çà€&lt;`",
             "dc.description": "Desc containing &lt;strong&gt;HTML&lt;/strong&gt; and special chars like &lt;tt&gt;`&gt;&amp;éè§çà€&lt;`&lt;/tt&gt;.",
             "dc.type": "video",
-            "dc.format": "video/mp4"
+            "dc.format": "video/mp4",
         }
         got = dc_vid.get_dublin_core()
 

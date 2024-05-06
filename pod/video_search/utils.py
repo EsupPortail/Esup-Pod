@@ -1,4 +1,5 @@
 """Esup-Pod Video Search utilities."""
+
 from django.conf import settings
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import TransportError

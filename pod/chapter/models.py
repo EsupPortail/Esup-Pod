@@ -1,4 +1,5 @@
 """Esup-Pod Video chapter models."""
+
 import time
 
 from django.core.exceptions import ValidationError

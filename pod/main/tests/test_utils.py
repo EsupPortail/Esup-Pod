@@ -26,9 +26,9 @@ class MainUtilsTestCase(TestCase):
         """Test the return of generate_qrcode."""
         alt = "test QR code"
         url = "https://pod.univ.fr"
-        start_attended = "<img id=\"qrcode\" src=\"data:image/png;base64, "
-        end_attended = "width=\"200px\" height=\"200px\" alt=\"test QR code\">"
+        start_attended = '<img id="qrcode" src="data:image/png;base64, '
+        end_attended = 'width="200px" height="200px" alt="test QR code">'
         got = utils.generate_qrcode(url, alt, None)
-        self.assertEqual(start_attended, got[:len(start_attended)])
-        self.assertEqual(end_attended, got[-len(end_attended):])
+        self.assertEqual(start_attended, got[: len(start_attended)])
+        self.assertEqual(end_attended, got[-len(end_attended) :])
         print(" --->  test_generate_qrcode OK.")

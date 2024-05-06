@@ -1,4 +1,5 @@
 """Esup-Pod video completion models."""
+
 import base64
 
 from django.db import models
@@ -267,6 +268,7 @@ class Track(models.Model):
 
     class Meta:
         """Video additional tracks metadata."""
+
         verbose_name = _("Track")
         verbose_name_plural = _("Tracks")
 

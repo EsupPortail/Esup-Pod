@@ -164,4 +164,4 @@ def remove_trailing_spaces(text: str) -> str:
         line = line.rstrip()
         if line != "":
             cleaned_lines.append(line)
-    return '\n'.join(cleaned_lines)
+    return "\n".join(cleaned_lines)

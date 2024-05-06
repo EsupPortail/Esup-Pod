@@ -1,4 +1,5 @@
 """Esup-Pod recorder administration."""
+
 import os
 from django.conf import settings
 from django.contrib import admin

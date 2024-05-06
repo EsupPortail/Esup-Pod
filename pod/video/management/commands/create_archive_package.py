@@ -2,6 +2,7 @@
 
 *  run with 'python manage.py create_archive_package [--dry]'
 """
+
 import csv
 import os
 import shutil
@@ -283,18 +284,26 @@ class Command(BaseCommand):
         msg_html = [_("Hello manager(s) of  %s,") % __TITLE_SITE__]
         msg_html.append("<br>")
         if self.dry_mode:
-            msg = _(
-                "For your information, "
-                "below is the list of archived videos that would’ve been packaged in "
-                "your ARCHIVE_ROOT folder. Run the <code>create_archive_package</code> command "
-                "without the <code>--dry</code> option to delete them from %s."
-            ) % __TITLE_SITE__
+            msg = (
+                _(
+                    "For your information, "
+                    "below is the list of archived videos that would’ve been packaged in "
+                    "your ARCHIVE_ROOT folder. Run the <code>create_archive_package</code> command "
+                    "without the <code>--dry</code> option to delete them from %s."
+                )
+                % __TITLE_SITE__
+            )
         else:
-            msg = _(
-                ("For your information, "
-                 "below is the list of archived videos that have been packaged in "
-                 "your ARCHIVE_ROOT folder, and definitely deleted from %s.")
-            ) % __TITLE_SITE__
+            msg = (
+                _(
+                    (
+                        "For your information, "
+                        "below is the list of archived videos that have been packaged in "
+                        "your ARCHIVE_ROOT folder, and definitely deleted from %s."
+                    )
+                )
+                % __TITLE_SITE__
+            )
 
         msg_html.append("<p>%s</p>" % msg)
         msg_html.append(self.get_list_video_html(list_video))
