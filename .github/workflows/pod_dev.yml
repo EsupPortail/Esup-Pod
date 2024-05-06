@@ -145,6 +145,11 @@ jobs:
         run: |
           coverage run --append --source='.' manage.py test -v 3 --settings=pod.main.test_settings
 
+      - name: Report Coveralls (Linux)
+        run: curl -sL https://coveralls.io/coveralls-linux.tar.gz | tar -xz && ./coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Send coverage to coveralls.io
         # coveralls command has been installed by requirements-dev.txt
         env:
