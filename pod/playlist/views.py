@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import PermissionDenied
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponseRedirect
@@ -127,14 +128,18 @@ def playlist_content(request: WSGIRequest, slug: str):
         playlist.visibility == "public"
         or playlist.visibility == "protected"
         or (
-            playlist.owner == request.user
+            request.user.is_authenticated and
+            (playlist.owner == request.user
             or playlist in get_playlists_for_additional_owner(request.user)
-            or request.user.is_staff
+            or request.user.is_superuser)
         )
     ):
         return render_playlist(request, playlist, sort_field, sort_direction)
     else:
-        return HttpResponseRedirect(reverse("playlist:list"))
+        messages.add_message(
+            request, messages.ERROR, _("You cannot access this playlist.")
+        )
+        raise PermissionDenied
 
 
 def render_playlist_page(

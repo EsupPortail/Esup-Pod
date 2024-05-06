@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-29 10:28+0000\n"
+"POT-Creation-Date: 2024-05-06 08:49+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1907,7 +1907,7 @@ msgid "Cut the video"
 msgstr "Découper la vidéo"
 
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
-#: pod/dressing/views.py
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
@@ -2225,6 +2225,14 @@ msgstr ""
 "ou à la fin de la vidéo."
 
 #: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "You cannot dress this video."
+msgstr "Vous ne pouvez pas habiller cette vidéo."
+
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "You cannot access this page."
+msgstr "Vous ne pouvez pas accéder à cette page."
+
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
 msgid "You cannot edit this dressing."
 msgstr "Vous ne pouvez pas éditer cet habillage."
 
@@ -2235,10 +2243,6 @@ msgstr "L’habillage a été supprimé."
 #: pod/dressing/tests/test_views.py pod/dressing/views.py
 msgid "You cannot create a video dressing."
 msgstr "Vous ne pouvez pas créer d’habillage de vidéo."
-
-#: pod/dressing/views.py
-msgid "You cannot dress this video."
-msgstr "Vous ne pouvez pas habiller cette vidéo."
 
 #: pod/dressing/views.py
 #, python-format
@@ -2267,10 +2271,6 @@ msgstr "Vous ne pouvez pas supprimer cet habillage."
 #, python-format
 msgid "Deleting the dressing “%s”"
 msgstr "Supprimer l’habillage « %s »"
-
-#: pod/dressing/views.py
-msgid "You cannot access this page."
-msgstr "Vous ne pouvez pas accéder à cette page."
 
 #: pod/enrichment/apps.py pod/enrichment/models.py
 msgid "Enrichments"
@@ -7165,6 +7165,10 @@ msgstr "Liste de lecture : %(name)s"
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
+
+#: pod/playlist/views.py
+msgid "You cannot access this playlist."
+msgstr "Vous ne pouvez pas accéder à cette liste de lecture."
 
 #: pod/playlist/views.py
 #, python-format
