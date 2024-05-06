@@ -947,6 +947,7 @@ def invite(request: WSGIRequest, meeting_id: str) -> HttpResponse:
     meeting = get_object_or_404(
         Meeting, meeting_id=meeting_id, site=get_current_site(request)
     )
+    page_title = _("Send invitations to the meeting “%s”") % meeting.name
 
     if (
         request.user != meeting.owner
@@ -970,13 +971,17 @@ def invite(request: WSGIRequest, meeting_id: str) -> HttpResponse:
             emails = get_dest_emails(meeting, form)
             send_invite(request, meeting, emails)
             display_message_with_icon(
-                request, messages.INFO, _("Invitations send to recipients.")
+                request, messages.SUCCESS, _("Invitations send to recipients.")
             )
             return redirect(reverse("meeting:my_meetings"))
     return render(
         request,
         "meeting/invite.html",
-        {"meeting": meeting, "form": form},
+        {
+            "page_title": page_title,
+            "meeting": meeting,
+            "form": form
+        },
     )
 
 

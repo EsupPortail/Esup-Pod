@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-06 08:49+0000\n"
+"POT-Creation-Date: 2024-05-06 12:37+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -6195,10 +6195,6 @@ msgid "Delete the recording"
 msgstr "Supprimer l’enregistrement"
 
 #: pod/meeting/templates/meeting/invite.html
-msgid "Send invitations to the meeting"
-msgstr "Envoyer des invitations à la réunion"
-
-#: pod/meeting/templates/meeting/invite.html
 msgid ""
 "Add emails addresses in the form below and click send to invite to your "
 "meeting"
@@ -6469,6 +6465,11 @@ msgid "The recording has been deleted."
 msgstr "L’enregistrement a été supprimé."
 
 #: pod/meeting/views.py
+#, python-format
+msgid "Send invitations to the meeting “%s”"
+msgstr "Envoyer des invitations à la réunion « %s »"
+
+#: pod/meeting/views.py
 msgid "You cannot invite for this meeting."
 msgstr "Vous ne pouvez pas inviter à cette réunion."
 
@@ -6594,22 +6595,22 @@ msgstr "Vous ne pouvez pas redémarrer ce webinaire en direct."
 #: pod/meeting/webinar.py
 #, python-format
 msgid "Webinar mode has been successfully started for “%s” meeting."
-msgstr "Le mode webinaire a bien été démarré pour la réunion “%s”."
+msgstr "Le mode webinaire a bien été démarré pour la réunion « %s »."
 
 #: pod/meeting/webinar.py
 #, python-format
 msgid "Error to start webinar mode for “%s” meeting: %s"
-msgstr "Erreur de démarrage du mode webinaire pour la réunion “%s” : %s"
+msgstr "Erreur de démarrage du mode webinaire pour la réunion « %s » : %s"
 
 #: pod/meeting/webinar.py
 #, python-format
 msgid "Webinar mode has been successfully stopped for “%s” meeting."
-msgstr "Le mode webinaire a bien été arrêté pour la réunion “%s”."
+msgstr "Le mode webinaire a bien été arrêté pour la réunion « %s »."
 
 #: pod/meeting/webinar.py
 #, python-format
 msgid "Error to stop webinar mode for “%s” meeting: %s"
-msgstr "Erreur dans l’arrêt du mode webinaire pour la réunion “%s” : %s"
+msgstr "Erreur dans l’arrêt du mode webinaire pour la réunion « %s » : %s"
 
 #: pod/meeting/webinar.py
 msgid ""
