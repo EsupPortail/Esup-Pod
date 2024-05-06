@@ -145,11 +145,6 @@ jobs:
         run: |
           coverage run --append --source='.' manage.py test -v 3 --settings=pod.main.test_settings
 
-      - name: Coveralls
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        uses: coverallsapp/github-action@v2
-
       - name: Send coverage to coveralls.io
         # coveralls command has been installed by requirements-dev.txt
         env:
