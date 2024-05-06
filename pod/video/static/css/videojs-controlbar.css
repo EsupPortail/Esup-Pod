@@ -45,8 +45,3 @@
 .video-js.vjs-layout-x-small .vjs-volume-panel {
   display: none;
 }
-
-.vjs-text-track-cue > div {
-  line-height: 1.3;
-}
-
