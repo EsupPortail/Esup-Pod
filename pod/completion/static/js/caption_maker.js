@@ -137,7 +137,7 @@ document.addEventListener("click", (evt) => {
  */
 const send_form_save_captions = function () {
   let fileName = document.getElementById("captionFilename").value;
-  if (fileName.length == 0) {
+  if (fileName.length === 0) {
     fileName = `${file_prefix}_captions_${Date.now()}`;
   }
 
@@ -1050,7 +1050,7 @@ let editorShortcuts = {
    */
   notFocused: function () {
     var focused = document.activeElement;
-    return focused.length == 0;
+    return focused.length === 0;
   },
 
   init: function () {
@@ -1162,7 +1162,7 @@ function formatTime(seconds) {
   var mm = Math.floor(seconds / 60) % 60;
   var ss = seconds % 60;
   return (
-    (hh == 0 ? "" : (hh < 10 ? "0" : "") + hh.toString() + ":") +
+    (hh === 0 ? "" : (hh < 10 ? "0" : "") + hh.toString() + ":") +
     (mm < 10 ? "0" : "") +
     mm.toString() +
     ":" +
@@ -1358,7 +1358,7 @@ function parseAndLoadWebVTT(vtt) {
     if (timeMatch) {
       appendCurrentCaption();
       cueStart = parseTime(timeMatch[1]);
-      if (cueStart == 0) cueStart = "0.0";
+      if (cueStart === 0) cueStart = "0.0";
       cueEnd = parseTime(timeMatch[2]);
       continue;
     }

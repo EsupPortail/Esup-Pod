@@ -288,8 +288,8 @@ class Command(BaseCommand):
                 _(
                     "For your information, "
                     "below is the list of archived videos that would’ve been packaged in "
-                    "your ARCHIVE_ROOT folder. Run the <code>create_archive_package</code> command "
-                    "without the <code>--dry</code> option to delete them from %s."
+                    "your ARCHIVE_ROOT folder. Run the <code>create_archive_package</code> "
+                    "command without the <code>--dry</code> option to delete them from %s."
                 )
                 % __TITLE_SITE__
             )

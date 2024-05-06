@@ -1,5 +1,7 @@
 /* Esup-Pod My Meetings JS */
 
+/* exported displayLoader */
+
 var meetingModal = document.getElementById("meetingModal");
 meetingModal.addEventListener("show.bs.modal", function (event) {
   // Button that triggered the modal
@@ -27,7 +29,7 @@ meetingModal.addEventListener("show.bs.modal", function (event) {
         modalBody.innerHTML = gettext(
           "Unable to find information about the meeting",
         );
-        console.log(msg);
+        console.log(data.msg);
       } else {
         // All buttons
         var allLinks = "";
@@ -96,7 +98,7 @@ meetingModal.addEventListener("show.bs.modal", function (event) {
  * @return {string}       Generated HTML
  */
 function generateHtml(data, level = 0) {
-  html = "<ul>";
+  let html = "<ul>";
   for (let k in data) {
     if (typeof data[k] === "object") {
       html +=
@@ -111,7 +113,7 @@ function generateHtml(data, level = 0) {
 
 var copyButtons = document.querySelectorAll(".pod-btn-copy");
 copyButtons.forEach(function (elt) {
-  elt.addEventListener("click", function (event) {
+  elt.addEventListener("click", function () {
     const input_id = this.dataset.copyvalue;
     copyValue(input_id);
   });

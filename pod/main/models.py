@@ -159,8 +159,8 @@ class LinkFooter(models.Model):
 
 
 @receiver(post_save, sender=LinkFooter)
-def default_site_link_footer(sender, instance, created, **kwargs) -> None:
-    if len(instance.sites.all()) == 0:
+def default_site_link_footer(sender, instance, created: bool, **kwargs) -> None:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())
 
 
@@ -186,7 +186,7 @@ class Configuration(models.Model):
 class AdditionalChannelTab(models.Model):
     name = models.CharField(_("Value"), max_length=40, help_text=_("Name of the tab"))
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s" % (self.name)
 
     class Meta:
@@ -363,7 +363,7 @@ class Block(models.Model):
 
 
 @receiver(post_save, sender=Block)
-def default_site_block(sender, instance, created, **kwargs) -> None:
+def default_site_block(sender, instance, created: bool, **kwargs) -> None:
     """Set a default site for the instance if it has no associated sites upon creation."""
-    if len(instance.sites.all()) == 0:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())

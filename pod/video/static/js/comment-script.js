@@ -525,7 +525,7 @@ function vote(comment_action_html, comment_id) {
         return response.json();
       } else {
         let message = gettext("Bad response from the server.");
-        if (response.status == 403) {
+        if (response.status === 403) {
           message = gettext("Sorry, you’re not allowed to vote by now.");
         }
         throw new Error(message);
@@ -615,7 +615,7 @@ function save_comment(
         return response.json();
       } else {
         let message = gettext("Bad response from the server.");
-        if (response.status == 403) {
+        if (response.status === 403) {
           message = gettext("Sorry, you can’t comment this video by now.");
         }
         throw new Error(message);
@@ -753,7 +753,7 @@ function delete_comment(comment) {
         });
       } else {
         let message = gettext("Bad response from the server.");
-        if (response.status == 403) {
+        if (response.status === 403) {
           message = gettext("Sorry, you can’t delete this comment by now.");
         }
         showalert(message, "alert-danger");

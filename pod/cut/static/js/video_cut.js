@@ -113,7 +113,7 @@ function calculation_total_time() {
 (function (n) {
   var f = function (e) {
     var c = e.which || e.keyCode;
-    if (c == 13) {
+    if (c === 13) {
       e.preventDefault();
       let ConfirmationModalID = document.getElementById("ConfirmationModal");
       let ConfirmationModal =

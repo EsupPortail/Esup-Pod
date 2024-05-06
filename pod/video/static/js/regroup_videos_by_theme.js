@@ -220,7 +220,7 @@ function run(has_more_themes, Helper) {
     } else if (this.isEqualNode(previous_btn) && current_position < 0) {
       current_position += 100;
       next_btn.classList.remove("disabled");
-      if (current_position == 0) previous_btn.classList.add("disabled");
+      if (current_position === 0) previous_btn.classList.add("disabled");
       // swipe content on the left
       themes_contents.forEach(
         (theme_content) =>

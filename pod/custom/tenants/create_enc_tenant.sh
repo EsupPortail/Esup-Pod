@@ -18,7 +18,7 @@ echo "Creation du répertoire"
 cp -r ./source_enc ./$NAME
 
 echo "Fichier de configuration"
-mv "./$NAME/tenant_enc_settings.py" "./$NAME/"$NAME"_enc_settings.py"
+mv "./$NAME/tenant_enc_settings.py" ./$NAME/"$NAME"_enc_settings.py
 sed -i "s/__NAME__/$NAME/g" ./$NAME/"$NAME"_enc_settings.py
 sed -i "s/__ID_SITE__/$ID_SITE/g" ./$NAME/"$NAME"_enc_settings.py
 sed -i "s/__DOMAIN_NAME__/$DOMAIN_NAME/g" ./$NAME/"$NAME"_enc_settings.py

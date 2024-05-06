@@ -161,7 +161,7 @@
         e.stopImmediatePropagation();
         var error = player.error();
         //alert(error.code+" "+error.type+" "+error.message);
-        if(error.code == 3 || error.code == 4) {
+        if(error.code == 3 || error.code === 4) {
           //console.log('error!', error.code, error.type , error.message);
           if(player.src()=="" || player.src().indexOf("m3u8")!=-1){
             player.controlBar.addChild('QualitySelector');

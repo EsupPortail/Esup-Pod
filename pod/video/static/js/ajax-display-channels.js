@@ -30,7 +30,7 @@ function setAttributesWithTab(htmlElement, attributeCouples) {
  */
 function getChannelsForSpecificChannelTabs(page, id = 0) {
   let url = "";
-  if (id == 0)
+  if (id === 0)
     url = `${GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL}?page=${page}`;
   else
     url = `${GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL}?page=${page}&id=${id}`;

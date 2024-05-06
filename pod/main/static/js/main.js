@@ -591,7 +591,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // If aside menu is empty, hide container and button
-    if (collapseAside.querySelectorAll("div").length == 0) {
+    if (collapseAside.querySelectorAll("div").length === 0) {
       if (collapseAside.offsetParent) {
         collapseAside.style.display = "none";
 

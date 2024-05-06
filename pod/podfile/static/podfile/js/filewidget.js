@@ -390,7 +390,7 @@ if (typeof loaded == "undefined") {
       cache: "no-cache",
     })
       .then((response) => {
-        if (response.status == 201) {
+        if (response.status === 201) {
           reloadRemoveBtn();
         } else {
           showalert(
@@ -514,7 +514,7 @@ if (typeof loaded == "undefined") {
     if (folder_searching === true ) {
       return;
     } else {
-      if (text.length > 2 || text.length == 0) {
+      if (text.length > 2 || text.length === 0) {
         getFolders(text);
       }
     }
@@ -543,7 +543,7 @@ if (typeof loaded == "undefined") {
     if (data.list_element) {
       var folder_id = data.folder_id;
 
-      if (data.new_folder == true) {
+      if (data.new_folder === true) {
         let type = document.getElementById("list_folders_sub").dataset.type;
 
         let string_html =

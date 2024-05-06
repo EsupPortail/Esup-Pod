@@ -55,11 +55,11 @@ var loadEnrichmentVTTfile = function (url, callback) {
   if (null != xhr) {
     xhr.open("GET", url, true);
     xhr.onreadystatechange = function () {
-      if (this.readyState == 4) {
+      if (this.readyState === 4) {
         var lines = xhr.responseText.split("\n"),
           nbl = lines.length,
           reg =
-            /(^\d{2}:\d{2}:\d{2})\.\d{3} \-\-> (\d{2}:\d{2}:\d{2})\.\d{3}$/i,
+            /(^\d{2}:\d{2}:\d{2})\.\d{3} --> (\d{2}:\d{2}:\d{2})\.\d{3}$/i,
           fisrtcueline = 1,
           txtdata = "",
           c = 0;
@@ -357,7 +357,6 @@ var VideoSlides = function (items) {
     class SlideMode extends vjs_menu_item {
       constructor(player, options) {
         options = options || {};
-        options.label = options.label;
         super(player, options);
         this.on("click", this.onClick);
         this.addClass("vjs-slide-mode");
@@ -372,7 +371,7 @@ var VideoSlides = function (items) {
         player.trigger("changemode", current_slide_mode);
 
         var available = document.getElementsByClassName("vjs-slide-mode");
-        for (let i = 0, nb = available.length, e; i < nb; i++) {
+        for (let i = 0, nb = available.length; i < nb; i++) {
           //for (let e of available) {
           let e = available[i];
           if (e.firstChild.innerHTML != this.el().firstChild.innerHTML) {

@@ -1,4 +1,8 @@
 <?php
+/**
+ * BBB Pod Live
+ */
+
 /************* DEBUT PARAMETRAGE *************/
 /* PARAMETRAGE NECESSAIRE POUR BBB-POD-LIVE */
 // Application en mode débogage (true - on logue toutes les lignes) ou en production (false - on logue seulement les erreurs et infos).
@@ -58,17 +62,16 @@ define("POD_ID_BUILDING", 1);
 // Ce répertoire - typiquement un partage NFS - doit être accessible aussi par POD et correspondre à DEFAULT_BBB_PATH du fichier settings_local.py.
 // Si ce n'est pas possible, laisser ce champ vide et positionner USE_BBB_LIVE_DOWNLOADING = False dans le settings_local de POD.
 define("POD_DEFAULT_BBB_PATH", "/data/www/pod/bbb-recorder/");
-/************* FIN PARAMETRAGE *************/
+/* FIN PARAMETRAGE */
 
 
-/** Variables globales **/
+/* Variables globales */
 // Variable permettant de savoir si le script a rencontré au moins une erreur
 $txtErrorInScript = "";
 // Variable permettant de connaitre les lives en cours sur ce serveur
 $livesInProgressOnThisServer = array();
-/*****************/
 
-/********** Début de la phase principale**********/
+/*  Début de la phase principale */
 try {
     // Gestion de la timezone
     date_default_timezone_set('Europe/Paris');
@@ -97,11 +100,12 @@ try {
 if ($GLOBALS["txtErrorInScript"] != "") {
     sendEmail("[BBB-POD-LIVE] Erreur rencontrée", $GLOBALS["txtErrorInScript"]);
 }
-/********** Fin de la phase principale**********/
+/* Fin de la phase principale */
 
 /**
  * Procédure de création et de configuration initile des différents plugin BigBlueButton-liveStreaming.
- * Un répertoire, par nombre de directs gérés par ce serveur (cf. NUMBER_LIVES), sera créé sous la forme bbb-live-streaming+incrémental.
+ * Un répertoire, par nombre de directs gérés par ce serveur (cf. NUMBER_LIVES),
+ * sera créé sous la forme bbb-live-streaming+incrémental.
  * Le fichier compose.yml sera copié depuis le répertoire courant (fichier docker-compose.default.yml).
  */
 function configureInitialBigBlueButtonLiveStreaming()
@@ -133,9 +137,11 @@ function configureInitialBigBlueButtonLiveStreaming()
 }
 
 /**
- * Procédure permettant de démarrer des directs, si des usagers en ont fait la demande dans Pod.
+ * Procédure permettant de démarrer des directs,
+ * si des usagers en ont fait la demande dans Pod.
  * Pour cela, on utilise l'API Rest de Pod.
- * Cette procédure permet d'identifier si un slot est disponible pour être utilisé pour lancer un direct.
+ * Cette procédure permet d'identifier si un slot est disponible
+ * pour être utilisé pour lancer un direct.
  */
 function startLives()
 {
@@ -146,7 +152,7 @@ function startLives()
     $cmdStatus1 .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
     $cmdStatus1 .= "-X GET " . checkEndWithoutSlash(POD_URL). "/rest/bbb_livestream/?status=1";
 
-    $verificationStatus1 = exec("$cmdStatus1 2>&1", $aRetourVerificationStatus1, $sRetourVerificationStatus1);
+    exec("$cmdStatus1 2>&1", $aRetourVerificationStatus1, $sRetourVerificationStatus1);
 
     writeLog("Recherche si des lives sont en cours", "DEBUG");
 
@@ -159,7 +165,8 @@ function startLives()
         for ($i = 0; $i < $oListeSessions->count; $i++) {
             // Identifiant du live dans Pod
             $idLive = $oListeSessions->results[$i]->id;
-            // Dans Pod, l'information est sauvegardé sous la forme NUMERO_SERVEUR/NUMERO_REPERTOIRE_bbb_live_streaming
+            // Dans Pod, l'information est sauvegardé sous la forme
+            // NUMERO_SERVEUR/NUMERO_REPERTOIRE_bbb_live_streaming
             $server = $oListeSessions->results[$i]->server;
             // Le live est il déjà en cours sur un des serveurs BBB-POD-LIVE ?
             $status = $oListeSessions->results[$i]->status;
@@ -187,7 +194,7 @@ function startLives()
     $cmdStatus0 .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
     $cmdStatus0 .= "-X GET " . checkEndWithoutSlash(POD_URL) . "/rest/bbb_livestream/?status=0";
 
-    $verificationStatus0 = exec("$cmdStatus0 2>&1", $aRetourVerificationStatus0, $sRetourVerificationStatus0);
+    exec("$cmdStatus0 2>&1", $aRetourVerificationStatus0, $sRetourVerificationStatus0);
 
     writeLog("Recherche si des utilisateurs ont lancé des lives depuis Pod", "DEBUG");
 
@@ -208,7 +215,8 @@ function startLives()
             $status = $oListeSessions->results[$i]->status;
             // Utilisateur ayant lancé ce live
             $user = $oListeSessions->results[$i]->user;
-            // Identifiant du répertoire bbb-live-streaming qui s'occupera de réaliser le live, si disponible
+            // Identifiant du répertoire bbb-live-streaming qui s'occupera de
+            // réaliser le live, si disponible
             $idBbbLiveStreaming = 0;
             // Recherche si ce serveur peut encore lancer un direct
             for ($j = 1; $j <= NUMBER_LIVES; $j++) {
@@ -259,7 +267,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
     $cmd = "curl --silent -H 'Content-Type: application/json' ";
     $cmd .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
     $cmd .= "-X GET $urlMeeting";
-    $verification = exec("$cmd 2>&1", $aRetourVerification, $sRetourVerification);
+    exec("$cmd 2>&1", $aRetourVerification, $sRetourVerification);
 
     writeLog("Récupération de l'objet meeting ($urlMeeting) depuis Pod", "DEBUG");
 
@@ -280,7 +288,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         $cmdOptions = "curl --silent -H 'Content-Type: application/json' ";
         $cmdOptions .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
         $cmdOptions .= "-X GET " . checkEndWithoutSlash(POD_URL) . "/rest/bbb_livestream/$idLive/";
-        $verificationOptions = exec("$cmdOptions 2>&1", $aRetourVerificationOptions, $sRetourVerificationOptions);
+        exec("$cmdOptions 2>&1", $aRetourVerificationOptions, $sRetourVerificationOptions);
 
         writeLog("Récupération des options de l'objet bbb_livestream (/rest/bbb_livestream/$idLive/) depuis Pod", "DEBUG");
 
@@ -451,7 +459,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         $cmdBroadcaster .= "-F 'url=" . checkEndSlash(POD_HLS_STREAM) . "$nameMeeting.m3u8' ";
         $cmdBroadcaster .= "-F 'building=" . checkEndWithoutSlash(POD_URL) . "/rest/buildings/" . POD_ID_BUILDING . "/' ";
         $cmdBroadcaster .= "-F 'name=$nameMeetingToDisplay' -F 'status=true' -F 'is_restricted=$isRestricted' '" . checkEndWithoutSlash(POD_URL) . "/rest/broadcasters/'";
-        $verificationBroadcaster = exec("$cmdBroadcaster 2>&1", $aRetourVerificationBroadcaster, $sRetourVerificationBroadcaster);
+        exec("$cmdBroadcaster 2>&1", $aRetourVerificationBroadcaster, $sRetourVerificationBroadcaster);
 
         writeLog("  + Création du diffuseur correspondant dans Pod", "DEBUG");
 
@@ -469,7 +477,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
                 $cmdBroadcaster2 = "curl --silent -H 'Content-Type: application/json' ";
                 $cmdBroadcaster2 .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
                 $cmdBroadcaster2 .= "-X GET " . checkEndWithoutSlash(POD_URL) . "/rest/broadcasters/$nameMeeting/";
-                $verificationBroadcaster2 = exec("$cmdBroadcaster2 2>&1", $aRetourVerificationBroadcaster2, $sRetourVerificationBroadcaster2);
+                exec("$cmdBroadcaster2 2>&1", $aRetourVerificationBroadcaster2, $sRetourVerificationBroadcaster2);
 
                 writeLog("  + Récupération du diffuseur déjà existant dans Pod", "DEBUG");
                 if ($sRetourVerificationBroadcaster2 == 0) {
@@ -587,7 +595,7 @@ function stopLives()
             $dockerFile = checkEndSlash(PHYSICAL_BASE_ROOT) . "bbb-live-streaming" . $ligneLiveInProgressOnThisServer->idBbbLiveStreaming . "/docker-compose.yml";
             $dockerDirectory = checkEndSlash(PHYSICAL_BASE_ROOT) . "bbb-live-streaming" . $ligneLiveInProgressOnThisServer->idBbbLiveStreaming;
             $cmdGrep1="grep BBB_MEETING_ID $dockerFile| cut -d\"=\" -f2";
-            $verificationGrep1 = exec("$cmdGrep1 2>&1", $aRetourVerificationGrep1, $sRetourVerificationGrep1);
+            exec("$cmdGrep1 2>&1", $aRetourVerificationGrep1, $sRetourVerificationGrep1);
             if ($sRetourVerificationGrep1 == 0) {
                 writeLog("  + Commande '$cmdGrep1' : $aRetourVerificationGrep1[0]", "DEBUG");
                 // Meeting ID correspondant
@@ -596,7 +604,7 @@ function stopLives()
                 // Recherche du nom du diffuseur correspondant (sauvegardé aussi dans BBB_MEETING_TITLE du fichier compose)
                 $broadcasterName = "";
                 $cmdGrep2="grep BBB_MEETING_TITLE $dockerFile| cut -d\"=\" -f2";
-                $verificationGrep2 = exec("$cmdGrep2 2>&1", $aRetourVerificationGrep2, $sRetourVerificationGrep2);
+                exec("$cmdGrep2 2>&1", $aRetourVerificationGrep2, $sRetourVerificationGrep2);
                 if ($sRetourVerificationGrep2 == 0) {
                     writeLog("  + Commande '$cmdGrep2' : $aRetourVerificationGrep2[0]", "DEBUG");
                     // Nom du diffuseur correspondant
@@ -648,7 +656,7 @@ function stopLives()
                         // Recherche si l'utilisateur a souhaité cet enregistrement (sauvegardé aussi dans BBB_DOWNLOAD_MEETING du fichier compose)
                         $downloadMeeting = false;
                         $cmdGrep3="grep BBB_DOWNLOAD_MEETING $dockerFile| cut -d\"=\" -f2";
-                        $verificationGrep3 = exec("$cmdGrep3 2>&1", $aRetourVerificationGrep3, $sRetourVerificationGrep3);
+                        exec("$cmdGrep3 2>&1", $aRetourVerificationGrep3, $sRetourVerificationGrep3);
                         if ($sRetourVerificationGrep3 == 0) {
                             writeLog("  + Commande '$cmdGrep3' : $aRetourVerificationGrep3[0]", "DEBUG");
                             // Nom du diffuseur correspondant
@@ -659,14 +667,15 @@ function stopLives()
                             writeLog("  + Commande '$cmdGrep3' : $sRetourVerificationGrep3[0]", "ERROR", __FILE__, __LINE__);
                         }
 
-                        // Copie du fichier vidéo créé : si c'est configuré pour et que l'utilisateur a souhaité cet enregistrement
+                        // Copie du fichier vidéo créé : si c'est configuré pour
+                        //et que l'utilisateur a souhaité cet enregistrement
                         if (POD_DEFAULT_BBB_PATH != "" && $downloadMeeting) {
                             // Recherche de internal_meeting_id correspondant à cette session
                             $cmdMajPod2 = "curl --silent -H 'Content-Type: application/json' ";
                             $cmdMajPod2 .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
                             $cmdMajPod2 .= "-X PATCH -d '{\"encoded_by\":\"$urlApiRestUser\", \"encoding_step\":3}' ";
                             $cmdMajPod2 .= "$urlApiRestMeeting";
-                            $verificationMajPod2 = exec("$cmdMajPod2 2>&1", $aRetourVerificationMajPod2, $sRetourVerificationMajPod2);
+                            exec("$cmdMajPod2 2>&1", $aRetourVerificationMajPod2, $sRetourVerificationMajPod2);
 
                             writeLog("  + Récupération de l'internal_meeting_id correspondant à l'objet bbb_meeting $bbbMeetingId depuis Pod", "DEBUG");
                             $internalMeetingId = "";
@@ -701,6 +710,7 @@ function stopLives()
 
 /**
  * Procédure permettant de supprimer un diffuseur dans Pod.
+ *
  * @param string $broadcasterName - Nom du diffuseur à supprimer
  */
 function deleteBroadcaster($broadcasterName)
@@ -711,7 +721,7 @@ function deleteBroadcaster($broadcasterName)
     $cmdBroadcaster = "curl --silent ";
     $cmdBroadcaster .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
     $cmdBroadcaster .= "-X DELETE '" . checkEndWithoutSlash(POD_URL) . "/rest/broadcasters/$slug/'";
-    $verificationBroadcaster = exec("$cmdBroadcaster 2>&1", $aRetourVerificationBroadcaster, $sRetourVerificationBroadcaster);
+    exec("$cmdBroadcaster 2>&1", $aRetourVerificationBroadcaster, $sRetourVerificationBroadcaster);
 
     writeLog("  + Suppression du diffuseur $slug dans Pod", "DEBUG");
 
@@ -727,8 +737,9 @@ function deleteBroadcaster($broadcasterName)
  * Le fichier vidéo est créé dans le répertoire videodata du répertoire BigBlueButton-liveStreaming concerné.
  * Ce fichier vidéo sera copié dans le POD_DEFAULT_BBB_PATH et renommé sous la forme internalMeetingId.mkv.
  * Ce nommage est très important et permet au CRON Job bbb de Pod d'assigner le bon propriétaire à cette vidéo.
+ *
  * @param string $idBbbLiveStreaming - Identifiant du répertoire BigBlueButton-liveStreaming concerné.
- * @param string $internalMeetingId - Identifiant interne de la session BBB enregistrée.
+ * @param string $internalMeetingId  - Identifiant interne de la session BBB enregistrée.
  */
 function processDirectory($idBbbLiveStreaming, $internalMeetingId)
 {
@@ -748,7 +759,8 @@ function processDirectory($idBbbLiveStreaming, $internalMeetingId)
                 writeLog("  + Déplacement du fichier $oldFilename vers $newFilename", "DEBUG");
                 @rename("$oldFilename", "$newFilename");
                 // Positionnement de droits adéquats pour pouvoir être encodé par Pod
-                // Normalement, il n'y en a pas besoin : le fichier généré a les droits 644, ce qui est suffisant.
+                // Normalement, il n'y en a pas besoin :
+                // le fichier généré a les droits 644, ce qui est suffisant.
                 @chmod("$newFilename", 0755);
             }
         }
@@ -757,11 +769,14 @@ function processDirectory($idBbbLiveStreaming, $internalMeetingId)
 
 /**
  * Fonction d'écriture dans le fichier de logs.
- * Les messages au niveau debug ne seront écris que si l'application est configuré en mode DEBUG (DEBUG = true).
+ * Les messages au niveau debug ne seront écris que
+ * si l'application est configuré en mode DEBUG (DEBUG = true).
+ *
  * @param string $message - Message à écrire
- * @param string $level - Niveau de log de ce message (debug, info, warning, error)
- * @param string $file - Nom du fichier PHP concerné (en cas d'erreur)
- * @param int $line - Ligne dans le fichier PHP concerné (en cas d'erreur)
+ * @param string $level   - Niveau de log de ce message (debug, info, warning, error)
+ * @param string $file    - Nom du fichier PHP concerné (en cas d'erreur)
+ * @param int    $line    - Ligne dans le fichier PHP concerné (en cas d'erreur)
+ *
  * @return nombre d'octets écris, false sinon
  */
 function writeLog($message, $level, $file = null, $line = null)
@@ -783,14 +798,16 @@ function writeLog($message, $level, $file = null, $line = null)
     // En cas de non existence, on créé ce fichier
     if (!file_exists($logFile)) {
         $file = fopen($logFile, "x+");
-        // Une exception est levée en cas de non existence du fichier (problème manifeste de droits utilisateurs)
+        // Une exception est levée en cas de non existence du fichier
+        // (problème manifeste de droits utilisateurs)
         if (!file_exists($logFile)) {
             echo "Erreur de configuration : impossible de créer le fichier $logFile.";
             throw new Exception("Impossible de créer le fichier $logFile.");
         }
     }
 
-    // Une exception est levée en cas de problème d'écriture (problème manifeste de droits utilisateurs)
+    // Une exception est levée en cas de problème d'écriture
+    // (problème manifeste de droits utilisateurs)
     if (!is_writeable($logFile)) {
         throw new Exception("$logFile n'a pas les droits en écriture.");
     }
@@ -809,8 +826,11 @@ function writeLog($message, $level, $file = null, $line = null)
 }
 
 /**
- * Fonction permettant de vérifier que la chaîne de caractères finit par un /. En ajoute un si nécessaire.
- * @param string - Chaîne de caractères.
+ * Fonction permettant de vérifier que la chaîne de caractères finit par un /.
+ * En ajoute un si nécessaire.
+ *
+ * @param string $string - Chaîne de caractères.
+ *
  * @return Chaîne de caractères identique à celle en entrée, mais avec un / comme dernier caractère.
  */
 function checkEndSlash($string)
@@ -823,7 +843,9 @@ function checkEndSlash($string)
 
 /**
  * Fonction permettant de vérifier que la chaîne de caractères ne finit pas par un /. Supprime ce / un si nécessaire.
- * @param string - Chaîne de caractères.
+ *
+ * @param string $string - Chaîne de caractères.
+ *
  * @return Chaîne de caractères identique à celle en entrée, mais sans / à la fin.
  */
 function checkEndWithoutSlash($string)
@@ -835,11 +857,14 @@ function checkEndWithoutSlash($string)
 }
 
 /**
-* Fonction permettant de supprimer les caractères accentués et autres caractéres problématiques d'une chaîne de caractères.
-* Remplace aussi les espaces par des tirets
-* @param $string - chaîne avec accents
-* @return chaîne sans accents
-*/
+ * Fonction permettant de supprimer les caractères accentués et autres caractères
+ * problématiques d'une chaîne de caractères.
+ * Remplace aussi les espaces par des tirets
+ *
+ * @param $string - chaîne avec accents
+ *
+ * @return chaîne sans accents
+ */
 function formatString($string)
 {
     $string = htmlentities($string, ENT_NOQUOTES, 'utf-8');
@@ -852,11 +877,14 @@ function formatString($string)
 }
 
 /**
-* Fonction permettant de supprimer les caractères accentués et autres caractéres problématiques d'une chaîne de caractères.
-* Ne replace pas les espaces.
-* @param $string - chaîne avec accents
-* @return chaîne sans accents
-*/
+ * Fonction permettant de supprimer les caractères accentués et autres caractéres
+ * problématiques d'une chaîne de caractères.
+ * Ne replace pas les espaces.
+ *
+ * @param $string - chaîne avec accents
+ *
+ * @return chaîne sans accents
+ */
 function formatStringToDisplay($string)
 {
     $string = htmlentities($string, ENT_NOQUOTES, 'utf-8');
@@ -868,10 +896,11 @@ function formatStringToDisplay($string)
 }
 
 /**
-* Procédure permettant d'envoyer un email à l'administrateur.
-* @param $subject - sujet du mail
-* @param $message - message du mail
-*/
+ * Procédure permettant d'envoyer un email à l'administrateur.
+ *
+ * @param $subject - sujet du mail
+ * @param $message - message du mail
+ */
 function sendEmail($subject, $message)
 {
     $to = ADMIN_EMAIL;

@@ -295,7 +295,7 @@
     let once = false;
     input.addEventListener("keyup", (e) => {
       if (
-        (/[a-z0-9\s]/.test(e.key.toLowerCase()) && e.key.length == 1) ||
+        (/[a-z0-9\s]/.test(e.key.toLowerCase()) && e.key.length === 1) ||
         e.key.toLowerCase() == "backspace"
       ) {
         const is_filter_input = input.isEqualNode(list_videos__search);
