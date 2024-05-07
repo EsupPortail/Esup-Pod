@@ -5,6 +5,7 @@
 # nb: you can also add a "# pragma: no cover"
 # on each function you don't want to be covered
 [run]
+relative_files = True
 source = pod/
 omit = pod/*settings*.py
        pod/*apps.py

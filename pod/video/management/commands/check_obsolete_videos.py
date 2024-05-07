@@ -539,7 +539,7 @@ class Command(BaseCommand):
                 }
             )
 
-    def check_csv_header(self, csv_file: str, fieldnames: list[str]) -> None:
+    def check_csv_header(self, csv_file: str, fieldnames: list) -> None:
         """Check for (and add) missing columns in an existing CSV file."""
         with open(csv_file, "r") as f:
             lines = f.readlines()
