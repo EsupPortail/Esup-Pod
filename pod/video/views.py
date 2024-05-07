@@ -1084,7 +1084,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         template_video = "videos/video-iframe.html"
     elif request.GET.get("playlist"):
         playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-        if playlist_can_be_displayed(request, playlist):
+        if playlist_can_be_displayed(request, playlist) and user_can_see_playlist_video(request, video, playlist):
             videos = sort_videos_list(get_video_list_for_playlist(playlist), "rank")
             params = {
                 "playlist_in_get": playlist,
@@ -1190,10 +1190,13 @@ def render_video(
     if toggle_render_video_user_can_see_video(
         show_page, is_password_protected, request, slug_private, video
     ):
-        if request.GET.get("playlist") and not user_can_see_playlist_video(
-            request, video
-        ):
-            toggle_render_video_when_is_playlist_player(request)
+        playlist = None
+        if request.GET.get("playlist"):
+            playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+            if not user_can_see_playlist_video(
+                request, video, playlist,
+            ):
+                toggle_render_video_when_is_playlist_player(request)
         return render(
             request,
             template_video,
@@ -1203,6 +1206,7 @@ def render_video(
                 "theme": theme,
                 "listNotes": listNotes,
                 "owner_filter": owner_filter,
+                "playlist": playlist if request.GET.get("playlist") else None,
                 **more_data,
             },
         )
