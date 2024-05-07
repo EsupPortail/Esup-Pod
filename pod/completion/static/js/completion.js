@@ -98,6 +98,18 @@ document.addEventListener("submit", (e) => {
   sendAndGetForm(e.target, action, name_form, form, list).then(r => "").catch(e => console.log("error", e));
 });
 
+
+/**
+ * Send and get form.
+ *
+ * @param elt {HTMLElement} HTML element.
+ * @param action {string} Action.
+ * @param name {string} Name.
+ * @param form {string} Form.
+ * @param list {string} List.
+ *
+ * @return {Promise<void>} The form promise.
+ */
 var sendAndGetForm = async function (elt, action, name, form, list) {
   var href = elt.getAttribute("action");
   if (action === "new" || action === "form_save_new") {
