@@ -67,7 +67,7 @@ migrate:
 
 # Launch all unit tests.
 tests:
-	coverage run --source='.' manage.py test --settings=pod.main.test_settings
+	coverage run manage.py test --settings=pod.main.test_settings
 	coverage html
 
 # Ensure coherence of all code style

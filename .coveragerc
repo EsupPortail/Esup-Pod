@@ -8,7 +8,7 @@ show_missing = True
 # on each function you don't want to be covered
 [run]
 relative_files = True
-source = pod/
+source = .
 # This ensures that your code runs through both the True and False paths of each conditional statement.
 branch = True
 # Here you can exclude a file from coverage testing

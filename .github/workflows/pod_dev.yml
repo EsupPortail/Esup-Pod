@@ -55,18 +55,16 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          sudo apt-get clean
           sudo apt-get update
-          sudo apt-get install ffmpeg
-          sudo apt-get install -y ffmpegthumbnailer
+          sudo apt-get install -y --no-install-recommends ffmpeg ffmpegthumbnailer
+          sudo apt-get clean
           python -m pip install --upgrade pip
           pip install -r requirements-dev.txt
           sudo npm install -g yarn
 
-      # FLAKE 8
+      # FLAKE 8 (see setup.cfg for configurations)
       - name: Flake8 compliance
-        run: |
-          flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py
+        run: flake8
 
       ## Start remote encoding and transcoding test ##
       - name: Create settings local file
@@ -144,6 +142,12 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           coverage run --append manage.py test -v 3 --settings=pod.main.test_settings
+
+      - name: Codacy coverage reporter
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh)
+        continue-on-error: true
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
       - name: Send coverage to coveralls.io
         # coveralls command has been installed by requirements-dev.txt
