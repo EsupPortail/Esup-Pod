@@ -328,16 +328,6 @@ def user_can_see_playlist_video(request: WSGIRequest, video: Video, playlist: Pl
     Returns:
         bool: True if the user can see the playlist video. False otherwise
     """
-    print("===== user_can_see_playlist_video =====")
-    print("request.user.is_authenticated", request.user.is_authenticated)
-    print("video.owner", video.owner)
-    print("playlist.owner", playlist.owner)
-    print("playlist.visibility", playlist.visibility)
-    print("video.is_draft", video.is_draft)
-    print("video.password", video.password)
-    print("playlist", playlist)
-    print("video", video)
-    print("request.user", request.user)
     is_password_protected = video.password is not None and video.password != ""
     if is_password_protected or video.is_draft:
         if not request.user.is_authenticated:
@@ -348,13 +338,6 @@ def user_can_see_playlist_video(request: WSGIRequest, video: Video, playlist: Pl
             or request.user.is_superuser
         )
     else:
-        print("condition 2", playlist.visibility is "private" and (
-            playlist.owner == request.user
-            or playlist in get_playlists_for_additional_owner(request.user)
-            or request.user.is_superuser
-        ) or playlist.visibility in {"public", "protected"})
-        print("request.user.is_superuser", request.user.is_superuser)
-        print('playlist.visibility is "private"', playlist.visibility == "private")
         return playlist.visibility == "private" and (
             playlist.owner == request.user
             or playlist in get_playlists_for_additional_owner(request.user)
