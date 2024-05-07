@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-29 10:28+0000\n"
+"POT-Creation-Date: 2024-05-06 12:37+0000\n"
 "PO-Revision-Date: 2024-04-15 14:27+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1817,7 +1817,7 @@ msgid "Cut the video"
 msgstr ""
 
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
-#: pod/dressing/views.py
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
 #: pod/enrichment/templates/enrichment/group_enrichment.html
 #: pod/video/templates/videos/video_edit.html
 #: pod/video/templates/videos/video_page_content.html
@@ -2112,6 +2112,14 @@ msgid ""
 msgstr ""
 
 #: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "You cannot dress this video."
+msgstr ""
+
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "You cannot access this page."
+msgstr ""
+
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
 msgid "You cannot edit this dressing."
 msgstr ""
 
@@ -2121,10 +2129,6 @@ msgstr ""
 
 #: pod/dressing/tests/test_views.py pod/dressing/views.py
 msgid "You cannot create a video dressing."
-msgstr ""
-
-#: pod/dressing/views.py
-msgid "You cannot dress this video."
 msgstr ""
 
 #: pod/dressing/views.py
@@ -2153,10 +2157,6 @@ msgstr ""
 #: pod/dressing/views.py
 #, python-format
 msgid "Deleting the dressing “%s”"
-msgstr ""
-
-#: pod/dressing/views.py
-msgid "You cannot access this page."
 msgstr ""
 
 #: pod/enrichment/apps.py pod/enrichment/models.py
@@ -5831,10 +5831,6 @@ msgid "Delete the recording"
 msgstr ""
 
 #: pod/meeting/templates/meeting/invite.html
-msgid "Send invitations to the meeting"
-msgstr ""
-
-#: pod/meeting/templates/meeting/invite.html
 msgid ""
 "Add emails addresses in the form below and click send to invite to your "
 "meeting"
@@ -6087,6 +6083,11 @@ msgstr ""
 
 #: pod/meeting/views.py
 msgid "The recording has been deleted."
+msgstr ""
+
+#: pod/meeting/views.py
+#, python-format
+msgid "Send invitations to the meeting “%s”"
 msgstr ""
 
 #: pod/meeting/views.py
@@ -6695,6 +6696,10 @@ msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
+msgstr ""
+
+#: pod/playlist/views.py
+msgid "You cannot access this playlist."
 msgstr ""
 
 #: pod/playlist/views.py

@@ -89,7 +89,7 @@ def transcribe(url, slug, model, filepath):  # noqa: C901
                     " "
                 ), current_caption_text.split(" ")
                 current_caption_words1 = current_caption_words[
-                    1 : len(current_caption_words)
+                    1: len(current_caption_words)
                 ]
 
                 for i in range(len(last_caption_words) - 1, 0, -1):
