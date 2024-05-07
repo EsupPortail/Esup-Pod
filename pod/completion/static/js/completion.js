@@ -28,7 +28,6 @@ document.addEventListener("DOMContentLoaded", function () {
 var num = 0;
 var name = "";
 
-
 function show_form(data, form) {
   let form_el = document.getElementById(form);
   form_el.style.display = "none";
@@ -95,9 +94,10 @@ document.addEventListener("submit", (e) => {
   var form = "form_" + name_form;
   var list = "list_" + name_form;
   var action = e.target.querySelector("input[name=action]").value;
-  sendAndGetForm(e.target, action, name_form, form, list).then(r => "").catch(e => console.log("error", e));
+  sendAndGetForm(e.target, action, name_form, form, list)
+    .then((r) => "")
+    .catch((e) => console.log("error", e));
 });
-
 
 /**
  * Send and get form.
