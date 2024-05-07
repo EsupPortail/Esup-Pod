@@ -316,7 +316,9 @@ def get_count_video_added_in_playlist(video: Video) -> int:
     return PlaylistContent.objects.filter(video=video).count()
 
 
-def user_can_see_playlist_video(request: WSGIRequest, video: Video, playlist: Playlist) -> bool:
+def user_can_see_playlist_video(
+    request: WSGIRequest, video: Video, playlist: Playlist
+) -> bool:
     """
     Check if the authenticated can see the playlist video.
 
@@ -338,11 +340,15 @@ def user_can_see_playlist_video(request: WSGIRequest, video: Video, playlist: Pl
             or request.user.is_superuser
         )
     else:
-        return playlist.visibility == "private" and (
-            playlist.owner == request.user
-            or playlist in get_playlists_for_additional_owner(request.user)
-            or request.user.is_superuser
-        ) or playlist.visibility in {"public", "protected"}
+        return (
+            playlist.visibility == "private"
+            and (
+                playlist.owner == request.user
+                or playlist in get_playlists_for_additional_owner(request.user)
+                or request.user.is_superuser
+            )
+            or playlist.visibility in {"public", "protected"}
+        )
 
 
 def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") -> list:

@@ -180,7 +180,7 @@ def get_videos(title, user_id, search=None, limit=12, offset=0):
     results = list(
         map(
             lambda v: {"id": v.id, "title": v.title, "thumbnail": v.get_thumbnail_url()},
-            videos[offset: limit + offset],
+            videos[offset : limit + offset],
         )
     )
 

@@ -128,10 +128,12 @@ def playlist_content(request: WSGIRequest, slug: str):
         playlist.visibility == "public"
         or playlist.visibility == "protected"
         or (
-            request.user.is_authenticated and
-            (playlist.owner == request.user
-            or playlist in get_playlists_for_additional_owner(request.user)
-            or request.user.is_superuser)
+            request.user.is_authenticated
+            and (
+                playlist.owner == request.user
+                or playlist in get_playlists_for_additional_owner(request.user)
+                or request.user.is_superuser
+            )
         )
     ):
         return render_playlist(request, playlist, sort_field, sort_direction)

@@ -977,11 +977,7 @@ def invite(request: WSGIRequest, meeting_id: str) -> HttpResponse:
     return render(
         request,
         "meeting/invite.html",
-        {
-            "page_title": page_title,
-            "meeting": meeting,
-            "form": form
-        },
+        {"page_title": page_title, "meeting": meeting, "form": form},
     )
 
 

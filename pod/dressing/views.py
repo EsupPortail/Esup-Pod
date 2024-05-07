@@ -35,7 +35,10 @@ def video_dressing(request: WSGIRequest, slug: str):
 
     dressings = get_dressings(request.user, request.user.owner.accessgroup_set.all())
 
-    if not (request.user.is_superuser or (request.user == video.owner and request.user.is_staff)):
+    if not (
+        request.user.is_superuser
+        or (request.user == video.owner and request.user.is_staff)
+    ):
         messages.add_message(request, messages.ERROR, _("You cannot dress this video."))
         raise PermissionDenied
 

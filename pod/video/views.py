@@ -253,7 +253,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
             request.path, offset, limit, videos.count()
         )
         count = videos.count()
-        videos = videos[offset: limit + offset]
+        videos = videos[offset : limit + offset]
         response = {
             **response,
             "videos": list(videos),
@@ -1084,7 +1084,9 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         template_video = "videos/video-iframe.html"
     elif request.GET.get("playlist"):
         playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-        if playlist_can_be_displayed(request, playlist) and user_can_see_playlist_video(request, video, playlist):
+        if playlist_can_be_displayed(request, playlist) and user_can_see_playlist_video(
+            request, video, playlist
+        ):
             videos = sort_videos_list(get_video_list_for_playlist(playlist), "rank")
             params = {
                 "playlist_in_get": playlist,
@@ -1194,7 +1196,9 @@ def render_video(
         if request.GET.get("playlist"):
             playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
             if not user_can_see_playlist_video(
-                request, video, playlist,
+                request,
+                video,
+                playlist,
             ):
                 toggle_render_video_when_is_playlist_player(request)
         return render(
