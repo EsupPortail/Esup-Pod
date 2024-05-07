@@ -1,3 +1,12 @@
+/**
+ * EsupPod Xapi video scripts.
+ */
+
+// Read-only globals defined in video-script.html
+/*
+global player
+*/
+
 const __XAPI_VIDEO_VERBS__ = {
   initialized: "http://adlnet.gov/expapi/verbs/initialized",
   played: "https://w3id.org/xapi/video/verbs/played",
@@ -196,28 +205,28 @@ player.on("ended", function (e) {
   active_statement();
 });
 
-player.on("ratechange", function (e) {
+player.on("ratechange", function () {
   set_interacted_statement();
   active_statement();
 });
-player.on("fullscreenchange", function (e) {
+player.on("fullscreenchange", function () {
   set_interacted_statement();
   active_statement();
 });
-player.on("volumechange", function (e) {
+player.on("volumechange", function () {
   set_interacted_statement();
   active_statement();
 });
-player.on("texttrackchange", function (e) {
+player.on("texttrackchange", function () {
   set_interacted_statement();
   active_statement();
 });
-player.on("resize", function (e) {
+player.on("resize", function () {
   set_interacted_statement();
   active_statement();
 });
 
-player.on("loadedmetadata", function (e) {
+player.on("loadedmetadata", function () {
   action = "initialized";
   verb = {
     id: __XAPI_VIDEO_VERBS__[action],
@@ -364,8 +373,8 @@ function set_interacted_statement() {
 }
 
 function get_current_subtitle_lang() {
-  textTracks = player.textTracks();
-  lang = "";
+  let textTracks = player.textTracks();
+  let lang = "";
   for (var i = 0; i < textTracks.length; i++) {
     if (textTracks[i].kind == "subtitles" && textTracks[i].mode == "showing") {
       lang = textTracks[i].language;
@@ -375,12 +384,12 @@ function get_current_subtitle_lang() {
 }
 
 function get_current_quality() {
-  qualitys = player.qualityLevels();
+  let qualitys = player.qualityLevels();
   if (qualitys.length > 0) return qualitys[qualitys.selectedIndex];
 }
 
 function active_statement() {
   timestamp = new Date().toISOString();
-  stmt = createStatement();
+  let stmt = createStatement();
   sendStatement(stmt);
 }

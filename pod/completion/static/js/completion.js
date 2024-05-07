@@ -1,5 +1,5 @@
 /**
- * Esup-Pod Completion scripts.
+ * @file Esup-Pod Completion scripts.
  */
 
 document.addEventListener("DOMContentLoaded", function () {

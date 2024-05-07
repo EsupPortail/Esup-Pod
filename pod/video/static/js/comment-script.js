@@ -1,5 +1,5 @@
 /**
- * comment-scripts.js
+ * @file Esup-Pod comment scripts
  * Handle comments under a video in Esup-Pod
  */
 
