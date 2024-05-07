@@ -316,28 +316,50 @@ def get_count_video_added_in_playlist(video: Video) -> int:
     return PlaylistContent.objects.filter(video=video).count()
 
 
-def user_can_see_playlist_video(request: WSGIRequest, video: Video) -> bool:
+def user_can_see_playlist_video(request: WSGIRequest, video: Video, playlist: Playlist) -> bool:
     """
     Check if the authenticated can see the playlist video.
 
     Args:
         request (WSGIRequest): The WSGIRequest
         video (:class:`pod.video.models.Video`): The video object
+        playlist (:class:`pod.playlist.models.Playlist`): The playlist object
 
     Returns:
         bool: True if the user can see the playlist video. False otherwise
     """
+    print("===== user_can_see_playlist_video =====")
+    print("request.user.is_authenticated", request.user.is_authenticated)
+    print("video.owner", video.owner)
+    print("playlist.owner", playlist.owner)
+    print("playlist.visibility", playlist.visibility)
+    print("video.is_draft", video.is_draft)
+    print("video.password", video.password)
+    print("playlist", playlist)
+    print("video", video)
+    print("request.user", request.user)
     is_password_protected = video.password is not None and video.password != ""
     if is_password_protected or video.is_draft:
         if not request.user.is_authenticated:
             return False
         return (
-            (video.owner == request.user)
-            or (request.user in video.additional_owners.all())
-            or (request.user.is_staff)
+            video.owner == request.user
+            or request.user in video.additional_owners.all()
+            or request.user.is_superuser
         )
     else:
-        return True
+        print("condition 2", playlist.visibility is "private" and (
+            playlist.owner == request.user
+            or playlist in get_playlists_for_additional_owner(request.user)
+            or request.user.is_superuser
+        ) or playlist.visibility in {"public", "protected"})
+        print("request.user.is_superuser", request.user.is_superuser)
+        print('playlist.visibility is "private"', playlist.visibility == "private")
+        return playlist.visibility == "private" and (
+            playlist.owner == request.user
+            or playlist in get_playlists_for_additional_owner(request.user)
+            or request.user.is_superuser
+        ) or playlist.visibility in {"public", "protected"}
 
 
 def sort_playlist_list(playlist_list: list, sort_field: str, sort_direction="") -> list:
