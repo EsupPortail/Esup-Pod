@@ -1196,7 +1196,7 @@ function htmlContainsClass(html_el, classes) {
 function get_node(el, class_name, not) {
   class_name = class_name || "comment_container";
   not = not || "";
-  let selector = !!not ? `.${class_name}:not(.${not})` : `.${class_name}`;
+  let selector = not ? `.${class_name}:not(.${not})` : `.${class_name}`;
   let foundedElement = el.querySelector(selector);
   if (htmlContainsClass(el, class_name) && !htmlContainsClass(el, not)) {
     return el;

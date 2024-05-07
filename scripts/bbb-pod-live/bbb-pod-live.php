@@ -177,6 +177,7 @@ function configureInitialBigBlueButtonLiveStreaming()
     }
 }
 
+
 /**
  * Procédure permettant de démarrer des directs,
  * si des usagers en ont fait la demande dans Pod.

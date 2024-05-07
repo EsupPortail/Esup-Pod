@@ -19,7 +19,9 @@ FROM $PYTHON_VERSION
 # TODO
 #FROM harbor.urba.univ-lille.fr/store/python:3.7-buster
 
-RUN apt-get clean && apt-get update && apt-get install -y netcat && apt-get install -y gettext
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends netcat gettext \
+    && apt-get clean
 
 WORKDIR /usr/src/app
 

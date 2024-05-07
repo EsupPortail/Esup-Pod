@@ -19,12 +19,14 @@ FROM $PYTHON_VERSION
 # TODO
 #FROM harbor.urba.univ-lille.fr/store/python:3.7-buster
 
-RUN apt-get clean && apt-get update \
-    && apt-get install -y netcat \
-                          ffmpeg \
-                          ffmpegthumbnailer \
-                          imagemagick \
-                          gettext
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        netcat \
+        ffmpeg \
+        ffmpegthumbnailer \
+        imagemagick \
+        gettext \
+    && apt-get clean
 
 WORKDIR /usr/src/app
 

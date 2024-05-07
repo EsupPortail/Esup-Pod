@@ -11,14 +11,14 @@ BASEDIR=${PWD}
 echo "remove previous site"
 rm -rf ./$NAME
 sudo systemctl stop uwsgi-pod_$NAME
-sudo rm -f /etc/systemd/system/uwsgi-pod_$NAME.service
-sudo rm -f /etc/nginx/sites-enabled/pod_nginx_$NAME.conf
+sudo rm -f "/etc/systemd/system/uwsgi-pod_$NAME.service"
+sudo rm -f "/etc/nginx/sites-enabled/pod_nginx_$NAME.conf"
 sudo rabbitmqctl delete_vhost rabbitpod-$NAME
 
 
 echo "Creation du site numéro $ID_SITE ayant pour identifiant $NAME et pour domaine $DOMAIN_NAME"
 echo "Creation du répertoire"
-cp -r ./source ./$NAME
+cp -r ./source "./$NAME"
 
 echo "Fichier de configuration"
 mv "./$NAME/tenant_settings.py" "./$NAME/"$NAME"_settings.py"
@@ -27,19 +27,19 @@ sed -i "s/__ID_SITE__/$ID_SITE/g" ./$NAME/"$NAME"_settings.py
 sed -i "s/__DOMAIN_NAME__/$DOMAIN_NAME/g" ./$NAME/"$NAME"_settings.py
 
 echo "Fichier vhost nginx"
-mv ./$NAME/pod_nginx_tenant.conf ./$NAME/pod_nginx_$NAME.conf
-sed -i "s/__NAME__/$NAME/g" ./$NAME/pod_nginx_$NAME.conf
-sed -i "s/__ID_SITE__/$ID_SITE/g" ./$NAME/pod_nginx_$NAME.conf
-sed -i "s/__DOMAIN_NAME__/$DOMAIN_NAME/g" ./$NAME/pod_nginx_$NAME.conf
+mv "./$NAME/pod_nginx_tenant.conf" "./$NAME/pod_nginx_$NAME.conf"
+sed -i "s/__NAME__/$NAME/g" "./$NAME/pod_nginx_$NAME.conf"
+sed -i "s/__ID_SITE__/$ID_SITE/g" "./$NAME/pod_nginx_$NAME.conf"
+sed -i "s/__DOMAIN_NAME__/$DOMAIN_NAME/g" "./$NAME/pod_nginx_$NAME.conf"
 
 echo "Fichier ini"
-mv ./$NAME/pod_uwsgi_tenant.ini ./$NAME/pod_uwsgi_$NAME.ini
-sed -i "s/__NAME__/$NAME/g" ./$NAME/pod_uwsgi_$NAME.ini
-sed -i "s/__ID_SITE__/$ID_SITE/g" ./$NAME/pod_uwsgi_$NAME.ini
-sed -i "s/__DOMAIN_NAME__/$DOMAIN_NAME/g" ./$NAME/pod_uwsgi_$NAME.ini
+mv "./$NAME/pod_uwsgi_tenant.ini" "./$NAME/pod_uwsgi_$NAME.ini"
+sed -i "s/__NAME__/$NAME/g" "./$NAME/pod_uwsgi_$NAME.ini"
+sed -i "s/__ID_SITE__/$ID_SITE/g" "./$NAME/pod_uwsgi_$NAME.ini"
+sed -i "s/__DOMAIN_NAME__/$DOMAIN_NAME/g" "./$NAME/pod_uwsgi_$NAME.ini"
 
 echo "Activation du vhost"
-sudo ln -s $BASEDIR/$NAME/pod_nginx_$NAME.conf /etc/nginx/sites-enabled/pod_nginx_$NAME.conf
+sudo ln -s "$BASEDIR/$NAME/pod_nginx_$NAME.conf" "/etc/nginx/sites-enabled/pod_nginx_$NAME.conf"
 ## sudo /etc/init.d/nginx restart
 echo "****************"
 echo "--> add /home/pod/ssl/$NAME/$DOMAIN_NAME.crt and add /home/pod/ssl/$NAME/$DOMAIN_NAME.key"
@@ -47,9 +47,9 @@ echo "--> then restart nginx with sudo /etc/init.d/nginx restart"
 echo "****************"
 
 echo "Activation du service uwsgi"
-mv ./$NAME/uwsgi-pod_tenant.service ./$NAME/uwsgi-pod_$NAME.service
-sed -i "s/__NAME__/$NAME/g" ./$NAME/uwsgi-pod_$NAME.service
-sudo ln -s $BASEDIR/$NAME/uwsgi-pod_$NAME.service /etc/systemd/system/uwsgi-pod_$NAME.service
+mv "./$NAME/uwsgi-pod_tenant.service" "./$NAME/uwsgi-pod_$NAME.service"
+sed -i "s/__NAME__/$NAME/g" "./$NAME/uwsgi-pod_$NAME.service"
+sudo ln -s "$BASEDIR/$NAME/uwsgi-pod_$NAME.service" "/etc/systemd/system/uwsgi-pod_$NAME.service"
 sudo systemctl enable uwsgi-pod_$NAME
 echo "****************"
 echo "--> after restarting nginx, use $> sudo systemctl start uwsgi-pod_$NAME"
@@ -61,9 +61,9 @@ sudo rabbitmqctl add_vhost rabbitpod-$NAME
 sudo rabbitmqctl set_permissions -p rabbitpod-$NAME pod ".*" ".*" ".*"
 
 echo "Données initiales"
-sed -i "s/__NAME__/$NAME/g" ./$NAME/initial_data.json
-sed -i "s/__ID_SITE__/$ID_SITE/g" ./$NAME/initial_data.json
-sed -i "s/__DOMAIN_NAME__/$DOMAIN_NAME/g" ./$NAME/initial_data.json
+sed -i "s/__NAME__/$NAME/g" "./$NAME/initial_data.json"
+sed -i "s/__ID_SITE__/$ID_SITE/g" "./$NAME/initial_data.json"
+sed -i "s/__DOMAIN_NAME__/$DOMAIN_NAME/g" "./$NAME/initial_data.json"
 echo "--"
 echo "Pour intégrer les données en base concernant ce nouveau site, il faut lancer la commande suivante:"
 echo "(django_pod) pod@pod:/usr/local/django_projects/podv3$ python manage.py loaddata pod/custom/tenants/$NAME/initial_data.json --settings=pod.custom.tenants.$NAME.\"$NAME\"_settings"
