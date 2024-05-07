@@ -38,8 +38,6 @@ class DownloadFileForm(forms.Form):
         clean_filename = self.cleaned_data["filename"]
         fullname = os.path.join(settings.MEDIA_ROOT, clean_filename)
         dirname = os.path.dirname(fullname)
-        print("MEDIA:::", settings.MEDIA_ROOT)
-        print("DIRNAME:::", dirname)
         if not os.path.isfile(clean_filename):
             raise FileNotFoundError
         elif not dirname.startswith(settings.MEDIA_ROOT):

@@ -1203,7 +1203,6 @@ class StartPlaylistViewTest(TestCase):
                 kwargs={"slug": self.public_playlist_user1.slug},
             )
         )
-        print("=== HERE ===", self.client.request)
         expected_url = get_link_to_start_playlist(
             self.client.request, self.public_playlist_user1
         )

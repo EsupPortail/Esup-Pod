@@ -95,13 +95,10 @@ document.addEventListener("submit", (e) => {
   var form = "form_" + name_form;
   var list = "list_" + name_form;
   var action = e.target.querySelector("input[name=action]").value;
-  console.log("e.target", e.target);
   sendAndGetForm(e.target, action, name_form, form, list).then(r => "").catch(e => console.log("error", e));
 });
 
 var sendAndGetForm = async function (elt, action, name, form, list) {
-  console.log("-------------------");
-  console.log("sendAndGetForm", elt, action, name, form, list);
   var href = elt.getAttribute("action");
   if (action === "new" || action === "form_save_new") {
     document.getElementById(form).innerHTML =
