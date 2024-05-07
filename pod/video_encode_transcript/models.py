@@ -155,9 +155,9 @@ class VideoRendition(models.Model):
 
 
 @receiver(post_save, sender=VideoRendition)
-def default_site_videorendition(sender, instance, created, **kwargs) -> None:
+def default_site_videorendition(sender, instance, created: bool, **kwargs) -> None:
     """Add the current site as a default site."""
-    if len(instance.sites.all()) == 0:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())
 
 

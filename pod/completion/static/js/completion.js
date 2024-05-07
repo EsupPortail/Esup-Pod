@@ -1,3 +1,7 @@
+/**
+ * Esup-Pod Completion scripts.
+ */
+
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll("li.contenuTitre").forEach(function (element) {
     element.style.display = "none";
@@ -128,6 +132,10 @@ document.addEventListener("submit", (e) => {
 
 var sendandgetform = async function (elt, action, name, form, list) {
   var href = elt.getAttribute("action");
+  let url = window.location.origin + href;
+  let token = elt.csrfmiddlewaretoken.value;
+  var id = elt.querySelector("input[name=id]").value;
+
   if (action == "new" || action == "form_save_new") {
     document.getElementById(form).innerHTML =
       '<div style="width:100%; margin: 2rem;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
@@ -145,9 +153,7 @@ var sendandgetform = async function (elt, action, name, form, list) {
     var compInfo = document.querySelector(`#${name}-info>.collapse`);
     bootstrap.Collapse.getOrCreateInstance(compInfo).show();
 
-    let url = window.location.origin + href;
-    let token = elt.csrfmiddlewaretoken.value;
-    form_data = new FormData(elt);
+    let form_data = new FormData(elt);
 
     await fetch(url, {
       method: "POST",
@@ -162,7 +168,7 @@ var sendandgetform = async function (elt, action, name, form, list) {
       .then((response) => response.text())
       .then((data) => {
         //parse data into html and log it
-        if (data.indexOf(form) == -1) {
+        if (data.indexOf(form) === -1) {
           showalert(
             gettext(
               "You are no longer authenticated. Please log in again.",
@@ -200,10 +206,7 @@ var sendandgetform = async function (elt, action, name, form, list) {
     hide_others_sections(name);
   }
   if (action == "modify" || action == "form_save_modify") {
-    var id = elt.querySelector("input[name=id]").value;
-    var url = window.location.origin + href;
-    var token = document.csrfmiddlewaretoken.value;
-    form_data = new FormData();
+    let form_data = new FormData();
     form_data.append("action", action);
     form_data.append("id", id);
 
@@ -217,7 +220,7 @@ var sendandgetform = async function (elt, action, name, form, list) {
     })
       .then((response) => response.text())
       .then((data) => {
-        if (data.indexOf(form) == -1) {
+        if (data.indexOf(form) === -1) {
           showalert(
             gettext(
               "You are no longer authenticated. Please log in again.",
@@ -259,9 +262,9 @@ var sendandgetform = async function (elt, action, name, form, list) {
       );
     }
     if (deleteConfirm) {
-      var id = elt.querySelector("input[name=id]").value;
-      var url = window.location.origin + href;
-      var token = document.querySelector(
+      id = elt.querySelector("input[name=id]").value;
+      url = window.location.origin + href;
+      token = document.querySelector(
         "input[name=csrfmiddlewaretoken]",
       ).value;
       let form_data = new FormData();
@@ -474,7 +477,7 @@ function verify_fields(form) {
 
       error = true;
     }
-    var element = document.getElementById("id_lang");
+    element = document.getElementById("id_lang");
     var lang = element.options[element.selectedIndex].value
       .trim()
       .toLowerCase();
@@ -518,7 +521,7 @@ function verify_fields(form) {
       error = true;
     }
     var is_duplicate = false;
-    var file_name = file_abs_path.match(/([\w\d_\-]+)(\.vtt)/)[1].toLowerCase();
+    var file_name = file_abs_path.match(/([\w\d_-]+)(\.vtt)/)[1].toLowerCase();
     document
       .querySelectorAll(".grid-list-track .track_kind.kind")
       .forEach((elt) => {

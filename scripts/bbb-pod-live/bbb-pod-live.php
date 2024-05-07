@@ -134,6 +134,7 @@ function configureInitialBigBlueButtonLiveStreaming()
         "----- Configuration des plugins nécessaires : configureBigBlueButtonLiveStreaming()-----",
         "DEBUG"
     );
+
     /* Création des répertoires et des fichiers compose
      pour le plugin BigBlueButton-liveStreaming */
     for ($i = 1; $i <= NUMBER_LIVES; $i++) {
@@ -160,7 +161,7 @@ function configureInitialBigBlueButtonLiveStreaming()
             );
             $cmdCp = "cp ./docker-compose.default.yml $fichierCompose";
             exec("$cmdCp 2>&1", $aVerifCp, $sVerifCp);
-            if ($sVerifCp == 0) {
+            if ($sVerifCp === 0) {
                 writeLog(
                     "  + Copie du fichier $fichierCompose réalisée",
                     "DEBUG"

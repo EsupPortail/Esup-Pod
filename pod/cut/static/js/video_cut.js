@@ -161,7 +161,7 @@ button_end.addEventListener("keydown", function (event) {
  */
 function get_video_player_start(event) {
   event.preventDefault();
-  time = Math.trunc(player.currentTime()) + start_time;
+  let time = Math.trunc(player.currentTime()) + start_time;
   displayValOne.value = intToTime(time);
   sliderOne.value = time;
   fillColor();
@@ -172,7 +172,7 @@ function get_video_player_start(event) {
  */
 function get_video_player_end(event) {
   event.preventDefault();
-  time = Math.trunc(player.currentTime()) + start_time;
+  let time = Math.trunc(player.currentTime()) + start_time;
   displayValTwo.value = intToTime(time);
   sliderTwo.value = Math.trunc(time);
   fillColor();

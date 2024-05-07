@@ -919,7 +919,7 @@ var send_form_data_vanilla = function (
  * @return {void}
  */
 var show_form_theme_new = function (data) {
-  if (data.indexOf("form_theme") == -1) {
+  if (data.indexOf("form_theme") === -1) {
     showalert(
       gettext("You are no longer authenticated. Please log in again."),
       "alert-danger",
@@ -935,7 +935,7 @@ var show_form_theme_new = function (data) {
  * @return {void}
  */
 var show_form_theme_modify = function (data) {
-  if (data.indexOf("theme") == -1) {
+  if (data.indexOf("theme") === -1) {
     showalert(
       gettext("You are no longer authenticated. Please log in again."),
       "alert-danger",

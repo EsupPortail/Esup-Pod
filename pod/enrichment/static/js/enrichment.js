@@ -124,7 +124,7 @@ var sendandgetform = async function (elt, action) {
     });
     const data = await response.text();
     if (
-      data.indexOf(id_form) == -1 &&
+      data.indexOf(id_form) === -1 &&
       (action === "new" || action === "modify")
     ) {
       showalert(
@@ -140,7 +140,7 @@ var sendandgetform = async function (elt, action) {
       show_form(data);
       elt.classList.add("info");
     } else if (action === "delete") {
-      if (data.indexOf("list_enrichment") == -1) {
+      if (data.indexOf("list_enrichment") === 1) {
         showalert(
           gettext("You are no longer authenticated. Please log in again."),
           "alert-danger",
@@ -186,8 +186,8 @@ var sendform = async function (elt, action) {
         .then((response) => response.text())
         .then((data) => {
           if (
-            data.indexOf("list_enrichment") == -1 &&
-            data.indexOf("form") == -1
+            data.indexOf("list_enrichment") === -1 &&
+            data.indexOf("form") === -1
           ) {
             showalert(
               gettext("You are no longer authenticated. Please log in again."),
@@ -229,7 +229,7 @@ var sendform = async function (elt, action) {
     })
       .then((response) => response.text())
       .then((data) => {
-        if (data.indexOf("list_enrichment") == -1) {
+        if (data.indexOf("list_enrichment") === -1) {
           showalert(
             gettext("You are no longer authenticated. Please log in again."),
             "alert-danger",

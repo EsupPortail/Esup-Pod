@@ -7,6 +7,8 @@
   global current_folder
 */
 
+/* exported processProxyVttResponse */
+
 // Global vars
 var fileLoaded = false;
 var fileLoadedId = undefined;
@@ -1349,7 +1351,7 @@ function parseAndLoadWebVTT(vtt) {
       continue;
     }
 
-    if (!cueStart && !cueEnd && !cueText && vttLines[i].indexOf("-->") == -1) {
+    if (!cueStart && !cueEnd && !cueText && vttLines[i].indexOf("-->") === -1) {
       // this is a cue identifier we're ignoring
       continue;
     }
