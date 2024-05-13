@@ -17,44 +17,45 @@ define("PHYSICAL_BASE_ROOT", "/home/pod/bbb-pod-live/");
 // !!! L'arborescence doit être sur un disque dur local de la machine serveur.
 define("PHYSICAL_LOG_ROOT", "/home/pod/bbb-pod-live/logs/");
 // Mail de l'administrateur de BBB-POD-LIVE, qui recevra les mails
-// en cas de démarrage de live ou d'erreur
+// en cas de démarrage de live ou d'erreur.
 define("ADMIN_EMAIL", "admin@univ.fr");
-// Hostname de ce serveur BBB-POD-LIVE (utile pour Redis et le chat)
+// Hostname de ce serveur BBB-POD-LIVE (utile pour Redis et le chat).
 define("SERVER_HOSTNAME", "server.univ.fr");
-// Nombre de serveurs BBB-POD-LIVE
+// Nombre de serveurs BBB-POD-LIVE.
 define("NUMBER_SERVERS", 1);
 // Numéro unique de ce serveur dans la liste des serveurs BBB-POD-LIVE
 // Par exemple : s'il y a 2 serveurs BBB-POD-LIVE (NUMBER_SERVERS = 2),
-// alors un serveur devra avoir SERVER_NUMBER=1 et l'autre SERVER_NUMBER=2
+// alors un serveur devra avoir SERVER_NUMBER=1 et l'autre SERVER_NUMBER=2.
 define("SERVER_NUMBER", 1);
-// Nombre de directs gérés par ce serveur (à adapter selon les ressources du serveur)
+// Nombre de directs gérés par ce serveur
+// (à adapter selon les ressources du serveur).
 define("NUMBER_LIVES", 3);
 
 /* PARAMETRAGE NECESSAIRE POUR BigBlueButton-liveStreaming */
-// URL du serveur BigBlueButton/Scalelite, avec la notion d'API
+// URL du serveur BigBlueButton/Scalelite, avec la notion d'API.
 define("BBB_URL", "https://bbb.univ.fr/bigbluebutton/api");
-// Clé secrète du serveur BigBlueButton/Scalelite
+// Clé secrète du serveur BigBlueButton/Scalelite.
 define("BBB_SECRET", "xxxxxxxxxxxxx");
 // Résolution pour diffuser / télécharger au format WxH (Défaut: 1920x1080).
-// cf. BBB_RESOLUTION
+// cf. BBB_RESOLUTION.
 define("BBB_RESOLUTION", "1280x720");
 // Bitrate de la vidéo (Défaut: 4000). cf. FFMPEG_STREAM_VIDEO_BITRATE
 define("FFMPEG_STREAM_VIDEO_BITRATE", "3000");
 // Threads utilisés pour le flux (Défaut: 0). 0 signifie auto.
-// cf. FFMPEG_STREAM_THREADS
+// cf. FFMPEG_STREAM_THREADS.
 define("FFMPEG_STREAM_THREADS", "0");
 // Serveur RTMP qui va gérer les directs pour ce serveur BBB-POD-LIVE
 // Format, sans authentification : rtmp://serveurRTMP.domaine.fr:port/app/
 // Format, avec authentification : rtmp://user@pass:server.domain.fr:port/app/
-// Exemple : rtmp://live.univ.fr:1935/live/ cf. BBB_STREAM_URL
+// Exemple : rtmp://live.univ.fr:1935/live/ cf. BBB_STREAM_URL.
 define("BBB_STREAM_URL", "rtmp://live.univ.fr/live/");
 // Mot de passe des participants cf. BBB_ATTENDEE_PASSWORD
 // Doit être défini comme le mot de passe du participant de Moodle / Greenlight
-// ou de tout autre frontend pour permettre la participation via leurs liens
+// ou de tout autre frontend pour permettre la participation via leurs liens.
 define("BBB_ATTENDEE_PASSWORD", "xxxxxxx");
 // Mot de passe des modérateurs cf. BBB_ATTENDEE_PASSWORD
 // Doit être défini comme le mot de passe du modérateur de Moodle / Greenlight
-// ou de tout autre frontend pour permettre la participation via leurs liens
+// ou de tout autre frontend pour permettre la participation via leurs liens.
 define("BBB_MODERATOR_PASSWORD", "xxxxxxx");
 
 
@@ -64,10 +65,10 @@ define("POD_HLS_STREAM", "https://live.univ.fr/hls/");
 // URL du serveur Pod
 define("POD_URL", "https://pod.univ.fr");
 // Token de sécurité de Pod, utile pour attaquer Pod via les API Rest
-// (cf. administration de Pod / Jeton)
+// (cf. administration de Pod / Jeton).
 define("POD_TOKEN", "xxxxxxxxxxxxxxx");
 // Identifiant du bâtiment POD (au sens live/building de POD) de rattachement
-// des diffuseurs créés par bbb-pod-live
+// des diffuseurs créés par bbb-pod-live.
 define("POD_ID_BUILDING", 1);
 // Répertoire dans lequel copier les fichiers vidéo
 // générés par BigBlueButton-liveStreaming
@@ -76,49 +77,58 @@ define("POD_ID_BUILDING", 1);
 // Si ce n'est pas possible, laisser ce champ vide et positionner
 // USE_BBB_LIVE_DOWNLOADING = False dans le settings_local de POD.
 define("POD_DEFAULT_BBB_PATH", "/data/www/pod/bbb-recorder/");
-// FIN PARAMETRAGE
+// FIN PARAMETRAGE.
 
 /*
  * Variables globales
  */
-// Variable permettant de savoir si le script a rencontré au moins une erreur
+
+// Variable permettant de savoir si le script a rencontré au moins une erreur.
 $txtErrorInScript = "";
-// Variable permettant de connaitre les lives en cours sur ce serveur
+// Variable permettant de connaitre les lives en cours sur ce serveur.
 $livesInProgressOnThisServer = array();
 
-/*  Début de la phase principale */
+/*
+  Début de la phase principale
+ */
+
 try {
-    // Gestion de la timezone
+    // Gestion de la timezone.
     date_default_timezone_set('Europe/Paris');
 
-    // Décalage permettant d'éviter que chaque serveur n'exécute ce script en même temps.
-    // Cela sert aussi de "load balancer" simpliste : chaque serveur va prendre en charge les demandes de directs sur la période de décalage.
+    // Décalage permettant d'éviter que chaque serveur
+    // n'exécute ce script en même temps.
+    // Cela sert aussi de "load balancer" simpliste : chaque serveur
+    // va prendre en charge les demandes de directs sur la période de décalage.
     $delay = (SERVER_NUMBER - 1) * round(60 / NUMBER_SERVERS);
     sleep($delay);
 
     writeLog(
-        "----------" . date('Y-m-d H:i:s') . "----------",
+        "----------".date('Y-m-d H:i:s')."----------",
         "DEBUG"
     );
 
-    // Création des répertoires, des fichiers compose et configuration initiale de ces derniers pour le plugin BigBlueButton-liveStreaming.
-    // Un répertoire, par plugin BigBlueButton-liveStreaming, est créé, selon le nombre de directs que gère ce serveur (cf. NUMBER_LIVES).
-    configureInitialBigBlueButtonLiveStreaming();
+    // Création des répertoires, des fichiers compose et configuration initiale
+    // de ces derniers pour le plugin BigBlueButton-liveStreaming.
+    // Un répertoire, par plugin BigBlueButton-liveStreaming, est créé,
+    // selon le nombre de directs que gère ce serveur (cf. NUMBER_LIVES).
+    configureBBBLiveStreaming();
 
-    // Démarrage des directs, si des usagers en ont fait la demande dans Pod
+    // Démarrage des directs, si des usagers en ont fait la demande dans Pod.
     startLives();
 
-    // Arrêt des directs si les sessions BigBlueButton correspondante s ont été arrêtées
+    // Arrêt des directs si les sessions BigBlueButton
+    // correspondantes ont été arrêtées.
     stopLives();
 } catch (Exception $e) {
     $GLOBALS["txtErrorInScript"] .= $e->getMessage();
 }
 
-// Envoi d'un message à l'administrateur en cas d'erreur de script
+// Envoi d'un message à l'administrateur en cas d'erreur de script.
 if ($GLOBALS["txtErrorInScript"] != "") {
     sendEmail("[BBB-POD-LIVE] Erreur rencontrée", $GLOBALS["txtErrorInScript"]);
 }
-// Fin de la phase principale
+// Fin de la phase principale.
 
 /**
  * Procédure de création et de configuration initiale
@@ -128,27 +138,29 @@ if ($GLOBALS["txtErrorInScript"] != "") {
  * Le fichier compose.yml sera copié depuis le répertoire courant
  * (fichier docker-compose.default.yml).
  */
-function configureInitialBigBlueButtonLiveStreaming()
+function configureBBBLiveStreaming()
 {
     writeLog(
-        "----- Configuration des plugins nécessaires : configureBigBlueButtonLiveStreaming()-----",
+        "----- Configuration des plugins nécessaires : configureBBBLiveStreaming()-----",
         "DEBUG"
     );
 
-    /* Création des répertoires et des fichiers compose
-     pour le plugin BigBlueButton-liveStreaming */
+    /*
+     Création des répertoires et des fichiers compose
+     pour le plugin BigBlueButton-liveStreaming.
+    */
     for ($i = 1; $i <= NUMBER_LIVES; $i++) {
-        // Définition du répertoire
-        $directoryLiveStreaming = checkEndSlash(PHYSICAL_BASE_ROOT) . "bbb-live-streaming$i/";
+        // Définition du répertoire.
+        $directoryLiveStreaming = checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming$i/";
         writeLog(
             "Vérification pour le direct $i : $directoryLiveStreaming",
             "DEBUG"
         );
         // Définition du fichier compose.yml dans ce répertoire.
-        $fichierCompose = $directoryLiveStreaming . "docker-compose.yml";
+        $fichierCompose = $directoryLiveStreaming."docker-compose.yml";
         // Création du répertoire et du fichier la 1° fois.
         if (! file_exists($fichierCompose)) {
-            // Création du répertoire
+            // Création du répertoire.
             writeLog(
                 "  + Création du répertoire $directoryLiveStreaming",
                 "DEBUG"
@@ -194,8 +206,8 @@ function startLives()
 
     // Recherche si des lives sont en cours.
     $cmdStatus1 = "curl --silent -H 'Content-Type: application/json' ";
-    $cmdStatus1 .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
-    $cmdStatus1 .= "-X GET " . checkEndWithoutSlash(POD_URL). "/rest/bbb_livestream/?status=1";
+    $cmdStatus1 .= "-H 'Authorization: Token ".POD_TOKEN."' ";
+    $cmdStatus1 .= "-X GET ".checkEndWithoutSlash(POD_URL)."/rest/bbb_livestream/?status=1";
 
     exec("$cmdStatus1 2>&1", $aVerifStatus1, $sVerifStatus1);
 
@@ -217,16 +229,18 @@ function startLives()
             // Identifiant du live dans Pod.
             $idLive = $oListeSessions->results[$i]->id;
             // Dans Pod, l'information est sauvegardé sous la forme
-            // NUMERO_SERVEUR/NUMERO_REPERTOIRE_bbb_live_streaming
+            // NUMERO_SERVEUR/NUMERO_REPERTOIRE_bbb_live_streaming.
             $server = $oListeSessions->results[$i]->server;
             // Le live est il déjà en cours sur un des serveurs BBB-POD-LIVE ?
             $status = $oListeSessions->results[$i]->status;
             // Utilisateur ayant lancé ce live.
             $user = $oListeSessions->results[$i]->user;
             // Prise en compte seulement des lives en cours de ce serveur.
-            if (($status == 1) && (strpos("$server", SERVER_NUMBER . "/") !== false)) {
+            if (($status === 1)
+                && (strpos("$server", SERVER_NUMBER."/") !== false)
+            ) {
                 // Sauvegarde du NUMERO_REPERTOIRE_bbb_live_streaming.
-                $processInProgress = str_replace(SERVER_NUMBER . "/", "", $server);
+                $processInProgress = str_replace(SERVER_NUMBER."/", "", $server);
                 // Utilisation d'une classe standard.
                 $liveInProgress = new stdClass();
                 $liveInProgress->id = $idLive;
@@ -248,8 +262,8 @@ function startLives()
 
     // Recherche si des utilisateurs ont lancé des lives depuis Pod.
     $cmdStatus0 = "curl --silent -H 'Content-Type: application/json' ";
-    $cmdStatus0 .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
-    $cmdStatus0 .= "-X GET " . checkEndWithoutSlash(POD_URL) . "/rest/bbb_livestream/?status=0";
+    $cmdStatus0 .= "-H 'Authorization: Token ".POD_TOKEN."' ";
+    $cmdStatus0 .= "-X GET ".checkEndWithoutSlash(POD_URL)."/rest/bbb_livestream/?status=0";
 
     exec("$cmdStatus0 2>&1", $aVerifStatus0, $sVerifStatus0);
 
@@ -306,7 +320,7 @@ function startLives()
             // Un slot est disponible sur ce serveur pour réaliser un live ?
             if ($idBbbLiveStreaming == 0) {
                 writeLog(
-                    "     => Impossible de lancer le live $idLive de $user sur ce serveur : il y a déjà " . NUMBER_LIVES . " directs qui sont gérés par ce serveur.",
+                    "     => Impossible de lancer le live $idLive de $user sur ce serveur : il y a déjà ".NUMBER_LIVES." directs qui sont gérés par ce serveur.",
                     "INFO"
                 );
             } else {
@@ -346,7 +360,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
     );
 
     $cmd = "curl --silent -H 'Content-Type: application/json' ";
-    $cmd .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
+    $cmd .= "-H 'Authorization: Token ".POD_TOKEN."' ";
     $cmd .= "-X GET $urlMeeting";
     exec("$cmd 2>&1", $aVerif, $sVerif);
 
@@ -366,11 +380,11 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         /* Nom de la session, sans caractères problématiques ni espaces, et la
            chaîne bbb- en premier pour éviter toute confusion
            avec un diffuseur existant. */
-        $nameMeeting = "bbb-" . formatString($oMeeting->meeting_name);
+        $nameMeeting = "bbb-".formatString($oMeeting->meeting_name);
         /* Nom de la session, sans caractères problématiques avec espaces,
            et la chaîne [BBB] en premier pour éviter toute confusion
            avec un diffuseur existant. */
-        $nameMeetingToDisplay = "[BBB] " . formatStringToDisplay($oMeeting->meeting_name);
+        $nameMeetingToDisplay = "[BBB] ".formatStringToDisplay($oMeeting->meeting_name);
         // Id de la session.
         $idMeeting = $oMeeting->meeting_id;
 
@@ -378,8 +392,8 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         /* Récupération des informations concernant
            les options saisies par l'utilisateur. */
         $cmdOptions = "curl --silent -H 'Content-Type: application/json' ";
-        $cmdOptions .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
-        $cmdOptions .= "-X GET " . checkEndWithoutSlash(POD_URL) . "/rest/bbb_livestream/$idLive/";
+        $cmdOptions .= "-H 'Authorization: Token ".POD_TOKEN."' ";
+        $cmdOptions .= "-X GET ".checkEndWithoutSlash(POD_URL)."/rest/bbb_livestream/$idLive/";
         exec("$cmdOptions 2>&1", $aVerifOptions, $sVerifOptions);
 
         writeLog(
@@ -430,9 +444,9 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
             "  + Modification de la configuration du docker-compose.yml",
             "DEBUG"
         );
-        $dockerFile = checkEndSlash(PHYSICAL_BASE_ROOT) . "bbb-live-streaming" . $idBbbLiveStreaming . "/docker-compose.yml";
+        $dockerFile = checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming".$idBbbLiveStreaming."/docker-compose.yml";
         // Configuration du nom du container (container_name).
-        $nameContainer = "liveStreaming" . $idBbbLiveStreaming;
+        $nameContainer = "liveStreaming".$idBbbLiveStreaming;
         $cmdSed0 = "sed -i \"s/^.*container_name:.*/    container_name: $nameContainer/\" $dockerFile";
         exec("$cmdSed0 2>&1", $aVerifSed0, $sVerifSed0);
         if ($sVerifSed0 != 0) {
@@ -510,7 +524,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         }
         /* Modification de la ligne concernant l'id
            de la session à streamer (BBB_MEETING_ID). */
-        $cmdSed7 = "sed -i \"s/^.*BBB_MEETING_ID=.*/      - BBB_MEETING_ID=$idMeeting/\" " . $dockerFile;
+        $cmdSed7 = "sed -i \"s/^.*BBB_MEETING_ID=.*/      - BBB_MEETING_ID=$idMeeting/\" ".$dockerFile;
         exec("$cmdSed7 2>&1", $aVerifSed7, $sVerifSed7);
         if ($sVerifSed7 != 0) {
             writeLog(
@@ -521,7 +535,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         // Modification de la ligne concernant le flux RTMP (BBB_STREAM_URL).
         // Gestion des caractères / du serveur RTMP pour être utilisé via sed.
         $rtmpServer = str_replace("/", "\/", checkEndSlash(BBB_STREAM_URL));
-        $cmdSed8 = "sed -i \"s/^.*BBB_STREAM_URL=.*/      - BBB_STREAM_URL=" . $rtmpServer . "$nameMeeting/\" " . $dockerFile;
+        $cmdSed8 = "sed -i \"s/^.*BBB_STREAM_URL=.*/      - BBB_STREAM_URL=".$rtmpServer."$nameMeeting/\" ".$dockerFile;
         exec("$cmdSed8 2>&1", $aVerifSed8, $sVerifSed8);
         if ($sVerifSed8 != 0) {
             writeLog(
@@ -531,7 +545,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         }
         /* Modification de la ligne concernant
            l'utilisation de chat (BBB_ENABLE_CHAT). */
-        $cmdSed9 = "sed -i \"s/^.*BBB_ENABLE_CHAT=.*/      - BBB_ENABLE_CHAT=$enableChat/\" " . $dockerFile;
+        $cmdSed9 = "sed -i \"s/^.*BBB_ENABLE_CHAT=.*/      - BBB_ENABLE_CHAT=$enableChat/\" ".$dockerFile;
         exec("$cmdSed9 2>&1", $aVerifSed9, $sVerifSed9);
         if ($sVerifSed9 != 0) {
             writeLog(
@@ -541,7 +555,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         }
         /* Modification de la ligne concernant l'affichage
            du chat dans la vidéo (BBB_SHOW_CHAT) */
-        $cmdSed10 = "sed -i \"s/^.*BBB_SHOW_CHAT=.*/      - BBB_SHOW_CHAT=$showChat/\" " . $dockerFile;
+        $cmdSed10 = "sed -i \"s/^.*BBB_SHOW_CHAT=.*/      - BBB_SHOW_CHAT=$showChat/\" ".$dockerFile;
         exec("$cmdSed10 2>&1", $aVerifSed10, $sVerifSed10);
         if ($sVerifSed10 != 0) {
             writeLog(
@@ -551,7 +565,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         }
         /* Modification de la ligne concernant l'enregistrement
            de la vidéo du live (BBB_DOWNLOAD_MEETING) */
-        $cmdSed11 = "sed -i \"s/^.*BBB_DOWNLOAD_MEETING=.*/      - BBB_DOWNLOAD_MEETING=$downloadMeeting/\" " . $dockerFile;
+        $cmdSed11 = "sed -i \"s/^.*BBB_DOWNLOAD_MEETING=.*/      - BBB_DOWNLOAD_MEETING=$downloadMeeting/\" ".$dockerFile;
         exec("$cmdSed11 2>&1", $aVerifSed11, $sVerifSed11);
         if ($sVerifSed11 != 0) {
             writeLog(
@@ -561,7 +575,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         }
         /* Modification de la ligne concernant le titre
            de la session (BBB_MEETING_TITLE) */
-        $cmdSed12 = "sed -i \"s/^.*BBB_MEETING_TITLE=.*/      - BBB_MEETING_TITLE=$nameMeetingToDisplay/\" " . $dockerFile;
+        $cmdSed12 = "sed -i \"s/^.*BBB_MEETING_TITLE=.*/      - BBB_MEETING_TITLE=$nameMeetingToDisplay/\" ".$dockerFile;
         exec("$cmdSed12 2>&1", $aVerifSed12, $sVerifSed12);
         if ($sVerifSed12 != 0) {
             writeLog(
@@ -571,7 +585,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         }
         /* Modification de la ligne concernant le mot de passe
            d'un participant de la session (BBB_ATTENDEE_PASSWORD) */
-        $cmdSed13 = "sed -i \"s/^.*BBB_ATTENDEE_PASSWORD=.*/      - BBB_ATTENDEE_PASSWORD=".BBB_ATTENDEE_PASSWORD."/\" " . $dockerFile;
+        $cmdSed13 = "sed -i \"s/^.*BBB_ATTENDEE_PASSWORD=.*/      - BBB_ATTENDEE_PASSWORD=".BBB_ATTENDEE_PASSWORD."/\" ".$dockerFile;
         exec("$cmdSed13 2>&1", $aVerifSed13, $sVerifSed13);
         if ($sVerifSed13 != 0) {
             writeLog(
@@ -581,7 +595,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         }
         /* Modification de la ligne concernant le mot de passe
            d'un modérateur de la session (BBB_MODERATOR_PASSWORD) */
-        $cmdSed14 = "sed -i \"s/^.*BBB_MODERATOR_PASSWORD=.*/      - BBB_MODERATOR_PASSWORD=".BBB_MODERATOR_PASSWORD."/\" " . $dockerFile;
+        $cmdSed14 = "sed -i \"s/^.*BBB_MODERATOR_PASSWORD=.*/      - BBB_MODERATOR_PASSWORD=".BBB_MODERATOR_PASSWORD."/\" ".$dockerFile;
         exec("$cmdSed14 2>&1", $aVerifSed14, $sVerifSed14);
         if ($sVerifSed14 != 0) {
             writeLog(
@@ -592,8 +606,8 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         // Modification de la ligne concernant le channel pour REDIS,
         // en cas d'utilisation du chat (BBB_REDIS_CHANNEL)
         // Typiquement pour le répertoire 1 => chat1, 2 => chat2, 3 => chat3...
-        $channelRedis = "chat" . $idBbbLiveStreaming;
-        $cmdSed15 = "sed -i \"s/^.*BBB_REDIS_CHANNEL=.*/      - BBB_REDIS_CHANNEL=$channelRedis/\" " . $dockerFile;
+        $channelRedis = "chat".$idBbbLiveStreaming;
+        $cmdSed15 = "sed -i \"s/^.*BBB_REDIS_CHANNEL=.*/      - BBB_REDIS_CHANNEL=$channelRedis/\" ".$dockerFile;
         exec("$cmdSed15 2>&1", $aVerifSed15, $sVerifSed15);
         if ($sVerifSed15 != 0) {
             writeLog(
@@ -607,7 +621,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         } else {
             $debug = "false";
         }
-        $cmdSed16 = "sed -i \"s/^.*DEBUG=.*/      - DEBUG=$debug/\" " . $dockerFile;
+        $cmdSed16 = "sed -i \"s/^.*DEBUG=.*/      - DEBUG=$debug/\" ".$dockerFile;
         exec("$cmdSed16 2>&1", $aVerifSed16, $sVerifSed16);
         if ($sVerifSed16 != 0) {
             writeLog(
@@ -618,10 +632,10 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
 
         /* Création du diffuseur correspondant dans Pod */
         $cmdBroadcaster = "curl --silent  -H 'Content-Type: multipart/form-data' ";
-        $cmdBroadcaster .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
-        $cmdBroadcaster .= "-F 'url=" . checkEndSlash(POD_HLS_STREAM) . "$nameMeeting.m3u8' ";
-        $cmdBroadcaster .= "-F 'building=" . checkEndWithoutSlash(POD_URL) . "/rest/buildings/" . POD_ID_BUILDING . "/' ";
-        $cmdBroadcaster .= "-F 'name=$nameMeetingToDisplay' -F 'status=true' -F 'is_restricted=$isRestricted' '" . checkEndWithoutSlash(POD_URL) . "/rest/broadcasters/'";
+        $cmdBroadcaster .= "-H 'Authorization: Token ".POD_TOKEN."' ";
+        $cmdBroadcaster .= "-F 'url=".checkEndSlash(POD_HLS_STREAM)."$nameMeeting.m3u8' ";
+        $cmdBroadcaster .= "-F 'building=".checkEndWithoutSlash(POD_URL)."/rest/buildings/".POD_ID_BUILDING."/' ";
+        $cmdBroadcaster .= "-F 'name=$nameMeetingToDisplay' -F 'status=true' -F 'is_restricted=$isRestricted' '".checkEndWithoutSlash(POD_URL)."/rest/broadcasters/'";
         exec("$cmdBroadcaster 2>&1", $aVerifBroadcaster, $sVerifBroadcaster);
 
         writeLog(
@@ -646,8 +660,8 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
                 "name":["Un objet Diffuseur avec ce champ nom existe déjà."]} */
             if (strpos($aVerifBroadcaster[0], "Un objet Diffuseur avec ce champ nom existe déjà.") !== false) {
                 $cmdBroadcaster2 = "curl --silent -H 'Content-Type: application/json' ";
-                $cmdBroadcaster2 .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
-                $cmdBroadcaster2 .= "-X GET " . checkEndWithoutSlash(POD_URL) . "/rest/broadcasters/$nameMeeting/";
+                $cmdBroadcaster2 .= "-H 'Authorization: Token ".POD_TOKEN."' ";
+                $cmdBroadcaster2 .= "-X GET ".checkEndWithoutSlash(POD_URL)."/rest/broadcasters/$nameMeeting/";
                 exec("$cmdBroadcaster2 2>&1", $aVerifBroadcaster2, $sVerifBroadcaster2);
 
                 writeLog(
@@ -679,7 +693,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
 
                 // Démarrage du live, si nécessaire.
                 startLive(
-                    $idLive, checkEndSlash(BBB_STREAM_URL) . "$nameMeeting",
+                    $idLive, checkEndSlash(BBB_STREAM_URL)."$nameMeeting",
                     $idBbbLiveStreaming, $idBroadcaster
                 );
             } else {
@@ -725,11 +739,11 @@ function startLive($idLive, $streamName, $idBbbLiveStreaming, $idBroadcaster)
         // Avec gestions des logs, dans le répertoire des logs.
         // Le nom du fichier correspond à l'id du live BBB de Pod.
         // ((cf. table bbb_meeting)
-        $cmd = "cd " . checkEndSlash(PHYSICAL_BASE_ROOT) . "bbb-live-streaming" . $idBbbLiveStreaming . " ; docker compose up 1>" . checkEndSlash(PHYSICAL_LOG_ROOT) . "$idLive.log";
+        $cmd = "cd ".checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming".$idBbbLiveStreaming." ; docker compose up 1>".checkEndSlash(PHYSICAL_LOG_ROOT)."$idLive.log";
         exec("$cmd 2>&1 &", $aVerif, $sVerif);
     } else {
         // En mode daemon.
-        $cmd = "cd " . checkEndSlash(PHYSICAL_BASE_ROOT) . "bbb-live-streaming" . $idBbbLiveStreaming . " ; docker compose up -d";
+        $cmd = "cd ".checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming".$idBbbLiveStreaming." ; docker compose up -d";
         exec("$cmd 2>&1", $aVerif, $sVerif);
     }
 
@@ -750,13 +764,13 @@ function startLive($idLive, $streamName, $idBbbLiveStreaming, $idBroadcaster)
 
         // Définition du channel pour REDIS (en cas d'utilisation du chat)
         // Typiquement pour le répertoire 1 => chat1, 2 => chat2, 3 => chat3...
-        $channelRedis = "chat" . $idBbbLiveStreaming;
+        $channelRedis = "chat".$idBbbLiveStreaming;
 
         // Mise a jour de l'information dans Pod, via l'API Rest.
         $cmdMajPod = "curl --silent -H 'Content-Type: application/json' ";
-        $cmdMajPod .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
-        $cmdMajPod .= "-X PATCH -d '{\"server\":\"" . SERVER_NUMBER . "/" . $idBbbLiveStreaming . "\", \"status\":1, \"broadcaster_id\": $idBroadcaster, \"redis_hostname\":\"" . SERVER_HOSTNAME . "\", \"redis_port\": $portRedis, \"redis_channel\":\"$channelRedis\"}' ";
-        $cmdMajPod .= "" . checkEndWithoutSlash(POD_URL) . "/rest/bbb_livestream/$idLive/";
+        $cmdMajPod .= "-H 'Authorization: Token ".POD_TOKEN."' ";
+        $cmdMajPod .= "-X PATCH -d '{\"server\":\"".SERVER_NUMBER."/".$idBbbLiveStreaming."\", \"status\":1, \"broadcaster_id\": $idBroadcaster, \"redis_hostname\":\"".SERVER_HOSTNAME."\", \"redis_port\": $portRedis, \"redis_channel\":\"$channelRedis\"}' ";
+        $cmdMajPod .= "".checkEndWithoutSlash(POD_URL)."/rest/bbb_livestream/$idLive/";
         exec("$cmdMajPod", $aVerifMajPod, $sVerifMajPod);
 
         writeLog(
@@ -781,7 +795,7 @@ function startLive($idLive, $streamName, $idBbbLiveStreaming, $idBroadcaster)
             "ERROR", __FILE__, __LINE__
         );
     }
-    sendEmail("[BBB-POD-LIVE] Démarrage d'un live", "Démarrage d'un direct (id : $idLive, stream : $streamName) sur le serveur " . SERVER_NUMBER);
+    sendEmail("[BBB-POD-LIVE] Démarrage d'un live", "Démarrage d'un direct (id : $idLive, stream : $streamName) sur le serveur ".SERVER_NUMBER);
 }
 
 /**
@@ -797,10 +811,10 @@ function stopLives()
 
     // Checksum utile pour récupérer les informations des sessions
     // en cours sur BigBlueButton/Scalelite.
-    $checksum = sha1("getMeetings" . BBB_SECRET);
+    $checksum = sha1("getMeetings".BBB_SECRET);
     // Adresse utile pour récupérer les informations des sessions
     // en cours sur BigBlueButton/Scalelite.
-    $bbbUrlGetMeetings = checkEndWithoutSlash(BBB_URL) . "/getMeetings?checksum=" . $checksum;
+    $bbbUrlGetMeetings = checkEndWithoutSlash(BBB_URL)."/getMeetings?checksum=".$checksum;
     // Variable permettant de connaitre les sessions
     // en cours sur le serveur BigBlueButton/Scalelite.
     $meetingsInProgressOnBBB = array();
@@ -833,8 +847,8 @@ function stopLives()
         foreach ($GLOBALS["livesInProgressOnThisServer"] as $ligneLiveInProgressOnThisServer) {
             /* Récupération du BBB_MEETING_ID
                correspondant dans le docker-compose.yml */
-            $dockerFile = checkEndSlash(PHYSICAL_BASE_ROOT) . "bbb-live-streaming" . $ligneLiveInProgressOnThisServer->idBbbLiveStreaming . "/docker-compose.yml";
-            $dockerDirectory = checkEndSlash(PHYSICAL_BASE_ROOT) . "bbb-live-streaming" . $ligneLiveInProgressOnThisServer->idBbbLiveStreaming;
+            $dockerFile = checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming".$ligneLiveInProgressOnThisServer->idBbbLiveStreaming."/docker-compose.yml";
+            $dockerDirectory = checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming".$ligneLiveInProgressOnThisServer->idBbbLiveStreaming;
             $cmdGrep1="grep BBB_MEETING_ID $dockerFile| cut -d\"=\" -f2";
             exec("$cmdGrep1 2>&1", $aVerifGrep1, $sVerifGrep1);
             if ($sVerifGrep1 == 0) {
@@ -887,9 +901,9 @@ function stopLives()
                         // On sauvegarde cette information dans la base de Pod
                         // via l'appel à l'API Rest.
                         $cmdMajPod1 = "curl --silent -H 'Content-Type: application/json' ";
-                        $cmdMajPod1 .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
+                        $cmdMajPod1 .= "-H 'Authorization: Token ".POD_TOKEN."' ";
                         $cmdMajPod1 .= "-X PATCH -d '{\"end_date\":\"$endDate\", \"status\":2}' ";
-                        $cmdMajPod1 .= "" . checkEndWithoutSlash(POD_URL) . "/rest/bbb_livestream/" . $ligneLiveInProgressOnThisServer->id . "/";
+                        $cmdMajPod1 .= "".checkEndWithoutSlash(POD_URL)."/rest/bbb_livestream/".$ligneLiveInProgressOnThisServer->id."/";
                         exec("$cmdMajPod1", $aVerifMajPod1, $sVerifMajPod1);
 
                         writeLog(
@@ -949,7 +963,7 @@ function stopLives()
                             /* Recherche de internal_meeting_id
                                correspondant à cette session. */
                             $cmdMajPod2 = "curl --silent -H 'Content-Type: application/json' ";
-                            $cmdMajPod2 .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
+                            $cmdMajPod2 .= "-H 'Authorization: Token ".POD_TOKEN."' ";
                             $cmdMajPod2 .= "-X PATCH -d '{\"encoded_by\":\"$urlApiRestUser\", \"encoding_step\":3}' ";
                             $cmdMajPod2 .= "$urlApiRestMeeting";
                             exec("$cmdMajPod2 2>&1", $aVerifMajPod2, $sVerifMajPod2);
@@ -985,7 +999,7 @@ function stopLives()
                                 );
                             } else {
                                 writeLog(
-                                    "    - Impossible de récupérer l'internal meeting id pour le direct " . $ligneLiveInProgressOnThisServer->idBbbLiveStreaming,
+                                    "    - Impossible de récupérer l'internal meeting id pour le direct ".$ligneLiveInProgressOnThisServer->idBbbLiveStreaming,
                                     "ERROR", __FILE__, __LINE__
                                 );
                             }
@@ -1018,8 +1032,8 @@ function deleteBroadcaster($broadcasterName)
     $slug = str_replace("[BBB]", "bbb", $broadcasterName);
     /* Suppression du diffuseur correspondant dans Pod */
     $cmdBroadcaster = "curl --silent ";
-    $cmdBroadcaster .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
-    $cmdBroadcaster .= "-X DELETE '" . checkEndWithoutSlash(POD_URL) . "/rest/broadcasters/$slug/'";
+    $cmdBroadcaster .= "-H 'Authorization: Token ".POD_TOKEN."' ";
+    $cmdBroadcaster .= "-X DELETE '".checkEndWithoutSlash(POD_URL)."/rest/broadcasters/$slug/'";
     exec("$cmdBroadcaster 2>&1", $aVerifBroadcaster, $sVerifBroadcaster);
 
     writeLog(
@@ -1064,7 +1078,7 @@ function processDirectory($idBbbLiveStreaming, $internalMeetingId)
     // Parcours du répertoire videodata du répertoire
     // BigBlueButton-liveStreaming concerné
     // Définition du répertoire.
-    $directoryLiveStreaming = checkEndSlash(PHYSICAL_BASE_ROOT) . "bbb-live-streaming$idBbbLiveStreaming/videodata";
+    $directoryLiveStreaming = checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming$idBbbLiveStreaming/videodata";
     writeLog(
         "Recherche de fichiers vidéos pour le direct $idBbbLiveStreaming : $directoryLiveStreaming",
         "DEBUG"
@@ -1077,7 +1091,7 @@ function processDirectory($idBbbLiveStreaming, $internalMeetingId)
             if (strrpos($value, ".mkv")) {
                 // Déplacer et renommer le fichier avec l'internalMeetingId.
                 $oldFilename = "$directoryLiveStreaming/$value";
-                $newFilename = checkEndSlash(POD_DEFAULT_BBB_PATH) . "$internalMeetingId" . ".mkv";
+                $newFilename = checkEndSlash(POD_DEFAULT_BBB_PATH)."$internalMeetingId".".mkv";
                 writeLog(
                     "  + Déplacement du fichier $oldFilename vers $newFilename",
                     "DEBUG"
@@ -1118,7 +1132,7 @@ function writeLog($message, $level, $file = null, $line = null)
     }
 
     // Configuration du fichier de log, 1 par jour.
-    $logFile = checkEndSlash(PHYSICAL_LOG_ROOT) . gmdate("Y-m-d") . "_bbb-pod-live.log";
+    $logFile = checkEndSlash(PHYSICAL_LOG_ROOT) . gmdate("Y-m-d")."_bbb-pod-live.log";
 
     // En cas de non existence, on créé ce fichier.
     if (!file_exists($logFile)) {
@@ -1137,7 +1151,7 @@ function writeLog($message, $level, $file = null, $line = null)
         throw new Exception("$logFile n'a pas les droits en écriture.");
     }
 
-    $message = gmdate("Y-m-d H:i:s") . " - [$level] - " . $message;
+    $message = gmdate("Y-m-d H:i:s")." - [$level] - ".$message;
     $message .= is_null($file) ? '' : " - Fichier [$file]";
     $message .= is_null($line) ? '' : " - Ligne [$line].";
     $message .= "\n";

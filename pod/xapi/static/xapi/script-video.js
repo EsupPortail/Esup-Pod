@@ -53,8 +53,8 @@ var time_paused = 0;
 var time_seek = 0;
 
 player.on("timeupdate", function () {
-  progress[parseInt(player.currentTime())] = 1;
-  if (progress.length == parseInt(player.duration())) {
+  progress[parseInt(player.currentTime(), 10)] = 1;
+  if (progress.length == parseInt(player.duration(), 10)) {
     set_completed_statement();
     active_statement();
   }
@@ -197,7 +197,7 @@ player.on("ended", function (e) {
         .duration()
         .toFixed(3),
       "https://w3id.org/xapi/video/extensions/completion-threshold": (
-        parseInt(player.duration()) / player.duration()
+        parseInt(player.duration(), 10) / player.duration()
       ).toFixed(3),
     },
     registration: registration,
@@ -252,7 +252,7 @@ player.on("loadedmetadata", function () {
         window.navigator.userAgent,
       "https://w3id.org/xapi/video/extensions/speed": player.playbackRate(),
       "https://w3id.org/xapi/video/extensions/completion-threshold": (
-        parseInt(player.duration()) / player.duration()
+        parseInt(player.duration(), 10) / player.duration()
       ).toFixed(3),
       "https://w3id.org/xapi/video/extensions/session-id": session_id,
       "https://w3id.org/xapi/video/extensions/length": player
@@ -304,7 +304,7 @@ function set_completed_statement() {
     },
     extensions: {
       "https://w3id.org/xapi/video/extensions/completion-threshold": (
-        parseInt(player.duration()) / player.duration()
+        parseInt(player.duration(), 10) / player.duration()
       ).toFixed(3),
       "https://w3id.org/xapi/video/extensions/session-id": session_id,
       "https://w3id.org/xapi/video/extensions/length": player
@@ -353,7 +353,7 @@ function set_interacted_statement() {
         window.navigator.userAgent,
       "https://w3id.org/xapi/video/extensions/speed": player.playbackRate(),
       "https://w3id.org/xapi/video/extensions/completion-threshold": (
-        parseInt(player.duration()) / player.duration()
+        parseInt(player.duration(), 10) / player.duration()
       ).toFixed(3),
       "https://w3id.org/xapi/video/extensions/session-id": session_id,
       "https://w3id.org/xapi/video/extensions/length": player

@@ -41,5 +41,11 @@ module.exports = {
     "showalert": "writable",
     "showLoader": "writable",
     "manageDisableBtn": "writable"
-  }
+  },
+  overrides: [
+    {
+      files: [ "pod/main/static/js/utils.js", "pod/video/static/js/regroup_videos_by_theme.js" ],
+      parserOptions: { sourceType: "module" },
+    }
+  ]
 };

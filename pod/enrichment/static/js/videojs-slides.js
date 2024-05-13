@@ -31,7 +31,7 @@ var loadEnrichmentVTTfile = function (url, callback) {
     timeInSecond = function (strtime) {
       let atime = strtime.split(":");
       return (
-        parseInt(atime[0]) * 3600 + parseInt(atime[1]) * 60 + parseInt(atime[2])
+        parseInt(atime[0], 10) * 3600 + parseInt(atime[1], 10) * 60 + parseInt(atime[2], 10)
       );
     },
     createEmptyCue = function (start, end) {
@@ -302,9 +302,9 @@ var VideoSlides = function (items) {
     var keys = Object.keys(this.slidesItems);
     for (let i = 0; i <= keys.length - 1; i++) {
       var slidebar_left =
-        (parseInt(this.slidesItems[i].start) / duration) * 100;
+        (parseInt(this.slidesItems[i].start, 10) / duration) * 100;
       var slidebar_width =
-        (parseInt(this.slidesItems[i].end) / duration) * 100 - slidebar_left;
+        (parseInt(this.slidesItems[i].end, 10) / duration) * 100 - slidebar_left;
       var id = this.slidesItems[i].id;
       var type = this.slidesItems[i].type;
       var newslide = document.createElement("div");

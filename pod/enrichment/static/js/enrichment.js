@@ -340,7 +340,7 @@ const setTimecode = (e) => {
   const timecodeSpan = parentNode.querySelector(
     "div.getfromvideo span.timecode",
   );
-  timecodeSpan.innerHTML = " " + parseInt(e.target.value).toHHMMSS();
+  timecodeSpan.innerHTML = " " + parseInt(e.target.value, 10).toHHMMSS();
 };
 document.addEventListener("change", setTimecode);
 
@@ -350,12 +350,12 @@ document.addEventListener("click", (e) => {
   if (!(typeof player === "undefined")) {
     if (e.target.getAttribute("id") == "getfromvideo_start") {
       let inputStart = document.getElementById("id_start");
-      inputStart.value = parseInt(player.currentTime());
+      inputStart.value = parseInt(player.currentTime(), 10);
       changeEvent = new Event("change");
       inputStart.dispatchEvent(changeEvent);
     } else {
       let inputEnd = document.getElementById("id_end");
-      inputEnd.value = parseInt(player.currentTime());
+      inputEnd.value = parseInt(player.currentTime(), 10);
       changeEvent = new Event("change");
       inputEnd.dispatchEvent(changeEvent);
     }
@@ -532,8 +532,8 @@ function verify_fields() {
 /***  Verify if fields end and start are correct ***/
 function verify_end_start_items() {
   var msg = "";
-  new_start = parseInt(document.getElementById("id_start").value);
-  new_end = parseInt(document.getElementById("id_end").value);
+  new_start = parseInt(document.getElementById("id_start").value, 10);
+  new_end = parseInt(document.getElementById("id_end").value, 10);
   if (new_start > new_end) {
     msg = gettext("The start field value is greater than the end field one.");
   } else if (new_end > video_duration) {
@@ -549,13 +549,13 @@ function verify_end_start_items() {
 /*** Verify if there is a overlap with over enrich***/
 function overlaptest() {
   //var video_list_enrich=[];
-  var new_start = parseInt(document.getElementById("id_start").value);
-  var new_end = parseInt(document.getElementById("id_end").value);
+  var new_start = parseInt(document.getElementById("id_start").value, 10);
+  var new_end = parseInt(document.getElementById("id_end").value, 10);
   var id = document.getElementById("id_enrich").value;
   var msg = "";
   document.querySelectorAll("ul#slides li").forEach((e) => {
-    var data_start = parseInt(e.dataset.start);
-    var data_end = parseInt(e.dataset.end);
+    var data_start = parseInt(e.dataset.start, 10);
+    var data_end = parseInt(e.dataset.end, 10);
     if (
       id != e.dataset.id &&
       !(

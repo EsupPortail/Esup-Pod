@@ -439,7 +439,7 @@ function verify_fields(form) {
       form_group.classList.add("has-error");
       error = true;
     }
-    var id = parseInt(document.getElementById("id_contributor").value);
+    var id = parseInt(document.getElementById("id_contributor", 10).value);
     var new_role = document.getElementById("id_role").value;
     var new_name = document.getElementById("id_name").value;
     document

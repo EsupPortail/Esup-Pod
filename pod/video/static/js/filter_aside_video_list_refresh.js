@@ -2,6 +2,10 @@
  * @file Esup-Pod functions for videos list refresh and aside manage.
  * @since 3.4.1
  */
+
+/* Read-only globals defined in filter-aside-element-list-refresh.js */
+/* global toggleSortDirection */
+
 var infinite;
 var checkedInputs = [];
 
@@ -121,7 +125,7 @@ function refreshVideosSearch() {
       }
     })
     .catch((error) => {
-      document.getElementById("videos_list").innerHTML = gettext(
+      document.getElementById("videos_list").textContent = gettext(
         "An Error occurred while processing.",
       );
     })
@@ -197,7 +201,7 @@ function setListenerChangeInputs(el) {
  * Add event listener to search user input to create checkboxes
  */
 if (ownerBox) {
-  ownerBox.addEventListener("input", (e) => {
+  ownerBox.addEventListener("input", () => {
     if (ownerBox.value && ownerBox.value.length > 2) {
       var searchTerm = ownerBox.value;
       getSearchListUsers(searchTerm).then((users) => {

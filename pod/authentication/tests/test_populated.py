@@ -107,7 +107,7 @@ class PopulatedCASTestCase(TestCase):
     </ns0:authenticationSuccess>
 </ns0:serviceResponse>"""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up PopulatedCASTestCase create user Pod."""
         User.objects.create(username="pod", password="pod1234pod")
         AccessGroup.objects.create(code_name="groupTest", display_name="Group de test")
@@ -117,7 +117,7 @@ class PopulatedCASTestCase(TestCase):
         print(" --->  SetUp of PopulatedCASTestCase: OK!")
 
     @override_settings(DEBUG=False)
-    def test_populate_user_from_tree(self):
+    def test_populate_user_from_tree(self) -> None:
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
         self.assertEqual(user.owner, owner)
@@ -141,7 +141,7 @@ class PopulatedCASTestCase(TestCase):
         )
 
     @override_settings(DEBUG=False, CREATE_GROUP_FROM_AFFILIATION=True)
-    def test_populate_user_from_tree_affiliation(self):
+    def test_populate_user_from_tree_affiliation(self) -> None:
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
         self.assertEqual(user.owner, owner)
@@ -162,7 +162,7 @@ class PopulatedCASTestCase(TestCase):
         CREATE_GROUP_FROM_AFFILIATION=True,
         CREATE_GROUP_FROM_GROUPS=True,
     )
-    def test_populate_user_from_tree_affiliation_group(self):
+    def test_populate_user_from_tree_affiliation_group(self) -> None:
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
         self.assertEqual(user.owner, owner)
@@ -191,7 +191,7 @@ class PopulatedCASTestCase(TestCase):
         CREATE_GROUP_FROM_GROUPS=True,
         USER_CAS_MAPPING_ATTRIBUTES=USER_CAS_MAPPING_ATTRIBUTES_TEST_NOGROUPS,
     )
-    def test_populate_user_from_tree_affiliation_nogroup(self):
+    def test_populate_user_from_tree_affiliation_nogroup(self) -> None:
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
         self.assertEqual(user.owner, owner)
@@ -220,7 +220,7 @@ class PopulatedCASTestCase(TestCase):
         CREATE_GROUP_FROM_GROUPS=True,
         POPULATE_USER="CAS",
     )
-    def test_populate_user_from_tree_unpopulate_group(self):
+    def test_populate_user_from_tree_unpopulate_group(self) -> None:
         user = User.objects.get(username="pod")
         user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest"))
         user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest2"))
@@ -294,7 +294,7 @@ class PopulatedLDAPTestCase(TestCase):
     }
     entry = ""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up PopulatedLDAPTestCase create user Pod."""
         User.objects.create(username="pod", password="pod1234pod")
         AccessGroup.objects.create(code_name="groupTest", display_name="Group de test")
@@ -321,7 +321,7 @@ class PopulatedLDAPTestCase(TestCase):
         print(" --->  SetUp of PopulatedLDAPTestCase: OK!")
 
     @override_settings(DEBUG=False)
-    def test_populate_user_from_entry(self):
+    def test_populate_user_from_entry(self) -> None:
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
         self.assertEqual(user.owner, owner)
@@ -344,7 +344,7 @@ class PopulatedLDAPTestCase(TestCase):
         )
 
     @override_settings(DEBUG=False, CREATE_GROUP_FROM_AFFILIATION=True)
-    def test_populate_user_from_entry_affiliation(self):
+    def test_populate_user_from_entry_affiliation(self) -> None:
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
         self.assertEqual(user.owner, owner)
@@ -364,7 +364,7 @@ class PopulatedLDAPTestCase(TestCase):
         CREATE_GROUP_FROM_AFFILIATION=True,
         CREATE_GROUP_FROM_GROUPS=True,
     )
-    def test_populate_user_from_entry_affiliation_group(self):
+    def test_populate_user_from_entry_affiliation_group(self) -> None:
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
         self.assertEqual(user.owner, owner)
@@ -393,7 +393,7 @@ class PopulatedLDAPTestCase(TestCase):
             CREATE_GROUP_FROM_GROUPS=True,
             POPULATE_USER="LDAP",
         )
-        def test_populate_user_from_entry_unpopulate_group(self):
+        def test_populate_user_from_entry_unpopulate_group(self) -> None:
             user = User.objects.get(username="pod")
             user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="groupTest"))
             user.owner.accessgroup_set.add(
@@ -432,7 +432,7 @@ class PopulatedLDAPTestCase(TestCase):
 
 
 class PopulatedShibTestCase(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up PopulatedShibTestCase create user Pod."""
         self.hmap = {}
         for a in SHIBBOLETH_ATTRIBUTE_MAP:
@@ -456,13 +456,13 @@ class PopulatedShibTestCase(TestCase):
             fake_shib_header[self.hmap["affiliation"]] = u["affiliations"].split(";")[0]
             fake_shib_header[self.hmap["affiliations"]] = u["affiliations"]
 
-        """Get valid shib_meta from simulated shibboleth header """
+        # Get valid shib_meta from simulated shibboleth header.
         request = RequestFactory().get("/", REMOTE_USER=u["username"])
         request.META.update(**fake_shib_header)
         shib_meta, error = shibmiddleware.ShibbMiddleware.parse_attributes(request)
         self.assertFalse(error, "Generating shibboleth attribute mapping contains errors")
 
-        """Check user authentication """
+        # Check user authentication.
         user = ShibbBackend.authenticate(
             ShibbBackend(),
             request=request,
@@ -474,7 +474,7 @@ class PopulatedShibTestCase(TestCase):
         return (user, shib_meta)
 
     @override_settings(DEBUG=False)
-    def test_make_profile(self):
+    def test_make_profile(self) -> None:
         """Test if user attributes are retrieved."""
         user, shib_meta = self._authenticate_shib_user(
             {
@@ -490,7 +490,7 @@ class PopulatedShibTestCase(TestCase):
         self.assertEqual(user.first_name, "John")
         self.assertEqual(user.last_name, "Do")
 
-        """Test if user can be staff if SHIBBOLETH_STAFF_ALLOWED_DOMAINS is None """
+        # Test if user can be staff if SHIBBOLETH_STAFF_ALLOWED_DOMAINS is None.
         settings.SHIBBOLETH_STAFF_ALLOWED_DOMAINS = None
         reload(shibmiddleware)
         shibmiddleware.ShibbMiddleware.make_profile(
@@ -524,7 +524,7 @@ class PopulatedShibTestCase(TestCase):
         )
         self.assertTrue(user.is_staff)
 
-        """Test if same user with new unstaffable affiliation keep his staff status """
+        # Test if same user with new unstaffable affiliation keep his staff status.
         for a in UNSTAFFABLE_AFFILIATIONS:
             self.assertFalse(a in AFFILIATION_STAFF)
         user, shib_meta = self._authenticate_shib_user(
@@ -546,7 +546,7 @@ class PopulatedShibTestCase(TestCase):
         owner = Owner.objects.get(user__username="jdo@univ.fr")
         self.assertEqual(owner.affiliation, "member")
 
-        """Test if a new user with same unstaffable affiliations has no staff status"""
+        # Test if a new user with same unstaffable affiliations has no staff status.
         user, shib_meta = self._authenticate_shib_user(
             {
                 "username": "ada@univ.fr",

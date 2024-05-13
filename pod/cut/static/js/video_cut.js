@@ -4,7 +4,7 @@ let displayValOne = document.getElementById("range1");
 let displayValTwo = document.getElementById("range2");
 let minGap = 0;
 let sliderTrack = document.querySelector(".slider-track");
-start_time = parseInt(sliderOne.value);
+start_time = parseInt(sliderOne.value, 10);
 button_reset = document.getElementById("reset");
 initialStart = sliderOne.value;
 initialEnd = sliderTwo.value;
@@ -45,8 +45,8 @@ displayValTwo.addEventListener("change", doChangeForRange2);
 
 function slideOne() {
   // Do change for the start value with the slider
-  if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
-    sliderOne.value = parseInt(sliderTwo.value) - minGap;
+  if (parseInt(sliderTwo.value, 10) - parseInt(sliderOne.value, 10) <= minGap) {
+    sliderOne.value = parseInt(sliderTwo.value, 10) - minGap;
   }
   displayValOne.value = intToTime(sliderOne.value);
   fillColor();
@@ -55,8 +55,8 @@ function slideOne() {
 
 function slideTwo() {
   // Do change for the end value with the slider
-  if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
-    sliderTwo.value = parseInt(sliderOne.value) + minGap;
+  if (parseInt(sliderTwo.value, 10) - parseInt(sliderOne.value, 10) <= minGap) {
+    sliderTwo.value = parseInt(sliderOne.value, 10) + minGap;
   }
   displayValTwo.value = intToTime(sliderTwo.value);
   fillColor();

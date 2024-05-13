@@ -252,7 +252,7 @@ document.getElementById("addSubtitle").addEventListener("click", function () {
   var captionsEndTime = existingCaptionsEndTime();
   addCaption(
     captionsEndTime,
-    playTime > captionsEndTime ? playTime : parseInt(captionsEndTime) + 2,
+    playTime > captionsEndTime ? playTime : parseInt(captionsEndTime, 10) + 2,
     "",
   );
 });
@@ -838,7 +838,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
       let captionObj = {
         start: newCaption.end,
         end:
-          playTime > newCaption.end ? playTime : parseInt(newCaption.end) + 2,
+          playTime > newCaption.end ? playTime : parseInt(newCaption.end, 10) + 2,
         caption: "",
       };
       let index = Array.from(this.div.parentNode.children).indexOf(this.div);

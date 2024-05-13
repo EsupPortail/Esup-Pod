@@ -69,7 +69,7 @@
     var ownerFilter = {{ owner_filter|yesno:'true,false'}};
 
     {% if videos.has_next %}
-      page = parseInt("{{videos.next_page_number}}");
+      page = parseInt("{{videos.next_page_number}}", 10);
       nextPage = true;
     {% endif %}
 

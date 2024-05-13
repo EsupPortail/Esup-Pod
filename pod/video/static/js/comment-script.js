@@ -811,7 +811,7 @@ function getElementPosition(element) {
   let yPosition = 0;
   // get body padding top if exists that will be
   let bodyPaddingTop = Number.parseInt(
-    getComputedStyle(document.body)["padding-top"] ?? 0,
+    getComputedStyle(document.body)["padding-top"] ?? 0, 10
   );
 
   while (element) {
@@ -905,7 +905,7 @@ function add_user_tag(comment_value, parent_comment) {
  */
 function setBorderLeftColor(comment, parent_element) {
   try {
-    let index = Number.parseInt(parent_element.dataset.level) + 1;
+    let index = Number.parseInt(parent_element.dataset.level, 10) + 1;
     if (index >= COLORS.length) {
       comment.dataset.level = COLORS.length - 1;
       comment.querySelector(".comment_content").style.borderLeft = `4px solid ${

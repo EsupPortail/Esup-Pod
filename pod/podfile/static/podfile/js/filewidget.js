@@ -219,7 +219,7 @@ if (typeof loaded == "undefined") {
         break;
       default: // Extract info from data-* attributes
         document.getElementById("folderFormName").style.display = "block";
-        document.getElementById("folderModalCenterTitle").innerHTML = gettext(
+        document.getElementById("folderModalCenterTitle").textContent = gettext(
           "Enter new name of folder"
         );
         4;
@@ -316,7 +316,7 @@ if (typeof loaded == "undefined") {
     const formUserId = document.getElementById("formuserid");
     if (!formUserId) return;
 
-    const folderId = Number.parseInt(formUserId.value);
+    const folderId = Number.parseInt(formUserId.value, 10);
     const add = gettext("Add");
     const url = "/podfile/ajax_calls/search_share_user?term=" + searchTerm + "&foldid=" + folderId;
     const token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;

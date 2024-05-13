@@ -120,9 +120,9 @@
             start: [],
           };
           for (var i = 0; i < data.length; i++) {
-            chapters.id.push(parseInt(data[i].attributes[1].value));
+            chapters.id.push(parseInt(data[i].attributes[1].value, 10));
             chapters.title.push(data[i].attributes[2].value);
-            chapters.start.push(parseInt(data[i].attributes[0].value));
+            chapters.start.push(parseInt(data[i].attributes[0].value, 10));
           }
           return chapters;
         }

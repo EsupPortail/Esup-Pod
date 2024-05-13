@@ -70,7 +70,7 @@ global refreshVideosSearch, CATEGORIES_DATA, BASE_URL, VIDEO_URL, EDIT_URL,
     } else {
       const cat_modal_alert = document.createElement("div");
       cat_modal_alert.setAttribute("class", "alert alert-warning");
-      cat_modal_alert.innerHTML = gettext(
+      cat_modal_alert.textContent = gettext(
         "You have no content without a category.",
       );
       const cat_modal_body = document.querySelector(

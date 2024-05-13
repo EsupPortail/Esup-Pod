@@ -188,7 +188,7 @@
       return;
     }
     const curr_offset = Number.parseInt(
-      getSearchParamFromURL(url, "offset", 0),
+      getSearchParamFromURL(url, "offset", 0), 10
     );
     const curr_page = curr_offset === 0 ? 1 : 1 + curr_offset / limit;
     const total_page = Math.ceil(DATA.count / limit);

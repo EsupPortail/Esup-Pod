@@ -260,7 +260,7 @@ function verify_start_title_items() {
       let lengthErrorMsg = document.createElement("div");
       lengthErrorMsg.id = errormsg_id;
       lengthErrorMsg.className = "invalid-feedback";
-      lengthErrorMsg.innerHTML = gettext(
+      lengthErrorMsg.textContent = gettext(
         "Please enter a title from 2 to 100 characters.",
       );
       inputTitle.insertAdjacentHTML("afterend", lengthErrorMsg.outerHTML);
@@ -301,7 +301,7 @@ function verify_start_title_items() {
       let timeErrorMsg = document.createElement("div");
       timeErrorMsg.id = errormsg_id;
       timeErrorMsg.className = "invalid-feedback";
-      timeErrorMsg.innerHTML =
+      timeErrorMsg.textContent =
         gettext("Please enter a correct start field between 0 and") +
         " " +
         (video_duration - 1);
@@ -329,8 +329,8 @@ function verify_start_title_items() {
 
 /** Unused function. TODO: delete in 3.7.0
 function overlaptest() {
-  var new_start = parseInt(document.getElementById("id_time_start").value);
-  var id = parseInt(document.getElementById("id_chapter").value);
+  var new_start = parseInt(document.getElementById("id_time_start").value, 10);
+  var id = parseInt(document.getElementById("id_chapter").value, 10);
   var msg = "";
   document.querySelectorAll("ul#chapters li").foreach(function (li) {
     if (
@@ -378,7 +378,7 @@ const updateTimeCode = (event) => {
   }
   const parent = event.target.parentNode;
   parent.querySelectorAll("span.getfromvideo span.timecode").forEach((span) => {
-    span.innerHTML = " " + parseInt(event.target.value).toHHMMSS();
+    span.textContent = " " + parseInt(event.target.value, 10).toHHMMSS();
   });
 };
 
