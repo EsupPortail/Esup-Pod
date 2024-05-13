@@ -4,7 +4,6 @@
  */
 
 // ************* DEBUT PARAMETRAGE *************
-
 /*
  * PARAMETRAGE NECESSAIRE POUR BBB-POD-LIVE
  */
@@ -1199,7 +1198,7 @@ function writeLog($message, $level, $file = null, $line = null)
     }
 
     // Configuration du fichier de log, 1 par jour.
-    $logFile = checkEndSlash(PHYSICAL_LOG_ROOT) . gmdate("Y-m-d")."_bbb-pod-live.log";
+    $logFile = checkEndSlash(PHYSICAL_LOG_ROOT).gmdate("Y-m-d")."_bbb-pod-live.log";
 
     // En cas de non existence, on créé ce fichier.
     if (!file_exists($logFile)) {

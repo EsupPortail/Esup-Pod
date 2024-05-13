@@ -861,7 +861,7 @@ global refreshVideosSearch, CATEGORIES_DATA, BASE_URL, VIDEO_URL, EDIT_URL,
           showAlertMessage(msg_saved);
           showLoader(loader, false); // hide loader
         })
-        .catch((err) => {
+        .catch(() => {
           showLoader(loader, false);
           showAlertMessage(msg_error, false, (delay = 30000));
         });
@@ -880,7 +880,7 @@ global refreshVideosSearch, CATEGORIES_DATA, BASE_URL, VIDEO_URL, EDIT_URL,
           saveCategoryData(data.category); // saving cat localy to prevent more request to the server
           showLoader(loader, false); // hide loader
         })
-        .catch((err) => {
+        .catch(() => {
           //alert(err);
           showAlertMessage(msg_error_duplicate, false, (delay = 30000));
         });

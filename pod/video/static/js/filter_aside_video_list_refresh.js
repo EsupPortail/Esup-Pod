@@ -124,7 +124,7 @@ function refreshVideosSearch() {
         setSelectedVideos();
       }
     })
-    .catch((error) => {
+    .catch(() => {
       document.getElementById("videos_list").textContent = gettext(
         "An Error occurred while processing.",
       );

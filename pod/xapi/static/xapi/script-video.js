@@ -137,7 +137,7 @@ player.on("pause", function () {
   active_statement();
 });
 
-player.on("seeked", function (e) {
+player.on("seeked", function () {
   time_seek = player.currentTime().toFixed(3);
   action = "seeked";
   verb = {
@@ -168,7 +168,7 @@ player.on("seeked", function (e) {
   active_statement();
 });
 
-player.on("ended", function (e) {
+player.on("ended", function () {
   action = "terminated";
   verb = {
     id: __XAPI_VIDEO_VERBS__[action],
