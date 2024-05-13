@@ -13,6 +13,7 @@ source = .
 branch = True
 # Here you can exclude a file from coverage testing
 omit = pod/*settings*.py
+       pod/custom/settings*.py
        pod/*apps.py
        pod/wsgi.py
        pod/db_migrations/*

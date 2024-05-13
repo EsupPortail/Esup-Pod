@@ -142,6 +142,7 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           coverage run --append manage.py test -v 3 --settings=pod.main.test_settings
+          coverage xml -o cobertura.xml
 
       - name: Codacy coverage reporter
         run: bash <(curl -Ls https://coverage.codacy.com/get.sh)
