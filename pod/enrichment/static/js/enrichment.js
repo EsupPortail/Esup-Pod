@@ -345,7 +345,7 @@ const setTimecode = (e) => {
   const timecodeSpan = parentNode.querySelector(
     "div.getfromvideo span.timecode",
   );
-  timecodeSpan.innerHTML = " " + parseInt(e.target.value, 10).toHHMMSS();
+  timecodeSpan.textContent = " " + parseInt(e.target.value, 10).toHHMMSS();
 };
 document.addEventListener("change", setTimecode);
 

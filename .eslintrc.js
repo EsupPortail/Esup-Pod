@@ -30,6 +30,8 @@ module.exports = {
   },
   /* functions and Objects that will not trigger a "not defined" error. */
   "globals": {
+    "require": true,
+    "process": true,
     "Cookies": "readonly",
     "gettext": "readonly",
     "ngettext": "readonly",
@@ -44,6 +46,7 @@ module.exports = {
   },
   overrides: [
     {
+      // Allow use of import & export functions
       files: [ "pod/main/static/js/utils.js", "pod/video/static/js/regroup_videos_by_theme.js" ],
       parserOptions: { sourceType: "module" },
     }

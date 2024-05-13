@@ -78,7 +78,7 @@ function replaceCountVideos(newCount) {
     newCount,
   );
   videoFoundStr = interpolate(videoFoundStr, { count: newCount }, true);
-  document.getElementById("video_count").innerHTML = videoFoundStr;
+  document.getElementById("video_count").textContent = videoFoundStr;
 }
 
 /**
@@ -86,7 +86,7 @@ function replaceCountVideos(newCount) {
  */
 function refreshVideosSearch() {
   // Erase videos list and show loader
-  document.getElementById("videos_list").innerHTML = "";
+  document.getElementById("videos_list").textContent = "";
   showLoader(videosListLoader, true);
   let url = getUrlForRefresh();
   // Async GET request wth parameters by fetch method
@@ -205,7 +205,7 @@ if (ownerBox) {
     if (ownerBox.value && ownerBox.value.length > 2) {
       var searchTerm = ownerBox.value;
       getSearchListUsers(searchTerm).then((users) => {
-        filterOwnerContainer.innerHTML = "";
+        filterOwnerContainer.textContent = "";
         users.forEach((user) => {
           filterOwnerContainer.appendChild(createUserCheckBox(user));
           setListenerChangeInputs(
@@ -214,7 +214,7 @@ if (ownerBox) {
         });
       });
     } else {
-      filterOwnerContainer.innerHTML = "";
+      filterOwnerContainer.textContent = "";
     }
   });
 }
@@ -261,7 +261,7 @@ document.getElementById("resetFilters").addEventListener("click", function () {
     c_p.classList.remove("active");
   });
   if (filterOwnerContainer && ownerBox) {
-    filterOwnerContainer.innerHTML = "";
+    filterOwnerContainer.textContent = "";
     ownerBox.value = "";
   }
   window.history.pushState("", "", window.location.pathname);

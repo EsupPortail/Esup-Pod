@@ -112,7 +112,7 @@
         e.stopPropagation();
         div.remove();
       });
-    container.innerHTML = "";
+    container.textContent = "";
     container.appendChild(div);
   };
 
@@ -132,7 +132,7 @@
     }
     if (remove) loader.remove();
     else if (!container.querySelector(".spinner-border") && !remove) {
-      container.innerHTML = "";
+      container.textContent = "";
       container.appendChild(loader);
     }
   };
@@ -256,7 +256,7 @@
    * @param {HTMLElement} suggestion suggestion container
    */
   const clearSuggestions = (suggestion) => {
-    suggestion.innerHTML = "";
+    suggestion.textContent = "";
   };
 
   /**
@@ -426,7 +426,7 @@
    * @param {Array} videos list of videos
    */
   const refreshVideos = (url, videos = DATA.results) => {
-    videos_container.innerHTML = "";
+    videos_container.textContent = "";
     videos.forEach((video) => {
       const cls = choosed_videos.includes(video.id) ? "choosed" : "";
       const card = document.createElement("DIV");
@@ -521,7 +521,7 @@
       current_username_filter !== username &&
       input.isEqualNode(old_owner_input)
     ) {
-      videos_container.innerHTML = "";
+      videos_container.textContent = "";
       reset(true);
     }
   };
@@ -665,9 +665,9 @@
     }
     selectAllVideos.checked = false;
     DATA = { count: 0, next: null, previous: null, results: [] };
-    videos_container.innerHTML = "";
+    videos_container.textContent = "";
     list_videos__search.value = "";
-    list_videos__search.nextElementSibling.innerHTML = "";
+    list_videos__search.nextElementSibling.textContent = "";
     choosed_videos = [];
     refreshPageInfos(null);
     refreshPagination();

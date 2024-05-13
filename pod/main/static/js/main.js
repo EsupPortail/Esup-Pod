@@ -364,7 +364,7 @@ document.addEventListener("change", (e) => {
       .toHHMMSS();
   } else {
     txtpartage.value = txtpartage.value
-      .replace(/(\&start=)\d+/, "")
+      .replace(/(&start=)\d+/, "")
       .replace(/(\start=)\d+/, "")
       .replace(/(\?start=)\d+/, "");
 
@@ -489,8 +489,8 @@ var get_list = function (
 };
 
 /* USERS IN NAVBAR */
-if (typeof ownerBoxNavBar === undefined) {
-  let ownerBoxNavBar = document.getElementById("ownerboxnavbar");
+if (typeof ownerBoxNavBar === "undefined") {
+  var ownerBoxNavBar = document.getElementById("ownerboxnavbar");
 } else {
   ownerBoxNavBar = document.getElementById("ownerboxnavbar");
 }
@@ -500,13 +500,13 @@ if (ownerBoxNavBar) {
     if (ownerBoxNavBar.value && ownerBoxNavBar.value.length > 2) {
       var searchTerm = ownerBoxNavBar.value;
       getSearchListUsers(searchTerm).then((users) => {
-        pod_users_list.innerHTML = "";
+        pod_users_list.textContent = "";
         users.forEach((user) => {
           pod_users_list.appendChild(createUserLink(user));
         });
       });
     } else {
-      pod_users_list.innerHTML = "";
+      pod_users_list.textContent = "";
     }
   });
 }
@@ -797,8 +797,8 @@ var send_form_data = async function (
     typeof callbackSuccess === "function"
       ? callbackSuccess
       : function ($data) {
-          return $data;
-        };
+        return $data;
+      };
   callbackFail =
     typeof callbackFail === "function" ? callbackFail : function ($xhr) {};
 
@@ -879,10 +879,10 @@ var send_form_data_vanilla = function (
     typeof callbackSuccess === "function"
       ? callbackSuccess
       : function (data) {
-          return data;
-        };
+        return data;
+      };
   callbackFail =
-    typeof callbackFail === "function" ? callbackFail : function (err) {};
+    typeof callbackFail === "function" ? callbackFail : function () {};
   if (data_form) {
     data_form = new FormData(data_form);
   }
@@ -1121,8 +1121,8 @@ function show_list_theme(data) {
 /****** VIDEOS EDIT ******/
 
 /*** Copy to clipboard ***/
-if (typeof btnpartageprive === undefined) {
-  let btnpartageprive = document.getElementById("btnpartageprive");
+if (typeof btnpartageprive === "undefined") {
+  var btnpartageprive = document.getElementById("btnpartageprive");
 } else {
   btnpartageprive = document.getElementById("btnpartageprive");
 }
@@ -1137,8 +1137,8 @@ if (btnpartageprive) {
 
 /** Restrict access **/
 /** restrict access to group */
-if (typeof id_is_restricted === undefined) {
-  let id_is_restricted = document.getElementById("id_is_restricted");
+if (typeof id_is_restricted === "undefined") {
+  var id_is_restricted = document.getElementById("id_is_restricted");
 } else {
   id_is_restricted = document.getElementById("id_is_restricted");
 }
@@ -1174,8 +1174,8 @@ var restrict_access_to_groups = function () {
   }
 };
 
-if (typeof id_is_draft === undefined) {
-  let id_is_draft = document.getElementById("id_is_draft");
+if (typeof id_is_draft === "undefined") {
+  var id_is_draft = document.getElementById("id_is_draft");
 } else {
   id_is_draft = document.getElementById("id_is_draft");
 }

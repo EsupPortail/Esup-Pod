@@ -66,7 +66,7 @@ if (typeof loaded == "undefined") {
         "</a></strong>&nbsp;";
       document.getElementById("fileinput_" + id_input).innerHTML = html;
 
-      document.getElementById("modal-folder_" + id_input).innerHTML = "";
+      document.getElementById("modal-folder_" + id_input).textContent = "";
 
       let modalFile = bootstrap.Modal.getInstance(
         document.getElementById("fileModal_" + id_input)
@@ -529,7 +529,7 @@ if (typeof loaded == "undefined") {
     } else {
       let user_search = document.getElementById("user_search");
       if (user_search) {
-        user_search.innerHTML = "";
+        user_search.textContent = "";
         fadeOut(user_search, 300);
         setTimeout(() => {
           user_search.hide();
@@ -750,7 +750,7 @@ if (typeof loaded == "undefined") {
 
 
   function getFolders(search = "") {
-    document.getElementById("list_folders_sub").innerHTML = "";
+    document.getElementById("list_folders_sub").textContent = "";
     let type = document.getElementById("list_folders_sub").dataset.type;
     let currentFolder = getCurrentSessionFolder();
     let url = "/podfile/ajax_calls/user_folders";

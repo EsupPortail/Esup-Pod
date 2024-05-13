@@ -1,5 +1,5 @@
 /**
- * EsupPod Xapi video scripts.
+ * Esup-Pod Xapi video scripts.
  */
 
 // Read-only globals defined in video-script.html

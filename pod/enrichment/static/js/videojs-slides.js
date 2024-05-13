@@ -1,5 +1,22 @@
 "use-strict";
+/**
+ * Esup-Pod videojs Slides plugin
+*/
+// Read-only globals defined in video-script.html
+/*
+global player
+*/
+// Read-only globals defined in IE
+/*
+global ActiveXObject
+*/
+
 //// Begin Safari patch for enrich track
+/**
+ * Safari patch for enrich track
+ * @param {*} url
+ * @param {*} callback
+ */
 var loadEnrichmentVTTfile = function (url, callback) {
   var getXhr = function () {
       try {
@@ -72,7 +89,8 @@ var loadEnrichmentVTTfile = function (url, callback) {
         for (let i = 1; i < nbl; i++) {
           if ((m = lines[i].match(reg))) {
             fisrtcueline = i;
-            cues[c] = createEmptyCue(timeInSecond(m[1]), timeInSecond(m[2])); //console.log('Cue '+c+' is created');
+            cues[c] = createEmptyCue(timeInSecond(m[1]), timeInSecond(m[2]));
+            //console.log('Cue '+c+' is created');
             break;
           }
         }
@@ -82,7 +100,8 @@ var loadEnrichmentVTTfile = function (url, callback) {
             setCue(c, JSON.parse(txtdata.split("}")[0] + "}"));
             txtdata = "";
             c++;
-            cues[c] = createEmptyCue(timeInSecond(m[1]), timeInSecond(m[2])); //console.log('Cue '+c+' is created');
+            cues[c] = createEmptyCue(timeInSecond(m[1]), timeInSecond(m[2]));
+            //console.log('Cue '+c+' is created');
           } else {
             txtdata += lines[i];
           }
@@ -111,7 +130,7 @@ const slide_color = {
   weblink: "var(--bs-red)",
   embed: "var(--bs-green)",
 };
-//Is now a list of css class instead of video/slide width values
+// Is now a list of css class instead of video/slide width values
 const split_slide_label = gettext("Split view");
 const split_slide = "split-slide";
 const no_slide_label = gettext("slide off");

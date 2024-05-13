@@ -328,10 +328,10 @@ class Comment extends HTMLElement {
       `;
       let new_comment = add_comment.querySelector(".new_comment");
       let comment_reply_btn = add_comment.querySelector(".send_reply");
-      comment_reply_btn.addEventListener("click", (e) => {
+      comment_reply_btn.addEventListener("click", () => {
         this.submit_comment_reply(new_comment, add_comment, comment_reply_btn);
       });
-      new_comment.addEventListener("keyup", function (e) {
+      new_comment.addEventListener("keyup", function () {
         // Enable/Disable send button
         if (
           this.value.trim().length > 0 &&

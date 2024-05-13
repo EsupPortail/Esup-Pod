@@ -257,7 +257,7 @@ function verify_start_title_items() {
     inputTitle.value.length > 100
   ) {
     if (typeof lengthErrorMsg === "undefined") {
-      let lengthErrorMsg = document.createElement("div");
+      var lengthErrorMsg = document.createElement("div");
       lengthErrorMsg.id = errormsg_id;
       lengthErrorMsg.className = "invalid-feedback";
       lengthErrorMsg.textContent = gettext(
@@ -298,7 +298,7 @@ function verify_start_title_items() {
     inputStart.value >= video_duration
   ) {
     if (typeof timeErrorMsg === "undefined") {
-      let timeErrorMsg = document.createElement("div");
+      var timeErrorMsg = document.createElement("div");
       timeErrorMsg.id = errormsg_id;
       timeErrorMsg.className = "invalid-feedback";
       timeErrorMsg.textContent =

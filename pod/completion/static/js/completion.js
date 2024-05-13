@@ -40,7 +40,7 @@ document.addEventListener("reset", (event) => {
   var name_form = id_form.substring(5, id_form.length);
   var form_new = "form_new_" + name_form;
   var list = "list_" + name_form;
-  document.getElementById(id_form).innerHTML = "";
+  document.getElementById(id_form).textContent = "";
   if (id_form == "form_track")
     document.getElementById("form_track").style.width = "auto";
   document.getElementById(form_new).style.display = "block";
@@ -185,7 +185,7 @@ var sendandgetform = async function (elt, action, name, form, list) {
         document.querySelector("form.form_modif").style.display = "block";
         document.querySelector("form.form_delete").style.display = "block";
         document.querySelector("form.form_new").style.display = "block";
-        document.getElementById(form).innerHTML = "";
+        document.getElementById(form).textContent = "";
       });
 
     const formClasses = [
@@ -236,7 +236,7 @@ var sendandgetform = async function (elt, action, name, form, list) {
         document.querySelector("form.form_modif").style.display = "block";
         document.querySelector("form.form_delete").style.display = "block";
         document.querySelector("form.form_new").style.display = "block";
-        document.getElementById(form).innerHTML = "";
+        document.getElementById(form).textContent = "";
       });
 
     document.querySelector("a.title").style.display = "none";
