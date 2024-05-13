@@ -7,6 +7,11 @@
 global player
 */
 
+// Read-only globals defined in xapi/script.js
+/*
+global createStatement sendStatement
+*/
+
 const __XAPI_VIDEO_VERBS__ = {
   initialized: "http://adlnet.gov/expapi/verbs/initialized",
   played: "https://w3id.org/xapi/video/verbs/played",

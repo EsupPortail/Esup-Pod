@@ -2,6 +2,11 @@
  * @file Esup-Pod Main JavaScripts
  */
 
+// Read-only globals defined in video-script.html
+/*
+global player
+*/
+
 // this function (appendHTML) is not used elsewhere
 /*
 function appendHTML(node, html) {

@@ -1,4 +1,4 @@
-"""Esup-Pod athentication context_processors."""
+"""Esup-Pod authentication context_processors."""
 from django.conf import settings as django_settings
 
 SHIB_NAME = getattr(django_settings, "SHIB_NAME", "Identify Federation")
