@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-03 14:28+0000\n"
+"POT-Creation-Date: 2024-05-13 13:00+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -8179,13 +8179,13 @@ msgstr ""
 "l’adresse suivante : %(email_address)s</p>\n"
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "Your video will be obsolete"
-msgstr "Votre vidéo sera obsolète"
+#, python-format
+msgid "Sending mail to %(to_email)s for video %(title)s."
+msgstr "Envoi d’un courriel à %(to_email)s pour la vidéo %(title)s."
 
 #: pod/video/management/commands/check_obsolete_videos.py
-#, python-format
-msgid "Mail sent to %(to_email)s for video %(title)s."
-msgstr "Courriel envoyé à %(to_email)s pour la vidéo %(title)s."
+msgid "Your video will be obsolete"
+msgstr "Votre vidéo sera obsolète"
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format

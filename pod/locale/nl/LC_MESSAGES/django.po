@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-03 14:28+0000\n"
+"POT-Creation-Date: 2024-05-13 13:00+0000\n"
 "PO-Revision-Date: 2024-04-15 14:27+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -7607,12 +7607,12 @@ msgid ""
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "Your video will be obsolete"
+#, python-format
+msgid "Sending mail to %(to_email)s for video %(title)s."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-#, python-format
-msgid "Mail sent to %(to_email)s for video %(title)s."
+msgid "Your video will be obsolete"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py

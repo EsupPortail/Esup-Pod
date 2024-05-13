@@ -2,6 +2,11 @@
  * @file Esup-Pod functions for enrichment view.
  */
 
+// Read-only globals defined in video-script.html
+/*
+global player
+*/
+
 var id_form = "form_enrich";
 
 function removeLoadedScript(lib) {
@@ -532,8 +537,8 @@ function verify_fields() {
 /***  Verify if fields end and start are correct ***/
 function verify_end_start_items() {
   var msg = "";
-  new_start = parseInt(document.getElementById("id_start").value, 10);
-  new_end = parseInt(document.getElementById("id_end").value, 10);
+  let new_start = parseInt(document.getElementById("id_start").value, 10);
+  let new_end = parseInt(document.getElementById("id_end").value, 10);
   if (new_start > new_end) {
     msg = gettext("The start field value is greater than the end field one.");
   } else if (new_end > video_duration) {

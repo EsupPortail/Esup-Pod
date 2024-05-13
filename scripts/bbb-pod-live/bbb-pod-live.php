@@ -4,6 +4,7 @@
  */
 
 // ************* DEBUT PARAMETRAGE *************
+
 /*
  * PARAMETRAGE NECESSAIRE POUR BBB-POD-LIVE
  */
@@ -199,7 +200,7 @@ function configureBBBLiveStreaming()
     }
 
 }
-//end configureBBBLiveStreaming()
+// end configureBBBLiveStreaming()
 
 
 /**
@@ -905,7 +906,7 @@ function stopLives()
 
             $dockerFile = checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming".$ligneLiveInProgressOnThisServer->idBbbLiveStreaming."/docker-compose.yml";
             $dockerDirectory = checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming".$ligneLiveInProgressOnThisServer->idBbbLiveStreaming;
-            $cmdGrep1="grep BBB_MEETING_ID $dockerFile| cut -d\"=\" -f2";
+            $cmdGrep1 = "grep BBB_MEETING_ID $dockerFile| cut -d\"=\" -f2";
             exec("$cmdGrep1 2>&1", $aVerifGrep1, $sVerifGrep1);
             if ($sVerifGrep1 === 0) {
                 writeLog(
@@ -918,7 +919,7 @@ function stopLives()
                 // Recherche du nom du diffuseur correspondant.
                 // (sauvegardé aussi dans BBB_MEETING_TITLE du fichier compose).
                 $broadcasterName = "";
-                $cmdGrep2="grep BBB_MEETING_TITLE $dockerFile| cut -d\"=\" -f2";
+                $cmdGrep2 = "grep BBB_MEETING_TITLE $dockerFile| cut -d\"=\" -f2";
                 exec("$cmdGrep2 2>&1", $aVerifGrep2, $sVerifGrep2);
                 if ($sVerifGrep2 === 0) {
                     writeLog(
@@ -948,7 +949,7 @@ function stopLives()
                         "INFO"
                     );
                     $cmdStop = "cd $dockerDirectory; docker compose down";
-                    //  exec($command, $output, $result_code): string|false
+                    // exec($command, $output, $result_code): string|false
                     exec("$cmdStop 2>&1", null, $sVerifStop);
                     if ($sVerifStop === 0) {
                         writeLog(
@@ -996,9 +997,9 @@ function stopLives()
                         }
 
                         // Recherche si l'utilisateur a souhaité cet enregistrement.
-                        // (sauvegardé aussi dans BBB_DOWNLOAD_MEETING du fichier compose)
+                        // (sauvegardé aussi dans BBB_DOWNLOAD_MEETING du fichier compose).
                         $downloadMeeting = false;
-                        $cmdGrep3="grep BBB_DOWNLOAD_MEETING $dockerFile| cut -d\"=\" -f2";
+                        $cmdGrep3 = "grep BBB_DOWNLOAD_MEETING $dockerFile| cut -d\"=\" -f2";
                         exec("$cmdGrep3 2>&1", $aVerifGrep3, $sVerifGrep3);
                         if ($sVerifGrep3 === 0) {
                             writeLog(
@@ -1006,7 +1007,7 @@ function stopLives()
                                 "DEBUG"
                             );
                             // Nom du diffuseur correspondant.
-                            if ($aVerifGrep3[0] == "true") {
+                            if ($aVerifGrep3[0] === "true") {
                                 $downloadMeeting = true;
                             }
                         } else {
@@ -1149,13 +1150,7 @@ function processDirectory($idBbbLiveStreaming, $internalMeetingId)
         "DEBUG"
     );
 
-    try {
-        $file_content = file_get_contents($filename);
-    } catch (Exception $e) {
-        echo "Le fichier $filename n'existe pas.";
-    }
-
-    if (is_dir($dirLiveStreaming)) {
+    if (is_dir($dirLiveStreaming) === true) {
         $listFiles = scandir("$dirLiveStreaming");
         // Mise en place d'une boucle,
         // mais il ne doit y avoir qu'un seul fichier au maximum.
@@ -1163,7 +1158,7 @@ function processDirectory($idBbbLiveStreaming, $internalMeetingId)
             if (strrpos($value, ".mkv")) {
                 // Déplacer et renommer le fichier avec l'internalMeetingId.
                 $oldFilename = "$dirLiveStreaming/$value";
-                $newFilename = checkEndSlash(POD_DEFAULT_BBB_PATH)."$internalMeetingId".".mkv";
+                $newFilename = checkEndSlash(POD_DEFAULT_BBB_PATH).$internalMeetingId.".mkv";
                 writeLog(
                     "  + Déplacement du fichier $oldFilename vers $newFilename",
                     "DEBUG"
@@ -1212,7 +1207,7 @@ function writeLog($message, $level, $file = null, $line = null)
         // Une exception est levée en cas de non existence du fichier.
         // (problème manifeste de droits utilisateurs)
         if (!file_exists($logFile)) {
-            echo "Erreur de configuration : impossible de créer le fichier $logFile.";
+            print("Erreur de configuration : impossible de créer le fichier $logFile.");
             throw new Exception("Impossible de créer le fichier $logFile.");
         }
     }
