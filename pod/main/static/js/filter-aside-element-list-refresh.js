@@ -1,3 +1,7 @@
+/**
+ * Esup-Pod Filter Aside element list refresh scripts
+ */
+
 var sortDirectionChars = ["8600", "8599"];
 var sortDirectionTitle = [
   gettext("Descending sort"),

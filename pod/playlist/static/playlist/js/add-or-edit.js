@@ -27,11 +27,11 @@ function hidePasswordField(toHide) {
  */
 function updateVisibilityHelpText(visibility, helpText) {
     if (visibility == 'public') {
-        helpText.innerHTML = gettext('<b>Public:</b> the playlist can be accessed by anyone.');
+        helpText.textContent = gettext('<b>Public:</b> the playlist can be accessed by anyone.');
     } else if (visibility == 'protected') {
-        helpText.innerHTML = gettext('<b>Password-protected:</b> the playlist can be accessed by anyone with the appropriate link and password.');
+        helpText.textContent = gettext('<b>Password-protected:</b> the playlist can be accessed by anyone with the appropriate link and password.');
     } else if (visibility == 'private') {
-        helpText.innerHTML = gettext('<b>Private:</b> only you have access to this playlist.');
+        helpText.textContent = gettext('<b>Private:</b> only you have access to this playlist.');
     }
 }
 

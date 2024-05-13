@@ -344,14 +344,14 @@ document.addEventListener("change", (e) => {
   if (displayTime.checked) {
     if (txtpartage.value.indexOf("start") < 0) {
       txtpartage.value =
-        txtpartage.value + "&start=" + parseInt(player.currentTime());
+        txtpartage.value + "&start=" + parseInt(player.currentTime(), 10);
 
       if (txtpartage.value.indexOf("??") > 0)
         txtpartage.value = txtpartage.value.replace("??", "?");
       var valeur = txtinteg.value;
       txtinteg.value = valeur.replace(
         "/?",
-        "/?start=" + parseInt(player.currentTime()) + "&",
+        "/?start=" + parseInt(player.currentTime(), 10) + "&",
       );
     }
     document.getElementById("txtposition").value = player
@@ -707,7 +707,7 @@ document.addEventListener("click", (e) => {
   });
 
   window.scrollTo({
-    top: parseInt(document.getElementById("list_theme").offsetTop),
+    top: parseInt(document.getElementById("list_theme").offsetTop, 10),
     behavior: "smooth",
   });
 });
@@ -1092,7 +1092,7 @@ function show_form_theme(data) {
   if (data != "")
     document.querySelector("form.get_form_theme").style.display = "none";
   window.scrollTo({
-    top: parseInt(document.getElementById("div_form_theme").offsetTop),
+    top: parseInt(document.getElementById("div_form_theme").offsetTop, 10),
     behavior: "smooth",
   });
 }
@@ -1108,7 +1108,7 @@ function show_list_theme(data) {
   fadeIn(list_theme);
   //$('form.get_form_theme').show();
   window.scrollTo({
-    top: parseInt(document.getElementById("list_theme").offsetTop),
+    top: parseInt(document.getElementById("list_theme").offsetTop, 10),
     behavior: "smooth",
   });
 }

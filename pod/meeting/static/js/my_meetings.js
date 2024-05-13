@@ -26,7 +26,7 @@ meetingModal.addEventListener("show.bs.modal", function (event) {
     })
     .then(function (data) {
       if (data.msg != "") {
-        modalBody.innerHTML = gettext(
+        modalBody.textContent = gettext(
           "Unable to find information about the meeting",
         );
         console.log(data.msg);
