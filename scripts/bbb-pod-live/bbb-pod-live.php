@@ -4,7 +4,10 @@
  */
 
 // ************* DEBUT PARAMETRAGE *************
-/* PARAMETRAGE NECESSAIRE POUR BBB-POD-LIVE */
+/*
+ * PARAMETRAGE NECESSAIRE POUR BBB-POD-LIVE
+ */
+
 // Application en mode débogage (true - on logue toutes les lignes)
 // ou en production (false - on logue seulement les erreurs et infos).
 define("DEBUG", true);
@@ -31,7 +34,10 @@ define("SERVER_NUMBER", 1);
 // (à adapter selon les ressources du serveur).
 define("NUMBER_LIVES", 3);
 
-/* PARAMETRAGE NECESSAIRE POUR BigBlueButton-liveStreaming */
+/*
+ * PARAMETRAGE NECESSAIRE POUR BigBlueButton-liveStreaming
+ */
+
 // URL du serveur BigBlueButton/Scalelite, avec la notion d'API.
 define("BBB_URL", "https://bbb.univ.fr/bigbluebutton/api");
 // Clé secrète du serveur BigBlueButton/Scalelite.
@@ -59,7 +65,10 @@ define("BBB_ATTENDEE_PASSWORD", "xxxxxxx");
 define("BBB_MODERATOR_PASSWORD", "xxxxxxx");
 
 
-/* PARAMETRAGE NECESSAIRE POUR POD */
+/*
+ * PARAMETRAGE NECESSAIRE POUR POD
+ */
+
 // Flux HLS, dépend de la configuration du serveur RTMP Nginx utilisé
 define("POD_HLS_STREAM", "https://live.univ.fr/hls/");
 // URL du serveur Pod
@@ -78,7 +87,6 @@ define("POD_ID_BUILDING", 1);
 // USE_BBB_LIVE_DOWNLOADING = False dans le settings_local de POD.
 define("POD_DEFAULT_BBB_PATH", "/data/www/pod/bbb-recorder/");
 // FIN PARAMETRAGE.
-
 /*
  * Variables globales
  */
@@ -89,7 +97,7 @@ $txtErrorInScript = "";
 $livesInProgressOnThisServer = array();
 
 /*
-  Début de la phase principale
+ * Début de la phase principale
  */
 
 try {
@@ -130,6 +138,7 @@ if ($GLOBALS["txtErrorInScript"] != "") {
 }
 // Fin de la phase principale.
 
+
 /**
  * Procédure de création et de configuration initiale
  * des différents plugin BigBlueButton-liveStreaming.
@@ -146,26 +155,26 @@ function configureBBBLiveStreaming()
     );
 
     /*
-     Création des répertoires et des fichiers compose
-     pour le plugin BigBlueButton-liveStreaming.
+        Création des répertoires et des fichiers compose
+        pour le plugin BigBlueButton-liveStreaming.
     */
     for ($i = 1; $i <= NUMBER_LIVES; $i++) {
         // Définition du répertoire.
-        $directoryLiveStreaming = checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming$i/";
+        $dirLiveStreaming = checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming$i/";
         writeLog(
-            "Vérification pour le direct $i : $directoryLiveStreaming",
+            "Vérification pour le direct $i : $dirLiveStreaming",
             "DEBUG"
         );
         // Définition du fichier compose.yml dans ce répertoire.
-        $fichierCompose = $directoryLiveStreaming."docker-compose.yml";
+        $fichierCompose = $dirLiveStreaming."docker-compose.yml";
         // Création du répertoire et du fichier la 1° fois.
-        if (! file_exists($fichierCompose)) {
+        if (file_exists($fichierCompose) === false) {
             // Création du répertoire.
             writeLog(
-                "  + Création du répertoire $directoryLiveStreaming",
+                "  + Création du répertoire $dirLiveStreaming",
                 "DEBUG"
             );
-            @mkdir("$directoryLiveStreaming", 0755);
+            @mkdir("$dirLiveStreaming", 0755);
             // Téléchargement du fichier compose depuis Github.
             writeLog(
                 "  + Copie du fichier docker-compose.default.yml du répertoire courant",
@@ -187,7 +196,8 @@ function configureBBBLiveStreaming()
             }
         }
     }
-}
+
+} //end configureBBBLiveStreaming()
 
 
 /**
@@ -217,7 +227,7 @@ function startLives()
     );
 
     // En cas d'erreur, le code de retour est différent de 0.
-    if ($sVerifStatus1 == 0) {
+    if ($sVerifStatus1 === 0) {
         writeLog(
             "  + Commande '$cmdStatus1' : $aVerifStatus1[0]",
             "DEBUG"
@@ -273,7 +283,7 @@ function startLives()
     );
 
     // En cas d'erreur, le code de retour est différent de 0.
-    if ($sVerifStatus0 == 0) {
+    if ($sVerifStatus0 === 0) {
         writeLog(
             "  + Commande '$cmdStatus0' : $aVerifStatus0[0]",
             "DEBUG"
@@ -292,8 +302,9 @@ function startLives()
             $status = $oListeSessions->results[$i]->status;
             // Utilisateur ayant lancé ce live.
             $user = $oListeSessions->results[$i]->user;
-            /* Identifiant du répertoire bbb-live-streaming qui s'occupera de
-               réaliser le live, si disponible */
+            /*
+                Identifiant du répertoire bbb-live-streaming qui s'occupera de
+                réaliser le live, si disponible */
             $idBbbLiveStreaming = 0;
             // Recherche si ce serveur peut encore lancer un direct.
             for ($j = 1; $j <= NUMBER_LIVES; $j++) {
@@ -301,13 +312,13 @@ function startLives()
                 $idBbbLiveStreamingUsed = false;
                 foreach ($GLOBALS["livesInProgressOnThisServer"] as $ligneLiveInProgressOnThisServer) {
                     // Cet idBbbLiveStreaming est déjà utilisé.
-                    if ($ligneLiveInProgressOnThisServer->idBbbLiveStreaming == $j) {
+                    if ($ligneLiveInProgressOnThisServer->idBbbLiveStreaming === $j) {
                         $idBbbLiveStreamingUsed = true;
                     }
                 }
                 // Le slot idBbbLiveStreaming est non utilisé.
-                if (! $idBbbLiveStreamingUsed) {
-                    // Un slot est disponible
+                if ($idBbbLiveStreamingUsed === false) {
+                    // Un slot est disponible.
                     $idBbbLiveStreaming = $j;
                     // Ajout de l'information aux lives en cours sur ce serveur.
                     $liveInProgress2 = new stdClass();
@@ -318,7 +329,7 @@ function startLives()
                 }
             }
             // Un slot est disponible sur ce serveur pour réaliser un live ?
-            if ($idBbbLiveStreaming == 0) {
+            if ($idBbbLiveStreaming === 0) {
                 writeLog(
                     "     => Impossible de lancer le live $idLive de $user sur ce serveur : il y a déjà ".NUMBER_LIVES." directs qui sont gérés par ce serveur.",
                     "INFO"
@@ -369,7 +380,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         "DEBUG"
     );
 
-    if ($sVerif == 0) {
+    if ($sVerif === 0) {
         writeLog(
             "  + Commande '$cmd' : $aVerif[0]",
             "DEBUG"
@@ -377,20 +388,22 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
 
         // Récupération de l'objet meeting.
         $oMeeting = json_decode($aVerif[0]);
-        /* Nom de la session, sans caractères problématiques ni espaces, et la
-           chaîne bbb- en premier pour éviter toute confusion
-           avec un diffuseur existant. */
+        /*
+            Nom de la session, sans caractères problématiques ni espaces, et la
+            chaîne bbb- en premier pour éviter toute confusion
+            avec un diffuseur existant. */
         $nameMeeting = "bbb-".formatString($oMeeting->meeting_name);
-        /* Nom de la session, sans caractères problématiques avec espaces,
-           et la chaîne [BBB] en premier pour éviter toute confusion
-           avec un diffuseur existant. */
+        /*
+            Nom de la session, sans caractères problématiques avec espaces,
+            et la chaîne [BBB] en premier pour éviter toute confusion
+            avec un diffuseur existant. */
         $nameMeetingToDisplay = "[BBB] ".formatStringToDisplay($oMeeting->meeting_name);
         // Id de la session.
         $idMeeting = $oMeeting->meeting_id;
 
-
-        /* Récupération des informations concernant
-           les options saisies par l'utilisateur. */
+        /*
+            Récupération des informations concernant
+            les options saisies par l'utilisateur. */
         $cmdOptions = "curl --silent -H 'Content-Type: application/json' ";
         $cmdOptions .= "-H 'Authorization: Token ".POD_TOKEN."' ";
         $cmdOptions .= "-X GET ".checkEndWithoutSlash(POD_URL)."/rest/bbb_livestream/$idLive/";
@@ -405,29 +418,29 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         $enableChat = "false";
         $showChat = "true";
         $downloadMeeting = "false";
-        if ($sVerifOptions == 0) {
+        if ($sVerifOptions === 0) {
             // Récupération de l'objet live.
             $oLive = json_decode($aVerifOptions[0]);
             // Accès restreint.
-            if ($oLive->is_restricted == 1) {
+            if ($oLive->is_restricted === 1) {
                 $isRestricted = "true";
             } else {
                 $isRestricted = "false";
             }
             // Utilisation du chat.
-            if ($oLive->enable_chat == 1) {
+            if ($oLive->enable_chat === 1) {
                 $enableChat = "true";
             } else {
                 $enableChat = "false";
             }
             // Affichage du chat dans la vidéo.
-            if ($oLive->show_chat == 1) {
+            if ($oLive->show_chat === 1) {
                 $showChat = "true";
             } else {
                 $showChat = "false";
             }
             // Téléchargement de la vidéo en fin de live.
-            if ($oLive->download_meeting == 1) {
+            if ($oLive->download_meeting === 1) {
                 $downloadMeeting = "true";
             } else {
                 $downloadMeeting = "false";
@@ -439,7 +452,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
             );
         }
 
-        /* Modification de la configuration du docker-compose.yml */
+        // Modification de la configuration du docker-compose.yml.
         writeLog(
             "  + Modification de la configuration du docker-compose.yml",
             "DEBUG"
@@ -449,29 +462,31 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         $nameContainer = "liveStreaming".$idBbbLiveStreaming;
         $cmdSed0 = "sed -i \"s/^.*container_name:.*/    container_name: $nameContainer/\" $dockerFile";
         exec("$cmdSed0 2>&1", $aVerifSed0, $sVerifSed0);
-        if ($sVerifSed0 != 0) {
+        if ($sVerifSed0 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed0' : $aVerifSed0[0]",
                 "ERROR", __FILE__, __LINE__
             );
         }
-        /* Configuration du port utilisé par le host (ligne sous ports:),
-           de la forme - "6379:6379" pour 1°, - "6380:6379" pour le 2°.... */
+        /*
+            Configuration du port utilisé par le host (ligne sous ports:),
+            de la forme - "6379:6379" pour 1°, - "6380:6379" pour le 2°... */
         $port = 6378 + $idBbbLiveStreaming;
         $cmdSed01 = "sed -i \"s/^.*:6379:.*/     - \"$port:6379\"/\" $dockerFile";
         exec("$cmdSed01 2>&1", $aVerifSed01, $sVerifSed01);
-        if ($sVerifSed01 != 0) {
+        if ($sVerifSed01 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed01' : $aVerifSed01[0]",
                 "ERROR", __FILE__, __LINE__
             );
         }
-        /* Configuration du serveur BBB/Scalelite (BBB_URL)
-           Gestion des caractères / de BBB_URL pour être utilisé via sed */
+        /*
+            Configuration du serveur BBB/Scalelite (BBB_URL)
+            Gestion des caractères / de BBB_URL pour être utilisé via sed. */
         $bbbURL = str_replace("/", "\/", checkEndWithoutSlash(BBB_URL));
         $cmdSed1 = "sed -i \"s/^.*BBB_URL=.*/      - BBB_URL=$bbbURL/\" $dockerFile";
         exec("$cmdSed1 2>&1", $aVerifSed1, $sVerifSed1);
-        if ($sVerifSed1 != 0) {
+        if ($sVerifSed1 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed1' : $aVerifSed1[0]",
                 "ERROR", __FILE__, __LINE__
@@ -480,7 +495,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         // Configuration de la clé secrète (BBB_SECRET).
         $cmdSed2 = "sed -i \"s/^.*BBB_SECRET=.*/      - BBB_SECRET=".BBB_SECRET."/\" $dockerFile";
         exec("$cmdSed2 2>&1", $aVerifSed2, $sVerifSed2);
-        if ($sVerifSed2 != 0) {
+        if ($sVerifSed2 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed2' : $aVerifSed2[0]",
                 "ERROR", __FILE__, __LINE__
@@ -489,7 +504,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         // Configuration de la timezone (TZ).
         $cmdSed3 = "sed -i \"s/^.*TZ=.*/      - TZ=Europe\/Paris/\" $dockerFile";
         exec("$cmdSed3 2>&1", $aVerifSed3, $sVerifSed3);
-        if ($sVerifSed3 != 0) {
+        if ($sVerifSed3 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed3' : $aVerifSed3[0]",
                 "ERROR", __FILE__, __LINE__
@@ -498,7 +513,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         // Configuration de la résolution (BBB_RESOLUTION).
         $cmdSed4 = "sed -i \"s/^.*BBB_RESOLUTION=.*/      - BBB_RESOLUTION=".BBB_RESOLUTION."/\" $dockerFile";
         exec("$cmdSed4 2>&1", $aVerifSed4, $sVerifSed4);
-        if ($sVerifSed4 != 0) {
+        if ($sVerifSed4 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed4' : $aVerifSed4[0]",
                 "ERROR", __FILE__, __LINE__
@@ -507,7 +522,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         // Configuration du bitrate de la vidéo (FFMPEG_STREAM_VIDEO_BITRATE).
         $cmdSed5 = "sed -i \"s/^.*FFMPEG_STREAM_VIDEO_BITRATE=.*/      - FFMPEG_STREAM_VIDEO_BITRATE=".FFMPEG_STREAM_VIDEO_BITRATE."/\" $dockerFile";
         exec("$cmdSed5 2>&1", $aVerifSed5, $sVerifSed5);
-        if ($sVerifSed5 != 0) {
+        if ($sVerifSed5 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed5' : $aVerifSed5[0]",
                 "ERROR", __FILE__, __LINE__
@@ -516,17 +531,18 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         // Configuration du nombre de threads (FFMPEG_STREAM_THREADS).
         $cmdSed6 = "sed -i \"s/^.*FFMPEG_STREAM_THREADS=.*/      - FFMPEG_STREAM_THREADS=".FFMPEG_STREAM_THREADS."/\" $dockerFile";
         exec("$cmdSed6 2>&1", $aVerifSed6, $sVerifSed6);
-        if ($sVerifSed6 != 0) {
+        if ($sVerifSed6 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed6' : $aVerifSed6[0]",
                 "ERROR", __FILE__, __LINE__
             );
         }
-        /* Modification de la ligne concernant l'id
-           de la session à streamer (BBB_MEETING_ID). */
+        /*
+            Modification de la ligne concernant l'id
+            de la session à streamer (BBB_MEETING_ID). */
         $cmdSed7 = "sed -i \"s/^.*BBB_MEETING_ID=.*/      - BBB_MEETING_ID=$idMeeting/\" ".$dockerFile;
         exec("$cmdSed7 2>&1", $aVerifSed7, $sVerifSed7);
-        if ($sVerifSed7 != 0) {
+        if ($sVerifSed7 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed7' : $aVerifSed7[0]",
                 "ERROR", __FILE__, __LINE__
@@ -537,67 +553,73 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         $rtmpServer = str_replace("/", "\/", checkEndSlash(BBB_STREAM_URL));
         $cmdSed8 = "sed -i \"s/^.*BBB_STREAM_URL=.*/      - BBB_STREAM_URL=".$rtmpServer."$nameMeeting/\" ".$dockerFile;
         exec("$cmdSed8 2>&1", $aVerifSed8, $sVerifSed8);
-        if ($sVerifSed8 != 0) {
+        if ($sVerifSed8 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed8' : $aVerifSed8[0]",
                 "ERROR", __FILE__, __LINE__
             );
         }
-        /* Modification de la ligne concernant
-           l'utilisation de chat (BBB_ENABLE_CHAT). */
+        /*
+            Modification de la ligne concernant
+            l'utilisation de chat (BBB_ENABLE_CHAT). */
         $cmdSed9 = "sed -i \"s/^.*BBB_ENABLE_CHAT=.*/      - BBB_ENABLE_CHAT=$enableChat/\" ".$dockerFile;
         exec("$cmdSed9 2>&1", $aVerifSed9, $sVerifSed9);
-        if ($sVerifSed9 != 0) {
+        if ($sVerifSed9 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed9' : $aVerifSed9[0]",
                 "ERROR", __FILE__, __LINE__
             );
         }
-        /* Modification de la ligne concernant l'affichage
-           du chat dans la vidéo (BBB_SHOW_CHAT) */
+        /*
+            Modification de la ligne concernant l'affichage
+            du chat dans la vidéo (BBB_SHOW_CHAT) */
         $cmdSed10 = "sed -i \"s/^.*BBB_SHOW_CHAT=.*/      - BBB_SHOW_CHAT=$showChat/\" ".$dockerFile;
         exec("$cmdSed10 2>&1", $aVerifSed10, $sVerifSed10);
-        if ($sVerifSed10 != 0) {
+        if ($sVerifSed10 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed10' : $aVerifSed10[0]",
                 "ERROR", __FILE__, __LINE__
             );
         }
-        /* Modification de la ligne concernant l'enregistrement
-           de la vidéo du live (BBB_DOWNLOAD_MEETING) */
+        /*
+            Modification de la ligne concernant l'enregistrement
+            de la vidéo du live (BBB_DOWNLOAD_MEETING) */
         $cmdSed11 = "sed -i \"s/^.*BBB_DOWNLOAD_MEETING=.*/      - BBB_DOWNLOAD_MEETING=$downloadMeeting/\" ".$dockerFile;
         exec("$cmdSed11 2>&1", $aVerifSed11, $sVerifSed11);
-        if ($sVerifSed11 != 0) {
+        if ($sVerifSed11 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed11' : $aVerifSed11[0]",
                 "ERROR", __FILE__, __LINE__
             );
         }
-        /* Modification de la ligne concernant le titre
-           de la session (BBB_MEETING_TITLE) */
+        /*
+            Modification de la ligne concernant le titre
+            de la session (BBB_MEETING_TITLE) */
         $cmdSed12 = "sed -i \"s/^.*BBB_MEETING_TITLE=.*/      - BBB_MEETING_TITLE=$nameMeetingToDisplay/\" ".$dockerFile;
         exec("$cmdSed12 2>&1", $aVerifSed12, $sVerifSed12);
-        if ($sVerifSed12 != 0) {
+        if ($sVerifSed12 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed12' : $aVerifSed12[0]",
                 "ERROR", __FILE__, __LINE__
             );
         }
-        /* Modification de la ligne concernant le mot de passe
-           d'un participant de la session (BBB_ATTENDEE_PASSWORD) */
+        /*
+            Modification de la ligne concernant le mot de passe
+            d'un participant de la session (BBB_ATTENDEE_PASSWORD) */
         $cmdSed13 = "sed -i \"s/^.*BBB_ATTENDEE_PASSWORD=.*/      - BBB_ATTENDEE_PASSWORD=".BBB_ATTENDEE_PASSWORD."/\" ".$dockerFile;
         exec("$cmdSed13 2>&1", $aVerifSed13, $sVerifSed13);
-        if ($sVerifSed13 != 0) {
+        if ($sVerifSed13 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed13' : $aVerifSed13[0]",
                 "ERROR", __FILE__, __LINE__
             );
         }
-        /* Modification de la ligne concernant le mot de passe
-           d'un modérateur de la session (BBB_MODERATOR_PASSWORD) */
+        /*
+            Modification de la ligne concernant le mot de passe
+            d'un modérateur de la session (BBB_MODERATOR_PASSWORD) */
         $cmdSed14 = "sed -i \"s/^.*BBB_MODERATOR_PASSWORD=.*/      - BBB_MODERATOR_PASSWORD=".BBB_MODERATOR_PASSWORD."/\" ".$dockerFile;
         exec("$cmdSed14 2>&1", $aVerifSed14, $sVerifSed14);
-        if ($sVerifSed14 != 0) {
+        if ($sVerifSed14 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed14' : $aVerifSed14[0]",
                 "ERROR", __FILE__, __LINE__
@@ -609,7 +631,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         $channelRedis = "chat".$idBbbLiveStreaming;
         $cmdSed15 = "sed -i \"s/^.*BBB_REDIS_CHANNEL=.*/      - BBB_REDIS_CHANNEL=$channelRedis/\" ".$dockerFile;
         exec("$cmdSed15 2>&1", $aVerifSed15, $sVerifSed15);
-        if ($sVerifSed15 != 0) {
+        if ($sVerifSed15 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed15' : $aVerifSed15[0]",
                 "ERROR", __FILE__, __LINE__
@@ -623,14 +645,14 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
         }
         $cmdSed16 = "sed -i \"s/^.*DEBUG=.*/      - DEBUG=$debug/\" ".$dockerFile;
         exec("$cmdSed16 2>&1", $aVerifSed16, $sVerifSed16);
-        if ($sVerifSed16 != 0) {
+        if ($sVerifSed16 !== 0) {
             writeLog(
                 "      - Commande '$cmdSed16' : $aVerifSed16[0]",
                 "ERROR", __FILE__, __LINE__
             );
         }
 
-        /* Création du diffuseur correspondant dans Pod */
+        // Création du diffuseur correspondant dans Pod.
         $cmdBroadcaster = "curl --silent  -H 'Content-Type: multipart/form-data' ";
         $cmdBroadcaster .= "-H 'Authorization: Token ".POD_TOKEN."' ";
         $cmdBroadcaster .= "-F 'url=".checkEndSlash(POD_HLS_STREAM)."$nameMeeting.m3u8' ";
@@ -643,7 +665,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
             "DEBUG"
         );
 
-        if ($sVerifBroadcaster == 0) {
+        if ($sVerifBroadcaster === 0) {
             writeLog(
                 "    - Commande '$cmdBroadcaster' : $aVerifBroadcaster[0]",
                 "DEBUG"
@@ -654,9 +676,10 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
             // Récupération du diffuseur créé.
             $oBroadcaster = json_decode($aVerifBroadcaster[0]);
 
-            /* Si le diffuseur existe déjà,
-               $aVerifBroadcaster[0] contiendra un message d'avertissement du type :
-               {"url":["Un objet Diffuseur avec ce champ URL existe déjà."],
+            /*
+                Si le diffuseur existe déjà,
+                $aVerifBroadcaster[0] contiendra un message d'avertissement du type :
+                {"url":["Un objet Diffuseur avec ce champ URL existe déjà."],
                 "name":["Un objet Diffuseur avec ce champ nom existe déjà."]} */
             if (strpos($aVerifBroadcaster[0], "Un objet Diffuseur avec ce champ nom existe déjà.") !== false) {
                 $cmdBroadcaster2 = "curl --silent -H 'Content-Type: application/json' ";
@@ -668,7 +691,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
                     "  + Récupération du diffuseur déjà existant dans Pod",
                     "DEBUG"
                 );
-                if ($sVerifBroadcaster2 == 0) {
+                if ($sVerifBroadcaster2 === 0) {
                     writeLog(
                         "    - Commande '$cmdBroadcaster2' : $aVerifBroadcaster2[0]",
                         "DEBUG"
@@ -685,7 +708,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
                 $idBroadcaster = $oBroadcaster->id;
             }
 
-            if ($idBroadcaster != 0) {
+            if ($idBroadcaster !== 0) {
                 writeLog(
                     "      + Utilisation du diffuseur $idBroadcaster",
                     "DEBUG"
@@ -752,7 +775,7 @@ function startLive($idLive, $streamName, $idBbbLiveStreaming, $idBroadcaster)
         "DEBUG"
     );
 
-    if ($sVerif == 0) {
+    if ($sVerif === 0) {
         writeLog(
             "  + Commande '$cmd'",
             "DEBUG"
@@ -778,7 +801,7 @@ function startLive($idLive, $streamName, $idBbbLiveStreaming, $idBroadcaster)
             "DEBUG"
         );
 
-        if ($sVerifMajPod == 0) {
+        if ($sVerifMajPod === 0) {
             writeLog(
                 "    - Commande '$cmdMajPod' : $aVerifMajPod[0]",
                 "DEBUG"
@@ -845,13 +868,14 @@ function stopLives()
 
         // Recherche de tous les directs marqués comme étant en cours.
         foreach ($GLOBALS["livesInProgressOnThisServer"] as $ligneLiveInProgressOnThisServer) {
-            /* Récupération du BBB_MEETING_ID
-               correspondant dans le docker-compose.yml */
+            /*
+                Récupération du BBB_MEETING_ID
+                correspondant dans le docker-compose.yml. */
             $dockerFile = checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming".$ligneLiveInProgressOnThisServer->idBbbLiveStreaming."/docker-compose.yml";
             $dockerDirectory = checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming".$ligneLiveInProgressOnThisServer->idBbbLiveStreaming;
             $cmdGrep1="grep BBB_MEETING_ID $dockerFile| cut -d\"=\" -f2";
             exec("$cmdGrep1 2>&1", $aVerifGrep1, $sVerifGrep1);
-            if ($sVerifGrep1 == 0) {
+            if ($sVerifGrep1 === 0) {
                 writeLog(
                     "  + Commande '$cmdGrep1' : $aVerifGrep1[0]",
                     "DEBUG"
@@ -864,7 +888,7 @@ function stopLives()
                 $broadcasterName = "";
                 $cmdGrep2="grep BBB_MEETING_TITLE $dockerFile| cut -d\"=\" -f2";
                 exec("$cmdGrep2 2>&1", $aVerifGrep2, $sVerifGrep2);
-                if ($sVerifGrep2 == 0) {
+                if ($sVerifGrep2 === 0) {
                     writeLog(
                         "  + Commande '$cmdGrep2' : $aVerifGrep2[0]",
                         "DEBUG"
@@ -883,7 +907,7 @@ function stopLives()
                 //  - on supprime le diffuseur correspondant
                 //  - on copie, pour permettre l'encodage, le fichier vidéo
                 //    si l'utilisateur a enregistré la session
-                if (! in_array($bbbMeetingId, $meetingsInProgressOnBBB)) {
+                if (in_array($bbbMeetingId, $meetingsInProgressOnBBB) === false) {
                     writeLog(
                         "   + La session BigBlueButton $bbbMeetingId est arrêtée. Arrêt du container docker $dockerFile, suppression du diffuseur correspondant, copie du fichier vidéo généré selon le souhait de l'utilisateur",
                         "INFO"
@@ -891,7 +915,7 @@ function stopLives()
                     $cmdStop = "cd $dockerDirectory; docker compose down";
                     //  exec($command, $output, $result_code): string|false
                     exec("$cmdStop 2>&1", null, $sVerifStop);
-                    if ($sVerifStop == 0) {
+                    if ($sVerifStop === 0) {
                         writeLog(
                             "   - Le container docker $dockerDirectory est bien arrêté",
                             "DEBUG"
@@ -915,7 +939,7 @@ function stopLives()
                         $urlApiRestMeeting = "";
                         // URL de l'API Rest du user qui a réalisé le live en cours d'arrêt.
                         $urlApiRestUser = "";
-                        if ($sVerifMajPod1 == 0) {
+                        if ($sVerifMajPod1 === 0) {
                             writeLog(
                                 "    - Commande '$cmdMajPod1' : $aVerifMajPod1[0]",
                                 "DEBUG"
@@ -941,7 +965,7 @@ function stopLives()
                         $downloadMeeting = false;
                         $cmdGrep3="grep BBB_DOWNLOAD_MEETING $dockerFile| cut -d\"=\" -f2";
                         exec("$cmdGrep3 2>&1", $aVerifGrep3, $sVerifGrep3);
-                        if ($sVerifGrep3 == 0) {
+                        if ($sVerifGrep3 === 0) {
                             writeLog(
                                 "  + Commande '$cmdGrep3' : $aVerifGrep3[0]",
                                 "DEBUG"
@@ -960,8 +984,9 @@ function stopLives()
                         // Copie du fichier vidéo créé : si c'est configuré pour
                         //et que l'utilisateur a souhaité cet enregistrement.
                         if (POD_DEFAULT_BBB_PATH != "" && $downloadMeeting) {
-                            /* Recherche de internal_meeting_id
-                               correspondant à cette session. */
+                            /*
+                                Recherche de internal_meeting_id
+                                correspondant à cette session. */
                             $cmdMajPod2 = "curl --silent -H 'Content-Type: application/json' ";
                             $cmdMajPod2 .= "-H 'Authorization: Token ".POD_TOKEN."' ";
                             $cmdMajPod2 .= "-X PATCH -d '{\"encoded_by\":\"$urlApiRestUser\", \"encoding_step\":3}' ";
@@ -973,14 +998,15 @@ function stopLives()
                                 "DEBUG"
                             );
                             $internalMeetingId = "";
-                            if ($sVerifMajPod2 == 0) {
+                            if ($sVerifMajPod2 === 0) {
                                 writeLog(
                                     "    - Commande '$cmdMajPod2' : $aVerifMajPod2[0]",
                                     "DEBUG"
                                 );
 
-                                /* Recherche de l'internal_meeting_id
-                                   correspondant au meeting. */
+                                /*
+                                    Recherche de l'internal_meeting_id
+                                    correspondant au meeting. */
                                 $oMeeting = json_decode($aVerifMajPod2[0]);
                                 if (isset($oMeeting->internal_meeting_id)) {
                                     $internalMeetingId = $oMeeting->internal_meeting_id;
@@ -1030,7 +1056,7 @@ function deleteBroadcaster($broadcasterName)
 {
     // Via l'API, il faut utiliser le slug et non le nom.
     $slug = str_replace("[BBB]", "bbb", $broadcasterName);
-    /* Suppression du diffuseur correspondant dans Pod */
+    // Suppression du diffuseur correspondant dans Pod.
     $cmdBroadcaster = "curl --silent ";
     $cmdBroadcaster .= "-H 'Authorization: Token ".POD_TOKEN."' ";
     $cmdBroadcaster .= "-X DELETE '".checkEndWithoutSlash(POD_URL)."/rest/broadcasters/$slug/'";
@@ -1041,7 +1067,7 @@ function deleteBroadcaster($broadcasterName)
         "DEBUG"
     );
 
-    if ($sVerifBroadcaster == 0) {
+    if ($sVerifBroadcaster === 0) {
         writeLog(
             "    - Commande '$cmdBroadcaster' exécutée",
             "DEBUG"
@@ -1078,19 +1104,19 @@ function processDirectory($idBbbLiveStreaming, $internalMeetingId)
     // Parcours du répertoire videodata du répertoire
     // BigBlueButton-liveStreaming concerné
     // Définition du répertoire.
-    $directoryLiveStreaming = checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming$idBbbLiveStreaming/videodata";
+    $dirLiveStreaming = checkEndSlash(PHYSICAL_BASE_ROOT)."bbb-live-streaming$idBbbLiveStreaming/videodata";
     writeLog(
-        "Recherche de fichiers vidéos pour le direct $idBbbLiveStreaming : $directoryLiveStreaming",
+        "Recherche de fichiers vidéos pour le direct $idBbbLiveStreaming : $dirLiveStreaming",
         "DEBUG"
     );
-    if (file_exists($directoryLiveStreaming)) {
-        $listFiles = scandir("$directoryLiveStreaming");
+    if (file_exists($dirLiveStreaming)) {
+        $listFiles = scandir("$dirLiveStreaming");
         // Mise en place d'une boucle,
         // mais il ne doit y avoir qu'un seul fichier au maximum.
         foreach ($listFiles as $key => $value) {
             if (strrpos($value, ".mkv")) {
                 // Déplacer et renommer le fichier avec l'internalMeetingId.
-                $oldFilename = "$directoryLiveStreaming/$value";
+                $oldFilename = "$dirLiveStreaming/$value";
                 $newFilename = checkEndSlash(POD_DEFAULT_BBB_PATH)."$internalMeetingId".".mkv";
                 writeLog(
                     "  + Déplacement du fichier $oldFilename vers $newFilename",
@@ -1126,7 +1152,7 @@ function writeLog($message, $level, $file = null, $line = null)
     }
 
     // Création du répertoire des logs si besoin.
-    if (! file_exists(checkEndSlash(PHYSICAL_LOG_ROOT))) {
+    if (file_exists(checkEndSlash(PHYSICAL_LOG_ROOT)) === false) {
         // Création du répertoire.
         @mkdir(checkEndSlash(PHYSICAL_LOG_ROOT), 0755);
     }
