@@ -22,7 +22,8 @@ RUN apt-get update \
         ffmpeg \
         ffmpegthumbnailer \
         imagemagick \
-    && apt-get clean
+    && apt-get clean\
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 

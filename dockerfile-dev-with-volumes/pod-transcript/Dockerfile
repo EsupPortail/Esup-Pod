@@ -21,7 +21,8 @@ RUN apt-get update \
         netcat \
         sox \
         libsox-fmt-mp3 \
-    && apt-get clean
+    && apt-get clean\
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 

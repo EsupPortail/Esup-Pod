@@ -21,7 +21,8 @@ FROM $PYTHON_VERSION
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends netcat gettext \
-    && apt-get clean
+    && apt-get clean\
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 
