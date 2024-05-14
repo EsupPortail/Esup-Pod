@@ -1519,6 +1519,7 @@ table .alert.alert-danger.btn.pod-btn-social {
   display: block;
   padding: 0.3rem 0.5rem;
   border-radius: 8px;
+  line-height: 1.3;
 }
 
 .vjs-logo-button {

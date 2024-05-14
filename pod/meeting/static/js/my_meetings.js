@@ -126,7 +126,7 @@ function copyValue(value) {
   navigator.clipboard
     .writeText(value)
     .then(() => {
-      showalert(gettext("Text copied."), "alert-success");
+      showalert(gettext("Text copied."), "alert-info");
     })
     .catch(() => {
       showalert(gettext("Something went wrong."), "alert-danger");

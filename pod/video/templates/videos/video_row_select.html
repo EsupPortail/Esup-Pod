@@ -6,7 +6,7 @@
 {% spaceless %}
   {% if playlist %}
     {% load playlist_buttons %}
-    {% can_see_playlist_video video as can_see_video %}
+    {% can_see_playlist_video video playlist as can_see_video %}
   {% endif %}
   <div class="checked_overlay">
     <span class="card-selected" title="{% trans 'Selected' %}">

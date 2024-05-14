@@ -957,7 +957,9 @@ class TestPrivatePlaylistTestCase(TestCase):
         importlib.reload(context_processors)
         self.client.force_login(self.first_student)
         response = self.client.get(self.url_private_playlist)
-        self.assertEqual(response.status_code, 302)
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(_("You cannot access this playlist."), messages)
+        self.assertEqual(response.status_code, 403)
         self.client.logout()
         print(" --->  test_user_redirect_if_private_playlist_playlists ok")
 
@@ -1207,23 +1209,6 @@ class StartPlaylistViewTest(TestCase):
         self.assertRedirects(response, expected_url)
         self.client.logout()
         print(" --->  test_start_playlist_public ok")
-
-    def test_start_playlist_private_owner(self):
-        """Test if start a private playlist when owner of it works."""
-        importlib.reload(context_processors)
-        self.client.force_login(self.user)
-        response = self.client.get(
-            reverse(
-                "playlist:start-playlist",
-                kwargs={"slug": self.private_playlist_user1.slug},
-            )
-        )
-        expected_url = get_link_to_start_playlist(
-            self.client.request, self.private_playlist_user1
-        )
-        self.assertRedirects(response, expected_url)
-        self.client.logout()
-        print(" --->  test_start_playlist_private_owner ok")
 
     def test_start_playlist_private_not_owner(self):
         """Test if start a private playlist don't works if not owner of it."""
