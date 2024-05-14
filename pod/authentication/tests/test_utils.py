@@ -12,7 +12,7 @@ class UserTestUtils(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.admin = User.objects.create(
             first_name="pod",
             last_name="Admin",
@@ -25,7 +25,7 @@ class UserTestUtils(TestCase):
         )
         print(" --->  SetUp of VideoTestFiltersViews: OK!")
 
-    def test_get_owners(self):
+    def test_get_owners(self) -> None:
         # Search with common word
         actual = get_owners("pod", 12, 0)
         expected = [

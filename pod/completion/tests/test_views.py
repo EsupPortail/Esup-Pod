@@ -1,4 +1,7 @@
-"""Unit tests for completion views."""
+"""Esup-Pod unit tests for completion views.
+
+test with `python manage.py test pod.completion.tests.test_views`
+"""
 
 from django.test import TestCase
 from django.conf import settings
@@ -23,19 +26,25 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomFileModel
 
+# ggignore-start
+# gitguardian:ignore
+PWD = "azerty1234"  # nosec
+# ggignore-end
+
 
 class CompletionViewsTestCase(TestCase):
     fixtures = [
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
+        """Set up the CompletionViews test case."""
         site = Site.objects.get(id=1)
-        user = User.objects.create(username="test", password="azerty")
-        user.set_password("hello")
+        user = User.objects.create(username="test")
+        user.set_password(PWD)  # nosem
         user.save()
-        staff = User.objects.create(username="staff", password="azerty", is_staff=True)
-        staff.set_password("hello")
+        staff = User.objects.create(username="staff", is_staff=True)
+        staff.set_password(PWD)  # nosem
         staff.save()
         vid1 = Video.objects.create(
             title="videotest",
@@ -57,13 +66,13 @@ class CompletionViewsTestCase(TestCase):
         staff.owner.sites.add(Site.objects.get_current())
         staff.owner.save()
 
-    def test_video_completion_user(self):
+    def test_video_completion_user(self) -> None:
         video = Video.objects.get(id=1)
         url = reverse("video:completion:video_completion", kwargs={"slug": video.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        authenticate(username="test", password="hello")
-        login = self.client.login(username="test", password="hello")
+        authenticate(username="test", password=PWD)
+        login = self.client.login(username="test", password=PWD)
         self.assertTrue(login)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -73,13 +82,13 @@ class CompletionViewsTestCase(TestCase):
 
         print(" ---> test_video_completion_user: OK!")
 
-    def test_video_completion_staff(self):
+    def test_video_completion_staff(self) -> None:
         video = Video.objects.get(id=2)
         url = reverse("video:completion:video_completion", kwargs={"slug": video.slug})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -98,10 +107,11 @@ class CompletionContributorViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
+        """Set up the CompletionContributorViews test case."""
         site = Site.objects.get(id=1)
-        staff = User.objects.create(username="staff", password="azerty", is_staff=True)
-        staff.set_password("hello")
+        staff = User.objects.create(username="staff", is_staff=True)
+        staff.set_password(PWD)  # nosem
         staff.save()
         vid = Video.objects.create(
             title="videotest2",
@@ -113,15 +123,15 @@ class CompletionContributorViewsTestCase(TestCase):
         staff.owner.sites.add(Site.objects.get_current())
         staff.owner.save()
 
-    def test_video_completion_contributor(self):
+    def test_video_completion_contributor(self) -> None:
         video = Video.objects.get(id=1)
         url = reverse(
             "video:completion:video_completion_contributor", kwargs={"slug": video.slug}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -135,10 +145,10 @@ class CompletionContributorViewsTestCase(TestCase):
         print(" [ BEGIN COMPLETION_CONTRIBUTOR VIEWS ] ")
         print(" ---> test_video_completion_contributor: OK!")
 
-    def test_video_completion_contributor_new(self):
+    def test_video_completion_contributor_new(self) -> None:
         video = Video.objects.get(id=1)
-        authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         url = reverse(
             "video:completion:video_completion_contributor", kwargs={"slug": video.slug}
@@ -172,10 +182,10 @@ class CompletionContributorViewsTestCase(TestCase):
         print(" ---> test_video_completion_contributor_new: OK!")
         print(" [ END COMPLETION_CONTRIBUTOR VIEWS ] ")
 
-    def test_video_completion_contributor_edit(self):
+    def test_video_completion_contributor_edit(self) -> None:
         video = Video.objects.get(id=1)
-        authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         url = reverse(
             "video:completion:video_completion_contributor", kwargs={"slug": video.slug}
@@ -228,10 +238,10 @@ class CompletionContributorViewsTestCase(TestCase):
 
         print(" ---> test_video_completion_contributor_edit: OK!")
 
-    def test_video_completion_contributor_delete(self):
+    def test_video_completion_contributor_delete(self) -> None:
         video = Video.objects.get(id=1)
-        authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         url = reverse(
             "video:completion:video_completion_contributor", kwargs={"slug": video.slug}
@@ -274,10 +284,11 @@ class CompletionTrackViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
+        """Set up the CompletionTrackViews test case."""
         site = Site.objects.get(id=1)
-        staff = User.objects.create(username="staff", password="azerty", is_staff=True)
-        staff.set_password("hello")
+        staff = User.objects.create(username="staff", is_staff=True)
+        staff.set_password(PWD)  # nosem
         staff.save()
         if FILEPICKER:
             UserFolder.objects.create(owner=staff, name="Home")
@@ -291,15 +302,15 @@ class CompletionTrackViewsTestCase(TestCase):
         staff.owner.sites.add(Site.objects.get_current())
         staff.owner.save()
 
-    def test_video_completion_track(self):
+    def test_video_completion_track(self) -> None:
         video = Video.objects.get(id=1)
         url = reverse(
             "video:completion:video_completion_track", kwargs={"slug": video.slug}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -313,10 +324,10 @@ class CompletionTrackViewsTestCase(TestCase):
         print(" [ BEGIN COMPLETION_TRACK VIEWS ] ")
         print(" ---> test_video_completion_track: OK!")
 
-    def test_video_completion_track_new(self):
+    def test_video_completion_track_new(self) -> None:
         video = Video.objects.get(id=1)
-        user = authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        user = authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         url = reverse(
             "video:completion:video_completion_track", kwargs={"slug": video.slug}
@@ -366,8 +377,8 @@ class CompletionTrackViewsTestCase(TestCase):
 
     def test_video_completion_track_edit(self):
         video = Video.objects.get(id=1)
-        user = authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        user = authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         url = reverse(
             "video:completion:video_completion_track", kwargs={"slug": video.slug}
@@ -436,8 +447,8 @@ class CompletionTrackViewsTestCase(TestCase):
 
     def test_video_completion_track_delete(self):
         video = Video.objects.get(id=1)
-        user = authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        user = authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         url = reverse(
             "video:completion:video_completion_track", kwargs={"slug": video.slug}
@@ -495,10 +506,11 @@ class CompletionDocumentViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
+        """Set up the CompletionDocumentViews test case."""
         site = Site.objects.get(id=1)
-        staff = User.objects.create(username="staff", password="azerty", is_staff=True)
-        staff.set_password("hello")
+        staff = User.objects.create(username="staff", is_staff=True)
+        staff.set_password(PWD)  # nosem
         staff.save()
         if FILEPICKER:
             UserFolder.objects.create(owner=staff, name="Home")
@@ -512,15 +524,15 @@ class CompletionDocumentViewsTestCase(TestCase):
         staff.owner.sites.add(Site.objects.get_current())
         staff.owner.save()
 
-    def test_video_completion_document(self):
+    def test_video_completion_document(self) -> None:
         video = Video.objects.get(id=1)
         url = reverse(
             "video:completion:video_completion_document", kwargs={"slug": video.slug}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -534,10 +546,10 @@ class CompletionDocumentViewsTestCase(TestCase):
         print(" [ BEGIN COMPLETION_DOCUMENT VIEWS ] ")
         print(" ---> test_video_completion_document: OK!")
 
-    def test_video_completion_document_new(self):
+    def test_video_completion_document_new(self) -> None:
         video = Video.objects.get(id=1)
-        user = authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        user = authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         url = reverse(
             "video:completion:video_completion_document", kwargs={"slug": video.slug}
@@ -583,10 +595,10 @@ class CompletionDocumentViewsTestCase(TestCase):
         print(" ---> test_video_completion_document_new: OK!")
         print(" [ END COMPLETION_DOCUMENT VIEWS ] ")
 
-    def test_video_completion_document_edit(self):
+    def test_video_completion_document_edit(self) -> None:
         video = Video.objects.get(id=1)
-        user = authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        user = authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         url = reverse(
             "video:completion:video_completion_document", kwargs={"slug": video.slug}
@@ -666,10 +678,10 @@ class CompletionDocumentViewsTestCase(TestCase):
         self.assertTrue("testfile2" in result.document.name)
         print(" ---> test_video_completion_document_edit: OK!")
 
-    def test_video_completion_document_delete(self):
+    def test_video_completion_document_delete(self) -> None:
         video = Video.objects.get(id=1)
-        user = authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        user = authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         url = reverse(
             "video:completion:video_completion_document", kwargs={"slug": video.slug}
@@ -725,9 +737,10 @@ class CompletionOverlayViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
-        staff = User.objects.create(username="staff", password="azerty", is_staff=True)
-        staff.set_password("hello")
+    def setUp(self) -> None:
+        """Set up the CompletionOverlayViews test case."""
+        staff = User.objects.create(username="staff", is_staff=True)
+        staff.set_password(PWD)  # nosem
         staff.save()
         Video.objects.create(
             title="videotest2",
@@ -739,15 +752,15 @@ class CompletionOverlayViewsTestCase(TestCase):
         staff.owner.sites.add(Site.objects.get_current())
         staff.owner.save()
 
-    def test_video_completion_overlay(self):
+    def test_video_completion_overlay(self) -> None:
         video = Video.objects.get(id=1)
         url = reverse(
             "video:completion:video_completion_overlay", kwargs={"slug": video.slug}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -761,10 +774,10 @@ class CompletionOverlayViewsTestCase(TestCase):
         print(" [ BEGIN COMPLETION_OVERLAY VIEWS ] ")
         print(" ---> test_video_completion_overlay: OK!")
 
-    def test_video_completion_overlay_new(self):
+    def test_video_completion_overlay_new(self) -> None:
         video = Video.objects.get(id=1)
-        authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         url = reverse(
             "video:completion:video_completion_overlay", kwargs={"slug": video.slug}
@@ -796,10 +809,10 @@ class CompletionOverlayViewsTestCase(TestCase):
         print(" ---> test_video_completion_overlay_new: OK!")
         print(" [ END COMPLETION_OVERLAY VIEWS ] ")
 
-    def test_video_completion_overlay_edit(self):
+    def test_video_completion_overlay_edit(self) -> None:
         video = Video.objects.get(id=1)
-        authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         url = reverse(
             "video:completion:video_completion_overlay", kwargs={"slug": video.slug}
@@ -854,10 +867,10 @@ class CompletionOverlayViewsTestCase(TestCase):
 
         print(" ---> test_video_completion_overlay_edit: OK!")
 
-    def test_video_completion_overlay_delete(self):
+    def test_video_completion_overlay_delete(self) -> None:
         video = Video.objects.get(id=1)
-        authenticate(username="staff", password="hello")
-        login = self.client.login(username="staff", password="hello")
+        authenticate(username="staff", password=PWD)
+        login = self.client.login(username="staff", password=PWD)
         self.assertTrue(login)
         url = reverse(
             "video:completion:video_completion_overlay", kwargs={"slug": video.slug}

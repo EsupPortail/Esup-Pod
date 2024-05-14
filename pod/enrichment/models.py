@@ -1,15 +1,19 @@
+"""Esup-Pod video Enrichment."""
+
 from django.conf import settings
-from django.core.exceptions import ValidationError
-from django.db import models
-from django.template.defaultfilters import slugify
-from django.utils.translation import ugettext as _
-from django.dispatch import receiver
-from django.db.models.signals import post_save, post_delete
-from django.core.files import File
-from ckeditor.fields import RichTextField
-from webvtt import WebVTT, Caption
-from tempfile import NamedTemporaryFile
 from django.contrib.auth.models import Group
+from django.core.exceptions import ValidationError
+from django.core.files import File
+from django.db import models
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from django.utils.translation import ugettext as _
+from django.utils import timezone
+from django.template.defaultfilters import slugify
+
+from ckeditor.fields import RichTextField
+from tempfile import NamedTemporaryFile
+from webvtt import WebVTT, Caption
 
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
@@ -33,13 +37,15 @@ FILES_DIR = getattr(settings, "FILES_DIR", "files")
 __NAME__ = _("Enrichment")
 
 
-def enrichment_to_vtt(list_enrichment, video):
+def enrichment_to_vtt(list_enrichment, video) -> str:
     webvtt = WebVTT()
     for enrich in list_enrichment:
-        start = datetime.datetime.utcfromtimestamp(enrich.start).strftime("%H:%M:%S.%f")[
-            :-3
-        ]
-        end = datetime.datetime.utcfromtimestamp(enrich.end).strftime("%H:%M:%S.%f")[:-3]
+        start = datetime.datetime.fromtimestamp(enrich.start, tz=timezone.utc).strftime(
+            "%H:%M:%S.%f"
+        )[:-3]
+        end = datetime.datetime.fromtimestamp(enrich.end, tz=timezone.utc).strftime(
+            "%H:%M:%S.%f"
+        )[:-3]
         url = enrichment_to_vtt_type(enrich)
         caption = Caption(
             "{0}".format(start),
@@ -172,7 +178,7 @@ class Enrichment(models.Model):
     def sites(self):
         return self.video.sites
 
-    def clean(self):
+    def clean(self) -> None:
         msg = list()
         msg = self.verify_all_fields()
         if len(msg) > 0:
@@ -192,7 +198,8 @@ class Enrichment(models.Model):
         if type not in typelist:
             return _("Please enter a correct {0}.".format(type))
 
-    def verify_all_fields(self):
+    def verify_all_fields(self) -> list:
+        """Validate all Enrichment fields."""
         msg = list()
         if (
             not self.title
@@ -230,15 +237,11 @@ class Enrichment(models.Model):
                 msg.append(self.verify_type(self.type))
         else:
             msg.append(_("Please enter a type."))
+        return msg
 
-        if len(msg) > 0:
-            return msg
-        else:
-            return list()
-
-    def verify_end_start_item(self):
+    def verify_end_start_item(self) -> list:
+        """Check validity of start and end values."""
         msg = list()
-        video = Video.objects.get(id=self.video.id)
         if self.start > self.end:
             msg.append(
                 _(
@@ -246,14 +249,15 @@ class Enrichment(models.Model):
                     + "of end field."
                 )
             )
-        if self.end > video.duration:
+        if self.end > self.video.duration:
             msg.append(_("The value of end field is greater than the video duration."))
         if self.end and self.start == self.end:
             msg.append(_("End field and start field can’t be equal."))
 
         return msg
 
-    def overlap(self):
+    def overlap(self) -> list:
+        """Check that there is no overlap between this enrichment and existing ones."""
         msg = list()
         instance = None
         if self.slug:
@@ -274,11 +278,10 @@ class Enrichment(models.Model):
                             "time end values."
                         ).format(element.title)
                     )
-            if len(msg) > 0:
-                return msg
-        return list()
+        return msg
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
+        """Store this enrichment in DB."""
         newid = -1
         if not self.id:
             try:
@@ -300,13 +303,13 @@ class Enrichment(models.Model):
 
 
 @receiver(post_save, sender=Enrichment)
-def update_vtt(sender, instance=None, created=False, **kwargs):
+def update_vtt(sender, instance=None, created=False, **kwargs) -> None:
     list_enrichment = instance.video.enrichment_set.all()
     enrichment_to_vtt(list_enrichment, instance.video)
 
 
 @receiver(post_delete, sender=Enrichment)
-def delete_vtt(sender, instance=None, created=False, **kwargs):
+def delete_vtt(sender, instance=None, created=False, **kwargs) -> None:
     list_enrichment = instance.video.enrichment_set.all()
     if list_enrichment.count() > 0:
         enrichment_to_vtt(list_enrichment, instance.video)
@@ -334,13 +337,15 @@ class EnrichmentVtt(models.Model):
     def sites(self):
         return self.video.sites
 
-    def clean(self):
+    def clean(self) -> None:
+        """Validate EnrichmentVTT fields and eventually raise ValidationError."""
         msg = list()
         msg = self.verify_attributs() + self.verify_not_same_track()
         if len(msg) > 0:
             raise ValidationError(msg)
 
-    def verify_attributs(self):
+    def verify_attributs(self) -> list:
+        """Validate EnrichmentVTT fields."""
         msg = list()
         if "vtt" not in self.src.file_type:
             msg.append(_("Only “.vtt” format is allowed."))
@@ -374,5 +379,5 @@ class EnrichmentGroup(models.Model):
     def sites(self):
         return self.video.sites
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Enrichment group %s" % (self.video)

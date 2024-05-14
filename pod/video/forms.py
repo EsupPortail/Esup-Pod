@@ -1008,7 +1008,6 @@ class VideoForm(forms.ModelForm):
             "date_evt": widgets.AdminDateWidget,
             "restrict_access_to_groups": AddAccessGroupWidget,
             "video": CustomClearableFileInput,
-            "restrict_access_to_groups": AddAccessGroupWidget,
             "password": forms.PasswordInput(attrs={"autocomplete": "new-password"}),
         }
         initial = {

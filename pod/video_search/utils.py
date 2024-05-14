@@ -1,3 +1,5 @@
+"""Esup-Pod Video Search utilities."""
+
 from django.conf import settings
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import TransportError
@@ -19,6 +21,7 @@ ES_OPTIONS = getattr(settings, "ES_OPTIONS", {})
 
 
 def index_es(video):
+    """Get ElasticSearch index."""
     translation.activate(settings.LANGUAGE_CODE)
     es = Elasticsearch(
         ES_URL,
@@ -53,7 +56,7 @@ def index_es(video):
 
 
 def delete_es(video):
-    """Delete an Elasticsearch entry."""
+    """Delete an Elasticsearch video entry."""
     es = Elasticsearch(
         ES_URL,
         timeout=ES_TIMEOUT,
@@ -86,6 +89,7 @@ def delete_es(video):
 
 
 def create_index_es():
+    """Create ElasticSearch index."""
     es = Elasticsearch(
         ES_URL,
         timeout=ES_TIMEOUT,
@@ -116,6 +120,7 @@ def create_index_es():
 
 
 def delete_index_es():
+    """Delete ElasticSearch index."""
     es = Elasticsearch(
         ES_URL,
         timeout=ES_TIMEOUT,

@@ -92,7 +92,9 @@ confirmModalBtn.addEventListener("click", (e) => {
 
 /**
  * Reset action and value of dashboard form elements when reset button is clicked.
- */
+ *
+ * exported dashboardActionReset
+ **/
 function dashboardActionReset() {
   dashboardAction = "";
   dashboardValue = "";
@@ -139,6 +141,14 @@ async function bulkUpdate() {
       }
       updateFields.push(element.name);
     });
+  }
+
+  // Remove unecessaries fields.
+  if (updateFields.includes("channel") && updateFields.includes("theme")) {
+    if (formData.get("channel") != "" && formData.get("theme") == "") {
+      updateFields.pop("theme");
+      formData.delete("theme");
+    }
   }
 
   // Construct formData to send

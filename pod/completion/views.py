@@ -102,7 +102,7 @@ def video_caption_maker(request, slug):
                 "track_language": track_language,
                 "track_kind": track_kind,
                 "active_model_enrich": ACTIVE_MODEL_ENRICH,
-                "page_title": _("Video Caption Maker"),
+                "page_title": _("Video caption maker"),
             },
         )
 
@@ -168,7 +168,7 @@ def video_caption_maker_save(request, video):
             "current_folder": video_folder,
             "form_make_caption": form_caption,
             "video": video,
-            "page_title": _("Video Caption Maker"),
+            "page_title": _("Video caption maker"),
         },
     )
 
