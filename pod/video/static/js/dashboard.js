@@ -143,6 +143,14 @@ async function bulkUpdate() {
     });
   }
 
+  // Remove unecessaries fields.
+  if (updateFields.includes("channel") && updateFields.includes("theme")) {
+    if (formData.get("channel") != "" && formData.get("theme") == "") {
+      updateFields.pop("theme");
+      formData.delete("theme");
+    }
+  }
+
   // Construct formData to send
   formData.append("selected_videos", JSON.stringify(selectedVideos));
   formData.append("update_fields", JSON.stringify(updateFields));

@@ -9,6 +9,7 @@ from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
+from django.core.handlers.wsgi import WSGIRequest
 
 from pod.video.models import Video
 from pod.video_encode_transcript.encode import start_encode
@@ -19,7 +20,7 @@ from .utils import get_dressings
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def video_dressing(request, slug):
+def video_dressing(request: WSGIRequest, slug: str):
     """View for video dressing."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
@@ -34,7 +35,10 @@ def video_dressing(request, slug):
 
     dressings = get_dressings(request.user, request.user.owner.accessgroup_set.all())
 
-    if not (request.user.is_superuser or request.user.is_staff):
+    if not (
+        request.user.is_superuser
+        or (request.user == video.owner and request.user.is_staff)
+    ):
         messages.add_message(request, messages.ERROR, _("You cannot dress this video."))
         raise PermissionDenied
 
@@ -74,7 +78,7 @@ def video_dressing(request, slug):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def dressing_edit(request, dressing_id):
+def dressing_edit(request: WSGIRequest, dressing_id: int):
     """Edit a dressing object."""
     dressing_edit = get_object_or_404(Dressing, id=dressing_id)
 
@@ -115,7 +119,7 @@ def dressing_edit(request, dressing_id):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def dressing_create(request):
+def dressing_create(request: WSGIRequest):
     """Create a dressing object."""
     if not (request.user.is_superuser or request.user.is_staff):
         messages.add_message(
@@ -144,7 +148,7 @@ def dressing_create(request):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def dressing_delete(request, dressing_id):
+def dressing_delete(request: WSGIRequest, dressing_id: int):
     """Delete the dressing identified by 'id'."""
     dressing = get_object_or_404(Dressing, id=dressing_id)
     if in_maintenance():
@@ -186,7 +190,7 @@ def dressing_delete(request, dressing_id):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def my_dressings(request):
+def my_dressings(request: WSGIRequest):
     """Render the logged user's dressings."""
     if in_maintenance():
         return redirect(reverse("maintenance"))

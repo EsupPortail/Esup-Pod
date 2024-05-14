@@ -54,7 +54,7 @@ def get_link_to_start_playlist(context: dict, playlist: Playlist, video=None) ->
 
 
 @register.simple_tag(takes_context=True, name="can_see_playlist_video")
-def can_see_playlist_video(context: dict, video: Video) -> bool:
+def can_see_playlist_video(context: dict, video: Video, playlist: Playlist) -> bool:
     """
     Template tag to check if the user can see a playlist video.
 
@@ -65,4 +65,4 @@ def can_see_playlist_video(context: dict, video: Video) -> bool:
     Returns:
         bool: `True` if the user can, `False` otherwise
     """
-    return user_can_see_playlist_video(context["request"], video)
+    return user_can_see_playlist_video(context["request"], video, playlist)
