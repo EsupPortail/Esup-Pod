@@ -142,10 +142,10 @@ function calculation_total_time() {
   };
 })("keydown");
 
-noPressEnter(displayValOne);
-noPressEnter(displayValTwo);
-noPressEnter(sliderOne);
-noPressEnter(sliderTwo);
+window.noPressEnter(displayValOne);
+window.noPressEnter(displayValTwo);
+window.noPressEnter(sliderOne);
+window.noPressEnter(sliderTwo);
 
 // Buttons to get the time of the video player
 let button_start = document.getElementById("button_start");

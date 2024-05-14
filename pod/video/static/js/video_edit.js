@@ -1,6 +1,10 @@
 /**
  *  Javascript for Esup-Portal video_edit form
  **/
+
+// Read-only globals defined in main.js
+/* global flashing */
+
 document.addEventListener(
   "DOMContentLoaded",
   function () {

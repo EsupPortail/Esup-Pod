@@ -1188,7 +1188,7 @@ function processDirectory($idBbbLiveStreaming, $internalMeetingId)
 function writeLog($message, $level, $file=null, $line=null)
 {
     // Ecriture des lignes de debug seulement en cas de mode DEBUG.
-    if (($level === "DEBUG") && (! DEBUG)) {
+    if (($level === "DEBUG") && (DEBUG === false)) {
         return false;
     }
 

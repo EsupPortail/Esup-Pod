@@ -2,10 +2,13 @@
  * @file Esup-Pod Main JavaScripts
  */
 
+/* exported getParents slideToggle fadeOut linkTo_UnCryptMailto showLoader videocheck send_form_data_vanilla */
+
 // Read-only globals defined in video-script.html
-/*
-global player
-*/
+/* global player */
+
+// Read-only globals defined in video-edit.html
+/* global VIDEO_MAX_UPLOAD_SIZE listext */
 
 // this function (appendHTML) is not used elsewhere
 /*
@@ -800,7 +803,7 @@ var send_form_data = async function (
         return $data;
       };
   callbackFail =
-    typeof callbackFail === "function" ? callbackFail : function ($xhr) {};
+    typeof callbackFail === "function" ? callbackFail : function (xhr) {console.log(xhr);};
 
   // console.log("send_form_data. fct=" + fct);
   method = method || "post";
@@ -1010,11 +1013,11 @@ var show_theme_form = function (data) {
 };
 
 /**
- * [show_picture_form description]
+ * unused function? TODO : delete in 3.8.0
  * @param  {[type]} data [description]
  * @return {[type]}      [description]
  */
-var show_picture_form = function (data) {
+/*var show_picture_form = function (data) {
   let htmlData = new DOMParser().parseFromString(data, "text/html");
   document.getElementById("userpicture_form").innerHTML =
     htmlData.querySelector("#userpicture_form").innerHTML;
@@ -1059,7 +1062,7 @@ var show_picture_form = function (data) {
     let userPictureModal = bootstrap.Modal.getOrCreateInstance(userpicture);
     userPictureModal.hide();
   }
-};
+}; */
 var append_picture_form = async function (data) {
   let htmlData = new DOMParser().parseFromString(data, "text/html").body
     .firstChild;
