@@ -18,9 +18,14 @@ global fadeIn
 */
 
 var id_form = "form_chapter";
+
+/**
+ * Display the chapter form
+ * @param {*} data
+ */
 function show_form(data) {
   let form_chapter = document.getElementById(id_form);
-  form_chapter.style.display = "none";
+  form_chapter.classList.add("d-none");
   form_chapter.innerHTML = data;
   form_chapter.querySelectorAll("script").forEach((item) => {
     // run script tags of filewidget.js and custom_filewidget.js
@@ -70,19 +75,6 @@ function show_form(data) {
     inputEnd.setAttribute("aria-describedby", describedby_list.join(" "));
   }
 }
-
-var showalert = function (message, alerttype) {
-  document.body.append(
-    '<div id="formalertdiv" class="alert ' +
-      alerttype +
-      ' alert-dismissible fade show" role="alert">' +
-      message +
-      '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>',
-  );
-  setTimeout(function () {
-    document.getElementById("formalertdiv").remove();
-  }, 5000);
-};
 
 var ajaxfail = function (data) {
   showalert(
@@ -180,14 +172,14 @@ var sendform = async function (elt, action) {
     "X-Requested-With": "XMLHttpRequest",
   };
   const url = window.location.href;
-  let form_save;
   let data_form;
   let validationMessage;
+  let form_chapter = document.getElementById(id_form);
+  let form_save = form_chapter.querySelector("form");
 
   if (action === "save") {
     if (verify_start_title_items()) {
-      form_save = document.getElementById("form_chapter").querySelector("form");
-      form_save.style.display = "none";
+      form_chapter.classList.add("d-none");
       data_form = new FormData(form_save);
       validationMessage = gettext(
         "Make sure your chapter start time is not 0 or equal to another chapter start time.",
@@ -225,7 +217,7 @@ var sendform = async function (elt, action) {
     } else {
       const jsonData = JSON.parse(data);
       if (jsonData.errors) {
-        document.getElementById("form_chapter").style.display = "block";
+        form_chapter.classList.remove("d-none");
         showalert(jsonData.errors + " " + validationMessage, "alert-danger");
       } else {
         updateDom(jsonData);

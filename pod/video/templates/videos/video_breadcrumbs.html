@@ -21,6 +21,6 @@
     <li class="breadcrumb-item"><a href="{% url 'playlist:content' playlist_in_get.slug %}">{% get_playlist_name playlist_in_get %}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
 {% else %}
-    <li class="breadcrumb-item"><a href="{% url 'videos:videos' %}">{% trans 'Video' %}</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'videos:videos' %}">{% trans 'Videos' %}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
 {% endif %}

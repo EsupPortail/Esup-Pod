@@ -154,6 +154,7 @@ var slideToggle = (target, duration = 500) => {
  */
 function fadeIn(el, display) {
   el.style.opacity = 0;
+  el.classList.remove("d-none");
   el.style.display = display || "block";
   (function fade() {
     var val = parseFloat(el.style.opacity);

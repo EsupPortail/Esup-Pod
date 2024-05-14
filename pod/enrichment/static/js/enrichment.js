@@ -63,21 +63,6 @@ function show_form(data) {
   enrich_type();
 }
 
-var showalert = function (message, alerttype) {
-  document.body.append(
-    '<div id="formalertdiv" class="alert ' +
-      alerttype +
-      ' alert-dismissible fade show" role="alert">' +
-      message +
-      '<button type="button" class="close" data-dismiss="alert" aria-label="' +
-      gettext("Close") +
-      '"><span aria-hidden="true">&times;</span></button></div>',
-  );
-  setTimeout(function () {
-    document.getElementById("formalertdiv").remove();
-  }, 5000);
-};
-
 var ajaxfail = function (data) {
   showalert(
     gettext("Error getting form.") +
@@ -94,6 +79,9 @@ var ajaxfail = function (data) {
   show_form("");
 };
 
+/**
+ * Handle the "cancel enrichment" button.
+ */
 document.addEventListener("click", (e) => {
   if (e.target.id != "cancel_enrichment") return;
   document.querySelectorAll("form.get_form").forEach((form) => {
@@ -102,6 +90,9 @@ document.addEventListener("click", (e) => {
   });
 });
 
+/**
+ * Handle any of the "get_form" submitting forms.
+ */
 document.addEventListener("submit", (e) => {
   if (!e.target.classList.contains("get_form")) return;
   e.preventDefault();
@@ -109,6 +100,10 @@ document.addEventListener("submit", (e) => {
 
   sendandgetform(e.target, action);
 });
+
+/**
+ * Handle the "form_save" form submit.
+ */
 document.addEventListener("submit", (e) => {
   if (!e.target.classList.contains("form_save")) return;
   e.preventDefault();
@@ -283,6 +278,12 @@ Number.prototype.toHHMMSS = function () {
   return hours + ":" + minutes + ":" + seconds;
 };
 
+/**
+ * UNUSED function ??
+ * TODO : remove in 3.8.0
+ * @param {*} data
+ */
+/*
 function get_form(data) {
   var form = document.getElementById("form_enrich");
   form.style.display = "none";
@@ -318,7 +319,8 @@ function get_form(data) {
   );
   enrich_type();
   manageResize();
-}
+}*/
+
 function enrich_type() {
   document.getElementById("id_image").closest("div.form-group").style.display =
     "none";
@@ -448,9 +450,9 @@ function verify_fields() {
       if (richtext.value == "") {
         richtext.insertAdjacentHTML(
           "beforebegin",
-          "<span class='form-help-inline'>&nbsp; &nbsp;" +
+          "<span class='form-help-inline'>" +
             gettext("Please enter a correct richtext.") +
-            "</span>",
+          "</span>",
         );
         richtext.closest("div.form-group").classList.add("has-error");
 
