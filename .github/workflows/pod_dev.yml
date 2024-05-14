@@ -11,6 +11,7 @@ on:
   pull_request:
     branches:
     - develop
+  workflow_dispatch:
 
 env:
   PYTHON_VERSION: '3.9'
@@ -106,7 +107,7 @@ jobs:
           docker exec pod-back-with-volumes ps auxf
           docker exec pod-back-with-volumes python manage.py loaddata pod/video/fixtures/sample_videos.json
       - name: run test in docker
-        run: docker exec pod-back-with-volumes coverage run --append --source='.' manage.py test -v 3 --keepdb pod.video_encode_transcript.tests.test_remote_encode_transcode
+        run: docker exec pod-back-with-volumes coverage run --append manage.py test -v 3 --keepdb pod.video_encode_transcript.tests.test_remote_encode_transcode
 
       - name: Run pa11y-ci full
         run: docker exec pa11y-ci pa11y-ci -c /usr/src/app/dockerfile-dev-with-volumes/pa11y-ci/config.json
@@ -135,7 +136,7 @@ jobs:
 
       - name: Setup Pod
         run: |
-          coverage run --append --source='.' manage.py create_pod_index --settings=pod.main.test_settings
+          coverage run --append manage.py create_pod_index --settings=pod.main.test_settings
           python manage.py makemigrations --settings=pod.main.test_settings
           python manage.py migrate --settings=pod.main.test_settings
 
@@ -143,7 +144,8 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
         run: |
-          coverage run --append --source='.' manage.py test -v 3 --settings=pod.main.test_settings
+          coverage run --append manage.py test -v 3 --settings=pod.main.test_settings
+          coverage xml -o cobertura.xml
 
       - name: Send coverage to coveralls.io
         # coveralls command has been installed by requirements-dev.txt

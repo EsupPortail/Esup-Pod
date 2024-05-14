@@ -1,12 +1,14 @@
 
 [report]
-# Here you can exclude a file from coverage testing
 
 # nb: you can also add a "# pragma: no cover"
 # on each function you don't want to be covered
 [run]
-source = pod/
+relative_files = True
+source = .
+# Here you can exclude a file from coverage testing
 omit = pod/*settings*.py
+       pod/custom/settings*.py
        pod/*apps.py
        pod/wsgi.py
        pod/db_migrations/*
