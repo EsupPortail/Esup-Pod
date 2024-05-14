@@ -1204,7 +1204,7 @@ function writeLog($message, $level, $file = null, $line = null)
     if (!file_exists($logFile)) {
         $file = fopen($logFile, "x+");
         // Une exception est levée en cas de non existence du fichier.
-        // (problème manifeste de droits utilisateurs)
+        // (problème manifeste de droits utilisateurs).
         if (!file_exists($logFile)) {
             print("Erreur de configuration : impossible de créer le fichier $logFile.");
             throw new Exception("Impossible de créer le fichier $logFile.");

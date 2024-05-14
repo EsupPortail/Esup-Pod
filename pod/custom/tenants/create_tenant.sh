@@ -9,7 +9,7 @@ echo "Script executed from: ${PWD}"
 BASEDIR=${PWD}
 
 echo "remove previous site"
-rm -rf ./$NAME
+rm -rf "./$NAME"
 sudo systemctl stop uwsgi-pod_$NAME
 sudo rm -f "/etc/systemd/system/uwsgi-pod_$NAME.service"
 sudo rm -f "/etc/nginx/sites-enabled/pod_nginx_$NAME.conf"
@@ -21,7 +21,7 @@ echo "Creation du répertoire"
 cp -r ./source "./$NAME"
 
 echo "Fichier de configuration"
-mv "./$NAME/tenant_settings.py" "./$NAME/"$NAME"_settings.py"
+mv "./$NAME/tenant_settings.py" ./$NAME/"$NAME"_settings.py
 sed -i "s/__NAME__/$NAME/g" ./$NAME/"$NAME"_settings.py
 sed -i "s/__ID_SITE__/$ID_SITE/g" ./$NAME/"$NAME"_settings.py
 sed -i "s/__DOMAIN_NAME__/$DOMAIN_NAME/g" ./$NAME/"$NAME"_settings.py
@@ -73,23 +73,23 @@ echo "(django_pod) pod@pod:/usr/local/django_projects/podv3$ python manage.py cr
 echo "--"
 echo "crontab"
 echo "clear session"
-echo "" >> $BASEDIR/sh_tenants/clearsessions.sh
-echo "# $ID_SITE $NAME " >> $BASEDIR/sh_tenants/clearsessions.sh
-echo "cd /usr/local/django_projects/podv3 && /home/pod/.virtualenvs/django_pod/bin/python manage.py clearsessions --settings=pod.custom.tenants.$NAME.\"$NAME\"_settings &>> /usr/local/django_projects/podv3/pod/log/cron_clearsessions_$NAME.log 2>&1" >> $BASEDIR/clearsessions.sh
+echo "" >> "$BASEDIR/sh_tenants/clearsessions.sh"
+echo "# $ID_SITE $NAME " >> "$BASEDIR/sh_tenants/clearsessions.sh"
+echo "cd /usr/local/django_projects/podv3 && /home/pod/.virtualenvs/django_pod/bin/python manage.py clearsessions --settings=pod.custom.tenants.$NAME.\"$NAME\"_settings &>> /usr/local/django_projects/podv3/pod/log/cron_clearsessions_$NAME.log 2>&1" >> "$BASEDIR/clearsessions.sh"
 
 echo "index videos"
-echo "" >> $BASEDIR/sh_tenants/index_videos.sh
-echo "# $ID_SITE $NAME " >> $BASEDIR/sh_tenants/index_videos.sh
-echo "cd /usr/local/django_projects/podv3 && /home/pod/.virtualenvs/django_pod/bin/python manage.py index_videos --all  --settings=pod.custom.tenants.$NAME.\"$NAME\"_settings  &>> /usr/local/django_projects/podv3/pod/log/cron_index_$NAME.log 2>&1"  >> $BASEDIR/index_videos.sh
+echo "" >> "$BASEDIR/sh_tenants/index_videos.sh"
+echo "# $ID_SITE $NAME " >> "$BASEDIR/sh_tenants/index_videos.sh"
+echo "cd /usr/local/django_projects/podv3 && /home/pod/.virtualenvs/django_pod/bin/python manage.py index_videos --all  --settings=pod.custom.tenants.$NAME.\"$NAME\"_settings  &>> /usr/local/django_projects/podv3/pod/log/cron_index_$NAME.log 2>&1"  >> "$BASEDIR/index_videos.sh"
 
 echo "check_obsolete_videos"
-echo "" >> $BASEDIR/sh_tenants/check_obsolete_videos.sh
-echo "# $ID_SITE $NAME " >> $BASEDIR/sh_tenants/check_obsolete_videos.sh
-echo "cd /usr/local/django_projects/podv3 && /home/pod/.virtualenvs/django_pod/bin/python manage.py check_obsolete_videos --settings=pod.custom.tenants.$NAME.\"$NAME\"_settings  &>> /usr/local/django_projects/podv3/pod/log/cron_obsolete_$NAME.log 2>&1"  >> $BASEDIR/check_obsolete_videos.sh
+echo "" >> "$BASEDIR/sh_tenants/check_obsolete_videos.sh"
+echo "# $ID_SITE $NAME " >> "$BASEDIR/sh_tenants/check_obsolete_videos.sh"
+echo "cd /usr/local/django_projects/podv3 && /home/pod/.virtualenvs/django_pod/bin/python manage.py check_obsolete_videos --settings=pod.custom.tenants.$NAME.\"$NAME\"_settings  &>> /usr/local/django_projects/podv3/pod/log/cron_obsolete_$NAME.log 2>&1"  >> "$BASEDIR/check_obsolete_videos.sh"
 
 echo "live_viewcounter"
-echo "" >> $BASEDIR/sh_tenants/live_viewcounter.sh
-echo "# $ID_SITE $NAME " >> $BASEDIR/sh_tenants/live_viewcounter.sh
-echo "cd /usr/local/django_projects/podv3 && /home/pod/.virtualenvs/django_pod/bin/python manage.py live_viewcounter --settings=pod.custom.tenants.$NAME.\"$NAME\"_settings  &>> /usr/local/django_projects/podv3/pod/log/cron_viewcounter_$NAME.log 2>&1"  >> $BASEDIR/live_viewcounter.sh
+echo "" >> "$BASEDIR/sh_tenants/live_viewcounter.sh"
+echo "# $ID_SITE $NAME " >> "$BASEDIR/sh_tenants/live_viewcounter.sh"
+echo "cd /usr/local/django_projects/podv3 && /home/pod/.virtualenvs/django_pod/bin/python manage.py live_viewcounter --settings=pod.custom.tenants.$NAME.\"$NAME\"_settings  &>> /usr/local/django_projects/podv3/pod/log/cron_viewcounter_$NAME.log 2>&1"  >> "$BASEDIR/live_viewcounter.sh"
 
 echo "FIN"
