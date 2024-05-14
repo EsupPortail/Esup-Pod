@@ -554,6 +554,12 @@ def dashboard(request):
 
         data_context["categories"] = categories
 
+        all_categories_videos = {}
+        for cat in categories:
+            videoss = list(cat.video.all().values_list("slug", flat=True))
+            all_categories_videos[cat.slug] = videoss
+        data_context["all_categories_videos"] = json.dumps(all_categories_videos)
+
     page = request.GET.get("page", 1)
     full_path = ""
     if page:

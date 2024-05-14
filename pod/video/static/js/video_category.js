@@ -123,7 +123,10 @@ function get_category_modal(url, page= null){
           manageModalConfirmBtn();
           managePaginationBtn();
       }
-      setSelectedVideos(catVideosListContainerId);
+      if(url.includes(CATEGORIES_EDIT_URL)){
+        var slugg = url.split("/")[url.split("/").length - 2];
+        selectedVideos[catVideosListContainerId] = all_categories_videos[slugg];
+      }
       currentUrl = url;
     })
     .catch(() => {

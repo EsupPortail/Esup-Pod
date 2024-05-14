@@ -13,3 +13,9 @@
     </div>
   </li>
 {% endfor %}
+
+{% block more_script %}
+<script type="text/javascript">
+var all_categories_videos = JSON.parse("{{ all_categories_videos|escapejs }}");
+</script>
+{% endblock more_script %}
