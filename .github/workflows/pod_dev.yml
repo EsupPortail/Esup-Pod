@@ -11,6 +11,7 @@ on:
   pull_request:
     branches:
     - develop
+  workflow_dispatch:
 
 env:
   PYTHON_VERSION: '3.9'
@@ -144,12 +145,15 @@ jobs:
         run: |
           coverage run --append manage.py test -v 3 --settings=pod.main.test_settings
           coverage xml -o cobertura.xml
+<<<<<<< HEAD
 
       - name: Codacy coverage reporter
         run: bash <(curl -Ls https://coverage.codacy.com/get.sh)
         continue-on-error: true
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+=======
+>>>>>>> develop
 
       - name: Send coverage to coveralls.io
         # coveralls command has been installed by requirements-dev.txt
