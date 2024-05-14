@@ -37,38 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
 var num = 0;
 var name = "";
 
-<<<<<<< HEAD
-// RESET
-document.addEventListener("reset", (event) => {
-  if (!event.target.matches("#accordeon form.completion")) return;
-
-  var id_form = event.target.getAttribute("id");
-  var name_form = id_form.substring(5, id_form.length);
-  var form_new = "form_new_" + name_form;
-  var list = "list_" + name_form;
-  document.getElementById(id_form).textContent = "";
-  if (id_form == "form_track")
-    document.getElementById("form_track").style.width = "auto";
-  document.getElementById(form_new).style.display = "block";
-  document.querySelectorAll("form").forEach((form) => {
-    form.style.display = "block";
-  });
-  document.querySelectorAll("a.title").forEach(function (element) {
-    element.style.display = "initial";
-  });
-  document.querySelectorAll("table tr").forEach(function (element) {
-    element.classList.remove("info");
-  });
-
-  let fileModalDoc = document.getElementById("fileModal_id_document");
-  let fileModalSrc = document.getElementById("fileModal_id_src");
-
-  fileModalDoc?.remove();
-  fileModalSrc?.remove();
-});
-
-=======
->>>>>>> develop
 function show_form(data, form) {
   let form_el = document.getElementById(form);
   form_el.style.display = "none";
@@ -153,15 +121,11 @@ document.addEventListener("submit", (e) => {
  */
 var sendAndGetForm = async function (elt, action, name, form, list) {
   var href = elt.getAttribute("action");
-<<<<<<< HEAD
   let url = window.location.origin + href;
   let token = elt.csrfmiddlewaretoken.value;
   var id = elt.querySelector("input[name=id]").value;
 
-  if (action == "new" || action == "form_save_new") {
-=======
   if (action === "new" || action === "form_save_new") {
->>>>>>> develop
     document.getElementById(form).innerHTML =
       '<div style="width:100%; margin: 2rem;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
 
