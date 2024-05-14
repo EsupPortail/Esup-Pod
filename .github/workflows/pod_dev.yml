@@ -145,6 +145,7 @@ jobs:
           PYTHONUNBUFFERED: 1
         run: |
           coverage run --append manage.py test -v 3 --settings=pod.main.test_settings
+          coverage xml -o cobertura.xml
 
       - name: Send coverage to coveralls.io
         # coveralls command has been installed by requirements-dev.txt
