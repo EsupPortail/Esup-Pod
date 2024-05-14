@@ -365,8 +365,7 @@ function hide_others_sections(name_form) {
       slideUp(element.parentNode.nextElementSibling);
       element.classList.remove("active");
     });
-    var i;
-    for (i = 0; i < sections.length; i++) {
+    for (let i = 0; i < sections.length; i++) {
       var section = sections[i];
       var text = section.text;
       var name_section = "'" + text.replace(/\s/g, "") + "'";

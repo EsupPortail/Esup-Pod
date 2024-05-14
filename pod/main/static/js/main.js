@@ -13,7 +13,7 @@ function appendHTML(node, html) {
   var temp = document.createElement("div");
   temp.innerHTML = html;
   var scripts = temp.getElementsByTagName("script");
-  for (var i = 0; i < scripts.length; i++) {
+  for (let i = 0; i < scripts.length; i++) {
     var script = scripts[i];
     var s = document.createElement("script");
     s.type = script.type || "text/javascript";
@@ -420,9 +420,9 @@ var get_list = function (
   channel = channel || "";
   var list = "";
   var prefix = "";
-  for (i = 0; i < level; i++) prefix += "&nbsp;&nbsp;";
+  for (let i = 0; i < level; i++) prefix += "&nbsp;&nbsp;";
   if (level != 0) prefix += "|-";
-  for (var i = 0; i < tab.length; i++) {
+  for (let i = 0; i < tab.length; i++) {
     var val = tab[i];
     var title = add_link
       ? '<a href="' + val.url + '">' + channel + " " + val.title + "</a>"

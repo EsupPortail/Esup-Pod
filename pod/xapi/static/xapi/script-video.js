@@ -380,7 +380,7 @@ function set_interacted_statement() {
 function get_current_subtitle_lang() {
   let textTracks = player.textTracks();
   let lang = "";
-  for (var i = 0; i < textTracks.length; i++) {
+  for (let i = 0; i < textTracks.length; i++) {
     if (textTracks[i].kind == "subtitles" && textTracks[i].mode == "showing") {
       lang = textTracks[i].language;
     }

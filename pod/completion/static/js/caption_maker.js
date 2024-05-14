@@ -1349,7 +1349,7 @@ function parseAndLoadWebVTT(vtt) {
     cueStart = cueEnd = cueText = null;
   }
 
-  for (var i = 1; i < vttLines.length; i++) {
+  for (let i = 1; i < vttLines.length; i++) {
     if (rxBlankLine.test(vttLines[i])) {
       appendCurrentCaption();
       continue;
