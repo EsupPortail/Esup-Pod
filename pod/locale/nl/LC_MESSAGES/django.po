@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-03 14:28+0000\n"
+"POT-Creation-Date: 2024-05-06 12:37+0000\n"
 "PO-Revision-Date: 2024-04-15 14:27+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -5835,10 +5835,6 @@ msgid "Delete the recording"
 msgstr ""
 
 #: pod/meeting/templates/meeting/invite.html
-msgid "Send invitations to the meeting"
-msgstr ""
-
-#: pod/meeting/templates/meeting/invite.html
 msgid ""
 "Add emails addresses in the form below and click send to invite to your "
 "meeting"
@@ -6091,6 +6087,11 @@ msgstr ""
 
 #: pod/meeting/views.py
 msgid "The recording has been deleted."
+msgstr ""
+
+#: pod/meeting/views.py
+#, python-format
+msgid "Send invitations to the meeting “%s”"
 msgstr ""
 
 #: pod/meeting/views.py
@@ -6699,6 +6700,10 @@ msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
+msgstr ""
+
+#: pod/playlist/views.py
+msgid "You cannot access this playlist."
 msgstr ""
 
 #: pod/playlist/views.py

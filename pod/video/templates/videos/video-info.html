@@ -281,9 +281,9 @@
           {% endif %}
 
           {% if video.document_set.all %}
-            <span class="meta-title pod-meta-title pod-download-title">
+            <h3 class="h4">
               <i class="bi bi-files" aria-hidden="true"></i>&nbsp;{% trans 'Document:' %}
-            </span>
+            </h3>
             <ul>
               {% for doc in video.document_set.all %}
                 {% if request.user.is_superuser or not doc.private %}
