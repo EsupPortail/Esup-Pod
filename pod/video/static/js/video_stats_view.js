@@ -3,6 +3,11 @@
  * @since 2.5.0
  */
 
+// Read-only globals defined in jQuery
+/*
+global $
+*/
+
 function linkedCell(cellValue, options, rowObject) {
   return (
     "<a href='" +

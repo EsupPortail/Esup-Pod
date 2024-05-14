@@ -133,7 +133,7 @@ try {
 }
 
 // Envoi d'un message à l'administrateur en cas d'erreur de script.
-if ($GLOBALS["txtErrorInScript"] != "") {
+if ($GLOBALS["txtErrorInScript"] !== "") {
     sendEmail("[BBB-POD-LIVE] Erreur rencontrée", $GLOBALS["txtErrorInScript"]);
 }
 // Fin de la phase principale.
@@ -352,6 +352,7 @@ function startLives()
             "ERROR", __FILE__, __LINE__
         );
     }
+
 }
 
 /**
@@ -483,7 +484,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
             de la forme - "6379:6379" pour 1°, - "6380:6379" pour le 2°...
         */
 
-        $port = 6378 + $idBbbLiveStreaming;
+        $port = (6378 + $idBbbLiveStreaming);
         $cmdSed01 = "sed -i \"s/^.*:6379:.*/     - \"$port:6379\"/\" $dockerFile";
         exec("$cmdSed01 2>&1", $aVerifSed01, $sVerifSed01);
         if ($sVerifSed01 !== 0) {
@@ -666,7 +667,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming)
             );
         }
         // Modification de la ligne concernant le mode DEBUG (DEBUG).
-        if (DEBUG) {
+        if (DEBUG === true) {
             $debug = "true";
         } else {
             $debug = "false";
@@ -813,7 +814,7 @@ function startLive($idLive, $streamName, $idBbbLiveStreaming, $idBroadcaster)
 
         // Définition du port pour REDIS (en cas d'utilisation du chat)
         // Typiquement pour le répertoire 1 => 6379, 2 => 6380, 3 => 6381...
-        $portRedis = 6378 + $idBbbLiveStreaming;
+        $portRedis = (6378 + $idBbbLiveStreaming);
 
         // Définition du channel pour REDIS (en cas d'utilisation du chat)
         // Typiquement pour le répertoire 1 => chat1, 2 => chat2, 3 => chat3...
@@ -880,7 +881,7 @@ function stopLives()
             "Récupération des sessions depuis le serveur BigBlueButton/Scalelite",
             "DEBUG"
         );
-        if ($xml ===  false) {
+        if ($xml === false) {
             writeLog(
                 "  + Impossible de se connecter au serveur BBB/Scalelite : $bbbUrlGetMeetings",
                 "ERROR", __FILE__, __LINE__
@@ -980,7 +981,7 @@ function stopLives()
                                 "DEBUG"
                             );
                             $oLive = json_decode($aVerifMajPod1[0]);
-                            if (isset($oLive->meeting)) {
+                            if (isset($oLive->meeting) === true) {
                                 $urlApiRestMeeting = $oLive->meeting;
                                 $urlApiRestUser = $oLive->user;
                             }
@@ -991,7 +992,7 @@ function stopLives()
                             );
                         }
                         // Suppression du diffuseur.
-                        if ($broadcasterName != "") {
+                        if ($broadcasterName !== "") {
                             deleteBroadcaster($broadcasterName);
                         }
 
@@ -1018,7 +1019,7 @@ function stopLives()
 
                         // Copie du fichier vidéo créé : si c'est configuré pour
                         // et que l'utilisateur a souhaité cet enregistrement.
-                        if (POD_DEFAULT_BBB_PATH != "" && $downloadMeeting) {
+                        if (POD_DEFAULT_BBB_PATH !== "" && $downloadMeeting === true) {
                             /*
                                 Recherche de internal_meeting_id
                                 correspondant à cette session.
@@ -1047,7 +1048,7 @@ function stopLives()
                                 */
 
                                 $oMeeting = json_decode($aVerifMajPod2[0]);
-                                if (isset($oMeeting->internal_meeting_id)) {
+                                if (isset($oMeeting->internal_meeting_id) === true) {
                                     $internalMeetingId = $oMeeting->internal_meeting_id;
                                 }
                             } else {
@@ -1057,7 +1058,7 @@ function stopLives()
                                 );
                             }
 
-                            if ($internalMeetingId != "") {
+                            if ($internalMeetingId !== "") {
                                 processDirectory(
                                     $ligneLiveInProgressOnThisServer->idBbbLiveStreaming,
                                     $internalMeetingId
@@ -1154,7 +1155,7 @@ function processDirectory($idBbbLiveStreaming, $internalMeetingId)
         // Mise en place d'une boucle,
         // mais il ne doit y avoir qu'un seul fichier au maximum.
         foreach ($listFiles as $key => $value) {
-            if (strrpos($value, ".mkv")) {
+            if (strrpos($value, ".mkv") === true) {
                 // Déplacer et renommer le fichier avec l'internalMeetingId.
                 $oldFilename = "$dirLiveStreaming/$value";
                 $newFilename = checkEndSlash(POD_DEFAULT_BBB_PATH).$internalMeetingId.".mkv";
@@ -1184,10 +1185,10 @@ function processDirectory($idBbbLiveStreaming, $internalMeetingId)
  *
  * @return nombre d'octets écris, false sinon
  */
-function writeLog($message, $level, $file = null, $line = null)
+function writeLog($message, $level, $file=null, $line=null)
 {
     // Ecriture des lignes de debug seulement en cas de mode DEBUG.
-    if (($level == "DEBUG") && (! DEBUG)) {
+    if (($level === "DEBUG") && (! DEBUG)) {
         return false;
     }
 
@@ -1201,11 +1202,11 @@ function writeLog($message, $level, $file = null, $line = null)
     $logFile = checkEndSlash(PHYSICAL_LOG_ROOT).gmdate("Y-m-d")."_bbb-pod-live.log";
 
     // En cas de non existence, on créé ce fichier.
-    if (!file_exists($logFile)) {
+    if (file_exists($logFile) === false) {
         $file = fopen($logFile, "x+");
         // Une exception est levée en cas de non existence du fichier.
         // (problème manifeste de droits utilisateurs).
-        if (!file_exists($logFile)) {
+        if (file_exists($logFile) === false) {
             print("Erreur de configuration : impossible de créer le fichier $logFile.");
             throw new Exception("Impossible de créer le fichier $logFile.");
         }
@@ -1223,7 +1224,7 @@ function writeLog($message, $level, $file = null, $line = null)
     $message .= "\n";
 
     // Surcharge de la variable globale signifiant une erreur dans le script.
-    if ($level == "ERROR") {
+    if ($level === "ERROR") {
         $GLOBALS["txtErrorInScript"] .= "$message";
     }
 
@@ -1257,7 +1258,7 @@ function checkEndSlash($string)
  */
 function checkEndWithoutSlash($string)
 {
-    if (substr($string, -1) == "/") {
+    if (substr($string, -1) === "/") {
         $string = substr($string, 0, -1);
     }
     return $string;

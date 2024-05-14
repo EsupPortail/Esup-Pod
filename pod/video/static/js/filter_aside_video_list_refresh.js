@@ -3,8 +3,17 @@
  * @since 3.4.1
  */
 
-/* Read-only globals defined in filter-aside-element-list-refresh.js */
+// Read-only globals defined in filter-aside-element-list-refresh.js
 /* global toggleSortDirection */
+
+// Read-only globals defined ever in playlist.html, dashboard.html or videos.html
+/* global urlVideos */
+
+// Read-only globals defined ever in infinite.js
+/* global InfiniteLoader */
+
+// Read-only globals defined in video_select.js
+/* global setSelectedVideos */
 
 var infinite;
 var checkedInputs = [];
@@ -13,10 +22,10 @@ let infiniteLoading = document.querySelector(".infinite-loading");
 let ownerBox = document.getElementById("ownerbox");
 let filterOwnerContainer = document.getElementById("collapseFilterOwner");
 
-onBeforePageLoad = function () {
+function onBeforePageLoad() {
   infiniteLoading.style.display = "block";
-};
-onAfterPageLoad = function () {
+}
+function onAfterPageLoad() {
   if (
     urlVideos === "/video/dashboard/" &&
     selectedVideos &&
@@ -47,7 +56,7 @@ onAfterPageLoad = function () {
       footer.classList.remove("fixed-bottom");
     }
   });
-};
+}
 
 /**
  * Refresh Infinite Loader (Waypoint Infinite's)

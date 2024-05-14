@@ -735,7 +735,7 @@ global refreshVideosSearch, CATEGORIES_DATA, BASE_URL, VIDEO_URL, EDIT_URL,
 
   // Add onclick event to delete a category
   let del_cat = document.querySelector("#confirm_remove_category_btn");
-  del_cat.addEventListener("click", (e) => {
+  del_cat.addEventListener("click", () => {
     showLoader(loader, true);
     if (CAT_TO_DELETE.slug && CAT_TO_DELETE.id && CAT_TO_DELETE.html) {
       // Delete category

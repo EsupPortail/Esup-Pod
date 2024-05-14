@@ -7,6 +7,11 @@
 global player
 */
 
+// Read-only globals defined in main.js
+/*
+global fadeIn
+*/
+
 var id_form = "form_enrich";
 
 function removeLoadedScript(lib) {
@@ -356,12 +361,12 @@ document.addEventListener("click", (e) => {
     if (e.target.getAttribute("id") == "getfromvideo_start") {
       let inputStart = document.getElementById("id_start");
       inputStart.value = parseInt(player.currentTime(), 10);
-      changeEvent = new Event("change");
+      let changeEvent = new Event("change");
       inputStart.dispatchEvent(changeEvent);
     } else {
       let inputEnd = document.getElementById("id_end");
       inputEnd.value = parseInt(player.currentTime(), 10);
-      changeEvent = new Event("change");
+      let changeEvent = new Event("change");
       inputEnd.dispatchEvent(changeEvent);
     }
   }

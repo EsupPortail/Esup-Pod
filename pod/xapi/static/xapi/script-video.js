@@ -12,6 +12,11 @@ global player
 global createStatement sendStatement
 */
 
+// Read-only globals defined in xapi_video.html
+/*
+global progress
+*/
+
 const __XAPI_VIDEO_VERBS__ = {
   initialized: "http://adlnet.gov/expapi/verbs/initialized",
   played: "https://w3id.org/xapi/video/verbs/played",

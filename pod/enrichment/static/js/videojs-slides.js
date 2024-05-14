@@ -87,7 +87,8 @@ var loadEnrichmentVTTfile = function (url, callback) {
         }
         //// Get First cue line and create first cue
         for (let i = 1; i < nbl; i++) {
-          if ((m = lines[i].match(reg))) {
+          let m = lines[i].match(reg);
+          if (m) {
             fisrtcueline = i;
             cues[c] = createEmptyCue(timeInSecond(m[1]), timeInSecond(m[2]));
             //console.log('Cue '+c+' is created');
@@ -96,7 +97,8 @@ var loadEnrichmentVTTfile = function (url, callback) {
         }
         //// Read next lines, feed first, create and feed next cues
         for (let i = fisrtcueline + 1; i < nbl; i++) {
-          if ((m = lines[i].match(reg))) {
+          let m = lines[i].match(reg);
+          if (m) {
             setCue(c, JSON.parse(txtdata.split("}")[0] + "}"));
             txtdata = "";
             c++;

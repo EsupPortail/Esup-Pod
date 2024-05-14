@@ -185,7 +185,7 @@ function convertToModalListElement(channel) {
   const noWrapSpanElement = document.createElement("span");
   noWrapSpanElement.classList.add("text-nowrap");
   if (haveThemes) {
-    spanElement = setChannelThemeButtonForModal(noWrapSpanElement, channel);
+    var spanElement = setChannelThemeButtonForModal(noWrapSpanElement, channel);
   }
 
   var videoString = ngettext(

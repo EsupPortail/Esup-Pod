@@ -2,6 +2,11 @@
  * @file Esup-Pod Completion scripts.
  */
 
+// Read-only globals defined in main.js
+/*
+global fadeIn
+*/
+
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll("li.contenuTitre").forEach(function (element) {
     element.style.display = "none";

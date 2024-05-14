@@ -3,6 +3,7 @@
  * @since 3.5.0
  */
 
+/* exported asyncStartCountDown */
 
 // Global vars defined in playlist_player.html
 /*
