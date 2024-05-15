@@ -1,15 +1,13 @@
 """Utils for Meeting module."""
 
+import bleach
 from datetime import date, timedelta
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.utils.translation import ugettext_lazy as _
-from pod.main.views import TEMPLATE_VISIBLE_SETTINGS
 from hashlib import sha1
+from pod.main.views import TEMPLATE_VISIBLE_SETTINGS
 
-import bleach
-
-BBB_API_URL = getattr(settings, "BBB_API_URL", "")
 BBB_SECRET_KEY = getattr(settings, "BBB_SECRET_KEY", "")
 
 DEBUG = getattr(settings, "DEBUG", True)

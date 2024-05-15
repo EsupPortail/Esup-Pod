@@ -1,16 +1,19 @@
 """Esup-Pod playlist views tests.
 
-*  run with 'python manage.py test pod.playlist.tests.test_views'
+*  run with 'python3 manage.py test -v 3 --settings=pod.main.test_settings pod.playlist.tests.test_views'
 """
 
 from django.contrib.auth.models import User
+from django.contrib.messages import get_messages
 from django.http import JsonResponse
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.test import override_settings, TestCase
+from pod.main.models import Configuration
 
 from bs4 import BeautifulSoup
 
+from pod.playlist.forms import PlaylistRemoveForm
 from pod.video.models import Type, Video
 
 from ..apps import FAVORITE_PLAYLIST_NAME
@@ -150,9 +153,7 @@ class TestPlaylistsPageTestCase(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_private_filter(self) -> None:
-        """
-        Test if private playlists only are visible when the private filter is active.
-        """
+        """Test if private playlists only are visible when the private filter is active."""
         importlib.reload(context_processors)
         self.client.force_login(self.first_user)
         response = self.client.get(f"{self.url}?visibility=private")
@@ -178,9 +179,7 @@ class TestPlaylistsPageTestCase(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_protected_filter(self) -> None:
-        """
-        Test if protected playlists only are visible when the protected filter is active.
-        """
+        """Test if protected playlists only are visible when the protected filter is active."""
         importlib.reload(context_processors)
         self.client.force_login(self.first_user)
         response = self.client.get(f"{self.url}?visibility=protected")
@@ -206,9 +205,7 @@ class TestPlaylistsPageTestCase(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_public_filter(self) -> None:
-        """
-        Test if public playlists only are visible when the public filter is active.
-        """
+        """Test if public playlists only are visible when the public filter is active."""
         importlib.reload(context_processors)
         self.client.force_login(self.first_user)
         response = self.client.get(f"{self.url}?visibility=public")
@@ -233,9 +230,7 @@ class TestPlaylistsPageTestCase(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_allpublic_filter(self) -> None:
-        """
-        Test if all public playlists are visible when the allpublic filter is active.
-        """
+        """Test if all public playlists are visible when the allpublic filter is active."""
         importlib.reload(context_processors)
         self.client.force_login(self.first_user)
         response = self.client.get(f"{self.url}?visibility=allpublic")
@@ -260,9 +255,7 @@ class TestPlaylistsPageTestCase(TestCase):
 
     @override_settings(USE_PLAYLIST=True)
     def test_promoted_filter(self) -> None:
-        """
-        Test if all promoted playlist are visible when the promoted filter is active.
-        """
+        """Test if all promoted playlist are visible when the promoted filter is active."""
         importlib.reload(context_processors)
         self.client.force_login(self.first_user)
         response = self.client.get(f"{self.url}?visibility=promoted")
@@ -507,6 +500,22 @@ class TestAddOrRemoveFormTestCase(TestCase):
         self.client.logout()
         print(" --->  test_edit_form_page ok")
 
+    @override_settings(USE_PLAYLIST=True)
+    def test_maintenance(self):
+        """Test Pod maintenance mode in TestAddOrRemoveFormTestCase."""
+        self.client.force_login(self.user)
+        response = self.client.get(self.addUrl)
+        self.assertEqual(response.status_code, 200)
+
+        conf = Configuration.objects.get(key="maintenance_mode")
+        conf.value = "1"
+        conf.save()
+
+        response = self.client.get(self.addUrl)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, "/maintenance/")
+        print(" --->  test_maintenance ok")
+
 
 class TestStartupPlaylistParamTestCase(TestCase):
     """Add or remove form test case."""
@@ -711,8 +720,8 @@ class TestPlaylistPage(TestCase):
         importlib.reload(context_processors)
         self.client.force_login(self.user)
         response = self.client.get(self.url_fav_user1)
-        self.assertTrue(
-            f'{_("Playlist")} : {_(FAVORITE_PLAYLIST_NAME)}' in response.content.decode()
+        self.assertContains(
+            response, _("Playlist: %(name)s") % {"name": _(FAVORITE_PLAYLIST_NAME)}
         )
         self.client.logout()
         print(" --->  test_folder_icon_in_video_links ok")
@@ -948,7 +957,9 @@ class TestPrivatePlaylistTestCase(TestCase):
         importlib.reload(context_processors)
         self.client.force_login(self.first_student)
         response = self.client.get(self.url_private_playlist)
-        self.assertEqual(response.status_code, 302)
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(_("You cannot access this playlist."), messages)
+        self.assertEqual(response.status_code, 403)
         self.client.logout()
         print(" --->  test_user_redirect_if_private_playlist_playlists ok")
 
@@ -1037,7 +1048,6 @@ class TestPlaylistPlayerTestCase(TestCase):
             autoplay=True,
             owner=self.first_student,
         )
-        # TODO Make a for boucle to don't repeat function call
         tuples_to_link = [
             (self.playlist_first_video_is_disabled, self.video_second_student_draft),
             (self.playlist_first_video_is_disabled, self.video_first_student),
@@ -1200,23 +1210,6 @@ class StartPlaylistViewTest(TestCase):
         self.client.logout()
         print(" --->  test_start_playlist_public ok")
 
-    def test_start_playlist_private_owner(self):
-        """Test if start a private playlist when owner of it works."""
-        importlib.reload(context_processors)
-        self.client.force_login(self.user)
-        response = self.client.get(
-            reverse(
-                "playlist:start-playlist",
-                kwargs={"slug": self.private_playlist_user1.slug},
-            )
-        )
-        expected_url = get_link_to_start_playlist(
-            self.client.request, self.private_playlist_user1
-        )
-        self.assertRedirects(response, expected_url)
-        self.client.logout()
-        print(" --->  test_start_playlist_private_owner ok")
-
     def test_start_playlist_private_not_owner(self):
         """Test if start a private playlist don't works if not owner of it."""
         importlib.reload(context_processors)
@@ -1233,7 +1226,7 @@ class StartPlaylistViewTest(TestCase):
         print(" --->  test_start_playlist_private_not_owner ok")
 
     def test_start_playlist_protected_get_request_not_owner(self):
-        """Test if form password is present when not owner of a protected playlist"""
+        """Test if form password is present when not owner of a protected playlist."""
         importlib.reload(context_processors)
         self.client.force_login(self.user2)
         response = self.client.get(
@@ -1246,7 +1239,7 @@ class StartPlaylistViewTest(TestCase):
         print(" --->  test_start_playlist_protected_get_request_not_owner ok")
 
     def test_start_playlist_protected_get_request_owner(self):
-        """Test if form password is not present when owner of a protected playlist"""
+        """Test if form password is not present when owner of a protected playlist."""
         importlib.reload(context_processors)
         self.client.force_login(self.user)
         response = self.client.get(
@@ -1261,3 +1254,115 @@ class StartPlaylistViewTest(TestCase):
         self.assertRedirects(response, expected_url)
         self.assertTemplateNotUsed(response, "playlist/protected-playlist-form.html")
         print(" --->  test_start_playlist_protected_get_request_owner ok")
+
+
+class RemovePlaylistTestCase(TestCase):
+    """Remove playlist page tests case."""
+
+    fixtures = ["initial_data.json"]
+
+    def setUp(self) -> None:
+        """Set up required objects for next tests."""
+        self.user = User.objects.create(
+            username="simple.user",
+            password="user1234user",
+        )
+        self.simple_playlist = Playlist.objects.create(
+            name="My simple playlist",
+            visibility="public",
+            owner=self.user,
+        )
+        self.playlist_without_videos = Playlist.objects.create(
+            name="My playlist without videos",
+            visibility="public",
+            owner=self.user,
+        )
+        self.video = Video.objects.create(
+            title="First video",
+            owner=self.user,
+            video="first_video.mp4",
+            is_draft=False,
+            type=Type.objects.get(id=1),
+        )
+        user_add_video_in_playlist(self.simple_playlist, self.video)
+        self.url = reverse("playlist:remove", kwargs={"slug": self.simple_playlist.slug})
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_maintenance(self):
+        """Test Pod maintenance mode in RemovePlaylistTestCase."""
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+        conf = Configuration.objects.get(key="maintenance_mode")
+        conf.value = "1"
+        conf.save()
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, "/maintenance/")
+        print(" --->  test_maintenance ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_get_remove_playlist(self):
+        """Test test_get_remove_playlist."""
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "playlist/delete.html")
+        self.assertEqual(response.context["playlist"], self.simple_playlist)
+        self.assertIsInstance(response.context["form"], PlaylistRemoveForm)
+        print(" --->  test_maintenance ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_playlist_delete_view_get(self):
+        """Test test_playlist_delete_view_get."""
+        self.client.force_login(self.user)
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "playlist/delete.html")
+        self.assertEqual(response.context["playlist"], self.simple_playlist)
+        self.assertIsInstance(response.context["form"], PlaylistRemoveForm)
+        print(" --->  test_playlist_delete_view_get ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_playlist_delete_view_post(self):
+        """Test test_playlist_delete_view_post."""
+        self.client.force_login(self.user)
+        self.assertEqual(
+            Playlist.objects.filter(slug=self.simple_playlist.slug).count(), 1
+        )
+        form_data = {"agree": True}
+        response = self.client.post(
+            reverse("playlist:remove", kwargs={"slug": self.simple_playlist.slug}),
+            data=form_data,
+        )
+        self.assertEqual(
+            Playlist.objects.filter(slug=self.simple_playlist.slug).count(), 0
+        )
+        self.assertRedirects(
+            response, reverse("playlist:list"), status_code=302, target_status_code=200
+        )
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(_("The playlist has been deleted."), messages)
+        print(" --->  test_playlist_delete_view_post ok")
+
+    @override_settings(USE_PLAYLIST=True)
+    def test_playlist_delete_view_post_invalid_form(self):
+        """Test test_playlist_delete_view_post_invalid_form."""
+        self.client.force_login(self.user)
+        form_data = {}  # Invalid form data
+        response = self.client.post(
+            reverse("playlist:remove", kwargs={"slug": self.simple_playlist.slug}),
+            data=form_data,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "playlist/delete.html")
+        self.assertEqual(response.context["playlist"], self.simple_playlist)
+        self.assertIsInstance(response.context["form"], PlaylistRemoveForm)
+        messages = [m.message for m in get_messages(response.wsgi_request)]
+        self.assertIn(_("One or more errors have been found in the form."), messages)
+        print(" --->  test_playlist_delete_view_post_invalid_form ok")

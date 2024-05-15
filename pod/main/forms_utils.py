@@ -56,37 +56,37 @@ class MyAdminSplitDateTime(forms.MultiWidget):
 def add_describedby_attr(fields):
     """Add aria-describedby attribute to specified fields."""
     for fieldName in fields:
-        myField = fields[fieldName]
-        if myField.widget.__class__.__name__ != "HiddenInput" and myField.help_text:
-            myField.widget.attrs["aria-describedby"] = "id_%sHelp" % fieldName
+        my_field = fields[fieldName]
+        if my_field.widget.__class__.__name__ != "HiddenInput" and my_field.help_text:
+            my_field.widget.attrs["aria-describedby"] = "id_%sHelp" % fieldName
     return fields
 
 
 def add_placeholder_and_asterisk(fields):
     """Add placeholder and asterisk to specified fields."""
     for fieldName in fields:
-        myField = fields[fieldName]
-        classname = myField.widget.__class__.__name__
-        if classname == "PasswordInput" or classname == "TextInput":
-            myField.widget.attrs["placeholder"] = myField.label
+        my_field = fields[fieldName]
+        classname = my_field.widget.__class__.__name__
+        if classname in {"PasswordInput", "TextInput", "EmailInput", "CaptchaTextInput"}:
+            my_field.widget.attrs["placeholder"] = my_field.label
 
-        if classname == "CheckboxInput" or classname == "CheckboxSelectMultiple":
-            bsClass = "form-check-input"
+        if classname in {"CheckboxInput", "CheckboxSelectMultiple"}:
+            bs_class = "form-check-input"
         elif classname == "Select":
-            bsClass = "form-select"
+            bs_class = "form-select"
         else:
-            bsClass = "form-control"
+            bs_class = "form-control"
 
-        init_class = myField.widget.attrs.get("class", "")
-        bsClass = bsClass + " " + init_class
-        if myField.required:
-            myField.label = mark_safe(
-                '%s <span class="required_star">*</span>' % myField.label
+        init_class = my_field.widget.attrs.get("class", "")
+        bs_class = bs_class + " " + init_class
+        if my_field.required:
+            my_field.label = mark_safe(
+                '%s <span class="required_star">*</span>' % my_field.label
             )
-            myField.widget.attrs["required"] = ""
-            myField.widget.attrs["class"] = "required " + bsClass
+            my_field.widget.attrs["required"] = ""
+            my_field.widget.attrs["class"] = "required " + bs_class
         else:
-            myField.widget.attrs["class"] = bsClass
+            my_field.widget.attrs["class"] = bs_class
 
     return fields
 

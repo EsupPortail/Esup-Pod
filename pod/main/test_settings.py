@@ -21,9 +21,13 @@ TEMPLATES[0]["DIRS"].append(
 )
 USE_DOCKER = True
 path = "pod/custom/settings_local.py"
+ES_URL = ["http://127.0.0.1:9200/"]
+ES_VERSION = 6
 if os.path.exists(path):
     _temp = __import__("pod.custom", globals(), locals(), ["settings_local"])
     USE_DOCKER = getattr(_temp.settings_local, "USE_DOCKER", True)
+    ES_URL = getattr(_temp.settings_local, "ES_URL", ["http://127.0.0.1:9200/"])
+    ES_VERSION = getattr(_temp.settings_local, "ES_VERSION", 6)
 
 for application in INSTALLED_APPS:
     if application.startswith("pod"):
@@ -50,10 +54,11 @@ THIRD_PARTY_APPS = ["enrichment", "live"]
 USE_PODFILE = True
 USE_FAVORITES = True
 USE_PLAYLIST = True
+USE_PROMOTED_PLAYLIST = True
+RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY = False
 USE_STATS_VIEW = True
 ACCOMMODATION_YEARS = {"faculty": 1}
 USE_OBSOLESCENCE = True
-SHOW_EVENTS_ON_HOMEPAGE = True
 ACTIVE_VIDEO_COMMENT = True
 USER_VIDEO_CATEGORY = True
 POD_ARCHIVE_AFFILIATION = ["faculty"]
@@ -70,6 +75,7 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
     "Shibboleth-unscoped-affiliation": (False, "affiliations"),
 }
 REMOTE_USER_HEADER = "REMOTE_USER"
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = False
 EXISTING_BROADCASTER_IMPLEMENTATIONS = ["Wowza", "Test"]
 AFFILIATION_EVENT = ["employee"]
 
@@ -98,6 +104,12 @@ XAPI_LRS_URL = ""
 XAPI_LRS_LOGIN = ""
 XAPI_LRS_PWD = ""
 
+# Webinar options
+USE_MEETING_WEBINAR = True
+MEETING_WEBINAR_SIPMEDIAGW_URL = "https://127.0.0.1"
+MEETING_WEBINAR_SIPMEDIAGW_TOKEN = "token"
+MEETING_WEBINAR_AFFILIATION = ["faculty", "employee", "staff"]
+
 # Uniquement lors d'environnement conteneurisé
 if USE_DOCKER:
     MIGRATION_MODULES = {"flatpages": "pod.db_migrations"}
@@ -106,3 +118,6 @@ if USE_DOCKER:
         os.mkdir(MIGRATION_DIRECTORY)
         file = os.path.join(MIGRATION_DIRECTORY, "__init__.py")
         open(file, "a").close()
+
+# DEBUG
+USE_DEBUG_TOOLBAR = False

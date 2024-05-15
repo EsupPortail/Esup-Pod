@@ -55,10 +55,10 @@ class ExternalRecordingTestCase(TestCase):
         """Change attributs values in a recording and save it."""
         recording1 = ExternalRecording.objects.get(id=1)
         self.assertEqual(recording1.name, "test recording1")
-        recording1.name = "New test recording1 !"
+        recording1.name = "New test recording1!"
         recording1.save()
         newrecording1 = ExternalRecording.objects.get(id=1)
-        self.assertEqual(newrecording1.name, "New test recording1 !")
+        self.assertEqual(newrecording1.name, "New test recording1!")
 
     def test_delete_object(self):
         """Delete a recording."""

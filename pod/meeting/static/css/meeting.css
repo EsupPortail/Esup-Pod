@@ -6,6 +6,10 @@
   border: 1px solid #f5a391;
 }
 
+.meeting-card-personal {
+  border: 1px solid #91a3f5;
+}
+
 .link-meeting {
   right: 1rem;
   border-radius: 0.375rem;
@@ -60,14 +64,6 @@
 }
 
 /* Message error */
-div.alert.alert-dismissible {
-  border-radius: 6px;
-  display: table;
-  width: 100%;
-  padding-left: 78px;
-  position: relative;
-  padding-right: 60px;
-}
 
 div.alert .icon {
   text-align: center;
@@ -124,4 +120,17 @@ div.alert .proposition::before {
   margin-right: 15px;
   font-family: bootstrap-icons;
   vertical-align: -0.125em;
+}
+
+/* Max 16rem for meeting card */
+.pod-infinite-container {
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+}
+
+.meeting-nowrap {
+  white-space: nowrap !important;
+}
+
+.meeting-header-card {
+  min-height: 4rem;
 }

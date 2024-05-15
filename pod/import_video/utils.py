@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 from html.parser import HTMLParser
+from pod.meeting.utils import slash_join
 from pod.video.models import Video
 from pod.video.models import Type
 from urllib.parse import parse_qs, urlparse
@@ -48,6 +49,11 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
 
 VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
 
+# The meeting application is activated?
+USE_MEETING = getattr(settings, "USE_MEETING", False)
+# BBB server API
+BBB_API_URL = getattr(settings, "BBB_API_URL", "")
+
 
 def secure_request_for_upload(request):
     """Check that the request is correct for uploading a recording.
@@ -73,7 +79,7 @@ def parse_remote_file(session: Session, source_html_url: str):
     """Parse the remote HTML file on the BBB server.
 
     Args:
-        session (Session) : session useful to achieve requests (and keep cookies between)
+        session (Session): session useful to achieve requests (and keep cookies between)
         source_html_url (String): URL to parse
 
     Raises:
@@ -85,13 +91,8 @@ def parse_remote_file(session: Session, source_html_url: str):
     try:
         response = session.get(source_html_url)
         if response.status_code != 200:
-            msg = {}
-            msg["error"] = _(
-                "The HTML file for this recording was not found on the server."
-            )
-            # If we want to display the 404/500... page to the user
-            # msg["message"] = response.content.decode("utf-8")
-            msg["message"] = _("Error number: %s") % response.status_code
+            # No more informations needed for common error
+            msg = ""
             raise ValueError(msg)
 
         # Parse the BBB video HTML file
@@ -160,7 +161,7 @@ def manage_recording_url(source_url: str, video_file_add: str) -> str:
         if url.query:
             query = parse_qs(url.query, keep_blank_values=True)
             if query["token"][0]:
-                # 1st case (ex: ESR URL), URL likes (ex for ESR URL:)
+                # 1st case (ex: ESR URL), URL likes
                 # https://_site_/recording/_recording_id/video?token=_token_
                 # Get recording unique identifier
                 recording_id = url.path.split("/")[2]
@@ -188,7 +189,7 @@ def manage_download(
 ) -> str:
     """Manage the download of a BBB video file.
 
-    2 possibilities :
+    2 possibilities:
      - Download BBB video file directly.
      - Download BBB video file where source URL is protected by a single-use token.
     In such a case, 2 requests are made, using the same session.
@@ -199,13 +200,13 @@ def manage_download(
     and download_video_file.
 
     Args:
-        session (Session) : Session useful to achieve requests (and keep cookies between)
+        session (Session): Session useful to achieve requests (and keep cookies between)
         source_url (String): Source file URL
         video_file_add (String): Name of the video file to add to the URL
         dest_file (String): Destination file of the Pod video
 
     Returns:
-        source_video_url (String) : video source file URL
+        source_video_url (String): video source file URL
 
     Raises:
         ValueError: if impossible download
@@ -222,7 +223,7 @@ def download_video_file(session: Session, source_video_url: str, dest_file: str)
     """Download video file.
 
     Args:
-        session (Session) : Session useful to achieve requests (and keep cookies between)
+        session (Session): Session useful to achieve requests (and keep cookies between)
         source_video_url (String): Video file URL
         dest_file (String): Destination file of the Pod video
 
@@ -236,19 +237,19 @@ def download_video_file(session: Session, source_video_url: str, dest_file: str)
             # print(session.cookies.get_dict())
             if response.status_code != 200:
                 raise ValueError(
-                    _("The video file for this recording " "was not found on the server.")
+                    _("The video file for this recording was not found on the server.")
                 )
 
             with open(dest_file, "wb+") as file:
                 # Total size, in bytes, from response header
                 # total_size = int(response.headers.get('content-length', 0))
                 # Other possible methods
-                # Method 1 : iterate over every chunk and calculate % of total
+                # Method 1: iterate over every chunk and calculate % of total
                 # for chunk in response.iter_content(chunk_size=1024*1024):
                 #    file.write(chunk)
-                # Method 2 : Binary download
+                # Method 2: Binary download
                 # file.write(response.content)
-                # Method 3 : The fastest
+                # Method 3: The fastest
                 shutil.copyfileobj(response.raw, file)
     except Exception as exc:
         raise ValueError(mark_safe(str(exc)))
@@ -358,10 +359,11 @@ def check_video_size(video_size: int):
 def check_source_url(source_url: str):  # noqa: C901
     """Check the source URL to identify the used platform.
 
-    Platforms managed :
-     - Mediacad platform (Médiathèque académique) : rewrite source URL if required
+    Platforms managed:
+     - Mediacad platform (Médiathèque académique): rewrite source URL if required
      and manage JSON API.
-     - Old BigBlueButton : source URL for old BBB presentation playback
+     - BBB ESR infrastructure: rewrite source URL if required
+     - Old BigBlueButton presentation: source URL for old BBB presentation playback
     """
     base_url = ""
     media_id = ""
@@ -428,6 +430,27 @@ def check_source_url(source_url: str):  # noqa: C901
                 media_id,
             )
             platform = "Mediacad"
+        elif source_url.find("bbb.numerique-esr.fr/video/") != -1:
+            # BBB ESR video link
+            # https://univ.scalelite.bbb.numerique-esr.fr/video/#id#/
+            source_video_url = source_url
+            format = "m4v"
+            platform = "BBB_ESR"
+        elif source_url.find("bbb.numerique-esr.fr/playback/presentation/2.3/") != -1:
+            # BBB ESR presentation link: rewrite for video source URL
+            # https://univ.scalelite.bbb.numerique-esr.fr/playback/presentation/2.3/#id#
+            source_video_url = (
+                source_url.replace("/playback/presentation/2.3/", "/video/") + "/"
+            )
+            format = "m4v"
+            platform = "BBB_ESR"
+        elif source_url.find("bbb.numerique-esr.fr/recording/") != -1:
+            # BBB ESR video or presentation link: rewrite for video source URL if pres
+            # https://univ.scalelite.bbb.numerique-esr.fr/recording/#id#/presentation?
+            # https://univ.scalelite.bbb.numerique-esr.fr/recording/#id#/video?
+            source_video_url = source_url.replace("/presentation", "/video")
+            format = "m4v"
+            platform = "BBB_ESR"
         elif source_url.find("/playback/presentation/2.0/playback.html?") != -1:
             # Old BBB 2.x (<2.3) presentation link
             # Conversion from
@@ -440,22 +463,22 @@ def check_source_url(source_url: str):  # noqa: C901
             format = "webm"
             platform = "BBB_Presentation"
         elif source_url.find("/playback/presentation/2.3/") != -1:
-            # Old BBB 2.3 presentation link : no conversion needed
+            # Old BBB 2.3 presentation link: no conversion needed
             source_video_url = source_url
             format = "webm"
             platform = "BBB_Presentation"
 
         # Platform's URL identified
         if platform == "Mediacad":
-            # Mediacad API (JSON format) is available at :
+            # Mediacad API (JSON format) is available at:
             # ##mediacadBaseUrl##/default/media/display/m/##mediaId##/d/j
             url_api_video = "%s/default/media/display/m/%s/d/j" % (base_url, media_id)
             # Platform type
             platform_type = TypeSourceURL(
                 platform, source_video_url, format, url_api_video
             )
-        if platform == "BBB_Presentation":
-            # Platform type: older BBB, format presentation
+        # Platform type: BBB ESR or older BBB, format presentation
+        if platform == "BBB_ESR" or platform == "BBB_Presentation":
             platform_type = TypeSourceURL(platform, source_video_url, format, "")
 
         return platform_type
@@ -507,6 +530,79 @@ def move_file(source: str, destination: str):
         print(f"Error moving the file: {e}")
 
 
+def check_url_format_presentation(source_url: str) -> bool:
+    """Check if the URL looks like a BBB presentation."""
+    presentation = False
+    # Management for old presentation URLs with BBB or Scalelite server
+    if source_url.find("/playback/presentation/2.0/playback.html?") != -1:
+        presentation = True
+    # Management for standard presentation URLs with BBB or Scalelite server
+    elif source_url.find("/playback/presentation/2.3/") != -1:
+        presentation = True
+    return presentation
+
+
+def check_url_need_token(source_url: str) -> str:
+    """Check if the URL is used by an infrastructure that need a token.
+
+    Useful for generating the single-use token required to access video file.
+    2 conditions:
+     - URL was created on the same BBB infrastructure as the meeting module,
+     - At present, only ESR's BBB infrastructure uses single-use tokens.
+    If both conditions are met, then returns the recording_id.
+    """
+    if USE_MEETING:
+        # Calculate base URL for BBB meeting
+        meeting_base_url = slash_join(BBB_API_URL.replace("bigbluebutton/api", ""))
+        # If the URL was created on the same BBB ESR infrastructure as the meeting module
+        # Ex:
+        # https://univ.scalelite.bbb.numerique-esr.fr/video/##id##/
+        # https://univ.scalelite.bbb.numerique-esr.fr/presentation/##id##/
+        # https://univ.scalelite.bbb.numerique-esr.fr/recording/##id##/video?xxx
+        # https://univ.scalelite.bbb.numerique-esr.fr/recording/##id##/presentation?xxx
+        # https://univ.scalelite.bbb.numerique-esr.fr/playback/presentation/2.3/##id##
+        if (
+            source_url.find(meeting_base_url) != -1
+            and source_url.find("bbb.numerique-esr.fr/") != -1
+        ):
+            # Get recording id
+            array_url = source_url.split("/")
+            recording_id = array_url[-2]
+            # Specific case
+            if recording_id == "2.3":
+                recording_id = array_url[-1]
+            return recording_id
+        else:
+            return ""
+    else:
+        return ""
+
+
+def get_playbacks_urls_with_token(recording):
+    """Get presentation and video source URL, with token, for a recording.
+
+    Check if the recording was made by an infrastructure that need a token.
+    In such a case, request the BBB infrastructure to get playbacks with token.
+    """
+    # Default values
+    presentation_url = ""
+    video_url = ""
+    # Check if the URL is used by an infrastructure that need a token
+    recording_id = check_url_need_token(recording.source_url)
+    if recording_id != "":
+        # Request the BBB infrastructure to get playbacks with token
+        recordings = recording.search_internal_recording(recording_id)
+        if type(recordings.get("recordings")) is dict:
+            for data in recordings["recordings"].values():
+                for playback in data["playback"]:
+                    if data["playback"][playback]["type"] == "video":
+                        video_url = data["playback"][playback]["url"]
+                    if data["playback"][playback]["type"] == "presentation":
+                        presentation_url = data["playback"][playback]["url"]
+    # Return the 2 usefuls playbacks
+    return presentation_url, video_url
+
+
 class TypeSourceURL:
     """Manage external recording source URL.
 
@@ -555,9 +651,9 @@ class video_parser(HTMLParser):
         attrs = dict(attrs)
         # Search for source tag
         if tag == "source":
-            # Found the line. Managed format :
+            # Found the line. Managed format:
             # attrs = {'src': 'video-0.m4v', 'type': 'video/mp4'}
-            # print("video line : %s" % attrs)
+            # print("video line: %s" % attrs)
             self.video_check = True
             self.video_file = attrs.get("src", "")
             self.video_type = attrs.get("type", "")
@@ -577,7 +673,7 @@ class video_parser(HTMLParser):
 class StatelessRecording:
     """Recording model, not saved in database.
 
-    Useful to manage :
+    Useful to manage:
      - internal (meeting module) recordings
      - external (import_video module) recordings
     for the views.
@@ -599,6 +695,8 @@ class StatelessRecording:
     presentationUrl = ""
     # Video playback URL, used as the source URL for the video file
     videoUrl = ""
+    # Recording id (BBB format), when created on the same BBB infra as meeting module
+    recordingId = ""
 
     def __init__(self, id, name, state):
         """Initiliaze."""

@@ -3,19 +3,22 @@ document.addEventListener("DOMContentLoaded", function () {
   let restrictedCheckBox = document.getElementById("event_is_restricted");
   let restrictedHelp = document.getElementById("event_is_restrictedHelp");
   let restrictedLabel = document.getElementsByClassName(
-    "field_is_restricted",
+    "field-is_restricted",
   )[0];
 
   let change_restriction = (restrict) => {
     if (restrict === true) {
-      restrictedCheckBox.checked = true;
-      restrictedCheckBox.setAttribute("onclick", "return false");
+      if (!restrictedCheckBox.checked) {
+        restrictedCheckBox.click();
+        restrictedCheckBox.checked = true;
+      }
+      restrictedCheckBox.setAttribute("disabled", "disabled");
       restrictedHelp.innerHTML = gettext(
         "Restricted because the broadcaster is restricted",
       );
       restrictedLabel.style.opacity = "0.5";
     } else {
-      restrictedCheckBox.removeAttribute("onclick");
+      restrictedCheckBox.removeAttribute("disabled");
       restrictedHelp.innerHTML = gettext(
         "If this box is checked, the event will only be accessible to authenticated users.",
       );
@@ -50,9 +53,9 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((s) => {
         change_restriction(s.restricted);
       })
-      .catch((error) => {
+      .catch(() => {
         change_restriction(false);
-        alert(gettext("An error occurred on broadcaster fetch..."));
+        alert(gettext("An error occurred on broadcaster fetch…"));
       });
   };
 
@@ -93,8 +96,8 @@ document.addEventListener("DOMContentLoaded", function () {
             getBroadcasterRestriction();
           }
         })
-        .catch((error) => {
-          alert(gettext("An error occurred during broadcasters loading..."));
+        .catch(() => {
+          alert(gettext("An error occurred during broadcasters loading…"));
         });
     });
 

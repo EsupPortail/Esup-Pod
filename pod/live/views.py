@@ -30,9 +30,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+from pod.meeting.models import Livestream
 from rest_framework import status
-
-from pod.bbb.models import Livestream
 from .forms import EventPasswordForm, EventForm, EventDeleteForm, EventImmediateForm
 from .models import (
     Building,
@@ -41,7 +40,12 @@ from .models import (
     Event,
     get_available_broadcasters_of_building,
 )
-from .pilotingInterface import get_piloting_implementation
+from .pilotingInterface import (
+    get_piloting_implementation,
+    CREATE_VIDEO_FROM_FTP,
+    CREATE_VIDEO_FROM_FS,
+    CREATE_VIDEO_OPENCAST,
+)
 from .utils import (
     send_email_confirmation,
     get_event_id_and_broadcaster_id,
@@ -55,8 +59,8 @@ from ..video.models import Video, Type
 
 HEARTBEAT_DELAY = getattr(settings, "HEARTBEAT_DELAY", 45)
 
-USE_BBB = getattr(settings, "USE_BBB", False)
-USE_BBB_LIVE = getattr(settings, "USE_BBB_LIVE", False)
+USE_MEETING = getattr(settings, "USE_MEETING", False)
+USE_MEETING_WEBINAR = getattr(settings, "USE_MEETING_WEBINAR", False)
 
 DEFAULT_EVENT_PATH = getattr(settings, "DEFAULT_EVENT_PATH", "")
 DEFAULT_EVENT_THUMBNAIL = getattr(
@@ -124,18 +128,11 @@ def direct(request, slug):
             "%s?%sreferrer=%s"
             % (settings.LOGIN_URL, iframe_param, request.get_full_path())
         )
-    # Search if broadcaster is used to display a BBB streaming live
-    # for which students can send message from this live page
-    display_chat = False
-    if USE_BBB and USE_BBB_LIVE:
-        livestreams_list = Livestream.objects.filter(broadcaster_id=broadcaster.id)
-        for livestream in livestreams_list:
-            display_chat = livestream.enable_chat
+
     return render(
         request,
         "live/direct.html",
         {
-            "display_chat": display_chat,
             "display_event_btn": can_manage_event(request.user),
             "broadcaster": broadcaster,
             "heartbeat_delay": HEARTBEAT_DELAY,
@@ -340,20 +337,20 @@ def render_event_template(request, evemnt, user_owns_event):
             },
         )
 
-    # Search if broadcaster is used to display a BBB streaming live
+    # Search if livestream is used to display a webinar streaming live
     # for which students can send message from this live page
-    display_chat = False
-    if USE_BBB and USE_BBB_LIVE:
-        livestreams_list = Livestream.objects.filter(broadcaster_id=evemnt.broadcaster_id)
-        for livestream in livestreams_list:
-            display_chat = livestream.enable_chat
+    enable_chat = False
+    if USE_MEETING and USE_MEETING_WEBINAR:
+        livestream = Livestream.objects.filter(event=evemnt).first()
+        if livestream:
+            enable_chat = livestream.meeting.enable_chat
 
     return render(
         request,
         template_event,
         {
             "event": evemnt,
-            "display_chat": display_chat,
+            "enable_chat": enable_chat,
             "can_record": (
                 user_owns_event
                 and evemnt.broadcaster.piloting_implementation
@@ -588,6 +585,7 @@ def update_event(form):
         d_fin = timezone.make_aware(d_fin)
         evt.end_date = d_fin
         evt.save()
+        form.save_m2m()
         return evt
 
 
@@ -798,8 +796,9 @@ def ajax_event_splitrecord(request):
 
 
 def event_splitrecord(event_id, broadcaster_id):
-    """Call the split method of the broadcaster's implementation
-    and converts the file to a Pod video (linked to the event).
+    """Call the split method of the broadcaster's implementation.
+
+    And converts the file to a Pod video (linked to the event).
 
      Returns: a JsonResponse with success state and the error (in case of failure).
     """
@@ -834,8 +833,9 @@ def ajax_event_stoprecord(request):
 
 
 def event_stoprecord(event_id, broadcaster_id):
-    """Call the stop method of the broadcaster's implementation
-    and converts the file to a Pod video (linked to the event).
+    """Call the stop method of the broadcaster's implementation.
+
+    And converts the file to a Pod video (linked to the event).
 
      Returns: a JsonResponse with success state and the error (in case of failure).
     """
@@ -872,8 +872,9 @@ def ajax_event_info_record(request):
 
 
 def event_info_record(event_id, broadcaster_id):
-    """Return a JsonResponse with success state and :
+    """Return a JsonResponse with state and duration.
 
+    JsonResponse contains success state and:
     * the duration of the recording in seconds
     * or the error (in case of failure).
     """
@@ -1145,6 +1146,8 @@ def is_recording(broadcaster: Broadcaster, with_file_check=False) -> bool:
 
 def transform_to_video(broadcaster, event_id, current_record_info):
     """
+    Transform current_record_info to video.
+
     Args:
         broadcaster (Broadcaster): the broadcaster
         event_id (int): event's id
@@ -1158,8 +1161,12 @@ def transform_to_video(broadcaster, event_id, current_record_info):
     if not impl_class:
         return JsonResponse({"success": False, "error": "implementation error"})
 
-    if impl_class.copy_file_needed():
-        # Copie + transform faite dans un thread
+    vcm = impl_class.video_creation_method()
+
+    if vcm == CREATE_VIDEO_OPENCAST:
+        return JsonResponse({"success": True, "error": ""})
+    elif vcm == CREATE_VIDEO_FROM_FTP:
+        # copy_and_transform dans un thread
         t = threading.Thread(
             target=copy_and_transform,
             args=[impl_class, event_id, current_record_info],
@@ -1167,17 +1174,22 @@ def transform_to_video(broadcaster, event_id, current_record_info):
         )
         t.start()
         return JsonResponse({"success": True, "error": ""})
+    elif vcm == CREATE_VIDEO_FROM_FS:
+        return create_video(
+            event_id,
+            current_record_info.get("currentFile", None),
+            current_record_info.get("segmentNumber", None),
+        )
 
-    return create_video(
-        event_id,
-        current_record_info.get("currentFile", None),
-        current_record_info.get("segmentNumber", None),
+    return JsonResponse(
+        {"success": False, "error": "file_location() is not well-defined"}
     )
 
 
 def copy_and_transform(impl_class, event_id, current_record_info):
     """
-    Copy the file from remote to Pod and creates the video
+    Copy the file from remote to Pod and create the video.
+
     Args:
         impl_class (PilotingInterface): the piloting interface of the broadcaster
         event_id (int): event's id

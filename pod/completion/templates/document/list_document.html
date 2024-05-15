@@ -14,11 +14,11 @@
 		<tbody>
 			{% for doc in list_document %}
 				<tr>
-					<td class="document_name">{{doc.document.name}} ({{ doc.document.file_ext }}) 
-						{% if doc.private %} 
-							<i class="bi bi-eye-slash" aria-hidden="true"></i>
-						{% else %} 
-							<i class="bi bi-eye" aria-hidden="true"></i>
+					<td class="document_name">{{doc.document.name}} ({{ doc.document.file_ext }})
+						{% if doc.private %}
+							<i class="bi bi-eye-slash" title="{% trans 'Private document' %}"></i>
+						{% else %}
+							<i class="bi bi-eye" title="{% trans 'Public document' %}"></i>
 						{% endif %}
 					</td>
 					<td>

@@ -23,6 +23,8 @@ try:
 except ImportError:
     from .. import settings as settings_local
 
+from .encoding_utils import sec_to_timestamp
+
 DEBUG = getattr(settings_local, "DEBUG", False)
 
 TRANSCRIPTION_MODEL_PARAM = getattr(settings_local, "TRANSCRIPTION_MODEL_PARAM", False)
@@ -456,14 +458,6 @@ def change_previous_end_caption(webvtt, start_caption):
         ).total_seconds()
         if td_prev_end > start_caption:
             webvtt.captions[-1].end = sec_to_timestamp(start_caption)
-
-
-def sec_to_timestamp(total_seconds):
-    """Format time for webvtt caption."""
-    hours = int(total_seconds / 3600)
-    minutes = int(total_seconds / 60 - hours * 60)
-    seconds = total_seconds - hours * 3600 - minutes * 60
-    return "{:02d}:{:02d}:{:06.3f}".format(hours, minutes, seconds)
 
 
 def get_text_caption(text_caption, last_word_added):

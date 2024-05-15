@@ -89,8 +89,9 @@ createconfigs:
 # Use for docker run and docker exec commands
 -include .env.dev
 export
-COMPOSE = docker-compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
-COMPOSE_FULL = docker-compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod
+COMPOSE = docker compose -f ./docker-compose-dev-with-volumes.yml -p esup-pod
+COMPOSE_FULL = docker compose -f ./docker-compose-full-dev-with-volumes.yml -p esup-pod
+COMPOSE_FULL_TEST = docker compose -f ./docker-compose-full-dev-with-volumes-test.yml -p esup-pod
 DOCKER_LOGS = docker logs -f
 
 #docker-start-build:
@@ -123,6 +124,9 @@ docker-build:
 ifeq ($(DOCKER_ENV), full)
 	@$(COMPOSE_FULL) build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG) --no-cache
 	@$(COMPOSE_FULL) up
+else ifeq ($(DOCKER_ENV), full-test)
+	@$(COMPOSE_FULL_TEST) build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG) --no-cache
+	@$(COMPOSE_FULL_TEST) up
 else
 	@$(COMPOSE) build --build-arg ELASTICSEARCH_VERSION=$(ELASTICSEARCH_TAG) --build-arg NODE_VERSION=$(NODE_TAG) --build-arg PYTHON_VERSION=$(PYTHON_TAG) --no-cache
 	@$(COMPOSE) up
@@ -135,6 +139,8 @@ docker-start:
 	# (Attention, il a été constaté que sur un mac, le premier lancement peut prendre plus de 5 minutes.)
 ifeq ($(DOCKER_ENV), full)
 	@$(COMPOSE_FULL) up
+else ifeq ($(DOCKER_ENV), full-test)
+	@$(COMPOSE_FULL_TEST) up
 else
 	@$(COMPOSE) up
 endif
@@ -145,25 +151,26 @@ endif
 docker-stop:
 ifeq ($(DOCKER_ENV), full)
 	@$(COMPOSE_FULL) down -v
+else ifeq ($(DOCKER_ENV), full-test)
+	@$(COMPOSE_FULL_TEST)  down -v
 else
 	@$(COMPOSE) down -v
 endif
+
 # Arrête le serveur de test et supprime les fichiers générés
 docker-reset:
 ifeq ($(DOCKER_ENV), full)
 	@$(COMPOSE_FULL) down -v
+else ifeq ($(DOCKER_ENV), full-test)
+	@$(COMPOSE_FULL_TEST)  down -v
 else
 	@$(COMPOSE) down -v
 endif
-	# sudo rm -rf ./pod/log
+	# Supprime les fichiers générés.
 	sudo rm -rf ./pod/log
-	# sudo rm -rf ./pod/static
 	sudo rm -rf ./pod/static
-	# sudo rm -rf ./pod/node_modules
 	sudo rm -rf ./pod/node_modules
-	# sudo rm -rf ./pod/db_migrations
 	sudo rm -rf ./pod/db_migrations
-	# sudo rm -rf ./pod/db.sqlite3"
 	sudo rm -rf ./pod/db.sqlite3
-	# sudo rm -rf ./pod/media"
+	sudo rm -rf ./pod/db_remote.sqlite3
 	sudo rm -rf ./pod/media

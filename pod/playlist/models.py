@@ -17,6 +17,8 @@ from pod.video.utils import sort_videos_list
 
 SITE_ID = getattr(settings, "SITE_ID")
 
+__MAX_LENGTH_FOR_PLAYLIST_NAME__ = 200
+
 
 class Playlist(models.Model):
     """Playlist model."""
@@ -28,9 +30,11 @@ class Playlist(models.Model):
     ]
     name = models.CharField(
         verbose_name=_("Title"),
-        max_length=250,
+        max_length=__MAX_LENGTH_FOR_PLAYLIST_NAME__,
         default=_("Playlist"),
-        help_text=_("Please choose a title between 1 and 250 characters."),
+        help_text=_(
+            f"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} characters."
+        ),
     )
     description = models.TextField(
         verbose_name=_("Description"),
@@ -78,7 +82,7 @@ class Playlist(models.Model):
     slug = models.SlugField(
         _("slug"),
         unique=True,
-        max_length=105,
+        max_length=__MAX_LENGTH_FOR_PLAYLIST_NAME__ + 10,
         help_text=_(
             "Used to access this instance, the “slug” is a short label"
             + " containing only letters, numbers, underscore or dash top."
@@ -160,7 +164,7 @@ class Playlist(models.Model):
 
         if request is not None:
             for video in sort_videos_list(get_video_list_for_playlist(self), "rank"):
-                if user_can_see_playlist_video(request, video):
+                if user_can_see_playlist_video(request, video, self):
                     return video
         return sort_videos_list(get_video_list_for_playlist(self), "rank").first()
 

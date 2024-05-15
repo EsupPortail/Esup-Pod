@@ -287,3 +287,15 @@ def get_storage_path_video(instance, filename):
             instance.owner.owner.hashkey,
             "%s.%s" % (slugify(fname), extension),
         )
+
+
+def verify_field_length(field, field_name="title", max_length=100) -> list:
+    """Check field length, and return message."""
+    msg = list()
+    if not field or field == "":
+        msg.append(_("Please enter a title."))
+    elif len(field) < 2 or len(field) > max_length:
+        msg.append(
+            _("Please enter a %s from 2 to %s characters." % (field_name, max_length))
+        )
+    return msg

@@ -165,8 +165,8 @@ tr,
   color: inherit;
 }
 
-a:not(.btn):hover,
-a:not(.btn):focus {
+a:not(.btn, .dropdown-item):hover,
+a:not(.btn, .dropdown-item):focus {
   color: var(--pod-activelink-color);
   text-decoration: underline;
 }
@@ -209,6 +209,10 @@ a:not(.btn):focus {
 
 .pod-share-fieldset legend {
   margin-bottom: 1.5rem;
+}
+
+.pod-share-draft-icon {
+  font-size: 1.5rem;
 }
 
 :not(footer) > .pod-btn-social {
@@ -339,7 +343,6 @@ a:not(.btn):focus {
 
 /** modal **/
 .modal-title svg {
-  /* color:var(--pod-primary); */
   height: 40px;
   width: 40px;
 }
@@ -726,10 +729,15 @@ div.card a img {
   transition: all 0.3s;
 }
 
+.dashboard-container .infinite-item:not(.selected),
+.dashboard-container .infinite-item .checked_overlay .card_selected {
+  transition: transform 0.2s ease-in-out;
+}
+
 .dashboard-container .infinite-item:not(.selected):hover,
 .dashboard-container .infinite-item .checked_overlay:hover .card_selected {
   transform: scale(1.03);
-  transition: transform 0.25s ease;
+  transition: transform 0.2s ease-in-out;
   z-index: 6;
 }
 
@@ -794,7 +802,6 @@ div.card a img {
   i:not(.checked_overlay .card-selected i) {
   font-size: 1.2rem;
   padding: 0.2rem;
-  opacity: 0.3;
 }
 
 .thumbnail-item-video-row {
@@ -812,19 +819,8 @@ div.card a img {
   padding-left: 1rem;
 }
 
-.more-actions-row-btn {
-  border: none;
-  background-color: inherit;
-}
-
-.pod-infinite-list-container-dashboard .list-item-video-row i.active,
-.pod-infinite-list-container-dashboard .list-item-video-row i.bi_content_type,
-.pod-infinite-list-container-dashboard
-  .list-item-video-row
-  .more-actions-row-btn
-  i {
+.pod-infinite-list-container-dashboard .list-item-video-row i.active {
   color: var(--pod-link-color);
-  opacity: 1 !important;
 }
 
 /* custom badges for confirm modal bulk update */
@@ -833,6 +829,10 @@ div.card a img {
   color: var(--pod-background);
   padding: 10px;
   margin: 5px;
+}
+
+span[data-bs-placement] {
+  cursor: help;
 }
 
 /** video form **/
@@ -916,10 +916,6 @@ div.card a img {
     flex-direction: column;
   }
 }
-
-/*
-@media screen and (min-width:768px) {  }
-*/
 
 @media screen and (min-width: 992px) {
   .card-img-top {
@@ -1087,23 +1083,22 @@ body {
 
 .pod-aside-collapse {
   position: absolute;
-  right: 0.5rem;
+  right: 0.75rem;
   z-index: 6;
+  margin: 0.25rem;
 }
 
 .pod-aside-collapse__button {
-  border-radius: 50%;
+  border-radius: var(--bs-btn-border-radius);
   width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.4rem;
-  transition: all 0.5s ease-in;
   background: none;
   border: 1px solid silver;
   color: var(--pod-font-color);
-  text-shadow: 1px 1px 0 var(--pod-background);
 }
 
 .pod-aside-collapse__button:hover {
@@ -1111,9 +1106,12 @@ body {
   color: var(--pod-btn-text);
 }
 
+/* Commented in 3.6.0
+[Todo] remove in 3.7.0
 .pod-aside-collapse[aria-expanded="true"] {
   transform: rotate(-90deg);
 }
+*/
 
 /*** footer **/
 .pod-footer {
@@ -1137,10 +1135,6 @@ body {
 
 .pod-footer__credits {
   font-size: 85%;
-
-  /*
-  opacity: .8;
-  */
 }
 
 .pod-footer__links {
@@ -1340,16 +1334,16 @@ body {
 
 /* small screens */
 .pod-grid-content {
-  display: grid;
-  grid-template-columns: minmax(0%, 100%) repeat(auto-fit, 100%);
   position: relative;
 }
 
 /* medium screens */
 @media (width >= 992px) {
   .pod-grid-content {
+    display: grid;
     gap: 2rem;
     grid-template-columns: minmax(0%, 100%) repeat(auto-fit, 33%);
+    grid-template-areas: "main sidebar";
   }
 }
 
@@ -1375,6 +1369,7 @@ body {
 }
 
 .pod-aside {
+  grid-area: sidebar;
   display: grid;
   gap: 1rem;
   grid-template-columns: 1fr;
@@ -1383,34 +1378,42 @@ body {
   grid-auto-rows: min-content;
   background: var(--pod-background-neutre2-bloc);
   padding: 1rem;
+  border-radius: var(--bs-border-radius-sm);
+  /*
+  Commented in 3.6.0
+  [Todo] remove in 3.7.0
   width: 0;
   overflow: hidden;
   margin-left: 100%;
   transition: all 0.15s ease;
+  */
   z-index: 5;
   padding-top: 5rem;
   box-shadow: 0.05rem 0.05rem 0.2rem 0.05rem rgb(0 0 0 / 20%);
 }
 
+/*
+Commented in 3.6.0
+[Todo] remove in 3.7.0
 .pod-aside.show {
   margin-left: 0;
   width: auto;
 }
-
-@media (width >= 992px) {
-  .pod-show-lg {
-    margin-left: 0;
-    width: auto;
-  }
-}
+*/
 
 @media (max-width: 992px) {
+  /*
   .pod-aside {
     /* THIS IS NORMAL, it's to fit with pod-aside-collapse */
+
+  /*
+    Commented in 3.6.0
+    [Todo] remove in 3.7.0
     width: 101% !important;
     min-height: 100%;
     position: absolute;
   }
+  */
 
   .pod-aside-collapse {
     position: fixed;
@@ -1428,9 +1431,13 @@ body {
   }
 }
 
+/*
+Commented in 3.6.0
+[Todo] remove in 3.7.0
 .pod-aside.collapsing {
   height: auto;
 }
+*/
 
 .pod-aside .card {
   background: none;
@@ -1512,6 +1519,7 @@ table .alert.alert-danger.btn.pod-btn-social {
   display: block;
   padding: 0.3rem 0.5rem;
   border-radius: 8px;
+  line-height: 1.3;
 }
 
 .vjs-logo-button {
@@ -1537,13 +1545,18 @@ table .alert.alert-danger.btn.pod-btn-social {
   font-size: 11px;
 }
 
-/* Upload page */
+/** Upload page **/
 
 .form-group.hide-on-processing {
   border: dotted var(--pod-link-color);
   margin-bottom: 0.5rem;
   border-radius: 1rem;
   width: fit-content;
+}
+
+/* Drag over styles */
+.dragover .form-group.hide-on-processing {
+  border: solid var(--bs-form-valid-border-color);
 }
 
 /** Esup-Pod callout messages **/
@@ -1633,7 +1646,6 @@ a.player-element.disabled {
 }
 
 .podfile-icon-selector {
-  /* display: inline-block; */
   width: 1.6em;
   padding: 1.7em 1em 0;
   margin-top: 0.1em;

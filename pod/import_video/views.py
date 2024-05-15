@@ -1,4 +1,5 @@
 """Esup-Pod import_video views.
+
 More information on this module at: https://www.esup-portail.org/wiki/x/BQCnSw
 """
 
@@ -14,12 +15,13 @@ import json
 
 from .models import ExternalRecording
 from .forms import ExternalRecordingForm
-from .utils import StatelessRecording, check_url_exists, download_video_file
+from .utils import StatelessRecording, download_video_file
 from .utils import manage_recording_url, check_source_url, parse_remote_file
 from .utils import save_video, secure_request_for_upload
 from .utils import check_video_size, verify_video_exists_and_size
 from .utils import define_dest_file_and_path, check_file_exists, move_file
-from .utils import TypeSourceURL
+from .utils import check_url_format_presentation, check_url_need_token
+from .utils import get_playbacks_urls_with_token, TypeSourceURL
 from datetime import datetime
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -27,6 +29,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.contrib import messages
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -98,7 +101,7 @@ IMPORT_VIDEO_BBB_RECORDER_PATH = getattr(
 log = logging.getLogger(__name__)
 
 
-def secure_external_recording(request, recording: ExternalRecording):
+def secure_external_recording(request, recording: ExternalRecording) -> None:
     """Secure an external recording.
 
     Args:
@@ -122,7 +125,7 @@ def secure_external_recording(request, recording: ExternalRecording):
         raise PermissionDenied
 
 
-def get_can_delete_external_recording(request, owner: User):
+def get_can_delete_external_recording(request, owner: User) -> bool:
     """Return True if current user can delete this recording."""
     can_delete = False
 
@@ -212,14 +215,12 @@ def external_recordings(request):
         owner__id=request.user.id, site=site
     )
     # | request.user.owners_external_recordings.all().filter(site=site)
-    external_recordings = external_recordings.order_by("-id").distinct()
+    external_recordings = external_recordings.order_by("-start_at").distinct()
 
     recordings = []
     for data in external_recordings:
         recording = get_stateless_recording(request, data)
-
         recordings.append(recording)
-
     return render(
         request,
         "import_video/list.html",
@@ -286,7 +287,7 @@ def add_or_edit_external_recording(request, id=None):
         if form.is_valid():
             recording = save_recording_form(request, form)
             display_message_with_icon(
-                request, messages.INFO, _("The changes have been saved.")
+                request, messages.SUCCESS, _("The changes have been saved.")
             )
             return redirect(reverse("import_video:external_recordings"))
         else:
@@ -347,7 +348,7 @@ def delete_external_recording(request, id: int):
             msg += args["message"]
     if delete and msg == "":
         msg += _("The external recording has been deleted.")
-        display_message_with_icon(request, messages.INFO, msg)
+        display_message_with_icon(request, messages.SUCCESS, msg)
     else:
         display_message_with_icon(request, messages.ERROR, msg)
     return redirect(reverse("import_video:external_recordings", args=()))
@@ -457,7 +458,7 @@ def upload_video_recording_to_pod(request, record_id: int):  # noqa: C901
             # Mediacad platform
             return upload_mediacad_recording_to_pod(request, record_id, type_source_url)
         elif type_source_url is not None and type_source_url.type == "BBB_Presentation":
-            # Old BigBlueBlutton playback (presentation format) :
+            # Old BigBlueBlutton playback (presentation format):
             # convert this presentation in video and upload automatically to Pod
             # via an asynchronous task
             if USE_IMPORT_VIDEO_BBB_RECORDER:
@@ -467,6 +468,10 @@ def upload_video_recording_to_pod(request, record_id: int):  # noqa: C901
                 return True
             else:
                 return False
+        elif type_source_url is not None and type_source_url.type == "BBB_ESR":
+            # BBB ESR platform
+            # For BBB ESR infrastructure, there is always a video playback
+            return upload_bbb_esr_video_recording_to_pod(record_id, type_source_url.url)
         else:
             # Video file (or BBB video file, same process) source URL
             return upload_standard_video_recording_to_pod(record_id)
@@ -489,6 +494,7 @@ def upload_video_recording_to_pod(request, record_id: int):  # noqa: C901
 
 def upload_standard_video_recording_to_pod(record_id: int) -> bool:
     """Upload a standard video file (or BBB video file) recording to Pod.
+
     Used with an URL.
 
     Args:
@@ -507,8 +513,8 @@ def upload_standard_video_recording_to_pod(record_id: int) -> bool:
         recording = ExternalRecording.objects.get(id=record_id)
 
         # Step 1: Download and parse the remote HTML file if necessary
-        # Check if extension is a video extension
         source_url = recording.source_url
+        # Check if extension is a video extension
         extension = source_url.split(".")[-1].lower()
 
         # Name of the video file to add to the URL (if necessary)
@@ -548,8 +554,62 @@ def upload_standard_video_recording_to_pod(record_id: int) -> bool:
         manage_standard_exception(exc)
 
 
+def upload_bbb_esr_video_recording_to_pod(record_id: int, source_url: str) -> bool:
+    """Upload a BBB - from BBB ESR infrastructure - video file recording to Pod.
+
+    Useful for generating the single-use token required to access the video file.
+    This is only possible for recordings made on the same BBB infrastructure used
+    by the meetings module.
+    """
+    try:
+        # Session useful to achieve requests (and keep cookies between)
+        session = requests.Session()
+
+        recording = ExternalRecording.objects.get(id=record_id)
+
+        # Check if the URL is used by an infrastructure that need a token
+        # In such a case, request the BBB infrastructure to get playbacks with token
+        presentation_url, video_url = get_playbacks_urls_with_token(recording)
+        if video_url != "":
+            # Define the new source URL, with token
+            recording.source_url = video_url
+            source_url = video_url
+
+        # Download and parse the remote HTML file (BBB specific)
+        video_file_add = parse_remote_file(session, source_url)
+        extension = video_file_add.split(".")[-1].lower()
+
+        # Impossible to check simply that video exists
+        # and not oversized for BBB ESR infrastructure.
+        # This seems to be a technical constraint.
+
+        # Step 2: Define destination source file
+        dest_file, dest_path = define_dest_file_and_path(
+            recording.owner, recording.id, extension
+        )
+
+        # Step 3: Download the video file
+        manage_download(session, source_url, video_file_add, dest_file)
+
+        # Step 4: Save informations about the recording
+        save_external_recording(recording.owner, record_id)
+
+        # Step 5: Save and encode Pod video
+        description = _(
+            "This video has been uploaded to Pod and its source is the virtual "
+            "classroom solution of the French Ministry of Higher Education and Research."
+        )
+
+        save_video(recording.owner, dest_path, recording.name, description)
+
+        return True
+    except Exception as exc:
+        manage_standard_exception(exc)
+
+
 def upload_local_video_recording_to_pod(record_id: id, dest_file: str, dest_path: str):
     """Upload a local (typically in Pod filesystem) video file recording to Pod.
+
     Useful for video files that have been encoded following
     the recording of a BBB presentation.
 
@@ -638,7 +698,7 @@ def upload_mediacad_recording_to_pod(
 
 
 def get_mediacad_api_description(type_source_url: TypeSourceURL) -> str:
-    """Returns description of a Mediacad video, after a call to Mediacad JSON API.
+    """Return description of a Mediacad video, after a call to Mediacad JSON API.
 
     Args:
         type_source_url (TypeSourceURL): informations about source URL
@@ -879,7 +939,8 @@ def upload_peertube_recording_to_pod(request, record_id: int) -> bool:  # noqa: 
 def start_bbb_encode_presentation_and_upload_to_pod(
     record_id: int, url: str, extension: str
 ):
-    """Send an asynchronous task or a thread to encode a BBB presentation
+    """Send an asynchronous task or a thread to encode a BBB presentation.
+
     into a video file and upload it to Pod.
 
     With Celery, logs can be found in encoding servers, worker.log.
@@ -905,7 +966,8 @@ def start_bbb_encode_presentation_and_upload_to_pod(
 def start_bbb_encode_presentation_and_move_to_destination(
     filename: str, url: str, dest_file: str
 ):
-    """Send an asynchronous task to encode or encode direclty a BBB presentation
+    """Send an asynchronous task to encode or encode direclty a BBB presentation.
+
     into a video file and move it to a specific directory.
 
     With Celery, logs can be found in encoding servers, worker.log.
@@ -1010,7 +1072,7 @@ def bbb_encode_presentation_and_upload_to_pod(record_id: int, url: str, extensio
         recording.owner, recording.id, extension
     )
     # Change the recording state
-    recording.state = _("Convert web presentation to video in progress...")
+    recording.state = _("Convert web presentation to video in progress…")
     recording.save()
 
     # Achieve the encode of the presentation via bbb-recorder
@@ -1030,7 +1092,7 @@ def bbb_encode_presentation_and_upload_to_pod(record_id: int, url: str, extensio
             recording.save()
 
     else:
-        # Video file not generated : inform the user via the recording state
+        # Video file not generated: inform the user via the recording state
         recording.state = _(
             "Impossible to upload to Pod the video, "
             "the link provided does not seem valid."
@@ -1078,32 +1140,33 @@ def get_stateless_recording(request, data: ExternalRecording):
     recording.state = get_status_recording(data)
 
     # Management of the external recording type
-    if data.type == "bigbluebutton":
+    if data.type == "bigbluebutton" or data.type == "video":
         # Manage BBB recording URL
-        # Management for old presentation URLs with BBB or Scalelite server
-        if data.source_url.find("/playback/presentation/2.0/playback.html?") != -1:
+        if check_url_format_presentation(data.source_url):
+            # Presentation format
             recording.presentationUrl = data.source_url
-        # Management for standard presentation URLs with BBB or Scalelite server
-        elif data.source_url.find("/playback/presentation/2.3/") != -1:
-            recording.presentationUrl = data.source_url
-        # Management of other situations
         else:
+            # Management of other situations
             recording.videoUrl = data.source_url
+
+        # Check if the URL is used by an infrastructure that need a token
+        recording.recordingId = check_url_need_token(data.source_url)
 
         # If possible to encode BBB presentation
         # Useful for old BBB or BBB 2.6+ without video playback
         if USE_IMPORT_VIDEO_BBB_RECORDER and recording.presentationUrl != "":
             recording.canUpload = True
             recording.videoUrl = recording.presentationUrl
-        # In all case
-        if recording.videoUrl == "" or check_url_exists(recording.videoUrl) is False:
+
+        # To optimize, do not check that url exists
+        if recording.videoUrl == "":
             recording.state = _(
                 "No video file found. Upload to Pod as a video is not possible."
             )
             recording.canUpload = False
             recording.videoUrl = ""
     else:
-        # For PeerTube, Video file, Youtube
+        # For PeerTube, Youtube
         recording.videoUrl = data.source_url
 
     # Display type label
@@ -1116,8 +1179,41 @@ def get_status_recording(data: ExternalRecording) -> str:
     """Get the status of an external recording."""
     if data.uploaded_to_pod_by is None and data.state is None:
         state = _("Video file not uploaded to Pod")
-    elif data.uploaded_to_pod_by is not None and data.state is None:
+    elif data.uploaded_to_pod_by is not None:
         state = _("Video file already uploaded to Pod")
     else:
         state = data.state
     return state
+
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def recording_with_token(request, id):
+    """Get for specific recording.
+
+    (recording created on BBB infrastructure that need a
+    token and used by meeting module), the presentation and video source URL, in JSON.
+
+    Args:
+        request (Request): HTTP request
+        record_id (int): record id
+
+    Raises:
+        PermissionDenied: if user not allowed
+
+    Returns:
+        HTTPResponse: internal recording (JSON format)
+    """
+    recording = ExternalRecording.objects.get(id=id)
+
+    # Check if the URL is used by an infrastructure that need a token
+    # In such a case, request the BBB infrastructure to get playbacks with token
+    presentation_url, video_url = get_playbacks_urls_with_token(recording)
+
+    # JSON format
+    data = '{"presentationUrl": "%s", "videoUrl": "%s"}' % (presentation_url, video_url)
+    if request.is_ajax():
+        return HttpResponse(data, content_type="application/json")
+    else:
+        return HttpResponseBadRequest()

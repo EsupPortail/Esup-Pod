@@ -5,7 +5,6 @@ Django version: 3.2.
 """
 
 import os
-from django.utils.translation import gettext_lazy as _
 
 ##
 # flatpages
@@ -36,6 +35,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #
 # SECURITY WARNING: MUST be set to False when deploying into production.
 DEBUG = True
+
+##
+# USE_DEBUG_TOOLBAR option activation
+#
+# https://django-debug-toolbar.readthedocs.io/en/latest/
+#
+USE_DEBUG_TOOLBAR = True
 
 ##
 # A list of strings representing the host/domain names
@@ -275,7 +281,6 @@ LTI_PROPERTY_USER_USERNAME = "ext_user_username"
 # https://sorl-thumbnail.readthedocs.io/en/latest/reference/settings.html
 THUMBNAIL_PRESERVE_FORMAT = True
 
-SHOW_EVENTS_ON_HOMEPAGE = False
 DEFAULT_EVENT_PATH = ""
 DEFAULT_EVENT_THUMBNAIL = "/img/default-event.svg"
 DEFAULT_EVENT_TYPE_ID = 1
@@ -312,7 +317,7 @@ HONEYPOT_FIELD_NAME = "firstname"
 # PWA
 
 PWA_APP_NAME = "Pod"
-PWA_APP_DESCRIPTION = _(
+PWA_APP_DESCRIPTION = (
     "Pod is aimed at users of our institutions, by allowing the publication of "
     "videos in the fields of research (promotion of platforms, etc.), training "
     "(tutorials, distance training, student reports, etc.), institutional life (video "

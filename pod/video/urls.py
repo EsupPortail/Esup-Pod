@@ -97,11 +97,6 @@ urlpatterns += [
     path("chapter/", include("pod.chapter.urls", namespace="chapter")),
 ]
 
-# CUT
-urlpatterns += [
-    path("cut/", include("pod.cut.urls", namespace="video_cut")),
-]
-
 # DRESSING
 urlpatterns += [
     path("dressing/", include("pod.dressing.urls", namespace="video_dressing")),

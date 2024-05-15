@@ -37,7 +37,7 @@ from pod.completion.admin import TrackInline
 from django.contrib.sites.shortcuts import get_current_site
 from pod.chapter.admin import ChapterInline
 
-# Ordering user by username !
+# Ordering user by username!
 User._meta.ordering = ["username"]
 # SET USE_ESTABLISHMENT_FIELD
 USE_ESTABLISHMENT_FIELD = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
@@ -676,7 +676,7 @@ class CategoryAdmin(admin.ModelAdmin):
 class VideoAccessTokenAdmin(admin.ModelAdmin):
     """Admin for the VideoAccessToken model."""
 
-    list_display = ("video", "token")
+    list_display = ("video", "token", "name")
     readonly_fields = ("token",)
     autocomplete_fields = ["video"]
 

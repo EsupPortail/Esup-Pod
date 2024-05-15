@@ -1,4 +1,7 @@
-"""Create configuration file."""
+"""Esup-Pod configuration file generator.
+
+Launch with `python3 manage.py createconfiguration $lang`
+"""
 
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import translation
@@ -14,7 +17,7 @@ class Command(BaseCommand):
     language = "fr"
     data = []
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser) -> None:
         """Add 'language' argument."""
         parser.add_argument(
             "language",
@@ -22,7 +25,7 @@ class Command(BaseCommand):
             help="give the language to export the configuration: fr or en",
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         """Handle the createconfiguration command call."""
         self.language = options["language"].lower()
         if self.language not in ["fr", "en"]:
@@ -33,7 +36,7 @@ class Command(BaseCommand):
             self.data = json.load(json_file)
         # header, information, configuration_pod, configuration_apps
         output = ""
-        output += "\n# %s \n" % self.data[0]["header"][self.language]
+        output += "# %s\n\n" % self.data[0]["header"][self.language]
         output += self.get_information()
         output += self.get_configuration("pod")
         output += self.get_configuration("apps")
@@ -45,56 +48,79 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("Successfully export configuration"))
 
-    def get_information(self):
-        msg = "\n"
-        msg += "\n## %s \n" % self.data[0]["information"]["title"][self.language]
+    def get_information(self) -> str:
+        """Get information section from configuration.json."""
+        msg = "## %s\n" % self.data[0]["information"]["title"][self.language]
         for line in self.data[0]["information"]["description"][self.language]:
             if line != "":
-                msg += "\n%s<br>" % line
+                msg += "%s<br>\n" % line
             else:
                 msg += "\n"
+        msg += "\n"
         msg += self.get_settings(self.data[0]["information"]["settings"])
         return msg
 
-    def get_configuration(self, app):
-        msg = "\n"
-        msg += "\n## %s \n" % (
+    def get_configuration(self, app) -> str:
+        """Get the "configuration_$app section from configuration.json."""
+        msg = "\n## %s\n" % (
             self.data[0]["configuration_%s" % app]["title"][self.language]
         )
         descs = self.data[0]["configuration_%s" % app]["description"]
-        for key, desc in descs.items():
-            msg += "\n\n### %s" % desc["title"][self.language]
-            for line in desc["description"].get(self.language, []):
+        for _key, desc in descs.items():
+            msg += "\n### %s\n\n" % desc["title"][self.language]
+            desc_list = desc["description"].get(self.language, [])
+            for line in desc_list:
                 if line != "":
-                    msg += "\n%s<br>" % line
+                    msg += "%s<br>\n" % line
                 else:
                     msg += "\n"
+            if desc["description"] and len(desc_list) > 0:
+                msg += "\n"
             msg += self.get_settings(desc["settings"])
 
         msg += self.get_settings(self.data[0]["configuration_%s" % app]["settings"])
         return msg
 
-    def get_settings(self, settings):
+    def get_settings(self, settings) -> str:
         """Format settings into md."""
         msg = ""
         for key, value in settings.items():
-            msg += "\n\n - `%s`" % key
+            msg += "* `%s`\n" % key
             # Ensure that multi line code will properly be displayed
             if str(value["default_value"]).startswith("```"):
                 formatted = value["default_value"].replace("\n", "\n  ")
-                value["default_value"] = "\n\n  %s" % formatted
+                value["default_value"] = "\n\n  %s\n" % formatted
             else:
                 value["default_value"] = " `%s`" % value["default_value"]
-            msg += "\n\n  > %s%s\n" % (_("default value:"), value["default_value"])
-            code = False
-            for line in value["description"][self.language]:
-                if line.startswith("`"):
-                    msg += "\n  >>\n  >> %s" % line
+            msg += "  > %s%s\n" % (_("default value:"), value["default_value"])
+            msg += self.get_description(value["description"][self.language])
+
+        return msg
+
+    def get_description(self, description: list) -> str:
+        """Get a setting description in MD format."""
+        msg = ""
+        code = False
+        for line in description:
+            if line == "":
+                msg += "  >>\n"
+            else:
+                if line.startswith("```"):
                     code = not code
+                    if code:
+                        # Add a blank line before each code block
+                        msg += "  >>\n  >> %s\n" % line
+                    else:
+                        # Add a blank line after each code block
+                        msg += "  >> %s\n  >>\n" % line
                     continue
-                endline = "" if code else "<br>"
-                if line != "":
-                    msg += "\n  >> %s %s" % (line, endline)
+
+                if code:
+                    endline = "\n"
                 else:
-                    msg += "\n"
+                    endline = "<br>\n"
+                    # Auto remove surrounding spaces.
+                    line = line.strip()
+
+                msg += "  >> %s%s" % (line, endline)
         return msg

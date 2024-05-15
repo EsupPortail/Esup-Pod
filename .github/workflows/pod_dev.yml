@@ -1,0 +1,155 @@
+---
+name: Django DEV Pod CI with remote encoding
+run-name: ${{ github.actor }} is testing Pod encoding in Dev 🚀
+
+on:
+  push:
+    branches:
+    - develop
+    - features/**
+    - dependabot/**
+  pull_request:
+    branches:
+    - develop
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.9'
+  DJANGO_SUPERUSER_USERNAME: "admin"
+  DJANGO_SUPERUSER_PASSWORD: "passwd"
+  DJANGO_SUPERUSER_EMAIL: "noreply@uni.fr"
+  ELASTICSEARCH_TAG: "elasticsearch:7.17.18"
+  NODE_VERSION: "20"
+  NODE_TAG: "node:20"
+  PYTHON_TAG: "python:3.9-bullseye"
+  REDIS_TAG: "redis:alpine3.16"
+  DOCKER_ENV: "full-test"
+
+jobs:
+  Pod-Dev:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{env.NODE_VERSION}}
+
+      - name: Configure sysctl limits (for ES)
+        run: |
+          sudo swapoff -a
+          sudo sysctl -w vm.swappiness=1
+          sudo sysctl -w fs.file-max=262144
+          sudo sysctl -w vm.max_map_count=262144
+
+      - name: Set up Python ${{env.PYTHON_VERSION}}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{env.PYTHON_VERSION}}
+
+      # Remove apt repos that are known to break from time to time
+      # See https://github.com/actions/virtual-environments/issues/323
+      - name: Remove broken apt repos [Ubuntu]
+        run: |
+          for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get clean
+          sudo apt-get update
+          sudo apt-get install ffmpeg
+          sudo apt-get install -y ffmpegthumbnailer
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          sudo npm install -g yarn
+
+      # FLAKE 8
+      - name: Flake8 compliance
+        run: |
+          flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,test_settings.py,node_modules/*/*.py,pod/static/*.py,pod/custom/tenants/*/*.py
+
+      ## Start remote encoding and transcoding test ##
+      - name: Create settings local file
+        run: |
+            mv pod/custom/settings_local_docker_full_test.py pod/custom/settings_local.py
+      - name: cat settings local
+        run: cat pod/custom/settings_local.py
+      - name: Create env file containers
+        run: |
+          touch .env.dev
+          echo DJANGO_SUPERUSER_USERNAME=$DJANGO_SUPERUSER_USERNAME >> .env.dev
+          echo DJANGO_SUPERUSER_PASSWORD=$DJANGO_SUPERUSER_PASSWORD >> .env.dev
+          echo DJANGO_SUPERUSER_EMAIL=$DJANGO_SUPERUSER_EMAIL >> .env.dev
+          echo ELASTICSEARCH_TAG=$ELASTICSEARCH_TAG >> .env.dev
+          echo ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG >> .env.dev
+          echo NODE_TAG=$NODE_TAG >> .env.dev
+          echo PYTHON_TAG=$PYTHON_TAG >> .env.dev
+          echo REDIS_TAG=$REDIS_TAG >> .env.dev
+          echo DOCKER_ENV=$DOCKER_ENV >> .env.dev
+      - name: cat env
+        run: cat .env.dev
+      - name: make Build container
+        run: |
+          sudo rm -rf ./pod/log
+          sudo rm -rf ./pod/static
+          sudo rm -rf ./pod/node_modules
+          docker compose -f ./docker-compose-full-dev-with-volumes-test.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG --build-arg NODE_VERSION=$NODE_TAG --build-arg PYTHON_VERSION=$PYTHON_TAG --no-cache
+          docker compose -f ./docker-compose-full-dev-with-volumes-test.yml up --detach --force-recreate --always-recreate-deps
+      - name: Sleep for 60 seconds to wait run server on pod back
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '60s'
+      - name: show running container
+        run: |
+          docker ps
+          echo "🍏 Docker is UP ${{ job.status }}."
+          docker exec pod-back-with-volumes ps auxf
+          docker exec pod-back-with-volumes python manage.py loaddata pod/video/fixtures/sample_videos.json
+      - name: run test in docker
+        run: docker exec pod-back-with-volumes coverage run --append manage.py test -v 3 --keepdb pod.video_encode_transcript.tests.test_remote_encode_transcode
+
+      - name: Run pa11y-ci full
+        run: docker exec pa11y-ci pa11y-ci -c /usr/src/app/dockerfile-dev-with-volumes/pa11y-ci/config.json
+
+      - name: Run pa11y-ci mobile
+        run: docker exec pa11y-ci pa11y-ci -c /usr/src/app/dockerfile-dev-with-volumes/pa11y-ci/config_mobile.json
+
+      - name: show pa11y results
+        run: cat pa11y-results.json
+
+      - name: Stop containers
+        if: always()
+        run: docker compose -f ./docker-compose-full-dev-with-volumes-test.yml down
+      - name: delete unused file and change owner
+        run: |
+          sudo rm -f pod/custom/settings_local.py
+          sudo chown -R runner:runner .
+
+      ## Start unit test test ##
+      - name: Runs Elasticsearch
+        uses: elastic/elastic-github-actions/elasticsearch@refactor_with_plugins
+        with:
+          # stack-version: 7.6.0
+          stack-version: 6.8.23
+          plugins: analysis-icu
+
+      - name: Setup Pod
+        run: |
+          coverage run --append manage.py create_pod_index --settings=pod.main.test_settings
+          python manage.py makemigrations --settings=pod.main.test_settings
+          python manage.py migrate --settings=pod.main.test_settings
+
+      - name: Run Tests with coverage
+        env:
+          PYTHONUNBUFFERED: 1
+        run: |
+          coverage run --append manage.py test -v 3 --settings=pod.main.test_settings
+          coverage xml -o cobertura.xml
+
+      - name: Send coverage to coveralls.io
+        # coveralls command has been installed by requirements-dev.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run:
+          coveralls  --service=github

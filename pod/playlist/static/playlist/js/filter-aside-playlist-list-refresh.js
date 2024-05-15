@@ -40,7 +40,7 @@ function refreshPlaylistsSearch() {
             document.getElementById("playlists_list").replaceWith(html.getElementById("playlists_list"));
         })
         .catch((error) => {
-            document.getElementById("playlists_list").innerHTML = gettext(
+            document.getElementById("playlists_list").textContent = gettext(
                 "An Error occurred while processing."
             );
         });

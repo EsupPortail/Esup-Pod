@@ -188,15 +188,15 @@ class Broadcaster(models.Model):
 
     piloting_implementation = models.CharField(
         max_length=100,
-        blank=True,
         null=True,
+        default="",
         verbose_name=_("Piloting implementation"),
         help_text=_("Select the piloting implementation for to this broadcaster."),
     )
 
     piloting_conf = models.TextField(
-        null=True,
         blank=True,
+        default="",
         verbose_name=_("Piloting configuration parameters"),
         help_text=_("Add piloting configuration parameters in Json format."),
     )
@@ -271,7 +271,8 @@ class Broadcaster(models.Model):
     @property
     def qrcode(self, request=None):
         alt = _("QR code to record immediately an event")
-        return generate_qrcode("live:event_immediate_edit", self.id, alt, request)
+        url = reverse("live:event_immediate_edit", args={self.id})
+        return generate_qrcode(url, alt, request)
 
     def set_broadcaster_file(self, filename):
         trans_folder = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER)

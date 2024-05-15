@@ -24,7 +24,7 @@
     </p>
 
     <select id="bulkUpdateActionSelect" name="action" class="form-select mb-2" aria-label="{% trans 'Choose an action' %}">
-      <option value="" disabled selected>{% trans "Choose an action" %}</option>
+      <option value="" selected>{% trans "Choose an action" %}</option>
       <optgroup label="-- {% trans 'Edit a field' %} --">
         {# <option value="title">{% trans "Title" %}</option> #}
         <option value="type">{% trans "Type" %}</option>
@@ -42,9 +42,11 @@
         <option value="tags">{% trans "Tags" %}</option>
         <option value="discipline">{% trans "Disciplines" %}</option>
         <option value="licence">{% trans "Licence" %}</option>
-        <option value="thumbnail">{% trans "Thumbnails" %}</option>
+        {% if request.user.is_staff  %}
+          <option value="thumbnail">{% trans "Thumbnails" %}</option>
+        {% endif %}
         {% if request.user.is_staff and use_obsolescence %}
-            <option value="date_delete">{% trans "Date to delete" %}</option>
+          <option value="date_delete">{% trans "Date to delete" %}</option>
         {% endif %}
       </optgroup>
 
@@ -52,9 +54,7 @@
         {% if use_transcription %}
           <option value="transcript">{% trans "Transcript" %}</option>
         {% endif %}
-        {% if request.user.is_staff  %}
           <option value="access_restrictions">{% trans "Restrictions" %}</option>
-        {% endif %}
           <option value="channel_option">{% trans "Channel options" %}</option>
           <option value="advanced_options">{% trans "Advanced options" %}</option>
           <option value="delete">{% trans "Delete" %}</option>
@@ -115,7 +115,7 @@
     <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalBulkUpdate" disabled>
       {% trans 'Apply' %} <span id="countSelectedVideosBadge" class="badge" title="{% trans 'No video found' %}">
     {% blocktrans count counter=0 %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}</span></button>
-    <button id="resetSelectedVideosBtn" type="button" class="btn btn-secondary mt-2" onclick="clearSelectedVideo()" disabled>{% trans "Clear selection" %}</button>
+    <button id="reset-dashboard-elements-btn" type="button" class="btn btn-secondary mt-2" onclick="resetDashboardElements()" disabled>{% trans "Reset" %}</button>
   </div>
 
   <div>
@@ -163,8 +163,8 @@
   var formFieldsets = {{ fieldsets_dashboard|safe }};
 
   {% if videos.has_next %}
-      page = parseInt("{{videos.next_page_number}}");
-      nextPage = true;
+    page = parseInt("{{videos.next_page_number}}");
+    nextPage = true;
   {% endif %}
 </script>
 <script src="{% static 'js/infinite.js' %}"></script>

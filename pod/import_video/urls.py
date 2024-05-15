@@ -28,4 +28,9 @@ urlpatterns = [
         views.delete_external_recording,
         name="delete_external_recording",
     ),
+    path(
+        "recording_with_token/<slug:id>/",
+        views.recording_with_token,
+        name="recording_with_token",
+    ),
 ]
