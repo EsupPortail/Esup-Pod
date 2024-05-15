@@ -86,6 +86,10 @@ function replaceSelectedCountVideos(container) {
     applyMultipleActionsBtn,
     newCount > 0 && dashboardAction.length !== 0,
   );
+  manageDisableBtn(
+    resetDashboardElementsBtn,
+    newCount > 0,
+  );
 }
 
 /**
@@ -114,7 +118,7 @@ function toggleSelectedVideo(item, container) {
     }
   }
   //setListSelectedVideos(container);
-  if(container === "videos_list") {
+  if(container === videosListContainerId) {
     replaceSelectedCountVideos(container);
   }
 }
@@ -136,7 +140,7 @@ function clearSelectedVideo(container) {
  * @see resetDashboardElementsBtn
  **/
 function resetDashboardElements() {
-  clearSelectedVideo();
+  clearSelectedVideo(videosListContainerId);
   dashboardActionReset();
   window.scrollTo(0, 0);
 }

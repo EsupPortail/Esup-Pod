@@ -41,7 +41,6 @@ bulkUpdateActionSelect.addEventListener("change", function () {
   dashboardAction = bulkUpdateActionSelect.value;
   appendDynamicForm(dashboardAction);
   replaceSelectedCountVideos(videosListContainerId);
-  manageDisableBtn(resetDashboardElementsBtn, dashboardAction != "");
 });
 
 /**

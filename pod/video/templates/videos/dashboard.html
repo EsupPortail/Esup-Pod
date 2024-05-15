@@ -115,6 +115,7 @@
     <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalBulkUpdate" disabled>
       {% trans 'Apply' %} <span id="countSelectedVideosBadge" class="badge" title="{% trans 'No video found' %}">
     {% blocktrans count counter=0 %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}</span></button>
+    <button id="select-all-dashboard-elements-btn" type="button" class="btn btn-primary mt-2" onclick="selectAllVideos(videosListContainerId)">{% trans "Select all" %}</button>
     <button id="reset-dashboard-elements-btn" type="button" class="btn btn-secondary mt-2" onclick="resetDashboardElements()" disabled>{% trans "Clear selection" %}</button>
   </div>
 
