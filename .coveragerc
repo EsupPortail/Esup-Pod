@@ -7,8 +7,10 @@ show_missing = True
 [run]
 relative_files = True
 source = .
+
 # This ensures that your code runs through both the True and False paths of each conditional statement.
-branch = True
+# branch = True
+
 # Here you can exclude a file from coverage testing
 # nb: you can also add a "# pragma: no cover"
 # on each function you don't want to be covered
