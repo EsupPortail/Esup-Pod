@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-13 13:00+0000\n"
+"POT-Creation-Date: 2024-05-15 08:40+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -7168,12 +7168,12 @@ msgid "Playlist: %(name)s"
 msgstr "Liste de lecture : %(name)s"
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
-msgid "The playlist has been deleted."
-msgstr "La liste de lecture a été supprimée."
-
-#: pod/playlist/views.py
 msgid "You cannot access this playlist."
 msgstr "Vous ne pouvez pas accéder à cette liste de lecture."
+
+#: pod/playlist/tests/test_views.py pod/playlist/views.py
+msgid "The playlist has been deleted."
+msgstr "La liste de lecture a été supprimée."
 
 #: pod/playlist/views.py
 #, python-format
@@ -8184,13 +8184,13 @@ msgstr ""
 "l’adresse suivante : %(email_address)s</p>\n"
 
 #: pod/video/management/commands/check_obsolete_videos.py
-#, python-format
-msgid "Sending mail to %(to_email)s for video %(title)s."
-msgstr "Envoi d’un courriel à %(to_email)s pour la vidéo %(title)s."
-
-#: pod/video/management/commands/check_obsolete_videos.py
 msgid "Your video will be obsolete"
 msgstr "Votre vidéo sera obsolète"
+
+#: pod/video/management/commands/check_obsolete_videos.py
+#, python-format
+msgid "Mail sent to %(to_email)s for video %(title)s."
+msgstr "Courriel envoyé à %(to_email)s pour la vidéo %(title)s."
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
@@ -8552,6 +8552,14 @@ msgstr "Catégorie"
 #: pod/video/models.py pod/video/templates/videos/filter_aside_category.html
 msgid "Categories"
 msgstr "Catégories"
+
+#: pod/video/models.py pod/video/templates/videos/video_access_tokens.html
+msgid "Token name"
+msgstr "Nom du jeton"
+
+#: pod/video/models.py
+msgid "Change me!"
+msgstr "Changez-moi !"
 
 #: pod/video/models.py
 msgid "Video access token"
@@ -9324,6 +9332,10 @@ msgid "Code to embed in a web page"
 msgstr "Code à intégrer dans une page web"
 
 #: pod/video/templates/videos/video_access_tokens.html
+msgid "Update the token name"
+msgstr "Modifier le nom du jeton"
+
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Copy to clipboard"
 msgstr "Copier dans le presse-papiers"
 
@@ -9334,6 +9346,35 @@ msgstr "Veuillez confirmer que vous souhaitez supprimer le jeton"
 #: pod/video/templates/videos/video_access_tokens.html
 msgid "Delete the token"
 msgstr "Supprimer le jeton"
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Tokens"
+msgstr "Jetons"
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "When your video is in draft mode, you can share it using a token."
+msgstr ""
+"Lorsque votre vidéo est en mode brouillon, vous pouvez la partager en "
+"utilisant un jeton."
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid ""
+"Add a token, then copy the direct link or link to insert. You can name your "
+"token to identify it."
+msgstr ""
+"Ajouter un jeton, puis copier le lien direct ou le lien à insérer. Vous "
+"pouvez nommer votre jeton pour l’identifier."
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid ""
+"It is possible to create several tokens, to be able to differentiate the "
+"users who can access your video. When it is no longer necessary to grant "
+"access to your users, simply delete the token(s) concerned."
+msgstr ""
+"Il est possible de créer plusieurs jetons, pour pouvoir différencier les "
+"utilisateurs pouvant accéder à votre vidéo. Quand il n’est plus nécessaire "
+"de laisser l’accès à vos utilisateurs, il suffit de supprimer le ou les "
+"jetons concernés."
 
 #: pod/video/templates/videos/video_collaborate.html
 msgid "Collaborate"
@@ -9705,6 +9746,10 @@ msgstr "Vous ne pouvez pas supprimer une vidéo en cours d’encodage."
 #, python-format
 msgid "Manage access tokens for the video \"%(vtitle)s\""
 msgstr "Gestion des jetons d’accès à la vidéo « %(vtitle)s »"
+
+#: pod/video/views.py
+msgid "The token has been updated."
+msgstr "Le jeton a été modifié."
 
 #: pod/video/views.py
 msgid "Transcription not enabled on this platform."

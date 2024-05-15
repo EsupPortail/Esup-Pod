@@ -14,86 +14,102 @@
 {% endblock %}
 
 {% block page_content %}
-<div class="d-grid gap-2 d-md-flex justify-content-md mb-2">
+  <div class="d-grid gap-2 d-md-flex justify-content-md mb-2">
     <form method="post" action="{% url 'video:video_edit_access_tokens' video.slug %}" class="d-inline">
     {% csrf_token %}
     <input type="hidden" name="action" value="add" />
     <button type="submit" class="initials btn btn-primary pod-btn-primary btn-sm" title="{% trans 'Add a token' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="{% trans 'Add a token' %}">
-        <i class="bi bi-plus pod-add" aria-hidden="true"></i><span>{% trans "Add a token" %}</span>
+      <i class="bi bi-plus pod-add" aria-hidden="true"></i><span>{% trans "Add a token" %}</span>
     </button>
     </form>
-</div>
-{% if tokens %}
-<div class="table-responsive">
-  <table class="table align-top table-sm table-bordered table-striped caption-top">
-    <caption>{% trans "List of active tokens:" %}</caption>
-    <thead>
-      <tr>
-        <th scope="col" class="text-center col-2"><i class="bi bi-universal-access-circle" aria-hidden="true"></i>&nbsp;{% trans "Token" %}</th>
-        <th scope="col" class="text-center col-4"><i class="bi bi-link-45deg" aria-hidden="true"></i>&nbsp;{% trans 'Share link' %}</th>
-        <th scope="col" class="text-center col-6"><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Code to embed in a web page' %}</th>
-        <th scope="col" class="text-center" aria-label="{% trans 'Actions' %}"><i class="bi bi-trash3" aria-hidden="true"></i></th>
-      </tr>
-    </thead>
-    <tbody class="table-group-divider">
-      {% for token in tokens %}
-      <tr>
-        <td>&nbsp;{{ token.token }}</td>
-        <td>
-          <div class="form-group">
-            <label for="txtpartage-{{ forloop.counter }}">{% trans 'Use this link to share the video:' %}
-              <clipboard-copy data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Copy to clipboard' %}" class="btn pod-btn-social btnpartageprive" tabindex="0" role="button" data-id="txtpartage-{{ forloop.counter }}">
-                <i class="bi bi-clipboard" aria-hidden="true"></i>
-              </clipboard-copy>
-            </label>
-            <textarea class="form-control" type="text" name="txtpartage" id="txtpartage-{{ forloop.counter }}" rows="4"
-              readonly>{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}{{ token.token }}/</textarea>
-          </div>
-        </td>
-        <td>
-          <div class="form-group ">
-            <label for="txtintegration-{{ forloop.counter }}">{% trans 'Copy the content of this text box and paste it in the page:' %}
-              <clipboard-copy data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Copy to clipboard' %}" class="btn pod-btn-social btnpartageprive" tabindex="0" role="button" data-id="txtintegration-{{ forloop.counter }}">
-                <i class="bi bi-clipboard" aria-hidden="true"></i>
-              </clipboard-copy>
-            </label>
-            <textarea name="txtintegration" id="txtintegration-{{ forloop.counter }}" class="form-control" rows="4"
-              readonly>&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}{{ token.token }}/?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen title="{{ video.title }}" &gt;&lt;/iframe&gt;</textarea>
-          </div>
-        </td>
-        <td class="text-center align-middle">
-          {% trans "Please confirm you want to delete the token" as confirmDelete %}
-          <form method="post" action="{% url 'video:video_edit_access_tokens' video.slug %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="delete" />
-            <input type="hidden" name="token" value="{{ token.token }}" />
-            <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the token' %}" data-bs-toggle="tooltip" data-bs-placement="top">
-              <i class="bi bi-trash3" aria-hidden="true"></i>
-            </button>
-          </form>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
-{% endif %}
+  </div>
+  {% if tokens %}
+    <div class="table-responsive">
+      <table class="table align-top table-sm table-bordered table-striped caption-top">
+        <caption>{% trans "List of active tokens:" %}</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="text-center col-2"><i class="bi bi-tag" aria-hidden="true"></i>&nbsp;{% trans "Token name" %}</th>
+            <th scope="col" class="text-center col-2"><i class="bi bi-universal-access-circle" aria-hidden="true"></i>&nbsp;{% trans "Token" %}</th>
+            <th scope="col" class="text-center col-4"><i class="bi bi-link-45deg" aria-hidden="true"></i>&nbsp;{% trans 'Share link' %}</th>
+            <th scope="col" class="text-center col-6"><i class="bi bi-code" aria-hidden="true"></i>&nbsp;{% trans 'Code to embed in a web page' %}</th>
+            <th scope="col" class="text-center" aria-label="{% trans 'Actions' %}"><i class="bi bi-trash3" aria-hidden="true"></i></th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+          {% for token in tokens %}
+            <tr>
+              <td class="align-middle">
+                <form method="post" action="{% url 'video:video_edit_access_tokens' video.slug %}" class="d-flex flex-column align-items-center gap-2 token-name-form">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="update" />
+                  <input type="hidden" name="token" value="{{ token.token }}" />
+                  <label for="name-{{ forloop.counter }}">
+                    {% trans "Token name" %}
+                  </label>
+                  <input class="form-control text-center token-name-form-input" type="text" name="name" value="{{ token.name }}" id="name-{{ forloop.counter }}" placeholder='{% trans "Token name" %}' />
+                  <button type="submit" class="btn btn-primary pod-btn-primary btn-sm w-100 token-name-form-button" title="{% trans 'Update the token name' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                    <i class="bi bi-floppy2-fill" aria-hidden="true"></i>
+                  </button>
+                </form>
+              </td>
+              <td>&nbsp;{{ token.token }}</td>
+              <td>
+                <div class="form-group">
+                  <label for="txtpartage-{{ forloop.counter }}">{% trans 'Use this link to share the video:' %}
+                    <clipboard-copy data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Copy to clipboard' %}" class="btn pod-btn-social btn-private-share" tabindex="0" role="button" data-id="txtpartage-{{ forloop.counter }}">
+                      <i class="bi bi-clipboard" aria-hidden="true"></i>
+                    </clipboard-copy>
+                  </label>
+                  <textarea class="form-control" type="text" name="txtpartage" id="txtpartage-{{ forloop.counter }}" rows="4"
+                    readonly>{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}{{ token.token }}/</textarea>
+                </div>
+              </td>
+              <td>
+                <div class="form-group ">
+                  <label for="txtintegration-{{ forloop.counter }}">{% trans 'Copy the content of this text box and paste it in the page:' %}
+                    <clipboard-copy data-bs-toggle="tooltip" data-bs-placement="right" title="{% trans 'Copy to clipboard' %}" class="btn pod-btn-social btn-private-share" tabindex="0" role="button" data-id="txtintegration-{{ forloop.counter }}">
+                      <i class="bi bi-clipboard" aria-hidden="true"></i>
+                    </clipboard-copy>
+                  </label>
+                  <textarea name="txtintegration" id="txtintegration-{{ forloop.counter }}" class="form-control" rows="4"
+                    readonly>&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}{{ token.token }}/?is_iframe=true" width="640" height="{{video.get_player_height}}" style="padding: 0; margin: 0; border:0" allowfullscreen title="{{ video.title }}" &gt;&lt;/iframe&gt;</textarea>
+                </div>
+              </td>
+              <td class="text-center align-middle">
+                {% trans "Please confirm you want to delete the token" as confirmDelete %}
+                <form method="post" action="{% url 'video:video_edit_access_tokens' video.slug %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="delete" />
+                  <input type="hidden" name="token" value="{{ token.token }}" />
+                  <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the token' %}" data-bs-toggle="tooltip" data-bs-placement="top">
+                    <i class="bi bi-trash3" aria-hidden="true"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
 {% endblock page_content %}
 
-{% block collapse_page_aside %}{% endblock collapse_page_aside %}
-{% block page_aside %}{% endblock page_aside %}
+{% block collapse_page_aside %}
+  {{ block.super }}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+  <div class="card mt-1" id="card-sharedraftversion">
+    <h2 class="h4 card-header card-title pl-2">{% trans "Tokens" %}</h2>
+    <div class="card-body card-text">
+      <p>{% trans "When your video is in draft mode, you can share it using a token." %}</p>
+      <p>{% trans "Add a token, then copy the direct link or link to insert. You can name your token to identify it." %}</p>
+      <p>{% trans "It is possible to create several tokens, to be able to differentiate the users who can access your video. When it is no longer necessary to grant access to your users, simply delete the token(s) concerned." %}<p>
+    </div>
+  </div>
+{% endblock page_aside %}
 
 {% block more_script %}
-  <script>
-    const btnpartageprive = document.getElementsByClassName("btnpartageprive");
-    for (let i = 0; i < btnpartageprive.length; i++) {
-      let btn = btnpartageprive[i];
-      btn.addEventListener("click", function () {
-        var copyText = document.getElementById(btn.dataset.id);
-        copyText.select();
-        document.execCommand("copy");
-        showalert(gettext("Text copied"), "alert-info");
-      });
-    }
-  </script>
+  <script src="{% static 'js/video-access-token.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}
