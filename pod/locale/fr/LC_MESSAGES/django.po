@@ -8559,7 +8559,7 @@ msgstr "Nom du jeton"
 
 #: pod/video/models.py
 msgid "Change me!"
-msgstr "Changez moi !"
+msgstr "Changez-moi !"
 
 #: pod/video/models.py
 msgid "Video access token"
