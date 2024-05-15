@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-06 12:37+0000\n"
-"PO-Revision-Date: 2024-04-15 14:27+0200\n"
+"POT-Creation-Date: 2024-05-15 08:40+0200\n"
+"PO-Revision-Date: 2024-05-15 09:01+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -6699,11 +6699,11 @@ msgid "Playlist: %(name)s"
 msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
-msgid "The playlist has been deleted."
+msgid "You cannot access this playlist."
 msgstr ""
 
-#: pod/playlist/views.py
-msgid "You cannot access this playlist."
+#: pod/playlist/tests/test_views.py pod/playlist/views.py
+msgid "The playlist has been deleted."
 msgstr ""
 
 #: pod/playlist/views.py
@@ -7956,6 +7956,14 @@ msgstr ""
 msgid "Categories"
 msgstr ""
 
+#: pod/video/models.py pod/video/templates/videos/video_access_tokens.html
+msgid "Token name"
+msgstr ""
+
+#: pod/video/models.py
+msgid "Change me!"
+msgstr ""
+
 #: pod/video/models.py
 msgid "Video access token"
 msgstr ""
@@ -8687,6 +8695,10 @@ msgid "Code to embed in a web page"
 msgstr ""
 
 #: pod/video/templates/videos/video_access_tokens.html
+msgid "Update the token name"
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
 msgid "Copy to clipboard"
 msgstr ""
 
@@ -8696,6 +8708,27 @@ msgstr ""
 
 #: pod/video/templates/videos/video_access_tokens.html
 msgid "Delete the token"
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "Tokens"
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid "When your video is in draft mode, you can share it using a token."
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid ""
+"Add a token, then copy the direct link or link to insert. You can name your "
+"token to identify it."
+msgstr ""
+
+#: pod/video/templates/videos/video_access_tokens.html
+msgid ""
+"It is possible to create several tokens, to be able to differentiate the "
+"users who can access your video. When it is no longer necessary to grant "
+"access to your users, simply delete the token(s) concerned."
 msgstr ""
 
 #: pod/video/templates/videos/video_collaborate.html
@@ -9054,6 +9087,10 @@ msgstr ""
 #: pod/video/views.py
 #, python-format
 msgid "Manage access tokens for the video \"%(vtitle)s\""
+msgstr ""
+
+#: pod/video/views.py
+msgid "The token has been updated."
 msgstr ""
 
 #: pod/video/views.py
