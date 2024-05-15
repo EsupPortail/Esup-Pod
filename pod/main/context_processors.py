@@ -85,6 +85,8 @@ RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
 )
 USE_NOTIFICATIONS = getattr(django_settings, "USE_NOTIFICATIONS", True)
 
+WEBTV_MODE = getattr(django_settings, "WEBTV_MODE", False)
+
 
 def context_settings(request):
     """Return all context settings."""
@@ -146,6 +148,7 @@ def context_settings(request):
         RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY
     )
     new_settings["USE_NOTIFICATIONS"] = USE_NOTIFICATIONS
+    new_settings["WEBTV_MODE"] = WEBTV_MODE
     return new_settings
 
 

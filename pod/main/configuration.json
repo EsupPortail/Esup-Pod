@@ -1468,6 +1468,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "WEBTV_MODE": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Webtv mode"
+                                ],
+                                "fr": [
+                                    "Mode webtv"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
                         }
                     },
                     "title": {
