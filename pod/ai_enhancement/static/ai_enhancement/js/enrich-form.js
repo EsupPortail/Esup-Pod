@@ -194,7 +194,7 @@ function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipl
       'Content-Type': 'application/json',
     },
   };
-  fetch(`http://${window.location.host}/ai-enhancement/enrich-video/${videoSlug}/json/`, options)
+  fetch(`//${window.location.host}/ai-enhancement/enrich-video/${videoSlug}/json/`, options)
     .then(response => response.json())
     .then(response => {
       for (let element of elements) {
