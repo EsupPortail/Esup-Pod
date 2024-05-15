@@ -224,7 +224,7 @@ class VideoConfig(AppConfig):
         else:
             return
 
-    def import_data(self, nb_batch) -> None:
+    def import_data(self, nb_batch: int) -> None:
         """Call method to put data if data saved."""
         if len(VIDEO_RENDITION) > 0:
             self.import_video_rendition(nb_batch)
@@ -244,7 +244,7 @@ class VideoConfig(AppConfig):
         if len(PLAYLIST_VIDEO) > 0:
             self.import_playlist_video(nb_batch)
 
-    def import_video_rendition(self, nb_batch) -> None:
+    def import_video_rendition(self, nb_batch: int) -> None:
         """Import video rendition data in DB."""
         from pod.video_encode_transcript.models import VideoRendition
 
@@ -265,7 +265,7 @@ class VideoConfig(AppConfig):
             video_renditions.append(vr)
         VideoRendition.objects.bulk_create(video_renditions, batch_size=nb_batch)
 
-    def import_encoding_video(self, nb_batch) -> None:
+    def import_encoding_video(self, nb_batch: int) -> None:
         """Import encoding video data in DB."""
         from pod.video_encode_transcript.models import EncodingVideo
 
@@ -284,7 +284,7 @@ class VideoConfig(AppConfig):
             encoding_videos.append(ev)
         EncodingVideo.objects.bulk_create(encoding_videos, batch_size=nb_batch)
 
-    def import_encoding_step(self, nb_batch) -> None:
+    def import_encoding_step(self, nb_batch: int) -> None:
         """Import encoding step data in DB."""
         from pod.video_encode_transcript.models import EncodingStep
 
@@ -301,7 +301,7 @@ class VideoConfig(AppConfig):
             encoding_steps.append(ea)
         EncodingStep.objects.bulk_create(encoding_steps, batch_size=nb_batch)
 
-    def import_encoding_log(self, nb_batch) -> None:
+    def import_encoding_log(self, nb_batch: int) -> None:
         """Import encoding log data in DB."""
         from pod.video_encode_transcript.models import EncodingLog
 
@@ -318,7 +318,7 @@ class VideoConfig(AppConfig):
             encoding_logs.append(el)
         EncodingLog.objects.bulk_create(encoding_logs, batch_size=nb_batch)
 
-    def import_encoding_audio(self, nb_batch) -> None:
+    def import_encoding_audio(self, nb_batch: int) -> None:
         """Import encoding audio data in DB."""
         from pod.video_encode_transcript.models import EncodingAudio
 
@@ -336,7 +336,7 @@ class VideoConfig(AppConfig):
             encoding_audios.append(es)
         EncodingAudio.objects.bulk_create(encoding_audios, batch_size=nb_batch)
 
-    def import_playlist_video(self, nb_batch) -> None:
+    def import_playlist_video(self, nb_batch: int) -> None:
         """Import playlist video data in DB."""
         from pod.video_encode_transcript.models import PlaylistVideo
 

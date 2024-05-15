@@ -1,6 +1,5 @@
 ---
 name: Code Formatting
-run-name: ${{ github.actor }} is running Pod code formatting 🎨
 
 on:
   push:

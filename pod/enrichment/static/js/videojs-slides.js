@@ -392,9 +392,9 @@ var VideoSlides = function (items) {
         player.trigger("changemode", current_slide_mode);
 
         var available = document.getElementsByClassName("vjs-slide-mode");
-        for (let i = 0, nb = available.length; i < nb; i++) {
+        for (let i = 0, nb = available.length, e; i < nb; i++) {
           //for (let e of available) {
-          let e = available[i];
+          e = available[i];
           if (e.firstChild.innerHTML != this.el().firstChild.innerHTML) {
             e.setAttribute("aria-checked", false);
             e.classList.remove("vjs-selected");
