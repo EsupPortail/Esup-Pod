@@ -12,11 +12,11 @@ from pod.video.models import Channel, Theme, Video, Type, Discipline
 from pod.video_encode_transcript.models import VideoRendition
 from pod.video.apps import set_default_site, update_video_passwords
 
-
 # ggignore-start
 # gitguardian:ignore
 PWD = "azerty1234"  # nosec
 # ggignore-end
+
 
 class VideoTestApps(TestCase):
     """TestCase for Esup-Pod video apps."""
