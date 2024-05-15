@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-06 12:37+0000\n"
+"POT-Creation-Date: 2024-05-15 08:40+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -2222,6 +2222,14 @@ msgid ""
 msgstr ""
 "Les génériques de début et de fin sont des vidéos qui s’affichent au début "
 "ou à la fin de la vidéo."
+
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "You cannot dress this video."
+msgstr "Vous ne pouvez pas habiller cette vidéo."
+
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "You cannot access this page."
+msgstr "Vous ne pouvez pas accéder à cette page."
 
 #: pod/dressing/tests/test_views.py pod/dressing/views.py
 msgid "You cannot edit this dressing."
@@ -5856,7 +5864,7 @@ msgstr ""
 "Souhaitez-vous commencer cette réunion sous la forme d’un webinaire ? Dans "
 "ce cas, vous pouvez inviter les présentateurs à se joindre à vous dans "
 "BigBlueButton, et les auditeurs auront un accès via un direct dans la page "
-"des directs. "
+"des directs."
 
 #: pod/meeting/models.py
 msgid ""
@@ -7160,12 +7168,12 @@ msgid "Playlist: %(name)s"
 msgstr "Liste de lecture : %(name)s"
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
-msgid "The playlist has been deleted."
-msgstr "La liste de lecture a été supprimée."
-
-#: pod/playlist/views.py
 msgid "You cannot access this playlist."
 msgstr "Vous ne pouvez pas accéder à cette liste de lecture."
+
+#: pod/playlist/tests/test_views.py pod/playlist/views.py
+msgid "The playlist has been deleted."
+msgstr "La liste de lecture a été supprimée."
 
 #: pod/playlist/views.py
 #, python-format

@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-06 12:37+0000\n"
-"PO-Revision-Date: 2024-04-15 14:27+0200\n"
+"POT-Creation-Date: 2024-05-15 08:40+0200\n"
+"PO-Revision-Date: 2024-05-15 09:01+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -2108,6 +2108,14 @@ msgstr ""
 msgid ""
 "Opening and ending credits are videos that will be displayed at the "
 "beginning or at the end of the video."
+msgstr ""
+
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "You cannot dress this video."
+msgstr ""
+
+#: pod/dressing/tests/test_views.py pod/dressing/views.py
+msgid "You cannot access this page."
 msgstr ""
 
 #: pod/dressing/tests/test_views.py pod/dressing/views.py
@@ -6691,11 +6699,11 @@ msgid "Playlist: %(name)s"
 msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
-msgid "The playlist has been deleted."
+msgid "You cannot access this playlist."
 msgstr ""
 
-#: pod/playlist/views.py
-msgid "You cannot access this playlist."
+#: pod/playlist/tests/test_views.py pod/playlist/views.py
+msgid "The playlist has been deleted."
 msgstr ""
 
 #: pod/playlist/views.py
