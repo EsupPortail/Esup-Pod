@@ -188,15 +188,15 @@ class Broadcaster(models.Model):
 
     piloting_implementation = models.CharField(
         max_length=100,
-        blank=True,
         null=True,
+        default="",
         verbose_name=_("Piloting implementation"),
         help_text=_("Select the piloting implementation for to this broadcaster."),
     )
 
     piloting_conf = models.TextField(
-        null=True,
         blank=True,
+        default="",
         verbose_name=_("Piloting configuration parameters"),
         help_text=_("Add piloting configuration parameters in Json format."),
     )

@@ -6,7 +6,7 @@
 {% spaceless %}
   {% if playlist %}
     {% load playlist_buttons %}
-    {% can_see_playlist_video video as can_see_video %}
+    {% can_see_playlist_video video playlist as can_see_video %}
   {% endif %}
   <div class="checked_overlay">
     <span class="card-selected" title="{% trans 'Selected' %}">
@@ -78,7 +78,7 @@
       </span>
     {% endif %}
   </div>
-  <div id="more-btn-group" class="btn-group ms-auto" role="group">
+  <div id="more-btn-group-{{ video.id }}" class="btn-group ms-auto" role="group">
     <button id="more-actions-row-btn-{{ video.id }}" type="button" class="btn btn-link"
             data-bs-toggle="dropdown" aria-expanded="false" title="{% trans 'Toggle actions menu' %}">
       <i class="bi bi-three-dots more-actions-row-i" aria-hidden="true"></i>

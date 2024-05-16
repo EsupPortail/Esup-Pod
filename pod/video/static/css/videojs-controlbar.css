@@ -24,6 +24,21 @@
   margin-right: 1em;
 }
 
+.video-js .vjs-current-time {
+  display: block;
+  padding-right: 0;
+}
+
+.video-js .vjs-time-divider {
+  padding: 0;
+  text-align: center;
+}
+
+.video-js .vjs-duration {
+  display: block;
+  padding-left: 0;
+}
+
 /* Hide seek buttons & volume pannel on x-small screens */
 .video-js.vjs-layout-small .vjs-seek-button,
 .video-js.vjs-layout-x-small .vjs-seek-button,

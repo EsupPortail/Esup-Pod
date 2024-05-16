@@ -5,7 +5,7 @@ from django.test import Client
 from http import HTTPStatus
 from django.urls import reverse
 
-from xml.dom import minidom
+from defusedxml import minidom
 
 
 class FeedTestView(TestCase):

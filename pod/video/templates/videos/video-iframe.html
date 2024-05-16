@@ -30,14 +30,14 @@
   {% if CSS_OVERRIDE %}
     <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen">
   {% endif %}
-  
+
   <meta itemprop="duration" content="{{ video.duration }}">
   <meta itemprop="thumbnailUrl" content="{{ video.get_thumbnail_url }}">
   <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}: //{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">
   <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}: //{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
 
 </head>
-<body>
+<body class="iframe">
 {% block page_content %}
 <div class="overlay" id="div-video-wrapper">
 

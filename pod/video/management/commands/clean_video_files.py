@@ -18,7 +18,7 @@ class Command(BaseCommand):
 
     help = "Delete useless files (video or userfolder not associated with a video Object)"
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser) -> None:
         """Allow arguments to be used with the command."""
         parser.add_argument(
             "--type",
@@ -34,7 +34,7 @@ class Command(BaseCommand):
             default=False,
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         """Handle the clean_video_files command call."""
         if options["dry"]:
             print("Simulation mode ('dry'). Nothing will be deleted.")
@@ -49,7 +49,7 @@ class Command(BaseCommand):
 
         self.print_resume(clean_type, options["dry"])
 
-    def clean_userFolders(self, dry_run):
+    def clean_userFolders(self, dry_run: bool) -> int:
         """Clean useless User folders."""
         folder_deleted = 0
         files_deleted = 0
@@ -73,7 +73,7 @@ class Command(BaseCommand):
         print("Cleaning useless User folders done. %s deleted files." % files_deleted)
         return folder_deleted
 
-    def clean_videos(self, dry_run):
+    def clean_videos(self, dry_run: bool) -> int:
         """Clean useless video files."""
         list_dir = listdir(join(settings.MEDIA_ROOT, VIDEOS_DIR))
         print("Start cleaning useless video files, please wait...")
@@ -93,7 +93,7 @@ class Command(BaseCommand):
         print("Cleaning useless video files done.")
         return nb_deleted
 
-    def print_resume(self, clean_type, dry_run):
+    def print_resume(self, clean_type: str, dry_run: bool) -> None:
         """Print summary of deleted files."""
         if clean_type in ["userfolder", "all"]:
             if USE_PODFILE:

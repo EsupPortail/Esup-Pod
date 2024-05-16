@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-15 12:26+0000\n"
+"POT-Creation-Date: 2024-05-15 08:40+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 msgid "Get time from the player"
@@ -66,14 +66,6 @@ msgstr "Veuillez entrer un titre contenant entre 2 et 100 caractères."
 #: pod/chapter/static/js/chapters.js
 msgid "Please enter a correct start field between 0 and"
 msgstr "Veuillez entrer un correct temps de début compris entre 0 et"
-
-#: pod/chapter/static/js/chapters.js
-msgid "The chapter"
-msgstr "Le chapitre"
-
-#: pod/chapter/static/js/chapters.js
-msgid "starts at the same time."
-msgstr "commencent au même moment."
 
 #: pod/chapter/static/js/videojs-chapters.js
 msgid "Chapters"
@@ -406,7 +398,7 @@ msgstr ""
 "authentifiés."
 
 #: pod/live/static/js/broadcaster_from_building.js
-msgid "An error occurred on broadcaster fetch..."
+msgid "An error occurred on broadcaster fetch…"
 msgstr "Une erreur s’est produite lors du chargement du diffuseur…"
 
 #: pod/live/static/js/broadcaster_from_building.js
@@ -414,7 +406,7 @@ msgid "No broadcaster set for this building"
 msgstr "Pas de diffuseur pour ce bâtiment"
 
 #: pod/live/static/js/broadcaster_from_building.js
-msgid "An error occurred during broadcasters loading..."
+msgid "An error occurred during broadcasters loading…"
 msgstr "Une erreur s’est produite lors du chargement des diffuseurs…"
 
 #: pod/live/static/js/filter_aside_event_list.js
@@ -467,7 +459,7 @@ msgstr "Changer votre image"
 msgid "Add your picture"
 msgstr "Ajouter votre image"
 
-#: pod/main/static/js/main.js
+#: pod/main/static/js/main.js pod/video/static/js/video-access-token.js
 msgid "Text copied"
 msgstr "Texte copié"
 
@@ -577,6 +569,10 @@ msgstr "Changer"
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Enter new name of folder"
 msgstr "Indiquer un nouveau nom au dossier"
+
+#: pod/podfile/static/podfile/js/filewidget.js
+msgid "No user found"
+msgstr "Aucun utilisateur trouvé"
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Remove"
@@ -756,6 +752,12 @@ msgid_plural "Please confirm the editing of the following videos:"
 msgstr[0] "Veuillez confirmer l'édition de la vidéo suivante :"
 msgstr[1] "Veuillez confirmer l'édition des vidéos suivantes :"
 
+#: pod/video/static/js/dashboard.js
+msgid "Please confirm the deletion of the following video:"
+msgid_plural "Please confirm the deletion of the following videos:"
+msgstr[0] "Veuillez confirmer la suppression de la vidéo suivante :"
+msgstr[1] "Veuillez confirmer la suppression des vidéos suivantes :"
+
 #: pod/video/static/js/filter_aside_video_list_refresh.js
 msgid "%(count)s video found"
 msgid_plural "%(count)s videos found"
@@ -882,7 +884,7 @@ msgstr "Supprimer la catégorie"
 
 #: pod/video/static/js/video_category.js
 msgid "Success!"
-msgstr "Succès !"
+msgstr "Succès !"
 
 #: pod/video/static/js/video_category.js
 msgid "Error…"
@@ -969,3 +971,9 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "The chapter"
+#~ msgstr "Le chapitre"
+
+#~ msgid "starts at the same time."
+#~ msgstr "commencent au même moment."

@@ -1,15 +1,21 @@
 """Esup-Pod recorder utilities."""
 
+import hashlib
+import os
+import re
 import shutil
 import time
-import os
 import uuid
-from .models import Recording
+from defusedxml import minidom
+
 from django.conf import settings
-from xml.dom import minidom
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 
+from .models import Recording, Recorder
+from ..settings import BASE_DIR
+
+MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", os.path.join(BASE_DIR, "media"))
 OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
 MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
 
@@ -28,7 +34,7 @@ def studio_clean_old_entries():
     The function removes entries that are older than 7 days
     from the opencast folder in the media root.
     """
-    folder_to_clean = os.path.join(settings.MEDIA_ROOT, OPENCAST_FILES_DIR)
+    folder_to_clean = os.path.join(MEDIA_ROOT, OPENCAST_FILES_DIR)
     now = time.time()
 
     for entry in os.listdir(folder_to_clean):
@@ -58,26 +64,33 @@ def handle_upload_file(request, element_name, mimetype, tag_name):
     opencast_filename = None
     # tags = "" # not use actually
     id_media = get_id_media(request)
-    if request.POST.get("flavor") and request.POST.get("flavor") != "":
+    if request.POST.get("flavor", "") != "":
         type_name = request.POST.get("flavor")
-    media_package_dir = os.path.join(
-        settings.MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % id_media
-    )
+    media_package_dir = os.path.join(MEDIA_ROOT, OPENCAST_FILES_DIR, "%s" % id_media)
 
     media_package_content, media_package_file = get_media_package_content(
         media_package_dir, id_media
     )
 
     if element_name != "attachment":
+        file = ""
+        filename = ""
+
+        if "BODY" in request.FILES:
+            file = request.FILES["BODY"]
+            filename = file.name
+
+        if request.FILES.getlist("file"):
+            file = request.FILES.getlist("file")[0]
+            filename = file.name
+
         if element_name == "track":
-            opencast_filename, ext = os.path.splitext(request.FILES["BODY"].name)
+            opencast_filename, ext = os.path.splitext(filename)
             filename = "%s%s" % (type_name.replace("/", "_").replace(" ", ""), ext)
-        elif element_name == "catalog":
-            filename = request.FILES["BODY"].name
 
         opencastMediaFile = os.path.join(media_package_dir, filename)
         with open(opencastMediaFile, "wb+") as destination:
-            for chunk in request.FILES["BODY"].chunks():
+            for chunk in file.chunks():
                 destination.write(chunk)
 
         url_text = "%(http)s://%(host)s%(media)sopencast-files/%(id_media)s/%(fn)s" % {
@@ -109,7 +122,7 @@ def handle_upload_file(request, element_name, mimetype, tag_name):
 def get_id_media(request):
     """Extract and returns id_media from the mediaPackage in the request."""
     if (
-        request.POST.get("mediaPackage") != ""
+        request.POST.get("mediaPackage", "") != ""
         and request.POST.get("mediaPackage") != "{}"
     ):
         mediaPackage = request.POST.get("mediaPackage")
@@ -174,3 +187,92 @@ def create_xml_element(
         element.appendChild(live)
 
     return element
+
+
+def create_digest_auth_response(request):
+    """
+    Create a HttpResponse:
+    403 if the sender's ip is defined in the Recorders.
+    401 otherwise with realm and nonce (being the salt of the Recorder whose ip matches the sender's ip).
+    """
+    client_ip = request.META.get("REMOTE_ADDR", "none")
+    recorder = Recorder.objects.filter(address_ip=client_ip).first()
+    if recorder is None:
+        return HttpResponse(status=403)
+    h_key = "WWW-Authenticate"
+    header = {h_key: 'Digest realm="Opencast", nonce="salt"'}
+    header[h_key] = header[h_key].replace("salt", recorder.salt)
+    return HttpResponse(headers=header, status=401)
+
+
+def digest_is_valid(request) -> bool:
+    """Check if the digest hash is valid."""
+    auth_headers = get_auth_headers_as_dict(request)
+
+    if not auth_headers:
+        # print("no authentication in Headers")
+        return False
+
+    if (
+        "username" not in auth_headers
+        and "realm" not in auth_headers
+        and "uri" not in auth_headers
+        and "response" not in auth_headers
+    ):
+        # print("missing data to compute hash")
+        return False
+
+    client_ip = request.META.get("REMOTE_ADDR", "none")
+    recorder = Recorder.objects.filter(address_ip=client_ip).first()
+    if recorder is None:
+        print("no Recorder found with Ip: " + client_ip)
+        return False
+    if recorder.credentials_login != auth_headers["username"]:
+        print(
+            "Recorder ip '"
+            + recorder.address_ip
+            + "' and login '"
+            + auth_headers["username"]
+            + "' mismatch"
+        )
+        return False
+
+    # print("Recorder: " + str(recorder))
+    # print(auth_headers['realm'] + " - " + request.method + " - " + auth_headers['uri'])
+    computed_hash = compute_digest_recorder(
+        recorder, auth_headers["realm"], request.method, auth_headers["uri"]
+    )
+    # print(computed_hash + " vs " + auth_headers['response'])
+    return computed_hash == auth_headers["response"]
+
+
+def get_auth_headers_as_dict(request) -> dict:
+    """Return a dict with Authorization headers as a dict."""
+    result = {}
+    if "Authorization" in request.headers:
+        # Regex pattern that match key-value pairs
+        pattern = r'(\w+)="([^"]+)"'
+
+        matches = re.findall(pattern, request.headers["Authorization"])
+        result = {key: value for key, value in matches}
+    return result
+
+
+def compute_digest_recorder(recorder, realm, method, uri):
+    """Call method compute_digest() with recorder data."""
+    return compute_digest(
+        recorder.credentials_login,
+        realm,
+        recorder.credentials_password,
+        method,
+        uri,
+        recorder.salt,
+    )
+
+
+def compute_digest(user, realm, passwd, method, uri, nonce):
+    """Compute a digest hash with md5 and no qop."""
+    ha1 = hashlib.md5(f"{user}:{realm}:{passwd}".encode("utf-8")).hexdigest()
+    ha2 = hashlib.md5(f"{method}:{uri}".encode("utf-8")).hexdigest()
+    response = hashlib.md5(f"{ha1}:{nonce}:{ha2}".encode("utf-8")).hexdigest()
+    return response

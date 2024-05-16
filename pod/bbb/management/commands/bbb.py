@@ -60,7 +60,7 @@ import datetime
 import dateutil.parser
 from django.core.mail import mail_admins
 from django.utils import timezone
-from xml.dom import minidom
+from defusedxml import minidom
 import urllib.parse
 
 from pod.video.models import Video, Type, get_storage_path_video

@@ -53,9 +53,9 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((s) => {
         change_restriction(s.restricted);
       })
-      .catch((error) => {
+      .catch(() => {
         change_restriction(false);
-        alert(gettext("An error occurred on broadcaster fetch..."));
+        alert(gettext("An error occurred on broadcaster fetch…"));
       });
   };
 
@@ -96,8 +96,8 @@ document.addEventListener("DOMContentLoaded", function () {
             getBroadcasterRestriction();
           }
         })
-        .catch((error) => {
-          alert(gettext("An error occurred during broadcasters loading..."));
+        .catch(() => {
+          alert(gettext("An error occurred during broadcasters loading…"));
         });
     });
 
