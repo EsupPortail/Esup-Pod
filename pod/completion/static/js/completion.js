@@ -201,7 +201,7 @@ var sendandgetform = async function (elt, action, name, form, list) {
   if (action == "modify" || action == "form_save_modify") {
     var id = elt.querySelector("input[name=id]").value;
     var url = window.location.origin + href;
-    var token = elt.querySelector("input[name=csrfmiddlewaretoken]").value;
+    var token = elt.csrfmiddlewaretoken.value;
     form_data = new FormData();
     form_data.append("action", action);
     form_data.append("id", id);

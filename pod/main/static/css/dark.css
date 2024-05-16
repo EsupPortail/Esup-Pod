@@ -336,18 +336,6 @@ body.dark {
 }
 */
 
-.theme-switch {
-  display: inline-block;
-  height: 24px;
-  position: relative;
-  width: 50px;
-}
-
-.theme-switch input {
-  width: 100%;
-  height: 100%;
-}
-
 .slider {
   background-color: var(--pod-background-neutre1-bloc);
   cursor: pointer;
