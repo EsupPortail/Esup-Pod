@@ -676,7 +676,7 @@ class CategoryAdmin(admin.ModelAdmin):
 class VideoAccessTokenAdmin(admin.ModelAdmin):
     """Admin for the VideoAccessToken model."""
 
-    list_display = ("video", "token")
+    list_display = ("video", "token", "name")
     readonly_fields = ("token",)
     autocomplete_fields = ["video"]
 

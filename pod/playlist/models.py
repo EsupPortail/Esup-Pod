@@ -164,7 +164,7 @@ class Playlist(models.Model):
 
         if request is not None:
             for video in sort_videos_list(get_video_list_for_playlist(self), "rank"):
-                if user_can_see_playlist_video(request, video):
+                if user_can_see_playlist_video(request, video, self):
                     return video
         return sort_videos_list(get_video_list_for_playlist(self), "rank").first()
 

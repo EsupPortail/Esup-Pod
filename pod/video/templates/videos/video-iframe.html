@@ -1,0 +1,101 @@
+{% load i18n %}
+{% load static %}
+{% load tagging_tags %}
+{% load thumbnail %}
+{% load video_filters %}
+
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/MediaObject">
+<head>
+  <meta charset="utf-8">
+
+  <title>{{ TITLE_SITE }} - {% block page_title %}{{page_title|capfirst}}{% endblock page_title %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {# jquery is still used by video-script.html #}
+  <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+
+  {% block page_extra_head %}
+    {% include 'videos/video-header.html' %}
+  {% endblock page_extra_head %}
+
+  <script src="{% static 'js/videojs-info-controlbar.js' %}?ver={{VERSION}}"></script>
+
+  <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+  <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}?ver={{VERSION}}"></script>
+  <script id="jsi18n" src="{% url 'javascript-catalog' %}?ver={{VERSION}}"></script>
+
+  <link rel="stylesheet" href="{% static 'css/video-iframe.css' %}?ver={{VERSION}}">
+
+  {% if CSS_OVERRIDE %}
+    <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen">
+  {% endif %}
+
+  <meta itemprop="duration" content="{{ video.duration }}">
+  <meta itemprop="thumbnailUrl" content="{{ video.get_thumbnail_url }}">
+  <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}: //{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}">
+  <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}: //{{ request.META.HTTP_HOST }}{% url 'video:video' slug=video.slug %}?is_iframe=true">
+
+</head>
+<body class="iframe">
+{% block page_content %}
+<div class="overlay" id="div-video-wrapper">
+
+  {% block video-element %}
+    {% include 'videos/video-element.html' %}
+  {% endblock video-element %}
+
+  <div id="info-video-wrapper" class="pod-inner">
+    <div class="iframe-header bg-dark text-white">
+      <h2 class="video-title">{{ video.title }}</h2>
+      <button type="button" class="close" aria-label="{% trans 'Close' %}">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div id="info-video" class="pod-info-video">
+    {% include 'videos/video-info.html'%}
+  </div>
+  </div>
+
+</div>
+{% block more_script %}
+  {% if not form %}
+    {% include 'videos/video-script.html'%}
+    <script>
+
+      (function () {
+
+        player.videoJsInfo();
+
+        {% if video.is_video %}
+          // Append overlay-footer to video-wrapper
+          let overlay = document.createElement("div");
+          overlay.id="overlay-footer";
+          document.getElementById("div-video-wrapper").appendChild(overlay);
+
+          player.ready(function() {
+            const btinfo = document.querySelector(".vjs-info-button");
+            const clonedInfo = btinfo.cloneNode(true);
+            overlay.appendChild(clonedInfo);
+            clonedInfo.addEventListener("click", showInfoVideo);
+          })
+        {% endif %}
+
+        document.querySelector("#info-video-wrapper .close").addEventListener("click", showInfoVideo);
+
+        player.on('play',function() {
+          isPlaying = true;
+          document.getElementById("div-video-wrapper").className = '';
+        });
+        player.on('pause',function() { isPlaying = false; });
+        resizeVideoJs(); // Initialize the function right now
+        window.onresize = resizeVideoJs; // Call the function on resize
+
+      })();
+      </script>
+  {% endif %}
+{% endblock more_script %}
+{% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
+{% endblock page_content %}
+</body>
+</html>

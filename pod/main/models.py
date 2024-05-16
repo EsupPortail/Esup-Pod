@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from django.db import connection
+from django.db.models import Max
 import os
 import mimetypes
 from ckeditor.fields import RichTextField
@@ -19,19 +19,14 @@ FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 
 def get_nextautoincrement(model):
-    cursor = connection.cursor()
-    cursor.execute(
-        "SELECT Auto_increment FROM information_schema.tables "
-        + 'WHERE table_name="{0}" AND table_schema=DATABASE();'.format(
-            model._meta.db_table
-        )
-    )
-    row = cursor.fetchone()
-    cursor.close()
-    return row[0]
+    """Get potential next id for the current model when an object will be created"""
+    objects = model.objects.all()
+    if objects:
+        return objects.aggregate(Max("id"))["id__max"] + 1
+    return 1
 
 
-def get_upload_path_files(instance, filename):
+def get_upload_path_files(instance, filename) -> str:
     fname, dot, extension = filename.rpartition(".")
     try:
         fname.index("/")
@@ -60,7 +55,7 @@ class CustomImageModel(models.Model):
     )
 
     @property
-    def file_type(self):
+    def file_type(self) -> str:
         filetype = mimetypes.guess_type(self.file.path)[0]
         if filetype is None:
             fname, dot, extension = self.file.path.rpartition(".")
@@ -70,21 +65,21 @@ class CustomImageModel(models.Model):
     file_type.fget.short_description = _("Get the file type")
 
     @property
-    def file_size(self):
+    def file_size(self) -> int:
         return os.path.getsize(self.file.path)
 
     file_size.fget.short_description = _("Get the file size")
 
     @property
-    def name(self):
+    def name(self) -> str:
         return os.path.basename(self.file.path)
 
     name.fget.short_description = _("Get the file name")
 
-    def file_exist(self):
+    def file_exist(self) -> bool:
         return self.file and os.path.isfile(self.file.path)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s (%s, %s)" % (self.name, self.file_type, self.file_size)
 
 
@@ -98,7 +93,7 @@ class CustomFileModel(models.Model):
     )
 
     @property
-    def file_type(self):
+    def file_type(self) -> str:
         filetype = mimetypes.guess_type(self.file.path)[0]
         if filetype is None:
             fname, dot, extension = self.file.path.rpartition(".")
@@ -108,21 +103,21 @@ class CustomFileModel(models.Model):
     file_type.fget.short_description = _("Get the file type")
 
     @property
-    def file_size(self):
+    def file_size(self) -> int:
         return os.path.getsize(self.file.path)
 
     file_size.fget.short_description = _("Get the file size")
 
     @property
-    def name(self):
+    def name(self) -> str:
         return os.path.basename(self.file.path)
 
     name.fget.short_description = _("Get the file name")
 
-    def file_exist(self):
+    def file_exist(self) -> bool:
         return self.file and os.path.isfile(self.file.path)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s (%s, %s)" % (self.name, self.file_type, self.file_size)
 
 
@@ -155,16 +150,16 @@ class LinkFooter(models.Model):
             return self.url
         return self.page.url
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s - %s" % (self.id, self.title)
 
-    def clean(self):
+    def clean(self) -> None:
         if self.url is None and self.page is None:
             raise ValidationError(_("You must give an URL or a page to link the link"))
 
 
 @receiver(post_save, sender=LinkFooter)
-def default_site_link_footer(sender, instance, created, **kwargs):
+def default_site_link_footer(sender, instance, created, **kwargs) -> None:
     if len(instance.sites.all()) == 0:
         instance.sites.add(Site.objects.get_current())
 
@@ -359,7 +354,7 @@ class Block(models.Model):
         help_text=_("Check this box if you want view videos with password."),
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s" % (self.title)
 
     class Meta:
@@ -368,7 +363,7 @@ class Block(models.Model):
 
 
 @receiver(post_save, sender=Block)
-def default_site_block(sender, instance, created, **kwargs):
+def default_site_block(sender, instance, created, **kwargs) -> None:
     """Set a default site for the instance if it has no associated sites upon creation."""
     if len(instance.sites.all()) == 0:
         instance.sites.add(Site.objects.get_current())

@@ -67,10 +67,10 @@ def add_placeholder_and_asterisk(fields):
     for fieldName in fields:
         my_field = fields[fieldName]
         classname = my_field.widget.__class__.__name__
-        if classname == "PasswordInput" or classname == "TextInput":
+        if classname in {"PasswordInput", "TextInput", "EmailInput", "CaptchaTextInput"}:
             my_field.widget.attrs["placeholder"] = my_field.label
 
-        if classname == "CheckboxInput" or classname == "CheckboxSelectMultiple":
+        if classname in {"CheckboxInput", "CheckboxSelectMultiple"}:
             bs_class = "form-check-input"
         elif classname == "Select":
             bs_class = "form-select"

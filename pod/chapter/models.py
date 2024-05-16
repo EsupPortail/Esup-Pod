@@ -1,3 +1,5 @@
+"""Esup-Pod Video chapter models."""
+
 import time
 
 from django.core.exceptions import ValidationError
@@ -6,10 +8,13 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 
 from pod.video.models import Video
+from pod.video.utils import verify_field_length
 from pod.main.models import get_nextautoincrement
 
 
 class Chapter(models.Model):
+    """Chapter model."""
+
     video = models.ForeignKey(Video, verbose_name=_("video"), on_delete=models.CASCADE)
     title = models.CharField(_("title"), max_length=100)
     slug = models.SlugField(
@@ -30,6 +35,8 @@ class Chapter(models.Model):
     )
 
     class Meta:
+        """Chapter Metadata."""
+
         verbose_name = _("Chapter")
         verbose_name_plural = _("Chapters")
         ordering = ["time_start"]
@@ -39,27 +46,15 @@ class Chapter(models.Model):
             "video",
         )
 
-    def clean(self):
+    def clean(self) -> None:
+        """Check chapter fields validity."""
         msg = list()
-        msg = self.verify_title_items() + self.verify_time()
+        msg = verify_field_length(self.title) + self.verify_time()
         msg = msg + self.verify_overlap()
         if len(msg) > 0:
             raise ValidationError(msg)
 
-    def verify_title_items(self):
-        msg = list()
-        if (
-            not self.title
-            or self.title == ""
-            or len(self.title) < 2
-            or len(self.title) > 100
-        ):
-            msg.append(_("Please enter a title from 2 to 100 characters."))
-        if len(msg) > 0:
-            return msg
-        return list()
-
-    def verify_time(self):
+    def verify_time(self) -> list:
         """Check that start time is included inside video duration."""
         msg = list()
         if (
@@ -73,11 +68,9 @@ class Chapter(models.Model):
                     + "{0}".format(self.video.duration - 1)
                 )
             )
-        if len(msg) > 0:
-            return msg
-        return list()
+        return msg
 
-    def verify_overlap(self):
+    def verify_overlap(self) -> list:
         msg = list()
         instance = None
         if self.slug:
@@ -95,11 +88,10 @@ class Chapter(models.Model):
                             + "end values."
                         ).format(element.title)
                     )
-            if len(msg) > 0:
-                return msg
-        return list()
+        return msg
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
+        """Save a chapter."""
         newid = -1
         if not self.id:
             try:
@@ -117,14 +109,15 @@ class Chapter(models.Model):
         super(Chapter, self).save(*args, **kwargs)
 
     @property
-    def chapter_in_time(self):
+    def chapter_in_time(self) -> str:
         return time.strftime("%H:%M:%S", time.gmtime(self.time_start))
 
     chapter_in_time.fget.short_description = _("Start time")
 
     @property
     def sites(self):
+        """Get the related video sites."""
         return self.video.sites
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Chapter: {0} - video: {1}".format(self.title, self.video)

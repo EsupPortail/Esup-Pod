@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-15 12:26+0000\n"
+"POT-Creation-Date: 2024-05-15 08:40+0200\n"
 "PO-Revision-Date: 2024-04-15 14:27+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -61,14 +61,6 @@ msgstr ""
 
 #: pod/chapter/static/js/chapters.js
 msgid "Please enter a correct start field between 0 and"
-msgstr ""
-
-#: pod/chapter/static/js/chapters.js
-msgid "The chapter"
-msgstr ""
-
-#: pod/chapter/static/js/chapters.js
-msgid "starts at the same time."
 msgstr ""
 
 #: pod/chapter/static/js/videojs-chapters.js
@@ -384,7 +376,7 @@ msgid ""
 msgstr ""
 
 #: pod/live/static/js/broadcaster_from_building.js
-msgid "An error occurred on broadcaster fetch..."
+msgid "An error occurred on broadcaster fetch…"
 msgstr ""
 
 #: pod/live/static/js/broadcaster_from_building.js
@@ -392,7 +384,7 @@ msgid "No broadcaster set for this building"
 msgstr ""
 
 #: pod/live/static/js/broadcaster_from_building.js
-msgid "An error occurred during broadcasters loading..."
+msgid "An error occurred during broadcasters loading…"
 msgstr ""
 
 #: pod/live/static/js/filter_aside_event_list.js
@@ -445,7 +437,7 @@ msgstr ""
 msgid "Add your picture"
 msgstr ""
 
-#: pod/main/static/js/main.js
+#: pod/main/static/js/main.js pod/video/static/js/video-access-token.js
 msgid "Text copied"
 msgstr ""
 
@@ -550,6 +542,10 @@ msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Enter new name of folder"
+msgstr ""
+
+#: pod/podfile/static/podfile/js/filewidget.js
+msgid "No user found"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
@@ -722,6 +718,12 @@ msgstr[1] ""
 #: pod/video/static/js/dashboard.js
 msgid "Please confirm the editing of the following video:"
 msgid_plural "Please confirm the editing of the following videos:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/static/js/dashboard.js
+msgid "Please confirm the deletion of the following video:"
+msgid_plural "Please confirm the deletion of the following videos:"
 msgstr[0] ""
 msgstr[1] ""
 
