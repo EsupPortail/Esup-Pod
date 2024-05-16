@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-15 08:40+0200\n"
+"POT-Creation-Date: 2024-05-16 07:36+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -283,12 +283,6 @@ msgstr "Veuillez sélectionner un document"
 msgid "Iframe and Script tags are not allowed."
 msgstr "Les balises Iframe et Script ne sont pas autorisées."
 
-#: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
-#: pod/video/static/js/ajax-display-channels.js
-#: pod/video/static/js/comment-script.js pod/video/static/js/dashboard.js
-msgid "Close"
-msgstr "Fermer"
-
 #: pod/enrichment/static/js/enrichment.js
 msgid "Please enter a correct start from 0 to "
 msgstr "Veuillez entrer un correct temps de début compris entre 0 et "
@@ -451,14 +445,6 @@ msgstr "Suppression du thème réussie."
 msgid "Action performed successfully."
 msgstr "Action réalisée avec succès."
 
-#: pod/main/static/js/main.js
-msgid "Change your picture"
-msgstr "Changer votre image"
-
-#: pod/main/static/js/main.js
-msgid "Add your picture"
-msgstr "Ajouter votre image"
-
 #: pod/main/static/js/main.js pod/video/static/js/video-access-token.js
 msgid "Text copied"
 msgstr "Texte copié"
@@ -480,6 +466,11 @@ msgid "The file extension not in the allowed extension:"
 msgstr ""
 "Cette extension de fichier n’est pas présente dans les extensions "
 "autorisées :"
+
+#: pod/main/static/js/main.js pod/video/static/js/ajax-display-channels.js
+#: pod/video/static/js/comment-script.js pod/video/static/js/dashboard.js
+msgid "Close"
+msgstr "Fermer"
 
 #: pod/main/static/js/videojs-info-controlbar.js
 msgid "Info"
@@ -518,20 +509,21 @@ msgid "Something went wrong."
 msgstr "Quelque-chose s’est mal passé."
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
-msgid "<b>Public:</b> the playlist can be accessed by anyone."
-msgstr "<b>Public :</b> la liste de lecture est accessible par tous."
+msgid "<strong>Public:</strong> the playlist can be accessed by anyone."
+msgstr "<strong>Public :</strong> la liste de lecture est accessible par tous."
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
 msgid ""
-"<b>Password-protected:</b> the playlist can be accessed by anyone with the "
-"appropriate link and password."
+"<strong>Password-protected:</strong> the playlist can be accessed by anyone "
+"with the appropriate link and password."
 msgstr ""
-"<b>Protégé par un mot de passe :</b> la liste de lecture est accessible à "
-"toute personne disposant du lien et du mot de passe appropriés."
+"<strong>Protégé par un mot de passe :</strong> la liste de lecture est "
+"accessible à toute personne disposant du lien et du mot de passe appropriés."
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
-msgid "<b>Private:</b> only you have access to this playlist."
-msgstr "<b>Privé :</b> vous seul avez accès à cette liste de lecture."
+msgid "<strong>Private:</strong> only you have access to this playlist."
+msgstr ""
+"<strong>Privé :</strong> vous seul avez accès à cette liste de lecture."
 
 #: pod/playlist/static/playlist/js/playlist-reorganize.js
 msgid "Save your reorganization"
@@ -971,6 +963,12 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "Change your picture"
+#~ msgstr "Changer votre image"
+
+#~ msgid "Add your picture"
+#~ msgstr "Ajouter votre image"
 
 #~ msgid "The chapter"
 #~ msgstr "Le chapitre"
