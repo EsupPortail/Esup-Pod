@@ -37,7 +37,7 @@ USE_PODFILE = getattr(settings, "USE_PODFILE", False)
 USE_PLAYLIST = getattr(settings, "USE_PLAYLIST", True)
 USE_DRESSING = getattr(settings, "USE_DRESSING", True)
 USE_IMPORT_VIDEO = getattr(settings, "USE_IMPORT_VIDEO", True)
-USE_AI_ENHANCEMENT = getattr(settings, "USE_AI_ENHANCEMENT", True)
+USE_AI_ENHANCEMENT = getattr(settings, "USE_AI_ENHANCEMENT", False)
 
 if USE_CAS:
     from cas import views as cas_views
