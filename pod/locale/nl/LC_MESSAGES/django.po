@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-15 08:40+0200\n"
+"POT-Creation-Date: 2024-05-17 15:36+0000\n"
 "PO-Revision-Date: 2024-05-15 09:01+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1173,7 +1173,6 @@ msgstr ""
 #: pod/completion/models.py pod/enrichment/models.py pod/playlist/models.py
 #: pod/recorder/models.py pod/video/models.py
 #: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/video_breadcrumbs.html
 #: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
 msgid "Video"
 msgstr ""
@@ -1973,6 +1972,7 @@ msgid "Ending credits"
 msgstr ""
 
 #: pod/dressing/models.py pod/video/apps.py pod/video/models.py
+#: pod/video/templates/videos/video_breadcrumbs.html
 #: pod/video/templates/videos/videos.html
 msgid "Videos"
 msgstr ""
@@ -7612,12 +7612,12 @@ msgid ""
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "Your video will be obsolete"
+#, python-format
+msgid "Sending mail to %(to_email)s for video %(title)s."
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
-#, python-format
-msgid "Mail sent to %(to_email)s for video %(title)s."
+msgid "Your video will be obsolete"
 msgstr ""
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -7680,8 +7680,8 @@ msgstr ""
 #: pod/video/management/commands/create_archive_package.py
 #, python-format
 msgid ""
-"Package archiving done. %(amount)s video packaged (%(weight)s - "
-"[%(duration)s])"
+"Package archiving done. %(amount)s video(s) packaged (%(weight)s - "
+"[%(duration)s]) - %(nb_ignored)s video(s) ignored."
 msgstr ""
 
 #: pod/video/management/commands/create_archive_package.py
@@ -7699,7 +7699,14 @@ msgid ""
 msgstr ""
 
 #: pod/video/management/commands/create_archive_package.py
-msgid "Packaging archived videos on Pod"
+msgid ""
+"And below is the list of ignored videos that were not packaged because they "
+"have been recently viewed."
+msgstr ""
+
+#: pod/video/management/commands/create_archive_package.py
+#, python-format
+msgid "Packaging %s archived videos on Pod"
 msgstr ""
 
 #: pod/video/models.py pod/video/views.py
