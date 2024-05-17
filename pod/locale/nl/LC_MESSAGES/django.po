@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-17 08:18+0000\n"
+"POT-Creation-Date: 2024-05-17 14:19+0200\n"
 "PO-Revision-Date: 2024-05-15 09:01+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -355,6 +355,70 @@ msgstr ""
 
 #: pod/ai_enhancement/templates/create_enhancement.html
 msgid "Confirm"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/live/templates/live/direct.html
+#: pod/live/templates/live/event-script.html pod/main/context_processors.py
+#: pod/main/templates/base.html pod/main/templates/navbar.html
+#: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
+#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
+#: pod/video/templates/videos/video-script.html pod/video/utils.py
+#: pod/video/views.py pod/video_encode_transcript/utils.py
+msgid "Home"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/video_encode_transcript/utils.py
+#, python-format
+msgid "%(subject)s #%(content_id)s completed"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py
+msgid "Enhancement"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid ""
+"“%(content_title)s” was processed by the AI.Suggestions for improvement are "
+"available on %(site_title)s."
+msgstr ""
+
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid "IA improvement #%(content_id)s completed"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/live/utils.py pod/meeting/utils.py
+#: pod/video_encode_transcript/utils.py
+msgid "Hello,"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid ""
+"IA improvement “%(content_title)s” has been completed, and is now available "
+"on %(site_title)s."
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/meeting/utils.py
+#: pod/video_encode_transcript/utils.py
+msgid "You will find it here:"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/live/utils.py
+#: pod/main/templates/mail/mail.html pod/meeting/utils.py
+#: pod/video/management/commands/create_archive_package.py
+#: pod/video_encode_transcript/utils.py
+msgid "Regards."
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/live/utils.py
+#: pod/video_encode_transcript/utils.py
+msgid "Post by:"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/video_encode_transcript/utils.py
+msgid "the:"
 msgstr ""
 
 #: pod/ai_enhancement/views.py pod/completion/models.py pod/completion/views.py
@@ -3558,16 +3622,6 @@ msgid ""
 msgstr ""
 
 #: pod/live/templates/live/direct.html
-#: pod/live/templates/live/event-script.html pod/main/context_processors.py
-#: pod/main/templates/base.html pod/main/templates/navbar.html
-#: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
-#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
-#: pod/video/templates/videos/video-script.html pod/video/utils.py
-#: pod/video/views.py pod/video_encode_transcript/utils.py
-msgid "Home"
-msgstr ""
-
-#: pod/live/templates/live/direct.html
 #: pod/live/templates/live/event-script.html pod/main/templates/footer.html
 #: pod/video/templates/videos/video-script.html
 msgid "New window"
@@ -4019,26 +4073,12 @@ msgstr ""
 msgid "Registration of event #%(content_id)s"
 msgstr ""
 
-#: pod/live/utils.py pod/meeting/utils.py pod/video_encode_transcript/utils.py
-msgid "Hello,"
-msgstr ""
-
 #: pod/live/utils.py
 #, python-format
 msgid ""
 "You have just scheduled a new event called “%(content_title)s” from "
 "%(start_date)s to %(end_date)s on video server: %(url_event)s). You can find "
 "the other sharing options in the dedicated tab."
-msgstr ""
-
-#: pod/live/utils.py pod/main/templates/mail/mail.html pod/meeting/utils.py
-#: pod/video/management/commands/create_archive_package.py
-#: pod/video_encode_transcript/utils.py
-msgid "Regards."
-msgstr ""
-
-#: pod/live/utils.py pod/video_encode_transcript/utils.py
-msgid "Post by:"
 msgstr ""
 
 #: pod/live/utils.py
@@ -6230,10 +6270,6 @@ msgstr ""
 msgid ""
 "A new Big Blue Button recording for “%(content_title)s” meeting is now "
 "available on %(site_title)s."
-msgstr ""
-
-#: pod/meeting/utils.py pod/video_encode_transcript/utils.py
-msgid "You will find it here:"
 msgstr ""
 
 #: pod/meeting/views.py
@@ -9603,11 +9639,6 @@ msgstr ""
 
 #: pod/video_encode_transcript/utils.py
 #, python-format
-msgid "%(subject)s #%(content_id)s completed"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-#, python-format
 msgid ""
 "%(content_type)s “%(content_title)s” has been %(action)s, and is now "
 "available on %(site_title)s."
@@ -9627,10 +9658,6 @@ msgstr ""
 
 #: pod/video_encode_transcript/utils.py
 msgid "encoded to Web formats"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "the:"
 msgstr ""
 
 #: pod/video_encode_transcript/utils.py

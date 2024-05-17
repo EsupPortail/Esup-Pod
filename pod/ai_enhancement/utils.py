@@ -227,7 +227,7 @@ def send_notification_enhancement(video):
     )
     message = _(
         "“%(content_title)s” was processed by the AI."
-        + "Suggestions for improvement are available on %(site_title)s."
+        + " Suggestions for improvement are available on %(site_title)s."
     ) % {
         "content_title": video.title,
         "site_title": __TITLE_SITE__,

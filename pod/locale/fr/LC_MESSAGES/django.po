@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-17 08:18+0000\n"
+"POT-Creation-Date: 2024-05-17 14:19+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -363,6 +363,71 @@ msgstr "Retour à la vidéo"
 #: pod/ai_enhancement/templates/create_enhancement.html
 msgid "Confirm"
 msgstr "Confirmer"
+
+#: pod/ai_enhancement/utils.py pod/live/templates/live/direct.html
+#: pod/live/templates/live/event-script.html pod/main/context_processors.py
+#: pod/main/templates/base.html pod/main/templates/navbar.html
+#: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
+#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
+#: pod/video/templates/videos/video-script.html pod/video/utils.py
+#: pod/video/views.py pod/video_encode_transcript/utils.py
+msgid "Home"
+msgstr "Accueil"
+
+#: pod/ai_enhancement/utils.py pod/video_encode_transcript/utils.py
+#, python-format
+msgid "%(subject)s #%(content_id)s completed"
+msgstr "%(subject)s du #%(content_id)s est terminée"
+
+#: pod/ai_enhancement/utils.py
+msgid "Enhancement"
+msgstr "Amélioration"
+
+#: pod/ai_enhancement/utils.py
+msgid ""
+"“%(content_title)s” was processed by the AI. Suggestions for improvement are "
+"available on %(site_title)s."
+msgstr ""
+"« %(content_title)s » a été traité par l'IA. Des suggestions d'amélioration "
+"sont disponibles sur %(site_title)s."
+
+#: pod/ai_enhancement/utils.py
+msgid "IA improvement #%(content_id)s completed"
+msgstr "Amélioration de l'IA #%(content_id)s est terminée"
+
+#: pod/ai_enhancement/utils.py pod/live/utils.py pod/meeting/utils.py
+#: pod/video_encode_transcript/utils.py
+msgid "Hello,"
+msgstr "Bonjour,"
+
+#: pod/ai_enhancement/utils.py
+msgid ""
+"IA improvement “%(content_title)s” has been completed, and is now available "
+"on %(site_title)s."
+msgstr ""
+"Amélioration de l'AI « %(content_title)s » a été achevée, et est maintenant "
+"disponible sur %(site_title)s."
+
+#: pod/ai_enhancement/utils.py pod/meeting/utils.py
+#: pod/video_encode_transcript/utils.py
+msgid "You will find it here:"
+msgstr "Vous la/le retrouverez ici :"
+
+#: pod/ai_enhancement/utils.py pod/live/utils.py
+#: pod/main/templates/mail/mail.html pod/meeting/utils.py
+#: pod/video/management/commands/create_archive_package.py
+#: pod/video_encode_transcript/utils.py
+msgid "Regards."
+msgstr "Cordialement."
+
+#: pod/ai_enhancement/utils.py pod/live/utils.py
+#: pod/video_encode_transcript/utils.py
+msgid "Post by:"
+msgstr "Posté par :"
+
+#: pod/ai_enhancement/utils.py pod/video_encode_transcript/utils.py
+msgid "the:"
+msgstr "le :"
 
 #: pod/ai_enhancement/views.py pod/completion/models.py pod/completion/views.py
 #: pod/live/models.py pod/recorder/models.py pod/video/models.py
@@ -1819,7 +1884,8 @@ msgstr "menu"
 
 #: pod/completion/templates/video_caption_maker.html
 msgid "Enrichment is ready. You can now edit the subtitles."
-msgstr "L'enrichissement est prêt. Vous pouvez maintenant éditer les sous-titres."
+msgstr ""
+"L'enrichissement est prêt. Vous pouvez maintenant éditer les sous-titres."
 
 #: pod/completion/templates/video_caption_maker.html
 #: pod/video/templates/videos/add_video.html
@@ -3804,16 +3870,6 @@ msgstr ""
 "d’attente."
 
 #: pod/live/templates/live/direct.html
-#: pod/live/templates/live/event-script.html pod/main/context_processors.py
-#: pod/main/templates/base.html pod/main/templates/navbar.html
-#: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
-#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
-#: pod/video/templates/videos/video-script.html pod/video/utils.py
-#: pod/video/views.py pod/video_encode_transcript/utils.py
-msgid "Home"
-msgstr "Accueil"
-
-#: pod/live/templates/live/direct.html
 #: pod/live/templates/live/event-script.html pod/main/templates/footer.html
 #: pod/video/templates/videos/video-script.html
 msgid "New window"
@@ -4290,10 +4346,6 @@ msgstr "QR code pour le lien de l’évènement"
 msgid "Registration of event #%(content_id)s"
 msgstr "Programmation de l’évènement #%(content_id)s"
 
-#: pod/live/utils.py pod/meeting/utils.py pod/video_encode_transcript/utils.py
-msgid "Hello,"
-msgstr "Bonjour,"
-
 #: pod/live/utils.py
 #, python-format
 msgid ""
@@ -4305,16 +4357,6 @@ msgstr ""
 "“%(content_title)s” du %(start_date)s au %(end_date)s sur le serveur vidéo : "
 "%(url_event)s). Vous pouvez retrouver les autres options de partage dans "
 "l’onglet dédié."
-
-#: pod/live/utils.py pod/main/templates/mail/mail.html pod/meeting/utils.py
-#: pod/video/management/commands/create_archive_package.py
-#: pod/video_encode_transcript/utils.py
-msgid "Regards."
-msgstr "Cordialement."
-
-#: pod/live/utils.py pod/video_encode_transcript/utils.py
-msgid "Post by:"
-msgstr "Posté par :"
 
 #: pod/live/utils.py
 msgid "You cannot view this page."
@@ -6616,10 +6658,6 @@ msgid ""
 msgstr ""
 "Un nouvel enregistrement Big Blue Button pour la réunion “%(content_title)s” "
 "est maintenant disponible sur %(site_title)s."
-
-#: pod/meeting/utils.py pod/video_encode_transcript/utils.py
-msgid "You will find it here:"
-msgstr "Vous la/le retrouverez ici :"
 
 #: pod/meeting/views.py
 msgid "Has user joined?"
@@ -10280,11 +10318,6 @@ msgstr "La transcription du contenu"
 
 #: pod/video_encode_transcript/utils.py
 #, python-format
-msgid "%(subject)s #%(content_id)s completed"
-msgstr "%(subject)s du #%(content_id)s est terminée"
-
-#: pod/video_encode_transcript/utils.py
-#, python-format
 msgid ""
 "%(content_type)s “%(content_title)s” has been %(action)s, and is now "
 "available on %(site_title)s."
@@ -10307,10 +10340,6 @@ msgstr "automatiquement transcrit"
 #: pod/video_encode_transcript/utils.py
 msgid "encoded to Web formats"
 msgstr "encodé aux formats Web"
-
-#: pod/video_encode_transcript/utils.py
-msgid "the:"
-msgstr "le :"
 
 #: pod/video_encode_transcript/utils.py
 msgid "content"
@@ -10357,7 +10386,6 @@ msgstr "xAPI Esup-Pod"
 #~ msgid "Please enter a model type."
 #~ msgstr "Veuillez entrer un type."
 
-#, python-format
 #~ msgid ""
 #~ "For your information, below is the list of archived videos that have been "
 #~ "packaged in your ARCHIVE_ROOT folder, and definitely deleted from %s."
