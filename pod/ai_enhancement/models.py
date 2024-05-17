@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext as _
-
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 from pod.video.models import Video
 
 
@@ -49,3 +50,16 @@ class AIEnhancement(models.Model):
     def __str__(self) -> str:
         """Return the string representation of the AI enhancement."""
         return f"{self.video.title} - {self.ai_enhancement_id_in_aristote}"
+
+
+@receiver(post_save, sender=Video)
+def delete_AIEnhancement(sender, instance, created, **kwargs):
+    """
+    Delete AIEnhancement if launch encoding if requested.
+
+    Args:
+        sender (:class:`pod.video.models.Video`): Video model class.
+        instance (:class:`pod.video.models.Video`): Video object instance.
+    """
+    if hasattr(instance, "launch_encode") and instance.launch_encode is True:
+        AIEnhancement.objects.filter(video=instance).first().delete()

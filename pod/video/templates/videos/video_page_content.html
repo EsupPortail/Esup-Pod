@@ -1,6 +1,5 @@
 {% load i18n %}
 {% load video_filters %}
-{% load ai_enhancement_template_tags %}
 
 <div id="video-player">
   <div itemscope itemtype="http://schema.org/VideoObject">
@@ -78,8 +77,6 @@
       </div>
     {% endif %}
   {% endif %}
-  {% enhancement_is_ready video as enr_is_ready %}
-  {% enhancement_is_already_asked video as enr_is_already_asked %}
   {% if enr_is_already_asked %}
     <div class="alert alert-warning" role="alert">
       {% trans 'The video is currently waiting for Aristote AI treatment.' %}

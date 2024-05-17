@@ -83,7 +83,7 @@ def send_enhancement_creation_request(request: WSGIRequest, aristote: AristoteAI
             )
             if creation_response:
                 if creation_response["status"] == "OK":
-                    AIEnhancement.objects.create(
+                    AIEnhancement.objects.update_or_create(
                         video=video,
                         ai_enhancement_id_in_aristote=creation_response["id"],
                     )
@@ -144,9 +144,26 @@ def enhance_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
         return send_enhancement_creation_request(request, aristote, video)
 
 
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
 def enhance_video_json(request: WSGIRequest, video_slug: str) -> HttpResponse:
     """The view to get the JSON of Aristote version."""
     video = get_object_or_404(Video, slug=video_slug)
+    if AI_ENHANCEMENT_TO_STAFF_ONLY and request.user.is_staff is False:
+        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        raise PermissionDenied
+
+    if (
+        video
+        and request.user != video.owner
+        and (
+            not (request.user.is_superuser or request.user.has_perm("video.change_video"))
+        )
+        and (request.user not in video.additional_owners.all())
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        raise PermissionDenied
     aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
     enhancement = AIEnhancement.objects.filter(video=video).first()
     latest_version = aristote.get_latest_enhancement_version(enhancement.ai_enhancement_id_in_aristote)
@@ -236,8 +253,9 @@ def enhance_form(request: WSGIRequest, video: Video) -> HttpResponse:
         )
 
 
+'''
 def check_video_generated(request: WSGIRequest, video: Video) -> None:
     """Check if the video is generated and delete the enhancement if it is."""
-    # if enhancement_is_already_asked(video) and request.GET.get("generated") == "True":
-    #    AIEnhancement.objects.filter(video=video).first().delete()
-    print("DELETE !")
+    if enhancement_is_already_asked(video) and request.GET.get("generated") == "True":
+        AIEnhancement.objects.filter(video=video).first().delete()
+'''
