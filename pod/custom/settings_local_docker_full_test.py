@@ -60,7 +60,7 @@ MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
 # If DOCKER_ENV = full: activate encoding, transcription and remote xapi
 USE_REMOTE_ENCODING_TRANSCODING = True
 ENCODING_TRANSCODING_CELERY_BROKER_URL = 'redis://redis:6379/7'
-POD_API_URL = "http://pod-back:8000/rest"
+POD_API_URL = "http://pod.localhost:8000/rest"
 POD_API_TOKEN = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 USE_TRANSCRIPTION = True

@@ -340,7 +340,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> d’encodage ou de flux RSS si la variable `CONTACT_US_EMAIL` n’est pas renseignée.<br><br>
   >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#admins)_<br>
 * `ALLOWED_HOSTS`
-  > valeur par défaut : `['localhost']`
+  > valeur par défaut : `['pod.localhost']`
   >> Une liste de chaînes représentant des noms de domaine/d’hôte que ce site Django peut servir.<br><br>
   >> C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP,<br>
   >> qui sont possibles même avec bien des configurations de serveur Web apparemment sécurisées.<br><br>

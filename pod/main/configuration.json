@@ -4308,7 +4308,7 @@
                             "pod_version_init": "3.1"
                         },
                         "ALLOWED_HOSTS": {
-                            "default_value": "['localhost']",
+                            "default_value": "['pod.localhost']",
                             "description": {
                                 "en": [
                                     ""

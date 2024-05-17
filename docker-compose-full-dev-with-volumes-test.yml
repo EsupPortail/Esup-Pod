@@ -9,6 +9,7 @@ version: '3.7'
 services:
   pod-back:
     container_name: pod-back-with-volumes
+    hostname: pod.localhost
     build:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod-back/Dockerfile
