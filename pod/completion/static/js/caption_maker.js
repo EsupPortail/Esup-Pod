@@ -842,7 +842,9 @@ function createCaptionBlock(newCaption, spawnFunction) {
       let captionObj = {
         start: newCaption.end,
         end:
-          playTime > newCaption.end ? playTime : parseInt(newCaption.end, 10) + 2,
+          playTime > newCaption.end
+            ? playTime
+            : parseInt(newCaption.end, 10) + 2,
         caption: "",
       };
       let index = Array.from(this.div.parentNode.children).indexOf(this.div);
@@ -1448,7 +1450,6 @@ const onPlayerReady = function (player, options) {
     endKeyframe.style = "left" + `${endPercent}%`;
     regionHighlight.after(endKeyframe);
   };
-
 };
 
 /**

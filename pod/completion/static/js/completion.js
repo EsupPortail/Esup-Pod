@@ -258,9 +258,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
     if (deleteConfirm) {
       id = elt.querySelector("input[name=id]").value;
       url = window.location.origin + href;
-      token = document.querySelector(
-        "input[name=csrfmiddlewaretoken]",
-      ).value;
+      token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
       let form_data = new FormData();
       form_data.append("action", action);
       form_data.append("id", id);

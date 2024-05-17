@@ -129,7 +129,7 @@ function run(has_more_themes, Helper) {
       </div>
       <div class="card-thumbnail">
         <a class="link-center-pod" href="${VIDEO_URL}${video.slug}"
-           title="${video.title.charAt(0).toUpperCase()}${video.title.slice(1,)}">
+           title="${video.title.charAt(0).toUpperCase()}${video.title.slice(1)}">
           ${video.thumbnail}
         </a>
       </div>
@@ -209,7 +209,10 @@ function run(has_more_themes, Helper) {
     const themes_contents = scroll_wrapper.querySelectorAll(
       ".list-children-theme",
     );
-    if (this.isEqualNode(next_btn) && curr_page < Number.parseInt(max_pages, 10)) {
+    if (
+      this.isEqualNode(next_btn) &&
+      curr_page < Number.parseInt(max_pages, 10)
+    ) {
       current_position -= 100;
       // swipe content on the right
       themes_contents.forEach(

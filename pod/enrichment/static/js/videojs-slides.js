@@ -1,7 +1,7 @@
 "use-strict";
 /**
  * Esup-Pod videojs Slides plugin
-*/
+ */
 // Read-only globals defined in video-script.html
 /*
 global player
@@ -48,7 +48,9 @@ var loadEnrichmentVTTfile = function (url, callback) {
     timeInSecond = function (strtime) {
       let atime = strtime.split(":");
       return (
-        parseInt(atime[0], 10) * 3600 + parseInt(atime[1], 10) * 60 + parseInt(atime[2], 10)
+        parseInt(atime[0], 10) * 3600 +
+        parseInt(atime[1], 10) * 60 +
+        parseInt(atime[2], 10)
       );
     },
     createEmptyCue = function (start, end) {
@@ -75,8 +77,7 @@ var loadEnrichmentVTTfile = function (url, callback) {
       if (this.readyState === 4) {
         var lines = xhr.responseText.split("\n"),
           nbl = lines.length,
-          reg =
-            /(^\d{2}:\d{2}:\d{2})\.\d{3} --> (\d{2}:\d{2}:\d{2})\.\d{3}$/i,
+          reg = /(^\d{2}:\d{2}:\d{2})\.\d{3} --> (\d{2}:\d{2}:\d{2})\.\d{3}$/i,
           fisrtcueline = 1,
           txtdata = "",
           c = 0;
@@ -325,7 +326,8 @@ var VideoSlides = function (items) {
       var slidebar_left =
         (parseInt(this.slidesItems[i].start, 10) / duration) * 100;
       var slidebar_width =
-        (parseInt(this.slidesItems[i].end, 10) / duration) * 100 - slidebar_left;
+        (parseInt(this.slidesItems[i].end, 10) / duration) * 100 -
+        slidebar_left;
       var id = this.slidesItems[i].id;
       var type = this.slidesItems[i].type;
       var newslide = document.createElement("div");

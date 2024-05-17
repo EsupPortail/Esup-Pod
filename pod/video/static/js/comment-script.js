@@ -811,7 +811,8 @@ function getElementPosition(element) {
   let yPosition = 0;
   // get body padding top if exists that will be
   let bodyPaddingTop = Number.parseInt(
-    getComputedStyle(document.body)["padding-top"] ?? 0, 10
+    getComputedStyle(document.body)["padding-top"] ?? 0,
+    10,
   );
 
   while (element) {

@@ -801,10 +801,14 @@ var send_form_data = async function (
     typeof callbackSuccess === "function"
       ? callbackSuccess
       : function ($data) {
-        return $data;
-      };
+          return $data;
+        };
   callbackFail =
-    typeof callbackFail === "function" ? callbackFail : function (xhr) {console.log(xhr);};
+    typeof callbackFail === "function"
+      ? callbackFail
+      : function (xhr) {
+          console.log(xhr);
+        };
 
   // console.log("send_form_data. fct=" + fct);
   method = method || "post";
@@ -883,8 +887,8 @@ var send_form_data_vanilla = function (
     typeof callbackSuccess === "function"
       ? callbackSuccess
       : function (data) {
-        return data;
-      };
+          return data;
+        };
   callbackFail =
     typeof callbackFail === "function" ? callbackFail : function () {};
   if (data_form) {

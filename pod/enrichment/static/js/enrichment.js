@@ -452,7 +452,7 @@ function verify_fields() {
           "beforebegin",
           "<span class='form-help-inline'>" +
             gettext("Please enter a correct richtext.") +
-          "</span>",
+            "</span>",
         );
         richtext.closest("div.form-group").classList.add("has-error");
 
