@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
 from pod.ai_enhancement.forms import AIEnhancementChoice, NotifyUserThirdPartyServicesForm
 from pod.ai_enhancement.models import AIEnhancement
-from pod.ai_enhancement.utils import AristoteAI, enhancement_is_already_asked
+from pod.ai_enhancement.utils import AristoteAI, enhancement_is_already_asked, notify_user
 from pod.completion.models import Track
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.utils import json_to_web_vtt
@@ -52,11 +52,12 @@ def toggle_webhook(request: WSGIRequest):
                 if "status" in data and data["status"] == "SUCCESS":
                     enhancement.is_ready = True
                     enhancement.save()
+                    notify_user(enhancement.video)
                     return JsonResponse({"status": "OK"}, status=200)
                 else:
-                    return JsonResponse({"status": "Enrichment has not yet been successfully achieved."}, status=500)
+                    return JsonResponse({"status": "Enhancement has not yet been successfully achieved."}, status=500)
             else:
-                return JsonResponse({"error": "Enrichment not found."}, status=404)
+                return JsonResponse({"error": "Enhancement not found."}, status=404)
         else:
             return JsonResponse({"error": "No id in the request."}, status=400)
 
