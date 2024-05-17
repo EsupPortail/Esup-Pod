@@ -626,8 +626,8 @@ class Type(models.Model):
 
 
 @receiver(post_save, sender=Type)
-def default_site_type(sender, instance, created, **kwargs) -> None:
-    if len(instance.sites.all()) == 0:
+def default_site_type(sender, instance, created: bool, **kwargs) -> None:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())
 
 
@@ -1421,8 +1421,8 @@ class UpdateOwner(models.Model):
 
 
 @receiver(post_save, sender=Video)
-def default_site(sender, instance, created, **kwargs) -> None:
-    if len(instance.sites.all()) == 0:
+def default_site(sender, instance, created: bool, **kwargs) -> None:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())
 
 
@@ -1443,7 +1443,7 @@ def video_files_removal(sender, instance, using, **kwargs) -> None:
                 encoding.delete()
 
 
-def remove_video_file(video) -> None:
+def remove_video_file(video: Video) -> None:
     """Remove video file linked to video."""
     if video.overview:
         image_overview = os.path.join(

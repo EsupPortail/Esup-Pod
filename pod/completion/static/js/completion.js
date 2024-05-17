@@ -1,3 +1,12 @@
+/**
+ * @file Esup-Pod Completion scripts.
+ */
+
+// Read-only globals defined in main.js
+/*
+global fadeIn
+*/
+
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll("li.contenuTitre").forEach(function (element) {
     element.style.display = "none";
@@ -112,6 +121,10 @@ document.addEventListener("submit", (e) => {
  */
 var sendAndGetForm = async function (elt, action, name, form, list) {
   var href = elt.getAttribute("action");
+  let url = window.location.origin + href;
+  let token = elt.csrfmiddlewaretoken.value;
+  var id = elt.querySelector("input[name=id]").value;
+
   if (action === "new" || action === "form_save_new") {
     document.getElementById(form).innerHTML =
       '<div style="width:100%; margin: 2rem;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
@@ -134,9 +147,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
       // do nothing
     }
 
-    let url = window.location.origin + href;
-    let token = elt.csrfmiddlewaretoken.value;
-    form_data = new FormData(elt);
+    let form_data = new FormData(elt);
 
     await fetch(url, {
       method: "POST",
@@ -151,7 +162,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
       .then((response) => response.text())
       .then((data) => {
         //parse data into html and log it
-        if (data.indexOf(form) == -1) {
+        if (data.indexOf(form) === -1) {
           showalert(
             gettext(
               "You are no longer authenticated. Please log in again.",
@@ -168,7 +179,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         document.querySelector("form.form_modif").style.display = "block";
         document.querySelector("form.form_delete").style.display = "block";
         document.querySelector("form.form_new").style.display = "block";
-        document.getElementById(form).innerHTML = "";
+        document.getElementById(form).textContent = "";
       });
 
     const formClasses = [
@@ -189,10 +200,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
     hide_others_sections(name);
   }
   if (action == "modify" || action == "form_save_modify") {
-    var id = elt.querySelector("input[name=id]").value;
-    var url = window.location.origin + href;
-    var token = document.csrfmiddlewaretoken.value;
-    form_data = new FormData();
+    let form_data = new FormData();
     form_data.append("action", action);
     form_data.append("id", id);
 
@@ -206,7 +214,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
     })
       .then((response) => response.text())
       .then((data) => {
-        if (data.indexOf(form) == -1) {
+        if (data.indexOf(form) === -1) {
           showalert(
             gettext(
               "You are no longer authenticated. Please log in again.",
@@ -222,7 +230,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         document.querySelector("form.form_modif").style.display = "block";
         document.querySelector("form.form_delete").style.display = "block";
         document.querySelector("form.form_new").style.display = "block";
-        document.getElementById(form).innerHTML = "";
+        document.getElementById(form).textContent = "";
       });
 
     document.querySelector("a.title").style.display = "none";
@@ -248,9 +256,9 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
       );
     }
     if (deleteConfirm) {
-      var id = elt.querySelector("input[name=id]").value;
-      var url = window.location.origin + href;
-      var token = document.querySelector(
+      id = elt.querySelector("input[name=id]").value;
+      url = window.location.origin + href;
+      token = document.querySelector(
         "input[name=csrfmiddlewaretoken]",
       ).value;
       let form_data = new FormData();
@@ -351,8 +359,7 @@ function hide_others_sections(name_form) {
       slideUp(element.parentNode.nextElementSibling);
       element.classList.remove("active");
     });
-    var i;
-    for (i = 0; i < sections.length; i++) {
+    for (let i = 0; i < sections.length; i++) {
       var section = sections[i];
       var text = section.text;
       var name_section = "'" + text.replace(/\s/g, "") + "'";
@@ -425,7 +432,7 @@ function verify_fields(form) {
       form_group.classList.add("has-error");
       error = true;
     }
-    var id = parseInt(document.getElementById("id_contributor").value);
+    var id = parseInt(document.getElementById("id_contributor").value, 10);
     var new_role = document.getElementById("id_role").value;
     var new_name = document.getElementById("id_name").value;
     document
@@ -463,7 +470,7 @@ function verify_fields(form) {
 
       error = true;
     }
-    var element = document.getElementById("id_lang");
+    element = document.getElementById("id_lang");
     var lang = element.options[element.selectedIndex].value
       .trim()
       .toLowerCase();
@@ -507,7 +514,7 @@ function verify_fields(form) {
       error = true;
     }
     var is_duplicate = false;
-    var file_name = file_abs_path.match(/([\w\d_\-]+)(\.vtt)/)[1].toLowerCase();
+    var file_name = file_abs_path.match(/([\w\d_-]+)(\.vtt)/)[1].toLowerCase();
     document
       .querySelectorAll(".grid-list-track .track_kind.kind")
       .forEach((elt) => {

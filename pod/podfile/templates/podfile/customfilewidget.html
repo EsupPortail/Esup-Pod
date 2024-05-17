@@ -107,7 +107,7 @@ document.body.append(document.getElementById('fileModal_{{id}}'));
 document.addEventListener('hide.bs.modal',   (event) => {
   if (!event.target.matches('#fileModal_{{id}}')) return;
   event.stopPropagation();
-  document.getElementById("modal-folder_"+event.target.dataset.id).innerHTML = "";
+  document.getElementById("modal-folder_"+event.target.dataset.id).textContent = "";
 });
 
 document.addEventListener('show.bs.modal',  (event) => {
