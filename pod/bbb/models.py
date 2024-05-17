@@ -1,4 +1,5 @@
 """Esup-Pod BBB models."""
+
 import importlib
 
 from django.db import models

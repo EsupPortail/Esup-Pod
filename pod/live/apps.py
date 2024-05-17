@@ -1,4 +1,5 @@
 """Esup-Pod Live apps."""
+
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate, pre_migrate
 from django.db import connection

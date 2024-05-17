@@ -156,7 +156,9 @@ def move_video_file(video, new_owner) -> None:
     video.save()
 
 
-def get_videos(title, user_id, search=None, limit: int = 12, offset: int = 0) -> JsonResponse:
+def get_videos(
+    title, user_id, search=None, limit: int = 12, offset: int = 0
+) -> JsonResponse:
     """Return videos filtered by GET parameters 'title' with limit and offset.
 
     Args:

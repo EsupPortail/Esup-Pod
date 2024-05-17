@@ -29,7 +29,9 @@ class VideoTestApps(TestCase):
         """Set up required objects for next tests."""
         self.user = User.objects.create(username="pod", password=PWD)  # nosem
         self.chan = Channel.objects.create(title="ChannelTest1")
-        self.theme = Theme.objects.create(title="Theme1", slug="blabla", channel=self.chan)
+        self.theme = Theme.objects.create(
+            title="Theme1", slug="blabla", channel=self.chan
+        )
         self.disc = Discipline.objects.create(title="Discipline1")
         self.type = Type.objects.get(id=1)
         self.vr = VideoRendition.objects.get(id=1)
@@ -39,7 +41,7 @@ class VideoTestApps(TestCase):
             video="test.mp4",
             is_draft=False,
             password=PWD,  # nosem
-            type=Type.objects.get(id=1)
+            type=Type.objects.get(id=1),
         )
         print("\n --->  SetUp of VideoTestApps: OK!")
 
