@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-15 08:40+0200\n"
+"POT-Creation-Date: 2024-05-16 07:36+0000\n"
 "PO-Revision-Date: 2024-04-15 14:27+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -263,12 +263,6 @@ msgstr ""
 msgid "Iframe and Script tags are not allowed."
 msgstr ""
 
-#: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
-#: pod/video/static/js/ajax-display-channels.js
-#: pod/video/static/js/comment-script.js pod/video/static/js/dashboard.js
-msgid "Close"
-msgstr ""
-
 #: pod/enrichment/static/js/enrichment.js
 msgid "Please enter a correct start from 0 to "
 msgstr ""
@@ -429,14 +423,6 @@ msgstr ""
 msgid "Action performed successfully."
 msgstr ""
 
-#: pod/main/static/js/main.js
-msgid "Change your picture"
-msgstr ""
-
-#: pod/main/static/js/main.js
-msgid "Add your picture"
-msgstr ""
-
 #: pod/main/static/js/main.js pod/video/static/js/video-access-token.js
 msgid "Text copied"
 msgstr ""
@@ -455,6 +441,11 @@ msgstr ""
 
 #: pod/main/static/js/main.js
 msgid "The file extension not in the allowed extension:"
+msgstr ""
+
+#: pod/main/static/js/main.js pod/video/static/js/ajax-display-channels.js
+#: pod/video/static/js/comment-script.js pod/video/static/js/dashboard.js
+msgid "Close"
 msgstr ""
 
 #: pod/main/static/js/videojs-info-controlbar.js
@@ -494,17 +485,17 @@ msgid "Something went wrong."
 msgstr ""
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
-msgid "<b>Public:</b> the playlist can be accessed by anyone."
+msgid "<strong>Public:</strong> the playlist can be accessed by anyone."
 msgstr ""
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
 msgid ""
-"<b>Password-protected:</b> the playlist can be accessed by anyone with the "
-"appropriate link and password."
+"<strong>Password-protected:</strong> the playlist can be accessed by anyone "
+"with the appropriate link and password."
 msgstr ""
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
-msgid "<b>Private:</b> only you have access to this playlist."
+msgid "<strong>Private:</strong> only you have access to this playlist."
 msgstr ""
 
 #: pod/playlist/static/playlist/js/playlist-reorganize.js

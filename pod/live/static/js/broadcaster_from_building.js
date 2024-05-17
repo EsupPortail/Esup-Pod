@@ -13,13 +13,13 @@ document.addEventListener("DOMContentLoaded", function () {
         restrictedCheckBox.checked = true;
       }
       restrictedCheckBox.setAttribute("disabled", "disabled");
-      restrictedHelp.innerHTML = gettext(
+      restrictedHelp.textContent = gettext(
         "Restricted because the broadcaster is restricted",
       );
       restrictedLabel.style.opacity = "0.5";
     } else {
       restrictedCheckBox.removeAttribute("disabled");
-      restrictedHelp.innerHTML = gettext(
+      restrictedHelp.textContent = gettext(
         "If this box is checked, the event will only be accessible to authenticated users.",
       );
       restrictedLabel.style.opacity = "";

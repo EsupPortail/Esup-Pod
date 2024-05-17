@@ -1,3 +1,6 @@
+/**
+ * Esup-Pod Xapi scripts
+ */
 let result,
   verb,
   context,

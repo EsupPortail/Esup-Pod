@@ -25,5 +25,5 @@ fi
 # Le serveur de développement permet de tester vos futures modifications facilement.
 # N'hésitez pas à lancer le serveur de développement pour vérifier vos modifications au fur et à mesure.
 # À ce niveau, vous devriez avoir le site en français et en anglais et voir l'ensemble de la page d'accueil.
-python3 manage.py runserver 0.0.0.0:8080 --insecure
+python3 manage.py runserver 0.0.0.0:8000 --insecure
 sleep infinity
