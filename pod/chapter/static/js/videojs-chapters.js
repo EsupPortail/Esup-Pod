@@ -61,7 +61,7 @@
       constructor(player, options) {
         super(player, options);
         var settings = videojs.mergeOptions(defaults, options),
-          chapters = {},
+          /*chapters = {},*/
           currentChapter = document.createElement("li");
 
         /**

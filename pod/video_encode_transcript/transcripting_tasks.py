@@ -1,6 +1,6 @@
 """Esup-Pod transcripting tasks."""
 
-# pip3 install celery==5.2.7
+# pip3 install celery==5.4.0
 # pip3 install webvtt-py
 # pip3 install redis==4.5.4
 from celery import Celery
@@ -79,7 +79,7 @@ def start_transcripting_task(video_id, mp3filepath, duration, lang):
     try:
         response = requests.post(url, json=data, headers=Headers)
         if response.status_code != 200:
-            msg = "Calling store remote transcoding error : {} {}".format(
+            msg = "Calling store remote transcoding error: {} {}".format(
                 response.status_code, response.reason
             )
             logger.error(msg + "\n" + str(response.content))

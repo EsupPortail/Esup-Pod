@@ -143,6 +143,7 @@ if USE_BBB:
 if USE_OPENCAST_STUDIO:
     urlpatterns += [
         url(r"^studio/", include("pod.recorder.studio_urls")),
+        url(r"^digest/studio/", include("pod.recorder.studio_urls_digest")),
     ]
 
 # PODFILE

@@ -1,8 +1,10 @@
-// podfile:filewidjet.js
-// select file
+/**
+ * @file Esup-Pod File selector widget.
+ * @since 2.5.0
+ */
 
 if (typeof loaded == "undefined") {
-  loaded = true;
+  var loaded = true;
 
   const loader = `
   <div id="loader" class="d-flex justify-content-center align-items-center d-none loaderSpinner">
@@ -87,7 +89,7 @@ if (typeof loaded == "undefined") {
   });
 
   /*document.querySelectorAll("#open-folder-icon > *").forEach((el) => {
-    el.style = "pointer-events: none; cursor : pointer;";
+    el.style = "pointer-events: none; cursor: pointer;";
   });
   if (document.getElementById("open-folder-icon")) {
     document.getElementById("open-folder-icon").style.cursor = "pointer";
@@ -221,12 +223,12 @@ if (typeof loaded == "undefined") {
           "Enter new name of folder"
         );
         4;
-        let oldname = button.dataset.oldname;
+        var oldname = button.dataset.oldname;
         // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
         // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        let folder_input = modal.querySelector("#folderInputName");
+        var folder_input = modal.querySelector("#folderInputName");
         folder_input.value = oldname;
-        let focus = new Event("focus");
+        var focus = new Event("focus");
         folder_input.dispatchEvent(focus);
         modal.querySelector(".modal-body input#formfolderid").value = folder_id;
         break;
@@ -258,7 +260,7 @@ if (typeof loaded == "undefined") {
     a.role = "button";
     a.dataset.userid = elt.id;
     a.classList.add("btn", "btn-share");
-    a.classList.add(...cls.split(" "))
+    a.classList.add(...cls.split(" "));
     a.textContent = text;
 
     li.appendChild(span);
@@ -266,67 +268,85 @@ if (typeof loaded == "undefined") {
     return li;
   }
 
-  function reloadRemoveBtn() {
-      let remove = gettext("Remove");
-      const sharedPeopleContainer = document.getElementById("shared-people");
-      sharedPeopleContainer.innerHTML = "";
-      const foldId = document.getElementById("formuserid").value;
-      const url = "/podfile/ajax_calls/folder_shared_with?foldid=" + foldId;
-      const token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+  /**
+   * Creates a list item element in case of empty user list.
+   */
+  function emptyUserLi() {
+    const li = document.createElement("li");
+    li.classList.add("list-group-item");
 
-      fetch(url, {
-        method: "GET",
-        headers: {
-          "X-CSRFToken": token,
-          "X-Requested-With": "XMLHttpRequest",
-          Authorization: "Bearer " + token,
-        },
+    const span = document.createElement("span");
+    span.classList.add("empty-user-text");
+    span.textContent = gettext("No user found");
+    li.appendChild(span);
+    return li;
+  }
+
+  function reloadRemoveBtn() {
+    let remove = gettext("Remove");
+    const sharedPeopleContainer = document.getElementById("shared-people");
+    sharedPeopleContainer.textContent = "";
+    const foldId = document.getElementById("formuserid").value;
+    const url = "/podfile/ajax_calls/folder_shared_with?foldid=" + foldId;
+    const token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "X-CSRFToken": token,
+        "X-Requested-With": "XMLHttpRequest",
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.length > 0) {
+          data.forEach((elt) => {
+            const listItem = user_li(remove, elt, "remove");
+            sharedPeopleContainer.appendChild(listItem);
+          });
+        }
       })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.length > 0) {
-            data.forEach((elt) => {
-              const listItem = user_li(remove, elt, "remove");
-              sharedPeopleContainer.appendChild(listItem);
-            });
-          }
-        })
-        .catch((error) => {
-          showalert(gettext("Server error") + "<br>" + error, "alert-danger");
-        });
+      .catch((error) => {
+        showalert(gettext("Server error") + "<br>" + error, "alert-danger");
+      });
   }
 
   function reloadAddBtn(searchTerm) {
-      const formUserId = document.getElementById("formuserid");
-      if (!formUserId) return;
+    const formUserId = document.getElementById("formuserid");
+    if (!formUserId) return;
 
-      const folderId = Number.parseInt(formUserId.value);
-      const add = gettext("Add");
-      const url = "/podfile/ajax_calls/search_share_user?term=" + searchTerm + "&foldid=" + folderId;
-      const token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    const folderId = Number.parseInt(formUserId.value);
+    const add = gettext("Add");
+    const url = "/podfile/ajax_calls/search_share_user?term=" + searchTerm + "&foldid=" + folderId;
+    const token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
-      fetch(url, {
-        method: "GET",
-        headers: {
-          "X-CSRFToken": token,
-          "X-Requested-With": "XMLHttpRequest",
-          Authorization: "Bearer " + token,
-        },
-        cache: "no-cache",
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          const userSearchContainer = document.getElementById("user-search");
-          userSearchContainer.innerHTML = "";
+    fetch(url, {
+      method: "GET",
+      headers: {
+        "X-CSRFToken": token,
+        "X-Requested-With": "XMLHttpRequest",
+        Authorization: "Bearer " + token,
+      },
+      cache: "no-cache",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const userSearchContainer = document.getElementById("user-search");
+        userSearchContainer.textContent = "";
+        if (data.length === 0) {
+          userSearchContainer.appendChild(emptyUserLi());
+        } else {
           data.forEach((elt) => {
             const listItem = user_li(add, elt, "add");
             userSearchContainer.appendChild(listItem);
           });
-          fadeIn(userSearchContainer);
-        })
-        .catch((error) => {
-          showalert(gettext("Server error") + "<br>" + error, "alert-danger");
-        });
+        }
+        userSearchContainer.classList.remove("d-none");
+      })
+      .catch((error) => {
+        showalert(gettext("Server error") + "<br>" + error, "alert-danger");
+      });
   }
 
   //$(document).on('click', '#currentfoldershare', function(e){
@@ -337,7 +357,7 @@ if (typeof loaded == "undefined") {
   document.addEventListener("show.bs.modal", (event) => {
     if (event.target.id != "shareModalCenter") return;
     event.stopPropagation();
-    document.getElementById("user-search").style.display = "none";
+    document.getElementById("user-search").classList.add("d-none");
     document.getElementById("shared-people").textContent = "";
     let button = event.relatedTarget;
     var folder_id = button.dataset.folderid;
@@ -351,7 +371,7 @@ if (typeof loaded == "undefined") {
   document.addEventListener("click", (e) => {
 
     if (!e.target.classList.contains("btn-remove")) return;
-    url =
+    let url =
       "/podfile/ajax_calls/remove_shared_user?foldid=" +
       document.getElementById("formuserid").value +
       "&userid=" +
@@ -386,7 +406,7 @@ if (typeof loaded == "undefined") {
 
   document.addEventListener("click", (e) => {
     if (!e.target.classList.contains("btn-add")) return;
-    url =
+    let url =
       "/podfile/ajax_calls/add_shared_user?foldid=" +
       document.getElementById("formuserid").value +
       "&userid=" +
@@ -495,7 +515,7 @@ if (typeof loaded == "undefined") {
       return;
     } else {
       if (text.length > 2 || text.length == 0) {
-        getFolders(text)
+        getFolders(text);
       }
     }
   });
@@ -631,10 +651,11 @@ if (typeof loaded == "undefined") {
     }
   }
 
+  /* exported append_folder_html_in_modal */
   function append_folder_html_in_modal(data) {
     document.getElementById("modal-folder_" + id_input).innerHTML = data;
     getFolders("");
-    folder_observer = add_folder_observer()
+    folder_observer = add_folder_observer();
     folder_observer.observe(list_folders_sub, { childList: true, subtree: true });
   }
 
@@ -657,7 +678,7 @@ if (typeof loaded == "undefined") {
       .then((data) => {
         folder = data.folder;
       })
-      .catch((error) => {});
+      .catch(() => {});
     return folder;
   }
 
@@ -734,12 +755,12 @@ if (typeof loaded == "undefined") {
     let currentFolder = getCurrentSessionFolder();
     let url = "/podfile/ajax_calls/user_folders";
     if(search !== ""){
-      url += "?search=" + search
+      url += "?search=" + search;
     }
     let token = document.querySelector(
       'input[name="csrfmiddlewaretoken"]'
     ).value;
-    folder_searching = true
+    folder_searching = true;
     fetch(url, {
       method: "GET",
       headers: {
@@ -779,17 +800,17 @@ if (typeof loaded == "undefined") {
               seeMoreElement(nextPage, data.current_page + 1, data.total_pages, search)
             );
         }
-        folder_searching = false
+        folder_searching = false;
       }).catch((error) => {
         showalert(gettext("Server error") + "<br>" + error, "alert-danger");
       });
   }
 
   /*** load folder after dom charged and check for changing **** */
-  document.addEventListener("DOMContentLoaded", (e) => {
+  document.addEventListener("DOMContentLoaded", () => {
     if (typeof myFilesView !== "undefined") {
       getFolders("");
-      folder_observer = add_folder_observer()
+      folder_observer = add_folder_observer();
       folder_observer.observe(list_folders_sub, { childList: true, subtree: true });
     }
   });
@@ -809,7 +830,7 @@ if (typeof loaded == "undefined") {
     `;
   };
 
-  function seemore(e) {
+  function seemore() {
     let parent_el = document.getElementById("more").parentNode;
     showLoader(parent_el.querySelector("#loader"), true);
     let next = document.getElementById("more").dataset.next;
@@ -820,7 +841,7 @@ if (typeof loaded == "undefined") {
     let token = document.querySelector(
       'input[name="csrfmiddlewaretoken"]'
     ).value;
-    folder_searching = true
+    folder_searching = true;
     fetch(url, {
       method: "GET",
       headers: {
@@ -830,43 +851,43 @@ if (typeof loaded == "undefined") {
       },
       cache: "no-cache",
     })
-    .then((response) => response.json())
-    .then((data) => {
-      parent_el.remove();
-      let nextPage = data.next_page;
-      data.folders.forEach((elt) => {
-        let string_html =
-          '<div class="folder_container text-truncate">' +
-          createFolder(
-            elt.id,
-            elt.name,
-            currentFolder == elt.name,
-            type,
-            elt.owner
-          ) +
-          "</div>";
-        let parsedHTML = new DOMParser().parseFromString(
-          string_html,
-          "text/html"
-        ).body.firstChild;
-        document.getElementById("list_folders_sub").appendChild(parsedHTML);
+      .then((response) => response.json())
+      .then((data) => {
+        parent_el.remove();
+        let nextPage = data.next_page;
+        data.folders.forEach((elt) => {
+          let string_html =
+            '<div class="folder_container text-truncate">' +
+            createFolder(
+              elt.id,
+              elt.name,
+              currentFolder == elt.name,
+              type,
+              elt.owner
+            ) +
+            "</div>";
+          let parsedHTML = new DOMParser().parseFromString(
+            string_html,
+            "text/html"
+          ).body.firstChild;
+          document.getElementById("list_folders_sub").appendChild(parsedHTML);
+        });
+        if (nextPage != -1) {
+          search = data.search !== "" ? data.search : null;
+          document
+            .getElementById("list_folders_sub")
+            .innerHTML += (
+              seeMoreElement(nextPage, data.current_page + 1, data.total_pages, search)
+            );
+        }
+        folder_searching = false;
       });
-      if (nextPage != -1) {
-        search = data.search !== "" ? data.search : null;
-        document
-          .getElementById("list_folders_sub")
-          .innerHTML += (
-            seeMoreElement(nextPage, data.current_page + 1, data.total_pages, search)
-          );
-      }
-      folder_searching = false
-    });
   }
 
   function showfiles(e) {
-    let cible = e.target
+    let cible = e.target;
     if (e.target.nodeName.toLowerCase() !== "a" ) {
-      cible = e.target.parentNode
+      cible = e.target.parentNode;
     }
     document
       .querySelectorAll("#podfile #list_folders_sub a.folder-opened")
@@ -877,7 +898,7 @@ if (typeof loaded == "undefined") {
 
 
     document.getElementById("files").classList.add("loading");
-    let id = cible.dataset.id;
+    // let id = cible.dataset.id;
 
     document.getElementById("files").innerHTML = loader;
 
@@ -896,7 +917,7 @@ if (typeof loaded == "undefined") {
       }
       return $data;
     };
-    let error_func = function ($xhr) {};
+    let error_func = function () {};
     send_form_data(
       cible.dataset.target,
       {},

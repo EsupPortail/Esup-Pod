@@ -1,4 +1,4 @@
-"""test populated authentication."""
+"""Esup-Pod test populated authentication."""
 
 import random
 from django.conf import settings
@@ -108,7 +108,7 @@ class PopulatedCASTestCase(TestCase):
 </ns0:serviceResponse>"""
 
     def setUp(self):
-        """setUp PopulatedCASTestCase create user pod"""
+        """Set up PopulatedCASTestCase create user Pod."""
         User.objects.create(username="pod", password="pod1234pod")
         AccessGroup.objects.create(code_name="groupTest", display_name="Group de test")
         AccessGroup.objects.create(
@@ -295,7 +295,7 @@ class PopulatedLDAPTestCase(TestCase):
     entry = ""
 
     def setUp(self):
-        """setUp PopulatedLDAPTestCase create user pod"""
+        """Set up PopulatedLDAPTestCase create user Pod."""
         User.objects.create(username="pod", password="pod1234pod")
         AccessGroup.objects.create(code_name="groupTest", display_name="Group de test")
         AccessGroup.objects.create(
@@ -433,7 +433,7 @@ class PopulatedLDAPTestCase(TestCase):
 
 class PopulatedShibTestCase(TestCase):
     def setUp(self):
-        """setUp PopulatedShibTestCase create user pod"""
+        """Set up PopulatedShibTestCase create user Pod."""
         self.hmap = {}
         for a in SHIBBOLETH_ATTRIBUTE_MAP:
             self.hmap[SHIBBOLETH_ATTRIBUTE_MAP[a][1]] = a

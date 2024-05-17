@@ -11,16 +11,17 @@ on:
   pull_request:
     branches:
     - develop
+  workflow_dispatch:
 
 env:
   PYTHON_VERSION: '3.9'
   DJANGO_SUPERUSER_USERNAME: "admin"
   DJANGO_SUPERUSER_PASSWORD: "passwd"
-  DJANGO_SUPERUSER_EMAIL: "noreplay@uni.fr"
+  DJANGO_SUPERUSER_EMAIL: "noreply@uni.fr"
   ELASTICSEARCH_TAG: "elasticsearch:7.17.18"
-  NODE_VERSION: "19"
-  NODE_TAG: "node:19"
-  PYTHON_TAG: "python:3.9-buster"
+  NODE_VERSION: "20"
+  NODE_TAG: "node:20"
+  PYTHON_TAG: "python:3.9-bullseye"
   REDIS_TAG: "redis:alpine3.16"
   DOCKER_ENV: "full-test"
 
@@ -66,7 +67,7 @@ jobs:
       # FLAKE 8
       - name: Flake8 compliance
         run: |
-          flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,*_settings.py
+          flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,test_settings.py,node_modules/*/*.py,pod/static/*.py,pod/custom/tenants/*/*.py
 
       ## Start remote encoding and transcoding test ##
       - name: Create settings local file
@@ -106,7 +107,7 @@ jobs:
           docker exec pod-back-with-volumes ps auxf
           docker exec pod-back-with-volumes python manage.py loaddata pod/video/fixtures/sample_videos.json
       - name: run test in docker
-        run: docker exec pod-back-with-volumes coverage run --append --source='.' manage.py test -v 3 --keepdb pod.video_encode_transcript.tests.test_remote_encode_transcode
+        run: docker exec pod-back-with-volumes coverage run --append manage.py test -v 3 --keepdb pod.video_encode_transcript.tests.test_remote_encode_transcode
 
       - name: Run pa11y-ci full
         run: docker exec pa11y-ci pa11y-ci -c /usr/src/app/dockerfile-dev-with-volumes/pa11y-ci/config.json
@@ -135,7 +136,7 @@ jobs:
 
       - name: Setup Pod
         run: |
-          coverage run --append --source='.' manage.py create_pod_index --settings=pod.main.test_settings
+          coverage run --append manage.py create_pod_index --settings=pod.main.test_settings
           python manage.py makemigrations --settings=pod.main.test_settings
           python manage.py migrate --settings=pod.main.test_settings
 
@@ -143,7 +144,8 @@ jobs:
         env:
           PYTHONUNBUFFERED: 1
         run: |
-          coverage run --append --source='.' manage.py test -v 3 --settings=pod.main.test_settings
+          coverage run --append manage.py test -v 3 --settings=pod.main.test_settings
+          coverage xml -o cobertura.xml
 
       - name: Send coverage to coveralls.io
         # coveralls command has been installed by requirements-dev.txt

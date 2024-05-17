@@ -304,7 +304,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         )
         response["videos"] = videos
         return JsonResponse(response, safe=False)
-        # TODO : replace this return by a
+        # TODO: replace this return by a
         #  render(request,"videos/video_list.html") like in channel
 
     return render(
@@ -1087,7 +1087,9 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         template_video = "videos/video-iframe.html"
     elif request.GET.get("playlist"):
         playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
-        if playlist_can_be_displayed(request, playlist):
+        if playlist_can_be_displayed(request, playlist) and user_can_see_playlist_video(
+            request, video, playlist
+        ):
             videos = sort_videos_list(get_video_list_for_playlist(playlist), "rank")
             params = {
                 "playlist_in_get": playlist,
@@ -1193,10 +1195,15 @@ def render_video(
     if toggle_render_video_user_can_see_video(
         show_page, is_password_protected, request, slug_private, video
     ):
-        if request.GET.get("playlist") and not user_can_see_playlist_video(
-            request, video
-        ):
-            toggle_render_video_when_is_playlist_player(request)
+        playlist = None
+        if request.GET.get("playlist"):
+            playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
+            if not user_can_see_playlist_video(
+                request,
+                video,
+                playlist,
+            ):
+                toggle_render_video_when_is_playlist_player(request)
         return render(
             request,
             template_video,
@@ -1206,6 +1213,7 @@ def render_video(
                 "theme": theme,
                 "listNotes": listNotes,
                 "owner_filter": owner_filter,
+                "playlist": playlist if request.GET.get("playlist") else None,
                 **more_data,
             },
         )
@@ -1423,18 +1431,24 @@ def video_edit_access_tokens(request: WSGIRequest, slug: str = None):
         messages.add_message(request, messages.ERROR, _("You cannot edit this video."))
         raise PermissionDenied
     if request.method == "POST":
-        if request.POST.get("action") and request.POST.get("action") in ["add", "delete"]:
+        if request.POST.get("action") and request.POST.get("action") in {
+            "add",
+            "delete",
+            "update",
+        }:
             if request.POST["action"] == "add":
                 VideoAccessToken.objects.create(video=video)
                 messages.add_message(
-                    request, messages.INFO, _("A token has been created.")
+                    request, messages.SUCCESS, _("A token has been created.")
                 )
+            elif request.POST["action"] == "delete" and request.POST.get("token"):
+                token = request.POST.get("token")
+                delete_token(request, video, token)
+            elif request.POST["action"] == "update":
+                token = request.POST.get("token")
+                update_token(request, video, token)
             else:
-                if request.POST["action"] == "delete" and request.POST.get("token"):
-                    token = request.POST.get("token")
-                    delete_token(request, video, token)
-                else:
-                    messages.add_message(request, messages.ERROR, _("Token not found."))
+                messages.add_message(request, messages.ERROR, _("Token not found."))
         else:
             messages.add_message(
                 request, messages.ERROR, _("An action must be specified.")
@@ -1457,7 +1471,18 @@ def delete_token(request, video: Video, token: VideoAccessToken):
     try:
         uuid.UUID(str(token))
         VideoAccessToken.objects.get(video=video, token=token).delete()
-        messages.add_message(request, messages.INFO, _("The token has been deleted."))
+        messages.add_message(request, messages.SUCCESS, _("The token has been deleted."))
+    except (ValueError, ObjectDoesNotExist):
+        messages.add_message(request, messages.ERROR, _("Token not found."))
+
+
+def update_token(request, video: Video, token: VideoAccessToken):
+    """update token name for the video if exist."""
+    try:
+        Token = VideoAccessToken.objects.get(video=video, token=token)
+        Token.name = request.POST.get("name")
+        Token.save()
+        messages.add_message(request, messages.SUCCESS, _("The token has been updated."))
     except (ValueError, ObjectDoesNotExist):
         messages.add_message(request, messages.ERROR, _("Token not found."))
 
@@ -1567,7 +1592,7 @@ def get_com_coms_dict(request, listComs):
 
       for each encountered com
     Starting from the coms present in listComs
-    Example, having the next tree of coms :
+    Example, having the next tree of coms:
     |- C1     (id: 1)
     |- C2     (id: 2)
        |- C3  (id: 3)
@@ -2121,7 +2146,7 @@ def video_note_download(request, slug):
         "content": [],
     }
 
-    def write_to_dict(t, id, s, rn, rc, dc, dm, nt, c):
+    def write_to_dict(t, id, s, rn, rc, dc, dm, nt, c) -> None:
         contentToDownload["type"].append(t)
         contentToDownload["id"].append(id)
         contentToDownload["status"].append(s)
@@ -2132,7 +2157,7 @@ def video_note_download(request, slug):
         contentToDownload["noteTimestamp"].append(nt)
         contentToDownload["content"].append(c)
 
-    def rec_expl_coms(idNote, lComs):
+    def rec_expl_coms(idNote, lComs) -> None:
         dictComs = get_com_coms_dict(request, lComs)
         for c in lComs:
             write_to_dict(
@@ -2796,7 +2821,7 @@ def get_children_comment(request, comment_id, video_slug):
             .first()
         )
         if parent_comment is None:
-            raise Exception("Error: comment doesn't exist : " + comment_id)
+            raise Exception("Error: comment doesn't exist: " + comment_id)
 
         children = parent_comment.get_json_children(request.user.id)
         parent_comment_data = {

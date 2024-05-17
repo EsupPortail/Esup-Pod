@@ -1,8 +1,6 @@
 # gitguardian:ignore
 
-"""
-Unit tests for enrichment views.
-"""
+"""Esup-Pod unit tests for enrichment views."""
 from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User

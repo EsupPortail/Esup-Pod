@@ -1,3 +1,5 @@
+"""Esup-Pod Xapi views tests."""
+
 from django.test import TestCase
 from django.urls import reverse
 from django.test import Client  # , override_settings
@@ -7,7 +9,7 @@ import json
 
 class xapi_statement_TestView(TestCase):
     def setUp(self):
-        """initialize the Django test client"""
+        """Initialize the Django test client."""
         self.client = Client()
         print(" --->  SetUp of xapi_statement_TestView: OK!")
 

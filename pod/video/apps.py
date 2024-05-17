@@ -51,7 +51,8 @@ def set_default_site(sender, **kwargs):
 
 def fix_transcript(sender, **kwargs):
     """
-    Transcript field change from boolean to charfield since the version 3.2.0
+    Transcript field change from boolean to charfield since the version 3.2.0.
+
     This fix change value to set the default lang value if necessary
     """
     from pod.video.models import Video
@@ -218,7 +219,7 @@ class VideoConfig(AppConfig):
             or len(ENCODING_STEP) > 0
             or len(PLAYLIST_VIDEO) > 0
         ):
-            print("send_previous_data : batch size = %s" % nb_batch)
+            print("send_previous_data: batch size = %s" % nb_batch)
             self.import_data(nb_batch)
         else:
             return

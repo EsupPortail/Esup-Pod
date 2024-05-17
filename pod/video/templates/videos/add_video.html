@@ -201,6 +201,11 @@
   /* Upload file to Pod on form submit */
   document.getElementById("uploadForm").addEventListener("submit", function(e) {
     e.preventDefault();
+    let legalNoticeCheckbox = document.getElementById("legal_notice");
+    if (!legalNoticeCheckbox.checked) {
+      showalert("{% trans 'You must accept the necessary authorizations to continue.' %}", "alert-warning");
+      return;
+    }
     if (global_data) {
       let elementsHideProcessing = document.getElementsByClassName("hide-on-processing");
       for (let i = 0; i < elementsHideProcessing.length; i++) {

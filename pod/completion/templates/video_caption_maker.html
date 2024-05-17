@@ -17,12 +17,8 @@
     </a>
   </li>
   <li class="breadcrumb-item active"  aria-current="page">
-    {{ page_title }}
+    {{page_title}}
   </li>
-{% endblock %}
-
-{% block page_title %}
-  {% trans "Video Caption Maker" %}
 {% endblock %}
 
 {% block page_content %}
@@ -215,11 +211,9 @@
 
 {% endblock page_content %}
 
-{% block collapse_page_aside %}
-{% endblock collapse_page_aside %}
+{% block collapse_page_aside %}{% endblock collapse_page_aside %}
 
-{% block page_aside %}
-{% endblock page_aside %}
+{% block page_aside %}{% endblock page_aside %}
 
 {% block more_script %}
   <script>

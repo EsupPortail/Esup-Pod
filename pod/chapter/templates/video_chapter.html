@@ -48,6 +48,7 @@
     </div>
   </div>
 {% endblock page_content %}
+
 {% block page_aside %}
   {% if video.owner == request.user or request.user.is_superuser or perms.chapter.add_chapter or request.user in video.additional_owners.all %}
     <div class="card" id="card-manage-video">
