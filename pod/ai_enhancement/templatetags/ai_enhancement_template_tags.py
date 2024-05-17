@@ -12,7 +12,11 @@ from pod.video.models import Video
 
 
 USE_AI_ENHANCEMENT = getattr(settings, "USE_AI_ENHANCEMENT", False)
-
+AI_ENHANCEMENT_TO_STAFF_ONLY = getattr(
+    settings,
+    "AI_ENHANCEMENT_TO_STAFF_ONLY",
+    True
+)
 
 register = Library()
 
@@ -31,6 +35,12 @@ def user_can_enhance_video(context: dict, video: Video) -> bool:
     """
     request = context["request"]
     if not request.user.is_authenticated:
+        return False
+    if (
+        request.user.is_authenticated
+        and AI_ENHANCEMENT_TO_STAFF_ONLY
+        and request.user.is_staff is False
+    ):
         return False
     return (
         (

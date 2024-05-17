@@ -10,7 +10,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
-
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import login_required
 from pod.ai_enhancement.forms import AIEnhancementChoice, NotifyUserThirdPartyServicesForm
 from pod.ai_enhancement.models import AIEnhancement
 from pod.ai_enhancement.utils import AristoteAI, enhancement_is_already_asked, notify_user
@@ -24,6 +26,11 @@ from pod.video_encode_transcript.transcript import saveVTT
 
 AI_ENHANCEMENT_CLIENT_ID = getattr(settings, "AI_ENHANCEMENT_CLIENT_ID", "mocked_id")
 AI_ENHANCEMENT_CLIENT_SECRET = getattr(settings, "AI_ENHANCEMENT_CLIENT_SECRET", "mocked_secret")
+AI_ENHANCEMENT_TO_STAFF_ONLY = getattr(
+    settings,
+    "AI_ENHANCEMENT_TO_STAFF_ONLY",
+    True
+)
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
@@ -62,17 +69,17 @@ def toggle_webhook(request: WSGIRequest):
             return JsonResponse({"error": "No id in the request."}, status=400)
 
 
-@csrf_protect
 def send_enhancement_creation_request(request: WSGIRequest, aristote: AristoteAI, video: Video) -> HttpResponse:
     """Send a request to create an enhancement."""
     if request.method == "POST":
         form = NotifyUserThirdPartyServicesForm(request.POST)
         if form.is_valid():
+            url_scheme = "https" if request.is_secure() else "http"
             creation_response = aristote.create_enhancement_from_url(
-                "https://" + get_current_site(request).domain + video.video.url,
+                url_scheme + "://" + get_current_site(request).domain + video.video.url,
                 ["video/mp4"],
                 request.user.username,
-                "https://" + get_current_site(request).domain + reverse("ai_enhancement:webhook"),
+                url_scheme + "://" + get_current_site(request).domain + reverse("ai_enhancement:webhook"),
             )
             if creation_response:
                 if creation_response["status"] == "OK":
@@ -105,17 +112,35 @@ def send_enhancement_creation_request(request: WSGIRequest, aristote: AristoteAI
 
 
 @csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
 def enhance_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
     """The view to enrich a video."""
     if in_maintenance():
         return redirect(reverse("maintenance"))
     video = get_object_or_404(Video, slug=video_slug)
-    aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
+
+    if AI_ENHANCEMENT_TO_STAFF_ONLY and request.user.is_staff is False:
+        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        raise PermissionDenied
+
+    if (
+        video
+        and request.user != video.owner
+        and (
+            not (request.user.is_superuser or request.user.has_perm("video.change_video"))
+        )
+        and (request.user not in video.additional_owners.all())
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        raise PermissionDenied
+
     if enhancement_is_already_asked(video):
         enhancement = AIEnhancement.objects.filter(video=video).first()
         if enhancement.is_ready:
             return enhance_form(request, video)
     else:
+        aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
         return send_enhancement_creation_request(request, aristote, video)
 
 
@@ -129,9 +154,26 @@ def enhance_video_json(request: WSGIRequest, video_slug: str) -> HttpResponse:
 
 
 @csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
 def enhance_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
     """The view to enrich the subtitles of a video."""
     video = get_object_or_404(Video, slug=video_slug, sites=get_current_site(request))
+    if AI_ENHANCEMENT_TO_STAFF_ONLY and request.user.is_staff is False:
+        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        raise PermissionDenied
+
+    if (
+        video
+        and request.user != video.owner
+        and (
+            not (request.user.is_superuser or request.user.has_perm("video.change_video"))
+        )
+        and (request.user not in video.additional_owners.all())
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        raise PermissionDenied
+
     video_folder, created = UserFolder.objects.get_or_create(
         name=video.slug,
         owner=request.user,
@@ -150,11 +192,10 @@ def enhance_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
                     # "ai_enhancement": enhancement,
                 },
             )
-    AIEnhancement.objects.filter(video=video).delete()
+    # AIEnhancement.objects.filter(video=video).delete()
     return redirect(reverse("video:video", args=[video.slug]))
 
 
-@csrf_protect
 def enhance_form(request: WSGIRequest, video: Video) -> HttpResponse:
     """The view to choose the title of a video with the AI enhancement."""
     if request.method == "POST":
@@ -197,5 +238,6 @@ def enhance_form(request: WSGIRequest, video: Video) -> HttpResponse:
 
 def check_video_generated(request: WSGIRequest, video: Video) -> None:
     """Check if the video is generated and delete the enhancement if it is."""
-    if enhancement_is_already_asked(video) and request.GET.get("generated") == "True":
-        AIEnhancement.objects.filter(video=video).first().delete()
+    # if enhancement_is_already_asked(video) and request.GET.get("generated") == "True":
+    #    AIEnhancement.objects.filter(video=video).first().delete()
+    print("DELETE !")
