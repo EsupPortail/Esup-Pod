@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-21 14:16+0200\n"
+"POT-Creation-Date: 2024-05-21 15:33+0200\n"
 "PO-Revision-Date: 2024-05-15 09:01+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -226,6 +226,15 @@ msgid "Video name: %(video.title)s"
 msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
+#: pod/ai_enhancement/views.py
+msgid "Enrich with Aristote AI"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Go to subtitle part"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
 #: pod/ai_enhancement/templates/create_enhancement.html
 #: pod/ai_enhancement/views.py
 #: pod/authentication/templates/userpicture/userpicture.html
@@ -299,25 +308,20 @@ msgid "Please provide a valid value for this field."
 msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
-#: pod/chapter/templates/chapter/form_chapter.html
-#: pod/completion/templates/contributor/form_contributor.html
-#: pod/completion/templates/document/form_document.html
-#: pod/completion/templates/overlay/form_overlay.html
-#: pod/completion/templates/track/form_track.html
-#: pod/completion/templates/video_caption_maker.html
-#: pod/dressing/templates/dressing_edit.html
-#: pod/enrichment/templates/enrichment/form_enrichment.html
-#: pod/enrichment/templates/enrichment/group_enrichment.html
-#: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/meeting/templates/meeting/add_or_edit.html
-#: pod/playlist/templates/playlist/add_or_edit.html
-#: pod/recorder/templates/recorder/add_recording.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/form_theme.html
-#: pod/video/templates/videos/video_note_comments_display.html
-#: pod/video/templates/videos/video_note_display.html
-#: pod/video/templates/videos/video_notes.html
-msgid "Save"
+msgid "Save and go back to the video"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Save and go to subtitle part"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+#: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
+#: pod/dressing/templates/video_dressing.html
+#: pod/video/templates/videos/video_collaborate.html
+#: pod/video/templates/videos/video_delete.html
+msgid "Back to the video"
 msgstr ""
 
 #: pod/ai_enhancement/templates/create_enhancement.html
@@ -343,14 +347,6 @@ msgstr ""
 #: pod/ai_enhancement/templates/create_enhancement.html
 #, python-format
 msgid "Back to the %(video.title)s video"
-msgstr ""
-
-#: pod/ai_enhancement/templates/create_enhancement.html
-#: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
-#: pod/dressing/templates/video_dressing.html
-#: pod/video/templates/videos/video_collaborate.html
-#: pod/video/templates/videos/video_delete.html
-msgid "Back to the video"
 msgstr ""
 
 #: pod/ai_enhancement/templates/create_enhancement.html
@@ -449,10 +445,6 @@ msgstr ""
 
 #: pod/ai_enhancement/views.py
 msgid "Video Caption Maker - Aristote AI Version"
-msgstr ""
-
-#: pod/ai_enhancement/views.py
-msgid "Enrich with Aristote AI"
 msgstr ""
 
 #: pod/authentication/admin.py pod/main/forms.py
@@ -1218,6 +1210,27 @@ msgstr ""
 #: pod/enrichment/templates/enrichment/form_enrichment.html
 #: pod/video/templates/channel/form_theme.html
 msgid "One or more errors have been found in the form:"
+msgstr ""
+
+#: pod/chapter/templates/chapter/form_chapter.html
+#: pod/completion/templates/contributor/form_contributor.html
+#: pod/completion/templates/document/form_document.html
+#: pod/completion/templates/overlay/form_overlay.html
+#: pod/completion/templates/track/form_track.html
+#: pod/completion/templates/video_caption_maker.html
+#: pod/dressing/templates/dressing_edit.html
+#: pod/enrichment/templates/enrichment/form_enrichment.html
+#: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/playlist/templates/playlist/add_or_edit.html
+#: pod/recorder/templates/recorder/add_recording.html
+#: pod/video/templates/channel/channel_edit.html
+#: pod/video/templates/channel/form_theme.html
+#: pod/video/templates/videos/video_note_comments_display.html
+#: pod/video/templates/videos/video_note_display.html
+#: pod/video/templates/videos/video_notes.html
+msgid "Save"
 msgstr ""
 
 #: pod/chapter/templates/chapter/form_chapter.html

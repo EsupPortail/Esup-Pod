@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-21 14:16+0200\n"
+"POT-Creation-Date: 2024-05-21 15:33+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -232,6 +232,15 @@ msgid "Video name: %(video.title)s"
 msgstr "Nom de la vidéo : %(video.title)s"
 
 #: pod/ai_enhancement/templates/choose_video_element.html
+#: pod/ai_enhancement/views.py
+msgid "Enrich with Aristote AI"
+msgstr "Améliorer la vidéo avec l’IA Aristote"
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Go to subtitle part"
+msgstr "Aller à la partie sous-titres"
+
+#: pod/ai_enhancement/templates/choose_video_element.html
 #: pod/ai_enhancement/templates/create_enhancement.html
 #: pod/ai_enhancement/views.py
 #: pod/authentication/templates/userpicture/userpicture.html
@@ -305,26 +314,21 @@ msgid "Please provide a valid value for this field."
 msgstr "Veuillez renseigner une valeur valide pour ce champ."
 
 #: pod/ai_enhancement/templates/choose_video_element.html
-#: pod/chapter/templates/chapter/form_chapter.html
-#: pod/completion/templates/contributor/form_contributor.html
-#: pod/completion/templates/document/form_document.html
-#: pod/completion/templates/overlay/form_overlay.html
-#: pod/completion/templates/track/form_track.html
-#: pod/completion/templates/video_caption_maker.html
-#: pod/dressing/templates/dressing_edit.html
-#: pod/enrichment/templates/enrichment/form_enrichment.html
-#: pod/enrichment/templates/enrichment/group_enrichment.html
-#: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/meeting/templates/meeting/add_or_edit.html
-#: pod/playlist/templates/playlist/add_or_edit.html
-#: pod/recorder/templates/recorder/add_recording.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/channel/form_theme.html
-#: pod/video/templates/videos/video_note_comments_display.html
-#: pod/video/templates/videos/video_note_display.html
-#: pod/video/templates/videos/video_notes.html
-msgid "Save"
-msgstr "Sauvegarder"
+msgid "Save and go back to the video"
+msgstr "Sauvegarder et retourner à la vidéo"
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Save and go to subtitle part"
+msgstr "Sauvegarder et aller au sous-titrage"
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+#: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
+#: pod/dressing/templates/video_dressing.html
+#: pod/video/templates/videos/video_collaborate.html
+#: pod/video/templates/videos/video_delete.html
+msgid "Back to the video"
+msgstr "Retour à la vidéo"
 
 #: pod/ai_enhancement/templates/create_enhancement.html
 msgid "Access the video"
@@ -349,18 +353,8 @@ msgid "Agreement required"
 msgstr "Accord requis"
 
 #: pod/ai_enhancement/templates/create_enhancement.html
-#, fuzzy, python-format
-#| msgid "Back to the %(video.title)s video"
 msgid "Back to the %(video.title)s video"
 msgstr "Retourner à la vidéo « %(video_title)s »"
-
-#: pod/ai_enhancement/templates/create_enhancement.html
-#: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
-#: pod/dressing/templates/video_dressing.html
-#: pod/video/templates/videos/video_collaborate.html
-#: pod/video/templates/videos/video_delete.html
-msgid "Back to the video"
-msgstr "Retour à la vidéo"
 
 #: pod/ai_enhancement/templates/create_enhancement.html
 msgid "Confirm"
@@ -457,20 +451,14 @@ msgid "Enhance the video with Aristote AI"
 msgstr "Améliorer la vidéo avec l’IA Aristote"
 
 #: pod/ai_enhancement/views.py
-#, fuzzy
-#| msgid "You cannot cut this video."
 msgid "You cannot use IA to improve this video."
-msgstr "Vous ne pouvez pas découper cette vidéo."
+msgstr "Vous ne pouvez pas utiliser l'IA pour améliorer cette vidéo."
 
 #: pod/ai_enhancement/views.py
 msgid "Video Caption Maker - Aristote AI Version"
 msgstr ""
 "Outil de création de fichier de sous-titres/légende - Version de l'IA "
 "Aristote"
-
-#: pod/ai_enhancement/views.py
-msgid "Enrich with Aristote AI"
-msgstr "Améliorer la vidéo avec l’IA Aristote"
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -1293,6 +1281,27 @@ msgstr "Créer / Éditer les chapitres"
 #: pod/video/templates/channel/form_theme.html
 msgid "One or more errors have been found in the form:"
 msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
+
+#: pod/chapter/templates/chapter/form_chapter.html
+#: pod/completion/templates/contributor/form_contributor.html
+#: pod/completion/templates/document/form_document.html
+#: pod/completion/templates/overlay/form_overlay.html
+#: pod/completion/templates/track/form_track.html
+#: pod/completion/templates/video_caption_maker.html
+#: pod/dressing/templates/dressing_edit.html
+#: pod/enrichment/templates/enrichment/form_enrichment.html
+#: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/playlist/templates/playlist/add_or_edit.html
+#: pod/recorder/templates/recorder/add_recording.html
+#: pod/video/templates/channel/channel_edit.html
+#: pod/video/templates/channel/form_theme.html
+#: pod/video/templates/videos/video_note_comments_display.html
+#: pod/video/templates/videos/video_note_display.html
+#: pod/video/templates/videos/video_notes.html
+msgid "Save"
+msgstr "Sauvegarder"
 
 #: pod/chapter/templates/chapter/form_chapter.html
 #: pod/completion/templates/contributor/form_contributor.html
@@ -2129,8 +2138,6 @@ msgstr ""
 "malencontreuses."
 
 #: pod/completion/templates/video_completion.html
-#, fuzzy
-#| msgid ": "
 msgid ":"
 msgstr " : "
 
