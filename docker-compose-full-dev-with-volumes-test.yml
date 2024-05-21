@@ -24,6 +24,7 @@ services:
 
   pod-encode:
     container_name: pod-encode-with-volumes
+    hostname: pod-encode.localhost
     build:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod-encode/Dockerfile
@@ -35,6 +36,7 @@ services:
 
   pod-transcript:
     container_name: pod-transcript-with-volumes
+    hostname: pod-transcript.localhost
     build:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod-transcript/Dockerfile
@@ -46,6 +48,7 @@ services:
 
   pod-xapi:
     container_name: pod-xapi-with-volumes
+    hostname: pod-xapi.localhost
     build:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod-xapi/Dockerfile
@@ -57,6 +60,7 @@ services:
 
   elasticsearch:
     container_name: elasticsearch-with-volumes
+    hostname: elasticsearch.localhost
     build:
       context: .
       dockerfile: dockerfile-dev-with-volumes/elasticsearch/dockerfile-elasticsearch-dev
@@ -70,6 +74,7 @@ services:
 
   redis:
     container_name: redis-with-volumes
+    hostname: redis.localhost
     image: ${REDIS_TAG}
     env_file:
       - ./.env.dev
@@ -87,7 +92,7 @@ services:
 
 #  redis-commander:
 #    container_name: redis-commander
-#    hostname: redis-commander
+#    hostname: redis-commander.localhost
 #    image: rediscommander/redis-commander:latest
 #    restart: always
 #    environment:

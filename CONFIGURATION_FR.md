@@ -359,7 +359,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >>     # },
   >>     "default": {
   >>         "BACKEND": "django_redis.cache.RedisCache",
-  >>         "LOCATION": "redis://127.0.0.1:6379/1",
+  >>         "LOCATION": "redis://redis.localhost:6379/1",
   >>         "OPTIONS": {
   >>             "CLIENT_CLASS": "django_redis.client.DefaultClient",
   >>         },
@@ -367,7 +367,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >>     # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).
   >>     "select2": {
   >>         "BACKEND": "django_redis.cache.RedisCache",
-  >>         "LOCATION": "redis://127.0.0.1:6379/2",
+  >>         "LOCATION": "redis://redis.localhost:6379/2",
   >>         "OPTIONS": {
   >>             "CLIENT_CLASS": "django_redis.client.DefaultClient",
   >>         },
@@ -1934,7 +1934,7 @@ Il est possible d’encoder en local ou en distant.<br>
 Attention, il faut configurer Celery pour l’envoi des instructions pour l’encodage distant.<br>
 
 * `CELERY_BROKER_URL`
-  > valeur par défaut : `redis://127.0.0.1:6379/5`
+  > valeur par défaut : `redis://redis.localhost:6379/5`
   >> URL du courtier de messages où Celery stocke les ordres d’encodage et de transcription.<br>
 * `CELERY_TO_ENCODE`
   > valeur par défaut : `False`
@@ -1976,7 +1976,7 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l’en
   >>
   >> Il faut renseigner l’url du redis sur lequel Celery<br>
   >> va chercher les ordres d’encodage et de transcription<br>
-  >> par exemple : "redis://redis:6379/7"<br>
+  >> par exemple : "redis://redis.localhost:6379/7"<br>
 * `FORMAT_CHOICES`
   > valeur par défaut : `()`
   >> Format d’encodage réalisé sur la plateforme.<br>
@@ -2057,7 +2057,7 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l’en
   > valeur par défaut : `30`
   >> Valeur de timeout pour ElasticSearch.<br>
 * `ES_URL`
-  > valeur par défaut : `["http://127.0.0.1:9200/"]`
+  > valeur par défaut : `["http://elasticsearch.localhost:9200/"]`
   >> Adresse du ou des instances d’Elasticsearch utilisées pour<br>
   >> l’indexation et la recherche de vidéo.<br>
 * `ES_VERSION`
