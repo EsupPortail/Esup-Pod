@@ -236,7 +236,7 @@ class StudioPodTestView(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.get(url)
-        self.assertEquals(response.context["access_not_allowed"], True)
+        self.assertEqual(response.context["access_not_allowed"], True)
         self.user.is_staff = True
         self.user.save()
         response = self.client.get(url)
