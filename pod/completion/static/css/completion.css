@@ -42,7 +42,6 @@ table#list-contributor thead th.contributor-name {
   background-color: #fff;
 }
 
-
 .grid-list-track .track-kind.options .dropdown .btn {
   width: 100%;
 }
@@ -100,8 +99,8 @@ ul.css-tabs a {
   box-sizing: content-box;
 }
 
-.caption{
-  padding-top: .5rem;
+.caption {
+  padding-top: 0.5rem;
   color: var(--bs-secondary-color);
   text-align: left;
   font-size: 1em;

@@ -404,22 +404,19 @@ function verify_fields(form) {
     var id = parseInt(document.getElementById("id_contributor").value, 10);
     var new_role = document.getElementById("id_role").value;
     var new_name = document.getElementById("id_name").value;
-    document
-      .querySelectorAll("#list-contributor tbody > tr")
-      .forEach((tr) => {
-        if (
-          id != tr.querySelector("input[name=id]").value &&
-          tr.querySelector("td[class=contributor-name]").innerHTML ==
-            new_name &&
-          tr.querySelector("td[class=contributor_role]").innerHTML == new_role
-        ) {
-          var text = gettext(
-            "There is already a contributor with this same name and role in the list.",
-          );
-          showalert(text, "alert-danger");
-          error = true;
-        }
-      });
+    document.querySelectorAll("#list-contributor tbody > tr").forEach((tr) => {
+      if (
+        id != tr.querySelector("input[name=id]").value &&
+        tr.querySelector("td[class=contributor-name]").innerHTML == new_name &&
+        tr.querySelector("td[class=contributor_role]").innerHTML == new_role
+      ) {
+        var text = gettext(
+          "There is already a contributor with this same name and role in the list.",
+        );
+        showalert(text, "alert-danger");
+        error = true;
+      }
+    });
   } else if (form == "form_track") {
     var element = document.getElementById("id_kind");
     var value = element.options[element.selectedIndex].value
