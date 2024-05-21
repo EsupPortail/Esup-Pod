@@ -33,6 +33,8 @@ PWD = "azerty1234"  # nosec
 
 
 class CompletionViewsTestCase(TestCase):
+    """Test cases for the Pod video completion views."""
+
     fixtures = [
         "initial_data.json",
     ]
@@ -78,7 +80,7 @@ class CompletionViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest")
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
 
         print(" ---> test_video_completion_user: OK!")
 
@@ -94,10 +96,10 @@ class CompletionViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
-        self.assertContains(response, "list_contributor")
-        self.assertContains(response, "list_track")
-        self.assertContains(response, "list_document")
-        self.assertContains(response, "list_overlay")
+        self.assertContains(response, "list-contributor")
+        self.assertContains(response, "list-track")
+        self.assertContains(response, "list-document")
+        self.assertContains(response, "list-overlay")
 
         print(" ---> test_video_completion_staff: OK!")
 
@@ -137,10 +139,10 @@ class CompletionContributorViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
-        self.assertContains(response, "list_contributor")
-        self.assertContains(response, "list_track")
-        self.assertContains(response, "list_document")
-        self.assertContains(response, "list_overlay")
+        self.assertContains(response, "list-contributor")
+        self.assertContains(response, "list-track")
+        self.assertContains(response, "list-document")
+        self.assertContains(response, "list-overlay")
 
         print(" [ BEGIN COMPLETION_CONTRIBUTOR VIEWS ] ")
         print(" ---> test_video_completion_contributor: OK!")
@@ -172,7 +174,7 @@ class CompletionContributorViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
         self.assertContains(response, "testcontributor")
         self.assertContains(response, "test@test.com")
 
@@ -208,7 +210,7 @@ class CompletionContributorViewsTestCase(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, "testcontributor")
         response = self.client.post(
@@ -230,7 +232,7 @@ class CompletionContributorViewsTestCase(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
         self.assertContains(response, "testcontributor2")
         self.assertContains(response, _("editor"))
         result = Contributor.objects.get(id=1)
@@ -264,7 +266,7 @@ class CompletionContributorViewsTestCase(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
 
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, "testcontributor")
@@ -316,10 +318,10 @@ class CompletionTrackViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
-        self.assertContains(response, "list_contributor")
-        self.assertContains(response, "list_track")
-        self.assertContains(response, "list_document")
-        self.assertContains(response, "list_overlay")
+        self.assertContains(response, "list-contributor")
+        self.assertContains(response, "list-track")
+        self.assertContains(response, "list-document")
+        self.assertContains(response, "list-overlay")
 
         print(" [ BEGIN COMPLETION_TRACK VIEWS ] ")
         print(" ---> test_video_completion_track: OK!")
@@ -366,7 +368,7 @@ class CompletionTrackViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
-        self.assertContains(response, "list_track")
+        self.assertContains(response, "list-track")
         result = Track.objects.get(id=1)
         self.assertEqual(result.kind, "subtitles")
         self.assertTrue("testfile" in result.src.name)
@@ -416,7 +418,7 @@ class CompletionTrackViewsTestCase(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "list_track")
+        self.assertContains(response, "list-track")
         result = Track.objects.get(id=1)
         self.assertTrue("testfile" in result.src.name)
         # self.assertEqual(result.src.name, 'testfile')
@@ -438,7 +440,7 @@ class CompletionTrackViewsTestCase(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "list_track")
+        self.assertContains(response, "list-track")
         result = Track.objects.get(id=1)
         self.assertEqual(result.kind, "captions")
         self.assertEqual(result.lang, "de")
@@ -486,7 +488,7 @@ class CompletionTrackViewsTestCase(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "list_track")
+        self.assertContains(response, "list-track")
         result = Track.objects.get(id=1)
         self.assertTrue("testfile" in result.src.name)
         # self.assertEqual(result.src.name, 'testfile')
@@ -538,10 +540,10 @@ class CompletionDocumentViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
-        self.assertContains(response, "list_contributor")
-        self.assertContains(response, "list_track")
-        self.assertContains(response, "list_document")
-        self.assertContains(response, "list_overlay")
+        self.assertContains(response, "list-contributor")
+        self.assertContains(response, "list-track")
+        self.assertContains(response, "list-document")
+        self.assertContains(response, "list-overlay")
 
         print(" [ BEGIN COMPLETION_DOCUMENT VIEWS ] ")
         print(" ---> test_video_completion_document: OK!")
@@ -587,7 +589,7 @@ class CompletionDocumentViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
-        self.assertContains(response, "list_document")
+        self.assertContains(response, "list-document")
         result = Document.objects.get(id=1)
         # self.assertEqual(result.document.name, 'testfile')
         self.assertTrue("testfile" in result.document.name)
@@ -636,7 +638,7 @@ class CompletionDocumentViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
-        self.assertContains(response, "list_document")
+        self.assertContains(response, "list-document")
         result = Document.objects.get(id=1)
         # self.assertEqual(result.document.name, 'testfile')
         self.assertTrue("testfile" in result.document.name)
@@ -672,7 +674,7 @@ class CompletionDocumentViewsTestCase(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "list_document")
+        self.assertContains(response, "list-document")
         result = Document.objects.get(id=1)
         # self.assertEqual(result.document.name, 'testfile2')
         self.assertTrue("testfile2" in result.document.name)
@@ -717,7 +719,7 @@ class CompletionDocumentViewsTestCase(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "list_document")
+        self.assertContains(response, "list-document")
         result = Document.objects.get(id=1)
         # self.assertEqual(result.document.name, 'testfile')
         self.assertTrue("testfile" in result.document.name)
@@ -766,10 +768,10 @@ class CompletionOverlayViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
-        self.assertContains(response, "list_contributor")
-        self.assertContains(response, "list_track")
-        self.assertContains(response, "list_document")
-        self.assertContains(response, "list_overlay")
+        self.assertContains(response, "list-contributor")
+        self.assertContains(response, "list-track")
+        self.assertContains(response, "list-document")
+        self.assertContains(response, "list-overlay")
 
         print(" [ BEGIN COMPLETION_OVERLAY VIEWS ] ")
         print(" ---> test_video_completion_overlay: OK!")
@@ -800,7 +802,7 @@ class CompletionOverlayViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
-        self.assertContains(response, "list_overlay")
+        self.assertContains(response, "list-overlay")
 
         result = Overlay.objects.get(id=1)
         self.assertEqual(result.title, "testoverlay")
@@ -835,7 +837,7 @@ class CompletionOverlayViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
-        self.assertContains(response, "list_overlay")
+        self.assertContains(response, "list-overlay")
         result = Overlay.objects.get(id=1)
         self.assertEqual(result.title, "testoverlay")
         response = self.client.post(
@@ -859,7 +861,7 @@ class CompletionOverlayViewsTestCase(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "list_overlay")
+        self.assertContains(response, "list-overlay")
         result = Overlay.objects.get(id=1)
         self.assertEqual(result.title, "testoverlay2")
         self.assertEqual(result.time_end, 3)
@@ -895,7 +897,7 @@ class CompletionOverlayViewsTestCase(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "list_overlay")
+        self.assertContains(response, "list-overlay")
         result = Overlay.objects.get(id=1)
         self.assertEqual(result.title, "testoverlay")
         response = self.client.post(

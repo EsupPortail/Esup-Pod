@@ -73,7 +73,7 @@ __LEVEL__ = "LEVEL"
 __SUBTREE__ = "SUBTREE"
 
 
-def populateUser(tree):
+def populateUser(tree) -> None:
     """Populate user form CAS or LDAP attributes."""
     username_element = tree.find(
         ".//{http://www.yale.edu/tp/cas}%s" % AUTH_CAS_USER_SEARCH
@@ -103,13 +103,13 @@ def populateUser(tree):
                 populate_user_from_entry(user, owner, entry)
 
 
-def delete_synchronized_access_group(owner):
+def delete_synchronized_access_group(owner) -> None:
     groups_to_sync = AccessGroup.objects.filter(auto_sync=True)
     for group_to_sync in groups_to_sync:
         owner.accessgroup_set.remove(group_to_sync)
 
 
-def get_server():
+def get_server() -> Server:
     if isinstance(LDAP_SERVER["url"], str):
         server = Server(
             LDAP_SERVER["url"],
@@ -167,7 +167,7 @@ def get_entry(conn, username, list_value):
         return None
 
 
-def assign_accessgroups(groups_element, user):
+def assign_accessgroups(groups_element, user) -> None:
     for group in groups_element:
         if group in GROUP_STAFF:
             user.is_staff = True
@@ -189,7 +189,7 @@ def assign_accessgroups(groups_element, user):
                 pass
 
 
-def create_accessgroups(user, tree_or_entry, auth_type):
+def create_accessgroups(user, tree_or_entry, auth_type) -> None:
     groups_element = []
     if auth_type == "cas":
         tree_groups_element = tree_or_entry.findall(
@@ -229,7 +229,7 @@ def get_entry_value(entry, attribute, default):
         return default
 
 
-def populate_user_from_entry(user, owner, entry):
+def populate_user_from_entry(user, owner, entry) -> None:
     """Populate user and owner objects from the LDAP entry."""
     if DEBUG:
         print(entry)
@@ -260,7 +260,7 @@ def populate_user_from_entry(user, owner, entry):
     owner.save()
 
 
-def populate_user_from_tree(user, owner, tree):
+def populate_user_from_tree(user, owner, tree) -> None:
     """Populate user from CAS attributes."""
     if DEBUG:
         print_xml_tree(tree)
@@ -312,13 +312,13 @@ def populate_user_from_tree(user, owner, tree):
     owner.save()
 
 
-def print_xml_tree(tree):
+def print_xml_tree(tree) -> None:
     """Print XML tree for debug purpose."""
     import xml.etree.ElementTree as ET
-    import xml.dom.minidom
+    from defusedxml import minidom
     import os
 
-    xml_string = xml.dom.minidom.parseString(ET.tostring(tree)).toprettyxml()
+    xml_string = minidom.parseString(ET.tostring(tree)).toprettyxml()
     xml_string = os.linesep.join(
         [s for s in xml_string.splitlines() if s.strip()]
     )  # remove the weird newline issue

@@ -124,7 +124,7 @@
     var last_timeupdate = 0;
     player.on('timeupdate', function(){
       // Get the current time (in seconds)
-      let currentTime = parseInt(player.currentTime());
+      let currentTime = parseInt(player.currentTime(), 10);
       if(currentTime % 5 == 0 && currentTime != last_timeupdate ) {
         last_timeupdate = currentTime;
         fetch(marker_url.replace("/0/", "/"+currentTime+"/"), {}); //.then(response => console.log(response));
@@ -161,7 +161,7 @@
         e.stopImmediatePropagation();
         var error = player.error();
         //alert(error.code+" "+error.type+" "+error.message);
-        if(error.code == 3 || error.code == 4) {
+        if(error.code == 3 || error.code === 4) {
           //console.log('error!', error.code, error.type , error.message);
           if(player.src()=="" || player.src().indexOf("m3u8")!=-1){
             player.controlBar.addChild('QualitySelector');
@@ -190,8 +190,8 @@
           content: $(this).attr('data-content'),
           align: $(this).attr('data-position'),
           showBackground: ($(this).attr('data-background') === 'true'),
-          start: parseInt($(this).attr('data-timestart')),
-          end: parseInt($(this).attr('data-timeend'))
+          start: parseInt($(this).attr('data-timestart'), 10),
+          end: parseInt($(this).attr('data-timeend'), 10)
         });
       });
       if (typeof player.overlay === "function") {

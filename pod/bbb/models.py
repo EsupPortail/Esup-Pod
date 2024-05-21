@@ -1,3 +1,5 @@
+"""Esup-Pod BBB models."""
+
 import importlib
 
 from django.db import models
@@ -85,13 +87,13 @@ class BBB_Meeting(models.Model):
         help_text=_("Last date where BBB session was in progress."),
     )
 
-    def __unicode__(self):
+    def __unicode__(self) -> str:
         return "%s - %s" % (self.meeting_name, self.meeting_id)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s - %s" % (self.meeting_name, self.meeting_id)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         super(BBB_Meeting, self).save(*args, **kwargs)
 
     class Meta:
@@ -101,7 +103,7 @@ class BBB_Meeting(models.Model):
 
 
 @receiver(post_save, sender=BBB_Meeting)
-def process_recording(sender, instance, created, **kwargs):
+def process_recording(sender, instance, created, **kwargs) -> None:
     # Convert the BBB presentation only one time
     # Be careful: this is the condition to create a video of the
     # BigBlueButton presentation only one time.
@@ -148,13 +150,13 @@ class Attendee(models.Model):
         help_text=_("User from the Pod database, if user found."),
     )
 
-    def __unicode__(self):
+    def __unicode__(self) -> str:
         return "%s - %s" % (self.full_name, self.role)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s - %s" % (self.full_name, self.role)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         super(Attendee, self).save(*args, **kwargs)
 
     class Meta:
@@ -270,13 +272,13 @@ class Livestream(models.Model):
         help_text=_("Redis channel, useful for chat"),
     )
 
-    def __unicode__(self):
+    def __unicode__(self) -> str:
         return "%s - %s" % (self.meeting, self.status)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s - %s" % (self.meeting, self.status)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         super(Livestream, self).save(*args, **kwargs)
 
     class Meta:

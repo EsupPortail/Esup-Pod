@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-17 14:19+0200\n"
+"POT-Creation-Date: 2024-05-21 14:16+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -179,7 +179,6 @@ msgstr "Enrichissements AI"
 #: pod/ai_enhancement/models.py pod/completion/models.py
 #: pod/enrichment/models.py pod/playlist/models.py pod/recorder/models.py
 #: pod/video/models.py pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/video_breadcrumbs.html
 #: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
 msgid "Video"
 msgstr "Vidéo"
@@ -222,6 +221,7 @@ msgstr "Entrez l'identifiant d’enrichissement de l'IA dans Aristote"
 
 #: pod/ai_enhancement/templates/choose_video_element.html
 #: pod/dressing/models.py pod/video/apps.py pod/video/models.py
+#: pod/video/templates/videos/video_breadcrumbs.html
 #: pod/video/templates/videos/videos.html
 msgid "Videos"
 msgstr "Vidéos"
@@ -349,6 +349,8 @@ msgid "Agreement required"
 msgstr "Accord requis"
 
 #: pod/ai_enhancement/templates/create_enhancement.html
+#, fuzzy, python-format
+#| msgid "Back to the %(video.title)s video"
 msgid "Back to the %(video.title)s video"
 msgstr "Retourner à la vidéo « %(video_title)s »"
 
@@ -384,6 +386,7 @@ msgid "Enhancement"
 msgstr "Amélioration"
 
 #: pod/ai_enhancement/utils.py
+#, python-format
 msgid ""
 "“%(content_title)s” was processed by the AI. Suggestions for improvement are "
 "available on %(site_title)s."
@@ -392,6 +395,7 @@ msgstr ""
 "sont disponibles sur %(site_title)s."
 
 #: pod/ai_enhancement/utils.py
+#, python-format
 msgid "IA improvement #%(content_id)s completed"
 msgstr "Amélioration de l'IA #%(content_id)s est terminée"
 
@@ -401,6 +405,7 @@ msgid "Hello,"
 msgstr "Bonjour,"
 
 #: pod/ai_enhancement/utils.py
+#, python-format
 msgid ""
 "IA improvement “%(content_title)s” has been completed, and is now available "
 "on %(site_title)s."
@@ -450,6 +455,12 @@ msgstr "Erreur : pas de réponse de l'IA Aristote."
 #: pod/ai_enhancement/views.py
 msgid "Enhance the video with Aristote AI"
 msgstr "Améliorer la vidéo avec l’IA Aristote"
+
+#: pod/ai_enhancement/views.py
+#, fuzzy
+#| msgid "You cannot cut this video."
+msgid "You cannot use IA to improve this video."
+msgstr "Vous ne pouvez pas découper cette vidéo."
 
 #: pod/ai_enhancement/views.py
 msgid "Video Caption Maker - Aristote AI Version"
@@ -1438,7 +1449,7 @@ msgstr "Veuillez corriger les erreurs."
 msgid "Enrich with selected subtitles"
 msgstr "Enrichir avec les sous-titres sélectionnés"
 
-#: pod/completion/apps.py
+#: pod/completion/apps.py pod/completion/templates/video_completion.html
 msgid "Video additions"
 msgstr "Compléments de la vidéo"
 
@@ -2015,24 +2026,12 @@ msgid "Override"
 msgstr "Remplacer"
 
 #: pod/completion/templates/video_completion.html
-msgid "Completion video"
-msgstr "Complétion de la vidéo"
-
-#: pod/completion/templates/video_completion.html
-msgid "Display &quot;Contributor(s)&quot; section"
-msgstr "Afficher la section « Contributeurs »"
-
-#: pod/completion/templates/video_completion.html
 msgid "Contributor(s)"
 msgstr "Contributeurs"
 
 #: pod/completion/templates/video_completion.html
 msgid "Add a new contributor"
 msgstr "Ajouter un nouveau contributeur"
-
-#: pod/completion/templates/video_completion.html
-msgid "Display &quot;Subtitle(s) and Caption(s) &quot; section"
-msgstr "Afficher la section « Sous-titres et Légendes »"
 
 #: pod/completion/templates/video_completion.html
 msgid "Subtitle(s) and Caption(s)"
@@ -2051,20 +2050,12 @@ msgid "Add a new subtitle or caption file"
 msgstr "Ajouter un nouveau fichier de sous-titres ou de légende"
 
 #: pod/completion/templates/video_completion.html
-msgid "Display &quot; Additional resource(s)&quot; section"
-msgstr "Afficher la section « Documents complémentaires »"
-
-#: pod/completion/templates/video_completion.html
 msgid "Additional resource(s)"
 msgstr "Documents complémentaires"
 
 #: pod/completion/templates/video_completion.html
 msgid "Add a new additional resource"
 msgstr "Ajouter un document complémentaire"
-
-#: pod/completion/templates/video_completion.html
-msgid "Display &quot; Overlay(s)&quot; section"
-msgstr "Afficher la section « Superpositions »"
 
 #: pod/completion/templates/video_completion.html
 msgid "Overlay(s)"
@@ -2138,6 +2129,12 @@ msgstr ""
 "malencontreuses."
 
 #: pod/completion/templates/video_completion.html
+#, fuzzy
+#| msgid ": "
+msgid ":"
+msgstr " : "
+
+#: pod/completion/templates/video_completion.html
 msgid ""
 "Document(s) related to this video. These documents will be downloadable by "
 "users."
@@ -2173,7 +2170,7 @@ msgstr ""
 msgid "editor"
 msgstr "éditeur"
 
-#: pod/completion/views.py
+#: pod/completion/utils.py pod/completion/views.py
 #, python-format
 msgid "Additions for the video “%s”"
 msgstr "Compléments pour la vidéo « %s »"
@@ -8448,13 +8445,13 @@ msgstr ""
 "l’adresse suivante : %(email_address)s</p>\n"
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "Your video will be obsolete"
-msgstr "Votre vidéo sera obsolète"
+#, python-format
+msgid "Sending mail to %(to_email)s for video %(title)s."
+msgstr "Envoi d’un courriel à %(to_email)s pour la vidéo %(title)s."
 
 #: pod/video/management/commands/check_obsolete_videos.py
-#, python-format
-msgid "Mail sent to %(to_email)s for video %(title)s."
-msgstr "Courriel envoyé à %(to_email)s pour la vidéo %(title)s."
+msgid "Your video will be obsolete"
+msgstr "Votre vidéo sera obsolète"
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
@@ -8526,10 +8523,11 @@ msgstr "Dans %(deadline)s jours :"
 #: pod/video/management/commands/create_archive_package.py
 #, python-format
 msgid ""
-"Package archiving done. %(amount)s video packaged (%(weight)s - "
-"[%(duration)s])"
+"Package archiving done. %(amount)s video(s) packaged (%(weight)s - "
+"[%(duration)s]) - %(nb_ignored)s video(s) ignored."
 msgstr ""
-"Archivage effectué. %(amount)s vidéos traitées (%(weight)s - [%(duration)s])"
+"Archivage effectué. %(amount)s vidéos traitées (%(weight)s - [%(duration)s]) "
+"- %(nb_ignored)s vidéo(s) ignorée(s)."
 
 #: pod/video/management/commands/create_archive_package.py
 #, python-format
@@ -8549,8 +8547,17 @@ msgstr ""
 "code> sans l’option <code>--dry</code> pour les supprimer de %s."
 
 #: pod/video/management/commands/create_archive_package.py
-msgid "Packaging archived videos on Pod"
-msgstr "Déplacement des vidéos archivées sur Pod"
+msgid ""
+"And below is the list of ignored videos that were not packaged because they "
+"have been recently viewed."
+msgstr ""
+"Vous trouverez ci-dessous la liste des vidéos ignorées qui n'ont pas été "
+"regroupées parce qu'elles ont été visionnées récemment."
+
+#: pod/video/management/commands/create_archive_package.py
+#, python-format
+msgid "Packaging %s archived videos on Pod"
+msgstr "Déplacement de %s vidéos archivées sur Pod"
 
 #: pod/video/models.py pod/video/views.py
 msgid "None / All"
@@ -10376,6 +10383,21 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Completion video"
+#~ msgstr "Complétion de la vidéo"
+
+#~ msgid "Display &quot;Contributor(s)&quot; section"
+#~ msgstr "Afficher la section « Contributeurs »"
+
+#~ msgid "Display &quot;Subtitle(s) and Caption(s) &quot; section"
+#~ msgstr "Afficher la section « Sous-titres et Légendes »"
+
+#~ msgid "Display &quot; Additional resource(s)&quot; section"
+#~ msgstr "Afficher la section « Documents complémentaires »"
+
+#~ msgid "Display &quot; Overlay(s)&quot; section"
+#~ msgstr "Afficher la section « Superpositions »"
 
 #~ msgid "Editing the dressing"
 #~ msgstr "Éditer l’habillage"

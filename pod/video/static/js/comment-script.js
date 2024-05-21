@@ -1,5 +1,5 @@
 /**
- * comment-scripts.js
+ * @file Esup-Pod comment scripts
  * Handle comments under a video in Esup-Pod
  */
 
@@ -328,10 +328,10 @@ class Comment extends HTMLElement {
       `;
       let new_comment = add_comment.querySelector(".new_comment");
       let comment_reply_btn = add_comment.querySelector(".send_reply");
-      comment_reply_btn.addEventListener("click", (e) => {
+      comment_reply_btn.addEventListener("click", () => {
         this.submit_comment_reply(new_comment, add_comment, comment_reply_btn);
       });
-      new_comment.addEventListener("keyup", function (e) {
+      new_comment.addEventListener("keyup", function () {
         // Enable/Disable send button
         if (
           this.value.trim().length > 0 &&
@@ -525,7 +525,7 @@ function vote(comment_action_html, comment_id) {
         return response.json();
       } else {
         let message = gettext("Bad response from the server.");
-        if (response.status == 403) {
+        if (response.status === 403) {
           message = gettext("Sorry, you’re not allowed to vote by now.");
         }
         throw new Error(message);
@@ -615,7 +615,7 @@ function save_comment(
         return response.json();
       } else {
         let message = gettext("Bad response from the server.");
-        if (response.status == 403) {
+        if (response.status === 403) {
           message = gettext("Sorry, you can’t comment this video by now.");
         }
         throw new Error(message);
@@ -753,7 +753,7 @@ function delete_comment(comment) {
         });
       } else {
         let message = gettext("Bad response from the server.");
-        if (response.status == 403) {
+        if (response.status === 403) {
           message = gettext("Sorry, you can’t delete this comment by now.");
         }
         showalert(message, "alert-danger");
@@ -812,6 +812,7 @@ function getElementPosition(element) {
   // get body padding top if exists that will be
   let bodyPaddingTop = Number.parseInt(
     getComputedStyle(document.body)["padding-top"] ?? 0,
+    10,
   );
 
   while (element) {
@@ -905,7 +906,7 @@ function add_user_tag(comment_value, parent_comment) {
  */
 function setBorderLeftColor(comment, parent_element) {
   try {
-    let index = Number.parseInt(parent_element.dataset.level) + 1;
+    let index = Number.parseInt(parent_element.dataset.level, 10) + 1;
     if (index >= COLORS.length) {
       comment.dataset.level = COLORS.length - 1;
       comment.querySelector(".comment_content").style.borderLeft = `4px solid ${
@@ -1196,7 +1197,7 @@ function htmlContainsClass(html_el, classes) {
 function get_node(el, class_name, not) {
   class_name = class_name || "comment_container";
   not = not || "";
-  let selector = !!not ? `.${class_name}:not(.${not})` : `.${class_name}`;
+  let selector = not ? `.${class_name}:not(.${not})` : `.${class_name}`;
   let foundedElement = el.querySelector(selector);
   if (htmlContainsClass(el, class_name) && !htmlContainsClass(el, not)) {
     return el;

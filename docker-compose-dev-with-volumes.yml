@@ -18,7 +18,7 @@ services:
     env_file:
       - ./.env.dev
     ports:
-      - 9090:8080
+      - 8000:8000
     volumes: *pod-volumes
 
   elasticsearch:

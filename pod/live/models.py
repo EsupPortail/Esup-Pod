@@ -73,10 +73,10 @@ class Building(models.Model):
     gmapurl = models.CharField(max_length=250, blank=True, null=True)
     sites = models.ManyToManyField(Site)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def get_headband_url(self):
+    def get_headband_url(self) -> str:
         if self.headband:
             return self.headband.file.url
         else:
@@ -91,8 +91,8 @@ class Building(models.Model):
 
 
 @receiver(post_save, sender=Building)
-def default_site_building(sender, instance, created, **kwargs):
-    if len(instance.sites.all()) == 0:
+def default_site_building(sender, instance, created: bool, **kwargs) -> None:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())
 
 
@@ -214,20 +214,20 @@ class Broadcaster(models.Model):
         editable=False,
     )
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("live:direct", args=[str(self.slug)])
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s - %s" % (self.name, self.url)
 
-    def get_poster_url(self):
+    def get_poster_url(self) -> str:
         if self.poster:
             return self.poster.file.url
         else:
             thumbnail_url = "".join([settings.STATIC_URL, DEFAULT_THUMBNAIL])
             return thumbnail_url
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.slug = slugify(self.name)
         filename = self.slug + ".vtt"
         self.set_broadcaster_file(filename)
@@ -242,7 +242,7 @@ class Broadcaster(models.Model):
     def sites(self):
         return self.building.sites
 
-    def check_recording(self):
+    def check_recording(self) -> bool:
         from pod.live.pilotingInterface import get_piloting_implementation
 
         impl = get_piloting_implementation(self)
@@ -251,7 +251,7 @@ class Broadcaster(models.Model):
         else:
             return False
 
-    def is_recording(self):
+    def is_recording(self) -> bool:
         try:
             return self.check_recording()
         except Exception:
@@ -274,7 +274,7 @@ class Broadcaster(models.Model):
         url = reverse("live:event_immediate_edit", args={self.id})
         return generate_qrcode(url, alt, request)
 
-    def set_broadcaster_file(self, filename):
+    def set_broadcaster_file(self, filename) -> None:
         trans_folder = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER)
         trans_file = os.path.join(MEDIA_ROOT, LIVE_TRANSCRIPTIONS_FOLDER, filename)
         empty_trans_file = os.path.join(
@@ -465,7 +465,7 @@ class Event(models.Model):
         verbose_name_plural = _("Events")
         ordering = ["start_date"]
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         if not self.id:
             try:
                 new_id = get_nextautoincrement(Event)
@@ -481,35 +481,35 @@ class Event(models.Model):
         self.slug = "%s-%s" % (new_id, slugify(self.title))
         super(Event, self).save(*args, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.id:
             return "%s - %s" % ("%04d" % self.id, self.title)
         else:
             return "None"
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("live:event", args=[str(self.slug)])
 
-    def get_full_url(self, request=None):
+    def get_full_url(self, request=None) -> str:
         """Get the video full URL."""
         full_url = "".join(
             ["//", get_current_site(request).domain, self.get_absolute_url()]
         )
         return full_url
 
-    def get_hashkey(self):
+    def get_hashkey(self) -> str:
         return hashlib.sha256(
             ("%s-%s" % (SECRET_KEY, self.id)).encode("utf-8")
         ).hexdigest()
 
-    def get_thumbnail_card(self):
+    def get_thumbnail_card(self) -> str:
         if self.thumbnail:
             return self.thumbnail.file.url
         else:
             thumbnail_url = static(DEFAULT_EVENT_THUMBNAIL)
             return thumbnail_url
 
-    def is_current(self):
+    def is_current(self) -> bool:
         """Test if event is currently open."""
         # TODO: FIX this to have possibility to run test between 2 days
         """
@@ -531,14 +531,14 @@ class Event(models.Model):
         else:
             return False
 
-    def is_past(self):
+    def is_past(self) -> bool:
         """Test if event has happened in past."""
         if self.end_date:
             return self.end_date <= timezone.localtime(timezone.now())
         else:
             return False
 
-    def is_coming(self):
+    def is_coming(self) -> bool:
         """Test if event will happen in future."""
         if self.start_date:
             return timezone.localtime(timezone.now()) < self.start_date

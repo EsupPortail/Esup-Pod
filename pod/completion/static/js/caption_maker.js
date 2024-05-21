@@ -7,6 +7,13 @@
   global current_folder
 */
 
+// Read-only globals defined in video-script.html
+/*
+global player
+*/
+
+/* exported processProxyVttResponse */
+
 // Global vars
 var fileLoaded = false;
 var fileLoadedId = undefined;
@@ -137,14 +144,14 @@ document.addEventListener("click", (evt) => {
   saveModal.hide();
 
   let form_save_captions = document.getElementById("form_save_captions");
-  if (evt.target.id == "modal-btn-override") {
+  if (evt.target.id === "modal-btn-override") {
     document
       .getElementById("form_save_captions")
       .querySelector('input[name="file_id"]').value = fileLoadedId;
     //form_save_captions.querySelector('input[name="enrich_ready"]').value = "";
     updateCaptionsArray(caption_content.value);
     send_form_save_captions();
-  } else if (evt.target.id == "modal-btn-new") {
+  } else if (evt.target.id === "modal-btn-new") {
     form_save_captions.querySelector('input[name="file_id"]').value = "";
     //form_save_captions.querySelector('input[name="enrich_ready"]').value="";
 
@@ -160,7 +167,7 @@ document.addEventListener("click", (evt) => {
  */
 const send_form_save_captions = function () {
   let fileName = document.getElementById("captionFilename").value;
-  if (fileName.length == 0) {
+  if (fileName.length === 0) {
     fileName = `${file_prefix}_captions_${Date.now()}`;
   }
 
@@ -273,7 +280,7 @@ document.getElementById("addSubtitle").addEventListener("click", function () {
   var captionsEndTime = existingCaptionsEndTime();
   addCaption(
     captionsEndTime,
-    playTime > captionsEndTime ? playTime : parseInt(captionsEndTime) + 2,
+    playTime > captionsEndTime ? playTime : parseInt(captionsEndTime, 10) + 2,
     "",
   );
 });
@@ -287,7 +294,7 @@ document
       autoPauseAtTime = -1;
 
       document.getElementById("captionContent").value = "";
-      document.getElementById("captionTitle").innerHTML = "&nbsp;";
+      document.getElementById("captionTitle").textContent = "&nbsp;";
       document.getElementById("textCaptionEntry").value = "";
       document.querySelectorAll(".newEditorBlock").forEach((e) => {
         e.remove();
@@ -338,7 +345,7 @@ function displayExistingCaption(seconds) {
     document.getElementById("textCaptionEntry").value = theCaption.caption;
     //document.getElementById("previewTrack").value = theCaption.caption;
   } else {
-    document.getElementById("captionTitle").innerHTML = "&nbsp;";
+    document.getElementById("captionTitle").textContent = "&nbsp;";
     document.getElementById("textCaptionEntry").value = "";
     //document.getElementById("previewTrack").value = "";
   }
@@ -477,8 +484,7 @@ function videoTimeUpdateEventHandler() {
     ]);
 
     let divs = document.querySelectorAll(".vjs-text-track-display div");
-    divs[divs.length - 1].innerText = "";
-
+    divs[divs.length - 1].innertext = "";
     if (captionBeingDisplayed != -1) {
       document.getElementById("textCaptionEntry").value = "";
       captionBeingDisplayed = -1;
@@ -632,7 +638,7 @@ document
   .getElementById("textCaptionEntry")
   .addEventListener("keydown", function (e) {
     var code = e.key ?? e.code;
-    if (code == "ENTER" && !e.shiftKey) {
+    if (code === "ENTER" && !e.shiftKey) {
       document.getElementById("saveCaptionAndPlay").click();
       return false;
     }
@@ -859,7 +865,9 @@ function createCaptionBlock(newCaption, spawnFunction) {
       let captionObj = {
         start: newCaption.end,
         end:
-          playTime > newCaption.end ? playTime : parseInt(newCaption.end) + 2,
+          playTime > newCaption.end
+            ? playTime
+            : parseInt(newCaption.end, 10) + 2,
         caption: "",
       };
       let index = Array.from(this.div.parentNode.children).indexOf(this.div);
@@ -928,11 +936,11 @@ function createCaptionBlock(newCaption, spawnFunction) {
       );
 
       this.startTimeInput.addEventListener("keydown", (e) => {
-        if (e.key == "ENTER") this.disableEdit();
+        if (e.key === "ENTER") this.disableEdit();
       });
 
       this.endTimeInput.addEventListener("keydown", (e) => {
-        if (e.key == "ENTER") this.disableEdit();
+        if (e.key === "ENTER") this.disableEdit();
       });
 
       document.addEventListener("click", (e) => {
@@ -1073,7 +1081,7 @@ let editorShortcuts = {
    */
   notFocused: function () {
     var focused = document.activeElement;
-    return focused.length == 0;
+    return focused.length === 0;
   },
 
   init: function () {
@@ -1185,7 +1193,7 @@ function formatTime(seconds) {
   var mm = Math.floor(seconds / 60) % 60;
   var ss = seconds % 60;
   return (
-    (hh == 0 ? "" : (hh < 10 ? "0" : "") + hh.toString() + ":") +
+    (hh === 0 ? "" : (hh < 10 ? "0" : "") + hh.toString() + ":") +
     (mm < 10 ? "0" : "") +
     mm.toString() +
     ":" +
@@ -1298,9 +1306,9 @@ function loadCaptionFile(fileObject) {
  */
 function processProxyVttResponse(obj) {
   obj = JSON.parse(obj);
-  if (obj.status == "error")
+  if (obj.status === "error")
     alert(gettext("Error loading caption file: ") + obj.message);
-  else if (obj.status == "success") {
+  else if (obj.status === "success") {
     //  delete any captions we've got
     captionsArray.length = 0;
     fileLoaded = true;
@@ -1366,13 +1374,13 @@ function parseAndLoadWebVTT(vtt) {
     cueStart = cueEnd = cueText = null;
   }
 
-  for (var i = 1; i < vttLines.length; i++) {
+  for (let i = 1; i < vttLines.length; i++) {
     if (rxBlankLine.test(vttLines[i])) {
       appendCurrentCaption();
       continue;
     }
 
-    if (!cueStart && !cueEnd && !cueText && vttLines[i].indexOf("-->") == -1) {
+    if (!cueStart && !cueEnd && !cueText && vttLines[i].indexOf("-->") === -1) {
       // this is a cue identifier we're ignoring
       continue;
     }
@@ -1381,7 +1389,7 @@ function parseAndLoadWebVTT(vtt) {
     if (timeMatch) {
       appendCurrentCaption();
       cueStart = parseTime(timeMatch[1]);
-      if (cueStart == 0) cueStart = "0.0";
+      if (cueStart === 0) cueStart = "0.0";
       cueEnd = parseTime(timeMatch[2]);
       continue;
     }
@@ -1465,25 +1473,25 @@ const onPlayerReady = function (player, options) {
     endKeyframe.style = "left" + `${endPercent}%`;
     regionHighlight.after(endKeyframe);
   };
-
-  /**
-   * Seek video player to absolute `time`.
-   * @param  {[type]} time [description]
-   */
-  seekVideoTo = function (time) {
-    player.userActive(true);
-    player.currentTime(time);
-  };
-
-  /**
-   * Seek video player to relative `time`.
-   * @param  {[type]} time [description]
-   */
-  seekVideo = function (time) {
-    player.userActive(true);
-    player.currentTime(player.currentTime() + time);
-  };
 };
+
+/**
+ * Seek video player to absolute `time`.
+ * @param  {[type]} time [description]
+ */
+function seekVideoTo(time) {
+  player.userActive(true);
+  player.currentTime(time);
+}
+
+/**
+ * Seek video player to relative `time`.
+ * @param  {[type]} time [description]
+ */
+function seekVideo(time) {
+  player.userActive(true);
+  player.currentTime(player.currentTime() + time);
+}
 
 /**
  * Timeline regions

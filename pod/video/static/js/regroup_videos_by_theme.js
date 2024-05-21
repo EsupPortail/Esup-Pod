@@ -1,6 +1,10 @@
 /**
  * @file Esup-Pod functions for regroup_videos_by_theme.
  */
+
+/* Read-only globals defined in channel.html */
+/* global has_more_themes */
+
 import { Helper } from "/static/js/utils.js";
 
 function run(has_more_themes, Helper) {
@@ -124,20 +128,17 @@ function run(has_more_themes, Helper) {
         </div>
       </div>
       <div class="card-thumbnail">
-        <a class="link-center-pod" href="${VIDEO_URL}${
-          video.slug
-        }" title="${video.title.charAt(0).toUpperCase()}${video.title.slice(
-          1,
-        )}">
+        <a class="link-center-pod" href="${VIDEO_URL}${video.slug}"
+           title="${video.title.charAt(0).toUpperCase()}${video.title.slice(1)}">
           ${video.thumbnail}
         </a>
       </div>
       <div class="card-body px-3 py-2">
         ${footer}
         <span class="small video-title">
-          <a href="${VIDEO_URL}${video.slug}">${video.title
-            .charAt(0)
-            .toUpperCase()}${video.title.slice(1)}</a>
+          <a href="${VIDEO_URL}${video.slug}">
+            ${video.title.charAt(0).toUpperCase()}${video.title.slice(1)}
+          </a>
         </span>
       </div>
     `;
@@ -208,7 +209,10 @@ function run(has_more_themes, Helper) {
     const themes_contents = scroll_wrapper.querySelectorAll(
       ".list-children-theme",
     );
-    if (this.isEqualNode(next_btn) && curr_page < Number.parseInt(max_pages)) {
+    if (
+      this.isEqualNode(next_btn) &&
+      curr_page < Number.parseInt(max_pages, 10)
+    ) {
       current_position -= 100;
       // swipe content on the right
       themes_contents.forEach(
@@ -220,7 +224,7 @@ function run(has_more_themes, Helper) {
     } else if (this.isEqualNode(previous_btn) && current_position < 0) {
       current_position += 100;
       next_btn.classList.remove("disabled");
-      if (current_position == 0) previous_btn.classList.add("disabled");
+      if (current_position === 0) previous_btn.classList.add("disabled");
       // swipe content on the left
       themes_contents.forEach(
         (theme_content) =>
@@ -229,7 +233,7 @@ function run(has_more_themes, Helper) {
     }
     curr_page = Math.abs(current_position) / 100 + 1;
     if (
-      curr_page === Number.parseInt(max_pages) &&
+      curr_page === Number.parseInt(max_pages, 10) &&
       !next_btn.classList.contains("disabled")
     )
       next_btn.classList.add("disabled");
@@ -247,7 +251,7 @@ function run(has_more_themes, Helper) {
    * Manage next/ previous  click Event
    */
   [previous_btn, next_btn].forEach((btn) => {
-    if (!!btn) btn.addEventListener("click", nextPreviousHandler);
+    if (btn) btn.addEventListener("click", nextPreviousHandler);
   });
 
   /**
@@ -277,12 +281,12 @@ function run(has_more_themes, Helper) {
   const video_loader_btn = document.querySelector(
     ".video-section #load-more-videos",
   );
-  if (!!video_loader_btn) {
+  if (video_loader_btn) {
     video_loader_btn.addEventListener("click", loadMoreVideos);
     // Overriding click event to loading more videos
     let loadOnce = true;
     let alreadyClicked = false;
-    window.onscroll = function (e) {
+    window.onscroll = function () {
       const isVisible = Helper.isElementInView(video_loader_btn);
       if (isVisible && loadOnce) {
         video_loader_btn.click();

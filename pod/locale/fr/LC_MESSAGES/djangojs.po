@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-17 14:19+0200\n"
+"POT-Creation-Date: 2024-05-21 14:16+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -235,14 +235,6 @@ msgid "Are you sure you want to delete this overlay?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer cette superposition ?"
 
 #: pod/completion/static/js/completion.js
-msgid "Display"
-msgstr "Afficher"
-
-#: pod/completion/static/js/completion.js
-msgid "section"
-msgstr "section"
-
-#: pod/completion/static/js/completion.js
 msgid "Please enter a name from 2 to 100 caracteres."
 msgstr "Veuillez entrer un nom entre 2 et 200 caractères."
 
@@ -290,12 +282,6 @@ msgstr "Veuillez sélectionner un document"
 #: pod/completion/static/js/completion.js
 msgid "Iframe and Script tags are not allowed."
 msgstr "Les balises Iframe et Script ne sont pas autorisées."
-
-#: pod/enrichment/static/js/enrichment.js pod/main/static/js/main.js
-#: pod/video/static/js/ajax-display-channels.js
-#: pod/video/static/js/comment-script.js pod/video/static/js/dashboard.js
-msgid "Close"
-msgstr "Fermer"
 
 #: pod/enrichment/static/js/enrichment.js
 msgid "Please enter a correct start from 0 to "
@@ -459,14 +445,6 @@ msgstr "Suppression du thème réussie."
 msgid "Action performed successfully."
 msgstr "Action réalisée avec succès."
 
-#: pod/main/static/js/main.js
-msgid "Change your picture"
-msgstr "Changer votre image"
-
-#: pod/main/static/js/main.js
-msgid "Add your picture"
-msgstr "Ajouter votre image"
-
 #: pod/main/static/js/main.js pod/video/static/js/video-access-token.js
 msgid "Text copied"
 msgstr "Texte copié"
@@ -488,6 +466,11 @@ msgid "The file extension not in the allowed extension:"
 msgstr ""
 "Cette extension de fichier n’est pas présente dans les extensions "
 "autorisées :"
+
+#: pod/main/static/js/main.js pod/video/static/js/ajax-display-channels.js
+#: pod/video/static/js/comment-script.js pod/video/static/js/dashboard.js
+msgid "Close"
+msgstr "Fermer"
 
 #: pod/main/static/js/videojs-info-controlbar.js
 msgid "Info"
@@ -526,20 +509,21 @@ msgid "Something went wrong."
 msgstr "Quelque-chose s’est mal passé."
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
-msgid "<b>Public:</b> the playlist can be accessed by anyone."
-msgstr "<b>Public :</b> la liste de lecture est accessible par tous."
+msgid "<strong>Public:</strong> the playlist can be accessed by anyone."
+msgstr "<strong>Public :</strong> la liste de lecture est accessible par tous."
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
 msgid ""
-"<b>Password-protected:</b> the playlist can be accessed by anyone with the "
-"appropriate link and password."
+"<strong>Password-protected:</strong> the playlist can be accessed by anyone "
+"with the appropriate link and password."
 msgstr ""
-"<b>Protégé par un mot de passe :</b> la liste de lecture est accessible à "
-"toute personne disposant du lien et du mot de passe appropriés."
+"<strong>Protégé par un mot de passe :</strong> la liste de lecture est "
+"accessible à toute personne disposant du lien et du mot de passe appropriés."
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
-msgid "<b>Private:</b> only you have access to this playlist."
-msgstr "<b>Privé :</b> vous seul avez accès à cette liste de lecture."
+msgid "<strong>Private:</strong> only you have access to this playlist."
+msgstr ""
+"<strong>Privé :</strong> vous seul avez accès à cette liste de lecture."
 
 #: pod/playlist/static/playlist/js/playlist-reorganize.js
 msgid "Save your reorganization"
@@ -935,35 +919,8 @@ msgstr "Ajouts en favoris total depuis la création"
 msgid "Slug"
 msgstr "Titre court"
 
-#~ msgid "Add a caption/subtitle after this one"
-#~ msgstr "Ajouter un(e) légende/sous-titre après celui-ci"
+#~ msgid "Display"
+#~ msgstr "Afficher"
 
-#~ msgid "Delete this caption/subtitle"
-#~ msgstr "Supprimer ce(tte) légende/sous-titre"
-
-#~ msgid "Change image"
-#~ msgstr "Changer d’image"
-
-#~ msgid "Change file"
-#~ msgstr "Changer de fichier"
-
-#~ msgid "Reply to comment"
-#~ msgstr "Répondre au commentaire"
-
-#~ msgid "Reply"
-#~ msgstr "Répondre"
-
-#~ msgid "Add a public comment"
-#~ msgstr "Ajouter un commentaire public"
-
-#~ msgid "Send"
-#~ msgstr "Envoyer"
-
-#~ msgid "Delete the category"
-#~ msgstr "Supprimer la catégorie"
-
-#~ msgid "Success!"
-#~ msgstr "Succès !"
-
-#~ msgid "Error…"
-#~ msgstr "Erreur…"
+#~ msgid "section"
+#~ msgstr "section"
