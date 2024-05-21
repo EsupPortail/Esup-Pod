@@ -86,14 +86,14 @@ class MainViewsTestCase(TestCase):
                 "description": "pod",
                 "captcha_0": captcha.hashkey,
                 "captcha_1": captcha.response,
-                "url_referrer": "http://localhost:8000/",
+                "url_referrer": "http://pod.localhost:8000/",
                 "firstname": "",
             },
         )
         messages = list(response.wsgi_request._messages)
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), _("Your message has been sent."))
-        self.assertRedirects(response, "http://localhost:8000/")
+        self.assertRedirects(response, "http://pod.localhost:8000/")
         print("   --->  test_contact_us of mainViewsTestCase: OK!")
         # Form is not valid
         #  /!\  voir fonction clean de ContactUsForm segment if

@@ -8,7 +8,7 @@ from django.db.models.signals import post_save, pre_delete
 
 import threading
 
-ES_URL = getattr(settings, "ES_URL", ["http://127.0.0.1:9200/"])
+ES_URL = getattr(settings, "ES_URL", ["http://elasticsearch.localhost:9200/"])
 
 # do it with contributor, overlay, chapter etc.
 
