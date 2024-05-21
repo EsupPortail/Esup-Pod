@@ -247,9 +247,7 @@ class Command(BaseCommand):
             if vid.recentViewcount > 0:
                 # Do not archive a video with recent views.
                 # (if video has been shared with a token, it can still be viewed)
-                print(
-                    "  * IGNORED (%s recent views)" % vid.recentViewcount
-                )
+                print("  * IGNORED (%s recent views)" % vid.recentViewcount)
                 ignored_video.append(str(vid))
                 continue
 
@@ -277,7 +275,7 @@ class Command(BaseCommand):
             "amount": total_processed,
             "weight": sizeof_fmt(total_weight),
             "duration": total_duration,
-            "nb_ignored": len(ignored_video)
+            "nb_ignored": len(ignored_video),
         }
 
         print(total_msg)
