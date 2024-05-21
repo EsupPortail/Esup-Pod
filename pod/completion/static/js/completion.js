@@ -405,7 +405,7 @@ function verify_fields(form) {
     var new_role = document.getElementById("id_role").value;
     var new_name = document.getElementById("id_name").value;
     document
-      .querySelectorAll("#table-list-contributors tbody > tr")
+      .querySelectorAll("#list-contributor tbody > tr")
       .forEach((tr) => {
         if (
           id != tr.querySelector("input[name=id]").value &&
