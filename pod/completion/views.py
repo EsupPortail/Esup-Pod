@@ -48,7 +48,7 @@ __LANG_CHOICES_DICT__ = {
 }
 
 
-def get_completion_home_page_title(video: Video):
+def get_completion_home_page_title(video: Video) -> str:
     """Get page title."""
     return _("Additions for the video “%s”") % video.title
 
