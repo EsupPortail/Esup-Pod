@@ -190,6 +190,16 @@ def enhance_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
     ):
         messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
         raise PermissionDenied
+    if request.GET.get("src", None) is None:
+        aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
+        enhancement = AIEnhancement.objects.filter(video=video).first()
+        latest_version = aristote.get_latest_enhancement_version(enhancement.ai_enhancement_id_in_aristote)
+        web_vtt = json_to_web_vtt(latest_version["transcript"]["sentences"], video.duration)
+        saveVTT(video, web_vtt, latest_version["transcript"]["language"])
+        latest_track = Track.objects.filter(video=video,).order_by("id").first()
+        return redirect(
+            reverse("ai_enhancement:enhance_subtitles", args=[video.slug]) + '?src=' + str(latest_track.src_id) + '&generated=' + str(True)
+        )
 
     video_folder, created = UserFolder.objects.get_or_create(
         name=video.slug,
@@ -226,15 +236,12 @@ def enhance_form(request: WSGIRequest, video: Video) -> HttpResponse:
             if discipline in Discipline.objects.all():
                 video.discipline.add(discipline)
             video.save()
-            video = form.instance
-            aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
-            enhancement = AIEnhancement.objects.filter(video=video).first()
-            latest_version = aristote.get_latest_enhancement_version(enhancement.ai_enhancement_id_in_aristote)
-            web_vtt = json_to_web_vtt(latest_version["transcript"]["sentences"], video.duration)
-            saveVTT(video, web_vtt, latest_version["transcript"]["language"])
-            latest_track = Track.objects.filter(video=video,).order_by("id").first()
+            if request.POST.get("_saveandback", None) is not None:
+                return redirect(
+                    reverse("video:video", args=[video.slug])
+                )
             return redirect(
-                reverse("ai_enhancement:enhance_subtitles", args=[video.slug]) + '?src=' + str(latest_track.src_id) + '&generated=' + str(True)
+                reverse("ai_enhancement:enhance_subtitles", args=[video.slug])
             )
         else:
             return render(

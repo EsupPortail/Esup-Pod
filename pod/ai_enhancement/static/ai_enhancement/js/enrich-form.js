@@ -180,8 +180,9 @@ function setInformationOrEmptyString(element, value, message) {
  * @param videoTitle {string} The video title.
  * @param videoDescription {string} The video description.
  * @param videoDiscipline {string} The video discipline.
+ * @param json_url {string} The url to fetch to get json information.
  */
-function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipline) {
+function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipline, json_url) {
   const elements = [
     'title',
     'description',
@@ -194,7 +195,7 @@ function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipl
       'Content-Type': 'application/json',
     },
   };
-  fetch(`//${window.location.host}/ai-enhancement/enrich-video/${videoSlug}/json/`, options)
+  fetch(json_url, options)
     .then(response => response.json())
     .then(response => {
       for (let element of elements) {

@@ -29,7 +29,18 @@
   </li>
 {% endblock breadcrumbs %}
 
+{% block main_page_title %}
+{% endblock main_page_title %}
+
 {% block page_content %}
+<h1 class="h2">
+  {% trans "Enrich with Aristote AI" %}
+  <span>
+    <a href="{% url 'ai_enhancement:enhance_subtitles' video_slug=video.slug %}" class="btn btn-primary btn-sm m-2">
+      <i class="bi bi-file-text" aria-hidden="true"></i>&nbsp;{% trans "Go to subtitle part" %}
+    </a>
+  </span>
+</h1>
   <form method="POST" action="{% url 'ai_enhancement:enhance_video' video_slug=video.slug %}">
     {% csrf_token %}
     {% if form.errors %}
@@ -85,7 +96,9 @@
       {% endwith %}
     {% endfor %}
     <div class="text-center mb-3">
-      <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+      <button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandback"><i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans "Save and go back to the video" %}</button>
+      <button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandsubtitle"><i class="bi bi-file-text" aria-hidden="true"></i>&nbsp;{% trans "Save and go to subtitle part" %}</button>
+      <a href="{% url 'video:video' slug=form.instance.slug %}" class="btn btn-secondary btn-sm m-2"><i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans 'Back to the video' %}</a>
     </div>
   </form>
 {% endblock page_content %}
@@ -99,6 +112,6 @@
   {{ form.media }}
   <script src="{% static 'ai_enhancement/js/enrich-form.js' %}?ver={{ VERSION }}"></script>
   <script>
-    addEventListeners("{{ video.slug }}", "{{ video.title }}", "{{ video.description|safe }}", "{{ video.disciplines }}");
+    addEventListeners("{{ video.slug }}", "{{ video.title }}", "{{ video.description|safe }}", "{{ video.disciplines }}", "{% url 'ai_enhancement:enhance_video_json' video_slug=video.slug %}");
   </script>
 {% endblock more_script %}

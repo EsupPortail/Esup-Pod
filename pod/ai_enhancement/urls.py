@@ -12,14 +12,14 @@ app_name = "ai_enhancement"
 
 urlpatterns = [
     path("webhook/", toggle_webhook, name="webhook"),
-    path("enrich-video/<slug:video_slug>/", enhance_video, name="enhance_video"),
+    path("enhance_video/<slug:video_slug>/", enhance_video, name="enhance_video"),
     path(
-        "enrich-subtitles/<slug:video_slug>/",
+        "enhance_subtitles/<slug:video_slug>/",
         enhance_subtitles,
         name="enhance_subtitles"
     ),
     path(
-        "enrich-video/<slug:video_slug>/json/",
+        "enhance_video_json/<slug:video_slug>/json/",
         enhance_video_json,
         name="enhance_video_json"
     ),
