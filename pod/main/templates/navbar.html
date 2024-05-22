@@ -195,7 +195,7 @@
                 </label>
               </li>
             {% endif %}
-            <li class="pod-navbar__theme-switch__item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Automaticaly select and display the first available subtitle at the start of each video play.' %}">
+            <li class="pod-navbar__theme-switch__item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Automaticaly display subtitle at the start of each video play.' %} {% trans 'If no subtitle corresponds to the current language, the first available will be selected.'%}">
               <label for="checkbox-subtitle">
                 <span class="form-label">{% trans 'Auto show subtitles' %}</span>
                 <span class="pod-switch">
