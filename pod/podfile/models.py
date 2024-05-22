@@ -53,7 +53,7 @@ class UserFolder(models.Model):
         ordering = ["name"]
         app_label = "podfile"
 
-    def clean(self):
+    def clean(self) -> None:
         if self.name == "Home":
             same_home = UserFolder.objects.filter(owner=self.owner, name="Home")
             if same_home:
@@ -61,16 +61,16 @@ class UserFolder(models.Model):
                     "A user cannot have have multiple home directories."
                 )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "{0}".format(self.name)
 
-    def get_all_files(self):
+    def get_all_files(self) -> list:
         file_list = self.customfilemodel_set.all()
         image_list = self.customimagemodel_set.all()
         result_list = sorted(chain(image_list, file_list), key=attrgetter("uploaded_at"))
         return result_list
 
-    def delete(self):
+    def delete(self) -> None:
         for file in self.customfilemodel_set.all():
             file.delete()
         for img in self.customimagemodel_set.all():
@@ -79,7 +79,7 @@ class UserFolder(models.Model):
 
 
 @receiver(post_save, sender=User)
-def create_owner_directory(sender, instance, created, **kwargs):
+def create_owner_directory(sender, instance, created: bool, **kwargs) -> None:
     if created:
         try:
             UserFolder.objects.create(owner=instance, name="home")
@@ -91,7 +91,7 @@ def create_owner_directory(sender, instance, created, **kwargs):
             print(msg)
 
 
-def get_upload_path_files(instance, filename):
+def get_upload_path_files(instance, filename) -> str:
     user_rep = (
         instance.created_by.owner.hashkey
         if (instance.created_by.owner)
@@ -125,16 +125,16 @@ class BaseFileModel(models.Model):
         on_delete=models.CASCADE,
     )
 
-    def save(self, **kwargs):
+    def save(self, **kwargs) -> None:
         path, ext = os.path.splitext(self.file.name)
         # if not self.name or self.name == "":
         self.name = os.path.basename(path)
         return super(BaseFileModel, self).save(**kwargs)
 
-    def class_name(self):
+    def class_name(self) -> str:
         return self.__class__.__name__
 
-    def file_exist(self):
+    def file_exist(self) -> bool:
         return self.file and os.path.isfile(self.file.path)
 
     class Meta:
@@ -146,11 +146,11 @@ class CustomFileModel(BaseFileModel):
     file = models.FileField(upload_to=get_upload_path_files, max_length=255)
 
     @property
-    def file_ext(self):
+    def file_ext(self) -> str:
         return self.file.path.rpartition(".")[-1].lower()
 
     @property
-    def file_type(self):
+    def file_type(self) -> str:
         filetype = mimetypes.guess_type(self.file.path)[0]
         if filetype is None:
             filetype = self.file_ext
@@ -159,18 +159,18 @@ class CustomFileModel(BaseFileModel):
     file_type.fget.short_description = _("Get the file type")
 
     @property
-    def file_size(self):
+    def file_size(self) -> int:
         return os.path.getsize(self.file.path)
 
     file_size.fget.short_description = _("Get the file size")
 
-    def delete(self):
+    def delete(self) -> None:
         if self.file:
             if os.path.isfile(self.file.path):
                 os.remove(self.file.path)
         super(CustomFileModel, self).delete()
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.file and os.path.isfile(self.file.path):
             return "%s (%s, %s)" % (self.name, self.file_type, self.file_size)
         else:
@@ -186,7 +186,7 @@ class CustomImageModel(BaseFileModel):
     file = models.ImageField(upload_to=get_upload_path_files, max_length=255)
 
     @property
-    def file_type(self):
+    def file_type(self) -> str:
         filetype = mimetypes.guess_type(self.file.path)[0]
         if filetype is None:
             fname, dot, extension = self.file.path.rpartition(".")
@@ -196,12 +196,12 @@ class CustomImageModel(BaseFileModel):
     file_type.fget.short_description = _("Get the file type")
 
     @property
-    def file_size(self):
+    def file_size(self) -> int:
         return os.path.getsize(self.file.path)
 
     file_size.fget.short_description = _("Get the file size")
 
-    def delete(self):
+    def delete(self) -> None:
         if self.file:
             delete(self.file)
             if os.path.isfile(self.file.path):

@@ -48,7 +48,7 @@ USE_DEBUG_TOOLBAR = True
 # that this Django site is allowed to serve.
 #
 # https://docs.djangoproject.com/en/3.2/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["localhost"]
+ALLOWED_HOSTS = ["pod.localhost"]
 
 ##
 # Session settings

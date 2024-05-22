@@ -2,7 +2,7 @@
 {% if xml == True %}<rdf:Description rdf:about="http://dublincore.org/">{% endif %}
 {% for key, value in video.get_dublin_core.items %}
   {% if xml == True %}
-    <{{key}}>{{value|metaformat|striptags|truncatechars:300}}</{{key}}>
+    <{{key}}>{{value|metaformat|striptags}}</{{key}}>
   {% else %}
     <meta name="{{key}}" content="{{key|metaformat|safe|striptags|truncatechars:300}}" />
   {% endif %}

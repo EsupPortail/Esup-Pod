@@ -1,12 +1,19 @@
 
 [report]
+# Add a column to the report with a summary of which lines (and branches) the tests missed.
+# This makes it easy to go from a failure to fixing it, rather than using the HTML report.
+show_missing = True
 
-# nb: you can also add a "# pragma: no cover"
-# on each function you don't want to be covered
 [run]
 relative_files = True
 source = .
+
+# This ensures that your code runs through both the True and False paths of each conditional statement.
+# branch = True
+
 # Here you can exclude a file from coverage testing
+# nb: you can also add a "# pragma: no cover"
+# on each function you don't want to be covered
 omit = pod/*settings*.py
        pod/custom/settings*.py
        pod/*apps.py

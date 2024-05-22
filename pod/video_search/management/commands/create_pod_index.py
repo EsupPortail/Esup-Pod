@@ -8,7 +8,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-ES_URL = getattr(settings, "ES_URL", ["http://127.0.0.1:9200/"])
+ES_URL = getattr(settings, "ES_URL", ["http://elasticsearch.localhost:9200/"])
 
 
 class Command(BaseCommand):

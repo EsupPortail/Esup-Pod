@@ -45,7 +45,7 @@ class ChannelTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up some test channels."""
         site = Site.objects.get(id=1)
         self.c = Channel.objects.create(title="ChannelTest1")
@@ -77,7 +77,7 @@ class ChannelTestView(TestCase):
         self.c2.site = site
 
     @override_settings(ORGANIZE_BY_THEME=False)
-    def test_get_channel_view(self):
+    def test_get_channel_view(self) -> None:
         reload(views)
         self.client = Client()
         response = self.client.get("/%s/" % self.c.slug)
@@ -97,7 +97,7 @@ class ChannelTestView(TestCase):
         print("   --->  test_channel_with_theme_in_argument of ChannelTestView: OK!")
 
     @override_settings(ORGANIZE_BY_THEME=True)
-    def test_regroup_videos_by_theme(self):
+    def test_regroup_videos_by_theme(self) -> None:
         reload(views)
         # Test get videos and theme from channel view
         self.client = Client()
@@ -192,7 +192,7 @@ class MyChannelsTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
@@ -210,7 +210,7 @@ class MyChannelsTestView(TestCase):
         user2.owner.save()
         print(" --->  SetUp of MyChannelsTestView: OK!")
 
-    def test_get_mychannels_view(self):
+    def test_get_mychannels_view(self) -> None:
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
@@ -231,7 +231,7 @@ class ChannelEditTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
@@ -247,7 +247,7 @@ class ChannelEditTestView(TestCase):
 
         print(" --->  SetUp of ChannelEditTestView: OK!")
 
-    def test_channel_edit_get_request(self):
+    def test_channel_edit_get_request(self) -> None:
         self.client = Client()
         channel = Channel.objects.get(title="ChannelTest1")
         self.user = User.objects.get(username="pod")
@@ -265,7 +265,7 @@ class ChannelEditTestView(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_channel_edit_get_request of ChannelEditTestView: OK!")
 
-    def test_channel_edit_post_request(self):
+    def test_channel_edit_post_request(self) -> None:
         self.client = Client()
         channel = Channel.objects.get(title="ChannelTest1")
         self.user = User.objects.get(username="pod")
@@ -288,7 +288,7 @@ class ThemeEditTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         c1 = Channel.objects.create(title="ChannelTest1")
@@ -314,7 +314,7 @@ class ThemeEditTestView(TestCase):
         user.owner.save()
         print(" --->  SetUp of ThemeEditTestView: OK!")
 
-    def test_theme_edit_get_request(self):
+    def test_theme_edit_get_request(self) -> None:
         self.client = Client()
         channel = Channel.objects.get(title="ChannelTest1")
         self.user = User.objects.get(username="pod")
@@ -327,7 +327,7 @@ class ThemeEditTestView(TestCase):
         self.assertEqual(channel.themes.all().count(), 3)
         print(" --->  test_theme_edit_get_request of ThemeEditTestView: OK!")
 
-    def test_theme_edit_post_request(self):
+    def test_theme_edit_post_request(self) -> None:
         self.client = Client()
         channel = Channel.objects.get(title="ChannelTest1")
         self.user = User.objects.get(username="pod")
@@ -411,7 +411,7 @@ class DashboardTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
@@ -454,7 +454,7 @@ class DashboardTestView(TestCase):
 
         print(" --->  SetUp of MyChannelsTestView: OK!")
 
-    def test_get_dashboard_view(self):
+    def test_get_dashboard_view(self) -> None:
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
@@ -475,7 +475,7 @@ class VideosTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         # type, discipline, owner et tag
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
@@ -538,7 +538,7 @@ class VideosTestView(TestCase):
         print(" --->  SetUp of VideosTestView: OK!")
 
     @override_settings(HIDE_USER_FILTER=False)
-    def test_get_videos_view(self):
+    def test_get_videos_view(self) -> None:
         self.client = Client()
         url = reverse("videos:videos")
         response = self.client.get(url)
@@ -596,7 +596,7 @@ class VideoTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         # type, discipline, owner et tag
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
@@ -631,7 +631,7 @@ class VideoTestView(TestCase):
         user3.owner.sites.add(Site.objects.get_current())
         user3.owner.save()
 
-    def test_video_get_request(self):
+    def test_video_get_request(self) -> None:
         v = Video.objects.get(title="Video1")
         self.assertEqual(v.is_draft, True)
         # test draft
@@ -757,7 +757,7 @@ class VideoEditTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
@@ -799,7 +799,7 @@ class VideoEditTestView(TestCase):
 
         print(" --->  SetUp of VideoEditTestView: OK!")
 
-    def test_video_edit_get_request(self):
+    def test_video_edit_get_request(self) -> None:
         self.client = Client()
         url = reverse("video:video_edit", kwargs={})
         response = self.client.get(url)
@@ -837,7 +837,7 @@ class VideoEditTestView(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_video_edit_get_request of VideoEditTestView: OK!")
 
-    def test_video_edit_post_request(self):
+    def test_video_edit_post_request(self) -> None:
         self.client = Client()
         video = Video.objects.get(title="Video1")
         self.user = User.objects.get(username="pod")
@@ -880,7 +880,7 @@ class VideoEditTestView(TestCase):
         self.assertTrue(b"The changes have been saved." in response.content)
         v = Video.objects.get(title="VideoTest1")
         p = re.compile(r"^videos/([\d\w]+)/file([_\d\w]*).mp4$")
-        self.assertRegexpMatches(v.video.name, p)
+        self.assertRegex(v.video.name, p)
         # new one
         videofile = SimpleUploadedFile(
             "file.mp4", b"file_content", content_type="video/mp4"
@@ -950,7 +950,7 @@ class video_deleteTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
@@ -987,7 +987,7 @@ class video_deleteTestView(TestCase):
         user2.owner.save()
         print(" --->  SetUp of video_deleteTestView: OK!")
 
-    def test_video_delete_get_request(self):
+    def test_video_delete_get_request(self) -> None:
         self.client = Client()
         video = Video.objects.get(title="Video1")
         url = reverse("video:video_delete", kwargs={"slug": video.slug})
@@ -1015,7 +1015,7 @@ class video_deleteTestView(TestCase):
         self.user = User.objects.get(username="pod")
         print(" --->  test_video_edit_get_request of video_deleteTestView: OK!")
 
-    def test_video_delete_post_request(self):
+    def test_video_delete_post_request(self) -> None:
         self.client = Client()
         video = Video.objects.get(title="Video1")
         self.user = User.objects.get(username="pod")
@@ -1049,7 +1049,7 @@ class video_notesTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         v = Video.objects.create(
@@ -1064,7 +1064,7 @@ class video_notesTestView(TestCase):
         user.owner.save()
         print(" --->  SetUp of video_notesTestView: OK!")
 
-    def test_video_notesTestView_get_request(self):
+    def test_video_notesTestView_get_request(self) -> None:
         self.client = Client()
         video = Video.objects.get(title="Video1")
         self.user = User.objects.get(username="pod")
@@ -1086,7 +1086,7 @@ class video_notesTestView(TestCase):
         # self.assertEqual(response.context['notesForm'].instance, note)
         print(" --->  test_video_notesTestView_get_request of video_notesTestView: OK!")
 
-    def test_video_notesTestView_post_request(self):
+    def test_video_notesTestView_post_request(self) -> None:
         self.client = Client()
         video = Video.objects.get(title="Video1")
         self.user = User.objects.get(username="pod")
@@ -1126,7 +1126,7 @@ class video_countTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
             title="Video1",
@@ -1136,7 +1136,7 @@ class video_countTestView(TestCase):
         )
         print(" --->  SetUp of video_countTestView: OK!")
 
-    def test_video_countTestView_get_request(self):
+    def test_video_countTestView_get_request(self) -> None:
         self.client = Client()
         video = Video.objects.get(title="Video1")
         url = reverse("video:video_count", kwargs={"id": 2})
@@ -1147,7 +1147,7 @@ class video_countTestView(TestCase):
         self.assertEqual(response.status_code, 403)
         print(" --->  test_video_countTestView_get_request of video_countTestView: OK!")
 
-    def test_video_countTestView_post_request(self):
+    def test_video_countTestView_post_request(self) -> None:
         self.client = Client()
         video = Video.objects.get(title="Video1")
         print("count: %s" % video.get_viewcount())
@@ -1177,7 +1177,7 @@ class VideoMarkerTestView(TestCase):
         )
         print(" --->  SetUp of VideoMarkerTestView: OK!")
 
-    def test_video_markerTestView_get_request(self):
+    def test_video_markerTestView_get_request(self) -> None:
         # anonyme
         self.client = Client()
         video = Video.objects.get(title="Video1")
@@ -1210,7 +1210,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.client = Client()
 
         self.admin = User.objects.create(
@@ -1237,7 +1237,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
         )
         print(" --->  SetUp of VideoTestUpdateOwner: OK!")
 
-    def test_update_video_owner(self):
+    def test_update_video_owner(self) -> None:
         """Test update video owner."""
         url = reverse("video:update_video_owner", kwargs={"user_id": self.admin.id})
 
@@ -1306,7 +1306,7 @@ class VideoTestFiltersViews(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.client = Client()
 
         self.admin = User.objects.create(
@@ -1333,7 +1333,7 @@ class VideoTestFiltersViews(TestCase):
         )
         print(" --->  SetUp of VideoTestFiltersViews: OK!")
 
-    def test_filter_owners(self):
+    def test_filter_owners(self) -> None:
         url = reverse("video:filter_owners")
 
         # Authentication required
@@ -1387,7 +1387,7 @@ class VideoTestFiltersViews(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
-    def test_filter_videos(self):
+    def test_filter_videos(self) -> None:
         url = reverse("video:filter_videos", kwargs={"user_id": self.admin.id})
 
         # Authentication required
@@ -1433,7 +1433,7 @@ class VideoTestFiltersViews(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         super(VideoTestFiltersViews, self).tearDown()
 
 
@@ -1449,7 +1449,7 @@ class ChannelJsonResponseViews(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up the tests."""
         self.site = Site.objects.get(id=1)
         self.user = User.objects.create(
@@ -1481,7 +1481,7 @@ class ChannelJsonResponseViews(TestCase):
         self.video.channel.add(self.second_channel)
 
     @override_settings(HIDE_CHANNEL_TAB=False)
-    def test_get_channels_for_navbar(self):
+    def test_get_channels_for_navbar(self) -> None:
         """Test if the get channels request for the navbar works correctly."""
         response = self.client.get(
             f"{reverse('video:get-channels-for-specific-channel-tab')}"
@@ -1504,7 +1504,7 @@ class ChannelJsonResponseViews(TestCase):
         print(" ---> test_get_channels_for_navbar: OK!")
 
     @override_settings(HIDE_CHANNEL_TAB=False)
-    def test_get_channel_tabs_for_navbar(self):
+    def test_get_channel_tabs_for_navbar(self) -> None:
         """Test if the get channel tabs request for the navbar works correctly."""
         response = self.client.get(reverse("video:get-channel-tabs"))
         self.assertEqual(
@@ -1525,7 +1525,7 @@ class ChannelJsonResponseViews(TestCase):
         print(" ---> test_get_channel_tabs_for_navbar: OK!")
 
     @override_settings(HIDE_CHANNEL_TAB=False)
-    def test_get_channels_for_specific_channel_tab(self):
+    def test_get_channels_for_specific_channel_tab(self) -> None:
         """Test if the get channels request for a specific channel tab works correctly."""
         response = self.client.get(
             f"{reverse('video:get-channels-for-specific-channel-tab')}?page=1&id=1"
@@ -1555,7 +1555,7 @@ class VideoTranscriptTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up data for test class."""
         user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
@@ -1566,7 +1566,7 @@ class VideoTranscriptTestView(TestCase):
         )
         print(" --->  SetUp of VideoTranscriptTestView: OK!")
 
-    def test_video_transcript_get_request(self):
+    def test_video_transcript_get_request(self) -> None:
         """Check response for get request with default settings."""
         # anonyme
         self.client = Client()
@@ -1603,11 +1603,11 @@ class VideoTranscriptTestView(TestCase):
             }
         },
     )
-    def test_video_transcript_get_request_transcription(self):
+    def test_video_transcript_get_request_transcription(self) -> None:
         """Check response for get request with use transcription."""
         reload(views)
 
-        def inner_get_transcription_choices():
+        def inner_get_transcription_choices() -> list:
             return [("fr", "French"), ("en", "english")]
 
         views.get_transcription_choices = inner_get_transcription_choices
@@ -1686,7 +1686,7 @@ class VideoAccessTokenTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up data for test class."""
         user = User.objects.create(username="pod", password="pod1234pod")
         User.objects.create(username="pod2", password="pod1234pod")
@@ -1699,7 +1699,7 @@ class VideoAccessTokenTestView(TestCase):
         )
         print(" --->  SetUp of VideoAccessTokenTestView: OK!")
 
-    def test_video_access_tokens_get_request(self):
+    def test_video_access_tokens_get_request(self) -> None:
         """Check response for get request with default settings."""
         # anonyme
         self.client = Client()
@@ -1733,7 +1733,7 @@ class VideoAccessTokenTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         print(" ---> test_video_access_tokens_get_request: OK!")
 
-    def test_video_access_tokens_post_request(self):
+    def test_video_access_tokens_post_request(self) -> None:
         """Check response for post request."""
         video = Video.objects.get(title="Video1")
         self.user = User.objects.get(username="pod")

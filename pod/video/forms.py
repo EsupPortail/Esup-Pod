@@ -552,7 +552,7 @@ class FileSizeValidator(object):
 
 
 @receiver(post_save, sender=Video)
-def launch_encode(sender, instance, created, **kwargs):
+def launch_encode(sender, instance, created, **kwargs) -> None:
     """
     Launch encoding after save Video if requested.
 
@@ -567,7 +567,7 @@ def launch_encode(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=Video)
-def launch_transcript(sender, instance, created, **kwargs):
+def launch_transcript(sender, instance, created, **kwargs) -> None:
     """
     Launch transcription after save Video if requested.
 
@@ -674,7 +674,7 @@ class VideoForm(forms.ModelForm):
         if not hasattr(form, "admin_form"):
             form.remove_field("sites")
 
-    def create_with_fields(self, field_key):
+    def create_with_fields(self, field_key) -> None:
         """Create VideoForm with specific fields. Keep video field to prevent error on save."""
         fields = set(self.fields)
         if "description" in field_key:
@@ -685,7 +685,7 @@ class VideoForm(forms.ModelForm):
             if field not in field_key and field != "video":
                 del self.fields[field]
 
-    def move_video_source_file(self, new_path, new_dir, old_dir):
+    def move_video_source_file(self, new_path, new_dir, old_dir) -> None:
         """Move video source file in a new dir."""
         # create user repository
         dest_file = os.path.join(settings.MEDIA_ROOT, new_path)
@@ -706,7 +706,7 @@ class VideoForm(forms.ModelForm):
         if self.instance.overview:
             self.instance.overview = self.instance.overview.name.replace(old_dir, new_dir)
 
-    def change_encoded_path(self, video, new_dir, old_dir):
+    def change_encoded_path(self, video, new_dir, old_dir) -> None:
         """Change the path of encodings related to a video."""
         models_to_update = [EncodingVideo, EncodingAudio, PlaylistVideo]
         for model in models_to_update:
@@ -777,7 +777,7 @@ class VideoForm(forms.ModelForm):
             )
         return self.cleaned_data["date_delete"]
 
-    def clean(self):
+    def clean(self) -> None:
         """Validate Video form fields."""
         cleaned_data = super(VideoForm, self).clean()
 
@@ -847,7 +847,7 @@ class VideoForm(forms.ModelForm):
         else:
             return self.cleaned_data["channel"]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize a new VideoForm instance."""
         self.is_staff = (
             kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
@@ -902,7 +902,7 @@ class VideoForm(forms.ModelForm):
                 owner__sites=Site.objects.get_current()
             )
 
-    def custom_video_form(self):
+    def custom_video_form(self) -> None:
         if not ACTIVE_VIDEO_COMMENT:
             self.remove_field("disable_comment")
 
@@ -912,20 +912,20 @@ class VideoForm(forms.ModelForm):
         if not USE_TRANSCRIPTION:
             self.remove_field("transcript")
 
-    def manage_more_required_fields(self):
+    def manage_more_required_fields(self) -> None:
         """Set the required attribute to True for all VIDEO_REQUIRED_FIELDS."""
         for field in VIDEO_REQUIRED_FIELDS:
             # field exists, not hide
             if self.fields.get(field, None):
                 self.fields[field].required = True
 
-    def set_nostaff_config(self):
+    def set_nostaff_config(self) -> None:
         """Set the configuration for non staff user."""
         if self.is_staff is False:
             del self.fields["thumbnail"]
 
             self.fields["description"].widget = CKEditorWidget(config_name="default")
-            for key, value in settings.LANGUAGES:
+            for key, _value in settings.LANGUAGES:
                 self.fields["description_%s" % key.replace("-", "_")].widget = (
                     CKEditorWidget(config_name="default")
                 )
@@ -938,7 +938,7 @@ class VideoForm(forms.ModelForm):
                     attrs={"type": "date"},
                 )
 
-    def hide_default_language(self):
+    def hide_default_language(self) -> None:
         """Hide default language."""
         if self.fields.get("description_%s" % settings.LANGUAGE_CODE):
             self.fields["description_%s" % settings.LANGUAGE_CODE].widget = (
@@ -947,12 +947,12 @@ class VideoForm(forms.ModelForm):
         if self.fields.get("title_%s" % settings.LANGUAGE_CODE):
             self.fields["title_%s" % settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
-    def remove_field(self, field):
+    def remove_field(self, field) -> None:
         """Remove a field from the form."""
         if self.fields.get(field):
             del self.fields[field]
 
-    def set_queryset(self):
+    def set_queryset(self) -> None:
         """Set the queryset for the form fields."""
         if self.current_user is not None:
             users_groups = self.current_user.owner.accessgroup_set.all()
@@ -1052,7 +1052,7 @@ class ChannelForm(forms.ModelForm):
         ),
     )
 
-    def clean(self):
+    def clean(self) -> None:
         cleaned_data = super(ChannelForm, self).clean()
         if "description" in cleaned_data.keys():
             cleaned_data["description_%s" % settings.LANGUAGE_CODE] = cleaned_data[
@@ -1061,7 +1061,7 @@ class ChannelForm(forms.ModelForm):
         if "title" in cleaned_data.keys():
             cleaned_data["title_%s" % settings.LANGUAGE_CODE] = cleaned_data["title"]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize a new ChannelForm instance."""
         self.is_staff = (
             kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
@@ -1096,7 +1096,7 @@ class ChannelForm(forms.ModelForm):
         ):
             del self.fields["headband"]
             self.fields["description"].widget = CKEditorWidget(config_name="default")
-            for key, value in settings.LANGUAGES:
+            for key, _value in settings.LANGUAGES:
                 self.fields["description_%s" % key.replace("-", "_")].widget = (
                     CKEditorWidget(config_name="default")
                 )
@@ -1124,7 +1124,7 @@ class ChannelForm(forms.ModelForm):
 class ThemeForm(forms.ModelForm):
     """Form class for Theme editing."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize a new ThemeForm instance."""
         super(ThemeForm, self).__init__(*args, **kwargs)
         if __FILEPICKER__:
@@ -1138,7 +1138,7 @@ class ThemeForm(forms.ModelForm):
 
         self.fields = add_placeholder_and_asterisk(self.fields)
 
-    def clean(self):
+    def clean(self) -> None:
         cleaned_data = super(ThemeForm, self).clean()
         if "description" in cleaned_data.keys():
             cleaned_data["description_%s" % settings.LANGUAGE_CODE] = cleaned_data[
@@ -1157,7 +1157,7 @@ class ThemeForm(forms.ModelForm):
 class FrontThemeForm(ThemeForm):
     """Form class for Theme editing in front."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.THEME_FORM_FIELDS_HELP_TEXT = THEME_FORM_FIELDS_HELP_TEXT
 
         super(FrontThemeForm, self).__init__(*args, **kwargs)
@@ -1180,7 +1180,7 @@ class VideoPasswordForm(forms.Form):
 
     password = forms.CharField(label=_("Password"), widget=forms.PasswordInput())
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize a new VideoPasswordForm instance."""
         super(VideoPasswordForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
@@ -1195,7 +1195,7 @@ class VideoDeleteForm(forms.Form):
         widget=forms.CheckboxInput(),
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize a new VideoDeleteForm instance."""
         super(VideoDeleteForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
@@ -1204,7 +1204,7 @@ class VideoDeleteForm(forms.Form):
 class TypeForm(forms.ModelForm):
     """Form class for Type editing."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize a new TypeForm instance."""
         super(TypeForm, self).__init__(*args, **kwargs)
         if __FILEPICKER__:
@@ -1220,7 +1220,7 @@ class TypeForm(forms.ModelForm):
 class DisciplineForm(forms.ModelForm):
     """Form class for Discipline editing."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize a new DisciplineForm instance."""
         super(DisciplineForm, self).__init__(*args, **kwargs)
         if __FILEPICKER__:
@@ -1236,7 +1236,7 @@ class DisciplineForm(forms.ModelForm):
 class VideoVersionForm(forms.ModelForm):
     """Form class for VideoVersion editing."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize a new VideoVersionForm instance."""
         super(VideoVersionForm, self).__init__(*args, **kwargs)
 
@@ -1250,7 +1250,7 @@ class VideoVersionForm(forms.ModelForm):
 class NotesForm(forms.ModelForm):
     """Form class for Notes editing."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize a new NotesForm instance."""
         super(NotesForm, self).__init__(*args, **kwargs)
         # self.fields["user"].widget = forms.HiddenInput()
@@ -1269,7 +1269,7 @@ class NotesForm(forms.ModelForm):
 class AdvancedNotesForm(forms.ModelForm):
     """Form class for AdvancedNotes editing."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize a new AdvancedNotesForm instance."""
         super(AdvancedNotesForm, self).__init__(*args, **kwargs)
         # self.fields["user"].widget = forms.HiddenInput()
@@ -1295,7 +1295,7 @@ class AdvancedNotesForm(forms.ModelForm):
 class NoteCommentsForm(forms.ModelForm):
     """Form class for NoteComments editing."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize a new NoteCommentsForm instance."""
         super(NoteCommentsForm, self).__init__(*args, **kwargs)
         # self.fields["user"].widget = forms.HiddenInput()

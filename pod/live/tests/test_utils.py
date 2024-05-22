@@ -36,17 +36,17 @@ class LiveTestUtils(TestCase):
         event = Event.objects.get(id=1)
 
         bcc = get_bcc(1)
-        self.assertEquals(bcc, [])
+        self.assertEqual(bcc, [])
         print(" --->  test_utils get_bcc ok")
 
         expected = ["first", "second"]
         bcc = get_bcc(expected)
-        self.assertEquals(bcc, expected)
+        self.assertEqual(bcc, expected)
         print(" --->  test_utils get_bcc liste or tuple ok")
 
         expected = "first"
         bcc = get_bcc(expected)
-        self.assertEquals(bcc, expected.split())
+        self.assertEqual(bcc, expected.split())
         print(" --->  test_utils get_bcc string ok")
 
         expected = ["emailadduser1", "emailadduser2"]
@@ -55,7 +55,7 @@ class LiveTestUtils(TestCase):
 
         event.additional_owners.set([additional_user1, additional_user2])
         cc = get_cc(event)
-        self.assertEquals(cc, expected)
+        self.assertEqual(cc, expected)
         print(" --->  test_utils get_cc ok")
 
         # TODO test this for real
@@ -66,17 +66,17 @@ class LiveTestUtils(TestCase):
         """Teste la conversion d'une chaine de caractère en nombre de secondes."""
         from pod.live.utils import date_string_to_second
 
-        self.assertEquals(0, date_string_to_second("a"))
-        self.assertEquals(0, date_string_to_second("1:1:1"))
-        self.assertEquals(0, date_string_to_second("00:00:61"))
-        self.assertEquals(0, date_string_to_second("00:61:00"))
-        self.assertEquals(0, date_string_to_second("24:00:00"))
-        self.assertEquals(0, date_string_to_second("00:00:00"))
-        self.assertEquals(1, date_string_to_second("00:00:01"))
-        self.assertEquals(60, date_string_to_second("00:01:00"))
-        self.assertEquals(3600, date_string_to_second("01:00:00"))
-        self.assertEquals(3661, date_string_to_second("01:01:01"))
-        self.assertEquals(86399, date_string_to_second("23:59:59"))
+        self.assertEqual(0, date_string_to_second("a"))
+        self.assertEqual(0, date_string_to_second("1:1:1"))
+        self.assertEqual(0, date_string_to_second("00:00:61"))
+        self.assertEqual(0, date_string_to_second("00:61:00"))
+        self.assertEqual(0, date_string_to_second("24:00:00"))
+        self.assertEqual(0, date_string_to_second("00:00:00"))
+        self.assertEqual(1, date_string_to_second("00:00:01"))
+        self.assertEqual(60, date_string_to_second("00:01:00"))
+        self.assertEqual(3600, date_string_to_second("01:00:00"))
+        self.assertEqual(3661, date_string_to_second("01:01:01"))
+        self.assertEqual(86399, date_string_to_second("23:59:59"))
         print(" --->  test_utils date_string_to_second ok")
 
     def test_get_event_id_and_broadcaster_id(self):

@@ -66,7 +66,7 @@ if (typeof loaded == "undefined") {
         "</a></strong>&nbsp;";
       document.getElementById("fileinput_" + id_input).innerHTML = html;
 
-      document.getElementById("modal-folder_" + id_input).innerHTML = "";
+      document.getElementById("modal-folder_" + id_input).textContent = "";
 
       let modalFile = bootstrap.Modal.getInstance(
         document.getElementById("fileModal_" + id_input)
@@ -219,7 +219,7 @@ if (typeof loaded == "undefined") {
         break;
       default: // Extract info from data-* attributes
         document.getElementById("folderFormName").style.display = "block";
-        document.getElementById("folderModalCenterTitle").innerHTML = gettext(
+        document.getElementById("folderModalCenterTitle").textContent = gettext(
           "Enter new name of folder"
         );
         4;
@@ -316,7 +316,7 @@ if (typeof loaded == "undefined") {
     const formUserId = document.getElementById("formuserid");
     if (!formUserId) return;
 
-    const folderId = Number.parseInt(formUserId.value);
+    const folderId = Number.parseInt(formUserId.value, 10);
     const add = gettext("Add");
     const url = "/podfile/ajax_calls/search_share_user?term=" + searchTerm + "&foldid=" + folderId;
     const token = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
@@ -390,7 +390,7 @@ if (typeof loaded == "undefined") {
       cache: "no-cache",
     })
       .then((response) => {
-        if (response.status == 201) {
+        if (response.status === 201) {
           reloadRemoveBtn();
         } else {
           showalert(
@@ -514,7 +514,7 @@ if (typeof loaded == "undefined") {
     if (folder_searching === true ) {
       return;
     } else {
-      if (text.length > 2 || text.length == 0) {
+      if (text.length > 2 || text.length === 0) {
         getFolders(text);
       }
     }
@@ -529,7 +529,7 @@ if (typeof loaded == "undefined") {
     } else {
       let user_search = document.getElementById("user_search");
       if (user_search) {
-        user_search.innerHTML = "";
+        user_search.textContent = "";
         fadeOut(user_search, 300);
         setTimeout(() => {
           user_search.hide();
@@ -543,7 +543,7 @@ if (typeof loaded == "undefined") {
     if (data.list_element) {
       var folder_id = data.folder_id;
 
-      if (data.new_folder == true) {
+      if (data.new_folder === true) {
         let type = document.getElementById("list_folders_sub").dataset.type;
 
         let string_html =
@@ -750,7 +750,7 @@ if (typeof loaded == "undefined") {
 
 
   function getFolders(search = "") {
-    document.getElementById("list_folders_sub").innerHTML = "";
+    document.getElementById("list_folders_sub").textContent = "";
     let type = document.getElementById("list_folders_sub").dataset.type;
     let currentFolder = getCurrentSessionFolder();
     let url = "/podfile/ajax_calls/user_folders";

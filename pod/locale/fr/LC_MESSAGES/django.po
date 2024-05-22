@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-15 08:40+0200\n"
+"POT-Creation-Date: 2024-05-17 15:36+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1238,7 +1238,6 @@ msgstr ""
 #: pod/completion/models.py pod/enrichment/models.py pod/playlist/models.py
 #: pod/recorder/models.py pod/video/models.py
 #: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/video_breadcrumbs.html
 #: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
 msgid "Video"
 msgstr "Vidéo"
@@ -2078,6 +2077,7 @@ msgid "Ending credits"
 msgstr "Générique de fin"
 
 #: pod/dressing/models.py pod/video/apps.py pod/video/models.py
+#: pod/video/templates/videos/video_breadcrumbs.html
 #: pod/video/templates/videos/videos.html
 msgid "Videos"
 msgstr "Vidéos"
@@ -8197,13 +8197,13 @@ msgstr ""
 "l’adresse suivante : %(email_address)s</p>\n"
 
 #: pod/video/management/commands/check_obsolete_videos.py
-msgid "Your video will be obsolete"
-msgstr "Votre vidéo sera obsolète"
+#, python-format
+msgid "Sending mail to %(to_email)s for video %(title)s."
+msgstr "Envoi d’un courriel à %(to_email)s pour la vidéo %(title)s."
 
 #: pod/video/management/commands/check_obsolete_videos.py
-#, python-format
-msgid "Mail sent to %(to_email)s for video %(title)s."
-msgstr "Courriel envoyé à %(to_email)s pour la vidéo %(title)s."
+msgid "Your video will be obsolete"
+msgstr "Votre vidéo sera obsolète"
 
 #: pod/video/management/commands/check_obsolete_videos.py
 #, python-format
@@ -8275,10 +8275,11 @@ msgstr "Dans %(deadline)s jours :"
 #: pod/video/management/commands/create_archive_package.py
 #, python-format
 msgid ""
-"Package archiving done. %(amount)s video packaged (%(weight)s - "
-"[%(duration)s])"
+"Package archiving done. %(amount)s video(s) packaged (%(weight)s - "
+"[%(duration)s]) - %(nb_ignored)s video(s) ignored."
 msgstr ""
-"Archivage effectué. %(amount)s vidéos traitées (%(weight)s - [%(duration)s])"
+"Archivage effectué. %(amount)s vidéos traitées (%(weight)s - [%(duration)s]) "
+"- %(nb_ignored)s vidéo(s) ignorée(s)."
 
 #: pod/video/management/commands/create_archive_package.py
 #, python-format
@@ -8298,8 +8299,17 @@ msgstr ""
 "code> sans l’option <code>--dry</code> pour les supprimer de %s."
 
 #: pod/video/management/commands/create_archive_package.py
-msgid "Packaging archived videos on Pod"
-msgstr "Déplacement des vidéos archivées sur Pod"
+msgid ""
+"And below is the list of ignored videos that were not packaged because they "
+"have been recently viewed."
+msgstr ""
+"Vous trouverez ci-dessous la liste des vidéos ignorées qui n'ont pas été "
+"regroupées parce qu'elles ont été visionnées récemment."
+
+#: pod/video/management/commands/create_archive_package.py
+#, python-format
+msgid "Packaging %s archived videos on Pod"
+msgstr "Déplacement de %s vidéos archivées sur Pod"
 
 #: pod/video/models.py pod/video/views.py
 msgid "None / All"

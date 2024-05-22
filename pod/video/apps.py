@@ -14,19 +14,19 @@ ENCODING_STEP = {}
 PLAYLIST_VIDEO = {}
 
 
-def apply_default_site(obj, site):
-    if len(obj.sites.all()) == 0:
+def apply_default_site(obj, site) -> None:
+    if obj.sites.count() == 0:
         obj.sites.add(site)
         obj.save()
 
 
-def apply_default_site_fk(obj, site):
+def apply_default_site_fk(obj, site) -> None:
     if obj.site is None:
         obj.site = site
         obj.save()
 
 
-def set_default_site(sender, **kwargs):
+def set_default_site(sender, **kwargs) -> None:
     from pod.video.models import Video
     from pod.video.models import Channel
     from pod.video.models import Discipline
@@ -49,7 +49,7 @@ def set_default_site(sender, **kwargs):
     print("set_default_site --> OK")
 
 
-def fix_transcript(sender, **kwargs):
+def fix_transcript(sender, **kwargs) -> None:
     """
     Transcript field change from boolean to charfield since the version 3.2.0.
 
@@ -64,7 +64,7 @@ def fix_transcript(sender, **kwargs):
     print("fix_transcript --> OK")
 
 
-def update_video_passwords(sender, **kwargs):
+def update_video_passwords(sender, **kwargs) -> None:
     """Encrypt all video passwords."""
     from pod.video.models import Video
     from django.contrib.auth.hashers import make_password
@@ -92,14 +92,14 @@ class VideoConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     verbose_name = _("Videos")
 
-    def ready(self):
+    def ready(self) -> None:
         pre_migrate.connect(self.save_previous_data, sender=self)
         post_migrate.connect(set_default_site, sender=self)
         post_migrate.connect(self.send_previous_data, sender=self)
         post_migrate.connect(fix_transcript, sender=self)
         # post_migrate.connect(update_video_passwords, sender=self)
 
-    def execute_query(self, query, mapping_dict):
+    def execute_query(self, query, mapping_dict) -> None:
         """
         Execute the given query and populate the mapping dictionary with the results.
 
@@ -117,7 +117,7 @@ class VideoConfig(AppConfig):
             # print(e)
             pass
 
-    def save_previous_data(self, sender, **kwargs):
+    def save_previous_data(self, sender, **kwargs) -> None:
         """Save previous data from various database tables."""
         print("pre_migrate - Start save_previous_data")
         self.execute_query(
@@ -207,7 +207,7 @@ class VideoConfig(AppConfig):
             print("%s PLAYLIST_VIDEO saved" % len(PLAYLIST_VIDEO))
         print("pre_migrate - save_previous_data --> OK")
 
-    def send_previous_data(self, sender, **kwargs):
+    def send_previous_data(self, sender, **kwargs) -> None:
         """Send previous data from various database tables."""
         print("post_migrate - Start send_previous_data")
         nb_batch = 1000
@@ -224,7 +224,7 @@ class VideoConfig(AppConfig):
         else:
             return
 
-    def import_data(self, nb_batch):
+    def import_data(self, nb_batch: int) -> None:
         """Call method to put data if data saved."""
         if len(VIDEO_RENDITION) > 0:
             self.import_video_rendition(nb_batch)
@@ -244,7 +244,7 @@ class VideoConfig(AppConfig):
         if len(PLAYLIST_VIDEO) > 0:
             self.import_playlist_video(nb_batch)
 
-    def import_video_rendition(self, nb_batch):
+    def import_video_rendition(self, nb_batch: int) -> None:
         """Import video rendition data in DB."""
         from pod.video_encode_transcript.models import VideoRendition
 
@@ -265,7 +265,7 @@ class VideoConfig(AppConfig):
             video_renditions.append(vr)
         VideoRendition.objects.bulk_create(video_renditions, batch_size=nb_batch)
 
-    def import_encoding_video(self, nb_batch):
+    def import_encoding_video(self, nb_batch: int) -> None:
         """Import encoding video data in DB."""
         from pod.video_encode_transcript.models import EncodingVideo
 
@@ -284,7 +284,7 @@ class VideoConfig(AppConfig):
             encoding_videos.append(ev)
         EncodingVideo.objects.bulk_create(encoding_videos, batch_size=nb_batch)
 
-    def import_encoding_step(self, nb_batch):
+    def import_encoding_step(self, nb_batch: int) -> None:
         """Import encoding step data in DB."""
         from pod.video_encode_transcript.models import EncodingStep
 
@@ -301,7 +301,7 @@ class VideoConfig(AppConfig):
             encoding_steps.append(ea)
         EncodingStep.objects.bulk_create(encoding_steps, batch_size=nb_batch)
 
-    def import_encoding_log(self, nb_batch):
+    def import_encoding_log(self, nb_batch: int) -> None:
         """Import encoding log data in DB."""
         from pod.video_encode_transcript.models import EncodingLog
 
@@ -318,7 +318,7 @@ class VideoConfig(AppConfig):
             encoding_logs.append(el)
         EncodingLog.objects.bulk_create(encoding_logs, batch_size=nb_batch)
 
-    def import_encoding_audio(self, nb_batch):
+    def import_encoding_audio(self, nb_batch: int) -> None:
         """Import encoding audio data in DB."""
         from pod.video_encode_transcript.models import EncodingAudio
 
@@ -336,7 +336,7 @@ class VideoConfig(AppConfig):
             encoding_audios.append(es)
         EncodingAudio.objects.bulk_create(encoding_audios, batch_size=nb_batch)
 
-    def import_playlist_video(self, nb_batch):
+    def import_playlist_video(self, nb_batch: int) -> None:
         """Import playlist video data in DB."""
         from pod.video_encode_transcript.models import PlaylistVideo
 

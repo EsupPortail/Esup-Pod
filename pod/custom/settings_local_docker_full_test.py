@@ -26,11 +26,11 @@ SECRET_KEY = 'A_CHANGER'
 
 # We specify here that we're using ES version 7\n
 ES_VERSION = 7
-ES_URL = ['http://elasticsearch:9200/']
+ES_URL = ['http://elasticsearch.localhost:9200/']
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://redis:6379/3',
+        'LOCATION': 'redis://redis.localhost:6379/3',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         },
@@ -38,7 +38,7 @@ CACHES = {
     },
     'select2': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://redis:6379/2',
+        'LOCATION': 'redis://redis.localhost:6379/2',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         },
@@ -46,7 +46,7 @@ CACHES = {
 }
 SESSION_ENGINE = 'redis_sessions.session'
 SESSION_REDIS = {
-    'host': 'redis',
+    'host': 'redis.localhost',
     'port': 6379,
     'db': 4,
     'prefix': 'session',
@@ -59,8 +59,8 @@ MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
 
 # If DOCKER_ENV = full: activate encoding, transcription and remote xapi
 USE_REMOTE_ENCODING_TRANSCODING = True
-ENCODING_TRANSCODING_CELERY_BROKER_URL = 'redis://redis:6379/7'
-POD_API_URL = "http://pod-back:8080/rest"
+ENCODING_TRANSCODING_CELERY_BROKER_URL = 'redis://redis.localhost:6379/7'
+POD_API_URL = "http://pod.localhost:8000/rest"
 POD_API_TOKEN = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 USE_TRANSCRIPTION = True
@@ -79,7 +79,7 @@ TRANSCRIPTION_MODEL_PARAM = {
 }
 
 USE_XAPI_VIDEO = False
-XAPI_CELERY_BROKER_URL = "redis://redis:6379/6"
+XAPI_CELERY_BROKER_URL = "redis://redis.localhost:6379/6"
 
 # for maximum console logging\n
 LOGGING = {}

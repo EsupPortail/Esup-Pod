@@ -34,7 +34,7 @@ class authenticationViewsTestCase(TestCase):
             of authenticationViewsTestCase: OK!"
         )
 
-    def test_authentication_login(self):
+    def test_authentication_login(self) -> None:
         """Test authentication login page."""
         self.client = Client()
         self.user = User.objects.get(username="pod")
@@ -55,7 +55,7 @@ class authenticationViewsTestCase(TestCase):
             of authenticationViewsTestCase: OK!"
         )
 
-    def test_authentication_logout(self):
+    def test_authentication_logout(self) -> None:
         self.client = Client()
         # USE_CAS is valued to False
         response = self.client.get("/authentication_logout/")

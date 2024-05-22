@@ -1,5 +1,7 @@
 """Esup-Pod completion app utilities."""
 
+from django.utils.translation import ugettext as _
+
 
 def get_video_completion_context(
     video,
@@ -38,6 +40,7 @@ def get_video_completion_context(
         "form_document": form_document,
         "form_track": form_track,
         "form_overlay": form_overlay,
+        "page_title": _("Additions for the video “%s”") % video.title,
     }
 
     return context

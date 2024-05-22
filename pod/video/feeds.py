@@ -1,3 +1,5 @@
+"""Esup-Pod video feeds."""
+
 from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Rss201rev2Feed
 
@@ -74,7 +76,7 @@ class RssFeedGenerator(Rss201rev2Feed):
             "xmlns:itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd",
         }
 
-    def add_root_elements(self, handler):
+    def add_root_elements(self, handler) -> None:
         """Add root elements."""
         super(RssFeedGenerator, self).add_root_elements(handler)
         handler.startElement("image", {})
@@ -100,7 +102,7 @@ class RssFeedGenerator(Rss201rev2Feed):
         handler.endElement("itunes:owner")
         handler.addQuickElement("itunes:image", "", {"href": self.feed["image_url"]})
 
-    def add_item_elements(self, handler, item):
+    def add_item_elements(self, handler, item) -> None:
         super(RssFeedGenerator, self).add_item_elements(handler, item)
         handler.addQuickElement("itunes:subtitle", item["title"])
         handler.addQuickElement("itunes:summary", item["description"])
@@ -185,11 +187,11 @@ class RssSiteVideosFeed(Feed):
     def items(self, obj):
         return obj.order_by("-date_added")[:VIDEO_FEED_NB_ITEMS]
 
-    def item_title(self, item):
+    def item_title(self, item) -> str:
         sub = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.title)
         return "%s | %s" % (item.owner.get_full_name(), sub)
 
-    def item_link(self, item):
+    def item_link(self, item) -> str:
         url = "".join([self.author_link, item.get_absolute_url()])
         url += "?is_iframe=true"
         return url
@@ -200,7 +202,7 @@ class RssSiteVideosFeed(Feed):
     def item_author_email(self, item):
         return item.owner.email
 
-    def item_author_link(self, item):
+    def item_author_link(self, item) -> str:
         return "".join(
             [
                 self.author_link,
@@ -209,7 +211,7 @@ class RssSiteVideosFeed(Feed):
             ]
         )
 
-    def item_description(self, item):
+    def item_description(self, item) -> str:
         thumbnail_url = "".join([self.prefix, item.get_thumbnail_url().replace("//", "")])
         title = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.title)
         img = format_html(
@@ -233,7 +235,7 @@ class RssSiteVideosFeed(Feed):
     def item_updateddate(self, item):
         return item.date_added
 
-    def item_enclosure_url(self, item):
+    def item_enclosure_url(self, item) -> str:
         if (item.password is not None) or item.is_restricted:
             return ""
         if item.get_video_mp4().count() > 0:
@@ -260,7 +262,7 @@ class RssSiteVideosFeed(Feed):
             )
         return ""
 
-    def item_categories(self, item):
+    def item_categories(self, item) -> tuple:
         return (item.type,)
 
     def item_copyright(self, obj):
@@ -268,7 +270,7 @@ class RssSiteVideosFeed(Feed):
 
 
 class RssSiteAudiosFeed(RssSiteVideosFeed):
-    def item_enclosure_url(self, item):
+    def item_enclosure_url(self, item) -> str:
         try:
             mp3 = EncodingAudio.objects.get(
                 name="audio", video=item, encoding_format="audio/mp3"

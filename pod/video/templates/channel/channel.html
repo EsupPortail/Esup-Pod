@@ -280,7 +280,7 @@
              });
             }
         {% if videos.has_next %}
-            page = parseInt("{{videos.next_page_number}}")
+            page = parseInt("{{videos.next_page_number}}", 10)
             next_page = true
             var infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, page = page);
         {% endif %}
@@ -316,7 +316,7 @@
                 const tree_item = document.querySelectorAll("#theme-ul-tree-view li")
                 if(tree_item_info && tree_item)
                 {
-                    const position = parseInt(tree_item_info.offsetTop) - parseInt(tree_item[0].offsetTop);
+                    const position = parseInt(tree_item_info.offsetTop, 10) - parseInt(tree_item[0].offsetTop, 10);
                     document.getElementById("theme-ul-tree-view").scrollTop = position;
                 }
             }, 500);
