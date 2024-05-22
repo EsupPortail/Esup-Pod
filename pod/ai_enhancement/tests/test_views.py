@@ -22,6 +22,8 @@ class EnrichVideoJsonViewTest(TestCase):
         """Set up the test."""
         self.factory = RequestFactory()
         self.user = User.objects.create_user(username="testuser")
+        self.user.is_staff = True
+        self.user.save()
         self.video = Video.objects.create(
             slug="test-video",
             owner=self.user,
@@ -31,6 +33,7 @@ class EnrichVideoJsonViewTest(TestCase):
             type=Type.objects.get(id=1),
         )
         self.enhancement = AIEnhancement.objects.create(video=self.video, ai_enhancement_id_in_aristote="123")
+        self.client.force_login(self.user)
 
     @patch("pod.ai_enhancement.views.AristoteAI")
     def test_enhance_video_json__success(self, mock_aristote_ai):
