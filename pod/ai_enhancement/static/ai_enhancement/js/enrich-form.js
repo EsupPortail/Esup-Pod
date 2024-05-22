@@ -205,7 +205,7 @@ function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipl
         switch (element) {
           case 'title':
             initialVersionElement.children[0].textContent = decodeString(videoTitle);
-            aiVersionElement.children[0].textContent = response['enrichmentVersionMetadata']['title'];
+            aiVersionElement.children[0].textContent = remove_quotes(response['enrichmentVersionMetadata']['title']);
             addTogglePairInput(aiVersionElement, initialVersionElement, input, element);
             break;
           case 'description':
@@ -232,4 +232,14 @@ function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipl
       }
     })
     .catch(err => showalert(gettext("An error has occurred. Please try later."), 'alert-danger'));
+}
+
+function remove_quotes(text) {
+  if(text.charAt(0) === '"') {
+    text = text.substring(1);
+  }
+  if(text.charAt(text.length-1) === '"') {
+    text = text.substring(0,text.length-1);
+  }
+  return text;
 }

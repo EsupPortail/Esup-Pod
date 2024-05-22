@@ -8,7 +8,7 @@ from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
 from pod.ai_enhancement.models import AIEnhancement
-from pod.ai_enhancement.views import enhance_video_json, toggle_webhook
+from pod.ai_enhancement.views import toggle_webhook
 from pod.main.models import Configuration
 from pod.video.models import Video, Type
 
@@ -61,8 +61,9 @@ class EnrichVideoJsonViewTest(TestCase):
         mock_aristote_instance = mock_aristote_ai.return_value
         mock_aristote_instance.get_latest_enhancement_version.return_value = json_data
         url = reverse("ai_enhancement:enhance_video_json", args=[self.video.slug])
-        request = self.factory.get(url)
-        response = enhance_video_json(request, self.video.slug)
+        # request = self.factory.get(url)
+        response = self.client.get(url)
+        # response = enhance_video_json(request, self.video.slug)
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response, JsonResponse)
         mock_aristote_instance.get_latest_enhancement_version.assert_called_once_with(
