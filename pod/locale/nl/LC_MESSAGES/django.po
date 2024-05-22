@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-21 15:33+0200\n"
+"POT-Creation-Date: 2024-05-22 08:10+0200\n"
 "PO-Revision-Date: 2024-05-15 09:01+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -223,11 +223,6 @@ msgstr ""
 #: pod/ai_enhancement/templates/choose_video_element.html
 #, python-format
 msgid "Video name: %(video.title)s"
-msgstr ""
-
-#: pod/ai_enhancement/templates/choose_video_element.html
-#: pod/ai_enhancement/views.py
-msgid "Enrich with Aristote AI"
 msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html

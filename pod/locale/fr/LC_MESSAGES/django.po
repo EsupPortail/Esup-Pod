@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-21 15:33+0200\n"
+"POT-Creation-Date: 2024-05-22 08:10+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -230,11 +230,6 @@ msgstr "Vidéos"
 #, python-format
 msgid "Video name: %(video.title)s"
 msgstr "Nom de la vidéo : %(video.title)s"
-
-#: pod/ai_enhancement/templates/choose_video_element.html
-#: pod/ai_enhancement/views.py
-msgid "Enrich with Aristote AI"
-msgstr "Améliorer la vidéo avec l’IA Aristote"
 
 #: pod/ai_enhancement/templates/choose_video_element.html
 msgid "Go to subtitle part"
@@ -10390,35 +10385,3 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#~ msgid "Completion video"
-#~ msgstr "Complétion de la vidéo"
-
-#~ msgid "Display &quot;Contributor(s)&quot; section"
-#~ msgstr "Afficher la section « Contributeurs »"
-
-#~ msgid "Display &quot;Subtitle(s) and Caption(s) &quot; section"
-#~ msgstr "Afficher la section « Sous-titres et Légendes »"
-
-#~ msgid "Display &quot; Additional resource(s)&quot; section"
-#~ msgstr "Afficher la section « Documents complémentaires »"
-
-#~ msgid "Display &quot; Overlay(s)&quot; section"
-#~ msgstr "Afficher la section « Superpositions »"
-
-#~ msgid "Editing the dressing"
-#~ msgstr "Éditer l’habillage"
-
-#~ msgid "Please enter a text."
-#~ msgstr "Veuillez entrer un texte."
-
-#~ msgid "Please enter a model type."
-#~ msgstr "Veuillez entrer un type."
-
-#~ msgid ""
-#~ "For your information, below is the list of archived videos that have been "
-#~ "packaged in your ARCHIVE_ROOT folder, and definitely deleted from %s."
-#~ msgstr ""
-#~ "Pour votre information, voici la liste des vidéos archivées qui ont été "
-#~ "placées dans votre dossier ARCHIVE_ROOT, et définitivement supprimées de "
-#~ "%s."

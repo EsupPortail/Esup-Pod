@@ -140,7 +140,7 @@ class ReceiveWebhookViewTest(TestCase):
         self.assertFalse(self.enhancement.is_ready)
         self.assertEqual(response.status_code, 404)
         self.assertIsInstance(response, JsonResponse)
-        self.assertEqual(json.loads(response.content.decode()), {"error": "Enrichment not found."})
+        self.assertEqual(json.loads(response.content.decode()), {"error": "Enhancement not found."})
         print(" --->  test_toggle_webhook__enhancement_not_found ok")
 
     def test_toggle_webhook__no_id_in_request(self):
@@ -197,7 +197,7 @@ class ReceiveWebhookViewTest(TestCase):
         self.assertIsInstance(response, JsonResponse)
         self.assertEqual(
             json.loads(response.content.decode()),
-            {"status": "Enrichment has not yet been successfully achieved."},
+            {"status": "Enhancement has not yet been successfully achieved."},
         )
         print(" --->  test_toggle_webhook__enrichment_not_achieved ok")
 
@@ -211,6 +211,8 @@ class EnhanceVideoViewTest(TestCase):
         """Set up the test."""
         self.factory = RequestFactory()
         self.user = User.objects.create_user(username="test_user")
+        self.user.is_staff = True
+        self.user.save()
         self.video = Video.objects.create(
             slug="test-video",
             owner=self.user,
