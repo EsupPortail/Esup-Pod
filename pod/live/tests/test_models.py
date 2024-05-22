@@ -290,7 +290,9 @@ class EventTestCase(TestCase):
         event.id = None
         self.assertEqual(event.__str__(), "None")
         self.assertEqual(event.get_thumbnail_card(), "/static/img/default-event.svg")
-        self.assertEqual(event.get_full_url(), "//localhost:8000/live/event/0001-event1/")
+        self.assertEqual(
+            event.get_full_url(), "//pod.localhost:8000/live/event/0001-event1/"
+        )
         print(" --->  test_attributs of EventTestCase: OK!")
 
     def test_add_thumbnail(self):
@@ -316,19 +318,19 @@ class EventTestCase(TestCase):
         event = Event.objects.get(id=1)
         event.video_on_hold = video
         event.save()
-        self.assertEquals(event.video_on_hold.id, video.id)
+        self.assertEqual(event.video_on_hold.id, video.id)
         print(" --->  test_add_video_on_hold of EventTestCase: OK!")
 
     def test_add_video(self):
         event = Event.objects.get(id=1)
         event = add_video(event)
-        self.assertEquals(event.videos.count(), 1)
+        self.assertEqual(event.videos.count(), 1)
         print(" --->  test_add_video of EventTestCase: OK!")
 
     def test_delete_object(self):
         event = Event.objects.get(id=1)
         event.delete()
-        self.assertEquals(Event.objects.all().count(), 0)
+        self.assertEqual(Event.objects.all().count(), 0)
         print(" --->  test_delete_object of EventTestCase: OK!")
 
     def test_delete_object_keep_video(self):
@@ -336,7 +338,7 @@ class EventTestCase(TestCase):
         add_video(event)
         event.delete()
         # video is not deleted with event
-        self.assertEquals(Video.objects.all().count(), 1)
+        self.assertEqual(Video.objects.all().count(), 1)
         print(" --->  test_delete_object_keep_video of EventTestCase: OK!")
 
     def test_event_filters(self):

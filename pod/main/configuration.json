@@ -3229,7 +3229,7 @@
                     },
                     "settings": {
                         "CELERY_BROKER_URL": {
-                            "default_value": "redis://127.0.0.1:6379/5",
+                            "default_value": "redis://redis.localhost:6379/5",
                             "description": {
                                 "en": [
                                     ""
@@ -3354,7 +3354,7 @@
                                     "",
                                     "Il faut renseigner l’url du redis sur lequel Celery",
                                     "va chercher les ordres d’encodage et de transcription",
-                                    "par exemple : \"redis://redis:6379/7\""
+                                    "par exemple : \"redis://redis.localhost:6379/7\""
                                 ]
                             },
                             "pod_version_end": "",
@@ -3524,7 +3524,7 @@
                             "pod_version_init": "3.1.0"
                         },
                         "ES_URL": {
-                            "default_value": "[\"http://127.0.0.1:9200/\"]",
+                            "default_value": "[\"http://elasticsearch.localhost:9200/\"]",
                             "description": {
                                 "en": [
                                     ""
@@ -4411,7 +4411,7 @@
                             "pod_version_init": "3.1"
                         },
                         "ALLOWED_HOSTS": {
-                            "default_value": "['localhost']",
+                            "default_value": "['pod.localhost']",
                             "description": {
                                 "en": [
                                     ""
@@ -4454,7 +4454,7 @@
                                     "    # },",
                                     "    \"default\": {",
                                     "        \"BACKEND\": \"django_redis.cache.RedisCache\",",
-                                    "        \"LOCATION\": \"redis://127.0.0.1:6379/1\",",
+                                    "        \"LOCATION\": \"redis://redis.localhost:6379/1\",",
                                     "        \"OPTIONS\": {",
                                     "            \"CLIENT_CLASS\": \"django_redis.client.DefaultClient\",",
                                     "        },",
@@ -4462,7 +4462,7 @@
                                     "    # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).",
                                     "    \"select2\": {",
                                     "        \"BACKEND\": \"django_redis.cache.RedisCache\",",
-                                    "        \"LOCATION\": \"redis://127.0.0.1:6379/2\",",
+                                    "        \"LOCATION\": \"redis://redis.localhost:6379/2\",",
                                     "        \"OPTIONS\": {",
                                     "            \"CLIENT_CLASS\": \"django_redis.client.DefaultClient\",",
                                     "        },",

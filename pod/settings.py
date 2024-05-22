@@ -358,7 +358,7 @@ LOGGING = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/3",
+        "LOCATION": "redis://redis.localhost:6379/3",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -366,7 +366,7 @@ CACHES = {
     },
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/2",
+        "LOCATION": "redis://redis.localhost:6379/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -374,7 +374,7 @@ CACHES = {
 }
 SESSION_ENGINE = "redis_sessions.session"
 SESSION_REDIS = {
-    "host": "127.0.0.1",
+    "host": "redis.localhost",
     "port": 6379,
     "db": 4,
     "prefix": "session",

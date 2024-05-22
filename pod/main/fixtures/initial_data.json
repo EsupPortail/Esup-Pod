@@ -3,8 +3,8 @@
     "model": "sites.site",
     "pk": 1,
     "fields": {
-      "domain": "localhost:8000",
-      "name": "localhost:8000"
+      "domain": "pod.localhost:8000",
+      "name": "pod.localhost:8000"
     }
   },
   {
