@@ -82,6 +82,8 @@ class ReceiveWebhookViewTest(TestCase):
         """Set up the test."""
         self.factory = RequestFactory()
         self.user = User.objects.create_user(username="test_user")
+        self.user.is_staff = True
+        self.user.save()
         self.video = Video.objects.create(
             slug="test-video",
             owner=self.user,
@@ -94,6 +96,7 @@ class ReceiveWebhookViewTest(TestCase):
             video=self.video,
             ai_enhancement_id_in_aristote="123"
         )
+        self.client.force_login(self.user)
 
     def test_toggle_webhook__success(self):
         """Test the receive_webhook view when successful."""

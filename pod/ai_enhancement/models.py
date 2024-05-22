@@ -62,4 +62,5 @@ def delete_AIEnhancement(sender, instance, created, **kwargs):
         instance (:class:`pod.video.models.Video`): Video object instance.
     """
     if hasattr(instance, "launch_encode") and instance.launch_encode is True:
-        AIEnhancement.objects.filter(video=instance).first().delete()
+        if AIEnhancement.objects.filter(video=instance).exists():
+            AIEnhancement.objects.filter(video=instance).first().delete()
