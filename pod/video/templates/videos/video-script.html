@@ -22,31 +22,18 @@
       subtitles[0].setAttribute('default',null);
     }
   }
+
+  /** @global */
   let options = {}
-    , player = videojs('podvideoplayer', options, function(){});
+    , player;
+
+  /**
+   * Set the video player options
+   * Initialyse the player with those configured options
+   * Add listeners for the video player events.
+   */
   const initialized_player = function() {
-    window.onmessage = function(event) {
-      const evt = event || window.event;
-      {# maybe use request.get_host to protect it... #}
-        if(evt.data.type === 'player:play') {
-          player.play();
-          evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
-        }
-        if(evt.data.type === 'player:pause') {
-          player.pause();
-          evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
-        }
-        if(evt.data.type === 'player:mute') {
-          player.muted(true);
-          evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
-        }
-        if(evt.data.type === 'player:unmute') {
-          player.muted(false);
-          evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
-        }
-    };
-
-
+    /** Set the video player options **/
     options = {
       notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
       //language: "fr", //en or nl
@@ -73,12 +60,10 @@
             event.preventDefault();
             this.requestFullscreen();
           }
-          // `arrow left`
           if (event.code === 'ArrowLeft') {
             event.preventDefault();
             this.currentTime(Math.floor(this.currentTime())-seektime);
           }
-          // `arrow right`
           if (event.code === 'ArrowRight') {
             event.preventDefault();
             this.currentTime(Math.floor(this.currentTime())+seektime);
@@ -114,12 +99,32 @@
     {% endif %}
     }
   }
+  /** Initialyse the player with the configured options. **/
+  player = videojs('podvideoplayer', options, function(){});
 
-  // player = videojs('podvideoplayer', options, function(){});
+  /** Add listeners for the video player events. **/
+  window.onmessage = function(event) {
+    const evt = event || window.event;
+    {# maybe use request.get_host to protect it... #}
+      if(evt.data.type === 'player:play') {
+        player.play();
+        evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
+      }
+      if(evt.data.type === 'player:pause') {
+        player.pause();
+        evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
+      }
+      if(evt.data.type === 'player:mute') {
+        player.muted(true);
+        evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
+      }
+      if(evt.data.type === 'player:unmute') {
+        player.muted(false);
+        evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
+      }
+  };
 
-  /**
-   * Increase the video counter on first play
-   */
+  // Increase the video counter on first play
   player.on('firstplay', function(){
 
     let formElement = document.getElementById("video_count_form");
@@ -150,7 +155,7 @@
   {% endif %}
 
   {% if video.is_video %}
-    /** get all mp4 format **/
+    // get all mp4 format
     const mp4_sources = {{ video.get_video_mp4_json|safe }};
 
     {% if video.get_playlist_master %}
@@ -168,18 +173,16 @@
           {% endif %}
         {% endif %}
       });
-      //Add source to player
+      // Add source to player
       player.src(srcOptions);
-      //add quality selector to player
+      // Add quality selector to player
       player.hlsQualitySelector({
           displayCurrentQuality: true,
       });
       player.on("error", function(e) {
         e.stopImmediatePropagation();
         const error = player.error();
-        //alert(error.code+" "+error.type+" "+error.message);
         if(error.code === 3 || error.code === 4) {
-          //console.log('error!', error.code, error.type , error.message);
           if(player.src() === "" || player.src().indexOf("m3u8") !== -1){
             player.controlBar.addChild('QualitySelector');
             player.play();
@@ -233,9 +236,9 @@
         src: '{{video.get_video_m4a.source_file.url}}',
         type: '{{video.get_video_m4a.encoding_format}}',
       };
-      //Add source to player
+      // Add source to player
       player.src(srcOptions);
-      //add logo to the player
+      // Add logo to the player
       player.videoJsLogo({
         imgsrc: '{% static LOGO_PLAYER %}',
         linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
