@@ -933,7 +933,7 @@ def owner_is_searchable(user: User) -> bool:
 def videos(request):
     """Render the main list of videos."""
     videos_list = get_filtered_videos_list(request, get_available_videos())
-    sort_field = request.GET.get("sort") if request.GET.get("sort") else "title"
+    sort_field = request.GET.get("sort") if request.GET.get("sort") else "date_added"
     sort_direction = request.GET.get("sort_direction")
 
     videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
