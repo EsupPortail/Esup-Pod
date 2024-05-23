@@ -29,7 +29,7 @@
 
   /**
    * Set the video player options
-   * Initialyse the player with those configured options
+   * Initialise the player with those configured options
    * Add listeners for the video player events.
    */
   const initialized_player = function() {
@@ -99,7 +99,7 @@
     {% endif %}
     }
   }
-  /** Initialyse the player with the configured options. **/
+  /** Initialise the player with the configured options. **/
   player = videojs('podvideoplayer', options, function(){});
 
   /** Add listeners for the video player events. **/
@@ -194,7 +194,7 @@
       player.controlBar.addChild('QualitySelector');
     {% endif %}
     {% if video.overview %}
-      //add overview
+      // Add overview
       player.vttThumbnails({
         src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
       });
@@ -224,7 +224,7 @@
     {% if video.is_360 %}
       player.vr({projection: '360'});
     {% endif %}
-    //add logo to the player
+    // Add logo to the player
     player.videoJsLogo({
       imgsrc: '{% static LOGO_PLAYER %}',
       linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
