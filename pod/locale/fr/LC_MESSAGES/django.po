@@ -5328,7 +5328,6 @@ msgid "Dyslexia mode"
 msgstr "Mode dyslexie"
 
 #: pod/main/templates/navbar.html
-<<<<<<< HEAD
 msgid "Automatic subtitles"
 msgstr "Sous-titres automatiques"
 

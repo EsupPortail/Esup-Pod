@@ -174,7 +174,6 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
   if (action == "modify" || action == "form_save_modify") {
     let id = elt.querySelector("input[name=id]").value;
     let form_data = new FormData();
-
     form_data.append("action", action);
     form_data.append("id", id);
 
