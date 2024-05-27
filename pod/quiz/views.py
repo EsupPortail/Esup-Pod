@@ -494,15 +494,17 @@ def get_initial_data(existing_questions=None) -> str:
         initial_data = {
             "existing_questions": [
                 {
-                    "short_answer": question.answer
-                    if question.get_type() == "short_answer"
-                    else None,
-                    "long_answer": question.answer
-                    if question.get_type() == "long_answer"
-                    else None,
-                    "choices": json.loads(question.choices)
-                    if question.get_type() in {"single_choice", "multiple_choice"}
-                    else None,
+                    "short_answer": (
+                        question.answer if question.get_type() == "short_answer" else None
+                    ),
+                    "long_answer": (
+                        question.answer if question.get_type() == "long_answer" else None
+                    ),
+                    "choices": (
+                        json.loads(question.choices)
+                        if question.get_type() in {"single_choice", "multiple_choice"}
+                        else None
+                    ),
                     # Add other datas needed for JS fields
                 }
                 for question in existing_questions
