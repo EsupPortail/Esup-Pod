@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-16 07:36+0000\n"
+"POT-Creation-Date: 2024-05-27 09:44+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: obado <bado@unice.fr>\n"
+"Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -17,6 +17,7 @@ msgstr ""
 "X-Generator: Poedit 3.4.4\n"
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
+#: pod/quiz/static/quiz/js/create-quiz.js
 msgid "Get time from the player"
 msgstr "Obtenir le temps du lecteur"
 
@@ -225,14 +226,6 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer ce document ?"
 #: pod/completion/static/js/completion.js
 msgid "Are you sure you want to delete this overlay?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer cette superposition ?"
-
-#: pod/completion/static/js/completion.js
-msgid "Display"
-msgstr "Afficher"
-
-#: pod/completion/static/js/completion.js
-msgid "section"
-msgstr "section"
 
 #: pod/completion/static/js/completion.js
 msgid "Please enter a name from 2 to 100 caracteres."
@@ -635,6 +628,38 @@ msgstr "Souscription aux notifications réussie."
 msgid "Error while subscribing to push notifications."
 msgstr "Une erreur est survenue lors de la souscription aux notifications."
 
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "The short answer"
+msgstr "La réponse courte"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Short answer"
+msgstr "Réponse courte"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "The long answer"
+msgstr "La réponse longue"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Long answer"
+msgstr "Réponse longue"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Remove choice"
+msgstr "Supprimer le choix"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Choice"
+msgstr "Choix"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Your choices"
+msgstr "Vos choix"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Add a choice"
+msgstr "Ajouter un choix"
+
 #: pod/video/static/js/ajax-display-channels.js
 msgid "%(count)s channel"
 msgid_plural "%(count)s channels"
@@ -963,6 +988,12 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "Display"
+#~ msgstr "Afficher"
+
+#~ msgid "section"
+#~ msgstr "section"
 
 #~ msgid "Change your picture"
 #~ msgstr "Changer votre image"

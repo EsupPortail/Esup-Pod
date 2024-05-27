@@ -1379,6 +1379,15 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   >> Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush).<br>
   >> Elles peuvent être générées avec [web-push-codelab.glitch.me](https://web-push-codelab.glitch.me/).<br>
 
+### Configuration de l'application quiz
+
+Application Quiz pour ajouter des questions sur les vidéos.<br>
+Mettre `USE_QUIZ` à True pour activer cette application.<br>
+
+* `USE_QUIZ`
+  > valeur par défaut : `True`
+  >> Activation des quiz. Permet aux utilisateurs de créer, répondre et utiliser des quiz dans les vidéos.<br>
+
 ### Configuration de l’application recorder
 
 * `ALLOW_MANUAL_RECORDING_CLAIMING`
