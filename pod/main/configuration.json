@@ -2039,6 +2039,37 @@
                         "fr": "Configuration de l’application progressive_web_app"
                     }
                 },
+                "quiz": {
+                    "description": {
+                        "en": [
+                            "Quiz App to add various questions on videos.",
+                            "Set `USE_QUIZ` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Quiz pour ajouter des questions sur les vidéos.",
+                            "Mettre `USE_QUIZ` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "USE_QUIZ": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of quizzes. Allows users to create, respond and use quizzes in videos."
+                                ],
+                                "fr": [
+                                    "Activation des quiz. Permet aux utilisateurs de créer, répondre et utiliser des quiz dans les vidéos."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4"
+                        }
+                    },
+                    "title": {
+                        "en": "Quiz application configuration",
+                        "fr": "Configuration de l'application quiz"
+                    }
+                },
                 "recorder": {
                     "description": {},
                     "settings": {

@@ -37,6 +37,7 @@ USE_PODFILE = getattr(settings, "USE_PODFILE", False)
 USE_PLAYLIST = getattr(settings, "USE_PLAYLIST", True)
 USE_DRESSING = getattr(settings, "USE_DRESSING", True)
 USE_IMPORT_VIDEO = getattr(settings, "USE_IMPORT_VIDEO", True)
+USE_QUIZ = getattr(settings, "USE_QUIZ", True)
 
 if USE_CAS:
     from cas import views as cas_views
@@ -166,6 +167,12 @@ if USE_CUT:
 if USE_PLAYLIST:
     urlpatterns += [
         path("playlist/", include("pod.playlist.urls", namespace="playlist")),
+    ]
+
+# QUIZ
+if USE_QUIZ:
+    urlpatterns += [
+        path("quiz/", include("pod.quiz.urls", namespace="quiz")),
     ]
 
 # DRESSING
