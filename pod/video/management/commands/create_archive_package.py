@@ -18,7 +18,7 @@ from django.template.loader import render_to_string
 from django.utils.translation import activate
 from django.utils.translation import gettext as _
 
-from pod.video.models import Video, Notes, AdvancedNotes, Comment
+from pod.video.models import Video, Notes, AdvancedNotes, Comment, ViewCount
 from pod.chapter.models import Chapter
 from pod.completion.models import Contributor, Document, Overlay, Track
 from pod.enrichment.models import Enrichment
@@ -173,13 +173,14 @@ class Command(BaseCommand):
             Notes,
             AdvancedNotes,
             Comment,
+            ViewCount,
         ]:
             # nb: contributors are already exported in dublincore.xml
             self.export_complement(
                 mediaPackage_dir, model.__name__, model.objects.filter(video=vid)
             )
         # Export also the video itself as json
-        self.export_complement(mediaPackage_dir, "Video", vid)
+        self.export_complement(mediaPackage_dir, "Video", [vid])
 
         # Store also files linked to Enrichments
         for enrich in Enrichment.objects.filter(video=vid):

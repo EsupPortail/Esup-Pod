@@ -110,7 +110,7 @@ class ConfigurationTestCase(TestCase):
 
     def test_delete_object(self):
         Configuration.objects.filter(key="maintenance_mode").delete()
-        self.assertEquals(Configuration.objects.filter(key="maintenance_mode").count(), 0)
+        self.assertEqual(Configuration.objects.filter(key="maintenance_mode").count(), 0)
         print("--->  test_delete_object of ConfigurationTestCase: OK!")
 
 
@@ -140,7 +140,7 @@ class AdditionalChannelTabTestCase(TestCase):
 
     def test_delete_object(self):
         AdditionalChannelTab.objects.filter(name="Tab0").delete()
-        self.assertEquals(AdditionalChannelTab.objects.filter(name="Tab0").count(), 0)
+        self.assertEqual(AdditionalChannelTab.objects.filter(name="Tab0").count(), 0)
 
         print("--->  test_delete_object of AdditionalChannelTabTestCase: OK!")
 
