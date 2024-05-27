@@ -37,6 +37,7 @@ USE_PODFILE = getattr(settings, "USE_PODFILE", False)
 USE_PLAYLIST = getattr(settings, "USE_PLAYLIST", True)
 USE_DRESSING = getattr(settings, "USE_DRESSING", True)
 USE_IMPORT_VIDEO = getattr(settings, "USE_IMPORT_VIDEO", True)
+USE_QUIZ = getattr(settings, "USE_QUIZ", True)
 USE_AI_ENHANCEMENT = getattr(settings, "USE_AI_ENHANCEMENT", False)
 
 if USE_CAS:
@@ -173,6 +174,12 @@ if USE_PLAYLIST:
 if USE_AI_ENHANCEMENT:
     urlpatterns += [
         path("ai-enhancement/", include("pod.ai_enhancement.urls", namespace="ai_enhancement")),
+    ]
+
+# QUIZ
+if USE_QUIZ:
+    urlpatterns += [
+        path("quiz/", include("pod.quiz.urls", namespace="quiz")),
     ]
 
 # DRESSING

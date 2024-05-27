@@ -33,7 +33,7 @@
   </h2>
   <div {% if videos|length > 5 %}class="scroll-container"{% endif %}>
     {% for video_in_playlist in videos %}
-      {% can_see_playlist_video video_in_playlist playlist as can_see_video %}
+      {% can_see_playlist_video video_in_playlist playlist_in_get as can_see_video %}
         <a
           {% if can_see_video %}
             href="{% with default_version_link=video_in_playlist.get_default_version_link %}{% if default_version_link %}{{ default_version_link }}{% else %}{% url 'video:video' video_in_playlist.slug %}{% endif %}{% endwith %}?playlist={{ playlist_in_get.slug }}"
