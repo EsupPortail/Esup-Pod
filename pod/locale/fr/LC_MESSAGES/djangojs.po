@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-27 09:44+0000\n"
+"POT-Creation-Date: 2024-05-27 14:52+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: \n"
@@ -951,18 +951,3 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
-
-#~ msgid "Display"
-#~ msgstr "Afficher"
-
-#~ msgid "section"
-#~ msgstr "section"
-
-#~ msgid "Change your picture"
-#~ msgstr "Changer votre image"
-
-#~ msgid "Add your picture"
-#~ msgstr "Ajouter votre image"
-
-#~ msgid "section"
-#~ msgstr "section"

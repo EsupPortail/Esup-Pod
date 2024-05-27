@@ -49,7 +49,7 @@
           {% endspaceless %}
         {% endfor %}
           <div class="text-center mt-1">
-            <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans %}Back to the {{ video.title }} video{% endblocktrans %}}" data-bs-toggle="tooltip" data-bs-placement="bottom" class="btn btn-secondary btn-sm">
+            <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the {{ video_title }} video{% endblocktrans %}}" data-bs-toggle="tooltip" data-bs-placement="bottom" class="btn btn-secondary btn-sm">
               <i class="bi bi-play-circle" aria-hidden="true"></i>&nbsp;{% trans 'Back to the video' %}
             </a>
             <button type="submit" class="btn btn-secondary btn-sm btn-success">{% trans 'Confirm' %}</button>
