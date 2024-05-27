@@ -2,6 +2,16 @@
  * @file Esup-Pod functions for enrichment view.
  */
 
+// Read-only globals defined in video-script.html
+/*
+global player
+*/
+
+// Read-only globals defined in main.js
+/*
+global fadeIn
+*/
+
 var id_form = "form_enrich";
 
 function removeLoadedScript(lib) {
@@ -53,21 +63,6 @@ function show_form(data) {
   enrich_type();
 }
 
-var showalert = function (message, alerttype) {
-  document.body.append(
-    '<div id="formalertdiv" class="alert ' +
-      alerttype +
-      ' alert-dismissible fade show" role="alert">' +
-      message +
-      '<button type="button" class="close" data-dismiss="alert" aria-label="' +
-      gettext("Close") +
-      '"><span aria-hidden="true">&times;</span></button></div>',
-  );
-  setTimeout(function () {
-    document.getElementById("formalertdiv").remove();
-  }, 5000);
-};
-
 var ajaxfail = function (data) {
   showalert(
     gettext("Error getting form.") +
@@ -84,6 +79,9 @@ var ajaxfail = function (data) {
   show_form("");
 };
 
+/**
+ * Handle the "cancel enrichment" button.
+ */
 document.addEventListener("click", (e) => {
   if (e.target.id != "cancel_enrichment") return;
   document.querySelectorAll("form.get_form").forEach((form) => {
@@ -92,6 +90,9 @@ document.addEventListener("click", (e) => {
   });
 });
 
+/**
+ * Handle any of the "get_form" submitting forms.
+ */
 document.addEventListener("submit", (e) => {
   if (!e.target.classList.contains("get_form")) return;
   e.preventDefault();
@@ -99,6 +100,10 @@ document.addEventListener("submit", (e) => {
 
   sendandgetform(e.target, action);
 });
+
+/**
+ * Handle the "form_save" form submit.
+ */
 document.addEventListener("submit", (e) => {
   if (!e.target.classList.contains("form_save")) return;
   e.preventDefault();
@@ -124,7 +129,7 @@ var sendandgetform = async function (elt, action) {
     });
     const data = await response.text();
     if (
-      data.indexOf(id_form) == -1 &&
+      data.indexOf(id_form) === -1 &&
       (action === "new" || action === "modify")
     ) {
       showalert(
@@ -140,7 +145,7 @@ var sendandgetform = async function (elt, action) {
       show_form(data);
       elt.classList.add("info");
     } else if (action === "delete") {
-      if (data.indexOf("list_enrichment") == -1) {
+      if (data.indexOf("list_enrichment") === 1) {
         showalert(
           gettext("You are no longer authenticated. Please log in again."),
           "alert-danger",
@@ -186,8 +191,8 @@ var sendform = async function (elt, action) {
         .then((response) => response.text())
         .then((data) => {
           if (
-            data.indexOf("list_enrichment") == -1 &&
-            data.indexOf("form") == -1
+            data.indexOf("list_enrichment") === -1 &&
+            data.indexOf("form") === -1
           ) {
             showalert(
               gettext("You are no longer authenticated. Please log in again."),
@@ -229,7 +234,7 @@ var sendform = async function (elt, action) {
     })
       .then((response) => response.text())
       .then((data) => {
-        if (data.indexOf("list_enrichment") == -1) {
+        if (data.indexOf("list_enrichment") === -1) {
           showalert(
             gettext("You are no longer authenticated. Please log in again."),
             "alert-danger",
@@ -273,6 +278,12 @@ Number.prototype.toHHMMSS = function () {
   return hours + ":" + minutes + ":" + seconds;
 };
 
+/**
+ * UNUSED function ??
+ * TODO : remove in 3.8.0
+ * @param {*} data
+ */
+/*
 function get_form(data) {
   var form = document.getElementById("form_enrich");
   form.style.display = "none";
@@ -308,7 +319,8 @@ function get_form(data) {
   );
   enrich_type();
   manageResize();
-}
+}*/
+
 function enrich_type() {
   document.getElementById("id_image").closest("div.form-group").style.display =
     "none";
@@ -340,7 +352,7 @@ const setTimecode = (e) => {
   const timecodeSpan = parentNode.querySelector(
     "div.getfromvideo span.timecode",
   );
-  timecodeSpan.innerHTML = " " + parseInt(e.target.value).toHHMMSS();
+  timecodeSpan.textContent = " " + parseInt(e.target.value, 10).toHHMMSS();
 };
 document.addEventListener("change", setTimecode);
 
@@ -350,13 +362,13 @@ document.addEventListener("click", (e) => {
   if (!(typeof player === "undefined")) {
     if (e.target.getAttribute("id") == "getfromvideo_start") {
       let inputStart = document.getElementById("id_start");
-      inputStart.value = parseInt(player.currentTime());
-      changeEvent = new Event("change");
+      inputStart.value = parseInt(player.currentTime(), 10);
+      let changeEvent = new Event("change");
       inputStart.dispatchEvent(changeEvent);
     } else {
       let inputEnd = document.getElementById("id_end");
-      inputEnd.value = parseInt(player.currentTime());
-      changeEvent = new Event("change");
+      inputEnd.value = parseInt(player.currentTime(), 10);
+      let changeEvent = new Event("change");
       inputEnd.dispatchEvent(changeEvent);
     }
   }
@@ -438,7 +450,7 @@ function verify_fields() {
       if (richtext.value == "") {
         richtext.insertAdjacentHTML(
           "beforebegin",
-          "<span class='form-help-inline'>&nbsp; &nbsp;" +
+          "<span class='form-help-inline'>" +
             gettext("Please enter a correct richtext.") +
             "</span>",
         );
@@ -532,8 +544,8 @@ function verify_fields() {
 /***  Verify if fields end and start are correct ***/
 function verify_end_start_items() {
   var msg = "";
-  new_start = parseInt(document.getElementById("id_start").value);
-  new_end = parseInt(document.getElementById("id_end").value);
+  let new_start = parseInt(document.getElementById("id_start").value, 10);
+  let new_end = parseInt(document.getElementById("id_end").value, 10);
   if (new_start > new_end) {
     msg = gettext("The start field value is greater than the end field one.");
   } else if (new_end > video_duration) {
@@ -549,13 +561,13 @@ function verify_end_start_items() {
 /*** Verify if there is a overlap with over enrich***/
 function overlaptest() {
   //var video_list_enrich=[];
-  var new_start = parseInt(document.getElementById("id_start").value);
-  var new_end = parseInt(document.getElementById("id_end").value);
+  var new_start = parseInt(document.getElementById("id_start").value, 10);
+  var new_end = parseInt(document.getElementById("id_end").value, 10);
   var id = document.getElementById("id_enrich").value;
   var msg = "";
   document.querySelectorAll("ul#slides li").forEach((e) => {
-    var data_start = parseInt(e.dataset.start);
-    var data_end = parseInt(e.dataset.end);
+    var data_start = parseInt(e.dataset.start, 10);
+    var data_end = parseInt(e.dataset.end, 10);
     if (
       id != e.dataset.id &&
       !(

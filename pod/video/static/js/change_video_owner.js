@@ -112,7 +112,7 @@
         e.stopPropagation();
         div.remove();
       });
-    container.innerHTML = "";
+    container.textContent = "";
     container.appendChild(div);
   };
 
@@ -132,7 +132,7 @@
     }
     if (remove) loader.remove();
     else if (!container.querySelector(".spinner-border") && !remove) {
-      container.innerHTML = "";
+      container.textContent = "";
       container.appendChild(loader);
     }
   };
@@ -189,6 +189,7 @@
     }
     const curr_offset = Number.parseInt(
       getSearchParamFromURL(url, "offset", 0),
+      10,
     );
     const curr_page = curr_offset === 0 ? 1 : 1 + curr_offset / limit;
     const total_page = Math.ceil(DATA.count / limit);
@@ -256,7 +257,7 @@
    * @param {HTMLElement} suggestion suggestion container
    */
   const clearSuggestions = (suggestion) => {
-    suggestion.innerHTML = "";
+    suggestion.textContent = "";
   };
 
   /**
@@ -295,7 +296,7 @@
     let once = false;
     input.addEventListener("keyup", (e) => {
       if (
-        (/[a-z0-9\s]/.test(e.key.toLowerCase()) && e.key.length == 1) ||
+        (/[a-z0-9\s]/.test(e.key.toLowerCase()) && e.key.length === 1) ||
         e.key.toLowerCase() == "backspace"
       ) {
         const is_filter_input = input.isEqualNode(list_videos__search);
@@ -426,7 +427,7 @@
    * @param {Array} videos list of videos
    */
   const refreshVideos = (url, videos = DATA.results) => {
-    videos_container.innerHTML = "";
+    videos_container.textContent = "";
     videos.forEach((video) => {
       const cls = choosed_videos.includes(video.id) ? "choosed" : "";
       const card = document.createElement("DIV");
@@ -521,7 +522,7 @@
       current_username_filter !== username &&
       input.isEqualNode(old_owner_input)
     ) {
-      videos_container.innerHTML = "";
+      videos_container.textContent = "";
       reset(true);
     }
   };
@@ -665,9 +666,9 @@
     }
     selectAllVideos.checked = false;
     DATA = { count: 0, next: null, previous: null, results: [] };
-    videos_container.innerHTML = "";
+    videos_container.textContent = "";
     list_videos__search.value = "";
-    list_videos__search.nextElementSibling.innerHTML = "";
+    list_videos__search.nextElementSibling.textContent = "";
     choosed_videos = [];
     refreshPageInfos(null);
     refreshPagination();

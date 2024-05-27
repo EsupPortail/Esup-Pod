@@ -5,7 +5,7 @@
 
 // Read-only globals defined in video_select.js
 /*
-  global replaceSelectedCountVideos selectedVideos getHTMLBadgesSelectedTitles
+  global replaceSelectedCountVideos selectedVideos getHTMLBadgesSelectedTitles resetDashboardElements
 */
 
 // Read-only globals defined in filter_aside_video_list_refresh.js
@@ -18,8 +18,13 @@
   global urlUpdateVideos csrftoken formFieldsets displayMode
 */
 
+/* exported dashboardActionReset */
+
 var bulkUpdateActionSelect = document.getElementById("bulkUpdateActionSelect");
 var applyBulkUpdateBtn = document.getElementById("applyBulkUpdateBtn");
+var resetDashboardElementsBtn = document.getElementById(
+  "reset-dashboard-elements-btn",
+);
 var modalLoader = document.getElementById("bulkUpdateLoader");
 var modal = document.getElementById("modalBulkUpdate");
 var confirmModalBtn = document.getElementById("confirmModalBtn");
@@ -35,6 +40,7 @@ bulkUpdateActionSelect.addEventListener("change", function () {
   dashboardAction = bulkUpdateActionSelect.value;
   appendDynamicForm(dashboardAction);
   replaceSelectedCountVideos();
+  manageDisableBtn(resetDashboardElementsBtn, dashboardAction != "");
 });
 
 /**
@@ -42,11 +48,23 @@ bulkUpdateActionSelect.addEventListener("change", function () {
  */
 applyBulkUpdateBtn.addEventListener("click", () => {
   let selectedCount = selectedVideos.length;
-  let modalConfirmStr = ngettext(
+  let modalEditionConfirmStr = ngettext(
     "Please confirm the editing of the following video:",
     "Please confirm the editing of the following videos:",
     selectedCount,
   );
+  let modalDeleteConfirmStr = ngettext(
+    "Please confirm the deletion of the following video:",
+    "Please confirm the deletion of the following videos:",
+    selectedCount,
+  );
+  let modalConfirmStr;
+  if (dashboardAction === "delete") {
+    modalConfirmStr = modalDeleteConfirmStr;
+  } else {
+    modalConfirmStr = modalEditionConfirmStr;
+  }
+
   modalConfirmStr = interpolate(
     modalConfirmStr,
     { count: selectedCount },
@@ -71,7 +89,18 @@ confirmModalBtn.addEventListener("click", (e) => {
     manageDisableBtn(cancelModalBtn, true);
     manageDisableBtn(confirmModalBtn, true);
   });
+  resetDashboardElements();
 });
+
+/**
+ * Reset action and value of dashboard form elements when reset button is clicked.
+ **/
+function dashboardActionReset() {
+  dashboardAction = "";
+  dashboardValue = "";
+  bulkUpdateActionSelect.value = "";
+  bulkUpdateActionSelect.dispatchEvent(new Event("change"));
+}
 
 /**
  * Perform asynchronously bulk update on selected videos
@@ -112,6 +141,14 @@ async function bulkUpdate() {
       }
       updateFields.push(element.name);
     });
+  }
+
+  // Remove unecessaries fields.
+  if (updateFields.includes("channel") && updateFields.includes("theme")) {
+    if (formData.get("channel") != "" && formData.get("theme") == "") {
+      updateFields.pop("theme");
+      formData.delete("theme");
+    }
   }
 
   // Construct formData to send
@@ -195,18 +232,6 @@ function changeDisplayMode(display_mode) {
   btnDisplayMode.forEach((e) => e.classList.toggle("active"));
   refreshVideosSearch();
 }
-
-/**
- * Update list of selected videos for modal confirm display
- */
-/* Unused function ?
-function updateModalConfirmSelectedVideos() {
-  let str = "";
-  Array.from(getListSelectedVideosTitles()).forEach((title) => {
-    str += "<li>" + title + "</li>";
-  });
-  bulkUpdateConfirmSelectedVideos.innerHTML = str;
-}*/
 
 /**
  * Show feedback message after bulk update

@@ -81,7 +81,9 @@ function refreshEvents() {
       window.history.pushState({}, "", url);
     })
     .catch(() => {
-      events_content.innerHTML = gettext("An Error occurred while processing.");
+      events_content.textContent = gettext(
+        "An Error occurred while processing.",
+      );
     })
     .finally(() => {
       // Re-enable inputs and dismiss loader

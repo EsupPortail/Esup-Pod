@@ -23,7 +23,7 @@ def is_ajax(request) -> bool:
     return request.headers.get("x-requested-with") == "XMLHttpRequest"
 
 
-def get_number_video_for_user(user: User) -> int():
+def get_number_video_for_user(user: User) -> int:
     """
     Get the number of videos for a user.
 
@@ -36,7 +36,7 @@ def get_number_video_for_user(user: User) -> int():
     return Video.objects.filter(owner=user).count()
 
 
-def get_number_playlist_for_user(user: User) -> int():
+def get_number_playlist_for_user(user: User) -> int:
     """
     Get the number of playlists for a user.
 
@@ -49,7 +49,7 @@ def get_number_playlist_for_user(user: User) -> int():
     return get_playlist_list_for_user(user).count()
 
 
-def display_message_with_icon(request, type, message):
+def display_message_with_icon(request, type, message) -> None:
     """Procedure that allows to display a message with icon to the user.
 
     Return message with icon, depending on message type.
@@ -71,7 +71,7 @@ def display_message_with_icon(request, type, message):
     messages.add_message(request, type, mark_safe(msg))
 
 
-def dismiss_stored_messages(request):
+def dismiss_stored_messages(request) -> None:
     """
     Tweak that dismiss messages (django.contrib.messages) stored.
 
@@ -81,7 +81,7 @@ def dismiss_stored_messages(request):
         request (Request): HTTP request
     """
     system_messages = messages.get_messages(request)
-    for msg in system_messages:
+    for _msg in system_messages:
         pass
 
 
@@ -98,7 +98,7 @@ def get_max_code_lvl_messages(request):
     return max_code_lvl
 
 
-def secure_post_request(request):
+def secure_post_request(request) -> None:
     """Secure that this request is POST type.
 
     Args:
@@ -145,3 +145,23 @@ def generate_qrcode(url: str, alt: str, request=None):
         f'<img id="qrcode" src="data:image/png;base64, {img_str}" '
         + f'width="200px" height="200px" alt="{alt}">'
     )
+
+
+def sizeof_fmt(num: float, suffix: str = "B") -> str:
+    """Humanize size of a file."""
+    for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
+        if abs(num) < 1024.0:
+            return f"{num:3.1f}{unit}{suffix}"
+        num /= 1024.0
+    return f"{num:.1f}Yi{suffix}"
+
+
+def remove_trailing_spaces(text: str) -> str:
+    """Remove trailing spaces in a multi-line string."""
+    lines = text.splitlines()
+    cleaned_lines = []
+    for line in lines:
+        line = line.rstrip()
+        if line != "":
+            cleaned_lines.append(line)
+    return "\n".join(cleaned_lines)

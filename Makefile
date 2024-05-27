@@ -12,16 +12,16 @@ help:
 
 # Démarre le serveur de test
 start:
-	(sleep 15 ; open http://localhost:9090) &
-	python3 manage.py runserver localhost:9090 --insecure
+	(sleep 15 ; open http://pod.localhost:8000) &
+	python3 manage.py runserver pod.localhost:8000 --insecure
 	# --insecure let serve static files even when DEBUG=False
 
 # Démarre le serveur de test en https auto-signé
 starts:
 	# nécessite les django-extensions
 	# cf https://timonweb.com/django/https-django-development-server-ssl-certificate/
-	(sleep 15 ; open https://localhost:9090) &
-	python3 manage.py runserver_plus localhost:9090 --cert-file cert.pem --key-file key.pem
+	(sleep 15 ; open https://pod.localhost:8000) &
+	python3 manage.py runserver_plus pod.localhost:8000 --cert-file cert.pem --key-file key.pem
 
 # Première installation de pod (BDD SQLite intégrée)
 install:
@@ -67,7 +67,7 @@ migrate:
 
 # Launch all unit tests.
 tests:
-	coverage run --source='.' manage.py test --settings=pod.main.test_settings
+	coverage run manage.py test --settings=pod.main.test_settings
 	coverage html
 
 # Ensure coherence of all code style

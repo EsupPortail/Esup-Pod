@@ -1,30 +1,28 @@
 """Unit tests for recorder views."""
 
 import hashlib
+import os
+from http import HTTPStatus
+from defusedxml import minidom
 
 from django.conf import settings
-from django.urls import reverse
-from django.test import TestCase
-from django.test import Client
-from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.core.exceptions import PermissionDenied
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import Client
+from django.test import TestCase
+from django.urls import reverse
 
-from ..models import Recorder, Recording, RecordingFileTreatment
 from pod.video.models import Type
-
-from xml.dom import minidom
-
 from .. import views
-from http import HTTPStatus
-import os
+from ..models import Recorder, Recording, RecordingFileTreatment
 
 OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
 OPENCAST_DEFAULT_PRESENTER = getattr(settings, "OPENCAST_DEFAULT_PRESENTER", "mid")
 
 
-class recorderViewsTestCase(TestCase):
+class RecorderViewsTestCase(TestCase):
     """Test case for Pod recorder views."""
 
     fixtures = [
@@ -32,6 +30,7 @@ class recorderViewsTestCase(TestCase):
     ]
 
     def setUp(self):
+        """Create models to be tested."""
         site = Site.objects.get(id=1)
         videotype = Type.objects.create(title="others")
         user = User.objects.create(username="pod", password="podv3")
@@ -52,14 +51,16 @@ class recorderViewsTestCase(TestCase):
 
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
-        print(" --->  SetUp of recorderViewsTestCase: OK!")
+        print(" --->  SetUp of RecorderViewsTestCase: OK!")
 
     def test_add_recording(self):
+        """Test method add_recording()."""
+
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         url = reverse("record:add_recording")
-        response = self.client.get(url)
+        self.client.get(url)
         self.assertRaises(PermissionDenied)  # No mediapath and user is not SU
 
         self.user.is_superuser = True
@@ -79,14 +80,16 @@ class recorderViewsTestCase(TestCase):
 
         self.assertTemplateUsed(response, "recorder/add_recording.html")
 
-        print("   --->  test_add_recording of recorderViewsTestCase: OK!")
+        print("   --->  test_add_recording of RecorderViewsTestCase: OK!")
 
     def test_claim_recording(self):
+        """Test method claim_recording()."""
+
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         url = reverse("record:claim_record")
-        response = self.client.get(url)
+        self.client.get(url)
         self.assertRaises(PermissionDenied)  # No mediapath and user is not SU
 
         self.user.is_superuser = True
@@ -101,19 +104,21 @@ class recorderViewsTestCase(TestCase):
 
         self.assertTemplateUsed(response, "recorder/claim_record.html")
 
-        print("   --->  test_claim_record of recorderViewsTestCase: OK!")
+        print("   --->  test_claim_record of RecorderViewsTestCase: OK!")
 
     def test_delete_record(self):
+        """Test method delete_recording()."""
+
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         url = reverse("record:delete_record", kwargs={"id": 1})
-        response = self.client.get(url)
+        self.client.get(url)
         self.assertRaises(PermissionDenied)
 
         self.user.is_staff = True
         self.user.save()
-        response = self.client.get(url)
+        self.client.get(url)
         self.assertRaises(PermissionDenied)
 
         self.user.is_superuser = True
@@ -127,9 +132,11 @@ class recorderViewsTestCase(TestCase):
 
         self.assertTemplateUsed(response, "recorder/record_delete.html")
 
-        print("   --->  test_delete_record recorderViewsTestCase: OK!")
+        print("   --->  test_delete_record RecorderViewsTestCase: OK!")
 
     def test_recorder_notify(self):
+        """Test method recorder_notify()."""
+
         self.client = Client()
 
         record = Recorder.objects.get(id=1)
@@ -158,15 +165,18 @@ class recorderViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, b"ok")
 
-        print("   --->  test_record_notify of recorderViewsTestCase: OK!")
+        print("   --->  test_record_notify of RecorderViewsTestCase: OK!")
 
 
-class studio_podTestView(TestCase):
+class StudioPodTestView(TestCase):
+    """Test case for Pod studio views."""
+
     fixtures = [
         "initial_data.json",
     ]
 
     def create_index_file(self):
+        """Create and write a xml file."""
         text = """
         <html>
             <head>
@@ -188,49 +198,66 @@ class studio_podTestView(TestCase):
             file.close()
 
     def setUp(self):
-        User.objects.create(username="pod", password="pod1234pod")
-        print(" --->  SetUp of studio_podTestView: OK!")
+        """Create models to be tested."""
+        User.objects.create(username="pod")
+        print(" --->  SetUp of StudioPodTestView: OK!")
 
-    def test_studio_podTestView_get_request(self):
+    def test_StudioPodTestView_get_request(self):
+        """Test view studio_pod."""
         self.create_index_file()
         self.client = Client()
         url = reverse("recorder:studio_pod", kwargs={})
+
+        # not logged
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
+
+        # user logged in
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
-        print(" --->  test_studio_podTestView_get_request of openCastTestView: OK!")
+        print(" --->  test_StudioPodTestView_get_request of openCastTestView: OK!")
 
-    def test_studio_podTestView_get_request_restrict(self):
+    def test_StudioPodTestView_get_request_restrict(self):
+        """Test view studio_pod."""
+
         views.__REVATSO__ = True  # override setting value to test
         self.create_index_file()
-        self.client = Client()
         url = reverse("recorder:studio_pod", kwargs={})
+        self.client = Client()
+
+        # not logged
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
+
+        # user logged in
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.get(url)
-        self.assertEquals(response.context["access_not_allowed"], True)
+        self.assertEqual(response.context["access_not_allowed"], True)
         self.user.is_staff = True
         self.user.save()
         response = self.client.get(url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         views.__REVATSO__ = False
         print(
-            " --->  test_studio_podTestView_get_request_restrict ",
-            "of studio_podTestView: OK!",
+            " --->  test_StudioPodTestView_get_request_restrict ",
+            "of StudioPodTestView: OK!",
         )
 
     def test_studio_presenter_post(self):
+        """Test view presenter_post."""
+
         self.client = Client()
         url = reverse("recorder:presenter_post", kwargs={})
-        response = self.client.get(url)
+
+        # not logged
+        self.client.get(url)
         self.assertRaises(PermissionDenied)
 
+        # user logged in
         self.user = User.objects.get(username="pod")
         self.user.is_staff = True
         self.user.save()
@@ -246,14 +273,19 @@ class studio_podTestView(TestCase):
         response = self.client.post(url, {"presenter": "mid"})
         self.assertEqual(response.status_code, 200)
 
-        print(" -->  test_studio_presenter_post of studio_podTestView", ": OK!")
+        print(" -->  test_studio_presenter_post of StudioPodTestView: OK!")
 
     def test_studio_info_me_json(self):
+        """Test view info_me_json."""
+
         self.client = Client()
         url = reverse("recorder:info_me_json", kwargs={})
-        response = self.client.get(url)
+
+        # not logged
+        self.client.get(url)
         self.assertRaises(PermissionDenied)
 
+        # user logged in
         self.user = User.objects.get(username="pod")
         self.user.is_staff = True
         self.user.save()
@@ -263,14 +295,19 @@ class studio_podTestView(TestCase):
         self.assertTrue(b"ROLE_ADMIN" in response.content)
         self.assertEqual(response.status_code, 200)
 
-        print(" -->  test_studio_info_me_json of studio_podTestView", ": OK!")
+        print(" -->  test_studio_info_me_json of StudioPodTestView: OK!")
 
     def test_studio_ingest_createMediaPackage(self):
+        """Test view ingest_createMediaPackage."""
+
         self.client = Client()
         url = reverse("recorder:ingest_createMediaPackage", kwargs={})
-        response = self.client.get(url)
+
+        # not logged
+        self.client.get(url)
         self.assertRaises(PermissionDenied)
 
+        # user logged in
         self.user = User.objects.get(username="pod")
         self.user.is_staff = True
         self.user.save()
@@ -296,11 +333,11 @@ class studio_podTestView(TestCase):
         mediapackage = mediaPackage_content.getElementsByTagName("mediapackage")[0]
         self.assertEqual(mediapackage.getAttribute("id"), idMedia)
 
-        print(
-            " -->  test_studio_ingest_createMediaPackage of studio_podTestView", ": OK!"
-        )
+        print(" -->  test_studio_ingest_createMediaPackage of StudioPodTestView: OK!")
 
     def test_studio_ingest_createMediaPackage_with_presenter(self):
+        """Test view presenter_post."""
+
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.user.is_staff = True
@@ -339,16 +376,21 @@ class studio_podTestView(TestCase):
 
         print(
             " -->  test_studio_ingest_createMediaPackage_with_presenter"
-            + " of studio_podTestView",
+            + " of StudioPodTestView",
             ": OK!",
         )
 
     def test_studio_ingest_addDCCatalog(self):
+        """Test view ingest_addDCCatalog."""
+
         self.client = Client()
         url_addDCCatalog = reverse("recorder:ingest_addDCCatalog", kwargs={})
-        response = self.client.get(url_addDCCatalog)
+
+        # not logged
+        self.client.get(url_addDCCatalog)
         self.assertRaises(PermissionDenied)
 
+        # user logged in
         self.user = User.objects.get(username="pod")
         self.user.is_staff = True
         self.user.save()
@@ -414,14 +456,19 @@ class studio_podTestView(TestCase):
         self.assertTrue(catalog)
         self.assertEqual(catalog.getAttribute("type"), "dublincore/episode")
 
-        print(" -->  test_studio_ingest_addDCCatalog of studio_podTestView", ": OK!")
+        print(" -->  test_studio_ingest_addDCCatalog of StudioPodTestView: OK!")
 
     def test_studio_ingest_addAttachment(self):
+        """Test view ingest_addAttachment."""
+
         self.client = Client()
         url_addAttachment = reverse("recorder:ingest_addAttachment", kwargs={})
+
+        # user not logged
         response = self.client.get(url_addAttachment)
         self.assertRaises(PermissionDenied)
 
+        # user logged in
         self.user = User.objects.get(username="pod")
         self.user.is_staff = True
         self.user.save()
@@ -475,14 +522,19 @@ class studio_podTestView(TestCase):
         self.assertTrue(attachment)
         self.assertEqual(attachment.getAttribute("type"), "security/xacml+episode")
 
-        print(" -->  test_studio_ingest_addAttachment of studio_podTestView", ": OK!")
+        print(" -->  test_studio_ingest_addAttachment of StudioPodTestView: OK!")
 
     def test_studio_ingest_addTrack(self):
+        """Test view ingest_addTrack."""
+
         self.client = Client()
         url_addTrack = reverse("recorder:ingest_addTrack", kwargs={})
+
+        # user not logged
         response = self.client.get(url_addTrack)
         self.assertRaises(PermissionDenied)
 
+        # user logged in
         self.user = User.objects.get(username="pod")
         self.user.is_staff = True
         self.user.save()
@@ -546,14 +598,19 @@ class studio_podTestView(TestCase):
         # chek if mediapackage file exist
         self.assertTrue(os.path.exists(video_file))
 
-        print(" -->  test_studio_ingest_addTrack of studio_podTestView", ": OK!")
+        print(" -->  test_studio_ingest_addTrack of StudioPodTestView: OK!")
 
     def test_studio_ingest_addCatalog(self):
+        """Test view ingest_addCatalog."""
+
         self.client = Client()
         url_addCatalog = reverse("recorder:ingest_addCatalog", kwargs={})
+
+        # not logged
         response = self.client.get(url_addCatalog)
         self.assertRaises(PermissionDenied)
 
+        # user logged in
         self.user = User.objects.get(username="pod")
         self.user.is_staff = True
         self.user.save()
@@ -612,14 +669,19 @@ class studio_podTestView(TestCase):
         cutting_file = os.path.join(mediaPackage_dir, cutting.name)
         self.assertTrue(os.path.exists(cutting_file))
 
-        print(" -->  test_studio_ingest_addCatalog of studio_podTestView", ": OK!")
+        print(" -->  test_studio_ingest_addCatalog of StudioPodTestView: OK!")
 
     def test_studio_ingest_ingest(self):
+        """Test view ingest_ingest."""
+
         self.client = Client()
         url_ingest = reverse("recorder:ingest_ingest", kwargs={})
+
+        # not logged
         response = self.client.get(url_ingest)
         self.assertRaises(PermissionDenied)
 
+        # user logged in
         self.user = User.objects.get(username="pod")
         self.user.is_staff = True
         self.user.save()
@@ -685,4 +747,143 @@ class studio_podTestView(TestCase):
         # check if recording object exist
         self.assertTrue(recording.first())
 
-        print(" -->  test_studio_ingest_ingest of studio_podTestView", ": OK!")
+        print(" -->  test_studio_ingest_ingest of StudioPodTestView: OK!")
+
+
+class StudioDigestViews(TestCase):
+    """Test case for Pod studio views with Digest auth."""
+
+    def test_digest_presenter_post(self):
+        """Test Digest restriction on view presenter_post."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:presenter_post", kwargs={})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_studio_pod of StudioDigestViews: OK!")
+
+    def test_digest_studio_static(self):
+        """Test Digest restriction on view studio_static."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:studio_static", kwargs={"file": "test"})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_studio_static of StudioDigestViews: OK!")
+
+    def test_digest_settings_toml(self):
+        """Test Digest restriction on view settings_toml."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:settings_toml", kwargs={})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_settings_toml of StudioDigestViews: OK!")
+
+    def test_digest_info_me_json(self):
+        """Test Digest restriction on view info_me_json."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:info_me_json", kwargs={})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_info_me_json of StudioDigestViews: OK!")
+
+    def test_digest_ingest_createMediaPackage(self):
+        """Test Digest restriction on view ingest_createMediaPackage."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:ingest_createMediaPackage", kwargs={})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_ingest_createMediaPackage of StudioDigestViews: OK!")
+
+    def test_digest_ingest_addDCCatalog(self):
+        """Test Digest restriction on view ingest_addDCCatalog."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:ingest_addDCCatalog", kwargs={})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_ingest_addDCCatalog of StudioDigestViews: OK!")
+
+    def test_digest_ingest_addAttachment(self):
+        """Test Digest restriction on view ingest_addAttachment."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:ingest_addAttachment", kwargs={})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_ingest_addAttachment of StudioDigestViews: OK!")
+
+    def test_digest_ingest_addTrack(self):
+        """Test Digest restriction on view ingest_addTrack."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:ingest_addTrack", kwargs={})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_ingest_addTrack of StudioDigestViews: OK!")
+
+    def test_digest_ingest_addCatalog(self):
+        """Test Digest restriction on view ingest_addCatalog."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:ingest_addCatalog", kwargs={})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_ingest_addCatalog of StudioDigestViews: OK!")
+
+    def test_digest_ingest_ingest(self):
+        """Test Digest restriction on view ingest_ingest."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:ingest_ingest", kwargs={})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_ingest_ingest of StudioDigestViews: OK!")
+
+    def test_digest_hosts_json(self):
+        """Test Digest restriction on view hosts_json."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:hosts_json", kwargs={})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_hosts_json of StudioDigestViews: OK!")
+
+    def test_digest_capture_admin_config(self):
+        """Test Digest restriction on view capture_admin_config."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:capture_admin_config", kwargs={"name": "test"})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_capture_admin_config of StudioDigestViews: OK!")
+
+    def test_digest_capture_admin(self):
+        """Test Digest restriction on view capture_admin_agent."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:capture_admin_agent", kwargs={"name": "test"})
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_capture_admin of StudioDigestViews: OK!")
+
+    def test_digest_admin_ng_series(self):
+        """Test Digest restriction on view admin_ng_series."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:admin_ng_series", kwargs={})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_admin_ng_series of StudioDigestViews: OK!")
+
+    def test_digest_services_available(self):
+        """Test Digest restriction on view services_available."""
+
+        self.client = Client()
+        url = reverse("recorder_digest:services_available", kwargs={})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+        print(" --->  test_digest_services_available of StudioDigestViews: OK!")

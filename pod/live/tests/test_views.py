@@ -85,7 +85,8 @@ class LiveViewsTestCase(TestCase):
             '"user": "username", '
             '"password": "mdp", '
             '"rtmp_streamer_id": "1", '
-            '"record_dir_path": "/recording"}',
+            '"record_dir_path": "/recording", '
+            '"use_opencast": "true"}',
         )
         Video.objects.create(
             title="VideoOnHold",
@@ -1983,6 +1984,7 @@ class LiveViewsTestCase(TestCase):
         """Test test_methode_start_stream."""
         from pod.live.views import start_stream, stop_stream
 
+        # no impl
         broad_no_impl = Broadcaster.objects.get(id=1)
         response = start_stream(broad_no_impl)
         self.assertFalse(response)
@@ -1993,6 +1995,7 @@ class LiveViewsTestCase(TestCase):
         self.assertFalse(response)
         print("   --->  test methode_stop_stream no_impl: OK!")
 
+        # cannot manage stream
         broad_no_manage = Broadcaster.objects.get(id=2)
         response = start_stream(broad_no_manage)
         self.assertFalse(response)
@@ -2003,17 +2006,18 @@ class LiveViewsTestCase(TestCase):
         self.assertFalse(response)
         print("   --->  test methode_stop_stream cannot manage: OK!")
 
+        # can manage stream
+        broad_manage = Broadcaster.objects.get(id=3)
+
         @all_requests
         def rtmp_response_no_valid_record(url, request):
             return httmock.response(200, json.dumps(({"key": "value"},)))
 
         with HTTMock(rtmp_response_no_valid_record):
-            broad_manage = Broadcaster.objects.get(id=3)
             response = start_stream(broad_manage)
             self.assertFalse(response)
             print("   --->  test methode_start_stream: OK!")
 
-            broad_manage = Broadcaster.objects.get(id=3)
             response = stop_stream(broad_manage)
             self.assertFalse(response)
             print("   --->  test methode_stop_stream: OK!")
@@ -2037,11 +2041,10 @@ class LiveViewsTestCase(TestCase):
             return httmock.response(200, rtmp_response_body(1))
 
         with HTTMock(rtmp_response_data):
-            broad_manage = Broadcaster.objects.get(id=3)
             response = start_stream(broad_manage)
             self.assertTrue(response)
             print("   --->  test methode_start_stream already started: OK!")
-            broad_manage = Broadcaster.objects.get(id=3)
+
             response = stop_stream(broad_manage)
             self.assertFalse(response)
             print("   --->  test methode_stop_stream stops: OK!")
@@ -2051,11 +2054,10 @@ class LiveViewsTestCase(TestCase):
             return httmock.response(200, rtmp_response_body(0))
 
         with HTTMock(rtmp_response_data):
-            broad_manage = Broadcaster.objects.get(id=3)
             response = start_stream(broad_manage)
             self.assertFalse(response)
             print("   --->  test methode_start_stream starts: OK!")
-            broad_manage = Broadcaster.objects.get(id=3)
+
             response = stop_stream(broad_manage)
             self.assertTrue(response)
             print("   --->  test methode_stop_stream already stopped: OK!")

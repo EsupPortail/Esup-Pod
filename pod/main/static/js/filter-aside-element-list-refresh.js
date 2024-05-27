@@ -1,3 +1,9 @@
+/**
+ * Esup-Pod Filter Aside element list refresh scripts
+ */
+
+/* exported toggleSortDirection */
+
 var sortDirectionChars = ["8600", "8599"];
 var sortDirectionTitle = [
   gettext("Descending sort"),
@@ -26,6 +32,7 @@ function updateSortDirectionTitle(sortDirectionAsc) {
 
 /**
  * Toggle direction of sort.
+ * used in filter_aside_xxx
  */
 function toggleSortDirection() {
   document.getElementById("sort_direction").checked =

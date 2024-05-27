@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from captcha.fields import CaptchaField
 from .forms_utils import add_placeholder_and_asterisk
+import os
 
 SUBJECT_CHOICES = getattr(
     settings,
@@ -24,17 +25,25 @@ SUBJECT_CHOICES = getattr(
 class DownloadFileForm(forms.Form):
     """Manage "Download File" form."""
 
-    filename = forms.FilePathField(
+    filename = forms.CharField(
         required=True,
-        path=settings.MEDIA_ROOT,
-        recursive=True,
-        allow_files=True,
-        allow_folders=False,
     )
 
     def __init__(self, *args, **kwargs):
         """Init download file form."""
         super(DownloadFileForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        """Clean "download file" form submission."""
+        clean_filename = self.cleaned_data["filename"]
+        fullname = os.path.join(settings.MEDIA_ROOT, clean_filename)
+        dirname = os.path.dirname(fullname)
+        if not os.path.isfile(clean_filename):
+            raise FileNotFoundError
+        elif not dirname.startswith(settings.MEDIA_ROOT):
+            raise ValueError("File not in media directory")
+        else:
+            return self.cleaned_data
 
 
 class ContactUsForm(forms.Form):

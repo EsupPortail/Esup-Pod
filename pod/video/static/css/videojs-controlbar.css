@@ -1,5 +1,5 @@
 /*
- * Video JS control-bar Custom CSS for EsupPod
+ * Video JS control-bar Custom CSS for Esup-Pod
  */
 
 /* add Highlighting for active buttons */
@@ -22,6 +22,21 @@
 
 .video-js .vjs-volume-bar {
   margin-right: 1em;
+}
+
+.video-js .vjs-current-time {
+  display: block;
+  padding-right: 0;
+}
+
+.video-js .vjs-time-divider {
+  padding: 0;
+  text-align: center;
+}
+
+.video-js .vjs-duration {
+  display: block;
+  padding-left: 0;
 }
 
 /* Hide seek buttons & volume pannel on x-small screens */

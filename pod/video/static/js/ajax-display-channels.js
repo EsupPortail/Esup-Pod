@@ -30,7 +30,7 @@ function setAttributesWithTab(htmlElement, attributeCouples) {
  */
 function getChannelsForSpecificChannelTabs(page, id = 0) {
   let url = "";
-  if (id == 0)
+  if (id === 0)
     url = `${GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL}?page=${page}`;
   else
     url = `${GET_CHANNELS_FOR_SPECIFIC_CHANNEL_TAB_REQUEST_URL}?page=${page}&id=${id}`;
@@ -185,7 +185,7 @@ function convertToModalListElement(channel) {
   const noWrapSpanElement = document.createElement("span");
   noWrapSpanElement.classList.add("text-nowrap");
   if (haveThemes) {
-    spanElement = setChannelThemeButtonForModal(noWrapSpanElement, channel);
+    var spanElement = setChannelThemeButtonForModal(noWrapSpanElement, channel);
   }
 
   var videoString = ngettext(

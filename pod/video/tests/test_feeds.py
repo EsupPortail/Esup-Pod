@@ -5,7 +5,7 @@ from django.test import Client
 from http import HTTPStatus
 from django.urls import reverse
 
-from xml.dom import minidom
+from defusedxml import minidom
 
 
 class FeedTestView(TestCase):
@@ -15,10 +15,10 @@ class FeedTestView(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         pass
 
-    def test_get_rss_video_from_video(self):
+    def test_get_rss_video_from_video(self) -> None:
         self.client = Client()
         url = reverse("rss-video:rss-video", kwargs={})
         response = self.client.get(url)
@@ -28,7 +28,7 @@ class FeedTestView(TestCase):
         self.assertTrue(mediapackage)
         print(" -->  test_get_rss_video_from_video of FeedTestView", ": OK!")
 
-    def test_get_rss_audio_from_video(self):
+    def test_get_rss_audio_from_video(self) -> None:
         self.client = Client()
         url = reverse("rss-video:rss-audio", kwargs={})
         response = self.client.get(url)

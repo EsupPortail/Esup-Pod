@@ -1,3 +1,5 @@
+"""Esup-Pod recorder administration."""
+
 import os
 from django.conf import settings
 from django.contrib import admin
@@ -42,7 +44,7 @@ class RecordingFileTreatmentAdmin(admin.ModelAdmin):
     actions = ["delete_source"]
     autocomplete_fields = ["recorder"]
 
-    def delete_source(self, request, queryset):
+    def delete_source(self, request, queryset) -> None:
         for item in queryset:
             if os.path.exists(item.file):
                 os.remove(item.file)
@@ -128,7 +130,7 @@ class RecorderAdmin(admin.ModelAdmin):
         form = super(RecorderAdmin, self).get_form(request, obj, **kwargs)
         return form
 
-    def save_model(self, request, obj, form, change):
+    def save_model(self, request, obj, form, change) -> None:
         super().save_model(request, obj, form, change)
         if not change:
             obj.sites.add(get_current_site(request))
@@ -138,6 +140,7 @@ class RecorderAdmin(admin.ModelAdmin):
         "name",
         "Description",
         "address_ip",
+        "credentials_login",
         "user",
         "type",
         "recording_type",

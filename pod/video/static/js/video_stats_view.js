@@ -3,6 +3,11 @@
  * @since 2.5.0
  */
 
+// Read-only globals defined in jQuery
+/*
+global $
+*/
+
 function linkedCell(cellValue, options, rowObject) {
   return (
     "<a href='" +
@@ -114,7 +119,9 @@ $(() => {
         // remove date_min in data
         data.pop();
         document.getElementById("jsperiode").min = min_date[0].min_date;
-      } catch (uselesserr) {}
+      } catch (uselesserr) {
+        /* empty */
+      }
     },
     postData: {
       csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),

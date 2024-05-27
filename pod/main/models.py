@@ -26,7 +26,7 @@ def get_nextautoincrement(model):
     return 1
 
 
-def get_upload_path_files(instance, filename):
+def get_upload_path_files(instance, filename) -> str:
     fname, dot, extension = filename.rpartition(".")
     try:
         fname.index("/")
@@ -55,7 +55,7 @@ class CustomImageModel(models.Model):
     )
 
     @property
-    def file_type(self):
+    def file_type(self) -> str:
         filetype = mimetypes.guess_type(self.file.path)[0]
         if filetype is None:
             fname, dot, extension = self.file.path.rpartition(".")
@@ -65,21 +65,21 @@ class CustomImageModel(models.Model):
     file_type.fget.short_description = _("Get the file type")
 
     @property
-    def file_size(self):
+    def file_size(self) -> int:
         return os.path.getsize(self.file.path)
 
     file_size.fget.short_description = _("Get the file size")
 
     @property
-    def name(self):
+    def name(self) -> str:
         return os.path.basename(self.file.path)
 
     name.fget.short_description = _("Get the file name")
 
-    def file_exist(self):
+    def file_exist(self) -> bool:
         return self.file and os.path.isfile(self.file.path)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s (%s, %s)" % (self.name, self.file_type, self.file_size)
 
 
@@ -93,7 +93,7 @@ class CustomFileModel(models.Model):
     )
 
     @property
-    def file_type(self):
+    def file_type(self) -> str:
         filetype = mimetypes.guess_type(self.file.path)[0]
         if filetype is None:
             fname, dot, extension = self.file.path.rpartition(".")
@@ -103,21 +103,21 @@ class CustomFileModel(models.Model):
     file_type.fget.short_description = _("Get the file type")
 
     @property
-    def file_size(self):
+    def file_size(self) -> int:
         return os.path.getsize(self.file.path)
 
     file_size.fget.short_description = _("Get the file size")
 
     @property
-    def name(self):
+    def name(self) -> str:
         return os.path.basename(self.file.path)
 
     name.fget.short_description = _("Get the file name")
 
-    def file_exist(self):
+    def file_exist(self) -> bool:
         return self.file and os.path.isfile(self.file.path)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s (%s, %s)" % (self.name, self.file_type, self.file_size)
 
 
@@ -150,17 +150,17 @@ class LinkFooter(models.Model):
             return self.url
         return self.page.url
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s - %s" % (self.id, self.title)
 
-    def clean(self):
+    def clean(self) -> None:
         if self.url is None and self.page is None:
             raise ValidationError(_("You must give an URL or a page to link the link"))
 
 
 @receiver(post_save, sender=LinkFooter)
-def default_site_link_footer(sender, instance, created, **kwargs):
-    if len(instance.sites.all()) == 0:
+def default_site_link_footer(sender, instance, created: bool, **kwargs) -> None:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())
 
 
@@ -186,7 +186,7 @@ class Configuration(models.Model):
 class AdditionalChannelTab(models.Model):
     name = models.CharField(_("Value"), max_length=40, help_text=_("Name of the tab"))
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s" % (self.name)
 
     class Meta:
@@ -354,7 +354,7 @@ class Block(models.Model):
         help_text=_("Check this box if you want view videos with password."),
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s" % (self.title)
 
     class Meta:
@@ -363,7 +363,7 @@ class Block(models.Model):
 
 
 @receiver(post_save, sender=Block)
-def default_site_block(sender, instance, created, **kwargs):
+def default_site_block(sender, instance, created: bool, **kwargs) -> None:
     """Set a default site for the instance if it has no associated sites upon creation."""
-    if len(instance.sites.all()) == 0:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())

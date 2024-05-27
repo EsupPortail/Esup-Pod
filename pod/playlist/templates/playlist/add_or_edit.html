@@ -51,7 +51,7 @@
           {% for field in form.visible_fields %}
             {% if field.name in options.fields %}
               {% spaceless %}
-                <div class="mb-3 {% if "restrict_access_to_groups" in field.name %}collapse restricted_access{% endif %}">
+                <div class="form-group-item mb-3 {% if "restrict_access_to_groups" in field.name %}collapse restricted_access{% endif %}">
                   <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
                     {{ field.errors }}
                     {% if "form-check-input" in field.field.widget.attrs.class %}

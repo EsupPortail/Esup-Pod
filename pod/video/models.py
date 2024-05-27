@@ -23,14 +23,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sites.shortcuts import get_current_site
 from django.templatetags.static import static
 from django.dispatch import receiver
-from django.utils.html import format_html
 from django.db.models.signals import pre_delete, post_delete
 from tagging.models import Tag
 from datetime import date
 from django.utils import timezone
+from django.utils.html import format_html, escape
+from django.utils.text import capfirst
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
-from django.utils.text import capfirst
 from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
 from django.db.models.signals import pre_save
@@ -218,7 +218,7 @@ if USE_TRANSCRIPTION:
 # FUNCTIONS
 
 
-def get_transcription_choices():
+def get_transcription_choices() -> list:
     if USE_TRANSCRIPTION:
         transcript_lang = TRANSCRIPTION_MODEL_PARAM.get(TRANSCRIPTION_TYPE, {}).keys()
         transcript_choices_lang = []
@@ -229,7 +229,7 @@ def get_transcription_choices():
         return []
 
 
-def default_date_delete():
+def default_date_delete() -> date:
     """Get the default deletion date."""
     return date.today() + timezone.timedelta(days=DEFAULT_YEAR_DATE_DELETE * 365)
 
@@ -245,13 +245,13 @@ def select_video_owner():
         )
 
 
-def remove_accents(input_str):
+def remove_accents(input_str) -> str:
     """Remove diacritics in input string."""
     nkfd_form = unicodedata.normalize("NFKD", input_str)
     return "".join([c for c in nkfd_form if not unicodedata.combining(c)])
 
 
-def get_storage_path_video(instance, filename):
+def get_storage_path_video(instance, filename) -> str:
     """Get the video storage path.
 
     Instance needs to implement owner
@@ -381,15 +381,15 @@ class Channel(models.Model):
             )
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Display a channel object as string."""
         return "%s" % (self.title)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Return channel absolute URL."""
         return reverse("channel-video:channel", args=[str(self.slug)])
 
-    def get_all_theme(self):
+    def get_all_theme(self) -> list:
         """Return the list of all child themes in current channel."""
         list_theme = []
         themes = self.themes.filter(parentId=None).order_by("title")
@@ -405,18 +405,18 @@ class Channel(models.Model):
             )
         return list_theme
 
-    def get_all_theme_json(self):
+    def get_all_theme_json(self) -> str:
         """Return theme list in json format."""
         return json.dumps(self.get_all_theme())
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """Store the channel object in db."""
         self.slug = slugify(self.title)
         super(Channel, self).save(*args, **kwargs)
 
 
 @receiver(pre_save, sender=Channel)
-def default_site_channel(sender, instance, **kwargs):
+def default_site_channel(sender, instance, **kwargs) -> None:
     if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
 
@@ -484,22 +484,22 @@ class Theme(models.Model):
         """Return sites associated to parent channel."""
         return self.channel.site
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Display current theme as string."""
         return "%s: %s" % (self.channel.title, self.title)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Get current theme absolute URL."""
         return reverse(
             "channel-video:theme", args=[str(self.channel.slug), str(self.slug)]
         )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """Store current theme object in db."""
         self.slug = slugify(self.title)
         super(Theme, self).save(*args, **kwargs)
 
-    def get_all_children_tree(self):
+    def get_all_children_tree(self) -> list:
         """Get a tree of all theme children."""
         children = []
         try:
@@ -529,7 +529,7 @@ class Theme(models.Model):
             children.extend(child.get_all_children_flat())
         return children
 
-    def get_all_children_tree_json(self):
+    def get_all_children_tree_json(self) -> str:
         """Get a json tree of all theme children."""
         return json.dumps(self.get_all_children_tree())
 
@@ -541,7 +541,7 @@ class Theme(models.Model):
             parents.extend(parent.get_all_parents())
         return parents
 
-    def clean(self):
+    def clean(self) -> None:
         """Validate Theme fields."""
         # Dans le cas où on modifie un theme
         if (
@@ -609,10 +609,10 @@ class Type(models.Model):
     )
     sites = models.ManyToManyField(Site)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s" % (self.title)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """Store current Type in DB."""
         self.slug = slugify(self.title)
         super(Type, self).save(*args, **kwargs)
@@ -626,8 +626,8 @@ class Type(models.Model):
 
 
 @receiver(post_save, sender=Type)
-def default_site_type(sender, instance, created, **kwargs):
-    if len(instance.sites.all()) == 0:
+def default_site_type(sender, instance, created: bool, **kwargs) -> None:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())
 
 
@@ -654,10 +654,10 @@ class Discipline(models.Model):
         Site, verbose_name=_("Site"), on_delete=models.CASCADE, default=SITE_ID
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s" % (self.title)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """Store current Discipline in DB."""
         self.slug = slugify(self.title)
         super(Discipline, self).save(*args, **kwargs)
@@ -671,7 +671,7 @@ class Discipline(models.Model):
 
 
 @receiver(pre_save, sender=Discipline)
-def default_site_discipline(sender, instance, **kwargs):
+def default_site_discipline(sender, instance, **kwargs) -> None:
     if not hasattr(instance, "site"):
         instance.site = Site.objects.get_current()
 
@@ -898,7 +898,7 @@ class Video(models.Model):
         # self.set_password()
         super(Video, self).save(*args, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Display a video object as string."""
         if self.id:
             return "%s - %s" % ("%04d" % self.id, self.title)
@@ -925,7 +925,7 @@ class Video(models.Model):
         "Sum of view of last %(ndays)s days" % {"ndays": VIDEO_RECENT_VIEWCOUNT}
     )
 
-    def is_editable(self, user):
+    def is_editable(self, user) -> bool:
         """Return true if video is editable by user."""
         if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and user.is_staff is False:
             return False
@@ -975,7 +975,7 @@ class Video(models.Model):
         """Check if the user affiliation is an array of strings or a simple string."""
         return True if affiliation.find("[") != -1 else False
 
-    def get_player_height(self):
+    def get_player_height(self) -> int:
         """
         Get the default player height (half size for audio files).
 
@@ -984,7 +984,7 @@ class Video(models.Model):
         """
         return 360 if self.is_video else 244
 
-    def get_thumbnail_url(self):
+    def get_thumbnail_url(self) -> str:
         """Get a thumbnail url for the video."""
         request = None
         if self.thumbnail and self.thumbnail.file_exist():
@@ -1028,7 +1028,7 @@ class Video(models.Model):
 
     get_thumbnail_admin.fget.short_description = _("Thumbnails")
 
-    def get_thumbnail_card(self):
+    def get_thumbnail_card(self) -> str:
         """Return thumbnail image card of current video."""
         thumbnail_url = ""
         if self.thumbnail and self.thumbnail.file_exist():
@@ -1045,14 +1045,14 @@ class Video(models.Model):
         )
 
     @property
-    def duration_in_time(self):
+    def duration_in_time(self) -> str:
         """Get the duration of a video."""
         return time.strftime("%H:%M:%S", time.gmtime(self.duration))
 
     duration_in_time.fget.short_description = _("Duration")
 
     @property
-    def encoded(self):
+    def encoded(self) -> bool:
         """Get the encoded status of a video."""
         return (
             self.get_playlist_master() is not None
@@ -1070,7 +1070,7 @@ class Video(models.Model):
         except VideoVersion.DoesNotExist:
             return "O"
 
-    def get_other_version(self):
+    def get_other_version(self) -> list:
         """Get other versions of a video."""
         version = []
         for app in THIRD_PARTY_APPS:
@@ -1136,23 +1136,23 @@ class Video(models.Model):
             return self.usermarkertime_set.get(user=user).markerTime
         return 0
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         """Get the video absolute URL."""
         return reverse("video:video", args=[str(self.slug)])
 
-    def get_full_url(self, request=None):
+    def get_full_url(self, request=None) -> str:
         """Get the video full URL."""
         full_url = "".join(
             ["//", get_current_site(request).domain, self.get_absolute_url()]
         )
         return full_url
 
-    def get_hashkey(self):
+    def get_hashkey(self) -> str:
         return hashlib.sha256(
             ("%s-%s" % (SECRET_KEY, self.id)).encode("utf-8")
         ).hexdigest()
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args, **kwargs) -> None:
         """Delete the current video file and db object."""
         # use pre delete and post delete signal to remove file used by video
         # see above
@@ -1192,19 +1192,19 @@ class Video(models.Model):
         }
         return sorted_dict_src
 
-    def get_video_mp4_json(self):
+    def get_video_mp4_json(self) -> list:
         """Get the JSON representation of the MP4 video."""
         list_mp4 = self.get_video_json(extensions="mp4")
         return list_mp4["mp4"] if list_mp4.get("mp4") else []
 
-    def get_audio_json(self, extensions):
+    def get_audio_json(self, extensions) -> dict:
         """Get the JSON representation of the audio."""
         extension_list = extensions.split(",") if extensions else []
         list_audio = self.encodingaudio_set.filter(name="audio")
         dict_src = Video.get_media_json(extension_list, list_audio)
         return dict_src
 
-    def get_audio_and_video_json(self, extensions):
+    def get_audio_and_video_json(self, extensions) -> dict:
         """Get the JSON representation of the video and audio."""
         return {
             **self.get_video_json(extensions),
@@ -1212,7 +1212,7 @@ class Video(models.Model):
         }
 
     @staticmethod
-    def get_media_json(extension_list, list_video):
+    def get_media_json(extension_list, list_video) -> dict:
         dict_src = {}
         for media in list_video:
             file_extension = splitext(media.source_file.url)[-1]
@@ -1235,7 +1235,7 @@ class Video(models.Model):
                     dict_entry.append(video_object)
         return dict_src
 
-    def get_json_to_index(self):
+    def get_json_to_index(self) -> str:
         try:
             current_site = Site.objects.get_current()
             data_to_dump = {
@@ -1291,7 +1291,7 @@ class Video(models.Model):
             )
             return json.dumps({})
 
-    def get_json_to_video_view(video, other_data_to_dump):
+    def get_json_to_video_view(video, other_data_to_dump) -> str:
         try:
             video_src = {}
             if video.is_video:
@@ -1366,16 +1366,16 @@ class Video(models.Model):
             )
             return json.dumps({})
 
-    def get_main_lang(self):
+    def get_main_lang(self) -> str:
         return "%s" % __LANG_CHOICES_DICT__[self.main_lang]
 
-    def get_cursus(self):
+    def get_cursus(self) -> str:
         return "%s" % __CURSUS_CODES_DICT__[self.cursus]
 
-    def get_licence(self):
+    def get_licence(self) -> str:
         return "%s" % __LICENCE_CHOICES_DICT__[self.licence]
 
-    def get_dublin_core(self):
+    def get_dublin_core(self) -> dict:
         """Export Dublin Core items for current video."""
         contributors = []
         current_site = Site.objects.get_current()
@@ -1383,9 +1383,9 @@ class Video(models.Model):
             contributors.append(" ".join(contrib))
         try:
             data_to_dump = {
-                "dc.title": "%s" % self.title,
+                "dc.title": "%s" % escape(self.title),
                 "dc.creator": "%s" % self.owner.get_full_name(),
-                "dc.description": "%s" % self.description,
+                "dc.description": "%s" % escape(self.description),
                 "dc.subject": "%s, %s"
                 % (
                     self.type.title,
@@ -1421,13 +1421,13 @@ class UpdateOwner(models.Model):
 
 
 @receiver(post_save, sender=Video)
-def default_site(sender, instance, created, **kwargs):
-    if len(instance.sites.all()) == 0:
+def default_site(sender, instance, created: bool, **kwargs) -> None:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())
 
 
 @receiver(pre_delete, sender=Video, dispatch_uid="pre_delete-video_files_removal")
-def video_files_removal(sender, instance, using, **kwargs):
+def video_files_removal(sender, instance, using, **kwargs) -> None:
     """Remove files created after encoding."""
     remove_video_file(instance)
 
@@ -1443,7 +1443,7 @@ def video_files_removal(sender, instance, using, **kwargs):
                 encoding.delete()
 
 
-def remove_video_file(video):
+def remove_video_file(video: Video) -> None:
     """Remove video file linked to video."""
     if video.overview:
         image_overview = os.path.join(
@@ -1461,7 +1461,7 @@ def remove_video_file(video):
 
 
 @receiver(post_delete, sender=Video, dispatch_uid="post_delete-video_podfiles_removal")
-def video_podfiles_removal(sender, instance, **kwargs):
+def video_podfiles_removal(sender, instance, **kwargs) -> None:
     """Delete UserFolder associated to current video."""
     if instance.video and os.path.isfile(instance.video.path):
         os.remove(instance.video.path)
@@ -1510,7 +1510,7 @@ class UserMarkerTime(models.Model):
         """Return the sites of the video."""
         return self.video.sites
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Render the user marker time as string."""
         return "Marker time for user %s and video %s: %s" % (
             self.user,
@@ -1549,7 +1549,7 @@ class VideoVersion(models.Model):
     def sites_all(self):
         return self.video.sites_set.all()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Render the video version as string."""
         return "Choice for default video version: %s - %s" % (
             self.video.id,
@@ -1577,7 +1577,7 @@ class Notes(models.Model):
         verbose_name_plural = _("Notes")
         unique_together = ("video", "user")
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Render the Note as string."""
         return "%s-%s" % (self.user.username, self.video)
 
@@ -1600,6 +1600,8 @@ class AdvancedNotes(models.Model):
     modified_on = models.DateTimeField(_("Date modified"), default=timezone.now)
 
     class Meta:
+        """AdvancedNotes Metadata."""
+
         verbose_name = _("Advanced Note")
         verbose_name_plural = _("Advanced Notes")
         unique_together = ("video", "user", "timestamp", "status")
@@ -1612,11 +1614,11 @@ class AdvancedNotes(models.Model):
     def sites_all(self):
         return self.video.sites_set.all()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Render the advanced note as string."""
         return "%s-%s-%s" % (self.user.username, self.video, self.timestamp)
 
-    def clean(self):
+    def clean(self) -> None:
         """Validate AdvancedNotes fields."""
         if not self.note:
             raise ValidationError(
@@ -1636,7 +1638,7 @@ class AdvancedNotes(models.Model):
                 code="invalid_timestamp",
             )
 
-    def timestampstr(self):
+    def timestampstr(self) -> str:
         if self.timestamp is None:
             return "--:--:--"
         seconds = int(self.timestamp)
@@ -1673,11 +1675,11 @@ class NoteComments(models.Model):
         verbose_name = _("Note comment")
         verbose_name_plural = _("Note comments")
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Render the note comment as string."""
         return "%s-%s-%s" % (self.user.username, self.parentNote, self.comment)
 
-    def clean(self):
+    def clean(self) -> None:
         """Validate NoteComments fields."""
         if not self.comment:
             raise ValidationError(
@@ -1699,7 +1701,7 @@ class VideoToDelete(models.Model):
         verbose_name = _("Video to delete")
         verbose_name_plural = _("Videos to delete")
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Render the video to delete as string."""
         return "%s - nb videos: %s" % (self.date_deletion, self.video.count())
 
@@ -1727,18 +1729,20 @@ class Comment(models.Model):
     added = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        """Video comment metadata."""
+
         verbose_name = _("Comment")
         verbose_name_plural = _("Comments")
 
     @property
-    def number_vote(self):
+    def number_vote(self) -> None:
         self.vote_set.all().count()
 
     @property
     def get_children(self):
         return Comment.objects.filter(parent_id=self.id).order_by("id")
 
-    def get_json_children(self, user_id):
+    def get_json_children(self, user_id) -> list:
         return list(
             self.get_children.annotate(nbr_vote=Count("vote", distinct=True))
             .annotate(
@@ -1763,7 +1767,7 @@ class Comment(models.Model):
             )
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Render the comment as string."""
         return self.content
 
@@ -1776,7 +1780,7 @@ class Vote(models.Model):
         verbose_name = _("Vote")
         verbose_name_plural = _("Votes")
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Render the vote as string."""
         return str(self.user)
 
@@ -1813,12 +1817,12 @@ class Category(models.Model):
         editable=False,
     )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """Set a slug and save the category instance."""
         self.slug = "%s-%s" % (self.owner.id, slugify(self.title))
         super(Category, self).save(*args, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Render the category as string."""
         return self.title
 
@@ -1835,6 +1839,9 @@ class VideoAccessToken(models.Model):
 
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
     token = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(
+        verbose_name=_("Token name"), max_length=100, blank=True, default=_("Change me!")
+    )
 
     class Meta:
         """Video access token Metadata."""

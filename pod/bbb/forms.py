@@ -16,7 +16,7 @@ USE_BBB_LIVE_DOWNLOADING = getattr(settings, "USE_BBB_LIVE_DOWNLOADING", False)
 
 
 class MeetingForm(forms.ModelForm):
-    def __init__(self, request, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs) -> None:
         super(MeetingForm, self).__init__(*args, **kwargs)
 
         # All fields are hidden. This form is like a Confirm prompt
@@ -43,7 +43,7 @@ class MeetingForm(forms.ModelForm):
 
 
 @receiver(post_save, sender=BBB_Meeting)
-def launch_encode(sender, instance, created, **kwargs):
+def launch_encode(sender, instance, created, **kwargs) -> None:
     # Useful when an administrator send a re-encode task
     if hasattr(instance, "launch_encode") and instance.launch_encode is True:
         instance.launch_encode = False
@@ -62,7 +62,7 @@ def launch_encode(sender, instance, created, **kwargs):
 
 
 class LivestreamForm(forms.ModelForm):
-    def __init__(self, request, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs) -> None:
         super(LivestreamForm, self).__init__(*args, **kwargs)
 
         # All fields are hidden. This form is like a Confirm prompt

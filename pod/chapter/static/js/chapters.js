@@ -2,10 +2,30 @@
  * @file Esup-Pod functions for chapter view.
  */
 
+// Read-only globals defined in video_chapter.html
+/*
+  global video_duration
+*/
+
+// Read-only globals defined in video-script.html
+/*
+global player
+*/
+
+// Read-only globals defined in main.js
+/*
+global fadeIn
+*/
+
 var id_form = "form_chapter";
+
+/**
+ * Display the chapter form
+ * @param {*} data
+ */
 function show_form(data) {
   let form_chapter = document.getElementById(id_form);
-  form_chapter.style.display = "none";
+  form_chapter.classList.add("d-none");
   form_chapter.innerHTML = data;
   form_chapter.querySelectorAll("script").forEach((item) => {
     // run script tags of filewidget.js and custom_filewidget.js
@@ -55,19 +75,6 @@ function show_form(data) {
     inputEnd.setAttribute("aria-describedby", describedby_list.join(" "));
   }
 }
-
-var showalert = function (message, alerttype) {
-  document.body.append(
-    '<div id="formalertdiv" class="alert ' +
-      alerttype +
-      ' alert-dismissible fade show" role="alert">' +
-      message +
-      '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>',
-  );
-  setTimeout(function () {
-    document.getElementById("formalertdiv").remove();
-  }, 5000);
-};
 
 var ajaxfail = function (data) {
   showalert(
@@ -124,7 +131,7 @@ var sendandgetform = async function (elt) {
     });
     const data = await response.text();
     if (
-      data.indexOf(id_form) == -1 &&
+      data.indexOf(id_form) === -1 &&
       (action === "new" || action === "modify")
     ) {
       showalert(
@@ -140,7 +147,7 @@ var sendandgetform = async function (elt) {
       show_form(data);
       elt.classList.add("info");
     } else if (action === "delete") {
-      if (data.indexOf("list_chapter") == -1) {
+      if (data.indexOf("list_chapter") === -1) {
         showalert(
           gettext("You are no longer authenticated. Please log in again."),
           "alert-danger",
@@ -165,14 +172,14 @@ var sendform = async function (elt, action) {
     "X-Requested-With": "XMLHttpRequest",
   };
   const url = window.location.href;
-  let form_save;
   let data_form;
   let validationMessage;
+  let form_chapter = document.getElementById(id_form);
+  let form_save = form_chapter.querySelector("form");
 
   if (action === "save") {
     if (verify_start_title_items()) {
-      form_save = document.getElementById("form_chapter").querySelector("form");
-      form_save.style.display = "none";
+      form_chapter.classList.add("d-none");
       data_form = new FormData(form_save);
       validationMessage = gettext(
         "Make sure your chapter start time is not 0 or equal to another chapter start time.",
@@ -202,7 +209,7 @@ var sendform = async function (elt, action) {
       dataType: "html",
     });
     const data = await response.text();
-    if (data.indexOf("list_chapter") == -1 && data.indexOf("form") == -1) {
+    if (data.indexOf("list_chapter") === -1 && data.indexOf("form") === -1) {
       showalert(
         gettext("You are no longer authenticated. Please log in again."),
         "alert-danger",
@@ -210,7 +217,7 @@ var sendform = async function (elt, action) {
     } else {
       const jsonData = JSON.parse(data);
       if (jsonData.errors) {
-        document.getElementById("form_chapter").style.display = "block";
+        form_chapter.classList.remove("d-none");
         showalert(jsonData.errors + " " + validationMessage, "alert-danger");
       } else {
         updateDom(jsonData);
@@ -247,10 +254,10 @@ function verify_start_title_items() {
     inputTitle.value.length > 100
   ) {
     if (typeof lengthErrorMsg === "undefined") {
-      lengthErrorMsg = document.createElement("div");
+      var lengthErrorMsg = document.createElement("div");
       lengthErrorMsg.id = errormsg_id;
       lengthErrorMsg.className = "invalid-feedback";
-      lengthErrorMsg.innerHTML = gettext(
+      lengthErrorMsg.textContent = gettext(
         "Please enter a title from 2 to 100 characters.",
       );
       inputTitle.insertAdjacentHTML("afterend", lengthErrorMsg.outerHTML);
@@ -288,10 +295,10 @@ function verify_start_title_items() {
     inputStart.value >= video_duration
   ) {
     if (typeof timeErrorMsg === "undefined") {
-      timeErrorMsg = document.createElement("div");
+      var timeErrorMsg = document.createElement("div");
       timeErrorMsg.id = errormsg_id;
       timeErrorMsg.className = "invalid-feedback";
-      timeErrorMsg.innerHTML =
+      timeErrorMsg.textContent =
         gettext("Please enter a correct start field between 0 and") +
         " " +
         (video_duration - 1);
@@ -317,9 +324,10 @@ function verify_start_title_items() {
   return ret;
 }
 
+/** Unused function. TODO: delete in 3.7.0
 function overlaptest() {
-  var new_start = parseInt(document.getElementById("id_time_start").value);
-  var id = parseInt(document.getElementById("id_chapter").value);
+  var new_start = parseInt(document.getElementById("id_time_start").value, 10);
+  var id = parseInt(document.getElementById("id_chapter").value, 10);
   var msg = "";
   document.querySelectorAll("ul#chapters li").foreach(function (li) {
     if (
@@ -337,6 +345,7 @@ function overlaptest() {
   });
   return msg;
 }
+*/
 
 /*** Display element of form enrich ***/
 Number.prototype.toHHMMSS = function () {
@@ -366,7 +375,7 @@ const updateTimeCode = (event) => {
   }
   const parent = event.target.parentNode;
   parent.querySelectorAll("span.getfromvideo span.timecode").forEach((span) => {
-    span.innerHTML = " " + parseInt(event.target.value).toHHMMSS();
+    span.textContent = " " + parseInt(event.target.value, 10).toHHMMSS();
   });
 };
 
@@ -386,7 +395,7 @@ document.addEventListener("click", (event) => {
 });
 
 var updateDom = function (data) {
-  let player = window.videojs.players.podvideoplayer;
+  // let player = window.videojs.players.podvideoplayer;
   let n1 = document.getElementById("chapters");
   let n2 = document.querySelector("div.chapters-list");
   let tmp_node = document.createElement("div");
@@ -430,6 +439,7 @@ var manageDelete = function () {
   }
 };
 
+/** Unused function. TODO: delete in 3.7.0
 var manageImport = function () {
   let player = window.videojs.players.podvideoplayer;
   let n = document.querySelector("div.chapters-list");
@@ -448,3 +458,4 @@ var manageImport = function () {
     }
   }
 };
+*/

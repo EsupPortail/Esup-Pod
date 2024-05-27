@@ -101,7 +101,7 @@ IMPORT_VIDEO_BBB_RECORDER_PATH = getattr(
 log = logging.getLogger(__name__)
 
 
-def secure_external_recording(request, recording: ExternalRecording):
+def secure_external_recording(request, recording: ExternalRecording) -> None:
     """Secure an external recording.
 
     Args:
@@ -125,7 +125,7 @@ def secure_external_recording(request, recording: ExternalRecording):
         raise PermissionDenied
 
 
-def get_can_delete_external_recording(request, owner: User):
+def get_can_delete_external_recording(request, owner: User) -> bool:
     """Return True if current user can delete this recording."""
     can_delete = False
 
@@ -287,7 +287,7 @@ def add_or_edit_external_recording(request, id=None):
         if form.is_valid():
             recording = save_recording_form(request, form)
             display_message_with_icon(
-                request, messages.INFO, _("The changes have been saved.")
+                request, messages.SUCCESS, _("The changes have been saved.")
             )
             return redirect(reverse("import_video:external_recordings"))
         else:
@@ -348,7 +348,7 @@ def delete_external_recording(request, id: int):
             msg += args["message"]
     if delete and msg == "":
         msg += _("The external recording has been deleted.")
-        display_message_with_icon(request, messages.INFO, msg)
+        display_message_with_icon(request, messages.SUCCESS, msg)
     else:
         display_message_with_icon(request, messages.ERROR, msg)
     return redirect(reverse("import_video:external_recordings", args=()))
@@ -1072,7 +1072,7 @@ def bbb_encode_presentation_and_upload_to_pod(record_id: int, url: str, extensio
         recording.owner, recording.id, extension
     )
     # Change the recording state
-    recording.state = _("Convert web presentation to video in progress...")
+    recording.state = _("Convert web presentation to video in progress…")
     recording.save()
 
     # Achieve the encode of the presentation via bbb-recorder

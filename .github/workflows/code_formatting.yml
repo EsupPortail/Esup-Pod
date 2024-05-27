@@ -4,6 +4,7 @@ name: Code Formatting
 on:
   push:
     branches: [master, develop]
+  workflow_dispatch:
 
 jobs:
   code-formatting:

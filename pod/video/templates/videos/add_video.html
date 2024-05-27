@@ -201,6 +201,11 @@
   /* Upload file to Pod on form submit */
   document.getElementById("uploadForm").addEventListener("submit", function(e) {
     e.preventDefault();
+    let legalNoticeCheckbox = document.getElementById("legal_notice");
+    if (!legalNoticeCheckbox.checked) {
+      showalert("{% trans 'You must accept the necessary authorizations to continue.' %}", "alert-warning");
+      return;
+    }
     if (global_data) {
       let elementsHideProcessing = document.getElementsByClassName("hide-on-processing");
       for (let i = 0; i < elementsHideProcessing.length; i++) {
@@ -295,7 +300,7 @@
   document.getElementById("resetButton").addEventListener("click", (e) => {
     global_data = undefined;
     document.getElementById("file_field").classList.remove("d-none");
-    document.getElementById("file_name").innerHTML = "";
+    document.getElementById("file_name").textContent = "";
     document.getElementById("file_selected").classList.add("d-none");
   });
 
