@@ -126,36 +126,35 @@
       </div>
     </div>
 
-    <!-- Quiz -->
     {% if USE_QUIZ %}
-    <li>
-      <a id="quiz-overlay" href="#" title="{% trans 'Display “quizzes” section' %}" class="title">
-        {% trans 'Quizzes' %}&nbsp;<i class="bi bi-chevron-down" aria-hidden="true"></i>
-      </a>
-    </li>
-    &nbsp;
-    <li class="contenuTitre">
-      <div id="list-quiz">
-        <p>
-          {% is_quiz_exists video as is_quiz_exists %}
-          {% if is_quiz_exists %}
-            <a class="btn btn-secondary" href="{% url 'quiz:edit_quiz' video_slug=video.slug %}">{% trans 'Edit your quiz' %}</a>
-            <span class="form-text">{% trans 'To edit your quiz for this video.' %}</span>
-          {% else %}
-            <a class="btn btn-secondary" href="{% url 'quiz:add_quiz' video_slug=video.slug %}">{% trans 'Create a quiz' %}</a>
-            <span class="form-text">{% trans 'To create a quiz for this video.' %}</span>
-          {% endif %}
-        </p>
-        {% if is_quiz_exists %}
-          <p>
-            <a class="btn btn-danger" href="{% url 'quiz:remove_quiz' video_slug=video.slug %}">{% trans 'Delete your quiz' %}</a>
-            <span class="form-text">{% trans 'To delete your quiz for this video.' %}</span>
-          </p>
-        {% endif %}
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#compQuiz" aria-expanded="true" aria-controls="compQuiz">
+            {% trans 'Quizzes' %}
+          </button>
+        </h2>
+        <div id="compQuiz" class="accordion-collapse collapse">
+          <div class="accordion-body">
+            <p class="m-0">
+              {% is_quiz_exists video as is_quiz_exists %}
+              {% if is_quiz_exists %}
+                <a class="btn btn-secondary" href="{% url 'quiz:edit_quiz' video_slug=video.slug %}">{% trans 'Edit your quiz' %}</a>
+                <span class="form-text">{% trans 'To edit your quiz for this video.' %}</span>
+              {% else %}
+                <a class="btn btn-secondary" href="{% url 'quiz:add_quiz' video_slug=video.slug %}">{% trans 'Create a quiz' %}</a>
+                <span class="form-text">{% trans 'To create a quiz for this video.' %}</span>
+              {% endif %}
+            </p>
+            {% if is_quiz_exists %}
+              <p>
+                <a class="btn btn-danger" href="{% url 'quiz:remove_quiz' video_slug=video.slug %}">{% trans 'Delete your quiz' %}</a>
+                <span class="form-text">{% trans 'To delete your quiz for this video.' %}</span>
+              </p>
+            {% endif %}
+          </div>
+        </div>
       </div>
-      &nbsp;
-    </li>
-    &nbsp;
+    {% endif %}
   {% endif %}
 </div>
 {% endblock page_content %}
