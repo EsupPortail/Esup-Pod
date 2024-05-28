@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-27 09:44+0000\n"
+"POT-Creation-Date: 2024-05-28 15:40+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -94,8 +94,8 @@ msgstr "La discipline proposée par l’IA Aristote."
 #: pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
 #: pod/main/models.py pod/main/views.py pod/playlist/forms.py
-#: pod/playlist/models.py pod/video/models.py
-#: pod/video/templates/channel/list_theme.html
+#: pod/playlist/models.py pod/quiz/forms.py pod/quiz/models.py
+#: pod/video/models.py pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Title"
 msgstr "Titre"
@@ -168,6 +168,10 @@ msgstr ""
 "Veuillez cocher cette case si vous consentez à utiliser un service tiers "
 "pour améliorer cette vidéo."
 
+#: pod/ai_enhancement/forms.py
+msgid "For more information."
+msgstr "En savoir plus."
+
 #: pod/ai_enhancement/models.py
 msgid "AI enhancement"
 msgstr "Enrichissement AI"
@@ -177,8 +181,9 @@ msgid "AI enhancements"
 msgstr "Enrichissements AI"
 
 #: pod/ai_enhancement/models.py pod/completion/models.py
-#: pod/enrichment/models.py pod/playlist/models.py pod/recorder/models.py
-#: pod/video/models.py pod/video/templates/channel/channel.html
+#: pod/enrichment/models.py pod/playlist/models.py pod/quiz/models.py
+#: pod/recorder/models.py pod/video/models.py
+#: pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
 msgid "Video"
 msgstr "Vidéo"
@@ -260,7 +265,9 @@ msgstr "Aller à la partie sous-titres"
 #: pod/playlist/templates/playlist/delete.html
 #: pod/playlist/templates/playlist/protected-playlist-form.html
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
-#: pod/recorder/templates/recorder/add_recording.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/delete_quiz.html pod/quiz/tests/test_views.py
+#: pod/quiz/views.py pod/recorder/templates/recorder/add_recording.html
 #: pod/recorder/templates/recorder/record_delete.html pod/recorder/views.py
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/videos/dashboard.html
@@ -296,6 +303,10 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/playlist/templates/playlist/delete.html
 #: pod/playlist/templates/playlist/protected-playlist-form.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/delete_quiz.html
+#: pod/quiz/templates/quiz/question_form.html
+#: pod/quiz/templates/quiz/video_quiz.html
 #: pod/recorder/templates/recorder/add_recording.html
 #: pod/recorder/templates/recorder/record_delete.html
 #: pod/video/templates/channel/channel_edit.html
@@ -320,6 +331,7 @@ msgstr "Sauvegarder et aller au sous-titrage"
 #: pod/ai_enhancement/templates/create_enhancement.html
 #: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
 #: pod/dressing/templates/video_dressing.html
+#: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
 msgid "Back to the video"
@@ -342,13 +354,15 @@ msgstr ""
 #: pod/live/templates/live/event_delete.html
 #: pod/meeting/templates/meeting/delete.html
 #: pod/playlist/templates/playlist/delete.html
+#: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/recorder/templates/recorder/record_delete.html
 #: pod/video/templates/videos/video_delete.html
 msgid "Agreement required"
 msgstr "Accord requis"
 
 #: pod/ai_enhancement/templates/create_enhancement.html
-msgid "Back to the %(video.title)s video"
+#, python-format
+msgid "Back to the %(video_title)s video"
 msgstr "Retourner à la vidéo « %(video_title)s »"
 
 #: pod/ai_enhancement/templates/create_enhancement.html
@@ -1323,18 +1337,6 @@ msgstr "Importer les chapitres"
 msgid "List of chapters"
 msgstr "Liste des chapitres"
 
-#: pod/chapter/templates/chapter/list_chapter.html pod/completion/models.py
-#: pod/completion/templates/overlay/list_overlay.html pod/dressing/models.py
-#: pod/dressing/templates/my_dressings.html
-#: pod/dressing/templates/video_dressing.html
-#: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
-#: pod/main/models.py pod/main/views.py pod/playlist/forms.py
-#: pod/playlist/models.py pod/quiz/forms.py pod/quiz/models.py
-#: pod/video/models.py pod/video/templates/channel/list_theme.html
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Title"
-msgstr "Titre"
-
 #: pod/chapter/templates/chapter/list_chapter.html
 #: pod/completion/templates/contributor/list_contributor.html
 #: pod/completion/templates/document/list_document.html
@@ -1411,14 +1413,6 @@ msgstr "Tableau de bord"
 #, python-format
 msgid "Back to the video “%(video_title)s”"
 msgstr "Retourner à la vidéo « %(video_title)s »"
-
-#: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
-#: pod/dressing/templates/video_dressing.html
-#: pod/quiz/templates/quiz/delete_quiz.html
-#: pod/video/templates/videos/video_collaborate.html
-#: pod/video/templates/videos/video_delete.html
-msgid "Back to the video"
-msgstr "Retour à la vidéo"
 
 #: pod/chapter/templates/video_chapter.html
 msgid "Add a new chapter"
@@ -1602,13 +1596,6 @@ msgid "There is already a contributor with the same name and role in the list."
 msgstr ""
 "Il existe déjà un contributeur avec le même nom et le même rôle dans cette "
 "liste."
-
-#: pod/completion/models.py pod/enrichment/models.py pod/playlist/models.py
-#: pod/quiz/models.py pod/recorder/models.py pod/video/models.py
-#: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
-msgid "Video"
-msgstr "Vidéo"
 
 #: pod/completion/models.py
 #: pod/completion/templates/document/list_document.html
@@ -2485,16 +2472,6 @@ msgid "To delete the dressing, please check the box and click “Delete”."
 msgstr ""
 "Pour supprimer l’habillage, veuillez cocher la case et cliquer sur "
 "« Supprimer »."
-
-#: pod/dressing/templates/dressing_delete.html
-#: pod/live/templates/live/event_delete.html
-#: pod/meeting/templates/meeting/delete.html
-#: pod/playlist/templates/playlist/delete.html
-#: pod/quiz/templates/quiz/delete_quiz.html
-#: pod/recorder/templates/recorder/record_delete.html
-#: pod/video/templates/videos/video_delete.html
-msgid "Agreement required"
-msgstr "Accord requis"
 
 #: pod/dressing/templates/dressing_edit.html pod/import_video/forms.py
 #: pod/live/forms.py pod/video/forms.py
@@ -3727,13 +3704,6 @@ msgid ""
 msgstr ""
 "Choissez un titre aussi court et précis que possible, reflétant le sujet "
 "principal / le contexte de ce contenu. (taille maximale : 250 caractères)"
-
-#: pod/live/models.py pod/main/forms.py pod/main/models.py
-#: pod/playlist/forms.py pod/playlist/models.py pod/video/forms.py
-#: pod/video/models.py pod/video/templates/channel/list_theme.html
-#: pod/video/templates/videos/dashboard.html
-msgid "Description"
-msgstr "Description"
 
 #: pod/live/models.py pod/video/forms.py pod/video/models.py
 msgid ""
@@ -9092,10 +9062,6 @@ msgstr "Un thème doit se trouver dans la même chaîne que son parent."
 msgid "Icon"
 msgstr "Icone"
 
-#: pod/video/models.py pod/video_search/templates/search/search.html
-msgid "Discipline"
-msgstr "Discipline"
-
 #: pod/video/models.py
 msgid "Select the general type of the video."
 msgstr "Sélectionnez le type général de la vidéo."
@@ -9736,6 +9702,10 @@ msgid "Edit the video"
 msgstr "Éditer la vidéo"
 
 #: pod/video/templates/videos/link_video.html
+msgid "Enhance the video with AI"
+msgstr "Améliorer la vidéo avec l’IA"
+
+#: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Complete the video"
 msgstr "Compléter la vidéo"
@@ -10276,6 +10246,18 @@ msgstr "Description de la chaîne"
 msgid "Theme description"
 msgstr "Description du thème"
 
+#: pod/video/templates/videos/video_page_content.html
+msgid "The video is currently waiting for Aristote AI treatment."
+msgstr "La vidéo est actuellement en attente du traitement par l'IA Aristote."
+
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"The video was treated by Aristote. You must verify and validate the "
+"processing by pressing the robot icon."
+msgstr ""
+"La vidéo a été traitée par Aristote. Vous devez vérifier et valider le "
+"traitement en appuyant sur l'icône du robot."
+
 #: pod/video/templates/videos/video_row_select.html
 msgid "Toggle actions menu"
 msgstr "Afficher/masquer les actions"
@@ -10754,11 +10736,6 @@ msgstr "La transcription du contenu"
 
 #: pod/video_encode_transcript/utils.py
 #, python-format
-msgid "%(subject)s #%(content_id)s completed"
-msgstr "%(subject)s du #%(content_id)s est terminée"
-
-#: pod/video_encode_transcript/utils.py
-#, python-format
 msgid ""
 "%(content_type)s “%(content_title)s” has been %(action)s, and is now "
 "available on %(site_title)s."
@@ -10781,10 +10758,6 @@ msgstr "automatiquement transcrit"
 #: pod/video_encode_transcript/utils.py
 msgid "encoded to Web formats"
 msgstr "encodé aux formats Web"
-
-#: pod/video_encode_transcript/utils.py
-msgid "the:"
-msgstr "le :"
 
 #: pod/video_encode_transcript/utils.py
 msgid "content"
@@ -10846,7 +10819,6 @@ msgstr "xAPI Esup-Pod"
 #~ msgid "Please enter a model type."
 #~ msgstr "Veuillez entrer un type."
 
-#, python-format
 #~ msgid ""
 #~ "For your information, below is the list of archived videos that have been "
 #~ "packaged in your ARCHIVE_ROOT folder, and definitely deleted from %s."

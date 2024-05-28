@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-27 09:44+0000\n"
+"POT-Creation-Date: 2024-05-28 15:40+0200\n"
 "PO-Revision-Date: 2024-04-15 14:27+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -15,6 +15,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.4.2\n"
+
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "No discipline"
+msgstr ""
+
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "No description"
+msgstr ""
+
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "An error has occurred. Please try later."
+msgstr ""
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 #: pod/quiz/static/quiz/js/create-quiz.js
@@ -66,6 +78,10 @@ msgstr ""
 
 #: pod/chapter/static/js/videojs-chapters.js
 msgid "Chapters"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
+msgid "You will soon be redirected."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
@@ -157,16 +173,8 @@ msgid "A caption cannot contain more than 80 characters."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
-msgid "Add a caption/subtitle after this one"
-msgstr ""
-
-#: pod/completion/static/js/caption_maker.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Add"
-msgstr ""
-
-#: pod/completion/static/js/caption_maker.js
-msgid "Delete this caption/subtitle"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
@@ -509,14 +517,6 @@ msgid "Loading…"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
-msgid "Change image"
-msgstr ""
-
-#: pod/podfile/static/podfile/js/filewidget.js
-msgid "Change file"
-msgstr ""
-
-#: pod/podfile/static/podfile/js/filewidget.js
 msgid "Open file in a new tab"
 msgstr ""
 
@@ -670,34 +670,11 @@ msgid "Cancel"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
-#, javascript-format
-msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
-msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pod/video/static/js/comment-script.js
 msgid "Agree with the comment"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
-msgid "Reply to comment"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js
-msgid "Reply"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js
 msgid "Remove this comment"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js
-msgid "Add a public comment"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js
-msgid "Send"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js
@@ -711,6 +688,13 @@ msgstr ""
 #: pod/video/static/js/comment-script.js
 msgid "Sorry, you’re not allowed to vote by now."
 msgstr ""
+
+#: pod/video/static/js/comment-script.js
+#, javascript-format
+msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
+msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/video/static/js/comment-script.js
 msgid "Sorry, you can’t comment this video by now."
@@ -750,47 +734,38 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is password protected."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is chaptered."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is in draft."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Video content."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Audio content."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Edit the video"
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Complete the video"
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Chapter the video"
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Delete the video"
 msgstr ""
 
@@ -860,18 +835,6 @@ msgstr ""
 
 #: pod/video/static/js/video_category.js
 msgid "Edit the category"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Delete the category"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Success!"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Error…"
 msgstr ""
 
 #: pod/video/static/js/video_category.js
