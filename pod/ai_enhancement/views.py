@@ -77,7 +77,7 @@ def send_enhancement_creation_request(request: WSGIRequest, aristote: AristoteAI
             url_scheme = "https" if request.is_secure() else "http"
             creation_response = aristote.create_enhancement_from_url(
                 url_scheme + "://" + get_current_site(request).domain + video.get_video_mp3_url(),
-                ["video/mp4"],
+                ["video/mp3"],
                 request.user.username,
                 url_scheme + "://" + get_current_site(request).domain + reverse("ai_enhancement:webhook"),
             )
