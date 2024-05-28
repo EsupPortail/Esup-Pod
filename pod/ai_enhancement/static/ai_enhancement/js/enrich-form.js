@@ -15,7 +15,7 @@ const TAGS_PER_LINE = 4;
 /**
  * Decode the string from the HTML entity.
  *
- * @param str {string} The string to decode.
+ * @param {string} str The string to decode.
  *
  * @return {string} The decoded string.
  */
@@ -29,10 +29,10 @@ function decodeString(str) {
 /**
  * Toggle the input and the two versions of the element.
  *
- * @param selectedElement {HTMLElement} The selected element.
- * @param notSelectedElement {HTMLElement} The not selected element.
- * @param input {HTMLElement} The input element.
- * @param elementName {string} The name of the element.
+ * @param {HTMLElement} selectedElement The selected element.
+ * @param {HTMLElement} notSelectedElement The not selected element.
+ * @param {HTMLElement} input The input element.
+ * @param {string} elementName The name of the element.
  */
 function togglePairInput(selectedElement, notSelectedElement, input, elementName) {
   selectedElement.children[0].classList.remove(BORDER_CLASS);
@@ -58,9 +58,9 @@ function togglePairInput(selectedElement, notSelectedElement, input, elementName
 /**
  * Toggle the input and the multiple versions of the element.
  *
- * @param selectedElement {HTMLElement} The selected element.
- * @param notSelectedElement {HTMLElement} The not selected element.
- * @param input {HTMLElement} The input element.
+ * @param {HTMLElement} selectedElement The selected element.
+ * @param {HTMLElement} notSelectedElement The not selected element.
+ * @param {HTMLElement} input The input element.
  */
 function toggleMultiplePairInput(selectedElement, notSelectedElement, input) {
   selectedElement.children[0].classList.remove(BORDER_CLASS);
@@ -84,10 +84,10 @@ function toggleMultiplePairInput(selectedElement, notSelectedElement, input) {
 /**
  * Add event listeners to the input and the two versions of the element.
  *
- * @param aiVersionElement {HTMLElement} The AI version of the element.
- * @param initialVersionElement {HTMLElement} The initial version of the element.
- * @param input {HTMLElement} The input element.
- * @param element {string} The name of the element.
+ * @param {HTMLElement} aiVersionElement The AI version of the element.
+ * @param {HTMLElement} initialVersionElement The initial version of the element.
+ * @param {HTMLElement} input The input element.
+ * @param {string} element The name of the element.
  */
 function addTogglePairInput(aiVersionElement, initialVersionElement, input, element) {
   togglePairInput(aiVersionElement, initialVersionElement, input, element);
@@ -106,8 +106,8 @@ function addTogglePairInput(aiVersionElement, initialVersionElement, input, elem
 /**
  * This function is called when the input is changed.
  *
- * @param initialVersionElement {HTMLElement} The initial version of the element.
- * @param aiVersionElement {HTMLElement} The AI version of the element.
+ * @param {HTMLElement} initialVersionElement The initial version of the element.
+ * @param {HTMLElement} aiVersionElement The AI version of the element.
  */
 function event__inputChange(initialVersionElement, aiVersionElement) {
   initialVersionElement.children[0].classList.add(BORDER_CLASS);
@@ -120,8 +120,8 @@ function event__inputChange(initialVersionElement, aiVersionElement) {
 /**
  * Add the tags elements to the tags container.
  *
- * @param tags {Array} The list of tags.
- * @param input {HTMLElement} The input element.
+ * @param {string[]} tags The list of tags.
+ * @param {HTMLElement} input The input element.
  */
 function addTagsElements(tags, input) {
   const tagsContainerElement = document.getElementById('tags-container');
@@ -161,9 +161,9 @@ function addTagsElements(tags, input) {
 /**
  * Set the information or an empty string in the element.
  *
- * @param element {HTMLElement} The element to set the information.
- * @param value {string} The value to set in the element.
- * @param message {string} The message to set in the element if the value is empty.
+ * @param {HTMLElement} element The element to set the information.
+ * @param {string} value The value to set in the element.
+ * @param {string} message The message to set in the element if the value is empty.
  */
 function setInformationOrEmptyString(element, value, message) {
   if (value.length > 0) {
@@ -178,11 +178,11 @@ function setInformationOrEmptyString(element, value, message) {
 /**
  * Add event listeners to the elements.
  *
- * @param videoSlug {string} The video slug.
- * @param videoTitle {string} The video title.
- * @param videoDescription {string} The video description.
- * @param videoDiscipline {string} The video discipline.
- * @param json_url {string} The url to fetch to get json information.
+ * @param {string} videoSlug The video slug.
+ * @param {string} videoTitle The video title.
+ * @param {string} videoDescription The video description.
+ * @param {string} videoDiscipline The video discipline.
+ * @param {string} json_url The url to fetch to get json information.
  */
 function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipline, json_url) {
   const elements = [
