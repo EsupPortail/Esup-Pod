@@ -28,6 +28,8 @@ from django.core.exceptions import PermissionDenied
 from django.conf import settings
 from django.core.handlers.wsgi import WSGIRequest
 
+from pod.video_encode_transcript.utils import time_to_seconds
+
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
@@ -511,3 +513,67 @@ def get_initial_data(existing_questions=None) -> str:
             ],
         }
     return json.dumps(initial_data)
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def import_quiz(request: WSGIRequest, video_slug: str, quiz_data_json: str):
+    """
+    View function to import a quiz from a JSON input for a given video.
+
+    Args:
+        request (WSGIRequest): The HTTP request.
+        video_slug (str): The slug of the associated video.
+        quiz_data_json (str): JSON string containing quiz data.
+
+    Raises:
+        PermissionDenied: If the user lacks the required privileges.
+
+    Returns:
+        HttpResponse: The HTTP response indicating the result of the import.
+    """
+    if in_maintenance():
+        return redirect(reverse("maintenance"))
+
+    video = get_object_or_404(Video, slug=video_slug)
+
+    if not (request.user.is_superuser or request.user.is_staff or request.user == video.owner):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot import a quiz for this video.")
+        )
+        raise PermissionDenied
+
+    existing_quiz = get_video_quiz(video)
+    if existing_quiz:
+        existing_quiz.delete()
+    quiz_data = json.loads(quiz_data_json)
+
+    new_quiz = Quiz.objects.create(video=video)
+    for question_type, question_list in quiz_data.items():
+        for question in question_list:
+            create_question_from_aristote_json(quiz=new_quiz, question_type=question_type, question_dict=question)
+
+
+def create_question_from_aristote_json(quiz: Quiz, question_type: str, question_dict: dict) -> None:
+    """
+    Creates and associates questions with a given quiz based on JSON data.
+
+    Args:
+        quiz (Quiz): The quiz instance.
+        questions_data (list): List of question data dictionaries.
+    """
+    title = question_dict["question"]
+    explanation = question_dict["explanation"]
+    start_timestamp = question_dict["answerPointer"]["startAnswerPointer"]
+    end_timestamp = question_dict["answerPointer"]["stopAnswerPointer"]
+
+    if question_type == "multiple_choice":
+        question_choices = {i["optionText"]: i["correctAnswer"] for i in question_dict["choices"]}
+        MultipleChoiceQuestion.objects.create(
+            quiz=quiz,
+            title=title,
+            explanation=explanation,
+            start_timestamp=time_to_seconds(start_timestamp),
+            end_timestamp=time_to_seconds(end_timestamp),
+            choices=json.dumps(question_choices),
+        )

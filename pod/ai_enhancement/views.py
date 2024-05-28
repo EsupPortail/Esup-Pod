@@ -21,6 +21,7 @@ from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.utils import json_to_web_vtt
 from pod.main.views import in_maintenance
 from pod.podfile.models import UserFolder
+from pod.quiz.views import edit_quiz, import_quiz
 from pod.video.models import Video, Discipline
 from pod.video_encode_transcript.transcript import saveVTT
 
@@ -220,6 +221,52 @@ def enhance_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
                 },
             )
     # AIEnhancement.objects.filter(video=video).delete()
+    return redirect(reverse("video:video", args=[video.slug]))
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def enhance_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
+    """The view to enrich quiz of a video."""
+    video = get_object_or_404(Video, slug=video_slug, sites=get_current_site(request))
+    if AI_ENHANCEMENT_TO_STAFF_ONLY and request.user.is_staff is False:
+        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        raise PermissionDenied
+
+    if (
+        video
+        and request.user != video.owner
+        and (
+            not (request.user.is_superuser or request.user.has_perm("video.change_video"))
+        )
+        and (request.user not in video.additional_owners.all())
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        raise PermissionDenied
+
+    aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
+    enhancement = AIEnhancement.objects.filter(video=video).first()
+    if enhancement:
+        latest_version = aristote.get_latest_enhancement_version(enhancement.ai_enhancement_id_in_aristote)
+        multiple_choice_questions_json = latest_version["multipleChoiceQuestions"]
+
+    if enhancement_is_already_asked(video):
+        enhancement = AIEnhancement.objects.filter(video=video).first()
+        if enhancement.is_ready:
+            multiple_choice_questions_json = latest_version["multipleChoiceQuestions"]
+
+            questions_dict = {"multiple_choice": multiple_choice_questions_json}
+
+            import_quiz(request, video.slug, json.dumps(questions_dict))
+
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                _("Quiz successfully imported."),
+            )
+
+            return edit_quiz(request=request, video_slug=video_slug)
+
     return redirect(reverse("video:video", args=[video.slug]))
 
 
