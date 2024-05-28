@@ -9,7 +9,7 @@ const BORDER_CLASS = 'border-d';
 
 const ENRICH_INPUT_SELECTED = 'enrich-input-selected';
 
-const TAGS_PER_LINE = 10;
+const TAGS_PER_LINE = 4;
 
 
 /**
@@ -127,10 +127,11 @@ function addTagsElements(tags, input) {
   const tagsContainerElement = document.getElementById('tags-container');
   let tagLineElement = tagsContainerElement.children[tagsContainerElement.children.length - 1];
   for (let i = 0; i < tags.length; i++) {
+    console.log(i, tags[i]);
     if (i % TAGS_PER_LINE === 0 && i !== 0) {
       tagLineElement = document.createElement('div');
       tagLineElement.classList.add('row');
-      tagsContainerElement.textContent = tagLineElement.innerHTML;
+      tagsContainerElement.appendChild(tagLineElement);
     }
     const tagElement = document.createElement('div');
     tagElement.classList.add('col');
@@ -153,6 +154,7 @@ function addTagsElements(tags, input) {
   if (tagsInformationsElement) {
     tagsInformationsElement.remove();
   }
+  console.log('tagLineElement', tagLineElement.innerHTML);
 }
 
 
