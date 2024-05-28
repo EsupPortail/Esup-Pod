@@ -1178,11 +1178,6 @@ class Video(models.Model):
         ).first()
         return encoding_audio
 
-    def get_video_mp3_url(self):
-        """Get the audio (mp3) version of the video in URL format."""
-        url_parts = self.video.url.split('/')
-        return '/'.join(url_parts[:-1]) + "/" + str(self.id).zfill(4) + "/audio_192k.mp3"
-
     def get_video_mp4(self):
         """Get the mp4 version of the video."""
         return self.encodingvideo_set.filter(encoding_format="video/mp4")
