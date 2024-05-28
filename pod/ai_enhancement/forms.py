@@ -38,6 +38,11 @@ AI_ENHANCEMENT_FIELDS_HELP_TEXT = getattr(
         },
     },
 )
+AI_ENHANCEMENT_CGU_URL = getattr(
+    settings,
+    "AI_ENHANCEMENT_CGU_URL",
+    "",
+)
 
 
 class AIEnhancementChoice(forms.ModelForm):
@@ -216,3 +221,9 @@ class NotifyUserThirdPartyServicesForm(forms.Form):
         """Init method."""
         super(NotifyUserThirdPartyServicesForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
+        if AI_ENHANCEMENT_CGU_URL != "" and self.fields.get("agree"):
+            to_know_more = '<a href="%s" target="_blank" >' % AI_ENHANCEMENT_CGU_URL
+            to_know_more += '  <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>&nbsp;'
+            to_know_more += _('For more information.')
+            to_know_more += '</a>'
+            self.fields['agree'].help_text += "&nbsp;" + to_know_more
