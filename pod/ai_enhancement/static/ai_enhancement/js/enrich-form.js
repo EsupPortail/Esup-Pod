@@ -235,13 +235,3 @@ function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipl
     })
     .catch(err => showalert(gettext("An error has occurred. Please try later."), 'alert-danger'));
 }
-
-function remove_quotes(text) {
-  if(text.charAt(0) === '"') {
-    text = text.substring(1);
-  }
-  if(text.charAt(text.length-1) === '"') {
-    text = text.substring(0,text.length-1);
-  }
-  return text;
-}

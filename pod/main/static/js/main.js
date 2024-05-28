@@ -1469,3 +1469,20 @@ document.addEventListener("DOMContentLoaded", function () {
     searchInput.addEventListener("blur", handleBlur);
   }
 });
+
+/**
+ * Removes double quotes from the start and end of the given text.
+ *
+ * @param {string} text - The input text to process.
+ * @returns {string} The text without leading and trailing double quotes.
+ */
+function remove_quotes(text) {
+  text = text.trim();
+  if(text.charAt(0) === '"') {
+    text = text.substring(1);
+  }
+  if(text.charAt(text.length-1) === '"') {
+    text = text.substring(0,text.length-1);
+  }
+  return text;
+}
