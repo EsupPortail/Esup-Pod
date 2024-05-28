@@ -21,6 +21,7 @@ from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.utils import json_to_web_vtt
 from pod.main.views import in_maintenance
 from pod.podfile.models import UserFolder
+from pod.quiz.views import edit_quiz, import_quiz
 from pod.video.models import Video, Discipline
 from pod.video_encode_transcript.transcript import saveVTT
 
@@ -75,8 +76,9 @@ def send_enhancement_creation_request(request: WSGIRequest, aristote: AristoteAI
         form = NotifyUserThirdPartyServicesForm(request.POST)
         if form.is_valid():
             url_scheme = "https" if request.is_secure() else "http"
+            mp3_url = video.get_video_mp3().source_file.url
             creation_response = aristote.create_enhancement_from_url(
-                "https://pod.univ-lille.fr/media/videos/317176a373051f907702b0f7393fee63c70d7d0dd34f726093e865fd9b080219/37303/360p.mp4",
+                url_scheme + "://" + get_current_site(request).domain + mp3_url,
                 ["video/mp3"],
                 request.user.username,
                 url_scheme + "://" + get_current_site(request).domain + reverse("ai_enhancement:webhook"),

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-27 14:52+0200\n"
+"POT-Creation-Date: 2024-05-28 15:40+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -167,6 +167,10 @@ msgid ""
 msgstr ""
 "Veuillez cocher cette case si vous consentez à utiliser un service tiers "
 "pour améliorer cette vidéo."
+
+#: pod/ai_enhancement/forms.py
+msgid "For more information."
+msgstr "En savoir plus."
 
 #: pod/ai_enhancement/models.py
 msgid "AI enhancement"
@@ -357,6 +361,7 @@ msgid "Agreement required"
 msgstr "Accord requis"
 
 #: pod/ai_enhancement/templates/create_enhancement.html
+#, python-format
 msgid "Back to the %(video_title)s video"
 msgstr "Retourner à la vidéo « %(video_title)s »"
 

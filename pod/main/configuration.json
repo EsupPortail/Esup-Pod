@@ -42,7 +42,24 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "3.6.0"
+                            "pod_version_init": "3.7.0"
+                        },
+                        "AI_ENHANCEMENT_CGU_URL": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "URL for General Terms and Conditions for API uses for the AI video enhancement.",
+                                    "Example: 'https://aristote.univ.fr/cgu'",
+                                    "Project Link: https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                ],
+                                "fr": [
+                                    "L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.",
+                                    "Exemple : 'https://aristote.univ.fr/cgu'",
+                                    "Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
                         },
                         "AI_ENHANCEMENT_CLIENT_ID": {
                             "default_value": "mocked_id",
@@ -57,7 +74,7 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "3.6.0"
+                            "pod_version_init": "3.7.0"
                         },
                         "AI_ENHANCEMENT_CLIENT_SECRET": {
                             "default_value": "mocked_secret",
@@ -70,7 +87,7 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "3.6.0"
+                            "pod_version_init": "3.7.0"
                         },
 
                         "AI_ENHANCEMENT_FIELDS_HELP_TEXT": {
@@ -84,7 +101,7 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "3.1.0"
+                            "pod_version_init": "3.7.0"
                         },
                         "USE_AI_ENHANCEMENT": {
                             "default_value": false,
@@ -97,7 +114,7 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "3.6.0"
+                            "pod_version_init": "3.7.0"
                         }
                     },
                     "title": {
