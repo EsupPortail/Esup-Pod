@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-28 14:53+0000\n"
+"POT-Creation-Date: 2024-05-29 07:37+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -472,6 +472,10 @@ msgid "Video Caption Maker - Aristote AI Version"
 msgstr ""
 "Outil de création de fichier de sous-titres/légende - Version de l'IA "
 "Aristote"
+
+#: pod/ai_enhancement/views.py
+msgid "Quiz successfully imported."
+msgstr "Quiz importé avec succès."
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -7921,7 +7925,7 @@ msgstr ""
 
 #: pod/quiz/models.py
 msgid "Single choice questions"
-msgstr "Questions à choix multiples"
+msgstr "Questions à choix unique"
 
 #: pod/quiz/models.py
 msgid "There must be at least 2 choices."
