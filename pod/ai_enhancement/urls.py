@@ -2,6 +2,7 @@
 from django.urls import path
 
 from pod.ai_enhancement.views import (
+    delete_enhance_video,
     enhance_subtitles,
     enhance_quiz,
     enhance_video,
@@ -13,6 +14,7 @@ app_name = "ai_enhancement"
 
 urlpatterns = [
     path("webhook/", toggle_webhook, name="webhook"),
+    path("delete/<slug:video_slug>/", delete_enhance_video, name="delete_enhance_video"),
     path("enhance_video/<slug:video_slug>/", enhance_video, name="enhance_video"),
     path(
         "enhance_subtitles/<slug:video_slug>/",

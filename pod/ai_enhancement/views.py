@@ -13,7 +13,8 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
-from pod.ai_enhancement.forms import AIEnhancementChoice, NotifyUserThirdPartyServicesForm
+from pod.ai_enhancement.forms import AIEnhancementChoice, NotifyUserThirdPartyServicesForm, \
+    NotifyUserDeleteEnhancementForm
 from pod.ai_enhancement.models import AIEnhancement
 from pod.ai_enhancement.utils import AristoteAI, enhancement_is_already_asked, notify_user
 from pod.completion.models import Track
@@ -109,6 +110,76 @@ def send_enhancement_creation_request(request: WSGIRequest, aristote: AristoteAI
             "form": form,
             "video": video,
             "page_title": _("Enhance the video with Aristote AI"),
+        }
+    )
+
+
+@csrf_protect
+@ensure_csrf_cookie
+@login_required(redirect_field_name="referrer")
+def delete_enhance_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
+    """The view to delete an enhancement."""
+    if in_maintenance():
+        return redirect(reverse("maintenance"))
+    video = get_object_or_404(Video, slug=video_slug)
+    if AI_ENHANCEMENT_TO_STAFF_ONLY and request.user.is_staff is False:
+        messages.add_message(request, messages.ERROR, _("You cannot delete the video improvement."))
+        raise PermissionDenied
+    if (
+        video
+        and request.user != video.owner
+        and (
+            not (request.user.is_superuser or request.user.has_perm("video.change_video"))
+        )
+        and (request.user not in video.additional_owners.all())
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot delete the video improvement."))
+        raise PermissionDenied
+    if enhancement_is_already_asked(video):
+        #  AIEnhancement.objects.filter(video=video).first().delete()
+        enhancement = AIEnhancement.objects.filter(video=video).first()
+        if enhancement.is_ready:
+            aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
+            return delete_enhancement_request(request, aristote, video)
+    messages.add_message(request, messages.ERROR, _("The video has not been improved."))
+    return redirect(reverse("video:video", args=[video.slug]))
+
+
+def delete_enhancement_request(request: WSGIRequest, aristote: AristoteAI, video: Video) -> HttpResponse:
+    """Send a request to delete an enhancement."""
+    if request.method == "POST":
+        form = NotifyUserDeleteEnhancementForm(request.POST)
+        if form.is_valid():
+            enhancement = AIEnhancement.objects.filter(video=video).first()
+            if enhancement:
+                deletion_response = aristote.delete_enhancement(enhancement.ai_enhancement_id_in_aristote)
+                if deletion_response:
+                    if deletion_response["status"] == "OK":
+                        enhancement.delete()
+                        messages.add_message(request, messages.SUCCESS, _("Enhancement successfully deleted."))
+                        return redirect(reverse("video:video", args=[video.slug]))
+                    else:
+                        messages.add_message(
+                            request,
+                            messages.ERROR,
+                            _("Something wrong... Status error: ") + deletion_response["status"],
+                        )
+                else:
+                    messages.add_message(request, messages.ERROR, _("Error: no response from Aristote AI."))
+            else:
+                messages.add_message(request, messages.ERROR, _("No enhancement found."))
+            return redirect(reverse("video:video", args=[video.slug]))
+        else:
+            messages.add_message(request, messages.ERROR, _("One or more errors have been found in the form."))
+    else:
+        form = NotifyUserDeleteEnhancementForm()
+    return render(
+        request,
+        "delete_enhancement.html",
+        {
+            "form": form,
+            "video": video,
+            "page_title": _("Delete the video enhancement"),
         }
     )
 

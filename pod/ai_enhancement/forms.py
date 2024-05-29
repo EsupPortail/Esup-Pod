@@ -227,3 +227,30 @@ class NotifyUserThirdPartyServicesForm(forms.Form):
             to_know_more += _('For more information.')
             to_know_more += '</a>'
             self.fields['agree'].help_text += "&nbsp;" + to_know_more
+
+
+class NotifyUserDeleteEnhancementForm(forms.Form):
+    """Form to notify user before delete an enhancement."""
+
+    confirm = forms.BooleanField(
+        label=_("I want to delete this enhancement"),
+        help_text=_(
+            "Please check this box if you want to delete this enhance."
+        ),
+        widget=forms.CheckboxInput(
+            attrs={
+                "aria-describedby": "id_confirmHelp",
+            },
+        ),
+    )
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Init method."""
+        super(NotifyUserDeleteEnhancementForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
+        if AI_ENHANCEMENT_CGU_URL != "" and self.fields.get("agree"):
+            to_know_more = '<a href="%s" target="_blank" >' % AI_ENHANCEMENT_CGU_URL
+            to_know_more += '  <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>&nbsp;'
+            to_know_more += _('For more information.')
+            to_know_more += '</a>'
+            self.fields['agree'].help_text += "&nbsp;" + to_know_more

@@ -195,6 +195,36 @@ class AristoteAI:
         path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}/versions/{version_id}"
         return self.get_response(path)
 
+    def delete_request(self, path: str) -> dict or None:
+        """
+        Send delete request.
+
+        Args:
+            path (str): The path to the API endpoint.
+        """
+        headers = {
+            "Accept": "application/json",
+            "Authorization": f"Bearer {self.get_token()}",
+        }
+        try:
+            response = requests.delete(
+                AI_ENHANCEMENT_API_URL + path,
+                headers=headers,
+            )
+            if response.status_code == 200:
+                return response.json()
+            else:
+                print(f"Error: {response.status_code}")
+            return response
+        except requests.exceptions.RequestException as e:
+            print(f"Request Exception: {e}")
+            return None
+
+    def delete_enhancement(self, enhancement_id: str) -> dict or None:
+        """Delete the specific enhancement."""
+        path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}"
+        return self.delete_request(path)
+
 
 def enhancement_is_already_asked(video: Video) -> bool:
     """Check if the enhancement is already asked."""
