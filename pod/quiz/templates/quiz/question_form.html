@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<fieldset class="border rounded-3 p-3 mb-3 question-form" data-question-index="{{ form_index }}">
+<fieldset class="border rounded-3 p-4 question-form" data-question-index="{{ form_index }}">
   <legend class="d-flex justify-content-between align-items-center">
     <div>
       <i class="bi bi-patch-question" aria-hidden='true'></i>&nbsp;
@@ -30,7 +30,7 @@
                 {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
               </div>
             {% else %}
-              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              <label for="{{ field.id_for_label }}" class="col-form-label">{{ field.label }}</label>
               {{ field }}
             {% endif %}
             {% if field.help_text %}
