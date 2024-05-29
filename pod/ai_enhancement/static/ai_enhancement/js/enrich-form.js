@@ -127,7 +127,6 @@ function addTagsElements(tags, input) {
   const tagsContainerElement = document.getElementById('tags-container');
   let tagLineElement = tagsContainerElement.children[tagsContainerElement.children.length - 1];
   for (let i = 0; i < tags.length; i++) {
-    console.log(i, tags[i]);
     if (i % TAGS_PER_LINE === 0 && i !== 0) {
       tagLineElement = document.createElement('div');
       tagLineElement.classList.add('row');
@@ -154,7 +153,6 @@ function addTagsElements(tags, input) {
   if (tagsInformationsElement) {
     tagsInformationsElement.remove();
   }
-  console.log('tagLineElement', tagLineElement.innerHTML);
 }
 
 
@@ -172,6 +170,17 @@ function setInformationOrEmptyString(element, value, message) {
     element.children[0].textContent = gettext(message);
     element.children[0].classList.add('text-muted', 'font-italic', 'no-content');
   }
+}
+
+
+function removeAccentsAndLowerCase(str) {
+    // Convertir en minuscules
+    str = str.toLowerCase();
+
+    // Remplacer les caractères accentués
+    str = str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    return str;
 }
 
 
@@ -216,7 +225,24 @@ function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipl
             addTogglePairInput(aiVersionElement, initialVersionElement, input, element);
             break;
           case 'tags':
-            addTagsElements(response['enrichmentVersionMetadata']['topics'], input);
+            const topics = response['enrichmentVersionMetadata']['topics'];
+            console.log(topics);
+            const newTopics = [];
+            try {
+              const tagInput = document.getElementById('id_tags');
+              for (let i = 0; i < topics.length; i++) {
+                console.log(removeAccentsAndLowerCase(topics[i]));
+                console.log(tagInput.value.includes(removeAccentsAndLowerCase(topics[i])));
+                if (!tagInput.value.includes(removeAccentsAndLowerCase(topics[i]))) {
+                  newTopics.push(topics[i]);
+                }
+              }
+              console.log(topics);
+            } catch (e) {
+              console.log(e);
+            }
+            console.log(topics);
+            addTagsElements(newTopics, input);
             break;
           case 'disciplines':
             setInformationOrEmptyString(initialVersionElement, videoDiscipline, gettext('No discipline'));
