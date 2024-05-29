@@ -15,15 +15,12 @@
     </a>
   </li>
   <li class="breadcrumb-item active" aria-current="page">
-      {{ page_title }}
+      {{ page_title|title|truncatechars:45 }}
   </li>
 {% endblock %}
 
 
 {% block page_content %}
-  <span id="quiz-player">
-    {% include 'videos/video-element.html' %}
-  </span>
   <hr>
   <form method="post" id="quiz-form">
     {% csrf_token %}
@@ -42,7 +39,7 @@
               {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
             </div>
           {% else %}
-            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            <label for="{{ field.id_for_label }}" class="col-form-label">{{ field.label }}</label>
             {{ field }}
           {% endif %}
           {% if field.help_text %}
@@ -54,7 +51,7 @@
     {% endfor %}
 
     {{ question_formset.management_form }}
-    <div id="question-form-list" class="mt-2">
+    <div id="question-form-list" class="my-4 d-flex flex-column gap-4">
       {% for question_form in question_formset %}
         {% with form_index=forloop.counter0 %}
           {% include "quiz/question_form.html" with form=question_form form_index=form_index %}
@@ -83,6 +80,11 @@
     </div>
   </div>
   {% endif %}
+
+  <div class="card" id="card-quiz-player">
+    <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-film"></i>&nbsp;{% trans "Video"%}</h2>
+    {% include 'videos/video-element.html' %}
+  </div>
 
   {% include "main/mandatory_fields.html" %}
 

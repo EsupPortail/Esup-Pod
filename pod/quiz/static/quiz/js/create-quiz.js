@@ -273,6 +273,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const fieldset = document.createElement("fieldset");
     const legend = document.createElement("legend");
+    legend.classList.add("col-form-label");
     legend.textContent = gettext("Your choices");
     fieldset.appendChild(legend);
 
@@ -331,6 +332,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "btn",
         "btn-link",
         "pod-btn-social",
+        "py-0",
       );
       deleteButton.addEventListener("click", function () {
         choiceDiv.remove();
@@ -466,6 +468,8 @@ document.addEventListener("DOMContentLoaded", function () {
         "btn",
         "btn-outline-secondary",
         "btn-sm",
+        "ms-2",
+        "mb-2",
       );
       buttonElement.textContent = gettext("Get time from the player");
 

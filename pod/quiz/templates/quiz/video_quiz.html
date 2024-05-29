@@ -14,7 +14,7 @@
     </a>
   </li>
   <li class="breadcrumb-item active" aria-current="page">
-    {{ page_title }}
+    {{ page_title|title|truncatechars:45 }}
   </li>
 {% endblock %}
 
@@ -39,9 +39,6 @@
     {% endif %}
   {% endif %}
 
-  <span id="quiz-player">
-    {% include 'videos/video-element.html' %}
-  </span>
   <hr>
 
   <form method="post" id="quiz-form" action="{% url 'quiz:video_quiz' video_slug=video.slug %}">
@@ -111,6 +108,10 @@
       </div>
     </div>
   {% endif %}
+  <div class="card" id="card-quiz-player">
+    <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-film"></i>&nbsp;{% trans "Video"%}</h2>
+    {% include 'videos/video-element.html' %}
+  </div>
 {% endblock page_aside %}
 
 {% block more_script %}
