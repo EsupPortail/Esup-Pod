@@ -275,12 +275,13 @@ def calculate_score(question: Question, form) -> float:
     elif question.get_type() == "multiple_choice":
         user_answer = form.cleaned_data.get("selected_choice")
         correct_answer = question.get_answer()
-        user_answer = ast.literal_eval(
-            user_answer
-        )  # Cannot use JSON.loads in case of quotes in a user answer.
-        intersection = set(user_answer) & set(correct_answer)
-        score = len(intersection) / len(correct_answer)
-        return score
+        if user_answer != "":
+            user_answer = ast.literal_eval(
+                user_answer
+            )  # Cannot use JSON.loads in case of quotes in a user answer.
+            intersection = set(user_answer) & set(correct_answer)
+            score = len(intersection) / len(correct_answer)
+            return score
 
     elif question.get_type() in {"short_answer", "long_answer"}:
         user_answer = form.cleaned_data.get("user_answer")
@@ -288,7 +289,7 @@ def calculate_score(question: Question, form) -> float:
 
     # Add similar logic for other question types...
 
-    if user_answer is not None and correct_answer is not None:
+    if (user_answer is not None and user_answer != "") and correct_answer is not None:
         return 1.0 if user_answer.lower() == correct_answer.lower() else 0.0
 
     return 0.0
