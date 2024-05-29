@@ -43,52 +43,52 @@
 
   <form method="post" id="quiz-form" action="{% url 'quiz:video_quiz' video_slug=video.slug %}">
     {% csrf_token %}
-
-    {% for question in quiz.get_questions %}
-      <fieldset class="border rounded-3 p-3 mb-3 question-container">
-        <legend>
-          <i class="bi bi-patch-question" aria-hidden='true'></i>&nbsp;{{ question.title }}
-        </legend>
-        {% with form=question.get_question_form %}
-          {% for field in form.visible_fields %}
-            {% spaceless %}
-              <div class="mb-3">
-                <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
-                  {{ field.errors }}
-                  {% if "form-check-input" in field.field.widget.attrs.class %}
-                    <div class="form-check">
-                      {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
-                    </div>
-                  {% else %}
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                  {% endif %}
-                  {% if field.help_text %}
-                    <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
-                  {% endif %}
-                  {% if field.field.required %}
-                    <div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>
-                  {% endif %}
+    <div class="d-flex flex-column gap-4">
+      {% for question in quiz.get_questions %}
+        <fieldset class="border rounded-3 p-4 question-container">
+          <legend>
+            <i class="bi bi-patch-question" aria-hidden='true'></i>&nbsp;{{ question.title }}
+          </legend>
+          {% with form=question.get_question_form %}
+            {% for field in form.visible_fields %}
+              {% spaceless %}
+                <div class="mb-3">
+                  <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
+                    {{ field.errors }}
+                    {% if "form-check-input" in field.field.widget.attrs.class %}
+                      <div class="form-check">
+                        {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                      </div>
+                    {% else %}
+                      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      {{ field }}
+                    {% endif %}
+                    {% if field.help_text %}
+                      <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+                    {% endif %}
+                    {% if field.field.required %}
+                      <div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>
+                    {% endif %}
+                  </div>
                 </div>
-              </div>
-            {% endspaceless %}
-          {% endfor %}
-        {% endwith %}
+              {% endspaceless %}
+            {% endfor %}
+          {% endwith %}
 
-        {% if form_submitted and quiz.show_correct_answers %}
-          <p>{% trans "Right answer:" %} {{ question.get_answer }}</p>
-          {% if question.explanation %}
-            <p>{% trans "Explanation:" %} {{ question.explanation }}</p>
+          {% if form_submitted and quiz.show_correct_answers %}
+            <p>{% trans "Right answer:" %} {{ question.get_answer }}</p>
+            {% if question.explanation %}
+              <p>{% trans "Explanation:" %} {{ question.explanation }}</p>
+            {% endif %}
+            {% if question.start_timestamp %}
+              <a class="btn btn-primary show-response-button" start="{{ question.start_timestamp}}" end="{{ question.end_timestamp }}" role="button">
+                {% trans "Show answer in the video" %}
+              </a>
+            {% endif %}
           {% endif %}
-          {% if question.start_timestamp %}
-            <a class="btn btn-primary show-response-button" start="{{ question.start_timestamp}}" end="{{ question.end_timestamp }}" role="button">
-              {% trans "Show answer in the video" %}
-            </a>
-          {% endif %}
-        {% endif %}
-      </fieldset>
-    {% endfor %}
-
+        </fieldset>
+      {% endfor %}
+    </div>
     <div class="text-center mt-2">
       <button type="submit" id="quiz-submission-button" class="btn btn-primary"
               {% if form_submitted %}disabled aria-disabled="true"{% endif %}>

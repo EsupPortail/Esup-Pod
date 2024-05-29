@@ -373,6 +373,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const fieldset = document.createElement("fieldset");
     const legend = document.createElement("legend");
+    legend.classList.add("col-form-label");
     legend.textContent = gettext("Your choices");
     fieldset.appendChild(legend);
 
