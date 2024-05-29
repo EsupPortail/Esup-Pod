@@ -1,6 +1,6 @@
 """Views for ai_enhancement module."""
 import json
-
+import hashlib
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
@@ -77,10 +77,13 @@ def send_enhancement_creation_request(request: WSGIRequest, aristote: AristoteAI
         if form.is_valid():
             url_scheme = "https" if request.is_secure() else "http"
             mp3_url = video.get_video_mp3().source_file.url
+            end_user_identifier = hashlib.sha256(
+                (AI_ENHANCEMENT_CLIENT_ID + AI_ENHANCEMENT_CLIENT_SECRET + request.user.username).encode("utf-8")
+            ).hexdigest()
             creation_response = aristote.create_enhancement_from_url(
                 url_scheme + "://" + get_current_site(request).domain + mp3_url,
                 ["video/mp3"],
-                request.user.username,
+                end_user_identifier + "@%s" % get_current_site(request).domain,
                 url_scheme + "://" + get_current_site(request).domain + reverse("ai_enhancement:webhook"),
             )
             if creation_response:
