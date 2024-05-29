@@ -1486,3 +1486,8 @@ function remove_quotes(text) {
   }
   return text;
 }
+
+let mainCollapseButton = document.getElementById("collapse-button");
+mainCollapseButton.addEventListener("click", () => {
+  window.scrollTo(0, 0)
+});
