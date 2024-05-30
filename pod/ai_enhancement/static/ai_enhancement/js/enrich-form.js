@@ -27,6 +27,20 @@ function decodeString(str) {
 
 
 /**
+ * Select the element to select and unselect the element to unselect.
+ *
+ * @param {HTMLElement} elementToSelect The element to select.
+ * @param {HTMLElement} elementToUnselect The element to unselect.
+ */
+function selectElement(elementToSelect, elementToUnselect) {
+  elementToSelect.classList.remove(BORDER_CLASS);
+  elementToSelect.classList.add(ENRICH_INPUT_SELECTED);
+  elementToUnselect.classList.remove(ENRICH_INPUT_SELECTED);
+  elementToUnselect.classList.add(BORDER_CLASS);
+}
+
+
+/**
  * Toggle the input and the two versions of the element.
  *
  * @param {HTMLElement} selectedElement The selected element.
@@ -35,10 +49,7 @@ function decodeString(str) {
  * @param {string} elementName The name of the element.
  */
 function togglePairInput(selectedElement, notSelectedElement, input, elementName) {
-  selectedElement.children[0].classList.remove(BORDER_CLASS);
-  selectedElement.children[0].classList.add(ENRICH_INPUT_SELECTED);
-  notSelectedElement.children[0].classList.remove(ENRICH_INPUT_SELECTED);
-  notSelectedElement.children[0].classList.add(BORDER_CLASS);
+  selectElement(selectedElement.children[0], notSelectedElement.children[0]);
   let newString = selectedElement.children[0].textContent.trim();
   switch (elementName) {
     case 'title':
@@ -63,10 +74,7 @@ function togglePairInput(selectedElement, notSelectedElement, input, elementName
  * @param {HTMLElement} input The input element.
  */
 function toggleMultiplePairInput(selectedElement, notSelectedElement, input) {
-  selectedElement.children[0].classList.remove(BORDER_CLASS);
-  selectedElement.children[0].classList.add(ENRICH_INPUT_SELECTED);
-  notSelectedElement.children[0].classList.remove(ENRICH_INPUT_SELECTED);
-  notSelectedElement.children[0].classList.add(BORDER_CLASS);
+  selectElement(selectedElement.children[0], notSelectedElement.children[0]);
   let newString = selectedElement.children[0].textContent.trim();
   if (newString === gettext('No discipline')) {
     input.value = '';
