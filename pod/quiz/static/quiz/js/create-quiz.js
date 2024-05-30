@@ -144,10 +144,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const questionFormToDelete = event.target.closest(".question-form");
 
     if (questionFormToDelete) {
-      questionFormToDelete.remove();
+      const deleteInput = document.getElementById(`id_questions-${questionFormToDelete.getAttribute("data-question-index")}-DELETE`)
+      deleteInput.checked = true;
+      questionFormToDelete.classList.add('d-none');
 
-      const currentQuestionForms = document.querySelectorAll(".question-form");
-      totalNewForms.setAttribute("value", currentQuestionForms.length - 1);
+      // const currentQuestionForms = document.querySelectorAll(".question-form");
+      // totalNewForms.setAttribute("value", currentQuestionForms.length - 1);
     }
   }
 
@@ -346,7 +348,6 @@ document.addEventListener("DOMContentLoaded", function () {
       textInput.classList.add("form-control", "ms-2");
       if (choice) {
         textInput.value = choice[0];
-        console.log(input);
         if (choice[1]) {
           input.checked = true;
         }
@@ -502,7 +503,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       let questionFormsList = document.querySelectorAll(".question-form");
       for (questionForm of questionFormsList) {
-        console.log(questionForm);
         const questionType = questionForm.querySelector(
           ".question-select-type",
         ).value;
@@ -525,6 +525,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
       let form = document.getElementById("quiz-form");
+      console.log(form);
       form.submit();
     });
   }

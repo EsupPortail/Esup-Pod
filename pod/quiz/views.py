@@ -91,30 +91,52 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
         existing_quiz (Quiz): The existing quiz instance.
         question_formset: The formset containing updated question data.
     """
-    for question_form, existing_question in zip(
-        question_formset, existing_quiz.get_questions()
-    ):
-        question_type = question_form.cleaned_data.get("type")
-        title = question_form.cleaned_data["title"]
-        explanation = question_form.cleaned_data["explanation"]
-        start_timestamp = question_form.cleaned_data["start_timestamp"]
-        end_timestamp = question_form.cleaned_data["end_timestamp"]
+    question_index = 0
+    existing_questions = existing_quiz.get_questions()
 
-        if question_type == "short_answer":
-            existing_question.answer = question_form.cleaned_data["short_answer"]
-        elif question_type == "long_answer":
-            existing_question.answer = question_form.cleaned_data["long_answer"]
-        elif question_type == "single_choice":
-            existing_question.choices = question_form.cleaned_data["single_choice"]
-        elif question_type == "multiple_choice":
-            existing_question.choices = question_form.cleaned_data["multiple_choice"]
+    for question_form, existing_question in zip(question_formset, existing_questions):
+        if question_form.cleaned_data.get("DELETE"):
+            existing_questions[question_index].delete()
+        else:
+            question_type = question_form.cleaned_data.get("type")
+            title = question_form.cleaned_data["title"]
+            explanation = question_form.cleaned_data["explanation"]
+            start_timestamp = question_form.cleaned_data["start_timestamp"]
+            end_timestamp = question_form.cleaned_data["end_timestamp"]
 
-        existing_question.title = title
-        existing_question.explanation = explanation
-        existing_question.start_timestamp = start_timestamp
-        existing_question.end_timestamp = end_timestamp
+            if existing_questions[question_index]:
+                if question_type == "short_answer":
+                    existing_question.answer = question_form.cleaned_data["short_answer"]
+                elif question_type == "long_answer":
+                    existing_question.answer = question_form.cleaned_data["long_answer"]
+                elif question_type == "single_choice":
+                    existing_question.choices = question_form.cleaned_data[
+                        "single_choice"
+                    ]
+                elif question_type == "multiple_choice":
+                    existing_question.choices = question_form.cleaned_data[
+                        "multiple_choice"
+                    ]
 
-        existing_question.save()
+                existing_question.title = title
+                existing_question.explanation = explanation
+                existing_question.start_timestamp = start_timestamp
+                existing_question.end_timestamp = end_timestamp
+
+                existing_question.save()
+            else:
+                # Fix this line. With zip method, when a new question is added, this one is skipped. So this condition is always skipped.
+                create_question(
+                    question_type=question_type,
+                    quiz=existing_quiz,
+                    title=title,
+                    explanation=explanation,
+                    start_timestamp=start_timestamp,
+                    end_timestamp=end_timestamp,
+                    question_data=question_form.cleaned_data[question_type],
+                )
+
+        question_index += 1
 
 
 def handle_post_request_for_create_or_edit_quiz(
@@ -202,6 +224,53 @@ def create_or_edit_quiz_instance(
         return existing_quiz
 
 
+def create_question(
+    question_type: str,
+    quiz: Quiz,
+    title: str,
+    explanation: str,
+    start_timestamp: int,
+    end_timestamp: int,
+    question_data: str,
+):
+    if question_type == "short_answer":
+        ShortAnswerQuestion.objects.get_or_create(
+            quiz=quiz,
+            title=title,
+            explanation=explanation,
+            start_timestamp=start_timestamp,
+            end_timestamp=end_timestamp,
+            answer=question_data,
+        )
+    elif question_type == "long_answer":
+        LongAnswerQuestion.objects.get_or_create(
+            quiz=quiz,
+            title=title,
+            explanation=explanation,
+            start_timestamp=start_timestamp,
+            end_timestamp=end_timestamp,
+            answer=question_data,
+        )
+    elif question_type == "single_choice":
+        SingleChoiceQuestion.objects.get_or_create(
+            quiz=quiz,
+            title=title,
+            explanation=explanation,
+            start_timestamp=start_timestamp,
+            end_timestamp=end_timestamp,
+            choices=question_data,
+        )
+    elif question_type == "multiple_choice":
+        MultipleChoiceQuestion.objects.get_or_create(
+            quiz=quiz,
+            title=title,
+            explanation=explanation,
+            start_timestamp=start_timestamp,
+            end_timestamp=end_timestamp,
+            choices=question_data,
+        )
+
+
 def create_questions(new_quiz: Quiz, question_formset) -> None:
     """
     Creates and associates questions with a given quiz based on the provided formset.
@@ -217,42 +286,15 @@ def create_questions(new_quiz: Quiz, question_formset) -> None:
         start_timestamp = question_form.cleaned_data["start_timestamp"]
         end_timestamp = question_form.cleaned_data["end_timestamp"]
 
-        if question_type == "short_answer":
-            ShortAnswerQuestion.objects.get_or_create(
-                quiz=new_quiz,
-                title=title,
-                explanation=explanation,
-                start_timestamp=start_timestamp,
-                end_timestamp=end_timestamp,
-                answer=question_form.cleaned_data["short_answer"],
-            )
-        elif question_type == "long_answer":
-            LongAnswerQuestion.objects.get_or_create(
-                quiz=new_quiz,
-                title=title,
-                explanation=explanation,
-                start_timestamp=start_timestamp,
-                end_timestamp=end_timestamp,
-                answer=question_form.cleaned_data["long_answer"],
-            )
-        elif question_type == "single_choice":
-            SingleChoiceQuestion.objects.get_or_create(
-                quiz=new_quiz,
-                title=title,
-                explanation=explanation,
-                start_timestamp=start_timestamp,
-                end_timestamp=end_timestamp,
-                choices=question_form.cleaned_data["single_choice"],
-            )
-        elif question_type == "multiple_choice":
-            MultipleChoiceQuestion.objects.get_or_create(
-                quiz=new_quiz,
-                title=title,
-                explanation=explanation,
-                start_timestamp=start_timestamp,
-                end_timestamp=end_timestamp,
-                choices=question_form.cleaned_data["multiple_choice"],
-            )
+        create_question(
+            question_type=question_type,
+            quiz=new_quiz,
+            title=title,
+            explanation=explanation,
+            start_timestamp=start_timestamp,
+            end_timestamp=end_timestamp,
+            question_data=question_form.cleaned_data[question_type],
+        )
 
 
 def calculate_score(question: Question, form) -> float:
@@ -440,7 +482,7 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         return redirect(reverse("maintenance"))
 
     video = get_object_or_404(Video, slug=video_slug)
-    question_formset_factory = formset_factory(QuestionForm, extra=0)
+    question_formset_factory = formset_factory(QuestionForm, extra=0, can_delete=True)
 
     if not (
         request.user.is_superuser or request.user.is_staff or request.user == video.owner
