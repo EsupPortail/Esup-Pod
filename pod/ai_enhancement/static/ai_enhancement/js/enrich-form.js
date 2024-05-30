@@ -209,22 +209,13 @@ function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipl
             break;
           case 'tags':
             const topics = response['enrichmentVersionMetadata']['topics'];
-            console.log(topics);
             const newTopics = [];
-            try {
-              const tagInput = document.getElementById('id_tags');
-              for (let i = 0; i < topics.length; i++) {
-                console.log(removeAccentsAndLowerCase(topics[i]));
-                console.log(tagInput.value.includes(removeAccentsAndLowerCase(topics[i])));
-                if (!tagInput.value.includes(removeAccentsAndLowerCase(topics[i]))) {
-                  newTopics.push(topics[i]);
-                }
+            const tagInput = document.getElementById('id_tags');
+            for (let i = 0; i < topics.length; i++) {
+              if (!tagInput.value.includes(removeAccentsAndLowerCase(topics[i]))) {
+                newTopics.push(topics[i]);
               }
-              console.log(topics);
-            } catch (e) {
-              console.log(e);
             }
-            console.log(topics);
             addTagsElements(newTopics, input);
             break;
           case 'disciplines':
