@@ -22,6 +22,10 @@
         <i class="bi bi-pencil pod-nav-link-icon mx-1" aria-hidden="true"></i>
         <span class="ms-1 d-none d-md-inline">{% trans 'Edit your quiz' %}</span>
       </a>
+      <a class="btn btn-danger btn-sm" href="{% url 'quiz:remove_quiz' video_slug=video.slug %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Delete your quiz" %}" role="button">
+        <i class="bi bi-trash pod-nav-link-icon mx-1" aria-hidden="true"></i>
+        <span class="ms-1 d-none d-md-inline">{% trans 'Delete your quiz' %}</span>
+      </a>
     {% else %}
       <a class="btn btn-secondary btn-sm" href="{% url 'quiz:add_quiz' video_slug=video.slug %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Create a quiz" %}" role="button">
         <i class="bi bi-patch-question pod-nav-link-icon mx-1" aria-hidden="true"></i>
