@@ -2,6 +2,7 @@
 import json
 import bleach
 import requests
+import logging
 from django.conf import settings
 from requests import Response
 from django.urls import reverse
@@ -53,6 +54,8 @@ __TITLE_SITE__ = (
     else "Pod"
 )
 
+logger = logging.getLogger(__name__)
+
 
 class AristoteAI:
     """Aristote AI Enhancement utilities."""
@@ -90,10 +93,10 @@ class AristoteAI:
                 self.token = response.json()["access_token"]
                 return response.json()
             else:
-                print(f"Error: {response.status_code}")
+                logger.error(f"Error: {response.status_code}")
             return response
         except requests.exceptions.RequestException as e:
-            print(f"Request Exception: {e}")
+            logger.error(f"Request Exception: {e}")
             return None
 
     def get_response(self, path: str) -> dict or None:
@@ -115,10 +118,10 @@ class AristoteAI:
             if response.status_code == 200:
                 return response.json()
             else:
-                print(f"Error: {response.status_code}")
+                logger.error(f"Error: {response.status_code}")
             return response
         except requests.exceptions.RequestException as e:
-            print(f"Request Exception: {e}")
+            logger.error(f"Request Exception: {e}")
             return None
 
     def get_ai_enhancements(self) -> dict or None:
@@ -172,10 +175,10 @@ class AristoteAI:
                 if response.status_code == 200:
                     return extract_json_from_str(response.content.decode("utf-8")) if response.content else None
                 else:
-                    print(f"Error: {response.status_code}")
+                    logger.error(f"Error: {response.status_code}")
                 return None
             except requests.exceptions.RequestException as e:
-                print(f"Request Exception: {e}")
+                logger.error(f"Request Exception: {e}")
                 return None
         else:
             raise ValueError("No discipline in the database.")
@@ -214,10 +217,10 @@ class AristoteAI:
             if response.status_code == 200:
                 return response.json()
             else:
-                print(f"Error: {response.status_code}")
+                logger.error(f"Error: {response.status_code}")
             return response
         except requests.exceptions.RequestException as e:
-            print(f"Request Exception: {e}")
+            logger.error(f"Request Exception: {e}")
             return None
 
     def delete_enhancement(self, enhancement_id: str) -> dict or None:
@@ -274,7 +277,7 @@ def send_notification_enhancement(video):
 def send_email_enhancement(video):
     """Send email notification on video improvement completion."""
     if DEBUG:
-        print("SEND EMAIL ON IA IMPROVEMENT COMPLETION")
+        logger.info("SEND EMAIL ON IA IMPROVEMENT COMPLETION")
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
     content_url = "%s:%s" % (url_scheme, video.get_full_url())
     subject = "[%s] %s" % (
