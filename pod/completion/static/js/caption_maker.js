@@ -580,6 +580,7 @@ function validateForms(forms) {
 
     // After Browser checks, we add some custom ones
     let captionInput = e.querySelector(".captionTextInput");
+    // 81 for carriage return
     if (captionInput.value.length > 81) {
       captionInput.setCustomValidity(
         gettext("A caption cannot contain more than 80 characters.") +
