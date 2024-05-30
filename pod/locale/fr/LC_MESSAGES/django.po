@@ -512,7 +512,7 @@ msgid "Delete the video enhancement"
 msgstr "Supprimer l'amélioration de la vidéo"
 
 #: pod/ai_enhancement/views.py
-msgid "You cannot use IA to improve this video."
+msgid "You cannot use AI to improve this video."
 msgstr "Vous ne pouvez pas utiliser l'IA pour améliorer cette vidéo."
 
 #: pod/ai_enhancement/views.py

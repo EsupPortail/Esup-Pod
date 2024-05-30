@@ -197,7 +197,7 @@ def enhance_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
     video = get_object_or_404(Video, slug=video_slug)
 
     if AI_ENHANCEMENT_TO_STAFF_ONLY and request.user.is_staff is False:
-        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        messages.add_message(request, messages.ERROR, _("You cannot use AI to improve this video."))
         raise PermissionDenied
 
     if (
@@ -208,7 +208,7 @@ def enhance_video(request: WSGIRequest, video_slug: str) -> HttpResponse:
         )
         and (request.user not in video.additional_owners.all())
     ):
-        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        messages.add_message(request, messages.ERROR, _("You cannot use AI to improve this video."))
         raise PermissionDenied
 
     if enhancement_is_already_asked(video):
@@ -227,7 +227,7 @@ def enhance_video_json(request: WSGIRequest, video_slug: str) -> HttpResponse:
     """The view to get the JSON of Aristote version."""
     video = get_object_or_404(Video, slug=video_slug)
     if AI_ENHANCEMENT_TO_STAFF_ONLY and request.user.is_staff is False:
-        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        messages.add_message(request, messages.ERROR, _("You cannot use AI to improve this video."))
         raise PermissionDenied
 
     if (
@@ -238,7 +238,7 @@ def enhance_video_json(request: WSGIRequest, video_slug: str) -> HttpResponse:
         )
         and (request.user not in video.additional_owners.all())
     ):
-        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        messages.add_message(request, messages.ERROR, _("You cannot use AI to improve this video."))
         raise PermissionDenied
     aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
     enhancement = AIEnhancement.objects.filter(video=video).first()
@@ -253,7 +253,7 @@ def enhance_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
     """The view to enrich the subtitles of a video."""
     video = get_object_or_404(Video, slug=video_slug, sites=get_current_site(request))
     if AI_ENHANCEMENT_TO_STAFF_ONLY and request.user.is_staff is False:
-        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        messages.add_message(request, messages.ERROR, _("You cannot use AI to improve this video."))
         raise PermissionDenied
 
     if (
@@ -264,7 +264,7 @@ def enhance_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
         )
         and (request.user not in video.additional_owners.all())
     ):
-        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        messages.add_message(request, messages.ERROR, _("You cannot use AI to improve this video."))
         raise PermissionDenied
     if request.GET.get("src", None) is None:
         aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
@@ -305,7 +305,7 @@ def enhance_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
     """The view to enrich quiz of a video."""
     video = get_object_or_404(Video, slug=video_slug, sites=get_current_site(request))
     if AI_ENHANCEMENT_TO_STAFF_ONLY and request.user.is_staff is False:
-        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        messages.add_message(request, messages.ERROR, _("You cannot use AI to improve this video."))
         raise PermissionDenied
 
     if (
@@ -316,7 +316,7 @@ def enhance_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         )
         and (request.user not in video.additional_owners.all())
     ):
-        messages.add_message(request, messages.ERROR, _("You cannot use IA to improve this video."))
+        messages.add_message(request, messages.ERROR, _("You cannot use AI to improve this video."))
         raise PermissionDenied
 
     aristote = AristoteAI(AI_ENHANCEMENT_CLIENT_ID, AI_ENHANCEMENT_CLIENT_SECRET)
