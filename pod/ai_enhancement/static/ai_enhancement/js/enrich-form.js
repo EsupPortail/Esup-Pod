@@ -1,7 +1,7 @@
 /**
  * @file Esup-Pod functions for enrich-form.
  *
- * @since 3.6.0
+ * @since 3.7.0
  */
 
 
