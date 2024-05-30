@@ -52,7 +52,7 @@
             <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the {{ video_title }} video{% endblocktrans %}}" data-bs-toggle="tooltip" data-bs-placement="bottom" class="btn btn-secondary btn-sm">
               <i class="bi bi-play-circle" aria-hidden="true"></i>&nbsp;{% trans 'Back to the video' %}
             </a>
-            <button type="submit" class="btn btn-secondary btn-sm btn-success">{% trans 'Confirm' %}</button>
+            <button type="submit" class="btn btn-secondary btn-sm btn-primary">{% trans 'Confirm' %}</button>
           </div>
       </fieldset>
     </div>
