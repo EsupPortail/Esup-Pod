@@ -232,7 +232,7 @@ msgstr "ID d’enrichissement AI dans Aristote"
 
 #: pod/ai_enhancement/models.py
 msgid "Enter the ID of the enhancement in Aristote"
-msgstr "Entrez l'identifiant d’enrichissement de l'IA dans Aristote"
+msgstr "Entrez l'identifiant de l'enrichissement dans Aristote"
 
 #: pod/ai_enhancement/templates/choose_video_element.html
 #: pod/dressing/models.py pod/video/apps.py pod/video/models.py
