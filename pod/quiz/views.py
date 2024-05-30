@@ -281,6 +281,10 @@ def calculate_score(question: Question, form) -> float:
             )  # Cannot use JSON.loads in case of quotes in a user answer.
             intersection = set(user_answer) & set(correct_answer)
             score = len(intersection) / len(correct_answer)
+
+            len_incorrect = len(user_answer) - len(intersection)
+            penalty = len_incorrect / len(correct_answer)
+            score = max(0, score - penalty)
             return score
 
     elif question.get_type() in {"short_answer", "long_answer"}:
