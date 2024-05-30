@@ -13,20 +13,6 @@ const TAGS_PER_LINE = 4;
 
 
 /**
- * Decode the string from the HTML entity.
- *
- * @param {string} str The string to decode.
- *
- * @return {string} The decoded string.
- */
-function decodeString(str) {
-  str = str.replace(/&#x([0-9A-Fa-f]+);/g, (match, p1) => String.fromCharCode(parseInt(p1, 16)));
-  str = str.replace(/&#(\d+);/g, (match, p1) => String.fromCharCode(parseInt(p1, 10)));
-  return str;
-}
-
-
-/**
  * Select the element to select and unselect the element to unselect.
  *
  * @param {HTMLElement} elementToSelect The element to select.
@@ -178,17 +164,6 @@ function setInformationOrEmptyString(element, value, message) {
     element.children[0].textContent = gettext(message);
     element.children[0].classList.add('text-muted', 'font-italic', 'no-content');
   }
-}
-
-
-function removeAccentsAndLowerCase(str) {
-    // Convertir en minuscules
-    str = str.toLowerCase();
-
-    // Remplacer les caractères accentués
-    str = str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-    return str;
 }
 
 

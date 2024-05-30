@@ -1491,3 +1491,30 @@ let mainCollapseButton = document.getElementById("collapse-button");
 mainCollapseButton.addEventListener("click", () => {
   window.scrollTo(0, 0)
 });
+
+
+/**
+ * Remove accents and convert to lowercase.
+ *
+ * @param {string} str The string.
+ *
+ * @return {string} The new string.
+ */
+function removeAccentsAndLowerCase(str) {
+    str = str.toLowerCase();
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+
+/**
+ * Decode the string from the HTML entity.
+ *
+ * @param {string} str The string to decode.
+ *
+ * @return {string} The decoded string.
+ */
+function decodeString(str) {
+  str = str.replace(/&#x([0-9A-Fa-f]+);/g, (match, p1) => String.fromCharCode(parseInt(p1, 16)));
+  str = str.replace(/&#(\d+);/g, (match, p1) => String.fromCharCode(parseInt(p1, 10)));
+  return str;
+}
