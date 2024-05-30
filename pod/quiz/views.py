@@ -105,18 +105,10 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
             end_timestamp = question_form.cleaned_data["end_timestamp"]
 
             if existing_questions[question_index]:
-                if question_type == "short_answer":
-                    existing_question.answer = question_form.cleaned_data["short_answer"]
-                elif question_type == "long_answer":
-                    existing_question.answer = question_form.cleaned_data["long_answer"]
-                elif question_type == "single_choice":
-                    existing_question.choices = question_form.cleaned_data[
-                        "single_choice"
-                    ]
-                elif question_type == "multiple_choice":
-                    existing_question.choices = question_form.cleaned_data[
-                        "multiple_choice"
-                    ]
+                if question_type in {"short_answer", "long_answer"}:
+                    existing_question.answer = question_form.cleaned_data[question_type]
+                elif question_type in {"single_choice", "multiple_choice"}:
+                    existing_question.choices = question_form.cleaned_data[question_type]
 
                 existing_question.title = title
                 existing_question.explanation = explanation
