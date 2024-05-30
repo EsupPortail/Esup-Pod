@@ -94,10 +94,15 @@
       {% endfor %}
     </div>
     <div class="text-center mt-2">
-      <button type="submit" id="quiz-submission-button" class="btn btn-primary"
-              {% if form_submitted %}disabled aria-disabled="true"{% endif %}>
-        {% trans "Validate" %}
-      </button>
+      {% if form_submitted %}
+        <a role="button" href="{% url 'quiz:video_quiz' video.slug %}" class="btn btn-primary">
+          {% trans "Redo the quiz" %}
+        </a>
+      {% else %}
+        <button type="submit" id="quiz-submission-button" class="btn btn-primary">
+          {% trans "Validate" %}
+        </button>
+      {% endif %}
       <a href="{% url 'video:video' slug=video.slug %}" class="btn btn-secondary">{% trans "Back to video" %}</a>
     </div>
   </form>
