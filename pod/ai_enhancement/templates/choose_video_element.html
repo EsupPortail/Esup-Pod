@@ -45,6 +45,11 @@
       <i class="bi bi-patch-question" aria-hidden="true"></i>&nbsp;{% trans "Go to quiz part" %}
     </a>
   </span>
+  <span>
+    <a href="{% url 'ai_enhancement:delete_enhance_video' video_slug=video.slug %}" class="btn btn-danger btn-sm m-2">
+      <i class="bi bi-trash" aria-hidden="true"></i>&nbsp;{% trans "Remove this enhancement" %}
+    </a>
+  </span>
 </h1>
   <form method="POST" action="{% url 'ai_enhancement:enhance_video' video_slug=video.slug %}">
     {% csrf_token %}

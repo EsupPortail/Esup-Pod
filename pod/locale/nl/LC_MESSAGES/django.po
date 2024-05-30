@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-29 07:37+0000\n"
+"POT-Creation-Date: 2024-05-29 14:51+0000\n"
 "PO-Revision-Date: 2024-05-15 09:01+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -170,6 +170,14 @@ msgstr ""
 msgid "For more information."
 msgstr ""
 
+#: pod/ai_enhancement/forms.py
+msgid "I want to delete this enhancement"
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "Please check this box if you want to delete this enhance."
+msgstr ""
+
 #: pod/ai_enhancement/models.py
 msgid "AI enhancement"
 msgstr ""
@@ -180,8 +188,9 @@ msgstr ""
 
 #: pod/ai_enhancement/models.py pod/completion/models.py
 #: pod/enrichment/models.py pod/playlist/models.py pod/quiz/models.py
-#: pod/recorder/models.py pod/video/models.py
-#: pod/video/templates/channel/channel.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/video_quiz.html pod/recorder/models.py
+#: pod/video/models.py pod/video/templates/channel/channel.html
 #: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
 msgid "Video"
 msgstr ""
@@ -245,7 +254,12 @@ msgid "Go to quiz part"
 msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Remove this enhancement"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
 #: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/ai_enhancement/templates/delete_enhancement.html
 #: pod/ai_enhancement/views.py
 #: pod/authentication/templates/userpicture/userpicture.html
 #: pod/authentication/tests/test_views.py
@@ -287,6 +301,7 @@ msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
 #: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/ai_enhancement/templates/delete_enhancement.html
 #: pod/authentication/templates/userpicture/userpicture.html
 #: pod/bbb/templates/bbb/live_publish_meeting.html
 #: pod/bbb/templates/bbb/publish_meeting.html
@@ -333,6 +348,7 @@ msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
 #: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/ai_enhancement/templates/delete_enhancement.html
 #: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
 #: pod/dressing/templates/video_dressing.html
 #: pod/quiz/templates/quiz/delete_quiz.html
@@ -342,6 +358,7 @@ msgid "Back to the video"
 msgstr ""
 
 #: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/ai_enhancement/templates/delete_enhancement.html
 msgid "Access the video"
 msgstr ""
 
@@ -352,6 +369,7 @@ msgid ""
 msgstr ""
 
 #: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/ai_enhancement/templates/delete_enhancement.html
 #: pod/dressing/templates/dressing_delete.html
 #: pod/live/templates/live/event_delete.html
 #: pod/meeting/templates/meeting/delete.html
@@ -363,12 +381,20 @@ msgid "Agreement required"
 msgstr ""
 
 #: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/ai_enhancement/templates/delete_enhancement.html
 #, python-format
 msgid "Back to the %(video_title)s video"
 msgstr ""
 
 #: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/ai_enhancement/templates/delete_enhancement.html
 msgid "Confirm"
+msgstr ""
+
+#: pod/ai_enhancement/templates/delete_enhancement.html
+msgid ""
+"To delete this enhancement, please check the box and click confirm. The "
+"video data will also be deleted from Aristote AI."
 msgstr ""
 
 #: pod/ai_enhancement/utils.py pod/live/templates/live/direct.html
@@ -456,6 +482,28 @@ msgstr ""
 #: pod/ai_enhancement/views.py
 msgid "Enhance the video with Aristote AI"
 msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgid "You cannot delete the video improvement."
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgid "The video has not been improved."
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgid "Enhancement successfully deleted."
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgid "No enhancement found."
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+#, fuzzy
+#| msgid "Select the video to move by clicking and holding."
+msgid "Delete the video enhancement"
+msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
 
 #: pod/ai_enhancement/views.py
 msgid "You cannot use IA to improve this video."
@@ -2024,6 +2072,7 @@ msgid "Quizzes"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
+#: pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Edit your quiz"
 msgstr ""
 
@@ -2032,6 +2081,7 @@ msgid "To edit your quiz for this video."
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
+#: pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Create a quiz"
 msgstr ""
 
@@ -7265,6 +7315,7 @@ msgid "Allow"
 msgstr ""
 
 #: pod/quiz/apps.py pod/quiz/models.py
+#: pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Quiz"
 msgstr ""
 
@@ -7556,6 +7607,10 @@ msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Validate"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz_aside.html
+msgid "Answer the quiz"
 msgstr ""
 
 #: pod/quiz/tests/test_views.py pod/quiz/views.py
@@ -9179,10 +9234,6 @@ msgstr ""
 
 #: pod/video/templates/videos/video-info.html
 msgid "Number of favorites"
-msgstr ""
-
-#: pod/video/templates/videos/video-info.html
-msgid "Answer the quiz"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
