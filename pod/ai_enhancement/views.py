@@ -1,4 +1,4 @@
-"""Views for ai_enhancement module."""
+"""Views for Esup-Pod ai_enhancement module."""
 import json
 import hashlib
 from django.conf import settings

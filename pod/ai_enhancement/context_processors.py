@@ -1,3 +1,4 @@
+"""Esup-Pod ai_enhancement context_processors."""
 from django.conf import settings as django_settings
 
 USE_AI_ENHANCEMENT = getattr(
