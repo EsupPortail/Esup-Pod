@@ -67,4 +67,4 @@ def get_question_color(is_submitted: bool, score: int = None) -> str:
         elif score <= 0.75:
             return "warning"
         return "success"
-    return ""
+    return "dark"

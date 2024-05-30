@@ -78,15 +78,17 @@
           {% endwith %}
 
           {% if form_submitted and quiz.show_correct_answers %}
-            <p>{% trans "Right answer:" %} {{ question.get_answer }}</p>
-            {% if question.explanation %}
-              <p>{% trans "Explanation:" %} {{ question.explanation }}</p>
-            {% endif %}
-            {% if question.start_timestamp %}
-              <a class="btn btn-primary show-response-button" start="{{ question.start_timestamp}}" end="{{ question.end_timestamp }}" role="button">
-                {% trans "Show answer in the video" %}
-              </a>
-            {% endif %}
+            <div class="alert alert-{% get_question_color form_submitted questions_stats|dict_get:question.id %}">
+              <p><b>{% trans "Right answer:" %}</b> {{ question.get_answer }}</p>
+              {% if question.explanation %}
+                <p><b>{% trans "Explanation:" %}</b> {{ question.explanation }}</p>
+              {% endif %}
+              {% if question.start_timestamp %}
+                <a class="btn btn-primary show-response-button" start="{{ question.start_timestamp}}" end="{{ question.end_timestamp }}" role="button">
+                  {% trans "Show answer in the video" %}
+                </a>
+              {% endif %}
+            </div>
           {% endif %}
         </fieldset>
       {% endfor %}
