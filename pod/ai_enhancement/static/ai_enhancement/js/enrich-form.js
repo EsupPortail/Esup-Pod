@@ -1,7 +1,7 @@
 /**
  * @file Esup-Pod functions for enrich-form.
  *
- * @since 3.6.0
+ * @since 3.7.0
  */
 
 
@@ -13,16 +13,16 @@ const TAGS_PER_LINE = 4;
 
 
 /**
- * Decode the string from the HTML entity.
+ * Select the element to select and unselect the element to unselect.
  *
- * @param {string} str The string to decode.
- *
- * @return {string} The decoded string.
+ * @param {HTMLElement} elementToSelect The element to select.
+ * @param {HTMLElement} elementToUnselect The element to unselect.
  */
-function decodeString(str) {
-  str = str.replace(/&#x([0-9A-Fa-f]+);/g, (match, p1) => String.fromCharCode(parseInt(p1, 16)));
-  str = str.replace(/&#(\d+);/g, (match, p1) => String.fromCharCode(parseInt(p1, 10)));
-  return str;
+function selectElement(elementToSelect, elementToUnselect) {
+  elementToSelect.classList.remove(BORDER_CLASS);
+  elementToSelect.classList.add(ENRICH_INPUT_SELECTED);
+  elementToUnselect.classList.remove(ENRICH_INPUT_SELECTED);
+  elementToUnselect.classList.add(BORDER_CLASS);
 }
 
 
@@ -35,10 +35,7 @@ function decodeString(str) {
  * @param {string} elementName The name of the element.
  */
 function togglePairInput(selectedElement, notSelectedElement, input, elementName) {
-  selectedElement.children[0].classList.remove(BORDER_CLASS);
-  selectedElement.children[0].classList.add(ENRICH_INPUT_SELECTED);
-  notSelectedElement.children[0].classList.remove(ENRICH_INPUT_SELECTED);
-  notSelectedElement.children[0].classList.add(BORDER_CLASS);
+  selectElement(selectedElement.children[0], notSelectedElement.children[0]);
   let newString = selectedElement.children[0].textContent.trim();
   switch (elementName) {
     case 'title':
@@ -63,10 +60,7 @@ function togglePairInput(selectedElement, notSelectedElement, input, elementName
  * @param {HTMLElement} input The input element.
  */
 function toggleMultiplePairInput(selectedElement, notSelectedElement, input) {
-  selectedElement.children[0].classList.remove(BORDER_CLASS);
-  selectedElement.children[0].classList.add(ENRICH_INPUT_SELECTED);
-  notSelectedElement.children[0].classList.remove(ENRICH_INPUT_SELECTED);
-  notSelectedElement.children[0].classList.add(BORDER_CLASS);
+  selectElement(selectedElement.children[0], notSelectedElement.children[0]);
   let newString = selectedElement.children[0].textContent.trim();
   if (newString === gettext('No discipline')) {
     input.value = '';
@@ -170,17 +164,6 @@ function setInformationOrEmptyString(element, value, message) {
     element.children[0].textContent = gettext(message);
     element.children[0].classList.add('text-muted', 'font-italic', 'no-content');
   }
-}
-
-
-function removeAccentsAndLowerCase(str) {
-    // Convertir en minuscules
-    str = str.toLowerCase();
-
-    // Remplacer les caractères accentués
-    str = str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-    return str;
 }
 
 
