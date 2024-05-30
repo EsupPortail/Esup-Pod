@@ -141,7 +141,8 @@ class AristoteAITestCase(TestCase):
             "mocked_url",
             ["mocked_media_type_1", "mocked_media_type_2"],
             "mocked_end_user_identifier",
-            "mocked_notification_webhook_url")
+            "mocked_notification_webhook_url",
+        )
         self.assertIsNone(result)
         print(" --->  test_create_enhancement_from_url__success ok")
 
@@ -158,7 +159,8 @@ class AristoteAITestCase(TestCase):
             "mocked_url",
             ["mocked_media_type_1", "mocked_media_type_2"],
             "mocked_end_user_identifier",
-            "mocked_notification_webhook_url")
+            "mocked_notification_webhook_url",
+        )
         self.assertIsNone(result)
         print(" --->  test_create_enhancement_from_url__failure ok")
 
@@ -292,22 +294,26 @@ class AristoteAITestCase(TestCase):
 
         aristote_ai = AristoteAI(self.client_id, self.client_secret)
         aristote_ai.token = "mocked_token"
-        result = aristote_ai.get_specific_enhancement_version("mocked_enhancement_id", "mocked_version_id")
+        result = aristote_ai.get_specific_enhancement_version(
+            "mocked_enhancement_id", "mocked_version_id"
+        )
         self.assertEqual(result, mock_response)
         print(" --->  test_get_specific_enhancement_version__failure ok")
 
     def test_extract_json_from_str__valid_json(self):
         """Test the extract_json_from_str function with a valid JSON string."""
-        content_to_extract = "This is some text {\"key\": \"value\"} and more text."
+        content_to_extract = 'This is some text {"key": "value"} and more text.'
         result = extract_json_from_str(content_to_extract)
         self.assertEqual(result, {"key": "value"})
         print(" --->  test_extract_json_from_str__valid_json ok")
 
     def test_extract_json_from_str__invalid_json(self):
         """Test the extract_json_from_str function with an invalid JSON string."""
-        content_to_extract = "This is some text {\"key\": \"value\" and more text."
+        content_to_extract = 'This is some text {"key": "value" and more text.'
         result = extract_json_from_str(content_to_extract)
-        expected_result = {"error": "JSONDecodeError: The string is not a valid JSON string."}
+        expected_result = {
+            "error": "JSONDecodeError: The string is not a valid JSON string."
+        }
         self.assertEqual(result, expected_result)
         print(" --->  test_extract_json_from_str__invalid_json ok")
 
@@ -315,7 +321,9 @@ class AristoteAITestCase(TestCase):
         """Test the extract_json_from_str function with a string without JSON content."""
         content_to_extract = "This is some text without JSON content."
         result = extract_json_from_str(content_to_extract)
-        expected_result = {"error": "JSONDecodeError: The string is not a valid JSON string."}
+        expected_result = {
+            "error": "JSONDecodeError: The string is not a valid JSON string."
+        }
         self.assertEqual(result, expected_result)
         print(" --->  test_extract_json_from_str__no_json ok")
 

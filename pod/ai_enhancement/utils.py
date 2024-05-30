@@ -27,7 +27,9 @@ SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 AI_ENHANCEMENT_API_URL = getattr(settings, "AI_ENHANCEMENT_API_URL", "")
 AI_ENHANCEMENT_API_VERSION = getattr(settings, "AI_ENHANCEMENT_API_VERSION", "")
 USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", True)
-EMAIL_ON_ENHANCEMENT_COMPLETION = getattr(settings, "EMAIL_ON_ENHANCEMENT_COMPLETION", True)
+EMAIL_ON_ENHANCEMENT_COMPLETION = getattr(
+    settings, "EMAIL_ON_ENHANCEMENT_COMPLETION", True
+)
 TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings,
     "TEMPLATE_VISIBLE_SETTINGS",
@@ -140,11 +142,11 @@ class AristoteAI:
         return self.get_response(path)
 
     def create_enhancement_from_url(
-            self,
-            url: str,
-            media_types: list,
-            end_user_identifier: str,
-            notification_webhook_url: str
+        self,
+        url: str,
+        media_types: list,
+        end_user_identifier: str,
+        notification_webhook_url: str,
     ) -> dict or None:
         """Create an enhancement from a file."""
         if Discipline.objects.count() > 0:
@@ -173,7 +175,11 @@ class AristoteAI:
                     headers=headers,
                 )
                 if response.status_code == 200:
-                    return extract_json_from_str(response.content.decode("utf-8")) if response.content else None
+                    return (
+                        extract_json_from_str(response.content.decode("utf-8"))
+                        if response.content
+                        else None
+                    )
                 else:
                     logger.error(f"Error: {response.status_code}")
                 return None
@@ -185,15 +191,21 @@ class AristoteAI:
 
     def get_latest_enhancement_version(self, enhancement_id: str) -> dict or None:
         """Get the latest enhancement version."""
-        path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}/versions/latest"
+        path = (
+            f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}/versions/latest"
+        )
         return self.get_response(path)
 
-    def get_enhancement_versions(self, enhancement_id: str, with_transcript: bool = True) -> dict or None:
+    def get_enhancement_versions(
+        self, enhancement_id: str, with_transcript: bool = True
+    ) -> dict or None:
         """Get the enhancement versions."""
         path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}/versions?withTranscript={with_transcript}"
         return self.get_response(path)
 
-    def get_specific_enhancement_version(self, enhancement_id: str, version_id: str) -> dict or None:
+    def get_specific_enhancement_version(
+        self, enhancement_id: str, version_id: str
+    ) -> dict or None:
         """Get a specific version."""
         path = f"/{AI_ENHANCEMENT_API_VERSION}/enrichments/{enhancement_id}/versions/{version_id}"
         return self.get_response(path)
@@ -256,7 +268,7 @@ def send_notification_enhancement(video):
     subject = "[%s] %s" % (
         __TITLE_SITE__,
         _("%(subject)s #%(content_id)s completed")
-        % {"subject": _('Enhancement'), "content_id": video.id},
+        % {"subject": _("Enhancement"), "content_id": video.id},
     )
     message = _(
         "“%(content_title)s” was processed by the AI."
@@ -282,8 +294,7 @@ def send_email_enhancement(video):
     content_url = "%s:%s" % (url_scheme, video.get_full_url())
     subject = "[%s] %s" % (
         __TITLE_SITE__,
-        _("IA improvement #%(content_id)s completed")
-        % {"content_id": video.id},
+        _("IA improvement #%(content_id)s completed") % {"content_id": video.id},
     )
 
     html_message = (

@@ -32,7 +32,9 @@ class EnrichVideoJsonViewTest(TestCase):
             description="This is a test video.",
             type=Type.objects.get(id=1),
         )
-        self.enhancement = AIEnhancement.objects.create(video=self.video, ai_enhancement_id_in_aristote="123")
+        self.enhancement = AIEnhancement.objects.create(
+            video=self.video, ai_enhancement_id_in_aristote="123"
+        )
         self.client.force_login(self.user)
 
     @patch("pod.ai_enhancement.views.AristoteAI")
@@ -97,8 +99,7 @@ class ReceiveWebhookViewTest(TestCase):
             type=Type.objects.get(id=1),
         )
         self.enhancement = AIEnhancement.objects.create(
-            video=self.video,
-            ai_enhancement_id_in_aristote="123"
+            video=self.video, ai_enhancement_id_in_aristote="123"
         )
         self.client.force_login(self.user)
 
@@ -111,7 +112,9 @@ class ReceiveWebhookViewTest(TestCase):
             "initialVersionId": "018e08b5-9ea0-73a7-bcd7-34764e3b0775",
             "failureCause": None,
         }
-        request = self.factory.post(url, data=request_data, content_type="application/json")
+        request = self.factory.post(
+            url, data=request_data, content_type="application/json"
+        )
         response = toggle_webhook(request)
         self.enhancement.refresh_from_db()
         self.assertTrue(self.enhancement.is_ready)
@@ -129,7 +132,10 @@ class ReceiveWebhookViewTest(TestCase):
         self.assertFalse(self.enhancement.is_ready)
         self.assertEqual(response.status_code, 405)
         self.assertIsInstance(response, JsonResponse)
-        self.assertEqual(json.loads(response.content.decode()), {"error": "Only POST requests are allowed."})
+        self.assertEqual(
+            json.loads(response.content.decode()),
+            {"error": "Only POST requests are allowed."},
+        )
         print(" --->  test_toggle_webhook__bad_method ok")
 
     def test_toggle_webhook__enhancement_not_found(self):
@@ -141,13 +147,17 @@ class ReceiveWebhookViewTest(TestCase):
             "initialVersionId": "018e08b5-9ea0-73a7-bcd7-34764e3b0775",
             "failureCause": None,
         }
-        request = self.factory.post(url, data=request_data, content_type="application/json")
+        request = self.factory.post(
+            url, data=request_data, content_type="application/json"
+        )
         response = toggle_webhook(request)
         self.enhancement.refresh_from_db()
         self.assertFalse(self.enhancement.is_ready)
         self.assertEqual(response.status_code, 404)
         self.assertIsInstance(response, JsonResponse)
-        self.assertEqual(json.loads(response.content.decode()), {"error": "Enhancement not found."})
+        self.assertEqual(
+            json.loads(response.content.decode()), {"error": "Enhancement not found."}
+        )
         print(" --->  test_toggle_webhook__enhancement_not_found ok")
 
     def test_toggle_webhook__no_id_in_request(self):
@@ -158,13 +168,17 @@ class ReceiveWebhookViewTest(TestCase):
             "initialVersionId": "018e08b5-9ea0-73a7-bcd7-34764e3b0775",
             "failureCause": None,
         }
-        request = self.factory.post(url, data=request_data, content_type="application/json")
+        request = self.factory.post(
+            url, data=request_data, content_type="application/json"
+        )
         response = toggle_webhook(request)
         self.enhancement.refresh_from_db()
         self.assertFalse(self.enhancement.is_ready)
         self.assertEqual(response.status_code, 400)
         self.assertIsInstance(response, JsonResponse)
-        self.assertEqual(json.loads(response.content.decode()), {"error": "No id in the request."})
+        self.assertEqual(
+            json.loads(response.content.decode()), {"error": "No id in the request."}
+        )
         print(" --->  test_toggle_webhook__no_id_in_request ok")
 
     def test_toggle_webhook__bad_content_type(self):
@@ -196,7 +210,9 @@ class ReceiveWebhookViewTest(TestCase):
             "initialVersionId": "018e08b5-9ea0-73a7-bcd7-34764e3b0775",
             "failureCause": "mocked_failure_cause",
         }
-        request = self.factory.post(url, data=request_data, content_type="application/json")
+        request = self.factory.post(
+            url, data=request_data, content_type="application/json"
+        )
         response = toggle_webhook(request)
         self.enhancement.refresh_from_db()
         self.assertFalse(self.enhancement.is_ready)
@@ -235,11 +251,11 @@ class EnhanceVideoViewTest(TestCase):
         url = reverse("ai_enhancement:enhance_video", args=[self.video.slug])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'base.html')
-        self.assertTemplateUsed(response, 'navbar.html')
-        self.assertTemplateUsed(response, 'navbar_collapse.html')
-        self.assertTemplateUsed(response, 'footer.html')
-        self.assertTemplateUsed(response, 'create_enhancement.html')
+        self.assertTemplateUsed(response, "base.html")
+        self.assertTemplateUsed(response, "navbar.html")
+        self.assertTemplateUsed(response, "navbar_collapse.html")
+        self.assertTemplateUsed(response, "footer.html")
+        self.assertTemplateUsed(response, "create_enhancement.html")
         print(" --->  test_enhance_video__success ok")
 
     def test_enhance_video__video_not_exists(self):
@@ -254,7 +270,12 @@ class EnhanceVideoViewTest(TestCase):
         maintenance_mode_conf = Configuration.objects.get(key="maintenance_mode")
         maintenance_mode_conf.value = "1"
         maintenance_mode_conf.save()
-        print("MAINTENANCE MODE: ", True if Configuration.objects.get(key="maintenance_mode").value == "1" else False)
+        print(
+            "MAINTENANCE MODE: ",
+            True
+            if Configuration.objects.get(key="maintenance_mode").value == "1"
+            else False,
+        )
         url = reverse("ai_enhancement:enhance_video", args=[self.video.slug])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 302)

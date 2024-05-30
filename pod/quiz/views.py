@@ -547,7 +547,9 @@ def import_quiz(request: WSGIRequest, video_slug: str, quiz_data_json: str):
 
     video = get_object_or_404(Video, slug=video_slug)
 
-    if not (request.user.is_superuser or request.user.is_staff or request.user == video.owner):
+    if not (
+        request.user.is_superuser or request.user.is_staff or request.user == video.owner
+    ):
         messages.add_message(
             request, messages.ERROR, _("You cannot import a quiz for this video.")
         )
@@ -561,10 +563,14 @@ def import_quiz(request: WSGIRequest, video_slug: str, quiz_data_json: str):
     new_quiz = Quiz.objects.create(video=video)
     for question_type, question_list in quiz_data.items():
         for question in question_list:
-            create_question_from_aristote_json(quiz=new_quiz, question_type=question_type, question_dict=question)
+            create_question_from_aristote_json(
+                quiz=new_quiz, question_type=question_type, question_dict=question
+            )
 
 
-def create_question_from_aristote_json(quiz: Quiz, question_type: str, question_dict: dict) -> None:
+def create_question_from_aristote_json(
+    quiz: Quiz, question_type: str, question_dict: dict
+) -> None:
     """
     Creates and associates questions with a given quiz based on JSON data.
 
@@ -578,7 +584,9 @@ def create_question_from_aristote_json(quiz: Quiz, question_type: str, question_
     end_timestamp = question_dict["answerPointer"]["stopAnswerPointer"]
 
     if question_type == "multiple_choice":
-        question_choices = {i["optionText"]: i["correctAnswer"] for i in question_dict["choices"]}
+        question_choices = {
+            i["optionText"]: i["correctAnswer"] for i in question_dict["choices"]
+        }
         MultipleChoiceQuestion.objects.create(
             quiz=quiz,
             title=title,

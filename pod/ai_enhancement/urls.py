@@ -19,16 +19,12 @@ urlpatterns = [
     path(
         "enhance_subtitles/<slug:video_slug>/",
         enhance_subtitles,
-        name="enhance_subtitles"
+        name="enhance_subtitles",
     ),
-    path(
-        "enhance_quiz/<slug:video_slug>/",
-        enhance_quiz,
-        name="enhance_quiz"
-    ),
+    path("enhance_quiz/<slug:video_slug>/", enhance_quiz, name="enhance_quiz"),
     path(
         "enhance_video_json/<slug:video_slug>/json/",
         enhance_video_json,
-        name="enhance_video_json"
+        name="enhance_video_json",
     ),
 ]

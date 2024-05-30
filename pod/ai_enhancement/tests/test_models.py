@@ -25,7 +25,9 @@ class AIEnrichmentModelTest(TestCase):
             owner=self.owner,
             type=Type.objects.create(title="Test Type"),
         )
-        self.ai_enhancement = AIEnhancement.objects.create(video=self.video, ai_enhancement_id_in_aristote="test_id")
+        self.ai_enhancement = AIEnhancement.objects.create(
+            video=self.video, ai_enhancement_id_in_aristote="test_id"
+        )
 
     def test_create_ai_enhancement(self):
         """Test the model creation."""

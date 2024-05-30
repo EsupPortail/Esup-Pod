@@ -22,7 +22,9 @@ AI_ENHANCEMENT_FIELDS_HELP_TEXT = getattr(
             "choose_information_string": _("Choose the description."),
             "initial_information": _("The initial description is loading…"),
             "initial_information_t": _("Your initial description."),
-            "ai_information": _("The description proposed by the Aristote AI is loading…"),
+            "ai_information": _(
+                "The description proposed by the Aristote AI is loading…"
+            ),
             "ai_information_t": _("The description proposed by the Aristote AI."),
         },
         "tags": {
@@ -66,9 +68,11 @@ class AIEnhancementChoice(forms.ModelForm):
                 "aria-describedby": "id_titleHelp",
             },
         ),
-        help_text=_('''
+        help_text=_(
+            """
             Please choose a title between 1 and 250 characters.
-        '''),
+        """
+        ),
     )
 
     description = forms.CharField(
@@ -83,10 +87,12 @@ class AIEnhancementChoice(forms.ModelForm):
     )
 
     tags = TagField(
-        help_text=_('''
+        help_text=_(
+            """
             Please choose tags for your video.
             Separate tags with spaces, enclose the tags consist of several words in quotation marks.
-        '''),
+        """
+        ),
         verbose_name=_("Tags"),
     )
 
@@ -94,7 +100,7 @@ class AIEnhancementChoice(forms.ModelForm):
         label=_("Discipline"),
         queryset=Discipline.objects.all(),
         required=False,
-        help_text=_('Please choose the discipline of your video.'),
+        help_text=_("Please choose the discipline of your video."),
     )
 
     fieldsets = [
@@ -223,10 +229,12 @@ class NotifyUserThirdPartyServicesForm(forms.Form):
         self.fields = add_placeholder_and_asterisk(self.fields)
         if AI_ENHANCEMENT_CGU_URL != "" and self.fields.get("agree"):
             to_know_more = '<a href="%s" target="_blank" >' % AI_ENHANCEMENT_CGU_URL
-            to_know_more += '  <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>&nbsp;'
-            to_know_more += _('For more information.')
-            to_know_more += '</a>'
-            self.fields['agree'].help_text += "&nbsp;" + to_know_more
+            to_know_more += (
+                '  <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>&nbsp;'
+            )
+            to_know_more += _("For more information.")
+            to_know_more += "</a>"
+            self.fields["agree"].help_text += "&nbsp;" + to_know_more
 
 
 class NotifyUserDeleteEnhancementForm(forms.Form):
@@ -234,9 +242,7 @@ class NotifyUserDeleteEnhancementForm(forms.Form):
 
     confirm = forms.BooleanField(
         label=_("I want to delete this enhancement"),
-        help_text=_(
-            "Please check this box if you want to delete this enhance."
-        ),
+        help_text=_("Please check this box if you want to delete this enhance."),
         widget=forms.CheckboxInput(
             attrs={
                 "aria-describedby": "id_confirmHelp",
@@ -250,7 +256,9 @@ class NotifyUserDeleteEnhancementForm(forms.Form):
         self.fields = add_placeholder_and_asterisk(self.fields)
         if AI_ENHANCEMENT_CGU_URL != "" and self.fields.get("agree"):
             to_know_more = '<a href="%s" target="_blank" >' % AI_ENHANCEMENT_CGU_URL
-            to_know_more += '  <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>&nbsp;'
-            to_know_more += _('For more information.')
-            to_know_more += '</a>'
-            self.fields['agree'].help_text += "&nbsp;" + to_know_more
+            to_know_more += (
+                '  <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>&nbsp;'
+            )
+            to_know_more += _("For more information.")
+            to_know_more += "</a>"
+            self.fields["agree"].help_text += "&nbsp;" + to_know_more

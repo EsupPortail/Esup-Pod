@@ -12,11 +12,7 @@ from pod.video.models import Video
 
 
 USE_AI_ENHANCEMENT = getattr(settings, "USE_AI_ENHANCEMENT", False)
-AI_ENHANCEMENT_TO_STAFF_ONLY = getattr(
-    settings,
-    "AI_ENHANCEMENT_TO_STAFF_ONLY",
-    True
-)
+AI_ENHANCEMENT_TO_STAFF_ONLY = getattr(settings, "AI_ENHANCEMENT_TO_STAFF_ONLY", True)
 
 register = Library()
 
@@ -42,13 +38,7 @@ def user_can_enhance_video(context: dict, video: Video) -> bool:
         and request.user.is_staff is False
     ):
         return False
-    return (
-        (
-            request.user.is_staff
-            or request.user.is_superuser
-        )
-        and USE_AI_ENHANCEMENT
-    )
+    return (request.user.is_staff or request.user.is_superuser) and USE_AI_ENHANCEMENT
 
 
 @register.simple_tag(takes_context=True, name="enhancement_is_ready")
@@ -84,4 +74,9 @@ def enhancement_is_already_asked(context: dict, video: Video) -> bool:
     request = context["request"]
     if not request.user.is_authenticated:
         return False
-    return eia(video) and USE_AI_ENHANCEMENT and user_can_enhance_video(context, video) and not eir(video)
+    return (
+        eia(video)
+        and USE_AI_ENHANCEMENT
+        and user_can_enhance_video(context, video)
+        and not eir(video)
+    )

@@ -19,4 +19,9 @@ class AIEnhancementAdmin(admin.ModelAdmin):
     )
     list_display_links = ("id", "ai_enhancement_id_in_aristote")
     list_filter = ("is_ready", "created_at", "updated_at")
-    search_fields = ["ai_enhancement_id_in_aristote", "video__title", "video__id", "video__slug"]
+    search_fields = [
+        "ai_enhancement_id_in_aristote",
+        "video__title",
+        "video__id",
+        "video__slug",
+    ]

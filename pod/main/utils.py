@@ -155,7 +155,7 @@ def extract_json_from_str(content_to_extract: str) -> dict:
     """Extract the JSON from a string."""
     start_index = content_to_extract.find("{")
     end_index = content_to_extract.rfind("}")
-    json_string = content_to_extract[start_index:end_index + 1]
+    json_string = content_to_extract[start_index : end_index + 1]
     try:
         return json.loads(json_string)
     except json.JSONDecodeError:

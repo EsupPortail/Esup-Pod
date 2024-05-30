@@ -16,6 +16,7 @@ def isempty(value):
         return value.strip() == ""
     return value is None
 
+
 @register.filter(name="dict_get")
 def dict_get(value: dict, key):
     """Get a dict value thanks to a key."""
