@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load filters %}
+{% load video_quiz %}
 
 {% block page_extra_head %}
   {% include 'videos/video-header.html' %}
@@ -45,7 +47,7 @@
     {% csrf_token %}
     <div class="d-flex flex-column gap-4">
       {% for question in quiz.get_questions %}
-        <fieldset class="border rounded-3 p-4 question-container">
+        <fieldset class="border border-2 border-{% get_question_color form_submitted questions_stats|dict_get:question.id %} rounded-3 p-4 question-container">
           <legend>
             <i class="bi bi-patch-question" aria-hidden='true'></i>&nbsp;{{ question.title }}
           </legend>
