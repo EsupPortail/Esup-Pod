@@ -275,12 +275,17 @@ def calculate_score(question: Question, form) -> float:
     elif question.get_type() == "multiple_choice":
         user_answer = form.cleaned_data.get("selected_choice")
         correct_answer = question.get_answer()
-        user_answer = ast.literal_eval(
-            user_answer
-        )  # Cannot use JSON.loads in case of quotes in a user answer.
-        intersection = set(user_answer) & set(correct_answer)
-        score = len(intersection) / len(correct_answer)
-        return score
+        if user_answer != "":
+            user_answer = ast.literal_eval(
+                user_answer
+            )  # Cannot use JSON.loads in case of quotes in a user answer.
+            intersection = set(user_answer) & set(correct_answer)
+            score = len(intersection) / len(correct_answer)
+
+            len_incorrect = len(user_answer) - len(intersection)
+            penalty = len_incorrect / len(correct_answer)
+            score = max(0, score - penalty)
+            return score
 
     elif question.get_type() in {"short_answer", "long_answer"}:
         user_answer = form.cleaned_data.get("user_answer")
@@ -288,7 +293,7 @@ def calculate_score(question: Question, form) -> float:
 
     # Add similar logic for other question types...
 
-    if user_answer is not None and correct_answer is not None:
+    if (user_answer is not None and user_answer != "") and correct_answer is not None:
         return 1.0 if user_answer.lower() == correct_answer.lower() else 0.0
 
     return 0.0
@@ -307,14 +312,17 @@ def process_quiz_submission(request: WSGIRequest, quiz: Quiz) -> float:
     """
     total_questions = len(quiz.get_questions())
     score = 0.0
+    questions_stats = {}
 
     for question in quiz.get_questions():
         form = question.get_question_form(request.POST)
         if form.is_valid():
-            score += calculate_score(question, form)
+            question_score = calculate_score(question, form)
+            score += question_score
 
+            questions_stats[question.id] = question_score
     percentage_score = (score / total_questions) * 100
-    return percentage_score
+    return percentage_score, questions_stats
 
 
 def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
@@ -335,12 +343,13 @@ def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
     quiz = get_video_quiz(video)
     form_submitted = False
     percentage_score = None
+    questions_stats = {}
 
     if quiz.connected_user_only and not request.user.is_authenticated:
         return redirect("%s?referrer=%s" % (settings.LOGIN_URL, request.get_full_path()))
 
     if request.method == "POST":
-        percentage_score = process_quiz_submission(request, quiz)
+        (percentage_score, questions_stats) = process_quiz_submission(request, quiz)
         form_submitted = True
 
     return render(
@@ -352,6 +361,7 @@ def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
             "quiz": quiz,
             "form_submitted": form_submitted,
             "percentage_score": percentage_score,
+            "questions_stats": questions_stats,
         },
     )
 
