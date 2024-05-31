@@ -25,7 +25,7 @@ from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.utils import json_to_web_vtt
 from pod.main.views import in_maintenance
 from pod.podfile.models import UserFolder
-from pod.quiz.views import edit_quiz, import_quiz
+from pod.quiz.utils import import_quiz
 from pod.video.models import Video, Discipline
 from pod.video_encode_transcript.transcript import saveVTT
 
@@ -409,15 +409,16 @@ def enhance_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
 
             questions_dict = {"multiple_choice": multiple_choice_questions_json}
 
-            import_quiz(request, video.slug, json.dumps(questions_dict))
+            import_quiz(video, json.dumps(questions_dict))
 
             messages.add_message(
                 request,
                 messages.SUCCESS,
                 _("Quiz successfully imported."),
             )
-
-            return edit_quiz(request=request, video_slug=video_slug)
+            return redirect(
+                reverse("quiz:edit_quiz", args=[video.slug])
+            )
 
     return redirect(reverse("video:video", args=[video.slug]))
 
