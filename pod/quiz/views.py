@@ -91,12 +91,14 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
         existing_quiz (Quiz): The existing quiz instance.
         question_formset: The formset containing updated question data.
     """
-    question_index = 0
     existing_questions = existing_quiz.get_questions()
+    existing_question_dict = {q.id: q for q in existing_questions}
 
-    for question_form, existing_question in zip(question_formset, existing_questions):
+    for question_form in question_formset:
+        question_id = question_form.cleaned_data.get("id")
         if question_form.cleaned_data.get("DELETE"):
-            existing_questions[question_index].delete()
+            if question_id in existing_question_dict:
+                existing_question_dict[question_id].delete()
         else:
             question_type = question_form.cleaned_data.get("type")
             title = question_form.cleaned_data["title"]
@@ -104,7 +106,8 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
             start_timestamp = question_form.cleaned_data["start_timestamp"]
             end_timestamp = question_form.cleaned_data["end_timestamp"]
 
-            if existing_questions[question_index]:
+            if question_id in existing_question_dict:
+                existing_question = existing_question_dict[question_id]
                 if question_type in {"short_answer", "long_answer"}:
                     existing_question.answer = question_form.cleaned_data[question_type]
                 elif question_type in {"single_choice", "multiple_choice"}:
@@ -117,7 +120,6 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
 
                 existing_question.save()
             else:
-                # Fix this line. With zip method, when a new question is added, this one is skipped. So this condition is always skipped.
                 create_question(
                     question_type=question_type,
                     quiz=existing_quiz,
@@ -127,8 +129,6 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
                     end_timestamp=end_timestamp,
                     question_data=question_form.cleaned_data[question_type],
                 )
-
-        question_index += 1
 
 
 def handle_post_request_for_create_or_edit_quiz(
