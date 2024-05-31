@@ -400,7 +400,7 @@ msgid ""
 "video data will also be deleted from Aristote AI."
 msgstr ""
 "Pour supprimer cette amélioration, veuillez cocher la case et cliquer sur "
-"confirmer. Les données de la vidéo seront également supprimé sur l'IA "
+"confirmer. Les données de la vidéo seront également supprimées sur l'IA "
 "Aristote."
 
 #: pod/ai_enhancement/utils.py pod/live/templates/live/direct.html
