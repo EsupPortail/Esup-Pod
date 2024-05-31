@@ -21,6 +21,14 @@ document.addEventListener("DOMContentLoaded", function () {
     addEventListenerQuestionType(questionTypeEl);
   }
 
+  for (let deleteInput of document.querySelectorAll('label[for*="-DELETE"]')) {
+    deleteInput.parentElement.classList.add('d-none');
+  }
+
+      const deleteInput = document.getElementById(`id_questions-${questionFormToDelete.getAttribute("data-question-index")}-DELETE`)
+    deleteInput.checked = true;
+    questionFormToDelete.classList.add('d-none');
+
   /**
    * Retrieves question data from the initial data based on the provided question form.
    * @param {HTMLElement} questionForm - The HTML form element representing a question.
