@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-30 13:49+0000\n"
+"POT-Creation-Date: 2024-06-03 14:00+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -247,12 +247,12 @@ msgid "Video name: %(video.title)s"
 msgstr "Nom de la vidéo : %(video.title)s"
 
 #: pod/ai_enhancement/templates/choose_video_element.html
-msgid "Go to subtitle part"
-msgstr "Aller à la partie sous-titres"
+msgid "Import subtitle"
+msgstr "Importer les sous-titres"
 
 #: pod/ai_enhancement/templates/choose_video_element.html
-msgid "Go to quiz part"
-msgstr "Aller à la partie quiz"
+msgid "Import the quiz"
+msgstr "Importer le quiz"
 
 #: pod/ai_enhancement/templates/choose_video_element.html
 msgid "Remove this enhancement"
@@ -2170,6 +2170,7 @@ msgid "To create a quiz for this video."
 msgstr "Pour créer un quiz pour cette vidéo."
 
 #: pod/completion/templates/video_completion.html
+#: pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Delete your quiz"
 msgstr "Supprimez votre quiz"
 
@@ -8161,10 +8162,6 @@ msgstr "Vous ne pouvez pas éditer ce quiz."
 msgid "Quiz edition for the video “%s”"
 msgstr "Modification du quiz pour la vidéo « %s »"
 
-#: pod/quiz/views.py
-msgid "You cannot import a quiz for this video."
-msgstr "Vous ne pouvez pas importer de quiz pour cette vidéo."
-
 #: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
 msgstr ""
@@ -10863,35 +10860,3 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#~ msgid "Completion video"
-#~ msgstr "Complétion de la vidéo"
-
-#~ msgid "Display “Contributor(s)” section"
-#~ msgstr "Afficher la section « Contributeur(s) »"
-
-#~ msgid "Display “Subtitle(s) and Caption(s)” section"
-#~ msgstr "Afficher la section « Sous-titre(s) et Légende(s) »"
-
-#~ msgid "Display “Additional resource(s)” section"
-#~ msgstr "Afficher la section « Document(s) complémentaire(s) »"
-
-#~ msgid "Display “Overlay(s)” section"
-#~ msgstr "Afficher la section « Superposition(s) »"
-
-#~ msgid "Display “quizzes” section"
-#~ msgstr "Afficher la section « quiz »"
-
-#~ msgid "Please enter a text."
-#~ msgstr "Veuillez entrer un texte."
-
-#~ msgid "Please enter a model type."
-#~ msgstr "Veuillez entrer un type."
-
-#~ msgid ""
-#~ "For your information, below is the list of archived videos that have been "
-#~ "packaged in your ARCHIVE_ROOT folder, and definitely deleted from %s."
-#~ msgstr ""
-#~ "Pour votre information, voici la liste des vidéos archivées qui ont été "
-#~ "placées dans votre dossier ARCHIVE_ROOT, et définitivement supprimées de "
-#~ "%s."

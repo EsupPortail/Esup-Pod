@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-30 13:49+0000\n"
+"POT-Creation-Date: 2024-06-03 14:00+0200\n"
 "PO-Revision-Date: 2024-05-15 09:01+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -246,11 +246,11 @@ msgid "Video name: %(video.title)s"
 msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
-msgid "Go to subtitle part"
+msgid "Import subtitle"
 msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
-msgid "Go to quiz part"
+msgid "Import the quiz"
 msgstr ""
 
 #: pod/ai_enhancement/templates/choose_video_element.html
@@ -2090,6 +2090,7 @@ msgid "To create a quiz for this video."
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
+#: pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Delete your quiz"
 msgstr ""
 
@@ -7668,10 +7669,6 @@ msgstr ""
 #: pod/quiz/views.py
 #, python-format
 msgid "Quiz edition for the video “%s”"
-msgstr ""
-
-#: pod/quiz/views.py
-msgid "You cannot import a quiz for this video."
 msgstr ""
 
 #: pod/recorder/admin.py

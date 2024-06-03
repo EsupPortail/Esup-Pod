@@ -36,12 +36,12 @@
   {{ page_title }}
   <span>
     <a href="{% url 'ai_enhancement:enhance_subtitles' video_slug=video.slug %}" class="btn btn-primary btn-sm m-2">
-      <i class="bi bi-file-text" aria-hidden="true"></i>&nbsp;{% trans "Go to subtitle part" %}
+      <i class="bi bi-file-text" aria-hidden="true"></i>&nbsp;{% trans "Import subtitle" %}
     </a>
   </span>
   <span>
     <a href="{% url 'ai_enhancement:enhance_quiz' video_slug=video.slug %}" class="btn btn-primary btn-sm m-2">
-      <i class="bi bi-patch-question" aria-hidden="true"></i>&nbsp;{% trans "Go to quiz part" %}
+      <i class="bi bi-patch-question" aria-hidden="true"></i>&nbsp;{% trans "Import the quiz" %}
     </a>
   </span>
   <span>
