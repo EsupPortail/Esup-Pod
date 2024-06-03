@@ -52,7 +52,7 @@ def create_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
     if get_video_quiz(video):
         return redirect(reverse("quiz:edit_quiz", kwargs={"video_slug": video.slug}))
 
-    question_formset_factory = formset_factory(QuestionForm, extra=2)
+    question_formset_factory = formset_factory(QuestionForm, extra=1)
     if not (
         request.user.is_superuser or request.user.is_staff or request.user == video.owner
     ):

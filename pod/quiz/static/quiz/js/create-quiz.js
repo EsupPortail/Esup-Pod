@@ -148,12 +148,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const questionFormToDelete = event.target.closest(".question-form");
 
     if (questionFormToDelete) {
-      const deleteInput = document.getElementById(`id_questions-${questionFormToDelete.getAttribute("data-question-index")}-DELETE`)
-      deleteInput.checked = true;
-      questionFormToDelete.classList.add('d-none');
-
-      // const currentQuestionForms = document.querySelectorAll(".question-form");
-      // totalNewForms.setAttribute("value", currentQuestionForms.length - 1);
+      
+      const deleteInput = document.getElementById(`id_questions-${questionFormToDelete.getAttribute("data-question-index")}-DELETE`);
+      if (deleteInput) {
+        deleteInput.checked = true;
+        questionFormToDelete.classList.add('d-none');
+      } else {
+        questionFormToDelete.remove();
+        const currentQuestionForms = document.querySelectorAll(".question-form");
+        totalNewForms.setAttribute("value", currentQuestionForms.length - 1);
+      }
+      
     }
   }
 
