@@ -62,8 +62,12 @@ def create_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         raise PermissionDenied
 
     if request.method == "POST":
+        question_formset = question_formset_factory(
+            request.POST,
+            prefix="questions",
+        )
         return handle_post_request_for_create_or_edit_quiz(
-            request, video, question_formset_factory, action="create"
+            request, video, question_formset, action="create"
         )
     else:
         quiz_form = QuizForm()
