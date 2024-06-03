@@ -996,6 +996,15 @@ Mettre `USE_DRESSING` à True pour activer cette application.<br>
 ### Configuration de l’application enrichment
 
 
+### Configuration de l’application Intervenant
+
+Application Intervenant permettant d'ajouter des intervenants à la vidéo.<br>
+Mettre `USE_SPEAKER` à True pour activer cette application.<br>
+
+* `USE_SPEAKER`
+  > valeur par défaut : `False`
+  >> Activation de l’application Intervenant<br>
+
 ### Configuration de l’application d’import vidéo
 
 Application Import_video permettant d’importer des vidéos externes dans Pod.<br>
