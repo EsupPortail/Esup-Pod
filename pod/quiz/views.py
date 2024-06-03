@@ -92,6 +92,8 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
     for question_form in question_formset:
         question_type = question_form.cleaned_data.get("type")
         question_id = question_form.cleaned_data.get("question_id")
+        if question_id is None and question_form.cleaned_data.get("DELETE"):
+            continue  # to prevent empty question not filled
         title = question_form.cleaned_data["title"]
         explanation = question_form.cleaned_data["explanation"]
         start_timestamp = question_form.cleaned_data["start_timestamp"]
@@ -495,8 +497,6 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         return redirect(reverse("maintenance"))
 
     video = get_object_or_404(Video, slug=video_slug)
-    question_formset_factory = formset_factory(QuestionForm, extra=0, can_delete=True)
-
     if not (
         request.user.is_superuser or request.user.is_staff or request.user == video.owner
     ):
@@ -505,6 +505,8 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
 
     quiz = get_object_or_404(Quiz, video=video)
     existing_questions = quiz.get_questions()
+    extra = 2 if existing_questions == [] else 0
+    question_formset_factory = formset_factory(QuestionForm, extra=extra, can_delete=True)
     if request.method == "POST":
         question_formset = question_formset_factory(
             request.POST,
@@ -531,9 +533,9 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
                 "show_correct_answers": quiz.show_correct_answers,
             }
         )
-
-        existing_questions = quiz.get_questions()
-        initial_data = get_initial_data(existing_questions=existing_questions)
+        initial_data = None
+        if existing_questions != []:
+            initial_data = get_initial_data(existing_questions=existing_questions)
 
         question_formset = question_formset_factory(
             prefix="questions",
@@ -573,6 +575,7 @@ def get_initial_data(existing_questions=None) -> str:
     Returns:
         str: JSON-encoded initial data for JavaScript fields.
     """
+    initial_data = {}
     if existing_questions:
         initial_data = {
             "existing_questions": [
