@@ -76,7 +76,10 @@ class QuestionForm(forms.Form):
         required=True,
         help_text=_("Please choose the question type."),
     )
-
+    question_id = forms.IntegerField(
+        widget=forms.HiddenInput(),
+        required=False,
+    )
     single_choice = forms.CharField(
         widget=forms.HiddenInput(attrs={"class": "hidden-single-choice-field"}),
         required=False,

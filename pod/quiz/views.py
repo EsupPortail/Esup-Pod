@@ -89,48 +89,41 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
         existing_quiz (Quiz): The existing quiz instance.
         question_formset: The formset containing updated question data.
     """
-    existing_questions = existing_quiz.get_questions()
-    existing_question_dict = {q.id: q for q in existing_questions}
-
     for question_form in question_formset:
-        question_id = question_form.cleaned_data.get("id")
-        if question_form.cleaned_data.get("DELETE"):
-            if question_id in existing_question_dict:
-                existing_question_dict[question_id].delete()
-        else:
-            question_type = question_form.cleaned_data.get("type")
-            title = question_form.cleaned_data["title"]
-            explanation = question_form.cleaned_data["explanation"]
-            start_timestamp = question_form.cleaned_data["start_timestamp"]
-            end_timestamp = question_form.cleaned_data["end_timestamp"]
-
-            if question_id in existing_question_dict:
-                existing_question = existing_question_dict[question_id]
-                if question_type in {"short_answer", "long_answer"}:
-                    existing_question.answer = question_form.cleaned_data[question_type]
-                elif question_type in {"single_choice", "multiple_choice"}:
-                    existing_question.choices = question_form.cleaned_data[question_type]
-
+        question_type = question_form.cleaned_data.get("type")
+        question_id = question_form.cleaned_data.get("question_id")
+        title = question_form.cleaned_data["title"]
+        explanation = question_form.cleaned_data["explanation"]
+        start_timestamp = question_form.cleaned_data["start_timestamp"]
+        end_timestamp = question_form.cleaned_data["end_timestamp"]
+        if question_id:
+            existing_question = get_question(question_type, question_id, existing_quiz)
+            if question_form.cleaned_data.get("DELETE"):
+                existing_question.delete()
+            else:
                 existing_question.title = title
                 existing_question.explanation = explanation
                 existing_question.start_timestamp = start_timestamp
                 existing_question.end_timestamp = end_timestamp
-
+                if question_type in {"short_answer", "long_answer"}:
+                    existing_question.answer = question_form.cleaned_data[question_type]
+                elif question_type in {"single_choice", "multiple_choice"}:
+                    existing_question.choices = question_form.cleaned_data[question_type]
                 existing_question.save()
-            else:
-                create_question(
-                    question_type=question_type,
-                    quiz=existing_quiz,
-                    title=title,
-                    explanation=explanation,
-                    start_timestamp=start_timestamp,
-                    end_timestamp=end_timestamp,
-                    question_data=question_form.cleaned_data[question_type],
-                )
+        else:
+            create_question(
+                question_type=question_type,
+                quiz=existing_quiz,
+                title=title,
+                explanation=explanation,
+                start_timestamp=start_timestamp,
+                end_timestamp=end_timestamp,
+                question_data=question_form.cleaned_data[question_type],
+            )
 
 
 def handle_post_request_for_create_or_edit_quiz(
-    request: WSGIRequest, video: Video, question_formset_factory, action: str
+    request: WSGIRequest, video: Video, question_formset, action: str
 ) -> HttpResponse:
     """
     Handles the POST request for creating or editing a quiz associated with a video.
@@ -138,14 +131,13 @@ def handle_post_request_for_create_or_edit_quiz(
     Args:
         request (WSGIRequest): The HTTP request.
         video (Video): The associated video instance.
-        question_formset_factory: The formset factory for handling question forms.
+        question_formset: The formset factory for handling question forms.
         action (str): The action to perform - "create" or "edit".
 
     Returns:
         HttpResponse: The HTTP response for rendering the appropriate template.
     """
     quiz_form = QuizForm(request.POST)
-    question_formset = question_formset_factory(request.POST, prefix="questions")
     if quiz_form.is_valid() and question_formset.is_valid():
         if action == "create":
             new_quiz = create_or_edit_quiz_instance(video, quiz_form, action)
@@ -163,7 +155,9 @@ def handle_post_request_for_create_or_edit_quiz(
                 messages.SUCCESS,
                 _("Quiz successfully updated."),
             )
-
+        return redirect(
+            reverse("quiz:edit_quiz", args=[video.slug])
+        )
         # return HttpResponseRedirect(reverse("video:video", kwargs={"slug": video.slug}))
     else:
         messages.add_message(
@@ -182,6 +176,35 @@ def handle_post_request_for_create_or_edit_quiz(
             "video": video,
         },
     )
+
+
+def get_question(
+    question_type: str,
+    question_id: int,
+    quiz: Quiz
+):
+    question = None
+    if question_type == "short_answer":
+        question = ShortAnswerQuestion.objects.get(
+            quiz=quiz,
+            id=question_id,
+        )
+    elif question_type == "long_answer":
+        question = LongAnswerQuestion.objects.get(
+            quiz=quiz,
+            id=question_id,
+        )
+    elif question_type == "single_choice":
+        question = SingleChoiceQuestion.objects.get(
+            quiz=quiz,
+            id=question_id,
+        )
+    elif question_type == "multiple_choice":
+        question = MultipleChoiceQuestion.objects.get(
+            quiz=quiz,
+            id=question_id,
+        )
+    return question
 
 
 def create_or_edit_quiz_instance(
@@ -481,10 +504,25 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         raise PermissionDenied
 
     quiz = get_object_or_404(Quiz, video=video)
-
+    existing_questions = quiz.get_questions()
     if request.method == "POST":
+        question_formset = question_formset_factory(
+            request.POST,
+            prefix="questions",
+            initial=[
+                {
+                    "type": question.get_type(),
+                    "title": question.title,
+                    "explanation": question.explanation,
+                    "start_timestamp": question.start_timestamp,
+                    "end_timestamp": question.end_timestamp,
+                    "question_id": question.id
+                }
+                for question in existing_questions
+            ],
+        )
         return handle_post_request_for_create_or_edit_quiz(
-            request, video, question_formset_factory, action="edit"
+            request, video, question_formset, action="edit"
         )
     else:
         quiz_form = QuizForm(
@@ -506,6 +544,7 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
                     "explanation": question.explanation,
                     "start_timestamp": question.start_timestamp,
                     "end_timestamp": question.end_timestamp,
+                    "question_id": question.id
                 }
                 for question in existing_questions
             ],
