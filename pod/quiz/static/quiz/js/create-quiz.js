@@ -21,6 +21,10 @@ document.addEventListener("DOMContentLoaded", function () {
     addEventListenerQuestionType(questionTypeEl);
   }
 
+  for (let deleteInput of document.querySelectorAll('label[for*="-DELETE"]')) {
+    deleteInput.parentElement.classList.add('d-none');
+  }
+
   /**
    * Retrieves question data from the initial data based on the provided question form.
    * @param {HTMLElement} questionForm - The HTML form element representing a question.
@@ -144,10 +148,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const questionFormToDelete = event.target.closest(".question-form");
 
     if (questionFormToDelete) {
-      questionFormToDelete.remove();
-
-      const currentQuestionForms = document.querySelectorAll(".question-form");
-      totalNewForms.setAttribute("value", currentQuestionForms.length - 1);
+      
+      const deleteInput = document.getElementById(`id_questions-${questionFormToDelete.getAttribute("data-question-index")}-DELETE`);
+      if (deleteInput) {
+        deleteInput.checked = true;
+        questionFormToDelete.classList.add('d-none');
+      } else {
+        questionFormToDelete.remove();
+        const currentQuestionForms = document.querySelectorAll(".question-form");
+        totalNewForms.setAttribute("value", currentQuestionForms.length - 1);
+      }
+      
     }
   }
 
@@ -273,6 +284,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const fieldset = document.createElement("fieldset");
     const legend = document.createElement("legend");
+    legend.classList.add("col-form-label");
     legend.textContent = gettext("Your choices");
     fieldset.appendChild(legend);
 
@@ -331,6 +343,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "btn",
         "btn-link",
         "pod-btn-social",
+        "py-0",
       );
       deleteButton.addEventListener("click", function () {
         choiceDiv.remove();
@@ -344,7 +357,6 @@ document.addEventListener("DOMContentLoaded", function () {
       textInput.classList.add("form-control", "ms-2");
       if (choice) {
         textInput.value = choice[0];
-        console.log(input);
         if (choice[1]) {
           input.checked = true;
         }
@@ -371,6 +383,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const fieldset = document.createElement("fieldset");
     const legend = document.createElement("legend");
+    legend.classList.add("col-form-label");
     legend.textContent = gettext("Your choices");
     fieldset.appendChild(legend);
 
@@ -466,6 +479,8 @@ document.addEventListener("DOMContentLoaded", function () {
         "btn",
         "btn-outline-secondary",
         "btn-sm",
+        "ms-2",
+        "mb-2",
       );
       buttonElement.textContent = gettext("Get time from the player");
 
@@ -497,7 +512,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       let questionFormsList = document.querySelectorAll(".question-form");
       for (questionForm of questionFormsList) {
-        console.log(questionForm);
         const questionType = questionForm.querySelector(
           ".question-select-type",
         ).value;
@@ -520,6 +534,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
       let form = document.getElementById("quiz-form");
+      console.log(form);
       form.submit();
     });
   }

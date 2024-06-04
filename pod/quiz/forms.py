@@ -76,7 +76,10 @@ class QuestionForm(forms.Form):
         required=True,
         help_text=_("Please choose the question type."),
     )
-
+    question_id = forms.IntegerField(
+        widget=forms.HiddenInput(),
+        required=False,
+    )
     single_choice = forms.CharField(
         widget=forms.HiddenInput(attrs={"class": "hidden-single-choice-field"}),
         required=False,
@@ -188,7 +191,7 @@ class SingleChoiceQuestionForm(forms.ModelForm):
     selected_choice = forms.CharField(
         label=_("Single choice question"),
         widget=forms.RadioSelect(),
-        required=False,
+        required=True,
         help_text=_("Please choose one answer."),
     )
 
@@ -207,9 +210,12 @@ class SingleChoiceQuestionForm(forms.ModelForm):
             choices_dict = {}
 
         choices_list = [(choice, choice) for choice in choices_dict.keys()]
-
         self.fields["selected_choice"].widget.choices = choices_list
         self.fields["selected_choice"].widget.attrs["class"] = "list-unstyled ps-2"
+
+    def clean_selected_choice(self):
+        data = self.cleaned_data["selected_choice"]
+        return data
 
 
 class MultipleChoiceQuestionForm(forms.ModelForm):
@@ -218,7 +224,7 @@ class MultipleChoiceQuestionForm(forms.ModelForm):
     selected_choice = forms.CharField(
         label=_("Multiple choice question"),
         widget=forms.CheckboxSelectMultiple(),
-        required=False,
+        required=True,
         help_text=_("Please check any answers you want."),
     )
 
@@ -240,6 +246,10 @@ class MultipleChoiceQuestionForm(forms.ModelForm):
 
         self.fields["selected_choice"].widget.choices = choices_list
         self.fields["selected_choice"].widget.attrs["class"] = "list-unstyled ps-2"
+
+    def clean_selected_choice(self):
+        data = self.cleaned_data["selected_choice"]
+        return data
 
 
 class ShortAnswerQuestionForm(forms.ModelForm):

@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-27 09:44+0000\n"
+"POT-Creation-Date: 2024-06-04 13:25+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
+"Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -15,6 +15,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.4.4\n"
+
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "No discipline"
+msgstr "Aucune discipline"
+
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "No description"
+msgstr "Aucune description"
+
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "An error has occurred. Please try later."
+msgstr "Une erreur est survenue. Merci d'essayer plus tard."
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
 #: pod/quiz/static/quiz/js/create-quiz.js
@@ -71,6 +83,10 @@ msgstr "Veuillez entrer un correct temps de début compris entre 0 et"
 #: pod/chapter/static/js/videojs-chapters.js
 msgid "Chapters"
 msgstr "Chapitres"
+
+#: pod/completion/static/js/caption_maker.js
+msgid "You will soon be redirected."
+msgstr "Vous serez bientôt redirigé."
 
 #: pod/completion/static/js/caption_maker.js
 msgid ""
@@ -901,7 +917,7 @@ msgstr "Supprimer la catégorie"
 
 #: pod/video/static/js/video_category.js
 msgid "Success!"
-msgstr "Succès !"
+msgstr "Succès !"
 
 #: pod/video/static/js/video_category.js
 msgid "Error…"
@@ -988,21 +1004,3 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
-
-#~ msgid "Display"
-#~ msgstr "Afficher"
-
-#~ msgid "section"
-#~ msgstr "section"
-
-#~ msgid "Change your picture"
-#~ msgstr "Changer votre image"
-
-#~ msgid "Add your picture"
-#~ msgstr "Ajouter votre image"
-
-#~ msgid "The chapter"
-#~ msgstr "Le chapitre"
-
-#~ msgid "starts at the same time."
-#~ msgstr "commencent au même moment."

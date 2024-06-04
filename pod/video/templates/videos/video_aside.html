@@ -1,23 +1,35 @@
 {% load i18n %}
+{% load video_quiz %}
 
 {% if playlist_in_get %}
   {% include 'playlist/playlist_player.html' %}
 {% endif %}
+
 {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video or perms.enrichment.edit_enrichment or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay or perms.chapter.change_chapter or perms.video.delete_video %}
-<div class="card" id="card-manage-video">
-  <h2 class="card-header card-title pod-card__title h4">
-    <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage video"%}
-  </h2>
-  <div class="card-body card-text text-center">
-    {% include "videos/link_video.html" with hide_favorite_link=True %}
+  <div class="card" id="card-manage-video">
+    <h2 class="card-header card-title pod-card__title h4">
+      <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage video"%}
+    </h2>
+    <div class="card-body card-text text-center">
+      {% include "videos/link_video.html" with hide_favorite_link=True %}
+    </div>
   </div>
-</div>
+{% endif %}
+
+{% if USE_QUIZ %}
+  {% is_quiz_accessible video as is_quiz_accessible %}
+  {% if is_quiz_accessible or video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all %}
+    <div class="card" id="card-manage-quiz">
+      {% include "quiz/video_quiz_aside.html" %}
+    </div>
+  {% endif %}
 {% endif %}
 
 {# Do not display notes if video is restricted. #}
 {% if not form %}
-<div class="card" id="card-takenote">
-  {% include 'videos/video_notes.html' %}
-</div>
+  <div class="card" id="card-takenote">
+    {% include 'videos/video_notes.html' %}
+  </div>
 {% endif %}
+
 {% include 'aside.html' %}
