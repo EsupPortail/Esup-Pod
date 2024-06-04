@@ -61,7 +61,7 @@ def get_question_color(is_submitted: bool, score: int = None) -> str:
     Returns:
         str: The corresponding bootstrap color.
     """
-    if is_submitted:
+    if is_submitted and score:
         if score <= 0.5:
             return "danger"
         elif score <= 0.75:

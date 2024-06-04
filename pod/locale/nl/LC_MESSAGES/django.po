@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-03 14:00+0200\n"
+"POT-Creation-Date: 2024-06-04 14:39+0200\n"
 "PO-Revision-Date: 2024-05-15 09:01+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -7595,6 +7595,15 @@ msgid "It's not terrible, but there's room for improvement!"
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
+msgid "Error found in form"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+#, python-format
+msgid "For the question \"%(title)s\", %(error)s."
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
 msgid "Right answer:"
 msgstr ""
 
@@ -7651,6 +7660,12 @@ msgstr ""
 #, python-brace-format
 msgid "Quiz edition for the video: {video.title}"
 msgstr ""
+
+#: pod/quiz/views.py
+#, fuzzy
+#| msgid "Please enter a title."
+msgid "You have to choose at least one answer"
+msgstr "Voer een titel in."
 
 #: pod/quiz/views.py
 #, python-format

@@ -22,7 +22,7 @@
 
 
 {% block page_content %}
-  {% if form_submitted %}
+  {% if form_submitted and questions_form_errors.items|length == 0 %}
     {% if percentage_score >= 75 %}
       <div class="alert alert-success" role="alert">
         <p>{% trans "Your score is:" %} {{ percentage_score|floatformat:2 }}%</p>
@@ -39,6 +39,13 @@
         <p class="m-0">{% trans "It's not terrible, but there's room for improvement!" %}</p>
       </div>
     {% endif %}
+  {% elif questions_form_errors %}
+  <div class="alert alert-danger" role="alert">
+    <p>{% trans "Error found in form" %}</p>
+    {% for question_title, question_error in questions_form_errors.items %}
+      <p>{% blocktranslate with title=question_title error=question_error|lower %}For the question "{{ title }}", {{ error }}.{% endblocktranslate %}</p>
+    {% endfor %}
+  </div>
   {% endif %}
 
   <hr>
@@ -47,7 +54,7 @@
     {% csrf_token %}
     <div class="d-flex flex-column gap-4">
       {% for question in quiz.get_questions %}
-        <fieldset class="border border-2 border-{% get_question_color form_submitted questions_stats|dict_get:question.id %} rounded-3 p-4 question-container">
+        <fieldset class="border border-2 border-{% get_question_color form_submitted questions_stats|dict_get:question.id %} rounded-3 p-4 question-container" data-questionid="question_{{question.id}}">
           <legend>
             <i class="bi bi-patch-question" aria-hidden='true'></i>&nbsp;{{ question.title }}
           </legend>
@@ -58,7 +65,7 @@
                   <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
                     {{ field.errors }}
                     {% if "form-check-input" in field.field.widget.attrs.class %}
-                      <div class="form-check">
+                      <div class="form-check"> 
                         {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
                       </div>
                     {% else %}
@@ -130,6 +137,10 @@
   {% include "videos/video-script.html" %}
 
   {% if form_submitted %}
+    {{ questions_answers|json_script:"questions_answers" }}
+    <script>
+      const questions_answers = JSON.parse(document.getElementById('questions_answers').textContent);
+    </script>
     <script src="{% static 'quiz/js/video-quiz-submit.js' %}?ver={{VERSION}}"></script>
   {% endif %}
 {% endblock more_script %}

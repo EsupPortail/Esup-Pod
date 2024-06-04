@@ -374,16 +374,24 @@ def process_quiz_submission(request: WSGIRequest, quiz: Quiz) -> float:
     total_questions = len(quiz.get_questions())
     score = 0.0
     questions_stats = {}
-
+    questions_answers = {}
+    questions_form_errors = {}
     for question in quiz.get_questions():
         form = question.get_question_form(request.POST)
         if form.is_valid():
             question_score = calculate_score(question, form)
             score += question_score
-
             questions_stats[question.id] = question_score
+            if question.get_type() in ["single_choice", "multiple_choice"]:
+                user_answer = form.cleaned_data["selected_choice"]
+                if question.get_type() == "multiple_choice":
+                    user_answer = ast.literal_eval(user_answer)
+                correct_answer = question.get_answer()
+                questions_answers["question_%s" % question.id] = [user_answer, correct_answer]
+        else:
+            questions_form_errors[question.title] = _('You have to choose at least one answer')
     percentage_score = (score / total_questions) * 100
-    return percentage_score, questions_stats
+    return percentage_score, questions_stats, questions_answers, questions_form_errors
 
 
 def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
@@ -405,12 +413,13 @@ def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
     form_submitted = False
     percentage_score = None
     questions_stats = {}
-
+    questions_answers = {}
+    questions_form_errors = {}
     if quiz.connected_user_only and not request.user.is_authenticated:
         return redirect("%s?referrer=%s" % (settings.LOGIN_URL, request.get_full_path()))
 
     if request.method == "POST":
-        (percentage_score, questions_stats) = process_quiz_submission(request, quiz)
+        (percentage_score, questions_stats, questions_answers, questions_form_errors) = process_quiz_submission(request, quiz)
         form_submitted = True
 
     return render(
@@ -423,6 +432,8 @@ def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
             "form_submitted": form_submitted,
             "percentage_score": percentage_score,
             "questions_stats": questions_stats,
+            "questions_answers": questions_answers,
+            "questions_form_errors": questions_form_errors,
         },
     )
 
