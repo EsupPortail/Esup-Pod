@@ -90,7 +90,7 @@ class QuizCreateViewsTest(TestCase):
         self.assertIn("quiz_form", response.context)
         self.assertIsInstance(response.context["quiz_form"], QuizForm)
         self.assertIn("question_formset", response.context)
-        self.assertEqual(response.context["question_formset"].extra, 2)
+        self.assertEqual(response.context["question_formset"].extra, 1)
         self.assertEqual(response.context["question_formset"].prefix, "questions")
 
         print(" ---> test_get_request_for_create_quiz_view ok")
