@@ -96,38 +96,43 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
     for question_form in question_formset:
         question_type = question_form.cleaned_data.get("type")
         question_id = question_form.cleaned_data.get("question_id")
-        if question_id is None and question_form.cleaned_data.get("DELETE"):
-            continue  # to prevent empty question not filled
-        title = question_form.cleaned_data["title"]
-        explanation = question_form.cleaned_data["explanation"]
-        start_timestamp = question_form.cleaned_data["start_timestamp"]
-        end_timestamp = question_form.cleaned_data["end_timestamp"]
         if question_id:
             existing_question = get_question(question_type, question_id, existing_quiz)
-            if not existing_question:
-                continue
-            if question_form.cleaned_data.get("DELETE"):
-                existing_question.delete()
-            else:
-                existing_question.title = title
-                existing_question.explanation = explanation
-                existing_question.start_timestamp = start_timestamp
-                existing_question.end_timestamp = end_timestamp
-                if question_type in {"short_answer", "long_answer"}:
-                    existing_question.answer = question_form.cleaned_data[question_type]
-                elif question_type in {"single_choice", "multiple_choice"}:
-                    existing_question.choices = question_form.cleaned_data[question_type]
-                existing_question.save()
-        else:
+            if existing_question:
+                update_question(existing_question)
+        elif not question_form.cleaned_data.get("DELETE"):
             create_question(
                 question_type=question_type,
                 quiz=existing_quiz,
-                title=title,
-                explanation=explanation,
-                start_timestamp=start_timestamp,
-                end_timestamp=end_timestamp,
+                title=question_form.cleaned_data["title"],
+                explanation=question_form.cleaned_data["explanation"],
+                start_timestamp=question_form.cleaned_data["start_timestamp"],
+                end_timestamp=question_form.cleaned_data["end_timestamp"],
                 question_data=question_form.cleaned_data[question_type],
             )
+
+
+def update_question(existing_question: Question, cleaned_data) -> None:
+    """
+    Update existing question in a given quiz based on the provided form data.
+
+    Args:
+        existing_question (Question): The existing quiz instance.
+        cleaned_data: The updated question data.
+    """
+    if cleaned_data.get("DELETE"):
+        existing_question.delete()
+    else:
+        question_type = cleaned_data.get("type")
+        existing_question.title = cleaned_data["title"]
+        existing_question.explanation = cleaned_data["explanation"]
+        existing_question.start_timestamp = cleaned_data["start_timestamp"]
+        existing_question.end_timestamp = cleaned_data["end_timestamp"]
+        if question_type in {"short_answer", "long_answer"}:
+            existing_question.answer = cleaned_data[question_type]
+        elif question_type in {"single_choice", "multiple_choice"}:
+            existing_question.choices = cleaned_data[question_type]
+        existing_question.save()
 
 
 def handle_post_request_for_create_or_edit_quiz(
@@ -625,6 +630,7 @@ def get_initial_data(existing_questions=None) -> str:
     """
     initial_data = {}
     if existing_questions:
+        print(existing_questions)
         initial_data = {
             "existing_questions": [
                 {
