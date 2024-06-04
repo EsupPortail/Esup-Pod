@@ -1,0 +1,25 @@
+{% load i18n %}
+{% load video_quiz %}
+
+{% is_quiz_exists video as is_quiz_exists %}
+<div class="mb-2">
+  {% if is_quiz_exists %}
+    <a class="btn btn-primary" href="{% url 'quiz:edit_quiz' video_slug=video.slug %}">
+      <i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans 'Edit your quiz' %}
+    </a>
+    <div class="form-text">{% trans 'To edit your quiz for this video.' %}</div>
+  {% else %}
+    <a class="btn btn-primary" href="{% url 'quiz:add_quiz' video_slug=video.slug %}">
+      <i class="bi bi-plus" aria-hidden="true"></i>{% trans 'Create a quiz' %}
+    </a>
+    <div class="form-text">{% trans 'To create a quiz for this video.' %}</div>
+  {% endif %}
+</div>
+{% if is_quiz_exists %}
+  <div class="mb-2">
+    <a class="btn btn-danger" href="{% url 'quiz:remove_quiz' video_slug=video.slug %}">
+      <i class="bi bi-trash" aria-hidden="true"></i>{% trans 'Delete your quiz' %}
+    </a>
+    <div class="form-text">{% trans 'To delete your quiz for this video.' %}</div>
+  </div>
+{% endif %}

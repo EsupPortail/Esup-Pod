@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-04 13:24+0000\n"
-"PO-Revision-Date: 2024-05-15 09:01+0200\n"
+"POT-Creation-Date: 2024-06-04 14:16+0000\n"
+"PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -1294,7 +1294,6 @@ msgstr ""
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/playlist/templates/playlist/add_or_edit.html
-#: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/recorder/templates/recorder/add_recording.html
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/channel/form_theme.html
@@ -2067,35 +2066,8 @@ msgstr ""
 msgid "Add a new overlay"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html pod/quiz/models.py
-msgid "Quizzes"
-msgstr ""
-
 #: pod/completion/templates/video_completion.html
-#: pod/quiz/templates/quiz/video_quiz_aside.html
-msgid "Edit your quiz"
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
-msgid "To edit your quiz for this video."
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
-#: pod/quiz/templates/quiz/video_quiz_aside.html
-msgid "Create a quiz"
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
-msgid "To create a quiz for this video."
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
-#: pod/quiz/templates/quiz/video_quiz_aside.html
-msgid "Delete your quiz"
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
-msgid "To delete your quiz for this video."
+msgid "Quiz(zes)"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -2149,7 +2121,8 @@ msgid ""
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid ":"
+#, python-format
+msgid "%(name)s:"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -3254,15 +3227,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -6497,8 +6470,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
@@ -6512,8 +6485,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
@@ -7365,8 +7338,7 @@ msgid "Start timestamp"
 msgstr ""
 
 #: pod/quiz/forms.py pod/quiz/models.py
-msgid ""
-"Please choose the beginning time of the answer in the video (in seconds)."
+msgid "The start time of the answer in the video (in seconds)."
 msgstr ""
 
 #: pod/quiz/forms.py pod/quiz/models.py
@@ -7374,7 +7346,7 @@ msgid "End timestamp"
 msgstr ""
 
 #: pod/quiz/forms.py pod/quiz/models.py
-msgid "Please choose the end time of the answer in the video (in seconds)."
+msgid "The end time of the answer in the video (in seconds)."
 msgstr ""
 
 #: pod/quiz/forms.py
@@ -7444,15 +7416,19 @@ msgid "Write a long answer."
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Please choose a video associated with the quiz."
+msgid "Choose a video associated with the quiz."
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Please choose if this quiz is only for connected users or not."
+msgid "Choose if this quiz is only for connected users or not."
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Please choose if the correct answers will be displayed or not."
+msgid "Choose if the correct answers will be displayed or not."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Quizzes"
 msgstr ""
 
 #: pod/quiz/models.py
@@ -7460,7 +7436,7 @@ msgid "Quiz of video"
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Please choose a quiz associated with the question."
+msgid "Choose a quiz associated with the question."
 msgstr ""
 
 #: pod/quiz/models.py
@@ -7556,12 +7532,49 @@ msgid "Add a question"
 msgstr ""
 
 #: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Save and continue editing"
+msgstr ""
+
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Save and see"
+msgstr ""
+
+#: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Back to video"
 msgstr ""
 
 #: pod/quiz/templates/quiz/delete_quiz.html
 msgid "To delete the quiz, please check the box and click “Delete”."
+msgstr ""
+
+#: pod/quiz/templates/quiz/manage_quiz.html
+#: pod/quiz/templates/quiz/video_quiz_aside.html
+msgid "Edit your quiz"
+msgstr ""
+
+#: pod/quiz/templates/quiz/manage_quiz.html
+msgid "To edit your quiz for this video."
+msgstr ""
+
+#: pod/quiz/templates/quiz/manage_quiz.html
+#: pod/quiz/templates/quiz/video_quiz_aside.html
+msgid "Create a quiz"
+msgstr ""
+
+#: pod/quiz/templates/quiz/manage_quiz.html
+msgid "To create a quiz for this video."
+msgstr ""
+
+#: pod/quiz/templates/quiz/manage_quiz.html
+#: pod/quiz/templates/quiz/video_quiz_aside.html
+msgid "Delete your quiz"
+msgstr ""
+
+#: pod/quiz/templates/quiz/manage_quiz.html
+msgid "To delete your quiz for this video."
 msgstr ""
 
 #: pod/quiz/templates/quiz/question_form.html
@@ -7591,7 +7604,7 @@ msgid "Can do better."
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
-msgid "It's not terrible, but there's room for improvement!"
+msgid "It’s not terrible, but there’s room for improvement!"
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
@@ -7604,7 +7617,7 @@ msgid "For the question \"%(title)s\", %(error)s."
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
-msgid "Right answer:"
+msgid "Correct answer:"
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
@@ -7621,6 +7634,10 @@ msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Validate"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Manage quiz"
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz_aside.html
@@ -7649,7 +7666,15 @@ msgid "Quiz successfully created."
 msgstr ""
 
 #: pod/quiz/views.py
+msgid "Error during quiz creation."
+msgstr ""
+
+#: pod/quiz/views.py
 msgid "Quiz successfully updated."
+msgstr ""
+
+#: pod/quiz/views.py
+msgid "Error during quiz update."
 msgstr ""
 
 #: pod/quiz/views.py
@@ -7971,8 +7996,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -9535,14 +9560,6 @@ msgstr ""
 
 #: pod/video/templates/videos/video_edit.html
 msgid "The page will refresh after the upload completes."
-msgstr ""
-
-#: pod/video/templates/videos/video_edit.html
-msgid "Save and continue editing"
-msgstr ""
-
-#: pod/video/templates/videos/video_edit.html
-msgid "Save and see"
 msgstr ""
 
 #: pod/video/templates/videos/video_edit.html

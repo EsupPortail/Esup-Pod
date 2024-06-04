@@ -1244,8 +1244,7 @@ restricted_access();
         form.addEventListener(
           "submit",
           function (event) {
-            if (form.checkValidity() === false) {
-              form.scrollIntoView();
+            if (form.reportValidity() === false) {
               showalert(
                 gettext("There are errors in the form, please correct them."),
                 "alert-danger",

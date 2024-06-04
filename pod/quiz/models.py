@@ -22,17 +22,17 @@ class Quiz(models.Model):
         Video,
         verbose_name=_("Video"),
         on_delete=models.CASCADE,
-        help_text=_("Please choose a video associated with the quiz."),
+        help_text=_("Choose a video associated with the quiz."),
     )
     connected_user_only = models.BooleanField(
         verbose_name=_("Connected user only"),
         default=False,
-        help_text=_("Please choose if this quiz is only for connected users or not."),
+        help_text=_("Choose if this quiz is only for connected users or not."),
     )
     show_correct_answers = models.BooleanField(
         verbose_name=_("Show correct answers"),
         default=True,
-        help_text=_("Please choose if the correct answers will be displayed or not."),
+        help_text=_("Choose if the correct answers will be displayed or not."),
     )
 
     class Meta:
@@ -47,11 +47,11 @@ class Quiz(models.Model):
             ),
         ]
 
-    def __str__(self):
-        """String representation of the quiz."""
+    def __str__(self) -> str:
+        """Represent the quiz as string."""
         return _("Quiz of video") + " " + str(self.video)
 
-    def get_questions(self):
+    def get_questions(self) -> list:
         """
         Retrieve questions associated with the quiz.
 
@@ -79,7 +79,7 @@ class Question(models.Model):
         Quiz,
         verbose_name=_("Quiz"),
         on_delete=models.CASCADE,
-        help_text=_("Please choose a quiz associated with the question."),
+        help_text=_("Choose a quiz associated with the question."),
     )
     title = models.CharField(
         verbose_name=_("Title"),
@@ -96,14 +96,14 @@ class Question(models.Model):
         verbose_name=_("Start timestamp"),
         null=True,
         help_text=_(
-            "Please choose the beginning time of the answer in the video (in seconds)."
+            "The start time of the answer in the video (in seconds)."
         ),
     )
     end_timestamp = models.PositiveIntegerField(
         verbose_name=_("End timestamp"),
         null=True,
         help_text=_(
-            "Please choose the end time of the answer in the video (in seconds)."
+            "The end time of the answer in the video (in seconds)."
         ),
     )
 
@@ -120,7 +120,7 @@ class Question(models.Model):
             ),
         ]
 
-    def clean(self):
+    def clean(self) -> None:
         """Clean method for Question model."""
         super().clean()
 
@@ -138,8 +138,8 @@ class Question(models.Model):
                 _("End timestamp cannot be defined without a start timestamp.")
             )
 
-    def __str__(self):
-        """String representation of the question."""
+    def __str__(self) -> str:
+        """Represent the question as string."""
         return _("Question") + " " + self.title
 
     def get_question_form(self, data=None):
@@ -154,7 +154,7 @@ class Question(models.Model):
         """
         return "This method must be redefined in child class."
 
-    def get_answer(self):
+    def get_answer(self) -> None:
         """
         Get the answer for the question.
 
@@ -163,7 +163,7 @@ class Question(models.Model):
         """
         return None
 
-    def get_type(self):
+    def get_type(self) -> None:
         """
         Get the type of the question.
 
@@ -193,7 +193,7 @@ class SingleChoiceQuestion(Question):
         verbose_name = _("Single choice question")
         verbose_name_plural = _("Single choice questions")
 
-    def clean(self):
+    def clean(self) -> None:
         """Clean method for SingleChoiceQuestion model."""
         super().clean()
 
@@ -211,9 +211,9 @@ class SingleChoiceQuestion(Question):
         if sum([1 for choice in self.choices.values() if choice]) != 1:
             raise ValidationError(_("There must be only one correct answer."))
 
-    def __str__(self):
-        """String representation of the SingleChoiceQuestion."""
-        return super().__str__()
+    def __str__(self) -> str:
+        """Represent the SingleChoiceQuestion as string."""
+        return "%s choices: %s" % (super().__str__(), self.choices)
 
     def get_answer(self):
         if isinstance(self.choices, str):
@@ -264,7 +264,7 @@ class MultipleChoiceQuestion(Question):
         verbose_name = _("Multiple choice question")
         verbose_name_plural = _("Multiple choice questions")
 
-    def clean(self):
+    def clean(self) -> None:
         """Clean method for MultipleChoiceQuestion model."""
         super().clean()
 
@@ -282,9 +282,9 @@ class MultipleChoiceQuestion(Question):
         if not any(choices.values()):
             raise ValidationError(_("There must be at least one correct answer."))
 
-    def __str__(self):
-        """String representation of the MultipleChoiceQuestion."""
-        return super().__str__()
+    def __str__(self) -> str:
+        """Represent the MultipleChoiceQuestion as string."""
+        return "%s choices: %s" % (super().__str__(), self.choices)
 
     def get_type(self):
         return "multiple_choice"
@@ -337,8 +337,8 @@ class TrueFalseQuestion(Question):  # TODO
         verbose_name = _("True/false question")
         verbose_name_plural = _("True/false questions")
 
-    def __str__(self):
-        """String representation of the TrueFalseQuestion."""
+    def __str__(self) -> str:
+        """Represent the TrueFalseQuestion as string."""
         return super().__str__()
 
     def get_type(self):
@@ -364,11 +364,11 @@ class ShortAnswerQuestion(Question):
         verbose_name = _("Short answer question")
         verbose_name_plural = _("Short answer questions")
 
-    def __str__(self):
-        """String representation of the ShortAnswerQuestion."""
+    def __str__(self) -> str:
+        """Represent the ShortAnswerQuestion as string."""
         return super().__str__()
 
-    def get_answer(self):
+    def get_answer(self) -> str:
         return self.answer
 
     def get_type(self):
@@ -407,11 +407,11 @@ class LongAnswerQuestion(Question):
         verbose_name = _("Long answer question")
         verbose_name_plural = _("Long answer questions")
 
-    def __str__(self):
-        """String representation of the LongAnswerQuestion."""
+    def __str__(self) -> str:
+        """Representation the LongAnswerQuestion as string."""
         return super().__str__()
 
-    def get_answer(self):
+    def get_answer(self) -> str:
         return self.answer
 
     def get_type(self):

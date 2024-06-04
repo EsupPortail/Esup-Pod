@@ -58,17 +58,25 @@
         {% endwith %}
       {% endfor %}
     </div>
-    <div id='empty-form' class="d-none">
-      {% include "quiz/question_form.html" with form=question_formset.empty_form form_index="__prefix__" %}
-    </div>
 
-    <button id="add-question" type="button" class="btn btn-primary">{% trans "Add a question" %}</button>
+    <button id="add-question" type="button" class="btn btn-primary">
+      <i class="bi bi-plus" aria-hidden="true"></i>&nbsp;{% trans "Add a question" %}
+    </button>
 
     <div class="text-center mt-4">
-      <button type="submit" id="quiz-submission-button" class="btn btn-primary">{% trans "Save" %}</button>
+      <button type="submit" id="quiz-submission-button" class="btn btn-primary" name="_continue">
+        {% trans "Save and continue editing" %}
+      </button>
+      <button type="submit" class="btn btn-primary" name="_saveandsee">
+        {% trans 'Save and see' %}
+      </button>
       <a href="{% url 'video:video' slug=video.slug %}" class="btn btn-secondary">{% trans "Back to video" %}</a>
     </div>
   </form>
+
+  <div id='empty-form' class="d-none">
+    {% include "quiz/question_form.html" with form=question_formset.empty_form form_index="__prefix__" %}
+  </div>
 {% endblock page_content %}
 
 {% block page_aside %}
@@ -101,6 +109,7 @@
     {% else %}
       const initialData = null;
     {% endif %}
+    console.log(initialData);
   </script>
   <script src="{% static 'quiz/js/create-quiz.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}

@@ -87,7 +87,7 @@ def create_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
 
 def update_questions(existing_quiz: Quiz, question_formset) -> None:
     """
-    Updates existing questions in a given quiz based on the provided formset.
+    Update existing questions in a given quiz based on the provided formset.
 
     Args:
         existing_quiz (Quiz): The existing quiz instance.
@@ -134,7 +134,7 @@ def handle_post_request_for_create_or_edit_quiz(
     request: WSGIRequest, video: Video, question_formset, action: str
 ) -> HttpResponse:
     """
-    Handles the POST request for creating or editing a quiz associated with a video.
+    Handle the POST request for creating or editing a quiz associated with a video.
 
     Args:
         request (WSGIRequest): The HTTP request.
@@ -147,24 +147,43 @@ def handle_post_request_for_create_or_edit_quiz(
     """
     quiz_form = QuizForm(request.POST)
     if quiz_form.is_valid() and question_formset.is_valid():
+        error = False
         if action == "create":
             new_quiz = create_or_edit_quiz_instance(video, quiz_form, action)
-            create_questions(new_quiz, question_formset)
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                _("Quiz successfully created."),
-            )
+            if new_quiz:
+                create_questions(new_quiz, question_formset)
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    _("Quiz successfully created."),
+                )
+            else:
+                error = True
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    _("Error during quiz creation."),
+                )
         elif action == "edit":
             new_quiz = create_or_edit_quiz_instance(video, quiz_form, action)
-            update_questions(new_quiz, question_formset)
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                _("Quiz successfully updated."),
-            )
-        return redirect(reverse("quiz:edit_quiz", args=[video.slug]))
-        # return HttpResponseRedirect(reverse("video:video", kwargs={"slug": video.slug}))
+            if new_quiz:
+                update_questions(new_quiz, question_formset)
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    _("Quiz successfully updated."),
+                )
+            else:
+                error = True
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    _("Error during quiz update."),
+                )
+        if error is False and request.POST.get("_saveandsee"):
+            return redirect(reverse("quiz:video_quiz", args=[video.slug]))
+        else:
+            return redirect(reverse("quiz:edit_quiz", args=[video.slug]))
     else:
         messages.add_message(
             request,
@@ -224,7 +243,7 @@ def create_or_edit_quiz_instance(
     video: Video, quiz_form: QuizForm, action: str
 ) -> Optional[Quiz]:
     """
-    Creates a new quiz instance or updates an existing one based on the provided action.
+    Create a new quiz instance or update an existing one based on the provided action.
 
     Args:
         video (Video): The associated video instance.
@@ -299,7 +318,7 @@ def create_question(
 
 def create_questions(new_quiz: Quiz, question_formset) -> None:
     """
-    Creates and associates questions with a given quiz based on the provided formset.
+    Create and associate questions with a given quiz based on the provided formset.
 
     Args:
         new_quiz (Quiz): The newly created quiz instance.
@@ -486,7 +505,7 @@ def delete_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         if form.is_valid():
             quiz.delete()
             messages.add_message(request, messages.INFO, _("The quiz has been deleted."))
-            return redirect(reverse("video:video", kwargs={"slug": video.slug}))
+            return redirect(reverse("video:completion:video_completion", kwargs={"slug": video.slug}))
         else:
             messages.add_message(
                 request,
@@ -625,4 +644,6 @@ def get_initial_data(existing_questions=None) -> str:
                 for question in existing_questions
             ],
         }
-    return json.dumps(initial_data)
+        return json.dumps(initial_data)
+    else:
+        return None

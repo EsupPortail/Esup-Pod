@@ -847,7 +847,11 @@ span[data-bs-placement] {
 .required_star,
 .form-help-inline {
   color: var(--bs-danger);
-  font-size: 1.3rem;
+
+}
+
+.form-check-label>.required_star {
+  font-size: 1em;
 }
 
 /* prevent a large link from extending beyond it's container

@@ -36,7 +36,7 @@
     {% else %}
       <div class="alert alert-danger" role="alert">
         <p>{% trans "Your score is:" %} {{ percentage_score|floatformat:2 }}%</p>
-        <p class="m-0">{% trans "It's not terrible, but there's room for improvement!" %}</p>
+        <p class="m-0">{% trans "It’s not terrible, but there’s room for improvement!" %}</p>
       </div>
     {% endif %}
   {% elif questions_form_errors %}
@@ -65,7 +65,7 @@
                   <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
                     {{ field.errors }}
                     {% if "form-check-input" in field.field.widget.attrs.class %}
-                      <div class="form-check"> 
+                      <div class="form-check">
                         {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
                       </div>
                     {% else %}
@@ -86,9 +86,9 @@
 
           {% if form_submitted and quiz.show_correct_answers %}
             <div class="alert alert-{% get_question_color form_submitted questions_stats|dict_get:question.id %}">
-              <p><b>{% trans "Right answer:" %}</b> {{ question.get_answer }}</p>
+              <p><strong>{% trans "Correct answer:" %}</strong> {{ question.get_answer }}</p>
               {% if question.explanation %}
-                <p><b>{% trans "Explanation:" %}</b> {{ question.explanation }}</p>
+                <p><strong>{% trans "Explanation:" %}</strong> {{ question.explanation }}</p>
               {% endif %}
               {% if question.start_timestamp %}
                 <a class="btn btn-primary show-response-button" start="{{ question.start_timestamp}}" end="{{ question.end_timestamp }}" role="button">
@@ -118,9 +118,19 @@
 {% block page_aside %}
   {% if video.owner == request.user or request.user.is_superuser or perms.chapter.add_chapter or request.user in video.additional_owners.all %}
     <div class="card" id="card-manage-video">
-      <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
+      <h2 class="card-header card-title pod-card__title h4">
+        <i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}
+      </h2>
       <div class="card-body card-text text-center">
         {% include "videos/link_video.html" with hide_favorite_link=True %}
+      </div>
+    </div>
+    <div class="card" id="card-manage-video">
+      <h2 class="card-header card-title pod-card__title h4">
+        <i class="bi bi-gear"></i>&nbsp;{% trans "Manage quiz"%}
+      </h2>
+      <div class="card-body card-text">
+        {% include 'quiz/manage_quiz.html' %}
       </div>
     </div>
   {% endif %}
