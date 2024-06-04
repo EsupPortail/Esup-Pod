@@ -140,7 +140,6 @@
 
         {# affichage du bouton d'info sur le player #}
         {% if event.is_coming and event.video_on_hold.is_video or event.is_current  %}
-
             <script>
                 {% if event.is_coming and event.video_on_hold.is_video %}
                     iframeplayer = videojs("podvideoonholdplayer");
