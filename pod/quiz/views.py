@@ -104,6 +104,8 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
         end_timestamp = question_form.cleaned_data["end_timestamp"]
         if question_id:
             existing_question = get_question(question_type, question_id, existing_quiz)
+            if not existing_question:
+                continue
             if question_form.cleaned_data.get("DELETE"):
                 existing_question.delete()
             else:
@@ -189,27 +191,38 @@ def get_question(
     question_id: int,
     quiz: Quiz
 ):
+    """
+    Returns the question found according to its type, identifier and the quiz to which it belongs.
+
+    Args:
+        question_type (str): The type fo the question.
+        question_id (int): The identifier of the question.
+        quiz (Quiz): The quiz object.
+
+    Returns:
+        question: The question if found else None.
+    """
     question = None
     if question_type == "short_answer":
-        question = ShortAnswerQuestion.objects.get(
+        question = ShortAnswerQuestion.objects.filter(
             quiz=quiz,
             id=question_id,
-        )
+        ).first()
     elif question_type == "long_answer":
-        question = LongAnswerQuestion.objects.get(
+        question = LongAnswerQuestion.objects.filter(
             quiz=quiz,
             id=question_id,
-        )
+        ).first()
     elif question_type == "single_choice":
-        question = SingleChoiceQuestion.objects.get(
+        question = SingleChoiceQuestion.objects.filter(
             quiz=quiz,
             id=question_id,
-        )
+        ).first()
     elif question_type == "multiple_choice":
-        question = MultipleChoiceQuestion.objects.get(
+        question = MultipleChoiceQuestion.objects.filter(
             quiz=quiz,
             id=question_id,
-        )
+        ).first()
     return question
 
 
