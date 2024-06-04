@@ -1,4 +1,5 @@
 """Views for Esup-Pod ai_enhancement module."""
+
 import json
 import hashlib
 from django.conf import settings
@@ -416,9 +417,7 @@ def enhance_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
                 messages.SUCCESS,
                 _("Quiz successfully imported."),
             )
-            return redirect(
-                reverse("quiz:edit_quiz", args=[video.slug])
-            )
+            return redirect(reverse("quiz:edit_quiz", args=[video.slug]))
 
     return redirect(reverse("video:video", args=[video.slug]))
 

@@ -1,4 +1,5 @@
 """Esup-Pod AI enhancement admin."""
+
 from django.contrib import admin
 
 from .models import AIEnhancement

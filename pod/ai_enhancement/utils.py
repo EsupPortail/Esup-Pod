@@ -1,4 +1,5 @@
 """Util functions and classes for ai_enhancement module."""
+
 import json
 import bleach
 import requests

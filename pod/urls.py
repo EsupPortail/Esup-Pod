@@ -173,7 +173,10 @@ if USE_PLAYLIST:
 # AI ENHANCEMENT
 if USE_AI_ENHANCEMENT:
     urlpatterns += [
-        path("ai-enhancement/", include("pod.ai_enhancement.urls", namespace="ai_enhancement")),
+        path(
+            "ai-enhancement/",
+            include("pod.ai_enhancement.urls", namespace="ai_enhancement"),
+        ),
     ]
 
 # QUIZ

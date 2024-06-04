@@ -1,4 +1,5 @@
 """Tests the util functions and classes for ai_enhancement module."""
+
 from unittest.mock import patch
 
 from django.test import TestCase

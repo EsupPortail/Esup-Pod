@@ -163,9 +163,7 @@ def handle_post_request_for_create_or_edit_quiz(
                 messages.SUCCESS,
                 _("Quiz successfully updated."),
             )
-        return redirect(
-            reverse("quiz:edit_quiz", args=[video.slug])
-        )
+        return redirect(reverse("quiz:edit_quiz", args=[video.slug]))
         # return HttpResponseRedirect(reverse("video:video", kwargs={"slug": video.slug}))
     else:
         messages.add_message(
@@ -186,11 +184,7 @@ def handle_post_request_for_create_or_edit_quiz(
     )
 
 
-def get_question(
-    question_type: str,
-    question_id: int,
-    quiz: Quiz
-):
+def get_question(question_type: str, question_id: int, quiz: Quiz):
     """
     Returns the question found according to its type, identifier and the quiz to which it belongs.
 
@@ -400,9 +394,14 @@ def process_quiz_submission(request: WSGIRequest, quiz: Quiz) -> float:
                 if question.get_type() == "multiple_choice":
                     user_answer = ast.literal_eval(user_answer)
                 correct_answer = question.get_answer()
-                questions_answers["question_%s" % question.id] = [user_answer, correct_answer]
+                questions_answers["question_%s" % question.id] = [
+                    user_answer,
+                    correct_answer,
+                ]
         else:
-            questions_form_errors[question.title] = _('You have to choose at least one answer')
+            questions_form_errors[question.title] = _(
+                "You have to choose at least one answer"
+            )
     percentage_score = (score / total_questions) * 100
     return percentage_score, questions_stats, questions_answers, questions_form_errors
 
@@ -432,7 +431,9 @@ def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         return redirect("%s?referrer=%s" % (settings.LOGIN_URL, request.get_full_path()))
 
     if request.method == "POST":
-        (percentage_score, questions_stats, questions_answers, questions_form_errors) = process_quiz_submission(request, quiz)
+        (percentage_score, questions_stats, questions_answers, questions_form_errors) = (
+            process_quiz_submission(request, quiz)
+        )
         form_submitted = True
 
     return render(
@@ -546,7 +547,7 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
                     "explanation": question.explanation,
                     "start_timestamp": question.start_timestamp,
                     "end_timestamp": question.end_timestamp,
-                    "question_id": question.id
+                    "question_id": question.id,
                 }
                 for question in existing_questions
             ],
@@ -574,7 +575,7 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
                     "explanation": question.explanation,
                     "start_timestamp": question.start_timestamp,
                     "end_timestamp": question.end_timestamp,
-                    "question_id": question.id
+                    "question_id": question.id,
                 }
                 for question in existing_questions
             ],

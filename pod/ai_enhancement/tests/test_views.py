@@ -1,4 +1,5 @@
 """Tests the views for ai_enhancement module."""
+
 import json
 from unittest.mock import patch
 
@@ -272,9 +273,11 @@ class EnhanceVideoViewTest(TestCase):
         maintenance_mode_conf.save()
         print(
             "MAINTENANCE MODE: ",
-            True
-            if Configuration.objects.get(key="maintenance_mode").value == "1"
-            else False,
+            (
+                True
+                if Configuration.objects.get(key="maintenance_mode").value == "1"
+                else False
+            ),
         )
         url = reverse("ai_enhancement:enhance_video", args=[self.video.slug])
         response = self.client.get(url)
