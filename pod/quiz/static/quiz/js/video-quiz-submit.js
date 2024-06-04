@@ -6,6 +6,9 @@ for (questionElement of questionList) {
   );
   showResponseButton.addEventListener("click", function (event) {
     event.preventDefault();
+    if(player.paused()) {
+      player.play()
+    }
     player.currentTime(this.attributes.start.value);
   });
 }
