@@ -1478,20 +1478,19 @@ document.addEventListener("DOMContentLoaded", function () {
  */
 function remove_quotes(text) {
   text = text.trim();
-  if(text.charAt(0) === '"') {
+  if (text.charAt(0) === '"') {
     text = text.substring(1);
   }
-  if(text.charAt(text.length-1) === '"') {
-    text = text.substring(0,text.length-1);
+  if (text.charAt(text.length - 1) === '"') {
+    text = text.substring(0, text.length - 1);
   }
   return text;
 }
 
 let mainCollapseButton = document.getElementById("collapse-button");
 mainCollapseButton.addEventListener("click", () => {
-  window.scrollTo(0, 0)
+  window.scrollTo(0, 0);
 });
-
 
 /**
  * Remove accents and convert to lowercase.
@@ -1501,10 +1500,9 @@ mainCollapseButton.addEventListener("click", () => {
  * @return {string} The new string.
  */
 function removeAccentsAndLowerCase(str) {
-    str = str.toLowerCase();
-    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  str = str.toLowerCase();
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
-
 
 /**
  * Decode the string from the HTML entity.
@@ -1514,7 +1512,11 @@ function removeAccentsAndLowerCase(str) {
  * @return {string} The decoded string.
  */
 function decodeString(str) {
-  str = str.replace(/&#x([0-9A-Fa-f]+);/g, (match, p1) => String.fromCharCode(parseInt(p1, 16)));
-  str = str.replace(/&#(\d+);/g, (match, p1) => String.fromCharCode(parseInt(p1, 10)));
+  str = str.replace(/&#x([0-9A-Fa-f]+);/g, (match, p1) =>
+    String.fromCharCode(parseInt(p1, 16)),
+  );
+  str = str.replace(/&#(\d+);/g, (match, p1) =>
+    String.fromCharCode(parseInt(p1, 10)),
+  );
   return str;
 }
