@@ -25,6 +25,7 @@ from pod.video.models import Type, Video
 PWD = "azerty1234"  # nosec
 # ggignore-end
 
+
 class QuizCreateViewsTest(TestCase):
     """TestCase for Esup-Pod quiz creation views."""
 
