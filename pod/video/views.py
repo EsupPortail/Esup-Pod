@@ -2967,6 +2967,15 @@ def get_categories_list(request):
 
 @login_required(redirect_field_name="referrer")
 def get_json_videos_categories(request):
+    """
+    Get categories with associated videos in json object.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+
+    Returns:
+        Json object with category slug as key and array of video(s) as value.
+    """
     categories = Category.objects.prefetch_related("video").filter(owner=request.user)
     all_categories_videos = {}
     for cat in categories:
