@@ -1,4 +1,7 @@
-"""Unit tests for Esup-Pod quiz models."""
+"""Unit tests for Esup-Pod quiz models.
+
+test with `python manage.py test pod.quiz.tests.test_models`
+"""
 
 from unittest.mock import patch
 from django.contrib.auth.models import User
@@ -28,7 +31,7 @@ class QuizModelTests(TestCase):
 
     fixtures = ["initial_data.json"]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up the tests."""
         self.user = User.objects.create_user(username="testuser", password="testpassword")
         self.video = Video.objects.create(
@@ -40,7 +43,7 @@ class QuizModelTests(TestCase):
         )
         self.quiz = Quiz.objects.create(video=self.video)
 
-    def test_get_questions(self):
+    def test_get_questions(self) -> None:
         """Test if test_get_questions works correctly."""
         question1 = SingleChoiceQuestion.objects.create(quiz=self.quiz, title="UCQ1")
         question2 = MultipleChoiceQuestion.objects.create(quiz=self.quiz, title="MCQ1")
@@ -54,8 +57,8 @@ class QuizModelTests(TestCase):
             self.assertIn(question2, questions)
         print(" --->  test_get_questions ok")
 
-    def test_string_representation(self):
-        """Test if test_string_representation works correctly."""
+    def test_string_representation(self) -> None:
+        """Check Quiz string representation."""
         expected_string = f"{_('Quiz of video')} {self.video}"
         self.assertEqual(str(self.quiz), expected_string)
         print(" --->  test_get_questions ok")
@@ -66,7 +69,7 @@ class QuestionModelTests(TestCase):
 
     fixtures = ["initial_data.json"]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up the tests."""
         self.user = User.objects.create_user(username="testuser", password="testpassword")
         self.video = Video.objects.create(
@@ -79,13 +82,13 @@ class QuestionModelTests(TestCase):
         self.quiz = Quiz.objects.create(video=self.video)
         self.UCQ1 = SingleChoiceQuestion.objects.create(quiz=self.quiz, title="UCQ1")
 
-    def test_string_representation(self):
+    def test_string_representation(self) -> None:
         """Test if test_string_representation works correctly."""
-        expected_string = f"{_('Question')} {self.UCQ1.title}"
+        expected_string = f"{_('Question')} “{self.UCQ1.title}” choices: {self.UCQ1.choices}"
         self.assertEqual(str(self.UCQ1), expected_string)
         print(" --->  test_string_representation ok")
 
-    def test_get_question_form(self):
+    def test_get_question_form(self) -> None:
         """Test if test_get_question_form works correctly."""
         self.assertEqual(
             Question.get_question_form(self),
@@ -93,12 +96,12 @@ class QuestionModelTests(TestCase):
         )
         print(" --->  test_get_question_form ok")
 
-    def test_get_type(self):
+    def test_get_type(self) -> None:
         """Test if test_get_type works correctly."""
         self.assertIsNone(Question.get_type(self))
         print(" --->  test_get_type ok")
 
-    def test_clean(self):
+    def test_clean(self) -> None:
         """Test if test_clean works correctly."""
         question_start_timestamp_more_than_end_timestamp = SingleChoiceQuestion(
             quiz=self.quiz,
@@ -126,7 +129,7 @@ class SingleChoiceQuestionModelTests(TestCase):
 
     fixtures = ["initial_data.json"]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up the tests."""
         self.user = User.objects.create_user(username="testuser", password="testpassword")
         self.video = Video.objects.create(
@@ -142,7 +145,7 @@ class SingleChoiceQuestionModelTests(TestCase):
             quiz=self.quiz, title="UCQ1", choices='{"choice 1": true, "choice 2": false}'
         )
 
-    def test_clean(self):
+    def test_clean(self) -> None:
         """Test if test_clean works correctly."""
         question_with_one_choice = SingleChoiceQuestion(
             quiz=self.quiz, title="question_with_one_choice", choices='{"choice 1": true}'
@@ -167,23 +170,23 @@ class SingleChoiceQuestionModelTests(TestCase):
 
         print(" --->  test_clean ok")
 
-    def test_string_representation(self):
-        """Test if test_string_representation works correctly."""
-        expected_string = f"{_('Question')} {self.normal_question.title}"
+    def test_string_representation(self) -> None:
+        """Check single choice question string representation."""
+        expected_string = f"{_('Question')} “{self.normal_question.title}” choices: {self.normal_question.choices}"
         self.assertEqual(str(self.normal_question), expected_string)
         print(" --->  test_string_representation ok")
 
-    def test_get_answer(self):
+    def test_get_answer(self) -> None:
         """Test if test_get_answer works correctly."""
         self.assertEqual(self.normal_question.get_answer(), "choice 1")
         print(" --->  test_get_answer ok")
 
-    def test_get_type(self):
+    def test_get_type(self) -> None:
         """Test if test_get_type works correctly."""
         self.assertEqual(self.normal_question.get_type(), "single_choice")
         print(" --->  test_get_type ok")
 
-    def test_get_question_form(self):
+    def test_get_question_form(self) -> None:
         """Test if test_get_question_form works correctly."""
         expected_form = SingleChoiceQuestionForm(
             instance=self.normal_question, prefix=f"question_{self.normal_question.pk}"
@@ -204,7 +207,7 @@ class MultipleChoiceQuestionModelTests(TestCase):
 
     fixtures = ["initial_data.json"]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up the tests."""
         self.user = User.objects.create_user(username="testuser", password="testpassword")
         self.video = Video.objects.create(
@@ -222,7 +225,7 @@ class MultipleChoiceQuestionModelTests(TestCase):
             choices='{"choice 1": true, "choice 2": false, "choice 3": true}',
         )
 
-    def test_clean(self):
+    def test_clean(self) -> None:
         """Test if test_clean works correctly."""
         question_with_one_choice = MultipleChoiceQuestion(
             quiz=self.quiz, title="question_with_one_choice", choices='{"choice 1": true}'
@@ -238,23 +241,23 @@ class MultipleChoiceQuestionModelTests(TestCase):
 
         print(" --->  test_clean ok")
 
-    def test_string_representation(self):
-        """Test if test_string_representation works correctly."""
-        expected_string = f"{_('Question')} {self.normal_question.title}"
+    def test_string_representation(self) -> None:
+        """Check Multiple choice question string representation."""
+        expected_string = f"{_('Question')} “{self.normal_question.title}” choices: {self.normal_question.choices}"
         self.assertEqual(str(self.normal_question), expected_string)
         print(" --->  test_string_representation ok")
 
-    def test_get_type(self):
+    def test_get_type(self) -> None:
         """Test if test_get_type works correctly."""
         self.assertEqual(self.normal_question.get_type(), "multiple_choice")
         print(" --->  test_get_type ok")
 
-    def test_get_answer(self):
+    def test_get_answer(self) -> None:
         """Test if test_get_answer works correctly."""
         self.assertEqual(self.normal_question.get_answer(), ["choice 1", "choice 3"])
         print(" --->  test_get_answer ok")
 
-    def test_get_question_form(self):
+    def test_get_question_form(self) -> None:
         """Test if test_get_question_form works correctly."""
         expected_form = MultipleChoiceQuestionForm(
             instance=self.normal_question, prefix=f"question_{self.normal_question.pk}"
@@ -276,7 +279,7 @@ class ShortAnwerQuestionTest(TestCase):
 
     fixtures = ["initial_data.json"]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up the tests."""
         self.user = User.objects.create_user(username="testuser", password="testpassword")
         self.video = Video.objects.create(
@@ -292,23 +295,23 @@ class ShortAnwerQuestionTest(TestCase):
             quiz=self.quiz, title="SAQ1", answer="answer"
         )
 
-    def test_string_representation(self):
-        """Test if test_string_representation works correctly."""
-        expected_string = f"{_('Question')} {self.normal_question.title}"
+    def test_string_representation(self) -> None:
+        """Check short answer question string representation."""
+        expected_string = f"{_('Question')} “{self.normal_question.title}”"
         self.assertEqual(str(self.normal_question), expected_string)
         print(" --->  test_string_representation ok")
 
-    def test_get_type(self):
+    def test_get_type(self) -> None:
         """Test if test_get_type works correctly."""
         self.assertEqual(self.normal_question.get_type(), "short_answer")
         print(" --->  test_get_type ok")
 
-    def test_get_answer(self):
+    def test_get_answer(self) -> None:
         """Test if test_get_answer works correctly."""
         self.assertEqual(self.normal_question.get_answer(), "answer")
         print(" --->  test_get_answer ok")
 
-    def test_get_question_form(self):
+    def test_get_question_form(self) -> None:
         """Test if test_get_question_form works correctly."""
         expected_form = ShortAnswerQuestionForm(
             instance=self.normal_question, prefix=f"question_{self.normal_question.pk}"
@@ -330,7 +333,7 @@ class LongAnswerQuestionTest(TestCase):
 
     fixtures = ["initial_data.json"]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up the tests."""
         self.user = User.objects.create_user(username="testuser", password="testpassword")
         self.video = Video.objects.create(
@@ -346,23 +349,23 @@ class LongAnswerQuestionTest(TestCase):
             quiz=self.quiz, title="LAQ1", answer="long answer"
         )
 
-    def test_string_representation(self):
-        """Test if test_string_representation works correctly."""
-        expected_string = f"{_('Question')} {self.normal_question.title}"
+    def test_string_representation(self) -> None:
+        """Check long answer question string representation."""
+        expected_string = f"{_('Question')} “{self.normal_question.title}”"
         self.assertEqual(str(self.normal_question), expected_string)
         print(" --->  test_string_representation ok")
 
-    def test_get_type(self):
+    def test_get_type(self) -> None:
         """Test if test_get_type works correctly."""
         self.assertEqual(self.normal_question.get_type(), "long_answer")
         print(" --->  test_get_type ok")
 
-    def test_get_answer(self):
+    def test_get_answer(self) -> None:
         """Test if test_get_answer works correctly."""
         self.assertEqual(self.normal_question.get_answer(), "long answer")
         print(" --->  test_get_answer ok")
 
-    def test_get_question_form(self):
+    def test_get_question_form(self) -> None:
         """Test if test_get_question_form works correctly."""
         expected_form = LongAnswerQuestionForm(
             instance=self.normal_question, prefix=f"question_{self.normal_question.pk}"

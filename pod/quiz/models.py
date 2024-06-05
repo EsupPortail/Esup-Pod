@@ -140,7 +140,7 @@ class Question(models.Model):
 
     def __str__(self) -> str:
         """Represent the question as string."""
-        return _("Question") + " " + self.title
+        return "%s “%s”" % (_("Question"), self.title)
 
     def get_question_form(self, data=None):
         """

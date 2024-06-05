@@ -1,6 +1,6 @@
 /**
  * @file Esup-Pod functions for the quiz creation or edit form.
- * @since 3.6.0
+ * @since 3.7.0
  */
 
 // Read-only globals defined in video-script.html
