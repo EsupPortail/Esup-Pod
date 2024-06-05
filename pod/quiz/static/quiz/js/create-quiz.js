@@ -158,6 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (questionFormToDelete) {
 
+      // If the question already exist in Pod, we only hide in dom and send a "delete" input.
       const deleteInput = document.getElementById(`id_questions-${questionFormToDelete.getAttribute("data-question-index")}-DELETE`);
       if (deleteInput) {
         deleteInput.checked = true;
@@ -185,6 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
     input.type = "text";
     input.id = inputId;
     input.name = inputId;
+    input.required = true;
     input.placeholder = gettext("The short answer");
     input.classList.add("short-answer-field", "form-control");
 
@@ -212,6 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     textarea.id = textareaId;
     textarea.name = textareaId;
+    textarea.required = true;
     textarea.placeholder = gettext("The long answer");
     textarea.classList.add("long-answer-field", "form-control");
 
@@ -353,22 +356,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const input = document.createElement("input");
       input.type = "checkbox";
-      input.required = true;
+      let message = gettext("Select the choice #%s as correct answer.");
+      input.title = interpolate(message, [index]);
       input.classList.add("form-check-input");
       input.name = `choice-${questionIndex}`;
       input.id = `choice-${questionIndex}-${index}`;
 
       const deleteButton = document.createElement("a");
-      let message = gettext("Remove choice #%s");
+      message = gettext("Remove choice #%s");
+      const deleteIcon = document.createElement("i");
+      deleteIcon.classList.add(
+        "bi",
+        "bi-trash"
+      );
+      deleteButton.appendChild(deleteIcon);
       deleteButton.setAttribute('title', interpolate(message, [index]));
       deleteButton.setAttribute('role', 'button');
       deleteButton.classList.add(
-        "bi",
-        "bi-trash",
         "btn",
         "btn-link",
         "pod-btn-social",
-        "py-0",
       );
       deleteButton.addEventListener("click", function () {
         choiceDiv.remove();
@@ -430,7 +437,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const addButton = document.createElement("button");
     addButton.textContent = gettext("Add a choice");
     addButton.type = "button";
-    addButton.classList.add("btn", "btn-secondary", "btn-sm", "mt-2");
+    addButton.classList.add("btn", "btn-primary", "btn-sm", "mt-2");
     addButton.addEventListener("click", function () {
       fieldset.appendChild(
         createChoiceElement(

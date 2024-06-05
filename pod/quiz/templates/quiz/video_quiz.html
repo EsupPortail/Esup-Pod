@@ -40,12 +40,15 @@
       </div>
     {% endif %}
   {% elif questions_form_errors %}
-  <div class="alert alert-danger" role="alert">
-    <p>{% trans "Error found in form" %}</p>
-    {% for question_title, question_error in questions_form_errors.items %}
-      <p>{% blocktranslate with title=question_title error=question_error|lower %}For the question "{{ title }}", {{ error }}.{% endblocktranslate %}</p>
-    {% endfor %}
-  </div>
+    <div class="alert alert-danger" role="alert">
+      <p>{% trans "Error found in form" %}</p>
+      {% for question_title, question_error in questions_form_errors.items %}
+        <p>
+          {% blocktranslate with title=question_title error=question_error|lower %}
+          For the question “{{ title }}”, {{ error }}.{% endblocktranslate %}
+        </p>
+      {% endfor %}
+    </div>
   {% endif %}
 
   <hr>
@@ -56,7 +59,8 @@
       {% for question in quiz.get_questions %}
         <fieldset class="border border-2 border-{% get_question_color form_submitted questions_stats|dict_get:question.id %} rounded-3 p-4 question-container" data-questionid="question_{{question.id}}">
           <legend>
-            <i class="bi bi-patch-question" aria-hidden='true'></i>&nbsp;{{ question.title }}
+            <i class="bi bi-patch-question" aria-hidden='true'></i>
+            {% trans "Question #" %}<span class="question-number">{{ forloop.counter0 |add:1 }}</span>
           </legend>
           {% with form=question.get_question_form %}
             {% for field in form.visible_fields %}
@@ -64,12 +68,11 @@
                 <div class="mb-3">
                   <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
                     {{ field.errors }}
-                    {% if "form-check-input" in field.field.widget.attrs.class %}
-                      <div class="form-check">
-                        {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
-                      </div>
+                    {% if "list-unstyled" in field.field.widget.attrs.class %}
+                      {{ question.title }}
+                      {{ field }}
                     {% else %}
-                      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      <label for="{{ field.id_for_label }}">{{ question.title }}</label>
                       {{ field }}
                     {% endif %}
                     {% if field.help_text %}
@@ -103,14 +106,19 @@
     <div class="text-center mt-2">
       {% if form_submitted %}
         <a role="button" href="{% url 'quiz:video_quiz' video.slug %}" class="btn btn-primary">
+          <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
           {% trans "Redo the quiz" %}
         </a>
       {% else %}
         <button type="submit" id="quiz-submission-button" class="btn btn-primary">
+          <i class="bi bi-check2-square" aria-hidden="true"></i>
           {% trans "Validate" %}
         </button>
       {% endif %}
-      <a href="{% url 'video:video' slug=video.slug %}" class="btn btn-secondary">{% trans "Back to video" %}</a>
+      <a href="{% url 'video:video' slug=video.slug %}" class="btn btn-secondary">
+        <i class="bi bi-file-play" aria-hidden="true"></i>
+        {% trans "Back to video" %}
+      </a>
     </div>
   </form>
 {% endblock page_content %}
@@ -119,7 +127,7 @@
   {% if video.owner == request.user or request.user.is_superuser or perms.chapter.add_chapter or request.user in video.additional_owners.all %}
     <div class="card" id="card-manage-video">
       <h2 class="card-header card-title pod-card__title h4">
-        <i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}
+        <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage video"%}
       </h2>
       <div class="card-body card-text text-center">
         {% include "videos/link_video.html" with hide_favorite_link=True %}
@@ -127,7 +135,7 @@
     </div>
     <div class="card" id="card-manage-video">
       <h2 class="card-header card-title pod-card__title h4">
-        <i class="bi bi-gear"></i>&nbsp;{% trans "Manage quiz"%}
+        <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage quiz"%}
       </h2>
       <div class="card-body card-text">
         {% include 'quiz/manage_quiz.html' %}

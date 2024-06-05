@@ -108,6 +108,8 @@ class Question(models.Model):
     )
 
     class Meta:
+        """Question Metadata."""
+
         ordering = ["id"]
         abstract = True
         verbose_name = _("Question")
@@ -190,6 +192,8 @@ class SingleChoiceQuestion(Question):
     )
 
     class Meta:
+        """SingleChoiceQuestion Metadata."""
+
         verbose_name = _("Single choice question")
         verbose_name_plural = _("Single choice questions")
 
@@ -226,6 +230,13 @@ class SingleChoiceQuestion(Question):
         )
         return correct_answer
 
+    def get_choices(self):
+        """Return choices for this question."""
+        if self.choices:
+            return self.choices
+        else:
+            return "{}"
+
     def get_type(self):
         return "single_choice"
 
@@ -261,6 +272,8 @@ class MultipleChoiceQuestion(Question):
     )
 
     class Meta:
+        """MultipleChoiceQuestion Metadata."""
+
         verbose_name = _("Multiple choice question")
         verbose_name_plural = _("Multiple choice questions")
 
@@ -299,6 +312,13 @@ class MultipleChoiceQuestion(Question):
             choice for choice, is_correct in self.choices.items() if is_correct
         ]
         return correct_answer
+
+    def get_choices(self):
+        """Return choices for this question."""
+        if self.choices:
+            return self.choices
+        else:
+            return "{}"
 
     def get_question_form(self, data=None):
         """

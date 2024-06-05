@@ -1841,3 +1841,9 @@ body[data-admin-utc-offset]
   font-size: 13px;
   text-align: left;
 }
+
+/** QUIZ **/
+
+.question-container li.bi::before {
+  margin-right: .5em;
+}

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load video_quiz %}
 
 {% block page_extra_head %}
   {% include 'videos/video-header.html' %}
@@ -65,10 +66,7 @@
 
     <div class="text-center mt-4">
       <button type="submit" id="quiz-submission-button" class="btn btn-primary" name="_continue">
-        {% trans "Save and continue editing" %}
-      </button>
-      <button type="submit" class="btn btn-primary" name="_saveandsee">
-        {% trans 'Save and see' %}
+        {% trans "Save" %}
       </button>
       <a href="{% url 'video:video' slug=video.slug %}" class="btn btn-secondary">{% trans "Back to video" %}</a>
     </div>
@@ -80,17 +78,39 @@
 {% endblock page_content %}
 
 {% block page_aside %}
-  {% if video.owner == request.user or request.user.is_superuser or perms.chapter.add_chapter or request.user in video.additional_owners.all %}
-  <div class="card" id="card-manage-video">
-    <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-gear"></i>&nbsp;{% trans "Manage video"%}</h2>
-    <div class="card-body card-text text-center">
-      {% include "videos/link_video.html" with hide_favorite_link=True %}
+  {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all %}
+    <div class="card" id="card-manage-video">
+      <h2 class="card-header card-title pod-card__title h4">
+        <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage video"%}
+      </h2>
+      <div class="card-body card-text text-center">
+        {% include "videos/link_video.html" with hide_favorite_link=True %}
+      </div>
     </div>
-  </div>
+    <div class="card" id="card-manage-video">
+      <h2 class="card-header card-title pod-card__title h4">
+        <i class="bi bi-controller" aria-hidden="true"></i>&nbsp;{% trans "Quiz"%}
+      </h2>
+      <div class="card-body card-text">
+        {% is_quiz_accessible video as is_quiz_accessible %}
+        {% if is_quiz_accessible %}
+          <a class="btn btn-primary btn-sm m-1" href="{% url 'quiz:video_quiz' video.slug %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Answer the quiz" %}" role="button">
+            <i class="bi bi-controller pod-nav-link-icon mx-1" aria-hidden="true"></i>
+            <span class="ms-1 d-none d-md-inline">{% trans 'Answer the quiz' %}</span>
+          </a>
+        {% endif %}
+        <a class="btn btn-danger btn-sm m-1" href="{% url 'quiz:remove_quiz' video_slug=video.slug %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Delete your quiz" %}" role="button">
+          <i class="bi bi-trash pod-nav-link-icon mx-1" aria-hidden="true"></i>
+          <span class="ms-1 d-none d-md-inline">{% trans 'Delete your quiz' %}</span>
+        </a>
+      </div>
+    </div>
   {% endif %}
 
   <div class="card" id="card-quiz-player">
-    <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-film"></i>&nbsp;{% trans "Video"%}</h2>
+    <h2 class="card-header card-title pod-card__title h4">
+      <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans "Video"%}
+    </h2>
     {% include 'videos/video-element.html' %}
   </div>
 

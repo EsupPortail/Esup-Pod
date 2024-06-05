@@ -44,11 +44,11 @@ class QuestionForm(forms.Form):
         label=_("Explanation"),
         widget=forms.Textarea(
             attrs={
-                "placeholder": _("Explanation of the question"),
+                "placeholder": _("Explanation of the answer."),
             }
         ),
         required=False,
-        help_text=_("Please choose an explanation."),
+        help_text=_("An explanation that will be displayed once the user has responded (feedback)."),
     )
     start_timestamp = forms.IntegerField(
         label=_("Start timestamp"),
@@ -187,7 +187,7 @@ class QuizDeleteForm(forms.Form):
 
 
 class SingleChoiceQuestionForm(forms.ModelForm):
-    """Form to add or edit a single choice question form."""
+    """Form to show a single choice question form."""
 
     selected_choice = forms.CharField(
         label=_("Single choice question"),
@@ -223,7 +223,7 @@ class SingleChoiceQuestionForm(forms.ModelForm):
 
 
 class MultipleChoiceQuestionForm(forms.ModelForm):
-    """Form to add or edit a multiple choice question form."""
+    """Form to show a multiple choice question form."""
 
     selected_choice = forms.CharField(
         label=_("Multiple choice question"),
@@ -257,12 +257,12 @@ class MultipleChoiceQuestionForm(forms.ModelForm):
 
 
 class ShortAnswerQuestionForm(forms.ModelForm):
-    """Form to add or edit a short answer question form."""
+    """Form to show a short answer question form."""
 
     user_answer = forms.CharField(
         label=_("Short answer question"),
         widget=forms.TextInput(),
-        required=False,
+        required=True,
         help_text=_("Write a short answer."),
     )
 
@@ -277,20 +277,22 @@ class ShortAnswerQuestionForm(forms.ModelForm):
 
 
 class LongAnswerQuestionForm(forms.ModelForm):
-    """Form to add or edit a long answer question form."""
+    """Form to show a long answer question form."""
 
     user_answer = forms.CharField(
         label=_("Long answer question"),
         widget=forms.Textarea(),
-        required=False,
+        required=True,
         help_text=_("Write a long answer."),
     )
 
     class Meta:
+        """LongAnswerQuestionForm Metadata."""
+
         model = LongAnswerQuestion
         fields = ["user_answer"]
 
     def __init__(self, *args, **kwargs) -> None:
-        """Init short answer question form."""
+        """Init long answer question form."""
         super(LongAnswerQuestionForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)

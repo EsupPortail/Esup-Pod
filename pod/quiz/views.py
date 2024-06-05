@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_protect
 from pod.main.views import in_maintenance
 
@@ -66,7 +67,7 @@ def create_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
             request.POST,
             prefix="questions",
         )
-        return handle_post_request_for_create_or_edit_quiz(
+        quiz_form = handle_post_request_for_create_or_edit_quiz(
             request, video, question_formset, action="create"
         )
     else:
@@ -99,7 +100,9 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
         if question_id:
             existing_question = get_question(question_type, question_id, existing_quiz)
             if existing_question:
-                update_question(existing_question)
+                if not question_form.cleaned_data[question_type]:
+                    raise ValidationError(_("No answer defined for question %s.") % question_id)
+                update_question(existing_question, question_form.cleaned_data)
         elif not question_form.cleaned_data.get("DELETE"):
             create_question(
                 question_type=question_type,
@@ -137,7 +140,7 @@ def update_question(existing_question: Question, cleaned_data) -> None:
 
 def handle_post_request_for_create_or_edit_quiz(
     request: WSGIRequest, video: Video, question_formset, action: str
-) -> HttpResponse:
+) -> QuizForm:
     """
     Handle the POST request for creating or editing a quiz associated with a video.
 
@@ -148,11 +151,11 @@ def handle_post_request_for_create_or_edit_quiz(
         action (str): The action to perform - "create" or "edit".
 
     Returns:
-        HttpResponse: The HTTP response for rendering the appropriate template.
+        QuizForm: The HTTP response for rendering the appropriate template.
     """
     quiz_form = QuizForm(request.POST)
     if quiz_form.is_valid() and question_formset.is_valid():
-        error = False
+
         if action == "create":
             new_quiz = create_or_edit_quiz_instance(video, quiz_form, action)
             if new_quiz:
@@ -163,7 +166,6 @@ def handle_post_request_for_create_or_edit_quiz(
                     _("Quiz successfully created."),
                 )
             else:
-                error = True
                 messages.add_message(
                     request,
                     messages.ERROR,
@@ -179,16 +181,11 @@ def handle_post_request_for_create_or_edit_quiz(
                     _("Quiz successfully updated."),
                 )
             else:
-                error = True
                 messages.add_message(
                     request,
                     messages.ERROR,
                     _("Error during quiz update."),
                 )
-        if error is False and request.POST.get("_saveandsee"):
-            return redirect(reverse("quiz:video_quiz", args=[video.slug]))
-        else:
-            return redirect(reverse("quiz:edit_quiz", args=[video.slug]))
     else:
         messages.add_message(
             request,
@@ -196,16 +193,7 @@ def handle_post_request_for_create_or_edit_quiz(
             _("The data sent to create the quiz are invalid."),
         )
 
-    return render(
-        request,
-        "quiz/create_edit_quiz.html",
-        {
-            "page_title": _(f"Quiz edition for the video: {video.title}"),
-            "quiz_form": quiz_form,
-            "question_formset": question_formset,
-            "video": video,
-        },
-    )
+    return quiz_form
 
 
 def get_question(question_type: str, question_id: int, quiz: Quiz):
@@ -558,6 +546,10 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
 
     quiz = get_object_or_404(Quiz, video=video)
     existing_questions = quiz.get_questions()
+    if existing_questions != []:
+        initial_data = get_initial_data(existing_questions)
+    else:
+        initial_data = None
     extra = 2 if existing_questions == [] else 0
     question_formset_factory = formset_factory(QuestionForm, extra=extra, can_delete=True)
     if request.method == "POST":
@@ -576,7 +568,7 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
                 for question in existing_questions
             ],
         )
-        return handle_post_request_for_create_or_edit_quiz(
+        quiz_form = handle_post_request_for_create_or_edit_quiz(
             request, video, question_formset, action="edit"
         )
     else:
@@ -586,9 +578,6 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
                 "show_correct_answers": quiz.show_correct_answers,
             }
         )
-        initial_data = None
-        if existing_questions != []:
-            initial_data = get_initial_data(existing_questions=existing_questions)
 
         question_formset = question_formset_factory(
             prefix="questions",
@@ -630,7 +619,6 @@ def get_initial_data(existing_questions=None) -> str:
     """
     initial_data = {}
     if existing_questions:
-        print(existing_questions)
         initial_data = {
             "existing_questions": [
                 {
@@ -641,7 +629,7 @@ def get_initial_data(existing_questions=None) -> str:
                         question.answer if question.get_type() == "long_answer" else None
                     ),
                     "choices": (
-                        json.loads(question.choices)
+                        json.loads(question.get_choices())
                         if question.get_type() in {"single_choice", "multiple_choice"}
                         else None
                     ),
