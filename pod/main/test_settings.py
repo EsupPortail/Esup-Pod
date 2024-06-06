@@ -122,5 +122,12 @@ if USE_DOCKER:
         file = os.path.join(MIGRATION_DIRECTORY, "__init__.py")
         open(file, "a").close()
 
+# AI Enhancement settings
+USE_AI_ENHANCEMENT = True
+AI_ENHANCEMENT_CLIENT_ID = "mocked_id"
+AI_ENHANCEMENT_CLIENT_SECRET = "mock_secret"
+AI_ENHANCEMENT_API_URL = ""
+AI_ENHANCEMENT_API_VERSION = ""
+
 # DEBUG
 USE_DEBUG_TOOLBAR = False

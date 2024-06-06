@@ -1,3 +1,5 @@
+"""Esup-Pod Video completion urls."""
+
 from django.conf.urls import url
 from .views import video_completion
 from .views import video_caption_maker
