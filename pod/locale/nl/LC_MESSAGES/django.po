@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-04 13:24+0000\n"
-"PO-Revision-Date: 2024-05-15 09:01+0200\n"
+"POT-Creation-Date: 2024-06-06 07:49+0000\n"
+"PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -472,7 +472,7 @@ msgid "-- All languages --"
 msgstr ""
 
 #: pod/ai_enhancement/views.py
-msgid "Something wrong... Status error: "
+msgid "Something wrong… Status error: "
 msgstr ""
 
 #: pod/ai_enhancement/views.py
@@ -2067,35 +2067,16 @@ msgstr ""
 msgid "Add a new overlay"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html pod/quiz/models.py
-msgid "Quizzes"
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
+#: pod/completion/templates/video_completion.html pod/quiz/apps.py
+#: pod/quiz/models.py pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/quiz/templates/quiz/video_quiz_aside.html
-msgid "Edit your quiz"
+msgid "Quiz"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "To edit your quiz for this video."
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/quiz/templates/quiz/video_quiz_aside.html
-msgid "Create a quiz"
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
-msgid "To create a quiz for this video."
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
-#: pod/quiz/templates/quiz/video_quiz_aside.html
-msgid "Delete your quiz"
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
-msgid "To delete your quiz for this video."
+msgid "Answer the quiz"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -2149,7 +2130,8 @@ msgid ""
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid ":"
+#, python-format
+msgid "%(name)s:"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -2178,7 +2160,7 @@ msgstr ""
 
 #: pod/completion/templates/video_completion.html
 msgid ""
-"Quizzes allow you to test the memorization and comprehension of your video."
+"A Quiz allow you to test the memorization and comprehension of your video."
 msgstr ""
 
 #: pod/completion/tests/test_views.py
@@ -3254,15 +3236,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -6497,8 +6479,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
@@ -6512,8 +6494,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
@@ -7315,11 +7297,6 @@ msgstr ""
 msgid "Allow"
 msgstr ""
 
-#: pod/quiz/apps.py pod/quiz/models.py
-#: pod/quiz/templates/quiz/video_quiz_aside.html
-msgid "Quiz"
-msgstr ""
-
 #: pod/quiz/forms.py
 msgid "Redaction"
 msgstr ""
@@ -7353,11 +7330,12 @@ msgid "Explanation"
 msgstr ""
 
 #: pod/quiz/forms.py
-msgid "Explanation of the question"
+msgid "Explanation of the answer."
 msgstr ""
 
-#: pod/quiz/forms.py pod/quiz/models.py
-msgid "Please choose an explanation."
+#: pod/quiz/forms.py
+msgid ""
+"An explanation that will be displayed once the user has responded (feedback)."
 msgstr ""
 
 #: pod/quiz/forms.py pod/quiz/models.py
@@ -7365,8 +7343,7 @@ msgid "Start timestamp"
 msgstr ""
 
 #: pod/quiz/forms.py pod/quiz/models.py
-msgid ""
-"Please choose the beginning time of the answer in the video (in seconds)."
+msgid "The start time of the answer in the video (in seconds)."
 msgstr ""
 
 #: pod/quiz/forms.py pod/quiz/models.py
@@ -7374,7 +7351,7 @@ msgid "End timestamp"
 msgstr ""
 
 #: pod/quiz/forms.py pod/quiz/models.py
-msgid "Please choose the end time of the answer in the video (in seconds)."
+msgid "The end time of the answer in the video (in seconds)."
 msgstr ""
 
 #: pod/quiz/forms.py
@@ -7444,15 +7421,19 @@ msgid "Write a long answer."
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Please choose a video associated with the quiz."
+msgid "Choose a video associated with the quiz."
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Please choose if this quiz is only for connected users or not."
+msgid "Choose if this quiz is only for connected users or not."
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Please choose if the correct answers will be displayed or not."
+msgid "Choose if the correct answers will be displayed or not."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Quizzes"
 msgstr ""
 
 #: pod/quiz/models.py
@@ -7460,7 +7441,11 @@ msgid "Quiz of video"
 msgstr ""
 
 #: pod/quiz/models.py
-msgid "Please choose a quiz associated with the question."
+msgid "Choose a quiz associated with the question."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Please choose an explanation."
 msgstr ""
 
 #: pod/quiz/models.py
@@ -7477,6 +7462,11 @@ msgstr ""
 
 #: pod/quiz/models.py
 msgid "End timestamp cannot be defined without a start timestamp."
+msgstr ""
+
+#: pod/quiz/models.py
+#, python-format
+msgid "Question “%s”"
 msgstr ""
 
 #: pod/quiz/models.py
@@ -7560,11 +7550,25 @@ msgstr ""
 msgid "Back to video"
 msgstr ""
 
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/manage_quiz.html
+msgid "Delete your quiz"
+msgstr ""
+
 #: pod/quiz/templates/quiz/delete_quiz.html
 msgid "To delete the quiz, please check the box and click “Delete”."
 msgstr ""
 
+#: pod/quiz/templates/quiz/manage_quiz.html
+msgid "Edit your quiz"
+msgstr ""
+
+#: pod/quiz/templates/quiz/manage_quiz.html
+msgid "Create a quiz"
+msgstr ""
+
 #: pod/quiz/templates/quiz/question_form.html
+#: pod/quiz/templates/quiz/video_quiz.html
 msgid "Question #"
 msgstr ""
 
@@ -7583,7 +7587,7 @@ msgid "Your score is:"
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
-msgid "That's great! Bravo!"
+msgid "That’s great! Bravo!"
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
@@ -7591,7 +7595,7 @@ msgid "Can do better."
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
-msgid "It's not terrible, but there's room for improvement!"
+msgid "It’s not terrible, but there’s room for improvement!"
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
@@ -7600,11 +7604,11 @@ msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
 #, python-format
-msgid "For the question \"%(title)s\", %(error)s."
+msgid "For the question “%(title)s”, %(error)s."
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
-msgid "Right answer:"
+msgid "Correct answer:"
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
@@ -7623,8 +7627,8 @@ msgstr ""
 msgid "Validate"
 msgstr ""
 
-#: pod/quiz/templates/quiz/video_quiz_aside.html
-msgid "Answer the quiz"
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Manage quiz"
 msgstr ""
 
 #: pod/quiz/tests/test_views.py pod/quiz/views.py
@@ -7645,7 +7649,16 @@ msgid "Quiz creation for the video “%s”"
 msgstr ""
 
 #: pod/quiz/views.py
+#, python-format
+msgid "No answer defined for question %s."
+msgstr ""
+
+#: pod/quiz/views.py
 msgid "Quiz successfully created."
+msgstr ""
+
+#: pod/quiz/views.py
+msgid "Error during quiz creation."
 msgstr ""
 
 #: pod/quiz/views.py
@@ -7653,12 +7666,11 @@ msgid "Quiz successfully updated."
 msgstr ""
 
 #: pod/quiz/views.py
-msgid "The data sent to create the quiz are invalid."
+msgid "Error during quiz update."
 msgstr ""
 
 #: pod/quiz/views.py
-#, python-brace-format
-msgid "Quiz edition for the video: {video.title}"
+msgid "The data sent to create the quiz are invalid."
 msgstr ""
 
 #: pod/quiz/views.py
@@ -7971,8 +7983,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html

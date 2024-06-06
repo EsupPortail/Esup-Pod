@@ -308,7 +308,7 @@ def send_email_enhancement(video):
                 + ", and is now available on %(site_title)s."
             )
             % {
-                "content_title": "<b>%s</b>" % video.title,
+                "content_title": "<strong>%s</strong>" % video.title,
                 "site_title": __TITLE_SITE__,
             },
             _("You will find it here:"),

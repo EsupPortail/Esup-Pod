@@ -1,7 +1,17 @@
 /**
  * @file Esup-Pod functions for the quiz creation or edit form.
- * @since 3.6.0
+ * @since 3.7.0
  */
+
+// Read-only globals defined in video-script.html
+/*
+global player
+*/
+
+// Read-only globals defined in create_edit_quiz.html
+/*
+global initialData
+*/
 
 document.addEventListener("DOMContentLoaded", function () {
   let addQuestionButton = document.getElementById("add-question");
@@ -17,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let questionsTypeElements = document.querySelectorAll(
     ".question-select-type",
   );
-  for (questionTypeEl of questionsTypeElements) {
+  for (let questionTypeEl of questionsTypeElements) {
     addEventListenerQuestionType(questionTypeEl);
   }
 
@@ -34,9 +44,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!initialData) {
       return null;
     }
-    const questionIndex = questionForm.getAttribute("data-question-index");
-    const questionData = initialData.existing_questions[questionIndex];
-    return questionData;
+    const questionIndex = Number(questionForm.getAttribute("data-question-index"));
+    return initialData.existing_questions[questionIndex];
   }
 
   /**
@@ -44,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
    * @param {HTMLElement} questionTypeElement - The HTML element representing the question type.
    */
   function addEventListenerQuestionType(questionTypeElement) {
-    questionTypeElement.addEventListener("change", function (event) {
+    questionTypeElement.addEventListener("change", function () {
       let questionForm = questionTypeElement.closest(".question-form");
       handleQuestionType(questionForm);
     });
@@ -54,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let removeQuestionButtons = document.querySelectorAll(
     ".delete-question-button",
   );
-  for (removeQuestionButton of removeQuestionButtons) {
+  for (let removeQuestionButton of removeQuestionButtons) {
     removeQuestionButton.addEventListener("click", removeQuestionForm);
   }
 
@@ -148,7 +157,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const questionFormToDelete = event.target.closest(".question-form");
 
     if (questionFormToDelete) {
-      
+
+      // If the question already exist in Pod, we only hide in dom and send a "delete" input.
       const deleteInput = document.getElementById(`id_questions-${questionFormToDelete.getAttribute("data-question-index")}-DELETE`);
       if (deleteInput) {
         deleteInput.checked = true;
@@ -158,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const currentQuestionForms = document.querySelectorAll(".question-form");
         totalNewForms.setAttribute("value", currentQuestionForms.length - 1);
       }
-      
+
     }
   }
 
@@ -176,15 +186,16 @@ document.addEventListener("DOMContentLoaded", function () {
     input.type = "text";
     input.id = inputId;
     input.name = inputId;
+    input.required = true;
     input.placeholder = gettext("The short answer");
     input.classList.add("short-answer-field", "form-control");
 
     label.setAttribute("for", inputId);
     label.textContent = gettext("Short answer");
 
-    let initialData = getQuestionData(questionForm);
-    if (initialData && initialData["short_answer"] != null) {
-      input.value = initialData["short_answer"];
+    let qData = getQuestionData(questionForm);
+    if (qData && qData["short_answer"] != null) {
+      input.value = qData["short_answer"];
     }
 
     const questionChoicesForm = questionForm.querySelector(".question-choices-form");
@@ -203,15 +214,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     textarea.id = textareaId;
     textarea.name = textareaId;
+    textarea.required = true;
     textarea.placeholder = gettext("The long answer");
     textarea.classList.add("long-answer-field", "form-control");
 
     label.setAttribute("for", textareaId);
     label.textContent = gettext("Long answer");
 
-    let initialData = getQuestionData(questionForm);
-    if (initialData && initialData["long_answer"] != null) {
-      textarea.value = initialData["long_answer"];
+    let qData = getQuestionData(questionForm);
+    if (qData && qData["long_answer"] != null) {
+      textarea.value = qData["long_answer"];
     }
 
     const questionChoicesForm = questionForm.querySelector(".question-choices-form");
@@ -225,6 +237,7 @@ document.addEventListener("DOMContentLoaded", function () {
    */
   function handleSingleChoiceQuestion(questionForm) {
     const choicesForm = questionForm.querySelector(".question-choices-form");
+    const questionIndex = Number(questionForm.getAttribute("data-question-index"));
 
     const createChoiceElement = (index, choice) => {
       const choiceDiv = document.createElement("div");
@@ -232,29 +245,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const input = document.createElement("input");
       input.type = "radio";
+      input.required = true;
       input.classList.add("form-check-input");
+      message = gettext("Select the choice #%s as correct answer.");
+      input.title = interpolate(message, [index]);
       input.name = `choice-${questionForm.getAttribute("data-question-index")}`;
       input.id = `choice-${questionForm.getAttribute("data-question-index")}-${index}`;
 
       const deleteButton = document.createElement("a");
-      deleteButton.setAttribute('title', gettext("Remove choice") + ` ${index}`)
-      deleteButton.setAttribute('role', 'button')
-      deleteButton.classList.add(
+      const deleteIcon = document.createElement("i");
+      deleteIcon.classList.add(
         "bi",
-        "bi-trash",
+        "bi-trash"
+      );
+      deleteButton.appendChild(deleteIcon);
+      message = gettext("Remove choice %s");
+      deleteButton.setAttribute('title', interpolate(message, [index]));
+      deleteButton.setAttribute('role', 'button');
+      deleteButton.classList.add(
         "btn",
         "btn-link",
         "pod-btn-social",
       );
+
       deleteButton.addEventListener("click", function () {
         choiceDiv.remove();
       });
 
       const textInput = document.createElement("input");
-      textInput.id = `choice-text-${questionForm.getAttribute("data-question-index")}-${index}`;
-      textInput.name = `choice-text-${questionForm.getAttribute("data-question-index")}`;
+      textInput.id = `choice-text-${questionIndex}-${index}`;
+      textInput.name = `choice-text-${questionIndex}`;
       textInput.type = "text";
-      textInput.placeholder = gettext("Choice") + ` ${index}`;
+      textInput.required = true;
+      message = gettext("Choice #%s");
+      textInput.placeholder = interpolate(message, [index]);
       textInput.classList.add("form-control", "ms-2");
       if (choice) {
         textInput.value = choice[0];
@@ -266,12 +290,12 @@ document.addEventListener("DOMContentLoaded", function () {
       const inputLabel = document.createElement("label");
       inputLabel.setAttribute("for", input.id);
       inputLabel.textContent = textInput.placeholder;
-      inputLabel.classList.add("d-none")
+      inputLabel.classList.add("d-none");
 
       const textInputLabel = document.createElement("label");
       textInputLabel.setAttribute("for", textInput.id);
       textInputLabel.textContent = textInput.placeholder;
-      textInputLabel.classList.add("d-none")
+      textInputLabel.classList.add("d-none");
 
       choiceDiv.appendChild(inputLabel);
       choiceDiv.appendChild(input);
@@ -285,12 +309,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const fieldset = document.createElement("fieldset");
     const legend = document.createElement("legend");
     legend.classList.add("col-form-label");
-    legend.textContent = gettext("Your choices");
+    let message = gettext("Choices for question #%s");
+    legend.textContent = interpolate(message, [questionIndex+1]);
     fieldset.appendChild(legend);
 
-    let initialData = getQuestionData(questionForm);
-    if (initialData && initialData["choices"] != null) {
-      const initialChoices = Object.entries(initialData["choices"]);
+    let qData = getQuestionData(questionForm);
+    if (qData && qData["choices"] != null) {
+      const initialChoices = Object.entries(qData["choices"]);
       for (let i = 0; i < initialChoices.length; i++) {
         fieldset.appendChild(createChoiceElement(i + 1, initialChoices[i]));
       }
@@ -303,7 +328,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const addButton = document.createElement("button");
     addButton.textContent = gettext("Add a choice");
     addButton.type = "button";
-    addButton.classList.add("btn", "btn-outline-secondary", "btn-sm", "mt-2");
+    addButton.classList.add("btn", "btn-primary", "btn-sm", "mt-2");
     addButton.addEventListener("click", function () {
       fieldset.appendChild(
         createChoiceElement(
@@ -322,6 +347,7 @@ document.addEventListener("DOMContentLoaded", function () {
    */
   function handleMultipleChoiceQuestion(questionForm) {
     const choicesForm = questionForm.querySelector(".question-choices-form");
+    const questionIndex = Number(questionForm.getAttribute("data-question-index"));
 
     const createChoiceElement = (index, choice) => {
       const choiceDiv = document.createElement("div");
@@ -330,20 +356,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const input = document.createElement("input");
       input.type = "checkbox";
+      let message = gettext("Select the choice #%s as correct answer.");
+      input.title = interpolate(message, [index]);
       input.classList.add("form-check-input");
-      input.name = `choice-${questionForm.getAttribute("data-question-index")}`;
-      input.id = `choice-${questionForm.getAttribute("data-question-index")}-${index}`;
+      input.name = `choice-${questionIndex}`;
+      input.id = `choice-${questionIndex}-${index}`;
 
       const deleteButton = document.createElement("a");
-      deleteButton.setAttribute('title', gettext("Remove choice") + ` ${index}`)
-      deleteButton.setAttribute('role', 'button')
-      deleteButton.classList.add(
+      message = gettext("Remove choice #%s");
+      const deleteIcon = document.createElement("i");
+      deleteIcon.classList.add(
         "bi",
-        "bi-trash",
+        "bi-trash"
+      );
+      deleteButton.appendChild(deleteIcon);
+      deleteButton.setAttribute('title', interpolate(message, [index]));
+      deleteButton.setAttribute('role', 'button');
+      deleteButton.classList.add(
         "btn",
         "btn-link",
         "pod-btn-social",
-        "py-0",
       );
       deleteButton.addEventListener("click", function () {
         choiceDiv.remove();
@@ -351,9 +383,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const textInput = document.createElement("input");
       textInput.type = "text";
+      textInput.required = true;
       textInput.id = `choice-text-${questionForm.getAttribute("data-question-index")}-${index}`;
       textInput.name = `choice-text-${questionForm.getAttribute("data-question-index")}`;
-      textInput.placeholder = gettext("Choice") + ` ${index}`;
+      message = gettext("choice #%s");
+      textInput.placeholder = interpolate(message, [index]);
       textInput.classList.add("form-control", "ms-2");
       if (choice) {
         textInput.value = choice[0];
@@ -384,12 +418,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const fieldset = document.createElement("fieldset");
     const legend = document.createElement("legend");
     legend.classList.add("col-form-label");
-    legend.textContent = gettext("Your choices");
+    let message = gettext("Choices for question #%s");
+    legend.textContent = interpolate(message, [questionIndex+1]);
     fieldset.appendChild(legend);
 
-    let initialData = getQuestionData(questionForm);
-    if (initialData && initialData["choices"] != null) {
-      const initialChoices = Object.entries(initialData["choices"]);
+    let qData = getQuestionData(questionForm);
+    if (qData && qData["choices"] != null) {
+      const initialChoices = Object.entries(qData["choices"]);
       for (let i = 0; i < initialChoices.length; i++) {
         fieldset.appendChild(createChoiceElement(i + 1, initialChoices[i]));
       }
@@ -402,7 +437,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const addButton = document.createElement("button");
     addButton.textContent = gettext("Add a choice");
     addButton.type = "button";
-    addButton.classList.add("btn", "btn-outline-secondary", "btn-sm", "mt-2");
+    addButton.classList.add("btn", "btn-primary", "btn-sm", "mt-2");
     addButton.addEventListener("click", function () {
       fieldset.appendChild(
         createChoiceElement(
@@ -477,14 +512,13 @@ document.addEventListener("DOMContentLoaded", function () {
       buttonElement.classList.add(
         "get-timestamp-from-video",
         "btn",
-        "btn-outline-secondary",
+        "btn-secondary",
         "btn-sm",
-        "ms-2",
-        "mb-2",
+        "m-1"
       );
       buttonElement.textContent = gettext("Get time from the player");
 
-      buttonElement.addEventListener("click", (event) => {
+      buttonElement.addEventListener("click", () => {
         if (!(typeof player === "undefined")) {
           htmlElement.value = Math.floor(player.currentTime());
         }
@@ -506,36 +540,47 @@ document.addEventListener("DOMContentLoaded", function () {
     let submissionButton = document.getElementById("quiz-submission-button");
 
     submissionButton.addEventListener("click", (event) => {
-      if (event) {
-        event.preventDefault();
-      }
-
-      let questionFormsList = document.querySelectorAll(".question-form");
-      for (questionForm of questionFormsList) {
-        const questionType = questionForm.querySelector(
-          ".question-select-type",
-        ).value;
-        switch (questionType) {
-          case "short_answer":
-            handleShortAnswerSubmission(questionForm);
-            break;
-          case "long_answer":
-            handleLongAnswerSubmission(questionForm);
-            break;
-          case "single_choice":
-            handleSingleChoiceSubmission(questionForm);
-            break;
-          case "multiple_choice":
-            handleMultipleChoiceSubmission(questionForm);
-            break;
-          // Add other cases for other type of question
-          default:
-            break;
-        }
-      }
       let form = document.getElementById("quiz-form");
-      console.log(form);
-      form.submit();
+
+      if (form.reportValidity() === false) {
+        showalert(
+          gettext("There are errors in the form, please correct them."),
+          "alert-danger",
+        );
+        event.preventDefault();
+        event.stopPropagation();
+        form.classList.add("was-validated");
+      } else {
+        form.classList.add("was-validated");
+        if (form.dataset.morecheck) {
+          window[form.dataset.morecheck](form, event);
+        }
+        let questionFormsList = document.querySelectorAll(".question-form");
+        for (let questionForm of questionFormsList) {
+          console.log(questionForm);
+          const questionType = questionForm.querySelector(
+            ".question-select-type",
+          ).value;
+          switch (questionType) {
+            case "short_answer":
+              handleShortAnswerSubmission(questionForm);
+              break;
+            case "long_answer":
+              handleLongAnswerSubmission(questionForm);
+              break;
+            case "single_choice":
+              handleSingleChoiceSubmission(questionForm);
+              break;
+            case "multiple_choice":
+              handleMultipleChoiceSubmission(questionForm);
+              break;
+            // Add other cases for other type of question
+            default:
+              break;
+          }
+        }
+        form.submit();
+      }
     });
   }
 

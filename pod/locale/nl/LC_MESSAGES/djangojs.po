@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-04 13:25+0000\n"
-"PO-Revision-Date: 2024-04-15 14:27+0200\n"
+"POT-Creation-Date: 2024-06-05 15:31+0000\n"
+"PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
 
 #: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
 msgid "No discipline"
@@ -436,7 +436,7 @@ msgstr ""
 msgid "Text copied"
 msgstr ""
 
-#: pod/main/static/js/main.js
+#: pod/main/static/js/main.js pod/quiz/static/quiz/js/create-quiz.js
 msgid "There are errors in the form, please correct them."
 msgstr ""
 
@@ -629,19 +629,49 @@ msgid "Long answer"
 msgstr ""
 
 #: pod/quiz/static/quiz/js/create-quiz.js
-msgid "Remove choice"
+#, javascript-format
+msgid "Select the choice #%s as correct answer."
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "Remove choice %s"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "Choice #%s"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "Choices for question #%s"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Add a choice"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "Remove choice #%s"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "choice #%s"
 msgstr ""
 
 #: pod/quiz/static/quiz/js/create-quiz.js
 msgid "Choice"
 msgstr ""
 
-#: pod/quiz/static/quiz/js/create-quiz.js
-msgid "Your choices"
+#: pod/quiz/static/quiz/js/video-quiz-submit.js
+msgid "Correct answer given"
 msgstr ""
 
-#: pod/quiz/static/quiz/js/create-quiz.js
-msgid "Add a choice"
+#: pod/quiz/static/quiz/js/video-quiz-submit.js
+msgid "Incorrect answer given"
 msgstr ""
 
 #: pod/video/static/js/ajax-display-channels.js

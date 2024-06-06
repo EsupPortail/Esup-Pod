@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 from django.views.decorators.csrf import csrf_protect
 from pod.main.views import in_maintenance
 
@@ -66,7 +67,7 @@ def create_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
             request.POST,
             prefix="questions",
         )
-        return handle_post_request_for_create_or_edit_quiz(
+        quiz_form = handle_post_request_for_create_or_edit_quiz(
             request, video, question_formset, action="create"
         )
     else:
@@ -87,7 +88,7 @@ def create_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
 
 def update_questions(existing_quiz: Quiz, question_formset) -> None:
     """
-    Updates existing questions in a given quiz based on the provided formset.
+    Update existing questions in a given quiz based on the provided formset.
 
     Args:
         existing_quiz (Quiz): The existing quiz instance.
@@ -96,45 +97,52 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
     for question_form in question_formset:
         question_type = question_form.cleaned_data.get("type")
         question_id = question_form.cleaned_data.get("question_id")
-        if question_id is None and question_form.cleaned_data.get("DELETE"):
-            continue  # to prevent empty question not filled
-        title = question_form.cleaned_data["title"]
-        explanation = question_form.cleaned_data["explanation"]
-        start_timestamp = question_form.cleaned_data["start_timestamp"]
-        end_timestamp = question_form.cleaned_data["end_timestamp"]
         if question_id:
             existing_question = get_question(question_type, question_id, existing_quiz)
-            if not existing_question:
-                continue
-            if question_form.cleaned_data.get("DELETE"):
-                existing_question.delete()
-            else:
-                existing_question.title = title
-                existing_question.explanation = explanation
-                existing_question.start_timestamp = start_timestamp
-                existing_question.end_timestamp = end_timestamp
-                if question_type in {"short_answer", "long_answer"}:
-                    existing_question.answer = question_form.cleaned_data[question_type]
-                elif question_type in {"single_choice", "multiple_choice"}:
-                    existing_question.choices = question_form.cleaned_data[question_type]
-                existing_question.save()
-        else:
+            if existing_question:
+                if not question_form.cleaned_data[question_type]:
+                    raise ValidationError(_("No answer defined for question %s.") % question_id)
+                update_question(existing_question, question_form.cleaned_data)
+        elif not question_form.cleaned_data.get("DELETE"):
             create_question(
                 question_type=question_type,
                 quiz=existing_quiz,
-                title=title,
-                explanation=explanation,
-                start_timestamp=start_timestamp,
-                end_timestamp=end_timestamp,
+                title=question_form.cleaned_data["title"],
+                explanation=question_form.cleaned_data["explanation"],
+                start_timestamp=question_form.cleaned_data["start_timestamp"],
+                end_timestamp=question_form.cleaned_data["end_timestamp"],
                 question_data=question_form.cleaned_data[question_type],
             )
 
 
+def update_question(existing_question: Question, cleaned_data) -> None:
+    """
+    Update existing question in a given quiz based on the provided form data.
+
+    Args:
+        existing_question (Question): The existing quiz instance.
+        cleaned_data: The updated question data.
+    """
+    if cleaned_data.get("DELETE"):
+        existing_question.delete()
+    else:
+        question_type = cleaned_data.get("type")
+        existing_question.title = cleaned_data["title"]
+        existing_question.explanation = cleaned_data["explanation"]
+        existing_question.start_timestamp = cleaned_data["start_timestamp"]
+        existing_question.end_timestamp = cleaned_data["end_timestamp"]
+        if question_type in {"short_answer", "long_answer"}:
+            existing_question.answer = cleaned_data[question_type]
+        elif question_type in {"single_choice", "multiple_choice"}:
+            existing_question.choices = cleaned_data[question_type]
+        existing_question.save()
+
+
 def handle_post_request_for_create_or_edit_quiz(
     request: WSGIRequest, video: Video, question_formset, action: str
-) -> HttpResponse:
+) -> QuizForm:
     """
-    Handles the POST request for creating or editing a quiz associated with a video.
+    Handle the POST request for creating or editing a quiz associated with a video.
 
     Args:
         request (WSGIRequest): The HTTP request.
@@ -143,28 +151,41 @@ def handle_post_request_for_create_or_edit_quiz(
         action (str): The action to perform - "create" or "edit".
 
     Returns:
-        HttpResponse: The HTTP response for rendering the appropriate template.
+        QuizForm: The HTTP response for rendering the appropriate template.
     """
     quiz_form = QuizForm(request.POST)
     if quiz_form.is_valid() and question_formset.is_valid():
+
         if action == "create":
             new_quiz = create_or_edit_quiz_instance(video, quiz_form, action)
-            create_questions(new_quiz, question_formset)
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                _("Quiz successfully created."),
-            )
+            if new_quiz:
+                create_questions(new_quiz, question_formset)
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    _("Quiz successfully created."),
+                )
+            else:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    _("Error during quiz creation."),
+                )
         elif action == "edit":
             new_quiz = create_or_edit_quiz_instance(video, quiz_form, action)
-            update_questions(new_quiz, question_formset)
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                _("Quiz successfully updated."),
-            )
-        return redirect(reverse("quiz:edit_quiz", args=[video.slug]))
-        # return HttpResponseRedirect(reverse("video:video", kwargs={"slug": video.slug}))
+            if new_quiz:
+                update_questions(new_quiz, question_formset)
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    _("Quiz successfully updated."),
+                )
+            else:
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    _("Error during quiz update."),
+                )
     else:
         messages.add_message(
             request,
@@ -172,16 +193,7 @@ def handle_post_request_for_create_or_edit_quiz(
             _("The data sent to create the quiz are invalid."),
         )
 
-    return render(
-        request,
-        "quiz/create_edit_quiz.html",
-        {
-            "page_title": _(f"Quiz edition for the video: {video.title}"),
-            "quiz_form": quiz_form,
-            "question_formset": question_formset,
-            "video": video,
-        },
-    )
+    return quiz_form
 
 
 def get_question(question_type: str, question_id: int, quiz: Quiz):
@@ -224,7 +236,7 @@ def create_or_edit_quiz_instance(
     video: Video, quiz_form: QuizForm, action: str
 ) -> Optional[Quiz]:
     """
-    Creates a new quiz instance or updates an existing one based on the provided action.
+    Create a new quiz instance or update an existing one based on the provided action.
 
     Args:
         video (Video): The associated video instance.
@@ -299,7 +311,7 @@ def create_question(
 
 def create_questions(new_quiz: Quiz, question_formset) -> None:
     """
-    Creates and associates questions with a given quiz based on the provided formset.
+    Create and associate questions with a given quiz based on the provided formset.
 
     Args:
         new_quiz (Quiz): The newly created quiz instance.
@@ -486,7 +498,7 @@ def delete_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         if form.is_valid():
             quiz.delete()
             messages.add_message(request, messages.INFO, _("The quiz has been deleted."))
-            return redirect(reverse("video:video", kwargs={"slug": video.slug}))
+            return redirect(reverse("video:completion:video_completion", kwargs={"slug": video.slug}))
         else:
             messages.add_message(
                 request,
@@ -534,6 +546,10 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
 
     quiz = get_object_or_404(Quiz, video=video)
     existing_questions = quiz.get_questions()
+    if existing_questions != []:
+        initial_data = get_initial_data(existing_questions)
+    else:
+        initial_data = None
     extra = 2 if existing_questions == [] else 0
     question_formset_factory = formset_factory(QuestionForm, extra=extra, can_delete=True)
     if request.method == "POST":
@@ -552,7 +568,7 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
                 for question in existing_questions
             ],
         )
-        return handle_post_request_for_create_or_edit_quiz(
+        quiz_form = handle_post_request_for_create_or_edit_quiz(
             request, video, question_formset, action="edit"
         )
     else:
@@ -562,9 +578,6 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
                 "show_correct_answers": quiz.show_correct_answers,
             }
         )
-        initial_data = None
-        if existing_questions != []:
-            initial_data = get_initial_data(existing_questions=existing_questions)
 
         question_formset = question_formset_factory(
             prefix="questions",
@@ -616,7 +629,7 @@ def get_initial_data(existing_questions=None) -> str:
                         question.answer if question.get_type() == "long_answer" else None
                     ),
                     "choices": (
-                        json.loads(question.choices)
+                        json.loads(question.get_choices())
                         if question.get_type() in {"single_choice", "multiple_choice"}
                         else None
                     ),
@@ -625,4 +638,6 @@ def get_initial_data(existing_questions=None) -> str:
                 for question in existing_questions
             ],
         }
-    return json.dumps(initial_data)
+        return json.dumps(initial_data)
+    else:
+        return None

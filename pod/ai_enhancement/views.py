@@ -116,7 +116,7 @@ def send_enhancement_creation_request(
                     messages.add_message(
                         request,
                         messages.ERROR,
-                        _("Something wrong... Status error: ")
+                        _("Something wrong… Status error: ")
                         + creation_response["status"],
                     )
             else:
@@ -202,7 +202,7 @@ def delete_enhancement_request(
                         messages.add_message(
                             request,
                             messages.ERROR,
-                            _("Something wrong... Status error: ")
+                            _("Something wrong… Status error: ")
                             + deletion_response["status"],
                         )
                 else:

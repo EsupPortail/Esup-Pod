@@ -1,36 +1,17 @@
 {% load i18n %}
 {% load video_quiz %}
 
-
 <h2 class="card-header card-title pod-card__title h4 align-middle">
   <i class="bi bi-controller" aria-hidden="true"></i>&nbsp;{% trans "Quiz"%}
 </h2>
 
-<div class="card-body card-text text-center d-flex flex-column align-items-center gap-2">
+<div class="card-body card-text d-flex justify-content-evenly">
   {% is_quiz_accessible video as is_quiz_accessible %}
   {% if is_quiz_accessible %}
-    <a class="btn btn-primary btn-sm" href="{% url 'quiz:video_quiz' video.slug %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Answer the quiz" %}" role="button">
+    <a class="btn btn-primary btn-sm m-1" href="{% url 'quiz:video_quiz' video.slug %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Answer the quiz" %}" role="button">
       <i class="bi bi-controller pod-nav-link-icon mx-1" aria-hidden="true"></i>
       <span class="ms-1 d-none d-md-inline">{% trans 'Answer the quiz' %}</span>
     </a>
   {% endif %}
-
-  {% is_quiz_exists video as is_quiz_exists %}
-  {% if video.owner == request.user or request.user in video.additional_owners.all %}
-    {% if is_quiz_exists %}
-      <a class="btn btn-secondary btn-sm" href="{% url 'quiz:edit_quiz' video_slug=video.slug %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Edit your quiz" %}" role="button">
-        <i class="bi bi-pencil pod-nav-link-icon mx-1" aria-hidden="true"></i>
-        <span class="ms-1 d-none d-md-inline">{% trans 'Edit your quiz' %}</span>
-      </a>
-      <a class="btn btn-danger btn-sm" href="{% url 'quiz:remove_quiz' video_slug=video.slug %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Delete your quiz" %}" role="button">
-        <i class="bi bi-trash pod-nav-link-icon mx-1" aria-hidden="true"></i>
-        <span class="ms-1 d-none d-md-inline">{% trans 'Delete your quiz' %}</span>
-      </a>
-    {% else %}
-      <a class="btn btn-secondary btn-sm" href="{% url 'quiz:add_quiz' video_slug=video.slug %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Create a quiz" %}" role="button">
-        <i class="bi bi-patch-question pod-nav-link-icon mx-1" aria-hidden="true"></i>
-        <span class="ms-1 d-none d-md-inline">{% trans 'Create a quiz' %}</span>
-      </a>
-    {% endif %}
-  {% endif %}
+  {% include 'quiz/manage_quiz.html' %}
 </div>
