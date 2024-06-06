@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-05 15:31+0000\n"
+"POT-Creation-Date: 2024-06-06 07:49+0000\n"
 "PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -472,7 +472,7 @@ msgid "-- All languages --"
 msgstr ""
 
 #: pod/ai_enhancement/views.py
-msgid "Something wrong... Status error: "
+msgid "Something wrong… Status error: "
 msgstr ""
 
 #: pod/ai_enhancement/views.py
@@ -2067,8 +2067,10 @@ msgstr ""
 msgid "Add a new overlay"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html
-msgid "Quiz(zes)"
+#: pod/completion/templates/video_completion.html pod/quiz/apps.py
+#: pod/quiz/models.py pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/video_quiz_aside.html
+msgid "Quiz"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -2158,7 +2160,7 @@ msgstr ""
 
 #: pod/completion/templates/video_completion.html
 msgid ""
-"Quizzes allow you to test the memorization and comprehension of your video."
+"A Quiz allow you to test the memorization and comprehension of your video."
 msgstr ""
 
 #: pod/completion/tests/test_views.py
@@ -7295,12 +7297,6 @@ msgstr ""
 msgid "Allow"
 msgstr ""
 
-#: pod/quiz/apps.py pod/quiz/models.py
-#: pod/quiz/templates/quiz/create_edit_quiz.html
-#: pod/quiz/templates/quiz/video_quiz_aside.html
-msgid "Quiz"
-msgstr ""
-
 #: pod/quiz/forms.py
 msgid "Redaction"
 msgstr ""
@@ -7469,6 +7465,11 @@ msgid "End timestamp cannot be defined without a start timestamp."
 msgstr ""
 
 #: pod/quiz/models.py
+#, python-format
+msgid "Question “%s”"
+msgstr ""
+
+#: pod/quiz/models.py
 msgid "Choices"
 msgstr ""
 
@@ -7586,7 +7587,7 @@ msgid "Your score is:"
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
-msgid "That's great! Bravo!"
+msgid "That’s great! Bravo!"
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
@@ -7603,9 +7604,7 @@ msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
 #, python-format
-msgid ""
-"\n"
-"          For the question “%(title)s”, %(error)s."
+msgid "For the question “%(title)s”, %(error)s."
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html

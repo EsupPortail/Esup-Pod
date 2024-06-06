@@ -36,6 +36,8 @@ class Quiz(models.Model):
     )
 
     class Meta:
+        """Quiz Metadata."""
+
         ordering = ["id"]
         verbose_name = _("Quiz")
         verbose_name_plural = _("Quizzes")
@@ -142,7 +144,7 @@ class Question(models.Model):
 
     def __str__(self) -> str:
         """Represent the question as string."""
-        return "%s “%s”" % (_("Question"), self.title)
+        return _("Question “%s”") % self.title
 
     def get_question_form(self, data=None):
         """
@@ -397,6 +399,7 @@ class ShortAnswerQuestion(Question):
     def get_question_form(self, data=None):
         """
         Get the form for the question.
+
         Args:
             data (dict): Form data.
         Returns:
@@ -440,6 +443,7 @@ class LongAnswerQuestion(Question):
     def get_question_form(self, data=None):
         """
         Get the form for the question.
+
         Args:
             data (dict): Form data.
         Returns:

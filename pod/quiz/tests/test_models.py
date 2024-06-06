@@ -84,7 +84,7 @@ class QuestionModelTests(TestCase):
 
     def test_string_representation(self) -> None:
         """Test if test_string_representation works correctly."""
-        expected_string = f"{_('Question')} “{self.UCQ1.title}” choices: {self.UCQ1.choices}"
+        expected_string = f"{_('Question “%s”') % self.UCQ1.title} choices: {self.UCQ1.choices}"
         self.assertEqual(str(self.UCQ1), expected_string)
         print(" --->  test_string_representation ok")
 
@@ -170,9 +170,9 @@ class SingleChoiceQuestionModelTests(TestCase):
 
         print(" --->  test_clean ok")
 
-    def test_string_representation(self) -> None:
+    def test_scq_str_representation(self) -> None:
         """Check single choice question string representation."""
-        expected_string = f"{_('Question')} “{self.normal_question.title}” choices: {self.normal_question.choices}"
+        expected_string = f"{_('Question “%s”') % self.normal_question.title} choices: {self.normal_question.choices}"
         self.assertEqual(str(self.normal_question), expected_string)
         print(" --->  test_string_representation ok")
 
@@ -241,9 +241,9 @@ class MultipleChoiceQuestionModelTests(TestCase):
 
         print(" --->  test_clean ok")
 
-    def test_string_representation(self) -> None:
+    def test_mcq_str_representation(self) -> None:
         """Check Multiple choice question string representation."""
-        expected_string = f"{_('Question')} “{self.normal_question.title}” choices: {self.normal_question.choices}"
+        expected_string = f"{_('Question “%s”') % self.normal_question.title} choices: {self.normal_question.choices}"
         self.assertEqual(str(self.normal_question), expected_string)
         print(" --->  test_string_representation ok")
 
@@ -297,7 +297,7 @@ class ShortAnwerQuestionTest(TestCase):
 
     def test_string_representation(self) -> None:
         """Check short answer question string representation."""
-        expected_string = f"{_('Question')} “{self.normal_question.title}”"
+        expected_string = _("Question “%s”") % self.normal_question.title
         self.assertEqual(str(self.normal_question), expected_string)
         print(" --->  test_string_representation ok")
 
@@ -351,7 +351,7 @@ class LongAnswerQuestionTest(TestCase):
 
     def test_string_representation(self) -> None:
         """Check long answer question string representation."""
-        expected_string = f"{_('Question')} “{self.normal_question.title}”"
+        expected_string = _("Question “%s”") % self.normal_question.title
         self.assertEqual(str(self.normal_question), expected_string)
         print(" --->  test_string_representation ok")
 

@@ -26,7 +26,7 @@
     {% if percentage_score >= 75 %}
       <div class="alert alert-success" role="alert">
         <p>{% trans "Your score is:" %} {{ percentage_score|floatformat:2 }}%</p>
-        <p class="m-0">{% trans "That's great! Bravo!" %}</p>
+        <p class="m-0">{% trans "That’s great! Bravo!" %}</p>
       </div>
     {% elif percentage_score >= 45 %}
       <div class="alert alert-warning" role="alert">
@@ -44,8 +44,7 @@
       <p>{% trans "Error found in form" %}</p>
       {% for question_title, question_error in questions_form_errors.items %}
         <p>
-          {% blocktranslate with title=question_title error=question_error|lower %}
-          For the question “{{ title }}”, {{ error }}.{% endblocktranslate %}
+          {% blocktranslate with title=question_title error=question_error|lower %}For the question “{{ title }}”, {{ error }}.{% endblocktranslate %}
         </p>
       {% endfor %}
     </div>
