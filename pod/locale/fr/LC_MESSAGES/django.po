@@ -2260,15 +2260,11 @@ msgstr ""
 "afficher avec l’option \"Afficher le fond\""
 
 #: pod/completion/templates/video_completion.html
-#, fuzzy
-#| msgid ""
-#| "Quizzes allow you to test the memorization and comprehension of your "
-#| "video."
 msgid ""
 "A Quiz allow you to test the memorization and comprehension of your video."
 msgstr ""
-"Les quiz vous permettent de tester la mémorisation et la compréhension de "
-"votre vidéo."
+"Un quiz vous permet de tester la mémorisation et la compréhension de votre "
+"vidéo."
 
 #: pod/completion/tests/test_views.py
 msgid "editor"
@@ -6880,7 +6876,7 @@ msgstr ""
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<strong>%(password)s</strong> </p>\n"
+"<strong>%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -6905,7 +6901,7 @@ msgstr ""
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<strong>%(password)s</strong> </p>\n"
+"<strong>%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -6934,7 +6930,7 @@ msgstr ""
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<strong>%(password)s</strong> </p>\n"
+"<strong>%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -7955,20 +7951,15 @@ msgid "End timestamp cannot be defined without a start timestamp."
 msgstr "L’horodatage de fin ne peut être défini sans l’heure de début."
 
 #: pod/quiz/models.py
-#, fuzzy, python-format
-#| msgid "Questions"
+#, python-format
 msgid "Question “%s”"
-msgstr "Questions"
+msgstr "Question « %s »"
 
 #: pod/quiz/models.py
 msgid "Choices"
 msgstr "Choix"
 
 #: pod/quiz/models.py
-#, fuzzy
-#| msgid ""
-#| "Choices must be like this: {'choice 1': true, 'choice 2': false, …} | "
-#| "true for the right choice, false for the wrong choices."
 msgid ""
 "Choices must be like this: {'choice 1': true, 'choice 2': false, ...} | true "
 "for the right choice, false for the wrong choices."
@@ -7993,10 +7984,6 @@ msgid "Invalid JSON format for choices."
 msgstr "Format JSON invalide pour les choix."
 
 #: pod/quiz/models.py
-#, fuzzy
-#| msgid ""
-#| "Choices must be like this: {'choice 1': true, 'choice 2': true, 'choice "
-#| "3': false, …} | true for the right choice, false for the wrong choices."
 msgid ""
 "Choices must be like this: {'choice 1': true, 'choice 2': true, 'choice 3': "
 "false, ...} | true for the right choice, false for the wrong choices."
@@ -8106,14 +8093,9 @@ msgid "Error found in form"
 msgstr "Erreur constatée dans le formulaire"
 
 #: pod/quiz/templates/quiz/video_quiz.html
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "          For the question “%(title)s”, %(error)s."
+#, python-format
 msgid "For the question “%(title)s”, %(error)s."
-msgstr ""
-"\n"
-"          Pour la question « %(title)s », %(error)s."
+msgstr "Pour la question « %(title)s », %(error)s."
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Correct answer:"
