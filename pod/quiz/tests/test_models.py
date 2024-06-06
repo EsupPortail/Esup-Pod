@@ -84,7 +84,9 @@ class QuestionModelTests(TestCase):
 
     def test_string_representation(self) -> None:
         """Test if test_string_representation works correctly."""
-        expected_string = f"{_('Question “%s”') % self.UCQ1.title} choices: {self.UCQ1.choices}"
+        expected_string = (
+            f"{_('Question “%s”') % self.UCQ1.title} choices: {self.UCQ1.choices}"
+        )
         self.assertEqual(str(self.UCQ1), expected_string)
         print(" --->  test_string_representation ok")
 

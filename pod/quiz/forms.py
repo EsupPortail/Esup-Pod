@@ -48,25 +48,23 @@ class QuestionForm(forms.Form):
             }
         ),
         required=False,
-        help_text=_("An explanation that will be displayed once the user has responded (feedback)."),
+        help_text=_(
+            "An explanation that will be displayed once the user has responded (feedback)."
+        ),
     )
     start_timestamp = forms.IntegerField(
         label=_("Start timestamp"),
         required=False,
         min_value=0,
         widget=forms.NumberInput(attrs={"class": "start-timestamp-field"}),
-        help_text=_(
-            "The start time of the answer in the video (in seconds)."
-        ),
+        help_text=_("The start time of the answer in the video (in seconds)."),
     )
     end_timestamp = forms.IntegerField(
         label=_("End timestamp"),
         required=False,
         min_value=0,
         widget=forms.NumberInput(attrs={"class": "end-timestamp-field"}),
-        help_text=_(
-            "The end time of the answer in the video (in seconds)."
-        ),
+        help_text=_("The end time of the answer in the video (in seconds)."),
     )
     type = forms.ChoiceField(
         choices=QUESTION_TYPES,

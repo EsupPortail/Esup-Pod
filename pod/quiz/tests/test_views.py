@@ -307,7 +307,10 @@ class DeleteQuizViewsTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(
-            response, reverse("video:completion:video_completion", kwargs={"slug": self.video.slug})
+            response,
+            reverse(
+                "video:completion:video_completion", kwargs={"slug": self.video.slug}
+            ),
         )
         self.assertIn(_("The quiz has been deleted."), messages)
         self.assertFalse(Quiz.objects.filter(video=self.video).exists())

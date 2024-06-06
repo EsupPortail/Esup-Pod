@@ -101,7 +101,9 @@ def update_questions(existing_quiz: Quiz, question_formset) -> None:
             existing_question = get_question(question_type, question_id, existing_quiz)
             if existing_question:
                 if not question_form.cleaned_data[question_type]:
-                    raise ValidationError(_("No answer defined for question %s.") % question_id)
+                    raise ValidationError(
+                        _("No answer defined for question %s.") % question_id
+                    )
                 update_question(existing_question, question_form.cleaned_data)
         elif not question_form.cleaned_data.get("DELETE"):
             create_question(
@@ -498,7 +500,9 @@ def delete_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
         if form.is_valid():
             quiz.delete()
             messages.add_message(request, messages.INFO, _("The quiz has been deleted."))
-            return redirect(reverse("video:completion:video_completion", kwargs={"slug": video.slug}))
+            return redirect(
+                reverse("video:completion:video_completion", kwargs={"slug": video.slug})
+            )
         else:
             messages.add_message(
                 request,

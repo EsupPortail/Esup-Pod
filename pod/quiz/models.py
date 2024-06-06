@@ -97,16 +97,12 @@ class Question(models.Model):
     start_timestamp = models.PositiveIntegerField(
         verbose_name=_("Start timestamp"),
         null=True,
-        help_text=_(
-            "The start time of the answer in the video (in seconds)."
-        ),
+        help_text=_("The start time of the answer in the video (in seconds)."),
     )
     end_timestamp = models.PositiveIntegerField(
         verbose_name=_("End timestamp"),
         null=True,
-        help_text=_(
-            "The end time of the answer in the video (in seconds)."
-        ),
+        help_text=_("The end time of the answer in the video (in seconds)."),
     )
 
     class Meta:
