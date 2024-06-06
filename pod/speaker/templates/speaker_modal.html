@@ -1,0 +1,30 @@
+{% load i18n %}
+<div class="modal fade" id="addSpeakerModal" tabindex="-1" aria-labelledby="addSpeakerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="addSpeakerForm" method="post" action="{% url 'speaker:speaker_management' %}">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="addSpeakerModalLabel">Add Speaker</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                    {% csrf_token %}
+                    {{ speaker_form.as_p }}
+                    <input type="hidden" name="action" value="add" />
+                    <div id="jobFieldsContainer" class="mb-3">
+                        <label for="jobTitle" class="form-label">Jobs</label>
+                        <div class="input-group mb-2">
+                            <input type="text" class="form-control" name="jobs[]" placeholder="Job Title">
+                            <button type="button" class="btn btn-secondary add-job-field"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Speaker</button>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Add Speaker</button>
+                <button type="button" id="cancelDialog" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+              </div>
+        </div>
+    </form>
+    </div>
+</div>
