@@ -71,7 +71,7 @@ applyBulkUpdateBtn.addEventListener("click", () => {
     true,
   );
   modal.querySelector(".modal-body").innerHTML =
-    "<p>" + modalConfirmStr + "</p>" + getHTMLBadgesSelectedTitles();
+    "<p>" + modalConfirmStr + "</p>" + getHTMLBadgesSelectedTitles(videosListContainerId);
 });
 
 /**

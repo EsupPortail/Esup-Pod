@@ -30,7 +30,7 @@ function getListSelectedVideosTitles(container) {
   if (selectedVideos[container].length > 0) {
     Array.from(selectedVideos[container]).forEach((v) => {
       let item = document.querySelector(
-        ".infinite-item.selected[data-slug='" + v + "']",
+        "#" + container + " .infinite-item[data-slug='" + v + "']"
       );
       selectedTitles.push(
         item.querySelector(".dashboard-video-title").getAttribute("title"),
@@ -146,7 +146,7 @@ function resetDashboardElements() {
 /**
  * Get list of selected videos slugs (HTML li formated) for modal confirm display
  */
-function getHTMLBadgesSelectedTitles() {
+function getHTMLBadgesSelectedTitles(container) {
   let str = "";
   Array.from(getListSelectedVideosTitles(container)).forEach((title) => {
     str +=
