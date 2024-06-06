@@ -4,8 +4,10 @@
 
 <div id="videos_list" class="pod-infinite-container pod-infinite-grid-container-dashbord infinite-container dashboard-container" data-nextpage="{{ videos.has_next|yesno:'true,false' }}" data-countvideos="{{ count_videos }}">
   {% for video in videos %}
-    <div class="infinite-item" data-slug={{video.slug}} onclick="toggleSelectedVideo(this,'videos_list')" onkeydown="toggleSelectedVideo(this,'videos_list')" tabindex="0">
-      {% include "videos/card_select.html" %}
+    <div class="infinite-item" data-slug={{video.slug}} tabindex="0">
+        <a href="{% url 'video:video' video.slug %}" title="{% trans 'Play' %}">
+            {% include "videos/card_select.html" %}
+        </a>
     </div>
   {% empty %}
     <div>

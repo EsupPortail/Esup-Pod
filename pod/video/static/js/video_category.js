@@ -104,7 +104,7 @@ function getCategoriesUrl(action, slug = null){
  * @param url {string} : Url to call (add, edit, delete)
  * @param page {number} : Page url managment (can be null)
  */
-function get_category_modal(url, page= null){
+function get_category_modal(url, page=null){
     if(page){
         url += "?page=" + page;
     }

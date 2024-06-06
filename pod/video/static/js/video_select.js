@@ -49,7 +49,7 @@ function setListSelectedVideos(container) {
   if(container === videosListContainerId){
     selectedVideos[container] = [];
   }
-  let selector = "#" + container + " .infinite-item.selected";
+  let selector = "#" + container + " .card_select_input:checked";
   document.querySelectorAll(selector).forEach((elt) => {
     if(selectedVideos[container].indexOf(elt.dataset.slug) === -1){
       selectedVideos[container].push(elt.dataset.slug);
@@ -64,12 +64,10 @@ function setListSelectedVideos(container) {
  */
 function setSelectedVideos(container) {
   Array.from(selectedVideos[container]).forEach((elt) => {
-    let selector = '#' + container + ' .infinite-item[data-slug="' + elt + '"]';
+    let selector = '#' + container + ' .card_select_input[data-slug="' + elt + '"]';
     let domElt = document.querySelector(selector);
-    if (domElt && !domElt.classList.contains("selected")) {
-      if (!domElt.classList.contains("selected")) {
-        domElt.classList.add("selected");
-      }
+    if (domElt && !domElt.checked) {
+      domElt.checked = true;
     }
   });
 }
@@ -107,18 +105,7 @@ function replaceSelectedCountVideos(container) {
  * @param {string} container : Identifier of container = selectedVideos's key
  */
 function toggleSelectedVideo(item, container) {
-  // Prevent item to select if link is clicked
-  if (
-    event.target.tagName === "A" ||
-    event.target.tagName === "BUTTON" ||
-    event.target.classList.contains("card-footer-link-i") ||
-    event.target.classList.contains("more-actions-row-i") ||
-    (event.keyCode && event.keyCode !== 13)
-  ) {
-    return;
-  }
-  item.classList.toggle("selected");
-  if(item.classList.contains("selected")){
+  if(item.checked){
     if(!selectedVideos[container].includes(item.dataset.slug)){
       selectedVideos[container].push(item.dataset.slug);
     }
@@ -139,8 +126,8 @@ function toggleSelectedVideo(item, container) {
  */
 function clearSelectedVideo(container) {
   selectedVideos[container] = [];
-  document.querySelectorAll(".infinite-item.selected").forEach((elt) => {
-    elt.classList.remove("selected");
+  document.querySelectorAll(".card_select_input").forEach((elt) => {
+    elt.checked = false;
   });
   replaceSelectedCountVideos(container);
 }
@@ -176,9 +163,9 @@ function getHTMLBadgesSelectedTitles() {
  * @param {string} container : Identifier of the infinite-items's container
  */
 function selectAllVideos(container){
-  let selector = "#" + container + " .infinite-item";
+  let selector = "#" + container + " .card_select_input";
   document.querySelectorAll(selector).forEach((elt) => {
-    elt.classList.add("selected");
+    elt.checked = true;
   });
   setListSelectedVideos(container);
   replaceSelectedCountVideos(container);

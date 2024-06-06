@@ -2982,7 +2982,7 @@ def get_json_videos_categories(request):
         videos = list(cat.video.all().values_list("slug", flat=True))
         all_categories_videos[cat.slug] = videos
     return json.dumps(all_categories_videos)
-    
+
 
 @login_required(redirect_field_name="referrer")
 @ajax_required

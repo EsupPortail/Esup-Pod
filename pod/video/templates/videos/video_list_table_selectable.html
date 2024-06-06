@@ -4,7 +4,7 @@
 
 <ul id="videos_list" class="pod-infinite-list-container-dashboard infinite-container list-group list-group-action dashboard-container" data-nextpage="{{ videos.has_next|yesno:'true,false' }}" data-countvideos="{{ count_videos }}">
   {% for video in videos %}
-  <li class="infinite-item list-group-item list-item-video-row d-flex align-items-center mb-3" data-slug={{video.slug}} onclick="toggleSelectedVideo(this,'videos_list')" onkeydown="toggleSelectedVideo(this,'videos_list')" tabindex="0">
+  <li class="infinite-item list-group-item list-item-video-row d-flex align-items-center mb-3" data-slug={{video.slug}} tabindex="0">
     {% include "videos/video_row_select.html" %}
   </li>
   {% empty %}
