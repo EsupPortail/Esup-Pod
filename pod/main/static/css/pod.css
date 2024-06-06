@@ -847,10 +847,9 @@ span[data-bs-placement] {
 .required_star,
 .form-help-inline {
   color: var(--bs-danger);
-
 }
 
-.form-check-label>.required_star {
+.form-check-label > .required_star {
   font-size: 1em;
 }
 
@@ -1845,5 +1844,5 @@ body[data-admin-utc-offset]
 /** QUIZ **/
 
 .question-container li.bi::before {
-  margin-right: .5em;
+  margin-right: 0.5em;
 }
