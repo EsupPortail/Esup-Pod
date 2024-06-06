@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-04 14:16+0000\n"
+"POT-Creation-Date: 2024-06-05 15:31+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1361,6 +1361,7 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/playlist/templates/playlist/add_or_edit.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/recorder/templates/recorder/add_recording.html
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/channel/form_theme.html
@@ -2149,6 +2150,12 @@ msgstr "Ajouter une nouvelle superposition"
 #: pod/completion/templates/video_completion.html
 msgid "Quiz(zes)"
 msgstr "Quiz"
+
+#: pod/completion/templates/video_completion.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/video_quiz_aside.html
+msgid "Answer the quiz"
+msgstr "Répondre au quiz"
 
 #: pod/completion/templates/video_completion.html
 msgid "List of people related to this video."
@@ -7778,6 +7785,7 @@ msgid "Allow"
 msgstr "Autoriser"
 
 #: pod/quiz/apps.py pod/quiz/models.py
+#: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Quiz"
 msgstr "Quiz"
@@ -7815,12 +7823,15 @@ msgid "Explanation"
 msgstr "Explication"
 
 #: pod/quiz/forms.py
-msgid "Explanation of the question"
-msgstr "Explication de la question"
+msgid "Explanation of the answer."
+msgstr "Explication de la réponse."
 
-#: pod/quiz/forms.py pod/quiz/models.py
-msgid "Please choose an explanation."
-msgstr "Veuillez choisir une explication."
+#: pod/quiz/forms.py
+msgid ""
+"An explanation that will be displayed once the user has responded (feedback)."
+msgstr ""
+"Une explication qui sera affichée une fois que l’utilisateur aura répondu "
+"(feedback)."
 
 #: pod/quiz/forms.py pod/quiz/models.py
 msgid "Start timestamp"
@@ -7924,6 +7935,10 @@ msgid "Choose a quiz associated with the question."
 msgstr "Veuillez choisir un quiz associé à la question."
 
 #: pod/quiz/models.py
+msgid "Please choose an explanation."
+msgstr "Veuillez choisir une explication."
+
+#: pod/quiz/models.py
 msgid "Question"
 msgstr "Question"
 
@@ -8021,19 +8036,14 @@ msgid "Add a question"
 msgstr "Ajouter une question"
 
 #: pod/quiz/templates/quiz/create_edit_quiz.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Save and continue editing"
-msgstr "Sauvegarder et continuer d’éditer"
-
-#: pod/quiz/templates/quiz/create_edit_quiz.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Save and see"
-msgstr "Sauvegarder et voir"
-
-#: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Back to video"
 msgstr "Retour à la vidéo"
+
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/manage_quiz.html
+msgid "Delete your quiz"
+msgstr "Supprimez votre quiz"
 
 #: pod/quiz/templates/quiz/delete_quiz.html
 msgid "To delete the quiz, please check the box and click “Delete”."
@@ -8042,33 +8052,15 @@ msgstr ""
 "« Supprimer »."
 
 #: pod/quiz/templates/quiz/manage_quiz.html
-#: pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Edit your quiz"
 msgstr "Éditez votre quiz"
 
 #: pod/quiz/templates/quiz/manage_quiz.html
-msgid "To edit your quiz for this video."
-msgstr "Pour éditer votre quiz pour cette vidéo."
-
-#: pod/quiz/templates/quiz/manage_quiz.html
-#: pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Create a quiz"
 msgstr "Créer un quiz"
 
-#: pod/quiz/templates/quiz/manage_quiz.html
-msgid "To create a quiz for this video."
-msgstr "Pour créer un quiz pour cette vidéo."
-
-#: pod/quiz/templates/quiz/manage_quiz.html
-#: pod/quiz/templates/quiz/video_quiz_aside.html
-msgid "Delete your quiz"
-msgstr "Supprimez votre quiz"
-
-#: pod/quiz/templates/quiz/manage_quiz.html
-msgid "To delete your quiz for this video."
-msgstr "Pour supprimer votre quiz pour cette vidéo."
-
 #: pod/quiz/templates/quiz/question_form.html
+#: pod/quiz/templates/quiz/video_quiz.html
 msgid "Question #"
 msgstr "Question n°"
 
@@ -8102,8 +8094,12 @@ msgstr "Erreur constatée dans le formulaire"
 
 #: pod/quiz/templates/quiz/video_quiz.html
 #, python-format
-msgid "For the question \"%(title)s\", %(error)s."
-msgstr "Pour la question \"%(title)s\", %(error)s."
+msgid ""
+"\n"
+"          For the question “%(title)s”, %(error)s."
+msgstr ""
+"\n"
+"          Pour la question « %(title)s », %(error)s."
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Correct answer:"
@@ -8129,10 +8125,6 @@ msgstr "Valider"
 msgid "Manage quiz"
 msgstr "Gérer le quiz"
 
-#: pod/quiz/templates/quiz/video_quiz_aside.html
-msgid "Answer the quiz"
-msgstr "Répondre au quiz"
-
 #: pod/quiz/tests/test_views.py pod/quiz/views.py
 msgid "You cannot create a quiz for this video."
 msgstr "Vous ne pouvez pas créer de quiz pour cette vidéo."
@@ -8149,6 +8141,11 @@ msgstr "Le quiz a été supprimé."
 #, python-format
 msgid "Quiz creation for the video “%s”"
 msgstr "Création du quiz de la vidéo « %s »"
+
+#: pod/quiz/views.py
+#, python-format
+msgid "No answer defined for question %s."
+msgstr "Aucune réponse n'a été définie pour la question %s."
 
 #: pod/quiz/views.py
 msgid "Quiz successfully created."
@@ -8169,11 +8166,6 @@ msgstr "Erreur pendant la mise à jour du quiz."
 #: pod/quiz/views.py
 msgid "The data sent to create the quiz are invalid."
 msgstr "Les données envoyées pour créer le quiz ne sont pas valides."
-
-#: pod/quiz/views.py
-#, python-brace-format
-msgid "Quiz edition for the video: {video.title}"
-msgstr "Édition du quiz pour la vidéo : {video.title}"
 
 #: pod/quiz/views.py
 msgid "You have to choose at least one answer"
@@ -10227,6 +10219,14 @@ msgid "The page will refresh after the upload completes."
 msgstr "La page se rafraîchira après la fin de la mise en ligne."
 
 #: pod/video/templates/videos/video_edit.html
+msgid "Save and continue editing"
+msgstr "Sauvegarder et continuer d’éditer"
+
+#: pod/video/templates/videos/video_edit.html
+msgid "Save and see"
+msgstr "Sauvegarder et voir"
+
+#: pod/video/templates/videos/video_edit.html
 msgid "Back to dashboard"
 msgstr "Retour au tableau de bord"
 
@@ -10889,6 +10889,19 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "To edit your quiz for this video."
+#~ msgstr "Pour éditer votre quiz pour cette vidéo."
+
+#~ msgid "To create a quiz for this video."
+#~ msgstr "Pour créer un quiz pour cette vidéo."
+
+#~ msgid "To delete your quiz for this video."
+#~ msgstr "Pour supprimer votre quiz pour cette vidéo."
+
+#, python-brace-format
+#~ msgid "Quiz edition for the video: {video.title}"
+#~ msgstr "Édition du quiz pour la vidéo : {video.title}"
 
 #~ msgid ""
 #~ "Please choose the beginning time of the answer in the video (in seconds)."

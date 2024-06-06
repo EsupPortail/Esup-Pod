@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-04 14:16+0000\n"
+"POT-Creation-Date: 2024-06-05 15:31+0000\n"
 "PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1294,6 +1294,7 @@ msgstr ""
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/playlist/templates/playlist/add_or_edit.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/recorder/templates/recorder/add_recording.html
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/channel/form_theme.html
@@ -2068,6 +2069,12 @@ msgstr ""
 
 #: pod/completion/templates/video_completion.html
 msgid "Quiz(zes)"
+msgstr ""
+
+#: pod/completion/templates/video_completion.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/video_quiz_aside.html
+msgid "Answer the quiz"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -7289,6 +7296,7 @@ msgid "Allow"
 msgstr ""
 
 #: pod/quiz/apps.py pod/quiz/models.py
+#: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Quiz"
 msgstr ""
@@ -7326,11 +7334,12 @@ msgid "Explanation"
 msgstr ""
 
 #: pod/quiz/forms.py
-msgid "Explanation of the question"
+msgid "Explanation of the answer."
 msgstr ""
 
-#: pod/quiz/forms.py pod/quiz/models.py
-msgid "Please choose an explanation."
+#: pod/quiz/forms.py
+msgid ""
+"An explanation that will be displayed once the user has responded (feedback)."
 msgstr ""
 
 #: pod/quiz/forms.py pod/quiz/models.py
@@ -7440,6 +7449,10 @@ msgid "Choose a quiz associated with the question."
 msgstr ""
 
 #: pod/quiz/models.py
+msgid "Please choose an explanation."
+msgstr ""
+
+#: pod/quiz/models.py
 msgid "Question"
 msgstr ""
 
@@ -7532,18 +7545,13 @@ msgid "Add a question"
 msgstr ""
 
 #: pod/quiz/templates/quiz/create_edit_quiz.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Save and continue editing"
-msgstr ""
-
-#: pod/quiz/templates/quiz/create_edit_quiz.html
-#: pod/video/templates/videos/video_edit.html
-msgid "Save and see"
-msgstr ""
-
-#: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Back to video"
+msgstr ""
+
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/manage_quiz.html
+msgid "Delete your quiz"
 msgstr ""
 
 #: pod/quiz/templates/quiz/delete_quiz.html
@@ -7551,33 +7559,15 @@ msgid "To delete the quiz, please check the box and click “Delete”."
 msgstr ""
 
 #: pod/quiz/templates/quiz/manage_quiz.html
-#: pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Edit your quiz"
 msgstr ""
 
 #: pod/quiz/templates/quiz/manage_quiz.html
-msgid "To edit your quiz for this video."
-msgstr ""
-
-#: pod/quiz/templates/quiz/manage_quiz.html
-#: pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Create a quiz"
 msgstr ""
 
-#: pod/quiz/templates/quiz/manage_quiz.html
-msgid "To create a quiz for this video."
-msgstr ""
-
-#: pod/quiz/templates/quiz/manage_quiz.html
-#: pod/quiz/templates/quiz/video_quiz_aside.html
-msgid "Delete your quiz"
-msgstr ""
-
-#: pod/quiz/templates/quiz/manage_quiz.html
-msgid "To delete your quiz for this video."
-msgstr ""
-
 #: pod/quiz/templates/quiz/question_form.html
+#: pod/quiz/templates/quiz/video_quiz.html
 msgid "Question #"
 msgstr ""
 
@@ -7613,7 +7603,9 @@ msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
 #, python-format
-msgid "For the question \"%(title)s\", %(error)s."
+msgid ""
+"\n"
+"          For the question “%(title)s”, %(error)s."
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
@@ -7640,10 +7632,6 @@ msgstr ""
 msgid "Manage quiz"
 msgstr ""
 
-#: pod/quiz/templates/quiz/video_quiz_aside.html
-msgid "Answer the quiz"
-msgstr ""
-
 #: pod/quiz/tests/test_views.py pod/quiz/views.py
 msgid "You cannot create a quiz for this video."
 msgstr ""
@@ -7659,6 +7647,11 @@ msgstr ""
 #: pod/quiz/views.py
 #, python-format
 msgid "Quiz creation for the video “%s”"
+msgstr ""
+
+#: pod/quiz/views.py
+#, python-format
+msgid "No answer defined for question %s."
 msgstr ""
 
 #: pod/quiz/views.py
@@ -7679,11 +7672,6 @@ msgstr ""
 
 #: pod/quiz/views.py
 msgid "The data sent to create the quiz are invalid."
-msgstr ""
-
-#: pod/quiz/views.py
-#, python-brace-format
-msgid "Quiz edition for the video: {video.title}"
 msgstr ""
 
 #: pod/quiz/views.py
@@ -9560,6 +9548,14 @@ msgstr ""
 
 #: pod/video/templates/videos/video_edit.html
 msgid "The page will refresh after the upload completes."
+msgstr ""
+
+#: pod/video/templates/videos/video_edit.html
+msgid "Save and continue editing"
+msgstr ""
+
+#: pod/video/templates/videos/video_edit.html
+msgid "Save and see"
 msgstr ""
 
 #: pod/video/templates/videos/video_edit.html
