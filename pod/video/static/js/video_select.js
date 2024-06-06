@@ -20,7 +20,7 @@ var countSelectedVideosBadge = document.getElementById(
 );
 
 /**
- * Get list of selected videos's titles based on class selected
+ * Get list of selected videos's titles based on selected videos
  *
  * @param {string} container : Identifier of container = selectedVideos's key
  * @returns {*[video_title]}

@@ -123,9 +123,9 @@ function get_category_modal(url, page=null){
       let html = parser.parseFromString(data, "text/html").body;
       if(page){
           document.getElementById("category_modal_videos_list").outerHTML = html.innerHTML;
-          document.querySelectorAll("#category_modal_videos_list .infinite-item.selected").forEach((el) => {
+          document.querySelectorAll("#category_modal_videos_list .card_select_input:checked").forEach((el) => {
               if(!selectedVideos[catVideosListContainerId].includes(el.dataset.slug)){
-                  el.classList.remove("selected");
+                  el.checked = false;
               }
           });
           setSelectedVideos(catVideosListContainerId);
