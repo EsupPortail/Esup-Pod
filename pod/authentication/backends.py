@@ -15,7 +15,7 @@ User = get_user_model()
 CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
 
 
-def is_staff_affiliation(affiliation):
+def is_staff_affiliation(affiliation) -> bool:
     """Check if user affiliation correspond to AFFILIATION_STAFF."""
     return affiliation in AFFILIATION_STAFF
 
@@ -48,7 +48,7 @@ class ShibbBackend(ShibbolethRemoteUserBackend):
             return user if self.user_can_authenticate(user) else None
 
     @staticmethod
-    def update_owner_params(user, params):
+    def update_owner_params(user, params) -> None:
         """Update owner params from Shibboleth."""
         user.owner.auth_type = "Shibboleth"
         if get_current_site(None) not in user.owner.sites.all():

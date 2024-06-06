@@ -8,6 +8,8 @@
   global dashboardActionReset
 */
 
+/* exported resetDashboardElements getHTMLBadgesSelectedTitles toggleSelectedVideo setSelectedVideos */
+
 var selectedVideos = [];
 var applyMultipleActionsBtn = document.getElementById("applyBulkUpdateBtn");
 var resetDashboardElementsBtn = document.getElementById(
@@ -118,7 +120,6 @@ function clearSelectedVideo() {
  * Reset dashboard elements (selected videos, action)
  * @see dashboardActionReset
  * @see resetDashboardElementsBtn
- * exported resetDashboardElements
  **/
 function resetDashboardElements() {
   clearSelectedVideo();

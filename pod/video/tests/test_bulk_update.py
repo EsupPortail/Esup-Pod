@@ -23,7 +23,7 @@ class BulkUpdateTestCase(TransactionTestCase):
     ]
     serialized_rollback = True
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Create videos to be tested."""
         self.factory = RequestFactory()
         self.client = Client()
@@ -122,7 +122,7 @@ class BulkUpdateTestCase(TransactionTestCase):
 
         print(" --->  SetUp of BulkUpdateTestCase: OK!")
 
-    def test_bulk_update_type(self):
+    def test_bulk_update_type(self) -> None:
         """Test bulk update of type attribute."""
         video1 = Video.objects.get(title="Video1")
         video2 = Video.objects.get(title="Video2")
@@ -155,7 +155,7 @@ class BulkUpdateTestCase(TransactionTestCase):
         print("--->  test_bulk_update_type of BulkUpdateTestCase: OK")
         self.client.logout()
 
-    def test_bulk_update_tags(self):
+    def test_bulk_update_tags(self) -> None:
         """Test bulk update of tags attribute."""
         video4 = Video.objects.get(title="Video4")
         video5 = Video.objects.get(title="Video5")

@@ -2,85 +2,10 @@
  * Esup-Pod completion styles
  */
 
-/** Table scroll **/
-table.scroll {
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-table.scroll .btn-sm,
-table.scroll .btn-group-sm > .btn {
-  border-radius: 4px;
-  font-size: 14px;
-  line-height: 1.4;
-  padding: 0.2em 0.4em;
-}
-
-table.scroll tbody {
-  max-height: 100px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-table.scroll tbody td,
-table.scroll thead th {
-  width: 10%;
-  height: 20px;
-  line-height: 20px;
-  border-bottom: 0;
-}
-
-table.scroll thead tr th {
-  height: 27px;
-  line-height: 27px;
-  text-align: left;
-}
-
 /** Table contributor **/
-table#table_list_contributors tbody td.contributor_name,
-table#table_list_contributors thead th.contributor_name {
+table#list-contributor tbody td.contributor-name,
+table#list-contributor thead th.contributor-name {
   width: 20%;
-}
-
-/** Accordeon for lists **/
-#accordeon li,
-#accordeon div {
-  list-style: none;
-}
-
-/** Lists style **/
-#list_contributor .panel-heading,
-#list_track .panel-heading,
-#list_document .panel-heading,
-#list_overlay .panel-heading {
-  border-bottom: 1px solid transparent;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  padding: 4px 15px;
-}
-
-#id_background {
-  margin-left: 0.25rem;
-  position: inherit;
-}
-
-.contenuTitre {
-  display: flex;
-  flex-direction: column;
-}
-
-.contenuTitre #list_track {
-  order: 1;
-}
-
-.contenuTitre .breadcrumb {
-  padding: 0;
-}
-
-.contenuTitre .btn {
-  margin-bottom: 1rem;
-  margin-right: 1rem;
 }
 
 /***** Override track list *****/
@@ -90,36 +15,43 @@ table#table_list_contributors thead th.contributor_name {
   border-bottom: 1px solid #ccc;
 }
 
-.grid-list-track .track_kind.options .btn {
+.track-kind.options .btn {
+  margin: 0;
+  padding: 0.2em 0.4em;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.grid-list-track .track-kind.options .btn {
   font-size: 14px;
 }
 
-.grid-list-track .track_kind.options a.btn {
+.grid-list-track .track-kind.options a.btn {
   overflow: unset;
   align-self: self-start;
 }
 
-.grid-list-track .track_kind.options .dropdown #dropdownMenuButton {
+.grid-list-track .track-kind.options .dropdown #track-menu-button {
   background-color: var(--pod-primary);
   color: #fff;
   border-color: var(--pod-primary);
   border-radius: 4px;
 }
 
-.grid-list-track .track_kind.options .dropdown .dropdown-item {
+.grid-list-track .track-kind.options .dropdown .dropdown-item {
   background-color: #fff;
 }
 
-.grid-list-track .track_kind.options .dropdown .btn {
+.grid-list-track .track-kind.options .dropdown .btn {
   width: 100%;
 }
 
-.grid-list-track .track_kind.options .dropdown {
+.grid-list-track .track-kind.options .dropdown {
   display: none;
   background-color: #fff;
 }
 
-.grid-list-track .thead_title {
+.grid-list-track .thead-title {
   margin: 0;
   padding-right: 20px;
   color: var(--pod-primary);
@@ -139,30 +71,23 @@ table#table_list_contributors thead th.contributor_name {
   margin-top: 1em;
 }
 
-.grid-list-track .track_kind.file {
+.grid-list-track .track-kind.file {
   word-break: break-word;
 }
 
-.track_kind.options {
+.track-kind.options {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-column-gap: 10px;
 }
 
-.track_kind.options .btn {
-  margin: 0;
-  padding: 0.2em 0.4em;
-  font-size: 1rem;
-  box-sizing: border-box;
-}
-
-@media only screen and (max-width: 840px) {
-  .grid-list-track .track_kind.options .dropdown {
+@media only screen and (width <= 840px) {
+  .grid-list-track .track-kind.options .dropdown {
     display: inline-block;
   }
 
-  .grid-list-track .track_kind.options > form,
-  .grid-list-track .track_kind.options > #modifCapSubFile {
+  .grid-list-track .track-kind.options > form,
+  .grid-list-track .track-kind.options > #modif-cap-sub-file {
     display: none;
   }
 }
@@ -174,11 +99,9 @@ ul.css-tabs a {
   box-sizing: content-box;
 }
 
-textarea#id_description {
-  line-height: normal;
-}
-
-/** Bootstrap override **/
-.card-title {
-  margin: 0.45rem;
+.caption {
+  padding-top: 0.5rem;
+  color: var(--bs-secondary-color);
+  text-align: left;
+  font-size: 1em;
 }

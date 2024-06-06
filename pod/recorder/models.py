@@ -285,8 +285,8 @@ class Recorder(models.Model):
 
 
 @receiver(post_save, sender=Recorder)
-def default_site(sender, instance, created, **kwargs) -> None:
-    if len(instance.sites.all()) == 0:
+def default_site(sender, instance, created: bool, **kwargs) -> None:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())
 
 
@@ -354,7 +354,7 @@ class Recording(models.Model):
 
 
 @receiver(post_save, sender=Recording)
-def process_recording(sender, instance, created, **kwargs) -> None:
+def process_recording(sender, instance, created: bool, **kwargs) -> None:
     if created and os.path.exists(instance.source_file):
         mod = importlib.import_module("%s.plugins.type_%s" % (__package__, instance.type))
         mod.process(instance)
@@ -435,7 +435,7 @@ class RecordingFile(models.Model):
 
 
 @receiver(post_save, sender=RecordingFile)
-def process_recording_file(sender, instance, created, **kwargs) -> None:
+def process_recording_file(sender, instance, created: bool, **kwargs) -> None:
     if created and instance.file and os.path.isfile(instance.file.path):
         # deplacement du fichier source vers destination
         create_recording(instance)

@@ -13,7 +13,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "3.6.1"
+VERSION = "3.7.0"
 
 ##
 # Installed applications list
@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "pod.video",
     "pod.podfile",
     "pod.playlist",
+    "pod.quiz",
     "pod.completion",
     "pod.chapter",
     "pod.enrichment",
@@ -69,6 +70,7 @@ INSTALLED_APPS = [
     "pod.import_video",
     "pod.progressive_web_app",
     "pod.dressing",
+    "pod.ai_enhancement",
     "pod.custom",
 ]
 
@@ -125,6 +127,8 @@ TEMPLATES = [
                 "pod.authentication.context_processors.context_authentication_settings",
                 "pod.recorder.context_processors.context_recorder_settings",
                 "pod.playlist.context_processors.context_settings",
+                "pod.quiz.context_processors.context_settings",
+                "pod.ai_enhancement.context_processors.context_settings",
                 "pod.dressing.context_processors.context_settings",
                 "pod.import_video.context_processors.context_settings",
                 "pod.cut.context_processors.context_settings",
@@ -356,7 +360,7 @@ LOGGING = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/3",
+        "LOCATION": "redis://redis.localhost:6379/3",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -364,7 +368,7 @@ CACHES = {
     },
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/2",
+        "LOCATION": "redis://redis.localhost:6379/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -372,7 +376,7 @@ CACHES = {
 }
 SESSION_ENGINE = "redis_sessions.session"
 SESSION_REDIS = {
-    "host": "127.0.0.1",
+    "host": "redis.localhost",
     "port": 6379,
     "db": 4,
     "prefix": "session",

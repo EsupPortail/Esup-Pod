@@ -3,6 +3,7 @@
  * @since 3.5.0
  */
 
+/* exported asyncStartCountDown */
 
 // Global vars defined in playlist_player.html
 /*
@@ -202,8 +203,8 @@ function startCountdown(callback) {
 }
 
 
-if (typeof videos === undefined) {
-  let videos = document.querySelectorAll('.player-element');
+if (typeof videos === "undefined") {
+  var videos = document.querySelectorAll('.player-element');
 } else {
   videos = document.querySelectorAll('.player-element');
 }

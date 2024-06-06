@@ -2,6 +2,19 @@
  * @file Esup-Pod functions for videos list refresh and aside manage.
  * @since 3.4.1
  */
+
+// Read-only globals defined in filter-aside-element-list-refresh.js
+/* global toggleSortDirection */
+
+// Read-only globals defined ever in playlist.html, dashboard.html or videos.html
+/* global urlVideos */
+
+// Read-only globals defined ever in infinite.js
+/* global InfiniteLoader */
+
+// Read-only globals defined in video_select.js
+/* global setSelectedVideos */
+
 var infinite;
 var checkedInputs = [];
 
@@ -9,10 +22,10 @@ let infiniteLoading = document.querySelector(".infinite-loading");
 let ownerBox = document.getElementById("ownerbox");
 let filterOwnerContainer = document.getElementById("collapseFilterOwner");
 
-onBeforePageLoad = function () {
+function onBeforePageLoad() {
   infiniteLoading.style.display = "block";
-};
-onAfterPageLoad = function () {
+}
+function onAfterPageLoad() {
   if (
     urlVideos === "/video/dashboard/" &&
     selectedVideos &&
@@ -43,7 +56,7 @@ onAfterPageLoad = function () {
       footer.classList.remove("fixed-bottom");
     }
   });
-};
+}
 
 /**
  * Refresh Infinite Loader (Waypoint Infinite's)
@@ -74,7 +87,7 @@ function replaceCountVideos(newCount) {
     newCount,
   );
   videoFoundStr = interpolate(videoFoundStr, { count: newCount }, true);
-  document.getElementById("video_count").innerHTML = videoFoundStr;
+  document.getElementById("video_count").textContent = videoFoundStr;
 }
 
 /**
@@ -82,7 +95,7 @@ function replaceCountVideos(newCount) {
  */
 function refreshVideosSearch() {
   // Erase videos list and show loader
-  document.getElementById("videos_list").innerHTML = "";
+  document.getElementById("videos_list").textContent = "";
   showLoader(videosListLoader, true);
   let url = getUrlForRefresh();
   // Async GET request wth parameters by fetch method
@@ -120,8 +133,8 @@ function refreshVideosSearch() {
         setSelectedVideos();
       }
     })
-    .catch((error) => {
-      document.getElementById("videos_list").innerHTML = gettext(
+    .catch(() => {
+      document.getElementById("videos_list").textContent = gettext(
         "An Error occurred while processing.",
       );
     })
@@ -197,11 +210,11 @@ function setListenerChangeInputs(el) {
  * Add event listener to search user input to create checkboxes
  */
 if (ownerBox) {
-  ownerBox.addEventListener("input", (e) => {
+  ownerBox.addEventListener("input", () => {
     if (ownerBox.value && ownerBox.value.length > 2) {
       var searchTerm = ownerBox.value;
       getSearchListUsers(searchTerm).then((users) => {
-        filterOwnerContainer.innerHTML = "";
+        filterOwnerContainer.textContent = "";
         users.forEach((user) => {
           filterOwnerContainer.appendChild(createUserCheckBox(user));
           setListenerChangeInputs(
@@ -210,7 +223,7 @@ if (ownerBox) {
         });
       });
     } else {
-      filterOwnerContainer.innerHTML = "";
+      filterOwnerContainer.textContent = "";
     }
   });
 }
@@ -257,7 +270,7 @@ document.getElementById("resetFilters").addEventListener("click", function () {
     c_p.classList.remove("active");
   });
   if (filterOwnerContainer && ownerBox) {
-    filterOwnerContainer.innerHTML = "";
+    filterOwnerContainer.textContent = "";
     ownerBox.value = "";
   }
   window.history.pushState("", "", window.location.pathname);

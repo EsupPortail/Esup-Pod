@@ -45,11 +45,10 @@ jobs:
 
             - name: Install Dependencies
               run: |
-                sudo apt-get clean
                 sudo apt-get update
-                sudo apt-get install ffmpeg
-                sudo apt-get install -y ffmpegthumbnailer
-                sudo apt-get install -y npm
+                sudo apt-get install -y --no-install-recommends ffmpeg ffmpegthumbnailer npm
+                sudo apt-get clean
+                sudo rm -rf /var/lib/apt/lists/*
                 python -m pip install --upgrade pip
                 pip install -r requirements-dev.txt
                 sudo npm install -g yarn

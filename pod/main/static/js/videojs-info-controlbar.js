@@ -50,7 +50,7 @@ function showInfoVideo() {
 function resizeInfo() {
   const ihead = document.querySelector("#info-video-wrapper > .iframe-header");
   const ph = player.el().offsetHeight;
-  const pb = parseInt(player.el().style.top) + ph - 30;
+  const pb = parseInt(player.el().style.top, 10) + ph - 30;
   const pw = ph * hdres; // ('#podvideoplayer .vjs-poster').width()
   document.getElementById("info-video").style.top = ihead.offsetHeight + "px";
   // console.log('MTop: '+player.el().style.top+'\nleft: '+player.el().offsetLeft+'\nwidth: '+player.el().offsetWidth+'\nheight: '+player.el().offsetHeight+' /// '+pb)
@@ -79,7 +79,7 @@ function resizeVideoJs() {
   if (ratio < hdres) {
     player.width(width);
     player.height(width / hdres);
-    margintop = parseInt((height - player.height()) / 2);
+    margintop = parseInt((height - player.height()) / 2, 10);
     document.getElementById("podvideoplayer").style.top = margintop + "px";
   } else {
     player.height(height);

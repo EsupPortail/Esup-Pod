@@ -31,7 +31,7 @@ document.addEventListener("submit", function (e) {
  */
 function pod_note_comment_offset() {
   let divComments = document.querySelectorAll("#id_notes div.comments");
-  for (var i = 0; i < Math.min(divComments.length, 3); i++) {
+  for (let i = 0; i < Math.min(divComments.length, 3); i++) {
     divComments[i].classList.add("ms-3");
   }
 }

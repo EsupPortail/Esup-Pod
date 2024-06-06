@@ -126,7 +126,7 @@ class ObsolescenceTestCase(TestCase):
 
         print(" --->  SetUp of ObsolescenceTestCase: OK!")
 
-    def test_check_video_date_delete(self):
+    def test_check_video_date_delete(self) -> None:
         """Check that the videos deletion date complies with the settings."""
         video = Video.objects.get(id=1)
         date1 = date.today() + timedelta(days=DEFAULT_YEAR_DATE_DELETE * 365)

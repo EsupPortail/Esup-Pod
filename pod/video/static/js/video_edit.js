@@ -1,6 +1,10 @@
 /**
  *  Javascript for Esup-Portal video_edit form
  **/
+
+// Read-only globals defined in main.js
+/* global flashing */
+
 document.addEventListener(
   "DOMContentLoaded",
   function () {
@@ -24,7 +28,7 @@ function display_option_desc(selectBox, container) {
   if (!target_title) {
     target_title = gettext("Select the general type of the video.");
   }
-  container.innerHTML = target_title;
+  container.textContent = target_title;
 }
 
 // Test if we are on video Edit form
@@ -42,7 +46,7 @@ if (document.getElementById("video_form")) {
     const update_theme = function () {
       tab_initial = [];
       if (id_theme) {
-        for (i = 0; i < id_theme.options.length; i++) {
+        for (let i = 0; i < id_theme.options.length; i++) {
           if (id_theme.options[i].selected) {
             tab_initial.push(id_theme.options[i].value);
           }
@@ -63,8 +67,8 @@ if (document.getElementById("video_form")) {
           var channels = id_channel.parentElement.querySelectorAll(
             ".select2-selection__choice",
           );
-          for (i = 0; i < channels.length; i++) {
-            for (j = 0; j < id_channel.options.length; j++) {
+          for (let i = 0; i < channels.length; i++) {
+            for (let j = 0; j < id_channel.options.length; j++) {
               if (channels[i].title === id_channel.options[j].text) {
                 if (listTheme["channel_" + id_channel.options[j].value]) {
                   new_themes.push(
@@ -116,7 +120,7 @@ if (document.getElementById("video_form")) {
     });
 
     var initial_themes = [];
-    for (i = 0; i < id_channel.options.length; i++) {
+    for (let i = 0; i < id_channel.options.length; i++) {
       if (listTheme["channel_" + id_channel.options[i].value]) {
         initial_themes.push(
           get_list(

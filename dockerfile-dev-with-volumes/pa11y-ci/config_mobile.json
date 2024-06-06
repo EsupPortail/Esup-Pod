@@ -19,10 +19,10 @@
         ]
     },
     "urls": [
-        "http://pod-back:8080/",
-        "http://pod-back:8080/accounts/login",
-        "http://pod-back:8080/videos",
-        "http://pod-back:8080/video/0001-video-test/",
-        "http://pod-back:8080/live/events/"
+        "http://pod-back:8000/",
+        "http://pod-back:8000/accounts/login",
+        "http://pod-back:8000/videos",
+        "http://pod-back:8000/video/0001-video-test/",
+        "http://pod-back:8000/live/events/"
     ]
 }

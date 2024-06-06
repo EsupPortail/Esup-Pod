@@ -1,18 +1,27 @@
+/**
+ * Esup-Pod Video Cut scripts
+ */
+
+// Read-only globals defined in video-script.html
+/*
+global player
+*/
+
 let sliderOne = document.getElementById("slider-1");
 let sliderTwo = document.getElementById("slider-2");
 let displayValOne = document.getElementById("range1");
 let displayValTwo = document.getElementById("range2");
 let minGap = 0;
 let sliderTrack = document.querySelector(".slider-track");
-start_time = parseInt(sliderOne.value);
-button_reset = document.getElementById("reset");
-initialStart = sliderOne.value;
-initialEnd = sliderTwo.value;
+let start_time = parseInt(sliderOne.value, 10);
+let button_reset = document.getElementById("reset");
+let initialStart = sliderOne.value;
+let initialEnd = sliderTwo.value;
 
 // Set max value
 let sliderMaxValue = sliderOne.max;
 // Set min value
-let sliderMinValue = sliderOne.min;
+// let sliderMinValue = sliderOne.min;
 
 function doChangeForRange1() {
   // Do change for the start value with the "time range"
@@ -45,8 +54,8 @@ displayValTwo.addEventListener("change", doChangeForRange2);
 
 function slideOne() {
   // Do change for the start value with the slider
-  if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
-    sliderOne.value = parseInt(sliderTwo.value) - minGap;
+  if (parseInt(sliderTwo.value, 10) - parseInt(sliderOne.value, 10) <= minGap) {
+    sliderOne.value = parseInt(sliderTwo.value, 10) - minGap;
   }
   displayValOne.value = intToTime(sliderOne.value);
   fillColor();
@@ -55,8 +64,8 @@ function slideOne() {
 
 function slideTwo() {
   // Do change for the end value with the slider
-  if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
-    sliderTwo.value = parseInt(sliderOne.value) + minGap;
+  if (parseInt(sliderTwo.value, 10) - parseInt(sliderOne.value, 10) <= minGap) {
+    sliderTwo.value = parseInt(sliderOne.value, 10) + minGap;
   }
   displayValTwo.value = intToTime(sliderTwo.value);
   fillColor();
@@ -65,8 +74,8 @@ function slideTwo() {
 
 function fillColor() {
   // Apply the changes
-  percent1 = (sliderOne.value / sliderMaxValue) * 100;
-  percent2 = (sliderTwo.value / sliderMaxValue) * 100;
+  let percent1 = (sliderOne.value / sliderMaxValue) * 100;
+  let percent2 = (sliderTwo.value / sliderMaxValue) * 100;
   sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #1f8389 ${percent1}% , #1f8389 ${percent2}%, #dadae5 ${percent2}%)`;
   calculation_total_time();
 }
@@ -113,7 +122,7 @@ function calculation_total_time() {
 (function (n) {
   var f = function (e) {
     var c = e.which || e.keyCode;
-    if (c == 13) {
+    if (c === 13) {
       e.preventDefault();
       let ConfirmationModalID = document.getElementById("ConfirmationModal");
       let ConfirmationModal =
@@ -133,10 +142,10 @@ function calculation_total_time() {
   };
 })("keydown");
 
-noPressEnter(displayValOne);
-noPressEnter(displayValTwo);
-noPressEnter(sliderOne);
-noPressEnter(sliderTwo);
+window.noPressEnter(displayValOne);
+window.noPressEnter(displayValTwo);
+window.noPressEnter(sliderOne);
+window.noPressEnter(sliderTwo);
 
 // Buttons to get the time of the video player
 let button_start = document.getElementById("button_start");
@@ -161,7 +170,7 @@ button_end.addEventListener("keydown", function (event) {
  */
 function get_video_player_start(event) {
   event.preventDefault();
-  time = Math.trunc(player.currentTime()) + start_time;
+  let time = Math.trunc(player.currentTime()) + start_time;
   displayValOne.value = intToTime(time);
   sliderOne.value = time;
   fillColor();
@@ -172,7 +181,7 @@ function get_video_player_start(event) {
  */
 function get_video_player_end(event) {
   event.preventDefault();
-  time = Math.trunc(player.currentTime()) + start_time;
+  let time = Math.trunc(player.currentTime()) + start_time;
   displayValTwo.value = intToTime(time);
   sliderTwo.value = Math.trunc(time);
   fillColor();

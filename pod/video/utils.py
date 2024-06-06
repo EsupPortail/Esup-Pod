@@ -103,7 +103,7 @@ def get_headband(channel, theme=None):
     return result
 
 
-def change_owner(video_id, new_owner):
+def change_owner(video_id, new_owner) -> bool:
     """Replace current video_id owner by new_owner."""
     if video_id is None:
         return False
@@ -117,7 +117,7 @@ def change_owner(video_id, new_owner):
     return True
 
 
-def move_video_file(video, new_owner):
+def move_video_file(video, new_owner) -> None:
     """Move video files in new_owner folder."""
     # overview and encoding video folder name
     encod_folder_pattern = "%04d" % video.id
@@ -156,7 +156,9 @@ def move_video_file(video, new_owner):
     video.save()
 
 
-def get_videos(title, user_id, search=None, limit=12, offset=0):
+def get_videos(
+    title, user_id, search=None, limit: int = 12, offset: int = 0
+) -> JsonResponse:
     """Return videos filtered by GET parameters 'title' with limit and offset.
 
     Args:
@@ -198,7 +200,7 @@ def get_videos(title, user_id, search=None, limit=12, offset=0):
     return JsonResponse(response, safe=False)
 
 
-def sort_videos_list(videos_list, sort_field, sort_direction=""):
+def sort_videos_list(videos_list: list, sort_field: str, sort_direction: str = ""):
     """Return videos list sorted by sort_field.
 
     Sorted by specific column name and ascending or descending direction
@@ -263,7 +265,7 @@ def get_video_data(video):
     }
 
 
-def get_storage_path_video(instance, filename):
+def get_storage_path_video(instance, filename) -> str:
     """Get the video storage path.
 
     Instance needs to implement owner
@@ -289,7 +291,7 @@ def get_storage_path_video(instance, filename):
         )
 
 
-def verify_field_length(field, field_name="title", max_length=100) -> list:
+def verify_field_length(field, field_name: str = "title", max_length: int = 100) -> list:
     """Check field length, and return message."""
     msg = list()
     if not field or field == "":

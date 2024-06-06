@@ -119,7 +119,7 @@ class UserAdmin(BaseUserAdmin):
         self.readonly_fields += ("is_superuser",)
         return self.readonly_fields
 
-    def owner_hashkey(self, obj):
+    def owner_hashkey(self, obj) -> str:
         return "%s" % Owner.objects.get(user=obj).hashkey
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
@@ -130,7 +130,7 @@ class UserAdmin(BaseUserAdmin):
         kwargs["widget"] = widgets.FilteredSelectMultiple(db_field.verbose_name, False)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-    def owner_establishment(self, obj):
+    def owner_establishment(self, obj) -> str:
         return "%s" % Owner.objects.get(user=obj).establishment
 
     owner_establishment.short_description = _("Establishment")
@@ -146,7 +146,7 @@ class UserAdmin(BaseUserAdmin):
             qs = qs.filter(owner__sites=get_current_site(request))
         return qs
 
-    def save_model(self, request, obj, form, change):
+    def save_model(self, request, obj, form, change) -> None:
         super().save_model(request, obj, form, change)
         if not change:
             obj.owner.sites.add(get_current_site(request))
@@ -174,7 +174,7 @@ class GroupAdmin(admin.ModelAdmin):
             qs = qs.filter(groupsite__sites=get_current_site(request))
         return qs
 
-    def save_model(self, request, obj, form, change):
+    def save_model(self, request, obj, form, change) -> None:
         super().save_model(request, obj, form, change)
         if not change:
             obj.groupsite.sites.add(get_current_site(request))

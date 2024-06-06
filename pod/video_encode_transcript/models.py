@@ -96,12 +96,12 @@ class VideoRendition(models.Model):
     sites = models.ManyToManyField(Site)
 
     @property
-    def height(self):
+    def height(self) -> int:
         """The height of the video rendition based on the resolution."""
         return int(self.resolution.split("x")[1])
 
     @property
-    def width(self):
+    def width(self) -> int:
         """The width of the video rendition based on the resolution."""
         return int(self.resolution.split("x")[0])
 
@@ -110,13 +110,13 @@ class VideoRendition(models.Model):
         verbose_name = _("rendition")
         verbose_name_plural = _("renditions")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "VideoRendition num %s with resolution %s" % (
             "%04d" % self.id,
             self.resolution,
         )
 
-    def bitrate(self, field_value, field_name, name=None):
+    def bitrate(self, field_value, field_name, name=None) -> None:
         """Validate the bitrate field value."""
         if name is None:
             name = field_name
@@ -133,13 +133,13 @@ class VideoRendition(models.Model):
                     "%s %s" % (msg, VideoRendition._meta.get_field(field_name).help_text)
                 )
 
-    def clean_bitrate(self):
+    def clean_bitrate(self) -> None:
         """Clean the bitrate-related fields."""
         self.bitrate(self.video_bitrate, "video_bitrate", "bitrate video")
         self.bitrate(self.maxrate, "maxrate")
         self.bitrate(self.minrate, "minrate")
 
-    def clean(self):
+    def clean(self) -> None:
         """Clean the fields of the VideoRendition model."""
         if self.resolution and "x" not in self.resolution:
             raise ValidationError(VideoRendition._meta.get_field("resolution").help_text)
@@ -155,9 +155,9 @@ class VideoRendition(models.Model):
 
 
 @receiver(post_save, sender=VideoRendition)
-def default_site_videorendition(sender, instance, created, **kwargs):
+def default_site_videorendition(sender, instance, created: bool, **kwargs) -> None:
     """Add the current site as a default site."""
-    if len(instance.sites.all()) == 0:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())
 
 
@@ -200,7 +200,7 @@ class EncodingVideo(models.Model):
         """Property representing all the sites associated with the video."""
         return self.video.sites_set.all()
 
-    def clean(self):
+    def clean(self) -> None:
         """Validate the encoding video model."""
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
@@ -216,7 +216,7 @@ class EncodingVideo(models.Model):
         verbose_name = _("Encoding video")
         verbose_name_plural = _("Encoding videos")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "EncodingVideo num: %s with resolution %s for video %s in %s" % (
             "%04d" % self.id,
             self.name,
@@ -230,16 +230,16 @@ class EncodingVideo(models.Model):
         return self.video.owner
 
     @property
-    def height(self):
+    def height(self) -> int:
         """Property representing the height of the video rendition."""
         return int(self.rendition.resolution.split("x")[1])
 
     @property
-    def width(self):
+    def width(self) -> int:
         """Property representing the width of the video rendition."""
         return int(self.rendition.resolution.split("x")[0])
 
-    def delete(self):
+    def delete(self) -> None:
         """Delete the encoding video."""
         if self.source_file:
             if os.path.isfile(self.source_file.path):
@@ -288,7 +288,7 @@ class EncodingAudio(models.Model):
         verbose_name = _("Encoding audio")
         verbose_name_plural = _("Encoding audios")
 
-    def clean(self):
+    def clean(self) -> None:
         """Validate the encoding audio model."""
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
@@ -299,7 +299,7 @@ class EncodingAudio(models.Model):
                     EncodingAudio._meta.get_field("encoding_format").help_text
                 )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "EncodingAudio num: %s for video %s in %s" % (
             "%04d" % self.id,
             self.video.id,
@@ -311,7 +311,7 @@ class EncodingAudio(models.Model):
         """Property representing the owner of the video."""
         return self.video.owner
 
-    def delete(self):
+    def delete(self) -> None:
         """Delete the encoding audio, including the source file if it exists."""
         if self.source_file:
             if os.path.isfile(self.source_file.path):
@@ -411,7 +411,7 @@ class PlaylistVideo(models.Model):
     def sites_all(self):
         return self.video.sites_set.all()
 
-    def clean(self):
+    def clean(self) -> None:
         """Validate some PlaylistVideomodels fields."""
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
@@ -425,7 +425,7 @@ class PlaylistVideo(models.Model):
                     code="invalid_encoding",
                 )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "Playlist num: %s for video %s in %s" % (
             "%04d" % self.id,
             self.video.id,
@@ -436,7 +436,7 @@ class PlaylistVideo(models.Model):
     def owner(self):
         return self.video.owner
 
-    def delete(self):
+    def delete(self) -> None:
         if self.source_file:
             if os.path.isfile(self.source_file.path):
                 os.remove(self.source_file.path)

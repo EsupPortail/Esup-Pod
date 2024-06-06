@@ -15,9 +15,7 @@ markdown==3.4.1
 sorl-thumbnail==12.10.0
 django-lti-provider==1.0.0
 django-auth-mixins==1.0.1
-vine==5.0.0;
 pandas
-billiard<4.0,>=3.6.0
 django-shibboleth-remoteuser
 django-chunked-upload==2.0.0
 django-select2
