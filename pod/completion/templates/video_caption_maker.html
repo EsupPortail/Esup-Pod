@@ -24,6 +24,12 @@
 {% block page_content %}
 <div class="overflow-hidden">
 
+  {% if ai_enrichment %}
+    <div class="alert alert-success" role="alert">
+      {% trans "Enrichment is ready. You can now edit the subtitles." %}
+    </div>
+  {% endif %}
+
   <div class="row align-items-center mb-2 justify-content-end">
     <div class="col-auto">
       <label class="col-form-label" for="captionFilename">{% trans "File" %}</label>
@@ -107,7 +113,7 @@
       <textarea class="form-control captions_editor" id="captionContent"></textarea>
     </div>
     <div class="captions_editor text-center container" id="newCaptionsEditor">
-      <h2 class="h3" id="noCaptionsText">{% trans "No captions" %}</h5>
+      <h2 class="h3" id="noCaptionsText">{% trans "No captions" %}</h2>
       <button id="addSubtitle" type="button" class="btn btn-outline-primary btn-lg mt-2">
         <i class="bi bi-plus" aria-hidden="true"></i>
         {% trans "Add a caption/subtitle" %}
@@ -213,7 +219,7 @@
   <script>
     var current_folder = {{ current_folder.id }};
   </script>
-  <script src="{% static 'js/caption_maker.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'js/completion.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/caption_maker.js' %}?ver={{ VERSION }}"></script>
+  <script src="{% static 'js/completion.js' %}?ver={{ VERSION }}"></script>
   {% include "videos/video-script.html" %}
 {% endblock more_script %}

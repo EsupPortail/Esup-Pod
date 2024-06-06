@@ -7,6 +7,11 @@ from pod.quiz.templatetags.video_quiz import is_quiz_accessible, is_quiz_exists
 
 from pod.video.models import Type, Video
 
+# ggignore-start
+# gitguardian:ignore
+PWD = "azerty1234"  # nosec
+# ggignore-end
+
 
 class VideoQuizTemplateTagsTestCase(TestCase):
     """TestCase for video_quiz template tags."""
@@ -14,7 +19,7 @@ class VideoQuizTemplateTagsTestCase(TestCase):
     fixtures = ["initial_data.json"]
 
     def setUp(self) -> None:
-        self.user = User.objects.create(username="pod", password="pod1234pod")
+        self.user = User.objects.create(username="pod", password=PWD)
         self.video_with_quiz = Video.objects.create(
             title="Video1",
             owner=self.user,

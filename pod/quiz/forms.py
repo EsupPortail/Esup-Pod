@@ -44,29 +44,27 @@ class QuestionForm(forms.Form):
         label=_("Explanation"),
         widget=forms.Textarea(
             attrs={
-                "placeholder": _("Explanation of the question"),
+                "placeholder": _("Explanation of the answer."),
             }
         ),
         required=False,
-        help_text=_("Please choose an explanation."),
+        help_text=_(
+            "An explanation that will be displayed once the user has responded (feedback)."
+        ),
     )
     start_timestamp = forms.IntegerField(
         label=_("Start timestamp"),
         required=False,
         min_value=0,
         widget=forms.NumberInput(attrs={"class": "start-timestamp-field"}),
-        help_text=_(
-            "Please choose the beginning time of the answer in the video (in seconds)."
-        ),
+        help_text=_("The start time of the answer in the video (in seconds)."),
     )
     end_timestamp = forms.IntegerField(
         label=_("End timestamp"),
         required=False,
         min_value=0,
         widget=forms.NumberInput(attrs={"class": "end-timestamp-field"}),
-        help_text=_(
-            "Please choose the end time of the answer in the video (in seconds)."
-        ),
+        help_text=_("The end time of the answer in the video (in seconds)."),
     )
     type = forms.ChoiceField(
         choices=QUESTION_TYPES,
@@ -76,7 +74,10 @@ class QuestionForm(forms.Form):
         required=True,
         help_text=_("Please choose the question type."),
     )
-
+    question_id = forms.IntegerField(
+        widget=forms.HiddenInput(),
+        required=False,
+    )
     single_choice = forms.CharField(
         widget=forms.HiddenInput(attrs={"class": "hidden-single-choice-field"}),
         required=False,
@@ -120,7 +121,7 @@ class QuestionForm(forms.Form):
         super(QuestionForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
 
-    def _clean_single_choice(self):
+    def _clean_single_choice(self) -> None:
         """Call SingleChoiceQuestion's clean method."""
         choices_str = self.cleaned_data.get("single_choice")
         single_choice_question = SingleChoiceQuestion(choices=choices_str)
@@ -130,7 +131,7 @@ class QuestionForm(forms.Form):
             for error in e.error_list:
                 self.add_error("single_choice", error)
 
-    def _clean_multiple_choice(self):
+    def _clean_multiple_choice(self) -> None:
         """Call MultipleChoiceQuestion's clean method."""
         choices_str = self.cleaned_data.get("multiple_choice")
         multiple_choice_question = MultipleChoiceQuestion(choices=choices_str)
@@ -169,11 +170,12 @@ class QuizDeleteForm(forms.Form):
 
     agree = forms.BooleanField(
         label=_("I agree"),
+        required=True,
         help_text=_("Delete video quiz cannot be undone"),
         widget=forms.CheckboxInput(),
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Init deletion quiz form."""
         super(QuizDeleteForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
@@ -183,20 +185,22 @@ class QuizDeleteForm(forms.Form):
 
 
 class SingleChoiceQuestionForm(forms.ModelForm):
-    """Form to add or edit a single choice question form."""
+    """Form to show a single choice question form."""
 
     selected_choice = forms.CharField(
         label=_("Single choice question"),
         widget=forms.RadioSelect(),
-        required=False,
+        required=True,
         help_text=_("Please choose one answer."),
     )
 
     class Meta:
+        """SingleChoiceQuestionForm Metadata."""
+
         model = SingleChoiceQuestion
         fields = ["selected_choice"]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Init single choice question form."""
         super(SingleChoiceQuestionForm, self).__init__(*args, **kwargs)
 
@@ -207,18 +211,22 @@ class SingleChoiceQuestionForm(forms.ModelForm):
             choices_dict = {}
 
         choices_list = [(choice, choice) for choice in choices_dict.keys()]
-
         self.fields["selected_choice"].widget.choices = choices_list
-        self.fields["selected_choice"].widget.attrs["class"] = "list-unstyled ps-2"
+        self.fields["selected_choice"].widget.wrap_label = False
+        self.fields["selected_choice"].widget.attrs["class"] = "list-unstyled ps-2 mb-0"
+
+    def clean_selected_choice(self):
+        data = self.cleaned_data["selected_choice"]
+        return data
 
 
 class MultipleChoiceQuestionForm(forms.ModelForm):
-    """Form to add or edit a multiple choice question form."""
+    """Form to show a multiple choice question form."""
 
     selected_choice = forms.CharField(
         label=_("Multiple choice question"),
         widget=forms.CheckboxSelectMultiple(),
-        required=False,
+        required=True,
         help_text=_("Please check any answers you want."),
     )
 
@@ -226,7 +234,7 @@ class MultipleChoiceQuestionForm(forms.ModelForm):
         model = MultipleChoiceQuestion
         fields = ["selected_choice"]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Init multiple choice question form."""
         super(MultipleChoiceQuestionForm, self).__init__(*args, **kwargs)
 
@@ -239,16 +247,20 @@ class MultipleChoiceQuestionForm(forms.ModelForm):
         choices_list = [(choice, choice) for choice in choices_dict.keys()]
 
         self.fields["selected_choice"].widget.choices = choices_list
-        self.fields["selected_choice"].widget.attrs["class"] = "list-unstyled ps-2"
+        self.fields["selected_choice"].widget.attrs["class"] = "list-unstyled ps-2 mb-0"
+
+    def clean_selected_choice(self):
+        data = self.cleaned_data["selected_choice"]
+        return data
 
 
 class ShortAnswerQuestionForm(forms.ModelForm):
-    """Form to add or edit a short answer question form."""
+    """Form to show a short answer question form."""
 
     user_answer = forms.CharField(
         label=_("Short answer question"),
         widget=forms.TextInput(),
-        required=False,
+        required=True,
         help_text=_("Write a short answer."),
     )
 
@@ -263,20 +275,22 @@ class ShortAnswerQuestionForm(forms.ModelForm):
 
 
 class LongAnswerQuestionForm(forms.ModelForm):
-    """Form to add or edit a long answer question form."""
+    """Form to show a long answer question form."""
 
     user_answer = forms.CharField(
         label=_("Long answer question"),
         widget=forms.Textarea(),
-        required=False,
+        required=True,
         help_text=_("Write a long answer."),
     )
 
     class Meta:
+        """LongAnswerQuestionForm Metadata."""
+
         model = LongAnswerQuestion
         fields = ["user_answer"]
 
     def __init__(self, *args, **kwargs) -> None:
-        """Init short answer question form."""
+        """Init long answer question form."""
         super(LongAnswerQuestionForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)

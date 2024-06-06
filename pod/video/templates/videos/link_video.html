@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load favorites_playlist %}
 {% load playlist_buttons %}
+{% load ai_enhancement_template_tags %}
 
 {% spaceless %}
 {% if request.path == '/video/dashboard/' %}
@@ -32,8 +33,16 @@
 
 {% endif %}
 {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video %}
-  <a href="{% url 'video:video_edit' slug=video.slug %}" title="{% trans 'Edit the video'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
-    <i class="bi bi-pencil-square card-footer-link-i" aria-hidden="true"></i></a>
+  <a href="{% url 'video:video_edit' slug=video.slug %}" title="{% trans 'Edit the video' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
+    <i class="bi bi-pencil-square card-footer-link-i" aria-hidden="true"></i>
+  </a>
+  {% user_can_enhance_video video as can_enhance_video_with_ai %}
+  {% enhancement_is_already_asked video as enr_is_already_asked %}
+  {% if can_enhance_video_with_ai and not enr_is_already_asked %}
+    <a href="{% url 'ai_enhancement:enhance_video' video_slug=video.slug %}" title="{% trans 'Enhance the video with AI' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
+      <i class="bi bi-robot card-footer-link-i" aria-hidden="true"></i>
+    </a>
+  {% endif %}
 {% endif %}
 {% comment %}
 {% if request.resolver_match.namespace %}

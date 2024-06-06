@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.files import File
 from pod.completion.models import Track
 from pod.main.tasks import task_start_transcript
-from webvtt import Caption
+from webvtt import Caption, WebVTT
 
 from .utils import (
     send_email,
@@ -150,10 +150,10 @@ def save_vtt_and_notify(video_to_encode, msg, webvtt):
     add_encoding_log(video_to_encode.id, msg)
 
 
-def saveVTT(video, webvtt):
+def saveVTT(video: Video, webvtt: WebVTT, lang_code: str = None):
     """Save webvtt file with the video."""
-    msg = "\nSAVE TRANSCRIPT WEBVTT: %s" % time.ctime()
-    lang = video.transcript
+    msg = "\nSAVE TRANSCRIPT WEBVTT : %s" % time.ctime()
+    lang = lang_code if lang_code else video.transcript
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     webvtt.save(temp_vtt_file.name)
     if webvtt.captions:

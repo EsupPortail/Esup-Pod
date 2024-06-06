@@ -1061,7 +1061,7 @@ def get_html_content(request: WSGIRequest, meeting: Meeting) -> str:
                 <p>%(owner)s invites you to the meeting <strong>%(meeting_title)s</strong>.</p>
                 <p>here the link to join the meeting:
                 <a href="%(join_link)s">%(join_link)s</a></p>
-                <p>You need this password to enter: <strong>%(password)s</strong> </p>
+                <p>You need this password to enter: <strong>%(password)s</strong></p>
                 <p>Regards</p>
             """
                 )
@@ -1086,7 +1086,7 @@ def get_html_content(request: WSGIRequest, meeting: Meeting) -> str:
                 <p>End date: %(end_date)s </p>
                 <p>here the link to join the meeting:
                 <a href="%(join_link)s">%(join_link)s</a></p>
-                <p>You need this password to enter: <strong>%(password)s</strong> </p>
+                <p>You need this password to enter: <strong>%(password)s</strong></p>
                 <p>Regards</p>
             """
                 )

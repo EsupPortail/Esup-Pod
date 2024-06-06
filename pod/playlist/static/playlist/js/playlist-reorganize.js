@@ -1,8 +1,12 @@
+/**
+ * Esup-Pod Playlist reorganize scripts.
+ */
+
 const exchangedValues = [];
 var infinite;
 
-const reorganizeButtonsSpanElement = document.getElementById('reorganize-buttons');
-const collapseAsideElement = document.getElementById('collapseAside');
+// const reorganizeButtonsSpanElement = document.getElementById('reorganize-buttons');
+// const collapseAsideElement = document.getElementById('collapseAside');
 const reorganizeButton = document.getElementById('reorganize-button');
 
 addEventForReorganizedButton();
@@ -112,7 +116,7 @@ function onDrop(event) {
  */
 function activateDragAndDrop(parent) {
   const draggableElements = document.querySelectorAll(".draggable-container");
-  const cardFooterElements = document.querySelectorAll(".card-footer");
+  // const cardFooterElements = document.querySelectorAll(".card-footer");
   draggableElements.forEach((draggableElement) => {
     draggableElement.setAttribute('draggable', true);
     draggableElement.addEventListener('dragstart', onDragStart);

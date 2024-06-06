@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<fieldset class="border rounded-3 p-3 mb-3 question-form" data-question-index="{{ form_index }}">
+<fieldset class="border rounded-3 p-4 question-form" data-question-index="{{ form_index }}">
   <legend class="d-flex justify-content-between align-items-center">
     <div>
       <i class="bi bi-patch-question" aria-hidden='true'></i>&nbsp;
@@ -22,22 +22,20 @@
 
     {% for field in form.visible_fields %}
       {% spaceless %}
-        <div class="mb-3">
-          <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
-            {{ field.errors }}
-            {% if "form-check-input" in field.field.widget.attrs.class %}
-              <div class="form-check">
-                {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
-              </div>
-            {% else %}
-              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-              {{ field }}
-            {% endif %}
-            {% if field.help_text %}
-              <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
-            {% endif %}
-            {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
-          </div>
+        <div class="mb-3 form-group {% if field.field.required %}form-group-required {% endif %}">
+          {{ field.errors }}
+          {% if "form-check-input" in field.field.widget.attrs.class %}
+            <div class="form-check">
+              {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+            </div>
+          {% else %}
+            <label for="{{ field.id_for_label }}" class="col-form-label">{{ field.label }}</label>
+            {{ field }}
+          {% endif %}
+          {% if field.help_text %}
+            <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+          {% endif %}
+          {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
         </div>
       {% endspaceless %}
     {% endfor %}
