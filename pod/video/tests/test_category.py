@@ -71,7 +71,6 @@ class TestCategory(TestCase):
         )
         self.cat_3.video.add(self.video)
 
-
     def test_addCategory(self):
         data = {"title": "Test new category", "videos": [self.video_2.slug]}
 
