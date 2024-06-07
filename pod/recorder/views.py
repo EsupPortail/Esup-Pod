@@ -222,6 +222,8 @@ def reformat_url_if_use_cas_or_shib(request, link_url):
 
 
 def video_publish(recorder, mediapath, request, course_title):
+    """Assigns a video by email or automatically depending on the configuration of the recorder"""
+
     if recorder.publication_auto is True:
         # Here we have already checked that the upload is complete
         rft = RecordingFileTreatment.objects.get(file=mediapath, recorder=recorder)
