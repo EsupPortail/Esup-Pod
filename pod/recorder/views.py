@@ -247,48 +247,60 @@ def recorder_notify(request):
             if key != m.hexdigest():
                 return HttpResponse("nok: key is not valid")
 
-            link_url = "".join(
-                [
-                    request.build_absolute_uri(reverse("record:add_recording")),
-                    "?mediapath=",
-                    mediapath,
-                    "&course_title=%s" % course_title,
-                    "&recorder=%s" % recorder.id,
-                ]
-            )
-            # link_url = reformat_url_if_use_cas_or_shib(request, link_url)
-
-            html_msg = _(
-                "<p>Hello,<br>a new recording has just be added on %("
-                "title_site)s from the recorder “%(recorder)s”.<br>"
-                'To add it, just click on link below.</p><p><a href="%('
-                'link_url)s">%(link_url)s</a><br><em>If you cannot click on '
-                "link, just copy-paste it in your browser.</em>"
-                "</p><p>Regards.</p>"
-            ) % {
-                "title_site": __TITLE_SITE__,
-                "recorder": recorder.name,
-                "link_url": link_url,
-            }
-
-            text_msg = bleach.clean(html_msg, tags=[], strip=True)
-            # Sending the mail to the managers defined in the administration
-            # for the concerned recorder
-            if recorder.user:
-                admin_emails = [recorder.user.email]
+            if recorder.publication_auto is True:
+                # Ici on a déjà controllé que l'upload est terminé
+                rft = RecordingFileTreatment.objects.get(file=mediapath, recorder=recorder)
+                title = rft.file.split('/')
+                title = title[len(title) - 1]
+                recording = Recording(title=title, type=rft.type,
+                                      source_file=rft.file,
+                                      user=recorder.user, recorder=rft.recorder)
+                recording.save()
+                rft.delete()
+                return HttpResponse("auto")
             else:
-                admin_emails = User.objects.filter(is_superuser=True).values_list(
-                    "email", flat=True
+                link_url = "".join(
+                    [
+                        request.build_absolute_uri(reverse("record:add_recording")),
+                        "?mediapath=",
+                        mediapath,
+                        "&course_title=%s" % course_title,
+                        "&recorder=%s" % recorder.id,
+                    ]
                 )
-            subject = "[" + __TITLE_SITE__ + "] %s" % _("New recording added.")
-            # Send the mail to the managers or admins (if not found)
-            email_msg = EmailMultiAlternatives(
-                subject, text_msg, settings.DEFAULT_FROM_EMAIL, admin_emails
-            )
+                # link_url = reformat_url_if_use_cas_or_shib(request, link_url)
 
-            email_msg.attach_alternative(html_msg, "text/html")
-            email_msg.send(fail_silently=False)
-            return HttpResponse("ok")
+                html_msg = _(
+                    "<p>Hello,<br>a new recording has just be added on %("
+                    "title_site)s from the recorder “%(recorder)s”.<br>"
+                    'To add it, just click on link below.</p><p><a href="%('
+                    'link_url)s">%(link_url)s</a><br><em>If you cannot click on '
+                    "link, just copy-paste it in your browser.</em>"
+                    "</p><p>Regards.</p>"
+                ) % {
+                    "title_site": __TITLE_SITE__,
+                    "recorder": recorder.name,
+                    "link_url": link_url,
+                }
+
+                text_msg = bleach.clean(html_msg, tags=[], strip=True)
+                # Sending the mail to the managers defined in the administration
+                # for the concerned recorder
+                if recorder.user:
+                    admin_emails = [recorder.user.email]
+                else:
+                    admin_emails = User.objects.filter(is_superuser=True).values_list(
+                        "email", flat=True
+                    )
+                subject = "[" + __TITLE_SITE__ + "] %s" % _("New recording added.")
+                # Send the mail to the managers or admins (if not found)
+                email_msg = EmailMultiAlternatives(
+                    subject, text_msg, settings.DEFAULT_FROM_EMAIL, admin_emails
+                )
+
+                email_msg.attach_alternative(html_msg, "text/html")
+                email_msg.send(fail_silently=False)
+                return HttpResponse("ok")
         else:
             return HttpResponse(
                 "nok: address_ip not valid or recorder not found in this site"

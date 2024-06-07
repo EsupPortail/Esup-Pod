@@ -223,6 +223,11 @@ def case_manager_exist(
         print_if_debug(
             "- Information saved in the recorder_recordingfiletreatment table."
         )
+    elif str(request.content)[1:] == "'auto'":
+        # Video auto published
+        print_if_debug(
+            "The video was published and attributed."
+        )
     else:
         # Email wasn't sent, due to an error
         print_if_debug(

@@ -8281,6 +8281,18 @@ msgstr ""
 "que vous sauf qu’ils ne peuvent pas supprimer cette vidéo."
 
 #: pod/recorder/models.py
+msgid "Automatic publishing :"
+msgstr "Publication automatique :"
+
+#: pod/recorder/models.py
+msgid ""
+"If this box is checked, "
+"the videos will be automatically assigned to the recorder manager."
+msgstr ""
+"Si vous cochez cette case "
+"les vidéos seront automatiquement attribuées au gestionnaire de l'enregistreur."
+
+#: pod/recorder/models.py
 msgid "Video type by default."
 msgstr "Type par défaut des vidéos."
 
