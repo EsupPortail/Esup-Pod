@@ -5695,6 +5695,18 @@ msgid "Dyslexia mode"
 msgstr "Mode dyslexie"
 
 #: pod/main/templates/navbar.html
+msgid "Auto show subtitles"
+msgstr "Affichage automatique des sous-titres"
+
+#: pod/main/templates/navbar.html
+msgid "Automaticaly display subtitle at the start of each video play."
+msgstr "Affiche automatiquement le sous-titrage au commencement de chaque vidéo."
+
+#: pod/main/templates/navbar.html
+msgid "If no subtitle corresponds to the current language, the first available will be selected."
+msgstr "Si aucun sous-titre ne correspond au langage courant, le premier disponible sera sélectionné."
+
+#: pod/main/templates/navbar.html
 msgid "Toggle user menu"
 msgstr "Basculer le menu utilisateur"
 
