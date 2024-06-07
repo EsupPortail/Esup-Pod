@@ -150,7 +150,7 @@ class Recorder(models.Model):
     )
     # To publish the videos automatically for this recorder
     publication_auto = models.BooleanField(
-        verbose_name=_("Automatic publishing :"),
+        verbose_name=_("Automatic publishing:"),
         default=False,
         help_text=_(
             "If this box is checked, "

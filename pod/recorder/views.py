@@ -223,7 +223,7 @@ def reformat_url_if_use_cas_or_shib(request, link_url):
 
 def video_publish(recorder, mediapath, request, course_title):
     if recorder.publication_auto is True:
-        # Ici on a déjà controllé que l'upload est terminé
+        # Here we have already checked that the upload is complete
         rft = RecordingFileTreatment.objects.get(file=mediapath, recorder=recorder)
         title = rft.file.split('/')
         title = title[len(title) - 1]
@@ -246,11 +246,11 @@ def video_publish(recorder, mediapath, request, course_title):
         # link_url = reformat_url_if_use_cas_or_shib(request, link_url)
 
         html_msg = _(
-            "<p>Hello,<br>a new recording has just be added on %("
+            "<p>Hello,<br>a new recording has just been added on %("
             "title_site)s from the recorder “%(recorder)s”.<br>"
-            'To add it, just click on link below.</p><p><a href="%('
+            'To assign it, just click on link below.</p><p><a href="%('
             'link_url)s">%(link_url)s</a><br><em>If you cannot click on '
-            "link, just copy-paste it in your browser.</em>"
+            "the link, just copy-paste it in your browser.</em>"
             "</p><p>Regards.</p>"
         ) % {
             "title_site": __TITLE_SITE__,
