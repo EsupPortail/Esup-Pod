@@ -303,7 +303,6 @@ def recorder_notify(request):
             m.update(recording_place.encode("utf-8") + recorder.salt.encode("utf-8"))
             if key != m.hexdigest():
                 return HttpResponse("nok: key is not valid")
-
             return video_publish(recorder, mediapath, request, course_title)
         else:
             return HttpResponse(
