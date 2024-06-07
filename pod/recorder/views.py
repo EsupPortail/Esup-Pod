@@ -225,11 +225,15 @@ def video_publish(recorder, mediapath, request, course_title):
     if recorder.publication_auto is True:
         # Here we have already checked that the upload is complete
         rft = RecordingFileTreatment.objects.get(file=mediapath, recorder=recorder)
-        title = rft.file.split('/')
+        title = rft.file.split("/")
         title = title[len(title) - 1]
-        recording = Recording(title=title, type=rft.type,
-                              source_file=rft.file,
-                              user=recorder.user, recorder=rft.recorder)
+        recording = Recording(
+            title=title,
+            type=rft.type,
+            source_file=rft.file,
+            user=recorder.user,
+            recorder=rft.recorder,
+        )
         recording.save()
         rft.delete()
         return HttpResponse("auto")
