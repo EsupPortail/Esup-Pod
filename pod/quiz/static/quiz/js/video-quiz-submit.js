@@ -61,12 +61,13 @@ for (let questionElement of questionList) {
   }
   // case user input
   let user_input = questionElement.querySelector(`#id_${questionid}-user_answer`);
-  if(user_input && !allanswers.includes(user_input) && questions_answers[`${questionid}`]) {
+  allanswersarr = Array.from(allanswers)
+  if(user_input && !allanswersarr.includes(user_input) && questions_answers[`${questionid}`]) {
       let user_answer = questions_answers[`${questionid}`][0];
-      if(user_input.tagName === 'input') {
+      if(user_input.tagName === 'INPUT') {
         user_input.value = user_answer;
       }
-      if(user_input.tagName === 'textarea') {
+      if(user_input.tagName === 'TEXTAREA') {
         user_input.innerText = user_answer;
       }
   }
