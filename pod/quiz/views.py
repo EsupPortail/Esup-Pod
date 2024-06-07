@@ -369,7 +369,7 @@ def calculate_score(question: Question, form) -> float:
             score = max(0, score - penalty)
             return score
 
-    elif question.get_type() in {"short_answer", "long_answer"}:
+    elif question.get_type() in ["short_answer", "long_answer"]:
         user_answer = form.cleaned_data.get("user_answer")
         correct_answer = question.get_answer()
 
@@ -407,6 +407,13 @@ def process_quiz_submission(request: WSGIRequest, quiz: Quiz) -> float:
                 user_answer = form.cleaned_data["selected_choice"]
                 if question.get_type() == "multiple_choice":
                     user_answer = ast.literal_eval(user_answer)
+                correct_answer = question.get_answer()
+                questions_answers["question_%s" % question.id] = [
+                    user_answer,
+                    correct_answer,
+                ]
+            elif question.get_type() in ["short_answer", "long_answer"]:
+                user_answer = form.cleaned_data.get("user_answer")
                 correct_answer = question.get_answer()
                 questions_answers["question_%s" % question.id] = [
                     user_answer,

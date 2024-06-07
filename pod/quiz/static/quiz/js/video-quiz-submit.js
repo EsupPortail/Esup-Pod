@@ -53,9 +53,21 @@ for (let questionElement of questionList) {
       } else {
         answer.closest('li').classList.add('bi', 'bi-clipboard');
       }
+      // check if question is "single_choice", "multiple_choice", "short_answer", "long_answer"
       if ((Array.isArray(user_answer) && user_answer.includes(answer.value)) || user_answer === answer.value ){
         answer.checked = true;
       }
     }
   }
+  // case user input
+  let user_input = questionElement.querySelector(`#id_${questionid}-user_answer`);
+  if(user_input && !allanswers.includes(user_input)) {
+    if(user_input.tagName === 'input') {
+
+    }
+    if(user_input.tagName === 'textarea') {
+      
+    }
+  }
+
 }
