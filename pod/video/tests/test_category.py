@@ -71,158 +71,6 @@ class TestCategory(TestCase):
         )
         self.cat_3.video.add(self.video)
 
-    def test_getCategories(self):
-        # not Authenticated, should return HttpResponseRedirect:302
-        response = self.client.get(reverse("video:get_categories"))
-        self.assertIsInstance(response, HttpResponseRedirect)
-        self.assertEqual(response.status_code, 302)
-
-        # not Ajax request, should return HttpResponseForbidden:403
-        self.client.force_login(self.owner_user)
-        response = self.client.get(reverse("video:get_categories"))
-        self.assertIsInstance(response, HttpResponseForbidden)
-        self.assertEqual(response.status_code, 403)
-
-        # Ajax request, should return HttpResponse:200 with all categories
-        response = self.client.get(
-            reverse("video:get_categories"), HTTP_X_REQUESTED_WITH="XMLHttpRequest"
-        )
-
-        actual_data = json.loads(response.content.decode("utf-8"))
-        expected_data = {
-            "success": True,
-            "categories": [
-                {
-                    "title": "test2Category",
-                    "slug": self.cat_2.slug,
-                    "videos": [],
-                },
-                {
-                    "title": "testCategory",
-                    "slug": self.cat_1.slug,
-                    "videos": [
-                        {
-                            "slug": self.video.slug,
-                            "title": self.video.title,
-                            "duration": self.video.duration_in_time,
-                            "thumbnail": self.video.get_thumbnail_card(),
-                            "is_video": self.video.is_video,
-                            "is_draft": self.video.is_draft,
-                            "is_restricted": self.video.is_restricted,
-                            "has_chapter": self.video.chapter_set.all().count() > 0,
-                            "has_password": bool(self.video.password),
-                        }
-                    ],
-                },
-            ],
-        }
-        self.assertIsInstance(response, HttpResponse)
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(expected_data["success"])
-        for i in range(2):
-            self.assertEqual(
-                actual_data["categories"][i]["title"],
-                expected_data["categories"][i]["title"],
-            )
-            self.assertEqual(
-                actual_data["categories"][i]["slug"],
-                expected_data["categories"][i]["slug"],
-            )
-            self.assertCountEqual(
-                actual_data["categories"][i]["videos"],
-                expected_data["categories"][i]["videos"],
-            )
-
-        # Ajax request, should return HttpResponse:200 with one category
-        response = self.client.get(
-            reverse("video:get_category", kwargs={"c_slug": self.cat_1.slug}),
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-        )
-
-        actual_data = json.loads(response.content.decode("utf-8"))
-        expected_data = {
-            "success": True,
-            "id": self.cat_1.id,
-            "slug": self.cat_1.slug,
-            "title": self.cat_1.title,
-            "owner": self.cat_1.owner.id,
-            "videos": list(
-                map(
-                    lambda v: {
-                        "slug": v.slug,
-                        "title": v.title,
-                        "duration": v.duration_in_time,
-                        "thumbnail": v.get_thumbnail_card(),
-                        "is_video": v.is_video,
-                        "is_draft": v.is_draft,
-                        "is_restricted": v.is_restricted,
-                        "has_chapter": v.chapter_set.all().count() > 0,
-                        "has_password": bool(v.password),
-                    },
-                    self.cat_1.video.all(),
-                )
-            ),
-        }
-
-        self.assertIsInstance(response, HttpResponse)
-        self.assertEqual(response.status_code, 200)
-        self.assertCountEqual(list(actual_data.keys()), list(expected_data.keys()))
-        self.assertCountEqual(list(actual_data.values()), list(expected_data.values()))
-
-        # GET category as additional owner
-        # Ajax request, should return HttpResponse:200 with one category
-        self.client.force_login(self.simple_user)
-        response = self.client.get(
-            reverse("video:get_category", kwargs={"c_slug": self.cat_3.slug}),
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-        )
-
-        actual_data = json.loads(response.content.decode("utf-8"))
-        expected_data = {
-            "success": True,
-            "id": self.cat_3.id,
-            "slug": self.cat_3.slug,
-            "title": self.cat_3.title,
-            "owner": self.cat_3.owner.id,
-            "videos": [
-                {
-                    "slug": self.video.slug,
-                    "title": self.video.title,
-                    "duration": self.video.duration_in_time,
-                    "thumbnail": self.video.get_thumbnail_card(),
-                    "is_video": self.video.is_video,
-                    "is_draft": self.video.is_draft,
-                    "is_restricted": self.video.is_restricted,
-                    "has_chapter": self.video.chapter_set.all().count() > 0,
-                    "has_password": bool(self.video.password),
-                }
-            ],
-        }
-
-        self.assertIsInstance(response, HttpResponse)
-        self.assertEqual(response.status_code, 200)
-        self.assertCountEqual(actual_data, expected_data)
-
-        # GET category as no longer additional owner
-        # Ajax request, should return HttpResponse:200 with one category
-        self.video.additional_owners.remove(self.simple_user)
-        response = self.client.get(
-            reverse("video:get_category", kwargs={"c_slug": self.cat_3.slug}),
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-        )
-
-        actual_data = json.loads(response.content.decode("utf-8"))
-        expected_data = {
-            "success": True,
-            "id": self.cat_3.id,
-            "slug": self.cat_3.slug,
-            "title": self.cat_3.title,
-            "owner": self.cat_3.owner.id,
-            "videos": [],
-        }
-        self.assertIsInstance(response, HttpResponse)
-        self.assertEqual(response.status_code, 200)
-        self.assertCountEqual(actual_data, expected_data)
 
     def test_addCategory(self):
         data = {"title": "Test new category", "videos": [self.video_2.slug]}
@@ -434,7 +282,7 @@ class TestCategory(TestCase):
     def test_deleteCategory(self):
         # not Authenticated, should return HttpResponseRedirect:302
         response = self.client.post(
-            reverse("video:delete_category", kwargs={"c_id": self.cat_1.id}),
+            reverse("video:delete_category", kwargs={"c_slug": self.cat_1.slug}),
             content_type="application/json",
         )
 
@@ -444,7 +292,7 @@ class TestCategory(TestCase):
         # not Ajax request, should return HttpResponseForbidden:403
         self.client.force_login(self.owner_user)
         response = self.client.post(
-            reverse("video:delete_category", kwargs={"c_id": self.cat_1.id}),
+            reverse("video:delete_category", kwargs={"c_slug": self.cat_1.slug}),
             content_type="application/json",
         )
 
@@ -453,7 +301,7 @@ class TestCategory(TestCase):
 
         # Ajax GET request, should return HttpResponseNotAllowed:405
         response = self.client.get(
-            reverse("video:delete_category", kwargs={"c_id": self.cat_1.id}),
+            reverse("video:delete_category", kwargs={"c_slug": self.cat_1.slug}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
 
@@ -464,17 +312,14 @@ class TestCategory(TestCase):
         # should return HttpResponseForbidden:403
         self.client.force_login(self.simple_user)
         response = self.client.post(
-            reverse("video:delete_category", kwargs={"c_id": self.cat_1.id}),
+            reverse("video:delete_category", kwargs={"c_slug": self.cat_1.slug}),
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
-        response = self.client.get(reverse("video:get_categories"))
-        self.assertIsInstance(response, HttpResponseForbidden)
-        self.assertEqual(response.status_code, 403)
 
         self.client.force_login(self.owner_user)
         # Ajax POST request, should return HttpResponse:200 with category data
         response = self.client.post(
-            reverse("video:delete_category", kwargs={"c_id": self.cat_1.id}),
+            reverse("video:delete_category", kwargs={"c_slug": self.cat_1.slug}),
             content_type="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
