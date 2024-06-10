@@ -53,9 +53,22 @@ for (let questionElement of questionList) {
       } else {
         answer.closest('li').classList.add('bi', 'bi-clipboard');
       }
+      // check if question is "single_choice", "multiple_choice", "short_answer", "long_answer"
       if ((Array.isArray(user_answer) && user_answer.includes(answer.value)) || user_answer === answer.value ){
         answer.checked = true;
       }
     }
+  }
+  // case user input
+  let user_input = questionElement.getElementById(`id_${questionid}-user_answer`);
+  allanswersarr = Array.from(allanswers)
+  if(user_input && !allanswersarr.includes(user_input) && questions_answers[`${questionid}`]) {
+      let user_answer = questions_answers[`${questionid}`][0];
+      if(user_input.tagName === 'INPUT') {
+        user_input.value = user_answer;
+      }
+      if(user_input.tagName === 'TEXTAREA') {
+        user_input.innerText = user_answer;
+      }
   }
 }
