@@ -60,7 +60,7 @@ for (let questionElement of questionList) {
     }
   }
   // case user input
-  let user_input = questionElement.querySelector(`#id_${questionid}-user_answer`);
+  let user_input = questionElement.getElementById(`id_${questionid}-user_answer`);
   allanswersarr = Array.from(allanswers)
   if(user_input && !allanswersarr.includes(user_input) && questions_answers[`${questionid}`]) {
       let user_answer = questions_answers[`${questionid}`][0];
