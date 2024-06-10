@@ -24,6 +24,8 @@ def is_quiz_accessible(context: dict, video: Video) -> bool:
     quiz = get_video_quiz(video)
     if quiz:
         request = context["request"]
+        if quiz.is_draft:
+            return video.owner == request.user
         if (
             quiz.connected_user_only and request.user.is_authenticated
         ) or not quiz.connected_user_only:
