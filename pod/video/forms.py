@@ -596,11 +596,13 @@ class VideoForm(forms.ModelForm):
         required=True,
         initial="public",
     )
+    password = forms.CharField(widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}), required=False, label=_("Password"))
 
     required_css_class = "required"
     videoattrs = {
         "class": "form-control-file",
         "accept": "audio/*, video/*, .%s"
+
         % ", .".join(map(str, VIDEO_ALLOWED_EXTENSIONS)),
     }
     is_admin = False
@@ -935,6 +937,7 @@ class VideoForm(forms.ModelForm):
                 self.initial["visibility"] = "public"
         self.fields['is_draft'].widget = forms.HiddenInput()
         self.fields['is_restricted'].widget = forms.HiddenInput()
+        self.order_fields(["visibility", "password"] + list(self.fields.keys()))
 
 
     def custom_video_form(self) -> None:

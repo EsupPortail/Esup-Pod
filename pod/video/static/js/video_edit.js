@@ -8,6 +8,10 @@
 document.addEventListener(
   "DOMContentLoaded",
   function () {
+    const visibilitySelect = document.getElementById("id_visibility");
+    const passwordField = document.getElementById("id_password").parentElement;
+    visibilitySelect.addEventListener('change', () => togglePasswordField(visibilitySelect, passwordField));
+    togglePasswordField(visibilitySelect, passwordField);
     // Display type description as field help when changed
     const target = "id_type";
     // Cannot be used in django admin pages, as <div class="help"> has no id.
@@ -20,6 +24,22 @@ document.addEventListener(
   },
   false,
 );
+
+
+/**
+ * Toggle the password field visibility based on the visibility select value.
+ *
+ * @param visibilitySelect {HTMLSelectElement} - The select element with the visibility options.
+ * @param passwordField {HTMLElement} - The password field container.
+ */
+function togglePasswordField(visibilitySelect, passwordField) {
+  if (visibilitySelect.value !== "draft") {
+    passwordField.style.display = "block";
+  } else {
+    passwordField.style.display = "none";
+  }
+}
+
 
 function display_option_desc(selectBox, container) {
   // Display in $container the title of current $selectedBox option.
