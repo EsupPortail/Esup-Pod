@@ -170,8 +170,6 @@ class QuizForm(forms.Form):
         )
     )
 
-
-
     def __init__(self, *args, **kwargs) -> None:
         """Init quiz form."""
         super(QuizForm, self).__init__(*args, **kwargs)
