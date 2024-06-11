@@ -167,7 +167,7 @@ class QuizForm(forms.Form):
             "If this box is checked, "
             "the quiz will be visible and accessible only by you "
             "and the additional owners."
-        )
+        ),
     )
 
     def __init__(self, *args, **kwargs) -> None:
