@@ -30,12 +30,6 @@ for (let questionElement of questionList) {
 
   let questionid = questionElement.dataset.questionid;
 
-  // Get short or long answer input
-  let textInput = document.getElementById(`id_${questionid}-user_answer`);
-  if (textInput) {
-    textInput.disabled = true;
-  }
-
   // get all checkbox & radio answers and parse them.
   // if answer in good answer, put it in green else if user answer put it in red
   let allanswers = questionElement.querySelectorAll(`ul#id_${questionid}-selected_choice li input`);
@@ -59,8 +53,14 @@ for (let questionElement of questionList) {
       }
     }
   }
+
   // case user input
-  let user_input = questionElement.getElementById(`id_${questionid}-user_answer`);
+  // Get short or long answer input
+  let user_input = document.getElementById(`id_${questionid}-user_answer`);
+  if (user_input) {
+    user_input.disabled = true;
+  }
+
   allanswersarr = Array.from(allanswers)
   if(user_input && !allanswersarr.includes(user_input) && questions_answers[`${questionid}`]) {
       let user_answer = questions_answers[`${questionid}`][0];
