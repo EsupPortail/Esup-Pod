@@ -731,8 +731,8 @@ class VideoForm(forms.ModelForm):
                 encoding.source_file = encoding.source_file.name.replace(old_dir, new_dir)
                 encoding.save()
 
-    def save(self, commit=True, *args, **kwargs):
-        """Save video and launch encoding if relevant."""
+    def save_visibility(self):
+        """Save video and launch encoding if relevant for the visibility field."""
         visibility = self.cleaned_data.get('visibility')
         if visibility == 'public':
             self.instance.is_draft = False
@@ -743,6 +743,10 @@ class VideoForm(forms.ModelForm):
         elif visibility == 'restricted':
             self.instance.is_draft = False
             self.instance.is_restricted = True
+
+    def save(self, commit=True, *args, **kwargs):
+        """Save video and launch encoding if relevant."""
+        self.save_visibility()
         old_dir = ""
         new_dir = ""
         if hasattr(self, "change_user") and self.change_user is True:
@@ -928,6 +932,10 @@ class VideoForm(forms.ModelForm):
             self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
                 owner__sites=Site.objects.get_current()
             )
+        self.__init_instance__()
+
+    def __init_instance__(self):
+        """Initialize a new VideoForm instance for visibility field."""
         if self.instance:
             if self.instance.is_draft:
                 self.initial["visibility"] = "draft"
@@ -938,7 +946,6 @@ class VideoForm(forms.ModelForm):
         self.fields['is_draft'].widget = forms.HiddenInput()
         self.fields['is_restricted'].widget = forms.HiddenInput()
         self.order_fields(["visibility", "password"] + list(self.fields.keys()))
-
 
     def custom_video_form(self) -> None:
         if not ACTIVE_VIDEO_COMMENT:
