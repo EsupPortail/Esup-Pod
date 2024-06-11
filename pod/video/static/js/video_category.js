@@ -136,8 +136,8 @@ function get_category_modal(url, page=null){
           manageModalConfirmBtn();
       }
       if(url.includes(CATEGORIES_EDIT_URL)){
-        var slugg = url.split("/")[url.split("/").length - 2];
-        selectedVideos[catVideosListContainerId] = all_categories_videos[slugg];
+        let c_slug = url.split("/")[url.split("/").length - 2];
+        selectedVideos[catVideosListContainerId] = all_categories_videos[c_slug];
       }
       currentUrl = url;
     })
@@ -157,7 +157,7 @@ function post_category_modal(url){
         formData.append("videos", JSON.stringify(selectedVideos[catVideosListContainerId]));
     }
     if(document.getElementById("catTitle")){
-        formData.append("title", document.getElementById("catTitle").value);
+        formData.append("title", JSON.stringify(document.getElementById("catTitle").value));
     }
 
     fetch(url, {

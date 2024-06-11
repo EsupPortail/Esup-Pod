@@ -3001,7 +3001,14 @@ def add_category(request):
         response = {"success": False}
         c_user = request.user
 
-        title = request.POST.get("title")
+        if not request.POST.get("title") or json.loads(request.POST.get("title")) == "":
+            response["message"] = _("Title field is required")
+            return HttpResponseBadRequest(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json",
+            )
+
+        title = json.loads(request.POST.get("title"))
         videos_slugs = json.loads(request.POST.get("videos"))
 
         videos = Video.objects.filter(slug__in=videos_slugs)
@@ -3018,34 +3025,17 @@ def add_category(request):
                 content_type="application/json",
             )
 
-        if title.strip() != "":
-            try:
-                cat = Category.objects.create(title=title, owner=c_user)
-                cat.video.add(*videos)
-                cat.save()
-            except IntegrityError:  # cannot duplicate category
-                return HttpResponse(status=409)
+        try:
+            cat = Category.objects.create(title=title, owner=c_user)
+            cat.video.add(*videos)
+            cat.save()
+        except IntegrityError:  # cannot duplicate category
+            return HttpResponse(status=409)
 
-            response["category"] = {}
-            response["category"]["id"] = cat.id
-            response["category"]["title"] = cat.title
-            response["category"]["slug"] = cat.slug
-            response["success"] = True
-            response["category"]["videos"] = list(
-                map(
-                    lambda v: get_video_data(v),
-                    cat.video.all(),
-                )
-            )
-            response["message"] = _("Category successfully added.")
+        response["success"] = True
+        response["message"] = _("Category successfully added.")
 
-            return HttpResponse(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json",
-            )
-
-        response["message"] = _("Title field is required")
-        return HttpResponseBadRequest(
+        return HttpResponse(
             json.dumps(response, cls=DjangoJSONEncoder),
             content_type="application/json",
         )
@@ -3068,7 +3058,7 @@ def add_category(request):
             "modal_title": _("Add new category"),
             "videos": videos,
         }
-    return render(request, "videos/category_modal.html", data_context)
+        return render(request, "videos/category_modal.html", data_context)
 
 
 @login_required(redirect_field_name="referrer")
@@ -3088,7 +3078,15 @@ def edit_category(request, c_slug=None):
         response = {"success": False}
         c_user = request.user
         cat = get_object_or_404(Category, slug=c_slug)
-        title = request.POST.get("title")
+
+        if not request.POST.get("title") or json.loads(request.POST.get("title")) == "":
+            response["message"] = _("Title field is required")
+            return HttpResponseBadRequest(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json",
+            )
+
+        title = json.loads(request.POST.get("title"))
         videos_slugs = json.loads(request.POST.get("videos"))
 
         new_videos = Video.objects.filter(slug__in=videos_slugs)
@@ -3105,28 +3103,22 @@ def edit_category(request, c_slug=None):
                 content_type="application/json",
             )
 
-        if title.strip() != "":
-            if c_user == cat.owner or c_user.is_superuser:
-                cat.title = title
-                cat.video.set(list(new_videos))
-                cat.save()
+        if c_user == cat.owner or c_user.is_superuser:
+            cat.title = title
+            cat.video.set(list(new_videos))
+            cat.save()
 
-                response["message"] = _("Category updated successfully.")
-                response["all_categories_videos"] = get_json_videos_categories(request)
+            response["success"] = True
+            response["message"] = _("Category updated successfully.")
+            response["all_categories_videos"] = get_json_videos_categories(request)
 
-                return HttpResponse(
-                    json.dumps(response, cls=DjangoJSONEncoder),
-                    content_type="application/json",
-                )
-
-            response["message"] = _("You do not have rights to edit this category")
-            return HttpResponseForbidden(
+            return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json",
             )
 
-        response["message"] = _("Title field is required")
-        return HttpResponseBadRequest(
+        response["message"] = _("You do not have rights to edit this category")
+        return HttpResponseForbidden(
             json.dumps(response, cls=DjangoJSONEncoder),
             content_type="application/json",
         )
