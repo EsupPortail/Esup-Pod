@@ -42,7 +42,7 @@ class Quiz(models.Model):
             "the quiz will be visible and accessible only by you "
             "and the additional owners."
         ),
-        default=True,
+        default=False,
     )
 
     class Meta:
