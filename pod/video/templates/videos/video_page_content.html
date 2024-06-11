@@ -1,6 +1,12 @@
 {% load i18n %}
 {% load video_filters %}
 
+{% if video.is_draft %}
+  <div class="alert alert-secondary">
+    <p>{% trans "This video is in <strong>draft</strong>." %}</p>
+  </div>
+{% endif %}
+
 <div id="video-player">
   <div itemscope itemtype="http://schema.org/VideoObject">
 

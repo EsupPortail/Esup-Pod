@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-11 07:24+0000\n"
+"POT-Creation-Date: 2024-06-11 07:48+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -8119,6 +8119,10 @@ msgid "One or more errors have been found in the question."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans la question."
 
 #: pod/quiz/templates/quiz/video_quiz.html
+msgid "This quiz is in <strong>draft</strong>."
+msgstr "Ce quiz est en mode <strong>brouillon</strong>."
+
+#: pod/quiz/templates/quiz/video_quiz.html
 msgid "Your score is:"
 msgstr "Votre score est de :"
 
@@ -10373,6 +10377,10 @@ msgstr "Télécharger les notes"
 #: pod/video/templates/videos/video_notes.html
 msgid "New note"
 msgstr "Nouvelle note"
+
+#: pod/video/templates/videos/video_page_content.html
+msgid "This video is in <strong>draft</strong>."
+msgstr "Cette vidéo est en mode <strong>brouillon</strong>."
 
 #: pod/video/templates/videos/video_page_content.html
 msgid "Channel description"

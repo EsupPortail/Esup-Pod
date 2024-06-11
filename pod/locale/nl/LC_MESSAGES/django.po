@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-11 07:24+0000\n"
+"POT-Creation-Date: 2024-06-11 07:48+0000\n"
 "PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -7600,6 +7600,10 @@ msgid "One or more errors have been found in the question."
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
+msgid "This quiz is in <strong>draft</strong>."
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
 msgid "Your score is:"
 msgstr ""
 
@@ -9677,6 +9681,10 @@ msgstr ""
 
 #: pod/video/templates/videos/video_notes.html
 msgid "New note"
+msgstr ""
+
+#: pod/video/templates/videos/video_page_content.html
+msgid "This video is in <strong>draft</strong>."
 msgstr ""
 
 #: pod/video/templates/videos/video_page_content.html

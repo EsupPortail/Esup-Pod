@@ -22,6 +22,12 @@
 
 
 {% block page_content %}
+  {% if quiz.is_draft %}
+    <div class="alert alert-secondary">
+      <p>{% trans "This quiz is in <strong>draft</strong>." %}</p>
+    </div>
+  {% endif %}
+
   {% if form_submitted and questions_form_errors.items|length == 0 %}
     {% if percentage_score >= 75 %}
       <div class="alert alert-success" role="alert">
