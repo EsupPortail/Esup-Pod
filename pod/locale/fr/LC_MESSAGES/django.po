@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-06 07:49+0000\n"
+"POT-Creation-Date: 2024-06-11 07:48+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2148,13 +2148,11 @@ msgid "Add a new overlay"
 msgstr "Ajouter une nouvelle superposition"
 
 #: pod/completion/templates/video_completion.html pod/quiz/apps.py
-#: pod/quiz/models.py pod/quiz/templates/quiz/create_edit_quiz.html
-#: pod/quiz/templates/quiz/video_quiz_aside.html
+#: pod/quiz/models.py pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Quiz"
 msgstr "Quiz"
 
 #: pod/completion/templates/video_completion.html
-#: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Answer the quiz"
 msgstr "Répondre au quiz"
@@ -3058,8 +3056,8 @@ msgid ""
 "a>."
 msgstr ""
 "L’accès à l’ajout d’enregistrements externes a été limité. Si vous souhaitez "
-"ajouter des enregistrements externes sur la plateforme, veuillez <a "
-"href=\"%(url)s\">nous contacter</a>."
+"ajouter des enregistrements externes sur la plateforme, veuillez <a href="
+"\"%(url)s\">nous contacter</a>."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
@@ -3425,8 +3423,8 @@ msgid ""
 "This video was uploaded to Pod; its origin is %(type)s: <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
-"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
 #: pod/import_video/views.py
 msgid ""
@@ -3440,8 +3438,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
@@ -3449,8 +3447,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "Youtube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
@@ -3808,8 +3806,8 @@ msgstr "Lien du site intégré"
 msgid "Url of the embedded site to display on aside"
 msgstr "Lien du site à intégrer sous forme d’iframe à droite du live"
 
-#: pod/live/models.py pod/recorder/models.py pod/video/forms.py
-#: pod/video/models.py
+#: pod/live/models.py pod/quiz/forms.py pod/quiz/models.py
+#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -5695,16 +5693,21 @@ msgid "Dyslexia mode"
 msgstr "Mode dyslexie"
 
 #: pod/main/templates/navbar.html
+msgid "Automaticaly display subtitle at the start of each video play."
+msgstr ""
+"Affiche automatiquement le sous-titrage au commencement de chaque vidéo."
+
+#: pod/main/templates/navbar.html
+msgid ""
+"If no subtitle corresponds to the current language, the first available will "
+"be selected."
+msgstr ""
+"Si aucun sous-titre ne correspond au langage courant, le premier disponible "
+"sera sélectionné."
+
+#: pod/main/templates/navbar.html
 msgid "Auto show subtitles"
 msgstr "Affichage automatique des sous-titres"
-
-#: pod/main/templates/navbar.html
-msgid "Automaticaly display subtitle at the start of each video play."
-msgstr "Affiche automatiquement le sous-titrage au commencement de chaque vidéo."
-
-#: pod/main/templates/navbar.html
-msgid "If no subtitle corresponds to the current language, the first available will be selected."
-msgstr "Si aucun sous-titre ne correspond au langage courant, le premier disponible sera sélectionné."
 
 #: pod/main/templates/navbar.html
 msgid "Toggle user menu"
@@ -6879,30 +6882,41 @@ msgid ""
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à une réunion récurrente "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "        <p>Date de début : %(start_date_time)s </p>\n"
 "        <p>Récurrent jusqu’à la date : %(end_date)s </p>\n"
 "        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
 "p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<strong>%(password)s</strong></p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <strong>"
+"%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
 #: pod/meeting/views.py
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "\n"
+#| "                <p>Hello,</p>\n"
+#| "                <p>%(owner)s invites you to the meeting <strong>"
+#| "%(meeting_title)s</strong>.</p>\n"
+#| "                <p>here the link to join the meeting:\n"
+#| "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
+#| "                <p>You need this password to enter: <strong>%(password)s</"
+#| "strong> </p>\n"
+#| "                <p>Regards</p>\n"
+#| "            "
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
-"strong> </p>\n"
+"strong></p>\n"
 "                <p>Regards</p>\n"
 "            "
 msgstr ""
@@ -6912,24 +6926,37 @@ msgstr ""
 "strong>.</p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<strong>%(password)s</strong></p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <strong>"
+"%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
 #: pod/meeting/views.py
-#, python-format
+#, fuzzy, python-format
+#| msgid ""
+#| "\n"
+#| "                <p>Hello,</p>\n"
+#| "                <p>%(owner)s invites you to the meeting <strong>"
+#| "%(meeting_title)s</strong>.</p>\n"
+#| "                <p>Start date: %(start_date_time)s </p>\n"
+#| "                <p>End date: %(end_date)s </p>\n"
+#| "                <p>here the link to join the meeting:\n"
+#| "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
+#| "                <p>You need this password to enter: <strong>%(password)s</"
+#| "strong> </p>\n"
+#| "                <p>Regards</p>\n"
+#| "            "
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
-"strong> </p>\n"
+"strong></p>\n"
 "                <p>Regards</p>\n"
 "            "
 msgstr ""
@@ -6941,8 +6968,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<strong>%(password)s</strong></p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <strong>"
+"%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -7881,6 +7908,14 @@ msgstr "Afficher les réponses correctes"
 msgid "The correction page can be reach."
 msgstr "La page de correction est accessible."
 
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid ""
+"If this box is checked, the quiz will be visible and accessible only by you "
+"and the additional owners."
+msgstr ""
+"Si la case est cochée, le quiz sera visible et accessible uniquement par "
+"vous et les propriétaires additionnels."
+
 #: pod/quiz/forms.py
 msgid "Delete video quiz cannot be undone"
 msgstr "La suppression d’un quiz pour une vidéo est définitive"
@@ -7962,7 +7997,7 @@ msgstr "L’horodatage de début doit être inférieur à l’heure de fin."
 msgid "End timestamp cannot be defined without a start timestamp."
 msgstr "L’horodatage de fin ne peut être défini sans l’heure de début."
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 #, python-format
 msgid "Question “%s”"
 msgstr "Question « %s »"
@@ -8052,11 +8087,6 @@ msgstr "Ajouter une question"
 msgid "Back to video"
 msgstr "Retour à la vidéo"
 
-#: pod/quiz/templates/quiz/create_edit_quiz.html
-#: pod/quiz/templates/quiz/manage_quiz.html
-msgid "Delete your quiz"
-msgstr "Supprimez votre quiz"
-
 #: pod/quiz/templates/quiz/delete_quiz.html
 msgid "To delete the quiz, please check the box and click “Delete”."
 msgstr ""
@@ -8066,6 +8096,10 @@ msgstr ""
 #: pod/quiz/templates/quiz/manage_quiz.html
 msgid "Edit your quiz"
 msgstr "Éditez votre quiz"
+
+#: pod/quiz/templates/quiz/manage_quiz.html
+msgid "Delete your quiz"
+msgstr "Supprimez votre quiz"
 
 #: pod/quiz/templates/quiz/manage_quiz.html
 msgid "Create a quiz"
@@ -8083,6 +8117,10 @@ msgstr "Supprimer la question n°"
 #: pod/quiz/templates/quiz/question_form.html
 msgid "One or more errors have been found in the question."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans la question."
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "This quiz is in <strong>draft</strong>."
+msgstr "Ce quiz est en mode <strong>brouillon</strong>."
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Your score is:"
@@ -8518,8 +8556,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -8949,8 +8987,8 @@ msgid ""
 "%(url)s</a></p>\n"
 msgstr ""
 "vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
-"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
-"target=\"_blank\">%(scheme)s:%(url)s</a></p>\n"
+"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" target=\"_blank\">"
+"%(scheme)s:%(url)s</a></p>\n"
 "\n"
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -9862,8 +9900,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
-"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
+"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html
 msgid "Other versions"
@@ -10352,6 +10390,10 @@ msgstr "Télécharger les notes"
 #: pod/video/templates/videos/video_notes.html
 msgid "New note"
 msgstr "Nouvelle note"
+
+#: pod/video/templates/videos/video_page_content.html
+msgid "This video is in <strong>draft</strong>."
+msgstr "Cette vidéo est en mode <strong>brouillon</strong>."
 
 #: pod/video/templates/videos/video_page_content.html
 msgid "Channel description"

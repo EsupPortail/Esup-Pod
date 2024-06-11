@@ -159,6 +159,17 @@ class QuizForm(forms.Form):
         help_text=_("The correction page can be reach."),
     )
 
+    is_draft = forms.BooleanField(
+        label=_("Draft"),
+        widget=forms.CheckboxInput(),
+        required=False,
+        help_text=_(
+            "If this box is checked, "
+            "the quiz will be visible and accessible only by you "
+            "and the additional owners."
+        )
+    )
+
     def __init__(self, *args, **kwargs) -> None:
         """Init quiz form."""
         super(QuizForm, self).__init__(*args, **kwargs)

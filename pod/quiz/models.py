@@ -35,6 +35,16 @@ class Quiz(models.Model):
         help_text=_("Choose if the correct answers will be displayed or not."),
     )
 
+    is_draft = models.BooleanField(
+        verbose_name=_("Draft"),
+        help_text=_(
+            "If this box is checked, "
+            "the quiz will be visible and accessible only by you "
+            "and the additional owners."
+        ),
+        default=False,
+    )
+
     class Meta:
         """Quiz Metadata."""
 

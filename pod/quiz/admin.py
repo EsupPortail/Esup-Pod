@@ -87,7 +87,7 @@ class ShortAnswerQuestionInline(admin.StackedInline):
 class QuizAdmin(admin.ModelAdmin):
     """Admin configuration for Quiz model."""
 
-    list_display = ("video", "connected_user_only", "show_correct_answers")
+    list_display = ("video", "connected_user_only", "show_correct_answers", "is_draft")
     inlines = [
         SingleChoiceQuestionInline,
         MultipleChoiceQuestionInline,
