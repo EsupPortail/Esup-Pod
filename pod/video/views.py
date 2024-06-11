@@ -1082,8 +1082,18 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     template_video = "videos/video.html"
     params = {
         "active_video_comment": ACTIVE_VIDEO_COMMENT,
-        "enr_is_already_asked": enhancement_is_already_asked(video) and (request.user.is_staff or request.user.is_superuser or request.user == video.owner),
-        "enr_is_ready": enhancement_is_ready(video) and (request.user.is_staff or request.user.is_superuser or request.user == video.owner),
+        "enr_is_already_asked": enhancement_is_already_asked(video)
+        and (
+            request.user.is_staff
+            or request.user.is_superuser
+            or request.user == video.owner
+        ),
+        "enr_is_ready": enhancement_is_ready(video)
+        and (
+            request.user.is_staff
+            or request.user.is_superuser
+            or request.user == video.owner
+        ),
     }
     if request.GET.get("is_iframe"):
         params = {"page_title": video.title}
