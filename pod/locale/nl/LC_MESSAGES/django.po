@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-06 07:49+0000\n"
+"POT-Creation-Date: 2024-06-11 07:24+0000\n"
 "PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2068,13 +2068,11 @@ msgid "Add a new overlay"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html pod/quiz/apps.py
-#: pod/quiz/models.py pod/quiz/templates/quiz/create_edit_quiz.html
-#: pod/quiz/templates/quiz/video_quiz_aside.html
+#: pod/quiz/models.py pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Quiz"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-#: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Answer the quiz"
 msgstr ""
@@ -3236,15 +3234,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -3570,8 +3568,8 @@ msgstr ""
 msgid "Url of the embedded site to display on aside"
 msgstr ""
 
-#: pod/live/models.py pod/recorder/models.py pod/video/forms.py
-#: pod/video/models.py
+#: pod/live/models.py pod/quiz/forms.py pod/quiz/models.py
+#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
 msgid "Draft"
 msgstr ""
 
@@ -5404,6 +5402,20 @@ msgid "Dyslexia mode"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+msgid "Automaticaly display subtitle at the start of each video play."
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid ""
+"If no subtitle corresponds to the current language, the first available will "
+"be selected."
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Auto show subtitles"
+msgstr ""
+
+#: pod/main/templates/navbar.html
 msgid "Toggle user menu"
 msgstr ""
 
@@ -6479,12 +6491,12 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
-"strong> </p>\n"
+"strong></p>\n"
 "                <p>Regards</p>\n"
 "            "
 msgstr ""
@@ -6494,14 +6506,14 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
-"strong> </p>\n"
+"strong></p>\n"
 "                <p>Regards</p>\n"
 "            "
 msgstr ""
@@ -7380,6 +7392,12 @@ msgstr ""
 msgid "The correction page can be reach."
 msgstr ""
 
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid ""
+"If this box is checked, the quiz will be visible and accessible only by you "
+"and the additional owners."
+msgstr ""
+
 #: pod/quiz/forms.py
 msgid "Delete video quiz cannot be undone"
 msgstr ""
@@ -7464,7 +7482,7 @@ msgstr ""
 msgid "End timestamp cannot be defined without a start timestamp."
 msgstr ""
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 #, python-format
 msgid "Question “%s”"
 msgstr ""
@@ -7550,17 +7568,16 @@ msgstr ""
 msgid "Back to video"
 msgstr ""
 
-#: pod/quiz/templates/quiz/create_edit_quiz.html
-#: pod/quiz/templates/quiz/manage_quiz.html
-msgid "Delete your quiz"
-msgstr ""
-
 #: pod/quiz/templates/quiz/delete_quiz.html
 msgid "To delete the quiz, please check the box and click “Delete”."
 msgstr ""
 
 #: pod/quiz/templates/quiz/manage_quiz.html
 msgid "Edit your quiz"
+msgstr ""
+
+#: pod/quiz/templates/quiz/manage_quiz.html
+msgid "Delete your quiz"
 msgstr ""
 
 #: pod/quiz/templates/quiz/manage_quiz.html
@@ -7983,8 +8000,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
