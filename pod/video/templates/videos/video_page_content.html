@@ -3,7 +3,7 @@
 
 {% if video.is_draft %}
   <div class="alert alert-secondary">
-    <p>{% trans "This video is in <strong>draft</strong>." %}</p>
+    {% trans "This video is in <strong>draft</strong>." %}
   </div>
 {% endif %}
 
@@ -86,11 +86,6 @@
   {% if enr_is_already_asked %}
     <div class="alert alert-warning" role="alert">
       {% trans 'The video is currently waiting for Aristote AI treatment.' %}
-    </div>
-  {% endif %}
-  {% if enr_is_ready %}
-    <div class="alert alert-warning" role="alert">
-      {% trans 'The video was treated by Aristote. You must verify and validate the processing by pressing the robot icon.' %}
     </div>
   {% endif %}
   {% if video.get_encoding_step == "" %}
