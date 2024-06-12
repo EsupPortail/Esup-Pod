@@ -89,7 +89,7 @@ from django.db import IntegrityError
 from django.db.models import QuerySet
 from django.db import transaction
 
-from ..ai_enhancement.utils import enhancement_is_already_asked, enhancement_is_ready
+from ..ai_enhancement.utils import enhancement_is_already_asked
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
@@ -1083,12 +1083,6 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     params = {
         "active_video_comment": ACTIVE_VIDEO_COMMENT,
         "enr_is_already_asked": enhancement_is_already_asked(video)
-        and (
-            request.user.is_staff
-            or request.user.is_superuser
-            or request.user == video.owner
-        ),
-        "enr_is_ready": enhancement_is_ready(video)
         and (
             request.user.is_staff
             or request.user.is_superuser
