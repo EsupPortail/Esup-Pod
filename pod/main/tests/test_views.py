@@ -527,7 +527,7 @@ class TestNavbar(TestCase):
 
     @override_settings(WEBTV_MODE=True)
     def test_login_button_hidden(self) -> None:
-        """Test if login button is hidden when we webtv mode is true."""
+        """Test if login button is hidden when the webtv mode is true."""
         importlib.reload(context_processors)
         response = self.client.get("/")
         self.assertFalse(

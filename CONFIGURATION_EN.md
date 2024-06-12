@@ -199,7 +199,7 @@
   > default value: `[("Name", "adminmail@univ.fr"),]`
   >>
 * `ALLOWED_HOSTS`
-  > default value: `['localhost']`
+  > default value: `['pod.localhost']`
   >>
 * `BASE_DIR`
   > default value: `os.path.dirname(os.path.dirname(os.path.abspath(__file__)))`
@@ -382,6 +382,38 @@
   >>
 
 ## 
+
+### AI Enhancement application configuration
+
+AI Enhancement app to be able to use artificial intelligence enhancements for videos.<br>
+Set `USE_AI_ENHANCEMENT` to True to activate this application.<br>
+
+* `AI_ENHANCEMENT_API_URL`
+  > default value: ``
+  >> API URL for the AI video enhancement.<br>
+  >> Example: 'https://aristote.univ.fr/api'<br>
+  >> Project Link: https://www.demainestingenieurs.centralesupelec.fr/aristote/<br>
+* `AI_ENHANCEMENT_API_VERSION`
+  > default value: ``
+  >> API version for the AI video enhancement.<br>
+* `AI_ENHANCEMENT_CGU_URL`
+  > default value: ``
+  >> URL for General Terms and Conditions for API uses for the AI video enhancement.<br>
+  >> Example: 'https://aristote.univ.fr/cgu'<br>
+  >> Project Link: https://www.demainestingenieurs.centralesupelec.fr/aristote/<br>
+* `AI_ENHANCEMENT_CLIENT_ID`
+  > default value: `mocked_id`
+  >> The video enhancement AI client ID.<br>
+  >> Example: 'v1'<br>
+* `AI_ENHANCEMENT_CLIENT_SECRET`
+  > default value: `mocked_secret`
+  >> The video enhancement AI client secret password.<br>
+* `AI_ENHANCEMENT_FIELDS_HELP_TEXT`
+  > default value: ``
+  >> Set of help texts displayed with the form for improving a video with Aristotle's AI.<br>
+* `USE_AI_ENHANCEMENT`
+  > default value: `False`
+  >> Activation of artificial intelligence enhancements. Allows users to use it.<br>
 
 ### 
 
@@ -721,7 +753,7 @@ Set `USE_IMPORT_VIDEO` to True to activate this application.<br>
   >> Version of the project<br>
 * `WEBTV_MODE`
   > default value: `False`
-  >> Webtv mode<br>
+  >> Webtv mode allows you to switch POD into a webtv application removing the connection buttons for example<br>
 
 ### 
 
@@ -855,6 +887,15 @@ Set `USE_PLAYLIST` to True to activate this application.<br>
   ```
 
   >>
+
+### Quiz application configuration
+
+Quiz App to add various questions on videos.<br>
+Set `USE_QUIZ` to True to activate this application.<br>
+
+* `USE_QUIZ`
+  > default value: `True`
+  >> Activation of quizzes. Allows users to create, respond and use quizzes in videos.<br>
 
 ### 
 
@@ -1031,7 +1072,7 @@ Set `USE_PLAYLIST` to True to activate this application.<br>
 
 
 * `CELERY_BROKER_URL`
-  > default value: `redis://127.0.0.1:6379/5`
+  > default value: `redis://redis.localhost:6379/5`
   >>
 * `CELERY_TO_ENCODE`
   > default value: `False`
@@ -1087,7 +1128,7 @@ Set `USE_PLAYLIST` to True to activate this application.<br>
   > default value: `30`
   >>
 * `ES_URL`
-  > default value: `["http://127.0.0.1:9200/"]`
+  > default value: `["http://elasticsearch.localhost:9200/"]`
   >>
 * `ES_VERSION`
   > default value: `6`

@@ -1593,10 +1593,10 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    "Webtv mode"
+                                    "Webtv mode allows you to switch POD into a webtv application removing the connection buttons for example"
                                 ],
                                 "fr": [
-                                    "Mode webtv"
+                                    "Mode webtv permet de basculer POD en une application webtv ensupprimant les boutons de connexions par exemple"
                                 ]
                             },
                             "pod_version_end": "",
