@@ -1,3 +1,5 @@
+"""Esup-Pod recorder models."""
+
 import os
 import importlib
 
@@ -45,7 +47,7 @@ if USE_TRANSCRIPTION:
 # FUNCTIONS
 
 
-def get_transcription_choices():
+def get_transcription_choices() -> list:
     """Manage the transcription language choice table."""
     if USE_TRANSCRIPTION:
         transcript_lang = TRANSCRIPTION_MODEL_PARAM.get(TRANSCRIPTION_TYPE, {}).keys()
@@ -96,8 +98,23 @@ class Recorder(models.Model):
     salt = models.CharField(
         _("salt"), max_length=50, blank=True, help_text=_("Recorder salt.")
     )
-
-    # Recording type (video, AUdioVideoCasst, etc)
+    # Login for digest connexion
+    credentials_login = models.CharField(
+        _("Credentials login"),
+        blank=True,
+        default="",
+        max_length=255,
+        help_text=_("Recorder credentials login."),
+    )
+    # Password for digest connexion
+    credentials_password = models.CharField(
+        _("Credentials password"),
+        blank=True,
+        default="",
+        max_length=255,
+        help_text=_("Recorder credentials password."),
+    )
+    # Recording type (video, AudioVideoCast, etc,)
     recording_type = models.CharField(
         _("Recording Type"),
         max_length=50,
@@ -118,7 +135,7 @@ class Recorder(models.Model):
         null=True,
         blank=True,
     )
-    # Additionnal additional_users
+    # Additional users
     additional_users = models.ManyToManyField(
         User,
         blank=True,
@@ -129,6 +146,15 @@ class Recorder(models.Model):
             "will become the additionnals owners of the published videos "
             "and will have the same rights as the owner except that they "
             "can’t delete the published videos."
+        ),
+    )
+    # To publish the videos automatically for this recorder
+    publication_auto = models.BooleanField(
+        verbose_name=_("Automatic publishing:"),
+        default=False,
+        help_text=_(
+            "If this box is checked, "
+            "the videos will be automatically assigned to the recorder manager."
         ),
     )
     # Default type of published videos by this recorder
@@ -233,17 +259,33 @@ class Recorder(models.Model):
     )
     sites = models.ManyToManyField(Site)
 
-    def __unicode__(self):
+    def __unicode__(self) -> str:
         return "%s - %s" % (self.name, self.address_ip)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s - %s" % (self.name, self.address_ip)
 
-    def ipunder(self):
+    def ipunder(self) -> str:
         return self.address_ip.replace(".", "_")
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         super(Recorder, self).save(*args, **kwargs)
+
+    def clean(self) -> None:
+        """Validate model fields."""
+        cred_msg = _("All credentials must be set.")
+        cred_error = {
+            "credentials_login": cred_msg,
+            "credentials_password": cred_msg,
+        }
+
+        # Ensure all credentials are set
+        if (not self.credentials_login and self.credentials_password) or (
+            self.credentials_login and not self.credentials_password
+        ):
+            if not self.salt:
+                cred_error["salt"] = cred_msg
+            raise ValidationError(cred_error)
 
     class Meta:
         verbose_name = _("Recorder")
@@ -252,8 +294,8 @@ class Recorder(models.Model):
 
 
 @receiver(post_save, sender=Recorder)
-def default_site(sender, instance, created, **kwargs):
-    if len(instance.sites.all()) == 0:
+def default_site(sender, instance, created: bool, **kwargs) -> None:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())
 
 
@@ -289,23 +331,25 @@ class Recording(models.Model):
     def sites(self):
         return self.recorder.sites
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s" % self.title
 
     class Meta:
         verbose_name = _("Recording")
         verbose_name_plural = _("Recordings")
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         super(Recording, self).save(*args, **kwargs)
 
-    def clean(self):
+    def clean(self) -> None:
+        """Validate Recording fields and eventually raise ValidationError."""
         msg = list()
         msg = self.verify_attributs()
         if len(msg) > 0:
             raise ValidationError(msg)
 
-    def verify_attributs(self):
+    def verify_attributs(self) -> list:
+        """Validate Recording fields."""
         msg = list()
         if not self.type:
             msg.append(_("Please specify a type."))
@@ -319,7 +363,7 @@ class Recording(models.Model):
 
 
 @receiver(post_save, sender=Recording)
-def process_recording(sender, instance, created, **kwargs):
+def process_recording(sender, instance, created: bool, **kwargs) -> None:
     if created and os.path.exists(instance.source_file):
         mod = importlib.import_module("%s.plugins.type_%s" % (__package__, instance.type))
         mod.process(instance)
@@ -364,10 +408,10 @@ class RecordingFileTreatment(models.Model):
     def sites(self):
         return self.recorder.sites
 
-    def filename(self):
+    def filename(self) -> str:
         return os.path.basename(self.file)
 
-    def publicfileurl(self):
+    def publicfileurl(self) -> str:
         return os.path.join(
             settings.MEDIA_URL,
             PUBLIC_RECORD_DIR,
@@ -400,13 +444,13 @@ class RecordingFile(models.Model):
 
 
 @receiver(post_save, sender=RecordingFile)
-def process_recording_file(sender, instance, created, **kwargs):
+def process_recording_file(sender, instance, created: bool, **kwargs) -> None:
     if created and instance.file and os.path.isfile(instance.file.path):
         # deplacement du fichier source vers destination
         create_recording(instance)
 
 
-def create_recording(recordingFile):
+def create_recording(recordingFile) -> None:
     new_path = os.path.join(
         DEFAULT_RECORDER_PATH, os.path.basename(recordingFile.file.path)
     )

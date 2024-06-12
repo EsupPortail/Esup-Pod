@@ -1,4 +1,4 @@
-#                       Compiled source #
+# Compiled source #
 ###################
 *.com
 *.class
@@ -60,6 +60,7 @@ chromedriver
 pod/static/
 *.bak
 .coverage
+.cache_ggshield
 htmlcov
 compile-model
 

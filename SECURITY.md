@@ -2,8 +2,8 @@
 
 ## Supported Versions
 
-If you want most up to date secured version of Esup-Pod, we encourage you to upgrade to the last release.
-
+If you want most up to date secured version of Esup-Pod,
+we encourage you to upgrade to the last release.
 
 ## Reporting a Vulnerability
 

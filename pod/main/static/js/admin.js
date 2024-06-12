@@ -4,11 +4,11 @@
  */
 const selectedType = document.getElementById("id_type");
 const selectedDataType = document.getElementById("id_data_type");
-fieldDataType = document.getElementsByClassName("field-data_type")[0];
-fieldChannel = document.getElementsByClassName("field-Channel")[0];
-fieldTheme = document.getElementsByClassName("field-Theme")[0];
-fieldPlaylist = document.getElementsByClassName("field-Playlist")[0];
-fieldHtml = document.getElementsByClassName("field-html")[0];
+const fieldDataType = document.getElementsByClassName("field-data_type")[0];
+const fieldChannel = document.getElementsByClassName("field-Channel")[0];
+const fieldTheme = document.getElementsByClassName("field-Theme")[0];
+const fieldPlaylist = document.getElementsByClassName("field-Playlist")[0];
+const fieldHtml = document.getElementsByClassName("field-html")[0];
 
 /**
  * Function for show field.

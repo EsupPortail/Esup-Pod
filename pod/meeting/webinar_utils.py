@@ -105,7 +105,7 @@ def send_email_webinars(
         "The next meeting has been created but not like a webinar:%s %s [%s-%s].\n"
         "Please fix the problem either by increasing the number of live gateways "
         "or by modifying/deleting one of the affected webinars "
-        "(with the users' agreement).\n"
+        "(with the users’ agreement).\n"
         "Other webinars: %s"
     ) % (
         nb_webinars,
@@ -123,7 +123,7 @@ def send_email_webinars(
         "<ul><li><b>%s %s</b> [%s-%s].</li></ul><p>"
         "Please fix the problem either by increasing the number of live gateways "
         "or by modifying/deleting one of the affected webinars "
-        "(with the users' agreement).<br>"
+        "(with the users’ agreement).<br>"
         "Other webinars: <b>%s</b>"
     ) % (
         nb_webinars,

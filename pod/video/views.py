@@ -89,6 +89,8 @@ from django.db import IntegrityError
 from django.db.models import QuerySet
 from django.db import transaction
 
+from ..ai_enhancement.utils import enhancement_is_already_asked
+
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
 )
@@ -933,7 +935,7 @@ def owner_is_searchable(user: User) -> bool:
 def videos(request):
     """Render the main list of videos."""
     videos_list = get_filtered_videos_list(request, get_available_videos())
-    sort_field = request.GET.get("sort") if request.GET.get("sort") else "title"
+    sort_field = request.GET.get("sort") if request.GET.get("sort") else "date_added"
     sort_direction = request.GET.get("sort_direction")
 
     videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
@@ -1078,7 +1080,15 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         return redirect(video.get_default_version_link(slug_private) + query_string)
 
     template_video = "videos/video.html"
-    params = {"active_video_comment": ACTIVE_VIDEO_COMMENT}
+    params = {
+        "active_video_comment": ACTIVE_VIDEO_COMMENT,
+        "enr_is_already_asked": enhancement_is_already_asked(video)
+        and (
+            request.user.is_superuser
+            or request.user == video.owner
+            or request.user in video.additional_owners.all()
+        ),
+    }
     if request.GET.get("is_iframe"):
         params = {"page_title": video.title}
         template_video = "videos/video-iframe.html"
@@ -1428,18 +1438,24 @@ def video_edit_access_tokens(request: WSGIRequest, slug: str = None):
         messages.add_message(request, messages.ERROR, _("You cannot edit this video."))
         raise PermissionDenied
     if request.method == "POST":
-        if request.POST.get("action") and request.POST.get("action") in ["add", "delete"]:
+        if request.POST.get("action") and request.POST.get("action") in {
+            "add",
+            "delete",
+            "update",
+        }:
             if request.POST["action"] == "add":
                 VideoAccessToken.objects.create(video=video)
                 messages.add_message(
                     request, messages.SUCCESS, _("A token has been created.")
                 )
+            elif request.POST["action"] == "delete" and request.POST.get("token"):
+                token = request.POST.get("token")
+                delete_token(request, video, token)
+            elif request.POST["action"] == "update":
+                token = request.POST.get("token")
+                update_token(request, video, token)
             else:
-                if request.POST["action"] == "delete" and request.POST.get("token"):
-                    token = request.POST.get("token")
-                    delete_token(request, video, token)
-                else:
-                    messages.add_message(request, messages.ERROR, _("Token not found."))
+                messages.add_message(request, messages.ERROR, _("Token not found."))
         else:
             messages.add_message(
                 request, messages.ERROR, _("An action must be specified.")
@@ -1463,6 +1479,17 @@ def delete_token(request, video: Video, token: VideoAccessToken):
         uuid.UUID(str(token))
         VideoAccessToken.objects.get(video=video, token=token).delete()
         messages.add_message(request, messages.SUCCESS, _("The token has been deleted."))
+    except (ValueError, ObjectDoesNotExist):
+        messages.add_message(request, messages.ERROR, _("Token not found."))
+
+
+def update_token(request, video: Video, token: VideoAccessToken):
+    """update token name for the video if exist."""
+    try:
+        Token = VideoAccessToken.objects.get(video=video, token=token)
+        Token.name = request.POST.get("name")
+        Token.save()
+        messages.add_message(request, messages.SUCCESS, _("The token has been updated."))
     except (ValueError, ObjectDoesNotExist):
         messages.add_message(request, messages.ERROR, _("Token not found."))
 
@@ -2126,7 +2153,7 @@ def video_note_download(request, slug):
         "content": [],
     }
 
-    def write_to_dict(t, id, s, rn, rc, dc, dm, nt, c):
+    def write_to_dict(t, id, s, rn, rc, dc, dm, nt, c) -> None:
         contentToDownload["type"].append(t)
         contentToDownload["id"].append(id)
         contentToDownload["status"].append(s)
@@ -2137,7 +2164,7 @@ def video_note_download(request, slug):
         contentToDownload["noteTimestamp"].append(nt)
         contentToDownload["content"].append(c)
 
-    def rec_expl_coms(idNote, lComs):
+    def rec_expl_coms(idNote, lComs) -> None:
         dictComs = get_com_coms_dict(request, lComs)
         for c in lComs:
             write_to_dict(

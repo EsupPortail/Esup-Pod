@@ -1,5 +1,22 @@
 "use-strict";
+/**
+ * Esup-Pod videojs Slides plugin
+ */
+// Read-only globals defined in video-script.html
+/*
+global player
+*/
+// Read-only globals defined in IE
+/*
+global ActiveXObject
+*/
+
 //// Begin Safari patch for enrich track
+/**
+ * Safari patch for enrich track
+ * @param {*} url
+ * @param {*} callback
+ */
 var loadEnrichmentVTTfile = function (url, callback) {
   var getXhr = function () {
       try {
@@ -31,7 +48,9 @@ var loadEnrichmentVTTfile = function (url, callback) {
     timeInSecond = function (strtime) {
       let atime = strtime.split(":");
       return (
-        parseInt(atime[0]) * 3600 + parseInt(atime[1]) * 60 + parseInt(atime[2])
+        parseInt(atime[0], 10) * 3600 +
+        parseInt(atime[1], 10) * 60 +
+        parseInt(atime[2], 10)
       );
     },
     createEmptyCue = function (start, end) {
@@ -55,11 +74,10 @@ var loadEnrichmentVTTfile = function (url, callback) {
   if (null != xhr) {
     xhr.open("GET", url, true);
     xhr.onreadystatechange = function () {
-      if (this.readyState == 4) {
+      if (this.readyState === 4) {
         var lines = xhr.responseText.split("\n"),
           nbl = lines.length,
-          reg =
-            /(^\d{2}:\d{2}:\d{2})\.\d{3} \-\-> (\d{2}:\d{2}:\d{2})\.\d{3}$/i,
+          reg = /(^\d{2}:\d{2}:\d{2})\.\d{3} --> (\d{2}:\d{2}:\d{2})\.\d{3}$/i,
           fisrtcueline = 1,
           txtdata = "",
           c = 0;
@@ -70,19 +88,23 @@ var loadEnrichmentVTTfile = function (url, callback) {
         }
         //// Get First cue line and create first cue
         for (let i = 1; i < nbl; i++) {
-          if ((m = lines[i].match(reg))) {
+          let m = lines[i].match(reg);
+          if (m) {
             fisrtcueline = i;
-            cues[c] = createEmptyCue(timeInSecond(m[1]), timeInSecond(m[2])); //console.log('Cue '+c+' is created');
+            cues[c] = createEmptyCue(timeInSecond(m[1]), timeInSecond(m[2]));
+            //console.log('Cue '+c+' is created');
             break;
           }
         }
         //// Read next lines, feed first, create and feed next cues
         for (let i = fisrtcueline + 1; i < nbl; i++) {
-          if ((m = lines[i].match(reg))) {
+          let m = lines[i].match(reg);
+          if (m) {
             setCue(c, JSON.parse(txtdata.split("}")[0] + "}"));
             txtdata = "";
             c++;
-            cues[c] = createEmptyCue(timeInSecond(m[1]), timeInSecond(m[2])); //console.log('Cue '+c+' is created');
+            cues[c] = createEmptyCue(timeInSecond(m[1]), timeInSecond(m[2]));
+            //console.log('Cue '+c+' is created');
           } else {
             txtdata += lines[i];
           }
@@ -111,7 +133,7 @@ const slide_color = {
   weblink: "var(--bs-red)",
   embed: "var(--bs-green)",
 };
-//Is now a list of css class instead of video/slide width values
+// Is now a list of css class instead of video/slide width values
 const split_slide_label = gettext("Split view");
 const split_slide = "split-slide";
 const no_slide_label = gettext("slide off");
@@ -302,9 +324,10 @@ var VideoSlides = function (items) {
     var keys = Object.keys(this.slidesItems);
     for (let i = 0; i <= keys.length - 1; i++) {
       var slidebar_left =
-        (parseInt(this.slidesItems[i].start) / duration) * 100;
+        (parseInt(this.slidesItems[i].start, 10) / duration) * 100;
       var slidebar_width =
-        (parseInt(this.slidesItems[i].end) / duration) * 100 - slidebar_left;
+        (parseInt(this.slidesItems[i].end, 10) / duration) * 100 -
+        slidebar_left;
       var id = this.slidesItems[i].id;
       var type = this.slidesItems[i].type;
       var newslide = document.createElement("div");
@@ -357,7 +380,6 @@ var VideoSlides = function (items) {
     class SlideMode extends vjs_menu_item {
       constructor(player, options) {
         options = options || {};
-        options.label = options.label;
         super(player, options);
         this.on("click", this.onClick);
         this.addClass("vjs-slide-mode");
@@ -374,7 +396,7 @@ var VideoSlides = function (items) {
         var available = document.getElementsByClassName("vjs-slide-mode");
         for (let i = 0, nb = available.length, e; i < nb; i++) {
           //for (let e of available) {
-          let e = available[i];
+          e = available[i];
           if (e.firstChild.innerHTML != this.el().firstChild.innerHTML) {
             e.setAttribute("aria-checked", false);
             e.classList.remove("vjs-selected");

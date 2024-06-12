@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item">
+    <a
+      href="{% url 'video:video' slug=video.slug %}"
+      title="{% trans 'Access the video' %}"
+    >
+      {{ video.title }}
+    </a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">
+    {{ page_title }}
+  </li>
+{% endblock breadcrumbs %}
+
+{% block page_content %}
+  <p>{% trans 'To enhance the video with Aristote AI, please check the box and click confirm.' %}</p>
+  <form method="POST" action="{{ request.get_full_path }}" class='needs-validation' novalidate>
+    {% csrf_token %}
+    <div class="list-group">
+    <fieldset>
+      <legend>{% trans 'Agreement required' %}</legend>
+      {% if form.errors %}
+        <p class="text-danger">{% trans 'One or more errors have been found in the form.' %}</p>
+      {% endif %}
+      {% for field_hidden in form.hidden_fields %}
+        {{field_hidden}}
+        {% endfor %}
+        {% for field in form.visible_fields %}
+          {% spaceless %}
+            <div class="list-group-item">
+              <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
+                {{ field.errors }}
+                <div class="form-check">
+                  {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                </div>
+                {% if field.help_text %}
+                  <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+                {% endif %}
+                {% if field.field.required %}
+                  <div class="invalid-feedback">{% trans 'Please provide a valid value for this field.' %}</div>
+                {% endif %}
+              </div>
+            </div>
+          {% endspaceless %}
+        {% endfor %}
+          <div class="text-center mt-1">
+            <a href="{% url 'video:video' slug=video.slug %}" title="{% blocktrans with video_title=video.title %}Back to the {{ video_title }} video{% endblocktrans %}}" data-bs-toggle="tooltip" data-bs-placement="bottom" class="btn btn-secondary btn-sm">
+              <i class="bi bi-play-circle" aria-hidden="true"></i>&nbsp;{% trans 'Back to the video' %}
+            </a>
+            <button type="submit" class="btn btn-sm btn-primary">{% trans 'Confirm' %}</button>
+          </div>
+      </fieldset>
+    </div>
+  </form>
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}

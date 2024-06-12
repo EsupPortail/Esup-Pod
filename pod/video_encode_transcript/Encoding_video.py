@@ -36,6 +36,7 @@ if __name__ == "__main__":
         FFMPEG_EXTRACT_THUMBNAIL,
         FFMPEG_NB_THUMBNAIL,
         FFMPEG_CREATE_THUMBNAIL,
+        FFMPEG_CREATE_OVERVIEW,
         FFMPEG_EXTRACT_SUBTITLE,
         FFMPEG_DRESSING_INPUT,
         FFMPEG_DRESSING_OUTPUT,
@@ -73,6 +74,7 @@ else:
         FFMPEG_EXTRACT_THUMBNAIL,
         FFMPEG_NB_THUMBNAIL,
         FFMPEG_CREATE_THUMBNAIL,
+        FFMPEG_CREATE_OVERVIEW,
         FFMPEG_EXTRACT_SUBTITLE,
         FFMPEG_DRESSING_INPUT,
         FFMPEG_DRESSING_OUTPUT,
@@ -641,57 +643,40 @@ class Encoding_video:
         # overview combine for 160x90
         in_height = list(self.list_video_track.items())[0][1]["height"]
         in_width = list(self.list_video_track.items())[0][1]["width"]
-        image_height = 75  # decrease to 75 px instead of 90 due to montage overflow
+        image_height = 90
         coef = in_height / image_height
         image_width = int(in_width / coef)
         input_file = self.list_mp4_files[first_item[0]]
-        nb_img = 100
-        step = 1
-        if self.duration < 100:
-            # nb_img = int(self.duration * 10 / 100)
-            step = 10  # on ne fait que 10 images si la video dure moins de 100 sec.
+        nb_img = 100 if self.duration >= 100 else 10
+
         overviewimagefilename = os.path.join(self.output_dir, "overview.png")
-        image_url = os.path.basename(overviewimagefilename)
-        overviewfilename = os.path.join(self.output_dir, "overview.vtt")
-        webvtt = WebVTT()
-        for i in range(0, nb_img, step):
-            # create overviewimagefilename for first pass
-            output_file = (
-                os.path.join(self.output_dir, "thumbnail_%s.png" % i)
-                if i > 0
-                else overviewimagefilename
-            )
-            cmd_ffmpegthumbnailer = (
-                'ffmpegthumbnailer -t "%(stamp)s" '
-                + '-s "%(image_width)s" -i %(source)s -c png '
-                + "-o %(output_file)s "
-            ) % {
-                "stamp": str(i) + "%",
-                "source": input_file,
-                "output_file": output_file,
-                "image_width": image_width,
+        overview_image_command = (
+            FFMPEG_CMD
+            + " "
+            + FFMPEG_INPUT
+            % {
+                "input": input_file,
+                "nb_threads": FFMPEG_NB_THREADS,
             }
-            return_value, return_msg = launch_cmd(cmd_ffmpegthumbnailer)
-            # self.add_encoding_log(
-            # "ffmpegthumbnailer_%s" % i, cmd_ffmpegthumbnailer, return_value, return_msg)
-            if return_value and check_file(output_file) and i > 0:
-                # print("MONTAGE")
-                cmd_montage = (
-                    "montage -geometry +0+0 %(overviewimagefilename)s \
-                    %(output_file)s  %(overviewimagefilename)s"
-                    % {
-                        "overviewimagefilename": overviewimagefilename,
-                        "output_file": output_file,
-                    }
-                )
-                return_value, return_msg = launch_cmd(cmd_montage)
-                if not return_value:
-                    print("cmd_montage_%s" % i, cmd_montage, return_value, return_msg)
-                # self.add_encoding_log
-                # ("cmd_montage_%s" % i, cmd_montage, return_value, return_msg)
-                os.remove(output_file)
-            start = format(float(self.duration * i / 100), ".3f")
-            end = format(float(self.duration * (i + step) / 100), ".3f")
+            + FFMPEG_CREATE_OVERVIEW
+            % {
+                "duration": self.duration,
+                "image_count": nb_img,
+                "width": image_width,
+                "height": image_height,
+                "output": overviewimagefilename,
+            }
+        )
+        return_value, output_message = launch_cmd(overview_image_command)
+        if not return_value or not check_file(overviewimagefilename):
+            print(f"FFmpeg failed with output: {output_message}")
+
+        overviewfilename = os.path.join(self.output_dir, "overview.vtt")
+        image_url = os.path.basename(overviewimagefilename)
+        webvtt = WebVTT()
+        for i in range(0, nb_img):
+            start = format(float(self.duration * i / nb_img), ".3f")
+            end = format(float(self.duration * (i + 1) / nb_img), ".3f")
             start_time = time.strftime(
                 "%H:%M:%S", time.gmtime(int(str(start).split(".")[0]))
             )
@@ -703,7 +688,7 @@ class Encoding_video:
                 "%s" % start_time,
                 "%s" % end_time,
                 "%s#xywh=%d,%d,%d,%d"
-                % (image_url, image_width * (i / step), 0, image_width, image_height),
+                % (image_url, image_width * i, 0, image_width, image_height),
             )
             webvtt.captions.append(caption)
         webvtt.save(overviewfilename)

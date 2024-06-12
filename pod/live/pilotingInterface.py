@@ -7,7 +7,7 @@ import os
 import re
 from abc import ABC as __ABC__, abstractmethod
 from datetime import timedelta
-from typing import Optional, List
+from typing import Optional
 
 import paramiko
 import requests
@@ -19,21 +19,30 @@ from .utils import date_string_to_second
 
 DEFAULT_EVENT_PATH = getattr(settings, "DEFAULT_EVENT_PATH", "")
 
+CREATE_VIDEO_FROM_FTP = "fetch file from remote using ftp"
+CREATE_VIDEO_FROM_FS = "file is in Pod file system"
+CREATE_VIDEO_OPENCAST = "file is automatically sent to the recorder module"
+
 logger = logging.getLogger(__name__)
 
 __EXISTING_BROADCASTER_IMPLEMENTATIONS__ = ["Wowza", "SMP"]
 
 __MANDATORY_PARAMETERS__ = {
     "Wowza": {"server_url", "application", "livestream"},
-    "SMP": {
+    "SMP": [
         "server_url",
         "sftp_port",
         "user",
         "password",
-        "record_dir_path",
+        "use_opencast",
         "rtmp_streamer_id",
-    },
+        "record_dir_path",
+    ],
 }
+
+__OPTIONAL_IF_OPENCAST__ = [
+    "record_dir_path",
+]
 
 
 class PilotingInterface(__ABC__):
@@ -51,8 +60,8 @@ class PilotingInterface(__ABC__):
         raise NotImplementedError
 
     @abstractmethod
-    def copy_file_needed(self) -> bool:
-        """If the video file needs to be copied from a remote server."""
+    def video_creation_method(self):
+        """The method used to create the video."""
         raise NotImplementedError
 
     @abstractmethod
@@ -84,7 +93,7 @@ class PilotingInterface(__ABC__):
         raise NotImplementedError
 
     @abstractmethod
-    def start_recording(self, event_id, login=None) -> bool:
+    def start_recording(self, event_id) -> bool:
         """Start the recording."""
         raise NotImplementedError
 
@@ -135,16 +144,25 @@ def ajax_get_mandatory_parameters(request):
         impl_name = request.GET.get("impl_name", None)
         params = get_mandatory_parameters(impl_name)
         params_json = {}
-        for value in params:
-            params_json[value] = "..."
+        for key in params:
+            if key in __OPTIONAL_IF_OPENCAST__:
+                params_json[key] = "(optional if 'use_opencast':'true') ..."
+            else:
+                params_json[key] = "..."
 
         return JsonResponse(data=params_json)
 
     return HttpResponseNotAllowed(["GET"])
 
 
-def get_mandatory_parameters(impl_name="") -> List[str]:
-    """Return the mandatory parameters of the implementation."""
+def get_mandatory_parameters(impl_name=""):
+    """Return the mandatory parameters of the implementation.
+    Args:
+        impl_name (str): The name of the implementation to retrieve mandatory parameters for.
+
+    Returns:
+        dict[str, str]: A dict with the mandatory parameters for the specified implementation.
+    """
     if impl_name in __MANDATORY_PARAMETERS__:
         return __MANDATORY_PARAMETERS__[impl_name]
     if impl_name.lower() in __MANDATORY_PARAMETERS__:
@@ -153,7 +171,19 @@ def get_mandatory_parameters(impl_name="") -> List[str]:
         return __MANDATORY_PARAMETERS__[impl_name.title()]
     if impl_name.upper() in __MANDATORY_PARAMETERS__:
         return __MANDATORY_PARAMETERS__[impl_name.upper()]
-    return [""]
+    return {}
+
+
+def get_missing_params(config: dict, parameters: dict):
+    """Compare parameters with configuration and returns missing ones."""
+    missing = ""
+    use_opencast = config.get("use_opencast", "").lower() == "true"
+    for parameter in parameters:
+        if parameter not in config.keys():
+            if use_opencast and parameter in __OPTIONAL_IF_OPENCAST__:
+                continue
+            missing += "'" + parameter + "':'...',"
+    return missing
 
 
 def validate_json_implementation(broadcaster: Broadcaster) -> bool:
@@ -164,8 +194,9 @@ def validate_json_implementation(broadcaster: Broadcaster) -> bool:
             "'piloting_conf' value is not set for '" + broadcaster.name + "' broadcaster."
         )
         return False
+
     try:
-        decoded = json.loads(conf)
+        config = json.loads(conf)
     except Exception as e:
         logger.error(
             "'piloting_conf' has not a valid Json format for '"
@@ -177,16 +208,14 @@ def validate_json_implementation(broadcaster: Broadcaster) -> bool:
 
     parameters = get_mandatory_parameters(broadcaster.piloting_implementation)
 
-    if not parameters <= decoded.keys():
-        mandatory = ""
-        for value in parameters:
-            mandatory += "'" + value + "':'...',"
+    missing = get_missing_params(config, parameters)
+
+    if missing:
         logger.error(
-            "'piloting_conf' format value for '"
+            "'piloting_conf' value for '"
             + broadcaster.name
-            + "' broadcaster must be like: "
-            + "{"
-            + mandatory[:-1]
+            + "' must define: {"
+            + missing
             + "}"
         )
         return False
@@ -277,9 +306,9 @@ class Wowza(PilotingInterface):
                 application=conf["application"],
             )
 
-    def copy_file_needed(self) -> bool:
-        """Implement copy_file_needed from PilotingInterface."""
-        return False
+    def video_creation_method(self):
+        """Implement video_creation_method from PilotingInterface."""
+        return CREATE_VIDEO_FROM_FS
 
     def can_split(self) -> bool:
         """Implement can_split from PilotingInterface."""
@@ -338,7 +367,7 @@ class Wowza(PilotingInterface):
         else:
             return True
 
-    def start_recording(self, event_id, login=None) -> bool:
+    def start_recording(self, event_id) -> bool:
         """Implement start_recording from PilotingInterface."""
         logger.debug("Wowza - Start record")
         json_conf = self.broadcaster.piloting_conf
@@ -347,8 +376,6 @@ class Wowza(PilotingInterface):
             self.url + "/instances/_definst_/streamrecorders/" + conf["livestream"]
         )
         filename = str(event_id) + "_" + self.broadcaster.slug
-        if login is not None:
-            filename = login + "_" + filename
         data = {
             "instanceName": "",
             "fileVersionDelegateName": "",
@@ -493,6 +520,7 @@ class Smp(PilotingInterface):
     def __init__(self, broadcaster: Broadcaster):
         self.broadcaster = broadcaster
         self.url = None
+        self.use_opencast = False
         if self.check_piloting_conf():
             conf = json.loads(self.broadcaster.piloting_conf)
             url = "{server_url}/api/swis/resources"
@@ -500,10 +528,13 @@ class Smp(PilotingInterface):
                 server_url=conf["server_url"],
                 # smp_version=conf["smp_version"],
             )
+            self.use_opencast = conf["use_opencast"].lower() == "true"
 
-    def copy_file_needed(self) -> bool:
-        """Implement copy_file_needed from PilotingInterface."""
-        return True
+    def video_creation_method(self):
+        """Implement video_creation_method from PilotingInterface."""
+        if self.use_opencast:
+            return CREATE_VIDEO_OPENCAST
+        return CREATE_VIDEO_FROM_FTP
 
     def can_split(self) -> bool:
         """Implement can_split from PilotingInterface."""
@@ -543,7 +574,7 @@ class Smp(PilotingInterface):
 
         return self.verify_smp_response(response, "result", "recording")
 
-    def start_recording(self, event_id, login=None) -> bool:
+    def start_recording(self, event_id) -> bool:
         """Implement start_recording from PilotingInterface."""
         logger.debug("Smp - Start record")
         json_conf = self.broadcaster.piloting_conf
@@ -552,7 +583,6 @@ class Smp(PilotingInterface):
 
         event = Event.objects.filter(id=event_id).first()
         filename = event.slug if event else str(event_id) + "_" + self.broadcaster.slug
-        login = login if login else "unknown"
         body = json.dumps(
             [
                 {"uri": "/record/1/root_dir_fs", "value": "internal"},
@@ -562,9 +592,11 @@ class Smp(PilotingInterface):
                         "recording": "record",
                         "location": "internal",
                         "metadata": {
+                            "course_id": event_id,
+                            "creator": event.owner.username,
                             "title": filename,
-                            "creator": login,
-                            "description": "launch from Pod",
+                            "description": "",
+                            "relation": "",
                         },
                     },
                 },
@@ -636,6 +668,10 @@ class Smp(PilotingInterface):
     def copy_file_to_pod_dir(self, filename):
         """Implement copy_file_to_pod_dir from PilotingInterface."""
         logger.debug("Smp - Copy file to Pod dir")
+
+        # not needed if file is sent to the Recorder
+        if self.use_opencast:
+            return True
 
         json_conf = self.broadcaster.piloting_conf
         conf = json.loads(json_conf)

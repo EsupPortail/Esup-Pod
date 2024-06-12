@@ -61,7 +61,7 @@
       constructor(player, options) {
         super(player, options);
         var settings = videojs.mergeOptions(defaults, options),
-          chapters = {},
+          /*chapters = {},*/
           currentChapter = document.createElement("li");
 
         /**
@@ -74,7 +74,7 @@
           this.chapters = groupedChapters(data);
 
           var ol = document.getElementById("chapters-list");
-          for (var i = 0; i < this.chapters.id.length; ++i) {
+          for (let i = 0; i < this.chapters.id.length; ++i) {
             var chapId = this.chapters.id[i];
             var chapTitle = this.chapters.title[i];
             var chapTime = this.chapters.start[i];
@@ -119,10 +119,10 @@
             title: [],
             start: [],
           };
-          for (var i = 0; i < data.length; i++) {
-            chapters.id.push(parseInt(data[i].attributes[1].value));
+          for (let i = 0; i < data.length; i++) {
+            chapters.id.push(parseInt(data[i].attributes[1].value, 10));
             chapters.title.push(data[i].attributes[2].value);
-            chapters.start.push(parseInt(data[i].attributes[0].value));
+            chapters.start.push(parseInt(data[i].attributes[0].value, 10));
           }
           return chapters;
         }

@@ -13,3 +13,4 @@
 # Désigne tous les fichiers qui sont vraiment binaires et ne doivent pas être modifiés.
 *.png binary
 *.jpg binary
+*.webp binary

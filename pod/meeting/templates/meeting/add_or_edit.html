@@ -48,7 +48,7 @@
             {% trans "Your personal meeting room is a room specific to your profile, which is always available." %}
             {% trans "You can start it at any time, or schedule it for later use." %}
           {% else %}
-            {% blocktrans with full_name=form.instance.owner.get_full_name %}This is “{{ full_name }}”'s personal meeting room, a room specific to his profile, which is always available.{% endblocktrans %}
+            {% blocktrans with full_name=form.instance.owner.get_full_name %}This is “{{ full_name }}”’s personal meeting room, a room specific to his profile, which is always available.{% endblocktrans %}
             {% trans "You can start it at any time, or schedule it for later use." %}
           {% endif %}
         </p>
@@ -242,7 +242,7 @@ if(id_start) {
       let match = id_start_value.match(new RegExp(regex_date_format, "g"));
       if(match) {
         let day = id_start_value.substring(index_day, index_day+2);
-        let monthIndex = parseInt(id_start_value.substring(index_month, index_month+2))-1;
+        let monthIndex = parseInt(id_start_value.substring(index_month, index_month+2), 10)-1;
         let year = 0;
         if(index_year == -1) {
           year = id_start_value.substring(index_little_year, index_little_year+2);

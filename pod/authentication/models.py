@@ -66,7 +66,7 @@ SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 
-def get_name(self) -> str:
+def get_name(self: User) -> str:
     """
     Return the user's full name, including the username if not hidden.
 
@@ -119,7 +119,7 @@ class Owner(models.Model):
         verbose_name_plural = _("Owners")
         ordering = ["user"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         if HIDE_USERNAME:
             return "%s %s" % (self.user.first_name, self.user.last_name)
         return "%s %s (%s)" % (
@@ -128,13 +128,13 @@ class Owner(models.Model):
             self.user.username,
         )
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         self.hashkey = hashlib.sha256(
             (SECRET_KEY + self.user.username).encode("utf-8")
         ).hexdigest()
         super(Owner, self).save(*args, **kwargs)
 
-    def is_manager(self):
+    def is_manager(self) -> bool:
         group_ids = (
             self.user.groups.all()
             .filter(groupsite__sites=Site.objects.get_current())
@@ -146,18 +146,18 @@ class Owner(models.Model):
         )
 
     @property
-    def email(self):
+    def email(self) -> str:
         return self.user.email
 
 
 @receiver(post_save, sender=Owner)
-def default_site_owner(sender, instance, created, **kwargs):
-    if len(instance.sites.all()) == 0:
+def default_site_owner(sender, instance, created: bool, **kwargs) -> None:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())
 
 
 @receiver(post_save, sender=User)
-def create_owner_profile(sender, instance, created, **kwargs):
+def create_owner_profile(sender, instance, created: bool, **kwargs) -> None:
     if created:
         try:
             Owner.objects.create(user=instance)
@@ -179,13 +179,13 @@ class GroupSite(models.Model):
 
 
 @receiver(post_save, sender=GroupSite)
-def default_site_groupsite(sender, instance, created, **kwargs):
-    if len(instance.sites.all()) == 0:
+def default_site_groupsite(sender, instance, created: bool, **kwargs) -> None:
+    if instance.sites.count() == 0:
         instance.sites.add(Site.objects.get_current())
 
 
 @receiver(post_save, sender=Group)
-def create_groupsite_profile(sender, instance, created, **kwargs):
+def create_groupsite_profile(sender, instance, created: bool, **kwargs) -> None:
     if created:
         try:
             GroupSite.objects.create(group=instance)
@@ -211,7 +211,7 @@ class AccessGroup(models.Model):
         through="Owner_accessgroups",
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return "%s" % (self.display_name)
 
     class Meta:

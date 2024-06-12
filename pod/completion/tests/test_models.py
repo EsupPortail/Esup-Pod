@@ -33,7 +33,7 @@ class ContributorModelTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.site = Site.objects.get(id=1)
         owner = User.objects.create(username="test")
         video_type = Type.objects.create(title="others")
@@ -53,7 +53,7 @@ class ContributorModelTestCase(TestCase):
         )
         Contributor.objects.create(video=video, name="contributor2")
 
-    def test_attributs_full(self):
+    def test_attributs_full(self) -> None:
         contributor = Contributor.objects.get(id=1)
         video = Video.objects.get(id=1)
         self.assertEqual(contributor.video, video)
@@ -123,7 +123,7 @@ class ContributorModelTestCase(TestCase):
         )
         print(" ---> test_str: OK! --- ContributorModel")
 
-    def test_get_base_mail(self):
+    def test_get_base_mail(self) -> None:
         """Test the get_base_mail method of the Contributor model."""
         contributor = Contributor.objects.get(id=1)
         self.assertEqual(
@@ -132,7 +132,7 @@ class ContributorModelTestCase(TestCase):
         )
         print(" ---> test_get_base_mail: OK! --- ContributorModel")
 
-    def test_get_noscript_mail(self):
+    def test_get_noscript_mail(self) -> None:
         """Test the get_noscript_mail method of the Contributor model."""
         contributor = Contributor.objects.get(id=1)
         self.assertEqual(contributor.get_noscript_mail(), "contributor__AT__pod.com")

@@ -1,6 +1,6 @@
 """Esup-Pod transcripting tasks."""
 
-# pip3 install celery==5.2.7
+# pip3 install celery==5.4.0
 # pip3 install webvtt-py
 # pip3 install redis==4.5.4
 from celery import Celery

@@ -1,9 +1,10 @@
-from rest_framework import serializers, viewsets
+"""Esup-Pod REST views."""
+
+from rest_framework import serializers, viewsets, renderers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 # from rest_framework import authentication, permissions
-from rest_framework import renderers
 from rest_framework.decorators import action
 
 from django.template.loader import render_to_string
@@ -12,6 +13,8 @@ from .models import Channel, Theme
 from .models import Type, Discipline, Video
 from .models import ViewCount
 from .context_processors import get_available_videos
+
+from pod.main.utils import remove_trailing_spaces
 
 # commented for v3
 # from .remote_encode import start_store_remote_encoding_video
@@ -266,7 +269,7 @@ class DublinCoreView(APIView):
     page_size_query_param = "page_size"
     max_page_size = 1000
 
-    def get(self, request, format=None):
+    def get(self, request, format=None) -> Response:
         list_videos = get_available_videos(request)
         if request.GET:
             list_videos = list_videos.filter(**request.GET.dict())
@@ -287,6 +290,6 @@ class DublinCoreView(APIView):
             rendered = render_to_string(
                 "videos/dublincore.html", {"video": video, "xml": True}, request
             )
-            xmlcontent += rendered
+            xmlcontent += remove_trailing_spaces(rendered)
         xmlcontent += "</rdf:RDF>"
         return Response(xmlcontent)

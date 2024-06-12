@@ -2,6 +2,8 @@
  * Esup-Pod Infinite scroll script
  */
 
+/* exported InfiniteLoader */
+
 /* Read-only Globals defined in utils-playlist.js */
 /*
   global preventRefreshButton

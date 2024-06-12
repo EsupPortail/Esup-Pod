@@ -300,7 +300,7 @@
   document.getElementById("resetButton").addEventListener("click", (e) => {
     global_data = undefined;
     document.getElementById("file_field").classList.remove("d-none");
-    document.getElementById("file_name").innerHTML = "";
+    document.getElementById("file_name").textContent = "";
     document.getElementById("file_selected").classList.add("d-none");
   });
 

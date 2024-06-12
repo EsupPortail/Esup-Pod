@@ -1,4 +1,7 @@
-"""Check Obsolete videos."""
+"""Esup-Pod - Check for obsolete videos.
+
+*  run with 'python manage.py check_obsolete_videos [--dry]'
+"""
 
 from django.conf import settings
 from django.utils import translation
@@ -25,7 +28,7 @@ MANAGERS = getattr(settings, "MANAGERS", [])
 CONTACT_US_EMAIL = getattr(
     settings,
     "CONTACT_US_EMAIL",
-    [mail for name, mail in getattr(settings, "MANAGERS")],
+    [mail for name, mail in MANAGERS],
 )
 
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
@@ -71,9 +74,23 @@ class Command(BaseCommand):
     """Checking obsolete videos."""
 
     help = "Treatment of obsolete videos."
+    dry_mode = False
 
-    def handle(self, *args, **options):
+    def add_arguments(self, parser) -> None:
+        """Add possible args to the command."""
+        parser.add_argument(
+            "--dry",
+            help="Simulate what would be done.",
+            action="store_true",
+            default=False,
+        )
+
+    def handle(self, *args, **options) -> None:
         """Handle the check_obsolete_videos command call."""
+        if options["dry"]:
+            self.dry_mode = True
+            print("Simulation mode ('dry'). Nothing will be deleted.")
+
         # Activate a fixed locale fr
         translation.activate(LANGUAGE_CODE)
 
@@ -93,7 +110,7 @@ class Command(BaseCommand):
             self.stderr.write(self.style.ERROR(_("An Error occurred while processing.")))
             raise CommandError(_("USE_OBSOLESCENCE is FALSE"))
 
-    def get_video_treatment_and_notify_user(self):
+    def get_video_treatment_and_notify_user(self) -> dict:
         """Check video with close deadlines to send email to each owner."""
         list_video_notified_by_establishment = {}
         list_video_notified_by_establishment.setdefault("other", {})
@@ -103,7 +120,8 @@ class Command(BaseCommand):
                 date_delete=step_date, sites=get_current_site(settings.SITE_ID)
             )
             for video in videos:
-                self.notify_user(video, step_day)
+                if not self.dry_mode:
+                    self.notify_user(video, step_day)
                 if (
                     USE_ESTABLISHMENT
                     and MANAGERS
@@ -122,7 +140,7 @@ class Command(BaseCommand):
 
         return list_video_notified_by_establishment
 
-    def get_video_archived_deleted_treatment(self):
+    def get_video_archived_deleted_treatment(self) -> tuple:  # tuple[dict, dict]
         """Get video with deadline out of time and delete them."""
         vids = Video.objects.filter(
             sites=get_current_site(None), date_delete__lt=date.today()
@@ -141,29 +159,30 @@ class Command(BaseCommand):
             estab = vid.owner.owner.establishment.lower()
 
             if vid.owner.owner.affiliation in POD_ARCHIVE_AFFILIATION:
-                self.write_in_csv(vid, "archived")
-                archive_user, created = User.objects.get_or_create(
-                    username=ARCHIVE_OWNER_USERNAME,
-                )
-                # Rename video and change owner.
-                vid.owner = archive_user
-                vid.is_draft = True
-                vid.title = "%s %s %s" % (
-                    _("Archived"),
-                    date.today(),
-                    vid.title,
-                )
-                # Trunc title to 250 chars max.
-                vid.title = vid.title[:250]
-                vid.save()
-                nb_archived += 1
+                if not self.dry_mode:
+                    self.write_in_csv(vid, "archived")
+                    archive_user, created = User.objects.get_or_create(
+                        username=ARCHIVE_OWNER_USERNAME,
+                    )
+                    # Rename video and change owner.
+                    vid.owner = archive_user
+                    vid.is_draft = True
+                    vid.title = "%s %s %s" % (
+                        _("Archived"),
+                        date.today(),
+                        vid.title,
+                    )
+                    # Trunc title to 250 chars max.
+                    vid.title = vid.title[:250]
+                    vid.save()
 
-                # add video to delete
-                vid_delete, created = VideoToDelete.objects.get_or_create(
-                    date_deletion=vid.date_delete
-                )
-                vid_delete.video.add(vid)
-                vid_delete.save()
+                    # add video to delete
+                    vid_delete, created = VideoToDelete.objects.get_or_create(
+                        date_deletion=vid.date_delete
+                    )
+                    vid_delete.video.add(vid)
+                    vid_delete.save()
+                nb_archived += 1
                 if USE_ESTABLISHMENT and MANAGERS and estab in dict(MANAGERS):
                     list_video_archived_by_establishment.setdefault(estab, {})
                     list_video_archived_by_establishment[estab].setdefault(
@@ -175,8 +194,11 @@ class Command(BaseCommand):
                     ).append(vid)
 
             else:
-                self.write_in_csv(vid, "deleted")
-                vid.delete()
+                if not self.dry_mode:
+                    self.write_in_csv(vid, "deleted")
+                    vid.delete()
+                else:
+                    print("Video %s would have been deleted." % vid)
                 nb_deleted += 1
                 if USE_ESTABLISHMENT and MANAGERS and estab in dict(MANAGERS):
                     list_video_deleted_by_establishment.setdefault(estab, {})
@@ -196,7 +218,7 @@ class Command(BaseCommand):
             list_video_archived_by_establishment,
         )
 
-    def notify_user(self, video, step_day):
+    def notify_user(self, video: Video, step_day: int) -> int:
         """Notify a user that his video will be deleted soon."""
         name = video.owner.last_name + " " + video.owner.first_name
         if video.owner.is_staff:
@@ -240,6 +262,10 @@ class Command(BaseCommand):
         to_email = [video.owner.email]
         for additional in video.additional_owners.all():
             to_email.append(additional.email)
+        print(
+            _("Sending mail to %(to_email)s for video %(title)s.")
+            % {"to_email": to_email, "title": video.title}
+        )
         return send_mail(
             "[%s] %s" % (__TITLE_SITE__, _("Your video will be obsolete")),
             striptags(msg_html),
@@ -248,12 +274,8 @@ class Command(BaseCommand):
             fail_silently=False,
             html_message=msg_html,
         )
-        print(
-            _("Mail sent to %(to_email)s for video %(title)s.")
-            % {"to_email": to_email, "title": video.title}
-        )
 
-    def notify_manager_of_obsolete_video(self, list_video):
+    def notify_manager_of_obsolete_video(self, list_video: dict) -> None:
         """Notify manager(s) with a list of obsolete videos."""
         for estab in list_video:
             if len(list_video[estab]) > 0:
@@ -313,7 +335,7 @@ class Command(BaseCommand):
                         % {"estab": estab, "nb": len(list_video[estab])}
                     )
 
-    def notify_manager_of_deleted_video(self, list_video):
+    def notify_manager_of_deleted_video(self, list_video: dict) -> None:
         """Notify manager(s) with a list of deleted videos."""
         for estab in list_video:
             if len(list_video[estab]) > 0:
@@ -370,7 +392,7 @@ class Command(BaseCommand):
                         % {"et": estab, "nb": len(list_video[estab])}
                     )
 
-    def notify_manager_of_archived_video(self, list_video):
+    def notify_manager_of_archived_video(self, list_video: dict) -> None:
         """Notify manager(s) with a list of archived videos."""
         for estab in list_video:
             if len(list_video[estab]) > 0:
@@ -428,7 +450,7 @@ class Command(BaseCommand):
                         % {"estab": estab, "nb": len(list_video[estab])}
                     )
 
-    def get_list_video_html(self, list_video, deleted):
+    def get_list_video_html(self, list_video: dict, deleted: bool) -> str:
         """Generate an html version of list_video."""
         msg_html = ""
         for i, deadline in enumerate(list_video):
@@ -456,7 +478,7 @@ class Command(BaseCommand):
             msg_html += "</ol>"
         return msg_html
 
-    def get_manager_emails(self, video):
+    def get_manager_emails(self, video: Video):
         """Return the list of manager emails."""
         if (
             USE_ESTABLISHMENT
@@ -468,9 +490,9 @@ class Command(BaseCommand):
         else:
             return CONTACT_US_EMAIL
 
-    def write_in_csv(self, vid, type):
+    def write_in_csv(self, vid: Video, arch_type: str) -> None:
         """Add in `type`.csv file informations about the video."""
-        file = "%s/%s.csv" % (settings.LOG_DIRECTORY, type)
+        file = "%s/%s.csv" % (settings.LOG_DIRECTORY, arch_type)
         exists = os.path.isfile(file)
 
         fieldnames = [
@@ -517,7 +539,7 @@ class Command(BaseCommand):
                 }
             )
 
-    def check_csv_header(self, csv_file, fieldnames):
+    def check_csv_header(self, csv_file: str, fieldnames: list) -> None:
         """Check for (and add) missing columns in an existing CSV file."""
         with open(csv_file, "r") as f:
             lines = f.readlines()

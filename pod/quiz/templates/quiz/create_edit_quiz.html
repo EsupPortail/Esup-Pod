@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load video_quiz %}
+
+{% block page_extra_head %}
+  {% include 'videos/video-header.html' %}
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item"><a href="{% url 'video:dashboard'%}">{% trans 'Dashboard' %}</a></li>
+  <li class="breadcrumb-item">
+    <a href="{% url 'video:video' slug=video.slug %}" title="{{ video.title }}">
+      {{ video.title|title|truncatechars:45 }}
+    </a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">
+      {{ page_title|title|truncatechars:45 }}
+  </li>
+{% endblock %}
+
+
+{% block page_content %}
+  <hr>
+  <form method="post" id="quiz-form">
+    {% csrf_token %}
+    {% if quiz_form.errors %}
+      <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+    {% endif %}
+    {% for field_hidden in quiz_form.hidden_fields %}
+      {{ field_hidden }}
+    {% endfor %}
+    {% for field in quiz_form.visible_fields %}
+      {% spaceless %}
+        <div class="form-group {% if field.field.required %}form-group-required {% endif %}{% if field.field.errors %}errors{% endif %}">
+          {{ field.errors }}
+          {% if "form-check-input" in field.field.widget.attrs.class %}
+            <div class="form-check">
+              {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+            </div>
+          {% else %}
+            <label for="{{ field.id_for_label }}" class="col-form-label">{{ field.label }}</label>
+            {{ field }}
+          {% endif %}
+          {% if field.help_text %}
+            <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+          {% endif %}
+          {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+        </div>
+      {% endspaceless %}
+    {% endfor %}
+
+    {{ question_formset.management_form }}
+    <div id="question-form-list" class="my-4 d-flex flex-column gap-4">
+      {% for question_form in question_formset %}
+        {% with form_index=forloop.counter0 %}
+          {% include "quiz/question_form.html" with form=question_form form_index=form_index %}
+        {% endwith %}
+      {% endfor %}
+    </div>
+
+    <button id="add-question" type="button" class="btn btn-primary">
+      <i class="bi bi-plus" aria-hidden="true"></i>&nbsp;{% trans "Add a question" %}
+    </button>
+
+    <div class="text-center mt-4">
+      <button type="submit" id="quiz-submission-button" class="btn btn-primary" name="_continue">
+        {% trans "Save" %}
+      </button>
+      <a href="{% url 'video:video' slug=video.slug %}" class="btn btn-secondary">{% trans "Back to video" %}</a>
+    </div>
+  </form>
+
+  <div id='empty-form' class="d-none">
+    {% include "quiz/question_form.html" with form=question_formset.empty_form form_index="__prefix__" %}
+  </div>
+{% endblock page_content %}
+
+{% block page_aside %}
+  {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all %}
+    <div class="card" id="card-manage-video">
+      <h2 class="card-header card-title pod-card__title h4">
+        <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage video"%}
+      </h2>
+      <div class="card-body card-text text-center">
+        {% include "videos/link_video.html" with hide_favorite_link=True %}
+      </div>
+    </div>
+    {% is_quiz_accessible video as is_quiz_accessible %}
+    {% if is_quiz_accessible %}
+      <div class="card" id="card-manage-quiz">
+        {% include "quiz/video_quiz_aside.html" with hide_edit=True %}
+      </div>
+    {% endif %}
+  {% endif %}
+
+  <div class="card" id="card-quiz-player">
+    <h2 class="card-header card-title pod-card__title h4">
+      <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans "Video"%}
+    </h2>
+    {% include 'videos/video-element.html' %}
+  </div>
+
+  {% include "main/mandatory_fields.html" %}
+
+{% endblock page_aside %}
+
+{% block more_script %}
+  <script>
+    const video_duration = {{ video.duration }};
+  </script>
+  {% include "videos/video-script.html" %}
+  <script>
+    {% if initial_data %}
+      const initialData = JSON.parse('{{ initial_data|escapejs }}');
+    {% else %}
+      const initialData = null;
+    {% endif %}
+  </script>
+  <script src="{% static 'quiz/js/create-quiz.js' %}?ver={{VERSION}}"></script>
+{% endblock more_script %}

@@ -25,7 +25,7 @@ class ChapterViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         site = Site.objects.get(id=1)
         owner = User.objects.create(username="test", password="azerty", is_staff=True)
         owner.set_password("hello")
@@ -49,7 +49,7 @@ class ChapterViewsTestCase(TestCase):
 
         vid.sites.add(site)
 
-    def test_video_chapter_owner(self):
+    def test_video_chapter_owner(self) -> None:
         video = Video.objects.get(id=1)
         url = reverse("video:chapter:video_chapter", kwargs={"slug": video.slug})
         response = self.client.get(url)
@@ -69,7 +69,7 @@ class ChapterViewsTestCase(TestCase):
         print(" ---> test_video_chapter_owner: OK!")
         print(" [ END CHAPTER VIEWS ] ")
 
-    def test_video_chapter(self):
+    def test_video_chapter(self) -> None:
         video = Video.objects.get(id=1)
         url = reverse("video:chapter:video_chapter", kwargs={"slug": video.slug})
         response = self.client.get(url)
@@ -86,7 +86,7 @@ class ChapterViewsTestCase(TestCase):
         print(" [ BEGIN CHAPTER VIEWS ] ")
         print(" ---> test_video_chapter: OK!")
 
-    def test_video_chapter_new(self):
+    def test_video_chapter_new(self) -> None:
         video = Video.objects.get(id=1)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
@@ -118,7 +118,7 @@ class ChapterViewsTestCase(TestCase):
 
         print(" ---> test_video_chapter_new: OK!")
 
-    def test_video_chapter_edit(self):
+    def test_video_chapter_edit(self) -> None:
         video = Video.objects.get(id=1)
         url = reverse("video:chapter:video_chapter", kwargs={"slug": video.slug})
         authenticate(username="test", password="hello")
@@ -157,7 +157,7 @@ class ChapterViewsTestCase(TestCase):
 
         print(" ---> test_video_chapter_edit: OK!")
 
-    def test_video_chapter_delete(self):
+    def test_video_chapter_delete(self) -> None:
         video = Video.objects.get(id=1)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
@@ -187,7 +187,8 @@ class ChapterViewsTestCase(TestCase):
 
         print(" ---> test_video_chapter_delete: OK!")
 
-    def test_video_chapter_import(self):
+    def test_video_chapter_import(self) -> None:
+        """Test Chapters creations from vtt file."""
         video = Video.objects.get(id=1)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
@@ -218,7 +219,7 @@ class ChapterViewsTestCase(TestCase):
 
         print(" ---> test_video_chapter_import: OK!")
 
-    def test_video_chapter_modify(self):
+    def test_video_chapter_modify(self) -> None:
         video = Video.objects.get(id=1)
         Chapter.objects.create(
             title="Test Chapter",

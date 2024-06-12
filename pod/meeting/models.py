@@ -433,8 +433,8 @@ class Meeting(models.Model):
         verbose_name=_("Enable chat"),
         help_text=_(
             "Do you want a chat on the live page "
-            "for listeners? Messages sent in this live page's chat will "
-            "end up in BigBlueButton's public chat. "
+            "for listeners? Messages sent in this live page’s chat will "
+            "end up in BigBlueButton’s public chat. "
             "This public chat will be also displayed in the live."
         ),
         default=False,
@@ -454,7 +454,7 @@ class Meeting(models.Model):
     def get_current_session(self):
         return self.meetingsessionlog_set.first()
 
-    def reset_recurrence(self):
+    def reset_recurrence(self) -> None:
         """
         Reset recurrence so everything indicates that the event occurs only once.
 
@@ -513,7 +513,7 @@ class Meeting(models.Model):
         else:
             self.reset_recurrence()
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         """Store a meeting object in db."""
         self.check_recurrence()
         newid = -1
@@ -534,7 +534,7 @@ class Meeting(models.Model):
             self.record = False
         super(Meeting, self).save(*args, **kwargs)
 
-    def get_hashkey(self):
+    def get_hashkey(self) -> str:
         return hashlib.sha256(
             ("%s-%s-%s" % (SECRET_KEY, self.id, self.attendee_password)).encode("utf-8")
         ).hexdigest()
@@ -628,7 +628,7 @@ class Meeting(models.Model):
         return []
 
     @property
-    def is_active(self):
+    def is_active(self) -> bool:
         """Compute meeting to know if it is past or not."""
         # Specific case for the personal meeting room
         if self.is_personal:
@@ -647,7 +647,7 @@ class Meeting(models.Model):
         return False
 
     # ##############################    BBB API
-    def get_meeting_parameters(self):
+    def get_meeting_parameters(self) -> dict:
         """Return the meeting's parameters in dict obejct to create the meeting."""
         parameters = {}
         for param in meeting_to_bbb:

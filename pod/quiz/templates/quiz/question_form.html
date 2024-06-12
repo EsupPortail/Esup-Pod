@@ -1,0 +1,48 @@
+{% load i18n %}
+
+<fieldset class="border border-2 rounded-3 p-4 question-form" data-question-index="{{ form_index }}">
+  <legend class="d-flex justify-content-between align-items-center">
+    <div>
+      <i class="bi bi-patch-question" aria-hidden='true'></i>&nbsp;
+      {% trans "Question #" %}<span class="question-number">{{ form_index|add:1 }}</span>
+    </div>
+    <button class="btn btn-danger btn-small delete-question-button" type="button" title="{% trans 'Delete the question #' %}{{ form_index|add:1 }}" data-bs-toggle="tooltip" data-bs-placement="left">
+      <i class="bi bi-trash" aria-hidden="true"></i>
+    </button>
+  </legend>
+
+  <div class="question-attributes">
+    {% if form.errors %}
+      <p class="text-danger">{% trans "One or more errors have been found in the question." %}</p>
+    {% endif %}
+
+    {% for field_hidden in form.hidden_fields %}
+      {{ field_hidden }}
+    {% endfor %}
+
+    {% for field in form.visible_fields %}
+      {% spaceless %}
+        <div class="mb-3 form-group {% if field.field.required %}form-group-required {% endif %}">
+          {{ field.errors }}
+          {% if "form-check-input" in field.field.widget.attrs.class %}
+            <div class="form-check">
+              {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+            </div>
+          {% else %}
+            <label for="{{ field.id_for_label }}" class="col-form-label">{{ field.label }}</label>
+            {{ field }}
+          {% endif %}
+          {% if field.help_text %}
+            <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+          {% endif %}
+          {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+        </div>
+      {% endspaceless %}
+    {% endfor %}
+  </div>
+  <div class="question-choices-section">
+    <div class="question-choices-form" >
+      <!-- There is nothing & it's normal. The content is managed in JS. File: js/create-quiz.js -->
+    </div>
+  </div>
+</fieldset>

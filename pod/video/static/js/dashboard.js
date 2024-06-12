@@ -18,6 +18,8 @@
   global urlUpdateVideos csrftoken formFieldsets displayMode
 */
 
+/* exported dashboardActionReset */
+
 var bulkUpdateActionSelect = document.getElementById("bulkUpdateActionSelect");
 var applyBulkUpdateBtn = document.getElementById("applyBulkUpdateBtn");
 var resetDashboardElementsBtn = document.getElementById(
@@ -92,7 +94,7 @@ confirmModalBtn.addEventListener("click", (e) => {
 
 /**
  * Reset action and value of dashboard form elements when reset button is clicked.
- */
+ **/
 function dashboardActionReset() {
   dashboardAction = "";
   dashboardValue = "";

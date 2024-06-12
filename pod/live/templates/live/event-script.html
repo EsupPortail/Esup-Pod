@@ -206,7 +206,7 @@
           }).then((data) => {
             if (data.success) {
               recordingDuration = 0;
-              durationClock.innerHTML = "";
+              durationClock.textContent = "";
               durationClock.classList.remove("d-none");
               changeRecordControlButtons("on");
               show_alert("{% trans 'Recording in progress' %}", "success");

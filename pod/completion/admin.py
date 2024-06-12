@@ -154,14 +154,14 @@ admin.site.register(EnrichModelQueue, EnrichModelQueueAdmin)
 
 
 class TrackAdmin(admin.ModelAdmin):
-    def debug(text):
+    def debug(text) -> None:
         if DEBUG:
             print(text)
 
     def check_if_treatment_in_progress() -> bool:
         return EnrichModelQueue.objects.filter(in_treatment=True).exists()
 
-    def write_into_kaldi_file(enrich_model_queue: EnrichModelQueue):
+    def write_into_kaldi_file(enrich_model_queue: EnrichModelQueue) -> None:
         with open(
             MODEL_COMPILE_DIR + "/" + enrich_model_queue.lang + "/db/extra.txt", "w"
         ) as f:
@@ -178,7 +178,7 @@ class TrackAdmin(admin.ModelAdmin):
             ]
         )
 
-    def copy_result_into_current_model(enrich_model_queue: EnrichModelQueue):
+    def copy_result_into_current_model(enrich_model_queue: EnrichModelQueue) -> None:
         from_path: str = (
             MODEL_COMPILE_DIR + "/" + enrich_model_queue.lang + "/exp/chain/tdnn/graph"
         )
@@ -219,7 +219,8 @@ class TrackAdmin(admin.ModelAdmin):
         if os.path.exists(from_path):
             shutil.copy(from_path, to_path)
 
-    def enrich_kaldi_model_launch():
+    @staticmethod
+    def enrich_kaldi_model_launch() -> None:
         TrackAdmin.debug("enrich_kaldi_model")
         enrich_model_queue = EnrichModelQueue.objects.filter(model_type="VOSK").first()
         if enrich_model_queue is not None:
@@ -239,7 +240,7 @@ class TrackAdmin(admin.ModelAdmin):
             return
 
     @admin.action(description=_("Enrich with selected subtitles"))
-    def enrich_model(modeladmin, request, queryset):
+    def enrich_model(modeladmin, request, queryset) -> None:
         text = ""
         title = ""
         for query in list(queryset.all()):

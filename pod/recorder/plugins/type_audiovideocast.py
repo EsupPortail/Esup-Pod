@@ -5,7 +5,7 @@ import logging
 import datetime
 import zipfile
 import os
-from xml.dom import minidom
+from defusedxml import minidom
 
 from django.conf import settings
 from django.template.defaultfilters import slugify
@@ -33,14 +33,14 @@ else:
 log = logging.getLogger(__name__)
 
 
-def process(recording):
+def process(recording) -> None:
     log.info("START PROCESS OF RECORDING %s" % recording)
     t = threading.Thread(target=encode_recording, args=[recording])
     t.setDaemon(True)
     t.start()
 
 
-def save_video(recording, video_data, video_src):
+def save_video(recording, video_data, video_src) -> Video:
     recorder = recording.recorder
     video = Video()
     video.owner = recording.user
@@ -95,7 +95,7 @@ def save_video(recording, video_data, video_src):
     return video
 
 
-def save_slide(data, filename, video, enrichment, recording):
+def save_slide(data, filename, video, enrichment, recording) -> None:
     if len(data):
         slide_name, ext = os.path.splitext(os.path.basename(filename))
         if FILEPICKER:
@@ -134,7 +134,7 @@ def save_slide(data, filename, video, enrichment, recording):
         add_comment(recording.id, "file %s is empty" % filename)
 
 
-def save_enrichment(video, list_node_img, recording, media_name, zip):
+def save_enrichment(video, list_node_img, recording, media_name, zip) -> None:
     previousEnrichment = None
     i = 0
     Enrichment.objects.filter(video=video).delete()

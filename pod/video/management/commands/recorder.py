@@ -112,7 +112,7 @@ USE_OPENCAST_STUDIO = getattr(settings, "USE_OPENCAST_STUDIO", False)
 opencastMediaDir = os.path.join(settings.MEDIA_ROOT, "opencast-files")
 
 
-def print_if_debug(str):
+def print_if_debug(str) -> None:
     if DEBUG:
         print(str)
 
@@ -223,6 +223,9 @@ def case_manager_exist(
         print_if_debug(
             "- Information saved in the recorder_recordingfiletreatment table."
         )
+    elif str(request.content)[1:] == "'auto'":
+        # Video auto published
+        print_if_debug("The video was published and attributed.")
     else:
         # Email wasn't sent, due to an error
         print_if_debug(

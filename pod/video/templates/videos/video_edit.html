@@ -13,8 +13,6 @@
   {% endif %}
 {% endblock %}
 
-{% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Add a new video" %}{% endif %}{% endblock %}
-
 {% block collapse_page_aside %}
   {% if access_not_allowed != True %}
     {{block.super}}
@@ -30,7 +28,7 @@
         <a href="{% url 'video:video' slug=form.instance.slug %}" class="btn btn-primary btn-sm m-2">
           <i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans "View the video" %}
         </a>
-        {% if video.encoded and video.encoding_in_progress is False %}
+        {% if form.instance.encoded and form.instance.encoding_in_progress is False %}
         <a href="{% url 'video:video_delete' slug=form.instance.slug %}" class="btn btn btn-danger btn-sm m-2">
           <i class="bi bi-trash" aria-hidden="true"></i>&nbsp;{% trans "Delete the video" %}
         </a>

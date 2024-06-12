@@ -104,7 +104,7 @@ from pod.import_video.models import ExternalRecording
 from pod.import_video.views import start_bbb_encode_presentation_and_move_to_destination
 from pod.meeting.models import Meeting
 from pod.recorder.models import Recorder
-from xml.dom import minidom
+from defusedxml import minidom
 
 # # Script config (TO EDIT) # #
 # Moodle database engine (postgresql, mysql or None)

@@ -24,7 +24,7 @@ class PlaylistConfig(AppConfig):
         post_migrate.connect(self.send_previous_data, sender=self)
         post_migrate.connect(self.remove_previous_favorites_table, sender=self)
 
-    def save_previous_data(self, sender, **kwargs):
+    def save_previous_data(self, sender, **kwargs) -> None:
         """Save previous data from various database tables."""
         print("Start save_previous_data | playlists")
         self.save_playlists()
@@ -42,7 +42,7 @@ class PlaylistConfig(AppConfig):
             print("FAVORITES_DATA saved for %s persons" % len(FAVORITES_DATA))
         print("save_previous_data --> OK | playlists")
 
-    def save_favorites(self):
+    def save_favorites(self) -> None:
         """Save previous data from favorites table."""
         try:
             with connection.cursor() as c:
@@ -61,7 +61,7 @@ class PlaylistConfig(AppConfig):
         except Exception as e:
             print(e)
 
-    def execute_query(self, query, mapping_dict):
+    def execute_query(self, query, mapping_dict) -> None:
         """
         Execute the given query and populate the mapping dictionary with the results.
 
@@ -80,7 +80,7 @@ class PlaylistConfig(AppConfig):
             print(e)
             pass
 
-    def save_playlists(self):
+    def save_playlists(self) -> None:
         """Save previous data from playlists table."""
         self.execute_query(
             """
@@ -91,7 +91,7 @@ class PlaylistConfig(AppConfig):
             PLAYLIST_INFORMATIONS,
         )
 
-    def save_playlist_content(self):
+    def save_playlist_content(self) -> None:
         """Save previous data from playlistelement table."""
         self.execute_query(
             """
@@ -102,7 +102,7 @@ class PlaylistConfig(AppConfig):
             PLAYLIST_CONTENTS,
         )
 
-    def send_previous_data(self, sender, **kwargs):
+    def send_previous_data(self, sender, **kwargs) -> None:
         """Send previous data from various database tables."""
         print("Start send_previous_data | playlists")
 
@@ -115,7 +115,7 @@ class PlaylistConfig(AppConfig):
         self.create_new_favorites()
         print("send_previous_data --> OK | playlists")
 
-    def create_new_favorites(self):
+    def create_new_favorites(self) -> None:
         """Create favorites records from existing datas or create favorites playlist."""
         from pod.playlist.models import Playlist, PlaylistContent
         from django.utils.translation import gettext_lazy as _
@@ -174,7 +174,7 @@ class PlaylistConfig(AppConfig):
 
         print("create_new_favorites --> OK")
 
-    def update_playlists(self):
+    def update_playlists(self) -> None:
         """Update previous playlist table."""
         from pod.playlist.models import Playlist
 
@@ -212,7 +212,7 @@ class PlaylistConfig(AppConfig):
         )
         print("update_playlists --> OK")
 
-    def add_playlists_contents(self):
+    def add_playlists_contents(self) -> None:
         """Add playlist content record from existing datas."""
         from pod.playlist.models import PlaylistContent
 
@@ -227,7 +227,7 @@ class PlaylistConfig(AppConfig):
         PlaylistContent.objects.bulk_create(content_list_to_bulk, batch_size=1000)
         print("add_playlists_contents --> OK")
 
-    def remove_previous_favorites_table(self, sender, **kwargs):
+    def remove_previous_favorites_table(self, sender, **kwargs) -> None:
         """Remove the previous favorites table."""
         try:
             with connection.cursor() as c:
