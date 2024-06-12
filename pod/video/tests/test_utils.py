@@ -5,10 +5,8 @@ import json
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from pod.video.models import Channel, Theme
-from pod.video.models import Video, Type
-from pod.video.utils import pagination_data, get_headband
-from pod.video.utils import change_owner, get_videos
+from pod.video.models import Channel, Theme, Video, Type
+from pod.video.utils import pagination_data, get_headband, change_owner, get_videos
 
 
 class VideoTestUtils(TestCase):
@@ -18,7 +16,7 @@ class VideoTestUtils(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up required objects for next tests."""
         self.user = User.objects.create(username="pod", password="pod1234pod")
         self.user2 = User.objects.create(username="pod2", password="pod1234pod2")
@@ -32,7 +30,7 @@ class VideoTestUtils(TestCase):
             type=Type.objects.get(id=1),
         )
 
-    def test_pagination_data(self):
+    def test_pagination_data(self) -> None:
         # First data, previous_url = None
         data_length = 9
         offset = 0
@@ -56,18 +54,18 @@ class VideoTestUtils(TestCase):
         actual = pagination_data(path, offset, limit, data_length)
         self.assertEqual(actual, expected)
 
-    def test_get_headband(self):
+    def test_get_headband(self) -> None:
         self.assertEqual(get_headband(self.c).get("type", None), "channel")
         self.assertEqual(get_headband(self.c, self.theme).get("type", None), "theme")
 
-    def test_change_owner(self):
+    def test_change_owner(self) -> None:
         """Change video owner."""
         actual = change_owner(str(self.v.id), self.user2)
         self.assertEqual(actual, True)
         # Must return false with non-existent video id
         self.assertEqual(change_owner(100, self.user2), False)
 
-    def test_get_videos(self):
+    def test_get_videos(self) -> None:
         actual = get_videos(self.v.title, self.user.id)
         expected = {
             "count": 1,

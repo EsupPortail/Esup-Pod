@@ -95,20 +95,6 @@
     let name = '';
     /*** For the form ***/;
     let video_duration = {{video.duration}};
-    /*** For the Cancel button ***/
-
-    document.addEventListener("reset",   (e) => {
-      if (e.target !== document.querySelector("#page-video form"))  return
-      document.getElementById("form_enrich").innerHTML = "";
-      document.querySelectorAll("form").forEach((form)=>{
-        form.style.display = "block";
-      })
-      document.querySelectorAll("table tr").forEach((tr) => {
-        tr.classList.remove("info");
-      });
-
-      manageResize();
-    });
   </script>
   {{block.super}}
   <script>

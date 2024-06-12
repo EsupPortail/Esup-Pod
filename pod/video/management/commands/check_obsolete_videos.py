@@ -140,7 +140,7 @@ class Command(BaseCommand):
 
         return list_video_notified_by_establishment
 
-    def get_video_archived_deleted_treatment(self) -> tuple[dict, dict]:
+    def get_video_archived_deleted_treatment(self) -> tuple:  # tuple[dict, dict]
         """Get video with deadline out of time and delete them."""
         vids = Video.objects.filter(
             sites=get_current_site(None), date_delete__lt=date.today()
@@ -262,6 +262,10 @@ class Command(BaseCommand):
         to_email = [video.owner.email]
         for additional in video.additional_owners.all():
             to_email.append(additional.email)
+        print(
+            _("Sending mail to %(to_email)s for video %(title)s.")
+            % {"to_email": to_email, "title": video.title}
+        )
         return send_mail(
             "[%s] %s" % (__TITLE_SITE__, _("Your video will be obsolete")),
             striptags(msg_html),
@@ -269,10 +273,6 @@ class Command(BaseCommand):
             to_email,
             fail_silently=False,
             html_message=msg_html,
-        )
-        print(
-            _("Mail sent to %(to_email)s for video %(title)s.")
-            % {"to_email": to_email, "title": video.title}
         )
 
     def notify_manager_of_obsolete_video(self, list_video: dict) -> None:
@@ -490,9 +490,9 @@ class Command(BaseCommand):
         else:
             return CONTACT_US_EMAIL
 
-    def write_in_csv(self, vid: Video, type: str) -> None:
+    def write_in_csv(self, vid: Video, arch_type: str) -> None:
         """Add in `type`.csv file informations about the video."""
-        file = "%s/%s.csv" % (settings.LOG_DIRECTORY, type)
+        file = "%s/%s.csv" % (settings.LOG_DIRECTORY, arch_type)
         exists = os.path.isfile(file)
 
         fieldnames = [
@@ -539,7 +539,7 @@ class Command(BaseCommand):
                 }
             )
 
-    def check_csv_header(self, csv_file: str, fieldnames: list[str]) -> None:
+    def check_csv_header(self, csv_file: str, fieldnames: list) -> None:
         """Check for (and add) missing columns in an existing CSV file."""
         with open(csv_file, "r") as f:
             lines = f.readlines()

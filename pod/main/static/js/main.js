@@ -2,13 +2,21 @@
  * @file Esup-Pod Main JavaScripts
  */
 
+/* exported getParents slideToggle fadeOut linkTo_UnCryptMailto showLoader videocheck send_form_data_vanilla */
+
+// Read-only globals defined in video-script.html
+/* global player */
+
+// Read-only globals defined in video-edit.html
+/* global VIDEO_MAX_UPLOAD_SIZE listext */
+
 // this function (appendHTML) is not used elsewhere
 /*
 function appendHTML(node, html) {
   var temp = document.createElement("div");
   temp.innerHTML = html;
   var scripts = temp.getElementsByTagName("script");
-  for (var i = 0; i < scripts.length; i++) {
+  for (let i = 0; i < scripts.length; i++) {
     var script = scripts[i];
     var s = document.createElement("script");
     s.type = script.type || "text/javascript";
@@ -146,6 +154,7 @@ var slideToggle = (target, duration = 500) => {
  */
 function fadeIn(el, display) {
   el.style.opacity = 0;
+  el.classList.remove("d-none");
   el.style.display = display || "block";
   (function fade() {
     var val = parseFloat(el.style.opacity);
@@ -291,8 +300,18 @@ function writeInFrame() {
   if (img.getAttribute("src") === "") img.setAttribute("data-src", imgsrc);
   else img.src = imgsrc;
 }
+
+if (localStorage.getItem("autoshowsubtitles")) {
+  document.getElementById("checkbox-subtitle").checked = true;
+}
+
 document.addEventListener("change", (e) => {
   if (e.target.id === "autoplay" || e.target.id === "loop") writeInFrame();
+  else if (e.target.id === "checkbox-subtitle") {
+    e.target.checked
+      ? localStorage.setItem("autoshowsubtitles", "on")
+      : localStorage.removeItem("autoshowsubtitles");
+  }
 });
 
 document.addEventListener("shown.bs.collapse", (e) => {
@@ -344,14 +363,14 @@ document.addEventListener("change", (e) => {
   if (displayTime.checked) {
     if (txtpartage.value.indexOf("start") < 0) {
       txtpartage.value =
-        txtpartage.value + "&start=" + parseInt(player.currentTime());
+        txtpartage.value + "&start=" + parseInt(player.currentTime(), 10);
 
       if (txtpartage.value.indexOf("??") > 0)
         txtpartage.value = txtpartage.value.replace("??", "?");
       var valeur = txtinteg.value;
       txtinteg.value = valeur.replace(
         "/?",
-        "/?start=" + parseInt(player.currentTime()) + "&",
+        "/?start=" + parseInt(player.currentTime(), 10) + "&",
       );
     }
     document.getElementById("txtposition").value = player
@@ -359,7 +378,7 @@ document.addEventListener("change", (e) => {
       .toHHMMSS();
   } else {
     txtpartage.value = txtpartage.value
-      .replace(/(\&start=)\d+/, "")
+      .replace(/(&start=)\d+/, "")
       .replace(/(\start=)\d+/, "")
       .replace(/(\?start=)\d+/, "");
 
@@ -415,9 +434,9 @@ var get_list = function (
   channel = channel || "";
   var list = "";
   var prefix = "";
-  for (i = 0; i < level; i++) prefix += "&nbsp;&nbsp;";
+  for (let i = 0; i < level; i++) prefix += "&nbsp;&nbsp;";
   if (level != 0) prefix += "|-";
-  for (var i = 0; i < tab.length; i++) {
+  for (let i = 0; i < tab.length; i++) {
     var val = tab[i];
     var title = add_link
       ? '<a href="' + val.url + '">' + channel + " " + val.title + "</a>"
@@ -484,8 +503,8 @@ var get_list = function (
 };
 
 /* USERS IN NAVBAR */
-if (typeof ownerBoxNavBar === undefined) {
-  let ownerBoxNavBar = document.getElementById("ownerboxnavbar");
+if (typeof ownerBoxNavBar === "undefined") {
+  var ownerBoxNavBar = document.getElementById("ownerboxnavbar");
 } else {
   ownerBoxNavBar = document.getElementById("ownerboxnavbar");
 }
@@ -495,13 +514,13 @@ if (ownerBoxNavBar) {
     if (ownerBoxNavBar.value && ownerBoxNavBar.value.length > 2) {
       var searchTerm = ownerBoxNavBar.value;
       getSearchListUsers(searchTerm).then((users) => {
-        pod_users_list.innerHTML = "";
+        pod_users_list.textContent = "";
         users.forEach((user) => {
           pod_users_list.appendChild(createUserLink(user));
         });
       });
     } else {
-      pod_users_list.innerHTML = "";
+      pod_users_list.textContent = "";
     }
   });
 }
@@ -591,7 +610,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // If aside menu is empty, hide container and button
-    if (collapseAside.querySelectorAll("div").length == 0) {
+    if (collapseAside.querySelectorAll("div").length === 0) {
       if (collapseAside.offsetParent) {
         collapseAside.style.display = "none";
 
@@ -707,7 +726,7 @@ document.addEventListener("click", (e) => {
   });
 
   window.scrollTo({
-    top: parseInt(document.getElementById("list_theme").offsetTop),
+    top: parseInt(document.getElementById("list_theme").offsetTop, 10),
     behavior: "smooth",
   });
 });
@@ -795,7 +814,11 @@ var send_form_data = async function (
           return $data;
         };
   callbackFail =
-    typeof callbackFail === "function" ? callbackFail : function ($xhr) {};
+    typeof callbackFail === "function"
+      ? callbackFail
+      : function (xhr) {
+          console.log(xhr);
+        };
 
   // console.log("send_form_data. fct=" + fct);
   method = method || "post";
@@ -877,7 +900,7 @@ var send_form_data_vanilla = function (
           return data;
         };
   callbackFail =
-    typeof callbackFail === "function" ? callbackFail : function (err) {};
+    typeof callbackFail === "function" ? callbackFail : function () {};
   if (data_form) {
     data_form = new FormData(data_form);
   }
@@ -919,7 +942,7 @@ var send_form_data_vanilla = function (
  * @return {void}
  */
 var show_form_theme_new = function (data) {
-  if (data.indexOf("form_theme") == -1) {
+  if (data.indexOf("form_theme") === -1) {
     showalert(
       gettext("You are no longer authenticated. Please log in again."),
       "alert-danger",
@@ -935,7 +958,7 @@ var show_form_theme_new = function (data) {
  * @return {void}
  */
 var show_form_theme_modify = function (data) {
-  if (data.indexOf("theme") == -1) {
+  if (data.indexOf("theme") === -1) {
     showalert(
       gettext("You are no longer authenticated. Please log in again."),
       "alert-danger",
@@ -1005,11 +1028,11 @@ var show_theme_form = function (data) {
 };
 
 /**
- * [show_picture_form description]
+ * unused function? TODO : delete in 3.8.0
  * @param  {[type]} data [description]
  * @return {[type]}      [description]
  */
-var show_picture_form = function (data) {
+/*var show_picture_form = function (data) {
   let htmlData = new DOMParser().parseFromString(data, "text/html");
   document.getElementById("userpicture_form").innerHTML =
     htmlData.querySelector("#userpicture_form").innerHTML;
@@ -1054,7 +1077,7 @@ var show_picture_form = function (data) {
     let userPictureModal = bootstrap.Modal.getOrCreateInstance(userpicture);
     userPictureModal.hide();
   }
-};
+}; */
 var append_picture_form = async function (data) {
   let htmlData = new DOMParser().parseFromString(data, "text/html").body
     .firstChild;
@@ -1092,7 +1115,7 @@ function show_form_theme(data) {
   if (data != "")
     document.querySelector("form.get_form_theme").style.display = "none";
   window.scrollTo({
-    top: parseInt(document.getElementById("div_form_theme").offsetTop),
+    top: parseInt(document.getElementById("div_form_theme").offsetTop, 10),
     behavior: "smooth",
   });
 }
@@ -1108,7 +1131,7 @@ function show_list_theme(data) {
   fadeIn(list_theme);
   //$('form.get_form_theme').show();
   window.scrollTo({
-    top: parseInt(document.getElementById("list_theme").offsetTop),
+    top: parseInt(document.getElementById("list_theme").offsetTop, 10),
     behavior: "smooth",
   });
 }
@@ -1116,8 +1139,8 @@ function show_list_theme(data) {
 /****** VIDEOS EDIT ******/
 
 /*** Copy to clipboard ***/
-if (typeof btnpartageprive === undefined) {
-  let btnpartageprive = document.getElementById("btnpartageprive");
+if (typeof btnpartageprive === "undefined") {
+  var btnpartageprive = document.getElementById("btnpartageprive");
 } else {
   btnpartageprive = document.getElementById("btnpartageprive");
 }
@@ -1132,8 +1155,8 @@ if (btnpartageprive) {
 
 /** Restrict access **/
 /** restrict access to group */
-if (typeof id_is_restricted === undefined) {
-  let id_is_restricted = document.getElementById("id_is_restricted");
+if (typeof id_is_restricted === "undefined") {
+  var id_is_restricted = document.getElementById("id_is_restricted");
 } else {
   id_is_restricted = document.getElementById("id_is_restricted");
 }
@@ -1169,8 +1192,8 @@ var restrict_access_to_groups = function () {
   }
 };
 
-if (typeof id_is_draft === undefined) {
-  let id_is_draft = document.getElementById("id_is_draft");
+if (typeof id_is_draft === "undefined") {
+  var id_is_draft = document.getElementById("id_is_draft");
 } else {
   id_is_draft = document.getElementById("id_is_draft");
 }
@@ -1231,8 +1254,7 @@ restricted_access();
         form.addEventListener(
           "submit",
           function (event) {
-            if (form.checkValidity() === false) {
-              form.scrollIntoView();
+            if (form.reportValidity() === false) {
               showalert(
                 gettext("There are errors in the form, please correct them."),
                 "alert-danger",
@@ -1456,3 +1478,54 @@ document.addEventListener("DOMContentLoaded", function () {
     searchInput.addEventListener("blur", handleBlur);
   }
 });
+
+/**
+ * Removes double quotes from the start and end of the given text.
+ *
+ * @param {string} text - The input text to process.
+ * @returns {string} The text without leading and trailing double quotes.
+ */
+function remove_quotes(text) {
+  text = text.trim();
+  if (text.charAt(0) === '"') {
+    text = text.substring(1);
+  }
+  if (text.charAt(text.length - 1) === '"') {
+    text = text.substring(0, text.length - 1);
+  }
+  return text;
+}
+
+let mainCollapseButton = document.getElementById("collapse-button");
+mainCollapseButton.addEventListener("click", () => {
+  window.scrollTo(0, 0);
+});
+
+/**
+ * Remove accents and convert to lowercase.
+ *
+ * @param {string} str The string.
+ *
+ * @return {string} The new string.
+ */
+function removeAccentsAndLowerCase(str) {
+  str = str.toLowerCase();
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+/**
+ * Decode the string from the HTML entity.
+ *
+ * @param {string} str The string to decode.
+ *
+ * @return {string} The decoded string.
+ */
+function decodeString(str) {
+  str = str.replace(/&#x([0-9A-Fa-f]+);/g, (match, p1) =>
+    String.fromCharCode(parseInt(p1, 16)),
+  );
+  str = str.replace(/&#(\d+);/g, (match, p1) =>
+    String.fromCharCode(parseInt(p1, 10)),
+  );
+  return str;
+}

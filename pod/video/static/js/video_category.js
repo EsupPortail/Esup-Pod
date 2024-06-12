@@ -61,7 +61,7 @@ global refreshVideosSearch, CATEGORIES_DATA, BASE_URL, VIDEO_URL, EDIT_URL,
   const show_paginate_videos = (paginator = true) => {
     if (paginator) modal_video_list.classList.add("show");
     const html_paginator = modal_video_list.querySelector(".paginator");
-    modal_video_list.innerHTML = "";
+    modal_video_list.textContent = "";
     modal_video_list.appendChild(html_paginator);
     if (VIDEOS_LIST_CHUNK.videos.chunk.length > 0) {
       let videos_to_display =
@@ -70,7 +70,7 @@ global refreshVideosSearch, CATEGORIES_DATA, BASE_URL, VIDEO_URL, EDIT_URL,
     } else {
       const cat_modal_alert = document.createElement("div");
       cat_modal_alert.setAttribute("class", "alert alert-warning");
-      cat_modal_alert.innerHTML = gettext(
+      cat_modal_alert.textContent = gettext(
         "You have no content without a category.",
       );
       const cat_modal_body = document.querySelector(
@@ -220,7 +220,7 @@ global refreshVideosSearch, CATEGORIES_DATA, BASE_URL, VIDEO_URL, EDIT_URL,
     let curr_slug = html_el.querySelector(".cat_title").dataset.slug;
     let curr_id = html_el.querySelector(".remove_category").dataset.del;
     html_el.classList.toggle("active");
-    getVideosFilteredContainer().innerHTML = "";
+    getVideosFilteredContainer().textContent = "";
     if (CURR_FILTER.slug === curr_slug && CURR_FILTER.id == curr_id) {
       html_el.classList.remove("active"); // unfilter
       CURR_FILTER.slug = null;
@@ -735,7 +735,7 @@ global refreshVideosSearch, CATEGORIES_DATA, BASE_URL, VIDEO_URL, EDIT_URL,
 
   // Add onclick event to delete a category
   let del_cat = document.querySelector("#confirm_remove_category_btn");
-  del_cat.addEventListener("click", (e) => {
+  del_cat.addEventListener("click", () => {
     showLoader(loader, true);
     if (CAT_TO_DELETE.slug && CAT_TO_DELETE.id && CAT_TO_DELETE.html) {
       // Delete category
@@ -861,7 +861,7 @@ global refreshVideosSearch, CATEGORIES_DATA, BASE_URL, VIDEO_URL, EDIT_URL,
           showAlertMessage(msg_saved);
           showLoader(loader, false); // hide loader
         })
-        .catch((err) => {
+        .catch(() => {
           showLoader(loader, false);
           showAlertMessage(msg_error, false, (delay = 30000));
         });
@@ -880,7 +880,7 @@ global refreshVideosSearch, CATEGORIES_DATA, BASE_URL, VIDEO_URL, EDIT_URL,
           saveCategoryData(data.category); // saving cat localy to prevent more request to the server
           showLoader(loader, false); // hide loader
         })
-        .catch((err) => {
+        .catch(() => {
           //alert(err);
           showAlertMessage(msg_error_duplicate, false, (delay = 30000));
         });

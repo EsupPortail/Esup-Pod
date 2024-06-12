@@ -1,3 +1,22 @@
+/**
+ * Esup-Pod Xapi video scripts.
+ */
+
+// Read-only globals defined in video-script.html
+/*
+global player
+*/
+
+// Read-only globals defined in xapi/script.js
+/*
+global createStatement sendStatement
+*/
+
+// Read-only globals defined in xapi_video.html
+/*
+global progress
+*/
+
 const __XAPI_VIDEO_VERBS__ = {
   initialized: "http://adlnet.gov/expapi/verbs/initialized",
   played: "https://w3id.org/xapi/video/verbs/played",
@@ -44,8 +63,8 @@ var time_paused = 0;
 var time_seek = 0;
 
 player.on("timeupdate", function () {
-  progress[parseInt(player.currentTime())] = 1;
-  if (progress.length == parseInt(player.duration())) {
+  progress[parseInt(player.currentTime(), 10)] = 1;
+  if (progress.length == parseInt(player.duration(), 10)) {
     set_completed_statement();
     active_statement();
   }
@@ -123,7 +142,7 @@ player.on("pause", function () {
   active_statement();
 });
 
-player.on("seeked", function (e) {
+player.on("seeked", function () {
   time_seek = player.currentTime().toFixed(3);
   action = "seeked";
   verb = {
@@ -154,7 +173,7 @@ player.on("seeked", function (e) {
   active_statement();
 });
 
-player.on("ended", function (e) {
+player.on("ended", function () {
   action = "terminated";
   verb = {
     id: __XAPI_VIDEO_VERBS__[action],
@@ -188,7 +207,7 @@ player.on("ended", function (e) {
         .duration()
         .toFixed(3),
       "https://w3id.org/xapi/video/extensions/completion-threshold": (
-        parseInt(player.duration()) / player.duration()
+        parseInt(player.duration(), 10) / player.duration()
       ).toFixed(3),
     },
     registration: registration,
@@ -196,28 +215,28 @@ player.on("ended", function (e) {
   active_statement();
 });
 
-player.on("ratechange", function (e) {
+player.on("ratechange", function () {
   set_interacted_statement();
   active_statement();
 });
-player.on("fullscreenchange", function (e) {
+player.on("fullscreenchange", function () {
   set_interacted_statement();
   active_statement();
 });
-player.on("volumechange", function (e) {
+player.on("volumechange", function () {
   set_interacted_statement();
   active_statement();
 });
-player.on("texttrackchange", function (e) {
+player.on("texttrackchange", function () {
   set_interacted_statement();
   active_statement();
 });
-player.on("resize", function (e) {
+player.on("resize", function () {
   set_interacted_statement();
   active_statement();
 });
 
-player.on("loadedmetadata", function (e) {
+player.on("loadedmetadata", function () {
   action = "initialized";
   verb = {
     id: __XAPI_VIDEO_VERBS__[action],
@@ -243,7 +262,7 @@ player.on("loadedmetadata", function (e) {
         window.navigator.userAgent,
       "https://w3id.org/xapi/video/extensions/speed": player.playbackRate(),
       "https://w3id.org/xapi/video/extensions/completion-threshold": (
-        parseInt(player.duration()) / player.duration()
+        parseInt(player.duration(), 10) / player.duration()
       ).toFixed(3),
       "https://w3id.org/xapi/video/extensions/session-id": session_id,
       "https://w3id.org/xapi/video/extensions/length": player
@@ -295,7 +314,7 @@ function set_completed_statement() {
     },
     extensions: {
       "https://w3id.org/xapi/video/extensions/completion-threshold": (
-        parseInt(player.duration()) / player.duration()
+        parseInt(player.duration(), 10) / player.duration()
       ).toFixed(3),
       "https://w3id.org/xapi/video/extensions/session-id": session_id,
       "https://w3id.org/xapi/video/extensions/length": player
@@ -344,7 +363,7 @@ function set_interacted_statement() {
         window.navigator.userAgent,
       "https://w3id.org/xapi/video/extensions/speed": player.playbackRate(),
       "https://w3id.org/xapi/video/extensions/completion-threshold": (
-        parseInt(player.duration()) / player.duration()
+        parseInt(player.duration(), 10) / player.duration()
       ).toFixed(3),
       "https://w3id.org/xapi/video/extensions/session-id": session_id,
       "https://w3id.org/xapi/video/extensions/length": player
@@ -364,9 +383,9 @@ function set_interacted_statement() {
 }
 
 function get_current_subtitle_lang() {
-  textTracks = player.textTracks();
-  lang = "";
-  for (var i = 0; i < textTracks.length; i++) {
+  let textTracks = player.textTracks();
+  let lang = "";
+  for (let i = 0; i < textTracks.length; i++) {
     if (textTracks[i].kind == "subtitles" && textTracks[i].mode == "showing") {
       lang = textTracks[i].language;
     }
@@ -375,12 +394,12 @@ function get_current_subtitle_lang() {
 }
 
 function get_current_quality() {
-  qualitys = player.qualityLevels();
+  let qualitys = player.qualityLevels();
   if (qualitys.length > 0) return qualitys[qualitys.selectedIndex];
 }
 
 function active_statement() {
   timestamp = new Date().toISOString();
-  stmt = createStatement();
+  let stmt = createStatement();
   sendStatement(stmt);
 }

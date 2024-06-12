@@ -1,3 +1,12 @@
+/**
+ * Esup-Pod Main utilities
+ */
+
+// Read-only globals defined in jQuery
+/*
+global $
+*/
+
 function Utils() {}
 
 Utils.prototype = {

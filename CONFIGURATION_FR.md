@@ -340,7 +340,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> d’encodage ou de flux RSS si la variable `CONTACT_US_EMAIL` n’est pas renseignée.<br><br>
   >> _ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#admins)_<br>
 * `ALLOWED_HOSTS`
-  > valeur par défaut : `['localhost']`
+  > valeur par défaut : `['pod.localhost']`
   >> Une liste de chaînes représentant des noms de domaine/d’hôte que ce site Django peut servir.<br><br>
   >> C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP,<br>
   >> qui sont possibles même avec bien des configurations de serveur Web apparemment sécurisées.<br><br>
@@ -359,7 +359,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >>     # },
   >>     "default": {
   >>         "BACKEND": "django_redis.cache.RedisCache",
-  >>         "LOCATION": "redis://127.0.0.1:6379/1",
+  >>         "LOCATION": "redis://redis.localhost:6379/1",
   >>         "OPTIONS": {
   >>             "CLIENT_CLASS": "django_redis.client.DefaultClient",
   >>         },
@@ -367,7 +367,7 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >>     # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).
   >>     "select2": {
   >>         "BACKEND": "django_redis.cache.RedisCache",
-  >>         "LOCATION": "redis://127.0.0.1:6379/2",
+  >>         "LOCATION": "redis://redis.localhost:6379/2",
   >>         "OPTIONS": {
   >>             "CLIENT_CLASS": "django_redis.client.DefaultClient",
   >>         },
@@ -710,6 +710,38 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
   >> Activation de la transcription.<br>
 
 ## Configuration des applications Esup_Pod
+
+### Configuration application AI Enhancement
+
+Application AI Enhancement pour pouvoir utiliser les améliorations des vidéos par l'intelligence artifficielle.<br>
+Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
+
+* `AI_ENHANCEMENT_API_URL`
+  > valeur par défaut : ``
+  >> L’URL de l’API pour l’IA d’amélioration des vidéos.<br>
+  >> Exemple : 'https://aristote.univ.fr/api'<br>
+  >> Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/<br>
+* `AI_ENHANCEMENT_API_VERSION`
+  > valeur par défaut : ``
+  >> La version de l’API pour l’IA d’amélioration des vidéos.<br>
+* `AI_ENHANCEMENT_CGU_URL`
+  > valeur par défaut : ``
+  >> L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.<br>
+  >> Exemple : 'https://aristote.univ.fr/cgu'<br>
+  >> Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/<br>
+* `AI_ENHANCEMENT_CLIENT_ID`
+  > valeur par défaut : `mocked_id`
+  >> L’ID du client de l’IA d’amélioration des vidéos.<br>
+  >> Exemple : 'v1'<br>
+* `AI_ENHANCEMENT_CLIENT_SECRET`
+  > valeur par défaut : `mocked_secret`
+  >> Le mot de passe secret du client de l’IA d’amélioration des vidéos.<br>
+* `AI_ENHANCEMENT_FIELDS_HELP_TEXT`
+  > valeur par défaut : ``
+  >> Ensemble des textes d’aide affichés avec le formulaire d'amélioration d'une vidéo avec l'IA d'Aristote.<br>
+* `USE_AI_ENHANCEMENT`
+  > valeur par défaut : `False`
+  >> Activation des améliorations de l'intelligence artificielle. Permet aux utilisateurs de l'utiliser.<br>
 
 ### Configuration de l’application authentification
 
@@ -1382,6 +1414,15 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
   >> Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush).<br>
   >> Elles peuvent être générées avec [web-push-codelab.glitch.me](https://web-push-codelab.glitch.me/).<br>
 
+### Configuration de l'application quiz
+
+Application Quiz pour ajouter des questions sur les vidéos.<br>
+Mettre `USE_QUIZ` à True pour activer cette application.<br>
+
+* `USE_QUIZ`
+  > valeur par défaut : `True`
+  >> Activation des quiz. Permet aux utilisateurs de créer, répondre et utiliser des quiz dans les vidéos.<br>
+
 ### Configuration de l’application recorder
 
 * `ALLOW_MANUAL_RECORDING_CLAIMING`
@@ -1937,7 +1978,7 @@ Il est possible d’encoder en local ou en distant.<br>
 Attention, il faut configurer Celery pour l’envoi des instructions pour l’encodage distant.<br>
 
 * `CELERY_BROKER_URL`
-  > valeur par défaut : `redis://127.0.0.1:6379/5`
+  > valeur par défaut : `redis://redis.localhost:6379/5`
   >> URL du courtier de messages où Celery stocke les ordres d’encodage et de transcription.<br>
 * `CELERY_TO_ENCODE`
   > valeur par défaut : `False`
@@ -1979,7 +2020,7 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l’en
   >>
   >> Il faut renseigner l’url du redis sur lequel Celery<br>
   >> va chercher les ordres d’encodage et de transcription<br>
-  >> par exemple : "redis://redis:6379/7"<br>
+  >> par exemple : "redis://redis.localhost:6379/7"<br>
 * `FORMAT_CHOICES`
   > valeur par défaut : `()`
   >> Format d’encodage réalisé sur la plateforme.<br>
@@ -2060,7 +2101,7 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l’en
   > valeur par défaut : `30`
   >> Valeur de timeout pour ElasticSearch.<br>
 * `ES_URL`
-  > valeur par défaut : `["http://127.0.0.1:9200/"]`
+  > valeur par défaut : `["http://elasticsearch.localhost:9200/"]`
   >> Adresse du ou des instances d’Elasticsearch utilisées pour<br>
   >> l’indexation et la recherche de vidéo.<br>
 * `ES_VERSION`

@@ -68,9 +68,9 @@ class MeetingTestCase(TestCase):
     # Test delete object
     def test_delete_object(self):
         Meeting.objects.filter(meeting_id="id1").delete()
-        self.assertEquals(Meeting.objects.all().count(), 1)
+        self.assertEqual(Meeting.objects.all().count(), 1)
         Meeting.objects.filter(meeting_id="id2").delete()
-        self.assertEquals(Meeting.objects.all().count(), 0)
+        self.assertEqual(Meeting.objects.all().count(), 0)
 
         print("   --->  test_delete_object of MeetingTestCase: OK!")
 
@@ -137,9 +137,9 @@ class AttendeeTestCase(TestCase):
     # Test delete object
     def test_delete_object(self):
         Attendee.objects.filter(id=1).delete()
-        self.assertEquals(Attendee.objects.all().count(), 1)
+        self.assertEqual(Attendee.objects.all().count(), 1)
         Attendee.objects.filter(id=2).delete()
-        self.assertEquals(Attendee.objects.all().count(), 0)
+        self.assertEqual(Attendee.objects.all().count(), 0)
 
         print("   --->  test_delete_object of AttendeeTestCase: OK!")
 
@@ -202,6 +202,6 @@ class LivestreamTestCase(TestCase):
     # Test delete object
     def test_delete_object(self):
         Livestream.objects.filter(id=1).delete()
-        self.assertEquals(Livestream.objects.all().count(), 0)
+        self.assertEqual(Livestream.objects.all().count(), 0)
 
         print("   --->  test_delete_object of LivestreamTestCase: OK!")

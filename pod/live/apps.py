@@ -1,3 +1,5 @@
+"""Esup-Pod Live apps."""
+
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate, pre_migrate
 from django.db import connection
@@ -10,18 +12,18 @@ from django.utils.translation import gettext_lazy as _
 __EVENT_DATA__ = {}
 
 
-def set_default_site(sender, **kwargs):
+def set_default_site(sender, **kwargs) -> None:
     """Set a default Site for Building not having one."""
     from pod.live.models import Building
     from django.contrib.sites.models import Site
 
     for build in Building.objects.all():
-        if len(build.sites.all()) == 0:
+        if build.sites.count() == 0:
             build.sites.add(Site.objects.get_current())
             build.save()
 
 
-def add_default_opencast(sender, **kwargs):
+def add_default_opencast(sender, **kwargs) -> None:
     """Add the key 'use_opencast' with value False, in the json conf of the Broadcaster if not present."""
     from pod.live.models import Broadcaster
 
@@ -35,7 +37,7 @@ def add_default_opencast(sender, **kwargs):
             brd.save()
 
 
-def save_previous_data(sender, **kwargs):
+def save_previous_data(sender, **kwargs) -> None:
     """Save all live events if model has date and time in different fields."""
     results = []
     try:
@@ -48,7 +50,7 @@ def save_previous_data(sender, **kwargs):
         pass  # print('OperationalError: ', oe)
 
 
-def send_previous_data(sender, **kwargs):
+def send_previous_data(sender, **kwargs) -> None:
     """Set start and end dates with date + time to all saved events."""
     from .models import Event
 
@@ -78,7 +80,7 @@ class LiveConfig(AppConfig):
     # event_data = {}
     verbose_name = _("Lives")
 
-    def ready(self):
+    def ready(self) -> None:
         """Init tasks."""
         pre_migrate.connect(save_previous_data, sender=self)
         post_migrate.connect(add_default_opencast, sender=self)

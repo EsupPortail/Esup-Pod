@@ -16,10 +16,13 @@ COPY ./pod/ .
 # TODO
 #FROM harbor.urba.univ-lille.fr/store/python:3.7-buster
 
-RUN apt-get clean && apt-get update \
-    && apt-get install -y netcat \
-                          sox \
-                          libsox-fmt-mp3
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        netcat \
+        sox \
+        libsox-fmt-mp3 \
+    && apt-get clean\
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 

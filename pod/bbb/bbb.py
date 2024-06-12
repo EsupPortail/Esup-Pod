@@ -33,7 +33,7 @@ CELERY_TO_ENCODE = getattr(settings, "CELERY_TO_ENCODE", False)
 log = logging.getLogger(__name__)
 
 
-def start_bbb_encode(id):
+def start_bbb_encode(id) -> None:
     if CELERY_TO_ENCODE:
         task_start_bbb_encode.delay(id)
     else:
@@ -43,7 +43,7 @@ def start_bbb_encode(id):
         t.start()
 
 
-def bbb_encode_meeting(id):
+def bbb_encode_meeting(id) -> None:
     msg = ""
 
     # Get the meeting

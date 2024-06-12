@@ -15,7 +15,7 @@ if getattr(settings, "USE_PODFILE", False):
 
 
 class OwnerAdminForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(OwnerAdminForm, self).__init__(*args, **kwargs)
         if __FILEPICKER__:
             self.fields["userpicture"].widget = CustomFileWidget(type="image")
@@ -26,7 +26,7 @@ class OwnerAdminForm(forms.ModelForm):
 
 
 class GroupSiteAdminForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(GroupSiteAdminForm, self).__init__(*args, **kwargs)
 
     class Meta(object):
@@ -52,7 +52,7 @@ class AdminOwnerForm(forms.ModelForm):
 class SetNotificationForm(forms.ModelForm):
     """Push notification preferences form."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(SetNotificationForm, self).__init__(*args, **kwargs)
 
     class Meta(object):
@@ -79,7 +79,7 @@ class GroupAdminForm(forms.ModelForm):
         fields = "__all__"
         exclude = []
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         # Do the normal form initialisation.
         super(GroupAdminForm, self).__init__(*args, **kwargs)
         # If it is an existing group (saved objects have a pk).
@@ -90,7 +90,7 @@ class GroupAdminForm(forms.ModelForm):
             owner__sites=Site.objects.get_current()
         )
 
-    def save_m2m(self):
+    def save_m2m(self) -> None:
         # Add the users to the Group.
         self.instance.user_set.set(self.cleaned_data["users"])
 

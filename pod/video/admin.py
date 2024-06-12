@@ -266,7 +266,7 @@ class VideoAdmin(admin.ModelAdmin):
             request, object_id, form_url, extra_context
         )
 
-    def save_model(self, request, obj, form, change):
+    def save_model(self, request, obj, form, change) -> None:
         super().save_model(request, obj, form, change)
         if not change:
             obj.sites.add(get_current_site(request))
@@ -404,7 +404,7 @@ class ChannelAdmin(admin.ModelAdmin):
         else:
             return ()
 
-    def save_model(self, request, obj, form, change):
+    def save_model(self, request, obj, form, change) -> None:
         super().save_model(request, obj, form, change)
         if not change:
             obj.site = get_current_site(request)
@@ -506,7 +506,7 @@ class TypeAdmin(TranslationAdmin):
         form = super(TypeAdmin, self).get_form(request, obj, **kwargs)
         return form
 
-    def save_model(self, request, obj, form, change):
+    def save_model(self, request, obj, form, change) -> None:
         super().save_model(request, obj, form, change)
         if not change:
             obj.sites.add(get_current_site(request))

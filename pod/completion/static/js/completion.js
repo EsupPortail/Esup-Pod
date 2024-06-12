@@ -1,31 +1,14 @@
-document.addEventListener("DOMContentLoaded", function () {
-  document.querySelectorAll("li.contenuTitre").forEach(function (element) {
-    element.style.display = "none";
-  });
-  var accordeon_head = document.querySelectorAll("#accordeon li a.title");
-  if (accordeon_head.length <= 0) return;
-  accordeon_head[0].classList.add("active");
-  let sibling = accordeon_head[0].parentNode.nextElementSibling;
-  slideDown(sibling, 500);
+/**
+ * @file Esup-Pod Completion scripts.
+ */
 
-  // Click on .titre
-  accordeon_head.forEach((element) => {
-    addEventListener("click", (event) => {
-      if (event.target != element) return;
-      event.preventDefault();
-      if (element.getAttribute("class") != "title active") {
-        slideToggle(element.parentNode.nextElementSibling);
-        element.classList.add("active");
-      } else if (element.getAttribute("class") == "title active") {
-        slideUp(element.parentNode.nextElementSibling);
-        element.classList.remove("active");
-      }
-    });
-  });
-});
+// Read-only globals defined in main.js
+/*
+global fadeIn
+*/
 
 // Video form
-var num = 0;
+//var num = 0;
 var name = "";
 
 function show_form(data, form) {
@@ -36,7 +19,6 @@ function show_form(data, form) {
   form_el.querySelectorAll("script").forEach((item) => {
     if (item.src) {
       // external script
-
       let script = document.createElement("script");
       script.src = item.src;
       document.body.appendChild(script);
@@ -76,7 +58,7 @@ document.addEventListener("submit", (e) => {
     return;
 
   e.preventDefault();
-  var jqxhr = "";
+  // var jqxhr = "";
   var exp = /_([a-z]*)\s?/g;
   var id_form = e.target.getAttribute("id");
   var name_form = "";
@@ -95,7 +77,7 @@ document.addEventListener("submit", (e) => {
   var list = "list_" + name_form;
   var action = e.target.querySelector("input[name=action]").value;
   sendAndGetForm(e.target, action, name_form, form, list)
-    .then((r) => "")
+    .then(() => "")
     .catch((e) => console.log("error", e));
 });
 
@@ -112,6 +94,9 @@ document.addEventListener("submit", (e) => {
  */
 var sendAndGetForm = async function (elt, action, name, form, list) {
   var href = elt.getAttribute("action");
+  let url = window.location.origin + href;
+  let token = elt.csrfmiddlewaretoken.value;
+
   if (action === "new" || action === "form_save_new") {
     document.getElementById(form).innerHTML =
       '<div style="width:100%; margin: 2rem;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
@@ -134,9 +119,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
       // do nothing
     }
 
-    let url = window.location.origin + href;
-    let token = elt.csrfmiddlewaretoken.value;
-    form_data = new FormData(elt);
+    let form_data = new FormData(elt);
 
     await fetch(url, {
       method: "POST",
@@ -151,7 +134,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
       .then((response) => response.text())
       .then((data) => {
         //parse data into html and log it
-        if (data.indexOf(form) == -1) {
+        if (data.indexOf(form) === -1) {
           showalert(
             gettext(
               "You are no longer authenticated. Please log in again.",
@@ -168,7 +151,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         document.querySelector("form.form_modif").style.display = "block";
         document.querySelector("form.form_delete").style.display = "block";
         document.querySelector("form.form_new").style.display = "block";
-        document.getElementById(form).innerHTML = "";
+        document.getElementById(form).textContent = "";
       });
 
     const formClasses = [
@@ -186,13 +169,11 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
     document.querySelectorAll("a.title").forEach(function (element) {
       element.style.display = "none";
     });
-    hide_others_sections(name);
+    //hide_others_sections(name);
   }
   if (action == "modify" || action == "form_save_modify") {
-    var id = elt.querySelector("input[name=id]").value;
-    var url = window.location.origin + href;
-    var token = document.csrfmiddlewaretoken.value;
-    form_data = new FormData();
+    let id = elt.querySelector("input[name=id]").value;
+    let form_data = new FormData();
     form_data.append("action", action);
     form_data.append("id", id);
 
@@ -206,7 +187,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
     })
       .then((response) => response.text())
       .then((data) => {
-        if (data.indexOf(form) == -1) {
+        if (data.indexOf(form) === -1) {
           showalert(
             gettext(
               "You are no longer authenticated. Please log in again.",
@@ -222,37 +203,35 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         document.querySelector("form.form_modif").style.display = "block";
         document.querySelector("form.form_delete").style.display = "block";
         document.querySelector("form.form_new").style.display = "block";
-        document.getElementById(form).innerHTML = "";
+        document.getElementById(form).textContent = "";
       });
 
     document.querySelector("a.title").style.display = "none";
-    hide_others_sections(name);
+    // hide_others_sections(name);
   }
-  if (action == "delete") {
+  if (action === "delete") {
     var deleteConfirm = "";
-    if (name == "track") {
+    if (name === "track") {
       deleteConfirm = confirm(
         gettext("Are you sure you want to delete this file?"),
       );
-    } else if (name == "contributor") {
+    } else if (name === "contributor") {
       deleteConfirm = confirm(
         gettext("Are you sure you want to delete this contributor?"),
       );
-    } else if (name == "document") {
+    } else if (name === "document") {
       deleteConfirm = confirm(
         gettext("Are you sure you want to delete this document?"),
       );
-    } else if (name == "overlay") {
+    } else if (name === "overlay") {
       deleteConfirm = confirm(
         gettext("Are you sure you want to delete this overlay?"),
       );
     }
     if (deleteConfirm) {
-      var id = elt.querySelector("input[name=id]").value;
-      var url = window.location.origin + href;
-      var token = document.querySelector(
-        "input[name=csrfmiddlewaretoken]",
-      ).value;
+      let id = elt.querySelector("input[name=id]").value;
+      url = window.location.origin + href;
+      token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
       let form_data = new FormData();
       form_data.append("action", action);
       form_data.append("id", id);
@@ -336,7 +315,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
 };
 
 // Hide others sections
-function hide_others_sections(name_form) {
+/*function hide_others_sections(name_form) {
   var allElements = document.querySelectorAll("a.title.active");
   var sections = [];
   let form = document.querySelector('a[id="section_' + name_form + '"]');
@@ -351,8 +330,7 @@ function hide_others_sections(name_form) {
       slideUp(element.parentNode.nextElementSibling);
       element.classList.remove("active");
     });
-    var i;
-    for (i = 0; i < sections.length; i++) {
+    for (let i = 0; i < sections.length; i++) {
       var section = sections[i];
       var text = section.text;
       var name_section = "'" + text.replace(/\s/g, "") + "'";
@@ -361,7 +339,7 @@ function hide_others_sections(name_form) {
       section.firstElementChild.className = "glyphicon glyphicon-chevron-down";
     }
   }
-}
+}*/
 
 // Refreshes the list
 function refresh_list(data, form, list) {
@@ -370,9 +348,7 @@ function refresh_list(data, form, list) {
   document.querySelectorAll("form").forEach(function (element) {
     element.style.display = "block";
   });
-  document.querySelectorAll("a.title").forEach(function (element) {
-    element.style.display = "initial";
-  });
+
   if (data.player) {
     document.getElementById("enrich_player").innerHTML = data.player;
   }
@@ -425,25 +401,22 @@ function verify_fields(form) {
       form_group.classList.add("has-error");
       error = true;
     }
-    var id = parseInt(document.getElementById("id_contributor").value);
+    var id = parseInt(document.getElementById("id_contributor").value, 10);
     var new_role = document.getElementById("id_role").value;
     var new_name = document.getElementById("id_name").value;
-    document
-      .querySelectorAll("#table_list_contributors tbody > tr")
-      .forEach((tr) => {
-        if (
-          id != tr.querySelector("input[name=id]").value &&
-          tr.querySelector("td[class=contributor_name]").innerHTML ==
-            new_name &&
-          tr.querySelector("td[class=contributor_role]").innerHTML == new_role
-        ) {
-          var text = gettext(
-            "There is already a contributor with this same name and role in the list.",
-          );
-          showalert(text, "alert-danger");
-          error = true;
-        }
-      });
+    document.querySelectorAll("#list-contributor tbody > tr").forEach((tr) => {
+      if (
+        id != tr.querySelector("input[name=id]").value &&
+        tr.querySelector("td[class=contributor-name]").innerHTML == new_name &&
+        tr.querySelector("td[class=contributor_role]").innerHTML == new_role
+      ) {
+        var text = gettext(
+          "There is already a contributor with this same name and role in the list.",
+        );
+        showalert(text, "alert-danger");
+        error = true;
+      }
+    });
   } else if (form == "form_track") {
     var element = document.getElementById("id_kind");
     var value = element.options[element.selectedIndex].value
@@ -463,7 +436,7 @@ function verify_fields(form) {
 
       error = true;
     }
-    var element = document.getElementById("id_lang");
+    element = document.getElementById("id_lang");
     var lang = element.options[element.selectedIndex].value
       .trim()
       .toLowerCase();
@@ -507,20 +480,20 @@ function verify_fields(form) {
       error = true;
     }
     var is_duplicate = false;
-    var file_name = file_abs_path.match(/([\w\d_\-]+)(\.vtt)/)[1].toLowerCase();
+    var file_name = file_abs_path.match(/([\w\d_-]+)(\.vtt)/)[1].toLowerCase();
     document
-      .querySelectorAll(".grid-list-track .track_kind.kind")
+      .querySelectorAll(".grid-list-track .track-kind.kind")
       .forEach((elt) => {
         if (
           kind === elt.textContent.trim().toLowerCase() &&
           lang ===
             elt.parentNode
-              .querySelector("#" + elt.get("id") + ".track_kind.lang")
+              .querySelector("#" + elt.get("id") + ".track-kind.lang")
               .textContent.trim()
               .toLowerCase() &&
           file_name ===
             elt.parentNode
-              .querySelector("#" + elt.get("id") + ".track_kind.file")
+              .querySelector("#" + elt.get("id") + ".track-kind.file")
               .textContent.trim()
               .split(" ")[0]
               .toLowerCase()
