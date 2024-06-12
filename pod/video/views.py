@@ -1084,9 +1084,9 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         "active_video_comment": ACTIVE_VIDEO_COMMENT,
         "enr_is_already_asked": enhancement_is_already_asked(video)
         and (
-            request.user.is_staff
-            or request.user.is_superuser
+            request.user.is_superuser
             or request.user == video.owner
+            or request.user in video.additional_owners.all()
         ),
     }
     if request.GET.get("is_iframe"):
