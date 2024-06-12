@@ -47,6 +47,7 @@
     {% endif %}
 {% endif %}
 
+{% get_setting "USE_XAPI" False as USE_XAPI %}
 {% get_setting "USE_XAPI_VIDEO" False as USE_XAPI_VIDEO %}
 {% if USE_XAPI and USE_XAPI_VIDEO %}
     {% include 'xapi/xapi_video.html' %}

@@ -10,11 +10,7 @@ import datetime as dt
 from datetime import timedelta
 
 from webvtt import WebVTT, Caption
-
-try:
-    from shhlex import quote
-except ImportError:
-    from pipes import quote
+from shlex import quote
 
 import logging
 

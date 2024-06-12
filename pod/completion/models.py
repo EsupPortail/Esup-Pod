@@ -297,7 +297,7 @@ class Track(models.Model):
     def verify_not_same_track(self) -> list:
         """Check that there's not already a track with same kind & lang."""
         msg = list()
-        list_track = Track.objects.filter(video=self.video)
+        list_track = Track.objects.filter(video=self.video).order_by("lang")
         if self.id:
             list_track = list_track.exclude(id=self.id)
 

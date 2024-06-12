@@ -4,86 +4,88 @@
 {% get_setting "VIDEO_PLAYBACKRATES" '[0.5, 1, 1.5, 2]' as video_playbackrates %}
 {% get_setting "USE_VIDEO_EVENT_TRACKING" False as video_event_tracking %}
 <script id="id_video_script">
-  var seektime = 10;
-  var options = {};
-  var player;
-  var initialized_player = function() {
-  window.onmessage = function(event) {
-    var evt = event || window.event;
-    {# maybe use request.get_host to protect it... #}
-      if(evt.data.type == 'player:play') {
-        player.play();
-        evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
+  // Check subtitle track
+  // /!\ the following query will work only before player initialisation
+  const seektime = 10
+      , subtitles = document.querySelectorAll('video#podvideoplayer > track[kind="subtitles"]')
+      , subtitles_count = subtitles.length;
+  if(subtitles_count > 0 && localStorage.getItem('autoshowsubtitles')) {
+    let subtitle_current_lang = false;
+    for(let i=0; i<subtitles_count; i++) {
+      if(subtitles[i].getAttribute('srclang') === '{{ LANGUAGE_CODE }}') {
+        subtitles[i].setAttribute('default',null);
+        subtitle_current_lang = true;
+        break;
       }
-      if(evt.data.type == 'player:pause') {
-        player.pause();
-        evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
-      }
-      if(evt.data.type == 'player:mute') {
-        player.muted(true);
-        evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
-      }
-      if(evt.data.type == 'player:unmute') {
-        player.muted(false);
-        evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
-      }
-  };
+    }
+    if(!subtitle_current_lang) {
+      subtitles[0].setAttribute('default',null);
+    }
+  }
 
+  /** @global */
+  var options = {}
+    , player;
 
-  options = {
-    notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
-    //language: "fr", //en or nl
+  /**
+   * Set the video player options
+   * Initialize the player with those configured options
+   * Add listeners for the video player events.
+   */
+  const initialized_player = function() {
+    /** Set the video player options **/
+    options = {
+      notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
+      //language: "fr", //en or nl
     {% if video.is_video and request.GET.is_iframe %}
       fluid: false,
     {% else %}
       fluid: true,
     {% endif %}
-    responsive: true,
-    playbackRates: {{video_playbackrates}},
-    userActions: {
-      hotkeys: function(event) {
-        // `this` is the player in this context
-        if (event.code === 'Space') {
-          event.preventDefault();
-          if(!this.paused()) this.pause();
-          else this.play();
+      responsive: true,
+      playbackRates: {{video_playbackrates}},
+      userActions: {
+        hotkeys: function(event) {
+          // `this` is the player in this context
+          if (event.code === 'Space') {
+            event.preventDefault();
+            if(!this.paused()) this.pause();
+            else this.play();
+          }
+          if (event.key === 'm') {
+            event.preventDefault();
+            this.muted(!this.muted());
+          }
+          if (event.key === 'f') {
+            event.preventDefault();
+            this.requestFullscreen();
+          }
+          if (event.code === 'ArrowLeft') {
+            event.preventDefault();
+            this.currentTime(Math.floor(this.currentTime())-seektime);
+          }
+          if (event.code === 'ArrowRight') {
+            event.preventDefault();
+            this.currentTime(Math.floor(this.currentTime())+seektime);
+          }
+          if( event.code === "ArrowUp" ) {
+            event.preventDefault();
+            this.volume(this.volume()+0.1);
+          }
+          if( event.code === "ArrowDown" ) {
+            event.preventDefault();
+            this.volume(this.volume()-0.1);
+          }
         }
-        if (event.key === 'm') {
-          event.preventDefault();
-          this.muted(!this.muted());
+      },
+      plugins: {
+    {% if event is None %}
+        seekButtons: {
+          forward: seektime,
+          back: seektime
         }
-        if (event.key === 'f') {
-          event.preventDefault();
-          this.requestFullscreen();
-        }
-        // `arrow left`
-        if (event.code === 'ArrowLeft') {
-          event.preventDefault();
-          this.currentTime(Math.floor(this.currentTime())-seektime);
-        }
-        // `arrow right`
-        if (event.code === 'ArrowRight') {
-          event.preventDefault();
-          this.currentTime(Math.floor(this.currentTime())+seektime);
-        }
-        if( event.code === "ArrowUp" ) {
-          event.preventDefault();
-          this.volume(this.volume()+0.1);
-        }
-        if( event.code === "ArrowDown" ) {
-          event.preventDefault();
-          this.volume(this.volume()-0.1);
-        }
-      }
-    },
-    plugins: {
-      {% if event is None %}
-      seekButtons: {
-        forward: seektime,
-        back: seektime
-      }
-      {% endif %}
-  {% if not video.is_video and event is None %}
+    {% endif %}
+    {% if not video.is_video and event is None %}
       // enable videojs-wavesurfer plugin
       ,wavesurfer: {
         backend: 'MediaElement',
@@ -94,15 +96,35 @@
         cursorColor: 'var(--pod-primary)',
         hideScrollbar: false
       }
-  {% endif %}
+    {% endif %}
     }
   }
-
+  /** Initialize the player with the configured options. **/
   player = videojs('podvideoplayer', options, function(){});
 
-  /**
-   * Increase the video counter on first play
-   */
+  /** Add listeners for the video player events. **/
+  window.onmessage = function(event) {
+    const evt = event || window.event;
+    {# maybe use request.get_host to protect it... #}
+      if(evt.data.type === 'player:play') {
+        player.play();
+        evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
+      }
+      if(evt.data.type === 'player:pause') {
+        player.pause();
+        evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
+      }
+      if(evt.data.type === 'player:mute') {
+        player.muted(true);
+        evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
+      }
+      if(evt.data.type === 'player:unmute') {
+        player.muted(false);
+        evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
+      }
+  };
+
+  // Increase the video counter on first play
   player.on('firstplay', function(){
 
     let formElement = document.getElementById("video_count_form");
@@ -120,12 +142,12 @@
   });
 
   {% if request.user and not playlist_in_get.autoplay %}
-    var marker_url = "{% url "video:video_marker" video.id 0 %}";
-    var last_timeupdate = 0;
+    const marker_url = "{% url "video:video_marker" video.id 0 %}";
+    let last_timeupdate = 0;
     player.on('timeupdate', function(){
       // Get the current time (in seconds)
       let currentTime = parseInt(player.currentTime(), 10);
-      if(currentTime % 5 == 0 && currentTime != last_timeupdate ) {
+      if(currentTime % 5 === 0 && currentTime !== last_timeupdate ) {
         last_timeupdate = currentTime;
         fetch(marker_url.replace("/0/", "/"+currentTime+"/"), {}); //.then(response => console.log(response));
       }
@@ -133,11 +155,11 @@
   {% endif %}
 
   {% if video.is_video %}
-    /** get all mp4 format **/
-    var mp4_sources = {{ video.get_video_mp4_json|safe }};
+    // get all mp4 format
+    const mp4_sources = {{ video.get_video_mp4_json|safe }};
 
     {% if video.get_playlist_master %}
-      var srcOptions = {
+      const srcOptions = {
         src: '{{video.get_playlist_master.source_file.url}}',
         type: '{{video.get_playlist_master.encoding_format}}',
       };
@@ -147,23 +169,21 @@
         {% else %}
           {% if request.user.is_authenticated and not playlist_in_get.autoplay %}
             const markerTime = {% get_marker_time_for_user video request.user %};
-            if(markerTime !=0) player.currentTime(markerTime);
+            if(markerTime !== 0) player.currentTime(markerTime);
           {% endif %}
         {% endif %}
       });
-      //Add source to player
+      // Add source to player
       player.src(srcOptions);
-      //add quality selector to player
+      // Add quality selector to player
       player.hlsQualitySelector({
           displayCurrentQuality: true,
       });
       player.on("error", function(e) {
         e.stopImmediatePropagation();
-        var error = player.error();
-        //alert(error.code+" "+error.type+" "+error.message);
-        if(error.code == 3 || error.code === 4) {
-          //console.log('error!', error.code, error.type , error.message);
-          if(player.src()=="" || player.src().indexOf("m3u8")!=-1){
+        const error = player.error();
+        if(error.code === 3 || error.code === 4) {
+          if(player.src() === "" || player.src().indexOf("m3u8") !== -1){
             player.controlBar.addChild('QualitySelector');
             player.play();
           }
@@ -174,7 +194,7 @@
       player.controlBar.addChild('QualitySelector');
     {% endif %}
     {% if video.overview %}
-      //add overview
+      // Add overview
       player.vttThumbnails({
         src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
       });
@@ -184,7 +204,7 @@
     {% endif %}
 
     {% if video.overlay_set.all %}
-      var list_overlays = [];
+      const list_overlays = [];
       $('ul#overlays li').each(function() {
         list_overlays.push({
           content: $(this).attr('data-content'),
@@ -204,7 +224,7 @@
     {% if video.is_360 %}
       player.vr({projection: '360'});
     {% endif %}
-    //add logo to the player
+    // Add logo to the player
     player.videoJsLogo({
       imgsrc: '{% static LOGO_PLAYER %}',
       linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
@@ -212,13 +232,13 @@
     });
   {% else %}
     {% if video.get_video_m4a %}
-      var srcOptions = {
+      const srcOptions = {
         src: '{{video.get_video_m4a.source_file.url}}',
         type: '{{video.get_video_m4a.encoding_format}}',
       };
-      //Add source to player
+      // Add source to player
       player.src(srcOptions);
-      //add logo to the player
+      // Add logo to the player
       player.videoJsLogo({
         imgsrc: '{% static LOGO_PLAYER %}',
         linktitle: '{{ TITLE_SITE }} - {% if LINK_PLAYER_NAME %}{{ LINK_PLAYER_NAME }}{% else %}{% trans "Home" %}{% endif %} - {% trans "New window" %}',
@@ -230,7 +250,7 @@
         {% else %}
           {% if request.user.is_authenticated and not playlist_in_get.autoplay %}
             const markerTime = {% get_marker_time_for_user video request.user %};
-            if(markerTime !=0) player.currentTime(markerTime);
+            if(markerTime !== 0) player.currentTime(markerTime);
           {% endif %}
         {% endif %}
       });

@@ -84,7 +84,7 @@ player.on("play", function () {
       "https://w3id.org/xapi/video/extensions/time": time_played,
     },
   };
-  if (registration == "") registration = create_UUID();
+  if (registration_xapi == "") registration_xapi = create_UUID();
   context = {
     contextActivities: {
       category: [
@@ -99,7 +99,7 @@ player.on("play", function () {
         .duration()
         .toFixed(3),
     },
-    registration: registration,
+    registration: registration_xapi,
   };
   active_statement();
 });
@@ -122,7 +122,7 @@ player.on("pause", function () {
     },
   };
   played_segments.push(time_played + "[.]" + time_paused);
-  if (registration == "") registration = create_UUID();
+  if (registration_xapi == "") registration_xapi = create_UUID();
   context = {
     contextActivities: {
       category: [
@@ -137,7 +137,7 @@ player.on("pause", function () {
         .duration()
         .toFixed(3),
     },
-    registration: registration,
+    registration: registration_xapi,
   };
   active_statement();
 });
@@ -156,7 +156,7 @@ player.on("seeked", function () {
         last_time[last_time.indexOf(time_seek) - 1],
     },
   };
-  if (registration == "") registration = create_UUID();
+  if (registration_xapi == "") registration_xapi = create_UUID();
   context = {
     contextActivities: {
       category: [
@@ -168,7 +168,7 @@ player.on("seeked", function () {
     extensions: {
       "https://w3id.org/xapi/video/extensions/session-id": session_id,
     },
-    registration: registration,
+    registration: registration_xapi,
   };
   active_statement();
 });
@@ -192,7 +192,7 @@ player.on("ended", function () {
         .toFixed(3),
     },
   };
-  if (registration == "") registration = create_UUID();
+  if (registration_xapi == "") registration_xapi = create_UUID();
   context = {
     contextActivities: {
       category: [
@@ -210,7 +210,7 @@ player.on("ended", function () {
         parseInt(player.duration(), 10) / player.duration()
       ).toFixed(3),
     },
-    registration: registration,
+    registration: registration_xapi,
   };
   active_statement();
 });
@@ -243,7 +243,7 @@ player.on("loadedmetadata", function () {
     display: { "en-US": action },
   };
   result = {};
-  if (registration == "") registration = create_UUID();
+  if (registration_xapi == "") registration_xapi = create_UUID();
   cc_lang = get_current_subtitle_lang();
   current_quality = get_current_quality();
   context = {
@@ -279,7 +279,7 @@ player.on("loadedmetadata", function () {
       "https://w3id.org/xapi/video/extensions/full-screen":
         player.isFullscreen(),
     },
-    registration: registration,
+    registration: registration_xapi,
   };
   result = {};
   active_statement();
@@ -321,7 +321,7 @@ function set_completed_statement() {
         .duration()
         .toFixed(3),
     },
-    registration: registration,
+    registration: registration_xapi,
   };
 }
 
@@ -338,7 +338,7 @@ function set_interacted_statement() {
         .toFixed(3),
     },
   };
-  if (registration == "") registration = create_UUID();
+  if (registration_xapi == "") registration_xapi = create_UUID();
   cc_lang = get_current_subtitle_lang();
   current_quality = get_current_quality();
   quality = "";
@@ -378,7 +378,7 @@ function set_interacted_statement() {
       "https://w3id.org/xapi/video/extensions/full-screen":
         player.isFullscreen(),
     },
-    registration: registration,
+    registration: registration_xapi,
   };
 }
 

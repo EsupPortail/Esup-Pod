@@ -22,6 +22,12 @@
 
 
 {% block page_content %}
+  {% if quiz.is_draft %}
+    <div class="alert alert-secondary">
+      <p>{% trans "This quiz is in <strong>draft</strong>." %}</p>
+    </div>
+  {% endif %}
+
   {% if form_submitted and questions_form_errors.items|length == 0 %}
     {% if percentage_score >= 75 %}
       <div class="alert alert-success" role="alert">
@@ -92,7 +98,7 @@
               {% if question.explanation %}
                 <p><strong>{% trans "Explanation:" %}</strong> {{ question.explanation }}</p>
               {% endif %}
-              {% if question.start_timestamp %}
+              {% if question.start_timestamp is not null %}
                 <a class="btn btn-primary show-response-button" start="{{ question.start_timestamp}}" end="{{ question.end_timestamp }}" role="button">
                   {% trans "Show answer in the video" %}
                 </a>
@@ -132,11 +138,11 @@
         {% include "videos/link_video.html" with hide_favorite_link=True %}
       </div>
     </div>
-    <div class="card" id="card-manage-video">
+    <div class="card" id="card-manage-quiz">
       <h2 class="card-header card-title pod-card__title h4">
         <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage quiz"%}
       </h2>
-      <div class="card-body card-text">
+      <div class="card-body card-text d-flex justify-content-evenly">
         {% include 'quiz/manage_quiz.html' %}
       </div>
     </div>

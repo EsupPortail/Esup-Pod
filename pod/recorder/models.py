@@ -148,6 +148,15 @@ class Recorder(models.Model):
             "can’t delete the published videos."
         ),
     )
+    # To publish the videos automatically for this recorder
+    publication_auto = models.BooleanField(
+        verbose_name=_("Automatic publishing:"),
+        default=False,
+        help_text=_(
+            "If this box is checked, "
+            "the videos will be automatically assigned to the recorder manager."
+        ),
+    )
     # Default type of published videos by this recorder
     type = models.ForeignKey(
         Type, on_delete=models.CASCADE, help_text=_("Video type by default.")

@@ -24,6 +24,8 @@ def is_quiz_accessible(context: dict, video: Video) -> bool:
     quiz = get_video_quiz(video)
     if quiz:
         request = context["request"]
+        if quiz.is_draft:
+            return video.owner == request.user or request.user.is_superuser
         if (
             quiz.connected_user_only and request.user.is_authenticated
         ) or not quiz.connected_user_only:
@@ -61,10 +63,10 @@ def get_question_color(is_submitted: bool, score: int = None) -> str:
     Returns:
         str: The corresponding bootstrap color.
     """
-    if is_submitted and score:
+    if is_submitted and score is not None:
         if score <= 0.5:
             return "danger"
         elif score <= 0.75:
             return "warning"
         return "success"
-    return "dark"
+    return "gray"

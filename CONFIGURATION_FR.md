@@ -1200,6 +1200,9 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 * `VERSION`
   > valeur par défaut : ``
   >> Version courante du projet<br>
+* `WEBTV_MODE`
+  > valeur par défaut : `False`
+  >> Mode webtv permet de basculer POD en une application webtv ensupprimant les boutons de connexions par exemple<br>
 
 ### Configuration de l’application meeting
 

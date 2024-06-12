@@ -64,6 +64,14 @@ FFMPEG_CREATE_THUMBNAIL = (
 )
 FFMPEG_EXTRACT_SUBTITLE = '-map 0:%(index)s -f webvtt -y  "%(output)s" '
 
+FFMPEG_CREATE_OVERVIEW = (
+    " -vsync vfr -vf "
+    "'fps=fps=(%(image_count)s/%(duration)s), "
+    "scale=%(width)sx%(height)s, "
+    "tile=%(image_count)sx1' "
+    "-frames:v 1 '%(output)s' "
+)
+
 FFMPEG_DRESSING_OUTPUT = ' -c:v libx264 -y -vsync 0 "%(output)s" '
 FFMPEG_DRESSING_INPUT = ' -i "%(input)s"'
 FFMPEG_DRESSING_FILTER_COMPLEX = ' -filter_complex "%(filter)s" '

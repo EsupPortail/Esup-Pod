@@ -4,7 +4,7 @@ import ast
 import json
 from typing import Optional
 from django.forms import formset_factory
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -253,6 +253,7 @@ def create_or_edit_quiz_instance(
             video=video,
             connected_user_only=quiz_form.cleaned_data["connected_user_only"],
             show_correct_answers=quiz_form.cleaned_data["show_correct_answers"],
+            is_draft=quiz_form.cleaned_data["is_draft"],
         )
     elif action == "edit":
         existing_quiz = get_object_or_404(Quiz, video=video)
@@ -260,6 +261,7 @@ def create_or_edit_quiz_instance(
         existing_quiz.show_correct_answers = quiz_form.cleaned_data[
             "show_correct_answers"
         ]
+        existing_quiz.is_draft = quiz_form.cleaned_data["is_draft"]
         existing_quiz.save()
         return existing_quiz
 
@@ -369,7 +371,7 @@ def calculate_score(question: Question, form) -> float:
             score = max(0, score - penalty)
             return score
 
-    elif question.get_type() in {"short_answer", "long_answer"}:
+    elif question.get_type() in ["short_answer", "long_answer"]:
         user_answer = form.cleaned_data.get("user_answer")
         correct_answer = question.get_answer()
 
@@ -412,6 +414,13 @@ def process_quiz_submission(request: WSGIRequest, quiz: Quiz) -> float:
                     user_answer,
                     correct_answer,
                 ]
+            elif question.get_type() in ["short_answer", "long_answer"]:
+                user_answer = form.cleaned_data.get("user_answer")
+                correct_answer = question.get_answer()
+                questions_answers["question_%s" % question.id] = [
+                    user_answer,
+                    correct_answer,
+                ]
         else:
             questions_form_errors[question.title] = _(
                 "You have to choose at least one answer"
@@ -441,6 +450,10 @@ def video_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
     questions_stats = {}
     questions_answers = {}
     questions_form_errors = {}
+
+    if quiz.is_draft and (video.owner != request.user):
+        raise Http404()
+
     if quiz.connected_user_only and not request.user.is_authenticated:
         return redirect("%s?referrer=%s" % (settings.LOGIN_URL, request.get_full_path()))
 
@@ -580,6 +593,7 @@ def edit_quiz(request: WSGIRequest, video_slug: str) -> HttpResponse:
             initial={
                 "connected_user_only": quiz.connected_user_only,
                 "show_correct_answers": quiz.show_correct_answers,
+                "is_draft": quiz.is_draft,
             }
         )
 

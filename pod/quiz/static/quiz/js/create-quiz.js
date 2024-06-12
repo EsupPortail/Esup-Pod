@@ -16,6 +16,7 @@ global initialData
 document.addEventListener("DOMContentLoaded", function () {
   let addQuestionButton = document.getElementById("add-question");
   const totalNewForms = document.getElementById("id_questions-TOTAL_FORMS");
+  const initialNumberForms = document.getElementById("id_questions-INITIAL_FORMS");
 
   let defaultQuestionForms = document.querySelectorAll(".question-form");
   for (let i = 0; i < defaultQuestionForms.length - 1; i++) {
@@ -160,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // If the question already exist in Pod, we only hide in dom and send a "delete" input.
       const deleteInput = document.getElementById(`id_questions-${questionFormToDelete.getAttribute("data-question-index")}-DELETE`);
-      if (deleteInput) {
+      if (deleteInput && totalNewForms.value <= initialNumberForms.value) {
         deleteInput.checked = true;
         questionFormToDelete.classList.add('d-none');
       } else {
@@ -168,7 +169,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const currentQuestionForms = document.querySelectorAll(".question-form");
         totalNewForms.setAttribute("value", currentQuestionForms.length - 1);
       }
-
     }
   }
 

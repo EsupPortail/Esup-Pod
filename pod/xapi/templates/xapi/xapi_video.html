@@ -4,7 +4,7 @@
     const endpoint = "{% url "xapi:statement" app="video" %}";
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     const session_id = create_UUID();
-    let registration, action = "";
+    let registration_xapi, action = "";
     const progress = [];
     object = {
         "definition": {
@@ -14,7 +14,7 @@
             },
             {% if video.description|addslashes != "" %}
             "description": {
-                "{{video.main_lang}}": "{{video.description|addslashes}}"
+                "{{video.main_lang}}": "{{video.description|addslashes|escapejs}}"
             }
             {% endif %}
         },
