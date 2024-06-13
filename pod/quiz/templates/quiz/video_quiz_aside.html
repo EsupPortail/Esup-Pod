@@ -13,5 +13,5 @@
       <span class="ms-1 d-none d-md-inline">{% trans 'Answer the quiz' %}</span>
     </a>
   {% endif %}
-  {% include 'quiz/manage_quiz.html' %}
+  {% include 'quiz/manage_quiz.html' with hide_edit=hide_edit hide_create=hide_create %}
 </div>

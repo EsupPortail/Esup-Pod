@@ -893,6 +893,7 @@ class VideoForm(forms.ModelForm):
                 if not self.is_superuser:
                     self.remove_field("owner")
                 self.remove_field("video")  # .widget = forms.HiddenInput()
+                self.remove_field("thumbnail")
 
         # remove required=True for videofield if instance
         if self.fields.get("video") and self.instance and self.instance.video:

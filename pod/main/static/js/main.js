@@ -300,8 +300,18 @@ function writeInFrame() {
   if (img.getAttribute("src") === "") img.setAttribute("data-src", imgsrc);
   else img.src = imgsrc;
 }
+
+if (localStorage.getItem("autoshowsubtitles")) {
+  document.getElementById("checkbox-subtitle").checked = true;
+}
+
 document.addEventListener("change", (e) => {
   if (e.target.id === "autoplay" || e.target.id === "loop") writeInFrame();
+  else if (e.target.id === "checkbox-subtitle") {
+    e.target.checked
+      ? localStorage.setItem("autoshowsubtitles", "on")
+      : localStorage.removeItem("autoshowsubtitles");
+  }
 });
 
 document.addEventListener("shown.bs.collapse", (e) => {
