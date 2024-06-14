@@ -1,5 +1,8 @@
 {% load i18n %}
+{% load video_quiz %}
+
 {% spaceless %}
+
 <!-- card_select.html -->
 <div class="checked_overlay">
   <span class="card-selected" title="{% trans 'Selected' %}">
@@ -11,6 +14,14 @@
     <div class="d-flex justify-content-between align-items-center">
       <small class="text-muted time">{{video.duration_in_time}}</small>
       <span class="text-muted small d-flex">
+
+        {% is_quiz_exists video as is_quiz_exists %}
+        {% if is_quiz_exists %}
+          <span title="{% trans 'This content contains a quiz.' %}"
+            data-bs-toggle="tooltip" data-bs-placement="left">
+            <i class="bi bi-controller" aria-hidden="true"></i>
+          </span>
+        {% endif %}
 
         {% if video.password or video.is_restricted %}
           <span title="{% trans 'This content is password protected.' %}">
