@@ -1,3 +1,5 @@
+"""Esup-Pod forms speaker."""
+
 from django import forms
 from .models import Speaker, Job
 

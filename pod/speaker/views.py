@@ -35,12 +35,6 @@ def speaker_management(request: WSGIRequest) -> HttpResponse:
     speaker_form = SpeakerForm()
     job_form = JobForm()
 
-    if not (
-        request.user.is_superuser or request.user.is_staff
-    ):
-        messages.add_message(request, messages.ERROR, _("You cannot list speakers."))
-        raise PermissionDenied
-
     if (
         not (request.user.is_superuser)
     ):

@@ -52,6 +52,14 @@ class Job(models.Model):
 
 
 class JobVideo(models.Model):
+    """
+    JobVideo model.
+
+    Attributes:
+        job (ForeignKey <Job>): job of speaker.
+        video (ForeignKey <Video>): video.
+    """
+
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
 

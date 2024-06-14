@@ -25,7 +25,7 @@
         <th scope="col">{% trans 'Firstname' %}</th>
         <th scope="col">{% trans 'Lastname' %}</th>
         <th scope="col">{% trans 'Job' %}</th>
-        <th scope="col" class="text-center" aria-label="{% trans 'Actions' %}"><i class="bi bi-trash3" aria-hidden="true"></i></th>
+        <th scope="col" class="text-center" aria-label="{% trans 'Actions' %}"></th>
       </tr>
     </thead>
     <tbody>
@@ -43,6 +43,7 @@
             </ul>
         </td>
         <td class="text-center align-middle">
+          <a title="Edit speaker" role="button" class="btn btn-link pod-btn-social edit-speaker-field"><i class="bi bi-pencil-square" aria-hidden="true"></i></a>
           {% trans "Please confirm you want to delete the speaker" as confirmDelete %}
           <form method="post" action="{% url 'speaker:speaker_management' %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
             {% csrf_token %}
@@ -56,7 +57,7 @@
         </tr>
       {% empty %}
         <tr>
-          <td colspan="11">{% trans 'No dressings found.' %}</td>
+          <td colspan="11">{% trans 'No speakers found.' %}</td>
         </tr>
       {% endfor %}
     </tbody>
@@ -75,8 +76,8 @@
         function addJobField() {
             var jobFieldHtml = `
                 <div class="input-group mb-2">
-                    <input type="text" class="form-control" name="jobs[]" placeholder="Job Title">
-                    <button type="button" class="btn btn-danger remove-job-field"><i class="bi bi-dash"></i></button>
+                    <input type="text" class="form-control ms-2" name="jobs[]" placeholder="Job Title">
+                    <a title="Remove job" role="button" class="btn btn-link pod-btn-social remove-job-field"><i class="bi bi-trash"></i></a>
                 </div>
             `;
             document.getElementById('jobFieldsContainer').insertAdjacentHTML('beforeend', jobFieldHtml);
