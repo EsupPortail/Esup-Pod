@@ -18,13 +18,14 @@
     <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addSpeakerModal">
         Add Speaker
     </button>
-  <table class="table table-sm table-striped table-bordered text-center" summary="{% trans 'List of dressings I can use or manage.' %}">
-    <caption class="caption-top">{% trans 'Available video dressings' %}</caption>
+  <table class="table table-sm table-striped table-bordered text-center" summary="{% trans 'List of speakers I can manage.' %}">
+    <caption class="caption-top">{% trans 'List of speakers' %}</caption>
     <thead>
       <tr>
         <th scope="col">{% trans 'Firstname' %}</th>
         <th scope="col">{% trans 'Lastname' %}</th>
         <th scope="col">{% trans 'Job' %}</th>
+        <th scope="col" class="text-center" aria-label="{% trans 'Actions' %}"><i class="bi bi-trash3" aria-hidden="true"></i></th>
       </tr>
     </thead>
     <tbody>
@@ -40,6 +41,17 @@
                     <li>No jobs assigned</li>
                 {% endfor %}
             </ul>
+        </td>
+        <td class="text-center align-middle">
+          {% trans "Please confirm you want to delete the speaker" as confirmDelete %}
+          <form method="post" action="{% url 'speaker:speaker_management' %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete" />
+            <input type="hidden" name="speakerid" value="{{ speaker.id }}" />
+            <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the speaker' %}" data-bs-toggle="tooltip" data-bs-placement="top">
+              <i class="bi bi-trash3" aria-hidden="true"></i>
+            </button>
+          </form>
         </td>
         </tr>
       {% empty %}
@@ -64,7 +76,7 @@
             var jobFieldHtml = `
                 <div class="input-group mb-2">
                     <input type="text" class="form-control" name="jobs[]" placeholder="Job Title">
-                    <button type="button" class="btn btn-danger remove-job-field"><i class="fas fa-minus"></i></button>
+                    <button type="button" class="btn btn-danger remove-job-field"><i class="bi bi-dash"></i></button>
                 </div>
             `;
             document.getElementById('jobFieldsContainer').insertAdjacentHTML('beforeend', jobFieldHtml);

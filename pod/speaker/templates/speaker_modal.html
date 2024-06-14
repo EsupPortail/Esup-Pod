@@ -4,7 +4,7 @@
         <form id="addSpeakerForm" method="post" action="{% url 'speaker:speaker_management' %}">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title" id="addSpeakerModalLabel">Add Speaker</h5>
+                <h2 class="modal-title" id="addSpeakerModalLabel">Add Speaker</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -15,10 +15,9 @@
                         <label for="jobTitle" class="form-label">Jobs</label>
                         <div class="input-group mb-2">
                             <input type="text" class="form-control" name="jobs[]" placeholder="Job Title">
-                            <button type="button" class="btn btn-secondary add-job-field"><i class="fas fa-plus"></i></button>
+                            <button type="button" class="btn btn-secondary add-job-field"><i class="bi bi-plus"></i></button>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Add Speaker</button>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Add Speaker</button>

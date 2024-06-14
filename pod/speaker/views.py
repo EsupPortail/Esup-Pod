@@ -1,6 +1,6 @@
 """Esup-Pod speaker views."""
 
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -20,7 +20,7 @@ from django.core.handlers.wsgi import WSGIRequest
 @login_required(redirect_field_name="referrer")
 def speaker_management(request: WSGIRequest) -> HttpResponse:
     """
-    View function for rendering a quiz associated with a video.
+    View function for rendering a list of speakers.
 
     Args:
         request (WSGIRequest): The HTTP request.
@@ -40,10 +40,10 @@ def speaker_management(request: WSGIRequest) -> HttpResponse:
     ):
         messages.add_message(request, messages.ERROR, _("You cannot list speakers."))
         raise PermissionDenied
-    
+
     if (
         not (request.user.is_superuser)
-        ):
+    ):
         messages.add_message(request, messages.ERROR, _("You cannot acces to speaker management."))
         raise PermissionDenied
     if request.method == "POST":
@@ -54,6 +54,8 @@ def speaker_management(request: WSGIRequest) -> HttpResponse:
         }:
             if request.POST["action"] == "add":
                 add_speaker(request)
+            elif request.POST["action"] == "delete":
+                delete_speaker(request)
         else:
             messages.add_message(
                 request, messages.ERROR, _("An action must be specified.")
@@ -87,3 +89,12 @@ def add_speaker(request):
     except (ValueError, ObjectDoesNotExist):
         messages.add_message(request, messages.ERROR, _("Speaker not found."))
 
+
+def delete_speaker(request):
+    """Remove speaker and jobs."""
+    try:
+        speakerid = request.POST.get('speakerid')
+        Speaker.objects.get(id=speakerid).delete()
+        messages.add_message(request, messages.SUCCESS, _("The speaker has been deleted."))
+    except (ValueError, ObjectDoesNotExist):
+        messages.add_message(request, messages.ERROR, _("Speaker not found."))
