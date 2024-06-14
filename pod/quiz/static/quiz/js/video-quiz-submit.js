@@ -47,7 +47,7 @@ for (let questionElement of questionList) {
       } else {
         answer.closest('li').classList.add('bi', 'bi-clipboard');
       }
-      // check if question is "single_choice", "multiple_choice", "short_answer", "long_answer"
+      // check if question is "single_choice", "multiple_choice", "short_answer"
       if ((Array.isArray(user_answer) && user_answer.includes(answer.value)) || user_answer === answer.value ){
         answer.checked = true;
       }
@@ -55,7 +55,7 @@ for (let questionElement of questionList) {
   }
 
   // case user input
-  // Get short or long answer input
+  // Get short answer input
   let user_input = document.getElementById(`id_${questionid}-user_answer`);
   if (user_input) {
     user_input.disabled = true;

@@ -3,7 +3,6 @@
 from django.contrib import admin
 
 from pod.quiz.models import (
-    LongAnswerQuestion,
     MultipleChoiceQuestion,
     Quiz,
     ShortAnswerQuestion,
@@ -39,10 +38,6 @@ class MultipleChoiceQuestionAdmin(BaseQuestionAdmin):
     """Admin configuration for MultipleChoiceQuestion."""
 
 
-@admin.register(LongAnswerQuestion)
-class LongAnswerQuestionAdmin(BaseQuestionAdmin):
-    """Admin configuration for LongAnswerQuestion."""
-
 
 @admin.register(ShortAnswerQuestion)
 class ShortAnswerQuestionAdmin(BaseQuestionAdmin):
@@ -66,13 +61,6 @@ class MultipleChoiceQuestionInline(admin.StackedInline):
     extra = 0
 
 
-class LongAnswerQuestionInline(admin.StackedInline):
-    """Inline configuration for LongAnswerQuestion."""
-
-    model = LongAnswerQuestion
-    extra = 0
-
-
 class ShortAnswerQuestionInline(admin.StackedInline):
     """Inline configuration for ShortAnswerQuestion."""
 
@@ -91,6 +79,5 @@ class QuizAdmin(admin.ModelAdmin):
     inlines = [
         SingleChoiceQuestionInline,
         MultipleChoiceQuestionInline,
-        LongAnswerQuestionInline,
         ShortAnswerQuestionInline,
     ]

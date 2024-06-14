@@ -15,7 +15,6 @@ from pod.main.views import in_maintenance
 
 from pod.quiz.forms import QuestionForm, QuizDeleteForm, QuizForm
 from pod.quiz.models import (
-    LongAnswerQuestion,
     MultipleChoiceQuestion,
     Question,
     Quiz,
@@ -133,7 +132,7 @@ def update_question(existing_question: Question, cleaned_data) -> None:
         existing_question.explanation = cleaned_data["explanation"]
         existing_question.start_timestamp = cleaned_data["start_timestamp"]
         existing_question.end_timestamp = cleaned_data["end_timestamp"]
-        if question_type in {"short_answer", "long_answer"}:
+        if question_type in {"short_answer"}:
             existing_question.answer = cleaned_data[question_type]
         elif question_type in {"single_choice", "multiple_choice"}:
             existing_question.choices = cleaned_data[question_type]
@@ -216,11 +215,6 @@ def get_question(question_type: str, question_id: int, quiz: Quiz):
             quiz=quiz,
             id=question_id,
         ).first()
-    elif question_type == "long_answer":
-        question = LongAnswerQuestion.objects.filter(
-            quiz=quiz,
-            id=question_id,
-        ).first()
     elif question_type == "single_choice":
         question = SingleChoiceQuestion.objects.filter(
             quiz=quiz,
@@ -277,15 +271,6 @@ def create_question(
 ):
     if question_type == "short_answer":
         ShortAnswerQuestion.objects.get_or_create(
-            quiz=quiz,
-            title=title,
-            explanation=explanation,
-            start_timestamp=start_timestamp,
-            end_timestamp=end_timestamp,
-            answer=question_data,
-        )
-    elif question_type == "long_answer":
-        LongAnswerQuestion.objects.get_or_create(
             quiz=quiz,
             title=title,
             explanation=explanation,
@@ -371,7 +356,7 @@ def calculate_score(question: Question, form) -> float:
             score = max(0, score - penalty)
             return score
 
-    elif question.get_type() in ["short_answer", "long_answer"]:
+    elif question.get_type() in {"short_answer"}:
         user_answer = form.cleaned_data.get("user_answer")
         correct_answer = question.get_answer()
 
@@ -414,7 +399,7 @@ def process_quiz_submission(request: WSGIRequest, quiz: Quiz) -> float:
                     user_answer,
                     correct_answer,
                 ]
-            elif question.get_type() in ["short_answer", "long_answer"]:
+            elif question.get_type() in {"short_answer"}:
                 user_answer = form.cleaned_data.get("user_answer")
                 correct_answer = question.get_answer()
                 questions_answers["question_%s" % question.id] = [
@@ -642,9 +627,6 @@ def get_initial_data(existing_questions=None) -> str:
                 {
                     "short_answer": (
                         question.answer if question.get_type() == "short_answer" else None
-                    ),
-                    "long_answer": (
-                        question.answer if question.get_type() == "long_answer" else None
                     ),
                     "choices": (
                         json.loads(question.get_choices())

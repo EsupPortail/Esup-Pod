@@ -2,7 +2,6 @@
 
 from typing import Optional
 from pod.quiz.models import (
-    LongAnswerQuestion,
     MultipleChoiceQuestion,
     Quiz,
     ShortAnswerQuestion,
@@ -31,14 +30,12 @@ def get_quiz_questions(
     single_choice_questions = SingleChoiceQuestion.objects.filter(quiz=quiz)
     multiple_choice_questions = MultipleChoiceQuestion.objects.filter(quiz=quiz)
     short_answer_questions = ShortAnswerQuestion.objects.filter(quiz=quiz)
-    long_answer_questions = LongAnswerQuestion.objects.filter(quiz=quiz)
 
     return list(
         chain(
             single_choice_questions,
             multiple_choice_questions,
             short_answer_questions,
-            long_answer_questions,
         )
     )
 
