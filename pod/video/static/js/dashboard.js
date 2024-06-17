@@ -176,6 +176,7 @@ async function bulkUpdate() {
     selectedVideos[videosListContainerId] = data["updated_videos"];
     showalert(message, "alert-success", "formalertdivbottomright");
     refreshVideosSearch();
+    replaceSelectedCountVideos(videosListContainerId);
   } else {
     // Manage field errors and global errors
     let errors = Array.from(data["fields_errors"]);
