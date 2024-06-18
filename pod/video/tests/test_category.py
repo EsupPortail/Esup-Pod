@@ -71,6 +71,17 @@ class TestCategory(TestCase):
         )
         self.cat_3.video.add(self.video)
 
+    def test_get_add_category_modal(self) -> None:
+        self.client.force_login(self.owner_user)
+        url = reverse("video:add_category")
+        response = self.client.get(
+            url,
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'videos/category_modal.html')
+        print(" --->  test_get_add_category_modal of TestCategory: OK!")
+
     def test_addCategory(self) -> None:
         data = {
             "title": json.dumps("Test new category"),
@@ -167,6 +178,17 @@ class TestCategory(TestCase):
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 409)
 
+    def test_get_edit_category_modal(self) -> None:
+        self.client.force_login(self.owner_user)
+        url = reverse("video:edit_category", args=[self.cat_1.slug])
+        response = self.client.get(
+            url,
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'videos/category_modal.html')
+        print(" --->  test_get_edit_category_modal of TestCategory: OK!")
+
     def test_editCategory(self) -> None:
         data = {
             "title": json.dumps("New Category title"),
@@ -257,6 +279,17 @@ class TestCategory(TestCase):
         self.assertEqual(response_data["categories"].count(), 2)
         self.assertEqual(len(all_categories_videos[self.cat_1.slug]), 1)
         self.assertEqual(all_categories_videos[self.cat_1.slug][0], self.video.slug)
+
+    def test_get_delete_category_modal(self) -> None:
+        self.client.force_login(self.owner_user)
+        url = reverse("video:delete_category", args=[self.cat_1.slug])
+        response = self.client.get(
+            url,
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'videos/category_modal.html')
+        print(" --->  test_get_delete_category_modal of TestCategory: OK!")
 
     def test_deleteCategory(self) -> None:
         # not Authenticated, should return HttpResponseRedirect:302
