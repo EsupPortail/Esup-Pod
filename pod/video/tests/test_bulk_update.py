@@ -138,6 +138,23 @@ class BulkUpdateTestCase(TransactionTestCase):
             "/bulk_update/",
             {
                 "type": type2.id,
+                "selected_videos": '["%s", "%s"]' % ("slug_that_not_exist", "slug_that_not_exist2"),
+                "update_fields": '["type"]',
+                "update_action": "fields",
+            },
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        post_request.user = user1
+        post_request.LANGUAGE_CODE = "fr"
+        response = bulk_update(post_request)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(json.loads(response.content)["message"], "Sorry, no video found.")
+        self.assertEqual(json.loads(response.content)["updated_videos"], [])
+
+        post_request = self.factory.post(
+            "/bulk_update/",
+            {
+                "type": type2.id,
                 "selected_videos": '["%s", "%s"]' % (video1.slug, video2.slug),
                 "update_fields": '["type"]',
                 "update_action": "fields",
@@ -218,7 +235,7 @@ class BulkUpdateTestCase(TransactionTestCase):
 
         print("--->  test_bulk_update_owner of BulkUpdateTestCase: OK")
 
-    def test_bulk_delete(self):
+    def test_bulk_delete(self) -> None:
         """Test bulk delete."""
         video4 = Video.objects.get(title="Video4")
         video5 = Video.objects.get(title="Video5")
@@ -253,7 +270,7 @@ class BulkUpdateTestCase(TransactionTestCase):
         print("--->  test_bulk_delete of BulkUpdateTestCase: OK")
         self.client.logout()
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Cleanup all created stuffs."""
         del self.client
         del self.factory

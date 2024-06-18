@@ -16,7 +16,7 @@ class TestCategory(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.maxDiff = None
         self.logger = logging.getLogger("django.request")
         # self.previous_level = self.logger.getEffectiveLevel()
@@ -71,7 +71,7 @@ class TestCategory(TestCase):
         )
         self.cat_3.video.add(self.video)
 
-    def test_addCategory(self):
+    def test_addCategory(self) -> None:
         data = {
             "title": json.dumps("Test new category"),
             "videos": json.dumps([self.video_2.slug])
@@ -167,7 +167,7 @@ class TestCategory(TestCase):
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 409)
 
-    def test_editCategory(self):
+    def test_editCategory(self) -> None:
         data = {
             "title": json.dumps("New Category title"),
             "videos": json.dumps([self.video_2.slug])
@@ -245,7 +245,20 @@ class TestCategory(TestCase):
         self.assertIsInstance(response, HttpResponseBadRequest)
         self.assertEqual(response.status_code, 400)
 
-    def test_deleteCategory(self):
+    def test_get_videos_for_category(self) -> None:
+        self.client.force_login(self.owner_user)
+        url = reverse("video:dashboard")
+        response = self.client.get(url, {"categories": [self.cat_1.slug]})
+        response_data = response.context
+        all_categories_videos = json.loads(response_data["all_categories_videos"])
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response_data["videos"].paginator.count, 1)
+        self.assertEqual(response_data["categories"].count(), 2)
+        self.assertEqual(len(all_categories_videos[self.cat_1.slug]), 1)
+        self.assertEqual(all_categories_videos[self.cat_1.slug][0], self.video.slug)
+
+    def test_deleteCategory(self) -> None:
         # not Authenticated, should return HttpResponseRedirect:302
         response = self.client.post(
             reverse("video:delete_category", kwargs={"c_slug": self.cat_1.slug}),
@@ -291,7 +304,7 @@ class TestCategory(TestCase):
         )
         self.assertEqual(Category.objects.filter(slug=self.cat_1.slug).count(), 0)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         del self.video
         del self.owner_user
         del self.admin_user
