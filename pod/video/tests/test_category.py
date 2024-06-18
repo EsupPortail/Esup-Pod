@@ -245,7 +245,7 @@ class TestCategory(TestCase):
         self.assertIsInstance(response, HttpResponseBadRequest)
         self.assertEqual(response.status_code, 400)
 
-    def test_get_videos_for_category(self) -> None:
+    def test_get_categories(self) -> None:
         self.client.force_login(self.owner_user)
         url = reverse("video:dashboard")
         response = self.client.get(url, {"categories": [self.cat_1.slug]})
