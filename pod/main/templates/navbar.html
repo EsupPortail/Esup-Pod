@@ -298,7 +298,7 @@
                 {% endif %}
               {% endif %}
               {% if request.user.is_superuser and USE_SPEAKER %}
-                <a class="nav-item nav-link" href="{% url 'speaker:speaker_management' %}"><i class="bi bi-megaphone pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Speakers management' %}</a>
+                <a class="nav-item nav-link" href="{% url 'speaker:speaker_management' %}"><i class="bi bi-megaphone pod-nav-link-icon mx-1" aria-hidden="true"></i>&nbsp;{% trans 'Speakers management' %}</a>
               {% endif %}
               {% if USE_NOTIFICATIONS %}
                 <div class="nav-item">

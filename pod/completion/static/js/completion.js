@@ -49,6 +49,7 @@ var ajaxfail = function (data, form) {
 document.addEventListener("submit", (e) => {
   if (
     e.target.id !== "form_new_contributor" &&
+    e.target.id !== "form_new_speaker" &&
     e.target.id !== "form_new_document" &&
     e.target.id !== "form_new_track" &&
     e.target.id !== "form_new_overlay" &&
@@ -218,6 +219,10 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
     } else if (name === "contributor") {
       deleteConfirm = confirm(
         gettext("Are you sure you want to delete this contributor?"),
+      );
+    } else if (name === "speaker") {
+      deleteConfirm = confirm(
+        gettext("Are you sure you want to delete this speaker?"),
       );
     } else if (name === "document") {
       deleteConfirm = confirm(
