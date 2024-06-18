@@ -436,7 +436,7 @@ def video_completion_contributor_delete(request: WSGIRequest, video: Video):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_completion_speaker(request: WSGIRequest, slug: str):
-    """View to manage contributors of a video."""
+    """View to manage speakers of a video."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     page_title = get_completion_home_page_title(video)
     if request.user != video.owner and not (
@@ -511,7 +511,7 @@ def video_completion_speaker_new(request: WSGIRequest, video: Video):
             "video_completion.html",
             context,
         )
- 
+
 
 def video_completion_speaker_save(request: WSGIRequest, video: Video):
     """View to save speakers of a video."""
@@ -572,7 +572,7 @@ def video_completion_speaker_save(request: WSGIRequest, video: Video):
             "video_completion.html",
             context,
         )
-    
+
 
 def video_completion_speaker_delete(request: WSGIRequest, video: Video):
     """View to delete a video speaker."""

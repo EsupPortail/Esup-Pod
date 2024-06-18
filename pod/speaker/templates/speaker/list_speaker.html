@@ -6,7 +6,7 @@
     <caption>{% trans 'List of speakers' %}&nbsp;({{list_speaker|length}})</caption>
     <thead>
       <tr>
-        <th scope="col" class="speaker-name">{% trans 'Lastname / Firstname' %}</th>
+        <th scope="col" class="speaker-name">{% trans 'Firstname / Lastname' %}</th>
         <th scope="col">{% trans 'Job' %}</th>
         <th scope="col">{% trans 'Actions' %}</th>
       </tr>
@@ -15,7 +15,7 @@
       {% for speaker in list_speaker %}
         <tr class="speaker">
           <td class="speaker-name">{{speaker.job.speaker.firstname}} {{speaker.job.speaker.lastname}}</td>
-          <td class="speaker_job">{{speaker.job|default_if_none:'&nbsp;'}}</td>
+          <td class="speaker_job">{{speaker.job.title|default_if_none:'&nbsp;'}}</td>
           <td>
             <form class="form_delete completion d-inline-block" action="{% url 'video:completion:video_completion_speaker' slug=video.slug %}" method="POST">
               {% csrf_token %}

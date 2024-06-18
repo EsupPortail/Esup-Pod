@@ -179,7 +179,7 @@
             {% get_video_speaker video as speaker_in_video %}
             {% for speaker in speaker_in_video %}
               <li>
-                {{ speaker.job }}
+                {{ speaker.job.speaker.firstname }} {{ speaker.job.speaker.lastname }} ({{ speaker.job.title }})
               </li>
             {% endfor %}
           </ul>

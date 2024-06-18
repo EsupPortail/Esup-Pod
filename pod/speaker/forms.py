@@ -7,20 +7,24 @@ from .models import Speaker, Job, JobVideo
 
 
 class JobWidget(s2forms.ModelSelect2Widget):
-    """Widget for selecting multiple disciplines."""
+    """Widget for selecting speaker job."""
 
     search_fields = [
         "title__icontains",
     ]
-  
-    
+
+
 class SpeakerForm(forms.ModelForm):
+    """Speaker form fields."""
+
     class Meta:
         model = Speaker
         fields = ['firstname', 'lastname']
 
 
 class JobForm(forms.ModelForm):
+    """Job form fields."""
+
     class Meta:
         model = Job
         fields = ['title']
