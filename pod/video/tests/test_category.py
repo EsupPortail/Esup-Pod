@@ -82,7 +82,7 @@ class TestCategory(TestCase):
         self.assertTemplateUsed(response, 'videos/category_modal.html')
         print(" --->  test_get_add_category_modal of TestCategory: OK!")
 
-    def test_addCategory(self) -> None:
+    def test_post_add_category(self) -> None:
         data = {
             "title": json.dumps("Test new category"),
             "videos": json.dumps([self.video_2.slug])
@@ -177,6 +177,7 @@ class TestCategory(TestCase):
 
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 409)
+        print(" --->  test_post_add_category of TestCategory: OK!")
 
     def test_get_edit_category_modal(self) -> None:
         self.client.force_login(self.owner_user)
@@ -189,7 +190,7 @@ class TestCategory(TestCase):
         self.assertTemplateUsed(response, 'videos/category_modal.html')
         print(" --->  test_get_edit_category_modal of TestCategory: OK!")
 
-    def test_editCategory(self) -> None:
+    def test_post_edit_category(self) -> None:
         data = {
             "title": json.dumps("New Category title"),
             "videos": json.dumps([self.video_2.slug])
@@ -213,7 +214,20 @@ class TestCategory(TestCase):
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
 
+        # Ajax request but with other user should return HttpResponseForbidden:403
+        self.client.force_login(self.simple_user)
+        response = self.client.post(
+            reverse("video:edit_category", kwargs={"c_slug": self.cat_1.slug}),
+            data,
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+
+        self.assertIsInstance(response, HttpResponseForbidden)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(json.loads(response.content)["message"], 'You do not have rights to edit this category')
+
         # Ajax POST request, should return HttpResponse:200 with category data
+        self.client.force_login(self.owner_user)
         response = self.client.post(
             reverse("video:edit_category", kwargs={"c_slug": self.cat_1.slug}),
             data,
@@ -266,6 +280,7 @@ class TestCategory(TestCase):
         )
         self.assertIsInstance(response, HttpResponseBadRequest)
         self.assertEqual(response.status_code, 400)
+        print(" --->  test_post_edit_category of TestCategory: OK!")
 
     def test_get_categories(self) -> None:
         self.client.force_login(self.owner_user)
@@ -279,6 +294,20 @@ class TestCategory(TestCase):
         self.assertEqual(response_data["categories"].count(), 2)
         self.assertEqual(len(all_categories_videos[self.cat_1.slug]), 1)
         self.assertEqual(all_categories_videos[self.cat_1.slug][0], self.video.slug)
+        print(" --->  test_get_categories of TestCategory: OK!")
+
+    def test_get_categories_aside(self) -> None:
+        self.client.force_login(self.owner_user)
+        url = reverse("video:get_categories_list")
+        response = self.client.get(
+            url,
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        response_data = response.context
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "videos/filter_aside_categories_list.html")
+        self.assertEqual(response_data["categories"].count(), 2)
+        print(" --->  test_get_categories_aside of TestCategory: OK!")
 
     def test_get_delete_category_modal(self) -> None:
         self.client.force_login(self.owner_user)
@@ -291,7 +320,7 @@ class TestCategory(TestCase):
         self.assertTemplateUsed(response, 'videos/category_modal.html')
         print(" --->  test_get_delete_category_modal of TestCategory: OK!")
 
-    def test_deleteCategory(self) -> None:
+    def test_post_delete_category(self) -> None:
         # not Authenticated, should return HttpResponseRedirect:302
         response = self.client.post(
             reverse("video:delete_category", kwargs={"c_slug": self.cat_1.slug}),
@@ -336,6 +365,7 @@ class TestCategory(TestCase):
             "Category successfully deleted.",
         )
         self.assertEqual(Category.objects.filter(slug=self.cat_1.slug).count(), 0)
+        print(" --->  test_post_delete_category of TestCategory: OK!")
 
     def tearDown(self) -> None:
         del self.video
