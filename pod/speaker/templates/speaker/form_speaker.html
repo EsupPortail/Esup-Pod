@@ -1,6 +1,5 @@
 {# HTML for speaker form. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
-{{ form_speaker.media }}
 <div class="card card-body">
 	<form id="form_speaker" action="{% url 'video:completion:video_completion_speaker' slug=video.slug %}" method="POST" class="completion">
 		{% csrf_token %}
@@ -32,5 +31,5 @@
 	</form>
 </div>
 {% block more_script %}
-
+{{ form_speaker.media }}
 {% endblock more_script %}

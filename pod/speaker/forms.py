@@ -10,7 +10,7 @@ class JobWidget(s2forms.ModelSelect2Widget):
     """Widget for selecting speaker job."""
 
     search_fields = [
-        "title__icontains",
+        "title__icontains", "speaker__lastname__icontains",
     ]
 
 
