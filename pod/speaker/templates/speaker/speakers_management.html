@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load thumbnail %}
+
+{% block page_extra_head %}
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item active" aria-current="page">
+    {{ page_title }}
+  </li>
+{% endblock %}
+
+{% block page_content %}
+  <div class="table-responsive">
+    <button type="button" class="btn btn-primary mb-3 add-speaker-btn">
+      {% trans "Add Speaker" %}
+  </button>
+  <table class="table table-sm table-striped table-bordered text-left" summary="{% trans 'List of speakers I can manage.' %}">
+    <caption class="caption-top">{% trans 'List of speakers' %}</caption>
+    <thead>
+      <tr>
+        <th scope="col">{% trans 'Firstname' %}</th>
+        <th scope="col">{% trans 'Lastname' %}</th>
+        <th scope="col">{% trans 'Job' %}</th>
+        <th scope="col" class="text-center" aria-label="{% trans 'Actions' %}"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;<i class="bi bi-trash3" aria-hidden="true"></i></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for speaker in speakers %}
+        <tr>
+          <td>{{ speaker.firstname }}</td>
+          <td>{{ speaker.lastname }}</td>
+          <td>
+            <ul>
+                {% for job in speaker.job_set.all %}
+                    <li class="text-left">{{ job.title }}</li>
+                {% empty %}
+                    <li>No jobs assigned</li>
+                {% endfor %}
+            </ul>
+        </td>
+        <td class="text-center align-middle">
+          <button type="button" class="btn btn-link pod-btn-social edit-speaker-field" data-speaker-id="{{ speaker.id }}">
+            <i class="bi bi-pencil-square" aria-hidden="true"></i>
+        </button>
+          {% trans "Please confirm you want to delete the speaker" as confirmDelete %}
+          <form method="post" action="{% url 'speaker:speaker_management' %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete" />
+            <input type="hidden" name="speakerid" value="{{ speaker.id }}" />
+            <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the speaker' %}" data-bs-toggle="tooltip" data-bs-placement="top">
+              <i class="bi bi-trash3" aria-hidden="true"></i>
+            </button>
+          </form>
+        </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="11">{% trans 'No speakers found.' %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  {% include "speaker/speaker_modal.html" %}
+{% endblock page_content %}
+
+{% block collapse_page_aside %}{% endblock collapse_page_aside %}
+{% block page_aside %}{% endblock page_aside %}
+{% block more_script %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Function to add a job field
+      function addJobField(jobId = '', jobTitle = '') {
+          var jobFieldHtml = `
+              <div class="input-group mb-2">
+                  <input type="text" class="form-control ms-2 jobTitle" name="jobs[]" value="${jobTitle}" placeholder="{% trans "Job Title" %}">
+                  <input type="hidden" class="jobId" name="jobIds[]" value="${jobId}">
+                  <a title="{% trans "Remove job" %}" role="button" class="btn btn-link pod-btn-social remove-job-field"><i class="bi bi-trash"></i></a>
+              </div>
+          `;
+          document.getElementById('jobFieldsContainer').insertAdjacentHTML('beforeend', jobFieldHtml);
+      }
+  
+      // Handle add/edit speaker modal show
+      function showSpeakerModal(speaker = null) {
+          // Clear existing job fields
+          document.getElementById('jobFieldsContainer').innerHTML = '';
+  
+          if (speaker) {
+              // Editing speaker
+              document.getElementById('speakerModalLabel').innerText = '{% trans "Edit Speaker" %}';
+              document.getElementById('actionField').value = 'edit';
+              document.getElementById('speakerId').value = speaker.id;
+              document.getElementById('id_firstname').value = speaker.firstname;
+              document.getElementById('id_lastname').value = speaker.lastname;
+  
+              // Fetch and populate jobs
+              fetch(`/speaker/get-jobs/${speaker.id}/`)
+                  .then(response => response.json())
+                  .then(data => {
+                      data.jobs.forEach(job => {
+                          addJobField(job.id, job.title);
+                      });
+                  })
+                  .catch(error => {
+                      console.error('Error fetching jobs:', error);
+                  });
+          } else {
+              // Adding new speaker
+              document.getElementById('speakerModalLabel').innerText = '{% trans "Add Speaker" %}';
+              document.getElementById('actionField').value = 'add';
+              document.getElementById('speakerId').value = '';
+              document.getElementById('id_firstname').value = '';
+              document.getElementById('id_lastname').value = '';
+              addJobField(); // Add one empty job field by default
+          }
+  
+          // Show modal
+          var speakerModal = new bootstrap.Modal(document.getElementById('speakerModal'));
+          speakerModal.show();
+      }
+  
+      // Add job field on button click
+      document.getElementById('addJobField').addEventListener('click', function() {
+          addJobField();
+      });
+  
+      // Remove job field on button click
+      document.addEventListener('click', function(event) {
+          if (event.target && event.target.closest('.remove-job-field')) {
+              event.target.closest('.input-group').remove();
+          }
+      });
+  
+      // Set up event listeners for add/edit buttons
+      document.querySelectorAll('.add-speaker-btn').forEach(button => {
+          button.addEventListener('click', function() {
+              showSpeakerModal();
+          });
+      });
+  
+      document.querySelectorAll('.edit-speaker-field').forEach(button => {
+          button.addEventListener('click', function() {
+              var speakerId = this.getAttribute('data-speaker-id');
+  
+              // Fetch speaker data (you may need to implement this endpoint)
+              fetch(`/speaker/get-speaker/${speakerId}/`)
+                  .then(response => response.json())
+                  .then(data => {
+                      showSpeakerModal(data.speaker);
+                  })
+                  .catch(error => {
+                      console.error('Error fetching speaker:', error);
+                  });
+          });
+      });
+  });
+  </script>  
+{% endblock more_script %}
+
