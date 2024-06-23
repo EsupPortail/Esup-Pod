@@ -63,7 +63,7 @@ class SpeakerModelTest(TestCase):
     def test_attributs_full(self):
         speaker1 = Speaker.objects.get(id=1)
         speaker2 = Speaker.objects.get(id=2)
-        job1 = Speaker.objects.get(id=1)
+        job1 = Job.objects.get(id=1)
         self.assertEqual(speaker1.firstname, "Dupont")
         self.assertEqual(speaker1.lastname, "Pierre")
         self.assertEqual(speaker2.firstname, "Martin")
