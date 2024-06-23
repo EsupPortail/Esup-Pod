@@ -67,6 +67,6 @@ class SpeakerModelTest(TestCase):
         self.assertEqual(speaker1.firstname, "Dupont")
         self.assertEqual(speaker1.lastname, "Pierre")
         self.assertEqual(speaker2.firstname, "Martin")
-        self.assertEqual(speaker2.lastname, "Directeur")
-        self.assertEqual(job1.title, "Michel")
+        self.assertEqual(speaker2.lastname, "Michel")
+        self.assertEqual(job1.title, "Directeur")
         print(" ---> test_attributs_full: OK! --- SpeakerModelTest")
