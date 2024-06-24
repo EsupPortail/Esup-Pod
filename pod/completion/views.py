@@ -198,7 +198,7 @@ def video_completion(request: WSGIRequest, slug: str):
         raise PermissionDenied
     elif request.user.is_staff:
         list_contributor = video.contributor_set.all()
-        list_track = video.track_set.all()
+        list_track = video.track_set.all().order_by("lang")
         list_document = video.document_set.all()
         list_overlay = video.overlay_set.all()
     else:
@@ -246,7 +246,7 @@ def video_completion_contributor(request: WSGIRequest, slug: str):
         raise PermissionDenied
     elif request.user.is_staff:
         list_contributor = video.contributor_set.all()
-        list_track = video.track_set.all()
+        list_track = video.track_set.all().order_by("lang")
         list_document = video.document_set.all()
         list_overlay = video.overlay_set.all()
     else:
@@ -649,7 +649,7 @@ def toggle_form_track_is_valid__video_completion_track(request, video, list_trac
 def video_completion_track_save(request, video):
     """View to save a track associated to a video."""
     form_track = video_completion_get_form_track(request)
-    list_track = video.track_set.all()
+    list_track = video.track_set.all().order_by("lang")
 
     if form_track.is_valid():
         form_track.save()
@@ -702,7 +702,7 @@ def video_completion_track_delete(request, video):
     """View to delete a track associated to a video."""
     track = get_object_or_404(Track, id=request.POST["id"])
     track.delete()
-    list_track = video.track_set.all()
+    list_track = video.track_set.all().order_by("lang")
     return toggle_form_track_is_valid__video_completion_track(request, video, list_track)
 
 

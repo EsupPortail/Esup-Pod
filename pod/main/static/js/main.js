@@ -300,8 +300,18 @@ function writeInFrame() {
   if (img.getAttribute("src") === "") img.setAttribute("data-src", imgsrc);
   else img.src = imgsrc;
 }
+
+if (localStorage.getItem("autoshowsubtitles")) {
+  document.getElementById("checkbox-subtitle").checked = true;
+}
+
 document.addEventListener("change", (e) => {
   if (e.target.id === "autoplay" || e.target.id === "loop") writeInFrame();
+  else if (e.target.id === "checkbox-subtitle") {
+    e.target.checked
+      ? localStorage.setItem("autoshowsubtitles", "on")
+      : localStorage.removeItem("autoshowsubtitles");
+  }
 });
 
 document.addEventListener("shown.bs.collapse", (e) => {
@@ -1244,8 +1254,7 @@ restricted_access();
         form.addEventListener(
           "submit",
           function (event) {
-            if (form.checkValidity() === false) {
-              form.scrollIntoView();
+            if (form.reportValidity() === false) {
               showalert(
                 gettext("There are errors in the form, please correct them."),
                 "alert-danger",
@@ -1469,3 +1478,54 @@ document.addEventListener("DOMContentLoaded", function () {
     searchInput.addEventListener("blur", handleBlur);
   }
 });
+
+/**
+ * Removes double quotes from the start and end of the given text.
+ *
+ * @param {string} text - The input text to process.
+ * @returns {string} The text without leading and trailing double quotes.
+ */
+function remove_quotes(text) {
+  text = text.trim();
+  if (text.charAt(0) === '"') {
+    text = text.substring(1);
+  }
+  if (text.charAt(text.length - 1) === '"') {
+    text = text.substring(0, text.length - 1);
+  }
+  return text;
+}
+
+let mainCollapseButton = document.getElementById("collapse-button");
+mainCollapseButton.addEventListener("click", () => {
+  window.scrollTo(0, 0);
+});
+
+/**
+ * Remove accents and convert to lowercase.
+ *
+ * @param {string} str The string.
+ *
+ * @return {string} The new string.
+ */
+function removeAccentsAndLowerCase(str) {
+  str = str.toLowerCase();
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+/**
+ * Decode the string from the HTML entity.
+ *
+ * @param {string} str The string to decode.
+ *
+ * @return {string} The decoded string.
+ */
+function decodeString(str) {
+  str = str.replace(/&#x([0-9A-Fa-f]+);/g, (match, p1) =>
+    String.fromCharCode(parseInt(p1, 16)),
+  );
+  str = str.replace(/&#(\d+);/g, (match, p1) =>
+    String.fromCharCode(parseInt(p1, 10)),
+  );
+  return str;
+}

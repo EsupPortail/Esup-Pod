@@ -711,6 +711,38 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
 
 ## Configuration des applications Esup_Pod
 
+### Configuration application AI Enhancement
+
+Application AI Enhancement pour pouvoir utiliser les améliorations des vidéos par l'intelligence artifficielle.<br>
+Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
+
+* `AI_ENHANCEMENT_API_URL`
+  > valeur par défaut : ``
+  >> L’URL de l’API pour l’IA d’amélioration des vidéos.<br>
+  >> Exemple : 'https://aristote.univ.fr/api'<br>
+  >> Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/<br>
+* `AI_ENHANCEMENT_API_VERSION`
+  > valeur par défaut : ``
+  >> La version de l’API pour l’IA d’amélioration des vidéos.<br>
+* `AI_ENHANCEMENT_CGU_URL`
+  > valeur par défaut : ``
+  >> L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.<br>
+  >> Exemple : 'https://aristote.univ.fr/cgu'<br>
+  >> Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/<br>
+* `AI_ENHANCEMENT_CLIENT_ID`
+  > valeur par défaut : `mocked_id`
+  >> L’ID du client de l’IA d’amélioration des vidéos.<br>
+  >> Exemple : 'v1'<br>
+* `AI_ENHANCEMENT_CLIENT_SECRET`
+  > valeur par défaut : `mocked_secret`
+  >> Le mot de passe secret du client de l’IA d’amélioration des vidéos.<br>
+* `AI_ENHANCEMENT_FIELDS_HELP_TEXT`
+  > valeur par défaut : ``
+  >> Ensemble des textes d’aide affichés avec le formulaire d'amélioration d'une vidéo avec l'IA d'Aristote.<br>
+* `USE_AI_ENHANCEMENT`
+  > valeur par défaut : `False`
+  >> Activation des améliorations de l'intelligence artificielle. Permet aux utilisateurs de l'utiliser.<br>
+
 ### Configuration de l’application authentification
 
 * `AFFILIATION`
@@ -1159,6 +1191,9 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 * `VERSION`
   > valeur par défaut : ``
   >> Version courante du projet<br>
+* `WEBTV_MODE`
+  > valeur par défaut : `False`
+  >> Mode webtv permet de basculer POD en une application webtv ensupprimant les boutons de connexions par exemple<br>
 
 ### Configuration de l’application meeting
 
@@ -1378,6 +1413,15 @@ Mettre `USE_PLAYLIST` à True pour activer cette application.<br>
 
   >> Les clés VAPID sont nécessaires à la lib [django-webpush](https://github.com/safwanrahman/django-webpush).<br>
   >> Elles peuvent être générées avec [web-push-codelab.glitch.me](https://web-push-codelab.glitch.me/).<br>
+
+### Configuration de l'application quiz
+
+Application Quiz pour ajouter des questions sur les vidéos.<br>
+Mettre `USE_QUIZ` à True pour activer cette application.<br>
+
+* `USE_QUIZ`
+  > valeur par défaut : `True`
+  >> Activation des quiz. Permet aux utilisateurs de créer, répondre et utiliser des quiz dans les vidéos.<br>
 
 ### Configuration de l’application recorder
 

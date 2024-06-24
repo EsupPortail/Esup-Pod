@@ -2,6 +2,126 @@
     {
         "configuration_apps": {
             "description": {
+                "ai_enhancement": {
+                    "description": {
+                        "en": [
+                            "AI Enhancement app to be able to use artificial intelligence enhancements for videos.",
+                            "Set `USE_AI_ENHANCEMENT` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application AI Enhancement pour pouvoir utiliser les améliorations des vidéos par l'intelligence artifficielle.",
+                            "Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "AI_ENHANCEMENT_API_URL": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "API URL for the AI video enhancement.",
+                                    "Example: 'https://aristote.univ.fr/api'",
+                                    "Project Link: https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                ],
+                                "fr": [
+                                    "L’URL de l’API pour l’IA d’amélioration des vidéos.",
+                                    "Exemple : 'https://aristote.univ.fr/api'",
+                                    "Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.6.0"
+                        },
+                        "AI_ENHANCEMENT_API_VERSION": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "API version for the AI video enhancement."
+                                ],
+                                "fr": [
+                                    "La version de l’API pour l’IA d’amélioration des vidéos."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
+                        },
+                        "AI_ENHANCEMENT_CGU_URL": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "URL for General Terms and Conditions for API uses for the AI video enhancement.",
+                                    "Example: 'https://aristote.univ.fr/cgu'",
+                                    "Project Link: https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                ],
+                                "fr": [
+                                    "L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.",
+                                    "Exemple : 'https://aristote.univ.fr/cgu'",
+                                    "Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
+                        },
+                        "AI_ENHANCEMENT_CLIENT_ID": {
+                            "default_value": "mocked_id",
+                            "description": {
+                                "en": [
+                                    "The video enhancement AI client ID.",
+                                    "Example: 'v1'"
+                                ],
+                                "fr": [
+                                    "L’ID du client de l’IA d’amélioration des vidéos.",
+                                    "Exemple : 'v1'"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
+                        },
+                        "AI_ENHANCEMENT_CLIENT_SECRET": {
+                            "default_value": "mocked_secret",
+                            "description": {
+                                "en": [
+                                    "The video enhancement AI client secret password."
+                                ],
+                                "fr": [
+                                    "Le mot de passe secret du client de l’IA d’amélioration des vidéos."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
+                        },
+
+                        "AI_ENHANCEMENT_FIELDS_HELP_TEXT": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "Set of help texts displayed with the form for improving a video with Aristotle's AI."
+                                ],
+                                "fr": [
+                                    "Ensemble des textes d’aide affichés avec le formulaire d'amélioration d'une vidéo avec l'IA d'Aristote."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
+                        },
+                        "USE_AI_ENHANCEMENT": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Activation of artificial intelligence enhancements. Allows users to use it."
+                                ],
+                                "fr": [
+                                    "Activation des améliorations de l'intelligence artificielle. Permet aux utilisateurs de l'utiliser."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
+                        }
+                    },
+                    "title": {
+                        "en": "AI Enhancement application configuration",
+                        "fr": "Configuration application AI Enhancement"
+                    }
+                },
                 "authentication": {
                     "description": {},
                     "settings": {
@@ -1468,6 +1588,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "WEBTV_MODE": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Webtv mode allows you to switch POD into a webtv application removing the connection buttons for example"
+                                ],
+                                "fr": [
+                                    "Mode webtv permet de basculer POD en une application webtv ensupprimant les boutons de connexions par exemple"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
                         }
                     },
                     "title": {
@@ -2037,6 +2170,37 @@
                     "title": {
                         "en": "",
                         "fr": "Configuration de l’application progressive_web_app"
+                    }
+                },
+                "quiz": {
+                    "description": {
+                        "en": [
+                            "Quiz App to add various questions on videos.",
+                            "Set `USE_QUIZ` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Quiz pour ajouter des questions sur les vidéos.",
+                            "Mettre `USE_QUIZ` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "USE_QUIZ": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of quizzes. Allows users to create, respond and use quizzes in videos."
+                                ],
+                                "fr": [
+                                    "Activation des quiz. Permet aux utilisateurs de créer, répondre et utiliser des quiz dans les vidéos."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4"
+                        }
+                    },
+                    "title": {
+                        "en": "Quiz application configuration",
+                        "fr": "Configuration de l'application quiz"
                     }
                 },
                 "recorder": {

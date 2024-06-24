@@ -1,6 +1,12 @@
 {% load i18n %}
 {% load video_filters %}
 
+{% if video.is_draft %}
+  <div class="alert alert-secondary">
+    {% trans "This video is in <strong>draft</strong>." %}
+  </div>
+{% endif %}
+
 <div id="video-player">
   <div itemscope itemtype="http://schema.org/VideoObject">
 
@@ -77,12 +83,16 @@
       </div>
     {% endif %}
   {% endif %}
+  {% if enr_is_already_asked %}
+    <div class="alert alert-warning" role="alert">
+      {% trans 'The video is currently waiting for Aristote AI treatment.' %}
+    </div>
+  {% endif %}
   {% if video.get_encoding_step == "" %}
     <div class="alert alert-warning" role="alert">
       {% trans 'The video is currently waiting for encoding.' %}
     </div>
   {% endif %}
-
   {% if video.encoding_in_progress %}
     <div class="alert alert-warning" role="alert">
       {% trans 'The video is currently being encoded.' %}

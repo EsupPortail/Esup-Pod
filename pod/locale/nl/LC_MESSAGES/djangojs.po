@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-16 07:36+0000\n"
-"PO-Revision-Date: 2024-04-15 14:27+0200\n"
+"POT-Creation-Date: 2024-06-11 07:48+0000\n"
+"PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -14,9 +14,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "No discipline"
+msgstr ""
+
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "No description"
+msgstr ""
+
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "An error has occurred. Please try later."
+msgstr ""
 
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
+#: pod/quiz/static/quiz/js/create-quiz.js
 msgid "Get time from the player"
 msgstr ""
 
@@ -65,6 +78,10 @@ msgstr ""
 
 #: pod/chapter/static/js/videojs-chapters.js
 msgid "Chapters"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
+msgid "You will soon be redirected."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
@@ -208,14 +225,6 @@ msgstr ""
 
 #: pod/completion/static/js/completion.js
 msgid "Are you sure you want to delete this overlay?"
-msgstr ""
-
-#: pod/completion/static/js/completion.js
-msgid "Display"
-msgstr ""
-
-#: pod/completion/static/js/completion.js
-msgid "section"
 msgstr ""
 
 #: pod/completion/static/js/completion.js
@@ -427,7 +436,7 @@ msgstr ""
 msgid "Text copied"
 msgstr ""
 
-#: pod/main/static/js/main.js
+#: pod/main/static/js/main.js pod/quiz/static/quiz/js/create-quiz.js
 msgid "There are errors in the form, please correct them."
 msgstr ""
 
@@ -601,6 +610,68 @@ msgstr ""
 
 #: pod/progressive_web_app/static/js/notification-toast.js
 msgid "Error while subscribing to push notifications."
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "The short answer"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Short answer"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "The long answer"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Long answer"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "Select the choice #%s as correct answer."
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "Remove choice %s"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "Choice #%s"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "Choices for question #%s"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Add a choice"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "Remove choice #%s"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "choice #%s"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Choice"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/video-quiz-submit.js
+msgid "Correct answer given"
+msgstr ""
+
+#: pod/quiz/static/quiz/js/video-quiz-submit.js
+msgid "Incorrect answer given"
 msgstr ""
 
 #: pod/video/static/js/ajax-display-channels.js

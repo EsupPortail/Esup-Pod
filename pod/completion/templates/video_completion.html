@@ -2,30 +2,32 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load video_quiz %}
 
 {% block page_extra_head %}
-<!-- media -->
-<link rel="stylesheet" href="{% static 'css/completion.css' %}?ver={{VERSION}}">
-
+  <!-- media -->
+  <link rel="stylesheet" href="{% static 'css/completion.css' %}?ver={{VERSION}}">
 {% endblock page_extra_head %}
+
 {% block breadcrumbs %}
-{{block.super}}
+  {{ block.super }}
   <li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans "Dashboard" %}</a></li>
   <li class="breadcrumb-item">
-    <a href="{% url 'video:video' slug=video.slug %}" title="{{video.title}}">
-      {{video.title|title|truncatechars:45}}
+    <a href="{% url 'video:video' slug=video.slug %}" title="{{ video.title }}">
+      {{ video.title|title|truncatechars:45 }}
     </a>
   </li>
   <li class="breadcrumb-item active" aria-current="page">
     {% trans "Video additions" %}
   </li>
 {% endblock %}
+
 {% block page_content %}
 
 <div class="accordion">
   <div class="accordion-item">
     <h2 class="accordion-header">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#compContributors" aria-expanded="true" aria-controls="compContributors">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compContributors" aria-expanded="false" aria-controls="compContributors">
         {% trans 'Contributor(s)' %}
       </button>
     </h2>
@@ -49,7 +51,7 @@
   {% if request.user.is_staff %}
     <div class="accordion-item">
       <h2 class="accordion-header">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#compSubtitles" aria-expanded="true" aria-controls="compSubtitles">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compSubtitles" aria-expanded="false" aria-controls="compSubtitles">
           {% trans 'Subtitle(s) and Caption(s)' %}
         </button>
       </h2>
@@ -78,7 +80,7 @@
 
     <div class="accordion-item">
       <h2 class="accordion-header">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#compDocument" aria-expanded="true" aria-controls="compDocument">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compDocument" aria-expanded="false" aria-controls="compDocument">
           {% trans 'Additional resource(s)' %}
         </button>
       </h2>
@@ -102,7 +104,7 @@
 
     <div class="accordion-item">
       <h2 class="accordion-header">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#compOverlay" aria-expanded="true" aria-controls="compOverlay">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compOverlay" aria-expanded="false" aria-controls="compOverlay">
           {% trans 'Overlay(s)' %}
         </button>
       </h2>
@@ -112,7 +114,7 @@
 
           <span id="form_overlay">
             {% if form_overlay %}
-            {% include 'overlay/form_overlay.html' with form_overlay=form_overlay %}
+              {% include 'overlay/form_overlay.html' with form_overlay=form_overlay %}
             {% endif %}
           </span>
           <form class="form_new completion" id="form_new_overlay" action="{% url 'video:completion:video_completion_overlay' slug=video.slug %}" method="POST">
@@ -123,6 +125,28 @@
         </div>
       </div>
     </div>
+
+    {% if USE_QUIZ %}
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compQuiz" aria-expanded="false" aria-controls="compQuiz">
+            {% trans 'Quiz' %}
+          </button>
+        </h2>
+        <div id="compQuiz" class="accordion-collapse collapse">
+          <div class="accordion-body">
+            {% is_quiz_accessible video as is_quiz_accessible %}
+            {% if is_quiz_accessible %}
+              <a class="btn btn-primary btn-sm m-1" href="{% url 'quiz:video_quiz' video.slug %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Answer the quiz" %}" role="button">
+                <i class="bi bi-controller pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                <span class="ms-1 d-none d-md-inline">{% trans 'Answer the quiz' %}</span>
+              </a>
+            {% endif %}
+            {% include 'quiz/manage_quiz.html' %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
   {% endif %}
 </div>
 {% endblock page_content %}
@@ -143,19 +167,19 @@
   <h2 class="card-header card-title pod-card__title h4">{% trans "Help"%}</h2>
   <div class="card-body">
     <div id="contributor-info">
-      <button class="btn btn-link rounded-0 pod-btn" id="heading-1" data-bs-toggle="collapse" data-bs-target="#collapse-1" aria-expanded="false" aria-controls="collapse-1">
+      <button class="btn btn-link rounded-0 pod-btn" id="heading-1" data-bs-toggle="collapse" data-bs-target="#collapse-contributor" aria-expanded="false" aria-controls="collapse-contributor">
         {% trans 'Contributor(s)' %}
       </button>
-      <div id="collapse-1" class="collapse card-text small">
+      <div id="collapse-contributor" class="collapse card-text small">
         <p>{% trans 'List of people related to this video.' %}</p>
         <p>{% trans 'A contributor must at least have a name and a role. You can also join the email of this contributor as well as a link (professional website for example).' %}</p>
       </div>
     </div>
     <div id="track-info">
-      <button class="btn btn-link rounded-0 pod-btn" id="heading-2" data-bs-toggle="collapse" data-bs-target="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
+      <button class="btn btn-link rounded-0 pod-btn" id="heading-2" data-bs-toggle="collapse" data-bs-target="#collapse-track" aria-expanded="false" aria-controls="collapse-track">
         {% trans 'Subtitle(s) and Caption(s)' %}
       </button>
-      <div id="collapse-2" class="collapse card-text small">
+      <div id="collapse-track" class="collapse card-text small">
         <p>{% trans 'Subtitle(s) and/or captions(s) related to this video.' %}</p>
         <!-- <p>{% trans 'Several web sites allows you to subtitle or caption videos (for example: Amara)' %}</p> -->
         <p>{% trans 'You can add several subtitle or caption files to a single video (for example, in order to subtitle or caption this video in several languages' %}</p>
@@ -165,13 +189,17 @@
         <ul class="list-group">
           {% for vid in video.get_video_mp4 %}
             <li class="list-group-item">
-              <label for="vid_{{vid.name}}">{{vid.name}}{% trans ":" %}</label>
+              <label for="vid_{{vid.name}}">
+                {% blocktrans with name=vid.name %}{{ name }}:{% endblocktrans %}
+              </label>
               <input id="vid_{{vid.name}}" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly>
             </li>
           {% endfor %}
           {% if video.is_video == False and video.get_video_mp3 %}
             <li class="list-group-item">
-              <label for="aud_source_url">{{video.get_video_mp3.name}}{% trans ":" %}</label>
+              <label for="aud_source_url">
+                {% blocktrans with name=video.get_video_mp3.name %}{{ name }}:{% endblocktrans %}
+              </label>
               <input id="aud_source_url" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly>
             </li>
           {% endif %}
@@ -179,26 +207,38 @@
       </div>
     </div>
     <div id="document-info">
-      <button class="btn btn-link rounded-0 pod-btn" id="heading-3" data-bs-toggle="collapse" data-bs-target="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
+      <button class="btn btn-link rounded-0 pod-btn" id="heading-3" data-bs-toggle="collapse" data-bs-target="#collapse-document" aria-expanded="false" aria-controls="collapse-document">
         {% trans 'Additional resource(s)' %}
       </button>
-      <div id="collapse-3" class="collapse card-text small">
+      <div id="collapse-document" class="collapse card-text small">
         <p>{% trans 'Document(s) related to this video. These documents will be downloadable by users.' %}</p>
         <p>{% trans 'Be careful, not to be confused with enrichment. These documents are attached to the video, not integrated.' %}</p>
       </div>
     </div>
     <div id="overlay-info">
-      <button class="btn btn-link rounded-0 pod-btn" id="heading-4" data-bs-toggle="collapse" data-bs-target="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
+      <button class="btn btn-link rounded-0 pod-btn" id="heading-4" data-bs-toggle="collapse" data-bs-target="#collapse-overlay" aria-expanded="false" aria-controls="collapse-overlay">
         {% trans 'Overlay(s)' %}
       </button>
-      <div id="collapse-4" class="collapse card-text small">
+      <div id="collapse-overlay" class="collapse card-text small">
         <p>{% trans 'Overlay allows you to display text (with ou without html tag) over the video at specific times and positions.' %}</p>
         <p>{% trans 'You can add a solid background or a transparent background to the text you want to display with the option "Show background"' %}</p>
       </div>
     </div>
+    <!-- Quiz -->
+    {% if USE_QUIZ %}
+      <div id="quiz-info">
+        <button class="btn btn-link rounded-0 pod-btn" id="heading-5" data-bs-toggle="collapse" data-bs-target="#collapse-quiz" aria-expanded="false" aria-controls="collapse-quiz">
+          {% trans 'Quiz' %}
+        </button>
+        <div id="collapse-quiz" class="collapse card-text small">
+          <p>{% trans 'A Quiz allow you to test the memorization and comprehension of your video.' %}</p>
+        </div>
+      </div>
+    {% endif %}
   </div>
 </div>
 {% endblock page_aside %}
+
 {% block more_script %}
-<script src="{% static 'js/completion.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/completion.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}

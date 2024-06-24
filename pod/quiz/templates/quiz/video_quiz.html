@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load filters %}
+{% load video_quiz %}
+
+{% block page_extra_head %}
+  {% include 'videos/video-header.html' %}
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item">
+    <a href="{% url 'video:video' slug=video.slug %}" title="{{ video.title }}">
+      {{ video.title|title|truncatechars:45 }}
+    </a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">
+    {{ page_title|title|truncatechars:45 }}
+  </li>
+{% endblock %}
+
+
+{% block page_content %}
+  {% if quiz.is_draft %}
+    <div class="alert alert-secondary">
+      <p>{% trans "This quiz is in <strong>draft</strong>." %}</p>
+    </div>
+  {% endif %}
+
+  {% if form_submitted and questions_form_errors.items|length == 0 %}
+    {% if percentage_score >= 75 %}
+      <div class="alert alert-success" role="alert">
+        <p>{% trans "Your score is:" %} {{ percentage_score|floatformat:2 }}%</p>
+        <p class="m-0">{% trans "That’s great! Bravo!" %}</p>
+      </div>
+    {% elif percentage_score >= 45 %}
+      <div class="alert alert-warning" role="alert">
+        <p>{% trans "Your score is:" %} {{ percentage_score|floatformat:2 }}%</p>
+        <p class="m-0">{% trans "Can do better." %}</p>
+      </div>
+    {% else %}
+      <div class="alert alert-danger" role="alert">
+        <p>{% trans "Your score is:" %} {{ percentage_score|floatformat:2 }}%</p>
+        <p class="m-0">{% trans "It’s not terrible, but there’s room for improvement!" %}</p>
+      </div>
+    {% endif %}
+  {% elif questions_form_errors %}
+    <div class="alert alert-danger" role="alert">
+      <p>{% trans "Error found in form" %}</p>
+      {% for question_title, question_error in questions_form_errors.items %}
+        <p>
+          {% blocktranslate with title=question_title error=question_error|lower %}For the question “{{ title }}”, {{ error }}.{% endblocktranslate %}
+        </p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <hr>
+
+  <form method="post" id="quiz-form" action="{% url 'quiz:video_quiz' video_slug=video.slug %}">
+    {% csrf_token %}
+    <div class="d-flex flex-column gap-4">
+      {% for question in quiz.get_questions %}
+        <fieldset class="border border-2 border-{% get_question_color form_submitted questions_stats|dict_get:question.id %} rounded-3 p-4 question-container" data-questionid="question_{{question.id}}">
+          <legend>
+            <i class="bi bi-patch-question" aria-hidden='true'></i>
+            {% trans "Question #" %}<span class="question-number">{{ forloop.counter0 |add:1 }}</span>
+          </legend>
+          {% with form=question.get_question_form %}
+            {% for field in form.visible_fields %}
+              {% spaceless %}
+                <div class="mb-3">
+                  <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
+                    {{ field.errors }}
+                    {% if "list-unstyled" in field.field.widget.attrs.class %}
+                      {{ question.title }}
+                      {{ field }}
+                    {% else %}
+                      <label for="{{ field.id_for_label }}">{{ question.title }}</label>
+                      {{ field }}
+                    {% endif %}
+                    {% if field.help_text %}
+                      <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+                    {% endif %}
+                    {% if field.field.required %}
+                      <div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endspaceless %}
+            {% endfor %}
+          {% endwith %}
+
+          {% if form_submitted and quiz.show_correct_answers %}
+            <div class="alert alert-{% get_question_color form_submitted questions_stats|dict_get:question.id %}">
+              <p><strong>{% trans "Correct answer:" %}</strong> {{ question.get_answer }}</p>
+              {% if question.explanation %}
+                <p><strong>{% trans "Explanation:" %}</strong> {{ question.explanation }}</p>
+              {% endif %}
+              {% if question.start_timestamp is not null %}
+                <a class="btn btn-primary show-response-button" start="{{ question.start_timestamp}}" end="{{ question.end_timestamp }}" role="button">
+                  {% trans "Show answer in the video" %}
+                </a>
+              {% endif %}
+            </div>
+          {% endif %}
+        </fieldset>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-2">
+      {% if form_submitted %}
+        <a role="button" href="{% url 'quiz:video_quiz' video.slug %}" class="btn btn-primary">
+          <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
+          {% trans "Redo the quiz" %}
+        </a>
+      {% else %}
+        <button type="submit" id="quiz-submission-button" class="btn btn-primary">
+          <i class="bi bi-check2-square" aria-hidden="true"></i>
+          {% trans "Validate" %}
+        </button>
+      {% endif %}
+      <a href="{% url 'video:video' slug=video.slug %}" class="btn btn-secondary">
+        <i class="bi bi-file-play" aria-hidden="true"></i>
+        {% trans "Back to video" %}
+      </a>
+    </div>
+  </form>
+{% endblock page_content %}
+
+{% block page_aside %}
+  {% if video.owner == request.user or request.user.is_superuser or perms.chapter.add_chapter or request.user in video.additional_owners.all %}
+    <div class="card" id="card-manage-video">
+      <h2 class="card-header card-title pod-card__title h4">
+        <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage video"%}
+      </h2>
+      <div class="card-body card-text text-center">
+        {% include "videos/link_video.html" with hide_favorite_link=True %}
+      </div>
+    </div>
+    <div class="card" id="card-manage-quiz">
+      <h2 class="card-header card-title pod-card__title h4">
+        <i class="bi bi-gear" aria-hidden="true"></i>&nbsp;{% trans "Manage quiz"%}
+      </h2>
+      <div class="card-body card-text d-flex justify-content-evenly">
+        {% include 'quiz/manage_quiz.html' %}
+      </div>
+    </div>
+  {% endif %}
+  <div class="card" id="card-quiz-player">
+    <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-film"></i>&nbsp;{% trans "Video"%}</h2>
+    {% include 'videos/video-element.html' %}
+  </div>
+{% endblock page_aside %}
+
+{% block more_script %}
+  <script>
+    const video_duration = {{ video.duration }};
+  </script>
+  {% include "videos/video-script.html" %}
+
+  {% if form_submitted %}
+    {{ questions_answers|json_script:"questions_answers" }}
+    <script>
+      const questions_answers = JSON.parse(document.getElementById('questions_answers').textContent);
+    </script>
+    <script src="{% static 'quiz/js/video-quiz-submit.js' %}?ver={{VERSION}}"></script>
+  {% endif %}
+{% endblock more_script %}

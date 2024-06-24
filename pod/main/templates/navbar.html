@@ -172,7 +172,7 @@
               <li class="pod-navbar__theme-switch__item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses darker colors' %}">
                 <label for="checkbox-darkmode">
                   <span class="form-label">{% trans 'Dark mode' %}</span>
-                  <span class="theme-switch">
+                  <span class="pod-switch">
                     <input type="checkbox" id="checkbox-darkmode">
                     <span class="slider">
                       <i class="bi bi-sun" aria-hidden="true"></i>
@@ -185,7 +185,7 @@
               <li class="pod-navbar__theme-switch__item" id="dyslexia-switch-wrapper" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Uses a font more suitable for people with dyslexia.' %}">
                 <label for="checkbox-dyslexia">
                   <span class="form-label">{% trans 'Dyslexia mode' %}</span>
-                  <span class="dyslexia-switch">
+                  <span class="pod-switch">
                     <input type="checkbox" id="checkbox-dyslexia">
                     <span class="slider">
                       <i class="bi bi-eye-slash" aria-hidden="true"></i>
@@ -195,6 +195,18 @@
                 </label>
               </li>
             {% endif %}
+            <li class="pod-navbar__theme-switch__item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Automaticaly display subtitle at the start of each video play.' %} {% trans 'If no subtitle corresponds to the current language, the first available will be selected.'%}">
+              <label for="checkbox-subtitle">
+                <span class="form-label">{% trans 'Auto show subtitles' %}</span>
+                <span class="pod-switch">
+                  <input type="checkbox" id="checkbox-subtitle">
+                  <span class="slider">
+                    <i class="icon-subtitle" aria-hidden="true"></i>
+                    <i class="icon-subtitle slash" aria-hidden="true"></i>
+                  </span>
+                </span>
+              </label>
+            </li>
           </ul>
         </div>
       </div>
@@ -323,14 +335,16 @@
         <!-- end offcanvas -->
       </li>
     {% else %}{# user not authenticated #}
-      {% get_setting "LOGIN_URL" "/authentication_login/" as LOGIN_URL %}
-      {% if request.path != LOGIN_URL %}
-        <li class="nav-item dropdown login me-2" id="nav-authentication">
-          {% get_url_referrer request as url_referrer %}
-          <a class="btn btn-primary btn-sm ps-2 pe-2 d-flex" href="{% url 'authentication:authentication_login' %}{{ url_referrer }}" title="{% trans 'Open login page' %}" data-bs-toggle="tooltip">
-            <i class="bi bi-person-circle" aria-hidden="true"></i> <span class="ms-1 d-none d-lg-block">{% trans 'Log in' %}</span>
-          </a>
-        </li>
+      {% if not WEBTV_MODE %}
+        {% get_setting "LOGIN_URL" "/authentication_login/" as LOGIN_URL %}
+        {% if request.path != LOGIN_URL %}
+         <li class="nav-item dropdown login me-2" id="nav-authentication">
+           {% get_url_referrer request as url_referrer %}
+           <a class="btn btn-primary btn-sm ps-2 pe-2 d-flex" href="{% url 'authentication:authentication_login' %}{{ url_referrer }}" title="{% trans 'Open login page' %}" data-bs-toggle="tooltip">
+             <i class="bi bi-person-circle" aria-hidden="true"></i> <span class="ms-1 d-none d-lg-block">{% trans 'Log in' %}</span>
+            </a>
+          </li>
+        {% endif %}
       {% endif %}
     {% endif %}
   </ul>

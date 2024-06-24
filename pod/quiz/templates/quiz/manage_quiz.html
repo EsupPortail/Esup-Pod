@@ -1,0 +1,25 @@
+{% load i18n %}
+{% load video_quiz %}
+
+{% is_quiz_exists video as is_quiz_exists %}
+{% if video.owner == request.user or request.user in video.additional_owners.all %}
+  {% if is_quiz_exists %}
+    {% if not hide_edit %}
+      <a class="btn btn-secondary btn-sm m-1" href="{% url 'quiz:edit_quiz' video_slug=video.slug %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Edit your quiz" %}" role="button">
+        <i class="bi bi-pencil pod-nav-link-icon mx-1" aria-hidden="true"></i>
+        <span class="ms-1 d-none d-md-inline">{% trans 'Edit your quiz' %}</span>
+      </a>
+    {% endif %}
+    <a class="btn btn-danger btn-sm m-1" href="{% url 'quiz:remove_quiz' video_slug=video.slug %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Delete your quiz" %}" role="button">
+      <i class="bi bi-trash pod-nav-link-icon mx-1" aria-hidden="true"></i>
+      <span class="ms-1 d-none d-md-inline">{% trans 'Delete your quiz' %}</span>
+    </a>
+  {% else %}
+    {% if not hide_create %}
+      <a class="btn btn-secondary btn-sm m-1" href="{% url 'quiz:add_quiz' video_slug=video.slug %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Create a quiz" %}" role="button">
+        <i class="bi bi-patch-question pod-nav-link-icon mx-1" aria-hidden="true"></i>
+        <span class="ms-1 d-none d-md-inline">{% trans 'Create a quiz' %}</span>
+      </a>
+    {% endif %}
+  {% endif %}
+{% endif %}

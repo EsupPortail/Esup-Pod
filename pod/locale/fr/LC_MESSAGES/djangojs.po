@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-16 07:36+0000\n"
+"POT-Creation-Date: 2024-06-11 07:48+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -16,7 +16,20 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.4.4\n"
 
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "No discipline"
+msgstr "Aucune discipline"
+
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "No description"
+msgstr "Aucune description"
+
+#: pod/ai_enhancement/static/ai_enhancement/js/enrich-form.js
+msgid "An error has occurred. Please try later."
+msgstr "Une erreur est survenue. Merci d’essayer plus tard."
+
 #: pod/chapter/static/js/chapters.js pod/enrichment/static/js/enrichment.js
+#: pod/quiz/static/quiz/js/create-quiz.js
 msgid "Get time from the player"
 msgstr "Obtenir le temps du lecteur"
 
@@ -70,6 +83,10 @@ msgstr "Veuillez entrer un correct temps de début compris entre 0 et"
 #: pod/chapter/static/js/videojs-chapters.js
 msgid "Chapters"
 msgstr "Chapitres"
+
+#: pod/completion/static/js/caption_maker.js
+msgid "You will soon be redirected."
+msgstr "Vous serez bientôt redirigé."
 
 #: pod/completion/static/js/caption_maker.js
 msgid ""
@@ -225,14 +242,6 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer ce document ?"
 #: pod/completion/static/js/completion.js
 msgid "Are you sure you want to delete this overlay?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer cette superposition ?"
-
-#: pod/completion/static/js/completion.js
-msgid "Display"
-msgstr "Afficher"
-
-#: pod/completion/static/js/completion.js
-msgid "section"
-msgstr "section"
 
 #: pod/completion/static/js/completion.js
 msgid "Please enter a name from 2 to 100 caracteres."
@@ -449,7 +458,7 @@ msgstr "Action réalisée avec succès."
 msgid "Text copied"
 msgstr "Texte copié"
 
-#: pod/main/static/js/main.js
+#: pod/main/static/js/main.js pod/quiz/static/quiz/js/create-quiz.js
 msgid "There are errors in the form, please correct them."
 msgstr "Des erreurs sont présentes dans le formulaire, veuillez les corriger."
 
@@ -635,6 +644,68 @@ msgstr "Souscription aux notifications réussie."
 msgid "Error while subscribing to push notifications."
 msgstr "Une erreur est survenue lors de la souscription aux notifications."
 
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "The short answer"
+msgstr "La réponse courte"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Short answer"
+msgstr "Réponse courte"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "The long answer"
+msgstr "La réponse longue"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Long answer"
+msgstr "Réponse longue"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "Select the choice #%s as correct answer."
+msgstr "Selectionnez le choix n°%s comme réponse correcte."
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "Remove choice %s"
+msgstr "Supprimer le choix n°%s"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "Choice #%s"
+msgstr "Choix n°%s"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "Choices for question #%s"
+msgstr "Choix de la question n°%s"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Add a choice"
+msgstr "Ajouter un choix"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "Remove choice #%s"
+msgstr "Supprimer le choix n°%s"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+#, javascript-format
+msgid "choice #%s"
+msgstr "choix n°%s"
+
+#: pod/quiz/static/quiz/js/create-quiz.js
+msgid "Choice"
+msgstr "Choix"
+
+#: pod/quiz/static/quiz/js/video-quiz-submit.js
+msgid "Correct answer given"
+msgstr "Réponse correcte envoyée"
+
+#: pod/quiz/static/quiz/js/video-quiz-submit.js
+msgid "Incorrect answer given"
+msgstr "Réponse incorrecte envoyée"
+
 #: pod/video/static/js/ajax-display-channels.js
 msgid "%(count)s channel"
 msgid_plural "%(count)s channels"
@@ -741,8 +812,8 @@ msgstr[1] "%s commentaires"
 #: pod/video/static/js/dashboard.js
 msgid "Please confirm the editing of the following video:"
 msgid_plural "Please confirm the editing of the following videos:"
-msgstr[0] "Veuillez confirmer l'édition de la vidéo suivante :"
-msgstr[1] "Veuillez confirmer l'édition des vidéos suivantes :"
+msgstr[0] "Veuillez confirmer l’édition de la vidéo suivante :"
+msgstr[1] "Veuillez confirmer l’édition des vidéos suivantes :"
 
 #: pod/video/static/js/dashboard.js
 msgid "Please confirm the deletion of the following video:"
@@ -876,7 +947,7 @@ msgstr "Supprimer la catégorie"
 
 #: pod/video/static/js/video_category.js
 msgid "Success!"
-msgstr "Succès !"
+msgstr "Succès !"
 
 #: pod/video/static/js/video_category.js
 msgid "Error…"
@@ -963,15 +1034,3 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
-
-#~ msgid "Change your picture"
-#~ msgstr "Changer votre image"
-
-#~ msgid "Add your picture"
-#~ msgstr "Ajouter votre image"
-
-#~ msgid "The chapter"
-#~ msgstr "Le chapitre"
-
-#~ msgid "starts at the same time."
-#~ msgstr "commencent au même moment."

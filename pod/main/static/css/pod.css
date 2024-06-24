@@ -847,7 +847,10 @@ span[data-bs-placement] {
 .required_star,
 .form-help-inline {
   color: var(--bs-danger);
-  font-size: 1.3rem;
+}
+
+.form-check-label > .required_star {
+  font-size: 1em;
 }
 
 /* prevent a large link from extending beyond it's container
@@ -1314,8 +1317,32 @@ body {
   margin: 1rem 2rem;
 }
 
+.pod-navbar__theme-switch__item .pod-switch {
+  display: inline-block;
+  height: 24px;
+  position: relative;
+  width: 50px;
+}
+.pod-navbar__theme-switch__item .pod-switch input {
+  width: 100%;
+  height: 100%;
+}
+
+.pod-navbar__theme-switch__item .icon-subtitle::before {
+  display: inline-block;
+  height: 0.925em;
+  width: 0.925em;
+  vertical-align: -0.125em;
+  content: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" version="1.1" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><rect x="2%" y="15%" width="96%" height="70%" rx="5%" ry="5%" fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/><rect x="10%" y="50%" width="22.5%" height="9%" fill="black" stroke="0"/><rect x="42.5%" y="50%" width="47.5%" height="9%" fill="black" stroke="0"/><rect x="10%" y="67%" width="47.5%" height="9%" fill="black" stroke="0"/><rect x="67.5%" y="67%" width="22.5%" height="9%" fill="black" stroke="0"/></svg>');
+}
+
+.pod-navbar__theme-switch__item .icon-subtitle.slash::before {
+  content: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" version="1.1" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><rect x="2%" y="15%" width="96%" height="70%" rx="5%" ry="5%" fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/><rect x="10%" y="50%" width="22.5%" height="9%" fill="black" stroke="0"/><rect x="42.5%" y="50%" width="47.5%" height="9%" fill="black" stroke="0"/><rect x="10%" y="67%" width="47.5%" height="9%" fill="black" stroke="0"/><rect x="67.5%" y="67%" width="22.5%" height="9%" fill="black" stroke="0"/><line x1="2%" y1="2%" x2="98%" y2="98%" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/></svg>');
+}
+
 .pod-navbar__theme-switch__item .form-label {
   flex-grow: 1;
+  max-width: 84%;
 }
 
 .pod-navbar__theme-switch__item .dropdown-menu {
@@ -1377,7 +1404,7 @@ body {
   grid-auto-flow: row;
   grid-auto-rows: min-content;
   background: var(--pod-background-neutre2-bloc);
-  padding: 1rem;
+  padding: 1.25rem;
   border-radius: var(--bs-border-radius-sm);
   /*
   Commented in 3.6.0
@@ -1836,4 +1863,10 @@ body[data-admin-utc-offset]
   font-weight: 400;
   font-size: 13px;
   text-align: left;
+}
+
+/** QUIZ **/
+
+.question-container li.bi::before {
+  margin-right: 0.5em;
 }

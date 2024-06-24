@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-17 15:36+0000\n"
-"PO-Revision-Date: 2024-05-15 09:01+0200\n"
+"POT-Creation-Date: 2024-06-11 07:48+0000\n"
+"PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -15,6 +15,507 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.4.4\n"
+
+#: pod/ai_enhancement/apps.py
+msgid "Artificial Intelligence Enhancement"
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+#, fuzzy
+#| msgid "Please enter a title."
+msgid "Choose the title."
+msgstr "Voer een titel in."
+
+#: pod/ai_enhancement/forms.py
+msgid "The initial title is loading…"
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "Your initial title."
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "The title proposed by the Aristote AI is loading…"
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "The title proposed by the Aristote AI."
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+#, fuzzy
+#| msgid "Please enter a title."
+msgid "Choose the description."
+msgstr "Voer een titel in."
+
+#: pod/ai_enhancement/forms.py
+msgid "The initial description is loading…"
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "Your initial description."
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "The description proposed by the Aristote AI is loading…"
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "The description proposed by the Aristote AI."
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "Choose the tags."
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "The tags proposed by the Aristote AI is loading…"
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "Choose the discipline."
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "The initial discipline is loading…"
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "Your initial discipline."
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "The discipline proposed by the Aristote AI is loading…"
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "The discipline proposed by the Aristote AI."
+msgstr ""
+
+#: pod/ai_enhancement/forms.py pod/chapter/templates/chapter/list_chapter.html
+#: pod/completion/models.py pod/completion/templates/overlay/list_overlay.html
+#: pod/dressing/models.py pod/dressing/templates/my_dressings.html
+#: pod/dressing/templates/video_dressing.html
+#: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
+#: pod/main/models.py pod/main/views.py pod/playlist/forms.py
+#: pod/playlist/models.py pod/quiz/forms.py pod/quiz/models.py
+#: pod/video/models.py pod/video/templates/channel/list_theme.html
+#: pod/video/templates/videos/video_sort_select.html
+msgid "Title"
+msgstr "Titel"
+
+#: pod/ai_enhancement/forms.py
+msgid ""
+"\n"
+"            Please choose a title between 1 and 250 characters.\n"
+"        "
+msgstr ""
+
+#: pod/ai_enhancement/forms.py pod/live/models.py pod/main/forms.py
+#: pod/main/models.py pod/playlist/forms.py pod/playlist/models.py
+#: pod/video/forms.py pod/video/models.py
+#: pod/video/templates/channel/list_theme.html
+#: pod/video/templates/videos/dashboard.html
+msgid "Description"
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+#, fuzzy
+#| msgid "Please enter a title."
+msgid "Please choose a description."
+msgstr "Voer een titel in."
+
+#: pod/ai_enhancement/forms.py
+msgid ""
+"\n"
+"            Please choose tags for your video.\n"
+"            Separate tags with spaces, enclose the tags consist of several "
+"words in quotation marks.\n"
+"        "
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+#: pod/import_video/templates/import_video/filter_aside.html
+#: pod/main/templates/aside.html
+#: pod/meeting/templates/meeting/filter_aside_recording.html
+#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
+#: pod/video/templates/videos/dashboard.html
+#: pod/video/templates/videos/filter_aside.html
+#: pod/video_search/templates/search/search.html
+msgid "Tags"
+msgstr ""
+
+#: pod/ai_enhancement/forms.py pod/video/models.py
+#: pod/video_search/templates/search/search.html
+msgid "Discipline"
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+#, fuzzy
+#| msgid "Please enter a title."
+msgid "Please choose the discipline of your video."
+msgstr "Voer een titel in."
+
+#: pod/ai_enhancement/forms.py
+msgid "I agree to use third-party services"
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid ""
+"Please check this box if you agree to use a third-party service to improve "
+"this video."
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "For more information."
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "I want to delete this enhancement"
+msgstr ""
+
+#: pod/ai_enhancement/forms.py
+msgid "Please check this box if you want to delete this enhance."
+msgstr ""
+
+#: pod/ai_enhancement/models.py
+msgid "AI enhancement"
+msgstr ""
+
+#: pod/ai_enhancement/models.py
+msgid "AI enhancements"
+msgstr ""
+
+#: pod/ai_enhancement/models.py pod/completion/models.py
+#: pod/enrichment/models.py pod/playlist/models.py pod/quiz/models.py
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/video_quiz.html pod/recorder/models.py
+#: pod/video/models.py pod/video/templates/channel/channel.html
+#: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
+msgid "Video"
+msgstr ""
+
+#: pod/ai_enhancement/models.py
+#, fuzzy
+#| msgid "Select the video to move by clicking and holding."
+msgid "Select the video to enhance with AI"
+msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
+
+#: pod/ai_enhancement/models.py
+msgid "Created at"
+msgstr ""
+
+#: pod/ai_enhancement/models.py
+msgid "The date and time when the enhancement was created"
+msgstr ""
+
+#: pod/ai_enhancement/models.py
+msgid "Updated at"
+msgstr ""
+
+#: pod/ai_enhancement/models.py
+msgid "The date and time when the enhancement was updated"
+msgstr ""
+
+#: pod/ai_enhancement/models.py
+msgid "Is ready"
+msgstr ""
+
+#: pod/ai_enhancement/models.py
+msgid "Check if the enhancement is ready"
+msgstr ""
+
+#: pod/ai_enhancement/models.py
+msgid "AI enhancement ID in Aristote"
+msgstr ""
+
+#: pod/ai_enhancement/models.py
+msgid "Enter the ID of the enhancement in Aristote"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+#: pod/dressing/models.py pod/video/apps.py pod/video/models.py
+#: pod/video/templates/videos/video_breadcrumbs.html
+#: pod/video/templates/videos/videos.html
+msgid "Videos"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+#, python-format
+msgid "Video name: %(video.title)s"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Import subtitle"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Import the quiz"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Remove this enhancement"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+#: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/ai_enhancement/templates/delete_enhancement.html
+#: pod/ai_enhancement/views.py
+#: pod/authentication/templates/userpicture/userpicture.html
+#: pod/authentication/tests/test_views.py
+#: pod/bbb/templates/bbb/live_publish_meeting.html
+#: pod/bbb/templates/bbb/publish_meeting.html pod/bbb/views.py
+#: pod/completion/templates/video_caption_maker.html
+#: pod/dressing/templates/dressing_delete.html
+#: pod/dressing/templates/dressing_edit.html pod/dressing/views.py
+#: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/import_video/views.py pod/live/templates/live/event-form.html
+#: pod/live/templates/live/event_delete.html
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html pod/live/views.py
+#: pod/main/templates/contact_us.html pod/main/tests/test_views.py
+#: pod/main/views.py pod/meeting/templates/meeting/add_or_edit.html
+#: pod/meeting/templates/meeting/delete.html
+#: pod/meeting/templates/meeting/invite.html
+#: pod/meeting/templates/meeting/join.html pod/meeting/views.py
+#: pod/playlist/templates/playlist/add_or_edit.html
+#: pod/playlist/templates/playlist/delete.html
+#: pod/playlist/templates/playlist/protected-playlist-form.html
+#: pod/playlist/tests/test_views.py pod/playlist/views.py
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/delete_quiz.html pod/quiz/tests/test_views.py
+#: pod/quiz/views.py pod/recorder/templates/recorder/add_recording.html
+#: pod/recorder/templates/recorder/record_delete.html pod/recorder/views.py
+#: pod/video/templates/channel/channel_edit.html
+#: pod/video/templates/videos/dashboard.html
+#: pod/video/templates/videos/video-form.html
+#: pod/video/templates/videos/video_delete.html
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_note_comments_display.html
+#: pod/video/templates/videos/video_note_display.html
+#: pod/video/templates/videos/video_notes.html pod/video/views.py
+#: pod/video_search/templates/search/search.html
+msgid "One or more errors have been found in the form."
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+#: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/ai_enhancement/templates/delete_enhancement.html
+#: pod/authentication/templates/userpicture/userpicture.html
+#: pod/bbb/templates/bbb/live_publish_meeting.html
+#: pod/bbb/templates/bbb/publish_meeting.html
+#: pod/completion/templates/video_caption_maker.html
+#: pod/dressing/templates/dressing_delete.html
+#: pod/dressing/templates/dressing_edit.html
+#: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/import_video/templates/import_video/add_or_edit.html
+#: pod/live/templates/live/event-form.html
+#: pod/live/templates/live/event_delete.html
+#: pod/live/templates/live/event_edit.html
+#: pod/live/templates/live/event_immediate_edit.html
+#: pod/main/templates/contact_us.html
+#: pod/meeting/templates/meeting/add_or_edit.html
+#: pod/meeting/templates/meeting/delete.html
+#: pod/meeting/templates/meeting/invite.html
+#: pod/meeting/templates/meeting/join.html
+#: pod/playlist/templates/playlist/add_or_edit.html
+#: pod/playlist/templates/playlist/delete.html
+#: pod/playlist/templates/playlist/protected-playlist-form.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/delete_quiz.html
+#: pod/quiz/templates/quiz/question_form.html
+#: pod/quiz/templates/quiz/video_quiz.html
+#: pod/recorder/templates/recorder/add_recording.html
+#: pod/recorder/templates/recorder/record_delete.html
+#: pod/video/templates/channel/channel_edit.html
+#: pod/video/templates/videos/video-form.html
+#: pod/video/templates/videos/video_delete.html
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_note_comments_display.html
+#: pod/video/templates/videos/video_note_display.html
+#: pod/video/templates/videos/video_notes.html
+msgid "Please provide a valid value for this field."
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Save and go back to the video"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+msgid "Save and go to subtitle part"
+msgstr ""
+
+#: pod/ai_enhancement/templates/choose_video_element.html
+#: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/ai_enhancement/templates/delete_enhancement.html
+#: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
+#: pod/dressing/templates/video_dressing.html
+#: pod/quiz/templates/quiz/delete_quiz.html
+#: pod/video/templates/videos/video_collaborate.html
+#: pod/video/templates/videos/video_delete.html
+msgid "Back to the video"
+msgstr ""
+
+#: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/ai_enhancement/templates/delete_enhancement.html
+msgid "Access the video"
+msgstr ""
+
+#: pod/ai_enhancement/templates/create_enhancement.html
+msgid ""
+"To enhance the video with Aristote AI, please check the box and click "
+"confirm."
+msgstr ""
+
+#: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/ai_enhancement/templates/delete_enhancement.html
+#: pod/dressing/templates/dressing_delete.html
+#: pod/live/templates/live/event_delete.html
+#: pod/meeting/templates/meeting/delete.html
+#: pod/playlist/templates/playlist/delete.html
+#: pod/quiz/templates/quiz/delete_quiz.html
+#: pod/recorder/templates/recorder/record_delete.html
+#: pod/video/templates/videos/video_delete.html
+msgid "Agreement required"
+msgstr ""
+
+#: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/ai_enhancement/templates/delete_enhancement.html
+#, python-format
+msgid "Back to the %(video_title)s video"
+msgstr ""
+
+#: pod/ai_enhancement/templates/create_enhancement.html
+#: pod/ai_enhancement/templates/delete_enhancement.html
+msgid "Confirm"
+msgstr ""
+
+#: pod/ai_enhancement/templates/delete_enhancement.html
+msgid ""
+"To delete this enhancement, please check the box and click confirm. The "
+"video data will also be deleted from Aristote AI."
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/live/templates/live/direct.html
+#: pod/live/templates/live/event-script.html pod/main/context_processors.py
+#: pod/main/templates/base.html pod/main/templates/navbar.html
+#: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
+#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
+#: pod/video/templates/videos/video-script.html pod/video/utils.py
+#: pod/video/views.py pod/video_encode_transcript/utils.py
+msgid "Home"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/video_encode_transcript/utils.py
+#, python-format
+msgid "%(subject)s #%(content_id)s completed"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py
+msgid "Enhancement"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid ""
+"“%(content_title)s” was processed by the AI. Suggestions for improvement are "
+"available on %(site_title)s."
+msgstr ""
+
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid "IA improvement #%(content_id)s completed"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/live/utils.py pod/meeting/utils.py
+#: pod/video_encode_transcript/utils.py
+msgid "Hello,"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py
+#, python-format
+msgid ""
+"IA improvement “%(content_title)s” has been completed, and is now available "
+"on %(site_title)s."
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/meeting/utils.py
+#: pod/video_encode_transcript/utils.py
+msgid "You will find it here:"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/live/utils.py
+#: pod/main/templates/mail/mail.html pod/meeting/utils.py
+#: pod/video/management/commands/create_archive_package.py
+#: pod/video_encode_transcript/utils.py
+msgid "Regards."
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/live/utils.py
+#: pod/video_encode_transcript/utils.py
+msgid "Post by:"
+msgstr ""
+
+#: pod/ai_enhancement/utils.py pod/video_encode_transcript/utils.py
+msgid "the:"
+msgstr ""
+
+#: pod/ai_enhancement/views.py pod/completion/models.py pod/completion/views.py
+#: pod/live/models.py pod/recorder/models.py pod/video/models.py
+msgid "-- Frequently used languages --"
+msgstr ""
+
+#: pod/ai_enhancement/views.py pod/completion/models.py pod/completion/views.py
+#: pod/live/models.py pod/recorder/models.py pod/video/models.py
+msgid "-- All languages --"
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgid "Something wrong… Status error: "
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgid "Error: no response from Aristote AI."
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgid "Enhance the video with Aristote AI"
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgid "You cannot delete the video improvement."
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgid "The video has not been improved."
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgid "Enhancement successfully deleted."
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgid "No enhancement found."
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+#, fuzzy
+#| msgid "Select the video to move by clicking and holding."
+msgid "Delete the video enhancement"
+msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
+
+#: pod/ai_enhancement/views.py
+msgid "You cannot use AI to improve this video."
+msgstr "Vous ne pouvez pas utiliser l'IA pour améliorer cette vidéo."
+
+#: pod/ai_enhancement/views.py
+msgid "Video Caption Maker - Aristote AI Version"
+msgstr ""
+
+#: pod/ai_enhancement/views.py
+msgid "Quiz successfully imported."
+msgstr ""
 
 #: pod/authentication/admin.py pod/main/forms.py
 msgid "Email"
@@ -201,74 +702,6 @@ msgstr ""
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_notes.html
 msgid "Close"
-msgstr ""
-
-#: pod/authentication/templates/userpicture/userpicture.html
-#: pod/authentication/tests/test_views.py
-#: pod/bbb/templates/bbb/live_publish_meeting.html
-#: pod/bbb/templates/bbb/publish_meeting.html pod/bbb/views.py
-#: pod/completion/templates/video_caption_maker.html
-#: pod/dressing/templates/dressing_delete.html
-#: pod/dressing/templates/dressing_edit.html pod/dressing/views.py
-#: pod/enrichment/templates/enrichment/group_enrichment.html
-#: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/import_video/views.py pod/live/templates/live/event-form.html
-#: pod/live/templates/live/event_delete.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html pod/live/views.py
-#: pod/main/templates/contact_us.html pod/main/tests/test_views.py
-#: pod/main/views.py pod/meeting/templates/meeting/add_or_edit.html
-#: pod/meeting/templates/meeting/delete.html
-#: pod/meeting/templates/meeting/invite.html
-#: pod/meeting/templates/meeting/join.html pod/meeting/views.py
-#: pod/playlist/templates/playlist/add_or_edit.html
-#: pod/playlist/templates/playlist/delete.html
-#: pod/playlist/templates/playlist/protected-playlist-form.html
-#: pod/playlist/tests/test_views.py pod/playlist/views.py
-#: pod/recorder/templates/recorder/add_recording.html
-#: pod/recorder/templates/recorder/record_delete.html pod/recorder/views.py
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/videos/dashboard.html
-#: pod/video/templates/videos/video-form.html
-#: pod/video/templates/videos/video_delete.html
-#: pod/video/templates/videos/video_edit.html
-#: pod/video/templates/videos/video_note_comments_display.html
-#: pod/video/templates/videos/video_note_display.html
-#: pod/video/templates/videos/video_notes.html pod/video/views.py
-#: pod/video_search/templates/search/search.html
-msgid "One or more errors have been found in the form."
-msgstr ""
-
-#: pod/authentication/templates/userpicture/userpicture.html
-#: pod/bbb/templates/bbb/live_publish_meeting.html
-#: pod/bbb/templates/bbb/publish_meeting.html
-#: pod/completion/templates/video_caption_maker.html
-#: pod/dressing/templates/dressing_delete.html
-#: pod/dressing/templates/dressing_edit.html
-#: pod/enrichment/templates/enrichment/group_enrichment.html
-#: pod/import_video/templates/import_video/add_or_edit.html
-#: pod/live/templates/live/event-form.html
-#: pod/live/templates/live/event_delete.html
-#: pod/live/templates/live/event_edit.html
-#: pod/live/templates/live/event_immediate_edit.html
-#: pod/main/templates/contact_us.html
-#: pod/meeting/templates/meeting/add_or_edit.html
-#: pod/meeting/templates/meeting/delete.html
-#: pod/meeting/templates/meeting/invite.html
-#: pod/meeting/templates/meeting/join.html
-#: pod/playlist/templates/playlist/add_or_edit.html
-#: pod/playlist/templates/playlist/delete.html
-#: pod/playlist/templates/playlist/protected-playlist-form.html
-#: pod/recorder/templates/recorder/add_recording.html
-#: pod/recorder/templates/recorder/record_delete.html
-#: pod/video/templates/channel/channel_edit.html
-#: pod/video/templates/videos/video-form.html
-#: pod/video/templates/videos/video_delete.html
-#: pod/video/templates/videos/video_edit.html
-#: pod/video/templates/videos/video_note_comments_display.html
-#: pod/video/templates/videos/video_note_display.html
-#: pod/video/templates/videos/video_notes.html
-msgid "Please provide a valid value for this field."
 msgstr ""
 
 #: pod/authentication/templates/userpicture/userpicture.html
@@ -861,6 +1294,7 @@ msgstr ""
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/playlist/templates/playlist/add_or_edit.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/recorder/templates/recorder/add_recording.html
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/channel/form_theme.html
@@ -893,18 +1327,6 @@ msgstr ""
 #: pod/chapter/templates/chapter/list_chapter.html
 msgid "List of chapters"
 msgstr ""
-
-#: pod/chapter/templates/chapter/list_chapter.html pod/completion/models.py
-#: pod/completion/templates/overlay/list_overlay.html pod/dressing/models.py
-#: pod/dressing/templates/my_dressings.html
-#: pod/dressing/templates/video_dressing.html
-#: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
-#: pod/main/models.py pod/main/views.py pod/playlist/forms.py
-#: pod/playlist/models.py pod/video/models.py
-#: pod/video/templates/channel/list_theme.html
-#: pod/video/templates/videos/video_sort_select.html
-msgid "Title"
-msgstr "Titel"
 
 #: pod/chapter/templates/chapter/list_chapter.html
 #: pod/completion/templates/contributor/list_contributor.html
@@ -948,6 +1370,7 @@ msgstr ""
 #: pod/live/templates/live/event_delete.html
 #: pod/meeting/templates/meeting/delete.html
 #: pod/playlist/templates/playlist/delete.html
+#: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/recorder/templates/recorder/record_delete.html
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/category_modal.html
@@ -965,7 +1388,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
-#: pod/main/templates/navbar.html pod/video/templates/videos/add_video.html
+#: pod/main/templates/navbar.html pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/video/templates/videos/add_video.html
 #: pod/video/templates/videos/video_access_tokens.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
@@ -974,17 +1398,11 @@ msgid "Dashboard"
 msgstr ""
 
 #: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
+#: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/video/templates/videos/video_collaborate.html
 #: pod/video/templates/videos/video_delete.html
 #, python-format
 msgid "Back to the video “%(video_title)s”"
-msgstr ""
-
-#: pod/chapter/templates/video_chapter.html pod/cut/templates/video_cut.html
-#: pod/dressing/templates/video_dressing.html
-#: pod/video/templates/videos/video_collaborate.html
-#: pod/video/templates/videos/video_delete.html
-msgid "Back to the video"
 msgstr ""
 
 #: pod/chapter/templates/video_chapter.html
@@ -995,6 +1413,8 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/video_quiz.html
 #: pod/video/templates/videos/video_aside.html
 #: pod/video/templates/videos/video_edit.html
 msgid "Manage video"
@@ -1038,7 +1458,7 @@ msgstr ""
 msgid "Enrich with selected subtitles"
 msgstr ""
 
-#: pod/completion/apps.py
+#: pod/completion/apps.py pod/completion/templates/video_completion.html
 msgid "Video additions"
 msgstr ""
 
@@ -1118,16 +1538,6 @@ msgstr ""
 msgid "captions"
 msgstr ""
 
-#: pod/completion/models.py pod/completion/views.py pod/live/models.py
-#: pod/recorder/models.py pod/video/models.py
-msgid "-- Frequently used languages --"
-msgstr ""
-
-#: pod/completion/models.py pod/completion/views.py pod/live/models.py
-#: pod/recorder/models.py pod/video/models.py
-msgid "-- All languages --"
-msgstr ""
-
 #: pod/completion/models.py
 msgid "lastname / firstname"
 msgstr ""
@@ -1168,13 +1578,6 @@ msgstr ""
 
 #: pod/completion/models.py
 msgid "There is already a contributor with the same name and role in the list."
-msgstr ""
-
-#: pod/completion/models.py pod/enrichment/models.py pod/playlist/models.py
-#: pod/recorder/models.py pod/video/models.py
-#: pod/video/templates/channel/channel.html
-#: pod/video/templates/videos/videos.html pod/video_encode_transcript/models.py
-msgid "Video"
 msgstr ""
 
 #: pod/completion/models.py
@@ -1494,6 +1897,10 @@ msgid "menu"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
+msgid "Enrichment is ready. You can now edit the subtitles."
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html
 #: pod/video/templates/videos/add_video.html
 msgid "File"
 msgstr ""
@@ -1621,23 +2028,11 @@ msgid "Override"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "Completion video"
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
-msgid "Display &quot;Contributor(s)&quot; section"
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
 msgid "Contributor(s)"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
 msgid "Add a new contributor"
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
-msgid "Display &quot;Subtitle(s) and Caption(s) &quot; section"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -1657,10 +2052,6 @@ msgid "Add a new subtitle or caption file"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "Display &quot; Additional resource(s)&quot; section"
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
 msgid "Additional resource(s)"
 msgstr ""
 
@@ -1669,15 +2060,21 @@ msgid "Add a new additional resource"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "Display &quot; Overlay(s)&quot; section"
-msgstr ""
-
-#: pod/completion/templates/video_completion.html
 msgid "Overlay(s)"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
 msgid "Add a new overlay"
+msgstr ""
+
+#: pod/completion/templates/video_completion.html pod/quiz/apps.py
+#: pod/quiz/models.py pod/quiz/templates/quiz/video_quiz_aside.html
+msgid "Quiz"
+msgstr ""
+
+#: pod/completion/templates/video_completion.html
+#: pod/quiz/templates/quiz/video_quiz_aside.html
+msgid "Answer the quiz"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -1731,6 +2128,11 @@ msgid ""
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
+#, python-format
+msgid "%(name)s:"
+msgstr ""
+
+#: pod/completion/templates/video_completion.html
 msgid ""
 "Document(s) related to this video. These documents will be downloadable by "
 "users."
@@ -1754,11 +2156,16 @@ msgid ""
 "want to display with the option \"Show background\""
 msgstr ""
 
+#: pod/completion/templates/video_completion.html
+msgid ""
+"A Quiz allow you to test the memorization and comprehension of your video."
+msgstr ""
+
 #: pod/completion/tests/test_views.py
 msgid "editor"
 msgstr ""
 
-#: pod/completion/views.py
+#: pod/completion/utils.py pod/completion/views.py
 #, python-format
 msgid "Additions for the video “%s”"
 msgstr ""
@@ -1911,7 +2318,8 @@ msgid "Video dressings"
 msgstr ""
 
 #: pod/dressing/forms.py pod/live/forms.py pod/meeting/forms.py
-#: pod/playlist/forms.py pod/recorder/forms.py pod/video/forms.py
+#: pod/playlist/forms.py pod/quiz/forms.py pod/recorder/forms.py
+#: pod/video/forms.py
 msgid "I agree"
 msgstr ""
 
@@ -1971,12 +2379,6 @@ msgstr ""
 msgid "Ending credits"
 msgstr ""
 
-#: pod/dressing/models.py pod/video/apps.py pod/video/models.py
-#: pod/video/templates/videos/video_breadcrumbs.html
-#: pod/video/templates/videos/videos.html
-msgid "Videos"
-msgstr ""
-
 #: pod/dressing/models.py
 msgid "Video dressing"
 msgstr ""
@@ -1990,15 +2392,6 @@ msgstr ""
 
 #: pod/dressing/templates/dressing_delete.html
 msgid "To delete the dressing, please check the box and click “Delete”."
-msgstr ""
-
-#: pod/dressing/templates/dressing_delete.html
-#: pod/live/templates/live/event_delete.html
-#: pod/meeting/templates/meeting/delete.html
-#: pod/playlist/templates/playlist/delete.html
-#: pod/recorder/templates/recorder/record_delete.html
-#: pod/video/templates/videos/video_delete.html
-msgid "Agreement required"
 msgstr ""
 
 #: pod/dressing/templates/dressing_edit.html pod/import_video/forms.py
@@ -2630,16 +3023,6 @@ msgid "Filters"
 msgstr ""
 
 #: pod/import_video/templates/import_video/filter_aside.html
-#: pod/main/templates/aside.html
-#: pod/meeting/templates/meeting/filter_aside_recording.html
-#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
-#: pod/video/templates/videos/dashboard.html
-#: pod/video/templates/videos/filter_aside.html
-#: pod/video_search/templates/search/search.html
-msgid "Tags"
-msgstr ""
-
-#: pod/import_video/templates/import_video/filter_aside.html
 #: pod/main/templates/navbar_collapse.html
 #: pod/meeting/templates/meeting/filter_aside_recording.html
 #: pod/video/templates/videos/filter_aside.html
@@ -2851,15 +3234,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -3131,13 +3514,6 @@ msgid ""
 "subject / context of the content. (max length: 250 characters)"
 msgstr ""
 
-#: pod/live/models.py pod/main/forms.py pod/main/models.py
-#: pod/playlist/forms.py pod/playlist/models.py pod/video/forms.py
-#: pod/video/models.py pod/video/templates/channel/list_theme.html
-#: pod/video/templates/videos/dashboard.html
-msgid "Description"
-msgstr ""
-
 #: pod/live/models.py pod/video/forms.py pod/video/models.py
 msgid ""
 "In this field you can describe your content, add all needed related "
@@ -3192,8 +3568,8 @@ msgstr ""
 msgid "Url of the embedded site to display on aside"
 msgstr ""
 
-#: pod/live/models.py pod/recorder/models.py pod/video/forms.py
-#: pod/video/models.py
+#: pod/live/models.py pod/quiz/forms.py pod/quiz/models.py
+#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
 msgid "Draft"
 msgstr ""
 
@@ -3337,16 +3713,6 @@ msgstr ""
 msgid ""
 "Thank you for watching this streaming live with us. The page will reload "
 "automatically within a few seconds to display the video on hold."
-msgstr ""
-
-#: pod/live/templates/live/direct.html
-#: pod/live/templates/live/event-script.html pod/main/context_processors.py
-#: pod/main/templates/base.html pod/main/templates/navbar.html
-#: pod/main/views.py pod/playlist/views.py pod/video/feeds.py
-#: pod/video/management/commands/check_obsolete_videos.py pod/video/models.py
-#: pod/video/templates/videos/video-script.html pod/video/utils.py
-#: pod/video/views.py pod/video_encode_transcript/utils.py
-msgid "Home"
 msgstr ""
 
 #: pod/live/templates/live/direct.html
@@ -3801,26 +4167,12 @@ msgstr ""
 msgid "Registration of event #%(content_id)s"
 msgstr ""
 
-#: pod/live/utils.py pod/meeting/utils.py pod/video_encode_transcript/utils.py
-msgid "Hello,"
-msgstr ""
-
 #: pod/live/utils.py
 #, python-format
 msgid ""
 "You have just scheduled a new event called “%(content_title)s” from "
 "%(start_date)s to %(end_date)s on video server: %(url_event)s). You can find "
 "the other sharing options in the dedicated tab."
-msgstr ""
-
-#: pod/live/utils.py pod/main/templates/mail/mail.html pod/meeting/utils.py
-#: pod/video/management/commands/create_archive_package.py
-#: pod/video_encode_transcript/utils.py
-msgid "Regards."
-msgstr ""
-
-#: pod/live/utils.py pod/video_encode_transcript/utils.py
-msgid "Post by:"
 msgstr ""
 
 #: pod/live/utils.py
@@ -5050,6 +5402,20 @@ msgid "Dyslexia mode"
 msgstr ""
 
 #: pod/main/templates/navbar.html
+msgid "Automaticaly display subtitle at the start of each video play."
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid ""
+"If no subtitle corresponds to the current language, the first available will "
+"be selected."
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Auto show subtitles"
+msgstr ""
+
+#: pod/main/templates/navbar.html
 msgid "Toggle user menu"
 msgstr ""
 
@@ -6014,10 +6380,6 @@ msgid ""
 "available on %(site_title)s."
 msgstr ""
 
-#: pod/meeting/utils.py pod/video_encode_transcript/utils.py
-msgid "You will find it here:"
-msgstr ""
-
 #: pod/meeting/views.py
 msgid "Has user joined?"
 msgstr ""
@@ -6129,12 +6491,12 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
-"strong> </p>\n"
+"strong></p>\n"
 "                <p>Regards</p>\n"
 "            "
 msgstr ""
@@ -6144,14 +6506,14 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
-"strong> </p>\n"
+"strong></p>\n"
 "                <p>Regards</p>\n"
 "            "
 msgstr ""
@@ -6252,7 +6614,7 @@ msgstr ""
 msgid "Security informations"
 msgstr ""
 
-#: pod/playlist/forms.py
+#: pod/playlist/forms.py pod/quiz/forms.py pod/quiz/models.py
 msgid "Please choose a title between 1 and 250 characters."
 msgstr ""
 
@@ -6947,6 +7309,416 @@ msgstr ""
 msgid "Allow"
 msgstr ""
 
+#: pod/quiz/forms.py
+msgid "Redaction"
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Short answer"
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Long answer"
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Choice"
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Single choice"
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Multiple choice"
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Your question"
+msgstr ""
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Explanation"
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Explanation of the answer."
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid ""
+"An explanation that will be displayed once the user has responded (feedback)."
+msgstr ""
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Start timestamp"
+msgstr ""
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "The start time of the answer in the video (in seconds)."
+msgstr ""
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "End timestamp"
+msgstr ""
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "The end time of the answer in the video (in seconds)."
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Question type"
+msgstr ""
+
+#: pod/quiz/forms.py
+#, fuzzy
+#| msgid "Please enter a title."
+msgid "Please choose the question type."
+msgstr "Voer een titel in."
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Connected user only"
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Only the connected users can answer to this quiz."
+msgstr ""
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Show correct answers"
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "The correction page can be reach."
+msgstr ""
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid ""
+"If this box is checked, the quiz will be visible and accessible only by you "
+"and the additional owners."
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Delete video quiz cannot be undone"
+msgstr ""
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Single choice question"
+msgstr ""
+
+#: pod/quiz/forms.py
+#, fuzzy
+#| msgid "Please enter a title."
+msgid "Please choose one answer."
+msgstr "Voer een titel in."
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Multiple choice question"
+msgstr ""
+
+#: pod/quiz/forms.py
+#, fuzzy
+#| msgid "Please enter a title."
+msgid "Please check any answers you want."
+msgstr "Voer een titel in."
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Short answer question"
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Write a short answer."
+msgstr ""
+
+#: pod/quiz/forms.py pod/quiz/models.py
+msgid "Long answer question"
+msgstr ""
+
+#: pod/quiz/forms.py
+msgid "Write a long answer."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Choose a video associated with the quiz."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Choose if this quiz is only for connected users or not."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Choose if the correct answers will be displayed or not."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Quizzes"
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Quiz of video"
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Choose a quiz associated with the question."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Please choose an explanation."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Question"
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Questions"
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Start timestamp must be lower than end timestamp."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "End timestamp cannot be defined without a start timestamp."
+msgstr ""
+
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
+#, python-format
+msgid "Question “%s”"
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Choices"
+msgstr ""
+
+#: pod/quiz/models.py
+msgid ""
+"Choices must be like this: {'choice 1': true, 'choice 2': false, ...} | true "
+"for the right choice, false for the wrong choices."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Single choice questions"
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "There must be at least 2 choices."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "There must be only one correct answer."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Invalid JSON format for choices."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid ""
+"Choices must be like this: {'choice 1': true, 'choice 2': true, 'choice 3': "
+"false, ...} | true for the right choice, false for the wrong choices."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Multiple choice questions"
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "There must be at least one correct answer."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Please choose if the answer is true or false."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "True/false question"
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "True/false questions"
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Answer"
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Please choose an answer between 1 and 250 characters."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Short answer questions"
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Please choose an answer."
+msgstr ""
+
+#: pod/quiz/models.py
+msgid "Long answer questions"
+msgstr ""
+
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+msgid "Add a question"
+msgstr ""
+
+#: pod/quiz/templates/quiz/create_edit_quiz.html
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Back to video"
+msgstr ""
+
+#: pod/quiz/templates/quiz/delete_quiz.html
+msgid "To delete the quiz, please check the box and click “Delete”."
+msgstr ""
+
+#: pod/quiz/templates/quiz/manage_quiz.html
+msgid "Edit your quiz"
+msgstr ""
+
+#: pod/quiz/templates/quiz/manage_quiz.html
+msgid "Delete your quiz"
+msgstr ""
+
+#: pod/quiz/templates/quiz/manage_quiz.html
+msgid "Create a quiz"
+msgstr ""
+
+#: pod/quiz/templates/quiz/question_form.html
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Question #"
+msgstr ""
+
+#: pod/quiz/templates/quiz/question_form.html
+#, fuzzy
+#| msgid "Please enter a title."
+msgid "Delete the question #"
+msgstr "Voer een titel in."
+
+#: pod/quiz/templates/quiz/question_form.html
+msgid "One or more errors have been found in the question."
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "This quiz is in <strong>draft</strong>."
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Your score is:"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "That’s great! Bravo!"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Can do better."
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "It’s not terrible, but there’s room for improvement!"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Error found in form"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+#, python-format
+msgid "For the question “%(title)s”, %(error)s."
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Correct answer:"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Explanation:"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Show answer in the video"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Redo the quiz"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Validate"
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid "Manage quiz"
+msgstr ""
+
+#: pod/quiz/tests/test_views.py pod/quiz/views.py
+msgid "You cannot create a quiz for this video."
+msgstr ""
+
+#: pod/quiz/tests/test_views.py pod/quiz/views.py
+msgid "You cannot delete the quiz for this video."
+msgstr ""
+
+#: pod/quiz/tests/test_views.py pod/quiz/views.py
+msgid "The quiz has been deleted."
+msgstr ""
+
+#: pod/quiz/views.py
+#, python-format
+msgid "Quiz creation for the video “%s”"
+msgstr ""
+
+#: pod/quiz/views.py
+#, python-format
+msgid "No answer defined for question %s."
+msgstr ""
+
+#: pod/quiz/views.py
+msgid "Quiz successfully created."
+msgstr ""
+
+#: pod/quiz/views.py
+msgid "Error during quiz creation."
+msgstr ""
+
+#: pod/quiz/views.py
+msgid "Quiz successfully updated."
+msgstr ""
+
+#: pod/quiz/views.py
+msgid "Error during quiz update."
+msgstr ""
+
+#: pod/quiz/views.py
+msgid "The data sent to create the quiz are invalid."
+msgstr ""
+
+#: pod/quiz/views.py
+#, fuzzy
+#| msgid "Please enter a title."
+msgid "You have to choose at least one answer"
+msgstr "Voer een titel in."
+
+#: pod/quiz/views.py
+#, python-format
+msgid "Quiz for the video “%s”"
+msgstr ""
+
+#: pod/quiz/views.py
+#, python-format
+msgid "Deleting the quiz for the video “%s”"
+msgstr ""
+
+#: pod/quiz/views.py
+msgid "You cannot edit this quiz."
+msgstr ""
+
+#: pod/quiz/views.py
+#, python-format
+msgid "Quiz edition for the video “%s”"
+msgstr ""
+
 #: pod/recorder/admin.py
 msgid "Delete selected Recording file treatments + source files"
 msgstr ""
@@ -7232,8 +8004,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -7794,10 +8566,6 @@ msgstr ""
 
 #: pod/video/models.py
 msgid "Icon"
-msgstr ""
-
-#: pod/video/models.py pod/video_search/templates/search/search.html
-msgid "Discipline"
 msgstr ""
 
 #: pod/video/models.py
@@ -8413,6 +9181,12 @@ msgid "Edit the video"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html
+#, fuzzy
+#| msgid "Select the video to move by clicking and holding."
+msgid "Enhance the video with AI"
+msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
+
+#: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Complete the video"
 msgstr ""
@@ -8910,11 +9684,25 @@ msgid "New note"
 msgstr ""
 
 #: pod/video/templates/videos/video_page_content.html
+msgid "This video is in <strong>draft</strong>."
+msgstr ""
+
+#: pod/video/templates/videos/video_page_content.html
 msgid "Channel description"
 msgstr ""
 
 #: pod/video/templates/videos/video_page_content.html
 msgid "Theme description"
+msgstr ""
+
+#: pod/video/templates/videos/video_page_content.html
+msgid "The video is currently waiting for Aristote AI treatment."
+msgstr ""
+
+#: pod/video/templates/videos/video_page_content.html
+msgid ""
+"The video was treated by Aristote. You must verify and validate the "
+"processing by pressing the robot icon."
 msgstr ""
 
 #: pod/video/templates/videos/video_row_select.html
@@ -9382,11 +10170,6 @@ msgstr ""
 
 #: pod/video_encode_transcript/utils.py
 #, python-format
-msgid "%(subject)s #%(content_id)s completed"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-#, python-format
 msgid ""
 "%(content_type)s “%(content_title)s” has been %(action)s, and is now "
 "available on %(site_title)s."
@@ -9406,10 +10189,6 @@ msgstr ""
 
 #: pod/video_encode_transcript/utils.py
 msgid "encoded to Web formats"
-msgstr ""
-
-#: pod/video_encode_transcript/utils.py
-msgid "the:"
 msgstr ""
 
 #: pod/video_encode_transcript/utils.py

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block page_extra_head %}
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{ VERSION }}">
+  <link rel="stylesheet" type="text/css" href="{% static 'ai_enhancement/css/choose-video-element.css' %}?ver={{ VERSION }}">
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item">
+    <a
+      href="{% url 'videos:videos' %}"
+    >
+      {% trans 'Videos' %}
+    </a>
+  </li>
+  <li class="breadcrumb-item">
+    <a
+      href="{% url 'video:video' slug=video.slug %}"
+      title="{% blocktrans %}Video name: {{ video.title }}{% endblocktrans %}"
+    >
+      {{ video.title }}
+    </a>
+  </li>
+  <li class="breadcrumb-item active" aria-current="page">
+    {{ page_title }}
+  </li>
+{% endblock breadcrumbs %}
+
+{% block main_page_title %}
+{% endblock main_page_title %}
+
+{% block page_content %}
+  {{ page_title }}
+  <span>
+    <a href="{% url 'ai_enhancement:enhance_subtitles' video_slug=video.slug %}" class="btn btn-primary btn-sm m-2">
+      <i class="bi bi-file-text" aria-hidden="true"></i>&nbsp;{% trans "Import subtitle" %}
+    </a>
+  </span>
+  <span>
+    <a href="{% url 'ai_enhancement:enhance_quiz' video_slug=video.slug %}" class="btn btn-primary btn-sm m-2">
+      <i class="bi bi-patch-question" aria-hidden="true"></i>&nbsp;{% trans "Import the quiz" %}
+    </a>
+  </span>
+  <span>
+    <a href="{% url 'ai_enhancement:delete_enhance_video' video_slug=video.slug %}" class="btn btn-danger btn-sm m-2">
+      <i class="bi bi-trash" aria-hidden="true"></i>&nbsp;{% trans "Remove this enhancement" %}
+    </a>
+  </span>
+  <form method="POST" action="{% url 'ai_enhancement:enhance_video' video_slug=video.slug %}">
+    {% csrf_token %}
+    {% if form.errors %}
+      <p class="text-danger">
+        {% trans "One or more errors have been found in the form." %}<br>
+        {% for error in form.errors %}
+          {% if error != "__all__" %}
+            <span> - {{ error }}</span><br>
+          {% endif %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          <span> - {{ error }}</span><br>
+        {% endfor %}
+      </p>
+    {% endif %}
+
+    {% for field_hidden in form.hidden_fields %}
+      {{ field_hidden }}
+    {% endfor %}
+    {% for fieldset in form.fieldsets %}
+      {% with options=fieldset|last name=fieldset|first %}
+        <fieldset class="border rounded-3 p-3 mb-3 {{ options.classes }}" id="playlist-form-{{fieldset|first}}-{{forloop.counter}}" >
+          {% if options.legend %}
+            <legend>{{ options.legend|safe }}</legend>
+          {% endif %}
+          {% for field in form.visible_fields %}
+            {% if field.name in options.fields %}
+              {% spaceless %}
+                <div class="mb-3 {% if "restrict_access_to_groups" in field.name %}collapse restricted_access{% endif %}">
+                  <div class="form-group {% if field.field.required %}form-group-required {% endif %}">
+                    {{ field.errors }}
+                    {% if "form-check-input" in field.field.widget.attrs.class %}
+                      <div class="form-check">
+                        {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+                      </div>
+                    {% else %}
+                      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      {{ field }}
+                    {% endif %}
+                    {% if field.help_text %}
+                      <small id="{{field.id_for_label}}Help" class="form-text">{{ field.help_text|safe }}</small>
+                    {% endif %}
+                    {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field." %}</div>{% endif %}
+                  </div>
+                </div>
+              {% endspaceless %}
+            {% endif %}
+          {% endfor %}
+          <div class="d-flex align-items-center">
+          {{ options.additional_data|safe }}
+          </div>
+        </fieldset>
+      {% endwith %}
+    {% endfor %}
+    <div class="text-center mb-3">
+      <button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandback"><i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans "Save and go back to the video" %}</button>
+      <button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandsubtitle"><i class="bi bi-file-text" aria-hidden="true"></i>&nbsp;{% trans "Save and go to subtitle part" %}</button>
+      <a href="{% url 'video:video' slug=form.instance.slug %}" class="btn btn-secondary btn-sm m-2"><i class="bi bi-film" aria-hidden="true"></i>&nbsp;{% trans 'Back to the video' %}</a>
+    </div>
+  </form>
+{% endblock page_content %}
+
+{% block collapse_page_aside %}{% endblock collapse_page_aside %}
+
+{% block page_aside %}{% endblock page_aside %}
+
+{% block more_script %}
+  <script src="{% static 'admin/js/core.js' %}?ver={{ VERSION }}"></script>
+  {{ form.media }}
+  <script src="{% static 'ai_enhancement/js/enrich-form.js' %}?ver={{ VERSION }}"></script>
+  <script>
+    addEventListeners("{{ video.slug }}", "{{ video.title }}", "{{ video.description|safe }}", "{{ video.disciplines }}", "{% url 'ai_enhancement:enhance_video_json' video_slug=video.slug %}");
+  </script>
+{% endblock more_script %}
