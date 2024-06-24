@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-11 07:48+0000\n"
+"POT-Creation-Date: 2024-06-20 14:01+0000\n"
 "PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1914,7 +1914,7 @@ msgid "Caption"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
-#: pod/video/templates/videos/link_video.html
+#: pod/video/templates/videos/video_list_grid_selectable.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Play"
 msgstr ""
@@ -2260,7 +2260,6 @@ msgstr ""
 
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/playlist/templates/playlist/filter_aside.html
-#: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/filter_aside.html
 msgid "Reset"
 msgstr ""
@@ -4081,13 +4080,13 @@ msgid "Sorry, no event found."
 msgstr ""
 
 #: pod/live/templates/live/events_list.html
-#: pod/video/templates/videos/category_modal.html
+#: pod/video/templates/videos/category_modal_video_list.html
 #: pod/video/templates/videos/paginator.html
 msgid "Previous page"
 msgstr ""
 
 #: pod/live/templates/live/events_list.html
-#: pod/video/templates/videos/category_modal.html
+#: pod/video/templates/videos/category_modal_video_list.html
 #: pod/video/templates/videos/paginator.html
 msgid "Next page"
 msgstr ""
@@ -7806,6 +7805,16 @@ msgid ""
 msgstr ""
 
 #: pod/recorder/models.py
+msgid "Automatic publishing:"
+msgstr ""
+
+#: pod/recorder/models.py
+msgid ""
+"If this box is checked, the videos will be automatically assigned to the "
+"recorder manager."
+msgstr ""
+
+#: pod/recorder/models.py
 msgid "Video type by default."
 msgstr ""
 
@@ -8068,10 +8077,10 @@ msgstr ""
 #: pod/recorder/views.py
 #, python-format
 msgid ""
-"<p>Hello,<br>a new recording has just be added on %(title_site)s from the "
-"recorder “%(recorder)s”.<br>To add it, just click on link below.</p><p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br><em>If you cannot click on link, "
-"just copy-paste it in your browser.</em></p><p>Regards.</p>"
+"<p>Hello,<br>a new recording has just been added on %(title_site)s from the "
+"recorder “%(recorder)s”.<br>To assign it, just click on link below.</p><p><a "
+"href=\"%(link_url)s\">%(link_url)s</a><br><em>If you cannot click on the "
+"link, just copy-paste it in your browser.</em></p><p>Regards.</p>"
 msgstr ""
 
 #: pod/recorder/views.py
@@ -8723,7 +8732,7 @@ msgstr ""
 msgid "Category title"
 msgstr "Categorie titel"
 
-#: pod/video/models.py pod/video/templates/videos/category_modal.html
+#: pod/video/models.py
 msgid "Category"
 msgstr ""
 
@@ -8994,21 +9003,14 @@ msgstr ""
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
-#: pod/video/templates/videos/category_modal_card.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Video content."
 msgstr ""
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
-#: pod/video/templates/videos/category_modal_card.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Audio content."
-msgstr ""
-
-#: pod/video/templates/videos/card_select.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Selected"
 msgstr ""
 
 #: pod/video/templates/videos/category_modal.html
@@ -9020,16 +9022,11 @@ msgid "Check the videos to add in the category"
 msgstr ""
 
 #: pod/video/templates/videos/category_modal.html
-msgid "Save category"
-msgstr ""
-
-#: pod/video/templates/videos/category_modal.html
-#: pod/video/templates/videos/filter_aside_category.html
-msgid "Delete the category"
-msgstr ""
-
-#: pod/video/templates/videos/category_modal.html
 msgid "Permanently delete your category?"
+msgstr ""
+
+#: pod/video/templates/videos/category_modal.html
+msgid "Save category"
 msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
@@ -9111,6 +9108,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/video/templates/videos/dashboard.html
+msgid "Select all"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Clear selection"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
 msgid ""
 "You have not uploaded any videos yet, please use the ”Add a new video” "
 "button to add one"
@@ -9142,16 +9147,22 @@ msgstr ""
 msgid "Fold/Unfold “Tags” filters"
 msgstr ""
 
-#: pod/video/templates/videos/filter_aside_category.html
+#: pod/video/templates/videos/filter_aside_categories_list.html
+#: pod/video/views.py
+msgid "Edit the category"
+msgstr ""
+
+#: pod/video/templates/videos/filter_aside_categories_list.html
+#: pod/video/views.py
+msgid "Delete the category"
+msgstr ""
+
+#: pod/video/templates/videos/filter_aside_category.html pod/video/views.py
 msgid "Add new category"
 msgstr ""
 
 #: pod/video/templates/videos/filter_aside_category.html
 msgid "Type at least 3 chars to filter categories"
-msgstr ""
-
-#: pod/video/templates/videos/filter_aside_category.html
-msgid "Edit the category"
 msgstr ""
 
 #: pod/video/templates/videos/footer_link.html
@@ -9699,10 +9710,8 @@ msgstr ""
 msgid "The video is currently waiting for Aristote AI treatment."
 msgstr ""
 
-#: pod/video/templates/videos/video_page_content.html
-msgid ""
-"The video was treated by Aristote. You must verify and validate the "
-"processing by pressing the robot icon."
+#: pod/video/templates/videos/video_row_select.html
+msgid "Selected"
 msgstr ""
 
 #: pod/video/templates/videos/video_row_select.html
@@ -10029,15 +10038,15 @@ msgid "You do not have rights to delete this comment"
 msgstr ""
 
 #: pod/video/views.py
-msgid "One or many videos already have a category."
-msgstr ""
-
-#: pod/video/views.py
 msgid "Title field is required"
 msgstr "Titelveld is verplicht"
 
 #: pod/video/views.py
-msgid "Method Not Allowed"
+msgid "One or many videos already have a category."
+msgstr ""
+
+#: pod/video/views.py
+msgid "Category successfully added."
 msgstr ""
 
 #: pod/video/views.py
@@ -10046,6 +10055,10 @@ msgstr ""
 
 #: pod/video/views.py
 msgid "You do not have rights to edit this category"
+msgstr ""
+
+#: pod/video/views.py
+msgid "Category successfully deleted."
 msgstr ""
 
 #: pod/video/views.py
