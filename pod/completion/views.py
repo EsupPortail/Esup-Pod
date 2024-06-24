@@ -58,9 +58,7 @@ def get_completion_home_page_title(video: Video) -> str:
 def video_caption_maker(request, slug):
     """Caption maker app."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-    video_folder, created = UserFolder.objects.get_or_create(
-        name=video.slug, owner=request.user
-    )
+
     request.session["current_session_folder"] = video.slug
     action = None
     if (
@@ -74,6 +72,7 @@ def video_caption_maker(request, slug):
             request, messages.ERROR, _("You cannot complement this video.")
         )
         raise PermissionDenied
+    video_folder = video.get_or_create_video_folder()
     if request.method == "POST" and request.POST.get("action"):
         action = request.POST.get("action")
     if action in __CAPTION_MAKER_ACTION__:
@@ -111,9 +110,7 @@ def video_caption_maker(request, slug):
 @staff_member_required(redirect_field_name="referrer")
 def video_caption_maker_save(request, video):
     """Caption maker save view."""
-    video_folder, created = UserFolder.objects.get_or_create(
-        name=video.slug, owner=request.user
-    )
+    video_folder = video.get_or_create_video_folder()
 
     if request.method == "POST":
         error = False

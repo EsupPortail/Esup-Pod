@@ -896,6 +896,9 @@ class Video(models.Model):
         self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
         # self.set_password()
+        if USE_PODFILE:
+            # Ensure video folder will accord access to additional owners
+            self.update_additional_owners_rights()
         super(Video, self).save(*args, **kwargs)
 
     def __str__(self) -> str:
@@ -1412,6 +1415,26 @@ class Video(models.Model):
                 " for video %s: %s" % (self.id, e)
             )
             return {}
+
+    def get_or_create_video_folder(self):
+        """Get or create a UserFolder associated to current video."""
+        if USE_PODFILE:
+            videodir, created = UserFolder.objects.get_or_create(
+                name="%s" % self.slug, owner=self.owner
+            )
+            """Ensure additional users will get access to this folder"""
+            videodir.users.set(self.additional_owners.all())
+            return videodir
+
+    def update_additional_owners_rights(self) -> None:
+        """Update folder rights for additional video owners."""
+        try:
+            videodir = UserFolder.objects.get(
+                name="%s" % self.slug, owner=self.owner
+            )
+            videodir.users.set(self.additional_owners.all())
+        except UserFolder.DoesNotExist:
+            pass
 
 
 class UpdateOwner(models.Model):

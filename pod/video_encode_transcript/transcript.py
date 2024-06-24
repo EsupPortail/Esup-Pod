@@ -38,7 +38,6 @@ DEBUG = getattr(settings, "DEBUG", False)
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
     from pod.podfile.models import CustomFileModel
-    from pod.podfile.models import UserFolder
 else:
     __FILEPICKER__ = False
     from pod.main.models import CustomFileModel
@@ -160,9 +159,7 @@ def saveVTT(video: Video, webvtt: WebVTT, lang_code: str = None):
         improveCaptionsAccessibility(webvtt)
         msg += "\nstore vtt file in bdd with CustomFileModel model file field"
         if __FILEPICKER__:
-            videodir, created = UserFolder.objects.get_or_create(
-                name="%s" % video.slug, owner=video.owner
-            )
+            videodir = video.get_or_create_video_folder()
             """
             previousSubtitleFile = CustomFileModel.objects.filter(
                 name__startswith="subtitle_%s" % lang,

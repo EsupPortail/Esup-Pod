@@ -23,6 +23,8 @@ FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 
 class UserFolder(models.Model):
+    """Folder that will contain custom files."""
+
     name = models.CharField(_("Name"), max_length=255)
     # parent = models.ForeignKey(
     #    'self', blank=True, null=True, related_name='children')
@@ -65,12 +67,14 @@ class UserFolder(models.Model):
         return "{0}".format(self.name)
 
     def get_all_files(self) -> list:
+        """Get all files in a UserFolder."""
         file_list = self.customfilemodel_set.all()
         image_list = self.customimagemodel_set.all()
         result_list = sorted(chain(image_list, file_list), key=attrgetter("uploaded_at"))
         return result_list
 
     def delete(self) -> None:
+        """Delete a UserForlder and it's content."""
         for file in self.customfilemodel_set.all():
             file.delete()
         for img in self.customimagemodel_set.all():

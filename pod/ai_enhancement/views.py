@@ -349,10 +349,7 @@ def enhance_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
             + str(True)
         )
 
-    video_folder, created = UserFolder.objects.get_or_create(
-        name=video.slug,
-        owner=request.user,
-    )
+    video_folder = video.get_or_create_video_folder()
     if enhancement_is_already_asked(video):
         enhancement = AIEnhancement.objects.filter(video=video).first()
         if enhancement.is_ready:

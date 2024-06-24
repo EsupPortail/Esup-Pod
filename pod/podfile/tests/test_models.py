@@ -14,7 +14,7 @@ import os
 class CustomFileModelTestCase(TestCase):
     """Test case for Pod CustomFile model."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         test = User.objects.create(username="test")
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,7 +41,7 @@ class CustomFileModelTestCase(TestCase):
             file=simplefile,
         )
 
-    def test_attributs_full(self):
+    def test_attributs_full(self) -> None:
         user = User.objects.get(id=1)
         file = CustomFileModel.objects.get(id=1)
         self.assertEqual(file.name, "testfile")
@@ -59,7 +59,7 @@ class CustomFileModelTestCase(TestCase):
 
         print(" ---> test_attributs_full: OK! --- CustomFileModel")
 
-    def test_attributs(self):
+    def test_attributs(self) -> None:
         user = User.objects.get(id=1)
         file = CustomFileModel.objects.get(id=2)
         self.assertTrue(file.name, "testfile")
@@ -78,7 +78,7 @@ class CustomFileModelTestCase(TestCase):
         print(" [ BEGIN FILEPICKER_TEST_MODELS ] ")
         print(" ---> test_attributs: OK! --- CustomFileModel")
 
-    def test_delete(self):
+    def test_delete(self) -> None:
         CustomFileModel.objects.get(id=1).delete()
         CustomFileModel.objects.get(id=2).delete()
         self.assertFalse(CustomFileModel.objects.all())
@@ -87,7 +87,7 @@ class CustomFileModelTestCase(TestCase):
 
 
 class CustomImageModelTestCase(TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         test = User.objects.create(username="test")
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         simplefile = SimpleUploadedFile(
@@ -113,7 +113,7 @@ class CustomImageModelTestCase(TestCase):
             file=simplefile,
         )
 
-    def test_attributs_full(self):
+    def test_attributs_full(self) -> None:
         user = User.objects.get(id=1)
         file = CustomImageModel.objects.get(id=1)
         self.assertEqual(file.name, "testimage")
@@ -130,7 +130,7 @@ class CustomImageModelTestCase(TestCase):
 
         print(" ---> test_attributs_full: OK! --- CustomImageModel")
 
-    def test_attributs(self):
+    def test_attributs(self) -> None:
         user = User.objects.get(id=1)
         file = CustomImageModel.objects.get(id=2)
         self.assertTrue(file.name, "testimage")
@@ -147,7 +147,7 @@ class CustomImageModelTestCase(TestCase):
 
         print(" ---> test_attributs: OK! --- CustomImageModel")
 
-    def test_delete(self):
+    def test_delete(self) -> None:
         CustomImageModel.objects.get(id=1).delete()
         CustomImageModel.objects.get(id=2).delete()
         self.assertFalse(CustomImageModel.objects.all())
@@ -158,14 +158,14 @@ class CustomImageModelTestCase(TestCase):
 class UserFolderTestCase(TestCase):
     """Test case for UserFolder."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Create UserFolders to be tested."""
         test = User.objects.create(username="test")
         UserFolder.objects.get(name="home", owner=test)
         UserFolder.objects.create(name="Images", owner=test)
         UserFolder.objects.create(name="Documents", owner=test)
 
-    def test_attributs_full(self):
+    def test_attributs_full(self) -> None:
         """Test UserFolder attributes."""
         user = User.objects.get(id=1)
         child = UserFolder.objects.get(id=2)
@@ -174,7 +174,7 @@ class UserFolderTestCase(TestCase):
 
         print(" ---> test_attributs_full: OK! --- UserFolder")
 
-    def test_attributs(self):
+    def test_attributs(self) -> None:
         """Test UserFolder attributes."""
         user = User.objects.get(id=1)
         home = UserFolder.objects.get(id=1)
@@ -183,7 +183,7 @@ class UserFolderTestCase(TestCase):
 
         print(" ---> test_attributs: OK! --- UserFolder")
 
-    def test_delete(self):
+    def test_delete(self) -> None:
         """Test UserFolder deletion."""
         UserFolder.objects.get(id=1).delete()
         UserFolder.objects.get(id=2).delete()
