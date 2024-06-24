@@ -33,7 +33,7 @@ smtp_handler = logging.handlers.SMTPHandler(
     mailhost=EMAIL_HOST,
     fromaddr=DEFAULT_FROM_EMAIL,
     toaddrs=admins_email,
-    subject="[POD ENCODING] Encoding Log Mail",
+    subject="[POD TRANSCRIPT] Transcripting Log Mail",
 )
 if not TEST_REMOTE_ENCODE:
     logger.addHandler(smtp_handler)

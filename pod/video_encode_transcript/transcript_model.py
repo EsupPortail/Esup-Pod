@@ -409,7 +409,7 @@ def main_whisper_transcript(norm_mp3_file, duration, lang):
     all_text = ""
     webvtt = WebVTT()
     inference_start = timer()
-    desired_sample_rate = 16000
+    # desired_sample_rate = 16000
     msg += "\nInference start %0.3fs." % inference_start
 
     model = whisper.load_model(
