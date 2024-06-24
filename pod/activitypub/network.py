@@ -98,9 +98,7 @@ def index_video(following: Following, video_url):
     """Read a video payload and create an ExternalVideo object"""
     ap_video = ap_object(video_url)
     logger.warning(f"TODO: Deal with video indexation {ap_video}")
-    extvideo = ap_video_to_external_video(ap_video)
-    extvideo.source_instance = following
-    extvideo.save()
+    ap_video_to_external_video(payload=ap_video, source_instance=following)
 
 
 def external_video_added_by_actor(ap_video, ap_actor):

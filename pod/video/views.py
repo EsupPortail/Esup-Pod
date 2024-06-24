@@ -91,6 +91,8 @@ from django.db import transaction
 
 from ..ai_enhancement.utils import enhancement_is_already_asked
 
+from pod.activitypub.context_processors import get_available_external_videos
+
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
 )
@@ -905,6 +907,15 @@ def get_filtered_videos_list(request, videos_list):
     return videos_list.distinct()
 
 
+def get_filtered_external_videos_list(request, external_videos_list):
+    """Return filtered external videos list by get parameters."""
+    if request.GET.getlist("source_instance"):
+        external_videos_list = external_videos_list.filter(
+            Q(source_instance__object__in=request.GET.getlist("source_instance"))
+        )
+    return external_videos_list.distinct()
+
+
 def get_owners_has_instances(owners: list) -> list:
     """Return the list of owners who has instances in User.objects."""
     ownersInstances = []
@@ -935,10 +946,11 @@ def owner_is_searchable(user: User) -> bool:
 def videos(request):
     """Render the main list of videos."""
     videos_list = get_filtered_videos_list(request, get_available_videos())
+    external_video_list = get_filtered_external_videos_list(request, get_available_external_videos())
     sort_field = request.GET.get("sort") if request.GET.get("sort") else "date_added"
     sort_direction = request.GET.get("sort_direction")
 
-    videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
+    videos_list = list(sort_videos_list(videos_list, sort_field, sort_direction)) + list(external_video_list)  # TODO: Check performance
 
     if not sort_field:
         # Get the default Video ordering
@@ -3404,6 +3416,14 @@ def get_theme_list_for_specific_channel(request: WSGIRequest, slug: str) -> Json
     """
     channel = Channel.objects.get(slug=slug)
     return JsonResponse(json.loads(channel.get_all_theme_json()), safe=False)
+
+
+def video_mp4_filename(request, mp4_id, id):
+    video = get_object_or_404(Video, id=id, sites=get_current_site(request))
+
+    mp4s = [v for v in video.get_video_mp4() if str(v.id) == mp4_id]
+    if len(mp4s) == 1:
+        return redirect(mp4s[0].source_file.url)
 
 
 """

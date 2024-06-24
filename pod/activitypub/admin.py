@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from .models import Follower, Following
+from .models import Follower, Following, ExternalVideo
 from .tasks import task_follow, task_index_videos
 
 
@@ -27,4 +27,33 @@ def reindex_videos(modeladmin, request, queryset):
 @admin.register(Following)
 class FollowingAdmin(admin.ModelAdmin):
     actions = [send_federation_request, reindex_videos]
-    list_display = ("object", "status")
+    list_display = (
+        "object",
+        "status",
+    )
+
+
+# TODO External video admin
+@admin.register(ExternalVideo)
+class ExternalVideoAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "title",
+        "source_instance",
+        "date_added",
+        "viewcount",
+        "duration_in_time",
+        "get_thumbnail_admin",
+    )
+    list_display_links = ("id", "title")
+    list_filter = (
+        "date_added",
+    )
+
+    search_fields = [
+        "id",
+        "title",
+        "video",
+        "source_instance__object",
+    ]
+    list_per_page = 20

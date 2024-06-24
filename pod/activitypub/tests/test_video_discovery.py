@@ -1,4 +1,4 @@
-import json
+# import json
 
 
 from . import ActivityPubTestCase
@@ -7,8 +7,8 @@ from . import ActivityPubTestCase
 class VideoDiscoveryTest(ActivityPubTestCase):
     def test_video_deserialization(self):
         """Test ExternalVideo creation from a AP Video."""
-        with open("pod/activitypub/tests/fixtures/peertube_video.json") as fd:
-            payload = json.load(fd)
+        # with open("pod/activitypub/tests/fixtures/peertube_video.json") as fd:
+        #     payload = json.load(fd)
 
         # video = ap_video_to_external_video(payload)
 

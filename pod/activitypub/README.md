@@ -137,5 +137,5 @@ curl -H "Accept: application/activity+json, application/ld+json" -s "http://pod.
 ### Unit tests
 
 ```shell
-python manage.py test --settings=pod.main.test_settings pod.activitypub.test_settings
+python manage.py test --settings=pod.main.test_settings pod.activitypub.tests
 ```

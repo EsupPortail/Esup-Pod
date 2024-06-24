@@ -8,8 +8,11 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
+from django.core.exceptions import SuspiciousOperation
 
 from pod.video.models import Channel, Video
+from pod.activitypub.models import ExternalVideo
 
 from .constants import (
     AP_DEFAULT_CONTEXT,
@@ -36,6 +39,17 @@ logger = logging.getLogger(__name__)
 
 
 AP_PAGE_SIZE = 25
+
+
+TYPE_TASK = {
+    "Follow": task_handle_inbox_follow,
+    "Accept": task_handle_inbox_accept,
+    "Reject": task_handle_inbox_reject,
+    "Announce": task_handle_inbox_announce,
+    "Update": task_handle_inbox_update,
+    "Delete": task_handle_inbox_delete,
+    "Undo": task_handle_inbox_undo,
+}
 
 
 def nodeinfo(request):
@@ -125,27 +139,8 @@ def inbox(request, username=None):
     logger.warning("inbox query: %s", json.dumps(data, indent=True))
     # TODO: test HTTP signature
 
-    if not username and data["type"] == "Follow":
-        task_handle_inbox_follow.delay(username, data)
-
-    elif not username and data["type"] == "Accept":
-        task_handle_inbox_accept.delay(username, data)
-
-    elif not username and data["type"] == "Reject":
-        task_handle_inbox_reject.delay(username, data)
-
-    elif not username and data["type"] == "Announce":
-        task_handle_inbox_announce.delay(username, data)
-
-    elif not username and data["type"] == "Update":
-        task_handle_inbox_update.delay(username, data)
-
-    elif not username and data["type"] == "Delete":
-        task_handle_inbox_delete.delay(username, data)
-
-    elif not username and data["type"] == "Undo":
-        task_handle_inbox_undo.delay(username, data)
-
+    if (activitypub_task := TYPE_TASK.get(data["type"], None)):
+        activitypub_task.delay(username, data)
     else:
         logger.debug("Ignoring inbox action: %s", data["type"])
 
@@ -416,3 +411,29 @@ def chapters(request, id):
         ],
     }
     return JsonResponse(response, status=200)
+
+
+def render_external_video(request, id):
+    external_video = get_object_or_404(ExternalVideo, id=id)
+    return render(
+        request,
+        "videos/video.html",
+        {
+            "channel": None,
+            "video": external_video,
+            "theme": None,
+            "listNotes": None,
+            "owner_filter": False,
+            "playlist": None,
+        },
+    )
+
+
+def external_video(request, slug):
+    try:
+        id = int(slug[: slug.find("-")])
+    except ValueError:
+        raise SuspiciousOperation("Invalid external video id")
+
+    get_object_or_404(ExternalVideo, id=id)
+    return render_external_video(request, id)

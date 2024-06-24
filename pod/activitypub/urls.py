@@ -31,3 +31,7 @@ urlpatterns = [
     path("ap/video/<id>/chapters", views.chapters, name="chapters"),
     path("ap/channel/<id>", views.channel, name="channel"),
 ]
+
+urlpatterns += [
+    path("external_video/<slug>", views.external_video, name="external_video"),
+]

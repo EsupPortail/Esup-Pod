@@ -2628,6 +2628,20 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
+                        "DEFAULT_AP_THUMBNAIL": {
+                            "default_value": "img/default_ap.png",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Image par défaut envoyée comme vignette, utilisée pour communiquer via ActivityPub",
+                                    "Cette image doit être au format png et se situer dans le répertoire static."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "XXX"
+                        },
                         "DEFAULT_TYPE_ID": {
                             "default_value": 1,
                             "description": {
