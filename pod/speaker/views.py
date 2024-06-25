@@ -230,7 +230,7 @@ def update_existing_jobs(speaker, job_ids, job_titles):
 
 
 @login_required
-def get_speaker(speaker_id) -> JsonResponse:
+def get_speaker(request, speaker_id) -> JsonResponse:
     """
     Get details of a specific speaker.
 
@@ -255,7 +255,7 @@ def get_speaker(speaker_id) -> JsonResponse:
 
 
 @login_required
-def get_jobs(speaker_id) -> JsonResponse:
+def get_jobs(request, speaker_id) -> JsonResponse:
     """
     Get jobs of a specific speaker.
 
