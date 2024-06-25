@@ -409,7 +409,7 @@ def main_whisper_transcript(norm_mp3_file, duration, lang):
     all_text = ""
     webvtt = WebVTT()
     inference_start = timer()
-    # desired_sample_rate = 16000
+    desired_sample_rate = 16000
     msg += "\nInference start %0.3fs." % inference_start
 
     model = whisper.load_model(
@@ -437,7 +437,13 @@ def main_whisper_transcript(norm_mp3_file, duration, lang):
             )
             webvtt.captions.append(caption)
     '''
-    transcription = model.transcribe(norm_mp3_file, language=lang)
+    audio = convert_samplerate(
+        norm_mp3_file,
+        desired_sample_rate,
+        0,
+        duration
+    )
+    transcription = model.transcribe(audio, language=lang)
     for segment in transcription["segments"]:
         caption = Caption(
             sec_to_timestamp(segment["start"]),
