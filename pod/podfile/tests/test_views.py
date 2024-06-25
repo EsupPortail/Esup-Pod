@@ -22,6 +22,7 @@ class FolderViewTestCase(TestCase):
     """FOLDER VIEWS test case."""
 
     def setUp(self) -> None:
+        """Init some values before FolderView tests."""
         user = User.objects.create(username="pod", password="azerty")
         UserFolder.objects.get(owner=user, name="home")
         child = UserFolder.objects.create(owner=user, name="Child")
@@ -49,7 +50,7 @@ class FolderViewTestCase(TestCase):
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
 
-    def test_list_folders(self):
+    def test_list_folders(self) -> None:
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)

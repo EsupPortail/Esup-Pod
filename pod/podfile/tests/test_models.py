@@ -15,6 +15,7 @@ class CustomFileModelTestCase(TestCase):
     """Test case for Pod CustomFile model."""
 
     def setUp(self) -> None:
+        """Init some values before CustomFileModel tests."""
         test = User.objects.create(username="test")
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -88,6 +89,7 @@ class CustomFileModelTestCase(TestCase):
 
 class CustomImageModelTestCase(TestCase):
     def setUp(self) -> None:
+        """Init some values before CustomImageModel tests."""
         test = User.objects.create(username="test")
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         simplefile = SimpleUploadedFile(
