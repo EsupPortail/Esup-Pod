@@ -45,16 +45,17 @@ if __name__ == "__main__":
         FFMPEG_DRESSING_SCALE,
         FFMPEG_DRESSING_CONCAT,
     )
-    from encoding_settings_gpu import (
+    from encoding_gpu_settings import (
         FFMPEG_USE_GPU,
-        FFMPEG_CMD as FFMPEG_CMD_GPU,
-        FFMPEG_PRESET as FFMPEG_PRESET_GPU,
-        FFMPEG_INPUT as FFMPEG_INPUT_GPU,
-        FFMPEG_LIBX as FFMPEG_LIBX_GPU,
-        FFMPEG_MP4_ENCODE as FFMPEG_MP4_ENCODE_GPU,
-        FFMPEG_HLS_COMMON_PARAMS as FFMPEG_HLS_COMMON_PARAMS_GPU,
-        FFMPEG_HLS_ENCODE_PARAMS as FFMPEG_HLS_ENCODE_PARAMS_GPU,
-        FFMPEG_CREATE_THUMBNAIL as FFMPEG_CREATE_THUMBNAIL_GPU,
+        FFMPEG_CMD_GPU,
+        FFMPEG_PRESET_GPU,
+        FFMPEG_LEVEL_GPU,
+        FFMPEG_INPUT_GPU,
+        FFMPEG_LIBX_GPU,
+        FFMPEG_MP4_ENCODE_GPU,
+        FFMPEG_HLS_COMMON_PARAMS_GPU,
+        FFMPEG_HLS_ENCODE_PARAMS_GPU,
+        FFMPEG_CREATE_THUMBNAIL_GPU
     )
 else:
     from .encoding_utils import (
@@ -94,16 +95,17 @@ else:
         FFMPEG_DRESSING_SCALE,
         FFMPEG_DRESSING_CONCAT,
     )
-    from .encoding_settings_gpu import (
+    from .encoding_gpu_settings import (
         FFMPEG_USE_GPU,
-        FFMPEG_CMD as FFMPEG_CMD_GPU,
-        FFMPEG_PRESET as FFMPEG_PRESET_GPU,
-        FFMPEG_INPUT as FFMPEG_INPUT_GPU,
-        FFMPEG_LIBX as FFMPEG_LIBX_GPU,
-        FFMPEG_MP4_ENCODE as FFMPEG_MP4_ENCODE_GPU,
-        FFMPEG_HLS_COMMON_PARAMS as FFMPEG_HLS_COMMON_PARAMS_GPU,
-        FFMPEG_HLS_ENCODE_PARAMS as FFMPEG_HLS_ENCODE_PARAMS_GPU,
-        FFMPEG_CREATE_THUMBNAIL as FFMPEG_CREATE_THUMBNAIL_GPU,
+        FFMPEG_CMD_GPU,
+        FFMPEG_PRESET_GPU,
+        FFMPEG_LEVEL_GPU,
+        FFMPEG_INPUT_GPU,
+        FFMPEG_LIBX_GPU,
+        FFMPEG_MP4_ENCODE_GPU,
+        FFMPEG_HLS_COMMON_PARAMS_GPU,
+        FFMPEG_HLS_ENCODE_PARAMS_GPU,
+        FFMPEG_CREATE_THUMBNAIL_GPU
     )
 
 
@@ -122,22 +124,35 @@ image_codec = ["jpeg", "gif", "png", "bmp", "jpg"]
 try:
     from django.conf import settings
 
-    FFMPEG_CMD = getattr(settings, "FFMPEG_CMD", FFMPEG_CMD_GPU if FFMPEG_USE_GPU else FFMPEG_CMD)
+    FFMPEG_USE_GPU = getattr(settings, "FFMPEG_USE_GPU", FFMPEG_USE_GPU)
+    FFMPEG_CMD = getattr(settings, "FFMPEG_CMD", FFMPEG_CMD)
+    FFMPEG_CMD_GPU = getattr(settings, "FFMPEG_CMD_GPU", FFMPEG_CMD_GPU)
     FFPROBE_CMD = getattr(settings, "FFPROBE_CMD", FFPROBE_CMD)
     FFPROBE_GET_INFO = getattr(settings, "FFPROBE_GET_INFO", FFPROBE_GET_INFO)
     FFMPEG_CRF = getattr(settings, "FFMPEG_CRF", FFMPEG_CRF)
-    FFMPEG_PRESET = getattr(settings, "FFMPEG_PRESET", FFMPEG_PRESET_GPU if FFMPEG_USE_GPU else FFMPEG_PRESET)
+    FFMPEG_PRESET = getattr(settings, "FFMPEG_PRESET", FFMPEG_PRESET)
+    FFMPEG_PRESET_GPU = getattr(settings, "FFMPEG_PRESET_GPU", FFMPEG_PRESET_GPU)
     FFMPEG_PROFILE = getattr(settings, "FFMPEG_PROFILE", FFMPEG_PROFILE)
     FFMPEG_LEVEL = getattr(settings, "FFMPEG_LEVEL", FFMPEG_LEVEL)
+    FFMPEG_LEVEL_GPU = getattr(settings, "FFMPEG_LEVEL_GPU", FFMPEG_LEVEL_GPU)
     FFMPEG_HLS_TIME = getattr(settings, "FFMPEG_HLS_TIME", FFMPEG_HLS_TIME)
-    FFMPEG_INPUT = getattr(settings, "FFMPEG_INPUT", FFMPEG_INPUT_GPU if FFMPEG_USE_GPU else FFMPEG_INPUT)
-    FFMPEG_LIBX = getattr(settings, "FFMPEG_LIBX", FFMPEG_LIBX_GPU if FFMPEG_USE_GPU else FFMPEG_LIBX)
-    FFMPEG_MP4_ENCODE = getattr(settings, "FFMPEG_MP4_ENCODE", FFMPEG_MP4_ENCODE_GPU if FFMPEG_USE_GPU else FFMPEG_MP4_ENCODE)
+    FFMPEG_INPUT = getattr(settings, "FFMPEG_INPUT", FFMPEG_INPUT)
+    FFMPEG_INPUT_GPU = getattr(settings, "FFMPEG_INPUT_GPU", FFMPEG_INPUT_GPU)
+    FFMPEG_LIBX = getattr(settings, "FFMPEG_LIBX", FFMPEG_LIBX)
+    FFMPEG_LIBX_GPU = getattr(settings, "FFMPEG_LIBX_GPU", FFMPEG_LIBX_GPU)
+    FFMPEG_MP4_ENCODE = getattr(settings, "FFMPEG_MP4_ENCODE", FFMPEG_MP4_ENCODE)
+    FFMPEG_MP4_ENCODE_GPU = getattr(settings, "FFMPEG_MP4_ENCODE_GPU", FFMPEG_MP4_ENCODE_GPU)
     FFMPEG_HLS_COMMON_PARAMS = getattr(
-        settings, "FFMPEG_HLS_COMMON_PARAMS", FFMPEG_HLS_COMMON_PARAMS_GPU if FFMPEG_USE_GPU else FFMPEG_HLS_COMMON_PARAMS
+        settings, "FFMPEG_HLS_COMMON_PARAMS", FFMPEG_HLS_COMMON_PARAMS
+    )
+    FFMPEG_HLS_COMMON_PARAMS_GPU = getattr(
+        settings, "FFMPEG_HLS_COMMON_PARAMS_GPU", FFMPEG_HLS_COMMON_PARAMS_GPU
     )
     FFMPEG_HLS_ENCODE_PARAMS = getattr(
-        settings, "FFMPEG_HLS_ENCODE_PARAMS", FFMPEG_HLS_ENCODE_PARAMS_GPU if FFMPEG_USE_GPU else FFMPEG_HLS_ENCODE_PARAMS
+        settings, "FFMPEG_HLS_ENCODE_PARAMS", FFMPEG_HLS_ENCODE_PARAMS
+    )
+    FFMPEG_HLS_ENCODE_PARAMS_GPU = getattr(
+        settings, "FFMPEG_HLS_ENCODE_PARAMS_GPU", FFMPEG_HLS_ENCODE_PARAMS_GPU
     )
     FFMPEG_MP3_ENCODE = getattr(settings, "FFMPEG_MP3_ENCODE", FFMPEG_MP3_ENCODE)
     FFMPEG_M4A_ENCODE = getattr(settings, "FFMPEG_M4A_ENCODE", FFMPEG_M4A_ENCODE)
@@ -148,7 +163,10 @@ try:
     )
     FFMPEG_NB_THUMBNAIL = getattr(settings, "FFMPEG_NB_THUMBNAIL", FFMPEG_NB_THUMBNAIL)
     FFMPEG_CREATE_THUMBNAIL = getattr(
-        settings, "FFMPEG_CREATE_THUMBNAIL", FFMPEG_CREATE_THUMBNAIL_GPU if FFMPEG_USE_GPU else FFMPEG_CREATE_THUMBNAIL
+        settings, "FFMPEG_CREATE_THUMBNAIL", FFMPEG_CREATE_THUMBNAIL
+    )
+    FFMPEG_CREATE_THUMBNAIL_GPU = getattr(
+        settings, "FFMPEG_CREATE_THUMBNAIL_GPU", FFMPEG_CREATE_THUMBNAIL_GPU
     )
     FFMPEG_EXTRACT_SUBTITLE = getattr(
         settings, "FFMPEG_EXTRACT_SUBTITLE", FFMPEG_EXTRACT_SUBTITLE
@@ -326,8 +344,8 @@ class Encoding_video:
             os.makedirs(output_dir)
         self.output_dir = output_dir
 
-    def get_mp4_command(self) -> str:
-        mp4_command = "%s " % FFMPEG_CMD
+    def get_mp4_command(self, use_gpu: bool = False) -> str:
+        mp4_command = "%s " % (FFMPEG_CMD_GPU if use_gpu else FFMPEG_CMD)
         list_rendition = get_list_rendition()
         # remove rendition if encode_mp4 == False
         for rend in list_rendition.copy():
@@ -341,14 +359,14 @@ class Encoding_video:
             "nb_threads": FFMPEG_NB_THREADS,
         }
         output_file = os.path.join(self.output_dir, "%sp.mp4" % first_item[0])
-        mp4_command += FFMPEG_MP4_ENCODE % {
+        mp4_command += (FFMPEG_MP4_ENCODE_GPU if use_gpu else FFMPEG_MP4_ENCODE) % {
             "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
             "map_audio": "-map 0:a:0" if len(self.list_audio_track) > 0 else "",
-            "libx": FFMPEG_LIBX,
+            "libx": (FFMPEG_LIBX_GPU if use_gpu else FFMPEG_LIBX),
             "height": first_item[0],
-            "preset": FFMPEG_PRESET,
+            "preset": (FFMPEG_PRESET_GPU if use_gpu else FFMPEG_PRESET),
             "profile": FFMPEG_PROFILE,
-            "level": FFMPEG_LEVEL,
+            "level": (FFMPEG_LEVEL_GPU if use_gpu else FFMPEG_LEVEL),
             "crf": FFMPEG_CRF,
             "maxrate": first_item[1]["maxrate"],
             "bufsize": first_item[1]["maxrate"],
@@ -370,14 +388,14 @@ class Encoding_video:
             )
             if in_height >= resolution_threshold:
                 output_file = os.path.join(self.output_dir, "%sp.mp4" % rend)
-                mp4_command += FFMPEG_MP4_ENCODE % {
+                mp4_command += (FFMPEG_MP4_ENCODE_GPU if use_gpu else FFMPEG_MP4_ENCODE) % {
                     "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
                     "map_audio": "-map 0:a:0" if len(self.list_audio_track) > 0 else "",
-                    "libx": FFMPEG_LIBX,
+                    "libx": (FFMPEG_LIB_GPU if use_gpu else FFMPEG_LIBX),
                     "height": min(rend, in_height),
-                    "preset": FFMPEG_PRESET,
+                    "preset": (FFMPEG_PRESET_GPU if use_gpu else FFMPEG_PRESET),
                     "profile": FFMPEG_PROFILE,
-                    "level": FFMPEG_LEVEL,
+                    "level": (FFMPEG_LEVEL_GPU if use_gpu else FFMPEG_LEVEL),
                     "crf": FFMPEG_CRF,
                     "maxrate": list_rendition[rend]["maxrate"],
                     "bufsize": list_rendition[rend]["maxrate"],
@@ -387,19 +405,19 @@ class Encoding_video:
                 self.list_mp4_files[rend] = output_file
         return mp4_command
 
-    def get_hls_command(self) -> str:
-        hls_command = "%s " % FFMPEG_CMD
+    def get_hls_command(self, use_gpu: bool = False) -> str:
+        hls_command = "%s " % (FFMPEG_CMD_GPU if use_gpu else FFMPEG_CMD)
         list_rendition = get_list_rendition()
         hls_command += FFMPEG_INPUT % {
             "input": self.video_file,
             "nb_threads": FFMPEG_NB_THREADS,
         }
-        hls_common_params = FFMPEG_HLS_COMMON_PARAMS % {
+        hls_common_params = (FFMPEG_HLS_COMMON_PARAMS_GPU if use_gpu else FFMPEG_HLS_COMMON_PARAMS) % {
             "cut": self.get_subtime(self.cutting_start, self.cutting_stop),
-            "libx": FFMPEG_LIBX,
-            "preset": FFMPEG_PRESET,
+            "libx": (FFMPEG_LIBX_GPU if use_gpu else FFMPEG_LIBX),
+            "preset": (FFMPEG_PRESET_GPU if use_gpu else FFMPEG_PRESET),
             "profile": FFMPEG_PROFILE,
-            "level": FFMPEG_LEVEL,
+            "level": (FFMPEG_LEVEL_GPU if use_gpu else FFMPEG_LEVEL),
             "crf": FFMPEG_CRF,
         }
         hls_command += hls_common_params
@@ -411,7 +429,7 @@ class Encoding_video:
             if in_height >= resolution_threshold or index == 0:
                 output_file = os.path.join(self.output_dir, "%sp.m3u8" % rend)
                 hls_command += hls_common_params
-                hls_command += FFMPEG_HLS_ENCODE_PARAMS % {
+                hls_command += (FFMPEG_HLS_ENCODE_PARAMS_GPU if use_gpu else FFMPEG_HLS_ENCODE_PARAMS) % {
                     "height": min(rend, in_height),
                     "maxrate": list_rendition[rend]["maxrate"],
                     "bufsize": list_rendition[rend]["maxrate"],
@@ -533,20 +551,38 @@ class Encoding_video:
 
     def encode_video_part(self):
         """Encode the video part of a file."""
-        mp4_command = self.get_mp4_command()
-        return_value, return_msg = launch_cmd(mp4_command)
-        self.add_encoding_log("mp4_command", mp4_command, return_value, return_msg)
-        if not return_value:
-            self.error_encoding = True
+        def _run_mp4_command(use_gpu: bool = False) -> bool:
+            mp4_command = self.get_mp4_command(use_gpu=use_gpu)
+            return_value, return_msg = launch_cmd(mp4_command)
+            self.add_encoding_log(f"mp4_command{'_gpu' if use_gpu else ''}", mp4_command, return_value, return_msg)
+            return return_value
+        return_value = _run_mp4_command(use_gpu=FFMPEG_USE_GPU)
+        if FFMPEG_USE_GPU:
+            if not return_value:
+                if not _run_mp4_command(use_gpu=False):
+                    self.error_encoding = True
+        else:
+            if not return_value:
+                self.error_encoding = True
+
         if self.duration == 0:
             list_rendition = get_list_rendition()
             first_item = list_rendition.popitem(last=False)
             self.fix_duration(self.list_mp4_files[first_item[0]])
-        hls_command = self.get_hls_command()
-        return_value, return_msg = launch_cmd(hls_command)
-        if return_value:
-            self.create_main_livestream()
-        self.add_encoding_log("hls_command", hls_command, return_value, return_msg)
+
+        def _run_hls_command(use_gpu: bool = False) -> bool:
+            hls_command = self.get_hls_command(use_gpu=use_gpu)
+            return_value, return_msg = launch_cmd(hls_command)
+            self.add_encoding_log(f"hls_command{'_gpu' if use_gpu else ''}", hls_command, return_value, return_msg)
+            return return_value
+        return_value = _run_hls_command(use_gpu=FFMPEG_USE_GPU)
+        if FFMPEG_USE_GPU:
+            if not return_value:
+                if _run_hls_command(use_gpu=False):
+                    self.create_main_livestream()
+        else:
+            if return_value:
+                self.create_main_livestream()
 
     def create_main_livestream(self):
         list_rendition = get_list_rendition()
@@ -627,8 +663,8 @@ class Encoding_video:
             self.list_thumbnail_files[img] = output_file
         return thumbnail_command
 
-    def get_create_thumbnail_command(self) -> str:
-        thumbnail_command = "%s " % FFMPEG_CMD
+    def get_create_thumbnail_command(self, use_gpu: bool = False) -> str:
+        thumbnail_command = "%s " % (FFMPEG_CMD_GPU if use_gpu else FFMPEG_CMD)
         first_item = self.get_first_item()
         input_file = self.list_mp4_files[first_item[0]]
         thumbnail_command += FFMPEG_INPUT % {
@@ -636,7 +672,7 @@ class Encoding_video:
             "nb_threads": FFMPEG_NB_THREADS,
         }
         output_file = os.path.join(self.output_dir, "thumbnail")
-        thumbnail_command += FFMPEG_CREATE_THUMBNAIL % {
+        thumbnail_command += (FFMPEG_CREATE_THUMBNAIL_GPU if use_gpu else FFMPEG_CREATE_THUMBNAIL) % {
             "duration": self.duration,
             "nb_thumbnail": FFMPEG_NB_THUMBNAIL,
             "output": output_file,
@@ -729,11 +765,18 @@ class Encoding_video:
                 "extract_thumbnail_command", thumbnail_command, return_value, return_msg
             )
         elif self.is_video():
-            thumbnail_command = self.get_create_thumbnail_command()
-            return_value, return_msg = launch_cmd(thumbnail_command)
-            self.add_encoding_log(
-                "create_thumbnail_command", thumbnail_command, return_value, return_msg
-            )
+            def _run_thumbnail_command(use_gpu: bool = False) -> bool:
+                thumbnail_command = self.get_create_thumbnail_command(use_gpu=use_gpu)
+                return_value, return_msg = launch_cmd(thumbnail_command)
+                self.add_encoding_log(
+                    f"create_thumbnail_command{'_gpu' if use_gpu else ''}", thumbnail_command, return_value, return_msg
+                )
+                return return_value
+            return_value = _run_thumbnail_command(use_gpu=FFMPEG_USE_GPU)
+            if FFMPEG_USE_GPU:
+                if not return_value:
+                    _run_thumbnail_command(use_gpu=False)
+
         # on ne fait pas d'overview pour les videos de moins de 10 secondes
         # (laisser les 10sec inclus pour laisser les tests passer) --> OK
         if self.is_video() and self.duration >= 10:
