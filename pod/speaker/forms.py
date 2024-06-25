@@ -1,16 +1,18 @@
 """Esup-Pod forms speaker."""
 
 from django_select2 import forms as s2forms
+from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.forms.widgets import HiddenInput
 from .models import Speaker, Job, JobVideo
+from pod.main.forms_utils import add_placeholder_and_asterisk
 
 
 class JobWidget(s2forms.ModelSelect2Widget):
     """Widget for selecting speaker job."""
 
     search_fields = [
-        "title__icontains", "speaker__lastname__icontains",
+        "title__icontains", "speaker__lastname__icontains", "speaker__firstname__icontains",
     ]
 
 
@@ -20,6 +22,11 @@ class SpeakerForm(forms.ModelForm):
     class Meta:
         model = Speaker
         fields = ['firstname', 'lastname']
+
+    def __init__(self, *args, **kwargs):
+        """Init method."""
+        super(SpeakerForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
 
 
 class JobForm(forms.ModelForm):
@@ -43,5 +50,12 @@ class JobVideoForm(forms.ModelForm):
         """Set form Metadata."""
 
         model = JobVideo
-        widgets = {"job": JobWidget}
+        widgets = {
+            "job": JobWidget(
+                attrs={
+                    'data-placeholder': _("You can search speaker by firstname, lastname and job."),
+                    'style': 'width: 100%;',
+                }
+            )
+        }
         fields = "__all__"

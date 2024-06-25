@@ -29,7 +29,7 @@ class Speaker(models.Model):
         verbose_name_plural = _("Speakers")
 
     def __str__(self):
-        return f"{self.lastname} {self.firstname}"
+        return f"{self.firstname} {self.lastname}"
 
 
 class Job(models.Model):
@@ -48,7 +48,7 @@ class Job(models.Model):
     speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.title} ({self.speaker})"
+        return f"{self.speaker} ({self.title})"
 
 
 class JobVideo(models.Model):

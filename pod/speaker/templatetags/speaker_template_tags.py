@@ -1,4 +1,4 @@
-"""Template tags for the AI enhancement app."""
+"""Template tags for the speaker app."""
 
 from django import template
 

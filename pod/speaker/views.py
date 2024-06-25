@@ -19,6 +19,20 @@ from django.db import transaction
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def speaker_management(request: WSGIRequest) -> HttpResponse:
+    """
+    Manage speakers.
+
+    This view handles the management of speakers. It checks if the system is
+    in maintenance mode and if the user has the appropriate permissions.
+    It processes speaker actions if the request method is POST. Otherwise,
+    it renders the speaker management page.
+
+    Args:
+        request (WSGIRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The HTTP response object.
+    """
     if in_maintenance():
         return redirect(reverse("maintenance"))
 
@@ -46,7 +60,19 @@ def speaker_management(request: WSGIRequest) -> HttpResponse:
     )
 
 
-def handle_speaker_action(request):
+def handle_speaker_action(request: WSGIRequest):
+    """
+    Handle speaker actions.
+
+    This function processes the action specified in the POST request.
+    It calls the appropriate function based on the action.
+
+    Args:
+        request (WSGIRequest): The HTTP request object.
+
+    Returns:
+        bool: True if the action was handled successfully, False otherwise.
+    """
     action = request.POST.get("action")
     if action == "add":
         return add_speaker(request)
@@ -59,8 +85,19 @@ def handle_speaker_action(request):
         return False
 
 
-def add_speaker(request):
-    """add speaker."""
+def add_speaker(request: WSGIRequest):
+    """
+    Add a new speaker.
+
+    This function adds a new speaker with the details provided in the POST request.
+    It also adds jobs for the speaker if specified.
+
+    Args:
+        request (WSGIRequest): The HTTP request object.
+
+    Returns:
+        bool: True if the speaker was added successfully, False otherwise.
+    """
     try:
         firstname = request.POST.get('firstname')
         lastname = request.POST.get('lastname')
@@ -76,8 +113,19 @@ def add_speaker(request):
         return False
 
 
-def delete_speaker(request):
-    """Remove speaker and jobs."""
+def delete_speaker(request: WSGIRequest):
+    """
+    Delete a speaker.
+
+    This function deletes a speaker and their associated jobs based on the
+    speaker ID provided in the POST request.
+
+    Args:
+        request (WSGIRequest): The HTTP request object.
+
+    Returns:
+        bool: True if the speaker was deleted successfully, False otherwise.
+    """
     try:
         speakerid = request.POST.get('speakerid')
         Speaker.objects.get(id=speakerid).delete()
@@ -89,7 +137,19 @@ def delete_speaker(request):
 
 
 @login_required
-def edit_speaker(request):
+def edit_speaker(request: WSGIRequest):
+    """
+    Edit an existing speaker.
+
+    This function edits an existing speaker and their jobs based on the
+    details provided in the POST request.
+
+    Args:
+        request (WSGIRequest): The HTTP request object.
+
+    Returns:
+        bool: True if the speaker was edited successfully, False otherwise.
+    """
     try:
         job_ids = request.POST.getlist('jobIds[]')
         job_titles = request.POST.getlist('jobs[]')
@@ -106,7 +166,19 @@ def edit_speaker(request):
         return False
 
 
-def edit_speaker_details(request):
+def edit_speaker_details(request: WSGIRequest):
+    """
+    Edit speaker details.
+
+    This function edits the details of a speaker such as their first name
+    and last name based on the details provided in the POST request.
+
+    Args:
+        request (WSGIRequest): The HTTP request object.
+
+    Returns:
+        Speaker: The updated speaker object.
+    """
     speakerid = request.POST.get('speakerid')
     firstname = request.POST.get('firstname')
     lastname = request.POST.get('lastname')
@@ -123,6 +195,17 @@ def edit_speaker_details(request):
 
 
 def update_existing_jobs(speaker, job_ids, job_titles):
+    """
+    Update existing jobs for a speaker.
+
+    This function updates the jobs of a speaker based on the job IDs and
+    job titles provided in the POST request.
+
+    Args:
+        speaker (Speaker): The speaker object.
+        job_ids (list): A list of job IDs.
+        job_titles (list): A list of job titles.
+    """
     existing_jobs = {job.id: job for job in speaker.job_set.all()}
     updated_job_ids = {int(job_id) for job_id in job_ids if job_id}
 
@@ -147,8 +230,19 @@ def update_existing_jobs(speaker, job_ids, job_titles):
 
 
 @login_required
-def get_speaker(request, speaker_id):
-    """Get details of a specific speaker including jobs."""
+def get_speaker(speaker_id) -> JsonResponse:
+    """
+    Get details of a specific speaker.
+
+    This function retrieves the details of a specific speaker including
+    their jobs based on the speaker ID.
+
+    Args:
+        speaker_id (int): The ID of the speaker.
+
+    Returns:
+        JsonResponse: A JSON response containing the speaker details.
+    """
     speaker = get_object_or_404(Speaker, id=speaker_id)
     jobs = speaker.job_set.all().values('id', 'title')
     speaker_data = {
@@ -161,7 +255,19 @@ def get_speaker(request, speaker_id):
 
 
 @login_required
-def get_jobs(request, speaker_id):
+def get_jobs(speaker_id) -> JsonResponse:
+    """
+    Get jobs of a specific speaker.
+
+    This function retrieves the jobs of a specific speaker based on
+    the speaker ID.
+
+    Args:
+        speaker_id (int): The ID of the speaker.
+
+    Returns:
+        JsonResponse: A JSON response containing the jobs.
+    """
     speaker = get_object_or_404(Speaker, id=speaker_id)
     jobs = speaker.job_set.all().values('id', 'title')
     jobs_list = list(jobs)

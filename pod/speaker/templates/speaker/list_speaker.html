@@ -21,7 +21,7 @@
               {% csrf_token %}
               <input type="hidden" name="action" value="delete">
               <input type="hidden" name="id" value="{{speaker.id}}">
-              <input type="submit" title="{% blocktrans with speaker_job=speaker.job %}Delete the speaker job“{{ speaker_job }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="right" value="{% trans 'Delete' %}" class="edt_speaker btn btn-danger btn-sm">
+              <input type="submit" title="{% blocktrans with speaker_job=speaker.job %}Delete the speaker job “{{ speaker_job }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="right" value="{% trans 'Delete' %}" class="edt_speaker btn btn-danger btn-sm">
             </form>
           </td>
         </tr>

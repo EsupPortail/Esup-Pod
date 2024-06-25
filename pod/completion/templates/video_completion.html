@@ -7,11 +7,6 @@
 {% block page_extra_head %}
   <!-- media -->
   <link rel="stylesheet" href="{% static 'css/completion.css' %}?ver={{VERSION}}">
-  <style>
-    .django-select2 {
-      width: 100%;
-      }
-  </style>
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}
@@ -206,6 +201,18 @@
         <p>{% trans 'A contributor must at least have a name and a role. You can also join the email of this contributor as well as a link (professional website for example).' %}</p>
       </div>
     </div>
+        <!-- Speaker -->
+        {% if USE_SPEAKER %}
+        <div id="speaker-info">
+          <button class="btn btn-link rounded-0 pod-btn" id="heading-5" data-bs-toggle="collapse" data-bs-target="#collapse-speaker" aria-expanded="false" aria-controls="collapse-speaker">
+            {% trans 'Speaker(s)' %}
+          </button>
+          <div id="collapse-speaker" class="collapse card-text small">
+            <p>{% trans 'List of speaker related to this video.' %}</p>
+            <p>{% trans "You can add speakers to this video by searching by their last name, first name or job. If you can't find the speaker, contact a super admin." %}</p>
+          </div>
+        </div>
+      {% endif %}
     <div id="track-info">
       <button class="btn btn-link rounded-0 pod-btn" id="heading-2" data-bs-toggle="collapse" data-bs-target="#collapse-track" aria-expanded="false" aria-controls="collapse-track">
         {% trans 'Subtitle(s) and Caption(s)' %}

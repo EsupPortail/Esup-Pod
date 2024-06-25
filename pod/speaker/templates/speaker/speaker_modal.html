@@ -14,7 +14,7 @@
                     {{ speaker_form.as_p }}
                     <div id="jobFieldsContainer" class="mb-3">
                         <label for="jobTitle" class="form-label">{% trans "Jobs" %}</label>
-                        <div class="input-group mb-2">
+                        <div class="d-flex align-items-center">
                             <input type="text" class="form-control ms-2 jobTitle" name="jobs[]" placeholder="{% trans "Job Title" %}">
                             <input type="hidden" class="jobId" name="jobIds[]">
                             <a title="{% trans "Remove job" %}" role="button" class="btn btn-link pod-btn-social remove-job-field"><i class="bi bi-trash"></i></a>

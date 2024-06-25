@@ -1,3 +1,5 @@
+"""Unit tests for speaker views."""
+
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
@@ -5,7 +7,13 @@ from pod.speaker.models import Speaker, Job
 
 
 class SpeakerViewsTest(TestCase):
+    """
+    Test case for speaker views.
+    """
     def setUp(self):
+        """
+        Set up the test environment.
+        """
         self.client = Client()
         self.superuser = User.objects.create_superuser(
             username='admin', password='admin', email='admin@example.com'
@@ -17,17 +25,26 @@ class SpeakerViewsTest(TestCase):
         self.job = Job.objects.create(title='Engineer', speaker=self.speaker)
 
     def test_speaker_management_superuser_get(self):
+        """
+        Test GET request to speaker management by a superuser.
+        """
         self.client.login(username='admin', password='admin')
         response = self.client.get(reverse('speaker:speaker_management'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'speaker/speakers_management.html')
 
     def test_speaker_management_non_superuser_get(self):
+        """
+        Test GET request to speaker management by a non-superuser.
+        """
         self.client.login(username='user', password='user')
         response = self.client.get(reverse('speaker:speaker_management'))
         self.assertEqual(response.status_code, 403)
 
     def test_add_speaker(self):
+        """
+        Test adding a new speaker.
+        """
         self.client.login(username='admin', password='admin')
         data = {
             'action': 'add',
@@ -43,6 +60,9 @@ class SpeakerViewsTest(TestCase):
         self.assertEqual(speaker.job_set.count(), 2)
 
     def test_delete_speaker(self):
+        """
+        Test deleting a speaker.
+        """
         self.client.login(username='admin', password='admin')
         data = {
             'action': 'delete',
@@ -53,6 +73,9 @@ class SpeakerViewsTest(TestCase):
         self.assertFalse(Speaker.objects.filter(id=self.speaker.id).exists())
 
     def test_edit_speaker(self):
+        """
+        Test editing a speaker.
+        """
         self.client.login(username='admin', password='admin')
         data = {
             'action': 'edit',
@@ -70,6 +93,9 @@ class SpeakerViewsTest(TestCase):
         self.assertEqual(speaker.job_set.first().title, 'Senior Engineer')
 
     def test_get_speaker(self):
+        """
+        Test retrieving a speaker's details.
+        """
         self.client.login(username='admin', password='admin')
         response = self.client.get(reverse('speaker:get_speaker', args=[self.speaker.id]))
         self.assertEqual(response.status_code, 200)
@@ -83,6 +109,9 @@ class SpeakerViewsTest(TestCase):
         })
 
     def test_get_jobs(self):
+        """
+        Test retrieving jobs for a speaker.
+        """
         self.client.login(username='admin', password='admin')
         response = self.client.get(reverse('speaker:get_jobs', args=[self.speaker.id]))
         self.assertEqual(response.status_code, 200)

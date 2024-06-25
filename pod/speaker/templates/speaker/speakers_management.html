@@ -22,17 +22,17 @@
     <caption class="caption-top">{% trans 'List of speakers' %}</caption>
     <thead>
       <tr>
-        <th scope="col">{% trans 'Firstname' %}</th>
-        <th scope="col">{% trans 'Lastname' %}</th>
-        <th scope="col">{% trans 'Job' %}</th>
-        <th scope="col" class="text-center" aria-label="{% trans 'Actions' %}"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;<i class="bi bi-trash3" aria-hidden="true"></i></th>
+        <th scope="col" class="ps-2">{% trans 'Firstname' %}</th>
+        <th scope="col" class="ps-2">{% trans 'Lastname' %}</th>
+        <th scope="col" class="ps-2">{% trans 'Job' %}</th>
+        <th scope="col" class="text-center">{% trans 'Actions' %}</th>
       </tr>
     </thead>
     <tbody>
       {% for speaker in speakers %}
         <tr>
-          <td>{{ speaker.firstname }}</td>
-          <td>{{ speaker.lastname }}</td>
+          <td class="ps-2">{{ speaker.firstname }}</td>
+          <td class="ps-2">{{ speaker.lastname }}</td>
           <td>
             <ul>
                 {% for job in speaker.job_set.all %}
@@ -43,7 +43,7 @@
             </ul>
         </td>
         <td class="text-center align-middle">
-          <button type="button" class="btn btn-link pod-btn-social edit-speaker-field" data-speaker-id="{{ speaker.id }}">
+          <button type="button" class="btn btn-link pod-btn-social edit-speaker-field" data-speaker-id="{{ speaker.id }}" title="{% blocktrans with speaker_firstname=speaker.firstname speaker_lastname=speaker.lastname %}Edit the speaker “{{ speaker_firstname }} {{ speaker_lastname }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="top">
             <i class="bi bi-pencil-square" aria-hidden="true"></i>
         </button>
           {% trans "Please confirm you want to delete the speaker" as confirmDelete %}
@@ -51,7 +51,7 @@
             {% csrf_token %}
             <input type="hidden" name="action" value="delete" />
             <input type="hidden" name="speakerid" value="{{ speaker.id }}" />
-            <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% trans 'Delete the speaker' %}" data-bs-toggle="tooltip" data-bs-placement="top">
+            <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% blocktrans with speaker_firstname=speaker.firstname speaker_lastname=speaker.lastname %}Delete the speaker “{{ speaker_firstname }} {{ speaker_lastname }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="top">
               <i class="bi bi-trash3" aria-hidden="true"></i>
             </button>
           </form>
@@ -77,8 +77,8 @@
       // Function to add a job field
       function addJobField(jobId = '', jobTitle = '') {
           var jobFieldHtml = `
-              <div class="input-group mb-2">
-                  <input type="text" class="form-control ms-2 jobTitle" name="jobs[]" value="${jobTitle}" placeholder="{% trans "Job Title" %}">
+             <div class="d-flex align-items-center">
+                  <input type="text" class="form-control jobTitle" name="jobs[]" value="${jobTitle}" placeholder="{% trans "Job Title" %}">
                   <input type="hidden" class="jobId" name="jobIds[]" value="${jobId}">
                   <a title="{% trans "Remove job" %}" role="button" class="btn btn-link pod-btn-social remove-job-field"><i class="bi bi-trash"></i></a>
               </div>
