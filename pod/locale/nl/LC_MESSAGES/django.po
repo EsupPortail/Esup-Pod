@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-26 15:39+0200\n"
+"POT-Creation-Date: 2024-06-26 16:21+0200\n"
 "PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -8155,6 +8155,10 @@ msgstr ""
 
 #: pod/speaker/models.py
 msgid "Speakers"
+msgstr ""
+
+#: pod/speaker/models.py
+msgid "Job's speaker"
 msgstr ""
 
 #: pod/speaker/templates/speaker/list_speaker.html
