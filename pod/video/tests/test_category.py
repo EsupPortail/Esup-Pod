@@ -72,6 +72,9 @@ class TestCategory(TestCase):
         self.cat_3.video.add(self.video)
 
     def test_get_add_category_modal(self) -> None:
+        """
+        Test get add new category modal
+        """
         self.client.force_login(self.owner_user)
         url = reverse("video:add_category")
         response = self.client.get(
@@ -83,6 +86,9 @@ class TestCategory(TestCase):
         print(" --->  test_get_add_category_modal of TestCategory: OK!")
 
     def test_post_add_category(self) -> None:
+        """
+        Test perform add new category
+        """
         data = {
             "title": json.dumps("Test new category"),
             "videos": json.dumps([self.video_2.slug])
@@ -180,6 +186,9 @@ class TestCategory(TestCase):
         print(" --->  test_post_add_category of TestCategory: OK!")
 
     def test_get_edit_category_modal(self) -> None:
+        """
+        Test get edit existent category modal
+        """
         self.client.force_login(self.owner_user)
         url = reverse("video:edit_category", args=[self.cat_1.slug])
         response = self.client.get(
@@ -191,6 +200,9 @@ class TestCategory(TestCase):
         print(" --->  test_get_edit_category_modal of TestCategory: OK!")
 
     def test_post_edit_category(self) -> None:
+        """
+        Test perform edit existent category
+        """
         data = {
             "title": json.dumps("New Category title"),
             "videos": json.dumps([self.video_2.slug])
@@ -283,6 +295,9 @@ class TestCategory(TestCase):
         print(" --->  test_post_edit_category of TestCategory: OK!")
 
     def test_get_categories(self) -> None:
+        """
+        Test get categories from dashboard
+        """
         self.client.force_login(self.owner_user)
         url = reverse("video:dashboard")
         response = self.client.get(url, {"categories": [self.cat_1.slug]})
@@ -297,6 +312,9 @@ class TestCategory(TestCase):
         print(" --->  test_get_categories of TestCategory: OK!")
 
     def test_get_categories_aside(self) -> None:
+        """
+        Test get categories for filter aside elements
+        """
         self.client.force_login(self.owner_user)
         url = reverse("video:get_categories_list")
         response = self.client.get(
@@ -310,6 +328,9 @@ class TestCategory(TestCase):
         print(" --->  test_get_categories_aside of TestCategory: OK!")
 
     def test_get_delete_category_modal(self) -> None:
+        """
+        Test get delete existent category modal
+        """
         self.client.force_login(self.owner_user)
         url = reverse("video:delete_category", args=[self.cat_1.slug])
         response = self.client.get(
@@ -321,6 +342,9 @@ class TestCategory(TestCase):
         print(" --->  test_get_delete_category_modal of TestCategory: OK!")
 
     def test_post_delete_category(self) -> None:
+        """
+        Test perform delete existent category
+        """
         # not Authenticated, should return HttpResponseRedirect:302
         response = self.client.post(
             reverse("video:delete_category", kwargs={"c_slug": self.cat_1.slug}),

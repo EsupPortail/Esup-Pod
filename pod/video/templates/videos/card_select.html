@@ -3,11 +3,11 @@
 <div class="card box-shadow pod-card--video video-card">
   <div class="card-header">
     <div class="d-flex justify-content-between align-items-center">
-        <input class="form-check-input card_select_input" type="checkbox" aria-label="..."
+        <input class="form-check-input card_select_input" type="checkbox"
                {% if not category_modal %}
                onchange="toggleSelectedVideo(this, 'videos_list')"
                {% else %}
-               onchange="toggleSelectedVideo(this, 'category_modal_videos_list')"
+               onchange="toggleSelectedVideo(this, 'category-modal-videos-list')"
                {% if video.id in category_videos %}checked{% endif %}
                {% endif %}
                data-slug="{{video.slug}}">

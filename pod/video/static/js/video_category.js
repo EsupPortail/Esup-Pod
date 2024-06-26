@@ -1,9 +1,16 @@
 /**
  * Esup-Pod video category scripts.
  */
-const catVideosListContainerId = "category_modal_videos_list";
+const catVideosListContainerId = "category-modal-videos-list";
 var currentUrl;
 selectedVideos[catVideosListContainerId] = [];
+
+/* Read-only globals defined in dashboard.html */
+/*
+global refreshVideosSearch, CATEGORIES_ADD_URL, CATEGORIES_EDIT_URL, CATEGORIES_DELETE_URL,
+ CATEGORIES_LIST_URL, EDIT_URL, COMPLETION_URL, CHAPTER_URL, DELETE_URL, VIDEO_URL,
+ categoriesListContainer, categoryModal
+*/
 
 /**
  * Manage add category link in filter aside
@@ -122,8 +129,8 @@ function get_category_modal(url, page=null){
       let parser = new DOMParser();
       let html = parser.parseFromString(data, "text/html").body;
       if(page){
-          document.getElementById("category_modal_videos_list").outerHTML = html.innerHTML;
-          document.querySelectorAll("#category_modal_videos_list .card_select_input:checked").forEach((el) => {
+          document.getElementById("category-modal-videos-list").outerHTML = html.innerHTML;
+          document.querySelectorAll("#category-modal-videos-list .card_select_input:checked").forEach((el) => {
               if(!selectedVideos[catVideosListContainerId].includes(el.dataset.slug)){
                   el.checked = false;
               }

@@ -2489,6 +2489,9 @@ def get_videos(p_slug, target, p_slug_t=None):
 
 
 def get_videos_for_owner(request):
+    """
+    Return video list of specific user
+    """
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
     videos_list = request.user.video_set.all().filter(
