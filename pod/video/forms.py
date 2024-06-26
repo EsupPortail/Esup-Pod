@@ -584,10 +584,25 @@ def launch_transcript(sender, instance, created, **kwargs) -> None:
 class VideoForm(forms.ModelForm):
     """Form class for Video editing."""
 
+    VISIBILITY_CHOICES = [
+        ("public", _("Public")),
+        ("draft", _("Draft")),
+        ("restricted", _("Restricted")),
+    ]
+
+    visibility = forms.ChoiceField(
+        choices=VISIBILITY_CHOICES,
+        label=_("Visibility"),
+        required=True,
+        initial="public",
+    )
+    password = forms.CharField(widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}), required=False, label=_("Password"))
+
     required_css_class = "required"
     videoattrs = {
         "class": "form-control-file",
         "accept": "audio/*, video/*, .%s"
+
         % ", .".join(map(str, VIDEO_ALLOWED_EXTENSIONS)),
     }
     is_admin = False
@@ -648,6 +663,7 @@ class VideoForm(forms.ModelForm):
                 "legend": _("Restrictions"),
                 "classes": "show",
                 "fields": [
+                    "visibility",
                     "is_draft",
                     "is_restricted",
                     "restrict_access_to_groups",
@@ -715,8 +731,22 @@ class VideoForm(forms.ModelForm):
                 encoding.source_file = encoding.source_file.name.replace(old_dir, new_dir)
                 encoding.save()
 
+    def save_visibility(self):
+        """Save video and launch encoding if relevant for the visibility field."""
+        visibility = self.cleaned_data.get('visibility')
+        if visibility == 'public':
+            self.instance.is_draft = False
+            self.instance.is_restricted = False
+        elif visibility == 'draft':
+            self.instance.is_draft = True
+            self.instance.is_restricted = False
+        elif visibility == 'restricted':
+            self.instance.is_draft = False
+            self.instance.is_restricted = True
+
     def save(self, commit=True, *args, **kwargs):
         """Save video and launch encoding if relevant."""
+        self.save_visibility()
         old_dir = ""
         new_dir = ""
         if hasattr(self, "change_user") and self.change_user is True:
@@ -902,6 +932,20 @@ class VideoForm(forms.ModelForm):
             self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
                 owner__sites=Site.objects.get_current()
             )
+        self.__init_instance__()
+
+    def __init_instance__(self):
+        """Initialize a new VideoForm instance for visibility field."""
+        if self.instance:
+            if self.instance.is_draft:
+                self.initial["visibility"] = "draft"
+            elif self.instance.is_restricted:
+                self.initial["visibility"] = "restricted"
+            else:
+                self.initial["visibility"] = "public"
+        self.fields['is_draft'].widget = forms.HiddenInput()
+        self.fields['is_restricted'].widget = forms.HiddenInput()
+        self.order_fields(["visibility", "password"] + list(self.fields.keys()))
 
     def custom_video_form(self) -> None:
         if not ACTIVE_VIDEO_COMMENT:
