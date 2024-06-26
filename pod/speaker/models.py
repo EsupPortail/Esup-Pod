@@ -10,16 +10,16 @@ class Speaker(models.Model):
     Speaker model.
 
     Attributes:
-        firstname (CharField): firstname of speaker.
-        lastname (CharField): lastname of speaker.
+        firstname (CharField): first name of speaker.
+        lastname (CharField): last name of speaker.
     """
 
     firstname = models.CharField(
-        verbose_name=_("Firstname"),
+        verbose_name=_("First name"),
         max_length=100
     )
     lastname = models.CharField(
-        verbose_name=_("Lastname"),
+        verbose_name=_("Last name"),
         max_length=100
     )
 

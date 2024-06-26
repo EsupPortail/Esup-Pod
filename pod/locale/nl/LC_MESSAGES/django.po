@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-25 16:32+0200\n"
+"POT-Creation-Date: 2024-06-26 15:39+0200\n"
 "PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1547,7 +1547,7 @@ msgid "captions"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "lastname / firstname"
+msgid "last name / first name"
 msgstr ""
 
 #: pod/completion/models.py
@@ -1802,7 +1802,7 @@ msgid "List of contributors"
 msgstr ""
 
 #: pod/completion/templates/contributor/list_contributor.html
-msgid "Lastname / Firstname"
+msgid "Last name / First name"
 msgstr ""
 
 #: pod/completion/templates/contributor/list_contributor.html
@@ -2106,7 +2106,7 @@ msgid ""
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
-msgid "List of speaker related to this video."
+msgid "List of speakers related to this video."
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -8142,15 +8142,15 @@ msgid "Recorder for Studio not found."
 msgstr ""
 
 #: pod/speaker/forms.py
-msgid "You can search speaker by firstname, lastname and job."
+msgid "You can search speaker by first name, last name and job."
 msgstr ""
 
 #: pod/speaker/models.py pod/speaker/templates/speaker/speakers_management.html
-msgid "Firstname"
+msgid "First name"
 msgstr ""
 
 #: pod/speaker/models.py pod/speaker/templates/speaker/speakers_management.html
-msgid "Lastname"
+msgid "Last name"
 msgstr ""
 
 #: pod/speaker/models.py
@@ -8163,7 +8163,7 @@ msgid "List of speakers"
 msgstr ""
 
 #: pod/speaker/templates/speaker/list_speaker.html
-msgid "Firstname / Lastname"
+msgid "First name / Last name"
 msgstr ""
 
 #: pod/speaker/templates/speaker/list_speaker.html
@@ -8178,7 +8178,7 @@ msgstr ""
 
 #: pod/speaker/templates/speaker/speaker_modal.html
 #: pod/speaker/templates/speaker/speakers_management.html
-msgid "Add Speaker"
+msgid "Add a speaker"
 msgstr ""
 
 #: pod/speaker/templates/speaker/speaker_modal.html
@@ -8186,14 +8186,12 @@ msgid "Jobs"
 msgstr ""
 
 #: pod/speaker/templates/speaker/speaker_modal.html
-#: pod/speaker/templates/speaker/speakers_management.html
 #, fuzzy
 #| msgid "Title"
 msgid "Job Title"
 msgstr "Titel"
 
 #: pod/speaker/templates/speaker/speaker_modal.html
-#: pod/speaker/templates/speaker/speakers_management.html
 msgid "Remove job"
 msgstr ""
 
@@ -8203,6 +8201,10 @@ msgstr ""
 
 #: pod/speaker/templates/speaker/speakers_management.html
 msgid "List of speakers I can manage."
+msgstr ""
+
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "No jobs assigned"
 msgstr ""
 
 #: pod/speaker/templates/speaker/speakers_management.html
@@ -8221,10 +8223,6 @@ msgstr ""
 
 #: pod/speaker/templates/speaker/speakers_management.html
 msgid "No speakers found."
-msgstr ""
-
-#: pod/speaker/templates/speaker/speakers_management.html
-msgid "Edit Speaker"
 msgstr ""
 
 #: pod/speaker/views.py

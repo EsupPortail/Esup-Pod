@@ -79,7 +79,7 @@ class Contributor(models.Model):
 
     video = models.ForeignKey(Video, verbose_name=_("video"), on_delete=models.CASCADE)
     name = models.CharField(
-        verbose_name=_("lastname / firstname"), max_length=200, default=""
+        verbose_name=_("last name / first name"), max_length=200, default=""
     )
     email_address = models.EmailField(
         verbose_name=_("mail"), null=True, blank=True, default=""

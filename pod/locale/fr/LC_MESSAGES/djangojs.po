@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-25 16:32+0200\n"
+"POT-Creation-Date: 2024-06-26 15:39+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -709,6 +709,22 @@ msgstr "Réponse correcte envoyée"
 #: pod/quiz/static/quiz/js/video-quiz-submit.js
 msgid "Incorrect answer given"
 msgstr "Réponse incorrecte envoyée"
+
+#: pod/speaker/static/speaker/js/speakers-management.js
+msgid "Job title"
+msgstr "Titre de la fonction"
+
+#: pod/speaker/static/speaker/js/speakers-management.js
+msgid "remove job"
+msgstr "retirer la fonction"
+
+#: pod/speaker/static/speaker/js/speakers-management.js
+msgid "Edit this speaker"
+msgstr "Éditer cet intervenant"
+
+#: pod/speaker/static/speaker/js/speakers-management.js
+msgid "Add a speaker"
+msgstr "Ajouter un intervenant"
 
 #: pod/video/static/js/ajax-display-channels.js
 msgid "%(count)s channel"

@@ -53,7 +53,7 @@ class JobVideoForm(forms.ModelForm):
         widgets = {
             "job": JobWidget(
                 attrs={
-                    'data-placeholder': _("You can search speaker by firstname, lastname and job."),
+                    'data-placeholder': _("You can search speaker by first name, last name and job."),
                     'style': 'width: 100%;',
                 }
             )

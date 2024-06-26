@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-25 16:32+0200\n"
+"POT-Creation-Date: 2024-06-26 15:39+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1620,7 +1620,7 @@ msgid "captions"
 msgstr "légendes"
 
 #: pod/completion/models.py
-msgid "lastname / firstname"
+msgid "last name / first name"
 msgstr "nom / prénom"
 
 #: pod/completion/models.py
@@ -1881,7 +1881,7 @@ msgid "List of contributors"
 msgstr "Liste des contributeurs"
 
 #: pod/completion/templates/contributor/list_contributor.html
-msgid "Lastname / Firstname"
+msgid "Last name / First name"
 msgstr "Nom / Prénom"
 
 #: pod/completion/templates/contributor/list_contributor.html
@@ -2188,7 +2188,7 @@ msgstr ""
 "joindre son courriel ainsi qu’un lien web (site professionnel par exemple)."
 
 #: pod/completion/templates/video_completion.html
-msgid "List of speaker related to this video."
+msgid "List of speakers related to this video."
 msgstr "Liste des intervenants relatifs à cette vidéo."
 
 #: pod/completion/templates/video_completion.html
@@ -2196,7 +2196,7 @@ msgid ""
 "You can add speakers to this video by searching by their last name, first "
 "name or job. If you can't find the speaker, contact a super admin."
 msgstr ""
-"Vous pouvez ajouter des intervenants à cette vidéo en recherchant par son "
+"Vous pouvez ajouter des intervenants à cette vidéo en recherchant par leur "
 "nom, prénom ou fonction. Si vous ne trouvez pas l’intervenant, adressez-vous "
 "à un super administrateur."
 
@@ -8676,15 +8676,15 @@ msgid "Recorder for Studio not found."
 msgstr "Enregistreur studio non trouvé."
 
 #: pod/speaker/forms.py
-msgid "You can search speaker by firstname, lastname and job."
+msgid "You can search speaker by first name, last name and job."
 msgstr "Vous pouvez rechercher l’intervenant par son nom, prénom ou fonction."
 
 #: pod/speaker/models.py pod/speaker/templates/speaker/speakers_management.html
-msgid "Firstname"
+msgid "First name"
 msgstr "Prénom"
 
 #: pod/speaker/models.py pod/speaker/templates/speaker/speakers_management.html
-msgid "Lastname"
+msgid "Last name"
 msgstr "Nom"
 
 #: pod/speaker/models.py
@@ -8697,7 +8697,7 @@ msgid "List of speakers"
 msgstr "Liste des intervenants"
 
 #: pod/speaker/templates/speaker/list_speaker.html
-msgid "Firstname / Lastname"
+msgid "First name / Last name"
 msgstr "Prénom / Nom"
 
 #: pod/speaker/templates/speaker/list_speaker.html
@@ -8712,30 +8712,32 @@ msgstr "Supprimer la fonction de l’intervenant “%(speaker_job)s”"
 
 #: pod/speaker/templates/speaker/speaker_modal.html
 #: pod/speaker/templates/speaker/speakers_management.html
-msgid "Add Speaker"
-msgstr "Ajouter un intervenant"
+msgid "Add a speaker"
+msgstr "Ajouter un  intervenant"
 
 #: pod/speaker/templates/speaker/speaker_modal.html
 msgid "Jobs"
 msgstr "Fonctions"
 
 #: pod/speaker/templates/speaker/speaker_modal.html
-#: pod/speaker/templates/speaker/speakers_management.html
 msgid "Job Title"
 msgstr "Titre de la fonction"
 
 #: pod/speaker/templates/speaker/speaker_modal.html
-#: pod/speaker/templates/speaker/speakers_management.html
 msgid "Remove job"
 msgstr "Supprimer la fonction"
 
 #: pod/speaker/templates/speaker/speaker_modal.html
 msgid "Add job"
-msgstr "Ajouter une qualité"
+msgstr "Ajouter une fonction"
 
 #: pod/speaker/templates/speaker/speakers_management.html
 msgid "List of speakers I can manage."
 msgstr "Liste des intervenants que je peux gérer."
+
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "No jobs assigned"
+msgstr "Pas de fonctions associées"
 
 #: pod/speaker/templates/speaker/speakers_management.html
 #, python-format
@@ -8754,10 +8756,6 @@ msgstr "Supprimer l’intervenant “%(speaker_firstname)s %(speaker_lastname)s�
 #: pod/speaker/templates/speaker/speakers_management.html
 msgid "No speakers found."
 msgstr "Aucun intervenant trouvé."
-
-#: pod/speaker/templates/speaker/speakers_management.html
-msgid "Edit Speaker"
-msgstr "Modifier l’intervenant"
 
 #: pod/speaker/views.py
 msgid "You cannot access speaker management."
@@ -10155,7 +10153,7 @@ msgstr "Lien du contributeur"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Speaker(s):"
-msgstr "Intervenant(s)"
+msgstr "Intervenant(s):"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Updated on:"
@@ -11082,6 +11080,18 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Add Speaker"
+#~ msgstr "Ajouter un intervenant"
+
+#~ msgid "Firstname"
+#~ msgstr "Prénom"
+
+#~ msgid "Lastname"
+#~ msgstr "Nom"
+
+#~ msgid "Edit Speaker"
+#~ msgstr "Modifier l’intervenant"
 
 #~ msgid "Quiz(zes)"
 #~ msgstr "Quiz"
