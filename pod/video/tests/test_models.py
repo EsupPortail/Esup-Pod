@@ -465,6 +465,31 @@ class VideoTestCase(TestCase):
 
         print("--->  test_video_additional_owners_rights of VideoTestCase: OK")
 
+    def test_video_user_folder(self) -> None:
+        """Check that UserFolder is synced with video params."""
+        # Create 2nd staff user
+        user2 = User.objects.create(username="user2", password=PWD)
+        user2.is_staff = True
+        user2.save()
+
+        # Get the test video and associated Userfolder
+        video = Video.objects.get(id=1)
+        video_folder = video.get_or_create_video_folder()
+
+        # Then, change owner and rename the video
+        video.owner = user2
+        video.title = "Video renamed",
+        video.save()
+
+        video_folder2 = video.get_or_create_video_folder()
+
+        # Check there is no duplicated folder
+        self.assertEqual(video_folder2.id, video_folder.id)
+        self.assertEqual(video_folder2.name, video.slug)
+        self.assertEqual(video_folder2.owner, video.owner)
+
+        print("--->  test_video_user_folder of VideoTestCase: OK")
+
 
 class VideoRenditionTestCase(TestCase):
     """Test the Video Rendition."""

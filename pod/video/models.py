@@ -896,9 +896,8 @@ class Video(models.Model):
         self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
         # self.set_password()
-        if USE_PODFILE:
-            # Ensure video folder will accord access to additional owners
-            self.update_additional_owners_rights()
+        # Ensure video folder will accord access to additional owners
+        self.update_additional_owners_rights()
         super(Video, self).save(*args, **kwargs)
 
     def __str__(self) -> str:
@@ -1420,21 +1419,35 @@ class Video(models.Model):
         """Get or create a UserFolder associated to current video."""
         if USE_PODFILE:
             videodir, created = UserFolder.objects.get_or_create(
-                name="%s" % self.slug, owner=self.owner
+                name=self.slug, owner=self.owner
             )
-            """Ensure additional users will get access to this folder"""
-            videodir.users.set(self.additional_owners.all())
             return videodir
 
     def update_additional_owners_rights(self) -> None:
         """Update folder rights for additional video owners."""
-        try:
-            videodir = UserFolder.objects.get(
-                name="%s" % self.slug, owner=self.owner
-            )
-            videodir.users.set(self.additional_owners.all())
-        except UserFolder.DoesNotExist:
-            pass
+        if USE_PODFILE:
+            try:
+                # First, search for exact Userfolder match
+                videodir = UserFolder.objects.get(
+                    name="%s" % self.slug, owner=self.owner
+                )
+                # Ensure all additional users will get access to this folder
+                videodir.users.set(self.additional_owners.all())
+                videodir.save()
+            except UserFolder.DoesNotExist:
+                # Search for Userfolder previously associated to current vid
+                # (if vid changed slug or owner)
+                slugid = "%04d-" % self.id
+                videodirs = UserFolder.objects.filter(name__startswith=slugid)
+                if videodirs.all().count() > 0:
+                    # We found a match
+                    videodir = videodirs.first()
+                    # Re-sync folder metadata with video
+                    videodir.users.set(self.additional_owners.all())
+                    videodir.name = self.slug
+                    videodir.owner = self.owner
+                    videodir.save()
+
 
 
 class UpdateOwner(models.Model):

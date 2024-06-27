@@ -119,6 +119,8 @@ def get_upload_path_files(instance, filename) -> str:
 
 
 class BaseFileModel(models.Model):
+    """Esup-Pod Base File Model."""
+
     name = models.CharField(_("Name"), max_length=255)
     description = models.CharField(max_length=255, blank=True)
     folder = models.ForeignKey(UserFolder, on_delete=models.CASCADE)
@@ -130,18 +132,23 @@ class BaseFileModel(models.Model):
     )
 
     def save(self, **kwargs) -> None:
+        """Save a BaseFile in DB."""
         path, ext = os.path.splitext(self.file.name)
         # if not self.name or self.name == "":
         self.name = os.path.basename(path)
         return super(BaseFileModel, self).save(**kwargs)
 
     def class_name(self) -> str:
+        """Get the BaseFileModel class name."""
         return self.__class__.__name__
 
     def file_exist(self) -> bool:
+        """Check if a BaseFileModel exist."""
         return self.file and os.path.isfile(self.file.path)
 
     class Meta:
+        """BaseFileModel Metadata."""
+
         abstract = True
         ordering = ["name"]
 
