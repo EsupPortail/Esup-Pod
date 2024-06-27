@@ -465,7 +465,7 @@ class VideoTestCase(TestCase):
 
         print("--->  test_video_additional_owners_rights of VideoTestCase: OK")
 
-    def test_video_user_folder(self) -> None:
+    def test_synced_user_folder(self) -> None:
         """Check that UserFolder is synced with video params."""
         # Create 2nd staff user
         user2 = User.objects.create(username="user2", password=PWD)
@@ -488,7 +488,7 @@ class VideoTestCase(TestCase):
         self.assertEqual(video_folder2.name, video.slug)
         self.assertEqual(video_folder2.owner, video.owner)
 
-        print("--->  test_video_user_folder of VideoTestCase: OK")
+        print("--->  test_synced_user_folder of VideoTestCase: OK")
 
 
 class VideoRenditionTestCase(TestCase):

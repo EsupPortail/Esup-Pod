@@ -896,9 +896,9 @@ class Video(models.Model):
         self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
         # self.set_password()
+        super(Video, self).save(*args, **kwargs)
         # Ensure video folder will accord access to additional owners
         self.update_additional_owners_rights()
-        super(Video, self).save(*args, **kwargs)
 
     def __str__(self) -> str:
         """Display a video object as string."""
@@ -1447,7 +1447,6 @@ class Video(models.Model):
                     videodir.name = self.slug
                     videodir.owner = self.owner
                     videodir.save()
-
 
 
 class UpdateOwner(models.Model):

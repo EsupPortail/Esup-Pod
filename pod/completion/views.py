@@ -22,7 +22,6 @@ from .forms import TrackForm
 from .models import Overlay
 from .forms import OverlayForm
 from .models import CustomFileModel
-from pod.podfile.models import UserFolder
 from pod.podfile.views import get_current_session_folder, file_edit_save
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.settings import LANGUAGE_CODE
