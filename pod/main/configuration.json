@@ -49,13 +49,13 @@
                             "description": {
                                 "en": [
                                     "URL for General Terms and Conditions for API uses for the AI video enhancement.",
-                                    "Example: 'https://aristote.univ.fr/cgu'",
-                                    "Project Link: https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                    "Example: '<https://aristote.univ.fr/cgu>'",
+                                    "Project Link: <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
                                 ],
                                 "fr": [
                                     "L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.",
-                                    "Exemple : 'https://aristote.univ.fr/cgu'",
-                                    "Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                    "Exemple : '<https://aristote.univ.fr/cgu>'",
+                                    "Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
                                 ]
                             },
                             "pod_version_end": "",

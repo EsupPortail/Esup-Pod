@@ -897,6 +897,8 @@ class Video(models.Model):
         self.tags = remove_accents(self.tags)
         # self.set_password()
         super(Video, self).save(*args, **kwargs)
+        # Ensure video folder will accord access to additional owners
+        self.update_additional_owners_rights()
 
     def __str__(self) -> str:
         """Display a video object as string."""
@@ -1412,6 +1414,39 @@ class Video(models.Model):
                 " for video %s: %s" % (self.id, e)
             )
             return {}
+
+    def get_or_create_video_folder(self):
+        """Get or create a UserFolder associated to current video."""
+        if USE_PODFILE:
+            videodir, created = UserFolder.objects.get_or_create(
+                name=self.slug, owner=self.owner
+            )
+            return videodir
+
+    def update_additional_owners_rights(self) -> None:
+        """Update folder rights for additional video owners."""
+        if USE_PODFILE:
+            try:
+                # First, search for exact Userfolder match
+                videodir = UserFolder.objects.get(
+                    name="%s" % self.slug, owner=self.owner
+                )
+                # Ensure all additional users will get access to this folder
+                videodir.users.set(self.additional_owners.all())
+                videodir.save()
+            except UserFolder.DoesNotExist:
+                # Search for Userfolder previously associated to current vid
+                # (if vid changed slug or owner)
+                slugid = "%04d-" % self.id
+                videodirs = UserFolder.objects.filter(name__startswith=slugid)
+                if videodirs.all().count() > 0:
+                    # We found a match
+                    videodir = videodirs.first()
+                    # Re-sync folder metadata with video
+                    videodir.users.set(self.additional_owners.all())
+                    videodir.name = self.slug
+                    videodir.owner = self.owner
+                    videodir.save()
 
 
 class UpdateOwner(models.Model):

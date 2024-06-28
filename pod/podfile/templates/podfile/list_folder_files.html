@@ -20,7 +20,7 @@
       aria-expanded="false"
       title="{% trans 'Toggle file actions menu' %}"
     >
-      <i class="bi bi-three-dots-vertical"></i>
+      <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
     </button>
     <div class="collapse navbar-collapse" id="currentfolder">
       <ul class="navbar-nav me-auto">
@@ -128,7 +128,7 @@
             title="{% trans 'Toggle file actions menu' %}"
           >
             <span class="navbar-toggler-icon file-options-icon">
-              <i class="bi bi-three-dots-vertical"></i>
+              <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
             </span>
           </button>
           <div class="file collapse bg-primary" data-bs-theme="dark" id="currentfile{{file.id}}">
@@ -256,4 +256,3 @@
   </div>
   {% endfor %}
 </div>
-

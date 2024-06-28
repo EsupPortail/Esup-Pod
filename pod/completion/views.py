@@ -22,7 +22,6 @@ from .forms import TrackForm
 from .models import Overlay
 from .forms import OverlayForm
 from .models import CustomFileModel
-from pod.podfile.models import UserFolder
 from pod.podfile.views import get_current_session_folder, file_edit_save
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.settings import LANGUAGE_CODE
@@ -58,9 +57,7 @@ def get_completion_home_page_title(video: Video) -> str:
 def video_caption_maker(request, slug):
     """Caption maker app."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-    video_folder, created = UserFolder.objects.get_or_create(
-        name=video.slug, owner=request.user
-    )
+
     request.session["current_session_folder"] = video.slug
     action = None
     if (
@@ -74,6 +71,7 @@ def video_caption_maker(request, slug):
             request, messages.ERROR, _("You cannot complement this video.")
         )
         raise PermissionDenied
+    video_folder = video.get_or_create_video_folder()
     if request.method == "POST" and request.POST.get("action"):
         action = request.POST.get("action")
     if action in __CAPTION_MAKER_ACTION__:
@@ -111,9 +109,7 @@ def video_caption_maker(request, slug):
 @staff_member_required(redirect_field_name="referrer")
 def video_caption_maker_save(request, video):
     """Caption maker save view."""
-    video_folder, created = UserFolder.objects.get_or_create(
-        name=video.slug, owner=request.user
-    )
+    video_folder = video.get_or_create_video_folder()
 
     if request.method == "POST":
         error = False
