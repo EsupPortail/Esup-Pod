@@ -1428,9 +1428,7 @@ class Video(models.Model):
         if USE_PODFILE:
             try:
                 # First, search for exact Userfolder match
-                videodir = UserFolder.objects.get(
-                    name="%s" % self.slug, owner=self.owner
-                )
+                videodir = UserFolder.objects.get(name="%s" % self.slug, owner=self.owner)
                 # Ensure all additional users will get access to this folder
                 videodir.users.set(self.additional_owners.all())
                 videodir.save()

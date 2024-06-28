@@ -478,7 +478,7 @@ class VideoTestCase(TestCase):
 
         # Then, change owner and rename the video
         video.owner = user2
-        video.title = "Video renamed",
+        video.title = ("Video renamed",)
         video.save()
 
         video_folder2 = video.get_or_create_video_folder()

@@ -26,21 +26,18 @@ def clean_duplicated_UserFolders(dry_run: bool) -> int:
 
         if found > 1:
             # Only one folder is needed by video
-            print(
-                "# More than one Userfolder found for vid %s (%s)." % (
-                    slugid, found)
-            )
+            print("# More than one Userfolder found for vid %s (%s)." % (slugid, found))
             # We arbitrary keep the first folder.
             primary_folder = videodirs.first()
             print(
-                "Primary folder %s `%s` had %s files" % (
-                    primary_folder.id, primary_folder,
-                    len(primary_folder.get_all_files())
-                )
+                "Primary folder %s `%s` had %s files"
+                % (primary_folder.id, primary_folder, len(primary_folder.get_all_files()))
             )
             for folder in list(videodirs.all())[1:]:
-                print(" + Add %s files from folder %s `%s`" % (
-                    len(folder.get_all_files()), folder.id, folder))
+                print(
+                    " + Add %s files from folder %s `%s`"
+                    % (len(folder.get_all_files()), folder.id, folder)
+                )
                 # Move every file to the primary folder
                 if not dry_run:
                     for file in folder.get_all_files():
@@ -52,10 +49,8 @@ def clean_duplicated_UserFolders(dry_run: bool) -> int:
                 if not dry_run:
                     folder.delete()
             print(
-                "Primary folder %s `%s` has now %s files\n" % (
-                    primary_folder.id, primary_folder,
-                    len(primary_folder.get_all_files())
-                )
+                "Primary folder %s `%s` has now %s files\n"
+                % (primary_folder.id, primary_folder, len(primary_folder.get_all_files()))
             )
     return nb_duplicated
 
@@ -69,10 +64,7 @@ def update_folder_rights(vid: Video, folder: UserFolder) -> int:
 
     add_own = vid.additional_owners.all()
     expected = add_own.count()
-    print(
-        "* Regular folder: %s; %s; %s/%s" % (
-            folder.id, folder, before, expected)
-    )
+    print("* Regular folder: %s; %s; %s/%s" % (folder.id, folder, before, expected))
     # Update it’s additional owners
     vid.update_additional_owners_rights()
 
@@ -111,7 +103,9 @@ class Command(BaseCommand):
         self.nb_deleted = {}
         if clean_type in ["userfolder", "all"]:
             if USE_PODFILE:
-                self.nb_deleted["userfolder"] = clean_duplicated_UserFolders(options["dry"])
+                self.nb_deleted["userfolder"] = clean_duplicated_UserFolders(
+                    options["dry"]
+                )
                 if self.nb_deleted["userfolder"] == 0:
                     print("  No duplicated UserFolders found.")
                 self.nb_deleted["userfolder"] += self.clean_userFolders(options["dry"])
@@ -140,7 +134,10 @@ class Command(BaseCommand):
 
                     except Video.DoesNotExist:
                         folder_content = folder.get_all_files()
-                        print("* Orphaned folder: %s; %s; %s" % (folder, folder_content, len(folder_content)))
+                        print(
+                            "* Orphaned folder: %s; %s; %s"
+                            % (folder, folder_content, len(folder_content))
+                        )
                         folder_deleted += 1
                         files_deleted += len(folder_content)
                         if not dry_run:
