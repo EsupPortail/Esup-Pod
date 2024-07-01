@@ -23,6 +23,8 @@ FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 
 class UserFolder(models.Model):
+    """Folder that will contain custom files."""
+
     name = models.CharField(_("Name"), max_length=255)
     # parent = models.ForeignKey(
     #    'self', blank=True, null=True, related_name='children')
@@ -65,12 +67,14 @@ class UserFolder(models.Model):
         return "{0}".format(self.name)
 
     def get_all_files(self) -> list:
+        """Get all files in a UserFolder."""
         file_list = self.customfilemodel_set.all()
         image_list = self.customimagemodel_set.all()
         result_list = sorted(chain(image_list, file_list), key=attrgetter("uploaded_at"))
         return result_list
 
     def delete(self) -> None:
+        """Delete a UserForlder and it's content."""
         for file in self.customfilemodel_set.all():
             file.delete()
         for img in self.customimagemodel_set.all():
@@ -115,6 +119,8 @@ def get_upload_path_files(instance, filename) -> str:
 
 
 class BaseFileModel(models.Model):
+    """Esup-Pod Base File Model."""
+
     name = models.CharField(_("Name"), max_length=255)
     description = models.CharField(max_length=255, blank=True)
     folder = models.ForeignKey(UserFolder, on_delete=models.CASCADE)
@@ -126,18 +132,23 @@ class BaseFileModel(models.Model):
     )
 
     def save(self, **kwargs) -> None:
+        """Save a BaseFile in DB."""
         path, ext = os.path.splitext(self.file.name)
         # if not self.name or self.name == "":
         self.name = os.path.basename(path)
         return super(BaseFileModel, self).save(**kwargs)
 
     def class_name(self) -> str:
+        """Get the BaseFileModel class name."""
         return self.__class__.__name__
 
     def file_exist(self) -> bool:
+        """Check if a BaseFileModel exist."""
         return self.file and os.path.isfile(self.file.path)
 
     class Meta:
+        """BaseFileModel Metadata."""
+
         abstract = True
         ordering = ["name"]
 

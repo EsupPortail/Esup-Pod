@@ -2,7 +2,8 @@
  * @file Esup-Pod Main JavaScripts
  */
 
-/* exported getParents slideToggle fadeOut linkTo_UnCryptMailto showLoader videocheck send_form_data_vanilla */
+/* exported getParents slideToggle fadeOut linkTo_UnCryptMailto showLoader videocheck */
+/* exported  send_form_data_vanilla decodeString */
 
 // Read-only globals defined in video-script.html
 /* global player */

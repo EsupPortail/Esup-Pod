@@ -21,7 +21,8 @@ import ast
 class FolderViewTestCase(TestCase):
     """FOLDER VIEWS test case."""
 
-    def setUp(self):
+    def setUp(self) -> None:
+        """Init some values before FolderView tests."""
         user = User.objects.create(username="pod", password="azerty")
         UserFolder.objects.get(owner=user, name="home")
         child = UserFolder.objects.create(owner=user, name="Child")
@@ -49,7 +50,7 @@ class FolderViewTestCase(TestCase):
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
 
-    def test_list_folders(self):
+    def test_list_folders(self) -> None:
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
@@ -92,7 +93,7 @@ class FolderViewTestCase(TestCase):
 
         print(" ---> test_list_folders: OK!")
 
-    def test_edit_folders(self):
+    def test_edit_folders(self) -> None:
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.user.is_staff = True
@@ -122,7 +123,7 @@ class FolderViewTestCase(TestCase):
         self.assertEqual(response.context["user_folder"].count(), 2)
         print(" ---> test_edit_folders: OK!")
 
-    def test_delete_folders(self):
+    def test_delete_folders(self) -> None:
         self.client = Client()
         self.user = User.objects.get(username="pod2")
         self.user.is_staff = True
@@ -164,7 +165,7 @@ class FolderViewTestCase(TestCase):
 class FileViewTestCase(TestCase):
     """File view test case."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         pod = User.objects.create(username="pod", password="azerty")
         home = UserFolder.objects.get(owner=pod, name="home")
         child = UserFolder.objects.create(owner=pod, name="Child")
@@ -203,7 +204,7 @@ class FileViewTestCase(TestCase):
             file=simplefile,
         )
 
-    def test_list_files(self):
+    def test_list_files(self) -> None:
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
@@ -245,7 +246,7 @@ class FileViewTestCase(TestCase):
 
         print(" ---> test_list_files: OK!")
 
-    def test_edit_files(self):
+    def test_edit_files(self) -> None:
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.user.is_staff = True
