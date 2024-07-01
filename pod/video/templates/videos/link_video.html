@@ -84,7 +84,9 @@
       <i class="bi bi-trash card-footer-link-i" aria-hidden="true"></i></a>
   {% endif %}
 {% endif %}
-
+  <a href="#" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" title="{% trans 'Add the video to a playlist'%}" data-bs-toggle="modal" data-bs-target="#link-video-modal">
+    <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+  </a>
 {% if "edit" in request.resolver_match.url_name %}
   {% with video.get_other_version as versions %}
     {% if versions|length > 0 %}
