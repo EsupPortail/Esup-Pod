@@ -81,12 +81,59 @@
 {% if video.encoded and video.encoding_in_progress is False %}
   {% if video.owner == request.user or request.user.is_superuser or perms.video.delete_video %}
     <a href="{% url 'video:video_delete' slug=video.slug %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" title="{% trans 'Delete the video'%}" data-bs-toggle="tooltip" data-bs-placement="top">
-      <i class="bi bi-trash card-footer-link-i" aria-hidden="true"></i></a>
+      <i class="bi bi-trash card-footer-link-i" aria-hidden="true"></i>
+    </a>
   {% endif %}
 {% endif %}
-  <a href="#" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" title="{% trans 'Add the video to a playlist'%}" data-bs-toggle="modal" data-bs-target="#link-video-modal">
-    <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
-  </a>
+<a href=""
+   class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1"
+   data-bs-toggle="dropdown"
+   aria-expanded="false"
+   title="{% trans 'More options' %}">
+  <i class="bi bi-list" aria-hidden="true"></i>
+</a>
+<ul class="dropdown-menu" aria-labelledby="more-actions-row-btn-{{ video.id }}">
+  {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video %}
+    <li>
+      <a href="{% url 'video:video_edit' slug=video.slug %}"
+         title="{% trans 'Edit the video' %} {{ video.title }}"
+         class="dropdown-item">{% trans 'Edit the video' %}</a>
+    </li>
+  {% endif %}
+  {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay %}
+    <li>
+      <a href="{% url 'video:completion:video_completion' slug=video.slug %}"
+         title="{% trans 'Complete the video' %} {{ video.title }}"
+         class="dropdown-item">{% trans 'Complete the video' %}
+      </a>
+    </li>
+  {% endif %}
+  {% if video.encoded and video.encoding_in_progress is False %}
+    {% if video.owner == request.user or request.user.is_superuser or perms.cut.cut_video %}
+      <li>
+        <a href="{% url 'cut:video_cut' slug=video.slug %}"
+           title="{% trans 'Cut the video' %} {{ video.title }}"
+           class="dropdown-item">{% trans 'Cut the video' %}</a>
+      </li>
+    {% endif %}
+  {% endif %}
+  {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.chapter.change_chapter %}
+    <li>
+      <a href="{% url 'video:chapter:video_chapter' slug=video.slug %}"
+         title="{% trans 'Chapter the video' %} {{ video.title }}"
+         class="dropdown-item">{% trans 'Chapter the video' %}</a>
+    </li>
+  {% endif %}
+  {% if video.encoded and video.encoding_in_progress is False %}
+    {% if video.owner == request.user or request.user.is_superuser or perms.video.delete_video %}
+      <li>
+        <a href="{% url 'video:video_delete' slug=video.slug %}"
+           title="{% trans 'Delete the video' %} {{ video.title }}"
+           class="dropdown-item">{% trans 'Delete the video' %}</a>
+      </li>
+    {% endif %}
+  {% endif %}
+</ul>
 {% if "edit" in request.resolver_match.url_name %}
   {% with video.get_other_version as versions %}
     {% if versions|length > 0 %}
