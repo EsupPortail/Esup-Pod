@@ -2,7 +2,11 @@
  * @file Esup-Pod speaker management script.
  */
 document.addEventListener('DOMContentLoaded', function() {
-    // Function to add a job field
+    /**
+     * Adds a job field to the job fields container.
+     * @param {string} jobId - The ID of the job (default is an empty string).
+     * @param {string} jobTitle - The title of the job (default is an empty string).
+     */
     function addJobField(jobId = '', jobTitle = '') {
         var jobFieldHtml = `
            <div class="d-flex align-items-center">
@@ -14,7 +18,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('jobFieldsContainer').insertAdjacentHTML('beforeend', jobFieldHtml);
     }
 
-    // Handle add/edit speaker modal show
+    /**
+     * Shows the add/edit speaker modal with the provided speaker data.
+     * @param {Object|null} speaker - The speaker data (default is null for adding a new speaker).
+     */
     function showSpeakerModal(speaker = null) {
         // Clear existing job fields
         document.getElementById('jobFieldsContainer').textContent = '';

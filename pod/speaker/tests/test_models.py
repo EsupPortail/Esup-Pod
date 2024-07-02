@@ -61,6 +61,7 @@ class SpeakerModelTest(TestCase):
         )
 
     def test_attributs_full(self):
+        """Test all attributs."""
         speaker1 = Speaker.objects.get(id=1)
         speaker2 = Speaker.objects.get(id=2)
         job1 = Job.objects.get(id=1)
