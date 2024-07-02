@@ -183,6 +183,29 @@ class Question(models.Model):
         """
         return None
 
+    def calculate_score(self, user_answer):
+        """
+        Calculate the score for the question based on user's answer.
+
+        Args:
+            user_answer (any): Answer provided by the user.
+
+        Returns:
+            float: The calculated score, a value between 0 and 1.
+        """
+        correct_answer = self.get_answer()
+
+        if correct_answer is None:
+            return 0.0
+
+        return self._calculate_score(user_answer, correct_answer)
+
+    def _calculate_score(self, user_answer, correct_answer):
+        """
+        Internal method to be implemented by subclasses to calculate score.
+        """
+        raise NotImplementedError("Subclasses of Question must implement _calculate_score method.")
+
 
 class SingleChoiceQuestion(Question):
     """
@@ -262,6 +285,19 @@ class SingleChoiceQuestion(Question):
         from pod.quiz.forms import SingleChoiceQuestionForm
 
         return SingleChoiceQuestionForm(data, instance=self, prefix=f"question_{self.pk}")
+
+    def _calculate_score(self, user_answer, correct_answer):
+        """
+        Calculate the score for single choice question.
+
+        Args:
+            user_answer (any): Answer provided by the user.
+            correct_answer (any): Correct answer for the question.
+
+        Returns:
+            float: The calculated score, a value between 0 and 1.
+        """
+        return 1.0 if user_answer.lower() == correct_answer.lower() else 0.0
 
 
 class MultipleChoiceQuestion(Question):
@@ -347,6 +383,27 @@ class MultipleChoiceQuestion(Question):
             data, instance=self, prefix=f"question_{self.pk}"
         )
 
+    def _calculate_score(self, user_answer, correct_answer):
+        """
+        Calculate the score for multiple choice question.
+
+        Args:
+            user_answer (list): Answers provided by the user.
+            correct_answer (list): Correct answers for the question.
+
+        Returns:
+            float: The calculated score, a value between 0 and 1.
+        """
+        user_answer_set = set(user_answer) if user_answer else set()
+        correct_answer_set = set(correct_answer)
+        intersection = user_answer_set & correct_answer_set
+        score = len(intersection) / len(correct_answer_set)
+
+        len_incorrect = len(user_answer_set - correct_answer_set)
+        penalty = len_incorrect / len(correct_answer_set)
+        score = max(0, score - penalty)
+        return score
+
 
 class TrueFalseQuestion(Question):  # TODO
     """
@@ -417,3 +474,18 @@ class ShortAnswerQuestion(Question):
         )
 
         return ShortAnswerQuestionForm(data, instance=self, prefix=f"question_{self.pk}")
+
+    def _calculate_score(self, user_answer, correct_answer):
+        """
+        Calculate the score for short answer question.
+
+        Args:
+            user_answer (str): Answer provided by the user.
+            correct_answer (str): Correct answer for the question.
+
+        Returns:
+            float: The calculated score, a value between 0 and 1.
+        """
+        if user_answer is not None and user_answer.strip() != "" and correct_answer is not None:
+            return 1.0 if user_answer.lower() == correct_answer.lower() else 0.0
+        return 0.0

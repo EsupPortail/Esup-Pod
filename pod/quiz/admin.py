@@ -38,7 +38,6 @@ class MultipleChoiceQuestionAdmin(BaseQuestionAdmin):
     """Admin configuration for MultipleChoiceQuestion."""
 
 
-
 @admin.register(ShortAnswerQuestion)
 class ShortAnswerQuestionAdmin(BaseQuestionAdmin):
     """Admin configuration for ShortAnswerQuestion."""

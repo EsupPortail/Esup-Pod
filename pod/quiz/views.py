@@ -21,7 +21,7 @@ from pod.quiz.models import (
     ShortAnswerQuestion,
     SingleChoiceQuestion,
 )
-from pod.quiz.utils import get_video_quiz
+from pod.quiz.utils import calculate_question_score_from_form, get_video_quiz
 from pod.video.models import Video
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
@@ -324,50 +324,6 @@ def create_questions(new_quiz: Quiz, question_formset) -> None:
         )
 
 
-def calculate_score(question: Question, form) -> float:
-    """
-    Calculate the score for a given question and form.
-
-    Args:
-        question (Question): The question object.
-        form: The form object containing the user's answers.
-
-    Returns:
-        float: The calculated score, a value between 0 and 1.
-    """
-    user_answer = None
-    correct_answer = None
-    if question.get_type() == "single_choice":
-        user_answer = form.cleaned_data.get("selected_choice")
-        correct_answer = question.get_answer()
-
-    elif question.get_type() == "multiple_choice":
-        user_answer = form.cleaned_data.get("selected_choice")
-        correct_answer = question.get_answer()
-        if user_answer != "":
-            user_answer = ast.literal_eval(
-                user_answer
-            )  # Cannot use JSON.loads in case of quotes in a user answer.
-            intersection = set(user_answer) & set(correct_answer)
-            score = len(intersection) / len(correct_answer)
-
-            len_incorrect = len(user_answer) - len(intersection)
-            penalty = len_incorrect / len(correct_answer)
-            score = max(0, score - penalty)
-            return score
-
-    elif question.get_type() in {"short_answer"}:
-        user_answer = form.cleaned_data.get("user_answer")
-        correct_answer = question.get_answer()
-
-    # Add similar logic for other question types...
-
-    if (user_answer is not None and user_answer != "") and correct_answer is not None:
-        return 1.0 if user_answer.lower() == correct_answer.lower() else 0.0
-
-    return 0.0
-
-
 def process_quiz_submission(request: WSGIRequest, quiz: Quiz) -> float:
     """
     Process the submission of a quiz and calculate the user's percentage score.
@@ -387,7 +343,7 @@ def process_quiz_submission(request: WSGIRequest, quiz: Quiz) -> float:
     for question in quiz.get_questions():
         form = question.get_question_form(request.POST)
         if form.is_valid():
-            question_score = calculate_score(question, form)
+            question_score = calculate_question_score_from_form(question, form)
             score += question_score
             questions_stats[question.id] = question_score
             if question.get_type() in ["single_choice", "multiple_choice"]:

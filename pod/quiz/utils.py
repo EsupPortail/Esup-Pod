@@ -3,6 +3,7 @@
 from typing import Optional
 from pod.quiz.models import (
     MultipleChoiceQuestion,
+    Question,
     Quiz,
     ShortAnswerQuestion,
     SingleChoiceQuestion,
@@ -101,3 +102,34 @@ def import_quiz(video: Video, quiz_data_json: str):
             create_question_from_aristote_json(
                 quiz=new_quiz, question_type=question_type, question_dict=question
             )
+
+
+def calculate_question_score_from_form(question: Question, form) -> float:
+    """
+    Calculate the score for a given question and form.
+
+    Args:
+        question (Question): The question object.
+        form: The form object containing the user's answers.
+
+    Returns:
+        float: The calculated score, a value between 0 and 1.
+    """
+    user_answer = None
+
+    if question.get_type() == "single_choice":
+        user_answer = form.cleaned_data.get("selected_choice")
+
+    elif question.get_type() == "multiple_choice":
+        user_answer = form.cleaned_data.get("selected_choice")
+        if user_answer != "":
+            user_answer = ast.literal_eval(
+                user_answer
+            )  # Cannot use JSON.loads in case of quotes in a user answer.
+
+    elif question.get_type() == "short_answer":
+        user_answer = form.cleaned_data.get("user_answer")
+
+    # Add similar logic for other question types...
+
+    return question.calculate_score(user_answer)
