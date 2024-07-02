@@ -51,7 +51,8 @@
    class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1"
    data-bs-toggle="dropdown"
    aria-expanded="false"
-   title="{% trans 'More options' %}">
+   title="{% trans 'More options' %}"
+>
   <i class="bi bi-list" aria-hidden="true"></i>
 </a>
 <ul class="dropdown-menu" aria-labelledby="more-actions-row-btn-{{ video.id }}">
@@ -60,8 +61,11 @@
     {% enhancement_is_already_asked video as enr_is_already_asked %}
     {% if can_enhance_video_with_ai and not enr_is_already_asked %}
       <a href="{% url 'ai_enhancement:enhance_video' video_slug=video.slug %}"
-         title="{% trans 'Enhance the video with AI' %} ({{ video.title }})"
+         title="{% trans 'Enhance the video with AI' %} — {{ video.title }}"
          class="dropdown-item"
+         data-bs-toggle="tooltip"
+         aria-label="{% trans 'Enhance the video with AI' %} — {{ video.title }}"
+         data-bs-original-title="{% trans 'Enhance the video with AI' %} — {{ video.title }}"
       >
         <i class="bi bi-robot card-footer-link-i" aria-hidden="true"></i>
         {% trans 'Enhance the video with AI' %}
@@ -71,8 +75,11 @@
   {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay %}
     <li>
       <a href="{% url 'video:completion:video_completion' slug=video.slug %}"
-         title="{% trans 'Complete the video' %} {{ video.title }}"
+         title="{% trans 'Complete the video' %} — {{ video.title }}"
          class="dropdown-item"
+         data-bs-toggle="tooltip"
+         aria-label="{% trans 'Complete the video' %} — {{ video.title }}"
+         data-bs-original-title="{% trans 'Complete the video' %} — {{ video.title }}"
       >
           <i class="bi bi-file-text card-footer-link-i" aria-hidden="true"></i>
           {% trans 'Complete the video' %}
@@ -84,8 +91,11 @@
       {% if video.owner == request.user or request.user.is_superuser or perms.cut.cut_video %}
         <li>
           <a href="{% url 'cut:video_cut' slug=video.slug %}"
-             title="{% trans 'Cut the video' %} {{ video.title }}"
+             title="{% trans 'Cut the video' %} — {{ video.title }}"
              class="dropdown-item"
+             data-bs-toggle="tooltip"
+             aria-label="{% trans 'Cut the video' %} — {{ video.title }}"
+             data-bs-original-title="{% trans 'Cut the video' %} — {{ video.title }}"
           >
             <i class="bi bi-scissors card-footer-link-i" aria-hidden="true"></i>
             {% trans 'Cut the video' %}
@@ -97,8 +107,11 @@
   {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.chapter.change_chapter %}
     <li>
       <a href="{% url 'video:chapter:video_chapter' slug=video.slug %}"
-         title="{% trans 'Chapter the video' %} {{ video.title }}"
+         title="{% trans 'Chapter the video' %} — {{ video.title }}"
          class="dropdown-item"
+         data-bs-toggle="tooltip"
+         aria-label="{% trans 'Chapter the video' %} — {{ video.title }}"
+         data-bs-original-title="{% trans 'Chapter the video' %} — {{ video.title }}"
       >
           <i class="bi bi-card-list card-footer-link-i" aria-hidden="true"></i>
           {% trans 'Chapter the video' %}
@@ -108,8 +121,11 @@
   {% if USE_DRESSING and video.encoded and video.encoding_in_progress is False %}
     {% if request.user.is_staff and video.owner == request.user or request.user.is_superuser %}
       <a href="{% url 'video:dressing:video_dressing' slug=video.slug %}"
-         title="{% trans 'Dress the video'%} {{ video.title }}"
+         title="{% trans 'Dress the video'%} — {{ video.title }}"
          class="dropdown-item"
+         data-bs-toggle="tooltip"
+         aria-label="{% trans 'Dress the video'%} — {{ video.title }}"
+         data-bs-original-title="{% trans 'Dress the video'%} — {{ video.title }}"
       >
         <i class="bi bi-palette" aria-hidden="true"></i>
         {% trans 'Dress the video'%}
@@ -121,8 +137,11 @@
       <li><hr class="dropdown-divider"></li>
       <li>
         <a href="{% url 'video:video_delete' slug=video.slug %}"
-           title="{% trans 'Delete the video' %} {{ video.title }}"
+           title="{% trans 'Delete the video' %} — {{ video.title }}"
            class="dropdown-item"
+           data-bs-toggle="tooltip"
+           aria-label="{% trans 'Delete the video' %} — {{ video.title }}"
+           data-bs-original-title="{% trans 'Delete the video' %} — {{ video.title }}"
         >
             <i class="bi bi-trash card-footer-link-i" aria-hidden="true"></i>
             {% trans 'Delete the video' %}
