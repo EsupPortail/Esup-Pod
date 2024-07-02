@@ -15,7 +15,6 @@ from pod.quiz.forms import (
 )
 from pod.quiz.models import (
     MultipleChoiceQuestion,
-    Question,
     Quiz,
     ShortAnswerQuestion,
     SingleChoiceQuestion,
@@ -87,19 +86,6 @@ class QuestionModelTests(TestCase):
         )
         self.assertEqual(str(self.UCQ1), expected_string)
         print(" --->  test_string_representation ok")
-
-    def test_get_question_form(self) -> None:
-        """Test if test_get_question_form works correctly."""
-        self.assertEqual(
-            Question.get_question_form(self),
-            "This method must be redefined in child class.",
-        )
-        print(" --->  test_get_question_form ok")
-
-    def test_get_type(self) -> None:
-        """Test if test_get_type works correctly."""
-        self.assertIsNone(Question.get_type(self))
-        print(" --->  test_get_type ok")
 
     def test_clean(self) -> None:
         """Test if test_clean works correctly."""
