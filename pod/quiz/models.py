@@ -1,5 +1,6 @@
 """Esup-Pod quiz models."""
 
+import uuid
 from json import JSONDecodeError, loads
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -86,7 +87,7 @@ class Question(models.Model):
         start_timestamp (IntegerField): Start timestamp of the answer in the video.
         end_timestamp (IntegerField): End timestamp of the answer in the video.
     """
-
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     quiz = models.ForeignKey(
         Quiz,
         verbose_name=_("Quiz"),

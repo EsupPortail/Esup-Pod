@@ -165,6 +165,7 @@
     {{ questions_answers|json_script:"questions_answers" }}
     <script>
       const questions_answers = JSON.parse(document.getElementById('questions_answers').textContent);
+      console.log(questions_answers);
     </script>
     <script src="{% static 'quiz/js/video-quiz-submit.js' %}?ver={{VERSION}}"></script>
   {% endif %}
