@@ -1870,3 +1870,8 @@ body[data-admin-utc-offset]
 .question-container li.bi::before {
   margin-right: 0.5em;
 }
+
+/** LINK VIDEO MODAL **/
+#link-video-modal .modal-dialog {
+  font-size: 1.7em;
+}
