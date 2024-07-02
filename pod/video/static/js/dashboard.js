@@ -32,6 +32,7 @@ var cancelModalBtn = document.getElementById("cancelModalBtn");
 var btnDisplayMode = document.querySelectorAll(".btn-dashboard-display-mode");
 var dashboardAction = "";
 var dashboardValue;
+selectedVideos[videosListContainerId] = [];
 
 /**
  * Add change event listener on select action to get related inputs
@@ -39,15 +40,14 @@ var dashboardValue;
 bulkUpdateActionSelect.addEventListener("change", function () {
   dashboardAction = bulkUpdateActionSelect.value;
   appendDynamicForm(dashboardAction);
-  replaceSelectedCountVideos();
-  manageDisableBtn(resetDashboardElementsBtn, dashboardAction != "");
+  replaceSelectedCountVideos(videosListContainerId);
 });
 
 /**
  * Add click event listener on apply button to build and open confirm modal
  */
 applyBulkUpdateBtn.addEventListener("click", () => {
-  let selectedCount = selectedVideos.length;
+  let selectedCount = selectedVideos[videosListContainerId].length;
   let modalEditionConfirmStr = ngettext(
     "Please confirm the editing of the following video:",
     "Please confirm the editing of the following videos:",
@@ -71,7 +71,7 @@ applyBulkUpdateBtn.addEventListener("click", () => {
     true,
   );
   modal.querySelector(".modal-body").innerHTML =
-    "<p>" + modalConfirmStr + "</p>" + getHTMLBadgesSelectedTitles();
+    "<p>" + modalConfirmStr + "</p>" + getHTMLBadgesSelectedTitles(videosListContainerId);
 });
 
 /**
@@ -152,7 +152,7 @@ async function bulkUpdate() {
   }
 
   // Construct formData to send
-  formData.append("selected_videos", JSON.stringify(selectedVideos));
+  formData.append("selected_videos", JSON.stringify(selectedVideos[videosListContainerId]));
   formData.append("update_fields", JSON.stringify(updateFields));
   formData.append("update_action", updateAction);
 
@@ -173,9 +173,10 @@ async function bulkUpdate() {
 
   if (response.ok) {
     // Set selected videos with new slugs if changed during update
-    selectedVideos = data["updated_videos"];
+    selectedVideos[videosListContainerId] = data["updated_videos"];
     showalert(message, "alert-success", "formalertdivbottomright");
     refreshVideosSearch();
+    replaceSelectedCountVideos(videosListContainerId);
   } else {
     // Manage field errors and global errors
     let errors = Array.from(data["fields_errors"]);
