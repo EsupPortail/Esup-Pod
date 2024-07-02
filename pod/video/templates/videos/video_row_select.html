@@ -83,73 +83,7 @@
             data-bs-toggle="dropdown" aria-expanded="false" title="{% trans 'Toggle actions menu' %}">
       <i class="bi bi-three-dots more-actions-row-i" aria-hidden="true"></i>
     </button>
-    <ul class="dropdown-menu" aria-labelledby="more-actions-row-btn-{{ video.id }}">
-      <li><a href="{% url 'video:video' video.slug %}"
-           title="{% trans 'Play' %} {{ video.title }}"
-           class="dropdown-item">{% trans "Play" %}</a></li>
-      {% if playlist %}
-        {% user_can_edit_or_remove playlist as can_edit_or_remove %}
-        {% if not in_favorites_playlist and can_edit_or_remove %}
-          <li><a href="{% url 'playlist:remove-video' playlist.slug video.slug %}" class="dropdown-item"
-               id="remove-from-playlist-btn-{{ video.id }}">{% trans "Remove from playlist" %}</a></li>
-        {% endif %}
-      {% endif %}
-      {{ is_favorite }}
-      {% is_favorite user video as is_favorite %}
-      {% get_favorite_playlist user as fav_playlist %}
-      {% if USE_PLAYLIST and USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
-        <li>
-          {% if is_favorite %}
-            <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}"
-               class="dropdown-item" id="favorite-btn-{{ video.id }}" aria-pressed="true"
-               role="button">{% trans "Remove from favorite" %}</a>
-          {% else %}
-            <a href="{% url 'playlist:add-video' fav_playlist.slug video.slug %}"
-               class="dropdown-item" id="favorite-btn-{{ video.id }}" aria-pressed="false"
-               role="button">{% trans "Add in favorite" %}</a>
-          {% endif %}
-        </li>
-      {% endif %}
-      {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video %}
-        <li>
-          <a href="{% url 'video:video_edit' slug=video.slug %}"
-             title="{% trans 'Edit the video' %} {{ video.title }}"
-             class="dropdown-item">{% trans 'Edit the video' %}</a>
-        </li>
-      {% endif %}
-      {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay %}
-        <li>
-          <a href="{% url 'video:completion:video_completion' slug=video.slug %}"
-             title="{% trans 'Complete the video' %} {{ video.title }}"
-             class="dropdown-item">{% trans 'Complete the video' %}</a>
-        </li>
-      {% endif %}
-      {% if video.encoded and video.encoding_in_progress is False %}
-        {% if video.owner == request.user or request.user.is_superuser or perms.cut.cut_video %}
-          <li>
-            <a href="{% url 'cut:video_cut' slug=video.slug %}"
-               title="{% trans 'Cut the video' %} {{ video.title }}"
-               class="dropdown-item">{% trans 'Cut the video' %}</a>
-          </li>
-        {% endif %}
-      {% endif %}
-      {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.chapter.change_chapter %}
-        <li>
-          <a href="{% url 'video:chapter:video_chapter' slug=video.slug %}"
-             title="{% trans 'Chapter the video' %} {{ video.title }}"
-             class="dropdown-item">{% trans 'Chapter the video' %}</a>
-        </li>
-      {% endif %}
-      {% if video.encoded and video.encoding_in_progress is False %}
-        {% if video.owner == request.user or request.user.is_superuser or perms.video.delete_video %}
-          <li>
-            <a href="{% url 'video:video_delete' slug=video.slug %}"
-               title="{% trans 'Delete the video' %} {{ video.title }}"
-               class="dropdown-item">{% trans 'Delete the video' %}</a>
-          </li>
-        {% endif %}
-      {% endif %}
-    </ul>
+    {% include 'videos/link_video_dropdown_menu.html' %}
   </div>
 {% endspaceless %}
 
