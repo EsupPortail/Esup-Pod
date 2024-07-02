@@ -351,10 +351,8 @@ class Command(BaseCommand):
             homedir, created = UserFolder.objects.get_or_create(
                 name="home", owner=video.owner
             )
-            videodir, created = UserFolder.objects.get_or_create(
-                name="%s" % video.slug, owner=video.owner
-            )
-            document = CustomFileModel(folder=videodir, created_by=video.owner)
+            video_folder = video.get_or_create_video_folder()
+            document = CustomFileModel(folder=video_folder, created_by=video.owner)
             document.file.save(
                 os.path.basename(new_file),
                 File(open(new_file, "rb")),
@@ -377,10 +375,8 @@ class Command(BaseCommand):
             homedir, created = UserFolder.objects.get_or_create(
                 name="home", owner=video.owner
             )
-            videodir, created = UserFolder.objects.get_or_create(
-                name="%s" % video.slug, owner=video.owner
-            )
-            image = CustomImageModel(folder=videodir, created_by=video.owner)
+            video_folder = video.get_or_create_video_folder()
+            image = CustomImageModel(folder=video_folder, created_by=video.owner)
             image.file.save(
                 os.path.basename(new_file),
                 File(open(new_file, "rb")),

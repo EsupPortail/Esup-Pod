@@ -65,10 +65,10 @@ def display_content_by_block(content, request):  # noqa: C901
 
     if content.no_cache is True:
         params["cache"] = False
-        debug_elts.append("Cache is disable for this part")
+        debug_elts.append("Cache is disabled for this part")
     else:
         params["cache"] = True
-        debug_elts.append("Cache is enable for this part")
+        debug_elts.append("Cache is enabled for this part")
 
     if content.nb_element is not None or content.nb_element != "":
         params["nb-element"] = int(content.nb_element)

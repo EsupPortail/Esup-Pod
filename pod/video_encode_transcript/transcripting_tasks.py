@@ -33,7 +33,7 @@ smtp_handler = logging.handlers.SMTPHandler(
     mailhost=EMAIL_HOST,
     fromaddr=DEFAULT_FROM_EMAIL,
     toaddrs=admins_email,
-    subject="[POD ENCODING] Encoding Log Mail",
+    subject="[POD TRANSCRIPT] Transcripting Log Mail",
 )
 if not TEST_REMOTE_ENCODE:
     logger.addHandler(smtp_handler)
@@ -57,8 +57,8 @@ transcripting_app.autodiscover_tasks(packages=None, related_name="", force=False
 # celery \
 # -A pod.video_encode_transcript.transcripting_tasks worker \
 # -l INFO -Q transcripting
-@transcripting_app.task
-def start_transcripting_task(video_id, mp3filepath, duration, lang):
+@transcripting_app.task(bind=True)
+def start_transcripting_task(self, video_id, mp3filepath, duration, lang):
     """Start the transcripting of the video."""
     from .transcript_model import start_transcripting
     from ..main.settings import MEDIA_ROOT
@@ -76,21 +76,22 @@ def start_transcripting_task(video_id, mp3filepath, duration, lang):
     Headers = {"Authorization": "Token %s" % POD_API_TOKEN}
     url = POD_API_URL.strip("/") + "/store_remote_transcripted_video/?id=%s" % video_id
     data = {"video_id": video_id, "msg": msg, "temp_vtt_file": temp_vtt_file.name}
+    msg = "Task id : %s\n" % self.request.id
     try:
         response = requests.post(url, json=data, headers=Headers)
         if response.status_code != 200:
-            msg = "Calling store remote transcoding error: {} {}".format(
+            msg += "Calling store remote transcoding error: {} {}".format(
                 response.status_code, response.reason
             )
             logger.error(msg + "\n" + str(response.content))
         else:
-            logger.info("Call importing transcript task ok")
+            logger.info(msg + "Call importing transcript task ok")
     except (
         requests.exceptions.HTTPError,
         requests.exceptions.ConnectionError,
         requests.exceptions.InvalidURL,
         requests.exceptions.Timeout,
     ) as exception:
-        msg = "Exception: {}".format(type(exception).__name__)
+        msg += "Exception: {}".format(type(exception).__name__)
         msg += "\nException message: {}".format(exception)
         logger.error(msg)

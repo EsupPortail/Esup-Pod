@@ -102,17 +102,15 @@ def save_slide(data, filename, video, enrichment, recording) -> None:
             homedir, created = UserFolder.objects.get_or_create(
                 name="home", owner=video.owner
             )
-            videodir, created = UserFolder.objects.get_or_create(
-                name="%s" % video.slug, owner=video.owner
-            )
+            video_folder = video.get_or_create_video_folder()
             previousImage = CustomImageModel.objects.filter(
                 name__startswith=slugify(video.title + "_" + slide_name),
-                folder=videodir,
+                folder=video_folder,
                 created_by=video.owner,
             )
             for img in previousImage:
                 img.delete()
-            image = CustomImageModel(folder=videodir, created_by=video.owner)
+            image = CustomImageModel(folder=video_folder, created_by=video.owner)
             image.file.save(
                 slugify(video.title + "_" + slide_name) + ext,
                 ContentFile(data),
