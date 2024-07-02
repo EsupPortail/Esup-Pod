@@ -36,6 +36,7 @@ USE_OPENCAST_STUDIO = getattr(settings, "USE_OPENCAST_STUDIO", False)
 USE_PODFILE = getattr(settings, "USE_PODFILE", False)
 USE_PLAYLIST = getattr(settings, "USE_PLAYLIST", True)
 USE_DRESSING = getattr(settings, "USE_DRESSING", True)
+USE_SPEAKER = getattr(settings, "USE_SPEAKER", False)
 USE_IMPORT_VIDEO = getattr(settings, "USE_IMPORT_VIDEO", True)
 USE_QUIZ = getattr(settings, "USE_QUIZ", True)
 USE_AI_ENHANCEMENT = getattr(settings, "USE_AI_ENHANCEMENT", False)
@@ -189,6 +190,12 @@ if USE_QUIZ:
 if USE_DRESSING:
     urlpatterns += [
         path("dressing/", include("pod.dressing.urls", namespace="dressing")),
+    ]
+
+# SPEAKER
+if USE_SPEAKER:
+    urlpatterns += [
+        path("speaker/", include("pod.speaker.urls", namespace="speaker")),
     ]
 
 # IMPORT_VIDEO

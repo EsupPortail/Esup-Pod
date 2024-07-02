@@ -1,0 +1,31 @@
+{# HTML for speaker list. Don't use this file alone it must be integrated into another template! #}
+{% load i18n %}
+
+<div class="table-responsive">
+  <table class="table table-striped table-condensed caption-top" id="list_speaker">
+    <caption>{% trans 'List of speakers' %}&nbsp;({{list_speaker|length}})</caption>
+    <thead>
+      <tr>
+        <th scope="col" class="speaker-name">{% trans 'First name / Last name' %}</th>
+        <th scope="col">{% trans 'Job' %}</th>
+        <th scope="col">{% trans 'Actions' %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for speaker in list_speaker %}
+        <tr class="speaker">
+          <td class="speaker-name">{{speaker.job.speaker.firstname}} {{speaker.job.speaker.lastname}}</td>
+          <td class="speaker_job">{{speaker.job.title|default_if_none:'&nbsp;'}}</td>
+          <td>
+            <form class="form_delete completion d-inline-block" action="{% url 'video:completion:video_completion_speaker' slug=video.slug %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="id" value="{{speaker.id}}">
+              <input type="submit" title="{% blocktrans with speaker_job=speaker.job %}Delete the speaker job “{{ speaker_job }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="right" value="{% trans 'Delete' %}" class="edt_speaker btn btn-danger btn-sm">
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

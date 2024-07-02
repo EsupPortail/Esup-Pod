@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "pod.progressive_web_app",
     "pod.dressing",
     "pod.ai_enhancement",
+    "pod.speaker",
     "pod.custom",
 ]
 
@@ -132,6 +133,7 @@ TEMPLATES = [
                 "pod.dressing.context_processors.context_settings",
                 "pod.import_video.context_processors.context_settings",
                 "pod.cut.context_processors.context_settings",
+                "pod.speaker.context_processors.context_settings",
             ],
         },
     },
