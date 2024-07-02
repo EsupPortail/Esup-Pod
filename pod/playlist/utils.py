@@ -228,7 +228,7 @@ def remove_playlist(user: User, playlist: Playlist) -> None:
         user (:class:`django.contrib.auth.models.User`): The user object
         playlist (:class:`pod.playlist.models.Playlist`): The playlist objet
     """
-    if playlist.owner == user or user.is_staff:
+    if playlist.owner == user:
         playlist.delete()
 
 
@@ -416,6 +416,5 @@ def playlist_can_be_displayed(request: WSGIRequest, playlist: Playlist) -> bool:
         and (
             playlist.owner == request.user
             or playlist in get_playlists_for_additional_owner(request.user)
-            or request.user.is_staff
         )
     )
