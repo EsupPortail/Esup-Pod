@@ -109,7 +109,7 @@ def add_speaker(request: WSGIRequest):
         messages.add_message(request, messages.SUCCESS, _("The speaker has been added."))
         return True
     except (ValueError, ObjectDoesNotExist):
-        messages.add_message(request, messages.ERROR, _("Speaker not found."))
+        messages.add_message(request, messages.ERROR, _("The speaker could not be added."))
         return False
 
 
@@ -132,7 +132,7 @@ def delete_speaker(request: WSGIRequest):
         messages.add_message(request, messages.SUCCESS, _("The speaker has been deleted."))
         return True
     except (ValueError, ObjectDoesNotExist):
-        messages.add_message(request, messages.ERROR, _("Speaker not found."))
+        messages.add_message(request, messages.ERROR, _("The speaker could not be deleted."))
         return False
 
 

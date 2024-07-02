@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-26 16:21+0200\n"
+"POT-Creation-Date: 2024-07-02 09:11+0200\n"
 "PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -8242,11 +8242,15 @@ msgid "The speaker has been added."
 msgstr ""
 
 #: pod/speaker/views.py
-msgid "Speaker not found."
+msgid "The speaker could not be added."
 msgstr ""
 
 #: pod/speaker/views.py
 msgid "The speaker has been deleted."
+msgstr ""
+
+#: pod/speaker/views.py
+msgid "The speaker could not be deleted."
 msgstr ""
 
 #: pod/speaker/views.py
@@ -9867,12 +9871,6 @@ msgstr ""
 
 #: pod/video/templates/videos/video_page_content.html
 msgid "The video is currently waiting for Aristote AI treatment."
-msgstr ""
-
-#: pod/video/templates/videos/video_page_content.html
-msgid ""
-"The video was treated by Aristote. You must verify and validate the "
-"processing by pressing the robot icon."
 msgstr ""
 
 #: pod/video/templates/videos/video_row_select.html

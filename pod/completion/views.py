@@ -22,7 +22,6 @@ from .forms import TrackForm
 from .models import Overlay
 from .forms import OverlayForm
 from .models import CustomFileModel
-from pod.podfile.models import UserFolder
 from pod.speaker.models import JobVideo
 from pod.speaker.forms import JobVideoForm
 from pod.podfile.views import get_current_session_folder, file_edit_save

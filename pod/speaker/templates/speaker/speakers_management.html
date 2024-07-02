@@ -47,7 +47,7 @@
             <i class="bi bi-pencil-square" aria-hidden="true"></i>
         </button>
           {% trans "Please confirm you want to delete the speaker" as confirmDelete %}
-          <form method="post" action="{% url 'speaker:speaker_management' %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" style="display: inline;">
+          <form method="post" action="{% url 'speaker:speaker_management' %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" class="d-inline">
             {% csrf_token %}
             <input type="hidden" name="action" value="delete" />
             <input type="hidden" name="speakerid" value="{{ speaker.id }}" />

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-26 16:21+0200\n"
+"POT-Creation-Date: 2024-07-02 09:11+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -8774,12 +8774,16 @@ msgid "The speaker has been added."
 msgstr "L’intervenant a été ajouté."
 
 #: pod/speaker/views.py
-msgid "Speaker not found."
-msgstr "Intervenant non trouvé."
+msgid "The speaker could not be added."
+msgstr "L’intervenant n’a pas pu être ajouté."
 
 #: pod/speaker/views.py
 msgid "The speaker has been deleted."
 msgstr "L’intervenant a été supprimé."
+
+#: pod/speaker/views.py
+msgid "The speaker could not be deleted."
+msgstr "L’intervenant n’a pas pu être supprimé."
 
 #: pod/speaker/views.py
 msgid "The speaker has been updated."
@@ -10157,7 +10161,7 @@ msgstr "Lien du contributeur"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Speaker(s):"
-msgstr "Intervenant(s):"
+msgstr "Intervenant(s) :"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Updated on:"
@@ -10543,14 +10547,6 @@ msgstr "Description du thème"
 #: pod/video/templates/videos/video_page_content.html
 msgid "The video is currently waiting for Aristote AI treatment."
 msgstr "La vidéo est actuellement en attente du traitement par l’IA Aristote."
-
-#: pod/video/templates/videos/video_page_content.html
-msgid ""
-"The video was treated by Aristote. You must verify and validate the "
-"processing by pressing the robot icon."
-msgstr ""
-"La vidéo a été traitée par Aristote. Vous devez vérifier et valider le "
-"traitement en appuyant sur l’icône du robot."
 
 #: pod/video/templates/videos/video_row_select.html
 msgid "Toggle actions menu"
@@ -11084,6 +11080,16 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Speaker not found."
+#~ msgstr "Intervenant non trouvé."
+
+#~ msgid ""
+#~ "The video was treated by Aristote. You must verify and validate the "
+#~ "processing by pressing the robot icon."
+#~ msgstr ""
+#~ "La vidéo a été traitée par Aristote. Vous devez vérifier et valider le "
+#~ "traitement en appuyant sur l’icône du robot."
 
 #~ msgid "Add Speaker"
 #~ msgstr "Ajouter un intervenant"

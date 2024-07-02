@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle add/edit speaker modal show
     function showSpeakerModal(speaker = null) {
         // Clear existing job fields
-        document.getElementById('jobFieldsContainer').innerHTML = '';
+        document.getElementById('jobFieldsContainer').textContent = '';
 
         if (speaker) {
             // Editing speaker
-            document.getElementById('speakerModalLabel').innerText = gettext("Edit this speaker");
+            document.getElementById('speakerModalLabel').textContent = gettext("Edit this speaker");
             document.getElementById('actionField').value = 'edit';
             document.getElementById('speakerId').value = speaker.id;
             document.getElementById('id_firstname').value = speaker.firstname;
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         } else {
             // Adding new speaker
-            document.getElementById('speakerModalLabel').innerText = gettext("Add a speaker");
+            document.getElementById('speakerModalLabel').textContent = gettext("Add a speaker");
             document.getElementById('actionField').value = 'add';
             document.getElementById('speakerId').value = '';
             document.getElementById('id_firstname').value = '';
