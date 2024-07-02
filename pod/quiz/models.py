@@ -163,7 +163,7 @@ class Question(models.Model):
         Returns:
             QuestionForm: Form for the question.
         """
-        return "This method must be redefined in child class."
+        raise NotImplementedError("Subclasses of Question must implement get_question_form method.")
 
     def get_answer(self) -> None:
         """
@@ -172,7 +172,7 @@ class Question(models.Model):
         Returns:
             str: Answer for the question.
         """
-        return None
+        raise NotImplementedError("Subclasses of Question must implement get_answer method.")
 
     def get_type(self) -> None:
         """
@@ -181,7 +181,7 @@ class Question(models.Model):
         Returns:
             str: Type of the question.
         """
-        return None
+        raise NotImplementedError("Subclasses of Question must implement get_type method.")
 
     def calculate_score(self, user_answer):
         """

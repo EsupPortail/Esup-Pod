@@ -1,5 +1,6 @@
 """Esup-Pod quiz utilities."""
 
+import ast
 from typing import Optional
 from pod.quiz.models import (
     MultipleChoiceQuestion,
