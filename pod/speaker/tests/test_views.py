@@ -5,6 +5,11 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from pod.speaker.models import Speaker, Job
 
+# ggignore-start
+# gitguardian:ignore
+PWD = "thisisnotpassword"
+# ggignore-end
+
 
 class SpeakerViewsTest(TestCase):
     """Test case for speaker views."""
@@ -12,30 +17,30 @@ class SpeakerViewsTest(TestCase):
         """Set up the test environment."""
         self.client = Client()
         self.superuser = User.objects.create_superuser(
-            username='admin', password='admin', email='admin@example.com'
+            username='admin', password=PWD, email='admin@example.com'
         )
         self.user = User.objects.create_user(
-            username='user', password='user'
+            username='user', password=PWD
         )
         self.speaker = Speaker.objects.create(firstname='John', lastname='Doe')
         self.job = Job.objects.create(title='Engineer', speaker=self.speaker)
 
     def test_speaker_management_superuser_get(self):
         """Test GET request to speaker management by a superuser."""
-        self.client.login(username='admin', password='admin')
+        self.client.login(username='admin', password=PWD)
         response = self.client.get(reverse('speaker:speaker_management'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'speaker/speakers_management.html')
 
     def test_speaker_management_non_superuser_get(self):
         """Test GET request to speaker management by a non-superuser."""
-        self.client.login(username='user', password='user')
+        self.client.login(username='user', password=PWD)
         response = self.client.get(reverse('speaker:speaker_management'))
         self.assertEqual(response.status_code, 403)
 
     def test_add_speaker(self):
         """Test adding a new speaker."""
-        self.client.login(username='admin', password='admin')
+        self.client.login(username='admin', password=PWD)
         data = {
             'action': 'add',
             'firstname': 'Jane',
@@ -51,7 +56,7 @@ class SpeakerViewsTest(TestCase):
 
     def test_delete_speaker(self):
         """Test deleting a speaker."""
-        self.client.login(username='admin', password='admin')
+        self.client.login(username='admin', password=PWD)
         data = {
             'action': 'delete',
             'speakerid': self.speaker.id,
@@ -62,7 +67,7 @@ class SpeakerViewsTest(TestCase):
 
     def test_edit_speaker(self):
         """Test editing a speaker."""
-        self.client.login(username='admin', password='admin')
+        self.client.login(username='admin', password=PWD)
         data = {
             'action': 'edit',
             'speakerid': self.speaker.id,
@@ -80,7 +85,7 @@ class SpeakerViewsTest(TestCase):
 
     def test_get_speaker(self):
         """Test retrieving a speaker's details."""
-        self.client.login(username='admin', password='admin')
+        self.client.login(username='admin', password=PWD)
         response = self.client.get(reverse('speaker:get_speaker', args=[self.speaker.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {
@@ -94,7 +99,7 @@ class SpeakerViewsTest(TestCase):
 
     def test_get_jobs(self):
         """Test retrieving jobs for a speaker."""
-        self.client.login(username='admin', password='admin')
+        self.client.login(username='admin', password=PWD)
         response = self.client.get(reverse('speaker:get_jobs', args=[self.speaker.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {
