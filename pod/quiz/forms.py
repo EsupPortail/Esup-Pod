@@ -72,7 +72,7 @@ class QuestionForm(forms.Form):
         required=True,
         help_text=_("Please choose the question type."),
     )
-    question_id = forms.IntegerField(
+    question_id = forms.UUIDField(
         widget=forms.HiddenInput(),
         required=False,
     )
