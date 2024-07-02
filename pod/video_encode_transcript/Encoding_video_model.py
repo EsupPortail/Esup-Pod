@@ -48,7 +48,6 @@ DEFAULT_LANG_TRACK = getattr(settings, "DEFAULT_LANG_TRACK", "fr")
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
     from pod.podfile.models import CustomImageModel
-    from pod.podfile.models import UserFolder
     from pod.podfile.models import CustomFileModel
 else:
     __FILEPICKER__ = False
@@ -59,7 +58,7 @@ else:
 class Encoding_video_model(Encoding_video):
     """Encoding video model."""
 
-    def remove_old_data(self):
+    def remove_old_data(self) -> None:
         """Remove data from previous encoding."""
         video_to_encode = Video.objects.get(id=self.id)
         video_to_encode.thumbnail = None
@@ -91,7 +90,7 @@ class Encoding_video_model(Encoding_video):
             msg += "Audio: Nothing to delete"
         return msg
 
-    def remove_previous_encoding_objects(self, model_class, video_to_encode):
+    def remove_previous_encoding_objects(self, model_class, video_to_encode) -> str:
         """Remove previously encoded objects of the given model."""
         msg = "\n"
         object_type = model_class.__name__
@@ -106,15 +105,15 @@ class Encoding_video_model(Encoding_video):
             msg += "Video: Nothing to delete"
         return msg
 
-    def remove_previous_encoding_video(self, video_to_encode):
+    def remove_previous_encoding_video(self, video_to_encode) -> str:
         """Remove previously encoded video."""
         return self.remove_previous_encoding_objects(EncodingVideo, video_to_encode)
 
-    def remove_previous_encoding_audio(self, video_to_encode):
+    def remove_previous_encoding_audio(self, video_to_encode) -> str:
         """Remove previously encoded audio."""
         return self.remove_previous_encoding_objects(EncodingAudio, video_to_encode)
 
-    def remove_previous_encoding_playlist(self, video_to_encode):
+    def remove_previous_encoding_playlist(self, video_to_encode) -> str:
         """Remove previously encoded playlist."""
         return self.remove_previous_encoding_objects(PlaylistVideo, video_to_encode)
 
@@ -122,7 +121,7 @@ class Encoding_video_model(Encoding_video):
         """Get the true path by replacing the MEDIA_ROOT from the original path."""
         return original.replace(os.path.join(settings.MEDIA_ROOT, ""), "")
 
-    def store_json_list_mp3_m4a_files(self, info_video, video_to_encode):
+    def store_json_list_mp3_m4a_files(self, info_video, video_to_encode) -> None:
         """Store JSON list of MP3 and M4A files for encoding."""
         encoding_list = ["list_m4a_files", "list_mp3_files"]
         for encode_item in encoding_list:
@@ -140,7 +139,7 @@ class Encoding_video_model(Encoding_video):
                     source_file=self.get_true_path(mp3_files[audio_file]),
                 )
 
-    def store_json_list_mp4_hls_files(self, info_video, video_to_encode):
+    def store_json_list_mp4_hls_files(self, info_video, video_to_encode) -> None:
         mp4_files = info_video["list_mp4_files"]
         for video_file in mp4_files:
             if not check_file(mp4_files[video_file]):
@@ -188,7 +187,7 @@ class Encoding_video_model(Encoding_video):
                 source_file=playlist_file,
             )
 
-    def store_json_encoding_log(self, info_video, video_to_encode):
+    def store_json_encoding_log(self, info_video, video_to_encode) -> None:
         # Need to modify start and stop
         log_to_text = ""
         # logs = info_video["encoding_log"]
@@ -219,13 +218,10 @@ class Encoding_video_model(Encoding_video):
         )
         encoding_log.save()
 
-    def store_json_list_subtitle_files(self, info_video, video_to_encode):
+    def store_json_list_subtitle_files(self, info_video, video_to_encode) -> None:
         list_subtitle_files = info_video["list_subtitle_files"]
         if __FILEPICKER__:
-            videodir, created = UserFolder.objects.get_or_create(
-                name="%s" % video_to_encode.slug,
-                owner=video_to_encode.owner,
-            )
+            videodir = video_to_encode.get_or_create_video_folder()
 
         for sub in list_subtitle_files:
             if not check_file(list_subtitle_files[sub][1]):
@@ -259,16 +255,13 @@ class Encoding_video_model(Encoding_video):
                 enrich_ready=True,
             )
 
-    def store_json_list_thumbnail_files(self, info_video):
+    def store_json_list_thumbnail_files(self, info_video) -> Video:
         """store_json_list_thumbnail_files."""
         video = Video.objects.get(id=self.id)
         list_thumbnail_files = info_video["list_thumbnail_files"]
         thumbnail = CustomImageModel()
         if __FILEPICKER__:
-            videodir, created = UserFolder.objects.get_or_create(
-                name="%s" % video.slug,
-                owner=video.owner,
-            )
+            videodir = video.get_or_create_video_folder()
             thumbnail = CustomImageModel(folder=videodir, created_by=video.owner)
         for index, thumbnail_path in enumerate(list_thumbnail_files):
             if check_file(list_thumbnail_files[thumbnail_path]):
@@ -298,7 +291,7 @@ class Encoding_video_model(Encoding_video):
             video.save()
         return video
 
-    def wait_for_file(self, filepath):
+    def wait_for_file(self, filepath) -> None:
         time_to_wait = 40
         time_counter = 0
         while not os.path.exists(filepath):
@@ -367,7 +360,7 @@ class Encoding_video_model(Encoding_video):
         encoding_log.save()
         return thumbnail_command
 
-    def recreate_thumbnail(self):
+    def recreate_thumbnail(self) -> None:
         self.create_output_dir()
         self.get_video_data()
         info_video = {}

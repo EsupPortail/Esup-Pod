@@ -495,7 +495,8 @@ def file_edit_save(request, folder):
 
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
-def get_file(request, type):
+def get_file(request, type) -> HttpResponse:
+    """Get file specified in request if current user can access it."""
     id = None
     if request.method == "POST" and request.POST.get("src"):
         id = request.POST.get("src")

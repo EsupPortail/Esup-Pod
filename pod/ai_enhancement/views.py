@@ -25,7 +25,6 @@ from pod.completion.models import Track
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.utils import json_to_web_vtt
 from pod.main.views import in_maintenance
-from pod.podfile.models import UserFolder
 from pod.quiz.utils import import_quiz
 from pod.video.models import Video, Discipline
 from pod.video_encode_transcript.transcript import saveVTT
@@ -349,10 +348,7 @@ def enhance_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
             + str(True)
         )
 
-    video_folder, created = UserFolder.objects.get_or_create(
-        name=video.slug,
-        owner=request.user,
-    )
+    video_folder = video.get_or_create_video_folder()
     if enhancement_is_already_asked(video):
         enhancement = AIEnhancement.objects.filter(video=video).first()
         if enhancement.is_ready:

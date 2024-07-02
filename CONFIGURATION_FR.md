@@ -727,8 +727,8 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `AI_ENHANCEMENT_CGU_URL`
   > valeur par défaut : ``
   >> L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.<br>
-  >> Exemple : 'https://aristote.univ.fr/cgu'<br>
-  >> Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/<br>
+  >> Exemple : '<https://aristote.univ.fr/cgu>'<br>
+  >> Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/><br>
 * `AI_ENHANCEMENT_CLIENT_ID`
   > valeur par défaut : `mocked_id`
   >> L’ID du client de l’IA d’amélioration des vidéos.<br>

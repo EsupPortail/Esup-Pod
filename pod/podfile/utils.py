@@ -1,3 +1,5 @@
+"""Esup-Pod podfile utils."""
+
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from .models import UserFolder
