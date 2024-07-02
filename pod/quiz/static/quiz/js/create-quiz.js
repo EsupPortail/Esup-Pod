@@ -204,34 +204,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /**
-   * Handles the setup for a long answer question in the question form.
-   * @param {HTMLElement} questionForm - The question form element.
-   */
-  function handleLongAnswerQuestion(questionForm) {
-    const textarea = document.createElement("textarea");
-    const textareaId = "long-answer-" + questionForm.getAttribute("data-question-index");
-    const label = document.createElement("label");
-
-    textarea.id = textareaId;
-    textarea.name = textareaId;
-    textarea.required = true;
-    textarea.placeholder = gettext("The long answer");
-    textarea.classList.add("long-answer-field", "form-control");
-
-    label.setAttribute("for", textareaId);
-    label.textContent = gettext("Long answer");
-
-    let qData = getQuestionData(questionForm);
-    if (qData && qData["long_answer"] != null) {
-      textarea.value = qData["long_answer"];
-    }
-
-    const questionChoicesForm = questionForm.querySelector(".question-choices-form");
-    questionChoicesForm.appendChild(label);
-    questionChoicesForm.appendChild(textarea);
-  }
-
-  /**
    * Handles the setup for a single choice question in the question form.
    * @param {HTMLElement} questionForm - The question form element.
    */
@@ -480,9 +452,6 @@ document.addEventListener("DOMContentLoaded", function () {
       case "short_answer":
         handleShortAnswerQuestion(questionForm);
         break;
-      case "long_answer":
-        handleLongAnswerQuestion(questionForm);
-        break;
       case "single_choice":
         handleSingleChoiceQuestion(questionForm);
         break;
@@ -557,16 +526,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         let questionFormsList = document.querySelectorAll(".question-form");
         for (let questionForm of questionFormsList) {
-          console.log(questionForm);
           const questionType = questionForm.querySelector(
             ".question-select-type",
           ).value;
           switch (questionType) {
             case "short_answer":
               handleShortAnswerSubmission(questionForm);
-              break;
-            case "long_answer":
-              handleLongAnswerSubmission(questionForm);
               break;
             case "single_choice":
               handleSingleChoiceSubmission(questionForm);
@@ -595,19 +560,6 @@ document.addEventListener("DOMContentLoaded", function () {
       ".hidden-short-answer-field",
     );
     hiddenShortAnswerInput.value = shortAnswerInput.value;
-  }
-
-  /**
-   * Handles the submission process for long answer questions in the quiz form.
-   *
-   * @param {HTMLElement} questionForm - The form element representing the long answer question.
-   */
-  function handleLongAnswerSubmission(questionForm) {
-    let longAnswerInput = questionForm.querySelector(".long-answer-field");
-    let hiddenLongAnswerInput = questionForm.querySelector(
-      ".hidden-long-answer-field",
-    );
-    hiddenLongAnswerInput.value = longAnswerInput.value;
   }
 
   /**

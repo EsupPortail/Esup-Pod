@@ -30,7 +30,6 @@ def user_can_edit_or_remove(context: dict, playlist: Playlist) -> bool:
         return False
     return playlist.editable and (
         request.user == playlist.owner
-        or request.user.is_staff
         or request.user in get_additional_owners(playlist)
     )
 

@@ -9,15 +9,12 @@ from django.forms import ValidationError
 from django.utils.translation import ugettext as _
 from django.test import TestCase
 from pod.quiz.forms import (
-    LongAnswerQuestionForm,
     MultipleChoiceQuestionForm,
     ShortAnswerQuestionForm,
     SingleChoiceQuestionForm,
 )
 from pod.quiz.models import (
-    LongAnswerQuestion,
     MultipleChoiceQuestion,
-    Question,
     Quiz,
     ShortAnswerQuestion,
     SingleChoiceQuestion,
@@ -89,19 +86,6 @@ class QuestionModelTests(TestCase):
         )
         self.assertEqual(str(self.UCQ1), expected_string)
         print(" --->  test_string_representation ok")
-
-    def test_get_question_form(self) -> None:
-        """Test if test_get_question_form works correctly."""
-        self.assertEqual(
-            Question.get_question_form(self),
-            "This method must be redefined in child class.",
-        )
-        print(" --->  test_get_question_form ok")
-
-    def test_get_type(self) -> None:
-        """Test if test_get_type works correctly."""
-        self.assertIsNone(Question.get_type(self))
-        print(" --->  test_get_type ok")
 
     def test_clean(self) -> None:
         """Test if test_clean works correctly."""
@@ -319,59 +303,6 @@ class ShortAnwerQuestionTest(TestCase):
             instance=self.normal_question, prefix=f"question_{self.normal_question.pk}"
         )
 
-        actual_form = self.normal_question.get_question_form()
-
-        self.assertEqual(
-            expected_form.fields["user_answer"].widget.attrs,
-            actual_form.fields["user_answer"].widget.attrs,
-        )
-        self.assertEqual(expected_form.prefix, actual_form.prefix)
-
-        print(" --->  test_get_question_form ok")
-
-
-class LongAnswerQuestionTest(TestCase):
-    """TestCase for LongAnswerQuestion model."""
-
-    fixtures = ["initial_data.json"]
-
-    def setUp(self) -> None:
-        """Set up the tests."""
-        self.user = User.objects.create_user(username="testuser", password="testpassword")
-        self.video = Video.objects.create(
-            title="Video1",
-            owner=self.user,
-            video="test.mp4",
-            is_draft=False,
-            type=Type.objects.get(id=1),
-        )
-        self.quiz = Quiz.objects.create(video=self.video)
-
-        self.normal_question = LongAnswerQuestion(
-            quiz=self.quiz, title="LAQ1", answer="long answer"
-        )
-
-    def test_string_representation(self) -> None:
-        """Check long answer question string representation."""
-        expected_string = _("Question “%s”") % self.normal_question.title
-        self.assertEqual(str(self.normal_question), expected_string)
-        print(" --->  test_string_representation ok")
-
-    def test_get_type(self) -> None:
-        """Test if test_get_type works correctly."""
-        self.assertEqual(self.normal_question.get_type(), "long_answer")
-        print(" --->  test_get_type ok")
-
-    def test_get_answer(self) -> None:
-        """Test if test_get_answer works correctly."""
-        self.assertEqual(self.normal_question.get_answer(), "long answer")
-        print(" --->  test_get_answer ok")
-
-    def test_get_question_form(self) -> None:
-        """Test if test_get_question_form works correctly."""
-        expected_form = LongAnswerQuestionForm(
-            instance=self.normal_question, prefix=f"question_{self.normal_question.pk}"
-        )
         actual_form = self.normal_question.get_question_form()
 
         self.assertEqual(

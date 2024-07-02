@@ -1,9 +1,10 @@
 """Esup-Pod quiz utilities."""
 
+import ast
 from typing import Optional
 from pod.quiz.models import (
-    LongAnswerQuestion,
     MultipleChoiceQuestion,
+    Question,
     Quiz,
     ShortAnswerQuestion,
     SingleChoiceQuestion,
@@ -31,14 +32,12 @@ def get_quiz_questions(
     single_choice_questions = SingleChoiceQuestion.objects.filter(quiz=quiz)
     multiple_choice_questions = MultipleChoiceQuestion.objects.filter(quiz=quiz)
     short_answer_questions = ShortAnswerQuestion.objects.filter(quiz=quiz)
-    long_answer_questions = LongAnswerQuestion.objects.filter(quiz=quiz)
 
     return list(
         chain(
             single_choice_questions,
             multiple_choice_questions,
             short_answer_questions,
-            long_answer_questions,
         )
     )
 
@@ -104,3 +103,34 @@ def import_quiz(video: Video, quiz_data_json: str):
             create_question_from_aristote_json(
                 quiz=new_quiz, question_type=question_type, question_dict=question
             )
+
+
+def calculate_question_score_from_form(question: Question, form) -> float:
+    """
+    Calculate the score for a given question and form.
+
+    Args:
+        question (Question): The question object.
+        form: The form object containing the user's answers.
+
+    Returns:
+        float: The calculated score, a value between 0 and 1.
+    """
+    user_answer = None
+
+    if question.get_type() == "single_choice":
+        user_answer = form.cleaned_data.get("selected_choice")
+
+    elif question.get_type() == "multiple_choice":
+        user_answer = form.cleaned_data.get("selected_choice")
+        if user_answer != "":
+            user_answer = ast.literal_eval(
+                user_answer
+            )  # Cannot use JSON.loads in case of quotes in a user answer.
+
+    elif question.get_type() == "short_answer":
+        user_answer = form.cleaned_data.get("user_answer")
+
+    # Add similar logic for other question types...
+
+    return question.calculate_score(user_answer)

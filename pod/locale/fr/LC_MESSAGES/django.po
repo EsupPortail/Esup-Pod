@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-11 07:48+0000\n"
+"POT-Creation-Date: 2024-07-02 12:54+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1490,6 +1490,7 @@ msgstr "Gérer la vidéo"
 #: pod/chapter/templates/video_chapter.html
 #: pod/completion/templates/video_completion.html
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
+#: pod/quiz/templates/quiz/question_help_aside.html
 msgid "Help"
 msgstr "Aide"
 
@@ -7260,7 +7261,7 @@ msgstr "Accéder aux listes de lecture"
 
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/playlist/templates/playlist/playlist_link.html
-#: pod/playlist/tests/test_views.py pod/playlist/views.py
+#: pod/playlist/tests/test_views.py
 msgid "Edit the playlist"
 msgstr "Éditer la liste de lecture"
 
@@ -7829,23 +7830,19 @@ msgstr "Autoriser"
 msgid "Redaction"
 msgstr "Rédaction"
 
-#: pod/quiz/forms.py
+#: pod/quiz/forms.py pod/quiz/templates/quiz/question_help_aside.html
 msgid "Short answer"
 msgstr "Réponse courte"
-
-#: pod/quiz/forms.py
-msgid "Long answer"
-msgstr "Réponse longue"
 
 #: pod/quiz/forms.py
 msgid "Choice"
 msgstr "Choix"
 
-#: pod/quiz/forms.py
+#: pod/quiz/forms.py pod/quiz/templates/quiz/question_help_aside.html
 msgid "Single choice"
 msgstr "Choix unique"
 
-#: pod/quiz/forms.py
+#: pod/quiz/forms.py pod/quiz/templates/quiz/question_help_aside.html
 msgid "Multiple choice"
 msgstr "Choix multiples"
 
@@ -7943,14 +7940,6 @@ msgstr "Question à réponse courte"
 #: pod/quiz/forms.py
 msgid "Write a short answer."
 msgstr "Écrivez une réponse courte."
-
-#: pod/quiz/forms.py pod/quiz/models.py
-msgid "Long answer question"
-msgstr "Question à réponse longue"
-
-#: pod/quiz/forms.py
-msgid "Write a long answer."
-msgstr "Écrivez une réponse longue."
 
 #: pod/quiz/models.py
 msgid "Choose a video associated with the quiz."
@@ -8070,14 +8059,6 @@ msgstr "Veuillez choisir une réponse entre 1 et 250 caractères."
 msgid "Short answer questions"
 msgstr "Questions à réponse courte"
 
-#: pod/quiz/models.py
-msgid "Please choose an answer."
-msgstr "Veuillez choisir une réponse."
-
-#: pod/quiz/models.py
-msgid "Long answer questions"
-msgstr "Questions à réponse longue"
-
 #: pod/quiz/templates/quiz/create_edit_quiz.html
 msgid "Add a question"
 msgstr "Ajouter une question"
@@ -8118,6 +8099,58 @@ msgstr "Supprimer la question n°"
 msgid "One or more errors have been found in the question."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans la question."
 
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For short answer questions, ensure responses are between 1 and 250 "
+"characters. This type of question is ideal for brief, specific answers."
+msgstr ""
+"Pour les questions à réponse courte, veillez à ce que les réponses soient "
+"comprises entre 1 et 250 caractères. Ce type de question est idéal pour des "
+"réponses brèves et spécifiques."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For short answer questions, please provide a response between 1 and 250 "
+"characters. Be concise and specific."
+msgstr ""
+"Pour les questions à réponse courte, veuillez fournir une réponse de 1 à 250 "
+"caractères. Soyez concis et précis."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"Single choice questions require participants to select one answer from a "
+"list of options. This is useful for questions with a clear, correct answer."
+msgstr ""
+"Les questions à choix unique demandent aux participants de sélectionner une "
+"réponse parmi une liste d'options. Elles sont utiles pour les questions dont "
+"la réponse est claire et correcte."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For single choice questions, select only one answer from the provided "
+"options. Read each option carefully before making your selection."
+msgstr ""
+"Pour les questions à choix unique, ne sélectionnez qu'une seule réponse "
+"parmi les options proposées. Lisez attentivement chaque option avant de "
+"faire votre choix."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"Multiple choice questions allow participants to select more than one answer. "
+"Use this type for questions where more than one option could be correct."
+msgstr ""
+"Les questions à choix multiples permettent aux participants de sélectionner "
+"plusieurs réponses. Utilisez ce type de question pour les questions où "
+"plusieurs options peuvent être correctes."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For multiple choice questions, select all answers that apply. There may be "
+"more than one correct answer."
+msgstr ""
+"Pour les questions à choix multiples, sélectionnez toutes les réponses qui "
+"s'appliquent. Il peut y avoir plus d'une réponse correcte."
+
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "This quiz is in <strong>draft</strong>."
 msgstr "Ce quiz est en mode <strong>brouillon</strong>."
@@ -8146,6 +8179,14 @@ msgstr "Erreur constatée dans le formulaire"
 #, python-format
 msgid "For the question “%(title)s”, %(error)s."
 msgstr "Pour la question « %(title)s », %(error)s."
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid ""
+"The creator of this quiz has decided not to display the answers and your "
+"score."
+msgstr ""
+"Le créateur de ce quiz a décidé de ne pas afficher les réponses et votre "
+"score."
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Correct answer:"
@@ -8336,11 +8377,11 @@ msgstr "Publication automatique :"
 
 #: pod/recorder/models.py
 msgid ""
-"If this box is checked, "
-"the videos will be automatically assigned to the recorder manager."
+"If this box is checked, the videos will be automatically assigned to the "
+"recorder manager."
 msgstr ""
-"Si vous cochez cette case "
-"les vidéos seront automatiquement attribuées au gestionnaire de l'enregistreur."
+"Si vous cochez cette case les vidéos seront automatiquement attribuées au "
+"gestionnaire de l'enregistreur."
 
 #: pod/recorder/models.py
 msgid "Video type by default."
@@ -8629,15 +8670,14 @@ msgstr ""
 msgid ""
 "<p>Hello,<br>a new recording has just been added on %(title_site)s from the "
 "recorder “%(recorder)s”.<br>To assign it, just click on link below.</p><p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br><em>If you cannot click on the link, "
-"just copy-paste it in your browser.</em></p><p>Regards.</p>"
+"href=\"%(link_url)s\">%(link_url)s</a><br><em>If you cannot click on the "
+"link, just copy-paste it in your browser.</em></p><p>Regards.</p>"
 msgstr ""
 "<p>Bonjour,<br> un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur « %(recorder)s ».<br>Pour "
-"l’attribuer, cliquez sur le lien ci-dessous.</p><p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br><em>Si le lien n’est pas actif, il "
-"faut le copier-coller dans la barre d’adresse de votre navigateur.</em></"
-"p><p>Cordialement.</p>"
+"l’attribuer, cliquez sur le lien ci-dessous.</p><p><a href=\"%(link_url)s\">"
+"%(link_url)s</a><br><em>Si le lien n’est pas actif, il faut le copier-coller "
+"dans la barre d’adresse de votre navigateur.</em></p><p>Cordialement.</p>"
 
 #: pod/recorder/views.py
 msgid "New recording added."
@@ -9648,6 +9688,11 @@ msgstr ""
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
+msgid "This content contains a quiz."
+msgstr "Ce contenu contient un quiz."
+
+#: pod/video/templates/videos/card.html
+#: pod/video/templates/videos/card_select.html
 #: pod/video/templatetags/video_tags.py
 msgid "This content is password protected."
 msgstr "Ce contenu est protégé par un mot de passe."
@@ -10407,14 +10452,6 @@ msgstr "Description du thème"
 msgid "The video is currently waiting for Aristote AI treatment."
 msgstr "La vidéo est actuellement en attente du traitement par l’IA Aristote."
 
-#: pod/video/templates/videos/video_page_content.html
-msgid ""
-"The video was treated by Aristote. You must verify and validate the "
-"processing by pressing the robot icon."
-msgstr ""
-"La vidéo a été traitée par Aristote. Vous devez vérifier et valider le "
-"traitement en appuyant sur l’icône du robot."
-
 #: pod/video/templates/videos/video_row_select.html
 msgid "Toggle actions menu"
 msgstr "Afficher/masquer les actions"
@@ -10951,6 +10988,28 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Long answer"
+#~ msgstr "Réponse longue"
+
+#~ msgid "Long answer question"
+#~ msgstr "Question à réponse longue"
+
+#~ msgid "Write a long answer."
+#~ msgstr "Écrivez une réponse longue."
+
+#~ msgid "Please choose an answer."
+#~ msgstr "Veuillez choisir une réponse."
+
+#~ msgid "Long answer questions"
+#~ msgstr "Questions à réponse longue"
+
+#~ msgid ""
+#~ "The video was treated by Aristote. You must verify and validate the "
+#~ "processing by pressing the robot icon."
+#~ msgstr ""
+#~ "La vidéo a été traitée par Aristote. Vous devez vérifier et valider le "
+#~ "traitement en appuyant sur l’icône du robot."
 
 #~ msgid "Quiz(zes)"
 #~ msgstr "Quiz"

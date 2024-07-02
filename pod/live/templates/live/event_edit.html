@@ -206,7 +206,7 @@
         document.querySelectorAll('ul.timelist').forEach( (e) => {
           var $this = e;
           var originalHref = $this.querySelector('a').getAttribute('href');
-          console.log(originalHref);
+
           $this.querySelector('li').remove();
           for (i=8; i <= 20; i++) {
             var newLink = '<li><a href="javascript:DateTimeShortcuts.handleClockQuicklink('+ clockCount + ', ' + i
