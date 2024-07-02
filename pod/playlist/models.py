@@ -12,6 +12,7 @@ from django.template.defaultfilters import slugify
 
 from pod.main.models import get_nextautoincrement
 from pod.video.models import Video
+from pod.activitypub.models import ExternalVideo
 from pod.video.utils import sort_videos_list
 
 
@@ -175,7 +176,8 @@ class PlaylistContent(models.Model):
     playlist = models.ForeignKey(
         Playlist, verbose_name=_("Playlist"), on_delete=models.CASCADE
     )
-    video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE)
+    video = models.ForeignKey(Video, verbose_name=_("Video"), on_delete=models.CASCADE, blank=True, null=True)
+    external_video = models.ForeignKey(ExternalVideo, verbose_name=_("External video"), on_delete=models.CASCADE, blank=True, null=True)
     date_added = models.DateTimeField(
         verbose_name=_("Addition date"), default=timezone.now, editable=False
     )
@@ -204,6 +206,10 @@ class PlaylistContent(models.Model):
             self.rank = last_rank + 1 if last_rank is not None else 1
         except Exception:
             ...
+        if not self.video and not self.external_video:
+            raise ValidationError(
+                _("PlaylistContent needs a Video or an ExternalVideo to be created.")
+            )
         return super().save(*args, **kwargs)
 
     def __str__(self) -> str:

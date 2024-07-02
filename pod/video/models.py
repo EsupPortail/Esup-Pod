@@ -47,6 +47,7 @@ from django.db.models import Count, Case, When, Value, BooleanField, Q
 from django.db.models.functions import Concat
 from os.path import splitext
 
+
 USE_PODFILE = getattr(settings, "USE_PODFILE", False)
 if USE_PODFILE:
     from pod.podfile.models import CustomImageModel
@@ -146,6 +147,7 @@ ENCODING_CHOICES = getattr(
     ),
 )
 DEFAULT_THUMBNAIL = getattr(settings, "DEFAULT_THUMBNAIL", "img/default.svg")
+DEFAULT_AP_THUMBNAIL = getattr(settings, "DEFAULT_AP_THUMBNAIL", "img/default.png")
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 
 NOTES_STATUS = getattr(
@@ -676,15 +678,9 @@ def default_site_discipline(sender, instance, **kwargs) -> None:
         instance.site = Site.objects.get_current()
 
 
-class Video(models.Model):
+class BaseVideo(models.Model):
     """Class describing video objects."""
 
-    video = models.FileField(
-        _("Video"),
-        upload_to=get_storage_path_video,
-        max_length=255,
-        help_text=_("You can send an audio or video file."),
-    )
     title = models.CharField(
         _("Title"),
         max_length=250,
@@ -706,6 +702,67 @@ class Video(models.Model):
         editable=False,
     )
     sites = models.ManyToManyField(Site)
+    description = RichTextField(
+        _("Description"),
+        config_name="complete",
+        blank=True,
+        help_text=_(
+            "In this field you can describe your content, "
+            + "add all needed related information, "
+            + "and format the result using the toolbar."
+        ),
+    )
+    date_added = models.DateTimeField(_("Date added"), default=timezone.now)
+    date_evt = models.DateField(
+        _("Date of event"), default=date.today, blank=True, null=True
+    )
+    main_lang = models.CharField(
+        _("Main language"),
+        max_length=2,
+        choices=LANG_CHOICES,
+        default=get_language(),
+        help_text=_("Select the main language used in the content."),
+    )
+    tags = TagField(
+        help_text=_(
+            "Separate tags with spaces, "
+            "enclose the tags consist of several words in quotation marks."
+        ),
+        verbose_name=_("Tags"),
+    )
+    licence = models.CharField(
+        _("Licence"), max_length=8, choices=LICENCE_CHOICES, blank=True, null=True
+    )
+    duration = models.IntegerField(_("Duration"), default=0, editable=False, blank=True)
+    is_video = models.BooleanField(_("Is Video"), default=True, editable=False)
+    is_external = models.BooleanField(_("Is External Video"), default=False)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self) -> str:
+        """Display a video object as string."""
+        if self.id:
+            return "%s - %s" % ("%04d" % self.id, self.title)
+        else:
+            return "None"
+
+    @property
+    def duration_in_time(self) -> str:
+        """Get the duration of a video."""
+        return time.strftime("%H:%M:%S", time.gmtime(self.duration))
+
+    duration_in_time.fget.short_description = _("Duration")
+
+
+class Video(BaseVideo):
+    """Class describing video objects."""
+    video = models.FileField(
+        _("Video"),
+        upload_to=get_storage_path_video,
+        max_length=255,
+        help_text=_("You can send an audio or video file."),
+    )
     type = models.ForeignKey(
         Type,
         verbose_name=_("Type"),
@@ -724,33 +781,12 @@ class Video(models.Model):
             + "that they can’t delete this video."
         ),
     )
-    description = RichTextField(
-        _("Description"),
-        config_name="complete",
-        blank=True,
-        help_text=_(
-            "In this field you can describe your content, "
-            + "add all needed related information, "
-            + "and format the result using the toolbar."
-        ),
-    )
-    date_added = models.DateTimeField(_("Date added"), default=timezone.now)
-    date_evt = models.DateField(
-        _("Date of event"), default=date.today, blank=True, null=True
-    )
     cursus = models.CharField(
         _("University course"),
         max_length=1,
         choices=CURSUS_CODES,
         default="0",
         help_text=_("Select an university course as audience target of the content."),
-    )
-    main_lang = models.CharField(
-        _("Main language"),
-        max_length=2,
-        choices=LANG_CHOICES,
-        default=get_language(),
-        help_text=_("Select the main language used in the content."),
     )
     transcript = models.CharField(
         _("Transcript"),
@@ -759,18 +795,8 @@ class Video(models.Model):
         blank=True,
         help_text=_("Select an available language to transcribe the audio."),
     )
-    tags = TagField(
-        help_text=_(
-            "Separate tags with spaces, "
-            "enclose the tags consist of several words in quotation marks."
-        ),
-        verbose_name=_("Tags"),
-    )
     discipline = models.ManyToManyField(
         Discipline, blank=True, verbose_name=_("Disciplines")
-    )
-    licence = models.CharField(
-        _("Licence"), max_length=8, choices=LICENCE_CHOICES, blank=True, null=True
     )
     channel = models.ManyToManyField(Channel, verbose_name=_("Channels"), blank=True)
     theme = models.ManyToManyField(
@@ -830,7 +856,6 @@ class Video(models.Model):
         verbose_name=_("Thumbnails"),
         related_name="videos",
     )
-    duration = models.IntegerField(_("Duration"), default=0, editable=False, blank=True)
     overview = models.ImageField(
         _("Overview"),
         null=True,
@@ -842,7 +867,6 @@ class Video(models.Model):
     encoding_in_progress = models.BooleanField(
         _("Encoding in progress"), default=False, editable=False
     )
-    is_video = models.BooleanField(_("Is Video"), default=True, editable=False)
 
     date_delete = models.DateField(_("Date to delete"), default=default_date_delete)
 
@@ -986,7 +1010,7 @@ class Video(models.Model):
         """
         return 360 if self.is_video else 244
 
-    def get_thumbnail_url(self) -> str:
+    def get_thumbnail_url(self, scheme=False, is_activity_pub=False) -> str:
         """Get a thumbnail url for the video."""
         request = None
         if self.thumbnail and self.thumbnail.file_exist():
@@ -1002,9 +1026,14 @@ class Video(models.Model):
                 [
                     "//",
                     get_current_site(request).domain,
-                    static(DEFAULT_THUMBNAIL),
+                    static(DEFAULT_AP_THUMBNAIL if is_activity_pub else DEFAULT_THUMBNAIL),
                 ]
             )
+
+        if scheme:
+            scheme = "https" if getattr(settings, "SECURE_SSL_REDIRECT") else "http"
+            return f"{scheme}:{thumbnail_url}"
+
         return thumbnail_url
 
     @property
@@ -1045,13 +1074,6 @@ class Video(models.Model):
             loading="lazy">'
             % (thumbnail_url, self.title)
         )
-
-    @property
-    def duration_in_time(self) -> str:
-        """Get the duration of a video."""
-        return time.strftime("%H:%M:%S", time.gmtime(self.duration))
-
-    duration_in_time.fget.short_description = _("Duration")
 
     @property
     def encoded(self) -> bool:
@@ -1226,6 +1248,7 @@ class Video(models.Model):
                     "id": media.id,
                     "type": media.encoding_format,
                     "src": media.source_file.url,
+                    "size": media.source_file.size,
                     "height": media_height,
                     "extension": file_extension,
                     "label": media.name,

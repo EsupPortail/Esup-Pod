@@ -51,6 +51,7 @@ pod/main/static/custom/img
 settings_local.py
 scripts/bbb-pod-live/docker-compose.yml
 transcription/*
+docker-volume
 
 # Unit test utilities #
 #######################
@@ -74,6 +75,7 @@ compile-model
 *.crt
 *.key
 *.pem
+*.pub
 
 # NPM stuffs #
 ################

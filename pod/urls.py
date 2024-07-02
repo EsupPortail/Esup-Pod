@@ -39,6 +39,7 @@ USE_DRESSING = getattr(settings, "USE_DRESSING", True)
 USE_IMPORT_VIDEO = getattr(settings, "USE_IMPORT_VIDEO", True)
 USE_QUIZ = getattr(settings, "USE_QUIZ", True)
 USE_AI_ENHANCEMENT = getattr(settings, "USE_AI_ENHANCEMENT", False)
+USE_ACTIVITYPUB = getattr(settings, "USE_ACTIVITYPUB", True)
 
 if USE_CAS:
     from cas import views as cas_views
@@ -100,6 +101,12 @@ if USE_NOTIFICATIONS:
     urlpatterns += [
         # webpush
         url(r"^webpush/", include("webpush.urls")),
+    ]
+
+# WEBPUSH
+if USE_ACTIVITYPUB:
+    urlpatterns += [
+        url("", include("pod.activitypub.urls")),
     ]
 
 # CAS

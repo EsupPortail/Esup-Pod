@@ -16,7 +16,7 @@
   </div>
 {% endif %}
 
-{% if USE_QUIZ %}
+{% if USE_QUIZ and not video.is_external %}
   {% is_quiz_accessible video as is_quiz_accessible %}
   {% if is_quiz_accessible or video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all %}
     <div class="card" id="card-manage-quiz">

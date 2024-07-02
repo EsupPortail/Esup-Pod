@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "pod.dressing",
     "pod.ai_enhancement",
     "pod.custom",
+    "pod.activitypub",
 ]
 
 ##
