@@ -3,8 +3,6 @@
 from django.contrib import admin
 from pod.speaker.models import Speaker, Job, JobVideo
 
-# Speaker.
-
 
 class JobInline(admin.StackedInline):
     """Inline configuration for Job."""

@@ -10,16 +10,16 @@ class Speaker(models.Model):
     Speaker model.
 
     Attributes:
-        firstname (CharField): firstname of speaker.
-        lastname (CharField): lastname of speaker.
+        firstname (CharField): first name of speaker.
+        lastname (CharField): last name of speaker.
     """
 
     firstname = models.CharField(
-        verbose_name=_("Firstname"),
+        verbose_name=_("First name"),
         max_length=100
     )
     lastname = models.CharField(
-        verbose_name=_("Lastname"),
+        verbose_name=_("Last name"),
         max_length=100
     )
 
@@ -29,7 +29,7 @@ class Speaker(models.Model):
         verbose_name_plural = _("Speakers")
 
     def __str__(self):
-        return f"{self.lastname} {self.firstname}"
+        return f"{self.firstname} {self.lastname}"
 
 
 class Job(models.Model):
@@ -48,11 +48,19 @@ class Job(models.Model):
     speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.title} ({self.speaker})"
+        return f"{self.speaker} ({self.title})"
 
 
 class JobVideo(models.Model):
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    """
+    JobVideo model.
+
+    Attributes:
+        job (ForeignKey <Job>): job of speaker.
+        video (ForeignKey <Video>): video.
+    """
+
+    job = models.ForeignKey(Job, verbose_name=_("Job's speaker"), on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
 
     class Meta:

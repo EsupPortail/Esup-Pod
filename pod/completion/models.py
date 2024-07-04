@@ -79,7 +79,7 @@ class Contributor(models.Model):
 
     video = models.ForeignKey(Video, verbose_name=_("video"), on_delete=models.CASCADE)
     name = models.CharField(
-        verbose_name=_("lastname / firstname"), max_length=200, default=""
+        verbose_name=_("last name / first name"), max_length=200, default=""
     )
     email_address = models.EmailField(
         verbose_name=_("mail"), null=True, blank=True, default=""
@@ -297,7 +297,7 @@ class Track(models.Model):
     def verify_not_same_track(self) -> list:
         """Check that there's not already a track with same kind & lang."""
         msg = list()
-        list_track = Track.objects.filter(video=self.video)
+        list_track = Track.objects.filter(video=self.video).order_by("lang")
         if self.id:
             list_track = list_track.exclude(id=self.id)
 
