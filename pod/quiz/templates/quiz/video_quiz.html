@@ -28,7 +28,7 @@
     </div>
   {% endif %}
 
-  {% if form_submitted and questions_form_errors.items|length == 0 %}
+  {% if quiz.show_correct_answers and form_submitted and questions_form_errors.items|length == 0 %}
     {% if percentage_score >= 75 %}
       <div class="alert alert-success" role="alert">
         <p>{% trans "Your score is:" %} {{ percentage_score|floatformat:2 }}%</p>
@@ -54,6 +54,10 @@
         </p>
       {% endfor %}
     </div>
+  {% elif not quiz.show_correct_answers %}
+    <div class="alert alert-secondary" role="alert">
+      <p class="m-0">{% trans "The creator of this quiz has decided not to display the answers and your score." %}</p>
+    </div>
   {% endif %}
 
   <hr>
@@ -62,7 +66,7 @@
     {% csrf_token %}
     <div class="d-flex flex-column gap-4">
       {% for question in quiz.get_questions %}
-        <fieldset class="border border-2 border-{% get_question_color form_submitted questions_stats|dict_get:question.id %} rounded-3 p-4 question-container" data-questionid="question_{{question.id}}">
+        <fieldset class="border border-2 border-{% get_question_color form_submitted quiz questions_stats|dict_get:question.id %} rounded-3 p-4 question-container" data-questionid="question_{{question.id}}">
           <legend>
             <i class="bi bi-patch-question" aria-hidden='true'></i>
             {% trans "Question #" %}<span class="question-number">{{ forloop.counter0 |add:1 }}</span>
@@ -93,7 +97,7 @@
           {% endwith %}
 
           {% if form_submitted and quiz.show_correct_answers %}
-            <div class="alert alert-{% get_question_color form_submitted questions_stats|dict_get:question.id %}">
+            <div class="alert alert-{% get_question_color form_submitted quiz questions_stats|dict_get:question.id %}">
               <p><strong>{% trans "Correct answer:" %}</strong> {{ question.get_answer }}</p>
               {% if question.explanation %}
                 <p><strong>{% trans "Explanation:" %}</strong> {{ question.explanation }}</p>
@@ -151,6 +155,8 @@
     <h2 class="card-header card-title pod-card__title h4"><i class="bi bi-film"></i>&nbsp;{% trans "Video"%}</h2>
     {% include 'videos/video-element.html' %}
   </div>
+
+  {% include "quiz/question_help_aside.html" %}
 {% endblock page_aside %}
 
 {% block more_script %}
@@ -163,6 +169,7 @@
     {{ questions_answers|json_script:"questions_answers" }}
     <script>
       const questions_answers = JSON.parse(document.getElementById('questions_answers').textContent);
+      const show_correct_answers = {{ quiz.show_correct_answers|yesno:"true,false" }};
     </script>
     <script src="{% static 'quiz/js/video-quiz-submit.js' %}?ver={{VERSION}}"></script>
   {% endif %}

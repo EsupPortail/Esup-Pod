@@ -1,0 +1,45 @@
+{% load i18n %}
+
+<div id="quiz-info" class="card">
+  <h2 class="card-header card-title pod-card__title h4">{% trans "Help"%}</h2>
+
+  <button class="btn btn-link rounded-0 pod-btn" id="heading-collapse-short-answer" data-bs-toggle="collapse" data-bs-target="#collapse-short-answer" aria-expanded="false" aria-controls="collapse-short-answer">
+    {% trans 'Short answer' %}
+  </button>
+  <div id="collapse-short-answer" class="card-body collapse card-text small">
+    <p>
+      {% if creator is True %}
+        {% trans "For short answer questions, ensure responses are between 1 and 250 characters. This type of question is ideal for brief, specific answers." %}
+      {% else %}
+        {% trans "For short answer questions, please provide a response between 1 and 250 characters. Be concise and specific." %}
+      {% endif %}
+    </p>
+  </div>
+
+  <button class="btn btn-link rounded-0 pod-btn" id="heading-collapse-single-choice" data-bs-toggle="collapse" data-bs-target="#collapse-single-choice" aria-expanded="false" aria-controls="collapse-single-choice">
+    {% trans 'Single choice' %}
+  </button>
+  <div id="collapse-single-choice" class="card-body collapse card-text small">
+    <p>
+      {% if creator is True %}
+        {% trans "Single choice questions require participants to select one answer from a list of options. This is useful for questions with a clear, correct answer." %}
+      {% else %}
+        {% trans "For single choice questions, select only one answer from the provided options. Read each option carefully before making your selection." %}
+      {% endif %}
+      </p>
+  </div>
+
+  <button class="btn btn-link rounded-0 pod-btn" id="heading-collapse-multiple-choice" data-bs-toggle="collapse" data-bs-target="#collapse-multiple-choice" aria-expanded="false" aria-controls="collapse-multiple-choice">
+    {% trans 'Multiple choice' %}
+  </button>
+  <div id="collapse-multiple-choice" class="card-body collapse card-text small">
+    <p>
+      {% if creator is True %}
+        {% trans "Multiple choice questions allow participants to select more than one answer. Use this type for questions where more than one option could be correct." %}
+      {% else %}
+        {% trans "For multiple choice questions, select all answers that apply. There may be more than one correct answer." %}
+      {% endif %}
+      </p>
+  </div>
+
+</div>

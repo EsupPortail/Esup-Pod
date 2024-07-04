@@ -15,14 +15,13 @@ from pod.main.views import in_maintenance
 
 from pod.quiz.forms import QuestionForm, QuizDeleteForm, QuizForm
 from pod.quiz.models import (
-    LongAnswerQuestion,
     MultipleChoiceQuestion,
     Question,
     Quiz,
     ShortAnswerQuestion,
     SingleChoiceQuestion,
 )
-from pod.quiz.utils import get_video_quiz
+from pod.quiz.utils import calculate_question_score_from_form, get_video_quiz
 from pod.video.models import Video
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
@@ -133,7 +132,7 @@ def update_question(existing_question: Question, cleaned_data) -> None:
         existing_question.explanation = cleaned_data["explanation"]
         existing_question.start_timestamp = cleaned_data["start_timestamp"]
         existing_question.end_timestamp = cleaned_data["end_timestamp"]
-        if question_type in {"short_answer", "long_answer"}:
+        if question_type in {"short_answer"}:
             existing_question.answer = cleaned_data[question_type]
         elif question_type in {"single_choice", "multiple_choice"}:
             existing_question.choices = cleaned_data[question_type]
@@ -216,11 +215,6 @@ def get_question(question_type: str, question_id: int, quiz: Quiz):
             quiz=quiz,
             id=question_id,
         ).first()
-    elif question_type == "long_answer":
-        question = LongAnswerQuestion.objects.filter(
-            quiz=quiz,
-            id=question_id,
-        ).first()
     elif question_type == "single_choice":
         question = SingleChoiceQuestion.objects.filter(
             quiz=quiz,
@@ -284,15 +278,6 @@ def create_question(
             end_timestamp=end_timestamp,
             answer=question_data,
         )
-    elif question_type == "long_answer":
-        LongAnswerQuestion.objects.get_or_create(
-            quiz=quiz,
-            title=title,
-            explanation=explanation,
-            start_timestamp=start_timestamp,
-            end_timestamp=end_timestamp,
-            answer=question_data,
-        )
     elif question_type == "single_choice":
         SingleChoiceQuestion.objects.get_or_create(
             quiz=quiz,
@@ -339,50 +324,6 @@ def create_questions(new_quiz: Quiz, question_formset) -> None:
         )
 
 
-def calculate_score(question: Question, form) -> float:
-    """
-    Calculate the score for a given question and form.
-
-    Args:
-        question (Question): The question object.
-        form: The form object containing the user's answers.
-
-    Returns:
-        float: The calculated score, a value between 0 and 1.
-    """
-    user_answer = None
-    correct_answer = None
-    if question.get_type() == "single_choice":
-        user_answer = form.cleaned_data.get("selected_choice")
-        correct_answer = question.get_answer()
-
-    elif question.get_type() == "multiple_choice":
-        user_answer = form.cleaned_data.get("selected_choice")
-        correct_answer = question.get_answer()
-        if user_answer != "":
-            user_answer = ast.literal_eval(
-                user_answer
-            )  # Cannot use JSON.loads in case of quotes in a user answer.
-            intersection = set(user_answer) & set(correct_answer)
-            score = len(intersection) / len(correct_answer)
-
-            len_incorrect = len(user_answer) - len(intersection)
-            penalty = len_incorrect / len(correct_answer)
-            score = max(0, score - penalty)
-            return score
-
-    elif question.get_type() in ["short_answer", "long_answer"]:
-        user_answer = form.cleaned_data.get("user_answer")
-        correct_answer = question.get_answer()
-
-    # Add similar logic for other question types...
-
-    if (user_answer is not None and user_answer != "") and correct_answer is not None:
-        return 1.0 if user_answer.lower() == correct_answer.lower() else 0.0
-
-    return 0.0
-
-
 def process_quiz_submission(request: WSGIRequest, quiz: Quiz) -> float:
     """
     Process the submission of a quiz and calculate the user's percentage score.
@@ -402,7 +343,7 @@ def process_quiz_submission(request: WSGIRequest, quiz: Quiz) -> float:
     for question in quiz.get_questions():
         form = question.get_question_form(request.POST)
         if form.is_valid():
-            question_score = calculate_score(question, form)
+            question_score = calculate_question_score_from_form(question, form)
             score += question_score
             questions_stats[question.id] = question_score
             if question.get_type() in ["single_choice", "multiple_choice"]:
@@ -414,7 +355,7 @@ def process_quiz_submission(request: WSGIRequest, quiz: Quiz) -> float:
                     user_answer,
                     correct_answer,
                 ]
-            elif question.get_type() in ["short_answer", "long_answer"]:
+            elif question.get_type() in {"short_answer"}:
                 user_answer = form.cleaned_data.get("user_answer")
                 correct_answer = question.get_answer()
                 questions_answers["question_%s" % question.id] = [
@@ -642,9 +583,6 @@ def get_initial_data(existing_questions=None) -> str:
                 {
                     "short_answer": (
                         question.answer if question.get_type() == "short_answer" else None
-                    ),
-                    "long_answer": (
-                        question.answer if question.get_type() == "long_answer" else None
                     ),
                     "choices": (
                         json.loads(question.get_choices())

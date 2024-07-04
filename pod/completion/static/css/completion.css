@@ -3,8 +3,8 @@
  */
 
 /** Table contributor **/
-table#list-contributor tbody td.contributor-name,
-table#list-contributor thead th.contributor-name {
+table#list_contributor tbody td.contributor-name,
+table#list_contributor thead th.contributor-name {
   width: 20%;
 }
 

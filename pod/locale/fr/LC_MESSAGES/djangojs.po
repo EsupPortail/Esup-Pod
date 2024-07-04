@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-11 07:48+0000\n"
+"POT-Creation-Date: 2024-07-02 12:54+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -653,14 +653,6 @@ msgid "Short answer"
 msgstr "Réponse courte"
 
 #: pod/quiz/static/quiz/js/create-quiz.js
-msgid "The long answer"
-msgstr "La réponse longue"
-
-#: pod/quiz/static/quiz/js/create-quiz.js
-msgid "Long answer"
-msgstr "Réponse longue"
-
-#: pod/quiz/static/quiz/js/create-quiz.js
 #, javascript-format
 msgid "Select the choice #%s as correct answer."
 msgstr "Selectionnez le choix n°%s comme réponse correcte."
@@ -1034,3 +1026,9 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "The long answer"
+#~ msgstr "La réponse longue"
+
+#~ msgid "Long answer"
+#~ msgstr "Réponse longue"
