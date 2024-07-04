@@ -39,6 +39,7 @@ USE_DRESSING = getattr(settings, "USE_DRESSING", True)
 USE_SPEAKER = getattr(settings, "USE_SPEAKER", False)
 USE_IMPORT_VIDEO = getattr(settings, "USE_IMPORT_VIDEO", True)
 USE_QUIZ = getattr(settings, "USE_QUIZ", True)
+USE_AI_ENHANCEMENT = getattr(settings, "USE_AI_ENHANCEMENT", False)
 
 if USE_CAS:
     from cas import views as cas_views
@@ -168,6 +169,15 @@ if USE_CUT:
 if USE_PLAYLIST:
     urlpatterns += [
         path("playlist/", include("pod.playlist.urls", namespace="playlist")),
+    ]
+
+# AI ENHANCEMENT
+if USE_AI_ENHANCEMENT:
+    urlpatterns += [
+        path(
+            "ai-enhancement/",
+            include("pod.ai_enhancement.urls", namespace="ai_enhancement"),
+        ),
     ]
 
 # QUIZ

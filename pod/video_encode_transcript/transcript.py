@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.files import File
 from pod.completion.models import Track
 from pod.main.tasks import task_start_transcript
-from webvtt import Caption
+from webvtt import Caption, WebVTT
 
 from .utils import (
     send_email,
@@ -38,7 +38,6 @@ DEBUG = getattr(settings, "DEBUG", False)
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
     from pod.podfile.models import CustomFileModel
-    from pod.podfile.models import UserFolder
 else:
     __FILEPICKER__ = False
     from pod.main.models import CustomFileModel
@@ -150,19 +149,17 @@ def save_vtt_and_notify(video_to_encode, msg, webvtt):
     add_encoding_log(video_to_encode.id, msg)
 
 
-def saveVTT(video, webvtt):
+def saveVTT(video: Video, webvtt: WebVTT, lang_code: str = None):
     """Save webvtt file with the video."""
-    msg = "\nSAVE TRANSCRIPT WEBVTT: %s" % time.ctime()
-    lang = video.transcript
+    msg = "\nSAVE TRANSCRIPT WEBVTT : %s" % time.ctime()
+    lang = lang_code if lang_code else video.transcript
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     webvtt.save(temp_vtt_file.name)
     if webvtt.captions:
         improveCaptionsAccessibility(webvtt)
         msg += "\nstore vtt file in bdd with CustomFileModel model file field"
         if __FILEPICKER__:
-            videodir, created = UserFolder.objects.get_or_create(
-                name="%s" % video.slug, owner=video.owner
-            )
+            videodir = video.get_or_create_video_folder()
             """
             previousSubtitleFile = CustomFileModel.objects.filter(
                 name__startswith="subtitle_%s" % lang,

@@ -24,6 +24,8 @@ def is_quiz_accessible(context: dict, video: Video) -> bool:
     quiz = get_video_quiz(video)
     if quiz:
         request = context["request"]
+        if quiz.is_draft:
+            return video.owner == request.user or request.user.is_superuser
         if (
             quiz.connected_user_only and request.user.is_authenticated
         ) or not quiz.connected_user_only:
@@ -46,3 +48,25 @@ def is_quiz_exists(video: Video) -> bool:
     if get_video_quiz(video):
         return True
     return False
+
+
+@register.simple_tag(name="get_question_color")
+def get_question_color(is_submitted: bool, score: int = None) -> str:
+    """
+    Template tag used to return a color corresponding to the score.
+
+    Args:
+        is_submitted (bool): True if form is submitted.
+        score (int): A question score (from 0 to 1)
+
+
+    Returns:
+        str: The corresponding bootstrap color.
+    """
+    if is_submitted and score is not None:
+        if score <= 0.5:
+            return "danger"
+        elif score <= 0.75:
+            return "warning"
+        return "success"
+    return "gray"

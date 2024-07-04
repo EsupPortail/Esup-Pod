@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     "pod.import_video",
     "pod.progressive_web_app",
     "pod.dressing",
+    "pod.ai_enhancement",
     "pod.speaker",
     "pod.custom",
 ]
@@ -128,6 +129,7 @@ TEMPLATES = [
                 "pod.recorder.context_processors.context_recorder_settings",
                 "pod.playlist.context_processors.context_settings",
                 "pod.quiz.context_processors.context_settings",
+                "pod.ai_enhancement.context_processors.context_settings",
                 "pod.dressing.context_processors.context_settings",
                 "pod.import_video.context_processors.context_settings",
                 "pod.cut.context_processors.context_settings",

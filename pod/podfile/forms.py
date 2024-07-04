@@ -49,10 +49,10 @@ class FileSizeValidator(object):
     )
     code = "invalid_max_size"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.max_size = FILE_MAX_UPLOAD_SIZE * 1024 * 1024  # MO
 
-    def __call__(self, value):
+    def __call__(self, value) -> None:
         # Check the file size
         filesize = len(value)
         if self.max_size and filesize > self.max_size:
@@ -103,7 +103,7 @@ class CustomImageModelForm(forms.ModelForm):
         "data-maxsize": FILE_MAX_UPLOAD_SIZE * 1024 * 1024,
     }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(CustomImageModelForm, self).__init__(*args, **kwargs)
         self.fields["folder"].widget = forms.HiddenInput()
         valid_ext = FileExtensionValidator(IMAGE_ALLOWED_EXTENSIONS)
