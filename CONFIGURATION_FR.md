@@ -727,8 +727,8 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `AI_ENHANCEMENT_CGU_URL`
   > valeur par défaut : ``
   >> L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.<br>
-  >> Exemple : 'https://aristote.univ.fr/cgu'<br>
-  >> Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/<br>
+  >> Exemple : '<https://aristote.univ.fr/cgu>'<br>
+  >> Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/><br>
 * `AI_ENHANCEMENT_CLIENT_ID`
   > valeur par défaut : `mocked_id`
   >> L’ID du client de l’IA d’amélioration des vidéos.<br>
@@ -1191,6 +1191,9 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 * `VERSION`
   > valeur par défaut : ``
   >> Version courante du projet<br>
+* `WEBTV_MODE`
+  > valeur par défaut : `False`
+  >> Mode webtv permet de basculer POD en une application webtv ensupprimant les boutons de connexions par exemple<br>
 
 ### Configuration de l’application meeting
 

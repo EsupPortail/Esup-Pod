@@ -335,14 +335,16 @@
         <!-- end offcanvas -->
       </li>
     {% else %}{# user not authenticated #}
-      {% get_setting "LOGIN_URL" "/authentication_login/" as LOGIN_URL %}
-      {% if request.path != LOGIN_URL %}
-        <li class="nav-item dropdown login me-2" id="nav-authentication">
-          {% get_url_referrer request as url_referrer %}
-          <a class="btn btn-primary btn-sm ps-2 pe-2 d-flex" href="{% url 'authentication:authentication_login' %}{{ url_referrer }}" title="{% trans 'Open login page' %}" data-bs-toggle="tooltip">
-            <i class="bi bi-person-circle" aria-hidden="true"></i> <span class="ms-1 d-none d-lg-block">{% trans 'Log in' %}</span>
-          </a>
-        </li>
+      {% if not WEBTV_MODE %}
+        {% get_setting "LOGIN_URL" "/authentication_login/" as LOGIN_URL %}
+        {% if request.path != LOGIN_URL %}
+         <li class="nav-item dropdown login me-2" id="nav-authentication">
+           {% get_url_referrer request as url_referrer %}
+           <a class="btn btn-primary btn-sm ps-2 pe-2 d-flex" href="{% url 'authentication:authentication_login' %}{{ url_referrer }}" title="{% trans 'Open login page' %}" data-bs-toggle="tooltip">
+             <i class="bi bi-person-circle" aria-hidden="true"></i> <span class="ms-1 d-none d-lg-block">{% trans 'Log in' %}</span>
+            </a>
+          </li>
+        {% endif %}
       {% endif %}
     {% endif %}
   </ul>

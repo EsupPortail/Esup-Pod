@@ -3,6 +3,7 @@ import threading
 import logging
 import datetime
 import os
+import shutil
 
 from django.conf import settings
 from pod.video.models import Video, get_storage_path_video
@@ -36,7 +37,7 @@ def encode_recording(recording):
     )
     # deplacement du fichier source vers destination
     os.makedirs(os.path.dirname(video.video.path), exist_ok=True)
-    os.rename(recording.source_file, video.video.path)
+    shutil.move(recording.source_file, video.video.path)
     video.save()
     # on ajoute d'eventuels propriétaires additionnels
     video.additional_owners.add(*recorder.additional_users.all())
