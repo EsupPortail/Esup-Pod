@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-05 07:48+0000\n"
+"POT-Creation-Date: 2024-07-05 16:15+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2004,7 +2004,7 @@ msgstr "Sous-titre / Légende"
 
 #: pod/completion/templates/video_caption_maker.html
 #: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "Play"
 msgstr "Lecture"
 
@@ -2358,8 +2358,8 @@ msgstr "Découpe de vidéo"
 msgid "Please select values between 00:00:00 and "
 msgstr "Veuillez renseigner des valeurs comprises entre 00:00:00 et "
 
-#: pod/cut/templates/video_cut.html pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
+#: pod/cut/templates/video_cut.html
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "Cut the video"
 msgstr "Découper la vidéo"
 
@@ -3095,8 +3095,8 @@ msgid ""
 "a>."
 msgstr ""
 "L’accès à l’ajout d’enregistrements externes a été limité. Si vous souhaitez "
-"ajouter des enregistrements externes sur la plateforme, veuillez <a "
-"href=\"%(url)s\">nous contacter</a>."
+"ajouter des enregistrements externes sur la plateforme, veuillez <a href="
+"\"%(url)s\">nous contacter</a>."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
@@ -3462,8 +3462,8 @@ msgid ""
 "This video was uploaded to Pod; its origin is %(type)s: <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
-"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
 #: pod/import_video/views.py
 msgid ""
@@ -3477,8 +3477,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
@@ -3486,8 +3486,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "Youtube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
@@ -6682,22 +6682,27 @@ msgid "Authenticate"
 msgstr "S’authentifier"
 
 #: pod/meeting/templates/meeting/link_meeting.html
+#: pod/video/templates/videos/link_video.html
+msgid "More options"
+msgstr "Plus d'options"
+
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Copy the direct join link"
 msgstr "Copiez le lien d’accès direct"
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Copy the join link"
 msgstr "Copiez le lien d’accès avec restriction d’accès"
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Invite to the meeting"
 msgstr "Inviter à la réunion"
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Get the recordings of the meeting"
 msgstr "Obtenir les enregistrements de la réunion"
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Delete the meeting"
 msgstr "Supprimer la réunion"
 
@@ -6925,16 +6930,16 @@ msgid ""
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à une réunion récurrente "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "        <p>Date de début : %(start_date_time)s </p>\n"
 "        <p>Récurrent jusqu’à la date : %(end_date)s </p>\n"
 "        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
 "p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<strong>%(password)s</strong></p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <strong>"
+"%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -6943,8 +6948,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
@@ -6958,8 +6963,8 @@ msgstr ""
 "strong>.</p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<strong>%(password)s</strong></p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <strong>"
+"%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -6968,8 +6973,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
@@ -6987,8 +6992,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : "
-"<strong>%(password)s</strong></p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : <strong>"
+"%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -8575,8 +8580,8 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
@@ -8653,10 +8658,9 @@ msgid ""
 msgstr ""
 "<p>Bonjour,<br> un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur « %(recorder)s ».<br>Pour "
-"l’attribuer, cliquez sur le lien ci-dessous.</p><p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br><em>Si le lien n’est pas actif, il "
-"faut le copier-coller dans la barre d’adresse de votre navigateur.</em></"
-"p><p>Cordialement.</p>"
+"l’attribuer, cliquez sur le lien ci-dessous.</p><p><a href=\"%(link_url)s\">"
+"%(link_url)s</a><br><em>Si le lien n’est pas actif, il faut le copier-coller "
+"dans la barre d’adresse de votre navigateur.</em></p><p>Cordialement.</p>"
 
 #: pod/recorder/views.py
 msgid "New recording added."
@@ -9125,8 +9129,8 @@ msgid ""
 "%(url)s</a></p>\n"
 msgstr ""
 "vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
-"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
-"target=\"_blank\">%(scheme)s:%(url)s</a></p>\n"
+"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" target=\"_blank\">"
+"%(scheme)s:%(url)s</a></p>\n"
 "\n"
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -9975,50 +9979,22 @@ msgid "Links"
 msgstr "Liens"
 
 #: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Remove from playlist"
 msgstr "Retirer de la liste de lecture"
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Remove from favorite"
 msgstr "Retirer des favoris"
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Add in favorite"
 msgstr "Ajouter aux favoris"
 
 #: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Edit the video"
 msgstr "Éditer la vidéo"
-
-#: pod/video/templates/videos/link_video.html
-msgid "Enhance the video with AI"
-msgstr "Améliorer la vidéo avec l’IA"
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Complete the video"
-msgstr "Compléter la vidéo"
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Chapter the video"
-msgstr "Chapitrer la vidéo"
-
-#: pod/video/templates/videos/link_video.html
-msgid "Dress the video"
-msgstr "Habiller la vidéo"
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_edit.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Delete the video"
-msgstr "Supprimer la vidéo"
 
 #: pod/video/templates/videos/link_video.html
 msgid "Video default version"
@@ -10029,6 +10005,27 @@ msgstr "Version par défaut de la vidéo"
 msgid "Original version"
 msgstr "Version originale"
 
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Enhance the video with AI"
+msgstr "Améliorer la vidéo avec l’IA"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Complete the video"
+msgstr "Compléter la vidéo"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Chapter the video"
+msgstr "Chapitrer la vidéo"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Dress the video"
+msgstr "Habiller la vidéo"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Delete the video"
+msgstr "Supprimer la vidéo"
+
 #: pod/video/templates/videos/video-all-info.html
 msgid "Report the video"
 msgstr "Signaler la vidéo"
@@ -10038,8 +10035,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
-"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
+"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html
 msgid "Other versions"
@@ -11081,11 +11078,6 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#: pod/video/templates/videos/link_video.html
-#: pod/meeting/templates/meeting/link_meeting.html
-msgid "More options"
-msgstr "Plus d'options"
 
 #~ msgid ""
 #~ "The video was treated by Aristote. You must verify and validate the "

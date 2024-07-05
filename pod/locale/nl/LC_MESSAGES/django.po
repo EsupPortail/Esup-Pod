@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-04 18:04+0200\n"
+"POT-Creation-Date: 2024-07-05 16:15+0200\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1912,7 +1912,7 @@ msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
 #: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "Play"
 msgstr ""
 
@@ -2240,8 +2240,8 @@ msgstr ""
 msgid "Please select values between 00:00:00 and "
 msgstr ""
 
-#: pod/cut/templates/video_cut.html pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
+#: pod/cut/templates/video_cut.html
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "Cut the video"
 msgstr ""
 
@@ -6283,22 +6283,27 @@ msgid "Authenticate"
 msgstr ""
 
 #: pod/meeting/templates/meeting/link_meeting.html
+#: pod/video/templates/videos/link_video.html
+msgid "More options"
+msgstr ""
+
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Copy the direct join link"
 msgstr ""
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Copy the join link"
 msgstr ""
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Invite to the meeting"
 msgstr ""
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Get the recordings of the meeting"
 msgstr ""
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Delete the meeting"
 msgstr ""
 
@@ -9305,49 +9310,21 @@ msgid "Links"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Remove from playlist"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Remove from favorite"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Add in favorite"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Edit the video"
-msgstr ""
-
-#: pod/video/templates/videos/link_video.html
-msgid "Enhance the video with AI"
-msgstr ""
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Complete the video"
-msgstr ""
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Chapter the video"
-msgstr ""
-
-#: pod/video/templates/videos/link_video.html
-msgid "Dress the video"
-msgstr ""
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_edit.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Delete the video"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html
@@ -9357,6 +9334,27 @@ msgstr ""
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video-all-info.html
 msgid "Original version"
+msgstr ""
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Enhance the video with AI"
+msgstr ""
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Complete the video"
+msgstr ""
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Chapter the video"
+msgstr ""
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Dress the video"
+msgstr ""
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Delete the video"
 msgstr ""
 
 #: pod/video/templates/videos/video-all-info.html
