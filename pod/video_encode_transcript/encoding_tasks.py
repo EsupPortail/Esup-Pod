@@ -47,9 +47,9 @@ encoding_app.conf.task_routes = {
 
 
 # celery -A pod.video_encode_transcript.encoding_tasks worker -l INFO -Q encoding
-@encoding_app.task
+@encoding_app.task(bind=True)
 def start_encoding_task(
-    video_id, video_path, cut_start, cut_end, json_dressing, dressing_input
+    self, video_id, video_path, cut_start, cut_end, json_dressing, dressing_input
 ):
     """Start the encoding of the video."""
     print("Start the encoding of the video")
@@ -73,22 +73,23 @@ def start_encoding_task(
         "json_dressing": json_dressing,
         "dressing_input": dressing_input,
     }
+    msg = "Task id : %s\n" % self.request.id
     try:
         response = requests.post(url, json=data, headers=Headers)
         if response.status_code != 200:
-            msg = "Calling store remote encoding error: {} {}".format(
+            msg += "Calling store remote encoding error: {} {}".format(
                 response.status_code, response.reason
             )
             logger.error(msg + "\n" + str(response.content))
         else:
-            logger.info("Call importing encoded task ok")
+            logger.info(msg + "Call importing encoding task ok")
     except (
         requests.exceptions.HTTPError,
         requests.exceptions.ConnectionError,
         requests.exceptions.InvalidURL,
         requests.exceptions.Timeout,
     ) as exception:
-        msg = "Exception: {}".format(type(exception).__name__)
+        msg += "Exception: {}".format(type(exception).__name__)
         msg += "\nException message: {}".format(exception)
         logger.error(msg)
 
