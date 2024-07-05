@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     function addJobField(jobId = '', jobTitle = '') {
         var jobFieldHtml = `
-           <div class="d-flex align-items-center">
+           <div class="d-flex align-items-center job-content">
                 <input type="text" class="form-control jobTitle" name="jobs[]" value="${jobTitle}" placeholder="${gettext("Job title")}">
                 <input type="hidden" class="jobId" name="jobIds[]" value="${jobId}">
                 <a title="${gettext("remove job")}" role="button" class="btn btn-link pod-btn-social remove-job-field"><i class="bi bi-trash"></i></a>
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Remove job field on button click
     document.addEventListener('click', function(event) {
         if (event.target && event.target.closest('.remove-job-field')) {
-            event.target.closest('.input-group').remove();
+            event.target.closest('.job-content').remove();
         }
     });
 
