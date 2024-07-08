@@ -8697,7 +8697,7 @@ msgid "Speakers"
 msgstr "Intervenants"
 
 #: pod/speaker/models.py
-msgid "Job's speaker"
+msgid "Speaker's job"
 msgstr "Fonction de l’intervenant"
 
 #: pod/speaker/templates/speaker/list_speaker.html
@@ -8729,7 +8729,7 @@ msgid "Jobs"
 msgstr "Fonctions"
 
 #: pod/speaker/templates/speaker/speaker_modal.html
-msgid "Job Title"
+msgid "Job title"
 msgstr "Titre de la fonction"
 
 #: pod/speaker/templates/speaker/speaker_modal.html
@@ -8751,7 +8751,7 @@ msgstr "Aucune fonction associée"
 #: pod/speaker/templates/speaker/speakers_management.html
 #, python-format
 msgid "Edit the speaker “%(speaker_firstname)s %(speaker_lastname)s”"
-msgstr "Modifier l’intervenant “%(speaker_firstname)s %(speaker_lastname)s”"
+msgstr "Modifier l’intervenant « %(speaker_firstname)s %(speaker_lastname)s »"
 
 #: pod/speaker/templates/speaker/speakers_management.html
 msgid "Please confirm you want to delete the speaker"
@@ -8760,7 +8760,7 @@ msgstr "Veuillez confirmer que vous souhaitez supprimer l’intervenant"
 #: pod/speaker/templates/speaker/speakers_management.html
 #, python-format
 msgid "Delete the speaker “%(speaker_firstname)s %(speaker_lastname)s”"
-msgstr "Supprimer l’intervenant “%(speaker_firstname)s %(speaker_lastname)s”"
+msgstr "Supprimer l’intervenant « %(speaker_firstname)s %(speaker_lastname)s »"
 
 #: pod/speaker/templates/speaker/speakers_management.html
 msgid "No speakers found."

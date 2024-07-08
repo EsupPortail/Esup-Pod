@@ -60,7 +60,7 @@ class JobVideo(models.Model):
         video (ForeignKey <Video>): video.
     """
 
-    job = models.ForeignKey(Job, verbose_name=_("Job's speaker"), on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, verbose_name=_("Speaker's job"), on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
 
     class Meta:

@@ -715,7 +715,7 @@ msgid "Job title"
 msgstr "Titre de la fonction"
 
 #: pod/speaker/static/speaker/js/speakers-management.js
-msgid "remove job"
+msgid "Remove job"
 msgstr "Supprimer la fonction"
 
 #: pod/speaker/static/speaker/js/speakers-management.js

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
            <div class="d-flex align-items-center job-content">
                 <input type="text" class="form-control jobTitle" name="jobs[]" value="${jobTitle}" placeholder="${gettext("Job title")}">
                 <input type="hidden" class="jobId" name="jobIds[]" value="${jobId}">
-                <a title="${gettext("remove job")}" role="button" class="btn btn-link pod-btn-social remove-job-field"><i class="bi bi-trash"></i></a>
+                <a title="${gettext("Remove job")}" role="button" class="btn btn-link pod-btn-social remove-job-field"><i class="bi bi-trash"></i></a>
             </div>
         `;
         document.getElementById('jobFieldsContainer').insertAdjacentHTML('beforeend', jobFieldHtml);
