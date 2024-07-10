@@ -37,7 +37,9 @@ def speaker_management(request: WSGIRequest) -> HttpResponse:
         return redirect(reverse("maintenance"))
 
     if not request.user.is_superuser:
-        messages.add_message(request, messages.ERROR, _("You cannot access speaker management."))
+        messages.add_message(
+            request, messages.ERROR, _("You cannot access speaker management.")
+        )
         raise PermissionDenied
 
     if request.method == "POST":
@@ -99,9 +101,9 @@ def add_speaker(request: WSGIRequest):
         bool: True if the speaker was added successfully, False otherwise.
     """
     try:
-        firstname = request.POST.get('firstname')
-        lastname = request.POST.get('lastname')
-        jobs = request.POST.getlist('jobs[]')
+        firstname = request.POST.get("firstname")
+        lastname = request.POST.get("lastname")
+        jobs = request.POST.getlist("jobs[]")
         speaker = Speaker.objects.create(firstname=firstname, lastname=lastname)
         for job_title in jobs:
             if job_title.strip():
@@ -109,7 +111,9 @@ def add_speaker(request: WSGIRequest):
         messages.add_message(request, messages.SUCCESS, _("The speaker has been added."))
         return True
     except (ValueError, ObjectDoesNotExist):
-        messages.add_message(request, messages.ERROR, _("The speaker could not be added."))
+        messages.add_message(
+            request, messages.ERROR, _("The speaker could not be added.")
+        )
         return False
 
 
@@ -127,12 +131,16 @@ def delete_speaker(request: WSGIRequest):
         bool: True if the speaker was deleted successfully, False otherwise.
     """
     try:
-        speakerid = request.POST.get('speakerid')
+        speakerid = request.POST.get("speakerid")
         Speaker.objects.get(id=speakerid).delete()
-        messages.add_message(request, messages.SUCCESS, _("The speaker has been deleted."))
+        messages.add_message(
+            request, messages.SUCCESS, _("The speaker has been deleted.")
+        )
         return True
     except (ValueError, ObjectDoesNotExist):
-        messages.add_message(request, messages.ERROR, _("The speaker could not be deleted."))
+        messages.add_message(
+            request, messages.ERROR, _("The speaker could not be deleted.")
+        )
         return False
 
 
@@ -151,17 +159,21 @@ def edit_speaker(request: WSGIRequest):
         bool: True if the speaker was edited successfully, False otherwise.
     """
     try:
-        job_ids = request.POST.getlist('jobIds[]')
-        job_titles = request.POST.getlist('jobs[]')
+        job_ids = request.POST.getlist("jobIds[]")
+        job_titles = request.POST.getlist("jobs[]")
 
         with transaction.atomic():
             speaker = edit_speaker_details(request)
             update_existing_jobs(speaker, job_ids, job_titles)
 
-        messages.add_message(request, messages.SUCCESS, _("The speaker has been updated."))
+        messages.add_message(
+            request, messages.SUCCESS, _("The speaker has been updated.")
+        )
         return True
     except (ValueError, ObjectDoesNotExist) as e:
-        messages.add_message(request, messages.ERROR, _("Speaker not found or invalid input."))
+        messages.add_message(
+            request, messages.ERROR, _("Speaker not found or invalid input.")
+        )
         print(e)
         return False
 
@@ -179,9 +191,9 @@ def edit_speaker_details(request: WSGIRequest):
     Returns:
         Speaker: The updated speaker object.
     """
-    speakerid = request.POST.get('speakerid')
-    firstname = request.POST.get('firstname')
-    lastname = request.POST.get('lastname')
+    speakerid = request.POST.get("speakerid")
+    firstname = request.POST.get("firstname")
+    lastname = request.POST.get("lastname")
 
     if not speakerid or not firstname or not lastname:
         raise ValueError("Missing speaker information")
@@ -244,14 +256,14 @@ def get_speaker(request, speaker_id) -> JsonResponse:
         JsonResponse: A JSON response containing the speaker details.
     """
     speaker = get_object_or_404(Speaker, id=speaker_id)
-    jobs = speaker.job_set.all().values('id', 'title')
+    jobs = speaker.job_set.all().values("id", "title")
     speaker_data = {
-        'id': speaker.id,
-        'firstname': speaker.firstname,
-        'lastname': speaker.lastname,
-        'jobs': list(jobs)
+        "id": speaker.id,
+        "firstname": speaker.firstname,
+        "lastname": speaker.lastname,
+        "jobs": list(jobs),
     }
-    return JsonResponse({'speaker': speaker_data})
+    return JsonResponse({"speaker": speaker_data})
 
 
 @login_required
@@ -269,6 +281,6 @@ def get_jobs(request, speaker_id) -> JsonResponse:
         JsonResponse: A JSON response containing the jobs.
     """
     speaker = get_object_or_404(Speaker, id=speaker_id)
-    jobs = speaker.job_set.all().values('id', 'title')
+    jobs = speaker.job_set.all().values("id", "title")
     jobs_list = list(jobs)
-    return JsonResponse({'jobs': jobs_list})
+    return JsonResponse({"jobs": jobs_list})

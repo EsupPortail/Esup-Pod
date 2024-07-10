@@ -532,9 +532,7 @@ def video_completion_speaker_save(request: WSGIRequest, video: Video):
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type="application/json")
         else:
-            context = get_video_completion_context(
-                video, list_speaker=list_speaker
-            )
+            context = get_video_completion_context(video, list_speaker=list_speaker)
             context["page_title"] = get_completion_home_page_title(video)
             messages.add_message(
                 request, messages.SUCCESS, _("The speaker has been saved.")

@@ -12,7 +12,7 @@ def get_all_speakers() -> Optional[Speaker]:
     Returns:
         Optional[Speakers]: The speakers list, or None if no speaker is found.
     """
-    return Speaker.objects.prefetch_related('job_set').all()
+    return Speaker.objects.prefetch_related("job_set").all()
 
 
 def get_video_speakers(video: Video) -> Optional[JobVideo]:

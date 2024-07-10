@@ -14,14 +14,8 @@ class Speaker(models.Model):
         lastname (CharField): last name of speaker.
     """
 
-    firstname = models.CharField(
-        verbose_name=_("First name"),
-        max_length=100
-    )
-    lastname = models.CharField(
-        verbose_name=_("Last name"),
-        max_length=100
-    )
+    firstname = models.CharField(verbose_name=_("First name"), max_length=100)
+    lastname = models.CharField(verbose_name=_("Last name"), max_length=100)
 
     class Meta:
         ordering = ["lastname", "firstname"]
@@ -41,10 +35,7 @@ class Job(models.Model):
         speaker (ForeignKey <Speaker>): Speaker of the job.
     """
 
-    title = models.CharField(
-        verbose_name=_("Title"),
-        max_length=100
-    )
+    title = models.CharField(verbose_name=_("Title"), max_length=100)
     speaker = models.ForeignKey(Speaker, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -60,11 +51,13 @@ class JobVideo(models.Model):
         video (ForeignKey <Video>): video.
     """
 
-    job = models.ForeignKey(Job, verbose_name=_("Speaker's job"), on_delete=models.CASCADE)
+    job = models.ForeignKey(
+        Job, verbose_name=_("Speaker's job"), on_delete=models.CASCADE
+    )
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('job', 'video')
+        unique_together = ("job", "video")
 
     def __str__(self):
         return f"{self.job} - {self.video}"

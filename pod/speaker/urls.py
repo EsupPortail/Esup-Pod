@@ -7,7 +7,7 @@ app_name = "speaker"
 
 urlpatterns = [
     path("", speaker_management, name="speaker_management"),
-    path("add/", add_speaker, name='add_speaker'),
-    path('get-speaker/<int:speaker_id>/', get_speaker, name='get_speaker'),
-    path('get-jobs/<int:speaker_id>/', get_jobs, name='get_jobs'),
+    path("add/", add_speaker, name="add_speaker"),
+    path("get-speaker/<int:speaker_id>/", get_speaker, name="get_speaker"),
+    path("get-jobs/<int:speaker_id>/", get_jobs, name="get_jobs"),
 ]

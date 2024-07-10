@@ -27,38 +27,14 @@ class SpeakerModelTest(TestCase):
             video="test2.mp4",
             duration=20,
         )
-        speaker1 = Speaker.objects.create(
-            firstname="Dupont",
-            lastname="Pierre"
-        )
-        speaker2 = Speaker.objects.create(
-            firstname="Martin",
-            lastname="Michel"
-        )
-        job1 = Job.objects.create(
-            speaker=speaker1,
-            title="Directeur"
-        )
-        job2 = Job.objects.create(
-            speaker=speaker1,
-            title="President"
-        )
-        job3 = Job.objects.create(
-            speaker=speaker2,
-            title="Responsable"
-        )
-        JobVideo.objects.create(
-            video=video,
-            job=job1
-        )
-        JobVideo.objects.create(
-            video=video,
-            job=job2
-        )
-        JobVideo.objects.create(
-            video=video2,
-            job=job3
-        )
+        speaker1 = Speaker.objects.create(firstname="Dupont", lastname="Pierre")
+        speaker2 = Speaker.objects.create(firstname="Martin", lastname="Michel")
+        job1 = Job.objects.create(speaker=speaker1, title="Directeur")
+        job2 = Job.objects.create(speaker=speaker1, title="President")
+        job3 = Job.objects.create(speaker=speaker2, title="Responsable")
+        JobVideo.objects.create(video=video, job=job1)
+        JobVideo.objects.create(video=video, job=job2)
+        JobVideo.objects.create(video=video2, job=job3)
 
     def test_attributs_full(self):
         """Test all attributs."""

@@ -12,7 +12,9 @@ class JobWidget(s2forms.ModelSelect2Widget):
     """Widget for selecting speaker job."""
 
     search_fields = [
-        "title__icontains", "speaker__lastname__icontains", "speaker__firstname__icontains",
+        "title__icontains",
+        "speaker__lastname__icontains",
+        "speaker__firstname__icontains",
     ]
 
 
@@ -21,7 +23,7 @@ class SpeakerForm(forms.ModelForm):
 
     class Meta:
         model = Speaker
-        fields = ['firstname', 'lastname']
+        fields = ["firstname", "lastname"]
 
     def __init__(self, *args, **kwargs):
         """Init method."""
@@ -34,7 +36,7 @@ class JobForm(forms.ModelForm):
 
     class Meta:
         model = Job
-        fields = ['title']
+        fields = ["title"]
 
 
 class JobVideoForm(forms.ModelForm):
@@ -53,8 +55,10 @@ class JobVideoForm(forms.ModelForm):
         widgets = {
             "job": JobWidget(
                 attrs={
-                    'data-placeholder': _("You can search speaker by first name, last name and job."),
-                    'class': 'w-100',
+                    "data-placeholder": _(
+                        "You can search speaker by first name, last name and job."
+                    ),
+                    "class": "w-100",
                 }
             )
         }
