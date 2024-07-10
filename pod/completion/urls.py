@@ -4,6 +4,7 @@ from django.conf.urls import url
 from .views import video_completion
 from .views import video_caption_maker
 from .views import video_completion_contributor
+from .views import video_completion_speaker
 from .views import video_completion_document
 from .views import video_completion_track
 from .views import video_completion_overlay
@@ -20,6 +21,11 @@ urlpatterns = [
         r"^contributor/(?P<slug>[\-\d\w]+)/$",
         video_completion_contributor,
         name="video_completion_contributor",
+    ),
+    url(
+        r"^speaker/(?P<slug>[\-\d\w]+)/$",
+        video_completion_speaker,
+        name="video_completion_speaker",
     ),
     url(
         r"^document/(?P<slug>[\-\d\w]+)/$",

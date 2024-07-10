@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load thumbnail %}
+
+{% block page_extra_head %}
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li class="breadcrumb-item active" aria-current="page">
+    {{ page_title }}
+  </li>
+{% endblock %}
+
+{% block page_content %}
+  <div class="table-responsive">
+    <button type="button" class="btn btn-primary mb-3 add-speaker-btn">
+      {% trans "Add a speaker" %}
+  </button>
+  <table class="table table-sm table-striped table-bordered text-left" summary="{% trans 'List of speakers I can manage.' %}">
+    <caption class="caption-top">{% trans 'List of speakers' %}</caption>
+    <thead>
+      <tr>
+        <th scope="col" class="ps-2">{% trans 'First name' %}</th>
+        <th scope="col" class="ps-2">{% trans 'Last name' %}</th>
+        <th scope="col" class="ps-2">{% trans 'Job' %}</th>
+        <th scope="col" class="text-center">{% trans 'Actions' %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for speaker in speakers %}
+        <tr>
+          <td class="ps-2">{{ speaker.firstname }}</td>
+          <td class="ps-2">{{ speaker.lastname }}</td>
+          <td>
+            <ul class="list-group list-group-flush">
+                {% for job in speaker.job_set.all %}
+                    <li class="list-group-item bg-transparent">{{ job.title }}</li>
+                {% empty %}
+                    <li class="list-group-item bg-transparent disabled" aria-disabled="true">{% trans 'No jobs assigned' %}</li>
+                {% endfor %}
+            </ul>
+        </td>
+        <td class="text-center align-middle">
+          <button type="button" class="btn btn-primary btn-sm me-1 edit-speaker-field" data-speaker-id="{{ speaker.id }}" title="{% blocktrans with speaker_firstname=speaker.firstname speaker_lastname=speaker.lastname %}Edit the speaker “{{ speaker_firstname }} {{ speaker_lastname }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="top">
+            <i class="bi bi-pencil-square" aria-hidden="true"></i>
+        </button>
+          {% trans "Please confirm you want to delete the speaker" as confirmDelete %}
+          <form method="post" action="{% url 'speaker:speaker_management' %}" onsubmit="return confirm('{{ confirmDelete|escapejs }}');" class="d-inline">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete" />
+            <input type="hidden" name="speakerid" value="{{ speaker.id }}" />
+            <button type="submit" class="btn btn-danger pod-btn-primary btn-sm" title="{% blocktrans with speaker_firstname=speaker.firstname speaker_lastname=speaker.lastname %}Delete the speaker “{{ speaker_firstname }} {{ speaker_lastname }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="top">
+              <i class="bi bi-trash3" aria-hidden="true"></i>
+            </button>
+          </form>
+        </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="11">{% trans 'No speakers found.' %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  {% include "speaker/speaker_modal.html" %}
+{% endblock page_content %}
+
+{% block collapse_page_aside %}{% endblock collapse_page_aside %}
+{% block page_aside %}{% endblock page_aside %}
+{% block more_script %}
+<script src="{% static 'speaker/js/speakers-management.js' %}?ver={{VERSION}}"></script> 
+{% endblock more_script %}
+
