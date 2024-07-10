@@ -3,7 +3,7 @@
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from pod.video_search.utils import create_index_es, delete_index_es
-
+from elasticsearch import Elasticsearch, exceptions
 import logging
 
 logger = logging.getLogger(__name__)
@@ -19,6 +19,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Create the Elasticsearch Pod index."""
-        delete_index_es()
+        try:
+            delete_index_es()
+        except exceptions.NotFoundError:
+            self.stdout.write(self.style.WARNING("Pod index not found."))
         create_index_es()
         self.stdout.write(self.style.SUCCESS("Video index successfully created on ES."))
