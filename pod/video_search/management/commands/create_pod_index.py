@@ -20,6 +20,8 @@ class Command(BaseCommand):
             delete_index_es()
             self.stdout.write(self.style.WARNING("The Pod index has been deleted."))
         except exceptions.NotFoundError:
-            self.stdout.write(self.style.WARNING("Pod index not found on ElasticSearch server."))
+            self.stdout.write(
+                self.style.WARNING("Pod index not found on ElasticSearch server.")
+            )
         create_index_es()
         self.stdout.write(self.style.SUCCESS("Video index successfully created on ES."))
