@@ -1,3 +1,5 @@
+"""Esup-Pod REST views."""
+
 from .models import UserFolder
 from .models import CustomImageModel, CustomFileModel
 from rest_framework import serializers, viewsets

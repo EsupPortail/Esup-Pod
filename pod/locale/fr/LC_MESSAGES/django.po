@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-20 14:01+0000\n"
+"POT-Creation-Date: 2024-07-05 16:15+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: obado <bado@unice.fr>\n"
+"Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -95,7 +95,8 @@ msgstr "La discipline proposée par l’IA Aristote."
 #: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
 #: pod/main/models.py pod/main/views.py pod/playlist/forms.py
 #: pod/playlist/models.py pod/quiz/forms.py pod/quiz/models.py
-#: pod/video/models.py pod/video/templates/channel/list_theme.html
+#: pod/speaker/models.py pod/video/models.py
+#: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Title"
 msgstr "Titre"
@@ -1363,6 +1364,8 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/recorder/templates/recorder/add_recording.html
+#: pod/speaker/templates/speaker/form_speaker.html
+#: pod/speaker/templates/speaker/speaker_modal.html
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/channel/form_theme.html
 #: pod/video/templates/videos/video_note_comments_display.html
@@ -1378,6 +1381,8 @@ msgstr "Sauvegarder"
 #: pod/completion/templates/track/form_track.html
 #: pod/enrichment/templates/enrichment/form_enrichment.html
 #: pod/playlist/templates/playlist/playlist.html
+#: pod/speaker/templates/speaker/form_speaker.html
+#: pod/speaker/templates/speaker/speaker_modal.html
 #: pod/video/templates/channel/form_theme.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/dashboard_modal.html
@@ -1402,6 +1407,8 @@ msgstr "Liste des chapitres"
 #: pod/completion/templates/track/list_track.html
 #: pod/dressing/templates/my_dressings.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
+#: pod/speaker/templates/speaker/list_speaker.html
+#: pod/speaker/templates/speaker/speakers_management.html
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_access_tokens.html
 msgid "Actions"
@@ -1439,6 +1446,7 @@ msgstr "Supprimer le chapitre « %(chapter_title)s »"
 #: pod/playlist/templates/playlist/delete.html
 #: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/recorder/templates/recorder/record_delete.html
+#: pod/speaker/templates/speaker/list_speaker.html
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/dashboard.html
@@ -1599,7 +1607,7 @@ msgstr "Ingénieur du son"
 msgid "Speaking roles"
 msgstr "Rôles d’orateur"
 
-#: pod/completion/models.py
+#: pod/completion/models.py pod/speaker/apps.py pod/speaker/models.py
 msgid "Speaker"
 msgstr "Intervenant"
 
@@ -1612,7 +1620,7 @@ msgid "captions"
 msgstr "légendes"
 
 #: pod/completion/models.py
-msgid "lastname / firstname"
+msgid "last name / first name"
 msgstr "nom / prénom"
 
 #: pod/completion/models.py
@@ -1864,6 +1872,7 @@ msgstr ""
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
 #: pod/completion/templates/track/form_track.html
+#: pod/speaker/templates/speaker/form_speaker.html
 msgid "Your form contains errors:"
 msgstr "Votre formulaire contient des erreurs :"
 
@@ -1872,7 +1881,7 @@ msgid "List of contributors"
 msgstr "Liste des contributeurs"
 
 #: pod/completion/templates/contributor/list_contributor.html
-msgid "Lastname / Firstname"
+msgid "Last name / First name"
 msgstr "Nom / Prénom"
 
 #: pod/completion/templates/contributor/list_contributor.html
@@ -1996,6 +2005,8 @@ msgstr "Sous-titre / Légende"
 #: pod/completion/templates/video_caption_maker.html
 #: pod/video/templates/videos/video_list_grid_selectable.html
 #: pod/video/templates/videos/video_row_select.html
+#: pod/video/templates/videos/link_video.html
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "Play"
 msgstr "Lecture"
 
@@ -2116,6 +2127,14 @@ msgid "Add a new contributor"
 msgstr "Ajouter un nouveau contributeur"
 
 #: pod/completion/templates/video_completion.html
+msgid "Speaker(s)"
+msgstr "Intervenant(s)"
+
+#: pod/completion/templates/video_completion.html
+msgid "Add a new speaker"
+msgstr "Ajouter un nouvel intervenant"
+
+#: pod/completion/templates/video_completion.html
 msgid "Subtitle(s) and Caption(s)"
 msgstr "Sous-titre(s) et légende(s)"
 
@@ -2169,6 +2188,19 @@ msgid ""
 msgstr ""
 "Un contributeur doit au moins avoir un nom et un rôle. Vous pouvez aussi "
 "joindre son courriel ainsi qu’un lien web (site professionnel par exemple)."
+
+#: pod/completion/templates/video_completion.html
+msgid "List of speakers related to this video."
+msgstr "Liste des intervenants relatifs à cette vidéo."
+
+#: pod/completion/templates/video_completion.html
+msgid ""
+"You can add speakers to this video by searching by their last name, first "
+"name or job. If you can't find the speaker, contact a super admin."
+msgstr ""
+"Vous pouvez ajouter des intervenants à cette vidéo en effectuant une "
+"recherche par leur nom, prénom ou fonction. Si vous ne trouvez pas "
+"l’orateur, contactez un super administrateur."
 
 #: pod/completion/templates/video_completion.html
 msgid "Subtitle(s) and/or captions(s) related to this video."
@@ -2307,6 +2339,15 @@ msgstr "Veuillez corriger les erreurs"
 msgid "Edit the contributor “%s”"
 msgstr "Modifier le contributeur « %s »"
 
+#: pod/completion/views.py
+#, python-format
+msgid "Add a new speaker to the video “%s”"
+msgstr "Ajouter un nouvel intervenant à la vidéo « %s »"
+
+#: pod/completion/views.py
+msgid "The speaker has been saved."
+msgstr "L’intervenant a été enregistré."
+
 #: pod/cut/apps.py pod/cut/models.py
 msgid "Video cuts"
 msgstr "Découpes de vidéo"
@@ -2319,8 +2360,8 @@ msgstr "Découpe de vidéo"
 msgid "Please select values between 00:00:00 and "
 msgstr "Veuillez renseigner des valeurs comprises entre 00:00:00 et "
 
-#: pod/cut/templates/video_cut.html pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
+#: pod/cut/templates/video_cut.html
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "Cut the video"
 msgstr "Découper la vidéo"
 
@@ -5751,6 +5792,10 @@ msgstr "Mes fichiers"
 msgid "Claim a record"
 msgstr "Revendiquer un enregistrement"
 
+#: pod/main/templates/navbar.html pod/speaker/views.py
+msgid "Speakers management"
+msgstr "Gestion des intervenants"
+
 #: pod/main/templates/navbar.html pod/progressive_web_app/templates/debug.html
 msgid "Notifications settings"
 msgstr "Paramètres de notifications"
@@ -6637,22 +6682,27 @@ msgid "Authenticate"
 msgstr "S’authentifier"
 
 #: pod/meeting/templates/meeting/link_meeting.html
+#: pod/video/templates/videos/link_video.html
+msgid "More options"
+msgstr "Plus d'options"
+
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Copy the direct join link"
 msgstr "Copiez le lien d’accès direct"
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Copy the join link"
 msgstr "Copiez le lien d’accès avec restriction d’accès"
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Invite to the meeting"
 msgstr "Inviter à la réunion"
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Get the recordings of the meeting"
 msgstr "Obtenir les enregistrements de la réunion"
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Delete the meeting"
 msgstr "Supprimer la réunion"
 
@@ -6892,6 +6942,9 @@ msgstr ""
 "%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
 "    "
+
+#: pod/meeting/views.py
+#, python-format
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
@@ -6914,6 +6967,9 @@ msgstr ""
 "%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
 "    "
+
+#: pod/meeting/views.py
+#, python-format
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
@@ -8623,6 +8679,125 @@ msgstr "Suppression de l’enregistrement « %s »"
 msgid "Recorder for Studio not found."
 msgstr "Enregistreur studio non trouvé."
 
+#: pod/speaker/forms.py
+msgid "You can search speaker by first name, last name and job."
+msgstr ""
+"Vous pouvez rechercher un intervenant par leur prénom, nom et fonction."
+
+#: pod/speaker/models.py pod/speaker/templates/speaker/speakers_management.html
+msgid "First name"
+msgstr "Prénom"
+
+#: pod/speaker/models.py pod/speaker/templates/speaker/speakers_management.html
+msgid "Last name"
+msgstr "Nom"
+
+#: pod/speaker/models.py
+msgid "Speakers"
+msgstr "Intervenants"
+
+#: pod/speaker/models.py
+msgid "Speaker's job"
+msgstr "Fonction de l’intervenant"
+
+#: pod/speaker/templates/speaker/list_speaker.html
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "List of speakers"
+msgstr "Liste des intervenants"
+
+#: pod/speaker/templates/speaker/list_speaker.html
+msgid "First name / Last name"
+msgstr "Prénom / Nom"
+
+#: pod/speaker/templates/speaker/list_speaker.html
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "Job"
+msgstr "Fonction"
+
+#: pod/speaker/templates/speaker/list_speaker.html
+#, python-format
+msgid "Delete the speaker job “%(speaker_job)s”"
+msgstr "Supprimer la fonction de l’intervenant « %(speaker_job)s »"
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "Add a speaker"
+msgstr "Ajouter un intervenant"
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+msgid "Jobs"
+msgstr "Fonctions"
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+msgid "Job title"
+msgstr "Titre de la fonction"
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+msgid "Remove job"
+msgstr "Supprimer la fonction"
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+msgid "Add job"
+msgstr "Ajouter une fonction"
+
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "List of speakers I can manage."
+msgstr "Liste des intervenants que je peux gérer."
+
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "No jobs assigned"
+msgstr "Aucune fonction associée"
+
+#: pod/speaker/templates/speaker/speakers_management.html
+#, python-format
+msgid "Edit the speaker “%(speaker_firstname)s %(speaker_lastname)s”"
+msgstr "Modifier l’intervenant « %(speaker_firstname)s %(speaker_lastname)s »"
+
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "Please confirm you want to delete the speaker"
+msgstr "Veuillez confirmer que vous souhaitez supprimer l’intervenant"
+
+#: pod/speaker/templates/speaker/speakers_management.html
+#, python-format
+msgid "Delete the speaker “%(speaker_firstname)s %(speaker_lastname)s”"
+msgstr "Supprimer l’intervenant « %(speaker_firstname)s %(speaker_lastname)s »"
+
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "No speakers found."
+msgstr "Aucun intervenant trouvé."
+
+#: pod/speaker/views.py
+msgid "You cannot access speaker management."
+msgstr "Vous ne pouvez pas accéder à la gestion des intervenants."
+
+#: pod/speaker/views.py pod/video/tests/test_views.py pod/video/views.py
+msgid "An action must be specified."
+msgstr "Une action doit être précisée."
+
+#: pod/speaker/views.py
+msgid "The speaker has been added."
+msgstr "L’intervenant a été ajouté."
+
+#: pod/speaker/views.py
+msgid "The speaker could not be added."
+msgstr "L’intervenant n’a pu être ajouté."
+
+#: pod/speaker/views.py
+msgid "The speaker has been deleted."
+msgstr "L’intervenant a été supprimé."
+
+#: pod/speaker/views.py
+msgid "The speaker could not be deleted."
+msgstr "L’intervenant n’a pu être supprimé."
+
+#: pod/speaker/views.py
+msgid "The speaker has been updated."
+msgstr "L’intervenant a été modifié."
+
+#: pod/speaker/views.py
+msgid "Speaker not found or invalid input."
+msgstr "Intervenant non trouvé ou champ invalide."
+
 #: pod/urls.py
 msgid "Pod Administration"
 msgstr "Administration de Pod"
@@ -9806,50 +9981,22 @@ msgid "Links"
 msgstr "Liens"
 
 #: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Remove from playlist"
 msgstr "Retirer de la liste de lecture"
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Remove from favorite"
 msgstr "Retirer des favoris"
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Add in favorite"
 msgstr "Ajouter aux favoris"
 
 #: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Edit the video"
 msgstr "Éditer la vidéo"
-
-#: pod/video/templates/videos/link_video.html
-msgid "Enhance the video with AI"
-msgstr "Améliorer la vidéo avec l’IA"
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Complete the video"
-msgstr "Compléter la vidéo"
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Chapter the video"
-msgstr "Chapitrer la vidéo"
-
-#: pod/video/templates/videos/link_video.html
-msgid "Dress the video"
-msgstr "Habiller la vidéo"
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_edit.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Delete the video"
-msgstr "Supprimer la vidéo"
 
 #: pod/video/templates/videos/link_video.html
 msgid "Video default version"
@@ -9859,6 +10006,27 @@ msgstr "Version par défaut de la vidéo"
 #: pod/video/templates/videos/video-all-info.html
 msgid "Original version"
 msgstr "Version originale"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Enhance the video with AI"
+msgstr "Améliorer la vidéo avec l’IA"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Complete the video"
+msgstr "Compléter la vidéo"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Chapter the video"
+msgstr "Chapitrer la vidéo"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Dress the video"
+msgstr "Habiller la vidéo"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Delete the video"
+msgstr "Supprimer la vidéo"
 
 #: pod/video/templates/videos/video-all-info.html
 msgid "Report the video"
@@ -9990,6 +10158,10 @@ msgstr "Envoyer un courriel à « %(contributor_name)s »"
 #: pod/video/templates/videos/video-info.html
 msgid "Contributor web link"
 msgstr "Lien du contributeur"
+
+#: pod/video/templates/videos/video-info.html
+msgid "Speaker(s):"
+msgstr "Intervenant(s) :"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Updated on:"
@@ -10472,10 +10644,6 @@ msgid "-- sorry, no translation provided --"
 msgstr "-- désolé, aucune traduction fournie --"
 
 #: pod/video/tests/test_views.py pod/video/views.py
-msgid "An action must be specified."
-msgstr "Une action doit être précisée."
-
-#: pod/video/tests/test_views.py pod/video/views.py
 msgid "A token has been created."
 msgstr "Un jeton a été créé."
 
@@ -10927,9 +11095,6 @@ msgstr "xAPI Esup-Pod"
 #~ msgstr ""
 #~ "La vidéo a été traitée par Aristote. Vous devez vérifier et valider le "
 #~ "traitement en appuyant sur l’icône du robot."
-
-#~ msgid "Method Not Allowed"
-#~ msgstr "Méthode non autorisée"
 
 #~ msgid "Quiz(zes)"
 #~ msgstr "Quiz"

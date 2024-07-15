@@ -1,0 +1,72 @@
+{% load i18n %}
+
+<ul class="dropdown-menu" aria-labelledby="more-actions-row-btn-{{ meeting.id }}">
+  <li>
+    <a href="#"
+       title="{% trans 'Copy the direct join link' %} — {{ meeting.name }}"
+       class="dropdown-item pod-btn-copy"
+       data-bs-toggle="tooltip"
+       aria-label="{% trans 'Copy the direct join link' %} — {{ meeting.name }}"
+       data-bs-original-title="{% trans 'Copy the direct join link' %} — {{ meeting.name }}"
+       data-copyvalue="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}"
+    >
+      <i class="bi bi-person-check" aria-hidden="true"></i>
+      {% trans 'Copy the direct join link' %}
+    </a>
+  </li>
+  <li>
+    <a href="#"
+       title="{% trans 'Copy the join link' %} — {{ meeting.name }}"
+       class="dropdown-item pod-btn-copy"
+       data-bs-toggle="tooltip"
+       aria-label="{% trans 'Copy the join link' %} — {{ meeting.name }}"
+       data-bs-original-title="{% trans 'Copy the join link' %} — {{ meeting.name }}"
+       data-copyvalue="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id %}"
+    >
+      <i class="bi bi-person-lock" aria-hidden="true"></i>
+      {% trans 'Copy the join link' %}
+    </a>
+  </li>
+  <li>
+    <a href="{% url 'meeting:invite' meeting.meeting_id %}"
+       title="{% trans 'Invite to the meeting'%} — {{ meeting.name }}"
+       class="dropdown-item"
+       data-bs-toggle="tooltip"
+       aria-label="{% trans 'Invite to the meeting'%} — {{ meeting.name }}"
+       data-bs-original-title="{% trans 'Invite to the meeting'%} — {{ meeting.name }}"
+    >
+      <i class="bi bi-envelope" aria-hidden="true"></i>
+      {% trans 'Invite to the meeting'%}
+    </a>
+  </li>
+  {% if not meeting_disable_record %}
+    <li><hr class="dropdown-divider"></li>
+    <li>
+      <a href="{% url 'meeting:internal_recordings' meeting.meeting_id %}"
+         title="{% trans 'Get the recordings of the meeting'%} — {{ meeting.name }}"
+         class="dropdown-item"
+         data-bs-toggle="tooltip"
+         aria-label="{% trans 'Get the recordings of the meeting'%} — {{ meeting.name }}"
+         data-bs-original-title="{% trans 'Get the recordings of the meeting'%} — {{ meeting.name }}"
+      >
+        <i class="bi bi-collection-play" aria-hidden="true"></i>
+        {% trans 'Get the recordings of the meeting'%}
+      </a>
+    </li>
+  {% endif %}
+  {% if not meeting.is_personal %}
+    <li><hr class="dropdown-divider"></li>
+    <li>
+      <a href="{% url 'meeting:internal_recordings' meeting.meeting_id %}"
+         title="{% trans 'Delete the meeting'%} — {{ meeting.name }}"
+         class="dropdown-item"
+         data-bs-toggle="tooltip"
+         aria-label="{% trans 'Delete the meeting'%} — {{ meeting.name }}"
+         data-bs-original-title="{% trans 'Delete the meeting'%} — {{ meeting.name }}"
+      >
+        <i class="bi bi-trash" aria-hidden="true"></i>
+        {% trans 'Delete the meeting'%}
+      </a>
+    </li>
+  {% endif %}
+</ul>

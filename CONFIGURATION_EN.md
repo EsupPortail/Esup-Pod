@@ -399,8 +399,8 @@ Set `USE_AI_ENHANCEMENT` to True to activate this application.<br>
 * `AI_ENHANCEMENT_CGU_URL`
   > default value: ``
   >> URL for General Terms and Conditions for API uses for the AI video enhancement.<br>
-  >> Example: 'https://aristote.univ.fr/cgu'<br>
-  >> Project Link: https://www.demainestingenieurs.centralesupelec.fr/aristote/<br>
+  >> Example: '<https://aristote.univ.fr/cgu>'<br>
+  >> Project Link: <https://www.demainestingenieurs.centralesupelec.fr/aristote/><br>
 * `AI_ENHANCEMENT_CLIENT_ID`
   > default value: `mocked_id`
   >> The video enhancement AI client ID.<br>
@@ -621,6 +621,15 @@ Set `USE_DRESSING` to True to activate this application.<br>
 
 ### 
 
+
+### Seaker application configuration
+
+Speaker application to add speakers to video.<br>
+Set `USE_SPEAKER` to True to activate this application.<br>
+
+* `USE_SPEAKER`
+  > default value: `False`
+  >> Activation of the Speaker application<br>
 
 ### Video import application configuration
 
