@@ -586,7 +586,7 @@ class VideoForm(forms.ModelForm):
 
     VISIBILITY_CHOICES = [
         ("public", _("Public")),
-        ("draft", _("Draft")),
+        ("draft", _("Draft / Private")),
         ("restricted", _("Restricted")),
     ]
 
