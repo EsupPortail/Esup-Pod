@@ -33,7 +33,7 @@ document.addEventListener(
  * @param passwordField {HTMLElement} - The password field container.
  */
 function togglePasswordField(visibilitySelect, passwordField) {
-  if (visibilitySelect.value !== "draft") {
+  if (!["draft", "public"].includes(visibilitySelect.value)) {
     passwordField.style.display = "block";
   } else {
     passwordField.style.display = "none";
