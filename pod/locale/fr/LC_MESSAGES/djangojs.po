@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-05 16:15+0200\n"
+"POT-Creation-Date: 2024-07-15 06:50+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -189,9 +189,17 @@ msgid "A caption cannot contain more than 80 characters."
 msgstr "Une légende / sous-titre ne peut comporter plus de 80 caractères."
 
 #: pod/completion/static/js/caption_maker.js
+msgid "Add a caption/subtitle after this one"
+msgstr "Ajouter un(e) légende/sous-titre après celui-ci"
+
+#: pod/completion/static/js/caption_maker.js
 #: pod/podfile/static/podfile/js/filewidget.js
 msgid "Add"
 msgstr "Ajouter"
+
+#: pod/completion/static/js/caption_maker.js
+msgid "Delete this caption/subtitle"
+msgstr "Supprimer ce(tte) légende/sous-titre"
 
 #: pod/completion/static/js/caption_maker.js
 #: pod/video/static/js/comment-script.js
@@ -549,6 +557,16 @@ msgid "Loading…"
 msgstr "Chargement en cours…"
 
 #: pod/podfile/static/podfile/js/filewidget.js
+msgid "Change image"
+msgstr "Changer d’image"
+
+#: pod/podfile/static/podfile/js/filewidget.js
+#, fuzzy
+#| msgid "Change"
+msgid "Change file"
+msgstr "Changer de fichier"
+
+#: pod/podfile/static/podfile/js/filewidget.js
 msgid "Open file in a new tab"
 msgstr "Ouvrir le fichier dans un nouvel onglet"
 
@@ -753,12 +771,35 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: pod/video/static/js/comment-script.js
+#, javascript-format
+msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
+msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
+msgstr[0] "%s <span class=\"d-none d-md-inline\">vote</span>"
+msgstr[1] "%s <span class=\"d-none d-md-inline\">votes</span>"
+
+#: pod/video/static/js/comment-script.js
 msgid "Agree with the comment"
 msgstr "D’accord avec ce commentaire"
 
 #: pod/video/static/js/comment-script.js
+msgid "Reply to comment"
+msgstr "Répondre au commentaire"
+
+#: pod/video/static/js/comment-script.js
+msgid "Reply"
+msgstr "Répondre"
+
+#: pod/video/static/js/comment-script.js
 msgid "Remove this comment"
 msgstr "Supprimer ce commentaire"
+
+#: pod/video/static/js/comment-script.js
+msgid "Add a public comment"
+msgstr "Ajouter un commentaire public"
+
+#: pod/video/static/js/comment-script.js
+msgid "Send"
+msgstr "Envoyer"
 
 #: pod/video/static/js/comment-script.js
 msgid "Show answers"
@@ -771,13 +812,6 @@ msgstr "Mauvaise réponse du serveur."
 #: pod/video/static/js/comment-script.js
 msgid "Sorry, you’re not allowed to vote by now."
 msgstr "Désolé, vous n’êtes pas autorisé à voter maintenant."
-
-#: pod/video/static/js/comment-script.js
-#, javascript-format
-msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
-msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
-msgstr[0] "%s <span class=\"d-none d-md-inline\">vote</span>"
-msgstr[1] "%s <span class=\"d-none d-md-inline\">votes</span>"
 
 #: pod/video/static/js/comment-script.js
 msgid "Sorry, you can’t comment this video by now."

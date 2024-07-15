@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-05 16:15+0200\n"
+"POT-Creation-Date: 2024-07-15 06:50+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2003,10 +2003,8 @@ msgid "Caption"
 msgstr "Sous-titre / Légende"
 
 #: pod/completion/templates/video_caption_maker.html
-#: pod/video/templates/videos/video_list_grid_selectable.html
-#: pod/video/templates/videos/video_row_select.html
-#: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/link_video_dropdown_menu.html
+#: pod/video/templates/videos/video_list_grid_selectable.html
 msgid "Play"
 msgstr "Lecture"
 
@@ -5515,6 +5513,7 @@ msgid "Show all videos"
 msgstr "Afficher toutes les vidéos"
 
 #: pod/main/templates/block/carousel.html
+#, python-format
 msgid "Video %(video_number)s"
 msgstr "Vidéo %(video_number)s"
 
@@ -9815,6 +9814,11 @@ msgstr "Contenu vidéo."
 #: pod/video/templates/videos/video_row_select.html
 msgid "Audio content."
 msgstr "Contenu audio."
+
+#: pod/video/templates/videos/card_select.html
+#, python-format
+msgid "Select video “%(video_title)s”"
+msgstr "Sélectionner la vidéo « %(video_title)s »"
 
 #: pod/video/templates/videos/category_modal.html
 msgid "category title"

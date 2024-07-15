@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-05 16:15+0200\n"
+"POT-Creation-Date: 2024-07-15 06:50+0000\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1911,10 +1911,8 @@ msgid "Caption"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
-#: pod/video/templates/videos/video_list_grid_selectable.html
-#: pod/video/templates/videos/video_row_select.html
-#: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/link_video_dropdown_menu.html
+#: pod/video/templates/videos/video_list_grid_selectable.html
 msgid "Play"
 msgstr ""
 
@@ -8142,7 +8140,7 @@ msgid "Speakers"
 msgstr ""
 
 #: pod/speaker/models.py
-msgid "Job's speaker"
+msgid "Speaker's job"
 msgstr ""
 
 #: pod/speaker/templates/speaker/list_speaker.html
@@ -8174,8 +8172,10 @@ msgid "Jobs"
 msgstr ""
 
 #: pod/speaker/templates/speaker/speaker_modal.html
-msgid "Job Title"
-msgstr ""
+#, fuzzy
+#| msgid "title"
+msgid "Job title"
+msgstr "titel"
 
 #: pod/speaker/templates/speaker/speaker_modal.html
 msgid "Remove job"
@@ -9154,6 +9154,11 @@ msgstr ""
 #: pod/video/templates/videos/card_select.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Audio content."
+msgstr ""
+
+#: pod/video/templates/videos/card_select.html
+#, python-format
+msgid "Select video “%(video_title)s”"
 msgstr ""
 
 #: pod/video/templates/videos/category_modal.html
