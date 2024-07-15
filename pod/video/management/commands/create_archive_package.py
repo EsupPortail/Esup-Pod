@@ -30,7 +30,8 @@ LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 ARCHIVE_ROOT = getattr(settings, "ARCHIVE_ROOT", "/video_archiving")
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 ARCHIVE_CSV = "%s/archived.csv" % settings.LOG_DIRECTORY
-HOW_MANY_DAYS = 365  # Delay before an archived video is moved to archive_ROOT
+# Delay before an archived video is moved to archive_ROOT
+ARCHIVE_HOW_MANY_DAYS = getattr(settings, "ARCHIVE_HOW_MANY_DAYS", 365)
 
 __TITLE_SITE__ = (
     settings.TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
@@ -234,12 +235,12 @@ class Command(BaseCommand):
         # Get videos
         vids = Video.objects.filter(
             owner__username=ARCHIVE_OWNER_USERNAME,
-            date_delete__lte=datetime.now() - timedelta(days=HOW_MANY_DAYS),
+            date_delete__lte=datetime.now() - timedelta(days=ARCHIVE_HOW_MANY_DAYS),
         )
 
         print(
             "%s videos archived since more than %s days found."
-            % (len(vids), HOW_MANY_DAYS)
+            % (len(vids), ARCHIVE_HOW_MANY_DAYS)
         )
         for vid in vids:
             # vid = Video.objects.get(id=video_id)
