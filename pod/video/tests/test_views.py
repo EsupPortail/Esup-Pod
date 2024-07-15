@@ -1,7 +1,6 @@
 """Esup-Pod tests for Video views."""
 
 from django.conf import settings
-from django.contrib.messages import get_messages
 from django.http import JsonResponse
 from django.test import Client
 from django.test import TestCase, override_settings, TransactionTestCase
