@@ -26,8 +26,6 @@ document.addEventListener(
 );
 
 
-// let selectContainerSpanForGroups = document.getElementById("id_restrict_access_to_groups");
-
 
 /**
  * Toggle the password field visibility based on the visibility select value.
