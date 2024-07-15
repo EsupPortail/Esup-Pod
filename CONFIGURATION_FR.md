@@ -475,6 +475,9 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
 * `ARCHIVE_OWNER_USERNAME`
   > valeur par défaut : `"archive"`
   >> Nom de l’utilisateur pour l’archivage des vidéos.<br>
+* `ARCHIVE_HOW_MANY_DAYS`
+  > valeur par défaut : `365`
+  >> Délai avant qu'une vidéo archivée ne soit déplacée vers archive_ROOT.<br>
 * `POD_ARCHIVE_AFFILIATION`
   > valeur par défaut : `[]`
   >> Affiliations pour lesquelles on souhaite archiver la vidéo plutôt que de la supprimer.<br>
