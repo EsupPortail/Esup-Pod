@@ -36,10 +36,8 @@ document.addEventListener(
 function togglePasswordField(visibilitySelect, passwordField) {
   let idRestrictToGroupsField = document.getElementById("id_restrict_access_to_groups");
   if (visibilitySelect.value === "restricted") {
-    console.log(passwordField);
     passwordField.closest(".field-password").classList.add("show");
     if (idRestrictToGroupsField) {
-      // idRestrictToGroupsField.parentElement.classList.remove("d-none");
       idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.add("show");
     }
   } else {
@@ -54,13 +52,18 @@ function togglePasswordField(visibilitySelect, passwordField) {
             }
           });
         });
-      // idRestrictToGroupsField.parentElement.classList.add("d-none");
       idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.remove("show");
     }
   }
 }
 
 
+/**
+ * Display the description of the selected option in a select box.
+ *
+ * @param selectBox {HTMLElement} - The select element.
+ * @param container {HTMLElement} - The container element where the description will be displayed.
+ */
 function display_option_desc(selectBox, container) {
   // Display in $container the title of current $selectedBox option.
   var target_title =

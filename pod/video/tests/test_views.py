@@ -857,8 +857,6 @@ class VideoEditTestView(TestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        print("HELP#2")
-        [print(m) for m in get_messages(response.wsgi_request)]
         self.assertTrue(b"The changes have been saved." in response.content)
 
         v = Video.objects.get(title="VideoTest1")
