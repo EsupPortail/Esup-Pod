@@ -32,8 +32,9 @@ function getListSelectedVideosTitles(container) {
       let item = document.querySelector(
         "#" + container + " .infinite-item[data-slug='" + v + "']"
       );
+      console.log(item);
       selectedTitles.push(
-        item.querySelector(".dashboard-video-title").getAttribute("title"),
+        item.querySelector(".dashboard-video-title").dataset.videoTitle,
       );
     });
   }

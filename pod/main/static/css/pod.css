@@ -726,18 +726,6 @@ div.card a img {
   transition: all 0.3s;
 }
 
-.dashboard-container .infinite-item:not(.selected),
-.dashboard-container .infinite-item .checked_overlay .card_selected {
-  transition: transform 0.2s ease-in-out;
-}
-
-.dashboard-container .infinite-item:not(.selected):hover,
-.dashboard-container .infinite-item .checked_overlay:hover .card_selected {
-  transform: scale(1.03);
-  transition: transform 0.2s ease-in-out;
-  z-index: 6;
-}
-
 .infinite-item.selected .checked_overlay .card-selected i {
   font-size: 3rem;
   color: var(--pod-link-color);
@@ -802,9 +790,9 @@ div.card a img {
 }
 
 .thumbnail-item-video-row {
-  height: 50px;
+  height: 40px;
   overflow: hidden;
-  border-radius: 4px 0 0 4px;
+  border-radius: 4px;
 }
 
 .thumbnail-item-video-row img {

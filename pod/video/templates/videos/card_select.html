@@ -79,7 +79,7 @@
       </footer>
     {% endif %}
 
-    <span class="small video-title dashboard-video-title">
+    <span class="small video-title dashboard-video-title" data-video-title="{{video.title|capfirst}}">
       <a href="{{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}" {% if video.title|length > 25 %}title="{{video.title|capfirst}}"{% endif %}>{{video.title|capfirst|truncatechars:25}}</a>
     </span>
   </div>
