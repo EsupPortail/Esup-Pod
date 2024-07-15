@@ -34,9 +34,9 @@
       </div>
       <div class="modal-footer">
       {% if modal_action == "add" %}
-        <button type="button" id="confirm_category_btn" data-action="add" class="btn btn-primary">{% trans "Save category" %} </button>
+        <button type="button" id="confirm_category_btn" data-action="add" class="btn btn-primary">{% trans "Save category" %}</button>
       {% elif modal_action == "edit" %}
-        <button type="button" id="confirm_category_btn" data-action="edit" data-slug="{{ category.slug }}" class="btn btn-primary">{% trans "Save category" %} </button>
+        <button type="button" id="confirm_category_btn" data-action="edit" data-slug="{{ category.slug }}" class="btn btn-primary">{% trans "Save category" %}</button>
       {% elif modal_action == "delete" %}
         <button type="button" id="confirm_category_btn" data-action="delete" data-slug="{{ category.slug }}" class="btn btn-danger">{% trans "Delete" %}</button>
       {% endif %}

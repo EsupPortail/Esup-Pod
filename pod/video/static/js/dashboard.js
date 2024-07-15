@@ -18,6 +18,11 @@
   global urlUpdateVideos csrftoken formFieldsets displayMode
 */
 
+// Read-only globals defined in video_select.js
+/*
+  global selectedVideos
+*/
+
 /* exported dashboardActionReset */
 
 var bulkUpdateActionSelect = document.getElementById("bulkUpdateActionSelect");

@@ -2494,9 +2494,9 @@ def get_videos_for_owner(request):
     """
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
-    videos_list = request.user.video_set.all().filter(
+    videos_list = request.user.video_set.filter(
         sites=site
-    ) | request.user.owners_videos.all().filter(sites=site)
+    ) | request.user.owners_videos.filter(sites=site)
     return videos_list.distinct()
 
 
