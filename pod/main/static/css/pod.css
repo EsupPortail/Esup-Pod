@@ -698,10 +698,6 @@ div.card a img {
 }
 
 .dashboard-container .infinite-item {
-  cursor: pointer;
-}
-
-.dashboard-container .infinite-item {
   position: relative;
 }
 
