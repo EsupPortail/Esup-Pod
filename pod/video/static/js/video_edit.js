@@ -26,6 +26,9 @@ document.addEventListener(
 );
 
 
+// let selectContainerSpanForGroups = document.getElementById("id_restrict_access_to_groups");
+
+
 /**
  * Toggle the password field visibility based on the visibility select value.
  *
@@ -33,10 +36,29 @@ document.addEventListener(
  * @param passwordField {HTMLElement} - The password field container.
  */
 function togglePasswordField(visibilitySelect, passwordField) {
-  if (!["draft", "public"].includes(visibilitySelect.value)) {
-    passwordField.style.display = "block";
+  let idRestrictToGroupsField = document.getElementById("id_restrict_access_to_groups");
+  if (visibilitySelect.value === "restricted") {
+    console.log(passwordField);
+    passwordField.closest(".field-password").classList.add("show");
+    if (idRestrictToGroupsField) {
+      // idRestrictToGroupsField.parentElement.classList.remove("d-none");
+      idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.add("show");
+    }
   } else {
-    passwordField.style.display = "none";
+    passwordField.closest(".field-password").classList.remove("show");
+    if (idRestrictToGroupsField) {
+      document
+        .querySelectorAll("#id_restrict_access_to_groups select")
+        .forEach((select) => {
+          select.options.forEach((option) => {
+            if (option.selected) {
+              option.selected = false;
+            }
+          });
+        });
+      // idRestrictToGroupsField.parentElement.classList.add("d-none");
+      idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.remove("show");
+    }
   }
 }
 
