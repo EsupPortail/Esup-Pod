@@ -1,6 +1,7 @@
 """Esup-Pod tests for Video views."""
 
 from django.conf import settings
+from django.contrib.messages import get_messages
 from django.http import JsonResponse
 from django.test import Client
 from django.test import TestCase, override_settings, TransactionTestCase
@@ -852,27 +853,30 @@ class VideoEditTestView(TestCase):
                 "main_lang": "fr",
                 "cursus": "0",
                 "type": 1,
+                "visibility": "public",
             },
             follow=True,
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        # print(response.context["form"].errors)
+        print("HELP#2")
+        [print(m) for m in get_messages(response.wsgi_request)]
         self.assertTrue(b"The changes have been saved." in response.content)
 
         v = Video.objects.get(title="VideoTest1")
         self.assertEqual(v.description, "<p>bl</p>")
-        videofile = SimpleUploadedFile(
+        video_file = SimpleUploadedFile(
             "file.mp4", b"file_content", content_type="video/mp4"
         )
         url = reverse("video:video_edit", kwargs={"slug": v.slug})
         response = self.client.post(
             url,
             {
-                "video": videofile,
+                "video": video_file,
                 "title": "VideoTest1",
                 "main_lang": "fr",
                 "cursus": "0",
                 "type": 1,
+                "visibility": "public",
             },
             follow=True,
         )
@@ -882,19 +886,20 @@ class VideoEditTestView(TestCase):
         p = re.compile(r"^videos/([\d\w]+)/file([_\d\w]*).mp4$")
         self.assertRegex(v.video.name, p)
         # new one
-        videofile = SimpleUploadedFile(
+        video_file = SimpleUploadedFile(
             "file.mp4", b"file_content", content_type="video/mp4"
         )
         url = reverse("video:video_edit", kwargs={})
         self.client.post(
             url,
             {
-                "video": videofile,
+                "video": video_file,
                 "title": "VideoTest2",
                 "description": "<p>coucou</p>\r\n",
                 "main_lang": "fr",
                 "cursus": "0",
                 "type": 1,
+                "visibility": "public",
             },
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -916,6 +921,7 @@ class VideoEditTestView(TestCase):
                 "cursus": "0",
                 "type": 1,
                 "additional_owners": [self.user.pk],
+                "visibility": "public",
             },
             follow=True,
         )
@@ -924,19 +930,20 @@ class VideoEditTestView(TestCase):
 
         v = Video.objects.get(title="VideoTest3")
         self.assertEqual(v.description, "<p>bl</p>")
-        videofile = SimpleUploadedFile(
+        video_file = SimpleUploadedFile(
             "file.mp4", b"file_content", content_type="video/mp4"
         )
         url = reverse("video:video_edit", kwargs={"slug": v.slug})
         response = self.client.post(
             url,
             {
-                "video": videofile,
+                "video": video_file,
                 "title": "VideoTest3",
                 "main_lang": "fr",
                 "cursus": "0",
                 "type": 1,
                 "additional_owners": [self.user.pk],
+                "visibility": "public",
             },
             follow=True,
         )
@@ -945,7 +952,7 @@ class VideoEditTestView(TestCase):
         print("   --->  test_video_edit_post_request of VideoEditTestView: OK!")
 
 
-class video_deleteTestView(TestCase):
+class VideoDeleteTestView(TestCase):
     fixtures = [
         "initial_data.json",
     ]
