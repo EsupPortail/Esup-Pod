@@ -101,17 +101,6 @@
 
 #category_modal
   .category-modal-videos-list
-  .infinite-item:not(.selected):hover,
-#category_modal
-  .category-modal-videos-list
-  .infinite-item
-  .checked_overlay:hover
-  .card_selected {
-  transform: scale(1.04);
-}
-
-#category_modal
-  .category-modal-videos-list
   .infinite-item.selected
   .checked_overlay {
   opacity: 1;
@@ -123,18 +112,7 @@
   border-radius: var(--bs-border-radius-sm);
 }
 
-#category_modal .category-modal-videos-list .card-header {
-  background-color: var(--pod-primary);
-  color: white;
-  font-size: 14px;
-  padding: 0.4em;
-  border-top-left-radius: var(--bs-border-radius-sm);
-}
-
-#category_modal .category-modal-videos-list .card-header * {
-  color: inherit !important;
-}
-
+#category_modal .category-modal-videos-list .card-header,
 #category_modal .category-modal-videos-list .card-footer {
   padding: 0.4em;
 }
