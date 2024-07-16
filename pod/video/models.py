@@ -802,7 +802,7 @@ class Video(models.Model):
         default=True,
     )
     is_restricted = models.BooleanField(
-        verbose_name=_("Restricted access"),
+        verbose_name=_("Authentication restricted access"),
         help_text=_(
             "If this box is checked, "
             "the video will only be accessible to authenticated users."

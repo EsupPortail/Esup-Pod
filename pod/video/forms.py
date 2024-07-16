@@ -284,7 +284,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 ],
             ),
             (
-                "{0}".format(_("Restricted access")),
+                "{0}".format(_("Authentication restricted access")),
                 [
                     _(
                         "If you don’t select “Draft mode”, you can restrict "
