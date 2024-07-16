@@ -731,7 +731,7 @@ class VideoForm(forms.ModelForm):
                 encoding.save()
 
     def save_visibility(self):
-        """Save video access fileds depends of the visibility field value."""
+        """Save video access fields depends on the visibility field value."""
         visibility = self.cleaned_data.get('visibility')
         if visibility == 'public':
             self.instance.is_draft = False
@@ -806,7 +806,7 @@ class VideoForm(forms.ModelForm):
         return self.cleaned_data["date_delete"]
 
     def check_visibility(self, cleaned_data) -> None:
-        """Save video and launch encoding if relevant for the visibility field."""
+        """Check the visibility field."""
         visibility = cleaned_data.get('visibility', '')
         is_restricted = cleaned_data.get('is_restricted', False)
         password = cleaned_data.get('password', '')
