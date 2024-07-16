@@ -3144,7 +3144,7 @@ def edit_category(request, c_slug=None):
 
         data_context = {
             "modal_action": "edit",
-            "modal_title": _("Edit the category") + " " + category.title,
+            "modal_title": _("Edit category") + " " + category.title,
             "videos": videos,
             "category": category,
             "category_videos": category_videos,
@@ -3205,7 +3205,7 @@ def delete_category(request, c_slug):
 
         data_context = {
             "modal_action": "delete",
-            "modal_title": _("Delete the category") + " " + category.title,
+            "modal_title": _("Delete category") + " " + category.title,
             "category": category,
         }
     return render(request, "videos/category_modal.html", data_context)

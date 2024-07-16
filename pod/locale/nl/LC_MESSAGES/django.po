@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-15 06:50+0000\n"
+"POT-Creation-Date: 2024-07-16 09:09+0000\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1912,7 +1912,6 @@ msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
 #: pod/video/templates/videos/link_video_dropdown_menu.html
-#: pod/video/templates/videos/video_list_grid_selectable.html
 msgid "Play"
 msgstr ""
 
@@ -9135,6 +9134,7 @@ msgid "This content is password protected."
 msgstr ""
 
 #: pod/video/templates/videos/card.html
+#: pod/video/templates/videos/card_select.html
 msgid "This content has restricted access."
 msgstr ""
 
@@ -9157,13 +9157,10 @@ msgid "Audio content."
 msgstr ""
 
 #: pod/video/templates/videos/card_select.html
+#: pod/video/templates/videos/video_row_select.html
 #, python-format
 msgid "Select video “%(video_title)s”"
 msgstr ""
-
-#: pod/video/templates/videos/category_modal.html
-msgid "category title"
-msgstr "categorie titel"
 
 #: pod/video/templates/videos/category_modal.html
 msgid "Check the videos to add in the category"
@@ -9297,12 +9294,12 @@ msgstr ""
 
 #: pod/video/templates/videos/filter_aside_categories_list.html
 #: pod/video/views.py
-msgid "Edit the category"
+msgid "Edit category"
 msgstr ""
 
 #: pod/video/templates/videos/filter_aside_categories_list.html
 #: pod/video/views.py
-msgid "Delete the category"
+msgid "Delete category"
 msgstr ""
 
 #: pod/video/templates/videos/filter_aside_category.html pod/video/views.py
@@ -10377,3 +10374,6 @@ msgstr ""
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr ""
+
+#~ msgid "category title"
+#~ msgstr "categorie titel"

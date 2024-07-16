@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-15 06:50+0000\n"
+"POT-Creation-Date: 2024-07-16 09:09+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
+"Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -2004,7 +2004,6 @@ msgstr "Sous-titre / Légende"
 
 #: pod/completion/templates/video_caption_maker.html
 #: pod/video/templates/videos/link_video_dropdown_menu.html
-#: pod/video/templates/videos/video_list_grid_selectable.html
 msgid "Play"
 msgstr "Lecture"
 
@@ -9794,6 +9793,7 @@ msgid "This content is password protected."
 msgstr "Ce contenu est protégé par un mot de passe."
 
 #: pod/video/templates/videos/card.html
+#: pod/video/templates/videos/card_select.html
 msgid "This content has restricted access."
 msgstr "Ce contenu est en accès restreint."
 
@@ -9816,13 +9816,10 @@ msgid "Audio content."
 msgstr "Contenu audio."
 
 #: pod/video/templates/videos/card_select.html
+#: pod/video/templates/videos/video_row_select.html
 #, python-format
 msgid "Select video “%(video_title)s”"
 msgstr "Sélectionner la vidéo « %(video_title)s »"
-
-#: pod/video/templates/videos/category_modal.html
-msgid "category title"
-msgstr "titre catégorie"
 
 #: pod/video/templates/videos/category_modal.html
 msgid "Check the videos to add in the category"
@@ -9834,7 +9831,7 @@ msgstr "Supprimer définitivement votre catégorie ?"
 
 #: pod/video/templates/videos/category_modal.html
 msgid "Save category"
-msgstr "Sauvegarder catégorie"
+msgstr "Sauvegarder la catégorie"
 
 #: pod/video/templates/videos/change_video_owner.html
 msgid "Old owner"
@@ -9964,12 +9961,12 @@ msgstr "Plier/déplier les filtres par « Mots-clés »"
 
 #: pod/video/templates/videos/filter_aside_categories_list.html
 #: pod/video/views.py
-msgid "Edit the category"
+msgid "Edit category"
 msgstr "Éditer la catégorie"
 
 #: pod/video/templates/videos/filter_aside_categories_list.html
 #: pod/video/views.py
-msgid "Delete the category"
+msgid "Delete category"
 msgstr "Supprimer la catégorie"
 
 #: pod/video/templates/videos/filter_aside_category.html pod/video/views.py
