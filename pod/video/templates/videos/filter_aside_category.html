@@ -7,32 +7,19 @@
     <i class="bi bi-collection-fill" aria-hidden="true"></i>&nbsp;{% trans "Categories" %}
   </legend>
   <div class="align_flex">
-    <button type="button" class="btn btn-outline-primary align_flex add_category_btn" data-bs-toggle="modal" data-bs-target="#manageCategoryModal" id="add_category_btn">
+    <button type="button" class="btn btn-outline-primary align_flex add-category-btn" id="add-category-btn">
       <i class="bi bi-plus-lg" aria-hidden="true"></i>
       {% trans "Add new category" %}
     </button>
   </div>
   <div>
-    {% str_to_dict categories as categories %}
-    <div class="form-group my-3 {% if not categories|slice:'1:' %}hidden{% endif %}">
-      <label for="searchcategories" class="form-label">{% trans "Search" %}</label>
-      <input id="searchcategories" type="text" class="form-control" placeholder="{% trans 'Type at least 3 chars to filter categories' %}">
+    <div class="form-group my-3 {% if not categories %}hidden{% endif %}">
+      <label for="search-categories-input" class="form-label">{% trans "Search" %}</label>
+      <input id="search-categories-input" type="text" class="form-control" placeholder="{% trans 'Type at least 3 chars to filter categories' %}">
     </div>
     <div class="form-group navList categories" id="collapseFilterCategory">
-      <ul class="categories_list">
-        {% for category in categories|slice:"1:"%}
-          <li class="categories_list_item">
-            <button type="button" class="btn btn-link cat_title" data-slug="{{ category.slug}}">{{ category.title }}</button>
-            <div class="category_actions">
-              <button type="button" title="{% trans 'Edit the category' %}" data-bs-toggle="modal" data-bs-target="#manageCategoryModal" data-slug="{{category.slug}}" data-title="{{category.title}}" class="btn btn-link edit_category">
-                <i class="bi bi-pencil-square" aria-hidden="true"></i>
-              </button>
-              <button type="button" title="{% trans 'Delete the category' %}" data-bs-toggle="modal" data-del="{{category.id}}" data-bs-target="#deleteCategoryModal" data-title="{{category.title}}" data-slug="{{category.slug}}" class="btn btn-link remove_category">
-                <i class="bi bi-trash" aria-hidden="true"></i>
-              </button>
-            </div>
-          </li>
-        {% endfor %}
+      <ul id="categories-list" class="categories-list">
+        {% include "videos/filter_aside_categories_list.html" %}
       </ul>
     </div>
   </div>

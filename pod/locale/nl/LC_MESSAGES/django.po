@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-02 12:54+0000\n"
-"PO-Revision-Date: 2024-06-04 16:20+0200\n"
+"POT-Creation-Date: 2024-07-16 09:09+0000\n"
+"PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -21,10 +21,8 @@ msgid "Artificial Intelligence Enhancement"
 msgstr ""
 
 #: pod/ai_enhancement/forms.py
-#, fuzzy
-#| msgid "Please enter a title."
 msgid "Choose the title."
-msgstr "Voer een titel in."
+msgstr ""
 
 #: pod/ai_enhancement/forms.py
 msgid "The initial title is loading…"
@@ -43,10 +41,8 @@ msgid "The title proposed by the Aristote AI."
 msgstr ""
 
 #: pod/ai_enhancement/forms.py
-#, fuzzy
-#| msgid "Please enter a title."
 msgid "Choose the description."
-msgstr "Voer een titel in."
+msgstr ""
 
 #: pod/ai_enhancement/forms.py
 msgid "The initial description is loading…"
@@ -99,7 +95,8 @@ msgstr ""
 #: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
 #: pod/main/models.py pod/main/views.py pod/playlist/forms.py
 #: pod/playlist/models.py pod/quiz/forms.py pod/quiz/models.py
-#: pod/video/models.py pod/video/templates/channel/list_theme.html
+#: pod/speaker/models.py pod/video/models.py
+#: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Title"
 msgstr "Titel"
@@ -120,10 +117,8 @@ msgid "Description"
 msgstr ""
 
 #: pod/ai_enhancement/forms.py
-#, fuzzy
-#| msgid "Please enter a title."
 msgid "Please choose a description."
-msgstr "Voer een titel in."
+msgstr ""
 
 #: pod/ai_enhancement/forms.py
 msgid ""
@@ -151,10 +146,8 @@ msgid "Discipline"
 msgstr ""
 
 #: pod/ai_enhancement/forms.py
-#, fuzzy
-#| msgid "Please enter a title."
 msgid "Please choose the discipline of your video."
-msgstr "Voer een titel in."
+msgstr ""
 
 #: pod/ai_enhancement/forms.py
 msgid "I agree to use third-party services"
@@ -196,10 +189,8 @@ msgid "Video"
 msgstr ""
 
 #: pod/ai_enhancement/models.py
-#, fuzzy
-#| msgid "Select the video to move by clicking and holding."
 msgid "Select the video to enhance with AI"
-msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
+msgstr ""
 
 #: pod/ai_enhancement/models.py
 msgid "Created at"
@@ -500,10 +491,8 @@ msgid "No enhancement found."
 msgstr ""
 
 #: pod/ai_enhancement/views.py
-#, fuzzy
-#| msgid "Select the video to move by clicking and holding."
 msgid "Delete the video enhancement"
-msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
+msgstr ""
 
 #: pod/ai_enhancement/views.py
 msgid "You cannot use AI to improve this video."
@@ -1296,6 +1285,8 @@ msgstr ""
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/recorder/templates/recorder/add_recording.html
+#: pod/speaker/templates/speaker/form_speaker.html
+#: pod/speaker/templates/speaker/speaker_modal.html
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/channel/form_theme.html
 #: pod/video/templates/videos/video_note_comments_display.html
@@ -1311,6 +1302,8 @@ msgstr ""
 #: pod/completion/templates/track/form_track.html
 #: pod/enrichment/templates/enrichment/form_enrichment.html
 #: pod/playlist/templates/playlist/playlist.html
+#: pod/speaker/templates/speaker/form_speaker.html
+#: pod/speaker/templates/speaker/speaker_modal.html
 #: pod/video/templates/channel/form_theme.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/dashboard_modal.html
@@ -1335,6 +1328,8 @@ msgstr ""
 #: pod/completion/templates/track/list_track.html
 #: pod/dressing/templates/my_dressings.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
+#: pod/speaker/templates/speaker/list_speaker.html
+#: pod/speaker/templates/speaker/speakers_management.html
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_access_tokens.html
 msgid "Actions"
@@ -1372,6 +1367,7 @@ msgstr ""
 #: pod/playlist/templates/playlist/delete.html
 #: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/recorder/templates/recorder/record_delete.html
+#: pod/speaker/templates/speaker/list_speaker.html
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/dashboard.html
@@ -1527,7 +1523,7 @@ msgstr ""
 msgid "Speaking roles"
 msgstr ""
 
-#: pod/completion/models.py
+#: pod/completion/models.py pod/speaker/apps.py pod/speaker/models.py
 msgid "Speaker"
 msgstr ""
 
@@ -1540,7 +1536,7 @@ msgid "captions"
 msgstr ""
 
 #: pod/completion/models.py
-msgid "lastname / firstname"
+msgid "last name / first name"
 msgstr ""
 
 #: pod/completion/models.py
@@ -1786,6 +1782,7 @@ msgstr ""
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
 #: pod/completion/templates/track/form_track.html
+#: pod/speaker/templates/speaker/form_speaker.html
 msgid "Your form contains errors:"
 msgstr ""
 
@@ -1794,7 +1791,7 @@ msgid "List of contributors"
 msgstr ""
 
 #: pod/completion/templates/contributor/list_contributor.html
-msgid "Lastname / Firstname"
+msgid "Last name / First name"
 msgstr ""
 
 #: pod/completion/templates/contributor/list_contributor.html
@@ -1915,8 +1912,7 @@ msgid "Caption"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "Play"
 msgstr ""
 
@@ -2037,6 +2033,14 @@ msgid "Add a new contributor"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
+msgid "Speaker(s)"
+msgstr ""
+
+#: pod/completion/templates/video_completion.html
+msgid "Add a new speaker"
+msgstr ""
+
+#: pod/completion/templates/video_completion.html
 msgid "Subtitle(s) and Caption(s)"
 msgstr ""
 
@@ -2087,6 +2091,16 @@ msgid ""
 "A contributor must at least have a name and a role. You can also join the "
 "email of this contributor as well as a link (professional website for "
 "example)."
+msgstr ""
+
+#: pod/completion/templates/video_completion.html
+msgid "List of speakers related to this video."
+msgstr ""
+
+#: pod/completion/templates/video_completion.html
+msgid ""
+"You can add speakers to this video by searching by their last name, first "
+"name or job. If you can't find the speaker, contact a super admin."
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -2205,6 +2219,15 @@ msgstr ""
 msgid "Edit the contributor “%s”"
 msgstr ""
 
+#: pod/completion/views.py
+#, python-format
+msgid "Add a new speaker to the video “%s”"
+msgstr ""
+
+#: pod/completion/views.py
+msgid "The speaker has been saved."
+msgstr ""
+
 #: pod/cut/apps.py pod/cut/models.py
 msgid "Video cuts"
 msgstr ""
@@ -2217,8 +2240,8 @@ msgstr ""
 msgid "Please select values between 00:00:00 and "
 msgstr ""
 
-#: pod/cut/templates/video_cut.html pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
+#: pod/cut/templates/video_cut.html
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "Cut the video"
 msgstr ""
 
@@ -2261,7 +2284,6 @@ msgstr ""
 
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/playlist/templates/playlist/filter_aside.html
-#: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/filter_aside.html
 msgid "Reset"
 msgstr ""
@@ -4082,13 +4104,13 @@ msgid "Sorry, no event found."
 msgstr ""
 
 #: pod/live/templates/live/events_list.html
-#: pod/video/templates/videos/category_modal.html
+#: pod/video/templates/videos/category_modal_video_list.html
 #: pod/video/templates/videos/paginator.html
 msgid "Previous page"
 msgstr ""
 
 #: pod/live/templates/live/events_list.html
-#: pod/video/templates/videos/category_modal.html
+#: pod/video/templates/videos/category_modal_video_list.html
 #: pod/video/templates/videos/paginator.html
 msgid "Next page"
 msgstr ""
@@ -5460,6 +5482,10 @@ msgstr ""
 msgid "Claim a record"
 msgstr ""
 
+#: pod/main/templates/navbar.html pod/speaker/views.py
+msgid "Speakers management"
+msgstr ""
+
 #: pod/main/templates/navbar.html pod/progressive_web_app/templates/debug.html
 msgid "Notifications settings"
 msgstr ""
@@ -6256,22 +6282,27 @@ msgid "Authenticate"
 msgstr ""
 
 #: pod/meeting/templates/meeting/link_meeting.html
+#: pod/video/templates/videos/link_video.html
+msgid "More options"
+msgstr ""
+
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Copy the direct join link"
 msgstr ""
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Copy the join link"
 msgstr ""
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Invite to the meeting"
 msgstr ""
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Get the recordings of the meeting"
 msgstr ""
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Delete the meeting"
 msgstr ""
 
@@ -7368,10 +7399,8 @@ msgid "Question type"
 msgstr ""
 
 #: pod/quiz/forms.py
-#, fuzzy
-#| msgid "Please enter a title."
 msgid "Please choose the question type."
-msgstr "Voer een titel in."
+msgstr ""
 
 #: pod/quiz/forms.py pod/quiz/models.py
 msgid "Connected user only"
@@ -7404,20 +7433,16 @@ msgid "Single choice question"
 msgstr ""
 
 #: pod/quiz/forms.py
-#, fuzzy
-#| msgid "Please enter a title."
 msgid "Please choose one answer."
-msgstr "Voer een titel in."
+msgstr ""
 
 #: pod/quiz/forms.py pod/quiz/models.py
 msgid "Multiple choice question"
 msgstr ""
 
 #: pod/quiz/forms.py
-#, fuzzy
-#| msgid "Please enter a title."
 msgid "Please check any answers you want."
-msgstr "Voer een titel in."
+msgstr ""
 
 #: pod/quiz/forms.py pod/quiz/models.py
 msgid "Short answer question"
@@ -7571,10 +7596,8 @@ msgid "Question #"
 msgstr ""
 
 #: pod/quiz/templates/quiz/question_form.html
-#, fuzzy
-#| msgid "Please enter a title."
 msgid "Delete the question #"
-msgstr "Voer een titel in."
+msgstr ""
 
 #: pod/quiz/templates/quiz/question_form.html
 msgid "One or more errors have been found in the question."
@@ -7718,10 +7741,8 @@ msgid "The data sent to create the quiz are invalid."
 msgstr ""
 
 #: pod/quiz/views.py
-#, fuzzy
-#| msgid "Please enter a title."
 msgid "You have to choose at least one answer"
-msgstr "Voer een titel in."
+msgstr ""
 
 #: pod/quiz/views.py
 #, python-format
@@ -8122,6 +8143,126 @@ msgstr ""
 
 #: pod/recorder/views.py
 msgid "Recorder for Studio not found."
+msgstr ""
+
+#: pod/speaker/forms.py
+msgid "You can search speaker by first name, last name and job."
+msgstr ""
+
+#: pod/speaker/models.py pod/speaker/templates/speaker/speakers_management.html
+msgid "First name"
+msgstr ""
+
+#: pod/speaker/models.py pod/speaker/templates/speaker/speakers_management.html
+msgid "Last name"
+msgstr ""
+
+#: pod/speaker/models.py
+msgid "Speakers"
+msgstr ""
+
+#: pod/speaker/models.py
+msgid "Speaker's job"
+msgstr ""
+
+#: pod/speaker/templates/speaker/list_speaker.html
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "List of speakers"
+msgstr ""
+
+#: pod/speaker/templates/speaker/list_speaker.html
+msgid "First name / Last name"
+msgstr ""
+
+#: pod/speaker/templates/speaker/list_speaker.html
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "Job"
+msgstr ""
+
+#: pod/speaker/templates/speaker/list_speaker.html
+#, python-format
+msgid "Delete the speaker job “%(speaker_job)s”"
+msgstr ""
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "Add a speaker"
+msgstr ""
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+msgid "Jobs"
+msgstr ""
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+#, fuzzy
+#| msgid "title"
+msgid "Job title"
+msgstr "titel"
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+msgid "Remove job"
+msgstr ""
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+msgid "Add job"
+msgstr ""
+
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "List of speakers I can manage."
+msgstr ""
+
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "No jobs assigned"
+msgstr ""
+
+#: pod/speaker/templates/speaker/speakers_management.html
+#, python-format
+msgid "Edit the speaker “%(speaker_firstname)s %(speaker_lastname)s”"
+msgstr ""
+
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "Please confirm you want to delete the speaker"
+msgstr ""
+
+#: pod/speaker/templates/speaker/speakers_management.html
+#, python-format
+msgid "Delete the speaker “%(speaker_firstname)s %(speaker_lastname)s”"
+msgstr ""
+
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "No speakers found."
+msgstr ""
+
+#: pod/speaker/views.py
+msgid "You cannot access speaker management."
+msgstr ""
+
+#: pod/speaker/views.py pod/video/tests/test_views.py pod/video/views.py
+msgid "An action must be specified."
+msgstr ""
+
+#: pod/speaker/views.py
+msgid "The speaker has been added."
+msgstr ""
+
+#: pod/speaker/views.py
+msgid "The speaker could not be added."
+msgstr ""
+
+#: pod/speaker/views.py
+msgid "The speaker has been deleted."
+msgstr ""
+
+#: pod/speaker/views.py
+msgid "The speaker could not be deleted."
+msgstr ""
+
+#: pod/speaker/views.py
+msgid "The speaker has been updated."
+msgstr ""
+
+#: pod/speaker/views.py
+msgid "Speaker not found or invalid input."
 msgstr ""
 
 #: pod/urls.py
@@ -8756,7 +8897,7 @@ msgstr ""
 msgid "Category title"
 msgstr "Categorie titel"
 
-#: pod/video/models.py pod/video/templates/videos/category_modal.html
+#: pod/video/models.py
 msgid "Category"
 msgstr ""
 
@@ -9021,6 +9162,7 @@ msgid "This content is password protected."
 msgstr ""
 
 #: pod/video/templates/videos/card.html
+#: pod/video/templates/videos/card_select.html
 msgid "This content has restricted access."
 msgstr ""
 
@@ -9032,42 +9174,32 @@ msgstr ""
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
-#: pod/video/templates/videos/category_modal_card.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Video content."
 msgstr ""
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
-#: pod/video/templates/videos/category_modal_card.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Audio content."
 msgstr ""
 
 #: pod/video/templates/videos/card_select.html
 #: pod/video/templates/videos/video_row_select.html
-msgid "Selected"
+#, python-format
+msgid "Select video “%(video_title)s”"
 msgstr ""
-
-#: pod/video/templates/videos/category_modal.html
-msgid "category title"
-msgstr "categorie titel"
 
 #: pod/video/templates/videos/category_modal.html
 msgid "Check the videos to add in the category"
 msgstr ""
 
 #: pod/video/templates/videos/category_modal.html
-msgid "Save category"
-msgstr ""
-
-#: pod/video/templates/videos/category_modal.html
-#: pod/video/templates/videos/filter_aside_category.html
-msgid "Delete the category"
-msgstr ""
-
-#: pod/video/templates/videos/category_modal.html
 msgid "Permanently delete your category?"
+msgstr ""
+
+#: pod/video/templates/videos/category_modal.html
+msgid "Save category"
 msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
@@ -9149,6 +9281,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/video/templates/videos/dashboard.html
+msgid "Select all"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Clear selection"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
 msgid ""
 "You have not uploaded any videos yet, please use the ”Add a new video” "
 "button to add one"
@@ -9180,7 +9320,17 @@ msgstr ""
 msgid "Fold/Unfold “Tags” filters"
 msgstr ""
 
-#: pod/video/templates/videos/filter_aside_category.html
+#: pod/video/templates/videos/filter_aside_categories_list.html
+#: pod/video/views.py
+msgid "Edit category"
+msgstr ""
+
+#: pod/video/templates/videos/filter_aside_categories_list.html
+#: pod/video/views.py
+msgid "Delete category"
+msgstr ""
+
+#: pod/video/templates/videos/filter_aside_category.html pod/video/views.py
 msgid "Add new category"
 msgstr ""
 
@@ -9188,60 +9338,26 @@ msgstr ""
 msgid "Type at least 3 chars to filter categories"
 msgstr ""
 
-#: pod/video/templates/videos/filter_aside_category.html
-msgid "Edit the category"
-msgstr ""
-
 #: pod/video/templates/videos/footer_link.html
 msgid "Links"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Remove from playlist"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Remove from favorite"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Add in favorite"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Edit the video"
-msgstr ""
-
-#: pod/video/templates/videos/link_video.html
-#, fuzzy
-#| msgid "Select the video to move by clicking and holding."
-msgid "Enhance the video with AI"
-msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Complete the video"
-msgstr ""
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Chapter the video"
-msgstr ""
-
-#: pod/video/templates/videos/link_video.html
-msgid "Dress the video"
-msgstr ""
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_edit.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Delete the video"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html
@@ -9251,6 +9367,27 @@ msgstr ""
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video-all-info.html
 msgid "Original version"
+msgstr ""
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Enhance the video with AI"
+msgstr ""
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Complete the video"
+msgstr ""
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Chapter the video"
+msgstr ""
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Dress the video"
+msgstr ""
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Delete the video"
 msgstr ""
 
 #: pod/video/templates/videos/video-all-info.html
@@ -9374,6 +9511,10 @@ msgstr ""
 
 #: pod/video/templates/videos/video-info.html
 msgid "Contributor web link"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html
+msgid "Speaker(s):"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
@@ -9738,6 +9879,10 @@ msgid "The video is currently waiting for Aristote AI treatment."
 msgstr ""
 
 #: pod/video/templates/videos/video_row_select.html
+msgid "Selected"
+msgstr ""
+
+#: pod/video/templates/videos/video_row_select.html
 msgid "Toggle actions menu"
 msgstr ""
 
@@ -9824,10 +9969,6 @@ msgid "-- sorry, no translation provided --"
 msgstr ""
 
 #: pod/video/tests/test_views.py pod/video/views.py
-msgid "An action must be specified."
-msgstr ""
-
-#: pod/video/tests/test_views.py pod/video/views.py
 msgid "A token has been created."
 msgstr ""
 
@@ -9844,10 +9985,9 @@ msgid "Please enter a title."
 msgstr "Voer een titel in."
 
 #: pod/video/utils.py
-#, fuzzy, python-format
-#| msgid "Please enter a title."
+#, python-format
 msgid "Please enter a %s from 2 to %s characters."
-msgstr "Voer een titel in."
+msgstr ""
 
 #: pod/video/views.py
 msgid "You cannot edit this channel."
@@ -10061,15 +10201,15 @@ msgid "You do not have rights to delete this comment"
 msgstr ""
 
 #: pod/video/views.py
-msgid "One or many videos already have a category."
-msgstr ""
-
-#: pod/video/views.py
 msgid "Title field is required"
 msgstr "Titelveld is verplicht"
 
 #: pod/video/views.py
-msgid "Method Not Allowed"
+msgid "One or many videos already have a category."
+msgstr ""
+
+#: pod/video/views.py
+msgid "Category successfully added."
 msgstr ""
 
 #: pod/video/views.py
@@ -10078,6 +10218,10 @@ msgstr ""
 
 #: pod/video/views.py
 msgid "You do not have rights to edit this category"
+msgstr ""
+
+#: pod/video/views.py
+msgid "Category successfully deleted."
 msgstr ""
 
 #: pod/video/views.py
@@ -10258,3 +10402,6 @@ msgstr ""
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr ""
+
+#~ msgid "category title"
+#~ msgstr "categorie titel"

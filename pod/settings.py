@@ -13,7 +13,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "3.7.0"
+VERSION = "3.8.0"
 
 ##
 # Installed applications list
@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "pod.progressive_web_app",
     "pod.dressing",
     "pod.ai_enhancement",
+    "pod.speaker",
     "pod.custom",
 ]
 
@@ -132,6 +133,7 @@ TEMPLATES = [
                 "pod.dressing.context_processors.context_settings",
                 "pod.import_video.context_processors.context_settings",
                 "pod.cut.context_processors.context_settings",
+                "pod.speaker.context_processors.context_settings",
             ],
         },
     },
