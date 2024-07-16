@@ -596,6 +596,11 @@ class VideoForm(forms.ModelForm):
         required=True,
         initial="public",
     )
+    is_restricted = forms.BooleanField(
+        label=_("Restricted by authentication"),
+        required=False,
+        initial=False,
+    )
     password = forms.CharField(widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}), required=False, label=_("Password"))
 
     required_css_class = "required"
@@ -742,7 +747,6 @@ class VideoForm(forms.ModelForm):
             self.instance.is_restricted = False
         elif visibility == 'restricted':
             self.instance.is_draft = False
-            self.instance.is_restricted = True
 
     def save(self, commit=True, *args, **kwargs):
         """Save video and launch encoding if relevant."""
@@ -939,12 +943,13 @@ class VideoForm(forms.ModelForm):
         if self.instance:
             if self.instance.is_draft:
                 self.initial["visibility"] = "draft"
-            elif self.instance.is_restricted:
+            elif (self.instance.is_restricted
+                  or self.instance.restrict_access_to_groups.count() > 0
+                  or len(self.instance.password) > 0):
                 self.initial["visibility"] = "restricted"
             else:
                 self.initial["visibility"] = "public"
         self.fields['is_draft'].widget = forms.HiddenInput()
-        self.fields['is_restricted'].widget = forms.HiddenInput()
         self.order_fields(["visibility", "password"] + list(self.fields.keys()))
 
     def custom_video_form(self) -> None:

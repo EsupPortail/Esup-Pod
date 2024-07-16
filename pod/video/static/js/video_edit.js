@@ -10,8 +10,8 @@ document.addEventListener(
   function () {
     const visibilitySelect = document.getElementById("id_visibility");
     const passwordField = document.getElementById("id_password").parentElement;
-    visibilitySelect.addEventListener('change', () => togglePasswordField(visibilitySelect, passwordField));
-    togglePasswordField(visibilitySelect, passwordField);
+    visibilitySelect.addEventListener('change', () => toggleFields(visibilitySelect, passwordField));
+    toggleFields(visibilitySelect, passwordField);
     // Display type description as field help when changed
     const target = "id_type";
     // Cannot be used in django admin pages, as <div class="help"> has no id.
@@ -33,12 +33,16 @@ document.addEventListener(
  * @param visibilitySelect {HTMLSelectElement} - The select element with the visibility options.
  * @param passwordField {HTMLElement} - The password field container.
  */
-function togglePasswordField(visibilitySelect, passwordField) {
-  let idRestrictToGroupsField = document.getElementById("id_restrict_access_to_groups");
+function toggleFields(visibilitySelect, passwordField) {
+  const idRestrictToGroupsField = document.getElementById("id_restrict_access_to_groups");
+  const idIsRestrictedField = document.getElementById("id_is_restricted");
   if (visibilitySelect.value === "restricted") {
     passwordField.closest(".field-password").classList.add("show");
     if (idRestrictToGroupsField) {
       idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.add("show");
+    }
+    if (idIsRestrictedField) {
+      idIsRestrictedField.closest(".field-is_restricted").classList.add("show");
     }
   } else {
     passwordField.closest(".field-password").classList.remove("show");
@@ -52,7 +56,12 @@ function togglePasswordField(visibilitySelect, passwordField) {
             }
           });
         });
-      idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.remove("show");
+      if (idRestrictToGroupsField) {
+        idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.remove("show");
+      }
+      if (idIsRestrictedField) {
+        idIsRestrictedField.closest(".field-is_restricted").classList.remove("show");
+      }
     }
   }
 }
