@@ -198,6 +198,8 @@ if (document.getElementById("video_form")) {
 const notificationMessage = document.querySelector(
   "#notification-toast>.toast-body>p",
 );
-notificationMessage.textContent = gettext(
-  "Get notified when the video encoding is finished.",
-);
+if(notificationMessage) {
+  notificationMessage.textContent = gettext(
+    "Get notified when the video encoding is finished.",
+  );
+}

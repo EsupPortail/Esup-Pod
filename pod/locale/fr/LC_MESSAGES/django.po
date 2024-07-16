@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-16 09:32+0000\n"
+"POT-Creation-Date: 2024-07-16 10:54+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -9053,10 +9053,6 @@ msgid "Visibility"
 msgstr "Visibilité"
 
 #: pod/video/forms.py
-msgid "Restricted by authentication"
-msgstr "Restreint par authentification"
-
-#: pod/video/forms.py
 msgid "Source file"
 msgstr "Fichier source"
 
@@ -9076,6 +9072,13 @@ msgstr "La date doit être antérieure ou égale au %(date)s."
 #: pod/video/forms.py
 msgid "The deletion date can’t be earlier than today."
 msgstr "La date de suppression ne peut pas être antérieure à aujourd’hui."
+
+#: pod/video/forms.py
+msgid ""
+"If you select restricted visibility for your video, you must check the "
+"\"restricted access\" box or specify a password."
+msgstr ""
+"Si vous sélectionnez la visibilité restreinte pour votre vidéo, vous devez cocher la case \"accès restreint\" ou spécifier un mot de passe."
 
 #: pod/video/forms.py
 msgid "Delete video cannot be undo"
@@ -11094,13 +11097,3 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#~ msgid ""
-#~ "The video was treated by Aristote. You must verify and validate the "
-#~ "processing by pressing the robot icon."
-#~ msgstr ""
-#~ "La vidéo a été traitée par Aristote. Vous devez vérifier et valider le "
-#~ "traitement en appuyant sur l’icône du robot."
-
-#~ msgid "Quiz(zes)"
-#~ msgstr "Quiz"
