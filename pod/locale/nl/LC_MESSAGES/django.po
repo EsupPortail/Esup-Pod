@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-16 09:09+0000\n"
+"POT-Creation-Date: 2024-07-16 14:20+0000\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -901,8 +901,7 @@ msgid "Username / User id, that want to perform the live."
 msgstr ""
 
 #: pod/bbb/models.py pod/live/models.py pod/live/templates/live/event_card.html
-#: pod/meeting/models.py pod/recorder/models.py pod/video/forms.py
-#: pod/video/models.py
+#: pod/meeting/models.py pod/recorder/models.py
 msgid "Restricted access"
 msgstr ""
 
@@ -6705,7 +6704,7 @@ msgstr ""
 
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
-#: pod/video/models.py
+#: pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/video_note_comments_display.html
 #: pod/video/templates/videos/video_note_display.html
 msgid "Public"
@@ -8383,6 +8382,10 @@ msgid ""
 "it."
 msgstr ""
 
+#: pod/video/forms.py pod/video/models.py
+msgid "Authentication restricted access"
+msgstr ""
+
 #: pod/video/forms.py
 msgid ""
 "If you don’t select “Draft mode”, you can restrict the content access to "
@@ -8437,6 +8440,18 @@ msgid "Users can only add videos to this channel"
 msgstr ""
 
 #: pod/video/forms.py
+msgid "Draft / Private"
+msgstr ""
+
+#: pod/video/forms.py
+msgid "Restricted"
+msgstr ""
+
+#: pod/video/forms.py
+msgid "Visibility"
+msgstr ""
+
+#: pod/video/forms.py
 msgid "Source file"
 msgstr ""
 
@@ -8455,6 +8470,12 @@ msgstr ""
 
 #: pod/video/forms.py
 msgid "The deletion date can’t be earlier than today."
+msgstr ""
+
+#: pod/video/forms.py
+msgid ""
+"If you select restricted visibility for your video, you must check the "
+"\"restricted access\" box or specify a password."
 msgstr ""
 
 #: pod/video/forms.py
