@@ -807,7 +807,7 @@ class VideoForm(forms.ModelForm):
 
     def check_visibility(self, cleaned_data) -> None:
         """Save video and launch encoding if relevant for the visibility field."""
-        visibility = cleaned_data['visibility']
+        visibility = cleaned_data.get('visibility', '')
         is_restricted = cleaned_data.get('is_restricted', False)
         password = cleaned_data.get('password', '')
         if (
