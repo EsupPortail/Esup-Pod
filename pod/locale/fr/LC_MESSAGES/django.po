@@ -8972,7 +8972,7 @@ msgstr ""
 
 #: pod/video/forms.py pod/video/models.py
 msgid "Authentication restricted access"
-msgstr "Authentification accès restreint"
+msgstr "Accès restreint par authentification"
 
 #: pod/video/forms.py
 msgid ""
