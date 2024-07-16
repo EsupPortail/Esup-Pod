@@ -26,6 +26,18 @@ document.addEventListener(
 );
 
 
+/**
+ * Apply the select2 style to the select elements.
+ */
+function applySelect2Style() {
+  const select2Containers = document.querySelectorAll(".select2-container");
+  console.log(select2Containers);
+  select2Containers.forEach((container) => {
+    container.style.width = "100%";
+  });
+}
+
+
 
 /**
  * Toggle the password field visibility based on the visibility select value.
@@ -38,7 +50,8 @@ function toggleFields(visibilitySelect, passwordField) {
   const idIsRestrictedField = document.getElementById("id_is_restricted");
   if (visibilitySelect.value === "restricted") {
     passwordField.closest(".field-password").classList.add("show");
-    if (idRestrictToGroupsField) {
+    if (idRestrictToGroupsField && idIsRestrictedField.checked) {
+      applySelect2Style();
       idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.add("show");
     }
     if (idIsRestrictedField) {
