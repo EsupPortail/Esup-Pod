@@ -1,6 +1,6 @@
 /**
  * @file Esup-Pod link video modal functions
- * @since 3.7.1
+ * @since 3.8.0
  */
 
 /* Read-only Globals defined in utils-playlist.js */
