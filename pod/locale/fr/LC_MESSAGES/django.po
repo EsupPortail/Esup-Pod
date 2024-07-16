@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-05 16:15+0200\n"
+"POT-Creation-Date: 2024-07-16 09:32+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -7185,7 +7185,7 @@ msgstr ""
 
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
-#: pod/video/models.py
+#: pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/video_note_comments_display.html
 #: pod/video/templates/videos/video_note_display.html
 msgid "Public"
@@ -9039,6 +9039,22 @@ msgstr ""
 #: pod/video/forms.py
 msgid "Users can only add videos to this channel"
 msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne"
+
+#: pod/video/forms.py
+msgid "Draft / Private"
+msgstr "Brouillon / Privé"
+
+#: pod/video/forms.py
+msgid "Restricted"
+msgstr "Restreint"
+
+#: pod/video/forms.py
+msgid "Visibility"
+msgstr "Visibilité"
+
+#: pod/video/forms.py
+msgid "Restricted by authentication"
+msgstr "Restreint par authentification"
 
 #: pod/video/forms.py
 msgid "Source file"
