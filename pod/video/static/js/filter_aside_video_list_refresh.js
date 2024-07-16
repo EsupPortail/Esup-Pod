@@ -175,8 +175,8 @@ function getUrlForRefresh() {
     newUrl += "display_mode=" + displayMode + "&";
   }
   // Add categories checked if exists
-  if (document.querySelectorAll(".categories_list_item.active").length !== 0) {
-    Array.from(document.querySelectorAll(".categories_list_item.active")).forEach((cat) => {
+  if (document.querySelectorAll(".categories-list-item.active").length !== 0) {
+    Array.from(document.querySelectorAll(".categories-list-item.active")).forEach((cat) => {
       newUrl += "categories=" + cat.firstElementChild["dataset"]["slug"] + "&";
     });
   }
@@ -266,7 +266,7 @@ document.getElementById("resetFilters").addEventListener("click", function () {
     .forEach((checkBox) => {
       checkBox.checked = false;
     });
-  document.querySelectorAll("#filters .categories_list_item").forEach((c_p) => {
+  document.querySelectorAll("#filters .categories-list-item").forEach((c_p) => {
     c_p.classList.remove("active");
   });
   if (filterOwnerContainer && ownerBox) {

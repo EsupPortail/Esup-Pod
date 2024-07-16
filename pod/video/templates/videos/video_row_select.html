@@ -9,7 +9,7 @@
     {% can_see_playlist_video video playlist as can_see_video %}
   {% endif %}
 
-  <input class="form-check-input card_select_input me-4 my-0" type="checkbox" aria-label="{% blocktrans with video_title=video.title %}Select video “{{ video_title }}”{% endblocktrans %}"
+  <input class="form-check-input card-select-input me-4 my-0" type="checkbox" aria-label="{% blocktrans with video_title=video.title %}Select video “{{ video_title }}”{% endblocktrans %}"
     {% if not category_modal %}
     onchange="toggleSelectedVideo(this, 'videos_list')"
     {% else %}
@@ -19,7 +19,7 @@
     data-slug="{{video.slug}}"
   >
 
-  <div class="checked_overlay">
+  <div class="checked-overlay">
     <span class="card-selected" title="{% trans 'Selected' %}">
       <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
     </span>

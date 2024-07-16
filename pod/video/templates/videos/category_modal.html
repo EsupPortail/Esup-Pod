@@ -12,13 +12,13 @@
         {% if modal_action != "delete" %}
 
         <div class="form-group">
-          <label for="catTitle" class="form-label">
+          <label for="cat-title" class="form-label">
             {% trans "Category title" %}
-            <span class="required_star">*</span>
+            <span class="required-star">*</span>
           </label>
-          <input type="text" placeholder="{% trans 'Category title' %}" id="catTitle" name="catTitle"
+          <input type="text" placeholder="{% trans 'Category title' %}" id="cat-title" name="cat-title"
                  {% if category %} value="{{ category.title }}" {% endif %}
-                 class="catTitle_input form-control" required>
+                 class="cat-title_input form-control" required>
         </div>
         <div class="form-group mt-3">
           <p class="form-label">{% trans "Check the videos to add in the category" %}</p>
@@ -27,20 +27,20 @@
         </div>
 
         {% else %}
-            <span class="category_title">{{ category.title }}</span>
+            <span class="category-title">{{ category.title }}</span>
             {% trans "Permanently delete your category?" %}
         {% endif %}
 
       </div>
       <div class="modal-footer">
       {% if modal_action == "add" %}
-        <button type="button" id="confirm_category_btn" data-action="add" class="btn btn-primary">{% trans "Save category" %}</button>
+        <button type="button" id="confirm-category-btn" data-action="add" class="btn btn-primary">{% trans "Save category" %}</button>
       {% elif modal_action == "edit" %}
-        <button type="button" id="confirm_category_btn" data-action="edit" data-slug="{{ category.slug }}" class="btn btn-primary">{% trans "Save category" %}</button>
+        <button type="button" id="confirm-category-btn" data-action="edit" data-slug="{{ category.slug }}" class="btn btn-primary">{% trans "Save category" %}</button>
       {% elif modal_action == "delete" %}
-        <button type="button" id="confirm_category_btn" data-action="delete" data-slug="{{ category.slug }}" class="btn btn-danger">{% trans "Delete" %}</button>
+        <button type="button" id="confirm-category-btn" data-action="delete" data-slug="{{ category.slug }}" class="btn btn-danger">{% trans "Delete" %}</button>
       {% endif %}
-        <button type="button" id="cancelDialog" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="button" id="cancel-dialog" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
       </div>
     </div>
   </div>

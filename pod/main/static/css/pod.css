@@ -678,13 +678,13 @@ div.card a img {
 }
 
 /** Dashboard **/
-#bulk_update_container {
+#bulk-update-container {
   background-color: var(--pod-background-neutre2-bloc);
   padding: 1em;
   border-radius: var(--bs-border-radius);
 }
 
-#bulk_update_container .select2 {
+#bulk-update-container .select2 {
   width: 100% !important;
 }
 
@@ -706,7 +706,7 @@ div.card a img {
   position: relative;
 }
 
-.infinite-item .checked_overlay {
+.infinite-item .checked-overlay {
   display: none;
   position: absolute;
   inset: 0;
@@ -721,17 +721,17 @@ div.card a img {
   transition: all 0.3s;
 }
 
-.infinite-item.selected .checked_overlay {
+.infinite-item.selected .checked-overlay {
   display: flex;
   opacity: 1;
 }
 
-.infinite-item .checked_overlay .card_selected {
+.infinite-item .checked-overlay .card-selected {
   display: block;
   transition: all 0.3s;
 }
 
-.infinite-item.selected .checked_overlay .card-selected i {
+.infinite-item.selected .checked-overlay .card-selected i {
   font-size: 3rem;
   color: var(--pod-link-color);
 }
@@ -773,14 +773,14 @@ div.card a img {
 
 .pod-infinite-list-container-dashboard
   .list-item-video-row
-  .checked_overlay
+  .checked-overlay
   .card-selected {
   width: 100%;
 }
 
 .pod-infinite-list-container-dashboard
   .list-item-video-row.selected
-  .checked_overlay
+  .checked-overlay
   .card-selected
   i {
   font-size: 2rem;
@@ -789,7 +789,7 @@ div.card a img {
 
 .pod-infinite-list-container-dashboard
   .list-item-video-row
-  i:not(.checked_overlay .card-selected i) {
+  i:not(.checked-overlay .card-selected i) {
   font-size: 1.2rem;
   padding: 0.2rem;
 }
@@ -834,12 +834,12 @@ span[data-bs-placement] {
   overflow-wrap: anywhere;
 }
 
-.required_star,
+.required-star,
 .form-help-inline {
   color: var(--bs-danger);
 }
 
-.form-check-label > .required_star {
+.form-check-label > .required-star {
   font-size: 1em;
 }
 
@@ -881,7 +881,7 @@ span[data-bs-placement] {
   z-index: 1031;
 }
 
-#formalertdivbottomright {
+#form-alert-div-bottom-right {
   max-width: 95%;
   position: fixed;
   bottom: 20px;
@@ -890,7 +890,7 @@ span[data-bs-placement] {
   z-index: 1031;
 }
 
-#formalertdivbottomright > i {
+#form-alert-div-bottom-right > i {
   margin-right: 0.8rem;
   font-size: 1rem;
 }

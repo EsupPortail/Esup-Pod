@@ -15,7 +15,7 @@ global refreshVideosSearch, CATEGORIES_ADD_URL, CATEGORIES_EDIT_URL, CATEGORIES_
 /**
  * Manage add category link in filter aside
  */
-document.getElementById("add_category_btn").addEventListener("click", () => {
+document.getElementById("add-category-btn").addEventListener("click", () => {
   get_category_modal(CATEGORIES_ADD_URL);
 });
 
@@ -23,13 +23,13 @@ document.getElementById("add_category_btn").addEventListener("click", () => {
  * Manage categories links (edit and delete in filter aside)
  */
 function manageCategoriesLinks(){
-    Array.from(document.getElementsByClassName("edit_category_btn")).forEach((el) => {
+    Array.from(document.getElementsByClassName("edit-category-btn")).forEach((el) => {
       el.addEventListener("click", () => {
         let url_edit = getCategoriesUrl("edit", el.dataset.slug);
         get_category_modal(url_edit);
       });
     });
-    Array.from(document.getElementsByClassName("delete_category_btn")).forEach((el) => {
+    Array.from(document.getElementsByClassName("delete-category-btn")).forEach((el) => {
       el.addEventListener("click", () => {
         let url_delete = getCategoriesUrl("delete", el.dataset.slug);
         get_category_modal(url_delete);
@@ -40,7 +40,7 @@ function manageCategoriesLinks(){
 /**
  * Manage search category input in filter aside
  */
-let searchCategoriesInput = document.getElementById("searchCategoriesInput");
+let searchCategoriesInput = document.getElementById("search-categories-input");
 if(searchCategoriesInput){
     searchCategoriesInput.addEventListener("input", () => {
         manageSearchCategories(searchCategoriesInput.value.trim());
@@ -54,7 +54,7 @@ if(searchCategoriesInput){
  */
 function manageSearchCategories(search){
     let categories = document.querySelectorAll(
-      ".categories_list .cat_title:not(.hidden)",
+      ".categories-list .cat-title:not(.hidden)",
     );
     if (search.length >= 3) {
       categories.forEach((cat) => {
@@ -63,7 +63,7 @@ function manageSearchCategories(search){
         else cat.parentNode.classList.remove("hidden");
       });
     } else {
-      categories = document.querySelectorAll(".categories_list .hidden");
+      categories = document.querySelectorAll(".categories-list .hidden");
       categories.forEach((cat) => {
         cat.classList.remove("hidden");
       });
@@ -130,7 +130,7 @@ function get_category_modal(url, page=null){
       let html = parser.parseFromString(data, "text/html").body;
       if(page){
           document.getElementById("category-modal-videos-list").outerHTML = html.innerHTML;
-          document.querySelectorAll("#category-modal-videos-list .card_select_input:checked").forEach((el) => {
+          document.querySelectorAll("#category-modal-videos-list .card-select-input:checked").forEach((el) => {
               if(!selectedVideos[catVideosListContainerId].includes(el.dataset.slug)){
                   el.checked = false;
               }
@@ -139,7 +139,7 @@ function get_category_modal(url, page=null){
           url = url.replaceAll(/([?]page=)(\d+)/g, "");
       }else{
           categoryModal.innerHTML = html.innerHTML;
-          new bootstrap.Modal(document.getElementById('category_modal')).toggle();
+          new bootstrap.Modal(document.getElementById('category-modal')).toggle();
           manageModalConfirmBtn();
       }
       if(url.includes(CATEGORIES_EDIT_URL)){
@@ -149,7 +149,7 @@ function get_category_modal(url, page=null){
       currentUrl = url;
     })
     .catch(() => {
-      showalert(gettext("An Error occurred while processing."), "alert-danger", "formalertdivbottomright");
+      showalert(gettext("An Error occurred while processing."), "alert-danger", "form-alert-div-bottom-right");
     });
 }
 
@@ -163,8 +163,8 @@ function post_category_modal(url){
     if(selectedVideos[catVideosListContainerId] && selectedVideos[catVideosListContainerId].length > 0){
         formData.append("videos", JSON.stringify(selectedVideos[catVideosListContainerId]));
     }
-    if(document.getElementById("catTitle")){
-        formData.append("title", JSON.stringify(document.getElementById("catTitle").value));
+    if(document.getElementById("cat-title")){
+        formData.append("title", JSON.stringify(document.getElementById("cat-title").value));
     }
 
     fetch(url, {
@@ -182,14 +182,14 @@ function post_category_modal(url){
       bootstrap.Modal.getInstance(categoryModal).toggle();
       let message = data["message"];
       let videos = data["all_categories_videos"];
-      showalert(message, "alert-success", "formalertdivbottomright");
+      showalert(message, "alert-success", "form-alert-div-bottom-right");
       if(videos !== undefined){
          all_categories_videos = JSON.parse(videos);
       }
       refreshCategoriesLinks();
     })
     .catch(() => {
-      showalert(gettext("An Error occurred while processing."), "alert-danger", "formalertdivbottomright");
+      showalert(gettext("An Error occurred while processing."), "alert-danger", "form-alert-div-bottom-right");
     });
 }
 
@@ -211,7 +211,7 @@ function manageCategoryVideosPagination(el){
  * Dynamically add event listener on confirm button (Add, Edit or Delete) of category modal
  */
 function manageModalConfirmBtn(){
-    let btn = document.getElementById("confirm_category_btn");
+    let btn = document.getElementById("confirm-category-btn");
     if(btn !== undefined && btn.dataset.action !== undefined){
         btn.addEventListener("click", () => {
             let action = btn.dataset.action;
@@ -243,7 +243,7 @@ function refreshCategoriesLinks(){
       manageCategoriesLinks();
     })
     .catch(() => {
-      showalert(gettext("An Error occurred while processing."), "alert-danger", "formalertdivbottomright");
+      showalert(gettext("An Error occurred while processing."), "alert-danger", "form-alert-div-bottom-right");
     });
 }
 

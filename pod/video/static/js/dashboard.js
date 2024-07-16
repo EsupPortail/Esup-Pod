@@ -25,7 +25,7 @@
 
 /* exported dashboardActionReset */
 
-var bulkUpdateActionSelect = document.getElementById("bulkUpdateActionSelect");
+var bulkUpdateActionSelect = document.getElementById("bulk-update-action-select");
 var applyBulkUpdateBtn = document.getElementById("applyBulkUpdateBtn");
 var resetDashboardElementsBtn = document.getElementById(
   "reset-dashboard-elements-btn",
@@ -179,7 +179,7 @@ async function bulkUpdate() {
   if (response.ok) {
     // Set selected videos with new slugs if changed during update
     selectedVideos[videosListContainerId] = data["updated_videos"];
-    showalert(message, "alert-success", "formalertdivbottomright");
+    showalert(message, "alert-success", "form-alert-div-bottom-right");
     refreshVideosSearch();
     replaceSelectedCountVideos(videosListContainerId);
   } else {
@@ -196,7 +196,7 @@ async function bulkUpdate() {
       });
       window.scroll({ top: 0, left: 0, behavior: "smooth" });
     } else {
-      showalert(message, "alert-danger", "formalertdivbottomright");
+      showalert(message, "alert-danger", "form-alert-div-bottom-right");
     }
   }
 }

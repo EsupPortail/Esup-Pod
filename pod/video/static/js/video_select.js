@@ -32,7 +32,6 @@ function getListSelectedVideosTitles(container) {
       let item = document.querySelector(
         "#" + container + " .infinite-item[data-slug='" + v + "']"
       );
-      console.log(item);
       selectedTitles.push(
         item.querySelector(".dashboard-video-title").dataset.videoTitle,
       );
@@ -50,7 +49,7 @@ function setListSelectedVideos(container) {
   if(container === videosListContainerId){
     selectedVideos[container] = [];
   }
-  let selector = "#" + container + " .card_select_input:checked";
+  let selector = "#" + container + " .card-select-input:checked";
   document.querySelectorAll(selector).forEach((elt) => {
     if(selectedVideos[container].indexOf(elt.dataset.slug) === -1){
       selectedVideos[container].push(elt.dataset.slug);
@@ -65,7 +64,7 @@ function setListSelectedVideos(container) {
  */
 function setSelectedVideos(container) {
   Array.from(selectedVideos[container]).forEach((elt) => {
-    let selector = '#' + container + ' .card_select_input[data-slug="' + elt + '"]';
+    let selector = '#' + container + ' .card-select-input[data-slug="' + elt + '"]';
     let domElt = document.querySelector(selector);
     if (domElt && !domElt.checked) {
       domElt.checked = true;
@@ -127,7 +126,7 @@ function toggleSelectedVideo(item, container) {
  */
 function clearSelectedVideo(container) {
   selectedVideos[container] = [];
-  document.querySelectorAll(".card_select_input").forEach((elt) => {
+  document.querySelectorAll(".card-select-input").forEach((elt) => {
     elt.checked = false;
   });
   replaceSelectedCountVideos(container);
@@ -164,7 +163,7 @@ function getHTMLBadgesSelectedTitles(container) {
  * @param {string} container : Identifier of the infinite-items's container
  */
 function selectAllVideos(container){
-  let selector = "#" + container + " .card_select_input";
+  let selector = "#" + container + " .card-select-input";
   document.querySelectorAll(selector).forEach((elt) => {
     elt.checked = true;
   });
