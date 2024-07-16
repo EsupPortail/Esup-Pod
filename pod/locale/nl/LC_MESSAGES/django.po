@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-16 09:32+0000\n"
+"POT-Creation-Date: 2024-07-16 10:54+0000\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -8451,10 +8451,6 @@ msgid "Visibility"
 msgstr ""
 
 #: pod/video/forms.py
-msgid "Restricted by authentication"
-msgstr ""
-
-#: pod/video/forms.py
 msgid "Source file"
 msgstr ""
 
@@ -8473,6 +8469,12 @@ msgstr ""
 
 #: pod/video/forms.py
 msgid "The deletion date can’t be earlier than today."
+msgstr ""
+
+#: pod/video/forms.py
+msgid ""
+"If you select restricted visibility for your video, you must check the "
+"\"restricted access\" box or specify a password."
 msgstr ""
 
 #: pod/video/forms.py

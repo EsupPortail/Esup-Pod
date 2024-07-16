@@ -596,12 +596,6 @@ class VideoForm(forms.ModelForm):
         required=True,
         initial="public",
     )
-    is_restricted = forms.BooleanField(
-        label=_("Restricted by authentication"),
-        required=False,
-        initial=False,
-    )
-    password = forms.CharField(widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}), required=False, label=_("Password"))
 
     required_css_class = "required"
     videoattrs = {
@@ -737,7 +731,7 @@ class VideoForm(forms.ModelForm):
                 encoding.save()
 
     def save_visibility(self):
-        """Save video and launch encoding if relevant for the visibility field."""
+        """Save video access fileds depends of the visibility field value."""
         visibility = self.cleaned_data.get('visibility')
         if visibility == 'public':
             self.instance.is_draft = False
@@ -811,10 +805,23 @@ class VideoForm(forms.ModelForm):
             )
         return self.cleaned_data["date_delete"]
 
+    def check_visibility(self, cleaned_data) -> None:
+        """Save video and launch encoding if relevant for the visibility field."""
+        visibility = cleaned_data['visibility']
+        is_restricted = cleaned_data.get('is_restricted', False)
+        password = cleaned_data.get('password', '')
+        if (
+            visibility == 'restricted'
+            and is_restricted is False and password is None
+        ):
+            raise ValidationError(
+                _("If you select restricted visibility for your video, you must check the \"restricted access\" box or specify a password.")
+            )
+
     def clean(self) -> None:
         """Validate Video form fields."""
         cleaned_data = super(VideoForm, self).clean()
-
+        self.check_visibility(cleaned_data)
         if "additional_owners" in cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
         ):
@@ -943,9 +950,7 @@ class VideoForm(forms.ModelForm):
         if self.instance:
             if self.instance.is_draft:
                 self.initial["visibility"] = "draft"
-            elif (self.instance.is_restricted
-                  or self.instance.restrict_access_to_groups.count() > 0
-                  or len(self.instance.password) > 0):
+            elif (self.instance.is_restricted or self.instance.password):
                 self.initial["visibility"] = "restricted"
             else:
                 self.initial["visibility"] = "public"
