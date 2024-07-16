@@ -3,11 +3,6 @@
 {% load playlist_buttons %}
 
 {% spaceless %}
-{% if request.path == '/video/dashboard/' %}
-    <a href="{% url 'video:video' video.slug %}" title="{% trans 'Play' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1 see-video-btn-link" id="see-video-btn-{{ video.id }}" data-bs-toggle="tooltip" data-bs-placement="top">
-      <i class="bi bi-play-circle card-footer-link-i" aria-hidden="true"></i>
-    </a>
-{% endif %}
 {% if playlist %}
   {% user_can_edit_or_remove playlist as can_edit_or_remove %}
   {% if not in_favorites_playlist and can_edit_or_remove%}

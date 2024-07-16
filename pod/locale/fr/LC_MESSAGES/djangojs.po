@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-16 10:55+0000\n"
+"POT-Creation-Date: 2024-07-16 09:09+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
+"Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -419,6 +419,7 @@ msgstr "Une erreur s’est produite lors du chargement des diffuseurs…"
 #: pod/live/static/js/filter_aside_event_list.js
 #: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
 #: pod/video/static/js/filter_aside_video_list_refresh.js
+#: pod/video/static/js/video_category.js
 msgid "An Error occurred while processing."
 msgstr "Une erreur est survenue durant l’exécution du processus."
 
@@ -560,6 +561,8 @@ msgid "Change image"
 msgstr "Changer d’image"
 
 #: pod/podfile/static/podfile/js/filewidget.js
+#, fuzzy
+#| msgid "Change"
 msgid "Change file"
 msgstr "Changer de fichier"
 
@@ -848,47 +851,38 @@ msgstr[0] "%(count)s vidéo trouvée"
 msgstr[1] "%(count)s vidéos trouvées"
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is password protected."
 msgstr "Ce contenu est protégé par mot de passe."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is chaptered."
 msgstr "Ce contenu est chapitré."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is in draft."
 msgstr "Ce contenu est en brouillon."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Video content."
 msgstr "Contenu vidéo."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Audio content."
 msgstr "Contenu audio."
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Edit the video"
 msgstr "Éditer la vidéo"
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Complete the video"
 msgstr "Compléter la vidéo"
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Chapter the video"
 msgstr "Chapitrer la vidéo"
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Delete the video"
 msgstr "Supprimer la vidéo"
 
@@ -915,75 +909,6 @@ msgstr "Avancer de 10 secondes dans la video"
 #: pod/video/static/js/video-show.js
 msgid "Quality"
 msgstr "Qualité"
-
-#: pod/video/static/js/video_category.js
-msgid "Category changes saved successfully"
-msgstr "Les changements sur la catégorie ont été sauvegardés avec succès"
-
-#: pod/video/static/js/video_category.js
-msgid "You cannot add two categories with the same title."
-msgstr "Vous ne pouvez pas ajouter deux catégories avec le même titre."
-
-#: pod/video/static/js/video_category.js
-msgid "Category deleted successfully"
-msgstr "Catégorie supprimée avec succès"
-
-#: pod/video/static/js/video_category.js
-msgid "An error occured, please refresh the page and try again."
-msgstr ""
-"Une erreur est survenue, veuillez recharger la page et réessayer à nouveau."
-
-#: pod/video/static/js/video_category.js
-msgid "Category title field is required."
-msgstr "Le champ category titre est requis."
-
-#: pod/video/static/js/video_category.js
-msgid "Save category"
-msgstr "Sauvegarder catégorie"
-
-#: pod/video/static/js/video_category.js
-msgid "You have no content without a category."
-msgstr "Vous n’avez aucun contenu sans catégorie."
-
-#: pod/video/static/js/video_category.js
-msgid "videos found"
-msgstr "vidéos trouvées"
-
-#: pod/video/static/js/video_category.js
-msgid "video found"
-msgstr "vidéo trouvée"
-
-#: pod/video/static/js/video_category.js
-msgid "Sorry, no video found"
-msgstr "Désolé, aucune vidéo trouvée"
-
-#: pod/video/static/js/video_category.js
-msgid "Edit the category"
-msgstr "Éditer la catégorie"
-
-#: pod/video/static/js/video_category.js
-msgid "Delete the category"
-msgstr "Supprimer la catégorie"
-
-#: pod/video/static/js/video_category.js
-msgid "Success!"
-msgstr "Succès !"
-
-#: pod/video/static/js/video_category.js
-msgid "Error…"
-msgstr "Erreur…"
-
-#: pod/video/static/js/video_category.js
-msgid "Category created successfully"
-msgstr "Catégorie créée avec succès"
-
-#: pod/video/static/js/video_category.js
-msgid "Add new category"
-msgstr "Ajouter une catégorie"
-
-#: pod/video/static/js/video_category.js
-msgid "Create category"
-msgstr "Créer catégorie"
 
 #: pod/video/static/js/video_edit.js
 msgid "Select the general type of the video."

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-16 10:54+0000\n"
+"POT-Creation-Date: 2024-07-16 09:09+0000\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1911,7 +1911,6 @@ msgid "Caption"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
-#: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "Play"
 msgstr ""
@@ -2284,7 +2283,6 @@ msgstr ""
 
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/playlist/templates/playlist/filter_aside.html
-#: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/filter_aside.html
 msgid "Reset"
 msgstr ""
@@ -4105,13 +4103,13 @@ msgid "Sorry, no event found."
 msgstr ""
 
 #: pod/live/templates/live/events_list.html
-#: pod/video/templates/videos/category_modal.html
+#: pod/video/templates/videos/category_modal_video_list.html
 #: pod/video/templates/videos/paginator.html
 msgid "Previous page"
 msgstr ""
 
 #: pod/live/templates/live/events_list.html
-#: pod/video/templates/videos/category_modal.html
+#: pod/video/templates/videos/category_modal_video_list.html
 #: pod/video/templates/videos/paginator.html
 msgid "Next page"
 msgstr ""
@@ -6707,7 +6705,7 @@ msgstr ""
 
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
-#: pod/video/forms.py pod/video/models.py
+#: pod/video/models.py
 #: pod/video/templates/videos/video_note_comments_display.html
 #: pod/video/templates/videos/video_note_display.html
 msgid "Public"
@@ -8439,18 +8437,6 @@ msgid "Users can only add videos to this channel"
 msgstr ""
 
 #: pod/video/forms.py
-msgid "Draft / Private"
-msgstr ""
-
-#: pod/video/forms.py
-msgid "Restricted"
-msgstr ""
-
-#: pod/video/forms.py
-msgid "Visibility"
-msgstr ""
-
-#: pod/video/forms.py
 msgid "Source file"
 msgstr ""
 
@@ -8469,12 +8455,6 @@ msgstr ""
 
 #: pod/video/forms.py
 msgid "The deletion date can’t be earlier than today."
-msgstr ""
-
-#: pod/video/forms.py
-msgid ""
-"If you select restricted visibility for your video, you must check the "
-"\"restricted access\" box or specify a password."
 msgstr ""
 
 #: pod/video/forms.py
@@ -8894,7 +8874,7 @@ msgstr ""
 msgid "Category title"
 msgstr "Categorie titel"
 
-#: pod/video/models.py pod/video/templates/videos/category_modal.html
+#: pod/video/models.py
 msgid "Category"
 msgstr ""
 
@@ -9154,6 +9134,7 @@ msgid "This content is password protected."
 msgstr ""
 
 #: pod/video/templates/videos/card.html
+#: pod/video/templates/videos/card_select.html
 msgid "This content has restricted access."
 msgstr ""
 
@@ -9165,42 +9146,32 @@ msgstr ""
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
-#: pod/video/templates/videos/category_modal_card.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Video content."
 msgstr ""
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
-#: pod/video/templates/videos/category_modal_card.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Audio content."
 msgstr ""
 
 #: pod/video/templates/videos/card_select.html
 #: pod/video/templates/videos/video_row_select.html
-msgid "Selected"
+#, python-format
+msgid "Select video “%(video_title)s”"
 msgstr ""
-
-#: pod/video/templates/videos/category_modal.html
-msgid "category title"
-msgstr "categorie titel"
 
 #: pod/video/templates/videos/category_modal.html
 msgid "Check the videos to add in the category"
 msgstr ""
 
 #: pod/video/templates/videos/category_modal.html
-msgid "Save category"
-msgstr ""
-
-#: pod/video/templates/videos/category_modal.html
-#: pod/video/templates/videos/filter_aside_category.html
-msgid "Delete the category"
-msgstr ""
-
-#: pod/video/templates/videos/category_modal.html
 msgid "Permanently delete your category?"
+msgstr ""
+
+#: pod/video/templates/videos/category_modal.html
+msgid "Save category"
 msgstr ""
 
 #: pod/video/templates/videos/change_video_owner.html
@@ -9282,6 +9253,14 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/video/templates/videos/dashboard.html
+msgid "Select all"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Clear selection"
+msgstr ""
+
+#: pod/video/templates/videos/dashboard.html
 msgid ""
 "You have not uploaded any videos yet, please use the ”Add a new video” "
 "button to add one"
@@ -9313,16 +9292,22 @@ msgstr ""
 msgid "Fold/Unfold “Tags” filters"
 msgstr ""
 
-#: pod/video/templates/videos/filter_aside_category.html
+#: pod/video/templates/videos/filter_aside_categories_list.html
+#: pod/video/views.py
+msgid "Edit category"
+msgstr ""
+
+#: pod/video/templates/videos/filter_aside_categories_list.html
+#: pod/video/views.py
+msgid "Delete category"
+msgstr ""
+
+#: pod/video/templates/videos/filter_aside_category.html pod/video/views.py
 msgid "Add new category"
 msgstr ""
 
 #: pod/video/templates/videos/filter_aside_category.html
 msgid "Type at least 3 chars to filter categories"
-msgstr ""
-
-#: pod/video/templates/videos/filter_aside_category.html
-msgid "Edit the category"
 msgstr ""
 
 #: pod/video/templates/videos/footer_link.html
@@ -9866,6 +9851,10 @@ msgid "The video is currently waiting for Aristote AI treatment."
 msgstr ""
 
 #: pod/video/templates/videos/video_row_select.html
+msgid "Selected"
+msgstr ""
+
+#: pod/video/templates/videos/video_row_select.html
 msgid "Toggle actions menu"
 msgstr ""
 
@@ -10184,15 +10173,15 @@ msgid "You do not have rights to delete this comment"
 msgstr ""
 
 #: pod/video/views.py
-msgid "One or many videos already have a category."
-msgstr ""
-
-#: pod/video/views.py
 msgid "Title field is required"
 msgstr "Titelveld is verplicht"
 
 #: pod/video/views.py
-msgid "Method Not Allowed"
+msgid "One or many videos already have a category."
+msgstr ""
+
+#: pod/video/views.py
+msgid "Category successfully added."
 msgstr ""
 
 #: pod/video/views.py
@@ -10201,6 +10190,10 @@ msgstr ""
 
 #: pod/video/views.py
 msgid "You do not have rights to edit this category"
+msgstr ""
+
+#: pod/video/views.py
+msgid "Category successfully deleted."
 msgstr ""
 
 #: pod/video/views.py
@@ -10381,3 +10374,6 @@ msgstr ""
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr ""
+
+#~ msgid "category title"
+#~ msgstr "categorie titel"

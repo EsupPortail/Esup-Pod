@@ -4,7 +4,7 @@
 
 <div id="videos_list" class="pod-infinite-container pod-infinite-grid-container-dashbord infinite-container dashboard-container" data-nextpage="{{ videos.has_next|yesno:'true,false' }}" data-countvideos="{{ count_videos }}">
   {% for video in videos %}
-    <div class="infinite-item" data-slug={{video.slug}} onclick="toggleSelectedVideo(this)" onkeydown="toggleSelectedVideo(this)" tabindex="0">
+    <div class="infinite-item" data-slug={{video.slug}} tabindex="0">
       {% include "videos/card_select.html" %}
     </div>
   {% empty %}
@@ -26,7 +26,7 @@
   {% trans "Loading…" %}
 </div>
 {% endspaceless %}
-<script defer src="{% static 'js/video_select.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/video_select.js' %}?ver={{VERSION}}"></script>
 {% if USE_PLAYLIST and USE_FAVORITES %}
   <script src="{% static 'playlist/js/utils-playlist.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'playlist/js/video-list-favorites-card.js' %}?ver={{VERSION}}"></script>

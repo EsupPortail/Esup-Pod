@@ -1,0 +1,15 @@
+{% load i18n %}
+
+{% for category in categories %}
+  <li class="categories-list-item">
+    <button type="button" class="btn btn-link cat-title" data-slug="{{category.slug}}" onclick="toggleCategoryLink(this)">{{category.title}}</button>
+    <div class="category-actions">
+      <button type="button" title="{% trans 'Edit category' %}" data-slug="{{category.slug}}" data-title="{{category.title}}" class="btn btn-link edit-category-btn">
+        <i class="bi bi-pencil-square" aria-hidden="true"></i>
+      </button>
+      <button type="button" title="{% trans 'Delete category' %}" data-title="{{category.title}}" data-slug="{{category.slug}}" class="btn btn-link delete-category-btn">
+        <i class="bi bi-trash" aria-hidden="true"></i>
+      </button>
+    </div>
+  </li>
+{% endfor %}
