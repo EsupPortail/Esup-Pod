@@ -50,11 +50,21 @@ function toggleFields(visibilitySelect, passwordField) {
   const idIsRestrictedField = document.getElementById("id_is_restricted");
   if (visibilitySelect.value === "restricted") {
     passwordField.closest(".field-password").classList.add("show");
-    if (idRestrictToGroupsField && idIsRestrictedField.checked) {
-      applySelect2Style();
-      idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.add("show");
-    }
     if (idIsRestrictedField) {
+      // For first call, apply select2 style to the select elements.
+      if (idIsRestrictedField.checked) {
+        applySelect2Style();
+        idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.add("show");
+      }
+      // ---
+      idIsRestrictedField.addEventListener("change", () => {
+        if (idIsRestrictedField.checked) {
+          applySelect2Style();
+          idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.add("show");
+        } else {
+          idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.remove("show");
+        }
+      });
       idIsRestrictedField.closest(".field-is_restricted").classList.add("show");
     }
   } else {
