@@ -549,7 +549,9 @@ def dashboard(request):
         categories = Category.objects.prefetch_related("video").filter(owner=request.user)
         if len(request.GET.getlist("categories")):
             categories_checked = request.GET.getlist("categories")
-            categories_videos = categories.filter(slug__in=categories_checked).values_list("video", flat=True)
+            categories_videos = categories.filter(
+                slug__in=categories_checked
+            ).values_list("video", flat=True)
             videos_list = videos_list.filter(pk__in=categories_videos)
 
         data_context["categories"] = categories
@@ -3056,11 +3058,7 @@ def add_category(request):
         data_context["videos"] = videos
 
         if request.GET.get("page"):
-            return render(
-                request,
-                "videos/category_modal_video_list.html",
-                data_context
-            )
+            return render(request, "videos/category_modal_video_list.html", data_context)
 
         data_context = {
             "modal_action": "add",
@@ -3145,7 +3143,7 @@ def edit_category(request, c_slug=None):
                 {
                     "videos": videos,
                     "category_videos": category_videos,
-                }
+                },
             )
 
         data_context = {

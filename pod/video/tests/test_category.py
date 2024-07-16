@@ -80,31 +80,25 @@ class TestCategory(TestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'videos/category_modal.html')
+        self.assertTemplateUsed(response, "videos/category_modal.html")
         print(" --->  test_get_add_category_modal of TestCategory: OK!")
 
     def test_post_add_category(self) -> None:
         """Test perform add new category."""
         data = {
             "title": json.dumps("Test new category"),
-            "videos": json.dumps([self.video_2.slug])
+            "videos": json.dumps([self.video_2.slug]),
         }
 
         # not Authenticated, should return HttpResponseRedirect:302
-        response = self.client.post(
-            reverse("video:add_category"),
-            data
-        )
+        response = self.client.post(reverse("video:add_category"), data)
 
         self.assertIsInstance(response, HttpResponseRedirect)
         self.assertEqual(response.status_code, 302)
 
         # not Ajax request, should return HttpResponseForbidden:403
         self.client.force_login(self.owner_user)
-        response = self.client.post(
-            reverse("video:add_category"),
-            data
-        )
+        response = self.client.post(reverse("video:add_category"), data)
 
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
@@ -120,15 +114,17 @@ class TestCategory(TestCase):
             "success": True,
             "title": "Test new category",
             "slug": "%s-%s" % (self.owner_user.id, slugify("Test new category")),
-            "video": [self.video_2]
+            "video": [self.video_2],
         }
-        actual_data = Category.objects.filter(owner=self.owner_user, title="Test new category")
+        actual_data = Category.objects.filter(
+            owner=self.owner_user, title="Test new category"
+        )
         actual_cat = actual_data.first()
 
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response_data["success"], True)
-        self.assertEqual(response_data["message"], 'Category successfully added.')
+        self.assertEqual(response_data["message"], "Category successfully added.")
         self.assertEqual(actual_data.count(), 1)
         self.assertEqual(actual_cat.title, expected_data["title"])
         self.assertEqual(actual_cat.slug, expected_data["slug"])
@@ -166,10 +162,7 @@ class TestCategory(TestCase):
 
         # Ajax POST request, should return HttpResponse:409
         # category already exists
-        data = {
-            "title": json.dumps("Test new category"),
-            "videos": json.dumps([])
-        }
+        data = {"title": json.dumps("Test new category"), "videos": json.dumps([])}
 
         response = self.client.post(
             reverse("video:add_category"),
@@ -190,14 +183,14 @@ class TestCategory(TestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'videos/category_modal.html')
+        self.assertTemplateUsed(response, "videos/category_modal.html")
         print(" --->  test_get_edit_category_modal of TestCategory: OK!")
 
     def test_post_edit_category(self) -> None:
         """Test perform edit existent category."""
         data = {
             "title": json.dumps("New Category title"),
-            "videos": json.dumps([self.video_2.slug])
+            "videos": json.dumps([self.video_2.slug]),
         }
         # not Authenticated, should return HttpResponseRedirect:302
         response = self.client.post(
@@ -228,7 +221,10 @@ class TestCategory(TestCase):
 
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
-        self.assertEqual(json.loads(response.content)["message"], 'You do not have rights to edit this category')
+        self.assertEqual(
+            json.loads(response.content)["message"],
+            "You do not have rights to edit this category",
+        )
 
         # Ajax POST request, should return HttpResponse:200 with category data
         self.client.force_login(self.owner_user)
@@ -244,13 +240,15 @@ class TestCategory(TestCase):
             "slug": "%s-%s" % (self.owner_user.id, slugify("New Category title")),
             "videos": [self.video_2],
         }
-        actual_data = Category.objects.filter(owner=self.owner_user, slug=expected_data["slug"])
+        actual_data = Category.objects.filter(
+            owner=self.owner_user, slug=expected_data["slug"]
+        )
         actual_cat = actual_data.first()
 
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response_data["success"])
-        self.assertEqual(response_data["message"], 'Category updated successfully.')
+        self.assertEqual(response_data["message"], "Category updated successfully.")
         self.assertEqual(actual_cat.title, expected_data["title"])
         self.assertEqual(actual_cat.slug, expected_data["slug"])
         self.assertEqual(actual_cat.video.count(), 1)
@@ -324,7 +322,7 @@ class TestCategory(TestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'videos/category_modal.html')
+        self.assertTemplateUsed(response, "videos/category_modal.html")
         print(" --->  test_get_delete_category_modal of TestCategory: OK!")
 
     def test_post_delete_category(self) -> None:

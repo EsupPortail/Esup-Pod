@@ -140,7 +140,8 @@ class BulkUpdateTestCase(TransactionTestCase):
             "/bulk_update/",
             {
                 "type": type2.id,
-                "selected_videos": '["%s", "%s"]' % ("slug_that_not_exist", "slug_that_not_exist2"),
+                "selected_videos": '["%s", "%s"]'
+                % ("slug_that_not_exist", "slug_that_not_exist2"),
                 "update_fields": '["type"]',
                 "update_action": "fields",
             },
@@ -150,7 +151,9 @@ class BulkUpdateTestCase(TransactionTestCase):
         post_request.LANGUAGE_CODE = "fr"
         response = bulk_update(post_request)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(json.loads(response.content)["message"], "Sorry, no video found.")
+        self.assertEqual(
+            json.loads(response.content)["message"], "Sorry, no video found."
+        )
         self.assertEqual(json.loads(response.content)["updated_videos"], [])
 
         post_request = self.factory.post(
@@ -273,13 +276,13 @@ class BulkUpdateTestCase(TransactionTestCase):
             name="playlist",
             video=video4,
             encoding_format="application/x-mpegURL",
-            source_file="test.mp4"
+            source_file="test.mp4",
         )
         PlaylistVideo.objects.create(
             name="playlist",
             video=video5,
             encoding_format="application/x-mpegURL",
-            source_file="test.mp4"
+            source_file="test.mp4",
         )
 
         post_request = self.factory.post(
@@ -292,7 +295,7 @@ class BulkUpdateTestCase(TransactionTestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
 
-        permission = Permission.objects.get(codename='delete_video')
+        permission = Permission.objects.get(codename="delete_video")
         user3.user_permissions.add(permission)
         post_request.user = user3
         post_request.LANGUAGE_CODE = "fr"
@@ -302,7 +305,10 @@ class BulkUpdateTestCase(TransactionTestCase):
         response = bulk_update(post_request)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(json.loads(response.content)["message"], ' 2 videos removed, 0 videos in error')
+        self.assertEqual(
+            json.loads(response.content)["message"],
+            " 2 videos removed, 0 videos in error",
+        )
 
         print("--->  test_bulk_delete of BulkUpdateTestCase: OK")
         self.client.logout()
