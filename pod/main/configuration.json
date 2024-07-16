@@ -1061,6 +1061,37 @@
                         "fr": "Configuration de l’application enrichment"
                     }
                 },
+                "speaker": {
+                    "description": {
+                        "en": [
+                            "Speaker application to add speakers to video.",
+                            "Set `USE_SPEAKER` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Intervenant permettant d'ajouter des intervenants à la vidéo.",
+                            "Mettre `USE_SPEAKER` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "USE_SPEAKER": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Activation of the Speaker application"
+                                ],
+                                "fr": [
+                                    "Activation de l’application Intervenant"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.1"
+                        }
+                    },
+                    "title": {
+                        "en": "Seaker application configuration",
+                        "fr": "Configuration de l’application Intervenant"
+                    }
+                },
                 "import_video": {
                     "description": {
                         "en": [
@@ -4831,6 +4862,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "ARCHIVE_HOW_MANY_DAYS": {
+                            "default_value": "365",
+                            "description": {
+                                "en": [
+                                    "Delay before an archived video is moved to archive_ROOT."
+                                ],
+                                "fr": [
+                                    "Délai avant qu'une vidéo archivée ne soit déplacée vers archive_ROOT."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.0"
                         },
                         "POD_ARCHIVE_AFFILIATION": {
                             "default_value": "[]",

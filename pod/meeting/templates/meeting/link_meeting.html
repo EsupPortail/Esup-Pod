@@ -7,35 +7,19 @@
       <i class="bi bi-pencil-square" aria-hidden="true"></i>
     </a>
   {% endif %}
-
-  <a href="#" class="btn btn-lg pod-btn-social p-1 m-0 ms-1 pod-btn-copy" role="alert"
-    data-copyvalue="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id meeting.get_hashkey %}"
-    data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Copy the direct join link' %}">
-    <i class="bi bi-person-check" aria-hidden="true"></i>
-  </a>
-  <a href="#" class="btn btn-lg pod-btn-social p-1 m-0 ms-1 pod-btn-copy" role="alert"
-    data-copyvalue="{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{% url 'meeting:join' meeting.meeting_id %}"
-    data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'Copy the join link' %}">
-    <i class="bi bi-person-lock" aria-hidden="true"></i>
-  </a>
-
-  <a href="{% url 'meeting:invite' meeting.meeting_id %}" title="{% trans 'Invite to the meeting'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
-    <i class="bi bi-envelope" aria-hidden="true"></i>
-  </a>
-
-  {% if not meeting_disable_record %}
-    <a href="{% url 'meeting:internal_recordings' meeting.meeting_id %}" title="{% trans 'Get the recordings of the meeting'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
-      <i class="bi bi-collection-play" aria-hidden="true"></i>
-    </a>
-  {% endif %}
 {% endif %}
 
-{% if meeting.owner == request.user or request.user.is_superuser or perms.meeting.delete_meeting %}
-  {% if not meeting.is_personal %}
-    <a href="{% url 'meeting:delete' meeting.meeting_id %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" title="{% trans 'Delete the meeting'%}" data-bs-toggle="tooltip" data-bs-placement="top">
-      <i class="bi bi-trash" aria-hidden="true"></i>
+  {% if meeting.owner == request.user or request.user.is_superuser or request.user in meeting.additional_owners.all or perms.meeting.change_meeting %}
+    <a href=""
+       class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1"
+       data-bs-toggle="dropdown"
+       aria-expanded="false"
+       title="{% trans 'More options' %}"
+       data-bs-placement="top"
+    >
+      <i class="bi bi-list" aria-hidden="true"></i>
     </a>
+    {% include 'meeting/link_meeting_dropdown_menu.html' %}
   {% endif %}
-{% endif %}
 
 {%endspaceless%}

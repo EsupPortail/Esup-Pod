@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-11 07:48+0000\n"
+"POT-Creation-Date: 2024-07-05 16:15+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -234,6 +234,10 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer ce fichier ?"
 #: pod/completion/static/js/completion.js
 msgid "Are you sure you want to delete this contributor?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer ce contributeur ?"
+
+#: pod/completion/static/js/completion.js
+msgid "Are you sure you want to delete this speaker?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer cet intervenant ?"
 
 #: pod/completion/static/js/completion.js
 msgid "Are you sure you want to delete this document?"
@@ -705,6 +709,22 @@ msgstr "Réponse correcte envoyée"
 #: pod/quiz/static/quiz/js/video-quiz-submit.js
 msgid "Incorrect answer given"
 msgstr "Réponse incorrecte envoyée"
+
+#: pod/speaker/static/speaker/js/speakers-management.js
+msgid "Job title"
+msgstr "Titre de la fonction"
+
+#: pod/speaker/static/speaker/js/speakers-management.js
+msgid "Remove job"
+msgstr "Supprimer la fonction"
+
+#: pod/speaker/static/speaker/js/speakers-management.js
+msgid "Edit this speaker"
+msgstr "Modifier l’intervenant"
+
+#: pod/speaker/static/speaker/js/speakers-management.js
+msgid "Add a speaker"
+msgstr "Ajouter un intervenant"
 
 #: pod/video/static/js/ajax-display-channels.js
 msgid "%(count)s channel"
