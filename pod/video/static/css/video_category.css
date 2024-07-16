@@ -198,10 +198,10 @@
   display: flex;
 }
 
-#category-modal-videos-list .video-card > .card-thumbnail{
+#category-modal-videos-list .video-card > .card-thumbnail {
   min-height: auto;
 }
 
-#category-modal-videos-list .pod-thumbnail{
+#category-modal-videos-list .pod-thumbnail {
   width: 100%;
 }

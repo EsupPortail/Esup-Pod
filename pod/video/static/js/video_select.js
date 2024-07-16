@@ -30,7 +30,7 @@ function getListSelectedVideosTitles(container) {
   if (selectedVideos[container].length > 0) {
     Array.from(selectedVideos[container]).forEach((v) => {
       let item = document.querySelector(
-        "#" + container + " .infinite-item[data-slug='" + v + "']"
+        "#" + container + " .infinite-item[data-slug='" + v + "']",
       );
       selectedTitles.push(
         item.querySelector(".dashboard-video-title").dataset.videoTitle,
@@ -46,12 +46,12 @@ function getListSelectedVideosTitles(container) {
  * @param {string} container : Identifier of container = selectedVideos's key
  */
 function setListSelectedVideos(container) {
-  if(container === videosListContainerId){
+  if (container === videosListContainerId) {
     selectedVideos[container] = [];
   }
   let selector = "#" + container + " .card-select-input:checked";
   document.querySelectorAll(selector).forEach((elt) => {
-    if(selectedVideos[container].indexOf(elt.dataset.slug) === -1){
+    if (selectedVideos[container].indexOf(elt.dataset.slug) === -1) {
       selectedVideos[container].push(elt.dataset.slug);
     }
   });
@@ -64,7 +64,8 @@ function setListSelectedVideos(container) {
  */
 function setSelectedVideos(container) {
   Array.from(selectedVideos[container]).forEach((elt) => {
-    let selector = '#' + container + ' .card-select-input[data-slug="' + elt + '"]';
+    let selector =
+      "#" + container + ' .card-select-input[data-slug="' + elt + '"]';
     let domElt = document.querySelector(selector);
     if (domElt && !domElt.checked) {
       domElt.checked = true;
@@ -92,10 +93,7 @@ function replaceSelectedCountVideos(container) {
     applyMultipleActionsBtn,
     newCount > 0 && dashboardAction.length !== 0,
   );
-  manageDisableBtn(
-    resetDashboardElementsBtn,
-    newCount > 0,
-  );
+  manageDisableBtn(resetDashboardElementsBtn, newCount > 0);
 }
 
 /**
@@ -105,16 +103,19 @@ function replaceSelectedCountVideos(container) {
  * @param {string} container : Identifier of container = selectedVideos's key
  */
 function toggleSelectedVideo(item, container) {
-  if(item.checked){
-    if(!selectedVideos[container].includes(item.dataset.slug)){
+  if (item.checked) {
+    if (!selectedVideos[container].includes(item.dataset.slug)) {
       selectedVideos[container].push(item.dataset.slug);
     }
-  }else{
-    if (selectedVideos[container].includes(item.dataset.slug)){
-      selectedVideos[container].splice(selectedVideos[container].indexOf(item.dataset.slug),1);
+  } else {
+    if (selectedVideos[container].includes(item.dataset.slug)) {
+      selectedVideos[container].splice(
+        selectedVideos[container].indexOf(item.dataset.slug),
+        1,
+      );
     }
   }
-  if(container === videosListContainerId) {
+  if (container === videosListContainerId) {
     replaceSelectedCountVideos(container);
   }
 }
@@ -165,7 +166,7 @@ function getHTMLBadgesSelectedTitles(container) {
  *
  * @param {string} container : Identifier of the infinite-items's container
  */
-function selectAllVideos(container){
+function selectAllVideos(container) {
   let selector = "#" + container + " .card-select-input";
   document.querySelectorAll(selector).forEach((elt) => {
     elt.checked = true;

@@ -22,29 +22,33 @@ document.getElementById("add-category-btn").addEventListener("click", () => {
 /**
  * Manage categories links (edit and delete in filter aside)
  */
-function manageCategoriesLinks(){
-    Array.from(document.getElementsByClassName("edit-category-btn")).forEach((el) => {
+function manageCategoriesLinks() {
+  Array.from(document.getElementsByClassName("edit-category-btn")).forEach(
+    (el) => {
       el.addEventListener("click", () => {
         let url_edit = getCategoriesUrl("edit", el.dataset.slug);
         get_category_modal(url_edit);
       });
-    });
-    Array.from(document.getElementsByClassName("delete-category-btn")).forEach((el) => {
+    },
+  );
+  Array.from(document.getElementsByClassName("delete-category-btn")).forEach(
+    (el) => {
       el.addEventListener("click", () => {
         let url_delete = getCategoriesUrl("delete", el.dataset.slug);
         get_category_modal(url_delete);
       });
-    });
+    },
+  );
 }
 
 /**
  * Manage search category input in filter aside
  */
 let searchCategoriesInput = document.getElementById("search-categories-input");
-if(searchCategoriesInput){
-    searchCategoriesInput.addEventListener("input", () => {
-        manageSearchCategories(searchCategoriesInput.value.trim());
-    });
+if (searchCategoriesInput) {
+  searchCategoriesInput.addEventListener("input", () => {
+    manageSearchCategories(searchCategoriesInput.value.trim());
+  });
 }
 
 /**
@@ -52,22 +56,22 @@ if(searchCategoriesInput){
  *
  * @param search {string} : Search input string
  */
-function manageSearchCategories(search){
-    let categories = document.querySelectorAll(
-      ".categories-list .cat-title:not(.hidden)",
-    );
-    if (search.length >= 3) {
-      categories.forEach((cat) => {
-        if (!cat.innerHTML.trim().toLowerCase().includes(search))
-          cat.parentNode.classList.add("hidden");
-        else cat.parentNode.classList.remove("hidden");
-      });
-    } else {
-      categories = document.querySelectorAll(".categories-list .hidden");
-      categories.forEach((cat) => {
-        cat.classList.remove("hidden");
-      });
-    }
+function manageSearchCategories(search) {
+  let categories = document.querySelectorAll(
+    ".categories-list .cat-title:not(.hidden)",
+  );
+  if (search.length >= 3) {
+    categories.forEach((cat) => {
+      if (!cat.innerHTML.trim().toLowerCase().includes(search))
+        cat.parentNode.classList.add("hidden");
+      else cat.parentNode.classList.remove("hidden");
+    });
+  } else {
+    categories = document.querySelectorAll(".categories-list .hidden");
+    categories.forEach((cat) => {
+      cat.classList.remove("hidden");
+    });
+  }
 }
 
 /**
@@ -76,8 +80,8 @@ function manageSearchCategories(search){
  * @param el {HTMLElement} : Category link clicked
  */
 function toggleCategoryLink(el) {
-    el.parentNode.classList.toggle("active");
-    refreshVideosSearch();
+  el.parentNode.classList.toggle("active");
+  refreshVideosSearch();
 }
 
 /**
@@ -87,22 +91,22 @@ function toggleCategoryLink(el) {
  * @param slug {string} : Category slug given for edit or delete (can be null)
  * @returns {string} : Returns built URL
  */
-function getCategoriesUrl(action, slug = null){
-    let url;
-    switch (action){
-        case "add":
-            url = CATEGORIES_ADD_URL;
-            break;
-        case "edit":
-            url = CATEGORIES_EDIT_URL + slug + "/";
-            break;
-        case "delete":
-            url = CATEGORIES_DELETE_URL + slug + "/";
-            break;
-        default:
-            url = "";
-    }
-    return url
+function getCategoriesUrl(action, slug = null) {
+  let url;
+  switch (action) {
+    case "add":
+      url = CATEGORIES_ADD_URL;
+      break;
+    case "edit":
+      url = CATEGORIES_EDIT_URL + slug + "/";
+      break;
+    case "delete":
+      url = CATEGORIES_DELETE_URL + slug + "/";
+      break;
+    default:
+      url = "";
+  }
+  return url;
 }
 
 /**
@@ -111,11 +115,11 @@ function getCategoriesUrl(action, slug = null){
  * @param url {string} : Url to call (add, edit, delete)
  * @param page {number} : Page url managment (can be null)
  */
-function get_category_modal(url, page=null){
-    if(page){
-        url += "?page=" + page;
-    }
-    fetch(url, {
+function get_category_modal(url, page = null) {
+  if (page) {
+    url += "?page=" + page;
+  }
+  fetch(url, {
     method: "GET",
     headers: {
       "X-CSRFToken": "{{ csrf_token }}",
@@ -128,28 +132,42 @@ function get_category_modal(url, page=null){
       // Parse data into html and create new modal
       let parser = new DOMParser();
       let html = parser.parseFromString(data, "text/html").body;
-      if(page){
-          document.getElementById("category-modal-videos-list").outerHTML = html.innerHTML;
-          document.querySelectorAll("#category-modal-videos-list .card-select-input:checked").forEach((el) => {
-              if(!selectedVideos[catVideosListContainerId].includes(el.dataset.slug)){
-                  el.checked = false;
-              }
+      if (page) {
+        document.getElementById("category-modal-videos-list").outerHTML =
+          html.innerHTML;
+        document
+          .querySelectorAll(
+            "#category-modal-videos-list .card-select-input:checked",
+          )
+          .forEach((el) => {
+            if (
+              !selectedVideos[catVideosListContainerId].includes(
+                el.dataset.slug,
+              )
+            ) {
+              el.checked = false;
+            }
           });
-          setSelectedVideos(catVideosListContainerId);
-          url = url.replaceAll(/([?]page=)(\d+)/g, "");
-      }else{
-          categoryModal.innerHTML = html.innerHTML;
-          new bootstrap.Modal(document.getElementById('category-modal')).toggle();
-          manageModalConfirmBtn();
+        setSelectedVideos(catVideosListContainerId);
+        url = url.replaceAll(/([?]page=)(\d+)/g, "");
+      } else {
+        categoryModal.innerHTML = html.innerHTML;
+        new bootstrap.Modal(document.getElementById("category-modal")).toggle();
+        manageModalConfirmBtn();
       }
-      if(url.includes(CATEGORIES_EDIT_URL)){
+      if (url.includes(CATEGORIES_EDIT_URL)) {
         let c_slug = url.split("/")[url.split("/").length - 2];
-        selectedVideos[catVideosListContainerId] = all_categories_videos[c_slug];
+        selectedVideos[catVideosListContainerId] =
+          all_categories_videos[c_slug];
       }
       currentUrl = url;
     })
     .catch(() => {
-      showalert(gettext("An Error occurred while processing."), "alert-danger", "form-alert-div-bottom-right");
+      showalert(
+        gettext("An Error occurred while processing."),
+        "alert-danger",
+        "form-alert-div-bottom-right",
+      );
     });
 }
 
@@ -158,16 +176,25 @@ function get_category_modal(url, page=null){
  *
  * @param url {string} : Url to call (add, edit, delete)
  */
-function post_category_modal(url){
-    let formData = new FormData();
-    if(selectedVideos[catVideosListContainerId] && selectedVideos[catVideosListContainerId].length > 0){
-        formData.append("videos", JSON.stringify(selectedVideos[catVideosListContainerId]));
-    }
-    if(document.getElementById("cat-title")){
-        formData.append("title", JSON.stringify(document.getElementById("cat-title").value));
-    }
+function post_category_modal(url) {
+  let formData = new FormData();
+  if (
+    selectedVideos[catVideosListContainerId] &&
+    selectedVideos[catVideosListContainerId].length > 0
+  ) {
+    formData.append(
+      "videos",
+      JSON.stringify(selectedVideos[catVideosListContainerId]),
+    );
+  }
+  if (document.getElementById("cat-title")) {
+    formData.append(
+      "title",
+      JSON.stringify(document.getElementById("cat-title").value),
+    );
+  }
 
-    fetch(url, {
+  fetch(url, {
     method: "POST",
     headers: {
       "X-Requested-With": "XMLHttpRequest",
@@ -183,13 +210,17 @@ function post_category_modal(url){
       let message = data["message"];
       let videos = data["all_categories_videos"];
       showalert(message, "alert-success", "form-alert-div-bottom-right");
-      if(videos !== undefined){
-         all_categories_videos = JSON.parse(videos);
+      if (videos !== undefined) {
+        all_categories_videos = JSON.parse(videos);
       }
       refreshCategoriesLinks();
     })
     .catch(() => {
-      showalert(gettext("An Error occurred while processing."), "alert-danger", "form-alert-div-bottom-right");
+      showalert(
+        gettext("An Error occurred while processing."),
+        "alert-danger",
+        "form-alert-div-bottom-right",
+      );
     });
 }
 
@@ -198,35 +229,37 @@ function post_category_modal(url){
  *
  * @param el {HTMLElement} : Previous or next clicked button
  */
-function manageCategoryVideosPagination(el){
-    let currentPage = parseInt(document.getElementById("pages_infos").dataset.currentPage);
-    if(el.dataset.pageaction === "previous"){
-        get_category_modal(currentUrl, currentPage - 1);
-    }else if(el.dataset.pageaction === "next"){
-        get_category_modal(currentUrl, currentPage + 1);
-    }
+function manageCategoryVideosPagination(el) {
+  let currentPage = parseInt(
+    document.getElementById("pages_infos").dataset.currentPage,
+  );
+  if (el.dataset.pageaction === "previous") {
+    get_category_modal(currentUrl, currentPage - 1);
+  } else if (el.dataset.pageaction === "next") {
+    get_category_modal(currentUrl, currentPage + 1);
+  }
 }
 
 /**
  * Dynamically add event listener on confirm button (Add, Edit or Delete) of category modal
  */
-function manageModalConfirmBtn(){
-    let btn = document.getElementById("confirm-category-btn");
-    if(btn !== undefined && btn.dataset.action !== undefined){
-        btn.addEventListener("click", () => {
-            let action = btn.dataset.action;
-            let slug = btn.dataset.slug ? btn.dataset.slug : null;
-            let url_post = getCategoriesUrl(action, slug)
-            post_category_modal(url_post);
-        });
-    }
+function manageModalConfirmBtn() {
+  let btn = document.getElementById("confirm-category-btn");
+  if (btn !== undefined && btn.dataset.action !== undefined) {
+    btn.addEventListener("click", () => {
+      let action = btn.dataset.action;
+      let slug = btn.dataset.slug ? btn.dataset.slug : null;
+      let url_post = getCategoriesUrl(action, slug);
+      post_category_modal(url_post);
+    });
+  }
 }
 
 /**
  * Refresh filter aside's category links after treatment
  */
-function refreshCategoriesLinks(){
-    fetch(CATEGORIES_LIST_URL, {
+function refreshCategoriesLinks() {
+  fetch(CATEGORIES_LIST_URL, {
     method: "GET",
     headers: {
       "X-CSRFToken": "{{ csrf_token }}",
@@ -243,7 +276,11 @@ function refreshCategoriesLinks(){
       manageCategoriesLinks();
     })
     .catch(() => {
-      showalert(gettext("An Error occurred while processing."), "alert-danger", "form-alert-div-bottom-right");
+      showalert(
+        gettext("An Error occurred while processing."),
+        "alert-danger",
+        "form-alert-div-bottom-right",
+      );
     });
 }
 

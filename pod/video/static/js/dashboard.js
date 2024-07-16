@@ -25,7 +25,9 @@
 
 /* exported dashboardActionReset */
 
-var bulkUpdateActionSelect = document.getElementById("bulk-update-action-select");
+var bulkUpdateActionSelect = document.getElementById(
+  "bulk-update-action-select",
+);
 var applyBulkUpdateBtn = document.getElementById("applyBulkUpdateBtn");
 var resetDashboardElementsBtn = document.getElementById(
   "reset-dashboard-elements-btn",
@@ -76,7 +78,10 @@ applyBulkUpdateBtn.addEventListener("click", () => {
     true,
   );
   modal.querySelector(".modal-body").innerHTML =
-    "<p>" + modalConfirmStr + "</p>" + getHTMLBadgesSelectedTitles(videosListContainerId);
+    "<p>" +
+    modalConfirmStr +
+    "</p>" +
+    getHTMLBadgesSelectedTitles(videosListContainerId);
 });
 
 /**
@@ -157,7 +162,10 @@ async function bulkUpdate() {
   }
 
   // Construct formData to send
-  formData.append("selected_videos", JSON.stringify(selectedVideos[videosListContainerId]));
+  formData.append(
+    "selected_videos",
+    JSON.stringify(selectedVideos[videosListContainerId]),
+  );
   formData.append("update_fields", JSON.stringify(updateFields));
   formData.append("update_action", updateAction);
 

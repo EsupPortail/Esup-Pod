@@ -176,7 +176,9 @@ function getUrlForRefresh() {
   }
   // Add categories checked if exists
   if (document.querySelectorAll(".categories-list-item.active").length !== 0) {
-    Array.from(document.querySelectorAll(".categories-list-item.active")).forEach((cat) => {
+    Array.from(
+      document.querySelectorAll(".categories-list-item.active"),
+    ).forEach((cat) => {
       newUrl += "categories=" + cat.firstElementChild["dataset"]["slug"] + "&";
     });
   }
