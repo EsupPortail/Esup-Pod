@@ -275,30 +275,21 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 ],
             ),
             (
-                "{0}".format(_("Draft")),
+                "{0}".format(_("Draft / Private")),
                 [
                     _(
-                        "In “Draft mode”, the content shows nowhere and nobody "
-                        "else but you can see it."
+                        "In “Draft or private mode”, the content shows nowhere and nobody "
+                        "else but you can see it. You can add tokens to allow direct access by link."
                     )
                 ],
             ),
             (
-                "{0}".format(_("Authentication restricted access")),
+                "{0}".format(_("Restricted access")),
                 [
                     _(
-                        "If you don’t select “Draft mode”, you can restrict "
-                        "the content access to only people who can log in"
-                    )
-                ],
-            ),
-            (
-                "{0}".format(_("Password")),
-                [
-                    _(
-                        "If you don’t select “Draft mode”, you can add a password "
-                        "which will be asked to anybody willing to watch "
-                        "your content."
+                        "If you select restricted access, you can restrict access to content "
+                        "to only those who can log in, or add a password that will be requested "
+                        "from anyone wishing to view your content."
                     ),
                     _(
                         "If your video is in a playlist the password of your "
