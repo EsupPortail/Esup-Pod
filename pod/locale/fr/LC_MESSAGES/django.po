@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-16 09:09+0000\n"
+"POT-Creation-Date: 2024-07-16 14:23+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
+"Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -935,8 +935,7 @@ msgstr ""
 "Nom d’utilisateur / ID d’utilisateur, qui souhaite effectuer le direct."
 
 #: pod/bbb/models.py pod/live/models.py pod/live/templates/live/event_card.html
-#: pod/meeting/models.py pod/recorder/models.py pod/video/forms.py
-#: pod/video/models.py
+#: pod/meeting/models.py pod/recorder/models.py
 msgid "Restricted access"
 msgstr "Accès restreint"
 
@@ -7183,7 +7182,7 @@ msgstr ""
 
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
-#: pod/video/models.py
+#: pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/video_note_comments_display.html
 #: pod/video/templates/videos/video_note_display.html
 msgid "Public"
@@ -8971,6 +8970,12 @@ msgstr ""
 "En \"Mode brouillon\", le contenu n’apparaîtra nul part et uniquement vous "
 "pourrez le voir."
 
+#: pod/video/forms.py pod/video/models.py
+#, fuzzy
+#| msgid "This content has restricted access."
+msgid "Authentication restricted access"
+msgstr "Ce contenu est en accès restreint."
+
 #: pod/video/forms.py
 msgid ""
 "If you don’t select “Draft mode”, you can restrict the content access to "
@@ -9039,6 +9044,24 @@ msgid "Users can only add videos to this channel"
 msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne"
 
 #: pod/video/forms.py
+#, fuzzy
+#| msgid "Private"
+msgid "Draft / Private"
+msgstr "Privé"
+
+#: pod/video/forms.py
+#, fuzzy
+#| msgid "Restricted access"
+msgid "Restricted"
+msgstr "Accès restreint"
+
+#: pod/video/forms.py
+#, fuzzy
+#| msgid "Visible"
+msgid "Visibility"
+msgstr "Visible"
+
+#: pod/video/forms.py
 msgid "Source file"
 msgstr "Fichier source"
 
@@ -9058,6 +9081,12 @@ msgstr "La date doit être antérieure ou égale au %(date)s."
 #: pod/video/forms.py
 msgid "The deletion date can’t be earlier than today."
 msgstr "La date de suppression ne peut pas être antérieure à aujourd’hui."
+
+#: pod/video/forms.py
+msgid ""
+"If you select restricted visibility for your video, you must check the "
+"\"restricted access\" box or specify a password."
+msgstr ""
 
 #: pod/video/forms.py
 msgid "Delete video cannot be undo"
