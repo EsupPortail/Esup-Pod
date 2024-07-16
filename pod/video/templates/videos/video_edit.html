@@ -54,7 +54,9 @@
       {% if form.errors %}
         <div class="text-danger">
           <p>{% trans "One or more errors have been found in the form." %}</p>
-          {{form.errors}}
+           {% for key, err in form.errors.items %}
+           {{err}}
+           {% endfor %}
         </div>
       {% endif %}
 

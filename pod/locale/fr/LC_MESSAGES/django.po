@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-16 14:23+0000\n"
+"POT-Creation-Date: 2024-07-16 14:20+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
+"Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -8971,10 +8971,8 @@ msgstr ""
 "pourrez le voir."
 
 #: pod/video/forms.py pod/video/models.py
-#, fuzzy
-#| msgid "This content has restricted access."
 msgid "Authentication restricted access"
-msgstr "Ce contenu est en accès restreint."
+msgstr "Accès restreint par authentification"
 
 #: pod/video/forms.py
 msgid ""
@@ -9044,22 +9042,16 @@ msgid "Users can only add videos to this channel"
 msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne"
 
 #: pod/video/forms.py
-#, fuzzy
-#| msgid "Private"
 msgid "Draft / Private"
-msgstr "Privé"
+msgstr "Brouillon / Privé"
 
 #: pod/video/forms.py
-#, fuzzy
-#| msgid "Restricted access"
 msgid "Restricted"
-msgstr "Accès restreint"
+msgstr "Restreint"
 
 #: pod/video/forms.py
-#, fuzzy
-#| msgid "Visible"
 msgid "Visibility"
-msgstr "Visible"
+msgstr "Visibilité"
 
 #: pod/video/forms.py
 msgid "Source file"
@@ -9087,6 +9079,8 @@ msgid ""
 "If you select restricted visibility for your video, you must check the "
 "\"restricted access\" box or specify a password."
 msgstr ""
+"Si vous choisissez une visibilité restreinte pour votre vidéo, vous devez cocher "
+"la case \"accès restreint\" ou spécifier un mot de passe."
 
 #: pod/video/forms.py
 msgid "Delete video cannot be undo"
