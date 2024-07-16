@@ -50,14 +50,14 @@
               alt=""/>
             {% endif %} {% endif %}
             <div class="carousel-caption d-none d-md-block">
-              <h3 class="video_title">
+              <h3 class="video-title">
                 {{ element.title|capfirst|truncatechars:43 }}
               </h3>
               <p class="video_desc mt-2 text-white">
                 {{ element.description|metaformat|safe|striptags|truncatechars:250 }}
               </p>
               {% if type == "video" or type == "last" %}
-              <small class="video_time text-muted time d-none d-md-block">{{ element.duration_in_time }}</small>
+              <small class="video-time text-muted time d-none d-md-block">{{ element.duration_in_time }}</small>
               {% endif %}
             </div>
           </a>

@@ -8,17 +8,30 @@
     {% load playlist_buttons %}
     {% can_see_playlist_video video playlist as can_see_video %}
   {% endif %}
-  <div class="checked_overlay">
+
+  <input class="form-check-input card-select-input me-4 my-0" type="checkbox" aria-label="{% blocktrans with video_title=video.title %}Select video “{{ video_title }}”{% endblocktrans %}"
+    {% if not category_modal %}
+    onchange="toggleSelectedVideo(this, 'videos_list')"
+    {% else %}
+    onchange="toggleSelectedVideo(this, 'category-modal-videos-list')"
+    {% if video.id in category_videos %}checked{% endif %}
+    {% endif %}
+    data-slug="{{video.slug}}"
+  >
+
+  <div class="checked-overlay">
     <span class="card-selected" title="{% trans 'Selected' %}">
       <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
     </span>
   </div>
   <!-- video as row -->
   <div class="col-1 thumbnail-item-video-row">
-    <img class="pod-thumbnail" src="{{ video.get_thumbnail_url }}" alt="" loading="lazy">
+    <a href="{{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}">
+      {{video.get_thumbnail_card|safe}}
+    </a>
   </div>
-  <span class="col-3 title-item-video-row dashboard-video-title" title="{{ video.title|capfirst }}">
-    {{ video.title|capfirst|truncatechars:20 }}
+  <span class="col-3 title-item-video-row dashboard-video-title" data-video-title="{{video.title|capfirst}}">
+    <a href="{{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}" {% if video.title|length > 20 %}title="{{video.title|capfirst}}"{% endif %}>{{video.title|capfirst|truncatechars:20}}</a>
   </span>
   <span class="col-2" title="{% trans 'Duration' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
     <span class="visually-hidden">{% trans 'Duration' %}</span>
@@ -26,7 +39,7 @@
   </span>
   <span class="col-3" title="{% trans 'Date added' %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
     <span class="visually-hidden">{% trans 'Date added' %}</span>
-    <i class="bi bi-calendar-check text-muted" aria-hidden="true"></i>&nbsp;{{ video.date_added }}
+    <i class="bi bi-calendar-check text-muted" aria-hidden="true"></i>&nbsp;{{ video.date_added|date }}
   </span>
 
   <div class="col-2 me-auto">
@@ -63,7 +76,7 @@
         {% if video_infos.chaptered.status %}
           class="bi bi-card-checklist text-success"
         {% else %}
-          class="bi bi-card-list text-muted"
+          class="bi bi-card-list text-danger"
         {% endif %}
         aria-hidden="true"></i>
     </span>
@@ -78,6 +91,7 @@
       </span>
     {% endif %}
   </div>
+
   <div id="more-btn-group-{{ video.id }}" class="btn-group ms-auto" role="group">
     <button id="more-actions-row-btn-{{ video.id }}" type="button" class="btn btn-link"
             data-bs-toggle="dropdown" aria-expanded="false" title="{% trans 'Toggle actions menu' %}">

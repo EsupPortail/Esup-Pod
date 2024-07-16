@@ -557,7 +557,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         let questionFormsList = document.querySelectorAll(".question-form");
         for (let questionForm of questionFormsList) {
-          console.log(questionForm);
           const questionType = questionForm.querySelector(
             ".question-select-type",
           ).value;

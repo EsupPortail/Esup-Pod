@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Add job field on button click
-    document.getElementById('addJobField').addEventListener('click', function() {
+    document.getElementById('add-job-field').addEventListener('click', function() {
         addJobField();
     });
 
