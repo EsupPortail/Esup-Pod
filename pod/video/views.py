@@ -2488,9 +2488,15 @@ def get_videos(p_slug, target, p_slug_t=None):
     return (videos, title)
 
 
-def get_videos_for_owner(request):
+def get_videos_for_owner(request: WSGIRequest):
     """
-    Return video list of specific user
+    Retrieve a list of videos associated with the current user.
+
+    Args:
+        request (HttpRequest): The HTTP request object containing the user.
+
+    Returns:
+        list: A video list of specific user.
     """
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner

@@ -144,7 +144,10 @@ function resetDashboardElements() {
 }
 
 /**
- * Get list of selected videos slugs (HTML li formated) for modal confirm display
+ * Get list of selected videos slugs (HTML li formated) for modal confirm display.
+ *
+ * @param {HTMLElement} container - The container element that holds the selected videos.
+ * @returns {string} - HTML string of badges for the selected video titles.
  */
 function getHTMLBadgesSelectedTitles(container) {
   let str = "";
