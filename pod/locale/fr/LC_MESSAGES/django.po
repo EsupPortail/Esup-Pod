@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-17 08:31+0000\n"
+"POT-Creation-Date: 2024-07-17 09:34+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -7614,6 +7614,11 @@ msgstr ""
 "Les données envoyées pour créer la liste de lecture ne sont pas valides."
 
 #: pod/playlist/views.py
+#, python-brace-format
+msgid "Edit playlist “{playlist.name}”"
+msgstr "Éditer la liste de lecture « {playlist.name} »"
+
+#: pod/playlist/views.py
 msgid "JSON in wrong format"
 msgstr "JSON au mauvais format"
 
@@ -9014,7 +9019,7 @@ msgstr "Dans le mode « Public », le contenu est visible par tout le monde."
 #: pod/video/forms.py
 msgid ""
 "In “Draft / Private” mode, the content shows nowhere and nobody else but you "
-"can see it. You can add tokens for allow direct access by link."
+"can see it."
 msgstr ""
 "En mode “Brouillon / Privé“, le contenu n'apparaît nulle part et personne "
 "d'autre que vous ne peut le voir. Vous pouvez ajouter des jetons pour "
@@ -9024,15 +9029,18 @@ msgstr ""
 msgid ""
 "In “Restricted access” mode, you can choose the restrictions for the video."
 msgstr ""
-"En mode « Accès restreint », vous pouvez choisir les restrictions pour la video."
+"En mode « Accès restreint », vous pouvez choisir les restrictions pour la "
+"video."
 
 #: pod/video/forms.py
 msgid ""
 "In “Restricted access” mode, you can add a password which will be asked to "
-"anybody willing to watch your content."
+"anybody willing to watch your content. You can add tokens for allow direct "
+"access by link."
 msgstr ""
-"En mode « Accès restreint », vous pouvez ajouter un mot de passe qui sera demandé à "
-"toute personne souhaitant regarder votre contenu."
+"En mode « Accès restreint », vous pouvez ajouter un mot de passe qui sera "
+"demandé à toute personne souhaitant regarder votre contenu. Vous pouvez "
+"ajouter des jetons pour permettre un accès direct par lien."
 
 #: pod/video/forms.py
 msgid ""

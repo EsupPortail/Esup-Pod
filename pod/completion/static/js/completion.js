@@ -409,7 +409,7 @@ function verify_fields(form) {
     var id = parseInt(document.getElementById("id_contributor").value, 10);
     var new_role = document.getElementById("id_role").value;
     var new_name = document.getElementById("id_name").value;
-    document.querySelectorAll("#list_contributor tbody > tr").forEach((tr) => {
+    document.querySelectorAll("#list-contributor tbody > tr").forEach((tr) => {
       if (
         id != tr.querySelector("input[name=id]").value &&
         tr.querySelector("td[class=contributor-name]").innerHTML == new_name &&

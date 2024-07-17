@@ -474,7 +474,7 @@ def handle_get_request_for_add_or_edit_function(request: WSGIRequest, slug: str)
             or request.user in get_additional_owners(playlist)
         ) and playlist.editable:
             form = PlaylistForm(instance=playlist, user=request.user)
-            page_title = f'{_("Edit the playlist")} "{playlist.name}"'
+            page_title = _(f"Edit playlist “{playlist.name}”")
         else:
             return redirect(reverse("playlist:list"))
     else:

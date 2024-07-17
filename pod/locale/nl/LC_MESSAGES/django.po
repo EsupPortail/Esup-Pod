@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-17 08:31+0000\n"
+"POT-Creation-Date: 2024-07-17 09:34+0000\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -7113,6 +7113,11 @@ msgid "The data sent to create the playlist are invalid."
 msgstr ""
 
 #: pod/playlist/views.py
+#, python-brace-format
+msgid "Edit playlist “{playlist.name}”"
+msgstr ""
+
+#: pod/playlist/views.py
 msgid "JSON in wrong format"
 msgstr ""
 
@@ -8421,7 +8426,8 @@ msgstr ""
 #: pod/video/forms.py
 msgid ""
 "In “Restricted access” mode, you can add a password which will be asked to "
-"anybody willing to watch your content."
+"anybody willing to watch your content. You can add tokens for allow direct "
+"access by link."
 msgstr ""
 
 #: pod/video/forms.py

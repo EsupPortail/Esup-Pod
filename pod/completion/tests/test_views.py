@@ -80,7 +80,7 @@ class CompletionViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest")
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
 
         print(" ---> test_video_completion_user: OK!")
 
@@ -96,7 +96,7 @@ class CompletionViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
         self.assertContains(response, "list-track")
         self.assertContains(response, "list-document")
         self.assertContains(response, "list-overlay")
@@ -139,7 +139,7 @@ class CompletionContributorViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
         self.assertContains(response, "list-track")
         self.assertContains(response, "list-document")
         self.assertContains(response, "list-overlay")
@@ -174,7 +174,7 @@ class CompletionContributorViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
         self.assertContains(response, "testcontributor")
         self.assertContains(response, "test@test.com")
 
@@ -210,7 +210,7 @@ class CompletionContributorViewsTestCase(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, "testcontributor")
         response = self.client.post(
@@ -232,7 +232,7 @@ class CompletionContributorViewsTestCase(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
         self.assertContains(response, "testcontributor2")
         self.assertContains(response, _("editor"))
         result = Contributor.objects.get(id=1)
@@ -266,7 +266,7 @@ class CompletionContributorViewsTestCase(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
 
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, "testcontributor")
@@ -318,7 +318,7 @@ class CompletionTrackViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
         self.assertContains(response, "list-track")
         self.assertContains(response, "list-document")
         self.assertContains(response, "list-overlay")
@@ -540,7 +540,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
         self.assertContains(response, "list-track")
         self.assertContains(response, "list-document")
         self.assertContains(response, "list-overlay")
@@ -768,7 +768,7 @@ class CompletionOverlayViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
-        self.assertContains(response, "list_contributor")
+        self.assertContains(response, "list-contributor")
         self.assertContains(response, "list-track")
         self.assertContains(response, "list-document")
         self.assertContains(response, "list-overlay")
