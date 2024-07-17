@@ -277,9 +277,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
             (
                 "{0}".format(_("Visibility")),
                 [
-                    _(
-                        "In “Public” mode, the content is visible to everyone."
-                    ),
+                    _("In “Public” mode, the content is visible to everyone."),
                     _(
                         "In “Draft / Private” mode, the content shows nowhere and nobody "
                         "else but you can see it."
@@ -616,7 +614,6 @@ class VideoForm(forms.ModelForm):
     videoattrs = {
         "class": "form-control-file",
         "accept": "audio/*, video/*, .%s"
-
         % ", .".join(map(str, VIDEO_ALLOWED_EXTENSIONS)),
     }
     is_admin = False
@@ -747,16 +744,16 @@ class VideoForm(forms.ModelForm):
 
     def save_visibility(self):
         """Save video access fields depends on the visibility field value."""
-        visibility = self.cleaned_data.get('visibility')
-        if visibility == 'public':
+        visibility = self.cleaned_data.get("visibility")
+        if visibility == "public":
             self.instance.is_draft = False
             self.instance.is_restricted = False
             self.instance.password = None
-        elif visibility == 'draft':
+        elif visibility == "draft":
             self.instance.is_draft = True
             self.instance.is_restricted = False
             self.instance.password = None
-        elif visibility == 'restricted':
+        elif visibility == "restricted":
             self.instance.is_draft = False
 
     def save(self, commit=True, *args, **kwargs):
@@ -824,15 +821,14 @@ class VideoForm(forms.ModelForm):
 
     def check_visibility(self, cleaned_data) -> None:
         """Check the visibility field."""
-        visibility = cleaned_data.get('visibility', '')
-        is_restricted = cleaned_data.get('is_restricted', False)
-        password = cleaned_data.get('password', '')
-        if (
-            visibility == 'restricted'
-            and is_restricted is False and password is None
-        ):
+        visibility = cleaned_data.get("visibility", "")
+        is_restricted = cleaned_data.get("is_restricted", False)
+        password = cleaned_data.get("password", "")
+        if visibility == "restricted" and is_restricted is False and password is None:
             raise ValidationError(
-                _("If you select restricted visibility for your video, you must check the \"restricted access\" box or specify a password.")
+                _(
+                    'If you select restricted visibility for your video, you must check the "restricted access" box or specify a password.'
+                )
             )
 
     def clean(self) -> None:
@@ -967,11 +963,11 @@ class VideoForm(forms.ModelForm):
         if self.instance:
             if self.instance.is_draft:
                 self.initial["visibility"] = "draft"
-            elif (self.instance.is_restricted or self.instance.password):
+            elif self.instance.is_restricted or self.instance.password:
                 self.initial["visibility"] = "restricted"
             else:
                 self.initial["visibility"] = "public"
-        self.fields['is_draft'].widget = forms.HiddenInput()
+        self.fields["is_draft"].widget = forms.HiddenInput()
         self.order_fields(["visibility", "password"] + list(self.fields.keys()))
 
     def custom_video_form(self) -> None:
