@@ -12,6 +12,8 @@ QUESTION_DATA = {
     'short_answer': [],
 }
 
+EXECUTE_QUIZ_MIGRATIONS = False
+
 
 class QuizConfig(AppConfig):
     """Quiz config app."""
@@ -21,6 +23,7 @@ class QuizConfig(AppConfig):
     verbose_name = _("Quiz")
 
     def ready(self) -> None:
+        pre_migrate.connect(self.check_quiz_migrations, sender=self)
         pre_migrate.connect(self.save_previous_questions, sender=self)
         pre_migrate.connect(self.remove_previous_questions, sender=self)
         post_migrate.connect(self.send_previous_questions, sender=self)
@@ -52,9 +55,36 @@ class QuizConfig(AppConfig):
             print(e)
             pass
 
+    def check_quiz_migrations(self, sender, **kwargs) -> None:
+        """Save previous questions from different tables."""
+        from pod.quiz.models import MultipleChoiceQuestion, ShortAnswerQuestion, SingleChoiceQuestion, Quiz
+        QUESTION_MODELS = [MultipleChoiceQuestion, ShortAnswerQuestion, SingleChoiceQuestion]
+
+        global EXECUTE_QUIZ_MIGRATIONS
+
+        quiz = Quiz.objects.first()
+        if not quiz:
+            return
+
+        for model in QUESTION_MODELS:
+            query = f"SELECT id FROM {model.objects.model._meta.db_table} LIMIT 1"
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(query)
+                    result = cursor.fetchone()
+                    if result and isinstance(result[0], int):
+                        EXECUTE_QUIZ_MIGRATIONS = True
+                        break
+            except Exception as e:
+                print(e)
+                pass
+
     def save_previous_questions(self, sender, **kwargs) -> None:
         """Save previous questions from different tables."""
         from pod.quiz.models import MultipleChoiceQuestion, ShortAnswerQuestion, SingleChoiceQuestion
+
+        if not EXECUTE_QUIZ_MIGRATIONS:
+            return
 
         queries = {
             "single_choice": f"SELECT id, title, explanation, start_timestamp, end_timestamp, choices, quiz_id FROM {SingleChoiceQuestion.objects.model._meta.db_table}",
@@ -68,6 +98,9 @@ class QuizConfig(AppConfig):
         """Remove previous questions from different tables."""
         from pod.quiz.models import MultipleChoiceQuestion, ShortAnswerQuestion, SingleChoiceQuestion
 
+        if not EXECUTE_QUIZ_MIGRATIONS:
+            return
+
         QUESTION_MODELS = [MultipleChoiceQuestion, ShortAnswerQuestion, SingleChoiceQuestion]
 
         for model in QUESTION_MODELS:
@@ -78,6 +111,9 @@ class QuizConfig(AppConfig):
     def send_previous_questions(self, sender, **kwargs) -> None:
         """Insert previously saved questions from QUESTION_DATA."""
         from pod.quiz.views import create_question
+
+        if not EXECUTE_QUIZ_MIGRATIONS:
+            return
 
         for question_type, questions in QUESTION_DATA.items():
             for question in questions:
