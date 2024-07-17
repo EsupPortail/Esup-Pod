@@ -7,9 +7,9 @@ from django.utils.translation import gettext_lazy as _
 from django.db import transaction
 
 QUESTION_DATA = {
-    'single_choice': [],
-    'multiple_choice': [],
-    'short_answer': [],
+    "single_choice": [],
+    "multiple_choice": [],
+    "short_answer": [],
 }
 
 EXECUTE_QUIZ_MIGRATIONS = False
@@ -48,17 +48,34 @@ class QuizConfig(AppConfig):
                     question_data = question_result[5]
                     if question_type in {"single_choice", "multiple_choice"}:
                         question_data = json.loads(question_data)
-                    mapping_dict.append({
-                        "question_type": question_type, "quiz": quiz, "title": question_result[1], "explanation": question_result[2], "start_timestamp": question_result[3], "end_timestamp": question_result[4], "question_data": question_data
-                    })
+                    mapping_dict.append(
+                        {
+                            "question_type": question_type,
+                            "quiz": quiz,
+                            "title": question_result[1],
+                            "explanation": question_result[2],
+                            "start_timestamp": question_result[3],
+                            "end_timestamp": question_result[4],
+                            "question_data": question_data,
+                        }
+                    )
         except Exception as e:
             print(e)
             pass
 
     def check_quiz_migrations(self, sender, **kwargs) -> None:
         """Save previous questions from different tables."""
-        from pod.quiz.models import MultipleChoiceQuestion, ShortAnswerQuestion, SingleChoiceQuestion
-        QUESTION_MODELS = [MultipleChoiceQuestion, ShortAnswerQuestion, SingleChoiceQuestion]
+        from pod.quiz.models import (
+            MultipleChoiceQuestion,
+            ShortAnswerQuestion,
+            SingleChoiceQuestion,
+        )
+
+        QUESTION_MODELS = [
+            MultipleChoiceQuestion,
+            ShortAnswerQuestion,
+            SingleChoiceQuestion,
+        ]
 
         global EXECUTE_QUIZ_MIGRATIONS
         quiz_exist = self.check_quiz_exist()
@@ -81,6 +98,7 @@ class QuizConfig(AppConfig):
     def check_quiz_exist(self) -> bool:
         """Check if quiz exist in database."""
         from pod.quiz.models import Quiz
+
         try:
             quiz = Quiz.objects.first()
             if not quiz:
@@ -91,7 +109,11 @@ class QuizConfig(AppConfig):
 
     def save_previous_questions(self, sender, **kwargs) -> None:
         """Save previous questions from different tables."""
-        from pod.quiz.models import MultipleChoiceQuestion, ShortAnswerQuestion, SingleChoiceQuestion
+        from pod.quiz.models import (
+            MultipleChoiceQuestion,
+            ShortAnswerQuestion,
+            SingleChoiceQuestion,
+        )
 
         if not EXECUTE_QUIZ_MIGRATIONS:
             return
@@ -106,12 +128,20 @@ class QuizConfig(AppConfig):
 
     def remove_previous_questions(self, sender, **kwargs) -> None:
         """Remove previous questions from different tables."""
-        from pod.quiz.models import MultipleChoiceQuestion, ShortAnswerQuestion, SingleChoiceQuestion
+        from pod.quiz.models import (
+            MultipleChoiceQuestion,
+            ShortAnswerQuestion,
+            SingleChoiceQuestion,
+        )
 
         if not EXECUTE_QUIZ_MIGRATIONS:
             return
 
-        QUESTION_MODELS = [MultipleChoiceQuestion, ShortAnswerQuestion, SingleChoiceQuestion]
+        QUESTION_MODELS = [
+            MultipleChoiceQuestion,
+            ShortAnswerQuestion,
+            SingleChoiceQuestion,
+        ]
 
         for model in QUESTION_MODELS:
             model.objects.all().delete()
@@ -128,5 +158,13 @@ class QuizConfig(AppConfig):
         for question_type, questions in QUESTION_DATA.items():
             for question in questions:
                 print(question["question_data"])
-                create_question(question_type=question_type, quiz=question["quiz"], title=question["title"], explanation=question["explanation"], start_timestamp=question["start_timestamp"], end_timestamp=question["end_timestamp"], question_data=question["question_data"])
+                create_question(
+                    question_type=question_type,
+                    quiz=question["quiz"],
+                    title=question["title"],
+                    explanation=question["explanation"],
+                    start_timestamp=question["start_timestamp"],
+                    end_timestamp=question["end_timestamp"],
+                    question_data=question["question_data"],
+                )
         print("--- New questions saved successfuly ---")

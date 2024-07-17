@@ -87,6 +87,7 @@ class Question(models.Model):
         start_timestamp (IntegerField): Start timestamp of the answer in the video.
         end_timestamp (IntegerField): End timestamp of the answer in the video.
     """
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     quiz = models.ForeignKey(
         Quiz,
@@ -163,7 +164,9 @@ class Question(models.Model):
         Returns:
             QuestionForm: Form for the question.
         """
-        raise NotImplementedError("Subclasses of Question must implement get_question_form method.")
+        raise NotImplementedError(
+            "Subclasses of Question must implement get_question_form method."
+        )
 
     def get_answer(self) -> None:
         """
@@ -172,7 +175,9 @@ class Question(models.Model):
         Returns:
             str: Answer for the question.
         """
-        raise NotImplementedError("Subclasses of Question must implement get_answer method.")
+        raise NotImplementedError(
+            "Subclasses of Question must implement get_answer method."
+        )
 
     def get_type(self) -> None:
         """
@@ -181,7 +186,9 @@ class Question(models.Model):
         Returns:
             str: Type of the question.
         """
-        raise NotImplementedError("Subclasses of Question must implement get_type method.")
+        raise NotImplementedError(
+            "Subclasses of Question must implement get_type method."
+        )
 
     def calculate_score(self, user_answer):
         """
@@ -204,7 +211,9 @@ class Question(models.Model):
         """
         Internal method to be implemented by subclasses to calculate score.
         """
-        raise NotImplementedError("Subclasses of Question must implement _calculate_score method.")
+        raise NotImplementedError(
+            "Subclasses of Question must implement _calculate_score method."
+        )
 
 
 class SingleChoiceQuestion(Question):
@@ -486,6 +495,10 @@ class ShortAnswerQuestion(Question):
         Returns:
             float: The calculated score, a value between 0 and 1.
         """
-        if user_answer is not None and user_answer.strip() != "" and correct_answer is not None:
+        if (
+            user_answer is not None
+            and user_answer.strip() != ""
+            and correct_answer is not None
+        ):
             return 1.0 if user_answer.lower() == correct_answer.lower() else 0.0
         return 0.0
