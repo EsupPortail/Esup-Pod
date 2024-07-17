@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-17 08:31+0000\n"
+"POT-Creation-Date: 2024-07-17 09:34+0000\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1418,6 +1418,7 @@ msgstr ""
 #: pod/chapter/templates/video_chapter.html
 #: pod/completion/templates/video_completion.html
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
+#: pod/quiz/templates/quiz/question_help_aside.html
 msgid "Help"
 msgstr ""
 
@@ -6791,7 +6792,7 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/playlist/templates/playlist/playlist_link.html
-#: pod/playlist/tests/test_views.py pod/playlist/views.py
+#: pod/playlist/tests/test_views.py
 msgid "Edit the playlist"
 msgstr ""
 
@@ -7112,6 +7113,11 @@ msgid "The data sent to create the playlist are invalid."
 msgstr ""
 
 #: pod/playlist/views.py
+#, python-brace-format
+msgid "Edit playlist “{playlist.name}”"
+msgstr ""
+
+#: pod/playlist/views.py
 msgid "JSON in wrong format"
 msgstr ""
 
@@ -7343,23 +7349,19 @@ msgstr ""
 msgid "Redaction"
 msgstr ""
 
-#: pod/quiz/forms.py
+#: pod/quiz/forms.py pod/quiz/templates/quiz/question_help_aside.html
 msgid "Short answer"
-msgstr ""
-
-#: pod/quiz/forms.py
-msgid "Long answer"
 msgstr ""
 
 #: pod/quiz/forms.py
 msgid "Choice"
 msgstr ""
 
-#: pod/quiz/forms.py
+#: pod/quiz/forms.py pod/quiz/templates/quiz/question_help_aside.html
 msgid "Single choice"
 msgstr ""
 
-#: pod/quiz/forms.py
+#: pod/quiz/forms.py pod/quiz/templates/quiz/question_help_aside.html
 msgid "Multiple choice"
 msgstr ""
 
@@ -7452,14 +7454,6 @@ msgstr ""
 
 #: pod/quiz/forms.py
 msgid "Write a short answer."
-msgstr ""
-
-#: pod/quiz/forms.py pod/quiz/models.py
-msgid "Long answer question"
-msgstr ""
-
-#: pod/quiz/forms.py
-msgid "Write a long answer."
 msgstr ""
 
 #: pod/quiz/models.py
@@ -7575,14 +7569,6 @@ msgstr ""
 msgid "Short answer questions"
 msgstr ""
 
-#: pod/quiz/models.py
-msgid "Please choose an answer."
-msgstr ""
-
-#: pod/quiz/models.py
-msgid "Long answer questions"
-msgstr ""
-
 #: pod/quiz/templates/quiz/create_edit_quiz.html
 msgid "Add a question"
 msgstr ""
@@ -7621,6 +7607,42 @@ msgstr ""
 msgid "One or more errors have been found in the question."
 msgstr ""
 
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For short answer questions, ensure responses are between 1 and 250 "
+"characters. This type of question is ideal for brief, specific answers."
+msgstr ""
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For short answer questions, please provide a response between 1 and 250 "
+"characters. Be concise and specific."
+msgstr ""
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"Single choice questions require participants to select one answer from a "
+"list of options. This is useful for questions with a clear, correct answer."
+msgstr ""
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For single choice questions, select only one answer from the provided "
+"options. Read each option carefully before making your selection."
+msgstr ""
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"Multiple choice questions allow participants to select more than one answer. "
+"Use this type for questions where more than one option could be correct."
+msgstr ""
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For multiple choice questions, select all answers that apply. There may be "
+"more than one correct answer."
+msgstr ""
+
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "This quiz is in <strong>draft</strong>."
 msgstr ""
@@ -7648,6 +7670,12 @@ msgstr ""
 #: pod/quiz/templates/quiz/video_quiz.html
 #, python-format
 msgid "For the question “%(title)s”, %(error)s."
+msgstr ""
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid ""
+"The creator of this quiz has decided not to display the answers and your "
+"score."
 msgstr ""
 
 #: pod/quiz/templates/quiz/video_quiz.html
@@ -8398,7 +8426,8 @@ msgstr ""
 #: pod/video/forms.py
 msgid ""
 "In “Restricted access” mode, you can add a password which will be asked to "
-"anybody willing to watch your content."
+"anybody willing to watch your content. You can add tokens for allow direct "
+"access by link."
 msgstr ""
 
 #: pod/video/forms.py
@@ -9157,6 +9186,11 @@ msgstr ""
 
 #: pod/video/templates/videos/add_video.html
 msgid "The file extension is not in the allowed extension:"
+msgstr ""
+
+#: pod/video/templates/videos/card.html
+#: pod/video/templates/videos/card_select.html
+msgid "This content contains a quiz."
 msgstr ""
 
 #: pod/video/templates/videos/card.html

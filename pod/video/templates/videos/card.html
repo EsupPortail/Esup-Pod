@@ -1,113 +1,121 @@
 {% load i18n %}
 {% load playlist_buttons video_tags %}
+{% load video_quiz %}
 
 {% spaceless %}
-{% if playlist %}
-  {% load playlist_buttons %}
-  {% can_see_playlist_video video playlist as can_see_video %}
-{% endif %}
-<div class="card pod-card--video video-card {% if playlist and can_see_video == False %}disabled{% endif %}">
-  <!-- card.html -->
-  <div class="card-header">
-    <div class="d-flex justify-content-between align-items-center">
-      <small class="text-muted time">{{video.duration_in_time}}</small>
-      <span class="text-muted small d-flex">
-        {% if video.password %}
-          <span title="{% trans 'This content is password protected.' %}"
-            data-bs-toggle="tooltip" data-bs-placement="left">
-            <i class="bi bi-key" aria-hidden="true"></i>
-          </span>
+  {% if playlist %}
+    {% load playlist_buttons %}
+    {% can_see_playlist_video video playlist as can_see_video %}
+  {% endif %}
+  <div class="card pod-card--video video-card {% if playlist and can_see_video == False %}disabled{% endif %}">
+    <!-- card.html -->
+    <div class="card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <small class="text-muted time">{{video.duration_in_time}}</small>
+        <span class="text-muted small d-flex">
+          {% is_quiz_exists video as is_quiz_exists %}
+          {% if is_quiz_exists %}
+            <span title="{% trans 'This content contains a quiz.' %}"
+              data-bs-toggle="tooltip" data-bs-placement="left">
+              <i class="bi bi-controller" aria-hidden="true"></i>
+            </span>
+          {% endif %}
+          {% if video.password %}
+            <span title="{% trans 'This content is password protected.' %}"
+              data-bs-toggle="tooltip" data-bs-placement="left">
+              <i class="bi bi-key" aria-hidden="true"></i>
+            </span>
+          {% endif %}
+          {% if video.is_restricted %}
+            <span title="{% trans 'This content has restricted access.' %}"
+              data-bs-toggle="tooltip" data-bs-placement="left">
+              <i class="bi bi-lock" aria-hidden="true"></i>
+            </span>
+          {% endif %}
+          {% if video.is_draft %}
+            <span title="{% trans 'This content is in draft.' %}" data-bs-toggle="tooltip" data-bs-placement="left">
+              <i class="bi bi-incognito" aria-hidden="true"></i>
+            </span>
+          {% endif %}
+          {% if video.chapter_set.all %}
+            <span title="{% trans 'This content is chaptered.' %}" data-bs-toggle="tooltip" data-bs-placement="left">
+              <i class="bi bi-card-list" aria-hidden="true"></i>
+            </span>
+          {% endif %}
+          {% if video.is_video %}
+            <span title="{% trans 'Video content.' %}" data-bs-toggle="tooltip" data-bs-placement="left">
+              <i class="bi bi-film" aria-hidden="true"></i>
+            </span>
+          {% else %}
+            <span title="{% trans 'Audio content.' %}" data-bs-toggle="tooltip" data-bs-placement="left">
+              <i class="bi bi-soundwave" aria-hidden="true"></i>
+            </span>
+          {% endif %}
+        </span>
+      </div>
+
+    </div>
+    <div class="card-thumbnail">
+      <a class="link-center-pod"
+      {% if playlist %}
+        {% if can_see_video %}
+          href="{% url 'playlist:start-playlist' slug=playlist.slug video=video.slug %}"
         {% endif %}
-        {% if video.is_restricted %}
-          <span title="{% trans 'This content has restricted access.' %}"
-            data-bs-toggle="tooltip" data-bs-placement="left">
-            <i class="bi bi-lock" aria-hidden="true"></i>
-          </span>
-        {% endif %}
-        {% if video.is_draft %}
-          <span title="{% trans 'This content is in draft.' %}" data-bs-toggle="tooltip" data-bs-placement="left">
-            <i class="bi bi-incognito" aria-hidden="true"></i>
-          </span>
-        {% endif %}
-        {% if video.chapter_set.all %}
-          <span title="{% trans 'This content is chaptered.' %}" data-bs-toggle="tooltip" data-bs-placement="left">
-            <i class="bi bi-card-list" aria-hidden="true"></i>
-          </span>
-        {% endif %}
-        {% if video.is_video %}
-          <span title="{% trans 'Video content.' %}" data-bs-toggle="tooltip" data-bs-placement="left">
-            <i class="bi bi-film" aria-hidden="true"></i>
-          </span>
+      {% else %}
+        {% if channel %}
+          {% if theme %}
+            href="{% url 'channel-video:video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}"
+          {% else %}
+            href="{% url 'channel-video:video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}"
+          {% endif %}
         {% else %}
-          <span title="{% trans 'Audio content.' %}" data-bs-toggle="tooltip" data-bs-placement="left">
-            <i class="bi bi-soundwave" aria-hidden="true"></i>
-          </span>
+          href="{{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}"
+        {% endif %}
+      {% endif %}
+      >
+        {{video.get_thumbnail_card|safe}}
+      </a>
+      {% if request.user.is_authenticated %}
+        {% get_percent_marker_for_user video request.user as percent_view %}
+        {% if percent_view != 0 %}
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width:{{percent_view}}%" aria-valuenow="{{percent_view}}" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+    <div class="card-body px-3 py-2">
+      {# TODO: replace test below by "if video.is_editable"? #}
+      {% if request.user.is_authenticated %}
+        <footer class="card-footer card-footer-pod p-0 m-0">
+          {% include "videos/link_video.html" %}
+        </footer>
+      {% endif %}
+      <span class="small video-title">
+        {% if playlist %}
+          {% if can_see_video %}
+            <a href="{% url 'playlist:start-playlist' slug=playlist.slug video=video.slug %}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
+              {{video.title|capfirst|truncatechars:43}}
+            </a>
+          {% else %}
+            <span {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
+              {{video.title|capfirst|truncatechars:43}}
+            </span>
+          {% endif %}
+        {% elif channel %}
+          {% if theme %}
+            <a href="{% url 'channel-video:video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
+              {{video.title|capfirst|truncatechars:43}}
+            </a>
+          {% else %}
+            <a href="{% url 'channel-video:video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
+              {{video.title|capfirst|truncatechars:43}}
+            </a>
+          {% endif %}
+        {% else %}
+          <a href="{{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>{{video.title|capfirst|truncatechars:43}}</a>
         {% endif %}
       </span>
     </div>
-
   </div>
-  <div class="card-thumbnail">
-    <a class="link-center-pod"
-    {% if playlist %}
-      {% if can_see_video %}
-        href="{% url 'playlist:start-playlist' slug=playlist.slug video=video.slug %}"
-      {% endif %}
-    {% else %}
-      {% if channel %}
-        {% if theme %}
-          href="{% url 'channel-video:video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}"
-        {% else %}
-          href="{% url 'channel-video:video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}"
-        {% endif %}
-      {% else %}
-        href="{{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}"
-      {% endif %}
-    {% endif %}
-    >
-      {{video.get_thumbnail_card|safe}}
-    </a>
-    {% if request.user.is_authenticated %}
-      {% get_percent_marker_for_user video request.user as percent_view %}
-      {% if percent_view != 0 %}
-      <div class="progress">
-        <div class="progress-bar" role="progressbar" style="width:{{percent_view}}%" aria-valuenow="{{percent_view}}" aria-valuemin="0" aria-valuemax="100"></div>
-      </div>
-      {% endif %}
-    {% endif %}
-  </div>
-  <div class="card-body px-3 py-2">
-    {# TODO: replace test below by "if video.is_editable"? #}
-    {% if request.user.is_authenticated %}
-      <footer class="card-footer card-footer-pod p-0 m-0">
-        {% include "videos/link_video.html" %}
-      </footer>
-    {% endif %}
-    <span class="small video-title">
-      {% if playlist %}
-        {% if can_see_video %}
-          <a href="{% url 'playlist:start-playlist' slug=playlist.slug video=video.slug %}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
-            {{video.title|capfirst|truncatechars:43}}
-          </a>
-        {% else %}
-          <span {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
-            {{video.title|capfirst|truncatechars:43}}
-          </span>
-        {% endif %}
-      {% elif channel %}
-        {% if theme %}
-          <a href="{% url 'channel-video:video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
-            {{video.title|capfirst|truncatechars:43}}
-          </a>
-        {% else %}
-          <a href="{% url 'channel-video:video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>
-            {{video.title|capfirst|truncatechars:43}}
-          </a>
-        {% endif %}
-      {% else %}
-        <a href="{{video.get_absolute_url}}{% if video.is_draft and fromEvent %}{{ video.get_hashkey }}{% endif %}" {% if video.title|length > 43 %}title="{{video.title|capfirst}}"{% endif %}>{{video.title|capfirst|truncatechars:43}}</a>
-      {% endif %}
-    </span>
-  </div>
-</div>
 {% endspaceless %}

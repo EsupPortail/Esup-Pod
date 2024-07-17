@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-17 08:31+0000\n"
+"POT-Creation-Date: 2024-07-17 09:34+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1497,6 +1497,7 @@ msgstr "Gérer la vidéo"
 #: pod/chapter/templates/video_chapter.html
 #: pod/completion/templates/video_completion.html
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
+#: pod/quiz/templates/quiz/question_help_aside.html
 msgid "Help"
 msgstr "Aide"
 
@@ -7281,7 +7282,7 @@ msgstr "Accéder aux listes de lecture"
 
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/playlist/templates/playlist/playlist_link.html
-#: pod/playlist/tests/test_views.py pod/playlist/views.py
+#: pod/playlist/tests/test_views.py
 msgid "Edit the playlist"
 msgstr "Éditer la liste de lecture"
 
@@ -7613,6 +7614,11 @@ msgstr ""
 "Les données envoyées pour créer la liste de lecture ne sont pas valides."
 
 #: pod/playlist/views.py
+#, python-brace-format
+msgid "Edit playlist “{playlist.name}”"
+msgstr "Éditer la liste de lecture « {playlist.name} »"
+
+#: pod/playlist/views.py
 msgid "JSON in wrong format"
 msgstr "JSON au mauvais format"
 
@@ -7850,23 +7856,19 @@ msgstr "Autoriser"
 msgid "Redaction"
 msgstr "Rédaction"
 
-#: pod/quiz/forms.py
+#: pod/quiz/forms.py pod/quiz/templates/quiz/question_help_aside.html
 msgid "Short answer"
 msgstr "Réponse courte"
-
-#: pod/quiz/forms.py
-msgid "Long answer"
-msgstr "Réponse longue"
 
 #: pod/quiz/forms.py
 msgid "Choice"
 msgstr "Choix"
 
-#: pod/quiz/forms.py
+#: pod/quiz/forms.py pod/quiz/templates/quiz/question_help_aside.html
 msgid "Single choice"
 msgstr "Choix unique"
 
-#: pod/quiz/forms.py
+#: pod/quiz/forms.py pod/quiz/templates/quiz/question_help_aside.html
 msgid "Multiple choice"
 msgstr "Choix multiples"
 
@@ -7964,14 +7966,6 @@ msgstr "Question à réponse courte"
 #: pod/quiz/forms.py
 msgid "Write a short answer."
 msgstr "Écrivez une réponse courte."
-
-#: pod/quiz/forms.py pod/quiz/models.py
-msgid "Long answer question"
-msgstr "Question à réponse longue"
-
-#: pod/quiz/forms.py
-msgid "Write a long answer."
-msgstr "Écrivez une réponse longue."
 
 #: pod/quiz/models.py
 msgid "Choose a video associated with the quiz."
@@ -8091,14 +8085,6 @@ msgstr "Veuillez choisir une réponse entre 1 et 250 caractères."
 msgid "Short answer questions"
 msgstr "Questions à réponse courte"
 
-#: pod/quiz/models.py
-msgid "Please choose an answer."
-msgstr "Veuillez choisir une réponse."
-
-#: pod/quiz/models.py
-msgid "Long answer questions"
-msgstr "Questions à réponse longue"
-
 #: pod/quiz/templates/quiz/create_edit_quiz.html
 msgid "Add a question"
 msgstr "Ajouter une question"
@@ -8139,6 +8125,58 @@ msgstr "Supprimer la question n°"
 msgid "One or more errors have been found in the question."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans la question."
 
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For short answer questions, ensure responses are between 1 and 250 "
+"characters. This type of question is ideal for brief, specific answers."
+msgstr ""
+"Pour les questions à réponse courte, veillez à ce que les réponses soient "
+"comprises entre 1 et 250 caractères. Ce type de question est idéal pour des "
+"réponses brèves et spécifiques."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For short answer questions, please provide a response between 1 and 250 "
+"characters. Be concise and specific."
+msgstr ""
+"Pour les questions à réponse courte, veuillez fournir une réponse de 1 à 250 "
+"caractères. Soyez concis et précis."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"Single choice questions require participants to select one answer from a "
+"list of options. This is useful for questions with a clear, correct answer."
+msgstr ""
+"Les questions à choix unique demandent aux participants de sélectionner une "
+"réponse parmi une liste d'options. Elles sont utiles pour les questions dont "
+"la réponse est claire et correcte."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For single choice questions, select only one answer from the provided "
+"options. Read each option carefully before making your selection."
+msgstr ""
+"Pour les questions à choix unique, ne sélectionnez qu'une seule réponse "
+"parmi les options proposées. Lisez attentivement chaque option avant de "
+"faire votre choix."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"Multiple choice questions allow participants to select more than one answer. "
+"Use this type for questions where more than one option could be correct."
+msgstr ""
+"Les questions à choix multiples permettent aux participants de sélectionner "
+"plusieurs réponses. Utilisez ce type de question pour les questions où "
+"plusieurs options peuvent être correctes."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For multiple choice questions, select all answers that apply. There may be "
+"more than one correct answer."
+msgstr ""
+"Pour les questions à choix multiples, sélectionnez toutes les réponses qui "
+"s'appliquent. Il peut y avoir plus d'une réponse correcte."
+
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "This quiz is in <strong>draft</strong>."
 msgstr "Ce quiz est en mode <strong>brouillon</strong>."
@@ -8167,6 +8205,14 @@ msgstr "Erreur constatée dans le formulaire"
 #, python-format
 msgid "For the question “%(title)s”, %(error)s."
 msgstr "Pour la question « %(title)s », %(error)s."
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid ""
+"The creator of this quiz has decided not to display the answers and your "
+"score."
+msgstr ""
+"Le créateur de ce quiz a décidé de ne pas afficher les réponses et votre "
+"score."
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Correct answer:"
@@ -8973,7 +9019,7 @@ msgstr "Dans le mode « Public », le contenu est visible par tout le monde."
 #: pod/video/forms.py
 msgid ""
 "In “Draft / Private” mode, the content shows nowhere and nobody else but you "
-"can see it. You can add tokens for allow direct access by link."
+"can see it."
 msgstr ""
 "En mode “Brouillon / Privé“, le contenu n'apparaît nulle part et personne "
 "d'autre que vous ne peut le voir. Vous pouvez ajouter des jetons pour "
@@ -8983,15 +9029,18 @@ msgstr ""
 msgid ""
 "In “Restricted access” mode, you can choose the restrictions for the video."
 msgstr ""
-"En mode « Accès restreint », vous pouvez choisir les restrictions pour la video."
+"En mode « Accès restreint », vous pouvez choisir les restrictions pour la "
+"video."
 
 #: pod/video/forms.py
 msgid ""
 "In “Restricted access” mode, you can add a password which will be asked to "
-"anybody willing to watch your content."
+"anybody willing to watch your content. You can add tokens for allow direct "
+"access by link."
 msgstr ""
-"En mode « Accès restreint », vous pouvez ajouter un mot de passe qui sera demandé à "
-"toute personne souhaitant regarder votre contenu."
+"En mode « Accès restreint », vous pouvez ajouter un mot de passe qui sera "
+"demandé à toute personne souhaitant regarder votre contenu. Vous pouvez "
+"ajouter des jetons pour permettre un accès direct par lien."
 
 #: pod/video/forms.py
 msgid ""
@@ -9823,6 +9872,11 @@ msgid "The file extension is not in the allowed extension:"
 msgstr ""
 "Cette extension de fichier n’est pas présente dans les extensions "
 "autorisées :"
+
+#: pod/video/templates/videos/card.html
+#: pod/video/templates/videos/card_select.html
+msgid "This content contains a quiz."
+msgstr "Ce contenu contient un quiz."
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
@@ -11127,6 +11181,21 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Long answer"
+#~ msgstr "Réponse longue"
+
+#~ msgid "Long answer question"
+#~ msgstr "Question à réponse longue"
+
+#~ msgid "Write a long answer."
+#~ msgstr "Écrivez une réponse longue."
+
+#~ msgid "Please choose an answer."
+#~ msgstr "Veuillez choisir une réponse."
+
+#~ msgid "Long answer questions"
+#~ msgstr "Questions à réponse longue"
 
 #~ msgid "Restricted"
 #~ msgstr "Restreint"

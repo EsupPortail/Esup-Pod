@@ -35,7 +35,6 @@ def list_meeting(request):
         attendee__user_id=request.user.id, recording_available=True
     )
     meetings_list = meetings_list.order_by("-session_date")
-    # print(str(meetings_list.query))
 
     page = request.GET.get("page", 1)
 
@@ -145,7 +144,6 @@ def live_list_meeting(request):
         last_date_in_progress__gte=dateSince10Min,
     )
     meetings_list = meetings_list.order_by("-session_date")
-    # print(str(meetings_list.query))
 
     meetings_list = check_meetings_have_live_in_progress(meetings_list, request)
 
