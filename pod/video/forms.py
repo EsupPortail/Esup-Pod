@@ -275,28 +275,25 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 ],
             ),
             (
-                "{0}".format(_("Draft")),
+                "{0}".format(_("Visibility")),
                 [
                     _(
-                        "In “Draft mode”, the content shows nowhere and nobody "
+                        "In “Public” mode, the content is visible to everyone."
+                    ),
+                    _(
+                        "In “Draft / Private” mode, the content shows nowhere and nobody "
                         "else but you can see it."
-                    )
-                ],
-            ),
-            (
-                "{0}".format(_("Authentication restricted access")),
-                [
+                    ),
                     _(
-                        "If you don’t select “Draft mode”, you can restrict "
-                        "the content access to only people who can log in"
-                    )
+                        "In “Restricted access” mode, you can choose the restrictions for the video."
+                    ),
                 ],
             ),
             (
                 "{0}".format(_("Password")),
                 [
                     _(
-                        "If you don’t select “Draft mode”, you can add a password "
+                        "In “Restricted access” mode, you can add a password "
                         "which will be asked to anybody willing to watch "
                         "your content."
                     ),
@@ -304,6 +301,24 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                         "If your video is in a playlist the password of your "
                         "video will be removed automatically."
                     ),
+                ],
+            ),
+            (
+                "{0}".format(_("Authentication restricted access")),
+                [
+                    _(
+                        "In “Restricted access” mode, you can restrict "
+                        "the content access to only people who can log in"
+                    )
+                ],
+            ),
+            (
+                "{0}".format(_("Groups")),
+                [
+                    _(
+                        "In “Restricted access” mode, you can restrict "
+                        "the content access to only people who are in these groups."
+                    )
                 ],
             ),
         ]
