@@ -751,9 +751,11 @@ class VideoForm(forms.ModelForm):
         if visibility == 'public':
             self.instance.is_draft = False
             self.instance.is_restricted = False
+            self.instance.password = None
         elif visibility == 'draft':
             self.instance.is_draft = True
             self.instance.is_restricted = False
+            self.instance.password = None
         elif visibility == 'restricted':
             self.instance.is_draft = False
 
@@ -1078,7 +1080,7 @@ class VideoForm(forms.ModelForm):
             "date_evt": widgets.AdminDateWidget,
             "restrict_access_to_groups": AddAccessGroupWidget,
             "video": CustomClearableFileInput,
-            "password": forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+            "password": forms.TextInput(),
         }
         initial = {
             "date_added": datetime.date.today(),
