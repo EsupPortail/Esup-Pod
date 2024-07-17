@@ -10,7 +10,9 @@ document.addEventListener(
   function () {
     const visibilitySelect = document.getElementById("id_visibility");
     const passwordField = document.getElementById("id_password").parentElement;
-    visibilitySelect.addEventListener('change', () => toggleFields(visibilitySelect, passwordField));
+    visibilitySelect.addEventListener("change", () =>
+      toggleFields(visibilitySelect, passwordField),
+    );
     toggleFields(visibilitySelect, passwordField);
     // Display type description as field help when changed
     const target = "id_type";
@@ -25,7 +27,6 @@ document.addEventListener(
   false,
 );
 
-
 /**
  * Apply the select2 style to the select elements.
  */
@@ -37,8 +38,6 @@ function applySelect2Style() {
   });
 }
 
-
-
 /**
  * Toggle the password field visibility based on the visibility select value.
  *
@@ -46,7 +45,9 @@ function applySelect2Style() {
  * @param passwordField {HTMLElement} - The password field container.
  */
 function toggleFields(visibilitySelect, passwordField) {
-  const idRestrictToGroupsField = document.getElementById("id_restrict_access_to_groups");
+  const idRestrictToGroupsField = document.getElementById(
+    "id_restrict_access_to_groups",
+  );
   const idIsRestrictedField = document.getElementById("id_is_restricted");
   if (visibilitySelect.value === "restricted") {
     passwordField.closest(".field-password").classList.add("show");
@@ -54,15 +55,21 @@ function toggleFields(visibilitySelect, passwordField) {
       // For first call, apply select2 style to the select elements.
       if (idIsRestrictedField.checked) {
         applySelect2Style();
-        idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.add("show");
+        idRestrictToGroupsField
+          .closest(".field-restrict_access_to_groups")
+          .classList.add("show");
       }
       // ---
       idIsRestrictedField.addEventListener("change", () => {
         if (idIsRestrictedField.checked) {
           applySelect2Style();
-          idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.add("show");
+          idRestrictToGroupsField
+            .closest(".field-restrict_access_to_groups")
+            .classList.add("show");
         } else {
-          idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.remove("show");
+          idRestrictToGroupsField
+            .closest(".field-restrict_access_to_groups")
+            .classList.remove("show");
         }
       });
       idIsRestrictedField.closest(".field-is_restricted").classList.add("show");
@@ -80,15 +87,18 @@ function toggleFields(visibilitySelect, passwordField) {
           });
         });
       if (idRestrictToGroupsField) {
-        idRestrictToGroupsField.closest(".field-restrict_access_to_groups").classList.remove("show");
+        idRestrictToGroupsField
+          .closest(".field-restrict_access_to_groups")
+          .classList.remove("show");
       }
       if (idIsRestrictedField) {
-        idIsRestrictedField.closest(".field-is_restricted").classList.remove("show");
+        idIsRestrictedField
+          .closest(".field-is_restricted")
+          .classList.remove("show");
       }
     }
   }
 }
-
 
 /**
  * Display the description of the selected option in a select box.
@@ -221,7 +231,7 @@ if (document.getElementById("video_form")) {
 const notificationMessage = document.querySelector(
   "#notification-toast>.toast-body>p",
 );
-if(notificationMessage) {
+if (notificationMessage) {
   notificationMessage.textContent = gettext(
     "Get notified when the video encoding is finished.",
   );
