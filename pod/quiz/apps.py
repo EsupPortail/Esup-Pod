@@ -57,16 +57,12 @@ class QuizConfig(AppConfig):
 
     def check_quiz_migrations(self, sender, **kwargs) -> None:
         """Save previous questions from different tables."""
-        from pod.quiz.models import MultipleChoiceQuestion, ShortAnswerQuestion, SingleChoiceQuestion, Quiz
+        from pod.quiz.models import MultipleChoiceQuestion, ShortAnswerQuestion, SingleChoiceQuestion
         QUESTION_MODELS = [MultipleChoiceQuestion, ShortAnswerQuestion, SingleChoiceQuestion]
 
         global EXECUTE_QUIZ_MIGRATIONS
-
-        try:
-            quiz = Quiz.objects.first()
-            if not quiz:
-                return
-        except Exception:
+        quiz_exist = self.check_quiz_exist()
+        if not quiz_exist:
             return
 
         for model in QUESTION_MODELS:
@@ -81,6 +77,17 @@ class QuizConfig(AppConfig):
             except Exception as e:
                 print(e)
                 pass
+
+    def check_quiz_exist(self) -> bool:
+        """Check if quiz exist in database."""
+        from pod.quiz.models import Quiz
+        try:
+            quiz = Quiz.objects.first()
+            if not quiz:
+                return False
+            return True
+        except Exception:
+            return False
 
     def save_previous_questions(self, sender, **kwargs) -> None:
         """Save previous questions from different tables."""
