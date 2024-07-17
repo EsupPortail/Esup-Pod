@@ -62,8 +62,11 @@ class QuizConfig(AppConfig):
 
         global EXECUTE_QUIZ_MIGRATIONS
 
-        quiz = Quiz.objects.first()
-        if not quiz:
+        try:
+            quiz = Quiz.objects.first()
+            if not quiz:
+                return
+        except Exception:
             return
 
         for model in QUESTION_MODELS:
