@@ -295,7 +295,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                     _(
                         "In “Restricted access” mode, you can add a password "
                         "which will be asked to anybody willing to watch "
-                        "your content."
+                        "your content. You can add tokens for allow direct access by link."
                     ),
                     _(
                         "If your video is in a playlist the password of your "
