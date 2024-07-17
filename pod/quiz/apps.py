@@ -34,6 +34,7 @@ class QuizConfig(AppConfig):
             mapping_dict (dict): The dictionary.
         """
         from pod.quiz.models import Quiz
+        import json
 
         try:
             with connection.cursor() as c:
@@ -41,8 +42,11 @@ class QuizConfig(AppConfig):
                 results = c.fetchall()
                 for question_result in results:
                     quiz = Quiz.objects.get(id=question_result[6])
+                    question_data = question_result[5]
+                    if question_type in {"single_choice", "multiple_choice"}:
+                        question_data = json.loads(question_data)
                     mapping_dict.append({
-                        "question_type": question_type, "quiz": quiz, "title": question_result[1], "explanation": question_result[2], "start_timestamp": question_result[3], "end_timestamp": question_result[4], "question_data": question_result[5]
+                        "question_type": question_type, "quiz": quiz, "title": question_result[1], "explanation": question_result[2], "start_timestamp": question_result[3], "end_timestamp": question_result[4], "question_data": question_data
                     })
         except Exception as e:
             print(e)
@@ -77,5 +81,6 @@ class QuizConfig(AppConfig):
 
         for question_type, questions in QUESTION_DATA.items():
             for question in questions:
-                create_question(question_type=question_type, quiz=question["quiz"], title=question["title"], explanation=question["explanation"], start_timestamp=question["start_timestamp"], end_timestamp=question["end_timestamp"], question_data=["question_data"])
+                print(question["question_data"])
+                create_question(question_type=question_type, quiz=question["quiz"], title=question["title"], explanation=question["explanation"], start_timestamp=question["start_timestamp"], end_timestamp=question["end_timestamp"], question_data=question["question_data"])
         print("--- New questions saved successfuly ---")
