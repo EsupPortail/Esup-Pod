@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-16 09:09+0000\n"
+"POT-Creation-Date: 2024-07-17 08:31+0000\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -902,7 +902,6 @@ msgstr ""
 
 #: pod/bbb/models.py pod/live/models.py pod/live/templates/live/event_card.html
 #: pod/meeting/models.py pod/recorder/models.py pod/video/forms.py
-#: pod/video/models.py
 msgid "Restricted access"
 msgstr ""
 
@@ -2374,7 +2373,7 @@ msgstr ""
 
 #: pod/dressing/models.py pod/enrichment/forms.py pod/enrichment/models.py
 #: pod/live/models.py pod/meeting/models.py pod/podfile/models.py
-#: pod/recorder/models.py pod/video/models.py
+#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
 msgid "Groups"
 msgstr ""
 
@@ -3592,7 +3591,7 @@ msgid "Url of the embedded site to display on aside"
 msgstr ""
 
 #: pod/live/models.py pod/quiz/forms.py pod/quiz/models.py
-#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
+#: pod/recorder/models.py pod/video/models.py
 msgid "Draft"
 msgstr ""
 
@@ -6706,7 +6705,7 @@ msgstr ""
 
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
-#: pod/video/models.py
+#: pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/video_note_comments_display.html
 #: pod/video/templates/videos/video_note_display.html
 msgid "Public"
@@ -8401,27 +8400,50 @@ msgid ""
 msgstr ""
 
 #: pod/video/forms.py
-msgid ""
-"In “Draft mode”, the content shows nowhere and nobody else but you can see "
-"it."
+msgid "Visibility"
+msgstr ""
+
+#: pod/video/forms.py
+msgid "In “Public” mode, the content is visible to everyone."
 msgstr ""
 
 #: pod/video/forms.py
 msgid ""
-"If you don’t select “Draft mode”, you can restrict the content access to "
-"only people who can log in"
+"In “Draft / Private” mode, the content shows nowhere and nobody else but you "
+"can see it."
 msgstr ""
 
 #: pod/video/forms.py
 msgid ""
-"If you don’t select “Draft mode”, you can add a password which will be asked "
-"to anybody willing to watch your content."
+"In “Restricted access” mode, you can choose the restrictions for the video."
+msgstr ""
+
+#: pod/video/forms.py
+msgid ""
+"In “Restricted access” mode, you can add a password which will be asked to "
+"anybody willing to watch your content."
 msgstr ""
 
 #: pod/video/forms.py
 msgid ""
 "If your video is in a playlist the password of your video will be removed "
 "automatically."
+msgstr ""
+
+#: pod/video/forms.py pod/video/models.py
+msgid "Authentication restricted access"
+msgstr ""
+
+#: pod/video/forms.py
+msgid ""
+"In “Restricted access” mode, you can restrict the content access to only "
+"people who can log in"
+msgstr ""
+
+#: pod/video/forms.py
+msgid ""
+"In “Restricted access” mode, you can restrict the content access to only "
+"people who are in these groups."
 msgstr ""
 
 #: pod/video/forms.py pod/video/templates/videos/add_video.html
@@ -8460,6 +8482,10 @@ msgid "Users can only add videos to this channel"
 msgstr ""
 
 #: pod/video/forms.py
+msgid "Draft / Private"
+msgstr ""
+
+#: pod/video/forms.py
 msgid "Source file"
 msgstr ""
 
@@ -8478,6 +8504,12 @@ msgstr ""
 
 #: pod/video/forms.py
 msgid "The deletion date can’t be earlier than today."
+msgstr ""
+
+#: pod/video/forms.py
+msgid ""
+"If you select restricted visibility for your video, you must check the "
+"\"restricted access\" box or specify a password."
 msgstr ""
 
 #: pod/video/forms.py

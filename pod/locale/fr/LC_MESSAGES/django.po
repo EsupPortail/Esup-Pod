@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-16 09:09+0000\n"
+"POT-Creation-Date: 2024-07-17 08:31+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
+"Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -936,7 +936,6 @@ msgstr ""
 
 #: pod/bbb/models.py pod/live/models.py pod/live/templates/live/event_card.html
 #: pod/meeting/models.py pod/recorder/models.py pod/video/forms.py
-#: pod/video/models.py
 msgid "Restricted access"
 msgstr "Accès restreint"
 
@@ -2505,7 +2504,7 @@ msgstr ""
 
 #: pod/dressing/models.py pod/enrichment/forms.py pod/enrichment/models.py
 #: pod/live/models.py pod/meeting/models.py pod/podfile/models.py
-#: pod/recorder/models.py pod/video/models.py
+#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
 msgid "Groups"
 msgstr "Groupes"
 
@@ -3845,7 +3844,7 @@ msgid "Url of the embedded site to display on aside"
 msgstr "Lien du site à intégrer sous forme d’iframe à droite du live"
 
 #: pod/live/models.py pod/quiz/forms.py pod/quiz/models.py
-#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
+#: pod/recorder/models.py pod/video/models.py
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -7184,7 +7183,7 @@ msgstr ""
 
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
-#: pod/video/models.py
+#: pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/video_note_comments_display.html
 #: pod/video/templates/videos/video_note_display.html
 msgid "Public"
@@ -9005,28 +9004,35 @@ msgstr ""
 "besoins."
 
 #: pod/video/forms.py
-msgid ""
-"In “Draft mode”, the content shows nowhere and nobody else but you can see "
-"it."
-msgstr ""
-"En \"Mode brouillon\", le contenu n’apparaîtra nul part et uniquement vous "
-"pourrez le voir."
+msgid "Visibility"
+msgstr "Visibilité"
+
+#: pod/video/forms.py
+msgid "In “Public” mode, the content is visible to everyone."
+msgstr "Dans le mode « Public », le contenu est visible par tout le monde."
 
 #: pod/video/forms.py
 msgid ""
-"If you don’t select “Draft mode”, you can restrict the content access to "
-"only people who can log in"
+"In “Draft / Private” mode, the content shows nowhere and nobody else but you "
+"can see it. You can add tokens for allow direct access by link."
 msgstr ""
-"Si vous ne sélectionnez pas le « Mode brouillon », vous pouvez restreindre "
-"son accès aux personnes authentifiées"
+"En mode “Brouillon / Privé“, le contenu n'apparaît nulle part et personne "
+"d'autre que vous ne peut le voir. Vous pouvez ajouter des jetons pour "
+"permettre un accès direct par lien."
 
 #: pod/video/forms.py
 msgid ""
-"If you don’t select “Draft mode”, you can add a password which will be asked "
-"to anybody willing to watch your content."
+"In “Restricted access” mode, you can choose the restrictions for the video."
 msgstr ""
-"Si vous ne sélectionnez par le « Mode brouillon », vous pouvez ajouter un "
-"mot de passe qui sera demandé aux utilisateurs souhaitant voir votre contenu."
+"En mode « Accès restreint », vous pouvez choisir les restrictions pour la video."
+
+#: pod/video/forms.py
+msgid ""
+"In “Restricted access” mode, you can add a password which will be asked to "
+"anybody willing to watch your content."
+msgstr ""
+"En mode « Accès restreint », vous pouvez ajouter un mot de passe qui sera demandé à "
+"toute personne souhaitant regarder votre contenu."
 
 #: pod/video/forms.py
 msgid ""
@@ -9035,6 +9041,26 @@ msgid ""
 msgstr ""
 "Si votre vidéo est dans une liste de lecture vous ne pourrez pas lui ajouter "
 "de mot de passe."
+
+#: pod/video/forms.py pod/video/models.py
+msgid "Authentication restricted access"
+msgstr "Accès restreint par authentification"
+
+#: pod/video/forms.py
+msgid ""
+"In “Restricted access” mode, you can restrict the content access to only "
+"people who can log in"
+msgstr ""
+"En mode « Accès restreint », vous pouvez restreindre l’accès au contenu aux "
+"personnes qui peuvent se connecter"
+
+#: pod/video/forms.py
+msgid ""
+"In “Restricted access” mode, you can restrict the content access to only "
+"people who are in these groups."
+msgstr ""
+"Dans le mode « Accès restreint », vous pouvez restreindre l’accès au contenu "
+"aux personnes qui sont dans ces groupes."
 
 #: pod/video/forms.py pod/video/templates/videos/add_video.html
 msgid ""
@@ -9080,6 +9106,10 @@ msgid "Users can only add videos to this channel"
 msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne"
 
 #: pod/video/forms.py
+msgid "Draft / Private"
+msgstr "Brouillon / Privé"
+
+#: pod/video/forms.py
 msgid "Source file"
 msgstr "Fichier source"
 
@@ -9099,6 +9129,14 @@ msgstr "La date doit être antérieure ou égale au %(date)s."
 #: pod/video/forms.py
 msgid "The deletion date can’t be earlier than today."
 msgstr "La date de suppression ne peut pas être antérieure à aujourd’hui."
+
+#: pod/video/forms.py
+msgid ""
+"If you select restricted visibility for your video, you must check the "
+"\"restricted access\" box or specify a password."
+msgstr ""
+"Si vous choisissez une visibilité restreinte pour votre vidéo, vous devez "
+"cocher la case \"accès restreint\" ou spécifier un mot de passe."
 
 #: pod/video/forms.py
 msgid "Delete video cannot be undo"
@@ -11150,6 +11188,9 @@ msgstr "xAPI Esup-Pod"
 
 #~ msgid "Long answer questions"
 #~ msgstr "Questions à réponse longue"
+
+#~ msgid "Restricted"
+#~ msgstr "Restreint"
 
 #~ msgid ""
 #~ "The video was treated by Aristote. You must verify and validate the "

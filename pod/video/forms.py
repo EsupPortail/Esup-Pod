@@ -275,35 +275,48 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 ],
             ),
             (
-                "{0}".format(_("Draft")),
+                "{0}".format(_("Visibility")),
                 [
+                    _("In “Public” mode, the content is visible to everyone."),
                     _(
-                        "In “Draft mode”, the content shows nowhere and nobody "
+                        "In “Draft / Private” mode, the content shows nowhere and nobody "
                         "else but you can see it."
-                    )
-                ],
-            ),
-            (
-                "{0}".format(_("Restricted access")),
-                [
+                    ),
                     _(
-                        "If you don’t select “Draft mode”, you can restrict "
-                        "the content access to only people who can log in"
-                    )
+                        "In “Restricted access” mode, you can choose the restrictions for the video."
+                    ),
                 ],
             ),
             (
                 "{0}".format(_("Password")),
                 [
                     _(
-                        "If you don’t select “Draft mode”, you can add a password "
+                        "In “Restricted access” mode, you can add a password "
                         "which will be asked to anybody willing to watch "
-                        "your content."
+                        "your content. You can add tokens for allow direct access by link."
                     ),
                     _(
                         "If your video is in a playlist the password of your "
                         "video will be removed automatically."
                     ),
+                ],
+            ),
+            (
+                "{0}".format(_("Authentication restricted access")),
+                [
+                    _(
+                        "In “Restricted access” mode, you can restrict "
+                        "the content access to only people who can log in"
+                    )
+                ],
+            ),
+            (
+                "{0}".format(_("Groups")),
+                [
+                    _(
+                        "In “Restricted access” mode, you can restrict "
+                        "the content access to only people who are in these groups."
+                    )
                 ],
             ),
         ]
@@ -584,6 +597,19 @@ def launch_transcript(sender, instance, created, **kwargs) -> None:
 class VideoForm(forms.ModelForm):
     """Form class for Video editing."""
 
+    VISIBILITY_CHOICES = [
+        ("public", _("Public")),
+        ("draft", _("Draft / Private")),
+        ("restricted", _("Restricted access")),
+    ]
+
+    visibility = forms.ChoiceField(
+        choices=VISIBILITY_CHOICES,
+        label=_("Visibility"),
+        required=True,
+        initial="public",
+    )
+
     required_css_class = "required"
     videoattrs = {
         "class": "form-control-file",
@@ -648,6 +674,7 @@ class VideoForm(forms.ModelForm):
                 "legend": _("Restrictions"),
                 "classes": "show",
                 "fields": [
+                    "visibility",
                     "is_draft",
                     "is_restricted",
                     "restrict_access_to_groups",
@@ -715,8 +742,23 @@ class VideoForm(forms.ModelForm):
                 encoding.source_file = encoding.source_file.name.replace(old_dir, new_dir)
                 encoding.save()
 
+    def save_visibility(self):
+        """Save video access fields depends on the visibility field value."""
+        visibility = self.cleaned_data.get("visibility")
+        if visibility == "public":
+            self.instance.is_draft = False
+            self.instance.is_restricted = False
+            self.instance.password = None
+        elif visibility == "draft":
+            self.instance.is_draft = True
+            self.instance.is_restricted = False
+            self.instance.password = None
+        elif visibility == "restricted":
+            self.instance.is_draft = False
+
     def save(self, commit=True, *args, **kwargs):
         """Save video and launch encoding if relevant."""
+        self.save_visibility()
         old_dir = ""
         new_dir = ""
         if hasattr(self, "change_user") and self.change_user is True:
@@ -777,10 +819,22 @@ class VideoForm(forms.ModelForm):
             )
         return self.cleaned_data["date_delete"]
 
+    def check_visibility(self, cleaned_data) -> None:
+        """Check the visibility field."""
+        visibility = cleaned_data.get("visibility", "")
+        is_restricted = cleaned_data.get("is_restricted", False)
+        password = cleaned_data.get("password", "")
+        if visibility == "restricted" and is_restricted is False and password is None:
+            raise ValidationError(
+                _(
+                    'If you select restricted visibility for your video, you must check the "restricted access" box or specify a password.'
+                )
+            )
+
     def clean(self) -> None:
         """Validate Video form fields."""
         cleaned_data = super(VideoForm, self).clean()
-
+        self.check_visibility(cleaned_data)
         if "additional_owners" in cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet
         ):
@@ -902,6 +956,19 @@ class VideoForm(forms.ModelForm):
             self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
                 owner__sites=Site.objects.get_current()
             )
+        self.__init_instance__()
+
+    def __init_instance__(self):
+        """Initialize a new VideoForm instance for visibility field."""
+        if self.instance:
+            if self.instance.is_draft:
+                self.initial["visibility"] = "draft"
+            elif self.instance.is_restricted or self.instance.password:
+                self.initial["visibility"] = "restricted"
+            else:
+                self.initial["visibility"] = "public"
+        self.fields["is_draft"].widget = forms.HiddenInput()
+        self.order_fields(["visibility", "password"] + list(self.fields.keys()))
 
     def custom_video_form(self) -> None:
         if not ACTIVE_VIDEO_COMMENT:
@@ -1009,7 +1076,7 @@ class VideoForm(forms.ModelForm):
             "date_evt": widgets.AdminDateWidget,
             "restrict_access_to_groups": AddAccessGroupWidget,
             "video": CustomClearableFileInput,
-            "password": forms.PasswordInput(attrs={"autocomplete": "new-password"}),
+            "password": forms.TextInput(),
         }
         initial = {
             "date_added": datetime.date.today(),
