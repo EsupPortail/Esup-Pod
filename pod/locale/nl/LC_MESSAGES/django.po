@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-16 14:20+0000\n"
+"POT-Creation-Date: 2024-07-16 15:12+0000\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -901,7 +901,7 @@ msgid "Username / User id, that want to perform the live."
 msgstr ""
 
 #: pod/bbb/models.py pod/live/models.py pod/live/templates/live/event_card.html
-#: pod/meeting/models.py pod/recorder/models.py
+#: pod/meeting/models.py pod/recorder/models.py pod/video/forms.py
 msgid "Restricted access"
 msgstr ""
 
@@ -3590,7 +3590,7 @@ msgid "Url of the embedded site to display on aside"
 msgstr ""
 
 #: pod/live/models.py pod/quiz/forms.py pod/quiz/models.py
-#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
+#: pod/recorder/models.py pod/video/models.py
 msgid "Draft"
 msgstr ""
 
@@ -8377,25 +8377,20 @@ msgid ""
 msgstr ""
 
 #: pod/video/forms.py
-msgid ""
-"In “Draft mode”, the content shows nowhere and nobody else but you can see "
-"it."
-msgstr ""
-
-#: pod/video/forms.py pod/video/models.py
-msgid "Authentication restricted access"
+msgid "Draft / Private"
 msgstr ""
 
 #: pod/video/forms.py
 msgid ""
-"If you don’t select “Draft mode”, you can restrict the content access to "
-"only people who can log in"
+"In “Draft or private mode”, the content shows nowhere and nobody else but "
+"you can see it. You can add tokens to allow direct access by link."
 msgstr ""
 
 #: pod/video/forms.py
 msgid ""
-"If you don’t select “Draft mode”, you can add a password which will be asked "
-"to anybody willing to watch your content."
+"If you select restricted access, you can restrict access to content to only "
+"those who can log in, or add a password that will be requested from anyone "
+"wishing to view your content."
 msgstr ""
 
 #: pod/video/forms.py
@@ -8437,14 +8432,6 @@ msgstr ""
 
 #: pod/video/forms.py
 msgid "Users can only add videos to this channel"
-msgstr ""
-
-#: pod/video/forms.py
-msgid "Draft / Private"
-msgstr ""
-
-#: pod/video/forms.py
-msgid "Restricted"
 msgstr ""
 
 #: pod/video/forms.py
@@ -8752,6 +8739,10 @@ msgstr ""
 
 #: pod/video/models.py pod/video/templates/videos/video_sort_select.html
 msgid "Date of event"
+msgstr ""
+
+#: pod/video/models.py
+msgid "Authentication restricted access"
 msgstr ""
 
 #: pod/video/models.py
