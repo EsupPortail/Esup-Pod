@@ -3,48 +3,45 @@
 *  run with 'python manage.py test pod.video.tests.test_models'
 """
 
-from django.test import TestCase
+from django.test import TestCase, Client
+from django.db import transaction
 from django.db.models import Count, Q
-from django.template.defaultfilters import slugify
 from django.db.models.fields.files import ImageFieldFile
+from django.db.utils import IntegrityError
+from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
+from django.urls import reverse
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.db.utils import IntegrityError
-from django.db import transaction
 
-from ..models import Channel
-from ..models import Theme
-from ..models import Type
-from ..models import Discipline
-from ..models import Video
-from ..models import ViewCount
+from ..models import Channel, Theme, Type
+from ..models import Discipline, Video, ViewCount
 from ..models import get_storage_path_video
 from ..models import VIDEOS_DIR
 from ..models import Notes, AdvancedNotes
 from ..models import UserMarkerTime, VideoAccessToken
 
-from pod.video_encode_transcript.models import VideoRendition
-from pod.video_encode_transcript.models import EncodingVideo
-from pod.video_encode_transcript.models import EncodingAudio
-from pod.video_encode_transcript.models import PlaylistVideo
-from pod.video_encode_transcript.models import EncodingLog
-from pod.video_encode_transcript.models import EncodingStep
+from pod.video_encode_transcript.models import VideoRendition, PlaylistVideo
+from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio
+from pod.video_encode_transcript.models import EncodingLog, EncodingStep
 
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import os
 import uuid
 
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
-    from pod.podfile.models import CustomImageModel
-    from pod.podfile.models import UserFolder
+    from pod.podfile.models import CustomImageModel, UserFolder
 else:
     __FILEPICKER__ = False
     from pod.main.models import CustomImageModel
+
+# ggignore-start
+# gitguardian:ignore
+PWD = "azerty1234"  # nosec
+# ggignore-end
 
 
 class ChannelTestCase(TestCase):
@@ -283,7 +280,7 @@ class VideoTestCase(TestCase):
 
     def setUp(self) -> None:
         """Create videos to be tested."""
-        user = User.objects.create(username="pod", password="pod1234pod")
+        user = User.objects.create(username="pod", password=PWD)
 
         # Video 1 with minimum attributes
         Video.objects.create(
@@ -421,6 +418,78 @@ class VideoTestCase(TestCase):
 
         print("   --->  test_get_dublin_core of Video: OK!")
 
+    def test_video_additional_owners_rights(self) -> None:
+        """Check that additional owners have the correct rights."""
+        # Create 2nd and 3rd staff users
+        user2 = User.objects.create(username="user2", password=PWD)
+        user2.is_staff = True
+        user2.save()
+        user3 = User.objects.create(username="user3", password=PWD)
+        user3.is_staff = True
+        user3.save()
+
+        # Get the test video and associated Userfolder
+        video = Video.objects.get(id=1)
+        video_folder = video.get_or_create_video_folder()
+
+        # Add an additional owner to the video
+        video.additional_owners.set([user2])
+        video.save()
+
+        # Check user2 can access to video folder
+        client = Client()
+        client.force_login(user2)
+        response = client.post(
+            reverse("podfile:editfolder"),
+            {
+                "folderid": video_folder.id,
+            },
+            follow=True,
+        )
+
+        print("response: %s" % response)
+        self.assertEqual(response.status_code, 200)  # OK
+        # Replace aditional owner by another one
+        video.additional_owners.set([user3])
+        video.save()
+
+        # Check user2 no more access video folder
+        response = client.post(
+            reverse("podfile:editfolder"),
+            {
+                "folderid": video_folder.id,
+            },
+            follow=True,
+        )
+        self.assertEqual(response.status_code, 403)  # forbidden
+
+        print("--->  test_video_additional_owners_rights of VideoTestCase: OK")
+
+    def test_synced_user_folder(self) -> None:
+        """Check that UserFolder is synced with video params."""
+        # Create 2nd staff user
+        user2 = User.objects.create(username="user2", password=PWD)
+        user2.is_staff = True
+        user2.save()
+
+        # Get the test video and associated Userfolder
+        video = Video.objects.get(id=1)
+        video_folder = video.get_or_create_video_folder()
+
+        # Then, change owner and rename the video
+        video.owner = user2
+        video.title = ("Video renamed",)
+        video.save()
+
+        video_folder2 = video.get_or_create_video_folder()
+
+        # Check there is no duplicated folder
+        self.assertEqual(video_folder2.id, video_folder.id)
+        self.assertEqual(video_folder2.name, video.slug)
+        self.assertEqual(video_folder2.owner, video.owner)
+
+        print("--->  test_synced_user_folder of VideoTestCase: OK")
+
 
 class VideoRenditionTestCase(TestCase):
     """Test the Video Rendition."""
@@ -429,14 +498,14 @@ class VideoRenditionTestCase(TestCase):
 
     def create_video_rendition(
         self,
-        resolution="640x360",
-        minrate="500k",
-        video_bitrate="1000k",
-        maxrate="2000k",
-        audio_bitrate="300k",
-        encode_mp4=False,
+        resolution: str = "640x360",
+        minrate: str = "500k",
+        video_bitrate: str = "1000k",
+        maxrate: str = "2000k",
+        audio_bitrate: str = "300k",
+        encode_mp4: bool = False,
     ) -> VideoRendition:
-        # print("create_video_rendition: %s" % resolution)
+        """Create a video rendition."""
         return VideoRendition.objects.create(
             resolution=resolution,
             minrate=minrate,
@@ -524,7 +593,7 @@ class EncodingVideoTestCase(TestCase):
     # fixtures = ['initial_data.json', ]
 
     def setUp(self) -> None:
-        user = User.objects.create(username="pod", password="pod1234pod")
+        user = User.objects.create(username="pod", password=PWD)
         Type.objects.create(title="test")
         Video.objects.create(
             title="Video1",
@@ -607,7 +676,7 @@ class EncodingAudioTestCase(TestCase):
     # fixtures = ['initial_data.json', ]
 
     def setUp(self) -> None:
-        user = User.objects.create(username="pod", password="pod1234pod")
+        user = User.objects.create(username="pod", password=PWD)
         Type.objects.create(title="test")
         Video.objects.create(
             title="Video1",
@@ -676,7 +745,7 @@ class PlaylistVideoTestCase(TestCase):
     ]
 
     def setUp(self) -> None:
-        user = User.objects.create(username="pod", password="pod1234pod")
+        user = User.objects.create(username="pod", password=PWD)
         Video.objects.create(
             title="Video1",
             owner=user,
@@ -744,7 +813,7 @@ class EncodingLogTestCase(TestCase):
     ]
 
     def setUp(self) -> None:
-        user = User.objects.create(username="pod", password="pod1234pod")
+        user = User.objects.create(username="pod", password=PWD)
         Video.objects.create(
             title="Video1",
             owner=user,
@@ -785,7 +854,7 @@ class EncodingStepTestCase(TestCase):
     ]
 
     def setUp(self) -> None:
-        user = User.objects.create(username="pod", password="pod1234pod")
+        user = User.objects.create(username="pod", password=PWD)
         Video.objects.create(
             title="Video1",
             owner=user,
@@ -832,7 +901,7 @@ class NotesTestCase(TestCase):
     ]
 
     def setUp(self) -> None:
-        user = User.objects.create(username="pod", password="pod1234pod")
+        user = User.objects.create(username="pod", password=PWD)
         Video.objects.create(
             title="Video1",
             owner=user,
@@ -910,7 +979,7 @@ class UserMarkerTimeTestCase(TestCase):
     ]
 
     def setUp(self) -> None:
-        user = User.objects.create(username="pod", password="pod1234pod")
+        user = User.objects.create(username="pod", password=PWD)
         Video.objects.create(
             title="Video1",
             owner=user,
@@ -985,7 +1054,7 @@ class VideoAccessTokenTestCase(TestCase):
     ]
 
     def setUp(self) -> None:
-        user = User.objects.create(username="pod", password="pod1234pod")
+        user = User.objects.create(username="pod", password=PWD)
         print("VIDEO: %s" % Video.objects.all().count())
         self.video = Video.objects.create(
             title="Video1",

@@ -5,6 +5,7 @@
 {% load video_tags %}
 {% load playlist_stats %}
 {% load favorites_playlist %}
+{% load speaker_template_tags %}
 
 <div class="video-info_duration-view-share">
   <div class="video-info__duration">
@@ -164,6 +165,21 @@
                     <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                   </a>
                 {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </li>
+      {% endif %}
+      {% if USE_SPEAKER %}
+      <li class="col-6 col-md-4">
+        <span class="pod-meta-title">{% trans 'Speaker(s):' %}</span>
+        <div>
+          <ul>
+            {% get_video_speaker video as speaker_in_video %}
+            {% for speaker in speaker_in_video %}
+              <li>
+                {{ speaker.job.speaker.firstname }} {{ speaker.job.speaker.lastname }} ({{ speaker.job.title }})
               </li>
             {% endfor %}
           </ul>

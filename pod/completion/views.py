@@ -22,7 +22,8 @@ from .forms import TrackForm
 from .models import Overlay
 from .forms import OverlayForm
 from .models import CustomFileModel
-from pod.podfile.models import UserFolder
+from pod.speaker.models import JobVideo
+from pod.speaker.forms import JobVideoForm
 from pod.podfile.views import get_current_session_folder, file_edit_save
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.settings import LANGUAGE_CODE
@@ -30,6 +31,7 @@ import re
 import json
 from django.contrib.sites.shortcuts import get_current_site
 from .utils import get_video_completion_context
+from pod.speaker.utils import get_video_speakers
 
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTIVE_MODEL_ENRICH = getattr(settings, "ACTIVE_MODEL_ENRICH", False)
@@ -58,9 +60,7 @@ def get_completion_home_page_title(video: Video) -> str:
 def video_caption_maker(request, slug):
     """Caption maker app."""
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-    video_folder, created = UserFolder.objects.get_or_create(
-        name=video.slug, owner=request.user
-    )
+
     request.session["current_session_folder"] = video.slug
     action = None
     if (
@@ -74,6 +74,7 @@ def video_caption_maker(request, slug):
             request, messages.ERROR, _("You cannot complement this video.")
         )
         raise PermissionDenied
+    video_folder = video.get_or_create_video_folder()
     if request.method == "POST" and request.POST.get("action"):
         action = request.POST.get("action")
     if action in __CAPTION_MAKER_ACTION__:
@@ -111,9 +112,7 @@ def video_caption_maker(request, slug):
 @staff_member_required(redirect_field_name="referrer")
 def video_caption_maker_save(request, video):
     """Caption maker save view."""
-    video_folder, created = UserFolder.objects.get_or_create(
-        name=video.slug, owner=request.user
-    )
+    video_folder = video.get_or_create_video_folder()
 
     if request.method == "POST":
         error = False
@@ -185,6 +184,7 @@ def video_completion(request: WSGIRequest, slug: str):
             request.user.is_superuser
             or (
                 request.user.has_perm("completion.add_contributor")
+                and request.user.has_perm("completion.add_speaker")
                 and request.user.has_perm("completion.add_track")
                 and request.user.has_perm("completion.add_document")
                 and request.user.has_perm("completion.add_overlay")
@@ -198,6 +198,7 @@ def video_completion(request: WSGIRequest, slug: str):
         raise PermissionDenied
     elif request.user.is_staff:
         list_contributor = video.contributor_set.all()
+        list_speaker = get_video_speakers(video)
         list_track = video.track_set.all().order_by("lang")
         list_document = video.document_set.all()
         list_overlay = video.overlay_set.all()
@@ -212,6 +213,7 @@ def video_completion(request: WSGIRequest, slug: str):
                 "page_title": page_title,
                 "video": video,
                 "list_contributor": list_contributor,
+                "list_speaker": list_speaker,
                 "list_track": list_track,
                 "list_document": list_document,
                 "list_overlay": list_overlay,
@@ -246,6 +248,7 @@ def video_completion_contributor(request: WSGIRequest, slug: str):
         raise PermissionDenied
     elif request.user.is_staff:
         list_contributor = video.contributor_set.all()
+        list_speaker = get_video_speakers(video)
         list_track = video.track_set.all().order_by("lang")
         list_document = video.document_set.all()
         list_overlay = video.overlay_set.all()
@@ -267,6 +270,7 @@ def video_completion_contributor(request: WSGIRequest, slug: str):
                 "page_title": page_title,
                 "video": video,
                 "list_contributor": list_contributor,
+                "list_speaker": list_speaker,
                 "list_track": list_track,
                 "list_document": list_document,
                 "list_overlay": list_overlay,
@@ -409,6 +413,174 @@ def video_completion_contributor_delete(request: WSGIRequest, video: Video):
                 {
                     "page_title": page_title,
                     "list_contributor": list_contributor,
+                    "video": video,
+                },
+                request=request,
+            )
+        }
+        data = json.dumps(some_data_to_dump)
+        return HttpResponse(data, content_type="application/json")
+    context = get_video_completion_context(video)
+    context["page_title"] = page_title
+    return render(
+        request,
+        "video_completion.html",
+        context,
+    )
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+def video_completion_speaker(request: WSGIRequest, slug: str):
+    """View to manage speakers of a video."""
+    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
+    page_title = get_completion_home_page_title(video)
+    if request.user != video.owner and not (
+        request.user.is_superuser
+        or request.user.has_perm("completion.add_speaker")
+        or (request.user in video.additional_owners.all())
+    ):
+        messages.add_message(
+            request, messages.ERROR, _("You cannot complement this video.")
+        )
+        raise PermissionDenied
+    elif request.user.is_staff:
+        list_contributor = video.contributor_set.all()
+        list_speaker = get_video_speakers(video)
+        list_track = video.track_set.all().order_by("lang")
+        list_document = video.document_set.all()
+        list_overlay = video.overlay_set.all()
+    else:
+        list_contributor = video.contributor_set.all()
+    if request.POST and request.POST.get("action"):
+        if request.POST["action"] in __AVAILABLE_ACTIONS__:
+            return eval(
+                "video_completion_speaker_{0}(request, video)".format(
+                    request.POST["action"]
+                )
+            )
+
+    elif request.user.is_staff:
+        return render(
+            request,
+            "video_completion.html",
+            {
+                "page_title": page_title,
+                "video": video,
+                "list_contributor": list_contributor,
+                "list_speaker": list_speaker,
+                "list_track": list_track,
+                "list_document": list_document,
+                "list_overlay": list_overlay,
+            },
+        )
+    else:
+        return render(
+            request,
+            "video_completion.html",
+            {
+                "page_title": page_title,
+                "video": video,
+                "list_contributor": list_contributor,
+            },
+        )
+
+
+def video_completion_speaker_new(request: WSGIRequest, video: Video):
+    """View to add new speaker to a video."""
+    form_speaker = JobVideoForm(initial={"video": video})
+    context = get_video_completion_context(video, form_speaker=form_speaker)
+    context["page_title"] = _("Add a new contributor to the video “%s”") % video.title
+    if request.is_ajax():
+        return render(
+            request,
+            "speaker/form_speaker.html",
+            {
+                "page_title": context["page_title"],
+                "form_speaker": form_speaker,
+                "video": video,
+            },
+        )
+    else:
+        return render(
+            request,
+            "video_completion.html",
+            context,
+        )
+
+
+def video_completion_speaker_save(request: WSGIRequest, video: Video):
+    """View to save speakers of a video."""
+    form_speaker = None
+    form_speaker = JobVideoForm(request.POST)
+    if form_speaker.is_valid():
+        form_speaker.save()
+        list_speaker = get_video_speakers(video)
+        if request.is_ajax():
+            some_data_to_dump = {
+                "list_data": render_to_string(
+                    "speaker/list_speaker.html",
+                    {
+                        "page_title": _("Add a new speaker to the video “%s”")
+                        % video.title,
+                        "list_speaker": list_speaker,
+                        "video": video,
+                    },
+                    request=request,
+                ),
+            }
+            data = json.dumps(some_data_to_dump)
+            return HttpResponse(data, content_type="application/json")
+        else:
+            context = get_video_completion_context(video, list_speaker=list_speaker)
+            context["page_title"] = get_completion_home_page_title(video)
+            messages.add_message(
+                request, messages.SUCCESS, _("The speaker has been saved.")
+            )
+            return render(
+                request,
+                "video_completion.html",
+                context,
+            )
+    else:
+        if request.is_ajax():
+            some_data_to_dump = {
+                "errors": "{0}".format(_("Please correct errors")),
+                "form": render_to_string(
+                    "speaker/form_speaker.html",
+                    {
+                        "page_title": _("Add a new speaker to the video “%s”")
+                        % video.title,
+                        "video": video,
+                        "form_speaker": form_speaker,
+                    },
+                    request=request,
+                ),
+            }
+            data = json.dumps(some_data_to_dump)
+            return HttpResponse(data, content_type="application/json")
+        context = get_video_completion_context(video, form_speaker=form_speaker)
+        context["page_title"] = get_completion_home_page_title(video)
+        return render(
+            request,
+            "video_completion.html",
+            context,
+        )
+
+
+def video_completion_speaker_delete(request: WSGIRequest, video: Video):
+    """View to delete a video speaker."""
+    speaker = get_object_or_404(JobVideo, id=request.POST["id"])
+    speaker.delete()
+    page_title = get_completion_home_page_title(video)
+    list_speaker = get_video_speakers(video)
+    if request.is_ajax():
+        some_data_to_dump = {
+            "list_data": render_to_string(
+                "speaker/list_speaker.html",
+                {
+                    "page_title": page_title,
+                    "list_speaker": list_speaker,
                     "video": video,
                 },
                 request=request,

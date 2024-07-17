@@ -81,7 +81,7 @@ def add_placeholder_and_asterisk(fields):
         bs_class = bs_class + " " + init_class
         if my_field.required:
             my_field.label = mark_safe(
-                '%s <span class="required_star">*</span>' % my_field.label
+                '%s <span class="required-star">*</span>' % my_field.label
             )
             my_field.widget.attrs["required"] = ""
             my_field.widget.attrs["class"] = "required " + bs_class

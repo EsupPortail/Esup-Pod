@@ -1,6 +1,7 @@
 """Template tags used for Esup-Pod video quiz."""
 
 from django.template import Library
+from pod.quiz.models import Quiz
 from pod.quiz.utils import get_video_quiz
 
 from pod.video.models import Video
@@ -51,19 +52,19 @@ def is_quiz_exists(video: Video) -> bool:
 
 
 @register.simple_tag(name="get_question_color")
-def get_question_color(is_submitted: bool, score: int = None) -> str:
+def get_question_color(is_submitted_quiz: bool, quiz: Quiz, score: int = None) -> str:
     """
     Template tag used to return a color corresponding to the score.
 
     Args:
-        is_submitted (bool): True if form is submitted.
+        is_submitted_quiz (bool): True if form is submitted.
         score (int): A question score (from 0 to 1)
 
 
     Returns:
         str: The corresponding bootstrap color.
     """
-    if is_submitted and score is not None:
+    if quiz.show_correct_answers and is_submitted_quiz and score is not None:
         if score <= 0.5:
             return "danger"
         elif score <= 0.75:

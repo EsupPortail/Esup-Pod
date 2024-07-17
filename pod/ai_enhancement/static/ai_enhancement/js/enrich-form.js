@@ -4,6 +4,8 @@
  * @since 3.7.0
  */
 
+// Read-only globals defined in main.js
+/* global decodeString remove_quotes removeAccentsAndLowerCase */
 
 const BORDER_CLASS = 'border-d';
 
@@ -92,7 +94,7 @@ function addTogglePairInput(aiVersionElement, initialVersionElement, input, elem
   aiVersionElement.addEventListener('click', () => {
     let input = document.getElementById('id_' + element);
     togglePairInput(aiVersionElement, initialVersionElement, input, element);
-  })
+  });
   input.addEventListener('input', () => event__inputChange(initialVersionElement, aiVersionElement));
 }
 
@@ -182,7 +184,7 @@ function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipl
     'description',
     'tags',
     'disciplines',
-  ]
+  ];
   const options = {
     method: 'GET',
     headers: {
@@ -227,7 +229,7 @@ function addEventListeners(videoSlug, videoTitle, videoDescription, videoDiscipl
             });
             aiVersionElement.addEventListener('click', () => {
               toggleMultiplePairInput(aiVersionElement, initialVersionElement, input);
-            })
+            });
             input.addEventListener('input', () => event__inputChange(initialVersionElement, aiVersionElement));
             break;
         }

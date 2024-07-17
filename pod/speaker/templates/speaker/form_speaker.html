@@ -1,0 +1,35 @@
+{# HTML for speaker form. Don't use this file alone it must be integrated into another template! #}
+{% load i18n %}
+<div class="card card-body">
+  <form id="form_speaker" action="{% url 'video:completion:video_completion_speaker' slug=video.slug %}" method="POST" class="completion">
+    {% csrf_token %}
+    <div id="form_content" class="container">
+      {% if form_speaker.errors or form_speaker.non_field_errors %}
+        {% trans 'Your form contains errors:' %}<br>
+        {% for error in form_speaker.non_field_errors %}
+          - {{error}}<br>
+        {% endfor %}
+      {% endif %}
+      {% for field_hidden in form_speaker.hidden_fields %}
+        {{field_hidden}}
+      {% endfor %}
+      {% for field in form_speaker.visible_fields %}
+        <div class="form-group row">
+          <label for="{{field.auto_id}}" class="col-sm-4 col-form-label">{{field.label}}</label>
+          <div class="col-sm-10">{{field}}</div>
+        </div>
+      {% endfor %}
+      {% if form_speaker.instance %}
+        <input type="hidden" id="id_speaker" name="speaker_id" value="{{form_speaker.instance.id}}">
+      {% endif %}
+      <input type="hidden" name="action" value="save">
+      <div class="mt-3">
+        <input type="submit" id="save_speaker" value="{% trans 'Save' %}" class="btn btn-primary">
+        <a class="btn btn-secondary" action="cancel" id="cancel_document" href="{% url 'video:completion:video_completion' slug=video.slug %}">{% trans 'Cancel' %}</a>
+      </div>
+    </div>
+  </form>
+</div>
+{% block more_script %}
+{{ form_speaker.media }}
+{% endblock more_script %}

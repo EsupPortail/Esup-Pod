@@ -1,5 +1,6 @@
 """Esup-Pod quiz models."""
 
+import uuid
 from json import JSONDecodeError, loads
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -87,6 +88,7 @@ class Question(models.Model):
         end_timestamp (IntegerField): End timestamp of the answer in the video.
     """
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     quiz = models.ForeignKey(
         Quiz,
         verbose_name=_("Quiz"),
@@ -162,7 +164,9 @@ class Question(models.Model):
         Returns:
             QuestionForm: Form for the question.
         """
-        return "This method must be redefined in child class."
+        raise NotImplementedError(
+            "Subclasses of Question must implement get_question_form method."
+        )
 
     def get_answer(self) -> None:
         """
@@ -171,7 +175,9 @@ class Question(models.Model):
         Returns:
             str: Answer for the question.
         """
-        return None
+        raise NotImplementedError(
+            "Subclasses of Question must implement get_answer method."
+        )
 
     def get_type(self) -> None:
         """
@@ -180,7 +186,34 @@ class Question(models.Model):
         Returns:
             str: Type of the question.
         """
-        return None
+        raise NotImplementedError(
+            "Subclasses of Question must implement get_type method."
+        )
+
+    def calculate_score(self, user_answer):
+        """
+        Calculate the score for the question based on user's answer.
+
+        Args:
+            user_answer (any): Answer provided by the user.
+
+        Returns:
+            float: The calculated score, a value between 0 and 1.
+        """
+        correct_answer = self.get_answer()
+
+        if correct_answer is None:
+            return 0.0
+
+        return self._calculate_score(user_answer, correct_answer)
+
+    def _calculate_score(self, user_answer, correct_answer):
+        """
+        Internal method to be implemented by subclasses to calculate score.
+        """
+        raise NotImplementedError(
+            "Subclasses of Question must implement _calculate_score method."
+        )
 
 
 class SingleChoiceQuestion(Question):
@@ -261,6 +294,19 @@ class SingleChoiceQuestion(Question):
         from pod.quiz.forms import SingleChoiceQuestionForm
 
         return SingleChoiceQuestionForm(data, instance=self, prefix=f"question_{self.pk}")
+
+    def _calculate_score(self, user_answer, correct_answer):
+        """
+        Calculate the score for single choice question.
+
+        Args:
+            user_answer (any): Answer provided by the user.
+            correct_answer (any): Correct answer for the question.
+
+        Returns:
+            float: The calculated score, a value between 0 and 1.
+        """
+        return 1.0 if user_answer.lower() == correct_answer.lower() else 0.0
 
 
 class MultipleChoiceQuestion(Question):
@@ -346,6 +392,27 @@ class MultipleChoiceQuestion(Question):
             data, instance=self, prefix=f"question_{self.pk}"
         )
 
+    def _calculate_score(self, user_answer, correct_answer):
+        """
+        Calculate the score for multiple choice question.
+
+        Args:
+            user_answer (list): Answers provided by the user.
+            correct_answer (list): Correct answers for the question.
+
+        Returns:
+            float: The calculated score, a value between 0 and 1.
+        """
+        user_answer_set = set(user_answer) if user_answer else set()
+        correct_answer_set = set(correct_answer)
+        intersection = user_answer_set & correct_answer_set
+        score = len(intersection) / len(correct_answer_set)
+
+        len_incorrect = len(user_answer_set - correct_answer_set)
+        penalty = len_incorrect / len(correct_answer_set)
+        score = max(0, score - penalty)
+        return score
+
 
 class TrueFalseQuestion(Question):  # TODO
     """
@@ -417,46 +484,21 @@ class ShortAnswerQuestion(Question):
 
         return ShortAnswerQuestionForm(data, instance=self, prefix=f"question_{self.pk}")
 
-
-class LongAnswerQuestion(Question):
-    """
-    Long answer question model.
-
-    Attributes:
-        answer (TextField): Answer of the question.
-    """
-
-    answer = models.TextField(
-        verbose_name=_("Answer"),
-        default="",
-        help_text=_("Please choose an answer."),
-    )
-
-    class Meta:
-        verbose_name = _("Long answer question")
-        verbose_name_plural = _("Long answer questions")
-
-    def __str__(self) -> str:
-        """Representation the LongAnswerQuestion as string."""
-        return super().__str__()
-
-    def get_answer(self) -> str:
-        return self.answer
-
-    def get_type(self):
-        return "long_answer"
-
-    def get_question_form(self, data=None):
+    def _calculate_score(self, user_answer, correct_answer):
         """
-        Get the form for the question.
+        Calculate the score for short answer question.
 
         Args:
-            data (dict): Form data.
-        Returns:
-            LongAnswerQuestionForm: Form for the question.
-        """
-        from pod.quiz.forms import (
-            LongAnswerQuestionForm,
-        )
+            user_answer (str): Answer provided by the user.
+            correct_answer (str): Correct answer for the question.
 
-        return LongAnswerQuestionForm(data, instance=self, prefix=f"question_{self.pk}")
+        Returns:
+            float: The calculated score, a value between 0 and 1.
+        """
+        if (
+            user_answer is not None
+            and user_answer.strip() != ""
+            and correct_answer is not None
+        ):
+            return 1.0 if user_answer.lower() == correct_answer.lower() else 0.0
+        return 0.0

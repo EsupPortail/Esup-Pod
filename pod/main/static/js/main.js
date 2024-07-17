@@ -2,7 +2,8 @@
  * @file Esup-Pod Main JavaScripts
  */
 
-/* exported getParents slideToggle fadeOut linkTo_UnCryptMailto showLoader videocheck send_form_data_vanilla */
+/* exported getParents slideToggle fadeOut linkTo_UnCryptMailto showLoader videocheck */
+/* exported  send_form_data_vanilla decodeString */
 
 // Read-only globals defined in video-script.html
 /* global player */
@@ -1152,93 +1153,6 @@ if (btnpartageprive) {
     showalert(gettext("Text copied"), "alert-info");
   });
 }
-
-/** Restrict access **/
-/** restrict access to group */
-if (typeof id_is_restricted === "undefined") {
-  var id_is_restricted = document.getElementById("id_is_restricted");
-} else {
-  id_is_restricted = document.getElementById("id_is_restricted");
-}
-if (id_is_restricted) {
-  id_is_restricted.addEventListener("click", function () {
-    restrict_access_to_groups();
-  });
-}
-/**
- * [restrict_access_to_groups description]
- * @return {[type]} [description]
- */
-var restrict_access_to_groups = function () {
-  if (document.getElementById("id_is_restricted").checked) {
-    let id_restricted_to_groups = document.getElementById(
-      "id_restrict_access_to_groups",
-    );
-    id_restricted_to_groups.parentElement.classList.remove("d-none");
-  } else {
-    document
-      .querySelectorAll("#id_restrict_access_to_groups select")
-      .forEach((select) => {
-        select.options.forEach((option) => {
-          if (option.selected) {
-            option.selected = false;
-          }
-        });
-      });
-    let id_restricted_to_groups = document.getElementById(
-      "id_restrict_access_to_groups",
-    );
-    id_restricted_to_groups.parentElement.classList.add("d-none");
-  }
-};
-
-if (typeof id_is_draft === "undefined") {
-  var id_is_draft = document.getElementById("id_is_draft");
-} else {
-  id_is_draft = document.getElementById("id_is_draft");
-}
-if (id_is_draft) {
-  id_is_draft.addEventListener("click", function () {
-    restricted_access();
-  });
-}
-
-/**
- * [restricted_access description]
- * @return {[type]} [description]
- */
-var restricted_access = function () {
-  document
-    .querySelectorAll(".restricted_access")
-    .forEach((restricted_access) => {
-      if (restricted_access) {
-        let is_draft = document.getElementById("id_is_draft");
-        if (is_draft != null && is_draft.checked) {
-          restricted_access.classList.add("hide");
-          restricted_access.classList.remove("show");
-          document.getElementById("id_password").value;
-
-          document
-            .querySelectorAll("#id_restrict_access_to_groups select")
-            .forEach((select) => {
-              select.options.forEach((option) => {
-                if (option.selected) {
-                  option.selected = false;
-                }
-              });
-            });
-
-          document.getElementById("id_is_restricted").checked = false;
-        } else {
-          restricted_access.classList.add("show");
-          restricted_access.classList.remove("hide");
-        }
-        restrict_access_to_groups();
-      }
-    });
-};
-restricted_access();
-//restrict_access_to_groups();
 
 /** end restrict access **/
 /*** VALID FORM ***/

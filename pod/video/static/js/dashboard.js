@@ -18,9 +18,16 @@
   global urlUpdateVideos csrftoken formFieldsets displayMode
 */
 
+// Read-only globals defined in video_select.js
+/*
+  global selectedVideos
+*/
+
 /* exported dashboardActionReset */
 
-var bulkUpdateActionSelect = document.getElementById("bulkUpdateActionSelect");
+var bulkUpdateActionSelect = document.getElementById(
+  "bulk-update-action-select",
+);
 var applyBulkUpdateBtn = document.getElementById("applyBulkUpdateBtn");
 var resetDashboardElementsBtn = document.getElementById(
   "reset-dashboard-elements-btn",
@@ -32,6 +39,7 @@ var cancelModalBtn = document.getElementById("cancelModalBtn");
 var btnDisplayMode = document.querySelectorAll(".btn-dashboard-display-mode");
 var dashboardAction = "";
 var dashboardValue;
+selectedVideos[videosListContainerId] = [];
 
 /**
  * Add change event listener on select action to get related inputs
@@ -39,15 +47,14 @@ var dashboardValue;
 bulkUpdateActionSelect.addEventListener("change", function () {
   dashboardAction = bulkUpdateActionSelect.value;
   appendDynamicForm(dashboardAction);
-  replaceSelectedCountVideos();
-  manageDisableBtn(resetDashboardElementsBtn, dashboardAction != "");
+  replaceSelectedCountVideos(videosListContainerId);
 });
 
 /**
  * Add click event listener on apply button to build and open confirm modal
  */
 applyBulkUpdateBtn.addEventListener("click", () => {
-  let selectedCount = selectedVideos.length;
+  let selectedCount = selectedVideos[videosListContainerId].length;
   let modalEditionConfirmStr = ngettext(
     "Please confirm the editing of the following video:",
     "Please confirm the editing of the following videos:",
@@ -71,7 +78,10 @@ applyBulkUpdateBtn.addEventListener("click", () => {
     true,
   );
   modal.querySelector(".modal-body").innerHTML =
-    "<p>" + modalConfirmStr + "</p>" + getHTMLBadgesSelectedTitles();
+    "<p>" +
+    modalConfirmStr +
+    "</p>" +
+    getHTMLBadgesSelectedTitles(videosListContainerId);
 });
 
 /**
@@ -152,7 +162,10 @@ async function bulkUpdate() {
   }
 
   // Construct formData to send
-  formData.append("selected_videos", JSON.stringify(selectedVideos));
+  formData.append(
+    "selected_videos",
+    JSON.stringify(selectedVideos[videosListContainerId]),
+  );
   formData.append("update_fields", JSON.stringify(updateFields));
   formData.append("update_action", updateAction);
 
@@ -173,9 +186,10 @@ async function bulkUpdate() {
 
   if (response.ok) {
     // Set selected videos with new slugs if changed during update
-    selectedVideos = data["updated_videos"];
-    showalert(message, "alert-success", "formalertdivbottomright");
+    selectedVideos[videosListContainerId] = data["updated_videos"];
+    showalert(message, "alert-success", "form-alert-div-bottom-right");
     refreshVideosSearch();
+    replaceSelectedCountVideos(videosListContainerId);
   } else {
     // Manage field errors and global errors
     let errors = Array.from(data["fields_errors"]);
@@ -190,7 +204,7 @@ async function bulkUpdate() {
       });
       window.scroll({ top: 0, left: 0, behavior: "smooth" });
     } else {
-      showalert(message, "alert-danger", "formalertdivbottomright");
+      showalert(message, "alert-danger", "form-alert-div-bottom-right");
     }
   }
 }

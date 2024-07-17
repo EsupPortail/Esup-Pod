@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-11 07:48+0000\n"
+"POT-Creation-Date: 2024-07-17 09:34+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: obado <bado@unice.fr>\n"
+"Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -95,7 +95,8 @@ msgstr "La discipline proposée par l’IA Aristote."
 #: pod/enrichment/templates/enrichment/list_enrichment.html pod/live/models.py
 #: pod/main/models.py pod/main/views.py pod/playlist/forms.py
 #: pod/playlist/models.py pod/quiz/forms.py pod/quiz/models.py
-#: pod/video/models.py pod/video/templates/channel/list_theme.html
+#: pod/speaker/models.py pod/video/models.py
+#: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_sort_select.html
 msgid "Title"
 msgstr "Titre"
@@ -935,7 +936,6 @@ msgstr ""
 
 #: pod/bbb/models.py pod/live/models.py pod/live/templates/live/event_card.html
 #: pod/meeting/models.py pod/recorder/models.py pod/video/forms.py
-#: pod/video/models.py
 msgid "Restricted access"
 msgstr "Accès restreint"
 
@@ -1363,6 +1363,8 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/quiz/templates/quiz/create_edit_quiz.html
 #: pod/recorder/templates/recorder/add_recording.html
+#: pod/speaker/templates/speaker/form_speaker.html
+#: pod/speaker/templates/speaker/speaker_modal.html
 #: pod/video/templates/channel/channel_edit.html
 #: pod/video/templates/channel/form_theme.html
 #: pod/video/templates/videos/video_note_comments_display.html
@@ -1378,6 +1380,8 @@ msgstr "Sauvegarder"
 #: pod/completion/templates/track/form_track.html
 #: pod/enrichment/templates/enrichment/form_enrichment.html
 #: pod/playlist/templates/playlist/playlist.html
+#: pod/speaker/templates/speaker/form_speaker.html
+#: pod/speaker/templates/speaker/speaker_modal.html
 #: pod/video/templates/channel/form_theme.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/dashboard_modal.html
@@ -1402,6 +1406,8 @@ msgstr "Liste des chapitres"
 #: pod/completion/templates/track/list_track.html
 #: pod/dressing/templates/my_dressings.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
+#: pod/speaker/templates/speaker/list_speaker.html
+#: pod/speaker/templates/speaker/speakers_management.html
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/video_access_tokens.html
 msgid "Actions"
@@ -1439,6 +1445,7 @@ msgstr "Supprimer le chapitre « %(chapter_title)s »"
 #: pod/playlist/templates/playlist/delete.html
 #: pod/quiz/templates/quiz/delete_quiz.html
 #: pod/recorder/templates/recorder/record_delete.html
+#: pod/speaker/templates/speaker/list_speaker.html
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/category_modal.html
 #: pod/video/templates/videos/dashboard.html
@@ -1490,6 +1497,7 @@ msgstr "Gérer la vidéo"
 #: pod/chapter/templates/video_chapter.html
 #: pod/completion/templates/video_completion.html
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
+#: pod/quiz/templates/quiz/question_help_aside.html
 msgid "Help"
 msgstr "Aide"
 
@@ -1599,7 +1607,7 @@ msgstr "Ingénieur du son"
 msgid "Speaking roles"
 msgstr "Rôles d’orateur"
 
-#: pod/completion/models.py
+#: pod/completion/models.py pod/speaker/apps.py pod/speaker/models.py
 msgid "Speaker"
 msgstr "Intervenant"
 
@@ -1612,7 +1620,7 @@ msgid "captions"
 msgstr "légendes"
 
 #: pod/completion/models.py
-msgid "lastname / firstname"
+msgid "last name / first name"
 msgstr "nom / prénom"
 
 #: pod/completion/models.py
@@ -1864,6 +1872,7 @@ msgstr ""
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
 #: pod/completion/templates/track/form_track.html
+#: pod/speaker/templates/speaker/form_speaker.html
 msgid "Your form contains errors:"
 msgstr "Votre formulaire contient des erreurs :"
 
@@ -1872,7 +1881,7 @@ msgid "List of contributors"
 msgstr "Liste des contributeurs"
 
 #: pod/completion/templates/contributor/list_contributor.html
-msgid "Lastname / Firstname"
+msgid "Last name / First name"
 msgstr "Nom / Prénom"
 
 #: pod/completion/templates/contributor/list_contributor.html
@@ -1994,8 +2003,7 @@ msgid "Caption"
 msgstr "Sous-titre / Légende"
 
 #: pod/completion/templates/video_caption_maker.html
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "Play"
 msgstr "Lecture"
 
@@ -2116,6 +2124,14 @@ msgid "Add a new contributor"
 msgstr "Ajouter un nouveau contributeur"
 
 #: pod/completion/templates/video_completion.html
+msgid "Speaker(s)"
+msgstr "Intervenant(s)"
+
+#: pod/completion/templates/video_completion.html
+msgid "Add a new speaker"
+msgstr "Ajouter un nouvel intervenant"
+
+#: pod/completion/templates/video_completion.html
 msgid "Subtitle(s) and Caption(s)"
 msgstr "Sous-titre(s) et légende(s)"
 
@@ -2169,6 +2185,19 @@ msgid ""
 msgstr ""
 "Un contributeur doit au moins avoir un nom et un rôle. Vous pouvez aussi "
 "joindre son courriel ainsi qu’un lien web (site professionnel par exemple)."
+
+#: pod/completion/templates/video_completion.html
+msgid "List of speakers related to this video."
+msgstr "Liste des intervenants relatifs à cette vidéo."
+
+#: pod/completion/templates/video_completion.html
+msgid ""
+"You can add speakers to this video by searching by their last name, first "
+"name or job. If you can't find the speaker, contact a super admin."
+msgstr ""
+"Vous pouvez ajouter des intervenants à cette vidéo en effectuant une "
+"recherche par leur nom, prénom ou fonction. Si vous ne trouvez pas "
+"l’orateur, contactez un super administrateur."
 
 #: pod/completion/templates/video_completion.html
 msgid "Subtitle(s) and/or captions(s) related to this video."
@@ -2307,6 +2336,15 @@ msgstr "Veuillez corriger les erreurs"
 msgid "Edit the contributor “%s”"
 msgstr "Modifier le contributeur « %s »"
 
+#: pod/completion/views.py
+#, python-format
+msgid "Add a new speaker to the video “%s”"
+msgstr "Ajouter un nouvel intervenant à la vidéo « %s »"
+
+#: pod/completion/views.py
+msgid "The speaker has been saved."
+msgstr "L’intervenant a été enregistré."
+
 #: pod/cut/apps.py pod/cut/models.py
 msgid "Video cuts"
 msgstr "Découpes de vidéo"
@@ -2319,8 +2357,8 @@ msgstr "Découpe de vidéo"
 msgid "Please select values between 00:00:00 and "
 msgstr "Veuillez renseigner des valeurs comprises entre 00:00:00 et "
 
-#: pod/cut/templates/video_cut.html pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
+#: pod/cut/templates/video_cut.html
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "Cut the video"
 msgstr "Découper la vidéo"
 
@@ -2365,7 +2403,6 @@ msgstr "Réinitialiser les temps de début et de fin à leurs valeurs précéden
 
 #: pod/cut/templates/video_cut.html pod/dressing/templates/video_dressing.html
 #: pod/playlist/templates/playlist/filter_aside.html
-#: pod/video/templates/videos/dashboard.html
 #: pod/video/templates/videos/filter_aside.html
 msgid "Reset"
 msgstr "Réinitialiser"
@@ -2467,7 +2504,7 @@ msgstr ""
 
 #: pod/dressing/models.py pod/enrichment/forms.py pod/enrichment/models.py
 #: pod/live/models.py pod/meeting/models.py pod/podfile/models.py
-#: pod/recorder/models.py pod/video/models.py
+#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
 msgid "Groups"
 msgstr "Groupes"
 
@@ -3807,7 +3844,7 @@ msgid "Url of the embedded site to display on aside"
 msgstr "Lien du site à intégrer sous forme d’iframe à droite du live"
 
 #: pod/live/models.py pod/quiz/forms.py pod/quiz/models.py
-#: pod/recorder/models.py pod/video/forms.py pod/video/models.py
+#: pod/recorder/models.py pod/video/models.py
 msgid "Draft"
 msgstr "Brouillon"
 
@@ -4352,13 +4389,13 @@ msgid "Sorry, no event found."
 msgstr "Désolé, aucun évènement trouvé."
 
 #: pod/live/templates/live/events_list.html
-#: pod/video/templates/videos/category_modal.html
+#: pod/video/templates/videos/category_modal_video_list.html
 #: pod/video/templates/videos/paginator.html
 msgid "Previous page"
 msgstr "Page précédente"
 
 #: pod/live/templates/live/events_list.html
-#: pod/video/templates/videos/category_modal.html
+#: pod/video/templates/videos/category_modal_video_list.html
 #: pod/video/templates/videos/paginator.html
 msgid "Next page"
 msgstr "Page suivante"
@@ -5753,6 +5790,10 @@ msgstr "Mes fichiers"
 msgid "Claim a record"
 msgstr "Revendiquer un enregistrement"
 
+#: pod/main/templates/navbar.html pod/speaker/views.py
+msgid "Speakers management"
+msgstr "Gestion des intervenants"
+
 #: pod/main/templates/navbar.html pod/progressive_web_app/templates/debug.html
 msgid "Notifications settings"
 msgstr "Paramètres de notifications"
@@ -6639,22 +6680,27 @@ msgid "Authenticate"
 msgstr "S’authentifier"
 
 #: pod/meeting/templates/meeting/link_meeting.html
+#: pod/video/templates/videos/link_video.html
+msgid "More options"
+msgstr "Plus d'options"
+
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Copy the direct join link"
 msgstr "Copiez le lien d’accès direct"
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Copy the join link"
 msgstr "Copiez le lien d’accès avec restriction d’accès"
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Invite to the meeting"
 msgstr "Inviter à la réunion"
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Get the recordings of the meeting"
 msgstr "Obtenir les enregistrements de la réunion"
 
-#: pod/meeting/templates/meeting/link_meeting.html
+#: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Delete the meeting"
 msgstr "Supprimer la réunion"
 
@@ -6896,18 +6942,7 @@ msgstr ""
 "    "
 
 #: pod/meeting/views.py
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "                <p>Hello,</p>\n"
-#| "                <p>%(owner)s invites you to the meeting <strong>"
-#| "%(meeting_title)s</strong>.</p>\n"
-#| "                <p>here the link to join the meeting:\n"
-#| "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-#| "                <p>You need this password to enter: <strong>%(password)s</"
-#| "strong> </p>\n"
-#| "                <p>Regards</p>\n"
-#| "            "
+#, python-format
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
@@ -6932,20 +6967,7 @@ msgstr ""
 "    "
 
 #: pod/meeting/views.py
-#, fuzzy, python-format
-#| msgid ""
-#| "\n"
-#| "                <p>Hello,</p>\n"
-#| "                <p>%(owner)s invites you to the meeting <strong>"
-#| "%(meeting_title)s</strong>.</p>\n"
-#| "                <p>Start date: %(start_date_time)s </p>\n"
-#| "                <p>End date: %(end_date)s </p>\n"
-#| "                <p>here the link to join the meeting:\n"
-#| "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-#| "                <p>You need this password to enter: <strong>%(password)s</"
-#| "strong> </p>\n"
-#| "                <p>Regards</p>\n"
-#| "            "
+#, python-format
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
@@ -7161,7 +7183,7 @@ msgstr ""
 
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
-#: pod/video/models.py
+#: pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/video_note_comments_display.html
 #: pod/video/templates/videos/video_note_display.html
 msgid "Public"
@@ -7260,7 +7282,7 @@ msgstr "Accéder aux listes de lecture"
 
 #: pod/playlist/templates/playlist/add_or_edit.html
 #: pod/playlist/templates/playlist/playlist_link.html
-#: pod/playlist/tests/test_views.py pod/playlist/views.py
+#: pod/playlist/tests/test_views.py
 msgid "Edit the playlist"
 msgstr "Éditer la liste de lecture"
 
@@ -7592,6 +7614,11 @@ msgstr ""
 "Les données envoyées pour créer la liste de lecture ne sont pas valides."
 
 #: pod/playlist/views.py
+#, python-brace-format
+msgid "Edit playlist “{playlist.name}”"
+msgstr "Éditer la liste de lecture « {playlist.name} »"
+
+#: pod/playlist/views.py
 msgid "JSON in wrong format"
 msgstr "JSON au mauvais format"
 
@@ -7829,23 +7856,19 @@ msgstr "Autoriser"
 msgid "Redaction"
 msgstr "Rédaction"
 
-#: pod/quiz/forms.py
+#: pod/quiz/forms.py pod/quiz/templates/quiz/question_help_aside.html
 msgid "Short answer"
 msgstr "Réponse courte"
-
-#: pod/quiz/forms.py
-msgid "Long answer"
-msgstr "Réponse longue"
 
 #: pod/quiz/forms.py
 msgid "Choice"
 msgstr "Choix"
 
-#: pod/quiz/forms.py
+#: pod/quiz/forms.py pod/quiz/templates/quiz/question_help_aside.html
 msgid "Single choice"
 msgstr "Choix unique"
 
-#: pod/quiz/forms.py
+#: pod/quiz/forms.py pod/quiz/templates/quiz/question_help_aside.html
 msgid "Multiple choice"
 msgstr "Choix multiples"
 
@@ -7943,14 +7966,6 @@ msgstr "Question à réponse courte"
 #: pod/quiz/forms.py
 msgid "Write a short answer."
 msgstr "Écrivez une réponse courte."
-
-#: pod/quiz/forms.py pod/quiz/models.py
-msgid "Long answer question"
-msgstr "Question à réponse longue"
-
-#: pod/quiz/forms.py
-msgid "Write a long answer."
-msgstr "Écrivez une réponse longue."
 
 #: pod/quiz/models.py
 msgid "Choose a video associated with the quiz."
@@ -8070,14 +8085,6 @@ msgstr "Veuillez choisir une réponse entre 1 et 250 caractères."
 msgid "Short answer questions"
 msgstr "Questions à réponse courte"
 
-#: pod/quiz/models.py
-msgid "Please choose an answer."
-msgstr "Veuillez choisir une réponse."
-
-#: pod/quiz/models.py
-msgid "Long answer questions"
-msgstr "Questions à réponse longue"
-
 #: pod/quiz/templates/quiz/create_edit_quiz.html
 msgid "Add a question"
 msgstr "Ajouter une question"
@@ -8118,6 +8125,58 @@ msgstr "Supprimer la question n°"
 msgid "One or more errors have been found in the question."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans la question."
 
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For short answer questions, ensure responses are between 1 and 250 "
+"characters. This type of question is ideal for brief, specific answers."
+msgstr ""
+"Pour les questions à réponse courte, veillez à ce que les réponses soient "
+"comprises entre 1 et 250 caractères. Ce type de question est idéal pour des "
+"réponses brèves et spécifiques."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For short answer questions, please provide a response between 1 and 250 "
+"characters. Be concise and specific."
+msgstr ""
+"Pour les questions à réponse courte, veuillez fournir une réponse de 1 à 250 "
+"caractères. Soyez concis et précis."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"Single choice questions require participants to select one answer from a "
+"list of options. This is useful for questions with a clear, correct answer."
+msgstr ""
+"Les questions à choix unique demandent aux participants de sélectionner une "
+"réponse parmi une liste d'options. Elles sont utiles pour les questions dont "
+"la réponse est claire et correcte."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For single choice questions, select only one answer from the provided "
+"options. Read each option carefully before making your selection."
+msgstr ""
+"Pour les questions à choix unique, ne sélectionnez qu'une seule réponse "
+"parmi les options proposées. Lisez attentivement chaque option avant de "
+"faire votre choix."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"Multiple choice questions allow participants to select more than one answer. "
+"Use this type for questions where more than one option could be correct."
+msgstr ""
+"Les questions à choix multiples permettent aux participants de sélectionner "
+"plusieurs réponses. Utilisez ce type de question pour les questions où "
+"plusieurs options peuvent être correctes."
+
+#: pod/quiz/templates/quiz/question_help_aside.html
+msgid ""
+"For multiple choice questions, select all answers that apply. There may be "
+"more than one correct answer."
+msgstr ""
+"Pour les questions à choix multiples, sélectionnez toutes les réponses qui "
+"s'appliquent. Il peut y avoir plus d'une réponse correcte."
+
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "This quiz is in <strong>draft</strong>."
 msgstr "Ce quiz est en mode <strong>brouillon</strong>."
@@ -8146,6 +8205,14 @@ msgstr "Erreur constatée dans le formulaire"
 #, python-format
 msgid "For the question “%(title)s”, %(error)s."
 msgstr "Pour la question « %(title)s », %(error)s."
+
+#: pod/quiz/templates/quiz/video_quiz.html
+msgid ""
+"The creator of this quiz has decided not to display the answers and your "
+"score."
+msgstr ""
+"Le créateur de ce quiz a décidé de ne pas afficher les réponses et votre "
+"score."
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "Correct answer:"
@@ -8336,11 +8403,11 @@ msgstr "Publication automatique :"
 
 #: pod/recorder/models.py
 msgid ""
-"If this box is checked, "
-"the videos will be automatically assigned to the recorder manager."
+"If this box is checked, the videos will be automatically assigned to the "
+"recorder manager."
 msgstr ""
-"Si vous cochez cette case "
-"les vidéos seront automatiquement attribuées au gestionnaire de l'enregistreur."
+"Si vous cochez cette case les vidéos seront automatiquement attribuées au "
+"gestionnaire de l'enregistreur."
 
 #: pod/recorder/models.py
 msgid "Video type by default."
@@ -8629,15 +8696,14 @@ msgstr ""
 msgid ""
 "<p>Hello,<br>a new recording has just been added on %(title_site)s from the "
 "recorder “%(recorder)s”.<br>To assign it, just click on link below.</p><p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br><em>If you cannot click on the link, "
-"just copy-paste it in your browser.</em></p><p>Regards.</p>"
+"href=\"%(link_url)s\">%(link_url)s</a><br><em>If you cannot click on the "
+"link, just copy-paste it in your browser.</em></p><p>Regards.</p>"
 msgstr ""
 "<p>Bonjour,<br> un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur « %(recorder)s ».<br>Pour "
-"l’attribuer, cliquez sur le lien ci-dessous.</p><p><a "
-"href=\"%(link_url)s\">%(link_url)s</a><br><em>Si le lien n’est pas actif, il "
-"faut le copier-coller dans la barre d’adresse de votre navigateur.</em></"
-"p><p>Cordialement.</p>"
+"l’attribuer, cliquez sur le lien ci-dessous.</p><p><a href=\"%(link_url)s\">"
+"%(link_url)s</a><br><em>Si le lien n’est pas actif, il faut le copier-coller "
+"dans la barre d’adresse de votre navigateur.</em></p><p>Cordialement.</p>"
 
 #: pod/recorder/views.py
 msgid "New recording added."
@@ -8655,6 +8721,125 @@ msgstr "Suppression de l’enregistrement « %s »"
 #: pod/recorder/views.py
 msgid "Recorder for Studio not found."
 msgstr "Enregistreur studio non trouvé."
+
+#: pod/speaker/forms.py
+msgid "You can search speaker by first name, last name and job."
+msgstr ""
+"Vous pouvez rechercher un intervenant par leur prénom, nom et fonction."
+
+#: pod/speaker/models.py pod/speaker/templates/speaker/speakers_management.html
+msgid "First name"
+msgstr "Prénom"
+
+#: pod/speaker/models.py pod/speaker/templates/speaker/speakers_management.html
+msgid "Last name"
+msgstr "Nom"
+
+#: pod/speaker/models.py
+msgid "Speakers"
+msgstr "Intervenants"
+
+#: pod/speaker/models.py
+msgid "Speaker's job"
+msgstr "Fonction de l’intervenant"
+
+#: pod/speaker/templates/speaker/list_speaker.html
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "List of speakers"
+msgstr "Liste des intervenants"
+
+#: pod/speaker/templates/speaker/list_speaker.html
+msgid "First name / Last name"
+msgstr "Prénom / Nom"
+
+#: pod/speaker/templates/speaker/list_speaker.html
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "Job"
+msgstr "Fonction"
+
+#: pod/speaker/templates/speaker/list_speaker.html
+#, python-format
+msgid "Delete the speaker job “%(speaker_job)s”"
+msgstr "Supprimer la fonction de l’intervenant « %(speaker_job)s »"
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "Add a speaker"
+msgstr "Ajouter un intervenant"
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+msgid "Jobs"
+msgstr "Fonctions"
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+msgid "Job title"
+msgstr "Titre de la fonction"
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+msgid "Remove job"
+msgstr "Supprimer la fonction"
+
+#: pod/speaker/templates/speaker/speaker_modal.html
+msgid "Add job"
+msgstr "Ajouter une fonction"
+
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "List of speakers I can manage."
+msgstr "Liste des intervenants que je peux gérer."
+
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "No jobs assigned"
+msgstr "Aucune fonction associée"
+
+#: pod/speaker/templates/speaker/speakers_management.html
+#, python-format
+msgid "Edit the speaker “%(speaker_firstname)s %(speaker_lastname)s”"
+msgstr "Modifier l’intervenant « %(speaker_firstname)s %(speaker_lastname)s »"
+
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "Please confirm you want to delete the speaker"
+msgstr "Veuillez confirmer que vous souhaitez supprimer l’intervenant"
+
+#: pod/speaker/templates/speaker/speakers_management.html
+#, python-format
+msgid "Delete the speaker “%(speaker_firstname)s %(speaker_lastname)s”"
+msgstr "Supprimer l’intervenant « %(speaker_firstname)s %(speaker_lastname)s »"
+
+#: pod/speaker/templates/speaker/speakers_management.html
+msgid "No speakers found."
+msgstr "Aucun intervenant trouvé."
+
+#: pod/speaker/views.py
+msgid "You cannot access speaker management."
+msgstr "Vous ne pouvez pas accéder à la gestion des intervenants."
+
+#: pod/speaker/views.py pod/video/tests/test_views.py pod/video/views.py
+msgid "An action must be specified."
+msgstr "Une action doit être précisée."
+
+#: pod/speaker/views.py
+msgid "The speaker has been added."
+msgstr "L’intervenant a été ajouté."
+
+#: pod/speaker/views.py
+msgid "The speaker could not be added."
+msgstr "L’intervenant n’a pu être ajouté."
+
+#: pod/speaker/views.py
+msgid "The speaker has been deleted."
+msgstr "L’intervenant a été supprimé."
+
+#: pod/speaker/views.py
+msgid "The speaker could not be deleted."
+msgstr "L’intervenant n’a pu être supprimé."
+
+#: pod/speaker/views.py
+msgid "The speaker has been updated."
+msgstr "L’intervenant a été modifié."
+
+#: pod/speaker/views.py
+msgid "Speaker not found or invalid input."
+msgstr "Intervenant non trouvé ou champ invalide."
 
 #: pod/urls.py
 msgid "Pod Administration"
@@ -8824,28 +9009,38 @@ msgstr ""
 "besoins."
 
 #: pod/video/forms.py
-msgid ""
-"In “Draft mode”, the content shows nowhere and nobody else but you can see "
-"it."
-msgstr ""
-"En \"Mode brouillon\", le contenu n’apparaîtra nul part et uniquement vous "
-"pourrez le voir."
+msgid "Visibility"
+msgstr "Visibilité"
+
+#: pod/video/forms.py
+msgid "In “Public” mode, the content is visible to everyone."
+msgstr "Dans le mode « Public », le contenu est visible par tout le monde."
 
 #: pod/video/forms.py
 msgid ""
-"If you don’t select “Draft mode”, you can restrict the content access to "
-"only people who can log in"
+"In “Draft / Private” mode, the content shows nowhere and nobody else but you "
+"can see it."
 msgstr ""
-"Si vous ne sélectionnez pas le « Mode brouillon », vous pouvez restreindre "
-"son accès aux personnes authentifiées"
+"En mode “Brouillon / Privé“, le contenu n'apparaît nulle part et personne "
+"d'autre que vous ne peut le voir. Vous pouvez ajouter des jetons pour "
+"permettre un accès direct par lien."
 
 #: pod/video/forms.py
 msgid ""
-"If you don’t select “Draft mode”, you can add a password which will be asked "
-"to anybody willing to watch your content."
+"In “Restricted access” mode, you can choose the restrictions for the video."
 msgstr ""
-"Si vous ne sélectionnez par le « Mode brouillon », vous pouvez ajouter un "
-"mot de passe qui sera demandé aux utilisateurs souhaitant voir votre contenu."
+"En mode « Accès restreint », vous pouvez choisir les restrictions pour la "
+"video."
+
+#: pod/video/forms.py
+msgid ""
+"In “Restricted access” mode, you can add a password which will be asked to "
+"anybody willing to watch your content. You can add tokens for allow direct "
+"access by link."
+msgstr ""
+"En mode « Accès restreint », vous pouvez ajouter un mot de passe qui sera "
+"demandé à toute personne souhaitant regarder votre contenu. Vous pouvez "
+"ajouter des jetons pour permettre un accès direct par lien."
 
 #: pod/video/forms.py
 msgid ""
@@ -8854,6 +9049,26 @@ msgid ""
 msgstr ""
 "Si votre vidéo est dans une liste de lecture vous ne pourrez pas lui ajouter "
 "de mot de passe."
+
+#: pod/video/forms.py pod/video/models.py
+msgid "Authentication restricted access"
+msgstr "Accès restreint par authentification"
+
+#: pod/video/forms.py
+msgid ""
+"In “Restricted access” mode, you can restrict the content access to only "
+"people who can log in"
+msgstr ""
+"En mode « Accès restreint », vous pouvez restreindre l’accès au contenu aux "
+"personnes qui peuvent se connecter"
+
+#: pod/video/forms.py
+msgid ""
+"In “Restricted access” mode, you can restrict the content access to only "
+"people who are in these groups."
+msgstr ""
+"Dans le mode « Accès restreint », vous pouvez restreindre l’accès au contenu "
+"aux personnes qui sont dans ces groupes."
 
 #: pod/video/forms.py pod/video/templates/videos/add_video.html
 msgid ""
@@ -8899,6 +9114,10 @@ msgid "Users can only add videos to this channel"
 msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne"
 
 #: pod/video/forms.py
+msgid "Draft / Private"
+msgstr "Brouillon / Privé"
+
+#: pod/video/forms.py
 msgid "Source file"
 msgstr "Fichier source"
 
@@ -8918,6 +9137,14 @@ msgstr "La date doit être antérieure ou égale au %(date)s."
 #: pod/video/forms.py
 msgid "The deletion date can’t be earlier than today."
 msgstr "La date de suppression ne peut pas être antérieure à aujourd’hui."
+
+#: pod/video/forms.py
+msgid ""
+"If you select restricted visibility for your video, you must check the "
+"\"restricted access\" box or specify a password."
+msgstr ""
+"Si vous choisissez une visibilité restreinte pour votre vidéo, vous devez "
+"cocher la case \"accès restreint\" ou spécifier un mot de passe."
 
 #: pod/video/forms.py
 msgid "Delete video cannot be undo"
@@ -9376,7 +9603,7 @@ msgstr "Votes"
 msgid "Category title"
 msgstr "Titre de la catégorie"
 
-#: pod/video/models.py pod/video/templates/videos/category_modal.html
+#: pod/video/models.py
 msgid "Category"
 msgstr "Catégorie"
 
@@ -9648,11 +9875,17 @@ msgstr ""
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
+msgid "This content contains a quiz."
+msgstr "Ce contenu contient un quiz."
+
+#: pod/video/templates/videos/card.html
+#: pod/video/templates/videos/card_select.html
 #: pod/video/templatetags/video_tags.py
 msgid "This content is password protected."
 msgstr "Ce contenu est protégé par un mot de passe."
 
 #: pod/video/templates/videos/card.html
+#: pod/video/templates/videos/card_select.html
 msgid "This content has restricted access."
 msgstr "Ce contenu est en accès restreint."
 
@@ -9664,43 +9897,33 @@ msgstr "Ce contenu est chapitré."
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
-#: pod/video/templates/videos/category_modal_card.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Video content."
 msgstr "Contenu vidéo."
 
 #: pod/video/templates/videos/card.html
 #: pod/video/templates/videos/card_select.html
-#: pod/video/templates/videos/category_modal_card.html
 #: pod/video/templates/videos/video_row_select.html
 msgid "Audio content."
 msgstr "Contenu audio."
 
 #: pod/video/templates/videos/card_select.html
 #: pod/video/templates/videos/video_row_select.html
-msgid "Selected"
-msgstr "Sélectionné"
-
-#: pod/video/templates/videos/category_modal.html
-msgid "category title"
-msgstr "titre catégorie"
+#, python-format
+msgid "Select video “%(video_title)s”"
+msgstr "Sélectionner la vidéo « %(video_title)s »"
 
 #: pod/video/templates/videos/category_modal.html
 msgid "Check the videos to add in the category"
 msgstr "Cocher les vidéos à ajouter dans la catégorie"
 
 #: pod/video/templates/videos/category_modal.html
-msgid "Save category"
-msgstr "Sauvegarder catégorie"
-
-#: pod/video/templates/videos/category_modal.html
-#: pod/video/templates/videos/filter_aside_category.html
-msgid "Delete the category"
-msgstr "Supprimer la catégorie"
-
-#: pod/video/templates/videos/category_modal.html
 msgid "Permanently delete your category?"
 msgstr "Supprimer définitivement votre catégorie ?"
+
+#: pod/video/templates/videos/category_modal.html
+msgid "Save category"
+msgstr "Sauvegarder la catégorie"
 
 #: pod/video/templates/videos/change_video_owner.html
 msgid "Old owner"
@@ -9785,6 +10008,14 @@ msgstr[0] "%(counter)s vidéo"
 msgstr[1] "%(counter)s vidéos"
 
 #: pod/video/templates/videos/dashboard.html
+msgid "Select all"
+msgstr "Tout sélectionner"
+
+#: pod/video/templates/videos/dashboard.html
+msgid "Clear selection"
+msgstr "Effacer la sélection"
+
+#: pod/video/templates/videos/dashboard.html
 msgid ""
 "You have not uploaded any videos yet, please use the ”Add a new video” "
 "button to add one"
@@ -9820,7 +10051,17 @@ msgstr "Plier/déplier les filtres par « Disciplines »"
 msgid "Fold/Unfold “Tags” filters"
 msgstr "Plier/déplier les filtres par « Mots-clés »"
 
-#: pod/video/templates/videos/filter_aside_category.html
+#: pod/video/templates/videos/filter_aside_categories_list.html
+#: pod/video/views.py
+msgid "Edit category"
+msgstr "Éditer la catégorie"
+
+#: pod/video/templates/videos/filter_aside_categories_list.html
+#: pod/video/views.py
+msgid "Delete category"
+msgstr "Supprimer la catégorie"
+
+#: pod/video/templates/videos/filter_aside_category.html pod/video/views.py
 msgid "Add new category"
 msgstr "Ajouter une catégorie"
 
@@ -9828,59 +10069,27 @@ msgstr "Ajouter une catégorie"
 msgid "Type at least 3 chars to filter categories"
 msgstr "Tapez au moins 3 lettres pour filtrer vos catégories"
 
-#: pod/video/templates/videos/filter_aside_category.html
-msgid "Edit the category"
-msgstr "Éditer la catégorie"
-
 #: pod/video/templates/videos/footer_link.html
 msgid "Links"
 msgstr "Liens"
 
 #: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Remove from playlist"
 msgstr "Retirer de la liste de lecture"
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Remove from favorite"
 msgstr "Retirer des favoris"
 
 #: pod/video/templates/videos/link_video.html
 #: pod/video/templates/videos/video-info.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Add in favorite"
 msgstr "Ajouter aux favoris"
 
 #: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
 msgid "Edit the video"
 msgstr "Éditer la vidéo"
-
-#: pod/video/templates/videos/link_video.html
-msgid "Enhance the video with AI"
-msgstr "Améliorer la vidéo avec l’IA"
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Complete the video"
-msgstr "Compléter la vidéo"
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Chapter the video"
-msgstr "Chapitrer la vidéo"
-
-#: pod/video/templates/videos/link_video.html
-msgid "Dress the video"
-msgstr "Habiller la vidéo"
-
-#: pod/video/templates/videos/link_video.html
-#: pod/video/templates/videos/video_edit.html
-#: pod/video/templates/videos/video_row_select.html
-msgid "Delete the video"
-msgstr "Supprimer la vidéo"
 
 #: pod/video/templates/videos/link_video.html
 msgid "Video default version"
@@ -9890,6 +10099,27 @@ msgstr "Version par défaut de la vidéo"
 #: pod/video/templates/videos/video-all-info.html
 msgid "Original version"
 msgstr "Version originale"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Enhance the video with AI"
+msgstr "Améliorer la vidéo avec l’IA"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Complete the video"
+msgstr "Compléter la vidéo"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Chapter the video"
+msgstr "Chapitrer la vidéo"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Dress the video"
+msgstr "Habiller la vidéo"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+#: pod/video/templates/videos/video_edit.html
+msgid "Delete the video"
+msgstr "Supprimer la vidéo"
 
 #: pod/video/templates/videos/video-all-info.html
 msgid "Report the video"
@@ -10021,6 +10251,10 @@ msgstr "Envoyer un courriel à « %(contributor_name)s »"
 #: pod/video/templates/videos/video-info.html
 msgid "Contributor web link"
 msgstr "Lien du contributeur"
+
+#: pod/video/templates/videos/video-info.html
+msgid "Speaker(s):"
+msgstr "Intervenant(s) :"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Updated on:"
@@ -10407,13 +10641,9 @@ msgstr "Description du thème"
 msgid "The video is currently waiting for Aristote AI treatment."
 msgstr "La vidéo est actuellement en attente du traitement par l’IA Aristote."
 
-#: pod/video/templates/videos/video_page_content.html
-msgid ""
-"The video was treated by Aristote. You must verify and validate the "
-"processing by pressing the robot icon."
-msgstr ""
-"La vidéo a été traitée par Aristote. Vous devez vérifier et valider le "
-"traitement en appuyant sur l’icône du robot."
+#: pod/video/templates/videos/video_row_select.html
+msgid "Selected"
+msgstr "Sélectionné"
 
 #: pod/video/templates/videos/video_row_select.html
 msgid "Toggle actions menu"
@@ -10505,10 +10735,6 @@ msgstr ""
 #: pod/video/tests/test_models.py pod/video/translation.py
 msgid "-- sorry, no translation provided --"
 msgstr "-- désolé, aucune traduction fournie --"
-
-#: pod/video/tests/test_views.py pod/video/views.py
-msgid "An action must be specified."
-msgstr "Une action doit être précisée."
 
 #: pod/video/tests/test_views.py pod/video/views.py
 msgid "A token has been created."
@@ -10748,16 +10974,16 @@ msgid "You do not have rights to delete this comment"
 msgstr "Vous n’avez pas les droits pour supprimer ce commentaire"
 
 #: pod/video/views.py
-msgid "One or many videos already have a category."
-msgstr "Une ou plusieurs vidéos possèdent déjà une catégorie."
-
-#: pod/video/views.py
 msgid "Title field is required"
 msgstr "Champ de titre est requis"
 
 #: pod/video/views.py
-msgid "Method Not Allowed"
-msgstr "Méthode non autorisée"
+msgid "One or many videos already have a category."
+msgstr "Une ou plusieurs vidéos possèdent déjà une catégorie."
+
+#: pod/video/views.py
+msgid "Category successfully added."
+msgstr "Catégorie ajoutée avec succès."
 
 #: pod/video/views.py
 msgid "Category updated successfully."
@@ -10766,6 +10992,10 @@ msgstr "Catégorie mise à jour avec succès."
 #: pod/video/views.py
 msgid "You do not have rights to edit this category"
 msgstr "Vous n’avez pas les droits pour éditer cette catégorie"
+
+#: pod/video/views.py
+msgid "Category successfully deleted."
+msgstr "Categorie supprimée avec succès."
 
 #: pod/video/views.py
 msgid "You do not have rights to delete this category"
@@ -10951,6 +11181,31 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Long answer"
+#~ msgstr "Réponse longue"
+
+#~ msgid "Long answer question"
+#~ msgstr "Question à réponse longue"
+
+#~ msgid "Write a long answer."
+#~ msgstr "Écrivez une réponse longue."
+
+#~ msgid "Please choose an answer."
+#~ msgstr "Veuillez choisir une réponse."
+
+#~ msgid "Long answer questions"
+#~ msgstr "Questions à réponse longue"
+
+#~ msgid "Restricted"
+#~ msgstr "Restreint"
+
+#~ msgid ""
+#~ "The video was treated by Aristote. You must verify and validate the "
+#~ "processing by pressing the robot icon."
+#~ msgstr ""
+#~ "La vidéo a été traitée par Aristote. Vous devez vérifier et valider le "
+#~ "traitement en appuyant sur l’icône du robot."
 
 #~ msgid "Quiz(zes)"
 #~ msgstr "Quiz"

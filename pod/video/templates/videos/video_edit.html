@@ -54,7 +54,9 @@
       {% if form.errors %}
         <div class="text-danger">
           <p>{% trans "One or more errors have been found in the form." %}</p>
-          {{form.errors}}
+           {% for key, err in form.errors.items %}
+           {{err}}
+           {% endfor %}
         </div>
       {% endif %}
 
@@ -144,6 +146,9 @@
                   {% trans "Other(s) language(s)" %}
                 </button>
               </div>
+            {% endif %}
+            {% if field.id_for_label == "id_password" %}
+              <hr>
             {% endif %}
           </div>
         </div>
