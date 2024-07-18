@@ -1029,7 +1029,7 @@ var show_theme_form = function (data) {
 };
 
 /**
- * 
+ *
  * @param  {[type]} data [description]
  * @return {[type]}      [description]
  */
