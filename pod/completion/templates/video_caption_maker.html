@@ -31,21 +31,26 @@
     </div>
   {% endif %}
 
-  <div class="row align-items-center mb-2 justify-content-end">
+  <div class="row align-items-center mb-4 justify-content-end">
     <div class="col-auto">
       <label class="col-form-label" for="caption-file-name">{% trans "File" %}</label>
-    </div><div class="col-auto">
+    </div>
+    <div class="col-4">
       <input class="form-control" id="caption-file-name" name="file_name" type="text" form="form_save_captions">
-    </div><div class="col-auto">
+    </div>
+    <div class="col-auto">
       <label class="col-form-label" for="caption-kind-select">{% trans "Kind" %}</label>
-    </div><div class="col-auto">
+    </div>
+    <div class="col-auto">
       <select id="caption-kind-select" name="kind" form="form_save_captions" class="form-select">
-        <option value="subtitles" {% if track_kind == "subtitles" %} selected {% endif %} > {% trans "subtitles" %} </option>
-        <option value="captions" {% if track_kind == "captions" %} selected {% endif %} > {% trans "captions" %} </option>
+        <option value="subtitles" {% if track_kind == "subtitles" %} selected {% endif %} > {% trans "Subtitles" %} </option>
+        <option value="captions" {% if track_kind == "captions" %} selected {% endif %} > {% trans "Captions" %} </option>
       </select>
-    </div><div class="col-auto">
+    </div>
+    <div class="col-auto">
       <label class="col-form-label" for="caption-language-select">{% trans "Language" %}</label>
-    </div><div class="col-auto">
+    </div>
+    <div class="col-auto">
       <select id="caption-language-select" name="lang" form="form_save_captions" class="form-select">
         {% for lang_group in languages %}
           <optgroup label="{{ lang_group.0 }}">
@@ -54,7 +59,8 @@
             {% endfor %}
         {% endfor %}
       </select>
-    </div><div class="col-auto">
+    </div>
+    <div class="col-auto">
       <button id="switch-old-edit-mode" class="btn btn-primary btn-sm">
         <i class="bi bi-toggles" aria-hidden="true"></i>&nbsp;{% trans "Change mode" %}
       </button>
@@ -81,7 +87,7 @@
     <div id="caption-title"></div>
     <div>
       <label class="col-form-label" for="text-caption-entry">{% trans "Caption" %}</label>
-      <textarea class="form-control" id="text-caption-entry" autocomplete="off" cols="40" rows="2" wrap="hard" maxlength="80"></textarea>
+      <textarea class="form-control" id="text-caption-entry" autocomplete="off" cols="40" rows="3" wrap="hard" maxlength="110"></textarea>
     </div>
     <div >
       <button id="play-button" class="btn btn-primary btn-sm mt-1">
@@ -104,8 +110,8 @@
       <textarea class="form-control captions-editor" id="caption-content"></textarea>
     </div>
     <div class="captions-editor text-center container" id="new-captions-editor">
-      <h2 class="h3" id="no-captions-text">{% trans "No captions" %}</h2>
-      <button id="add-subtitle" type="button" class="btn btn-outline-primary btn-lg mt-2">
+      <h2 class="h3 my-4" id="no-captions-text">{% trans "No captions" %}</h2>
+      <button id="add-subtitle" type="button" class="btn btn-outline-primary btn-lg my-4">
         <i class="bi bi-plus" aria-hidden="true"></i>&nbsp;{% trans "Add a caption/subtitle" %}
       </button>
     </div>

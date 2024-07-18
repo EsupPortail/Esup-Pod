@@ -47,6 +47,7 @@
   /**** couleur neutre pour fond de bloc (ex jumbotron) ***/
   --pod-background-neutre1-bloc: #ddd;
   --pod-background-neutre1-bloc-dark: #393e46;
+  --pod-background-neutre1-bloc-blue: #e5f1fa;
 
   /**** couleur neutre 2 pour fond de bloc ***/
   --pod-background-neutre2-bloc: #f5f5f5;
@@ -768,7 +769,7 @@ div.card a img {
 }
 
 .pod-infinite-list-container-dashboard .list-item-video-row:hover {
-  background-color: var(--pod-background-neutre1-bloc);
+  background-color: var(--pod-background-neutre1-bloc-blue);
 }
 
 .pod-infinite-list-container-dashboard
