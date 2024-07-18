@@ -691,7 +691,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
 
     // circle buttons
     buttonsDiv: new DOMParser().parseFromString(
-      "<div class='captionButtons col-1 d-flex flex-wrap align-items-center'></div>",
+      "<div class='caption-buttons col-1 d-flex flex-wrap align-items-center'></div>",
       "text/html",
     ).body.firstChild,
 

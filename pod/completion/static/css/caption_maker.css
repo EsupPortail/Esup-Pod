@@ -147,7 +147,7 @@
   padding: 4px;
 }
 
-.captionButtons button {
+.caption-buttons button {
   display: block;
   width: 28px;
   height: 28px;
@@ -156,7 +156,7 @@
   border-radius: 50%;
 }
 
-.captionButtons button:hover {
+.caption-buttons button:hover {
   background: var(--pod-primary-lighten);
 }
 
