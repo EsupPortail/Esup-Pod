@@ -8400,7 +8400,7 @@ msgstr ""
 
 #: pod/recorder/models.py
 msgid "Automatic publishing:"
-msgstr "Publication automatique :"
+msgstr "Publication automatique :"
 
 #: pod/recorder/models.py
 msgid ""
@@ -10256,7 +10256,7 @@ msgstr "Lien du contributeur"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Speaker(s):"
-msgstr "Intervenant(s) :"
+msgstr "Intervenant(s) :"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Updated on:"
