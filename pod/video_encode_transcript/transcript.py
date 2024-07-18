@@ -194,6 +194,19 @@ def saveVTT(video: Video, webvtt: WebVTT, lang_code: str = None):
     return msg
 
 
+def remove_unnecessary_spaces(text: str) -> str:
+    """
+    Remove unnecessary spaces from a string.
+
+    Args:
+        text (str): The string.
+
+    Returns:
+        str: The new string.
+    """
+    return " ".join(text.split())
+
+
 def improve_captions_accessibility(webvtt):
     """
     Parse the vtt file in argument to render the caption conform to accessibility.
@@ -220,7 +233,7 @@ def improve_captions_accessibility(webvtt):
             startTime = caption.start_in_seconds
             for x in range(num_captions):
                 new_cap = Caption()
-                new_cap.text = get_cap_text(sent, x)
+                new_cap.text = remove_unnecessary_spaces(get_cap_text(sent, x))
                 # Durée d'affichage au prorata du nombre de mots
                 timeCalc = dur * (len(new_cap.text.split()) / nbTotWords)
                 new_cap.start = sec_to_timestamp(startTime)
