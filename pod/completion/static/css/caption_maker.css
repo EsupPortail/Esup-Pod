@@ -147,19 +147,6 @@
   padding: 4px;
 }
 
-.caption-buttons button {
-  display: block;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-}
-
-.caption-buttons button:hover {
-  background: var(--pod-primary-lighten);
-}
-
 #add-subtitle svg {
   color: var(--pod-link-color);
 }
