@@ -1561,11 +1561,11 @@ msgid "Please enter a name."
 msgstr ""
 
 #: pod/completion/models.py
-msgid "Please enter a name from 2 to 200 caracters."
+msgid "Please enter a name from 2 to 200 characters."
 msgstr ""
 
 #: pod/completion/models.py
-msgid "You cannot enter a weblink with more than 200 caracters."
+msgid "You cannot enter a weblink with more than 200 characters."
 msgstr ""
 
 #: pod/completion/models.py

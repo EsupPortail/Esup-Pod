@@ -1,4 +1,8 @@
-"""Unit tests for completion models."""
+"""
+Unit tests for completion models.
+
+Test with `python manage.py test pod.completion.tests.test_models`
+"""
 
 import base64
 
@@ -34,6 +38,7 @@ class ContributorModelTestCase(TestCase):
     ]
 
     def setUp(self) -> None:
+        """Set up general data for all ContributoModel tests."""
         self.site = Site.objects.get(id=1)
         owner = User.objects.create(username="test")
         video_type = Type.objects.create(title="others")
@@ -54,6 +59,7 @@ class ContributorModelTestCase(TestCase):
         Contributor.objects.create(video=video, name="contributor2")
 
     def test_attributs_full(self) -> None:
+        """Test contributor with all attributes."""
         contributor = Contributor.objects.get(id=1)
         video = Video.objects.get(id=1)
         self.assertEqual(contributor.video, video)
@@ -65,6 +71,7 @@ class ContributorModelTestCase(TestCase):
         print(" ---> test_attributs_full: OK! --- ContributorModel")
 
     def test_attributs(self) -> None:
+        """Test contributor with some empty attributes."""
         contributor = Contributor.objects.get(id=2)
         video = Video.objects.get(id=1)
         self.assertEqual(contributor.video, video)
@@ -77,15 +84,23 @@ class ContributorModelTestCase(TestCase):
         print(" ---> test_attributs: OK! --- ContributorModel")
 
     def test_bad_attributs(self) -> None:
+        """Test contributor with some bad attributes."""
         video = Video.objects.get(id=1)
         contributor = Contributor()
         contributor.video = video
         contributor.role = "actor"
+        # A contributor must have a name
         self.assertRaises(ValidationError, contributor.clean)
         contributor.name = "t"
+        # Contributor's name must have at least 2 chars
         self.assertRaises(ValidationError, contributor.clean)
         contributor.name = "test"
         contributor.role = None
+        # Contributor's role can't be None
+        self.assertRaises(ValidationError, contributor.clean)
+        contributor.role = "actor"
+        # Contributor's weblink cannot have more than 200 chars
+        contributor.weblink = "x" * 201
         self.assertRaises(ValidationError, contributor.clean)
 
         print(" ---> test_bad_attributs: OK! --- ContributorModel")
