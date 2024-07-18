@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-18 08:12+0000\n"
+"POT-Creation-Date: 2024-07-18 09:46+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -3763,8 +3763,7 @@ msgstr ""
 msgid "Main language"
 msgstr "Langue principale"
 
-#: pod/live/models.py pod/recorder/models.py pod/video/forms.py
-#: pod/video/models.py
+#: pod/live/models.py pod/video/forms.py
 msgid "Select the main language used in the content."
 msgstr "Sélectionner la langue principalement utilisée dans ce contenu."
 
@@ -3776,7 +3775,7 @@ msgstr "Diffuseurs"
 msgid "Is recording?"
 msgstr "Enregistrement en cours ?"
 
-#: pod/live/models.py pod/video/models.py
+#: pod/live/models.py
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
 "subject / context of the content. (max length: 250 characters)"
@@ -8431,8 +8430,8 @@ msgstr ""
 "utilisateurs authentifiés."
 
 #: pod/recorder/models.py pod/video/models.py
-msgid "Select one or more groups who can access to this video"
-msgstr "Sélectionner un ou plusieurs groupes qui auront accès à cette vidéo"
+msgid "One or more groups who can access to this video"
+msgstr "Un ou plusieurs groupes qui auront accès à cette vidéo"
 
 #: pod/recorder/models.py pod/video/models.py
 msgid "Viewing this video will not be possible without this password."
@@ -8448,6 +8447,10 @@ msgstr "Cursus universitaire"
 msgid "Select an university course as audience target of the content."
 msgstr ""
 "Sélectionner un cursus universitaire qui convient à l’audience de ce contenu."
+
+#: pod/recorder/models.py pod/video/models.py
+msgid "The main language used in the content."
+msgstr "La langue principalement utilisée dans ce contenu."
 
 #: pod/recorder/models.py pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/add_video.html
@@ -8467,10 +8470,18 @@ msgstr ""
 "Séparer les mots clés par des espaces, écrire les mots clés en plusieurs "
 "mots entre guillemets."
 
+#: pod/recorder/models.py pod/video/models.py
+msgid "The disciplines to which your content belongs."
+msgstr "Les disciplines auxquelles appartient votre contenu."
+
 #: pod/recorder/models.py pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/dashboard.html
 msgid "Licence"
 msgstr "Licence"
+
+#: pod/recorder/models.py pod/video/models.py
+msgid "Usage rights granted to your content."
+msgstr "Droits d’utilisation de votre contenu."
 
 #: pod/recorder/models.py pod/video/forms.py pod/video/models.py
 msgid "Themes"
@@ -8506,7 +8517,7 @@ msgstr ""
 msgid "Disable comment"
 msgstr "Désactiver les commentaires"
 
-#: pod/recorder/models.py pod/video/models.py
+#: pod/recorder/models.py
 msgid "Allows you to turn off all comments on this video."
 msgstr "Vous permet de désactiver les commentaires sur cette vidéo."
 
@@ -9003,12 +9014,11 @@ msgstr ""
 
 #: pod/video/forms.py
 msgid ""
-"If the channel or Themes you wish does not appear in the list, please select "
+"If the channel or theme you wish does not appear in the list, please select "
 "nothing and contact us to explain your needs."
 msgstr ""
-"Si une chaîne ou des thèmes que vous ne voulez pas voir apparaître dans la "
-"liste, veuillez ne rien sélectionner et contactez nous pour expliquer vos "
-"besoins."
+"Si une chaîne ou des thèmes que vous voulez n’apparaît pas dans la liste, "
+"veuillez ne rien sélectionner et contactez-nous pour expliquer vos besoins."
 
 #: pod/video/forms.py
 msgid "Visibility"
@@ -9118,6 +9128,12 @@ msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne
 #: pod/video/forms.py
 msgid "Draft / Private"
 msgstr "Brouillon / Privé"
+
+#: pod/video/forms.py
+msgid "Who can see your content (everyone, just you, or those granted)."
+msgstr ""
+"Qui peut voir votre contenu (tout le monde, juste vous ou des personnes "
+"autorisées)."
 
 #: pod/video/forms.py
 msgid "Source file"
@@ -9418,10 +9434,9 @@ msgstr ""
 "Si coché, la chaîne apparaîtra dans la liste des chaînes de la plateforme."
 
 #: pod/video/models.py
-msgid "Select one or more groups who can upload video to this channel."
+msgid "One or more groups who can upload video to this channel."
 msgstr ""
-"Sélectionner un ou plusieurs groupes qui pourront ajouter des vidéos à cette "
-"chaine."
+"Un ou plusieurs groupes qui pourront ajouter des vidéos à cette chaîne."
 
 #: pod/video/models.py
 msgid "Additionals channels tab"
@@ -9449,20 +9464,40 @@ msgid "Icon"
 msgstr "Icône"
 
 #: pod/video/models.py
-msgid "Select the general type of the video."
-msgstr "Sélectionnez le type général de la vidéo."
+msgid ""
+"A title as short and accurate as possible, reflecting the main subject / "
+"context of the content. (max length: 250 characters)"
+msgstr ""
+"Un titre aussi court et précis que possible, reflétant le sujet principal / "
+"le contexte de ce contenu. (taille maximale : 250 caractères)"
+
+#: pod/video/models.py
+msgid "The general type of the video."
+msgstr "Le type général de la vidéo."
 
 #: pod/video/models.py
 msgid ""
-"You can add additional owners to the video. They will have the same rights "
-"as you except that they can’t delete this video."
+"Additional owners will have the same rights as you, except that they can’t "
+"delete this media."
 msgstr ""
-"Vous pouvez ajouter des propriétaires additionnels à la vidéo. Ils auront "
-"les mêmes droits que vous sauf qu’ils ne peuvent pas supprimer cette vidéo."
+"Les propriétaires additionnels auront les mêmes droits que vous, sauf qu’ils "
+"ne peuvent pas supprimer ce contenu."
+
+#: pod/video/models.py
+msgid ""
+"Describe your content, add all needed related information, and format the "
+"result using the toolbar."
+msgstr ""
+"Décrivez votre contenu, ajoutez toutes les informations nécessaires, et "
+"mettez en forme le résultat en utilisant la barre d’outils."
 
 #: pod/video/models.py pod/video/templates/videos/video_sort_select.html
 msgid "Date of event"
 msgstr "Date de l’évènement"
+
+#: pod/video/models.py
+msgid "The channel where you want your content to appear."
+msgstr "La chaîne où vous voulez que votre contenu apparaisse."
 
 #: pod/video/models.py
 msgid "Overview"
@@ -9475,6 +9510,14 @@ msgstr "Est une vidéo"
 #: pod/video/models.py pod/video/templates/videos/dashboard.html
 msgid "Date to delete"
 msgstr "Date de suppression"
+
+#: pod/video/models.py
+msgid "Date when your video will be automatically removed from Pod."
+msgstr "Date à laquelle votre vidéo sera automatiquement retirée de Pod."
+
+#: pod/video/models.py
+msgid "Prevent users from commenting on your content."
+msgstr "Empêche les utilisateurs de commenter votre contenu."
 
 #: pod/video/models.py
 msgid "Sum of view"
@@ -9914,6 +9957,10 @@ msgstr "Contenu audio."
 #, python-format
 msgid "Select video “%(video_title)s”"
 msgstr "Sélectionner la vidéo « %(video_title)s »"
+
+#: pod/video/templates/videos/card_select.html
+msgid "Video duration"
+msgstr "Durée totale de la vidéo"
 
 #: pod/video/templates/videos/category_modal.html
 msgid "Check the videos to add in the category"
@@ -10805,21 +10852,21 @@ msgid "You cannot edit this video."
 msgstr "Vous ne pouvez pas éditer cette vidéo."
 
 #: pod/video/views.py
-msgid "The video has been deleted."
-msgstr "La vidéo a été supprimée."
+msgid "The media has been deleted."
+msgstr "Le contenu a été supprimé."
 
 #: pod/video/views.py
 #, python-format
-msgid "Deleting the video \"%(vtitle)s\""
-msgstr "Supprimer la vidéo « %(vtitle)s »"
+msgid "Deleting the media \"%(vtitle)s\""
+msgstr "Supprimer le média « %(vtitle)s »"
 
 #: pod/video/views.py
-msgid "You cannot delete this video."
-msgstr "Vous ne pouvez pas supprimer cette vidéo."
+msgid "You cannot delete this media."
+msgstr "Vous ne pouvez pas supprimer ce contenu."
 
 #: pod/video/views.py
-msgid "You cannot delete a video that is being encoded."
-msgstr "Vous ne pouvez pas supprimer une vidéo en cours d’encodage."
+msgid "You cannot delete a media that is being encoded."
+msgstr "Vous ne pouvez pas supprimer un contenu en cours d’encodage."
 
 #: pod/video/views.py
 #, python-format
@@ -11183,6 +11230,12 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "The video has been deleted."
+#~ msgstr "La vidéo a été supprimée."
+
+#~ msgid "You cannot delete this video."
+#~ msgstr "Vous ne pouvez pas supprimer cette vidéo."
 
 #~ msgid "Long answer"
 #~ msgstr "Réponse longue"

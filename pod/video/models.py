@@ -689,7 +689,7 @@ class Video(models.Model):
         _("Title"),
         max_length=250,
         help_text=_(
-            "Please choose a title as short and accurate as "
+            "A title as short and accurate as "
             "possible, reflecting the main subject / context "
             "of the content. (max length: 250 characters)"
         ),
@@ -719,9 +719,8 @@ class Video(models.Model):
         verbose_name=_("Additional owners"),
         related_name="owners_videos",
         help_text=_(
-            "You can add additional owners to the video. "
-            + "They will have the same rights as you except "
-            + "that they can’t delete this video."
+            "Additional owners will have the same rights as you, except "
+            + "that they can’t delete this media."
         ),
     )
     description = RichTextField(
@@ -729,8 +728,7 @@ class Video(models.Model):
         config_name="complete",
         blank=True,
         help_text=_(
-            "In this field you can describe your content, "
-            + "add all needed related information, "
+            "Describe your content, add all needed related information, "
             + "and format the result using the toolbar."
         ),
     )
@@ -774,7 +772,10 @@ class Video(models.Model):
         _("Licence"), max_length=8, choices=LICENCE_CHOICES, blank=True, null=True,
         help_text=_("Usage rights granted to your content.")
     )
-    channel = models.ManyToManyField(Channel, verbose_name=_("Channels"), blank=True)
+    channel = models.ManyToManyField(
+        Channel, verbose_name=_("Channels"), blank=True,
+        help_text=_("The channel where you want your content to appear.")
+    )
     theme = models.ManyToManyField(
         Theme,
         verbose_name=_("Themes"),
@@ -848,12 +849,12 @@ class Video(models.Model):
 
     date_delete = models.DateField(
         _("Date to delete"), default=default_date_delete,
-        help_text=_("Date your video will be automatically removed from Pod.")
+        help_text=_("Date when your video will be automatically removed from Pod.")
     )
 
     disable_comment = models.BooleanField(
         _("Disable comment"),
-        help_text=_("Allows you to turn off all comments on this video."),
+        help_text=_("Prevent users from commenting on your content."),
         default=False,
     )
 
