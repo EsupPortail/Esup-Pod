@@ -212,7 +212,7 @@ def improve_captions_accessibility(webvtt):
     Parse the vtt file in argument to render the caption conform to accessibility.
 
     - see `https://github.com/knarf18/Bonnes-pratiques-du-sous-titrage/blob/master/Liste%20de%20bonnes%20pratiques.md` # noqa: E501
-    - 40 car maximum per ligne (CPL)
+    - 40 car maximum per line (CPL)
     - 2 lines max by caption
 
     Args:
