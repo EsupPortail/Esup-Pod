@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-17 09:34+0000\n"
+"POT-Creation-Date: 2024-07-18 08:12+0000\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -1123,9 +1123,9 @@ msgstr ""
 
 #: pod/bbb/templates/bbb/live_publish_meeting.html
 msgid ""
-"Please note: shortly after clicking the \"Perform a BigBlueButton live\" "
-"button, the live stream will be available to users on the <i class=\\\"bi bi-"
-"broadcast\\\"></i> <b>Lives</b> page."
+"Please note: shortly after clicking the “Perform a BigBlueButton live” "
+"button, the live stream will be available to users on the <i class=\"bi bi-"
+"broadcast\" aria-hidden=\"true\"></i> <strong>Lives</strong> page."
 msgstr ""
 
 #: pod/bbb/templates/bbb/live_record_list.html
@@ -2099,7 +2099,7 @@ msgstr ""
 #: pod/completion/templates/video_completion.html
 msgid ""
 "You can add speakers to this video by searching by their last name, first "
-"name or job. If you can't find the speaker, contact a super admin."
+"name or job. If you can’t find the speaker, contact a super admin."
 msgstr ""
 
 #: pod/completion/templates/video_completion.html
@@ -3256,15 +3256,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -6143,7 +6143,7 @@ msgstr ""
 msgid ""
 "Shortly after clicking the “Start the webinar” button, the live stream will "
 "be available to users on the <i class='bi bi-broadcast mx-1' aria-"
-"hidden='true'></i> <b>Lives</b> page."
+"hidden='true'></i> <strong>Lives</strong> page."
 msgstr ""
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
@@ -6522,8 +6522,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
@@ -6537,8 +6537,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
@@ -8062,8 +8062,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -8166,7 +8166,7 @@ msgid "Speakers"
 msgstr ""
 
 #: pod/speaker/models.py
-msgid "Speaker's job"
+msgid "Speaker’s job"
 msgstr ""
 
 #: pod/speaker/templates/speaker/list_speaker.html
@@ -9275,10 +9275,10 @@ msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
 msgid ""
-"To edit several videos at the same time, you can select the ones you want by "
-"clicking on them then select an action to perform using the drop-down menu "
-"below, finally apply the modification. You can also refine your video search "
-"using the filters in the right menu."
+"To edit several videos at the same time, you can check the ones you want "
+"then select an action to perform using the drop-down menu below, finally "
+"apply the modification. You can also refine your video search using the "
+"filters in the right menu."
 msgstr ""
 
 #: pod/video/templates/videos/dashboard.html
@@ -9343,7 +9343,7 @@ msgstr ""
 #: pod/video/templates/videos/filter_aside.html
 msgid ""
 "The videos on the left are automatically sorted according to the filters "
-"selected. Check options to adjust results."
+"selected below. Check options to adjust results."
 msgstr ""
 
 #: pod/video/templates/videos/filter_aside.html

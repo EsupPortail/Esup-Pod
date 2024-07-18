@@ -268,7 +268,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                         "to select more than one."
                     ),
                     _(
-                        "If the channel or Themes you wish does not appear "
+                        "If the channel or theme you wish does not appear "
                         "in the list, please select nothing and contact "
                         "us to explain your needs."
                     ),

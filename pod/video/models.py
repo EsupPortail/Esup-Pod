@@ -360,7 +360,7 @@ class Channel(models.Model):
         AccessGroup,
         blank=True,
         verbose_name=_("Groups"),
-        help_text=_("Select one or more groups who can upload video to this channel."),
+        help_text=_("One or more groups who can upload video to this channel."),
     )
     add_channels_tab = models.ManyToManyField(
         AdditionalChannelTab, verbose_name=_("Additionals channels tab"), blank=True
@@ -710,7 +710,7 @@ class Video(models.Model):
         Type,
         verbose_name=_("Type"),
         on_delete=models.CASCADE,
-        help_text=_("Select the general type of the video."),
+        help_text=_("The general type of the video."),
     )
     owner = models.ForeignKey(User, verbose_name=_("Owner"), on_delete=models.CASCADE)
     additional_owners = models.ManyToManyField(
@@ -750,7 +750,7 @@ class Video(models.Model):
         max_length=2,
         choices=LANG_CHOICES,
         default=get_language(),
-        help_text=_("Select the main language used in the content."),
+        help_text=_("The main language used in the content."),
     )
     transcript = models.CharField(
         _("Transcript"),
@@ -767,10 +767,12 @@ class Video(models.Model):
         verbose_name=_("Tags"),
     )
     discipline = models.ManyToManyField(
-        Discipline, blank=True, verbose_name=_("Disciplines")
+        Discipline, blank=True, verbose_name=_("Disciplines"),
+        help_text=_("The disciplines to which your content belongs.")
     )
     licence = models.CharField(
-        _("Licence"), max_length=8, choices=LICENCE_CHOICES, blank=True, null=True
+        _("Licence"), max_length=8, choices=LICENCE_CHOICES, blank=True, null=True,
+        help_text=_("Usage rights granted to your content.")
     )
     channel = models.ManyToManyField(Channel, verbose_name=_("Channels"), blank=True)
     theme = models.ManyToManyField(
@@ -778,7 +780,7 @@ class Video(models.Model):
         verbose_name=_("Themes"),
         blank=True,
         help_text=_(
-            'Hold down "Control", or "Command" ' "on a Mac, to select more than one."
+            'Hold down "Control", or "Command" on a Mac, to select more than one.'
         ),
     )
     allow_downloading = models.BooleanField(
@@ -813,7 +815,7 @@ class Video(models.Model):
         AccessGroup,
         blank=True,
         verbose_name=_("Groups"),
-        help_text=_("Select one or more groups who can access to this video"),
+        help_text=_("One or more groups who can access to this video"),
     )
     password = models.CharField(
         _("password"),
@@ -844,7 +846,10 @@ class Video(models.Model):
     )
     is_video = models.BooleanField(_("Is Video"), default=True, editable=False)
 
-    date_delete = models.DateField(_("Date to delete"), default=default_date_delete)
+    date_delete = models.DateField(
+        _("Date to delete"), default=default_date_delete,
+        help_text=_("Date your video will be automatically removed from Pod.")
+    )
 
     disable_comment = models.BooleanField(
         _("Disable comment"),
@@ -1836,7 +1841,7 @@ class Category(models.Model):
         verbose_name=_("Videos"),
         blank=True,
         help_text=_(
-            'Hold down "Control", or "Command" ' "on a Mac, to select more than one."
+            'Hold down "Control", or "Command" on a Mac, to select more than one.'
         ),
     )
     slug = models.SlugField(
