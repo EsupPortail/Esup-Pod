@@ -707,24 +707,24 @@ function createCaptionBlock(newCaption, spawnFunction) {
 
     // circle buttons
     buttonsDiv: new DOMParser().parseFromString(
-      "<div class='caption-buttons col-1 d-flex flex-wrap align-items-center'></div>",
+      "<div class='caption-buttons d-flex gap-4 mt-4 justify-content-center'></div>",
       "text/html",
     ).body.firstChild,
 
     insertBtn: new DOMParser().parseFromString(
-      `<button type="button" class="btn btn-light" title="${gettext(
+      `<button type="button" class="btn btn-primary btn-small" title="${gettext(
         "Add a caption/subtitle after this one",
       )}" aria-label="${gettext(
         "Add",
-      )}"><i class="bi bi-plus-circle" aria-hidden="true"></i></button>`,
+      )}"><i class="bi bi-plus" aria-hidden="true"></i></button>`,
       "text/html",
     ).body.firstChild,
     deleteBtn: new DOMParser().parseFromString(
-      `<button type="button" class="btn btn-light" title="${gettext(
+      `<button type="button" class="btn btn-danger btn-small" title="${gettext(
         "Delete this caption/subtitle",
       )}" aria-label="${gettext(
         "Delete",
-      )}"><i class="bi bi-x-circle" aria-hidden="true"></i></button>`,
+      )}"><i class="bi bi-trash" aria-hidden="true"></i></button>`,
       "text/html",
     ).body.firstChild,
     // textarea
@@ -743,7 +743,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
     ).body.firstChild,
     // time editable
     timeBlockEditable: new DOMParser().parseFromString(
-      `<div class='captionTimestamps col-3' style='display:none'></div>"`,
+      `<div class='captionTimestamps col-auto' style='display:none'></div>"`,
       "text/html",
     ).body.firstChild,
     startTimeLabel: new DOMParser().parseFromString(
@@ -765,7 +765,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
 
     // time links
     timeBlock: new DOMParser().parseFromString(
-      `<div class='captionTimestamps col-sm-3 col-md-2'><span>${gettext(
+      `<div class='captionTimestamps col-auto'><span>${gettext(
         "Time stamps",
       )}</span></div>`,
       "text/html",
@@ -935,6 +935,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
       this.timeBlockEditable.append(
         this.startTimeLabel,
         this.startTimeInput,
+        document.createElement('br'),
         this.endTimeLabel,
         this.endTimeInput,
       );
@@ -944,7 +945,6 @@ function createCaptionBlock(newCaption, spawnFunction) {
 
       // Append all elements to containerDiv
       this.containerDiv.append(
-        this.buttonsDiv,
         this.captionDiv,
         this.timeBlock,
         this.timeBlockEditable,
@@ -953,6 +953,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
       // Append containerDiv to form
       this.div.append(this.containerDiv);
       this.div.append(this.numberCharactersDiv);
+      this.div.append(this.buttonsDiv);
 
       // Update numberCharactersDiv content
       const updateCharacterCount = () => {
