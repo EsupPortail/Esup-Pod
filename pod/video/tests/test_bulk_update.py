@@ -269,7 +269,7 @@ class BulkUpdateTestCase(TransactionTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             json.loads(response.content)["message"],
-            "You cannot delete a video that is being encoded. 0 videos removed, 2 videos in error",
+            "You cannot delete a media that is being encoded. 0 videos removed, 2 videos in error",
         )
 
         PlaylistVideo.objects.create(

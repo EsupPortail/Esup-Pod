@@ -54,9 +54,9 @@
       {% if form.errors %}
         <div class="text-danger">
           <p>{% trans "One or more errors have been found in the form." %}</p>
-           {% for key, err in form.errors.items %}
-           {{err}}
-           {% endfor %}
+          {% for key, err in form.errors.items %}
+            {{err}}
+          {% endfor %}
         </div>
       {% endif %}
 
@@ -87,7 +87,7 @@
         {% with options=fieldset|last name=fieldset|first%}
         <div class="accordion-item">
           <h2 class="accordion-header">
-            <button class="accordion-button{% if "show" in options.classes %}" aria-expanded="true{% else %} collapsed{% endif %}"
+            <button class="accordion-button{% if 'show' in options.classes %}" aria-expanded="true{% else %} collapsed{% endif %}"
                     data-bs-toggle="collapse" data-bs-target="#videoEditCollapse{{forloop.counter}}"
                     type="button" aria-controls="videoEditCollapse{{forloop.counter}}">
               {{ options.legend|safe }}
@@ -290,9 +290,9 @@
       function change_transcript() {
         if(select_transcript.value == "") {
           transcript_button.href = transcript_button_href;
-          transcript_button.classList.add("invisible");
+          transcript_button.classList.add("d-none");
         } else {
-          transcript_button.classList.remove("invisible");
+          transcript_button.classList.remove("d-none");
           transcript_button.href = transcript_button_href + "?lang=" + select_transcript.value;
         }
       }
