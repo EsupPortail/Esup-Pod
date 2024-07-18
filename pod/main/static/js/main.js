@@ -1029,11 +1029,11 @@ var show_theme_form = function (data) {
 };
 
 /**
- * unused function? TODO : delete in 3.8.0
+ * 
  * @param  {[type]} data [description]
  * @return {[type]}      [description]
  */
-/*var show_picture_form = function (data) {
+var show_picture_form = function (data) {
   let htmlData = new DOMParser().parseFromString(data, "text/html");
   document.getElementById("userpicture_form").innerHTML =
     htmlData.querySelector("#userpicture_form").innerHTML;
@@ -1078,7 +1078,8 @@ var show_theme_form = function (data) {
     let userPictureModal = bootstrap.Modal.getOrCreateInstance(userpicture);
     userPictureModal.hide();
   }
-}; */
+};
+
 var append_picture_form = async function (data) {
   let htmlData = new DOMParser().parseFromString(data, "text/html").body
     .firstChild;
