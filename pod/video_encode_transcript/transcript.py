@@ -156,7 +156,7 @@ def saveVTT(video: Video, webvtt: WebVTT, lang_code: str = None):
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     webvtt.save(temp_vtt_file.name)
     if webvtt.captions:
-        improveCaptionsAccessibility(webvtt)
+        improve_captions_accessibility(webvtt)
         msg += "\nstore vtt file in bdd with CustomFileModel model file field"
         if __FILEPICKER__:
             videodir = video.get_or_create_video_folder()
@@ -194,7 +194,7 @@ def saveVTT(video: Video, webvtt: WebVTT, lang_code: str = None):
     return msg
 
 
-def improveCaptionsAccessibility(webvtt):
+def improve_captions_accessibility(webvtt):
     """
     Parse the vtt file in argument to render the caption conform to accessibility.
 
