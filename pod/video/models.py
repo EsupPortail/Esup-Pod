@@ -765,16 +765,24 @@ class Video(models.Model):
         verbose_name=_("Tags"),
     )
     discipline = models.ManyToManyField(
-        Discipline, blank=True, verbose_name=_("Disciplines"),
-        help_text=_("The disciplines to which your content belongs.")
+        Discipline,
+        blank=True,
+        verbose_name=_("Disciplines"),
+        help_text=_("The disciplines to which your content belongs."),
     )
     licence = models.CharField(
-        _("Licence"), max_length=8, choices=LICENCE_CHOICES, blank=True, null=True,
-        help_text=_("Usage rights granted to your content.")
+        _("Licence"),
+        max_length=8,
+        choices=LICENCE_CHOICES,
+        blank=True,
+        null=True,
+        help_text=_("Usage rights granted to your content."),
     )
     channel = models.ManyToManyField(
-        Channel, verbose_name=_("Channels"), blank=True,
-        help_text=_("The channel where you want your content to appear.")
+        Channel,
+        verbose_name=_("Channels"),
+        blank=True,
+        help_text=_("The channel where you want your content to appear."),
     )
     theme = models.ManyToManyField(
         Theme,
@@ -848,8 +856,9 @@ class Video(models.Model):
     is_video = models.BooleanField(_("Is Video"), default=True, editable=False)
 
     date_delete = models.DateField(
-        _("Date to delete"), default=default_date_delete,
-        help_text=_("Date when your video will be automatically removed from Pod.")
+        _("Date to delete"),
+        default=default_date_delete,
+        help_text=_("Date when your video will be automatically removed from Pod."),
     )
 
     disable_comment = models.BooleanField(
