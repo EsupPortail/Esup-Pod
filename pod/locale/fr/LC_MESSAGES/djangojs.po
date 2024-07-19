@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-17 09:34+0000\n"
+"POT-Creation-Date: 2024-07-19 07:39+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: AymericJak <aymeric.jakobowski@univ-lille.fr>\n"
+"Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -185,8 +185,13 @@ msgid "Pause to enter caption for segment from %s to %s."
 msgstr "Mettez en pause pour entrer le texte du segment entre %s et %s."
 
 #: pod/completion/static/js/caption_maker.js
-msgid "A caption cannot contain more than 80 characters."
-msgstr "Une légende / sous-titre ne peut comporter plus de 80 caractères."
+msgid "A caption cannot contain more than 110 characters."
+msgstr "Une légende / sous-titre ne peut comporter plus de 110 caractères."
+
+#: pod/completion/static/js/caption_maker.js
+msgid ""
+"For your video's accessibility, we recommend a maximum of 80 characters."
+msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Add a caption/subtitle after this one"
@@ -221,6 +226,10 @@ msgstr "Fin"
 #: pod/completion/static/js/caption_maker.js
 msgid "Time stamps"
 msgstr "Horodatages"
+
+#: pod/completion/static/js/caption_maker.js
+msgid "/80 characters"
+msgstr "80 caractères"
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Error loading caption file: "
@@ -459,6 +468,14 @@ msgstr "Suppression du thème réussie."
 msgid "Action performed successfully."
 msgstr "Action réalisée avec succès."
 
+#: pod/main/static/js/main.js
+msgid "Change your picture"
+msgstr "Modifier votre image"
+
+#: pod/main/static/js/main.js
+msgid "Add your picture"
+msgstr "Ajoutez votre image"
+
 #: pod/main/static/js/main.js pod/video/static/js/video-access-token.js
 msgid "Text copied"
 msgstr "Texte copié"
@@ -561,8 +578,6 @@ msgid "Change image"
 msgstr "Changer d’image"
 
 #: pod/podfile/static/podfile/js/filewidget.js
-#, fuzzy
-#| msgid "Change"
 msgid "Change file"
 msgstr "Changer de fichier"
 

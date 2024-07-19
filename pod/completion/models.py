@@ -111,9 +111,9 @@ class Contributor(models.Model):
         if not self.name or self.name == "":
             msg.append(_("Please enter a name."))
         elif len(self.name) < 2 or len(self.name) > 200:
-            msg.append(_("Please enter a name from 2 to 200 caracters."))
+            msg.append(_("Please enter a name from 2 to 200 characters."))
         if self.weblink and len(self.weblink) > 200:
-            msg.append(_("You cannot enter a weblink with more than 200 caracters."))
+            msg.append(_("You cannot enter a weblink with more than 200 characters."))
         if not self.role:
             msg.append(_("Please enter a role."))
         return msg

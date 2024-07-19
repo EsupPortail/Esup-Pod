@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% load i18n %}
 {% load static %}
 
@@ -30,22 +31,27 @@
     </div>
   {% endif %}
 
-  <div class="row align-items-center mb-2 justify-content-end">
+  <div class="row align-items-center mb-4 justify-content-end">
     <div class="col-auto">
-      <label class="col-form-label" for="captionFilename">{% trans "File" %}</label>
-    </div><div class="col-auto">
-      <input class="form-control" id="captionFilename" name="file_name" type="text" form="form_save_captions">
-    </div><div class="col-auto">
-      <label class="col-form-label" for="captionKindSelect">{% trans "Kind" %}</label>
-    </div><div class="col-auto">
-      <select id="captionKindSelect" name="kind" form="form_save_captions" class="form-select">
-        <option value="subtitles" {% if track_kind == "subtitles" %} selected {% endif %} > {% trans "subtitles" %} </option>
-        <option value="captions" {% if track_kind == "captions" %} selected {% endif %} > {% trans "captions" %} </option>
+      <label class="col-form-label" for="caption-file-name">{% trans "File" %}</label>
+    </div>
+    <div class="col-4">
+      <input class="form-control" id="caption-file-name" name="file_name" type="text" form="form_save_captions">
+    </div>
+    <div class="col-auto">
+      <label class="col-form-label" for="caption-kind-select">{% trans "Kind" %}</label>
+    </div>
+    <div class="col-auto">
+      <select id="caption-kind-select" name="kind" form="form_save_captions" class="form-select">
+        <option value="subtitles" {% if track_kind == "subtitles" %} selected {% endif %} > {% trans "Subtitles" %} </option>
+        <option value="captions" {% if track_kind == "captions" %} selected {% endif %} > {% trans "Captions" %} </option>
       </select>
-    </div><div class="col-auto">
-      <label class="col-form-label" for="captionLanguageSelect">{% trans "Language" %}</label>
-    </div><div class="col-auto">
-      <select id="captionLanguageSelect" name="lang" form="form_save_captions" class="form-select">
+    </div>
+    <div class="col-auto">
+      <label class="col-form-label" for="caption-language-select">{% trans "Language" %}</label>
+    </div>
+    <div class="col-auto">
+      <select id="caption-language-select" name="lang" form="form_save_captions" class="form-select">
         {% for lang_group in languages %}
           <optgroup label="{{ lang_group.0 }}">
             {% for lang in lang_group.1 %}
@@ -53,10 +59,10 @@
             {% endfor %}
         {% endfor %}
       </select>
-    </div><div class="col-auto">
-      <button id="switchOldEditMode" class="btn btn-primary btn-sm">
-        <i class="bi bi-toggles"></i>
-        {% trans "Change mode" %}
+    </div>
+    <div class="col-auto">
+      <button id="switch-old-edit-mode" class="btn btn-primary btn-sm">
+        <i class="bi bi-toggles" aria-hidden="true"></i>&nbsp;{% trans "Change mode" %}
       </button>
     </div>
   </div>
@@ -70,53 +76,43 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button>
     </div>
   {% endfor %}
-  <script>
-    document.addEventListener('DOMContentLoaded',function () {
-      triggerAlertClose();
-    });
-  </script>
   </div>
 {% endif %}
 
 
-<div class="gray_no_video">
-  <div class="videoSection">
+<div class="gray-no-video">
+  <div class="video-section">
     {% include 'videos/video-element.html' %}
-    <div id="videoError" class="videoError" style="display: none;"></div>
-    <div id="captionTitle"></div>
+    <div id="video-error" class="video-error" style="display: none;"></div>
+    <div id="caption-title"></div>
     <div>
-      <label class="col-form-label" for="textCaptionEntry">{% trans "Caption" %}</label>
-      <textarea class="form-control" id="textCaptionEntry" autocomplete="off" cols="40" rows="2" wrap="hard" maxlength="80"></textarea>
+      <label class="col-form-label" for="text-caption-entry">{% trans "Caption" %}</label>
+      <textarea class="form-control" id="text-caption-entry" autocomplete="off" cols="40" rows="3" wrap="hard" maxlength="110"></textarea>
     </div>
     <div >
-      <button id="playButton" class="btn btn-primary btn-sm mt-1">
-        <i class="bi bi-play"></i>
-        {% trans "Play" %}
+      <button id="play-button" class="btn btn-primary btn-sm mt-1">
+        <i class="bi bi-play" aria-hidden="true"></i>&nbsp;{% trans "Play" %}
       </button>
-      <button id="pauseButton" class="btn btn-primary btn-sm mt-1">
-        <i class="bi bi-pause"></i>
-        {% trans "Pause" %}
+      <button id="pause-button" class="btn btn-primary btn-sm mt-1">
+        <i class="bi bi-pause" aria-hidden="true"></i>&nbsp;{% trans "Pause" %}
       </button>
-      <button id="justSaveCaption" class="btn btn-primary btn-sm mt-1">
-        <i class="bi bi-save"></i>
-        {% trans "Save" %}
+      <button id="just-save-caption" class="btn btn-primary btn-sm mt-1">
+        <i class="bi bi-save" aria-hidden="true"></i>&nbsp;{% trans "Save" %}
       </button>
-      <button id="saveCaptionAndPlay" class="btn btn-primary btn-sm mt-1">
-        <i class="bi bi-save"></i>
-        {% trans "Save &amp; Continue" %}
+      <button id="save-caption-and-play" class="btn btn-primary btn-sm mt-1">
+        <i class="bi bi-save" aria-hidden="true"></i>&nbsp;{% trans "Save &amp; Continue" %}
       </button>
     </div>
   </div>
-  <div class="caption_content p-1">
-    <div id="rawCaptionsEditor" style="display:none;" class="mb-2">
-      <label class="form-label" for="captionContent">{% trans "File content" %}</label>
-      <textarea class="form-control captions_editor" id="captionContent"></textarea>
+  <div class="caption-content-div p-1">
+    <div id="raw-captions-editor" style="display:none;" class="mb-2">
+      <label class="form-label" for="caption-content">{% trans "File content" %}</label>
+      <textarea class="form-control captions-editor" id="caption-content"></textarea>
     </div>
-    <div class="captions_editor text-center container" id="newCaptionsEditor">
-      <h2 class="h3" id="noCaptionsText">{% trans "No captions" %}</h2>
-      <button id="addSubtitle" type="button" class="btn btn-outline-primary btn-lg mt-2">
-        <i class="bi bi-plus" aria-hidden="true"></i>
-        {% trans "Add a caption/subtitle" %}
+    <div class="captions-editor text-center container" id="new-captions-editor">
+      <h2 class="h3 my-4" id="no-captions-text">{% trans "No captions" %}</h2>
+      <button id="add-subtitle" type="button" class="btn btn-outline-primary btn-lg my-4">
+        <i class="bi bi-plus" aria-hidden="true"></i>&nbsp;{% trans "Add a caption/subtitle" %}
       </button>
     </div>
     <div>
@@ -148,8 +144,7 @@
         <div class="m-2">
           <input type="submit" value="{% trans 'Save Captions' %}" id="save_captions" class="btn btn-primary btn-sm">
           <button id="clearAllCaptions" class="btn btn-primary btn-sm">
-            <i class="bi bi-eraser-fill"></i>
-            {% trans "Clear All" %}
+            <i class="bi bi-eraser-fill" aria-hidden="true"></i>&nbsp;{% trans "Clear All" %}
           </button>
         </div>
         {% if active_model_enrich %}<input type="checkbox" value="true" name="enrich_ready"> {% trans 'Enrich Model' %} {% endif %}
@@ -157,50 +152,51 @@
 
     </div>
   </div>
-  <div id="editorTipsAndGoBack">
-    <div style="padding-top: 6px;">
-      <span class="float-start">
-        <button id="showShortcutTips" class="btn btn-primary btn-sm">
-          <i class="bi bi-keyboard"></i>
-          {% trans "Key Schortcuts" %}
-        </button>
-        <div id="shortcutsBlock" style="display:none" class="shadow p-3 mb-5 bg-white rounded">
-          <h2 class="h3">{% trans "Video Player" %}</h2>
-          <p><div class="shortcutKey">{% trans "Space" %}</div> {% trans "Pause / unpause" %}</p>
-          <p><div class="shortcutKey"><i class="bi bi-arrow-left" width="18px" height="18px"></i></div> {% trans "Rewind the video 10 seconds back" %}</p>
-          <p><div class="shortcutKey"><i class="bi bi-arrow-right" width="18px" height="18px"></i></div> {% trans "Skip 10 seconds" %}</p>
-          <p><div class="shortcutKey">M</div> {% trans "Mute/unmute video" %}</p>
-          <br>
-          <h5>{% trans "Captions Editor" %}</h5>
-          <p><div class="shortcutKey">PgUP</div> {% trans "Select previous caption" %}</p>
-          <p><div class="shortcutKey">PgDOWN</div> {% trans "Select next caption" %}</p>
-          <p><div class="shortcutKey">Alt</div>+<div class="shortcutKey">{% trans "Del" %}</div> {% trans "Delete selected caption" %}</p>
-          <p><div class="shortcutKey">INSERT</div> {% trans "Add new caption" %}</p>
-          <p><div class="shortcutKey">CTRL</div>+<div class="shortcutKey">S</div> {% trans "Save" %}</p>
-          <p><div class="shortcutKey">End</div> {% trans "Save &amp; Continue" %}</p>
-          <br>
-          <p><div class="shortcutKey">?</div> {% trans "Show/hide this window" %} </p>
-        </div>
-      </span>
-      <span class="float-end">
-        <a href="{% url 'video:completion:video_completion' slug=video.slug %}" class="btn btn btn-secondary btn-sm">
-          <i class="bi bi-arrow-left"></i>&nbsp;{% trans "Back to the completion"%}
-        </a>
-      </span>
-    </div>
+  <div id="editor-tips-and-go-back">
+    <span class="float-start">
+      <button id="show-shortcut-tips" class="btn btn-primary btn-sm">
+        <i class="bi bi-keyboard" aria-hidden="true"></i>&nbsp;{% trans "Key Schortcuts" %}
+      </button>
+      <div id="shortcuts-block" style="display:none" class="shadow p-3 mb-5 bg-white rounded">
+        <h2 class="h3">{% trans "Video Player" %}</h2>
+        <p><div class="shortcut-key">{% trans "Space" %}</div> {% trans "Pause / unpause" %}</p>
+        <p><div class="shortcut-key"><i class="bi bi-arrow-left" width="18px" height="18px" aria-hidden="true"></i></div>&nbsp;{% trans "Rewind the video 10 seconds back" %}</p>
+        <p><div class="shortcut-key"><i class="bi bi-arrow-right" width="18px" height="18px" aria-hidden="true"></i></div>&nbsp;{% trans "Skip 10 seconds" %}</p>
+        <p><div class="shortcut-key">M</div>&nbsp;{% trans "Mute/unmute video" %}</p>
+        <br>
+        <h5>{% trans "Captions Editor" %}</h5>
+        <p><div class="shortcut-key">PgUP</div>&nbsp;{% trans "Select previous caption" %}</p>
+        <p><div class="shortcut-key">PgDOWN</div>&nbsp;{% trans "Select next caption" %}</p>
+        <p><div class="shortcut-key">Alt</div>+<div class="shortcut-key">{% trans "Del" %}</div>&nbsp;{% trans "Delete selected caption" %}</p>
+        <p><div class="shortcut-key">INSERT</div>&nbsp;{% trans "Add new caption" %}</p>
+        <p><div class="shortcut-key">CTRL</div>+<div class="shortcut-key">S</div>&nbsp;{% trans "Save" %}</p>
+        <p><div class="shortcut-key">End</div>&nbsp;{% trans "Save &amp; Continue" %}</p>
+        <br>
+        <p><div class="shortcut-key">?</div>&nbsp;{% trans "Show/hide this window" %}</p>
+      </div>
+    </span>
+    <span class="float-end">
+      <a href="{% url 'video:completion:video_completion' slug=video.slug %}" class="btn btn btn-secondary btn-sm">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i>&nbsp;{% trans "Back to the completion"%}
+      </a>
+    </span>
   </div>
 </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmSaveLabel" aria-hidden="true" id="saveCaptionsModal">
-  <div class="modal-dialog modal-sm">
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirm-save-label" aria-hidden="true" id="save-captions-modal">
+  <div class="modal-dialog">
     <div class="modal-content" style="min-height: auto; width: auto;">
       <div class="modal-header">
-        <h2 class="modal-title" id="confirmSaveLabel">{% trans "Save captions file."%}</h2>
+        <h2 class="modal-title h3" id="confirm-save-label">
+          <i class="bi bi-save" aria-hidden="true"></i>&nbsp;{% trans "Save captions file."%}
+        </h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
       </div>
+
       <div class="modal-body">
         <p>{% trans "You have loaded a file. Do you want to override it?"%}</p>
       </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" id="modal-btn-new"> {% trans "New" %} </button>
         <button type="button" class="btn btn-warning" id="modal-btn-override"> {% trans "Override"%} </button>
@@ -219,6 +215,13 @@
   <script>
     var current_folder = {{ current_folder.id }};
   </script>
+  {% if messages %}
+    <script>
+      document.addEventListener('DOMContentLoaded',function () {
+        triggerAlertClose();
+      });
+    </script>
+  {% endif %}
   <script src="{% static 'js/caption_maker.js' %}?ver={{ VERSION }}"></script>
   <script src="{% static 'js/completion.js' %}?ver={{ VERSION }}"></script>
   {% include "videos/video-script.html" %}

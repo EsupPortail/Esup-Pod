@@ -47,6 +47,7 @@
   /**** couleur neutre pour fond de bloc (ex jumbotron) ***/
   --pod-background-neutre1-bloc: #ddd;
   --pod-background-neutre1-bloc-dark: #393e46;
+  --pod-background-neutre1-bloc-hover: #e5f1fa;
 
   /**** couleur neutre 2 pour fond de bloc ***/
   --pod-background-neutre2-bloc: #f5f5f5;
@@ -534,7 +535,7 @@ a.btn-outline-primary:not(:hover) svg {
 /*** CARD ***/
 .infinite-item .card-body {
   padding: 0.9rem;
-  height: 3.5rem;
+  /* height: 3.5rem; */
   overflow: hidden;
 }
 
@@ -589,8 +590,8 @@ div.card a img {
 
 .card-footer-pod {
   position: absolute;
-  bottom: 4rem;
-  right: 0.5rem;
+  bottom: 3.5rem;
+  right: 1rem;
   border: none;
   border-radius: 0.375rem;
   display: flex;
@@ -768,7 +769,7 @@ div.card a img {
 }
 
 .pod-infinite-list-container-dashboard .list-item-video-row:hover {
-  background-color: var(--pod-background-neutre1-bloc);
+  background-color: var(--pod-background-neutre1-bloc-hover);
 }
 
 .pod-infinite-list-container-dashboard

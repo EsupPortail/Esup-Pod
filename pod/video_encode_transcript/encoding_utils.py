@@ -24,7 +24,7 @@ def get_dressing_position_value(position: str, height: str) -> str:
     Obtain dimensions proportional to the video format.
 
     Args:
-        position (str): proprerty "position" of the dressing object.
+        position (str): property "position" of the dressing object.
         height (str): height of the source video.
 
     Returns:

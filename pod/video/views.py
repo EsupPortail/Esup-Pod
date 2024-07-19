@@ -90,8 +90,6 @@ from django.db import IntegrityError
 from django.db.models import QuerySet
 from django.db import transaction
 
-from ..ai_enhancement.utils import enhancement_is_already_asked
-
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
 )
@@ -806,7 +804,7 @@ def get_bulk_update_result(request, status, update_action, counter, delta, resul
     return result, status
 
 
-def get_recap_message_bulk_update(request, update_action, counter, delta):
+def get_recap_message_bulk_update(request, update_action, counter, delta) -> str:
     """
     Build and return overview message for bulk update.
 
@@ -1058,12 +1056,6 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     template_video = "videos/video.html"
     params = {
         "active_video_comment": ACTIVE_VIDEO_COMMENT,
-        "enr_is_already_asked": enhancement_is_already_asked(video)
-        and (
-            request.user.is_superuser
-            or request.user == video.owner
-            or request.user in video.additional_owners.all()
-        ),
     }
     if request.GET.get("is_iframe"):
         params = {"page_title": video.title}
@@ -1315,7 +1307,7 @@ def video_edit(request, slug=None):
     )
 
 
-def get_list_theme_in_form(form):
+def get_list_theme_in_form(form) -> dict:
     """
     Get the themes for the form.
 
@@ -1365,7 +1357,7 @@ def video_delete(request, slug=None):
             if form.is_valid():
                 video.delete()
                 messages.add_message(
-                    request, messages.INFO, _("The video has been deleted.")
+                    request, messages.INFO, _("The media has been deleted.")
                 )
                 return redirect(reverse("video:dashboard"))
             else:
@@ -1374,7 +1366,7 @@ def video_delete(request, slug=None):
                     messages.ERROR,
                     _("One or more errors have been found in the form."),
                 )
-        page_title = _('Deleting the video "%(vtitle)s"') % {"vtitle": video.title}
+        page_title = _('Deleting the media "%(vtitle)s"') % {"vtitle": video.title}
         return render(
             request,
             "videos/video_delete.html",
@@ -1382,17 +1374,17 @@ def video_delete(request, slug=None):
         )
 
 
-def video_is_deletable(request, video):
+def video_is_deletable(request, video) -> bool:
     """Check if video is deletable, usage for delete form and multiple deletion."""
     if request.user != video.owner and not (
         request.user.is_superuser or request.user.has_perm("video.delete_video")
     ):
-        messages.add_message(request, messages.ERROR, _("You cannot delete this video."))
+        messages.add_message(request, messages.ERROR, _("You cannot delete this media."))
         raise PermissionDenied
 
     if not video.encoded or video.encoding_in_progress is True:
         messages.add_message(
-            request, messages.ERROR, _("You cannot delete a video that is being encoded.")
+            request, messages.ERROR, _("You cannot delete a media that is being encoded.")
         )
         return False
     return True

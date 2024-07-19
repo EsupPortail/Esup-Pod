@@ -1785,7 +1785,7 @@ Mettre `USE_QUIZ` à True pour activer cette application.<br>
   >>                 _(
   >>                     "In this field you can select and add additional owners to the "
   >>                     "video. These additional owners will have the same rights as "
-  >>                     "you except that they can’t delete this video."
+  >>                     "you except that they can’t delete this media."
   >>                 )
   >>             ],
   >>         ),
@@ -1989,6 +1989,11 @@ Application pour l’encodage et la transcription de vidéo.<br>
 Il est possible d’encoder en local ou en distant.<br>
 Attention, il faut configurer Celery pour l’envoi des instructions pour l’encodage distant.<br>
 
+* `CAPTIONS_STRICT_ACCESSIBILITY`
+  > valeur par défaut : `False`
+  >> Si True, les sous-titres seront générés en respectant strictement les normes<br>
+  >> d’accessibilité. L'apparition d'un message d’avertissement sera affiché si les<br>
+  >> sous-titres ne respectent pas ces normes, même si la valeur est à False.<br>
 * `CELERY_BROKER_URL`
   > valeur par défaut : `redis://redis.localhost:6379/5`
   >> URL du courtier de messages où Celery stocke les ordres d’encodage et de transcription.<br>

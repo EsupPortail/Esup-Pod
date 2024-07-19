@@ -132,7 +132,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                     _(
                         "In this field you can select and add additional owners to the "
                         "video. These additional owners will have the same rights as "
-                        "you except that they can’t delete this video."
+                        "you except that they can’t delete this media."
                     )
                 ],
             ),
@@ -268,7 +268,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                         "to select more than one."
                     ),
                     _(
-                        "If the channel or Themes you wish does not appear "
+                        "If the channel or theme you wish does not appear "
                         "in the list, please select nothing and contact "
                         "us to explain your needs."
                     ),
@@ -608,6 +608,7 @@ class VideoForm(forms.ModelForm):
         label=_("Visibility"),
         required=True,
         initial="public",
+        help_text=_("Who can see your content (everyone, just you, or those granted)."),
     )
 
     required_css_class = "required"

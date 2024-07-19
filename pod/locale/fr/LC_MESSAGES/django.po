@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-17 09:34+0000\n"
+"POT-Creation-Date: 2024-07-19 07:39+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: SebastienCozeDev <sebastien.coze@univ-lille.fr>\n"
+"Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -1188,13 +1188,14 @@ msgstr ""
 
 #: pod/bbb/templates/bbb/live_publish_meeting.html
 msgid ""
-"Please note: shortly after clicking the \"Perform a BigBlueButton live\" "
-"button, the live stream will be available to users on the <i class=\\\"bi bi-"
-"broadcast\\\"></i> <b>Lives</b> page."
+"Please note: shortly after clicking the “Perform a BigBlueButton live” "
+"button, the live stream will be available to users on the <i class=\"bi bi-"
+"broadcast\" aria-hidden=\"true\"></i> <strong>Lives</strong> page."
 msgstr ""
-"Remarque : peu de temps après avoir cliqué sur le bouton \"Réaliser un "
-"direct BigBlueButton\", le direct sera disponible pour les utilisateurs sur "
-"la page <i class=\\\"bi bi-broadcast\\\"></i> <b>Directs</b>."
+"Remarque : peu de temps après avoir cliqué sur le bouton « Réaliser un "
+"direct BigBlueButton » le direct sera disponible pour les utilisateurs sur "
+"la page <i class=\"bi bi-broadcast\" aria-hidden=\"true\"></"
+"i> <strong>Directs</strong>."
 
 #: pod/bbb/templates/bbb/live_record_list.html
 msgid "Sorry, no BigBlueButton session in progress found"
@@ -1611,11 +1612,11 @@ msgstr "Rôles d’orateur"
 msgid "Speaker"
 msgstr "Intervenant"
 
-#: pod/completion/models.py pod/completion/templates/video_caption_maker.html
+#: pod/completion/models.py
 msgid "subtitles"
 msgstr "sous-titres"
 
-#: pod/completion/models.py pod/completion/templates/video_caption_maker.html
+#: pod/completion/models.py
 msgid "captions"
 msgstr "légendes"
 
@@ -1646,11 +1647,11 @@ msgid "Please enter a name."
 msgstr "Veuillez entrer un nom."
 
 #: pod/completion/models.py
-msgid "Please enter a name from 2 to 200 caracters."
+msgid "Please enter a name from 2 to 200 characters."
 msgstr "Veuillez entrer un nom entre 2 et 200 caractères."
 
 #: pod/completion/models.py
-msgid "You cannot enter a weblink with more than 200 caracters."
+msgid "You cannot enter a weblink with more than 200 characters."
 msgstr "Vous ne pouvez pas entrer un lien web avec plus de 200 caractères."
 
 #: pod/completion/models.py
@@ -1995,6 +1996,14 @@ msgid "File"
 msgstr "Fichier"
 
 #: pod/completion/templates/video_caption_maker.html
+msgid "Subtitles"
+msgstr "Sous-titres"
+
+#: pod/completion/templates/video_caption_maker.html
+msgid "Captions"
+msgstr "Légendes"
+
+#: pod/completion/templates/video_caption_maker.html
 msgid "Change mode"
 msgstr "Changer le mode d’édition"
 
@@ -2193,7 +2202,7 @@ msgstr "Liste des intervenants relatifs à cette vidéo."
 #: pod/completion/templates/video_completion.html
 msgid ""
 "You can add speakers to this video by searching by their last name, first "
-"name or job. If you can't find the speaker, contact a super admin."
+"name or job. If you can’t find the speaker, contact a super admin."
 msgstr ""
 "Vous pouvez ajouter des intervenants à cette vidéo en effectuant une "
 "recherche par leur nom, prénom ou fonction. Si vous ne trouvez pas "
@@ -3762,8 +3771,7 @@ msgstr ""
 msgid "Main language"
 msgstr "Langue principale"
 
-#: pod/live/models.py pod/recorder/models.py pod/video/forms.py
-#: pod/video/models.py
+#: pod/live/models.py pod/video/forms.py
 msgid "Select the main language used in the content."
 msgstr "Sélectionner la langue principalement utilisée dans ce contenu."
 
@@ -3775,7 +3783,7 @@ msgstr "Diffuseurs"
 msgid "Is recording?"
 msgstr "Enregistrement en cours ?"
 
-#: pod/live/models.py pod/video/models.py
+#: pod/live/models.py
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
 "subject / context of the content. (max length: 250 characters)"
@@ -6513,11 +6521,11 @@ msgstr ""
 msgid ""
 "Shortly after clicking the “Start the webinar” button, the live stream will "
 "be available to users on the <i class='bi bi-broadcast mx-1' aria-"
-"hidden='true'></i> <b>Lives</b> page."
+"hidden='true'></i> <strong>Lives</strong> page."
 msgstr ""
 "Peu de temps après avoir cliqué sur le bouton « Démarrer le webinaire », le "
 "direct sera disponible pour les utilisateurs sur la page <i class='bi bi-"
-"broadcast mx-1' aria-hidden='true'></i> <b>Directs</b>."
+"broadcast mx-1' aria-hidden='true'></i> <strong>Directs</strong>."
 
 #: pod/meeting/templates/meeting/filter_aside_meeting.html
 msgid ""
@@ -6682,7 +6690,7 @@ msgstr "S’authentifier"
 #: pod/meeting/templates/meeting/link_meeting.html
 #: pod/video/templates/videos/link_video.html
 msgid "More options"
-msgstr "Plus d'options"
+msgstr "Plus d’options"
 
 #: pod/meeting/templates/meeting/link_meeting_dropdown_menu.html
 msgid "Copy the direct join link"
@@ -8148,7 +8156,7 @@ msgid ""
 "list of options. This is useful for questions with a clear, correct answer."
 msgstr ""
 "Les questions à choix unique demandent aux participants de sélectionner une "
-"réponse parmi une liste d'options. Elles sont utiles pour les questions dont "
+"réponse parmi une liste d’options. Elles sont utiles pour les questions dont "
 "la réponse est claire et correcte."
 
 #: pod/quiz/templates/quiz/question_help_aside.html
@@ -8156,7 +8164,7 @@ msgid ""
 "For single choice questions, select only one answer from the provided "
 "options. Read each option carefully before making your selection."
 msgstr ""
-"Pour les questions à choix unique, ne sélectionnez qu'une seule réponse "
+"Pour les questions à choix unique, ne sélectionnez qu’une seule réponse "
 "parmi les options proposées. Lisez attentivement chaque option avant de "
 "faire votre choix."
 
@@ -8175,7 +8183,7 @@ msgid ""
 "more than one correct answer."
 msgstr ""
 "Pour les questions à choix multiples, sélectionnez toutes les réponses qui "
-"s'appliquent. Il peut y avoir plus d'une réponse correcte."
+"s’appliquent. Il peut y avoir plus d’une réponse correcte."
 
 #: pod/quiz/templates/quiz/video_quiz.html
 msgid "This quiz is in <strong>draft</strong>."
@@ -8399,7 +8407,7 @@ msgstr ""
 
 #: pod/recorder/models.py
 msgid "Automatic publishing:"
-msgstr "Publication automatique :"
+msgstr "Publication automatique :"
 
 #: pod/recorder/models.py
 msgid ""
@@ -8407,7 +8415,7 @@ msgid ""
 "recorder manager."
 msgstr ""
 "Si vous cochez cette case les vidéos seront automatiquement attribuées au "
-"gestionnaire de l'enregistreur."
+"gestionnaire de l’enregistreur."
 
 #: pod/recorder/models.py
 msgid "Video type by default."
@@ -8430,8 +8438,8 @@ msgstr ""
 "utilisateurs authentifiés."
 
 #: pod/recorder/models.py pod/video/models.py
-msgid "Select one or more groups who can access to this video"
-msgstr "Sélectionner un ou plusieurs groupes qui auront accès à cette vidéo"
+msgid "One or more groups who can access to this video"
+msgstr "Un ou plusieurs groupes qui auront accès à cette vidéo"
 
 #: pod/recorder/models.py pod/video/models.py
 msgid "Viewing this video will not be possible without this password."
@@ -8447,6 +8455,10 @@ msgstr "Cursus universitaire"
 msgid "Select an university course as audience target of the content."
 msgstr ""
 "Sélectionner un cursus universitaire qui convient à l’audience de ce contenu."
+
+#: pod/recorder/models.py pod/video/models.py
+msgid "The main language used in the content."
+msgstr "La langue principalement utilisée dans ce contenu."
 
 #: pod/recorder/models.py pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/add_video.html
@@ -8466,10 +8478,18 @@ msgstr ""
 "Séparer les mots clés par des espaces, écrire les mots clés en plusieurs "
 "mots entre guillemets."
 
+#: pod/recorder/models.py pod/video/models.py
+msgid "The disciplines to which your content belongs."
+msgstr "Les disciplines auxquelles appartient votre contenu."
+
 #: pod/recorder/models.py pod/video/forms.py pod/video/models.py
 #: pod/video/templates/videos/dashboard.html
 msgid "Licence"
 msgstr "Licence"
+
+#: pod/recorder/models.py pod/video/models.py
+msgid "Usage rights granted to your content."
+msgstr "Droits d’utilisation de votre contenu."
 
 #: pod/recorder/models.py pod/video/forms.py pod/video/models.py
 msgid "Themes"
@@ -8505,7 +8525,7 @@ msgstr ""
 msgid "Disable comment"
 msgstr "Désactiver les commentaires"
 
-#: pod/recorder/models.py pod/video/models.py
+#: pod/recorder/models.py
 msgid "Allows you to turn off all comments on this video."
 msgstr "Vous permet de désactiver les commentaires sur cette vidéo."
 
@@ -8740,7 +8760,7 @@ msgid "Speakers"
 msgstr "Intervenants"
 
 #: pod/speaker/models.py
-msgid "Speaker's job"
+msgid "Speaker’s job"
 msgstr "Fonction de l’intervenant"
 
 #: pod/speaker/templates/speaker/list_speaker.html
@@ -8917,11 +8937,11 @@ msgstr ""
 msgid ""
 "In this field you can select and add additional owners to the video. These "
 "additional owners will have the same rights as you except that they can’t "
-"delete this video."
+"delete this media."
 msgstr ""
 "Dans ce champ, vous pouvez sélectionner et ajouter des propriétaires "
 "supplémentaires à la vidéo. Ces autres propriétaires auront les mêmes droits "
-"que vous sauf qu’ils ne peuvent pas supprimer cette vidéo."
+"que vous sauf qu’ils ne peuvent pas supprimer ce contenu."
 
 #: pod/video/forms.py pod/video/templates/videos/dashboard.html
 msgid "Date of the event field"
@@ -9001,12 +9021,11 @@ msgstr ""
 
 #: pod/video/forms.py
 msgid ""
-"If the channel or Themes you wish does not appear in the list, please select "
+"If the channel or theme you wish does not appear in the list, please select "
 "nothing and contact us to explain your needs."
 msgstr ""
-"Si une chaîne ou des thèmes que vous ne voulez pas voir apparaître dans la "
-"liste, veuillez ne rien sélectionner et contactez nous pour expliquer vos "
-"besoins."
+"Si une chaîne ou des thèmes que vous voulez n’apparaît pas dans la liste, "
+"veuillez ne rien sélectionner et contactez-nous pour expliquer vos besoins."
 
 #: pod/video/forms.py
 msgid "Visibility"
@@ -9021,8 +9040,8 @@ msgid ""
 "In “Draft / Private” mode, the content shows nowhere and nobody else but you "
 "can see it."
 msgstr ""
-"En mode “Brouillon / Privé“, le contenu n'apparaît nulle part et personne "
-"d'autre que vous ne peut le voir. Vous pouvez ajouter des jetons pour "
+"En mode “Brouillon / Privé“, le contenu n’apparaît nulle part et personne "
+"d’autre que vous ne peut le voir. Vous pouvez ajouter des jetons pour "
 "permettre un accès direct par lien."
 
 #: pod/video/forms.py
@@ -9116,6 +9135,12 @@ msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne
 #: pod/video/forms.py
 msgid "Draft / Private"
 msgstr "Brouillon / Privé"
+
+#: pod/video/forms.py
+msgid "Who can see your content (everyone, just you, or those granted)."
+msgstr ""
+"Qui peut voir votre contenu (tout le monde, juste vous ou des personnes "
+"autorisées)."
 
 #: pod/video/forms.py
 msgid "Source file"
@@ -9416,10 +9441,9 @@ msgstr ""
 "Si coché, la chaîne apparaîtra dans la liste des chaînes de la plateforme."
 
 #: pod/video/models.py
-msgid "Select one or more groups who can upload video to this channel."
+msgid "One or more groups who can upload video to this channel."
 msgstr ""
-"Sélectionner un ou plusieurs groupes qui pourront ajouter des vidéos à cette "
-"chaine."
+"Un ou plusieurs groupes qui pourront ajouter des vidéos à cette chaîne."
 
 #: pod/video/models.py
 msgid "Additionals channels tab"
@@ -9447,20 +9471,40 @@ msgid "Icon"
 msgstr "Icône"
 
 #: pod/video/models.py
-msgid "Select the general type of the video."
-msgstr "Sélectionnez le type général de la vidéo."
+msgid ""
+"A title as short and accurate as possible, reflecting the main subject / "
+"context of the content. (max length: 250 characters)"
+msgstr ""
+"Un titre aussi court et précis que possible, reflétant le sujet principal / "
+"le contexte de ce contenu. (taille maximale : 250 caractères)"
+
+#: pod/video/models.py
+msgid "The general type of the video."
+msgstr "Le type général de la vidéo."
 
 #: pod/video/models.py
 msgid ""
-"You can add additional owners to the video. They will have the same rights "
-"as you except that they can’t delete this video."
+"Additional owners will have the same rights as you, except that they can’t "
+"delete this media."
 msgstr ""
-"Vous pouvez ajouter des propriétaires additionnels à la vidéo. Ils auront "
-"les mêmes droits que vous sauf qu’ils ne peuvent pas supprimer cette vidéo."
+"Les propriétaires additionnels auront les mêmes droits que vous, sauf qu’ils "
+"ne peuvent pas supprimer ce contenu."
+
+#: pod/video/models.py
+msgid ""
+"Describe your content, add all needed related information, and format the "
+"result using the toolbar."
+msgstr ""
+"Décrivez votre contenu, ajoutez toutes les informations nécessaires, et "
+"mettez en forme le résultat en utilisant la barre d’outils."
 
 #: pod/video/models.py pod/video/templates/videos/video_sort_select.html
 msgid "Date of event"
 msgstr "Date de l’évènement"
+
+#: pod/video/models.py
+msgid "The channel where you want your content to appear."
+msgstr "La chaîne où vous voulez que votre contenu apparaisse."
 
 #: pod/video/models.py
 msgid "Overview"
@@ -9473,6 +9517,14 @@ msgstr "Est une vidéo"
 #: pod/video/models.py pod/video/templates/videos/dashboard.html
 msgid "Date to delete"
 msgstr "Date de suppression"
+
+#: pod/video/models.py
+msgid "Date when your video will be automatically removed from Pod."
+msgstr "Date à laquelle votre vidéo sera automatiquement retirée de Pod."
+
+#: pod/video/models.py
+msgid "Prevent users from commenting on your content."
+msgstr "Empêche les utilisateurs de commenter votre contenu."
 
 #: pod/video/models.py
 msgid "Sum of view"
@@ -9913,6 +9965,10 @@ msgstr "Contenu audio."
 msgid "Select video “%(video_title)s”"
 msgstr "Sélectionner la vidéo « %(video_title)s »"
 
+#: pod/video/templates/videos/card_select.html
+msgid "Video duration"
+msgstr "Durée de la vidéo"
+
 #: pod/video/templates/videos/category_modal.html
 msgid "Check the videos to add in the category"
 msgstr "Cocher les vidéos à ajouter dans la catégorie"
@@ -9960,15 +10016,15 @@ msgstr "Actions multiples"
 
 #: pod/video/templates/videos/dashboard.html
 msgid ""
-"To edit several videos at the same time, you can select the ones you want by "
-"clicking on them then select an action to perform using the drop-down menu "
-"below, finally apply the modification. You can also refine your video search "
-"using the filters in the right menu."
+"To edit several videos at the same time, you can check the ones you want "
+"then select an action to perform using the drop-down menu below, finally "
+"apply the modification. You can also refine your video search using the "
+"filters in the right menu."
 msgstr ""
-"Vous pouvez éditer plusieurs vidéos en même temps, pour cela cliquez sur "
-"celles que vous voulez modifier, sélectionnez une action à effectuer dans le "
-"formulaire ci-dessous puis appliquer. Vous pouvez également affiner le "
-"résultat de la recherche grâce aux filtres dans le menu de droite."
+"Pour éditer plusieurs vidéos en même temps, vous pouvez cocher celles que "
+"vous voulez modifier, puis sélectionner une action à effectuer dans le "
+"formulaire ci-dessous puis appliquer. Vous pouvez également affiner votre "
+"recherche de vidéos en utilisant les filtres du menu de droite."
 
 #: pod/video/templates/videos/dashboard.html
 msgid "Choose an action"
@@ -10034,10 +10090,10 @@ msgstr "Mode d’affichage par liste"
 #: pod/video/templates/videos/filter_aside.html
 msgid ""
 "The videos on the left are automatically sorted according to the filters "
-"selected. Check options to adjust results."
+"selected below. Check options to adjust results."
 msgstr ""
 "Les vidéos à gauche sont automatiquement triées en fonction des filtres "
-"sélectionnés. Vérifiez les options pour ajuster les résultats."
+"sélectionnés ci-dessous. Vérifiez les options pour ajuster les résultats."
 
 #: pod/video/templates/videos/filter_aside.html
 msgid "Filter by user"
@@ -10254,7 +10310,7 @@ msgstr "Lien du contributeur"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Speaker(s):"
-msgstr "Intervenant(s) :"
+msgstr "Intervenant(s) :"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Updated on:"
@@ -10803,21 +10859,21 @@ msgid "You cannot edit this video."
 msgstr "Vous ne pouvez pas éditer cette vidéo."
 
 #: pod/video/views.py
-msgid "The video has been deleted."
-msgstr "La vidéo a été supprimée."
+msgid "The media has been deleted."
+msgstr "Le contenu a été supprimé."
 
 #: pod/video/views.py
 #, python-format
-msgid "Deleting the video \"%(vtitle)s\""
-msgstr "Supprimer la vidéo « %(vtitle)s »"
+msgid "Deleting the media \"%(vtitle)s\""
+msgstr "Supprimer le média « %(vtitle)s »"
 
 #: pod/video/views.py
-msgid "You cannot delete this video."
-msgstr "Vous ne pouvez pas supprimer cette vidéo."
+msgid "You cannot delete this media."
+msgstr "Vous ne pouvez pas supprimer ce contenu."
 
 #: pod/video/views.py
-msgid "You cannot delete a video that is being encoded."
-msgstr "Vous ne pouvez pas supprimer une vidéo en cours d’encodage."
+msgid "You cannot delete a media that is being encoded."
+msgstr "Vous ne pouvez pas supprimer un contenu en cours d’encodage."
 
 #: pod/video/views.py
 #, python-format
@@ -11181,6 +11237,12 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "The video has been deleted."
+#~ msgstr "La vidéo a été supprimée."
+
+#~ msgid "You cannot delete this video."
+#~ msgstr "Vous ne pouvez pas supprimer cette vidéo."
 
 #~ msgid "Long answer"
 #~ msgstr "Réponse longue"
