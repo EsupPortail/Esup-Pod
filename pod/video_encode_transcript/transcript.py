@@ -213,7 +213,9 @@ def remove_unnecessary_spaces(text: str) -> str:
     return " ".join(text.split())
 
 
-def improve_captions_accessibility(webvtt, strict_accessibility=CAPTIONS_STRICT_ACCESSIBILITY):
+def improve_captions_accessibility(
+    webvtt, strict_accessibility=CAPTIONS_STRICT_ACCESSIBILITY
+):
     """
     Parse the vtt file in argument to render the caption conform to accessibility.
 
