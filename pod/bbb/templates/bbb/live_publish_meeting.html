@@ -77,7 +77,9 @@ body {
             {% endspaceless %}
         {% endfor %}
       </fieldset>
-	  <small class="form-text">{% trans 'Please note: shortly after clicking the "Perform a BigBlueButton live" button, the live stream will be available to users on the <i class=\"bi bi-broadcast\"></i> <b>Lives</b> page.' %}</small><br>
+      <small class="form-text">
+        {% trans 'Please note: shortly after clicking the “Perform a BigBlueButton live” button, the live stream will be available to users on the <i class="bi bi-broadcast" aria-hidden="true"></i> <strong>Lives</strong> page.' %}
+      </small><br>
     </div>
     <div class="text-center">
       <button type="submit" class="btn btn-primary">{% trans "Perform a BigBlueButton live" %}</button>

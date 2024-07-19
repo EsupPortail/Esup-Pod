@@ -182,7 +182,7 @@ class Recorder(models.Model):
         Group,
         blank=True,
         verbose_name=_("Groups"),
-        help_text=_("Select one or more groups who can access to this video"),
+        help_text=_("One or more groups who can access to this video"),
     )
     password = models.CharField(
         _("password"),
@@ -203,7 +203,7 @@ class Recorder(models.Model):
         max_length=2,
         choices=__LANG_CHOICES__,
         default=get_language(),
-        help_text=_("Select the main language used in the content."),
+        help_text=_("The main language used in the content."),
     )
     transcript = models.CharField(
         _("Transcript"),
@@ -220,10 +220,18 @@ class Recorder(models.Model):
         verbose_name=_("Tags"),
     )
     discipline = models.ManyToManyField(
-        Discipline, blank=True, verbose_name=_("Disciplines")
+        Discipline,
+        blank=True,
+        verbose_name=_("Disciplines"),
+        help_text=_("The disciplines to which your content belongs."),
     )
     licence = models.CharField(
-        _("Licence"), max_length=8, choices=__LICENCE_CHOICES__, blank=True, null=True
+        _("Licence"),
+        max_length=8,
+        choices=__LICENCE_CHOICES__,
+        blank=True,
+        null=True,
+        help_text=_("Usage rights granted to your content."),
     )
     channel = models.ManyToManyField(Channel, verbose_name=_("Channels"), blank=True)
     theme = models.ManyToManyField(
@@ -231,7 +239,7 @@ class Recorder(models.Model):
         verbose_name=_("Themes"),
         blank=True,
         help_text=_(
-            'Hold down "Control", or "Command" ' "on a Mac, to select more than one."
+            'Hold down "Control", or "Command" on a Mac, to select more than one.'
         ),
     )
     allow_downloading = models.BooleanField(

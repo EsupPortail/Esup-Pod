@@ -47,7 +47,7 @@ document.addEventListener("click", (e) => {
     !e.target.parentNode.matches("a.file-image")
   )
     return;
-
+  if (e.target.parentNode.dataset.filetype === "CustomImageModel") return;
   let url = "/podfile/get_file/file/";
   let form = document.getElementById("captionmaker_form");
   let data_form = new FormData(form);

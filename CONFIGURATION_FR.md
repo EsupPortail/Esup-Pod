@@ -1785,7 +1785,7 @@ Mettre `USE_QUIZ` à True pour activer cette application.<br>
   >>                 _(
   >>                     "In this field you can select and add additional owners to the "
   >>                     "video. These additional owners will have the same rights as "
-  >>                     "you except that they can’t delete this video."
+  >>                     "you except that they can’t delete this media."
   >>                 )
   >>             ],
   >>         ),

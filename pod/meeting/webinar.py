@@ -202,9 +202,9 @@ def start_rtmp_gateway(pod_host: str, meet_id: int, livestream_id: int):
     meeting_base_url = slash_join(
         pod_host, "meeting", meeting.meeting_id, meeting.get_hashkey()
     )
-    # Room used (last 10 caracters)
+    # Room used (last 10 characters)
     room = meeting.get_hashkey()[-10:]
-    # Domain (without last 10 caracters)
+    # Domain (without last 10 characters)
     domain = meeting_base_url[:-10]
     # RTMP stream URL
     rtmp_stream_url = livestream.live_gateway.rtmp_stream_url
@@ -238,7 +238,7 @@ def stop_rtmp_gateway(meet_id: int):
     """Run the stop command for SIPMediaGW RTMP gateway."""
     # Get the current meeting
     meeting = Meeting.objects.get(id=meet_id)
-    # Room used (last 10 caracters)
+    # Room used (last 10 characters)
     room = meeting.get_hashkey()[-10:]
     # Stop URL on SIPMediaGW server
     sipmediagw_url = slash_join(MEETING_WEBINAR_SIPMEDIAGW_URL, "stop")
@@ -268,7 +268,7 @@ def toggle_rtmp_gateway(meet_id: int):
     """Run the toggle (to show chat or not) command for SIPMediaGW RTMP gateway."""
     # Get the current meeting
     meeting = Meeting.objects.get(id=meet_id)
-    # Room used (last 10 caracters)
+    # Room used (last 10 characters)
     room = meeting.get_hashkey()[-10:]
     # Toogle URL on SIPMediaGW server
     sipmediagw_url = slash_join(MEETING_WEBINAR_SIPMEDIAGW_URL, "chat")
@@ -296,7 +296,7 @@ def chat_rtmp_gateway(meet_id: int, msg: str):
     """Send message command to SIPMediaGW RTMP gateway."""
     # Get the current meeting
     meeting = Meeting.objects.get(id=meet_id)
-    # Room used (last 10 caracters)
+    # Room used (last 10 characters)
     room = meeting.get_hashkey()[-10:]
     # Toogle URL on SIPMediaGW server
     sipmediagw_url = slash_join(MEETING_WEBINAR_SIPMEDIAGW_URL, "chat")
