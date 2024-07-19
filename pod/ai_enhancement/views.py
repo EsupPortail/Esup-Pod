@@ -27,7 +27,7 @@ from pod.main.utils import json_to_web_vtt
 from pod.main.views import in_maintenance
 from pod.quiz.utils import import_quiz
 from pod.video.models import Video, Discipline
-from pod.video_encode_transcript.transcript import saveVTT
+from pod.video_encode_transcript.transcript import save_vtt
 
 AI_ENHANCEMENT_CLIENT_ID = getattr(settings, "AI_ENHANCEMENT_CLIENT_ID", "mocked_id")
 AI_ENHANCEMENT_CLIENT_SECRET = getattr(
@@ -332,7 +332,7 @@ def enhance_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
         web_vtt = json_to_web_vtt(
             latest_version["transcript"]["sentences"], video.duration
         )
-        saveVTT(video, web_vtt, latest_version["transcript"]["language"])
+        save_vtt(video, web_vtt, latest_version["transcript"]["language"])
         latest_track = (
             Track.objects.filter(
                 video=video,

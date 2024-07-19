@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-18 08:12+0000\n"
+"POT-Creation-Date: 2024-07-19 07:39+0000\n"
 "PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -169,7 +169,12 @@ msgid "Pause to enter caption for segment from %s to %s."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
-msgid "A caption cannot contain more than 80 characters."
+msgid "A caption cannot contain more than 110 characters."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
+msgid ""
+"For your video's accessibility, we recommend a maximum of 80 characters."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
@@ -204,6 +209,10 @@ msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Time stamps"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
+msgid "/80 characters"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
@@ -435,6 +444,14 @@ msgstr ""
 
 #: pod/main/static/js/main.js
 msgid "Action performed successfully."
+msgstr ""
+
+#: pod/main/static/js/main.js
+msgid "Change your picture"
+msgstr ""
+
+#: pod/main/static/js/main.js
+msgid "Add your picture"
 msgstr ""
 
 #: pod/main/static/js/main.js pod/video/static/js/video-access-token.js
