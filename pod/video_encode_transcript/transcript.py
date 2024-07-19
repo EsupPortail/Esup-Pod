@@ -58,6 +58,12 @@ USE_REMOTE_ENCODING_TRANSCODING = getattr(
 if USE_REMOTE_ENCODING_TRANSCODING:
     from .transcripting_tasks import start_transcripting_task
 
+CAPTIONS_STRICT_ACCESSIBILITY = getattr(
+    settings,
+    "CAPTIONS_STRICT_ACCESSIBILITY",
+    False,
+)
+
 log = logging.getLogger(__name__)
 
 """
@@ -207,7 +213,7 @@ def remove_unnecessary_spaces(text: str) -> str:
     return " ".join(text.split())
 
 
-def improve_captions_accessibility(webvtt):
+def improve_captions_accessibility(webvtt, strict_accessibility=CAPTIONS_STRICT_ACCESSIBILITY):
     """
     Parse the vtt file in argument to render the caption conform to accessibility.
 
@@ -216,12 +222,13 @@ def improve_captions_accessibility(webvtt):
     - 2 lines max by caption
 
     Args:
-        webvtt (:class:`webvtt.WebVTT`): the webvtt file content
+        webvtt (:class:`webvtt.WebVTT`): The webvtt file content
+        strict_accessibility (bool): If True, the caption will be more accessible
 
     """
     new_captions = []
     for caption in webvtt.captions:
-        sent = split_string(caption.text, 40, sep=" ")
+        sent = split_string(caption.text, 40 if strict_accessibility else 55, sep=" ")
         # nb mots total
         nbTotWords = len(caption.text.split())
         if len(sent) > 2:
