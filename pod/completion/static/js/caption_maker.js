@@ -581,7 +581,7 @@ function validateForms(forms) {
     // 111 for carriage return
     if (captionInput.value.length > 111) {
       captionInput.setCustomValidity(
-        gettext("A caption cannot contain more than 111 characters.") +
+        gettext("A caption cannot contain more than 110 characters.") +
           "[" +
           captionInput.value.length +
           "]",
