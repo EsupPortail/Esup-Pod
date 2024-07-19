@@ -20,15 +20,15 @@ global HIDE_USERNAME
 
 
 var list_folders_sub;
-if(typeof loader === 'undefined') {
-  const loader = `
-  <div id="loader" class="d-flex justify-content-center align-items-center d-none loaderSpinner">
-    <div class="spinner-border" role="status">
-        <span class="visually-hidden">${gettext('Loading…')}</span>
-    </div>
+// change const to var to prevent multiple declaration
+var loader = `
+<div id="loader" class="d-flex justify-content-center align-items-center d-none loaderSpinner">
+  <div class="spinner-border" role="status">
+      <span class="visually-hidden">${gettext('Loading…')}</span>
   </div>
-  `;
-}
+</div>
+`;
+
 
 
 if (typeof loaded == "undefined") {
