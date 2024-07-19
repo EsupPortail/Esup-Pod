@@ -187,12 +187,16 @@
   <div class="modal-dialog">
     <div class="modal-content" style="min-height: auto; width: auto;">
       <div class="modal-header">
-        <h2 class="modal-title" id="confirm-save-label"><i class="bi bi-save" aria-hidden="true"></i>&nbsp;{% trans "Save captions file."%}</h2>
+        <h2 class="modal-title h3" id="confirm-save-label">
+          <i class="bi bi-save" aria-hidden="true"></i>&nbsp;{% trans "Save captions file."%}
+        </h2>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
       </div>
+
       <div class="modal-body">
         <p>{% trans "You have loaded a file. Do you want to override it?"%}</p>
       </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" id="modal-btn-new"> {% trans "New" %} </button>
         <button type="button" class="btn btn-warning" id="modal-btn-override"> {% trans "Override"%} </button>

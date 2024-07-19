@@ -258,7 +258,7 @@ button.close {
 }
 
 #podfile .list_folders .folder,
-#podfile .list_folders_sub .folder,
+#podfile .list_folders_sub .folder
 /*#podfile #dirs .dirs-nav a.folder*/ {
   display: flex;
   align-items: flex-end;

@@ -115,7 +115,7 @@
 
 .new-editor-block {
   border-bottom: 1px solid #e1e1e1;
-  padding: 8px;
+  padding: 16px 8px;
   transition: 0.2s;
 }
 
