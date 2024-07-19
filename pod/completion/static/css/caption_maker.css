@@ -120,7 +120,7 @@
 }
 
 .new-editor-block:hover {
-  background-color: var(--pod-background-neutre1-bloc-blue);
+  background-color: var(--pod-background-neutre1-bloc-hover);
 }
 
 .new-editor-block > textarea {
@@ -129,7 +129,7 @@
 
 .captionBeingEdited {
   border-left: 3px solid var(--pod-primary);
-  background-color: var(--pod-background-neutre1-bloc-blue);
+  background-color: var(--pod-background-neutre1-bloc-hover);
 }
 
 .captionTimestamps {
