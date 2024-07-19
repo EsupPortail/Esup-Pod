@@ -90,8 +90,6 @@ from django.db import IntegrityError
 from django.db.models import QuerySet
 from django.db import transaction
 
-from ..ai_enhancement.utils import enhancement_is_already_asked
-
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
 )
@@ -1058,12 +1056,6 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     template_video = "videos/video.html"
     params = {
         "active_video_comment": ACTIVE_VIDEO_COMMENT,
-        "enr_is_already_asked": enhancement_is_already_asked(video)
-        and (
-            request.user.is_superuser
-            or request.user == video.owner
-            or request.user in video.additional_owners.all()
-        ),
     }
     if request.GET.get("is_iframe"):
         params = {"page_title": video.title}
