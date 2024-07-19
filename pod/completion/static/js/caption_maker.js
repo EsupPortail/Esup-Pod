@@ -1433,7 +1433,7 @@ function parseAndLoadWebVTT(vtt) {
     if (captionMatch && cueStart && cueEnd) {
       // captionMatch[1] is the optional voice (speaker) we're ignoring
       var capLine = captionMatch[2].replace(rxMarkup, "");
-      if (cueText) cueText += " " + capLine;
+      if (cueText) cueText += "\n" + capLine; // Add a line break for new lines
       else {
         cueText = capLine;
       }
