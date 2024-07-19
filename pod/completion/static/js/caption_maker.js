@@ -334,10 +334,10 @@ function displayExistingCaption(seconds) {
     let divs = document.querySelectorAll(".vjs-text-track-display div");
     divs[divs.length - 1].innerText = theCaption.caption;
     var message = gettext("Caption for segment from %s to %s:");
-    document.getElementById("caption-title").textContent = interpolate(message, [
-      formatTime(theCaption.start),
-      formatTime(theCaption.end),
-    ]);
+    document.getElementById("caption-title").textContent = interpolate(
+      message,
+      [formatTime(theCaption.start), formatTime(theCaption.end)],
+    );
 
     document.getElementById("text-caption-entry").value = theCaption.caption;
     //document.getElementById("previewTrack").value = theCaption.caption;
@@ -396,7 +396,9 @@ function videoPlayEventHandler() {
     textCaption.classList.add("playing");
     document.getElementById("pause-button").disabled = false;
     document
-      .querySelectorAll("#play-button, #just-save-caption, #save-caption-and-play")
+      .querySelectorAll(
+        "#play-button, #just-save-caption, #save-caption-and-play",
+      )
       .forEach(function (e) {
         e.disabled = true;
       });
@@ -408,7 +410,9 @@ function videoPlayEventHandler() {
  */
 function videoPauseEventHandler() {
   document
-    .querySelectorAll("#play-button, #just-save-caption, #save-caption-and-play")
+    .querySelectorAll(
+      "#play-button, #just-save-caption, #save-caption-and-play",
+    )
     .forEach(function (e) {
       e.disabled = false;
     });
@@ -445,10 +449,10 @@ function videoPauseEventHandler() {
     }
   } else {
     message = gettext("Enter caption for segment from %s to %s:");
-    document.getElementById("caption-title").textContent = interpolate(message, [
-      formatTime(existingCaptionsEndTime()),
-      formatTime(playTime),
-    ]);
+    document.getElementById("caption-title").textContent = interpolate(
+      message,
+      [formatTime(existingCaptionsEndTime()), formatTime(playTime)],
+    );
 
     document.getElementById("text-caption-entry").value = "";
     captionBeingDisplayed = -1;
@@ -475,10 +479,10 @@ function videoTimeUpdateEventHandler() {
     displayExistingCaption(playTime);
   } else {
     var message = gettext("Pause to enter caption for segment from %s to %s.");
-    document.getElementById("caption-title").textContent = interpolate(message, [
-      formatTime(captionsEndTime),
-      formatTime(playTime),
-    ]);
+    document.getElementById("caption-title").textContent = interpolate(
+      message,
+      [formatTime(captionsEndTime), formatTime(playTime)],
+    );
 
     let divs = document.querySelectorAll(".vjs-text-track-display div");
     divs[divs.length - 1].innertext = "";
@@ -507,7 +511,9 @@ function enableDemoAfterLoadVideo() {
     });
 
   document
-    .querySelectorAll("#pause-button, #save-caption-and-play, #just-save-caption")
+    .querySelectorAll(
+      "#pause-button, #save-caption-and-play, #just-save-caption",
+    )
     .forEach(function (e) {
       e.disabled = true;
     });
@@ -935,7 +941,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
       this.timeBlockEditable.append(
         this.startTimeLabel,
         this.startTimeInput,
-        document.createElement('br'),
+        document.createElement("br"),
         this.endTimeLabel,
         this.endTimeInput,
       );
@@ -958,9 +964,10 @@ function createCaptionBlock(newCaption, spawnFunction) {
       // Update numberCharactersDiv content
       const updateCharacterCount = () => {
         let nbCharacters = this.captionTextInput.value.length;
-        this.numberCharactersDiv.textContent = nbCharacters + gettext("/80 characters");
+        this.numberCharactersDiv.textContent =
+          nbCharacters + gettext("/80 characters");
         if (nbCharacters > 80) {
-          this.numberCharactersDiv.append(this.numberCharactersAlert)
+          this.numberCharactersDiv.append(this.numberCharactersAlert);
         }
       };
 
@@ -1433,7 +1440,8 @@ function parseAndLoadWebVTT(vtt) {
     if (captionMatch && cueStart && cueEnd) {
       // captionMatch[1] is the optional voice (speaker) we're ignoring
       var capLine = captionMatch[2].replace(rxMarkup, "");
-      if (cueText) cueText += "\n" + capLine; // Add a line break for new lines
+      if (cueText)
+        cueText += "\n" + capLine; // Add a line break for new lines
       else {
         cueText = capLine;
       }
