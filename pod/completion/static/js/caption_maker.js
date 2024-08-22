@@ -47,7 +47,7 @@ document.addEventListener("click", (e) => {
     !e.target.parentNode.matches("a.file-image")
   )
     return;
-
+  if (e.target.parentNode.dataset.filetype === "CustomImageModel") return;
   let url = "/podfile/get_file/file/";
   let form = document.getElementById("captionmaker_form");
   let data_form = new FormData(form);
@@ -67,14 +67,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     send_form_data(url, data, "processProxyVttResponse");
   } else {
-    document.getElementById("captionFilename").value =
+    document.getElementById("caption-file-name").value =
       `${file_prefix}_captions_${Date.now()}`;
   }
 
   let placeholder = gettext(
     "WEBVTT\n\nstart time(00:00.000) --> end time(00:00.000)\ncaption text",
   );
-  let captionContent = document.getElementById("captionContent");
+  let captionContent = document.getElementById("caption-content");
   captionContent.setAttribute("placeholder", placeholder);
   captionContent.addEventListener("mouseup", function () {
     let selectedText = this.value.substring(
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   captionContent.addEventListener("input propertychange", function () {
     captionsArray.length = 0;
-    document.querySelectorAll(".newEditorBlock").forEach((elt) => {
+    document.querySelectorAll(".new-editor-block").forEach((elt) => {
       elt.remove();
     });
     if (this.value.match(/^WEBVTT/)) {
@@ -102,10 +102,10 @@ document.addEventListener("submit", (e) => {
   if (e.target.id != "form_save_captions") return;
   e.preventDefault();
   const params = new URLSearchParams(window.location.search);
-  let caption_content = document.getElementById("captionContent");
-  if (!oldModeSelected) caption_content.value = generateWEBVTT();
+  let captionContent = document.getElementById("caption-content");
+  if (!oldModeSelected) captionContent.value = generateWEBVTT();
 
-  if (caption_content.value === "false") {
+  if (captionContent.value === "false") {
     showalert(
       gettext("There are errors in your captions/subtitles. Please review."),
       "alert-warning",
@@ -113,12 +113,12 @@ document.addEventListener("submit", (e) => {
     return;
   }
 
-  if (caption_content.value.trim() === "") {
+  if (captionContent.value.trim() === "") {
     showalert(gettext("There is no caption/subtitle to save."), "alert-danger");
     return;
   }
   if (typeof fileLoaded != "undefined" && fileLoaded) {
-    let saveModalId = document.getElementById("saveCaptionsModal");
+    let saveModalId = document.getElementById("save-captions-modal");
     let saveModal = bootstrap.Modal.getOrCreateInstance(saveModalId);
     saveModal.show();
   } else {
@@ -133,10 +133,10 @@ document.addEventListener("submit", (e) => {
 document.addEventListener("click", (evt) => {
   if (evt.target.id != "modal-btn-new" && evt.target.id != "modal-btn-override")
     return;
-  let caption_content = document.getElementById("captionContent");
-  if (!oldModeSelected) caption_content.value = generateWEBVTT();
+  let captionContent = document.getElementById("caption-content");
+  if (!oldModeSelected) captionContent.value = generateWEBVTT();
 
-  let saveModalId = document.getElementById("saveCaptionsModal");
+  let saveModalId = document.getElementById("save-captions-modal");
   let saveModal = bootstrap.Modal.getOrCreateInstance(saveModalId);
   saveModal.hide();
 
@@ -146,7 +146,7 @@ document.addEventListener("click", (evt) => {
       .getElementById("form_save_captions")
       .querySelector('input[name="file_id"]').value = fileLoadedId;
     //form_save_captions.querySelector('input[name="enrich_ready"]').value = "";
-    updateCaptionsArray(caption_content.value);
+    updateCaptionsArray(captionContent.value);
     send_form_save_captions();
   } else if (evt.target.id === "modal-btn-new") {
     form_save_captions.querySelector('input[name="file_id"]').value = "";
@@ -163,13 +163,13 @@ document.addEventListener("click", (evt) => {
  * Send the captions form to be saved
  */
 const send_form_save_captions = function () {
-  let fileName = document.getElementById("captionFilename").value;
+  let fileName = document.getElementById("caption-file-name").value;
   if (fileName.length === 0) {
     fileName = `${file_prefix}_captions_${Date.now()}`;
   }
 
   let rxSignatureLine = /^WEBVTT(?:\s.*)?$/;
-  let vttContent = document.getElementById("captionContent").value.trim();
+  let vttContent = document.getElementById("caption-content").value.trim();
   let vttLines = vttContent.split(/\r\n|\r|\n/);
   if (!rxSignatureLine.test(vttLines[0])) {
     alert(gettext("Not a valid time track file."));
@@ -252,15 +252,15 @@ document
         video_error.textContent = gettext("An unknown error occurred.");
         break;
     }
-    document.getElementById("videoError").height(vh).style.display = "block";
+    document.getElementById("video-error").height(vh).style.display = "block";
     this.style.display = "none";
   });
 
 let shortcutsDisplayed = false;
 document
-  .getElementById("showShortcutTips")
+  .getElementById("show-shortcut-tips")
   .addEventListener("click", function () {
-    let shortcuts = document.getElementById("shortcutsBlock");
+    let shortcuts = document.getElementById("shortcuts-block");
     if (shortcutsDisplayed) {
       shortcuts.style.display = "none";
     } else {
@@ -270,7 +270,7 @@ document
     shortcutsDisplayed = !shortcutsDisplayed;
   });
 
-document.getElementById("addSubtitle").addEventListener("click", function () {
+document.getElementById("add-subtitle").addEventListener("click", function () {
   const pod = document.getElementById("podvideoplayer");
   const podPlayer = pod.player;
   var playTime = podPlayer.currentTime();
@@ -290,10 +290,10 @@ document
       captionsArray.length = 0;
       autoPauseAtTime = -1;
 
-      document.getElementById("captionContent").value = "";
-      document.getElementById("captionTitle").textContent = "&nbsp;";
-      document.getElementById("textCaptionEntry").value = "";
-      document.querySelectorAll(".newEditorBlock").forEach((e) => {
+      document.getElementById("caption-content").value = "";
+      document.getElementById("caption-title").textContent = "&nbsp;";
+      document.getElementById("text-caption-entry").value = "";
+      document.querySelectorAll(".new-editor-block").forEach((e) => {
         e.remove();
       });
     }
@@ -302,20 +302,20 @@ document
 let oldModeSelected = false;
 
 document
-  .getElementById("switchOldEditMode")
+  .getElementById("switch-old-edit-mode")
   .addEventListener("click", function () {
     if (!oldModeSelected) {
       let vtt = generateWEBVTT();
       if (vtt) {
-        document.getElementById("captionContent").value = vtt;
-        document.getElementById("rawCaptionsEditor").style.display = "block";
-        document.getElementById("newCaptionsEditor").style.display = "none";
+        document.getElementById("caption-content").value = vtt;
+        document.getElementById("raw-captions-editor").style.display = "block";
+        document.getElementById("new-captions-editor").style.display = "none";
         oldModeSelected = !oldModeSelected;
       }
     } else {
       oldModeSelected = !oldModeSelected;
-      document.getElementById("rawCaptionsEditor").style.display = "none";
-      document.getElementById("newCaptionsEditor").style.display = "block";
+      document.getElementById("raw-captions-editor").style.display = "none";
+      document.getElementById("new-captions-editor").style.display = "block";
     }
   });
 
@@ -334,16 +334,16 @@ function displayExistingCaption(seconds) {
     let divs = document.querySelectorAll(".vjs-text-track-display div");
     divs[divs.length - 1].innerText = theCaption.caption;
     var message = gettext("Caption for segment from %s to %s:");
-    document.getElementById("captionTitle").textContent = interpolate(message, [
-      formatTime(theCaption.start),
-      formatTime(theCaption.end),
-    ]);
+    document.getElementById("caption-title").textContent = interpolate(
+      message,
+      [formatTime(theCaption.start), formatTime(theCaption.end)],
+    );
 
-    document.getElementById("textCaptionEntry").value = theCaption.caption;
+    document.getElementById("text-caption-entry").value = theCaption.caption;
     //document.getElementById("previewTrack").value = theCaption.caption;
   } else {
-    document.getElementById("captionTitle").textContent = "&nbsp;";
-    document.getElementById("textCaptionEntry").value = "";
+    document.getElementById("caption-title").textContent = "&nbsp;";
+    document.getElementById("text-caption-entry").value = "";
     //document.getElementById("previewTrack").value = "";
   }
 }
@@ -365,7 +365,7 @@ function existingCaptionsEndTime() {
 let updateCaptionsArray = (vtt) => {
   let arr = vtt.split("\n\n");
   captionsArray = [];
-  document.querySelectorAll(".newEditorBlock").forEach((e) => {
+  document.querySelectorAll(".new-editor-block").forEach((e) => {
     e.remove();
   });
   arr.forEach((text) => {
@@ -390,13 +390,15 @@ function videoPlayEventHandler() {
   captionBeingDisplayed = -1;
   // give Opera a beat before doing this
   window.setTimeout(function () {
-    let textCaption = document.getElementById("textCaptionEntry");
+    let textCaption = document.getElementById("text-caption-entry");
     textCaption.value = "";
     textCaption.readOnly = true;
     textCaption.classList.add("playing");
-    document.getElementById("pauseButton").disabled = false;
+    document.getElementById("pause-button").disabled = false;
     document
-      .querySelectorAll("#playButton, #justSaveCaption, #saveCaptionAndPlay")
+      .querySelectorAll(
+        "#play-button, #just-save-caption, #save-caption-and-play",
+      )
       .forEach(function (e) {
         e.disabled = true;
       });
@@ -408,15 +410,17 @@ function videoPlayEventHandler() {
  */
 function videoPauseEventHandler() {
   document
-    .querySelectorAll("#playButton, #justSaveCaption, #saveCaptionAndPlay")
+    .querySelectorAll(
+      "#play-button, #just-save-caption, #save-caption-and-play",
+    )
     .forEach(function (e) {
       e.disabled = false;
     });
-  let textCaption = document.getElementById("textCaptionEntry");
+  let textCaption = document.getElementById("text-caption-entry");
 
   textCaption.classList.remove("playing");
   textCaption.readOnly = false;
-  document.getElementById("pauseButton").disabled = false;
+  document.getElementById("pause-button").disabled = false;
 
   const pod = document.getElementById("podvideoplayer");
   const podPlayer = pod.player;
@@ -429,7 +433,7 @@ function videoPauseEventHandler() {
       var theCaption = captionsArray[ci];
 
       message = gettext("Edit caption for segment from %s to %s:");
-      document.getElementById("captionTitle").textContent = interpolate(
+      document.getElementById("caption-title").textContent = interpolate(
         message,
         [formatTime(theCaption.start), formatTime(theCaption.end)],
       );
@@ -437,7 +441,7 @@ function videoPauseEventHandler() {
       textCaption.value = theCaption.caption;
       captionBeingDisplayed = ci;
     } else {
-      document.getElementById("captionTitle").textContent = gettext(
+      document.getElementById("caption-title").textContent = gettext(
         "No caption at this time code.",
       );
       textCaption.value = "";
@@ -445,16 +449,16 @@ function videoPauseEventHandler() {
     }
   } else {
     message = gettext("Enter caption for segment from %s to %s:");
-    document.getElementById("captionTitle").textContent = interpolate(message, [
-      formatTime(existingCaptionsEndTime()),
-      formatTime(playTime),
-    ]);
+    document.getElementById("caption-title").textContent = interpolate(
+      message,
+      [formatTime(existingCaptionsEndTime()), formatTime(playTime)],
+    );
 
-    document.getElementById("textCaptionEntry").value = "";
+    document.getElementById("text-caption-entry").value = "";
     captionBeingDisplayed = -1;
   }
 
-  //$("#textCaptionEntry").focus().get(0).setSelectionRange(1000, 1000); // set focus and selection point to end
+  //$("#text-caption-entry").focus().get(0).setSelectionRange(1000, 1000); // set focus and selection point to end
 }
 
 /**
@@ -475,15 +479,15 @@ function videoTimeUpdateEventHandler() {
     displayExistingCaption(playTime);
   } else {
     var message = gettext("Pause to enter caption for segment from %s to %s.");
-    document.getElementById("captionTitle").textContent = interpolate(message, [
-      formatTime(captionsEndTime),
-      formatTime(playTime),
-    ]);
+    document.getElementById("caption-title").textContent = interpolate(
+      message,
+      [formatTime(captionsEndTime), formatTime(playTime)],
+    );
 
     let divs = document.querySelectorAll(".vjs-text-track-display div");
     divs[divs.length - 1].innertext = "";
     if (captionBeingDisplayed != -1) {
-      document.getElementById("textCaptionEntry").value = "";
+      document.getElementById("text-caption-entry").value = "";
       captionBeingDisplayed = -1;
     }
   }
@@ -507,12 +511,14 @@ function enableDemoAfterLoadVideo() {
     });
 
   document
-    .querySelectorAll("#pauseButton, #saveCaptionAndPlay, #justSaveCaption")
+    .querySelectorAll(
+      "#pause-button, #save-caption-and-play, #just-save-caption",
+    )
     .forEach(function (e) {
       e.disabled = true;
     });
 
-  document.getElementById("textCaptionEntry").readOnly = true;
+  document.getElementById("text-caption-entry").readOnly = true;
 }
 
 const pod = document.getElementById("podvideoplayer");
@@ -523,13 +529,13 @@ pod.addEventListener("pause", videoPauseEventHandler);
 pod.addEventListener("canplay", enableDemoAfterLoadVideo);
 pod.addEventListener("loadeddata", enableDemoAfterLoadVideo);
 
-document.getElementById("playButton").addEventListener("click", function () {
+document.getElementById("play-button").addEventListener("click", function () {
   const pod = document.getElementById("podvideoplayer");
   const podPlayer = pod.player;
   podPlayer.play();
 });
 
-document.getElementById("pauseButton").addEventListener("click", function () {
+document.getElementById("pause-button").addEventListener("click", function () {
   const pod = document.getElementById("podvideoplayer");
   const podPlayer = pod.player;
   podPlayer.pause();
@@ -543,7 +549,7 @@ function generateWEBVTT() {
   let vtt = "";
 
   let captionBlocks = document.querySelectorAll(
-    "#newCaptionsEditor > .newEditorBlock",
+    "#new-captions-editor > .new-editor-block",
   );
 
   // If form has invalid fields, do not continue.
@@ -554,7 +560,7 @@ function generateWEBVTT() {
     /* We use FormData to get a formatted version of captionText
      * including auto "\n" generated by cols='y' rows='x' wrap='hard'
      */
-    let captionText = new FormData(e).get("captionTextInput");
+    let captionText = new FormData(e).get("caption-text-input");
     let startTime = e.querySelector(".startTimeBtn").text;
     let endTime = e.querySelector(".endTimeBtn").text;
 
@@ -567,7 +573,8 @@ function generateWEBVTT() {
 }
 
 /**
- * Check validity of every form and fires an invalid event on invalid elements
+ * Check validity of every form and fires an invalid event on invalid elements.
+ *
  * @return {bool} true if everything's fine
  */
 function validateForms(forms) {
@@ -576,11 +583,11 @@ function validateForms(forms) {
     e.classList.remove("was-validated");
 
     // After Browser checks, we add some custom ones
-    let captionInput = e.querySelector(".captionTextInput");
-    // 81 for carriage return
-    if (captionInput.value.length > 81) {
+    let captionInput = e.querySelector(".caption-text-input");
+    // 111 for carriage return
+    if (captionInput.value.length > 111) {
       captionInput.setCustomValidity(
-        gettext("A caption cannot contain more than 80 characters.") +
+        gettext("A caption cannot contain more than 110 characters.") +
           "[" +
           captionInput.value.length +
           "]",
@@ -605,7 +612,7 @@ function saveCurrentCaption() {
   const podPlayer = pod.player;
   var playTime = podPlayer.currentTime();
   var captionsEndTime = existingCaptionsEndTime();
-  let new_entry = document.getElementById("textCaptionEntry").value;
+  let new_entry = document.getElementById("text-caption-entry").value;
   if (playTime - 1 < captionsEndTime) {
     var ci = findCaptionIndex(playTime - 1);
     if (ci != -1) {
@@ -617,13 +624,13 @@ function saveCurrentCaption() {
 }
 
 document
-  .getElementById("justSaveCaption")
+  .getElementById("just-save-caption")
   .addEventListener("click", function () {
     saveCurrentCaption();
   });
 
 document
-  .getElementById("saveCaptionAndPlay")
+  .getElementById("save-caption-and-play")
   .addEventListener("click", function () {
     saveCurrentCaption();
 
@@ -633,11 +640,11 @@ document
   });
 
 document
-  .getElementById("textCaptionEntry")
+  .getElementById("text-caption-entry")
   .addEventListener("keydown", function (e) {
     var code = e.key ?? e.code;
     if (code === "ENTER" && !e.shiftKey) {
-      document.getElementById("saveCaptionAndPlay").click();
+      document.getElementById("save-caption-and-play").click();
       return false;
     }
   });
@@ -653,7 +660,7 @@ let updateCaptionHtmlContent = () => {
     }`;
     if (i !== captionsArray.length - 1) vtt += "\n\n";
   });
-  document.getElementById("captionContent").value = vtt;
+  document.getElementById("caption-content").value = vtt;
 };
 
 /**
@@ -685,30 +692,45 @@ function createCaptionBlock(newCaption, spawnFunction) {
   let Block = {
     // parent
     div: new DOMParser().parseFromString(
-      `<form class='newEditorBlock row'></form>`,
+      `<form class='new-editor-block'></form>`,
+      "text/html",
+    ).body.firstChild,
+
+    containerDiv: new DOMParser().parseFromString(
+      "<div class='new-editor-block-container row'></div>",
+      "text/html",
+    ).body.firstChild,
+
+    numberCharactersDiv: new DOMParser().parseFromString(
+      "<div class='number-character-container mt-2'></div>",
+      "text/html",
+    ).body.firstChild,
+
+    numberCharactersAlert: new DOMParser().parseFromString(
+      `<div class='alert alert-danger mt-2'><strong>${gettext("For your video's accessibility, we recommend a maximum of 80 characters.")}</strong></div>`,
       "text/html",
     ).body.firstChild,
 
     // circle buttons
     buttonsDiv: new DOMParser().parseFromString(
-      "<div class='captionButtons col-1 d-flex flex-wrap align-items-center'></div>",
+      "<div class='caption-buttons d-flex gap-4 mt-4 justify-content-center'></div>",
       "text/html",
     ).body.firstChild,
 
     insertBtn: new DOMParser().parseFromString(
-      `<button type="button" class="btn btn-light" title="${gettext(
+      `<button type="button" class="btn btn-primary btn-small" title="${gettext(
         "Add a caption/subtitle after this one",
       )}" aria-label="${gettext(
         "Add",
-      )}"><i class="bi bi-plus-circle" aria-hidden="true"></i></button>`,
+      )}"><i class="bi bi-plus" aria-hidden="true"></i></button>`,
       "text/html",
     ).body.firstChild,
     deleteBtn: new DOMParser().parseFromString(
-      `<button type="button" class="btn btn-light" title="${gettext(
+      `<button type="button" class="btn btn-danger btn-small" title="${gettext(
         "Delete this caption/subtitle",
       )}" aria-label="${gettext(
         "Delete",
-      )}"><i class="bi bi-x-circle" aria-hidden="true"></i></button>`,
+      )}"><i class="bi bi-trash" aria-hidden="true"></i></button>`,
       "text/html",
     ).body.firstChild,
     // textarea
@@ -722,12 +744,12 @@ function createCaptionBlock(newCaption, spawnFunction) {
       "text/html",
     ).body.firstChild,
     captionTextInput: new DOMParser().parseFromString(
-      `<textarea class='captionTextInput form-control' cols='40' rows='2' wrap='hard' maxlength='80' name='captionTextInput' required></textarea>`,
+      `<textarea class='caption-text-input form-control' cols='40' rows='3' wrap='hard' maxlength='110' name='caption-text-input' required></textarea>`,
       "text/html",
     ).body.firstChild,
     // time editable
     timeBlockEditable: new DOMParser().parseFromString(
-      `<div class='captionTimestamps col-3' style='display:none'></div>"`,
+      `<div class='captionTimestamps col-auto' style='display:none'></div>"`,
       "text/html",
     ).body.firstChild,
     startTimeLabel: new DOMParser().parseFromString(
@@ -749,7 +771,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
 
     // time links
     timeBlock: new DOMParser().parseFromString(
-      `<div class='captionTimestamps col-sm-3 col-md-2'><span>${gettext(
+      `<div class='captionTimestamps col-auto'><span>${gettext(
         "Time stamps",
       )}</span></div>`,
       "text/html",
@@ -842,7 +864,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
         let index = Array.from(this.div.parentNode.children).indexOf(this.div);
         captionsArray.splice(index, 1);
         captionsArray.push(newCaption);
-        let addSubtitle = document.getElementById("addSubtitle");
+        let addSubtitle = document.getElementById("add-subtitle");
         addSubtitle.parentNode.insertBefore(this.div, addSubtitle);
       }
     },
@@ -919,6 +941,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
       this.timeBlockEditable.append(
         this.startTimeLabel,
         this.startTimeInput,
+        document.createElement("br"),
         this.endTimeLabel,
         this.endTimeInput,
       );
@@ -926,12 +949,33 @@ function createCaptionBlock(newCaption, spawnFunction) {
 
       this.captionDiv.append(this.captionTextLabel, this.captionTextInput);
 
-      this.div.append(
-        this.buttonsDiv,
+      // Append all elements to containerDiv
+      this.containerDiv.append(
         this.captionDiv,
         this.timeBlock,
         this.timeBlockEditable,
       );
+
+      // Append containerDiv to form
+      this.div.append(this.containerDiv);
+      this.div.append(this.numberCharactersDiv);
+      this.div.append(this.buttonsDiv);
+
+      // Update numberCharactersDiv content
+      const updateCharacterCount = () => {
+        let nbCharacters = this.captionTextInput.value.length;
+        this.numberCharactersDiv.textContent =
+          nbCharacters + gettext("/80 characters");
+        if (nbCharacters > 80) {
+          this.numberCharactersDiv.append(this.numberCharactersAlert);
+        }
+      };
+
+      // Initialize with the current length
+      updateCharacterCount();
+
+      // Add event listener to update the character count on input
+      this.captionTextInput.addEventListener("input", updateCharacterCount);
 
       this.startTimeInput.addEventListener("keydown", (e) => {
         if (e.key === "ENTER") this.disableEdit();
@@ -960,7 +1004,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
   if (spawnFunction) {
     spawnFunction(Block.div);
   } else {
-    let addSubtitle = document.getElementById("addSubtitle");
+    let addSubtitle = document.getElementById("add-subtitle");
     addSubtitle.parentNode.insertBefore(Block.div, addSubtitle);
   }
 
@@ -977,7 +1021,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
       clearVideoRegion();
     },
   );
-  document.getElementById("noCaptionsText")?.remove();
+  document.getElementById("no-captions-text")?.remove();
 
   return Block;
 }
@@ -1049,7 +1093,7 @@ let editorShortcuts = {
   },
   "?": function () {
     if (this.notFocused()) {
-      document.getElementById("showShortcutTips").click();
+      document.getElementById("show-shortcut-tips").click();
       return false;
     }
   },
@@ -1057,19 +1101,19 @@ let editorShortcuts = {
     if (lastEditedBlock) {
       lastEditedBlock.spawnNew();
     } else {
-      document.getElementById("addSubtitle").click();
+      document.getElementById("add-subtitle").click();
     }
 
     return false;
   },
   s: function (e) {
     if (e.ctrlKey) {
-      document.getElementById("justSaveCaption").click();
+      document.getElementById("just-save-caption").click();
       return false;
     }
   },
   End: function () {
-    document.getElementById("saveCaptionAndPlay").click();
+    document.getElementById("save-caption-and-play").click();
     return false;
   },
 
@@ -1100,8 +1144,8 @@ editorShortcuts.init();
  * @param {[type]} newCaption [description]
  */
 function addCaptionListRow(ci, newCaption) {
-  let vtt = document.getElementById("captionContent");
-  let vtt_entry = document.getElementById("textCaptionEntry").value.trim();
+  let vtt = document.getElementById("caption-content");
+  let vtt_entry = document.getElementById("text-caption-entry").value.trim();
   let start = captionMemories.start_time;
 
   const pod = document.getElementById("podvideoplayer");
@@ -1312,12 +1356,12 @@ function processProxyVttResponse(obj) {
     fileLoaded = true;
     fileLoadedId = obj.id_file;
     current_folder = obj.id_folder;
-    document.querySelectorAll(".newEditorBlock").forEach((elt) => {
+    document.querySelectorAll(".new-editor-block").forEach((elt) => {
       elt.remove();
     });
 
     // strip file extension and set as title
-    document.getElementById("captionFilename").value = obj.file_name.replace(
+    document.getElementById("caption-file-name").value = obj.file_name.replace(
       /\.[^/.]+$/,
       "",
     );
@@ -1343,7 +1387,7 @@ function parseAndLoadWebVTT(vtt) {
     return;
   }
 
-  document.querySelectorAll(".newEditorBlock").forEach((elt) => {
+  document.querySelectorAll(".new-editor-block").forEach((elt) => {
     elt.remove();
   });
 
@@ -1396,14 +1440,15 @@ function parseAndLoadWebVTT(vtt) {
     if (captionMatch && cueStart && cueEnd) {
       // captionMatch[1] is the optional voice (speaker) we're ignoring
       var capLine = captionMatch[2].replace(rxMarkup, "");
-      if (cueText) cueText += " " + capLine;
+      if (cueText)
+        cueText += "\n" + capLine; // Add a line break for new lines
       else {
         cueText = capLine;
       }
     }
   }
   appendCurrentCaption();
-  document.getElementById("captionContent").value = vtt;
+  document.getElementById("caption-content").value = vtt;
 }
 
 // videojs region highlighting

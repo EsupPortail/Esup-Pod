@@ -20,14 +20,16 @@ global HIDE_USERNAME
 
 
 var list_folders_sub;
-
-const loader = `
-  <div id="loader" class="d-flex justify-content-center align-items-center d-none loaderSpinner">
-    <div class="spinner-border" role="status">
-        <span class="visually-hidden">${gettext('Loading…')}</span>
-    </div>
+// change const to var to prevent multiple declaration
+var loader = `
+<div id="loader" class="d-flex justify-content-center align-items-center d-none loaderSpinner">
+  <div class="spinner-border" role="status">
+      <span class="visually-hidden">${gettext('Loading…')}</span>
   </div>
-  `;
+</div>
+`;
+
+
 
 if (typeof loaded == "undefined") {
   var loaded = true;
@@ -723,7 +725,7 @@ if (typeof loaded == "undefined") {
   var folder_searching = false;
   function add_folder_observer() {
     // The new observer with a callback to execute upon change
-    var list_folders_sub = document.getElementById("list_folders_sub");
+    list_folders_sub = document.getElementById("list_folders_sub");
     var folder_observer = new MutationObserver((mutationsList) => {
       if(document.getElementById("more")) {
         document.getElementById("more").addEventListener("click", (event) => {

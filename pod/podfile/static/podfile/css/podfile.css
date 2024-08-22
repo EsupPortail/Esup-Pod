@@ -214,10 +214,6 @@ button.close {
   justify-content: space-between;
 }
 
-.modal-header .modal-title {
-  color: var(--pod-primary);
-}
-
 .modal-header .close {
   margin: 0;
   color: var(--pod-font-color);
@@ -262,7 +258,7 @@ button.close {
 }
 
 #podfile .list_folders .folder,
-#podfile .list_folders_sub .folder,
+#podfile .list_folders_sub .folder
 /*#podfile #dirs .dirs-nav a.folder*/ {
   display: flex;
   align-items: flex-end;

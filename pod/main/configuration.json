@@ -3320,6 +3320,23 @@
                         ]
                     },
                     "settings": {
+                        "CAPTIONS_STRICT_ACCESSIBILITY": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "If True, subtitles will be generated strictly following accessibility standards.",
+                                    "A warning message will be displayed if the subtitles do not follow these standards,",
+                                    "even if the value is False."
+                                ],
+                                "fr": [
+                                    "Si True, les sous-titres seront générés en respectant strictement les normes",
+                                    "d’accessibilité. L'apparition d'un message d’avertissement sera affiché si les",
+                                    "sous-titres ne respectent pas ces normes, même si la valeur est à False."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.1"
+                        },
                         "CELERY_BROKER_URL": {
                             "default_value": "redis://redis.localhost:6379/5",
                             "description": {
