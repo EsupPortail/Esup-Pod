@@ -5,11 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< .merge_file_bcmt2P
-"POT-Creation-Date: 2024-07-18 12:12+0000\n"
-=======
-"POT-Creation-Date: 2024-07-19 07:39+0000\n"
->>>>>>> .merge_file_gaKMbm
+"POT-Creation-Date: 2024-08-22 09:15+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -9486,7 +9482,6 @@ msgstr ""
 #: pod/video/models.py
 msgid "The general type of the video."
 msgstr "Le type général de la vidéo."
-<<<<<<< .merge_file_bcmt2P
 
 #: pod/video/models.py
 msgid ""
@@ -9501,22 +9496,6 @@ msgid ""
 "Describe your content, add all needed related information, and format the "
 "result using the toolbar."
 msgstr ""
-=======
-
-#: pod/video/models.py
-msgid ""
-"Additional owners will have the same rights as you, except that they can’t "
-"delete this media."
-msgstr ""
-"Les propriétaires additionnels auront les mêmes droits que vous, sauf qu’ils "
-"ne peuvent pas supprimer ce contenu."
-
-#: pod/video/models.py
-msgid ""
-"Describe your content, add all needed related information, and format the "
-"result using the toolbar."
-msgstr ""
->>>>>>> .merge_file_gaKMbm
 "Décrivez votre contenu, ajoutez toutes les informations nécessaires, et "
 "mettez en forme le résultat en utilisant la barre d’outils."
 

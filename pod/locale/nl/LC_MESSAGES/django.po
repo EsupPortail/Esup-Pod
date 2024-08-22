@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-18 12:12+0000\n"
-"PO-Revision-Date: 2024-07-04 17:54+0200\n"
+"POT-Creation-Date: 2024-08-22 09:15+0000\n"
+"PO-Revision-Date: 2024-08-22 11:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -496,7 +496,7 @@ msgstr ""
 
 #: pod/ai_enhancement/views.py
 msgid "You cannot use AI to improve this video."
-msgstr "Vous ne pouvez pas utiliser l'IA pour améliorer cette vidéo."
+msgstr ""
 
 #: pod/ai_enhancement/views.py
 msgid "Video Caption Maker - Aristote AI Version"
@@ -1526,11 +1526,11 @@ msgstr ""
 msgid "Speaker"
 msgstr ""
 
-#: pod/completion/models.py pod/completion/templates/video_caption_maker.html
+#: pod/completion/models.py
 msgid "subtitles"
 msgstr ""
 
-#: pod/completion/models.py pod/completion/templates/video_caption_maker.html
+#: pod/completion/models.py
 msgid "captions"
 msgstr ""
 
@@ -1900,6 +1900,14 @@ msgstr ""
 #: pod/completion/templates/video_caption_maker.html
 #: pod/video/templates/videos/add_video.html
 msgid "File"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html
+msgid "Subtitles"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html
+msgid "Captions"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
@@ -6960,16 +6968,15 @@ msgstr ""
 
 #: pod/playlist/templates/playlist/playlist.html
 msgid "Select the video to move by clicking and holding."
-msgstr "Sélectionnez la vidéo à déplacer en cliquant et en maintenant."
+msgstr ""
 
 #: pod/playlist/templates/playlist/playlist.html
 msgid "While holding down the video, drag it to the desired location."
 msgstr ""
-"Tout en maintenant la vidéo, faites-la glisser vers l'emplacement souhaité."
 
 #: pod/playlist/templates/playlist/playlist.html
 msgid "Drop the video on another to swap their position."
-msgstr "Déposez la vidéo sur une autre pour échanger leur position."
+msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_card.html
 #, python-format
@@ -8209,10 +8216,8 @@ msgid "Jobs"
 msgstr ""
 
 #: pod/speaker/templates/speaker/speaker_modal.html
-#, fuzzy
-#| msgid "title"
 msgid "Job title"
-msgstr "titel"
+msgstr ""
 
 #: pod/speaker/templates/speaker/speaker_modal.html
 msgid "Remove job"
@@ -10125,10 +10130,8 @@ msgid "Deleting the media \"%(vtitle)s\""
 msgstr ""
 
 #: pod/video/views.py
-#, fuzzy
-#| msgid "You cannot use AI to improve this video."
 msgid "You cannot delete this media."
-msgstr "Vous ne pouvez pas utiliser l'IA pour améliorer cette vidéo."
+msgstr ""
 
 #: pod/video/views.py
 msgid "You cannot delete a media that is being encoded."

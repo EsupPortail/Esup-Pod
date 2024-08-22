@@ -220,14 +220,6 @@ class Recorder(models.Model):
         verbose_name=_("Tags"),
     )
     discipline = models.ManyToManyField(
-<<<<<<< HEAD
-        Discipline, blank=True, verbose_name=_("Disciplines"),
-        help_text=_("The disciplines to which your content belongs.")
-    )
-    licence = models.CharField(
-        _("Licence"), max_length=8, choices=__LICENCE_CHOICES__, blank=True, null=True,
-        help_text=_("Usage rights granted to your content.")
-=======
         Discipline,
         blank=True,
         verbose_name=_("Disciplines"),
@@ -240,7 +232,6 @@ class Recorder(models.Model):
         blank=True,
         null=True,
         help_text=_("Usage rights granted to your content."),
->>>>>>> develop
     )
     channel = models.ManyToManyField(Channel, verbose_name=_("Channels"), blank=True)
     theme = models.ManyToManyField(

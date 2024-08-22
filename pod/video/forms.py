@@ -608,13 +608,7 @@ class VideoForm(forms.ModelForm):
         label=_("Visibility"),
         required=True,
         initial="public",
-<<<<<<< HEAD
-        help_text=_(
-            "Who can see your content (everyone, just you, or those granted)."
-        ),
-=======
         help_text=_("Who can see your content (everyone, just you, or those granted)."),
->>>>>>> develop
     )
 
     required_css_class = "required"
