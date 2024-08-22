@@ -1,4 +1,4 @@
-FROM grafana/docker-puppeteer
+FROM grafana/docker-puppeteer:1.1.0
 # RUN npm install --global --unsafe-perm pa11y-ci
 COPY ./dockerfile-dev-with-volumes/pa11y-ci/my-entrypoint-pa11y.sh /tmp/my-entrypoint-pa11y.sh
 RUN chmod 755 /tmp/my-entrypoint-pa11y.sh
