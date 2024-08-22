@@ -4,8 +4,6 @@ x-pod-volumes: &pod-volumes
 x-elasticsearch-volumes: &elasticsearch-volumes
   - ./dockerfile-dev-with-volumes/config/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
-version: '3.7'
-
 services:
   pod:
     container_name: pod-dev-with-volumes
