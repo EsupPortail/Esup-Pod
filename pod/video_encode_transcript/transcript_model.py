@@ -419,15 +419,13 @@ def main_whisper_transcript(norm_mp3_file, duration, lang):
         ],
     )
     audio = convert_samplerate(norm_mp3_file, desired_sample_rate, 0, duration)
-    transcription = model.transcribe(audio, language=lang, initial_prompt="prompt", word_timestamps=True)
+    transcription = model.transcribe(
+        audio, language=lang, initial_prompt="prompt", word_timestamps=True
+    )
     dirname = os.path.dirname(norm_mp3_file)
     filename = os.path.basename(norm_mp3_file).replace(".mp3", ".vtt")
     vtt_writer = get_writer("vtt", dirname)
-    word_options = {
-        "highlight_words": False,
-        "max_line_count": 2,
-        "max_line_width": 40
-    }
+    word_options = {"highlight_words": False, "max_line_count": 2, "max_line_width": 40}
     vtt_writer(transcription, filename, word_options)
     wvtt = webvtt.read(os.path.join(dirname, filename))
     inference_end = timer() - inference_start
