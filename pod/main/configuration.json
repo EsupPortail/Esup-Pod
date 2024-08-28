@@ -3915,6 +3915,19 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "NOTIFY_SENDER": {
+                            "default_value": "True",
+                            "description": {
+                                "en": [
+                                    "In unauthenticated mode, when using the contact form, sends a copy of the message to the address entered in the form."
+                                ],
+                                "fr": [
+                                    "En mode non authentifié, lors de l'utilisation du formulaire de contact, envoie une copie du message à l'adresse saisie dans le formulaire."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.2"
+                        },
                         "SERVER_EMAIL": {
                             "default_value": "noreply",
                             "description": {
