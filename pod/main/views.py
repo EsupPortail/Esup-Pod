@@ -288,7 +288,7 @@ def contact_us(request):
                     _("your message untitled"),
                     dict(SUBJECT_CHOICES)[form_subject],
                 )
-    
+
                 html_content = loader.get_template("mail/mail_sender.html").render(
                     {
                         "TITLE_SITE": __TITLE_SITE__,
@@ -301,7 +301,7 @@ def contact_us(request):
                 )
                 msg.attach_alternative(html_content, "text/html")
                 msg.send(fail_silently=False)
-    
+
             messages.add_message(request, messages.INFO, _("Your message has been sent."))
 
             return redirect(form.cleaned_data["url_referrer"])
