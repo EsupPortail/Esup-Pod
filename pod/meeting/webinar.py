@@ -223,8 +223,8 @@ def start_rtmp_gateway(pod_host: str, meet_id: int, livestream_id: int):
         % (meeting.id, meeting.name, response.text)
     )
 
-    if json_response["res"] != "ok":
-        message = json_response["type"]
+    if json_response["status"] != "success":
+        message = json_response["details"]
         raise ValueError(mark_safe(message))
 
 
@@ -254,8 +254,8 @@ def stop_rtmp_gateway(meet_id: int, livestream_id: int):
         % (meeting.id, meeting.name, response.text)
     )
 
-    if json_response["res"].find("Warning") != -1:
-        message = json_response["res"]
+    if json_response["status"] != "success":
+        message = json_response["details"]
         raise ValueError(mark_safe(message))
 
 
