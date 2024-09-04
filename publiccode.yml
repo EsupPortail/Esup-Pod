@@ -12,7 +12,6 @@ url: 'https://github.com/EsupPortail/Esup-Pod'
 landingURL: 'https://pod.esup-portail.org/'
 roadmap: 'https://pod.esup-portail.org/perimetre-fonctionnel'
 creationDate: "2015-03-11"
-latestTestedInstallationDate: "2024-03-28"
 developmentStatus: stable
 platforms:
   - web
