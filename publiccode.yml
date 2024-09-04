@@ -12,17 +12,10 @@ url: 'https://github.com/EsupPortail/Esup-Pod'
 landingURL: 'https://pod.esup-portail.org/'
 roadmap: 'https://pod.esup-portail.org/perimetre-fonctionnel'
 creationDate: "2015-03-11"
-latestRelease: 
-  date: "2024-03-28"
-  version: "3.5.2"
 latestTestedInstallationDate: "2024-03-28"
-releaseDate: '2024-03-28'
-softwareVersion: 3.5.2
 developmentStatus: stable
 platforms:
   - web
-  - ios
-  - android
 softwareType: standalone/web
 usedBy:
   - |-
@@ -99,7 +92,6 @@ intendedAudience:
   scope:
     - education
     - research
-    - sport
     - science-and-technology
   countries:
     - fr
