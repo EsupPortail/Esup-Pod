@@ -1,5 +1,5 @@
-FROM buildkite/puppeteer:v1.15.0
-RUN npm install --global --unsafe-perm pa11y-ci
+FROM grafana/docker-puppeteer:1.1.0
+# RUN npm install --global --unsafe-perm pa11y-ci
 COPY ./dockerfile-dev-with-volumes/pa11y-ci/my-entrypoint-pa11y.sh /tmp/my-entrypoint-pa11y.sh
 RUN chmod 755 /tmp/my-entrypoint-pa11y.sh
 # ENTRYPOINT ["pa11y-ci", "-c", "/usr/config.json"]
