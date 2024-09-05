@@ -76,7 +76,9 @@ class EncodingVideoViewSet(viewsets.ModelViewSet):
 
     queryset = EncodingVideo.objects.all()
     serializer_class = EncodingVideoSerializer
-    filterset_fields = ["video",]
+    filterset_fields = [
+        "video",
+    ]
 
     @action(detail=False, methods=["get"])
     def video_encodedfiles(self, request):
@@ -108,7 +110,9 @@ class EncodingAudioViewSet(viewsets.ModelViewSet):
 
     queryset = EncodingAudio.objects.all()
     serializer_class = EncodingAudioSerializer
-    filterset_fields = ["video",]
+    filterset_fields = [
+        "video",
+    ]
 
     @action(detail=False, methods=["get"])
     def audio_encodedfiles(self, request):
