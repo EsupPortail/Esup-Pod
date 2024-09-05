@@ -1,0 +1,136 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+categories:
+  - video-editing
+  - communications
+  - video-conferencing
+name: Esup-Pod
+url: 'https://github.com/EsupPortail/Esup-Pod'
+landingURL: 'https://pod.esup-portail.org/'
+roadmap: 'https://pod.esup-portail.org/perimetre-fonctionnel'
+creationDate: "2015-03-11"
+developmentStatus: stable
+platforms:
+  - web
+softwareType: standalone/web
+usedBy:
+  - |-
+    Ministère de l'Éducation Nationale de la Jeunesse et des Sports (Direction
+    du numérique pour l'éducation)
+  - Aix-Marseille université
+  - La Rochelle Université 
+  - Le Mans Université 
+  - Université Côte d’Azur (Nice) 
+  - Université d'Artois 
+  - Université d'Avignon 
+  - Université de Bordeaux 
+  - Université de Bretagne Occidentale (Brest) 
+  - Université de Caen Normandie 
+  - Université de Haute-Alsace
+  - Université de Lille 
+  - Université de Lorraine 
+  - Université de Montpellier 
+  - Université de Pau 
+  - Université de Strasbourg 
+  - Université de Technologie de Belfort Montbéliard 
+  - Université de Technologie de Compiègne 
+  - Université de Technologie de Troyes 
+  - Université de Toulon 
+  - Université des Antilles 
+  - Université du Littoral Côte d'Opale 
+  - |-
+    Université Européenne pour un Littoral Urbain Durable et Intelligent 
+    (EU-CONEXUS - La Rochelle Université) 
+  - Université Grenoble Alpes 
+  - Université Paris 1 
+  - Université Paris-Est Créteil - Pod U-PEC 
+  - Université Paul-Valéry Montpellier 3 
+  - Université Polynésie Française 
+  - Université Polytechnique Hauts-de-France 
+  - Université Saint Étienne 
+  - UVSQ Université de Versailles Saint-Quentin-en-Yvelines 
+  - CNAM'IDS France (Pod 25 tenants) 
+  - Inserm
+  - École nationale de la magistrature (Ministère de la justice) 
+  - INSA Rennes 
+  - Institut Mines-Télécom (IMT) 
+  - IMT Mines Albi 
+  - INSPE de Paris 
+  - Académie de Normandie
+  - Académie de Rennes
+  - GIP RECIA
+fundedBy:
+  - name: Consortium Esup-Portail / Université de Lille
+    url: https://www.esup-portail.org/
+logo: https://pod.esup-portail.org/themes/esup_pod_theme/img/icon--pod_final.svg
+monochromeLogo: https://pod.esup-portail.org/sites/pod.esup-portail.org/files/2023-05/LogoBLANC.svg
+metadataFiles:
+  readme: README.md
+  license: COPYING
+  contributing: CONTRIBUTING.md
+  changelog: ""
+  codeOfConduct: CODE_OF_CONDUCT.md
+  governance: ""
+maintenance:
+  type: community
+  contacts:
+    - name: Esup-portail
+      email: contact@esup-portail.org
+  contractors:
+    - name: Esup-portail
+      until: '2015-09-01'
+      website: 'https://www.esup-portail.org'
+legal:
+  license: LGPL-3.0-or-later
+  mainCopyrightOwner: Esup-Portail
+  repoOwner: Esup-Portail
+intendedAudience:
+  scope:
+    - education
+    - research
+    - science-and-technology
+  countries:
+    - fr
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - fr
+    - en
+fr:
+  sample: fr
+description:
+  fr:
+    genericName: Esup-Pod
+    documentation: 'https://www.esup-portail.org/wiki/display/ES/Esup-Pod'
+    longDescription: |
+      Créé en 2014, le projet Pod a connu de nombreux changements ces dernières
+      années. Initié à l' [Université de Lille](https://www.univ-lille.fr/), il
+      est depuis septembre 2015 piloté par le consortium [Esup
+      Portail](https://www.esup-portail.org/) et soutenu également par le
+      [Ministère de l'Enseignement supérieur et de la
+      Recherche](https://www.enseignementsup-recherche.gouv.fr/fr/esup-pod-plateforme-de-gestion-de-video-90260).
+
+
+      Le projet et la plateforme, qui portent le même nom, ont pour but de 
+      faciliter la mise à disposition de vidéos et de ce fait, d'encourager 
+      l'utilisation de celles-ci dans le cadre de l'enseignement et la 
+      recherche (ESR). La plateforme est utilisée par plus d'une cinquantaine 
+      d'établissements de l'ESR mais également des académies et des instituts.
+    shortDescription: Plateforme de gestion de fichier vidéo
+    features:
+      - 'Dépôt, encodage et diffusion de vidéos '
+      - |-
+        Complétion des vidéos :  Contributeurs, sous-titrage, documents et
+        superpositions
+      - 'Découpe, Habillage, Chapitrage, Indexation '
+      - |-
+        Enrichissement des vidéos : Synchronisation et affichage de média avec
+        la vidéo
+      - 'Diffusion en direct, liste de lecture, etc * Ne fais pas le café !'
+    videos:
+      - ""
+    screenshots:
+      - ""
