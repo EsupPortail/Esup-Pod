@@ -52,4 +52,4 @@ class PlaylistViewSet(viewsets.ModelViewSet):
         "visibility",
         "autoplay",
         "editable",
-        ]
+    ]

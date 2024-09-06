@@ -211,7 +211,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         "is_restricted",
         "encoding_in_progress",
         "sites",
-        ]
+    ]
 
     @action(detail=False, methods=["get"])
     def user_videos(self, request):
