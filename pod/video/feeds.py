@@ -211,17 +211,6 @@ class RssSiteVideosFeed(Feed):
         )
 
     def item_description(self, item) -> str:
-        thumbnail_url = "".join([self.prefix, item.get_thumbnail_url().replace("//", "")])
-        title = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.title)
-        img = format_html(
-            '<img style="max-width:100px" '
-            'src="%s" alt="%s" loading="lazy"/>'
-            % (
-                thumbnail_url,
-                title.replace("{", "").replace("}", "").replace('"', "'"),
-            )
-        )
-        # description = "%s<br/>" % img
         sub = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.description)
         # use re sub to remove Control characters are not supported in XML 1.0
         description = sub  # item.description
