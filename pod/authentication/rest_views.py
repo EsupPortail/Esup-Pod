@@ -56,7 +56,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             "email",
             "groups",
         )
-        filter_fields = ("id", "username", "email")
+        filterset_fields = ["id", "username", "email"]
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
@@ -88,7 +88,7 @@ class OwnerViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by("-date_joined")
     serializer_class = UserSerializer
-    filter_fields = ("id", "username", "email")
+    filterset_fields = ["id", "username", "email"]
 
 
 class GroupViewSet(viewsets.ModelViewSet):
