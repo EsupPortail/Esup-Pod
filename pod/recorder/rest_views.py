@@ -12,7 +12,16 @@ class RecordingFileTreatmentModelSerializer(serializers.HyperlinkedModelSerializ
 class RecordingModelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Recording
-        fields = ("id", "url", "user", "title", "source_file", "type", "date_added", "recorder")
+        fields = (
+            "id",
+            "url",
+            "user",
+            "title",
+            "source_file",
+            "type",
+            "date_added",
+            "recorder",
+        )
 
 
 class RecorderModelSerializer(serializers.HyperlinkedModelSerializer):
