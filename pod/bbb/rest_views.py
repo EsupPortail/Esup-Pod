@@ -57,10 +57,10 @@ class LivestreamModelSerializer(serializers.HyperlinkedModelSerializer):
             "server",
             "user",
         )
-        filter_fields = ("status", "server")
+        filterset_fields = ["status", "server"]
 
 
 class LivestreamModelViewSet(viewsets.ModelViewSet):
     queryset = Livestream.objects.all()
     serializer_class = LivestreamModelSerializer
-    filter_fields = ("status", "server")
+    filterset_fields = ["status", "server"]
