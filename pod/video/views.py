@@ -2330,7 +2330,7 @@ def video_oembed(request):
             "slug_private": "%s/" % slug_private if slug_private else "",
         }
         data["thumbnail_url"] = "%s:%s" % (protocole, video.get_thumbnail_url())
-        if hasattr(video.thumbnail, 'file'):
+        if hasattr(video.thumbnail, "file"):
             data["thumbnail_width"] = video.thumbnail.file.width
             data["thumbnail_height"] = video.thumbnail.file.height
         else:
