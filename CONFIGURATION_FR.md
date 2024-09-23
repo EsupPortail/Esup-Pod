@@ -155,6 +155,9 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
 * `EMAIL_SUBJECT_PREFIX`
   > valeur par défaut : ``
   >> Préfixe par défaut pour l’objet des courriels.<br>
+* `NOTIFY_SENDER`
+  > valeur par défaut : `True`
+  >> En mode non authentifié, lors de l'utilisation du formulaire de contact, envoie une copie du message à l'adresse saisie dans le formulaire.<br>
 * `SERVER_EMAIL`
   > valeur par défaut : `noreply`
   >> Expediteur par défaut pour les envois automatique (erreur de code etc.)<br>
