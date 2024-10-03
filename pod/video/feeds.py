@@ -189,11 +189,10 @@ class RssSiteVideosFeed(Feed):
 
     def item_title(self, item) -> str:
         sub = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.title)
-        return "%s | %s" % (item.owner.get_full_name(), sub)
+        return sub
 
     def item_link(self, item) -> str:
         url = "".join([self.author_link, item.get_absolute_url()])
-        url += "?is_iframe=true"
         return url
 
     def item_author_name(self, item):
@@ -212,20 +211,9 @@ class RssSiteVideosFeed(Feed):
         )
 
     def item_description(self, item) -> str:
-        thumbnail_url = "".join([self.prefix, item.get_thumbnail_url().replace("//", "")])
-        title = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.title)
-        img = format_html(
-            '<img style="max-width:100px" '
-            'src="%s" alt="%s" loading="lazy"/>'
-            % (
-                thumbnail_url,
-                title.replace("{", "").replace("}", "").replace('"', "'"),
-            )
-        )
-        description = "%s<br/>" % img
         sub = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.description)
         # use re sub to remove Control characters are not supported in XML 1.0
-        description += sub  # item.description
+        description = sub  # item.description
         description += "<br/> %s: %s" % (_("Duration"), item.duration_in_time)
         return description
 
