@@ -7,7 +7,7 @@
     data-bs-ride="{% if auto_slide %}carousel{% else %}false{% endif %}">
     <div class="carousel-inner" role="listbox">
       {% for element in elements %} {% if forloop.first %}
-      <div class="carousel-item active">
+      <div class="carousel-item{% if forloop.first %} active{% endif %}">
         {% else %}
         <div class="carousel-item">
           {% endif %}
@@ -55,7 +55,7 @@
           </div>
         </div>
         {% endfor %}
-      <!--</div>-->
+
       {% if elements.count > multi_carousel_nb_card %}
       <button
         class="carousel-control-prev"
