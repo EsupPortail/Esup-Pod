@@ -1270,7 +1270,7 @@ class LiveGateway(models.Model):
         _("URL of the SIPMediaGW server"),
         max_length=200,
         help_text=_("Example format: https://sipmediagw.univ.fr"),
-        default="https://sipmediagw.univ.fr"
+        default="https://sipmediagw.univ.fr",
     )
 
     # Bearer token for the SIPMediaGW server (e.g. `1234`)
@@ -1278,7 +1278,7 @@ class LiveGateway(models.Model):
         _("Bearer token for the SIPMediaGW server."),
         max_length=25,
         help_text=_("Example format: 1234"),
-        default="1234"
+        default="1234",
     )
 
     # LiveGateway's site
@@ -1300,7 +1300,8 @@ class LiveGateway(models.Model):
         verbose_name_plural = _("Live gateways")
         constraints = [
             models.UniqueConstraint(
-                fields=["sipmediagw_server_url"], name="livegateway_unique_sipmediagw_server_url"
+                fields=["sipmediagw_server_url"],
+                name="livegateway_unique_sipmediagw_server_url",
             ),
         ]
 
