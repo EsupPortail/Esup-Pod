@@ -81,8 +81,8 @@ FFMPEG_DRESSING_WATERMARK = (
     + " [video2][logo]%(position)s%(name_out)s "
 )
 FFMPEG_DRESSING_SCALE = (
-    "[%(number)s]scale=-1:%(height)s:force_original_aspect_ratio= "
-    + "decrease,pad=ceil(ih*16/9):ih:(ow-iw)/2:(oh-ih)/2[%(name)s]"
+    "[%(number)s]scale=w='if(gt(a,16/9),16/9*%(height)s,-2)':h='if(gt(a,16/9),-2,%(height)s)',"
+    + "pad=ceil(16/9*%(height)s):%(height)s:(ow-iw)/2:(oh-ih)/2[%(name)s]"
 )
 FFMPEG_DRESSING_CONCAT = "%(params)sconcat=n=%(number)s:v=1:a=1:unsafe=1[v][a]"
 

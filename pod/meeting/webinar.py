@@ -6,7 +6,6 @@ import requests
 import threading
 import time
 
-from django.conf import settings
 from django.contrib import messages
 from django.core.handlers.wsgi import WSGIRequest
 from django.utils.html import mark_safe
@@ -14,13 +13,6 @@ from django.utils.translation import ugettext_lazy as _
 from pod.main.utils import display_message_with_icon
 from pod.meeting.models import Meeting, Livestream
 from pod.meeting.utils import slash_join
-
-# URL of the SIPMediaGW server that manages webinars
-MEETING_WEBINAR_SIPMEDIAGW_URL = getattr(settings, "MEETING_WEBINAR_SIPMEDIAGW_URL", "")
-# Bearer token for the SIPMediaGW server that manages webinars
-MEETING_WEBINAR_SIPMEDIAGW_TOKEN = getattr(
-    settings, "MEETING_WEBINAR_SIPMEDIAGW_TOKEN", ""
-)
 
 log = logging.getLogger("webinar")
 
@@ -95,6 +87,7 @@ def start_webinar_livestream(pod_host: str, meet_id: int):
                     "(localhost) for this functionality."
                 )
             )
+
         # Get the current meeting
         meeting = Meeting.objects.get(id=meet_id)
 
@@ -128,7 +121,7 @@ def stop_webinar_livestream(meet_id: int, force: bool):
 
         if livestream_in_progress:
             # Stop RTMP Gateway for SIPMediaGW
-            stop_rtmp_gateway(meet_id)
+            stop_rtmp_gateway(meet_id, livestream_in_progress.id)
 
             # Change livestream status
             livestream_in_progress.status = 2
@@ -198,7 +191,8 @@ def start_rtmp_gateway(pod_host: str, meet_id: int, livestream_id: int):
     # Get the current meeting
     meeting = Meeting.objects.get(id=meet_id)
     livestream = Livestream.objects.get(id=livestream_id)
-    # Base URL; example format: pod.univ.fr/meeting/##id##/##hashkey##
+    # Base URL; example format: pod.univ.fr/meeting/##id##/##hash/key##
+    # with a / before the last 10 characters
     meeting_base_url = slash_join(
         pod_host, "meeting", meeting.meeting_id, meeting.get_hashkey()
     )
@@ -209,11 +203,11 @@ def start_rtmp_gateway(pod_host: str, meet_id: int, livestream_id: int):
     # RTMP stream URL
     rtmp_stream_url = livestream.live_gateway.rtmp_stream_url
     # Start URL on SIPMediaGW server
-    sipmediagw_url = slash_join(MEETING_WEBINAR_SIPMEDIAGW_URL, "start")
+    sipmediagw_url = slash_join(livestream.live_gateway.sipmediagw_server_url, "start")
 
     # SIPMediaGW start request
     headers = {
-        "Authorization": "Bearer %s" % MEETING_WEBINAR_SIPMEDIAGW_TOKEN,
+        "Authorization": "Bearer %s" % livestream.live_gateway.sipmediagw_server_token,
     }
     params = {
         "room": room,
@@ -229,23 +223,24 @@ def start_rtmp_gateway(pod_host: str, meet_id: int, livestream_id: int):
         % (meeting.id, meeting.name, response.text)
     )
 
-    if json_response["res"] != "ok":
-        message = json_response["type"]
+    if json_response["status"] != "success":
+        message = json_response["details"]
         raise ValueError(mark_safe(message))
 
 
-def stop_rtmp_gateway(meet_id: int):
+def stop_rtmp_gateway(meet_id: int, livestream_id: int):
     """Run the stop command for SIPMediaGW RTMP gateway."""
     # Get the current meeting
     meeting = Meeting.objects.get(id=meet_id)
+    livestream = Livestream.objects.get(id=livestream_id)
     # Room used (last 10 characters)
     room = meeting.get_hashkey()[-10:]
     # Stop URL on SIPMediaGW server
-    sipmediagw_url = slash_join(MEETING_WEBINAR_SIPMEDIAGW_URL, "stop")
+    sipmediagw_url = slash_join(livestream.live_gateway.sipmediagw_server_url, "stop")
 
     # SIPMediaGW stop request
     headers = {
-        "Authorization": "Bearer %s" % MEETING_WEBINAR_SIPMEDIAGW_TOKEN,
+        "Authorization": "Bearer %s" % livestream.live_gateway.sipmediagw_server_token,
     }
     params = {
         "room": room,
@@ -259,8 +254,8 @@ def stop_rtmp_gateway(meet_id: int):
         % (meeting.id, meeting.name, response.text)
     )
 
-    if json_response["res"].find("Warning") != -1:
-        message = json_response["res"]
+    if json_response["status"] != "success":
+        message = json_response["details"]
         raise ValueError(mark_safe(message))
 
 
@@ -270,26 +265,34 @@ def toggle_rtmp_gateway(meet_id: int):
     meeting = Meeting.objects.get(id=meet_id)
     # Room used (last 10 characters)
     room = meeting.get_hashkey()[-10:]
-    # Toogle URL on SIPMediaGW server
-    sipmediagw_url = slash_join(MEETING_WEBINAR_SIPMEDIAGW_URL, "chat")
+    # Search for the livestream used for this webinar
+    livestream = Livestream.objects.filter(meeting=meeting, status=1).first()
+    if livestream:
+        # Toogle URL on SIPMediaGW server
+        sipmediagw_url = slash_join(livestream.live_gateway.sipmediagw_server_url, "chat")
 
-    # SIPMediaGW toogle request
-    headers = {
-        "Authorization": "Bearer %s" % MEETING_WEBINAR_SIPMEDIAGW_TOKEN,
-    }
-    params = {"room": room, "toggle": True}
-    response = requests.get(sipmediagw_url, params=params, headers=headers, verify=False)
-    # Specific error message when not started
-    message = response.text
-    # Output in JSON (ex: {"res": "ok"})
-    json_response = json.loads(response.text)
-    if json_response["res"] != "ok":
-        message = "Toogle was sent before SIPMediaGW start (%s)" % response.text
+        # SIPMediaGW toogle request
+        headers = {
+            "Authorization": "Bearer %s"
+            % livestream.live_gateway.sipmediagw_server_token,
+        }
+        params = {"room": room, "toggle": True}
+        response = requests.get(
+            sipmediagw_url, params=params, headers=headers, verify=False
+        )
+        # Specific error message when not started
+        message = response.text
+        # Output in JSON (ex: {"res": "ok"})
+        json_response = json.loads(response.text)
+        if json_response["res"] != "ok":
+            message = "Toogle was sent before SIPMediaGW start (%s)" % response.text
 
-    log.info(
-        "toggle_rtmp_gateway for meeting %s “%s”: %s"
-        % (meeting.id, meeting.name, message)
-    )
+        log.info(
+            "toggle_rtmp_gateway for meeting %s “%s”: %s"
+            % (meeting.id, meeting.name, message)
+        )
+    else:
+        log.error("No livestream object found for webinar id %s" % meet_id)
 
 
 def chat_rtmp_gateway(meet_id: int, msg: str):
@@ -298,29 +301,35 @@ def chat_rtmp_gateway(meet_id: int, msg: str):
     meeting = Meeting.objects.get(id=meet_id)
     # Room used (last 10 characters)
     room = meeting.get_hashkey()[-10:]
-    # Toogle URL on SIPMediaGW server
-    sipmediagw_url = slash_join(MEETING_WEBINAR_SIPMEDIAGW_URL, "chat")
+    # Search for the livestream used for this webinar
+    livestream = Livestream.objects.filter(meeting=meeting, status=1).first()
+    if livestream:
+        # Toogle URL on SIPMediaGW server
+        sipmediagw_url = slash_join(livestream.live_gateway.sipmediagw_server_url, "chat")
 
-    # SIPMediaGW toogle request
-    headers = {
-        "Content-Type": "application/json",
-    }
-    # Manage quotes in msg
-    msg = msg.replace("'", "’")
-    msg = msg.replace('"', "’")
-    json_data = {"room": room, "msg": msg}
-    response = requests.post(
-        sipmediagw_url, headers=headers, json=json_data, verify=False
-    )
+        # SIPMediaGW toogle request
+        headers = {
+            "Content-Type": "application/json",
+        }
+        # Manage quotes in msg
+        msg = msg.replace("'", "’")
+        msg = msg.replace('"', "’")
+        json_data = {"room": room, "msg": msg}
+        response = requests.post(
+            sipmediagw_url, headers=headers, json=json_data, verify=False
+        )
 
-    message = response.text
-    # Output in JSON (ex: {"res": "ok"})
-    json_response = json.loads(response.text)
+        message = response.text
+        # Output in JSON (ex: {"res": "ok"})
+        json_response = json.loads(response.text)
 
-    log.info(
-        "chat_rtmp_gateway for meeting %s “%s”: %s" % (meeting.id, meeting.name, message)
-    )
+        log.info(
+            "chat_rtmp_gateway for meeting %s “%s”: %s"
+            % (meeting.id, meeting.name, message)
+        )
 
-    if json_response["res"].find("ok") == -1:
-        message = json_response["res"]
-        raise ValueError(mark_safe(message))
+        if json_response["res"].find("ok") == -1:
+            message = json_response["res"]
+            raise ValueError(mark_safe(message))
+    else:
+        log.error("No livestream object found for webinar id %s" % meet_id)
