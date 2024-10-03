@@ -9,7 +9,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
-from django.utils.html import format_html
 
 from .context_processors import get_available_videos
 
