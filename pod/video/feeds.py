@@ -210,9 +210,8 @@ class RssSiteVideosFeed(Feed):
         )
 
     def item_description(self, item) -> str:
-        sub = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.description)
         # use re sub to remove Control characters are not supported in XML 1.0
-        description = sub  # item.description
+        description = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", item.description) # item.description
         description += "<br/> %s: %s" % (_("Duration"), item.duration_in_time)
         return description
 
