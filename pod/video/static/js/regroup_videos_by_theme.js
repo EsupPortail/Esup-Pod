@@ -159,7 +159,7 @@ function run(has_more_themes, Helper) {
     infinite_item.appendChild(card);
     return infinite_item;
   };
-  /* */
+  /* End of old source code. */
 
   /**
    * Create an HTMLLiElement wich content a link element
@@ -309,11 +309,13 @@ function run(has_more_themes, Helper) {
       if (html.firstChild !== null) {
         videos_container.innerHTML += html.firstChild.innerHTML;
       }
-      // Reactivate tooltip (after an innerHTML, tooltip doesn't work in sucha a case !)
-      $(function() {
-        $('[data-bs-toggle="tooltip"]').tooltip();
-      });
-
+      // Reactivate tooltip (after an innerHTML, tooltip doesn't work in such a case !)
+      const tooltipTriggerList = document.querySelectorAll(
+        '[data-bs-toggle="tooltip"], [data-pod-tooltip="true"]',
+      );
+      [...tooltipTriggerList].map(
+        (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
+      );
     });
   };
   const video_loader_btn = document.querySelector(
