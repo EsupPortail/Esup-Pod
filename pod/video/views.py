@@ -2365,6 +2365,13 @@ def video_oembed(request):
             "video_url": video_url,
             "slug_private": "%s/" % slug_private if slug_private else "",
         }
+        data["thumbnail_url"] = "%s:%s" % (protocole, video.get_thumbnail_url())
+        if hasattr(video.thumbnail, "file"):
+            data["thumbnail_width"] = video.thumbnail.file.width
+            data["thumbnail_height"] = video.thumbnail.file.height
+        else:
+            data["thumbnail_width"] = 280
+            data["thumbnail_height"] = 140
     else:
         return HttpResponseNotFound("<h1>Url not match</h1>")
     if format == "xml":
@@ -2382,6 +2389,9 @@ def video_oembed(request):
                 <width>%(width)s</width>
                 <version>1.0</version>
                 <author_name>%(author_name)s</author_name>
+                <thumbnail_url>%(thumbnail_url)s</thumbnail_url>
+                <thumbnail_width>%(thumbnail_width)s</thumbnail_width>
+                <thumbnail_height>%(thumbnail_height)s</thumbnail_height>
             </oembed>
         """ % {
             "html": data["html"].replace("<", "&lt;").replace(">", "&gt;"),
@@ -2392,6 +2402,9 @@ def video_oembed(request):
             "provider_url": data["provider_url"],
             "width": data["width"],
             "author_name": data["author_name"],
+            "thumbnail_url": data["thumbnail_url"],
+            "thumbnail_width": data["thumbnail_width"],
+            "thumbnail_height": data["thumbnail_height"],
         }
         return HttpResponse(xml, content_type="application/xhtml+xml")
         # return HttpResponseNotFound('<h1>XML not implemented</h1>')

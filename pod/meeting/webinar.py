@@ -280,7 +280,10 @@ def toggle_rtmp_gateway(meet_id: int):
             "Authorization": "Bearer %s" % livestream.live_gateway.sipmediagw_server_token,
         }
         params = {"room": room, "toggle": True}
-        response = requests.get(sipmediagw_url, params=params, headers=headers, verify=False)
+        response = requests.get(
+            sipmediagw_url, params=params, headers=headers, verify=False
+        )
+
         # Specific error message when not started
         message = response.text
         # Output in JSON (ex: {"res": "ok"})
@@ -329,7 +332,8 @@ def chat_rtmp_gateway(meet_id: int, msg: str):
         json_response = json.loads(response.text)
 
         log.info(
-            "chat_rtmp_gateway for meeting %s “%s”: %s" % (meeting.id, meeting.name, message)
+            "chat_rtmp_gateway for meeting %s “%s”: %s"
+            % (meeting.id, meeting.name, message)
         )
 
         if json_response["res"].find("ok") == -1:
