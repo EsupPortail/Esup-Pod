@@ -1412,40 +1412,42 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Using BigBlueButton",
+                                    "Withdrawn from Pod version 3.8.2 (replaced by the meetings module)"
                                 ],
                                 "fr": [
                                     "Utilisation de BigBlueButton",
-                                    "[TODO] À retirer dans les futures versions de Pod"
+                                    "Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions)"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.8.2",
                             "pod_version_init": "3.1"
                         },
                         "USE_BBB_LIVE": {
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Using the BigBlueButton webinar delivery system",
+                                    "Withdrawn from Pod version 3.8.2 (replaced by the meetings module)"
                                 ],
                                 "fr": [
                                     "Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton",
-                                    "[TODO] À retirer dans les futures versions de Pod"
+                                    "Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions)"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.8.2",
                             "pod_version_init": "3.1"
                         },
                         "USE_LIVE_TRANSCRIPTION": {
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    "",
-                                    "Enable auto-transcritption for live events"
+                                    "Enable auto-transcription for live events",
+                                    ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Activer l’auto-transcription pour les directs"
+                                    "Activer l’auto-transcription pour les directs",
+                                    ""
                                 ]
                             },
                             "pod_version_end": "",
@@ -1907,26 +1909,30 @@
                             "default_value": "",
                             "description": {
                                 "en": [
-                                    "URL of the SIPMediaGW server that manages webinars (e.g. `https://sipmediagw.univ.fr`)"
+                                    "URL of the SIPMediaGW server that manages webinars (e.g. `https://sipmediagw.univ.fr`)",
+                                    "Retired as of Pod version 3.8.2 (replaced by the meetings module, see live gateway)"
                                 ],
                                 "fr": [
-                                    "URL du serveur SIPMediaGW qui gère les webinaires (Ex: `https://sipmediagw.univ.fr`)"
+                                    "URL du serveur SIPMediaGW qui gère les webinaires (Ex: `https://sipmediagw.univ.fr`)",
+                                    "Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions, cf. passerelle de live)"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.8.2",
                             "pod_version_init": "3.6.0"
                         },
                         "MEETING_WEBINAR_SIPMEDIAGW_TOKEN": {
                             "default_value": "",
                             "description": {
                                 "en": [
-                                    "Bearer token for the SIPMediaGW server that manages webinars"
+                                    "Bearer token for the SIPMediaGW server that manages webinars",
+                                    "Retired as of Pod version 3.8.2 (see live gateway)"
                                 ],
                                 "fr": [
-                                    "Jeton bearer du serveur SIPMediaGW qui gère les webinaires"
+                                    "Jeton bearer du serveur SIPMediaGW qui gère les webinaires",
+                                    "Retiré à partir de la version 3.8.2 de Pod (cf. passerelle de live)"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.8.2",
                             "pod_version_init": "3.6.0"
                         },
                         "MEETING_WEBINAR_FIELDS": {
@@ -3914,6 +3920,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "NOTIFY_SENDER": {
+                            "default_value": "True",
+                            "description": {
+                                "en": [
+                                    "In unauthenticated mode, when using the contact form, sends a copy of the message to the address entered in the form."
+                                ],
+                                "fr": [
+                                    "En mode non authentifié, lors de l'utilisation du formulaire de contact, envoie une copie du message à l'adresse saisie dans le formulaire."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.2"
                         },
                         "SERVER_EMAIL": {
                             "default_value": "noreply",

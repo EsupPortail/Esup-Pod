@@ -70,8 +70,10 @@ def display_message_with_icon(request, type, message) -> None:
         messages.DEBUG: "code",
     }
     icon = mapp.get(type, "info-circle")
-    msg = "<div class='icon'><i class='bi bi-" + icon + "'></i></div>"
-    msg += message
+    msg = "<div class='d-flex'>"
+    msg += "  <i aria-hidden='true' class='bi bi-" + icon + " me-2'></i>"
+    msg += "  <span class='alert-message'>" + message + "</span>"
+    msg += "</div>"
     messages.add_message(request, type, mark_safe(msg))
 
 

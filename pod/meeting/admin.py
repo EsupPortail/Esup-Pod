@@ -284,15 +284,8 @@ class LiveGatewayAdmin(admin.ModelAdmin):
         admin (ModelAdmin): admin model
     """
 
-    list_display = (
-        "id",
-        "rtmp_stream_url",
-        "broadcaster",
-    )
-    list_display_links = ("id", "rtmp_stream_url")
-    ordering = ("-id", "rtmp_stream_url")
+    list_display = ("id", "rtmp_stream_url", "broadcaster", "sipmediagw_server_url")
+    list_display_links = ("id",)
+    ordering = ("-id",)
     readonly_fields = []
-    search_fields = [
-        "id",
-        "broadcaster__broadcaster_name",
-    ]
+    search_fields = ["id", "broadcaster__broadcaster_name", "sipmediagw_server_url"]

@@ -64,50 +64,17 @@
 }
 
 /* Message error */
-
-div.alert .icon {
-  text-align: center;
-  width: 58px;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border: 1px solid #bdbdbd;
-  padding-top: 15px;
-  border-radius: 6px 0 0 6px;
+i.bi.bi-exclamation-circle.me-2 {
+  color: #c82630;
 }
-
-div.alert .icon i {
-  font-size: 20px;
-  color: #fff;
-  left: 21px;
-  margin-top: -15px;
-  position: absolute;
-  top: 50%;
+i.bi.bi-exclamation-triangle.me-2 {
+  color: #f9af2c;
 }
-
-div.alert.alert-success .icon,
-div.alert.alert-success .icon::after {
-  border-color: none;
-  background: #00986a;
+i.bi.bi-check-circle.me-2 {
+  color: #00986a;
 }
-
-div.alert.alert-info .icon,
-div.alert.alert-info .icon::after {
-  border-color: none;
-  background: #00b3c8;
-}
-
-div.alert.alert-warning .icon,
-div.alert.alert-warning .icon::after {
-  border: none;
-  background: #f9af2c;
-}
-
-div.alert.alert-error .icon,
-div.alert.alert-error .icon::after {
-  border-color: none;
-  background: #c82630;
+i.bi.bi-info-circle.me-2 {
+  color: #00b3c8;
 }
 
 div.alert .proposition {

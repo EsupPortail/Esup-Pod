@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     "pod.live",
     "pod.recorder",
     "pod.lti",
-    "pod.bbb",
     "pod.meeting",
     "pod.cut",
     "pod.xapi",

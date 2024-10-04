@@ -733,7 +733,7 @@
           }).then((data) => {
               document.getElementById('live_meeting_chat_form').reset();
               console.info(data);
-              if (data.res) {
+              if (data.is_sent) {
                   // Message_sent
                   displayReturnMessage("info", data.message_return);
               } else {

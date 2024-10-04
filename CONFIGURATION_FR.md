@@ -155,6 +155,9 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
 * `EMAIL_SUBJECT_PREFIX`
   > valeur par défaut : ``
   >> Préfixe par défaut pour l’objet des courriels.<br>
+* `NOTIFY_SENDER`
+  > valeur par défaut : `True`
+  >> En mode non authentifié, lors de l'utilisation du formulaire de contact, envoie une copie du message à l'adresse saisie dans le formulaire.<br>
 * `SERVER_EMAIL`
   > valeur par défaut : `noreply`
   >> Expediteur par défaut pour les envois automatique (erreur de code etc.)<br>
@@ -1144,15 +1147,15 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 * `USE_BBB`
   > valeur par défaut : `False`
   >> Utilisation de BigBlueButton<br>
-  >> [TODO] À retirer dans les futures versions de Pod<br>
+  >> Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions)<br>
 * `USE_BBB_LIVE`
   > valeur par défaut : `False`
   >> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton<br>
-  >> [TODO] À retirer dans les futures versions de Pod<br>
+  >> Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions)<br>
 * `USE_LIVE_TRANSCRIPTION`
   > valeur par défaut : `False`
-  >>
   >> Activer l’auto-transcription pour les directs<br>
+  >>
 * `VIEW_EXPIRATION_DELAY`
   > valeur par défaut : `60`
   >> Délai (en seconde) selon lequel une vue est considérée comme expirée<br>
@@ -1331,9 +1334,11 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
 * `MEETING_WEBINAR_SIPMEDIAGW_URL`
   > valeur par défaut : ``
   >> URL du serveur SIPMediaGW qui gère les webinaires (Ex: `https://sipmediagw.univ.fr`)<br>
+  >> Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions, cf. passerelle de live)<br>
 * `MEETING_WEBINAR_SIPMEDIAGW_TOKEN`
   > valeur par défaut : ``
   >> Jeton bearer du serveur SIPMediaGW qui gère les webinaires<br>
+  >> Retiré à partir de la version 3.8.2 de Pod (cf. passerelle de live)<br>
 * `MEETING_WEBINAR_FIELDS`
   > valeur par défaut : `("is_webinar", "enable_chat")`
   >> Permet de définir les champs complémentaires du formulaire de création d’un webinaire<br>
