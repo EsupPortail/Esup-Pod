@@ -42,12 +42,12 @@
 {% endif %}
 {% endcomment %}
 <a href=""
-   class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1"
-   data-bs-toggle="dropdown"
-   aria-expanded="false"
-   title="{% trans 'More options' %}"
+  class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1"
+  data-bs-toggle="dropdown"
+  aria-expanded="false"
+  title="{% trans 'More options' %}"
 >
-  <i class="bi bi-list" aria-hidden="true"></i>
+  <i class="bi bi-list" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'More options' %}"></i>
 </a>
 {% include 'videos/link_video_dropdown_menu.html' %}
 {% if "edit" in request.resolver_match.url_name %}
