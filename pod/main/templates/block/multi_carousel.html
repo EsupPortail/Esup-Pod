@@ -6,11 +6,8 @@
     class="carousel carousel-multi slide"
     data-bs-ride="{% if auto_slide %}carousel{% else %}false{% endif %}">
     <div class="carousel-inner" role="listbox">
-      {% for element in elements %} {% if forloop.first %}
+      {% for element in elements %}
       <div class="carousel-item{% if forloop.first %} active{% endif %}">
-        {% else %}
-        <div class="carousel-item">
-          {% endif %}
           <div class="col-md-{% widthratio 12 multi_carousel_nb_card 1 %}">
             <div class="card border-0 bg-transparent">
               <a
