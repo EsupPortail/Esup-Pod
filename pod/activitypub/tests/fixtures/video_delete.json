@@ -1,0 +1,26 @@
+{
+    "@context": [
+        "https://www.w3.org/ns/activitystreams",
+        "https://w3id.org/security/v1",
+        {
+            "RsaSignature2017": "https://w3id.org/security#RsaSignature2017"
+        }
+    ],
+    "to": [
+        "https://www.w3.org/ns/activitystreams#Public",
+        "http://peertube.test/video-channels/root_channel/followers",
+        "http://peertube.test/accounts/peertube/followers",
+        "http://peertube.test/accounts/root/followers"
+    ],
+    "cc": [],
+    "type": "Delete",
+    "id": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d/delete",
+    "actor": "http://peertube.test/accounts/root",
+    "object": "http://peertube.test/videos/watch/717c9d87-c912-4943-a392-49fadf2f235d",
+    "signature": {
+        "type": "RsaSignature2017",
+        "creator": "http://peertube.test/accounts/root",
+        "created": "2024-05-15T13:03:58.608Z",
+        "signatureValue": "sFcc/OwZVTjo1+iKZ9GSEcS/5KPfY5z1ul7q4nCi59B54fqM1P+WO6fupqD1SB1xYsLtPKDRpnoi3n0+vlPd6AsYN5dL2gHDZ79S0OygzyLFw18GlOSGdr6IFXNdQ7Gr0gTCDu7TXL42HzEes4OXz1LaV0Q+CagvsB96bkV5ZBM="
+    }
+}
