@@ -308,7 +308,7 @@ def save_meeting_form(request: WSGIRequest, form: MeetingForm) -> Meeting:
             # Manage webinar for event and livestream
             manage_webinar(meeting, created, live_gateway)
             display_message_with_icon(
-                request, messages.INFO, _("The changes have been saved.")
+                request, messages.SUCCESS, _("The changes have been saved.")
             )
         else:
             # Disable webinar mode if no live gateway available
@@ -325,7 +325,7 @@ def save_meeting_form(request: WSGIRequest, form: MeetingForm) -> Meeting:
             )
     else:
         display_message_with_icon(
-            request, messages.INFO, _("The changes have been saved.")
+            request, messages.SUCCESS, _("The changes have been saved.")
         )
 
     return meeting
@@ -382,7 +382,9 @@ def delete(request: WSGIRequest, meeting_id: str) -> HttpResponse:
 
 @csrf_protect
 @ensure_csrf_cookie
-def join(request: WSGIRequest, meeting_id: str, direct_access=None) -> HttpResponse:
+def join(
+    request: WSGIRequest, meeting_id: str, direct_access=None, room=None
+) -> HttpResponse:
     """Join a meeting."""
     try:
         id = int(meeting_id[: meeting_id.find("-")])
@@ -394,6 +396,11 @@ def join(request: WSGIRequest, meeting_id: str, direct_access=None) -> HttpRespo
         request.user == meeting.owner or request.user in meeting.additional_owners.all()
     ):
         return join_as_moderator(request, meeting)
+
+    # Manage room (last 10 characters of meeting_id) for SIPMediaGW
+    # In such a case, we need to compute direct access and room
+    if room:
+        direct_access += room
 
     if direct_access and direct_access != meeting.get_hashkey():
         raise SuspiciousOperation("Invalid access")
@@ -1061,7 +1068,7 @@ def get_html_content(request: WSGIRequest, meeting: Meeting) -> str:
                 <p>%(owner)s invites you to the meeting <strong>%(meeting_title)s</strong>.</p>
                 <p>here the link to join the meeting:
                 <a href="%(join_link)s">%(join_link)s</a></p>
-                <p>You need this password to enter: <strong>%(password)s</strong> </p>
+                <p>You need this password to enter: <strong>%(password)s</strong></p>
                 <p>Regards</p>
             """
                 )
@@ -1086,7 +1093,7 @@ def get_html_content(request: WSGIRequest, meeting: Meeting) -> str:
                 <p>End date: %(end_date)s </p>
                 <p>here the link to join the meeting:
                 <a href="%(join_link)s">%(join_link)s</a></p>
-                <p>You need this password to enter: <strong>%(password)s</strong> </p>
+                <p>You need this password to enter: <strong>%(password)s</strong></p>
                 <p>Regards</p>
             """
                 )

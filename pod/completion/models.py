@@ -79,7 +79,7 @@ class Contributor(models.Model):
 
     video = models.ForeignKey(Video, verbose_name=_("video"), on_delete=models.CASCADE)
     name = models.CharField(
-        verbose_name=_("lastname / firstname"), max_length=200, default=""
+        verbose_name=_("last name / first name"), max_length=200, default=""
     )
     email_address = models.EmailField(
         verbose_name=_("mail"), null=True, blank=True, default=""
@@ -111,9 +111,9 @@ class Contributor(models.Model):
         if not self.name or self.name == "":
             msg.append(_("Please enter a name."))
         elif len(self.name) < 2 or len(self.name) > 200:
-            msg.append(_("Please enter a name from 2 to 200 caracters."))
+            msg.append(_("Please enter a name from 2 to 200 characters."))
         if self.weblink and len(self.weblink) > 200:
-            msg.append(_("You cannot enter a weblink with more than 200 caracters."))
+            msg.append(_("You cannot enter a weblink with more than 200 characters."))
         if not self.role:
             msg.append(_("Please enter a role."))
         return msg
@@ -297,7 +297,7 @@ class Track(models.Model):
     def verify_not_same_track(self) -> list:
         """Check that there's not already a track with same kind & lang."""
         msg = list()
-        list_track = Track.objects.filter(video=self.video)
+        list_track = Track.objects.filter(video=self.video).order_by("lang")
         if self.id:
             list_track = list_track.exclude(id=self.id)
 

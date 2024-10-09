@@ -2,7 +2,8 @@
  * @file Esup-Pod Main JavaScripts
  */
 
-/* exported getParents slideToggle fadeOut linkTo_UnCryptMailto showLoader videocheck send_form_data_vanilla */
+/* exported getParents slideToggle fadeOut linkTo_UnCryptMailto showLoader videocheck */
+/* exported  send_form_data_vanilla decodeString */
 
 // Read-only globals defined in video-script.html
 /* global player */
@@ -300,8 +301,18 @@ function writeInFrame() {
   if (img.getAttribute("src") === "") img.setAttribute("data-src", imgsrc);
   else img.src = imgsrc;
 }
+
+if (localStorage.getItem("autoshowsubtitles")) {
+  document.getElementById("checkbox-subtitle").checked = true;
+}
+
 document.addEventListener("change", (e) => {
   if (e.target.id === "autoplay" || e.target.id === "loop") writeInFrame();
+  else if (e.target.id === "checkbox-subtitle") {
+    e.target.checked
+      ? localStorage.setItem("autoshowsubtitles", "on")
+      : localStorage.removeItem("autoshowsubtitles");
+  }
 });
 
 document.addEventListener("shown.bs.collapse", (e) => {
@@ -1018,11 +1029,11 @@ var show_theme_form = function (data) {
 };
 
 /**
- * unused function? TODO : delete in 3.8.0
+ *
  * @param  {[type]} data [description]
  * @return {[type]}      [description]
  */
-/*var show_picture_form = function (data) {
+var show_picture_form = function (data) {
   let htmlData = new DOMParser().parseFromString(data, "text/html");
   document.getElementById("userpicture_form").innerHTML =
     htmlData.querySelector("#userpicture_form").innerHTML;
@@ -1067,7 +1078,8 @@ var show_theme_form = function (data) {
     let userPictureModal = bootstrap.Modal.getOrCreateInstance(userpicture);
     userPictureModal.hide();
   }
-}; */
+};
+
 var append_picture_form = async function (data) {
   let htmlData = new DOMParser().parseFromString(data, "text/html").body
     .firstChild;
@@ -1143,93 +1155,6 @@ if (btnpartageprive) {
   });
 }
 
-/** Restrict access **/
-/** restrict access to group */
-if (typeof id_is_restricted === "undefined") {
-  var id_is_restricted = document.getElementById("id_is_restricted");
-} else {
-  id_is_restricted = document.getElementById("id_is_restricted");
-}
-if (id_is_restricted) {
-  id_is_restricted.addEventListener("click", function () {
-    restrict_access_to_groups();
-  });
-}
-/**
- * [restrict_access_to_groups description]
- * @return {[type]} [description]
- */
-var restrict_access_to_groups = function () {
-  if (document.getElementById("id_is_restricted").checked) {
-    let id_restricted_to_groups = document.getElementById(
-      "id_restrict_access_to_groups",
-    );
-    id_restricted_to_groups.parentElement.classList.remove("d-none");
-  } else {
-    document
-      .querySelectorAll("#id_restrict_access_to_groups select")
-      .forEach((select) => {
-        select.options.forEach((option) => {
-          if (option.selected) {
-            option.selected = false;
-          }
-        });
-      });
-    let id_restricted_to_groups = document.getElementById(
-      "id_restrict_access_to_groups",
-    );
-    id_restricted_to_groups.parentElement.classList.add("d-none");
-  }
-};
-
-if (typeof id_is_draft === "undefined") {
-  var id_is_draft = document.getElementById("id_is_draft");
-} else {
-  id_is_draft = document.getElementById("id_is_draft");
-}
-if (id_is_draft) {
-  id_is_draft.addEventListener("click", function () {
-    restricted_access();
-  });
-}
-
-/**
- * [restricted_access description]
- * @return {[type]} [description]
- */
-var restricted_access = function () {
-  document
-    .querySelectorAll(".restricted_access")
-    .forEach((restricted_access) => {
-      if (restricted_access) {
-        let is_draft = document.getElementById("id_is_draft");
-        if (is_draft != null && is_draft.checked) {
-          restricted_access.classList.add("hide");
-          restricted_access.classList.remove("show");
-          document.getElementById("id_password").value;
-
-          document
-            .querySelectorAll("#id_restrict_access_to_groups select")
-            .forEach((select) => {
-              select.options.forEach((option) => {
-                if (option.selected) {
-                  option.selected = false;
-                }
-              });
-            });
-
-          document.getElementById("id_is_restricted").checked = false;
-        } else {
-          restricted_access.classList.add("show");
-          restricted_access.classList.remove("hide");
-        }
-        restrict_access_to_groups();
-      }
-    });
-};
-restricted_access();
-//restrict_access_to_groups();
-
 /** end restrict access **/
 /*** VALID FORM ***/
 (function () {
@@ -1244,8 +1169,7 @@ restricted_access();
         form.addEventListener(
           "submit",
           function (event) {
-            if (form.checkValidity() === false) {
-              form.scrollIntoView();
+            if (form.reportValidity() === false) {
               showalert(
                 gettext("There are errors in the form, please correct them."),
                 "alert-danger",
@@ -1469,3 +1393,54 @@ document.addEventListener("DOMContentLoaded", function () {
     searchInput.addEventListener("blur", handleBlur);
   }
 });
+
+/**
+ * Removes double quotes from the start and end of the given text.
+ *
+ * @param {string} text - The input text to process.
+ * @returns {string} The text without leading and trailing double quotes.
+ */
+function remove_quotes(text) {
+  text = text.trim();
+  if (text.charAt(0) === '"') {
+    text = text.substring(1);
+  }
+  if (text.charAt(text.length - 1) === '"') {
+    text = text.substring(0, text.length - 1);
+  }
+  return text;
+}
+
+let mainCollapseButton = document.getElementById("collapse-button");
+mainCollapseButton.addEventListener("click", () => {
+  window.scrollTo(0, 0);
+});
+
+/**
+ * Remove accents and convert to lowercase.
+ *
+ * @param {string} str The string.
+ *
+ * @return {string} The new string.
+ */
+function removeAccentsAndLowerCase(str) {
+  str = str.toLowerCase();
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+/**
+ * Decode the string from the HTML entity.
+ *
+ * @param {string} str The string to decode.
+ *
+ * @return {string} The decoded string.
+ */
+function decodeString(str) {
+  str = str.replace(/&#x([0-9A-Fa-f]+);/g, (match, p1) =>
+    String.fromCharCode(parseInt(p1, 16)),
+  );
+  str = str.replace(/&#(\d+);/g, (match, p1) =>
+    String.fromCharCode(parseInt(p1, 10)),
+  );
+  return str;
+}

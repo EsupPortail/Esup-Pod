@@ -11,7 +11,7 @@ from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from django.http import HttpResponseNotAllowed, HttpResponseNotFound
+from django.http import HttpResponseNotFound
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
 from django.http import QueryDict, Http404
 from django.views.decorators.csrf import csrf_protect
@@ -84,6 +84,7 @@ import uuid
 from datetime import date
 from chunked_upload.models import ChunkedUpload
 from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
+from itertools import chain
 
 from django.db import IntegrityError
 from django.db.models import QuerySet
@@ -540,44 +541,19 @@ def dashboard(request):
          display_mode, etc...
     """
     data_context = {}
-    site = get_current_site(request)
-    # Videos list which user is the owner + which user is an additional owner
-    videos_list = request.user.video_set.all().filter(
-        sites=site
-    ) | request.user.owners_videos.all().filter(sites=site)
-    videos_list = videos_list.distinct()
+    videos_list = get_videos_for_owner(request)
 
     if USER_VIDEO_CATEGORY:
-        cats = Category.objects.prefetch_related("video").filter(owner=request.user)
-        """
-        " user's videos categories format =>
-        " [{
-        " 'title': cat_title,
-        " 'slug': cat_slug,
-        " 'videos': [v_slug, v_slug...] },]
-        """
-        if request.GET.get("category") is not None:
-            category_checked = request.GET.get("category")
-            videos_list = get_object_or_404(
-                Category, slug=category_checked, owner=request.user
-            ).video.all()
+        categories = Category.objects.prefetch_related("video").filter(owner=request.user)
+        if len(request.GET.getlist("categories")):
+            categories_checked = request.GET.getlist("categories")
+            categories_videos = categories.filter(
+                slug__in=categories_checked
+            ).values_list("video", flat=True)
+            videos_list = videos_list.filter(pk__in=categories_videos)
 
-        videos_without_cat = videos_list.exclude(category__in=cats)
-        cats = list(
-            map(
-                lambda c: {
-                    "id": c.id,
-                    "title": c.title,
-                    "slug": c.slug,
-                    "videos": list(c.video.values_list("slug", flat=True)),
-                },
-                cats,
-            )
-        )
-        cats.insert(0, len(videos_list))
-        cats = json.dumps(cats, ensure_ascii=False)
-        data_context["categories"] = cats
-        data_context["videos_without_cat"] = videos_without_cat
+        data_context["categories"] = categories
+        data_context["all_categories_videos"] = get_json_videos_categories(request)
 
     page = request.GET.get("page", 1)
     full_path = ""
@@ -828,7 +804,7 @@ def get_bulk_update_result(request, status, update_action, counter, delta, resul
     return result, status
 
 
-def get_recap_message_bulk_update(request, update_action, counter, delta):
+def get_recap_message_bulk_update(request, update_action, counter, delta) -> str:
     """
     Build and return overview message for bulk update.
 
@@ -933,7 +909,7 @@ def owner_is_searchable(user: User) -> bool:
 def videos(request):
     """Render the main list of videos."""
     videos_list = get_filtered_videos_list(request, get_available_videos())
-    sort_field = request.GET.get("sort") if request.GET.get("sort") else "title"
+    sort_field = request.GET.get("sort") if request.GET.get("sort") else "date_added"
     sort_direction = request.GET.get("sort_direction")
 
     videos_list = sort_videos_list(videos_list, sort_field, sort_direction)
@@ -1078,7 +1054,9 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         return redirect(video.get_default_version_link(slug_private) + query_string)
 
     template_video = "videos/video.html"
-    params = {"active_video_comment": ACTIVE_VIDEO_COMMENT}
+    params = {
+        "active_video_comment": ACTIVE_VIDEO_COMMENT,
+    }
     if request.GET.get("is_iframe"):
         params = {"page_title": video.title}
         template_video = "videos/video-iframe.html"
@@ -1329,7 +1307,7 @@ def video_edit(request, slug=None):
     )
 
 
-def get_list_theme_in_form(form):
+def get_list_theme_in_form(form) -> dict:
     """
     Get the themes for the form.
 
@@ -1379,7 +1357,7 @@ def video_delete(request, slug=None):
             if form.is_valid():
                 video.delete()
                 messages.add_message(
-                    request, messages.INFO, _("The video has been deleted.")
+                    request, messages.INFO, _("The media has been deleted.")
                 )
                 return redirect(reverse("video:dashboard"))
             else:
@@ -1388,7 +1366,7 @@ def video_delete(request, slug=None):
                     messages.ERROR,
                     _("One or more errors have been found in the form."),
                 )
-        page_title = _('Deleting the video "%(vtitle)s"') % {"vtitle": video.title}
+        page_title = _('Deleting the media "%(vtitle)s"') % {"vtitle": video.title}
         return render(
             request,
             "videos/video_delete.html",
@@ -1396,17 +1374,17 @@ def video_delete(request, slug=None):
         )
 
 
-def video_is_deletable(request, video):
+def video_is_deletable(request, video) -> bool:
     """Check if video is deletable, usage for delete form and multiple deletion."""
     if request.user != video.owner and not (
         request.user.is_superuser or request.user.has_perm("video.delete_video")
     ):
-        messages.add_message(request, messages.ERROR, _("You cannot delete this video."))
+        messages.add_message(request, messages.ERROR, _("You cannot delete this media."))
         raise PermissionDenied
 
     if not video.encoded or video.encoding_in_progress is True:
         messages.add_message(
-            request, messages.ERROR, _("You cannot delete a video that is being encoded.")
+            request, messages.ERROR, _("You cannot delete a media that is being encoded.")
         )
         return False
     return True
@@ -2351,6 +2329,13 @@ def video_oembed(request):
             "video_url": video_url,
             "slug_private": "%s/" % slug_private if slug_private else "",
         }
+        data["thumbnail_url"] = "%s:%s" % (protocole, video.get_thumbnail_url())
+        if hasattr(video.thumbnail, "file"):
+            data["thumbnail_width"] = video.thumbnail.file.width
+            data["thumbnail_height"] = video.thumbnail.file.height
+        else:
+            data["thumbnail_width"] = 280
+            data["thumbnail_height"] = 140
     else:
         return HttpResponseNotFound("<h1>Url not match</h1>")
     if format == "xml":
@@ -2368,6 +2353,9 @@ def video_oembed(request):
                 <width>%(width)s</width>
                 <version>1.0</version>
                 <author_name>%(author_name)s</author_name>
+                <thumbnail_url>%(thumbnail_url)s</thumbnail_url>
+                <thumbnail_width>%(thumbnail_width)s</thumbnail_width>
+                <thumbnail_height>%(thumbnail_height)s</thumbnail_height>
             </oembed>
         """ % {
             "html": data["html"].replace("<", "&lt;").replace(">", "&gt;"),
@@ -2378,6 +2366,9 @@ def video_oembed(request):
             "provider_url": data["provider_url"],
             "width": data["width"],
             "author_name": data["author_name"],
+            "thumbnail_url": data["thumbnail_url"],
+            "thumbnail_width": data["thumbnail_width"],
+            "thumbnail_height": data["thumbnail_height"],
         }
         return HttpResponse(xml, content_type="application/xhtml+xml")
         # return HttpResponseNotFound('<h1>XML not implemented</h1>')
@@ -2502,6 +2493,24 @@ def get_videos(p_slug, target, p_slug_t=None):
         return (available_videos, title)
 
     return (videos, title)
+
+
+def get_videos_for_owner(request: WSGIRequest):
+    """
+    Retrieve a list of videos associated with the current user.
+
+    Args:
+        request (HttpRequest): The HTTP request object containing the user.
+
+    Returns:
+        list: A video list of specific user.
+    """
+    site = get_current_site(request)
+    # Videos list which user is the owner + which user is an additional owner
+    videos_list = request.user.video_set.filter(
+        sites=site
+    ) | request.user.owners_videos.filter(sites=site)
+    return videos_list.distinct()
 
 
 def view_stats_if_authenticated(user):
@@ -2928,72 +2937,97 @@ def delete_comment(request, video_slug, comment_id):
 
 
 @login_required(redirect_field_name="referrer")
+def get_videos_for_category(request, videos_list: dict, category=None):
+    """
+    Get paginated videos for category modal.
+
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        videos_list (::class::`django.http.QueryDict`): The video list.
+        category (::class::`pod.video.models.Category`): Optional category object.
+
+    Returns:
+        Return paginated videos in paginator object.
+    """
+    cats = Category.objects.prefetch_related("video").filter(owner=request.user)
+    videos = videos_list.exclude(category__in=cats)
+
+    if category is not None:
+        videos = list(chain(category.video.all(), videos))
+
+    page = request.GET.get("page", 1)
+
+    paginator = Paginator(videos, 12)
+    paginated_videos_without_cat = get_paginated_videos(paginator, page)
+
+    return paginated_videos_without_cat
+
+
+@login_required(redirect_field_name="referrer")
 @ajax_required
-def get_categories(request, c_slug=None):
-    """Get categories."""
-    response = {"success": False}
-    c_user = request.user  # connected user
+def get_categories_list(request):
+    """
+    Get actual categories list for filter_aside elements.
 
-    # GET method
-    if c_slug:  # get category with slug
-        cat = get_object_or_404(Category, slug=c_slug)
-        response["success"] = True
-        response["id"] = cat.id
-        response["title"] = cat.title
-        response["owner"] = cat.owner.id
-        response["slug"] = cat.slug
-        response["videos"] = []
-        for v in cat.video.all():
-            if v.owner == cat.owner or cat.owner in v.additional_owners.all():
-                response["videos"].append(get_video_data(v))
-            else:
-                # delete if user is no longer owner
-                # or additional owner of the video
-                cat.video.remove(v)
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
 
-        return HttpResponse(
-            json.dumps(response, cls=DjangoJSONEncoder),
-            content_type="application/json",
-        )
+    Returns:
+        Template of categories list item in filter aside.
+    """
+    data_context = {}
+    categories = Category.objects.prefetch_related("video").filter(owner=request.user)
+    data_context["categories"] = categories
+    return render(request, "videos/filter_aside_categories_list.html", data_context)
 
-    else:  # get all categories of connected user
-        cats = Category.objects.prefetch_related("video").filter(owner=c_user)
-        cats = list(
-            map(
-                lambda c: {
-                    "title": c.title,
-                    "slug": c.slug,
-                    "videos": list(
-                        map(
-                            lambda v: get_video_data(v),
-                            c.video.all(),
-                        )
-                    ),
-                },
-                cats,
-            )
-        )
 
-        response["success"] = True
-        response["categories"] = cats
+@login_required(redirect_field_name="referrer")
+def get_json_videos_categories(request):
+    """
+    Get categories with associated videos in json object.
 
-        return HttpResponse(
-            json.dumps(response, cls=DjangoJSONEncoder),
-            content_type="application/json",
-        )
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+
+    Returns:
+        Json object with category slug as key and array of video(s) as value.
+    """
+    categories = Category.objects.prefetch_related("video").filter(owner=request.user)
+    all_categories_videos = {}
+    for cat in categories:
+        videos = list(cat.video.all().values_list("slug", flat=True))
+        all_categories_videos[cat.slug] = videos
+    return json.dumps(all_categories_videos)
 
 
 @login_required(redirect_field_name="referrer")
 @ajax_required
 def add_category(request):
-    """Add category."""
-    response = {"success": False}
-    c_user = request.user  # connected user
+    """
+    Add category managment. Get method return datas to fill the modal interface. Post method perform the insert.
 
-    if request.method == "POST":  # create new category
-        data = json.loads(request.body.decode("utf-8"))
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
 
-        videos = Video.objects.filter(slug__in=data.get("videos", []))
+    Returns:
+        ::class::`django.http.HttpResponse`: The HTTP response.
+    """
+    if request.method == "POST":
+
+        response = {"success": False}
+        c_user = request.user
+
+        if not request.POST.get("title") or json.loads(request.POST.get("title")) == "":
+            response["message"] = _("Title field is required")
+            return HttpResponseBadRequest(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json",
+            )
+
+        title = json.loads(request.POST.get("title"))
+        videos_slugs = json.loads(request.POST.get("videos"))
+
+        videos = Video.objects.filter(slug__in=videos_slugs)
 
         # constraint, video can be only in one of user's categories
         user_cats = Category.objects.filter(owner=c_user)
@@ -3007,58 +3041,72 @@ def add_category(request):
                 content_type="application/json",
             )
 
-        if "title" in data and data["title"].strip() != "":
-            try:
-                cat = Category.objects.create(title=data["title"], owner=c_user)
-                cat.video.add(*videos)
-                cat.save()
-            except IntegrityError:  # cannot duplicate category
-                return HttpResponse(status=409)
+        try:
+            cat = Category.objects.create(title=title, owner=c_user)
+            cat.video.add(*videos)
+            cat.save()
+        except IntegrityError:  # cannot duplicate category
+            return HttpResponse(status=409)
 
-            response["category"] = {}
-            response["category"]["id"] = cat.id
-            response["category"]["title"] = cat.title
-            response["category"]["slug"] = cat.slug
-            response["success"] = True
-            response["category"]["videos"] = list(
-                map(
-                    lambda v: get_video_data(v),
-                    cat.video.all(),
-                )
-            )
+        response["success"] = True
+        response["message"] = _("Category successfully added.")
 
-            return HttpResponse(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json",
-            )
-
-        response["message"] = _("Title field is required")
-        return HttpResponseBadRequest(
+        return HttpResponse(
             json.dumps(response, cls=DjangoJSONEncoder),
             content_type="application/json",
         )
+    else:
+        data_context = {}
 
-    return HttpResponseNotAllowed(_("Method Not Allowed"))
+        videos_list = get_videos_for_owner(request)
+        videos = get_videos_for_category(request, videos_list)
+        data_context["videos"] = videos
+
+        if request.GET.get("page"):
+            return render(request, "videos/category_modal_video_list.html", data_context)
+
+        data_context = {
+            "modal_action": "add",
+            "modal_title": _("Add new category"),
+            "videos": videos,
+        }
+        return render(request, "videos/category_modal.html", data_context)
 
 
 @login_required(redirect_field_name="referrer")
 @ajax_required
-def edit_category(request, c_slug):
-    """Edit category."""
-    response = {"success": False}
-    c_user = request.user  # connected user
+def edit_category(request, c_slug=None):
+    """
+    Edit category managment. Get method return datas to fill the modal interface. Post method perform the update.
 
-    if request.method == "POST":  # edit current category
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        c_slug (str): The optionnal category's slug.
+
+    Returns:
+        ::class::`django.http.HttpResponse`: The HTTP response.
+    """
+    if request.method == "POST":
+        response = {"success": False}
+        c_user = request.user
         cat = get_object_or_404(Category, slug=c_slug)
-        data = json.loads(request.body.decode("utf-8"))
 
-        new_videos = Video.objects.filter(slug__in=data.get("videos", []))
+        if not request.POST.get("title") or json.loads(request.POST.get("title")) == "":
+            response["message"] = _("Title field is required")
+            return HttpResponseBadRequest(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json",
+            )
+
+        title = json.loads(request.POST.get("title"))
+        videos_slugs = json.loads(request.POST.get("videos"))
+
+        new_videos = Video.objects.filter(slug__in=videos_slugs)
 
         # constraint, video can be only in one of user's categories,
-        # excepte current category
+        # except current category
         user_cats = Category.objects.filter(owner=c_user).exclude(id=cat.id)
         v_already_in_user_cat = new_videos.filter(category__in=user_cats)
-
         if v_already_in_user_cat:
             response["message"] = _("One or many videos already have a category.")
 
@@ -3067,55 +3115,69 @@ def edit_category(request, c_slug):
                 content_type="application/json",
             )
 
-        if "title" in data and data["title"].strip() != "":
-            if c_user == cat.owner or c_user.is_superuser:
-                cat.title = data["title"]
-                cat.video.set(list(new_videos))
-                cat.save()
-                response["id"] = cat.id
-                response["title"] = cat.title
-                response["slug"] = cat.slug
-                response["success"] = True
-                response["message"] = _("Category updated successfully.")
-                response["videos"] = list(
-                    map(
-                        lambda v: get_video_data(v),
-                        cat.video.all(),
-                    )
-                )
+        if c_user == cat.owner or c_user.is_superuser:
+            cat.title = title
+            cat.video.set(list(new_videos))
+            cat.save()
 
-                return HttpResponse(
-                    json.dumps(response, cls=DjangoJSONEncoder),
-                    content_type="application/json",
-                )
+            response["success"] = True
+            response["message"] = _("Category updated successfully.")
+            response["all_categories_videos"] = get_json_videos_categories(request)
 
-            response["message"] = _("You do not have rights to edit this category")
-            return HttpResponseForbidden(
+            return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json",
             )
 
-        response["message"] = _("Title field is required")
-        return HttpResponseBadRequest(
+        response["message"] = _("You do not have rights to edit this category")
+        return HttpResponseForbidden(
             json.dumps(response, cls=DjangoJSONEncoder),
             content_type="application/json",
         )
+    else:
+        category = get_object_or_404(Category, slug=c_slug, owner=request.user)
+        category_videos = list(category.video.all().values_list("id", flat=True))
 
-    response["message"] = _("Method Not Allowed")
-    return HttpResponseNotAllowed(
-        json.dumps(response, cls=DjangoJSONEncoder),
-        content_type="application/json",
-    )
+        videos_list = get_videos_for_owner(request)
+        videos = get_videos_for_category(request, videos_list, category)
+
+        if request.GET.get("page"):
+            return render(
+                request,
+                "videos/category_modal_video_list.html",
+                {
+                    "videos": videos,
+                    "category_videos": category_videos,
+                },
+            )
+
+        data_context = {
+            "modal_action": "edit",
+            "modal_title": _("Edit category") + " " + category.title,
+            "videos": videos,
+            "category": category,
+            "category_videos": category_videos,
+        }
+    return render(request, "videos/category_modal.html", data_context)
 
 
 @login_required(redirect_field_name="referrer")
 @ajax_required
-def delete_category(request, c_id):
-    response = {"success": False}
-    c_user = request.user  # connected user
+def delete_category(request, c_slug):
+    """
+    Delete category managment. Get method return datas to fill the modal interface. Post method perform the deletion.
 
-    if request.method == "POST":  # create new category
-        cat = get_object_or_404(Category, id=c_id)
+    Args:
+        request (::class::`django.core.handlers.wsgi.WSGIRequest`): The WSGI request.
+        c_slug (str): The category's slug.
+
+    Returns:
+        ::class::`django.http.HttpResponse`: The HTTP response.
+    """
+    if request.method == "POST":
+        response = {"success": False}
+        c_user = request.user  # connected user
+        cat = get_object_or_404(Category, slug=c_slug)
 
         if cat.owner == c_user:
             response["id"] = cat.id
@@ -3134,6 +3196,7 @@ def delete_category(request, c_id):
 
             cat.delete()
             response["success"] = True
+            response["message"] = _("Category successfully deleted.")
 
             return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
@@ -3146,8 +3209,15 @@ def delete_category(request, c_id):
             json.dumps(response, cls=DjangoJSONEncoder),
             content_type="application/json",
         )
+    else:
+        category = get_object_or_404(Category, slug=c_slug, owner=request.user)
 
-    return HttpResponseNotAllowed(_("Method Not Allowed"))
+        data_context = {
+            "modal_action": "delete",
+            "modal_title": _("Delete category") + " " + category.title,
+            "category": category,
+        }
+    return render(request, "videos/category_modal.html", data_context)
 
 
 class PodChunkedUploadView(ChunkedUploadView):

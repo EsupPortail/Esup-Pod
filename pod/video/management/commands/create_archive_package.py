@@ -18,7 +18,7 @@ from django.template.loader import render_to_string
 from django.utils.translation import activate
 from django.utils.translation import gettext as _
 
-from pod.video.models import Video, Notes, AdvancedNotes, Comment
+from pod.video.models import Video, Notes, AdvancedNotes, Comment, ViewCount
 from pod.chapter.models import Chapter
 from pod.completion.models import Contributor, Document, Overlay, Track
 from pod.enrichment.models import Enrichment
@@ -30,7 +30,8 @@ LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 ARCHIVE_ROOT = getattr(settings, "ARCHIVE_ROOT", "/video_archiving")
 ARCHIVE_OWNER_USERNAME = getattr(settings, "ARCHIVE_OWNER_USERNAME", "archive")
 ARCHIVE_CSV = "%s/archived.csv" % settings.LOG_DIRECTORY
-HOW_MANY_DAYS = 365  # Delay before an archived video is moved to archive_ROOT
+# Delay before an archived video is moved to archive_ROOT
+ARCHIVE_HOW_MANY_DAYS = getattr(settings, "ARCHIVE_HOW_MANY_DAYS", 365)
 
 __TITLE_SITE__ = (
     settings.TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
@@ -126,7 +127,7 @@ class Command(BaseCommand):
         """Store a video complement as json."""
         if len(export_objects) > 0:
             export_file = os.path.join(folder, "%s.json" % export_type)
-            print("Export %s %s." % (len(export_objects), export_type))
+            print("  * Export %s %s." % (len(export_objects), export_type))
             if not self.dry_mode:
                 with open(export_file, "w") as out:
                     content = serialize("json", export_objects)
@@ -135,7 +136,7 @@ class Command(BaseCommand):
     def move_video_to_archive(self, mediaPackage_dir: str, vid: Video) -> None:
         """Move video source file to mediaPackage_dir."""
         if os.access(vid.video.path, os.F_OK):
-            print("Moving %s" % vid.video.path)
+            print("  * Moving %s" % vid.video.path)
             if not self.dry_mode:
                 shutil.move(
                     vid.video.path,
@@ -146,7 +147,7 @@ class Command(BaseCommand):
             # Deletes the video object and the associated folder (encoding, logs, etc.)
             # Remove thumbnails (x3)
         else:
-            print("ERROR: Cannot acces to file '%s'." % vid.video.path)
+            print("ERROR: Cannot access to file '%s'." % vid.video.path)
 
     def archive_pack(self, video_dir: str, user_name: str, vid: Video) -> None:
         """Create a archive package for Video vid."""
@@ -173,29 +174,32 @@ class Command(BaseCommand):
             Notes,
             AdvancedNotes,
             Comment,
+            ViewCount,
         ]:
             # nb: contributors are already exported in dublincore.xml
             self.export_complement(
                 mediaPackage_dir, model.__name__, model.objects.filter(video=vid)
             )
+        # Export also the video itself as json
+        self.export_complement(mediaPackage_dir, "Video", [vid])
 
         # Store also files linked to Enrichments
         for enrich in Enrichment.objects.filter(video=vid):
             if enrich.document:
-                print("Copying %s..." % enrich.document.file.path)
+                print("  * Copying %s..." % enrich.document.file.path)
                 shutil.copy(enrich.document.file.path, mediaPackage_dir)
             if enrich.image:
-                print("Copying %s..." % enrich.image.file.path)
+                print("  * Copying %s..." % enrich.image.file.path)
                 shutil.copy(enrich.image.file.path, mediaPackage_dir)
 
         # Store file complements.
         for file in Document.objects.filter(video=vid):
-            print("Copying %s..." % file.document.file.path)
+            print("  * Copying %s..." % file.document.file.path)
             shutil.copy(file.document.file.path, mediaPackage_dir)
 
         # Store additional tracks (caption / subtitles)
         for track in Track.objects.filter(video=vid):
-            print("Copying %s..." % track.src.file.path)
+            print("  * Copying %s..." % track.src.file.path)
             shutil.copy(track.src.file.path, mediaPackage_dir)
 
         # TODO:
@@ -219,6 +223,7 @@ class Command(BaseCommand):
         total_processed = 0
         total_weight = 0
         list_video = []
+        ignored_video = []
 
         if options["dry"]:
             self.dry_mode = True
@@ -230,12 +235,12 @@ class Command(BaseCommand):
         # Get videos
         vids = Video.objects.filter(
             owner__username=ARCHIVE_OWNER_USERNAME,
-            date_delete__lte=datetime.now() - timedelta(days=HOW_MANY_DAYS),
+            date_delete__lte=datetime.now() - timedelta(days=ARCHIVE_HOW_MANY_DAYS),
         )
 
         print(
             "%s videos archived since more than %s days found."
-            % (len(vids), HOW_MANY_DAYS)
+            % (len(vids), ARCHIVE_HOW_MANY_DAYS)
         )
         for vid in vids:
             # vid = Video.objects.get(id=video_id)
@@ -244,10 +249,8 @@ class Command(BaseCommand):
             if vid.recentViewcount > 0:
                 # Do not archive a video with recent views.
                 # (if video has been shared with a token, it can still be viewed)
-                print(
-                    "- Video %s ignored (%s recent views)"
-                    % (vid.slug, vid.recentViewcount)
-                )
+                print("  * IGNORED (%s recent views)" % vid.recentViewcount)
+                ignored_video.append(str(vid))
                 continue
 
             # Recover original video slug
@@ -263,23 +266,27 @@ class Command(BaseCommand):
                 list_video.append(str(vid))
                 self.archive_pack(video_dir, csv_entry["User name"], vid)
             else:
-                print("Video %s not present in archived file" % vid.id)
+                print("  * Video %s not present in archived file" % vid.id)
             print("---")
         # Convert seconds in human readable time
         total_duration = str(timedelta(seconds=total_duration))
         total_msg = _(
-            "Package archiving done. %(amount)s video packaged (%(weight)s - [%(duration)s])"
+            "Package archiving done. %(amount)s video(s) packaged (%(weight)s - [%(duration)s])"
+            " - %(nb_ignored)s video(s) ignored."
         ) % {
             "amount": total_processed,
             "weight": sizeof_fmt(total_weight),
             "duration": total_duration,
+            "nb_ignored": len(ignored_video),
         }
 
         print(total_msg)
         if total_processed > 0:
-            self.inform_managers(list_video, total_msg)
+            self.inform_managers(list_video, ignored_video, total_msg, total_processed)
 
-    def inform_managers(self, list_video: list, total_msg: str) -> None:
+    def inform_managers(
+        self, list_video: list, ignored_video: list, total_msg: str, total_processed: int
+    ) -> None:
         """Inform site managers of packaged archives."""
         msg_html = [_("Hello manager(s) of  %s,") % __TITLE_SITE__]
         msg_html.append("<br>")
@@ -307,10 +314,19 @@ class Command(BaseCommand):
 
         msg_html.append("<p>%s</p>" % msg)
         msg_html.append(self.get_list_video_html(list_video))
+
+        msg = _(
+            "And below is the list of ignored videos that were not packaged "
+            "because they have been recently viewed."
+        )
+
+        msg_html.append("<p>%s</p>" % msg)
+        msg_html.append(self.get_list_video_html(ignored_video))
+
         msg_html.append("<p>%s</p>" % total_msg)
         msg_html.append("<p>%s</p>" % _("Regards."))
         msg_html = "\n".join(msg_html)
-        subject = _("Packaging archived videos on Pod")
+        subject = _("Packaging %s archived videos on Pod") % total_processed
         mail_managers(
             subject,
             striptags(msg_html),

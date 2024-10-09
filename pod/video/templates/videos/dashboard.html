@@ -13,20 +13,19 @@
 {% block page_content %}
 
   {% if use_category %}
-    {% include "videos/category_modal.html" %}
+      <div id="category-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal_title" aria-hidden="true"></div>
   {% endif %}
 
-  <div id="bulk_update_container">
+  <div id="bulk-update-container">
 
     <h2>{% trans 'Multiple actions' %}</h2>
-    <p id="bulk_update_instructions">
-      {% trans "To edit several videos at the same time, you can select the ones you want by clicking on them then select an action to perform using the drop-down menu below, finally apply the modification. You can also refine your video search using the filters in the right menu." %}
+    <p id="bulk-update-instructions">
+      {% trans "To edit several videos at the same time, you can check the ones you want then select an action to perform using the drop-down menu below, finally apply the modification. You can also refine your video search using the filters in the right menu." %}
     </p>
 
-    <select id="bulkUpdateActionSelect" name="action" class="form-select mb-2" aria-label="{% trans 'Choose an action' %}">
-      <option value="" selected>{% trans "Choose an action" %}</option>
+    <select id="bulk-update-action-select" name="action" class="form-select mb-2" aria-label="{% trans 'Choose an action' %}">
+      <option value="" disabled selected>{% trans "Choose an action" %}</option>
       <optgroup label="-- {% trans 'Edit a field' %} --">
-        {# <option value="title">{% trans "Title" %}</option> #}
         <option value="type">{% trans "Type" %}</option>
         {% if request.user.is_superuser %}
           <option value="owner">{% trans "Owner" %}</option>
@@ -115,7 +114,8 @@
     <button id="applyBulkUpdateBtn" type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalBulkUpdate" disabled>
       {% trans 'Apply' %} <span id="countSelectedVideosBadge" class="badge" title="{% trans 'No video found' %}">
     {% blocktrans count counter=0 %}{{ counter }} video{% plural %}{{ counter }} videos{% endblocktrans %}</span></button>
-    <button id="reset-dashboard-elements-btn" type="button" class="btn btn-secondary mt-2" onclick="resetDashboardElements()" disabled>{% trans "Reset" %}</button>
+    <button id="select-all-dashboard-elements-btn" type="button" class="btn btn-primary mt-2" onclick="selectAllVideos(videosListContainerId)">{% trans "Select all" %}</button>
+    <button id="reset-dashboard-elements-btn" type="button" class="btn btn-secondary mt-2" onclick="resetDashboardElements()" disabled>{% trans "Clear selection" %}</button>
   </div>
 
   <div>
@@ -155,6 +155,7 @@
   const urlVideos = "{% url 'video:dashboard' %}";
   const urlUpdateVideos = "{% url 'video:bulk_update' %}";
   const videosListLoader = document.getElementById("videosListLoader");
+  const videosListContainerId = "videos_list";
   var displayMode = "{{ display_mode }}";
   var csrftoken = "{{ csrf_token }}";
   var page = 1;
@@ -174,8 +175,13 @@
 {% if use_category %}
   <script>
     const USE_CATEGORY = true;
-    const CATEGORIES_DATA = {{ categories | safe }};
-    const BASE_URL = `${window.location.origin}/video/my/categories/`;
+    const categoryModal = document.getElementById("category-modal");
+    const CATEGORIES_ADD_URL = "{% url 'video:add_category' %}";
+    const CATEGORIES_EDIT_URL = `${window.location.origin}/video/category/edit/`;
+    const CATEGORIES_DELETE_URL = `${window.location.origin}/video/category/delete/`;
+    const CATEGORIES_LIST_URL = "{% url 'video:get_categories_list' %}";
+    const categoriesListContainer = document.getElementById("categories-list");
+    //const BASE_URL = `${window.location.origin}/video/my/categories/`;
     {# create base url link for video management #}
     {% url 'video:video_edit' slug="abcd" as video_edit %}
     const EDIT_URL = `{{ video_edit|slice:"-5" }}`;
@@ -186,8 +192,9 @@
     {% url 'video:video_delete' slug="abcd" as video_delete %}
     const DELETE_URL = `{{ video_delete|slice:"-5" }}`;
     const VIDEO_URL = `${window.location.origin}/video/`;
+    var all_categories_videos = JSON.parse("{{ all_categories_videos|escapejs }}");
   </script>
-  <script defer src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
 {% else %}
   <script>const USE_CATEGORY = false;</script>
 {% endif %}

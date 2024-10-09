@@ -4,11 +4,10 @@ x-pod-volumes: &pod-volumes
 x-elasticsearch-volumes: &elasticsearch-volumes
   - ./dockerfile-dev-with-volumes/config/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
-version: '3.7'
-
 services:
   pod:
     container_name: pod-dev-with-volumes
+    hostname: pod.localhost
     build:
       context: .
       dockerfile: dockerfile-dev-with-volumes/pod/Dockerfile
@@ -23,6 +22,7 @@ services:
 
   elasticsearch:
     container_name: elasticsearch-with-volumes
+    hostname: elasticsearch.localhost
     build:
       context: .
       dockerfile: dockerfile-dev-with-volumes/elasticsearch/dockerfile-elasticsearch-dev
@@ -36,6 +36,7 @@ services:
 
   redis:
     container_name: redis-with-volumes
+    hostname: redis.localhost
     image: ${REDIS_TAG}
     env_file:
       - ./.env.dev
@@ -44,7 +45,7 @@ services:
 
 #  redis-commander:
 #    container_name: redis-commander
-#    hostname: redis-commander
+#    hostname: redis-commander.localhost
 #    image: rediscommander/redis-commander:latest
 #    restart: always
 #    environment:

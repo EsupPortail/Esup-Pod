@@ -1243,7 +1243,7 @@ def default_site_recording(sender, instance, **kwargs):
 
 
 class LiveGateway(models.Model):
-    """Hold information about live gateways, encoders and broadcasters informations.
+    """Hold information about live gateways (SIPMediaGW, encoders and broadcasters informations).
 
     Useful for BigBlueButton livestreams.
     """
@@ -1256,6 +1256,7 @@ class LiveGateway(models.Model):
         max_length=200,
         help_text=_("Example format: rtmp://live.univ.fr/live/name"),
     )
+
     # Broadcaster in charge to perform the live
     broadcaster = models.ForeignKey(
         Broadcaster,
@@ -1264,16 +1265,32 @@ class LiveGateway(models.Model):
         help_text=_("Broadcaster in charge to perform lives."),
     )
 
+    # URL of the SIPMediaGW server that manages webinars (e.g. `https://sipmediagw.univ.fr`)
+    sipmediagw_server_url = models.CharField(
+        _("URL of the SIPMediaGW server"),
+        max_length=200,
+        help_text=_("Example format: https://sipmediagw.univ.fr"),
+        default="https://sipmediagw.univ.fr",
+    )
+
+    # Bearer token for the SIPMediaGW server (e.g. `1234`)
+    sipmediagw_server_token = models.CharField(
+        _("Bearer token for the SIPMediaGW server."),
+        max_length=25,
+        help_text=_("Example format: 1234"),
+        default="1234",
+    )
+
     # LiveGateway's site
     site = models.ForeignKey(
         Site, verbose_name=_("Site"), on_delete=models.CASCADE, default=SITE_ID
     )
 
     def __unicode__(self):
-        return "%s - %s" % (self.rtmp_stream_url, self.broadcaster)
+        return "%s - %s" % (self.rtmp_stream_url, self.sipmediagw_server_url)
 
     def __str__(self):
-        return "%s - %s" % (self.rtmp_stream_url, self.broadcaster)
+        return "%s - %s" % (self.rtmp_stream_url, self.sipmediagw_server_url)
 
     def save(self, *args, **kwargs):
         super(LiveGateway, self).save(*args, **kwargs)
@@ -1281,6 +1298,12 @@ class LiveGateway(models.Model):
     class Meta:
         verbose_name = _("Live gateway")
         verbose_name_plural = _("Live gateways")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["sipmediagw_server_url"],
+                name="livegateway_unique_sipmediagw_server_url",
+            ),
+        ]
 
 
 @receiver(pre_save, sender=LiveGateway)

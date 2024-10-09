@@ -47,6 +47,7 @@
   /**** couleur neutre pour fond de bloc (ex jumbotron) ***/
   --pod-background-neutre1-bloc: #ddd;
   --pod-background-neutre1-bloc-dark: #393e46;
+  --pod-background-neutre1-bloc-hover: #e5f1fa;
 
   /**** couleur neutre 2 pour fond de bloc ***/
   --pod-background-neutre2-bloc: #f5f5f5;
@@ -280,6 +281,11 @@ a:not(.btn, .dropdown-item):focus {
   min-width: 100%;
   height: 100%;
   min-height: 146px;
+}
+
+.link-center-pod-category > img {
+  min-width: 100%;
+  height: 100%;
 }
 
 /*********
@@ -529,7 +535,7 @@ a.btn-outline-primary:not(:hover) svg {
 /*** CARD ***/
 .infinite-item .card-body {
   padding: 0.9rem;
-  height: 3.5rem;
+  /* height: 3.5rem; */
   overflow: hidden;
 }
 
@@ -584,9 +590,10 @@ div.card a img {
 
 .card-footer-pod {
   position: absolute;
-  bottom: 4rem;
-  right: 0;
+  bottom: 3.5rem;
+  right: 1rem;
   border: none;
+  border-radius: 0.375rem;
   display: flex;
   flex-wrap: wrap-reverse;
   justify-content: flex-end;
@@ -672,13 +679,13 @@ div.card a img {
 }
 
 /** Dashboard **/
-#bulk_update_container {
+#bulk-update-container {
   background-color: var(--pod-background-neutre2-bloc);
   padding: 1em;
   border-radius: var(--bs-border-radius);
 }
 
-#bulk_update_container .select2 {
+#bulk-update-container .select2 {
   width: 100% !important;
 }
 
@@ -697,14 +704,10 @@ div.card a img {
 }
 
 .dashboard-container .infinite-item {
-  cursor: pointer;
-}
-
-.dashboard-container .infinite-item {
   position: relative;
 }
 
-.infinite-item .checked_overlay {
+.infinite-item .checked-overlay {
   display: none;
   position: absolute;
   inset: 0;
@@ -719,29 +722,17 @@ div.card a img {
   transition: all 0.3s;
 }
 
-.infinite-item.selected .checked_overlay {
+.infinite-item.selected .checked-overlay {
   display: flex;
   opacity: 1;
 }
 
-.infinite-item .checked_overlay .card_selected {
+.infinite-item .checked-overlay .card-selected {
   display: block;
   transition: all 0.3s;
 }
 
-.dashboard-container .infinite-item:not(.selected),
-.dashboard-container .infinite-item .checked_overlay .card_selected {
-  transition: transform 0.2s ease-in-out;
-}
-
-.dashboard-container .infinite-item:not(.selected):hover,
-.dashboard-container .infinite-item .checked_overlay:hover .card_selected {
-  transform: scale(1.03);
-  transition: transform 0.2s ease-in-out;
-  z-index: 6;
-}
-
-.infinite-item.selected .checked_overlay .card-selected i {
+.infinite-item.selected .checked-overlay .card-selected i {
   font-size: 3rem;
   color: var(--pod-link-color);
 }
@@ -778,19 +769,19 @@ div.card a img {
 }
 
 .pod-infinite-list-container-dashboard .list-item-video-row:hover {
-  background-color: var(--pod-background-neutre1-bloc);
+  background-color: var(--pod-background-neutre1-bloc-hover);
 }
 
 .pod-infinite-list-container-dashboard
   .list-item-video-row
-  .checked_overlay
+  .checked-overlay
   .card-selected {
   width: 100%;
 }
 
 .pod-infinite-list-container-dashboard
   .list-item-video-row.selected
-  .checked_overlay
+  .checked-overlay
   .card-selected
   i {
   font-size: 2rem;
@@ -799,15 +790,15 @@ div.card a img {
 
 .pod-infinite-list-container-dashboard
   .list-item-video-row
-  i:not(.checked_overlay .card-selected i) {
+  i:not(.checked-overlay .card-selected i) {
   font-size: 1.2rem;
   padding: 0.2rem;
 }
 
 .thumbnail-item-video-row {
-  height: 50px;
+  height: 40px;
   overflow: hidden;
-  border-radius: 4px 0 0 4px;
+  border-radius: 4px;
 }
 
 .thumbnail-item-video-row img {
@@ -844,10 +835,13 @@ span[data-bs-placement] {
   overflow-wrap: anywhere;
 }
 
-.required_star,
+.required-star,
 .form-help-inline {
   color: var(--bs-danger);
-  font-size: 1.3rem;
+}
+
+.form-check-label > .required-star {
+  font-size: 1em;
 }
 
 /* prevent a large link from extending beyond it's container
@@ -888,7 +882,7 @@ span[data-bs-placement] {
   z-index: 1031;
 }
 
-#formalertdivbottomright {
+#form-alert-div-bottom-right {
   max-width: 95%;
   position: fixed;
   bottom: 20px;
@@ -897,7 +891,7 @@ span[data-bs-placement] {
   z-index: 1031;
 }
 
-#formalertdivbottomright > i {
+#form-alert-div-bottom-right > i {
   margin-right: 0.8rem;
   font-size: 1rem;
 }
@@ -1314,8 +1308,32 @@ body {
   margin: 1rem 2rem;
 }
 
+.pod-navbar__theme-switch__item .pod-switch {
+  display: inline-block;
+  height: 24px;
+  position: relative;
+  width: 50px;
+}
+.pod-navbar__theme-switch__item .pod-switch input {
+  width: 100%;
+  height: 100%;
+}
+
+.pod-navbar__theme-switch__item .icon-subtitle::before {
+  display: inline-block;
+  height: 0.925em;
+  width: 0.925em;
+  vertical-align: -0.125em;
+  content: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" version="1.1" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><rect x="2%" y="15%" width="96%" height="70%" rx="5%" ry="5%" fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/><rect x="10%" y="50%" width="22.5%" height="9%" fill="black" stroke="0"/><rect x="42.5%" y="50%" width="47.5%" height="9%" fill="black" stroke="0"/><rect x="10%" y="67%" width="47.5%" height="9%" fill="black" stroke="0"/><rect x="67.5%" y="67%" width="22.5%" height="9%" fill="black" stroke="0"/></svg>');
+}
+
+.pod-navbar__theme-switch__item .icon-subtitle.slash::before {
+  content: url('data:image/svg+xml;utf8,<svg width="100%" height="100%" version="1.1" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><rect x="2%" y="15%" width="96%" height="70%" rx="5%" ry="5%" fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/><rect x="10%" y="50%" width="22.5%" height="9%" fill="black" stroke="0"/><rect x="42.5%" y="50%" width="47.5%" height="9%" fill="black" stroke="0"/><rect x="10%" y="67%" width="47.5%" height="9%" fill="black" stroke="0"/><rect x="67.5%" y="67%" width="22.5%" height="9%" fill="black" stroke="0"/><line x1="2%" y1="2%" x2="98%" y2="98%" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/></svg>');
+}
+
 .pod-navbar__theme-switch__item .form-label {
   flex-grow: 1;
+  max-width: 84%;
 }
 
 .pod-navbar__theme-switch__item .dropdown-menu {
@@ -1377,7 +1395,7 @@ body {
   grid-auto-flow: row;
   grid-auto-rows: min-content;
   background: var(--pod-background-neutre2-bloc);
-  padding: 1rem;
+  padding: 1.25rem;
   border-radius: var(--bs-border-radius-sm);
   /*
   Commented in 3.6.0
@@ -1836,4 +1854,15 @@ body[data-admin-utc-offset]
   font-weight: 400;
   font-size: 13px;
   text-align: left;
+}
+
+/** QUIZ **/
+
+.question-container li.bi::before {
+  margin-right: 0.5em;
+}
+
+/** LINK VIDEO MODAL **/
+#link-video-modal .modal-dialog {
+  font-size: 1.7em;
 }

@@ -8,7 +8,7 @@
             data-id="{{user_home_folder.id}}"
             data-target="{% if type %}{% url 'podfile:get_folder_files' id=user_home_folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=user_home_folder.id %}{% endif %}"
         >
-            <i class="home-directory bi bi-house-door-fill"></i>
+            <i class="home-directory bi bi-house-door-fill" aria-hidden="true"></i>
             {% trans "Home folder" %}
         </a>
         <button
@@ -19,7 +19,7 @@
             data-oldname=""
             data-folderid=""
         >
-            <i class="add-folder bi bi-folder-plus"></i>
+            <i class="add-folder bi bi-folder-plus" aria-hidden="true"></i>
             {% trans "Add new folder" %}
         </button>
     </div>

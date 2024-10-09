@@ -55,7 +55,7 @@
   </div>
   <div class="card-body px-3 py-2">
     {% if meeting.owner == request.user or request.user.is_superuser or perms.meeting.change_meeting or request.user in meeting.additional_owners.all %}
-      <footer class="card-footer card-footer-pod p-0 m-0 link-center-pod link-meeting">
+      <footer class="card-footer card-footer-pod p-0 m-0 link-meeting">
         {% include "meeting/link_meeting.html" %}
       </footer>
     {% endif %}

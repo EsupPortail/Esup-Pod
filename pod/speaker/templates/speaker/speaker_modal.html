@@ -1,0 +1,32 @@
+{% load i18n %}
+<div class="modal fade" id="speakerModal" tabindex="-1" aria-labelledby="speakerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="speakerForm" method="post" action="{% url 'speaker:speaker_management' %}">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="speakerModalLabel">{% trans "Add a speaker" %}</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <input type="hidden" name="speakerid" id="speakerId">
+                    <input type="hidden" name="action" id="actionField" value="add">
+                    {{ speaker_form.as_p }}
+                    <div id="jobFieldsContainer" class="mb-3">
+                        <label for="jobTitle" class="form-label">{% trans "Jobs" %}</label>
+                        <div class="d-flex align-items-center">
+                            <input type="text" class="form-control ms-2 jobTitle" name="jobs[]" placeholder="{% trans "Job title" %}">
+                            <input type="hidden" class="jobId" name="jobIds[]">
+                            <a title="{% trans "Remove job" %}" role="button" class="btn btn-link pod-btn-social remove-job-field"><i class="bi bi-trash"></i></a>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary mb-3" id="add-job-field">{% trans "Add job" %}</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                    <button type="button" id="cancel-dialog" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -3,16 +3,37 @@
  * @since 2.5.0
  */
 
+// Read-only globals defined in customfilewidget.html
+/*
+global id_input static_url deletefolder_url deletefile_url
+*/
+
+// Read-only globals defined in main.js
+/*
+global isJson fadeOut
+*/
+
+// Read-only globals defined in base.html
+/*
+global HIDE_USERNAME
+*/
+
+
+var list_folders_sub;
+// change const to var to prevent multiple declaration
+var loader = `
+<div id="loader" class="d-flex justify-content-center align-items-center d-none loaderSpinner">
+  <div class="spinner-border" role="status">
+      <span class="visually-hidden">${gettext('Loading…')}</span>
+  </div>
+</div>
+`;
+
+
+
 if (typeof loaded == "undefined") {
   var loaded = true;
 
-  const loader = `
-  <div id="loader" class="d-flex justify-content-center align-items-center d-none loaderSpinner">
-    <div class="spinner-border" role="status">
-        <span class="visually-hidden">${gettext('Loading…')}</span>
-    </div>
-  </div>
-  `;
   document.addEventListener("click", (e) => {
     if (!e.target.parentNode) return;
     if (
@@ -88,29 +109,6 @@ if (typeof loaded == "undefined") {
     bsdirs.hide();
   });
 
-  /*document.querySelectorAll("#open-folder-icon > *").forEach((el) => {
-    el.style = "pointer-events: none; cursor: pointer;";
-  });
-  if (document.getElementById("open-folder-icon")) {
-    document.getElementById("open-folder-icon").style.cursor = "pointer";
-  }*/
-
-  /*document.addEventListener("click", (e) => {
-    if (
-      e.target.id != "open-folder-icon" &&
-      !e.target.matches("open-folder-icon i")
-    )
-      return;
-
-    //unable click on span or i
-    document.querySelectorAll(".folder_name").forEach((e) => {
-      e.style = "pointer-events: none; ";
-    });
-
-    e.preventDefault();
-    document.getElementById("dirs").classList.add("open");
-  });*/
-
   document.addEventListener("change", (e) => {
     if (e.target.id != "ufile") return;
     document.getElementById("formuploadfile").querySelector("button").click();
@@ -140,7 +138,7 @@ if (typeof loaded == "undefined") {
       body: data_form,
       processData: false,
       contentType: false,
-      headers:{
+      headers: {
         'X-Requested-With': 'XMLHttpRequest', //Necessary to work with is_ajax
       },
     })
@@ -164,10 +162,10 @@ if (typeof loaded == "undefined") {
 
         showalert(
           gettext("Error during exchange") +
-            "(" +
-            data +
-            ")<br>" +
-            gettext("No data could be stored."),
+          "(" +
+          data +
+          ")<br>" +
+          gettext("No data could be stored."),
           "alert-danger"
         );
       });
@@ -455,7 +453,7 @@ if (typeof loaded == "undefined") {
 
   document.addEventListener("click", (e) => {
     var contain_target = false;
-    if (document.getElementById("currentfolderdelete")){
+    if (document.getElementById("currentfolderdelete")) {
       contain_target = document.getElementById("currentfolderdelete").contains(e.target);
     }
     if (e.target.id == "currentfolderdelete" || contain_target) {
@@ -511,7 +509,7 @@ if (typeof loaded == "undefined") {
   document.addEventListener("input", (e) => {
     if (e.target.id != "folder-search") return;
     var text = e.target.value.toLowerCase();
-    if (folder_searching === true ) {
+    if (folder_searching === true) {
       return;
     } else {
       if (text.length > 2 || text.length === 0) {
@@ -727,7 +725,7 @@ if (typeof loaded == "undefined") {
   var folder_searching = false;
   function add_folder_observer() {
     // The new observer with a callback to execute upon change
-    var list_folders_sub = document.getElementById("list_folders_sub");
+    list_folders_sub = document.getElementById("list_folders_sub");
     var folder_observer = new MutationObserver((mutationsList) => {
       if(document.getElementById("more")) {
         document.getElementById("more").addEventListener("click", (event) => {
@@ -810,7 +808,7 @@ if (typeof loaded == "undefined") {
   document.addEventListener("DOMContentLoaded", () => {
     if (typeof myFilesView !== "undefined") {
       getFolders("");
-      folder_observer = add_folder_observer();
+      var folder_observer = add_folder_observer();
       folder_observer.observe(list_folders_sub, { childList: true, subtree: true });
     }
   });

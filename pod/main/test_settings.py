@@ -21,12 +21,14 @@ TEMPLATES[0]["DIRS"].append(
 )
 USE_DOCKER = True
 path = "pod/custom/settings_local.py"
-ES_URL = ["http://127.0.0.1:9200/"]
+ES_URL = ["http://elasticsearch.localhost:9200/"]
 ES_VERSION = 6
 if os.path.exists(path):
     _temp = __import__("pod.custom", globals(), locals(), ["settings_local"])
     USE_DOCKER = getattr(_temp.settings_local, "USE_DOCKER", True)
-    ES_URL = getattr(_temp.settings_local, "ES_URL", ["http://127.0.0.1:9200/"])
+    ES_URL = getattr(
+        _temp.settings_local, "ES_URL", ["http://elasticsearch.localhost:9200/"]
+    )
     ES_VERSION = getattr(_temp.settings_local, "ES_VERSION", 6)
 
 for application in INSTALLED_APPS:
@@ -57,13 +59,13 @@ USE_PLAYLIST = True
 USE_PROMOTED_PLAYLIST = True
 RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY = False
 USE_STATS_VIEW = True
+USE_QUIZ = True
 ACCOMMODATION_YEARS = {"faculty": 1}
 USE_OBSOLESCENCE = True
 ACTIVE_VIDEO_COMMENT = True
 USER_VIDEO_CATEGORY = True
 POD_ARCHIVE_AFFILIATION = ["faculty"]
 WARN_DEADLINES = [60, 30, 7]
-USE_BBB = True
 ORGANIZE_BY_THEME = True
 SHIBBOLETH_STAFF_ALLOWED_DOMAINS = ()
 SHIBBOLETH_ATTRIBUTE_MAP = {
@@ -80,6 +82,7 @@ EXISTING_BROADCASTER_IMPLEMENTATIONS = ["Wowza", "Test"]
 AFFILIATION_EVENT = ["employee"]
 
 USE_MEETING = True
+USE_SPEAKER = True
 
 
 def get_shared_secret():
@@ -106,8 +109,6 @@ XAPI_LRS_PWD = ""
 
 # Webinar options
 USE_MEETING_WEBINAR = True
-MEETING_WEBINAR_SIPMEDIAGW_URL = "https://127.0.0.1"
-MEETING_WEBINAR_SIPMEDIAGW_TOKEN = "token"
 MEETING_WEBINAR_AFFILIATION = ["faculty", "employee", "staff"]
 
 # Uniquement lors d'environnement conteneurisé
@@ -118,6 +119,13 @@ if USE_DOCKER:
         os.mkdir(MIGRATION_DIRECTORY)
         file = os.path.join(MIGRATION_DIRECTORY, "__init__.py")
         open(file, "a").close()
+
+# AI Enhancement settings
+USE_AI_ENHANCEMENT = True
+AI_ENHANCEMENT_CLIENT_ID = "mocked_id"
+AI_ENHANCEMENT_CLIENT_SECRET = "mock_secret"
+AI_ENHANCEMENT_API_URL = ""
+AI_ENHANCEMENT_API_VERSION = ""
 
 # DEBUG
 USE_DEBUG_TOOLBAR = False

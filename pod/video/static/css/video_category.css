@@ -45,7 +45,7 @@
 }
 
 /* Override modal category css */
-#manageCategoryModal.show {
+#category-modal.show {
   display: flex !important;
   justify-content: center !important;
   align-items: flex-start !important;
@@ -53,7 +53,7 @@
   margin: 0 !important;
 }
 
-#manageCategoryModal .modal-dialog {
+#category-modal .modal-dialog {
   width: 900px;
   max-width: calc(100% - 2em);
   margin: 0 auto;
@@ -61,13 +61,13 @@
   transform: translateY(-50%);
 }
 
-#manageCategoryModal .category_modal_videos_list {
+.category-modal-videos-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   grid-gap: 0.4em;
 }
 
-#manageCategoryModal .category_modal_videos_list .infinite-item {
+.category-modal-videos-list .infinite-item {
   position: relative;
   padding: 0.2em 0.4em;
   min-width: 133px;
@@ -75,7 +75,7 @@
   transition: 0.3s all;
 }
 
-.category_modal_videos_list .infinite-item .checked_overlay {
+.category-modal-videos-list .infinite-item .checked-overlay {
   display: flex;
   position: absolute;
   margin: 0.2em 0.4em;
@@ -91,7 +91,7 @@
   transition: opacity 0.3s;
 }
 
-#manageCategoryModal .category_modal_videos_list .infinite-item .card_selected {
+.category-modal-videos-list .infinite-item .card-selected {
   display: block;
   width: 25%;
   font-size: 2em;
@@ -99,47 +99,19 @@
   transition: all 0.3s;
 }
 
-#manageCategoryModal
-  .category_modal_videos_list
-  .infinite-item:not(.selected):hover,
-#manageCategoryModal
-  .category_modal_videos_list
-  .infinite-item
-  .checked_overlay:hover
-  .card_selected {
-  transform: scale(1.04);
-}
-
-#manageCategoryModal
-  .category_modal_videos_list
+#category-modal
+  .category-modal-videos-list
   .infinite-item.selected
-  .checked_overlay {
+  .checked-overlay {
   opacity: 1;
 }
 
-#manageCategoryModal .category_modal_videos_list .modal_category_card {
-  margin-bottom: 0.4em !important;
-  height: 100%;
-  border-radius: var(--bs-border-radius-sm);
-}
-
-#manageCategoryModal .category_modal_videos_list .card-header {
-  background-color: var(--pod-primary);
-  color: white;
-  font-size: 14px;
-  padding: 0.4em;
-  border-top-left-radius: var(--bs-border-radius-sm);
-}
-
-#manageCategoryModal .category_modal_videos_list .card-header * {
-  color: inherit !important;
-}
-
-#manageCategoryModal .category_modal_videos_list .card-footer {
+#category-modal .category-modal-videos-list .card-header,
+#category-modal .category-modal-videos-list .card-footer {
   padding: 0.4em;
 }
 
-#manageCategoryModal .category_modal_videos_list .card-footer .video_title {
+#category-modal .category-modal-videos-list .card-footer .video-title {
   display: inline-block;
   line-height: 1;
   height: 100%;
@@ -152,7 +124,7 @@
   color: var(--pod-primary);
 }
 
-#deleteCategoryModal .modal-body .category_title {
+.category-title {
   display: block;
   text-align: center;
   color: var(--pod-primary);
@@ -160,12 +132,12 @@
   font-weight: 700;
 }
 
-.categories_list {
+.categories-list {
   padding: 0;
   padding-left: 0.4em;
 }
 
-.categories_list_item {
+.categories-list-item {
   list-style: square;
   padding: 0.4em;
   line-height: 1;
@@ -178,38 +150,38 @@
   transition: 0.3s all;
 }
 
-.categories_list_item.active {
+.categories-list-item.active {
   color: #fff;
   background-color: var(--pod-primary);
 }
 
-.active .category_actions > button {
+.active .category-actions > button {
   color: #fff;
 }
 
-.categories_list_item:last-child {
+.categories-list-item:last-child {
   border: none;
 }
 
-.categories_list_item:not(.active):hover {
+.categories-list-item:not(.active):hover {
   background-color: rgb(149 149 149 / 9%);
   border-color: rgb(149 149 149 / 9%);
 }
 
-.categories_list_item.active .cat_title {
+.categories-list-item.active .cat-title {
   color: inherit;
 }
 
-.edit_category {
+.edit-category {
   --bs-btn-hover-color: var(--pod-primary-darken);
 }
 
-.remove_category {
+.remove-category {
   --bs-btn-hover-color: var(--bs-danger);
 }
 
 /* Override Paginator css */
-.category_modal_videos_list.show {
+.category-modal-videos-list.show {
   height: 385px !important;
 }
 
@@ -221,7 +193,15 @@
   grid-column: 1 / -1;
 }
 
-.category_modal_videos_list.show .paginator,
-.loader_wrapper.show {
+.category-modal-videos-list .paginator,
+.loader-wrapper.show {
   display: flex;
+}
+
+#category-modal-videos-list .video-card > .card-thumbnail {
+  min-height: auto;
+}
+
+#category-modal-videos-list .pod-thumbnail {
+  width: 100%;
 }

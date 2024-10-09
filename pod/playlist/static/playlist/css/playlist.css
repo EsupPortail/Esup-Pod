@@ -12,6 +12,7 @@ a.link-for-playlist:hover {
 
 .link-playlist {
   right: 1rem;
+  bottom: 5rem;
   border-radius: 0.375rem;
 }
 

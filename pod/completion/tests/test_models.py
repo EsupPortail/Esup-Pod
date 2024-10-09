@@ -1,4 +1,8 @@
-"""Unit tests for completion models."""
+"""
+Unit tests for completion models.
+
+Test with `python manage.py test pod.completion.tests.test_models`
+"""
 
 import base64
 
@@ -34,6 +38,7 @@ class ContributorModelTestCase(TestCase):
     ]
 
     def setUp(self) -> None:
+        """Set up general data for all ContributoModel tests."""
         self.site = Site.objects.get(id=1)
         owner = User.objects.create(username="test")
         video_type = Type.objects.create(title="others")
@@ -54,6 +59,7 @@ class ContributorModelTestCase(TestCase):
         Contributor.objects.create(video=video, name="contributor2")
 
     def test_attributs_full(self) -> None:
+        """Test contributor with all attributes."""
         contributor = Contributor.objects.get(id=1)
         video = Video.objects.get(id=1)
         self.assertEqual(contributor.video, video)
@@ -64,7 +70,8 @@ class ContributorModelTestCase(TestCase):
 
         print(" ---> test_attributs_full: OK! --- ContributorModel")
 
-    def test_attributs(self):
+    def test_attributs(self) -> None:
+        """Test contributor with some empty attributes."""
         contributor = Contributor.objects.get(id=2)
         video = Video.objects.get(id=1)
         self.assertEqual(contributor.video, video)
@@ -76,21 +83,29 @@ class ContributorModelTestCase(TestCase):
         print(" [ BEGIN COMPLETION_TEST_MODELS ] ")
         print(" ---> test_attributs: OK! --- ContributorModel")
 
-    def test_bad_attributs(self):
+    def test_bad_attributs(self) -> None:
+        """Test contributor with some bad attributes."""
         video = Video.objects.get(id=1)
         contributor = Contributor()
         contributor.video = video
         contributor.role = "actor"
+        # A contributor must have a name
         self.assertRaises(ValidationError, contributor.clean)
         contributor.name = "t"
+        # Contributor's name must have at least 2 chars
         self.assertRaises(ValidationError, contributor.clean)
         contributor.name = "test"
         contributor.role = None
+        # Contributor's role can't be None
+        self.assertRaises(ValidationError, contributor.clean)
+        contributor.role = "actor"
+        # Contributor's weblink cannot have more than 200 chars
+        contributor.weblink = "x" * 201
         self.assertRaises(ValidationError, contributor.clean)
 
         print(" ---> test_bad_attributs: OK! --- ContributorModel")
 
-    def test_same(self):
+    def test_same(self) -> None:
         video = Video.objects.get(id=1)
         contributor = Contributor()
         contributor.video = video
@@ -100,20 +115,20 @@ class ContributorModelTestCase(TestCase):
 
         print(" ---> test_same: OK! --- ContributorModel")
 
-    def test_delete(self):
+    def test_delete(self) -> None:
         Contributor.objects.get(id=1).delete()
         Contributor.objects.get(id=2).delete()
         self.assertTrue(Contributor.objects.all().count() == 0)
 
         print(" ---> test_delete: OK! --- ContributorModel")
 
-    def test_sites_property(self):
+    def test_sites_property(self) -> None:
         """Test the sites property of the Contributor model."""
         contributor = Contributor.objects.get(id=1)
         self.assertEqual(contributor.sites, Video.objects.get(id=1).sites)
         print(" ---> test_sites_property: OK! --- ContributorModel")
 
-    def test_str(self):
+    def test_str(self) -> None:
         """Test the sites property of the Contributor model when the video is deleted."""
         contributor = Contributor.objects.get(id=1)
         video = Video.objects.get(id=1)
@@ -143,7 +158,7 @@ class DocumentModelTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         owner = User.objects.create(username="test")
         videotype = Type.objects.create(title="others")
         video = Video.objects.create(
@@ -168,7 +183,7 @@ class DocumentModelTestCase(TestCase):
         Document.objects.create(video=video, document=file)
         Document.objects.create(video=video)
 
-    def test_attributs_full(self):
+    def test_attributs_full(self) -> None:
         document = Document.objects.get(id=1)
         video = Video.objects.get(id=1)
         self.assertEqual(document.video, video)
@@ -179,7 +194,7 @@ class DocumentModelTestCase(TestCase):
 
         print(" ---> test_attributs_full: OK! --- DocumentModel")
 
-    def test_attributs(self):
+    def test_attributs(self) -> None:
         document = Document.objects.get(id=2)
         video = Video.objects.get(id=1)
         self.assertEqual(document.video, video)
@@ -187,20 +202,20 @@ class DocumentModelTestCase(TestCase):
 
         print(" ---> test_attributs: OK! --- DocumentModel")
 
-    def test_delete(self):
+    def test_delete(self) -> None:
         Document.objects.get(id=1).delete()
         Document.objects.get(id=2).delete()
         self.assertTrue(Document.objects.all().count() == 0)
 
         print(" ---> test_delete: OK! --- DocumentModel")
 
-    def test_sites_property(self):
+    def test_sites_property(self) -> None:
         """Test the sites property of the Contributor model."""
         document = Document.objects.get(id=1)
         self.assertEqual(document.sites, Video.objects.get(id=1).sites)
         print(" ---> test_sites_property: OK! --- DocumentModel")
 
-    def test_str(self):
+    def test_str(self) -> None:
         """Test the __str__ method of the Document model."""
         document = Document.objects.get(id=1)
         video = Video.objects.get(id=1)
@@ -209,7 +224,7 @@ class DocumentModelTestCase(TestCase):
         )
         print(" ---> test_str: OK! --- DocumentModel")
 
-    def test_verify_document(self):
+    def test_verify_document(self) -> None:
         """Test the verify_document method of the Document model."""
         document = Document.objects.get(id=1)
         document.document = None
@@ -223,7 +238,7 @@ class OverlayModelTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         owner = User.objects.create(username="test")
         videotype = Type.objects.create(title="others")
         video = Video.objects.create(
@@ -243,7 +258,7 @@ class OverlayModelTestCase(TestCase):
         )
         Overlay.objects.create(video=video, title="overlay2", content="test")
 
-    def test_attributs_full(self):
+    def test_attributs_full(self) -> None:
         overlay = Overlay.objects.get(id=1)
         video = Video.objects.get(id=1)
         self.assertEqual(overlay.video, video)
@@ -255,7 +270,7 @@ class OverlayModelTestCase(TestCase):
 
         print(" ---> test_attributs_full: OK! --- OverlayModel")
 
-    def test_attributs(self):
+    def test_attributs(self) -> None:
         overlay = Overlay.objects.get(id=2)
         video = Video.objects.get(id=1)
         self.assertEqual(overlay.video, video)
@@ -268,7 +283,7 @@ class OverlayModelTestCase(TestCase):
 
         print(" ---> test_attributs: OK! --- OverlayModel")
 
-    def test_title(self):
+    def test_title(self) -> None:
         video = Video.objects.get(id=1)
         overlay = Overlay()
         overlay.video = video
@@ -279,7 +294,7 @@ class OverlayModelTestCase(TestCase):
 
         print(" ---> test_title: OK! --- OverlayModel")
 
-    def test_times(self):
+    def test_times(self) -> None:
         video = Video.objects.get(id=1)
         overlay = Overlay()
         overlay.video = video
@@ -295,7 +310,7 @@ class OverlayModelTestCase(TestCase):
 
         print(" ---> test_times: OK! --- OverlayModel")
 
-    def test_overlap(self):
+    def test_overlap(self) -> None:
         video = Video.objects.get(id=1)
         overlay = Overlay()
         overlay.video = video
@@ -307,7 +322,7 @@ class OverlayModelTestCase(TestCase):
 
         print(" ---> test_overlap: OK! --- OverlayModel")
 
-    def test_delete(self):
+    def test_delete(self) -> None:
         Overlay.objects.get(id=1).delete()
         Overlay.objects.get(id=2).delete()
         self.assertTrue(Overlay.objects.all().count() == 0)
@@ -320,7 +335,7 @@ class TrackModelTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         owner = User.objects.create(username="test")
         videotype = Type.objects.create(title="others")
         video = Video.objects.create(
@@ -345,7 +360,7 @@ class TrackModelTestCase(TestCase):
         Track.objects.create(video=video, lang="fr", kind="captions", src=file)
         Track.objects.create(video=video, lang="en")
 
-    def test_attributs_full(self):
+    def test_attributs_full(self) -> None:
         track = Track.objects.get(id=1)
         video = Video.objects.get(id=1)
         self.assertEqual(track.video, video)
@@ -356,7 +371,7 @@ class TrackModelTestCase(TestCase):
 
         print(" ---> test_attributs_full: OK! --- TrackModel")
 
-    def test_attributs(self):
+    def test_attributs(self) -> None:
         track = Track.objects.get(id=2)
         video = Video.objects.get(id=1)
         self.assertEqual(track.video, video)
@@ -366,7 +381,7 @@ class TrackModelTestCase(TestCase):
 
         print(" ---> test_attributs: OK! --- TrackModel")
 
-    def test_bad_attributs(self):
+    def test_bad_attributs(self) -> None:
         track = Track.objects.get(id=1)
         track.kind = None
         self.assertRaises(ValidationError, track.clean)
@@ -381,7 +396,7 @@ class TrackModelTestCase(TestCase):
 
         print(" ---> test_bad_attributs: OK! --- TrackModel")
 
-    def test_same(self):
+    def test_same(self) -> None:
         video = Video.objects.get(id=1)
         track = Track()
         track.video = video

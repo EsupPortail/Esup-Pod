@@ -32,12 +32,14 @@ USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", True)
 USE_CUT = getattr(settings, "USE_CUT", True)
 USE_MEETING = getattr(settings, "USE_MEETING", False)
 USE_XAPI = getattr(settings, "USE_XAPI", False)
-USE_BBB = getattr(settings, "USE_BBB", False)
 USE_OPENCAST_STUDIO = getattr(settings, "USE_OPENCAST_STUDIO", False)
 USE_PODFILE = getattr(settings, "USE_PODFILE", False)
 USE_PLAYLIST = getattr(settings, "USE_PLAYLIST", True)
 USE_DRESSING = getattr(settings, "USE_DRESSING", True)
+USE_SPEAKER = getattr(settings, "USE_SPEAKER", False)
 USE_IMPORT_VIDEO = getattr(settings, "USE_IMPORT_VIDEO", True)
+USE_QUIZ = getattr(settings, "USE_QUIZ", True)
+USE_AI_ENHANCEMENT = getattr(settings, "USE_AI_ENHANCEMENT", False)
 
 if USE_CAS:
     from cas import views as cas_views
@@ -126,7 +128,6 @@ urlpatterns += [
     ),
 ]
 
-# BBB: TODO REPLACE BBB BY MEETING
 if USE_MEETING:
     urlpatterns += [
         url(r"^meeting/", include("pod.meeting.urls")),
@@ -135,12 +136,6 @@ if USE_MEETING:
 if USE_XAPI:
     urlpatterns += [
         url(r"^xapi/", include("pod.xapi.urls")),
-    ]
-
-# BBB
-if USE_BBB:
-    urlpatterns += [
-        url(r"^bbb/", include("pod.bbb.urls")),
     ]
 
 # RECORDER
@@ -173,10 +168,31 @@ if USE_PLAYLIST:
         path("playlist/", include("pod.playlist.urls", namespace="playlist")),
     )
 
+# AI ENHANCEMENT
+if USE_AI_ENHANCEMENT:
+    urlpatterns += [
+        path(
+            "ai-enhancement/",
+            include("pod.ai_enhancement.urls", namespace="ai_enhancement"),
+        ),
+    ]
+
+# QUIZ
+if USE_QUIZ:
+    urlpatterns += [
+        path("quiz/", include("pod.quiz.urls", namespace="quiz")),
+    ]
+
 # DRESSING
 if USE_DRESSING:
     urlpatterns += [
         path("dressing/", include("pod.dressing.urls", namespace="dressing")),
+    ]
+
+# SPEAKER
+if USE_SPEAKER:
+    urlpatterns += [
+        path("speaker/", include("pod.speaker.urls", namespace="speaker")),
     ]
 
 # IMPORT_VIDEO

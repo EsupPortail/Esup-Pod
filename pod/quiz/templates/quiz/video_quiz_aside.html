@@ -1,0 +1,17 @@
+{% load i18n %}
+{% load video_quiz %}
+
+<h2 class="card-header card-title pod-card__title h4 align-middle">
+  <i class="bi bi-controller" aria-hidden="true"></i>&nbsp;{% trans "Quiz"%}
+</h2>
+
+<div class="card-body card-text d-flex justify-content-evenly">
+  {% is_quiz_accessible video as is_quiz_accessible %}
+  {% if is_quiz_accessible %}
+    <a class="btn btn-primary btn-sm m-1" href="{% url 'quiz:video_quiz' video.slug %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans "Answer the quiz" %}" role="button">
+      <i class="bi bi-controller pod-nav-link-icon mx-1" aria-hidden="true"></i>
+      <span class="ms-1 d-none d-md-inline">{% trans 'Answer the quiz' %}</span>
+    </a>
+  {% endif %}
+  {% include 'quiz/manage_quiz.html' with hide_edit=hide_edit hide_create=hide_create %}
+</div>

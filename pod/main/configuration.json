@@ -2,6 +2,126 @@
     {
         "configuration_apps": {
             "description": {
+                "ai_enhancement": {
+                    "description": {
+                        "en": [
+                            "AI Enhancement app to be able to use artificial intelligence enhancements for videos.",
+                            "Set `USE_AI_ENHANCEMENT` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application AI Enhancement pour pouvoir utiliser les améliorations des vidéos par l'intelligence artifficielle.",
+                            "Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "AI_ENHANCEMENT_API_URL": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "API URL for the AI video enhancement.",
+                                    "Example: 'https://aristote.univ.fr/api'",
+                                    "Project Link: https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                ],
+                                "fr": [
+                                    "L’URL de l’API pour l’IA d’amélioration des vidéos.",
+                                    "Exemple : 'https://aristote.univ.fr/api'",
+                                    "Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.6.0"
+                        },
+                        "AI_ENHANCEMENT_API_VERSION": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "API version for the AI video enhancement."
+                                ],
+                                "fr": [
+                                    "La version de l’API pour l’IA d’amélioration des vidéos."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
+                        },
+                        "AI_ENHANCEMENT_CGU_URL": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "URL for General Terms and Conditions for API uses for the AI video enhancement.",
+                                    "Example: '<https://aristote.univ.fr/cgu>'",
+                                    "Project Link: <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
+                                ],
+                                "fr": [
+                                    "L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.",
+                                    "Exemple : '<https://aristote.univ.fr/cgu>'",
+                                    "Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
+                        },
+                        "AI_ENHANCEMENT_CLIENT_ID": {
+                            "default_value": "mocked_id",
+                            "description": {
+                                "en": [
+                                    "The video enhancement AI client ID.",
+                                    "Example: 'v1'"
+                                ],
+                                "fr": [
+                                    "L’ID du client de l’IA d’amélioration des vidéos.",
+                                    "Exemple : 'v1'"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
+                        },
+                        "AI_ENHANCEMENT_CLIENT_SECRET": {
+                            "default_value": "mocked_secret",
+                            "description": {
+                                "en": [
+                                    "The video enhancement AI client secret password."
+                                ],
+                                "fr": [
+                                    "Le mot de passe secret du client de l’IA d’amélioration des vidéos."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
+                        },
+
+                        "AI_ENHANCEMENT_FIELDS_HELP_TEXT": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "Set of help texts displayed with the form for improving a video with Aristotle's AI."
+                                ],
+                                "fr": [
+                                    "Ensemble des textes d’aide affichés avec le formulaire d'amélioration d'une vidéo avec l'IA d'Aristote."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
+                        },
+                        "USE_AI_ENHANCEMENT": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Activation of artificial intelligence enhancements. Allows users to use it."
+                                ],
+                                "fr": [
+                                    "Activation des améliorations de l'intelligence artificielle. Permet aux utilisateurs de l'utiliser."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
+                        }
+                    },
+                    "title": {
+                        "en": "AI Enhancement application configuration",
+                        "fr": "Configuration application AI Enhancement"
+                    }
+                },
                 "authentication": {
                     "description": {},
                     "settings": {
@@ -941,6 +1061,37 @@
                         "fr": "Configuration de l’application enrichment"
                     }
                 },
+                "speaker": {
+                    "description": {
+                        "en": [
+                            "Speaker application to add speakers to video.",
+                            "Set `USE_SPEAKER` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Intervenant permettant d'ajouter des intervenants à la vidéo.",
+                            "Mettre `USE_SPEAKER` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "USE_SPEAKER": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Activation of the Speaker application"
+                                ],
+                                "fr": [
+                                    "Activation de l’application Intervenant"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.0"
+                        }
+                    },
+                    "title": {
+                        "en": "Seaker application configuration",
+                        "fr": "Configuration de l’application Intervenant"
+                    }
+                },
                 "import_video": {
                     "description": {
                         "en": [
@@ -1261,40 +1412,42 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Using BigBlueButton",
+                                    "Withdrawn from Pod version 3.8.2 (replaced by the meetings module)"
                                 ],
                                 "fr": [
                                     "Utilisation de BigBlueButton",
-                                    "[TODO] À retirer dans les futures versions de Pod"
+                                    "Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions)"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.8.2",
                             "pod_version_init": "3.1"
                         },
                         "USE_BBB_LIVE": {
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Using the BigBlueButton webinar delivery system",
+                                    "Withdrawn from Pod version 3.8.2 (replaced by the meetings module)"
                                 ],
                                 "fr": [
                                     "Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton",
-                                    "[TODO] À retirer dans les futures versions de Pod"
+                                    "Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions)"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.8.2",
                             "pod_version_init": "3.1"
                         },
                         "USE_LIVE_TRANSCRIPTION": {
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    "",
-                                    "Enable auto-transcritption for live events"
+                                    "Enable auto-transcription for live events",
+                                    ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Activer l’auto-transcription pour les directs"
+                                    "Activer l’auto-transcription pour les directs",
+                                    ""
                                 ]
                             },
                             "pod_version_end": "",
@@ -1468,6 +1621,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "WEBTV_MODE": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Webtv mode allows you to switch POD into a webtv application removing the connection buttons for example"
+                                ],
+                                "fr": [
+                                    "Mode webtv permet de basculer POD en une application webtv ensupprimant les boutons de connexions par exemple"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.7.0"
                         }
                     },
                     "title": {
@@ -1743,26 +1909,30 @@
                             "default_value": "",
                             "description": {
                                 "en": [
-                                    "URL of the SIPMediaGW server that manages webinars (e.g. `https://sipmediagw.univ.fr`)"
+                                    "URL of the SIPMediaGW server that manages webinars (e.g. `https://sipmediagw.univ.fr`)",
+                                    "Retired as of Pod version 3.8.2 (replaced by the meetings module, see live gateway)"
                                 ],
                                 "fr": [
-                                    "URL du serveur SIPMediaGW qui gère les webinaires (Ex: `https://sipmediagw.univ.fr`)"
+                                    "URL du serveur SIPMediaGW qui gère les webinaires (Ex: `https://sipmediagw.univ.fr`)",
+                                    "Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions, cf. passerelle de live)"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.8.2",
                             "pod_version_init": "3.6.0"
                         },
                         "MEETING_WEBINAR_SIPMEDIAGW_TOKEN": {
                             "default_value": "",
                             "description": {
                                 "en": [
-                                    "Bearer token for the SIPMediaGW server that manages webinars"
+                                    "Bearer token for the SIPMediaGW server that manages webinars",
+                                    "Retired as of Pod version 3.8.2 (see live gateway)"
                                 ],
                                 "fr": [
-                                    "Jeton bearer du serveur SIPMediaGW qui gère les webinaires"
+                                    "Jeton bearer du serveur SIPMediaGW qui gère les webinaires",
+                                    "Retiré à partir de la version 3.8.2 de Pod (cf. passerelle de live)"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.8.2",
                             "pod_version_init": "3.6.0"
                         },
                         "MEETING_WEBINAR_FIELDS": {
@@ -2037,6 +2207,37 @@
                     "title": {
                         "en": "",
                         "fr": "Configuration de l’application progressive_web_app"
+                    }
+                },
+                "quiz": {
+                    "description": {
+                        "en": [
+                            "Quiz App to add various questions on videos.",
+                            "Set `USE_QUIZ` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Quiz pour ajouter des questions sur les vidéos.",
+                            "Mettre `USE_QUIZ` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "USE_QUIZ": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "Activation of quizzes. Allows users to create, respond and use quizzes in videos."
+                                ],
+                                "fr": [
+                                    "Activation des quiz. Permet aux utilisateurs de créer, répondre et utiliser des quiz dans les vidéos."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.4"
+                        }
+                    },
+                    "title": {
+                        "en": "Quiz application configuration",
+                        "fr": "Configuration de l'application quiz"
                     }
                 },
                 "recorder": {
@@ -2856,7 +3057,7 @@
                                     "                _(",
                                     "                    \"In this field you can select and add additional owners to the \"",
                                     "                    \"video. These additional owners will have the same rights as \"",
-                                    "                    \"you except that they can’t delete this video.\"",
+                                    "                    \"you except that they can’t delete this media.\"",
                                     "                )",
                                     "            ],",
                                     "        ),",
@@ -3125,8 +3326,25 @@
                         ]
                     },
                     "settings": {
+                        "CAPTIONS_STRICT_ACCESSIBILITY": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "If True, subtitles will be generated strictly following accessibility standards.",
+                                    "A warning message will be displayed if the subtitles do not follow these standards,",
+                                    "even if the value is False."
+                                ],
+                                "fr": [
+                                    "Si True, les sous-titres seront générés en respectant strictement les normes",
+                                    "d’accessibilité. L'apparition d'un message d’avertissement sera affiché si les",
+                                    "sous-titres ne respectent pas ces normes, même si la valeur est à False."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.1"
+                        },
                         "CELERY_BROKER_URL": {
-                            "default_value": "redis://127.0.0.1:6379/5",
+                            "default_value": "redis://redis.localhost:6379/5",
                             "description": {
                                 "en": [
                                     ""
@@ -3251,7 +3469,7 @@
                                     "",
                                     "Il faut renseigner l’url du redis sur lequel Celery",
                                     "va chercher les ordres d’encodage et de transcription",
-                                    "par exemple : \"redis://redis:6379/7\""
+                                    "par exemple : \"redis://redis.localhost:6379/7\""
                                 ]
                             },
                             "pod_version_end": "",
@@ -3421,7 +3639,7 @@
                             "pod_version_init": "3.1.0"
                         },
                         "ES_URL": {
-                            "default_value": "[\"http://127.0.0.1:9200/\"]",
+                            "default_value": "[\"http://elasticsearch.localhost:9200/\"]",
                             "description": {
                                 "en": [
                                     ""
@@ -3702,6 +3920,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "NOTIFY_SENDER": {
+                            "default_value": "True",
+                            "description": {
+                                "en": [
+                                    "In unauthenticated mode, when using the contact form, sends a copy of the message to the address entered in the form."
+                                ],
+                                "fr": [
+                                    "En mode non authentifié, lors de l'utilisation du formulaire de contact, envoie une copie du message à l'adresse saisie dans le formulaire."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.2"
                         },
                         "SERVER_EMAIL": {
                             "default_value": "noreply",
@@ -4308,7 +4539,7 @@
                             "pod_version_init": "3.1"
                         },
                         "ALLOWED_HOSTS": {
-                            "default_value": "['localhost']",
+                            "default_value": "['pod.localhost']",
                             "description": {
                                 "en": [
                                     ""
@@ -4351,7 +4582,7 @@
                                     "    # },",
                                     "    \"default\": {",
                                     "        \"BACKEND\": \"django_redis.cache.RedisCache\",",
-                                    "        \"LOCATION\": \"redis://127.0.0.1:6379/1\",",
+                                    "        \"LOCATION\": \"redis://redis.localhost:6379/1\",",
                                     "        \"OPTIONS\": {",
                                     "            \"CLIENT_CLASS\": \"django_redis.client.DefaultClient\",",
                                     "        },",
@@ -4359,7 +4590,7 @@
                                     "    # Persistent cache setup for select2 (NOT DummyCache or LocMemCache).",
                                     "    \"select2\": {",
                                     "        \"BACKEND\": \"django_redis.cache.RedisCache\",",
-                                    "        \"LOCATION\": \"redis://127.0.0.1:6379/2\",",
+                                    "        \"LOCATION\": \"redis://redis.localhost:6379/2\",",
                                     "        \"OPTIONS\": {",
                                     "            \"CLIENT_CLASS\": \"django_redis.client.DefaultClient\",",
                                     "        },",
@@ -4667,6 +4898,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "ARCHIVE_HOW_MANY_DAYS": {
+                            "default_value": "365",
+                            "description": {
+                                "en": [
+                                    "Delay before an archived video is moved to archive_ROOT."
+                                ],
+                                "fr": [
+                                    "Délai avant qu'une vidéo archivée ne soit déplacée vers archive_ROOT."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.0"
                         },
                         "POD_ARCHIVE_AFFILIATION": {
                             "default_value": "[]",

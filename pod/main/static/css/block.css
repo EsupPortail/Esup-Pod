@@ -30,11 +30,11 @@
   padding: 5em 3em 3em 3em;
 }
 
-.edito-carousel .video_title {
+.edito-carousel .video-title {
   font-size: 36px;
   font-family: var(--bs-body-font-family);
 }
-.edito-carousel .video_title:after {
+.edito-carousel .video-title:after {
   content: "";
   display: block;
   width: 90px;

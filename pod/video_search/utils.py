@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 DEBUG = getattr(settings, "DEBUG", False)
 
-ES_URL = getattr(settings, "ES_URL", ["http://127.0.0.1:9200/"])
+ES_URL = getattr(settings, "ES_URL", ["http://elasticsearch.localhost:9200/"])
 ES_INDEX = getattr(settings, "ES_INDEX", "pod")
 ES_TIMEOUT = getattr(settings, "ES_TIMEOUT", 30)
 ES_MAX_RETRIES = getattr(settings, "ES_MAX_RETRIES", 10)

@@ -1,0 +1,26 @@
+{% load i18n %}
+{% load static %}
+
+{% spaceless %}
+  <div class="row category-modal-videos-list" id="category-modal-videos-list">
+    {% for video in videos %}
+      <div data-slug="{{ video.slug }}" class="infinite-item col-12 col-md-6 col-lg-3 mb-2">
+        {% include "videos/card_select.html" with category_modal="True" %}
+      </div>
+    {% endfor %}
+    <!-- Paginator -->
+    {% if videos.has_other_pages %}
+        <nav class="paginator">
+          <div class="paginator-content">
+            <button class="btn btn-lg btn-link previous_content {% if not videos.has_previous %}disabled{% endif %}" id="previous_content" data-pageaction="previous" title="{% trans 'Previous page' %}" onclick="manageCategoryVideosPagination(this)">
+              <i class="bi bi-arrow-left-circle" aria-hidden='true'></i>
+            </button>
+            <span class="pages_infos" id="pages_infos" data-current-page="{{ videos.number }}">{{ videos.number }}/{{ videos.paginator.num_pages }}</span>
+            <button class="btn btn-lg btn-link next_content {% if not videos.has_next %}disabled{% endif %}" id="next_content" data-pageaction="next" title="{% trans 'Next page' %}" onclick="manageCategoryVideosPagination(this)">
+              <i class="bi bi-arrow-right-circle" aria-hidden='true'></i>
+            </button>
+          </div>
+        </nav>
+    {% endif %}
+  </div>
+{% endspaceless %}

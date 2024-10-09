@@ -6,11 +6,8 @@
     class="carousel carousel-multi slide"
     data-bs-ride="{% if auto_slide %}carousel{% else %}false{% endif %}">
     <div class="carousel-inner" role="listbox">
-      {% for element in elements %} {% if forloop.first %}
-      <div class="carousel-item active">
-        {% else %}
-        <div class="carousel-item">
-          {% endif %}
+      {% for element in elements %}
+      <div class="carousel-item{% if forloop.first %} active{% endif %}">
           <div class="col-md-{% widthratio 12 multi_carousel_nb_card 1 %}">
             <div class="card border-0 bg-transparent">
               <a
@@ -55,7 +52,7 @@
           </div>
         </div>
         {% endfor %}
-      </div>
+
       {% if elements.count > multi_carousel_nb_card %}
       <button
         class="carousel-control-prev"
@@ -90,7 +87,8 @@
     {% endif %}
   </div>
   <script type="text/javascript">
-    let items = document.querySelectorAll('.carousel .carousel-item')
+    const container = document.querySelector("#carousel_{{ container.slug }}_{{ uniq_id }}");
+    let items = container.querySelectorAll('.carousel .carousel-item')
     items.forEach((el) => {
         const minPerSlide = {{ multi_carousel_nb_card }}
         let next = el.nextElementSibling

@@ -8,7 +8,7 @@ v1.2, 2023-08-30
 == Docker / docker compose avec volumes sur la machine hôte
 
 === Conteneur ElasticSearch
-http://localhost:9200
+http://elasticsearch.localhost:9200
 
 ==== elasticsearch:8.8.1
 ===== OS/ARCH
@@ -68,13 +68,13 @@ SECRET_KEY = "A_CHANGER"
 DEBUG = True
 # on précise ici qu'on utilise ES version 8
 ES_VERSION = 8
-ES_URL = ['http://elasticsearch:9200/']
+ES_URL = ['http://elasticsearch.localhost:9200/']
 
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis:6379/3",
+        "LOCATION": "redis://redis.localhost:6379/3",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -82,7 +82,7 @@ CACHES = {
     },
     "select2": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://redis:6379/2",
+        "LOCATION": "redis://redis.localhost:6379/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -90,7 +90,7 @@ CACHES = {
 }
 SESSION_ENGINE = "redis_sessions.session"
 SESSION_REDIS = {
-    "host": "redis",
+    "host": "redis.localhost",
     "port": 6379,
     "db": 4,
     "prefix": "session",
@@ -103,7 +103,7 @@ MIGRATION_MODULES = {'flatpages': 'pod.db_migrations'}
 
 # Si DOCKER_ENV = full il faut activer l'encodage et la transcription distante
 # USE_REMOTE_ENCODING_TRANSCODING = True
-# ENCODING_TRANSCODING_CELERY_BROKER_URL = "redis://redis:6379/7"
+# ENCODING_TRANSCODING_CELERY_BROKER_URL = "redis://redis.localhost:6379/7"
 
 # pour avoir le maximum de log sur la console
 LOGGING = {}
