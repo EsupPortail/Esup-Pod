@@ -220,7 +220,9 @@ def get_theme_children_as_list(channel: Channel, theme_children: QuerySet) -> li
     return children
 
 
-def _regroup_videos_by_theme(request, videos, page, full_path, channel, theme=None):  # noqa: C901
+def _regroup_videos_by_theme(
+    request, videos, page, full_path, channel, theme=None
+):  # noqa: C901
     """Regroup videos by theme.
 
     Args:
@@ -327,7 +329,7 @@ def _regroup_videos_by_theme(request, videos, page, full_path, channel, theme=No
                     "videos": videos,
                     "theme": theme,
                     "channel": channel,
-                    "full_path": full_path
+                    "full_path": full_path,
                 },
             )
 
@@ -378,12 +380,7 @@ def channel(request, slug_c, slug_t=None):
     if ORGANIZE_BY_THEME:
         # Specific case
         return _regroup_videos_by_theme(
-            request,
-            videos_list,
-            page,
-            full_path,
-            channel,
-            theme
+            request, videos_list, page, full_path, channel, theme
         )
 
     if request.is_ajax():
@@ -394,7 +391,7 @@ def channel(request, slug_c, slug_t=None):
                 "channel": channel,
                 "videos": videos,
                 "theme": theme,
-                "full_path": full_path
+                "full_path": full_path,
             },
         )
     return render(

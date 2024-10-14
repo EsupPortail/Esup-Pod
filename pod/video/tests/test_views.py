@@ -153,7 +153,10 @@ class ChannelTestView(TestCase):
         # Ajax request for videos is now in HTML format, not JSON
         self.assertEqual(response.context["videos"].paginator.count, 1)
         self.assertEqual(response.context["theme"], None)
-        self.assertTrue(b"id=\"videos_list\" data-nextpage=\"false\" data-countvideos=\"\">" in response.content)
+        self.assertTrue(
+            b'id="videos_list" data-nextpage="false" data-countvideos="">'
+            in response.content
+        )
 
         # Test ajax request, get only themes from channel view
         self.client = Client()
@@ -191,7 +194,10 @@ class ChannelTestView(TestCase):
         # Ajax request for videos is now in HTML format, not JSON
         self.assertEqual(response.context["videos"].paginator.count, 1)
         self.assertEqual(response.context["theme"], None)
-        self.assertTrue(b"id=\"videos_list\" data-nextpage=\"false\" data-countvideos=\"\">" in response.content)
+        self.assertTrue(
+            b'id="videos_list" data-nextpage="false" data-countvideos="">'
+            in response.content
+        )
 
 
 class MyChannelsTestView(TestCase):

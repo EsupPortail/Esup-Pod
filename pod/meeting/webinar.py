@@ -266,18 +266,15 @@ def toggle_rtmp_gateway(meet_id: int):
     # Room used (last 10 characters)
     room = meeting.get_hashkey()[-10:]
     # Search for the livestream used for this webinar
-    livestream = Livestream.objects.filter(
-        meeting=meeting, status=1
-    ).first()
+    livestream = Livestream.objects.filter(meeting=meeting, status=1).first()
     if livestream:
         # Toogle URL on SIPMediaGW server
-        sipmediagw_url = slash_join(
-            livestream.live_gateway.sipmediagw_server_url, "chat"
-        )
+        sipmediagw_url = slash_join(livestream.live_gateway.sipmediagw_server_url, "chat")
 
         # SIPMediaGW toogle request
         headers = {
-            "Authorization": "Bearer %s" % livestream.live_gateway.sipmediagw_server_token,
+            "Authorization": "Bearer %s"
+            % livestream.live_gateway.sipmediagw_server_token,
         }
         params = {"room": room, "toggle": True}
         response = requests.get(
@@ -306,14 +303,10 @@ def chat_rtmp_gateway(meet_id: int, msg: str):
     # Room used (last 10 characters)
     room = meeting.get_hashkey()[-10:]
     # Search for the livestream used for this webinar
-    livestream = Livestream.objects.filter(
-        meeting=meeting, status=1
-    ).first()
+    livestream = Livestream.objects.filter(meeting=meeting, status=1).first()
     if livestream:
         # Toogle URL on SIPMediaGW server
-        sipmediagw_url = slash_join(
-            livestream.live_gateway.sipmediagw_server_url, "chat"
-        )
+        sipmediagw_url = slash_join(livestream.live_gateway.sipmediagw_server_url, "chat")
 
         # SIPMediaGW toogle request
         headers = {
