@@ -61,9 +61,9 @@ function run(has_more_themes, Helper) {
   };
 
   /*
-  * Old source code: this function createVideoElement was used when response was in JSON format.
-  * No need now. Keep it, for historical purposes, until we've verified that the new code works in all cases.
-  */
+   * Old source code: this function createVideoElement was used when response was in JSON format.
+   * No need now. Keep it, for historical purposes, until we've verified that the new code works in all cases.
+   */
   const createVideoElement = (video) => {
     let has_password = () => {
       let span = ``;
