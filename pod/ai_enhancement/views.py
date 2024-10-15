@@ -34,7 +34,7 @@ AI_ENHANCEMENT_CLIENT_SECRET = getattr(
     settings, "AI_ENHANCEMENT_CLIENT_SECRET", "mocked_secret"
 )
 AI_ENHANCEMENT_TO_STAFF_ONLY = getattr(settings, "AI_ENHANCEMENT_TO_STAFF_ONLY", True)
-AI_ENHANCEMENT_PROXY_URL = getattr(settings, "AI_ENHANCEMENT_PROXY_URL", False)
+AI_ENHANCEMENT_PROXY_URL = getattr(settings, "AI_ENHANCEMENT_PROXY_URL", "")
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
