@@ -277,10 +277,7 @@ if (id_channel) {
   let tab_initial = new Array();
   let id_theme = document.getElementById("id_theme");
 
-  /**
-   * [update_theme description]
-   * @return {[type]} [description]
-   */
+  // Save all themes in tab_initial array, then remove all themes options from selection list
   const update_theme = function () {
     tab_initial = [];
     if (id_theme) {
