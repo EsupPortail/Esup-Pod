@@ -401,10 +401,6 @@ Set `USE_AI_ENHANCEMENT` to True to activate this application.<br>
   >> URL for General Terms and Conditions for API uses for the AI video enhancement.<br>
   >> Example: '<https://aristote.univ.fr/cgu>'<br>
   >> Project Link: <https://www.demainestingenieurs.centralesupelec.fr/aristote/><br>
-* `AI_ENHANCEMENT_PROXY_URL`
-  > valeur par défaut : ``
-  >> URL of proxy server for request comming from Aristote.<br>
-  >> Exemple : '<https://proxy_aristote.univ.fr>'<br>
 * `AI_ENHANCEMENT_CLIENT_ID`
   > default value: `mocked_id`
   >> The video enhancement AI client ID.<br>
