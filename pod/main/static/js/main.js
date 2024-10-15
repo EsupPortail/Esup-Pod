@@ -1120,6 +1120,12 @@ function show_form_theme(data) {
     top: parseInt(document.getElementById("div_form_theme").offsetTop, 10),
     behavior: "smooth",
   });
+  // Add CKEditor when edit a theme
+  // For all descriptions, except description help
+  const theme_descriptions = document.querySelectorAll("[id^='id_description']:not([id$='Help']")
+  theme_descriptions.forEach((theme_description) => {
+    CKEDITOR.replace(theme_description.id);
+  });
 }
 /**
  * [show_list_theme description]
