@@ -220,9 +220,7 @@ def get_theme_children_as_list(channel: Channel, theme_children: QuerySet) -> li
     return children
 
 
-def _regroup_videos_by_theme(
-    request, videos, page, full_path, channel, theme=None
-):  # noqa: C901
+def _regroup_videos_by_theme(request, videos, page, full_path, channel, theme=None):  # noqa: C901
     """Regroup videos by theme.
 
     Args:
