@@ -3589,9 +3589,9 @@ msgid ""
 "Please note that your event is in draft mode.<br>The following links contain "
 "a key allowing access. Anyone with this links can access it."
 msgstr ""
-"Veuillez noter que votre événement est en mode brouillon. <br>Les liens "
-"suivants contiennent une clé permettant l’accès. Toute personne disposant de "
-"ces liens peut y accéder."
+"Veuillez noter que votre événement est en mode brouillon.<br>"
+"Les liens suivants contiennent une clé permettant l’accès."
+"Toute personne disposant de ces liens peut y accéder."
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
@@ -8231,7 +8231,7 @@ msgstr "Supprimer cet enregistrement."
 
 #: pod/recorder/templates/recorder/link_record.html
 msgid "Preview record."
-msgstr "Enregistrement précédent."
+msgstr "Prévisualiser l’enregistrement."
 
 #: pod/recorder/templates/recorder/link_record.html
 msgid "Claim the record"
