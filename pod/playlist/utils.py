@@ -320,7 +320,7 @@ def user_can_see_playlist_video(
     request: WSGIRequest, video: Video, playlist: Playlist
 ) -> bool:
     """
-    Check if the authenticated can see the playlist video.
+    Check if the authenticated user can see the playlist video.
 
     Args:
         request (WSGIRequest): The WSGIRequest
@@ -331,7 +331,7 @@ def user_can_see_playlist_video(
         bool: True if the user can see the playlist video. False otherwise
     """
     is_password_protected = video.password is not None and video.password != ""
-    if is_password_protected or video.is_draft:
+    if is_password_protected or video.is_restricted or video.is_draft:
         if not request.user.is_authenticated:
             return False
         return (
