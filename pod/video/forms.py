@@ -693,7 +693,7 @@ class VideoForm(forms.ModelForm):
         ),
     )
 
-    def filter_fields_admin(form):
+    def filter_fields_admin(form) -> None:
         """Hide fields reserved for admins."""
         if form.is_superuser is False and form.is_admin is False:
             form.remove_field("date_added")

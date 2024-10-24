@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-26 13:54+0200\n"
+"POT-Creation-Date: 2024-10-17 14:28+0000\n"
 "PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -559,7 +559,13 @@ msgid "Open file in a new tab"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js
-msgid "Change"
+#, javascript-format
+msgid "Change image “%s”"
+msgstr ""
+
+#: pod/podfile/static/podfile/js/filewidget.js
+#, javascript-format
+msgid "Change file “%s”"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js

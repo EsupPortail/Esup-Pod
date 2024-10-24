@@ -270,7 +270,7 @@ class MeetingForm(forms.ModelForm):
         ),
     )
 
-    def filter_fields_admin(form):
+    def filter_fields_admin(form) -> None:
         """Remove fields for not admin user."""
         if form.is_superuser is False and form.is_admin is False:
             form.remove_field("owner")
@@ -280,7 +280,7 @@ class MeetingForm(forms.ModelForm):
         else:
             form.remove_field("days_of_week")
 
-    def filter_fields_webinar(form):
+    def filter_fields_webinar(form) -> None:
         """Display webinar fields only for authorized user."""
         if (
             form.manage_webinar is False
@@ -290,7 +290,7 @@ class MeetingForm(forms.ModelForm):
             form.remove_field("is_webinar")
             form.remove_field("enable_chat")
 
-    def clean_start_date(self):
+    def clean_start_date(self) -> None:
         """Check two things about start date.
 
         - the start date is before the recurrence deadline.
@@ -620,13 +620,13 @@ class InternalRecordingForm(forms.ModelForm):
         ),
     )
 
-    def filter_fields_admin(form):
+    def filter_fields_admin(form) -> None:
         """List fields, depends on user right."""
         if form.is_superuser is False and form.is_admin is False:
             form.remove_field("owner")
             form.remove_field("site")
 
-    def clean(self):
+    def clean(self) -> None:
         """Clean method."""
         cleaned_data = super(InternalRecordingForm, self).clean()
         try:
@@ -635,7 +635,7 @@ class InternalRecordingForm(forms.ModelForm):
         except ValidationError:
             self.add_error("source_url", _("Please enter a valid address"))
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Initialize recording form."""
         self.is_staff = (
             kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff

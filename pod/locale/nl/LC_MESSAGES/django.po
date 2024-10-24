@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-26 13:54+0200\n"
+"POT-Creation-Date: 2024-10-17 14:28+0000\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2771,15 +2771,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -3538,6 +3538,11 @@ msgstr ""
 
 #: pod/live/templates/live/event_card.html
 msgid "Delete this event"
+msgstr ""
+
+#: pod/live/templates/live/event_card.html
+#, python-format
+msgid "See the event “%(title)s”."
 msgstr ""
 
 #: pod/live/templates/live/event_card.html
@@ -4895,7 +4900,12 @@ msgid "Search a media"
 msgstr ""
 
 #: pod/main/templates/navbar.html
-msgid "Start media search on"
+#, python-format
+msgid "Type keyword here to search a media on %(TITLE_SITE)s"
+msgstr ""
+
+#: pod/main/templates/navbar.html
+msgid "Do the media search"
 msgstr ""
 
 #: pod/main/templates/navbar.html
@@ -5017,7 +5027,7 @@ msgstr ""
 
 #: pod/main/templates/navbar.html
 #: pod/recorder/templates/recorder/claim_record.html
-#: pod/recorder/templates/recorder/record_delete.html
+#: pod/recorder/templates/recorder/record_delete.html pod/recorder/views.py
 msgid "Claim a record"
 msgstr ""
 
@@ -5878,6 +5888,7 @@ msgstr ""
 
 #: pod/meeting/templates/meeting/link_meeting.html
 #: pod/video/templates/videos/link_video.html
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "More options"
 msgstr ""
 
@@ -6134,8 +6145,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
@@ -6149,8 +6160,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
@@ -6601,6 +6612,11 @@ msgstr ""
 msgid "videos"
 msgstr ""
 
+#: pod/playlist/templates/playlist/playlist_card.html
+#, python-format
+msgid "See the playlist “%(playlist_label)s”"
+msgstr ""
+
 #: pod/playlist/templates/playlist/playlist_link.html
 #, python-format
 msgid "Edit the playlist “%(name)s”"
@@ -6885,6 +6901,21 @@ msgstr ""
 
 #: pod/podfile/templates/podfile/list_folder_files.html
 msgid "Delete file"
+msgstr ""
+
+#: pod/podfile/templates/podfile/list_folder_files.html
+#, python-format
+msgid "See the picture “%(title)s”."
+msgstr ""
+
+#: pod/podfile/templates/podfile/list_folder_files.html
+#, python-format
+msgid "Download the file “%(title)s”."
+msgstr ""
+
+#: pod/podfile/templates/podfile/list_folder_files.html
+#, python-format
+msgid "Get the file “%(title)s”."
 msgstr ""
 
 #: pod/podfile/templates/podfile/userfolder.html
@@ -7683,19 +7714,19 @@ msgid "Date of recording."
 msgstr ""
 
 #: pod/recorder/templates/recorder/claim_record.html
-#, python-format
-msgid "%(counter)s record found"
-msgid_plural "%(counter)s records found"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pod/recorder/templates/recorder/claim_record.html
 msgid "No record found"
 msgstr ""
 
 #: pod/recorder/templates/recorder/claim_record.html
 msgid "There is no unassigned records"
 msgstr ""
+
+#: pod/recorder/templates/recorder/claim_record.html
+#, python-format
+msgid "%(counter)s record found."
+msgid_plural "%(counter)s records found."
+msgstr[0] ""
+msgstr[1] ""
 
 #: pod/recorder/templates/recorder/claim_record.html
 msgid "Record preview"
@@ -7705,16 +7736,23 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
-msgid "Delete this record."
+#, python-format
+msgid "Preview the record “%(title)s”"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
-msgid "Preview record."
+#, python-format
+msgid "Delete the record “%(title)s”"
+msgstr ""
+
+#: pod/recorder/templates/recorder/link_record.html
+#, python-format
+msgid "Claim the record “%(title)s”"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -8671,7 +8709,6 @@ msgid "Audio"
 msgstr ""
 
 #: pod/video/templates/channel/channel.html
-#: pod/video/templates/channel/my_channels.html
 #: pod/video/templates/channel/theme_edit.html
 #: pod/video/templates/videos/video_page_content.html
 msgid "Edit the channel"
@@ -8774,7 +8811,18 @@ msgid "Add new theme"
 msgstr ""
 
 #: pod/video/templates/channel/my_channels.html
-msgid "Number of video inside the channel"
+#, python-format
+msgid "Edit the channel “%(title)s”"
+msgstr ""
+
+#: pod/video/templates/channel/my_channels.html
+#, python-format
+msgid "See the channel “%(title)s”"
+msgstr ""
+
+#: pod/video/templates/channel/my_channels.html
+#, python-format
+msgid "%(count)s video(s) inside the channel “%(title)s”."
 msgstr ""
 
 #: pod/video/templates/channel/theme_edit.html

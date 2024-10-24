@@ -42,13 +42,13 @@ class ExternalRecordingForm(forms.ModelForm):
         ),
     )
 
-    def filter_fields_admin(form):
+    def filter_fields_admin(form) -> None:
         """List fields, depends on user right."""
         if not form.is_superuser and not form.is_admin:
             form.remove_field("owner")
             form.remove_field("site")
 
-    def clean(self):
+    def clean(self) -> None:
         """Clean method."""
         cleaned_data = super(ExternalRecordingForm, self).clean()
         try:

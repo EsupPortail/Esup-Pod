@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load ai_enhancement_template_tags %}
 
-<ul class="dropdown-menu" aria-labelledby="more-actions-row-btn-{{ video.id }}">
+<ul class="dropdown-menu" aria-label="{% trans 'More options' %}">
   {% if request.path == '/video/dashboard/' %}
     <li>
       <a href="{% url 'video:video' video.slug %}"

@@ -7,7 +7,7 @@
 
 # Affiche la liste des commandes disponibles
 help:
-	echo "Syntax: [make target] where target is in this list:"
+	@echo "Syntax: [make target] where target is in this list:"
 	@awk '/^#/{c=substr($$0,3);next}c&&/^[[:alpha:]][[:alnum:]_-]+:/{print substr($$1,1,index($$1,":")),c}1{c=0}' $(MAKEFILE_LIST) | column -s: -t
 
 # Démarre le serveur de test

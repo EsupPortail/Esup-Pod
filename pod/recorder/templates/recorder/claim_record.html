@@ -12,16 +12,12 @@
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Claim a record" %}</li>{% endblock %}
 
-{% block page_title %}
-{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}
-{% endblock %}
-
 {% block page_content %}
   {% if records.paginator.count == 0 %}
-    <h3>{% trans "No record found"%}</h3>
+    <h2>{% trans "No record found"%}</h2>
     <p class="alert alert-info">{% trans 'There is no unassigned records'%}</p>
   {% else %}
-    <h3>{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}</h3>
+    <h2>{% blocktrans count counter=records.paginator.count %}{{ counter }} record found.{% plural %}{{ counter }} records found.{% endblocktrans %}</h2>
     {% include "recorder/record_list.html" %}
   {% endif %}
 
