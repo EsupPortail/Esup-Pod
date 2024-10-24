@@ -107,7 +107,6 @@
 
         </div>
         <div class="themes-videos" data-channelurl="{% url 'channel-video:channel' slug_c=channel.slug %}">
-            <!-- THEME SECTION -->
             <section class="theme-section">
                 <p class="theme-count">
                     {% if not parent_title %}
@@ -151,7 +150,7 @@
                     {% include "videos/video_list.html" %}
                     {% if has_more_videos %}
                         <div class="float-end">
-                            <button class="btn btn-primary" id="load-more-videos" type="button">{% trans "Load more videos" %}</button>
+                            <button class="btn btn-primary" id="load-more-videos" type="button" data-countvideos="{{ count_videos }}">{% trans "Load more videos" %}</button>
                         </div>
                     {% endif %}
                 {% endif %}
@@ -244,9 +243,9 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-
-    <script  src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
-    <script>
+    {% if not organize_theme %}
+      <script src="{% static 'js/infinite.js' %}?ver={{VERSION}}"></script>
+      <script>
         {% if theme %}
         url = "{% url 'channel-video:theme' slug_c=channel.slug slug_t=theme.slug %}?page="
         {% else %}
@@ -277,14 +276,16 @@
                       footer.setAttribute("style", "height:auto;");
                       footer.classList.remove("fixed-bottom");
                     }
-             });
+                });
             }
         {% if videos.has_next %}
             page = parseInt("{{videos.next_page_number}}", 10)
             next_page = true
             var infinite = new InfiniteLoader(url, onBeforePageLoad, onAfterPageLoad, page = page);
         {% endif %}
-    </script>
+      </script>
+    {% endif %}
+
     <script>
         /** SHOW_ONLY_PARENT_THEMES **/
         {% get_setting "SHOW_ONLY_PARENT_THEMES" True as only_parent_theme %}

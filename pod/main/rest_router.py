@@ -21,9 +21,6 @@ import importlib
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile import rest_views as podfile_views
 
-if getattr(settings, "USE_BBB", True):
-    from pod.bbb import rest_views as bbb_views
-
 if getattr(settings, "USE_MEETING", True):
     from pod.meeting import rest_views as meeting_views
 
@@ -69,11 +66,6 @@ if getattr(settings, "USE_PODFILE", False):
     router.register(r"folders", podfile_views.UserFolderSerializerViewSet)
     router.register(r"files", podfile_views.CustomFileModelSerializerViewSet)
     router.register(r"images", podfile_views.CustomImageModelSerializerViewSet)
-
-if getattr(settings, "USE_BBB", True):
-    router.register(r"bbb_meeting", bbb_views.MeetingModelViewSet)
-    router.register(r"bbb_attendee", bbb_views.AttendeeModelViewSet)
-    router.register(r"bbb_livestream", bbb_views.LivestreamModelViewSet)
 
 if getattr(settings, "USE_MEETING", True):
     router.register(r"meeting_session", meeting_views.MeetingModelViewSet)

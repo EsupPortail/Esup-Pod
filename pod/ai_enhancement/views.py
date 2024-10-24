@@ -34,6 +34,7 @@ AI_ENHANCEMENT_CLIENT_SECRET = getattr(
     settings, "AI_ENHANCEMENT_CLIENT_SECRET", "mocked_secret"
 )
 AI_ENHANCEMENT_TO_STAFF_ONLY = getattr(settings, "AI_ENHANCEMENT_TO_STAFF_ONLY", True)
+AI_ENHANCEMENT_PROXY_URL = getattr(settings, "AI_ENHANCEMENT_PROXY_URL", "")
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
@@ -95,14 +96,16 @@ def send_enhancement_creation_request(
                     + request.user.username
                 ).encode("utf-8")
             ).hexdigest()
+            if AI_ENHANCEMENT_PROXY_URL:
+                base_url = AI_ENHANCEMENT_PROXY_URL
+            else:
+                base_url = url_scheme + "://" + get_current_site(request).domain
+
             creation_response = aristote.create_enhancement_from_url(
-                url_scheme + "://" + get_current_site(request).domain + mp3_url,
+                base_url + mp3_url,
                 ["video/mp3"],
                 end_user_identifier + "@%s" % get_current_site(request).domain,
-                url_scheme
-                + "://"
-                + get_current_site(request).domain
-                + reverse("ai_enhancement:webhook"),
+                base_url + reverse("ai_enhancement:webhook"),
             )
             if creation_response:
                 if creation_response["status"] == "OK":

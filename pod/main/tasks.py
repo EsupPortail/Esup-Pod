@@ -23,15 +23,6 @@ def task_start_transcript(self, video_id):
 
 
 @app.task(bind=True)
-def task_start_bbb_encode(self, meeting_id):
-    """Start BBB meeting encoding with Celery."""
-    print("CELERY START BBB ENCODE MEETING ID %s" % meeting_id)
-    from pod.bbb.bbb import bbb_encode_meeting
-
-    bbb_encode_meeting(meeting_id)
-
-
-@app.task(bind=True)
 def task_start_encode_studio(
     self, recording_id, video_output, videos, subtime, presenter
 ):

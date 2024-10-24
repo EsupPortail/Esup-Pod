@@ -1866,3 +1866,8 @@ body[data-admin-utc-offset]
 #link-video-modal .modal-dialog {
   font-size: 1.7em;
 }
+
+/* No crop on thumbnail */
+img.pod-thumbnail {
+  width: 100%;
+}

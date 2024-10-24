@@ -40,7 +40,7 @@ class LivestreamModelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Livestream
         fields = ("id", "meeting", "status", "event", "live_gateway_id")
-        filter_fields = "status"
+        filterset_fields = ["status"]
 
 
 class LivestreamModelViewSet(viewsets.ModelViewSet):
@@ -58,7 +58,7 @@ class LiveGatewayModelSerializer(serializers.HyperlinkedModelSerializer):
             "broadcaster_id",
             "site_id",
         )
-        filter_fields = "site_id"
+        filterset_fields = ["site_id"]
 
 
 class LiveGatewayModelViewSet(viewsets.ModelViewSet):

@@ -457,9 +457,7 @@ def check_source_url(source_url: str):  # noqa: C901
             # https://xxx/playback/presentation/2.0/playback.html?meetingId=ID
             # to https://xxx/playback/presentation/2.3/ID?meetingId=ID
             media_id = array_url[-1]
-            source_video_url = source_url.replace(
-                "/2.0/playback.html", "/2.3/" + media_id
-            ).replace("playback.html?meetingId=", "")
+            source_video_url = source_url
             format = "webm"
             platform = "BBB_Presentation"
         elif source_url.find("/playback/presentation/2.3/") != -1:

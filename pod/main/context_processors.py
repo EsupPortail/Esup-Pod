@@ -64,10 +64,6 @@ HIDE_CURSUS = getattr(django_settings, "HIDE_CURSUS", False)
 
 HIDE_TYPES = getattr(django_settings, "HIDE_TYPES", False)
 
-USE_BBB = getattr(django_settings, "USE_BBB", False)
-
-USE_BBB_LIVE = getattr(django_settings, "USE_BBB_LIVE", False)
-
 COOKIE_LEARN_MORE = getattr(django_settings, "COOKIE_LEARN_MORE", "")
 
 USE_OPENCAST_STUDIO = getattr(django_settings, "USE_OPENCAST_STUDIO", False)
@@ -133,8 +129,6 @@ def context_settings(request):
     new_settings["MAINTENANCE_MODE"] = maintenance_mode
     new_settings["MAINTENANCE_TEXT_SHEDULED"] = maintenance_text_sheduled
     new_settings["MAINTENANCE_SHEDULED"] = maintenance_sheduled
-    new_settings["USE_BBB"] = USE_BBB
-    new_settings["USE_BBB_LIVE"] = USE_BBB_LIVE
     new_settings["DARKMODE_ENABLED"] = DARKMODE_ENABLED
     new_settings["DYSLEXIAMODE_ENABLED"] = DYSLEXIAMODE_ENABLED
     new_settings["USE_OPENCAST_STUDIO"] = USE_OPENCAST_STUDIO

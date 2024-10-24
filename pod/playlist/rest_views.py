@@ -47,9 +47,9 @@ class PlaylistViewSet(viewsets.ModelViewSet):
 
     queryset = Playlist.objects.all()
     serializer_class = PlaylistSerializer
-    filter_fields = (
+    filterset_fields = [
         "owner",
         "visibility",
         "autoplay",
         "editable",
-    )
+    ]

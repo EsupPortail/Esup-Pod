@@ -31,7 +31,6 @@ USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", True)
 USE_CUT = getattr(settings, "USE_CUT", True)
 USE_MEETING = getattr(settings, "USE_MEETING", False)
 USE_XAPI = getattr(settings, "USE_XAPI", False)
-USE_BBB = getattr(settings, "USE_BBB", False)
 USE_OPENCAST_STUDIO = getattr(settings, "USE_OPENCAST_STUDIO", False)
 USE_PODFILE = getattr(settings, "USE_PODFILE", False)
 USE_PLAYLIST = getattr(settings, "USE_PLAYLIST", True)
@@ -124,7 +123,6 @@ urlpatterns += [
     ),
 ]
 
-# BBB: TODO REPLACE BBB BY MEETING
 if USE_MEETING:
     urlpatterns += [
         url(r"^meeting/", include("pod.meeting.urls")),
@@ -133,12 +131,6 @@ if USE_MEETING:
 if USE_XAPI:
     urlpatterns += [
         url(r"^xapi/", include("pod.xapi.urls")),
-    ]
-
-# BBB
-if USE_BBB:
-    urlpatterns += [
-        url(r"^bbb/", include("pod.bbb.urls")),
     ]
 
 # RECORDER
