@@ -17,7 +17,7 @@
         {% for theme in list_theme %}
           <tr id="theme_{{theme.id}}">
             <td class="theme_title">{{theme.title}}</td>
-            <td class="theme_description">{{theme.description|truncatewords:6 }}</td>
+            <td class="theme_description">{{theme.description|striptags|truncatewords:6 }}</td>
             <td class="theme_headband">{{theme.headband}}</td>
             <td class="text-center">
               <form class="get_form_theme d-inline-block" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="POST">

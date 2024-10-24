@@ -57,7 +57,7 @@
   {% if not meeting.is_personal %}
     <li><hr class="dropdown-divider"></li>
     <li>
-      <a href="{% url 'meeting:internal_recordings' meeting.meeting_id %}"
+      <a href="{% url 'meeting:delete' meeting.meeting_id %}"
          title="{% trans 'Delete the meeting'%} — {{ meeting.name }}"
          class="dropdown-item"
          data-bs-toggle="tooltip"

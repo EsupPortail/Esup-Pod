@@ -1227,12 +1227,20 @@ class FrontThemeForm(ThemeForm):
     """Form class for Theme editing in front."""
 
     def __init__(self, *args, **kwargs) -> None:
+        """Initialize a new FrontThemeForm instance."""
         self.THEME_FORM_FIELDS_HELP_TEXT = THEME_FORM_FIELDS_HELP_TEXT
 
         super(FrontThemeForm, self).__init__(*args, **kwargs)
 
         self.fields["channel"].widget = forms.HiddenInput()
         # self.fields["parentId"].label = _('Theme parent')
+        # Add CKEditor when edit a theme
+        self.fields["description"].widget = CKEditorWidget(config_name="complete")
+        for key, _value in settings.LANGUAGES:
+            self.fields["description_%s" % key.replace("-", "_")].widget = (
+                CKEditorWidget(config_name="complete")
+            )
+
         if "channel" in self.initial.keys():
             themes_queryset = Theme.objects.filter(channel=self.initial["channel"])
             self.fields["parentId"].queryset = themes_queryset
