@@ -135,8 +135,11 @@ async function bulkUpdate() {
       if (element.hasAttribute("multiple")) {
         // Get multiple values for channel or theme
         var options = element.selectedOptions;
-        for (var i=0, iLen=options.length; i<iLen; i++) {
-          formData.append(element.getAttribute("name"), options[i].value.toString());
+        for (var i = 0, iLen = options.length; i < iLen; i++) {
+          formData.append(
+            element.getAttribute("name"),
+            options[i].value.toString(),
+          );
         }
       } else {
         switch (element.type) {
@@ -340,9 +343,7 @@ if (id_channel) {
       id_channel.parentElement.querySelector(".select2-selection__rendered")
     ) {
       id_channel_observer.observe(
-        id_channel.parentElement.querySelector(
-          ".select2-selection__rendered",
-        ),
+        id_channel.parentElement.querySelector(".select2-selection__rendered"),
         id_channel_config,
       );
       select_channel_observer.disconnect();

@@ -1122,7 +1122,9 @@ function show_form_theme(data) {
   });
   // Add CKEditor when edit a theme
   // For all descriptions, except description help
-  const theme_descriptions = document.querySelectorAll("textarea[id^='id_description']")
+  const theme_descriptions = document.querySelectorAll(
+    "textarea[id^='id_description']",
+  );
   theme_descriptions.forEach((theme_description) => {
     CKEDITOR.replace(theme_description.id);
   });
