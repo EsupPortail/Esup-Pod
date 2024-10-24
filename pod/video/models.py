@@ -1005,22 +1005,17 @@ class Video(models.Model):
         """Get a thumbnail url for the video."""
         request = None
         if self.thumbnail and self.thumbnail.file_exist():
-            thumbnail_url = "".join(
-                [
-                    "//",
-                    get_current_site(request).domain,
-                    self.thumbnail.file.url,
-                ]
-            )
+            # Do not serve thumbnail url directly, as it can lead to the video URL
+            im = get_thumbnail(self.thumbnail.file, "x170", crop="center", quality=80)
+            return im.url
         else:
-            thumbnail_url = "".join(
+            return "".join(
                 [
                     "//",
                     get_current_site(request).domain,
                     static(DEFAULT_THUMBNAIL),
                 ]
             )
-        return thumbnail_url
 
     @property
     def get_thumbnail_admin(self):
