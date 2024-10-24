@@ -120,7 +120,7 @@
                             "default_value": "",
                             "description": {
                                 "en": [
-                                    "URL of proxy server for request comming from Aristote.",
+                                    "URL of proxy server for request coming from Aristote.",
                                     "Exemple : '<https://proxy_aristote.univ.fr>'"
                                 ],
                                 "fr": [
