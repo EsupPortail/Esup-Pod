@@ -1,14 +1,13 @@
 """Esup-pod URL configuration."""
 
 from django.conf import settings
-from django.conf.urls import url
 from django.conf.urls import include
-from django.urls import path
+from django.urls import path, re_path
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.i18n import JavaScriptCatalog
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 import importlib.util
 
@@ -27,17 +26,17 @@ from pod.main.rest_router import urlpatterns as rest_urlpatterns
 USE_CAS = getattr(settings, "USE_CAS", False)
 USE_SHIB = getattr(settings, "USE_SHIB", False)
 USE_OIDC = getattr(settings, "USE_OIDC", False)
-USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", True)
-USE_CUT = getattr(settings, "USE_CUT", True)
+USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", False)
+USE_CUT = getattr(settings, "USE_CUT", False)
 USE_MEETING = getattr(settings, "USE_MEETING", False)
 USE_XAPI = getattr(settings, "USE_XAPI", False)
 USE_OPENCAST_STUDIO = getattr(settings, "USE_OPENCAST_STUDIO", False)
 USE_PODFILE = getattr(settings, "USE_PODFILE", False)
-USE_PLAYLIST = getattr(settings, "USE_PLAYLIST", True)
-USE_DRESSING = getattr(settings, "USE_DRESSING", True)
+USE_PLAYLIST = getattr(settings, "USE_PLAYLIST", False)
+USE_DRESSING = getattr(settings, "USE_DRESSING", False)
 USE_SPEAKER = getattr(settings, "USE_SPEAKER", False)
-USE_IMPORT_VIDEO = getattr(settings, "USE_IMPORT_VIDEO", True)
-USE_QUIZ = getattr(settings, "USE_QUIZ", True)
+USE_IMPORT_VIDEO = getattr(settings, "USE_IMPORT_VIDEO", False)
+USE_QUIZ = getattr(settings, "USE_QUIZ", False)
 USE_AI_ENHANCEMENT = getattr(settings, "USE_AI_ENHANCEMENT", False)
 
 if USE_CAS:
@@ -45,75 +44,75 @@ if USE_CAS:
 
 
 urlpatterns = [
-    url("select2/", include("django_select2.urls")),
-    url("robots.txt", robots_txt),
-    url("info_pod.json", info_pod),
-    url(r"^admin/", admin.site.urls),
+    re_path("select2/", include("django_select2.urls")),
+    re_path("robots.txt", robots_txt),
+    re_path("info_pod.json", info_pod),
+    re_path(r"^admin/", admin.site.urls),
     # Translation
-    url(r"^i18n/", include("django.conf.urls.i18n")),
-    url(r"^jsi18n/$", JavaScriptCatalog.as_view(), name="javascript-catalog"),
+    re_path(r"^i18n/", include("django.conf.urls.i18n")),
+    re_path(r"^jsi18n/$", JavaScriptCatalog.as_view(), name="javascript-catalog"),
     # Maintenance mode
-    url(r"^maintenance/$", maintenance, name="maintenance"),
+    re_path(r"^maintenance/$", maintenance, name="maintenance"),
     # videos
-    url(r"^videos/", include("pod.video.urls-videos")),
-    url(r"^rss", include("pod.video.urls-rss")),
-    url(r"^video/", include("pod.video.urls")),
-    url(r"^ajax_calls/search_user/", user_autocomplete),
+    re_path(r"^videos/", include("pod.video.urls-videos")),
+    re_path(r"^rss", include("pod.video.urls-rss")),
+    re_path(r"^video/", include("pod.video.urls")),
+    re_path(r"^ajax_calls/search_user/", user_autocomplete),
     # my channels
-    url(r"^channels/", include("pod.video.urls-channels")),
+    re_path(r"^channels/", include("pod.video.urls-channels")),
     # recording
-    url(r"^record/", include("pod.recorder.urls")),
+    re_path(r"^record/", include("pod.recorder.urls")),
     # search
-    url(r"^search/", include("pod.video_search.urls")),
-    url(r"^authentication_", include("pod.authentication.urls")),
-    url(
+    re_path(r"^search/", include("pod.video_search.urls")),
+    re_path(r"^authentication_", include("pod.authentication.urls")),
+    re_path(
         r"^accounts/login/$",
         auth_views.LoginView.as_view(),
         {"redirect_authenticated_user": True},
         name="local-login",
     ),
-    url(
+    re_path(
         r"^accounts/logout/$",
         auth_views.LogoutView.as_view(),
         {"next_page": "/"},
         name="local-logout",
     ),
-    url(r"^accounts/change-password/$", auth_views.PasswordChangeView.as_view()),
-    url(r"^accounts/reset-password/$", auth_views.PasswordResetView.as_view()),
-    url(r"^accounts/userpicture/$", userpicture, name="userpicture"),
-    url(r"^accounts/set-notifications/$", set_notifications, name="set_notifications"),
+    re_path(r"^accounts/change-password/$", auth_views.PasswordChangeView.as_view()),
+    re_path(r"^accounts/reset-password/$", auth_views.PasswordResetView.as_view()),
+    re_path(r"^accounts/userpicture/$", userpicture, name="userpicture"),
+    re_path(r"^accounts/set-notifications/$", set_notifications, name="set_notifications"),
     # rest framework
-    url(r"^api-auth/", include("rest_framework.urls")),
-    url(r"^rest/", include(rest_urlpatterns)),
+    re_path(r"^api-auth/", include("rest_framework.urls")),
+    re_path(r"^rest/", include(rest_urlpatterns)),
     # contact_us
-    url(r"^contact_us/$", contact_us, name="contact_us"),
-    url(r"^captcha/", include("captcha.urls")),
-    url(r"^download/$", download_file, name="download_file"),
+    re_path(r"^contact_us/$", contact_us, name="contact_us"),
+    re_path(r"^captcha/", include("captcha.urls")),
+    re_path(r"^download/$", download_file, name="download_file"),
     # custom
-    url(r"^custom/", include("pod.custom.urls")),
+    re_path(r"^custom/", include("pod.custom.urls")),
     # pwa
-    url("", include("pwa.urls")),
+    re_path("", include("pwa.urls")),
 ]
 
 # WEBPUSH
 if USE_NOTIFICATIONS:
     urlpatterns += [
         # webpush
-        url(r"^webpush/", include("webpush.urls")),
+        re_path(r"^webpush/", include("webpush.urls")),
     ]
 
 # CAS
 if USE_CAS:
-    # urlpatterns += [url(r'^sso-cas/', include('cas.urls')), ]
+    # urlpatterns += [re_path(r'^sso-cas/', include('cas.urls')), ]
     urlpatterns += [
-        url(r"^sso-cas/login/$", cas_views.login, name="cas-login"),
-        url(r"^sso-cas/logout/$", cas_views.logout, name="cas-logout"),
+        re_path(r"^sso-cas/login/$", cas_views.login, name="cas-login"),
+        re_path(r"^sso-cas/logout/$", cas_views.logout, name="cas-logout"),
     ]
 
 # OIDC
 if USE_OIDC:
     urlpatterns += [
-        url(r"^oidc/", include("mozilla_django_oidc.urls")),
+        re_path(r"^oidc/", include("mozilla_django_oidc.urls")),
     ]
 
 # PWA
@@ -125,30 +124,30 @@ urlpatterns += [
 
 if USE_MEETING:
     urlpatterns += [
-        url(r"^meeting/", include("pod.meeting.urls")),
+        re_path(r"^meeting/", include("pod.meeting.urls")),
     ]
 
 if USE_XAPI:
     urlpatterns += [
-        url(r"^xapi/", include("pod.xapi.urls")),
+        re_path(r"^xapi/", include("pod.xapi.urls")),
     ]
 
 # RECORDER
 if USE_OPENCAST_STUDIO:
     urlpatterns += [
-        url(r"^studio/", include("pod.recorder.studio_urls")),
-        url(r"^digest/studio/", include("pod.recorder.studio_urls_digest")),
+        re_path(r"^studio/", include("pod.recorder.studio_urls")),
+        re_path(r"^digest/studio/", include("pod.recorder.studio_urls_digest")),
     ]
 
 # PODFILE
 if USE_PODFILE:
     urlpatterns += [
-        url(r"^podfile/", include("pod.podfile.urls")),
+        re_path(r"^podfile/", include("pod.podfile.urls")),
     ]
 
 for apps in settings.THIRD_PARTY_APPS:
     urlpatterns += [
-        url(r"^" + apps + "/", include("pod.%s.urls" % apps, namespace=apps)),
+        re_path(r"^" + apps + "/", include("pod.%s.urls" % apps, namespace=apps)),
     ]
 
 # CUT
@@ -193,7 +192,7 @@ if USE_SPEAKER:
 # IMPORT_VIDEO
 if USE_IMPORT_VIDEO:
     urlpatterns += [
-        url(
+        re_path(
             r"^import_video/", include("pod.import_video.urls", namespace="import_video")
         ),
     ]
@@ -207,7 +206,7 @@ if settings.DEBUG:
 
 # CHANNELS
 urlpatterns += [
-    url(r"^", include("pod.video.urls-channels-video")),
+    re_path(r"^", include("pod.video.urls-channels-video")),
 ]
 
 # Change admin site title

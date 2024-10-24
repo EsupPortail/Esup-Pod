@@ -8,7 +8,7 @@ from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 from django.forms.widgets import ClearableFileInput
 from django.utils.deconstruct import deconstructible
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from .models import Video, VideoVersion
 from .models import Channel

@@ -12,7 +12,7 @@ import hashlib
 
 from django.db import models
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.translation import get_language
 from django.template.defaultfilters import slugify
 from django.db.models import Sum
@@ -24,13 +24,13 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.templatetags.static import static
 from django.dispatch import receiver
 from django.db.models.signals import pre_delete, post_delete
-from tagging.models import Tag
+# from tagging.models import Tag
+from tagulous.models import TagField
 from datetime import date
 from django.utils import timezone
 from django.utils.html import format_html, escape
 from django.utils.text import capfirst
 from ckeditor.fields import RichTextField
-from tagging.fields import TagField
 from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
 from django.db.models.signals import pre_save
@@ -909,7 +909,6 @@ class Video(models.Model):
             newid = self.id
         newid = "%04d" % newid
         self.slug = "%s-%s" % (newid, slugify(self.title))
-        self.tags = remove_accents(self.tags)
         # self.set_password()
         super(Video, self).save(*args, **kwargs)
         # Ensure video folder will accord access to additional owners
@@ -1273,12 +1272,15 @@ class Video(models.Model):
                 "description": "%s" % self.description,
                 "thumbnail": "%s" % self.get_thumbnail_url(),
                 "duration": "%s" % self.duration,
+                """
                 "tags": list(
                     [
                         {"name": name[0], "slug": slugify(name)}
                         for name in Tag.objects.get_for_object(self).values_list("name")
                     ]
                 ),
+                """
+                "tags": self.tags.all().filter(site=current_site).values("title", "slug"),
                 "type": {"title": self.type.title, "slug": self.type.slug},
                 "disciplines": list(
                     self.discipline.all()
