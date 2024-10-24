@@ -1237,8 +1237,8 @@ class FrontThemeForm(ThemeForm):
         # Add CKEditor when edit a theme
         self.fields["description"].widget = CKEditorWidget(config_name="complete")
         for key, _value in settings.LANGUAGES:
-            self.fields["description_%s" % key.replace("-", "_")].widget = (
-                CKEditorWidget(config_name="complete")
+            self.fields["description_%s" % key.replace("-", "_")].widget = CKEditorWidget(
+                config_name="complete"
             )
 
         if "channel" in self.initial.keys():
