@@ -674,6 +674,7 @@ def dashboard(request):
     data_context["display_mode"] = display_mode
     data_context["video_list_template"] = template
     data_context["page_title"] = _("Dashboard")
+    data_context["listTheme"] = json.dumps(get_list_theme_in_form(form))
 
     return render(request, "videos/dashboard.html", data_context)
 

@@ -115,6 +115,21 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.7.0"
+                        },
+                        "AI_ENHANCEMENT_PROXY_URL": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "URL of proxy server for request coming from Aristote.",
+                                    "Exemple : '<https://proxy_aristote.univ.fr>'"
+                                ],
+                                "fr": [
+                                    "L’URL du serveur proxy pour les requêtes venant d'Aristote.",
+                                    "Exemple : '<https://proxy_aristote.univ.fr>'"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.2"
                         }
                     },
                     "title": {

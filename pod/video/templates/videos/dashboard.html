@@ -162,6 +162,7 @@
   var nextPage = false;
   var ownerFilter = {{ owner_filter|yesno:'true,false'}};
   var formFieldsets = {{ fieldsets_dashboard|safe }};
+  var listTheme = {{listTheme | safe}};
 
   {% if videos.has_next %}
     page = parseInt("{{videos.next_page_number}}", 10);
