@@ -1,3 +1,4 @@
+from django.urls import path
 from django.urls import re_path
 
 from pod.recorder.views import (
@@ -25,8 +26,8 @@ urlpatterns = [
         digest_hosts_json,
         name="hosts_json",
     ),
-    re_path(
-        r"^capture-admin/agents/(?P<name>.+)/configuration$",
+    path(
+        "capture-admin/agents/<path:name>/configuration",
         digest_capture_admin_configuration,
         name="capture_admin_config",
     ),
@@ -45,8 +46,8 @@ urlpatterns = [
         digest_available,
         name="services_available",
     ),
-    re_path(
-        r"^presenter_post$",
+    path(
+        "presenter_post",
         digest_presenter_post,
         name="presenter_post",
     ),
@@ -65,33 +66,33 @@ urlpatterns = [
         digest_studio_static,
         name="studio_static",
     ),
-    re_path(
-        r"^ingest/createMediaPackage$",
+    path(
+        "ingest/createMediaPackage",
         digest_ingest_createMediaPackage,
         name="ingest_createMediaPackage",
     ),
-    re_path(
-        r"^ingest/addDCCatalog$",
+    path(
+        "ingest/addDCCatalog",
         digest_ingest_addDCCatalog,
         name="ingest_addDCCatalog",
     ),
-    re_path(
-        r"^ingest/addAttachment$",
+    path(
+        "ingest/addAttachment",
         digest_ingest_addAttachment,
         name="ingest_addAttachment",
     ),
-    re_path(
-        r"^ingest/addTrack$",
+    path(
+        "ingest/addTrack",
         digest_ingest_addTrack,
         name="ingest_addTrack",
     ),
-    re_path(
-        r"^ingest/addCatalog$",
+    path(
+        "ingest/addCatalog",
         digest_ingest_addCatalog,
         name="ingest_addCatalog",
     ),
-    re_path(
-        r"^ingest/ingest$",
+    path(
+        "ingest/ingest",
         digest_ingest_ingest,
         name="ingest_ingest",
     ),

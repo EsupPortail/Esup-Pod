@@ -1,5 +1,6 @@
 """Esup-Pod podfile URL Configuration."""
 
+from django.urls import path
 from django.urls import re_path
 
 from .views import home, get_folder_files, get_file
@@ -16,7 +17,7 @@ from .views import remove_shared_user, add_shared_user
 app_name = "podfile"
 
 urlpatterns = [
-    re_path(r"^$", home, name="home"),
+    path("", home, name="home"),
     re_path(r"^(?P<type>[\-\d\w]+)$", home, name="home"),
     re_path(
         r"^get_folder_files/(?P<id>[\d]+)/$",
@@ -29,11 +30,11 @@ urlpatterns = [
         name="get_folder_files",
     ),
     re_path(r"^get_file/(?P<type>[\-\d\w]+)/$", get_file, name="get_file"),
-    re_path(r"^editfolder/$", editfolder, name="editfolder"),
-    re_path(r"^deletefolder/$", deletefolder, name="deletefolder"),
-    re_path(r"^deletefile/$", deletefile, name="deletefile"),
-    re_path(r"^changefile/$", changefile, name="changefile"),
-    re_path(r"^uploadfiles/$", uploadfiles, name="uploadfiles"),
+    path("editfolder/", editfolder, name="editfolder"),
+    path("deletefolder/", deletefolder, name="deletefolder"),
+    path("deletefile/", deletefile, name="deletefile"),
+    path("changefile/", changefile, name="changefile"),
+    path("uploadfiles/", uploadfiles, name="uploadfiles"),
     re_path(r"^ajax_calls/search_share_user/", user_share_autocomplete),
     re_path(r"^ajax_calls/folder_shared_with/", folder_shared_with),
     re_path(r"^ajax_calls/remove_shared_user/", remove_shared_user),

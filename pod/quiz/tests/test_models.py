@@ -6,7 +6,7 @@ test with `python manage.py test pod.quiz.tests.test_models`
 from unittest.mock import patch
 from django.contrib.auth.models import User
 from django.forms import ValidationError
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.test import TestCase
 from pod.quiz.forms import (
     MultipleChoiceQuestionForm,

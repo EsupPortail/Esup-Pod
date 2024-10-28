@@ -84,12 +84,11 @@ class OwnerInline(admin.StackedInline):
 
 
 class UserAdmin(BaseUserAdmin):
+    @admin.display(description=_("Email"))
     def clickable_email(self, obj):
         email = obj.email
         return format_html('<a href="mailto:{}">{}</a>', email, email)
 
-    clickable_email.allow_tags = True
-    clickable_email.short_description = _("Email")
     list_display = (
         "username",
         "last_name",
@@ -130,10 +129,9 @@ class UserAdmin(BaseUserAdmin):
         kwargs["widget"] = widgets.FilteredSelectMultiple(db_field.verbose_name, False)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
+    @admin.display(description=_("Establishment"))
     def owner_establishment(self, obj) -> str:
         return "%s" % Owner.objects.get(user=obj).establishment
-
-    owner_establishment.short_description = _("Establishment")
 
     ordering = (
         "-is_superuser",
@@ -188,6 +186,7 @@ class GroupAdmin(admin.ModelAdmin):
         return _inlines
 
 
+@admin.register(AccessGroup)
 class AccessGroupAdmin(admin.ModelAdmin):
     # form = AccessGroupAdminForm
     # search_fields = ["user__username__icontains", "user__email__icontains"]
@@ -200,6 +199,7 @@ class AccessGroupAdmin(admin.ModelAdmin):
     )
 
 
+@admin.register(Owner)
 class OwnerAdmin(admin.ModelAdmin):
     # form = AdminOwnerForm
     autocomplete_fields = ["user", "accessgroups"]
@@ -225,5 +225,3 @@ admin.site.register(User, UserAdmin)
 # Register the new Group ModelAdmin instead of the original one.
 admin.site.unregister(Group)
 admin.site.register(Group, GroupAdmin)
-admin.site.register(Owner, OwnerAdmin)
-admin.site.register(AccessGroup, AccessGroupAdmin)

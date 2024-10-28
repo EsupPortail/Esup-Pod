@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required

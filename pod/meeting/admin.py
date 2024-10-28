@@ -212,6 +212,7 @@ class MeetingSessionLogAdmin(admin.ModelAdmin):
         "creator",
     ]
 
+    @admin.display(description=_("Moderators"))
     def decrypt_mods_as_json(self, obj):
         """Decrypt moderators value to json and show it pretty."""
         if not obj:
@@ -219,18 +220,13 @@ class MeetingSessionLogAdmin(admin.ModelAdmin):
         moderators = "<pre>{}</pre>".format(obj.moderators.replace(" ", "&nbsp;"))
         return SafeText(moderators)
 
-    decrypt_mods_as_json.short_description = _("Moderators")
-    decrypt_mods_as_json.allow_tags = True
-
+    @admin.display(description=_("Viewers"))
     def decrypt_viewers_as_json(self, obj):
         """Decrypt viewers value to json and show it pretty."""
         if not obj:
             return _("Mode insert, nothing to display")
         viewers = "<pre>{}</pre>".format(obj.viewers.replace(" ", "&nbsp;"))
         return SafeText(viewers)
-
-    decrypt_viewers_as_json.short_description = _("Viewers")
-    decrypt_viewers_as_json.allow_tags = True
 
     list_filter = ["creation_date"]
     readonly_fields = (

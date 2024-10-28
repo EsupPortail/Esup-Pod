@@ -24,6 +24,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.templatetags.static import static
 from django.dispatch import receiver
 from django.db.models.signals import pre_delete, post_delete
+
 # from tagging.models import Tag
 from tagulous.models import TagField
 from datetime import date

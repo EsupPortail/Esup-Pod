@@ -231,7 +231,7 @@ def contact_us(request):
     prefix = "https://" if request.is_secure() else "http://"
     home_page = "".join([prefix, get_current_site(request).domain])
     url_referrer = (
-        request.META["HTTP_REFERER"] if request.META.get("HTTP_REFERER") else home_page
+        request.headers["referer"] if request.headers.get("referer") else home_page
     )
 
     form = ContactUsForm(

@@ -1,11 +1,13 @@
-from django.urls import re_path
+"""Esup-Pod urls-rss."""
+
+from django.urls import path, re_path
 from .feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 
 app_name = "rss-video"
 
 urlpatterns = [
-    re_path(r"^-video/$", RssSiteVideosFeed(), name="rss-video"),
-    re_path(r"^-audio/$", RssSiteAudiosFeed(), name="rss-audio"),
+    path("-video/", RssSiteVideosFeed(), name="rss-video"),
+    path("-audio/", RssSiteAudiosFeed(), name="rss-audio"),
     re_path(
         r"^-video/(?P<slug_c>[\-\d\w]+)/$",
         RssSiteVideosFeed(),

@@ -4,7 +4,7 @@ import uuid
 from json import JSONDecodeError, loads
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from pod.video.models import Video
 

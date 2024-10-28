@@ -7,7 +7,7 @@ from django.core.files import File
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.template.defaultfilters import slugify
 
@@ -38,12 +38,12 @@ __NAME__ = _("Enrichment")
 def enrichment_to_vtt(list_enrichment, video) -> str:
     webvtt = WebVTT()
     for enrich in list_enrichment:
-        start = datetime.datetime.fromtimestamp(enrich.start, tz=timezone.utc).strftime(
-            "%H:%M:%S.%f"
-        )[:-3]
-        end = datetime.datetime.fromtimestamp(enrich.end, tz=timezone.utc).strftime(
-            "%H:%M:%S.%f"
-        )[:-3]
+        start = datetime.datetime.fromtimestamp(
+            enrich.start, tz=datetime.timezone.utc
+        ).strftime("%H:%M:%S.%f")[:-3]
+        end = datetime.datetime.fromtimestamp(
+            enrich.end, tz=datetime.timezone.utc
+        ).strftime("%H:%M:%S.%f")[:-3]
         url = enrichment_to_vtt_type(enrich)
         caption = Caption(
             "{0}".format(start),

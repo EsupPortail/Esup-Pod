@@ -47,14 +47,14 @@ urlpatterns = [
         update_video_owner,
         name="update_video_owner",
     ),
-    re_path(r"^updateowner/owners/$", filter_owners, name="filter_owners"),
+    path("updateowner/owners/", filter_owners, name="filter_owners"),
     re_path(
         r"^updateowner/videos/(?P<user_id>[\d]+)/$",
         filter_videos,
         name="filter_videos",
     ),
-    re_path(r"^add/$", video_add, name="video_add"),
-    re_path(r"^edit/$", video_edit, name="video_edit"),
+    path("add/", video_add, name="video_add"),
+    path("edit/", video_edit, name="video_edit"),
     re_path(r"^edit/(?P<slug>[\-\d\w]+)/$", video_edit, name="video_edit"),
     re_path(
         r"^edit_access_tokens/(?P<slug>[\-\d\w]+)/$",
@@ -73,7 +73,9 @@ urlpatterns = [
     ),
     re_path(r"^notes/(?P<slug>[\-\d\w]+)/$", video_notes, name="video_notes"),
     re_path(r"^count/(?P<id>[\d]+)/$", video_count, name="video_count"),
-    re_path(r"^marker/(?P<id>[\d]+)/(?P<time>[\d]+)/$", video_marker, name="video_marker"),
+    re_path(
+        r"^marker/(?P<id>[\d]+)/(?P<time>[\d]+)/$", video_marker, name="video_marker"
+    ),
     re_path(r"^version/(?P<id>[\d]+)/$", video_version, name="video_version"),
     re_path(
         "api/chunked_upload_complete/",
@@ -113,8 +115,8 @@ if getattr(settings, "OEMBED", False):
 # VIDEO CATEGORY
 if getattr(settings, "USER_VIDEO_CATEGORY", False):
     urlpatterns += [
-        re_path(r"^categories/$", get_categories_list, name="get_categories_list"),
-        re_path(r"^category/add/$", add_category, name="add_category"),
+        path("categories/", get_categories_list, name="get_categories_list"),
+        path("category/add/", add_category, name="add_category"),
         re_path(
             r"^category/edit/(?P<c_slug>[\-\d\w]+)/$", edit_category, name="edit_category"
         ),
@@ -127,7 +129,7 @@ if getattr(settings, "USER_VIDEO_CATEGORY", False):
 
 if getattr(settings, "USE_STATS_VIEW", False):
     urlpatterns += [
-        re_path(r"^stats_view/$", stats_view, name="video_stats_view"),
+        path("stats_view/", stats_view, name="video_stats_view"),
         re_path(
             r"^stats_view/(?P<slug>[-\w]+)/$",
             stats_view,

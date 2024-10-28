@@ -25,7 +25,10 @@ class xapi_statement_TestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
 
         response = self.client.post(
-            good_url, json.dumps({}), "json", HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            good_url,
+            json.dumps({}),
+            "json",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)  # 200
         self.assertEqual(response["Content-Type"], "application/json")

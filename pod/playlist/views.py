@@ -224,7 +224,7 @@ def toggle_render_playlist_user_has_right(
                 messages.ERROR,
                 _("The password is incorrect."),
             )
-            return redirect(request.META["HTTP_REFERER"])
+            return redirect(request.headers["referer"])
     else:
         form = PlaylistPasswordForm()
         return render(
@@ -346,7 +346,7 @@ def remove_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
                 "state": "out-playlist",
             }
         )
-    return redirect(request.META["HTTP_REFERER"])
+    return redirect(request.headers["referer"])
 
 
 @login_required(redirect_field_name="referrer")
@@ -361,7 +361,7 @@ def add_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
                 "state": "in-playlist",
             }
         )
-    return redirect(request.META["HTTP_REFERER"])
+    return redirect(request.headers["referer"])
 
 
 @login_required(redirect_field_name="referrer")
@@ -532,7 +532,7 @@ def favorites_save_reorganisation(request: WSGIRequest, slug: str):
                     playlist_video_1.update(rank=video_2_rank)
                     playlist_video_2.update(rank=video_1_rank)
 
-        return redirect(request.META["HTTP_REFERER"])
+        return redirect(request.headers["referer"])
     else:
         raise Http404()
 
@@ -556,7 +556,7 @@ def start_playlist(request: WSGIRequest, slug: str, video: Video = None):
                 messages.add_message(
                     request, messages.ERROR, _("The password is incorrect.")
                 )
-                return redirect(request.META["HTTP_REFERER"])
+                return redirect(request.headers["referer"])
         else:
             form = PlaylistPasswordForm()
             return render(

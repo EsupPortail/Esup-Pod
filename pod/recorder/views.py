@@ -903,8 +903,8 @@ def digest_hosts_json(request):
         if (request.is_secure())
         else "http://%s" % request.get_host()
     )
-    server_ip = request.META.get(
-        "HTTP_X_FORWARDED_FOR", request.META.get("REMOTE_ADDR", "")
+    server_ip = request.headers.get(
+        "x-forwarded-for", request.META.get("REMOTE_ADDR", "")
     )
     server_ip = server_ip.split(",")[0] if server_ip else None
 

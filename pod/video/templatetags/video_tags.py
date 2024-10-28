@@ -5,6 +5,7 @@ from django.utils.text import capfirst
 from django.urls import reverse
 from django.contrib.sites.shortcuts import get_current_site
 from django.template import TemplateSyntaxError
+
 # from django.apps.registry import apps
 from django.utils.translation import gettext_lazy as _
 
@@ -150,6 +151,7 @@ def get_video_infos(video):
         },
     }
 
+
 """
 class getTagsForModelNode(TagsForModelNode):
     def __init__(self, model, context_var, counts):
@@ -218,6 +220,7 @@ def do_tags_for_model(parser, token):
     else:
         return getTagsForModelNode(bits[1], bits[3], counts=True)
 """
+
 
 def do_tag_cloud_for_model(parser, token):
     """

@@ -1,7 +1,7 @@
 """Esup-Pod speaker models."""
 
 from django.db import models
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from pod.video.models import Video
 
 

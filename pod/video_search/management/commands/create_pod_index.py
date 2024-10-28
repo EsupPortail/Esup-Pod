@@ -24,4 +24,6 @@ class Command(BaseCommand):
                 self.style.WARNING("Pod index not found on ElasticSearch server.")
             )
         if create_index_es():
-            self.stdout.write(self.style.SUCCESS("Video index successfully created on ES."))
+            self.stdout.write(
+                self.style.SUCCESS("Video index successfully created on ES.")
+            )

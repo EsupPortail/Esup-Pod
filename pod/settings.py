@@ -167,7 +167,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 USE_I18N = True
-USE_L10N = True
 LOCALE_PATHS = (os.path.join(BASE_DIR, "pod", "locale"),)
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"

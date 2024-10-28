@@ -39,7 +39,7 @@ class FlatpageTestCase(TestCase):
         when a Flatpage has been saved with the minimum of attributes.
         """
         flatPage = FlatPage.objects.get(url="/")
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             flatPage.sites.all(),
             Site.objects.filter(id=SITE_ID),
             transform=lambda x: x,
@@ -53,7 +53,7 @@ class FlatpageTestCase(TestCase):
     def test_Flatpage_with_attributs(self):
         """Test attributs when a Flatpage have many attributs."""
         flatPage = FlatPage.objects.get(url="/home/")
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             flatPage.sites.all(),
             Site.objects.filter(id=SITE_ID),
             transform=lambda x: x,

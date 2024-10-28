@@ -108,9 +108,7 @@ def create_index_es():
         logger.info(create)
         return create
     except TransportError as e:
-        logger.error(
-            "An error occured during index creation: %s" % e.message
-        )
+        logger.error("An error occured during index creation: %s" % e.message)
         return False
 
 
@@ -128,7 +126,5 @@ def delete_index_es():
         logger.info(delete)
         return delete
     except TransportError as e:
-        logger.error(
-            "An error occured during index video deletion: %s" % e.message
-        )
+        logger.error("An error occured during index video deletion: %s" % e.message)
         return False

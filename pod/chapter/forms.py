@@ -3,7 +3,7 @@
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from pod.chapter.models import Chapter
 from pod.chapter.utils import vtt_to_chapter

@@ -17,6 +17,7 @@ from pod.video.models import Type
 RECORDER_ADDITIONAL_FIELDS = getattr(settings, "RECORDER_ADDITIONAL_FIELDS", ())
 
 
+@admin.register(Recording)
 class RecordingAdmin(admin.ModelAdmin):
     list_display = ("title", "user", "source_file", "date_added")
     list_display_links = ("title",)
@@ -39,20 +40,20 @@ class RecordingAdmin(admin.ModelAdmin):
         return qs
 
 
+@admin.register(RecordingFileTreatment)
 class RecordingFileTreatmentAdmin(admin.ModelAdmin):
     list_display = ("id", "file")
     actions = ["delete_source"]
     autocomplete_fields = ["recorder"]
 
+    @admin.action(
+        description=_("Delete selected Recording file treatments + source files")
+    )
     def delete_source(self, request, queryset) -> None:
         for item in queryset:
             if os.path.exists(item.file):
                 os.remove(item.file)
             item.delete()
-
-    delete_source.short_description = _(
-        "Delete selected Recording file treatments + source files"
-    )
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "recorder":
@@ -66,6 +67,7 @@ class RecordingFileTreatmentAdmin(admin.ModelAdmin):
         return qs
 
 
+@admin.register(Recorder)
 class RecorderAdmin(admin.ModelAdmin):
     search_fields = ["name"]
     autocomplete_fields = [
@@ -150,6 +152,7 @@ class RecorderAdmin(admin.ModelAdmin):
     readonly_fields = []
 
 
+@admin.register(RecordingFile)
 class RecordingFileAdmin(admin.ModelAdmin):
     list_display = ("id", "file", "recorder")
     autocomplete_fields = ["recorder"]
@@ -164,9 +167,3 @@ class RecordingFileAdmin(admin.ModelAdmin):
         if (db_field.name) == "recorder":
             kwargs["queryset"] = Recorder.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-
-admin.site.register(Recording, RecordingAdmin)
-admin.site.register(RecordingFile, RecordingFileAdmin)
-admin.site.register(RecordingFileTreatment, RecordingFileTreatmentAdmin)
-admin.site.register(Recorder, RecorderAdmin)

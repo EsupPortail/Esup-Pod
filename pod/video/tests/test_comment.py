@@ -110,7 +110,7 @@ class TestComment(TestCase):
     def test_get_only_parent_comment(self):
         url = reverse("video:get_comments", kwargs={"video_slug": self.video.slug})
         response = self.client.get(
-            url, {"only": "parents"}, HTTP_ACCEPT="application/json"
+            url, {"only": "parents"}, headers={"accept": "application/json"}
         )
         self.assertEqual(response.resolver_match.func, get_comments)
         # Check response is 200 OK and contents the expected comment
@@ -154,7 +154,7 @@ class TestComment(TestCase):
                 "video_slug": self.video.slug,
             },
         )
-        response = self.client.get(url, HTTP_ACCEPT="application/json")
+        response = self.client.get(url, headers={"accept": "application/json"})
         self.assertEqual(response.resolver_match.func, get_children_comment)
         # Check response is 200 OK and contents the expected comment
         owner_user_full_name = "{0} {1}".format(

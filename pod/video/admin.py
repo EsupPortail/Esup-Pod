@@ -108,6 +108,7 @@ class VideoVersionInline(admin.StackedInline):
     can_delete = False
 
 
+@admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):
     list_display = (
         "id",
@@ -176,11 +177,10 @@ class VideoAdmin(admin.ModelAdmin):
 
     inlines += [ChapterInline]
 
+    @admin.display(description=_("Establishment"))
     def get_owner_establishment(self, obj):
         owner = obj.owner
         return owner.owner.establishment
-
-    get_owner_establishment.short_description = _("Establishment")
 
     # Ajout de l'attribut 'establishment'
     if USE_ESTABLISHMENT_FIELD:
@@ -190,14 +190,12 @@ class VideoAdmin(admin.ModelAdmin):
             "owner__owner__establishment",
         )
 
+    @admin.display(description=_("Owner"))
     def get_owner_by_name(self, obj):
         owner = obj.owner
         url = url_to_edit_object(owner)
         title = "%s %s (%s)" % (owner.first_name, owner.last_name, url)
         return mark_safe(title)
-
-    get_owner_by_name.allow_tags = True
-    get_owner_by_name.short_description = _("Owner")
 
     def get_form(self, request, obj=None, **kwargs):
         if request.user.is_superuser:
@@ -229,27 +227,24 @@ class VideoAdmin(admin.ModelAdmin):
     else:
         actions = ["encode_video", "draft_video"]
 
+    @admin.action(description=_("Set as draft"))
     def draft_video(self, request, queryset):
         for item in queryset:
             item.is_draft = True
             item.save()
 
-    draft_video.short_description = _("Set as draft")
-
+    @admin.action(description=_("Encode selected"))
     def encode_video(self, request, queryset):
         for item in queryset:
             item.launch_encode = True
             item.save()
 
-    encode_video.short_description = _("Encode selected")
-
+    @admin.action(description=_("Transcript selected"))
     def transcript_video(self, request, queryset):
         for item in queryset:
             if item.get_video_mp3() and not item.encoding_in_progress:
                 transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
                 transcript_video(item.id)
-
-    transcript_video.short_description = _("Transcript selected")
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -288,6 +283,7 @@ class VideoAdmin(admin.ModelAdmin):
         )
 
 
+@admin.register(UpdateOwner)
 class updateOwnerAdmin(admin.ModelAdmin):
     """Handle an admin page to change owner of several videos."""
 
@@ -370,9 +366,11 @@ class ChannelAdminForm(ChannelForm):
         }
 
 
+@admin.register(Channel)
 class ChannelAdmin(admin.ModelAdmin):
     search_fields = ["title"]
 
+    @admin.display(description=_("Owners"))
     def get_owners(self, obj):
         owners = []
         for owner in obj.owners.all():
@@ -381,9 +379,6 @@ class ChannelAdmin(admin.ModelAdmin):
             owners.append(mark_safe(title))
         titles = ", ".join(owners)
         return mark_safe(titles)
-
-    get_owners.allow_tags = True
-    get_owners.short_description = _("Owners")
 
     list_display = (
         "title",
@@ -440,6 +435,7 @@ class ChannelAdmin(admin.ModelAdmin):
         return qs
 
 
+@admin.register(Theme)
 class ThemeAdmin(admin.ModelAdmin):
     form = ThemeForm
     list_display = ("title", "channel")
@@ -479,6 +475,7 @@ class ThemeAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+@admin.register(Type)
 class TypeAdmin(TranslationAdmin):
     form = TypeForm
     prepopulated_fields = {"slug": ("title",)}
@@ -519,6 +516,7 @@ class TypeAdmin(TranslationAdmin):
         return qs
 
 
+@admin.register(Discipline)
 class DisciplineAdmin(TranslationAdmin):
     form = DisciplineForm
     prepopulated_fields = {"slug": ("title",)}
@@ -559,6 +557,7 @@ class DisciplineAdmin(TranslationAdmin):
         return qs
 
 
+@admin.register(Notes)
 class NotesAdmin(admin.ModelAdmin):
     list_display = ("video", "user")
     autocomplete_fields = ["video", "user"]
@@ -583,6 +582,7 @@ class NotesAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+@admin.register(AdvancedNotes)
 class AdvancedNotesAdmin(admin.ModelAdmin):
     list_display = ("video", "user", "timestamp", "status", "added_on", "modified_on")
     search_fields = ["note"]
@@ -608,6 +608,7 @@ class AdvancedNotesAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+@admin.register(NoteComments)
 class NoteCommentsAdmin(admin.ModelAdmin):
     autocomplete_fields = ["user", "parentNote", "parentCom"]
     search_fields = ["comment"]
@@ -638,17 +639,18 @@ class NoteCommentsAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+@admin.register(VideoToDelete)
 class VideoToDeleteAdmin(admin.ModelAdmin):
     list_display = ("date_deletion", "get_videos")
     list_filter = ["date_deletion"]
     autocomplete_fields = ["video"]
 
+    @admin.display(description="video")
     def get_videos(self, obj):
         return obj.video.count()
 
-    get_videos.short_description = "video"
 
-
+@admin.register(ViewCount)
 class ViewCountAdmin(admin.ModelAdmin):
     list_display = ("video", "date", "count")
     readonly_fields = ("video", "date", "count")
@@ -660,6 +662,7 @@ class ViewCountAdmin(admin.ModelAdmin):
         return qs
 
 
+@admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     """Admin for the Category model."""
 
@@ -667,30 +670,15 @@ class CategoryAdmin(admin.ModelAdmin):
     readonly_fields = ("slug",)
     # list_filter = ["owner"]
 
+    @admin.display(description="Videos")
     def videos_count(self, obj) -> int:
         return obj.video.all().count()
 
-    videos_count.short_description = "Videos"
 
-
+@admin.register(VideoAccessToken)
 class VideoAccessTokenAdmin(admin.ModelAdmin):
     """Admin for the VideoAccessToken model."""
 
     list_display = ("video", "token", "name")
     readonly_fields = ("token",)
     autocomplete_fields = ["video"]
-
-
-admin.site.register(Channel, ChannelAdmin)
-admin.site.register(Type, TypeAdmin)
-admin.site.register(Discipline, DisciplineAdmin)
-admin.site.register(Theme, ThemeAdmin)
-admin.site.register(Video, VideoAdmin)
-admin.site.register(UpdateOwner, updateOwnerAdmin)
-admin.site.register(Notes, NotesAdmin)
-admin.site.register(AdvancedNotes, AdvancedNotesAdmin)
-admin.site.register(NoteComments, NoteCommentsAdmin)
-admin.site.register(VideoToDelete, VideoToDeleteAdmin)
-admin.site.register(ViewCount, ViewCountAdmin)
-admin.site.register(Category, CategoryAdmin)
-admin.site.register(VideoAccessToken, VideoAccessTokenAdmin)
