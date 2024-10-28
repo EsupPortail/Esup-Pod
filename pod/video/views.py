@@ -3282,7 +3282,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
             return False
         pass
 
-    def on_completion(self, uploaded_file, request):
+    def on_completion(self, uploaded_file, request) -> None:
         """Triggered when a chunked upload is complete."""
         edit_slug = request.POST.get("slug")
         transcript = request.POST.get("transcript", "")

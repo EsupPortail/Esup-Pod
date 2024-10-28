@@ -5,7 +5,7 @@
 from ..settings import BASE_DIR as settings_base_dir
 from ..settings import USE_TZ, REST_FRAMEWORK, LOG_DIRECTORY, LOGGING
 from ..settings import LOCALE_PATHS, STATICFILES_DIRS, DEFAULT_AUTO_FIELD
-from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N, USE_L10N
+from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N
 from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
 from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
 import os
