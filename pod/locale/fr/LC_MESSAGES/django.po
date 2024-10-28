@@ -3590,7 +3590,7 @@ msgid ""
 "a key allowing access. Anyone with this links can access it."
 msgstr ""
 "Veuillez noter que votre événement est en mode brouillon.<br>Les liens "
-"suivants contiennent une clé permettant l’accès.Toute personne disposant de "
+"suivants contiennent une clé permettant l’accès. Toute personne disposant de "
 "ces liens peut y accéder."
 
 #: pod/live/templates/live/event-info.html
