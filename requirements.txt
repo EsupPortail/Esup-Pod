@@ -19,7 +19,6 @@ pandas
 django-shibboleth-remoteuser
 django-chunked-upload==2.0.0
 django-select2
-django_select2_forms
 django-redis
 chardet==4.0.0
 django-static-compress>=1.2.1

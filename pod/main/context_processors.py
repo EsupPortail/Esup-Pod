@@ -17,10 +17,10 @@ MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
 
 USE_PODFILE = getattr(django_settings, "USE_PODFILE", False)
 
-DARKMODE_ENABLED = getattr(django_settings, "DARKMODE_ENABLED", False)
-DYSLEXIAMODE_ENABLED = getattr(django_settings, "DYSLEXIAMODE_ENABLED", False)
+DARKMODE_ENABLED = getattr(django_settings, "DARKMODE_ENABLED", True)
+DYSLEXIAMODE_ENABLED = getattr(django_settings, "DYSLEXIAMODE_ENABLED", True)
 
-VERSION = getattr(django_settings, "VERSION", "3.X")
+VERSION = getattr(django_settings, "VERSION", "4.X")
 ##
 # Settings exposed in templates
 #

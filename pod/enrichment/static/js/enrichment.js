@@ -248,7 +248,7 @@ var sendform = async function (elt, action) {
       });
   }
 };
-/*** Function show the item selected by type field ***/
+/*** Show the item's form by selected type field ***/
 document.addEventListener("change", (e) => {
   if (e.target.id != "id_type") return;
   enrich_type();
@@ -279,65 +279,24 @@ Number.prototype.toHHMMSS = function () {
 };
 
 /**
- * UNUSED function ??
- * TODO : remove in 3.8.0
- * @param {*} data
+ * Display the proper enrichment form with the selected type.
  */
-/*
-function get_form(data) {
-  var form = document.getElementById("form_enrich");
-  form.style.display = "none";
-  //form.innerHTML = data;
-  let htmlData = new DOMParser().parseFromString(data, "text/html").body
-    .firstChild;
-  form.innerHTML(htmlData);
-  htmlData.querySelectorAll("script").forEach((item) => {
-    if (item.src) {
-      let script = document.createElement("script");
-      script.src = item.src;
-      document.body.appendChild(script);
-    } else {
-      // inline script
-      (0, eval)(item.innerHTML);
-    }
-  });
-
-  fadeIn(form);
-  var inputStart = document.getElementById("id_start");
-  inputStart.insertAdjacentHTML(
-    "beforebegin",
-    "&nbsp;<div class='getfromvideo pull-right mb-1'><a href='' id='getfromvideo_start' class='btn btn-primary btn-sm'>" +
-      gettext("Get time from the player") +
-      "</a><span class='timecode'></span></div>",
-  );
-  var inputEnd = document.getElementById("id_end");
-  inputEnd.insertAdjacentHTML(
-    "beforebegin",
-    "&nbsp;<div class='getfromvideo pull-right mb-1'><a href='' id='getfromvideo_end' class='btn btn-primary btn-sm'>" +
-      gettext("Get time from the player") +
-      "</a><span class='timecode'></span></div>",
-  );
-  enrich_type();
-  manageResize();
-}*/
-
 function enrich_type() {
+  /** First, hide all element types */
   document.getElementById("id_image").closest("div.form-group").style.display =
     "none";
   document
     .querySelector("textarea#id_richtext")
     .closest("div.form-group").style.display = "none";
-
   document
     .getElementById("id_weblink")
     .closest("div.form-group").style.display = "none";
-
   document
     .getElementById("id_document")
     .closest("div.form-group").style.display = "none";
-
   document.getElementById("id_embed").closest("div.form-group").style.display =
     "none";
+
   var val = document.getElementById("id_type").value;
   if (val != "") {
     var form = document.getElementById("form_enrich");
@@ -427,24 +386,24 @@ function verify_fields() {
 
     error = true;
   }
+  let file_selector, attached;
   switch (document.getElementById("id_type").value) {
     case "image":
-      let img = document.getElementById("id_image_thumbnail_img");
-      if (img) {
-        if (img.src == "/static/filer/icons/nofile_48x48.png") {
-          //check with id_image value
-          img.insertAdjacentElement(
-            "beforebegin",
-            "<span class='form-help-inline'>&nbsp; &nbsp;" +
-              gettext("Please enter a correct image.") +
-              "</span>",
-          );
-          img.closest("div.form-group").classList.add("has-error");
-          error = true;
-        }
+      file_selector = document.getElementById("fileinput_id_image");
+      attached = file_selector.querySelector("img");
+      if (!attached || attached.src == "") {
+        //check with id_image value
+        file_selector.insertAdjacentHTML(
+          "beforebegin",
+          "<span class='form-help-inline'>&nbsp; &nbsp;" +
+            gettext("Please attach an image.") +
+            "</span>",
+        );
+        file_selector.closest("div.form-group").classList.add("has-error");
+        error = true;
       }
-
       break;
+
     case "richtext":
       let richtext = document.getElementById("id_richtext");
       if (richtext.value == "") {
@@ -455,10 +414,10 @@ function verify_fields() {
             "</span>",
         );
         richtext.closest("div.form-group").classList.add("has-error");
-
         error = true;
       }
       break;
+
     case "weblink":
       let weblink = document.getElementById("id_weblink");
       if (weblink.value == "") {
@@ -469,7 +428,6 @@ function verify_fields() {
             "</span>",
         );
         weblink.closest("div.form-group").classList.add("has-error");
-
         error = true;
       } else {
         if (weblink.value > 200) {
@@ -480,26 +438,26 @@ function verify_fields() {
               "</span>",
           );
           weblink.closest("div.form-group").classList.add("has-error");
-
           error = true;
         }
       }
       break;
+
     case "document":
-      let documentD = document.getElementById("id_document");
-      if (documentD.src == "/static/filer/icons/nofile_48x48.png") {
-        //check with id_document value
-        documentD.insertAdjacentHTML(
+      file_selector = document.getElementById("fileinput_id_document");
+      attached = file_selector.querySelector("a");
+      if (!attached || attached.href == "") {
+        file_selector.insertAdjacentHTML(
           "beforebegin",
           "<span class='form-help-inline'>&nbsp; &nbsp;" +
-            gettext("Please select a document.") +
+            gettext("Please attach a document.") +
             "</span>",
         );
-        documentD.closest("div.form-group").classList.add("has-error");
-
+        file_selector.closest("div.form-group").classList.add("has-error");
         error = true;
       }
       break;
+
     case "embed":
       let embed = document.getElementById("id_embed");
       if (embed.value == "") {
@@ -532,7 +490,7 @@ function verify_fields() {
       inputType.insertAdjacentHTML(
         "beforebegin",
         "<span class='form-help-inline'>&nbsp; &nbsp;" +
-          gettext("Please enter a type in index field.") +
+          gettext("Please choose a type for this enrichment.") +
           "</span>",
       );
       inputType.closest("div.form-group").classList.add("has-error");

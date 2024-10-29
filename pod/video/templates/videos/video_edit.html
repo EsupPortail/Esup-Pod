@@ -2,6 +2,13 @@
 {% load i18n %}
 {% load static %}
 
+{% block page_extra_head %}
+  {# form.media.css #}
+  <!--link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}"-->
+  <link rel="stylesheet" type="text/css" media="all"
+        href="{% static 'tagulous/lib/select2-4/css/select2.min.css' %}?ver={{VERSION}}">
+{% endblock %}
+
 {% block breadcrumbs %}{{ block.super }}
   <li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans "Dashboard" %}</a></li>
   {% if form.instance.title and form.instance.slug != '' %}
@@ -48,7 +55,6 @@
       {% endif %}
       accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
       {% csrf_token %}
-      <!--<div class="group-video-edit">-->
 
       {% if form.errors %}
         <div class="text-danger">
@@ -98,7 +104,6 @@
           {% if options.legend %}
             <legend>{{ options.legend|safe }}</legend>
           {% endif %}
-
 
       {% for field in form.visible_fields %}
         {% if field.name in options.fields %}
@@ -257,10 +262,8 @@
   <script>
     var listTheme = {{listTheme | safe}};
   </script>
+  {{ form.media.js }}
   <script defer src="{% static 'js/video_edit.js' %}?ver={{VERSION}}"></script>
-  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}">
-  {{form.media}}
-
   <script>
     var slug = "{{ form.instance.slug }}";
     let id_video = document.getElementById("id_video")

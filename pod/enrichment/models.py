@@ -8,7 +8,6 @@ from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext as _
-from django.utils import timezone
 from django.template.defaultfilters import slugify
 
 from ckeditor.fields import RichTextField
@@ -87,6 +86,7 @@ def enrichment_to_vtt(list_enrichment, video) -> str:
 
 
 def enrichment_to_vtt_type(enrich):
+    """Return enrichment content."""
     if enrich.type == "image":
         return enrich.image.file.url
     elif enrich.type == "document":

@@ -5000,26 +5000,27 @@
                             "pod_version_init": "3.1.0"
                         },
                         "DARKMODE_ENABLED": {
-                            "default_value": false,
+                            "default_value": true,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Allows users to enable a dark mode."
                                 ],
                                 "fr": [
-                                    "Activation du mode sombre"
+                                    "Permet aux utilisateurs d’activer un mode sombre."
                                 ]
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
                         },
                         "DYSLEXIAMODE_ENABLED": {
-                            "default_value": false,
+                            "default_value": true,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Allows to use a font that is more suitable for people with dyslexia."
                                 ],
                                 "fr": [
-                                    "Activation du mode dyslexie"
+                                    "Permet d’utiliser une police de caractères plus adaptée",
+                                    " aux personnes atteintes de dyslexie."
                                 ]
                             },
                             "pod_version_end": "",
