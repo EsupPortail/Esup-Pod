@@ -90,8 +90,8 @@
     const container = document.querySelector("#carousel_{{ container.slug }}_{{ uniq_id }}");
     let items = container.querySelectorAll('.carousel .carousel-item')
     items.forEach((el) => {
-        const minPerSlide = {{ multi_carousel_nb_card }}
-        let next = el.nextElementSibling
+        const minPerSlide = {{ multi_carousel_nb_card }};
+        let next = el.nextElementSibling;
         for (var i=1; i<minPerSlide; i++) {
             if (!next) {
                 // wrap carousel by using first child

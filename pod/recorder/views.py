@@ -85,6 +85,7 @@ logger = logging.getLogger("pod.recorder.view")
 
 def check_recorder(recorder_id, request):
     """Check if a Recorder with this id exist.
+
     Args:
         recorder_id (int): The recorder id.
         request (WSGIRequest): The request.
@@ -120,7 +121,6 @@ def case_delete(form, request):
 
 def fetch_user(request, form):
     """Return the user from the request."""
-
     if request.POST.get("user") and request.POST.get("user") != "":
         return form.cleaned_data["user"]
     else:
@@ -223,8 +223,7 @@ def reformat_url_if_use_cas_or_shib(request, link_url):
 
 
 def video_publish(recorder, mediapath, request, course_title):
-    """Assigns a video by email or automatically depending on the configuration of the recorder"""
-
+    """Assign a video by email or automatically depending on the configuration of the recorder."""
     if recorder.publication_auto is True:
         # Here we have already checked that the upload is complete
         rft = RecordingFileTreatment.objects.get(file=mediapath, recorder=recorder)
@@ -287,7 +286,6 @@ def video_publish(recorder, mediapath, request, course_title):
 
 def recorder_notify(request):
     """Notify the recorder."""
-
     # Used by URL like https://pod.univ.fr/recorder_notify/?recordingPlace
     # =192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
     mediapath = request.GET.get("mediapath") or ""
@@ -324,7 +322,6 @@ def recorder_notify(request):
 @staff_member_required(redirect_field_name="referrer")
 def claim_record(request):
     """Claim a record."""
-
     if in_maintenance():
         return redirect(reverse("maintenance"))
     site = get_current_site(request)
@@ -364,7 +361,7 @@ def claim_record(request):
     return render(
         request,
         "recorder/claim_record.html",
-        {"records": records, "full_path": full_path},
+        {"records": records, "full_path": full_path, "page_title": _("Claim a record")},
     )
 
 
@@ -450,7 +447,6 @@ def studio_toml(request, studio_url):
 # INNER METHODS
 def open_studio_pod(request):
     """Render the Opencast studio view in Esup-Pod."""
-
     if in_maintenance():
         return redirect(reverse("maintenance"))
     if __REVATSO__ and request.user.is_staff is False:
@@ -482,7 +478,6 @@ def open_studio_pod(request):
 
 def open_presenter_post(request):
     """Check if the value for `presenter` is valid."""
-
     if (
         request.POST
         and request.POST.get("presenter")
@@ -496,7 +491,6 @@ def open_presenter_post(request):
 
 def open_studio_static(request, file):
     """Redirect to all static files inside Opencast studio static subfolder."""
-
     extension = file.split(".")[-1]
     if extension == "js":
         path_file = os.path.join(
@@ -511,7 +505,6 @@ def open_studio_static(request, file):
 
 def open_info_me_json(request):
     """Render an info/me.json file for current user roles in Opencast Studio."""
-
     # Providing a user with ROLE_STUDIO should grant all necessary rights.
     # See https://github.com/elan-ev/opencast-studio/blob/master/README.md
     return render(request, "studio/me.json", {}, content_type="application/json")
@@ -519,7 +512,6 @@ def open_info_me_json(request):
 
 def open_ingest_createMediaPackage(request):
     """Create and return a mediaPacakge xml file."""
-
     # URI createMediaPackage useful for OpenCast Studio
     # Necessary id. Example format: a3d9e9f3-66d0-403b-a775-acb3f79196d4
     id_media = uuid.uuid4()
@@ -699,20 +691,20 @@ def open_ingest_ingest(request):
 # OPENCAST VIEWS WITH LOGIN MANDATORY
 @login_required(redirect_field_name="referrer")
 def studio_pod(request):
-    """Call open_studio_pod() if user is logged in."""
+    """Call open_studio_pod if user is logged in."""
     return open_studio_pod(request)
 
 
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def presenter_post(request):
-    """Call open_presenter_post() if user is logged in."""
+    """Call open_presenter_post if user is logged in."""
     return open_presenter_post(request)
 
 
 @login_required(redirect_field_name="referrer")
 def studio_static(request, file):
-    """Call open_studio_static() if user is logged in."""
+    """Call open_studio_static if user is logged in."""
     return open_studio_static(request, file)
 
 
@@ -744,48 +736,48 @@ def settings_toml(request):
 
 @login_required(redirect_field_name="referrer")
 def info_me_json(request):
-    """Call open_info_me_json() if user is logged in."""
+    """Call open_info_me_json if user is logged in."""
     return open_info_me_json(request)
 
 
 @login_required(redirect_field_name="referrer")
 def ingest_createMediaPackage(request):
-    """Call open_ingest_createMediaPackage() if user is logged in."""
+    """Call open_ingest_createMediaPackage if user is logged in."""
     return open_ingest_createMediaPackage(request)
 
 
 @login_required(redirect_field_name="referrer")
 @csrf_exempt
 def ingest_addDCCatalog(request):
-    """Call open_ingest_addDCCatalog() if user is logged in."""
+    """Call open_ingest_addDCCatalog if user is logged in."""
     return open_ingest_addDCCatalog(request)
 
 
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addAttachment(request):
-    """Call open_ingest_addAttachment() if user is logged in."""
+    """Call open_ingest_addAttachment if user is logged in."""
     return open_ingest_addAttachment(request)
 
 
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addTrack(request):
-    """Call open_ingest_addTrack() if user is logged in."""
+    """Call open_ingest_addTrack if user is logged in."""
     return open_ingest_addTrack(request)
 
 
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_addCatalog(request):
-    """Call open_ingest_addCatalog() if user is logged in."""
+    """Call open_ingest_addCatalog if user is logged in."""
     return open_ingest_addCatalog(request)
 
 
 @csrf_exempt
 @login_required(redirect_field_name="referrer")
 def ingest_ingest(request):
-    """Call open_ingest_ingest() if user is logged in."""
+    """Call open_ingest_ingest if user is logged in."""
     return open_ingest_ingest(request)
 
 
@@ -793,7 +785,7 @@ def ingest_ingest(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def digest_presenter_post(request):
-    """Call open_presenter_post() if user credentials are valid."""
+    """Call open_presenter_post if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -802,7 +794,7 @@ def digest_presenter_post(request):
 
 @require_http_methods(["GET"])
 def digest_studio_static(request, file):
-    """Call open_studio_static() if user credentials are valid."""
+    """Call open_studio_static if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -826,7 +818,7 @@ def digest_settings_toml(request):
 
 @require_http_methods(["GET"])
 def digest_info_me_json(request):
-    """Call open_info_me_json() if user credentials are valid."""
+    """Call open_info_me_json if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -835,7 +827,7 @@ def digest_info_me_json(request):
 
 @require_http_methods(["GET"])
 def digest_ingest_createMediaPackage(request):
-    """Call open_ingest_createMediaPackage() if user credentials are valid."""
+    """Call open_ingest_createMediaPackage if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -845,7 +837,7 @@ def digest_ingest_createMediaPackage(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def digest_ingest_addDCCatalog(request):
-    """Call open_ingest_addDCCatalog() if user credentials are valid."""
+    """Call open_ingest_addDCCatalog if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -855,7 +847,7 @@ def digest_ingest_addDCCatalog(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def digest_ingest_addAttachment(request):
-    """Call open_ingest_addAttachment() if user credentials are valid."""
+    """Call open_ingest_addAttachment if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -865,7 +857,7 @@ def digest_ingest_addAttachment(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def digest_ingest_addTrack(request):
-    """Call open_ingest_addTrack() if user credentials are valid."""
+    """Call open_ingest_addTrack if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -875,7 +867,7 @@ def digest_ingest_addTrack(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def digest_ingest_addCatalog(request):
-    """Call open_ingest_addCatalog() if user credentials are valid."""
+    """Call open_ingest_addCatalog if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 
@@ -885,7 +877,7 @@ def digest_ingest_addCatalog(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def digest_ingest_ingest(request):
-    """Call open_ingest_ingest() if user credentials are valid."""
+    """Call open_ingest_ingest if user credentials are valid."""
     if not digest_is_valid(request):
         return create_digest_auth_response(request)
 

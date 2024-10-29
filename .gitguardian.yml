@@ -1,2 +1,4 @@
-exclude_paths:
+version: 2
+secret:
+  ignored_paths:
   - pod/enrichment/tests/test_views.py
