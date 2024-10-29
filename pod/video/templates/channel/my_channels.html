@@ -16,9 +16,15 @@
     {% for channel in channels %}
       <li class="list-group-item d-flex justify-content-between align-items-center">
         <span>
-          <a href="{% url 'channels:channel_edit' slug=channel.slug %}" title="{% trans 'Edit the channel'%}" class="btn pod-btn-social"><i class="bi bi-pencil-square" aria-hidden="true"></i></a>
-          <a href="{% url 'channel-video:channel' slug_c=channel.slug %}" title="{{ channel.title }}" class="btn-link">
-            {% if channel.headband %}<!-- <img src="{{channel.headband.file.url}}" class="rounded img-thumbnail" alt="{{channel.title}}" loading="lazy"> -->
+          <a href="{% url 'channels:channel_edit' slug=channel.slug %}"
+             title="{% blocktrans with title=channel.title %}Edit the channel “{{ title }}”{% endblocktrans %}"
+             class="btn pod-btn-social">
+            <i class="bi bi-pencil-square" aria-hidden="true"></i>
+          </a>
+          <a href="{% url 'channel-video:channel' slug_c=channel.slug %}"
+             title="{% blocktrans with title=channel.title%}See the channel “{{ title }}”{% endblocktrans %}"
+             class="btn-link">
+            {% if channel.headband %}
               {% thumbnail channel.headband.file "x34" as im %}
                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="" loading="lazy">
               {% endthumbnail %}
@@ -26,7 +32,9 @@
             {{ channel.title }}
           </a>
         </span>
-        <span class="badge text-bg-primary rounded-pill" title="{% trans 'Number of video inside the channel' %}">{{channel.video_count}}</span>
+        <span class="badge text-bg-primary rounded-pill"
+              title="{% blocktrans with title=channel.title count=channel.video_count %}{{count}} video(s) inside the channel “{{ title }}”.{% endblocktrans %}"
+          >{{channel.video_count}}</span>
       </li>
     {% endfor %}
   {% endif %}

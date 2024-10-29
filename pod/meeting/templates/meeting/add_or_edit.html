@@ -32,7 +32,7 @@
       <p class="text-danger">
         {% trans "One or more errors have been found in the form." %}<br>
         {% for error in form.non_field_errors %}
-          <span> - {{ error }}</span> <br>
+          <span> - {{ error }}</span><br>
         {% endfor %}
       </p>
     {% endif %}

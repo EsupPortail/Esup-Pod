@@ -241,6 +241,7 @@ class TrackAdmin(admin.ModelAdmin):
 
     @admin.action(description=_("Enrich with selected subtitles"))
     def enrich_model(modeladmin, request, queryset) -> None:
+        """Enrich with selected subtitles."""
         text = ""
         title = ""
         for query in list(queryset.all()):
@@ -249,7 +250,7 @@ class TrackAdmin(admin.ModelAdmin):
             title += query.video.title
             file = query.src.file
             for caption in webvtt.read(file.path):
-                text += caption.text + " \n"
+                text += caption.text + "\n"
             query.enrich_ready = False
             query.save()
 

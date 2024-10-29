@@ -194,8 +194,10 @@ if (typeof loaded == "undefined") {
 
     switch (filetype) {
       case "CustomImageModel":
-        document.getElementById("folderModalCenterTitle").innerHTML =
-          gettext("Change") + " " + button.dataset.filename;
+        var modalTitle = gettext("Change image “%s”");
+        document.getElementById("folderModalCenterTitle").innerHTML = interpolate(
+          modalTitle, [button.dataset.filename]
+        );
         modal.querySelectorAll(".modal-body input#id_folder").forEach((e) => {
           e.value = folder_id;
         });
@@ -208,8 +210,9 @@ if (typeof loaded == "undefined") {
         document.getElementById("formchangeimage").style.display = "block";
         break;
       case "CustomFileModel":
+        var modalTitle = gettext("Change file “%s”");
         document.getElementById("folderModalCenterTitle").innerHTML =
-          gettext("Change") + " " + button.dataset.filename;
+          interpolate(modalTitle, [button.dataset.filename]);
         modal.getElementById("id_folder").value = folder_id;
         modal.getElementById("file_id").value = button.dataset.fileid;
         modal.getElementById("file_type").value = button.dataset.filetype;
