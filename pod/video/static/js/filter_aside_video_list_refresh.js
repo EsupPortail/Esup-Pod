@@ -28,10 +28,10 @@ function onBeforePageLoad() {
 function onAfterPageLoad() {
   if (
     urlVideos === "/video/dashboard/" &&
-    selectedVideos &&
-    selectedVideos.length !== 0
+    selectedVideos[videosListContainerId] &&
+    selectedVideos[videosListContainerId].length !== 0
   ) {
-    setSelectedVideos();
+    setSelectedVideos(videosListContainerId);
   }
   infiniteLoading.style.display = "none";
   let footer = document.querySelector("footer.static-pod");
@@ -127,10 +127,10 @@ function refreshVideosSearch() {
       }
       if (
         urlVideos === "/video/dashboard/" &&
-        selectedVideos &&
-        selectedVideos.length !== 0
+        selectedVideos[videosListContainerId] &&
+        selectedVideos[videosListContainerId].length !== 0
       ) {
-        setSelectedVideos();
+        setSelectedVideos(videosListContainerId);
       }
     })
     .catch(() => {
@@ -174,11 +174,13 @@ function getUrlForRefresh() {
   if (urlVideos === "/video/dashboard/" && displayMode !== undefined) {
     newUrl += "display_mode=" + displayMode + "&";
   }
-  // Add category checked if exists
-  if (document.querySelectorAll(".categories_list_item.active").length !== 0) {
-    checkedCategory = document.querySelector(".categories_list_item.active")
-      .firstChild["dataset"]["slug"];
-    newUrl += "category=" + checkedCategory + "&";
+  // Add categories checked if exists
+  if (document.querySelectorAll(".categories-list-item.active").length !== 0) {
+    Array.from(
+      document.querySelectorAll(".categories-list-item.active"),
+    ).forEach((cat) => {
+      newUrl += "categories=" + cat.firstElementChild["dataset"]["slug"] + "&";
+    });
   }
   // Add all other parameters (filters)
   checkedInputs.forEach((input) => {
@@ -266,7 +268,7 @@ document.getElementById("resetFilters").addEventListener("click", function () {
     .forEach((checkBox) => {
       checkBox.checked = false;
     });
-  document.querySelectorAll("#filters .categories_list_item").forEach((c_p) => {
+  document.querySelectorAll("#filters .categories-list-item").forEach((c_p) => {
     c_p.classList.remove("active");
   });
   if (filterOwnerContainer && ownerBox) {

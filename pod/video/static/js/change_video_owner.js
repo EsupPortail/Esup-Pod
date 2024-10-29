@@ -25,9 +25,9 @@
     ".paginator #previous_content",
   );
 
-  const submitBTN = document.querySelector("#submitChanges");
+  const submitBTN = document.querySelector("#submit-changes");
 
-  const selectAllVideos = document.getElementById("select_all");
+  const selectAllVideos = document.getElementById("select-all");
 
   let new_username_id = null;
 

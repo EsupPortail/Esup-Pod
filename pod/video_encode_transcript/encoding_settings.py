@@ -60,7 +60,7 @@ FFMPEG_NB_THUMBNAIL = 3
 # FFMPEG_CREATE_THUMBNAIL =
 #  '-map 0:%(index)s -vframes 1 -an -ss %(time)s -y "%(output)s" '
 FFMPEG_CREATE_THUMBNAIL = (
-    '-vf "fps=1/(%(duration)s/%(nb_thumbnail)s)" -vsync vfr "%(output)s_%%04d.png"'
+    '-vf "fps=1/(%(duration)s/%(nb_thumbnail)s)" -vsync vfr -y "%(output)s_%%04d.png"'
 )
 FFMPEG_EXTRACT_SUBTITLE = '-map 0:%(index)s -f webvtt -y  "%(output)s" '
 
@@ -69,7 +69,7 @@ FFMPEG_CREATE_OVERVIEW = (
     "'fps=fps=(%(image_count)s/%(duration)s), "
     "scale=%(width)sx%(height)s, "
     "tile=%(image_count)sx1' "
-    "-frames:v 1 '%(output)s' "
+    "-frames:v 1 -y '%(output)s' "
 )
 
 FFMPEG_DRESSING_OUTPUT = ' -c:v libx264 -y -vsync 0 "%(output)s" '
@@ -81,8 +81,8 @@ FFMPEG_DRESSING_WATERMARK = (
     + " [video2][logo]%(position)s%(name_out)s "
 )
 FFMPEG_DRESSING_SCALE = (
-    "[%(number)s]scale=-1:%(height)s:force_original_aspect_ratio= "
-    + "decrease,pad=ceil(ih*16/9):ih:(ow-iw)/2:(oh-ih)/2[%(name)s]"
+    "[%(number)s]scale=w='if(gt(a,16/9),16/9*%(height)s,-2)':h='if(gt(a,16/9),-2,%(height)s)',"
+    + "pad=ceil(16/9*%(height)s):%(height)s:(ow-iw)/2:(oh-ih)/2[%(name)s]"
 )
 FFMPEG_DRESSING_CONCAT = "%(params)sconcat=n=%(number)s:v=1:a=1:unsafe=1[v][a]"
 

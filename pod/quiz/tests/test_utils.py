@@ -3,7 +3,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from pod.quiz.models import (
-    LongAnswerQuestion,
     MultipleChoiceQuestion,
     Quiz,
     ShortAnswerQuestion,
@@ -49,10 +48,9 @@ class QuizTestUtils(TestCase):
         SingleChoiceQuestion.objects.create(quiz=quiz, title="UCQ1")
         MultipleChoiceQuestion.objects.create(quiz=quiz, title="MCQ1")
         ShortAnswerQuestion.objects.create(quiz=quiz, title="SAQ1")
-        LongAnswerQuestion.objects.create(quiz=quiz, title="LAQ1")
 
         questions = get_quiz_questions(quiz)
-        self.assertEqual(len(questions), 4)
+        self.assertEqual(len(questions), 3)
 
         quiz_with_single_choice = Quiz.objects.create(video=self.video2)
         SingleChoiceQuestion.objects.create(quiz=quiz_with_single_choice, title="UCQ2")
@@ -69,16 +67,13 @@ class QuizTestUtils(TestCase):
         SAQ2 = ShortAnswerQuestion.objects.create(
             quiz=quiz_with_all_question_types, title="SAQ2"
         )
-        LAQ2 = LongAnswerQuestion.objects.create(
-            quiz=quiz_with_all_question_types, title="LAQ2"
-        )
         questions_with_all_types = get_quiz_questions(quiz_with_all_question_types)
 
         self.assertIsInstance(questions_with_all_types, list)
-        self.assertEqual(len(questions_with_all_types), 4)
+        self.assertEqual(len(questions_with_all_types), 3)
         self.assertListEqual(
             questions_with_all_types,
-            [UCQ3, MCQ2, SAQ2, LAQ2],
+            [UCQ3, MCQ2, SAQ2],
         )
         print(" --->  test_get_quiz_questions ok")
 

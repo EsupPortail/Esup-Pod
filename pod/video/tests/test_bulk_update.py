@@ -6,6 +6,7 @@
 import json
 from datetime import datetime
 
+from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sites.models import Site
 from django.test import RequestFactory, Client, TransactionTestCase
@@ -13,6 +14,7 @@ from django.test import RequestFactory, Client, TransactionTestCase
 from pod.authentication.backends import User
 from pod.video.models import Video, Type
 from pod.video.views import bulk_update
+from pod.video_encode_transcript.models import PlaylistVideo
 
 
 class BulkUpdateTestCase(TransactionTestCase):
@@ -138,6 +140,26 @@ class BulkUpdateTestCase(TransactionTestCase):
             "/bulk_update/",
             {
                 "type": type2.id,
+                "selected_videos": '["%s", "%s"]'
+                % ("slug_that_not_exist", "slug_that_not_exist2"),
+                "update_fields": '["type"]',
+                "update_action": "fields",
+            },
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        post_request.user = user1
+        post_request.LANGUAGE_CODE = "fr"
+        response = bulk_update(post_request)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            json.loads(response.content)["message"], "Sorry, no video found."
+        )
+        self.assertEqual(json.loads(response.content)["updated_videos"], [])
+
+        post_request = self.factory.post(
+            "/bulk_update/",
+            {
+                "type": type2.id,
                 "selected_videos": '["%s", "%s"]' % (video1.slug, video2.slug),
                 "update_fields": '["type"]',
                 "update_action": "fields",
@@ -218,7 +240,7 @@ class BulkUpdateTestCase(TransactionTestCase):
 
         print("--->  test_bulk_update_owner of BulkUpdateTestCase: OK")
 
-    def test_bulk_delete(self):
+    def test_bulk_delete(self) -> None:
         """Test bulk delete."""
         video4 = Video.objects.get(title="Video4")
         video5 = Video.objects.get(title="Video5")
@@ -247,13 +269,51 @@ class BulkUpdateTestCase(TransactionTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             json.loads(response.content)["message"],
-            "You cannot delete a video that is being encoded. 0 videos removed, 2 videos in error",
+            "You cannot delete a media that is being encoded. 0 videos removed, 2 videos in error",
+        )
+
+        PlaylistVideo.objects.create(
+            name="playlist",
+            video=video4,
+            encoding_format="application/x-mpegURL",
+            source_file="test.mp4",
+        )
+        PlaylistVideo.objects.create(
+            name="playlist",
+            video=video5,
+            encoding_format="application/x-mpegURL",
+            source_file="test.mp4",
+        )
+
+        post_request = self.factory.post(
+            "/bulk_update/",
+            {
+                "selected_videos": '["%s", "%s"]' % (video4.slug, video5.slug),
+                "update_fields": "[]",
+                "update_action": "delete",
+            },
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+
+        permission = Permission.objects.get(codename="delete_video")
+        user3.user_permissions.add(permission)
+        post_request.user = user3
+        post_request.LANGUAGE_CODE = "fr"
+        setattr(post_request, "session", "session")
+        messages = FallbackStorage(post_request)
+        setattr(post_request, "_messages", messages)
+        response = bulk_update(post_request)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            json.loads(response.content)["message"],
+            " 2 videos removed, 0 videos in error",
         )
 
         print("--->  test_bulk_delete of BulkUpdateTestCase: OK")
         self.client.logout()
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Cleanup all created stuffs."""
         del self.client
         del self.factory

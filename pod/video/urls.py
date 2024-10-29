@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.conf.urls import url
+from django.urls import re_path
 from django.urls import include, path
 
 from .views import (
@@ -14,7 +14,7 @@ from .views import (
     video_count,
     video_marker,
     video_version,
-    get_categories,
+    get_categories_list,
     add_category,
     edit_category,
     delete_category,
@@ -42,45 +42,47 @@ app_name = "video"
 
 urlpatterns = [
     # Manage video owner
-    url(
+    re_path(
         r"^updateowner/put/(?P<user_id>[\d]+)/$",
         update_video_owner,
         name="update_video_owner",
     ),
-    url(r"^updateowner/owners/$", filter_owners, name="filter_owners"),
-    url(
+    path("updateowner/owners/", filter_owners, name="filter_owners"),
+    re_path(
         r"^updateowner/videos/(?P<user_id>[\d]+)/$",
         filter_videos,
         name="filter_videos",
     ),
-    url(r"^add/$", video_add, name="video_add"),
-    url(r"^edit/$", video_edit, name="video_edit"),
-    url(r"^edit/(?P<slug>[\-\d\w]+)/$", video_edit, name="video_edit"),
-    url(
+    path("add/", video_add, name="video_add"),
+    path("edit/", video_edit, name="video_edit"),
+    re_path(r"^edit/(?P<slug>[\-\d\w]+)/$", video_edit, name="video_edit"),
+    re_path(
         r"^edit_access_tokens/(?P<slug>[\-\d\w]+)/$",
         video_edit_access_tokens,
         name="video_edit_access_tokens",
     ),
-    url(
+    re_path(
         r"^delete/(?P<slug>[\-\d\w]+)/$",
         video_delete,
         name="video_delete",
     ),
-    url(
+    re_path(
         r"^transcript/(?P<slug>[\-\d\w]+)/$",
         video_transcript,
         name="video_transcript",
     ),
-    url(r"^notes/(?P<slug>[\-\d\w]+)/$", video_notes, name="video_notes"),
-    url(r"^count/(?P<id>[\d]+)/$", video_count, name="video_count"),
-    url(r"^marker/(?P<id>[\d]+)/(?P<time>[\d]+)/$", video_marker, name="video_marker"),
-    url(r"^version/(?P<id>[\d]+)/$", video_version, name="video_version"),
-    url(
+    re_path(r"^notes/(?P<slug>[\-\d\w]+)/$", video_notes, name="video_notes"),
+    re_path(r"^count/(?P<id>[\d]+)/$", video_count, name="video_count"),
+    re_path(
+        r"^marker/(?P<id>[\d]+)/(?P<time>[\d]+)/$", video_marker, name="video_marker"
+    ),
+    re_path(r"^version/(?P<id>[\d]+)/$", video_version, name="video_version"),
+    re_path(
         "api/chunked_upload_complete/",
         PodChunkedUploadCompleteView.as_view(),
         name="api_chunked_upload_complete",
     ),
-    url(
+    re_path(
         "api/chunked_upload/",
         PodChunkedUploadView.as_view(),
         name="api_chunked_upload",
@@ -107,40 +109,33 @@ urlpatterns += [
 #
 if getattr(settings, "OEMBED", False):
     urlpatterns += [
-        url(r"^oembed/", video_oembed, name="video_oembed"),
+        re_path(r"^oembed/", video_oembed, name="video_oembed"),
     ]
 
 # VIDEO CATEGORY
 if getattr(settings, "USER_VIDEO_CATEGORY", False):
     urlpatterns += [
-        url(r"^my/categories/add/$", add_category, name="add_category"),
-        url(
-            r"^my/categories/edit/(?P<c_slug>[\-\d\w]+)/$",
-            edit_category,
-            name="edit_category",
+        path("categories/", get_categories_list, name="get_categories_list"),
+        path("category/add/", add_category, name="add_category"),
+        re_path(
+            r"^category/edit/(?P<c_slug>[\-\d\w]+)/$", edit_category, name="edit_category"
         ),
-        url(
-            r"^my/categories/delete/(?P<c_id>[\d]+)/$",
+        re_path(
+            r"^category/delete/(?P<c_slug>[\-\d\w]+)/$",
             delete_category,
             name="delete_category",
         ),
-        url(
-            r"^my/categories/(?P<c_slug>[\-\d\w]+)/$",
-            get_categories,
-            name="get_category",
-        ),
-        url(r"^my/categories/$", get_categories, name="get_categories"),
     ]
 
 if getattr(settings, "USE_STATS_VIEW", False):
     urlpatterns += [
-        url(r"^stats_view/$", stats_view, name="video_stats_view"),
-        url(
+        path("stats_view/", stats_view, name="video_stats_view"),
+        re_path(
             r"^stats_view/(?P<slug>[-\w]+)/$",
             stats_view,
             name="video_stats_view",
         ),
-        url(
+        re_path(
             r"^stats_view/(?P<slug>[-\w]+)/(?P<slug_t>[-\w]+)/$",
             stats_view,
             name="video_stats_view",
@@ -150,37 +145,37 @@ if getattr(settings, "USE_STATS_VIEW", False):
 # COMMENT and VOTE
 if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
     urlpatterns += [
-        url(
+        re_path(
             r"^comment/(?P<video_slug>[\-\d\w]+)/$",
             get_comments,
             name="get_comments",
         ),
-        url(
+        re_path(
             r"^comment/(?P<comment_id>[\d]+)/(?P<video_slug>[\-\d\w]+)/$",
             get_children_comment,
             name="get_comment",
         ),
-        url(
+        re_path(
             r"^comment/add/(?P<video_slug>[\-\d\w]+)/$",
             add_comment,
             name="add_comment",
         ),
-        url(
+        re_path(
             r"^comment/add/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$",
             add_comment,
             name="add_child_comment",
         ),
-        url(
+        re_path(
             r"^comment/del/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$",
             delete_comment,
             name="delete_comment",
         ),
-        url(
+        re_path(
             r"^comment/vote/(?P<video_slug>[\-\d\w]+)/$",
             vote_get,
             name="get_votes",
         ),
-        url(
+        re_path(
             r"^comment/vote/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$",
             vote_post,
             name="add_vote",
@@ -204,8 +199,8 @@ urlpatterns += [
 
 # DIRECT ACCESS TO A VIDEO
 urlpatterns += [
-    url(r"^(?P<slug>[\-\d\w]+)/$", video, name="video"),
-    url(
+    re_path(r"^(?P<slug>[\-\d\w]+)/$", video, name="video"),
+    re_path(
         r"^(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
         video,
         name="video_private",

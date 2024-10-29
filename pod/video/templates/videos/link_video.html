@@ -1,14 +1,8 @@
 {% load i18n %}
 {% load favorites_playlist %}
 {% load playlist_buttons %}
-{% load ai_enhancement_template_tags %}
 
 {% spaceless %}
-{% if request.path == '/video/dashboard/' %}
-    <a href="{% url 'video:video' video.slug %}" title="{% trans 'Play' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1 see-video-btn-link" id="see-video-btn-{{ video.id }}" data-bs-toggle="tooltip" data-bs-placement="top">
-      <i class="bi bi-play-circle card-footer-link-i" aria-hidden="true"></i>
-    </a>
-{% endif %}
 {% if playlist %}
   {% user_can_edit_or_remove playlist as can_edit_or_remove %}
   {% if not in_favorites_playlist and can_edit_or_remove%}
@@ -22,7 +16,7 @@
 {% get_favorite_playlist user as fav_playlist %}
 {% if USE_PLAYLIST and USE_FAVORITES and video.is_draft is False and not hide_favorite_link is True %}
   {% if is_favorite %}
-    <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" title="{% trans 'Remove from favorite' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1 remove-from-playlist-btn-link" id="favorite-btn-{{ video.id }}" aria-pressed="true" data-bs-toggle="tooltip" data-bs-placement="top" role="button">
+    <a href="{% url 'playlist:remove-video' fav_playlist.slug video.slug %}" title="{% trans 'Remove from favorite' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1 remove-from-playlist-btn-link favorite-btn-link" id="favorite-btn-{{ video.id }}" aria-pressed="true" data-bs-toggle="tooltip" data-bs-placement="top" role="button">
       <i class="bi bi-star-fill card-footer-link-i" aria-hidden="true"></i>
     </a>
   {% else %}
@@ -36,13 +30,6 @@
   <a href="{% url 'video:video_edit' slug=video.slug %}" title="{% trans 'Edit the video' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
     <i class="bi bi-pencil-square card-footer-link-i" aria-hidden="true"></i>
   </a>
-  {% user_can_enhance_video video as can_enhance_video_with_ai %}
-  {% enhancement_is_already_asked video as enr_is_already_asked %}
-  {% if can_enhance_video_with_ai and not enr_is_already_asked %}
-    <a href="{% url 'ai_enhancement:enhance_video' video_slug=video.slug %}" title="{% trans 'Enhance the video with AI' %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
-      <i class="bi bi-robot card-footer-link-i" aria-hidden="true"></i>
-    </a>
-  {% endif %}
 {% endif %}
 {% comment %}
 {% if request.resolver_match.namespace %}
@@ -54,37 +41,15 @@
   {% endwith %}
 {% endif %}
 {% endcomment %}
-{% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay %}
-  <a href="{% url 'video:completion:video_completion' slug=video.slug %}" title="{% trans 'Complete the video'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
-    <i class="bi bi-file-text card-footer-link-i" aria-hidden="true"></i></a>
-{% endif %}
-{% if video.encoded and video.encoding_in_progress is False %}
-  {% if USE_CUT %}
-    {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.cut.cut_video %}
-      <a href="{% url 'cut:video_cut' slug=video.slug %}" title="{% trans 'Cut the video'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
-        <i class="bi bi-scissors card-footer-link-i" aria-hidden="true"></i>
-      </a>
-    {% endif %}
-  {% endif %}
-{% endif %}
-{% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.chapter.change_chapter %}
-  <a href="{% url 'video:chapter:video_chapter' slug=video.slug %}" title="{% trans 'Chapter the video'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
-    <i class="bi bi-card-list card-footer-link-i" aria-hidden="true"></i></a>
-{% endif %}
-{% if USE_DRESSING and video.encoded and video.encoding_in_progress is False %}
-  {% if request.user.is_staff and video.owner == request.user or request.user.is_superuser %}
-    <a href="{% url 'video:dressing:video_dressing' slug=video.slug %}" title="{% trans 'Dress the video'%}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" data-bs-toggle="tooltip" data-bs-placement="top">
-      <i class="bi bi-palette" aria-hidden="true"></i>
-    </a>
-  {% endif %}
-{% endif %}
-{% if video.encoded and video.encoding_in_progress is False %}
-  {% if video.owner == request.user or request.user.is_superuser or perms.video.delete_video %}
-    <a href="{% url 'video:video_delete' slug=video.slug %}" class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1" title="{% trans 'Delete the video'%}" data-bs-toggle="tooltip" data-bs-placement="top">
-      <i class="bi bi-trash card-footer-link-i" aria-hidden="true"></i></a>
-  {% endif %}
-{% endif %}
-
+<a href=""
+  class="btn btn-link btn-lg pod-btn-social p-1 m-0 ms-1"
+  data-bs-toggle="dropdown"
+  aria-expanded="false"
+  title="{% trans 'More options' %}"
+>
+  <i class="bi bi-list" aria-hidden="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{% trans 'More options' %}"></i>
+</a>
+{% include 'videos/link_video_dropdown_menu.html' %}
 {% if "edit" in request.resolver_match.url_name %}
   {% with video.get_other_version as versions %}
     {% if versions|length > 0 %}

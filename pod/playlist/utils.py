@@ -228,7 +228,7 @@ def remove_playlist(user: User, playlist: Playlist) -> None:
         user (:class:`django.contrib.auth.models.User`): The user object
         playlist (:class:`pod.playlist.models.Playlist`): The playlist objet
     """
-    if playlist.owner == user or user.is_staff:
+    if playlist.owner == user or user.is_superuser:
         playlist.delete()
 
 
@@ -320,7 +320,7 @@ def user_can_see_playlist_video(
     request: WSGIRequest, video: Video, playlist: Playlist
 ) -> bool:
     """
-    Check if the authenticated can see the playlist video.
+    Check if the authenticated user can see the playlist video.
 
     Args:
         request (WSGIRequest): The WSGIRequest
@@ -331,7 +331,7 @@ def user_can_see_playlist_video(
         bool: True if the user can see the playlist video. False otherwise
     """
     is_password_protected = video.password is not None and video.password != ""
-    if is_password_protected or video.is_draft:
+    if is_password_protected or video.is_restricted or video.is_draft:
         if not request.user.is_authenticated:
             return False
         return (
@@ -415,7 +415,7 @@ def playlist_can_be_displayed(request: WSGIRequest, playlist: Playlist) -> bool:
         request.user.is_authenticated
         and (
             playlist.owner == request.user
+            or request.user.is_superuser
             or playlist in get_playlists_for_additional_owner(request.user)
-            or request.user.is_staff
         )
     )

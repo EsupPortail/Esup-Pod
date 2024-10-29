@@ -7,7 +7,7 @@ from django.core.files import File
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.template.defaultfilters import slugify
 
@@ -22,11 +22,9 @@ import os
 import datetime
 
 if getattr(settings, "USE_PODFILE", False):
+    __FILEPICKER__ = True
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import CustomFileModel
-    from pod.podfile.models import UserFolder
-
-    __FILEPICKER__ = True
 else:
     __FILEPICKER__ = False
     from pod.main.models import CustomImageModel
@@ -40,12 +38,12 @@ __NAME__ = _("Enrichment")
 def enrichment_to_vtt(list_enrichment, video) -> str:
     webvtt = WebVTT()
     for enrich in list_enrichment:
-        start = datetime.datetime.fromtimestamp(enrich.start, tz=timezone.utc).strftime(
-            "%H:%M:%S.%f"
-        )[:-3]
-        end = datetime.datetime.fromtimestamp(enrich.end, tz=timezone.utc).strftime(
-            "%H:%M:%S.%f"
-        )[:-3]
+        start = datetime.datetime.fromtimestamp(
+            enrich.start, tz=datetime.timezone.utc
+        ).strftime("%H:%M:%S.%f")[:-3]
+        end = datetime.datetime.fromtimestamp(
+            enrich.end, tz=datetime.timezone.utc
+        ).strftime("%H:%M:%S.%f")[:-3]
         url = enrichment_to_vtt_type(enrich)
         caption = Caption(
             "{0}".format(start),
@@ -65,18 +63,16 @@ def enrichment_to_vtt(list_enrichment, video) -> str:
     with open(temp_vtt_file.name, "w") as f:
         webvtt.write(f)
     if __FILEPICKER__:
-        videodir, created = UserFolder.objects.get_or_create(
-            name="%s" % video.slug, owner=video.owner
-        )
+        video_folder = video.get_or_create_video_folder()
         previous_enrichment_file = CustomFileModel.objects.filter(
             name__startswith="enrichment",
-            folder=videodir,
+            folder=video_folder,
             created_by=video.owner,
         )
         for enr in previous_enrichment_file:
             enr.delete()  # do it like this to delete file
         enrichment_file, created = CustomFileModel.objects.get_or_create(
-            name="enrichment", folder=videodir, created_by=video.owner
+            name="enrichment", folder=video_folder, created_by=video.owner
         )
 
         if enrichment_file.file and os.path.isfile(enrichment_file.file.path):

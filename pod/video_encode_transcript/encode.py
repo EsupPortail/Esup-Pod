@@ -32,7 +32,7 @@ __license__ = "LGPL v3"
 log = logging.getLogger(__name__)
 
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
-USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", True)
+USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", False)
 if USE_TRANSCRIPTION:
     from . import transcript
 

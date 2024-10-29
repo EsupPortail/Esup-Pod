@@ -1,8 +1,7 @@
 """Esup-Pod Main REST api url router."""
 
 from rest_framework import routers
-from django.conf.urls import url
-from django.conf.urls import include
+from django.urls import include, path, re_path
 from pod.authentication import rest_views as authentication_views
 from pod.video import rest_views as video_views
 from pod.main import rest_views as main_views
@@ -21,16 +20,13 @@ import importlib
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile import rest_views as podfile_views
 
-if getattr(settings, "USE_BBB", True):
-    from pod.bbb import rest_views as bbb_views
-
 if getattr(settings, "USE_MEETING", True):
     from pod.meeting import rest_views as meeting_views
 
 router = routers.DefaultRouter()
 
-router.register(r"mainfiles", main_views.CustomFileModelViewSet)
-router.register(r"mainimages", main_views.CustomImageModelViewSet)
+# router.register(r"mainfiles", main_views.CustomFileModelViewSet)
+# router.register(r"mainimages", main_views.CustomImageModelViewSet)
 
 router.register(r"users", authentication_views.UserViewSet)
 router.register(r"groups", authentication_views.GroupViewSet)
@@ -70,11 +66,6 @@ if getattr(settings, "USE_PODFILE", False):
     router.register(r"files", podfile_views.CustomFileModelSerializerViewSet)
     router.register(r"images", podfile_views.CustomImageModelSerializerViewSet)
 
-if getattr(settings, "USE_BBB", True):
-    router.register(r"bbb_meeting", bbb_views.MeetingModelViewSet)
-    router.register(r"bbb_attendee", bbb_views.AttendeeModelViewSet)
-    router.register(r"bbb_livestream", bbb_views.LivestreamModelViewSet)
-
 if getattr(settings, "USE_MEETING", True):
     router.register(r"meeting_session", meeting_views.MeetingModelViewSet)
     router.register(
@@ -84,43 +75,43 @@ if getattr(settings, "USE_MEETING", True):
     router.register(r"meeting_live_gateway", meeting_views.LiveGatewayModelViewSet)
 
 urlpatterns = [
-    url(r"dublincore/$", video_views.DublinCoreView.as_view(), name="dublincore"),
-    url(
-        r"^launch_encode_view/$",
+    path("dublincore/", video_views.DublinCoreView.as_view(), name="dublincore"),
+    path(
+        "launch_encode_view/",
         encode_views.launch_encode_view,
         name="launch_encode_view",
     ),
-    url(
-        r"store_remote_encoded_video/$",
+    path(
+        "store_remote_encoded_video/",
         encode_views.store_remote_encoded_video,
         name="store_remote_encoded_video",
     ),
-    url(
-        r"store_remote_encoded_video_studio/$",
+    path(
+        "store_remote_encoded_video_studio/",
         encode_views.store_remote_encoded_video_studio,
         name="store_remote_encoded_video_studio",
     ),
-    url(
-        r"store_remote_transcripted_video/$",
+    path(
+        "store_remote_transcripted_video/",
         encode_views.store_remote_transcripted_video,
         name="store_remote_transcripted_video",
     ),
-    url(
-        r"accessgroups_set_users_by_name/$",
+    path(
+        "accessgroups_set_users_by_name/",
         auth_views.accessgroups_set_users_by_name,
         name="accessgroups_set_users_by_name",
     ),
-    url(
-        r"accessgroups_remove_users_by_name/$",
+    path(
+        "accessgroups_remove_users_by_name/",
         auth_views.accessgroups_remove_users_by_name,
         name="accessgroups_set_users_by_name",
     ),
-    url(
+    re_path(
         r"accessgroups_set_user_accessgroup /$",
         auth_views.accessgroups_set_user_accessgroup,
         name="accessgroups_set_user_accessgroup ",
     ),
-    url(
+    re_path(
         r"accessgroups_remove_user_accessgroup /$",
         auth_views.accessgroups_remove_user_accessgroup,
         name="accessgroups_remove_user_accessgroup ",
@@ -129,8 +120,8 @@ urlpatterns = [
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
     urlpatterns += [
-        url(
-            r"launch_transcript_view/$",
+        path(
+            "launch_transcript_view/",
             encode_views.launch_transcript_view,
             name="launch_transcript_view",
         ),
@@ -141,5 +132,5 @@ for apps in settings.THIRD_PARTY_APPS:
     mod.add_register(router)
 
 urlpatterns += [
-    url(r"^", include(router.urls)),
+    path("", include(router.urls)),
 ]

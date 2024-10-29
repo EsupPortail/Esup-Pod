@@ -5,7 +5,7 @@ from pod.main.views import in_maintenance
 from django.urls import reverse
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied

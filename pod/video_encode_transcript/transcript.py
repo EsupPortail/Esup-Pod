@@ -38,7 +38,6 @@ DEBUG = getattr(settings, "DEBUG", False)
 if getattr(settings, "USE_PODFILE", False):
     __FILEPICKER__ = True
     from pod.podfile.models import CustomFileModel
-    from pod.podfile.models import UserFolder
 else:
     __FILEPICKER__ = False
     from pod.main.models import CustomFileModel
@@ -58,6 +57,12 @@ USE_REMOTE_ENCODING_TRANSCODING = getattr(
 )
 if USE_REMOTE_ENCODING_TRANSCODING:
     from .transcripting_tasks import start_transcripting_task
+
+CAPTIONS_STRICT_ACCESSIBILITY = getattr(
+    settings,
+    "CAPTIONS_STRICT_ACCESSIBILITY",
+    False,
+)
 
 log = logging.getLogger(__name__)
 
@@ -140,7 +145,7 @@ def main_threaded_transcript(video_to_encode_id):
 
 def save_vtt_and_notify(video_to_encode, msg, webvtt):
     """Call save vtt file function and notify by mail at the end."""
-    msg += saveVTT(video_to_encode, webvtt)
+    msg += save_vtt(video_to_encode, webvtt)
     change_encoding_step(video_to_encode.id, 0, "done")
     video_to_encode.encoding_in_progress = False
     video_to_encode.save()
@@ -150,68 +155,83 @@ def save_vtt_and_notify(video_to_encode, msg, webvtt):
     add_encoding_log(video_to_encode.id, msg)
 
 
-def saveVTT(video: Video, webvtt: WebVTT, lang_code: str = None):
+def save_vtt(video: Video, webvtt: WebVTT, lang_code: str = None):
     """Save webvtt file with the video."""
     msg = "\nSAVE TRANSCRIPT WEBVTT : %s" % time.ctime()
     lang = lang_code if lang_code else video.transcript
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     webvtt.save(temp_vtt_file.name)
     if webvtt.captions:
-        improveCaptionsAccessibility(webvtt)
+        if TRANSCRIPTION_TYPE != "WHISPER":
+            improve_captions_accessibility(webvtt)
         msg += "\nstore vtt file in bdd with CustomFileModel model file field"
         if __FILEPICKER__:
-            videodir, created = UserFolder.objects.get_or_create(
-                name="%s" % video.slug, owner=video.owner
-            )
+            video_dir = video.get_or_create_video_folder()
             """
             previousSubtitleFile = CustomFileModel.objects.filter(
                 name__startswith="subtitle_%s" % lang,
-                folder=videodir,
+                folder=video_dir,
                 created_by=video.owner
             )
             """
             # for subt in previousSubtitleFile:
             #     subt.delete()
-            subtitleFile, created = CustomFileModel.objects.get_or_create(
+            subtitle_file, created = CustomFileModel.objects.get_or_create(
                 name="subtitle_%s_%s" % (lang, time.strftime("%Y%m%d-%H%M%S")),
-                folder=videodir,
+                folder=video_dir,
                 created_by=video.owner,
             )
-            if subtitleFile.file and os.path.isfile(subtitleFile.file.path):
-                os.remove(subtitleFile.file.path)
+            if subtitle_file.file and os.path.isfile(subtitle_file.file.path):
+                os.remove(subtitle_file.file.path)
         else:
-            subtitleFile, created = CustomFileModel.objects.get_or_create()
+            subtitle_file, created = CustomFileModel.objects.get_or_create()
 
-        subtitleFile.file.save(
+        subtitle_file.file.save(
             "subtitle_%s_%s.vtt" % (lang, time.strftime("%Y%m%d-%H%M%S")),
             File(temp_vtt_file),
         )
         msg += "\nstore vtt file in bdd with Track model src field"
 
-        subtitleVtt, created = Track.objects.get_or_create(video=video, lang=lang)
-        subtitleVtt.src = subtitleFile
-        subtitleVtt.lang = lang
-        subtitleVtt.save()
+        subtitle_btt, created = Track.objects.get_or_create(video=video, lang=lang)
+        subtitle_btt.src = subtitle_file
+        subtitle_btt.lang = lang
+        subtitle_btt.save()
     else:
         msg += "\nERROR SUBTITLES Output size is 0"
     return msg
 
 
-def improveCaptionsAccessibility(webvtt):
+def remove_unnecessary_spaces(text: str) -> str:
+    """
+    Remove unnecessary spaces from a string.
+
+    Args:
+        text (str): The string.
+
+    Returns:
+        str: The new string.
+    """
+    return " ".join(text.split())
+
+
+def improve_captions_accessibility(
+    webvtt, strict_accessibility=CAPTIONS_STRICT_ACCESSIBILITY
+):
     """
     Parse the vtt file in argument to render the caption conform to accessibility.
 
     - see `https://github.com/knarf18/Bonnes-pratiques-du-sous-titrage/blob/master/Liste%20de%20bonnes%20pratiques.md` # noqa: E501
-    - 40 car maximum per ligne (CPL)
+    - 40 car maximum per line (CPL)
     - 2 lines max by caption
 
     Args:
-        webvtt (:class:`webvtt.WebVTT`): the webvtt file content
+        webvtt (:class:`webvtt.WebVTT`): The webvtt file content
+        strict_accessibility (bool): If True, the caption will be more accessible
 
     """
     new_captions = []
     for caption in webvtt.captions:
-        sent = split_string(caption.text, 40, sep=" ")
+        sent = split_string(caption.text, 40 if strict_accessibility else 55, sep=" ")
         # nb mots total
         nbTotWords = len(caption.text.split())
         if len(sent) > 2:
@@ -223,7 +243,7 @@ def improveCaptionsAccessibility(webvtt):
             startTime = caption.start_in_seconds
             for x in range(num_captions):
                 new_cap = Caption()
-                new_cap.text = get_cap_text(sent, x)
+                new_cap.text = remove_unnecessary_spaces(get_cap_text(sent, x))
                 # Durée d'affichage au prorata du nombre de mots
                 timeCalc = dur * (len(new_cap.text.split()) / nbTotWords)
                 new_cap.start = sec_to_timestamp(startTime)

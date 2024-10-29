@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 from django.contrib.admin.views.decorators import staff_member_required
@@ -495,7 +495,8 @@ def file_edit_save(request, folder):
 
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
-def get_file(request, type):
+def get_file(request, type) -> HttpResponse:
+    """Get file specified in request if current user can access it."""
     id = None
     if request.method == "POST" and request.POST.get("src"):
         id = request.POST.get("src")

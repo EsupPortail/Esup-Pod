@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-11 07:48+0000\n"
+"POT-Creation-Date: 2024-08-26 13:54+0200\n"
 "PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -169,7 +169,12 @@ msgid "Pause to enter caption for segment from %s to %s."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
-msgid "A caption cannot contain more than 80 characters."
+msgid "A caption cannot contain more than 110 characters."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
+msgid ""
+"For your video's accessibility, we recommend a maximum of 80 characters."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
@@ -207,6 +212,10 @@ msgid "Time stamps"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
+msgid "/80 characters"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js
 msgid "Error loading caption file: "
 msgstr ""
 
@@ -217,6 +226,10 @@ msgstr ""
 
 #: pod/completion/static/js/completion.js
 msgid "Are you sure you want to delete this contributor?"
+msgstr ""
+
+#: pod/completion/static/js/completion.js
+msgid "Are you sure you want to delete this speaker?"
 msgstr ""
 
 #: pod/completion/static/js/completion.js
@@ -393,6 +406,7 @@ msgstr ""
 #: pod/live/static/js/filter_aside_event_list.js
 #: pod/playlist/static/playlist/js/filter-aside-playlist-list-refresh.js
 #: pod/video/static/js/filter_aside_video_list_refresh.js
+#: pod/video/static/js/video_category.js
 msgid "An Error occurred while processing."
 msgstr ""
 
@@ -430,6 +444,14 @@ msgstr ""
 
 #: pod/main/static/js/main.js
 msgid "Action performed successfully."
+msgstr ""
+
+#: pod/main/static/js/main.js
+msgid "Change your picture"
+msgstr ""
+
+#: pod/main/static/js/main.js
+msgid "Add your picture"
 msgstr ""
 
 #: pod/main/static/js/main.js pod/video/static/js/video-access-token.js
@@ -621,14 +643,6 @@ msgid "Short answer"
 msgstr ""
 
 #: pod/quiz/static/quiz/js/create-quiz.js
-msgid "The long answer"
-msgstr ""
-
-#: pod/quiz/static/quiz/js/create-quiz.js
-msgid "Long answer"
-msgstr ""
-
-#: pod/quiz/static/quiz/js/create-quiz.js
 #, javascript-format
 msgid "Select the choice #%s as correct answer."
 msgstr ""
@@ -672,6 +686,22 @@ msgstr ""
 
 #: pod/quiz/static/quiz/js/video-quiz-submit.js
 msgid "Incorrect answer given"
+msgstr ""
+
+#: pod/speaker/static/speaker/js/speakers-management.js
+msgid "Job title"
+msgstr ""
+
+#: pod/speaker/static/speaker/js/speakers-management.js
+msgid "Remove job"
+msgstr ""
+
+#: pod/speaker/static/speaker/js/speakers-management.js
+msgid "Edit this speaker"
+msgstr ""
+
+#: pod/speaker/static/speaker/js/speakers-management.js
+msgid "Add a speaker"
 msgstr ""
 
 #: pod/video/static/js/ajax-display-channels.js
@@ -796,47 +826,38 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is password protected."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is chaptered."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "This content is in draft."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Video content."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Audio content."
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Edit the video"
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Complete the video"
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Chapter the video"
 msgstr ""
 
 #: pod/video/static/js/regroup_videos_by_theme.js
-#: pod/video/static/js/video_category.js
 msgid "Delete the video"
 msgstr ""
 
@@ -862,74 +883,6 @@ msgstr ""
 
 #: pod/video/static/js/video-show.js
 msgid "Quality"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Category changes saved successfully"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "You cannot add two categories with the same title."
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Category deleted successfully"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "An error occured, please refresh the page and try again."
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Category title field is required."
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Save category"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "You have no content without a category."
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "videos found"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "video found"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Sorry, no video found"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Edit the category"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Delete the category"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Success!"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Error…"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Category created successfully"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Add new category"
-msgstr ""
-
-#: pod/video/static/js/video_category.js
-msgid "Create category"
 msgstr ""
 
 #: pod/video/static/js/video_edit.js

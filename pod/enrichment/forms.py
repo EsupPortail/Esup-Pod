@@ -2,7 +2,7 @@ from django import forms
 from django.conf import settings
 from django.forms.widgets import HiddenInput
 from django.contrib.admin import widgets
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.safestring import mark_safe
 from .models import Enrichment, EnrichmentGroup, EnrichmentVtt
 from django.contrib.auth.models import Group
@@ -62,7 +62,7 @@ class EnrichmentForm(forms.ModelForm):
                 self.fields[myField].widget.attrs["class"] = "form-control required"
                 label_unicode = "{0}".format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
-                    "{0} <span class='required_star'>*</span>".format(label_unicode)
+                    "{0} <span class='required-star'>*</span>".format(label_unicode)
                 )
             else:
                 self.fields[myField].widget.attrs["class"] = "form-control"

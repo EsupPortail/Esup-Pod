@@ -8,9 +8,14 @@ from django.urls import reverse
 from pod.main.models import Configuration
 from datetime import time
 from django.contrib.messages import get_messages
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from .. import views
 from importlib import reload
+
+# ggignore-start
+# gitguardian:ignore
+PWD = "azerty1234"  # nosec
+# ggignore-end
 
 
 class CutVideoViewsTestCase(TestCase):
@@ -18,9 +23,9 @@ class CutVideoViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
-        self.user = User.objects.create(username="test", password="azerty", is_staff=True)
-        self.user2 = User.objects.create(username="test2", password="azerty")
+    def setUp(self) -> None:
+        self.user = User.objects.create(username="test", password=PWD, is_staff=True)
+        self.user2 = User.objects.create(username="test2", password=PWD)
         self.video = Video.objects.create(
             title="videotest",
             owner=self.user,
@@ -30,7 +35,7 @@ class CutVideoViewsTestCase(TestCase):
         )
         self.video.additional_owners.add(self.user2)
 
-    def test_maintenance(self):
+    def test_maintenance(self) -> None:
         """Test Pod maintenance mode in CutVideoViewsTestCase."""
         self.client.force_login(self.user)
         url = reverse("cut:video_cut", kwargs={"slug": self.video.slug})
@@ -46,7 +51,7 @@ class CutVideoViewsTestCase(TestCase):
         self.assertRedirects(response, "/maintenance/")
         print(" --->  test_maintenance ok")
 
-    def test_get_full_duration(self):
+    def test_get_full_duration(self) -> None:
         """Test test_get_full_duration."""
         CutVideo.objects.create(
             video=self.video, start=time(0, 0, 0), end=time(0, 0, 10), duration="00:00:10"
@@ -61,7 +66,7 @@ class CutVideoViewsTestCase(TestCase):
         print(" --->  test_get_full_duration ok")
 
     @override_settings(RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True, USE_CUT=True)
-    def test_restrict_edit_video_access_staff_only(self):
+    def test_restrict_edit_video_access_staff_only(self) -> None:
         """Test test_restrict_edit_video_access_staff_only."""
         reload(views)
         self.client.force_login(self.user2)
@@ -80,7 +85,7 @@ class CutVideoViewsTestCase(TestCase):
 
         print(" --->  test_restrict_edit_video_access_staff_only ok")
 
-    def test_post_cut_valid_form(self):
+    def test_post_cut_valid_form(self) -> None:
         """Test test_post_cut_valid_form."""
         self.client.force_login(self.user)
         post_data = {
@@ -101,7 +106,7 @@ class CutVideoViewsTestCase(TestCase):
 
         print(" --->  test_post_cut_valid_form ok")
 
-    def test_post_cut_invalid_form(self):
+    def test_post_cut_invalid_form(self) -> None:
         """Test test_post_cut_invalid_form."""
         self.client.force_login(self.user)
         post_data = {

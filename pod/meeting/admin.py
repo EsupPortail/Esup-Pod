@@ -3,7 +3,7 @@
 from django.contrib import admin
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.html import mark_safe
 from django.contrib.admin import widgets
 from django.utils.safestring import SafeText
@@ -212,6 +212,7 @@ class MeetingSessionLogAdmin(admin.ModelAdmin):
         "creator",
     ]
 
+    @admin.display(description=_("Moderators"))
     def decrypt_mods_as_json(self, obj):
         """Decrypt moderators value to json and show it pretty."""
         if not obj:
@@ -219,18 +220,13 @@ class MeetingSessionLogAdmin(admin.ModelAdmin):
         moderators = "<pre>{}</pre>".format(obj.moderators.replace(" ", "&nbsp;"))
         return SafeText(moderators)
 
-    decrypt_mods_as_json.short_description = _("Moderators")
-    decrypt_mods_as_json.allow_tags = True
-
+    @admin.display(description=_("Viewers"))
     def decrypt_viewers_as_json(self, obj):
         """Decrypt viewers value to json and show it pretty."""
         if not obj:
             return _("Mode insert, nothing to display")
         viewers = "<pre>{}</pre>".format(obj.viewers.replace(" ", "&nbsp;"))
         return SafeText(viewers)
-
-    decrypt_viewers_as_json.short_description = _("Viewers")
-    decrypt_viewers_as_json.allow_tags = True
 
     list_filter = ["creation_date"]
     readonly_fields = (
@@ -284,15 +280,8 @@ class LiveGatewayAdmin(admin.ModelAdmin):
         admin (ModelAdmin): admin model
     """
 
-    list_display = (
-        "id",
-        "rtmp_stream_url",
-        "broadcaster",
-    )
-    list_display_links = ("id", "rtmp_stream_url")
-    ordering = ("-id", "rtmp_stream_url")
+    list_display = ("id", "rtmp_stream_url", "broadcaster", "sipmediagw_server_url")
+    list_display_links = ("id",)
+    ordering = ("-id",)
     readonly_fields = []
-    search_fields = [
-        "id",
-        "broadcaster__broadcaster_name",
-    ]
+    search_fields = ["id", "broadcaster__broadcaster_name", "sipmediagw_server_url"]

@@ -26,7 +26,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_GET
 from django.template import loader
 from django.core.mail import EmailMultiAlternatives
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
@@ -42,6 +42,7 @@ import mimetypes
 import json
 from django.contrib.auth.decorators import login_required
 from .models import Configuration
+from .utils import is_ajax
 from honeypot.decorators import check_honeypot
 
 
@@ -77,6 +78,7 @@ CONTACT_US_EMAIL = getattr(
     [mail for name, mail in getattr(settings, "MANAGERS")],
 )
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
+NOTIFY_SENDER = getattr(settings, "NOTIFY_SENDER", True)
 USER_CONTACT_EMAIL_CASE = getattr(settings, "USER_CONTACT_EMAIL_CASE", [])
 CUSTOM_CONTACT_US = getattr(settings, "CUSTOM_CONTACT_US", False)
 MANAGERS = getattr(settings, "MANAGERS", [])
@@ -229,7 +231,7 @@ def contact_us(request):
     prefix = "https://" if request.is_secure() else "http://"
     home_page = "".join([prefix, get_current_site(request).domain])
     url_referrer = (
-        request.META["HTTP_REFERER"] if request.META.get("HTTP_REFERER") else home_page
+        request.headers["referer"] if request.headers.get("referer") else home_page
     )
 
     form = ContactUsForm(
@@ -281,24 +283,25 @@ def contact_us(request):
             msg.send(fail_silently=False)
 
             # EMAIL TO SENDER
-            subject = "[ %s ] %s %s" % (
-                __TITLE_SITE__,
-                _("your message untitled"),
-                dict(SUBJECT_CHOICES)[form_subject],
-            )
+            if NOTIFY_SENDER:
+                subject = "[ %s ] %s %s" % (
+                    __TITLE_SITE__,
+                    _("your message untitled"),
+                    dict(SUBJECT_CHOICES)[form_subject],
+                )
 
-            html_content = loader.get_template("mail/mail_sender.html").render(
-                {
-                    "TITLE_SITE": __TITLE_SITE__,
-                    "message": message.replace("\n", "<br>"),
-                }
-            )
-            text_content = bleach.clean(html_content, tags=[], strip=True)
-            msg = EmailMultiAlternatives(
-                subject, text_content, DEFAULT_FROM_EMAIL, [email]
-            )
-            msg.attach_alternative(html_content, "text/html")
-            msg.send(fail_silently=False)
+                html_content = loader.get_template("mail/mail_sender.html").render(
+                    {
+                        "TITLE_SITE": __TITLE_SITE__,
+                        "message": message.replace("\n", "<br>"),
+                    }
+                )
+                text_content = bleach.clean(html_content, tags=[], strip=True)
+                msg = EmailMultiAlternatives(
+                    subject, text_content, DEFAULT_FROM_EMAIL, [email]
+                )
+                msg.attach_alternative(html_content, "text/html")
+                msg.send(fail_silently=False)
 
             messages.add_message(request, messages.INFO, _("Your message has been sent."))
 
@@ -322,7 +325,7 @@ def contact_us(request):
 @login_required(redirect_field_name="referrer")
 def user_autocomplete(request):
     """Search for users with partial names, for autocompletion."""
-    if request.is_ajax():
+    if is_ajax(request):
         additional_filters = {
             "video__is_draft": False,
             "owner__sites": get_current_site(request),

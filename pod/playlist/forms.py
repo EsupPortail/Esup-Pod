@@ -4,7 +4,7 @@ from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from pod.meeting.forms import AddOwnerWidget
@@ -12,7 +12,7 @@ from pod.meeting.forms import AddOwnerWidget
 from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist
 
-USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", True)
+USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", False)
 RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY = getattr(
     settings,
     "RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY",
@@ -146,9 +146,12 @@ class PlaylistForm(forms.ModelForm):
         super(PlaylistForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
         if self.user:
-            if not self.user.is_staff and RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY:
-                if "promoted" in self.fields:
-                    del self.fields["promoted"]
+            if (
+                RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY
+                and "promoted" in self.fields
+                or self.user.is_superuser
+            ):
+                del self.fields["promoted"]
         else:
             if "promoted" in self.fields:
                 del self.fields["promoted"]

@@ -12,7 +12,7 @@ import hashlib
 
 from django.db import models
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.translation import get_language
 from django.template.defaultfilters import slugify
 from django.db.models import Sum
@@ -24,13 +24,14 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.templatetags.static import static
 from django.dispatch import receiver
 from django.db.models.signals import pre_delete, post_delete
-from tagging.models import Tag
+
+# from tagging.models import Tag
+from tagulous.models import TagField
 from datetime import date
 from django.utils import timezone
 from django.utils.html import format_html, escape
 from django.utils.text import capfirst
 from ckeditor.fields import RichTextField
-from tagging.fields import TagField
 from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
 from django.db.models.signals import pre_save
@@ -360,7 +361,7 @@ class Channel(models.Model):
         AccessGroup,
         blank=True,
         verbose_name=_("Groups"),
-        help_text=_("Select one or more groups who can upload video to this channel."),
+        help_text=_("One or more groups who can upload video to this channel."),
     )
     add_channels_tab = models.ManyToManyField(
         AdditionalChannelTab, verbose_name=_("Additionals channels tab"), blank=True
@@ -689,7 +690,7 @@ class Video(models.Model):
         _("Title"),
         max_length=250,
         help_text=_(
-            "Please choose a title as short and accurate as "
+            "A title as short and accurate as "
             "possible, reflecting the main subject / context "
             "of the content. (max length: 250 characters)"
         ),
@@ -710,7 +711,7 @@ class Video(models.Model):
         Type,
         verbose_name=_("Type"),
         on_delete=models.CASCADE,
-        help_text=_("Select the general type of the video."),
+        help_text=_("The general type of the video."),
     )
     owner = models.ForeignKey(User, verbose_name=_("Owner"), on_delete=models.CASCADE)
     additional_owners = models.ManyToManyField(
@@ -719,9 +720,8 @@ class Video(models.Model):
         verbose_name=_("Additional owners"),
         related_name="owners_videos",
         help_text=_(
-            "You can add additional owners to the video. "
-            + "They will have the same rights as you except "
-            + "that they can’t delete this video."
+            "Additional owners will have the same rights as you, except "
+            + "that they can’t delete this media."
         ),
     )
     description = RichTextField(
@@ -729,8 +729,7 @@ class Video(models.Model):
         config_name="complete",
         blank=True,
         help_text=_(
-            "In this field you can describe your content, "
-            + "add all needed related information, "
+            "Describe your content, add all needed related information, "
             + "and format the result using the toolbar."
         ),
     )
@@ -750,7 +749,7 @@ class Video(models.Model):
         max_length=2,
         choices=LANG_CHOICES,
         default=get_language(),
-        help_text=_("Select the main language used in the content."),
+        help_text=_("The main language used in the content."),
     )
     transcript = models.CharField(
         _("Transcript"),
@@ -767,18 +766,31 @@ class Video(models.Model):
         verbose_name=_("Tags"),
     )
     discipline = models.ManyToManyField(
-        Discipline, blank=True, verbose_name=_("Disciplines")
+        Discipline,
+        blank=True,
+        verbose_name=_("Disciplines"),
+        help_text=_("The disciplines to which your content belongs."),
     )
     licence = models.CharField(
-        _("Licence"), max_length=8, choices=LICENCE_CHOICES, blank=True, null=True
+        _("Licence"),
+        max_length=8,
+        choices=LICENCE_CHOICES,
+        blank=True,
+        null=True,
+        help_text=_("Usage rights granted to your content."),
     )
-    channel = models.ManyToManyField(Channel, verbose_name=_("Channels"), blank=True)
+    channel = models.ManyToManyField(
+        Channel,
+        verbose_name=_("Channels"),
+        blank=True,
+        help_text=_("The channel where you want your content to appear."),
+    )
     theme = models.ManyToManyField(
         Theme,
         verbose_name=_("Themes"),
         blank=True,
         help_text=_(
-            'Hold down "Control", or "Command" ' "on a Mac, to select more than one."
+            'Hold down "Control", or "Command" on a Mac, to select more than one.'
         ),
     )
     allow_downloading = models.BooleanField(
@@ -802,7 +814,7 @@ class Video(models.Model):
         default=True,
     )
     is_restricted = models.BooleanField(
-        verbose_name=_("Restricted access"),
+        verbose_name=_("Authentication restricted access"),
         help_text=_(
             "If this box is checked, "
             "the video will only be accessible to authenticated users."
@@ -813,7 +825,7 @@ class Video(models.Model):
         AccessGroup,
         blank=True,
         verbose_name=_("Groups"),
-        help_text=_("Select one or more groups who can access to this video"),
+        help_text=_("One or more groups who can access to this video"),
     )
     password = models.CharField(
         _("password"),
@@ -844,11 +856,15 @@ class Video(models.Model):
     )
     is_video = models.BooleanField(_("Is Video"), default=True, editable=False)
 
-    date_delete = models.DateField(_("Date to delete"), default=default_date_delete)
+    date_delete = models.DateField(
+        _("Date to delete"),
+        default=default_date_delete,
+        help_text=_("Date when your video will be automatically removed from Pod."),
+    )
 
     disable_comment = models.BooleanField(
         _("Disable comment"),
-        help_text=_("Allows you to turn off all comments on this video."),
+        help_text=_("Prevent users from commenting on your content."),
         default=False,
     )
 
@@ -894,9 +910,10 @@ class Video(models.Model):
             newid = self.id
         newid = "%04d" % newid
         self.slug = "%s-%s" % (newid, slugify(self.title))
-        self.tags = remove_accents(self.tags)
         # self.set_password()
         super(Video, self).save(*args, **kwargs)
+        # Ensure video folder will accord access to additional owners
+        self.update_additional_owners_rights()
 
     def __str__(self) -> str:
         """Display a video object as string."""
@@ -1256,12 +1273,15 @@ class Video(models.Model):
                 "description": "%s" % self.description,
                 "thumbnail": "%s" % self.get_thumbnail_url(),
                 "duration": "%s" % self.duration,
+                """
                 "tags": list(
                     [
                         {"name": name[0], "slug": slugify(name)}
                         for name in Tag.objects.get_for_object(self).values_list("name")
                     ]
                 ),
+                """
+                "tags": self.tags.all().filter(site=current_site).values("title", "slug"),
                 "type": {"title": self.type.title, "slug": self.type.slug},
                 "disciplines": list(
                     self.discipline.all()
@@ -1412,6 +1432,37 @@ class Video(models.Model):
                 " for video %s: %s" % (self.id, e)
             )
             return {}
+
+    def get_or_create_video_folder(self):
+        """Get or create a UserFolder associated to current video."""
+        if USE_PODFILE:
+            videodir, created = UserFolder.objects.get_or_create(
+                name=self.slug, owner=self.owner
+            )
+            return videodir
+
+    def update_additional_owners_rights(self) -> None:
+        """Update folder rights for additional video owners."""
+        if USE_PODFILE:
+            try:
+                # First, search for exact Userfolder match
+                videodir = UserFolder.objects.get(name="%s" % self.slug, owner=self.owner)
+                # Ensure all additional users will get access to this folder
+                videodir.users.set(self.additional_owners.all())
+                videodir.save()
+            except UserFolder.DoesNotExist:
+                # Search for Userfolder previously associated to current vid
+                # (if vid changed slug or owner)
+                slugid = "%04d-" % self.id
+                videodirs = UserFolder.objects.filter(name__startswith=slugid)
+                if videodirs.all().count() > 0:
+                    # We found a match
+                    videodir = videodirs.first()
+                    # Re-sync folder metadata with video
+                    videodir.users.set(self.additional_owners.all())
+                    videodir.name = self.slug
+                    videodir.owner = self.owner
+                    videodir.save()
 
 
 class UpdateOwner(models.Model):
@@ -1803,7 +1854,7 @@ class Category(models.Model):
         verbose_name=_("Videos"),
         blank=True,
         help_text=_(
-            'Hold down "Control", or "Command" ' "on a Mac, to select more than one."
+            'Hold down "Control", or "Command" on a Mac, to select more than one.'
         ),
     )
     slug = models.SlugField(

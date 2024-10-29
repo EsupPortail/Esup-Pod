@@ -9,7 +9,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
@@ -75,7 +75,7 @@ __TITLE_SITE__ = (
     else "Pod"
 )
 
-USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", True)
+USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", False)
 
 
 def playlist_list(request: WSGIRequest):
@@ -224,7 +224,7 @@ def toggle_render_playlist_user_has_right(
                 messages.ERROR,
                 _("The password is incorrect."),
             )
-            return redirect(request.META["HTTP_REFERER"])
+            return redirect(request.headers["referer"])
     else:
         form = PlaylistPasswordForm()
         return render(
@@ -346,7 +346,7 @@ def remove_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
                 "state": "out-playlist",
             }
         )
-    return redirect(request.META["HTTP_REFERER"])
+    return redirect(request.headers["referer"])
 
 
 @login_required(redirect_field_name="referrer")
@@ -361,7 +361,7 @@ def add_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
                 "state": "in-playlist",
             }
         )
-    return redirect(request.META["HTTP_REFERER"])
+    return redirect(request.headers["referer"])
 
 
 @login_required(redirect_field_name="referrer")
@@ -470,11 +470,11 @@ def handle_get_request_for_add_or_edit_function(request: WSGIRequest, slug: str)
     if playlist:
         if (
             request.user == playlist.owner
-            or request.user.is_staff
+            or request.user.is_superuser
             or request.user in get_additional_owners(playlist)
         ) and playlist.editable:
             form = PlaylistForm(instance=playlist, user=request.user)
-            page_title = _("Edit the playlist") + f' "{playlist.name}"'
+            page_title = _(f"Edit playlist “{playlist.name}”")
         else:
             return redirect(reverse("playlist:list"))
     else:
@@ -532,7 +532,7 @@ def favorites_save_reorganisation(request: WSGIRequest, slug: str):
                     playlist_video_1.update(rank=video_2_rank)
                     playlist_video_2.update(rank=video_1_rank)
 
-        return redirect(request.META["HTTP_REFERER"])
+        return redirect(request.headers["referer"])
     else:
         raise Http404()
 
@@ -556,7 +556,7 @@ def start_playlist(request: WSGIRequest, slug: str, video: Video = None):
                 messages.add_message(
                     request, messages.ERROR, _("The password is incorrect.")
                 )
-                return redirect(request.META["HTTP_REFERER"])
+                return redirect(request.headers["referer"])
         else:
             form = PlaylistPasswordForm()
             return render(

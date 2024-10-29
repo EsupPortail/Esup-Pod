@@ -9,7 +9,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import PermissionDenied
@@ -25,16 +25,16 @@ from pod.completion.models import Track
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from pod.main.utils import json_to_web_vtt
 from pod.main.views import in_maintenance
-from pod.podfile.models import UserFolder
 from pod.quiz.utils import import_quiz
 from pod.video.models import Video, Discipline
-from pod.video_encode_transcript.transcript import saveVTT
+from pod.video_encode_transcript.transcript import save_vtt
 
 AI_ENHANCEMENT_CLIENT_ID = getattr(settings, "AI_ENHANCEMENT_CLIENT_ID", "mocked_id")
 AI_ENHANCEMENT_CLIENT_SECRET = getattr(
     settings, "AI_ENHANCEMENT_CLIENT_SECRET", "mocked_secret"
 )
 AI_ENHANCEMENT_TO_STAFF_ONLY = getattr(settings, "AI_ENHANCEMENT_TO_STAFF_ONLY", True)
+AI_ENHANCEMENT_PROXY_URL = getattr(settings, "AI_ENHANCEMENT_PROXY_URL", "")
 LANG_CHOICES = getattr(
     settings,
     "LANG_CHOICES",
@@ -96,14 +96,16 @@ def send_enhancement_creation_request(
                     + request.user.username
                 ).encode("utf-8")
             ).hexdigest()
+            if AI_ENHANCEMENT_PROXY_URL:
+                base_url = AI_ENHANCEMENT_PROXY_URL
+            else:
+                base_url = url_scheme + "://" + get_current_site(request).domain
+
             creation_response = aristote.create_enhancement_from_url(
-                url_scheme + "://" + get_current_site(request).domain + mp3_url,
+                base_url + mp3_url,
                 ["video/mp3"],
                 end_user_identifier + "@%s" % get_current_site(request).domain,
-                url_scheme
-                + "://"
-                + get_current_site(request).domain
-                + reverse("ai_enhancement:webhook"),
+                base_url + reverse("ai_enhancement:webhook"),
             )
             if creation_response:
                 if creation_response["status"] == "OK":
@@ -333,7 +335,7 @@ def enhance_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
         web_vtt = json_to_web_vtt(
             latest_version["transcript"]["sentences"], video.duration
         )
-        saveVTT(video, web_vtt, latest_version["transcript"]["language"])
+        save_vtt(video, web_vtt, latest_version["transcript"]["language"])
         latest_track = (
             Track.objects.filter(
                 video=video,
@@ -349,10 +351,7 @@ def enhance_subtitles(request: WSGIRequest, video_slug: str) -> HttpResponse:
             + str(True)
         )
 
-    video_folder, created = UserFolder.objects.get_or_create(
-        name=video.slug,
-        owner=request.user,
-    )
+    video_folder = video.get_or_create_video_folder()
     if enhancement_is_already_asked(video):
         enhancement = AIEnhancement.objects.filter(video=video).first()
         if enhancement.is_ready:

@@ -291,11 +291,8 @@
               {% if request.user.is_staff and ALLOW_MANUAL_RECORDING_CLAIMING %}
                 <a class="nav-item nav-link" href="{% url 'record:claim_record' %}"><i class="bi bi-share pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Claim a record' %}</a>
               {% endif %}
-              {% if request.user.is_staff and USE_BBB %}
-                <a class="nav-item nav-link" href="{% url 'bbb:list_meeting' %}"><i class="bi bi-person-video3 pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My BigBlueButton records' %}</a>
-                {% if USE_BBB_LIVE %}
-                  <a class="nav-item nav-link" href="{% url 'bbb:live_list_meeting' %}"><i class="bi bi-broadcast-pin pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Perform a BigBlueButton live' %}</a>
-                {% endif %}
+              {% if request.user.is_superuser and USE_SPEAKER %}
+                <a class="nav-item nav-link" href="{% url 'speaker:speaker_management' %}"><i class="bi bi-megaphone pod-nav-link-icon mx-1" aria-hidden="true"></i>&nbsp;{% trans 'Speakers management' %}</a>
               {% endif %}
               {% if USE_NOTIFICATIONS %}
                 <div class="nav-item">

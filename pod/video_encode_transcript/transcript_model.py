@@ -8,7 +8,7 @@ import os
 from timeit import default_timer as timer
 import datetime as dt
 from datetime import timedelta
-
+import webvtt
 from webvtt import WebVTT, Caption
 from shlex import quote
 
@@ -33,6 +33,7 @@ if USE_TRANSCRIPTION:
         from stt import Model
     elif TRANSCRIPTION_TYPE == "WHISPER":
         import whisper
+        from whisper.utils import get_writer
 
 TRANSCRIPTION_NORMALIZE = getattr(settings_local, "TRANSCRIPTION_NORMALIZE", False)
 TRANSCRIPTION_NORMALIZE_TARGET_LEVEL = getattr(
@@ -407,7 +408,6 @@ def main_whisper_transcript(norm_mp3_file, duration, lang):
     """Whisper transcription."""
     msg = ""
     all_text = ""
-    webvtt = WebVTT()
     inference_start = timer()
     desired_sample_rate = 16000
     msg += "\nInference start %0.3fs." % inference_start
@@ -418,28 +418,19 @@ def main_whisper_transcript(norm_mp3_file, duration, lang):
             "download_root"
         ],
     )
-
-    for start_trim in range(0, duration, TRANSCRIPTION_AUDIO_SPLIT_TIME):
-        log.info("start_trim: " + str(start_trim))
-        audio = convert_samplerate(
-            norm_mp3_file,
-            desired_sample_rate,
-            start_trim,
-            TRANSCRIPTION_AUDIO_SPLIT_TIME,  # dur
-        )
-        transcription = model.transcribe(audio, language=lang)
-        msg += "\nRunning inference."
-        for segment in transcription["segments"]:
-            caption = Caption(
-                sec_to_timestamp(segment["start"] + start_trim),
-                sec_to_timestamp(segment["end"] + start_trim),
-                segment["text"],
-            )
-            webvtt.captions.append(caption)
-
+    audio = convert_samplerate(norm_mp3_file, desired_sample_rate, 0, duration)
+    transcription = model.transcribe(
+        audio, language=lang, initial_prompt="prompt", word_timestamps=True
+    )
+    dirname = os.path.dirname(norm_mp3_file)
+    filename = os.path.basename(norm_mp3_file).replace(".mp3", ".vtt")
+    vtt_writer = get_writer("vtt", dirname)
+    word_options = {"highlight_words": False, "max_line_count": 2, "max_line_width": 40}
+    vtt_writer(transcription, filename, word_options)
+    wvtt = webvtt.read(os.path.join(dirname, filename))
     inference_end = timer() - inference_start
     msg += "\nInference took %0.3fs." % inference_end
-    return msg, webvtt, all_text
+    return msg, wvtt, all_text
 
 
 def change_previous_end_caption(webvtt, start_caption):

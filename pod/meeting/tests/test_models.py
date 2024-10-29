@@ -37,7 +37,7 @@ class MeetingTestCase(TestCase):
         meeting2.additional_owners.add(user1)
         meeting2.additional_owners.add(user2)
 
-    def test_default_attributs(self):
+    def test_default_attributs(self) -> None:
         """Check all default attributs values when creating a meeting."""
         meetings = Meeting.objects.all()
         self.assertGreaterEqual(meetings[0].start, meetings[1].start)

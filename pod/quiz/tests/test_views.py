@@ -7,12 +7,11 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.contrib.messages import get_messages
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from pod.main.models import Configuration
 from pod.quiz.forms import QuizDeleteForm, QuizForm
 from pod.quiz.models import (
-    LongAnswerQuestion,
     MultipleChoiceQuestion,
     Quiz,
     ShortAnswerQuestion,
@@ -139,9 +138,6 @@ class VideoQuizViewsTest(TestCase):
         )
         self.SAQ1 = ShortAnswerQuestion.objects.create(
             quiz=self.connected_only_quiz, title="SAQ1", answer="answer"
-        )
-        self.LAQ1 = LongAnswerQuestion.objects.create(
-            quiz=self.connected_only_quiz, title="LAQ1", answer="answer"
         )
 
     def test_maintenance(self) -> None:

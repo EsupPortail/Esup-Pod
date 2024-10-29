@@ -1,4 +1,5 @@
-from django.conf.urls import url
+from django.urls import path
+from django.urls import re_path
 
 from pod.recorder.views import (
     digest_admin_ng_series,
@@ -20,78 +21,78 @@ from pod.recorder.views import (
 
 app_name = "recorder_digest"
 urlpatterns = [
-    url(
+    re_path(
         r"^services/hosts.json$",
         digest_hosts_json,
         name="hosts_json",
     ),
-    url(
-        r"^capture-admin/agents/(?P<name>.+)/configuration$",
+    path(
+        "capture-admin/agents/<path:name>/configuration",
         digest_capture_admin_configuration,
         name="capture_admin_config",
     ),
-    url(
+    re_path(
         r"^capture-admin/agents/(?P<name>.*)$",
         digest_capture_admin,
         name="capture_admin_agent",
     ),
-    url(
+    re_path(
         r"^admin-ng/series/series.json$",
         digest_admin_ng_series,
         name="admin_ng_series",
     ),
-    url(
+    re_path(
         r"^services/available.json$",
         digest_available,
         name="services_available",
     ),
-    url(
-        r"^presenter_post$",
+    path(
+        "presenter_post",
         digest_presenter_post,
         name="presenter_post",
     ),
-    url(
+    re_path(
         r"^settings.toml$",
         digest_settings_toml,
         name="settings_toml",
     ),
-    url(
+    re_path(
         r"^info/me.json$",
         digest_info_me_json,
         name="info_me_json",
     ),
-    url(
+    re_path(
         r"^static/(?P<file>.*)$",
         digest_studio_static,
         name="studio_static",
     ),
-    url(
-        r"^ingest/createMediaPackage$",
+    path(
+        "ingest/createMediaPackage",
         digest_ingest_createMediaPackage,
         name="ingest_createMediaPackage",
     ),
-    url(
-        r"^ingest/addDCCatalog$",
+    path(
+        "ingest/addDCCatalog",
         digest_ingest_addDCCatalog,
         name="ingest_addDCCatalog",
     ),
-    url(
-        r"^ingest/addAttachment$",
+    path(
+        "ingest/addAttachment",
         digest_ingest_addAttachment,
         name="ingest_addAttachment",
     ),
-    url(
-        r"^ingest/addTrack$",
+    path(
+        "ingest/addTrack",
         digest_ingest_addTrack,
         name="ingest_addTrack",
     ),
-    url(
-        r"^ingest/addCatalog$",
+    path(
+        "ingest/addCatalog",
         digest_ingest_addCatalog,
         name="ingest_addCatalog",
     ),
-    url(
-        r"^ingest/ingest$",
+    path(
+        "ingest/ingest",
         digest_ingest_ingest,
         name="ingest_ingest",
     ),

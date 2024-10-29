@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
-{% load tagging_tags %}
 
 {% block breadcrumbs %}{{ block.super }}
 <li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans "Dashboard" %}</a></li>
@@ -65,7 +64,7 @@
         <input type="checkbox" id="legal_notice" required>
         <label for="legal_notice" class="form-check-label d-inline">
           {% trans "I confirm that I have the necessary authorizations signed by the parties involved in the uploaded content." %}
-          <span class="required_star">*</span>
+          <span class="required-star">*</span>
         </label>
       </div>
     </div>

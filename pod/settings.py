@@ -7,13 +7,24 @@ Django version: 3.2.
 import os
 import importlib.util
 
+# DEPRECATIONS HACKS
+import django
+from django.utils.translation import gettext
+from urllib.parse import quote
+
+# Needed for django-cas-client==1.5.3
+django.utils.http.urlquote = quote
+
+# Needed for django-chunked-upload==2.0.0
+django.utils.translation.ugettext = gettext
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # will be update in pod/main/settings.py
 
 ##
 # Version of the project
 #
-VERSION = "3.7.0"
+VERSION = "4.0.0--ALPHA"
 
 ##
 # Installed applications list
@@ -33,7 +44,8 @@ INSTALLED_APPS = [
     # Exterior Applications
     "ckeditor",
     "sorl.thumbnail",
-    "tagging",
+    # "tagging",
+    "tagulous",
     "cas",
     "captcha",
     "rest_framework",
@@ -62,7 +74,6 @@ INSTALLED_APPS = [
     "pod.live",
     "pod.recorder",
     "pod.lti",
-    "pod.bbb",
     "pod.meeting",
     "pod.cut",
     "pod.xapi",
@@ -71,6 +82,7 @@ INSTALLED_APPS = [
     "pod.progressive_web_app",
     "pod.dressing",
     "pod.ai_enhancement",
+    "pod.speaker",
     "pod.custom",
 ]
 
@@ -132,6 +144,7 @@ TEMPLATES = [
                 "pod.dressing.context_processors.context_settings",
                 "pod.import_video.context_processors.context_settings",
                 "pod.cut.context_processors.context_settings",
+                "pod.speaker.context_processors.context_settings",
             ],
         },
     },
@@ -154,7 +167,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 USE_I18N = True
-USE_L10N = True
 LOCALE_PATHS = (os.path.join(BASE_DIR, "pod", "locale"),)
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
@@ -490,3 +502,18 @@ if (
     and importlib.util.find_spec("django_extensions") is not None
 ):
     INSTALLED_APPS.append("django_extensions")
+
+
+# Django Tag manager
+SERIALIZATION_MODULES = {
+    "xml": "tagulous.serializers.xml_serializer",
+    "json": "tagulous.serializers.json",
+    "python": "tagulous.serializers.python",
+    "yaml": "tagulous.serializers.pyyaml",
+}
+# see https://django-tagulous.readthedocs.io/en/latest/installation.html#settings
+TAGULOUS_NAME_MAX_LENGTH = 80
+"""
+TAGULOUS_SLUG_MAX_LENGTH = 50
+TAGULOUS_LABEL_MAX_LENGTH = TAGULOUS_NAME_MAX_LENGTH
+"""

@@ -155,6 +155,9 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
 * `EMAIL_SUBJECT_PREFIX`
   > valeur par défaut : ``
   >> Préfixe par défaut pour l’objet des courriels.<br>
+* `NOTIFY_SENDER`
+  > valeur par défaut : `True`
+  >> En mode non authentifié, lors de l'utilisation du formulaire de contact, envoie une copie du message à l'adresse saisie dans le formulaire.<br>
 * `SERVER_EMAIL`
   > valeur par défaut : `noreply`
   >> Expediteur par défaut pour les envois automatique (erreur de code etc.)<br>
@@ -475,6 +478,9 @@ Il faudra pour cela créer un fichier de langue et traduire chaque entrée.<br>
 * `ARCHIVE_OWNER_USERNAME`
   > valeur par défaut : `"archive"`
   >> Nom de l’utilisateur pour l’archivage des vidéos.<br>
+* `ARCHIVE_HOW_MANY_DAYS`
+  > valeur par défaut : `365`
+  >> Délai avant qu'une vidéo archivée ne soit déplacée vers archive_ROOT.<br>
 * `POD_ARCHIVE_AFFILIATION`
   > valeur par défaut : `[]`
   >> Affiliations pour lesquelles on souhaite archiver la vidéo plutôt que de la supprimer.<br>
@@ -727,8 +733,8 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `AI_ENHANCEMENT_CGU_URL`
   > valeur par défaut : ``
   >> L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.<br>
-  >> Exemple : 'https://aristote.univ.fr/cgu'<br>
-  >> Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/<br>
+  >> Exemple : '<https://aristote.univ.fr/cgu>'<br>
+  >> Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/><br>
 * `AI_ENHANCEMENT_CLIENT_ID`
   > valeur par défaut : `mocked_id`
   >> L’ID du client de l’IA d’amélioration des vidéos.<br>
@@ -742,6 +748,10 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `USE_AI_ENHANCEMENT`
   > valeur par défaut : `False`
   >> Activation des améliorations de l'intelligence artificielle. Permet aux utilisateurs de l'utiliser.<br>
+* `AI_ENHANCEMENT_PROXY_URL`
+  > valeur par défaut : ``
+  >> L’URL du serveur proxy pour les requêtes venant d'Aristote.<br>
+  >> Exemple : '<https://proxy_aristote.univ.fr>'<br>
 
 ### Configuration de l’application authentification
 
@@ -1028,6 +1038,15 @@ Mettre `USE_DRESSING` à True pour activer cette application.<br>
 ### Configuration de l’application enrichment
 
 
+### Configuration de l’application Intervenant
+
+Application Intervenant permettant d'ajouter des intervenants à la vidéo.<br>
+Mettre `USE_SPEAKER` à True pour activer cette application.<br>
+
+* `USE_SPEAKER`
+  > valeur par défaut : `False`
+  >> Activation de l’application Intervenant<br>
+
 ### Configuration de l’application d’import vidéo
 
 Application Import_video permettant d’importer des vidéos externes dans Pod.<br>
@@ -1132,15 +1151,15 @@ Mettre `USE_IMPORT_VIDEO` à True pour activer cette application.<br>
 * `USE_BBB`
   > valeur par défaut : `False`
   >> Utilisation de BigBlueButton<br>
-  >> [TODO] À retirer dans les futures versions de Pod<br>
+  >> Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions)<br>
 * `USE_BBB_LIVE`
   > valeur par défaut : `False`
   >> Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton<br>
-  >> [TODO] À retirer dans les futures versions de Pod<br>
+  >> Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions)<br>
 * `USE_LIVE_TRANSCRIPTION`
   > valeur par défaut : `False`
-  >>
   >> Activer l’auto-transcription pour les directs<br>
+  >>
 * `VIEW_EXPIRATION_DELAY`
   > valeur par défaut : `60`
   >> Délai (en seconde) selon lequel une vue est considérée comme expirée<br>
@@ -1319,9 +1338,11 @@ Mettre `USE_MEETING` à True pour activer cette application.<br>
 * `MEETING_WEBINAR_SIPMEDIAGW_URL`
   > valeur par défaut : ``
   >> URL du serveur SIPMediaGW qui gère les webinaires (Ex: `https://sipmediagw.univ.fr`)<br>
+  >> Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions, cf. passerelle de live)<br>
 * `MEETING_WEBINAR_SIPMEDIAGW_TOKEN`
   > valeur par défaut : ``
   >> Jeton bearer du serveur SIPMediaGW qui gère les webinaires<br>
+  >> Retiré à partir de la version 3.8.2 de Pod (cf. passerelle de live)<br>
 * `MEETING_WEBINAR_FIELDS`
   > valeur par défaut : `("is_webinar", "enable_chat")`
   >> Permet de définir les champs complémentaires du formulaire de création d’un webinaire<br>
@@ -1773,7 +1794,7 @@ Mettre `USE_QUIZ` à True pour activer cette application.<br>
   >>                 _(
   >>                     "In this field you can select and add additional owners to the "
   >>                     "video. These additional owners will have the same rights as "
-  >>                     "you except that they can’t delete this video."
+  >>                     "you except that they can’t delete this media."
   >>                 )
   >>             ],
   >>         ),
@@ -1977,6 +1998,11 @@ Application pour l’encodage et la transcription de vidéo.<br>
 Il est possible d’encoder en local ou en distant.<br>
 Attention, il faut configurer Celery pour l’envoi des instructions pour l’encodage distant.<br>
 
+* `CAPTIONS_STRICT_ACCESSIBILITY`
+  > valeur par défaut : `False`
+  >> Si True, les sous-titres seront générés en respectant strictement les normes<br>
+  >> d’accessibilité. L'apparition d'un message d’avertissement sera affiché si les<br>
+  >> sous-titres ne respectent pas ces normes, même si la valeur est à False.<br>
 * `CELERY_BROKER_URL`
   > valeur par défaut : `redis://redis.localhost:6379/5`
   >> URL du courtier de messages où Celery stocke les ordres d’encodage et de transcription.<br>

@@ -7,7 +7,6 @@ from django.core.exceptions import ValidationError
 import json
 
 from pod.quiz.models import (
-    LongAnswerQuestion,
     MultipleChoiceQuestion,
     ShortAnswerQuestion,
     SingleChoiceQuestion,
@@ -22,7 +21,6 @@ class QuestionForm(forms.Form):
             _("Redaction"),
             [
                 ("short_answer", _("Short answer")),
-                ("long_answer", _("Long answer")),
             ],
         ),
         (
@@ -74,7 +72,7 @@ class QuestionForm(forms.Form):
         required=True,
         help_text=_("Please choose the question type."),
     )
-    question_id = forms.IntegerField(
+    question_id = forms.UUIDField(
         widget=forms.HiddenInput(),
         required=False,
     )
@@ -87,11 +85,6 @@ class QuestionForm(forms.Form):
         widget=forms.HiddenInput(attrs={"class": "hidden-short-answer-field"}),
         required=False,
         label=_("Short answer"),
-    )
-    long_answer = forms.CharField(
-        widget=forms.HiddenInput(attrs={"class": "hidden-long-answer-field"}),
-        required=False,
-        label=_("Long answer"),
     )
     multiple_choice = forms.CharField(
         widget=forms.HiddenInput(attrs={"class": "hidden-multiple-choice-field"}),
@@ -282,26 +275,4 @@ class ShortAnswerQuestionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs) -> None:
         """Init short answer question form."""
         super(ShortAnswerQuestionForm, self).__init__(*args, **kwargs)
-        self.fields = add_placeholder_and_asterisk(self.fields)
-
-
-class LongAnswerQuestionForm(forms.ModelForm):
-    """Form to show a long answer question form."""
-
-    user_answer = forms.CharField(
-        label=_("Long answer question"),
-        widget=forms.Textarea(),
-        required=True,
-        help_text=_("Write a long answer."),
-    )
-
-    class Meta:
-        """LongAnswerQuestionForm Metadata."""
-
-        model = LongAnswerQuestion
-        fields = ["user_answer"]
-
-    def __init__(self, *args, **kwargs) -> None:
-        """Init long answer question form."""
-        super(LongAnswerQuestionForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)

@@ -54,7 +54,6 @@ class ThemeSerializer(serializers.HyperlinkedModelSerializer):
             "headband",
             "description",
             "channel",
-            "site",
         )
 
 
@@ -204,7 +203,7 @@ class DisciplineViewSet(viewsets.ModelViewSet):
 class VideoViewSet(viewsets.ModelViewSet):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
-    filter_fields = (
+    filterset_fields = [
         "owner",
         "type",
         "date_added",
@@ -212,7 +211,7 @@ class VideoViewSet(viewsets.ModelViewSet):
         "is_restricted",
         "encoding_in_progress",
         "sites",
-    )
+    ]
 
     @action(detail=False, methods=["get"])
     def user_videos(self, request):

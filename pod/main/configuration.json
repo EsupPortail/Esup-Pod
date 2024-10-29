@@ -49,13 +49,13 @@
                             "description": {
                                 "en": [
                                     "URL for General Terms and Conditions for API uses for the AI video enhancement.",
-                                    "Example: 'https://aristote.univ.fr/cgu'",
-                                    "Project Link: https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                    "Example: '<https://aristote.univ.fr/cgu>'",
+                                    "Project Link: <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
                                 ],
                                 "fr": [
                                     "L’URL des conditions générales d’utilisation de l’API pour l’IA d’amélioration des vidéos.",
-                                    "Exemple : 'https://aristote.univ.fr/cgu'",
-                                    "Lien du projet : https://www.demainestingenieurs.centralesupelec.fr/aristote/"
+                                    "Exemple : '<https://aristote.univ.fr/cgu>'",
+                                    "Lien du projet : <https://www.demainestingenieurs.centralesupelec.fr/aristote/>"
                                 ]
                             },
                             "pod_version_end": "",
@@ -115,6 +115,21 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.7.0"
+                        },
+                        "AI_ENHANCEMENT_PROXY_URL": {
+                            "default_value": "",
+                            "description": {
+                                "en": [
+                                    "URL of proxy server for request coming from Aristote.",
+                                    "Exemple : '<https://proxy_aristote.univ.fr>'"
+                                ],
+                                "fr": [
+                                    "L’URL du serveur proxy pour les requêtes venant d'Aristote.",
+                                    "Exemple : '<https://proxy_aristote.univ.fr>'"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.2"
                         }
                     },
                     "title": {
@@ -1003,7 +1018,7 @@
                     },
                     "settings": {
                         "USE_CUT": {
-                            "default_value": true,
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     "Activation of the Cut application"
@@ -1034,7 +1049,7 @@
                     },
                     "settings": {
                         "USE_DRESSING": {
-                            "default_value": true,
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     "Activation of dressings. Allows users to customize a video with watermark & credits."
@@ -1059,6 +1074,37 @@
                     "title": {
                         "en": "",
                         "fr": "Configuration de l’application enrichment"
+                    }
+                },
+                "speaker": {
+                    "description": {
+                        "en": [
+                            "Speaker application to add speakers to video.",
+                            "Set `USE_SPEAKER` to True to activate this application."
+                        ],
+                        "fr": [
+                            "Application Intervenant permettant d'ajouter des intervenants à la vidéo.",
+                            "Mettre `USE_SPEAKER` à True pour activer cette application."
+                        ]
+                    },
+                    "settings": {
+                        "USE_SPEAKER": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Activation of the Speaker application"
+                                ],
+                                "fr": [
+                                    "Activation de l’application Intervenant"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.0"
+                        }
+                    },
+                    "title": {
+                        "en": "Seaker application configuration",
+                        "fr": "Configuration de l’application Intervenant"
                     }
                 },
                 "import_video": {
@@ -1102,7 +1148,7 @@
                             "pod_version_init": "3.3.0"
                         },
                         "USE_IMPORT_VIDEO": {
-                            "default_value": true,
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     "Activation of the video import application"
@@ -1147,7 +1193,7 @@
                             "pod_version_init": "3.5.1"
                         },
                         "IMPORT_VIDEO_BBB_RECORDER_PATH": {
-                            "default_value": true,
+                            "default_value": "/data/bbb-recorder/media/",
                             "description": {
                                 "en": [
                                     "Directory that will contain the video files generated by bbb-recorder."
@@ -1381,40 +1427,42 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Using BigBlueButton",
+                                    "Withdrawn from Pod version 3.8.2 (replaced by the meetings module)"
                                 ],
                                 "fr": [
                                     "Utilisation de BigBlueButton",
-                                    "[TODO] À retirer dans les futures versions de Pod"
+                                    "Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions)"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.8.2",
                             "pod_version_init": "3.1"
                         },
                         "USE_BBB_LIVE": {
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Using the BigBlueButton webinar delivery system",
+                                    "Withdrawn from Pod version 3.8.2 (replaced by the meetings module)"
                                 ],
                                 "fr": [
                                     "Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton",
-                                    "[TODO] À retirer dans les futures versions de Pod"
+                                    "Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions)"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.8.2",
                             "pod_version_init": "3.1"
                         },
                         "USE_LIVE_TRANSCRIPTION": {
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    "",
-                                    "Enable auto-transcritption for live events"
+                                    "Enable auto-transcription for live events",
+                                    ""
                                 ],
                                 "fr": [
-                                    "",
-                                    "Activer l’auto-transcription pour les directs"
+                                    "Activer l’auto-transcription pour les directs",
+                                    ""
                                 ]
                             },
                             "pod_version_end": "",
@@ -1517,10 +1565,10 @@
                                 ],
                                 "fr": [
                                     "Utilisation de BigBlueButton",
-                                    "[TODO] À retirer dans les futures versions de Pod"
+                                    "Module obsolète."
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.8.2",
                             "pod_version_init": "3.1"
                         },
                         "USE_BBB_LIVE": {
@@ -1538,7 +1586,7 @@
                             "pod_version_init": "3.1"
                         },
                         "USE_IMPORT_VIDEO": {
-                            "default_value": true,
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     "Activation of the video import application"
@@ -1876,26 +1924,30 @@
                             "default_value": "",
                             "description": {
                                 "en": [
-                                    "URL of the SIPMediaGW server that manages webinars (e.g. `https://sipmediagw.univ.fr`)"
+                                    "URL of the SIPMediaGW server that manages webinars (e.g. `https://sipmediagw.univ.fr`)",
+                                    "Retired as of Pod version 3.8.2 (replaced by the meetings module, see live gateway)"
                                 ],
                                 "fr": [
-                                    "URL du serveur SIPMediaGW qui gère les webinaires (Ex: `https://sipmediagw.univ.fr`)"
+                                    "URL du serveur SIPMediaGW qui gère les webinaires (Ex: `https://sipmediagw.univ.fr`)",
+                                    "Retiré à partir de la version 3.8.2 de Pod (remplacé par le module des réunions, cf. passerelle de live)"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.8.2",
                             "pod_version_init": "3.6.0"
                         },
                         "MEETING_WEBINAR_SIPMEDIAGW_TOKEN": {
                             "default_value": "",
                             "description": {
                                 "en": [
-                                    "Bearer token for the SIPMediaGW server that manages webinars"
+                                    "Bearer token for the SIPMediaGW server that manages webinars",
+                                    "Retired as of Pod version 3.8.2 (see live gateway)"
                                 ],
                                 "fr": [
-                                    "Jeton bearer du serveur SIPMediaGW qui gère les webinaires"
+                                    "Jeton bearer du serveur SIPMediaGW qui gère les webinaires",
+                                    "Retiré à partir de la version 3.8.2 de Pod (cf. passerelle de live)"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "3.8.2",
                             "pod_version_init": "3.6.0"
                         },
                         "MEETING_WEBINAR_FIELDS": {
@@ -2023,7 +2075,7 @@
                             "pod_version_init": "3.6"
                         },
                         "USE_FAVORITES": {
-                            "default_value": true,
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     "Activation of favorite videos.",
@@ -2038,7 +2090,7 @@
                             "pod_version_init": "3.4"
                         },
                         "USE_PLAYLIST": {
-                            "default_value": true,
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     "Activation of playlist. Allows users to add videos in a playlist."
@@ -2051,7 +2103,7 @@
                             "pod_version_init": "3.4"
                         },
                         "USE_PROMOTED_PLAYLIST": {
-                            "default_value": true,
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     "Activation of promoted playlists. Allows users to use the promoted playlists."
@@ -2140,7 +2192,7 @@
                     "description": {},
                     "settings": {
                         "USE_NOTIFICATIONS": {
-                            "default_value": true,
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     ""
@@ -2185,7 +2237,7 @@
                     },
                     "settings": {
                         "USE_QUIZ": {
-                            "default_value": true,
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     "Activation of quizzes. Allows users to create, respond and use quizzes in videos."
@@ -3020,7 +3072,7 @@
                                     "                _(",
                                     "                    \"In this field you can select and add additional owners to the \"",
                                     "                    \"video. These additional owners will have the same rights as \"",
-                                    "                    \"you except that they can’t delete this video.\"",
+                                    "                    \"you except that they can’t delete this media.\"",
                                     "                )",
                                     "            ],",
                                     "        ),",
@@ -3289,6 +3341,23 @@
                         ]
                     },
                     "settings": {
+                        "CAPTIONS_STRICT_ACCESSIBILITY": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "If True, subtitles will be generated strictly following accessibility standards.",
+                                    "A warning message will be displayed if the subtitles do not follow these standards,",
+                                    "even if the value is False."
+                                ],
+                                "fr": [
+                                    "Si True, les sous-titres seront générés en respectant strictement les normes",
+                                    "d’accessibilité. L'apparition d'un message d’avertissement sera affiché si les",
+                                    "sous-titres ne respectent pas ces normes, même si la valeur est à False."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.1"
+                        },
                         "CELERY_BROKER_URL": {
                             "default_value": "redis://redis.localhost:6379/5",
                             "description": {
@@ -3866,6 +3935,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "NOTIFY_SENDER": {
+                            "default_value": "True",
+                            "description": {
+                                "en": [
+                                    "In unauthenticated mode, when using the contact form, sends a copy of the message to the address entered in the form."
+                                ],
+                                "fr": [
+                                    "En mode non authentifié, lors de l'utilisation du formulaire de contact, envoie une copie du message à l'adresse saisie dans le formulaire."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.2"
                         },
                         "SERVER_EMAIL": {
                             "default_value": "noreply",
@@ -4831,6 +4913,19 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "ARCHIVE_HOW_MANY_DAYS": {
+                            "default_value": "365",
+                            "description": {
+                                "en": [
+                                    "Delay before an archived video is moved to archive_ROOT."
+                                ],
+                                "fr": [
+                                    "Délai avant qu'une vidéo archivée ne soit déplacée vers archive_ROOT."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.8.0"
                         },
                         "POD_ARCHIVE_AFFILIATION": {
                             "default_value": "[]",

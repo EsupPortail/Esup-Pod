@@ -49,6 +49,32 @@
   </div>
 
   {% if request.user.is_staff %}
+  {% if USE_SPEAKER %}
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compSpeakers" aria-expanded="false" aria-controls="compSpeakers">
+        {% trans 'Speaker(s)' %}
+      </button>
+    </h2>
+    <div id="compSpeakers" class="accordion-collapse collapse">
+      <div class="accordion-body">
+        {% include 'speaker/list_speaker.html' %}
+        <span id="form_speaker">
+          {% if form_speaker %}
+            {% include 'speaker/form_speaker.html' with form_speaker=form_speaker %}
+          {% endif %}
+        </span>
+        <form class="form_new completion" id="form_new_speaker" action="{% url 'video:completion:video_completion_speaker' slug=video.slug %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="new">
+          <input type="submit" value="{% trans 'Add a new speaker' %}" class="new_speaker btn btn-primary">
+        </form>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+
     <div class="accordion-item">
       <h2 class="accordion-header">
         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#compSubtitles" aria-expanded="false" aria-controls="compSubtitles">
@@ -175,6 +201,18 @@
         <p>{% trans 'A contributor must at least have a name and a role. You can also join the email of this contributor as well as a link (professional website for example).' %}</p>
       </div>
     </div>
+        <!-- Speaker -->
+        {% if USE_SPEAKER %}
+        <div id="speaker-info">
+          <button class="btn btn-link rounded-0 pod-btn" id="heading-5" data-bs-toggle="collapse" data-bs-target="#collapse-speaker" aria-expanded="false" aria-controls="collapse-speaker">
+            {% trans 'Speaker(s)' %}
+          </button>
+          <div id="collapse-speaker" class="collapse card-text small">
+            <p>{% trans 'List of speakers related to this video.' %}</p>
+            <p>{% trans "You can add speakers to this video by searching by their last name, first name or job. If you can’t find the speaker, contact a super admin." %}</p>
+          </div>
+        </div>
+      {% endif %}
     <div id="track-info">
       <button class="btn btn-link rounded-0 pod-btn" id="heading-2" data-bs-toggle="collapse" data-bs-target="#collapse-track" aria-expanded="false" aria-controls="collapse-track">
         {% trans 'Subtitle(s) and Caption(s)' %}
@@ -240,5 +278,7 @@
 {% endblock page_aside %}
 
 {% block more_script %}
+  <script src="{% static 'admin/js/vendor/select2/select2.full.min.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'django_select2/django_select2.js' %}?ver={{VERSION}}"></script>
   <script src="{% static 'js/completion.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}
