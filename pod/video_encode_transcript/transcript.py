@@ -162,7 +162,8 @@ def save_vtt(video: Video, webvtt: WebVTT, lang_code: str = None):
     temp_vtt_file = NamedTemporaryFile(suffix=".vtt")
     webvtt.save(temp_vtt_file.name)
     if webvtt.captions:
-        improve_captions_accessibility(webvtt)
+        if TRANSCRIPTION_TYPE != "WHISPER":
+            improve_captions_accessibility(webvtt)
         msg += "\nstore vtt file in bdd with CustomFileModel model file field"
         if __FILEPICKER__:
             video_dir = video.get_or_create_video_folder()

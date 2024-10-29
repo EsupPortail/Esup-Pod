@@ -77,6 +77,7 @@ CONTACT_US_EMAIL = getattr(
     [mail for name, mail in getattr(settings, "MANAGERS")],
 )
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
+NOTIFY_SENDER = getattr(settings, "NOTIFY_SENDER", True)
 USER_CONTACT_EMAIL_CASE = getattr(settings, "USER_CONTACT_EMAIL_CASE", [])
 CUSTOM_CONTACT_US = getattr(settings, "CUSTOM_CONTACT_US", False)
 MANAGERS = getattr(settings, "MANAGERS", [])
@@ -281,24 +282,25 @@ def contact_us(request):
             msg.send(fail_silently=False)
 
             # EMAIL TO SENDER
-            subject = "[ %s ] %s %s" % (
-                __TITLE_SITE__,
-                _("your message untitled"),
-                dict(SUBJECT_CHOICES)[form_subject],
-            )
+            if NOTIFY_SENDER:
+                subject = "[ %s ] %s %s" % (
+                    __TITLE_SITE__,
+                    _("your message untitled"),
+                    dict(SUBJECT_CHOICES)[form_subject],
+                )
 
-            html_content = loader.get_template("mail/mail_sender.html").render(
-                {
-                    "TITLE_SITE": __TITLE_SITE__,
-                    "message": message.replace("\n", "<br>"),
-                }
-            )
-            text_content = bleach.clean(html_content, tags=[], strip=True)
-            msg = EmailMultiAlternatives(
-                subject, text_content, DEFAULT_FROM_EMAIL, [email]
-            )
-            msg.attach_alternative(html_content, "text/html")
-            msg.send(fail_silently=False)
+                html_content = loader.get_template("mail/mail_sender.html").render(
+                    {
+                        "TITLE_SITE": __TITLE_SITE__,
+                        "message": message.replace("\n", "<br>"),
+                    }
+                )
+                text_content = bleach.clean(html_content, tags=[], strip=True)
+                msg = EmailMultiAlternatives(
+                    subject, text_content, DEFAULT_FROM_EMAIL, [email]
+                )
+                msg.attach_alternative(html_content, "text/html")
+                msg.send(fail_silently=False)
 
             messages.add_message(request, messages.INFO, _("Your message has been sent."))
 

@@ -52,6 +52,9 @@ if views.USE_MEETING_WEBINAR:
     urlpatterns += [
         path("restart_live/<slug:meeting_id>/", views.restart_live, name="restart_live"),
         path("end_live/<slug:meeting_id>/", views.end_live, name="end_live"),
+        path(
+            "<slug:meeting_id>/<slug:direct_access>/<slug:room>", views.join, name="join"
+        ),
         url(
             r"^live_publish_chat/(?P<id>[\d]+)/$",
             views.live_publish_chat,

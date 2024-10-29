@@ -13,7 +13,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "3.8.1"
+VERSION = "3.8.2"
 
 ##
 # Installed applications list
@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     "pod.live",
     "pod.recorder",
     "pod.lti",
-    "pod.bbb",
     "pod.meeting",
     "pod.cut",
     "pod.xapi",

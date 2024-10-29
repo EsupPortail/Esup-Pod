@@ -69,7 +69,6 @@ from .utils import (
     pagination_data,
     get_headband,
     change_owner,
-    get_video_data,
     get_id_from_request,
 )
 from .context_processors import get_available_videos
@@ -221,16 +220,20 @@ def get_theme_children_as_list(channel: Channel, theme_children: QuerySet) -> li
     return children
 
 
-def _regroup_videos_by_theme(request, videos, channel, theme=None):
+def _regroup_videos_by_theme(  # noqa: C901
+    request, videos, page, full_path, channel, theme=None
+):
     """Regroup videos by theme.
 
     Args:
         request (Request): current HTTP Request
         videos (List[Video]): list of video filter by channel
+        page (int): page number
+        full_path (str): URL full path
         channel (Channel): current channel
         theme (Theme, optional): current theme. Defaults to None.
     Returns:
-        Dict[str, Any]: json data
+        JsonResponse for themes in Ajax, or HttpResponse for other cases (videos).
     """
     target = request.GET.get("target", "").lower()
     limit = int(request.GET.get("limit", 12))
@@ -269,6 +272,8 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         theme_children = theme_children.annotate(video_count=Value(0))
         # List of children in the theme
         children = get_theme_children_as_list(channel, theme_children)
+        # Do not send all themes
+        children = children[offset : limit + offset]
         next_url, previous_url, theme_pages_info = pagination_data(
             request.path, offset, limit, count_themes
         )
@@ -291,8 +296,10 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         "description": description,
         "headband": headband,
     }
-    if request.is_ajax():
-        videos = list(
+    """
+    # Old source code.
+    # No need now. Keep it, for historical purposes, until we've verified that the new code works in all cases.
+    videos = list(
             map(
                 lambda v: {
                     **get_video_data(v),
@@ -301,10 +308,30 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
                 videos,
             )
         )
-        response["videos"] = videos
-        return JsonResponse(response, safe=False)
-        # TODO: replace this return by a
-        #  render(request,"videos/video_list.html") like in channel
+    response["videos"] = videos
+    """
+    if request.is_ajax():
+        if target == "themes":
+            # No change to the old system, with data in JSON format
+            return JsonResponse(response, safe=False)
+        else:
+            # New system, with data in HTML format
+            if not videos:
+                # No content
+                return HttpResponse(status=204)
+            else:
+                # Content with videos
+                videos = paginator(videos, page)
+            return render(
+                request,
+                "videos/video_list.html",
+                {
+                    "videos": videos,
+                    "theme": theme,
+                    "channel": channel,
+                    "full_path": full_path,
+                },
+            )
 
     return render(
         request,
@@ -340,9 +367,6 @@ def channel(request, slug_c, slug_t=None):
         list_theme = theme.get_all_children_flat()
         videos_list = videos_list.filter(theme__in=list_theme)
 
-    if ORGANIZE_BY_THEME:
-        return _regroup_videos_by_theme(request, videos_list, channel, theme)
-
     page = request.GET.get("page", 1)
     full_path = ""
     if page:
@@ -351,16 +375,25 @@ def channel(request, slug_c, slug_t=None):
             .replace("?page=%s" % page, "")
             .replace("&page=%s" % page, "")
         )
-
     videos = paginator(videos_list, page)
+
+    if ORGANIZE_BY_THEME:
+        # Specific case
+        return _regroup_videos_by_theme(
+            request, videos_list, page, full_path, channel, theme
+        )
 
     if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
-            {"videos": videos, "full_path": full_path},
+            {
+                "channel": channel,
+                "videos": videos,
+                "theme": theme,
+                "full_path": full_path,
+            },
         )
-
     return render(
         request,
         "channel/channel.html",
@@ -641,6 +674,7 @@ def dashboard(request):
     data_context["display_mode"] = display_mode
     data_context["video_list_template"] = template
     data_context["page_title"] = _("Dashboard")
+    data_context["listTheme"] = json.dumps(get_list_theme_in_form(form))
 
     return render(request, "videos/dashboard.html", data_context)
 
@@ -2329,6 +2363,13 @@ def video_oembed(request):
             "video_url": video_url,
             "slug_private": "%s/" % slug_private if slug_private else "",
         }
+        data["thumbnail_url"] = "%s:%s" % (protocole, video.get_thumbnail_url())
+        if hasattr(video.thumbnail, "file"):
+            data["thumbnail_width"] = video.thumbnail.file.width
+            data["thumbnail_height"] = video.thumbnail.file.height
+        else:
+            data["thumbnail_width"] = 280
+            data["thumbnail_height"] = 140
     else:
         return HttpResponseNotFound("<h1>Url not match</h1>")
     if format == "xml":
@@ -2346,6 +2387,9 @@ def video_oembed(request):
                 <width>%(width)s</width>
                 <version>1.0</version>
                 <author_name>%(author_name)s</author_name>
+                <thumbnail_url>%(thumbnail_url)s</thumbnail_url>
+                <thumbnail_width>%(thumbnail_width)s</thumbnail_width>
+                <thumbnail_height>%(thumbnail_height)s</thumbnail_height>
             </oembed>
         """ % {
             "html": data["html"].replace("<", "&lt;").replace(">", "&gt;"),
@@ -2356,6 +2400,9 @@ def video_oembed(request):
             "provider_url": data["provider_url"],
             "width": data["width"],
             "author_name": data["author_name"],
+            "thumbnail_url": data["thumbnail_url"],
+            "thumbnail_width": data["thumbnail_width"],
+            "thumbnail_height": data["thumbnail_height"],
         }
         return HttpResponse(xml, content_type="application/xhtml+xml")
         # return HttpResponseNotFound('<h1>XML not implemented</h1>')

@@ -86,9 +86,13 @@
       <i class="bi bi-search" aria-hidden="true"></i> <span class="visually-hidden">{% trans 'Search for a media on' %} {{ TITLE_SITE }}</span>
     </label>
     <div class="input-group me-sm-2 pod-navbar-search">
-      <input class="form-control form-control-sm hide-search-input" id="s" placeholder="{% trans 'Search a media' %}" type="search" name="q">
-      <button id="search-button" type="submit" class="btn btn-primary" title="{% trans 'Start media search on' %} {{ TITLE_SITE }}" data-bs-toggle="tooltip">
-        <i class="bi bi-search"></i>
+      <input class="form-control form-control-sm hide-search-input" id="s"
+             placeholder="{% trans 'Search a media' %}" type="search" name="q"
+             data-bs-toggle="tooltip"
+             title="{% blocktrans %}Type keyword here to search a media on {{ TITLE_SITE }}{% endblocktrans %}">
+      <button id="search-button" type="submit" class="btn btn-primary"
+        data-bs-toggle="tooltip" title="{% trans 'Do the media search' %}">
+        <i class="bi bi-search" aria-hidden="true"></i>
       </button>
     </div>
   </form>
@@ -97,7 +101,11 @@
     {% if user.is_authenticated %}
         {% if MAINTENANCE_MODE %}
           <li class="d-none d-md-block nav-item pod-navbar__nav-item mx-2" id="nav-addvideo">
-            <span class="badge bg-danger">{{MAINTENANCE_REASON}} <br><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {% trans 'Some features are unavailable' %}</span>
+            <span class="badge bg-danger">
+              {{MAINTENANCE_REASON}}<br>
+              <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+              {% trans 'Some features are unavailable' %}
+            </span>
           </li>
         {% else %}
           {% show_video_buttons as video_buttons %}
@@ -237,14 +245,24 @@
           <div class="offcanvas-body d-flex flex-column justify-content-between">
             <nav class="nav flex-column">
               {% if MAINTENANCE_MODE %}
-                <span class="badge bg-danger">{{ MAINTENANCE_REASON }} <br><i class="bi bi-exclamation-triangle " aria-hidden="true"></i> {% trans 'Some features are unavailable' %}</span>
+                <span class="badge bg-danger">
+                  {{ MAINTENANCE_REASON }}<br>
+                  <i class="bi bi-exclamation-triangle " aria-hidden="true"></i>
+                  {% trans 'Some features are unavailable' %}
+                </span>
               {% else %}
                 {% if video_buttons %}
-                  <a class="mx-3 mb-2 btn btn-primary" href="{% url 'video:video_add' %}"><i class="bi bi-plus pod-add" aria-hidden="true"></i><span>{% trans 'Add a video' %}</span></a>
+                  <a class="mx-3 mb-2 btn btn-primary" href="{% url 'video:video_add' %}">
+                    <i class="bi bi-plus pod-add" aria-hidden="true"></i>
+                    <span>{% trans 'Add a video' %}</span>
+                  </a>
                 {% endif %}
               {% endif %}
               {% if request.user.is_superuser or user.owner.is_manager %}
-                <a class="nav-item nav-link" href="{% url 'admin:index' %}"><i class="bi bi-cpu pod-nav-link-icon mx-1" aria-hidden="true"></i>Administration</a>
+                <a class="nav-item nav-link" href="{% url 'admin:index' %}">
+                  <i class="bi bi-cpu pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  Administration
+                </a>
               {% endif %}
               {% if request.user.is_staff or request.user.is_superuser %}
                 <div class="nav-item"><button class="nav-link get_form_userpicture" data-url='{% url "userpicture" %}'>
@@ -252,71 +270,104 @@
                 </button></div>
               {% endif %}
               {% if video_buttons %}
-                <a class="nav-item nav-link" href="{% url 'video:dashboard' %}"><i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Dashboard' %}</a>
+                <a class="nav-item nav-link" href="{% url 'video:dashboard' %}">
+                  <i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  {% trans 'Dashboard' %}
+                </a>
               {% endif %}
               {% if USE_PLAYLIST %}
-                <a class="nav-item nav-link" href="{% url 'playlist:list' %}"><i class="bi bi-list-ul pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My playlists' %}</a>
+                <a class="nav-item nav-link" href="{% url 'playlist:list' %}">
+                  <i class="bi bi-list-ul pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  {% trans 'My playlists' %}
+                </a>
               {% endif %}
               {% if USE_PLAYLIST and USE_FAVORITES %}
                 {% get_favorite_playlist user as playlist %}
-                <a class="nav-item nav-link" href="{% url 'playlist:content' slug=playlist.slug %}"><i class="bi bi-star pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My favorite videos' %}</a>
+                <a class="nav-item nav-link" href="{% url 'playlist:content' slug=playlist.slug %}">
+                  <i class="bi bi-star pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  {% trans 'My favorite videos' %}
+                </a>
               {% endif %}
               {% if USE_OPENCAST_STUDIO %}
-                <a class="nav-item nav-link" href="{% url 'recorder:studio_pod' %}"><i class="bi bi-camera-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Video Record' %}</a>
+                <a class="nav-item nav-link" href="{% url 'recorder:studio_pod' %}">
+                  <i class="bi bi-camera-video pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  {% trans 'Video Record' %}
+                </a>
               {% endif %}
               {% show_meeting_button as meeting_button %}
               {% if meeting_button %}
-                <a class="nav-item nav-link" href="{% url 'meeting:my_meetings' %}"><i class="bi bi-person-video pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My meetings' %}</a>
+                <a class="nav-item nav-link" href="{% url 'meeting:my_meetings' %}">
+                  <i class="bi bi-person-video pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  {% trans 'My meetings' %}
+                </a>
               {% endif %}
               {% show_import_video_button as import_video_button %}
               {% if import_video_button %}
-                <a class="nav-item nav-link" href="{% url 'import_video:external_recordings' %}"><i class="bi bi-collection-play-fill pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Import an external video' %}</a>
+                <a class="nav-item nav-link" href="{% url 'import_video:external_recordings' %}">
+                  <i class="bi bi-collection-play-fill pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  {% trans 'Import an external video' %}
+                </a>
               {% endif %}
               {% if "live" in THIRD_PARTY_APPS and request.user|can_manage_event_filter %}
-                <a class="nav-item nav-link" href="{% url 'live:my_events' %}" title="{% trans 'My events' %}">
-                  <i class="bi bi-broadcast pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My events' %}
+                <a class="nav-item nav-link" href="{% url 'live:my_events' %}">
+                  <i class="bi bi-broadcast pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  {% trans 'My events' %}
                 </a>
               {% endif %}
               {% if request.user.owners_channels.all %}
-                <a class="nav-item nav-link" href="{% url 'channels:my_channels' %}"><i class="bi bi-play-btn pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My channels' %}</a>
+                <a class="nav-item nav-link" href="{% url 'channels:my_channels' %}">
+                  <i class="bi bi-play-btn pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  {% trans 'My channels' %}
+                </a>
               {% endif %}
               {% if USE_DRESSING %}
                 {% if request.user.is_superuser or request.user.is_staff %}
-                  <a class="nav-item nav-link" href="{% url 'dressing:my_dressings' %}"><i class="bi bi-palette pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My dressings' %}</a>
+                  <a class="nav-item nav-link" href="{% url 'dressing:my_dressings' %}">
+                    <i class="bi bi-palette pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                    {% trans 'My dressings' %}
+                  </a>
                 {% endif %}
               {% endif %}
               {% if request.user.is_staff and USE_PODFILE %}
-                <a class="nav-item nav-link" href="{% url 'podfile:home' %}"><i class="bi bi-folder pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My files' %}</a>
+                <a class="nav-item nav-link" href="{% url 'podfile:home' %}">
+                  <i class="bi bi-folder pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  {% trans 'My files' %}
+                </a>
               {% endif %}
               {% if request.user.is_staff and ALLOW_MANUAL_RECORDING_CLAIMING %}
-                <a class="nav-item nav-link" href="{% url 'record:claim_record' %}"><i class="bi bi-share pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Claim a record' %}</a>
-              {% endif %}
-              {% if request.user.is_staff and USE_BBB %}
-                <a class="nav-item nav-link" href="{% url 'bbb:list_meeting' %}"><i class="bi bi-person-video3 pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'My BigBlueButton records' %}</a>
-                {% if USE_BBB_LIVE %}
-                  <a class="nav-item nav-link" href="{% url 'bbb:live_list_meeting' %}"><i class="bi bi-broadcast-pin pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Perform a BigBlueButton live' %}</a>
-                {% endif %}
+                <a class="nav-item nav-link" href="{% url 'record:claim_record' %}">
+                  <i class="bi bi-share pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  {% trans 'Claim a record' %}
+                </a>
               {% endif %}
               {% if request.user.is_superuser and USE_SPEAKER %}
-                <a class="nav-item nav-link" href="{% url 'speaker:speaker_management' %}"><i class="bi bi-megaphone pod-nav-link-icon mx-1" aria-hidden="true"></i>&nbsp;{% trans 'Speakers management' %}</a>
+                <a class="nav-item nav-link" href="{% url 'speaker:speaker_management' %}">
+                  <i class="bi bi-megaphone pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  {% trans 'Speakers management' %}
+                </a>
               {% endif %}
               {% if USE_NOTIFICATIONS %}
                 <div class="nav-item">
                   <button class="nav-link" onclick="new bootstrap.Toast(document.querySelector('#notification-toast')).show()">
-                    <i class="bi bi-bell pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Notifications settings' %}
+                    <i class="bi bi-bell pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                    {% trans 'Notifications settings' %}
                   </button>
                 </div>
               {% endif %}
               <div class="nav-item d-none" id="pwa-install-container">
                 <button class="nav-link" onclick="">
-                  <i class="bi bi-save pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Install' %}
+                  <i class="bi bi-save pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  {% trans 'Install' %}
                 </button>
               </div>
               {% comment %}
-                <a class="nav-item nav-link" href="#">Gestion de mon compte</a> {% endcomment %}
+                <a class="nav-item nav-link" href="#">Gestion de mon compte</a>
+              {% endcomment %}
               <hr class="dropdown-divider">
               <a class="nav-item nav-link" href="{% url 'authentication:authentication_logout' %}">
-                <i class="bi bi-box-arrow-right pod-nav-link-icon mx-1" aria-hidden="true"></i>{% trans 'Log out' %}</a>
+                <i class="bi bi-box-arrow-right pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                {% trans 'Log out' %}
+              </a>
             </nav>
             {% show_stats user as show_stats %}
             {% if show_stats %}

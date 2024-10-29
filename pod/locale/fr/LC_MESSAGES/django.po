@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-19 07:39+0000\n"
+"POT-Creation-Date: 2024-10-17 14:28+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 
 #: pod/ai_enhancement/apps.py
 msgid "Artificial Intelligence Enhancement"
@@ -265,8 +265,6 @@ msgstr "Supprimer cette amélioration"
 #: pod/ai_enhancement/views.py
 #: pod/authentication/templates/userpicture/userpicture.html
 #: pod/authentication/tests/test_views.py
-#: pod/bbb/templates/bbb/live_publish_meeting.html
-#: pod/bbb/templates/bbb/publish_meeting.html pod/bbb/views.py
 #: pod/completion/templates/video_caption_maker.html
 #: pod/dressing/templates/dressing_delete.html
 #: pod/dressing/templates/dressing_edit.html pod/dressing/views.py
@@ -305,8 +303,6 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 #: pod/ai_enhancement/templates/create_enhancement.html
 #: pod/ai_enhancement/templates/delete_enhancement.html
 #: pod/authentication/templates/userpicture/userpicture.html
-#: pod/bbb/templates/bbb/live_publish_meeting.html
-#: pod/bbb/templates/bbb/publish_meeting.html
 #: pod/completion/templates/video_caption_maker.html
 #: pod/dressing/templates/dressing_delete.html
 #: pod/dressing/templates/dressing_edit.html
@@ -696,7 +692,6 @@ msgid "Change your picture"
 msgstr "Changer votre image de profil"
 
 #: pod/authentication/templates/userpicture/userpicture.html
-#: pod/bbb/templates/bbb/list_meeting.html
 #: pod/completion/templates/video_caption_maker.html
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/live/templates/live/direct.html
@@ -723,553 +718,6 @@ msgstr "Fermer"
 #: pod/podfile/templates/podfile/home_content.html
 msgid "Save changes"
 msgstr "Sauvegarder"
-
-#: pod/bbb/admin.py pod/video/admin.py
-msgid "Encode selected"
-msgstr "(Ré)encoder la sélection"
-
-#: pod/bbb/forms.py
-msgid ""
-"It is not possible to re-encode a recording that was not originally encoded "
-"by an user."
-msgstr ""
-"Il n’est pas possible de ré-encoder un enregistrement qui n’a pas été encodé "
-"initialement par un utilisateur."
-
-#: pod/bbb/models.py
-msgid "Meeting id"
-msgstr "Identifiant de la session"
-
-#: pod/bbb/models.py
-msgid "Id of the BBB meeting."
-msgstr "Identifiant de la session BBB."
-
-#: pod/bbb/models.py
-msgid "Internal meeting id"
-msgstr "Identifiant interne de la session"
-
-#: pod/bbb/models.py
-msgid "Internal id of the BBB meeting."
-msgstr "Identifiant interne de la session BBB."
-
-#: pod/bbb/models.py pod/meeting/views.py
-msgid "Meeting name"
-msgstr "Nom de la session"
-
-#: pod/bbb/models.py
-msgid "Name of the BBB meeting."
-msgstr "Nom de la session BBB."
-
-#: pod/bbb/models.py
-msgid "Session date"
-msgstr "Date de session"
-
-#: pod/bbb/models.py
-msgid "Publish is possible"
-msgstr "La publication est possible"
-
-#: pod/bbb/models.py pod/bbb/templates/bbb/card.html
-msgid "Waiting for encoding"
-msgstr "En attente d’encodage"
-
-#: pod/bbb/models.py pod/bbb/templates/bbb/card.html pod/video/models.py
-msgid "Encoding in progress"
-msgstr "Encodage en cours"
-
-#: pod/bbb/models.py pod/bbb/templates/bbb/card.html
-msgid "Already published"
-msgstr "Déjà publié"
-
-#: pod/bbb/models.py pod/video/models.py pod/video_encode_transcript/models.py
-msgid "Encoding step"
-msgstr "Étape de l’encodage"
-
-#: pod/bbb/models.py
-msgid "Encoding step for conversion of the BBB presentation to video file."
-msgstr ""
-"Étape d’encodage pour la conversion de la présentation BBB en fichier vidéo."
-
-#: pod/bbb/models.py
-msgid "Recorded"
-msgstr "Enregistrée"
-
-#: pod/bbb/models.py
-msgid "BBB presentation recorded?"
-msgstr "La présentation BBB a-t-elle été enregistrée ?"
-
-#: pod/bbb/models.py
-msgid "Recording available"
-msgstr "Enregistrement disponible"
-
-#: pod/bbb/models.py
-msgid "BBB presentation recording is available?"
-msgstr "Un enregistrement de la présentation BBB est-il disponible ?"
-
-#: pod/bbb/models.py
-msgid "Recording url"
-msgstr "URL de l’enregistrement"
-
-#: pod/bbb/models.py
-msgid "URL of the recording of the BBB presentation."
-msgstr "URL de l’enregistrement de la présentation BBB."
-
-#: pod/bbb/models.py
-msgid "Thumbnail url"
-msgstr "URL de la vignette"
-
-#: pod/bbb/models.py
-msgid "URL of the recording thumbnail of the BBB presentation."
-msgstr ""
-"URL de la vignette correspondant à l’enregistrement de la présentation BBB."
-
-#: pod/bbb/models.py pod/import_video/models.py pod/meeting/models.py
-#: pod/playlist/models.py pod/recorder/models.py pod/video/models.py
-msgid "User"
-msgstr "Utilisateur"
-
-#: pod/bbb/models.py
-msgid "User who converted the BBB presentation to video file."
-msgstr "Utilisateur ayant converti la présentation BBB en fichier vidéo."
-
-#: pod/bbb/models.py
-msgid "Last date in progress"
-msgstr "Dernière date en cours"
-
-#: pod/bbb/models.py
-msgid "Last date where BBB session was in progress."
-msgstr "Dernière date à laquelle la session BBB était en cours."
-
-#: pod/bbb/models.py pod/meeting/models.py
-msgid "Meeting"
-msgstr "Session"
-
-#: pod/bbb/models.py pod/meeting/apps.py
-msgid "Meetings"
-msgstr "Sessions"
-
-#: pod/bbb/models.py pod/meeting/views.py
-msgid "Full name"
-msgstr "Nom complet"
-
-#: pod/bbb/models.py
-msgid "Full name of the user from BBB."
-msgstr "Nom complet de l’utilisateur dans BBB."
-
-#: pod/bbb/models.py
-msgid "User role"
-msgstr "Rôle de l’utilisateur"
-
-#: pod/bbb/models.py
-msgid "Role of the user from BBB."
-msgstr "Rôle de l’utilisateur dans BBB."
-
-#: pod/bbb/models.py
-msgid "Username / User id"
-msgstr "Username / Identifiant utilisateur"
-
-#: pod/bbb/models.py
-msgid "Username / User id, if the BBB user was matching a Pod user."
-msgstr ""
-"Nom d’utilisateur / ID utilisateur, si l’utilisateur BBB correspond à un "
-"utilisateur existant de Pod."
-
-#: pod/bbb/models.py
-msgid "User from the Pod database, if user found."
-msgstr ""
-"Utilisateur dans la base de données de Pod, si l’utilisateur est trouvé."
-
-#: pod/bbb/models.py pod/meeting/views.py
-msgid "Attendee"
-msgstr "Participant"
-
-#: pod/bbb/models.py pod/meeting/views.py
-msgid "Attendees"
-msgstr "Participants"
-
-#: pod/bbb/models.py pod/import_video/models.py pod/live/forms.py
-#: pod/live/models.py pod/meeting/forms.py pod/meeting/models.py
-#: pod/video_search/forms.py
-msgid "Start date"
-msgstr "Date de début"
-
-#: pod/bbb/models.py
-msgid "Start date of the live."
-msgstr "Date de début du direct."
-
-#: pod/bbb/models.py pod/live/forms.py pod/live/models.py
-#: pod/video_search/forms.py
-msgid "End date"
-msgstr "Date de fin"
-
-#: pod/bbb/models.py
-msgid "End date of the live."
-msgstr "Date de fin du direct."
-
-#: pod/bbb/models.py pod/meeting/models.py
-msgid "Live not started"
-msgstr "Le direct n’a pas encore démarré"
-
-#: pod/bbb/models.py pod/bbb/templates/bbb/live_card.html pod/meeting/models.py
-msgid "Live in progress"
-msgstr "Le direct est en cours"
-
-#: pod/bbb/models.py pod/bbb/templates/bbb/live_card.html pod/meeting/models.py
-msgid "Live stopped"
-msgstr "Le direct a été arrêté"
-
-#: pod/bbb/models.py pod/meeting/models.py
-msgid "Live status"
-msgstr "Statut du direct"
-
-#: pod/bbb/models.py
-msgid "Server"
-msgstr "Serveur"
-
-#: pod/bbb/models.py
-msgid "Server/process performing the live."
-msgstr "Serveur / processus effectuant le direct."
-
-#: pod/bbb/models.py
-msgid "Username / User id, that want to perform the live."
-msgstr ""
-"Nom d’utilisateur / ID d’utilisateur, qui souhaite effectuer le direct."
-
-#: pod/bbb/models.py pod/live/models.py pod/live/templates/live/event_card.html
-#: pod/meeting/models.py pod/recorder/models.py pod/video/forms.py
-msgid "Restricted access"
-msgstr "Accès restreint"
-
-#: pod/bbb/models.py
-msgid "Is live only accessible to authenticated users?"
-msgstr "Le direct est-il uniquement accessible aux utilisateurs authentifiés ?"
-
-#: pod/bbb/models.py pod/live/admin.py pod/live/models.py pod/meeting/models.py
-msgid "Broadcaster"
-msgstr "Diffuseur"
-
-#: pod/bbb/models.py
-msgid "Broadcaster in charge to perform live."
-msgstr "Diffuseur en charge de réaliser le direct."
-
-#: pod/bbb/models.py
-msgid "Show public chat"
-msgstr "Affichage du chat public"
-
-#: pod/bbb/models.py
-msgid "Do you want to show the public chat in the live?"
-msgstr "Souhaitez-vous montrer le chat public en direct ?"
-
-#: pod/bbb/models.py
-msgid "Save meeting in dashboard"
-msgstr "Enregistrer la réunion dans le tableau de bord"
-
-#: pod/bbb/models.py
-msgid ""
-"Do you want to save the video of this meeting, at the end of the live, "
-"directly in “Dashboard”?"
-msgstr ""
-"Souhaitez-vous enregistrer la vidéo de cette session, à la fin du direct, "
-"directement dans le « Tableau de bord » ?"
-
-#: pod/bbb/models.py pod/meeting/models.py
-msgid "Enable chat"
-msgstr "Activer le chat"
-
-#: pod/bbb/models.py
-msgid ""
-"Do you want a chat on the live page for students? Messages sent in this live "
-"page’s chat will end up in BigBlueButton’s public chat."
-msgstr ""
-"Voulez-vous un chat sur la page de direct pour les étudiants ? Les messages "
-"envoyés dans le chat de cette page de direct se retrouveront dans le chat "
-"public de BigBlueButton."
-
-#: pod/bbb/models.py
-msgid "Redis hostname"
-msgstr "Nom d’hôte REDIS"
-
-#: pod/bbb/models.py
-msgid "Redis hostname, useful for chat"
-msgstr "Nom d’hôte REDIS, utile pour le chat"
-
-#: pod/bbb/models.py
-msgid "Redis port"
-msgstr "Port REDIS"
-
-#: pod/bbb/models.py
-msgid "Redis port, useful for chat"
-msgstr "Port REDIS, utile pour le chat"
-
-#: pod/bbb/models.py
-msgid "Redis channel"
-msgstr "Channel REDIS"
-
-#: pod/bbb/models.py
-msgid "Redis channel, useful for chat"
-msgstr "Channel REDIS, utile pour le chat"
-
-#: pod/bbb/models.py pod/meeting/models.py
-msgid "Livestream"
-msgstr "Direct"
-
-#: pod/bbb/models.py pod/meeting/models.py
-msgid "Livestreams"
-msgstr "Directs"
-
-#: pod/bbb/templates/bbb/card.html pod/bbb/templates/bbb/list_meeting.html
-msgid "BigBlueButton presentation preview"
-msgstr "Aperçu de la présentation BigBlueButton"
-
-#: pod/bbb/templates/bbb/card.html
-msgid "Publish the BigBlueButton presentation on this platform"
-msgstr "Publier la présentation BigBlueButton sur cette plateforme"
-
-#: pod/bbb/templates/bbb/card.html pod/bbb/templates/bbb/publish_meeting.html
-msgid "Publish this presentation"
-msgstr "Publier cette présentation"
-
-#: pod/bbb/templates/bbb/card.html
-#: pod/meeting/templates/meeting/internal_recordings.html
-msgid "by"
-msgstr "par"
-
-#: pod/bbb/templates/bbb/list_meeting.html
-msgid "Create a video from a BigBlueButton presentation"
-msgstr "Créer une vidéo à partir d’une présentation BigBlueButton"
-
-#: pod/bbb/templates/bbb/list_meeting.html
-#: pod/recorder/templates/recorder/claim_record.html
-msgid "No record found"
-msgstr "Aucun enregistrement trouvé"
-
-#: pod/bbb/templates/bbb/list_meeting.html
-msgid "There are no BigBlueButton records."
-msgstr "Il n’y a pas de sessions BigBlueButton."
-
-#: pod/bbb/templates/bbb/list_meeting.html
-#: pod/recorder/templates/recorder/claim_record.html
-#, python-format
-msgid "%(counter)s record found"
-msgid_plural "%(counter)s records found"
-msgstr[0] "%(counter)s enregistrement trouvé"
-msgstr[1] "%(counter)s enregistrements trouvés"
-
-#: pod/bbb/templates/bbb/list_meeting.html
-msgid ""
-"This is the list of the recorded BigBlueButton sessions for which you were "
-"moderator. This module allows you to create a video from a BigBlueButton "
-"presentation."
-msgstr ""
-"Voici la liste des sessions BigBlueButton enregistrées pour lesquelles vous "
-"étiez modérateur. Ce module vous permet de créer une vidéo à partir d’une "
-"présentation BigBlueButton."
-
-#: pod/bbb/templates/bbb/list_meeting.html
-msgid ""
-"Shortly after the presentation is published, the corresponding video will "
-"appear in your videos."
-msgstr ""
-"Peu de temps après la publication de la présentation, la vidéo "
-"correspondante apparaîtra dans vos vidéos."
-
-#: pod/bbb/templates/bbb/list_meeting.html
-msgid ""
-"Please note: a BigBlueButton presentation can be encoded by another "
-"moderator."
-msgstr ""
-"Remarque: une présentation BigBlueButton peut être encodée par un autre "
-"modérateur."
-
-#: pod/bbb/templates/bbb/list_meeting.html
-msgid ""
-"If such a case occurs, this information will be displayed directly in the "
-"list. You can then contact this user directly to ask him/her to share the "
-"video with you, or even to put you as additional owner of the video."
-msgstr ""
-"Si un tel cas se produit, ces informations seront affichées directement dans "
-"la liste. Vous pouvez alors contacter directement cet utilisateur pour lui "
-"demander de partager la vidéo avec vous, voire de vous mettre en tant que "
-"propriétaire additionnel de la vidéo."
-
-#: pod/bbb/templates/bbb/list_meeting.html
-#: pod/bbb/templates/bbb/live_list_meeting.html
-msgid "Please note: this page refreshes automatically every 30 seconds."
-msgstr ""
-"Remarque : cette page s’actualise automatiquement toutes les 30 secondes."
-
-#: pod/bbb/templates/bbb/live_card.html
-#: pod/bbb/templates/bbb/live_publish_meeting.html pod/bbb/views.py
-#: pod/main/templates/navbar.html
-msgid "Perform a BigBlueButton live"
-msgstr "Réaliser un direct BigBlueButton"
-
-#: pod/bbb/templates/bbb/live_card.html
-msgid ""
-"Impossible to perform a BigBlueButton live for the moment (all resources are "
-"busy)"
-msgstr ""
-"Impossible de réaliser un direct BigBlueButton pour le moment (toutes les "
-"ressources sont occupées)"
-
-#: pod/bbb/templates/bbb/live_card.html
-msgid "Live not published"
-msgstr "Le direct n’a pas été publié"
-
-#: pod/bbb/templates/bbb/live_card.html
-msgid "Live not already started"
-msgstr "Le direct n’a pas encore démarré"
-
-#: pod/bbb/templates/bbb/live_list_meeting.html
-msgid "No BigBlueButton session in progress found"
-msgstr "Aucune session BigBlueButton en cours trouvée"
-
-#: pod/bbb/templates/bbb/live_list_meeting.html
-#, python-format
-msgid "%(counter)s BigBlueButton session in progress found"
-msgid_plural "%(counter)s BigBlueButton sessions in progress found"
-msgstr[0] "%(counter)s session BigBlueButton en cours trouvée"
-msgstr[1] "%(counter)s sessions BigBlueButton en cours trouvées"
-
-#: pod/bbb/templates/bbb/live_list_meeting.html
-msgid ""
-"This is the list of current BigBlueButton sessions for which you are "
-"moderator. This module allows you to make a live stream from this "
-"BigBlueButton session (<em>useful if there are more than 100 users</em>)."
-msgstr ""
-"Voici la liste des sessions BigBlueButton en cours pour lesquelles vous êtes "
-"modérateur. Ce module vous permet de réaliser un direct de cette session "
-"BigBlueButton (<em>utile s’il y a plus de 100 utilisateurs</em>)."
-
-#: pod/bbb/templates/bbb/live_list_meeting.html
-msgid ""
-"Remember to not use breakout rooms in this case and end the meeting once it "
-"is over."
-msgstr ""
-"N’oubliez pas de ne pas utiliser les salles privées dans ce cas et de mettre "
-"fin à la réunion une fois celle-ci terminée."
-
-#: pod/bbb/templates/bbb/live_list_meeting.html
-msgid ""
-"Shortly after clicking the “Perform a BigBlueButton live” button, and select "
-"the desired options, the live stream will be available to users on the <i "
-"class=\"bi bi-broadcast\" aria-hidden=\"true\"></i> <strong>Lives</strong> "
-"page."
-msgstr ""
-"Peu de temps après avoir cliqué sur le bouton « Réaliser un direct "
-"BigBlueButton » et sélectionné les options souhaitées, le direct sera "
-"disponible pour les utilisateurs sur la page <i class=\\\"bi bi-broadcast\\"
-"\" aria-hidden=\"true\"></i> <strong>Directs</strong>."
-
-#: pod/bbb/templates/bbb/live_list_meeting.html
-msgid "There are no BigBlueButton sessions in progress."
-msgstr "Aucune session BigBlueButton n’est en cours."
-
-#: pod/bbb/templates/bbb/live_publish_meeting.html
-msgid "Confirmation of performing a BigBlueButton live"
-msgstr "Confirmation de la réalisation d’un direct BigBlueButton"
-
-#: pod/bbb/templates/bbb/live_publish_meeting.html
-msgid "Are you sure you want to perform a BigBlueButton live?"
-msgstr "Êtes-vous sûr de vouloir réaliser un direct BigBlueButton ?"
-
-#: pod/bbb/templates/bbb/live_publish_meeting.html
-msgid ""
-"Select the desired options than validate this form by clicking \"Perform a "
-"BigBlueButton live\"."
-msgstr ""
-"Sélectionnez les options souhaitées puis validez ce formulaire en cliquant "
-"sur « Réaliser un direct BigBlueButton »."
-
-#: pod/bbb/templates/bbb/live_publish_meeting.html
-msgid ""
-"This live will be stopped automatically when BigBlueButton session ends."
-msgstr ""
-"Ce direct sera arrêté automatiquement à la fin de la session BigBlueButton."
-
-#: pod/bbb/templates/bbb/live_publish_meeting.html
-msgid ""
-"Please note: shortly after clicking the “Perform a BigBlueButton live” "
-"button, the live stream will be available to users on the <i class=\"bi bi-"
-"broadcast\" aria-hidden=\"true\"></i> <strong>Lives</strong> page."
-msgstr ""
-"Remarque : peu de temps après avoir cliqué sur le bouton « Réaliser un "
-"direct BigBlueButton » le direct sera disponible pour les utilisateurs sur "
-"la page <i class=\"bi bi-broadcast\" aria-hidden=\"true\"></"
-"i> <strong>Directs</strong>."
-
-#: pod/bbb/templates/bbb/live_record_list.html
-msgid "Sorry, no BigBlueButton session in progress found"
-msgstr "Désolé, aucune session BigBlueButton en cours n’a été trouvée"
-
-#: pod/bbb/templates/bbb/live_record_list.html
-#: pod/bbb/templates/bbb/record_list.html
-#: pod/playlist/templates/playlist/playlist-videos-list.html
-#: pod/recorder/templates/recorder/record_list.html
-#: pod/video/templates/videos/video_list.html
-#: pod/video/templates/videos/video_list_grid_selectable.html
-#: pod/video/templates/videos/video_list_table_selectable.html
-msgid "More"
-msgstr "Plus"
-
-#: pod/bbb/templates/bbb/live_record_list.html
-#: pod/bbb/templates/bbb/record_list.html pod/main/templates/loader.html
-#: pod/playlist/templates/playlist/playlist-videos-list.html
-#: pod/podfile/templates/podfile/home_content.html
-#: pod/podfile/templates/podfile/list_folder_files.html
-#: pod/recorder/templates/recorder/record_list.html
-#: pod/video/templates/videos/dashboard_modal.html
-#: pod/video/templates/videos/video_edit.html
-#: pod/video/templates/videos/video_list.html
-#: pod/video/templates/videos/video_list_grid_selectable.html
-#: pod/video/templates/videos/video_list_table_selectable.html
-msgid "Loading…"
-msgstr "Chargement en cours…"
-
-#: pod/bbb/templates/bbb/publish_meeting.html pod/bbb/views.py
-#: pod/main/templates/navbar.html
-msgid "My BigBlueButton records"
-msgstr "Mes sessions BigBlueButton"
-
-#: pod/bbb/templates/bbb/publish_meeting.html
-msgid "Publish the BigBlueButton presentation"
-msgstr "Publier la présentation BigBlueButton"
-
-#: pod/bbb/templates/bbb/publish_meeting.html
-msgid "Are you sure you want to publish this BigBlueButton presentation?"
-msgstr "Voulez-vous vraiment publier cette présentation BigBlueButton ?"
-
-#: pod/bbb/templates/bbb/publish_meeting.html
-msgid ""
-"A video will be created from the BigBlueButton presentation and will be "
-"available on this platform."
-msgstr ""
-"Une vidéo sera créée à partir de la présentation BigBlueButton et sera "
-"disponible sur cette plateforme."
-
-#: pod/bbb/templates/bbb/publish_meeting.html
-msgid ""
-"Please note: this treatment can take a long time. You will receive an email "
-"when this treatment is completed."
-msgstr ""
-"Attention: ce traitement peut durer longtemps. Vous recevrez un e-mail "
-"lorsque ce traitement sera terminé."
-
-#: pod/bbb/templates/bbb/record_list.html
-#: pod/recorder/templates/recorder/record_list.html
-msgid "Sorry, no record found"
-msgstr "Désolé, aucun enregistrement trouvé"
-
-#: pod/bbb/views.py
-msgid "You aren’t the moderator of this BigBlueButton session."
-msgstr "Vous n’êtes pas le modérateur de cette session BigBlueButton."
-
-#: pod/bbb/views.py
-msgid "The BigBlueButton session has been published."
-msgstr "La session BigBlueButton a été publiée."
-
-#: pod/bbb/views.py
-msgid "The BigBlueButton live has been performed."
-msgstr "Le direct BigBlueButton a été publié et va bientôt démarrer."
 
 #: pod/chapter/apps.py pod/chapter/models.py
 #: pod/chapter/templates/video_chapter.html
@@ -3009,6 +2457,16 @@ msgstr ""
 "Veuillez entrer un nom qui vous permettra de retrouver facilement cet "
 "enregistrement."
 
+#: pod/import_video/models.py pod/live/forms.py pod/live/models.py
+#: pod/meeting/forms.py pod/meeting/models.py pod/video_search/forms.py
+msgid "Start date"
+msgstr "Date de début"
+
+#: pod/import_video/models.py pod/meeting/models.py pod/playlist/models.py
+#: pod/recorder/models.py pod/video/models.py
+msgid "User"
+msgstr "Utilisateur"
+
 #: pod/import_video/models.py pod/meeting/models.py
 msgid "User who create this recording"
 msgstr "Utilisateur qui a créé cet enregistrement"
@@ -3102,8 +2560,8 @@ msgid ""
 "a>."
 msgstr ""
 "L’accès à l’ajout d’enregistrements externes a été limité. Si vous souhaitez "
-"ajouter des enregistrements externes sur la plateforme, veuillez <a href="
-"\"%(url)s\">nous contacter</a>."
+"ajouter des enregistrements externes sur la plateforme, veuillez <a "
+"href=\"%(url)s\">nous contacter</a>."
 
 #: pod/import_video/templates/import_video/add_or_edit.html
 msgid ""
@@ -3469,8 +2927,8 @@ msgid ""
 "This video was uploaded to Pod; its origin is %(type)s: <a href=\"%(url)s\" "
 "target=\"_blank\">%(url)s</a>"
 msgstr ""
-"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"Cette vidéo a été téléversée sur Pod ; son origine est %(type)s : <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 
 #: pod/import_video/views.py
 msgid ""
@@ -3484,8 +2942,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "%(type)s : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
@@ -3493,8 +2951,8 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 "Cette vidéo « %(name)s » a été téléversée sur Pod ; son origine est "
 "Youtube : <a href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
@@ -3610,6 +3068,10 @@ msgstr "Oui"
 msgid "No"
 msgstr "Non"
 
+#: pod/live/admin.py pod/live/models.py pod/meeting/models.py
+msgid "Broadcaster"
+msgstr "Diffuseur"
+
 #: pod/live/admin.py
 msgid "Auto start admin"
 msgstr "Enregistrement auto"
@@ -3633,6 +3095,10 @@ msgid "Select the piloting implementation for to this broadcaster."
 msgstr ""
 "Sélectionner l’implémentation de pilotage des enregistrements pour ce "
 "diffuseur."
+
+#: pod/live/forms.py pod/live/models.py pod/video_search/forms.py
+msgid "End date"
+msgstr "Date de fin"
 
 #: pod/live/forms.py
 msgid "End should not be in the past"
@@ -3732,6 +3198,11 @@ msgstr "Activer le compteur de spectateurs"
 #: pod/live/models.py
 msgid "Enable viewers count on live."
 msgstr "Active le compteur de spectateurs sur le direct."
+
+#: pod/live/models.py pod/live/templates/live/event_card.html
+#: pod/meeting/models.py pod/recorder/models.py pod/video/forms.py
+msgid "Restricted access"
+msgstr "Accès restreint"
 
 #: pod/live/models.py
 msgid "Live is accessible only to authenticated users."
@@ -4118,7 +3589,7 @@ msgid ""
 "Please note that your event is in draft mode.<br>The following links contain "
 "a key allowing access. Anyone with this links can access it."
 msgstr ""
-"Veuillez noter que votre événement est en mode brouillon. <br>Les liens "
+"Veuillez noter que votre événement est en mode brouillon.<br>Les liens "
 "suivants contiennent une clé permettant l’accès. Toute personne disposant de "
 "ces liens peut y accéder."
 
@@ -4293,6 +3764,11 @@ msgstr "Éditer cet évènement"
 #: pod/live/templates/live/event_card.html
 msgid "Delete this event"
 msgstr "Supprimer cet évènement"
+
+#: pod/live/templates/live/event_card.html
+#, python-format
+msgid "See the event “%(title)s”."
+msgstr "Voir l’évènement « %(title)s »."
 
 #: pod/live/templates/live/event_card.html
 #, python-format
@@ -5586,6 +5062,19 @@ msgstr "Version"
 msgid "videos available"
 msgstr "vidéos disponibles"
 
+#: pod/main/templates/loader.html
+#: pod/playlist/templates/playlist/playlist-videos-list.html
+#: pod/podfile/templates/podfile/home_content.html
+#: pod/podfile/templates/podfile/list_folder_files.html
+#: pod/recorder/templates/recorder/record_list.html
+#: pod/video/templates/videos/dashboard_modal.html
+#: pod/video/templates/videos/video_edit.html
+#: pod/video/templates/videos/video_list.html
+#: pod/video/templates/videos/video_list_grid_selectable.html
+#: pod/video/templates/videos/video_list_table_selectable.html
+msgid "Loading…"
+msgstr "Chargement en cours…"
+
 #: pod/main/templates/mail/mail.html pod/main/templates/mail/mail_sender.html
 msgid "Hello"
 msgstr "Bonjour"
@@ -5669,8 +5158,13 @@ msgid "Search a media"
 msgstr "Rechercher un média"
 
 #: pod/main/templates/navbar.html
-msgid "Start media search on"
-msgstr "Lancer la recherche d’un média sur"
+#, python-format
+msgid "Type keyword here to search a media on %(TITLE_SITE)s"
+msgstr "Tapez un mot-clé ici pour rechercher un média sur %(TITLE_SITE)s"
+
+#: pod/main/templates/navbar.html
+msgid "Do the media search"
+msgstr "Lance la recherche d’un média"
 
 #: pod/main/templates/navbar.html
 msgid "Some features are unavailable"
@@ -5794,7 +5288,7 @@ msgstr "Mes fichiers"
 
 #: pod/main/templates/navbar.html
 #: pod/recorder/templates/recorder/claim_record.html
-#: pod/recorder/templates/recorder/record_delete.html
+#: pod/recorder/templates/recorder/record_delete.html pod/recorder/views.py
 msgid "Claim a record"
 msgstr "Revendiquer un enregistrement"
 
@@ -5881,6 +5375,10 @@ msgstr "Modérateurs"
 #: pod/meeting/admin.py
 msgid "Viewers"
 msgstr "Spectateurs"
+
+#: pod/meeting/apps.py
+msgid "Meetings"
+msgstr "Sessions"
 
 #: pod/meeting/forms.py pod/video/feeds.py pod/video/models.py
 #: pod/video/templates/videos/video_row_select.html
@@ -6298,6 +5796,10 @@ msgstr ""
 "des directs."
 
 #: pod/meeting/models.py
+msgid "Enable chat"
+msgstr "Activer le chat"
+
+#: pod/meeting/models.py
 msgid ""
 "Do you want a chat on the live page for listeners? Messages sent in this "
 "live page’s chat will end up in BigBlueButton’s public chat. This public "
@@ -6327,6 +5829,10 @@ msgstr "Impossible d’obtenir les enregistrements de la réunion !"
 #: pod/meeting/models.py
 msgid "Unable to delete recording!"
 msgstr "Impossible de supprimer l’enregistrement !"
+
+#: pod/meeting/models.py
+msgid "Meeting"
+msgstr "Session"
 
 #: pod/meeting/models.py
 msgid "meeting"
@@ -6370,12 +5876,44 @@ msgid "Broadcaster in charge to perform lives."
 msgstr "Diffuseur chargé de réaliser des directs."
 
 #: pod/meeting/models.py
+msgid "URL of the SIPMediaGW server"
+msgstr "Adresse URL du serveur SIPMediaGW"
+
+#: pod/meeting/models.py
+msgid "Example format: https://sipmediagw.univ.fr"
+msgstr "Exemple de format : https://sipmediagw.univ.fr"
+
+#: pod/meeting/models.py
+msgid "Bearer token for the SIPMediaGW server."
+msgstr "Jeton Bearer pour le serveur SIPMediaGW."
+
+#: pod/meeting/models.py
+msgid "Example format: 1234"
+msgstr "Exemple de format : 1234"
+
+#: pod/meeting/models.py
 msgid "Live gateway"
 msgstr "Passerelle de live"
 
 #: pod/meeting/models.py
 msgid "Live gateways"
 msgstr "Passerelles de live"
+
+#: pod/meeting/models.py
+msgid "Live not started"
+msgstr "Le direct n’a pas encore démarré"
+
+#: pod/meeting/models.py
+msgid "Live in progress"
+msgstr "Le direct est en cours"
+
+#: pod/meeting/models.py
+msgid "Live stopped"
+msgstr "Le direct a été arrêté"
+
+#: pod/meeting/models.py
+msgid "Live status"
+msgstr "Statut du direct"
 
 #: pod/meeting/models.py
 msgid "Event managed for this live"
@@ -6392,6 +5930,14 @@ msgstr "Passerelle de live utilisé pour ce direct"
 #: pod/meeting/models.py
 msgid "Live gateway (encoder and broadcaster) that perform the livestream"
 msgstr "Passerelle de live (encodeur et diffuseur) qui réalise la diffusion"
+
+#: pod/meeting/models.py
+msgid "Livestream"
+msgstr "Direct"
+
+#: pod/meeting/models.py
+msgid "Livestreams"
+msgstr "Directs"
 
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/meeting/templates/meeting/link_meeting.html pod/meeting/views.py
@@ -6617,6 +6163,10 @@ msgid "Toolbar"
 msgstr "Barre d’outils"
 
 #: pod/meeting/templates/meeting/internal_recordings.html
+msgid "by"
+msgstr "par"
+
+#: pod/meeting/templates/meeting/internal_recordings.html
 msgid "Please confirm you want to upload the recording To Pod"
 msgstr ""
 "Veuillez confirmer que vous souhaitez téléverser l’enregistrement sur Pod"
@@ -6689,6 +6239,7 @@ msgstr "S’authentifier"
 
 #: pod/meeting/templates/meeting/link_meeting.html
 #: pod/video/templates/videos/link_video.html
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "More options"
 msgstr "Plus d’options"
 
@@ -6827,6 +6378,10 @@ msgstr ""
 "est maintenant disponible sur %(site_title)s."
 
 #: pod/meeting/views.py
+msgid "Meeting name"
+msgstr "Nom de la session"
+
+#: pod/meeting/views.py
 msgid "Has user joined?"
 msgstr "Utilisateurs connectés ?"
 
@@ -6845,6 +6400,18 @@ msgstr "Nombre d’auditeurs"
 #: pod/meeting/views.py
 msgid "Moderator count"
 msgstr "Nombre de modérateurs"
+
+#: pod/meeting/views.py
+msgid "Attendees"
+msgstr "Participants"
+
+#: pod/meeting/views.py
+msgid "Attendee"
+msgstr "Participant"
+
+#: pod/meeting/views.py
+msgid "Full name"
+msgstr "Nom complet"
 
 #: pod/meeting/views.py
 msgid "You cannot edit this meeting."
@@ -6936,16 +6503,16 @@ msgid ""
 msgstr ""
 "\n"
 "        <p>Bonjour,\n"
-"        <p>%(owner)s vous invite à une réunion récurrente <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"        <p>%(owner)s vous invite à une réunion récurrente "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "        <p>Date de début : %(start_date_time)s </p>\n"
 "        <p>Récurrent jusqu’à la date : %(end_date)s </p>\n"
 "        <p>La réunion se tiendra tou(te)s les %(frequency)s %(recurrence)s </"
 "p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <strong>"
-"%(password)s</strong></p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<strong>%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -6954,8 +6521,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
@@ -6969,8 +6536,8 @@ msgstr ""
 "strong>.</p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <strong>"
-"%(password)s</strong></p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<strong>%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -6979,8 +6546,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
@@ -6998,8 +6565,8 @@ msgstr ""
 "        <p>Date de fin : %(end_date)s </p>\n"
 "        <p>Voici le lien pour rejoindre la réunion :\n"
 "        <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
-"        <p>Vous avez besoin de ce mot de passe pour entrer : <strong>"
-"%(password)s</strong></p>\n"
+"        <p>Vous avez besoin de ce mot de passe pour entrer : "
+"<strong>%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
 "    "
 
@@ -7428,6 +6995,14 @@ msgstr "Gérer la liste de lecture"
 msgid "Sorry, no video found."
 msgstr "Désolé, aucune vidéo trouvée."
 
+#: pod/playlist/templates/playlist/playlist-videos-list.html
+#: pod/recorder/templates/recorder/record_list.html
+#: pod/video/templates/videos/video_list.html
+#: pod/video/templates/videos/video_list_grid_selectable.html
+#: pod/video/templates/videos/video_list_table_selectable.html
+msgid "More"
+msgstr "Plus"
+
 #: pod/playlist/templates/playlist/playlist.html
 #: pod/playlist/templates/playlist/playlist_content.html
 #: pod/video/templates/channel/channel.html
@@ -7485,6 +7060,11 @@ msgstr "Voir la liste de lecture « %(playlist_name)s »"
 #: pod/playlist/templates/playlist/playlist_card.html pod/video/models.py
 msgid "videos"
 msgstr "vidéos"
+
+#: pod/playlist/templates/playlist/playlist_card.html
+#, python-format
+msgid "See the playlist “%(playlist_label)s”"
+msgstr "Voir la liste de lecture « %(playlist_label)s »"
 
 #: pod/playlist/templates/playlist/playlist_link.html
 #, python-format
@@ -7777,6 +7357,21 @@ msgstr "Téléverser des fichiers"
 #: pod/podfile/templates/podfile/list_folder_files.html
 msgid "Delete file"
 msgstr "Supprimer le fichier"
+
+#: pod/podfile/templates/podfile/list_folder_files.html
+#, python-format
+msgid "See the picture “%(title)s”."
+msgstr "Voir l’image « %(title)s »."
+
+#: pod/podfile/templates/podfile/list_folder_files.html
+#, python-format
+msgid "Download the file “%(title)s”."
+msgstr "Télécharger le fichier « %(title)s »."
+
+#: pod/podfile/templates/podfile/list_folder_files.html
+#, python-format
+msgid "Get the file “%(title)s”."
+msgstr "Obtenir le fichier « %(title)s »."
 
 #: pod/podfile/templates/podfile/userfolder.html
 msgid "Home folder"
@@ -8632,8 +8227,19 @@ msgid "Date of recording."
 msgstr "Date de l’enregistrement."
 
 #: pod/recorder/templates/recorder/claim_record.html
+msgid "No record found"
+msgstr "Aucun enregistrement trouvé"
+
+#: pod/recorder/templates/recorder/claim_record.html
 msgid "There is no unassigned records"
 msgstr "Il n’y a pas d’enregistrement non assigné"
+
+#: pod/recorder/templates/recorder/claim_record.html
+#, python-format
+msgid "%(counter)s record found."
+msgid_plural "%(counter)s records found."
+msgstr[0] "%(counter)s enregistrement trouvé."
+msgstr[1] "%(counter)s enregistrements trouvés."
 
 #: pod/recorder/templates/recorder/claim_record.html
 msgid "Record preview"
@@ -8643,20 +8249,27 @@ msgstr "Prévisualisation d’enregistrement"
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 "Pour visionner cette vidéo, veuillez activer JavaScript et envisager de "
 "passer à un navigateur Web qui <a href=\"https://videojs.com/html5-video-"
 "support/\" target=\"_blank\"> prend en charge la vidéo HTML5</a>"
 
 #: pod/recorder/templates/recorder/link_record.html
-msgid "Delete this record."
-msgstr "Supprimer cet enregistrement."
+#, python-format
+msgid "Preview the record “%(title)s”"
+msgstr "Prévisualiser l’enregistrement « %(title)s »"
 
 #: pod/recorder/templates/recorder/link_record.html
-msgid "Preview record."
-msgstr "Enregistrement précédent."
+#, python-format
+msgid "Delete the record “%(title)s”"
+msgstr "Supprimer l’enregistrement « %(title)s »"
+
+#: pod/recorder/templates/recorder/link_record.html
+#, python-format
+msgid "Claim the record “%(title)s”"
+msgstr "Revendiquer l’enregistrement « %(title)s »"
 
 #: pod/recorder/templates/recorder/link_record.html
 msgid "Claim the record"
@@ -8687,6 +8300,10 @@ msgid "To delete the record, please check the box and click “Delete”."
 msgstr ""
 "Pour supprimer l’enregistrement, veuillez cocher la case et cliquer sur "
 "« Supprimer »."
+
+#: pod/recorder/templates/recorder/record_list.html
+msgid "Sorry, no record found"
+msgstr "Désolé, aucun enregistrement trouvé"
 
 #: pod/recorder/views.py
 msgid "Recorder should be indicated."
@@ -8721,9 +8338,10 @@ msgid ""
 msgstr ""
 "<p>Bonjour,<br> un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir de l’enregistreur « %(recorder)s ».<br>Pour "
-"l’attribuer, cliquez sur le lien ci-dessous.</p><p><a href=\"%(link_url)s\">"
-"%(link_url)s</a><br><em>Si le lien n’est pas actif, il faut le copier-coller "
-"dans la barre d’adresse de votre navigateur.</em></p><p>Cordialement.</p>"
+"l’attribuer, cliquez sur le lien ci-dessous.</p><p><a "
+"href=\"%(link_url)s\">%(link_url)s</a><br><em>Si le lien n’est pas actif, il "
+"faut le copier-coller dans la barre d’adresse de votre navigateur.</em></"
+"p><p>Cordialement.</p>"
 
 #: pod/recorder/views.py
 msgid "New recording added."
@@ -8872,6 +8490,10 @@ msgstr "Encodé ?"
 #: pod/video/admin.py
 msgid "Set as draft"
 msgstr "Définir comme brouillon"
+
+#: pod/video/admin.py
+msgid "Encode selected"
+msgstr "(Ré)encoder la sélection"
 
 #: pod/video/admin.py
 msgid "Transcript selected"
@@ -9239,8 +8861,8 @@ msgid ""
 "%(url)s</a></p>\n"
 msgstr ""
 "vous pouvez changer la date de suppression en éditant votre vidéo :</p>\n"
-"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" target=\"_blank\">"
-"%(scheme)s:%(url)s</a></p>\n"
+"<p><a href=\"%(scheme)s:%(url)s\" rel=\"noopener\" "
+"target=\"_blank\">%(scheme)s:%(url)s</a></p>\n"
 "\n"
 
 #: pod/video/management/commands/check_obsolete_videos.py
@@ -9511,6 +9133,10 @@ msgid "Overview"
 msgstr "Vue d’ensemble"
 
 #: pod/video/models.py
+msgid "Encoding in progress"
+msgstr "Encodage en cours"
+
+#: pod/video/models.py
 msgid "Is Video"
 msgstr "Est une vidéo"
 
@@ -9534,6 +9160,10 @@ msgstr "Somme des vues"
 #, python-format
 msgid "Sum of view of last %(ndays)s days"
 msgstr "Somme des vues des %(ndays)s derniers jours"
+
+#: pod/video/models.py pod/video_encode_transcript/models.py
+msgid "Encoding step"
+msgstr "Étape de l’encodage"
 
 #: pod/video/models.py
 msgid "Is the video encoded?"
@@ -9704,7 +9334,6 @@ msgid "Audio"
 msgstr "Audio"
 
 #: pod/video/templates/channel/channel.html
-#: pod/video/templates/channel/my_channels.html
 #: pod/video/templates/channel/theme_edit.html
 #: pod/video/templates/videos/video_page_content.html
 msgid "Edit the channel"
@@ -9808,8 +9437,19 @@ msgid "Add new theme"
 msgstr "Ajouter un nouveau thème"
 
 #: pod/video/templates/channel/my_channels.html
-msgid "Number of video inside the channel"
-msgstr "Nombre de vidéo à l’intérieur de la chaîne"
+#, python-format
+msgid "Edit the channel “%(title)s”"
+msgstr "Modifier la chaîne « %(title)s »"
+
+#: pod/video/templates/channel/my_channels.html
+#, python-format
+msgid "See the channel “%(title)s”"
+msgstr "Voir la chaîne « %(title)s »"
+
+#: pod/video/templates/channel/my_channels.html
+#, python-format
+msgid "%(count)s video(s) inside the channel “%(title)s”."
+msgstr "%(count)s vidéo(s) dans la chaîne « %(title)s »."
 
 #: pod/video/templates/channel/theme_edit.html
 msgid "Editing the channel’s themes"
@@ -10186,8 +9826,8 @@ msgid ""
 "This video is chaptered. Click the chapter button <span class=\"vjs-icon-"
 "chapters\"></span> on the video player to view them."
 msgstr ""
-"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span class="
-"\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
+"Cette vidéo est chapitrée. Cliquez sur le bouton de chapitre <span "
+"class=\"vjs-icon-chapters\"></span> sur le lecteur vidéo pour les voir."
 
 #: pod/video/templates/videos/video-all-info.html
 msgid "Other versions"
@@ -11238,36 +10878,11 @@ msgstr "Résultats de la recherche"
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
 
-#~ msgid "The video has been deleted."
-#~ msgstr "La vidéo a été supprimée."
+#~ msgid "Delete this record."
+#~ msgstr "Supprimer cet enregistrement."
 
-#~ msgid "You cannot delete this video."
-#~ msgstr "Vous ne pouvez pas supprimer cette vidéo."
+#~ msgid "Preview record."
+#~ msgstr "Prévisualiser l’enregistrement."
 
-#~ msgid "Long answer"
-#~ msgstr "Réponse longue"
-
-#~ msgid "Long answer question"
-#~ msgstr "Question à réponse longue"
-
-#~ msgid "Write a long answer."
-#~ msgstr "Écrivez une réponse longue."
-
-#~ msgid "Please choose an answer."
-#~ msgstr "Veuillez choisir une réponse."
-
-#~ msgid "Long answer questions"
-#~ msgstr "Questions à réponse longue"
-
-#~ msgid "Restricted"
-#~ msgstr "Restreint"
-
-#~ msgid ""
-#~ "The video was treated by Aristote. You must verify and validate the "
-#~ "processing by pressing the robot icon."
-#~ msgstr ""
-#~ "La vidéo a été traitée par Aristote. Vous devez vérifier et valider le "
-#~ "traitement en appuyant sur l’icône du robot."
-
-#~ msgid "Quiz(zes)"
-#~ msgstr "Quiz"
+#~ msgid "Number of video inside the channel"
+#~ msgstr "Nombre de vidéo à l’intérieur de la chaîne"
