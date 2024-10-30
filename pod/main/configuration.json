@@ -3822,7 +3822,7 @@
                                     "C’est un dictionnaire imbriqué dont les contenus font correspondre",
                                     "l’alias de base de données avec un dictionnaire contenant",
                                     "les options de chacune des bases de données.",
-                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#databases)_",
+                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#databases)_",
                                     "valeur par défaut : une base de données au format sqlite",
                                     "Voici un exemple de configuration pour utiliser une base MySQL :",
                                     "```python",
@@ -3904,7 +3904,7 @@
                                 ],
                                 "fr": [
                                     "nom du serveur smtp ",
-                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#email-host)_"
+                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#email-host)_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4372,7 +4372,7 @@
                                     "Le répertoire dans lequel stocker temporairement les données",
                                     "(typiquement pour les fichiers plus grands que `FILE_UPLOAD_MAX_MEMORY_SIZE`)",
                                     "lors des téléversements de fichiers.",
-                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#file-upload-temp-dir)_"
+                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#file-upload-temp-dir)_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4388,7 +4388,7 @@
                                     "Chemin absolu du système de fichiers pointant vers le répertoire qui contiendra",
                                     "les fichiers téléversés par les utilisateurs.<br>",
                                     "Attention, ce répertoire doit exister.<br>",
-                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-MEDIA_ROOT)_"
+                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-MEDIA_ROOT)_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4433,7 +4433,7 @@
                                     "Le chemin absolu vers le répertoire dans lequel collectstatic rassemble",
                                     "les fichiers statiques en vue du déploiement.",
                                     "Ce chemin sera précisé dans le fichier de configurtation du vhost nginx.<br>",
-                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-STATIC_ROOT)_"
+                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-STATIC_ROOT)_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4547,7 +4547,7 @@
                                     "Exemple : `[('John', 'john@example.com'), ('Mary', 'mary@example.com')]`<br>",
                                     "Dans Pod, les \"admins\" sont également destinataires des courriels de contact,",
                                     "d’encodage ou de flux RSS si la variable `CONTACT_US_EMAIL` n’est pas renseignée.<br>",
-                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#admins)_"
+                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#admins)_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4563,7 +4563,7 @@
                                     "Une liste de chaînes représentant des noms de domaine/d’hôte que ce site Django peut servir.<br>",
                                     "C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP,",
                                     "qui sont possibles même avec bien des configurations de serveur Web apparemment sécurisées.<br>",
-                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts)_"
+                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#allowed-hosts)_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4628,7 +4628,7 @@
                                     "l’ensemble des requetes en https.",
                                     "Idem pour les cookies de session et de cross-sites qui seront également sécurisés<br>",
                                     "Il faut les passer à False en cas d’usage du runserver (phase de développement / debugage)<br>",
-                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#secure-ssl-redirect)_"
+                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#secure-ssl-redirect)_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4643,7 +4643,7 @@
                                 "fr": [
                                     "Une valeur booléenne qui active ou désactive le mode de débogage.<br>",
                                     "Ne déployez jamais de site en production avec le réglage DEBUG activé.<br>",
-                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#debug)_"
+                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#debug)_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4674,7 +4674,7 @@
                                 ],
                                 "fr": [
                                     "url de redirection pour l’authentification de l’utilisateur",
-                                    "voir : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#login-url)"
+                                    "voir : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#login-url)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4692,7 +4692,7 @@
                                     "Le premier manager renseigné est également contact des flus RSS.<br>",
                                     "Ils sont aussi destinataires des courriels de contact",
                                     "si la variable `CONTACT_US_EMAIL` n’est pas renseignée.<br>",
-                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#managers)_"
+                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#managers)_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4735,7 +4735,7 @@
                                     "Elle est utilisée dans le contexte de la signature cryptographique,",
                                     "et doit être définie à une valeur unique et non prédictible.<br>",
                                     "Vous pouvez utiliser ce site pour en générer une : [djecrety.ir](https://djecrety.ir/)<br>",
-                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#secret-key)_"
+                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#secret-key)_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4782,7 +4782,7 @@
                                     "Cette option empêche le cookie d’être envoyé dans les requêtes inter-sites,",
                                     "ce qui prévient les attaques CSRF et rend impossible",
                                     "certaines méthodes de vol du cookie de session.",
-                                    "Voir [docs.djangoproject.com](https://docs.djangoproject.com/en/3.2/ref/settings/#std-setting-SESSION_COOKIE_SAMESITE)"
+                                    "Voir [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std-setting-SESSION_COOKIE_SAMESITE)"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4824,7 +4824,7 @@
                                     "L’identifiant (nombre entier) du site actuel.",
                                     "Peut être utilisé pour mettre en place une instance multi-tenant",
                                     "et ainsi gérer dans une même base de données du contenu pour plusieurs sites.<br>",
-                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#site-id)_"
+                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#site-id)_"
                                 ]
                             },
                             "pod_version_end": "",
@@ -4867,7 +4867,7 @@
                                 ],
                                 "fr": [
                                     "Une chaîne représentant le fuseau horaire pour cette installation.<br>",
-                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-TIME_ZONE)_",
+                                    "_ref : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/#std:setting-TIME_ZONE)_",
                                     "Liste des adresses destinataires des courriels de contact"
                                 ]
                             },
@@ -5530,12 +5530,12 @@
                 "fr": [
                     "",
                     "La plateforme Esup-Pod se base sur le framework Django écrit en Python.",
-                    "Elle est compatible avec les versions 3.8, 3.9 et 3.10 de Python.",
+                    "Elle est compatible avec les versions 3.9, 3.10 et 3.12 de Python.",
                     "",
-                    "**Django Version : 3.2 LTS**",
+                    "**Django Version : 4.2 LTS**",
                     "",
-                    "> La documentation complète du framework : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/)<br>",
-                    "> L’ensemble des variables de configuration du framework est accessible à cette adresse : [docs.djangoproject.com](https://docs.djangoproject.com/fr/3.2/ref/settings/)",
+                    "> La documentation complète du framework : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/)<br>",
+                    "> L’ensemble des variables de configuration du framework est accessible à cette adresse : [docs.djangoproject.com](https://docs.djangoproject.com/fr/4.2/ref/settings/)",
                     "",
                     "Voici les configurations des applications tierces utilisées par Esup-Pod."
                 ]

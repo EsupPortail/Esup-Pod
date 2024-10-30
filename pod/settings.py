@@ -1,7 +1,7 @@
 """
 Django global settings for pod_project.
 
-Django version: 3.2.
+Django version: 4.2.
 """
 
 import os
@@ -152,7 +152,7 @@ TEMPLATES = [
 
 ##
 # Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.{0}".format(validator)}
     for validator in [
@@ -165,7 +165,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 ##
 # Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
+# https://docs.djangoproject.com/en/4.2/topics/i18n/
 USE_I18N = True
 LOCALE_PATHS = (os.path.join(BASE_DIR, "pod", "locale"),)
 
@@ -194,7 +194,7 @@ REST_FRAMEWORK = {
 
 
 ##
-# Logging configuration https://docs.djangoproject.com/en/3.2/topics/logging/
+# Logging configuration https://docs.djangoproject.com/en/4.2/topics/logging/
 #
 LOG_DIRECTORY = os.path.join(BASE_DIR, "pod", "log")
 if not os.path.exists(LOG_DIRECTORY):
