@@ -39,6 +39,7 @@ USE_SPEAKER = getattr(settings, "USE_SPEAKER", False)
 USE_IMPORT_VIDEO = getattr(settings, "USE_IMPORT_VIDEO", True)
 USE_QUIZ = getattr(settings, "USE_QUIZ", True)
 USE_AI_ENHANCEMENT = getattr(settings, "USE_AI_ENHANCEMENT", False)
+WEBTV_MODE = getattr(settings, "WEBTV_MODE", False)
 
 if USE_CAS:
     from cas import views as cas_views
