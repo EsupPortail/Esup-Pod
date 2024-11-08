@@ -37,6 +37,7 @@ from django.db.models.signals import pre_save
 from pod.main.models import AdditionalChannelTab
 import importlib
 from django.contrib.auth.hashers import make_password
+from pod.main.context_processors import WEBTV_MODE
 
 from sorl.thumbnail import get_thumbnail
 from pod.authentication.models import AccessGroup
@@ -684,6 +685,8 @@ class Video(models.Model):
         upload_to=get_storage_path_video,
         max_length=255,
         help_text=_("You can send an audio or video file."),
+        null=WEBTV_MODE,
+        blank=WEBTV_MODE,
     )
     title = models.CharField(
         _("Title"),

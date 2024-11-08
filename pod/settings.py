@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "pod.ai_enhancement",
     "pod.speaker",
     "pod.custom",
+    "pod.duplicate"
 ]
 
 ##
@@ -133,6 +134,7 @@ TEMPLATES = [
                 "pod.import_video.context_processors.context_settings",
                 "pod.cut.context_processors.context_settings",
                 "pod.speaker.context_processors.context_settings",
+                "pod.duplicate.context_processors.context_settings",
             ],
         },
     },

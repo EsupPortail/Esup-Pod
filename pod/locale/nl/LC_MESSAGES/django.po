@@ -9163,6 +9163,10 @@ msgid "Dress the video"
 msgstr ""
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Duplicate the form"
+msgstr ""
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 #: pod/video/templates/videos/video_edit.html
 msgid "Delete the video"
 msgstr ""
