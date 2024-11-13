@@ -133,60 +133,30 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # WARNING: this folder must have previously been created.
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-##
-# CKeditor settings
-#
-# CKEDITOR_BASEPATH = os.path.join(STATIC_URL, 'ckeditor', "/")
-CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_ROOT, "uploads")
-CKEDITOR_CONFIGS = {
-    "complete": {"toolbar": "full", "height": 300, "width": "100%"},
-    "default": {
-        "height": 300,
-        "width": "100%",
-        "toolbar": "custom",
-        "language": "fr",
-        "toolbar_custom": [
-            {
-                "name": "basicstyles",
-                "items": [
-                    "Bold",
-                    "Italic",
-                    "Underline",
-                    "Strike",
-                    "Subscript",
-                    "Superscript",
-                    "-",
-                    "RemoveFormat",
-                ],
-            },
-            {
-                "name": "paragraph",
-                "items": [
-                    "NumberedList",
-                    "BulletedList",
-                    "-",
-                    "Outdent",
-                    "Indent",
-                    "-",
-                    "Blockquote",
-                    "CreateDiv",
-                    "-",
-                    "JustifyLeft",
-                    "JustifyCenter",
-                    "JustifyRight",
-                    "JustifyBlock",
-                    "-",
-                    "BidiLtr",
-                    "BidiRtl",
-                ],
-            },
-            {"name": "links", "items": ["Link", "Unlink", "Anchor"]},
-            {"name": "tools", "items": ["Maximize"]},
-        ],
-        "removePlugins": "exportpdf",
-    },
-}
 
+##
+# Quill WYSIWYG settings
+#
+QUILL_CONFIGS = {
+    "default": {
+        "theme": "snow",
+        "modules": {
+            "syntax": True,
+            "toolbar": [
+                [
+                    {"header": [2, 3, 4, 5, 6]},
+                    {"align": []},
+                    "bold",
+                    "italic",
+                    "strike",
+                    "blockquote",  # toggled buttons
+                ],
+                ["code-block", "link"],
+                ["clean"],
+            ],
+        },
+    }
+}
 
 ##
 # Video tiers apps settings

@@ -1,6 +1,6 @@
 -r requirements-encode.txt
 Django==4.2.16
-django-ckeditor==6.7.1
+django-quill-editor==0.1.42
 Pillow==10.3.0
 django-tagulous==2.1.0
 django-modeltranslation==0.19.10

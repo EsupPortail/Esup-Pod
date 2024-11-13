@@ -5602,6 +5602,18 @@
                     "pod_version_end": "",
                     "pod_version_init": "3.1"
                 },
+                "quill-editor": {
+                    "default_value": "6.3.0",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "Application permettant d’ajouter un éditeur WYSIWYG dans certains champs",
+                            "[django-quill-editor.readthedocs.io](https://django-quill-editor.readthedocs.io/)"
+                        ]
+                    },
+                    "pod_version_end": "",
+                    "pod_version_init": "4.0.0"
+                },
                 "django_select2": {
                     "default_value": "latest",
                     "description": {

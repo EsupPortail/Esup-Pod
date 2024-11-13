@@ -943,6 +943,7 @@ var send_form_data_vanilla = function (
  * @return {void}
  */
 var show_form_theme_new = function (data) {
+  //console.log(data);
   if (data.indexOf("form_theme") === -1) {
     showalert(
       gettext("You are no longer authenticated. Please log in again."),
@@ -959,6 +960,7 @@ var show_form_theme_new = function (data) {
  * @return {void}
  */
 var show_form_theme_modify = function (data) {
+  //console.log(data);
   if (data.indexOf("theme") === -1) {
     showalert(
       gettext("You are no longer authenticated. Please log in again."),
@@ -1105,7 +1107,7 @@ var append_picture_form = async function (data) {
   }
 };
 /**
- * [show_form_theme description]
+ * Dynamically show a theme form
  * @param  {[type]} data [description]
  * @return {[type]}      [description]
  */
@@ -1114,19 +1116,28 @@ function show_form_theme(data) {
   div_form.style.display = "none";
   div_form.innerHTML = data;
   fadeIn(div_form);
+  // [TODO] Add WYSIWYG when edit/create a theme
+  var wrapper = new QuillWrapper(
+    'quill-id_description', 'quill-input-id_description',
+    JSON.parse("TODO : get options from 'data-config'")
+  );
+
+  // try Parsing value as JSON
+  // Allow quill object interaction outer scope
+  djq['id_description'] = wrapper;
+
+  console.log(djq);
+  /* AUTRE TEST */
+  const container = document.getElementById('quill-id_description');
+  //const quill = new Quill(container);
+  // console.log(Quill.find(container) === quill); // Should be true
+  console.log(Quill.find(container)); // Should be true
+
   if (data != "")
     document.querySelector("form.get_form_theme").style.display = "none";
   window.scrollTo({
     top: parseInt(document.getElementById("div_form_theme").offsetTop, 10),
     behavior: "smooth",
-  });
-  // Add CKEditor when edit a theme
-  // For all descriptions, except description help
-  const theme_descriptions = document.querySelectorAll(
-    "textarea[id^='id_description']",
-  );
-  theme_descriptions.forEach((theme_description) => {
-    CKEDITOR.replace(theme_description.id);
   });
 }
 /**

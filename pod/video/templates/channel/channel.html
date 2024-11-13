@@ -206,7 +206,7 @@
             <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy">
         {% endif %}
         {% if channel.description %}
-            {{ channel.description|safe }}
+            {{ channel.description.html|safe }}
         {% endif %}
         {% if theme %}
             {% if request.user in channel.owners.all %}<span class="float-end"><a href="{% url 'channels:theme_edit' slug=channel.slug %}" class="btn btn btn-outline-primary btn-sm"><i class="bi bi-pencil-square" aria-hidden="true"></i>&nbsp;{% trans "Edit the themes"%}</a></span>{% endif %}

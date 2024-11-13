@@ -56,7 +56,7 @@
                 {{ element.title|capfirst|truncatechars:43 }}
               </h3>
               <p class="video_desc mt-2 text-white">
-                {{ element.description|metaformat|safe|striptags|truncatechars:250 }}
+                {{ element.description.html|metaformat|safe|striptags|truncatechars:250 }}
               </p>
               {% if type == "video" or type == "last" %}
               <small class="video-time text-muted time d-none d-md-block">{{ element.duration_in_time }}</small>

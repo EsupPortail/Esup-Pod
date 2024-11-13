@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.flatpages",
     # Exterior Applications
-    "ckeditor",
+    "django_quill",
     "sorl.thumbnail",
     # "tagging",
     "tagulous",

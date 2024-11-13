@@ -10,7 +10,7 @@ from django.dispatch import receiver
 from django.utils.translation import gettext as _
 from django.template.defaultfilters import slugify
 
-from ckeditor.fields import RichTextField
+from django_quill.fields import QuillField
 from tempfile import NamedTemporaryFile
 from webvtt import WebVTT, Caption
 
@@ -156,7 +156,7 @@ class Enrichment(models.Model):
         on_delete=models.CASCADE,
         help_text=_("Integrate a document (PDF, text, html)"),
     )
-    richtext = RichTextField(_("Richtext"), config_name="complete", blank=True)
+    richtext = QuillField(_("Richtext"), blank=True)
     weblink = models.URLField(_("Web link"), max_length=200, null=True, blank=True)
     embed = models.TextField(
         _("Embed code"),

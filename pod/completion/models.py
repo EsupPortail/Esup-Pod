@@ -7,7 +7,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.template.defaultfilters import slugify
-from ckeditor.fields import RichTextField
+from django_quill.fields import QuillField
 from pod.video.models import Video
 from pod.video.utils import verify_field_length
 from pod.main.models import get_nextautoincrement
@@ -352,7 +352,7 @@ class Overlay(models.Model):
         default=2,
         help_text=_("End time of the overlay, in seconds."),
     )
-    content = RichTextField(_("Content"), null=False, blank=False, config_name="complete")
+    content = QuillField(_("Content"), null=False, blank=False)
     position = models.CharField(
         _("Position"),
         max_length=100,

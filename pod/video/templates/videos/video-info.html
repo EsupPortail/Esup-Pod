@@ -82,7 +82,7 @@
     {% endif %}
     {% if video.description or tag_list %}
       <div class="pod-video-description">
-        {{ video.description|safe }}
+        {{ video.description.html|safe }}
       </div>
       {% if tag_list %}
         <p>{% trans 'Tags:' %}

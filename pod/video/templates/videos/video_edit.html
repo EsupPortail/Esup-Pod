@@ -7,6 +7,17 @@
   <!--link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}"-->
   <link rel="stylesheet" type="text/css" media="all"
         href="{% static 'tagulous/lib/select2-4/css/select2.min.css' %}?ver={{VERSION}}">
+
+  <!-- django-quill-editor Media -->
+  <!-- highlight -->
+  <link rel="stylesheet"
+        href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/darcula.min.css">
+  <!-- Quilljs -->
+  <link rel="stylesheet" href="//cdn.quilljs.com/1.3.7/quill.snow.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/quill-resize-module@1.2.4/dist/resize.min.css">
+  <!-- django_quill -->
+  <link rel="stylesheet" href="{% static 'django_quill/django_quill.css' %}">
+
 {% endblock %}
 
 {% block breadcrumbs %}{{ block.super }}

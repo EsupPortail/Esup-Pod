@@ -12,7 +12,7 @@ from django.db.models.signals import post_save
 from django.db.models import Max
 import os
 import mimetypes
-from ckeditor.fields import RichTextField
+from django_quill.fields import QuillField
 
 
 FILES_DIR = getattr(settings, "FILES_DIR", "files")
@@ -289,8 +289,7 @@ class Block(models.Model):
         help_text=_("Select the playlist you want to link with."),
     )
 
-    html = RichTextField(
-        config_name="complete",
+    html = QuillField(
         verbose_name=_("HTML"),
         null=True,
         blank=True,

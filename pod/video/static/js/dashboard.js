@@ -147,6 +147,7 @@ async function bulkUpdate() {
             dashboardValue = element.checked;
             break;
           case "textarea":
+            // TODO: Replace CKEDITOR by Quill
             dashboardValue = CKEDITOR.instances[element.id].getData();
             break;
           default:
