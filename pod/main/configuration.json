@@ -5593,13 +5593,18 @@
                 "ckeditor": {
                     "default_value": "6.3.0",
                     "description": {
-                        "en": "",
+                        "en": [
+                            "WARNING (ckeditor.W001) django-ckeditor bundles CKEditor 4.22.1 free version",
+                            "which isn’t supported anmyore and which does have unfixed security issues,",
+                            "see for example https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS .",
+                            "You should consider strongly switching to a different editor."
+                        ],
                         "fr": [
                             "Application permettant d’ajouter un éditeur CKEditor dans certains champs",
                             "[django-ckeditor.readthedocs.io](https://django-ckeditor.readthedocs.io/en/latest/#installation)"
                         ]
                     },
-                    "pod_version_end": "",
+                    "pod_version_end": "4.0.0",
                     "pod_version_init": "3.1"
                 },
                 "django_select2": {

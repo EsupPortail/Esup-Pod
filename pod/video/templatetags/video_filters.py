@@ -1,17 +1,14 @@
 """Esup-Pod video custom filters."""
 
 from django import template
-from html.parser import HTMLParser
 import html
 import re
 
 register = template.Library()
-parser = HTMLParser()
-html_parser = html
 
 
 @register.filter(name="metaformat")
-def metaformat(content):
+def metaformat(content) -> str:
     """
         Meta tag content text formatter.
 
@@ -24,10 +21,7 @@ def metaformat(content):
     Returns:
         content (str):  the cleaned string
     """
-    try:
-        content = re.sub(r"\s\s+", " ", parser.unescape(content))
-    except AttributeError:
-        content = re.sub(r"\s\s+", " ", html_parser.unescape(content))
+    content = re.sub(r"\s\s+", " ", html.unescape(str(content)))
     toReplace = {
         "&#39;": "'",
         '"': "'",

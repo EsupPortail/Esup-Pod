@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     "chunked_upload",
     "mozilla_django_oidc",
     "honeypot",
-    "lti_provider",
+    # "lti_provider", (wait until lti_provider has been upgraded > 1.0, with upgraded oauth2)
     "pwa",
     "webpush",
     # Pod Applications

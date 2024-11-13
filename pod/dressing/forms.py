@@ -79,7 +79,7 @@ class DressingForm(forms.ModelForm):
             self.fields["opening_credits"].queryset = query_videos.all()
             self.fields["ending_credits"].queryset = query_videos.all()
 
-        # change CKEditor config for no staff user
+        # Remove watermark config for no staff user
         if not hasattr(self, "admin_form") and (
             self.is_staff is False and self.is_superuser is False
         ):

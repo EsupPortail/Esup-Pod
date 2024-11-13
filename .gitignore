@@ -62,6 +62,7 @@ pod/static/
 .cache_ggshield
 htmlcov
 compile-model
+pod/activitypub/*.pub
 
 # IDE Files #
 #############
