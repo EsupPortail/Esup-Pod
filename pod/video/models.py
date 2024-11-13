@@ -524,7 +524,9 @@ class Theme(models.Model):
         children = [self]
         try:
             child_list = self.children.all()
-        except AttributeError:
+        except ValueError:
+            # ValueError: 'Theme' instance needs to have a
+            # primary key value before this relationship can be used.
             return children
         for child in child_list:
             children.extend(child.get_all_children_flat())
