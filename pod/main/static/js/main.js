@@ -1420,9 +1420,12 @@ function remove_quotes(text) {
 }
 
 let mainCollapseButton = document.getElementById("collapse-button");
-mainCollapseButton.addEventListener("click", () => {
-  window.scrollTo(0, 0);
-});
+// No collapse-button on admin pages
+if (mainCollapseButton) {
+  mainCollapseButton.addEventListener("click", () => {
+    window.scrollTo(0, 0);
+  });
+}
 
 /**
  * Remove accents and convert to lowercase.
