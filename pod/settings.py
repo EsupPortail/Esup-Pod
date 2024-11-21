@@ -5,6 +5,7 @@ Django version: 4.2.
 """
 
 import os
+import sys
 import importlib.util
 
 # DEPRECATIONS HACKS
@@ -484,6 +485,7 @@ if (
     locals()["DEBUG"] is True
     and importlib.util.find_spec("debug_toolbar") is not None
     and locals()["USE_DEBUG_TOOLBAR"]
+    and "test" not in sys.argv
 ):
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE = [
