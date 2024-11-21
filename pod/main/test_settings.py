@@ -20,9 +20,10 @@ TEMPLATES[0]["DIRS"].append(
     os.path.join(settings_base_dir, "custom", "static", "opencast")
 )
 USE_DOCKER = True
-path = "pod/custom/settings_local.py"
 ES_URL = ["http://elasticsearch.localhost:9200/"]
 ES_VERSION = 7
+ES_INDEX = "pod-test"
+path = "pod/custom/settings_local.py"
 if os.path.exists(path):
     _temp = __import__("pod.custom", globals(), locals(), ["settings_local"])
     USE_DOCKER = getattr(_temp.settings_local, "USE_DOCKER", USE_DOCKER)
