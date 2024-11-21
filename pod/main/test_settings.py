@@ -8,6 +8,8 @@ from ..settings import LOCALE_PATHS, STATICFILES_DIRS, DEFAULT_AUTO_FIELD
 from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N
 from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
 from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
+from ..settings import SERIALIZATION_MODULES, TAGULOUS_NAME_MAX_LENGTH
+
 import os
 from bs4 import BeautifulSoup
 import requests
@@ -129,4 +131,5 @@ AI_ENHANCEMENT_API_URL = ""
 AI_ENHANCEMENT_API_VERSION = ""
 
 # DEBUG
+DEBUG = False
 USE_DEBUG_TOOLBAR = False
