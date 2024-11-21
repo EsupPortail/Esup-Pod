@@ -765,6 +765,8 @@ class Video(models.Model):
             "Separate tags with spaces, "
             "enclose the tags consist of several words in quotation marks."
         ),
+        null=True,
+        blank=True,
         verbose_name=_("Tags"),
     )
     discipline = models.ManyToManyField(
@@ -1278,7 +1280,7 @@ class Video(models.Model):
                     ]
                 ),
                 """
-                "tags": self.tags.all().filter(site=current_site).values("title", "slug"),
+                "tags": self.tags.all().values("name", "slug"),
                 "type": {"title": self.type.title, "slug": self.type.slug},
                 "disciplines": list(
                     self.discipline.all()
