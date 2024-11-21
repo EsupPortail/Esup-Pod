@@ -16,7 +16,7 @@ ES_URL = getattr(settings, "ES_URL", ["http://elasticsearch.localhost:9200/"])
 ES_INDEX = getattr(settings, "ES_INDEX", "pod")
 ES_TIMEOUT = getattr(settings, "ES_TIMEOUT", 30)
 ES_MAX_RETRIES = getattr(settings, "ES_MAX_RETRIES", 10)
-ES_VERSION = getattr(settings, "ES_VERSION", 6)
+ES_VERSION = getattr(settings, "ES_VERSION", 7)
 ES_OPTIONS = getattr(settings, "ES_OPTIONS", {})
 
 
@@ -238,10 +238,7 @@ def search_videos(request):
     list_videos_id = [hit["_id"] for hit in result["hits"]["hits"]]
     videos = Video.objects.filter(id__in=list_videos_id)
     num_result = 0
-    if ES_VERSION in [7, 8]:
-        num_result = result["hits"]["total"]["value"]
-    else:
-        num_result = result["hits"]["total"]
+    num_result = result["hits"]["total"]["value"]
     videos.has_next = ((page + 1) * size) < num_result
     videos.next_page_number = page + 1
 

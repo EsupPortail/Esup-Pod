@@ -34,16 +34,7 @@ def index_es(video):
         try:
             data = video.get_json_to_index()
             if data != "{}":
-                if ES_VERSION in [7, 8]:
-                    res = es.index(index=ES_INDEX, id=video.id, body=data, refresh=True)
-                else:
-                    res = es.index(
-                        index=ES_INDEX,
-                        id=video.id,
-                        doc_type="pod",
-                        body=data,
-                        refresh=True,
-                    )
+                res = es.index(index=ES_INDEX, id=video.id, body=data, refresh=True)
                 if DEBUG:
                     logger.info(res)
                 return res
@@ -66,18 +57,9 @@ def delete_es(video):
     )
     if es.ping():
         try:
-            if ES_VERSION in [7, 8]:
-                delete = es.delete(
-                    index=ES_INDEX, id=video.id, refresh=True, ignore=[400, 404]
-                )
-            else:
-                delete = es.delete(
-                    index=ES_INDEX,
-                    doc_type="pod",
-                    id=video.id,
-                    refresh=True,
-                    ignore=[400, 404],
-                )
+            delete = es.delete(
+                index=ES_INDEX, id=video.id, refresh=True, ignore=[400, 404]
+            )
             if DEBUG:
                 logger.info(delete)
             return delete
