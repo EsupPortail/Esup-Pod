@@ -35,6 +35,7 @@ from django.http import JsonResponse
 from wsgiref.util import FileWrapper
 from django.db.models import Q, Count
 from pod.video.models import Video, remove_accents
+from pod.activitypub.models import ExternalVideo
 from pod.authentication.forms import FrontOwnerForm, SetNotificationForm
 from django.db.models import Sum
 import os
@@ -154,7 +155,7 @@ def get_dest_email(owner, video, form_subject, request):
     # Soit le owner a été spécifié
     # Soit on le récupere via la video
     # v_owner = instance de User
-    v_owner = owner if (owner) else getattr(video, "owner", None)
+    v_owner = owner if (owner) else getattr(video, "owner", None) if video and not video.is_external else None
     # Si ni le owner ni la video a été renseigné
     if not v_owner:
         # Vérifier si l'utilisateur est authentifié
@@ -193,28 +194,34 @@ def contact_us(request):
         else None
     )
 
-    video = (
-        Video.objects.get(id=request.GET.get("video"), sites=get_current_site(request))
-        if (
-            request.GET.get("video")
-            and request.GET.get("video").isdigit()
-            and Video.objects.filter(
-                id=request.GET.get("video"), sites=get_current_site(request)
-            ).first()
-        )
-        else None
-    )
+    media = None
+    if (
+        request.GET.get("external_video")
+        and request.GET.get("external_video").isdigit()
+        and ExternalVideo.objects.filter(
+            id=request.GET.get("external_video")
+        ).first()
+    ):
+        media = ExternalVideo.objects.get(id=request.GET.get("external_video"))
+    elif (
+        request.GET.get("video")
+        and request.GET.get("video").isdigit()
+        and Video.objects.filter(
+            id=request.GET.get("video"), sites=get_current_site(request)
+        ).first()
+    ):
+        media = Video.objects.get(id=request.GET.get("video"), sites=get_current_site(request))
 
     description = (
         "%s: %s\n%s: %s%s\n\n"
         % (
             _("Title"),
-            video.title,
+            media.title,
             _("Link"),
             "https:" if request.is_secure() else "http:",
-            video.get_full_url(request),
+            media.get_full_url(request),
         )
-        if video
+        if media
         else None
     )
 
@@ -273,7 +280,7 @@ def contact_us(request):
             )
             text_content = bleach.clean(html_content, tags=[], strip=True)
             dest_email = []
-            dest_email = get_dest_email(owner, video, form_subject, request)
+            dest_email = get_dest_email(owner, media, form_subject, request)
 
             msg = EmailMultiAlternatives(
                 subject, text_content, DEFAULT_FROM_EMAIL, dest_email, reply_to=[email]
