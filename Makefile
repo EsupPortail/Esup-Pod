@@ -15,6 +15,7 @@ start:
 	(sleep 15 ; open http://pod.localhost:8000) &
 	python3 -Wd manage.py runserver pod.localhost:8000 --insecure
 	# --insecure let serve static files even when DEBUG=False
+	# -Wd enable default warning mode (Warn once per call location)
 
 # Démarre le serveur de test en https auto-signé
 starts:
