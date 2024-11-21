@@ -13,7 +13,8 @@ from django.utils.translation import gettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from django.http import Http404, HttpResponseBadRequest, JsonResponse
+from django.http import Http404, HttpResponseBadRequest, JsonResponse, HttpResponseRedirect
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.db import transaction
 
 from pod.main.utils import is_ajax
@@ -224,7 +225,11 @@ def toggle_render_playlist_user_has_right(
                 messages.ERROR,
                 _("The password is incorrect."),
             )
-            return redirect(request.headers["referer"])
+            referer = request.headers.get("referer", "/")
+            if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+                return redirect(referer)
+            else:
+                return redirect('/')
     else:
         form = PlaylistPasswordForm()
         return render(
