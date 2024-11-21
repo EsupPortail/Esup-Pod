@@ -7,7 +7,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect, render
@@ -351,7 +350,11 @@ def remove_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
                 "state": "out-playlist",
             }
         )
-    return redirect(request.headers["referer"])
+    referer = request.headers.get("referer", "/")
+    if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+        return redirect(referer)
+    else:
+        return redirect("/")
 
 
 @login_required(redirect_field_name="referrer")
@@ -366,7 +369,11 @@ def add_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
                 "state": "in-playlist",
             }
         )
-    return redirect(request.headers["referer"])
+    referer = request.headers.get("referer", "/")
+    if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+        return redirect(referer)
+    else:
+        return redirect("/")
 
 
 @login_required(redirect_field_name="referrer")
@@ -537,7 +544,11 @@ def favorites_save_reorganisation(request: WSGIRequest, slug: str):
                     playlist_video_1.update(rank=video_2_rank)
                     playlist_video_2.update(rank=video_1_rank)
 
-        return redirect(request.headers["referer"])
+        referer = request.headers.get("referer", "/")
+        if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+            return redirect(referer)
+        else:
+            return redirect("/")
     else:
         raise Http404()
 
@@ -561,7 +572,11 @@ def start_playlist(request: WSGIRequest, slug: str, video: Video = None):
                 messages.add_message(
                     request, messages.ERROR, _("The password is incorrect.")
                 )
-                return redirect(request.headers["referer"])
+                referer = request.headers.get("referer", "/")
+                if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+                    return redirect(referer)
+                else:
+                    return redirect(reverse("playlist:list"))
         else:
             form = PlaylistPasswordForm()
             return render(
