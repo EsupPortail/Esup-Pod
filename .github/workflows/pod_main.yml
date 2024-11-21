@@ -57,8 +57,7 @@ jobs:
             - name: Runs Elasticsearch
               uses: elastic/elastic-github-actions/elasticsearch@refactor_with_plugins
               with:
-                # stack-version: 7.6.0
-                stack-version: 6.8.23
+                stack-version: 7.17.25
                 plugins: analysis-icu
 
             - name: Setup Pod
