@@ -44,7 +44,6 @@ from .utils import (
 
 import json
 import hashlib
-from typing import List
 
 
 TEMPLATE_VISIBLE_SETTINGS = getattr(
@@ -147,7 +146,7 @@ def playlist_content(request: WSGIRequest, slug: str):
 def render_playlist_page(
     request: WSGIRequest,
     playlist: Playlist,
-    videos: List[Video],
+    videos: list[Video],
     in_favorites_playlist: bool,
     count_videos: int,
     sort_field: str,
@@ -197,7 +196,7 @@ def render_playlist_page(
 def toggle_render_playlist_user_has_right(
     request: WSGIRequest,
     playlist: Playlist,
-    videos: List[Video],
+    videos: list[Video],
     in_favorites_playlist: bool,
     count_videos: int,
     sort_field: str,
