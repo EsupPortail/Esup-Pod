@@ -63,7 +63,7 @@ class ShibbMiddleware(ShibbolethRemoteUserMiddleware):
             and user.owner.affiliation != shib_meta["affiliation"]
         )
 
-    def is_staffable(self, user):
+    def is_staffable(self, user) -> bool:
         """Check that given user, his domain is in authorized domains of shibboleth staff.
 
         Args:
@@ -81,7 +81,7 @@ class ShibbMiddleware(ShibbolethRemoteUserMiddleware):
                 return True
         return False
 
-    def make_profile(self, user, shib_meta):
+    def make_profile(self, user, shib_meta) -> None:
         if ("affiliation" in shib_meta) and self.check_user_meta(user, shib_meta):
             user.owner.affiliation = shib_meta["affiliation"]
             user.owner.save()

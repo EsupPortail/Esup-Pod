@@ -56,6 +56,7 @@ DATABASES = {
 LANGUAGES = (("fr", "Français"), ("en", "English"))
 LANGUAGE_CODE = "en"
 THIRD_PARTY_APPS = ["enrichment", "live"]
+USE_CUT = True
 USE_DRESSING = True
 USE_FAVORITES = True
 USE_PODFILE = True
