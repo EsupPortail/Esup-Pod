@@ -1272,15 +1272,10 @@ class Video(models.Model):
                 "description": "%s" % self.description,
                 "thumbnail": "%s" % self.get_thumbnail_url(),
                 "duration": "%s" % self.duration,
-                """
                 "tags": list(
-                    [
-                        {"name": name[0], "slug": slugify(name)}
-                        for name in Tag.objects.get_for_object(self).values_list("name")
-                    ]
+                    self.tags.all()
+                    .values("name", "slug")
                 ),
-                """
-                "tags": self.tags.all().values("name", "slug"),
                 "type": {"title": self.type.title, "slug": self.type.slug},
                 "disciplines": list(
                     self.discipline.all()
