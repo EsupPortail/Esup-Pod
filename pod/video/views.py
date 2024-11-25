@@ -54,9 +54,6 @@ from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
 from pod.video.models import get_transcription_choices
 from pod.video.models import UserMarkerTime, VideoAccessToken
-
-# from tagging.models import TaggedItem
-
 from pod.video.forms import VideoForm, VideoVersionForm
 from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
@@ -904,10 +901,9 @@ def get_filtered_videos_list(request, videos_list):
             Q(owner__username__in=request.GET.getlist("owner"))
             | Q(additional_owners__username__in=request.GET.getlist("owner"))
         )
-    """if request.GET.getlist("tag"):
-        videos_list = TaggedItem.objects.get_union_by_model(
-            videos_list, request.GET.getlist("tag")
-        )"""
+    if request.GET.getlist("tag"):
+        videos_list = videos_list.filter(tags__name__in=request.GET.getlist("tag"))
+
     if request.GET.getlist("cursus"):
         videos_list = videos_list.filter(cursus__in=request.GET.getlist("cursus"))
     return videos_list.distinct()

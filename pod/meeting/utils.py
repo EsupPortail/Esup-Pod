@@ -19,7 +19,7 @@ MANAGERS = getattr(settings, "MANAGERS", {})
 SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
 
-def api_call(query, call):
+def api_call(query, call) -> str:
     """Generate checksum for BBB API call."""
     checksum_val = sha1(str(call + query + BBB_SECRET_KEY).encode("utf-8")).hexdigest()
     result = "%s&checksum=%s" % (query, checksum_val)
@@ -84,7 +84,7 @@ def get_nth_week_number(original_date):
     return nb_weeks
 
 
-def send_email_recording_ready(meeting):
+def send_email_recording_ready(meeting) -> None:
     """Send an email when a recording was saved and available on Pod."""
     if DEBUG:
         print("SEND EMAIL WHEN RECORDING READY")
