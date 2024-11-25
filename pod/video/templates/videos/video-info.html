@@ -118,7 +118,7 @@
               <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class="userpicture rounded" alt="" loading="lazy">
             {% endthumbnail %}
           {% endif %}
-          {{ video.owner }}
+          {{ video.owner.get_full_name }}
         {% if owner_filter %}
           </a>
         {% endif %}
