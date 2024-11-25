@@ -3,8 +3,8 @@
 from django import template
 from django.utils.text import capfirst
 from django.urls import reverse
-from django.contrib.sites.shortcuts import get_current_site
-from django.template import TemplateSyntaxError
+# from django.contrib.sites.shortcuts import get_current_site
+# from django.template import TemplateSyntaxError
 
 # from django.apps.registry import apps
 from django.utils.translation import gettext_lazy as _
@@ -222,8 +222,8 @@ def do_tags_for_model(parser, token):
 """
 
 
-def do_tag_cloud_for_model(parser, token):
-    """
+# def do_tag_cloud_for_model(parser, token):
+"""
     Retrieve a list of `Tag` objects with tag cloud attributes set.
 
     Retriev tags for a given model,
@@ -260,7 +260,8 @@ def do_tag_cloud_for_model(parser, token):
        {% tag_cloud_for_model products.Widget as widget_tags
                    with steps=9 min_count=3 distribution=log %}
 
-    """
+"""
+"""
     bits = token.contents.split()
     len_bits = len(bits)
     if len_bits != 4 and len_bits not in range(6, 9):
@@ -340,7 +341,7 @@ def update_kwargs_from_bits(kwargs, name, value, bits):
                 }
             )
     return kwargs
-
+"""
 
 # register.tag("tags_for_model", do_tags_for_model)
 # register.tag("tag_cloud_for_model", do_tag_cloud_for_model)

@@ -8,6 +8,8 @@ from ..settings import LOCALE_PATHS, STATICFILES_DIRS, DEFAULT_AUTO_FIELD
 from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N
 from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
 from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
+from ..settings import SERIALIZATION_MODULES, TAGULOUS_NAME_MAX_LENGTH
+
 import os
 from bs4 import BeautifulSoup
 import requests
@@ -22,7 +24,7 @@ TEMPLATES[0]["DIRS"].append(
 USE_DOCKER = True
 ES_URL = ["http://elasticsearch.localhost:9200/"]
 ES_VERSION = 7
-ES_INDEX = "pod-test"
+ES_INDEX = "pod"
 path = "pod/custom/settings_local.py"
 if os.path.exists(path):
     _temp = __import__("pod.custom", globals(), locals(), ["settings_local"])

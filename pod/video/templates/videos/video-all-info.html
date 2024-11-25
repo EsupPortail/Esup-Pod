@@ -2,7 +2,8 @@
 <div class="pod-info-video__header">
   <div>
     <h1 class="page_title h2">
-      {% if video.licence %} {% include "videos/video_licencebox.html" %}{% endif %} {{video.title|capfirst}}
+      {% if video.licence %} {% include "videos/video_licencebox.html" %}{% endif %}
+      {{video.title|capfirst}}
     </h1>
     {% if video.date_evt %}<small class="pod-info-video__date">{{ video.date_evt }}</small>{% endif %}
   </div>
