@@ -137,7 +137,7 @@
                 <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}" loading="lazy">
               {% endthumbnail %}
             {% endif %}
-            {{ additionalOwner }}
+            {{ additionalOwner.get_full_name }}
             {% if owner_filter %}
               </a>
             {% endif %}
