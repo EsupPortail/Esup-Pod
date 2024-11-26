@@ -748,6 +748,10 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `USE_AI_ENHANCEMENT`
   > valeur par défaut : `False`
   >> Activation des améliorations de l'intelligence artificielle. Permet aux utilisateurs de l'utiliser.<br>
+* `AI_ENHANCEMENT_PROXY_URL`
+  > valeur par défaut : ``
+  >> L’URL du serveur proxy pour les requêtes venant d'Aristote.<br>
+  >> Exemple : '<https://proxy_aristote.univ.fr>'<br>
 
 ### Configuration de l’application authentification
 

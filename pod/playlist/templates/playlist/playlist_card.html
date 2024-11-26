@@ -44,13 +44,13 @@
         href="{% url 'playlist:content' playlist.slug %}"
         title="{{ playlist_title }}"
       >
-        <img class="card-img-bottom"
+        <img class="card-img-bottom" loading="lazy"
           {% if playlist.get_number_video > 0 %}
             src="{{ playlist.get_first_video.get_thumbnail_url }}"
           {% else %}
             src="{{ DEFAULT_PLAYLIST_THUMBNAIL }}"
           {% endif %}
-          alt="{{ playlist_label }}" loading="lazy">
+          alt="{% blocktrans %}See the playlist “{{ playlist_label }}”{% endblocktrans %}">
       </a>
     </div>
     <div class="card-body">

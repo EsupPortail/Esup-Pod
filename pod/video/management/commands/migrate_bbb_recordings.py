@@ -769,13 +769,19 @@ def get_created_in_moodle(generic_recording: Generic_recording):  # noqa: C901
         with cursor as c:
             select_query = (
                 "SELECT b.id, b.intro, b.course, b.participants FROM "
-                "public.mdl_bigbluebuttonbn_recordings r, public.mdl_bigbluebuttonbn b "
+                "mdl_bigbluebuttonbn_recordings r, mdl_bigbluebuttonbn b "
                 "WHERE r.bigbluebuttonbnid = b.id "
                 "AND r.recordingid = '%s' "
                 "AND r.status = 2" % (generic_recording.internal_meeting_id)
             )
             if MOODLE_DB_TYPE == "postgresql":
-                select_query = sql.SQL(select_query).format(sql.Identifier("type"))
+                select_query = sql.SQL(
+                    "SELECT b.id, b.intro, b.course, b.participants FROM "
+                    "public.mdl_bigbluebuttonbn_recordings r, public.mdl_bigbluebuttonbn b "
+                    "WHERE r.bigbluebuttonbnid = b.id "
+                    "AND r.recordingid = '%s' "
+                    "AND r.status = 2" % (generic_recording.internal_meeting_id)
+                ).format(sql.Identifier("type"))
             c.execute(select_query)
             results = c.fetchall()
             for res in results:
@@ -783,7 +789,7 @@ def get_created_in_moodle(generic_recording: Generic_recording):  # noqa: C901
                 # Format for participants:
                 # '[{"selectiontype":"all","selectionid":"all","role":"viewer"},
                 # {"selectiontype":"user","selectionid":"83","role":"moderator"}]'
-                participants = res["participants"]
+                participants = res[3]
                 if participants != "":
                     # Parse participants as a JSON string
                     parsed_data = json.loads(participants)
@@ -827,18 +833,26 @@ def set_information_in_moodle(options, generic_recording):
         connection, cursor = connect_moodle_database(generic_recording)
         with cursor as c:
             # Request for Moodle v4
-            select_query = sql.SQL(
+            select_query = (
                 "SELECT b.id, b.intro, b.course, b.participants FROM "
-                "public.mdl_bigbluebuttonbn_recordings r, public.mdl_bigbluebuttonbn b "
+                "mdl_bigbluebuttonbn_recordings r, mdl_bigbluebuttonbn b "
                 "WHERE r.bigbluebuttonbnid = b.id "
                 "AND r.recordingid = '%s' "
                 "AND r.status = 2" % (generic_recording.internal_meeting_id)
-            ).format(sql.Identifier("type"))
+            )
+            if MOODLE_DB_TYPE == "postgresql":
+                select_query = sql.SQL(
+                    "SELECT b.id, b.intro, b.course, b.participants FROM "
+                    "public.mdl_bigbluebuttonbn_recordings r, public.mdl_bigbluebuttonbn b "
+                    "WHERE r.bigbluebuttonbnid = b.id "
+                    "AND r.recordingid = '%s' "
+                    "AND r.status = 2" % (generic_recording.internal_meeting_id)
+                ).format(sql.Identifier("type"))
             c.execute(select_query)
             results = c.fetchall()
             for res in results:
-                id = res["id"]
-                intro = res["intro"]
+                id = res[0]
+                intro = res[1]
                 # course_id = res["course"]
                 print(" - Set information in Moodle.")
                 # If SCRIPT_INFORM wasn't already added
@@ -870,18 +884,23 @@ def get_moodle_user(user_id: str, connection, cursor) -> Generic_user:
     generic_user = None
     with cursor as c:
         # Most important field: username
-        select_query = sql.SQL(
-            "SELECT id, username, firstname, lastname, email FROM public.mdl_user "
+        select_query = (
+            "SELECT id, username, firstname, lastname, email FROM mdl_user "
             "WHERE id = '%s' " % (user_id)
-        ).format(sql.Identifier("type"))
+        )
+        if MOODLE_DB_TYPE == "postgresql":
+            select_query = sql.SQL(
+                "SELECT id, username, firstname, lastname, email FROM public.mdl_user "
+                "WHERE id = '%s' " % (user_id)
+            ).format(sql.Identifier("type"))
         c.execute(select_query)
         dict_user = c.fetchone()
         generic_user = Generic_user(
-            dict_user["id"],
-            dict_user["username"],
-            dict_user["firstname"],
-            dict_user["lastname"],
-            dict_user["email"],
+            dict_user[0],
+            dict_user[1],
+            dict_user[2],
+            dict_user[3],
+            dict_user[4],
         )
 
     return generic_user

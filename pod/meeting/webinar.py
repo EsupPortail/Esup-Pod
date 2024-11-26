@@ -280,6 +280,7 @@ def toggle_rtmp_gateway(meet_id: int):
         response = requests.get(
             sipmediagw_url, params=params, headers=headers, verify=False
         )
+
         # Specific error message when not started
         message = response.text
         # Output in JSON (ex: {"res": "ok"})

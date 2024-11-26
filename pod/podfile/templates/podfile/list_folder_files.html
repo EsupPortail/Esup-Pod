@@ -121,9 +121,9 @@
             class="btn btn-link btn-lg p-0 m-0"
             type="button"
             data-bs-toggle="collapse"
-            data-bs-target="#currentfile{{file.id}}"
+            data-bs-target="#current{{file.class_name}}{{file.id}}"
             aria-expanded="false"
-            aria-controls="currentfile{{file.id}}"
+            aria-controls="current{{file.class_name}}{{file.id}}"
             style="opacity:.8;"
             title="{% trans 'Toggle file actions menu' %}"
           >
@@ -131,7 +131,7 @@
               <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
             </span>
           </button>
-          <div class="file collapse bg-primary" data-bs-theme="dark" id="currentfile{{file.id}}">
+          <div class="file collapse bg-primary" data-bs-theme="dark" id="current{{file.class_name}}{{file.id}}">
             <ul class="file-navbar navbar-nav me-auto p-0 m-0">
               <li class="nav-item p-0 m-0">
                 <button
@@ -217,7 +217,7 @@
               <a
                 href="{{file.file.url}}"
                 class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif %}"
-                title="{{file.name}}"
+                title="{% blocktrans with title=file.name %}See the picture “{{ title }}”.{% endblocktrans %}"
                 target="_blank"
                 data-fileid="{{file.id}}"
                 data-filetype="{{file.class_name}}"
@@ -228,7 +228,7 @@
               <a
                 href="{{file.file.url}}"
                 class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif %}"
-                title="{{file.name}}"
+                title="{% blocktrans with title=file.name %}Download the file “{{ title }}”.{% endblocktrans %}"
                 target="_blank"
                 data-fileid="{{file.id}}"
                 data-filetype="{{file.class_name}}"
@@ -242,7 +242,7 @@
             <a
               href="{{file.file.url}}"
               class="card-title pod-card__title {% if request.is_ajax %}file-name{% endif %}"
-              title="{{file.name}}"
+              title="{% blocktrans with title=file.name %}Get the file “{{ title }}”.{% endblocktrans %}"
               target="_blank"
               data-fileid="{{file.id}}"
               data-filetype="{{file.class_name}}"

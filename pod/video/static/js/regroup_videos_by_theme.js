@@ -47,13 +47,23 @@ function run(has_more_themes, Helper) {
     };
     if (method.toLowerCase() === "post") data["body"] = body;
     return fetch(url, data).then((data) => {
-      return data.json().then((response) => {
-        //console.log(response);
-        return response;
-      });
+      const contentType = data.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        return data.json().then((response) => {
+          return response;
+        });
+      } else {
+        return data.text().then((response) => {
+          return response;
+        });
+      }
     });
   };
 
+  /*
+   * Old source code: this function createVideoElement was used when response was in JSON format.
+   * No need now. Keep it, for historical purposes, until we've verified that the new code works in all cases.
+   */
   const createVideoElement = (video) => {
     let has_password = () => {
       let span = ``;
@@ -115,6 +125,10 @@ function run(has_more_themes, Helper) {
           <i class="bi bi-trash" aria-hidden="true"></i></a>
         </footer>`;
     }
+    var baseURI = "${VIDEO_URL}";
+    if (document.querySelector(".themes-videos")) {
+      baseURI = document.querySelector(".themes-videos").baseURI + "video/";
+    }
     card.innerHTML = `
       <div class="card-header">
         <div class="d-flex justify-content-between align-items-center">
@@ -128,7 +142,7 @@ function run(has_more_themes, Helper) {
         </div>
       </div>
       <div class="card-thumbnail">
-        <a class="link-center-pod" href="${VIDEO_URL}${video.slug}"
+        <a class="link-center-pod" href="${baseURI}${video.slug}"
            title="${video.title.charAt(0).toUpperCase()}${video.title.slice(1)}">
           ${video.thumbnail}
         </a>
@@ -136,7 +150,7 @@ function run(has_more_themes, Helper) {
       <div class="card-body px-3 py-2">
         ${footer}
         <span class="small video-title">
-          <a href="${VIDEO_URL}${video.slug}">
+          <a href="${baseURI}${video.slug}">
             ${video.title.charAt(0).toUpperCase()}${video.title.slice(1)}
           </a>
         </span>
@@ -145,6 +159,7 @@ function run(has_more_themes, Helper) {
     infinite_item.appendChild(card);
     return infinite_item;
   };
+  /* End of old source code. */
 
   /**
    * Create an HTMLLiElement wich content a link element
@@ -157,13 +172,13 @@ function run(has_more_themes, Helper) {
       "class",
       "btn btn-sm btn-outline-secondary text-truncate child-theme",
     );
-    li.setAttribute("title", theme.title);
+    li.setAttribute("title", theme.title + "(" + theme.video_count + ")");
     const link = document.createElement("A");
     let hrefUrl =
       document.querySelector(".themes-videos").dataset.channelurl + theme.slug;
     link.setAttribute("href", hrefUrl);
     link.setAttribute("class", "text-truncate");
-    link.innerText = theme.title;
+    link.innerText = theme.title + "(" + theme.video_count + ")";
 
     li.appendChild(link);
     return li;
@@ -264,18 +279,43 @@ function run(has_more_themes, Helper) {
     const url =
       window.location.href +
       `?limit=${limit}&offset=${current_video_offset}&target=videos`;
-    // Chargement vidéos..
+    // Loading videos...
     const save_text = video_loader_btn.textContent;
+    // Number total of videos
+    const count_videos = video_loader_btn.dataset.countvideos;
     video_loader_btn.textContent = gettext("Loading videos…");
     video_loader_btn.setAttribute("disabled", "disabled");
     makeRequest(url).then((response) => {
       current_video_offset += limit;
       video_loader_btn.textContent = save_text;
       video_loader_btn.removeAttribute("disabled");
+
+      // If no more videos
+      if (current_video_offset >= count_videos) {
+        video_loader_btn.remove();
+      }
+
+      // Old source code, when response was in JSON format
+      /*
       if (!response.has_more_videos) video_loader_btn.remove();
       response.videos.forEach((v) => {
         videos_container.appendChild(createVideoElement(v));
       });
+      */
+      // New source code: response is in HTML format (see videos/video_list.html)
+      let parser = new DOMParser();
+      let html = parser.parseFromString(response, "text/html").body;
+      // Add the video layers (a <div class="infinite-item">...</div> by video) to the existant videos list
+      if (html.firstChild !== null) {
+        videos_container.innerHTML += html.firstChild.innerHTML;
+      }
+      // Reactivate tooltip (after an innerHTML, tooltip doesn't work in such a case !)
+      const tooltipTriggerList = document.querySelectorAll(
+        '[data-bs-toggle="tooltip"], [data-pod-tooltip="true"]',
+      );
+      [...tooltipTriggerList].map(
+        (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl),
+      );
     });
   };
   const video_loader_btn = document.querySelector(
