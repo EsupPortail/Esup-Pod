@@ -3,6 +3,6 @@ description: "Video file management platform"
 show_downloads: false # indicate whether to provide a download URL
 baseurl: "/"
 url: "https://EsupPortail.github.io/Esup-Pod"
-remote_theme: pages-themes/slate@v0.2.0
-plugins:
-- jekyll-remote-theme # add this line to the plugins list if you already have one
+
+kramdown:
+  auto_ids: true # Add hover anchor links to headers
