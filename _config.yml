@@ -1,6 +1,6 @@
 title: "Esup-Pod Documentation"
-description: "A short description of your site's purpose"
-show_downloads: true # indicate whether to provide a download URL
+description: "Video file management platform"
+show_downloads: false # indicate whether to provide a download URL
 baseurl: "/"
 url: "https://EsupPortail.github.io/Esup-Pod"
 remote_theme: pages-themes/slate@v0.2.0
