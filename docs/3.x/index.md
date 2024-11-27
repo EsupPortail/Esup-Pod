@@ -4,6 +4,8 @@ layout: default
 
 # Installation de Pod v3.x
 
+{% include toc.html html=content %}
+
 Les commandes suivantes ont été lancées sur une distribution Debian 11.4
 
 ## Environnement
@@ -98,7 +100,7 @@ Clonage dans 'podv3'...
 remote: Counting objects: 4578, done.
 remote: Compressing objects: 100% (378/378), done.
 remote: Total 4578 (delta 460), reused 564 (delta 348), pack-reused 3847
-Réception d'objets: 100% (4578/4578), 4.40 MiB | 3.88 MiB/s, fait.
+Réception d’objets: 100% (4578/4578), 4.40 MiB | 3.88 MiB/s, fait.
 Résolution des deltas: 100% (3076/3076), fait.
 
 (django_pod3) pod@pod:~/django_projects$ cd podv3/
