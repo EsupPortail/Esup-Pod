@@ -834,7 +834,7 @@ class Video(models.Model):
         null=True,
     )
     order = models.PositiveSmallIntegerField(
-        _('order'),
+        _("order"),
         help_text=_("Order videos in channels or themes."),
         default=1,
         blank=True,
