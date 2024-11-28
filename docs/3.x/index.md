@@ -4,8 +4,6 @@ layout: default
 
 # Installation de Pod v3.x
 
-{% include toc.html html=content %}
-
 Les commandes suivantes ont été lancées sur une distribution Debian 11.4
 
 ## Environnement
@@ -34,9 +32,9 @@ pod@pod:~$ sudo apt-get install -y python3-pip
 pod@pod:~$ sudo pip3 install virtualenvwrapper
 ```
 
-> Depuis python 3.10, il n'est plus possible d'installer avec pip en dehors d'un environnement. Pour pouvoir installer virtualenvwrapper il faut ajouter à la fin de la ligne --break-system-packages
+> Depuis python 3.10, il n'est plus possible d'installer avec pip en dehors d'un environnement. Pour pouvoir installer virtualenvwrapper il faut ajouter à la fin de la ligne --break-system-packages
 
-À la fin du .bashrc, il faut ajouter ces lignes :
+À la fin du `.bashrc`, il faut ajouter ces lignes :
 
 ```sh
 pod@pod:~$ vim .bashrc
@@ -104,9 +102,11 @@ Réception d’objets: 100% (4578/4578), 4.40 MiB | 3.88 MiB/s, fait.
 Résolution des deltas: 100% (3076/3076), fait.
 
 (django_pod3) pod@pod:~/django_projects$ cd podv3/
-Applications tierces
-Installation de toutes les librairies python
 ```
+
+## Applications tierces
+
+### Installation de toutes les librairies python
 
 Il faut vérifier que l’on se trouve bien dans l’environnement virtuel (présence de "(django_pod3)" au début l'invite de commande).
 Sinon, il faut lancer la commande `$> workon django_pod3`
@@ -121,7 +121,7 @@ De même, si vous devez utiliser un proxy :
 (django_pod3) pod@pod:~/django_projects/podv3$ pip3 install --proxy="PROXY:PORT" -r requirements.txt
 ```
 
-## FFMPEG
+### FFMPEG
 
 Pour l'encodage des vidéos et la creation des vignettes, il faut installer ffmpeg, ffmpegthumbnailer et imagemagick (ne pas installer sur le serveur frontal si vous déportez l'encodage)
 
@@ -129,11 +129,11 @@ Pour l'encodage des vidéos et la creation des vignettes, il faut installer ffmp
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo apt install ffmpeg ffmpegthumbnailer imagemagick
 ```
 
-## Redis
+### Redis
 
 Voir la doc officielle: [](https://redis.io/docs/getting-started/)
 
-### Pour installer le cache Redis
+#### Pour installer le cache Redis
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo apt install redis-server
@@ -178,11 +178,11 @@ SESSION_REDIS = {
 }
 ```
 
-## Elasticsearch
+### Elasticsearch
 
 Selon la version d'Elasticsearch que vous allez utiliser, les versions des dépendances peuvent changer. Les versions 6 et 7 ne sont actuellement plus maintenues. La version 8 est à configurer plus bas. La version 6 est celle par défaut dans Pod.
 
-### Elasticsearch 6
+#### Elasticsearch 6
 
 Pour utiliser Elasticsearch 6, il faut avoir java 11 sur sa machine.
 
@@ -216,7 +216,7 @@ node.name: pod-1
 discovery.zen.ping.unicast.hosts: ["127.0.0.1"]
 ```
 
-## Elasticsearch 7 et 8
+#### Elasticsearch 7 et 8
 
 Pour utiliser Elasticsearch 7 ou 8, il faut avoir java 17 sur sa machine.
 
@@ -228,7 +228,7 @@ Puis pour installer Elasticsearch sur Debian en utilisant les paquets, il faut s
 
 Vous pouvez installer Elasticsearch en version 7 (plus maintenue) ou en version 8.
 
-### Voici pour ES7
+##### Voici pour ES7
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
@@ -238,7 +238,7 @@ Vous pouvez installer Elasticsearch en version 7 (plus maintenue) ou en version 
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo apt-get update && sudo apt-get install elasticsearch
 ```
 
-### Voici pour ES8
+##### Voici pour ES8
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
@@ -263,7 +263,7 @@ discovery.seed_hosts: ["127.0.0.1"]
 cluster.initial_master_nodes: ["pod-1"]
 ```
 
-Il est recommandé d'utiliser le mode security d'ES8.
+###### Mode security d'ES8 (recommandé)
 
 Générer l'utilisateur pod pour ES :
 
@@ -298,7 +298,7 @@ xpack.security.http.ssl.keystore.path: /etc/elasticsearch/elastic-certificates.p
 xpack.security.http.ssl.truststore.path: /etc/elasticsearch/elastic-certificates.p12
 ```
 
-Lancement et vérification d'Elasticsearch
+##### Lancement et vérification d'Elasticsearch
 
 Il faut enfin le lancer et vérifier son bon fonctionnement :
 
@@ -369,7 +369,7 @@ Attention, pour ES8 derrière un proxy :
 [ ok ] Restarting elasticsearch (via systemctl): elasticsearch.service.
 ```
 
-## Création de l'index Pod
+### Création de l'index Pod
 
 Pour une utilisation d'elasticsearch 7 ou 8, il faut absolument :
 
@@ -428,7 +428,7 @@ ES_URL = ['https://127.0.0.1:9200/'] # ou votre instance déportée
 ES_OPTIONS = {'verify_certs' : False, 'basic_auth' : ('es_user', 'password')}
 ```
 
-## Installation des dépendances
+### Installation des dépendances
 
 Pour installer les dépendances, il faut en premier installer nodejs, npm et yarn. L'installation ne fonctionne pas avec nodejs 12.x
 
@@ -472,8 +472,9 @@ Enfin, déployez les fichiers statiques.
 (django_pod3) pod@pod:~/django_projects/podv3$ python manage.py collectstatic --no-input --clear
 ```
 
-Mise en route
-Base de données SQLite intégrée
+## Mise en route
+
+### Base de données SQLite intégrée
 
 Lancez le script présent à la racine afin de créer les fichiers de migration, puis de les lancer pour créer la base de données SQLite intégrée.
 
@@ -481,7 +482,7 @@ Lancez le script présent à la racine afin de créer les fichiers de migration,
 (django_pod3) pod@Pod:~/django_projects/podv3$ make createDB
 ```
 
-Fichier de configuration settings_local.py
+### Fichier de configuration settings_local.py
 
 Vous devez créer un fichier de configuration local dans le dossier pod/custom.
 
@@ -607,7 +608,7 @@ Vous trouverez l'ensemble des variables disponibles sur cette page :
 
 Configuration de la plateforme
 
-## SuperUtilisateur
+### SuperUtilisateur
 
 Il faut créer un premier utilisateur qui aura tous les pouvoirs sur votre instance.
 
@@ -615,7 +616,7 @@ Il faut créer un premier utilisateur qui aura tous les pouvoirs sur votre insta
 (django_pod3) pod@Pod:~/django_projects/podv3$ python manage.py createsuperuser
 ```
 
-## Lancement des tests unitaires
+### Lancement des tests unitaires
 
 Afin de vérifier que votre instance est opérationnelle, vous pouvez lancer les tests unitaires :
 
@@ -624,7 +625,7 @@ Afin de vérifier que votre instance est opérationnelle, vous pouvez lancer les
 (django_pod3) pod@Pod:~/django_projects/podv3$ python manage.py test --settings=pod.main.test_settings
 ```
 
-## Modules complémentaires
+### Modules complémentaires
 
 Ce paragraphe a été rédigé pour pod v2.9.x, il est possible que cela ne concerne pas pod v3
 
@@ -645,7 +646,7 @@ Pour éviter ce problème, vous pouvez rajouter cette ligne dans settings_local.
 FILE_UPLOAD_PERMISSIONS = 0o644 # Octal number
 ```
 
-## Serveur de développement
+### Serveur de développement
 
 Le serveur de développement permet de tester vos futures modifications facilement.
 
