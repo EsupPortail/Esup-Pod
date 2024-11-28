@@ -228,6 +228,7 @@ def sort_videos_list(videos_list: list, sort_field: str, sort_direction: str = "
         "type",
         "viewcount",
         "rank",
+        "order",
     }:
         if sort_field in {"title", "title_fr", "title_en"}:
             sort_field = Lower(sort_field)
