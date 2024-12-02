@@ -23,7 +23,7 @@ TEMPLATES[0]["DIRS"].append(
 )
 USE_DOCKER = True
 ES_URL = ["http://elasticsearch.localhost:9200/"]
-ES_VERSION = 7
+ES_VERSION = 8
 ES_INDEX = "pod"
 path = "pod/custom/settings_local.py"
 if os.path.exists(path):

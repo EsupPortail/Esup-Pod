@@ -3668,17 +3668,16 @@
                             "pod_version_init": "3.1.0"
                         },
                         "ES_VERSION": {
-                            "default_value": 7,
+                            "default_value": 8,
                             "description": {
                                 "en": [
                                     ""
                                 ],
                                 "fr": [
                                     "Version d’ElasticSearch.",
-                                    "valeurs possibles 7 ou 8 correspondant à la version du serveur Elasticsearch utilisé.",
+                                    "valeurs possibles 8 correspondant à la version du serveur Elasticsearch utilisé.",
                                     "Attention, le paquet elasticsearch-py doit correspondre à la version du serveur. ",
-                                    "Pour la 7, `pip3 install elasticsearch==7.17.7`,",
-                                    "et pour la 8, `pip3 install elasticsearch==8.8.1`.",
+                                    "pour la 8, `pip3 install elasticsearch==8.16.0`.",
                                     "Voir [elasticsearch-py.readthedocs.io](https://elasticsearch-py.readthedocs.io/)",
                                     "pour plus d’information."
                                 ]
