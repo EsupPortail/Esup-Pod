@@ -1,7 +1,7 @@
 """Esup-Pod Main REST api url router."""
 
 from rest_framework import routers
-from django.urls import include, path, re_path
+from django.urls import include, path
 from pod.authentication import rest_views as authentication_views
 from pod.video import rest_views as video_views
 # from pod.main import rest_views as main_views
@@ -106,13 +106,13 @@ urlpatterns = [
         auth_views.accessgroups_remove_users_by_name,
         name="accessgroups_set_users_by_name",
     ),
-    re_path(
-        r"accessgroups_set_user_accessgroup /$",
+    path(
+        "accessgroups_set_user_accessgroup/",
         auth_views.accessgroups_set_user_accessgroup,
         name="accessgroups_set_user_accessgroup ",
     ),
-    re_path(
-        r"accessgroups_remove_user_accessgroup /$",
+    path(
+        "accessgroups_remove_user_accessgroup/",
         auth_views.accessgroups_remove_user_accessgroup,
         name="accessgroups_remove_user_accessgroup ",
     ),

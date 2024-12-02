@@ -765,7 +765,6 @@ class Video(models.Model):
             "Separate tags with spaces, "
             "enclose the tags consist of several words in quotation marks."
         ),
-        null=True,
         blank=True,
         verbose_name=_("Tags"),
     )

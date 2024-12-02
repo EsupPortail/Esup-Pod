@@ -25,6 +25,6 @@ class SearchForm(forms.Form):
         widget=widgets.AdminDateWidget(attrs={"type": "date"}),
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(SearchForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)

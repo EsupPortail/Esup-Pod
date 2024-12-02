@@ -16,7 +16,7 @@ ES_URL = getattr(settings, "ES_URL", ["http://elasticsearch.localhost:9200/"])
 ES_INDEX = getattr(settings, "ES_INDEX", "pod")
 ES_TIMEOUT = getattr(settings, "ES_TIMEOUT", 30)
 ES_MAX_RETRIES = getattr(settings, "ES_MAX_RETRIES", 10)
-ES_VERSION = getattr(settings, "ES_VERSION", 6)
+ES_VERSION = getattr(settings, "ES_VERSION", 7)
 ES_OPTIONS = getattr(settings, "ES_OPTIONS", {})
 
 
@@ -25,7 +25,7 @@ def index_es(video):
     translation.activate(settings.LANGUAGE_CODE)
     es = Elasticsearch(
         ES_URL,
-        timeout=ES_TIMEOUT,
+        request_timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
         retry_on_timeout=True,
         **ES_OPTIONS,
@@ -50,15 +50,18 @@ def delete_es(video):
     """Delete an Elasticsearch video entry."""
     es = Elasticsearch(
         ES_URL,
-        timeout=ES_TIMEOUT,
+        request_timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
         retry_on_timeout=True,
         **ES_OPTIONS,
     )
     if es.ping():
         try:
+            # Pass transport options to elasticsearch
+            es = es.options(ignore_status=[400, 404])
+            # Do the deletion
             delete = es.delete(
-                index=ES_INDEX, id=video.id, refresh=True, ignore=[400, 404]
+                index=ES_INDEX, id=video.id, refresh=True
             )
             if DEBUG:
                 logger.info(delete)
@@ -74,17 +77,13 @@ def create_index_es():
     """Create ElasticSearch index."""
     es = Elasticsearch(
         ES_URL,
-        timeout=ES_TIMEOUT,
+        request_timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
         retry_on_timeout=True,
         **ES_OPTIONS,
     )
-    if ES_VERSION in [7, 8]:
-        template_file = "pod/video_search/search_template7.json"
-    else:
-        template_file = "pod/video_search/search_template.json"
-    json_data = open(template_file)
-    es_template = json.load(json_data)
+    template_file = "pod/video_search/search_template_fr.json"
+    es_template = json.load(open(template_file))
     try:
         create = es.indices.create(index=ES_INDEX, body=es_template)  # ignore=[400, 404]
         logger.info(create)
@@ -98,7 +97,7 @@ def delete_index_es():
     """Delete ElasticSearch index."""
     es = Elasticsearch(
         ES_URL,
-        timeout=ES_TIMEOUT,
+        request_timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
         retry_on_timeout=True,
         **ES_OPTIONS,

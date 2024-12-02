@@ -1647,7 +1647,7 @@ def get_com_tree(com):
     return tree
 
 
-def can_edit_or_remove_note_or_com(request, nc, action):
+def can_edit_or_remove_note_or_com(request, nc, action) -> None:
     """
     Check if the current user can apply action to the note or comment nc.
 
@@ -1671,7 +1671,7 @@ def can_edit_or_remove_note_or_com(request, nc, action):
         raise PermissionDenied
 
 
-def can_see_note_or_com(request, nc):
+def can_see_note_or_com(request, nc) -> None:
     """
     Check if the current user can view the note or comment nc.
 

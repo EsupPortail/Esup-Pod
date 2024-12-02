@@ -1,9 +1,5 @@
-{% load i18n %}
-{% load static %}
-{% load thumbnail %}
-{% load video_tags %}
-{% load playlist_stats %}
-{% load favorites_playlist %}
+{% load i18n static thumbnail %}
+{% load video_tags playlist_stats favorites_playlist %}
 {% load speaker_template_tags %}
 
 <div class="video-info_duration-view-share">
@@ -87,7 +83,7 @@
       {% if video.tags %}
         <p class="tag-list">{% trans 'Tags:' %}
           {% for tag in video.tags.all %}
-            <a href="{% url 'videos:videos' %}?tag={{ tag }}"
+            <a href="{% url 'videos:videos' %}?tag={{ tag.slug }}"
               {% if request.GET.is_iframe %} target="_blank" {% endif %}
               class="btn btn-link btn-sm"
               title="{% blocktrans with video_tag=tag %}Show video list having tag “{{ video_tag }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="bottom">

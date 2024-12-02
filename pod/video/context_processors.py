@@ -1,3 +1,5 @@
+"""Esup-Pod vido context processor."""
+
 from django.conf import settings as django_settings
 
 from pod.video.models import Type

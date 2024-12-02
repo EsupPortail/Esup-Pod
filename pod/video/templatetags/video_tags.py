@@ -34,7 +34,7 @@ def get_marker_time_for_user(video: Video, user: User):
 
 
 @register.simple_tag(name="get_percent_marker_for_user")
-def get_percent_marker_for_user(video: Video, user: User):
+def get_percent_marker_for_user(video: Video, user: User) -> int:
     """Tag to get the percent time of the video viewed by the authenticated user."""
     if video.duration and video.duration != 0:
         return int((video.get_marker_time_for_user(user) / video.duration) * 100)
@@ -43,7 +43,7 @@ def get_percent_marker_for_user(video: Video, user: User):
 
 
 @register.filter(name="file_exists")
-def file_exists(filepath):
+def file_exists(filepath) -> bool:
     return check_file(filepath.path)
 
 
@@ -60,7 +60,7 @@ def file_date_modified(filepath):
 
 
 @register.simple_tag
-def get_app_link(video, app):
+def get_app_link(video, app) -> str:
     mod = importlib.import_module("pod.%s.models" % app)
     if hasattr(mod, capfirst(app)):
         video_app = eval(
