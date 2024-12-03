@@ -12,7 +12,9 @@ from pod.dressing.models import Dressing
 USE_DRESSING = getattr(settings, "USE_DRESSING", False)
 
 
-@unittest.skipUnless(USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs.")
+@unittest.skipUnless(
+    USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs."
+)
 class DressingUtilitiesTests(unittest.TestCase):
     """TestCase for Esup-Pod dressing utilities."""
 

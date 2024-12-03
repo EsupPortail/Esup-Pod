@@ -1,4 +1,5 @@
 """Esup-Pod Studio Recorder urls digest."""
+
 from django.urls import path, re_path
 
 from pod.recorder.views import (

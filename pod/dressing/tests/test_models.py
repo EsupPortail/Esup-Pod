@@ -22,7 +22,9 @@ else:
 USE_DRESSING = getattr(settings, "USE_DRESSING", False)
 
 
-@unittest.skipUnless(USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs.")
+@unittest.skipUnless(
+    USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs."
+)
 class DressingModelTest(TestCase):
     """Test case for Pod dressing models."""
 

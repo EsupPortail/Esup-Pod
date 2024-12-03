@@ -4,6 +4,7 @@ from rest_framework import routers
 from django.urls import include, path
 from pod.authentication import rest_views as authentication_views
 from pod.video import rest_views as video_views
+
 # from pod.main import rest_views as main_views
 from pod.authentication import rest_views as auth_views
 from pod.video_encode_transcript import rest_views as encode_views

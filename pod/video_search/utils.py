@@ -60,9 +60,7 @@ def delete_es(video):
             # Pass transport options to elasticsearch
             es = es.options(ignore_status=[400, 404])
             # Do the deletion
-            delete = es.delete(
-                index=ES_INDEX, id=video.id, refresh=True
-            )
+            delete = es.delete(index=ES_INDEX, id=video.id, refresh=True)
             if DEBUG:
                 logger.info(delete)
             return delete

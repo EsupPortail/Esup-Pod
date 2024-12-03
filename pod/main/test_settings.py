@@ -29,9 +29,7 @@ path = "pod/custom/settings_local.py"
 if os.path.exists(path):
     _temp = __import__("pod.custom", globals(), locals(), ["settings_local"])
     USE_DOCKER = getattr(_temp.settings_local, "USE_DOCKER", USE_DOCKER)
-    ES_URL = getattr(
-        _temp.settings_local, "ES_URL", ES_URL
-    )
+    ES_URL = getattr(_temp.settings_local, "ES_URL", ES_URL)
     ES_VERSION = getattr(_temp.settings_local, "ES_VERSION", ES_VERSION)
 
 for application in INSTALLED_APPS:
