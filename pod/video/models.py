@@ -763,7 +763,6 @@ class Video(models.Model):
             "Separate tags with spaces, "
             "enclose the tags consist of several words in quotation marks."
         ),
-        null=True,
         blank=True,
         verbose_name=_("Tags"),
     )
@@ -1270,15 +1269,10 @@ class Video(models.Model):
                 "description": "%s" % self.description,
                 "thumbnail": "%s" % self.get_thumbnail_url(),
                 "duration": "%s" % self.duration,
-                """
                 "tags": list(
-                    [
-                        {"name": name[0], "slug": slugify(name)}
-                        for name in Tag.objects.get_for_object(self).values_list("name")
-                    ]
+                    self.tags.all()
+                    .values("name", "slug")
                 ),
-                """
-                "tags": self.tags.all().values("name", "slug"),
                 "type": {"title": self.type.title, "slug": self.type.slug},
                 "disciplines": list(
                     self.discipline.all()
@@ -1437,6 +1431,10 @@ class Video(models.Model):
                 name=self.slug, owner=self.owner
             )
             return videodir
+
+    def get_tag_list(self) -> str:
+        """Return a list of comma separated tag names."""
+        return ', '.join(tag.name for tag in self.tags.all())
 
     def update_additional_owners_rights(self) -> None:
         """Update folder rights for additional video owners."""

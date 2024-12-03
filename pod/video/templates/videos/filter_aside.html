@@ -1,6 +1,4 @@
-{% load i18n %}
-{% load video_tags %}
-{% load thumbnail %}
+{% load i18n video_tags thumbnail %}
 
 {% spaceless %}
 <div class="card card-body">
@@ -92,12 +90,34 @@
   </fieldset>
   {% endif %}
   {% if HIDE_TAGS == False %}
-  <fieldset class="border-right border-bottom mt-2">
-    <legend class="h5"><i class="bi bi-tag" aria-hidden="true"></i>&nbsp;{% trans 'Tags' %}</legend>
-    <div id="filterTag">
-      TODO: DISPLAY TAG CLOUD HERE.
-    </div>
-  </fieldset>
+    {% if TAGS|length > 0 %}
+      <fieldset class="border-right border-bottom mt-2">
+        <legend class="h5">
+          <i class="bi bi-tag" aria-hidden="true"></i>&nbsp;{% trans 'Tags' %}
+        </legend>
+        <div id="filterTag">
+          <div class="form-group collapse" id="collapseFilterTag">
+            {% for tag in TAGS %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="tag"
+                  value="{{tag.slug}}" id="id{{tag.slug.split|join:'-'}}_tag" {% if tag.slug in tags_slug %}checked{% endif %}>
+                <label class="form-check-label" for="id{{tag.slug.split|join:'-'}}_tag">
+                  {{tag.name}}
+                </label>
+              </div>
+            {% endfor %}
+          </div>
+          {% if TAGS|length > 5 %}
+            <span class="badge badge-light float-end">
+              <a class="collapsed btn-link" data-bs-toggle="collapse"
+                  href="#collapseFilterTag" role="button"
+                  aria-expanded="false" aria-controls="collapseFilterTag"
+                  title="{% trans 'Fold/Unfold “Tags” filters' %}"></a>
+            </span>
+          {% endif %}
+        </div>
+      </fieldset>
+    {% endif %}
   {% endif %}
   {% if HIDE_CURSUS == False %}
   <fieldset class="border-right border-bottom mt-2">

@@ -1,7 +1,6 @@
 """Esup-Pod podfile URL Configuration."""
 
-from django.urls import path
-from django.urls import re_path
+from django.urls import path, re_path
 
 from .views import home, get_folder_files, get_file
 from .views import editfolder, deletefolder

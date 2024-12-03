@@ -3668,17 +3668,16 @@
                             "pod_version_init": "3.1.0"
                         },
                         "ES_VERSION": {
-                            "default_value": 7,
+                            "default_value": 8,
                             "description": {
                                 "en": [
                                     ""
                                 ],
                                 "fr": [
                                     "Version d’ElasticSearch.",
-                                    "valeurs possibles 7 ou 8 correspondant à la version du serveur Elasticsearch utilisé.",
+                                    "valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.",
                                     "Attention, le paquet elasticsearch-py doit correspondre à la version du serveur. ",
-                                    "Pour la 7, `pip3 install elasticsearch==7.17.7`,",
-                                    "et pour la 8, `pip3 install elasticsearch==8.8.1`.",
+                                    "pour la 8, `pip3 install elasticsearch==8.16.0`.",
                                     "Voir [elasticsearch-py.readthedocs.io](https://elasticsearch-py.readthedocs.io/)",
                                     "pour plus d’information."
                                 ]
@@ -5542,7 +5541,7 @@
             },
             "settings": {
                 "CAS": {
-                    "default_value": "1.5.2",
+                    "default_value": "1.5.3",
                     "description": {
                         "en": "",
                         "fr": [
@@ -5554,7 +5553,7 @@
                     "pod_version_init": "3.1"
                 },
                 "ModelTranslation": {
-                    "default_value": "0.18.7",
+                    "default_value": "0.19.11",
                     "description": {
                         "en": "",
                         "fr": [
@@ -5567,7 +5566,7 @@
                     "pod_version_init": "3.1"
                 },
                 "captcha": {
-                    "default_value": "0.5.17",
+                    "default_value": "0.6.0",
                     "description": {
                         "en": "",
                         "fr": [
@@ -5600,8 +5599,9 @@
                             "You should consider strongly switching to a different editor."
                         ],
                         "fr": [
-                            "Application permettant d’ajouter un éditeur CKEditor dans certains champs",
-                            "[django-ckeditor.readthedocs.io](https://django-ckeditor.readthedocs.io/en/latest/#installation)"
+                            "ATTENTION. django-ckeditor integre la version gratuite de CKEditor 4.22.1,",
+                            "qui n'est plus prise en charge et qui présente des problèmes de sécurité non résolus,",
+                            "voir par exemple https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS."
                         ]
                     },
                     "pod_version_end": "4.0.0",
@@ -5620,7 +5620,7 @@
                     "pod_version_init": "3.1"
                 },
                 "honeypot": {
-                    "default_value": "1.0.3",
+                    "default_value": "1.2.1",
                     "description": {
                         "en": "",
                         "fr": [
@@ -5633,7 +5633,7 @@
                     "pod_version_init": "3.1"
                 },
                 "mozilla_django_oidc": {
-                    "default_value": "3.0.0",
+                    "default_value": "4.0.1",
                     "description": {
                         "en": "",
                         "fr": [
@@ -5645,7 +5645,7 @@
                     "pod_version_init": "3.1"
                 },
                 "pwa": {
-                    "default_value": "1.1.0",
+                    "default_value": "2.0.1",
                     "description": {
                         "en": "",
                         "fr": [
@@ -5677,11 +5677,11 @@
                     "pod_version_init": "3.4"
                 },
                 "rest_framework": {
-                    "default_value": "3.14.0",
+                    "default_value": "3.15.2",
                     "description": {
                         "en": "",
                         "fr": [
-                            "version 3.14.0 : mise en place de l’API rest pour l’application",
+                            "mise en place de l’API rest pour l’application",
                             "[django-rest-framework.org](https://www.django-rest-framework.org/)"
                         ]
                     },
@@ -5701,7 +5701,7 @@
                     "pod_version_init": "3.1"
                 },
                 "sorl.thumbnail": {
-                    "default_value": "12.9.0",
+                    "default_value": "12.11.0",
                     "description": {
                         "en": "",
                         "fr": [
@@ -5721,13 +5721,28 @@
                             "[django-tagging.readthedocs.io](https://django-tagging.readthedocs.io/en/develop/#settings)"
                         ]
                     },
-                    "pod_version_end": "",
+                    "pod_version_end": "4.0.0",
                     "pod_version_init": "3.1"
+                },
+                "tagulous": {
+                    "default_value": "2.1.0",
+                    "description": {
+                        "en": [
+                            "Managing keywords associated with a Django object. ",
+                            "[django-tagulous.readthedocs.io](https://django-tagulous.readthedocs.io)"
+                        ],
+                        "fr": [
+                            "Gestion des mots-clés associés à un objet Django. ",
+                            "[django-tagulous.readthedocs.io](https://django-tagulous.readthedocs.io)"
+                        ]
+                    },
+                    "pod_version_end": "",
+                    "pod_version_init": "4.0.0"
                 }
             },
             "title": {
-                "en": "",
-                "fr": "Information générale"
+                "en": "General information",
+                "fr": "Informations générales"
             }
         }
     }

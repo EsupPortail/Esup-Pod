@@ -74,7 +74,7 @@ def save_video(recording, video_data, video_src) -> Video:
     # Choix des cursus
     video.cursus = recorder.cursus
     # mot clefs
-    video.tags = recorder.tags
+    video.tags = recorder.tags.get_tag_list()
     # transcript
     if getattr(settings, "USE_TRANSCRIPTION", False):
         video.transcript = recorder.transcript

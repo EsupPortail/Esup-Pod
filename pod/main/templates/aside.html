@@ -1,5 +1,4 @@
-{% load i18n %}
-{% load video_tags %}
+{% load i18n video_tags %}
 {% spaceless %}
 
 {% if HIDE_SHARE == False %}
@@ -24,7 +23,7 @@
   <div class="card card-body p-3" id="card-disciplines">
     <h2 class="card-title pod-card__title h4">
       <label for="discipline">
-        <i class="bi bi-book"></i>&nbsp;{% trans 'Disciplines' %}
+        <i class="bi bi-book" aria-hidden="true"></i>&nbsp;{% trans 'Disciplines' %}
       </label>
     </h2>
     <div class="card-text">
@@ -45,7 +44,7 @@
   <div class="card card-body p-3" id="card-types">
     <h2 class="card-title pod-card__title h4">
       <label for="type">
-        <i class="bi bi-tv"></i>&nbsp;{% trans 'Types' %}
+        <i class="bi bi-tv" aria-hidden="true"></i>&nbsp;{% trans 'Types' %}
       </label>
     </h2>
     <div class="card-text">
@@ -63,14 +62,14 @@
 {% endif %}
 
 {% if HIDE_TAGS == False %}
-  {% if tag_cloud|length > 0 %}
+  {% if TAGS|length > 0 %}
     <div class="card card-body p-3" id="card-tags">
       <h2 class="card-title pod-card__title h4">
         <i class="bi bi-tag" aria-hidden="true"></i>&nbsp;{% trans 'Tags' %}
       </h2>
-      <p class="card-text">
-        {% for tag in tag_cloud %}
-          <a href="{{ tag.get_absolute_url }}" class="tag_{{ tag.weight }}">
+      <p class="card-text tag-cloud">
+        {% for tag in TAGS %}
+          <a href="{% url 'videos:videos' %}?tag={{ tag.slug }}" class="btn-link pe-1 tag-{{ tag.weight }}">
             {{ tag.name }}
           </a>
         {% endfor %}

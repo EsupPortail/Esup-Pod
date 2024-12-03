@@ -16,7 +16,7 @@ ES_URL = getattr(settings, "ES_URL", ["http://elasticsearch.localhost:9200/"])
 ES_INDEX = getattr(settings, "ES_INDEX", "pod")
 ES_TIMEOUT = getattr(settings, "ES_TIMEOUT", 30)
 ES_MAX_RETRIES = getattr(settings, "ES_MAX_RETRIES", 10)
-ES_VERSION = getattr(settings, "ES_VERSION", 7)
+ES_VERSION = getattr(settings, "ES_VERSION", 8)
 ES_OPTIONS = getattr(settings, "ES_OPTIONS", {})
 
 
@@ -87,7 +87,7 @@ def get_result_aggregations(result, selected_facets):
     return result["aggregations"]
 
 
-def get_search_page(request):
+def get_search_page(request) -> int:
     """Return page number to start search from Elasticsearch."""
     page = request.GET.get("page", "0")
     page = int(page) if page.isdigit() else 0
@@ -102,7 +102,7 @@ def search_videos(request):
     """Send a search request to ES."""
     es = Elasticsearch(
         ES_URL,
-        timeout=ES_TIMEOUT,
+        request_timeout=ES_TIMEOUT,
         max_retries=ES_MAX_RETRIES,
         retry_on_timeout=True,
         **ES_OPTIONS,
@@ -173,7 +173,7 @@ def search_videos(request):
         "highlight": {
             "pre_tags": ["<mark>"],
             "post_tags": ["</mark>"],
-            "fields": {"title": {"force_source": "true"}},
+            "fields": {"title": {}},
         },
     }
 

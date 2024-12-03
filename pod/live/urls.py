@@ -1,5 +1,4 @@
-from django.urls import path
-from django.urls import re_path
+from django.urls import path, re_path
 
 from .pilotingInterface import ajax_get_mandatory_parameters
 from .views import (

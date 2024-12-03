@@ -23,7 +23,7 @@ TEMPLATES[0]["DIRS"].append(
 )
 USE_DOCKER = True
 ES_URL = ["http://elasticsearch.localhost:9200/"]
-ES_VERSION = 7
+ES_VERSION = 8
 ES_INDEX = "pod"
 path = "pod/custom/settings_local.py"
 if os.path.exists(path):
@@ -56,8 +56,10 @@ DATABASES = {
 LANGUAGES = (("fr", "Français"), ("en", "English"))
 LANGUAGE_CODE = "en"
 THIRD_PARTY_APPS = ["enrichment", "live"]
-USE_PODFILE = True
+USE_CUT = True
+USE_DRESSING = True
 USE_FAVORITES = True
+USE_PODFILE = True
 USE_PLAYLIST = True
 USE_PROMOTED_PLAYLIST = True
 RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY = False

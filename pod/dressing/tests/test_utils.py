@@ -3,12 +3,16 @@
 import os
 import unittest
 from unittest.mock import patch
+from django.conf import settings
 from django.contrib.auth.models import User
 from pod.authentication.models import AccessGroup
 from pod.dressing.utils import get_dressings, get_dressing_input
 from pod.dressing.models import Dressing
 
+USE_DRESSING = getattr(settings, "USE_DRESSING", False)
 
+
+@unittest.skipUnless(USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs.")
 class DressingUtilitiesTests(unittest.TestCase):
     """TestCase for Esup-Pod dressing utilities."""
 

@@ -15,9 +15,9 @@ class Command(BaseCommand):
         + "types, discipline, video count and videos duration"
     )
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         """Store video data in cache."""
-        cache.delete_many(["DISCIPLINES", "VIDEOS_COUNT", "VIDEOS_DURATION", "TYPES"])
+        cache.delete_many(["DISCIPLINES", "VIDEOS_COUNT", "VIDEOS_DURATION", "TYPES", "TAGS"])
         video_data = context_video_data(request=None)
         msg = "Successfully store video data in cache"
         for data in video_data:

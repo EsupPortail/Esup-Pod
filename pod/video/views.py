@@ -54,9 +54,6 @@ from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
 from pod.video.models import get_transcription_choices
 from pod.video.models import UserMarkerTime, VideoAccessToken
-
-# from tagging.models import TaggedItem
-
 from pod.video.forms import VideoForm, VideoVersionForm
 from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
@@ -359,6 +356,7 @@ def paginator(videos_list, page):
 def channel(request, slug_c, slug_t=None):
     channel = get_object_or_404(Channel, slug=slug_c, site=get_current_site(request))
     videos_list = get_available_videos().filter(channel=channel)
+    videos_list = sort_videos_list(videos_list, "date_added", "on")
     channel.video_count = videos_list.count()
 
     theme = None
@@ -904,10 +902,9 @@ def get_filtered_videos_list(request, videos_list):
             Q(owner__username__in=request.GET.getlist("owner"))
             | Q(additional_owners__username__in=request.GET.getlist("owner"))
         )
-    """if request.GET.getlist("tag"):
-        videos_list = TaggedItem.objects.get_union_by_model(
-            videos_list, request.GET.getlist("tag")
-        )"""
+    if request.GET.getlist("tag"):
+        videos_list = videos_list.filter(tags__name__in=request.GET.getlist("tag"))
+
     if request.GET.getlist("cursus"):
         videos_list = videos_list.filter(cursus__in=request.GET.getlist("cursus"))
     return videos_list.distinct()
@@ -1109,11 +1106,6 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                 _("You cannot access this playlist because it is private.")
             )
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
-
-
-def tag_cloud(request):
-    """Get only tags with weight between TAGULOUS_WEIGHT_MIN and TAGULOUS_WEIGHT_MAX."""
-    return Video.tags.tag_model.objects.weight()
 
 
 def toggle_render_video_user_can_see_video(
@@ -1650,7 +1642,7 @@ def get_com_tree(com):
     return tree
 
 
-def can_edit_or_remove_note_or_com(request, nc, action):
+def can_edit_or_remove_note_or_com(request, nc, action) -> None:
     """
     Check if the current user can apply action to the note or comment nc.
 
@@ -1674,7 +1666,7 @@ def can_edit_or_remove_note_or_com(request, nc, action):
         raise PermissionDenied
 
 
-def can_see_note_or_com(request, nc):
+def can_see_note_or_com(request, nc) -> None:
     """
     Check if the current user can view the note or comment nc.
 
