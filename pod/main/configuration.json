@@ -3675,7 +3675,7 @@
                                 ],
                                 "fr": [
                                     "Version d’ElasticSearch.",
-                                    "valeurs possibles 8 correspondant à la version du serveur Elasticsearch utilisé.",
+                                    "valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.",
                                     "Attention, le paquet elasticsearch-py doit correspondre à la version du serveur. ",
                                     "pour la 8, `pip3 install elasticsearch==8.16.0`.",
                                     "Voir [elasticsearch-py.readthedocs.io](https://elasticsearch-py.readthedocs.io/)",
@@ -5599,8 +5599,9 @@
                             "You should consider strongly switching to a different editor."
                         ],
                         "fr": [
-                            "Application permettant d’ajouter un éditeur CKEditor dans certains champs",
-                            "[django-ckeditor.readthedocs.io](https://django-ckeditor.readthedocs.io/en/latest/#installation)"
+                            "ATTENTION. django-ckeditor integre la version gratuite de CKEditor 4.22.1,",
+                            "qui n'est plus prise en charge et qui présente des problèmes de sécurité non résolus,",
+                            "voir par exemple https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS."
                         ]
                     },
                     "pod_version_end": "4.0.0",
@@ -5726,9 +5727,12 @@
                 "tagulous": {
                     "default_value": "2.1.0",
                     "description": {
-                        "en": "",
+                        "en": [
+                            "Managing keywords associated with a Django object. ",
+                            "[django-tagulous.readthedocs.io](https://django-tagulous.readthedocs.io)"
+                        ],
                         "fr": [
-                            "Gestion des mots-clés associés à un objet Django",
+                            "Gestion des mots-clés associés à un objet Django. ",
                             "[django-tagulous.readthedocs.io](https://django-tagulous.readthedocs.io)"
                         ]
                     },
