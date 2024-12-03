@@ -5541,7 +5541,7 @@
             },
             "settings": {
                 "CAS": {
-                    "default_value": "1.5.2",
+                    "default_value": "1.5.3",
                     "description": {
                         "en": "",
                         "fr": [
@@ -5553,7 +5553,7 @@
                     "pod_version_init": "3.1"
                 },
                 "ModelTranslation": {
-                    "default_value": "0.18.7",
+                    "default_value": "0.19.11",
                     "description": {
                         "en": "",
                         "fr": [
@@ -5566,7 +5566,7 @@
                     "pod_version_init": "3.1"
                 },
                 "captcha": {
-                    "default_value": "0.5.17",
+                    "default_value": "0.6.0",
                     "description": {
                         "en": "",
                         "fr": [
@@ -5619,7 +5619,7 @@
                     "pod_version_init": "3.1"
                 },
                 "honeypot": {
-                    "default_value": "1.0.3",
+                    "default_value": "1.2.1",
                     "description": {
                         "en": "",
                         "fr": [
@@ -5632,7 +5632,7 @@
                     "pod_version_init": "3.1"
                 },
                 "mozilla_django_oidc": {
-                    "default_value": "3.0.0",
+                    "default_value": "4.0.1",
                     "description": {
                         "en": "",
                         "fr": [
@@ -5644,7 +5644,7 @@
                     "pod_version_init": "3.1"
                 },
                 "pwa": {
-                    "default_value": "1.1.0",
+                    "default_value": "2.0.1",
                     "description": {
                         "en": "",
                         "fr": [
@@ -5676,11 +5676,11 @@
                     "pod_version_init": "3.4"
                 },
                 "rest_framework": {
-                    "default_value": "3.14.0",
+                    "default_value": "3.15.2",
                     "description": {
                         "en": "",
                         "fr": [
-                            "version 3.14.0 : mise en place de l’API rest pour l’application",
+                            "mise en place de l’API rest pour l’application",
                             "[django-rest-framework.org](https://www.django-rest-framework.org/)"
                         ]
                     },
@@ -5700,7 +5700,7 @@
                     "pod_version_init": "3.1"
                 },
                 "sorl.thumbnail": {
-                    "default_value": "12.9.0",
+                    "default_value": "12.11.0",
                     "description": {
                         "en": "",
                         "fr": [
@@ -5720,13 +5720,25 @@
                             "[django-tagging.readthedocs.io](https://django-tagging.readthedocs.io/en/develop/#settings)"
                         ]
                     },
-                    "pod_version_end": "",
+                    "pod_version_end": "4.0.0",
                     "pod_version_init": "3.1"
+                },
+                "tagulous": {
+                    "default_value": "2.1.0",
+                    "description": {
+                        "en": "",
+                        "fr": [
+                            "Gestion des mots-clés associés à un objet Django",
+                            "[django-tagulous.readthedocs.io](https://django-tagulous.readthedocs.io)"
+                        ]
+                    },
+                    "pod_version_end": "",
+                    "pod_version_init": "4.0.0"
                 }
             },
             "title": {
-                "en": "",
-                "fr": "Information générale"
+                "en": "General information",
+                "fr": "Informations générales"
             }
         }
     }

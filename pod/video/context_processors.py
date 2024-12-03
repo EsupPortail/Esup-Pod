@@ -6,6 +6,8 @@ from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.models import Video
 
+from pod.video.utils import get_tag_cloud
+
 from django.db.models import Count, Sum
 from django.db.models import Q
 from django.db.models import Exists
@@ -97,6 +99,11 @@ def context_video_data(request):
         )
         cache.set("TYPES", types, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
 
+    tags = cache.get("TAGS")
+    if tags is None:
+        tags = get_tag_cloud()
+        cache.set("TAGS", tags, timeout=CACHE_VIDEO_DEFAULT_TIMEOUT)
+
     disciplines = cache.get("DISCIPLINES")
     if disciplines is None:
         disciplines = (
@@ -132,4 +139,5 @@ def context_video_data(request):
         "VIDEOS_COUNT": VIDEOS_COUNT,
         "VIDEOS_DURATION": VIDEOS_DURATION,
         "CHANNELS_PER_BATCH": CHANNELS_PER_BATCH,
+        "TAGS": tags
     }

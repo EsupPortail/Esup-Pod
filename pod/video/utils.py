@@ -200,6 +200,15 @@ def get_videos(
     return JsonResponse(response, safe=False)
 
 
+def get_tag_cloud() -> list:
+    """Get only tags with weight between TAGULOUS_WEIGHT_MIN and TAGULOUS_WEIGHT_MAX."""
+    # Convert tag cloud to list of dict, so it can be stored in CACHE
+    tags = []
+    for tag in Video.tags.tag_model.objects.weight():
+        tags.append({"name": tag.name, "weight": tag.weight, "slug": tag.slug})
+    return tags
+
+
 def sort_videos_list(videos_list: list, sort_field: str, sort_direction: str = ""):
     """Return videos list sorted by sort_field.
 

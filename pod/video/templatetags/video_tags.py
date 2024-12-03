@@ -153,8 +153,11 @@ def get_video_infos(video):
 
 
 """
+No more used functions.
+To Delete in 4.0.1
+
 class getTagsForModelNode(TagsForModelNode):
-    def __init__(self, model, context_var, counts):
+    def __init__(self, model, context_var, counts) -> None:
         super(getTagsForModelNode, self).__init__(model, context_var, counts)
 
     def render(self, context):
@@ -219,11 +222,10 @@ def do_tags_for_model(parser, token):
         return getTagsForModelNode(bits[1], bits[3], counts=False)
     else:
         return getTagsForModelNode(bits[1], bits[3], counts=True)
-"""
 
 
-# def do_tag_cloud_for_model(parser, token):
-"""
+def do_tag_cloud_for_model(parser, token) -> None:
+    ###
     Retrieve a list of `Tag` objects with tag cloud attributes set.
 
     Retriev tags for a given model,
@@ -260,8 +262,7 @@ def do_tags_for_model(parser, token):
        {% tag_cloud_for_model products.Widget as widget_tags
                    with steps=9 min_count=3 distribution=log %}
 
-"""
-"""
+    ###
     bits = token.contents.split()
     len_bits = len(bits)
     if len_bits != 4 and len_bits not in range(6, 9):
@@ -341,7 +342,7 @@ def update_kwargs_from_bits(kwargs, name, value, bits):
                 }
             )
     return kwargs
-"""
 
-# register.tag("tags_for_model", do_tags_for_model)
-# register.tag("tag_cloud_for_model", do_tag_cloud_for_model)
+register.tag("tags_for_model", do_tags_for_model)
+register.tag("tag_cloud_for_model", do_tag_cloud_for_model)
+"""

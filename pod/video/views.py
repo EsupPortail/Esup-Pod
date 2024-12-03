@@ -1108,11 +1108,6 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 
 
-def tag_cloud(request):
-    """Get only tags with weight between TAGULOUS_WEIGHT_MIN and TAGULOUS_WEIGHT_MAX."""
-    return Video.tags.tag_model.objects.weight()
-
-
 def toggle_render_video_user_can_see_video(
     show_page, is_password_protected, request, slug_private, video
 ) -> bool:

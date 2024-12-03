@@ -65,6 +65,11 @@
   --pod-alert: #fc8670;
   --pod-alert-dark: #b11030;
 
+  /* Tag cloud colors */
+  --pod-tag-color1: 16, 131, 22;
+  --pod-tag-color2: 51, 51, 170;
+  --pod-tag-color3: 197, 53, 143;
+
   /**** font family ****/
 
   /* For better accessibility, avoid fonts where [1, i, L] or [O, 0] are the same. */
@@ -161,6 +166,30 @@ tr,
   margin-left: 0.5em;
   margin-right: 0.5em;
 }
+
+/** TAGs Cloud */
+.tag-cloud{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.tag-cloud>a {
+  line-height: 1.5;
+}
+
+.tag-cloud>*:nth-child(2n+1) { --bs-link-color-rgb: var(--pod-tag-color1); }
+.tag-cloud>*:nth-child(3n+1) { --bs-link-color-rgb: var(--pod-tag-color2); }
+.tag-cloud>*:nth-child(4n+1) { --bs-link-color-rgb: var(--pod-tag-color3); }
+
+.tag-1{font-size: 1em;}
+.tag-2{font-size: 1.1em;}
+.tag-3{font-size: 1.2em;}
+.tag-4{font-size: 1.3em;}
+.tag-5{font-size: 1.4em;}
+.tag-6{font-size: 1.5em;}
+
 
 .pod-card--video a:not(.btn) {
   color: inherit;

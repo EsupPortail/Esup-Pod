@@ -45,8 +45,8 @@ if USE_CAS:
 
 urlpatterns = [
     path("select2/", include("django_select2.urls")),
-    re_path("robots.txt", robots_txt),
-    re_path("info_pod.json", info_pod),
+    path("robots.txt", robots_txt),
+    path("info_pod.json", info_pod),
     re_path(r"^admin/", admin.site.urls),
     # Translation
     path("i18n/", include("django.conf.urls.i18n")),
