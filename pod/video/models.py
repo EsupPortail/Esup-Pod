@@ -833,6 +833,13 @@ class Video(models.Model):
         blank=True,
         null=True,
     )
+    order = models.PositiveSmallIntegerField(
+        _("order"),
+        help_text=_("Order videos in channels or themes."),
+        default=1,
+        blank=True,
+        null=True,
+    )
     thumbnail = models.ForeignKey(
         CustomImageModel,
         on_delete=models.SET_NULL,
