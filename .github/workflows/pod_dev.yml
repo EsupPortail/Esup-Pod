@@ -20,7 +20,7 @@ env:
   DJANGO_SUPERUSER_USERNAME: "admin"
   DJANGO_SUPERUSER_PASSWORD: "passwd"
   DJANGO_SUPERUSER_EMAIL: "noreply@uni.fr"
-  ELASTICSEARCH_TAG: "elasticsearch:7.17.18"
+  ELASTICSEARCH_TAG: "elasticsearch:8.16.1"
   NODE_VERSION: "20"
   NODE_TAG: "node:20"
   PYTHON_TAG: "python:3.9-bullseye"
@@ -128,10 +128,10 @@ jobs:
           sudo chown -R runner:runner .
 
       ## Start unit test test ##
-      - name: Runs Elasticsearch
+      - name: Run Elasticsearch
         uses: elastic/elastic-github-actions/elasticsearch@refactor_with_plugins
         with:
-          stack-version: 7.17.25
+          stack-version: 8.16.1
           plugins: analysis-icu
 
       - name: Setup Pod

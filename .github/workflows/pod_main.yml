@@ -54,10 +54,10 @@ jobs:
                 sudo npm install -g yarn
 
             ## Start unit test test ##
-            - name: Runs Elasticsearch
+            - name: Run Elasticsearch
               uses: elastic/elastic-github-actions/elasticsearch@refactor_with_plugins
               with:
-                stack-version: 8.16.0
+                stack-version: 8.16.1
                 plugins: analysis-icu
 
             - name: Setup Pod
