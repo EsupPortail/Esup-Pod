@@ -55,7 +55,7 @@ jobs:
 
             ## Start unit test test ##
             - name: Run Elasticsearch
-              uses: elastic/elastic-github-actions/elasticsearch@refactor_with_plugins
+              uses: elastic/elastic-github-actions/elasticsearch@master
               with:
                 stack-version: 8.16.1
                 plugins: analysis-icu
