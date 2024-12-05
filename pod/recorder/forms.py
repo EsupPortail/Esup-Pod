@@ -1,7 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.sites.models import Site
 from .models import Recording, Recorder
 from pod.main.forms_utils import add_placeholder_and_asterisk

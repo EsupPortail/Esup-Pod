@@ -13,15 +13,16 @@ help:
 # Démarre le serveur de test
 start:
 	(sleep 15 ; open http://pod.localhost:8000) &
-	python3 manage.py runserver pod.localhost:8000 --insecure
+	python3 -Wd manage.py runserver pod.localhost:8000 --insecure
 	# --insecure let serve static files even when DEBUG=False
+	# -Wd enable default warning mode (Warn once per call location)
 
 # Démarre le serveur de test en https auto-signé
 starts:
 	# nécessite les django-extensions
 	# cf https://timonweb.com/django/https-django-development-server-ssl-certificate/
 	(sleep 15 ; open https://pod.localhost:8000) &
-	python3 manage.py runserver_plus pod.localhost:8000 --cert-file cert.pem --key-file key.pem
+	python3 -Wd manage.py runserver_plus pod.localhost:8000 --cert-file cert.pem --key-file key.pem
 
 # Première installation de pod (BDD SQLite intégrée)
 install:
@@ -44,7 +45,7 @@ createDB:
 	find . -path "*/migrations/*.pyc" -delete
 	make updatedb
 	make migrate
-	python3 manage.py loaddata initial_data
+	python3 -Wd manage.py loaddata initial_data
 
 # Mise à jour des fichiers de langue
 lang:
@@ -82,8 +83,8 @@ statics:
 
 # Generate configuration docs in .MD format
 createconfigs:
-	python3 manage.py createconfiguration fr
-	python3 manage.py createconfiguration en
+	python3 -Wd manage.py createconfiguration fr
+	python3 -Wd manage.py createconfiguration en
 
 # -- Docker
 # Use for docker run and docker exec commands

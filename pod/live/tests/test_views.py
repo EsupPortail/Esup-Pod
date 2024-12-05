@@ -1145,7 +1145,7 @@ class LiveViewsTestCase(TestCase):
             url,
             content_type="application/json",
             data=json.dumps({"idbroadcaster": 1, "idevent": 1}),
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, 200)
         self.assertTrue("error" in response.json())
@@ -1170,7 +1170,7 @@ class LiveViewsTestCase(TestCase):
 
         # implementation error
         response = self.client.get(
-            url, {"idbroadcaster": 1}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            url, {"idbroadcaster": 1}, headers={"x-requested-with": "XMLHttpRequest"}
         )
         self.assertEqual(response.status_code, 200)
         self.assertTrue("message" in response.json())
@@ -1294,7 +1294,7 @@ class LiveViewsTestCase(TestCase):
                 data=json.dumps(
                     {"idbroadcaster": 2, "idevent": 1},
                 ),
-                HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+                headers={"x-requested-with": "XMLHttpRequest"},
             )
         self.assertEqual(
             response.json(),
@@ -1307,7 +1307,7 @@ class LiveViewsTestCase(TestCase):
                 url,
                 content_type="application/json",
                 data=json.dumps({"idbroadcaster": 2, "idevent": 1}),
-                HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+                headers={"x-requested-with": "XMLHttpRequest"},
             )
         self.assertEqual(response.json(), {"success": True, "duration": 3})
         print("   --->  test event_info_record recording: OK!")
@@ -1538,7 +1538,7 @@ class LiveViewsTestCase(TestCase):
         print("   --->  test event_video_cards not ajax: OK!")
 
         response = self.client.get(
-            url, {"idevent": 1}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            url, {"idevent": 1}, headers={"x-requested-with": "XMLHttpRequest"}
         )
         self.assertEqual(response.json(), {"content": ""})
         print("   --->  test event_video_cards empty: OK!")
@@ -1549,7 +1549,7 @@ class LiveViewsTestCase(TestCase):
         event.save()
 
         response = self.client.get(
-            url, {"idevent": 1}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            url, {"idevent": 1}, headers={"x-requested-with": "XMLHttpRequest"}
         )
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.json(), {"content": ""})
@@ -1741,7 +1741,7 @@ class LiveViewsTestCase(TestCase):
 
         # implementation error
         response = self.client.get(
-            url, {"idbroadcaster": 1}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            url, {"idbroadcaster": 1}, headers={"x-requested-with": "XMLHttpRequest"}
         )
         self.assertEqual(response.status_code, 200)
         self.assertTrue("error" in response.json())
@@ -1750,7 +1750,7 @@ class LiveViewsTestCase(TestCase):
 
         # wowza
         response = self.client.get(
-            url, {"idbroadcaster": 2}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            url, {"idbroadcaster": 2}, headers={"x-requested-with": "XMLHttpRequest"}
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"success": True, "data": {}})
@@ -1763,7 +1763,7 @@ class LiveViewsTestCase(TestCase):
 
         with HTTMock(rtmp_response_error):
             response = self.client.get(
-                url, {"idbroadcaster": 3}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+                url, {"idbroadcaster": 3}, headers={"x-requested-with": "XMLHttpRequest"}
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -1777,7 +1777,7 @@ class LiveViewsTestCase(TestCase):
 
         with HTTMock(rtmp_response_not_list):
             response = self.client.get(
-                url, {"idbroadcaster": 3}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+                url, {"idbroadcaster": 3}, headers={"x-requested-with": "XMLHttpRequest"}
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -1791,7 +1791,7 @@ class LiveViewsTestCase(TestCase):
 
         with HTTMock(rtmp_response_no_valid_record):
             response = self.client.get(
-                url, {"idbroadcaster": 3}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+                url, {"idbroadcaster": 3}, headers={"x-requested-with": "XMLHttpRequest"}
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"success": True, "data": {}})
@@ -1819,7 +1819,7 @@ class LiveViewsTestCase(TestCase):
 
         with HTTMock(rtmp_response_data):
             response = self.client.get(
-                url, {"idbroadcaster": 3}, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+                url, {"idbroadcaster": 3}, headers={"x-requested-with": "XMLHttpRequest"}
             )
         self.assertEqual(response.status_code, 200)
         expected = {
@@ -1846,7 +1846,7 @@ class LiveViewsTestCase(TestCase):
         self.client.force_login(self.user)
 
         # http method unauthorized
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        response = self.client.get(url, headers={"x-requested-with": "XMLHttpRequest"})
         self.assertEqual(response.status_code, 405)
         print("   --->  test ajax_event_start_streaming HttpResponseNotAllowed: OK!")
 
@@ -1859,7 +1859,7 @@ class LiveViewsTestCase(TestCase):
             url,
             data={},
             content_type="application/json",
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         print("   --->  test ajax_event_start_streaming: OK!")
 
@@ -1876,7 +1876,7 @@ class LiveViewsTestCase(TestCase):
         self.client.force_login(self.user)
 
         # http method unauthorized
-        response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+        response = self.client.get(url, headers={"x-requested-with": "XMLHttpRequest"})
         self.assertEqual(response.status_code, 405)
         print("   --->  test ajax_event_stop_streaming HttpResponseNotAllowed: OK!")
 
@@ -1889,7 +1889,7 @@ class LiveViewsTestCase(TestCase):
             url,
             data={},
             content_type="application/json",
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         print("   --->  test ajax_event_stop_streaming: OK!")
 

@@ -10,6 +10,7 @@ from pod.authentication.models import AccessGroup
 # Register your models here.
 
 
+@admin.register(UserFolder)
 class UserFolderAdmin(admin.ModelAdmin):
     list_display = (
         "name",
@@ -45,9 +46,7 @@ class UserFolderAdmin(admin.ModelAdmin):
         return qs
 
 
-admin.site.register(UserFolder, UserFolderAdmin)
-
-
+@admin.register(CustomImageModel)
 class CustomImageModelAdmin(admin.ModelAdmin):
     list_display = (
         "name",
@@ -85,9 +84,7 @@ class CustomImageModelAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
-admin.site.register(CustomImageModel, CustomImageModelAdmin)
-
-
+@admin.register(CustomFileModel)
 class CustomFileModelAdmin(admin.ModelAdmin):
     list_display = (
         "name",
@@ -123,6 +120,3 @@ class CustomFileModelAdmin(admin.ModelAdmin):
                 owner__sites=Site.objects.get_current()
             )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-
-admin.site.register(CustomFileModel, CustomFileModelAdmin)

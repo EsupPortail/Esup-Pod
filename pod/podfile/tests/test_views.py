@@ -3,7 +3,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.urls import reverse
 from django.test import Client
 
@@ -267,12 +267,12 @@ class FileViewTestCase(TestCase):
                 "folderid": folder.id,
             },
             follow=True,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
 
         self.assertEqual(response.status_code, 200)  # ajax with post data
 
-        result = json.loads(force_text(response.content))
+        result = json.loads(force_str(response.content))
 
         self.assertTrue(result["list_element"])
         self.assertEqual(folder.customfilemodel_set.all().count(), nbfile + 1)
@@ -295,6 +295,6 @@ class FileViewTestCase(TestCase):
                 "folderid": 999,
             },
             follow=True,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, 404)  # folder not exist

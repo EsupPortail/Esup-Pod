@@ -40,7 +40,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from pod.import_video.utils import manage_download
 from pod.main.views import in_maintenance
-from pod.main.utils import secure_post_request, display_message_with_icon
+from pod.main.utils import secure_post_request, display_message_with_icon, is_ajax
 
 # For Youtube download
 from pytube import YouTube
@@ -1213,7 +1213,7 @@ def recording_with_token(request, id):
 
     # JSON format
     data = '{"presentationUrl": "%s", "videoUrl": "%s"}' % (presentation_url, video_url)
-    if request.is_ajax():
+    if is_ajax(request):
         return HttpResponse(data, content_type="application/json")
     else:
         return HttpResponseBadRequest()

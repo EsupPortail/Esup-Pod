@@ -7,9 +7,9 @@
 <style>
   {{channel.style}}
   {% if channel.color %}
-  body {
-    background-color: {{form.instance.color}};
-  }
+    body {
+      background-color: {{form.instance.color}};
+    }
   {% endif %}
 </style>
 {% endblock page_extra_head %}
@@ -38,9 +38,9 @@
 <div id="list_theme">
   {% include 'channel/list_theme.html' with list_theme=channel.themes.all %}
 </div>
-<p>
-  <hr>
-</p>
+
+<hr>
+
 <div id="div_form_theme">
   {% if form_theme %}
   {% include 'channel/form_theme.html' %}

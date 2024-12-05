@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.messages import get_messages
 from django.http import JsonResponse
 from django.urls import reverse
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.test import override_settings, TestCase
 from pod.main.models import Configuration
 
@@ -759,7 +759,7 @@ class TestPlaylistPage(TestCase):
                 "video_slug": self.video.slug,
             },
         )
-        response = self.client.get(url, HTTP_REFERER=url_content)
+        response = self.client.get(url, headers={"referer": url_content})
         self.assertEqual(response.status_code, 302)
 
         redirected_url = response.url

@@ -6,7 +6,7 @@ from django import forms
 from django.contrib.flatpages.admin import FlatpageForm
 from django.contrib.flatpages.models import FlatPage
 from django.contrib.sites.models import Site
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from modeltranslation.admin import TranslationAdmin
@@ -30,12 +30,14 @@ class PageForm(FlatpageForm):
         widgets = content_widget
 
 
+@admin.register(AdditionalChannelTab)
 class AdditionalChannelTabAdmin(TranslationAdmin):
     """Create translation for additional Channel Tab Field."""
 
     list_display = ("name",)
 
 
+@admin.register(Configuration)
 class ConfigurationAdmin(admin.ModelAdmin):
     list_display = ("key", "value", "description")
 
@@ -83,6 +85,7 @@ class CustomFlatPageAdmin(TranslationAdmin):
         obj.save()
 
 
+@admin.register(LinkFooter)
 class LinkFooterAdmin(TranslationAdmin):
     list_display = (
         "title",
@@ -120,6 +123,7 @@ class BlockAdminForm(forms.ModelForm):
         fields = "__all__"
 
 
+@admin.register(Block)
 class BlockAdmin(TranslationAdmin):
     """The admin configuration for the Block model in the Django admin panel."""
 
@@ -150,7 +154,3 @@ class BlockAdmin(TranslationAdmin):
 # Unregister the default FlatPage admin and register CustomFlatPageAdmin.
 admin.site.unregister(FlatPage)
 admin.site.register(FlatPage, CustomFlatPageAdmin)
-admin.site.register(LinkFooter, LinkFooterAdmin)
-admin.site.register(Configuration, ConfigurationAdmin)
-admin.site.register(AdditionalChannelTab, AdditionalChannelTabAdmin)
-admin.site.register(Block, BlockAdmin)

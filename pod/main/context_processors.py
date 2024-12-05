@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from pod.main.models import Configuration
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
     django_settings, "MENUBAR_HIDE_INACTIVE_OWNERS", False
@@ -17,10 +17,10 @@ MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
 
 USE_PODFILE = getattr(django_settings, "USE_PODFILE", False)
 
-DARKMODE_ENABLED = getattr(django_settings, "DARKMODE_ENABLED", False)
-DYSLEXIAMODE_ENABLED = getattr(django_settings, "DYSLEXIAMODE_ENABLED", False)
+DARKMODE_ENABLED = getattr(django_settings, "DARKMODE_ENABLED", True)
+DYSLEXIAMODE_ENABLED = getattr(django_settings, "DYSLEXIAMODE_ENABLED", True)
 
-VERSION = getattr(django_settings, "VERSION", "3.X")
+VERSION = getattr(django_settings, "VERSION", "4.X")
 ##
 # Settings exposed in templates
 #
@@ -79,7 +79,7 @@ RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     django_settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
 )
-USE_NOTIFICATIONS = getattr(django_settings, "USE_NOTIFICATIONS", True)
+USE_NOTIFICATIONS = getattr(django_settings, "USE_NOTIFICATIONS", False)
 
 WEBTV_MODE = getattr(django_settings, "WEBTV_MODE", False)
 
