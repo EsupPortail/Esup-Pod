@@ -62,9 +62,10 @@ jobs:
 
             - name: Setup Pod
               run: |
-                python manage.py create_pod_index --settings=pod.main.test_settings
                 python manage.py makemigrations --settings=pod.main.test_settings
                 python manage.py migrate --settings=pod.main.test_settings
+                python manage.py create_pod_index --settings=pod.main.test_settings
+                curl -XGET "http://elasticsearch.localhost:9200/pod/_search?pretty=true&q=fr"
                 cd pod
                 yarn
 
