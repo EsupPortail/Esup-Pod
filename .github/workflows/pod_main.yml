@@ -53,7 +53,7 @@ jobs:
                 pip install -r requirements-dev.txt
                 sudo npm install -g yarn
 
-            ## Start unit test test ##
+            ## Start unit tests ##
             - name: Run Elasticsearch
               uses: elastic/elastic-github-actions/elasticsearch@master
               with:
@@ -63,7 +63,7 @@ jobs:
             - name: Setup Pod
               run: |
                 python manage.py create_pod_index --settings=pod.main.test_settings
-                curl -u elastic:changeme -XGET "https://es1:9200/pod/_search?pretty=true&q=fr"
+                curl -u elastic:changeme -XGET "https://elasticsearch.localhost:9200/pod/_search?pretty=true&q=fr"
                 python manage.py makemigrations --settings=pod.main.test_settings
                 python manage.py migrate --settings=pod.main.test_settings
                 cd pod
