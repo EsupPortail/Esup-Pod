@@ -88,8 +88,10 @@ jobs:
           echo PYTHON_TAG=$PYTHON_TAG >> .env.dev
           echo REDIS_TAG=$REDIS_TAG >> .env.dev
           echo DOCKER_ENV=$DOCKER_ENV >> .env.dev
+
       - name: cat env
         run: cat .env.dev
+
       - name: make Build container
         run: |
           sudo rm -rf ./pod/log
@@ -97,16 +99,19 @@ jobs:
           sudo rm -rf ./pod/node_modules
           docker compose -f ./docker-compose-full-dev-with-volumes-test.yml -p esup-pod build --build-arg ELASTICSEARCH_VERSION=$ELASTICSEARCH_TAG --build-arg NODE_VERSION=$NODE_TAG --build-arg PYTHON_VERSION=$PYTHON_TAG --no-cache
           docker compose -f ./docker-compose-full-dev-with-volumes-test.yml up --detach --force-recreate --always-recreate-deps
+
       - name: Sleep for 60 seconds to wait run server on pod back
         uses: jakejarvis/wait-action@master
         with:
           time: '60s'
+
       - name: show running container
         run: |
           docker ps
           echo "🍏 Docker is UP ${{ job.status }}."
           docker exec pod-back-with-volumes ps auxf
           docker exec pod-back-with-volumes python manage.py loaddata pod/video/fixtures/sample_videos.json
+
       - name: run test in docker
         run: docker exec pod-back-with-volumes coverage run --append manage.py test -v 3 --keepdb pod.video_encode_transcript.tests.test_remote_encode_transcode
 
@@ -136,9 +141,10 @@ jobs:
 
       - name: Setup Pod
         run: |
-          coverage run --append manage.py create_pod_index --settings=pod.main.test_settings
           python manage.py makemigrations --settings=pod.main.test_settings
           python manage.py migrate --settings=pod.main.test_settings
+          coverage run --append manage.py create_pod_index --settings=pod.main.test_settings
+          curl -XGET "http://elasticsearch.localhost:9200/pod/_search?pretty=true&q=fr"
 
       - name: Run Tests with coverage
         env:

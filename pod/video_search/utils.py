@@ -43,6 +43,11 @@ def index_es(video):
                 "An error occured during index creation: %s-%s: %s"
                 % (e.status_code, e.error, e.info)
             )
+    else:
+        logger.warning(
+            "Elasticsearch did not responded to ping request at %s. Video %s not indexed."
+            % (ES_URL, video.id)
+        )
     translation.deactivate()
 
 
@@ -83,7 +88,9 @@ def create_index_es():
     template_file = "pod/video_search/search_template_fr.json"
     es_template = json.load(open(template_file))
     try:
-        create = es.indices.create(index=ES_INDEX, body=es_template)  # ignore=[400, 404]
+        create = es.indices.create(
+            index=ES_INDEX, body=es_template
+        )  # ignore=[400, 404]
         logger.info(create)
         return create
     except TransportError as e:

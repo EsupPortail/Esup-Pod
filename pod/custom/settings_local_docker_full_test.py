@@ -24,8 +24,8 @@ USE_NOTIFICATIONS = False
 EMAIL_ON_ENCODING_COMPLETION = False
 SECRET_KEY = 'A_CHANGER'
 
-# We specify here that we're using ES version 7\n
-ES_VERSION = 7
+# ElasticSearch version
+ES_VERSION = 8
 ES_URL = ['http://elasticsearch.localhost:9200/']
 CACHES = {
     'default': {
