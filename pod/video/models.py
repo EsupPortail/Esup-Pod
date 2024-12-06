@@ -833,6 +833,13 @@ class Video(models.Model):
         blank=True,
         null=True,
     )
+    order = models.PositiveSmallIntegerField(
+        _("order"),
+        help_text=_("Order videos in channels or themes."),
+        default=1,
+        blank=True,
+        null=True,
+    )
     thumbnail = models.ForeignKey(
         CustomImageModel,
         on_delete=models.SET_NULL,
@@ -1001,12 +1008,12 @@ class Video(models.Model):
         """
         return 360 if self.is_video else 244
 
-    def get_thumbnail_url(self) -> str:
-        """Get a thumbnail url for the video."""
+    def get_thumbnail_url(self, size="x720") -> str:
+        """Get a thumbnail url for the video, with defined max size."""
         request = None
         if self.thumbnail and self.thumbnail.file_exist():
             # Do not serve thumbnail url directly, as it can lead to the video URL
-            im = get_thumbnail(self.thumbnail.file, "x170", crop="center", quality=80)
+            im = get_thumbnail(self.thumbnail.file, size, crop="center", quality=80)
             return im.url
         else:
             return "".join(
