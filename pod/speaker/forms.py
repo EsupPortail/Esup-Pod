@@ -7,6 +7,7 @@ from django.forms.widgets import HiddenInput
 from .models import Speaker, Job, JobVideo
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from pod.main.context_processors import WEBTV_MODE
+from pod.speaker.context_processors import REQUIRED_SPEAKER_FIRSTNAME
 
 
 class JobWidget(s2forms.ModelSelect2Widget):
@@ -29,7 +30,7 @@ class SpeakerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Init method."""
         super(SpeakerForm, self).__init__(*args, **kwargs)
-        if WEBTV_MODE:
+        if not REQUIRED_SPEAKER_FIRSTNAME:
             self.fields["firstname"].required = False
         self.fields = add_placeholder_and_asterisk(self.fields)
 

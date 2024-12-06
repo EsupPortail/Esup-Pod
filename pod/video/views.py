@@ -30,7 +30,6 @@ from django.utils import timezone
 from django.db.models import Sum, Min
 
 
-
 # from django.contrib.auth.hashers import check_password
 
 from dateutil.parser import parse
@@ -1399,7 +1398,7 @@ def video_delete(request, slug=None):
                 video.video.name = os.path.relpath(temp_file_path, media_root)
                 video.save()
                 video.delete()
-                
+
                 if os.path.exists(temp_file_path):
                     os.remove(temp_file_path)
 

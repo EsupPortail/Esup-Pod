@@ -199,7 +199,7 @@ if USE_IMPORT_VIDEO:
             r"^import_video/", include("pod.import_video.urls", namespace="import_video")
         ),
     ]
-    
+
 if USE_DUPLICATE:
     urlpatterns += [
         path("duplicate/", include("pod.duplicate.urls", namespace="duplicate")),

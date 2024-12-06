@@ -23,6 +23,7 @@ def get_video_speaker(video: Video) -> list:
     """
     return get_video_speakers(video)
 
+
 @register.simple_tag(name="get_video_speaker_grouped")
 def get_video_speaker_grouped(video: Video) -> dict:
     """
@@ -34,5 +35,5 @@ def get_video_speaker_grouped(video: Video) -> dict:
     Returns:
         List[VideoJob]: A list of VideoJob objects representing the speakers associated with the video.
     """
-    
+
     return get_video_speakers_grouped(video)

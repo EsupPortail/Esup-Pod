@@ -2,7 +2,7 @@
 
 from django.conf import settings as django_settings
 
-USE_DUPLICATE= getattr(django_settings, "USE_DUPLICATE", True)
+USE_DUPLICATE = getattr(django_settings, "USE_DUPLICATE", False)
 
 
 def context_settings(request):

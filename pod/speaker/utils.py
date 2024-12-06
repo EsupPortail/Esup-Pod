@@ -27,6 +27,7 @@ def get_video_speakers(video: Video) -> Optional[JobVideo]:
     """
     return JobVideo.objects.filter(video=video)
 
+
 def get_video_speakers_grouped(video) -> Dict[Speaker, List[str]]:
     """
     Group the jobs by speaker for a given video.

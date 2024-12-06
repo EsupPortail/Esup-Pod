@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from pod.video.models import Video, Type, Discipline, Channel, Theme
 
+
 class VideoDuplicateViewTest(TestCase):
     """Test case for duplicating videos."""
 

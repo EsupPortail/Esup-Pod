@@ -5,6 +5,7 @@ from pod.speaker.models import JobVideo
 from pod.video.models import Video
 from django.contrib.auth.decorators import login_required
 
+
 @login_required
 def video_duplicate(request, slug):
     """
@@ -46,9 +47,9 @@ def video_duplicate(request, slug):
         - JobVideo (speakers)
         - Documents
     """
-    
+
     original_video = get_object_or_404(Video, slug=slug)
-    
+
     duplicated_video = Video.objects.create(
         title=f"Copy of {original_video.title}",
         slug=f"{original_video.slug}-copy",
@@ -72,14 +73,13 @@ def video_duplicate(request, slug):
         disable_comment=original_video.disable_comment,
         tags=original_video.tags,
     )
-    
+
     # Many-to-Many Relations
     duplicated_video.discipline.set(original_video.discipline.all())
     duplicated_video.restrict_access_to_groups.set(original_video.restrict_access_to_groups.all())
     duplicated_video.channel.set(original_video.channel.all())
     duplicated_video.theme.set(original_video.theme.all())
 
-    
     # Copying contributors
     for contributor in Contributor.objects.filter(video=original_video):
         Contributor.objects.create(
@@ -89,14 +89,14 @@ def video_duplicate(request, slug):
             role=contributor.role,
             weblink=contributor.weblink,
         )
-    
+
     # Copying speakers
     for job_video in JobVideo.objects.filter(video=original_video):
         JobVideo.objects.create(
             job=job_video.job,
             video=duplicated_video,
         )
-    
+
     # Copying documents
     for document in Document.objects.filter(video=original_video):
         Document.objects.create(
@@ -104,5 +104,5 @@ def video_duplicate(request, slug):
             document=document.document,
             private=document.private,
         )
-    
+
     return redirect(reverse('video:video', args=[duplicated_video.slug]))

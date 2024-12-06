@@ -1096,8 +1096,8 @@
                         }
                     },
                     "title": {
-                        "en": "Dressing application configuration",
-                        "fr": "Configuration de l’application dressing"
+                        "en": "Duplicate application configuration",
+                        "fr": "Configuration de l’application duplicate"
                     }
                 },
                 "enrichment": {
@@ -1132,7 +1132,21 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.8.0"
+                        },
+                        "REQUIRED_SPEAKER_FIRSTNAME": {
+                            "default_value": true,
+                            "description": {
+                                "en": [
+                                    "First name required in the speaker addition form"
+                                ],
+                                "fr": [
+                                    "Prénom obligatoire dans le formulaire d'ajout intervenant"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": ""
                         }
+                        
                     },
                     "title": {
                         "en": "Seaker application configuration",
