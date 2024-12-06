@@ -2175,7 +2175,7 @@ msgstr "Supprimer l’habillage « %s »"
 #, fuzzy
 #| msgid "Video cuts"
 msgid "Video duplicates"
-msgstr "Découpes de vidéo"
+msgstr "Duplication de vidéo"
 
 #: pod/enrichment/apps.py pod/enrichment/models.py
 msgid "Enrichments"
