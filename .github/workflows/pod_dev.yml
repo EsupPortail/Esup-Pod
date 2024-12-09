@@ -138,6 +138,7 @@ jobs:
         with:
           stack-version: 8.16.1
           plugins: analysis-icu
+          security-enabled: false
 
       - name: Setup Pod
         run: |

@@ -59,11 +59,12 @@ jobs:
               with:
                 stack-version: 8.16.1
                 plugins: analysis-icu
+                security-enabled: false
 
             - name: Setup Pod
               run: |
                 python manage.py create_pod_index --settings=pod.main.test_settings
-                curl --insecure -u elastic:changeme -XGET "https://elasticsearch.localhost:9200/pod/_search?pretty=true&q=fr"
+                curl -XGET "https://elasticsearch.localhost:9200/pod/_search?pretty=true&q=fr"
                 python manage.py makemigrations --settings=pod.main.test_settings
                 python manage.py migrate --settings=pod.main.test_settings
                 cd pod
