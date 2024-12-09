@@ -139,5 +139,5 @@ def context_video_data(request):
         "VIDEOS_COUNT": VIDEOS_COUNT,
         "VIDEOS_DURATION": VIDEOS_DURATION,
         "CHANNELS_PER_BATCH": CHANNELS_PER_BATCH,
-        "TAGS": tags
+        "TAGS": tags,
     }

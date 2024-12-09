@@ -3,6 +3,7 @@
 from django import template
 from django.utils.text import capfirst
 from django.urls import reverse
+
 # from django.contrib.sites.shortcuts import get_current_site
 # from django.template import TemplateSyntaxError
 

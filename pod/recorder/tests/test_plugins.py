@@ -132,11 +132,11 @@ class PluginVideoTestCase(TestCase):
 
         recording = Recording.objects.get(id=1)
         title = "A new title"
-        self.assertNotEquals(recording.title, title)
+        self.assertNotEqual(recording.title, title)
 
         change_title(recording, title)
         recording = Recording.objects.get(id=1)
-        self.assertEquals(recording.title, title)
+        self.assertEqual(recording.title, title)
         print("   --->  test_change_title of PluginVideoTestCase: OK!")
 
     def test_change_user(self) -> None:
@@ -145,11 +145,11 @@ class PluginVideoTestCase(TestCase):
 
         recording = Recording.objects.get(id=1)
         user2 = User.objects.create(username="another_user", is_staff=True)
-        self.assertNotEquals(recording.user, user2)
+        self.assertNotEqual(recording.user, user2)
 
         change_user(recording, user2.username)
         recording = Recording.objects.get(id=1)
-        self.assertEquals(recording.user, user2)
+        self.assertEqual(recording.user, user2)
         print("   --->  test_change_user of PluginVideoTestCase: OK!")
 
     def test_link_video_to_event(self) -> None:

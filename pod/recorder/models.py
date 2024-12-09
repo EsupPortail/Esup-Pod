@@ -297,7 +297,7 @@ class Recorder(models.Model):
 
     def get_tag_list(self) -> str:
         """Return a list of comma separated tag names."""
-        return ', '.join(tag.name for tag in self.tags.all())
+        return ", ".join(tag.name for tag in self.tags.all())
 
     class Meta:
         verbose_name = _("Recorder")

@@ -29,9 +29,7 @@ path = "pod/custom/settings_local.py"
 if os.path.exists(path):
     _temp = __import__("pod.custom", globals(), locals(), ["settings_local"])
     USE_DOCKER = getattr(_temp.settings_local, "USE_DOCKER", USE_DOCKER)
-    ES_URL = getattr(
-        _temp.settings_local, "ES_URL", ES_URL
-    )
+    ES_URL = getattr(_temp.settings_local, "ES_URL", ES_URL)
     ES_VERSION = getattr(_temp.settings_local, "ES_VERSION", ES_VERSION)
 
 for application in INSTALLED_APPS:
@@ -48,7 +46,8 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": "db-test.sqlite",
         "OPTIONS": {
-            "timeout": 20,
+            "timeout": 30.0,  # in seconds
+            # see also https://docs.python.org/3.10/library/sqlite3.html#sqlite3.connect
         },
     }
 }

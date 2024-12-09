@@ -12,7 +12,12 @@ from django.utils.translation import gettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from django.http import Http404, HttpResponseBadRequest, JsonResponse, HttpResponseRedirect
+from django.http import (
+    Http404,
+    HttpResponseBadRequest,
+    JsonResponse,
+    HttpResponseRedirect,
+)
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.db import transaction
 
@@ -227,7 +232,7 @@ def toggle_render_playlist_user_has_right(
             if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
                 return redirect(referer)
             else:
-                return redirect('/')
+                return redirect("/")
     else:
         form = PlaylistPasswordForm()
         return render(

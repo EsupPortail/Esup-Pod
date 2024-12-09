@@ -43,6 +43,11 @@ def index_es(video):
                 "An error occured during index creation: %s-%s: %s"
                 % (e.status_code, e.error, e.info)
             )
+    else:
+        logger.warning(
+            "Elasticsearch did not responded to ping request at %s. Video %s not indexed."
+            % (ES_URL, video.id)
+        )
     translation.deactivate()
 
 
@@ -60,9 +65,7 @@ def delete_es(video):
             # Pass transport options to elasticsearch
             es = es.options(ignore_status=[400, 404])
             # Do the deletion
-            delete = es.delete(
-                index=ES_INDEX, id=video.id, refresh=True
-            )
+            delete = es.delete(index=ES_INDEX, id=video.id, refresh=True)
             if DEBUG:
                 logger.info(delete)
             return delete

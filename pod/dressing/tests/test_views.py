@@ -2,6 +2,7 @@
 
 *  run with 'python manage.py test pod.dressing.tests.test_views'
 """
+
 import unittest
 
 from django.contrib.auth.models import User
@@ -19,7 +20,9 @@ from pod.main.models import Configuration
 USE_DRESSING = getattr(settings, "USE_DRESSING", False)
 
 
-@unittest.skipUnless(USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs.")
+@unittest.skipUnless(
+    USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs."
+)
 class VideoDressingViewTest(TestCase):
     """Dressing page test case."""
 
@@ -104,7 +107,9 @@ class VideoDressingViewTest(TestCase):
         print(" --->  test_video_dressing_permission_denied ok")
 
 
-@unittest.skipUnless(USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs.")
+@unittest.skipUnless(
+    USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs."
+)
 class MyDressingViewTest(TestCase):
     """My dressing page tests case."""
 
@@ -168,7 +173,9 @@ class MyDressingViewTest(TestCase):
         print(" --->  test_my_dressing_permission_denied ok")
 
 
-@unittest.skipUnless(USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs.")
+@unittest.skipUnless(
+    USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs."
+)
 class DressingEditViewTest(TestCase):
     """Dressing edit page tests case."""
 
@@ -216,7 +223,9 @@ class DressingEditViewTest(TestCase):
         print(" --->  test_dressing_create_view_permission_denied ok")
 
 
-@unittest.skipUnless(USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs.")
+@unittest.skipUnless(
+    USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs."
+)
 class DressingDeleteViewTest(TestCase):
     """Dressing delete page test case."""
 
@@ -339,7 +348,9 @@ class DressingDeleteViewTest(TestCase):
         print(" --->  test_dressing_delete_view_not_authenticated ok")
 
 
-@unittest.skipUnless(USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs.")
+@unittest.skipUnless(
+    USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs."
+)
 class DressingCreateViewTest(TestCase):
     """Dressing create page test case."""
 

@@ -1269,10 +1269,7 @@ class Video(models.Model):
                 "description": "%s" % self.description,
                 "thumbnail": "%s" % self.get_thumbnail_url(),
                 "duration": "%s" % self.duration,
-                "tags": list(
-                    self.tags.all()
-                    .values("name", "slug")
-                ),
+                "tags": list(self.tags.all().values("name", "slug")),
                 "type": {"title": self.type.title, "slug": self.type.slug},
                 "disciplines": list(
                     self.discipline.all()
@@ -1434,7 +1431,7 @@ class Video(models.Model):
 
     def get_tag_list(self) -> str:
         """Return a list of comma separated tag names."""
-        return ', '.join(tag.name for tag in self.tags.all())
+        return ", ".join(tag.name for tag in self.tags.all())
 
     def update_additional_owners_rights(self) -> None:
         """Update folder rights for additional video owners."""
