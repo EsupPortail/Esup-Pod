@@ -3,7 +3,7 @@
 import os
 import importlib
 
-from ckeditor.fields import RichTextField
+from tinymce.models import HTMLField
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
@@ -89,7 +89,7 @@ class Recorder(models.Model):
     # Recorder name
     name = models.CharField(_("name"), max_length=200, unique=True)
     # Description of the recorder
-    description = RichTextField(_("description"), config_name="complete", blank=True)
+    description = HTMLField(_("description"), blank=True)
     # IP address of the recorder
     address_ip = models.GenericIPAddressField(
         _("Address IP"), unique=True, help_text=_("IP address of the recorder.")
