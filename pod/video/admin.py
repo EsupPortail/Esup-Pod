@@ -211,6 +211,7 @@ class VideoAdmin(admin.ModelAdmin):
             exclude += (
                 "video",
                 "owner",
+                "thumbnail"
             )
         if not USE_TRANSCRIPTION:
             exclude += ("transcript",)
@@ -228,19 +229,19 @@ class VideoAdmin(admin.ModelAdmin):
         actions = ["encode_video", "draft_video"]
 
     @admin.action(description=_("Set as draft"))
-    def draft_video(self, request, queryset):
+    def draft_video(self, request, queryset) -> None:
         for item in queryset:
             item.is_draft = True
             item.save()
 
     @admin.action(description=_("Encode selected"))
-    def encode_video(self, request, queryset):
+    def encode_video(self, request, queryset) -> None:
         for item in queryset:
             item.launch_encode = True
             item.save()
 
     @admin.action(description=_("Transcript selected"))
-    def transcript_video(self, request, queryset):
+    def transcript_video(self, request, queryset) -> None:
         for item in queryset:
             if item.get_video_mp3() and not item.encoding_in_progress:
                 transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)

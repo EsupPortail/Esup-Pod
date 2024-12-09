@@ -959,7 +959,7 @@ class VideoForm(forms.ModelForm):
             )
         self.__init_instance__()
 
-    def __init_instance__(self):
+    def __init_instance__(self) -> None:
         """Initialize a new VideoForm instance for visibility field."""
         if self.instance:
             if self.instance.is_draft:
