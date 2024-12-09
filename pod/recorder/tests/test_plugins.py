@@ -136,7 +136,7 @@ class PluginVideoTestCase(TestCase):
 
         change_title(recording, title)
         recording = Recording.objects.get(id=1)
-        self.assertEquals(recording.title, title)
+        self.assertEqual(recording.title, title)
         print("   --->  test_change_title of PluginVideoTestCase: OK!")
 
     def test_change_user(self) -> None:

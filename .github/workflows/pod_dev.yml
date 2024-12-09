@@ -6,13 +6,13 @@ on:
   push:
     branches:
     - develop
-    - pod_V4
+    - dev_v4
     - features/**
     - dependabot/**
   pull_request:
     branches:
     - develop
-    - pod_V4
+    - dev_v4
   workflow_dispatch:
 
 env:
