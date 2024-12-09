@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_protect
 from pod.video.models import Video
 from pod.chapter.models import Chapter

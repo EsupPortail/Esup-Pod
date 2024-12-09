@@ -14,7 +14,7 @@ from ralph.models.validator import Validator
 
 """
 To use Ralph:
-pip3 install ralph-malph==3.3.0
+pip3 install ralph-malph==5.0.1
 from ralph.models.xapi.fields.actors import AccountActorField
 from ralph.models.xapi.video.statements import VideoPlayed
 actor = AccountActorField(

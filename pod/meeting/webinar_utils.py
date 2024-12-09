@@ -5,7 +5,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.mail import mail_admins
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from .models import Meeting, LiveGateway, Livestream
 from pod.live.models import Event
 from pod.main.views import TEMPLATE_VISIBLE_SETTINGS

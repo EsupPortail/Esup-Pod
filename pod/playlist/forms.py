@@ -4,7 +4,7 @@ from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from pod.meeting.forms import AddOwnerWidget
@@ -12,7 +12,7 @@ from pod.meeting.forms import AddOwnerWidget
 from .apps import FAVORITE_PLAYLIST_NAME
 from .models import Playlist
 
-USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", True)
+USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", False)
 RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY = getattr(
     settings,
     "RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY",

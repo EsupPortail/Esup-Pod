@@ -317,7 +317,7 @@ msgstr "Veuillez entrer un correct temps de fin compris entre 1 et "
 
 #: pod/enrichment/static/js/enrichment.js
 msgid "Please enter a correct image."
-msgstr "Veuillez joindre une image correct."
+msgstr "Veuillez joindre une image."
 
 #: pod/enrichment/static/js/enrichment.js
 msgid "Please enter a correct richtext."
@@ -337,7 +337,7 @@ msgstr "Veuillez joindre un document."
 
 #: pod/enrichment/static/js/enrichment.js
 msgid "Please enter a correct embed."
-msgstr "Veuillez entrer une intégration correct."
+msgstr "Veuillez entrer un code d’intégration correct."
 
 #: pod/enrichment/static/js/enrichment.js
 msgid "Embed field must be less than 200 characters."
