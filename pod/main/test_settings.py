@@ -46,7 +46,8 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": "db-test.sqlite",
         "OPTIONS": {
-            "timeout": 20,
+            "timeout": 30.0,  # in seconds
+            # see also https://docs.python.org/3.10/library/sqlite3.html#sqlite3.connect
         },
     }
 }
