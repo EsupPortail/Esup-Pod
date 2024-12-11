@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-11 11:35+0000\n"
+"POT-Creation-Date: 2024-12-11 14:19+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -101,15 +101,11 @@ msgstr "La discipline proposée par l’IA Aristote."
 msgid "Title"
 msgstr "Titre"
 
-#: pod/ai_enhancement/forms.py
-msgid ""
-"\n"
-"            Please choose a title between 1 and 250 characters.\n"
-"        "
-msgstr ""
-"\n"
-"            Veuillez entrer un titre contenant entre 1 et 250 caractères.\n"
-"        "
+#: pod/ai_enhancement/forms.py pod/playlist/forms.py pod/quiz/forms.py
+#: pod/quiz/models.py
+#, python-format
+msgid "Please choose a title between 1 and %(max)s characters."
+msgstr "Veuillez entrer un titre contenant entre 1 et %(max)s caractères."
 
 #: pod/ai_enhancement/forms.py pod/live/models.py pod/main/forms.py
 #: pod/main/models.py pod/playlist/forms.py pod/playlist/models.py
@@ -4795,7 +4791,7 @@ msgstr "Dernières vidéos"
 msgid "Most views"
 msgstr "Les plus vues"
 
-#: pod/main/models.py
+#: pod/main/models.py pod/video/models.py
 msgid "Order"
 msgstr "Ordre"
 
@@ -6514,7 +6510,7 @@ msgstr ""
 "        <p>Vous avez besoin de ce mot de passe pour entrer : "
 "<strong>%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
-"    "
+" "
 
 #: pod/meeting/views.py
 #, python-format
@@ -6609,7 +6605,7 @@ msgstr ""
 #: pod/meeting/webinar.py
 #, python-format
 msgid "Webinar mode has been successfully stopped for “%(name)s” meeting."
-msgstr "Le mode webinaire a bien été démarré pour la réunion « %(name)s »."
+msgstr "Le mode webinaire a bien été arrêté pour la réunion « %(name)s »."
 
 #: pod/meeting/webinar.py
 #, python-format
@@ -6634,7 +6630,7 @@ msgstr "Trop de webinaires"
 msgid ""
 "There are too many webinars (%(nb_webinars)s) for the number of live "
 "gateways allocated (%(nb_live_gateways)s). The next meeting has been created "
-"but not like a webinar:%(id)s %(name)s [%(start_at)s-%(end_at)s].\n"
+"but not like a webinar: %(id)s %(name)s [%(start_at)s-%(end_at)s].\n"
 "Please fix the problem either by increasing the number of live gateways or "
 "by modifying/deleting one of the affected webinars (with the users’ "
 "agreement).\n"
@@ -6642,7 +6638,7 @@ msgid ""
 msgstr ""
 "Il y a trop de webinaires (%(nb_webinars)s) pour le nombre de passerelles de "
 "live allouées (%(nb_live_gateways)s). La prochaine réunion a été créée mais "
-"pas comme un webinaire :%(id)s %(name)s [%(start_at)s-%(end_at)s].\n"
+"pas comme un webinaire : %(id)s %(name)s [%(start_at)s-%(end_at)s].\n"
 "Veuillez résoudre le problème en augmentant le nombre de passerelles de live "
 "ou en modifiant/supprimant l’un des webinaires concernés (avec l’accord des "
 "utilisateurs).\n"
@@ -6689,10 +6685,6 @@ msgstr "Informations générales"
 #: pod/playlist/forms.py
 msgid "Security informations"
 msgstr "Informations de sécurité"
-
-#: pod/playlist/forms.py pod/quiz/forms.py pod/quiz/models.py
-msgid "Please choose a title between 1 and 250 characters."
-msgstr "Veuillez entrer un titre contenant entre 1 et 250 caractères."
 
 #: pod/playlist/forms.py pod/playlist/models.py
 msgid "Please choose a description. This description is empty by default."
@@ -7193,6 +7185,11 @@ msgstr "La liste de lecture a été créée et la vidéo a été ajoutée dedans
 msgid "The data sent to create the playlist are invalid."
 msgstr ""
 "Les données envoyées pour créer la liste de lecture ne sont pas valides."
+
+#: pod/playlist/views.py
+#, python-format
+msgid "Edit playlist “%(name)s”"
+msgstr "Modifier la liste de lecture « %(name)s »"
 
 #: pod/playlist/views.py
 msgid "JSON in wrong format"

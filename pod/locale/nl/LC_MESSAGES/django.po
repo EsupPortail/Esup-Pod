@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-11 11:35+0000\n"
+"POT-Creation-Date: 2024-12-11 14:19+0000\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -101,11 +101,10 @@ msgstr ""
 msgid "Title"
 msgstr "Titel"
 
-#: pod/ai_enhancement/forms.py
-msgid ""
-"\n"
-"            Please choose a title between 1 and 250 characters.\n"
-"        "
+#: pod/ai_enhancement/forms.py pod/playlist/forms.py pod/quiz/forms.py
+#: pod/quiz/models.py
+#, python-format
+msgid "Please choose a title between 1 and %(max)s characters."
 msgstr ""
 
 #: pod/ai_enhancement/forms.py pod/live/models.py pod/main/forms.py
@@ -6228,7 +6227,7 @@ msgstr ""
 msgid ""
 "There are too many webinars (%(nb_webinars)s) for the number of live "
 "gateways allocated (%(nb_live_gateways)s). The next meeting has been created "
-"but not like a webinar:%(id)s %(name)s [%(start_at)s-%(end_at)s].\n"
+"but not like a webinar: %(id)s %(name)s [%(start_at)s-%(end_at)s].\n"
 "Please fix the problem either by increasing the number of live gateways or "
 "by modifying/deleting one of the affected webinars (with the users’ "
 "agreement).\n"
@@ -6267,10 +6266,6 @@ msgstr ""
 
 #: pod/playlist/forms.py
 msgid "Security informations"
-msgstr ""
-
-#: pod/playlist/forms.py pod/quiz/forms.py pod/quiz/models.py
-msgid "Please choose a title between 1 and 250 characters."
 msgstr ""
 
 #: pod/playlist/forms.py pod/playlist/models.py
@@ -6739,6 +6734,11 @@ msgstr ""
 
 #: pod/playlist/views.py
 msgid "The data sent to create the playlist are invalid."
+msgstr ""
+
+#: pod/playlist/views.py
+#, python-format
+msgid "Edit playlist “%(name)s”"
 msgstr ""
 
 #: pod/playlist/views.py

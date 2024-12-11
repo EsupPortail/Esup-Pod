@@ -102,7 +102,7 @@ def send_email_webinars(
     message = _(
         "There are too many webinars (%(nb_webinars)s) for the number of "
         "live gateways allocated (%(nb_live_gateways)s). "
-        "The next meeting has been created but not like a webinar:%(id)s %(name)s [%(start_at)s-%(end_at)s].\n"
+        "The next meeting has been created but not like a webinar: %(id)s %(name)s [%(start_at)s-%(end_at)s].\n"
         "Please fix the problem either by increasing the number of live gateways "
         "or by modifying/deleting one of the affected webinars "
         "(with the users’ agreement).\n"
