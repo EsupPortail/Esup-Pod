@@ -323,7 +323,7 @@ def render_next_events(uniq_id, params, current_site, debug_elts):
     return part_content
 
 
-def render_html(uniq_id, params, current_site, debug_elts):
+def render_html(uniq_id, params, current_site, debug_elts) -> str:
     """Render block with html content."""
     debug_elts.append("Call function render_html")
 
