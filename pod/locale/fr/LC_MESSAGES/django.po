@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-27 12:02+0100\n"
+"POT-Creation-Date: 2024-12-11 11:35+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -6597,23 +6597,25 @@ msgstr "Vous ne pouvez pas redémarrer ce webinaire en direct."
 
 #: pod/meeting/webinar.py
 #, python-format
-msgid "Webinar mode has been successfully started for “%s” meeting."
-msgstr "Le mode webinaire a bien été démarré pour la réunion « %s »."
+msgid "Webinar mode has been successfully started for “%(name)s” meeting."
+msgstr "Le mode webinaire a bien été démarré pour la réunion « %(name)s »."
 
 #: pod/meeting/webinar.py
 #, python-format
-msgid "Error to start webinar mode for “%s” meeting: %s"
-msgstr "Erreur de démarrage du mode webinaire pour la réunion « %s » : %s"
+msgid "Error to start webinar mode for “%(name)s” meeting: %(exc)s"
+msgstr ""
+"Erreur de démarrage du mode webinaire pour la réunion « %(name)s » : %(exc)s"
 
 #: pod/meeting/webinar.py
 #, python-format
-msgid "Webinar mode has been successfully stopped for “%s” meeting."
-msgstr "Le mode webinaire a bien été arrêté pour la réunion « %s »."
+msgid "Webinar mode has been successfully stopped for “%(name)s” meeting."
+msgstr "Le mode webinaire a bien été démarré pour la réunion « %(name)s »."
 
 #: pod/meeting/webinar.py
 #, python-format
-msgid "Error to stop webinar mode for “%s” meeting: %s"
-msgstr "Erreur dans l’arrêt du mode webinaire pour la réunion « %s » : %s"
+msgid "Error to stop webinar mode for “%(name)s” meeting: %(exc)s"
+msgstr ""
+"Erreur de démarrage du mode webinaire pour la réunion « %(name)s » : %(exc)s"
 
 #: pod/meeting/webinar.py
 msgid ""
@@ -6630,38 +6632,41 @@ msgstr "Trop de webinaires"
 #: pod/meeting/webinar_utils.py
 #, python-format
 msgid ""
-"There are too many webinars (%s) for the number of live gateways allocated "
-"(%s). The next meeting has been created but not like a webinar:%s %s [%s-"
-"%s].\n"
+"There are too many webinars (%(nb_webinars)s) for the number of live "
+"gateways allocated (%(nb_live_gateways)s). The next meeting has been created "
+"but not like a webinar:%(id)s %(name)s [%(start_at)s-%(end_at)s].\n"
 "Please fix the problem either by increasing the number of live gateways or "
 "by modifying/deleting one of the affected webinars (with the users’ "
 "agreement).\n"
-"Other webinars: %s"
+"Other webinars: %(names_webinars)s"
 msgstr ""
-"Il y a trop de webinaires (%s) pour le nombre de passerelles de live "
-"allouées (%s). La prochaine réunion a été créée mais pas comme un webinaire :"
-"%s %s [%s-%s].\n"
+"Il y a trop de webinaires (%(nb_webinars)s) pour le nombre de passerelles de "
+"live allouées (%(nb_live_gateways)s). La prochaine réunion a été créée mais "
+"pas comme un webinaire :%(id)s %(name)s [%(start_at)s-%(end_at)s].\n"
 "Veuillez résoudre le problème en augmentant le nombre de passerelles de live "
 "ou en modifiant/supprimant l’un des webinaires concernés (avec l’accord des "
 "utilisateurs).\n"
-"Autres webinaires : %s"
+"Autres webinaires : %(names_webinars)s"
 
 #: pod/meeting/webinar_utils.py
 #, python-format
 msgid ""
-"<p>There are too many webinars (<b>%s</b>) for the number of live gateways "
-"allocated (<b>%s</b>). The next webinar has been created but <b>not like a "
-"webinar</b>:<ul><li><b>%s %s</b> [%s-%s].</li></ul><p>Please fix the problem "
-"either by increasing the number of live gateways or by modifying/deleting "
-"one of the affected webinars (with the users’ agreement).<br>Other webinars: "
-"<b>%s</b>"
+"<p>There are too many webinars (<strong>%(nb_webinars)s</strong>) for the "
+"number of live gateways allocated (<strong>%(nb_live_gateways)s</strong>). "
+"The next webinar has been created but <strong>not like a webinar</strong>:"
+"<ul><li><strong>%(id)s %(name)s</strong> [%(start_at)s-%(end_at)s].</li></"
+"ul><p>Please fix the problem either by increasing the number of live "
+"gateways or by modifying/deleting one of the affected webinars (with the "
+"users’ agreement).<br>Other webinars: <strong>%(names_webinars)s</strong>"
 msgstr ""
-"<p>Il y a trop de webinaires (<b>%s</b>) pour le nombre de passerelles live "
-"allouées (<b>%s</b>). La prochaine réunion a été créée mais <b>pas comme un "
-"webinaire</b> : <ul><li><b>%s %s</b> [%s-%s].</li></ul><p>Veuillez résoudre "
-"le problème en augmentant le nombre de passerelles live ou en modifiant/"
-"supprimant l’un des webinaires concernés (avec l’accord des utilisateurs)."
-"<br>Autres webinaires : <b>%s</b>"
+"<p>Il y a trop de webinaires (<strong>%(nb_webinars)s</strong>) pour le "
+"nombre de passerelles live allouées (<strong>%(nb_live_gateways)s</strong>). "
+"La prochaine réunion a été créée mais <strong>pas comme un webinaire</"
+"strong> : <ul><li><strong>%(id)s %(name)s</strong> [%(start_at)s-%(end_at)s]."
+"</li></ul><p>Veuillez résoudre le problème en augmentant le nombre de "
+"passerelles live ou en modifiant/supprimant l’un des webinaires concernés "
+"(avec l’accord des utilisateurs).<br>Autres webinaires : "
+"<strong>%(names_webinars)s</strong>"
 
 #: pod/playlist/apps.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/add_or_edit.html
@@ -6739,13 +6744,6 @@ msgid "Please choose if this playlist is an autoplay playlist or not."
 msgstr "Veuillez choisir si cette playlist est en lecture automatique ou non."
 
 #: pod/playlist/forms.py
-#, python-brace-format
-msgid "You cannot create a playlist named \"{FAVORITE_PLAYLIST_NAME}\""
-msgstr ""
-"Vous ne pouvez pas créer une liste de lecture nommée "
-"\"{FAVORITE_PLAYLIST_NAME}\""
-
-#: pod/playlist/forms.py
 msgid "Remove playlist cannot be undone"
 msgstr "La suppression de réunion est définitive"
 
@@ -6773,15 +6771,6 @@ msgstr "Protégé par un mot de passe"
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
 msgstr "Privé"
-
-#: pod/playlist/models.py
-#, python-brace-format
-msgid ""
-"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"characters."
-msgstr ""
-"Veuillez entrer un titre contenant entre 1 et "
-"{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
 
 #: pod/playlist/models.py
 msgid ""
@@ -7188,6 +7177,10 @@ msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
 
 #: pod/playlist/views.py
+msgid "Delete the playlist"
+msgstr "Supprimer la liste de lecture"
+
+#: pod/playlist/views.py
 #, python-format
 msgid "Edit the playlist “%(pname)s”"
 msgstr "Modifier la liste de lecture « %(pname)s »"
@@ -7200,11 +7193,6 @@ msgstr "La liste de lecture a été créée et la vidéo a été ajoutée dedans
 msgid "The data sent to create the playlist are invalid."
 msgstr ""
 "Les données envoyées pour créer la liste de lecture ne sont pas valides."
-
-#: pod/playlist/views.py
-#, python-brace-format
-msgid "Edit playlist “{playlist.name}”"
-msgstr "Éditer la liste de lecture « {playlist.name} »"
 
 #: pod/playlist/views.py
 msgid "JSON in wrong format"
@@ -7587,7 +7575,7 @@ msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
 msgid "Quizzes"
 msgstr "Quiz"
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 msgid "Quiz of video"
 msgstr "Quiz de la vidéo"
 
@@ -10454,8 +10442,10 @@ msgstr "Veuillez entrer un titre."
 
 #: pod/video/utils.py
 #, python-format
-msgid "Please enter a %s from 2 to %s characters."
-msgstr "Veuillez entrer un %s contenant entre 2 et %s caractères."
+msgid "Please enter a %(field_name)s from 2 to %(max_length)s characters."
+msgstr ""
+"Veuillez entrer un %(field_name)s contenant entre 2 et %(max_length)s "
+"caractères."
 
 #: pod/video/views.py
 msgid "You cannot edit this channel."
@@ -10881,12 +10871,3 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#~ msgid "Delete this record."
-#~ msgstr "Supprimer cet enregistrement."
-
-#~ msgid "Preview record."
-#~ msgstr "Prévisualiser l’enregistrement."
-
-#~ msgid "Number of video inside the channel"
-#~ msgstr "Nombre de vidéo à l’intérieur de la chaîne"

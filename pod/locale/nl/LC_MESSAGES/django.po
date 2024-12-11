@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-27 12:02+0100\n"
+"POT-Creation-Date: 2024-12-11 11:35+0000\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2771,15 +2771,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
-"\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
+"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -4549,7 +4549,7 @@ msgstr ""
 msgid "Most views"
 msgstr ""
 
-#: pod/main/models.py
+#: pod/main/models.py pod/video/models.py
 msgid "Order"
 msgstr ""
 
@@ -6145,8 +6145,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
@@ -6160,8 +6160,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting <strong>"
-"%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting "
+"<strong>%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
@@ -6195,22 +6195,22 @@ msgstr ""
 
 #: pod/meeting/webinar.py
 #, python-format
-msgid "Webinar mode has been successfully started for “%s” meeting."
+msgid "Webinar mode has been successfully started for “%(name)s” meeting."
 msgstr ""
 
 #: pod/meeting/webinar.py
 #, python-format
-msgid "Error to start webinar mode for “%s” meeting: %s"
+msgid "Error to start webinar mode for “%(name)s” meeting: %(exc)s"
 msgstr ""
 
 #: pod/meeting/webinar.py
 #, python-format
-msgid "Webinar mode has been successfully stopped for “%s” meeting."
+msgid "Webinar mode has been successfully stopped for “%(name)s” meeting."
 msgstr ""
 
 #: pod/meeting/webinar.py
 #, python-format
-msgid "Error to stop webinar mode for “%s” meeting: %s"
+msgid "Error to stop webinar mode for “%(name)s” meeting: %(exc)s"
 msgstr ""
 
 #: pod/meeting/webinar.py
@@ -6226,24 +6226,25 @@ msgstr ""
 #: pod/meeting/webinar_utils.py
 #, python-format
 msgid ""
-"There are too many webinars (%s) for the number of live gateways allocated "
-"(%s). The next meeting has been created but not like a webinar:%s %s [%s-"
-"%s].\n"
+"There are too many webinars (%(nb_webinars)s) for the number of live "
+"gateways allocated (%(nb_live_gateways)s). The next meeting has been created "
+"but not like a webinar:%(id)s %(name)s [%(start_at)s-%(end_at)s].\n"
 "Please fix the problem either by increasing the number of live gateways or "
 "by modifying/deleting one of the affected webinars (with the users’ "
 "agreement).\n"
-"Other webinars: %s"
+"Other webinars: %(names_webinars)s"
 msgstr ""
 
 #: pod/meeting/webinar_utils.py
 #, python-format
 msgid ""
-"<p>There are too many webinars (<b>%s</b>) for the number of live gateways "
-"allocated (<b>%s</b>). The next webinar has been created but <b>not like a "
-"webinar</b>:<ul><li><b>%s %s</b> [%s-%s].</li></ul><p>Please fix the problem "
-"either by increasing the number of live gateways or by modifying/deleting "
-"one of the affected webinars (with the users’ agreement).<br>Other webinars: "
-"<b>%s</b>"
+"<p>There are too many webinars (<strong>%(nb_webinars)s</strong>) for the "
+"number of live gateways allocated (<strong>%(nb_live_gateways)s</strong>). "
+"The next webinar has been created but <strong>not like a webinar</strong>:"
+"<ul><li><strong>%(id)s %(name)s</strong> [%(start_at)s-%(end_at)s].</li></"
+"ul><p>Please fix the problem either by increasing the number of live "
+"gateways or by modifying/deleting one of the affected webinars (with the "
+"users’ agreement).<br>Other webinars: <strong>%(names_webinars)s</strong>"
 msgstr ""
 
 #: pod/playlist/apps.py pod/playlist/models.py
@@ -6313,11 +6314,6 @@ msgid "Please choose if this playlist is an autoplay playlist or not."
 msgstr ""
 
 #: pod/playlist/forms.py
-#, python-brace-format
-msgid "You cannot create a playlist named \"{FAVORITE_PLAYLIST_NAME}\""
-msgstr ""
-
-#: pod/playlist/forms.py
 msgid "Remove playlist cannot be undone"
 msgstr ""
 
@@ -6342,13 +6338,6 @@ msgstr ""
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
-msgstr ""
-
-#: pod/playlist/models.py
-#, python-brace-format
-msgid ""
-"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"characters."
 msgstr ""
 
 #: pod/playlist/models.py
@@ -6736,6 +6725,10 @@ msgid "The playlist has been deleted."
 msgstr ""
 
 #: pod/playlist/views.py
+msgid "Delete the playlist"
+msgstr ""
+
+#: pod/playlist/views.py
 #, python-format
 msgid "Edit the playlist “%(pname)s”"
 msgstr ""
@@ -6746,11 +6739,6 @@ msgstr ""
 
 #: pod/playlist/views.py
 msgid "The data sent to create the playlist are invalid."
-msgstr ""
-
-#: pod/playlist/views.py
-#, python-brace-format
-msgid "Edit playlist “{playlist.name}”"
 msgstr ""
 
 #: pod/playlist/views.py
@@ -7123,7 +7111,7 @@ msgstr ""
 msgid "Quizzes"
 msgstr ""
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 msgid "Quiz of video"
 msgstr ""
 
@@ -7736,8 +7724,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
-"\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" "
+"target=\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -9767,7 +9755,7 @@ msgstr "Voer een titel in."
 
 #: pod/video/utils.py
 #, python-format
-msgid "Please enter a %s from 2 to %s characters."
+msgid "Please enter a %(field_name)s from 2 to %(max_length)s characters."
 msgstr ""
 
 #: pod/video/views.py
