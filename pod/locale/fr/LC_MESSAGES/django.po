@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-11 14:19+0000\n"
+"POT-Creation-Date: 2024-12-11 15:32+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -6735,6 +6735,11 @@ msgstr "Lecture automatique"
 msgid "Please choose if this playlist is an autoplay playlist or not."
 msgstr "Veuillez choisir si cette playlist est en lecture automatique ou non."
 
+#: pod/playlist/forms.py pod/playlist/tests/test_forms.py
+#, python-format
+msgid "You cannot create a playlist named “%(name)s”"
+msgstr "Vous ne pouvez pas créer une liste de lecture nommée « %(name)s »"
+
 #: pod/playlist/forms.py
 msgid "Remove playlist cannot be undone"
 msgstr "La suppression de réunion est définitive"
@@ -7144,16 +7149,13 @@ msgid "contact its owner"
 msgstr "contacter son propriétaire"
 
 #: pod/playlist/templatetags/favorites_playlist.py
+#: pod/playlist/tests/test_forms.py
 msgid "Favorites"
 msgstr "Favoris"
 
 #: pod/playlist/tests/test_forms.py
 msgid "This field is required."
 msgstr "Ce champ est requis."
-
-#: pod/playlist/tests/test_forms.py
-msgid "You cannot create a playlist named \"Favorites\""
-msgstr "Vous ne pouvez créer une liste de lecture nommé \"Favoris\""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 #, python-format

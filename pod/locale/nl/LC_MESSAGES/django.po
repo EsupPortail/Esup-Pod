@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-11 14:19+0000\n"
+"POT-Creation-Date: 2024-12-11 15:32+0000\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -4456,7 +4456,7 @@ msgstr ""
 msgid "Get the file name"
 msgstr ""
 
-#: pod/main/models.py pod/video/models.py
+#: pod/main/models.py
 msgid "order"
 msgstr ""
 
@@ -4548,7 +4548,7 @@ msgstr ""
 msgid "Most views"
 msgstr ""
 
-#: pod/main/models.py pod/video/models.py
+#: pod/main/models.py
 msgid "Order"
 msgstr ""
 
@@ -6308,6 +6308,11 @@ msgstr ""
 msgid "Please choose if this playlist is an autoplay playlist or not."
 msgstr ""
 
+#: pod/playlist/forms.py pod/playlist/tests/test_forms.py
+#, python-format
+msgid "You cannot create a playlist named “%(name)s”"
+msgstr ""
+
 #: pod/playlist/forms.py
 msgid "Remove playlist cannot be undone"
 msgstr ""
@@ -6695,15 +6700,12 @@ msgid "contact its owner"
 msgstr ""
 
 #: pod/playlist/templatetags/favorites_playlist.py
+#: pod/playlist/tests/test_forms.py
 msgid "Favorites"
 msgstr ""
 
 #: pod/playlist/tests/test_forms.py
 msgid "This field is required."
-msgstr ""
-
-#: pod/playlist/tests/test_forms.py
-msgid "You cannot create a playlist named \"Favorites\""
 msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
