@@ -147,7 +147,7 @@ async function bulkUpdate() {
             dashboardValue = element.checked;
             break;
           case "textarea":
-            dashboardValue = CKEDITOR.instances[element.id].getData();
+            dashboardValue = tinyMCE.get("id_" + element.getAttribute("name")).getContent();
             break;
           default:
             dashboardValue = document.getElementById(
