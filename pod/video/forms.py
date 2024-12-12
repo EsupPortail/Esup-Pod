@@ -1234,7 +1234,7 @@ class FrontThemeForm(ThemeForm):
 
         self.fields["channel"].widget = forms.HiddenInput()
         # self.fields["parentId"].label = _('Theme parent')
-        # Add CKEditor when edit a theme
+        # Add WYSIWYG when edit a theme
         self.fields["description"].widget = TinyMCE()
         for key, _value in settings.LANGUAGES:
             self.fields["description_%s" % key.replace("-", "_")].widget = TinyMCE()
