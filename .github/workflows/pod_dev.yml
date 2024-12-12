@@ -5,14 +5,12 @@ run-name: ${{ github.actor }} is testing Pod encoding in Dev 🚀
 on:
   push:
     branches:
-    - develop
     - dev_v4
-    - features/**
     - dependabot/**
   pull_request:
     branches:
-    - develop
     - dev_v4
+    - pod_v4
   workflow_dispatch:
 
 env:
