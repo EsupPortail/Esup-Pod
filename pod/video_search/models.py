@@ -16,7 +16,7 @@ ES_URL = getattr(settings, "ES_URL", ["http://elasticsearch.localhost:9200/"])
 @receiver(post_save, sender=Video)
 def update_video_index(
     sender, instance=None, created=False, **kwargs
-):  # pragma: no cover
+) -> None:  # pragma: no cover
     """Start index_video as daemon thread."""
     if ES_URL is None:
         return
@@ -25,7 +25,7 @@ def update_video_index(
     t.start()
 
 
-def index_video(video):  # pragma: no cover
+def index_video(video) -> None:  # pragma: no cover
     """Add video in ES index."""
     if video.is_draft is False and video.encoding_in_progress is False:
         index_es(video)
@@ -36,7 +36,7 @@ def index_video(video):  # pragma: no cover
 @receiver(pre_delete, sender=Video)
 def delete_video_index(
     sender, instance=None, created=False, **kwargs
-):  # pragma: no cover
+) -> None:  # pragma: no cover
     """Start delete_es as daemon thread."""
     if ES_URL is None:
         return

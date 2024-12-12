@@ -346,7 +346,7 @@ def case_studio_recording(
         # Cursus
         video.cursus = recorder.cursus
         # Tags
-        video.tags = recorder.tags
+        video.tags = recorder.tags.get_tag_list()
         # Transcription
         if getattr(settings, "USE_TRANSCRIPTION", False):
             video.transcript = recorder.transcript

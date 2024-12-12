@@ -14,14 +14,16 @@ class Command(BaseCommand):
     args = ""
     help = "Creates the Elasticsearch Pod index."
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         """Create the Elasticsearch Pod index."""
         try:
-            delete_index_es()
-            self.stdout.write(self.style.WARNING("The Pod index has been deleted."))
+            if delete_index_es():
+                self.stdout.write(self.style.WARNING("The Pod index has been deleted."))
         except exceptions.NotFoundError:
             self.stdout.write(
                 self.style.WARNING("Pod index not found on ElasticSearch server.")
             )
-        create_index_es()
-        self.stdout.write(self.style.SUCCESS("Video index successfully created on ES."))
+        if create_index_es():
+            self.stdout.write(
+                self.style.SUCCESS("Video index successfully created on ES.")
+            )

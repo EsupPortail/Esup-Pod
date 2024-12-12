@@ -55,7 +55,7 @@ USE_MEETING = getattr(settings, "USE_MEETING", False)
 BBB_API_URL = getattr(settings, "BBB_API_URL", "")
 
 
-def secure_request_for_upload(request):
+def secure_request_for_upload(request) -> None:
     """Check that the request is correct for uploading a recording.
 
     Args:
@@ -219,7 +219,7 @@ def manage_download(
         raise ValueError(mark_safe(str(exc)))
 
 
-def download_video_file(session: Session, source_video_url: str, dest_file: str):
+def download_video_file(session: Session, source_video_url: str, dest_file: str) -> None:
     """Download video file.
 
     Args:
@@ -257,7 +257,7 @@ def download_video_file(session: Session, source_video_url: str, dest_file: str)
 
 def save_video(
     user: User, dest_path: str, recording_name: str, description: str, date_evt=None
-):
+) -> None:
     """Save and encode the Pod video file.
 
     Args:
@@ -309,7 +309,7 @@ def check_url_exists(source_url: str) -> bool:
         return False
 
 
-def verify_video_exists_and_size(video_url: str):
+def verify_video_exists_and_size(video_url: str) -> None:
     """Check that the video file exists and its size does not exceed the limit.
 
     Args:
@@ -336,7 +336,7 @@ def verify_video_exists_and_size(video_url: str):
         raise ValueError(msg)
 
 
-def check_video_size(video_size: int):
+def check_video_size(video_size: int) -> None:
     """Check that the video file size does not exceed the limit.
 
     Args:
@@ -514,7 +514,7 @@ def check_file_exists(source: str) -> bool:
         return False
 
 
-def move_file(source: str, destination: str):
+def move_file(source: str, destination: str) -> None:
     """Move a file from a source to another destination."""
     try:
         # Ensure that the source file exists
@@ -616,7 +616,7 @@ class TypeSourceURL:
     # API URL if supplied
     api_url = ""
 
-    def __init__(self, type, url, extension, api_url):
+    def __init__(self, type, url, extension, api_url) -> None:
         """Initialize."""
         self.type = type
         self.url = url
@@ -632,7 +632,7 @@ class video_parser(HTMLParser):
         HTMLParser (_type_): _description_
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize video parser."""
         super().__init__()
         self.reset()
@@ -644,7 +644,7 @@ class video_parser(HTMLParser):
         self.video_file = ""
         self.video_type = ""
 
-    def handle_starttag(self, tag, attrs):
+    def handle_starttag(self, tag, attrs) -> None:
         """Parse BBB Web page and search video file."""
         attrs = dict(attrs)
         # Search for source tag
@@ -660,7 +660,7 @@ class video_parser(HTMLParser):
             # Found the title line
             self.title_check = True
 
-    def handle_data(self, data):
+    def handle_data(self, data) -> None:
         """Search for title tag."""
         if self.title_check:
             # Get the title that corresponds to recording's name
@@ -696,7 +696,7 @@ class StatelessRecording:
     # Recording id (BBB format), when created on the same BBB infra as meeting module
     recordingId = ""
 
-    def __init__(self, id, name, state):
+    def __init__(self, id, name, state) -> None:
         """Initiliaze."""
         self.id = id
         self.name = name
@@ -710,11 +710,11 @@ class StatelessRecording:
         """Return BBB epoch in milliseconds."""
         return dt.fromtimestamp(float(self.endTime) / 1000)
 
-    def get_duration(self):
+    def get_duration(self) -> str:
         """Return duration."""
         return str(self.get_end_time() - self.get_start_time()).split(".")[0]
 
-    def to_json(self):
+    def to_json(self) -> str:
         """Return recording data (without uploadedToPodBy) in JSON format."""
         exclusion_list = ["uploadedToPodBy"]
         return json.dumps(

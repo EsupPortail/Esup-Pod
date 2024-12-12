@@ -7,13 +7,18 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from django.http import Http404, HttpResponseBadRequest, JsonResponse
+from django.http import (
+    Http404,
+    HttpResponseBadRequest,
+    JsonResponse,
+    HttpResponseRedirect,
+)
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.db import transaction
 
 from pod.main.utils import is_ajax
@@ -44,7 +49,6 @@ from .utils import (
 
 import json
 import hashlib
-from typing import List
 
 
 TEMPLATE_VISIBLE_SETTINGS = getattr(
@@ -75,7 +79,7 @@ __TITLE_SITE__ = (
     else "Pod"
 )
 
-USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", True)
+USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", False)
 
 
 def playlist_list(request: WSGIRequest):
@@ -147,7 +151,7 @@ def playlist_content(request: WSGIRequest, slug: str):
 def render_playlist_page(
     request: WSGIRequest,
     playlist: Playlist,
-    videos: List[Video],
+    videos: list[Video],
     in_favorites_playlist: bool,
     count_videos: int,
     sort_field: str,
@@ -197,7 +201,7 @@ def render_playlist_page(
 def toggle_render_playlist_user_has_right(
     request: WSGIRequest,
     playlist: Playlist,
-    videos: List[Video],
+    videos: list[Video],
     in_favorites_playlist: bool,
     count_videos: int,
     sort_field: str,
@@ -224,7 +228,11 @@ def toggle_render_playlist_user_has_right(
                 messages.ERROR,
                 _("The password is incorrect."),
             )
-            return redirect(request.META["HTTP_REFERER"])
+            referer = request.headers.get("referer", "/")
+            if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+                return redirect(referer)
+            else:
+                return redirect("/")
     else:
         form = PlaylistPasswordForm()
         return render(
@@ -346,7 +354,11 @@ def remove_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
                 "state": "out-playlist",
             }
         )
-    return redirect(request.META["HTTP_REFERER"])
+    referer = request.headers.get("referer", "/")
+    if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+        return redirect(referer)
+    else:
+        return redirect("/")
 
 
 @login_required(redirect_field_name="referrer")
@@ -361,7 +373,11 @@ def add_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
                 "state": "in-playlist",
             }
         )
-    return redirect(request.META["HTTP_REFERER"])
+    referer = request.headers.get("referer", "/")
+    if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+        return redirect(referer)
+    else:
+        return redirect("/")
 
 
 @login_required(redirect_field_name="referrer")
@@ -532,7 +548,11 @@ def favorites_save_reorganisation(request: WSGIRequest, slug: str):
                     playlist_video_1.update(rank=video_2_rank)
                     playlist_video_2.update(rank=video_1_rank)
 
-        return redirect(request.META["HTTP_REFERER"])
+        referer = request.headers.get("referer", "/")
+        if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+            return redirect(referer)
+        else:
+            return redirect("/")
     else:
         raise Http404()
 
@@ -556,7 +576,11 @@ def start_playlist(request: WSGIRequest, slug: str, video: Video = None):
                 messages.add_message(
                     request, messages.ERROR, _("The password is incorrect.")
                 )
-                return redirect(request.META["HTTP_REFERER"])
+                referer = request.headers.get("referer", "/")
+                if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+                    return redirect(referer)
+                else:
+                    return redirect(reverse("playlist:list"))
         else:
             form = PlaylistPasswordForm()
             return render(
