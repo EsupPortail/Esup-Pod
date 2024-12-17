@@ -10,8 +10,7 @@ from django.core.validators import MaxValueValidator
 from django.contrib.sites.models import Site
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from pod.video.models import Video
-from pod.video.utils import get_storage_path_video
+from pod.video.models import Video, get_storage_path_video
 
 ENCODING_CHOICES = getattr(
     settings,

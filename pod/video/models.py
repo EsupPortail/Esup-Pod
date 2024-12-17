@@ -262,9 +262,9 @@ def get_storage_path_video(instance, filename) -> str:
         return os.path.join(
             VIDEOS_DIR,
             instance.owner.owner.hashkey,
-            "%s/%s.%s"
+            os.path.dirname(fname),
+            "%s.%s"
             % (
-                os.path.dirname(fname),
                 slugify(os.path.basename(fname)),
                 extension,
             ),

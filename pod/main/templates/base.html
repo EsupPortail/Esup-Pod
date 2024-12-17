@@ -63,10 +63,9 @@
 <body>
   {% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
   <header>
-    <!-- barre nav-->
     <nav class="pod-navbar navbar fixed-top m-0 p-1 p-md-2">
       {% include 'navbar.html' %}
-    </nav><!-- fin barre nav-->
+    </nav>
     {% include 'navbar_collapse.html' %}
   </header>
   {% block content %}
