@@ -271,25 +271,7 @@ def get_storage_path_video(instance, filename) -> str:
 
     Instance needs to implement owner
     """
-    fname, dot, extension = filename.rpartition(".")
-    try:
-        fname.index("/")
-        return os.path.join(
-            VIDEOS_DIR,
-            instance.owner.owner.hashkey,
-            "%s/%s.%s"
-            % (
-                os.path.dirname(fname),
-                slugify(os.path.basename(fname)),
-                extension,
-            ),
-        )
-    except ValueError:
-        return os.path.join(
-            VIDEOS_DIR,
-            instance.owner.owner.hashkey,
-            "%s.%s" % (slugify(fname), extension),
-        )
+    Video.get_storage_path_video(instance, filename)
 
 
 def verify_field_length(field, field_name: str = "title", max_length: int = 100) -> list:
