@@ -12,6 +12,17 @@
   --bs-btn-active-border-color: #9C5514;
 }
 
+.btn-outline-primary {
+  --bs-btn-color: #9C5514;
+  --bs-btn-border-color: #9C5514;
+  --bs-btn-hover-bg: #9C5514;
+  --bs-btn-hover-border-color: #473321;
+  --bs-btn-active-bg: #9C5514;
+  --bs-btn-active-border-color: #473321;
+  --bs-btn-disabled-color: #9C5514;
+  --bs-btn-disabled-border-color: #473321;
+}
+
 .navbar {
   box-shadow: 0 1px 3px rgb(0 0 0 / 12%), 0 1px 2px rgb(0 0 0 / 24%);
 }

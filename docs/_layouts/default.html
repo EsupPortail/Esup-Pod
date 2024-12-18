@@ -33,7 +33,7 @@
       {% include version_selector.html %}
     </header>
 
-    <div class="position-absolute end-0 me-2" id="collapse-button">
+    <div class="position-fixed end-0 me-2" id="collapse-button">
       <a role="button" href="#toc-page" class="btn btn-outline-primary"
          data-bs-toggle="collapse" aria-expanded="true" aria-controls="toc-page"
          aria-label="Side menu" data-pod-tooltip="true"
@@ -43,6 +43,10 @@
     </div>
 
     <main class="main-grid">
+      <!-- MAIN CONTENT -->
+      <section id="main-content" class="container mt-sm-2 mt-3">
+        {{ content }}
+      </section>
       <!-- Side bar -->
       <nav class="offcanvas offcanvas-end show position-static" tabindex="-1" id="toc-page"
           aria-labelledby="toc-page-label" data-bs-scroll="true">
@@ -53,11 +57,6 @@
           {% include toc.html html=content %}
         </div>
       </nav>
-
-      <!-- MAIN CONTENT -->
-      <section id="main-content" class="container mt-sm-2 mt-3">
-        {{ content }}
-      </section>
     </main>
 
     <!-- FOOTER  -->

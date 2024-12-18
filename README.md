@@ -22,8 +22,8 @@ We invite you to write each page in both French and English, to promote internat
 
 ```sh
 docs/
-├─ \_includes/  # page widgets
-├─ \_layouts/   # page layouts
+├─ _includes/  # page widgets
+├─ _layouts/   # page layouts
 ├─ 3.x/         # Esup-Pod v.3
 │  ├─ index.md  # v.3 home
 ├─ 4.x/         # Esup-Pod v.4
