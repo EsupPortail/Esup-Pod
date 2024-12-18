@@ -3,10 +3,18 @@
 
 @import "rouge";
 
+.highlight {
+  border-left: 3px solid var(--bs-gray-500);
+}
+
 pre.highlight{
   padding: 1rem;
 }
 
 .highlight .nv {
   color: #027F88;
+}
+
+.highlight .nb{
+  color: #0B7AAC;
 }

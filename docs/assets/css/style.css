@@ -12,9 +12,9 @@
   --bs-btn-active-border-color: #9C5514;
 }
 
-.btn-outline-primary {
-  --bs-btn-color: #9C5514;
-  --bs-btn-border-color: #9C5514;
+[data-bs-theme="dark"] .btn-outline-primary {
+  --bs-btn-color: #FFF;
+  --bs-btn-border-color: #FFF;
   --bs-btn-hover-bg: #9C5514;
   --bs-btn-hover-border-color: #473321;
   --bs-btn-active-bg: #9C5514;
