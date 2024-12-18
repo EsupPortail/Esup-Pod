@@ -23,3 +23,10 @@ footer {
 [data-bs-theme="dark"] {
   --bs-heading-color: var(--bs-body-color);
 }
+
+.main-grid {
+  display: grid;
+  grid-template-areas: "intro   toc";
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 4fr 1fr;
+}

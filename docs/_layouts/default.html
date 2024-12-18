@@ -42,21 +42,23 @@
       </a>
     </div>
 
-    <!-- Side bar -->
-    <div class="offcanvas offcanvas-end show" tabindex="-1" id="toc-page"
-         aria-labelledby="toc-page-label">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="toc-page-label">On this page</h5>
-      </div>
-      <div class="offcanvas-body">
-        {% include toc.html html=content %}
-      </div>
-    </div>
+    <main class="main-grid">
+      <!-- Side bar -->
+      <nav class="offcanvas offcanvas-end show position-static" tabindex="-1" id="toc-page"
+          aria-labelledby="toc-page-label" data-bs-scroll="true">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="toc-page-label">On this page</h5>
+        </div>
+        <div class="offcanvas-body">
+          {% include toc.html html=content %}
+        </div>
+      </nav>
 
-    <!-- MAIN CONTENT -->
-    <section id="main_content" class="container mt-sm-2 mt-3">
-      {{ content }}
-    </section>
+      <!-- MAIN CONTENT -->
+      <section id="main-content" class="container mt-sm-2 mt-3">
+        {{ content }}
+      </section>
+    </main>
 
     <!-- FOOTER  -->
     <footer class="container-fluid pt-1 mt-2">
