@@ -21,7 +21,7 @@
         <a id="forkme_banner" class="btn btn-primary" href="{{ site.github.repository_url }}">View on GitHub</a>
       {% endif %}
 
-      <h1 id="project_title">{{ site.title | default: site.github.repository_name }}</h1>
+      <a class="navbar-brand" href="/Esup-Pod">{{ site.title | default: site.github.repository_name }}</a>
 
       {% if site.show_downloads %}
         <section id="downloads">
@@ -32,9 +32,19 @@
       {% include version_selector.html %}
     </header>
 
+    <!-- Side bar -->
+    <div class="offcanvas offcanvas-end show" tabindex="-1" id="toc-page"
+         aria-labelledby="toc-page-label">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="toc-page-label">On this page</h5>
+      </div>
+      <div class="offcanvas-body">
+        {% include toc.html html=content %}
+      </div>
+    </div>
+
     <!-- MAIN CONTENT -->
     <section id="main_content" class="container mt-sm-2 mt-3">
-      {% include toc.html html=content %}
       {{ content }}
     </section>
 

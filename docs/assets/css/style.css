@@ -3,6 +3,15 @@
   --bs-primary-rgb: 21,129,158;
 }
 
+.btn-primary{
+  --bs-btn-bg: #9C5514;
+  --bs-btn-border-color: #9C5514;
+  --bs-btn-hover-bg: #473321;
+  --bs-btn-hover-border-color: #473321;
+  --bs-btn-active-bg: #473321;
+  --bs-btn-active-border-color: #9C5514;
+}
+
 .navbar {
   box-shadow: 0 1px 3px rgb(0 0 0 / 12%), 0 1px 2px rgb(0 0 0 / 24%);
 }
