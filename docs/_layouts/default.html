@@ -31,16 +31,15 @@
         </section>
       {% endif %}
       {% include version_selector.html %}
+      <div class="position-fixed end-0 me-2" id="collapse-button">
+        <a role="button" href="#toc-page" class="btn btn-outline-primary"
+           data-bs-toggle="collapse" aria-expanded="true" aria-controls="toc-page"
+           aria-label="Side menu" data-pod-tooltip="true"
+           data-bs-original-title="Toggle side menu">
+          <i class="bi bi-list" aria-hidden="true"></i>
+        </a>
+      </div>
     </header>
-
-    <div class="position-fixed end-0 me-2" id="collapse-button">
-      <a role="button" href="#toc-page" class="btn btn-outline-primary"
-         data-bs-toggle="collapse" aria-expanded="true" aria-controls="toc-page"
-         aria-label="Side menu" data-pod-tooltip="true"
-         data-bs-original-title="Toggle side menu">
-        <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
-      </a>
-    </div>
 
     <main class="main-grid">
       <!-- MAIN CONTENT -->
@@ -49,7 +48,7 @@
       </section>
       <!-- Side bar -->
       <nav class="offcanvas offcanvas-end show position-static" tabindex="-1" id="toc-page"
-          aria-labelledby="toc-page-label" data-bs-scroll="true">
+          aria-labelledby="toc-page-label" data-bs-scroll="true" data-bs-backdrop="false">
         <div class="offcanvas-header">
           <h5 class="offcanvas-title" id="toc-page-label">On this page</h5>
         </div>
