@@ -79,6 +79,7 @@ def video_duplicate(request, slug):
     duplicated_video.restrict_access_to_groups.set(original_video.restrict_access_to_groups.all())
     duplicated_video.channel.set(original_video.channel.all())
     duplicated_video.theme.set(original_video.theme.all())
+    duplicated_video.additional_owners.set(original_video.additional_owners.all())
 
     # Copying contributors
     for contributor in Contributor.objects.filter(video=original_video):
