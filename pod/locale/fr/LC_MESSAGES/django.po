@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-06 10:28+0100\n"
+"POT-Creation-Date: 2025-01-06 11:25+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -1560,10 +1560,10 @@ msgid "Caption"
 msgstr "Sous-titre / Légende"
 
 #: pod/completion/templates/video_caption_maker.html:94
-#: pod/video/templates/videos/link_video_dropdown_menu.html:8
-#: pod/video/templates/videos/link_video_dropdown_menu.html:12
-#: pod/video/templates/videos/link_video_dropdown_menu.html:13
-#: pod/video/templates/videos/link_video_dropdown_menu.html:16
+#: pod/video/templates/videos/link_video_dropdown_menu.html:10
+#: pod/video/templates/videos/link_video_dropdown_menu.html:14
+#: pod/video/templates/videos/link_video_dropdown_menu.html:15
+#: pod/video/templates/videos/link_video_dropdown_menu.html:18
 msgid "Play"
 msgstr "Lecture"
 
@@ -1937,10 +1937,10 @@ msgid "Please select values between 00:00:00 and "
 msgstr "Veuillez renseigner des valeurs comprises entre 00:00:00 et "
 
 #: pod/cut/templates/video_cut.html:8 pod/cut/templates/video_cut.html:26
-#: pod/video/templates/videos/link_video_dropdown_menu.html:57
-#: pod/video/templates/videos/link_video_dropdown_menu.html:60
-#: pod/video/templates/videos/link_video_dropdown_menu.html:61
-#: pod/video/templates/videos/link_video_dropdown_menu.html:64
+#: pod/video/templates/videos/link_video_dropdown_menu.html:59
+#: pod/video/templates/videos/link_video_dropdown_menu.html:62
+#: pod/video/templates/videos/link_video_dropdown_menu.html:63
+#: pod/video/templates/videos/link_video_dropdown_menu.html:66
 msgid "Cut the video"
 msgstr "Découper la vidéo"
 
@@ -2318,6 +2318,16 @@ msgstr "Supprimer l’habillage « %s »"
 #| msgid "Video cuts"
 msgid "Video duplicates"
 msgstr "Duplication de vidéo"
+
+#: pod/duplicate/views.py:54
+#, python-format
+msgid "Copy of %(title)s"
+msgstr "Copie de %(title)s"
+
+#: pod/duplicate/views.py:55
+#, python-format
+msgid "%(slug)s-copy"
+msgstr "%(slug)s-copie"
 
 #: pod/enrichment/apps.py:7 pod/enrichment/models.py:170
 msgid "Enrichments"
@@ -6495,7 +6505,7 @@ msgstr "S’authentifier"
 #: pod/meeting/templates/meeting/link_meeting.html:17
 #: pod/video/templates/videos/link_video.html:48
 #: pod/video/templates/videos/link_video.html:50
-#: pod/video/templates/videos/link_video_dropdown_menu.html:4
+#: pod/video/templates/videos/link_video_dropdown_menu.html:6
 msgid "More options"
 msgstr "Plus d’options"
 
@@ -10175,45 +10185,50 @@ msgstr "Version par défaut de la vidéo"
 msgid "Original version"
 msgstr "Version originale"
 
-#: pod/video/templates/videos/link_video_dropdown_menu.html:26
-#: pod/video/templates/videos/link_video_dropdown_menu.html:29
-#: pod/video/templates/videos/link_video_dropdown_menu.html:30
-#: pod/video/templates/videos/link_video_dropdown_menu.html:33
+#: pod/video/templates/videos/link_video_dropdown_menu.html:28
+#: pod/video/templates/videos/link_video_dropdown_menu.html:31
+#: pod/video/templates/videos/link_video_dropdown_menu.html:32
+#: pod/video/templates/videos/link_video_dropdown_menu.html:35
 msgid "Enhance the video with AI"
 msgstr "Améliorer la vidéo avec l’IA"
 
-#: pod/video/templates/videos/link_video_dropdown_menu.html:41
-#: pod/video/templates/videos/link_video_dropdown_menu.html:44
-#: pod/video/templates/videos/link_video_dropdown_menu.html:45
-#: pod/video/templates/videos/link_video_dropdown_menu.html:48
+#: pod/video/templates/videos/link_video_dropdown_menu.html:43
+#: pod/video/templates/videos/link_video_dropdown_menu.html:46
+#: pod/video/templates/videos/link_video_dropdown_menu.html:47
+#: pod/video/templates/videos/link_video_dropdown_menu.html:50
 msgid "Complete the video"
 msgstr "Compléter la vidéo"
 
-#: pod/video/templates/videos/link_video_dropdown_menu.html:73
-#: pod/video/templates/videos/link_video_dropdown_menu.html:76
-#: pod/video/templates/videos/link_video_dropdown_menu.html:77
-#: pod/video/templates/videos/link_video_dropdown_menu.html:80
+#: pod/video/templates/videos/link_video_dropdown_menu.html:75
+#: pod/video/templates/videos/link_video_dropdown_menu.html:78
+#: pod/video/templates/videos/link_video_dropdown_menu.html:79
+#: pod/video/templates/videos/link_video_dropdown_menu.html:82
 msgid "Chapter the video"
 msgstr "Chapitrer la vidéo"
 
-#: pod/video/templates/videos/link_video_dropdown_menu.html:87
-#: pod/video/templates/videos/link_video_dropdown_menu.html:90
-#: pod/video/templates/videos/link_video_dropdown_menu.html:91
-#: pod/video/templates/videos/link_video_dropdown_menu.html:94
+#: pod/video/templates/videos/link_video_dropdown_menu.html:89
+#: pod/video/templates/videos/link_video_dropdown_menu.html:92
+#: pod/video/templates/videos/link_video_dropdown_menu.html:93
+#: pod/video/templates/videos/link_video_dropdown_menu.html:96
 msgid "Dress the video"
 msgstr "Habiller la vidéo"
 
-#: pod/video/templates/videos/link_video_dropdown_menu.html:102
-#: pod/video/templates/videos/link_video_dropdown_menu.html:105
-#: pod/video/templates/videos/link_video_dropdown_menu.html:106
-#: pod/video/templates/videos/link_video_dropdown_menu.html:109
+#: pod/video/templates/videos/link_video_dropdown_menu.html:104
+#: pod/video/templates/videos/link_video_dropdown_menu.html:107
+#: pod/video/templates/videos/link_video_dropdown_menu.html:108
+#: pod/video/templates/videos/link_video_dropdown_menu.html:112
 msgid "Duplicate the form"
 msgstr "Dupliquer la fiche"
 
-#: pod/video/templates/videos/link_video_dropdown_menu.html:122
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html:109
+msgid "Are you sure you want to duplicate this form ?"
+msgstr "Êtes-vous sûr de vouloir dupliquer cette fiche ?"
+
 #: pod/video/templates/videos/link_video_dropdown_menu.html:125
-#: pod/video/templates/videos/link_video_dropdown_menu.html:126
+#: pod/video/templates/videos/link_video_dropdown_menu.html:128
 #: pod/video/templates/videos/link_video_dropdown_menu.html:129
+#: pod/video/templates/videos/link_video_dropdown_menu.html:132
 #: pod/video/templates/videos/video_edit.html:33
 msgid "Delete the video"
 msgstr "Supprimer la vidéo"
@@ -11324,12 +11339,3 @@ msgstr "xAPI Esup-Pod"
 
 #~ msgid "Number of video inside the channel"
 #~ msgstr "Nombre de vidéo à l’intérieur de la chaîne"
-
-#: pod/duplicate/views.py:54
-msgid "Copy of %(title)s"
-msgstr "Copie de %(title)s"
-
-#: pod/duplicate/views.py:55
-msgid "%(slug)s-copy"
-msgstr "%(slug)s-copie"
-
