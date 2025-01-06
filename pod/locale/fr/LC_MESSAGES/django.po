@@ -10222,7 +10222,7 @@ msgstr "Dupliquer la fiche"
 
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html:109
-msgid "Are you sure you want to duplicate this form ?"
+msgid "Are you sure you want to duplicate this form?"
 msgstr "Êtes-vous sûr de vouloir dupliquer cette fiche ?"
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html:125
