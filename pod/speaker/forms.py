@@ -6,8 +6,7 @@ from django import forms
 from django.forms.widgets import HiddenInput
 from .models import Speaker, Job, JobVideo
 from pod.main.forms_utils import add_placeholder_and_asterisk
-from pod.main.context_processors import WEBTV_MODE
-from pod.speaker.context_processors import REQUIRED_SPEAKER_FIRSTNAME
+from pod.main.context_processors import REQUIRED_SPEAKER_FIRSTNAME
 
 
 class JobWidget(s2forms.ModelSelect2Widget):

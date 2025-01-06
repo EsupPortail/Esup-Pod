@@ -6,6 +6,7 @@ from pod.video.models import Video
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext as _
 
+
 @login_required
 def video_duplicate(request, slug):
     """
@@ -51,8 +52,8 @@ def video_duplicate(request, slug):
     original_video = get_object_or_404(Video, slug=slug)
 
     duplicated_video = Video.objects.create(
-        title = _("Copy of %(title)s") % {'title': original_video.title},
-        slug = _("%(slug)s-copy") % {'slug': original_video.slug},
+        title=_("Copy of %(title)s") % {'title': original_video.title},
+        slug=_("%(slug)s-copy") % {'slug': original_video.slug},
         type=original_video.type,
         owner=request.user,
         description=original_video.description,

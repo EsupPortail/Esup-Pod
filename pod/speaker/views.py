@@ -14,7 +14,7 @@ from django.contrib import messages
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.core.handlers.wsgi import WSGIRequest
 from django.db import transaction
-from pod.main.context_processors import WEBTV_MODE
+from pod.speaker.context_processors import REQUIRED_SPEAKER_FIRSTNAME
 
 
 @csrf_protect
