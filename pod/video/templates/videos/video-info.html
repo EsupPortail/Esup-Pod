@@ -176,12 +176,6 @@
         <span class="pod-meta-title">{% trans 'Speaker(s):' %}</span>
         <div>
           <ul>
-            {% comment %} {% get_video_speaker video as speaker_in_video %}
-            {% for speaker in speaker_in_video %}
-              <li>
-                {{ speaker.job.speaker.firstname }} {{ speaker.job.speaker.lastname }} ({{ speaker.job.title }})
-              </li>
-            {% endfor %} {% endcomment %}
             {% get_video_speaker_grouped video as grouped_speakers %}
             {% for speaker, jobs in grouped_speakers.items %}
               <li>

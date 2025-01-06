@@ -1081,7 +1081,7 @@
                     },
                     "settings": {
                         "USE_DUPLICATE": {
-                            "default_value": true,
+                            "default_value": false,
                             "description": {
                                 "en": [
                                     "Activation of duplicate. Allows users to duplicate a video"
