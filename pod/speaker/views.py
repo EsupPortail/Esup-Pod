@@ -14,7 +14,7 @@ from django.contrib import messages
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.core.handlers.wsgi import WSGIRequest
 from django.db import transaction
-from pod.speaker.context_processors import REQUIRED_SPEAKER_FIRSTNAME
+from django.conf import settings
 
 
 @csrf_protect
@@ -196,7 +196,7 @@ def edit_speaker_details(request: WSGIRequest):
     firstname = request.POST.get("firstname")
     lastname = request.POST.get("lastname")
 
-    if REQUIRED_SPEAKER_FIRSTNAME:
+    if settings.REQUIRED_SPEAKER_FIRSTNAME:
         if not speakerid or not firstname or not lastname:
             raise ValueError("Missing speaker information")
     else:
