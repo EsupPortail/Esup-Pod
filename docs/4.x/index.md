@@ -1,5 +1,6 @@
 ---
 layout: default
+version: 4.x
 ---
 
 # Installation de Pod v4.x

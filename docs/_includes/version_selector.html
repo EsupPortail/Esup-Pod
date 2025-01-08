@@ -1,4 +1,4 @@
 <select id="version-selector" onchange="location = this.value;">
-  <option value="/Esup-Pod/3.x">Version 3.x</option>
-  <option value="/Esup-Pod/4.x">Version 4.x</option>
+  <option value="/Esup-Pod/3.x" {% if page.version == "3.x" %}selected{% endif %}>Version 3.x</option>
+  <option value="/Esup-Pod/4.x" {% if page.version contains "4." %}selected{% endif %}>Version 4.x</option>
 </select>

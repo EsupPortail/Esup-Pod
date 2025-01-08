@@ -1,5 +1,6 @@
 ---
 layout: default
+version: 3.x
 ---
 
 # Installation de Pod v3.x
