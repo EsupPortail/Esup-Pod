@@ -186,42 +186,6 @@ def add_recording(request):
     return render(request, "recorder/add_recording.html", {"form": form})
 
 
-"""
-def reformat_url_if_use_cas_or_shib(request, link_url):
-    # Pointing to the URL of the CAS allows to reach the already
-    # authenticated form URL like
-    # https://pod.univ.fr/sso-cas/login/?next=https%3A%2F%2Fpod.univ
-    # .fr%2Fadd_recording%2F%3Fmediapath%3Df18a5104-5a80-47a8-954e
-    # -7a142a67a935.zip%26course_title%3DEnregistrement%252021
-    # %2520juin%25202019%26recorder%3D1
-    host = (
-        "https://%s" % request.get_host()
-        if (request.is_secure())
-        else "http://%s" % request.get_host()
-    )
-    if not link_url.startswith(("/", host)):
-        raise SuspiciousOperation("link url is not internal")
-    if USE_CAS:
-        return "".join(
-            [
-                request.build_absolute_uri("/"),
-                "sso-cas/login/?next=",
-                urllib.parse.quote_plus(link_url),
-            ]
-        )
-    elif USE_SHIB:
-        return "".join(
-            [
-                request.build_absolute_uri(LOGIN_URL),
-                "?referrer=",
-                urllib.parse.quote_plus(link_url),
-            ]
-        )
-    else:
-        return link_url
-"""
-
-
 def video_publish(recorder, mediapath, request, course_title):
     """Assign a video by email or automatically depending on the configuration of the recorder."""
     if recorder.publication_auto is True:

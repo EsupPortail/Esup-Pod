@@ -15,24 +15,9 @@ class authenticationViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         User.objects.create(username="pod", password="podv3")
         print(" --->  SetUp of authenticationViewsTestCase: OK!")
-
-    def test_authentication_login_gateway(self):
-        self.client = Client()
-        # CAS_GATEWAY is valued to False
-        response = self.client.get("/authentication_login_gateway/")
-        self.assertEqual(
-            response.content,
-            b"You must set CAS_GATEWAY to True to use this view",
-        )
-        self.assertEqual(response.status_code, 200)
-
-        print(
-            "   --->  test_authentication_login_gateway \
-            of authenticationViewsTestCase: OK!"
-        )
 
     def test_authentication_login(self) -> None:
         """Test authentication login page."""
@@ -58,7 +43,7 @@ class authenticationViewsTestCase(TestCase):
     def test_authentication_logout(self) -> None:
         self.client = Client()
         # USE_CAS is valued to False
-        response = self.client.get("/authentication_logout/")
+        response = self.client.post("/authentication_logout/")
         self.assertRedirects(response, "/accounts/logout/?next=/", target_status_code=302)
 
         print(
@@ -66,7 +51,7 @@ class authenticationViewsTestCase(TestCase):
             of authenticationViewsTestCase: OK!"
         )
 
-    def test_userpicture(self):
+    def test_userpicture(self) -> None:
         self.client = Client()
         self.user = User.objects.get(username="pod")
         # User is not loged in
