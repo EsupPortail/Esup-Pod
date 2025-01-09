@@ -4074,7 +4074,7 @@
                             "pod_version_init": "3.1.0"
                         },
                         "FFMPEG_CREATE_THUMBNAIL": {
-                            "default_value": "-vf \"fps=1/(%(duration)s/%(nb_thumbnail)s)\" -vsync vfr \"%(output)s_%%04d.png\"",
+                            "default_value": "-vf \"fps=1/(%(duration)s/%(nb_thumbnail)s)\" -fps_mode passthrough \"%(output)s_%%04d.png\"",
                             "description": {
                                 "en": [
                                     ""
@@ -4230,7 +4230,7 @@
                             "pod_version_init": "3.1.0"
                         },
                         "FFMPEG_MP4_ENCODE": {
-                            "default_value": "-map 0:v:0 %(map_audio)s -c:v %(libx)s -vf \"scale=-2:%(height)s\" -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a %(ba)s -movflags faststart -y -vsync 0 \"%(output)s\"",
+                            "default_value": "-map 0:v:0 %(map_audio)s -c:v %(libx)s -vf \"scale=-2:%(height)s\" -preset %(preset)s -profile:v %(profile)s -pix_fmt yuv420p -level %(level)s -crf %(crf)s -maxrate %(maxrate)s -bufsize %(bufsize)s -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -max_muxing_queue_size 4000 -c:a aac -ar 48000 -b:a %(ba)s -movflags faststart -y -fps_mode passthrough \"%(output)s\"",
                             "description": {
                                 "en": [
                                     ""
