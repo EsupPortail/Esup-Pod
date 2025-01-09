@@ -20,6 +20,14 @@ def is_staff_affiliation(affiliation) -> bool:
     return affiliation in AFFILIATION_STAFF
 
 
+def pod_affiliation_handler(user, affiliations) -> None:
+    """Handle user affiliation."""
+    for affiliation in affiliations:
+        if is_staff_affiliation(affiliation):
+            user.is_staff = True
+            user.save()
+
+
 class ShibbBackend(ShibbolethRemoteUserBackend):
     """Shibboleth backend authentication."""
 

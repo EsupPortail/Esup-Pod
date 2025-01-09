@@ -23,20 +23,12 @@ from pod.authentication.backends import (
     OIDC_CLAIM_GIVEN_NAME,
 )
 
+# ggignore-start
+# gitguardian:ignore
+PWD = "pod1234pod"  # nosec
+# ggignore-end
 
-"""
-USER_CAS_MAPPING_ATTRIBUTES = getattr(
-    settings, 'USER_CAS_MAPPING_ATTRIBUTES',
-    {
-        "uid": "uid",
-        "mail": "mail",
-        "last_name": "sn",
-        "first_name": "givenname",
-        "primaryAffiliation": "eduPersonPrimaryAffiliation",
-        "affiliation": "eduPersonAffiliation",
-        "groups": "memberOf"
-    })
-"""
+
 USER_CAS_MAPPING_ATTRIBUTES_TEST_NOGROUPS = {
     "uid": "uid",
     "mail": "mail",
@@ -131,10 +123,7 @@ class PopulatedCASTestCase(TestCase):
         self.assertEqual(user.email, "pod@univ.fr")
         self.assertEqual(user.first_name, "Univ")
         self.assertEqual(user.last_name, "Pod")
-        # CREATE_GROUP_FROM_AFFILIATION = getattr(
-        #    settings, 'CREATE_GROUP_FROM_AFFILIATION', False)
-        # CREATE_GROUP_FROM_GROUPS = getattr(
-        #    settings, 'CREATE_GROUP_FROM_GROUPS', False)
+
         # check no group are created any from affiliation or groups
         self.assertEqual(user.is_staff, True)
         self.assertEqual(AccessGroup.objects.all().count(), 2)
@@ -144,7 +133,7 @@ class PopulatedCASTestCase(TestCase):
             " of PopulatedCASTestCase: OK!"
         )
 
-    @override_settings(DEBUG=False, CREATE_GROUP_FROM_AFFILIATION=True)
+    @override_settings(DEBUG=False, CAS_MAP_AFFILIATIONS=True)
     def test_populate_user_from_tree_affiliation(self) -> None:
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
@@ -163,7 +152,7 @@ class PopulatedCASTestCase(TestCase):
 
     @override_settings(
         DEBUG=True,
-        CREATE_GROUP_FROM_AFFILIATION=True,
+        CAS_MAP_AFFILIATIONS=True,
         CREATE_GROUP_FROM_GROUPS=True,
     )
     def test_populate_user_from_tree_affiliation_group(self) -> None:
@@ -191,7 +180,7 @@ class PopulatedCASTestCase(TestCase):
 
     @override_settings(
         DEBUG=True,
-        CREATE_GROUP_FROM_AFFILIATION=True,
+        CAS_MAP_AFFILIATIONS=True,
         CREATE_GROUP_FROM_GROUPS=True,
         USER_CAS_MAPPING_ATTRIBUTES=USER_CAS_MAPPING_ATTRIBUTES_TEST_NOGROUPS,
     )
@@ -220,7 +209,7 @@ class PopulatedCASTestCase(TestCase):
 
     @override_settings(
         DEBUG=True,
-        CREATE_GROUP_FROM_AFFILIATION=True,
+        CAS_MAP_AFFILIATIONS=True,
         CREATE_GROUP_FROM_GROUPS=True,
         POPULATE_USER="CAS",
     )
@@ -334,10 +323,7 @@ class PopulatedLDAPTestCase(TestCase):
         self.assertEqual(user.email, "pod@univ.fr")
         self.assertEqual(user.first_name, "Univ")
         self.assertEqual(user.last_name, "Pod")
-        # CREATE_GROUP_FROM_AFFILIATION = getattr(
-        #    settings, 'CREATE_GROUP_FROM_AFFILIATION', False)
-        # CREATE_GROUP_FROM_GROUPS = getattr(
-        #    settings, 'CREATE_GROUP_FROM_GROUPS', False)
+
         # check no group are created any from affiliation or groups
         self.assertEqual(user.is_staff, True)
         self.assertEqual(AccessGroup.objects.all().count(), 2)

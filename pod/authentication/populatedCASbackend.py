@@ -37,8 +37,6 @@ USER_CAS_MAPPING_ATTRIBUTES = getattr(
     },
 )
 
-CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
-
 CREATE_GROUP_FROM_GROUPS = getattr(settings, "CREATE_GROUP_FROM_GROUPS", False)
 
 GROUP_STAFF = AFFILIATION_STAFF
@@ -244,17 +242,6 @@ def populate_user_from_entry(user, owner, entry) -> None:
     for affiliation in affiliations:
         if affiliation in AFFILIATION_STAFF:
             user.is_staff = True
-        if CREATE_GROUP_FROM_AFFILIATION:
-            accessgroup, group_created = AccessGroup.objects.get_or_create(
-                code_name=affiliation
-            )
-            if group_created:
-                accessgroup.display_name = affiliation
-                accessgroup.auto_sync = True
-            accessgroup.sites.add(Site.objects.get_current())
-            accessgroup.save()
-            # group.groupsite.sites.add(Site.objects.get_current())
-            user.owner.accessgroup_set.add(accessgroup)
     create_accessgroups(user, entry, "ldap")
     user.save()
     owner.save()
@@ -297,17 +284,6 @@ def populate_user_from_tree(user, owner, tree) -> None:
     for affiliation in affiliation_element:
         if affiliation.text in AFFILIATION_STAFF:
             user.is_staff = True
-        if CREATE_GROUP_FROM_AFFILIATION:
-            accessgroup, group_created = AccessGroup.objects.get_or_create(
-                code_name=affiliation.text
-            )
-            if group_created:
-                accessgroup.display_name = affiliation.text
-                accessgroup.auto_sync = True
-            accessgroup.sites.add(Site.objects.get_current())
-            accessgroup.save()
-            user.owner.accessgroup_set.add(accessgroup)
-    create_accessgroups(user, tree, "cas")
     user.save()
     owner.save()
 

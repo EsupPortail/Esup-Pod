@@ -10,13 +10,18 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 
+# ggignore-start
+# gitguardian:ignore
+PWD = "pod1234pod"  # nosec
+# ggignore-end
+
 class authenticationViewsTestCase(TestCase):
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self) -> None:
-        User.objects.create(username="pod", password="podv3")
+        User.objects.create(username="pod", password=PWD)
         print(" --->  SetUp of authenticationViewsTestCase: OK!")
 
     def test_authentication_login(self) -> None:

@@ -316,6 +316,21 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "CAS_MAP_AFFILIATIONS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Si True, des groupes sont créés automatiquement",
+                                    "à partir des affiliations CAS des individus qui se connectent sur la plateforme",
+                                    "et l’individu qui se connecte est ajouté automatiquement à ces groupes."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.0"
+                        },
                         "CREATE_GROUP_FROM_AFFILIATION": {
                             "default_value": false,
                             "description": {
@@ -325,7 +340,9 @@
                                 "fr": [
                                     "Si True, des groupes sont créés automatiquement",
                                     "à partir des affiliations des individus qui se connectent sur la plateforme",
-                                    "et l’individu qui se connecte est ajouté automatiquement à ces groupes."
+                                    "et l’individu qui se connecte est ajouté automatiquement à ces groupes.",
+                                    "À partir de Pod V4, cette option ne fonctionne plus que pour Shib.",
+                                    "Si vous passez par CAS, utilisez plutôt `CAS_MAP_AFFILIATIONS`."
                                 ]
                             },
                             "pod_version_end": "",
@@ -729,10 +746,11 @@
                                 ],
                                 "fr": [
                                     "Liste de correspondance entre les champs d’un compte de Pod",
-                                    "et les champs renvoyés par le CAS."
+                                    "et les champs renvoyés par le CAS.",
+                                    "OBSOLÈTE. Utilisez désormais `CAS_RENAME_ATTRIBUTES`."
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "4.0",
                             "pod_version_init": "3.1"
                         },
                         "USER_LDAP_MAPPING_ATTRIBUTES": {
