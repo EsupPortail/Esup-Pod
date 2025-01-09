@@ -441,9 +441,7 @@ def update_settings(local_settings):
             "pod.authentication.populatedCASbackend.populateUser",
             # function call to add some information to user login by CAS
         )
-        local_settings["MIDDLEWARE"].append(
-            "django_cas_ng.middleware.CASMiddleware"
-        )
+        local_settings["MIDDLEWARE"].append("django_cas_ng.middleware.CASMiddleware")
 
     if local_settings.get("USE_SHIB", False):
         local_settings["AUTHENTICATION_BACKENDS"] += (

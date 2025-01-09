@@ -14,6 +14,7 @@ SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 PWD = "pod1234pod"  # nosec
 # ggignore-end
 
+
 class OwnerTestCase(TestCase):
     """Owner Test Case."""
 

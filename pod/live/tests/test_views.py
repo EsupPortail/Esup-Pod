@@ -36,6 +36,7 @@ else:
 PWD = "pod1234pod"  # nosec
 # ggignore-end
 
+
 class LiveViewsTestCase(TestCase):
     """Test case for Pod Live views."""
 

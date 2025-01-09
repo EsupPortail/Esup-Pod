@@ -15,6 +15,7 @@ from django.utils.translation import gettext_lazy as _
 PWD = "pod1234pod"  # nosec
 # ggignore-end
 
+
 class authenticationViewsTestCase(TestCase):
     fixtures = [
         "initial_data.json",

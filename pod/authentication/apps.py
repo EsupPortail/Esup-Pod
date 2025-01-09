@@ -42,11 +42,13 @@ class AuthConfig(AppConfig):
         post_migrate.connect(set_default_site, sender=self)
 
         from django.conf import settings
+
         USE_CAS = getattr(settings, "USE_CAS", False)
         if USE_CAS:
             from pod.authentication.backends import pod_affiliation_handler
+
             # Append the custom handler to the CAS_AFFILIATION_HANDLERS
-            if hasattr(settings, 'CAS_AFFILIATION_HANDLERS'):
+            if hasattr(settings, "CAS_AFFILIATION_HANDLERS"):
                 settings.CAS_AFFILIATION_HANDLERS.append(pod_affiliation_handler)
             else:
                 settings.CAS_AFFILIATION_HANDLERS = [pod_affiliation_handler]

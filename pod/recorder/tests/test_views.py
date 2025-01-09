@@ -26,6 +26,7 @@ OPENCAST_DEFAULT_PRESENTER = getattr(settings, "OPENCAST_DEFAULT_PRESENTER", "mi
 PWD = "pod1234pod"  # nosec
 # ggignore-end
 
+
 class RecorderViewsTestCase(TestCase):
     """Test case for Pod recorder views."""
 

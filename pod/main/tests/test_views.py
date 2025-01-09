@@ -29,6 +29,7 @@ import importlib
 PWD = "pod1234pod"  # nosec
 # ggignore-end
 
+
 class MainViewsTestCase(TestCase):
     """Main views test cases."""
 
