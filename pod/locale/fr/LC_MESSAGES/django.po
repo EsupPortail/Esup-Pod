@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-10 16:37+0100\n"
+"POT-Creation-Date: 2025-01-10 16:44+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2175,17 +2175,17 @@ msgstr "Supprimer l’habillage « %s »"
 #, fuzzy
 #| msgid "Video cuts"
 msgid "Video duplicates"
-msgstr "Découpes de vidéo"
+msgstr "Duplication de vidéo"
 
 #: pod/duplicate/views.py
 #, python-format
 msgid "%(slug)s-copy"
-msgstr ""
+msgstr "%(slug)s-copie"
 
 #: pod/duplicate/views.py
 #, python-format
 msgid "Copy of %(title)s"
-msgstr ""
+msgstr "Copie de %(title)s"
 
 #: pod/enrichment/apps.py pod/enrichment/models.py
 msgid "Enrichments"
@@ -9829,16 +9829,12 @@ msgid "Dress the video"
 msgstr "Habiller la vidéo"
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
-#, fuzzy
-#| msgid "Delete the record"
 msgid "Duplicate the form"
-msgstr "Supprimer cet enregistrement"
+msgstr "Dupliquer la vidéo"
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
-#, fuzzy
-#| msgid "Are you sure you want to apply these changes?"
 msgid "Are you sure you want to duplicate this form?"
-msgstr "Voulez-vous vraiment appliquer ces changements ?"
+msgstr "Voulez-vous vraiment dupliquer la vidéo ?"
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
 #: pod/video/templates/videos/video_edit.html
@@ -10366,10 +10362,8 @@ msgid "The video is currently waiting for Aristote AI treatment."
 msgstr "La vidéo est actuellement en attente du traitement par l’IA Aristote."
 
 #: pod/video/templates/videos/video_page_content.html
-#, fuzzy
-#| msgid "The found file is not a valid video."
 msgid "The form does not contain a video."
-msgstr "Le fichier trouvé n’est pas une vidéo valide."
+msgstr "La fiche ne contient pas de vidéo."
 
 #: pod/video/templates/videos/video_row_select.html
 msgid "Selected"
