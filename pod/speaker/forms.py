@@ -29,7 +29,7 @@ class SpeakerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Init method."""
         super(SpeakerForm, self).__init__(*args, **kwargs)
-        if not settings.REQUIRED_SPEAKER_FIRSTNAME:
+        if not getattr(settings, "REQUIRED_SPEAKER_FIRSTNAME", False):
             self.fields["firstname"].required = False
         self.fields = add_placeholder_and_asterisk(self.fields)
 

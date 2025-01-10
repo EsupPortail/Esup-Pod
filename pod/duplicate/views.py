@@ -5,6 +5,23 @@ from pod.speaker.models import JobVideo
 from pod.video.models import Video
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext as _
+from django.utils.text import slugify
+
+
+def generate_unique_slug(base_slug):
+    """
+    Generates a unique slug based on the given base slug.
+    Args:
+        base_slug (str): The base slug to be made unique.
+    Returns:
+        str: A unique slug based on the given base slug
+    """
+    slug = base_slug
+    counter = 1
+    while Video.objects.filter(slug=slug).exists():
+        slug = f"{base_slug}-{counter}"
+        counter += 1
+    return slug
 
 
 @login_required
@@ -22,14 +39,14 @@ def video_duplicate(request, slug):
         - title (prefixed with "Copy of ")
         - slug (suffixed with "-copy")
         - type
-        - owner (set to the current user)
+        - owner t to the current user)
         - description, description_fr, description_en
         - date_evt
         - cursus
         - main_lang
         - licence
         - thumbnail
-        - is_draft (set to True)
+        - is_draft (set to True)w
         - is_restricted
         - password
         - allow_downloading
@@ -50,10 +67,11 @@ def video_duplicate(request, slug):
     """
 
     original_video = get_object_or_404(Video, slug=slug)
+    new_slug = generate_unique_slug(slugify(_("%(slug)s-copy") % {'slug': original_video.slug}))
 
     duplicated_video = Video.objects.create(
         title=_("Copy of %(title)s") % {'title': original_video.title},
-        slug=_("%(slug)s-copy") % {'slug': original_video.slug},
+        slug=new_slug,
         type=original_video.type,
         owner=request.user,
         description=original_video.description,
@@ -107,4 +125,4 @@ def video_duplicate(request, slug):
             private=document.private,
         )
 
-    return redirect(reverse('video:video', args=[duplicated_video.slug]))
+    return redirect(reverse('video:video_edit', args=[duplicated_video.slug]))

@@ -196,7 +196,7 @@ def edit_speaker_details(request: WSGIRequest):
     firstname = request.POST.get("firstname")
     lastname = request.POST.get("lastname")
 
-    if settings.REQUIRED_SPEAKER_FIRSTNAME:
+    if getattr(settings, "REQUIRED_SPEAKER_FIRSTNAME", False):
         if not speakerid or not firstname or not lastname:
             raise ValueError("Missing speaker information")
     else:
