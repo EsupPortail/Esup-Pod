@@ -39,14 +39,14 @@ def video_duplicate(request, slug):
         - title (prefixed with "Copy of ")
         - slug (suffixed with "-copy")
         - type
-        - owner t to the current user)
+        - owner (set to the current user)
         - description, description_fr, description_en
         - date_evt
         - cursus
         - main_lang
         - licence
         - thumbnail
-        - is_draft (set to True)w
+        - is_draft (set to True)
         - is_restricted
         - password
         - allow_downloading
@@ -60,6 +60,7 @@ def video_duplicate(request, slug):
         - restrict_access_to_groups
         - channel
         - theme
+        - additional_owners
     The following related objects are also duplicated:
         - Contributors
         - JobVideo (speakers)
