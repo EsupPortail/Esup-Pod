@@ -10,7 +10,6 @@ from django.urls import reverse
 from django.conf import settings
 from django.http import JsonResponse
 from django.db.models import Q
-from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 
 from .models import Video
