@@ -49,7 +49,8 @@
   </div>
 </div>
 
-  {% if event.is_draft == False or event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser %} <!-- Début modale -->
+  {% if event.is_draft == False or event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser %}
+    <!-- Start modal -->
     <div class="modal fade" id="share" tabindex="-1" aria-labelledby="shareLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
