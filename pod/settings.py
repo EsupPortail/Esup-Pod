@@ -493,3 +493,5 @@ if (
     and importlib.util.find_spec("django_extensions") is not None
 ):
     INSTALLED_APPS.append("django_extensions")
+
+REQUIRED_SPEAKER_FIRSTNAME = True
