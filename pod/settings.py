@@ -397,6 +397,9 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr", "en")
 # }
 
 
+REQUIRED_SPEAKER_FIRSTNAME = False
+
+
 ##
 # Applications settings (and settings locale if any)
 #
@@ -493,5 +496,3 @@ if (
     and importlib.util.find_spec("django_extensions") is not None
 ):
     INSTALLED_APPS.append("django_extensions")
-
-REQUIRED_SPEAKER_FIRSTNAME = True
