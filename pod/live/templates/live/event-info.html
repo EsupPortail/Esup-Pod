@@ -32,7 +32,7 @@
       </li>
       <li class="col-6 col-md-4">
         <span class="pod-meta-title">{% trans 'Added by:' %}</span>
-          <a class="btn btn-link btn-sm px-0" href="{% url 'videos:videos' %}?owner={{ event.owner.get_username }}" {% if request.GET.is_iframe %}target="_blank" {% endif %} title="{% blocktrans with video_user_name=video.owner.get_username %}Show video list of user “{{ video_user_name }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+          <a class="btn btn-link btn-sm px-0" href="{% url 'videos:videos' %}?owner={{ event.owner.get_username}}" {% if request.GET.is_iframe %}target="_blank" {% endif %} title="{% blocktrans with video_user_name=video.owner %}Show video list of user “{{ video_user_name }}”{% endblocktrans %}" data-bs-toggle="tooltip" data-bs-placement="bottom">
           {% if event.owner.owner.userpicture.file %}
             {% thumbnail event.owner.owner.userpicture.file "x34" as im %}
               <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='userpicture rounded' alt="" loading="lazy">
