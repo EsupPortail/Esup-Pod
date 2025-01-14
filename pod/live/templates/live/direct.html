@@ -189,7 +189,7 @@
   }
 
   // Management of the end of the stream (for Firefox, Chrome... not working for Edge, Safari)
-  videojs.Hls.xhr.beforeRequest = function(options) {
+  videojs.Hls.xhr.onRequest = function(options) {
     // Reset counter if video state is ok
     if (started && player.readyState() > 2) { nbLoop = 0; }
     if (started && player.readyState() <= 2) {

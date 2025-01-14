@@ -1,7 +1,16 @@
 {% load custom_tags %}
 {% load i18n %}
 {% load static %}
+{% get_setting "USE_LIVE_P2P" False as use_live_p2p %}
+{% if use_live_p2p %}
+  {% get_setting "P2P_TRACKERS" "" as p2p_trackers %}
+  {% get_setting "P2P_STUNS" "" as p2p_stuns %}
+  {% if event.is_current %}
+  <script src="{% static 'js/video-p2p-stats.js' %}?ver={{VERSION}}"></script>
+  {% endif %}
+{% endif %}
 <script>
+
     // Debug if necessary, depends on the settings_local
     const debug = "{% get_setting "DEBUG" False %}" === "True";
 
