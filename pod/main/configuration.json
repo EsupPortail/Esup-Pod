@@ -270,11 +270,27 @@
                                 ],
                                 "fr": [
                                     "Forcer le passage en minuscule du nom d’utilisateur CAS",
-                                    "(permet de prévenir des doubles créations de comptes dans certain cas)."
+                                    "(permet de prévenir des doubles créations de comptes dans certains cas).",
+                                    "OBSOLÈTE à partir de Pod 4.0. Utilisez `CAS_FORCE_CHANGE_USERNAME_CASE`"
+                                ]
+                            },
+                            "pod_version_end": "4.0",
+                            "pod_version_init": "3.1"
+                        },
+                        "CAS_FORCE_CHANGE_USERNAME_CASE": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Forcer la casse (minuscules ou majuscules) du nom d’utilisateur CAS",
+                                    "(permet de prévenir des doubles créations de comptes dans certains cas).",
+                                    "Valeurs possibles : `lower`, `upper`, `False`."
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "3.1"
+                            "pod_version_init": "4.0"
                         },
                         "CAS_GATEWAY": {
                             "default_value": false,
@@ -323,7 +339,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Si True, des groupes sont créés automatiquement",
+                                    "Si True, des `groupes` d’utilisateurs sont créés automatiquement",
                                     "à partir des affiliations CAS des individus qui se connectent sur la plateforme",
                                     "et l’individu qui se connecte est ajouté automatiquement à ces groupes."
                                 ]
@@ -338,11 +354,9 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Si True, des groupes sont créés automatiquement",
+                                    "Si True, des `groupes d’accès` sont créés automatiquement",
                                     "à partir des affiliations des individus qui se connectent sur la plateforme",
-                                    "et l’individu qui se connecte est ajouté automatiquement à ces groupes.",
-                                    "À partir de Pod V4, cette option ne fonctionne plus que pour Shib.",
-                                    "Si vous passez par CAS, utilisez plutôt `CAS_MAP_AFFILIATIONS`."
+                                    "et l’individu qui se connecte est ajouté automatiquement à ces groupes."
                                 ]
                             },
                             "pod_version_end": "",

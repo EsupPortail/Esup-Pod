@@ -8,6 +8,10 @@ from django.core.exceptions import SuspiciousOperation
 from django.utils.translation import gettext_lazy as _
 from django.contrib import auth
 
+# Needed to trigger signals
+# flake8: noqa
+from . import signals
+
 USE_CAS = getattr(settings, "USE_CAS", False)
 USE_SHIB = getattr(settings, "USE_SHIB", False)
 USE_OIDC = getattr(settings, "USE_OIDC", False)
