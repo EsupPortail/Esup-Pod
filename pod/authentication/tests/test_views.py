@@ -3,12 +3,10 @@
 *  run with 'python manage.py test pod.authentication.tests.test_views'
 """
 
-from django.test import TestCase
-from django.test import Client
+from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-
 
 # ggignore-start
 # gitguardian:ignore
@@ -22,6 +20,7 @@ class authenticationViewsTestCase(TestCase):
     ]
 
     def setUp(self) -> None:
+        """Setup of authenticationViewsTestCase (launched before each test)."""
         User.objects.create(username="pod", password=PWD)
         print(" --->  SetUp of authenticationViewsTestCase: OK!")
 
@@ -34,17 +33,15 @@ class authenticationViewsTestCase(TestCase):
         # User already authenticated
         self.client.force_login(self.user)
         response = self.client.get(login_url)
+
         self.assertRedirects(response, "/")
 
-        # User not authenticated and CAS are valued to False
+        # User not authenticated and USE_CAS are valued to False
         self.client.logout()
         response = self.client.get(login_url)
         self.assertRedirects(response, "/accounts/login/?next=/")
 
-        print(
-            "   --->  test_authentication_login \
-            of authenticationViewsTestCase: OK!"
-        )
+        print("   --->  test_authentication_login of authenticationViewsTestCase: OK!")
 
     def test_authentication_logout(self) -> None:
         self.client = Client()

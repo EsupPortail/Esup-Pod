@@ -438,6 +438,8 @@ def update_settings(local_settings):
             "django_cas_ng.backends.CASBackend",
         )
         local_settings["MIDDLEWARE"].append("django_cas_ng.middleware.CASMiddleware")
+        if local_settings.get("POPULATE_USER", None) == "CAS":
+            local_settings["CAS_APPLY_ATTRIBUTES_TO_USER"] = True
 
     if local_settings.get("USE_SHIB", False):
         local_settings["AUTHENTICATION_BACKENDS"] += (

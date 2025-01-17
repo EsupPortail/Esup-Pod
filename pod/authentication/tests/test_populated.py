@@ -108,7 +108,7 @@ def authenticate_CAS_user():
     """Authenticate CAS user with fake ticket."""
     # Create an instance of a GET request.
     factory = RequestFactory()
-    request = factory.get("/authentication_login")
+    request = factory.get(settings.LOGIN_URL)
     request.session = {}
     backend = CASBackend()
     return backend.authenticate(
