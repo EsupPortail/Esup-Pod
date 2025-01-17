@@ -119,9 +119,10 @@ def authenticate_CAS_user():
 
 
 @override_settings(
-    CAS_RENAME_ATTRIBUTES=CAS_RENAME_ATTRIBUTES,
-    CAS_VERSION=3,
     POPULATE_USER="CAS",
+    CAS_VERSION=3,
+    CAS_APPLY_ATTRIBUTES_TO_USER=True,
+    CAS_RENAME_ATTRIBUTES=CAS_RENAME_ATTRIBUTES,
 )
 @mock.patch("cas.CASClientV3.verify_ticket", mock_verify_CAS_ticket)
 class PopulatedCASTestCase(TestCase):
