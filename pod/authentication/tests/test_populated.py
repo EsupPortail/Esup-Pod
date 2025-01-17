@@ -104,7 +104,7 @@ def mock_verify_CAS_ticket(ticket, service):
     )
 
 
-def authenticate_CAS_user() -> User | None:
+def authenticate_CAS_user():
     """Authenticate CAS user with fake ticket."""
     # Create an instance of a GET request.
     factory = RequestFactory()
