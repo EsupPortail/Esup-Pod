@@ -469,7 +469,7 @@
    * @param {Number} id - user id
    * @param {HTMLInputElement} input - field
    * @param {String} cls - css class
-   * @param {Callable} listenerCallback c- allback on click
+   * @param {Callable} listenerCallback - callback on click
    * @param {String} url - current url
    */
   const addSuggestionElement = (
