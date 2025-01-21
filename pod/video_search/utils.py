@@ -10,7 +10,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-DEBUG = getattr(settings, "DEBUG", False)
+DEBUG = getattr(settings, "DEBUG", True)
 
 ES_URL = getattr(settings, "ES_URL", ["http://elasticsearch.localhost:9200/"])
 ES_INDEX = getattr(settings, "ES_INDEX", "pod")

@@ -37,11 +37,11 @@
     options = {
       notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
       //language: "fr", //en or nl
-    {% if video.is_video and request.GET.is_iframe %}
-      fluid: false,
-    {% else %}
-      fluid: true,
-    {% endif %}
+      {% if video.is_video and request.GET.is_iframe %}
+        fluid: false,
+      {% else %}
+        fluid: true,
+      {% endif %}
       responsive: true,
       playbackRates: {{video_playbackrates}},
       userActions: {

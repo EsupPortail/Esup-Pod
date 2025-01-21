@@ -18,7 +18,7 @@ from pod.live.views import (
 )
 
 DEFAULT_EVENT_PATH = getattr(settings, "DEFAULT_EVENT_PATH", "")
-DEBUG = getattr(settings, "DEBUG", "")
+DEBUG = getattr(settings, "DEBUG", True)
 TIME_ZONE = getattr(settings, "TIME_ZONE", "Europe/Paris")
 
 
