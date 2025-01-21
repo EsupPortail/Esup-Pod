@@ -14,7 +14,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from pod.playlist.models import Playlist
 from pod.playlist.utils import get_video_list_for_playlist, playlist_can_be_displayed
 from pod.video.models import Video
-from pod.video.utils import sort_videos_list
+from pod.video.utils import sort_videos_queryset
 from pod.video.views import render_video
 
 from .models import Enrichment, EnrichmentGroup
@@ -269,7 +269,7 @@ def video_enrichment(
     if request.GET.get("playlist"):
         playlist = get_object_or_404(Playlist, slug=request.GET.get("playlist"))
         if playlist_can_be_displayed(request, playlist):
-            videos = sort_videos_list(get_video_list_for_playlist(playlist), "rank")
+            videos = sort_videos_queryset(get_video_list_for_playlist(playlist), "rank")
             params = {
                 "playlist_in_get": playlist,
                 "videos": videos,
