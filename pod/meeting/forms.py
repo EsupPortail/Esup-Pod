@@ -15,7 +15,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.query import QuerySet
 from django.forms import CharField, Textarea
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from pod.main.forms_utils import OwnerWidget, AddOwnerWidget
 from pod.meeting.webinar import start_webinar, stop_webinar, toggle_rtmp_gateway

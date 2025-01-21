@@ -2,25 +2,25 @@ from .views import authentication_login
 from .views import authentication_logout
 from .views import authentication_login_gateway
 
-from django.urls import re_path
+from django.conf.urls import url
 
 app_name = "authentication"
 
 urlpatterns = [
     # auth cas
-    re_path(
+    url(
         r"^login/$",
         authentication_login,
         name="authentication_login",
     ),
-    re_path(
+    url(
         r"^logout/$",
         authentication_logout,
         name="authentication_logout",
     ),
-    # re_path(r"^login/$", authentication_login, name="login"),
-    # re_path(r"^logout/$", authentication_logout, name="logout"),
-    re_path(
+    # url(r"^login/$", authentication_login, name="login"),
+    # url(r"^logout/$", authentication_logout, name="logout"),
+    url(
         r"^login_gateway/$",
         authentication_login_gateway,
         name="authentication_login_gateway",

@@ -4,7 +4,7 @@ import bleach
 from datetime import date, timedelta
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from hashlib import sha1
 from pod.main.views import TEMPLATE_VISIBLE_SETTINGS
 

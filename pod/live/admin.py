@@ -4,7 +4,7 @@ from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.utils.html import format_html
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from js_asset import static
 from sorl.thumbnail import get_thumbnail
 

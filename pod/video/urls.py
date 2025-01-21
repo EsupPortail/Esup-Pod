@@ -1,7 +1,7 @@
 """Esup-Pod Video Urls."""
 
 from django.conf import settings
-from django.urls import re_path
+from django.conf.urls import url
 from django.urls import include, path
 
 from .views import (
@@ -44,45 +44,45 @@ app_name = "video"
 
 urlpatterns = [
     # Manage video owner
-    re_path(
+    url(
         r"^updateowner/put/(?P<user_id>[\d]+)/$",
         update_video_owner,
         name="update_video_owner",
     ),
-    re_path(r"^updateowner/owners/$", filter_owners, name="filter_owners"),
-    re_path(
+    url(r"^updateowner/owners/$", filter_owners, name="filter_owners"),
+    url(
         r"^updateowner/videos/(?P<user_id>[\d]+)/$",
         filter_videos,
         name="filter_videos",
     ),
-    re_path(r"^add/$", video_add, name="video_add"),
-    re_path(r"^edit/$", video_edit, name="video_edit"),
-    re_path(r"^edit/(?P<slug>[\-\d\w]+)/$", video_edit, name="video_edit"),
-    re_path(
+    url(r"^add/$", video_add, name="video_add"),
+    url(r"^edit/$", video_edit, name="video_edit"),
+    url(r"^edit/(?P<slug>[\-\d\w]+)/$", video_edit, name="video_edit"),
+    url(
         r"^edit_access_tokens/(?P<slug>[\-\d\w]+)/$",
         video_edit_access_tokens,
         name="video_edit_access_tokens",
     ),
-    re_path(
+    url(
         r"^delete/(?P<slug>[\-\d\w]+)/$",
         video_delete,
         name="video_delete",
     ),
-    re_path(
+    url(
         r"^transcript/(?P<slug>[\-\d\w]+)/$",
         video_transcript,
         name="video_transcript",
     ),
-    re_path(r"^notes/(?P<slug>[\-\d\w]+)/$", video_notes, name="video_notes"),
-    re_path(r"^count/(?P<id>[\d]+)/$", video_count, name="video_count"),
-    re_path(r"^marker/(?P<id>[\d]+)/(?P<time>[\d]+)/$", video_marker, name="video_marker"),
-    re_path(r"^version/(?P<id>[\d]+)/$", video_version, name="video_version"),
-    re_path(
+    url(r"^notes/(?P<slug>[\-\d\w]+)/$", video_notes, name="video_notes"),
+    url(r"^count/(?P<id>[\d]+)/$", video_count, name="video_count"),
+    url(r"^marker/(?P<id>[\d]+)/(?P<time>[\d]+)/$", video_marker, name="video_marker"),
+    url(r"^version/(?P<id>[\d]+)/$", video_version, name="video_version"),
+    url(
         "api/chunked_upload_complete/",
         PodChunkedUploadCompleteView.as_view(),
         name="api_chunked_upload_complete",
     ),
-    re_path(
+    url(
         "api/chunked_upload/",
         PodChunkedUploadView.as_view(),
         name="api_chunked_upload",
@@ -109,18 +109,18 @@ urlpatterns += [
 #
 if getattr(settings, "OEMBED", False):
     urlpatterns += [
-        re_path(r"^oembed/", video_oembed, name="video_oembed"),
+        url(r"^oembed/", video_oembed, name="video_oembed"),
     ]
 
 # VIDEO CATEGORY
 if getattr(settings, "USER_VIDEO_CATEGORY", False):
     urlpatterns += [
-        re_path(r"^categories/$", get_categories_list, name="get_categories_list"),
-        re_path(r"^category/add/$", add_category, name="add_category"),
-        re_path(
+        url(r"^categories/$", get_categories_list, name="get_categories_list"),
+        url(r"^category/add/$", add_category, name="add_category"),
+        url(
             r"^category/edit/(?P<c_slug>[\-\d\w]+)/$", edit_category, name="edit_category"
         ),
-        re_path(
+        url(
             r"^category/delete/(?P<c_slug>[\-\d\w]+)/$",
             delete_category,
             name="delete_category",
@@ -129,13 +129,13 @@ if getattr(settings, "USER_VIDEO_CATEGORY", False):
 
 if getattr(settings, "USE_STATS_VIEW", False):
     urlpatterns += [
-        re_path(r"^stats_view/$", stats_view, name="video_stats_view"),
-        re_path(
+        url(r"^stats_view/$", stats_view, name="video_stats_view"),
+        url(
             r"^stats_view/(?P<slug>[-\w]+)/$",
             stats_view,
             name="video_stats_view",
         ),
-        re_path(
+        url(
             r"^stats_view/(?P<slug>[-\w]+)/(?P<slug_t>[-\w]+)/$",
             stats_view,
             name="video_stats_view",
@@ -145,37 +145,37 @@ if getattr(settings, "USE_STATS_VIEW", False):
 # COMMENT and VOTE
 if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
     urlpatterns += [
-        re_path(
+        url(
             r"^comment/(?P<video_slug>[\-\d\w]+)/$",
             get_comments,
             name="get_comments",
         ),
-        re_path(
+        url(
             r"^comment/(?P<comment_id>[\d]+)/(?P<video_slug>[\-\d\w]+)/$",
             get_children_comment,
             name="get_comment",
         ),
-        re_path(
+        url(
             r"^comment/add/(?P<video_slug>[\-\d\w]+)/$",
             add_comment,
             name="add_comment",
         ),
-        re_path(
+        url(
             r"^comment/add/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$",
             add_comment,
             name="add_child_comment",
         ),
-        re_path(
+        url(
             r"^comment/del/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$",
             delete_comment,
             name="delete_comment",
         ),
-        re_path(
+        url(
             r"^comment/vote/(?P<video_slug>[\-\d\w]+)/$",
             vote_get,
             name="get_votes",
         ),
-        re_path(
+        url(
             r"^comment/vote/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$",
             vote_post,
             name="add_vote",
@@ -199,8 +199,8 @@ urlpatterns += [
 
 # DIRECT ACCESS TO A VIDEO
 urlpatterns += [
-    re_path(r"^(?P<slug>[\-\d\w]+)/$", video, name="video"),
-    re_path(
+    url(r"^(?P<slug>[\-\d\w]+)/$", video, name="video"),
+    url(
         r"^(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$",
         video,
         name="video_private",

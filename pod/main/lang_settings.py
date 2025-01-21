@@ -1,4 +1,4 @@
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 # http://www.w3schools.com/tags/ref_language_codes.asp
 # http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes

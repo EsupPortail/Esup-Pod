@@ -8,7 +8,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import authenticate
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from pod.video.models import Video, Type
 from ..models import Contributor
 from ..models import Document

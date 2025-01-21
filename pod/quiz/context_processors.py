@@ -2,7 +2,7 @@
 
 from django.conf import settings as django_settings
 
-USE_QUIZ = getattr(django_settings, "USE_QUIZ", False)
+USE_QUIZ = getattr(django_settings, "USE_QUIZ", True)
 
 
 def context_settings(request):

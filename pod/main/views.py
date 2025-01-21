@@ -26,7 +26,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_GET
 from django.template import loader
 from django.core.mail import EmailMultiAlternatives
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
@@ -42,7 +42,6 @@ import mimetypes
 import json
 from django.contrib.auth.decorators import login_required
 from .models import Configuration
-from .utils import is_ajax
 from honeypot.decorators import check_honeypot
 
 
@@ -325,7 +324,7 @@ def contact_us(request):
 @login_required(redirect_field_name="referrer")
 def user_autocomplete(request):
     """Search for users with partial names, for autocompletion."""
-    if is_ajax(request):
+    if request.is_ajax():
         additional_filters = {
             "video__is_draft": False,
             "owner__sites": get_current_site(request),

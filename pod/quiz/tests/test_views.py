@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.contrib.messages import get_messages
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 from pod.main.models import Configuration
 from pod.quiz.forms import QuizDeleteForm, QuizForm

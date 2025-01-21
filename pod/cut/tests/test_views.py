@@ -8,7 +8,7 @@ from django.urls import reverse
 from pod.main.models import Configuration
 from datetime import time
 from django.contrib.messages import get_messages
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from .. import views
 from importlib import reload
 

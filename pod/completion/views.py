@@ -13,7 +13,6 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import PermissionDenied
 from django.core.handlers.wsgi import WSGIRequest
 from pod.video.models import Video
-from pod.main.utils import is_ajax
 from .models import Contributor
 from .forms import ContributorForm
 from .models import Document
@@ -294,7 +293,7 @@ def video_completion_contributor_new(request: WSGIRequest, video: Video):
     form_contributor = ContributorForm(initial={"video": video})
     context = get_video_completion_context(video, form_contributor=form_contributor)
     context["page_title"] = _("Add a new contributor to the video “%s”") % video.title
-    if is_ajax(request):
+    if request.is_ajax():
         return render(
             request,
             "contributor/form_contributor.html",
@@ -323,7 +322,7 @@ def video_completion_contributor_save(request: WSGIRequest, video: Video):
     if form_contributor.is_valid():
         form_contributor.save()
         list_contributor = video.contributor_set.all()
-        if is_ajax(request):
+        if request.is_ajax():
             some_data_to_dump = {
                 "list_data": render_to_string(
                     "contributor/list_contributor.html",
@@ -352,7 +351,7 @@ def video_completion_contributor_save(request: WSGIRequest, video: Video):
                 context,
             )
     else:
-        if is_ajax(request):
+        if request.is_ajax():
             some_data_to_dump = {
                 "errors": "{0}".format(_("Please correct errors")),
                 "form": render_to_string(
@@ -382,7 +381,7 @@ def video_completion_contributor_modify(request: WSGIRequest, video: Video):
     contributor = get_object_or_404(Contributor, id=request.POST["id"])
     form_contributor = ContributorForm(instance=contributor)
     page_title = _("Edit the contributor “%s”") % contributor.name
-    if is_ajax(request):
+    if request.is_ajax():
         return render(
             request,
             "contributor/form_contributor.html",
@@ -407,7 +406,7 @@ def video_completion_contributor_delete(request: WSGIRequest, video: Video):
     contributor.delete()
     page_title = get_completion_home_page_title(video)
     list_contributor = video.contributor_set.all()
-    if is_ajax(request):
+    if request.is_ajax():
         some_data_to_dump = {
             "list_data": render_to_string(
                 "contributor/list_contributor.html",
@@ -492,7 +491,7 @@ def video_completion_speaker_new(request: WSGIRequest, video: Video):
     form_speaker = JobVideoForm(initial={"video": video})
     context = get_video_completion_context(video, form_speaker=form_speaker)
     context["page_title"] = _("Add a new contributor to the video “%s”") % video.title
-    if is_ajax(request):
+    if request.is_ajax():
         return render(
             request,
             "speaker/form_speaker.html",
@@ -517,7 +516,7 @@ def video_completion_speaker_save(request: WSGIRequest, video: Video):
     if form_speaker.is_valid():
         form_speaker.save()
         list_speaker = get_video_speakers(video)
-        if is_ajax(request):
+        if request.is_ajax():
             some_data_to_dump = {
                 "list_data": render_to_string(
                     "speaker/list_speaker.html",
@@ -544,7 +543,7 @@ def video_completion_speaker_save(request: WSGIRequest, video: Video):
                 context,
             )
     else:
-        if is_ajax(request):
+        if request.is_ajax():
             some_data_to_dump = {
                 "errors": "{0}".format(_("Please correct errors")),
                 "form": render_to_string(
@@ -575,7 +574,7 @@ def video_completion_speaker_delete(request: WSGIRequest, video: Video):
     speaker.delete()
     page_title = get_completion_home_page_title(video)
     list_speaker = get_video_speakers(video)
-    if is_ajax(request):
+    if request.is_ajax():
         some_data_to_dump = {
             "list_data": render_to_string(
                 "speaker/list_speaker.html",
@@ -633,7 +632,7 @@ def video_completion_document_new(request, video):
     """View to add new document to a video."""
     form_document = DocumentForm(initial={"video": video})
     context = get_video_completion_context(video, form_document=form_document)
-    if is_ajax(request):
+    if request.is_ajax():
         return render(
             request,
             "document/form_document.html",
@@ -659,7 +658,7 @@ def video_completion_document_save(request, video):
     if form_document.is_valid():
         form_document.save()
         list_document = video.document_set.all()
-        if is_ajax(request):
+        if request.is_ajax():
             some_data_to_dump = {
                 "list_data": render_to_string(
                     "document/list_document.html",
@@ -676,7 +675,7 @@ def video_completion_document_save(request, video):
                 context,
             )
     else:
-        if is_ajax(request):
+        if request.is_ajax():
             some_data_to_dump = {
                 "errors": "{0}".format(_("Please correct errors")),
                 "form": render_to_string(
@@ -699,7 +698,7 @@ def video_completion_document_modify(request, video):
     """View to modify a document associated to a video."""
     document = get_object_or_404(Document, id=request.POST["id"])
     form_document = DocumentForm(instance=document)
-    if is_ajax(request):
+    if request.is_ajax():
         return render(
             request,
             "document/form_document.html",
@@ -719,7 +718,7 @@ def video_completion_document_delete(request, video):
     document = get_object_or_404(Document, id=request.POST["id"])
     document.delete()
     list_document = video.document_set.all()
-    if is_ajax(request):
+    if request.is_ajax():
         some_data_to_dump = {
             "list_data": render_to_string(
                 "document/list_document.html",
@@ -773,7 +772,7 @@ def video_completion_track_new(request, video):
     """View to add new track to a video."""
     form_track = TrackForm(initial={"video": video})
     context = get_video_completion_context(video, form_track=form_track)
-    if is_ajax(request):
+    if request.is_ajax():
         return render(
             request,
             "track/form_track.html",
@@ -800,7 +799,7 @@ def video_completion_get_form_track(request):
 
 def toggle_form_track_is_valid__video_completion_track(request, video, list_track):
     """Toggle form_track is valid."""
-    if is_ajax(request):
+    if request.is_ajax():
         some_data_to_dump = {
             "list_data": render_to_string(
                 "track/list_track.html",
@@ -830,7 +829,7 @@ def video_completion_track_save(request, video):
             request, video, list_track
         )
     else:
-        if is_ajax(request):
+        if request.is_ajax():
             some_data_to_dump = {
                 "errors": "{0}".format("Please correct errors"),
                 "form": render_to_string(
@@ -856,7 +855,7 @@ def video_completion_track_modify(request, video):
     """View to modify a track associated to a video."""
     track = get_object_or_404(Track, id=request.POST["id"])
     form_track = TrackForm(instance=track)
-    if is_ajax(request):
+    if request.is_ajax():
         return render(
             request,
             "track/form_track.html",
@@ -957,7 +956,7 @@ def video_completion_overlay_new(request, video):
     """Form to create a new completion overlay."""
     form_overlay = OverlayForm(initial={"video": video})
     context = get_video_completion_context(video, form_overlay=form_overlay)
-    if is_ajax(request):
+    if request.is_ajax():
         return render(
             request,
             "overlay/form_overlay.html",
@@ -986,7 +985,7 @@ def video_completion_overlay_save(request, video):
     if form_overlay.is_valid():
         form_overlay.save()
         list_overlay = video.overlay_set.all()
-        if is_ajax(request):
+        if request.is_ajax():
             some_data_to_dump = {
                 "list_data": render_to_string(
                     "overlay/list_overlay.html",
@@ -1004,7 +1003,7 @@ def video_completion_overlay_save(request, video):
             context,
         )
     else:
-        if is_ajax(request):
+        if request.is_ajax():
             some_data_to_dump = {
                 "errors": "{0}".format(_("Please correct errors")),
                 "form": render_to_string(
@@ -1033,7 +1032,7 @@ def video_completion_overlay_modify(request, video):
         overlay = get_simple_url(overlay)
 
     form_overlay = OverlayForm(instance=overlay)
-    if is_ajax(request):
+    if request.is_ajax():
         return render(
             request,
             "overlay/form_overlay.html",
@@ -1052,7 +1051,7 @@ def video_completion_overlay_delete(request, video):
     overlay = get_object_or_404(Overlay, id=request.POST["id"])
     overlay.delete()
     list_overlay = video.overlay_set.all()
-    if is_ajax(request):
+    if request.is_ajax():
         some_data_to_dump = {
             "list_data": render_to_string(
                 "overlay/list_overlay.html",

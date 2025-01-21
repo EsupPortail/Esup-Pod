@@ -12,7 +12,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from pod.video.models import Video
 from pod.video.models import Type
 from pod.completion.models import Contributor

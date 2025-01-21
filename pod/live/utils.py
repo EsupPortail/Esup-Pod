@@ -13,7 +13,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMultiAlternatives, mail_managers
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 from pod.main.views import TEMPLATE_VISIBLE_SETTINGS
 

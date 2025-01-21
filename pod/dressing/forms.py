@@ -6,7 +6,7 @@ from pod.main.forms_utils import add_placeholder_and_asterisk
 from django.contrib.sites.models import Site
 from django_select2 import forms as s2forms
 from django.db.models import Q
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 from django.contrib import admin
 from django.contrib.admin import widgets

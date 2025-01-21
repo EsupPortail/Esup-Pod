@@ -1,10 +1,10 @@
-from django.urls import re_path
+from django.conf.urls import url
 from pod.chapter.views import video_chapter
 
 app_name = "chapter"
 
 urlpatterns = [
-    re_path(
+    url(
         r"^(?P<slug>[\-\d\w]+)/$",
         video_chapter,
         name="video_chapter",

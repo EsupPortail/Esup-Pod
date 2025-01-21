@@ -9,7 +9,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
@@ -75,7 +75,7 @@ __TITLE_SITE__ = (
     else "Pod"
 )
 
-USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", False)
+USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", True)
 
 
 def playlist_list(request: WSGIRequest):

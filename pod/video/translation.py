@@ -1,5 +1,5 @@
 from modeltranslation.translator import translator, TranslationOptions
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 from pod.video.models import Channel
 from pod.video.models import Video

@@ -1,6 +1,7 @@
 """URLs for Meeting module."""
 
-from django.urls import path, re_path
+from django.conf.urls import url
+from django.urls import path
 
 from . import views
 
@@ -54,7 +55,7 @@ if views.USE_MEETING_WEBINAR:
         path(
             "<slug:meeting_id>/<slug:direct_access>/<slug:room>", views.join, name="join"
         ),
-        re_path(
+        url(
             r"^live_publish_chat/(?P<id>[\d]+)/$",
             views.live_publish_chat,
             name="live_publish_chat",

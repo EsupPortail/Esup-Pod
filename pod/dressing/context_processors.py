@@ -2,7 +2,7 @@
 
 from django.conf import settings as django_settings
 
-USE_DRESSING = getattr(django_settings, "USE_DRESSING", False)
+USE_DRESSING = getattr(django_settings, "USE_DRESSING", True)
 
 
 def context_settings(request):

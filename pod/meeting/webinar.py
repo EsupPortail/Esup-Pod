@@ -9,7 +9,7 @@ import time
 from django.contrib import messages
 from django.core.handlers.wsgi import WSGIRequest
 from django.utils.html import mark_safe
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from pod.main.utils import display_message_with_icon
 from pod.meeting.models import Meeting, Livestream
 from pod.meeting.utils import slash_join

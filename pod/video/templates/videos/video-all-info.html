@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load tagging_tags %}
 <div class="pod-info-video__header">
   <div>
     <h1 class="page_title h2">
@@ -18,7 +19,7 @@
 <div class="ps-0 pe-0">
   <div class="navbar d-flex flex-row-reverse p-0">
     <ul class="nav nav-tabs" role="tablist" id="pod-infos-tabs">
-
+      {% tags_for_object video as tag_list %}
       {% if third_app %}
         <li class="nav-item dropdown" id="list_third_apps">
           <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Other versions' %}">

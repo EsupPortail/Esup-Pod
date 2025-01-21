@@ -2,7 +2,7 @@
 
 from django.conf import settings as django_settings
 
-USE_IMPORT_VIDEO = getattr(django_settings, "USE_IMPORT_VIDEO", False)
+USE_IMPORT_VIDEO = getattr(django_settings, "USE_IMPORT_VIDEO", True)
 
 RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     django_settings, "RESTRICT_EDIT_IMPORT_VIDEO_ACCESS_TO_STAFF_ONLY", True

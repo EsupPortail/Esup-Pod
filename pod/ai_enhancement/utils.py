@@ -7,7 +7,7 @@ import logging
 from django.conf import settings
 from requests import Response
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from pod.ai_enhancement.models import AIEnhancement
 from pod.main.utils import extract_json_from_str
 from pod.video.models import Discipline, Video
@@ -27,7 +27,7 @@ SECURE_SSL_REDIRECT = getattr(settings, "SECURE_SSL_REDIRECT", False)
 
 AI_ENHANCEMENT_API_URL = getattr(settings, "AI_ENHANCEMENT_API_URL", "")
 AI_ENHANCEMENT_API_VERSION = getattr(settings, "AI_ENHANCEMENT_API_VERSION", "")
-USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", False)
+USE_NOTIFICATIONS = getattr(settings, "USE_NOTIFICATIONS", True)
 EMAIL_ON_ENHANCEMENT_COMPLETION = getattr(
     settings, "EMAIL_ON_ENHANCEMENT_COMPLETION", True
 )

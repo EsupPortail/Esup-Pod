@@ -4,6 +4,8 @@ from django import forms
 from django.conf import settings
 from django.forms.widgets import HiddenInput
 
+# from django.utils.translation import ugettext_lazy as _
+
 from pod.completion.models import Contributor
 from pod.completion.models import Document
 from pod.completion.models import Track

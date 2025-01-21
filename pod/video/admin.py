@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.html import mark_safe
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 
 from .models import Video

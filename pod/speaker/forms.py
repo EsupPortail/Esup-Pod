@@ -1,7 +1,7 @@
 """Esup-Pod forms speaker."""
 
 from django_select2 import forms as s2forms
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.forms.widgets import HiddenInput
 from .models import Speaker, Job, JobVideo

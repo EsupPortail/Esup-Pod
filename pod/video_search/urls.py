@@ -1,7 +1,7 @@
-from django.urls import re_path
+from django.conf.urls import url
 
 from .views import search_videos
 
 app_name = "video_search"
 
-urlpatterns = [re_path(r"^$", search_videos, name="search_videos")]
+urlpatterns = [url(r"^$", search_videos, name="search_videos")]

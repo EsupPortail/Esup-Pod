@@ -16,7 +16,6 @@ from pod.playlist.utils import get_video_list_for_playlist, playlist_can_be_disp
 from pod.video.models import Video
 from pod.video.utils import sort_videos_list
 from pod.video.views import render_video
-from pod.main.utils import is_ajax
 
 from .models import Enrichment, EnrichmentGroup
 from .forms import EnrichmentForm, EnrichmentGroupForm
@@ -109,7 +108,7 @@ def edit_enrichment_new(request, video):
     list_enrichment = video.enrichment_set.all()
 
     form_enrichment = EnrichmentForm(initial={"video": video, "start": 0, "end": 1})
-    if is_ajax(request):
+    if request.is_ajax():
         return render(
             request,
             "enrichment/form_enrichment.html",
@@ -144,7 +143,7 @@ def edit_enrichment_save(request, video):
         form_enrichment.save()
         # list_enrichment = video.enrichment_set.all()
         # enrichment_to_vtt(list_enrichment, video)
-        if is_ajax(request):
+        if request.is_ajax():
             some_data_to_dump = {
                 "list_enrichment": render_to_string(
                     "enrichment/list_enrichment.html",
@@ -161,7 +160,7 @@ def edit_enrichment_save(request, video):
                 {"video": video, "list_enrichment": list_enrichment},
             )
     else:
-        if is_ajax(request):
+        if request.is_ajax():
             some_data_to_dump = {
                 "errors": "{0}".format(_("Please correct errors.")),
                 "form": render_to_string(
@@ -189,7 +188,7 @@ def edit_enrichment_modify(request, video):
 
     enrich = get_object_or_404(Enrichment, id=request.POST["id"])
     form_enrichment = EnrichmentForm(instance=enrich)
-    if is_ajax(request):
+    if request.is_ajax():
         return render(
             request,
             "enrichment/form_enrichment.html",
@@ -213,7 +212,7 @@ def edit_enrichment_delete(request, video):
     list_enrichment = video.enrichment_set.all()
     # if list_enrichment:
     #    enrichment_to_vtt(list_enrichment, video)
-    if is_ajax(request):
+    if request.is_ajax():
         some_data_to_dump = {
             "list_enrichment": render_to_string(
                 "enrichment/list_enrichment.html",

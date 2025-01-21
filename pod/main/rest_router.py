@@ -1,7 +1,7 @@
 """Esup-Pod Main REST api url router."""
 
 from rest_framework import routers
-from django.urls import re_path
+from django.conf.urls import url
 from django.conf.urls import include
 from pod.authentication import rest_views as authentication_views
 from pod.video import rest_views as video_views
@@ -26,8 +26,8 @@ if getattr(settings, "USE_MEETING", True):
 
 router = routers.DefaultRouter()
 
-# router.register(r"mainfiles", main_views.CustomFileModelViewSet)
-# router.register(r"mainimages", main_views.CustomImageModelViewSet)
+router.register(r"mainfiles", main_views.CustomFileModelViewSet)
+router.register(r"mainimages", main_views.CustomImageModelViewSet)
 
 router.register(r"users", authentication_views.UserViewSet)
 router.register(r"groups", authentication_views.GroupViewSet)
@@ -76,43 +76,43 @@ if getattr(settings, "USE_MEETING", True):
     router.register(r"meeting_live_gateway", meeting_views.LiveGatewayModelViewSet)
 
 urlpatterns = [
-    re_path(r"dublincore/$", video_views.DublinCoreView.as_view(), name="dublincore"),
-    re_path(
+    url(r"dublincore/$", video_views.DublinCoreView.as_view(), name="dublincore"),
+    url(
         r"^launch_encode_view/$",
         encode_views.launch_encode_view,
         name="launch_encode_view",
     ),
-    re_path(
+    url(
         r"store_remote_encoded_video/$",
         encode_views.store_remote_encoded_video,
         name="store_remote_encoded_video",
     ),
-    re_path(
+    url(
         r"store_remote_encoded_video_studio/$",
         encode_views.store_remote_encoded_video_studio,
         name="store_remote_encoded_video_studio",
     ),
-    re_path(
+    url(
         r"store_remote_transcripted_video/$",
         encode_views.store_remote_transcripted_video,
         name="store_remote_transcripted_video",
     ),
-    re_path(
+    url(
         r"accessgroups_set_users_by_name/$",
         auth_views.accessgroups_set_users_by_name,
         name="accessgroups_set_users_by_name",
     ),
-    re_path(
+    url(
         r"accessgroups_remove_users_by_name/$",
         auth_views.accessgroups_remove_users_by_name,
         name="accessgroups_set_users_by_name",
     ),
-    re_path(
+    url(
         r"accessgroups_set_user_accessgroup /$",
         auth_views.accessgroups_set_user_accessgroup,
         name="accessgroups_set_user_accessgroup ",
     ),
-    re_path(
+    url(
         r"accessgroups_remove_user_accessgroup /$",
         auth_views.accessgroups_remove_user_accessgroup,
         name="accessgroups_remove_user_accessgroup ",
@@ -121,7 +121,7 @@ urlpatterns = [
 USE_TRANSCRIPTION = getattr(settings, "USE_TRANSCRIPTION", False)
 if USE_TRANSCRIPTION:
     urlpatterns += [
-        re_path(
+        url(
             r"launch_transcript_view/$",
             encode_views.launch_transcript_view,
             name="launch_transcript_view",
@@ -133,5 +133,5 @@ for apps in settings.THIRD_PARTY_APPS:
     mod.add_register(router)
 
 urlpatterns += [
-    re_path(r"^", include(router.urls)),
+    url(r"^", include(router.urls)),
 ]

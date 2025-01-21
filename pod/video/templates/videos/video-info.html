@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load static %}
+{% load tagging_tags %}
 {% load thumbnail %}
 {% load video_tags %}
 {% load playlist_stats %}
@@ -80,6 +81,7 @@
     {% if video.is_360 %}
       <p class="alert alert-info" role="alert">{% trans 'This is a 360 degree video. To look around click and drag your mouse on the video.' %}</p>
     {% endif %}
+    {% tags_for_object video as tag_list %}
     {% if video.description or tag_list %}
       <div class="pod-video-description">
         {{ video.description|safe }}

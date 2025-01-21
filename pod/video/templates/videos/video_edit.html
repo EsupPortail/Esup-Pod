@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% load tagging_tags %}
 
 {% block breadcrumbs %}{{ block.super }}
   <li class="breadcrumb-item"><a href="{% url 'video:dashboard' %}">{% trans "Dashboard" %}</a></li>

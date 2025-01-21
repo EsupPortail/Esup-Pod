@@ -1,4 +1,4 @@
-from django.urls import re_path
+from django.conf.urls import url
 
 from pod.recorder.views import (
     digest_admin_ng_series,
@@ -20,77 +20,77 @@ from pod.recorder.views import (
 
 app_name = "recorder_digest"
 urlpatterns = [
-    re_path(
+    url(
         r"^services/hosts.json$",
         digest_hosts_json,
         name="hosts_json",
     ),
-    re_path(
+    url(
         r"^capture-admin/agents/(?P<name>.+)/configuration$",
         digest_capture_admin_configuration,
         name="capture_admin_config",
     ),
-    re_path(
+    url(
         r"^capture-admin/agents/(?P<name>.*)$",
         digest_capture_admin,
         name="capture_admin_agent",
     ),
-    re_path(
+    url(
         r"^admin-ng/series/series.json$",
         digest_admin_ng_series,
         name="admin_ng_series",
     ),
-    re_path(
+    url(
         r"^services/available.json$",
         digest_available,
         name="services_available",
     ),
-    re_path(
+    url(
         r"^presenter_post$",
         digest_presenter_post,
         name="presenter_post",
     ),
-    re_path(
+    url(
         r"^settings.toml$",
         digest_settings_toml,
         name="settings_toml",
     ),
-    re_path(
+    url(
         r"^info/me.json$",
         digest_info_me_json,
         name="info_me_json",
     ),
-    re_path(
+    url(
         r"^static/(?P<file>.*)$",
         digest_studio_static,
         name="studio_static",
     ),
-    re_path(
+    url(
         r"^ingest/createMediaPackage$",
         digest_ingest_createMediaPackage,
         name="ingest_createMediaPackage",
     ),
-    re_path(
+    url(
         r"^ingest/addDCCatalog$",
         digest_ingest_addDCCatalog,
         name="ingest_addDCCatalog",
     ),
-    re_path(
+    url(
         r"^ingest/addAttachment$",
         digest_ingest_addAttachment,
         name="ingest_addAttachment",
     ),
-    re_path(
+    url(
         r"^ingest/addTrack$",
         digest_ingest_addTrack,
         name="ingest_addTrack",
     ),
-    re_path(
+    url(
         r"^ingest/addCatalog$",
         digest_ingest_addCatalog,
         name="ingest_addCatalog",
     ),
-    re_path(
+    url(
         r"^ingest/ingest$",
         digest_ingest_ingest,
         name="ingest_ingest",

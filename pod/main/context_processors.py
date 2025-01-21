@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from pod.main.models import Configuration
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
     django_settings, "MENUBAR_HIDE_INACTIVE_OWNERS", False
@@ -79,7 +79,7 @@ RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
 RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY = getattr(
     django_settings, "RESTRICT_EDIT_MEETING_ACCESS_TO_STAFF_ONLY", False
 )
-USE_NOTIFICATIONS = getattr(django_settings, "USE_NOTIFICATIONS", False)
+USE_NOTIFICATIONS = getattr(django_settings, "USE_NOTIFICATIONS", True)
 
 WEBTV_MODE = getattr(django_settings, "WEBTV_MODE", False)
 

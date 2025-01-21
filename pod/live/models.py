@@ -19,7 +19,7 @@ from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 from pod.main.lang_settings import ALL_LANG_CHOICES as __ALL_LANG_CHOICES__
 from pod.main.lang_settings import PREF_LANG_CHOICES as __PREF_LANG_CHOICES__

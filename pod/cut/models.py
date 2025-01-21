@@ -1,7 +1,7 @@
 from django.db import models
 from django.forms import ValidationError
 
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from pod.video.models import Video
 from pod.video_encode_transcript.utils import time_to_seconds
 

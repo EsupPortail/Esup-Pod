@@ -6,8 +6,7 @@ from pod.video_search.forms import SearchForm
 from django.conf import settings
 from django.contrib import messages
 from pod.video.models import Video
-from pod.main.utils import is_ajax
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from django.utils.html import strip_tags
 
 # import json
@@ -245,7 +244,7 @@ def search_videos(request):
     videos.has_next = ((page + 1) * size) < num_result
     videos.next_page_number = page + 1
 
-    if is_ajax(request):
+    if request.is_ajax():
         return render(
             request,
             "videos/video_list.html",
