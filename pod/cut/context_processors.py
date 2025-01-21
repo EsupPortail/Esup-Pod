@@ -2,7 +2,7 @@
 
 from django.conf import settings as django_settings
 
-USE_CUT = getattr(django_settings, "USE_CUT", True)
+USE_CUT = getattr(django_settings, "USE_CUT", False)
 
 
 def context_settings(request):

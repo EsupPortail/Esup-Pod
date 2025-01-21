@@ -11,7 +11,7 @@ from pod.authentication.models import AccessGroup
 from django.contrib.sites.models import Site
 from django.contrib.messages import get_messages
 from django.core.files.temp import NamedTemporaryFile
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from pod.main.models import AdditionalChannelTab
 

@@ -35,12 +35,13 @@ from django.shortcuts import render
 from django.template.defaultfilters import truncatechars
 from django.template.loader import render_to_string
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 
 from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
+from pod.main.utils import is_ajax
 from pod.recorder.models import Recorder, Recording, RecordingFileTreatment
 from .forms import RecordingForm, RecordingFileTreatmentDeleteForm
 from .models import __REVATSO__
@@ -350,7 +351,7 @@ def claim_record(request):
     except EmptyPage:
         records = paginator.page(paginator.num_pages)
 
-    if request.is_ajax():
+    if is_ajax(request):
         return render(
             request,
             "recorder/record_list.html",

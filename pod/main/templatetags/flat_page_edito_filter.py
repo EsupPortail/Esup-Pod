@@ -14,7 +14,7 @@ from django.core.cache import cache
 from django.db.models import Q, Sum
 from django.template import loader
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from pod.live.models import Event
 from pod.video.models import Video

@@ -6,7 +6,7 @@ import importlib
 from ckeditor.fields import RichTextField
 from django.db import models
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.dispatch import receiver
@@ -23,7 +23,7 @@ from pod.video.models import LANG_CHOICES as __LANG_CHOICES__
 from pod.video.models import CURSUS_CODES as __CURSUS_CODES__
 from pod.video.models import LICENCE_CHOICES as __LICENCE_CHOICES__
 from pod.video.models import RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY as __REVATSO__
-from tagging.fields import TagField
+from tagulous.models import TagField
 from django.utils.translation import get_language
 
 LANG_CHOICES = getattr(

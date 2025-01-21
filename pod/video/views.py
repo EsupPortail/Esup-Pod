@@ -17,7 +17,7 @@ from django.http import QueryDict, Http404
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.utils.translation import ngettext
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -55,7 +55,7 @@ from pod.video.models import Comment, Vote, Category
 from pod.video.models import get_transcription_choices
 from pod.video.models import UserMarkerTime, VideoAccessToken
 
-from tagging.models import TaggedItem
+# from tagging.models import TaggedItem
 
 from pod.video.forms import VideoForm, VideoVersionForm
 from pod.video.forms import ChannelForm
@@ -310,7 +310,7 @@ def _regroup_videos_by_theme(  # noqa: C901
         )
     response["videos"] = videos
     """
-    if request.is_ajax():
+    if is_ajax(request):
         if target == "themes":
             # No change to the old system, with data in JSON format
             return JsonResponse(response, safe=False)
@@ -384,7 +384,7 @@ def channel(request, slug_c, slug_t=None):
             request, videos_list, page, full_path, channel, theme
         )
 
-    if request.is_ajax():
+    if is_ajax(request):
         return render(
             request,
             "videos/video_list.html",
@@ -625,7 +625,7 @@ def dashboard(request):
     )
     template = videos_list_templates[display_mode]
 
-    if request.is_ajax():
+    if is_ajax(request):
         return render(
             request,
             template,
@@ -905,10 +905,10 @@ def get_filtered_videos_list(request, videos_list):
             Q(owner__username__in=request.GET.getlist("owner"))
             | Q(additional_owners__username__in=request.GET.getlist("owner"))
         )
-    if request.GET.getlist("tag"):
+    """if request.GET.getlist("tag"):
         videos_list = TaggedItem.objects.get_union_by_model(
             videos_list, request.GET.getlist("tag")
-        )
+        )"""
     if request.GET.getlist("cursus"):
         videos_list = videos_list.filter(cursus__in=request.GET.getlist("cursus"))
     return videos_list.distinct()
@@ -970,7 +970,7 @@ def videos(request):
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     owner_filter = owner_is_searchable(request.user)
 
-    if request.is_ajax():
+    if is_ajax(request):
         return render(
             request,
             "videos/video_list.html",
@@ -1110,6 +1110,11 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                 _("You cannot access this playlist because it is private.")
             )
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
+
+
+def tag_cloud(request):
+    """Get only tags with weight between TAGULOUS_WEIGHT_MIN and TAGULOUS_WEIGHT_MAX."""
+    return Video.tags.tag_model.objects.weight()
 
 
 def toggle_render_video_user_can_see_video(

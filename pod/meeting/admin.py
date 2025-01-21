@@ -3,7 +3,7 @@
 from django.contrib import admin
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.utils.html import mark_safe
 from django.contrib.admin import widgets
 from django.utils.safestring import SafeText

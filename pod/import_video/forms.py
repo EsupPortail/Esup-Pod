@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from pod.import_video.models import ExternalRecording
 from pod.main.forms_utils import add_placeholder_and_asterisk
 from pod.main.forms_utils import OwnerWidget, AddOwnerWidget

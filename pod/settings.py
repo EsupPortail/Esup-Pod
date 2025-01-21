@@ -7,15 +7,24 @@ Django version: 3.2.
 import os
 import importlib.util
 
+# DEPRECATIONS HACKS
+import django
+from django.utils.translation import gettext
+from urllib.parse import quote
+
+# Needed for django-cas-client==1.5.3
+django.utils.http.urlquote = quote
+
+# Needed for django-chunked-upload==2.0.0
+django.utils.translation.ugettext = gettext
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # will be update in pod/main/settings.py
 
 ##
 # Version of the project
 #
-
-VERSION = "3.9.0"
-
+VERSION = "4.0.0--ALPHA"
 
 ##
 # Installed applications list
@@ -35,7 +44,8 @@ INSTALLED_APPS = [
     # Exterior Applications
     "ckeditor",
     "sorl.thumbnail",
-    "tagging",
+    # "tagging",
+    "tagulous",
     "cas",
     "captcha",
     "rest_framework",
@@ -493,3 +503,18 @@ if (
     and importlib.util.find_spec("django_extensions") is not None
 ):
     INSTALLED_APPS.append("django_extensions")
+
+
+# Django Tag manager
+SERIALIZATION_MODULES = {
+    "xml": "tagulous.serializers.xml_serializer",
+    "json": "tagulous.serializers.json",
+    "python": "tagulous.serializers.python",
+    "yaml": "tagulous.serializers.pyyaml",
+}
+# see https://django-tagulous.readthedocs.io/en/latest/installation.html#settings
+TAGULOUS_NAME_MAX_LENGTH = 80
+"""
+TAGULOUS_SLUG_MAX_LENGTH = 50
+TAGULOUS_LABEL_MAX_LENGTH = TAGULOUS_NAME_MAX_LENGTH
+"""
