@@ -961,11 +961,11 @@ function createCaptionBlock(newCaption, spawnFunction) {
       this.div.append(this.numberCharactersDiv);
       this.div.append(this.buttonsDiv);
 
+      const nbCharsMsg = gettext("%s/%s characters");
       // Update numberCharactersDiv content
       const updateCharacterCount = () => {
         let nbCharacters = this.captionTextInput.value.length;
-        this.numberCharactersDiv.textContent =
-          nbCharacters + gettext("/80 characters");
+        this.numberCharactersDiv.textContent = interpolate(nbCharsMsg, [nbCharacters, 80]);
         if (nbCharacters > 80) {
           this.numberCharactersDiv.append(this.numberCharactersAlert);
         }
