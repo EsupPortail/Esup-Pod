@@ -9831,12 +9831,12 @@ msgid "Dress the video"
 msgstr "Habiller la vidéo"
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
-msgid "Duplicate the form"
+msgid "Duplicate the video"
 msgstr "Dupliquer la vidéo"
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
-msgid "Are you sure you want to duplicate this form?"
-msgstr "Voulez-vous vraiment dupliquer la vidéo ?"
+msgid "Are you sure you want to duplicate this video?"
+msgstr "Voulez-vous vraiment dupliquer cette vidéo ?"
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
 #: pod/video/templates/videos/video_edit.html
@@ -10907,9 +10907,6 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#~ msgid "Order videos in channels or themes."
-#~ msgstr "Ordonner les vidéos dans les chaines ou les thèmes."
 
 #~ msgid "Delete this record."
 #~ msgstr "Supprimer cet enregistrement."

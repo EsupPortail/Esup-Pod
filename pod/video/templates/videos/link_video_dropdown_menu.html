@@ -101,15 +101,15 @@
   {% if USE_DUPLICATE %}
     <a 
        href="{% url 'duplicate:video_duplicate' slug=video.slug %}"
-       title="{% trans 'Duplicate the form' %} — {{ video.title }}"
+       title="{% trans 'Duplicate the video' %} — {{ video.title }}"
        class="dropdown-item"
        data-bs-toggle="tooltip"
-       aria-label="{% trans 'Duplicate the form' %} — {{ video.title }}"
-       data-bs-original-title="{% trans 'Duplicate the form' %} — {{ video.title }}"
-       onclick="return confirmDuplication(event, this.href, '{% trans 'Are you sure you want to duplicate this form?' %}');"
+       aria-label="{% trans 'Duplicate the video' %} — {{ video.title }}"
+       data-bs-original-title="{% trans 'Duplicate the video' %} — {{ video.title }}"
+       onclick="return confirmDuplication(event, this.href, '{% trans 'Are you sure you want to duplicate this video?' %}');"
     >   
       <i class="bi bi-files" aria-hidden="true"></i>
-      {% trans 'Duplicate the form' %}
+      {% trans 'Duplicate the video' %}
     </a> 
   {% endif %}
 

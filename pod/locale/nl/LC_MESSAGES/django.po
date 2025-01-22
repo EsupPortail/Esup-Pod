@@ -9181,11 +9181,11 @@ msgid "Dress the video"
 msgstr ""
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
-msgid "Duplicate the form"
+msgid "Duplicate the video"
 msgstr ""
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
-msgid "Are you sure you want to duplicate this form?"
+msgid "Are you sure you want to duplicate this video?"
 msgstr ""
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
