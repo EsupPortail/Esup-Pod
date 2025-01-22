@@ -69,8 +69,8 @@ window.onload = function () {
 
   /**
    * Display a validation error message on current input
-   * @param {String} msg  message to be displayed
-   * @param {String} type error code (added as css class)
+   * @param {String} msg  - message to be displayed
+   * @param {String} type - error code (added as css class)
    */
   function add_error_message(msg, type) {
     let error_message = document.createElement("li");

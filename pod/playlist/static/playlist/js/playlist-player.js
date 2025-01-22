@@ -131,7 +131,7 @@ function switchToNextVideo() {
 /**
  * Update the URL without refresh the page.
  *
- * @param {string} newUrl The new URL.
+ * @param {string} newUrl - The new URL.
  */
 function updateUrl(newUrl) {
   history.pushState({}, document.title, newUrl);
@@ -141,8 +141,8 @@ function updateUrl(newUrl) {
 /**
  * Refresh element with the DocumentFragment.
  *
- * @param {string} elementQuerySelector The query selector for the element.
- * @param {*} html The html code.
+ * @param {string} elementQuerySelector - The query selector for the element.
+ * @param {*} html - The html code.
  */
 function refreshElementWithDocumentFragment(elementQuerySelector, newHTMLContent) {
   const fragment = document.createDocumentFragment();
@@ -188,7 +188,7 @@ function asyncStartCountDown() {
 /**
  * Start the count down.
  *
- * @param {function} callback The call back function.
+ * @param {function} callback - The call back function.
  */
 function startCountdown(callback) {
   countdownElement.textContent = playlistCount;
