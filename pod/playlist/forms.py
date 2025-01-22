@@ -60,9 +60,8 @@ class PlaylistForm(forms.ModelForm):
                 "aria-describedby": "id_nameHelp",
             },
         ),
-        help_text=_(
-            "Please choose a title between 1 and %(max)s characters."
-        ) % {"max": 250}
+        help_text=_("Please choose a title between 1 and %(max)s characters.")
+        % {"max": 250},
     )
     description = forms.CharField(
         label=_("Description"),
