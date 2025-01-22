@@ -102,7 +102,11 @@ function generateHtml(data, level = 0) {
   for (let k in data) {
     if (typeof data[k] === "object") {
       html +=
-        "<li><strong>" + k + ":</strong> " + generateHtml(data[k], level++) + "</li>";
+        "<li><strong>" +
+        k +
+        ":</strong> " +
+        generateHtml(data[k], level++) +
+        "</li>";
     } else {
       html += "<li><strong>" + k + ":</strong> " + data[k] + "</li>";
     }
