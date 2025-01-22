@@ -22,7 +22,7 @@ var countSelectedVideosBadge = document.getElementById(
 /**
  * Get list of selected videos's titles based on selected videos
  *
- * @param {string} container : Identifier of container = selectedVideos's key
+ * @param {string} container - Identifier of container = selectedVideos's key
  * @returns {*[video_title]}
  */
 function getListSelectedVideosTitles(container) {
@@ -43,7 +43,7 @@ function getListSelectedVideosTitles(container) {
 /**
  * Set shared/global variable selectedVideos with selected videos based on class selected
  *
- * @param {string} container : Identifier of container = selectedVideos's key
+ * @param {string} container - Identifier of container = selectedVideos's key
  */
 function setListSelectedVideos(container) {
   if (container === videosListContainerId) {
@@ -60,7 +60,7 @@ function setListSelectedVideos(container) {
 /**
  * Set directly selected videos on interface to improve user experience
  *
- * @param {string} container : Identifier of container = selectedVideos's key
+ * @param {string} container - Identifier of container = selectedVideos's key
  */
 function setSelectedVideos(container) {
   Array.from(selectedVideos[container]).forEach((elt) => {
@@ -76,7 +76,7 @@ function setSelectedVideos(container) {
 /**
  * Replace count of selected videos (count label in "Apply" bulk update's badge)
  *
- * @param {string} container : Identifier of container = selectedVideos's key
+ * @param {string} container - Identifier of container = selectedVideos's key
  */
 function replaceSelectedCountVideos(container) {
   let newCount = selectedVideos[container].length;
@@ -99,8 +99,8 @@ function replaceSelectedCountVideos(container) {
 /**
  * Toggle class selected for video cards or list-item, avoid select a video when click on links
  *
- * @param {HTMLElement} item : HTMLElement to be toggled
- * @param {string} container : Identifier of container = selectedVideos's key
+ * @param {HTMLElement} item - HTMLElement to be toggled
+ * @param {string} container - Identifier of container = selectedVideos's key
  */
 function toggleSelectedVideo(item, container) {
   if (item.checked) {
@@ -121,9 +121,9 @@ function toggleSelectedVideo(item, container) {
 }
 
 /**
- * Clear videos selection : deselect all videos, reset badge count
+ * Clear videos selection: deselect all videos, reset badge count
  *
- * @param {string} container : Identifier of container = selectedVideos's key
+ * @param {string} container - Identifier of container = selectedVideos's key
  */
 function clearSelectedVideo(container) {
   selectedVideos[container] = [];
@@ -148,7 +148,7 @@ function resetDashboardElements() {
  * Get list of selected videos slugs (HTML li formated) for modal confirm display.
  *
  * @param {HTMLElement} container - The container element that holds the selected videos.
- * @returns {string} - HTML string of badges for the selected video titles.
+ * @returns {string} HTML string of badges for the selected video titles.
  */
 function getHTMLBadgesSelectedTitles(container) {
   let str = "";
@@ -164,7 +164,7 @@ function getHTMLBadgesSelectedTitles(container) {
 /**
  * Select all videos (visible infinite-item) on given container
  *
- * @param {string} container : Identifier of the infinite-items's container
+ * @param {string} container - Identifier of the infinite-items's container
  */
 function selectAllVideos(container) {
   let selector = "#" + container + " .card-select-input";

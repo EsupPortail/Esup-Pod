@@ -243,7 +243,7 @@ var VideoSlides = function (items) {
   /**
    * slideShow function to show the current slide according to the time.
    *
-   * @param {number} time the current video time
+   * @param {number} time - the current video time
    * @return {void} doesn't return anything
    * @function slideShow
    */

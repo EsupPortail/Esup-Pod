@@ -6,7 +6,7 @@
 /**
  * Hide or show the password field. If it is show, it is required.
  *
- * @param {boolean} toHide For hide the field, set to `true`.
+ * @param {boolean} toHide - To hide the field, set to `true`.
  */
 function hidePasswordField(toHide) {
   if (toHide) {
@@ -22,8 +22,8 @@ function hidePasswordField(toHide) {
 /**
  * Update the visibility for the help text.
  *
- * @param {string} visibility The new visibility.
- * @param {HTMLElement} helpText The help text element.
+ * @param {string} visibility - The new visibility.
+ * @param {HTMLElement} helpText - The help text element.
  */
 function updateVisibilityHelpText(visibility, helpText) {
   if (visibility == 'public') {

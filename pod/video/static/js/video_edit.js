@@ -41,8 +41,8 @@ function applySelect2Style() {
 /**
  * Toggle the password field visibility based on the visibility select value.
  *
- * @param visibilitySelect {HTMLSelectElement} - The select element with the visibility options.
- * @param passwordField {HTMLElement} - The password field container.
+ * @param {HTMLSelectElement} visibilitySelect - The select element with the visibility options.
+ * @param {HTMLElement} passwordField - The password field container.
  */
 function toggleFields(visibilitySelect, passwordField) {
   const idRestrictToGroupsField = document.getElementById(
@@ -103,8 +103,8 @@ function toggleFields(visibilitySelect, passwordField) {
 /**
  * Display the description of the selected option in a select box.
  *
- * @param selectBox {HTMLElement} - The select element.
- * @param container {HTMLElement} - The container element where the description will be displayed.
+ * @param {HTMLElement} selectBox - The select element.
+ * @param {HTMLElement} container - The container element where the description will be displayed.
  */
 function display_option_desc(selectBox, container) {
   // Display in $container the title of current $selectedBox option.
