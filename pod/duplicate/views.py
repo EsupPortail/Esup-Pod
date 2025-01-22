@@ -68,10 +68,12 @@ def video_duplicate(request, slug):
     """
 
     original_video = get_object_or_404(Video, slug=slug)
-    new_slug = generate_unique_slug(slugify(_("%(slug)s-copy") % {'slug': original_video.slug}))
+    new_slug = generate_unique_slug(
+        slugify(_("%(slug)s-copy") % {"slug": original_video.slug})
+    )
 
     duplicated_video = Video.objects.create(
-        title=_("Copy of %(title)s") % {'title': original_video.title},
+        title=_("Copy of %(title)s") % {"title": original_video.title},
         slug=new_slug,
         type=original_video.type,
         owner=request.user,
@@ -96,7 +98,9 @@ def video_duplicate(request, slug):
 
     # Many-to-Many Relations
     duplicated_video.discipline.set(original_video.discipline.all())
-    duplicated_video.restrict_access_to_groups.set(original_video.restrict_access_to_groups.all())
+    duplicated_video.restrict_access_to_groups.set(
+        original_video.restrict_access_to_groups.all()
+    )
     duplicated_video.channel.set(original_video.channel.all())
     duplicated_video.theme.set(original_video.theme.all())
     duplicated_video.additional_owners.set(original_video.additional_owners.all())
@@ -126,4 +130,4 @@ def video_duplicate(request, slug):
             private=document.private,
         )
 
-    return redirect(reverse('video:video_edit', args=[duplicated_video.slug]))
+    return redirect(reverse("video:video_edit", args=[duplicated_video.slug]))

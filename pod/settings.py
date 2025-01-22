@@ -74,7 +74,7 @@ INSTALLED_APPS = [
     "pod.ai_enhancement",
     "pod.speaker",
     "pod.custom",
-    "pod.duplicate"
+    "pod.duplicate",
 ]
 
 ##

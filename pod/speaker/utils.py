@@ -39,7 +39,7 @@ def get_video_speakers_grouped(video) -> Dict[Speaker, List[str]]:
         Dict[Speaker, List[str]]: A dictionary where the keys are the speakers (Speaker)
         and the values are lists of job titles (str) associated with each speaker.
     """
-    speakers = video.jobvideo_set.select_related('job__speaker').all()
+    speakers = video.jobvideo_set.select_related("job__speaker").all()
     grouped_speakers = {}
     for jobvideo in speakers:
         speaker = jobvideo.job.speaker

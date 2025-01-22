@@ -1432,14 +1432,18 @@ def video_is_deletable(request, video) -> bool:
     if WEBTV_MODE:
         if video.encoding_in_progress is True:
             messages.add_message(
-                request, messages.ERROR, _("You cannot delete a media that is being encoded.")
+                request,
+                messages.ERROR,
+                _("You cannot delete a media that is being encoded."),
             )
             return False
         return True
     else:
         if not video.encoded or video.encoding_in_progress is True:
             messages.add_message(
-                request, messages.ERROR, _("You cannot delete a media that is being encoded.")
+                request,
+                messages.ERROR,
+                _("You cannot delete a media that is being encoded."),
             )
             return False
         return True

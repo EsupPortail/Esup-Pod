@@ -67,4 +67,6 @@ class VideoDuplicateViewTest(TestCase):
         self.assertEqual(list(duplicated_video.theme.all()), [self.theme])
 
         # Check the response status code
-        self.assertEqual(response.status_code, 302)  # Redirect after successful duplication
+        self.assertEqual(
+            response.status_code, 302
+        )  # Redirect after successful duplication
