@@ -96,48 +96,50 @@ def search_for_available_livegateway(
 
 def send_email_webinars(
     meeting: Meeting, nb_webinars: int, nb_live_gateways: int, names_webinars: str
-):
+) -> None:
     """Send email notification to administrators when too many webinars."""
     subject = "[" + __TITLE_SITE__ + "] %s" % _("Too many webinars")
     message = _(
-        "There are too many webinars (%s) for the number of "
-        "live gateways allocated (%s). "
-        "The next meeting has been created but not like a webinar:%s %s [%s-%s].\n"
+        "There are too many webinars (%(nb_webinars)s) for the number of "
+        "live gateways allocated (%(nb_live_gateways)s). "
+        "The next meeting has been created but not like a webinar: %(id)s %(name)s [%(start_at)s-%(end_at)s].\n"
         "Please fix the problem either by increasing the number of live gateways "
         "or by modifying/deleting one of the affected webinars "
         "(with the users’ agreement).\n"
-        "Other webinars: %s"
-    ) % (
-        nb_webinars,
-        nb_live_gateways,
-        meeting.id,
-        meeting.name,
-        meeting.start_at,
-        meeting.start_at + meeting.expected_duration,
-        names_webinars,
-    )
+        "Other webinars: %(names_webinars)s"
+    ) % {
+        "nb_webinars": nb_webinars,
+        "nb_live_gateways": nb_live_gateways,
+        "id": meeting.id,
+        "name": meeting.name,
+        "start_at": meeting.start_at,
+        "end_at": meeting.start_at + meeting.expected_duration,
+        "names_webinars": names_webinars,
+    }
+
     html_message = _(
-        "<p>There are too many webinars (<b>%s</b>) for the number of "
-        "live gateways allocated (<b>%s</b>). "
-        "The next webinar has been created but <b>not like a webinar</b>:"
-        "<ul><li><b>%s %s</b> [%s-%s].</li></ul><p>"
+        "<p>There are too many webinars (<strong>%(nb_webinars)s</strong>) for the number of "
+        "live gateways allocated (<strong>%(nb_live_gateways)s</strong>). "
+        "The next webinar has been created but <strong>not like a webinar</strong>:"
+        "<ul><li><strong>%(id)s %(name)s</strong> [%(start_at)s-%(end_at)s].</li></ul><p>"
         "Please fix the problem either by increasing the number of live gateways "
         "or by modifying/deleting one of the affected webinars "
         "(with the users’ agreement).<br>"
-        "Other webinars: <b>%s</b>"
-    ) % (
-        nb_webinars,
-        nb_live_gateways,
-        meeting.id,
-        meeting.name,
-        meeting.start_at,
-        meeting.start_at + meeting.expected_duration,
-        names_webinars,
-    )
+        "Other webinars: <strong>%(names_webinars)s</strong>"
+    ) % {
+        "nb_webinars": nb_webinars,
+        "nb_live_gateways": nb_live_gateways,
+        "id": meeting.id,
+        "name": meeting.name,
+        "start_at": meeting.start_at,
+        "end_at": meeting.start_at + meeting.expected_duration,
+        "names_webinars": names_webinars,
+    }
+
     mail_admins(subject, message, fail_silently=False, html_message=html_message)
 
 
-def update_livestream_event(livestream, meeting):
+def update_livestream_event(livestream, meeting) -> None:
     """Update event livestream from meeeting attributes."""
     if livestream.event.title != meeting.name:
         livestream.event.title = meeting.name
@@ -187,7 +189,7 @@ def manage_webinar(
         livestream.event.delete()
 
 
-def create_livestream_event(meeting: Meeting, live_gateway: LiveGateway):
+def create_livestream_event(meeting: Meeting, live_gateway: LiveGateway) -> None:
     """Create a livestream and an event for a new webinar."""
     # Create live event
     event = Event.objects.create(

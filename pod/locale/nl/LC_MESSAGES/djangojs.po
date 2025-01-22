@@ -212,7 +212,8 @@ msgid "Time stamps"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js
-msgid "/80 characters"
+#, javascript-format
+msgid "%s/%s characters"
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js

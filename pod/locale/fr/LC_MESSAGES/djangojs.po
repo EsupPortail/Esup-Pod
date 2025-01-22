@@ -230,8 +230,9 @@ msgid "Time stamps"
 msgstr "Horodatages"
 
 #: pod/completion/static/js/caption_maker.js
-msgid "/80 characters"
-msgstr "80 caractères"
+#, javascript-format
+msgid "%s/%s characters"
+msgstr "%s/%s caractères"
 
 #: pod/completion/static/js/caption_maker.js
 msgid "Error loading caption file: "
