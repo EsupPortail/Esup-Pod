@@ -1014,18 +1014,28 @@ class Video(models.Model):
     def get_thumbnail_url(self, size="x720") -> str:
         """Get a thumbnail url for the video, with defined max size."""
         request = None
+        # Initialize default thumbnail URL
+        thumbnail_url = "".join(
+            [
+                "//",
+                get_current_site(request).domain,
+                static(DEFAULT_THUMBNAIL),
+            ]
+        )
         if self.thumbnail and self.thumbnail.file_exist():
             # Do not serve thumbnail url directly, as it can lead to the video URL
-            im = get_thumbnail(self.thumbnail.file, size, crop="center", quality=80)
-            return im.url
+            # Handle exception to avoid sending an error email
+            try:
+                im = get_thumbnail(self.thumbnail.file, size, crop="center", quality=80)
+                thumbnail_url = im.url
+            except Exception as e:
+                logger.error(
+                    "An error occured during get_thumbnail_url"
+                    " for video %s: %s" % (self.id, e)
+                )
+            return thumbnail_url
         else:
-            return "".join(
-                [
-                    "//",
-                    get_current_site(request).domain,
-                    static(DEFAULT_THUMBNAIL),
-                ]
-            )
+            return thumbnail_url
 
     @property
     def get_thumbnail_admin(self):
@@ -1033,8 +1043,12 @@ class Video(models.Model):
         # fix title for xml description
         title = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]", "", self.title)
         if self.thumbnail and self.thumbnail.file_exist():
-            im = get_thumbnail(self.thumbnail.file, "100x100", crop="center", quality=72)
-            thumbnail_url = im.url
+            # Handle exception to avoid sending an error email
+            try:
+                im = get_thumbnail(self.thumbnail.file, "100x100", crop="center", quality=72)
+                thumbnail_url = im.url
+            except Exception:
+                thumbnail_url = static(DEFAULT_THUMBNAIL)
             # <img src="{{ im.url }}" width="{{ im.width }}"
             # height="{{ im.height }}" loading="lazy">
         else:
@@ -1054,8 +1068,12 @@ class Video(models.Model):
         """Return thumbnail image card of current video."""
         thumbnail_url = ""
         if self.thumbnail and self.thumbnail.file_exist():
-            im = get_thumbnail(self.thumbnail.file, "x170", crop="center", quality=72)
-            thumbnail_url = im.url
+            # Handle exception to avoid sending an error email
+            try:
+                im = get_thumbnail(self.thumbnail.file, "x170", crop="center", quality=72)
+                thumbnail_url = im.url
+            except Exception:
+                thumbnail_url = static(DEFAULT_THUMBNAIL)
             # <img src="{{ im.url }}" width="{{ im.width }}"
             # height="{{ im.height }}" loading="lazy">
         else:
