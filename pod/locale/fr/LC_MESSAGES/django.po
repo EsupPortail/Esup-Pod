@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-20 09:30+0100\n"
+"POT-Creation-Date: 2025-01-20 09:49+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -9828,7 +9828,7 @@ msgstr "Habiller la vidéo"
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "Duplicate the form"
-msgstr "Dupliquer la video"
+msgstr "Dupliquer la vidéo"
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
 msgid "Are you sure you want to duplicate this form?"
@@ -10361,7 +10361,7 @@ msgstr "La vidéo est actuellement en attente du traitement par l’IA Aristote.
 
 #: pod/video/templates/videos/video_page_content.html
 msgid "The form does not contain a video."
-msgstr "La fiche ne contient pas de vidéo"
+msgstr "La fiche ne contient pas de vidéo."
 
 #: pod/video/templates/videos/video_row_select.html
 msgid "Selected"
