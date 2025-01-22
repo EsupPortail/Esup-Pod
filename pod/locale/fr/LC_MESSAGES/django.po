@@ -4717,7 +4717,7 @@ msgstr "Obtenir la taille du fichier"
 msgid "Get the file name"
 msgstr "Obtenir le nom du fichier"
 
-#: pod/main/models.py
+#: pod/main/models.py pod/video/models.py
 msgid "order"
 msgstr "ordre"
 
@@ -9141,6 +9141,10 @@ msgstr "Date de l’évènement"
 #: pod/video/models.py
 msgid "The channel where you want your content to appear."
 msgstr "La chaîne où vous voulez que votre contenu apparaisse."
+
+#: pod/video/models.py
+msgid "Order videos in channels or themes."
+msgstr "Ordonner les vidéos dans les chaines ou les thèmes."
 
 #: pod/video/models.py
 msgid "Overview"
