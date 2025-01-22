@@ -104,6 +104,10 @@ urlpatterns += [
     path("dressing/", include("pod.dressing.urls", namespace="video_dressing")),
 ]
 
+urlpatterns += [
+    path("duplicate/", include("pod.duplicate.urls", namespace="duplicate")),
+]
+
 ##
 # OEMBED feature patterns
 #

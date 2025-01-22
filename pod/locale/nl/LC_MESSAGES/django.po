@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-11 15:32+0000\n"
+"POT-Creation-Date: 2025-01-20 09:49+0100\n"
 "PO-Revision-Date: 2024-07-04 17:54+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -2075,6 +2075,20 @@ msgstr ""
 #: pod/dressing/views.py
 #, python-format
 msgid "Deleting the dressing “%s”"
+msgstr ""
+
+#: pod/duplicate/apps.py
+msgid "Video duplicates"
+msgstr ""
+
+#: pod/duplicate/views.py
+#, python-format
+msgid "%(slug)s-copy"
+msgstr ""
+
+#: pod/duplicate/views.py
+#, python-format
+msgid "Copy of %(title)s"
 msgstr ""
 
 #: pod/enrichment/apps.py pod/enrichment/models.py
@@ -9157,6 +9171,14 @@ msgid "Dress the video"
 msgstr ""
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Duplicate the video"
+msgstr ""
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Are you sure you want to duplicate this video?"
+msgstr ""
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 #: pod/video/templates/videos/video_edit.html
 msgid "Delete the video"
 msgstr ""
@@ -9647,6 +9669,10 @@ msgstr ""
 
 #: pod/video/templates/videos/video_page_content.html
 msgid "The video is currently waiting for Aristote AI treatment."
+msgstr ""
+
+#: pod/video/templates/videos/video_page_content.html
+msgid "The form does not contain a video."
 msgstr ""
 
 #: pod/video/templates/videos/video_row_select.html

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-11 15:32+0000\n"
+"POT-Creation-Date: 2025-01-20 09:49+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -2166,6 +2166,20 @@ msgstr "Vous ne pouvez pas supprimer cet habillage."
 #, python-format
 msgid "Deleting the dressing “%s”"
 msgstr "Supprimer l’habillage « %s »"
+
+#: pod/duplicate/apps.py
+msgid "Video duplicates"
+msgstr "Duplication de vidéo"
+
+#: pod/duplicate/views.py
+#, python-format
+msgid "%(slug)s-copy"
+msgstr "%(slug)s-copie"
+
+#: pod/duplicate/views.py
+#, python-format
+msgid "Copy of %(title)s"
+msgstr "Copie de %(title)s"
 
 #: pod/enrichment/apps.py pod/enrichment/models.py
 msgid "Enrichments"
@@ -9804,6 +9818,14 @@ msgid "Dress the video"
 msgstr "Habiller la vidéo"
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Duplicate the video"
+msgstr "Dupliquer la vidéo"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Are you sure you want to duplicate this video?"
+msgstr "Voulez-vous vraiment dupliquer cette vidéo ?"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 #: pod/video/templates/videos/video_edit.html
 msgid "Delete the video"
 msgstr "Supprimer la vidéo"
@@ -10327,6 +10349,10 @@ msgstr "Description du thème"
 #: pod/video/templates/videos/video_page_content.html
 msgid "The video is currently waiting for Aristote AI treatment."
 msgstr "La vidéo est actuellement en attente du traitement par l’IA Aristote."
+
+#: pod/video/templates/videos/video_page_content.html
+msgid "The form does not contain a video."
+msgstr "La fiche ne contient pas de vidéo."
 
 #: pod/video/templates/videos/video_row_select.html
 msgid "Selected"

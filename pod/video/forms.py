@@ -951,7 +951,8 @@ class VideoForm(forms.ModelForm):
 
         # remove required=True for videofield if instance
         if self.fields.get("video") and self.instance and self.instance.video:
-            del self.fields["video"].widget.attrs["required"]
+            # remove del self.fields["video"].widget.attrs["required"]
+            self.fields["video"].widget.attrs.pop("required", None)
         if self.fields.get("owner"):
             self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
                 owner__sites=Site.objects.get_current()

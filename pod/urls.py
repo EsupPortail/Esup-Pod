@@ -39,6 +39,8 @@ USE_SPEAKER = getattr(settings, "USE_SPEAKER", False)
 USE_IMPORT_VIDEO = getattr(settings, "USE_IMPORT_VIDEO", True)
 USE_QUIZ = getattr(settings, "USE_QUIZ", True)
 USE_AI_ENHANCEMENT = getattr(settings, "USE_AI_ENHANCEMENT", False)
+WEBTV_MODE = getattr(settings, "WEBTV_MODE", False)
+USE_DUPLICATE = getattr(settings, "USE_DUPLICATE", False)
 
 if USE_CAS:
     from cas import views as cas_views
@@ -196,6 +198,11 @@ if USE_IMPORT_VIDEO:
         url(
             r"^import_video/", include("pod.import_video.urls", namespace="import_video")
         ),
+    ]
+
+if USE_DUPLICATE:
+    urlpatterns += [
+        path("duplicate/", include("pod.duplicate.urls", namespace="duplicate")),
     ]
 
 if settings.DEBUG:
