@@ -10,7 +10,7 @@ v1.2, 2023-08-30
 === Conteneur ElasticSearch
 http://elasticsearch.localhost:9200
 
-==== elasticsearch:8.8.1
+==== elasticsearch:8.16.1
 ===== OS/ARCH
 ----
 OS/ARCH
@@ -51,7 +51,7 @@ DJANGO_SUPERUSER_USERNAME=
 DJANGO_SUPERUSER_PASSWORD=
 DJANGO_SUPERUSER_EMAIL=
 ELASTICSEARCH_TAG=elasticsearch:8.16.1
-NODE_TAG=node:19
+NODE_TAG=node:23
 PYTHON_TAG=python:3.9-bullseye
 REDIS_TAG=redis:alpine3.16
 DOCKER_ENV=light

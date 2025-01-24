@@ -11,8 +11,8 @@
 /**
  * Set attributes of an HTML element with a two-dimensional array.
  *
- * @param {HTMLElement} htmlElement The HTML element.
- * @param {string[][]} attributeCouples The two-dimensional array.
+ * @param {HTMLElement} htmlElement - The HTML element.
+ * @param {string[][]} attributeCouples - The two-dimensional array.
  */
 function setAttributesWithTab(htmlElement, attributeCouples) {
   attributeCouples.forEach((attributeCouple) => {
@@ -23,8 +23,8 @@ function setAttributesWithTab(htmlElement, attributeCouples) {
 /**
  * Get the channel list for a specific channel tab thanks to the AJAX request.
  *
- * @param {*} page The page.
- * @param {*} id The channel tab identifier.
+ * @param {*} page - The page.
+ * @param {*} id - The channel tab identifier.
  *
  * @returns The AJAX request promise.
  */
@@ -53,7 +53,7 @@ function getChannelsForSpecificChannelTabs(page, id = 0) {
 /**
  * Get the channel tab list thanks to the AJAX request.
  *
- * @param {boolean} nameOnly If this options is `true`, the channel tab list contains the name of tab only.
+ * @param {boolean} nameOnly - If this options is `true`, the channel tab list contains the name of tab only.
  *
  * @returns The AJAX request promise.
  */
@@ -78,7 +78,7 @@ function getChannelTabsAjaxRequest() {
 /**
  * Get the theme list for a specific channel thanks to the AJAX request.
  *
- * @param {string} channelSlug The channel slug.
+ * @param {string} channelSlug - The channel slug.
  *
  * @returns The AJAX request promise.
  */
@@ -106,8 +106,8 @@ function getThemesForSpecificChannel(channelSlug) {
 /**
  * Set the modal title when the user ask to view this modal.
  *
- * @param {HTMLElement} modalContentElement The HTML element of the modal.
- * @param {Array} channelsArray The channel list.
+ * @param {HTMLElement} modalContentElement - The HTML element of the modal.
+ * @param {Array} channelsArray - The channel list.
  */
 function setModalTitle(modalContentElement, channelsCount) {
   const modalTitleElement = modalContentElement.querySelector(".modal-title");
@@ -124,7 +124,7 @@ function setModalTitle(modalContentElement, channelsCount) {
 /**
  * Convert a channel list to HTML modal list.
  *
- * @param {Array} channelsArray The channel list.
+ * @param {Array} channelsArray - The channel list.
  *
  * @returns The HTML modal list.
  */
@@ -155,7 +155,7 @@ function convertToModalList(channelsArray) {
 /**
  * Convert a channel to a HTML modal list element.
  *
- * @param {any} channel The channel to convert.
+ * @param {any} channel - The channel to convert.
  *
  * @returns The HTML modal list element.
  */
@@ -215,8 +215,8 @@ function convertToModalListElement(channel) {
 /**
  * Set the image in the innerHTML of span HTML element.
  *
- * @param {HTMLElement} dFlexSpanElement The span HTML element.
- * @param {any} channel The channel element.
+ * @param {HTMLElement} dFlexSpanElement - The span HTML element.
+ * @param {any} channel - The channel element.
  */
 function setImageForModal(dFlexSpanElement, channel) {
   if (channel.headband) {
@@ -227,8 +227,8 @@ function setImageForModal(dFlexSpanElement, channel) {
 /**
  * Set a channel theme collapse for the modal.
  *
- * @param {HTMLElement} channelListElement The HTML element channel list.
- * @param {any} channel The channel element.
+ * @param {HTMLElement} channelListElement - The HTML element channel list.
+ * @param {any} channel - The channel element.
  */
 function setChannelThemeCollapseForModal(
   channelListElement,
@@ -279,8 +279,8 @@ function setChannelThemeCollapseForModal(
 /**
  * Add a theme in a list.
  *
- * @param {HTMLElement} listElement The HTML element list.
- * @param {any} theme The theme.
+ * @param {HTMLElement} listElement - The HTML element list.
+ * @param {any} theme - The theme.
  */
 function addThemeInList(listElement, theme) {
   const themeLiElement = document.createElement("li");
@@ -304,8 +304,8 @@ function addThemeInList(listElement, theme) {
 /**
  * Append child to span HTML element. This child is the theme button element.
  *
- * @param {HTMLElement} spanElement The span HTML element.
- * @param {any} channel The channel.
+ * @param {HTMLElement} spanElement - The span HTML element.
+ * @param {any} channel - The channel.
  */
 function setChannelThemeButtonForModal(spanElement, channel) {
   const themesButtonElement = document.createElement("button");
@@ -328,7 +328,7 @@ function setChannelThemeButtonForModal(spanElement, channel) {
 /**
  * Create modal for a specific channel tab.
  *
- * @param {any} channelTab The specific channel tab.
+ * @param {any} channelTab - The specific channel tab.
  */
 function createModalFor(channelTab) {
   const headerElement = document.getElementsByTagName("header")[0];
@@ -401,9 +401,9 @@ function createModalFor(channelTab) {
 /**
  * Load the next batch of channels.
  *
- * @param {HTMLElement} modalContentElement The modal content HTML element.
- * @param {number} currentPage The current page.
- * @param {boolean} allChannelsLoaded `true` if all channels loaded, `false` otherwise.
+ * @param {HTMLElement} modalContentElement - The modal content HTML element.
+ * @param {number} currentPage - The current page.
+ * @param {boolean} allChannelsLoaded - `true` if all channels loaded, `false` otherwise.
  */
 function loadNextBatchOfChannels(
   modalContentElement,

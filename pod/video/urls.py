@@ -1,3 +1,5 @@
+"""Esup-Pod Video Urls."""
+
 from django.conf import settings
 from django.urls import include, path, re_path
 
@@ -101,6 +103,10 @@ urlpatterns += [
 # DRESSING
 urlpatterns += [
     path("dressing/", include("pod.dressing.urls", namespace="video_dressing")),
+]
+
+urlpatterns += [
+    path("duplicate/", include("pod.duplicate.urls", namespace="duplicate")),
 ]
 
 ##

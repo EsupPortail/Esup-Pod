@@ -93,18 +93,22 @@ meetingModal.addEventListener("show.bs.modal", function (event) {
 /* TODO: check if level parameter can be removed. */
 /**
  * Recursively generate an HTML unordered list version of data
- * @param  {Array} data   Data to be displayed
- * @param  {Number} level level of recursion (useless?)
- * @return {string}       Generated HTML
+ * @param  {Array}  data  - Data to be displayed
+ * @param  {Number} level - level of recursion (useless?)
+ * @return {string} Generated HTML
  */
 function generateHtml(data, level = 0) {
   let html = "<ul>";
   for (let k in data) {
     if (typeof data[k] === "object") {
       html +=
-        "<li><b>" + k + ":</b> " + generateHtml(data[k], level++) + "</li>";
+        "<li><strong>" +
+        k +
+        ":</strong> " +
+        generateHtml(data[k], level++) +
+        "</li>";
     } else {
-      html += "<li><b>" + k + ":</b> " + data[k] + "</li>";
+      html += "<li><strong>" + k + ":</strong> " + data[k] + "</li>";
     }
   }
   html += "</ul>";

@@ -33,8 +33,8 @@ def start_webinar(request: WSGIRequest, meet_id: int) -> None:
         display_message_with_icon(
             request,
             messages.INFO,
-            _("Webinar mode has been successfully started for “%s” meeting.")
-            % (meeting.name),
+            _("Webinar mode has been successfully started for “%(name)s” meeting.")
+            % ({"name": meeting.name}),
         )
         # Manage enable_chat is False by default
         if meeting.enable_chat is False:
@@ -42,13 +42,14 @@ def start_webinar(request: WSGIRequest, meet_id: int) -> None:
             toggle_rtmp_gateway(meet_id)
     except Exception as exc:
         log.error(
-            "Error to start webinar mode for “%s” meeting: %s" % (meet_id, str(exc))
+            "Error to start webinar mode for “%(id)s” meeting: %(exc)s"
+            % {"id": meet_id, "exc": str(exc)}
         )
         display_message_with_icon(
             request,
             messages.ERROR,
-            _("Error to start webinar mode for “%s” meeting: %s")
-            % (meeting.name, str(exc)),
+            _("Error to start webinar mode for “%(name)s” meeting: %(exc)s")
+            % {"name": meeting.name, "exc": str(exc)},
         )
 
 
@@ -64,16 +65,19 @@ def stop_webinar(request: WSGIRequest, meet_id: int) -> None:
         display_message_with_icon(
             request,
             messages.INFO,
-            _("Webinar mode has been successfully stopped for “%s” meeting.")
-            % (meeting.name),
+            _("Webinar mode has been successfully stopped for “%(name)s” meeting.")
+            % {"name": meeting.name},
         )
     except Exception as exc:
-        log.error("Error to stop webinar mode for “%s” meeting: %s" % (meet_id, str(exc)))
+        log.error(
+            "Error to stop webinar mode for “%(id)s” meeting: %(exc)s"
+            % {"id": meet_id, "exc": str(exc)}
+        )
         display_message_with_icon(
             request,
             messages.ERROR,
-            _("Error to stop webinar mode for “%s” meeting: %s")
-            % (meeting.name, str(exc)),
+            _("Error to stop webinar mode for “%(name)s” meeting: %(exc)s")
+            % {"name": meeting.name, "exc": str(exc)},
         )
 
 

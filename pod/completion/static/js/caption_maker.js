@@ -324,7 +324,7 @@ var captionBeingDisplayed = -1;
 
 /**
  * Display existing caption
- * @param {[type]} seconds [description]
+ * @param {[type]} seconds - time in seconds
  */
 function displayExistingCaption(seconds) {
   var ci = findCaptionIndex(seconds);
@@ -360,7 +360,7 @@ function existingCaptionsEndTime() {
 
 /**
  * Update captions array.
- * @param  {[type]} vtt [description]
+ * @param  {string} vtt - VTT string
  */
 let updateCaptionsArray = (vtt) => {
   let arr = vtt.split("\n\n");
@@ -665,8 +665,8 @@ let updateCaptionHtmlContent = () => {
 
 /**
  * Update caption.
- * @param {[type]} ci          caption index
- * @param {[type]} captionText caption text
+ * @param {int} ci          - caption index
+ * @param {string} captionText - caption text
  */
 function updateCaption(ci, captionText) {
   captionsArray[ci].caption = captionText;
@@ -677,8 +677,8 @@ let lastEditedBlock = null;
 
 /**
  * Create a caption block object.
- * @param {Object} newCaption    Simple object representing the caption block
- * @param {Function} spawnFunction Function to call after block init
+ * @param {Object} newCaption      - Simple object representing the caption block
+ * @param {Function} spawnFunction - Function to call after block init
  */
 function createCaptionBlock(newCaption, spawnFunction) {
   let captionText = newCaption.caption;
@@ -871,7 +871,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
 
     /**
      * Spawn New Block
-     * @param  {Event} e Triggered Event
+     * @param {Event} e - Triggered Event
      */
     spawnNew: function (e) {
       e.preventDefault();
@@ -900,7 +900,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
 
     /**
      * Delete Block
-     * @param  {Event} e Triggered Event
+     * @param {Event} e - Triggered Event
      */
     delete: function (e) {
       e.preventDefault();
@@ -961,11 +961,14 @@ function createCaptionBlock(newCaption, spawnFunction) {
       this.div.append(this.numberCharactersDiv);
       this.div.append(this.buttonsDiv);
 
+      const nbCharsMsg = gettext("%s/%s characters");
       // Update numberCharactersDiv content
       const updateCharacterCount = () => {
         let nbCharacters = this.captionTextInput.value.length;
-        this.numberCharactersDiv.textContent =
-          nbCharacters + gettext("/80 characters");
+        this.numberCharactersDiv.textContent = interpolate(nbCharsMsg, [
+          nbCharacters,
+          80,
+        ]);
         if (nbCharacters > 80) {
           this.numberCharactersDiv.append(this.numberCharactersAlert);
         }
@@ -1140,8 +1143,8 @@ editorShortcuts.init();
 
 /**
  * Add caption list row
- * @param {[type]} ci         [description]
- * @param {[type]} newCaption [description]
+ * @param {int} ci            - Caption index
+ * @param {[type]} newCaption - Caption object
  */
 function addCaptionListRow(ci, newCaption) {
   let vtt = document.getElementById("caption-content");
@@ -1167,9 +1170,9 @@ function addCaptionListRow(ci, newCaption) {
 
 /**
  * Add caption
- * @param {[type]} captionStart [description]
- * @param {[type]} captionEnd   [description]
- * @param {[type]} captionText  [description]
+ * @param {[type]} captionStart - Start time
+ * @param {[type]} captionEnd   - End time
+ * @param {[type]} captionText  - Caption content
  */
 function addCaption(captionStart, captionEnd, captionText) {
   const pod = document.getElementById("podvideoplayer");
@@ -1190,8 +1193,8 @@ function addCaption(captionStart, captionEnd, captionText) {
 
 /**
  * Convert HMS time format to seconds only
- * @param  {string} str hms
- * @return {number}     corresponding seconds
+ * @param  {string} str - hms
+ * @return {number}     - corresponding seconds
  */
 function hmsToSecondsOnly(str) {
   let p = str.split(":"),
@@ -1206,7 +1209,7 @@ function hmsToSecondsOnly(str) {
 
 /**
  * Parses webvtt time string format into floating point seconds
- * @param {[type]} sTime [description]
+ * @param {[type]} sTime - Webvtt time string
  */
 function parseTime(sTime) {
   let seconds = hmsToSecondsOnly(sTime);
@@ -1228,7 +1231,7 @@ function parseTime(sTime) {
 
 /**
  * formats floating point seconds into the webvtt time string format
- * @param {[type]} seconds [description]
+ * @param {[type]} seconds - floating point seconds
  */
 function formatTime(seconds) {
   var hh = Math.floor(seconds / (60 * 60));
@@ -1246,7 +1249,7 @@ function formatTime(seconds) {
 
 /**
  * Find caption index
- * @param {[type]} seconds [description]
+ * @param {[type]} seconds - Time in seconds
  */
 function findCaptionIndex(seconds) {
   var below = -1;
@@ -1268,7 +1271,7 @@ function findCaptionIndex(seconds) {
 
 /**
  * Play selected caption
- * @param  {[type]} timeline [description]
+ * @param {string} timeline -
  */
 function playSelectedCaption(timeline) {
   if (timeline.includes("-->")) {
@@ -1288,7 +1291,7 @@ function playSelectedCaption(timeline) {
 
 /**
  * Escape Html entities
- * @param {string} s String to be escaped
+ * @param {string} s - String to be escaped
  */
 function XMLEncode(s) {
   return s
@@ -1302,7 +1305,7 @@ function XMLEncode(s) {
 
 /**
  * Decode Html entities
- * @param {String} s String to be decoded
+ * @param {String} s - String to be decoded
  */
 function XMLDecode(s) {
   return s
@@ -1315,7 +1318,7 @@ function XMLDecode(s) {
 
 /**
  * Load caption file
- * @param {[type]} fileObject [description]
+ * @param {[type]} fileObject - File object to be loaded
  */
 /*
 function loadCaptionFile(fileObject) {
@@ -1344,7 +1347,7 @@ function loadCaptionFile(fileObject) {
 
 /**
  * Invoked by script insertion of proxyvtt.ashx
- * @param {[type]} obj [description]
+ * @param {[type]} obj -
  */
 function processProxyVttResponse(obj) {
   obj = JSON.parse(obj);
@@ -1376,7 +1379,7 @@ function processProxyVttResponse(obj) {
 
 /**
  * Partial parser for WebVTT files based on the spec at http://dev.w3.org/html5/webvtt/
- * @param {[type]} vtt [description]
+ * @param {[type]} vtt - VTT file content
  */
 function parseAndLoadWebVTT(vtt) {
   var vttLines = vtt.split(/\r\n|\r|\n/); // create an array of lines from our file
@@ -1460,8 +1463,8 @@ const registerPlugin = videojs.registerPlugin || videojs.plugin;
 
 /**
  * On player ready Event
- * @param  {[type]} player  [description]
- * @param  {[type]} options [description]
+ * @param {[type]} player  - Video player
+ * @param {[type]} options - Options (not used ?)
  */
 const onPlayerReady = function (player, options) {
   let startKeyframe;
@@ -1483,8 +1486,8 @@ const onPlayerReady = function (player, options) {
 
   /**
    * Highlight video region
-   * @param  {[type]} startTime [description]
-   * @param  {[type]} endTime   [description]
+   * @param {[type]} startTime - Start time in seconds
+   * @param {[type]} endTime   - End time in seconds
    */
   highlightVideoRegion = function (startTime, endTime) {
     clearVideoRegion();
@@ -1520,7 +1523,7 @@ const onPlayerReady = function (player, options) {
 
 /**
  * Seek video player to absolute `time`.
- * @param  {[type]} time [description]
+ * @param {[type]} time - absolute time target
  */
 function seekVideoTo(time) {
   player.userActive(true);
@@ -1529,7 +1532,7 @@ function seekVideoTo(time) {
 
 /**
  * Seek video player to relative `time`.
- * @param  {[type]} time [description]
+ * @param {[type]} time - relative time target
  */
 function seekVideo(time) {
   player.userActive(true);
@@ -1538,7 +1541,7 @@ function seekVideo(time) {
 
 /**
  * Timeline regions
- * @param  {[type]} options [description]
+ * @param {[type]} options - Video player options
  */
 function timelineRegions(options) {
   this.ready(function () {

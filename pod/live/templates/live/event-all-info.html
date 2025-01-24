@@ -1,23 +1,16 @@
 {% load i18n %}
 
-<div class="ps-0 pe-0">
-  <div class="navbar d-flex flex-row-reverse p-0">
-    <ul class="nav nav-tabs" id="pod-infos-tabs" role="tablist">
-      {% if event.description %}
-        <li class="nav-item dropdown">
-          <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
-            <i class="bi bi-justify" aria-hidden="true"></i>
-          </a>
-        </li>
-      {% endif %}
-
-      {% if event.is_draft == False or event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser %}
+<div class="video-info_duration-view-share">
+  <div class="pod-info-video__view">
+    <i class="bi bi-eye" aria-hidden="true"></i> {% trans 'Number of views' %}
+   {{ event.max_viewers }}
+  </div>
+    <div class="pod-info-video__buttons">
+     {% if event.is_draft == False or event.owner == request.user or request.user in event.additional_owners.all or request.user.is_superuser %}
         <button type="button" class="btn btn-link btn-lg pod-btn-share" data-bs-toggle="modal" data-bs-target="#share">
           <i class="bi bi-share" aria-hidden="true"></i><span class="visually-hidden">{% trans 'Embed/Share' %}</span>
         </button>
       {% endif %}
-    </ul>
-
   </div>
 </div>
 
