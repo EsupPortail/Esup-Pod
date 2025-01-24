@@ -100,7 +100,7 @@
   /**
    * Add not found text
    * @param {HTMLElement} container
-   * @param {Boolean} clickable if true, text can be remove by a click on it
+   * @param {Boolean} clickable - if true, text can be remove by a click on it
    */
   const addNotFound = (container, clickable = false) => {
     const div = document.createElement("DIV");
@@ -119,7 +119,7 @@
   /**
    * Add or remove loader
    * @param {HTMLElement} container
-   * @param {Boolean} remove if true, try to remove loader
+   * @param {Boolean} remove - if true, try to remove loader
    */
   const addRemoveLoader = (container = null, remove = false) => {
     let loader = document.querySelector(".manage-video__loader");
@@ -140,7 +140,7 @@
   /**
    * Add element in list
    * @param {Number} el
-   * @param {Array} list where to add element
+   * @param {Array} list - where to add element
    */
   const addInChoosedVideosArray = (el) => {
     if (choosed_videos.includes(el))
@@ -150,8 +150,8 @@
 
   /**
    *
-   * @param {HTMLInputElement} input field
-   * @param {Number} user_id user ID
+   * @param {HTMLInputElement} input - field
+   * @param {Number} user_id - user ID
    */
   const setOwner = (input, user_id) => {
     if (input.id.includes("newlogin")) new_username_id = user_id;
@@ -160,8 +160,8 @@
   /**
    * return GET param from url
    * @param {String} url
-   * @param {String} param key name
-   * @param {defaultValue} default value if not found
+   * @param {String} param - key name
+   * @param {defaultValue} default - value if not found
    * @return {String} value found or default value
    */
   const getSearchParamFromURL = (url, key, defaultValue = null) => {
@@ -199,7 +199,7 @@
 
   /**
    * Listener to pagination next page
-   * @param {ClickEvent} e emitted event
+   * @param {ClickEvent} e - emitted event
    */
   const nextPreviousHandler = function (e) {
     e.preventDefault();
@@ -254,7 +254,7 @@
 
   /**
    * Clear suggestion elements
-   * @param {HTMLElement} suggestion suggestion container
+   * @param {HTMLElement} suggestion - suggestion container
    */
   const clearSuggestions = (suggestion) => {
     suggestion.textContent = "";
@@ -262,9 +262,9 @@
 
   /**
    * Make request to url
-   * @param {String} url request url
-   * @param {String} method request method
-   * @param {FormData} body post data
+   * @param {String} url - request url
+   * @param {String} method - request method
+   * @param {FormData} body - post data
    * @returns {Promise} response
    */
   const makeRequest = (
@@ -287,9 +287,9 @@
 
   /**
    * Add search event to an input element with delay before user stops writing
-   * @param {HTMLInputElement} input field to add listener
-   * @param {Function} callback event action
-   * @param {Number} delay wait time after user stops writing before executing callback
+   * @param {HTMLInputElement} input - field to add listener
+   * @param {Function} callback - event action
+   * @param {Number} delay - wait time after user stops writing before executing callback
    */
   const addSearchListener = (input, callback, delay = 1100) => {
     let timer = null;
@@ -340,9 +340,9 @@
 
   /**
    * Add click event on user suggestion to get some of his videos
-   * @param {HTMLParagraphElement} p element to add listener
+   * @param {HTMLParagraphElement} p - element to add listener
    * @param {Number} user_id
-   * @param {HTMLInputElement} input field to set value with user fullname
+   * @param {HTMLInputElement} input - field to set value with user fullname
    */
   const addGetVideosListener = (p, user_id, input, ..._) => {
     p.addEventListener("click", (e) => {
@@ -465,12 +465,12 @@
 
   /**
    *
-   * @param {String} text user first_name & last_name
-   * @param {Number} id user id
-   * @param {HTMLInputElement} input field
-   * @param {String} cls css class
-   * @param {Callable} listenerCallback callback on click
-   * @param {String} url current url
+   * @param {String} text - user first_name & last_name
+   * @param {Number} id - user id
+   * @param {HTMLInputElement} input - field
+   * @param {String} cls - css class
+   * @param {Callable} listenerCallback - callback on click
+   * @param {String} url - current url
    */
   const addSuggestionElement = (
     text,

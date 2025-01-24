@@ -1,5 +1,7 @@
 {% load i18n %}
 {% load ai_enhancement_template_tags %}
+{% load static %}
+<script src="{% static 'js/link_video_dropdown_menu.js' %}"></script>
 
 <ul class="dropdown-menu" aria-label="{% trans 'More options' %}">
   {% if request.path == '/video/dashboard/' %}
@@ -95,7 +97,24 @@
       </a>
     {% endif %}
   {% endif %}
-  {% if video.encoded and video.encoding_in_progress is False %}
+
+  {% if USE_DUPLICATE %}
+    <a 
+       href="{% url 'duplicate:video_duplicate' slug=video.slug %}"
+       title="{% trans 'Duplicate the video' %} — {{ video.title }}"
+       class="dropdown-item"
+       data-bs-toggle="tooltip"
+       aria-label="{% trans 'Duplicate the video' %} — {{ video.title }}"
+       data-bs-original-title="{% trans 'Duplicate the video' %} — {{ video.title }}"
+       onclick="return confirmDuplication(event, this.href, '{% trans 'Are you sure you want to duplicate this video?' %}');"
+    >   
+      <i class="bi bi-files" aria-hidden="true"></i>
+      {% trans 'Duplicate the video' %}
+    </a> 
+  {% endif %}
+
+
+  {% if video.encoding_in_progress is False %}
     {% if video.owner == request.user or request.user.is_superuser or perms.video.delete_video %}
       <li><hr class="dropdown-divider"></li>
       <li>

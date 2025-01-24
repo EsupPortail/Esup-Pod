@@ -42,9 +42,9 @@ from pod.import_video.utils import manage_download
 from pod.main.views import in_maintenance
 from pod.main.utils import secure_post_request, display_message_with_icon
 
-# For Youtube download
-from pytube import YouTube
-from pytube.exceptions import PytubeError, VideoUnavailable
+# For Youtube download, use PyTubeFix in replacement of PyTube
+from pytubefix import YouTube
+from pytubefix.exceptions import PytubeFixError, VideoUnavailable
 
 # To convert old BBB presentation
 from pod.main.tasks import task_start_bbb_presentation_encode_and_upload_to_pod
@@ -734,8 +734,8 @@ def get_mediacad_api_description(type_source_url: TypeSourceURL) -> str:
 def upload_youtube_recording_to_pod(request, record_id: int):
     """Upload Youtube recording to Pod.
 
-    Use PyTube with its API
-    More information: https://pytube.io/en/latest/api.html
+    Use PyTubeFix with its API
+    More information: https://pytubefix.readthedocs.io/en/latest/
     Args:
         request (Request): HTTP request
         record_id (Integer): id record in the database
@@ -750,13 +750,10 @@ def upload_youtube_recording_to_pod(request, record_id: int):
         # Manage source URL from video playback
         source_url = request.POST.get("source_url")
 
-        # Use pytube to download Youtube file
-        yt_video = YouTube(
-            source_url,
-            # on_complete_callback=complete_func,
-            # use_oauth=True,
-            # allow_oauth_cache=True
-        )
+        # Use pytubefix to download Youtube file
+        # Manage Proof of Origin Token generation
+        # See https://pytubefix.readthedocs.io/en/latest/user/po_token.html
+        yt_video = YouTube(source_url, "WEB")
         # Publish date (format: 2023-05-13 00:00:00)
         # Event date (format: 2023-05-13)
         date_evt = str(yt_video.publish_date)[0:10]
@@ -799,7 +796,8 @@ def upload_youtube_recording_to_pod(request, record_id: int):
         save_video(request.user, dest_path, recording_title, description, date_evt)
         return True
 
-    except VideoUnavailable:
+    except VideoUnavailable as ptfvu:
+        log.error("upload_youtube_recording_to_pod - VideoUnavailable - %s" % ptfvu)
         msg = {}
         msg["error"] = _("YouTube error")
         msg["message"] = _(
@@ -810,9 +808,10 @@ def upload_youtube_recording_to_pod(request, record_id: int):
             "Try changing the access rights to the video directly in Youtube."
         )
         raise ValueError(msg)
-    except PytubeError as pterror:
+    except PytubeFixError as ptferror:
+        log.error("upload_youtube_recording_to_pod - PytubeFixError - %s" % ptferror)
         msg = {}
-        msg["error"] = _("YouTube error “%s”" % (mark_safe(pterror)))
+        msg["error"] = _("YouTube error “%s”" % (mark_safe(ptferror)))
         msg["message"] = "%s\n%s" % (
             _("YouTube content is inaccessible."),
             _("This content does not appear to be publicly available."),
@@ -891,7 +890,7 @@ def upload_peertube_recording_to_pod(request, record_id: int) -> bool:  # noqa: 
             else:
                 pt_video_json = json.loads(response.content.decode("utf-8"))
                 # URL
-                pt_video_url = pt_video_json["url"]
+                pt_video_url = source_url
                 # UUID, useful for the filename
                 pt_video_uuid = pt_video_json["uuid"]
                 pt_video_name = pt_video_json["name"]
@@ -905,7 +904,14 @@ def upload_peertube_recording_to_pod(request, record_id: int) -> bool:  # noqa: 
                 # Evant date (format: 2023-05-23)
                 date_evt = pt_video_created_at[0:10]
                 # Source video file
-                source_video_url = pt_video_json["files"][0]["fileDownloadUrl"]
+                if not pt_video_json["files"]:
+                    # Source video file for a playlist
+                    source_video_url = pt_video_json["streamingPlaylists"][0]["files"][0][
+                        "fileDownloadUrl"
+                    ]
+                else:
+                    # Source video file for a video
+                    source_video_url = pt_video_json["files"][0]["fileDownloadUrl"]
 
         # Verify that video exists and not oversized
         verify_video_exists_and_size(source_video_url)

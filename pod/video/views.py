@@ -1,6 +1,7 @@
 """Esup-Pod videos views."""
 
 from concurrent import futures
+import os
 
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
 from django.core.handlers.wsgi import WSGIRequest
@@ -28,11 +29,12 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Sum, Min
 
+
 # from django.contrib.auth.hashers import check_password
 
 from dateutil.parser import parse
 from pod.main.utils import is_ajax, dismiss_stored_messages, get_max_code_lvl_messages
-
+from pod.main.context_processors import WEBTV_MODE
 from pod.main.models import AdditionalChannelTab
 from pod.main.views import in_maintenance
 from pod.main.decorators import ajax_required, ajax_login_required, admin_required
@@ -1390,7 +1392,17 @@ def video_delete(request, slug=None):
         if request.method == "POST":
             form = VideoDeleteForm(request.POST)
             if form.is_valid():
+                media_root = settings.MEDIA_ROOT
+                temp_file_path = os.path.join(media_root, "temp_video.mp4")
+                with open(temp_file_path, "wb") as temp_file:
+                    temp_file.write(b"Temporary video content")
+                video.video.name = os.path.relpath(temp_file_path, media_root)
+                video.save()
                 video.delete()
+
+                if os.path.exists(temp_file_path):
+                    os.remove(temp_file_path)
+
                 messages.add_message(
                     request, messages.INFO, _("The media has been deleted.")
                 )
@@ -1417,12 +1429,24 @@ def video_is_deletable(request, video) -> bool:
         messages.add_message(request, messages.ERROR, _("You cannot delete this media."))
         raise PermissionDenied
 
-    if not video.encoded or video.encoding_in_progress is True:
-        messages.add_message(
-            request, messages.ERROR, _("You cannot delete a media that is being encoded.")
-        )
-        return False
-    return True
+    if WEBTV_MODE:
+        if video.encoding_in_progress is True:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _("You cannot delete a media that is being encoded."),
+            )
+            return False
+        return True
+    else:
+        if not video.encoded or video.encoding_in_progress is True:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _("You cannot delete a media that is being encoded."),
+            )
+            return False
+        return True
 
 
 @csrf_protect

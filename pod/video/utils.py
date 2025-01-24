@@ -10,7 +10,6 @@ from django.urls import reverse
 from django.conf import settings
 from django.http import JsonResponse
 from django.db.models import Q
-from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 
 from .models import Video
@@ -271,25 +270,7 @@ def get_storage_path_video(instance, filename) -> str:
 
     Instance needs to implement owner
     """
-    fname, dot, extension = filename.rpartition(".")
-    try:
-        fname.index("/")
-        return os.path.join(
-            VIDEOS_DIR,
-            instance.owner.owner.hashkey,
-            "%s/%s.%s"
-            % (
-                os.path.dirname(fname),
-                slugify(os.path.basename(fname)),
-                extension,
-            ),
-        )
-    except ValueError:
-        return os.path.join(
-            VIDEOS_DIR,
-            instance.owner.owner.hashkey,
-            "%s.%s" % (slugify(fname), extension),
-        )
+    Video.get_storage_path_video(instance, filename)
 
 
 def verify_field_length(field, field_name: str = "title", max_length: int = 100) -> list:
@@ -299,6 +280,9 @@ def verify_field_length(field, field_name: str = "title", max_length: int = 100)
         msg.append(_("Please enter a title."))
     elif len(field) < 2 or len(field) > max_length:
         msg.append(
-            _("Please enter a %s from 2 to %s characters." % (field_name, max_length))
+            _(
+                "Please enter a %(field_name)s from 2 to %(max_length)s characters."
+                % {"field_name": field_name, "max_length": max_length}
+            )
         )
     return msg
