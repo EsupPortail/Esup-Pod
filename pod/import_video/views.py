@@ -2,6 +2,7 @@
 
 More information on this module at: https://www.esup-portail.org/wiki/x/BQCnSw
 """
+
 import logging
 import os
 import requests
@@ -752,10 +753,7 @@ def upload_youtube_recording_to_pod(request, record_id: int):
         # Use pytubefix to download Youtube file
         # Manage Proof of Origin Token generation
         # See https://pytubefix.readthedocs.io/en/latest/user/po_token.html
-        yt_video = YouTube(
-            source_url,
-            'WEB'
-        )
+        yt_video = YouTube(source_url, "WEB")
         # Publish date (format: 2023-05-13 00:00:00)
         # Event date (format: 2023-05-13)
         date_evt = str(yt_video.publish_date)[0:10]
@@ -908,7 +906,9 @@ def upload_peertube_recording_to_pod(request, record_id: int) -> bool:  # noqa: 
                 # Source video file
                 if not pt_video_json["files"]:
                     # Source video file for a playlist
-                    source_video_url = pt_video_json["streamingPlaylists"][0]["files"][0]["fileDownloadUrl"]
+                    source_video_url = pt_video_json["streamingPlaylists"][0]["files"][0][
+                        "fileDownloadUrl"
+                    ]
                 else:
                     # Source video file for a video
                     source_video_url = pt_video_json["files"][0]["fileDownloadUrl"]

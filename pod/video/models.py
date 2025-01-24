@@ -1045,7 +1045,9 @@ class Video(models.Model):
         if self.thumbnail and self.thumbnail.file_exist():
             # Handle exception to avoid sending an error email
             try:
-                im = get_thumbnail(self.thumbnail.file, "100x100", crop="center", quality=72)
+                im = get_thumbnail(
+                    self.thumbnail.file, "100x100", crop="center", quality=72
+                )
                 thumbnail_url = im.url
             except Exception:
                 thumbnail_url = static(DEFAULT_THUMBNAIL)
