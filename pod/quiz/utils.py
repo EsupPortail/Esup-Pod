@@ -1,7 +1,6 @@
 """Esup-Pod quiz utilities."""
 
 import ast
-from typing import Optional
 from pod.quiz.models import (
     MultipleChoiceQuestion,
     Question,
@@ -42,7 +41,7 @@ def get_quiz_questions(
     )
 
 
-def get_video_quiz(video: Video) -> Optional[Quiz]:
+def get_video_quiz(video: Video):
     """
     Retrieve the quiz associated with a given video.
 
@@ -50,7 +49,7 @@ def get_video_quiz(video: Video) -> Optional[Quiz]:
         video (Video): The video for which to retrieve the associated quiz.
 
     Returns:
-        Optional[Quiz]: The quiz associated with the video, or None if no quiz is found.
+        [Quiz | None]: The quiz associated with the video, or None if no quiz is found.
     """
     return Quiz.objects.filter(video=video).first()
 

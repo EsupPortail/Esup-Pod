@@ -36,7 +36,8 @@ class QuestionForm(forms.Form):
         label=_("Title"),
         required=True,
         widget=forms.TextInput(attrs={"placeholder": _("Your question")}),
-        help_text=_("Please choose a title between 1 and 250 characters."),
+        help_text=_("Please choose a title between 1 and %(max)s characters.")
+        % {"max": 250},
     )
     explanation = forms.CharField(
         label=_("Explanation"),

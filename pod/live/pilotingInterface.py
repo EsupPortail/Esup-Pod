@@ -7,7 +7,6 @@ import os
 import re
 from abc import ABC as __ABC__, abstractmethod
 from datetime import timedelta
-from typing import Optional
 
 import paramiko
 import requests
@@ -224,7 +223,7 @@ def validate_json_implementation(broadcaster: Broadcaster) -> bool:
     return True
 
 
-def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
+def get_piloting_implementation(broadcaster):
     """Return the class inheriting from PilotingInterface according to the broadcaster configuration (or None)."""
     if broadcaster is None:
         return None

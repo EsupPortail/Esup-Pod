@@ -106,7 +106,7 @@ class PlaylistFormTest(TestCase):
         self.assertFalse(invalid_form.is_valid())
         self.assertEqual(
             invalid_form.errors["name"][0],
-            _('You cannot create a playlist named "Favorites"'),
+            _("You cannot create a playlist named “%(name)s”") % {"name": _("Favorites")},
         )
         print(" --->  test_name_validation_for_public_playlist ok")
 
@@ -129,7 +129,7 @@ class PlaylistFormTest(TestCase):
         self.assertFalse(invalid_form.is_valid())
         self.assertEqual(
             invalid_form.errors["name"][0],
-            _('You cannot create a playlist named "Favorites"'),
+            _("You cannot create a playlist named “%(name)s”") % {"name": _("Favorites")},
         )
         print(" --->  test_name_validation_for_private_playlist ok")
 
@@ -154,7 +154,7 @@ class PlaylistFormTest(TestCase):
         self.assertFalse(invalid_form.is_valid())
         self.assertEqual(
             invalid_form.errors["name"][0],
-            _('You cannot create a playlist named "Favorites"'),
+            _("You cannot create a playlist named “%(name)s”") % {"name": _("Favorites")},
         )
         print(" --->  test_name_validation_for_protected_playlist ok")
 

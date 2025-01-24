@@ -87,8 +87,8 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
 ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
     settings, "ALLOW_MANUAL_RECORDING_CLAIMING", False
 )
-# Debug mode (0: False, 1: True)
-DEBUG = getattr(settings, "DEBUG", False)
+# Debug mode
+DEBUG = getattr(settings, "DEBUG", True)
 
 RECORDER_SELF_REQUESTS_PROXIES = getattr(
     settings,

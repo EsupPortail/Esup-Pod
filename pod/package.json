@@ -11,7 +11,7 @@
     "jquery-ui-dist": "^1.13.2",
     "js-cookie": "^3.0.5",
     "spark-md5": "^3.0.2",
-    "video.js": "7.20.3",
+    "video.js": "latest-7",
     "videojs-contrib-quality-levels": "^3.0.0",
     "videojs-hls-quality-selector": "^1.1.4",
     "videojs-overlay": "^3.1.0",

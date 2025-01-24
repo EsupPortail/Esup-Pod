@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-27 12:02+0100\n"
+"POT-Creation-Date: 2025-01-20 09:49+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -101,15 +101,11 @@ msgstr "La discipline proposée par l’IA Aristote."
 msgid "Title"
 msgstr "Titre"
 
-#: pod/ai_enhancement/forms.py
-msgid ""
-"\n"
-"            Please choose a title between 1 and 250 characters.\n"
-"        "
-msgstr ""
-"\n"
-"            Veuillez entrer un titre contenant entre 1 et 250 caractères.\n"
-"        "
+#: pod/ai_enhancement/forms.py pod/playlist/forms.py pod/quiz/forms.py
+#: pod/quiz/models.py
+#, python-format
+msgid "Please choose a title between 1 and %(max)s characters."
+msgstr "Veuillez entrer un titre contenant entre 1 et %(max)s caractères."
 
 #: pod/ai_enhancement/forms.py pod/live/models.py pod/main/forms.py
 #: pod/main/models.py pod/playlist/forms.py pod/playlist/models.py
@@ -2170,6 +2166,20 @@ msgstr "Vous ne pouvez pas supprimer cet habillage."
 #, python-format
 msgid "Deleting the dressing “%s”"
 msgstr "Supprimer l’habillage « %s »"
+
+#: pod/duplicate/apps.py
+msgid "Video duplicates"
+msgstr "Duplication de vidéo"
+
+#: pod/duplicate/views.py
+#, python-format
+msgid "%(slug)s-copy"
+msgstr "%(slug)s-copie"
+
+#: pod/duplicate/views.py
+#, python-format
+msgid "Copy of %(title)s"
+msgstr "Copie de %(title)s"
 
 #: pod/enrichment/apps.py pod/enrichment/models.py
 msgid "Enrichments"
@@ -4795,7 +4805,7 @@ msgstr "Dernières vidéos"
 msgid "Most views"
 msgstr "Les plus vues"
 
-#: pod/main/models.py
+#: pod/main/models.py pod/video/models.py
 msgid "Order"
 msgstr "Ordre"
 
@@ -6514,7 +6524,7 @@ msgstr ""
 "        <p>Vous avez besoin de ce mot de passe pour entrer : "
 "<strong>%(password)s</strong></p>\n"
 "        <p>Cordialement</p>\n"
-"    "
+" "
 
 #: pod/meeting/views.py
 #, python-format
@@ -6597,23 +6607,25 @@ msgstr "Vous ne pouvez pas redémarrer ce webinaire en direct."
 
 #: pod/meeting/webinar.py
 #, python-format
-msgid "Webinar mode has been successfully started for “%s” meeting."
-msgstr "Le mode webinaire a bien été démarré pour la réunion « %s »."
+msgid "Webinar mode has been successfully started for “%(name)s” meeting."
+msgstr "Le mode webinaire a bien été démarré pour la réunion « %(name)s »."
 
 #: pod/meeting/webinar.py
 #, python-format
-msgid "Error to start webinar mode for “%s” meeting: %s"
-msgstr "Erreur de démarrage du mode webinaire pour la réunion « %s » : %s"
+msgid "Error to start webinar mode for “%(name)s” meeting: %(exc)s"
+msgstr ""
+"Erreur de démarrage du mode webinaire pour la réunion « %(name)s » : %(exc)s"
 
 #: pod/meeting/webinar.py
 #, python-format
-msgid "Webinar mode has been successfully stopped for “%s” meeting."
-msgstr "Le mode webinaire a bien été arrêté pour la réunion « %s »."
+msgid "Webinar mode has been successfully stopped for “%(name)s” meeting."
+msgstr "Le mode webinaire a bien été arrêté pour la réunion « %(name)s »."
 
 #: pod/meeting/webinar.py
 #, python-format
-msgid "Error to stop webinar mode for “%s” meeting: %s"
-msgstr "Erreur dans l’arrêt du mode webinaire pour la réunion « %s » : %s"
+msgid "Error to stop webinar mode for “%(name)s” meeting: %(exc)s"
+msgstr ""
+"Erreur de démarrage du mode webinaire pour la réunion « %(name)s » : %(exc)s"
 
 #: pod/meeting/webinar.py
 msgid ""
@@ -6630,38 +6642,41 @@ msgstr "Trop de webinaires"
 #: pod/meeting/webinar_utils.py
 #, python-format
 msgid ""
-"There are too many webinars (%s) for the number of live gateways allocated "
-"(%s). The next meeting has been created but not like a webinar:%s %s [%s-"
-"%s].\n"
+"There are too many webinars (%(nb_webinars)s) for the number of live "
+"gateways allocated (%(nb_live_gateways)s). The next meeting has been created "
+"but not like a webinar: %(id)s %(name)s [%(start_at)s-%(end_at)s].\n"
 "Please fix the problem either by increasing the number of live gateways or "
 "by modifying/deleting one of the affected webinars (with the users’ "
 "agreement).\n"
-"Other webinars: %s"
+"Other webinars: %(names_webinars)s"
 msgstr ""
-"Il y a trop de webinaires (%s) pour le nombre de passerelles de live "
-"allouées (%s). La prochaine réunion a été créée mais pas comme un webinaire :"
-"%s %s [%s-%s].\n"
+"Il y a trop de webinaires (%(nb_webinars)s) pour le nombre de passerelles de "
+"live allouées (%(nb_live_gateways)s). La prochaine réunion a été créée mais "
+"pas comme un webinaire : %(id)s %(name)s [%(start_at)s-%(end_at)s].\n"
 "Veuillez résoudre le problème en augmentant le nombre de passerelles de live "
 "ou en modifiant/supprimant l’un des webinaires concernés (avec l’accord des "
 "utilisateurs).\n"
-"Autres webinaires : %s"
+"Autres webinaires : %(names_webinars)s"
 
 #: pod/meeting/webinar_utils.py
 #, python-format
 msgid ""
-"<p>There are too many webinars (<b>%s</b>) for the number of live gateways "
-"allocated (<b>%s</b>). The next webinar has been created but <b>not like a "
-"webinar</b>:<ul><li><b>%s %s</b> [%s-%s].</li></ul><p>Please fix the problem "
-"either by increasing the number of live gateways or by modifying/deleting "
-"one of the affected webinars (with the users’ agreement).<br>Other webinars: "
-"<b>%s</b>"
+"<p>There are too many webinars (<strong>%(nb_webinars)s</strong>) for the "
+"number of live gateways allocated (<strong>%(nb_live_gateways)s</strong>). "
+"The next webinar has been created but <strong>not like a webinar</strong>:"
+"<ul><li><strong>%(id)s %(name)s</strong> [%(start_at)s-%(end_at)s].</li></"
+"ul><p>Please fix the problem either by increasing the number of live "
+"gateways or by modifying/deleting one of the affected webinars (with the "
+"users’ agreement).<br>Other webinars: <strong>%(names_webinars)s</strong>"
 msgstr ""
-"<p>Il y a trop de webinaires (<b>%s</b>) pour le nombre de passerelles live "
-"allouées (<b>%s</b>). La prochaine réunion a été créée mais <b>pas comme un "
-"webinaire</b> : <ul><li><b>%s %s</b> [%s-%s].</li></ul><p>Veuillez résoudre "
-"le problème en augmentant le nombre de passerelles live ou en modifiant/"
-"supprimant l’un des webinaires concernés (avec l’accord des utilisateurs)."
-"<br>Autres webinaires : <b>%s</b>"
+"<p>Il y a trop de webinaires (<strong>%(nb_webinars)s</strong>) pour le "
+"nombre de passerelles live allouées (<strong>%(nb_live_gateways)s</strong>). "
+"La prochaine réunion a été créée mais <strong>pas comme un webinaire</"
+"strong> : <ul><li><strong>%(id)s %(name)s</strong> [%(start_at)s-%(end_at)s]."
+"</li></ul><p>Veuillez résoudre le problème en augmentant le nombre de "
+"passerelles live ou en modifiant/supprimant l’un des webinaires concernés "
+"(avec l’accord des utilisateurs).<br>Autres webinaires : "
+"<strong>%(names_webinars)s</strong>"
 
 #: pod/playlist/apps.py pod/playlist/models.py
 #: pod/playlist/templates/playlist/add_or_edit.html
@@ -6684,10 +6699,6 @@ msgstr "Informations générales"
 #: pod/playlist/forms.py
 msgid "Security informations"
 msgstr "Informations de sécurité"
-
-#: pod/playlist/forms.py pod/quiz/forms.py pod/quiz/models.py
-msgid "Please choose a title between 1 and 250 characters."
-msgstr "Veuillez entrer un titre contenant entre 1 et 250 caractères."
 
 #: pod/playlist/forms.py pod/playlist/models.py
 msgid "Please choose a description. This description is empty by default."
@@ -6738,12 +6749,10 @@ msgstr "Lecture automatique"
 msgid "Please choose if this playlist is an autoplay playlist or not."
 msgstr "Veuillez choisir si cette playlist est en lecture automatique ou non."
 
-#: pod/playlist/forms.py
-#, python-brace-format
-msgid "You cannot create a playlist named \"{FAVORITE_PLAYLIST_NAME}\""
-msgstr ""
-"Vous ne pouvez pas créer une liste de lecture nommée "
-"\"{FAVORITE_PLAYLIST_NAME}\""
+#: pod/playlist/forms.py pod/playlist/tests/test_forms.py
+#, python-format
+msgid "You cannot create a playlist named “%(name)s”"
+msgstr "Vous ne pouvez pas créer une liste de lecture nommée « %(name)s »"
 
 #: pod/playlist/forms.py
 msgid "Remove playlist cannot be undone"
@@ -6773,15 +6782,6 @@ msgstr "Protégé par un mot de passe"
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
 msgstr "Privé"
-
-#: pod/playlist/models.py
-#, python-brace-format
-msgid ""
-"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"characters."
-msgstr ""
-"Veuillez entrer un titre contenant entre 1 et "
-"{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
 
 #: pod/playlist/models.py
 msgid ""
@@ -7163,16 +7163,13 @@ msgid "contact its owner"
 msgstr "contacter son propriétaire"
 
 #: pod/playlist/templatetags/favorites_playlist.py
+#: pod/playlist/tests/test_forms.py
 msgid "Favorites"
 msgstr "Favoris"
 
 #: pod/playlist/tests/test_forms.py
 msgid "This field is required."
 msgstr "Ce champ est requis."
-
-#: pod/playlist/tests/test_forms.py
-msgid "You cannot create a playlist named \"Favorites\""
-msgstr "Vous ne pouvez créer une liste de lecture nommé \"Favoris\""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 #, python-format
@@ -7186,6 +7183,10 @@ msgstr "Vous ne pouvez pas accéder à cette liste de lecture."
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
+
+#: pod/playlist/views.py
+msgid "Delete the playlist"
+msgstr "Supprimer la liste de lecture"
 
 #: pod/playlist/views.py
 #, python-format
@@ -7202,9 +7203,9 @@ msgstr ""
 "Les données envoyées pour créer la liste de lecture ne sont pas valides."
 
 #: pod/playlist/views.py
-#, python-brace-format
-msgid "Edit playlist “{playlist.name}”"
-msgstr "Éditer la liste de lecture « {playlist.name} »"
+#, python-format
+msgid "Edit playlist “%(name)s”"
+msgstr "Modifier la liste de lecture « %(name)s »"
 
 #: pod/playlist/views.py
 msgid "JSON in wrong format"
@@ -7587,7 +7588,7 @@ msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
 msgid "Quizzes"
 msgstr "Quiz"
 
-#: pod/quiz/models.py
+#: pod/quiz/models.py pod/quiz/tests/test_models.py
 msgid "Quiz of video"
 msgstr "Quiz de la vidéo"
 
@@ -9817,6 +9818,14 @@ msgid "Dress the video"
 msgstr "Habiller la vidéo"
 
 #: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Duplicate the video"
+msgstr "Dupliquer la vidéo"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
+msgid "Are you sure you want to duplicate this video?"
+msgstr "Voulez-vous vraiment dupliquer cette vidéo ?"
+
+#: pod/video/templates/videos/link_video_dropdown_menu.html
 #: pod/video/templates/videos/video_edit.html
 msgid "Delete the video"
 msgstr "Supprimer la vidéo"
@@ -10341,6 +10350,10 @@ msgstr "Description du thème"
 msgid "The video is currently waiting for Aristote AI treatment."
 msgstr "La vidéo est actuellement en attente du traitement par l’IA Aristote."
 
+#: pod/video/templates/videos/video_page_content.html
+msgid "The form does not contain a video."
+msgstr "La fiche ne contient pas de vidéo."
+
 #: pod/video/templates/videos/video_row_select.html
 msgid "Selected"
 msgstr "Sélectionné"
@@ -10454,8 +10467,10 @@ msgstr "Veuillez entrer un titre."
 
 #: pod/video/utils.py
 #, python-format
-msgid "Please enter a %s from 2 to %s characters."
-msgstr "Veuillez entrer un %s contenant entre 2 et %s caractères."
+msgid "Please enter a %(field_name)s from 2 to %(max_length)s characters."
+msgstr ""
+"Veuillez entrer un %(field_name)s contenant entre 2 et %(max_length)s "
+"caractères."
 
 #: pod/video/views.py
 msgid "You cannot edit this channel."
@@ -10881,12 +10896,3 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
-
-#~ msgid "Delete this record."
-#~ msgstr "Supprimer cet enregistrement."
-
-#~ msgid "Preview record."
-#~ msgstr "Prévisualiser l’enregistrement."
-
-#~ msgid "Number of video inside the channel"
-#~ msgstr "Nombre de vidéo à l’intérieur de la chaîne"

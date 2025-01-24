@@ -17,7 +17,7 @@ from pod.meeting.utils import slash_join
 log = logging.getLogger("webinar")
 
 
-def start_webinar(request: WSGIRequest, meet_id: int):
+def start_webinar(request: WSGIRequest, meet_id: int) -> None:
     """Start a webinar and send a thread to stop it automatically at the end."""
     try:
         # Get the current meeting
@@ -33,8 +33,8 @@ def start_webinar(request: WSGIRequest, meet_id: int):
         display_message_with_icon(
             request,
             messages.INFO,
-            _("Webinar mode has been successfully started for “%s” meeting.")
-            % (meeting.name),
+            _("Webinar mode has been successfully started for “%(name)s” meeting.")
+            % ({"name": meeting.name}),
         )
         # Manage enable_chat is False by default
         if meeting.enable_chat is False:
@@ -42,17 +42,18 @@ def start_webinar(request: WSGIRequest, meet_id: int):
             toggle_rtmp_gateway(meet_id)
     except Exception as exc:
         log.error(
-            "Error to start webinar mode for “%s” meeting: %s" % (meet_id, str(exc))
+            "Error to start webinar mode for “%(id)s” meeting: %(exc)s"
+            % {"id": meet_id, "exc": str(exc)}
         )
         display_message_with_icon(
             request,
             messages.ERROR,
-            _("Error to start webinar mode for “%s” meeting: %s")
-            % (meeting.name, str(exc)),
+            _("Error to start webinar mode for “%(name)s” meeting: %(exc)s")
+            % {"name": meeting.name, "exc": str(exc)},
         )
 
 
-def stop_webinar(request: WSGIRequest, meet_id: int):
+def stop_webinar(request: WSGIRequest, meet_id: int) -> None:
     """Stop the webinar."""
     try:
         # Get the current meeting
@@ -64,20 +65,23 @@ def stop_webinar(request: WSGIRequest, meet_id: int):
         display_message_with_icon(
             request,
             messages.INFO,
-            _("Webinar mode has been successfully stopped for “%s” meeting.")
-            % (meeting.name),
+            _("Webinar mode has been successfully stopped for “%(name)s” meeting.")
+            % {"name": meeting.name},
         )
     except Exception as exc:
-        log.error("Error to stop webinar mode for “%s” meeting: %s" % (meet_id, str(exc)))
+        log.error(
+            "Error to stop webinar mode for “%(id)s” meeting: %(exc)s"
+            % {"id": meet_id, "exc": str(exc)}
+        )
         display_message_with_icon(
             request,
             messages.ERROR,
-            _("Error to stop webinar mode for “%s” meeting: %s")
-            % (meeting.name, str(exc)),
+            _("Error to stop webinar mode for “%(name)s” meeting: %(exc)s")
+            % {"name": meeting.name, "exc": str(exc)},
         )
 
 
-def start_webinar_livestream(pod_host: str, meet_id: int):
+def start_webinar_livestream(pod_host: str, meet_id: int) -> None:
     """Run the steps to start the webinar livestream."""
     try:
         if pod_host.find("localhost") != -1:
@@ -103,7 +107,7 @@ def start_webinar_livestream(pod_host: str, meet_id: int):
         raise ValueError(str(exc))
 
 
-def stop_webinar_livestream(meet_id: int, force: bool):
+def stop_webinar_livestream(meet_id: int, force: bool) -> None:
     """Stop the webinar when meeting is stopped or when user forces to stop it."""
     try:
         log.info("stop_webinar_livestream %s: %s" % (meet_id, "stop"))
@@ -135,7 +139,7 @@ def stop_webinar_livestream(meet_id: int, force: bool):
             raise ValueError(str(exc))
 
 
-def wait_meeting_is_stopped(meeting: Meeting):
+def wait_meeting_is_stopped(meeting: Meeting) -> None:
     """Check regularly if meeting is stopped.
 
     If meeting is running, wait to make another check (5h max).
@@ -186,7 +190,7 @@ def manage_meeting_livestream(meeting: Meeting):
     return livestream
 
 
-def start_rtmp_gateway(pod_host: str, meet_id: int, livestream_id: int):
+def start_rtmp_gateway(pod_host: str, meet_id: int, livestream_id: int) -> None:
     """Run the start command for SIPMediaGW RTMP gateway."""
     # Get the current meeting
     meeting = Meeting.objects.get(id=meet_id)
@@ -259,7 +263,7 @@ def stop_rtmp_gateway(meet_id: int, livestream_id: int):
         raise ValueError(mark_safe(message))
 
 
-def toggle_rtmp_gateway(meet_id: int):
+def toggle_rtmp_gateway(meet_id: int) -> None:
     """Run the toggle (to show chat or not) command for SIPMediaGW RTMP gateway."""
     # Get the current meeting
     meeting = Meeting.objects.get(id=meet_id)
@@ -296,7 +300,7 @@ def toggle_rtmp_gateway(meet_id: int):
         log.error("No livestream object found for webinar id %s" % meet_id)
 
 
-def chat_rtmp_gateway(meet_id: int, msg: str):
+def chat_rtmp_gateway(meet_id: int, msg: str) -> None:
     """Send message command to SIPMediaGW RTMP gateway."""
     # Get the current meeting
     meeting = Meeting.objects.get(id=meet_id)
