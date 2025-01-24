@@ -65,7 +65,7 @@ def start_encode(video_id: int, threaded=True):
         else:
             log.info("START ENCODE VIDEO ID %s" % video_id)
             t = threading.Thread(target=encode_video, args=[video_id])
-            t.setDaemon(True)
+            t.daemon = True
             t.start()
     else:
         encode_video(video_id)
@@ -73,7 +73,7 @@ def start_encode(video_id: int, threaded=True):
 
 def start_encode_studio(
     recording_id, video_output, videos, subtime, presenter, threaded=True
-):
+) -> None:
     """Start studio encoding."""
     if threaded:
         if CELERY_TO_ENCODE:
@@ -86,7 +86,7 @@ def start_encode_studio(
                 target=encode_video_studio,
                 args=[recording_id, video_output, videos, subtime, presenter],
             )
-            t.setDaemon(True)
+            t.daemon = True
             t.start()
     else:
         encode_video_studio(recording_id, video_output, videos, subtime, presenter)

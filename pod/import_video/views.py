@@ -959,7 +959,7 @@ def start_bbb_encode_presentation_and_upload_to_pod(
             target=bbb_encode_presentation_and_upload_to_pod,
             args=[record_id, url, extension],
         )
-        t.setDaemon(True)
+        t.daemon = True
         t.start()
 
 

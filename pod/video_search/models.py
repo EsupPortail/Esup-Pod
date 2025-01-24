@@ -21,7 +21,7 @@ def update_video_index(
     if ES_URL is None:
         return
     t = threading.Thread(target=index_video, args=[instance])
-    t.setDaemon(True)
+    t.daemon = True
     t.start()
 
 
@@ -42,5 +42,5 @@ def delete_video_index(
         return
     # delete_es(instance)
     t = threading.Thread(target=delete_es, args=[instance])
-    t.setDaemon(True)
+    t.daemon = True
     t.start()
