@@ -1035,6 +1035,16 @@ Mettre `USE_DRESSING` à True pour activer cette application.<br>
   >> Activation des habillages.<br>
   >> Permet aux utilisateurs de customiser une vidéo avec un filigrane et des crédits.<br>
 
+### Configuration de l’application duplicate
+
+Application Duplicate pour créer une copie du formulaire d’une vidéo existante<br>
+Mettre `USE_DUPLICATE` à True pour activer cette application.<br>
+
+* `USE_DUPLICATE`
+  > valeur par défaut : `False`
+  >> Activation de duplicate.<br>
+  >> Permet aux utilisateurs de dupliquer une vidéo<br>
+
 ### Configuration de l’application enrichment
 
 
@@ -1046,6 +1056,9 @@ Mettre `USE_SPEAKER` à True pour activer cette application.<br>
 * `USE_SPEAKER`
   > valeur par défaut : `False`
   >> Activation de l’application Intervenant<br>
+* `REQUIRED_SPEAKER_FIRSTNAME`
+  > valeur par défaut : `True`
+  >> Prénom obligatoire dans le formulaire d'ajout intervenant<br>
 
 ### Configuration de l’application d’import vidéo
 

@@ -239,9 +239,9 @@ if (typeof loaded == "undefined") {
   /**
    * Creates a user list item elements
    *
-   * @param {string} text The text content of the button.
-   * @param {User} elt The user object.
-   * @param {string} type The type of action ("Add" or "Remove").
+   * @param {string} text - The text content of the button.
+   * @param {User} elt - The user object.
+   * @param {string} type - The type of action ("Add" or "Remove").
    * @returns {HTMLElement} The list item.
    */
   function user_li(text, elt, type) {

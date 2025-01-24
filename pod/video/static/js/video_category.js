@@ -54,7 +54,7 @@ if (searchCategoriesInput) {
 /**
  * Manage search category input to display chosen ones
  *
- * @param search {string} : Search input string
+ * @param {string} search - Search input string
  */
 function manageSearchCategories(search) {
   let categories = document.querySelectorAll(
@@ -77,7 +77,7 @@ function manageSearchCategories(search) {
 /**
  * Toggle category links and filter dashboard's videos list with given categories
  *
- * @param el {HTMLElement} : Category link clicked
+ * @param {HTMLElement} el - Category link clicked
  */
 function toggleCategoryLink(el) {
   el.parentNode.classList.toggle("active");
@@ -87,9 +87,9 @@ function toggleCategoryLink(el) {
 /**
  * Build and return url for Get or Post categories methods
  *
- * @param action {string} : Action defined "add", "edit" or "delete"
- * @param slug {string} : Category slug given for edit or delete (can be null)
- * @returns {string} : Returns built URL
+ * @param {string} action - Action defined "add", "edit" or "delete"
+ * @param {string} slug - Category slug given for edit or delete (can be null)
+ * @returns {string} - Returns built URL
  */
 function getCategoriesUrl(action, slug = null) {
   let url;
@@ -112,8 +112,8 @@ function getCategoriesUrl(action, slug = null) {
 /**
  * Async call to create Add, Edit or Delete Modal for categories managment
  *
- * @param url {string} : Url to call (add, edit, delete)
- * @param page {number} : Page url managment (can be null)
+ * @param {string} url  - Url to call (add, edit, delete)
+ * @param {number} page - Page url managment (can be null)
  */
 function get_category_modal(url, page = null) {
   if (page) {
@@ -174,7 +174,7 @@ function get_category_modal(url, page = null) {
 /**
  * Async call to post Add, Edit or Delete categories
  *
- * @param url {string} : Url to call (add, edit, delete)
+ * @param {string} url - Url to call (add, edit, delete)
  */
 function post_category_modal(url) {
   let formData = new FormData();
@@ -227,7 +227,7 @@ function post_category_modal(url) {
 /**
  * Manage category videos pagination (category modal's videos list)
  *
- * @param el {HTMLElement} : Previous or next clicked button
+ * @param {HTMLElement} el - Previous or next clicked button
  */
 function manageCategoryVideosPagination(el) {
   let currentPage = parseInt(

@@ -13,7 +13,7 @@ const fieldHtml = document.getElementsByClassName("field-html")[0];
 /**
  * Function for show field.
  *
- * @param {HTMLElement} field The field to show.
+ * @param {HTMLElement} field - The field to show.
  */
 function showField(field) {
   field.classList.remove("d-none");
@@ -23,7 +23,7 @@ function showField(field) {
 /**
  * Function for hide field.
  *
- * @param {HTMLElement} field The field to hide.
+ * @param {HTMLElement} field - The field to hide.
  */
 function hideField(field) {
   field.classList.remove("d-block");

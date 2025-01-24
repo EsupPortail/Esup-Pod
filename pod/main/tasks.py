@@ -5,7 +5,7 @@ from pod.live.models import LiveTranscriptRunningTask, Broadcaster
 
 
 @app.task(bind=True)
-def task_start_encode(self, video_id):
+def task_start_encode(self, video_id: int) -> None:
     """Start video encoding with Celery."""
     print("CELERY START ENCODE VIDEO ID %s" % video_id)
     from pod.video_encode_transcript.encode import encode_video
@@ -14,7 +14,7 @@ def task_start_encode(self, video_id):
 
 
 @app.task(bind=True)
-def task_start_transcript(self, video_id):
+def task_start_transcript(self, video_id: int) -> None:
     """Start video transcripting with Celery."""
     print("CELERY START TRANSCRIPT VIDEO ID %s" % video_id)
     from pod.video_encode_transcript.transcript import main_threaded_transcript
@@ -24,8 +24,8 @@ def task_start_transcript(self, video_id):
 
 @app.task(bind=True)
 def task_start_encode_studio(
-    self, recording_id, video_output, videos, subtime, presenter
-):
+    self, recording_id: int, video_output, videos, subtime, presenter
+) -> None:
     """Start studio record encoding with Celery."""
     print("CELERY START ENCODE VIDEOS FROM STUDIO RECORDING ID %s" % recording_id)
     from pod.video_encode_transcript.encode import encode_video_studio
@@ -34,7 +34,7 @@ def task_start_encode_studio(
 
 
 @app.task(bind=True)
-def task_start_live_transcription(self, url, slug, model, filepath):
+def task_start_live_transcription(self, url, slug, model, filepath) -> None:
     """Start live transcription with Celery."""
     print("CELERY START LIVE TRANSCRIPTION %s" % slug)
     from pod.live.live_transcript import transcribe
@@ -48,7 +48,7 @@ def task_start_live_transcription(self, url, slug, model, filepath):
 
 
 @app.task(bind=True)
-def task_end_live_transcription(self, slug):
+def task_end_live_transcription(self, slug) -> None:
     """End live transcription with Celery."""
     print("CELERY END LIVE TRANSCRIPTION %s" % slug)
     broadcaster = Broadcaster.objects.get(slug=slug)
@@ -61,7 +61,7 @@ def task_end_live_transcription(self, slug):
 @app.task(bind=True)
 def task_start_bbb_presentation_encode_and_upload_to_pod(
     self, record_id: int, url: str, extension: str
-):
+) -> None:
     """Start BBB presentation encoding with Celery, then upload to Pod."""
     print("CELERY START BBB ENCODE PRESENTATION/UPLOAD RECORD ID %s" % record_id)
     from pod.import_video.views import bbb_encode_presentation_and_upload_to_pod
@@ -72,7 +72,7 @@ def task_start_bbb_presentation_encode_and_upload_to_pod(
 @app.task(bind=True)
 def task_start_bbb_presentation_encode_and_move_to_destination(
     self, filename: str, url: str, dest_file: str
-):
+) -> None:
     """Start BBB presentation encoding with Celery, then move the video file."""
     print("CELERY START BBB ENCODE PRESENTATION/MOVE %s" % filename)
     from pod.import_video.views import bbb_encode_presentation_and_move_to_destination

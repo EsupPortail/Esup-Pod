@@ -10,13 +10,12 @@ from django.forms.widgets import ClearableFileInput
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
-from .models import Video, VideoVersion
+from .models import Video, VideoVersion, get_storage_path_video
 from .models import Channel
 from .models import Theme
 from .models import Type
 from .models import Discipline
 from .models import Notes, AdvancedNotes, NoteComments
-from .utils import get_storage_path_video
 from pod.video_encode_transcript.models import PlaylistVideo
 from pod.video_encode_transcript import encode
 from pod.video_encode_transcript.models import EncodingVideo, EncodingAudio
@@ -688,7 +687,7 @@ class VideoForm(forms.ModelForm):
             {
                 "legend": _("Advanced options"),
                 "classes": "",
-                "fields": ["allow_downloading", "is_360", "disable_comment"],
+                "fields": ["allow_downloading", "is_360", "disable_comment", "order"],
             },
         ),
     )
@@ -952,7 +951,8 @@ class VideoForm(forms.ModelForm):
 
         # remove required=True for videofield if instance
         if self.fields.get("video") and self.instance and self.instance.video:
-            del self.fields["video"].widget.attrs["required"]
+            # remove del self.fields["video"].widget.attrs["required"]
+            self.fields["video"].widget.attrs.pop("required", None)
         if self.fields.get("owner"):
             self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
                 owner__sites=Site.objects.get_current()
