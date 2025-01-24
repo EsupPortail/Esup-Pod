@@ -906,7 +906,12 @@ def upload_peertube_recording_to_pod(request, record_id: int) -> bool:  # noqa: 
                 # Evant date (format: 2023-05-23)
                 date_evt = pt_video_created_at[0:10]
                 # Source video file
-                source_video_url = pt_video_json["files"][0]["fileDownloadUrl"]
+                if not pt_video_json["files"]:
+                    # Source video file for a playlist
+                    source_video_url = pt_video_json["streamingPlaylists"][0]["files"][0]["fileDownloadUrl"]
+                else:
+                    # Source video file for a video
+                    source_video_url = pt_video_json["files"][0]["fileDownloadUrl"]
 
         # Verify that video exists and not oversized
         verify_video_exists_and_size(source_video_url)
