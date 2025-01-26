@@ -94,9 +94,11 @@ def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
         # -vsync 0 outputVideo.mp4
         subcmd = (
             " -filter_complex "
-            + '"[0:v]scale=-2:%(height)s[pres];[1:v]scale=-2:%(sh)s[pip];'
+            + '"[0:v]bwdif=mode=send_field:parity=auto:deint=all[presdeint];'
+            + '[1:v]bwdif=mode=send_field:parity=auto:deint=all[pipdeint];'
+            + '[presdeint]scale=-2:%(height)s[pres];[pipdeint]scale=-2:%(sh)s[pip];'
             % {"height": height, "sh": height / 4}
-            + '[pres][pip]overlay=W-w-10:H-h-10:shortest=1" -vsync 0 '
+            + '[pres][pip]overlay=W-w-10:H-h-10:shortest=1" -fps_mode passthrough '
         )
     if presenter == "piph":
         # trouver la bonne hauteur en fonction de la video de presentation
@@ -111,9 +113,11 @@ def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
         # -vsync 0 outputVideo.mp4
         subcmd = (
             " -filter_complex "
-            + '"[0:v]scale=-2:%(height)s[pres];[1:v]scale=-2:%(sh)s[pip];'
+            + '"[0:v]bwdif=mode=send_field:parity=auto:deint=all[presdeint];'
+            + '[1:v]bwdif=mode=send_field:parity=auto:deint=all[pipdeint];'
+            + '[presdeint]scale=-2:%(height)s[pres];[pipdeint]scale=-2:%(sh)s[pip];'
             % {"height": height, "sh": height / 4}
-            + '[pres][pip]overlay=W-w-10:10:shortest=1" -vsync 0 '
+            + '[pres][pip]overlay=W-w-10:10:shortest=1" -fps_mode passthrough '
         )
     if presenter == "mid":
         height = min_height if (min_height % 2) == 0 else min_height + 1
@@ -122,9 +126,11 @@ def get_sub_cmd(height_presentation_video, height_presenter_video, presenter):
         # outputVideo.mp4
         subcmd = (
             " -filter_complex "
-            + '"[0:v]scale=-2:%(height)s[left];[1:v]scale=-2:%(height)s[right];'
+            + '"[0:v]bwdif=mode=send_field:parity=auto:deint=all[presdeint];'
+            + '[1:v]bwdif=mode=send_field:parity=auto:deint=all[pipdeint];'
+            + '[presdeint]scale=-2:%(height)s[left];[pipdeint]scale=-2:%(height)s[right];'
             % {"height": height}
-            + '[left][right]hstack" -vsync 0 '
+            + '[left][right]hstack" -fps_mode passthrough '
         )
 
     return subcmd

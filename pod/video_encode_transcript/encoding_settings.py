@@ -29,7 +29,7 @@ FFMPEG_MP4_ENCODE = (
     + "-maxrate %(maxrate)s -bufsize %(bufsize)s "
     + '-sc_threshold 0 -force_key_frames "expr:gte(t,n_forced*1)" '
     + "-max_muxing_queue_size 4000 "
-    + '-c:a aac -ar 48000 -b:a %(ba)s -movflags faststart -y -vsync 0 "%(output)s" '
+    + '-c:a aac -ar 48000 -b:a %(ba)s -movflags faststart -y -fps_mode passthrough "%(output)s" '
 )
 # https://gist.github.com/Andrey2G/78d42b5c87850f8fbadd0b670b0e6924
 FFMPEG_HLS_COMMON_PARAMS = (
