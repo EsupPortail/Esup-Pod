@@ -60,7 +60,8 @@ class PlaylistForm(forms.ModelForm):
                 "aria-describedby": "id_nameHelp",
             },
         ),
-        help_text=_("Please choose a title between 1 and 250 characters."),
+        help_text=_("Please choose a title between 1 and %(max)s characters.")
+        % {"max": 250},
     )
     description = forms.CharField(
         label=_("Description"),
@@ -156,16 +157,17 @@ class PlaylistForm(forms.ModelForm):
             if "promoted" in self.fields:
                 del self.fields["promoted"]
 
-    def clean_name(self):
+    def clean_name(self) -> str:
         """Check if the playlist name asked is correct."""
         name = self.cleaned_data["name"]
         if name == FAVORITE_PLAYLIST_NAME:
             raise forms.ValidationError(
-                _(f'You cannot create a playlist named "{FAVORITE_PLAYLIST_NAME}"')
+                _("You cannot create a playlist named “%(name)s”")
+                % {"name": FAVORITE_PLAYLIST_NAME}
             )
         return name
 
-    def clean_add_owner(self, cleaned_data):
+    def clean_add_owner(self, cleaned_data) -> None:
         """Check if the owner is correct."""
         if "additional_owners" in cleaned_data.keys() and isinstance(
             self.cleaned_data["additional_owners"], QuerySet

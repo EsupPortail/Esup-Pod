@@ -98,7 +98,8 @@ class Question(models.Model):
     title = models.CharField(
         verbose_name=_("Title"),
         max_length=250,
-        help_text=_("Please choose a title between 1 and 250 characters."),
+        help_text=_("Please choose a title between 1 and %(max)s characters.")
+        % {"max": 250},
     )
     explanation = models.TextField(
         verbose_name=_("Explanation"),

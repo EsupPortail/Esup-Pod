@@ -37,11 +37,11 @@
     options = {
       notSupportedMessage: "{% trans 'Please use different browser' %} (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
       //language: "fr", //en or nl
-    {% if video.is_video and request.GET.is_iframe %}
-      fluid: false,
-    {% else %}
-      fluid: true,
-    {% endif %}
+      {% if video.is_video and request.GET.is_iframe %}
+        fluid: false,
+      {% else %}
+        fluid: true,
+      {% endif %}
       responsive: true,
       playbackRates: {{video_playbackrates}},
       userActions: {
@@ -195,9 +195,6 @@
     {% endif %}
     {% if video.overview %}
       // Add overview
-      player.vttThumbnails({
-        src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
-      });
       player.vttThumbnails({
         src: '{% if request.is_secure %}https://{% else %}http://{% endif %}{{request.get_host}}{{video.overview.url}}?date={{video.overview|file_date_created}}'
       });

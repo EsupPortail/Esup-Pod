@@ -30,8 +30,8 @@ document
 /**
  * Translate the title of the video player button.
  *
- * @param {string} querySelectorButton The query selector for the button.
- * @param {string} title The title.
+ * @param {string} querySelectorButton - The query selector for the button.
+ * @param {string} title - The title.
  */
 function translateTitleOfVideoPlayerButton(querySelectorButton, title) {
   let translatedTitle = title;

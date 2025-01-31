@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     "pod.ai_enhancement",
     "pod.speaker",
     "pod.custom",
+    "pod.duplicate",
 ]
 
 ##
@@ -142,6 +143,7 @@ TEMPLATES = [
                 "pod.import_video.context_processors.context_settings",
                 "pod.cut.context_processors.context_settings",
                 "pod.speaker.context_processors.context_settings",
+                "pod.duplicate.context_processors.context_settings",
             ],
         },
     },
@@ -401,6 +403,9 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr", "en")
 # MIGRATION_MODULES = {
 #     'flatpages': 'pod.db_migrations'
 # }
+
+
+REQUIRED_SPEAKER_FIRSTNAME = False
 
 
 ##

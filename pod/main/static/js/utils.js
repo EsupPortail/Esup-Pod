@@ -13,8 +13,8 @@ Utils.prototype = {
   constructor: Utils,
   /**
    * Check if element is partial/fully in screen view
-   * @param element {HTMLElement} element to check
-   * @param fullyInView {Boolean} check full in view
+   * @param {HTMLElement} element - element to check
+   * @param {Boolean} fullyInView - check full in view
    **/
   isElementInView: function (element, fullyInView) {
     const pageTop = $(window).scrollTop();

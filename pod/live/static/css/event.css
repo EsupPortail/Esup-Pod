@@ -2,12 +2,8 @@
  * Esup-Pod live event styles
  */
 
-.current_event {
+.current-event {
   stroke: red;
-}
-
-.video-js .vjs-time-control {
-  display: block;
 }
 
 .video-js .vjs-remaining-time {
