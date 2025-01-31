@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="{% static 'playlist/css/playlist.css' %}?ver={{ VERSION }}">
 {% endblock page_extra_head %}
 
-<!-- DEBUT modal PLAYLIST -->
+<!-- Start PLAYLIST modal -->
 <div class="modal fade" id="playlist-modal" tabindex="-1" aria-labelledby="playlist-list-label" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -56,7 +56,7 @@
       </div>
     </div>
   </div>
-</div> <!-- modal end PLAYLIST -->
+</div> <!-- End PLAYLIST modal -->
 {% block more_script %}
   <script src="{% static 'playlist/js/utils-playlist.js' %}?ver={{ VERSION }}"></script>
   <script src="{% static 'playlist/js/playlist-modal.js' %}?ver={{ VERSION }}"></script>

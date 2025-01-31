@@ -1,5 +1,10 @@
 -r requirements-encode.txt
+<<<<<<< HEAD
 Django==4.2.17
+=======
+Django==4.2.18
+django-ckeditor==6.7.1
+>>>>>>> pod_V4
 Pillow==10.3.0
 django-tinymce==4.1.0
 django-tagulous==2.1.0
@@ -29,7 +34,7 @@ qrcode
 ralph-malph==5.0.1
 pydantic==2.10.2
 bleach==6.2.0
-pytube==15.0.0
+pytubefix==8.12.0
 django-redis-sessions
 paramiko~=3.5.0
 djangorestframework-simplejwt==5.3.1

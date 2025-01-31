@@ -85,11 +85,11 @@ document.addEventListener("submit", (e) => {
 /**
  * Send and get form.
  *
- * @param elt {HTMLElement} HTML element.
- * @param action {string} Action.
- * @param name {string} Name.
- * @param form {string} Form.
- * @param list {string} List.
+ * @param {HTMLElement} elt - HTML element.
+ * @param {string} action - Action.
+ * @param {string} name - Name.
+ * @param {string} form - Form.
+ * @param {string} list - List.
  *
  * @return {Promise<void>} The form promise.
  */

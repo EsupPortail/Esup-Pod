@@ -6,6 +6,7 @@ from django import forms
 from django.forms.widgets import HiddenInput
 from .models import Speaker, Job, JobVideo
 from pod.main.forms_utils import add_placeholder_and_asterisk
+from django.conf import settings
 
 
 class JobWidget(s2forms.ModelSelect2Widget):
@@ -28,6 +29,8 @@ class SpeakerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Init method."""
         super(SpeakerForm, self).__init__(*args, **kwargs)
+        if not getattr(settings, "REQUIRED_SPEAKER_FIRSTNAME", False):
+            self.fields["firstname"].required = False
         self.fields = add_placeholder_and_asterisk(self.fields)
 
 

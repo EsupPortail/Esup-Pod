@@ -29,9 +29,9 @@ function run(has_more_themes, Helper) {
 
   /**
    * Make request to url
-   * @param {String} url request url
-   * @param {String} method request method
-   * @param {FormData} body post data
+   * @param {String} url - request url
+   * @param {String} method - request method
+   * @param {FormData} body - post data
    * @returns {Promise} json response
    */
   const makeRequest = (url, method = "GET", body = new FormData()) => {
