@@ -520,6 +520,19 @@
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
                         },
+                        "OIDC_CLAIM_AFFILIATION": {
+                            "default_value": "affiliations",
+                            "description": {
+                                "en": [
+                                    ""
+                                ],
+                                "fr": [
+                                    "Noms du Claim permettant de récupérer l'attribut affiliations"
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.1"
+                        },
                         "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES": {
                             "default_value": "[]",
                             "description": {
