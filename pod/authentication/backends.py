@@ -80,6 +80,7 @@ OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = getattr(
     settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", []
 )
 
+OIDC_CLAIM_AFFILIATION = getattr(settings, "OIDC_CLAIM_AFFILIATION", "affiliations")
 
 class OIDCBackend(OIDCAuthenticationBackend):
     """OIDC backend authentication."""
@@ -92,13 +93,26 @@ class OIDCBackend(OIDCAuthenticationBackend):
         user.last_name = claims.get(OIDC_CLAIM_FAMILY_NAME, "")
         user.username = claims.get(OIDC_CLAIM_PREFERRED_USERNAME, "")
         user.owner.affiliation = OIDC_DEFAULT_AFFILIATION
-        for code_name in OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES:
-            try:
-                user.owner.accessgroup_set.add(
-                    AccessGroup.objects.get(code_name=code_name)
-                )
-            except ObjectDoesNotExist:
-                pass
+        affiliations = claims.get(OIDC_CLAIM_AFFILIATION, "")
+        if affiliations:
+            for affiliation in affiliations:
+                if CREATE_GROUP_FROM_AFFILIATION:
+                    accessgroup, group_created = AccessGroup.objects.get_or_create(code_name=affiliation)
+                    if group_created:
+                        accessgroup.display_name = affiliation
+                        accessgroup.auto_sync = True
+                        accessgroup.sites.add(Site.objects.get_current())
+                        accessgroup.save()
+                        user.owner.accessgroup_set.add(accessgroup)
+                    else:
+                        user.owner.accessgroup_set.add(accessgroup)
+        else:
+            user.owner.affiliation = OIDC_DEFAULT_AFFILIATION
+            for code_name in OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES:
+                try:
+                    user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name=code_name))
+                except ObjectDoesNotExist:
+                    pass
         user.is_staff = is_staff_affiliation(affiliation=user.owner.affiliation)
         user.owner.save()
         user.save()
@@ -110,6 +124,27 @@ class OIDCBackend(OIDCAuthenticationBackend):
         user.first_name = claims.get(OIDC_CLAIM_GIVEN_NAME, "")
         user.last_name = claims.get(OIDC_CLAIM_FAMILY_NAME, "")
         user.username = claims.get(OIDC_CLAIM_PREFERRED_USERNAME, "")
+        affiliations = claims.get(OIDC_CLAIM_AFFILIATION, "")
+        if affiliations:
+            for affiliation in affiliations:
+                if CREATE_GROUP_FROM_AFFILIATION:
+                    accessgroup, group_created = AccessGroup.objects.get_or_create(code_name=affiliation)
+                    if group_created:
+                        accessgroup.display_name = affiliation
+                        accessgroup.auto_sync = True
+                        accessgroup.sites.add(Site.objects.get_current())
+                        accessgroup.save()
+                        user.owner.accessgroup_set.add(accessgroup)
+                    else:
+                        user.owner.accessgroup_set.add(accessgroup)
+        else:
+            user.owner.affiliation = OIDC_DEFAULT_AFFILIATION
+            for code_name in OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES:
+                try:
+                    user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name=code_name))
+                except ObjectDoesNotExist:
+                    pass
+
         user.save()
 
         user.owner.auth_type = "OIDC"
