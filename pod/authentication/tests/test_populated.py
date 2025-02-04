@@ -646,4 +646,3 @@ class PopulatedOIDCTestCase(TestCase):
             " --->  test_OIDC_user_with_multiple_claim_access_groups"
             " of PopulatedOIDCTestCase: OK!"
         )
-
