@@ -86,10 +86,11 @@ OIDC_CLAIM_AFFILIATION = getattr(settings, "OIDC_CLAIM_AFFILIATION", "affiliatio
 
 class OIDCBackend(OIDCAuthenticationBackend):
     """OIDC backend authentication."""
+
     def create_user(self, claims):
         """Create user connectd by OIDC."""
-        user = self._initialize_user(claims)
-        self._assign_affiliations(user, claims)
+        user = super(OIDCBackend, self).create_user(claims)
+        self._initialize_user(user, claims)
         user.is_staff = is_staff_affiliation(user.owner.affiliation)
         user.owner.save()
         user.save()
@@ -111,19 +112,17 @@ class OIDCBackend(OIDCAuthenticationBackend):
 
         return user
 
-    def _initialize_user(self, claims):
+    def _initialize_user(self, user, claims):
         """Initialize user object from OIDC claims."""
-        email = claims.get("email")
-        username = claims.get(OIDC_CLAIM_PREFERRED_USERNAME, "")
-        user = User.objects.create_user(username, email=email)
         user.first_name = claims.get(OIDC_CLAIM_GIVEN_NAME, "")
         user.last_name = claims.get(OIDC_CLAIM_FAMILY_NAME, "")
-        user.username = username  # Evite de récupérer deux fois
+        user.username = claims.get(OIDC_CLAIM_PREFERRED_USERNAME, "")
+        self._assign_affiliations(user, claims)
         return user
 
-    def _assign_affiliations(self, user, claims):
+    def _assign_affiliations(self, user, claims) -> None:
         """Assign affiliations and access groups to user."""
-        affiliations = claims.get(OIDC_CLAIM_AFFILIATION, []) or [OIDC_DEFAULT_AFFILIATION]
+        affiliations = claims.get(OIDC_CLAIM_AFFILIATION, [OIDC_DEFAULT_AFFILIATION])
 
         for affiliation in affiliations:
             self._add_access_group(user, affiliation)
@@ -132,9 +131,11 @@ class OIDCBackend(OIDCAuthenticationBackend):
             for code_name in OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES:
                 self._safe_add_access_group(user, code_name)
 
-        user.owner.affiliation = affiliations[0] if affiliations else OIDC_DEFAULT_AFFILIATION
+        user.owner.affiliation = (
+            affiliations[0] if affiliations else OIDC_DEFAULT_AFFILIATION
+        )
 
-    def _add_access_group(self, user, affiliation):
+    def _add_access_group(self, user, affiliation) -> None:
         """Create or retrieve access group and assign to user."""
         accessgroup, created = AccessGroup.objects.get_or_create(code_name=affiliation)
         if created:
@@ -144,7 +145,7 @@ class OIDCBackend(OIDCAuthenticationBackend):
             accessgroup.save()
         user.owner.accessgroup_set.add(accessgroup)
 
-    def _safe_add_access_group(self, user, code_name):
+    def _safe_add_access_group(self, user, code_name) -> None:
         """Safely add an access group if it exists."""
         try:
             user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name=code_name))

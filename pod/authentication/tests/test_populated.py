@@ -539,6 +539,7 @@ class PopulatedShibTestCase(TestCase):
 
         print(" --->  test_make_profile of PopulatedShibTestCase: OK!")
 
+
 @override_settings(
     # ggignore-start
     OIDC_RP_CLIENT_ID="MWViNTY2NzJjNGY4YTQ1MTAwMTNiYjk3",
@@ -549,6 +550,7 @@ class PopulatedShibTestCase(TestCase):
     OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES=["specific", "unique"],
 )
 class PopulatedOIDCTestCase(TestCase):
+    @override_settings(OIDC_DEFAULT_AFFILIATION=UNSTAFFABLE_AFFILIATION)
     def test_OIDC_commoner_with_default_unstaffable_affiliation(self) -> None:
         backends.OIDC_DEFAULT_AFFILIATION = UNSTAFFABLE_AFFILIATION
         user = OIDCBackend().create_user(
@@ -626,22 +628,29 @@ class PopulatedOIDCTestCase(TestCase):
             " --->  test_OIDC_user_with_multiple_default_access_groups"
             " of PopulatedOIDCTestCase: OK!"
         )
-    def test_OIDC_user_with_multiple_claim_access_groups(self):
-        backends.OIDC_CLAIM_AFFILIATION = ["accessgroup1", "accessgroup2"]
-        user = OIDCBackend().create_user(
-            claims={OIDC_CLAIM_GIVEN_NAME: "Jean", OIDC_CLAIM_FAMILY_NAME: "Fit"}
-        )
 
-        for code_name in settings.OIDC_CLAIM_AFFILIATION:
-            accessgroup, group_created = AccessGroup.objects.get_or_create(code_name=code_name)
-            user.owner.accessgroup_set.add(accessgroup)
+    @override_settings(OIDC_CLAIM_AFFILIATION="affiliations")
+    def test_OIDC_user_with_multiple_claim_access_groups(self) -> None:
+        """Test if user is added to access groups from OIDC affiliations."""
+
+        user = OIDCBackend().create_user(
+            claims={
+                OIDC_CLAIM_GIVEN_NAME: "Jean",
+                OIDC_CLAIM_FAMILY_NAME: "Fit",
+                "affiliations": ["accessgroup1", "accessgroup2"],
+            }
+        )
 
         self.assertEqual(user.first_name, "Jean")
         self.assertEqual(user.last_name, "Fit")
         self.assertEqual(AccessGroup.objects.all().count(), 2)
         self.assertEqual(user.owner.accessgroup_set.all().count(), 2)
-        self.assertTrue(user.owner.accessgroup_set.filter(code_name="accessgroup1").exists())
-        self.assertTrue(user.owner.accessgroup_set.filter(code_name="accessgroup2").exists())
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(code_name="accessgroup1").exists()
+        )
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(code_name="accessgroup2").exists()
+        )
         print(
             " --->  test_OIDC_user_with_multiple_claim_access_groups"
             " of PopulatedOIDCTestCase: OK!"
