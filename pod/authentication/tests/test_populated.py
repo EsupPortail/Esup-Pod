@@ -547,7 +547,6 @@ class PopulatedShibTestCase(TestCase):
     # ggignore-end
     OIDC_OP_TOKEN_ENDPOINT="https://auth.server.com/oauth/token",
     OIDC_OP_USER_ENDPOINT="https://auth.server.com/oauth/userinfo",
-    OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES=["specific", "unique"],
 )
 class PopulatedOIDCTestCase(TestCase):
     @override_settings(OIDC_DEFAULT_AFFILIATION=UNSTAFFABLE_AFFILIATION)
@@ -583,9 +582,15 @@ class PopulatedOIDCTestCase(TestCase):
             " of PopulatedOIDCTestCase: OK!"
         )
 
+    @override_settings(
+        OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES=["specific"],
+    )
     def test_OIDC_user_with_default_access_group(self) -> None:
-        backends.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = ["specific"]
-        for code_name in settings.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES + [
+        ACCESS_GROUP_CODE_NAMES = getattr(
+            settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", []
+        )
+        self.assertEqual(AccessGroup.objects.all().count(), 0)
+        for code_name in ACCESS_GROUP_CODE_NAMES + [
             "useless",
             "dull",
         ]:
@@ -597,18 +602,26 @@ class PopulatedOIDCTestCase(TestCase):
         )
         self.assertEqual(user.first_name, "Jean")
         self.assertEqual(user.last_name, "Fit")
-        self.assertEqual(AccessGroup.objects.all().count(), 3)
-        self.assertEqual(user.owner.accessgroup_set.all().count(), 1)
+
+        self.assertEqual(AccessGroup.objects.all().count(), 4)
+        # Assert that user has DEFAULT_ACCESS_GROUP_CODE_NAMES + DEFAULT_AFFILIATION as accessgroup_set
+        self.assertEqual(user.owner.accessgroup_set.all().count(), 2)
+        # OIDC new user should have the specified access group from settings
+        self.assertTrue(user.owner.accessgroup_set.filter(code_name="specific").exists())
         self.assertTrue(
-            user.owner.accessgroup_set.filter(code_name="specific").exists()
-        )  # OIDC new user should have the specified access group from in settings
+            user.owner.accessgroup_set.filter(
+                code_name=backends.OIDC_DEFAULT_AFFILIATION
+            ).exists()
+        )
         print(
             " --->  test_OIDC_user_with_default_access_group"
             " of PopulatedOIDCTestCase: OK!"
         )
 
+    @override_settings(
+        OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES=["specific", "unique"],
+    )
     def test_OIDC_user_with_multiple_default_access_groups(self) -> None:
-        backends.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = ["specific", "unique"]
         for code_name in settings.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES + ["dull"]:
             AccessGroup.objects.create(
                 code_name=code_name, display_name=f"Access group {code_name}"
@@ -618,21 +631,24 @@ class PopulatedOIDCTestCase(TestCase):
         )
         self.assertEqual(user.first_name, "Jean")
         self.assertEqual(user.last_name, "Fit")
-        self.assertEqual(AccessGroup.objects.all().count(), 3)
+        self.assertEqual(AccessGroup.objects.all().count(), 4)
         self.assertEqual(
-            user.owner.accessgroup_set.all().count(), 2
-        )  # OIDC new user should have 2 access groups
+            user.owner.accessgroup_set.all().count(), 3
+        )  # OIDC new user should have 3 access groups
         self.assertTrue(user.owner.accessgroup_set.filter(code_name="specific").exists())
         self.assertTrue(user.owner.accessgroup_set.filter(code_name="unique").exists())
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(
+                code_name=backends.OIDC_DEFAULT_AFFILIATION
+            ).exists()
+        )
         print(
             " --->  test_OIDC_user_with_multiple_default_access_groups"
             " of PopulatedOIDCTestCase: OK!"
         )
 
-    @override_settings(OIDC_CLAIM_AFFILIATION="affiliations")
     def test_OIDC_user_with_multiple_claim_access_groups(self) -> None:
         """Test if user is added to access groups from OIDC affiliations."""
-
         user = OIDCBackend().create_user(
             claims={
                 OIDC_CLAIM_GIVEN_NAME: "Jean",

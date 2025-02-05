@@ -531,7 +531,7 @@
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "3.1"
+                            "pod_version_init": "4.0"
                         },
                         "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES": {
                             "default_value": "[]",
@@ -1191,7 +1191,7 @@
                             "pod_version_end": "",
                             "pod_version_init": ""
                         }
-                        
+
                     },
                     "title": {
                         "en": "Seaker application configuration",

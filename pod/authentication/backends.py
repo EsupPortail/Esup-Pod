@@ -78,9 +78,7 @@ OIDC_CLAIM_PREFERRED_USERNAME = getattr(
 OIDC_DEFAULT_AFFILIATION = getattr(
     settings, "OIDC_DEFAULT_AFFILIATION", DEFAULT_AFFILIATION
 )
-OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = getattr(
-    settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", []
-)
+
 OIDC_CLAIM_AFFILIATION = getattr(settings, "OIDC_CLAIM_AFFILIATION", "affiliations")
 
 
@@ -127,9 +125,13 @@ class OIDCBackend(OIDCAuthenticationBackend):
         for affiliation in affiliations:
             self._add_access_group(user, affiliation)
 
-        if not affiliations:
-            for code_name in OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES:
-                self._safe_add_access_group(user, code_name)
+        OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = getattr(
+            settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", []
+        )
+
+        # Add default access groups
+        for code_name in OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES:
+            self._safe_assign_access_group(user, code_name)
 
         user.owner.affiliation = (
             affiliations[0] if affiliations else OIDC_DEFAULT_AFFILIATION
@@ -145,7 +147,7 @@ class OIDCBackend(OIDCAuthenticationBackend):
             accessgroup.save()
         user.owner.accessgroup_set.add(accessgroup)
 
-    def _safe_add_access_group(self, user, code_name) -> None:
+    def _safe_assign_access_group(self, user, code_name) -> None:
         """Safely add an access group if it exists."""
         try:
             user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name=code_name))
