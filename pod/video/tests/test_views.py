@@ -11,7 +11,7 @@ from pod.authentication.models import AccessGroup
 from django.contrib.sites.models import Site
 from django.contrib.messages import get_messages
 from django.core.files.temp import NamedTemporaryFile
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from pod.main.models import AdditionalChannelTab
 
@@ -130,7 +130,7 @@ class ChannelTestView(TestCase):
         # Test ajax request, get videos and themes from channel view
         self.client = Client()
         response = self.client.get(
-            "/%s/" % self.c.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+            "/%s/" % self.c.slug, headers={"x-requested-with": "XMLHttpRequest"}
         )
         expected["videos"] = [
             {
@@ -163,7 +163,7 @@ class ChannelTestView(TestCase):
         response = self.client.get(
             "/%s/" % self.c.slug,
             {"target": "themes"},
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         expected.pop("next_videos", None)
         expected.pop("has_more_videos", None)
@@ -177,7 +177,7 @@ class ChannelTestView(TestCase):
         response = self.client.get(
             "/%s/" % self.c.slug,
             {"target": "videos"},
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         expected["next_videos"] = None
         expected["has_more_videos"] = False
@@ -351,7 +351,7 @@ class ThemeEditTestView(TestCase):
             url,
             {"action": "new"},
             follow=True,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["channel"], channel)
@@ -361,7 +361,7 @@ class ThemeEditTestView(TestCase):
             url,
             {"action": "modify", "id": 1},
             follow=True,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["channel"], channel)
@@ -373,7 +373,7 @@ class ThemeEditTestView(TestCase):
             url,
             {"action": "delete", "id": 1},
             follow=True,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["channel"], channel)
@@ -390,7 +390,7 @@ class ThemeEditTestView(TestCase):
                 "channel": Channel.objects.get(title="ChannelTest1").id,
             },
             follow=True,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["channel"], channel)
@@ -408,7 +408,7 @@ class ThemeEditTestView(TestCase):
                 "channel": Channel.objects.get(title="ChannelTest1").id,
             },
             follow=True,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["channel"], channel)

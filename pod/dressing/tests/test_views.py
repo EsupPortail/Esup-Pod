@@ -1,7 +1,13 @@
-"""Unit tests for Esup-Pod dressing views."""
+"""Unit tests for Esup-Pod dressing views.
+
+*  run with 'python manage.py test pod.dressing.tests.test_views'
+"""
+
+import unittest
 
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 from django.contrib.messages import get_messages
 from django.test import TestCase
 from django.urls import reverse
@@ -11,7 +17,12 @@ from pod.dressing.models import Dressing
 from pod.video.models import Type, Video
 from pod.main.models import Configuration
 
+USE_DRESSING = getattr(settings, "USE_DRESSING", False)
 
+
+@unittest.skipUnless(
+    USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs."
+)
 class VideoDressingViewTest(TestCase):
     """Dressing page test case."""
 
@@ -19,6 +30,7 @@ class VideoDressingViewTest(TestCase):
 
     def setUp(self) -> None:
         """Set up VideoDressingViewTest."""
+
         self.user = User.objects.create_user(
             username="user", password="password", is_staff=1
         )
@@ -35,7 +47,7 @@ class VideoDressingViewTest(TestCase):
         self.dressing.users.set([self.user])
         self.dressing.videos.set([self.first_video])
 
-    def test_maintenance(self):
+    def test_maintenance(self) -> None:
         """Test Pod maintenance mode in VideoDressingViewTest."""
         self.client.force_login(self.user)
         url = reverse("dressing:video_dressing", args=[self.first_video.slug])
@@ -51,7 +63,7 @@ class VideoDressingViewTest(TestCase):
         self.assertRedirects(response, "/maintenance/")
         print(" --->  test_maintenance ok")
 
-    def test_video_dressing_page(self):
+    def test_video_dressing_page(self) -> None:
         """Test test_video_dressing_page in MyDressingViewTest."""
         self.client.force_login(self.user)
         response = self.client.get(
@@ -61,7 +73,7 @@ class VideoDressingViewTest(TestCase):
         self.assertTemplateUsed(response, "video_dressing.html")
         print(" --->  test_video_dressing_page ok")
 
-    def test_video_encoding_in_progress(self):
+    def test_video_encoding_in_progress(self) -> None:
         """Test video encoding in progress in VideoDressingViewTest."""
         self.first_video.encoding_in_progress = True
         self.first_video.save()
@@ -77,7 +89,7 @@ class VideoDressingViewTest(TestCase):
         self.assertEqual(messages[0].message, _("The video is currently being encoded."))
         print(" --->  test_video_encoding_in_progress ok")
 
-    def test_video_dressing_permission_denied(self):
+    def test_video_dressing_permission_denied(self) -> None:
         """Test test_video_dressing_permission_denied in VideoDressingViewTest."""
         user_without_permission = User.objects.create_user(
             username="useless_user", password="testpass"
@@ -95,6 +107,9 @@ class VideoDressingViewTest(TestCase):
         print(" --->  test_video_dressing_permission_denied ok")
 
 
+@unittest.skipUnless(
+    USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs."
+)
 class MyDressingViewTest(TestCase):
     """My dressing page tests case."""
 
@@ -118,7 +133,7 @@ class MyDressingViewTest(TestCase):
         self.dressing.users.set([self.user])
         self.dressing.videos.set([self.first_video])
 
-    def test_maintenance(self):
+    def test_maintenance(self) -> None:
         """Test Pod maintenance mode in MyDressingViewTest."""
         self.client.force_login(self.user)
         url = reverse("dressing:my_dressings")
@@ -158,6 +173,9 @@ class MyDressingViewTest(TestCase):
         print(" --->  test_my_dressing_permission_denied ok")
 
 
+@unittest.skipUnless(
+    USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs."
+)
 class DressingEditViewTest(TestCase):
     """Dressing edit page tests case."""
 
@@ -205,6 +223,9 @@ class DressingEditViewTest(TestCase):
         print(" --->  test_dressing_create_view_permission_denied ok")
 
 
+@unittest.skipUnless(
+    USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs."
+)
 class DressingDeleteViewTest(TestCase):
     """Dressing delete page test case."""
 
@@ -327,6 +348,9 @@ class DressingDeleteViewTest(TestCase):
         print(" --->  test_dressing_delete_view_not_authenticated ok")
 
 
+@unittest.skipUnless(
+    USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs."
+)
 class DressingCreateViewTest(TestCase):
     """Dressing create page test case."""
 

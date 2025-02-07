@@ -1,4 +1,4 @@
-webvtt-py==0.4.5
+webvtt-py==0.5.1
 celery==5.4.0
-redis==4.5.4
-requests==2.32.0
+redis==5.2.0
+requests==2.32.3

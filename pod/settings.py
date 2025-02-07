@@ -1,11 +1,23 @@
 """
 Django global settings for pod_project.
 
-Django version: 3.2.
+Django version: 4.2.
 """
 
 import os
+import sys
 import importlib.util
+
+# DEPRECATIONS HACKS
+import django
+from django.utils.translation import gettext
+from urllib.parse import quote
+
+# Needed for django-cas-client==1.5.3
+django.utils.http.urlquote = quote
+
+# Needed for django-chunked-upload==2.0.0
+django.utils.translation.ugettext = gettext
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # will be update in pod/main/settings.py
@@ -13,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 ##
 # Version of the project
 #
-VERSION = "3.9.0"
+VERSION = "4.0.0--ALPHA"
 
 ##
 # Installed applications list
@@ -33,7 +45,8 @@ INSTALLED_APPS = [
     # Exterior Applications
     "ckeditor",
     "sorl.thumbnail",
-    "tagging",
+    # "tagging",
+    "tagulous",
     "cas",
     "captcha",
     "rest_framework",
@@ -44,7 +57,7 @@ INSTALLED_APPS = [
     "chunked_upload",
     "mozilla_django_oidc",
     "honeypot",
-    "lti_provider",
+    # "lti_provider", (wait until lti_provider has been upgraded > 1.0, with upgraded oauth2)
     "pwa",
     "webpush",
     # Pod Applications
@@ -142,7 +155,7 @@ TEMPLATES = [
 
 ##
 # Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.{0}".format(validator)}
     for validator in [
@@ -155,9 +168,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 ##
 # Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
+# https://docs.djangoproject.com/en/4.2/topics/i18n/
 USE_I18N = True
-USE_L10N = True
 LOCALE_PATHS = (os.path.join(BASE_DIR, "pod", "locale"),)
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
@@ -185,7 +197,7 @@ REST_FRAMEWORK = {
 
 
 ##
-# Logging configuration https://docs.djangoproject.com/en/3.2/topics/logging/
+# Logging configuration https://docs.djangoproject.com/en/4.2/topics/logging/
 #
 LOG_DIRECTORY = os.path.join(BASE_DIR, "pod", "log")
 if not os.path.exists(LOG_DIRECTORY):
@@ -478,6 +490,7 @@ if (
     locals()["DEBUG"] is True
     and importlib.util.find_spec("debug_toolbar") is not None
     and locals()["USE_DEBUG_TOOLBAR"]
+    and "test" not in sys.argv
 ):
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE = [
@@ -496,3 +509,18 @@ if (
     and importlib.util.find_spec("django_extensions") is not None
 ):
     INSTALLED_APPS.append("django_extensions")
+
+
+# Django Tag manager
+SERIALIZATION_MODULES = {
+    "xml": "tagulous.serializers.xml_serializer",
+    "json": "tagulous.serializers.json",
+    "python": "tagulous.serializers.python",
+    "yaml": "tagulous.serializers.pyyaml",
+}
+# see https://django-tagulous.readthedocs.io/en/latest/installation.html#settings
+TAGULOUS_NAME_MAX_LENGTH = 80
+"""
+TAGULOUS_SLUG_MAX_LENGTH = 50
+TAGULOUS_LABEL_MAX_LENGTH = TAGULOUS_NAME_MAX_LENGTH
+"""

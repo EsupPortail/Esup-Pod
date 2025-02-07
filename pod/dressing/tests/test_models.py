@@ -1,10 +1,12 @@
 """Unit tests for dressing models."""
 
 import os
+import unittest
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
+
 from pod.video.models import Type, Video
 from pod.dressing.models import Dressing
 
@@ -17,11 +19,16 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomImageModel
 
+USE_DRESSING = getattr(settings, "USE_DRESSING", False)
 
+
+@unittest.skipUnless(
+    USE_DRESSING, "Set USE_DRESSING to True before testing Dressing stuffs."
+)
 class DressingModelTest(TestCase):
     """Test case for Pod dressing models."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up DressingModel Tests."""
         owner = User.objects.create(username="pod")
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -69,7 +76,7 @@ class DressingModelTest(TestCase):
         dressing.owners.set([owner])
         dressing.users.set([owner])
 
-    def test_attributs_full(self):
+    def test_attributs_full(self) -> None:
         dressing = Dressing.objects.get(id=1)
         owner = User.objects.get(username="pod")
         video = Video.objects.get(id=1)
@@ -85,7 +92,7 @@ class DressingModelTest(TestCase):
         self.assertEqual(dressing.ending_credits, video2)
         print(" ---> test_attributs_full: OK! --- DressingModelTest")
 
-    def test_dressing_to_json(self):
+    def test_dressing_to_json(self) -> None:
         """Test the to_json function."""
         dressing = Dressing.objects.get(id=1)
         dressing_json = dressing.to_json()

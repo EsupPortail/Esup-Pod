@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 from django.contrib.admin.views.decorators import staff_member_required

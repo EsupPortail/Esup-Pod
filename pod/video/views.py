@@ -18,7 +18,7 @@ from django.http import QueryDict, Http404
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.utils.translation import ngettext
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -56,9 +56,6 @@ from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
 from pod.video.models import get_transcription_choices
 from pod.video.models import UserMarkerTime, VideoAccessToken
-
-from tagging.models import TaggedItem
-
 from pod.video.forms import VideoForm, VideoVersionForm
 from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
@@ -312,7 +309,7 @@ def _regroup_videos_by_theme(  # noqa: C901
         )
     response["videos"] = videos
     """
-    if request.is_ajax():
+    if is_ajax(request):
         if target == "themes":
             # No change to the old system, with data in JSON format
             return JsonResponse(response, safe=False)
@@ -361,7 +358,7 @@ def paginator(videos_list, page):
 def channel(request, slug_c, slug_t=None):
     channel = get_object_or_404(Channel, slug=slug_c, site=get_current_site(request))
     videos_list = get_available_videos().filter(channel=channel)
-    videos_list = sort_videos_list(videos_list, "order", "on")
+    videos_list = sort_videos_list(videos_list, "date_added", "on")
     channel.video_count = videos_list.count()
 
     theme = None
@@ -386,7 +383,7 @@ def channel(request, slug_c, slug_t=None):
             request, videos_list, page, full_path, channel, theme
         )
 
-    if request.is_ajax():
+    if is_ajax(request):
         return render(
             request,
             "videos/video_list.html",
@@ -627,7 +624,7 @@ def dashboard(request):
     )
     template = videos_list_templates[display_mode]
 
-    if request.is_ajax():
+    if is_ajax(request):
         return render(
             request,
             template,
@@ -908,9 +905,8 @@ def get_filtered_videos_list(request, videos_list):
             | Q(additional_owners__username__in=request.GET.getlist("owner"))
         )
     if request.GET.getlist("tag"):
-        videos_list = TaggedItem.objects.get_union_by_model(
-            videos_list, request.GET.getlist("tag")
-        )
+        videos_list = videos_list.filter(tags__name__in=request.GET.getlist("tag"))
+
     if request.GET.getlist("cursus"):
         videos_list = videos_list.filter(cursus__in=request.GET.getlist("cursus"))
     return videos_list.distinct()
@@ -972,7 +968,7 @@ def videos(request):
     ownersInstances = get_owners_has_instances(request.GET.getlist("owner"))
     owner_filter = owner_is_searchable(request.user)
 
-    if request.is_ajax():
+    if is_ajax(request):
         return render(
             request,
             "videos/video_list.html",
@@ -1670,7 +1666,7 @@ def get_com_tree(com):
     return tree
 
 
-def can_edit_or_remove_note_or_com(request, nc, action):
+def can_edit_or_remove_note_or_com(request, nc, action) -> None:
     """
     Check if the current user can apply action to the note or comment nc.
 
@@ -1694,7 +1690,7 @@ def can_edit_or_remove_note_or_com(request, nc, action):
         raise PermissionDenied
 
 
-def can_see_note_or_com(request, nc):
+def can_see_note_or_com(request, nc) -> None:
     """
     Check if the current user can view the note or comment nc.
 
@@ -3302,7 +3298,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
             return False
         pass
 
-    def on_completion(self, uploaded_file, request):
+    def on_completion(self, uploaded_file, request) -> None:
         """Triggered when a chunked upload is complete."""
         edit_slug = request.POST.get("slug")
         transcript = request.POST.get("transcript", "")

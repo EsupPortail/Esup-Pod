@@ -21,7 +21,7 @@ def process(recording):
     t.start()
 
 
-def encode_recording(recording):
+def encode_recording(recording) -> None:
     recorder = recording.recorder
     video = Video()
     video.title = recording.title
@@ -58,7 +58,7 @@ def encode_recording(recording):
     # Choix des cursus
     video.cursus = recorder.cursus
     # mot clefs
-    video.tags = recorder.tags
+    video.tags = recorder.tags.get_tag_list()
     # transcript
     if getattr(settings, "USE_TRANSCRIPTION", False):
         video.transcript = recorder.transcript

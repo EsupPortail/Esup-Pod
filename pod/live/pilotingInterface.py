@@ -7,7 +7,6 @@ import os
 import re
 from abc import ABC as __ABC__, abstractmethod
 from datetime import timedelta
-from typing import Optional
 
 import paramiko
 import requests
@@ -16,6 +15,7 @@ from django.http import JsonResponse, HttpResponseNotAllowed
 
 from .models import Broadcaster, Event
 from .utils import date_string_to_second
+from pod.main.utils import is_ajax
 
 DEFAULT_EVENT_PATH = getattr(settings, "DEFAULT_EVENT_PATH", "")
 
@@ -140,7 +140,7 @@ class PilotingInterface(__ABC__):
 
 def ajax_get_mandatory_parameters(request):
     """Return the mandatory parameters as a json response."""
-    if request.method == "GET" and request.is_ajax():
+    if request.method == "GET" and is_ajax(request):
         impl_name = request.GET.get("impl_name", None)
         params = get_mandatory_parameters(impl_name)
         params_json = {}
@@ -223,7 +223,7 @@ def validate_json_implementation(broadcaster: Broadcaster) -> bool:
     return True
 
 
-def get_piloting_implementation(broadcaster) -> Optional[PilotingInterface]:
+def get_piloting_implementation(broadcaster):
     """Return the class inheriting from PilotingInterface according to the broadcaster configuration (or None)."""
     if broadcaster is None:
         return None

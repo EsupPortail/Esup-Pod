@@ -9,6 +9,7 @@ from .models import PlaylistVideo
 from pod.video.models import Video
 
 
+@admin.register(EncodingVideo)
 class EncodingVideoAdmin(admin.ModelAdmin):
     """Admin model for EncodingVideo."""
 
@@ -16,11 +17,10 @@ class EncodingVideoAdmin(admin.ModelAdmin):
     list_filter = ["encoding_format", "rendition"]
     search_fields = ["id", "video__id", "video__title"]
 
+    @admin.display(description="resolution")
     def get_resolution(self, obj):
         """Get the resolution of the video rendition."""
         return obj.rendition.resolution
-
-    get_resolution.short_description = "resolution"
 
     def get_queryset(self, request):
         """Get the queryset based on the request."""
@@ -40,6 +40,7 @@ class EncodingVideoAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+@admin.register(EncodingAudio)
 class EncodingAudioAdmin(admin.ModelAdmin):
     """Admin model for EncodingAudio."""
 
@@ -61,6 +62,7 @@ class EncodingAudioAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+@admin.register(EncodingLog)
 class EncodingLogAdmin(admin.ModelAdmin):
     """Admin model for EncodingLog."""
 
@@ -84,6 +86,7 @@ class EncodingLogAdmin(admin.ModelAdmin):
         return qs
 
 
+@admin.register(EncodingStep)
 class EncodingStepAdmin(admin.ModelAdmin):
     """Admin model for EncodingStep."""
 
@@ -99,6 +102,7 @@ class EncodingStepAdmin(admin.ModelAdmin):
         return qs
 
 
+@admin.register(VideoRendition)
 class VideoRenditionAdmin(admin.ModelAdmin):
     """Admin model for VideoRendition."""
 
@@ -133,6 +137,7 @@ class VideoRenditionAdmin(admin.ModelAdmin):
         return qs
 
 
+@admin.register(PlaylistVideo)
 class PlaylistVideoAdmin(admin.ModelAdmin):
     autocomplete_fields = ["video"]
     list_display = ("name", "video", "encoding_format")
@@ -150,11 +155,3 @@ class PlaylistVideoAdmin(admin.ModelAdmin):
             kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
-
-admin.site.register(EncodingVideo, EncodingVideoAdmin)
-admin.site.register(EncodingAudio, EncodingAudioAdmin)
-admin.site.register(EncodingLog, EncodingLogAdmin)
-admin.site.register(EncodingStep, EncodingStepAdmin)
-admin.site.register(VideoRendition, VideoRenditionAdmin)
-admin.site.register(PlaylistVideo, PlaylistVideoAdmin)

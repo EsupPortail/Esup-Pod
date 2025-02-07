@@ -16,7 +16,7 @@ class Command(BaseCommand):
     args = "--all or -id <video_id video_id ...>"
     help = "Indexes the specified video in Elasticsearch."
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser) -> None:
         """Add arguments of index_videos command."""
         parser.add_argument("-id", "--video_id", nargs="+", type=int, dest="video_id")
         parser.add_argument(
@@ -26,7 +26,7 @@ class Command(BaseCommand):
             help="index all video",
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         """Handle an index_videos command call."""
         translation.activate(settings.LANGUAGE_CODE)
         if options["all"]:
@@ -52,7 +52,7 @@ class Command(BaseCommand):
             )
         translation.deactivate()
 
-    def manage_es(self, video_id):
+    def manage_es(self, video_id) -> None:
         """Index or delete a video in ES."""
         try:
             video = Video.objects.get(pk=video_id)

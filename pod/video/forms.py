@@ -8,7 +8,7 @@ from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 from django.forms.widgets import ClearableFileInput
 from django.utils.deconstruct import deconstructible
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from .models import Video, VideoVersion, get_storage_path_video
 from .models import Channel
@@ -742,7 +742,7 @@ class VideoForm(forms.ModelForm):
                 encoding.source_file = encoding.source_file.name.replace(old_dir, new_dir)
                 encoding.save()
 
-    def save_visibility(self):
+    def save_visibility(self) -> None:
         """Save video access fields depends on the visibility field value."""
         visibility = self.cleaned_data.get("visibility")
         if visibility == "public":
@@ -922,7 +922,7 @@ class VideoForm(forms.ModelForm):
         super(VideoForm, self).__init__(*args, **kwargs)
 
         self.custom_video_form()
-        # change ckeditor, thumbnail and date delete config for non staff user
+        # change WYSIWYG, thumbnail and date delete config for non staff user
         self.set_nostaff_config()
         # hide default language
         self.hide_default_language()
@@ -1159,7 +1159,7 @@ class ChannelForm(forms.ModelForm):
                 owner__sites=Site.objects.get_current()
             )
 
-        # change ckeditor config for no staff user
+        # change WYSIWYG config for no staff user
         if not hasattr(self, "admin_form") and (
             self.is_staff is False and self.is_superuser is False
         ):

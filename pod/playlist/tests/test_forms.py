@@ -1,6 +1,6 @@
 """Tests the forms for playlist module."""
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.test import override_settings, TestCase
 
 from ...playlist.forms import PlaylistForm, PlaylistRemoveForm, PlaylistPasswordForm

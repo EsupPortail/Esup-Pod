@@ -5,6 +5,7 @@ from .models import Dressing
 from .forms import DressingAdminForm
 
 
+@admin.register(Dressing)
 class DressingAdmin(admin.ModelAdmin):
     """Dressing admin page."""
 
@@ -50,6 +51,3 @@ class DressingAdmin(admin.ModelAdmin):
             "podfile/js/filewidget.js",
             "bootstrap/dist/js/bootstrap.min.js",
         )
-
-
-admin.site.register(Dressing, DressingAdmin)

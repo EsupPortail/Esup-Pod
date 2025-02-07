@@ -5,9 +5,11 @@
 from ..settings import BASE_DIR as settings_base_dir
 from ..settings import USE_TZ, REST_FRAMEWORK, LOG_DIRECTORY, LOGGING
 from ..settings import LOCALE_PATHS, STATICFILES_DIRS, DEFAULT_AUTO_FIELD
-from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N, USE_L10N
+from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N
 from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
 from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
+from ..settings import SERIALIZATION_MODULES, TAGULOUS_NAME_MAX_LENGTH
+
 import os
 from bs4 import BeautifulSoup
 import requests
@@ -20,16 +22,15 @@ TEMPLATES[0]["DIRS"].append(
     os.path.join(settings_base_dir, "custom", "static", "opencast")
 )
 USE_DOCKER = True
-path = "pod/custom/settings_local.py"
 ES_URL = ["http://elasticsearch.localhost:9200/"]
-ES_VERSION = 6
+ES_VERSION = 8
+ES_INDEX = "pod"
+path = "pod/custom/settings_local.py"
 if os.path.exists(path):
     _temp = __import__("pod.custom", globals(), locals(), ["settings_local"])
-    USE_DOCKER = getattr(_temp.settings_local, "USE_DOCKER", True)
-    ES_URL = getattr(
-        _temp.settings_local, "ES_URL", ["http://elasticsearch.localhost:9200/"]
-    )
-    ES_VERSION = getattr(_temp.settings_local, "ES_VERSION", 6)
+    USE_DOCKER = getattr(_temp.settings_local, "USE_DOCKER", USE_DOCKER)
+    ES_URL = getattr(_temp.settings_local, "ES_URL", ES_URL)
+    ES_VERSION = getattr(_temp.settings_local, "ES_VERSION", ES_VERSION)
 
 for application in INSTALLED_APPS:
     if application.startswith("pod"):
@@ -45,7 +46,8 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": "db-test.sqlite",
         "OPTIONS": {
-            "timeout": 30,
+            "timeout": 30.0,  # in seconds
+            # see also https://docs.python.org/3.10/library/sqlite3.html#sqlite3.connect
         },
     }
 }
@@ -53,8 +55,10 @@ DATABASES = {
 LANGUAGES = (("fr", "Français"), ("en", "English"))
 LANGUAGE_CODE = "en"
 THIRD_PARTY_APPS = ["enrichment", "live"]
-USE_PODFILE = True
+USE_CUT = True
+USE_DRESSING = True
 USE_FAVORITES = True
+USE_PODFILE = True
 USE_PLAYLIST = True
 USE_PROMOTED_PLAYLIST = True
 RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY = False

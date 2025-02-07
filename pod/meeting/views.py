@@ -42,7 +42,7 @@ from pod.import_video.utils import StatelessRecording
 from pod.import_video.utils import manage_download, parse_remote_file
 from pod.import_video.utils import save_video, secure_request_for_upload
 from pod.main.views import in_maintenance, TEMPLATE_VISIBLE_SETTINGS
-from pod.main.utils import secure_post_request, display_message_with_icon
+from pod.main.utils import secure_post_request, display_message_with_icon, is_ajax
 from pod.meeting.webinar import chat_rtmp_gateway, start_webinar, stop_webinar
 from pod.meeting.webinar_utils import search_for_available_livegateway, manage_webinar
 from pod.live.models import Event
@@ -648,7 +648,7 @@ def end(request: WSGIRequest, meeting_id: str) -> HttpResponse:
         for key in args:
             msg += "<b>%s:</b> %s<br>" % (key, args[key])
         msg = mark_safe(msg)
-    if request.is_ajax():
+    if is_ajax(request):
         return JsonResponse({"end": meeting.end(), "msg": msg}, safe=False)
     else:
         if msg != "":
@@ -687,7 +687,7 @@ def get_meeting_info(request: WSGIRequest, meeting_id: str) -> JsonResponse:
         for key in args:
             msg += "<b>%s:</b> %s<br>" % (key, args[key])
         msg = mark_safe(msg)
-    if request.is_ajax():
+    if is_ajax(request):
         return JsonResponse({"info": info, "msg": msg}, safe=False)
     else:
         if msg != "":
@@ -823,7 +823,7 @@ def internal_recording(
     recordings = get_internal_recordings(request, meeting_id, recording_id)
     # JSON format
     data = recordings[0].to_json()
-    if request.is_ajax():
+    if is_ajax(request):
         return HttpResponse(data, content_type="application/json")
     else:
         return HttpResponseBadRequest()

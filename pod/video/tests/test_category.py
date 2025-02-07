@@ -75,10 +75,7 @@ class TestCategory(TestCase):
         """Test get add new category modal."""
         self.client.force_login(self.owner_user)
         url = reverse("video:add_category")
-        response = self.client.get(
-            url,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-        )
+        response = self.client.get(url, headers={"x-requested-with": "XMLHttpRequest"})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "videos/category_modal.html")
         print(" --->  test_get_add_category_modal of TestCategory: OK!")
@@ -107,7 +104,7 @@ class TestCategory(TestCase):
         response = self.client.post(
             reverse("video:add_category"),
             data,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         response_data = json.loads(response.content)
         expected_data = {
@@ -136,7 +133,7 @@ class TestCategory(TestCase):
         response = self.client.post(
             reverse("video:add_category"),
             data,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
 
         response_data = json.loads(response.content)
@@ -154,7 +151,7 @@ class TestCategory(TestCase):
         response = self.client.post(
             reverse("video:add_category"),
             data,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
 
         self.assertIsInstance(response, HttpResponseBadRequest)
@@ -167,7 +164,7 @@ class TestCategory(TestCase):
         response = self.client.post(
             reverse("video:add_category"),
             data,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
 
         self.assertIsInstance(response, HttpResponse)
@@ -178,10 +175,7 @@ class TestCategory(TestCase):
         """Test get edit existent category modal."""
         self.client.force_login(self.owner_user)
         url = reverse("video:edit_category", args=[self.cat_1.slug])
-        response = self.client.get(
-            url,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-        )
+        response = self.client.get(url, headers={"x-requested-with": "XMLHttpRequest"})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "videos/category_modal.html")
         print(" --->  test_get_edit_category_modal of TestCategory: OK!")
@@ -216,7 +210,7 @@ class TestCategory(TestCase):
         response = self.client.post(
             reverse("video:edit_category", kwargs={"c_slug": self.cat_1.slug}),
             data,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
 
         self.assertIsInstance(response, HttpResponseForbidden)
@@ -231,7 +225,7 @@ class TestCategory(TestCase):
         response = self.client.post(
             reverse("video:edit_category", kwargs={"c_slug": self.cat_1.slug}),
             data,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         response_data = json.loads(response.content)
         expected_data = {
@@ -260,7 +254,7 @@ class TestCategory(TestCase):
         response = self.client.post(
             reverse("video:edit_category", kwargs={"c_slug": self.cat_2.slug}),
             data,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         response_data = json.loads(response.content)
 
@@ -278,7 +272,7 @@ class TestCategory(TestCase):
         response = self.client.post(
             reverse("video:edit_category", kwargs={"c_slug": expected_data["slug"]}),
             data,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         self.assertIsInstance(response, HttpResponseBadRequest)
         self.assertEqual(response.status_code, 400)
@@ -303,10 +297,7 @@ class TestCategory(TestCase):
         """Test get categories for filter aside elements."""
         self.client.force_login(self.owner_user)
         url = reverse("video:get_categories_list")
-        response = self.client.get(
-            url,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-        )
+        response = self.client.get(url, headers={"x-requested-with": "XMLHttpRequest"})
         response_data = response.context
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "videos/filter_aside_categories_list.html")
@@ -317,10 +308,7 @@ class TestCategory(TestCase):
         """Test get delete existent category modal."""
         self.client.force_login(self.owner_user)
         url = reverse("video:delete_category", args=[self.cat_1.slug])
-        response = self.client.get(
-            url,
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
-        )
+        response = self.client.get(url, headers={"x-requested-with": "XMLHttpRequest"})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "videos/category_modal.html")
         print(" --->  test_get_delete_category_modal of TestCategory: OK!")
@@ -351,7 +339,7 @@ class TestCategory(TestCase):
         self.client.force_login(self.simple_user)
         response = self.client.post(
             reverse("video:delete_category", kwargs={"c_slug": self.cat_1.slug}),
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
 
         self.client.force_login(self.owner_user)
@@ -359,7 +347,7 @@ class TestCategory(TestCase):
         response = self.client.post(
             reverse("video:delete_category", kwargs={"c_slug": self.cat_1.slug}),
             content_type="application/json",
-            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+            headers={"x-requested-with": "XMLHttpRequest"},
         )
         response_data = json.loads(response.content)
 
