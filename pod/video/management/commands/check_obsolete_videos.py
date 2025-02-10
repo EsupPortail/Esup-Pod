@@ -509,6 +509,7 @@ class Command(BaseCommand):
             "Source file",
             "Description",
             "Views",
+            "Draft"
         ]
         if exists:
             self.check_csv_header(file, fieldnames)
@@ -536,6 +537,7 @@ class Command(BaseCommand):
                     .replace("\n\n", "\n")
                     .replace("\n", "$newl$"),
                     "Views": vid.viewcount,
+                    "Draft": vid.is_draft
                 }
             )
 
