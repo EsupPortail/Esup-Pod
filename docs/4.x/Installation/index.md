@@ -172,6 +172,10 @@ cluster.name: pod-application
 node.name: pod-1
 discovery.zen.ping.unicast.hosts: ["127.0.0.1"]
 ```
+Ajouter à votre fichier de settings_local.py
+```sh
+ES_VERSION = "6"
+```
 
 ### Elasticsearch 7 et 8
 Pour utiliser Elasticsearch 7 ou 8, il faut avoir java 17 sur sa machine.
@@ -332,7 +336,8 @@ ES_URL = ['http://elastic.domaine.fr:9200/']
 Avec le mode security et ES8, vous devrez parametrer les éléments suivants dans votre settings_local.py :
 ```
 ES_URL = ['https://127.0.0.1:9200/'] # ou votre instance déportée
-ES_OPTIONS = {'verify_certs' : False, 'basic_auth' : ('es_user', 'password')} 
+ES_OPTIONS = {'verify_certs' : False, 'basic_auth' : ('es_user', 'password')}
+ES_VERSION = "7" ou "8"
 ```
 
 ## Installation des dépendances
