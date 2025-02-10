@@ -10,7 +10,6 @@ on:
   pull_request:
     branches:
     - dev_v4
-    - pod_v4
   workflow_dispatch:
 
 env:
