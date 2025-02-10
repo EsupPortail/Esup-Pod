@@ -317,10 +317,8 @@ msgid "Please enter a correct end from 1 to "
 msgstr "Veuillez entrer un correct temps de fin compris entre 1 et "
 
 #: pod/enrichment/static/js/enrichment.js
-#, fuzzy
-#| msgid "Please select a language."
 msgid "Please attach an image."
-msgstr "Veuillez renseigner une langue."
+msgstr "Veuillez joindre une image."
 
 #: pod/enrichment/static/js/enrichment.js
 msgid "Please enter a correct richtext."
@@ -335,8 +333,6 @@ msgid "Weblink must be less than 200 characters."
 msgstr "Un lien web doit contenir moins de 200 caractères."
 
 #: pod/enrichment/static/js/enrichment.js
-#, fuzzy
-#| msgid "Please select a document."
 msgid "Please attach a document."
 msgstr "Veuillez joindre un document."
 
@@ -349,10 +345,8 @@ msgid "Embed field must be less than 200 characters."
 msgstr "Un code d’intégration doit comporter moins de 200 caractères."
 
 #: pod/enrichment/static/js/enrichment.js
-#, fuzzy
-#| msgid "Please enter a correct richtext."
 msgid "Please choose a type for this enrichment."
-msgstr "Veuillez entrer un texte riche correct."
+msgstr "Veuillez choisir un type pour cet enrichissement."
 
 #: pod/enrichment/static/js/enrichment.js
 msgid "The start field value is greater than the end field one."
