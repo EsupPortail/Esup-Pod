@@ -8,9 +8,16 @@ import random
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings, RequestFactory
+<<<<<<< HEAD
 from unittest import mock, skip
 from importlib import reload
 from ldap3 import Server, Connection, MOCK_SYNC
+=======
+from importlib import reload
+from ldap3 import Server, Connection, MOCK_SYNC
+from unittest import skip
+from xml.etree import ElementTree as ET
+>>>>>>> main
 
 from pod.authentication.models import Owner, AccessGroup, AFFILIATION_STAFF
 from pod.authentication import populatedCASbackend, shibmiddleware, backends
@@ -20,12 +27,16 @@ from pod.authentication.backends import (
     OIDC_CLAIM_FAMILY_NAME,
     OIDC_CLAIM_GIVEN_NAME,
 )
+<<<<<<< HEAD
 from django_cas_ng.backends import CASBackend
 
 # ggignore-start
 # gitguardian:ignore
 PWD = "pod1234pod"  # nosec
 # ggignore-end
+=======
+
+>>>>>>> main
 
 
 CAS_RENAME_ATTRIBUTES = {

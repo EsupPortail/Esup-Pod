@@ -11,6 +11,13 @@ import importlib.util
 # DEPRECATIONS HACKS
 import django
 from django.utils.translation import gettext
+<<<<<<< HEAD
+=======
+from urllib.parse import quote
+
+# Needed for django-cas-client==1.5.3
+django.utils.http.urlquote = quote
+>>>>>>> main
 
 # Needed for django-chunked-upload==2.0.0
 django.utils.translation.ugettext = gettext
@@ -43,7 +50,11 @@ INSTALLED_APPS = [
     "sorl.thumbnail",
     # "tagging",
     "tagulous",
+<<<<<<< HEAD
     "django_cas_ng",
+=======
+    "cas",
+>>>>>>> main
     "captcha",
     "rest_framework",
     "rest_framework.authtoken",

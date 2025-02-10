@@ -17,4 +17,14 @@ urlpatterns = [
         authentication_logout,
         name="authentication_logout",
     ),
+<<<<<<< HEAD
+=======
+    # re_path(r"^login/$", authentication_login, name="login"),
+    # re_path(r"^logout/$", authentication_logout, name="logout"),
+    path(
+        "login_gateway/",
+        authentication_login_gateway,
+        name="authentication_login_gateway",
+    ),
+>>>>>>> main
 ]
