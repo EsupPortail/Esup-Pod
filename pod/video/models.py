@@ -30,11 +30,7 @@ from datetime import date
 from django.utils import timezone
 from django.utils.html import format_html, escape
 from django.utils.text import capfirst
-<<<<<<< HEAD
 from tinymce.models import HTMLField
-=======
-from ckeditor.fields import RichTextField
->>>>>>> main
 from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
 from django.db.models.signals import pre_save
@@ -308,14 +304,8 @@ class Channel(models.Model):
         ),
         editable=False,
     )
-<<<<<<< HEAD
     description = HTMLField(
         _("Description"),
-=======
-    description = RichTextField(
-        _("Description"),
-        config_name="complete",
->>>>>>> main
         blank=True,
         help_text=_(
             "In this field you can describe your content, "
@@ -737,14 +727,8 @@ class Video(models.Model):
             + "that they can’t delete this media."
         ),
     )
-<<<<<<< HEAD
     description = HTMLField(
         _("Description"),
-=======
-    description = RichTextField(
-        _("Description"),
-        config_name="complete",
->>>>>>> main
         blank=True,
         help_text=_(
             "Describe your content, add all needed related information, "
