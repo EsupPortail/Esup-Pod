@@ -1,7 +1,13 @@
 -r requirements-encode.txt
+<<<<<<< HEAD
 Django==4.2.19
 Pillow==10.3.0
 django-tinymce==4.1.0
+=======
+Django==4.2.18
+django-ckeditor==6.7.1
+Pillow==10.3.0
+>>>>>>> main
 django-tagulous==2.1.0
 django-modeltranslation==0.19.11
 django-cas-client==1.5.3
