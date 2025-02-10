@@ -7,14 +7,11 @@ from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-<<<<<<< HEAD
 
 # ggignore-start
 # gitguardian:ignore
 PWD = "pod1234pod"  # nosec
 # ggignore-end
-=======
->>>>>>> main
 
 
 class authenticationViewsTestCase(TestCase):
