@@ -3561,7 +3561,7 @@ msgstr "à"
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
 msgid "Infos"
-msgstr "Informations"
+msgstr "Infos"
 
 #: pod/live/templates/live/event-info.html
 msgid "Broadcasted on:"
