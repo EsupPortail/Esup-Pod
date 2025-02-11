@@ -148,9 +148,11 @@ class PlaylistForm(forms.ModelForm):
         self.fields = add_placeholder_and_asterisk(self.fields)
         if self.user:
             if (
-                RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY
+                (
+                    RESTRICT_PROMOTED_PLAYLIST_ACCESS_TO_STAFF_ONLY
+                    or self.user.is_superuser
+                )
                 and "promoted" in self.fields
-                or self.user.is_superuser
             ):
                 del self.fields["promoted"]
         else:
