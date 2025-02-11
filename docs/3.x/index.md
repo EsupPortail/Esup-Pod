@@ -9,7 +9,7 @@ Les commandes suivantes ont été lancées sur une distribution Debian 11.4
 
 ## Environnement
 
-### Création de l'utilisateur Pod
+### Création de l’utilisateur Pod
 
 ```sh
 user@pod:~$  sudo adduser pod
@@ -24,7 +24,7 @@ user@pod:~$  cd /home/pod
 pod@pod:~$ sudo apt-get install git curl vim
 ```
 
-### Création de l'environnement virtuel
+### Création de l’environnement virtuel
 
 ```sh
 pod@pod:~$ sudo python3 -V
@@ -33,7 +33,7 @@ pod@pod:~$ sudo apt-get install -y python3-pip
 pod@pod:~$ sudo pip3 install virtualenvwrapper
 ```
 
-> Depuis python 3.10, il n'est plus possible d'installer avec pip en dehors d'un environnement. Pour pouvoir installer virtualenvwrapper il faut ajouter à la fin de la ligne --break-system-packages
+> Depuis python 3.10, il n’est plus possible d’installer avec pip en dehors d’un environnement. Pour pouvoir installer virtualenvwrapper il faut ajouter à la fin de la ligne --break-system-packages
 
 À la fin du `.bashrc`, il faut ajouter ces lignes :
 
@@ -78,7 +78,7 @@ Placez-vous dans le répertoire django_projects
 (django_pod3)pod@pod:~$ cd django_projects
 ```
 
-Donnez les droits à l'utilisateur pod de lire et d‘écrire dans le répertoire :
+Donnez les droits à l’utilisateur pod de lire et d‘écrire dans le répertoire :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects$ sudo chown pod:pod /usr/local/django_projects
@@ -95,7 +95,7 @@ La récupération des sources de la V3 se fait via cette commande :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects$ git clone https://github.com/EsupPortail/Esup-Pod.git podv3
-Clonage dans 'podv3'...
+Clonage dans "podv3"...
 remote: Counting objects: 4578, done.
 remote: Compressing objects: 100% (378/378), done.
 remote: Total 4578 (delta 460), reused 564 (delta 348), pack-reused 3847
@@ -109,7 +109,7 @@ Résolution des deltas: 100% (3076/3076), fait.
 
 ### Installation de toutes les librairies python
 
-Il faut vérifier que l’on se trouve bien dans l’environnement virtuel (présence de "(django_pod3)" au début l'invite de commande).
+Il faut vérifier que l’on se trouve bien dans l’environnement virtuel (présence de "(django_pod3)" au début l’invite de commande).
 Sinon, il faut lancer la commande `$> workon django_pod3`
 
 ```sh
@@ -124,7 +124,7 @@ De même, si vous devez utiliser un proxy :
 
 ### FFMPEG
 
-Pour l'encodage des vidéos et la creation des vignettes, il faut installer ffmpeg, ffmpegthumbnailer et imagemagick (ne pas installer sur le serveur frontal si vous déportez l'encodage)
+Pour l’encodage des vidéos et la creation des vignettes, il faut installer ffmpeg, ffmpegthumbnailer et imagemagick (ne pas installer sur le serveur frontal si vous déportez l’encodage)
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo apt install ffmpeg ffmpegthumbnailer imagemagick
@@ -146,7 +146,7 @@ En théorie le service démarre automatiquement. Si vous avez installé Redis su
 (django_pod3) pod@pod:~/django_projects/podv3$ sudo service redis-server status
 ```
 
-Si vous utilisez Redis sur une autre machine, n'oubliez pas de modifier le bind dans le fichier de configuration `/etc/redis/redis.conf`
+Si vous utilisez Redis sur une autre machine, n’oubliez pas de modifier le bind dans le fichier de configuration `/etc/redis/redis.conf`
 
 Si vous ne souhaitez pas toucher au bind, vous pouvez aussi modifier votre `settings_local.py` et personnaliser cette extrait du settings.py par défaut avec votre <my_redis_host>
 
@@ -181,7 +181,7 @@ SESSION_REDIS = {
 
 ### Elasticsearch
 
-Selon la version d'Elasticsearch que vous allez utiliser, les versions des dépendances peuvent changer. Les versions 6 et 7 ne sont actuellement plus maintenues. La version 8 est à configurer plus bas. La version 6 est celle par défaut dans Pod.
+Selon la version d’Elasticsearch que vous allez utiliser, les versions des dépendances peuvent changer. Les versions 6 et 7 ne sont actuellement plus maintenues. La version 8 est à configurer plus bas. La version 6 est celle par défaut dans Pod.
 
 #### Elasticsearch 6
 
@@ -264,9 +264,9 @@ discovery.seed_hosts: ["127.0.0.1"]
 cluster.initial_master_nodes: ["pod-1"]
 ```
 
-###### Mode security d'ES8 (recommandé)
+###### Mode security d’ES8 (recommandé)
 
-Générer l'utilisateur pod pour ES :
+Générer l’utilisateur pod pour ES :
 
 ```sh
 sudo /usr/share/elasticsearch/bin/elasticsearch-users useradd pod -p podpod -r superuser
@@ -299,7 +299,7 @@ xpack.security.http.ssl.keystore.path: /etc/elasticsearch/elastic-certificates.p
 xpack.security.http.ssl.truststore.path: /etc/elasticsearch/elastic-certificates.p12
 ```
 
-##### Lancement et vérification d'Elasticsearch
+##### Lancement et vérification d’Elasticsearch
 
 Il faut enfin le lancer et vérifier son bon fonctionnement :
 
@@ -311,7 +311,7 @@ Il faut enfin le lancer et vérifier son bon fonctionnement :
 ou pour ES8
 
 ```sh
-(django_pod3) pod@pod:~/django_projects/podv3$ curl -k -XGET 'https://127.0.0.1:9200' -u pod:podpod
+(django_pod3) pod@pod:~/django_projects/podv3$ curl -k -XGET "https://127.0.0.1:9200" -u pod:podpod
 ```
 
 ```json
@@ -370,9 +370,9 @@ Attention, pour ES8 derrière un proxy :
 [ ok ] Restarting elasticsearch (via systemctl): elasticsearch.service.
 ```
 
-### Création de l'index Pod
+### Création de l’index Pod
 
-Pour une utilisation d'elasticsearch 7 ou 8, il faut absolument :
+Pour une utilisation d’elasticsearch 7 ou 8, il faut absolument :
 
 Ajouter `ES_VERSION = 7` ou `ES_VERSION = 8`dans votre fichier de settings et modifier la version du client elasticsearch dans le fichier requirements.txt
 
@@ -392,7 +392,7 @@ Et ne pas oublier de relancer
 (django_pod3) pod@podv3:~/django_projects/podv3$ pip3 install -r requirements.txt
 ```
 
-Nous pouvons enfin vérifier le bon fonctionnement de l'ensemble (l’erreur affichée lors de la deletion est normale puisque l'indice n'existe pas, mais nous devons supprimer avant de créer un index dans ES) :
+Nous pouvons enfin vérifier le bon fonctionnement de l’ensemble (l’erreur affichée lors de la deletion est normale puisque l’indice n’existe pas, mais nous devons supprimer avant de créer un index dans ES) :
 
 ```sh
 (django_pod3) pod@pod:/usr/share/elasticsearch$ cd ~/django_projects/podv3
@@ -404,13 +404,13 @@ Successfully create index Video
 {"took":35,"timed_out":false,"_shards":{"total":2,"successful":2,"skipped":0,"failed":0},"hits":{"total":0,"max_score":null,"hits":[]}}
 ```
 
-Si la commande python ne fonctionne pas, créez d'abord l'index à la main avec un
+Si la commande python ne fonctionne pas, créez d’abord l’index à la main avec un
 
 ```sh
 curl -XPUT "http://127.0.0.1:9200/pod" # (options -k --noproxy -u <user>:<pwd> à prévoir si ES8 en mode security)
 ```
 
-Si vous déportez l'elastic search sur une autre machine, rajoutez dans le fichier settings_local.py son URL d'accès :
+Si vous déportez l’elastic search sur une autre machine, rajoutez dans le fichier settings_local.py son URL d’accès :
 
 ```sh
 (django_pod3) pod@pod:~/django_projects/podv3$ vim pod/custom/settings_local.py
@@ -419,19 +419,19 @@ Si vous déportez l'elastic search sur une autre machine, rajoutez dans le fichi
 Copiez la ligne suivante :
 
 ```py
-ES_URL = ['http://elastic.domaine.fr:9200/']
+ES_URL = ["http://elastic.domaine.fr:9200/"]
 ```
 
 Avec le mode security et ES8, vous devrez parametrer les éléments suivants dans votre settings_local.py :
 
 ```py
-ES_URL = ['https://127.0.0.1:9200/'] # ou votre instance déportée
-ES_OPTIONS = {'verify_certs' : False, 'basic_auth' : ('es_user', 'password')}
+ES_URL = ["https://127.0.0.1:9200/"] # ou votre instance déportée
+ES_OPTIONS = {"verify_certs": False, "basic_auth": ("es_user", "password")}
 ```
 
 ### Installation des dépendances
 
-Pour installer les dépendances, il faut en premier installer nodejs, npm et yarn. L'installation ne fonctionne pas avec nodejs 12.x
+Pour installer les dépendances, il faut en premier installer nodejs, npm et yarn. L’installation ne fonctionne pas avec nodejs 12.x
 
 La référence est ici: <https://github.com/nodesource/distributions>
 
@@ -507,7 +507,7 @@ Vous mettez dans ce fichier uniquement les variables dont vous voulez changer la
 #
 # SECURITY WARNING: keep the secret key used in production secret!
 # You can visit https://djecrety.ir/ to get it
-SECRET_KEY = 'A_CHANGER'
+SECRET_KEY = "A_CHANGER"
 
 ##
 # DEBUG mode activation
@@ -522,7 +522,7 @@ DEBUG = True
 # that this Django site is allowed to serve.
 #
 # https://docs.djangoproject.com/fr/3.2/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ["localhost"]
 
 ##
 # A tuple that lists people who get code error notifications
@@ -531,7 +531,7 @@ ALLOWED_HOSTS = ['localhost']
 # https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-ADMINS
 #
 ADMINS = (
-    ('Name', 'adminmail@univ.fr'),
+    ("Name", "adminmail@univ.fr"),
 )
 
 
@@ -541,8 +541,8 @@ ADMINS = (
 # https://docs.djangoproject.com/fr/3.2/topics/i18n/
 # https://github.com/django/django/blob/master/django/conf/global_settings.py
 LANGUAGES = (
-    ('fr', 'Français'),
-    ('en', 'English')
+    ("fr", "Français"),
+    ("en", "English")
 )
 
 # Hide Users in navbar
@@ -564,12 +564,12 @@ HIDE_DISCIPLINES = True
 #   username: EMAIL_HOST_USER
 #   password: EMAIL_HOST_PASSWORD
 #
-EMAIL_HOST = 'smtp.univ.fr'
+EMAIL_HOST = "smtp.univ.fr"
 EMAIL_PORT = 25
-DEFAULT_FROM_EMAIL = 'noreply@univ.fr'
+DEFAULT_FROM_EMAIL = "noreply@univ.fr"
 
 # https://docs.djangoproject.com/fr/3.2/ref/settings/#std:setting-SERVER_EMAIL
-SERVER_EMAIL = 'noreply@univ.fr'
+SERVER_EMAIL = "noreply@univ.fr"
 
 ##
 # THIRD PARTY APPS OPTIONNAL
@@ -581,31 +581,31 @@ USE_PODFILE = True
 #
 TEMPLATE_VISIBLE_SETTINGS = {
 
-    'TITLE_SITE': 'Lille.Pod',
-    'TITLE_ETB': 'Université de Lille',
-    'LOGO_SITE': 'img/logoPod.svg',
-    'LOGO_COMPACT_SITE': 'img/logoPod.svg',
-    'LOGO_ETB': 'img/logo_etb.svg',
-    'LOGO_PLAYER': 'img/logoPod.svg',
-    'FOOTER_TEXT': (
-        '42, rue Paul Duez',
-        '59000 Lille - France',
-        ('<a href="https://goo.gl/maps/AZnyBK4hHaM2"'
-            ' target="_blank">Google maps</a>')
+    "TITLE_SITE": "Lille.Pod",
+    "TITLE_ETB": "Université de Lille",
+    "LOGO_SITE": "img/logoPod.svg",
+    "LOGO_COMPACT_SITE": "img/logoPod.svg",
+    "LOGO_ETB": "img/logo_etb.svg",
+    "LOGO_PLAYER": "img/logoPod.svg",
+    "FOOTER_TEXT": (
+        "42, rue Paul Duez",
+        "59000 Lille - France",
+        ("<a href=\"https://goo.gl/maps/AZnyBK4hHaM2\""
+            " target=\"_blank\">Google maps</a>")
     ),
-    'LINK_PLAYER': 'http://www.univ-lille.fr',
-    'CSS_OVERRIDE': 'custom/mycss.css',
-    'PRE_HEADER_TEMPLATE': ''
+    "LINK_PLAYER": "http://www.univ-lille.fr",
+    "CSS_OVERRIDE": "custom/mycss.css",
+    "PRE_HEADER_TEMPLATE": ""
 }
 
 ##
 # A string representing the time zone for this installation. (default=UTC)
 #
 # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-TIME_ZONE = 'Europe/Paris'
+TIME_ZONE = "Europe/Paris"
 ```
 
-Vous trouverez l'ensemble des variables disponibles sur cette page :
+Vous trouverez l’ensemble des variables disponibles sur cette page :
 
 Configuration de la plateforme
 
@@ -651,9 +651,9 @@ FILE_UPLOAD_PERMISSIONS = 0o644 # Octal number
 
 Le serveur de développement permet de tester vos futures modifications facilement.
 
-N'hésitez pas à lancer le serveur de développement pour vérifier vos modifications au fur et à mesure.
+N’hésitez pas à lancer le serveur de développement pour vérifier vos modifications au fur et à mesure.
 
-À ce niveau, vous devriez avoir le site en français et en anglais et voir l'ensemble de la page d'accueil.
+À ce niveau, vous devriez avoir le site en français et en anglais et voir l’ensemble de la page d’accueil.
 
 ```sh
 (django_pod3) pod@Pod:~/django_projects/podv3$ python3 manage.py runserver @IP/DNS:8080 --insecure
@@ -667,10 +667,10 @@ N'hésitez pas à lancer le serveur de développement pour vérifier vos modific
 
 - Attention -
 
-Quand le site est lancé, il faut se rendre dans la partie administration puis dans site pour renseigner le nom de domaine de votre instance de Pod (par défaut 'example.com').
+Quand le site est lancé, il faut se rendre dans la partie administration puis dans site pour renseigner le nom de domaine de votre instance de Pod (par défaut "example.com").
 
-Avant la mise en production, il faut vérifier le fonctionnement de la plateforme dont l'ajout d'une vidéo, son encodage et sa suppression.
+Avant la mise en production, il faut vérifier le fonctionnement de la plateforme dont l’ajout d’une vidéo, son encodage et sa suppression.
 
 Attention, pour ajouter une vidéo, il doit y avoir au moins un type de vidéo disponible. Si vous avez correctement peuplé votre base de données avec le fichier initial_data.json vous devez au moins avoir other/autres.
 
-Il faut vérifier l'authentification CAS, le moteur de recherche etc.
+Il faut vérifier l’authentification CAS, le moteur de recherche etc.
