@@ -1,6 +1,7 @@
 ---
 layout: default
 version: 3.x
+lang: fr
 ---
 
 # Installation de Pod v3.x

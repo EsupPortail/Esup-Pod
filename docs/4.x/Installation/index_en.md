@@ -8,12 +8,12 @@ lang: en
 
 ## First installation
 
-* [Installation_standalone](Installation Stand alone)
-* [Installation_Docker](Installation Docker)
+* [Installation stand-alone](Installation_standalone)
+* [Installation Docker](Installation_Docker)
 
 ## Upgrade
 
-* [upgrade_standalone](Stand alone upgrade)
-* [upgrade_docker](Upgrade with Docker)
+* [Stand alone upgrade](upgrade_standalone)
+* [Upgrade with Docker](upgrade_docker)
 
 > Work in progress...

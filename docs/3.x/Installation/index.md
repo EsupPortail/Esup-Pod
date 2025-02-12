@@ -13,10 +13,10 @@ Les commandes suivantes ont été lancées sur une distribution Debian 11.4
 ### Création de l’utilisateur Pod
 
 ```sh
-user@pod:~$  sudo adduser pod
-user@pod:~$  adduser pod sudo
-user@pod:~$  su pod
-user@pod:~$  cd /home/pod
+user@pod:~$ sudo adduser pod
+user@pod:~$ adduser pod sudo
+user@pod:~$ su pod
+user@pod:~$ cd /home/pod
 ```
 
 ### Installation de paquets

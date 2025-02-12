@@ -6,7 +6,6 @@ lang: en
 
 # Esup-Pod v4 Stand-alone installation
 
-
 ## Environment
 
 ### User creation in Pod
