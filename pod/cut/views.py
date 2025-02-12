@@ -29,7 +29,7 @@ RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
-def cut_video(request, slug):  # noqa: C901
+def cut_video(request, slug):
     """View for video cutting."""
     if in_maintenance():
         return redirect(reverse("maintenance"))

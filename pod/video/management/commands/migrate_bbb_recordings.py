@@ -335,7 +335,7 @@ def disconnect_moodle_database(connection, cursor):
         print(e)
 
 
-def process(options):  # noqa: C901
+def process(options) -> None:
     """Achieve the BBB recordings migration."""
     # Get the BBB recordings from BBB/Scalelite server API
     recordings = get_bbb_recordings_by_xml()
@@ -465,7 +465,7 @@ def get_bbb_recordings_by_xml() -> list:
     return recordings
 
 
-def get_recording(recording) -> Generic_recording:  # noqa: C901
+def get_recording(recording) -> Generic_recording:
     """Return a BBB recording, using the Generic_recording class."""
     generic_recording = None
     try:
@@ -485,26 +485,9 @@ def get_recording(recording) -> Generic_recording:  # noqa: C901
         # Get recording URL that corresponds to the presentation URL
         # Take only the "presentation" or "video" format
         # Not other format like "screenshare" or "podcast"
-        presentation_url = ""
-        video_url = ""
+
         # Check playback data
-        for playback in recording.getElementsByTagName("playback"):
-            # Depends on BBB parameters, we can have multiple format
-            for format in playback.getElementsByTagName("format"):
-                type = format.getElementsByTagName("type")[0].firstChild.data
-                # For bbb-recorder, we need URL of presentation format
-                if type == "presentation":
-                    # Recording URL is the BBB presentation URL
-                    presentation_url = format.getElementsByTagName("url")[
-                        0
-                    ].firstChild.data
-                    # Convert format 2.0 to 2.3 if necessary
-                    presentation_url = convert_format(
-                        presentation_url, internal_meeting_id
-                    )
-                if type == "video":
-                    # Recording URL is the BBB video URL
-                    video_url = format.getElementsByTagName("url")[0].firstChild.data
+        presentation_url, video_url = get_recording_urls()
 
         # Define the result with the Generic_recording class
         generic_recording = Generic_recording(
@@ -540,6 +523,30 @@ def get_recording(recording) -> Generic_recording:  # noqa: C901
         err = "Problem to get BBB recording: " + str(e) + ". " + traceback.format_exc()
         print(err)
     return generic_recording
+
+
+def get_recording_urls(recording, internal_meeting_id):
+    """Get URLs for a BBB recording."""
+    # Depends on BBB parameters, we can have multiple format
+    presentation_url = ""
+    video_url = ""
+    for playback in recording.getElementsByTagName("playback"):
+        for format in playback.getElementsByTagName("format"):
+            type = format.getElementsByTagName("type")[0].firstChild.data
+            # For bbb-recorder, we need URL of presentation format
+            if type == "presentation":
+                # Recording URL is the BBB presentation URL
+                presentation_url = format.getElementsByTagName("url")[
+                    0
+                ].firstChild.data
+                # Convert format 2.0 to 2.3 if necessary
+                presentation_url = convert_format(
+                    presentation_url, internal_meeting_id
+                )
+            if type == "video":
+                # Recording URL is the BBB video URL
+                video_url = format.getElementsByTagName("url")[0].firstChild.data
+    return presentation_url, video_url
 
 
 def get_video_file_name(file_name: str, date: dt, extension: str) -> str:
@@ -751,7 +758,7 @@ def create_external_recording(generic_recording: Generic_recording, site, owner)
         )
 
 
-def get_created_in_moodle(generic_recording: Generic_recording):  # noqa: C901
+def get_created_in_moodle(generic_recording: Generic_recording):
     """Allow to know if this recording was made with Moodle.
 
     In such a case, we know the list of owners.
@@ -763,8 +770,6 @@ def get_created_in_moodle(generic_recording: Generic_recording):  # noqa: C901
         print("origin_server_name ignored (%s)." % generic_recording.origin_server_name)
         return owners_found
     try:
-        participants = ""
-
         connection, cursor = connect_moodle_database(generic_recording)
         with cursor as c:
             select_query = (
@@ -789,29 +794,7 @@ def get_created_in_moodle(generic_recording: Generic_recording):  # noqa: C901
                 # Format for participants:
                 # '[{"selectiontype":"all","selectionid":"all","role":"viewer"},
                 # {"selectiontype":"user","selectionid":"83","role":"moderator"}]'
-                participants = res[3]
-                if participants != "":
-                    # Parse participants as a JSON string
-                    parsed_data = json.loads(participants)
-                    for item in parsed_data:
-                        print("%s participants in this recording." % len(parsed_data))
-                        # Search for moderators
-                        if (
-                            item["selectiontype"] == "user"
-                            and item["role"] == "moderator"
-                        ):
-                            user_id_moodle = item["selectionid"]
-                            user_moodle = get_moodle_user(
-                                user_id_moodle, connection, cursor
-                            )
-                            if user_moodle:
-                                print(
-                                    " - Moderator found in Moodle: %s %s"
-                                    % (user_moodle.username, user_moodle.email)
-                                )
-                                owners_found.append(user_moodle)
-                else:
-                    print("No participant in this recording.")
+                extract_moodle_participants(res[3], connection, cursor, owners_found)
         disconnect_moodle_database(connection, cursor)
     except Exception as e:
         err = (
@@ -820,6 +803,31 @@ def get_created_in_moodle(generic_recording: Generic_recording):  # noqa: C901
         )
         print(err)
     return owners_found
+
+
+def extract_moodle_participants(participants, connection, cursor, owners_found) -> None:
+    if participants != "":
+        # Parse participants as a JSON string
+        parsed_data = json.loads(participants)
+        for item in parsed_data:
+            print("%s participants in this recording." % len(parsed_data))
+            # Search for moderators
+            if (
+                item["selectiontype"] == "user"
+                and item["role"] == "moderator"
+            ):
+                user_id_moodle = item["selectionid"]
+                user_moodle = get_moodle_user(
+                    user_id_moodle, connection, cursor
+                )
+                if user_moodle:
+                    print(
+                        " - Moderator found in Moodle: %s %s"
+                        % (user_moodle.username, user_moodle.email)
+                    )
+                    owners_found.append(user_moodle)
+    else:
+        print("No participant in this recording.")
 
 
 def set_information_in_moodle(options, generic_recording):
@@ -923,7 +931,7 @@ def convert_format(source_url: str, internal_meeting_id: str):
     return source_url.strip()
 
 
-def check_system(options):  # noqa: C901
+def check_system(options) -> None:  # noqa: C901
     """Check the system (configuration, recorder, access rights). Blocking function."""
     error = False
     if options["use_manual_claim"]:

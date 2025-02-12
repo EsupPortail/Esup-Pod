@@ -216,11 +216,11 @@ def remove_unnecessary_spaces(text: str) -> str:
 
 def improve_captions_accessibility(
     webvtt, strict_accessibility=CAPTIONS_STRICT_ACCESSIBILITY
-):
+) -> None:
     """
     Parse the vtt file in argument to render the caption conform to accessibility.
 
-    - see `https://github.com/knarf18/Bonnes-pratiques-du-sous-titrage/blob/master/Liste%20de%20bonnes%20pratiques.md` # noqa: E501
+    - see `https://github.com/knarf18/Bonnes-pratiques-du-sous-titrage/blob/master/Liste%20de%20bonnes%20pratiques.md`
     - 40 car maximum per line (CPL)
     - 2 lines max by caption
 
