@@ -218,7 +218,7 @@ class Generic_user:
 
     def __init__(
         self, user_id: str, username: str, firstname: str, lastname: str, email: str
-    ):
+    ) -> None:
         """Initialize."""
         self.id = user_id
         self.username = username
@@ -226,7 +226,7 @@ class Generic_user:
         self.lastname = lastname
         self.email = email
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Display a generic user object as string."""
         if self.id:
             return "%s %s (%s)" % (self.firstname, self.lastname, self.username)
@@ -323,7 +323,7 @@ def connect_moodle_database(generic_recording=None):
         return None, None
 
 
-def disconnect_moodle_database(connection, cursor):
+def disconnect_moodle_database(connection, cursor) -> None:
     """Disconnect the Moodle database."""
     try:
         if cursor:
@@ -555,7 +555,7 @@ def get_video_file_name(file_name: str, date: dt, extension: str) -> str:
     return "%s.%s" % (slug, extension)
 
 
-def download_bbb_video_file(source_url: str, dest_file: str):
+def download_bbb_video_file(source_url: str, dest_file: str) -> None:
     """Download a BBB video playback."""
     session = requests.Session()
     # Download and parse the remote HTML file (BBB specific)
@@ -569,7 +569,7 @@ def download_bbb_video_file(source_url: str, dest_file: str):
         print("Unable to download %s: video file doesn't exist." % source_url)
 
 
-def process_recording_to_claim(options, generic_recording):
+def process_recording_to_claim(options, generic_recording) -> None:
     """Download video playback or encode presentation playback to recorder directory.
 
     Please note: the claim requires the encoding of records in presentation playback.
@@ -627,7 +627,7 @@ def process_recording_to_claim(options, generic_recording):
             )
 
 
-def process_recording_to_import_video(options, generic_recording):
+def process_recording_to_import_video(options, generic_recording) -> None:
     """Add the recording to the import video in Pod.
 
     Please note: the link must remain valid for several months,
@@ -723,7 +723,7 @@ def get_or_create_user_pod(options, generic_owner: Generic_user):
             return generic_owner
 
 
-def manage_external_recording(options, generic_recording, site, owner, msg):
+def manage_external_recording(options, generic_recording, site, owner, msg) -> None:
     """Print and create an external recording for a BBB recording, if necessary."""
     print(
         " - Recording %s, playback %s, owner %s: "
@@ -740,7 +740,7 @@ def manage_external_recording(options, generic_recording, site, owner, msg):
         create_external_recording(generic_recording, site, owner)
 
 
-def create_external_recording(generic_recording: Generic_recording, site, owner):
+def create_external_recording(generic_recording: Generic_recording, site, owner) -> None:
     """Create an external recording for a BBB recording, if necessary."""
     # Check if external recording already exists for this owner
     external_recording = ExternalRecording.objects.filter(
@@ -758,7 +758,7 @@ def create_external_recording(generic_recording: Generic_recording, site, owner)
         )
 
 
-def get_created_in_moodle(generic_recording: Generic_recording):
+def get_created_in_moodle(generic_recording: Generic_recording) -> list:
     """Allow to know if this recording was made with Moodle.
 
     In such a case, we know the list of owners.
@@ -831,7 +831,7 @@ def extract_moodle_participants(participants, connection, cursor, owners_found) 
         print("No participant in this recording.")
 
 
-def set_information_in_moodle(options, generic_recording):
+def set_information_in_moodle(options, generic_recording) -> None:
     """Set information about this migration in Moodle (if possible).
 
     Update the field: public.mdl_bigbluebuttonbn.intro in Moodle
@@ -915,7 +915,7 @@ def get_moodle_user(user_id: str, connection, cursor) -> Generic_user:
     return generic_user
 
 
-def convert_format(source_url: str, internal_meeting_id: str):
+def convert_format(source_url: str, internal_meeting_id: str) -> str:
     """Convert presentation playback URL if necessary (see SCRIPT_PLAYBACK_URL_23)."""
     try:
         # Conversion - if necessary - from
@@ -991,7 +991,7 @@ class Command(BaseCommand):
 
     help = "Migrate BigBlueButton recordings"
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser) -> None:
         """Allow arguments to be used with the command."""
         parser.add_argument(
             "--use-manual-claim",
@@ -1039,7 +1039,7 @@ class Command(BaseCommand):
             default=False,
         )
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         """Handle the BBB migration command call."""
         if options["dry"]:
             print("Simulation mode ('dry'). Nothing will be achieved.")
