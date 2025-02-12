@@ -129,7 +129,7 @@ def handle_last_caption(last_caption, caption_text) -> None:
             caption_text = caption_text.replace(last_caption_text, "").strip()
         if caption_text in last_caption_text:
             caption_text = caption_text.replace(caption_text, "").strip()
-        return caption_text
+    return caption_text
 
 
 def transcribe_live(url, slug, status, lang, filepath) -> None:

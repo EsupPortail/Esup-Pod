@@ -806,6 +806,7 @@ def get_created_in_moodle(generic_recording: Generic_recording):
 
 
 def extract_moodle_participants(participants, connection, cursor, owners_found) -> None:
+    """Extract participants from a BBB recording in Moodle."""
     if participants != "":
         # Parse participants as a JSON string
         parsed_data = json.loads(participants)
