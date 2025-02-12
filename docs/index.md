@@ -2,7 +2,9 @@
 layout: default
 ---
 
-# Esup-Pod documentation <https://esupportail.github.io/Esup-Pod>
+# Esup-Pod documentation
+
+<https://esupportail.github.io/Esup-Pod>
 
 Choose your language / Votre langue :
 
