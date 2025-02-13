@@ -9,6 +9,7 @@ from pod.podfile.models import CustomImageModel
 from django.utils.translation import gettext_lazy as _
 from pod.video.models import Video
 from pod.video.utils import has_audio
+from pod.video.utils import has_audio
 
 
 class Dressing(models.Model):
@@ -140,9 +141,17 @@ class Dressing(models.Model):
             "opening_credits_video_hasaudio": (
                 has_audio(self.opening_credits) if self.opening_credits else None
             ),
-            "ending_credits": (self.ending_credits.slug if self.ending_credits else None),
+            "ending_credits": (
+                self.ending_credits.slug if self.ending_credits else None
+            ),
             "ending_credits_video": (
                 self.ending_credits.video.name if self.ending_credits else ""
+            ),
+            "ending_credits_video_duration": (
+                self.ending_credits.duration if self.ending_credits else None
+            ),
+            "ending_credits_video_hasaudio": (
+                has_audio(self.ending_credits) if self.ending_credits else None
             ),
             "ending_credits_video_duration": (
                 self.ending_credits.duration if self.ending_credits else None

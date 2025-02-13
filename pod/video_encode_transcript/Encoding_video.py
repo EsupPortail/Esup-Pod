@@ -46,6 +46,8 @@ if __name__ == "__main__":
         FFMPEG_DRESSING_CONCAT,
         FFMPEG_DRESSING_SILENT,
         FFMPEG_DRESSING_AUDIO,
+        FFMPEG_DRESSING_SILENT,
+        FFMPEG_DRESSING_AUDIO,
     )
 else:
     from .encoding_utils import (
@@ -84,6 +86,8 @@ else:
         FFMPEG_DRESSING_FILTER_COMPLEX,
         FFMPEG_DRESSING_SCALE,
         FFMPEG_DRESSING_CONCAT,
+        FFMPEG_DRESSING_SILENT,
+        FFMPEG_DRESSING_AUDIO,
         FFMPEG_DRESSING_SILENT,
         FFMPEG_DRESSING_AUDIO,
     )
@@ -152,6 +156,12 @@ try:
     )
     FFMPEG_DRESSING_CONCAT = getattr(
         settings, "FFMPEG_DRESSING_CONCAT", FFMPEG_DRESSING_CONCAT
+    )
+    FFMPEG_DRESSING_SILENT = getattr(
+        settings, "FFMPEG_DRESSING_SILENT", FFMPEG_DRESSING_SILENT
+    )
+    FFMPEG_DRESSING_AUDIO = getattr(
+        settings, "FFMPEG_DRESSING_AUDIO", FFMPEG_DRESSING_AUDIO
     )
     FFMPEG_DRESSING_SILENT = getattr(
         settings, "FFMPEG_DRESSING_SILENT", FFMPEG_DRESSING_SILENT
@@ -424,7 +434,14 @@ class Encoding_video:
         Returns:
             A string representing the complete FFMPEG command.
         """
+        """
+        Generate the FFMPEG command based on the dressing object parameters.
+
+        Returns:
+            A string representing the complete FFMPEG command.
+        """
         height = str(list(self.list_video_track.items())[0][1]["height"])
+        dressing_command = f"{FFMPEG_CMD} "
         dressing_command = f"{FFMPEG_CMD} "
         dressing_command += FFMPEG_INPUT % {
             "input": self.video_file,
@@ -437,17 +454,13 @@ class Encoding_video:
         dressing_command += self.handle_dressing_credits()
 
         # Apply filters
-        dressing_command_filter, dressing_command_params = self.build_dressing_filters(
-            height
-        )
+        dressing_command_filter, dressing_command_params = self.build_dressing_filters(height)
 
         dressing_command += FFMPEG_DRESSING_FILTER_COMPLEX % {
             "filter": ";".join(dressing_command_filter),
         }
 
-        if self.json_dressing.get("opening_credits") or self.json_dressing.get(
-            "ending_credits"
-        ):
+        if self.json_dressing.get("opening_credits") or self.json_dressing.get("ending_credits"):
             dressing_command += " -map '[v]' -map '[a]' "
 
         output_file = self.get_dressing_file()
@@ -491,9 +504,7 @@ class Encoding_video:
         concat_number = 1
 
         # Base video track
-        filters.append(
-            FFMPEG_DRESSING_SCALE % {"number": "0", "height": height, "name": "vid"}
-        )
+        filters.append(FFMPEG_DRESSING_SCALE % {"number": "0", "height": height, "name": "vid"})
         params = "[vid][0:a]"
         order = order + 1
 
@@ -508,29 +519,17 @@ class Encoding_video:
         if self.json_dressing.get("opening_credits"):
             if self.json_dressing.get("ending_credits"):
                 interval_silent = interval_silent + 1
-            filters, params, interval_silent = self.add_dressing_credits(
-                filters,
-                params,
-                height,
-                "opening_credits",
-                "debut",
-                order,
-                interval_silent,
-            )
+            filters, params, interval_silent = self.add_dressing_credits(filters, params, height, "opening_credits", "debut", order, interval_silent)
             order = order + 1
             concat_number = concat_number + 1
 
         # Ending credits
         if self.json_dressing.get("ending_credits"):
-            filters, params, interval_silent = self.add_dressing_credits(
-                filters, params, height, "ending_credits", "fin", order, interval_silent
-            )
+            filters, params, interval_silent = self.add_dressing_credits(filters, params, height, "ending_credits", "fin", order, interval_silent)
             concat_number = concat_number + 1
 
         # Concatenate if needed
-        if self.json_dressing.get("opening_credits") or self.json_dressing.get(
-            "ending_credits"
-        ):
+        if self.json_dressing.get("opening_credits") or self.json_dressing.get("ending_credits"):
             filters.append(
                 FFMPEG_DRESSING_CONCAT % {"params": params, "number": concat_number}
             )
@@ -548,32 +547,12 @@ class Encoding_video:
             A string representing the FFMPEG command for applying the watermark.
         """
         opacity = self.json_dressing["opacity"] / 100.0
-        position = get_dressing_position_value(
-            self.json_dressing["position_orig"], height
-        )
-        name_out = (
-            "[video]"
-            if self.json_dressing.get("opening_credits")
-            or self.json_dressing.get("ending_credits")
-            else ""
-        )
+        position = get_dressing_position_value(self.json_dressing["position_orig"], height)
+        name_out = "[video]" if self.json_dressing.get("opening_credits") or self.json_dressing.get("ending_credits") else ""
 
-        return FFMPEG_DRESSING_WATERMARK % {
-            "opacity": opacity,
-            "position": position,
-            "name_out": name_out,
-        }
+        return FFMPEG_DRESSING_WATERMARK % {"opacity": opacity, "position": position, "name_out": name_out}
 
-    def add_dressing_credits(
-        self,
-        filters: list,
-        params: str,
-        height: str,
-        credit_type: str,
-        name: str,
-        order: str,
-        interval_silent: str,
-    ) -> tuple:
+    def add_dressing_credits(self, filters: list, params: str, height: str, credit_type: str, name: str, order: str, interval_silent: str) -> tuple:
         """
         Add opening or ending credits to the FFmpeg command by updating the filters and parameters.
 
@@ -597,8 +576,7 @@ class Encoding_video:
         if not self.json_dressing.get(f"{credit_type}_video_hasaudio"):
             audio_out = f"a{order}"
             filters.append(
-                FFMPEG_DRESSING_AUDIO
-                % {
+                FFMPEG_DRESSING_AUDIO % {
                     "param_in": f"{interval_silent + 1}:a",
                     "param_out": audio_out,
                 }
