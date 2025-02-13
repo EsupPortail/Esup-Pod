@@ -114,9 +114,7 @@ def handle_last_caption(last_caption, caption_text) -> None:
         last_caption_words, current_caption_words = last_caption_text.split(
             " "
         ), current_caption_text.split(" ")
-        current_caption_words1 = current_caption_words[
-            1 : len(current_caption_words)
-        ]
+        current_caption_words1 = current_caption_words[1 : len(current_caption_words)]
 
         for i in range(len(last_caption_words) - 1, 0, -1):
             if (

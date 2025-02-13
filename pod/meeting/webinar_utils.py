@@ -158,9 +158,7 @@ def update_livestream_event(livestream, meeting) -> None:
     livestream.event.save()
 
 
-def manage_webinar(
-    meeting: Meeting, created: bool, live_gateway: LiveGateway
-) -> None:
+def manage_webinar(meeting: Meeting, created: bool, live_gateway: LiveGateway) -> None:
     """Manage the livestream and the event when a webinar is created or updated."""
     # When created a webinar
     if meeting.is_webinar and created:
