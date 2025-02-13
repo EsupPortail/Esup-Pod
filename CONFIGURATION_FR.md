@@ -274,6 +274,30 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
 * `FFPROBE_GET_INFO`
   > valeur par défaut : `%(ffprobe)s -v quiet -show_format -show_streams %(select_streams)s -print_format json -i %(source)s`
   >>
+* `FFMPEG_DRESSING_OUTPUT`
+  > valeur par défaut : ` -c:v libx264 -y -vsync 0 %(output)s `
+  >> Spécifie les paramètres d'encodage de sortie FFmpeg pour générer le fichier vidéo temporaire d'habillage, utilisant le codec H.264 avec écrasement forcé et synchronisation de la sortie vidéo.<br>
+* `FFMPEG_DRESSING_INPUT`
+  > valeur par défaut : ` -i %(input)s `
+  >> Définit le fichier d'entrée pour le traitement FFmpeg de la vidéo intermédiaire d'habillage.<br>
+* `FFMPEG_DRESSING_FILTER_COMPLEX`
+  > valeur par défaut : ` -filter_complex %(filter)s `
+  >> Applique des chaînes de filtres complexes à la vidéo intermédiaire d'habillage avec FFmpeg.<br>
+* `FFMPEG_DRESSING_WATERMARK`
+  > valeur par défaut : ` [1]format=rgba,colorchannelmixer=aa=%(opacity)s[logo]; [logo][vid]scale2ref=oh*mdar:ih*0.1[logo][video2]; [video2][logo]%(position)s%(name_out)s `
+  >> Ajoute un filigrane à la vidéo intermédiaire d'habillage avec une opacité et une position personnalisables.<br>
+* `FFMPEG_DRESSING_SCALE`
+  > valeur par défaut : `[%(number)s]scale=w='if(gt(a,16/9),16/9*%(height)s,-2)':h='if(gt(a,16/9),-2,%(height)s)',pad=ceil(16/9*%(height)s):%(height)s:(ow-iw)/2:(oh-ih)/2[%(name)s]`
+  >> Redimensionne la vidéo intermédiaire d'habillage pour maintenir un ratio d'aspect 16:9 avec ajout de bordures si nécessaire.<br>
+* `FFMPEG_DRESSING_CONCAT`
+  > valeur par défaut : `%(params)sconcat=n=%(number)s:v=1:a=1:unsafe=1[v][a]`
+  >> Concatène plusieurs flux vidéo et audio en une seule sortie de vidéo temporaire d'habillage.<br>
+* `FFMPEG_DRESSING_SILENT`
+  > valeur par défaut : ` -f lavfi -t %(duration)s -i anullsrc=r=44100:cl=stereo`
+  >> Génère un audio silencieux d'une durée spécifiée pour la vidéo temporaire d'habillage.<br>
+* `FFMPEG_DRESSING_AUDIO`
+  > valeur par défaut : `[%(param_in)s]anull[%(param_out)s]`
+  >> Traite l'audio sans modifications pour l'inclure dans la vidéo temporaire d'habillage.<br>
 
 ### Gestion des fichiers
 
