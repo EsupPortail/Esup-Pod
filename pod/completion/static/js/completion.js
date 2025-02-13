@@ -14,20 +14,21 @@ var name = "";
 function show_form(data, form) {
   let form_el = document.getElementById(form);
   form_el.style.display = "none";
-  //form_el.innerHTML = data;
   form_el.innerHTML = data;
-  form_el.querySelectorAll("script").forEach((item) => {
-    if (item.src) {
-      // external script
-      let script = document.createElement("script");
-      script.src = item.src;
-      document.body.appendChild(script);
-    } else {
-      // inline script
-      (0, eval)(item.innerHTML);
-    }
-  });
-
+  const scripts = form_el.querySelectorAll("script");
+  if (scripts.length > 0) {
+    scripts.forEach((item) => {
+      if (item.src) {
+        // external script
+        let script = document.createElement("script");
+        script.src = item.src;
+        document.body.appendChild(script);
+      } else {
+        // inline script
+        (0, eval)(item.innerHTML);
+      }
+    });
+  }
   fadeIn(form_el);
   if (form === "form_track")
     document.getElementById("form_track").style.width = "100%";
@@ -36,10 +37,10 @@ function show_form(data, form) {
 var ajaxfail = function (data, form) {
   showalert(
     gettext("Error getting form.") +
-      " (" +
-      data +
-      ") " +
-      gettext("The form could not be recovered."),
+    " (" +
+    data +
+    ") " +
+    gettext("The form could not be recovered."),
     "alert-danger",
   );
 };
@@ -51,7 +52,9 @@ document.addEventListener("submit", (e) => {
     e.target.id !== "form_new_contributor" &&
     e.target.id !== "form_contributor" &&
     e.target.id !== "form_new_speaker" &&
+    e.target.id !== "form_speaker" &&
     e.target.id !== "form_new_document" &&
+    e.target.id !== "form_document" &&
     e.target.id !== "form_new_track" &&
     e.target.id !== "form_new_overlay" &&
     !e.target.matches(".form_change") &&
@@ -75,7 +78,6 @@ document.addEventListener("submit", (e) => {
   } else {
     result_regexp = id_form.split(exp);
     name_form = result_regexp[result_regexp.length - 2];
-    console.log(name_form)
   }
   var form = "form_" + name_form;
   var list = "list-" + name_form;
@@ -115,7 +117,6 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         }).hide();
       });
     /* Display associated help in side menu */
-    console.log("name", name);
     var compInfo = document.querySelector(`#${name}-info>.collapse`);
     try {
       bootstrap.Collapse.getOrCreateInstance(compInfo).show();
@@ -170,13 +171,8 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
       });
     });
 
-    // document.querySelectorAll("a.title").forEach(function (element) {
-    //   element.style.display = "none";
-    // });
-    //hide_others_sections(name);
   }
   if (action == "modify" || action == "form_save_modify") {
-    console.log("modifier")
     let id = elt.querySelector("input[name=id]").value;
     let form_data = new FormData();
     form_data.append("action", action);
@@ -217,7 +213,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
   if (action === "delete") {
     var deleteConfirm = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
     var messageElement = document.getElementById('modalMessage');
-  
+
     let confirmationMessage;
     if (name === "track") {
       confirmationMessage = gettext("Are you sure you want to delete this file?");
@@ -226,9 +222,9 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
     } else if (name === "speaker") {
       confirmationMessage = gettext("Are you sure you want to delete this speaker?");
     } else if (name === "document") {
-     confirmationMessage = gettext("Are you sure you want to delete this document?");
+      confirmationMessage = gettext("Are you sure you want to delete this document?");
     } else if (name === "overlay") {
-    confirmationMessage = gettext("Are you sure you want to delete this overlay?");
+      confirmationMessage = gettext("Are you sure you want to delete this overlay?");
     }
 
     messageElement.innerText = confirmationMessage;
@@ -239,11 +235,9 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
     confirmButton.replaceWith(newConfirmButton);
     confirmButton = newConfirmButton;
 
-    confirmButton.addEventListener('click', async function() {
+    confirmButton.addEventListener('click', async function () {
       let id = elt.querySelector("input[name=id]").value;
       url = window.location.origin + href;
-      console.log(url)
-      console.log("id" + id)
       token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
       let form_data = new FormData();
       form_data.append("action", action);
@@ -274,11 +268,10 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         .catch((error) => {
           ajaxfail(error, form);
         });
-        deleteConfirm.hide();
-      }, { once: true });
+      deleteConfirm.hide();
+    }, { once: true });
   }
   if (action == "save") {
-    console.log("save")
     //let form_group = document.querySelector(".form-help-inline");
     //form_group.closest("div.form-group").classList.remove("has-error");
 
@@ -286,7 +279,6 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
     if (verify_fields(form)) {
       //var form_el = document.getElementById(form);
       var form_el = document.querySelector(`form#${form}`);
-      console.log("form" + form_el)
       let data_form = new FormData(form_el);
       let url = window.location.origin + href;
       let token = document.querySelector(
@@ -305,7 +297,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         .then((data) => {
           if (data.list_data || data.form) {
             if (data.errors) {
-              document.getElementById("fomeModal_id_src").remove();
+              document.getElementById("formalertdiv").remove();
               show_form(data.form, form);
             } else {
               refresh_list(data, form, list);
@@ -324,10 +316,6 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         .catch((error) => {
           ajaxfail(error, form);
         });
-
-      document.querySelector("form.form_new").style.display = "none";
-      document.querySelector("form.form_modif").style.display = "none";
-      document.querySelector("form.form_delete").style.display = "none";
     }
   }
 };
@@ -361,9 +349,8 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
 
 // Refreshes the list
 function refresh_list(data, form, list) {
-  console.log(form)
-  document.getElementById(form).html = "";
-  document.querySelector("form.form_new").style.display = "block";
+  document.getElementById(form).innerHTML = "";
+  //document.querySelector("form.form_new").style.display = "block";
   document.querySelectorAll("form").forEach(function (element) {
     element.style.display = "block";
   });
@@ -387,8 +374,8 @@ function verify_fields(form) {
       id_name.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
-          gettext("Please enter a name from 2 to 100 caracteres.") +
-          "</span>",
+        gettext("Please enter a name from 2 to 100 caracteres.") +
+        "</span>",
       );
       let form_group = input.closest("div.form-group");
 
@@ -401,8 +388,8 @@ function verify_fields(form) {
       id_weblink.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
-          gettext("You cannot enter a weblink with more than 200 caracteres.") +
-          "</span>",
+        gettext("You cannot enter a weblink with more than 200 caracteres.") +
+        "</span>",
       );
       let form_group = id_weblink.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -414,8 +401,8 @@ function verify_fields(form) {
       id_role.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
-          gettext("Please enter a role.") +
-          "</span>",
+        gettext("Please enter a role.") +
+        "</span>",
       );
       let form_group = id_role.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -448,8 +435,8 @@ function verify_fields(form) {
       id_kind.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
-          gettext("Please enter a correct kind.") +
-          "</span>",
+        gettext("Please enter a correct kind.") +
+        "</span>",
       );
       let form_group = id_kind.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -465,8 +452,8 @@ function verify_fields(form) {
       id_lang.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
-          gettext("Please select a language.") +
-          "</span>",
+        gettext("Please select a language.") +
+        "</span>",
       );
       let form_group = id_lang.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -482,8 +469,8 @@ function verify_fields(form) {
       id_src.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
-          gettext("Please specify a track file.") +
-          "</span>",
+        gettext("Please specify a track file.") +
+        "</span>",
       );
       let form_group = id_src.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -492,8 +479,8 @@ function verify_fields(form) {
       id_src.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
-          gettext("Only .vtt format is allowed.") +
-          "</span>",
+        gettext("Only .vtt format is allowed.") +
+        "</span>",
       );
       let form_group = id_src.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -507,16 +494,16 @@ function verify_fields(form) {
         if (
           kind === elt.textContent.trim().toLowerCase() &&
           lang ===
-            elt.parentNode
-              .querySelector("#" + elt.get("id") + ".track-kind.lang")
-              .textContent.trim()
-              .toLowerCase() &&
+          elt.parentNode
+            .querySelector("#" + elt.get("id") + ".track-kind.lang")
+            .textContent.trim()
+            .toLowerCase() &&
           file_name ===
-            elt.parentNode
-              .querySelector("#" + elt.get("id") + ".track-kind.file")
-              .textContent.trim()
-              .split(" ")[0]
-              .toLowerCase()
+          elt.parentNode
+            .querySelector("#" + elt.get("id") + ".track-kind.file")
+            .textContent.trim()
+            .split(" ")[0]
+            .toLowerCase()
         ) {
           is_duplicate = true;
           return false;
@@ -526,35 +513,56 @@ function verify_fields(form) {
       id_src.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
-          gettext(
-            "There is already a track with the same kind and language in the list.",
-          ) +
-          "</span>",
+        gettext(
+          "There is already a track with the same kind and language in the list.",
+        ) +
+        "</span>",
       );
       let form_group = id_src.closest("div.form-group");
       form_group.classList.add("has-error");
       error = true;
     }
   } else if (form == "form_document") {
-    if (
-      document
-        .getElementById("id_document_thumbnail_img")
-        .getAttribute("src") == "/static/icons/nofile_48x48.png"
-    ) {
-      let id_document_thumbnail = document.getElementById(
-        "id_document_thumbnail_img",
-      );
-      id_document_thumbnail.insertAdjacentHTML(
+    if (document.getElementById("id_document").value == "") {
+      let id_document = document.getElementById("id_document");
+      id_document.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
-          gettext("Please select a document") +
-          "</span>",
+        gettext("Please select a document") +
+        "</span>",
       );
-      let form_group = id_document_thumbnail.closest("div.form-group");
+      //   if (
+      //     document
+      //       .getElementById("id_document_thumbnail_img")
+      //       .getAttribute("src") == "/static/icons/nofile_48x48.png"
+      //   ) {
+      //     let id_document_thumbnail = document.getElementById(
+      //       "id_document_thumbnail_img",
+      //     );
+      //     id_document_thumbnail.insertAdjacentHTML(
+      //       "afterend",
+      //       "<span class='form-help-inline'>" +
+      //         gettext("Please select a document") +
+      //         "</span>",
+      //     );
+      let form_group = id_document.closest("div.form-group");
       form_group.classList.add("has-error");
 
       error = true;
     }
+    id_document = document.querySelector(`form#${form}`).querySelector("input[id=id_document]").value
+    document.querySelectorAll("#table-document tbody > tr").forEach((tr) => {
+      let trId = tr.id;
+      let currentId = trId.replace("doc_", "");
+
+      if (currentId === id_document) {
+        var text = gettext(
+          "There is already a document in the list.",
+        );
+        showalert(text, "alert-danger");
+        error = true;
+      }
+    });
   } else if (form == "form_overlay") {
     var tags = /<script.+?>|<iframe.+?>/;
     if (tags.exec(document.getElementById("id_content").value) != null) {
@@ -562,8 +570,8 @@ function verify_fields(form) {
       id_content.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
-          gettext("Iframe and Script tags are not allowed.") +
-          "</span>",
+        gettext("Iframe and Script tags are not allowed.") +
+        "</span>",
       );
       let form_group = id_content.closest("div.form-group");
       form_group.forEach(function (element) {
@@ -571,6 +579,20 @@ function verify_fields(form) {
       });
       error = true;
     }
+  } else if (form == "form_speaker") {
+    id_job = document.querySelector(`form#${form}`).querySelector("#id_job").value
+    document.querySelectorAll("#table-speaker tbody > tr").forEach((tr) => {
+      let trId = tr.id;
+      let currentId = trId.replace("job_", "");
+
+      if (currentId === id_job) {
+        var text = gettext(
+          "There is already a speaker job in the list.",
+        );
+        showalert(text, "alert-danger");
+        error = true;
+      }
+    });
   }
   return !error;
 }
