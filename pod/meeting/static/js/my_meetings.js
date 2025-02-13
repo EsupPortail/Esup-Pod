@@ -139,7 +139,10 @@ function copyValue(value) {
         showalert(gettext("Something went wrong."), "alert-danger");
       });
   } else {
-    showalert(gettext("Functionality accessible only in HTTPS, on a recent browser."), "alert-danger");
+    showalert(
+      gettext("Functionality accessible only in HTTPS, on a recent browser."),
+      "alert-danger",
+    );
   }
 }
 
