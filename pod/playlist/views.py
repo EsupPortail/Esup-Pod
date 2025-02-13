@@ -81,6 +81,8 @@ __TITLE_SITE__ = (
 
 USE_PROMOTED_PLAYLIST = getattr(settings, "USE_PROMOTED_PLAYLIST", False)
 
+ALLOWED_HOSTS = getattr(settings, "ALLOWED_HOSTS", ["pod.localhost"])
+
 
 def playlist_list(request: WSGIRequest):
     """Render playlists page."""
@@ -229,7 +231,7 @@ def toggle_render_playlist_user_has_right(
                 _("The password is incorrect."),
             )
             referer = request.headers.get("referer", "/")
-            if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+            if url_has_allowed_host_and_scheme(referer, allowed_hosts=ALLOWED_HOSTS):
                 return redirect(referer)
             else:
                 return redirect("/")
@@ -355,7 +357,7 @@ def remove_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
             }
         )
     referer = request.headers.get("referer", "/")
-    if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+    if url_has_allowed_host_and_scheme(referer, allowed_hosts=ALLOWED_HOSTS):
         return redirect(referer)
     else:
         return redirect("/")
@@ -374,7 +376,7 @@ def add_video_in_playlist(request: WSGIRequest, slug: str, video_slug: str):
             }
         )
     referer = request.headers.get("referer", "/")
-    if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+    if url_has_allowed_host_and_scheme(referer, allowed_hosts=ALLOWED_HOSTS):
         return redirect(referer)
     else:
         return redirect("/")
@@ -549,7 +551,7 @@ def favorites_save_reorganisation(request: WSGIRequest, slug: str):
                     playlist_video_2.update(rank=video_1_rank)
 
         referer = request.headers.get("referer", "/")
-        if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+        if url_has_allowed_host_and_scheme(referer, allowed_hosts=ALLOWED_HOSTS):
             return redirect(referer)
         else:
             return redirect("/")
@@ -577,7 +579,7 @@ def start_playlist(request: WSGIRequest, slug: str, video: Video = None):
                     request, messages.ERROR, _("The password is incorrect.")
                 )
                 referer = request.headers.get("referer", "/")
-                if url_has_allowed_host_and_scheme(referer, allowed_hosts=None):
+                if url_has_allowed_host_and_scheme(referer, allowed_hosts=ALLOWED_HOSTS):
                     return redirect(referer)
                 else:
                     return redirect(reverse("playlist:list"))

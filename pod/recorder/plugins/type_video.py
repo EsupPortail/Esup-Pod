@@ -17,7 +17,7 @@ log = logging.getLogger(__name__)
 def process(recording):
     log.info("START PROCESS OF RECORDING %s" % recording)
     t = threading.Thread(target=encode_recording, args=[recording])
-    t.setDaemon(True)
+    t.daemon = True
     t.start()
 
 
