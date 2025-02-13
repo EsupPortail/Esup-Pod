@@ -4380,7 +4380,7 @@
                             "pod_version_init": "3.1.0"
                         },
                         "FFMPEG_DRESSING_OUTPUT": {
-                            "default_value": " -c:v libx264 -y -vsync 0 %(output)s ",
+                            "default_value": " -c:v libx264 -y -vsync 0 \"%(output)s\" ",
                             "description": {
                                 "en": [
                                     "Specifies the FFmpeg output encoding settings for generating the temporary dressed video file, using the H.264 codec with forced overwrite and synchronized video output."
@@ -4393,7 +4393,7 @@
                             "pod_version_init": "3.5.0"
                         },
                         "FFMPEG_DRESSING_INPUT": {
-                            "default_value": " -i %(input)s ",
+                            "default_value": " -i \"%(input)s\" ",
                             "description": {
                                 "en": [
                                     "Defines the input file for FFmpeg processing of the intermediate dressed video."
@@ -4406,7 +4406,7 @@
                             "pod_version_init": "3.5.0"
                         },
                         "FFMPEG_DRESSING_FILTER_COMPLEX": {
-                            "default_value": " -filter_complex %(filter)s ",
+                            "default_value": " -filter_complex \"%(filter)s\" ",
                             "description": {
                                 "en": [
                                     "Applies complex filter chains to the intermediate dressed video using FFmpeg."
