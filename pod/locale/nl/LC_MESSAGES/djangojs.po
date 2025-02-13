@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-07 15:53+0100\n"
+"POT-Creation-Date: 2025-02-13 16:20+0100\n"
 "PO-Revision-Date: 2024-06-04 16:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -283,7 +283,15 @@ msgid "Please select a document"
 msgstr ""
 
 #: pod/completion/static/js/completion.js
+msgid "There is already the same document in the list."
+msgstr ""
+
+#: pod/completion/static/js/completion.js
 msgid "Iframe and Script tags are not allowed."
+msgstr ""
+
+#: pod/completion/static/js/completion.js
+msgid "There is already the same speaker with this job in the list."
 msgstr ""
 
 #: pod/enrichment/static/js/enrichment.js

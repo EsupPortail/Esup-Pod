@@ -557,7 +557,7 @@ function verify_fields(form) {
 
       if (currentId === id_document) {
         var text = gettext(
-          "There is already a document in the list.",
+          "There is already the same document in the list.",
         );
         showalert(text, "alert-danger");
         error = true;
@@ -587,7 +587,7 @@ function verify_fields(form) {
 
       if (currentId === id_job) {
         var text = gettext(
-          "There is already a speaker job in the list.",
+          "There is already the same speaker with this job in the list.",
         );
         showalert(text, "alert-danger");
         error = true;

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-07 15:53+0100\n"
+"POT-Creation-Date: 2025-02-13 16:20+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -305,8 +305,16 @@ msgid "Please select a document"
 msgstr "Veuillez sélectionner un document"
 
 #: pod/completion/static/js/completion.js
+msgid "There is already the same document in the list."
+msgstr "Il y a déjà le même document dans la liste."
+
+#: pod/completion/static/js/completion.js
 msgid "Iframe and Script tags are not allowed."
 msgstr "Les balises Iframe et Script ne sont pas autorisées."
+
+#: pod/completion/static/js/completion.js
+msgid "There is already the same speaker with this job in the list."
+msgstr "Il y a déjà le même intervenant avec cette fonction dans la liste."
 
 #: pod/enrichment/static/js/enrichment.js
 msgid "Please enter a correct start from 0 to "
@@ -544,7 +552,8 @@ msgstr "Quelque-chose s’est mal passé."
 
 #: pod/meeting/static/js/my_meetings.js
 msgid "Functionality accessible only in HTTPS, on a recent browser."
-msgstr "Fonctionnalité accessible uniquement en HTTPS, sur un navigateur récent."
+msgstr ""
+"Fonctionnalité accessible uniquement en HTTPS, sur un navigateur récent."
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
 msgid "<strong>Public:</strong> the playlist can be accessed by anyone."
