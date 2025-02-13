@@ -28,7 +28,7 @@ def start_webinar(request: WSGIRequest, meet_id: int) -> None:
 
         # Thread for stop the webinar
         t_stop = threading.Thread(target=stop_webinar_livestream, args=[meet_id, False])
-        t_stop.setDaemon(True)
+        t_stop.daemon = True
         t_stop.start()
         display_message_with_icon(
             request,
@@ -232,7 +232,7 @@ def start_rtmp_gateway(pod_host: str, meet_id: int, livestream_id: int) -> None:
         raise ValueError(mark_safe(message))
 
 
-def stop_rtmp_gateway(meet_id: int, livestream_id: int):
+def stop_rtmp_gateway(meet_id: int, livestream_id: int) -> None:
     """Run the stop command for SIPMediaGW RTMP gateway."""
     # Get the current meeting
     meeting = Meeting.objects.get(id=meet_id)
