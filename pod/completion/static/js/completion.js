@@ -49,11 +49,13 @@ var ajaxfail = function (data, form) {
 document.addEventListener("submit", (e) => {
   if (
     e.target.id !== "form_new_contributor" &&
+    e.target.id !== "form_contributor" &&
     e.target.id !== "form_new_speaker" &&
     e.target.id !== "form_new_document" &&
     e.target.id !== "form_new_track" &&
     e.target.id !== "form_new_overlay" &&
     !e.target.matches(".form_change") &&
+    !e.target.matches(".form_modif") &&
     !e.target.matches(".form_delete")
   )
     return;
@@ -73,9 +75,10 @@ document.addEventListener("submit", (e) => {
   } else {
     result_regexp = id_form.split(exp);
     name_form = result_regexp[result_regexp.length - 2];
+    console.log(name_form)
   }
   var form = "form_" + name_form;
-  var list = "list_" + name_form;
+  var list = "list-" + name_form;
   var action = e.target.querySelector("input[name=action]").value;
   sendAndGetForm(e.target, action, name_form, form, list)
     .then(() => "")
@@ -167,12 +170,13 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
       });
     });
 
-    document.querySelectorAll("a.title").forEach(function (element) {
-      element.style.display = "none";
-    });
+    // document.querySelectorAll("a.title").forEach(function (element) {
+    //   element.style.display = "none";
+    // });
     //hide_others_sections(name);
   }
   if (action == "modify" || action == "form_save_modify") {
+    console.log("modifier")
     let id = elt.querySelector("input[name=id]").value;
     let form_data = new FormData();
     form_data.append("action", action);
@@ -211,31 +215,35 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
     // hide_others_sections(name);
   }
   if (action === "delete") {
-    var deleteConfirm = "";
+    var deleteConfirm = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+    var messageElement = document.getElementById('modalMessage');
+  
+    let confirmationMessage;
     if (name === "track") {
-      deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this file?"),
-      );
+      confirmationMessage = gettext("Are you sure you want to delete this file?");
     } else if (name === "contributor") {
-      deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this contributor?"),
-      );
+      confirmationMessage = gettext("Are you sure you want to delete this contributor?");
     } else if (name === "speaker") {
-      deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this speaker?"),
-      );
+      confirmationMessage = gettext("Are you sure you want to delete this speaker?");
     } else if (name === "document") {
-      deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this document?"),
-      );
+     confirmationMessage = gettext("Are you sure you want to delete this document?");
     } else if (name === "overlay") {
-      deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this overlay?"),
-      );
+    confirmationMessage = gettext("Are you sure you want to delete this overlay?");
     }
-    if (deleteConfirm) {
+
+    messageElement.innerText = confirmationMessage;
+    deleteConfirm.show();
+
+    var confirmButton = document.getElementById('confirmDeleteButton');
+    var newConfirmButton = confirmButton.cloneNode(true);
+    confirmButton.replaceWith(newConfirmButton);
+    confirmButton = newConfirmButton;
+
+    confirmButton.addEventListener('click', async function() {
       let id = elt.querySelector("input[name=id]").value;
       url = window.location.origin + href;
+      console.log(url)
+      console.log("id" + id)
       token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
       let form_data = new FormData();
       form_data.append("action", action);
@@ -266,15 +274,19 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         .catch((error) => {
           ajaxfail(error, form);
         });
-    }
+        deleteConfirm.hide();
+      }, { once: true });
   }
   if (action == "save") {
-    let form_group = document.querySelector(".form-help-inline");
-    form_group.closest("div.form-group").classList.remove("has-error");
+    console.log("save")
+    //let form_group = document.querySelector(".form-help-inline");
+    //form_group.closest("div.form-group").classList.remove("has-error");
 
-    document.querySelector(".form-help-inline").remove();
+    //document.querySelector(".form-help-inline").remove();
     if (verify_fields(form)) {
-      var form_el = document.getElementById(form);
+      //var form_el = document.getElementById(form);
+      var form_el = document.querySelector(`form#${form}`);
+      console.log("form" + form_el)
       let data_form = new FormData(form_el);
       let url = window.location.origin + href;
       let token = document.querySelector(
@@ -297,7 +309,8 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
               show_form(data.form, form);
             } else {
               refresh_list(data, form, list);
-              window.scrollTop(100);
+              //window.scrollTop(100);
+              window.scrollTo(0, 100);
             }
           } else {
             showalert(
@@ -348,6 +361,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
 
 // Refreshes the list
 function refresh_list(data, form, list) {
+  console.log(form)
   document.getElementById(form).html = "";
   document.querySelector("form.form_new").style.display = "block";
   document.querySelectorAll("form").forEach(function (element) {
@@ -369,8 +383,9 @@ function verify_fields(form) {
       document.getElementById("id_name").value.length < 2 ||
       document.getElementById("id_name").length > 200
     ) {
-      let input = document.getElementById("id_name");
-      input.parentNode.append(
+      let id_name = document.getElementById("id_name");
+      id_name.insertAdjacentHTML(
+        "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
           gettext("Please enter a name from 2 to 100 caracteres.") +
           "</span>",
@@ -409,7 +424,7 @@ function verify_fields(form) {
     var id = parseInt(document.getElementById("id_contributor").value, 10);
     var new_role = document.getElementById("id_role").value;
     var new_name = document.getElementById("id_name").value;
-    document.querySelectorAll("#list-contributor tbody > tr").forEach((tr) => {
+    document.querySelectorAll("#table-contributor tbody > tr").forEach((tr) => {
       if (
         id != tr.querySelector("input[name=id]").value &&
         tr.querySelector("td[class=contributor-name]").innerHTML == new_name &&
@@ -527,7 +542,7 @@ function verify_fields(form) {
         .getAttribute("src") == "/static/icons/nofile_48x48.png"
     ) {
       let id_document_thumbnail = document.getElementById(
-        "id_document_thubmanil_img",
+        "id_document_thumbnail_img",
       );
       id_document_thumbnail.insertAdjacentHTML(
         "afterend",

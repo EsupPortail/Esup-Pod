@@ -73,6 +73,8 @@ __LANG_CHOICES_DICT__ = {
 }
 DEFAULT_LANG_TRACK = getattr(settings, "DEFAULT_LANG_TRACK", "fr")
 
+DEBUG = getattr(settings, "DEBUG", True)
+
 
 class Contributor(models.Model):
     """Class for Contributor object."""
@@ -191,8 +193,11 @@ class Document(models.Model):
         """Check if document is not already contained in the list."""
         msg = list()
         list_doc = Document.objects.filter(video=self.video)
+        if DEBUG:
+            print("tatata")
         if self.id:
             list_doc = list_doc.exclude(id=self.id)
+            print("toto")
         if len(list_doc) > 0:
             for element in list_doc:
                 if self.document == element.document:
