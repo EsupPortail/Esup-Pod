@@ -536,13 +536,9 @@ def get_recording_urls(recording, internal_meeting_id):
             # For bbb-recorder, we need URL of presentation format
             if type == "presentation":
                 # Recording URL is the BBB presentation URL
-                presentation_url = format.getElementsByTagName("url")[
-                    0
-                ].firstChild.data
+                presentation_url = format.getElementsByTagName("url")[0].firstChild.data
                 # Convert format 2.0 to 2.3 if necessary
-                presentation_url = convert_format(
-                    presentation_url, internal_meeting_id
-                )
+                presentation_url = convert_format(presentation_url, internal_meeting_id)
             if type == "video":
                 # Recording URL is the BBB video URL
                 video_url = format.getElementsByTagName("url")[0].firstChild.data
@@ -813,14 +809,9 @@ def extract_moodle_participants(participants, connection, cursor, owners_found) 
         for item in parsed_data:
             print("%s participants in this recording." % len(parsed_data))
             # Search for moderators
-            if (
-                item["selectiontype"] == "user"
-                and item["role"] == "moderator"
-            ):
+            if item["selectiontype"] == "user" and item["role"] == "moderator":
                 user_id_moodle = item["selectionid"]
-                user_moodle = get_moodle_user(
-                    user_id_moodle, connection, cursor
-                )
+                user_moodle = get_moodle_user(user_id_moodle, connection, cursor)
                 if user_moodle:
                     print(
                         " - Moderator found in Moodle: %s %s"

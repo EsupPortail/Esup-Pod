@@ -499,9 +499,7 @@ class Meeting(models.Model):
         if self.recurring_until:
             if self.recurring_until < self.start:
                 self.recurring_until = self.start
-            all_occurrences = self.get_occurrences(
-                self.start, self.recurring_until
-            )
+            all_occurrences = self.get_occurrences(self.start, self.recurring_until)
             self.nb_occurrences = len(all_occurrences)
             # Correct the date of end of recurrence
             self.recurring_until = all_occurrences[-1]
@@ -586,9 +584,7 @@ class Meeting(models.Model):
                 next_date.year, next_date.month, week_number, weekday
             )
 
-        raise RuntimeError(
-            "You should have found the next monthly occurrence by now."
-        )
+        raise RuntimeError("You should have found the next monthly occurrence by now.")
 
     def next_weekly_occurrence(self, current_date):
         """Return the next weekly occurrence after the current date."""
@@ -601,9 +597,7 @@ class Meeting(models.Model):
             increment += 1
         # Skip the weeks not covered by frequency
         next_date = (
-            current_date
-            + timedelta(days=increment)
-            + timedelta(weeks=self.frequency - 1)
+            current_date + timedelta(days=increment) + timedelta(weeks=self.frequency - 1)
         )
         # Look in this week and be sure to find
         weekday = 0
