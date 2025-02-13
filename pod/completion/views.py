@@ -1016,7 +1016,7 @@ def video_completion_overlay_save(request, video):
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type="application/json")
         context = get_video_completion_context(
-            video, list_overlay=list_overlay, form_overlay=form_overlay
+            video, form_overlay=form_overlay
         )
         return render(
             request,
