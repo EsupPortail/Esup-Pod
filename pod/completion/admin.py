@@ -256,7 +256,7 @@ class TrackAdmin(admin.ModelAdmin):
         if not TrackAdmin.check_if_treatment_in_progress():
             if TRANSCRIPTION_TYPE == "VOSK":
                 t = threading.Thread(target=TrackAdmin.enrich_kaldi_model_launch, args=[])
-                t.setDaemon(True)
+                t.daemon = True
                 t.start()
 
     if __FILEPICKER__:

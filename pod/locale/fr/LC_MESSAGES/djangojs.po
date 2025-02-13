@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-20 09:49+0100\n"
+"POT-Creation-Date: 2025-02-07 15:53+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -317,7 +317,7 @@ msgid "Please enter a correct end from 1 to "
 msgstr "Veuillez entrer un correct temps de fin compris entre 1 et "
 
 #: pod/enrichment/static/js/enrichment.js
-msgid "Please enter a correct image."
+msgid "Please attach an image."
 msgstr "Veuillez joindre une image."
 
 #: pod/enrichment/static/js/enrichment.js
@@ -333,7 +333,7 @@ msgid "Weblink must be less than 200 characters."
 msgstr "Un lien web doit contenir moins de 200 caractères."
 
 #: pod/enrichment/static/js/enrichment.js
-msgid "Please select a document."
+msgid "Please attach a document."
 msgstr "Veuillez joindre un document."
 
 #: pod/enrichment/static/js/enrichment.js
@@ -345,8 +345,8 @@ msgid "Embed field must be less than 200 characters."
 msgstr "Un code d’intégration doit comporter moins de 200 caractères."
 
 #: pod/enrichment/static/js/enrichment.js
-msgid "Please enter a type in index field."
-msgstr "Veuillez entrer un type."
+msgid "Please choose a type for this enrichment."
+msgstr "Veuillez choisir un type pour cet enrichissement."
 
 #: pod/enrichment/static/js/enrichment.js
 msgid "The start field value is greater than the end field one."
@@ -541,6 +541,10 @@ msgstr "Texte copié."
 #: pod/meeting/static/js/my_meetings.js
 msgid "Something went wrong."
 msgstr "Quelque-chose s’est mal passé."
+
+#: pod/meeting/static/js/my_meetings.js
+msgid "Functionality accessible only in HTTPS, on a recent browser."
+msgstr "Fonctionnalité accessible uniquement en HTTPS, sur un navigateur récent."
 
 #: pod/playlist/static/playlist/js/add-or-edit.js
 msgid "<strong>Public:</strong> the playlist can be accessed by anyone."
@@ -995,6 +999,12 @@ msgstr "Ajouts en favoris total depuis la création"
 #: pod/video/static/js/video_stats_view.js
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "Please enter a correct image."
+#~ msgstr "Veuillez joindre une image."
+
+#~ msgid "Please enter a type in index field."
+#~ msgstr "Veuillez entrer un type."
 
 #~ msgid "Change"
 #~ msgstr "Changer"
