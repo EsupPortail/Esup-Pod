@@ -39,7 +39,7 @@ def get_webinar_overlapping(meeting, webinar):
 
 def search_for_available_livegateway(
     request: WSGIRequest, meeting: Meeting
-) -> LiveGateway:  # noqa: C901
+) -> LiveGateway:
     """Search and returns a live gateway available during the period of the webinar.
 
     If more webinars are created than live gateways, an email is sent to warn administrators.
@@ -160,7 +160,7 @@ def update_livestream_event(livestream, meeting) -> None:
 
 def manage_webinar(
     meeting: Meeting, created: bool, live_gateway: LiveGateway
-):  # noqa: C901
+) -> None:
     """Manage the livestream and the event when a webinar is created or updated."""
     # When created a webinar
     if meeting.is_webinar and created:

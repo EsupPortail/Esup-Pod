@@ -465,7 +465,7 @@ class Meeting(models.Model):
         self.nb_occurrences = 1
         self.recurring_until = self.start
 
-    def check_recurrence(self):  # noqa: C901
+    def check_recurrence(self) -> None:
         """
         Compute the `recurring_until` field.
 
@@ -488,30 +488,34 @@ class Meeting(models.Model):
             else:
                 self.weekdays = None
             if self.recurrence:
-                if self.recurring_until:
-                    if self.recurring_until < self.start:
-                        self.recurring_until = self.start
-                    all_occurrences = self.get_occurrences(
-                        self.start, self.recurring_until
-                    )
-                    self.nb_occurrences = len(all_occurrences)
-                    # Correct the date of end of recurrence
-                    self.recurring_until = all_occurrences[-1]
-                    if self.nb_occurrences <= 1:
-                        self.reset_recurrence()
-
-                elif self.nb_occurrences is not None:
-                    if self.nb_occurrences <= 1:
-                        self.reset_recurrence()
-                    next_occurrence = self.start
-                    for _i in range(self.nb_occurrences - 1):
-                        next_occurrence = self.next_occurrence(next_occurrence)
-                    self.recurring_until = next_occurrence
-                # Infinite recurrence... do nothing
+                self.compute_recurrence_end()
             else:
                 self.reset_recurrence()
         else:
             self.reset_recurrence()
+
+    def compute_recurrence_end(self) -> None:
+        """Compute the end of recurrence."""
+        if self.recurring_until:
+            if self.recurring_until < self.start:
+                self.recurring_until = self.start
+            all_occurrences = self.get_occurrences(
+                self.start, self.recurring_until
+            )
+            self.nb_occurrences = len(all_occurrences)
+            # Correct the date of end of recurrence
+            self.recurring_until = all_occurrences[-1]
+            if self.nb_occurrences <= 1:
+                self.reset_recurrence()
+
+        elif self.nb_occurrences is not None:
+            if self.nb_occurrences <= 1:
+                self.reset_recurrence()
+            next_occurrence = self.start
+            for _i in range(self.nb_occurrences - 1):
+                next_occurrence = self.next_occurrence(next_occurrence)
+            self.recurring_until = next_occurrence
+        # Infinite recurrence... do nothing
 
     def save(self, *args, **kwargs) -> None:
         """Store a meeting object in db."""
@@ -548,7 +552,7 @@ class Meeting(models.Model):
                 return self.start_at
         return self.next_occurrence(timezone.now().date())
 
-    def next_occurrence(self, current_date):  # noqa: C901
+    def next_occurrence(self, current_date):
         """
         Take as assumption that the current date passed in argument IS valid occurrence.
 
@@ -559,48 +563,56 @@ class Meeting(models.Model):
             return current_date + timedelta(days=self.frequency)
 
         if self.recurrence == Meeting.WEEKLY:
-            increment = 1
-            # Look in the current week
-            weekday = current_date.weekday()
-            while weekday + increment <= 6:
-                if str(weekday + increment) in self.weekdays:
-                    return current_date + timedelta(days=increment)
-                increment += 1
-            # Skip the weeks not covered by frequency
-            next_date = (
-                current_date
-                + timedelta(days=increment)
-                + timedelta(weeks=self.frequency - 1)
-            )
-            # Look in this week and be sure to find
-            weekday = 0
-            increment = 0
-            while weekday + increment <= 6:
-                if str(weekday + increment) in self.weekdays:
-                    return next_date + timedelta(days=increment)
-                increment += 1
-            raise RuntimeError("You should have found the next weekly occurrence by now.")
+            return self.next_weekly_occurrence(current_date)
 
         if self.recurrence == Meeting.MONTHLY:
-            next_date = current_date + relativedelta(months=self.frequency)
-            if self.monthly_type == Meeting.DATE_DAY:
-                return next_date
-
-            if self.monthly_type == Meeting.NTH_DAY:
-                weekday = current_date.weekday()
-                week_number = get_nth_week_number(current_date)
-                return get_weekday_in_nth_week(
-                    next_date.year, next_date.month, week_number, weekday
-                )
-
-            raise RuntimeError(
-                "You should have found the next monthly occurrence by now."
-            )
+            return self.next_monthly_occurrence(current_date)
 
         if self.recurrence == Meeting.YEARLY:
             return current_date + relativedelta(years=self.frequency)
 
         raise RuntimeError("Non recurrent meetings don't have next occurences.")
+
+    def next_monthly_occurrence(self, current_date):
+        """Return the next monthly occurrence after the current date."""
+        next_date = current_date + relativedelta(months=self.frequency)
+        if self.monthly_type == Meeting.DATE_DAY:
+            return next_date
+
+        if self.monthly_type == Meeting.NTH_DAY:
+            weekday = current_date.weekday()
+            week_number = get_nth_week_number(current_date)
+            return get_weekday_in_nth_week(
+                next_date.year, next_date.month, week_number, weekday
+            )
+
+        raise RuntimeError(
+            "You should have found the next monthly occurrence by now."
+        )
+
+    def next_weekly_occurrence(self, current_date):
+        """Return the next weekly occurrence after the current date."""
+        increment = 1
+        # Look in the current week
+        weekday = current_date.weekday()
+        while weekday + increment <= 6:
+            if str(weekday + increment) in self.weekdays:
+                return current_date + timedelta(days=increment)
+            increment += 1
+        # Skip the weeks not covered by frequency
+        next_date = (
+            current_date
+            + timedelta(days=increment)
+            + timedelta(weeks=self.frequency - 1)
+        )
+        # Look in this week and be sure to find
+        weekday = 0
+        increment = 0
+        while weekday + increment <= 6:
+            if str(weekday + increment) in self.weekdays:
+                return next_date + timedelta(days=increment)
+            increment += 1
+        raise RuntimeError("You should have found the next weekly occurrence by now.")
 
     def get_occurrences(self, start, end=None):
         """

@@ -449,7 +449,7 @@ def upload_recording_to_pod(request, record_id: int) -> bool:
         raise ValueError(msg)
 
 
-def upload_video_recording_to_pod(request, record_id: int):  # noqa: C901
+def upload_video_recording_to_pod(request, record_id: int):
     """Upload a standard or BBB video file, or a BBB presentation to Pod."""
     try:
         # Try to identify the type of the source URL (avoids multiple source types)
@@ -822,7 +822,7 @@ def upload_youtube_recording_to_pod(request, record_id: int):
         manage_standard_exception(exc)
 
 
-def upload_peertube_recording_to_pod(request, record_id: int) -> bool:  # noqa: C901
+def upload_peertube_recording_to_pod(request, record_id: int) -> bool:
     """Upload Peertube recording to Pod.
 
     More information: https://docs.joinpeertube.org/api/rest-getting-started
