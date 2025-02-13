@@ -275,13 +275,13 @@ Voici les configurations des applications tierces utilisées par Esup-Pod.<br>
   > valeur par défaut : `%(ffprobe)s -v quiet -show_format -show_streams %(select_streams)s -print_format json -i %(source)s`
   >>
 * `FFMPEG_DRESSING_OUTPUT`
-  > valeur par défaut : ` -c:v libx264 -y -vsync 0 %(output)s `
+  > valeur par défaut : ` -c:v libx264 -y -vsync 0 "%(output)s" `
   >> Spécifie les paramètres d'encodage de sortie FFmpeg pour générer le fichier vidéo temporaire d'habillage, utilisant le codec H.264 avec écrasement forcé et synchronisation de la sortie vidéo.<br>
 * `FFMPEG_DRESSING_INPUT`
-  > valeur par défaut : ` -i %(input)s `
+  > valeur par défaut : ` -i "%(input)s" `
   >> Définit le fichier d'entrée pour le traitement FFmpeg de la vidéo intermédiaire d'habillage.<br>
 * `FFMPEG_DRESSING_FILTER_COMPLEX`
-  > valeur par défaut : ` -filter_complex %(filter)s `
+  > valeur par défaut : ` -filter_complex "%(filter)s" `
   >> Applique des chaînes de filtres complexes à la vidéo intermédiaire d'habillage avec FFmpeg.<br>
 * `FFMPEG_DRESSING_WATERMARK`
   > valeur par défaut : ` [1]format=rgba,colorchannelmixer=aa=%(opacity)s[logo]; [logo][vid]scale2ref=oh*mdar:ih*0.1[logo][video2]; [video2][logo]%(position)s%(name_out)s `
