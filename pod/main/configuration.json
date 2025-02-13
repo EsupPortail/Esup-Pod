@@ -4378,6 +4378,109 @@
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1.0"
+                        },
+                        "FFMPEG_DRESSING_OUTPUT": {
+                            "default_value": " -c:v libx264 -y -vsync 0 \"%(output)s\" ",
+                            "description": {
+                                "en": [
+                                    "Specifies the FFmpeg output encoding settings for generating the temporary dressed video file, using the H.264 codec with forced overwrite and synchronized video output."
+                                ],
+                                "fr": [
+                                    "Spécifie les paramètres d'encodage de sortie FFmpeg pour générer le fichier vidéo temporaire d'habillage, utilisant le codec H.264 avec écrasement forcé et synchronisation de la sortie vidéo."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.0"
+                        },
+                        "FFMPEG_DRESSING_INPUT": {
+                            "default_value": " -i \"%(input)s\" ",
+                            "description": {
+                                "en": [
+                                    "Defines the input file for FFmpeg processing of the intermediate dressed video."
+                                ],
+                                "fr": [
+                                    "Définit le fichier d'entrée pour le traitement FFmpeg de la vidéo intermédiaire d'habillage."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.0"
+                        },
+                        "FFMPEG_DRESSING_FILTER_COMPLEX": {
+                            "default_value": " -filter_complex \"%(filter)s\" ",
+                            "description": {
+                                "en": [
+                                    "Applies complex filter chains to the intermediate dressed video using FFmpeg."
+                                ],
+                                "fr": [
+                                    "Applique des chaînes de filtres complexes à la vidéo intermédiaire d'habillage avec FFmpeg."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.0"
+                        },
+                        "FFMPEG_DRESSING_WATERMARK": {
+                            "default_value": " [1]format=rgba,colorchannelmixer=aa=%(opacity)s[logo]; [logo][vid]scale2ref=oh*mdar:ih*0.1[logo][video2]; [video2][logo]%(position)s%(name_out)s ",
+                            "description": {
+                                "en": [
+                                    "Adds a watermark to the intermediate dressed video with customizable opacity and position."
+                                ],
+                                "fr": [
+                                    "Ajoute un filigrane à la vidéo intermédiaire d'habillage avec une opacité et une position personnalisables."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.0"
+                        },"FFMPEG_DRESSING_SCALE": {
+                            "default_value": "[%(number)s]scale=w='if(gt(a,16/9),16/9*%(height)s,-2)':h='if(gt(a,16/9),-2,%(height)s)',pad=ceil(16/9*%(height)s):%(height)s:(ow-iw)/2:(oh-ih)/2[%(name)s]",
+                            "description": {
+                                "en": [
+                                    "Rescales the intermediate dressed video to maintain a 16:9 aspect ratio with padding if necessary."
+                                ],
+                                "fr": [
+                                    "Redimensionne la vidéo intermédiaire d'habillage pour maintenir un ratio d'aspect 16:9 avec ajout de bordures si nécessaire."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.0"
+                        },
+                        "FFMPEG_DRESSING_CONCAT": {
+                            "default_value": "%(params)sconcat=n=%(number)s:v=1:a=1:unsafe=1[v][a]",
+                            "description": {
+                                "en": [
+                                    "Concatenates multiple video and audio streams into a single temporary dressed video output."
+                                ],
+                                "fr": [
+                                    "Concatène plusieurs flux vidéo et audio en une seule sortie de vidéo temporaire d'habillage."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "3.5.0"
+                        },
+                        "FFMPEG_DRESSING_SILENT": {
+                            "default_value": " -f lavfi -t %(duration)s -i anullsrc=r=44100:cl=stereo",
+                            "description": {
+                                "en": [
+                                    "Generates silent audio of specified duration for the temporary dressed video."
+                                ],
+                                "fr": [
+                                    "Génère un audio silencieux d'une durée spécifiée pour la vidéo temporaire d'habillage."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.0.0"
+                        },
+                        "FFMPEG_DRESSING_AUDIO": {
+                            "default_value": "[%(param_in)s]anull[%(param_out)s]",
+                            "description": {
+                                "en": [
+                                    "Processes audio without modifications for inclusion in the temporary dressed video."
+                                ],
+                                "fr": [
+                                    "Traite l'audio sans modifications pour l'inclure dans la vidéo temporaire d'habillage."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.0.0"
                         }
                     },
                     "title": {
