@@ -140,9 +140,7 @@ class Dressing(models.Model):
             "opening_credits_video_hasaudio": (
                 has_audio(self.opening_credits) if self.opening_credits else None
             ),
-            "ending_credits": (
-                self.ending_credits.slug if self.ending_credits else None
-            ),
+            "ending_credits": (self.ending_credits.slug if self.ending_credits else None),
             "ending_credits_video": (
                 self.ending_credits.video.name if self.ending_credits else ""
             ),
