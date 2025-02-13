@@ -3,7 +3,7 @@
 import hashlib
 import os
 
-from ckeditor.fields import RichTextField
+from tinymce.models import HTMLField
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
@@ -146,7 +146,7 @@ class Broadcaster(models.Model):
     building = models.ForeignKey(
         "Building", verbose_name=_("Building"), on_delete=models.CASCADE
     )
-    description = RichTextField(_("description"), config_name="complete", blank=True)
+    description = HTMLField(_("description"), blank=True)
     poster = models.ForeignKey(
         CustomImageModel, models.SET_NULL, blank=True, null=True, verbose_name=_("Poster")
     )
@@ -331,9 +331,8 @@ class Event(models.Model):
             "of the content. (max length: 250 characters)"
         ),
     )
-    description = RichTextField(
+    description = HTMLField(
         _("Description"),
-        config_name="complete",
         blank=True,
         help_text=_(
             "In this field you can describe your content, "

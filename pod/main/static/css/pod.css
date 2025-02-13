@@ -720,11 +720,6 @@ div.card a img {
   content: "▲";
 }
 
-/** ckeditor **/
-.django-ckeditor-widget {
-  width: 100%;
-}
-
 /** Dashboard **/
 #bulk-update-container {
   background-color: var(--pod-background-neutre2-bloc);

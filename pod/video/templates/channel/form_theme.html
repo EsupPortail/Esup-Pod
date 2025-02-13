@@ -1,7 +1,7 @@
 {# HTML for theme form. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
 {% load static %}
-
+{{form_theme.media.css}}
 <form id="form_theme" action="{% url 'channels:theme_edit' slug=channel.slug %}" method="post">
   {% csrf_token %}
   <div class="form-container">
@@ -61,4 +61,4 @@
     </div>
   </div>
 </form>
-{{form_theme.media}}
+{{form_theme.media.js}}
