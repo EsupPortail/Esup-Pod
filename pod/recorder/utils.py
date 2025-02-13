@@ -20,14 +20,14 @@ OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
 MEDIA_URL = getattr(settings, "MEDIA_URL", "/media/")
 
 
-def add_comment(recording_id, comment):
+def add_comment(recording_id, comment) -> None:
     """Add a comment to a recording."""
     recording = Recording.objects.get(id=recording_id)
     recording.comment = "%s\n%s" % (recording.comment, comment)
     recording.save()
 
 
-def studio_clean_old_entries():
+def studio_clean_old_entries() -> None:
     """
     Clean up old entries in the opencast folder.
 
@@ -62,7 +62,7 @@ def handle_upload_file(request, element_name, mimetype, tag_name):
     id_media = ""
     type_name = ""
     opencast_filename = None
-    # tags = "" # not use actually
+    # tags = "" # not actually used
     id_media = get_id_media(request)
     if request.POST.get("flavor", "") != "":
         type_name = request.POST.get("flavor")
@@ -258,7 +258,7 @@ def get_auth_headers_as_dict(request) -> dict:
     return result
 
 
-def compute_digest_recorder(recorder, realm, method, uri):
+def compute_digest_recorder(recorder, realm, method, uri) -> str:
     """Call method compute_digest() with recorder data."""
     return compute_digest(
         recorder.credentials_login,
@@ -270,7 +270,7 @@ def compute_digest_recorder(recorder, realm, method, uri):
     )
 
 
-def compute_digest(user, realm, passwd, method, uri, nonce):
+def compute_digest(user, realm, passwd, method, uri, nonce) -> str:
     """Compute a digest hash with md5 and no qop."""
     ha1 = hashlib.md5(f"{user}:{realm}:{passwd}".encode("utf-8")).hexdigest()
     ha2 = hashlib.md5(f"{method}:{uri}".encode("utf-8")).hexdigest()
