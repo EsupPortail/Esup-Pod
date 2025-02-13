@@ -137,7 +137,7 @@ def transcribe_live(url, slug, status, lang, filepath):
             if status:
                 # print("main process")
                 t = threading.Thread(target=transcribe, args=(url, slug, model, filepath))
-                t.setDaemon(True)
+                t.daemon = True
                 t.start()
                 # get id of the thread
                 threads[slug] = t.ident

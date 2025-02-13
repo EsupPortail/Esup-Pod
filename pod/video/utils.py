@@ -15,8 +15,6 @@ from django.utils.translation import gettext_lazy as _
 from .models import Video
 
 
-DEBUG = getattr(settings, "DEBUG", True)
-
 TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings,
     "TEMPLATE_VISIBLE_SETTINGS",

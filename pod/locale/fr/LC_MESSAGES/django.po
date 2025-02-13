@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-20 09:49+0100\n"
+"POT-Creation-Date: 2025-02-07 15:53+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -3513,9 +3513,9 @@ msgid "Sorry, no buildings found."
 msgstr "Désolé, aucun bâtiment trouvé."
 
 #: pod/live/templates/live/event-all-info.html
-#: pod/live/templates/live/event-info.html
-msgid "Summary"
-msgstr "Description"
+#: pod/video/templates/videos/video-info.html
+msgid "Number of views"
+msgstr "Nombre de vues"
 
 #: pod/live/templates/live/event-all-info.html
 #: pod/live/templates/live/event-info.html
@@ -3559,6 +3559,11 @@ msgid "to"
 msgstr "à"
 
 #: pod/live/templates/live/event-info.html
+#: pod/video/templates/videos/video-info.html
+msgid "Infos"
+msgstr "Infos"
+
+#: pod/live/templates/live/event-info.html
 msgid "Broadcasted on:"
 msgstr "Diffusé en direct le :"
 
@@ -3582,6 +3587,12 @@ msgstr "Lieu :"
 #: pod/video/templates/videos/video_page_content.html
 msgid "Added by:"
 msgstr "Ajouté par :"
+
+#: pod/live/templates/live/event-info.html
+#: pod/video/templates/videos/video-info.html
+#, python-format
+msgid "Show video list of user “%(video_user_name)s”"
+msgstr "Afficher la liste des vidéos de l’utilisateur « %(video_user_name)s »"
 
 #: pod/live/templates/live/event-info.html
 #: pod/video/templates/videos/video-info.html
@@ -4805,7 +4816,7 @@ msgstr "Dernières vidéos"
 msgid "Most views"
 msgstr "Les plus vues"
 
-#: pod/main/models.py pod/video/models.py
+#: pod/main/models.py
 msgid "Order"
 msgstr "Ordre"
 
@@ -5375,12 +5386,12 @@ msgid "Webinar options"
 msgstr "Options du webinaire"
 
 #: pod/meeting/admin.py
-msgid "Mode insert, nothing to display"
-msgstr "Mode insertion, rien à afficher"
-
-#: pod/meeting/admin.py
 msgid "Moderators"
 msgstr "Modérateurs"
+
+#: pod/meeting/admin.py
+msgid "Mode insert, nothing to display"
+msgstr "Mode insertion, rien à afficher"
 
 #: pod/meeting/admin.py
 msgid "Viewers"
@@ -6785,6 +6796,14 @@ msgstr "Privé"
 
 #: pod/playlist/models.py
 msgid ""
+"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+"characters."
+msgstr ""
+"Veuillez entrer un titre contenant entre 1 et {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+"caractères."
+
+#: pod/playlist/models.py
+msgid ""
 "Selecting this setting causes your playlist to be promoted on the page "
 "listing promoted public playlists. However, if this setting is deactivated "
 "your playlist will still be accessible to everyone.<br>For general use, we "
@@ -7183,10 +7202,6 @@ msgstr "Vous ne pouvez pas accéder à cette liste de lecture."
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
 msgstr "La liste de lecture a été supprimée."
-
-#: pod/playlist/views.py
-msgid "Delete the playlist"
-msgstr "Supprimer la liste de lecture"
 
 #: pod/playlist/views.py
 #, python-format
@@ -7588,7 +7603,7 @@ msgstr "Veuillez choisir si les réponses correctes seront affichées ou non."
 msgid "Quizzes"
 msgstr "Quiz"
 
-#: pod/quiz/models.py pod/quiz/tests/test_models.py
+#: pod/quiz/models.py
 msgid "Quiz of video"
 msgstr "Quiz de la vidéo"
 
@@ -9891,10 +9906,6 @@ msgid "Duration:"
 msgstr "Durée :"
 
 #: pod/video/templates/videos/video-info.html
-msgid "Number of views"
-msgstr "Nombre de vues"
-
-#: pod/video/templates/videos/video-info.html
 msgid "Show details of view statistics"
 msgstr "Afficher les details des statistiques de visualisation"
 
@@ -9934,15 +9945,6 @@ msgstr "Afficher la liste des vidéos ayant le tag « %(video_tag)s »"
 #: pod/video/templates/videos/video-info.html
 msgid "No information available"
 msgstr "Aucune information disponible"
-
-#: pod/video/templates/videos/video-info.html
-msgid "Infos"
-msgstr "Informations"
-
-#: pod/video/templates/videos/video-info.html
-#, python-format
-msgid "Show video list of user “%(video_user_name)s”"
-msgstr "Afficher la liste des vidéos de l’utilisateur « %(video_user_name)s »"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Additional owner(s):"
@@ -10389,61 +10391,6 @@ msgstr "Ce contenu est visible par tous."
 #: pod/video/templatetags/video_tags.py
 msgid "This content is not chaptered."
 msgstr "Ce contenu n’est pas chapitré."
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "tags_for_model tag was given an invalid model: %s"
-msgstr "la balise tags_for_model a reçu un modèle invalide : %s"
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%s tag requires either three or five arguments"
-msgstr "la balise %s requiert trois ou cinq arguments"
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "second argument to %s tag must be “as”"
-msgstr "le deuxième argument de la balise %s doit être « as »"
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "if given, fourth argument to %s tag must be “with”"
-msgstr ""
-"s’il est donné, le quatrième argument de la balise %s doit être « with »"
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "if given, fifth argument to %s tag must be “counts”"
-msgstr "si donné, le 5e argument de la balise %s doit être « counts »"
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%s tag requires either three or between five and seven arguments"
-msgstr "la balise %s requiert soit trois, soit entre cinq et sept arguments"
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%(tag)s tag was given an invalid option: “%(option)s”"
-msgstr "l’option « %(option)s » est invalide pour la balise %(tag)s"
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%(tag)s tag was given a badly formatted option: “%(option)s”"
-msgstr "l’option « %(option)s » n’est pas au bon format pour la balise %(tag)s"
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%(tag)s tag’s “%(option)s” option was not a valid integer: “%(value)s”"
-msgstr ""
-"l’option « %(option)s » de la balise %(tag)s n’est pas un entier valide : "
-"’%(value)s’"
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%(tag)s tag’s “%(option)s” option was not a valid choice: “%(value)s”"
-msgstr ""
-"l’option « %(option)s » de la balise %(tag)s n’est pas un choix valide : "
-"’%(value)s’"
 
 #: pod/video/tests/test_models.py pod/video/translation.py
 msgid "-- sorry, no translation provided --"
@@ -10896,3 +10843,57 @@ msgstr "Résultats de la recherche"
 #: pod/xapi/apps.py
 msgid "Esup-Pod xAPI"
 msgstr "xAPI Esup-Pod"
+
+#~ msgid "Summary"
+#~ msgstr "Description"
+
+#~ msgid "Delete the playlist"
+#~ msgstr "Supprimer la liste de lecture"
+
+#, python-format
+#~ msgid "tags_for_model tag was given an invalid model: %s"
+#~ msgstr "la balise tags_for_model a reçu un modèle invalide : %s"
+
+#, python-format
+#~ msgid "%s tag requires either three or five arguments"
+#~ msgstr "la balise %s requiert trois ou cinq arguments"
+
+#, python-format
+#~ msgid "second argument to %s tag must be “as”"
+#~ msgstr "le deuxième argument de la balise %s doit être « as »"
+
+#, python-format
+#~ msgid "if given, fourth argument to %s tag must be “with”"
+#~ msgstr ""
+#~ "s’il est donné, le quatrième argument de la balise %s doit être « with »"
+
+#, python-format
+#~ msgid "if given, fifth argument to %s tag must be “counts”"
+#~ msgstr "si donné, le 5e argument de la balise %s doit être « counts »"
+
+#, python-format
+#~ msgid "%s tag requires either three or between five and seven arguments"
+#~ msgstr "la balise %s requiert soit trois, soit entre cinq et sept arguments"
+
+#, python-format
+#~ msgid "%(tag)s tag was given an invalid option: “%(option)s”"
+#~ msgstr "l’option « %(option)s » est invalide pour la balise %(tag)s"
+
+#, python-format
+#~ msgid "%(tag)s tag was given a badly formatted option: “%(option)s”"
+#~ msgstr ""
+#~ "l’option « %(option)s » n’est pas au bon format pour la balise %(tag)s"
+
+#, python-format
+#~ msgid ""
+#~ "%(tag)s tag’s “%(option)s” option was not a valid integer: “%(value)s”"
+#~ msgstr ""
+#~ "l’option « %(option)s » de la balise %(tag)s n’est pas un entier valide : "
+#~ "’%(value)s’"
+
+#, python-format
+#~ msgid ""
+#~ "%(tag)s tag’s “%(option)s” option was not a valid choice: “%(value)s”"
+#~ msgstr ""
+#~ "l’option « %(option)s » de la balise %(tag)s n’est pas un choix valide : "
+#~ "’%(value)s’"

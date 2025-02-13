@@ -129,14 +129,21 @@ copyButtons.forEach(function (elt) {
  * @return {void}
  */
 function copyValue(value) {
-  navigator.clipboard
-    .writeText(value)
-    .then(() => {
-      showalert(gettext("Text copied."), "alert-info");
-    })
-    .catch(() => {
-      showalert(gettext("Something went wrong."), "alert-danger");
-    });
+  if (navigator.clipboard) {
+    navigator.clipboard
+      .writeText(value)
+      .then(() => {
+        showalert(gettext("Text copied."), "alert-info");
+      })
+      .catch(() => {
+        showalert(gettext("Something went wrong."), "alert-danger");
+      });
+  } else {
+    showalert(
+      gettext("Functionality accessible only in HTTPS, on a recent browser."),
+      "alert-danger",
+    );
+  }
 }
 
 /**
