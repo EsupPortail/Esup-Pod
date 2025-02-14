@@ -84,6 +84,13 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         dest = os.path.join(settings.MEDIA_ROOT, credit_video.video.name)
         shutil.copyfile(VIDEO_CREDIT_TEST, dest)
         self.credit_video = credit_video
+        credit_videofile = credit_video.video.path
+        credit_video_dir = os.path.join(
+            os.path.dirname(credit_videofile), "%04d" % credit_video.id
+        )
+        os.makedirs(credit_video_dir, exist_ok=True)
+        with open(os.path.join(credit_videofile, "info_video.json"), "w") as f:
+            json.dump({"list_audio_track": []}, f)
         print(" --->  SetUp of RemoteEncodeTranscriptTestCase: OK!")
 
     def tearDown(self):
