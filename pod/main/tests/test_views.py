@@ -24,6 +24,11 @@ from pod.live.models import Building, Broadcaster, Event
 import os
 import importlib
 
+# ggignore-start
+# gitguardian:ignore
+PWD = "pod1234pod"  # nosec
+# ggignore-end
+
 
 class MainViewsTestCase(TestCase):
     """Main views test cases."""
@@ -34,7 +39,7 @@ class MainViewsTestCase(TestCase):
 
     def setUp(self) -> None:
         """Create fictive user who will make tests."""
-        User.objects.create(username="pod", password="podv3")
+        User.objects.create(username="pod", password=PWD)
         print(" --->  SetUp of MainViewsTestCase: OK!")
 
     @override_settings()
@@ -128,7 +133,7 @@ class MaintenanceViewsTestCase(TestCase):
 
     def setUp(self) -> None:
         """Set up function for the tests."""
-        User.objects.create(username="pod", password="podv3")
+        User.objects.create(username="pod", password=PWD)
 
     def test_maintenance(self) -> None:
         """Test Pod maintenance mode."""
@@ -590,7 +595,7 @@ class TestBlock(TestCase):
 
     def test_default_block(self) -> None:
         """Test when add video if present in default block."""
-        user = User.objects.create(username="pod", password="podv3")
+        user = User.objects.create(username="pod", password=PWD)
         Video.objects.create(
             title="VideoOnHold",
             owner=user,
@@ -617,7 +622,7 @@ class TestBlock(TestCase):
         bk1.visible = False
         bk1.save()
         channel = Channel.objects.create(title="monChannel")
-        user = User.objects.create(username="pod", password="podv3")
+        user = User.objects.create(username="pod", password=PWD)
         video = Video.objects.create(
             title="VideoOnHold",
             owner=user,
@@ -724,7 +729,7 @@ class TestBlock(TestCase):
         bk1 = Block.objects.get(id=1)
         bk1.visible = False
         bk1.save()
-        user = User.objects.create(username="pod", password="podv3")
+        user = User.objects.create(username="pod", password=PWD)
         vd1 = Video.objects.create(
             title="VideoOnHold",
             owner=user,

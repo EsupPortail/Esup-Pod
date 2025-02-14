@@ -9,7 +9,7 @@
 
 <div class="text-center">
   {% if USE_CAS %}
-    <p><a class="btn btn-primary" role="button" href="{% url 'cas-login' %}?next={{ referrer|urlencode }}">{% trans "Single sign on" %} {{TITLE_ETB}}</a></p>
+    <p><a class="btn btn-primary" role="button" href="{% url 'cas_ng_login' %}?next={{ referrer|urlencode }}">{% trans "Single sign on" %} {{TITLE_ETB}}</a></p>
   {% endif %}
   {% if USE_SHIB %}
     <p><a class="btn btn-primary" role="button" href="{{SHIB_URL }}?target={{ referrer|urlencode }}">{{SHIB_NAME}}</a></p>

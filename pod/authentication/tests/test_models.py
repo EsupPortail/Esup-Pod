@@ -9,16 +9,21 @@ import hashlib
 
 SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 
+# ggignore-start
+# gitguardian:ignore
+PWD = "pod1234pod"  # nosec
+# ggignore-end
+
 
 class OwnerTestCase(TestCase):
     """Owner Test Case."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up OwnerTestCase create user Pod."""
-        User.objects.create(username="pod", password="pod1234pod")
+        User.objects.create(username="pod", password=PWD)
         # Owner.objects.create(user=user)
 
-    def test_creation_owner(self):
+    def test_creation_owner(self) -> None:
         """Check if owner exist with username pod and check hashkey."""
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
@@ -27,7 +32,7 @@ class OwnerTestCase(TestCase):
         self.assertEqual(owner.hashkey, hashkey)
         print("test_creation_owner OwnerTestCase OK")
 
-    def test_suppression_owner(self):
+    def test_suppression_owner(self) -> None:
         owner = Owner.objects.get(user__username="pod")
         owner.delete()
         self.assertEqual(Owner.objects.filter(user__username="pod").count(), 0)
@@ -37,20 +42,20 @@ class OwnerTestCase(TestCase):
 class AccessGroupTestCase(TestCase):
     """Acess Group Test Case."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up AcessGroupTestCase create user Pod."""
-        User.objects.create(username="pod", password="pod1234pod")
+        User.objects.create(username="pod", password=PWD)
 
         AccessGroup.objects.create(code_name="group1", display_name="Group 1")
 
-    def test_creation_accessgroup(self):
+    def test_creation_accessgroup(self) -> None:
         """Check if owner exist with username pod and check hashkey."""
         accessgroup = AccessGroup.objects.get(code_name="group1")
         self.assertEqual(accessgroup.code_name, "group1")
         self.assertEqual(accessgroup.display_name, "Group 1")
         print("test_creation_accessgroup AccessGroupTestCase OK")
 
-    def test_suppression_accessgroup(self):
+    def test_suppression_accessgroup(self) -> None:
         accessgroup = AccessGroup.objects.get(code_name="group1")
         accessgroup.delete()
         self.assertEqual(AccessGroup.objects.filter(code_name="group1").count(), 0)
