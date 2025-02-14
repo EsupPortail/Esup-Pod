@@ -62,6 +62,6 @@ class Command(BaseCommand):
                     self.style.SUCCESS('Successfully index Video "%s"' % video_id)
                 )
             else:
-                delete_es(video)
+                delete_es(video.id)
         except Video.DoesNotExist:
             self.stdout.write(self.style.ERROR('Video "%s" does not exist' % video_id))

@@ -19,6 +19,9 @@
           }
         },
         "analyzer": {
+          "default": {
+            "type": "standard"
+          },
           "icu_french": {
             "tokenizer": "icu_tokenizer",
             "filter": [
