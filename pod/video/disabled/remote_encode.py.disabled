@@ -78,7 +78,7 @@ SSH_REMOTE_STUDIO_PORT = getattr(settings, "SSH_REMOTE_STUDIO_PORT", "")
 def start_store_remote_encoding_video(video_id):
     log.info("START STORE ENCODED FILES FOR VIDEO ID %s" % video_id)
     t = threading.Thread(target=store_remote_encoding_video, args=[video_id])
-    t.setDaemon(True)
+    t.daemon = True
     t.start()
 
 
