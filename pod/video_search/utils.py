@@ -51,8 +51,8 @@ def index_es(video):
     translation.deactivate()
 
 
-def delete_es(video):
-    """Delete an Elasticsearch video entry."""
+def delete_es(video_id):
+    """Delete an Elasticsearch video entry by video id."""
     es = Elasticsearch(
         ES_URL,
         request_timeout=ES_TIMEOUT,
@@ -65,7 +65,7 @@ def delete_es(video):
             # Pass transport options to elasticsearch
             es = es.options(ignore_status=[400, 404])
             # Do the deletion
-            delete = es.delete(index=ES_INDEX, id=video.id, refresh=True)
+            delete = es.delete(index=ES_INDEX, id=video_id, refresh=True)
             if DEBUG:
                 logger.info(delete)
             return delete
