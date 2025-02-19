@@ -50,6 +50,7 @@ var ajaxfail = function (data, form) {
 document.addEventListener("submit", (e) => {
   if (
     e.target.id !== "form_new_contributor" &&
+    e.target.id !== "form_contributor" &&
     e.target.id !== "form_new_speaker" &&
     e.target.id !== "form_speaker" &&
     e.target.id !== "form_new_document" &&
@@ -57,6 +58,7 @@ document.addEventListener("submit", (e) => {
     e.target.id !== "form_new_track" &&
     e.target.id !== "form_new_overlay" &&
     !e.target.matches(".form_change") &&
+    !e.target.matches(".form_modif") &&
     !e.target.matches(".form_delete")
   )
     return;
@@ -78,7 +80,7 @@ document.addEventListener("submit", (e) => {
     name_form = result_regexp[result_regexp.length - 2];
   }
   var form = "form_" + name_form;
-  var list = "list_" + name_form;
+  var list = "list-" + name_form;
   var action = e.target.querySelector("input[name=action]").value;
   sendAndGetForm(e.target, action, name_form, form, list)
     .then(() => "")
@@ -214,17 +216,11 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
 
     let confirmationMessage;
     if (name === "track") {
-      deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this file?"),
-      );
+      confirmationMessage = gettext("Are you sure you want to delete this file?");
     } else if (name === "contributor") {
-      deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this contributor?"),
-      );
+      confirmationMessage = gettext("Are you sure you want to delete this contributor?");
     } else if (name === "speaker") {
-      deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this speaker?"),
-      );
+      confirmationMessage = gettext("Are you sure you want to delete this speaker?");
     } else if (name === "document") {
       confirmationMessage = gettext("Are you sure you want to delete this document?");
     } else if (name === "overlay") {
@@ -279,7 +275,7 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
     //let form_group = document.querySelector(".form-help-inline");
     //form_group.closest("div.form-group").classList.remove("has-error");
 
-    document.querySelector(".form-help-inline").remove();
+    //document.querySelector(".form-help-inline").remove();
     if (verify_fields(form)) {
       //var form_el = document.getElementById(form);
       var form_el = document.querySelector(`form#${form}`);
@@ -305,7 +301,8 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
               show_form(data.form, form);
             } else {
               refresh_list(data, form, list);
-              window.scrollTop(100);
+              //window.scrollTop(100);
+              window.scrollTo(0, 100);
             }
           } else {
             showalert(
@@ -373,8 +370,9 @@ function verify_fields(form) {
       document.getElementById("id_name").value.length < 2 ||
       document.getElementById("id_name").length > 200
     ) {
-      let input = document.getElementById("id_name");
-      input.parentNode.append(
+      let id_name = document.getElementById("id_name");
+      id_name.insertAdjacentHTML(
+        "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
         gettext("Please enter a name from 2 to 100 caracteres.") +
         "</span>",
@@ -413,7 +411,7 @@ function verify_fields(form) {
     var id = parseInt(document.getElementById("id_contributor").value, 10);
     var new_role = document.getElementById("id_role").value;
     var new_name = document.getElementById("id_name").value;
-    document.querySelectorAll("#list-contributor tbody > tr").forEach((tr) => {
+    document.querySelectorAll("#table-contributor tbody > tr").forEach((tr) => {
       if (
         id != tr.querySelector("input[name=id]").value &&
         tr.querySelector("td[class=contributor-name]").innerHTML == new_name &&
@@ -552,19 +550,25 @@ function verify_fields(form) {
 
       error = true;
     }
-    id_document = document.querySelector(`form#${form}`).querySelector("input[id=id_document]").value
-    document.querySelectorAll("#table-document tbody > tr").forEach((tr) => {
-      let trId = tr.id;
-      let currentId = trId.replace("doc_", "");
+    let idDocumentInput = document.querySelector(`form#${form}`).querySelector("input[id=id_document]")
+    let idInstanceDocumentInput = document.querySelector(`form#${form}`).querySelector("input[id=id_instance_document]")
 
-      if (currentId === id_document) {
-        var text = gettext(
-          "There is already the same document in the list.",
-        );
-        showalert(text, "alert-danger");
-        error = true;
-      }
-    });
+    let id_document = idDocumentInput ? idDocumentInput.value : null;
+    let id_instance_document = idInstanceDocumentInput ? idInstanceDocumentInput.value : null;
+
+    if (id_document) {
+      document.querySelectorAll("#table-document tbody > tr").forEach((tr) => {
+        let trInstanceId = tr.getAttribute("data-id-instance");
+        let trDocumentTd = tr.querySelector(".document_name");
+        let trDocumentId = trDocumentTd ? trDocumentTd.getAttribute("data-id-document") : null;
+    
+        if (trDocumentId === id_document && trInstanceId !== id_instance_document) {
+          let text = gettext("There is already the same document in the list.");
+          showalert(text, "alert-danger");
+          error = true;
+        }
+      });
+    }
   } else if (form == "form_overlay") {
     var tags = /<script.+?>|<iframe.+?>/;
     if (tags.exec(document.getElementById("id_content").value) != null) {

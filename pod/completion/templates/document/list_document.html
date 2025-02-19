@@ -10,8 +10,8 @@
     </thead>
     <tbody>
       {% for doc in list_document %}
-        <tr id="doc_{{doc.document.id}}">
-          <td class="document_name">{{doc.document.name}} ({{ doc.document.file_ext }})
+        <tr data-id-instance="{{doc.id}}">
+          <td class="document_name" data-id-document="{{doc.document.id}}">{{doc.document.name}} ({{ doc.document.file_ext }})
             {% if doc.private %}
               <i class="bi bi-eye-slash" title="{% trans 'Private document' %}"></i>
             {% else %}
@@ -36,4 +36,4 @@
       {% endfor %}
     </tbody>
   </table>
-</div>
+

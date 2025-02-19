@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-13 16:13+0100\n"
+"POT-Creation-Date: 2025-02-19 09:33+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -688,6 +688,7 @@ msgid "Change your picture"
 msgstr "Changer votre image de profil"
 
 #: pod/authentication/templates/userpicture/userpicture.html
+#: pod/completion/templates/delete_modal.html
 #: pod/completion/templates/video_caption_maker.html
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/live/templates/live/direct.html
@@ -1350,7 +1351,7 @@ msgid "Delete the contributor “%(contributor_name)s”"
 msgstr "Supprimer le contributeur « %(contributor_name)s »"
 
 #: pod/completion/templates/delete_modal.html
-msgid "Delete ?"
+msgid "Delete?"
 msgstr "Supprimer ?"
 
 #: pod/completion/templates/delete_modal.html
