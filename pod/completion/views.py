@@ -651,8 +651,8 @@ def video_completion_document_save(request, video):
     """View to save document associated to a video."""
     form_document = None
     form_document = DocumentForm(request, request.POST)
-    if request.POST.get("id_instance_document") and request.POST["id_instance_document"] != "None":
-        document = get_object_or_404(Document, id=request.POST["id_instance_document"])
+    if request.POST.get("id-instance-document") and request.POST["id-instance-document"] != "None":
+        document = get_object_or_404(Document, id=request.POST["id-instance-document"])
         form_document = DocumentForm(request.POST, instance=document)
     else:
         form_document = DocumentForm(request.POST)

@@ -670,7 +670,7 @@ class CompletionDocumentViewsTestCase(TestCase):
                 "action": "save",
                 "document": document.id,
                 "video": 1,
-                "id_instance_document": result.id,
+                "id-instance-document": result.id,
                 "private": True,
             },
         )
