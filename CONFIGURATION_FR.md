@@ -881,6 +881,10 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
   > valeur par défaut : `preferred_username`
   >> Noms des Claim permettant de récupérer<br>
   >> l’attribut login mais dépendant de l’attribut du client dans l’IDP.<br>
+* `OIDC_CLAIM_AFFILIATION`
+  > valeur par défaut : `affiliations`
+  >> Noms des Claim permettant de récupérer<br>
+  >> l’attribut affiliations.<br>
 * `OIDC_CLAIM_GIVEN_NAME`
   > valeur par défaut : `given_name`
   >> Noms des Claim permettant de récupérer les attributs nom, prénom, email<br>

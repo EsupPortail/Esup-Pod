@@ -540,14 +540,16 @@ class PopulatedShibTestCase(TestCase):
         print(" --->  test_make_profile of PopulatedShibTestCase: OK!")
 
 
+@override_settings(
+    # ggignore-start
+    OIDC_RP_CLIENT_ID="MWViNTY2NzJjNGY4YTQ1MTAwMTNiYjk3",
+    OIDC_RP_CLIENT_SECRET="YTM0MzIxZTVmMzZmMTdjNzY5NDQyODcw",
+    # ggignore-end
+    OIDC_OP_TOKEN_ENDPOINT="https://auth.server.com/oauth/token",
+    OIDC_OP_USER_ENDPOINT="https://auth.server.com/oauth/userinfo",
+)
 class PopulatedOIDCTestCase(TestCase):
-    @override_settings(
-        OIDC_RP_CLIENT_ID="MWViNTY2NzJjNGY4YTQ1MTAwMTNiYjk3",
-        OIDC_RP_CLIENT_SECRET="YTM0MzIxZTVmMzZmMTdjNzY5NDQyODcw",
-        OIDC_OP_TOKEN_ENDPOINT="https://auth.server.com/oauth/token",
-        OIDC_OP_USER_ENDPOINT="https://auth.server.com/oauth/userinfo",
-        OIDC_DEFAULT_AFFILIATION=UNSTAFFABLE_AFFILIATION,
-    )
+    @override_settings(OIDC_DEFAULT_AFFILIATION=UNSTAFFABLE_AFFILIATION)
     def test_OIDC_commoner_with_default_unstaffable_affiliation(self) -> None:
         backends.OIDC_DEFAULT_AFFILIATION = UNSTAFFABLE_AFFILIATION
         user = OIDCBackend().create_user(
@@ -564,13 +566,6 @@ class PopulatedOIDCTestCase(TestCase):
             " of PopulatedOIDCTestCase: OK!"
         )
 
-    @override_settings(
-        OIDC_RP_CLIENT_ID="MWViNTY2NzJjNGY4YTQ1MTAwMTNiYjk3",
-        OIDC_RP_CLIENT_SECRET="YTM0MzIxZTVmMzZmMTdjNzY5NDQyODcw",
-        OIDC_OP_TOKEN_ENDPOINT="https://auth.server.com/oauth/token",
-        OIDC_OP_USER_ENDPOINT="https://auth.server.com/oauth/userinfo",
-        # OIDC_DEFAULT_AFFILIATION=random.choice(AFFILIATION_STAFF),
-    )
     def test_OIDC_django_admin_user_with_default_staff_affiliation(self) -> None:
         backends.OIDC_DEFAULT_AFFILIATION = random.choice(AFFILIATION_STAFF)
         user = OIDCBackend().create_user(
@@ -588,15 +583,14 @@ class PopulatedOIDCTestCase(TestCase):
         )
 
     @override_settings(
-        OIDC_RP_CLIENT_ID="MWViNTY2NzJjNGY4YTQ1MTAwMTNiYjk3",
-        OIDC_RP_CLIENT_SECRET="YTM0MzIxZTVmMzZmMTdjNzY5NDQyODcw",
-        OIDC_OP_TOKEN_ENDPOINT="https://auth.server.com/oauth/token",
-        OIDC_OP_USER_ENDPOINT="https://auth.server.com/oauth/userinfo",
         OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES=["specific"],
     )
     def test_OIDC_user_with_default_access_group(self) -> None:
-        backends.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = ["specific"]
-        for code_name in settings.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES + [
+        ACCESS_GROUP_CODE_NAMES = getattr(
+            settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", []
+        )
+        self.assertEqual(AccessGroup.objects.all().count(), 0)
+        for code_name in ACCESS_GROUP_CODE_NAMES + [
             "useless",
             "dull",
         ]:
@@ -608,25 +602,26 @@ class PopulatedOIDCTestCase(TestCase):
         )
         self.assertEqual(user.first_name, "Jean")
         self.assertEqual(user.last_name, "Fit")
-        self.assertEqual(AccessGroup.objects.all().count(), 3)
-        self.assertEqual(user.owner.accessgroup_set.all().count(), 1)
+
+        self.assertEqual(AccessGroup.objects.all().count(), 4)
+        # Assert that user has DEFAULT_ACCESS_GROUP_CODE_NAMES + DEFAULT_AFFILIATION as accessgroup_set
+        self.assertEqual(user.owner.accessgroup_set.all().count(), 2)
+        # OIDC new user should have the specified access group from settings
+        self.assertTrue(user.owner.accessgroup_set.filter(code_name="specific").exists())
         self.assertTrue(
-            user.owner.accessgroup_set.filter(code_name="specific").exists()
-        )  # OIDC new user should have the specified access group from in settings
+            user.owner.accessgroup_set.filter(
+                code_name=backends.OIDC_DEFAULT_AFFILIATION
+            ).exists()
+        )
         print(
             " --->  test_OIDC_user_with_default_access_group"
             " of PopulatedOIDCTestCase: OK!"
         )
 
     @override_settings(
-        OIDC_RP_CLIENT_ID="MWViNTY2NzJjNGY4YTQ1MTAwMTNiYjk3",
-        OIDC_RP_CLIENT_SECRET="YTM0MzIxZTVmMzZmMTdjNzY5NDQyODcw",
-        OIDC_OP_TOKEN_ENDPOINT="https://auth.server.com/oauth/token",
-        OIDC_OP_USER_ENDPOINT="https://auth.server.com/oauth/userinfo",
         OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES=["specific", "unique"],
     )
     def test_OIDC_user_with_multiple_default_access_groups(self) -> None:
-        backends.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = ["specific", "unique"]
         for code_name in settings.OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES + ["dull"]:
             AccessGroup.objects.create(
                 code_name=code_name, display_name=f"Access group {code_name}"
@@ -636,13 +631,43 @@ class PopulatedOIDCTestCase(TestCase):
         )
         self.assertEqual(user.first_name, "Jean")
         self.assertEqual(user.last_name, "Fit")
-        self.assertEqual(AccessGroup.objects.all().count(), 3)
+        self.assertEqual(AccessGroup.objects.all().count(), 4)
         self.assertEqual(
-            user.owner.accessgroup_set.all().count(), 2
-        )  # OIDC new user should have 2 access groups
+            user.owner.accessgroup_set.all().count(), 3
+        )  # OIDC new user should have 3 access groups
         self.assertTrue(user.owner.accessgroup_set.filter(code_name="specific").exists())
         self.assertTrue(user.owner.accessgroup_set.filter(code_name="unique").exists())
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(
+                code_name=backends.OIDC_DEFAULT_AFFILIATION
+            ).exists()
+        )
         print(
             " --->  test_OIDC_user_with_multiple_default_access_groups"
+            " of PopulatedOIDCTestCase: OK!"
+        )
+
+    def test_OIDC_user_with_multiple_claim_access_groups(self) -> None:
+        """Test if user is added to access groups from OIDC affiliations."""
+        user = OIDCBackend().create_user(
+            claims={
+                OIDC_CLAIM_GIVEN_NAME: "Jean",
+                OIDC_CLAIM_FAMILY_NAME: "Fit",
+                "affiliations": ["accessgroup1", "accessgroup2"],
+            }
+        )
+
+        self.assertEqual(user.first_name, "Jean")
+        self.assertEqual(user.last_name, "Fit")
+        self.assertEqual(AccessGroup.objects.all().count(), 2)
+        self.assertEqual(user.owner.accessgroup_set.all().count(), 2)
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(code_name="accessgroup1").exists()
+        )
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(code_name="accessgroup2").exists()
+        )
+        print(
+            " --->  test_OIDC_user_with_multiple_claim_access_groups"
             " of PopulatedOIDCTestCase: OK!"
         )

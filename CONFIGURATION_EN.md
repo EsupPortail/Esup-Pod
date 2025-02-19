@@ -540,6 +540,9 @@ Set `USE_AI_ENHANCEMENT` to True to activate this application.<br>
 * `OIDC_DEFAULT_AFFILIATION`
   > default value: ``
   >>
+* `OIDC_DEFAULT_AFFILIATION`
+  > valeur par défaut : ``
+  >> Affiliation par défaut d’un utilisateur authentifié par OIDC.<br>
 * `OIDC_NAME`
   > default value: ``
   >>
