@@ -1,9 +1,8 @@
 {# HTML for track list. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
 
-<h3 class="caption">{% trans 'List of subtitle or caption files' %}&nbsp;({{list_track|length}})</h3>
 
-<div class="grid-list-track" id="list-track">
+<div class="grid-list-track">
   <span class="thead-title kind">{% trans 'Kind' %}</span>
   <span class="thead-title lang">{% trans 'Language' %}</span>
   <span class="thead-title file">{% trans 'Video track file' %}</span>

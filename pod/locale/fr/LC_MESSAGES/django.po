@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-07 15:53+0100\n"
+"POT-Creation-Date: 2025-02-19 09:33+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -688,6 +688,7 @@ msgid "Change your picture"
 msgstr "Changer votre image de profil"
 
 #: pod/authentication/templates/userpicture/userpicture.html
+#: pod/completion/templates/delete_modal.html
 #: pod/completion/templates/video_caption_maker.html
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/live/templates/live/direct.html
@@ -820,6 +821,7 @@ msgstr "Sauvegarder"
 
 #: pod/chapter/templates/chapter/form_chapter.html
 #: pod/completion/templates/contributor/form_contributor.html
+#: pod/completion/templates/delete_modal.html
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
 #: pod/completion/templates/track/form_track.html
@@ -1348,6 +1350,15 @@ msgstr "Modifier le contributeur « %(contributor_name)s »"
 msgid "Delete the contributor “%(contributor_name)s”"
 msgstr "Supprimer le contributeur « %(contributor_name)s »"
 
+#: pod/completion/templates/delete_modal.html
+msgid "Delete?"
+msgstr "Supprimer ?"
+
+#: pod/completion/templates/delete_modal.html
+#: pod/completion/templates/track/list_track.html
+msgid "Remove"
+msgstr "Retirer"
+
 #: pod/completion/templates/document/list_document.html
 msgid "List of additional resources"
 msgstr "Liste des documents complémentaires"
@@ -1395,10 +1406,6 @@ msgid "Delete the overlay “%(overlay_title)s”"
 msgstr "Supprimer la superposition « %(overlay_title)s »"
 
 #: pod/completion/templates/track/list_track.html
-msgid "List of subtitle or caption files"
-msgstr "Liste des fichiers de sous-titres ou de légendes"
-
-#: pod/completion/templates/track/list_track.html
 msgid "Video track file"
 msgstr "Fichier de piste vidéo"
 
@@ -1420,10 +1427,6 @@ msgstr "Modifier le fichier de sous-titres ou de légendes « %(track_name)s �
 #, python-format
 msgid "Remove the subtitle or caption file “%(track_name)s”"
 msgstr "Retirer le fichier de sous-titres ou de légendes « %(track_name)s »"
-
-#: pod/completion/templates/track/list_track.html
-msgid "Remove"
-msgstr "Retirer"
 
 #: pod/completion/templates/track/list_track.html
 msgid "menu"
@@ -1587,6 +1590,10 @@ msgstr "Ajouter un nouvel intervenant"
 #: pod/completion/templates/video_completion.html
 msgid "Subtitle(s) and Caption(s)"
 msgstr "Sous-titre(s) et légende(s)"
+
+#: pod/completion/templates/video_completion.html
+msgid "List of subtitle or caption files"
+msgstr "Liste des fichiers de sous-titres ou de légendes"
 
 #: pod/completion/templates/video_completion.html pod/completion/views.py
 msgid "Video caption maker"
@@ -6795,12 +6802,13 @@ msgid "Private"
 msgstr "Privé"
 
 #: pod/playlist/models.py
+#, python-brace-format
 msgid ""
 "Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
 "characters."
 msgstr ""
-"Veuillez entrer un titre contenant entre 1 et {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
-"caractères."
+"Veuillez entrer un titre contenant entre 1 et "
+"{__MAX_LENGTH_FOR_PLAYLIST_NAME__} caractères."
 
 #: pod/playlist/models.py
 msgid ""

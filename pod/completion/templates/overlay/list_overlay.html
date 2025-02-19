@@ -1,6 +1,5 @@
 {# HTML for Overlays list. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
-<div class="table-responsive">
   <table class="table table-striped table-condensed caption-top" id="list-overlay">
     <caption>{% trans 'List of overlays' %}&nbsp;({{list_overlay|length}})</caption>
     <thead>
@@ -37,4 +36,4 @@
       {% endfor %}
     </tbody>
   </table>
-</div>
+

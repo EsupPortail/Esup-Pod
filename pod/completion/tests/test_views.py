@@ -670,7 +670,8 @@ class CompletionDocumentViewsTestCase(TestCase):
                 "action": "save",
                 "document": document.id,
                 "video": 1,
-                "document_id": result.id,
+                "id-instance-document": result.id,
+                "private": True,
             },
         )
         self.assertEqual(response.status_code, 200)

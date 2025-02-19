@@ -20,6 +20,9 @@
 				<div class="col-sm-10">{{field}}</div>
 			</div>
 		{% endfor %}
+		{% if form_document.instance %}
+		<input type="hidden" id="id-instance-document" name="id-instance-document" value="{{form_document.instance.id}}">
+	{% endif %}
 		<input type="hidden" name="action" value="save">
 		<div class="mt-3">
 			<input type="submit" id="save_document" value="{% trans 'Save' %}" class="btn btn-primary">

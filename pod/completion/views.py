@@ -649,9 +649,10 @@ def video_completion_document_new(request, video):
 
 def video_completion_document_save(request, video):
     """View to save document associated to a video."""
+    form_document = None
     form_document = DocumentForm(request, request.POST)
-    if request.POST.get("document_id") and request.POST["document_id"] != "None":
-        document = get_object_or_404(Document, id=request.POST["document_id"])
+    if request.POST.get("id-instance-document") and request.POST["id-instance-document"] != "None":
+        document = get_object_or_404(Document, id=request.POST["id-instance-document"])
         form_document = DocumentForm(request.POST, instance=document)
     else:
         form_document = DocumentForm(request.POST)
@@ -659,6 +660,9 @@ def video_completion_document_save(request, video):
     if form_document.is_valid():
         form_document.save()
         list_document = video.document_set.all()
+        context = get_video_completion_context(
+            video, list_document=list_document
+        )
         if is_ajax(request):
             some_data_to_dump = {
                 "list_data": render_to_string(
@@ -1016,7 +1020,7 @@ def video_completion_overlay_save(request, video):
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type="application/json")
         context = get_video_completion_context(
-            video, list_overlay=list_overlay, form_overlay=form_overlay
+            video, form_overlay=form_overlay
         )
         return render(
             request,
