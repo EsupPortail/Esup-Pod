@@ -554,7 +554,7 @@ function verify_fields(form) {
     let idInstanceDocumentInput = document.querySelector(`form#${form}`).querySelector("input[id=id-instance-document]")
 
     let id_document = idDocumentInput ? idDocumentInput.value : null;
-    let id-instance-document = idInstanceDocumentInput ? idInstanceDocumentInput.value : null;
+    let id_instance_document = idInstanceDocumentInput ? idInstanceDocumentInput.value : null;
 
     if (id_document) {
       document.querySelectorAll("#table-document tbody > tr").forEach((tr) => {
@@ -562,7 +562,7 @@ function verify_fields(form) {
         let trDocumentTd = tr.querySelector(".document_name");
         let trDocumentId = trDocumentTd ? trDocumentTd.getAttribute("data-id-document") : null;
     
-        if (trDocumentId === id_document && trInstanceId !== id-instance-document) {
+        if (trDocumentId === id_document && trInstanceId !== id_instance_document) {
           let text = gettext("There is already the same document in the list.");
           showalert(text, "alert-danger");
           error = true;
