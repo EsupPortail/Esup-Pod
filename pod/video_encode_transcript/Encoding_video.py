@@ -44,6 +44,8 @@ if __name__ == "__main__":
         FFMPEG_DRESSING_FILTER_COMPLEX,
         FFMPEG_DRESSING_SCALE,
         FFMPEG_DRESSING_CONCAT,
+        FFMPEG_DRESSING_SILENT,
+        FFMPEG_DRESSING_AUDIO,
     )
 else:
     from .encoding_utils import (
@@ -82,6 +84,8 @@ else:
         FFMPEG_DRESSING_FILTER_COMPLEX,
         FFMPEG_DRESSING_SCALE,
         FFMPEG_DRESSING_CONCAT,
+        FFMPEG_DRESSING_SILENT,
+        FFMPEG_DRESSING_AUDIO,
     )
 
 
@@ -148,6 +152,12 @@ try:
     )
     FFMPEG_DRESSING_CONCAT = getattr(
         settings, "FFMPEG_DRESSING_CONCAT", FFMPEG_DRESSING_CONCAT
+    )
+    FFMPEG_DRESSING_SILENT = getattr(
+        settings, "FFMPEG_DRESSING_SILENT", FFMPEG_DRESSING_SILENT
+    )
+    FFMPEG_DRESSING_AUDIO = getattr(
+        settings, "FFMPEG_DRESSING_AUDIO", FFMPEG_DRESSING_AUDIO
     )
 except ImportError:  # pragma: no cover
     pass
@@ -408,97 +418,203 @@ class Encoding_video:
         return output_file
 
     def get_dressing_command(self) -> str:
-        """Get the command based on the dressing object parameters."""
+        """
+        Generate the FFMPEG command based on the dressing object parameters.
+
+        Returns:
+            A string representing the complete FFMPEG command.
+        """
         height = str(list(self.list_video_track.items())[0][1]["height"])
-        order_opening_credits = 0
-        dressing_command_params = "[vid][0:a]"
-        number_concat = 1
-        dressing_command = "%s " % FFMPEG_CMD
+        dressing_command = f"{FFMPEG_CMD} "
         dressing_command += FFMPEG_INPUT % {
             "input": self.video_file,
             "nb_threads": FFMPEG_NB_THREADS,
         }
 
         dressing_command += self.dressing_input
-        dressing_command_filter = []
-        dressing_command_filter.append(
-            FFMPEG_DRESSING_SCALE
-            % {
-                "number": "0",
-                "height": height,
-                "name": "vid",
-            }
+
+        # Handle opening and ending credits
+        dressing_command += self.handle_dressing_credits()
+
+        # Apply filters
+        dressing_command_filter, dressing_command_params = self.build_dressing_filters(
+            height
         )
-        if self.json_dressing["watermark"]:
-            dressing_command_params = "[video][0:a]"
-            order_opening_credits = order_opening_credits + 1
-            name_out = ""
-            if (
-                self.json_dressing["opening_credits"]
-                or self.json_dressing["ending_credits"]
-            ):
-                name_out = "[video]"
-            dressing_command_filter.append(
-                FFMPEG_DRESSING_WATERMARK
-                % {
-                    "opacity": self.json_dressing["opacity"] / 100.0,
-                    "position": get_dressing_position_value(
-                        self.json_dressing["position_orig"], height
-                    ),
-                    "name_out": name_out,
-                }
-            )
-        if self.json_dressing["opening_credits"]:
-            order_opening_credits = order_opening_credits + 1
-            number_concat = number_concat + 1
-            dressing_command_params = (
-                "[debut][" + str(order_opening_credits) + ":a]" + dressing_command_params
-            )
-            dressing_command_filter.append(
-                FFMPEG_DRESSING_SCALE
-                % {
-                    "number": str(order_opening_credits),
-                    "height": height,
-                    "name": "debut",
-                }
-            )
-        if self.json_dressing["ending_credits"]:
-            number_concat = number_concat + 1
-            dressing_command_params = (
-                dressing_command_params
-                + "[fin]["
-                + str(order_opening_credits + 1)
-                + ":a]"
-            )
-            dressing_command_filter.append(
-                FFMPEG_DRESSING_SCALE
-                % {
-                    "number": str(order_opening_credits + 1),
-                    "height": str(list(self.list_video_track.items())[0][1]["height"]),
-                    "name": "fin",
-                }
-            )
-        if self.json_dressing["opening_credits"] or self.json_dressing["ending_credits"]:
-            dressing_command_filter.append(
-                FFMPEG_DRESSING_CONCAT
-                % {
-                    "params": dressing_command_params,
-                    "number": number_concat,
-                }
-            )
 
         dressing_command += FFMPEG_DRESSING_FILTER_COMPLEX % {
             "filter": ";".join(dressing_command_filter),
         }
 
-        if self.json_dressing["opening_credits"] or self.json_dressing["ending_credits"]:
+        if self.json_dressing.get("opening_credits") or self.json_dressing.get(
+            "ending_credits"
+        ):
             dressing_command += " -map '[v]' -map '[a]' "
 
         output_file = self.get_dressing_file()
-        dressing_command += FFMPEG_DRESSING_OUTPUT % {
-            "output": output_file,
-        }
+        dressing_command += FFMPEG_DRESSING_OUTPUT % {"output": output_file}
+
         return dressing_command
+
+    def handle_dressing_credits(self) -> str:
+        """
+        Handle the addition of opening and ending credits to the command.
+
+        Returns:
+            A string with the FFMPEG commands for silent credits if required.
+        """
+        command = ""
+        for credit_type in ["opening_credits", "ending_credits"]:
+            if self.json_dressing.get(credit_type):
+                has_audio_key = f"{credit_type}_video_hasaudio"
+                duration_key = f"{credit_type}_video_duration"
+
+                if not self.json_dressing.get(has_audio_key):
+                    command += FFMPEG_DRESSING_SILENT % {
+                        "duration": self.json_dressing[duration_key],
+                    }
+        return command
+
+    def build_dressing_filters(self, height: str) -> tuple:
+        """
+        Build the filters for video processing.
+
+        Args:
+            height: The height of the video for scaling purposes.
+
+        Returns:
+            A tuple containing the list of filters and the filter parameters.
+        """
+        filters = []
+        params = ""
+        order = 0
+        interval_silent = 0
+        concat_number = 1
+
+        # Base video track
+        filters.append(
+            FFMPEG_DRESSING_SCALE % {"number": "0", "height": height, "name": "vid"}
+        )
+        params = "[vid][0:a]"
+        order = order + 1
+
+        # Watermark if present
+        if self.json_dressing.get("watermark"):
+            filters.append(self.apply_dressing_watermark(height))
+            params = "[video][0:a]"
+            order = order + 1
+
+        interval_silent = order
+        # Opening credits
+        if self.json_dressing.get("opening_credits"):
+            if self.json_dressing.get("ending_credits"):
+                interval_silent = interval_silent + 1
+            filters, params, interval_silent = self.add_dressing_credits(
+                filters,
+                params,
+                height,
+                "opening_credits",
+                "debut",
+                order,
+                interval_silent,
+            )
+            order = order + 1
+            concat_number = concat_number + 1
+
+        # Ending credits
+        if self.json_dressing.get("ending_credits"):
+            filters, params, interval_silent = self.add_dressing_credits(
+                filters, params, height, "ending_credits", "fin", order, interval_silent
+            )
+            concat_number = concat_number + 1
+
+        # Concatenate if needed
+        if self.json_dressing.get("opening_credits") or self.json_dressing.get(
+            "ending_credits"
+        ):
+            filters.append(
+                FFMPEG_DRESSING_CONCAT % {"params": params, "number": concat_number}
+            )
+
+        return filters, params
+
+    def apply_dressing_watermark(self, height: str) -> str:
+        """
+        Apply the watermark to the video.
+
+        Args:
+            height: The height of the video to position the watermark correctly.
+
+        Returns:
+            A string representing the FFMPEG command for applying the watermark.
+        """
+        opacity = self.json_dressing["opacity"] / 100.0
+        position = get_dressing_position_value(
+            self.json_dressing["position_orig"], height
+        )
+        name_out = (
+            "[video]"
+            if self.json_dressing.get("opening_credits")
+            or self.json_dressing.get("ending_credits")
+            else ""
+        )
+
+        return FFMPEG_DRESSING_WATERMARK % {
+            "opacity": opacity,
+            "position": position,
+            "name_out": name_out,
+        }
+
+    def add_dressing_credits(
+        self,
+        filters: list,
+        params: str,
+        height: str,
+        credit_type: str,
+        name: str,
+        order: str,
+        interval_silent: str,
+    ) -> tuple:
+        """
+        Add opening or ending credits to the FFmpeg command by updating the filters and parameters.
+
+        Args:
+            filters (list): A list of existing FFmpeg filters to which new filters will be appended.
+            params (str): The current filter parameters string that will be updated to include the credits.
+            height (str): The height of the video used for scaling the credit overlay.
+            credit_type (str): Specifies the type of credits to add, either 'opening_credits' or 'ending_credits'.
+            name (str): The identifier for the credit video or overlay to be used in the FFmpeg filter graph.
+            order (str): The position identifier for the audio stream, used to sync audio with the credits.
+            interval_silent (str): Counter indicating the number of silent audio intervals inserted, used when adding silent audio tracks.
+
+        Returns:
+            tuple:
+                - Updated list of filters with the added credit filters.
+                - Updated filter parameter string reflecting the new credit positioning.
+                - Updated interval_silent value if a silent audio track was added.
+        """
+        audio_out = f"{order}:a"
+
+        if not self.json_dressing.get(f"{credit_type}_video_hasaudio"):
+            audio_out = f"a{order}"
+            filters.append(
+                FFMPEG_DRESSING_AUDIO
+                % {
+                    "param_in": f"{interval_silent + 1}:a",
+                    "param_out": audio_out,
+                }
+            )
+            interval_silent = interval_silent + 1
+
+        if credit_type == "opening_credits":
+            params = f"[{name}][{audio_out}]{params}"
+        else:
+            params = f"{params}[{name}][{audio_out}]"
+
+        filters.append(
+            FFMPEG_DRESSING_SCALE % {"number": str(order), "height": height, "name": name}
+        )
+
+        return filters, params, interval_silent
 
     def encode_video_dressing(self):
         """Encode the dressed video."""
