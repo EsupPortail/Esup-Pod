@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 def create_groupsite_if_not_exists(g) -> None:
+    """Create a GroupSite if it does not exist."""
     from pod.authentication.models import GroupSite
 
     try:
@@ -16,6 +17,7 @@ def create_groupsite_if_not_exists(g) -> None:
 
 
 def set_default_site(sender, **kwargs) -> None:
+    """Set the default site for all groups and owners."""
     from pod.authentication.models import Owner
     from django.contrib.sites.models import Site
     from django.contrib.auth.models import Group
@@ -34,9 +36,12 @@ def set_default_site(sender, **kwargs) -> None:
 
 
 class AuthConfig(AppConfig):
+    """Authentication configuration."""
+
     name = "pod.authentication"
     default_auto_field = "django.db.models.BigAutoField"
     verbose_name = _("Authentication")
 
     def ready(self) -> None:
+        """Called after the Django app registry is ready."""
         post_migrate.connect(set_default_site, sender=self)

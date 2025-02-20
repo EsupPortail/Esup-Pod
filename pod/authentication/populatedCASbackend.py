@@ -1,45 +1,28 @@
 """Esup-Pod CAS & LDAP authentication backend."""
 
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
-from pod.authentication.models import Owner
-from pod.authentication.models import DEFAULT_AFFILIATION, AFFILIATION_STAFF
-from ldap3 import Server
+from pod.authentication.models import (
+    Owner,
+    AccessGroup,
+    DEFAULT_AFFILIATION,
+    AFFILIATION_STAFF,
+)
+from ldap3 import Server, Connection
 from ldap3 import ALL as __ALL__
-from ldap3 import Connection
-from ldap3.core.exceptions import LDAPSocketOpenError
-from ldap3.core.exceptions import LDAPBindError
-from ldap3.core.exceptions import LDAPAttributeError
-from ldap3.core.exceptions import LDAPInvalidFilterError
-from pod.authentication.models import AccessGroup
+from ldap3.core.exceptions import (
+    LDAPSocketOpenError,
+    LDAPBindError,
+    LDAPAttributeError,
+    LDAPInvalidFilterError,
+)
 from django.core.exceptions import ObjectDoesNotExist
 
 import logging
 
 logger = logging.getLogger(__name__)
 
-DEBUG = getattr(settings, "DEBUG", True)
-
-POPULATE_USER = getattr(settings, "POPULATE_USER", None)
 AUTH_CAS_USER_SEARCH = getattr(settings, "AUTH_CAS_USER_SEARCH", "user")
-USER_CAS_MAPPING_ATTRIBUTES = getattr(
-    settings,
-    "USER_CAS_MAPPING_ATTRIBUTES",
-    {
-        "uid": "uid",
-        "mail": "mail",
-        "last_name": "sn",
-        "first_name": "givenname",
-        "primaryAffiliation": "eduPersonPrimaryAffiliation",
-        "affiliation": "eduPersonAffiliation",
-        "groups": "memberOf",
-    },
-)
-
-CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
-
-CREATE_GROUP_FROM_GROUPS = getattr(settings, "CREATE_GROUP_FROM_GROUPS", False)
 
 GROUP_STAFF = AFFILIATION_STAFF
 
@@ -73,43 +56,74 @@ __LEVEL__ = "LEVEL"
 __SUBTREE__ = "SUBTREE"
 
 
-def populateUser(tree) -> None:
+def populateUser(user, cas_attributes) -> None:
     """Populate user form CAS or LDAP attributes."""
-    username_element = tree.find(
-        ".//{http://www.yale.edu/tp/cas}%s" % AUTH_CAS_USER_SEARCH
-    )
-    username_element.text = username_element.text.strip()
-    username = username_element.text
-    if CAS_FORCE_LOWERCASE_USERNAME:
-        username = username.lower()
-    user, user_created = User.objects.get_or_create(username=username)
     owner, owner_created = Owner.objects.get_or_create(user=user)
     owner.auth_type = "CAS"
-
     delete_synchronized_access_group(owner)
 
-    owner.save()
-
+    POPULATE_USER = getattr(settings, "POPULATE_USER", None)
     if POPULATE_USER == "CAS":
-        populate_user_from_tree(user, owner, tree)
+        populateUserFromCAS(user, owner, cas_attributes)
     if POPULATE_USER == "LDAP" and LDAP_SERVER["url"] != "":
-        list_value = []
-        for val in USER_LDAP_MAPPING_ATTRIBUTES.values():
-            list_value.append(str(val))
-        conn = get_ldap_conn()
-        if conn is not None:
-            entry = get_entry(conn, username, list_value)
-            if entry is not None:
-                populate_user_from_entry(user, owner, entry)
+        populateUserFromLDAP(user, owner)
+
+    owner.save()
+    user.save()
+
+
+def populateUserFromCAS(user, owner, attributes) -> None:
+    """Populate user and owner objects from CAS attributes."""
+    owner.affiliation = (
+        attributes["primaryAffiliation"]
+        if ("primaryAffiliation" in attributes)
+        else DEFAULT_AFFILIATION
+    )
+
+    if "affiliation" in attributes:
+        CREATE_GROUP_FROM_AFFILIATION = getattr(
+            settings, "CREATE_GROUP_FROM_AFFILIATION", False
+        )
+        for affiliation in attributes["affiliation"]:
+            if affiliation in AFFILIATION_STAFF:
+                user.is_staff = True
+            if CREATE_GROUP_FROM_AFFILIATION:
+                # Creating access groups from CAS affiliations
+                accessgroup, group_created = AccessGroup.objects.get_or_create(
+                    code_name=affiliation
+                )
+                if group_created:
+                    accessgroup.display_name = affiliation
+                    accessgroup.auto_sync = True
+                accessgroup.sites.add(Site.objects.get_current())
+                accessgroup.save()
+                user.owner.accessgroup_set.add(accessgroup)
+
+        if "groups" in attributes:
+            assign_accessgroups(attributes["groups"], user)
+
+
+def populateUserFromLDAP(user, owner) -> None:
+    """Populate user and owner objects from LDAP."""
+    list_value = []
+    for val in USER_LDAP_MAPPING_ATTRIBUTES.values():
+        list_value.append(str(val))
+    conn = get_ldap_conn()
+    if conn is not None:
+        entry = get_entry(conn, user.username, list_value)
+        if entry is not None:
+            populate_user_from_entry(user, owner, entry)
 
 
 def delete_synchronized_access_group(owner) -> None:
+    """Delete synchronized access groups."""
     groups_to_sync = AccessGroup.objects.filter(auto_sync=True)
     for group_to_sync in groups_to_sync:
         owner.accessgroup_set.remove(group_to_sync)
 
 
 def get_server() -> Server:
+    """Get LDAP server."""
     if isinstance(LDAP_SERVER["url"], str):
         server = Server(
             LDAP_SERVER["url"],
@@ -168,7 +182,11 @@ def get_entry(conn, username, list_value):
 
 
 def assign_accessgroups(groups_element, user) -> None:
+    """Assign access groups to the user."""
+    # print("assign_accessgroups / groups_element : %s " % groups_element)
+    CREATE_GROUP_FROM_GROUPS = getattr(settings, "CREATE_GROUP_FROM_GROUPS", False)
     for group in groups_element:
+
         if group in GROUP_STAFF:
             user.is_staff = True
         if CREATE_GROUP_FROM_GROUPS:
@@ -190,14 +208,9 @@ def assign_accessgroups(groups_element, user) -> None:
 
 
 def create_accessgroups(user, tree_or_entry, auth_type) -> None:
+    """Create access groups from LDAP entry or CAS tree."""
     groups_element = []
-    if auth_type == "cas":
-        tree_groups_element = tree_or_entry.findall(
-            ".//{http://www.yale.edu/tp/cas}%s" % (USER_CAS_MAPPING_ATTRIBUTES["groups"])
-        )
-        for tge in tree_groups_element:
-            groups_element.append(tge.text)
-    elif auth_type == "ldap":
+    if auth_type == "ldap":
         groups_element = (
             tree_or_entry[USER_LDAP_MAPPING_ATTRIBUTES["groups"]].values
             if (
@@ -231,8 +244,6 @@ def get_entry_value(entry, attribute, default):
 
 def populate_user_from_entry(user, owner, entry) -> None:
     """Populate user and owner objects from the LDAP entry."""
-    if DEBUG:
-        print(entry)
     user.email = get_entry_value(entry, "mail", "")
     user.first_name = get_entry_value(entry, "first_name", "")
     user.last_name = get_entry_value(entry, "last_name", "")
@@ -241,6 +252,9 @@ def populate_user_from_entry(user, owner, entry) -> None:
     owner.establishment = get_entry_value(entry, "establishment", "")
     owner.save()
     affiliations = get_entry_value(entry, attribute="affiliations", default=[])
+    CREATE_GROUP_FROM_AFFILIATION = getattr(
+        settings, "CREATE_GROUP_FROM_AFFILIATION", False
+    )
     for affiliation in affiliations:
         if affiliation in AFFILIATION_STAFF:
             user.is_staff = True
@@ -256,58 +270,6 @@ def populate_user_from_entry(user, owner, entry) -> None:
             # group.groupsite.sites.add(Site.objects.get_current())
             user.owner.accessgroup_set.add(accessgroup)
     create_accessgroups(user, entry, "ldap")
-    user.save()
-    owner.save()
-
-
-def populate_user_from_tree(user, owner, tree) -> None:
-    """Populate user from CAS attributes."""
-    if DEBUG:
-        print_xml_tree(tree)
-    # Mail
-    mail_element = tree.find(
-        ".//{http://www.yale.edu/tp/cas}%s" % (USER_CAS_MAPPING_ATTRIBUTES["mail"])
-    )
-    user.email = mail_element.text if mail_element is not None else ""
-    # first_name
-    first_name_element = tree.find(
-        ".//{http://www.yale.edu/tp/cas}%s" % (USER_CAS_MAPPING_ATTRIBUTES["first_name"])
-    )
-    user.first_name = first_name_element.text if first_name_element is not None else ""
-    # last_name
-    last_name_element = tree.find(
-        ".//{http://www.yale.edu/tp/cas}%s" % (USER_CAS_MAPPING_ATTRIBUTES["last_name"])
-    )
-    user.last_name = last_name_element.text if last_name_element is not None else ""
-    user.save()
-    # PrimaryAffiliation
-    primary_affiliation_element = tree.find(
-        ".//{http://www.yale.edu/tp/cas}%s"
-        % (USER_CAS_MAPPING_ATTRIBUTES["primaryAffiliation"])
-    )
-    owner.affiliation = (
-        primary_affiliation_element.text
-        if (primary_affiliation_element is not None)
-        else DEFAULT_AFFILIATION
-    )
-    # affiliation
-    affiliation_element = tree.findall(
-        ".//{http://www.yale.edu/tp/cas}%s" % (USER_CAS_MAPPING_ATTRIBUTES["affiliation"])
-    )
-    for affiliation in affiliation_element:
-        if affiliation.text in AFFILIATION_STAFF:
-            user.is_staff = True
-        if CREATE_GROUP_FROM_AFFILIATION:
-            accessgroup, group_created = AccessGroup.objects.get_or_create(
-                code_name=affiliation.text
-            )
-            if group_created:
-                accessgroup.display_name = affiliation.text
-                accessgroup.auto_sync = True
-            accessgroup.sites.add(Site.objects.get_current())
-            accessgroup.save()
-            user.owner.accessgroup_set.add(accessgroup)
-    create_accessgroups(user, tree, "cas")
     user.save()
     owner.save()
 
