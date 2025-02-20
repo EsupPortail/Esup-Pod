@@ -37,10 +37,10 @@ function show_form(data, form) {
 var ajaxfail = function (data, form) {
   showalert(
     gettext("Error getting form.") +
-    " (" +
-    data +
-    ") " +
-    gettext("The form could not be recovered."),
+      " (" +
+      data +
+      ") " +
+      gettext("The form could not be recovered."),
     "alert-danger",
   );
 };
@@ -170,7 +170,6 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         if (form) form.style.display = "none";
       });
     });
-
   }
   if (action == "modify" || action == "form_save_modify") {
     let id = elt.querySelector("input[name=id]").value;
@@ -211,65 +210,81 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
     // hide_others_sections(name);
   }
   if (action === "delete") {
-    var deleteConfirm = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-    var messageElement = document.getElementById('modalMessage');
+    var deleteConfirm = new bootstrap.Modal(
+      document.getElementById("deleteConfirmModal"),
+    );
+    var messageElement = document.getElementById("modalMessage");
 
     let confirmationMessage;
     if (name === "track") {
-      confirmationMessage = gettext("Are you sure you want to delete this file?");
+      confirmationMessage = gettext(
+        "Are you sure you want to delete this file?",
+      );
     } else if (name === "contributor") {
-      confirmationMessage = gettext("Are you sure you want to delete this contributor?");
+      confirmationMessage = gettext(
+        "Are you sure you want to delete this contributor?",
+      );
     } else if (name === "speaker") {
-      confirmationMessage = gettext("Are you sure you want to delete this speaker?");
+      confirmationMessage = gettext(
+        "Are you sure you want to delete this speaker?",
+      );
     } else if (name === "document") {
-      confirmationMessage = gettext("Are you sure you want to delete this document?");
+      confirmationMessage = gettext(
+        "Are you sure you want to delete this document?",
+      );
     } else if (name === "overlay") {
-      confirmationMessage = gettext("Are you sure you want to delete this overlay?");
+      confirmationMessage = gettext(
+        "Are you sure you want to delete this overlay?",
+      );
     }
 
     messageElement.innerText = confirmationMessage;
     deleteConfirm.show();
 
-    var confirmButton = document.getElementById('confirmDeleteButton');
+    var confirmButton = document.getElementById("confirmDeleteButton");
     var newConfirmButton = confirmButton.cloneNode(true);
     confirmButton.replaceWith(newConfirmButton);
     confirmButton = newConfirmButton;
 
-    confirmButton.addEventListener('click', async function () {
-      let id = elt.querySelector("input[name=id]").value;
-      url = window.location.origin + href;
-      token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
-      let form_data = new FormData();
-      form_data.append("action", action);
-      form_data.append("id", id);
+    confirmButton.addEventListener(
+      "click",
+      async function () {
+        let id = elt.querySelector("input[name=id]").value;
+        url = window.location.origin + href;
+        token = document.querySelector("input[name=csrfmiddlewaretoken]").value;
+        let form_data = new FormData();
+        form_data.append("action", action);
+        form_data.append("id", id);
 
-      await fetch(url, {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": token,
-          "X-Requested-With": "XMLHttpRequest",
-        },
-        body: form_data,
-      })
-        .then((response) => response.text())
-        .then((data) => {
-          data = JSON.parse(data);
-          if (data.list_data) {
-            refresh_list(data, form, list);
-          } else {
-            showalert(
-              gettext(
-                "You are no longer authenticated. Please log in again.",
-                "alert-danger",
-              ),
-            );
-          }
+        await fetch(url, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": token,
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          body: form_data,
         })
-        .catch((error) => {
-          ajaxfail(error, form);
-        });
-      deleteConfirm.hide();
-    }, { once: true });
+          .then((response) => response.text())
+          .then((data) => {
+            data = JSON.parse(data);
+            if (data.list_data) {
+              refresh_list(data, form, list);
+            } else {
+              showalert(
+                gettext(
+                  "You are no longer authenticated. Please log in again.",
+                  "alert-danger",
+                ),
+              );
+            }
+          })
+          .catch((error) => {
+            ajaxfail(error, form);
+          });
+        deleteConfirm.hide();
+      },
+      { once: true },
+    );
   }
   if (action == "save") {
     //let form_group = document.querySelector(".form-help-inline");
@@ -374,8 +389,8 @@ function verify_fields(form) {
       id_name.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
-        gettext("Please enter a name from 2 to 100 caracteres.") +
-        "</span>",
+          gettext("Please enter a name from 2 to 100 caracteres.") +
+          "</span>",
       );
       let form_group = input.closest("div.form-group");
 
@@ -388,8 +403,8 @@ function verify_fields(form) {
       id_weblink.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
-        gettext("You cannot enter a weblink with more than 200 caracteres.") +
-        "</span>",
+          gettext("You cannot enter a weblink with more than 200 caracteres.") +
+          "</span>",
       );
       let form_group = id_weblink.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -401,8 +416,8 @@ function verify_fields(form) {
       id_role.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
-        gettext("Please enter a role.") +
-        "</span>",
+          gettext("Please enter a role.") +
+          "</span>",
       );
       let form_group = id_role.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -435,8 +450,8 @@ function verify_fields(form) {
       id_kind.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
-        gettext("Please enter a correct kind.") +
-        "</span>",
+          gettext("Please enter a correct kind.") +
+          "</span>",
       );
       let form_group = id_kind.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -452,8 +467,8 @@ function verify_fields(form) {
       id_lang.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
-        gettext("Please select a language.") +
-        "</span>",
+          gettext("Please select a language.") +
+          "</span>",
       );
       let form_group = id_lang.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -469,8 +484,8 @@ function verify_fields(form) {
       id_src.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
-        gettext("Please specify a track file.") +
-        "</span>",
+          gettext("Please specify a track file.") +
+          "</span>",
       );
       let form_group = id_src.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -479,8 +494,8 @@ function verify_fields(form) {
       id_src.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
-        gettext("Only .vtt format is allowed.") +
-        "</span>",
+          gettext("Only .vtt format is allowed.") +
+          "</span>",
       );
       let form_group = id_src.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -494,16 +509,16 @@ function verify_fields(form) {
         if (
           kind === elt.textContent.trim().toLowerCase() &&
           lang ===
-          elt.parentNode
-            .querySelector("#" + elt.get("id") + ".track-kind.lang")
-            .textContent.trim()
-            .toLowerCase() &&
+            elt.parentNode
+              .querySelector("#" + elt.get("id") + ".track-kind.lang")
+              .textContent.trim()
+              .toLowerCase() &&
           file_name ===
-          elt.parentNode
-            .querySelector("#" + elt.get("id") + ".track-kind.file")
-            .textContent.trim()
-            .split(" ")[0]
-            .toLowerCase()
+            elt.parentNode
+              .querySelector("#" + elt.get("id") + ".track-kind.file")
+              .textContent.trim()
+              .split(" ")[0]
+              .toLowerCase()
         ) {
           is_duplicate = true;
           return false;
@@ -513,10 +528,10 @@ function verify_fields(form) {
       id_src.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
-        gettext(
-          "There is already a track with the same kind and language in the list.",
-        ) +
-        "</span>",
+          gettext(
+            "There is already a track with the same kind and language in the list.",
+          ) +
+          "</span>",
       );
       let form_group = id_src.closest("div.form-group");
       form_group.classList.add("has-error");
@@ -528,8 +543,8 @@ function verify_fields(form) {
       id_document.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>" +
-        gettext("Please select a document") +
-        "</span>",
+          gettext("Please select a document") +
+          "</span>",
       );
       //   if (
       //     document
@@ -550,19 +565,30 @@ function verify_fields(form) {
 
       error = true;
     }
-    let idDocumentInput = document.querySelector(`form#${form}`).querySelector("input[id=id_document]")
-    let idInstanceDocumentInput = document.querySelector(`form#${form}`).querySelector("input[id=id-instance-document]")
+    let idDocumentInput = document
+      .querySelector(`form#${form}`)
+      .querySelector("input[id=id_document]");
+    let idInstanceDocumentInput = document
+      .querySelector(`form#${form}`)
+      .querySelector("input[id=id-instance-document]");
 
     let id_document = idDocumentInput ? idDocumentInput.value : null;
-    let id_instance_document = idInstanceDocumentInput ? idInstanceDocumentInput.value : null;
+    let id_instance_document = idInstanceDocumentInput
+      ? idInstanceDocumentInput.value
+      : null;
 
     if (id_document) {
       document.querySelectorAll("#table-document tbody > tr").forEach((tr) => {
         let trInstanceId = tr.getAttribute("data-id-instance");
         let trDocumentTd = tr.querySelector(".document_name");
-        let trDocumentId = trDocumentTd ? trDocumentTd.getAttribute("data-id-document") : null;
-    
-        if (trDocumentId === id_document && trInstanceId !== id_instance_document) {
+        let trDocumentId = trDocumentTd
+          ? trDocumentTd.getAttribute("data-id-document")
+          : null;
+
+        if (
+          trDocumentId === id_document &&
+          trInstanceId !== id_instance_document
+        ) {
           let text = gettext("There is already the same document in the list.");
           showalert(text, "alert-danger");
           error = true;
@@ -576,8 +602,8 @@ function verify_fields(form) {
       id_content.insertAdjacentHTML(
         "afterend",
         "<span class='form-help-inline'>&nbsp;&nbsp;" +
-        gettext("Iframe and Script tags are not allowed.") +
-        "</span>",
+          gettext("Iframe and Script tags are not allowed.") +
+          "</span>",
       );
       let form_group = id_content.closest("div.form-group");
       form_group.forEach(function (element) {
@@ -586,7 +612,9 @@ function verify_fields(form) {
       error = true;
     }
   } else if (form == "form_speaker") {
-    id_job = document.querySelector(`form#${form}`).querySelector("#id_job").value
+    id_job = document
+      .querySelector(`form#${form}`)
+      .querySelector("#id_job").value;
     document.querySelectorAll("#table-speaker tbody > tr").forEach((tr) => {
       let trId = tr.id;
       let currentId = trId.replace("job_", "");
