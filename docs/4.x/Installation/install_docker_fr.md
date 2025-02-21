@@ -215,7 +215,3 @@ linux/amd64
 linux/arm/v7
 linux/arm64/v8
 ```
-
----
-Doublon avec ?
-<https://github.com/EsupPortail/Esup-Pod/blob/pod_V4/dockerfile-dev-with-volumes/README.adoc>
