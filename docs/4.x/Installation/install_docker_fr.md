@@ -4,7 +4,7 @@ version: 4.x
 lang: fr
 ---
 
-# Installation Docker [WIP]
+# Installation Docker
 
 Télécharger et installer Docker <https://www.docker.com>
 
