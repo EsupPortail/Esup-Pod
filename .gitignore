@@ -89,3 +89,5 @@ v8-compile-cache-0
 pod/db_migrations
 tmp/
 pod/.yarn
+/_site/
+/.jekyll-metadata
