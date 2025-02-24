@@ -7,9 +7,11 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist
-
+import logging
 from pod.authentication.models import AccessGroup, DEFAULT_AFFILIATION, AFFILIATION_STAFF
+from django.contrib.sites.models import Site
 
+logger = logging.getLogger(__name__)
 User = get_user_model()
 
 CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
@@ -76,9 +78,8 @@ OIDC_CLAIM_PREFERRED_USERNAME = getattr(
 OIDC_DEFAULT_AFFILIATION = getattr(
     settings, "OIDC_DEFAULT_AFFILIATION", DEFAULT_AFFILIATION
 )
-OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = getattr(
-    settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", []
-)
+
+OIDC_CLAIM_AFFILIATION = getattr(settings, "OIDC_CLAIM_AFFILIATION", "affiliations")
 
 
 class OIDCBackend(OIDCAuthenticationBackend):
@@ -87,22 +88,10 @@ class OIDCBackend(OIDCAuthenticationBackend):
     def create_user(self, claims):
         """Create user connectd by OIDC."""
         user = super(OIDCBackend, self).create_user(claims)
-
-        user.first_name = claims.get(OIDC_CLAIM_GIVEN_NAME, "")
-        user.last_name = claims.get(OIDC_CLAIM_FAMILY_NAME, "")
-        user.username = claims.get(OIDC_CLAIM_PREFERRED_USERNAME, "")
-        user.owner.affiliation = OIDC_DEFAULT_AFFILIATION
-        for code_name in OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES:
-            try:
-                user.owner.accessgroup_set.add(
-                    AccessGroup.objects.get(code_name=code_name)
-                )
-            except ObjectDoesNotExist:
-                pass
-        user.is_staff = is_staff_affiliation(affiliation=user.owner.affiliation)
+        self._initialize_user(user, claims)
+        user.is_staff = is_staff_affiliation(user.owner.affiliation)
         user.owner.save()
         user.save()
-
         return user
 
     def update_user(self, user, claims):
@@ -110,9 +99,57 @@ class OIDCBackend(OIDCAuthenticationBackend):
         user.first_name = claims.get(OIDC_CLAIM_GIVEN_NAME, "")
         user.last_name = claims.get(OIDC_CLAIM_FAMILY_NAME, "")
         user.username = claims.get(OIDC_CLAIM_PREFERRED_USERNAME, "")
+        user.owner.accessgroup_set.clear()
+        self._assign_affiliations(user, claims)
+        user.is_staff = is_staff_affiliation(user.owner.affiliation)
+
         user.save()
 
         user.owner.auth_type = "OIDC"
         user.owner.save()
 
         return user
+
+    def _initialize_user(self, user, claims):
+        """Initialize user object from OIDC claims."""
+        user.first_name = claims.get(OIDC_CLAIM_GIVEN_NAME, "")
+        user.last_name = claims.get(OIDC_CLAIM_FAMILY_NAME, "")
+        user.username = claims.get(OIDC_CLAIM_PREFERRED_USERNAME, "")
+        self._assign_affiliations(user, claims)
+        return user
+
+    def _assign_affiliations(self, user, claims) -> None:
+        """Assign affiliations and access groups to user."""
+        affiliations = claims.get(OIDC_CLAIM_AFFILIATION, [OIDC_DEFAULT_AFFILIATION])
+
+        for affiliation in affiliations:
+            self._add_access_group(user, affiliation)
+
+        OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES = getattr(
+            settings, "OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES", []
+        )
+
+        # Add default access groups
+        for code_name in OIDC_DEFAULT_ACCESS_GROUP_CODE_NAMES:
+            self._safe_assign_access_group(user, code_name)
+
+        user.owner.affiliation = (
+            affiliations[0] if affiliations else OIDC_DEFAULT_AFFILIATION
+        )
+
+    def _add_access_group(self, user, affiliation) -> None:
+        """Create or retrieve access group and assign to user."""
+        accessgroup, created = AccessGroup.objects.get_or_create(code_name=affiliation)
+        if created:
+            accessgroup.display_name = affiliation
+            accessgroup.auto_sync = True
+            accessgroup.sites.add(Site.objects.get_current())
+            accessgroup.save()
+        user.owner.accessgroup_set.add(accessgroup)
+
+    def _safe_assign_access_group(self, user, code_name) -> None:
+        """Safely add an access group if it exists."""
+        try:
+            user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name=code_name))
+        except ObjectDoesNotExist:
+            pass
