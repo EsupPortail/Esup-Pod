@@ -191,7 +191,7 @@ if USE_SPEAKER:
     urlpatterns += [
         path("speaker/", include("pod.speaker.urls", namespace="speaker")),
     ]
-    
+
 if USE_HYPERLINKS:
     urlpatterns += [
         path("hyperlinks/", include("pod.hyperlinks.urls", namespace="hyperlinks")),

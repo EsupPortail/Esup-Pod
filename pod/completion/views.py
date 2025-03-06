@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 from django.shortcuts import render
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
@@ -33,9 +33,8 @@ import json
 from django.contrib.sites.shortcuts import get_current_site
 from .utils import get_video_completion_context
 from pod.speaker.utils import get_video_speakers
-from pod.hyperlinks.models import Hyperlink, VideoHyperlink
-from pod.hyperlinks.forms import VideoHyperlinkForm
-
+from pod.hyperlinks.models import VideoHyperlink
+from pod.hyperlinks.forms import VideoHyperlinkForm, HyperlinkForm
 
 
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
@@ -604,6 +603,7 @@ def video_completion_speaker_delete(request: WSGIRequest, video: Video):
         context,
     )
 
+
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_completion_hyperlink(request: WSGIRequest, slug: str):
@@ -660,6 +660,7 @@ def video_completion_hyperlink(request: WSGIRequest, slug: str):
             },
         )
 
+
 def video_completion_hyperlink_new(request: WSGIRequest, video: Video):
     """View to add new hyperlink to a video."""
     form_hyperlink = VideoHyperlinkForm(initial={"video": video})
@@ -681,7 +682,7 @@ def video_completion_hyperlink_new(request: WSGIRequest, video: Video):
             "video_completion.html",
             context,
         )
-        
+
 
 def video_completion_hyperlink_save(request: WSGIRequest, video: Video):
     """View to save hyperlinks of a video."""
@@ -739,7 +740,8 @@ def video_completion_hyperlink_save(request: WSGIRequest, video: Video):
             request,
             "video_completion.html",
             context,
-        )     
+        )
+
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
@@ -765,7 +767,8 @@ def video_completion_hyperlink_modify(request: WSGIRequest, video: Video):
         "video_completion.html",
         context,
     )
-    
+
+
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def video_completion_hyperlink_delete(request: WSGIRequest, video: Video):
@@ -795,6 +798,7 @@ def video_completion_hyperlink_delete(request: WSGIRequest, video: Video):
         "video_completion.html",
         context,
     )
+
 
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")

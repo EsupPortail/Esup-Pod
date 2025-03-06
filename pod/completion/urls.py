@@ -1,6 +1,6 @@
 """Esup-Pod Video completion urls."""
 
-from django.urls import re_path, path
+from django.urls import re_path
 from .views import video_completion
 from .views import video_caption_maker
 from .views import video_completion_contributor
@@ -9,7 +9,6 @@ from .views import video_completion_document
 from .views import video_completion_track
 from .views import video_completion_overlay
 from .views import video_completion_hyperlink
-from . import views
 
 app_name = "completion"
 

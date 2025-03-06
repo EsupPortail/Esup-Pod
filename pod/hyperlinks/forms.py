@@ -4,12 +4,14 @@ from django.forms.widgets import HiddenInput
 from .models import Hyperlink, VideoHyperlink
 from django.utils.translation import gettext as _
 
+
 class HyperlinkForm(forms.ModelForm):
     """Form for creating and updating hyperlinks."""
 
     class Meta:
         model = Hyperlink
         fields = ["url", "description"]
+
 
 class HyperlinkWidget(s2forms.ModelSelect2Widget):
     """Widget for selecting hyperlinks."""
@@ -18,6 +20,7 @@ class HyperlinkWidget(s2forms.ModelSelect2Widget):
         "url__icontains",
         "description__icontains",
     ]
+
 
 class VideoHyperlinkForm(forms.ModelForm):
     """Form to associate a hyperlink with a video."""
