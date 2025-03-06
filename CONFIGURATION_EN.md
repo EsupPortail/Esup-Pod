@@ -622,7 +622,7 @@ Set `USE_DRESSING` to True to activate this application.<br>
 ###
 
 
-### Seaker application configuration
+### Speaker application configuration
 
 Speaker application to add speakers to video.<br>
 Set `USE_SPEAKER` to True to activate this application.<br>

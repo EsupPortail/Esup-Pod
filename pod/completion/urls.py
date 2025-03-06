@@ -1,6 +1,6 @@
 """Esup-Pod Video completion urls."""
 
-from django.urls import re_path
+from django.urls import re_path, path
 from .views import video_completion
 from .views import video_caption_maker
 from .views import video_completion_contributor
@@ -8,6 +8,8 @@ from .views import video_completion_speaker
 from .views import video_completion_document
 from .views import video_completion_track
 from .views import video_completion_overlay
+from .views import video_completion_hyperlink
+from . import views
 
 app_name = "completion"
 
@@ -43,8 +45,14 @@ urlpatterns = [
         name="video_completion_overlay",
     ),
     re_path(
+        r"^hyperlinks/(?P<slug>[\-\d\w]+)/$",
+        video_completion_hyperlink,
+        name="video_completion_hyperlink",
+    ),
+    re_path(
         r"^(?P<slug>[\-\d\w]+)/$",
         video_completion,
         name="video_completion",
     ),
+
 ]
