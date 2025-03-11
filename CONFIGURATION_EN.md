@@ -1,35 +1,43 @@
-#
+# 
 
-##
+## General information
 
 * `CAS`
-  > default value: `1.5.2`
+  > default value: `1.5.3`
 * `ModelTranslation`
-  > default value: `0.18.7`
+  > default value: `0.19.11`
 * `captcha`
-  > default value: `0.5.17`
+  > default value: `0.6.0`
 * `chunked_upload`
   > default value: `2.0.0`
 * `ckeditor`
   > default value: `6.3.0`
+  >> WARNING (ckeditor.W001) django-ckeditor bundles CKEditor 4.22.1 free version<br>
+  >> which isn’t supported anmyore and which does have unfixed security issues,<br>
+  >> see for example https://ckeditor.com/cke4/release/CKEditor-4.24.0-LTS .<br>
+  >> You should consider strongly switching to a different editor.<br>
 * `django_select2`
   > default value: `latest`
 * `honeypot`
-  > default value: `1.0.3`
+  > default value: `1.2.1`
 * `mozilla_django_oidc`
-  > default value: `3.0.0`
+  > default value: `4.0.1`
 * `pwa`
-  > default value: `1.1.0`
+  > default value: `2.0.1`
 * `rest_framework`
-  > default value: `3.14.0`
+  > default value: `3.15.2`
 * `shibboleth`
   > default value: `latest`
 * `sorl.thumbnail`
-  > default value: `12.9.0`
+  > default value: `12.11.0`
 * `tagging`
   > default value: `0.5.0`
+* `tagulous`
+  > default value: `2.1.0`
+  >> Managing keywords associated with a Django object.<br>
+  >> [django-tagulous.readthedocs.io](https://django-tagulous.readthedocs.io)<br>
 
-##
+## 
 
 ### Database
 
@@ -67,6 +75,9 @@
 * `EMAIL_SUBJECT_PREFIX`
   > default value: ``
   >>
+* `NOTIFY_SENDER`
+  > default value: `True`
+  >> In unauthenticated mode, when using the contact form, sends a copy of the message to the address entered in the form.<br>
 * `SERVER_EMAIL`
   > default value: `noreply`
   >>
@@ -151,6 +162,30 @@
 * `FFPROBE_GET_INFO`
   > default value: `%(ffprobe)s -v quiet -show_format -show_streams %(select_streams)s -print_format json -i %(source)s`
   >>
+* `FFMPEG_DRESSING_OUTPUT`
+  > default value: ` -c:v libx264 -y -vsync 0 %(output)s `
+  >> Specifies the FFmpeg output encoding settings for generating the temporary dressed video file, using the H.264 codec with forced overwrite and synchronized video output.<br>
+* `FFMPEG_DRESSING_INPUT`
+  > default value: ` -i %(input)s `
+  >> Defines the input file for FFmpeg processing of the intermediate dressed video.<br>
+* `FFMPEG_DRESSING_FILTER_COMPLEX`
+  > default value: ` -filter_complex %(filter)s `
+  >> Applies complex filter chains to the intermediate dressed video using FFmpeg.<br>
+* `FFMPEG_DRESSING_WATERMARK`
+  > default value: ` [1]format=rgba,colorchannelmixer=aa=%(opacity)s[logo]; [logo][vid]scale2ref=oh*mdar:ih*0.1[logo][video2]; [video2][logo]%(position)s%(name_out)s `
+  >> Adds a watermark to the intermediate dressed video with customizable opacity and position.<br>
+* `FFMPEG_DRESSING_SCALE`
+  > default value: `[%(number)s]scale=w='if(gt(a,16/9),16/9*%(height)s,-2)':h='if(gt(a,16/9),-2,%(height)s)',pad=ceil(16/9*%(height)s):%(height)s:(ow-iw)/2:(oh-ih)/2[%(name)s]`
+  >> Rescales the intermediate dressed video to maintain a 16:9 aspect ratio with padding if necessary.<br>
+* `FFMPEG_DRESSING_CONCAT`
+  > default value: `%(params)sconcat=n=%(number)s:v=1:a=1:unsafe=1[v][a]`
+  >> Concatenates multiple video and audio streams into a single temporary dressed video output.<br>
+* `FFMPEG_DRESSING_SILENT`
+  > default value: ` -f lavfi -t %(duration)s -i anullsrc=r=44100:cl=stereo`
+  >> Generates silent audio of specified duration for the temporary dressed video.<br>
+* `FFMPEG_DRESSING_AUDIO`
+  > default value: `[%(param_in)s]anull[%(param_out)s]`
+  >> Processes audio without modifications for inclusion in the temporary dressed video.<br>
 
 ### file management
 
@@ -272,6 +307,9 @@
 * `ARCHIVE_OWNER_USERNAME`
   > default value: `"archive"`
   >>
+* `ARCHIVE_HOW_MANY_DAYS`
+  > default value: `365`
+  >> Delay before an archived video is moved to archive_ROOT.<br>
 * `POD_ARCHIVE_AFFILIATION`
   > default value: `[]`
   >>
@@ -285,11 +323,11 @@
   > default value: ``
   >>
 * `DARKMODE_ENABLED`
-  > default value: `False`
-  >>
+  > default value: `True`
+  >> Allows users to enable a dark mode.<br>
 * `DYSLEXIAMODE_ENABLED`
-  > default value: `False`
-  >>
+  > default value: `True`
+  >> Allows to use a font that is more suitable for people with dyslexia.<br>
 * `HIDE_CHANNEL_TAB`
   > default value: `False`
   >>
@@ -381,7 +419,7 @@
   > default value: `False`
   >>
 
-##
+## 
 
 ### AI Enhancement application configuration
 
@@ -414,8 +452,12 @@ Set `USE_AI_ENHANCEMENT` to True to activate this application.<br>
 * `USE_AI_ENHANCEMENT`
   > default value: `False`
   >> Activation of artificial intelligence enhancements. Allows users to use it.<br>
+* `AI_ENHANCEMENT_PROXY_URL`
+  > default value: ``
+  >> URL of proxy server for request coming from Aristote.<br>
+  >> Exemple : '<https://proxy_aristote.univ.fr>'<br>
 
-###
+### 
 
 * `AFFILIATION`
   > default value: ``
@@ -559,10 +601,10 @@ Set `USE_AI_ENHANCEMENT` to True to activate this application.<br>
   > default value: `False`
   >>
 
-###
+### 
 
 
-###
+### 
 
 * `ACTIVE_MODEL_ENRICH`
   > default value: `False`
@@ -607,7 +649,7 @@ Cut application to cut videos.<br>
 Set `USE_CUT` to True to activate this application.<br>
 
 * `USE_CUT`
-  > default value: `True`
+  > default value: `False`
   >> Activation of the Cut application<br>
 
 ### Dressing application configuration
@@ -616,10 +658,19 @@ Dressing App to customize a video with watermark & credits.<br>
 Set `USE_DRESSING` to True to activate this application.<br>
 
 * `USE_DRESSING`
-  > default value: `True`
+  > default value: `False`
   >> Activation of dressings. Allows users to customize a video with watermark & credits.<br>
 
-###
+### Duplicate application configuration
+
+Duplicate App to create a copy of the form of an existing video<br>
+Set `USE_DUPLICATE` to True to activate this application.<br>
+
+* `USE_DUPLICATE`
+  > default value: `False`
+  >> Activation of duplicate. Allows users to duplicate a video<br>
+
+### 
 
 
 ### Speaker application configuration
@@ -630,6 +681,9 @@ Set `USE_SPEAKER` to True to activate this application.<br>
 * `USE_SPEAKER`
   > default value: `False`
   >> Activation of the Speaker application<br>
+* `REQUIRED_SPEAKER_FIRSTNAME`
+  > default value: `True`
+  >> First name required in the speaker addition form<br>
 
 ### Video import application configuration
 
@@ -644,7 +698,7 @@ Set `USE_IMPORT_VIDEO` to True to activate this application.<br>
   > default value: `True`
   >> Only "staff" users will be able to import videos<br>
 * `USE_IMPORT_VIDEO`
-  > default value: `True`
+  > default value: `False`
   >> Activation of the video import application<br>
 * `USE_IMPORT_VIDEO_BBB_RECORDER`
   > default value: `False`
@@ -656,10 +710,10 @@ Set `USE_IMPORT_VIDEO` to True to activate this application.<br>
   >> bbb-recorder must be installed in this directory, on all encoding servers.<br>
   >> bbb-recorder creates a Downloads directory, at the same level, which requires disk space.<br>
 * `IMPORT_VIDEO_BBB_RECORDER_PATH`
-  > default value: `True`
+  > default value: `/data/bbb-recorder/media/`
   >> Directory that will contain the video files generated by bbb-recorder.<br>
 
-###
+### 
 
 * `AFFILIATION_EVENT`
   > default value: `['faculty', 'employee', 'staff']`
@@ -705,19 +759,21 @@ Set `USE_IMPORT_VIDEO` to True to activate this application.<br>
   >>
 * `USE_BBB`
   > default value: `False`
-  >>
+  >> Using BigBlueButton<br>
+  >> Withdrawn from Pod version 3.8.2 (replaced by the meetings module)<br>
 * `USE_BBB_LIVE`
   > default value: `False`
-  >>
+  >> Using the BigBlueButton webinar delivery system<br>
+  >> Withdrawn from Pod version 3.8.2 (replaced by the meetings module)<br>
 * `USE_LIVE_TRANSCRIPTION`
   > default value: `False`
+  >> Enable auto-transcription for live events<br>
   >>
-  >> Enable auto-transcritption for live events<br>
 * `VIEW_EXPIRATION_DELAY`
   > default value: `60`
   >>
 
-###
+### 
 
 * `LTI_ENABLED`
   > default value: `False`
@@ -737,7 +793,7 @@ Set `USE_IMPORT_VIDEO` to True to activate this application.<br>
   >> ```
   >>
 
-###
+### 
 
 * `HOMEPAGE_VIEW_VIDEOS_FROM_NON_VISIBLE_CHANNELS`
   > default value: `False`
@@ -749,7 +805,7 @@ Set `USE_IMPORT_VIDEO` to True to activate this application.<br>
   > default value: `False`
   >>
 * `USE_IMPORT_VIDEO`
-  > default value: `True`
+  > default value: `False`
   >> Activation of the video import application<br>
 * `USE_MEETING`
   > default value: `False`
@@ -764,7 +820,7 @@ Set `USE_IMPORT_VIDEO` to True to activate this application.<br>
   > default value: `False`
   >> Webtv mode allows you to switch POD into a webtv application removing the connection buttons for example<br>
 
-###
+### 
 
 
 
@@ -820,9 +876,11 @@ Set `USE_IMPORT_VIDEO` to True to activate this application.<br>
 * `MEETING_WEBINAR_SIPMEDIAGW_URL`
   > default value: ``
   >> URL of the SIPMediaGW server that manages webinars (e.g. `https://sipmediagw.univ.fr`)<br>
+  >> Retired as of Pod version 3.8.2 (replaced by the meetings module, see live gateway)<br>
 * `MEETING_WEBINAR_SIPMEDIAGW_TOKEN`
   > default value: ``
   >> Bearer token for the SIPMediaGW server that manages webinars<br>
+  >> Retired as of Pod version 3.8.2 (see live gateway)<br>
 * `MEETING_WEBINAR_FIELDS`
   > default value: `("is_webinar", "enable_chat")`
   >> List the additional fields for the webinar session form<br>
@@ -854,17 +912,17 @@ Set `USE_PLAYLIST` to True to activate this application.<br>
   > default value: `True`
   >> Restrict access to promoted playlists creation to staff only.<br>
 * `USE_FAVORITES`
-  > default value: `True`
+  > default value: `False`
   >> Activation of favorite videos.<br>
   >> Allows users to add videos to their favorites.<br>
 * `USE_PLAYLIST`
-  > default value: `True`
+  > default value: `False`
   >> Activation of playlist. Allows users to add videos in a playlist.<br>
 * `USE_PROMOTED_PLAYLIST`
-  > default value: `True`
+  > default value: `False`
   >> Activation of promoted playlists. Allows users to use the promoted playlists.<br>
 
-###
+### 
 
 * `FILES_DIR`
   > default value: `files`
@@ -879,10 +937,10 @@ Set `USE_PLAYLIST` to True to activate this application.<br>
   > default value: `('jpg', 'jpeg', 'bmp', 'png', 'gif', 'tiff', 'webp')`
   >> Allowed extensions for images uploaded in the file manager (must be lowercase).<br>
 
-###
+### 
 
 * `USE_NOTIFICATIONS`
-  > default value: `True`
+  > default value: `False`
   >>
 * `WEBPUSH_SETTINGS`
   > default value:
@@ -903,10 +961,10 @@ Quiz App to add various questions on videos.<br>
 Set `USE_QUIZ` to True to activate this application.<br>
 
 * `USE_QUIZ`
-  > default value: `True`
+  > default value: `False`
   >> Activation of quizzes. Allows users to create, respond and use quizzes in videos.<br>
 
-###
+### 
 
 * `ALLOW_MANUAL_RECORDING_CLAIMING`
   > default value: `False`
@@ -968,7 +1026,7 @@ Set `USE_QUIZ` to True to activate this application.<br>
   > default value: `False`
   >> If True, displays the video preview icon in the "Claim a recording" page.<br>
 
-###
+### 
 
 * `ACTIVE_VIDEO_COMMENT`
   > default value: `False`
@@ -1076,10 +1134,15 @@ Set `USE_QUIZ` to True to activate this application.<br>
   > default value: `False`
   >>
 
-###
+### 
 
 
 
+* `CAPTIONS_STRICT_ACCESSIBILITY`
+  > default value: `False`
+  >> If True, subtitles will be generated strictly following accessibility standards.<br>
+  >> A warning message will be displayed if the subtitles do not follow these standards,<br>
+  >> even if the value is False.<br>
 * `CELERY_BROKER_URL`
   > default value: `redis://redis.localhost:6379/5`
   >>
@@ -1125,7 +1188,7 @@ Set `USE_QUIZ` to True to activate this application.<br>
   > default value: `[]`
   >>
 
-###
+### 
 
 * `ES_INDEX`
   > default value: `pod`
@@ -1140,13 +1203,13 @@ Set `USE_QUIZ` to True to activate this application.<br>
   > default value: `["http://elasticsearch.localhost:9200/"]`
   >>
 * `ES_VERSION`
-  > default value: `6`
+  > default value: `8`
   >>
 * `ES_OPTIONS`
   > default value: `{}`
   >>
 
-###
+### 
 
 Application for sending xAPI statements to an LRS.<br>
 No statements persist in Pod, they are all sent to the configured LRS.<br>

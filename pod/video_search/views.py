@@ -238,7 +238,10 @@ def search_videos(request):
     list_videos_id = [hit["_id"] for hit in result["hits"]["hits"]]
     videos = Video.objects.filter(id__in=list_videos_id)
     num_result = 0
-    num_result = result["hits"]["total"]["value"]
+    # In case of desynchronization with Elasticsearch, this result could be false.
+    # num_result = result["hits"]["total"]["value"]
+    # With this code, the result is always correct
+    num_result = len(videos)
     videos.has_next = ((page + 1) * size) < num_result
     videos.next_page_number = page + 1
 

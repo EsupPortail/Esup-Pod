@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-20 09:49+0100\n"
-"PO-Revision-Date: 2024-07-04 17:54+0200\n"
+"POT-Creation-Date: 2025-02-19 09:33+0100\n"
+"PO-Revision-Date: 2025-02-13 16:23+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 
 #: pod/ai_enhancement/apps.py
 msgid "Artificial Intelligence Enhancement"
@@ -665,6 +665,7 @@ msgid "Change your picture"
 msgstr ""
 
 #: pod/authentication/templates/userpicture/userpicture.html
+#: pod/completion/templates/delete_modal.html
 #: pod/completion/templates/video_caption_maker.html
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/live/templates/live/direct.html
@@ -790,6 +791,7 @@ msgstr ""
 
 #: pod/chapter/templates/chapter/form_chapter.html
 #: pod/completion/templates/contributor/form_contributor.html
+#: pod/completion/templates/delete_modal.html
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
 #: pod/completion/templates/track/form_track.html
@@ -1306,6 +1308,15 @@ msgstr ""
 msgid "Delete the contributor “%(contributor_name)s”"
 msgstr ""
 
+#: pod/completion/templates/delete_modal.html
+msgid "Delete?"
+msgstr ""
+
+#: pod/completion/templates/delete_modal.html
+#: pod/completion/templates/track/list_track.html
+msgid "Remove"
+msgstr ""
+
 #: pod/completion/templates/document/list_document.html
 msgid "List of additional resources"
 msgstr ""
@@ -1353,10 +1364,6 @@ msgid "Delete the overlay “%(overlay_title)s”"
 msgstr ""
 
 #: pod/completion/templates/track/list_track.html
-msgid "List of subtitle or caption files"
-msgstr ""
-
-#: pod/completion/templates/track/list_track.html
 msgid "Video track file"
 msgstr ""
 
@@ -1380,10 +1387,6 @@ msgid "Remove the subtitle or caption file “%(track_name)s”"
 msgstr ""
 
 #: pod/completion/templates/track/list_track.html
-msgid "Remove"
-msgstr ""
-
-#: pod/completion/templates/track/list_track.html
 msgid "menu"
 msgstr ""
 
@@ -1397,10 +1400,8 @@ msgid "File"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
-#, fuzzy
-#| msgid "title"
 msgid "Subtitles"
-msgstr "titel"
+msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html
 msgid "Captions"
@@ -1545,6 +1546,10 @@ msgstr ""
 
 #: pod/completion/templates/video_completion.html
 msgid "Subtitle(s) and Caption(s)"
+msgstr ""
+
+#: pod/completion/templates/video_completion.html
+msgid "List of subtitle or caption files"
 msgstr ""
 
 #: pod/completion/templates/video_completion.html pod/completion/views.py
@@ -2784,15 +2789,15 @@ msgstr ""
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
+"This video “%(name)s” was uploaded to Pod; its origin is %(type)s: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a><br><br>%(desc)s"
 msgstr ""
 
 #: pod/import_video/views.py
 #, python-format
 msgid ""
-"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a "
-"href=\"%(url)s\" target=\"_blank\">%(url)s</a>"
+"This video “%(name)s” was uploaded to Pod; its origin is Youtube: <a href="
+"\"%(url)s\" target=\"_blank\">%(url)s</a>"
 msgstr ""
 
 #: pod/import_video/views.py
@@ -3297,8 +3302,8 @@ msgid "Sorry, no buildings found."
 msgstr ""
 
 #: pod/live/templates/live/event-all-info.html
-#: pod/live/templates/live/event-info.html
-msgid "Summary"
+#: pod/video/templates/videos/video-info.html
+msgid "Number of views"
 msgstr ""
 
 #: pod/live/templates/live/event-all-info.html
@@ -3341,6 +3346,11 @@ msgid "to"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
+#: pod/video/templates/videos/video-info.html
+msgid "Infos"
+msgstr ""
+
+#: pod/live/templates/live/event-info.html
 msgid "Broadcasted on:"
 msgstr ""
 
@@ -3363,6 +3373,12 @@ msgstr ""
 #: pod/video/templates/videos/video_opengraph.html
 #: pod/video/templates/videos/video_page_content.html
 msgid "Added by:"
+msgstr ""
+
+#: pod/live/templates/live/event-info.html
+#: pod/video/templates/videos/video-info.html
+#, python-format
+msgid "Show video list of user “%(video_user_name)s”"
 msgstr ""
 
 #: pod/live/templates/live/event-info.html
@@ -4470,7 +4486,7 @@ msgstr ""
 msgid "Get the file name"
 msgstr ""
 
-#: pod/main/models.py
+#: pod/main/models.py pod/video/models.py
 msgid "order"
 msgstr ""
 
@@ -5117,11 +5133,11 @@ msgid "Webinar options"
 msgstr ""
 
 #: pod/meeting/admin.py
-msgid "Mode insert, nothing to display"
+msgid "Moderators"
 msgstr ""
 
 #: pod/meeting/admin.py
-msgid "Moderators"
+msgid "Mode insert, nothing to display"
 msgstr ""
 
 #: pod/meeting/admin.py
@@ -6158,8 +6174,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "                <p>here the link to join the meeting:\n"
 "                <a href=\"%(join_link)s\">%(join_link)s</a></p>\n"
 "                <p>You need this password to enter: <strong>%(password)s</"
@@ -6173,8 +6189,8 @@ msgstr ""
 msgid ""
 "\n"
 "                <p>Hello,</p>\n"
-"                <p>%(owner)s invites you to the meeting "
-"<strong>%(meeting_title)s</strong>.</p>\n"
+"                <p>%(owner)s invites you to the meeting <strong>"
+"%(meeting_title)s</strong>.</p>\n"
 "                <p>Start date: %(start_date_time)s </p>\n"
 "                <p>End date: %(end_date)s </p>\n"
 "                <p>here the link to join the meeting:\n"
@@ -6352,6 +6368,13 @@ msgstr ""
 #: pod/playlist/models.py
 #: pod/playlist/templates/playlist/playlist_visibility_icon.html
 msgid "Private"
+msgstr ""
+
+#: pod/playlist/models.py
+#, python-brace-format
+msgid ""
+"Please choose a title between 1 and {__MAX_LENGTH_FOR_PLAYLIST_NAME__} "
+"characters."
 msgstr ""
 
 #: pod/playlist/models.py
@@ -6733,10 +6756,6 @@ msgstr ""
 
 #: pod/playlist/tests/test_views.py pod/playlist/views.py
 msgid "The playlist has been deleted."
-msgstr ""
-
-#: pod/playlist/views.py
-msgid "Delete the playlist"
 msgstr ""
 
 #: pod/playlist/views.py
@@ -7127,7 +7146,7 @@ msgstr ""
 msgid "Quizzes"
 msgstr ""
 
-#: pod/quiz/models.py pod/quiz/tests/test_models.py
+#: pod/quiz/models.py
 msgid "Quiz of video"
 msgstr ""
 
@@ -7740,8 +7759,8 @@ msgstr ""
 #: pod/video/templates/videos/video-element.html
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that <a href=\"https://videojs.com/html5-video-support/\" "
-"target=\"_blank\">supports HTML5 video</a>"
+"browser that <a href=\"https://videojs.com/html5-video-support/\" target="
+"\"_blank\">supports HTML5 video</a>"
 msgstr ""
 
 #: pod/recorder/templates/recorder/link_record.html
@@ -7887,10 +7906,8 @@ msgid "Jobs"
 msgstr ""
 
 #: pod/speaker/templates/speaker/speaker_modal.html
-#, fuzzy
-#| msgid "title"
 msgid "Job title"
-msgstr "titel"
+msgstr ""
 
 #: pod/speaker/templates/speaker/speaker_modal.html
 msgid "Remove job"
@@ -9238,10 +9255,6 @@ msgid "Duration:"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
-msgid "Number of views"
-msgstr ""
-
-#: pod/video/templates/videos/video-info.html
 msgid "Show details of view statistics"
 msgstr ""
 
@@ -9278,15 +9291,6 @@ msgstr ""
 
 #: pod/video/templates/videos/video-info.html
 msgid "No information available"
-msgstr ""
-
-#: pod/video/templates/videos/video-info.html
-msgid "Infos"
-msgstr ""
-
-#: pod/video/templates/videos/video-info.html
-#, python-format
-msgid "Show video list of user “%(video_user_name)s”"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html
@@ -9711,56 +9715,6 @@ msgstr ""
 msgid "This content is not chaptered."
 msgstr ""
 
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "tags_for_model tag was given an invalid model: %s"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%s tag requires either three or five arguments"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "second argument to %s tag must be “as”"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "if given, fourth argument to %s tag must be “with”"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "if given, fifth argument to %s tag must be “counts”"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%s tag requires either three or between five and seven arguments"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%(tag)s tag was given an invalid option: “%(option)s”"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%(tag)s tag was given a badly formatted option: “%(option)s”"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%(tag)s tag’s “%(option)s” option was not a valid integer: “%(value)s”"
-msgstr ""
-
-#: pod/video/templatetags/video_tags.py
-#, python-format
-msgid "%(tag)s tag’s “%(option)s” option was not a valid choice: “%(value)s”"
-msgstr ""
-
 #: pod/video/tests/test_models.py pod/video/translation.py
 msgid "-- sorry, no translation provided --"
 msgstr ""
@@ -9841,10 +9795,8 @@ msgid "Deleting the media \"%(vtitle)s\""
 msgstr ""
 
 #: pod/video/views.py
-#, fuzzy
-#| msgid "You cannot use AI to improve this video."
 msgid "You cannot delete this media."
-msgstr "Vous ne pouvez pas utiliser l'IA pour améliorer cette vidéo."
+msgstr ""
 
 #: pod/video/views.py
 msgid "You cannot delete a media that is being encoded."

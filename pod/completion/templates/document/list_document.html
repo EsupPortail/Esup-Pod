@@ -1,7 +1,6 @@
 {# HTML for document list. Don't use this file alone it must be integrated into another template! #}
 {% load i18n %}
-<div class="table-responsive">
-  <table class="table table-striped table-condensed caption-top" id="list-document">
+  <table class="table table-striped table-condensed caption-top" id="table-document">
     <caption>{% trans 'List of additional resources' %}&nbsp;({{list_document|length}})</caption>
     <thead>
       <tr>
@@ -11,8 +10,8 @@
     </thead>
     <tbody>
       {% for doc in list_document %}
-        <tr>
-          <td class="document_name">{{doc.document.name}} ({{ doc.document.file_ext }})
+        <tr data-id-instance="{{doc.id}}">
+          <td class="document_name" data-id-document="{{doc.document.id}}">{{doc.document.name}} ({{ doc.document.file_ext }})
             {% if doc.private %}
               <i class="bi bi-eye-slash" title="{% trans 'Private document' %}"></i>
             {% else %}
@@ -37,4 +36,4 @@
       {% endfor %}
     </tbody>
   </table>
-</div>
+

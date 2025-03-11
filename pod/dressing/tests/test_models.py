@@ -1,6 +1,7 @@
 """Unit tests for dressing models."""
 
 import os
+import json
 import unittest
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -58,6 +59,11 @@ class DressingModelTest(TestCase):
             video="test.mp4",
             duration=20,
         )
+        videofile = video.video.path
+        video_dir = os.path.join(os.path.dirname(videofile), "%04d" % video.id)
+        os.makedirs(video_dir, exist_ok=True)
+        with open(os.path.join(video_dir, "info_video.json"), "w") as f:
+            json.dump({"list_audio_track": ["0"]}, f)
         video2 = Video.objects.create(
             title="video2",
             type=videotype,
@@ -65,6 +71,11 @@ class DressingModelTest(TestCase):
             video="test2.mp4",
             duration=20,
         )
+        videofile2 = video2.video.path
+        video_dir2 = os.path.join(os.path.dirname(videofile2), "%04d" % video2.id)
+        os.makedirs(video_dir2, exist_ok=True)
+        with open(os.path.join(video_dir2, "info_video.json"), "w") as f:
+            json.dump({"list_audio_track": []}, f)
         dressing = Dressing.objects.create(
             title="Test Dressing",
             watermark=customImage,
@@ -113,8 +124,12 @@ class DressingModelTest(TestCase):
             "opacity": 50,
             "opening_credits": video.slug,
             "opening_credits_video": (dressing.opening_credits.video.name),
+            "opening_credits_video_duration": 20,
+            "opening_credits_video_hasaudio": True,
             "ending_credits": video2.slug,
             "ending_credits_video": (dressing.ending_credits.video.name),
+            "ending_credits_video_duration": 20,
+            "ending_credits_video_hasaudio": False,
         }
         self.assertEqual(dressing_json, expected_json)
         print(" ---> test_dressing_to_json: OK! --- DressingModelTest")

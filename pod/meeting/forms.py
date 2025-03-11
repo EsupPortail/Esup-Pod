@@ -322,6 +322,7 @@ class MeetingForm(forms.ModelForm):
 
         if not self.cleaned_data.get("recurring_until"):
             self.instance.recurring_until = None
+            self.instance.nb_occurrences = None
 
     def clean_add_owner(self):
         """Check if meeting owner not in additional owners."""
@@ -457,6 +458,7 @@ class MeetingForm(forms.ModelForm):
             and getattr(self.instance, "recurrence", None) is None
         ):
             self.initial["recurring_until"] = None
+            self.initial["nb_occurrences"] = None
 
         # MEETING_DISABLE_RECORD
         if MEETING_DISABLE_RECORD:

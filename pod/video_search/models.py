@@ -21,7 +21,7 @@ def update_video_index(
     if ES_URL is None:
         return
     t = threading.Thread(target=index_video, args=[instance])
-    t.setDaemon(True)
+    t.daemon = True
     t.start()
 
 
@@ -30,7 +30,7 @@ def index_video(video) -> None:  # pragma: no cover
     if video.is_draft is False and video.encoding_in_progress is False:
         index_es(video)
     else:
-        delete_es(video)
+        delete_es(video.id)
 
 
 @receiver(pre_delete, sender=Video)
@@ -41,6 +41,6 @@ def delete_video_index(
     if ES_URL is None:
         return
     # delete_es(instance)
-    t = threading.Thread(target=delete_es, args=[instance])
-    t.setDaemon(True)
+    t = threading.Thread(target=delete_es, args=[instance.id])
+    t.daemon = True
     t.start()

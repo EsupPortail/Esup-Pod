@@ -2,6 +2,7 @@
 
 from django.db.models.functions import Lower
 import os
+import json
 import re
 import shutil
 from math import ceil
@@ -14,8 +15,6 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import Video
 
-
-DEBUG = getattr(settings, "DEBUG", True)
 
 TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings,
@@ -295,3 +294,46 @@ def verify_field_length(field, field_name: str = "title", max_length: int = 100)
             )
         )
     return msg
+
+
+def has_audio(video):
+    """
+    Checks if a video contains an audio track.
+
+    Args:
+        video (:class:`pod.video.models`): The video object.
+
+    Returns:
+        bool: True if the video has an audio track, False otherwise.
+    """
+    try:
+        # Get the path of the video file
+        video_path = video.video.path
+
+        # Build the path to the output directory
+        output_dir = os.path.join(os.path.dirname(video_path), f"{video.id:04d}")
+
+        # Path to the info_video.json file
+        info_file = os.path.join(output_dir, "info_video.json")
+
+        # Read the JSON file
+        with open(info_file, "r", encoding="utf-8") as json_file:
+            info_video = json.load(json_file)
+
+        # Check if the "list_audio_track" key exists and the list is not empty
+        if len(info_video["list_audio_track"]) > 0:
+            return True
+        else:
+            return False
+
+    except FileNotFoundError:
+        print("Error: info_video.json file not found.")
+    except json.JSONDecodeError:
+        print("Error: Malformed JSON file.")
+    except KeyError:
+        print("Error: 'list_audio_track' key missing in JSON file.")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+
+    # Default to True if an error occurs
+    return True
