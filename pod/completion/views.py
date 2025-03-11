@@ -14,7 +14,6 @@ from django.core.exceptions import PermissionDenied
 from django.core.handlers.wsgi import WSGIRequest
 from pod.video.models import Video
 from pod.main.utils import is_ajax
-from pod.main.utils import is_ajax
 from .models import Contributor
 from .forms import ContributorForm
 from .models import Document

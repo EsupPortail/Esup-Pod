@@ -1,7 +1,6 @@
 """Esup-Pod Video completion urls."""
 
 from django.urls import re_path
-from django.urls import re_path
 from .views import video_completion
 from .views import video_caption_maker
 from .views import video_completion_contributor
