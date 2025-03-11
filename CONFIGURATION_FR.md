@@ -926,6 +926,7 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
   >> Valeurs possibles :<br>
   >> * None (pas de renseignement),<br>
   >> * CAS (renseigne les champs depuis les informations renvoyées par le CAS),<br>
+  >> * LDAP (renseigne les champs depuis les informations renvoyées par le LDAP),<br>
 * `REMOTE_USER_HEADER`
   > valeur par défaut : `REMOTE_USER`
   >> Nom de l’attribut dans les headers qui sert à identifier<br>
