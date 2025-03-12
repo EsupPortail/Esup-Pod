@@ -86,6 +86,7 @@ INSTALLED_APPS = [
     "pod.speaker",
     "pod.custom",
     "pod.duplicate",
+    "pod.hyperlinks",
 ]
 
 ##
@@ -148,6 +149,7 @@ TEMPLATES = [
                 "pod.cut.context_processors.context_settings",
                 "pod.speaker.context_processors.context_settings",
                 "pod.duplicate.context_processors.context_settings",
+                "pod.hyperlinks.context_processors.context_settings",
             ],
         },
     },
