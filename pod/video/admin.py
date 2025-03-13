@@ -208,11 +208,7 @@ class VideoAdmin(admin.ModelAdmin):
             exclude += ("disable_comment",)
 
         if obj and (obj.encoding_in_progress or not obj.encoded):
-            exclude += (
-                "video",
-                "owner",
-                "thumbnail"
-            )
+            exclude += ("video", "owner", "thumbnail")
         if not USE_TRANSCRIPTION:
             exclude += ("transcript",)
         if request.user.is_staff is False or obj is None or USE_OBSOLESCENCE is False:

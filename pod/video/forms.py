@@ -995,9 +995,7 @@ class VideoForm(forms.ModelForm):
 
             self.fields["description"].widget = TinyMCE()
             for key, _value in settings.LANGUAGES:
-                self.fields["description_%s" % key.replace("-", "_")].widget = (
-                    TinyMCE()
-                )
+                self.fields["description_%s" % key.replace("-", "_")].widget = TinyMCE()
         if self.fields.get("date_delete"):
             if self.is_staff is False or USE_OBSOLESCENCE is False:
                 del self.fields["date_delete"]
@@ -1166,9 +1164,7 @@ class ChannelForm(forms.ModelForm):
             del self.fields["headband"]
             self.fields["description"].widget = TinyMCE()
             for key, _value in settings.LANGUAGES:
-                self.fields["description_%s" % key.replace("-", "_")].widget = (
-                    TinyMCE()
-                )
+                self.fields["description_%s" % key.replace("-", "_")].widget = TinyMCE()
         # hide default langage
         self.fields["description_%s" % settings.LANGUAGE_CODE].widget = (
             forms.HiddenInput()

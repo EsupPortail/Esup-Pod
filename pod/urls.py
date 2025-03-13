@@ -51,7 +51,7 @@ urlpatterns = [
     path("info_pod.json", info_pod),
     re_path(r"^admin/", admin.site.urls),
     # WYSIWYG editor
-    path('tinymce/', include('tinymce.urls')),
+    path("tinymce/", include("tinymce.urls")),
     # Translation
     path("i18n/", include("django.conf.urls.i18n")),
     path("jsi18n/", JavaScriptCatalog.as_view(), name="javascript-catalog"),
