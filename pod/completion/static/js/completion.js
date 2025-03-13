@@ -57,6 +57,7 @@ document.addEventListener("submit", (e) => {
     e.target.id !== "form_document" &&
     e.target.id !== "form_new_track" &&
     e.target.id !== "form_new_overlay" &&
+    e.target.id !== "form_new_hyperlink" &&
     !e.target.matches(".form_change") &&
     !e.target.matches(".form_modif") &&
     !e.target.matches(".form_delete")
@@ -235,6 +236,10 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
     } else if (name === "overlay") {
       confirmationMessage = gettext(
         "Are you sure you want to delete this overlay?",
+      );
+    } else if (name === "hyperlink") {
+      deleteConfirm = confirm(
+        gettext("Are you sure you want to delete this hyperlink?"),
       );
     }
 

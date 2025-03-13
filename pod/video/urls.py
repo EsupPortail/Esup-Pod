@@ -109,6 +109,10 @@ urlpatterns += [
     path("duplicate/", include("pod.duplicate.urls", namespace="duplicate")),
 ]
 
+urlpatterns += [
+    path("hyperlinks/", include("pod.hyperlinks.urls", namespace="hyperlinks")),
+]
+
 ##
 # OEMBED feature patterns
 #
