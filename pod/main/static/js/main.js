@@ -1119,7 +1119,7 @@ function show_form_theme(data) {
   );
 
   theme_descriptions.forEach((el) => {
-    let t=tinyMCE.get(el.id);
+    let t = tinyMCE.get(el.id);
     if (t) {
       t.remove();
     }

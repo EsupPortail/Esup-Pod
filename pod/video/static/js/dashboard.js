@@ -147,7 +147,9 @@ async function bulkUpdate() {
             dashboardValue = element.checked;
             break;
           case "textarea":
-            dashboardValue = tinyMCE.get("id_" + element.getAttribute("name")).getContent();
+            dashboardValue = tinyMCE
+              .get("id_" + element.getAttribute("name"))
+              .getContent();
             break;
           default:
             dashboardValue = document.getElementById(
