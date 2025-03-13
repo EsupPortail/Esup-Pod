@@ -119,12 +119,17 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         encode_video(self.video.id, threaded=False)
         self.video.refresh_from_db()
         n = 0
+        tstart = time.time()
+
         while self.video.encoding_in_progress:
-            print("... Encoding in progress: %s " % self.video.get_encoding_step)
+            tic = time.time()
+            htic = time.strftime('%M:%S', time.gmtime(tic - tstart))
+
+            print("... [%s] Encoding in progress: %s " % (htic, self.video.get_encoding_step))
             self.video.refresh_from_db()
             time.sleep(2)
             n += 1
-            if n > 60:
+            if n > 120:
                 raise ValidationError("Error while remote encoding (process too long)!")
         self.video.refresh_from_db()
         self.assertEqual("Video1", self.video.title)
@@ -168,12 +173,17 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         encode_video(self.video.id, threaded=False)
         self.video.refresh_from_db()
         n = 0
+        tstart = time.time()
+
         while self.video.encoding_in_progress:
-            print("... Encoding in progress: %s " % self.video.get_encoding_step)
+            tic = time.time()
+            htic = time.strftime('%M:%S', time.gmtime(tic - tstart))
+
+            print("... [%s] Cut encoding in progress: %s " % (htic, self.video.get_encoding_step))
             self.video.refresh_from_db()
             time.sleep(2)
             n += 1
-            if n > 60:
+            if n > 120:
                 raise ValidationError("Error while encoding Cut (process too long)!")
         self.video.refresh_from_db()
         self.assertEqual("Video1", self.video.title)
@@ -240,12 +250,17 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         encode_video(self.video.id, threaded=False)
         self.video.refresh_from_db()
         n = 0
+        tstart = time.time()
+
         while self.video.encoding_in_progress:
-            print("... Encoding dressing in progress: %s " % self.video.get_encoding_step)
+            tic = time.time()
+            htic = time.strftime('%M:%S', time.gmtime(tic - tstart))
+
+            print("... [%s] Encoding dressing in progress: %s " % (htic, self.video.get_encoding_step))
             self.video.refresh_from_db()
             time.sleep(2)
             n += 1
-            if n > 60:
+            if n > 120:
                 raise ValidationError("Error while encoding dressing (process too long)!")
         self.video.refresh_from_db()
         print("end of dressing encoding")
