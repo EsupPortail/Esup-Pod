@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Hyperlink, VideoHyperlink
+from django.utils.translation import gettext as _
 
 
 @admin.register(Hyperlink)
@@ -17,8 +18,8 @@ class VideoHyperlinkAdmin(admin.ModelAdmin):
 
     def get_hyperlink_description(self, obj):
         return obj.hyperlink.description
-    get_hyperlink_description.short_description = 'Hyperlink Description'
+    get_hyperlink_description.short_description = _('Hyperlink Description')
 
     def get_hyperlink_url(self, obj):
         return obj.hyperlink.url
-    get_hyperlink_url.short_description = 'Hyperlink URL'
+    get_hyperlink_url.short_description = _('Hyperlink URL')

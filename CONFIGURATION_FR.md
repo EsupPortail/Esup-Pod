@@ -1077,12 +1077,7 @@ Mettre `USE_DUPLICATE` à True pour activer cette application.<br>
 
 ### Configuration de l’application enrichment
 
-### Configuration de l’application hyperlinks
-Application hyperlinks permettant d'ajouter des liens à la vidéo.<br>
-Mettre `USE_HYPERLINKS` à True pour activer cette application.<br>
-* `USE_HYPERLINKS`
-  > valeur par défaut : `False`
-  >> Activation de hyperlinks.<br>
+
 ### Configuration de l’application Intervenant
 
 Application Intervenant permettant d'ajouter des intervenants à la vidéo.<br>

@@ -2497,6 +2497,13 @@ msgid "You cannot access this playlist because it is private."
 msgstr ""
 "Vous ne pouvez pas accéder à cette liste de lecture car elle est privée."
 
+#: pod/hyperlinks/admin.py
+msgid "Hyperlink Description"
+msgstr "Description de l'hyperlien"
+
+msgid "Hyperlink URL"
+msgstr "URL de l'hyperlien"
+
 #: pod/hyperlinks/forms.py
 msgid "You can search hyperlink by URL or description."
 msgstr "Vous pouvez rechercher un hyperlien par URL ou par description."
@@ -2522,7 +2529,7 @@ msgstr "URL"
 
 #: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
 msgid "Delete the hyperlink “%(hyperlink_description)s”"
-msgstr "Supprimer le hyperlien « %(hyperlink_description)s »"
+msgstr "Supprimer l'hyperlien « %(hyperlink_description)s »"
 
 #: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
 msgid "Manage Hyperlinks"
@@ -2546,7 +2553,7 @@ msgstr "Supprimer l'hyperlien « %(hyperlink_url)s »"
 
 #: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
 msgid "No hyperlinks found."
-msgstr "Aucun hyperliens trouvé."
+msgstr "Aucun hyperlien trouvé."
 
 #: pod/import_video/apps.py
 msgid "Import External Video"
@@ -10088,7 +10095,7 @@ msgstr "Langue principale :"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Hyperlinks:"
-msgstr "Hyperliens"
+msgstr "Hyperliens:"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Audience:"

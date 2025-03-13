@@ -261,7 +261,7 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer cette superposition ?"
 
 #: pod/completion/static/js/completion.js
 msgid "Are you sure you want to delete this hyperlink?"
-msgstr "Êtes-vous sûr(e) de vouloir supprimer cet hyperlien?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer cet hyperlien ?"
 
 #: pod/completion/static/js/completion.js
 msgid "Please enter a name from 2 to 100 caracteres."
