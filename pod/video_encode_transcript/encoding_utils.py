@@ -19,6 +19,7 @@ except ImportError:  # pragma: no cover
     pass
 """
 
+
 def sec_to_timestamp(total_seconds) -> str:
     """Format time for webvtt caption."""
     hours = int(total_seconds / 3600)
