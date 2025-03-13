@@ -54,9 +54,14 @@ lang:
 	echo "Processing javascript files..."
 	python3 manage.py makemessages -d djangojs -l fr -l nl -i "*.min.js" -i "pod/static/*" -i "opencast-studio/*" -i "*/node_modules/*"  -i "node_modules/*" -i "pod/custom/*" --add-location=file
 
-#compilation des fichiers de langue
+# Compilation des fichiers de langue
 compilelang:
 	python3 manage.py compilemessages -l fr -l nl
+
+# Suppression des sessions inutilisées
+clearsessions:
+	python3 manage.py clearsessions
+	python3 manage.py django_cas_ng_clean_sessions
 
 # Look for changes to apply in DB
 updatedb:

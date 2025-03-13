@@ -364,10 +364,13 @@
                 <a class="nav-item nav-link" href="#">Gestion de mon compte</a>
               {% endcomment %}
               <hr class="dropdown-divider">
-              <a class="nav-item nav-link" href="{% url 'authentication:authentication_logout' %}">
-                <i class="bi bi-box-arrow-right pod-nav-link-icon mx-1" aria-hidden="true"></i>
-                {% trans 'Log out' %}
-              </a>
+              <form action="{% url 'authentication:authentication_logout' %}" method="post">
+                {% csrf_token %}
+                <button class="nav-item nav-link" type="submit">
+                  <i class="bi bi-box-arrow-right pod-nav-link-icon mx-1" aria-hidden="true"></i>
+                  {% trans 'Log out' %}
+                </button>
+              </form>
             </nav>
             {% show_stats user as show_stats %}
             {% if show_stats %}
