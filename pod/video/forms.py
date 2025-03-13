@@ -27,7 +27,7 @@ from django.db.models.signals import post_save
 from django.contrib.sites.shortcuts import get_current_site
 from pod.main.forms_utils import add_placeholder_and_asterisk, add_describedby_attr
 
-from ckeditor.widgets import CKEditorWidget
+from tinymce.widgets import TinyMCE
 from collections import OrderedDict
 from django_select2 import forms as s2forms
 
@@ -959,7 +959,7 @@ class VideoForm(forms.ModelForm):
             )
         self.__init_instance__()
 
-    def __init_instance__(self):
+    def __init_instance__(self) -> None:
         """Initialize a new VideoForm instance for visibility field."""
         if self.instance:
             if self.instance.is_draft:
@@ -993,11 +993,9 @@ class VideoForm(forms.ModelForm):
         if self.is_staff is False:
             del self.fields["thumbnail"]
 
-            self.fields["description"].widget = CKEditorWidget(config_name="default")
+            self.fields["description"].widget = TinyMCE()
             for key, _value in settings.LANGUAGES:
-                self.fields["description_%s" % key.replace("-", "_")].widget = (
-                    CKEditorWidget(config_name="default")
-                )
+                self.fields["description_%s" % key.replace("-", "_")].widget = TinyMCE()
         if self.fields.get("date_delete"):
             if self.is_staff is False or USE_OBSOLESCENCE is False:
                 del self.fields["date_delete"]
@@ -1164,11 +1162,9 @@ class ChannelForm(forms.ModelForm):
             self.is_staff is False and self.is_superuser is False
         ):
             del self.fields["headband"]
-            self.fields["description"].widget = CKEditorWidget(config_name="default")
+            self.fields["description"].widget = TinyMCE()
             for key, _value in settings.LANGUAGES:
-                self.fields["description_%s" % key.replace("-", "_")].widget = (
-                    CKEditorWidget(config_name="default")
-                )
+                self.fields["description_%s" % key.replace("-", "_")].widget = TinyMCE()
         # hide default langage
         self.fields["description_%s" % settings.LANGUAGE_CODE].widget = (
             forms.HiddenInput()
@@ -1234,12 +1230,10 @@ class FrontThemeForm(ThemeForm):
 
         self.fields["channel"].widget = forms.HiddenInput()
         # self.fields["parentId"].label = _('Theme parent')
-        # Add CKEditor when edit a theme
-        self.fields["description"].widget = CKEditorWidget(config_name="complete")
+        # Add WYSIWYG when edit a theme
+        self.fields["description"].widget = TinyMCE()
         for key, _value in settings.LANGUAGES:
-            self.fields["description_%s" % key.replace("-", "_")].widget = CKEditorWidget(
-                config_name="complete"
-            )
+            self.fields["description_%s" % key.replace("-", "_")].widget = TinyMCE()
 
         if "channel" in self.initial.keys():
             themes_queryset = Theme.objects.filter(channel=self.initial["channel"])
