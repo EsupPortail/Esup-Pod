@@ -620,7 +620,6 @@ class Encoding_video:
 
     def encode_video_dressing(self) -> None:
         """Encode the dressed video."""
-        video.refresh_from_db()
         dressing_command = self.get_dressing_command()
         return_value, return_msg = launch_cmd(dressing_command)
         self.add_encoding_log(
