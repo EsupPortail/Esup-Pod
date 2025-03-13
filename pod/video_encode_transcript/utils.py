@@ -69,7 +69,7 @@ def change_encoding_step(video_id, num_step, desc) -> None:
     encoding_step.save()
 
     if DEBUG:
-        print("step: %d - desc: %s" % (num_step, desc))
+        print("Video: %d - step: %d - desc: %s" % (video_id, num_step, desc))
 
 
 def add_encoding_log(video_id, log) -> None:

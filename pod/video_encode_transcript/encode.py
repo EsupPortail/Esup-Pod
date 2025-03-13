@@ -138,8 +138,8 @@ def encode_video(video_id: int) -> None:
     change_encoding_step(video_id, 1, "remove old data")
     encoding_video.remove_old_data()
 
-    change_encoding_step(video_id, 2, "start encoding")
     if USE_REMOTE_ENCODING_TRANSCODING:
+        change_encoding_step(video_id, 2, "start remote encoding")
         dressing = None
         dressing_input = ""
         if Dressing.objects.filter(videos=video_to_encode).exists():
@@ -155,6 +155,7 @@ def encode_video(video_id: int) -> None:
             dressing_input=dressing_input,
         )
     else:
+        change_encoding_step(video_id, 2, "start standard encoding")
         encoding_video.start_encode()
         final_video = store_encoding_info(video_id, encoding_video)
 
