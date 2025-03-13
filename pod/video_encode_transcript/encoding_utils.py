@@ -11,15 +11,15 @@ try:
 except (ImportError, ValueError):
     from encoding_settings import VIDEO_RENDITIONS
 
+"""
 try:
     from django.conf import settings
-
     VIDEO_RENDITIONS = getattr(settings, "VIDEO_RENDITIONS", VIDEO_RENDITIONS)
 except ImportError:  # pragma: no cover
     pass
+"""
 
-
-def sec_to_timestamp(total_seconds):
+def sec_to_timestamp(total_seconds) -> str:
     """Format time for webvtt caption."""
     hours = int(total_seconds / 3600)
     minutes = int(total_seconds / 60 - hours * 60)
@@ -65,7 +65,7 @@ def get_renditions():
         return VIDEO_RENDITIONS
 
 
-def check_file(path_file):
+def check_file(path_file) -> bool:
     if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
         return True
     return False

@@ -874,6 +874,7 @@ class Encoding_video:
 
     def start_encode(self) -> None:
         self.start = time.ctime()
+        change_encoding_step(self.id, 2, "Encoding started at %s" % self.start)
         self.create_output_dir()
         self.get_video_data()
         if self.json_dressing is not None:

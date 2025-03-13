@@ -114,7 +114,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             self.user.delete()
         print(" --->  tearDown of RemoteEncodeTranscriptTestCase: OK!")
 
-    def wait_for_encode_end(self, title="", max_delay=120) -> None:
+    def wait_for_encode_end(self, title="", max_delay=60) -> None:
         """Wait for the encoding process to complete, raising an error if it takes too long."""
         tstart = time.time()
         self.video.refresh_from_db()
@@ -136,13 +136,13 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.video.refresh_from_db()
 
     def test_remote_encoding_transcoding(self) -> None:
-        """Tests the remote encoding and transcripting of a video."""
+        """Test the remote encoding and transcripting of a video."""
         self.remote_encoding()
         self.remote_transcripting()
         print(" --->  test_remote_encoding_transcoding: OK!")
 
     def remote_encoding(self) -> None:
-        """Tests the remote encoding of a video, verifying the creation of various encoding formats and logs."""
+        """Test the remote encoding of a video, verifying the creation of various encoding formats and logs."""
         if not TEST_REMOTE_ENCODE:
             return
         print("\n ---> Start Remote encoding video test")
@@ -182,15 +182,16 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             return
         print("\n ---> Start Remote encoding cut video test")
         encode_video = getattr(encode, ENCODE_VIDEO)
+
         encode_video(self.video.id, threaded=False)
-        self.video.refresh_from_db()
+        self.wait_for_encode_end("Pre-cut")
+
         CutVideo.objects.create(
             video=self.video,
             start="00:00:00",
             end="00:00:05",
         )
         encode_video(self.video.id, threaded=False)
-
         self.wait_for_encode_end("Cut")
 
         self.assertEqual("Video1", self.video.title)
@@ -301,7 +302,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
             transcript_video(self.video.id, threaded=False)
 
-            self.wait_for_encode_end("Transcripting", 120)
+            self.wait_for_encode_end("Transcripting", 60)
 
             self.video.refresh_from_db()
             if not Track.objects.filter(video=self.video, lang="fr").exists():
