@@ -167,8 +167,8 @@ function fadeIn(el, display) {
 
 /**
  * Hide element whith fade effect
- * @param  {HTMLElement} elem Dom element to hide
- * @param  {[type]} speed [description]
+ * @param {HTMLElement} elem Dom element to hide
+ * @param {number} speed Speed of the fadeout
  */
 function fadeOut(elem, speed) {
   if (!elem.style.opacity) {
