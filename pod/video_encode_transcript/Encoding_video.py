@@ -8,6 +8,7 @@ import argparse
 import unicodedata
 
 if __name__ == "__main__":
+    from utils import change_encoding_step
     from encoding_utils import (
         get_dressing_position_value,
         get_info_from_video,
@@ -48,6 +49,7 @@ if __name__ == "__main__":
         FFMPEG_DRESSING_AUDIO,
     )
 else:
+    from .utils import change_encoding_step
     from .encoding_utils import (
         get_dressing_position_value,
         get_info_from_video,
@@ -192,7 +194,7 @@ class Encoding_video:
 
     def __init__(
         self, id=0, video_file="", start=0, stop=0, json_dressing=None, dressing_input=""
-    ):
+    ) -> None:
         """Initialize a new Encoding_video object."""
         self.id = id
         self.video_file = video_file
@@ -222,13 +224,13 @@ class Encoding_video:
         """Check if current encoding correspond to a video."""
         return len(self.list_video_track) > 0
 
-    def get_subtime(self, clip_begin, clip_end):
+    def get_subtime(self, clip_begin, clip_end) -> str:
         subtime = ""
         if clip_begin != 0 or clip_end != 0:
             subtime += "-ss %s " % str(clip_begin) + "-to %s " % str(clip_end)
         return subtime
 
-    def get_video_data(self):
+    def get_video_data(self) -> None:
         """Get alls tracks from video source and put it in object passed in parameter."""
         msg = "--> get_info_video\n"
         probe_cmd = FFPROBE_GET_INFO % {
@@ -308,7 +310,7 @@ class Encoding_video:
         dirname = os.path.dirname(self.video_file)
         return os.path.join(dirname, "%04d" % int(self.id))
 
-    def create_output_dir(self):
+    def create_output_dir(self) -> None:
         output_dir = self.get_output_dir()
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -616,8 +618,9 @@ class Encoding_video:
 
         return filters, params, interval_silent
 
-    def encode_video_dressing(self):
+    def encode_video_dressing(self) -> None:
         """Encode the dressed video."""
+        video.refresh_from_db()
         dressing_command = self.get_dressing_command()
         return_value, return_msg = launch_cmd(dressing_command)
         self.add_encoding_log(
@@ -625,7 +628,7 @@ class Encoding_video:
         )
         self.video_file = self.get_dressing_file()
 
-    def encode_video_part(self):
+    def encode_video_part(self) -> None:
         """Encode the video part of a file."""
         mp4_command = self.get_mp4_command()
         return_value, return_msg = launch_cmd(mp4_command)
@@ -642,7 +645,7 @@ class Encoding_video:
             self.create_main_livestream()
         self.add_encoding_log("hls_command", hls_command, return_value, return_msg)
 
-    def create_main_livestream(self):
+    def create_main_livestream(self) -> None:
         list_rendition = get_list_rendition()
         livestream_content = ""
         for index, rend in enumerate(list_rendition):
@@ -693,7 +696,7 @@ class Encoding_video:
         self.list_m4a_files[FFMPEG_AUDIO_BITRATE] = output_file
         return m4a_command
 
-    def encode_audio_part(self):
+    def encode_audio_part(self) -> None:
         """Encode the audio part of a video."""
         mp3_command = self.get_mp3_command()
         return_value, return_msg = launch_cmd(mp3_command)
@@ -754,7 +757,7 @@ class Encoding_video:
         else:
             return list_rendition.popitem(last=False)
 
-    def create_overview(self):
+    def create_overview(self) -> None:
         first_item = self.get_first_item()
         # overview combine for 160x90
         in_height = list(self.list_video_track.items())[0][1]["height"]
@@ -815,7 +818,7 @@ class Encoding_video:
         else:
             self.add_encoding_log("create_overview", "", False, "")
 
-    def encode_image_part(self):
+    def encode_image_part(self) -> None:
         if len(self.list_image_track) > 0:
             thumbnail_command = self.get_extract_thumbnail_command()
             return_value, return_msg = launch_cmd(thumbnail_command)
@@ -849,7 +852,7 @@ class Encoding_video:
             self.list_subtitle_files[sub] = [lang, output_file]
         return subtitle_command
 
-    def get_subtitle_part(self):
+    def get_subtitle_part(self) -> None:
         if len(self.list_subtitle_track) > 0:
             subtitle_command = self.get_extract_subtitle_command()
             return_value, return_msg = launch_cmd(subtitle_command)
@@ -857,32 +860,37 @@ class Encoding_video:
                 "subtitle_command", subtitle_command, return_value, return_msg
             )
 
-    def export_to_json(self):
+    def export_to_json(self) -> None:
         data_to_dump = {}
         for attribute, value in self.__dict__.items():
             data_to_dump[attribute] = value
         with open(self.output_dir + "/info_video.json", "w") as outfile:
             json.dump(data_to_dump, outfile, indent=2)
 
-    def add_encoding_log(self, title, command, result, msg):
+    def add_encoding_log(self, title, command, result, msg) -> None:
         """Add Encoding step to the encoding_log dict."""
         self.encoding_log[title] = {"command": command, "result": result, "msg": msg}
         if result is False and self.error_encoding is False:
             self.error_encoding = True
 
-    def start_encode(self):
+    def start_encode(self) -> None:
         self.start = time.ctime()
         self.create_output_dir()
         self.get_video_data()
         if self.json_dressing is not None:
+            change_encoding_step(self.id, 3, "encode_video_dressing")
             self.encode_video_dressing()
         print(self.id, self.video_file, self.duration)
         if self.is_video():
+            change_encoding_step(self.id, 4, "encode_video_part")
             self.encode_video_part()
         if len(self.list_audio_track) > 0:
+            change_encoding_step(self.id, 5, "encode_audio_part")
             self.encode_audio_part()
+        change_encoding_step(self.id, 6, "encode_image_part")
         self.encode_image_part()
         if len(self.list_subtitle_track) > 0:
+            change_encoding_step(self.id, 7, "get_subtitle_part")
             self.get_subtitle_part()
         self.stop = time.ctime()
         self.export_to_json()
