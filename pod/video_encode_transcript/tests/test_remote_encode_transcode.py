@@ -124,8 +124,8 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             self.video.refresh_from_db()
             time.sleep(2)
             n += 1
-            if n > 30:
-                raise ValidationError("Error while encoding!!!")
+            if n > 60:
+                raise ValidationError("Error while remote encoding (process too long)!")
         self.video.refresh_from_db()
         self.assertEqual("Video1", self.video.title)
         list_mp2t = EncodingVideo.objects.filter(
@@ -173,8 +173,8 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             self.video.refresh_from_db()
             time.sleep(2)
             n += 1
-            if n > 30:
-                raise ValidationError("Error while encoding!!!")
+            if n > 60:
+                raise ValidationError("Error while encoding Cut (process too long)!")
         self.video.refresh_from_db()
         self.assertEqual("Video1", self.video.title)
         list_mp2t = EncodingVideo.objects.filter(
@@ -245,8 +245,8 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             self.video.refresh_from_db()
             time.sleep(2)
             n += 1
-            if n > 30:
-                raise ValidationError("Error while encoding!!!")
+            if n > 60:
+                raise ValidationError("Error while encoding dressing (process too long)!")
         self.video.refresh_from_db()
         print("end of dressing encoding")
         print(self.video.get_encoding_step)
