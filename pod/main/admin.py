@@ -1,6 +1,6 @@
 """Esup-Pod main admin page."""
 
-from ckeditor.widgets import CKEditorWidget
+from tinymce.widgets import TinyMCE
 from django.contrib import admin
 from django import forms
 from django.contrib.flatpages.admin import FlatpageForm
@@ -18,9 +18,7 @@ from pod.main.models import Block
 SITE_ID = getattr(settings, "SITE_ID", 1)
 content_widget = {}
 for key, value in settings.LANGUAGES:
-    content_widget["content_%s" % key.replace("-", "_")] = CKEditorWidget(
-        config_name="complete"
-    )
+    content_widget["content_%s" % key.replace("-", "_")] = TinyMCE()
 
 
 class PageForm(FlatpageForm):

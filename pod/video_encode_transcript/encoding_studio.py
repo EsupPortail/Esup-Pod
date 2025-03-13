@@ -23,6 +23,21 @@ else:
         FFMPEG_STUDIO_COMMAND,
     )
 
+try:
+    from django.conf import settings
+
+    FFMPEG_CMD = getattr(settings, "FFMPEG_CMD", FFMPEG_CMD)
+    FFPROBE_CMD = getattr(settings, "FFPROBE_CMD", FFPROBE_CMD)
+    FFMPEG_CRF = getattr(settings, "FFMPEG_CRF", FFMPEG_CRF)
+    FFMPEG_NB_THREADS = getattr(settings, "FFMPEG_NB_THREADS", FFMPEG_NB_THREADS)
+    FFPROBE_GET_INFO = getattr(settings, "FFPROBE_GET_INFO", FFPROBE_GET_INFO)
+    FFMPEG_STUDIO_COMMAND = getattr(
+        settings, "FFMPEG_STUDIO_COMMAND", FFMPEG_STUDIO_COMMAND
+    )
+except ImportError:  # pragma: no cover
+    pass
+
+
 # ##########################################################################
 # ENCODE VIDEO STUDIO: MAIN ENCODE
 # ##########################################################################
