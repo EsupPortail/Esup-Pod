@@ -63,3 +63,8 @@
 fieldset.collapse:not(.show) {
   display: block;
 }
+
+/* Corrections on Django admin base.css */
+select {
+  height: auto;
+}

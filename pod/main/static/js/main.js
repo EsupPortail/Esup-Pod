@@ -148,10 +148,9 @@ var slideToggle = (target, duration = 500) => {
 };
 
 /**
- * [fadeIn description]
- * @param  {[type]} el      [description]
- * @param  {[type]} display [description]
- * @return {[type]}         [description]
+ * Show HTML element whith fade effect
+ * @param  {HTMLElement} el Dom element to show
+ * @param  {string} display Display property (default: block)
  */
 function fadeIn(el, display) {
   el.style.opacity = 0;
@@ -159,7 +158,7 @@ function fadeIn(el, display) {
   el.style.display = display || "block";
   (function fade() {
     var val = parseFloat(el.style.opacity);
-    if (!((val += 0.1) > 1)) {
+    if (!((val += 0.04) > 1)) {
       el.style.opacity = val;
       requestAnimationFrame(fade);
     }
@@ -167,15 +166,14 @@ function fadeIn(el, display) {
 }
 
 /**
- * [fadeOut description]
- * @param  {[type]} elem  [description]
- * @param  {[type]} speed [description]
- * @return {[type]}       [description]
+ * Hide element whith fade effect
+ * @param {HTMLElement} elem Dom element to hide
+ * @param {number} speed Speed of the fadeout
  */
 function fadeOut(elem, speed) {
   if (!elem.style.opacity) {
     elem.style.opacity = 1;
-  } // end if
+  }
 
   var outInterval = setInterval(function () {
     elem.style.opacity -= 0.02;
@@ -185,9 +183,10 @@ function fadeOut(elem, speed) {
         elem.style.opacity = Number(elem.style.opacity) + 0.02;
         if (elem.style.opacity >= 1) clearInterval(inInterval);
       }, speed / 50);
-    } // end if
+    }
   }, speed / 50);
 }
+
 /**
  * [isJson description]
  * @param  {[type]}  str [description]
@@ -1104,6 +1103,7 @@ var append_picture_form = async function (data) {
     userPictureModal.show();
   }
 };
+
 /**
  * [show_form_theme description]
  * @param  {[type]} data [description]
@@ -1112,21 +1112,37 @@ var append_picture_form = async function (data) {
 function show_form_theme(data) {
   let div_form = document.getElementById("div_form_theme");
   div_form.style.display = "none";
+
+  // Destroy all WYSIWYG before replacing content
+  var theme_descriptions = document.querySelectorAll(
+    "textarea[id^='id_description']",
+  );
+
+  theme_descriptions.forEach((el) => {
+    let t=tinyMCE.get(el.id);
+    if (t) {
+      t.remove();
+    }
+  });
+
   div_form.innerHTML = data;
+
+  // Reinit WYSIWYG on newly loaded textarea
+  theme_descriptions = document.querySelectorAll(
+    "textarea[id^='id_description']",
+  );
+
+  theme_descriptions.forEach((el) => {
+    let mce_conf = JSON.parse(el.dataset.mceConf);
+    tinyMCE.init(mce_conf);
+  });
+
   fadeIn(div_form);
   if (data != "")
     document.querySelector("form.get_form_theme").style.display = "none";
   window.scrollTo({
     top: parseInt(document.getElementById("div_form_theme").offsetTop, 10),
     behavior: "smooth",
-  });
-  // Add CKEditor when edit a theme
-  // For all descriptions, except description help
-  const theme_descriptions = document.querySelectorAll(
-    "textarea[id^='id_description']",
-  );
-  theme_descriptions.forEach((theme_description) => {
-    CKEDITOR.replace(theme_description.id);
   });
 }
 /**
