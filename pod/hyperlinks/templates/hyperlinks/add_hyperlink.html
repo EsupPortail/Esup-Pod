@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block page_content %}
-  <h1 class="page_title">{% trans "Add Hyperlink" %}</h1>
+  <h1 class="page-title">{% trans "Add Hyperlink" %}</h1>
   <form method="post" action="{% url 'hyperlinks:add_hyperlink' %}">
     {% csrf_token %}
     {{ form.as_p }}
