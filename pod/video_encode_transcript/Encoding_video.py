@@ -8,7 +8,6 @@ import argparse
 import unicodedata
 
 if __name__ == "__main__":
-    from utils import change_encoding_step
     from encoding_utils import (
         get_dressing_position_value,
         get_info_from_video,
@@ -49,7 +48,6 @@ if __name__ == "__main__":
         FFMPEG_DRESSING_AUDIO,
     )
 else:
-    from .utils import change_encoding_step
     from .encoding_utils import (
         get_dressing_position_value,
         get_info_from_video,
@@ -874,23 +872,17 @@ class Encoding_video:
 
     def start_encode(self) -> None:
         self.start = time.ctime()
-        change_encoding_step(self.id, 2, "Encoding started at %s" % self.start)
         self.create_output_dir()
         self.get_video_data()
         if self.json_dressing is not None:
-            change_encoding_step(self.id, 3, "encode_video_dressing")
             self.encode_video_dressing()
         print(self.id, self.video_file, self.duration)
         if self.is_video():
-            change_encoding_step(self.id, 4, "encode_video_part")
             self.encode_video_part()
         if len(self.list_audio_track) > 0:
-            change_encoding_step(self.id, 5, "encode_audio_part")
             self.encode_audio_part()
-        change_encoding_step(self.id, 6, "encode_image_part")
         self.encode_image_part()
         if len(self.list_subtitle_track) > 0:
-            change_encoding_step(self.id, 7, "get_subtitle_part")
             self.get_subtitle_part()
         self.stop = time.ctime()
         self.export_to_json()
