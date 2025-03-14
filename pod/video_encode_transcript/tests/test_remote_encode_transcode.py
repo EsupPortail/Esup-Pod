@@ -114,7 +114,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             self.user.delete()
         print(" --->  tearDown of RemoteEncodeTranscriptTestCase: OK!")
 
-    def wait_for_encode_end(self, title="", max_delay=60) -> None:
+    def wait_for_encode_end(self, title="", max_delay=30) -> None:
         """Wait for the encoding process to complete, raising an error if it takes too long."""
         tstart = time.time()
         self.video.refresh_from_db()

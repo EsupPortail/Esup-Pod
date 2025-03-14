@@ -4,11 +4,9 @@
 #  (")_(")
 #------------------------------------------------------------------------------------------------------------------------------
 # Conteneur node
-ARG NODE_VERSION
-ARG PYTHON_VERSION
-FROM $NODE_VERSION as source-build-js
-# TODO
-#FROM harbor.urba.univ-lille.fr/store/node:19 as source-build-js
+ARG NODE_VERSION=23
+ARG PYTHON_VERSION=3.9
+FROM $NODE_VERSION AS source-build-js
 
 WORKDIR /tmp/pod
 COPY ./pod/ .
@@ -16,8 +14,6 @@ RUN yarn
 #------------------------------------------------------------------------------------------------------------------------------
 # Conteneur python
 FROM $PYTHON_VERSION
-# TODO
-#FROM harbor.urba.univ-lille.fr/store/python:3.7-buster
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends netcat gettext \
@@ -35,7 +31,7 @@ RUN mkdir /tmp/node_modules/
 COPY --from=source-build-js /tmp/pod/node_modules/ /tmp/node_modules/
 # TODO remove ES version - move it into env var
 RUN pip3 install --no-cache-dir -r requirements-conteneur.txt \
-    && pip3 install elasticsearch==8.16.0
+    && pip3 install elasticsearch==8.17.2
 
 # ENTRYPOINT:
 COPY ./dockerfile-dev-with-volumes/pod-back/my-entrypoint-back.sh /tmp/my-entrypoint-back.sh

@@ -53,7 +53,7 @@ class Command(BaseCommand):
         # raise CommandError('Poll "%s" does not exist' % poll_id)
         # self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"' % poll_id))
 
-    def print_log(self, title: str, data: List[str]) -> None:
+    def print_log(self, title: str, data: list[str]) -> None:
         print(20 * "-")
         print(f"{title}:")
         print("\n    - " + "\n    - ".join(data))
