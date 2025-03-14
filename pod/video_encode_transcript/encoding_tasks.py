@@ -50,7 +50,7 @@ encoding_app.conf.task_routes = {
 @encoding_app.task(bind=True)
 def start_encoding_task(
     self, video_id, video_path, cut_start, cut_end, json_dressing, dressing_input
-):
+) -> None:
     """Start the encoding of the video."""
     print("Start the encoding of the video")
     from .Encoding_video import Encoding_video
@@ -95,7 +95,7 @@ def start_encoding_task(
 
 
 @encoding_app.task
-def start_studio_task(recording_id, video_output, videos, subtime, presenter):
+def start_studio_task(recording_id, video_output, videos, subtime, presenter) -> None:
     from .encoding_studio import start_encode_video_studio
 
     print("Start the encoding studio of the video")

@@ -29,7 +29,7 @@ if USE_TRANSCRIPTION:
 class Command(BaseCommand):
     help = "launch of video encoding and transcripting for video test: %s" % VIDEO_TEST
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         cov = coverage.coverage()
         cov.start()
         user, created = User.objects.update_or_create(
@@ -60,7 +60,7 @@ class Command(BaseCommand):
         cov.html_report()
         print("\n -----> End of Encoding/transcripting video test")
 
-    def test_transcripting(self, video):
+    def test_transcripting(self, video) -> None:
         print("\n ---> Start Transcripting video test")
         if video.get_video_mp3() and not video.encoding_in_progress:
             video.transcript = "fr"
@@ -82,11 +82,11 @@ class Command(BaseCommand):
             raise CommandError("No mp3 found!!!")
         print("\n ---> End of transcripting video test")
 
-    def test_result_transcripting(self, video):
+    def test_result_transcripting(self, video) -> None:
         if not Track.objects.filter(video=video, lang="fr").exists():
             raise CommandError("Error while transcripting!!!")
 
-    def test_encoding(self, video):
+    def test_encoding(self, video) -> None:
         print("\n ---> Start Encoding video test")
         encode_video = getattr(encode, ENCODE_VIDEO)
         encode_video(video.id, threaded=False)
@@ -103,7 +103,7 @@ class Command(BaseCommand):
         self.test_result_encoding(video)
         print("\n ---> End of Encoding video test")
 
-    def test_result_encoding(self, video):
+    def test_result_encoding(self, video) -> None:
         list_mp2t = EncodingVideo.objects.filter(
             video=video, encoding_format="video/mp2t"
         )

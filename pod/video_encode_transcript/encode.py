@@ -57,7 +57,7 @@ FFMPEG_DRESSING_INPUT = getattr(settings, "FFMPEG_DRESSING_INPUT", FFMPEG_DRESSI
 # Disable for the moment, will be reactivated in future version
 
 
-def start_encode(video_id: int, threaded=True):
+def start_encode(video_id: int, threaded=True) -> None:
     """Start video encoding."""
     if threaded:
         if CELERY_TO_ENCODE:
@@ -92,7 +92,7 @@ def start_encode_studio(
         encode_video_studio(recording_id, video_output, videos, subtime, presenter)
 
 
-def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
+def encode_video_studio(recording_id, video_output, videos, subtime, presenter) -> None:
     """ENCODE STUDIO: MAIN FUNCTION."""
     msg = ""
     if USE_REMOTE_ENCODING_TRANSCODING:
@@ -102,7 +102,7 @@ def encode_video_studio(recording_id, video_output, videos, subtime, presenter):
         store_encoding_studio_info(recording_id, video_output, msg)
 
 
-def store_encoding_studio_info(recording_id, video_output, msg):
+def store_encoding_studio_info(recording_id, video_output, msg) -> None:
     recording = Recording.objects.get(id=recording_id)
     recording.comment += msg
     recording.save()
@@ -138,8 +138,8 @@ def encode_video(video_id: int) -> None:
     change_encoding_step(video_id, 1, "remove old data")
     encoding_video.remove_old_data()
 
-    change_encoding_step(video_id, 2, "start encoding")
     if USE_REMOTE_ENCODING_TRANSCODING:
+        change_encoding_step(video_id, 2, "start remote encoding")
         dressing = None
         dressing_input = ""
         if Dressing.objects.filter(videos=video_to_encode).exists():
@@ -155,6 +155,7 @@ def encode_video(video_id: int) -> None:
             dressing_input=dressing_input,
         )
     else:
+        change_encoding_step(video_id, 2, "start standard encoding")
         encoding_video.start_encode()
         final_video = store_encoding_info(video_id, encoding_video)
 
@@ -163,7 +164,7 @@ def encode_video(video_id: int) -> None:
             msg = "Error during video `%s` encoding." % video_id
             if created is False:
                 msg += " See log at:\n%s" % enc_log.logfile.url
-
+            change_encoding_step(video_id, -1, msg)
             send_email(msg, video_id)
         else:
             end_of_encoding(final_video)
@@ -212,7 +213,7 @@ def get_encoding_video(video_to_encode: Video) -> Encoding_video_model:
     )
 
 
-def end_of_encoding(video: Video):
+def end_of_encoding(video: Video) -> None:
     """Notify user at the end of encoding & call transcription."""
     if (
         USE_NOTIFICATIONS
@@ -227,7 +228,7 @@ def end_of_encoding(video: Video):
     change_encoding_step(video.id, 0, "end of encoding")
 
 
-def transcript_video(video_id: int):
+def transcript_video(video_id: int) -> None:
     """Transcript video audio to text."""
     video = Video.objects.get(id=video_id)
     if USE_TRANSCRIPTION and video.transcript not in ["", "0", "1"]:

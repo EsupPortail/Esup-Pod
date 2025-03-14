@@ -394,6 +394,6 @@ class Encoding_video_model(Encoding_video):
             info_video["list_thumbnail_files"] = self.list_thumbnail_files
             self.store_json_list_thumbnail_files(info_video)
 
-    def encode_video(self):
+    def encode_video(self) -> None:
         """Start video encoding."""
         self.start_encode()
