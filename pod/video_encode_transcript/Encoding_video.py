@@ -575,7 +575,7 @@ class Encoding_video:
         name: str,
         order: str,
         interval_silent: str,
-    ) -> tuple:
+    ):
         """
         Add opening or ending credits to the FFmpeg command by updating the filters and parameters.
 

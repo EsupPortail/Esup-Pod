@@ -11,13 +11,11 @@ try:
 except (ImportError, ValueError):
     from encoding_settings import VIDEO_RENDITIONS
 
-"""
 try:
     from django.conf import settings
     VIDEO_RENDITIONS = getattr(settings, "VIDEO_RENDITIONS", VIDEO_RENDITIONS)
 except ImportError:  # pragma: no cover
     pass
-"""
 
 
 def sec_to_timestamp(total_seconds) -> str:
