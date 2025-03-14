@@ -476,7 +476,7 @@ class Encoding_video:
                     }
         return command
 
-    def build_dressing_filters(self, height: str) -> tuple:
+    def build_dressing_filters(self, height: str):
         """
         Build the filters for video processing.
 
