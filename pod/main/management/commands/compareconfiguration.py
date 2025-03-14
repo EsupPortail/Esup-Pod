@@ -1,5 +1,7 @@
+"""
+Esup-pod compareconfiguration command
+"""
 from django.core.management.base import BaseCommand, CommandError
-from typing import List
 import urllib.request
 import json
 import os

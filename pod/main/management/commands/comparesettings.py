@@ -1,4 +1,6 @@
-from typing import List
+"""
+Esup-pod comparesettings command
+"""
 from django.core.management.base import BaseCommand
 
 # import re
