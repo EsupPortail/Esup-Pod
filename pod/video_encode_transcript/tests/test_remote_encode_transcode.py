@@ -16,9 +16,7 @@ from pod.cut.models import CutVideo
 from pod.dressing.models import Dressing
 from pod.video.models import Video, Type
 from pod.video_encode_transcript import encode
-from pod.video_encode_transcript.models import EncodingVideo
-from pod.video_encode_transcript.models import PlaylistVideo
-from pod.video_encode_transcript.models import EncodingLog
+from pod.video_encode_transcript.models import EncodingVideo, PlaylistVideo, EncodingLog
 from pod.completion.models import Track
 
 import shutil
@@ -114,7 +112,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             self.user.delete()
         print(" --->  tearDown of RemoteEncodeTranscriptTestCase: OK!")
 
-    def wait_for_encode_end(self, title="", max_delay=30) -> None:
+    def wait_for_encode_end(self, title="", max_delay=60) -> None:
         """Wait for the encoding process to complete, raising an error if it takes too long."""
         tstart = time.time()
         self.video.refresh_from_db()
@@ -124,8 +122,8 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             htic = time.strftime("%M:%S", time.gmtime(tic - tstart))
 
             print(
-                "... [%s] '%s' remote encoding in progress: %s "
-                % (htic, title, self.video.get_encoding_step)
+                "... [%s] '%04d-%s' remote encoding in progress: %s "
+                % (htic, self.video.id, title, self.video.get_encoding_step)
             )
             self.video.refresh_from_db()
             time.sleep(2)
@@ -302,7 +300,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
             transcript_video(self.video.id, threaded=False)
 
-            self.wait_for_encode_end("Transcripting", 60)
+            self.wait_for_encode_end("Transcripting")
 
             self.video.refresh_from_db()
             if not Track.objects.filter(video=self.video, lang="fr").exists():

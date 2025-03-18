@@ -255,7 +255,7 @@ class Encoding_video:
         for stream in streams:
             self.add_stream(stream)
 
-    def fix_duration(self, input_file):
+    def fix_duration(self, input_file) -> None:
         msg = "--> get_info_video\n"
         probe_cmd = 'ffprobe -v quiet -show_entries format=duration -hide_banner  \
                     -of default=noprint_wrappers=1:nokey=1 -print_format json -i \
@@ -876,13 +876,20 @@ class Encoding_video:
         self.get_video_data()
         if self.json_dressing is not None:
             self.encode_video_dressing()
-        print(self.id, self.video_file, self.duration)
+        print(
+            "start_encode {id: %s, file: %s, duration: %s}"
+            % (self.id, self.video_file, self.duration)
+        )
         if self.is_video():
+            print("* encode_video_part")
             self.encode_video_part()
         if len(self.list_audio_track) > 0:
+            print("* encode_audio_part")
             self.encode_audio_part()
+        print("* encode_image_part")
         self.encode_image_part()
         if len(self.list_subtitle_track) > 0:
+            print("* get_subtitle_part")
             self.get_subtitle_part()
         self.stop = time.ctime()
         self.export_to_json()
