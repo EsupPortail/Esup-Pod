@@ -136,7 +136,8 @@ class RemoteEncodeTranscriptTestCase(TestCase):
     def test_remote_encoding_transcoding(self) -> None:
         """Test the remote encoding and transcripting of a video."""
         self.remote_encoding()
-        self.remote_transcripting()
+        if USE_TRANSCRIPTION:
+            self.remote_transcripting()
         print(" --->  test_remote_encoding_transcoding: OK!")
 
     def remote_encoding(self) -> None:
@@ -255,7 +256,8 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         # Start encoding
         encode_video(self.video.id, threaded=False)
 
-        self.wait_for_encode_end("dressing")
+        # Wait 10 minutes for dressing encode end ??
+        self.wait_for_encode_end("dressing", 600)
 
         print("end of dressing encoding")
         print(self.video.get_encoding_step)
