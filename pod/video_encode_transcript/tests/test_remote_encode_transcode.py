@@ -4,7 +4,7 @@ Video & Audio Remote encoding test cases.
 *  run with `python manage.py test pod.video_encode_transcript.tests.test_remote_encode_transcode`
 """
 
-from unittest import TestCase, skip
+from unittest import TestCase, skip, skipUnless
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.temp import NamedTemporaryFile
@@ -46,6 +46,9 @@ else:
     from pod.main.models import CustomImageModel
 
 
+@skipUnless(
+    TEST_REMOTE_ENCODE, "Set TEST_REMOTE_ENCODE to True before testing remote encoding."
+)
 class RemoteEncodeTranscriptTestCase(TestCase):
     """Test case for remote encoding and transcripting of videos."""
 
@@ -53,8 +56,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         """Set up the test environment by creating a user, video, and credit video, and copying test files."""
         print("===== SetUp of RemoteEncodeTranscriptTestCase =====")
         print("===> TEST_REMOTE_ENCODE: %s" % TEST_REMOTE_ENCODE)
-        if not TEST_REMOTE_ENCODE:
-            return
+
         user, created = User.objects.update_or_create(
             username="pod", password="pod1234pod"
         )
@@ -104,8 +106,6 @@ class RemoteEncodeTranscriptTestCase(TestCase):
 
     def tearDown(self) -> None:
         """Clean up the test environment by deleting the created video, user, and token."""
-        if not TEST_REMOTE_ENCODE:
-            return
         if getattr(self, "video", False):
             self.video.delete()
         if self.temp_token:
@@ -144,8 +144,6 @@ class RemoteEncodeTranscriptTestCase(TestCase):
 
     def remote_encoding(self) -> None:
         """Test the remote encoding of a video, verifying the creation of various encoding formats and logs."""
-        if not TEST_REMOTE_ENCODE:
-            return
         print("\n ---> Start Remote encoding video test")
         encode_video = getattr(encode, ENCODE_VIDEO)
         encode_video(self.video.id, threaded=False)
@@ -179,8 +177,6 @@ class RemoteEncodeTranscriptTestCase(TestCase):
 
     def test_remote_encoding_cut(self) -> None:
         """Launch test of cut video remote encoding."""
-        if not TEST_REMOTE_ENCODE:
-            return
         print("\n ---> Start Remote encoding cut video test")
         encode_video = getattr(encode, ENCODE_VIDEO)
 
@@ -225,8 +221,6 @@ class RemoteEncodeTranscriptTestCase(TestCase):
     @skip("# This test doesn't work anymore since PR #1263")
     def test_remote_encoding_dressing(self) -> None:
         """Launch test of video remote encoding for dressing."""
-        if not TEST_REMOTE_ENCODE:
-            return
         print("\n ---> Start Remote encoding video dressing test")
         encode_video = getattr(encode, ENCODE_VIDEO)
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -298,8 +292,6 @@ class RemoteEncodeTranscriptTestCase(TestCase):
 
     def remote_transcripting(self) -> None:
         """Launch test of video remote transcripting."""
-        if not TEST_REMOTE_ENCODE:
-            return
         print("\n ---> Start Remote transcripting video test")
         if self.video.get_video_mp3() and not self.video.encoding_in_progress:
             self.video.transcript = "fr"
