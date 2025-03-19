@@ -1,7 +1,8 @@
 """Esup-Pod video encoding and transcripting utilities."""
 
-import os
 import bleach
+import logging
+import os
 import time
 
 from django.urls import reverse
@@ -17,6 +18,9 @@ from .models import EncodingStep
 from .models import EncodingLog
 
 DEBUG = getattr(settings, "DEBUG", True)
+logger = logging.getLogger(__name__)
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
 
 TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings,
@@ -67,9 +71,7 @@ def change_encoding_step(video_id: int, num_step: int, desc: str) -> None:
     encoding_step.num_step = num_step
     encoding_step.desc_step = desc[:255]
     encoding_step.save()
-
-    if DEBUG:
-        print("Video: %s - step: %d - desc: %s" % (video_id, num_step, desc))
+    logger.debug("Video: %s - step: %d - desc: %s" % (video_id, num_step, desc))
 
 
 def add_encoding_log(video_id, log) -> None:
@@ -82,8 +84,7 @@ def add_encoding_log(video_id, log) -> None:
     else:
         encoding_log.log += "\n\n%s" % log
     encoding_log.save()
-    if DEBUG:
-        print(log)
+    logger.debug(log)
 
 
 def check_file(path_file) -> bool:
@@ -149,8 +150,7 @@ def send_email_transcript(video_to_encode) -> None:
 
 def send_notification_email(video_to_encode, subject_prefix) -> None:
     """Send email notification on video encoding or transcripting completion."""
-    if DEBUG:
-        print("SEND EMAIL ON %s COMPLETION" % subject_prefix.upper())
+    logger.debug("SEND EMAIL ON %s COMPLETION" % subject_prefix.upper())
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
     content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
     subject = "[%s] %s" % (

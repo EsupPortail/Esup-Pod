@@ -140,6 +140,8 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.remote_encoding()
         if USE_TRANSCRIPTION:
             self.remote_transcripting()
+        else:
+            print("Remote transcript skipped. Set USE_TRANSCRIPTION to True before testing remote transcoding.")
         print(" --->  test_remote_encoding_transcoding: OK!")
 
     def remote_encoding(self) -> None:

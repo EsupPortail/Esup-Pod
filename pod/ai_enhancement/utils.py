@@ -287,7 +287,7 @@ def send_notification_enhancement(video):
     )
 
 
-def send_email_enhancement(video):
+def send_email_enhancement(video) -> None:
     """Send email notification on video improvement completion."""
     if DEBUG:
         logger.info("SEND EMAIL ON IA IMPROVEMENT COMPLETION")
