@@ -63,7 +63,7 @@ logger = logging.getLogger(__name__)
 class AristoteAI:
     """Aristote AI Enhancement utilities."""
 
-    def __init__(self, client_id, client_secret):
+    def __init__(self, client_id, client_secret) -> None:
         self.client_id = client_id
         self.client_secret = client_secret
         self.token = None

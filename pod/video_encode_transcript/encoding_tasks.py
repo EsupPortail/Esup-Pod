@@ -1,8 +1,5 @@
 """Esup-Pod encoding tasks."""
 
-# pip3 install celery==5.4.0
-# pip3 install webvtt-py
-# pip3 install redis==4.5.4
 from celery import Celery
 import logging
 import requests
@@ -52,10 +49,10 @@ def start_encoding_task(
     self, video_id, video_path, cut_start, cut_end, json_dressing, dressing_input
 ) -> None:
     """Start the encoding of the video."""
-    print("Start encoding of the video %s" % video_id)
+    logger.info("Start encoding of the video %s" % video_id)
     from .Encoding_video import Encoding_video
 
-    print(
+    logger.debug(
         "{video_id: %s, video_path: %s, cut_start: %s, cut_end: %s}"
         % (video_id, video_path, cut_start, cut_end)
     )
@@ -63,7 +60,7 @@ def start_encoding_task(
         video_id, video_path, cut_start, cut_end, json_dressing, dressing_input
     )
     encoding_video.start_encode()
-    print("End encoding of the video %s" % video_id)
+    logger.info("End encoding of the video %s" % video_id)
     Headers = {"Authorization": "Token %s" % POD_API_TOKEN}
     url = POD_API_URL.strip("/") + "/store_remote_encoded_video/?id=%s" % video_id
     data = {
@@ -101,9 +98,9 @@ def start_encoding_task(
 def start_studio_task(recording_id, video_output, videos, subtime, presenter) -> None:
     from .encoding_studio import start_encode_video_studio
 
-    print("Start the encoding studio of the video %s" % recording_id)
+    logger.info("Start the encoding studio of the video %s" % recording_id)
     msg = start_encode_video_studio(video_output, videos, subtime, presenter)
-    print("End of the encoding studio of the video %s" % recording_id)
+    logger.info("End of the encoding studio of the video %s" % recording_id)
     Headers = {"Authorization": "Token %s" % POD_API_TOKEN}
     url = (
         POD_API_URL.strip("/")

@@ -1,11 +1,12 @@
 """Esup-Pod video encoding."""
 
+import argparse
 import json
+import logging
 import os
 import time
-from webvtt import WebVTT, Caption
-import argparse
 import unicodedata
+from webvtt import WebVTT, Caption
 
 if __name__ == "__main__":
     from encoding_utils import (
@@ -88,7 +89,6 @@ else:
         FFMPEG_DRESSING_AUDIO,
     )
 
-
 __author__ = "Nicolas CAN <nicolas.can@univ-lille.fr>"
 __license__ = "LGPL v3"
 
@@ -159,8 +159,14 @@ try:
     FFMPEG_DRESSING_AUDIO = getattr(
         settings, "FFMPEG_DRESSING_AUDIO", FFMPEG_DRESSING_AUDIO
     )
+    DEBUG = getattr(settings, "DEBUG", True)
 except ImportError:  # pragma: no cover
+    DEBUG = True
     pass
+
+logger = logging.getLogger(__name__)
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
 
 
 class Encoding_video:
@@ -785,7 +791,7 @@ class Encoding_video:
         )
         return_value, output_message = launch_cmd(overview_image_command)
         if not return_value or not check_file(overviewimagefilename):
-            print(f"FFmpeg failed with output: {output_message}")
+            logger.error(f"FFmpeg failed with output: {output_message}")
 
         overviewfilename = os.path.join(self.output_dir, "overview.vtt")
         image_url = os.path.basename(overviewimagefilename)
@@ -876,20 +882,20 @@ class Encoding_video:
         self.get_video_data()
         if self.json_dressing is not None:
             self.encode_video_dressing()
-        print(
+        logger.info(
             "start_encode {id: %s, file: %s, duration: %s}"
             % (self.id, self.video_file, self.duration)
         )
         if self.is_video():
-            print("* encode_video_part")
+            logger.debug("* encode_video_part")
             self.encode_video_part()
         if len(self.list_audio_track) > 0:
-            print("* encode_audio_part")
+            logger.debug("* encode_audio_part")
             self.encode_audio_part()
-        print("* encode_image_part")
+        logger.debug("* encode_image_part")
         self.encode_image_part()
         if len(self.list_subtitle_track) > 0:
-            print("* get_subtitle_part")
+            logger.debug("* get_subtitle_part")
             self.get_subtitle_part()
         self.stop = time.ctime()
         self.export_to_json()
@@ -915,7 +921,7 @@ def fix_input(input) -> str:
             path_file,
             filename,
         )
-        print("Encoding file {} \n".format(filename))
+        logger.info("Encoding file {} \n".format(filename))
     return filename
 
 
@@ -932,7 +938,7 @@ if __name__ == "__main__":
     parser.add_argument("--dressing", required=False, help="Dressing for the video")
 
     args = parser.parse_args()
-    print(args.start)
+    logger.debug(args.start)
     filename = fix_input(args.input)
     encoding_video = Encoding_video(
         args.id, filename, args.start, args.stop, args.dressing

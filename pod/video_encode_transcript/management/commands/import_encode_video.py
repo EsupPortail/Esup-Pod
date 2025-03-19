@@ -7,10 +7,10 @@ from pod.video.models import Video
 class Command(BaseCommand):
     help = "Import encoded video"
 
-    def add_arguments(self, parser):
+    def add_arguments(self, parser) -> None:
         parser.add_argument("video_id", type=int)
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **options) -> None:
         video_id = options["video_id"]
         vid = Video.objects.get(id=video_id)
         encoding_video = Encoding_video_model(video_id, vid.video.path)

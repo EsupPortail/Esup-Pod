@@ -1,6 +1,7 @@
 """
 Esup-pod comparesettings command
 """
+
 from django.core.management.base import BaseCommand
 
 # import re

@@ -1,5 +1,6 @@
 """Model for video encoding."""
 
+import logging
 import os
 import re
 from django.conf import settings
@@ -26,6 +27,11 @@ from .encoding_utils import (
     launch_cmd,
     check_file,
 )
+
+DEBUG = getattr(settings, "DEBUG", True)
+logger = logging.getLogger(__name__)
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
 
 ENCODING_CHOICES = getattr(
     settings,
@@ -238,7 +244,7 @@ class Encoding_video_model(Encoding_video):
                 podfile = CustomFileModel()
                 podfile.file = self.get_true_path(list_subtitle_files[sub][1])
 
-            print("subtitle lang: %s " % list_subtitle_files[sub][0])
+            logger.debug("subtitle lang: %s " % list_subtitle_files[sub][0])
 
             sub_lang = list_subtitle_files[sub][0]
             track_lang = (
@@ -294,13 +300,13 @@ class Encoding_video_model(Encoding_video):
     def wait_for_file(self, filepath) -> None:
         time_to_wait = 40
         time_counter = 0
+        logger.info("wait_for_file: %s" % filepath)
         while not os.path.exists(filepath):
             time.sleep(1)
             time_counter += 1
-            print("wait...")
+            print(".", end="")
             if time_counter > time_to_wait:
                 break
-        print("infovideojsonfilepath : %s" % filepath)
 
     def store_json_info(self) -> Video:
         """Open json file and store its data in current instance."""

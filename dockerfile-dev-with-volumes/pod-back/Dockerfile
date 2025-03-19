@@ -37,4 +37,7 @@ RUN pip3 install --no-cache-dir -r requirements-conteneur.txt \
 COPY ./dockerfile-dev-with-volumes/pod-back/my-entrypoint-back.sh /tmp/my-entrypoint-back.sh
 RUN chmod 755 /tmp/my-entrypoint-back.sh
 
+# Default shell to bash:
+RUN ln -sf /bin/bash /bin/sh
+
 ENTRYPOINT ["bash", "/tmp/my-entrypoint-back.sh"]
