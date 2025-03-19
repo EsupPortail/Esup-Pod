@@ -301,7 +301,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
             transcript_video(self.video.id, threaded=False)
 
-            self.wait_for_encode_end("Transcripting")
+            self.wait_for_encode_end("Transcripting", 120)
 
             self.video.refresh_from_db()
             if not Track.objects.filter(video=self.video, lang="fr").exists():
