@@ -93,7 +93,7 @@ class EncodeTestCase(TestCase):
         el = EncodingLog.objects.get(video=video)
         self.assertTrue("Wrong file or path:" in el.log)
 
-    def test_result_encoding_video(self):
+    def test_result_encoding_video(self) -> None:
         """Test if video encoding worked properly."""
         # video id=1 et audio id=2
         video_to_encode = Video.objects.get(id=1)

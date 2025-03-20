@@ -80,7 +80,7 @@ print(webvtt)
 # ##########################################################################
 # TRANSCRIPT VIDEO: THREAD TO LAUNCH TRANSCRIPT
 # ##########################################################################
-def start_transcript(video_id, threaded=True):
+def start_transcript(video_id, threaded=True) -> None:
     """
     Call to start transcript main function.
 
@@ -98,7 +98,7 @@ def start_transcript(video_id, threaded=True):
         main_threaded_transcript(video_id)
 
 
-def main_threaded_transcript(video_to_encode_id):
+def main_threaded_transcript(video_to_encode_id) -> None:
     """
     Transcript main function.
 
@@ -141,7 +141,7 @@ def main_threaded_transcript(video_to_encode_id):
     add_encoding_log(video_to_encode.id, msg)
 
 
-def save_vtt_and_notify(video_to_encode, msg, webvtt):
+def save_vtt_and_notify(video_to_encode, msg, webvtt) -> None:
     """Call save vtt file function and notify by mail at the end."""
     msg += save_vtt(video_to_encode, webvtt)
     change_encoding_step(video_to_encode.id, 0, "done")
@@ -153,7 +153,7 @@ def save_vtt_and_notify(video_to_encode, msg, webvtt):
     add_encoding_log(video_to_encode.id, msg)
 
 
-def save_vtt(video: Video, webvtt: WebVTT, lang_code: str = None):
+def save_vtt(video: Video, webvtt: WebVTT, lang_code: str = None) -> str:
     """Save webvtt file with the video."""
     msg = "\nSAVE TRANSCRIPT WEBVTT : %s" % time.ctime()
     lang = lang_code if lang_code else video.transcript

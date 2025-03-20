@@ -1,10 +1,10 @@
-from rest_framework import serializers, viewsets
 from django.conf import settings
 from .models import EncodingVideo, EncodingAudio, VideoRendition, PlaylistVideo
 from pod.video.models import Video
 from pod.recorder.models import Recording
 from pod.video.rest_views import VideoSerializer
 
+from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -14,6 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import SuspiciousOperation
 
 import json
+import logging
 import os
 import webvtt
 
@@ -22,6 +23,11 @@ if USE_TRANSCRIPTION:
     from pod.video_encode_transcript.transcript import start_transcript
 
 MEDIA_ROOT = getattr(settings, "MEDIA_ROOT", "")
+
+DEBUG = getattr(settings, "DEBUG", True)
+logger = logging.getLogger(__name__)
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
 
 
 class VideoRenditionSerializer(serializers.HyperlinkedModelSerializer):
@@ -183,17 +189,17 @@ def store_remote_encoded_video(request):
     from .encode import store_encoding_info, end_of_encoding
 
     video_id = request.GET.get("id", 0)
+    logger.info("Start importing encoding data for video: %s" % video_id)
     video = get_object_or_404(Video, id=video_id)
     # start_store_remote_encoding_video(video_id)
     # check if video is encoding!!!
     data = json.loads(request.body.decode("utf-8"))
     if video.encoding_in_progress is False:
-        raise SuspiciousOperation("video not encoding in progress")
+        raise SuspiciousOperation("Video not being encoded.")
     if str(video_id) != str(data["video_id"]):
         raise SuspiciousOperation(
-            "different video id: %s - %s" % (video_id, data["video_id"])
+            "Different video id: %s - %s" % (video_id, data["video_id"])
         )
-    print("Start the importing of the video: %s" % video_id)
     encoding_video = Encoding_video_model(
         video_id, data["video_path"], data["cut_start"], data["cut_end"]
     )
@@ -230,7 +236,7 @@ def store_remote_transcripted_video(request):
         raise SuspiciousOperation(
             "different video id: %s - %s" % (video_id, data["video_id"])
         )
-    print("Start the import of transcription of the video: %s" % video_id)
+    logger.info("Start importing transcription data for video: %s" % video_id)
     filename = os.path.basename(data["temp_vtt_file"])
     media_temp_dir = os.path.join(MEDIA_ROOT, "temp")
     filepath = os.path.join(media_temp_dir, filename)
