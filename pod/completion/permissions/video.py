@@ -1,5 +1,4 @@
 from functools import wraps
-from typing import Callable, ParamSpec, Any
 from django.contrib import messages
 from django.http import Http404
 from django.core.exceptions import PermissionDenied
