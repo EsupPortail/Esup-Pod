@@ -631,7 +631,7 @@ def video_completion_hyperlink_new(request: WSGIRequest, video: Video):
     form_hyperlink = VideoHyperlinkForm(initial={"video": video})
     context = get_video_completion_context(video, form_hyperlink=form_hyperlink)
     context["page_title"] = _("Add a new hyperlink to the video “%s”") % video.title
-    context["form_hyperlink_is_active"] = True  # Indique que le formulaire est actif
+    context["form_hyperlink_is_active"] = True
     if is_ajax(request):
         return render(
             request,
