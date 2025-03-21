@@ -6,14 +6,11 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.translation import gettext as _
 from pod.video.models import Video
 
-P = ParamSpec("P")
-Fn = Callable[P, Any]
 
-
-def has_video_rights(permissions: list[str], message: str, prefetch_callback: Fn = None) -> Fn:
+def has_video_rights(permissions: list[str], message: str, prefetch_callback = None):
     """Check the current user's rights on a certain video."""
 
-    def decorator(func: Fn) -> Fn:
+    def decorator(func):
         @wraps(func)
         def wrapper(request, slug: str, *args, **kwargs):
             current_user = request.user
