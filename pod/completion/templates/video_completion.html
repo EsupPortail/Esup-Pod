@@ -202,7 +202,9 @@
             <form class="form-new completion" id="form-new-hyperlink" action="{% url 'video:completion:video_completion_hyperlink' slug=video.slug %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="action" value="new">
-              <input type="submit" value="{% trans 'Add a new hyperlink' %}" class="new-hyperlink btn btn-primary">
+              {% if not form_hyperlink_is_active %}
+                <input type="submit" value="{% trans 'Add a new hyperlink' %}" class="new-hyperlink btn btn-primary">
+              {% endif %}
             </form>
           </div>
         </div>

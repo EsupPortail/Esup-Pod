@@ -45,6 +45,12 @@ var ajaxfail = function (data, form) {
   );
 };
 
+//  Hide/Show the add hyperlink button
+document.getElementById("add-hyperlink-btn").addEventListener("click", function () {
+  document.getElementById("hyperlink-form").style.display = "block";
+  this.style.display = "none";
+});
+
 //SUBMIT
 
 document.addEventListener("submit", (e) => {
@@ -238,8 +244,8 @@ var sendAndGetForm = async function (elt, action, name, form, list) {
         "Are you sure you want to delete this overlay?",
       );
     } else if (name === "hyperlink") {
-      deleteConfirm = confirm(
-        gettext("Are you sure you want to delete this hyperlink?"),
+      confirmationMessage = gettext(
+        "Are you sure you want to delete this hyperlink?",
       );
     }
 

@@ -35,6 +35,8 @@ from .utils import get_video_completion_context
 from pod.speaker.utils import get_video_speakers
 from pod.hyperlinks.models import VideoHyperlink
 from pod.hyperlinks.forms import VideoHyperlinkForm, HyperlinkForm
+from pod.completion.permissions.video import has_video_rights
+from pod.video.queryset.utils import prefetch_video_completion_hyperlink
 
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTIVE_MODEL_ENRICH = getattr(settings, "ACTIVE_MODEL_ENRICH", False)
@@ -604,60 +606,24 @@ def video_completion_speaker_delete(request: WSGIRequest, video: Video):
 
 
 @csrf_protect
+@has_video_rights(
+    ["completion.add_hyperlink"],
+    "You cannot complement this video.",
+    prefetch_video_completion_hyperlink
+)
 @login_required(redirect_field_name="referrer")
-def video_completion_hyperlink(request: WSGIRequest, slug: str):
+def video_completion_hyperlink(request: WSGIRequest, slug: str, video: Video):
     """View to manage hyperlinks of a video."""
-    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-    page_title = get_completion_home_page_title(video)
-    if request.user != video.owner and not (
-        request.user.is_superuser
-        or request.user.has_perm("completion.add_hyperlink")
-        or (request.user in video.additional_owners.all())
-    ):
-        messages.add_message(
-            request, messages.ERROR, _("You cannot complement this video.")
-        )
-        raise PermissionDenied
-    elif request.user.is_staff:
-        list_contributor = video.contributor_set.all()
-        list_hyperlink = VideoHyperlink.objects.filter(video=video)
-        list_track = video.track_set.all().order_by("lang")
-        list_document = video.document_set.all()
-        list_overlay = video.overlay_set.all()
-    else:
-        list_contributor = video.contributor_set.all()
-    if request.POST and request.POST.get("action"):
-        if request.POST["action"] in __AVAILABLE_ACTIONS__:
-            return eval(
-                "video_completion_hyperlink_{0}(request, video)".format(
-                    request.POST["action"]
-                )
-            )
+    if request.method == "POST" and (action := request.POST.get("action")) in __AVAILABLE_ACTIONS__:
+        return eval(f"video_completion_hyperlink_{action}(request, video)")
 
-    elif request.user.is_staff:
-        return render(
-            request,
-            "video_completion.html",
-            {
-                "page_title": page_title,
-                "video": video,
-                "list_contributor": list_contributor,
-                "list_hyperlink": list_hyperlink,
-                "list_track": list_track,
-                "list_document": list_document,
-                "list_overlay": list_overlay,
-            },
-        )
-    else:
-        return render(
-            request,
-            "video_completion.html",
-            {
-                "page_title": page_title,
-                "video": video,
-                "list_contributor": list_contributor,
-            },
-        )
+    page_title = get_completion_home_page_title(video)
+    context = {
+        "page_title": page_title,
+        "video": video,
+    }
+
+    return render(request, "video_completion.html", context)
 
 
 def video_completion_hyperlink_new(request: WSGIRequest, video: Video):
@@ -665,6 +631,7 @@ def video_completion_hyperlink_new(request: WSGIRequest, video: Video):
     form_hyperlink = VideoHyperlinkForm(initial={"video": video})
     context = get_video_completion_context(video, form_hyperlink=form_hyperlink)
     context["page_title"] = _("Add a new hyperlink to the video “%s”") % video.title
+    context["form_hyperlink_is_active"] = True  # Indique que le formulaire est actif
     if is_ajax(request):
         return render(
             request,
