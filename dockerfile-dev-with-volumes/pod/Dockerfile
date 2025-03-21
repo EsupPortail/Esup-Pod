@@ -4,11 +4,9 @@
 #  (")_(")
 #------------------------------------------------------------------------------------------------------------------------------
 # Conteneur node
-ARG NODE_VERSION
-ARG PYTHON_VERSION
-FROM $NODE_VERSION as source-build-js
-# TODO
-#FROM harbor.urba.univ-lille.fr/store/node:19 as source-build-js
+ARG NODE_VERSION=23
+ARG PYTHON_VERSION=3.9
+FROM $NODE_VERSION AS source-build-js
 
 WORKDIR /tmp/pod
 COPY ./pod/ .
@@ -38,10 +36,13 @@ RUN mkdir /tmp/node_modules/
 COPY --from=source-build-js /tmp/pod/node_modules/ /tmp/node_modules/
 
 RUN pip3 install --no-cache-dir -r requirements-conteneur.txt \
-    && pip3 install elasticsearch==8.16.0
+    && pip3 install elasticsearch==8.17.2
 
 # ENTRYPOINT:
 COPY ./dockerfile-dev-with-volumes/pod/my-entrypoint.sh /tmp/my-entrypoint.sh
 RUN chmod 755 /tmp/my-entrypoint.sh
+
+# Default shell to bash:
+RUN ln -sf /bin/bash /bin/sh
 
 ENTRYPOINT ["bash", "/tmp/my-entrypoint.sh"]

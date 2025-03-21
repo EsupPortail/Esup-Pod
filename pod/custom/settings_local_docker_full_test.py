@@ -16,9 +16,14 @@ DATABASES = {
         'TEST': {
             'NAME': '/usr/src/app/pod/db_remote.sqlite3',
         },
+        "OPTIONS": {
+            "timeout": 40.0,  # in seconds
+            # see also https://docs.python.org/3.10/library/sqlite3.html#sqlite3.connect
+        },
     }
 }
 
+USE_CUT = True
 USE_PODFILE = True
 USE_NOTIFICATIONS = False
 EMAIL_ON_ENCODING_COMPLETION = False

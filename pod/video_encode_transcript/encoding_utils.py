@@ -5,6 +5,7 @@ import json
 import os
 import shlex
 import subprocess
+import logging
 
 try:
     from .encoding_settings import VIDEO_RENDITIONS
@@ -15,11 +16,17 @@ try:
     from django.conf import settings
 
     VIDEO_RENDITIONS = getattr(settings, "VIDEO_RENDITIONS", VIDEO_RENDITIONS)
+    DEBUG = getattr(settings, "DEBUG", True)
 except ImportError:  # pragma: no cover
+    DEBUG = True
     pass
 
+logger = logging.getLogger(__name__)
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
 
-def sec_to_timestamp(total_seconds):
+
+def sec_to_timestamp(total_seconds) -> str:
     """Format time for webvtt caption."""
     hours = int(total_seconds / 3600)
     minutes = int(total_seconds / 60 - hours * 60)
@@ -65,7 +72,7 @@ def get_renditions():
         return VIDEO_RENDITIONS
 
 
-def check_file(path_file):
+def check_file(path_file) -> bool:
     if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
         return True
     return False
@@ -100,11 +107,14 @@ def get_info_from_video(probe_cmd):
 
 def launch_cmd(cmd):
     if cmd == "":
-        return False, "No cmd to launch"
+        msg = "No cmd to launch"
+        logger.warning(msg)
+        return False, msg
     msg = ""
     encode_start = timer()
     return_value = False
     try:
+        logger.debug("launch_cmd: %s" % cmd)
         output = subprocess.run(
             shlex.split(cmd),
             stdout=subprocess.PIPE,
@@ -127,5 +137,7 @@ def launch_cmd(cmd):
         # raise RuntimeError('ffmpeg returned non-zero status: {}'.format(
         # e.stderr))
         msg += 20 * "////" + "\n"
-        msg += "Runtime or OsError Error: {0}\n".format(e)
+        err_msg = "Runtime or OS Error: {0}\n".format(e)
+        msg += err_msg
+        logger.error(err_msg)
     return return_value, msg

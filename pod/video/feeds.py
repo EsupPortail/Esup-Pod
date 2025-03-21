@@ -250,7 +250,7 @@ class RssSiteVideosFeed(Feed):
             )
         return ""
 
-    def item_categories(self, item) -> tuple:
+    def item_categories(self, item):
         return (item.type,)
 
     def item_copyright(self, obj):

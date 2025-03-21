@@ -69,7 +69,7 @@ class Quiz(models.Model):
         Retrieve questions associated with the quiz.
 
         Returns:
-            List[Question]: List of questions associated with the quiz.
+            list[Question]: List of questions associated with the quiz.
         """
         from pod.quiz.utils import get_quiz_questions
 

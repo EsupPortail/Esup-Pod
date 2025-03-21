@@ -1,5 +1,8 @@
+"""
+Esup-pod compareconfiguration command
+"""
+
 from django.core.management.base import BaseCommand, CommandError
-from typing import List
 import urllib.request
 import json
 import os
@@ -48,7 +51,7 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("End compare configuration"))
 
-    def print_log(self, title: str, data: List[str]) -> None:
+    def print_log(self, title: str, data: list[str]) -> None:
         """Pretty print of array with title."""
         print(20 * "-")
         print(f"{title}:")

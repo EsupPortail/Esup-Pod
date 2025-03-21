@@ -145,8 +145,6 @@ else ifeq ($(DOCKER_ENV), full-test)
 else
 	@$(COMPOSE) up
 endif
-	# Vous devriez obtenir ce message une fois esup-pod lancé
-	# $ pod-dev-with-volumes        | Superuser created successfully.
 
 # Arrête le serveur de test
 docker-stop:
