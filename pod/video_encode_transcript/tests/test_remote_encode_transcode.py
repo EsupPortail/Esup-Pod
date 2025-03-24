@@ -4,7 +4,7 @@ Video & Audio Remote encoding test cases.
 *  run with `python manage.py test pod.video_encode_transcript.tests.test_remote_encode_transcode`
 """
 
-from unittest import TestCase, skip, skipUnless
+from unittest import TestCase, skipUnless
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.temp import NamedTemporaryFile
