@@ -89,6 +89,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             # video="pod.mp4",
             type=Type.objects.get(id=1),
             transcript="",
+            duration="10"
         )
         tempfile = NamedTemporaryFile(delete=True)
         credit_video.video.save("pod.mp4", tempfile)
@@ -222,7 +223,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.assertTrue(self.video.thumbnail)
         print("\n ---> End of Remote encoding video cut test")
 
-    @skip("# This test doesn't work anymore since PR #1263")
+    # @skip("# This test doesn't work anymore since PR #1263")
     def test_remote_encoding_dressing(self) -> None:
         """Launch test of video remote encoding for dressing."""
         print("\n ---> Start Remote encoding video dressing test")
