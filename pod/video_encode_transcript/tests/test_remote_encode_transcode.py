@@ -4,7 +4,7 @@ Video & Audio Remote encoding test cases.
 *  run with `python manage.py test pod.video_encode_transcript.tests.test_remote_encode_transcode`
 """
 
-from unittest import TestCase, skip, skipUnless
+from unittest import TestCase, skipUnless
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.temp import NamedTemporaryFile
@@ -88,7 +88,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             owner=user,
             # video="pod.mp4",
             type=Type.objects.get(id=1),
-            transcript="",
+            transcript=""
         )
         tempfile = NamedTemporaryFile(delete=True)
         credit_video.video.save("pod.mp4", tempfile)
@@ -222,7 +222,6 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.assertTrue(self.video.thumbnail)
         print("\n ---> End of Remote encoding video cut test")
 
-    @skip("# This test doesn't work anymore since PR #1263")
     def test_remote_encoding_dressing(self) -> None:
         """Launch test of video remote encoding for dressing."""
         print("\n ---> Start Remote encoding video dressing test")
