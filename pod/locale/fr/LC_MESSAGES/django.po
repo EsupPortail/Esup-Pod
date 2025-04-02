@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-19 09:33+0100\n"
+"POT-Creation-Date: 2025-03-12 14:19+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team cotech-esup-pod@esup-portail.org\n"
@@ -107,9 +107,11 @@ msgstr "Titre"
 msgid "Please choose a title between 1 and %(max)s characters."
 msgstr "Veuillez entrer un titre contenant entre 1 et %(max)s caractères."
 
-#: pod/ai_enhancement/forms.py pod/live/models.py pod/main/forms.py
-#: pod/main/models.py pod/playlist/forms.py pod/playlist/models.py
-#: pod/video/forms.py pod/video/models.py
+#: pod/ai_enhancement/forms.py
+#: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html pod/live/models.py
+#: pod/main/forms.py pod/main/models.py pod/playlist/forms.py
+#: pod/playlist/models.py pod/video/forms.py pod/video/models.py
 #: pod/video/templates/channel/list_theme.html
 #: pod/video/templates/videos/dashboard.html
 msgid "Description"
@@ -804,6 +806,9 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
 #: pod/dressing/templates/dressing_edit.html
 #: pod/enrichment/templates/enrichment/form_enrichment.html
 #: pod/enrichment/templates/enrichment/group_enrichment.html
+#: pod/hyperlinks/templates/hyperlinks/add_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/edit_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/form_hyperlink.html
 #: pod/import_video/templates/import_video/add_or_edit.html
 #: pod/meeting/templates/meeting/add_or_edit.html
 #: pod/playlist/templates/playlist/add_or_edit.html
@@ -826,6 +831,9 @@ msgstr "Sauvegarder"
 #: pod/completion/templates/overlay/form_overlay.html
 #: pod/completion/templates/track/form_track.html
 #: pod/enrichment/templates/enrichment/form_enrichment.html
+#: pod/hyperlinks/templates/hyperlinks/add_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/edit_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/form_hyperlink.html
 #: pod/playlist/templates/playlist/playlist.html
 #: pod/speaker/templates/speaker/form_speaker.html
 #: pod/speaker/templates/speaker/speaker_modal.html
@@ -853,6 +861,8 @@ msgstr "Liste des chapitres"
 #: pod/completion/templates/track/list_track.html
 #: pod/dressing/templates/my_dressings.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
+#: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
 #: pod/speaker/templates/speaker/list_speaker.html
 #: pod/speaker/templates/speaker/speakers_management.html
 #: pod/video/templates/channel/list_theme.html
@@ -887,6 +897,7 @@ msgstr "Supprimer le chapitre « %(chapter_title)s »"
 #: pod/completion/templates/overlay/list_overlay.html
 #: pod/dressing/templates/dressing_delete.html
 #: pod/enrichment/templates/enrichment/list_enrichment.html
+#: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
 #: pod/live/templates/live/event_delete.html
 #: pod/meeting/templates/meeting/delete.html
 #: pod/playlist/templates/playlist/delete.html
@@ -1319,6 +1330,7 @@ msgstr ""
 #: pod/completion/templates/document/form_document.html
 #: pod/completion/templates/overlay/form_overlay.html
 #: pod/completion/templates/track/form_track.html
+#: pod/hyperlinks/templates/hyperlinks/form_hyperlink.html
 #: pod/speaker/templates/speaker/form_speaker.html
 msgid "Your form contains errors:"
 msgstr "Votre formulaire contient des erreurs :"
@@ -1623,6 +1635,14 @@ msgstr "Superposition(s)"
 msgid "Add a new overlay"
 msgstr "Ajouter une nouvelle superposition"
 
+#: pod/completion/templates/video_completion.html
+msgid "Hyperlinks"
+msgstr "Hyperliens"
+
+#: pod/completion/templates/video_completion.html
+msgid "Add a new hyperlink"
+msgstr "Ajouter un nouvel hyperlien"
+
 #: pod/completion/templates/video_completion.html pod/quiz/apps.py
 #: pod/quiz/models.py pod/quiz/templates/quiz/video_quiz_aside.html
 msgid "Quiz"
@@ -1747,6 +1767,15 @@ msgstr ""
 "afficher avec l’option \"Afficher le fond\""
 
 #: pod/completion/templates/video_completion.html
+msgid "Hyperlinks allow you to add external links related to your video."
+msgstr "Les hyperliens vous permettent d'ajouter des liens externes liés à votre vidéo."
+
+
+#: pod/completion/templates/video_completion.html
+msgid "You can add hyperlinks to this video by providing the URL and a description."
+msgstr "Vous pouvez ajouter des hyperliens à cette vidéo en fournissant l'URL et une description."
+
+#: pod/completion/templates/video_completion.html
 msgid ""
 "A Quiz allow you to test the memorization and comprehension of your video."
 msgstr ""
@@ -1804,6 +1833,18 @@ msgstr "Ajouter un nouvel intervenant à la vidéo « %s »"
 #: pod/completion/views.py
 msgid "The speaker has been saved."
 msgstr "L’intervenant a été enregistré."
+
+#: pod/completion/views.py
+msgid "Add a new hyperlink to the video “%s”"
+msgstr "Ajouter un nouvel hyperlien à la vidéo « %s »"
+
+#: pod/completion/views.py
+msgid "The hyperlink has been saved."
+msgstr "L'hyperlien a été enregistré."
+
+#: pod/completion/views.py
+msgid "Edit the hyperlink “%s”"
+msgstr "Modifier l'hyperlien « %s »"
 
 #: pod/cut/apps.py pod/cut/models.py
 msgid "Video cuts"
@@ -2455,6 +2496,64 @@ msgstr "Enrichissement de la vidéo « %s »"
 msgid "You cannot access this playlist because it is private."
 msgstr ""
 "Vous ne pouvez pas accéder à cette liste de lecture car elle est privée."
+
+#: pod/hyperlinks/admin.py
+msgid "Hyperlink Description"
+msgstr "Description de l'hyperlien"
+
+msgid "Hyperlink URL"
+msgstr "URL de l'hyperlien"
+
+#: pod/hyperlinks/forms.py
+msgid "You can search hyperlink by URL or description."
+msgstr "Vous pouvez rechercher un hyperlien par URL ou par description."
+
+#: pod/hyperlinks/templates/hyperlinks/add_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+msgid "Add Hyperlink"
+msgstr "Ajouter un hyperlien"
+
+#: pod/hyperlinks/templates/hyperlinks/edit_hyperlink.html
+msgid "Edit Hyperlink"
+msgstr "Modifier l'hyperlien"
+
+#: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+msgid "List of hyperlinks"
+msgstr "Liste des hyperliens"
+
+#: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html pod/live/models.py
+msgid "URL"
+msgstr "URL"
+
+#: pod/hyperlinks/templates/hyperlinks/list_hyperlink.html
+msgid "Delete the hyperlink “%(hyperlink_description)s”"
+msgstr "Supprimer l'hyperlien « %(hyperlink_description)s »"
+
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+msgid "Manage Hyperlinks"
+msgstr "Gérer les Hyperliens"
+
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+msgid "List of hyperlinks I can manage."
+msgstr "Liste des hyperliens que je peux gérer."
+
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+msgid "Edit the hyperlink “%(hyperlink_url)s”"
+msgstr "Modifier l'hyperlien « %(hyperlink_url)s »"
+
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+msgid "Please confirm you want to delete the hyperlink"
+msgstr "Veuillez confirmer que vous souhaitez supprimer l'hyperlien"
+
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+msgid "Delete the hyperlink “%(hyperlink_url)s”"
+msgstr "Supprimer l'hyperlien « %(hyperlink_url)s »"
+
+#: pod/hyperlinks/templates/hyperlinks/manage_hyperlink.html
+msgid "No hyperlinks found."
+msgstr "Aucun hyperlien trouvé."
 
 #: pod/import_video/apps.py
 msgid "Import External Video"
@@ -3187,10 +3286,6 @@ msgstr "description"
 #: pod/live/models.py
 msgid "Poster"
 msgstr "Affiche"
-
-#: pod/live/models.py
-msgid "URL"
-msgstr "URL"
 
 #: pod/live/models.py
 msgid "Url of the stream"
@@ -5323,6 +5418,10 @@ msgstr "Revendiquer un enregistrement"
 #: pod/main/templates/navbar.html pod/speaker/views.py
 msgid "Speakers management"
 msgstr "Gestion des intervenants"
+
+#: pod/main/templates/navbar.html
+msgid "Hyperlinks management"
+msgstr "Gestion des Hyperliens"
 
 #: pod/main/templates/navbar.html pod/progressive_web_app/templates/debug.html
 msgid "Notifications settings"
@@ -9993,6 +10092,10 @@ msgstr "Afficher la liste des vidéos de type « %(type_title)s »"
 #: pod/video/templates/videos/video-info.html
 msgid "Main language:"
 msgstr "Langue principale :"
+
+#: pod/video/templates/videos/video-info.html
+msgid "Hyperlinks:"
+msgstr "Hyperliens :"
 
 #: pod/video/templates/videos/video-info.html
 msgid "Audience:"

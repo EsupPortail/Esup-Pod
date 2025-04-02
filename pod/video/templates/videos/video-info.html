@@ -221,6 +221,18 @@
         {{video.get_main_lang}}
       </li>
 
+      {% if USE_HYPERLINKS and video.video_hyperlinks.exists %}
+      <li class="col-6 col-md-4">
+        <span class="pod-meta-title">{% trans 'Hyperlinks:' %}</span>
+        <ul style="display: inline-grid;">
+            {% for video_hyperlink in video.video_hyperlinks.all %}
+          <li><a href="{{ video_hyperlink.hyperlink.url }}">{{ video_hyperlink.hyperlink.description }}</a></li>
+            {% endfor %}
+        </ul>
+      </li>
+      {% endif %}
+
+
       {% if video.cursus and video.cursus != '0' %}
         <li class="col-6 col-md-4">
           <span class="pod-meta-title">{% trans 'Audience:' %}</span>
