@@ -88,7 +88,7 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             owner=user,
             # video="pod.mp4",
             type=Type.objects.get(id=1),
-            transcript=""
+            transcript="",
         )
         tempfile = NamedTemporaryFile(delete=True)
         credit_video.video.save("pod.mp4", tempfile)
