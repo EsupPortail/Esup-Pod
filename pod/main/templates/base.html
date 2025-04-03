@@ -221,7 +221,6 @@
       // Get the current theme from local storage
       let currentTheme = localStorage.getItem("theme");
 
-      // If the current local storage item can be found
       if (currentTheme == "auto") {
         // Detect Browser color-scheme
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -231,6 +230,8 @@
           currentTheme = "light";
         }
       }
+
+      // If the current local storage item can be found
       // Set the body data-theme attribute to match the local storage item
       document.documentElement.dataset.theme = currentTheme?currentTheme:"light";
       document.documentElement.dataset.bsTheme = currentTheme?currentTheme:"light";
