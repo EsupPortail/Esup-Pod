@@ -219,9 +219,19 @@
         'label[for="checkbox-darkmode"] .pod-switch input[type="checkbox"]'
       );
       // Get the current theme from local storage
-      const currentTheme = localStorage.getItem("theme");
-      // If the current local storage item can be found
+      let currentTheme = localStorage.getItem("theme");
 
+      if (currentTheme == "auto") {
+        // Detect Browser color-scheme
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          // dark mode
+          currentTheme = "dark";
+        } else {
+          currentTheme = "light";
+        }
+      }
+
+      // If the current local storage item can be found
       // Set the body data-theme attribute to match the local storage item
       document.documentElement.dataset.theme = currentTheme?currentTheme:"light";
       document.documentElement.dataset.bsTheme = currentTheme?currentTheme:"light";
