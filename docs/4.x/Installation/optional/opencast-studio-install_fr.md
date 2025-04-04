@@ -40,8 +40,8 @@ cp -r build/* pod/custom/static/opencast/studio
 
 La génération d’Opencast Studio peut très bien se réaliser sur un autre serveur. Pod n’a besoin que du répertoire `build`, renommé en `studio`, et positionné dans le sous-répertoire `pod/custom/static/opencast`.
 
-> [!WARNING]
-> **Il est indispensable que le serveur soit configuré en HTTPS (et non en HTTP) pour que l’Opencast Studio puisse fonctionner.**
+Il est indispensable que le serveur soit configuré en HTTPS (et non en HTTP) pour que l’Opencast Studio puisse fonctionner.
+{: .alert .alert-warning}
 
 ## Configuration et pré-requis
 

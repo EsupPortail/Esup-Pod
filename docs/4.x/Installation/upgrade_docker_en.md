@@ -10,7 +10,7 @@ lang: fr
 
 ### Announce the upgrade to users
 
-In Pod administration (https://VOTRE_SERVEUR/admin/main/configuration/), you'll find :
+In Pod administration (https://VOTRE_SERVEUR/admin/main/configuration/), you'll find:
 
 The “maintenance_text_scheduled” field lets you define a customized maintenance message.
 The “maintenance_scheduled” field lets you display/hide (=1 / 0) this message on Pod.
@@ -25,12 +25,14 @@ Switch to maintenance mode (maintenance_mode = 1), this will disable certain fun
 (django_pod4) pod@pod:~/django_projects$ git status
 (django_pod4) pod@pod:~/django_projects$ git pull origin master
 ```
+
 ## Build stack
 
 ```sh
 ## Force container recompilation (mandatory on first launch or after docker-reset)
 $ make docker-build
 ```
+
 This will delete the following directories:
 
 ```sh
@@ -48,7 +50,8 @@ From this terminal, run the following commands
 ```sh
 make upgrade
 ```
-or the following command lines 
+
+or the following command lines
 
 ```sh
 pip3 install -r requirements.txt
@@ -58,16 +61,19 @@ cd pod; yarn upgrade; cd ..
 # Caution: before running collectstatic --clear, make sure you've backed up the static/custom folder if you've put custom files in it.
 python manage.py collectstatic --no-input --clear
 ```
+
 > You can run commands directly from the host machine using _docker exec_.
+>
 > ```sh
 > docker exec -it <container_name> <command>
-> Ex : 
+> Ex:
 > docker exec -it pod-dev-with-volumes make upgrade
 > ```
-> Full documentation on docker exec 
-> https://docs.docker.com/reference/cli/docker/container/exec/
 >
-> 
+> Full documentation on docker exec
+> <https://docs.docker.com/reference/cli/docker/container/exec/>
+>
+
 ## Update settings
 
 After updating Esup-Pod, the command below shows the new parameters compared with a previous version:
@@ -80,7 +86,7 @@ python manage.py compareconfiguration *VERSION_PRECEDENTE*
 
 command, for example
 
-sh
+```sh
 python manage.py compareconfiguration 3.1.1
 ```
 
@@ -124,7 +130,7 @@ mkdir -p pod/custom/static/opencast/studio
 cp -r build/* pod/custom/static/opencast/studio
 ```
 
-Finally, don't forget to collect your static files for production via the command :
+Finally, don't forget to collect your static files for production via the command:
 
 ```sh
 python manage.py collectstatic

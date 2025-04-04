@@ -10,7 +10,7 @@ lang: en
 
 ### Announce the upgrade to users
 
-In Pod administration (https://VOTRE_SERVEUR/admin/main/configuration/), you'll find :
+In Pod administration (https://VOTRE_SERVEUR/admin/main/configuration/), you'll find:
 
 The “maintenance_text_scheduled” field lets you define a customized maintenance message.
 The “maintenance_scheduled” field lets you display/hide (=1 / 0) this message on Pod.
@@ -78,9 +78,10 @@ If you're upgrading from a version earlier than Pod version 3.3.1 and you're run
 ```sh
 podv3$ mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p --database=mysql
 ```
+
 ### Encoding server
 
-Be sure to update your encoding servers !
+Be sure to update your encoding servers!
 
 ```sh
 pod@pod-encodage:~$ cd django_projects/podv3/
@@ -129,7 +130,7 @@ mkdir -p pod/custom/static/opencast/studio
 cp -r build/* pod/custom/static/opencast/studio
 ```
 
-Finally, don't forget to collect your static files for production via the command :
+Finally, don't forget to collect your static files for production via the command:
 
 ```sh
 (django_pod) [userpod@video][/data/www/userpod/django_projects/podv2] python manage.py collectstatic

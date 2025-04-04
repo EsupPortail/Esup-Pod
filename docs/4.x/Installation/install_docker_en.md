@@ -40,7 +40,7 @@ To facilitate stack construction, several prefixed docker-xxx commands have been
     DJANGO_SUPERUSER_PASSWORD=admin
     DJANGO_SUPERUSER_EMAIL=celine.didier@univ-lorraine.fr
     ```
-   
+
     For the DOCKER_ENV variable, you can choose between _light_ (1 Pod docker with only encoding enabled) or _full_ (4 Pod dockers: pod-back, encoding, transcription and xAPI).
 
     ```py
@@ -217,4 +217,3 @@ linux/amd64
 linux/arm/v7
 linux/arm64/v8
 ```
-

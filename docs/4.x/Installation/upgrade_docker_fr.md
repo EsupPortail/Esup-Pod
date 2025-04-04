@@ -10,7 +10,7 @@ lang: fr
 
 ### Annoncez la maj aux utilisateurs
 
-Dans l’administration de Pod, (https://VOTRE_SERVEUR/admin/main/configuration/), vous trouverez :
+Dans l’administration de Pod, (https://VOTRE_SERVEUR/admin/main/configuration/), vous trouverez :
 
 Le champ "maintenance_text_sheduled" vous permet de définir un message de maintenance personnalisé.
 Le champ "maintenance_sheduled" vous permet d’afficher/masquer (=1 / 0) ce message sur Pod.
@@ -25,13 +25,15 @@ Basculez en mode maintenance (maintenance_mode = 1), cela va désactiver certain
 (django_pod4) pod@pod:~/django_projects$ git status
 (django_pod4) pod@pod:~/django_projects$ git pull origin master
 ```
+
 ## Build de la stack
 
 ```sh
 ## Force la recompilation des conteneurs (obligatoire au premier lancement ou après un docker-reset)
 $ make docker-build
 ```
-Ceci entrainera la suppression des répertoires suivants :
+
+Ceci entrainera la suppression des répertoires suivants :
 
 ```sh
 ./pod/log
@@ -48,7 +50,9 @@ Depuis ce terminal lancer les commandes suivantes
 ```sh
 make upgrade
 ```
-ou les lignes de commandes suivantes 
+
+ou les lignes de commandes suivantes
+
 ```sh
 pip3 install -r requirements.txt
 python manage.py makemigrations
@@ -57,16 +61,19 @@ cd pod; yarn upgrade; cd ..
 # Attention : avant de lancer collectstatic --clear, assurez-vous d’avoir sauvegardé le dossier static/custom si vous y avez mis des fichiers personnalisés.
 python manage.py collectstatic --no-input --clear
 ```
-> Vous pouvez directement lancer les commandes depuis la machine hôte grâce à _docker exec_
+
+> Vous pouvez directement lancer les commandes depuis la machine hôte grâce à `docker exec`
+>
 > ```sh
 > docker exec -it <container_name> <command>
-> Ex : 
+> # Ex :
 > docker exec -it pod-dev-with-volumes make upgrade
 > ```
-> Documentation complète sur docker exec 
-> https://docs.docker.com/reference/cli/docker/container/exec/
 >
-> 
+> Documentation complète sur docker exec
+> <https://docs.docker.com/reference/cli/docker/container/exec/>
+>
+>
 ## Mise à jour des paramètres
 
 Après avoir fait une mise à jour d’Esup-Pod, la commande ci-dessous permet de connaitre les nouveaux paramètres par rapport à une version précédente :
