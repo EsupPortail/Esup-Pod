@@ -11,6 +11,10 @@ lang: fr
 * [Installation standard](install_standalone_fr)
 * [Installation via Docker](install_docker_fr)
 
+### Fonctionalités optionelles
+
+* [Installation d’OpenCast Studio](optional/opencast-studio-install_fr.md)
+
 ## Mise à jour
 
 * [Mise à jour standard](upgrade_standalone_fr)
