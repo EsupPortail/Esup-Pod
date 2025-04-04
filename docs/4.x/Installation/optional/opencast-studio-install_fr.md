@@ -49,12 +49,13 @@ Il est indispensable que le serveur soit configuré en HTTPS (et non en HTTP) po
 
 Dans votre `custom/settings-local.py`, les paramètres suivants concernent l’utilisation d’Opencast Studio :
 
-| **Propriété**  | **Description**  | **Valeur par défaut** |
-|----------------|------------------|-----------------------|
+| Propriété  | Description  | Valeur par défaut |
+|:---------------|:------------------:|-----------------------:|
 | **USE_OPENCAST_STUDIO** | Activer l’enregistreur Opencast Studio | `False` |
 | **OPENCAST_FILES_DIR**  | Répertoire de travail pour les fichiers générés par Opencast Studio (sera accessible dans le media) | `"opencast-files"` |
 | **ENCODE_STUDIO**       | Fonction appelée pour lancer l’encodage des vidéos intermédiaires du studio | `"start_encode_studio"` |
 | **OPENCAST_DEFAULT_PRESENTER** | Paramètre permettant de savoir le comportement par défaut lors de l’enregistrement de la caméra et de l’écran (modifiable par l’utilisateur). Valeurs possibles : `mid` : Même taille pour l’écran et la caméra, `piph` : Pip - caméra à l’intérieur de la vidéo de l’écran en haut à droite, `pipb` : Pip - caméra à l’intérieur de la vidéo de l’écran en bas à droite | `"mid"` |
+{: .table .table-striped}
 
 ### Pré-requis
 
