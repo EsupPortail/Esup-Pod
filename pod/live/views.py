@@ -3,6 +3,7 @@
 import json
 import logging
 import os.path
+import shutil
 import re
 import threading
 from datetime import datetime
@@ -1020,13 +1021,15 @@ def create_video(event_id, current_file, segment_number):
         check_size_not_changing(full_file_name)
 
         # moving the file
-        os.rename(
+        shutil.copyfile(
             full_file_name,
-            dest_file,
+            dest_file
         )
 
         # verif si la taille du fichier copié ne bouge plus
         check_size_not_changing(dest_file)
+
+        os.remove(full_file_name)
 
     except Exception as exc:
         return JsonResponse(
