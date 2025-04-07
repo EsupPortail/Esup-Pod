@@ -474,10 +474,16 @@ class Encoding_video:
                 has_audio_key = f"{credit_type}_video_hasaudio"
                 duration_key = f"{credit_type}_video_duration"
 
-                if not self.json_dressing.get(has_audio_key):
-                    command += FFMPEG_DRESSING_SILENT % {
-                        "duration": self.json_dressing[duration_key],
-                    }
+                if not self.json_dressing.get(has_audio_key, True):
+                    duration = self.json_dressing.get(duration_key)
+
+                    try:
+                        duration = int(duration) if duration and int(duration) > 0 else 1
+                    except (ValueError, TypeError):
+                        duration = 1
+
+                    command += FFMPEG_DRESSING_SILENT % {"duration": duration}
+
         return command
 
     def build_dressing_filters(self, height: str):
