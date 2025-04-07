@@ -614,8 +614,17 @@ def video_completion_speaker_delete(request: WSGIRequest, video: Video):
 @login_required(redirect_field_name="referrer")
 def video_completion_hyperlink(request: WSGIRequest, slug: str, video: Video):
     """View to manage hyperlinks of a video."""
-    if request.method == "POST" and (action := request.POST.get("action")) in __AVAILABLE_ACTIONS__:
-        return eval(f"video_completion_hyperlink_{action}(request, video)")
+    action_mapping = {
+        "new": video_completion_hyperlink_new,
+        "save": video_completion_hyperlink_save,
+        "modify": video_completion_hyperlink_modify,
+        "delete": video_completion_hyperlink_delete,
+    }
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        if action in action_mapping:
+            return action_mapping[action](request, video)
 
     page_title = get_completion_home_page_title(video)
     context = {
