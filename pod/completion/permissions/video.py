@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 from pod.video.models import Video
 
 
-def has_video_rights(permissions: list[str], message: str, prefetch_callback = None):
+def has_video_rights(permissions: list[str], message: str, prefetch_callback=None):
     """Check the current user's rights on a certain video."""
 
     def decorator(func):
