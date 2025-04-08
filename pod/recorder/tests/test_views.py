@@ -21,6 +21,11 @@ from ..models import Recorder, Recording, RecordingFileTreatment
 OPENCAST_FILES_DIR = getattr(settings, "OPENCAST_FILES_DIR", "opencast-files")
 OPENCAST_DEFAULT_PRESENTER = getattr(settings, "OPENCAST_DEFAULT_PRESENTER", "mid")
 
+# ggignore-start
+# gitguardian:ignore
+PWD = "pod1234pod"  # nosec
+# ggignore-end
+
 
 class RecorderViewsTestCase(TestCase):
     """Test case for Pod recorder views."""
@@ -29,11 +34,11 @@ class RecorderViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Create models to be tested."""
         site = Site.objects.get(id=1)
         videotype = Type.objects.create(title="others")
-        user = User.objects.create(username="pod", password="podv3")
+        user = User.objects.create(username="pod", password=PWD)
         recorder = Recorder.objects.create(
             id=1,
             user=user,

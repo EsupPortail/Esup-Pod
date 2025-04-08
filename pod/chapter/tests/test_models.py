@@ -15,7 +15,7 @@ class ChapterModelTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
+    def setUp(self) -> None:
         owner = User.objects.create(username="test")
         videotype = Type.objects.create(title="others")
         video = Video.objects.create(
