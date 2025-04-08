@@ -820,20 +820,32 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
 * `CAS_FORCE_LOWERCASE_USERNAME`
   > valeur par défaut : `False`
   >> Forcer le passage en minuscule du nom d’utilisateur CAS<br>
-  >> (permet de prévenir des doubles créations de comptes dans certain cas).<br>
+  >> (permet de prévenir des doubles créations de comptes dans certains cas).<br>
+  >> OBSOLÈTE à partir de Pod 4.0. Utilisez `CAS_FORCE_CHANGE_USERNAME_CASE`<br>
+* `CAS_FORCE_CHANGE_USERNAME_CASE`
+  > valeur par défaut : `False`
+  >> Forcer la casse (minuscules ou majuscules) du nom d’utilisateur CAS<br>
+  >> (permet de prévenir des doubles créations de comptes dans certains cas).<br>
+  >> Valeurs possibles : `lower`, `upper`, `False`.<br>
 * `CAS_GATEWAY`
   > valeur par défaut : `False`
   >> Si True, authentifie automatiquement l’individu<br>
   >> si déjà authentifié sur le serveur CAS<br>
+  >> OBSOLÈTE à partir de Pod 4.0<br>
 * `CAS_LOGOUT_COMPLETELY`
   > valeur par défaut : `True`
   >> Voir [kstateome/django-cas](https://github.com/kstateome/django-cas)<br>
 * `CAS_SERVER_URL`
   > valeur par défaut : `sso_cas`
-  >> Url du serveur CAS de l’établissement. Format http://url_cas<br>
+  >> Url du serveur CAS de l’établissement. Format https://url_cas<br>
+* `CAS_MAP_AFFILIATIONS`
+  > valeur par défaut : `False`
+  >> Si True, des `groupes` d’utilisateurs sont créés automatiquement<br>
+  >> à partir des affiliations CAS des individus qui se connectent sur la plateforme<br>
+  >> et l’individu qui se connecte est ajouté automatiquement à ces groupes.<br>
 * `CREATE_GROUP_FROM_AFFILIATION`
   > valeur par défaut : `False`
-  >> Si True, des groupes sont créés automatiquement<br>
+  >> Si True, des `groupes d’accès` sont créés automatiquement<br>
   >> à partir des affiliations des individus qui se connectent sur la plateforme<br>
   >> et l’individu qui se connecte est ajouté automatiquement à ces groupes.<br>
 * `CREATE_GROUP_FROM_GROUPS`
@@ -950,6 +962,7 @@ Mettre `USE_AI_ENHANCEMENT` à True pour activer cette application.<br>
   > valeur par défaut : ``
   >> Liste de correspondance entre les champs d’un compte de Pod<br>
   >> et les champs renvoyés par le CAS.<br>
+  >> OBSOLÈTE. Utilisez désormais `CAS_RENAME_ATTRIBUTES`.<br>
 * `USER_LDAP_MAPPING_ATTRIBUTES`
   > valeur par défaut : ``
   >> Liste de correspondance entre les champs d’un compte de Pod<br>
