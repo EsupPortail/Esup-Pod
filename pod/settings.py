@@ -11,6 +11,12 @@ import importlib.util
 # DEPRECATIONS HACKS
 import django
 from django.utils.translation import gettext
+from urllib.parse import quote
+
+# Needed for django-cas-client==1.5.3
+from urllib.parse import quote
+urlquote = quote
+
 
 # Needed for django-chunked-upload==2.0.0
 django.utils.translation.ugettext = gettext
