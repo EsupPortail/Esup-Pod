@@ -140,7 +140,7 @@ class Command(BaseCommand):
 
         return list_video_notified_by_establishment
 
-    def get_video_archived_deleted_treatment(self) -> tuple:  # tuple[dict, dict]
+    def get_video_archived_deleted_treatment(self):  # tuple[dict, dict]
         """Get video with deadline out of time and delete them."""
         vids = Video.objects.filter(
             sites=get_current_site(None), date_delete__lt=date.today()

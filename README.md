@@ -2,7 +2,7 @@
 
   [![Licence LGPL 3.0](https://img.shields.io/github/license/EsupPortail/Esup-Pod)](https://github.com/EsupPortail/Esup-Pod/blob/master/LICENSE)
   [![Testing Status](https://github.com/EsupPortail/Esup-Pod/actions/workflows/pod_main.yml/badge.svg)](https://github.com/EsupPortail/Esup-Pod/actions)
-  [![Coverage Status](https://coveralls.io/repos/github/EsupPortail/Esup-Pod/badge.svg?branch=master)](https://coveralls.io/github/EsupPortail/Esup-Pod?branch=master)
+  [![Coverage Status](https://coveralls.io/repos/github/EsupPortail/Esup-Pod/badge.svg?branch=main)](https://coveralls.io/github/EsupPortail/Esup-Pod?branch=main)
   [![Awesome CodeGouvFr score](https://img.shields.io/badge/awesome-codegouvfr_8/10-blue)](https://code.gouv.fr/fr/awesome/)
   ![Release version](https://img.shields.io/github/v/release/EsupPortail/Esup-Pod)
   ![Repository size](https://img.shields.io/github/repo-size/EsupPortail/Esup-Pod)

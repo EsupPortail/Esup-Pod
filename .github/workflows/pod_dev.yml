@@ -5,14 +5,12 @@ run-name: ${{ github.actor }} is testing Pod encoding in Dev 🚀
 on:
   push:
     branches:
-    - develop
     - dev_v4
-    - features/**
     - dependabot/**
   pull_request:
     branches:
-    - develop
     - dev_v4
+    - main
   workflow_dispatch:
 
 env:
@@ -20,11 +18,11 @@ env:
   DJANGO_SUPERUSER_USERNAME: "admin"
   DJANGO_SUPERUSER_PASSWORD: "passwd"
   DJANGO_SUPERUSER_EMAIL: "noreply@uni.fr"
-  ELASTICSEARCH_TAG: "elasticsearch:8.16.1"
-  NODE_VERSION: "20"
-  NODE_TAG: "node:20"
+  ELASTICSEARCH_TAG: "elasticsearch:8.17.3"
+  NODE_VERSION: "23"
+  NODE_TAG: "node:23"
   PYTHON_TAG: "python:3.9-bullseye"
-  REDIS_TAG: "redis:alpine3.16"
+  REDIS_TAG: "redis:alpine3.21"
   DOCKER_ENV: "full-test"
 
 jobs:
@@ -136,7 +134,7 @@ jobs:
       - name: Run Elasticsearch
         uses: elastic/elastic-github-actions/elasticsearch@master
         with:
-          stack-version: 8.16.1
+          stack-version: 8.17.3
           plugins: analysis-icu
           security-enabled: false
 

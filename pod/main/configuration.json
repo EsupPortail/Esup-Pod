@@ -3763,7 +3763,7 @@
                                     "Version d’ElasticSearch.",
                                     "valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.",
                                     "Attention, le paquet elasticsearch-py doit correspondre à la version du serveur. ",
-                                    "pour la 8, `pip3 install elasticsearch==8.16.0`.",
+                                    "pour la 8, `pip3 install elasticsearch==8.17.2`.",
                                     "Voir [elasticsearch-py.readthedocs.io](https://elasticsearch-py.readthedocs.io/)",
                                     "pour plus d’information."
                                 ]

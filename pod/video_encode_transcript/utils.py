@@ -1,7 +1,8 @@
 """Esup-Pod video encoding and transcripting utilities."""
 
-import os
 import bleach
+import logging
+import os
 import time
 
 from django.urls import reverse
@@ -17,6 +18,9 @@ from .models import EncodingStep
 from .models import EncodingLog
 
 DEBUG = getattr(settings, "DEBUG", True)
+logger = logging.getLogger(__name__)
+if DEBUG:
+    logger.setLevel(logging.DEBUG)
 
 TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings,
@@ -59,7 +63,7 @@ VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
 # ##########################################################################
 
 
-def change_encoding_step(video_id, num_step, desc):
+def change_encoding_step(video_id: int, num_step: int, desc: str) -> None:
     """Change encoding step."""
     encoding_step, created = EncodingStep.objects.get_or_create(
         video=Video.objects.get(id=video_id)
@@ -67,12 +71,10 @@ def change_encoding_step(video_id, num_step, desc):
     encoding_step.num_step = num_step
     encoding_step.desc_step = desc[:255]
     encoding_step.save()
-
-    if DEBUG:
-        print("step: %d - desc: %s" % (num_step, desc))
+    logger.debug("Video: %s - step: %d - desc: %s" % (video_id, num_step, desc))
 
 
-def add_encoding_log(video_id, log):
+def add_encoding_log(video_id, log) -> None:
     """Add message in video_id encoding log."""
     encoding_log, created = EncodingLog.objects.get_or_create(
         video=Video.objects.get(id=video_id)
@@ -82,11 +84,10 @@ def add_encoding_log(video_id, log):
     else:
         encoding_log.log += "\n\n%s" % log
     encoding_log.save()
-    if DEBUG:
-        print(log)
+    logger.debug(log)
 
 
-def check_file(path_file):
+def check_file(path_file) -> bool:
     """Check if path_file is accessible and is not null."""
     if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
         return True
@@ -107,7 +108,7 @@ def create_outputdir(video_id, video_path):
 ###############################################################
 
 
-def send_email_item(msg, item, item_id):
+def send_email_item(msg, item, item_id) -> None:
     """Send email notification when encoding fails for a specific item."""
     subject = "[" + __TITLE_SITE__ + "] Error Encoding %s id: %s" % (item, item_id)
     message = "Error Encoding %s id: %s\n%s" % (item, item_id, msg)
@@ -119,38 +120,37 @@ def send_email_item(msg, item, item_id):
     mail_admins(subject, message, fail_silently=False, html_message=html_message)
 
 
-def send_email_recording(msg, recording_id):
+def send_email_recording(msg, recording_id) -> None:
     """Send email notification when recording encoding failed."""
     send_email_item(msg, "Recording", recording_id)
 
 
-def send_email_encoding(video_to_encode):
+def send_email_encoding(video_to_encode) -> None:
     """Send email on encoding completion."""
     subject_prefix = _("Encoding")
     send_notification_email(video_to_encode, subject_prefix)
 
 
-def send_notification_encoding(video_to_encode):
+def send_notification_encoding(video_to_encode) -> None:
     """Send push notification on encoding completion."""
     subject_prefix = _("Encoding")
     send_notification(video_to_encode, subject_prefix)
 
 
-def send_email(msg, video_id):
+def send_email(msg, video_id) -> None:
     """Send email notification when video encoding failed."""
     send_email_item(msg, "Video", video_id)
 
 
-def send_email_transcript(video_to_encode):
+def send_email_transcript(video_to_encode) -> None:
     """Send email on transcripting completion."""
     subject_prefix = _("The transcripting of content")
     send_notification_email(video_to_encode, subject_prefix)
 
 
-def send_notification_email(video_to_encode, subject_prefix):
+def send_notification_email(video_to_encode, subject_prefix) -> None:
     """Send email notification on video encoding or transcripting completion."""
-    if DEBUG:
-        print("SEND EMAIL ON %s COMPLETION" % subject_prefix.upper())
+    logger.debug("SEND EMAIL ON %s COMPLETION" % subject_prefix.upper())
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
     content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
     subject = "[%s] %s" % (
@@ -238,7 +238,7 @@ def send_notification_email(video_to_encode, subject_prefix):
             )
 
 
-def send_notification(video_to_encode, subject_prefix):
+def send_notification(video_to_encode, subject_prefix) -> None:
     """Send push notification on video encoding or transcripting completion."""
     subject = "[%s] %s" % (
         __TITLE_SITE__,
@@ -269,7 +269,7 @@ def send_notification(video_to_encode, subject_prefix):
     )
 
 
-def time_to_seconds(a_time):
+def time_to_seconds(a_time) -> int:
     """Convert a time to seconds."""
     seconds = time.strptime(str(a_time), "%H:%M:%S")
     seconds = seconds.tm_sec + seconds.tm_min * 60 + seconds.tm_hour * 3600

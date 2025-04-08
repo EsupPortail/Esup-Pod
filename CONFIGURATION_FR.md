@@ -2178,7 +2178,7 @@ Attention, il faut configurer Celery pour l’envoi des instructions pour l’en
   >> Version d’ElasticSearch.<br>
   >> valeurs possibles : `8`, correspondant à la version du serveur Elasticsearch utilisé.<br>
   >> Attention, le paquet elasticsearch-py doit correspondre à la version du serveur.<br>
-  >> pour la 8, `pip3 install elasticsearch==8.16.0`.<br>
+  >> pour la 8, `pip3 install elasticsearch==8.17.2`.<br>
   >> Voir [elasticsearch-py.readthedocs.io](https://elasticsearch-py.readthedocs.io/)<br>
   >> pour plus d’information.<br>
 * `ES_OPTIONS`

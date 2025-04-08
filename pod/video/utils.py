@@ -296,7 +296,7 @@ def verify_field_length(field, field_name: str = "title", max_length: int = 100)
     return msg
 
 
-def has_audio(video):
+def has_audio(video) -> bool:
     """
     Checks if a video contains an audio track.
 

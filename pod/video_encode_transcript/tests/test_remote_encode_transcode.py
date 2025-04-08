@@ -1,4 +1,10 @@
-from unittest import TestCase
+"""
+Video & Audio Remote encoding test cases.
+
+*  run with `python manage.py test pod.video_encode_transcript.tests.test_remote_encode_transcode`
+"""
+
+from unittest import TestCase, skipUnless
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.temp import NamedTemporaryFile
@@ -10,9 +16,7 @@ from pod.cut.models import CutVideo
 from pod.dressing.models import Dressing
 from pod.video.models import Video, Type
 from pod.video_encode_transcript import encode
-from pod.video_encode_transcript.models import EncodingVideo
-from pod.video_encode_transcript.models import PlaylistVideo
-from pod.video_encode_transcript.models import EncodingLog
+from pod.video_encode_transcript.models import EncodingVideo, PlaylistVideo, EncodingLog
 from pod.completion.models import Track
 
 import shutil
@@ -42,21 +46,28 @@ else:
     from pod.main.models import CustomImageModel
 
 
+@skipUnless(
+    TEST_REMOTE_ENCODE, "Set TEST_REMOTE_ENCODE to True before testing remote encoding."
+)
 class RemoteEncodeTranscriptTestCase(TestCase):
-    def setUp(self):
+    """Test case for remote encoding and transcripting of videos."""
+
+    def setUp(self) -> None:
+        """Set up the test environment by creating a user, video, and credit video, and copying test files."""
         print("===== SetUp of RemoteEncodeTranscriptTestCase =====")
         print("===> TEST_REMOTE_ENCODE: %s" % TEST_REMOTE_ENCODE)
-        if not TEST_REMOTE_ENCODE:
-            return
+
         user, created = User.objects.update_or_create(
             username="pod", password="pod1234pod"
         )
         user.is_staff = True
         user.is_superuser = True
         user.save()
+
+        self.temp_token = False
         # create token
         if not Token.objects.filter(key=POD_API_TOKEN).exists():
-            Token.objects.create(key=POD_API_TOKEN, user=user)
+            self.temp_token = Token.objects.create(key=POD_API_TOKEN, user=user)
         video, created = Video.objects.update_or_create(
             title="Video1",
             owner=user,
@@ -89,44 +100,60 @@ class RemoteEncodeTranscriptTestCase(TestCase):
             os.path.dirname(credit_videofile), "%04d" % credit_video.id
         )
         os.makedirs(credit_video_dir, exist_ok=True)
-        with open(os.path.join(credit_videofile, "info_video.json"), "w") as f:
+        with open(os.path.join(credit_video_dir, "info_video.json"), "w") as f:
             json.dump({"list_audio_track": []}, f)
         print(" --->  SetUp of RemoteEncodeTranscriptTestCase: OK!")
 
-    def tearDown(self):
-        if not TEST_REMOTE_ENCODE:
-            return
+    def tearDown(self) -> None:
+        """Clean up the test environment by deleting the created video, user, and token."""
         if getattr(self, "video", False):
             self.video.delete()
-        if Token.objects.filter(key=POD_API_TOKEN).exists():
-            Token.objects.get(key=POD_API_TOKEN).delete()
+        if self.temp_token:
+            self.temp_token.delete()
         if getattr(self, "user", False):
             self.user.delete()
         print(" --->  tearDown of RemoteEncodeTranscriptTestCase: OK!")
 
-    def test_remote_encoding_transcoding(self):
-        """Launch test of video remote encoding."""
-        self.remote_encoding()
-        self.remote_transcripting()
-        print(" --->  test_remote_encoding_transcoding: OK!")
-
-    def remote_encoding(self):
-        """Launch test of video remote encoding."""
-        if not TEST_REMOTE_ENCODE:
-            return
-        print("\n ---> Start Encoding video test")
-        encode_video = getattr(encode, ENCODE_VIDEO)
-        encode_video(self.video.id, threaded=False)
+    def wait_for_encode_end(self, title="", max_delay=60) -> None:
+        """Wait for the encoding process to complete, raising an error if it takes too long."""
+        tstart = time.time()
         self.video.refresh_from_db()
-        n = 0
         while self.video.encoding_in_progress:
-            print("... Encoding in progress: %s " % self.video.get_encoding_step)
+            tic = time.time()
+            delay = tic - tstart
+            htic = time.strftime("%M:%S", time.gmtime(tic - tstart))
+
+            print(
+                "... [%s] '%04d-%s' remote encoding in progress: %s "
+                % (htic, self.video.id, title, self.video.get_encoding_step)
+            )
             self.video.refresh_from_db()
             time.sleep(2)
-            n += 1
-            if n > 30:
-                raise ValidationError("Error while encoding!!!")
+            if delay > max_delay:
+                raise ValidationError(
+                    "Error while remote encoding '%s' (process too long)!" % title
+                )
         self.video.refresh_from_db()
+
+    def test_remote_encoding_transcoding(self) -> None:
+        """Test the remote encoding and transcripting of a video."""
+        self.remote_encoding()
+        if USE_TRANSCRIPTION:
+            self.remote_transcripting()
+        else:
+            print(
+                "Remote transcript skipped. Set USE_TRANSCRIPTION to True before testing remote transcoding."
+            )
+        print(" --->  test_remote_encoding_transcoding: OK!")
+
+    def remote_encoding(self) -> None:
+        """Test the remote encoding of a video, verifying the creation of various encoding formats and logs."""
+        print("\n ---> Start Remote encoding video test")
+        encode_video = getattr(encode, ENCODE_VIDEO)
+        encode_video(self.video.id, threaded=False)
+
+        self.wait_for_encode_end("Remote")
+
         self.assertEqual("Video1", self.video.title)
         list_mp2t = EncodingVideo.objects.filter(
             video=self.video, encoding_format="video/mp2t"
@@ -150,32 +177,24 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.assertTrue(len(list_mp4) > 0)
         self.assertTrue(self.video.overview)
         self.assertTrue(self.video.thumbnail)
-        print("\n ---> End of Encoding video test")
+        print("\n ---> End of Remote encoding video test")
 
-    def test_remote_encoding_cut(self):
+    def test_remote_encoding_cut(self) -> None:
         """Launch test of cut video remote encoding."""
-        if not TEST_REMOTE_ENCODE:
-            return
-        print("\n ---> Start Encoding cut video test")
+        print("\n ---> Start Remote encoding cut video test")
         encode_video = getattr(encode, ENCODE_VIDEO)
+
         encode_video(self.video.id, threaded=False)
-        self.video.refresh_from_db()
+        self.wait_for_encode_end("Pre-cut")
+
         CutVideo.objects.create(
             video=self.video,
             start="00:00:00",
             end="00:00:05",
         )
         encode_video(self.video.id, threaded=False)
-        self.video.refresh_from_db()
-        n = 0
-        while self.video.encoding_in_progress:
-            print("... Encoding in progress: %s " % self.video.get_encoding_step)
-            self.video.refresh_from_db()
-            time.sleep(2)
-            n += 1
-            if n > 30:
-                raise ValidationError("Error while encoding!!!")
-        self.video.refresh_from_db()
+        self.wait_for_encode_end("Cut")
+
         self.assertEqual("Video1", self.video.title)
         list_mp2t = EncodingVideo.objects.filter(
             video=self.video, encoding_format="video/mp2t"
@@ -197,15 +216,15 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         self.assertEqual(len(list_mp2t) + 1, len(list_playlist_video))
         self.assertTrue(list_playlist_master)
         self.assertTrue(len(list_mp4) > 0)
-        self.assertTrue(self.video.overview)
+        self.assertTrue(self.video.duration < 10)
+        # There is no overview for duration < 10s
+        self.assertFalse(self.video.overview)
         self.assertTrue(self.video.thumbnail)
-        print("\n ---> End of Encoding video cut test")
+        print("\n ---> End of Remote encoding video cut test")
 
-    def test_remote_encoding_dressing(self):
+    def test_remote_encoding_dressing(self) -> None:
         """Launch test of video remote encoding for dressing."""
-        if not TEST_REMOTE_ENCODE:
-            return
-        print("\n ---> Start Encoding video dressing test")
+        print("\n ---> Start Remote encoding video dressing test")
         encode_video = getattr(encode, ENCODE_VIDEO)
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         simplefile = SimpleUploadedFile(
@@ -238,16 +257,10 @@ class RemoteEncodeTranscriptTestCase(TestCase):
 
         # Start encoding
         encode_video(self.video.id, threaded=False)
-        self.video.refresh_from_db()
-        n = 0
-        while self.video.encoding_in_progress:
-            print("... Encoding dressing in progress: %s " % self.video.get_encoding_step)
-            self.video.refresh_from_db()
-            time.sleep(2)
-            n += 1
-            if n > 30:
-                raise ValidationError("Error while encoding!!!")
-        self.video.refresh_from_db()
+
+        # Wait 10 minutes for dressing encode end ??
+        self.wait_for_encode_end("dressing", 600)
+
         print("end of dressing encoding")
         print(self.video.get_encoding_step)
 
@@ -278,30 +291,22 @@ class RemoteEncodeTranscriptTestCase(TestCase):
         with open(self.video.encodinglog.logfile.path) as json_file:
             info_video = json.load(json_file)
             print(json.dumps(info_video, indent=4, sort_keys=True))
-        print("\n ---> End of Encoding video dressing test")
+        print("\n ---> End of Remote encoding video dressing test")
 
-    def remote_transcripting(self):
+    def remote_transcripting(self) -> None:
         """Launch test of video remote transcripting."""
-        if not TEST_REMOTE_ENCODE:
-            return
-        print("\n ---> Start Transcripting video test")
+        print("\n ---> Start Remote transcripting video test")
         if self.video.get_video_mp3() and not self.video.encoding_in_progress:
             self.video.transcript = "fr"
             self.video.save()
             transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
             transcript_video(self.video.id, threaded=False)
-            self.video.refresh_from_db()
-            n = 0
-            while self.video.encoding_in_progress:
-                print("... Transcripting in progress: %s " % self.video.get_encoding_step)
-                self.video.refresh_from_db()
-                time.sleep(2)
-                n += 1
-                if n > 60:
-                    raise ValidationError("Error while transcripting!!!")
+
+            self.wait_for_encode_end("Transcripting", 120)
+
             self.video.refresh_from_db()
             if not Track.objects.filter(video=self.video, lang="fr").exists():
-                raise ValidationError("Error while transcripting!!!")
+                raise ValidationError("Error while remote transcripting!!!")
         else:
             raise ValidationError("No mp3 found!!!")
-        print("\n ---> End of transcripting video test")
+        print("\n ---> End of remote transcripting video test")
