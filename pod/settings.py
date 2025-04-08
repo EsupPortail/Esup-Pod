@@ -16,8 +16,10 @@ from urllib.parse import quote
 # Needed for django-cas-client==1.5.3
 django.utils.http.urlquote = quote
 
-# Needed for django-chunked-upload==2.0.0
-django.utils.translation.ugettext = gettext
+# As a comment until a new version of django-chunked-upload is released on pypi
+# See requirements.txt (django-chunked-upload==2.0.0 replaced by 
+# git+https://github.com/juliomalegria/django-chunked-upload.git@master)
+# django.utils.translation.ugettext = gettext
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # will be update in pod/main/settings.py
