@@ -10,10 +10,6 @@ import importlib.util
 
 # DEPRECATIONS HACKS
 import django
-from urllib.parse import quote
-
-# Needed for django-cas-client==1.5.3
-django.utils.http.urlquote = quote
 
 # As a comment until a new version of django-chunked-upload is released on pypi
 # See requirements.txt (django-chunked-upload==2.0.0 replaced by
@@ -48,7 +44,7 @@ INSTALLED_APPS = [
     "sorl.thumbnail",
     # "tagging",
     "tagulous",
-    "cas",
+    "django_cas_ng",
     "captcha",
     "rest_framework",
     "rest_framework.authtoken",
@@ -443,12 +439,13 @@ def update_settings(local_settings):
     # AUTH
     #
     if local_settings.get("USE_CAS", False):
-        local_settings["AUTHENTICATION_BACKENDS"] += ("cas.backends.CASBackend",)
-        local_settings["CAS_RESPONSE_CALLBACKS"] = (
-            "pod.authentication.populatedCASbackend.populateUser",
-            # function call to add some information to user login by CAS
+        local_settings["AUTHENTICATION_BACKENDS"] += (
+            "django.contrib.auth.backends.ModelBackend",
+            "django_cas_ng.backends.CASBackend",
         )
-        local_settings["MIDDLEWARE"].append("cas.middleware.CASMiddleware")
+        local_settings["MIDDLEWARE"].append("django_cas_ng.middleware.CASMiddleware")
+        if local_settings.get("POPULATE_USER", None) == "CAS":
+            local_settings["CAS_APPLY_ATTRIBUTES_TO_USER"] = True
 
     if local_settings.get("USE_SHIB", False):
         local_settings["AUTHENTICATION_BACKENDS"] += (

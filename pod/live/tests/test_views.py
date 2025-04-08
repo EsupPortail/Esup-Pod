@@ -31,6 +31,11 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomImageModel
 
+# ggignore-start
+# gitguardian:ignore
+PWD = "pod1234pod"  # nosec
+# ggignore-end
+
 
 class LiveViewsTestCase(TestCase):
     """Test case for Pod Live views."""
@@ -39,8 +44,8 @@ class LiveViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
-        user = User.objects.create(username="pod", password="podv3")
+    def setUp(self) -> None:
+        user = User.objects.create(username="pod", password=PWD)
         building = Building.objects.create(name="building1")
         if FILEPICKER:
             homedir, created = UserFolder.objects.get_or_create(name="Home", owner=user)
