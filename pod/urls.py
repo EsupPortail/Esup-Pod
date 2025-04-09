@@ -43,7 +43,7 @@ USE_DUPLICATE = getattr(settings, "USE_DUPLICATE", False)
 USE_HYPERLINKS = getattr(settings, "USE_HYPERLINKS", False)
 
 if USE_CAS:
-    from cas import views as cas_views
+    from django_cas_ng import views as cas_views
 
 
 urlpatterns = [
@@ -108,10 +108,9 @@ if USE_NOTIFICATIONS:
 
 # CAS
 if USE_CAS:
-    # urlpatterns += [re_path(r'^sso-cas/', include('cas.urls')), ]
     urlpatterns += [
-        path("sso-cas/login/", cas_views.login, name="cas-login"),
-        path("sso-cas/logout/", cas_views.logout, name="cas-logout"),
+        path("accounts/login", cas_views.LoginView.as_view(), name="cas_ng_login"),
+        path("accounts/logout", cas_views.LogoutView.as_view(), name="cas_ng_logout"),
     ]
 
 # OIDC

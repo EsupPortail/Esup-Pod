@@ -90,7 +90,7 @@ jobs:
       - name: cat env
         run: cat .env.dev
 
-      - name: make Build container
+      - name: Build containers
         run: |
           sudo rm -rf ./pod/log
           sudo rm -rf ./pod/static
@@ -103,29 +103,29 @@ jobs:
         with:
           time: '60s'
 
-      - name: show running container
+      - name: Show running containers
         run: |
           docker ps
           echo "🍏 Docker is UP ${{ job.status }}."
           docker exec pod-back-with-volumes ps auxf
           docker exec pod-back-with-volumes python manage.py loaddata pod/video/fixtures/sample_videos.json
 
-      - name: run test in docker
+      - name: Run test_remote_encode_transcode in docker
         run: docker exec pod-back-with-volumes coverage run --append manage.py test -v 3 --keepdb pod.video_encode_transcript.tests.test_remote_encode_transcode
 
-      - name: Run pa11y-ci full
+      - name: Run pa11y-ci
         run: docker exec pa11y-ci pa11y-ci -c /usr/src/app/dockerfile-dev-with-volumes/pa11y-ci/config.json
 
       - name: Run pa11y-ci mobile
         run: docker exec pa11y-ci pa11y-ci -c /usr/src/app/dockerfile-dev-with-volumes/pa11y-ci/config_mobile.json
 
-      - name: show pa11y results
+      - name: Show pa11y results
         run: cat pa11y-results.json
 
       - name: Stop containers
         if: always()
         run: docker compose -f ./docker-compose-full-dev-with-volumes-test.yml down
-      - name: delete unused file and change owner
+      - name: Delete unused file and change owner
         run: |
           sudo rm -f pod/custom/settings_local.py
           sudo chown -R runner:runner .

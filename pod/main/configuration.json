@@ -266,28 +266,50 @@
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    ""
+                                    "Force CAS username to lowercase (prevents duplicate account creation in some cases).",
+                                    " DEPRECATED as of Pod 4.0. Use `CAS_FORCE_CHANGE_USERNAME_CASE`."
                                 ],
                                 "fr": [
                                     "Forcer le passage en minuscule du nom d’utilisateur CAS",
-                                    "(permet de prévenir des doubles créations de comptes dans certain cas)."
+                                    "(permet de prévenir des doubles créations de comptes dans certains cas).",
+                                    "OBSOLÈTE à partir de Pod 4.0. Utilisez `CAS_FORCE_CHANGE_USERNAME_CASE`"
+                                ]
+                            },
+                            "pod_version_end": "4.0",
+                            "pod_version_init": "3.1"
+                        },
+                        "CAS_FORCE_CHANGE_USERNAME_CASE": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "Force case (lower or upper case) of CAS username",
+                                    "(prevents double account creations in some cases).",
+                                    "Possible values: `lower`, `upper`, `False`."
+                                ],
+                                "fr": [
+                                    "Forcer la casse (minuscules ou majuscules) du nom d’utilisateur CAS",
+                                    "(permet de prévenir des doubles créations de comptes dans certains cas).",
+                                    "Valeurs possibles : `lower`, `upper`, `False`."
                                 ]
                             },
                             "pod_version_end": "",
-                            "pod_version_init": "3.1"
+                            "pod_version_init": "4.0"
                         },
                         "CAS_GATEWAY": {
                             "default_value": false,
                             "description": {
                                 "en": [
-                                    ""
+                                    "If True, automatically authenticates the user",
+                                    "if already authenticated on the CAS server",
+                                    "OBSOLETE as of Pod 4.0"
                                 ],
                                 "fr": [
                                     "Si True, authentifie automatiquement l’individu",
-                                    "si déjà authentifié sur le serveur CAS"
+                                    "si déjà authentifié sur le serveur CAS",
+                                    "OBSOLÈTE à partir de Pod 4.0"
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "4.0",
                             "pod_version_init": "3.1"
                         },
                         "CAS_LOGOUT_COMPLETELY": {
@@ -307,14 +329,31 @@
                             "default_value": "sso_cas",
                             "description": {
                                 "en": [
-                                    ""
+                                    "Url of the institution’s CAS server. In the format https://url_cas"
                                 ],
                                 "fr": [
-                                    "Url du serveur CAS de l’établissement. Format http://url_cas"
+                                    "Url du serveur CAS de l’établissement. Format https://url_cas"
                                 ]
                             },
                             "pod_version_end": "",
                             "pod_version_init": "3.1"
+                        },
+                        "CAS_MAP_AFFILIATIONS": {
+                            "default_value": false,
+                            "description": {
+                                "en": [
+                                    "If True, user `groups` are automatically created from the CAS affiliations",
+                                    " of individuals who log in to the platform and the person who logs in ",
+                                    " is automatically added to these groups."
+                                ],
+                                "fr": [
+                                    "Si True, des `groupes` d’utilisateurs sont créés automatiquement",
+                                    "à partir des affiliations CAS des individus qui se connectent sur la plateforme",
+                                    "et l’individu qui se connecte est ajouté automatiquement à ces groupes."
+                                ]
+                            },
+                            "pod_version_end": "",
+                            "pod_version_init": "4.0"
                         },
                         "CREATE_GROUP_FROM_AFFILIATION": {
                             "default_value": false,
@@ -323,7 +362,7 @@
                                     ""
                                 ],
                                 "fr": [
-                                    "Si True, des groupes sont créés automatiquement",
+                                    "Si True, des `groupes d’accès` sont créés automatiquement",
                                     "à partir des affiliations des individus qui se connectent sur la plateforme",
                                     "et l’individu qui se connecte est ajouté automatiquement à ces groupes."
                                 ]
@@ -729,10 +768,11 @@
                                 ],
                                 "fr": [
                                     "Liste de correspondance entre les champs d’un compte de Pod",
-                                    "et les champs renvoyés par le CAS."
+                                    "et les champs renvoyés par le CAS.",
+                                    "OBSOLÈTE. Utilisez désormais `CAS_RENAME_ATTRIBUTES`."
                                 ]
                             },
-                            "pod_version_end": "",
+                            "pod_version_end": "4.0",
                             "pod_version_init": "3.1"
                         },
                         "USER_LDAP_MAPPING_ATTRIBUTES": {
