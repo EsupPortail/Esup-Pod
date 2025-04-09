@@ -117,7 +117,7 @@
                 <span class="ms-1 d-none d-md-inline">{% trans 'Add a video' %}</span>
               </a>
             </li>
-            <li class="nav-item pod-navbar__nav-item ms-4" id="nav-myvideos">
+            <li class="nav-item pod-navbar__nav-item ms-2 ms-md-4" id="nav-myvideos">
               <a class="btn btn-primary btn-sm" href="{% url 'video:dashboard' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Show all my videos on' %} {{ TITLE_SITE }}">
                 <i class="bi bi-film pod-nav-link-icon mx-1" aria-hidden="true"></i>
                 <span class="ms-1 d-none d-md-inline">{% trans 'Dashboard' %}</span>
@@ -126,7 +126,7 @@
           {% endif %}
           {% show_meeting_button as meeting_button %}
           {% if meeting_button %}
-            <li class="nav-item pod-navbar__nav-item ms-3" id="nav-mymeetings">
+            <li class="nav-item pod-navbar__nav-item ms-2 ms-md-4" id="nav-mymeetings">
               <a class="btn btn-primary btn-sm" href="{% url 'meeting:my_meetings' %}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{% trans 'Show all my meetings on' %} {{ TITLE_SITE }}">
                 <i class="bi bi-person-video pod-add" aria-hidden="true"></i>
                 <span class="ms-1 d-none d-md-inline">{% trans 'My meetings' %}</span>
@@ -136,7 +136,7 @@
         {% endif %}
     {% endif %}
     <!--  Add configuration panel buttons -->
-    <li class="nav-item pod-params pod-navbar__nav-item ms-2" id="pod-param-buttons">
+    <li class="nav-item pod-params pod-navbar__nav-item ms-0.5 ms-md-2" id="pod-param-buttons">
       <button class="btn btn-link pod-params-button px-1"
         type="button" id="pod-param-buttons__button"
         data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menusettings"
@@ -222,7 +222,7 @@
     </li>
 
     {% if user.is_authenticated %}
-      <li class="nav-item ms-3" id="nav-usermenu">
+      <li class="nav-item ms-2 ms-sm-3" id="nav-usermenu">
         <button class="btn btn-sm nav-item {% if not request.user.owner.userpicture  %}initials btn btn-primary {% else %} nav-link{% endif %} d-flex justify-content-center align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#pod-navbar__menuuser" aria-controls="pod-navbar__menuuser" title="{% trans 'Toggle user menu' %}"
          data-pod-tooltip="true">
           {% if request.user.owner.userpicture %}
