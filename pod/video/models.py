@@ -816,6 +816,10 @@ class Video(models.Model):
         ),
         default=True,
     )
+    scheduled_publish_date = models.DateTimeField(
+        null=True, blank=True, 
+        help_text="Date and hour of the scheduled publication."
+    )
     is_restricted = models.BooleanField(
         verbose_name=_("Authentication restricted access"),
         help_text=_(

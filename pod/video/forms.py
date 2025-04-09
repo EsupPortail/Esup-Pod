@@ -934,6 +934,7 @@ class VideoForm(forms.ModelForm):
         # Manage required fields html
         self.fields = add_placeholder_and_asterisk(self.fields)
         self.fields = add_describedby_attr(self.fields)
+        self.fields['scheduled_publish_date'].input_formats = ['%Y-%m-%dT%H:%M']
         if self.fields.get("video"):
             # Remove label, as it will be included in customclearablefileinput
             self.fields["video"].label = ""
@@ -1076,6 +1077,7 @@ class VideoForm(forms.ModelForm):
             "restrict_access_to_groups": AddAccessGroupWidget,
             "video": CustomClearableFileInput,
             "password": forms.TextInput(),
+            "scheduled_publish_date": forms.DateTimeInput(attrs={"type": "datetime-local"}, format="%Y-%m-%dT%H:%M"),
         }
         initial = {
             "date_added": datetime.date.today(),
