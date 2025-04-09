@@ -199,7 +199,7 @@
                 {% include 'hyperlinks/form_hyperlink.html' with form_hyperlink=form_hyperlink %}
               {% endif %}
             </span>
-            <form class="form-new completion" id="form-new-hyperlink" action="{% url 'video:completion:video_completion_hyperlink' slug=video.slug %}" method="POST">
+            <form class="form_new completion" id="form-new-hyperlink" action="{% url 'video:completion:video_completion_hyperlink' slug=video.slug %}" method="POST">
               {% csrf_token %}
               <input type="hidden" name="action" value="new">
               {% if not form_hyperlink_is_active %}
