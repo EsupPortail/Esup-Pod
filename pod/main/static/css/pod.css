@@ -291,15 +291,15 @@ a:not(.btn, .dropdown-item):focus {
 
 .pod-navbar .btn{
   border-radius: var(--bs-border-radius-xl);
-  font-size: 1.20rem;
-  padding: 0.6rem 0.9rem; 
+  font-size: 1rem;
+  padding: 0.4rem 1.5rem; 
   display: inline-flex;
   align-items: center;
   gap: 0.5rem; 
 }
 
 .pod-navbar .btn i {
-  font-size: 1.25em; 
+  font-size: 1.5em; 
   display: inline-flex;
   align-items: center;
 }
