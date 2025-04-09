@@ -11,6 +11,7 @@ import importlib.util
 # As a comment until a new version of django-chunked-upload is released on pypi
 # See requirements.txt (django-chunked-upload==2.0.0 replaced by
 # git+https://github.com/juliomalegria/django-chunked-upload.git@master)
+# from django.utils.translation import gettext
 # django.utils.translation.ugettext = gettext
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
