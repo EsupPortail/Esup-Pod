@@ -4,7 +4,7 @@ Pillow==10.3.0
 django-tinymce==4.1.0
 django-tagulous==2.1.0
 django-modeltranslation==0.19.11
-django-cas-client==1.5.3
+django-cas-ng==5.0.1
 ldap3==2.9.1
 django-simple-captcha==0.6.0
 urllib3==2.2.3

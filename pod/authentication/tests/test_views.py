@@ -3,11 +3,15 @@
 *  run with 'python manage.py test pod.authentication.tests.test_views'
 """
 
-from django.test import TestCase
-from django.test import Client
+from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
+
+# ggignore-start
+# gitguardian:ignore
+PWD = "pod1234pod"  # nosec
+# ggignore-end
 
 
 class authenticationViewsTestCase(TestCase):
@@ -15,24 +19,10 @@ class authenticationViewsTestCase(TestCase):
         "initial_data.json",
     ]
 
-    def setUp(self):
-        User.objects.create(username="pod", password="podv3")
+    def setUp(self) -> None:
+        """Setup of authenticationViewsTestCase (launched before each test)."""
+        User.objects.create(username="pod", password=PWD)
         print(" --->  SetUp of authenticationViewsTestCase: OK!")
-
-    def test_authentication_login_gateway(self):
-        self.client = Client()
-        # CAS_GATEWAY is valued to False
-        response = self.client.get("/authentication_login_gateway/")
-        self.assertEqual(
-            response.content,
-            b"You must set CAS_GATEWAY to True to use this view",
-        )
-        self.assertEqual(response.status_code, 200)
-
-        print(
-            "   --->  test_authentication_login_gateway \
-            of authenticationViewsTestCase: OK!"
-        )
 
     def test_authentication_login(self) -> None:
         """Test authentication login page."""
@@ -43,22 +33,20 @@ class authenticationViewsTestCase(TestCase):
         # User already authenticated
         self.client.force_login(self.user)
         response = self.client.get(login_url)
+
         self.assertRedirects(response, "/")
 
-        # User not authenticated and CAS are valued to False
+        # User not authenticated and USE_CAS are valued to False
         self.client.logout()
         response = self.client.get(login_url)
         self.assertRedirects(response, "/accounts/login/?next=/")
 
-        print(
-            "   --->  test_authentication_login \
-            of authenticationViewsTestCase: OK!"
-        )
+        print("   --->  test_authentication_login of authenticationViewsTestCase: OK!")
 
     def test_authentication_logout(self) -> None:
         self.client = Client()
         # USE_CAS is valued to False
-        response = self.client.get("/authentication_logout/")
+        response = self.client.post("/authentication_logout/")
         self.assertRedirects(response, "/accounts/logout/?next=/", target_status_code=302)
 
         print(
@@ -66,7 +54,7 @@ class authenticationViewsTestCase(TestCase):
             of authenticationViewsTestCase: OK!"
         )
 
-    def test_userpicture(self):
+    def test_userpicture(self) -> None:
         self.client = Client()
         self.user = User.objects.get(username="pod")
         # User is not loged in
