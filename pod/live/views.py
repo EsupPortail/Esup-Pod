@@ -1022,10 +1022,7 @@ def create_video(event_id, current_file, segment_number):
 
         # Copy puis suppression plutôt qu'un rename qui ne fonctionne pas sous
         # des systèmes de fichiers différents (env. conteneurisés et volumes persistants)
-        shutil.copyfile(
-            full_file_name,
-            dest_file
-        )
+        shutil.copyfile(full_file_name, dest_file)
 
         # verif si la taille du fichier copié ne bouge plus
         check_size_not_changing(dest_file)
