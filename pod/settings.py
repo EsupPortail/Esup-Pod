@@ -8,9 +8,6 @@ import os
 import sys
 import importlib.util
 
-# DEPRECATIONS HACKS
-import django
-
 # As a comment until a new version of django-chunked-upload is released on pypi
 # See requirements.txt (django-chunked-upload==2.0.0 replaced by
 # git+https://github.com/juliomalegria/django-chunked-upload.git@master)
