@@ -16,7 +16,7 @@
     <i class="bi bi-list" aria-hidden="true"></i>
   </button>
   <a class="navbar-brand pod-navbar__brand me-0 me-sm-1" href="/" title="{{ TITLE_SITE }} - {% trans 'Home' %}" {% if request.path == '/' %}aria-current="page"{% endif %} data-bs-toggle="tooltip" data-bs-placement="bottom">
-    <img src="{% static LOGO_SITE %}" height="25" alt="" loading="lazy"><strong>{{ TITLE_SITE }}</strong>
+    <img src="{% static LOGO_SITE %}" height="40" alt="" loading="lazy"><strong>{{ TITLE_SITE }}</strong>
   </a>
   <!-- off canvas -->
   <div class="offcanvas offcanvas-start pod-offcanvas" tabindex="-1" id="pod-navbar__menu" aria-labelledby="pod-navbar__menuLabel">
@@ -86,10 +86,11 @@
       <i class="bi bi-search" aria-hidden="true"></i> <span class="visually-hidden">{% trans 'Search for a media on' %} {{ TITLE_SITE }}</span>
     </label>
     <div class="input-group me-sm-2 pod-navbar-search">
-      <input class="form-control form-control-sm hide-search-input" id="s"
+      <input class="form-control form-control-sm hide-search-input"
              placeholder="{% trans 'Search a media' %}" type="search" name="q"
              data-bs-toggle="tooltip"
-             title="{% blocktrans %}Type keyword here to search a media on {{ TITLE_SITE }}{% endblocktrans %}">
+             title="{% blocktrans %}Type keyword here to search a media on {{ TITLE_SITE }}{% endblocktrans %}"
+             style="border-top-left-radius: var(--bs-border-radius-xl); border-bottom-left-radius: var(--bs-border-radius-xl);">
       <button id="search-button" type="submit" class="btn btn-primary"
         data-bs-toggle="tooltip" title="{% trans 'Do the media search' %}">
         <i class="bi bi-search" aria-hidden="true"></i>

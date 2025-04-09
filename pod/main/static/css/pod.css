@@ -289,6 +289,22 @@ a:not(.btn, .dropdown-item):focus {
   padding: 0.25rem 1.25rem;
 }
 
+.pod-navbar .btn{
+  border-radius: var(--bs-border-radius-xl);
+  font-size: 1.20rem;
+  padding: 0.6rem 0.9rem; 
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem; 
+}
+
+.pod-navbar .btn i {
+  font-size: 1.25em; 
+  display: inline-flex;
+  align-items: center;
+}
+
+
 /***
  *  video *
  ***/
@@ -1321,6 +1337,7 @@ body {
   gap: 0.5rem;
   color: var(--pod-font-color) !important;
   transition: transform 0.4s ease;
+  font-size: 1.755rem;
 }
 
 .pod-navbar__brand:hover,
@@ -1384,6 +1401,7 @@ body {
 
 .pod-navbar__form {
   margin-left: auto;
+  margin-right: auto;
 }
 
 @media (width >= 992px) {
@@ -1508,13 +1526,13 @@ Commented in 3.6.0
 .pod-navbar__button-toggler {
   color: var(--pod-font-color);
   padding: 0;
-  font-size: 1.8rem;
+  font-size: 3rem;
   margin: 0;
   border: 0;
-  margin-right: 0.3rem;
+  margin-right: 1rem;
   background: none;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: auto;
+  height: auto;
 }
 
 .pod-camera-video {
