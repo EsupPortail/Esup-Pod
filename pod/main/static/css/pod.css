@@ -81,6 +81,7 @@
 
   /* BOOTSTRAP COLORS */
   --bs-primary-rgb: var(--pod-primary-rgb);
+  --bs-dropdown-link-active-bg: var(--pod-primary);
   --bs-light: #f8f9fa;
   --bs-dark: #343a40;
   --bs-link-color: var(--pod-link-color);
