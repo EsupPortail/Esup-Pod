@@ -1,4 +1,5 @@
 """Unit tests for Duplicate views."""
+
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
@@ -19,7 +20,9 @@ class VideoDuplicateViewTest(TestCase):
 
     def setUp(self) -> None:
         """Set up required objects for the tests."""
-        self.user = User.objects.create_user(username="testuser", password=PWD, is_staff=True)
+        self.user = User.objects.create_user(
+            username="testuser", password=PWD, is_staff=True
+        )
         self.type = Type.objects.create(title="Test Type")
         self.video = Video.objects.create(
             title="Original Video",

@@ -131,9 +131,7 @@ def video_duplicate(request, slug):
         )
         # Duplicate the source file and assign it to the duplicated video
         duplicated_video.video.name = duplicate_source_file(
-            duplicated_video.id,
-            duplicated_video.video.path,
-            duplicated_video.video.name
+            duplicated_video.id, duplicated_video.video.path, duplicated_video.video.name
         )
 
         # Many-to-Many Relations
