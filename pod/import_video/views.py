@@ -932,7 +932,7 @@ def upload_peertube_recording_to_pod(request, record_id: int) -> bool:
         # Step 5: Save and encode Pod video
         description = _(
             "This video “%(name)s” was uploaded to Pod; its origin is PeerTube: "
-            "<a href='%(url)s' target='blank'>%(url)s</a>."
+            "<a href=\"%(url)s\" target=\"blank\">%(url)s</a>."
         ) % {"name": pt_video_name, "url": pt_video_url}
         description = ("%s<br>%s") % (description, pt_video_description)
         save_video(request.user, dest_path, recording_title, description, date_evt)

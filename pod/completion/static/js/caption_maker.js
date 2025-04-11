@@ -707,7 +707,7 @@ function createCaptionBlock(newCaption, spawnFunction) {
     ).body.firstChild,
 
     numberCharactersAlert: new DOMParser().parseFromString(
-      `<div class='alert alert-danger mt-2'><strong>${gettext("For your video's accessibility, we recommend a maximum of 80 characters.")}</strong></div>`,
+      `<div class='alert alert-danger mt-2'><strong>${gettext("For your video’s accessibility, we recommend a maximum of 80 characters.")}</strong></div>`,
       "text/html",
     ).body.firstChild,
 

@@ -6,7 +6,12 @@
     <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Informations about meetings" %}</h2>
     <div class="card-body card-text">
       <p>{% trans "This meeting module is based on the OpenSource <strong>BigBlueButton</strong> solution." %}</p>
-      <p>{% trans "This solution enables voice and video image sharing, presentations with or without a whiteboard, public and private chat tools, screen sharing, voice over IP, online polling and the use of office documents." %}</p>
+      <p>
+        {% blocktrans trimmed %}
+        This solution enables voice and video image sharing, presentations with or without a whiteboard,
+        public and private chat tools, screen sharing, voice over IP, online polling and the use of office documents.
+        {% endblocktrans %}
+      </p>
     </div>
   </div>
 
@@ -14,11 +19,29 @@
   <div class="card">
     <h2 class="h4 card-header card-title pod-card__title ps-2">{% trans "Informations about webinars" %}</h2>
     <div class="card-body card-text">
-      <p>{% trans "If you want to hold an online conference for a large audience (over 200 users), you can use the Webinar mode, accessible from this meetings module." %}</p>
-      <p>{% trans "This Webinar mode enables you to transmit information to a large audience via a live broadcast (accessible from the platform’s live page) and interaction - if you wish - via an integrated chat." %}</p>
+      <p>
+        {% blocktrans trimmed %}
+          If you want to hold an online conference for a large audience (over 200 users),
+          you can use the Webinar mode, accessible from this meetings module.
+        {% endblocktrans %}
+      </p>
+      <p>{% blocktrans trimmed %}
+        This Webinar mode enables you to transmit information to a large audience via a live broadcast
+        (accessible from the platform’s live page) and interaction - if you wish - via an integrated chat.
+        {% endblocktrans %}
+      </p>
       <p>{% trans "Once you’ve saved the form, you can start the webinar by clicking on the “Start the webinar” button." %}</p>
-      <p>{% trans "Shortly after clicking the “Start the webinar” button, the live stream will be available to users on the <i class='bi bi-broadcast mx-1' aria-hidden='true'></i> <strong>Lives</strong> page." %}</p>
-      <p class="alert alert-info">{% trans "You can invite other speakers/trainers to join you in BigBlueButton. Live should only be used by listeners." %}</p>
+      <p>
+        {% blocktrans trimmed %}
+          Shortly after clicking the “Start the webinar” button,
+          the live stream will be available to users on the
+          <i class="bi bi-broadcast mx-1" aria-hidden="true"></i>
+          <strong>Lives</strong> page.
+        {% endblocktrans %}
+      </p>
+      <p class="alert alert-info">
+        {% trans "You can invite other speakers/trainers to join you in BigBlueButton. Live should only be used by listeners." %}
+      </p>
     </div>
   </div>
 
@@ -26,14 +49,29 @@
     <h2 class="card-header card-title pod-card__title h4">{% trans "Useful tips"%}</h2>
     <div class="card-body" id="formfields">
       <p>
-        {% trans "Once the webinar has been created, you can modify the date and time information as you wish, and the live webinar will be updated accordingly." %}<br>
+        {% blocktrans trimmed %}
+          Once the webinar has been created,
+          you can modify the date and time information as you wish,
+          and the live webinar will be updated accordingly.
+        {% endblocktrans %}<br>
         <em>{% trans "This can be very useful for pre-event testing." %}</em>
       </p>
       <p>
-        {% trans "Once started, you can access the webinar information and additional actions via <i class='bi bi-person-video2 pod-add mx-1' aria-hidden='true'></i> <strong>Show webinar informations</strong> in the meetings list." %}
+        {% blocktrans trimmed %}
+          Once started, you can access the webinar information and additional actions via
+          <i class="bi bi-person-video2 pod-add mx-1" aria-hidden="true"></i>
+          <strong>Show webinar informations</strong> in the meetings list.
+          {% endblocktrans %}
       </p>
       {% if manage_event %}
-        <p>{% trans "As you have the appropriate rights, once the webinar has been created, you can access additional settings for the created event via <i class='bi bi-broadcast mx-1' aria-hidden='true'></i> <strong>My Events</strong> in the main menu." %}</p>
+        <p>
+          {% blocktrans trimmed %}
+            As you have the appropriate rights, once the webinar has been created,
+            you can access additional settings for the created event via
+            <i class="bi bi-broadcast mx-1" aria-hidden="true"></i>
+            <strong>My Events</strong> in the main menu.
+          {% endblocktrans %}
+        </p>
       {% endif%}
     </div>
   </div>
